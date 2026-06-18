@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-server/
+data/
+*.sqlite
+*.sqlite-*
+*.local
+.DS_Store
+npm-debug.log*
+.tmp/
