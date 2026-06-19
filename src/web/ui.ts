@@ -225,10 +225,13 @@ export class App {
     };
     refreshControls();
 
-    let locked = false; // hard lock during win sequence
-    let busy = false; // brief guard so a long slide/warp animation isn't overlapped
+    let locked = false; // hard lock during win sequence only
     const doMove = (dir: Dir) => {
-      if (locked || busy) return;
+      // No input throttling: the engine is pure/synchronous and renderer.update
+      // always reconciles the DOM to the latest state, so rapid or repeated keys
+      // can never corrupt state — they just retarget the CSS transition. We only
+      // freeze input during the brief win hand-off below.
+      if (locked) return;
       const res = game.move(dir);
       if (!res) {
         sfx('blocked');
@@ -243,15 +246,6 @@ export class App {
       else if (e?.crate?.slid) sfx('slide');
       else if (e?.crate) sfx('push');
       else sfx('move');
-
-      // Briefly ignore input while a long animation plays (state is already
-      // correct — this only avoids visual overlap from mashing keys).
-      if (e?.crate?.slid || e?.teleported || e?.crate?.sank) {
-        busy = true;
-        window.setTimeout(() => {
-          busy = false;
-        }, 180);
-      }
 
       if (game.solved) {
         locked = true;

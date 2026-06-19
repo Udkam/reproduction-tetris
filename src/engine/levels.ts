@@ -1,6 +1,8 @@
-// The level catalog — 20 levels across six chapters, difficulty rising throughout.
+// The level catalog — 60 levels across eleven chapters, difficulty rising
+// throughout (10 designed/generated chapters + the 淬炼 Crucible finale chapter).
 // Every layout is verified by scripts/verify-levels.ts (`npm run verify`); `par`
-// is the solver's reported optimal move count.
+// is the solver's reported optimal move count (generated/finale levels carry a
+// stored, replay-verified solution).
 //
 // Legend (see level.ts): # wall · space floor · . goal · $ crate · @ player
 //   ~ ice · ^ pit · R/G/B/Y colored crate · r/g/b/y colored goal
@@ -439,7 +441,151 @@ const GEN_DEFS: Chaptered[] = GENERATED.filter((g) => /[ab]$/.test(g.id)).map((g
   solution: g.solution as Dir[],
 }));
 
-export const LEVEL_DEFS: Chaptered[] = [...HAND_DEFS, ...GEN_DEFS];
+// ───────────── Chapter XI · 淬炼 Crucible ─────────────
+// The closing chapter: no new mechanics, only combinations. Every level is a
+// pure "read the board" puzzle (intro: '') with a single clear core idea —
+// combo, resource trade-off, or spatial scheduling — rising to a finale that
+// folds colour + gate + pit + portal together. Hand-designed levels carry a
+// solver-verified solution; the four 空间调度 levels were produced by the
+// reverse-pull generator, hand-picked for a non-obvious reorder, then named.
+const CRUCIBLE_DEFS: Chaptered[] = [
+  {
+    // Combo · ice + colour: each crate slides until a wall/centre pillar stops
+    // it, so you must aim each colour at its own row from the right side.
+    id: 'l24', name: '凝光', subtitle: 'Frostlight', chapter: '淬炼', par: 22, intro: '',
+    map: [
+      '#########',
+      '#r  b  g#',
+      '# ~~~~~ #',
+      '# ~~#~~ #',
+      '# R B G #',
+      '#   @   #',
+      '#########',
+    ],
+    solution: ['right','right','up','left','left','down','left','up','left','down','left','up','up','up','right','up','right','down','right','right','up','right'] as Dir[],
+  },
+  {
+    // Resource · one of the three crates must be spent filling the pit to reach
+    // the far goal; pick the wrong one and a target goes unfillable.
+    id: 'l25', name: '抉择', subtitle: 'The Choice', chapter: '淬炼', par: 24, intro: '',
+    map: [
+      '##########',
+      '#        #',
+      '#@$ $ ^ .#',
+      '#   ###  #',
+      '#  $  . ##',
+      '#        #',
+      '##########',
+    ],
+    solution: ['right','up','right','down','right','right','left','left','left','down','down','right','right','right','left','left','up','left','up','right','right','right','right','right'] as Dir[],
+  },
+  {
+    // Spatial · two narrow bays per side; the crates interlock so the delivery
+    // order is forced (generator-found, hand-picked).
+    id: 'l26', name: '互锁', subtitle: 'Deadbolt', chapter: '淬炼', par: 25, intro: '',
+    map: [
+      '###########',
+      '# $. . * ##',
+      '# $# # # ##',
+      '# $. .  $@#',
+      '#        ##',
+      '###########',
+    ],
+    solution: ['left','left','left','down','left','left','left','left','left','up','up','up','right','right','right','left','left','left','down','down','right','up','left','up','right'] as Dir[],
+  },
+  {
+    // Spatial · a squeezed centre forces you to clear a lane before the last
+    // crates can pass (generator-found, hand-picked).
+    id: 'l27', name: '挤兑', subtitle: 'Squeeze', chapter: '淬炼', par: 28, intro: '',
+    map: [
+      '##########',
+      '# $ .    #',
+      '# . ## . #',
+      '#  .  .  #',
+      '# $$$##$ #',
+      '#     @  #',
+      '##########',
+    ],
+    solution: ['right','up','up','down','down','left','left','left','up','down','left','left','up','up','left','up','up','right','right','down','down','right','right','left','down','down','left','up'] as Dir[],
+  },
+  {
+    // Spatial · offset steps; a crate parked on the wrong step blocks the rung
+    // above it (generator-found, hand-picked).
+    id: 'l28', name: '错阶', subtitle: 'Staircase', chapter: '淬炼', par: 29, intro: '',
+    map: [
+      '###########',
+      '#    . $@##',
+      '# .  ## * #',
+      '#   .    ##',
+      '## .$$$ ###',
+      '#        ##',
+      '###########',
+    ],
+    solution: ['left','left','right','down','down','down','down','left','up','right','up','left','left','left','left','down','left','up','down','down','right','right','right','up','left','right','right','up','left'] as Dir[],
+  },
+  {
+    // Spatial · a coiled path around two pillars; crates must be threaded in
+    // sequence or they jam the bend (generator-found, hand-picked).
+    id: 'l29', name: '盘绕', subtitle: 'Coil', chapter: '淬炼', par: 29, intro: '',
+    map: [
+      '###########',
+      '# $   .   #',
+      '#  .$ #.  #',
+      '#   #   . #',
+      '# $. #$$  #',
+      '#     @  ##',
+      '###########',
+    ],
+    solution: ['up','down','left','left','left','left','left','up','right','up','up','left','up','right','right','right','right','down','left','right','down','right','down','right','up','down','down','right','up'] as Dir[],
+  },
+  {
+    // Resource · twin moats, two upper + two lower crates: each moat eats one
+    // crate, so exactly the right two reach the goals.
+    id: 'l30', name: '重堑', subtitle: 'Twin Moats', chapter: '淬炼', par: 31, intro: '',
+    map: [
+      '############',
+      '#          #',
+      '#@$ $ ^ $ .#',
+      '## ###### ##',
+      '#  $ $ ^ . #',
+      '#          #',
+      '############',
+    ],
+    solution: ['up','right','right','down','right','right','right','right','right','right','left','left','left','left','up','left','left','left','left','down','right','right','right','right','right','right','right','up','right','down','down'] as Dir[],
+  },
+  {
+    // Combo · colour + gate + pit: park a crate on the plate to hold the gate,
+    // sacrifice one to the pit, then deliver R/B to their own goals.
+    id: 'l31', name: '枢机', subtitle: 'Linchpin', chapter: '淬炼', par: 38, intro: '',
+    map: [
+      '##########',
+      '#  1     #',
+      '# R$ D r #',
+      '#@   #   #',
+      '# B ^  b #',
+      '#  $     #',
+      '##########',
+    ],
+    solution: ['right','right','up','down','left','left','up','right','right','right','right','right','down','down','down','left','left','left','left','up','up','left','up','right','right','right','right','up','right','down','down','right','down','down','left','left','up','right'] as Dir[],
+  },
+  {
+    // Finale · colour + gate + pit + portal all at once: the portal is the only
+    // way to reach a crate's pushable side after the gate is held open.
+    id: 'l32', name: '收束', subtitle: 'Convergence', chapter: '淬炼', par: 37, intro: '',
+    map: [
+      '###########',
+      '#  1    o #',
+      '# R$ D r  #',
+      '#@   #    #',
+      '# B ^  b  #',
+      '#  $   o  #',
+      '###########',
+    ],
+    solution: ['down','right','up','right','up','down','left','left','up','right','right','right','right','right','right','up','right','left','left','left','left','up','up','left','up','right','right','right','right','up','right','down','down','right','right','up','left'] as Dir[],
+  },
+];
+
+export const LEVEL_DEFS: Chaptered[] = [...HAND_DEFS, ...GEN_DEFS, ...CRUCIBLE_DEFS];
 
 export const LEVELS = LEVEL_DEFS.map(parseLevel);
 export const CHAPTER_OF: Record<string, string> = Object.fromEntries(
