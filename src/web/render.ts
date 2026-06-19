@@ -78,6 +78,7 @@ export class BoardRenderer {
     }
     if (cell.plateGroup) parts.push('plate', groupClass(cell.plateGroup));
     if (cell.gateGroup) parts.push('gate', groupClass(cell.gateGroup));
+    if (cell.portal) parts.push('portal', `p-${cell.portal}`);
     return parts.join(' ');
   }
 
@@ -99,7 +100,16 @@ export class BoardRenderer {
     const instant = !effect;
     const stepDur = instant ? 0 : STEP_MS;
 
-    this.setPos(this.playerEl, state.playerX, state.playerY, stepDur);
+    if (effect?.teleported) {
+      // Warp: snap to the partner cell (no slide across the board) with a pulse.
+      this.setPos(this.playerEl, state.playerX, state.playerY, 0);
+      this.playerEl.classList.remove('warp');
+      void this.playerEl.offsetWidth; // restart the animation
+      this.playerEl.classList.add('warp');
+      window.setTimeout(() => this.playerEl.classList.remove('warp'), 320);
+    } else {
+      this.setPos(this.playerEl, state.playerX, state.playerY, stepDur);
+    }
 
     const present = new Set(state.crates.map((c) => c.id));
 

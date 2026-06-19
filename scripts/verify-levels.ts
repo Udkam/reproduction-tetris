@@ -13,10 +13,12 @@ import { isSolved } from '../src/engine/rules.js';
 
 let failures = 0;
 const rows: string[] = [];
+// Lower this (e.g. VERIFY_MAX=400000) for fast triage of unsolvable drafts.
+const maxStates = Number(process.env.VERIFY_MAX ?? 2_000_000);
 
 for (const level of LEVELS) {
   const start = Date.now();
-  const res = solve(level);
+  const res = solve(level, { maxStates });
   const ms = Date.now() - start;
 
   const trivial = isSolved(level, initialState(level));

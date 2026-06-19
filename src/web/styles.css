@@ -125,8 +125,8 @@ button:disabled {
 /* ---------- menu ---------- */
 
 .menu {
-  width: min(680px, 92vw);
-  padding: 8vh 0 6vh;
+  width: min(760px, 94vw);
+  padding: 7vh 0 6vh;
   text-align: center;
 }
 .menu h1 {
@@ -151,10 +151,33 @@ button:disabled {
   line-height: 1.7;
 }
 
+.help-link {
+  margin: -0.4rem 0 1.4rem;
+}
+.menu .chapter {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.18em;
+  text-align: left;
+  margin: 2rem 0 0.9rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--floor-line);
+}
+.menu .chapter:first-of-type {
+  margin-top: 0.6rem;
+}
+
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+@media (max-width: 640px) {
+  .level-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 @media (max-width: 480px) {
   .level-grid {
@@ -260,6 +283,101 @@ button:disabled {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-left: 0.5rem;
+}
+.top-actions {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+/* ---------- help / legend ---------- */
+.card.help {
+  width: min(460px, 92vw);
+  text-align: left;
+}
+.card.help h2 {
+  text-align: center;
+}
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 1.2rem 0 0.4rem;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.legend-row b {
+  display: block;
+  font-size: 0.95rem;
+}
+.legend-row span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.legend-ic {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  position: relative;
+  background: var(--floor);
+  box-shadow: inset 0 0 0 1px var(--floor-line);
+}
+.legend-ic.ic-player {
+  background: var(--floor);
+}
+.legend-ic.ic-player::after {
+  content: '';
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(120% 120% at 35% 28%,
+      color-mix(in srgb, var(--player) 70%, white), var(--player) 55%);
+}
+.legend-ic.ic-crate {
+  background: var(--crate);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.16);
+}
+.legend-ic.ic-crate::after {
+  content: '';
+  position: absolute;
+  inset: 26%;
+  border-radius: 3px;
+  border: 2px solid rgba(0, 0, 0, 0.14);
+}
+.legend-ic.ic-ice {
+  background: linear-gradient(135deg, var(--ice-sheen), var(--ice));
+  box-shadow: inset 0 0 0 1px var(--ice-edge);
+}
+.legend-ic.ic-pit {
+  background: radial-gradient(120% 120% at 50% 35%, #3a352c, var(--pit) 70%);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.55);
+}
+.legend-ic.ic-plate::after {
+  content: '';
+  position: absolute;
+  inset: 26%;
+  border-radius: 5px;
+  border: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.legend-ic.ic-color {
+  background: var(--rose);
+  box-shadow: inset -10px 0 0 var(--sage), inset -20px 0 0 var(--slate),
+    inset 0 0 0 1px var(--floor-line);
+}
+.legend-ic.ic-portal::after {
+  content: '';
+  position: absolute;
+  inset: 50%;
+  width: 52%;
+  height: 52%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid #6f5b86;
 }
 
 .hud {
@@ -418,6 +536,55 @@ button:disabled {
 }
 .cell.gate.open {
   box-shadow: inset 0 0 0 1px var(--floor-line);
+}
+
+/* portal: concentric rings, tinted per pair (player-only teleporter) */
+.cell.portal {
+  background: var(--floor);
+  box-shadow: inset 0 0 0 1px var(--floor-line);
+}
+.cell.portal::before,
+.cell.portal::after {
+  content: '';
+  position: absolute;
+  inset: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid var(--portal-color, #6f5b86);
+}
+.cell.portal::before {
+  width: 56%;
+  height: 56%;
+  opacity: 0.95;
+}
+.cell.portal::after {
+  width: 28%;
+  height: 28%;
+  background: color-mix(in srgb, var(--portal-color, #6f5b86) 22%, transparent);
+  animation: portalPulse 2.6s ease-in-out infinite;
+}
+@keyframes portalPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.35); opacity: 0.35; }
+}
+.cell.portal.p-o {
+  --portal-color: #6f5b86; /* violet */
+}
+.cell.portal.p-p {
+  --portal-color: #4f8a86; /* teal */
+}
+.cell.portal.p-q {
+  --portal-color: #b07a3e; /* bronze */
+}
+
+.player.warp .body {
+  animation: warp 0.32s ease;
+}
+@keyframes warp {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.2); opacity: 0.5; }
+  36% { transform: scale(0.2) rotate(180deg); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* plate / gate group tints */

@@ -1,6 +1,7 @@
 // Screens and interaction. Plain DOM — no framework — kept small and explicit.
 
 import type { Dir, Level } from '../engine/types.js';
+import { CHAPTER_OF } from '../engine/levels.js';
 import { Game } from './game.js';
 import { BoardRenderer } from './render.js';
 import {
@@ -66,38 +67,82 @@ export class App {
 
   // ---------------- menu ----------------
 
+  private levelCard(lvl: Level, i: number): HTMLElement {
+    const unlocked = isUnlocked(this.order, lvl.id, this.progress);
+    const done = !!this.progress.completed[lvl.id];
+    const best = this.progress.best[lvl.id];
+    const card = h(
+      'div',
+      { class: `level-card${unlocked ? '' : ' locked'}` },
+      h('div', { class: 'idx' }, String(i + 1).padStart(2, '0')),
+      h('div', { class: 'name wordmark' }, unlocked ? lvl.name : '· · ·'),
+      h('div', { class: 'sub' }, unlocked ? lvl.subtitle : 'locked'),
+      h('div', { class: 'best' }, best !== undefined ? `最佳 ${best} 步` : unlocked ? '未通关' : ''),
+    );
+    if (done) card.append(h('div', { class: 'seal', title: '已通关' }));
+    if (unlocked) card.onclick = () => this.playLevel(lvl.id);
+    return card;
+  }
+
   private showMenu(): void {
-    const grid = h('div', { class: 'level-grid' });
-    this.levels.forEach((lvl, i) => {
-      const unlocked = isUnlocked(this.order, lvl.id, this.progress);
-      const done = !!this.progress.completed[lvl.id];
-      const best = this.progress.best[lvl.id];
-      const card = h(
-        'div',
-        { class: `level-card${unlocked ? '' : ' locked'}` },
-        h('div', { class: 'idx' }, String(i + 1).padStart(2, '0')),
-        h('div', { class: 'name wordmark' }, unlocked ? lvl.name : '· · ·'),
-        h('div', { class: 'sub' }, unlocked ? lvl.subtitle : 'locked'),
-        h('div', { class: 'best' }, best !== undefined ? `最佳 ${best} 步` : unlocked ? '未通关' : ''),
-      );
-      if (done) card.append(h('div', { class: 'seal', title: '已通关' }));
-      if (unlocked) card.onclick = () => this.playLevel(lvl.id);
-      grid.append(card);
-    });
+    const help = h('button', { class: 'ghost help-link' }, '玩法 / 图例');
+    help.onclick = () => this.showHelp();
 
     const menu = h(
       'div',
       { class: 'menu' },
       h('h1', {}, '推移'),
       h('div', { class: 'tagline' }, 'Driftbox'),
-      h(
-        'p',
-        { class: 'lede' },
-        '把箱子推到它该去的地方。冰会让箱子滑走，深坑要用箱子填平，闸门要有重物顶住，颜色必须各归其位。',
-      ),
-      grid,
+      h('p', { class: 'lede' }, '二十道关卡，六种机制层层叠加。多数关卡没有提示——自己读懂这张棋盘。'),
+      help,
     );
+
+    const chapters: string[] = [];
+    for (const l of this.levels) {
+      const c = CHAPTER_OF[l.id] ?? '';
+      if (!chapters.includes(c)) chapters.push(c);
+    }
+    for (const ch of chapters) {
+      menu.append(h('h2', { class: 'chapter' }, ch));
+      const grid = h('div', { class: 'level-grid' });
+      this.levels.forEach((lvl, i) => {
+        if ((CHAPTER_OF[lvl.id] ?? '') === ch) grid.append(this.levelCard(lvl, i));
+      });
+      menu.append(grid);
+    }
     this.swap(menu);
+  }
+
+  private showHelp(): void {
+    const sw = (cls: string) => h('span', { class: `legend-ic ${cls}` });
+    const row = (icon: HTMLElement, title: string, desc: string) =>
+      h('div', { class: 'legend-row' }, icon, h('div', {}, h('b', {}, title), h('span', {}, desc)));
+
+    const card = h(
+      'div',
+      { class: 'card help' },
+      h('h2', { class: 'wordmark' }, '玩法 / 图例'),
+      h('div', { class: 'legend' },
+        row(sw('ic-player'), '你', '方向键 / WASD 移动。只能推、不能拉。'),
+        row(sw('ic-crate'), '箱子 → 目标点', '把每个箱子推到目标点（○）即过关。'),
+        row(sw('ic-ice'), '冰面', '箱子推上去会一直滑到撞墙；你不受影响。'),
+        row(sw('ic-pit'), '深坑', '你过不去；推箱入坑可将其填平（箱子消耗）。'),
+        row(sw('ic-plate'), '压力板 / 闸门', '重物压住压力板时，同色闸门开启。'),
+        row(sw('ic-color'), '颜色匹配', '彩色箱子要送到同色目标点。'),
+        row(sw('ic-portal'), '折跃门', '踩上去瞬移到同色的另一扇；箱子过不去。'),
+      ),
+      h('p', { class: 'result' }, 'Z 撤销 · R 重开 · Esc 返回。可无限撤销，没有死亡惩罚。'),
+      h('div', { class: 'actions' }, (() => {
+        const b = h('button', { class: 'primary' }, '明白了');
+        b.onclick = () => overlay.remove();
+        return b;
+      })()),
+    );
+    const overlay = h('div', { class: 'overlay' }, card);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.remove();
+    });
+    this.root.append(overlay);
   }
 
   // ---------------- game ----------------
@@ -114,7 +159,9 @@ export class App {
     );
     const back = h('button', { class: 'ghost' }, '← 关卡');
     back.onclick = () => this.showMenu();
-    const topbar = h('div', { class: 'topbar' }, title, back);
+    const helpBtn = h('button', { class: 'ghost', title: '玩法 / 图例' }, '?');
+    helpBtn.onclick = () => this.showHelp();
+    const topbar = h('div', { class: 'topbar' }, title, h('div', { class: 'top-actions' }, helpBtn, back));
 
     const movesEl = h('b', {}, '0');
     const pushesEl = h('b', {}, '0');

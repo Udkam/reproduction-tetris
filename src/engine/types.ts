@@ -29,6 +29,9 @@ export interface Cell {
   plateGroup: string | null;
   /** Gate group id, or null. Gate is closed (blocks) unless its group is satisfied. */
   gateGroup: string | null;
+  /** Portal pair id, or null. Player-only: stepping onto a portal warps to its
+   *  partner; crates treat portals as walls. */
+  portal: string | null;
 }
 
 export interface Crate {
@@ -54,6 +57,8 @@ export interface Level {
   crates: Crate[];
   /** Gate opens when pressed-plate count in the group >= threshold (default = #plates in group). */
   gateThreshold: Record<string, number>;
+  /** For each cell index, the partner portal cell index, or -1 if not a portal. */
+  portalPartner: number[];
   /** Optimal push count, filled in by the solver / cached. */
   par?: number;
 }
@@ -73,6 +78,8 @@ export interface GameState {
 export interface MoveEffect {
   dir: Dir;
   player: { from: { x: number; y: number }; to: { x: number; y: number } };
+  /** True when the player stepped through a portal (render should warp, not slide). */
+  teleported?: boolean;
   crate?: {
     id: number;
     from: { x: number; y: number };

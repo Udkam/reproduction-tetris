@@ -15,6 +15,7 @@
 //   r g b y      colored goal   -> rose / sage / slate / amber
 //   1..9         pressure plate (group = the digit)
 //   D E F        gate, closed   (controlled by plate group 1 / 2 / 3)
+//   o p q        portal pair    (each letter appears exactly twice; player-only)
 //
 // A gate opens when the number of pressed plates in its group reaches the
 // group threshold (default = number of plates in the group, i.e. AND).
@@ -35,9 +36,10 @@ export interface LevelDef {
 const CRATE_COLOR: Record<string, Color> = { R: 'rose', G: 'sage', B: 'slate', Y: 'amber' };
 const GOAL_COLOR: Record<string, Color> = { r: 'rose', g: 'sage', b: 'slate', y: 'amber' };
 const GATE_GROUP: Record<string, string> = { D: '1', E: '2', F: '3' };
+const PORTAL_IDS = new Set(['o', 'p', 'q']);
 
 function blankCell(): Cell {
-  return { terrain: 'floor', goal: null, plateGroup: null, gateGroup: null };
+  return { terrain: 'floor', goal: null, plateGroup: null, gateGroup: null, portal: null };
 }
 
 export function parseLevel(def: LevelDef): Level {
@@ -72,6 +74,8 @@ export function parseLevel(def: LevelDef): Level {
       } else if (GATE_GROUP[ch]) {
         cell.gateGroup = GATE_GROUP[ch]!;
         gateGroups.add(GATE_GROUP[ch]!);
+      } else if (PORTAL_IDS.has(ch)) {
+        cell.portal = ch;
       }
 
       // Object layer (player / crates).
@@ -103,6 +107,20 @@ export function parseLevel(def: LevelDef): Level {
     gateThreshold[g] = def.gateThreshold?.[g] ?? plateCount;
   }
 
+  // Portal partners: each portal id must appear exactly twice; link the two cells.
+  const portalPartner = new Array<number>(cells.length).fill(-1);
+  const byId = new Map<string, number[]>();
+  cells.forEach((c, i) => {
+    if (c.portal) (byId.get(c.portal) ?? byId.set(c.portal, []).get(c.portal)!).push(i);
+  });
+  for (const [id, list] of byId) {
+    if (list.length !== 2) {
+      throw new Error(`Level ${def.id}: portal '${id}' must appear exactly twice (found ${list.length})`);
+    }
+    portalPartner[list[0]!] = list[1]!;
+    portalPartner[list[1]!] = list[0]!;
+  }
+
   return {
     id: def.id,
     name: def.name,
@@ -114,6 +132,7 @@ export function parseLevel(def: LevelDef): Level {
     start,
     crates,
     gateThreshold,
+    portalPartner,
     par: def.par,
   };
 }

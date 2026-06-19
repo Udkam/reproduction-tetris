@@ -76,6 +76,7 @@ function crateCanEnter(
 ): boolean {
   const cell = cellAt(level, x, y);
   if (!cell || cell.terrain === 'wall') return false;
+  if (cell.portal) return false; // crates can't enter portals (player-only)
   if (cell.gateGroup && !openGates.has(cell.gateGroup)) return false;
   const other = state.crates.find((c) => c.x === x && c.y === y && c.id !== movingId);
   if (other) return false;
@@ -174,16 +175,35 @@ export function applyMove(level: Level, state: GameState, dir: Dir): MoveResult 
     return { changed: true, state: next, effect };
   }
 
-  if (!playerCanEnter(level, state, tx, ty, openGates)) return { changed: false, state };
+  // Portal: stepping onto a portal warps the player to its partner cell.
+  const targetCell = cellAt(level, tx, ty);
+  let destX = tx;
+  let destY = ty;
+  let teleported = false;
+  if (targetCell?.portal) {
+    const partner = level.portalPartner[idx(level, tx, ty)] ?? -1;
+    if (partner < 0) return { changed: false, state };
+    const wx = partner % level.width;
+    const wy = Math.floor(partner / level.width);
+    if (!playerCanEnter(level, state, wx, wy, openGates)) return { changed: false, state };
+    destX = wx;
+    destY = wy;
+    teleported = true;
+  } else if (!playerCanEnter(level, state, tx, ty, openGates)) {
+    return { changed: false, state };
+  }
+
   const next: GameState = {
-    playerX: tx,
-    playerY: ty,
+    playerX: destX,
+    playerY: destY,
     crates: state.crates,
     filled: state.filled,
     moves: state.moves + 1,
     pushes: state.pushes,
   };
-  return { changed: true, state: next, effect: { dir, player: { from, to: { x: tx, y: ty } } } };
+  const effect: MoveEffect = { dir, player: { from, to: { x: destX, y: destY } } };
+  if (teleported) effect.teleported = true;
+  return { changed: true, state: next, effect };
 }
 
 /** Every goal covered by a crate of the right color? */
