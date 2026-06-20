@@ -783,16 +783,13 @@ button:disabled {
   border-radius: 4px;
   border: 2px solid rgba(0, 0, 0, 0.12);
 }
-/* crate cross-brace + top sheen — reads as a braced wooden crate */
+/* clean wooden box: a soft top sheen only (no cross-brace) */
 .crate .body::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 9px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 34%),
-    linear-gradient(45deg, transparent 45%, rgba(0, 0, 0, 0.14) 47% 53%, transparent 55%),
-    linear-gradient(-45deg, transparent 45%, rgba(0, 0, 0, 0.14) 47% 53%, transparent 55%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 32%);
 }
 .crate.color-rose {
   --c: var(--rose);
@@ -852,79 +849,52 @@ button:disabled {
   }
 }
 
-/* player — a little geometric figure: a round head over a rounded torso, on a
-   soft contact shadow. It leans toward its facing direction and its eyes shift
-   (and hide when it turns away/up), so the avatar visibly "looks where it goes". */
+/* player — a small SVG explorer. It leans toward its facing direction, its
+   visor/eyes shift left/right and hide when it turns away, so it visibly
+   "looks where it goes". */
 .player .body {
   position: absolute;
-  inset: 11%;
+  inset: 8%;
   transform: translate(var(--lx, 0), var(--ly, 0));
   transition: transform 0.14s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.player .body::after {
-  /* soft contact shadow under the figure */
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -4%;
-  width: 64%;
-  height: 14%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(closest-side, var(--shadow), transparent);
+.player .avatar {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 3px 5px var(--shadow));
 }
-.player .head {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 52%;
-  height: 52%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(125% 125% at 38% 30%,
-      color-mix(in srgb, var(--player) 60%, white), var(--player) 64%);
-  box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.28),
-    inset 0 2px 3px rgba(255, 255, 255, 0.45), 0 2px 5px var(--shadow);
-  z-index: 2;
+.player .av-body {
+  fill: var(--player);
+  stroke: color-mix(in srgb, var(--player) 55%, black);
+  stroke-width: 1.4;
 }
-.player .head::before,
-.player .head::after {
-  content: '';
-  position: absolute;
-  top: 40%;
-  width: 13%;
-  height: 17%;
-  border-radius: 50%;
-  background: rgba(18, 26, 24, 0.8);
-  opacity: var(--eye-op, 1);
-  transition: opacity 0.12s ease, left 0.12s ease, right 0.12s ease;
+.player .av-belt { fill: color-mix(in srgb, var(--player) 62%, black); opacity: 0.5; }
+.player .av-head {
+  fill: color-mix(in srgb, var(--player) 80%, white);
+  stroke: color-mix(in srgb, var(--player) 55%, black);
+  stroke-width: 1.4;
 }
-.player .head::before {
-  left: calc(27% + var(--eye-dx, 0%));
+.player .av-foot { fill: color-mix(in srgb, var(--player) 55%, black); }
+.player .av-visor { fill: #1c2b29; }
+.player .av-eye { fill: #d8efe9; }
+.player .av-antenna { fill: color-mix(in srgb, var(--player) 60%, black); }
+.player .av-tip { fill: var(--accent); }
+.player .av-shadow { fill: var(--shadow); opacity: 0.5; }
+.player .av-face {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
-.player .head::after {
-  right: calc(27% - var(--eye-dx, 0%));
-}
-.player .torso {
-  position: absolute;
-  left: 50%;
-  bottom: 3%;
-  width: 78%;
-  height: 60%;
-  transform: translateX(-50%);
-  border-radius: 46% 46% 40% 40% / 40% 40% 50% 50%;
-  background: linear-gradient(165deg,
-      color-mix(in srgb, var(--player) 82%, white), var(--player) 60%);
-  box-shadow: inset 0 -5px 9px rgba(0, 0, 0, 0.3),
-    inset 0 3px 5px rgba(255, 255, 255, 0.3), 0 4px 9px var(--shadow);
-  z-index: 1;
-}
-.player.face-down  { --lx: 0; --ly: 1%; --eye-dx: 0%; --eye-op: 1; }
-.player.face-up    { --lx: 0; --ly: -2%; --eye-dx: 0%; --eye-op: 0; }
-.player.face-left  { --lx: -3%; --ly: 0; --eye-dx: -11%; --eye-op: 1; }
-.player.face-right { --lx: 3%; --ly: 0; --eye-dx: 11%; --eye-op: 1; }
+.player.face-down  { --lx: 0; --ly: 1%; }
+.player.face-up    { --lx: 0; --ly: -2%; }
+.player.face-left  { --lx: -4%; --ly: 0; }
+.player.face-right { --lx: 4%; --ly: 0; }
+.player.face-left .av-face  { transform: translateX(-4px); }
+.player.face-right .av-face { transform: translateX(4px); }
+.player.face-up .av-face    { opacity: 0; } /* turned away */
 .player.pushing .body {
-  transform: translate(calc(var(--lx, 0) * 2.6), calc(var(--ly, 0) * 2.6)) scale(0.97);
+  transform: translate(calc(var(--lx, 0) * 2.4), calc(var(--ly, 0) * 2.4)) scale(0.97);
 }
 .player.stepping .body {
   animation: step 0.14s ease;

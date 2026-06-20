@@ -73,11 +73,25 @@ export class BoardRenderer {
       if (cell.goal) this.goals.push({ i, el, color: cell.goal });
     }
 
-    // player — a small geometric figure (head + torso) that faces its last
-    // move direction and leans when pushing.
+    // player — a small SVG explorer that faces its last move direction (its
+    // visor/eyes shift, and hide when it turns away) and leans when pushing.
     this.playerEl = document.createElement('div');
     this.playerEl.className = 'piece player face-down';
-    this.playerEl.innerHTML = '<div class="body"><span class="head"></span><span class="torso"></span></div>';
+    this.playerEl.innerHTML = `<div class="body"><svg class="avatar" viewBox="0 0 100 100" aria-hidden="true">
+      <ellipse class="av-shadow" cx="50" cy="93" rx="27" ry="6"/>
+      <rect class="av-foot" x="35" y="78" width="13" height="13" rx="5"/>
+      <rect class="av-foot" x="52" y="78" width="13" height="13" rx="5"/>
+      <rect class="av-body" x="28" y="44" width="44" height="42" rx="18"/>
+      <rect class="av-belt" x="28" y="66" width="44" height="7"/>
+      <circle class="av-head" cx="50" cy="32" r="23"/>
+      <g class="av-face">
+        <rect class="av-visor" x="33" y="26" width="34" height="13" rx="6.5"/>
+        <circle class="av-eye" cx="43" cy="32.5" r="3"/>
+        <circle class="av-eye" cx="57" cy="32.5" r="3"/>
+      </g>
+      <rect class="av-antenna" x="48.5" y="4" width="3" height="9" rx="1.5"/>
+      <circle class="av-tip" cx="50" cy="5" r="3.4"/>
+    </svg></div>`;
     this.facing = 'down';
     this.lastPX = level.start.x;
     this.lastPY = level.start.y;

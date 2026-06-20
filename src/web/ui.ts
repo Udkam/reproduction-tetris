@@ -4,7 +4,6 @@ import type { Dir, Level } from '../engine/types.js';
 import { CHAPTER_OF } from '../engine/levels.js';
 import { Game } from './game.js';
 import { BoardRenderer } from './render.js';
-import { sfx, soundEnabled, setSound } from './sfx.js';
 import {
   loadProgress,
   recordClear,
@@ -150,9 +149,7 @@ export class App {
   }
 
   private showMenu(): void {
-    const help = h('button', { class: 'ghost help-link' }, '玩法 / 图例');
-    help.onclick = () => this.showHelp();
-    const codex = h('button', { class: 'ghost help-link' }, '机制图鉴');
+    const codex = h('button', { class: 'ghost help-link' }, '玩法 / 图鉴');
     codex.onclick = () => this.showCodex();
 
     const total = this.levels.length;
@@ -163,9 +160,9 @@ export class App {
       { class: 'menu' },
       h('h1', {}, '推移'),
       h('div', { class: 'tagline' }, 'Driftbox'),
-      h('p', { class: 'lede' }, '六十关，九类机制层层叠加，十一章渐次加难。多数关卡没有提示——自己读懂这张棋盘。'),
+      h('p', { class: 'lede' }, '层层叠加的机制，渐次加难的关卡。多数关卡没有提示——自己读懂这张棋盘。'),
       h('p', { class: 'overall' }, `已通关 ${cleared} / ${total}`),
-      h('div', { class: 'menu-actions' }, help, codex),
+      h('div', { class: 'menu-actions' }, codex),
     );
 
     // The recommended level: the first reachable-but-uncleared level in order.
@@ -198,76 +195,25 @@ export class App {
     this.swap(menu);
   }
 
-  private showHelp(): void {
-    const sw = (cls: string) => h('span', { class: `legend-ic ${cls}` });
-    const row = (icon: HTMLElement, title: string, desc: string) =>
-      h('div', { class: 'legend-row' }, icon, h('div', {}, h('b', {}, title), h('span', {}, desc)));
-
-    const card = h(
-      'div',
-      { class: 'card help' },
-      h('h2', { class: 'wordmark' }, '玩法 / 图例'),
-      h('div', { class: 'legend' },
-        row(sw('ic-player'), '你', '方向键 / WASD 移动。只能推、不能拉。'),
-        row(sw('ic-crate'), '箱子 → 目标点', '把每个箱子推到目标点（○）即过关。'),
-        row(sw('ic-ice'), '冰面', '箱子推上去会一直滑到撞墙；你不受影响。'),
-        row(sw('ic-pit'), '深坑', '你过不去；推箱入坑可将其填平（箱子消耗）。'),
-        row(sw('ic-plate'), '压力板 / 闸门', '重物压住压力板时，同色闸门开启。'),
-        row(sw('ic-color'), '颜色匹配', '彩色箱子要送到同色目标点。'),
-        row(sw('ic-portal'), '折跃门', '踩上去瞬移到同色的另一扇；箱子过不去。'),
-        row(sw('ic-arrow'), '单向格', '只能顺着箭头方向进入，逆向进不去。'),
-        row(sw('ic-cracked'), '脆地', '离开后塌成深坑，只能走一次。'),
-        row(sw('ic-key'), '钥匙 / 锁', '拾取钥匙打开同色的锁。'),
-        row(sw('ic-pull'), '拉 / 抓', '按住 Shift + 方向（或点「抓」）拉动身后的箱子；贴墙的箱子只能拉。'),
-      ),
-      h('p', { class: 'result' }, 'Z 撤销 · R 重开 · Esc 返回。可无限撤销，没有死亡惩罚。'),
-      h('div', { class: 'actions' },
-        (() => {
-          const c = h('button', {}, '机制图鉴 →');
-          c.onclick = () => {
-            overlay.remove();
-            this.showCodex();
-          };
-          return c;
-        })(),
-        (() => {
-          const b = h('button', { class: 'primary' }, '明白了');
-          b.onclick = () => overlay.remove();
-          return b;
-        })(),
-      ),
-    );
-    const overlay = h('div', { class: 'overlay' }, card);
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.remove();
-    });
-    this.root.append(overlay);
-  }
-
   private showCodex(): void {
     const list = h('div', { class: 'codex' });
     for (const e of CODEX) {
-      const unlocked = isUnlocked(this.order, e.anchor, this.progress);
       const entry = h(
         'div',
-        { class: `codex-row${unlocked ? '' : ' locked'}` },
+        { class: 'codex-row' },
         h('span', { class: `legend-ic ${e.icon}` }),
-        unlocked
-          ? h('div', { class: 'codex-body' },
-              h('b', {}, e.name),
-              h('span', { class: 'codex-rule' }, e.rule),
-              h('span', { class: 'codex-use' }, e.use))
-          : h('div', { class: 'codex-body' },
-              h('b', {}, '未解锁'),
-              h('span', { class: 'codex-rule' }, '在后续章节首次遇到该机制后解锁。')),
+        h('div', { class: 'codex-body' },
+          h('b', {}, e.name),
+          h('span', { class: 'codex-rule' }, e.rule),
+          h('span', { class: 'codex-use' }, e.use)),
       );
       list.append(entry);
     }
     const card = h(
       'div',
       { class: 'card help' },
-      h('h2', { class: 'wordmark' }, '机制图鉴'),
-      h('p', { class: 'result' }, '每种机制在首次遇到后解锁，这里只讲规则与典型用法，不剧透关卡解法。'),
+      h('h2', { class: 'wordmark' }, '玩法 / 图鉴'),
+      h('p', { class: 'result' }, '方向键 / WASD 移动，只能推不能拉（除非按住 Shift 拉箱）。Z 撤销 · R 重开 · Esc 返回。下面是每种机制的规则与典型用法。'),
       list,
       h('div', { class: 'actions' }, (() => {
         const b = h('button', { class: 'primary' }, '返回');
@@ -296,14 +242,9 @@ export class App {
     );
     const back = h('button', { class: 'ghost' }, '← 关卡');
     back.onclick = () => this.showMenu();
-    const helpBtn = h('button', { class: 'ghost', title: '玩法 / 图例' }, '?');
-    helpBtn.onclick = () => this.showHelp();
-    const soundBtn = h('button', { class: 'ghost', title: '音效开关' }, soundEnabled() ? '🔈' : '🔇');
-    soundBtn.onclick = () => {
-      setSound(!soundEnabled());
-      soundBtn.textContent = soundEnabled() ? '🔈' : '🔇';
-    };
-    const topbar = h('div', { class: 'topbar' }, title, h('div', { class: 'top-actions' }, soundBtn, helpBtn, back));
+    const helpBtn = h('button', { class: 'ghost', title: '机制图鉴' }, '?');
+    helpBtn.onclick = () => this.showCodex();
+    const topbar = h('div', { class: 'topbar' }, title, h('div', { class: 'top-actions' }, helpBtn, back));
 
     const movesEl = h('b', {}, '0');
     const pushesEl = h('b', {}, '0');
@@ -325,15 +266,13 @@ export class App {
 
     const undoBtn = h('button', {}, '撤销');
     const restartBtn = h('button', {}, '重开');
-    const grabBtn = h('button', { class: 'grab', title: '抓取：开启后移动会拉动身后的箱子（也可按住 Shift + 方向）' }, '抓 ⇲');
     const controls = h(
       'div',
       { class: 'controls' },
       undoBtn,
       restartBtn,
-      grabBtn,
       h('span', { class: 'spacer' }),
-      h('span', { class: 'hint-keys' }, 'WASD/方向键 移动 · Shift+方向 拉 · Z 撤销 · R 重开'),
+      h('span', { class: 'hint-keys' }, 'WASD/方向键 移动 · Shift+方向 拉箱 · Z 撤销 · R 重开'),
     );
 
     const dpad = h(
@@ -361,7 +300,6 @@ export class App {
     refreshControls();
 
     let locked = false; // hard lock during win sequence only
-    let grabMode = false; // touch/click grab toggle; Shift also pulls per-move
     const doMove = (dir: Dir, pull = false) => {
       // No input throttling: the engine is pure/synchronous and renderer.update
       // always reconciles the DOM to the latest state, so rapid or repeated keys
@@ -369,23 +307,12 @@ export class App {
       // freeze input during the brief win hand-off below.
       if (locked) return;
       const res = game.move(dir, pull);
-      if (!res) {
-        sfx('blocked');
-        return;
-      }
+      if (!res) return;
       renderer.update(game.state, res.effect);
       refreshControls();
 
-      const e = res.effect;
-      if (e?.crate?.sank) sfx('fill');
-      else if (e?.teleported) sfx('warp');
-      else if (e?.crate?.slid) sfx('slide');
-      else if (e?.crate) sfx('push');
-      else sfx('move');
-
       if (game.solved) {
         locked = true;
-        sfx('win');
         const slid = res.effect?.crate?.slid;
         window.setTimeout(() => this.win(level, game), slid ? 460 : 320);
       }
@@ -394,7 +321,7 @@ export class App {
     const onKey = (e: KeyboardEvent) => {
       if (e.key in KEY_DIR) {
         e.preventDefault();
-        doMove(KEY_DIR[e.key]!, e.shiftKey || grabMode);
+        doMove(KEY_DIR[e.key]!, e.shiftKey);
       } else if (e.key === 'z' || e.key === 'Z') {
         if (game.undo()) {
           renderer.update(game.state);
@@ -421,14 +348,10 @@ export class App {
       renderer.update(game.state);
       refreshControls();
     };
-    grabBtn.onclick = () => {
-      grabMode = !grabMode;
-      grabBtn.classList.toggle('on', grabMode);
-    };
-    upB!.onclick = () => doMove('up', grabMode);
-    downB!.onclick = () => doMove('down', grabMode);
-    leftB!.onclick = () => doMove('left', grabMode);
-    rightB!.onclick = () => doMove('right', grabMode);
+    upB!.onclick = () => doMove('up');
+    downB!.onclick = () => doMove('down');
+    leftB!.onclick = () => doMove('left');
+    rightB!.onclick = () => doMove('right');
 
     // swipe
     let sx = 0;
@@ -443,7 +366,7 @@ export class App {
       const dx = t.clientX - sx;
       const dy = t.clientY - sy;
       if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
-      doMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up', grabMode);
+      doMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up');
     };
     boardWrap.addEventListener('touchstart', onTouchStart, { passive: true });
     boardWrap.addEventListener('touchend', onTouchEnd, { passive: true });
