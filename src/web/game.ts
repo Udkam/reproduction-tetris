@@ -4,7 +4,7 @@
 import type { Dir, GameState, Level, MoveResult, MoveToken } from '../engine/types.js';
 import { OPPOSITE } from '../engine/types.js';
 import { initialState } from '../engine/level.js';
-import { applyMove, isSolved } from '../engine/rules.js';
+import { applyMove, isSolved, parseToken } from '../engine/rules.js';
 
 export class Game {
   readonly level: Level;
@@ -50,6 +50,14 @@ export class Game {
     this.undos = 0;
     this.state = initialState(this.level);
     this.solved = false;
+  }
+
+  /** Replay a saved token log to restore a board (resume "继续当前局面"). */
+  loadTokens(tokens: MoveToken[]): void {
+    for (const t of tokens) {
+      const p = parseToken(t);
+      if (p) this.move(p.dir, p.pull);
+    }
   }
 
   get canUndo(): boolean {
@@ -131,6 +139,13 @@ export class DiptychGame {
   private refresh(): void {
     this.solvedA = isSolved(this.level, this.a);
     this.solvedB = isSolved(this.twin, this.b);
+  }
+
+  loadTokens(tokens: MoveToken[]): void {
+    for (const t of tokens) {
+      const p = parseToken(t);
+      if (p) this.move(p.dir, p.pull);
+    }
   }
 
   get canUndo(): boolean {

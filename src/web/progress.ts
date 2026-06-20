@@ -1,12 +1,23 @@
 // Local progress (always works offline) plus best-effort server sync. The server
 // is authoritative for the public leaderboard, but the game never blocks on it.
 
+import type { MoveToken } from '../engine/types.js';
+
+/** The level the player last opened — for "继续上次" and resuming a board. */
+export interface LastPlayed {
+  id: string;
+  at: number; // epoch ms
+  log: MoveToken[]; // moves so far (empty if fresh / restarted)
+  won: boolean; // true if they cleared it before leaving
+}
+
 export interface Progress {
   completed: Record<string, boolean>;
   best: Record<string, number>; // best move count per level id
   bestPush: Record<string, number>; // fewest pushes per level id
   parHit: Record<string, boolean>; // cleared at or under the par move count
   clean: Record<string, boolean>; // cleared at least once without using undo
+  lastPlayed?: LastPlayed;
 }
 
 const KEY = 'driftbox.progress.v1';
@@ -23,6 +34,12 @@ export function loadProgress(): Progress {
     /* ignore corrupt storage */
   }
   return { ...EMPTY };
+}
+
+/** Remember the level the player just opened/left (for the home "继续" entry). */
+export function setLastPlayed(p: Progress, lp: LastPlayed): void {
+  p.lastPlayed = lp;
+  saveProgress(p);
 }
 
 export function saveProgress(p: Progress): void {

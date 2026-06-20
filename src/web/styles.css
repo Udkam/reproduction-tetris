@@ -1140,6 +1140,55 @@ button:disabled {
   font-variant-numeric: tabular-nums;
 }
 
+/* "继续上次" home banner */
+.continue-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  margin: 0 0 1.8rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: linear-gradient(120deg,
+      color-mix(in srgb, var(--accent) 14%, var(--panel)), var(--panel));
+  box-shadow: 0 6px 18px var(--shadow);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+.continue-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px var(--shadow);
+}
+.continue-card .cont-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+.continue-card .cont-name {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  color: var(--ink);
+}
+.continue-card .cont-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.level-card.last {
+  box-shadow: 0 0 0 1px var(--accent-deep), 0 6px 18px var(--shadow);
+}
+.level-card.last .idx::after {
+  content: ' ⟵ 上次';
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-deep);
+  vertical-align: middle;
+}
+
 .chapter-head {
   display: flex;
   align-items: baseline;

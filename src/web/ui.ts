@@ -1,12 +1,13 @@
 // Screens and interaction. Plain DOM — no framework — kept small and explicit.
 
-import type { Dir, Level } from '../engine/types.js';
+import type { Dir, Level, MoveToken } from '../engine/types.js';
 import { CHAPTER_OF } from '../engine/levels.js';
 import { Game, DiptychGame } from './game.js';
 import { BoardRenderer } from './render.js';
 import {
   loadProgress,
   recordClear,
+  setLastPlayed,
   isUnlocked,
   submitScore,
   chapterStats,
@@ -122,7 +123,8 @@ export class App {
             ? '从这里继续'
             : '未通关'
           : '';
-    const cls = `level-card${unlocked ? '' : ' locked'}${current ? ' current' : ''}`;
+    const isLast = this.progress.lastPlayed?.id === lvl.id;
+    const cls = `level-card${unlocked ? '' : ' locked'}${current ? ' current' : ''}${isLast ? ' last' : ''}`;
     const card = h(
       'div',
       { class: cls },
@@ -138,8 +140,39 @@ export class App {
       if (medals.childElementCount) card.append(medals);
       card.append(h('div', { class: 'seal', title: '已通关' }));
     }
-    if (unlocked) card.onclick = () => this.playLevel(lvl.id);
+    if (unlocked) card.onclick = () => this.openLevel(lvl.id);
     return card;
+  }
+
+  /** True if there is an unfinished saved board for this level to resume. */
+  private resumable(id: string): boolean {
+    const lp = this.progress.lastPlayed;
+    return !!lp && lp.id === id && !lp.won && lp.log.length > 0;
+  }
+
+  /** Open a level, offering "continue / restart" if a board is mid-progress. */
+  private openLevel(id: string): void {
+    if (!this.resumable(id)) {
+      this.playLevel(id);
+      return;
+    }
+    const lp = this.progress.lastPlayed!;
+    const actions = h('div', { class: 'actions' });
+    const resume = h('button', { class: 'primary' }, `继续当前局面（${lp.log.length} 步）`);
+    const fresh = h('button', {}, '从头开始');
+    actions.append(resume, fresh);
+    const card = h(
+      'div',
+      { class: 'card' },
+      h('h2', { class: 'wordmark' }, '继续上次？'),
+      h('p', { class: 'result' }, `你上次在这一关走了 ${lp.log.length} 步还没解开。`),
+      actions,
+    );
+    const overlay = h('div', { class: 'overlay' }, card);
+    resume.onclick = () => { overlay.remove(); this.playLevel(id, lp.log.slice()); };
+    fresh.onclick = () => { overlay.remove(); this.playLevel(id); };
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    this.root.append(overlay);
   }
 
   private showMenu(): void {
@@ -158,6 +191,20 @@ export class App {
       h('p', { class: 'overall' }, `已通关 ${cleared} / ${total}`),
       h('div', { class: 'menu-actions' }, codex),
     );
+
+    // "继续上次" — the level the player most recently opened/left.
+    const lp = this.progress.lastPlayed;
+    const lpLevel = lp ? this.levels.find((l) => l.id === lp.id) : undefined;
+    if (lp && lpLevel) {
+      const ch = CHAPTER_OF[lp.id] ?? '';
+      const status = lp.won ? '已通关 · 可重玩' : lp.log.length ? `进行中 · ${lp.log.length} 步` : '未通关';
+      const cont = h('button', { class: 'continue-card' },
+        h('span', { class: 'cont-label' }, '继续上次'),
+        h('span', { class: 'cont-name wordmark' }, `${ch} · ${lpLevel.name}`),
+        h('span', { class: 'cont-status' }, status));
+      cont.onclick = () => this.openLevel(lp.id);
+      menu.append(cont);
+    }
 
     // The recommended level: the first reachable-but-uncleared level in order.
     const currentId =
@@ -224,13 +271,16 @@ export class App {
 
   // ---------------- game ----------------
 
-  private playLevel(id: string): void {
+  private playLevel(id: string, resumeLog?: MoveToken[]): void {
     const level = this.levels.find((l) => l.id === id)!;
     if (level.twin) {
-      this.playDiptych(level);
+      this.playDiptych(level, resumeLog);
       return;
     }
     const game = new Game(level);
+    if (resumeLog && resumeLog.length) game.loadTokens(resumeLog);
+    const saveVisit = () => setLastPlayed(this.progress, { id, at: Date.now(), log: [...game.log], won: game.solved });
+    saveVisit();
 
     const title = h(
       'div',
@@ -239,7 +289,7 @@ export class App {
       h('small', {}, level.subtitle),
     );
     const back = h('button', { class: 'ghost' }, '← 关卡');
-    back.onclick = () => this.showMenu();
+    back.onclick = () => { saveVisit(); this.showMenu(); };
     const helpBtn = h('button', { class: 'ghost', title: '机制图鉴' }, '?');
     helpBtn.onclick = () => this.showCodex();
     const topbar = h('div', { class: 'topbar' }, title, h('div', { class: 'top-actions' }, helpBtn, back));
@@ -330,6 +380,7 @@ export class App {
         renderer.update(game.state);
         refreshControls();
       } else if (e.key === 'Escape') {
+        saveVisit();
         this.showMenu();
       }
     };
@@ -379,13 +430,16 @@ export class App {
   }
 
   // Diptych: two boards, one input drives both, win only when both are solved.
-  private playDiptych(level: Level): void {
+  private playDiptych(level: Level, resumeLog?: MoveToken[]): void {
     const id = level.id;
     const game = new DiptychGame(level);
+    if (resumeLog && resumeLog.length) game.loadTokens(resumeLog);
+    const saveVisit = () => setLastPlayed(this.progress, { id, at: Date.now(), log: [...game.log], won: game.solved });
+    saveVisit();
 
     const title = h('div', { class: 'title wordmark' }, level.name, h('small', {}, level.subtitle));
     const back = h('button', { class: 'ghost' }, '← 关卡');
-    back.onclick = () => this.showMenu();
+    back.onclick = () => { saveVisit(); this.showMenu(); };
     const helpBtn = h('button', { class: 'ghost', title: '机制图鉴' }, '?');
     helpBtn.onclick = () => this.showCodex();
     const topbar = h('div', { class: 'topbar' }, title, h('div', { class: 'top-actions' }, helpBtn, back));
@@ -461,6 +515,7 @@ export class App {
       } else if (e.key === 'r' || e.key === 'R') {
         game.restart(); rendererA.update(game.a); rendererB.update(game.b); refreshControls();
       } else if (e.key === 'Escape') {
+        saveVisit();
         this.showMenu();
       }
     };
@@ -514,6 +569,7 @@ export class App {
   // ---------------- win ----------------
 
   private win(level: Level, game: Game | DiptychGame): void {
+    setLastPlayed(this.progress, { id: level.id, at: Date.now(), log: [...game.log], won: true });
     const par = level.par ?? Infinity;
     const outcome = recordClear(this.progress, level.id, {
       moves: game.moves,
