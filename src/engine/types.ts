@@ -29,6 +29,9 @@ export type Terrain = 'wall' | 'floor' | 'ice' | 'pit';
 
 export interface Cell {
   terrain: Terrain;
+  /** Floor height (z) of this cell. 0 = ground. Movement/pushes may go down or
+   *  stay level but not climb up a step (use ramps/lifts/portals to ascend). */
+  height: number;
   /** null = not a goal; 'natural' = accepts any crate; a color = needs that color. */
   goal: Color | null;
   /** Pressure plate group id, or null. A plate is "pressed" when a weight rests on it. */

@@ -43,6 +43,9 @@ export interface LevelDef {
   twin?: string[];
   /** When true, the twin receives mirrored (left/right-flipped) input. */
   mirrorTwin?: boolean;
+  /** Optional parallel height map (same dims): a digit 0-9 per cell = floor
+   *  height; space/missing = 0. Turns the level into a 3D (stepped) board. */
+  heights?: string[];
 }
 
 const CRATE_COLOR: Record<string, Color> = { R: 'rose', G: 'sage', B: 'slate', Y: 'amber' };
@@ -56,6 +59,7 @@ const LOCK_GROUP: Record<string, string> = { K: 'k', J: 'j' };
 function blankCell(): Cell {
   return {
     terrain: 'floor',
+    height: 0,
     goal: null,
     plateGroup: null,
     gateGroup: null,
@@ -83,6 +87,8 @@ export function parseLevel(def: LevelDef): Level {
     for (let x = 0; x < width; x++) {
       const ch = row[x] ?? ' ';
       const cell = blankCell();
+      const hc = def.heights?.[y]?.[x];
+      if (hc && hc >= '1' && hc <= '9') cell.height = Number(hc);
 
       if (ch === '#') {
         cell.terrain = 'wall';

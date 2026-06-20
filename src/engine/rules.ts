@@ -117,17 +117,19 @@ function resolveCratePush(
   openGates: Set<string>,
 ): PushOutcome {
   const { dx, dy } = DIRS[dir];
-  // A crate may enter (x,y) if it's not blocked AND a one-way arrow there permits `dir`.
-  const mayEnter = (x: number, y: number): boolean => {
+  // A crate may enter (x,y) from height `fromH` if it's not blocked, a one-way
+  // arrow permits `dir`, and it isn't being pushed UP a step (down/flat only).
+  const mayEnter = (x: number, y: number, fromH: number): boolean => {
     const cell = cellAt(level, x, y);
     if (!cell) return false;
     if (cell.arrow && cell.arrow !== dir) return false;
+    if (cell.height > fromH) return false;
     return crateCanEnter(level, state, x, y, openGates, crate.id);
   };
 
   let nx = crate.x + dx;
   let ny = crate.y + dy;
-  if (!mayEnter(nx, ny)) {
+  if (!mayEnter(nx, ny, cellAt(level, crate.x, crate.y)!.height)) {
     return { moved: false, sank: false, to: { x: crate.x, y: crate.y } };
   }
 
@@ -143,7 +145,7 @@ function resolveCratePush(
     if (cellAt(level, cx, cy)!.terrain !== 'ice') break; // landed on solid ground -> stop
     const px = cx + dx;
     const py = cy + dy;
-    if (!mayEnter(px, py)) break; // blocked -> stop on ice
+    if (!mayEnter(px, py, cellAt(level, cx, cy)!.height)) break; // blocked -> stop on ice
     nx = px;
     ny = py;
   }
@@ -183,6 +185,7 @@ function applyPull(level: Level, state: GameState, dir: Dir, openGates: Set<stri
   const destCell = cellAt(level, tx, ty);
   if (destCell?.arrow && destCell.arrow !== dir) return { changed: false, state };
   if (destCell?.portal) return { changed: false, state }; // no portal-pull
+  if ((destCell?.height ?? 0) > (cellAt(level, from.x, from.y)?.height ?? 0)) return { changed: false, state };
   if (!playerCanEnter(level, state, tx, ty, openGates)) return { changed: false, state };
 
   // There must be a crate directly behind to drag into the player's old cell.
@@ -326,8 +329,11 @@ export function applyMove(level: Level, state: GameState, dir: Dir, pull = false
     destX = wx;
     destY = wy;
     teleported = true;
-  } else if (!playerCanEnter(level, state, tx, ty, openGates)) {
-    return { changed: false, state };
+  } else {
+    // Walking: can't climb a step (down or flat only; portals/ramps/lifts ascend).
+    const hereH = cellAt(level, state.playerX, state.playerY)?.height ?? 0;
+    if ((targetCell?.height ?? 0) > hereH) return { changed: false, state };
+    if (!playerCanEnter(level, state, tx, ty, openGates)) return { changed: false, state };
   }
 
   // Cracked floor under the player collapses into a pit once they step off it.
