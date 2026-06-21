@@ -49,6 +49,26 @@ const KEY_DIR: Record<string, Dir> = {
   D: 'right',
 };
 
+// Camera (3D only): screen-direction control — an arrow key always moves the
+// player in the same on-screen direction regardless of rotation, by rotating the
+// logical direction by the inverse of the camera's quarter-turns.
+const CW_NEXT: Record<Dir, Dir> = { up: 'right', right: 'down', down: 'left', left: 'up' };
+function rotateDirCW(dir: Dir, n: number): Dir {
+  let d = dir;
+  const k = ((n % 4) + 4) % 4;
+  for (let i = 0; i < k; i++) d = CW_NEXT[d];
+  return d;
+}
+const screenToLogical = (arrow: Dir, rotation: number): Dir => rotateDirCW(arrow, -rotation);
+const CAMERA_KEY = 'driftbox.camera';
+const loadCamera = (): number => {
+  try { return ((Number(localStorage.getItem(CAMERA_KEY)) || 0) % 4 + 4) % 4; } catch { return 0; }
+};
+const saveCamera = (r: number): void => {
+  try { localStorage.setItem(CAMERA_KEY, String(r)); } catch { /* private mode */ }
+};
+const CAM_LABEL = ['东北 ↗', '东南 ↘', '西南 ↙', '西北 ↖'];
+
 // Mechanic codex. Each entry unlocks once its anchor level (the level that first
 // introduces the mechanic) becomes reachable — rule + typical use, never a
 // per-level solution.
@@ -330,6 +350,59 @@ export class App {
     renderer.mount(level);
     renderer.update(game.state);
 
+    // ── camera (3D levels only): rotate / top-down peek / recommended ──
+    const iso = level.is3D ? (renderer as IsoRenderer) : null;
+    let cam = iso ? (level.preferredCamera ?? loadCamera()) : 0;
+    if (iso) iso.setRotation(cam);
+    const camNow = h('span', { class: 'cam-now' }, iso ? CAM_LABEL[cam]! : '');
+    const peekBtn = h('button', { title: '俯视查看（按住空格）' }, '俯视');
+    let peeking = false;
+    const setPeek = (on: boolean) => {
+      if (!iso || peeking === on) return;
+      peeking = on;
+      iso.setPeek(on);
+      peekBtn.classList.toggle('on', on);
+    };
+    const rotateCam = (delta: number) => {
+      if (!iso) return;
+      cam = ((cam + delta) % 4 + 4) % 4;
+      iso.setRotation(cam);
+      saveCamera(cam);
+      camNow.textContent = CAM_LABEL[cam]!;
+    };
+    const recommendCam = () => {
+      if (!iso) return;
+      cam = level.preferredCamera ?? 0;
+      iso.setRotation(cam);
+      saveCamera(cam);
+      camNow.textContent = CAM_LABEL[cam]!;
+    };
+    const toLogical = (d: Dir): Dir => (iso ? screenToLogical(d, iso.cameraRotation) : d);
+    const cb = (label: string, title: string, fn: () => void) => {
+      const b = h('button', { title }, label);
+      b.onclick = fn;
+      return b;
+    };
+    peekBtn.onclick = () => setPeek(!peeking);
+    const hlBtn = h('button', { title: '高亮可交互物（按住 Alt）' }, '高亮');
+    let highlighting = false;
+    hlBtn.onclick = () => {
+      if (!iso) return;
+      highlighting = !highlighting;
+      iso.setHighlight(highlighting);
+      hlBtn.classList.toggle('on', highlighting);
+    };
+    const camBar = iso
+      ? h('div', { class: 'cam-bar' },
+          cb('⟲ 左转', '左转视角 (Q)', () => rotateCam(-1)),
+          cb('右转 ⟳', '右转视角 (E)', () => rotateCam(1)),
+          peekBtn,
+          hlBtn,
+          cb('推荐视角', '回到关卡推荐视角', recommendCam),
+          h('span', { class: 'spacer' }),
+          camNow)
+      : null;
+
     const undoBtn = h('button', {}, '撤销');
     const restartBtn = h('button', {}, '重开');
     const controls = h(
@@ -355,6 +428,17 @@ export class App {
     // Only first-appearance mechanic levels carry an `intro`. Show that one terse
     // rule line until the level is cleared — never an empty banner.
     if (level.intro && !this.progress.completed[id]) screen.append(this.introBanner(level));
+    if (camBar) {
+      screen.append(camBar);
+      // a one-time hint the first time a 3D level is opened
+      let firstTime = false;
+      try {
+        if (!localStorage.getItem('driftbox.hint3d')) { firstTime = true; localStorage.setItem('driftbox.hint3d', '1'); }
+      } catch { /* private mode */ }
+      if (firstTime) {
+        screen.append(h('div', { class: 'cam-hint' }, 'Q / E 旋转视角 · 按住空格 俯视查看 · 按住 Alt 高亮可交互物'));
+      }
+    }
     screen.append(boardWrap, controls, dpad);
     this.swap(screen);
 
@@ -387,7 +471,7 @@ export class App {
     const onKey = (e: KeyboardEvent) => {
       if (e.key in KEY_DIR) {
         e.preventDefault();
-        doMove(KEY_DIR[e.key]!, e.shiftKey);
+        doMove(toLogical(KEY_DIR[e.key]!), e.shiftKey);
       } else if (e.key === 'z' || e.key === 'Z') {
         if (game.undo()) {
           renderer.update(game.state);
@@ -397,12 +481,27 @@ export class App {
         game.restart();
         renderer.update(game.state);
         refreshControls();
+      } else if (iso && (e.key === 'q' || e.key === 'Q')) {
+        rotateCam(-1);
+      } else if (iso && (e.key === 'e' || e.key === 'E')) {
+        rotateCam(1);
+      } else if (iso && e.key === ' ') {
+        e.preventDefault();
+        setPeek(true);
+      } else if (iso && e.key === 'Alt') {
+        e.preventDefault();
+        iso.setHighlight(true);
       } else if (e.key === 'Escape') {
         saveVisit();
         this.showMenu();
       }
     };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === ' ') setPeek(false);
+      else if (e.key === 'Alt' && iso) iso.setHighlight(false);
+    };
     window.addEventListener('keydown', onKey);
+    window.addEventListener('keyup', onKeyUp);
 
     undoBtn.onclick = () => {
       if (game.undo()) {
@@ -415,10 +514,10 @@ export class App {
       renderer.update(game.state);
       refreshControls();
     };
-    upB!.onclick = () => doMove('up');
-    downB!.onclick = () => doMove('down');
-    leftB!.onclick = () => doMove('left');
-    rightB!.onclick = () => doMove('right');
+    upB!.onclick = () => doMove(toLogical('up'));
+    downB!.onclick = () => doMove(toLogical('down'));
+    leftB!.onclick = () => doMove(toLogical('left'));
+    rightB!.onclick = () => doMove(toLogical('right'));
 
     // swipe
     let sx = 0;
@@ -433,7 +532,7 @@ export class App {
       const dx = t.clientX - sx;
       const dy = t.clientY - sy;
       if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
-      doMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up');
+      doMove(toLogical(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up'));
     };
     boardWrap.addEventListener('touchstart', onTouchStart, { passive: true });
     boardWrap.addEventListener('touchend', onTouchEnd, { passive: true });
@@ -443,6 +542,7 @@ export class App {
 
     this.cleanup = () => {
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keyup', onKeyUp);
       window.removeEventListener('resize', onResize);
     };
   }

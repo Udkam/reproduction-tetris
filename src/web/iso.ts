@@ -43,6 +43,48 @@ export class IsoRenderer {
   private facing: Dir = 'down';
   private lastPX = 0;
   private lastPY = 0;
+  private rotation = 0; // 0..3 quarter-turns of the camera (logic coords unchanged)
+  private peek = false; // top-down blueprint view (flatten heights, show numbers)
+  private highlight = false; // Alt: lift interactive pieces above all geometry
+  private lastState: GameState | null = null;
+
+  /** Rotate logical (gx,gy) into the current camera's view space before projecting. */
+  private view(gx: number, gy: number): { vx: number; vy: number } {
+    const W = this.level.width;
+    const H = this.level.height;
+    switch (this.rotation & 3) {
+      case 1: return { vx: H - 1 - gy, vy: gx };
+      case 2: return { vx: W - 1 - gx, vy: H - 1 - gy };
+      case 3: return { vx: gy, vy: W - 1 - gx };
+      default: return { vx: gx, vy: gy };
+    }
+  }
+
+  get cameraRotation(): number {
+    return this.rotation;
+  }
+
+  /** Turn the camera to a quarter (0..3) and re-layout without touching logic. */
+  setRotation(r: number): void {
+    this.rotation = ((r % 4) + 4) % 4;
+    this.relayout();
+  }
+
+  /** Top-down "blueprint" peek: flatten heights so the board reads as a map with
+   *  height numbers — for confirming layout/height/path. Does not change logic. */
+  setPeek(on: boolean): void {
+    this.peek = on;
+    this.board.classList.toggle('peek', on);
+    this.relayout();
+  }
+
+  /** Alt: lift the player + crates (and goal rings) above all geometry and outline
+   *  them, so nothing interactive is ever hidden behind a tall tile. */
+  setHighlight(on: boolean): void {
+    this.highlight = on;
+    this.board.classList.toggle('highlight', on);
+    if (this.lastState) this.update(this.lastState);
+  }
 
   constructor(private wrap: HTMLDivElement) {
     this.board = document.createElement('div');
@@ -53,15 +95,10 @@ export class IsoRenderer {
     wrap.appendChild(this.board);
   }
 
-  // Screen position (top-diamond centre) for a grid cell at a given layer.
-  private projX(gx: number, gy: number): number {
-    return (gx - gy) * (TW / 2);
-  }
-  private projY(gx: number, gy: number, layer: number): number {
-    return (gx + gy) * (TH / 2) - layer * ZH;
-  }
+  // Screen position (top-diamond centre) of a view-space cell at a given layer.
   private depthZ(gx: number, gy: number, layer: number): number {
-    return Math.round((gx + gy) * 1000 + layer * 10);
+    const { vx, vy } = this.view(gx, gy);
+    return Math.round((vx + vy) * 1000 + layer * 10);
   }
 
   mount(level: Level): void {
@@ -71,26 +108,6 @@ export class IsoRenderer {
     this.goalEls = [];
     this.lifts = [];
     this.crateEls.clear();
-
-    // Centre the board: shift so the projected bounds sit in a positive box.
-    let minX = 0, maxX = 0, maxY = 0, minY = 0;
-    for (let y = 0; y < level.height; y++) {
-      for (let x = 0; x < level.width; x++) {
-        const px = this.projX(x, y);
-        const py = this.projY(x, y, 0);
-        minX = Math.min(minX, px - TW / 2);
-        maxX = Math.max(maxX, px + TW / 2);
-        minY = Math.min(minY, py - TH);
-        maxY = Math.max(maxY, py + TH / 2 + (level.height + level.width) * 0); // padded below
-      }
-    }
-    const padTop = (this.maxHeight() * ZH) + TH + 24;
-    const w = maxX - minX + 24;
-    const h = maxY - minY + padTop + 80;
-    this.scene.style.setProperty('--ox', `${-minX + 12}px`);
-    this.scene.style.setProperty('--oy', `${-minY + padTop}px`);
-    this.scene.style.setProperty('--bw', `${w}px`);
-    this.scene.style.setProperty('--bh', `${h}px`);
 
     for (let i = 0; i < level.cells.length; i++) {
       const cell = level.cells[i]!;
@@ -114,8 +131,9 @@ export class IsoRenderer {
     this.facing = 'down';
     this.lastPX = level.start.x;
     this.lastPY = level.start.y;
+    this.lastState = null;
 
-    this.sizeToViewport();
+    this.relayout();
   }
 
   private maxHeight(): number {
@@ -130,9 +148,40 @@ export class IsoRenderer {
   }
 
   private place(el: HTMLElement, gx: number, gy: number, layer: number, lift = 0): void {
-    el.style.setProperty('--sx', `${this.projX(gx, gy)}px`);
-    el.style.setProperty('--sy', `${this.projY(gx, gy, layer) - lift}px`);
+    const { vx, vy } = this.view(gx, gy);
+    const zEff = this.peek ? 0 : layer * ZH; // peek flattens heights
+    el.style.setProperty('--sx', `${(vx - vy) * (TW / 2)}px`);
+    el.style.setProperty('--sy', `${(vx + vy) * (TH / 2) - zEff - lift}px`);
     el.style.zIndex = String(this.depthZ(gx, gy, layer));
+  }
+
+  /** Recompute centring/bounds for the current rotation and re-place everything. */
+  private relayout(): void {
+    const lvl = this.level;
+    let minX = 0, maxX = 0, minY = 0, maxY = 0;
+    for (let y = 0; y < lvl.height; y++) {
+      for (let x = 0; x < lvl.width; x++) {
+        const { vx, vy } = this.view(x, y);
+        const px = (vx - vy) * (TW / 2);
+        const py = (vx + vy) * (TH / 2);
+        minX = Math.min(minX, px - TW / 2);
+        maxX = Math.max(maxX, px + TW / 2);
+        minY = Math.min(minY, py - TH);
+        maxY = Math.max(maxY, py + TH / 2);
+      }
+    }
+    const padTop = this.maxHeight() * ZH + TH + 24;
+    this.scene.style.setProperty('--ox', `${-minX + 12}px`);
+    this.scene.style.setProperty('--oy', `${-minY + padTop}px`);
+    this.scene.style.setProperty('--bw', `${maxX - minX + 24}px`);
+    this.scene.style.setProperty('--bh', `${maxY - minY + padTop + 80}px`);
+    for (const [i, el] of this.cellEls) {
+      const x = i % lvl.width;
+      const y = Math.floor(i / lvl.width);
+      this.place(el, x, y, topLayer(lvl.cells[i]!));
+    }
+    if (this.lastState) this.update(this.lastState);
+    this.sizeToViewport();
   }
 
   private makeTile(cell: Cell, x: number, y: number): HTMLDivElement {
@@ -141,10 +190,11 @@ export class IsoRenderer {
     const layer = topLayer(cell);
     const ext = Math.max(2, layer * ZH + BASE); // side height in px
     el.style.setProperty('--ext', `${ext}px`);
+    const label = cell.terrain === 'wall' ? '' : `<div class="iso-h">${cell.height}</div>`;
     el.innerHTML =
       '<div class="iso-face left"></div>' +
       '<div class="iso-face right"></div>' +
-      '<div class="iso-face top"></div>';
+      `<div class="iso-face top"></div>${label}`;
     this.place(el, x, y, layer);
     return el;
   }
@@ -194,6 +244,7 @@ export class IsoRenderer {
 
   /** Render a state. Pass effect to animate a single move; omit for instant. */
   update(state: GameState, effect?: MoveEffect): void {
+    this.lastState = state;
     // facing (same derivation as the 2D renderer)
     if (effect && !effect.teleported) {
       const dx = state.playerX - this.lastPX;
@@ -208,8 +259,8 @@ export class IsoRenderer {
 
     const pH = this.effHeight(state.playerX, state.playerY);
     this.place(this.playerEl, state.playerX, state.playerY, pH, 2);
-    // lift the player's z so it sits above its own tile
-    this.playerEl.style.zIndex = String(this.depthZ(state.playerX, state.playerY, pH) + 5);
+    // lift the player's z so it sits above its own tile (or all tiles in highlight)
+    this.playerEl.style.zIndex = String(this.depthZ(state.playerX, state.playerY, pH) + (this.highlight ? 800005 : 5));
     if (effect?.teleported) {
       this.playerEl.classList.remove('warp');
       void this.playerEl.offsetWidth;
@@ -239,7 +290,7 @@ export class IsoRenderer {
       }
       const cH = this.effHeight(c.x, c.y);
       this.place(el, c.x, c.y, cH, 1);
-      el.style.zIndex = String(this.depthZ(c.x, c.y, cH) + 3);
+      el.style.zIndex = String(this.depthZ(c.x, c.y, cH) + (this.highlight ? 800003 : 3));
       const sat = !!cell.goal && (cell.goal === 'natural' || cell.goal === c.color);
       el.classList.toggle('seated', sat);
     }

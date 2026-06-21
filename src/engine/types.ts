@@ -98,6 +98,9 @@ export interface Level {
   /** True if any cell has height > 0 — the UI renders these with the isometric
    *  renderer; flat levels keep the classic 2D grid. */
   is3D?: boolean;
+  /** Optional recommended camera quarter-turn (0..3) the level opens at if the
+   *  default view would mislead. */
+  preferredCamera?: number;
 }
 
 /** Mutable game state. Kept deliberately small so undo snapshots are cheap. */

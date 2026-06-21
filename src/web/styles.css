@@ -1230,6 +1230,80 @@ button:disabled {
 .iso-piece.crate.seated .cr-face.top { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cc) 55%, black), 0 0 8px 2px color-mix(in srgb, var(--seat-c, #5b8c5e) 55%, transparent); }
 .iso-piece.crate.sinking { transform: scale(0.4); opacity: 0; transition: transform 0.26s ease, opacity 0.26s ease; }
 
+/* height labels — shown only in top-down peek (blueprint) mode */
+.iso-cell .iso-h {
+  display: none;
+  position: absolute;
+  left: -32px;
+  top: -16px;
+  width: 64px;
+  height: 32px;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+.iso-board.peek .iso-cell .iso-h {
+  display: grid;
+}
+.iso-board.peek .iso-face.left,
+.iso-board.peek .iso-face.right {
+  opacity: 0.15;
+}
+.iso-board.peek .iso-face.top {
+  box-shadow: inset 0 0 0 1px rgba(50, 46, 40, 0.28);
+}
+
+/* camera control bar (3D levels) */
+.cam-bar {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.2rem;
+  flex-wrap: wrap;
+}
+.cam-bar button {
+  padding: 0.3em 0.7em;
+  font-size: 0.85rem;
+}
+.cam-bar button.on {
+  background: var(--accent);
+  color: #fdf8ef;
+  border-color: var(--accent-deep);
+}
+.cam-bar .spacer { flex: 1; }
+.cam-bar .cam-now {
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.cam-hint {
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  color: var(--accent-deep);
+  background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 8px;
+}
+
+/* Alt / 高亮: interactive pieces glow above geometry, walls fade so nothing hides */
+.iso-board.highlight .t-wall .iso-face { opacity: 0.5; }
+.iso-board.highlight .iso-piece.player .iso-av {
+  filter: drop-shadow(0 0 3px var(--accent)) drop-shadow(0 0 7px var(--accent));
+}
+.iso-board.highlight .iso-piece.crate .cr-face.top {
+  box-shadow: 0 0 0 2px var(--accent), 0 0 8px 2px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.iso-board.highlight .t-goal .iso-face.top::after {
+  border-width: 3px;
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
 /* occlusion hint: outline silhouette when the player is hidden */
 .iso-ghost {
   display: none;

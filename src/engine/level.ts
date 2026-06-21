@@ -46,6 +46,8 @@ export interface LevelDef {
   /** Optional parallel height map (same dims): a digit 0-9 per cell = floor
    *  height; space/missing = 0. Turns the level into a 3D (stepped) board. */
   heights?: string[];
+  /** Recommended camera quarter-turn (0..3) for a 3D level. */
+  preferredCamera?: number;
 }
 
 const CRATE_COLOR: Record<string, Color> = { R: 'rose', G: 'sage', B: 'slate', Y: 'amber' };
@@ -196,6 +198,7 @@ export function parseLevel(def: LevelDef): Level {
     is3D: cells.some(
       (c) => c.height > 0 || !!c.ramp || c.terrain === 'bridge' || c.terrain === 'lift',
     ),
+    preferredCamera: def.preferredCamera,
   };
 }
 
