@@ -20,7 +20,7 @@ export interface Progress {
   lastPlayed?: LastPlayed;
 }
 
-const KEY = 'driftbox.progress.v1';
+const KEY = 'driftbox.progress.v7';
 const NAME_KEY = 'driftbox.name';
 
 const EMPTY: Progress = { completed: {}, best: {}, bestPush: {}, parHit: {}, clean: {} };

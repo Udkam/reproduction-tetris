@@ -5,8 +5,9 @@ Driftbox is being rebuilt in `v7-loop-20260623-195154-f683` as a 2D sci-fi Sokob
 ## Current status
 
 - The previous v6 2.5D direction is retired from the user-facing mainline.
-- The public runtime currently exposes the remaining 2D catalog while v7 is rebuilt.
+- The public runtime currently exposes a 15-level v7 vertical slice with sci-fi metadata, quantum portals, synchronized actors, and time-shadow replay validation.
 - The target v7 release is a complete 70-level 2D sci-fi game with new screens, new visual identity, new mechanisms, richer level metadata, replay validation, visual smoke tests, and level/content/UI audits.
+- This is not final acceptance yet: the full 70-level buildout, visual smoke screenshots, and audit commands are still pending.
 
 The v7 process log is under:
 

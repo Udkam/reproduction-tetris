@@ -147,3 +147,79 @@ Next step:
 
 - Commit Stage 4 and push to `origin main`.
 - Begin Stage 5 level data format upgrade and 15-level vertical slice.
+
+## Stage 5: Level data format upgrade and 15-level vertical slice
+
+Goal:
+
+- Stop exposing the transitional old 52-level catalog.
+- Add a verified 15-level v7 slice with sci-fi titles, chapters, mechanisms, and full `levelDesignNote` metadata.
+- Prove current UI/API/replay paths work against the new catalog before expanding to 70 levels.
+
+Actual changes:
+
+- Added `src/engine/v7Levels.ts` with 15 v7 levels:
+  - 5 startup/core-push levels.
+  - 3 quantum portal levels.
+  - 3 synchronized actor / mirrored sync levels.
+  - 4 time-shadow gate levels.
+- Switched `LEVEL_DEFS` to `V7_LEVEL_DEFS`; old level definitions remain in source history but are no longer exposed by the runtime catalog.
+- Rewrote mechanism codex entries and anchors to point to v7 mechanisms (`v7-001`, `v7-006`, `v7-009`, `v7-010`, `v7-012`).
+- Removed the remaining `IsoRenderer` / demo fallback path from `src/web/ui.ts`; the v7 runtime level page now uses the 2D `BoardRenderer` only.
+- Changed progress storage to `driftbox.progress.v7` so old v1/v6 clears do not mark the new slice as completed.
+- Updated board rendering so a time shadow pressing a plate visually marks that plate as pressed.
+- Updated `06-level-design-matrix.md` with the verified 15-level slice and fixed previously garbled chapter text.
+- Updated README and `claude.md` to state the current runtime is a 15-level v7 vertical slice, not the old 52-level catalog.
+- Updated `smoke-api` so it no longer hardcodes the old `l1` level id.
+- Updated `verify` so levels declared `solverStatus: "optimal"` actually run the solver even when a stored replay exists.
+
+Verification:
+
+- Initial `npm run typecheck` / `npm run verify` failed because `v7Levels.ts` had an unescaped apostrophe in one English design note. Fixed and re-tested.
+- Initial `npm run smoke:api` failed because the test still queried `/api/scores/l1`. Fixed the test to use the current first level id and re-tested.
+- `npm run typecheck`: passed.
+- `npm run verify`: passed, 15/15 v7 slice levels.
+- `npm run smoke:api`: passed, `/api/levels` returns 15 levels and all stored solutions are accepted.
+- `npm run smoke:ui`: passed, all 15 v7 levels win through jsdom.
+- `npm run build`: passed.
+- Note: one parallel typecheck run reported old `camBar` / `iso` symbols while `ui.ts` was being edited; a standalone final typecheck passed against the final source.
+
+Failure items:
+
+```text
+[FAIL] Stage 5 initial typecheck/verify
+Evidence: TS parse error in src/engine/v7Levels.ts at the design note containing player's/core's.
+Root cause: Unescaped apostrophe inside a single-quoted string.
+Fix plan: Rewrite the phrase without apostrophes.
+Files to change: src/engine/v7Levels.ts
+Re-test: npm run typecheck; npm run verify
+```
+
+```text
+[FAIL] Stage 5 initial smoke:api
+Evidence: GET /api/scores/l1 failed after the catalog switched to v7-001..v7-015.
+Root cause: API smoke test had an old hardcoded level id.
+Fix plan: Use LEVELS[0].id for bogus/malformed/leaderboard checks.
+Files to change: scripts/smoke-api.ts
+Re-test: npm run smoke:api
+```
+
+```text
+[FAIL] Stage 5 parallel final typecheck
+Evidence: One parallel run reported old 3D camera symbols (`camBar`, `iso`) while `src/web/ui.ts` edits were in progress.
+Root cause: Validation started against an intermediate edit state.
+Fix plan: Re-run typecheck after final source settled and confirm old symbols are absent.
+Files to change: none after final source; `src/web/ui.ts` already contains the pure 2D path.
+Re-test: npm run typecheck; rg -n "camBar|iso|rotateCam|setPeek" src/web/ui.ts
+```
+
+Carry-forward risk:
+
+- Stage 5 is only 15/70 levels. Final acceptance is still blocked on the full 70-level buildout and final audit scripts.
+- Spatial swap, recursion, and chain-state mechanics are still not represented in playable levels.
+- Real-browser visual screenshots and mobile checks are still pending.
+
+Next step:
+
+- Commit Stage 5 and push to `origin main`.
+- Begin Stage 6 full 70-level expansion and audit command implementation.

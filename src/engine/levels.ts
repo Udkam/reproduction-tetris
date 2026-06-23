@@ -18,6 +18,7 @@ import type { LevelDef } from './level.js';
 import type { Dir, MoveToken } from './types.js';
 import { parseLevel } from './level.js';
 import { GENERATED } from './generated.js';
+import { V7_LEVEL_DEFS } from './v7Levels.js';
 
 interface Chaptered extends LevelDef {
   chapter: string;
@@ -539,13 +540,7 @@ const LEVEL3D_DEFS: Chaptered[] = [
   },
 ];
 
-export const LEVEL_DEFS: Chaptered[] = [
-  ...HAND_DEFS,
-  ...GEN_DEFS,
-  ...PARADOX_DEFS,
-  ...DIPTYCH_DEFS,
-  ...CRUCIBLE_DEFS,
-];
+export const LEVEL_DEFS: Chaptered[] = V7_LEVEL_DEFS;
 
 export const LEVELS = LEVEL_DEFS.map(parseLevel);
 export const CHAPTER_OF: Record<string, string> = Object.fromEntries(

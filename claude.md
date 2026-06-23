@@ -16,6 +16,12 @@ The v7 target is a 70-level 2D sci-fi Sokoban-variant puzzle game with:
 - replay validation preserved on the backend;
 - visual screenshots and audits as hard acceptance gates.
 
+Current runtime status:
+
+- Stage 5 has switched the exposed runtime catalog to a 15-level v7 vertical slice.
+- The slice includes startup/core puzzles, quantum portals, synchronized actors, mirrored sync, and time-shadow gate puzzles.
+- It is verified through shared replay/solver paths, but it is not the final 70-level acceptance build.
+
 ## Durable loop records
 
 All current v7 records live in:

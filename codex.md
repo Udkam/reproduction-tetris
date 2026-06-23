@@ -162,3 +162,54 @@ Next steps:
 
 - Commit and push Stage 4.
 - Begin Stage 5 level data upgrade and first 15-level vertical slice.
+
+### Stage 5: Level data upgrade and 15-level v7 vertical slice
+
+Phase: catalog replacement and vertical slice verification.
+
+Actions taken:
+
+- Added `src/engine/v7Levels.ts` with 15 v7 levels and complete `levelDesignNote` metadata.
+- Switched the exposed runtime catalog from the transitional 52 levels to `V7_LEVEL_DEFS`.
+- Updated the mechanism codex to v7 anchors and sci-fi mechanism language.
+- Removed the remaining level-page `IsoRenderer` / demo fallback path so v7 runtime play is 2D-only.
+- Changed progress storage to `driftbox.progress.v7`.
+- Updated plate rendering so time shadows visibly press plates.
+- Updated `06-level-design-matrix.md` with the 15-level verified slice.
+- Updated README and `claude.md` to state the current runtime is a 15-level v7 slice, not final 70-level acceptance.
+- Updated `smoke-api` to stop hardcoding the old `l1` id.
+- Updated `verify` so levels declared `optimal` actually run the solver.
+
+Verification commands and results:
+
+- Initial `npm run typecheck` / `npm run verify`: failed because one design note had an unescaped apostrophe. Fixed.
+- Initial `npm run smoke:api`: failed because the test queried old `/api/scores/l1`. Fixed.
+- `npm run typecheck`: passed.
+- `npm run verify`: passed, 15/15 v7 slice levels.
+- `npm run smoke:api`: passed, `/api/levels` returns 15 levels.
+- `npm run smoke:ui`: passed, all 15 levels win through jsdom.
+- `npm run build`: passed.
+- One parallel typecheck run saw an intermediate edit state with old `camBar` / `iso` symbols; standalone final `npm run typecheck` passed.
+
+Changed files:
+
+- `src/engine/v7Levels.ts`
+- `src/engine/levels.ts`
+- `src/web/ui.ts`
+- `scripts/verify-levels.ts`
+- `scripts/smoke-api.ts`
+- `README.md`
+- `claude.md`
+- v7 loop docs and agent logs
+- `codex.md`
+
+Risks:
+
+- Stage 5 is 15/70, not the final 70-level game.
+- Spatial swap, recursion, and chain-state levels are still pending.
+- Visual screenshot smoke, mobile layout proof, and final audit commands are still pending.
+
+Next steps:
+
+- Commit and push Stage 5.
+- Begin Stage 6 full 70-level buildout and final audit command implementation.

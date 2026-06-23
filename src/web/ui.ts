@@ -4,8 +4,6 @@ import type { Dir, Level, MoveToken } from '../engine/types.js';
 import { CHAPTER_OF } from '../engine/levels.js';
 import { Game, DiptychGame } from './game.js';
 import { BoardRenderer } from './render.js';
-import { IsoRenderer } from './iso.js';
-import { makeDemoLevel } from './demo.js';
 import {
   loadProgress,
   recordClear,
@@ -49,26 +47,6 @@ const KEY_DIR: Record<string, Dir> = {
   D: 'right',
 };
 
-// Camera (3D only): screen-direction control — an arrow key always moves the
-// player in the same on-screen direction regardless of rotation, by rotating the
-// logical direction by the inverse of the camera's quarter-turns.
-const CW_NEXT: Record<Dir, Dir> = { up: 'right', right: 'down', down: 'left', left: 'up' };
-function rotateDirCW(dir: Dir, n: number): Dir {
-  let d = dir;
-  const k = ((n % 4) + 4) % 4;
-  for (let i = 0; i < k; i++) d = CW_NEXT[d];
-  return d;
-}
-const screenToLogical = (arrow: Dir, rotation: number): Dir => rotateDirCW(arrow, -rotation);
-const CAMERA_KEY = 'driftbox.camera';
-const loadCamera = (): number => {
-  try { return ((Number(localStorage.getItem(CAMERA_KEY)) || 0) % 4 + 4) % 4; } catch { return 0; }
-};
-const saveCamera = (r: number): void => {
-  try { localStorage.setItem(CAMERA_KEY, String(r)); } catch { /* private mode */ }
-};
-const CAM_LABEL = ['东北 ↗', '东南 ↘', '西南 ↙', '西北 ↖'];
-
 // Mechanic codex. Each entry unlocks once its anchor level (the level that first
 // introduces the mechanic) becomes reachable — rule + typical use, never a
 // per-level solution.
@@ -80,30 +58,24 @@ interface CodexEntry {
   anchor: string;
 }
 const CODEX: CodexEntry[] = [
-  { icon: 'ic-crate', name: '推箱 / 目标点', anchor: 'l1',
-    rule: '把每个箱子推到目标点（○）即过关。只能推、不能拉。',
-    use: '箱子推进死角就再也拉不回——先想好落点，撤销（Z）随时反悔。' },
-  { icon: 'ic-ice', name: '冰面', anchor: 'l5',
-    rule: '箱子推上冰面会一直滑行，直到撞墙或滑出冰面；你穿防滑靴，不受影响。',
-    use: '用墙或目标点当“刹车”，一次推动就锁定一整条轨迹。' },
-  { icon: 'ic-pit', name: '深坑', anchor: 'l8',
-    rule: '你无法踏入深坑（视作墙）；把箱子推进坑会将其填平，坑变成可通行地面。',
-    use: '箱子是稀缺资源：哪些去填坑搭路、哪些去达标，是取舍。' },
-  { icon: 'ic-portal', name: '折跃门', anchor: 'l17',
-    rule: '踩上折跃门会瞬移到同色的另一扇；箱子无法进入折跃门。',
-    use: '当你够不到箱子的可推一侧时，借门绕到另一边。' },
-  { icon: 'ic-cracked', name: '脆地', anchor: 'l22',
-    rule: '你一旦离开脆地，它就塌成深坑，只能走一次；箱子压着它不会塌。',
-    use: '通往某处的脆地是一次性的——确认顺序再迈步。' },
-  { icon: 'ic-pull', name: '拉 / 抓', anchor: 'pull1',
-    rule: '按住 Shift + 方向会拉动你正后方的箱子，随你一起后退一格——推翻了「只能推」。',
-    use: '把贴着墙、卡在角落里只能拉不能推的箱子拽出来。' },
-  { icon: 'ic-gravity', name: '倾斜 / 重力', anchor: 'grav1',
-    rule: '倾斜关没有行走：每按一个方向，整个盘面朝那边倾倒，所有箱子与你一起滑到底、撞墙才停。',
-    use: '你也会滑动——把自己滑到合适位置当“挡块”，让箱子停在该停的地方。' },
-  { icon: 'ic-mirror', name: '镜面格', anchor: 'mir1',
-    rule: '站在镜面格（◄►）上时，你的左右被反转：按「左」实际向右、按「右」实际向左；上下不变。',
-    use: '穿越镜面区时反着想——要往左走就按右。推箱方向也跟着反。' },
+  { icon: 'ic-crate', name: '能量核心', anchor: 'v7-001',
+    rule: '把发光能量核心推入同频接口即可完成实验。无人机只能推，不能穿过核心。',
+    use: '先判断核心最终落点，再决定从哪一侧进入推线。死角仍然是死角。' },
+  { icon: 'ic-portal', name: '量子门', anchor: 'v7-006',
+    rule: '量子门只传送无人机，不传送能量核心。门用于改变无人机的接近侧。',
+    use: '当核心的可推侧被隔离时，先折跃到另一舱室，再从新方向施力。' },
+  { icon: 'ic-sync', name: '同步体', anchor: 'v7-009',
+    rule: '一次输入会同时驱动多个无人机舱室；所有舱室都达成目标才算通过。',
+    use: '不要只看当前舱室。一次无效移动也可能是在给另一个舱室排位。' },
+  { icon: 'ic-mirror', name: '镜像同步', anchor: 'v7-010',
+    rule: '镜像同步体会左右反向响应同一次输入，上下保持一致。',
+    use: '把输入看成协议而不是方向：右键可能同时代表右推和左推。' },
+  { icon: 'ic-shadow', name: '时间残影', anchor: 'v7-012',
+    rule: '残影会延迟复制无人机位置。它能压住量子压板，也会成为实体阻挡。',
+    use: '先把残影留在需要维持的开关上，再趁门保持开启穿过。' },
+  { icon: 'ic-gate', name: '量子压板', anchor: 'v7-012',
+    rule: '压板被无人机、核心或残影压住时，会打开同组量子门闩。',
+    use: '读清压板到门闩之间的距离；时间差本身就是谜题。' },
 ];
 
 export class App {
@@ -368,7 +340,7 @@ export class App {
   // ---------------- game ----------------
 
   private playLevel(id: string, resumeLog?: MoveToken[]): void {
-    const level = this.levels.find((l) => l.id === id) ?? (id === 'demo' ? makeDemoLevel() : undefined);
+    const level = this.levels.find((l) => l.id === id);
     if (!level) return;
     if (level.twin) {
       this.playDiptych(level, resumeLog);
@@ -406,65 +378,12 @@ export class App {
       h('span', { class: 'stat' }, bestVal !== undefined ? `最佳 ${bestVal}` : ''),
     );
 
-    const boardWrap = h('div', { class: `board-wrap${level.is3D ? ' iso' : ''}` });
-    const renderer: BoardRenderer | IsoRenderer = level.is3D
-      ? new IsoRenderer(boardWrap)
-      : new BoardRenderer(boardWrap);
+    const boardWrap = h('div', { class: 'board-wrap' });
+    const renderer = new BoardRenderer(boardWrap);
     renderer.mount(level);
     renderer.update(game.state);
 
-    // ── camera (3D levels only): rotate / top-down peek / recommended ──
-    const iso = level.is3D ? (renderer as IsoRenderer) : null;
-    let cam = iso ? (level.preferredCamera ?? loadCamera()) : 0;
-    if (iso) iso.setRotation(cam);
-    const camNow = h('span', { class: 'cam-now' }, iso ? CAM_LABEL[cam]! : '');
-    const peekBtn = h('button', { title: '俯视查看（按住空格）' }, '俯视');
-    let peeking = false;
-    const setPeek = (on: boolean) => {
-      if (!iso || peeking === on) return;
-      peeking = on;
-      iso.setPeek(on);
-      peekBtn.classList.toggle('on', on);
-    };
-    const rotateCam = (delta: number) => {
-      if (!iso) return;
-      cam = ((cam + delta) % 4 + 4) % 4;
-      iso.setRotation(cam);
-      saveCamera(cam);
-      camNow.textContent = CAM_LABEL[cam]!;
-    };
-    const recommendCam = () => {
-      if (!iso) return;
-      cam = level.preferredCamera ?? 0;
-      iso.setRotation(cam);
-      saveCamera(cam);
-      camNow.textContent = CAM_LABEL[cam]!;
-    };
-    const toLogical = (d: Dir): Dir => (iso ? screenToLogical(d, iso.cameraRotation) : d);
-    const cb = (label: string, title: string, fn: () => void) => {
-      const b = h('button', { title }, label);
-      b.onclick = fn;
-      return b;
-    };
-    peekBtn.onclick = () => setPeek(!peeking);
-    const hlBtn = h('button', { title: '高亮可交互物（按住 Alt）' }, '高亮');
-    let highlighting = false;
-    hlBtn.onclick = () => {
-      if (!iso) return;
-      highlighting = !highlighting;
-      iso.setHighlight(highlighting);
-      hlBtn.classList.toggle('on', highlighting);
-    };
-    const camBar = iso
-      ? h('div', { class: 'cam-bar' },
-          cb('⟲ 左转', '左转视角 (Q)', () => rotateCam(-1)),
-          cb('右转 ⟳', '右转视角 (E)', () => rotateCam(1)),
-          peekBtn,
-          hlBtn,
-          cb('推荐视角', '回到关卡推荐视角', recommendCam),
-          h('span', { class: 'spacer' }),
-          camNow)
-      : null;
+    const toLogical = (d: Dir): Dir => d;
 
     const undoBtn = h('button', {}, '撤销');
     const restartBtn = h('button', {}, '重开');
@@ -491,17 +410,6 @@ export class App {
     // Only first-appearance mechanic levels carry an `intro`. Show that one terse
     // rule line until the level is cleared — never an empty banner.
     if (level.intro && !this.progress.completed[id]) screen.append(this.introBanner(level));
-    if (camBar) {
-      screen.append(camBar);
-      // a one-time hint the first time a 3D level is opened
-      let firstTime = false;
-      try {
-        if (!localStorage.getItem('driftbox.hint3d')) { firstTime = true; localStorage.setItem('driftbox.hint3d', '1'); }
-      } catch { /* private mode */ }
-      if (firstTime) {
-        screen.append(h('div', { class: 'cam-hint' }, 'Q / E 旋转视角 · 按住空格 俯视查看 · 按住 Alt 高亮可交互物'));
-      }
-    }
     screen.append(boardWrap, controls, dpad);
     this.swap(screen);
 
@@ -544,27 +452,12 @@ export class App {
         game.restart();
         renderer.update(game.state);
         refreshControls();
-      } else if (iso && (e.key === 'q' || e.key === 'Q')) {
-        rotateCam(-1);
-      } else if (iso && (e.key === 'e' || e.key === 'E')) {
-        rotateCam(1);
-      } else if (iso && e.key === ' ') {
-        e.preventDefault();
-        setPeek(true);
-      } else if (iso && e.key === 'Alt') {
-        e.preventDefault();
-        iso.setHighlight(true);
       } else if (e.key === 'Escape') {
         saveVisit();
         this.showMenu();
       }
     };
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key === ' ') setPeek(false);
-      else if (e.key === 'Alt' && iso) iso.setHighlight(false);
-    };
     window.addEventListener('keydown', onKey);
-    window.addEventListener('keyup', onKeyUp);
 
     undoBtn.onclick = () => {
       if (game.undo()) {
@@ -605,7 +498,6 @@ export class App {
 
     this.cleanup = () => {
       window.removeEventListener('keydown', onKey);
-      window.removeEventListener('keyup', onKeyUp);
       window.removeEventListener('resize', onResize);
     };
   }

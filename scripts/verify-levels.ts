@@ -18,6 +18,8 @@ const maxStates = Number(process.env.VERIFY_MAX ?? 2_000_000);
 
 for (const level of LEVELS) {
   const start = Date.now();
+  const declaredSolverStatus = level.levelDesignNote?.solverStatus;
+  const mustSolveOptimal = declaredSolverStatus === 'optimal' && !level.twin;
   // Diptych levels replay across both boards; other levels with a stored solution
   // replay it; the rest run the solver.
   const res = level.twin
@@ -33,7 +35,9 @@ for (const level of LEVELS) {
         };
       })()
     : level.solution
-      ? (() => {
+      ? mustSolveOptimal
+        ? solve(level, { maxStates })
+        : (() => {
           const chk = replay(level, level.solution!);
           return {
             solvable: chk.solved,

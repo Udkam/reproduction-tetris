@@ -21,6 +21,10 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - Stage 3 replaced the old CSS surface with a new 2D sci-fi shell while keeping the existing `App` wiring stable.
 - Stage 4 added a visible `time-shadow` board piece and preserved the existing board renderer for old levels.
 - Stage 4 exposes `lastBlockedReason` through game wrappers for later HUD/feedback rendering.
+- Stage 5 rewrote mechanism codex entries and anchors to the v7 slice.
+- Stage 5 runtime catalog now exposes 15 v7 levels, and UI smoke plays all of them to win.
+- Stage 5 removed the remaining level-page `IsoRenderer` / demo fallback path from `ui.ts`.
+- Stage 5 moved local progress to `driftbox.progress.v7` and made time-shadow plate pressure visible in the renderer.
 
 ## Files touched
 
@@ -32,6 +36,8 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - `src/web/styles.css`
 - `src/web/game.ts`
 - `src/web/render.ts`
+- `src/web/ui.ts`
+- `src/web/progress.ts`
 - Stage docs and `codex.md`
 
 ## Risks
@@ -40,6 +46,7 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - Stage 3 has DOM verification but not full Playwright screenshots yet.
 - The new settings and records overlays are product shells; they need deeper persistence/settings behavior in later stages.
 - Blocked-reason data is not yet surfaced in HUD copy or animation.
+- Old 3D demo source remains in the repo as unreachable history; final content audit should decide whether to delete or archive it outside runtime source.
 
 ## Review notes
 
@@ -47,6 +54,7 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - Stage 2 leaves old 2.5D code unused as history. Later stages should remove or archive it when the v7 shell replaces the legacy UI.
 - Stage 3 verification passed: `typecheck`, `verify`, `smoke:api`, `smoke:ui`, `build`, and a temporary DOM audit for new home/navigation landmarks.
 - Stage 4 verification passed after renderer support for the time-shadow piece.
+- Stage 5 UI smoke passed for all 15 v7 levels.
 
 ## Next handoff
 

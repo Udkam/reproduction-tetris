@@ -284,7 +284,8 @@ export class BoardRenderer {
     for (const p of this.plates) {
       const weighed =
         (state.playerX === p.x && state.playerY === p.y) ||
-        state.crates.some((c) => c.x === p.x && c.y === p.y);
+        state.crates.some((c) => c.x === p.x && c.y === p.y) ||
+        (!!this.level.timeShadow?.pressesPlates && !!state.shadow && state.shadow.x === p.x && state.shadow.y === p.y);
       p.el.classList.toggle('pressed', weighed);
     }
   }

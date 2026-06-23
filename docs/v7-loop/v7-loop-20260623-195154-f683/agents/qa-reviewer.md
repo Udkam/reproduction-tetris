@@ -37,7 +37,11 @@ Own negative review, evidence requirements, failure loops, and final acceptance.
 - Stage 4 verification passed: `typecheck`, `verify`, dedicated `timeShadow` engine check, `smoke:api`, `smoke:ui`, and `build`.
 - Stage 4 negative finding: `chain`, `spatialSwap`, and `recursiveRoom` are not complete gameplay yet; only typed config surfaces exist.
 - Stage 4 negative finding: no final audit scripts or visual screenshots yet; those remain hard gates.
+- Stage 5 verification passed after two fixes: unescaped apostrophe in `v7Levels.ts`, and old `l1` hardcode in `smoke-api`.
+- Stage 5 negative finding: current catalog is 15/70, so final level count acceptance is not met.
+- Stage 5 negative finding: spatial swap, recursion, and chain-state chapters are not playable yet.
+- Stage 5 negative finding: real-browser visual screenshot smoke and mobile checks are still not implemented.
 
 ## Next handoff
 
-- Stage 4 may be committed and pushed. Next stage must create the v7 level data format/vertical slice and start replacing the old level corpus.
+- Stage 5 may be committed and pushed after final re-run. Next stage must expand to 70 and add final audit commands instead of polishing only the slice.

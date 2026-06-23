@@ -27,6 +27,7 @@ check(health.statusCode === 200 && health.json().ok === true, 'GET /api/health o
 
 const cat = await app.inject({ method: 'GET', url: '/api/levels' });
 check(cat.json().levels?.length === LEVELS.length, `GET /api/levels returns ${LEVELS.length} levels`);
+const firstLevel = LEVELS[0]!;
 
 for (const level of LEVELS) {
   const solution = level.solution ?? solve(level).solution;
@@ -46,7 +47,7 @@ for (const level of LEVELS) {
 const bogus = await app.inject({
   method: 'POST',
   url: '/api/scores',
-  payload: { levelId: 'l1', name: 'cheater', solution: ['up', 'up', 'up'] },
+  payload: { levelId: firstLevel.id, name: 'cheater', solution: ['up', 'up', 'up'] },
 });
 check(bogus.statusCode === 400 && bogus.json().ok === false, 'POST bogus solution rejected (400)');
 
@@ -62,14 +63,17 @@ check(unknown.statusCode === 400, 'POST unknown level rejected (400)');
 const malformed = await app.inject({
   method: 'POST',
   url: '/api/scores',
-  payload: { levelId: 'l1', name: 'x', solution: ['sideways'] },
+  payload: { levelId: firstLevel.id, name: 'x', solution: ['sideways'] },
 });
 check(malformed.statusCode === 400, 'POST malformed solution rejected (400)');
 
 // Leaderboard reflects stored scores.
-const board = await app.inject({ method: 'GET', url: '/api/scores/l1' });
+const board = await app.inject({ method: 'GET', url: `/api/scores/${firstLevel.id}` });
 const scores = board.json().scores;
-check(Array.isArray(scores) && scores.length >= 1 && scores[0].name === 'self-test', 'GET /api/scores/l1 lists the stored clear');
+check(
+  Array.isArray(scores) && scores.length >= 1 && scores[0].name === 'self-test',
+  `GET /api/scores/${firstLevel.id} lists the stored clear`,
+);
 
 await app.close();
 store.close();
