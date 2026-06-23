@@ -76,3 +76,43 @@ Review notes:
 Next handoff:
 
 - Solver engineer should define slice-mode verification before runtime levels are accepted.
+
+## Stage 9B Mechanism Proof Patch
+
+Agent: engine-engineer
+Task clarity: partial
+Capability fit: good
+Questions needed: none
+Assumptions: This patch improves the current runtime but does not reverse the Stage 9 product rejection.
+Proceed decision: proceed
+
+Decisions made:
+
+- Added a minimal deterministic spatial-swap rule: stepping on a configured trigger swaps crates between two configured exchange points.
+- Kept the rule coordinate-driven and replay-safe instead of adding hidden map semantics.
+- Added recursive-core visual marking and chain-state progress recording as partial affordances, not final nested-room/branch simulation.
+
+Files touched:
+
+- `src/engine/types.ts`
+- `src/engine/rules.ts`
+- `src/engine/v7Levels.ts`
+- `src/web/progress.ts`
+- `src/web/render.ts`
+- `src/web/styles.css`
+- `src/web/ui.ts`
+- `scripts/audit-levels.ts`
+
+Risks:
+
+- Recursive-room remains visual/metadata support only.
+- The accepted redesign slice still needs worldline split, recursive layer path, and rule sockets.
+
+Review notes:
+
+- `audit:levels` now includes an active spatial-swap requirement and behavior probe.
+- `verify`, API replay, and UI smoke all passed after `v7-033` became an active swap level.
+
+Next handoff:
+
+- Use this proof as implementation evidence, but replace the rejected runtime in the next slice rather than polishing it further.

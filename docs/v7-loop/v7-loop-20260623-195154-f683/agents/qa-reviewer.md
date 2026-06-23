@@ -96,3 +96,38 @@ Review notes:
 Next handoff:
 
 - Commit and push the Stage 9 reset checkpoint, then begin implementation from the new specs.
+
+## Stage 9B Mechanism Proof Patch
+
+Agent: qa-reviewer
+Task clarity: clear
+Capability fit: good
+Questions needed: none
+Assumptions: Passing current-runtime tests is still not final product acceptance after the Stage 9 reset.
+Proceed decision: proceed
+
+Decisions made:
+
+- Accept the spatial-swap behavior probe as real technical progress.
+- Keep final acceptance blocked because the runtime has not been replaced with the accepted 20-level redesign slice.
+
+Files touched:
+
+- `docs/v7-loop/v7-loop-20260623-195154-f683/09-iteration-log.md`
+- `docs/v7-loop/v7-loop-20260623-195154-f683/10-acceptance-report.md`
+- `docs/v7-loop/v7-loop-20260623-195154-f683/06-level-design-matrix.md`
+
+Risks:
+
+- The current screenshots are improved but still belong to the rejected route.
+- Recursive-room is not yet a full nested-room simulation.
+
+Review notes:
+
+- Full command suite passed after the Stage 9B patch.
+- `08-spatial-swap-033.png` shows visible swap trigger/node markers.
+- `09-recursive-041.png` shows the recursive-core marker.
+
+Next handoff:
+
+- Commit and push Stage 9B, then continue with the accepted redesign slice instead of declaring the current runtime final.

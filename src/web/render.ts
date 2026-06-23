@@ -64,6 +64,8 @@ export class BoardRenderer {
       const x = i % level.width;
       const y = Math.floor(i / level.width);
       el.className = this.staticCellClass(cell);
+      if (this.isSpatialSwapTrigger(x, y)) el.classList.add('swap-trigger');
+      if (this.isSpatialSwapNode(x, y)) el.classList.add('swap-node');
       this.board.appendChild(el);
       this.cellEls.push(el);
       if (cell.terrain === 'pit') this.pits.push({ i, el });
@@ -136,9 +138,19 @@ export class BoardRenderer {
     return parts.join(' ');
   }
 
+  private isSpatialSwapTrigger(x: number, y: number): boolean {
+    const trigger = this.level.spatialSwap?.triggerAt;
+    return !!trigger && trigger.x === x && trigger.y === y;
+  }
+
+  private isSpatialSwapNode(x: number, y: number): boolean {
+    return !!this.level.spatialSwap?.exchange?.some((p) => p.x === x && p.y === y);
+  }
+
   private makeCrate(c: Crate): HTMLDivElement {
     const el = document.createElement('div');
-    el.className = `piece crate ${colorClass(c.color)}`.trim();
+    const recursive = this.level.recursiveRoom?.entryCrateId === c.id ? ' recursive-core' : '';
+    el.className = `piece crate ${colorClass(c.color)}${recursive}`.trim();
     el.innerHTML = '<div class="body"></div>';
     return el;
   }

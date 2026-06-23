@@ -1,7 +1,7 @@
 // Local progress (always works offline) plus best-effort server sync. The server
 // is authoritative for the public leaderboard, but the game never blocks on it.
 
-import type { MoveToken } from '../engine/types.js';
+import type { ChainConfig, MoveToken } from '../engine/types.js';
 
 /** The level the player last opened — for "继续上次" and resuming a board. */
 export interface LastPlayed {
@@ -17,13 +17,14 @@ export interface Progress {
   bestPush: Record<string, number>; // fewest pushes per level id
   parHit: Record<string, boolean>; // cleared at or under the par move count
   clean: Record<string, boolean>; // cleared at least once without using undo
+  chainState: Record<string, string>; // visible v7 chain nodes earned by clearing linked levels
   lastPlayed?: LastPlayed;
 }
 
 const KEY = 'driftbox.progress.v7';
 const NAME_KEY = 'driftbox.name';
 
-const EMPTY: Progress = { completed: {}, best: {}, bestPush: {}, parHit: {}, clean: {} };
+const EMPTY: Progress = { completed: {}, best: {}, bestPush: {}, parHit: {}, clean: {}, chainState: {} };
 
 export function loadProgress(): Progress {
   try {
@@ -89,6 +90,14 @@ export function recordClear(p: Progress, id: string, info: ClearInfo): ClearOutc
 
   saveProgress(p);
   return { fresh: first || improved, newPush, parHit, clean, firstParHit, firstClean };
+}
+
+export function recordChainNode(p: Progress, chain?: ChainConfig): boolean {
+  if (!chain) return false;
+  const already = p.chainState[chain.key] === chain.label;
+  p.chainState[chain.key] = chain.label;
+  saveProgress(p);
+  return !already;
 }
 
 export interface ChapterStat {

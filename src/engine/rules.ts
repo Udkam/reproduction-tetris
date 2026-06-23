@@ -45,6 +45,43 @@ function advanceTimeShadow(
   return { ...next, history, shadow };
 }
 
+function samePoint(a: { x: number; y: number } | undefined, b: { x: number; y: number }): boolean {
+  return !!a && a.x === b.x && a.y === b.y;
+}
+
+function applySpatialSwap(level: Level, before: GameState, next: GameState): GameState {
+  const cfg = level.spatialSwap;
+  if (!cfg || cfg.trigger === 'replay-only' || !cfg.triggerAt || !cfg.exchange) return next;
+
+  const trigger = cfg.triggerAt;
+  const playerEntered =
+    cfg.trigger === 'player-step' &&
+    next.playerX === trigger.x &&
+    next.playerY === trigger.y &&
+    (before.playerX !== trigger.x || before.playerY !== trigger.y);
+  const crateEntered =
+    cfg.trigger === 'crate-seat' &&
+    next.crates.some((c) => c.x === trigger.x && c.y === trigger.y) &&
+    !before.crates.some((c) => c.x === trigger.x && c.y === trigger.y);
+  if (!playerEntered && !crateEntered) return next;
+
+  const [a, b] = cfg.exchange;
+  const hasA = next.crates.some((c) => samePoint(a, c));
+  const hasB = next.crates.some((c) => samePoint(b, c));
+  if (!hasA && !hasB) return next;
+
+  const crates = next.crates.map((c) => {
+    if (samePoint(a, c)) return { ...c, x: b.x, y: b.y };
+    if (samePoint(b, c)) return { ...c, x: a.x, y: a.y };
+    return c;
+  });
+  return { ...next, crates };
+}
+
+function finalizeMove(level: Level, before: GameState, next: GameState, effect?: MoveEffect): GameState {
+  return advanceTimeShadow(level, before, applySpatialSwap(level, before, next), effect);
+}
+
 /** How many plates of a group are currently weighed down (by player or a crate). */
 export function pressedPlateCount(level: Level, state: GameState, group: string): number {
   let n = 0;
@@ -301,7 +338,7 @@ function applyPull(level: Level, state: GameState, dir: Dir, openGates: Set<stri
     crate: { id: dragged.id, from: { x: bx, y: by }, to: { x: from.x, y: from.y }, slid: false, sank: false },
     pulled: true,
   };
-  return { changed: true, state: advanceTimeShadow(level, state, next, effect), effect };
+  return { changed: true, state: finalizeMove(level, state, next, effect), effect };
 }
 
 /** Gravity tilt: every crate and the player slide maximally in `dir` until
@@ -354,7 +391,7 @@ function applyTilt(level: Level, state: GameState, dir: Dir): MoveResult {
     moves: state.moves + 1,
   };
   const effect: MoveEffect = { dir, player: { from, to: { x: ps.x, y: ps.y } }, tilted: true };
-  return { changed: true, state: advanceTimeShadow(level, state, next, effect), effect };
+  return { changed: true, state: finalizeMove(level, state, next, effect), effect };
 }
 
 /** Apply one move. Returns a brand-new immutable state (or the same one if blocked). */
@@ -453,7 +490,7 @@ export function applyMove(level: Level, state: GameState, dir: Dir, pull = false
   if (filledPit !== undefined) effect.filledPit = filledPit;
   if (collapsedNow !== undefined) effect.collapsed = collapsedNow;
   if (teleported) effect.teleported = true;
-  return { changed: true, state: advanceTimeShadow(level, state, next, effect), effect };
+  return { changed: true, state: finalizeMove(level, state, next, effect), effect };
 }
 
 /** Every goal covered by a crate of the right color? */

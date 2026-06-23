@@ -24,6 +24,8 @@ export type V7Mechanic =
   | 'chain-state'
   | 'spatial-swap'
   | 'recursive-room'
+  | 'worldline-split'
+  | 'rule-block'
   | 'misdirection'
   | 'pull-field'
   | 'gravity-field'
@@ -87,6 +89,8 @@ export interface SpatialSwapConfig {
   id: string;
   trigger: 'player-step' | 'crate-seat' | 'replay-only';
   description: string;
+  triggerAt?: { x: number; y: number };
+  exchange?: [{ x: number; y: number }, { x: number; y: number }];
 }
 
 export interface RecursiveRoomConfig {

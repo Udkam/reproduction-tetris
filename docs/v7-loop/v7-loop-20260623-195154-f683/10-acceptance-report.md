@@ -48,7 +48,8 @@ The next accepted runtime checkpoint is not "70 levels still pass." It is:
 
 - Runtime has not yet been replaced with the redesign slice.
 - Current screenshot set belongs to the rejected v7 route and is no longer final acceptance evidence.
-- Engine support for worldline split, recursive layer path, swap preview, and rule sockets needs implementation.
+- Engine support for worldline split, recursive layer path, and rule sockets needs implementation.
+- The rejected 70-level runtime now has a deterministic spatial-swap trigger probe and visible local chain-state recording, but this does not make that runtime product-accepted.
 - `audit:levels` and `verify` still target the rejected 70-level checkpoint until the implementation stage updates them.
 - Existing docs may still contain historical mojibake in old stage excerpts; new redesign docs must remain UTF-8 clean.
 

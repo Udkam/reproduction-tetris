@@ -398,3 +398,52 @@ Next steps:
 - Run content/encoding/typecheck verification.
 - Commit and push Stage 9.
 - Start implementation of the redesigned 20-level vertical slice only after this reference/design checkpoint is pushed.
+
+### Stage 9B: Mechanism proof patch on rejected runtime
+
+Phase: partial mechanism implementation while preserving the product-rejection status.
+
+Actions taken:
+
+- Added coordinate-driven `SpatialSwapConfig` trigger/exchange support.
+- Added deterministic spatial-swap execution in `src/engine/rules.ts`.
+- Reworked `v7-033` into an active spatial-swap trigger level.
+- Added swap trigger/node rendering and recursive-core visual styling.
+- Added local `chainState` progress and chain-node feedback on home/win screens.
+- Strengthened `audit:levels` with an active spatial-swap requirement and behavior probe.
+- Rewrote `06-level-design-matrix.md` to remove mojibake and reflect the partial mechanism state.
+
+Verification commands and results:
+
+- `npm run typecheck`: passed.
+- `npm run verify`: passed for 70/70 current runtime levels.
+- `npm run audit:levels`: passed with `v7-033 spatial-swap behavior probe passed`; replay/manual warning remains.
+- `npm run audit:ui`: passed.
+- `npm run audit:content`: passed.
+- `npm run smoke:api`: passed; all 70 stored solutions accepted.
+- `npm run smoke:ui`: passed for 70/70 levels.
+- `npm run smoke:visual`: passed and regenerated screenshots.
+- `npm run build`: passed.
+
+Changed files:
+
+- `src/engine/types.ts`
+- `src/engine/rules.ts`
+- `src/engine/v7Levels.ts`
+- `src/web/progress.ts`
+- `src/web/render.ts`
+- `src/web/styles.css`
+- `src/web/ui.ts`
+- `scripts/audit-levels.ts`
+- `docs/v7-loop/v7-loop-20260623-195154-f683/06-level-design-matrix.md`
+- refreshed screenshots and v7 loop reports
+
+Risks:
+
+- This patch does not reverse the Stage 9 product rejection. The accepted next runtime is still the redesigned 20-level slice.
+- Recursive-room remains lightweight visual/metadata support rather than full nested-room simulation.
+
+Next steps:
+
+- Commit and push Stage 9B.
+- Continue by replacing the rejected runtime with the accepted redesign slice.

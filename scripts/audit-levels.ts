@@ -1,4 +1,6 @@
 import { LEVEL_DEFS, LEVELS } from '../src/engine/levels.js';
+import { initialState } from '../src/engine/level.js';
+import { applyToken } from '../src/engine/rules.js';
 import type { V7Mechanic } from '../src/engine/types.js';
 
 const EXPECTED_COUNTS: Record<string, number> = {
@@ -48,6 +50,9 @@ function defSignature(def: (typeof LEVEL_DEFS)[number]): string {
     gravity: def.gravity ?? false,
     mirrorTwin: def.mirrorTwin ?? false,
     timeShadow: def.timeShadow ?? null,
+    spatialSwap: def.spatialSwap ?? null,
+    recursiveRoom: def.recursiveRoom ?? null,
+    chain: def.chain ?? null,
   });
 }
 
@@ -109,6 +114,27 @@ for (const level of LEVELS) {
 for (const mech of REQUIRED_MECHANICS) {
   if (!mechanicSeen.has(mech)) fail(`required mechanic missing from corpus: ${mech}`);
   else pass(`mechanic present: ${mech}`);
+}
+
+const activeSwap = LEVEL_DEFS.some((def) =>
+  def.spatialSwap?.trigger !== undefined &&
+  def.spatialSwap.trigger !== 'replay-only' &&
+  !!def.spatialSwap.triggerAt &&
+  !!def.spatialSwap.exchange,
+);
+if (!activeSwap) fail('spatial-swap corpus has no active trigger/exchange rule');
+else pass('spatial-swap has at least one active trigger/exchange rule');
+
+const swapProbe = LEVELS.find((level) => level.spatialSwap?.trigger === 'player-step' && level.spatialSwap.exchange);
+if (!swapProbe) {
+  fail('no runtime level available for spatial-swap behavior probe');
+} else {
+  const first = swapProbe.solution?.[0];
+  const res = first ? applyToken(swapProbe, initialState(swapProbe), first) : null;
+  const target = swapProbe.spatialSwap!.exchange![1]!;
+  const swapped = !!res?.changed && res.state.crates.some((c) => c.x === target.x && c.y === target.y);
+  if (!swapped) fail(`${swapProbe.id} spatial-swap behavior probe did not move a crate to the exchange target`);
+  else pass(`${swapProbe.id} spatial-swap behavior probe passed`);
 }
 
 const signatures = new Map<string, string[]>();

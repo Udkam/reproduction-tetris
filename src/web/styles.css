@@ -463,6 +463,17 @@ button.command {
   animation: blockedFlash 0.34s ease;
 }
 
+.chain-result {
+  margin: 0.7rem 0 0;
+  color: var(--cyan);
+  font-weight: 800;
+}
+
+.chain-result.fresh {
+  color: var(--green);
+  text-shadow: 0 0 18px rgba(92, 255, 192, 0.36);
+}
+
 .spacer {
   flex: 1;
 }
@@ -579,6 +590,26 @@ button.command {
   animation: pulse 1.8s ease-in-out infinite;
 }
 
+.cell.swap-trigger::before,
+.cell.swap-node::before {
+  content: "";
+  position: absolute;
+  inset: 22%;
+  border-radius: 30%;
+  border: 2px solid var(--violet);
+  box-shadow: 0 0 16px rgba(181, 124, 255, 0.46);
+  transform: rotate(45deg);
+}
+
+.cell.swap-trigger::after {
+  content: "";
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background: var(--violet);
+  box-shadow: 0 0 14px rgba(181, 124, 255, 0.7);
+}
+
 .cell.cracked::after,
 .cell.mirror::after {
   content: "";
@@ -618,6 +649,17 @@ button.command {
 .crate.color-sage { --c: var(--green); }
 .crate.color-slate { --c: #8be8ff; }
 .crate.color-amber { --c: var(--amber); }
+
+.crate.recursive-core .body {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(181, 124, 255, 0.55), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.4), transparent 42%),
+    var(--c, var(--crate));
+  border-color: rgba(181, 124, 255, 0.72);
+  box-shadow:
+    0 0 22px rgba(181, 124, 255, 0.42),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.15);
+}
 
 .crate.seated .body {
   box-shadow: 0 0 0 2px var(--green), 0 0 22px rgba(124, 255, 155, 0.45);

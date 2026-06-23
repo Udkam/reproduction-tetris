@@ -491,3 +491,46 @@ Next step:
 
 - Commit and push this Redesign Reset documentation checkpoint.
 - Begin implementation only after this reference/design checkpoint is pushed.
+
+## Stage 9B: Mechanism Proof Patch On Rejected Runtime
+
+Goal:
+
+- Reduce concrete mechanism debt without claiming the rejected 70-level route is accepted.
+- Prove at least one spatial-swap rule is deterministic in engine, server replay, UI smoke, and level audit.
+- Make chain-state visible in local progress and make recursive-room cores visually distinct.
+
+Actual changes:
+
+- Extended `SpatialSwapConfig` with `triggerAt` and `exchange` coordinates.
+- Added deterministic spatial-swap resolution in `src/engine/rules.ts`: stepping onto a configured trigger swaps crates between the two configured exchange points.
+- Reworked `v7-033` into an active trigger/exchange spatial-swap level.
+- Added visible swap trigger/node tile markers.
+- Added recursive-core rendering for configured recursive-room entry crates.
+- Added local `chainState` progress and win-screen/home-screen chain-node feedback.
+- Strengthened `audit:levels` so it requires an active spatial-swap trigger and runs a behavior probe after the first move of the active swap level.
+- Rewrote `06-level-design-matrix.md` to remove historical mojibake and record the current partial mechanism state.
+
+Verification:
+
+- `npm run typecheck`: passed.
+- `npm run verify`: passed for all 70 current runtime levels.
+- `npm run audit:levels`: passed, including `v7-033 spatial-swap behavior probe passed`; retained warning that 70 levels rely on replay/manual status.
+- `npm run audit:ui`: passed.
+- `npm run audit:content`: passed.
+- `npm run smoke:api`: passed; server replay accepted all 70 stored solutions.
+- `npm run smoke:ui`: passed; all 70 levels played to win through jsdom UI.
+- `npm run smoke:visual`: passed and regenerated screenshots.
+- `npm run build`: passed.
+- Manual screenshot review: `08-spatial-swap-033.png` shows swap trigger/node markers; `09-recursive-041.png` shows the recursive core marker; home shows chain-state text.
+
+Failure items:
+
+- No hard Stage 9B command failure after implementation.
+- Carry-forward blocker: this patch improves the rejected runtime, but it does not implement the accepted `Worldline Lab` 20-level redesign slice.
+- Carry-forward blocker: recursive-room remains a visual/metadata lightweight implementation, not full nested-room simulation.
+
+Next step:
+
+- Commit and push Stage 9B to `origin main`.
+- Resume with the accepted redesign implementation target: replace the rejected runtime with the 20-level slice.

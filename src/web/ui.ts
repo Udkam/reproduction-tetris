@@ -7,6 +7,7 @@ import { BoardRenderer } from './render.js';
 import {
   loadProgress,
   recordClear,
+  recordChainNode,
   setLastPlayed,
   isUnlocked,
   submitScore,
@@ -219,6 +220,7 @@ export class App {
     const total = this.levels.length;
     const cleared = this.levels.filter((l) => this.progress.completed[l.id]).length;
     const pct = total ? Math.round((cleared / total) * 100) : 0;
+    const chainCount = Object.keys(this.progress.chainState).length;
 
     // The recommended level: the first reachable-but-uncleared level in order.
     const currentId =
@@ -255,6 +257,7 @@ export class App {
           progressRing,
           h('span', {}, `完成 ${cleared} / ${total}`),
           h('span', {}, current ? `推荐 ${current.name}` : '等待实验载入'),
+          h('span', {}, chainCount ? `链路 ${chainCount}` : '链路待激活'),
         ),
         h('div', { class: 'command-row' }, continueBtn, mapBtn, codexBtn, recordsBtn, settingsBtn),
       ),
@@ -734,6 +737,7 @@ export class App {
       par,
       usedUndo: game.usedUndo,
     });
+    const newChain = recordChainNode(this.progress, level.chain);
     void submitScore(level.id, game.moves, game.pushes, game.log);
 
     const idx = this.order.indexOf(level.id);
@@ -777,6 +781,10 @@ export class App {
       actions.append(doneBtn);
     }
 
+    const chainResult = level.chain
+      ? h('p', { class: `chain-result${newChain ? ' fresh' : ''}` }, `${newChain ? '新链路激活' : '链路已记录'}：${level.chain.label}`)
+      : null;
+
     const card = h(
       'div',
       { class: 'card' },
@@ -795,6 +803,7 @@ export class App {
           ...(outcome.newPush && !outcome.fresh ? [h('br'), h('span', {}, '刷新了最少推动数。')] : []),
         ],
       ),
+      ...(chainResult ? [chainResult] : []),
       medals,
       actions,
     );
