@@ -30,7 +30,8 @@ Own negative review, evidence requirements, failure loops, and final acceptance.
 
 - Final report must list failed or skipped checks explicitly.
 - Stage 1 verification passed: `typecheck`, `verify`, `smoke:api`, and `smoke:ui`.
+- Stage 2 verification passed: `typecheck`, `verify`, `smoke:api`, `smoke:ui`, `build`, and a `tsx` catalog check showing no exposed `3d*` or `is3D` levels.
 
 ## Next handoff
 
-- Stage 1 may be committed and pushed. Next stage must retire public v6 3D/2.5D entry points.
+- Stage 2 may be committed and pushed. Next stage starts the sci-fi art system and v7 UI shell.

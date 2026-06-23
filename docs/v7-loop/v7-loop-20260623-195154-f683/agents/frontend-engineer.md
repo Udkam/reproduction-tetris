@@ -16,10 +16,16 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - Retire user-facing `IsoRenderer` path.
 - Keep server and engine APIs as the source of truth for level/replay data.
 - Add DOM landmarks/classes for `audit:ui`.
+- Stage 2 removed the visible dev demo entry and runtime 3D catalog exposure.
 
 ## Files touched
 
-- Stage 1 docs only.
+- `src/web/ui.ts`
+- `src/engine/levels.ts`
+- `README.md`
+- `claude.md`
+- `package.json`
+- Stage docs and `codex.md`
 
 ## Risks
 
@@ -28,6 +34,7 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 ## Review notes
 
 - Split by screen/component enough to keep v7 maintainable.
+- Stage 2 leaves old 2.5D code unused as history. Later stages should remove or archive it when the v7 shell replaces the legacy UI.
 
 ## Next handoff
 

@@ -16,10 +16,13 @@ Own product flow, screens, navigation, progress surfaces, and acceptance framing
 - Home must become a command deck, not a title plus level list.
 - Chapter selection uses a star map / node graph.
 - Completion, challenge records, settings, and mechanism archive are required screens.
+- Stage 2 copy now states v6 is retired rather than current success.
 
 ## Files touched
 
-- Stage 1 docs only.
+- `README.md`
+- `claude.md`
+- Stage docs and `codex.md`
 
 ## Risks
 

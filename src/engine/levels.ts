@@ -1,5 +1,6 @@
-// The level catalog — 60 levels across eleven chapters, difficulty rising
-// throughout (10 designed/generated chapters + the 淬炼 Crucible finale chapter).
+// The legacy 2D level catalog exposed while Driftbox v7 is rebuilt.
+// The rejected v6 2.5D levels are retained below only as source history and are
+// not appended to LEVEL_DEFS.
 // Every layout is verified by scripts/verify-levels.ts (`npm run verify`); `par`
 // is the solver's reported optimal move count (generated/finale levels carry a
 // stored, replay-verified solution).
@@ -544,7 +545,6 @@ export const LEVEL_DEFS: Chaptered[] = [
   ...PARADOX_DEFS,
   ...DIPTYCH_DEFS,
   ...CRUCIBLE_DEFS,
-  ...LEVEL3D_DEFS,
 ];
 
 export const LEVELS = LEVEL_DEFS.map(parseLevel);

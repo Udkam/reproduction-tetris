@@ -263,9 +263,6 @@ export class App {
       });
       menu.append(grid);
     }
-    const dev = h('button', { class: 'ghost dev-link' }, '▦ 立体演示 (dev)');
-    dev.onclick = () => this.playLevel('demo');
-    menu.append(dev);
     this.swap(menu);
   }
 

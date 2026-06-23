@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Driftbox — a Sokoban variant puzzle game (ice, pits, plates/gates, colored crates).",
+  "description": "Driftbox v7 — a 2D sci-fi Sokoban-variant puzzle game rebuild.",
   "scripts": {
     "dev": "vite",
     "dev:server": "tsx watch server/index.ts",

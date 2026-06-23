@@ -31,3 +31,39 @@ Failure items:
 Next step:
 
 - Commit Stage 1 and push to `origin main`.
+
+## Stage 2: Project reset and route cleanup
+
+Goal:
+
+- Retire the user-visible v6 2.5D route without yet rewriting the whole game.
+- Remove public 3D level exposure and dev demo entry.
+- Update current top-level docs so v6 is not promoted as the active success path.
+
+Actual changes:
+
+- Removed `LEVEL3D_DEFS` from the runtime `LEVEL_DEFS` catalog.
+- Removed the visible `立体演示 (dev)` menu button.
+- Replaced `README.md` with v7-loop current status and retired-v6 language.
+- Replaced `claude.md` with v7-loop current work report.
+- Updated `package.json` description.
+- Updated the top comment in `src/engine/levels.ts`.
+
+Verification:
+
+- `npm run typecheck`: passed.
+- `npm run verify`: passed, current exposed catalog is 52/52.
+- `npm run smoke:api`: passed, `/api/levels` now returns 52 levels.
+- `npm run smoke:ui`: passed, all current exposed levels win through jsdom.
+- `npx tsx -e ...LEVELS check...`: passed with `{"count":52,"ids":[],"is3D":[]}`.
+- `npm run build`: passed.
+- Discarded check: direct `node` import of TS/JS source failed due extension/runtime mismatch; replaced by the `tsx` catalog check above.
+
+Failure items:
+
+- No Stage 2 blocker.
+- Carry-forward risk: unused v6 2.5D source still exists as historical code, but it is no longer in the user-visible runtime catalog.
+
+Next step:
+
+- Commit Stage 2 and push to `origin main`.
