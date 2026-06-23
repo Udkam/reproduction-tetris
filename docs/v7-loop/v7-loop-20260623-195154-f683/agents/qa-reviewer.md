@@ -31,7 +31,10 @@ Own negative review, evidence requirements, failure loops, and final acceptance.
 - Final report must list failed or skipped checks explicitly.
 - Stage 1 verification passed: `typecheck`, `verify`, `smoke:api`, and `smoke:ui`.
 - Stage 2 verification passed: `typecheck`, `verify`, `smoke:api`, `smoke:ui`, `build`, and a `tsx` catalog check showing no exposed `3d*` or `is3D` levels.
+- Stage 3 verification passed: `typecheck`, `verify`, `smoke:api`, `smoke:ui`, `build`, and a temporary DOM audit showing the new command deck, chapter map, codex, records, settings, and no visible `立体演示` / `2.5D` entry.
+- Stage 3 negative finding: this is a shell/art milestone only. It does not satisfy the final 70-level, new-mechanic, real-browser visual, or content-audit gates.
+- Stage 3 negative finding: temporary DOM audit initially failed due PowerShell pipe encoding of Chinese regex. The re-test used Unicode escapes and passed; repo source content was confirmed as UTF-8 with Node.
 
 ## Next handoff
 
-- Stage 2 may be committed and pushed. Next stage starts the sci-fi art system and v7 UI shell.
+- Stage 3 may be committed and pushed. Next stage must add v7 mechanism/data/test foundation instead of only polishing the old level set.

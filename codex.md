@@ -75,3 +75,43 @@ Next steps:
 
 - Commit and push Stage 2.
 - Begin Stage 3 sci-fi art system and UI shell.
+
+### Stage 3: New sci-fi art system and navigation shell
+
+Phase: product shell and visual reset.
+
+Actions taken:
+
+- Replaced the old paper/wood CSS with a dark 2D sci-fi visual system.
+- Rebuilt the home view as a command deck with progress, recent level, continue, chapter star map, mechanism archive, challenge records, and settings.
+- Added records and settings overlays.
+- Removed remaining visible 3D divider/badge handling from the home flow.
+- Converted the package description to ASCII-only punctuation after confirming PowerShell console mojibake was only display/script-pipe related.
+
+Verification commands and results:
+
+- `npm run typecheck`: passed.
+- `npm run verify`: passed, 52/52 current exposed levels.
+- `npm run smoke:api`: passed, `/api/levels` returns 52 levels.
+- `npm run smoke:ui`: passed for all exposed levels.
+- `npm run build`: passed.
+- Temporary `npx tsx -` DOM audit: passed for `.home-deck`, `#chapter-map`, primary continue, mechanism archive, records, settings, and no visible `立体演示` / `2.5D`.
+
+Changed files:
+
+- `package.json`
+- `src/web/ui.ts`
+- `src/web/styles.css`
+- v7 loop docs and agent logs
+- `codex.md`
+
+Risks:
+
+- Stage 3 is not final v7 acceptance. The app still runs the old 52 exposed level set and old mechanics.
+- `smoke:visual`, `audit:ui`, `audit:levels`, and `audit:content` are still pending.
+- Final self-hosted font/license choice is still pending.
+
+Next steps:
+
+- Commit and push Stage 3.
+- Begin Stage 4 mechanism/data/test foundation.

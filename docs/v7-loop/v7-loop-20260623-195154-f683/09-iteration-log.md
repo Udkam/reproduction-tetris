@@ -67,3 +67,42 @@ Failure items:
 Next step:
 
 - Commit Stage 2 and push to `origin main`.
+
+## Stage 3: New sci-fi art system and navigation shell
+
+Goal:
+
+- Replace the old paper/wood visual language with a clear 2D sci-fi shell.
+- Rebuild the home screen into a command deck with first-class navigation.
+- Add user-facing entries for chapter star map, mechanism archive, records, and settings.
+- Keep the current 52-level runtime stable while the v7 level/engine rebuild is still pending.
+
+Actual changes:
+
+- Replaced `src/web/styles.css` with a new dark sci-fi 2D visual system: neon grid background, hologram panels, command buttons, chapter map styling, HUD styling, board states, overlays, and responsive mobile rules.
+- Rebuilt `showMenu()` in `src/web/ui.ts` into a command-deck home screen.
+- Added `章节星图`, `机制档案`, `挑战记录`, and `设置` navigation surfaces.
+- Added `showRecords()` and `showSettings()` overlays.
+- Removed remaining visible 3D divider/badge handling from the home/level list flow.
+- Changed `package.json` description to ASCII-only text after confirming PowerShell had rendered UTF-8 symbols as mojibake in console output.
+
+Verification:
+
+- `npm run typecheck`: passed.
+- `npm run verify`: passed, current exposed catalog remains 52/52.
+- `npm run smoke:api`: passed, `/api/levels` returns 52 levels.
+- `npm run smoke:ui`: passed, all current exposed levels still win through jsdom.
+- `npm run build`: passed.
+- Temporary DOM audit with `npx tsx -`: passed for `.home-deck`, primary continue button, `#chapter-map`, mechanism archive button, records button, settings button, and no visible `立体演示` / `2.5D` entry.
+
+Failure items:
+
+- Initial temporary DOM audit failed because PowerShell piping converted Chinese regex text into `????`; root cause was ad-hoc script transport encoding, not repo source encoding. Re-ran the same assertions with Unicode escapes and passed.
+- Stage 3 is not final v7 acceptance. It still uses the old 52 exposed level data and old mechanics while establishing the new shell.
+- Carry-forward risk: no real-browser screenshot audit exists yet; `smoke:visual` is still pending for later stages.
+- Carry-forward risk: CSS currently uses local/system font stack names only. Final font decision and license record are still pending.
+
+Next step:
+
+- Commit Stage 3 and push to `origin main`.
+- Begin Stage 4 mechanism/data/test foundation.

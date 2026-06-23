@@ -198,20 +198,48 @@ export class App {
   }
 
   private showMenu(): void {
-    const codex = h('button', { class: 'ghost help-link' }, '玩法 / 图鉴');
-    codex.onclick = () => this.showCodex();
-
     const total = this.levels.length;
     const cleared = this.levels.filter((l) => this.progress.completed[l.id]).length;
+    const pct = total ? Math.round((cleared / total) * 100) : 0;
+
+    // The recommended level: the first reachable-but-uncleared level in order.
+    const currentId =
+      this.levels.find(
+        (l) => (!LEVELS_LOCKED || isUnlocked(this.order, l.id, this.progress)) && !this.progress.completed[l.id],
+      )?.id ?? this.levels[0]?.id ?? '';
+    const current = this.levels.find((l) => l.id === currentId);
+
+    const continueBtn = h('button', { class: 'primary command' }, '继续实验');
+    continueBtn.onclick = () => this.openLevel(currentId);
+    const mapBtn = h('button', { class: 'command' }, '章节星图');
+    const codexBtn = h('button', { class: 'command' }, '机制档案');
+    codexBtn.onclick = () => this.showCodex();
+    const recordsBtn = h('button', { class: 'command' }, '挑战记录');
+    recordsBtn.onclick = () => this.showRecords();
+    const settingsBtn = h('button', { class: 'command' }, '设置');
+    settingsBtn.onclick = () => this.showSettings();
+    const progressRing = h('span', { class: 'progress-ring' }, `${pct}%`);
+    progressRing.style.setProperty('--pct', String(pct));
 
     const menu = h(
       'div',
       { class: 'menu' },
-      h('h1', {}, '推移'),
-      h('div', { class: 'tagline' }, 'Driftbox'),
-      h('p', { class: 'lede' }, '层层叠加的机制，渐次加难的关卡。多数关卡没有提示——自己读懂这张棋盘。'),
-      h('p', { class: 'overall' }, `已通关 ${cleared} / ${total}`),
-      h('div', { class: 'menu-actions' }, codex),
+      h(
+        'section',
+        { class: 'home-deck' },
+        h('div', { class: 'scanline' }),
+        h('div', { class: 'eyebrow' }, 'QUANTUM DRIFT PROTOCOL'),
+        h('h1', {}, 'DRIFTBOX'),
+        h('p', { class: 'lede' }, '在量子实验舱中调度能量核心、同步体与折跃链路。读懂规则，重写路径。'),
+        h(
+          'div',
+          { class: 'progress-cluster' },
+          progressRing,
+          h('span', {}, `完成 ${cleared} / ${total}`),
+          h('span', {}, current ? `推荐 ${current.name}` : '等待实验载入'),
+        ),
+        h('div', { class: 'command-row' }, continueBtn, mapBtn, codexBtn, recordsBtn, settingsBtn),
+      ),
     );
 
     // "继续上次" — the level the player most recently opened/left.
@@ -228,41 +256,33 @@ export class App {
       menu.append(cont);
     }
 
-    // The recommended level: the first reachable-but-uncleared level in order.
-    const currentId =
-      this.levels.find(
-        (l) => (!LEVELS_LOCKED || isUnlocked(this.order, l.id, this.progress)) && !this.progress.completed[l.id],
-      )?.id ?? '';
-
     const stats = chapterStats(this.order, CHAPTER_OF, this.progress);
     const chapters: string[] = [];
     for (const l of this.levels) {
       const c = CHAPTER_OF[l.id] ?? '';
       if (!chapters.includes(c)) chapters.push(c);
     }
-    let dividerShown = false;
+    const chapterMap = h('section', { class: 'chapter-map', id: 'chapter-map' },
+      h('div', { class: 'map-heading' },
+        h('span', {}, 'CHAPTER STAR MAP'),
+        h('b', {}, '章节星图')));
+    mapBtn.onclick = () => chapterMap.scrollIntoView({ behavior: 'smooth', block: 'start' });
     for (const ch of chapters) {
       const s = stats[ch];
-      const is3d = ch.startsWith('立体');
-      // a one-time divider before the first 3D chapter separates them from Classic
-      if (is3d && !dividerShown) {
-        menu.append(h('div', { class: 'chapter-divider' }, '— 立体章节 · 2.5D —'));
-        dividerShown = true;
-      }
-      const head = h('div', { class: `chapter-head${is3d ? ' is3d' : ''}` }, h('h2', { class: 'chapter' }, ch));
-      if (is3d) head.append(h('span', { class: 'ch-3d-badge' }, '▲ 3D'));
+      const head = h('div', { class: 'chapter-head' }, h('h2', { class: 'chapter' }, ch));
       if (s) {
         head.append(h('span', { class: 'ch-progress' }, `${s.cleared}/${s.total}`));
         if (s.perfect) head.append(h('span', { class: 'ch-badge perfect', title: '全章达到参考最优' }, '✦ 大师'));
         else if (s.complete) head.append(h('span', { class: 'ch-badge done', title: '本章全部通关' }, '✓ 通章'));
       }
-      menu.append(head);
+      chapterMap.append(head);
       const grid = h('div', { class: 'level-grid' });
       this.levels.forEach((lvl, i) => {
         if ((CHAPTER_OF[lvl.id] ?? '') === ch) grid.append(this.levelCard(lvl, i, lvl.id === currentId));
       });
-      menu.append(grid);
+      chapterMap.append(grid);
     }
+    menu.append(chapterMap);
     this.swap(menu);
   }
 
@@ -296,6 +316,52 @@ export class App {
     overlay.addEventListener('click', (ev) => {
       if (ev.target === overlay) overlay.remove();
     });
+    this.root.append(overlay);
+  }
+
+  private showRecords(): void {
+    const rows = this.levels
+      .filter((l) => this.progress.completed[l.id])
+      .slice(-8)
+      .map((l) => h('div', { class: 'record-row' },
+        h('span', {}, l.name),
+        h('b', {}, `${this.progress.best[l.id] ?? '-'} 步`),
+        h('small', {}, `${this.progress.bestPush[l.id] ?? '-'} 推`)));
+    const card = h(
+      'div',
+      { class: 'card help' },
+      h('h2', { class: 'wordmark' }, '挑战记录'),
+      h('p', { class: 'result' }, '本地记录会在离线状态继续保存，通关后会尝试同步到后端排行榜。'),
+      h('div', { class: 'records' }, ...(rows.length ? rows : [h('p', { class: 'result' }, '暂无通关记录。')])),
+      h('div', { class: 'actions' }, (() => {
+        const b = h('button', { class: 'primary' }, '返回');
+        b.onclick = () => overlay.remove();
+        return b;
+      })()),
+    );
+    const overlay = h('div', { class: 'overlay' }, card);
+    overlay.addEventListener('click', (ev) => { if (ev.target === overlay) overlay.remove(); });
+    this.root.append(overlay);
+  }
+
+  private showSettings(): void {
+    const card = h(
+      'div',
+      { class: 'card help' },
+      h('h2', { class: 'wordmark' }, '设置'),
+      h('p', { class: 'result' }, 'v7 将加入高对比度、减少动态、输入偏好和进度管理。当前阶段先保留稳定操作路径。'),
+      h('div', { class: 'settings-list' },
+        h('label', {}, h('input', { type: 'checkbox', disabled: true }), ' 高对比度模式'),
+        h('label', {}, h('input', { type: 'checkbox', disabled: true }), ' 减少动态效果'),
+        h('label', {}, h('input', { type: 'checkbox', disabled: true }), ' 触控方向键')),
+      h('div', { class: 'actions' }, (() => {
+        const b = h('button', { class: 'primary' }, '返回');
+        b.onclick = () => overlay.remove();
+        return b;
+      })()),
+    );
+    const overlay = h('div', { class: 'overlay' }, card);
+    overlay.addEventListener('click', (ev) => { if (ev.target === overlay) overlay.remove(); });
     this.root.append(overlay);
   }
 

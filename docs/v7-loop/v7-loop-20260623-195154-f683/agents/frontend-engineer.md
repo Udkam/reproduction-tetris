@@ -17,6 +17,8 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - Keep server and engine APIs as the source of truth for level/replay data.
 - Add DOM landmarks/classes for `audit:ui`.
 - Stage 2 removed the visible dev demo entry and runtime 3D catalog exposure.
+- Stage 3 rebuilt the home screen as a command deck and added DOM-visible routes for chapter map, codex, records, and settings.
+- Stage 3 replaced the old CSS surface with a new 2D sci-fi shell while keeping the existing `App` wiring stable.
 
 ## Files touched
 
@@ -25,17 +27,21 @@ Own UI shell, routes, board rendering, transitions, responsive layout, and visua
 - `README.md`
 - `claude.md`
 - `package.json`
+- `src/web/styles.css`
 - Stage docs and `codex.md`
 
 ## Risks
 
 - Current `src/web/ui.ts` is too large and mixes routing, input, rendering, modals, and camera behavior.
+- Stage 3 has DOM verification but not full Playwright screenshots yet.
+- The new settings and records overlays are product shells; they need deeper persistence/settings behavior in later stages.
 
 ## Review notes
 
 - Split by screen/component enough to keep v7 maintainable.
 - Stage 2 leaves old 2.5D code unused as history. Later stages should remove or archive it when the v7 shell replaces the legacy UI.
+- Stage 3 verification passed: `typecheck`, `verify`, `smoke:api`, `smoke:ui`, `build`, and a temporary DOM audit for new home/navigation landmarks.
 
 ## Next handoff
 
-- Engine and art deliver data/state contracts; frontend wires screens and renderer.
+- Engine and level agents deliver v7 metadata and mechanism contracts; frontend wires richer state feedback and final `audit:ui` / `smoke:visual` hooks.
