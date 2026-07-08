@@ -1,7 +1,7 @@
 # Implementation Plan
 
-Status: approved implementation contract through Stage 3A recursive space
-interaction prototype. Do not proceed to Stage 3B without review.
+Status: approved implementation contract through Stage 3A-Refinement recursive
+visual fidelity. Do not proceed to Stage 3B without review.
 
 ## Gate 0: Approval Required
 
@@ -10,8 +10,10 @@ Current allowed work:
 - Stage 1 scaffold.
 - Stage 2 PixiJS renderer foundation.
 - Stage 3A recursive space interaction prototype.
+- Stage 3A-Refinement recursive visual fidelity.
 - Browser/computer visual QA and screenshot evidence for Stage 2.
 - Browser/computer visual QA and screenshot evidence for Stage 3A.
+- Browser/computer visual QA and screenshot evidence for Stage 3A-Refinement.
 
 Current forbidden work:
 
@@ -121,7 +123,8 @@ Current state before Stage 3A approval:
 | Local visual output has been compared | No local output exists yet, so comparison is impossible. | Deferred until Stage 7 after implementation output exists. |
 | Approval has been granted | Stage 1, Stage 2, and Stage 3A approval messages have been recorded. | Ready for Stage 3A only. |
 
-The next missing decision is Stage 3B approval after Stage 3A visual gate review.
+The next missing decision is Stage 3B approval after Stage 3A-Refinement visual
+gate review.
 
 ## Approval Decision Record
 
@@ -130,14 +133,16 @@ entry from the user or a later agent records the exact approval message.
 
 Current decision:
 
-- Status: approved through Stage 3A recursive space interaction prototype only.
+- Status: approved through Stage 3A-Refinement recursive visual fidelity only.
 - Stage 1 approval evidence: user message on 2026-07-07:
   `Approved for Stage 1 scaffold: ARCHITECTURE.md, DESIGN_REFERENCE.md, and IMPLEMENTATION_PLAN.md are accepted as the implementation contract.`
 - Stage 2 approval evidence: user-provided objective on 2026-07-07:
   `Proceed with Stage 2: PixiJS Renderer Foundation. Stage 1 is approved.`
 - Stage 3A approval evidence: user-provided objective on 2026-07-07:
   `Proceed with Stage 3A: Recursive Space Interaction Prototype. Stage 2 renderer foundation is approved.`
-- Allowed next action: Stage 3A recursive space interaction prototype,
+- Stage 3A-Refinement approval evidence: user-provided objective on 2026-07-08:
+  `Implement Stage 3A-Refinement only, improving renderer visual fidelity. Do not proceed to Stage 3B.`
+- Allowed next action: Stage 3A-Refinement recursive visual fidelity,
   browser visual QA, screenshot evidence, commit, and main-branch publication.
 - Previous allowed action: Stage 2 renderer foundation, browser visual QA,
   screenshot evidence, commit, and main-branch publication.
@@ -288,6 +293,39 @@ Failure conditions:
 - The inner world is cloned into a second mutable gameplay state.
 - React renders gameplay nodes for the transition.
 - Entering the box hard-switches views instead of visibly changing scale.
+
+## Stage 3A-Refinement: Recursive Visual Fidelity
+
+Goal: improve the Stage 3A recursive transition's visual fidelity without
+introducing gameplay systems.
+
+Implemented modules/artifacts:
+
+- `src/render/materials/worldMaterial.ts`
+- `src/render/materials/index.ts`
+- `src/render/primitives/worldFrame.ts`
+- `src/render/primitives/entityPrimitives.ts`
+- `src/render/RecursiveTransitionRenderer.ts`
+- `src/render/palette.ts`
+- `docs/screenshots/stage3a-refined.png`
+
+Acceptance:
+
+- Outer and inner worlds use shared proportional slab material metrics.
+- Player, box, goal, and recursive container primitives are readable without
+  text labels.
+- Enter transition keeps recursive aperture context visible instead of replacing
+  the view with a flat full-frame child world.
+- Browser QA captures `docs/screenshots/stage3a-refined.png`.
+- React DOM still contains no gameplay cells or entities.
+
+Failure conditions:
+
+- The refinement adds movement, levels, undo/redo, ECS, or Stage 3B simulation.
+- The renderer relies on official Patrick's Parabox assets or copied level
+  layouts.
+- The recursive aperture is visually indistinguishable from a normal static
+  world frame.
 
 ## Stage 3B: Simulation Core
 

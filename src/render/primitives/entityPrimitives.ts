@@ -13,15 +13,31 @@ export function createPlayerPrimitive(rect: Rect2D, palette: RenderPalette) {
   container.label = "player-primitive";
 
   const body = new Graphics();
-  const eyeRadius = Math.max(3, rect.width * 0.08);
+  const radius = Math.max(3, rect.width * 0.08);
+  const eyeRadius = Math.max(2.5, rect.width * 0.075);
 
-  body.rect(rect.x + rect.width * 0.08, rect.y + rect.height * 0.1, rect.width, rect.height).fill({
+  body.roundRect(rect.x + rect.width * 0.08, rect.y + rect.height * 0.1, rect.width, rect.height, radius).fill({
     color: palette.shellShadow,
     alpha: 0.65,
   });
-  body.roundRect(rect.x, rect.y, rect.width, rect.height, 2).fill(palette.player);
+  body.roundRect(rect.x, rect.y, rect.width, rect.height, radius).fill(palette.player);
+  body.roundRect(rect.x, rect.y, rect.width, rect.height * 0.22, radius).fill({ color: 0xffffff, alpha: 0.12 });
+  body.rect(rect.x + rect.width * 0.45, rect.y + rect.height * 0.78, rect.width * 0.1, rect.height * 0.15).fill({
+    color: palette.playerAccent,
+    alpha: 0.28,
+  });
   body.circle(rect.x + rect.width * 0.32, rect.y + rect.height * 0.43, eyeRadius).fill(palette.playerAccent);
   body.circle(rect.x + rect.width * 0.68, rect.y + rect.height * 0.43, eyeRadius).fill(palette.playerAccent);
+  body
+    .poly([
+      rect.x + rect.width * 0.5,
+      rect.y + rect.height * 0.62,
+      rect.x + rect.width * 0.6,
+      rect.y + rect.height * 0.74,
+      rect.x + rect.width * 0.4,
+      rect.y + rect.height * 0.74,
+    ])
+    .fill({ color: palette.playerAccent, alpha: 0.35 });
 
   container.addChild(body);
   return container;
@@ -33,16 +49,23 @@ export function createBoxPrimitive(rect: Rect2D, palette: RenderPalette) {
 
   const body = new Graphics();
   const tab = Math.max(4, rect.width * 0.12);
+  const radius = Math.max(2, rect.width * 0.045);
 
-  body.rect(rect.x + rect.width * 0.08, rect.y + rect.height * 0.08, rect.width, rect.height).fill({
+  body.roundRect(rect.x + rect.width * 0.08, rect.y + rect.height * 0.08, rect.width, rect.height, radius).fill({
     color: palette.shellShadow,
     alpha: 0.6,
   });
-  body.rect(rect.x - tab, rect.y + rect.height * 0.38, tab, rect.height * 0.24).fill(palette.boxSide);
-  body.rect(rect.x + rect.width, rect.y + rect.height * 0.38, tab, rect.height * 0.24).fill(palette.boxSide);
-  body.rect(rect.x + rect.width * 0.35, rect.y + rect.height, rect.width * 0.3, tab).fill(palette.boxSide);
-  body.rect(rect.x, rect.y, rect.width, rect.height).fill(palette.box);
-  body.rect(rect.x, rect.y, rect.width, rect.height * 0.08).fill({ color: 0xffffff, alpha: 0.16 });
+  body.roundRect(rect.x - tab, rect.y + rect.height * 0.38, tab * 1.4, rect.height * 0.24, radius).fill(palette.boxSide);
+  body.roundRect(rect.x + rect.width - tab * 0.4, rect.y + rect.height * 0.38, tab * 1.4, rect.height * 0.24, radius).fill(palette.boxSide);
+  body.roundRect(rect.x + rect.width * 0.35, rect.y + rect.height - tab * 0.35, rect.width * 0.3, tab * 1.35, radius).fill(
+    palette.boxSide,
+  );
+  body.roundRect(rect.x, rect.y, rect.width, rect.height, radius).fill(palette.box);
+  body.rect(rect.x, rect.y, rect.width, rect.height * 0.08).fill({ color: 0xffffff, alpha: 0.17 });
+  body.rect(rect.x + rect.width * 0.08, rect.y + rect.height * 0.84, rect.width * 0.84, rect.height * 0.08).fill({
+    color: palette.boxSide,
+    alpha: 0.22,
+  });
 
   container.addChild(body);
   return container;
@@ -55,11 +78,16 @@ export function createGoalPrimitive(rect: Rect2D, palette: RenderPalette) {
   const goal = new Graphics();
   const strokeWidth = Math.max(3, rect.width * 0.06);
   const dotRadius = Math.max(3, rect.width * 0.1);
+  const radius = Math.max(2, rect.width * 0.035);
 
-  goal.rect(rect.x, rect.y, rect.width, rect.height).stroke({
+  goal.roundRect(rect.x, rect.y, rect.width, rect.height, radius).stroke({
     color: palette.goal,
     width: strokeWidth,
     alpha: 0.95,
+  });
+  goal.roundRect(rect.x + strokeWidth * 1.4, rect.y + strokeWidth * 1.4, rect.width - strokeWidth * 2.8, rect.height - strokeWidth * 2.8, radius).fill({
+    color: palette.shellShadow,
+    alpha: 0.18,
   });
   goal.circle(rect.x + rect.width * 0.28, rect.y + rect.height * 0.55, dotRadius).fill(palette.goalDot);
   goal.circle(rect.x + rect.width * 0.72, rect.y + rect.height * 0.55, dotRadius).fill(palette.goalDot);
@@ -79,6 +107,7 @@ export function createRecursiveContainerPrimitive(
   const previewLayer = new Container();
   const mask = new Graphics();
   const inset = rect.width * 0.12;
+  const radius = Math.max(3, rect.width * 0.05);
   const previewRect = {
     x: rect.x + inset,
     y: rect.y + inset,
@@ -86,26 +115,27 @@ export function createRecursiveContainerPrimitive(
     height: rect.height - inset * 2,
   };
 
-  body.rect(rect.x + rect.width * 0.09, rect.y + rect.height * 0.1, rect.width, rect.height).fill({
+  body.roundRect(rect.x + rect.width * 0.09, rect.y + rect.height * 0.1, rect.width, rect.height, radius).fill({
     color: palette.shellShadow,
     alpha: 0.65,
   });
-  body.rect(rect.x - rect.width * 0.12, rect.y + rect.height * 0.38, rect.width * 0.12, rect.height * 0.24).fill({
+  body.roundRect(rect.x - rect.width * 0.12, rect.y + rect.height * 0.38, rect.width * 0.18, rect.height * 0.24, radius).fill({
     color: palette.containerWindow,
     alpha: 0.9,
   });
-  body.rect(rect.x + rect.width, rect.y + rect.height * 0.38, rect.width * 0.12, rect.height * 0.24).fill({
+  body.roundRect(rect.x + rect.width - rect.width * 0.06, rect.y + rect.height * 0.38, rect.width * 0.18, rect.height * 0.24, radius).fill({
     color: palette.containerWindow,
     alpha: 0.9,
   });
-  body.rect(rect.x, rect.y, rect.width, rect.height).fill(palette.container);
-  body.rect(previewRect.x, previewRect.y, previewRect.width, previewRect.height).fill(palette.containerWindow);
-  body.rect(previewRect.x, previewRect.y, previewRect.width, previewRect.height).stroke({
+  body.roundRect(rect.x, rect.y, rect.width, rect.height, radius).fill(palette.container);
+  body.roundRect(rect.x, rect.y, rect.width, rect.height * 0.16, radius).fill({ color: 0xffffff, alpha: 0.12 });
+  body.roundRect(previewRect.x, previewRect.y, previewRect.width, previewRect.height, radius * 0.5).fill(palette.containerWindow);
+  body.roundRect(previewRect.x, previewRect.y, previewRect.width, previewRect.height, radius * 0.5).stroke({
     color: palette.rimBright,
     width: Math.max(2, rect.width * 0.035),
   });
 
-  mask.rect(previewRect.x, previewRect.y, previewRect.width, previewRect.height).fill(0xffffff);
+  mask.roundRect(previewRect.x, previewRect.y, previewRect.width, previewRect.height, radius * 0.5).fill(0xffffff);
   mask.alpha = 0;
   previewLayer.mask = mask;
 

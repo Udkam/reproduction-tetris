@@ -116,9 +116,11 @@ function getOuterCameraState(camera: Camera2D, geometry: RecursiveTransitionGeom
 }
 
 function getInnerCameraState(camera: Camera2D, geometry: RecursiveTransitionGeometry) {
-  return camera.getFitState(geometry.viewport, geometry.apertureBounds, {
+  const apertureContext = expandRect(geometry.apertureBounds, 2.2);
+
+  return camera.getFitState(geometry.viewport, apertureContext, {
     margin: Math.max(26, Math.min(geometry.viewport.width, geometry.viewport.height) * 0.1),
-    maxScale: 8,
+    maxScale: 5.5,
   });
 }
 
@@ -136,5 +138,17 @@ function interpolateRect(from: Rect2D, to: Rect2D, progress: number): Rect2D {
     y: lerp(from.y, to.y, progress),
     width: lerp(from.width, to.width, progress),
     height: lerp(from.height, to.height, progress),
+  };
+}
+
+function expandRect(rect: Rect2D, factor: number): Rect2D {
+  const nextWidth = rect.width * factor;
+  const nextHeight = rect.height * factor;
+
+  return {
+    x: rect.x + rect.width * 0.5 - nextWidth * 0.5,
+    y: rect.y + rect.height * 0.5 - nextHeight * 0.5,
+    width: nextWidth,
+    height: nextHeight,
   };
 }

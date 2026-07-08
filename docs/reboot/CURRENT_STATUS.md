@@ -1,7 +1,7 @@
 # Current Project Status
 
-Status: Stage 3A recursive space interaction prototype implemented and
-verified after the Stage 2 renderer foundation.
+Status: Stage 3A-Refinement recursive visual fidelity implemented and verified
+after the Stage 3A recursive space interaction prototype.
 
 The current workspace is runnable as a React/Vite/PixiJS v8 visual-spatial
 prototype. It intentionally contains no gameplay logic, movement system, levels,
@@ -11,16 +11,14 @@ board grid, undo/redo, or ECS implementation.
 
 - Current branch: `main`
 - Implementation files in the working tree: Stage 3A visual interaction
-  prototype only
+  prototype plus Stage 3A-Refinement renderer fidelity changes only
 - Required records in the working tree: present
 - Draft approval documents in the working tree:
   - `ARCHITECTURE.md`
   - `DESIGN_REFERENCE.md`
   - `IMPLEMENTATION_PLAN.md`
-- Approval status: approved through Stage 3A recursive space interaction
-  prototype only
-- Local cleanup state: reset cleanup and Stage 2 renderer foundation are staged
-  for the required main-branch publication step
+- Approval status: approved through Stage 3A-Refinement only
+- Local cleanup state: no generated build output retained; dev server stopped
 
 ## Preserved Records
 
@@ -44,7 +42,7 @@ failed round.
 Do not create gameplay logic, levels, board grids, movement systems, undo/redo,
 ECS implementation, or Stage 3B work.
 
-The current aligned action has been completed as Stage 2 renderer foundation:
+The current aligned action has been completed as Stage 3A-Refinement:
 
 - `package.json`
 - `vite.config.ts`
@@ -70,6 +68,9 @@ The current aligned action has been completed as Stage 2 renderer foundation:
 - `src/render/RecursiveTransitionRenderer.ts`
 - `src/runtime/InteractionPrototype.ts`
 - `docs/screenshots/stage3a-enter-transition.png`
+- `src/render/materials/worldMaterial.ts`
+- `src/render/materials/index.ts`
+- `docs/screenshots/stage3a-refined.png`
 
 ## Retained For Audit
 

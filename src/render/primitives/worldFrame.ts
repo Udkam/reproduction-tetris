@@ -1,5 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import type { Rect2D } from "../../projection/types";
+import { getInteriorRect, getWorldMaterialMetrics } from "../materials";
 import type { RenderPalette } from "../palette";
 
 export interface WorldFramePrimitive {
@@ -17,19 +18,18 @@ export function createWorldFrame(rect: Rect2D, palette: RenderPalette, depth: nu
   const contentLayer = new Container();
   const mask = new Graphics();
 
-  const shortSide = Math.min(rect.width, rect.height);
-  const inset = Math.max(depth === 0 ? 18 : 4, shortSide * (depth === 0 ? 0.12 : 0.08));
-  const bevel = Math.max(depth === 0 ? 8 : 2, shortSide * (depth === 0 ? 0.045 : 0.035));
-  const interiorRect = {
-    x: inset + bevel,
-    y: inset + bevel,
-    width: Math.max(1, rect.width - (inset + bevel) * 2),
-    height: Math.max(1, rect.height - (inset + bevel) * 2),
-  };
+  const metrics = getWorldMaterialMetrics(rect);
+  const inset = metrics.shellInset;
+  const bevel = metrics.bevel;
+  const interiorRect = getInteriorRect(rect, metrics);
 
-  frame.rect(14, 16, rect.width, rect.height).fill({ color: palette.shellShadow, alpha: 0.65 });
-  frame.roundRect(0, 0, rect.width, rect.height, 6).fill(palette.shell);
-  frame.roundRect(inset, inset, rect.width - inset * 2, rect.height - inset * 2, 20).fill(palette.shellDark);
+  frame
+    .roundRect(metrics.shadowOffset, metrics.shadowOffset * 1.15, rect.width, rect.height, metrics.shellRadius)
+    .fill({ color: palette.shellShadow, alpha: 0.62 });
+  frame.roundRect(0, 0, rect.width, rect.height, metrics.shellRadius).fill(palette.shell);
+  frame
+    .roundRect(inset, inset, rect.width - inset * 2, rect.height - inset * 2, metrics.trayRadius)
+    .fill(palette.shellDark);
   frame
     .poly([
       inset + bevel,
@@ -67,11 +67,14 @@ export function createWorldFrame(rect: Rect2D, palette: RenderPalette, depth: nu
     ])
     .fill(palette.rimBright);
   frame
-    .roundRect(interiorRect.x, interiorRect.y, interiorRect.width, interiorRect.height, 3)
+    .roundRect(interiorRect.x, interiorRect.y, interiorRect.width, interiorRect.height, metrics.interiorRadius)
     .fill(palette.interior);
+  frame
+    .roundRect(interiorRect.x, interiorRect.y, interiorRect.width, interiorRect.height * 0.38, metrics.interiorRadius)
+    .fill({ color: palette.interiorShade, alpha: 0.2 });
 
   mask
-    .roundRect(interiorRect.x, interiorRect.y, interiorRect.width, interiorRect.height, 3)
+    .roundRect(interiorRect.x, interiorRect.y, interiorRect.width, interiorRect.height, metrics.interiorRadius)
     .fill(0xffffff);
   mask.alpha = 0;
   contentLayer.mask = mask;
