@@ -1,7 +1,7 @@
 # Implementation Plan
 
-Status: approved implementation contract through Stage 3B recursive simulation
-core. Do not proceed to Stage 4 without review.
+Status: approved implementation contract through Stage 4 recursive gameplay
+kernel. Do not proceed to Stage 5 without review.
 
 ## Gate 0: Approval Required
 
@@ -12,18 +12,20 @@ Current allowed work:
 - Stage 3A recursive space interaction prototype.
 - Stage 3A-Refinement recursive visual fidelity.
 - Stage 3B recursive simulation core.
+- Stage 4 recursive gameplay kernel.
 - Browser/computer visual QA and screenshot evidence for Stage 2.
 - Browser/computer visual QA and screenshot evidence for Stage 3A.
 - Browser/computer visual QA and screenshot evidence for Stage 3A-Refinement.
 - Browser/computer visual QA and screenshot evidence for Stage 3B.
+- Browser/computer visual QA and screenshot evidence for Stage 4.
 
 Current forbidden work:
 
 - Renderer redesign.
 - React gameplay UI, DOM cells, or DOM entities.
 - Level systems or puzzle content.
-- Complete Sokoban push-chain implementation.
-- Proceeding to Stage 4 without explicit review.
+- Level packs, level editor, menus, polish UI, or large content.
+- Proceeding to Stage 5 without explicit review.
 
 ## Evidence Already Collected
 
@@ -126,7 +128,8 @@ Current state before Stage 3A approval:
 | Local visual output has been compared | No local output exists yet, so comparison is impossible. | Deferred until Stage 7 after implementation output exists. |
 | Approval has been granted | Stage 1, Stage 2, and Stage 3A approval messages have been recorded. | Ready for Stage 3A only. |
 
-The next missing decision is Stage 4 approval after Stage 3B core review.
+The next missing decision is Stage 5 approval after Stage 4 gameplay-kernel
+review.
 
 ## Approval Decision Record
 
@@ -135,7 +138,7 @@ entry from the user or a later agent records the exact approval message.
 
 Current decision:
 
-- Status: approved through Stage 3B recursive simulation core only.
+- Status: approved through Stage 4 recursive gameplay kernel only.
 - Stage 1 approval evidence: user message on 2026-07-07:
   `Approved for Stage 1 scaffold: ARCHITECTURE.md, DESIGN_REFERENCE.md, and IMPLEMENTATION_PLAN.md are accepted as the implementation contract.`
 - Stage 2 approval evidence: user-provided objective on 2026-07-07:
@@ -146,12 +149,14 @@ Current decision:
   `Implement Stage 3A-Refinement only, improving renderer visual fidelity. Do not proceed to Stage 3B.`
 - Stage 3B approval evidence: user-provided objective on 2026-07-08:
   `Proceed to Stage 3B: Recursive Simulation Core. Stage 3A-Refinement is approved.`
-- Allowed next action: Stage 3B recursive simulation core,
+- Stage 4 approval evidence: user-provided objective on 2026-07-08:
+  `Proceed with Stage 4: Recursive Gameplay Kernel. Stage 3B is approved.`
+- Allowed next action: Stage 4 recursive gameplay kernel,
   browser visual QA, screenshot evidence, commit, and main-branch publication.
 - Previous allowed action: Stage 2 renderer foundation, browser visual QA,
   screenshot evidence, commit, and main-branch publication.
-- Forbidden next action: renderer redesign, React gameplay UI, levels, complete
-  Sokoban push chains, movement puzzles, or Stage 4 work.
+- Forbidden next action: level packs, level editor, menus, polish UI, large
+  content, renderer redesign, React gameplay UI, or Stage 5 work.
 
 Approval can be recorded as:
 
@@ -368,30 +373,48 @@ Failure conditions:
 - Undo restores visuals without proving the core hash changed back.
 - The stage adds levels, UI, or complete Sokoban push-chain rules.
 
-## Stage 4: Projection And Recursive Rendering
+## Stage 4: Recursive Gameplay Kernel
 
-Goal: render canonical graph state into bounded recursive visual projections.
+Goal: build the gameplay foundation of a Patrick's Parabox-style recursive
+puzzle engine while preserving the existing renderer architecture.
 
-Planned modules:
+Implemented modules/artifacts:
 
-- `src/projection/worldProjection.ts`
-- `src/projection/cyclePolicy.ts`
-- `src/render/WorldRenderer.ts`
-- `src/render/RecursivePreviewRenderer.ts`
-- `src/render/EntityRenderer.ts`
+- `docs/recursive-box-lab/GAME_RULES.md`
+- `src/core/collision.ts`
+- `src/core/movementResolver.ts`
+- `src/core/recursiveMovement.ts`
+- `src/core/systems.ts`
+- `src/core/commands.ts`
+- `src/core/reducer.ts`
+- `src/core/recursiveTransitions.ts`
+- `src/core/worldGraph.ts`
+- `src/core/types.ts`
+- `src/core/core.test.ts`
+- `src/projection/simulationProjection.ts`
+- `src/projection/simulationProjection.test.ts`
+- `docs/qa/STAGE4_PLAYABLE_CORE.md`
+- `docs/screenshots/stage4-playable-core.png`
 
 Acceptance:
 
-- Active world and nested box previews render in one canvas.
-- Projection depth is configurable.
-- Cyclic graph references are bounded in rendering, not expanded into state.
-- Parent context remains visible when entering/exiting.
+- Movement resolver handles normal moves, blocked moves, single-box pushes, and
+  multi-box push chains.
+- Recursive movement handles enter, exit, and moving a pushable container entity
+  while preserving its contained world graph reference.
+- Core emits transition events and stores no renderer, camera, animation, DOM,
+  CSS, viewport, or timing state.
+- Undo/redo restores canonical positions, focus path, active world, and hashes.
+- Existing Pixi renderer consumes a projection generated from Stage 4
+  `SimulationState`.
 
 Failure conditions:
 
-- A nested preview is a separate mutable game state.
-- Increasing projection depth changes simulation results.
-- Parent context disappears during every enter/exit transition.
+- Stage 4 is simplified into a flat normal Sokoban engine.
+- Renderer imports or Pixi objects enter `src/core`.
+- Gameplay entities are rendered as React DOM nodes.
+- The stage adds level packs, a level editor, menus, polish UI, or large
+  content.
 
 ## Stage 5: Input, Commands, And Game Feel
 

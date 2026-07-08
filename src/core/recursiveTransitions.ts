@@ -1,7 +1,9 @@
 import type { EnterCommand, ExitCommand } from "./commands";
 import { requireContainerComponent, requirePosition, setEntityPosition } from "./components";
+import { getSolidOccupantsAt } from "./collision";
+import { nextPosition } from "./grid";
 import type { SimulationState, TransitionEvent } from "./types";
-import { assertValidSimulationState, chooseContainerEntrance } from "./worldGraph";
+import { assertValidSimulationState, chooseContainerEntrance, isPositionInsideWorld } from "./worldGraph";
 
 export interface RecursiveTransitionResolution {
   readonly accepted: boolean;
@@ -47,7 +49,7 @@ export function enterContainer(state: SimulationState, command: EnterCommand): R
     state: nextState,
     events: [
       {
-        type: "enter",
+        type: "enterWorld",
         actorId,
         containerId: command.containerId,
         fromWorldId: actorPosition.worldId,
@@ -73,6 +75,8 @@ export function exitContainer(state: SimulationState, command: ExitCommand): Rec
 
   const containerPosition = requirePosition(state, command.containerId);
   const container = requireContainerComponent(state, command.containerId);
+  const exitDirection = Object.values(container.entrances).find(Boolean)?.facing ?? "down";
+  const exitPosition = nextPosition(containerPosition, exitDirection);
 
   if (container.innerWorldId !== actorPosition.worldId || container.innerWorldId !== state.activeWorldId) {
     return {
@@ -83,6 +87,41 @@ export function exitContainer(state: SimulationState, command: ExitCommand): Rec
     };
   }
 
+  if (!isPositionInsideWorld(state, exitPosition)) {
+    return {
+      accepted: false,
+      state,
+      events: [
+        {
+          type: "blocked",
+          actorId,
+          direction: exitDirection,
+          attemptedPosition: exitPosition,
+          reason: "exit-out-of-bounds",
+        },
+      ],
+      reason: "exit-out-of-bounds",
+    };
+  }
+
+  const blockers = getSolidOccupantsAt(state, exitPosition, actorId);
+  if (blockers.length > 0) {
+    return {
+      accepted: false,
+      state,
+      events: [
+        {
+          type: "blocked",
+          actorId,
+          direction: exitDirection,
+          attemptedPosition: exitPosition,
+          reason: "exit-blocked",
+        },
+      ],
+      reason: "exit-blocked",
+    };
+  }
+
   const nextState = setEntityPosition(
     {
       ...state,
@@ -90,11 +129,7 @@ export function exitContainer(state: SimulationState, command: ExitCommand): Rec
       focusPath: state.focusPath.slice(0, -1),
     },
     actorId,
-    {
-      worldId: containerPosition.worldId,
-      x: containerPosition.x,
-      y: containerPosition.y,
-    },
+    exitPosition,
   );
 
   assertValidSimulationState(nextState);
@@ -104,7 +139,7 @@ export function exitContainer(state: SimulationState, command: ExitCommand): Rec
     state: nextState,
     events: [
       {
-        type: "exit",
+        type: "exitWorld",
         actorId,
         containerId: command.containerId,
         fromWorldId: actorPosition.worldId,

@@ -1,7 +1,7 @@
 import type { SimulationCommand } from "./commands";
 import { commitStateChange, redoSession, resetSession, type SimulationSession, undoSession } from "./history";
-import { moveActor } from "./movement";
-import { enterContainer, exitContainer } from "./recursiveTransitions";
+import { resolveMovement } from "./movementResolver";
+import { enterContainer, exitContainer } from "./recursiveMovement";
 import type { TransitionEvent } from "./types";
 
 export interface CommandDispatchResult {
@@ -44,7 +44,7 @@ export function dispatchCommand(session: SimulationSession, command: SimulationC
 
   const resolution =
     command.type === "move"
-      ? moveActor(session.present, command)
+      ? resolveMovement(session.present, command)
       : command.type === "enter"
         ? enterContainer(session.present, command)
         : exitContainer(session.present, command);

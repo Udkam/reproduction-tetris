@@ -92,14 +92,31 @@ export type TransitionEvent =
       readonly to: GridPosition;
     }
   | {
-      readonly type: "enter";
+      readonly type: "push";
+      readonly actorId: EntityId;
+      readonly direction: Direction;
+      readonly pushed: readonly {
+        readonly entityId: EntityId;
+        readonly from: GridPosition;
+        readonly to: GridPosition;
+      }[];
+    }
+  | {
+      readonly type: "blocked";
+      readonly actorId: EntityId;
+      readonly direction?: Direction;
+      readonly attemptedPosition?: GridPosition;
+      readonly reason: string;
+    }
+  | {
+      readonly type: "enterWorld";
       readonly actorId: EntityId;
       readonly containerId: EntityId;
       readonly fromWorldId: WorldId;
       readonly toWorldId: WorldId;
     }
   | {
-      readonly type: "exit";
+      readonly type: "exitWorld";
       readonly actorId: EntityId;
       readonly containerId: EntityId;
       readonly fromWorldId: WorldId;

@@ -75,6 +75,7 @@ export function assertValidSimulationState(state: SimulationState) {
 
   assertComponentEntityReferences(state);
   assertPositionReferences(state);
+  assertSolidOccupancy(state);
   assertContainerReferences(state);
   assertFocusPath(state);
 }
@@ -109,6 +110,22 @@ export function getEntitiesInWorld(state: SimulationState, worldId: WorldId): re
   return Object.values(state.entities)
     .filter((entity) => state.components.positions[entity.id]?.worldId === worldId)
     .sort((left, right) => left.id.localeCompare(right.id));
+}
+
+export function getWorldParentContainers(
+  state: SimulationState,
+  worldId: WorldId,
+): readonly { readonly entityId: EntityId; readonly parentWorldId: WorldId }[] {
+  return Object.entries(state.components.containers)
+    .flatMap(([entityId, container]) => {
+      if (container.innerWorldId !== worldId) {
+        return [];
+      }
+
+      const position = getPosition(state, entityId);
+      return position ? [{ entityId, parentWorldId: position.worldId }] : [];
+    })
+    .sort((left, right) => left.entityId.localeCompare(right.entityId));
 }
 
 export function findEntityAt(
@@ -203,14 +220,15 @@ export function createStage3BSimulationState(): SimulationState {
       },
       pushables: {
         "box-a": { pushable: true },
+        "container-b": { pushable: true },
         "box-c": { pushable: true },
       },
       players: {
         "player-a": { controlled: true },
       },
       goals: {
-        "goal-a": {},
-        "goal-c": {},
+        "goal-a": { acceptsVisualKind: "box" },
+        "goal-c": { acceptsVisualKind: "box" },
       },
       visuals: {
         "player-a": { kind: "player", width: 1.25, height: 1.25, offsetX: 0.1, offsetY: 0.1 },
@@ -239,6 +257,28 @@ function assertPositionReferences(state: SimulationState) {
     if (!isPositionInsideWorld(state, position)) {
       throw new Error(`Entity "${entityId}" has invalid position in world "${position.worldId}".`);
     }
+  }
+}
+
+function assertSolidOccupancy(state: SimulationState) {
+  const occupied = new Map<string, EntityId>();
+
+  for (const entityId of Object.keys(state.components.solids)) {
+    const position = getPosition(state, entityId);
+    if (!position) {
+      continue;
+    }
+
+    const key = `${position.worldId}:${position.x}:${position.y}`;
+    const existingEntityId = occupied.get(key);
+
+    if (existingEntityId) {
+      throw new Error(
+        `Impossible position: solid entities "${existingEntityId}" and "${entityId}" overlap at "${key}".`,
+      );
+    }
+
+    occupied.set(key, entityId);
   }
 }
 

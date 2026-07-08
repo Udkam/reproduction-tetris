@@ -1,4 +1,5 @@
 import { getContainerComponent, getPosition, getVisualComponent } from "../core/components";
+import { createStage4PlayableCoreState } from "../core/systems";
 import type { SimulationState } from "../core/types";
 import { createStage3BSimulationState, getEntitiesInWorld } from "../core/worldGraph";
 import type { PrototypeEntity, PrototypeWorldGraph, WorldProjection } from "./types";
@@ -10,6 +11,10 @@ export function createProjectionFromSimulationState(state: SimulationState, maxD
 
 export function createStage3BSimulationProjection(maxDepth = 2): WorldProjection {
   return createProjectionFromSimulationState(createStage3BSimulationState(), maxDepth);
+}
+
+export function createStage4PlayableCoreProjection(maxDepth = 2): WorldProjection {
+  return createProjectionFromSimulationState(createStage4PlayableCoreState(), maxDepth);
 }
 
 export function createPrototypeWorldGraphFromSimulationState(state: SimulationState): PrototypeWorldGraph {
