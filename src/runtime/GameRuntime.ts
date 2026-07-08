@@ -1,4 +1,4 @@
-import { createRecursiveInteractionProjection } from "../projection/worldProjection";
+import { createStage3BSimulationProjection } from "../projection/simulationProjection";
 import { PixiApp } from "../render/PixiApp";
 import { InteractionPrototype } from "./InteractionPrototype";
 
@@ -22,7 +22,7 @@ export class GameRuntime {
     }
 
     this.pixiApp = pixiApp;
-    this.pixiApp.render(createRecursiveInteractionProjection());
+    this.pixiApp.render(createStage3BSimulationProjection());
     this.interactionPrototype = new InteractionPrototype({
       onToggleRecursiveSpace: () => this.pixiApp?.toggleRecursiveTransition(),
     });

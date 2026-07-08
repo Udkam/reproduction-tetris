@@ -1,7 +1,7 @@
 # Implementation Plan
 
-Status: approved implementation contract through Stage 3A-Refinement recursive
-visual fidelity. Do not proceed to Stage 3B without review.
+Status: approved implementation contract through Stage 3B recursive simulation
+core. Do not proceed to Stage 4 without review.
 
 ## Gate 0: Approval Required
 
@@ -11,16 +11,19 @@ Current allowed work:
 - Stage 2 PixiJS renderer foundation.
 - Stage 3A recursive space interaction prototype.
 - Stage 3A-Refinement recursive visual fidelity.
+- Stage 3B recursive simulation core.
 - Browser/computer visual QA and screenshot evidence for Stage 2.
 - Browser/computer visual QA and screenshot evidence for Stage 3A.
 - Browser/computer visual QA and screenshot evidence for Stage 3A-Refinement.
+- Browser/computer visual QA and screenshot evidence for Stage 3B.
 
 Current forbidden work:
 
-- Core gameplay logic.
-- Board grid or level systems.
-- Movement system, undo/redo, or ECS implementation.
-- Proceeding to Stage 3B without explicit review.
+- Renderer redesign.
+- React gameplay UI, DOM cells, or DOM entities.
+- Level systems or puzzle content.
+- Complete Sokoban push-chain implementation.
+- Proceeding to Stage 4 without explicit review.
 
 ## Evidence Already Collected
 
@@ -123,8 +126,7 @@ Current state before Stage 3A approval:
 | Local visual output has been compared | No local output exists yet, so comparison is impossible. | Deferred until Stage 7 after implementation output exists. |
 | Approval has been granted | Stage 1, Stage 2, and Stage 3A approval messages have been recorded. | Ready for Stage 3A only. |
 
-The next missing decision is Stage 3B approval after Stage 3A-Refinement visual
-gate review.
+The next missing decision is Stage 4 approval after Stage 3B core review.
 
 ## Approval Decision Record
 
@@ -133,7 +135,7 @@ entry from the user or a later agent records the exact approval message.
 
 Current decision:
 
-- Status: approved through Stage 3A-Refinement recursive visual fidelity only.
+- Status: approved through Stage 3B recursive simulation core only.
 - Stage 1 approval evidence: user message on 2026-07-07:
   `Approved for Stage 1 scaffold: ARCHITECTURE.md, DESIGN_REFERENCE.md, and IMPLEMENTATION_PLAN.md are accepted as the implementation contract.`
 - Stage 2 approval evidence: user-provided objective on 2026-07-07:
@@ -142,12 +144,14 @@ Current decision:
   `Proceed with Stage 3A: Recursive Space Interaction Prototype. Stage 2 renderer foundation is approved.`
 - Stage 3A-Refinement approval evidence: user-provided objective on 2026-07-08:
   `Implement Stage 3A-Refinement only, improving renderer visual fidelity. Do not proceed to Stage 3B.`
-- Allowed next action: Stage 3A-Refinement recursive visual fidelity,
+- Stage 3B approval evidence: user-provided objective on 2026-07-08:
+  `Proceed to Stage 3B: Recursive Simulation Core. Stage 3A-Refinement is approved.`
+- Allowed next action: Stage 3B recursive simulation core,
   browser visual QA, screenshot evidence, commit, and main-branch publication.
 - Previous allowed action: Stage 2 renderer foundation, browser visual QA,
   screenshot evidence, commit, and main-branch publication.
-- Forbidden next action: core gameplay logic, board grids, levels, movement,
-  undo/redo, ECS implementation, or Stage 3B work.
+- Forbidden next action: renderer redesign, React gameplay UI, levels, complete
+  Sokoban push chains, movement puzzles, or Stage 4 work.
 
 Approval can be recorded as:
 
@@ -336,6 +340,8 @@ Planned modules:
 - `src/core/types.ts`
 - `src/core/worldGraph.ts`
 - `src/core/components.ts`
+- `src/core/commands.ts`
+- `src/core/reducer.ts`
 - `src/core/movement.ts`
 - `src/core/recursiveTransitions.ts`
 - `src/core/history.ts`
@@ -344,10 +350,14 @@ Planned modules:
 
 Acceptance:
 
-- Unit tests cover movement, push chains, blocked moves, enter/exit, push-in,
-  push-out, parent updates, undo, redo, reset, and win checks.
+- Unit tests cover world graph creation, entity lookup, container references,
+  enter/exit state changes, invalid recursive reference rejection, and
+  deterministic hashing.
 - Core has no React or Pixi imports.
-- Failed moves do not mutate state or history.
+- History records commands, previous state hashes, and next state hashes without
+  renderer state.
+- Existing renderer can consume a projection generated from a simulation
+  snapshot.
 
 Failure conditions:
 
@@ -356,6 +366,7 @@ Failure conditions:
 - Recursive containment is represented by deep-cloning worlds instead of graph
   references.
 - Undo restores visuals without proving the core hash changed back.
+- The stage adds levels, UI, or complete Sokoban push-chain rules.
 
 ## Stage 4: Projection And Recursive Rendering
 

@@ -1,23 +1,24 @@
 # Current Project Status
 
-Status: Stage 3A-Refinement recursive visual fidelity implemented and verified
-after the Stage 3A recursive space interaction prototype.
+Status: Stage 3B recursive simulation core implemented and verified after the
+Stage 3A-Refinement visual fidelity pass.
 
 The current workspace is runnable as a React/Vite/PixiJS v8 visual-spatial
-prototype. It intentionally contains no gameplay logic, movement system, levels,
-board grid, undo/redo, or ECS implementation.
+prototype backed by a deterministic TypeScript simulation snapshot. It
+intentionally contains no React gameplay UI, levels, puzzle content, complete
+Sokoban push-chain implementation, or renderer redesign.
 
 ## Current Workspace
 
 - Current branch: `main`
-- Implementation files in the working tree: Stage 3A visual interaction
-  prototype plus Stage 3A-Refinement renderer fidelity changes only
+- Implementation files in the working tree: Stage 3B simulation core plus prior
+  renderer/prototype stages
 - Required records in the working tree: present
 - Draft approval documents in the working tree:
   - `ARCHITECTURE.md`
   - `DESIGN_REFERENCE.md`
   - `IMPLEMENTATION_PLAN.md`
-- Approval status: approved through Stage 3A-Refinement only
+- Approval status: approved through Stage 3B only
 - Local cleanup state: no generated build output retained; dev server stopped
 
 ## Preserved Records
@@ -39,10 +40,11 @@ failed round.
 
 ## Current Gate
 
-Do not create gameplay logic, levels, board grids, movement systems, undo/redo,
-ECS implementation, or Stage 3B work.
+Do not extend beyond the Stage 3B core into React gameplay UI, levels, board
+grids, complete Sokoban push-chain rules, puzzle content, renderer redesign, or
+Stage 4 work without explicit review.
 
-The current aligned action has been completed as Stage 3A-Refinement:
+The current aligned action has been completed as Stage 3B:
 
 - `package.json`
 - `vite.config.ts`
@@ -71,6 +73,20 @@ The current aligned action has been completed as Stage 3A-Refinement:
 - `src/render/materials/worldMaterial.ts`
 - `src/render/materials/index.ts`
 - `docs/screenshots/stage3a-refined.png`
+- `src/core/types.ts`
+- `src/core/worldGraph.ts`
+- `src/core/components.ts`
+- `src/core/commands.ts`
+- `src/core/reducer.ts`
+- `src/core/movement.ts`
+- `src/core/recursiveTransitions.ts`
+- `src/core/history.ts`
+- `src/core/hash.ts`
+- `src/core/win.ts`
+- `src/core/core.test.ts`
+- `src/projection/simulationProjection.ts`
+- `docs/qa/STAGE3B_CORE.md`
+- `docs/screenshots/stage3b-core-no-ui.png`
 
 ## Retained For Audit
 
