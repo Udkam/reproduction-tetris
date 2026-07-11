@@ -240,3 +240,41 @@ Coordination consequence:
   complete.”
 - No percentage or stage-completion claim may be inferred from existing Stage
   numbers, green unit tests, or a nonblank screenshot.
+
+## 2026-07-11 - R1 contract accepted and implementation remains frozen
+
+Accepted documentation chain:
+
+- Initial source candidate:
+  `87dfa4517ca668e09e97161405b39949939f2252`.
+- Corrected source candidate after the independent QA conditional rejection:
+  `d834f4350fe760e8f2997f0c246fc80e4fe0b69e`.
+- Independent QA acceptance source:
+  `dd8aa423035e6ca38f9d2f50f90aa4bb0d334826`.
+- Integrated on `main` as:
+  - `c4eef9f docs: freeze R1 recursive core contract`;
+  - `1d710e4 docs: clarify R1 command outcomes`;
+  - `8a794b1 docs(qa): accept corrected R1 contract`.
+
+Frozen R1 contract outcomes:
+
+- `Step(direction)` has deterministic port selection, complete rule
+  enablement/priority validation, and a total terminal fallback.
+- Step and non-Step rejected-command attempts/events have distinct,
+  internally consistent invariants.
+- Exit selection uses resolved world and cell coordinates; duplicate inner
+  landings are rejected deterministically.
+- `cycleMode: "forbid"` covers the complete containment graph, including
+  unreachable components.
+- The fixed xorshift32 1,000-case stress protocol and the disjoint C1/V1
+  ownership boundaries are documented.
+
+Gate decision:
+
+- R1 is accepted as a documentation-only contract freeze.
+- This acceptance does not authorize C1, V1, production code, Stage 6,
+  release, level authoring, or frontend implementation.
+- All implementation work remains stopped until a later explicit user
+  development instruction and a new bounded coordinator authorization.
+- Overall project completion remains below 10% relative to the intended
+  high-fidelity playable target.
