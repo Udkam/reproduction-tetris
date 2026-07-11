@@ -183,7 +183,9 @@ Explicitly excluded:
 Owner: gameplay rules/engine task
 `019f4e82-7cb8-73c1-b4a1-d333273b359f`.
 
-Status: active on integrated base `cbfa5e6`.
+Status: active on the current pushed `origin/main`; the accepted I1 integration
+checkpoint begins at `cbfa5e6` and the coordinator's C1 ownership update is
+part of the required implementation base.
 
 Independent reviewer: QA task
 `019f4e80-1462-7b32-8146-19ded692836c`.
