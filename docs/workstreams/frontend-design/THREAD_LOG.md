@@ -243,3 +243,65 @@ C1. These are contract corrections only; they do not authorize V1.
   only.
 - Commit the log-only review, report its SHA to the coordinator, and stop.
 - Do not begin C1, V1, V2, V3, or V4 from this review.
+
+## 2026-07-11 — Corrected D0 Re-review
+
+- Review timestamp: `2026-07-11 16:24:22 +08:00`
+- Reviewer thread ID: `019f4e80-145a-7520-81e1-41a45b2bec13`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Candidate range reviewed:
+  `e07808364febb2c6607fb6d962bf53fddd6c2cf3..ade2678fbe187b8950f1635b103807a900acc73a`
+- Corrected candidate HEAD: `ade2678fbe187b8950f1635b103807a900acc73a`
+- Scope: the same five coordinator/root documentation paths only. No product,
+  package, root changelog, merge, rebase, or push change was made here.
+
+### Verdict: ACCEPT
+
+The corrected D0 contract resolves every condition in frontend review
+`3e1ed2ccc82ec933fe72729df2d09b6fbde2dda9`.
+
+1. `CURRENT_TASK.md` V1 now explicitly owns
+   `src/animation/AnimationSystem.ts`, `Timeline.ts`, and
+   `TransitionTimeline.ts`, with their directly corresponding tests. That is
+   sufficient to replace the current canonical-entity-ID progress map with the
+   accepted R1 occurrence-address key without modifying `src/core/**`.
+2. V1 now specifies one bounded policy for every `PublicCommand`: one-slot
+   FIFO buffering for the first command during a visual transaction,
+   deterministic `input-buffer-full` local rejection for later commands,
+   exact-once post-barrier dispatch, the same rule for Step/Undo/Redo/Reset,
+   non-reordering cancellation, and destroy-time clearing without dispatch.
+   Its browser captures use normalized visual-transaction progress for start,
+   midpoint, and settled evidence rather than wall-clock guesses.
+3. `AGENTS.md` now scopes frontend P2 gates by their owning slice. V1 is a
+   desktop continuity/occurrence-lock candidate and cannot claim retained
+   scene-graph performance, DPR/mobile, reduced-motion, pointer/touch,
+   accessibility, or checked-in capture automation. V3 owns retained graph and
+   performance acceptance; V4 owns the deferred responsive/accessibility
+   gates. The documented `min(window.devicePixelRatio, 2)` cap is frozen for
+   V4 unless a later measured contract replaces it.
+4. I1's frontend consumer-half paths are sufficient for the frozen public
+   bridge. Current legacy imports in `src/runtime/**` are limited to
+   `EventPipeline.ts`, `GameRuntime.ts`, `InteractionPrototype.ts`, and their
+   tests; the only animation consumer of legacy event types is
+   `transitions.ts`/its test. `AudioManager.ts` consumes only the renderer-side
+   `AudioCue` type, so it does not need to participate in the public
+   command/result/event migration.
+
+### Evidence and checks
+
+- Read the corrected candidate itself at `ade2678`: `AGENTS.md`,
+  `CURRENT_TASK.md`, `DESIGN.md`, `docs/reboot/CURRENT_STATUS.md`, and the
+  coordinator log.
+- Compared the complete documentation diff from `e078083` to `ade2678`.
+- Rechecked the accepted R1 C1/V1 ownership boundary and inspected current
+  runtime/animation imports to validate I1 consumer coverage.
+- `git show --check ade2678` and range whitespace checks passed.
+- The candidate changes exactly the declared documentation paths.
+
+### Handoff
+
+- This ACCEPT is for D0 documentation only. It does not authorize I1, C1, V1,
+  V2, V3, V4, production code, level content, release, or a target-completion
+  claim.
+- Changed file for this review: `docs/workstreams/frontend-design/THREAD_LOG.md`
+  only. Commit and report its SHA to the coordinator, then stop.
