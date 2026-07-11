@@ -128,3 +128,51 @@
 - The worktree contains proposal/log artifacts only and must not be rebased or
   merged with coordinator commit ab58d75 during this audit phase.
 - Await coordinator approval before implementing any production or level slice.
+
+## 2026-07-11 — Coordinator P0 Decision Consumed
+
+### Coordination Evidence Consumed
+
+- Coordinator decision revision 715b039:
+  - docs/workstreams/coordinator/THREAD_LOG.md
+  - docs/workstreams/qa-approval/QA_APPROVAL_RUBRIC.md
+
+### Decision Recorded
+
+- Stage 6 is rejected for release.
+- The accepted QA baseline keeps all rules/runtime, frontend, level
+  serialization, and level-content implementation frozen.
+- Only the Gameplay Rules and Engine workstream has a bounded P0 authorization,
+  limited to package-lock.json and its own THREAD_LOG.md. This workstream has
+  no authorization to modify that candidate.
+- The level-design proposal remains provisional and blocked on accepted
+  gameplay semantics, schema validation/replay, frontend staging, and
+  independent QA by candidate SHA.
+
+### Changed Files
+
+- docs/workstreams/level-design/THREAD_LOG.md
+
+### Commands And Tests
+
+- git show 715b039:docs/workstreams/coordinator/THREAD_LOG.md: completed.
+- git show 715b039:docs/workstreams/qa-approval/QA_APPROVAL_RUBRIC.md:
+  completed.
+- No production, level, renderer, frontend, package, or lockfile command was
+  run for this documentation acknowledgment.
+
+### Screenshots
+
+- None.
+
+### Dependencies And Blockers
+
+- P0 lockfile reproducibility must close before any broader candidate can be
+  accepted.
+- No level-design follow-up is authorized until the coordinator and independent
+  QA open a bounded slice.
+
+### Handoff Notes
+
+- Do not rebase or merge coordinator main revision 715b039 into this isolated
+  worktree during the current audit turn.
