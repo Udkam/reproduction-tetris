@@ -437,3 +437,73 @@ the chain is executable without contradictory authority.
 - No executable tests were run: this is a documentation-only static re-review.
 - Commit: pending one log-only review commit. Report its SHA to the coordinator
   and stop. I1/C1 code remains unauthorized.
+
+## 2026-07-11 - Final D0/I1 stop-condition re-review (conditional reject)
+
+- Reviewer thread ID: `019f4e82-7cb8-73c1-b4a1-d333273b359f`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Candidate reviewed read-only: `b96d261641d41800df9101efe634718db8b65d80`, a
+  direct child of `ade2678`.
+- Candidate scope verified: only `AGENTS.md` and the coordinator workstream
+  log changed. No production, package, root-changelog, merge, rebase, or push
+  change was made.
+
+### Verdict
+
+**CONDITIONAL REJECT.** The new wording correctly removes the absolute stop
+that blocked I1, but it creates a generic exception: "an explicit,
+coordinator-authorized shared migration contract such as the active I1 linear
+bridge" does not itself require future bridges to be named in
+`CURRENT_TASK.md`, have exact non-overlapping/linear ownership, receive
+full-chain QA, or prohibit partial integration. Those safeguards are currently
+written only for I1, so the exception remains broader than the accepted R1
+boundary permits.
+
+### Verification and remaining blocker
+
+- `b96d261` changes the stop condition from an unconditional C1/V1
+  cross-boundary stop to a stop for changes without an explicit
+  coordinator-authorized shared migration contract, and points to I1 as an
+  example. This resolves the direct textual contradiction identified in
+  `31811b0`: the active I1 can now be a permitted exception.
+- I1 itself remains correctly bounded in `CURRENT_TASK.md`: named gameplay,
+  frontend, and QA owners; exact disjoint path lists; gameplay-first then
+  frontend-on-that-SHA linear commits; full-chain QA; and no partial
+  integration. Its frozen bridge still requires runtime-facing
+  `PublicCommand`/`CommandResult`/`SemanticEvent`, forbids directionless
+  `Enter`/`Exit` conversion and fixture/port/container selection, and makes C1
+  delete the bridge without a second public-type migration.
+- The current source tree is unchanged from the prior I1 review. I1's path
+  lists still cover every concrete current public-interface consumer:
+  runtime `EventPipeline`/`GameRuntime`/`InteractionPrototype` and tests,
+  animation `transitions` and its test, and gameplay `systems.ts` plus the
+  adapter/core paths. No additional compile dependency is missing; audio,
+  projection, and render do not need edits for this interface-only bridge.
+- However, `AGENTS.md` now permits any future "shared migration contract" that
+  is merely explicit and coordinator-authorized. It does not say that a future
+  exception must be individually named in `CURRENT_TASK.md` with named owners,
+  exact paths, a linear ordered commit chain, full-chain independent QA, and
+  an explicit no-partial-integration rule. "Such as I1" is illustrative, not a
+  restrictive "only if" condition; it is therefore a generic loophole.
+
+### Required final D0 correction
+
+- Replace the stop-condition exception with a restrictive condition: a public
+  type crossing remains blocked **unless** the active `CURRENT_TASK.md`
+  individually names the coordinator-authorized shared migration, its named
+  owners and exact non-overlapping paths, mandatory linear handoff order,
+  full-chain independent QA, and no-partial-integration rule. State that I1 is
+  the sole currently active instance and that any future instance requires a
+  new coordinator authorization and those same fields. This preserves the
+  freeze while allowing exactly the audited I1 chain.
+
+### Commands and handoff
+
+- Read the candidate itself with `git show b96d261`, compared it to `ade2678`,
+  and ran `git diff --check ade2678 b96d261`; the check passed.
+- Reused the prior candidate-tree `git grep` consumer inventory because this
+  direct child changes only documentation, then rechecked I1's exact path
+  lists against that inventory.
+- No executable tests were run: this is a documentation-only authority review.
+- Commit: pending one log-only review commit. Report its SHA to the coordinator
+  and stop. I1/C1 code remains unauthorized.
