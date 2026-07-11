@@ -247,9 +247,18 @@ Stop and return to the coordinator when:
 
 - required authority, file ownership, or contract is missing;
 - the candidate needs a path owned by another active slice;
-- a public type change crosses workstream boundaries without an explicit,
-  coordinator-authorized shared migration contract such as the active I1
-  linear bridge in `CURRENT_TASK.md`;
+- a public type change crosses workstream boundaries unless every condition
+  below is already frozen before the first file change:
+  1. `CURRENT_TASK.md` names one shared migration slice and the exact public
+     types being migrated;
+  2. the coordinator names each owner, exact disjoint paths, and linear commit
+     order;
+  3. the contract forbids partial integration and requires the complete linear
+     chain to pass whole-repository verification;
+  4. the named independent QA task accepts the complete chain by SHA.
+  The only currently authorized exception is I1 in `CURRENT_TASK.md`. Any
+  future shared bridge requires a fresh explicit coordinator authorization and
+  `CURRENT_TASK.md` update before work begins;
 - official/copied assets or level data would be required;
 - a clean install, deterministic test, browser capture, or required tool cannot
   be reproduced;

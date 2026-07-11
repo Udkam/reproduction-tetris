@@ -338,8 +338,11 @@ Coordinator correction:
 - C1 then implements the frozen R1 semantics and removes the temporary adapter.
 - V1 owns the required animation files and uses a one-slot FIFO input buffer
   with deterministic overflow, completion, cancellation, and destroy behavior.
-- The general cross-boundary stop condition explicitly permits only a named,
-  coordinator-authorized shared migration contract such as I1; unplanned public
-  type crossings still stop.
+- The general cross-boundary stop condition permits only I1 at present. It now
+  requires all four facts before any shared migration starts: named public
+  types in `CURRENT_TASK.md`, named owners with disjoint paths and linear order,
+  no partial integration plus whole-repository verification, and independent
+  QA acceptance of the complete chain. Any future bridge needs a fresh explicit
+  authorization and task-contract update.
 - No production work begins until the corrected D0 candidate is independently
   accepted and pushed.
