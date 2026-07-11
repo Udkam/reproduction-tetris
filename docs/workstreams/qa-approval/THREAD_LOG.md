@@ -223,3 +223,160 @@
 - Follow-up commit hash: pending creation; report it with this path to the
   coordinator after committing. No push, merge, rebase, product change, or root
   `docs/logs/CHANGELOG.md` edit is authorized.
+
+## Entry: independent proposal review — frontend visual redesign
+
+- Workstream thread ID: `019f4e80-1462-7b32-8146-19ded692836c`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Timestamp: 2026-07-11 Asia/Shanghai
+- QA parent revision: `b10537e90e869153be0d86d08e9eddddf5356db3`.
+- Coordinator decision remains `715b039`: Stage 6 is rejected; P0 remains
+  open; only gameplay owns the package-lock-plus-log P0 candidate. This review
+  neither changes nor broadens that authorization.
+
+### Candidate chain consumed
+
+1. `2ac2ed058af4ac49d7f5821f64d416b608ed845a`
+2. `be0b9e79bb6e84683b4c55b9f1bfad48ac91ca45`
+
+Reviewed paths at the final revision:
+
+- `docs/workstreams/frontend-design/VISUAL_REDESIGN_PROPOSAL.md`
+- `docs/workstreams/frontend-design/THREAD_LOG.md`
+
+### Scope and evidence review
+
+- The first commit adds only the two frontend workstream documents; the second
+  changes only its handoff log. `git diff --check` and `git show --check` pass
+  for both. No source, package, asset, screenshot, root changelog, generated
+  output, branch, or remote change is present.
+- Baseline source independently supports the P1 analysis: renderer animation
+  currently redraws full layers during active frames, projection interpolation
+  keys occurrences by canonical entity ID, runtime/transition geometry contain
+  `container-b` paths, and the animation-plan completion can precede the
+  independent recursive camera timeline. The live middle-frame observation is
+  therefore credible as a defect report, but is not acceptance evidence until
+  a reproducible capture harness records the candidate SHA and timing.
+- The design correctly retains the PixiJS canvas, deterministic core/projection
+  separation, shared metrics, masked recursive child worlds, command-driven
+  motion, and original procedural assets. Its partial reboot of composition,
+  material, aperture readability, mobile behavior, and allocation strategy is
+  consistent with the QA architecture gate.
+- Official press material confirms the high-level recursive mechanism and
+  publicly provides screenshots, but this candidate stores no reference asset
+  or copied layout. The proposal correctly treats references as temporary
+  comparison evidence rather than repository content.
+
+### QA verdict
+
+**Accepted as a frontend planning direction only; not an implementation or
+release approval.** The proposal correctly makes addressed projection
+occurrence identity and one combined entity/camera/portal command lock P1
+prerequisites, keeps P0 open, and explicitly refuses to infer mobile success
+from the failed viewport override.
+
+### Mandatory conditions before a frontend implementation slice
+
+1. P0 must first be independently accepted from the authorized clean-lockfile
+   candidate; no temporary installation, prior screenshot, or cached browser
+   session substitutes for a clean `npm ci` gate.
+2. V1 must consume a QA-accepted gameplay address/event/interaction contract,
+   not only the current rules proposal. It must remove every `container-b`
+   branch and apply a single command lock through entity, camera, and portal
+   completion/cancellation.
+3. The transition defect must have a deterministic regression harness that
+   captures initial, 50%, and settled move/enter/exit frames from one exact
+   command trace. Every capture must retain the relevant world frame and record
+   candidate SHA, dimensions/DPR, canvas/DOM count, console events, and
+   nonblank/palette metrics.
+4. Mobile proof requires a capture surface that reports the actual 390x844 DPR
+   3 viewport and backing-store dimensions. A CSS resize or an override that
+   leaves the canvas at desktop dimensions is a test failure, not mobile
+   evidence.
+5. Performance acceptance must name the browser/runtime version, device or
+   emulation profile, deterministic scene/command workload, collection method,
+   recursion depth/object count, and heap sampling rule. The 30-cycle p95 and
+   memory budgets are requirements pending that measurement protocol, not a
+   demonstrated result.
+6. Projection-instance addresses belong in capture metadata/test output, not
+   a gameplay HUD or React DOM. Composition/staging metadata remains outside
+   the deterministic core until an accepted level schema defines it.
+7. All screenshots, palettes, geometry, and layout data remain original. No
+   official download, visual trace, logo, audio, or game copy may enter a
+   frontend candidate.
+
+### Handoff
+
+- Files changed by this QA follow-up: this `THREAD_LOG.md` only.
+- Follow-up commit hash: pending creation; report it with this log path to the
+  coordinator after committing.
+- Frontend implementation remains frozen. Stage 6 release remains rejected.
+
+## Entry: independent P0 toolchain reproducibility review
+
+- Workstream thread ID: `019f4e80-1462-7b32-8146-19ded692836c`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Timestamp: 2026-07-11 Asia/Shanghai
+- Coordinator revision consumed read-only: `daf8565` and its integrated QA
+  planning-review record `423fff9`; neither was merged or rebased into this
+  isolated QA worktree.
+- Candidate SHA: `86d02d4498d314fcda9a8d7608509b4e5ba18ca1`.
+- Candidate parent reviewed: `175ca5e3b251c0485f9603925b0cfda221c11aa1`.
+
+### Scope and lock integrity review
+
+- Exact changed paths: `package-lock.json` and
+  `docs/workstreams/gameplay-rules-engine/THREAD_LOG.md` only. No diff exists
+  for `package.json`; no source, configuration, declared dependency range, root
+  changelog, asset, push, or merge change is present.
+- The lock diff adds only the nested
+  `@rolldown/binding-wasm32-wasi/node_modules/@emnapi/core@1.11.1` and
+  `@emnapi/runtime@1.11.1` entries, including resolved registry URLs and
+  integrity hashes. They match the dependency declaration already present for
+  the optional WASI binding; unrelated lock entries are unchanged.
+- `git diff --check` and `git show --check` pass. The candidate log accurately
+  preserves the P0-only authorization and records no attempt to claim Stage 6
+  release or rules/runtime authority.
+
+### Independent clean-checkout reproduction
+
+- Created a new detached temporary Git worktree at candidate SHA
+  `86d02d4`; `Test-Path node_modules` was `False` before installation.
+- Environment: Node `v24.12.0`; npm `11.6.2`.
+- `npm.cmd ci --no-audit --no-fund`: passed, added 64 packages.
+- `npm.cmd run typecheck`: passed.
+- `npm.cmd run test`: passed, 9 files / 35 tests.
+- `npm.cmd run build`: passed, including its nested typecheck; production
+  `dist/index.html` exists. The only output warning was Vite's existing
+  chunk-size advisory for a 520.27 kB minified chunk; it is unrelated to this
+  lockfile-only repair and remains a future performance gate item.
+- The post-install candidate worktree had clean tracked status and empty
+  `git diff --check`/`git diff --name-only` output. SHA-256 observations:
+  `package.json` `B6863FB4D1699C81466D5ECD9E4B506923C4736F3A2A78E3E4064D1977D6B3B3`;
+  repaired `package-lock.json`
+  `C4C47BA150EE1F308301FBD2CD4BFDFB121641B2581FDC443B0AA00732FE7E80`.
+- `npm ls` does not install the optional `binding-wasm32-wasi` tree on this
+  win32 x64 host and exits with an empty tree for those queried packages. This
+  platform exclusion is expected; the successful `npm ci` proves the lock can
+  now parse/install cleanly and does not turn the omitted optional artifact
+  into a P0 failure.
+
+### QA verdict
+
+**Accept P0 toolchain reproducibility for candidate `86d02d4` only.** The
+candidate meets its authorized path scope and independently reproduces a clean
+install, typecheck, 9-file/35-test suite, and production build.
+
+This decision does **not** accept Stage 6 for release, authorize rules/runtime
+sequence item 2, authorize frontend/level/serialization work, or close any P1
+or P2 finding. The coordinator must integrate the candidate before any later
+slice can be considered, and each such slice still requires explicit renewed
+authorization plus independent QA by SHA.
+
+### Additional coordination note
+
+- Delayed duplicate worktree commit `d5c36246c59ae9d96525543c0b93fc149db80a15`
+  was explicitly excluded from this review and contributes no authority or
+  evidence to either the P0 or frontend verdict.
+- Files changed by this QA follow-up: this `THREAD_LOG.md` only. Follow-up
+  commit hash is pending creation and will be reported to the coordinator.
