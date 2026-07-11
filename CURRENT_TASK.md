@@ -377,5 +377,8 @@ integrated, and verified together from a clean install. At that point:
 - remaining V2-V4 and gameplay-depth work is explicitly listed without a false
   stage-completion claim.
 
-Current checkpoint: **D0 candidate `e078083` was conditionally rejected and is
-being corrected. No production source edits have started.**
+Current checkpoint: **D0 has been independently accepted and integrated. After
+this accepted documentation baseline is pushed, only the gameplay/core half of
+I1 is authorized to start. The frontend half must wait for the coordinator to
+scope-review the gameplay candidate SHA. C1, V1, and all later slices remain
+closed.**

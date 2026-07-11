@@ -346,3 +346,42 @@ Coordinator correction:
   authorization and task-contract update.
 - No production work begins until the corrected D0 candidate is independently
   accepted and pushed.
+
+## 2026-07-11 - D0 accepted; I1 core half opened after push
+
+Final D0 product-document chain:
+
+- `e078083 docs: define Phase A implementation contracts`;
+- `ade2678 docs: resolve Phase A migration gates`;
+- `b96d261 docs: permit authorized interface bridge`;
+- `15a5443 docs: close interface bridge loophole`.
+
+Owner review sources and integrated equivalents:
+
+- Gameplay review sources `40e5212`, `31811b0`, `fdf59a0`, and final accept
+  `e8345e9`; integrated as `a815e2e`, `ed184c3`, `b7fa0a8`, and `0141f82`.
+- Frontend review sources `3e1ed2` and final accept `74ad444`; integrated as
+  `eaab25d` and `c8e1ae8`.
+- Independent QA final accept source `701bf51`; integrated as `b2c8911`.
+
+D0 decision:
+
+- `AGENTS.md`, `DESIGN.md`, and `CURRENT_TASK.md` are the accepted Phase A
+  repository contracts.
+- The cumulative D0 product scope is exactly five documentation paths; no
+  production, package, config, or root changelog path changed.
+- Clean baseline verification passed: `npm.cmd ci --no-audit --no-fund`,
+  typecheck, 9 Vitest files / 35 tests, and build. The existing 520.27 kB Vite
+  chunk advisory remains recorded.
+- D0 acceptance opens only I1 after this baseline is pushed to `origin/main`.
+
+I1 authorization boundary:
+
+- Gameplay task `019f4e82-7cb8-73c1-b4a1-d333273b359f` may start only the
+  gameplay/core half and exact paths listed in `CURRENT_TASK.md`.
+- It must commit and stop; the coordinator scope-reviews that SHA before the
+  frontend task may start from the exact candidate history.
+- Neither half is integrated alone. Independent QA reviews the complete linear
+  I1 chain.
+- C1, V1, frontend visual implementation, levels, release, and completion
+  claims remain unauthorized.

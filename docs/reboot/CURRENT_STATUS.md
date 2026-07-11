@@ -1,9 +1,10 @@
 # Current Project Status
 
 Status: Phase A recursive-foundation rebuild authorized after the design reboot.
-The D0 repository-contract slice is active; production source edits remain
-paused until D0 is independently reviewed and integrated. The user assesses the
-overall target as less than 10% complete.
+The D0 repository-contract slice is independently accepted and integrated. The
+I1 gameplay/core interface-bridge half is the only production slice that may
+start after the accepted D0 baseline is pushed. The user assesses the overall
+target as less than 10% complete.
 
 `Stage 6` is a historical implementation label only. It does not mean that the
 visual design, recursive rules, gameplay depth, runtime stability, content, or
@@ -25,8 +26,9 @@ menus, polish UI, large content, or new gameplay rules.
   - `ARCHITECTURE.md`
   - `DESIGN_REFERENCE.md`
   - `IMPLEMENTATION_PLAN.md`
-- Approval status: R1 documentation contract accepted; D0 repository contracts
-  are the active candidate. Historical Stage numbers are not current authority.
+- Approval status: R1 and D0 documentation contracts accepted. I1 is the only
+  active implementation authorization; historical Stage numbers are not
+  current authority.
 - Local cleanup state: no generated build output retained; dev server stopped
 
 ## Preserved Records
