@@ -507,3 +507,51 @@ boundary permits.
 - No executable tests were run: this is a documentation-only authority review.
 - Commit: pending one log-only review commit. Report its SHA to the coordinator
   and stop. I1/C1 code remains unauthorized.
+
+## 2026-07-11 - Final D0/I1 closed-gate re-review (accept)
+
+- Reviewer thread ID: `019f4e82-7cb8-73c1-b4a1-d333273b359f`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Candidate reviewed read-only: `15a5443b8f4e93dfa5e063d0a57826394e343f7c`, a
+  direct child of `b96d261`.
+- Candidate scope verified: only `AGENTS.md` and the coordinator workstream
+  log changed. No production, package, root-changelog, merge, rebase, or push
+  change was made.
+
+### Verdict
+
+**ACCEPT.** The final delta closes the sole remaining generic-exception
+blocker without weakening the ordinary cross-workstream public-type freeze.
+
+### Evidence
+
+- `AGENTS.md` now stops every cross-workstream public-type change unless all
+  four conditions are frozen before the first file edit: `CURRENT_TASK.md`
+  names the one shared slice and exact public types; the coordinator names
+  owners, exact disjoint paths, and linear commit order; the contract forbids
+  partial integration and requires whole-repository verification of the full
+  chain; and named independent QA accepts that complete chain by SHA.
+- The same clause states that I1 is the only currently authorized exception and
+  that every future bridge needs fresh explicit coordinator authorization plus
+  a `CURRENT_TASK.md` update before work. It is restrictive rather than the
+  prior illustrative "such as I1" wording, so it creates no generic loophole.
+- The active I1 section already satisfies all four frozen conditions: it names
+  `PublicCommand`, `CommandResult`, and `SemanticEvent`; assigns the gameplay,
+  frontend, and QA tasks; lists exact disjoint paths and gameplay-first then
+  frontend-second linear history; forbids partial integration; requires
+  whole-repository typecheck/test/build and full-chain QA; and makes C1 remove
+  the bridge without a second public-type migration.
+- This direct documentation-only child leaves the prior candidate source tree
+  unchanged. The rechecked I1 inventory therefore remains complete: runtime
+  `EventPipeline`/`GameRuntime`/`InteractionPrototype` and tests, animation
+  `transitions` and its test, and gameplay `systems.ts` plus bridge/core paths
+  cover every current public-interface compile consumer. No additional I1 path
+  is required.
+
+### Commands and handoff
+
+- Read `15a5443` directly, compared it with `b96d261`, and ran
+  `git diff --check b96d261 15a5443`; the check passed.
+- No executable tests were run: this was a documentation-only delta review.
+- Commit: pending one log-only acceptance commit. Report its SHA to the
+  coordinator and stop. This acceptance does not begin I1 or C1 code.
