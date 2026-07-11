@@ -154,3 +154,67 @@ Active gate:
 - P0 lockfile reproducibility remains the only authorized implementation
   candidate.
 - All other workstreams remain audit/design-only or idle.
+
+## 2026-07-11 - P0 accepted and planning baseline completed
+
+Independent QA source decision:
+
+- `7e65e33ff44b16755eb5ea48e070691bc265d7a6`.
+- Integrated as `1fb6c32 docs(qa): review frontend and P0 lockfile`.
+- QA accepted the P0 candidate only and accepted the frontend proposal only as
+  planning direction. Stage 6 remains rejected for release and all P1/P2 gates
+  remain open.
+
+P0 integration:
+
+- Source candidate: `86d02d4498d314fcda9a8d7608509b4e5ba18ca1`.
+- Integrated as `5075df0 build: repair reproducible npm lockfile`.
+- Changed production manifest scope: `package-lock.json` only; the accompanying
+  gameplay workstream log records the candidate evidence.
+- `package.json`, declared dependency ranges, source, config, assets, and root
+  changelog are unchanged.
+
+Coordinator combined verification after integration:
+
+- `npm.cmd ci --no-audit --no-fund`: passed; 64 packages installed.
+- `npm.cmd run typecheck`: passed.
+- `npm.cmd run test`: passed; 9 files / 35 tests.
+- `npm.cmd run build`: passed; only the existing 520.27 kB Vite chunk-size
+  advisory remains.
+
+Frontend planning integration:
+
+- Source chain:
+  - `2ac2ed058af4ac49d7f5821f64d416b608ed845a`
+  - `be0b9e79bb6e84683b4c55b9f1bfad48ac91ca45`
+- Integrated chain:
+  - `9f1d2a1 docs(frontend): audit visual redesign`
+  - `2244b95 docs(frontend): record audit handoff`
+- Planning direction preserves PixiJS/projection/metrics/procedural foundations
+  and proposes a partial reboot of composition, materials, aperture clarity,
+  motion continuity, responsive behavior, and performance verification.
+- No frontend implementation authority is granted.
+
+Next authorized slice: R1 Contract Freeze (documentation only):
+
+- Owner: gameplay thread `019f4e82-7cb8-73c1-b4a1-d333273b359f`.
+- Allowed paths only:
+  - `docs/workstreams/gameplay-rules-engine/RULES_SLICE_R1_CONTRACT.md`
+  - `docs/workstreams/gameplay-rules-engine/THREAD_LOG.md`
+- The contract must define:
+  1. deterministic `Step(direction)` to exactly one port mapping, including
+     absent and ambiguous-port rejection;
+  2. exact public discriminated result, semantic event, transaction, world
+     address, and entity-occurrence address shapes;
+  3. load-time `cycleMode: "forbid"` enforcement for every containment edge in
+     the first production slice;
+  4. a 1,000-sequence deterministic stress protocol with named PRNG, fixed seed,
+     command/data domain, invariant oracle, and reproducible failure report;
+  5. the path and test ownership boundary between the first core-safety
+     implementation and the later runtime/render address-and-lock slice.
+- The delayed duplicate proposal `d5c3624` may be read as non-authoritative
+  research input but must not be merged or used as a workstream log.
+- No `src/**`, package, config, frontend, level, serialization, root changelog,
+  push, or merge change is authorized in R1 Contract Freeze.
+- Independent QA must review the resulting SHA before any core implementation
+  slice is opened.
