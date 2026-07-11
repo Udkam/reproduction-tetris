@@ -1,7 +1,11 @@
 # Current Project Status
 
-Status: Stage 6 renderer fidelity alignment implemented after the Stage 5
-event-driven game feel pass.
+Status: design-reboot coordination after the historical Stage 6 renderer
+prototype. The user assesses the overall target as less than 10% complete.
+
+`Stage 6` is a historical implementation label only. It does not mean that the
+visual design, recursive rules, gameplay depth, runtime stability, content, or
+playability has reached Stage 6-level completeness or release readiness.
 
 The current workspace is runnable as a React/Vite/PixiJS v8 visual-spatial
 prototype backed by a deterministic TypeScript recursive gameplay kernel, an
@@ -40,6 +44,11 @@ start from a fresh plan and should not copy implementation files from either
 failed round.
 
 ## Current Gate
+
+The current multi-thread round is limited to design reboot, contract freezing,
+audit, and risk cleanup. Production implementation resumes only after the user
+explicitly requests development progress and the coordinator opens a bounded
+slice.
 
 Do not extend beyond Stage 6 renderer fidelity alignment into React gameplay UI,
 level packs, a level editor, menus, polish UI, large content, renderer

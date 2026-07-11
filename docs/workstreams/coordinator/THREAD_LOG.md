@@ -218,3 +218,25 @@ Next authorized slice: R1 Contract Freeze (documentation only):
   push, or merge change is authorized in R1 Contract Freeze.
 - Independent QA must review the resulting SHA before any core implementation
   slice is opened.
+
+## 2026-07-11 - User completion and scope clarification
+
+Authoritative user clarification:
+
+- This multi-thread round is a partial reboot of the current design, not a
+  continuation claim that Stage 6 is complete.
+- The current project is less than 10% complete relative to the intended
+  high-fidelity, genuinely playable target.
+- `Stage 6` is retained only as a historical commit/artifact label. It must not
+  be reported as visual, gameplay, engine, content, or release completion.
+- This round remains focused on design restart, contract freezing, audit, and
+  risk cleanup.
+- Further production development begins only after a later explicit user
+  instruction and a new bounded coordinator authorization.
+
+Coordination consequence:
+
+- Workstream reports must distinguish “artifact implemented” from “target
+  complete.”
+- No percentage or stage-completion claim may be inferred from existing Stage
+  numbers, green unit tests, or a nonblank screenshot.
