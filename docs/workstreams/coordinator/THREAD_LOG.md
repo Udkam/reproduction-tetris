@@ -49,3 +49,54 @@ Next coordinator action:
 - Route worker commits to the independent QA thread.
 - Approve a dependency-ordered implementation plan before any production-code
   slice begins.
+
+## 2026-07-11 - QA rejection and proposal intake
+
+QA evidence accepted into the coordination baseline:
+
+- QA workstream commit: `7a99506db46b54131b89473b67a86b5d5675577d`.
+- Integrated main commit: `c781c31 docs(qa): define Stage 6 approval gates`.
+- Artifacts:
+  - `docs/workstreams/qa-approval/THREAD_LOG.md`
+  - `docs/workstreams/qa-approval/QA_APPROVAL_RUBRIC.md`
+- QA verdict: Stage 6 rejected for release; no production implementation slice
+  approved.
+
+Coordinator reproduction:
+
+- `npm.cmd ci --dry-run --ignore-scripts --no-audit --no-fund` exited `1`.
+- Reproduced missing lock entries:
+  - `@emnapi/core@1.11.1`
+  - `@emnapi/runtime@1.11.1`
+- `package-lock.json` hash remained
+  `b0e0efca49d1371af660b34f17e0832777500954` before and after the dry run.
+- No tracked file changed during reproduction.
+
+Gameplay-rules proposal received but not approved:
+
+- Audit/design commit: `175ca5e3b251c0485f9603925b0cfda221c11aa1`.
+- The proposal defines an acyclic, address-aware target contract and a
+  dependency-ordered stability sequence.
+- It has been routed to independent QA by SHA.
+- Production rules/runtime work remains frozen; only the bounded P0 lockfile
+  candidate below is authorized.
+
+Level-design proposal received but not approved:
+
+- Proposal commit: `42f9ca197905e3363551c25e91faa8a6ed25527e`.
+- Handoff-log follow-up: `fa4d0ef1906098a332e515ba96cede5f600ac4f7`.
+- The four-level tutorial proposal remains blocked on gameplay semantics,
+  serialization, frontend staging, and independent QA review by SHA.
+
+Gate decision:
+
+- Only a package-lock reproducibility candidate may proceed before P0 closes.
+- The candidate should change `package-lock.json` plus its workstream
+  `THREAD_LOG.md` only. If `package.json`, production source, or a declared
+  dependency version must change, the owner must stop and request a revised
+  scope.
+- Required evidence is a clean `npm ci`, typecheck, 35-or-more passing tests,
+  production build, exact staged paths, and unchanged production behavior.
+- Rules/runtime production work, frontend production work, level
+  serialization, and level content remain frozen until QA accepts the P0
+  candidate.
