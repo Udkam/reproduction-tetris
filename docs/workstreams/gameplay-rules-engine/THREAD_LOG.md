@@ -204,3 +204,45 @@
 - Commit: pending scoped documentation-only verification and commit.
 - Send the resulting SHA and this log path to coordinator and independent QA;
   await QA before requesting C1. No code follows from R1 automatically.
+
+## 2026-07-11 - R1 conditional-reject contract correction
+
+- Thread ID: `019f4e82-7cb8-73c1-b4a1-d333273b359f`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Candidate under correction: `87dfa4517ca668e09e97161405b39949939f2252`
+- QA verdict: conditional reject. The independent QA thread
+  `019f4e80-1462-7b32-8146-19ded692836c` identified three contract blockers;
+  coordinator authorized exactly one follow-up documentation-only correction.
+
+### Bounded correction decisions
+
+- Split public-result and stress-oracle invariants by command family. A rejected
+  `Step` now has a nonempty ordered attempt trace ending in terminal `blocked`;
+  rejected `Undo`/`Redo`/`Reset` now explicitly use `attempts: []` and exactly
+  one deterministic `command-blocked` event with frozen code/reason shape.
+  Initial history/reset cases are explicit in the stress domain.
+- Freeze the complete prioritized R1 rule set (`push`, `enter`, `exit`) with a
+  complete enablement map. `interactionPriority` must contain every and only
+  enabled rule once. After all enabled rules are not applicable, `Step` emits
+  terminal `step-fallback` / `no-enabled-rule-applies`; it cannot fall through
+  without a public result.
+- Freeze exit selection against declared `CellAddress` semantics: resolve the
+  actor address to canonical `worldId`, then compare exact `worldId/x/y` to the
+  port landing. Duplicate `(innerWorldId, x, y)` landing cells are forbidden
+  across all ports, leaving ambiguity only as defensive invalid-data handling.
+- Performed a normative consistency pass across port validation, result/event
+  shapes, stress fixtures/oracles, failure expectations, C1/V1 ownership, and
+  R1 acceptance criteria. No product or implementation authority is created.
+
+### Files and verification
+
+- Allowed changed paths only:
+  - `docs/workstreams/gameplay-rules-engine/RULES_SLICE_R1_CONTRACT.md`
+  - `docs/workstreams/gameplay-rules-engine/THREAD_LOG.md`
+- This is contract repair only. No source, package, configuration, QA file,
+  root changelog, test run, merge, rebase, or push is permitted or claimed.
+- Required pre-commit checks: exact path scope, `git diff --check`, and
+  `git show --check` after committing.
+- Commit: pending one scoped follow-up documentation commit. Report its SHA to
+  coordinator and independent QA, then stop; a conditional-reject repair does
+  not authorize C1, V1, Stage 6, release, or production development.

@@ -36,6 +36,9 @@ export type PortId = string;
 export type StateHash = string;
 export type Direction = "up" | "right" | "down" | "left";
 export type CycleMode = "forbid";
+export type InteractionRule = "walk" | "push" | "enter" | "exit";
+export type PrioritizedInteractionRule = Exclude<InteractionRule, "walk">;
+export type AttemptRule = InteractionRule | "step-fallback";
 
 export interface CellAddress {
   readonly world: WorldAddress;
@@ -76,7 +79,6 @@ export interface RedoCommand { readonly type: "redo"; }
 export interface ResetCommand { readonly type: "reset"; }
 export type PublicCommand = StepCommand | UndoCommand | RedoCommand | ResetCommand;
 
-export type InteractionRule = "walk" | "push" | "enter" | "exit";
 export type EventDirection = "forward" | "reverse";
 ```
 
@@ -113,8 +115,13 @@ export interface ContainerPortTable {
 export interface RuleSetR1 {
   readonly version: 1;
   readonly cycleMode: CycleMode;
-  readonly interactionPriority: readonly Exclude<InteractionRule, "walk">[];
+  /** Complete map; every R1 prioritized rule must be present. */
+  readonly ruleEnablement: Readonly<Record<PrioritizedInteractionRule, "enabled" | "disabled">>;
+  /** Exactly the enabled prioritized rules, in deterministic attempt order. */
+  readonly interactionPriority: readonly PrioritizedInteractionRule[];
 }
+
+export const R1_PRIORITIZED_RULES = ["push", "enter", "exit"] as const;
 ```
 
 R1 validation requires all of the following:
@@ -126,18 +133,29 @@ R1 validation requires all of the following:
    entry/exit relation explicitly inverse rather than dependent on object-key
    enumeration.
 4. `innerLanding` is an integer in-bounds cell of that container's
-   `innerWorldId`, and contains no solid occupant in a validated initial state.
-5. `interactionPriority` contains each known item at most once and contains no
-   disabled/unknown item. `walk` is implicit and only applies to an empty,
-   in-bounds adjacent cell.
+   `innerWorldId`, contains no solid occupant in a validated initial state, and
+   is unique by `(innerWorldId, x, y)` across every port in the level. Two
+   different container occurrences may reference one canonical inner world,
+   but may not reuse an inner landing cell in R1.
+5. `ruleEnablement` contains exactly the complete known set in
+   `R1_PRIORITIZED_RULES`: no missing key, unknown key, or implicit default is
+   valid. `walk` is always enabled, implicit, and cannot be disabled.
+6. `interactionPriority` contains every and only enabled prioritized rule,
+   exactly once. A duplicate, unknown rule, omitted enabled rule, or listed
+   disabled rule is invalid level data. Disabled rules are never attempted.
 
 ### Selection algorithm
 
-For `Step(direction)`, evaluate `walk` first when the adjacent cell is empty
-and in bounds. Otherwise, evaluate `interactionPriority` in declared order.
+After `Step(direction)` preflight validates the active actor and focus, record
+a `walk` attempt first: it accepts when the adjacent cell is empty and in
+bounds, otherwise it is `not-applicable`. Then evaluate every enabled rule in
+`interactionPriority` in declared order.
 Each rule produces an `AttemptOutcome` defined below; only prior
 `not-applicable` outcomes may fall through. A terminal `blocked` outcome stops
-resolution and no candidate observes a partially mutated state.
+resolution and no candidate observes a partially mutated state. If every
+enabled rule is `not-applicable`, append terminal
+`blocked: "no-enabled-rule-applies"` with `rule: "step-fallback"`; a `Step`
+command can therefore never end in an unclassified fall-through.
 
 `enter` maps a port as follows:
 
@@ -157,13 +175,18 @@ resolution and no candidate observes a partially mutated state.
 
 1. The active address must have a nonempty `containerPath`; otherwise `exit`
    is `not-applicable`.
-2. Resolve its final container occurrence in the parent address. Filter its
-   ports by both `innerLanding === actor.localCell` and
-   `innerExit === direction`.
-3. Zero matches is `not-applicable` unless the actor is on an inner landing
-   cell of that container, in which case it is terminal
+2. Resolve its final container occurrence in the parent address and resolve the
+   active address to `actorWorldId`. A port landing matches the actor exactly
+   when `actorWorldId === container.innerWorldId`,
+   `actorCell.x === port.innerLanding.x`, and
+   `actorCell.y === port.innerLanding.y`. This comparison uses only the
+   declared `CellAddress` and resolved world identity.
+3. Filter the final container's ports by that exact landing comparison and
+   `innerExit === direction`. Zero matches is `not-applicable` unless the actor
+   is on one of that container's exact landings, in which case it is terminal
    `blocked: "port-absent"`. More than one match is terminal
-   `blocked: "port-ambiguous"`. Exactly one returns that same port occurrence.
+   `blocked: "port-ambiguous"`. The global inner-landing uniqueness rule makes
+   the latter defensive against invalid data, not a normal selection path.
 4. The parent destination is the parent-world cell adjacent to the container
    anchor in `opposite(port.outerApproach)`. It must be in bounds and free
    before an exit can be accepted.
@@ -196,14 +219,48 @@ export type RejectionCode =
   | "invalid-level-data"
   | "history-empty"
   | "future-empty"
-  | "already-initial-state";
+  | "already-initial-state"
+  | "no-enabled-rule-applies";
 
-export interface Rejection {
-  readonly code: RejectionCode;
-  readonly rule?: InteractionRule;
+type RejectionContext = {
+  readonly rule?: AttemptRule;
   readonly attemptedCell?: CellAddress;
   readonly port?: PortOccurrenceAddress;
-}
+};
+
+/** Frozen code-to-reason mapping; no localized/free-form reason is permitted. */
+export type Rejection =
+  | (RejectionContext & { readonly code: "actor-not-active"; readonly reason: { readonly kind: "actor" } })
+  | (RejectionContext & { readonly code: "focus-invalid"; readonly reason: { readonly kind: "focus" } })
+  | (RejectionContext & {
+      readonly code: "target-out-of-bounds" | "target-solid-not-pushable";
+      readonly reason: { readonly kind: "target" };
+    })
+  | (RejectionContext & {
+      readonly code: "push-chain-out-of-bounds";
+      readonly reason: { readonly kind: "push" };
+    })
+  | (RejectionContext & {
+      readonly code:
+        | "port-absent"
+        | "port-ambiguous"
+        | "port-landing-out-of-bounds"
+        | "port-landing-occupied"
+        | "port-parent-destination-out-of-bounds"
+        | "port-parent-destination-occupied";
+      readonly reason: { readonly kind: "port" };
+    })
+  | (RejectionContext & { readonly code: "cycle-forbidden"; readonly reason: { readonly kind: "cycle" } })
+  | (RejectionContext & { readonly code: "invalid-level-data"; readonly reason: { readonly kind: "validation" } })
+  | (RejectionContext & {
+      readonly code: "history-empty" | "future-empty";
+      readonly reason: { readonly kind: "history" };
+    })
+  | (RejectionContext & { readonly code: "already-initial-state"; readonly reason: { readonly kind: "reset" } })
+  | (RejectionContext & {
+      readonly code: "no-enabled-rule-applies";
+      readonly reason: { readonly kind: "step-fallback" };
+    });
 
 export type AttemptOutcome =
   | {
@@ -212,7 +269,7 @@ export type AttemptOutcome =
     }
   | {
       readonly kind: "blocked";
-      readonly rule: InteractionRule;
+      readonly rule: AttemptRule;
       readonly rejection: Rejection;
     }
   | {
@@ -234,34 +291,67 @@ export interface Transaction {
   readonly events: readonly SemanticEvent[];
 }
 
-export type CommandResult =
+export type StepCommandResult =
   | {
       readonly kind: "accepted";
+      readonly command: StepCommand;
       readonly transaction: Transaction;
-      /** Earlier candidates may be not-applicable; final accepted attempt is last. */
-      readonly attempts: readonly AttemptOutcome[];
+      /** Starts with walk; earlier candidates may be not-applicable. */
+      readonly attempts: readonly [AttemptOutcome, ...AttemptOutcome[]];
     }
   | {
       readonly kind: "rejected";
-      readonly command: PublicCommand;
+      readonly command: StepCommand;
       readonly rejection: Rejection;
       readonly stateHashBefore: StateHash;
       readonly stateHashAfter: StateHash;
       readonly activeAddressBefore: WorldAddress;
       readonly activeAddressAfter: WorldAddress;
-      /** Earlier candidates may be not-applicable; final blocked attempt is last. */
-      readonly attempts: readonly AttemptOutcome[];
+      /** Nonempty and terminal: the final attempt is always blocked. */
+      readonly attempts: readonly [AttemptOutcome, ...AttemptOutcome[]];
       readonly events: readonly [CommandBlockedEvent];
     };
+
+export type NonStepCommand = UndoCommand | RedoCommand | ResetCommand;
+export type NonStepCommandResult =
+  | {
+      readonly kind: "accepted";
+      readonly command: NonStepCommand;
+      readonly transaction: Transaction;
+      /** Interaction candidates do not apply to history/reset commands. */
+      readonly attempts: readonly [];
+    }
+  | {
+      readonly kind: "rejected";
+      readonly command: NonStepCommand;
+      readonly rejection: Rejection;
+      readonly stateHashBefore: StateHash;
+      readonly stateHashAfter: StateHash;
+      readonly activeAddressBefore: WorldAddress;
+      readonly activeAddressAfter: WorldAddress;
+      /** Empty by definition; command-blocked records the deterministic reason. */
+      readonly attempts: readonly [];
+      readonly events: readonly [CommandBlockedEvent];
+    };
+
+export type CommandResult = StepCommandResult | NonStepCommandResult;
 ```
 
 For a rejected result, before/after hashes and active addresses are equal,
 history is unchanged, and `events` has exactly one `command-blocked` event.
 That event has `transactionId: null` because no transaction committed.
-For `undo`, `redo`, and `reset`, `attempts` is the empty array: interaction
-attempts are a `Step` diagnostic only. Every accepted public action receives a
-new transaction ID; undo/redo additionally set `sourceTransactionId` to the
-history record whose events they reverse or replay.
+For a rejected `Step` with successful actor/focus preflight, `attempts` begins
+with `walk` and ends in a terminal `blocked` attempt. A failed actor/focus
+preflight instead has exactly one `step-fallback` terminal blocked attempt
+with its actor/focus rejection; it does not attempt `walk`. For a rejected
+`undo`, `redo`, or `reset`, `attempts` is exactly `[]`,
+`CommandBlockedEvent.eventIndex` is `0`, its `direction` is `"forward"`, and
+its frozen `Rejection` is respectively
+`history-empty`/`history`, `future-empty`/`history`, or
+`already-initial-state`/`reset`. Interaction attempts are a `Step` diagnostic
+only. Every accepted public action receives a new transaction ID; undo/redo
+additionally set `sourceTransactionId` to the history record whose events they
+reverse or replay.
 `TransactionId.sequence` increments only when a command returns `accepted`;
 it is session metadata, not canonical simulation state, and makes traces
 deterministic when replay uses the same initial state and command array.
@@ -388,33 +478,50 @@ been implemented.
 - Valid-fixture domain: 1–3 worlds, each 3–6 cells wide and high; one root;
   exactly one controlled actor; 0–4 ordinary pushables/solids; 0–2 containers
   per world; unique in-bounds solid cells; and an acyclic containment graph.
-  Containers receive 1–2 ports with unique approach/exit directions and free
-  inner landing cells. IDs are generated from case index plus ordinal and are
-  stable across replay.
+  Containers receive 1–2 ports with unique approach/exit directions and free,
+  globally unique `(innerWorldId, x, y)` landing cells. IDs are generated from
+  case index plus ordinal and are stable across replay. Each case uses the
+  three-bit mask `caseIndex & 7` for `push`/`enter`/`exit` enablement, and a
+  PRNG shuffle of exactly those enabled rules for `interactionPriority`; all
+  eight enablement combinations therefore occur deterministically.
 - Invalid-fixture domain: one deterministic mutation of a generated valid
   fixture selected from unknown inner world, invalid parent location, duplicate
-  port direction, occupied inner landing, self edge, two-world edge cycle, or
-  legacy cycle-enable flag. Loading it must reject with diagnostics, not throw.
+  port direction, duplicate inner landing, occupied inner landing, unknown or
+  duplicate priority item, omitted enabled priority item, listed disabled
+  priority item, self edge, two-world edge cycle, or legacy cycle-enable flag.
+  Loading it must reject with diagnostics, not throw.
 - Command domain for every valid fixture: 64 commands drawn from `Step(up)`,
   `Step(right)`, `Step(down)`, `Step(left)`, `Undo`, `Redo`, and `Reset` with
   weights `16,16,16,16,12,12,12` respectively. A command array is generated
-  before execution and reused unchanged for direct/replay comparison.
+  before execution and reused unchanged for direct/replay comparison. The
+  first command is explicitly exercised as each of `Undo`, `Redo`, and `Reset`
+  in three deterministic subcases: the required initial rejections are,
+  respectively, `history-empty`, `future-empty`, and `already-initial-state`,
+  all with `attempts: []` and one deterministic blocked event.
 
 ### Oracle after each dispatch
 
 1. No command or validation path throws.
 2. The post-session validates under `cycleMode: "forbid"`; positions are
    in-bounds, solid occupancy is unique, and active focus resolves.
-3. A rejected result has unchanged canonical hash, history lengths, active
-   address, and exactly one `command-blocked` event; its last attempt is
-   terminal `blocked`, not `not-applicable`.
-4. An accepted result has a valid monotonic transaction ID, matching before/
-   after hashes, a final accepted attempt, and every event address/port resolves
-   against its declared before/after snapshot.
-5. Replay of the fixture plus the entire generated command array produces the
+3. A rejected `Step` has unchanged canonical hash, history lengths, and active
+   address; exactly one `command-blocked` event; a nonempty attempt trace; and
+   a final terminal `blocked` attempt, never a final `not-applicable`. If all
+   enabled rules are not applicable, the last attempt is the frozen
+   `step-fallback` / `no-enabled-rule-applies` pair. A successful actor/focus
+   preflight makes the trace begin with `walk`; a failed preflight instead has
+   the single terminal `step-fallback` attempt carrying the actor/focus code.
+4. A rejected `Undo`, `Redo`, or `Reset` has the same unchanged-state
+   invariants, exactly `attempts: []`, and exactly one event at index `0` with
+   `transactionId: null`, `direction: "forward"`, and the frozen history/reset
+   rejection code and reason described above.
+5. An accepted result has a valid monotonic transaction ID, matching before/
+   after hashes, and a final accepted Step attempt when it is a `Step`; every
+   event address/port resolves against its declared before/after snapshot.
+6. Replay of the fixture plus the entire generated command array produces the
    same accepted/rejected kinds, transaction rules, hash trace, address trace,
    semantic event trace, and final win state as direct dispatch.
-6. The immutable initial fixture and every stored historical snapshot retain
+7. The immutable initial fixture and every stored historical snapshot retain
    their original stable hash after later commands.
 
 ### Failure report and minimization
@@ -485,6 +592,12 @@ the first core slice.
   `blocked`; accepted semantic events contain transaction and occurrence
   identity, while the single rejected blocked event explicitly has no
   transaction ID.
+- Rule enablement is complete and explicit; priority contains every and only
+  enabled prioritized rule, while an all-not-applicable Step ends in the frozen
+  `step-fallback` / `no-enabled-rule-applies` terminal attempt.
+- Step and non-Step rejected-command invariants are distinct and complete:
+  Step ends in terminal blocked; Undo/Redo/Reset use `attempts: []` plus their
+  one frozen deterministic command-blocked event.
 - Every containment edge is covered by deterministic load-time cycle rejection
   under `cycleMode: "forbid"`, including unreachable graph components.
 - The stress protocol is directly implementable with its named PRNG, seed,
