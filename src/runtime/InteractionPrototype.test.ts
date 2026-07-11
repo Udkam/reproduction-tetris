@@ -1,18 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { Enter, Move, Redo, Undo } from "../core/commands";
+import { Redo, Reset, Step, Undo } from "../core/commands";
 import { commandFromKeyboardEvent } from "./InteractionPrototype";
 
 describe("keyboard command mapping", () => {
-  it("maps movement keys into simulation commands", () => {
-    expect(commandFromKeyboardEvent({ key: "ArrowRight", shiftKey: false })).toEqual(Move("right"));
-    expect(commandFromKeyboardEvent({ key: "w", shiftKey: false })).toEqual(Move("up"));
+  it("maps every arrow and WASD key into a public Step command", () => {
+    const cases = [
+      ["ArrowUp", "up"],
+      ["w", "up"],
+      ["ArrowDown", "down"],
+      ["s", "down"],
+      ["ArrowLeft", "left"],
+      ["a", "left"],
+      ["ArrowRight", "right"],
+      ["d", "right"],
+    ] as const;
+
+    for (const [key, direction] of cases) {
+      expect(commandFromKeyboardEvent({ key, shiftKey: false })).toEqual(Step(direction));
+    }
   });
 
-  it("maps undo, redo, and recursive entry onto the shared command API", () => {
+  it("retains public Undo, Redo, and Reset mappings", () => {
     expect(commandFromKeyboardEvent({ key: "z", shiftKey: false })).toEqual(Undo());
     expect(commandFromKeyboardEvent({ key: "Z", shiftKey: true })).toEqual(Redo());
-    expect(commandFromKeyboardEvent({ key: "e", shiftKey: false }, () => Enter("container-b"))).toEqual(
-      Enter("container-b"),
-    );
+    expect(commandFromKeyboardEvent({ key: "Backspace", shiftKey: false })).toEqual(Undo());
+    expect(commandFromKeyboardEvent({ key: "y", shiftKey: false })).toEqual(Redo());
+    expect(commandFromKeyboardEvent({ key: "r", shiftKey: false })).toEqual(Reset());
+  });
+
+  it("does not emit a directionless recursive command for E", () => {
+    expect(commandFromKeyboardEvent({ key: "e", shiftKey: false })).toBeNull();
   });
 });

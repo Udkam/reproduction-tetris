@@ -1,4 +1,4 @@
-import { Enter, Exit, type SimulationCommand } from "../core/commands";
+import type { PublicCommand } from "../core/commands";
 import { createSimulationSession, type SimulationSession } from "../core/history";
 import { createStage3BSimulationState } from "../core/worldGraph";
 import { AudioManager } from "../audio/AudioManager";
@@ -14,7 +14,8 @@ export class GameRuntime {
   private pixiApp: PixiApp | null = null;
   private interactionPrototype: InteractionPrototype | null = null;
   private session: SimulationSession = createSimulationSession(createStage3BSimulationState());
-  private readonly queuedCommands: SimulationCommand[] = [];
+  /** I1 preserves the existing unbounded visual queue; V1 replaces it with the frozen one-slot barrier. */
+  private readonly queuedCommands: PublicCommand[] = [];
   private destroyed = false;
 
   constructor(host: HTMLElement) {
@@ -34,7 +35,6 @@ export class GameRuntime {
     this.pixiApp.render(createProjectionFromSimulationState(this.session.present));
     this.interactionPrototype = new InteractionPrototype({
       onCommand: (command) => this.enqueueOrDispatch(command),
-      getRecursiveCommand: () => this.getRecursiveCommand(),
     });
     this.interactionPrototype.start();
   }
@@ -49,7 +49,7 @@ export class GameRuntime {
     this.queuedCommands.length = 0;
   }
 
-  private enqueueOrDispatch(command: SimulationCommand) {
+  private enqueueOrDispatch(command: PublicCommand) {
     if (!this.pixiApp) {
       return;
     }
@@ -62,7 +62,7 @@ export class GameRuntime {
     this.dispatch(command);
   }
 
-  private dispatch(command: SimulationCommand) {
+  private dispatch(command: PublicCommand) {
     const pixiApp = this.pixiApp;
     if (!pixiApp) {
       return;
@@ -85,9 +85,5 @@ export class GameRuntime {
     if (nextCommand) {
       this.dispatch(nextCommand);
     }
-  }
-
-  private getRecursiveCommand(): SimulationCommand {
-    return this.session.present.focusPath.length === 0 ? Enter("container-b") : Exit("container-b");
   }
 }

@@ -305,3 +305,130 @@ The corrected D0 contract resolves every condition in frontend review
   claim.
 - Changed file for this review: `docs/workstreams/frontend-design/THREAD_LOG.md`
   only. Commit and report its SHA to the coordinator, then stop.
+
+## 2026-07-11 — I1 Frontend Consumer Migration
+
+- Implementation timestamp: `2026-07-11 17:24:00 +08:00`
+- Frontend task: `019f4e80-145a-7520-81e1-41a45b2bec13`
+- Coordinator task: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Exact gameplay candidate/base: `a4633c2bbdd4c1780b7396bff5dff9c2d245d16a`
+  (`phase a i1: add public core interface bridge`). The worktree was clean,
+  then detached directly at this commit without merge or rebase.
+- Authorization: frontend/consumer half of I1 only. C1, V1, rendering,
+  projection, assets, levels, packages, root contracts/changelog, browser
+  evidence, merge/rebase, and push remain out of scope.
+
+### Authority and public-surface audit
+
+- Read root `AGENTS.md`, `DESIGN.md`, `CURRENT_TASK.md`, the accepted
+  `RULES_SLICE_R1_CONTRACT.md`, and the latest coordinator, gameplay,
+  frontend, and independent-QA logs before editing.
+- The gameplay candidate exposes `dispatchPublicCommand(session, command)` and
+  `PublicDispatchEnvelope { session, result }`. Consumers use only
+  `PublicCommand` (`Step`, `Undo`, `Redo`, `Reset`), frozen `CommandResult`,
+  and `SemanticEvent` values.
+- I1 remains compatibility-only: `Step` reaches only the existing legacy
+  walk/push bridge. It selects no port, world, container, or recursive
+  destination and makes no recursive-correctness claim.
+
+### Consumer migration mapping and decisions
+
+- `InteractionPrototype`: arrows/WASD now construct `Step`; Undo/Redo/Reset
+  mappings stay public; E returns `null`. The recursive callback and its
+  directionless selection path are removed.
+- `GameRuntime`: its pending queue and dispatch signatures now carry only
+  `PublicCommand`; the existing queue behavior is deliberately retained. The
+  one-slot FIFO visual-completion barrier is V1-only work.
+- `EventPipeline`: dispatches only through `dispatchPublicCommand`, forwards
+  accepted `result.transaction.events` and rejected `result.events` by
+  reference, retains the frozen result/envelope, and derives accepted state,
+  rejection code, hashes, and projections from public data. It no longer
+  reconstructs history events.
+- `transitions`: maps semantic entity/push/blocked/portal/reset/win values to
+  current Pixi-compatible plan cues. It retains the semantic playback
+  direction (including Undo `reverse`) while never reversing event order or
+  endpoints again. Rejected Step feedback carries only its public direction;
+  it does not invent an actor.
+- Temporary V1-removal debt: `EntityMotion` carries lossless occurrence and
+  addressed-cell fields alongside a compatibility position that exposes only
+  the existing renderer's x/y needs. It uses the declared root-world value and
+  never synthesizes a canonical world identity from a containment path. V1
+  replaces the entity-ID progress/render path with occurrence-addressed
+  interpolation.
+- Push mapping structurally compares addressed occurrences/cells to suppress
+  duplicate pushed-entity motions without delimiter-built identity keys.
+
+### Authorized files and preliminary verification
+
+- Changed only:
+  - `src/runtime/EventPipeline.ts`
+  - `src/runtime/EventPipeline.test.ts`
+  - `src/runtime/GameRuntime.ts`
+  - `src/runtime/InteractionPrototype.ts`
+  - `src/runtime/InteractionPrototype.test.ts`
+  - `src/animation/transitions.ts`
+  - `src/animation/transitions.test.ts`
+  - this workstream log
+- `npm.cmd run typecheck`: passed.
+- `npm.cmd run test`: passed, 10 files / 48 tests.
+- `npm.cmd ci --no-audit --no-fund`: passed, 64 packages added.
+- Full clean-install rerun: typecheck passed; Vitest passed, 10 files / 48
+  tests; build passed. The pre-existing Vite >500 kB chunk advisory remains
+  (`527.87 kB` minified main chunk); no package or configuration change was
+  made.
+- `git diff --check`: passed. Exact changed-path audit passed for all eight
+  authorized paths. Runtime/animation searches found no legacy
+  command/result/event symbols, fixed-container identifier, or fixture text.
+- Scoped staging contains exactly the eight authorized paths and passed its
+  whitespace audit. This entry ships in the required
+  `phase a i1: migrate runtime consumers` commit; its final object SHA is
+  reported to the coordinator rather than creating a second acknowledgement
+  commit solely to self-record that SHA.
+
+## 2026-07-12 — I1 Frontend Candidate Correction
+
+- Coordinator task `019f4deb-7e83-7583-8cd5-8e6f075bc331` conditionally
+  rejected frontend candidate `9e3006528e9da69db59d87b7d8d4bc6d8f26dbcb`
+  before QA/integration and authorized this bounded correction only.
+- The detached worktree is clean at that candidate, whose parent remains the
+  exact gameplay candidate `a4633c2bbdd4c1780b7396bff5dff9c2d245d16a`.
+  The frontend commit must be amended, not followed by a third I1 commit.
+- Allowed correction paths are `src/animation/transitions.ts`,
+  `src/animation/transitions.test.ts`, this log, and the EventPipeline test
+  only if an integration assertion proves necessary. V1 and every other path
+  remain excluded.
+
+### Assumptions and correction mapping
+
+- A public push transaction contains one aggregate `push-resolved` event and
+  a separately addressed actor `entity-moved` event with `cause: "push"`.
+  Their relative ordering is not stable under Undo, so lookup must scan the
+  entire semantic event array without changing its order or endpoints.
+- A pushed-chain entity is still deduplicated by full occurrence and addressed
+  cell equality against `push-resolved.moved`.
+- The actor is identified only by full `EntityOccurrenceAddress` equality with
+  `push-resolved.actor`, not a fixture or canonical entity ID. Its motion stays
+  addressed but becomes a `move` plan motion without anticipation/settle,
+  duplicate impact, or duplicate push audio.
+- `push-resolved` is the sole I1 aggregate impact/push-audio source. Reset has
+  no success cue; only `win-changed { solved: true }` may emit the existing
+  success cue.
+- Required correction tests cover forward and reverse push order/endpoints,
+  nested duplicate suppression, aggregate feedback count, and reset/win audio.
+
+### Correction verification and handoff
+
+- `npm.cmd ci --no-audit --no-fund`: passed, 64 packages added.
+- `npm.cmd run typecheck`: passed.
+- `npm.cmd run test`: passed, 10 files / 50 tests, including forward and
+  reverse aggregate-push feedback, nested duplicate suppression, and reset/win
+  audio expectations.
+- `npm.cmd run build`: passed. The existing >500 kB Vite chunk advisory
+  remains (`527.88 kB` minified main chunk); no package/configuration change
+  was made.
+- `git diff --check`, exact allowed-path audit, and the runtime/animation
+  legacy-symbol/fixed-container/fixture search passed. Only this log,
+  `transitions.ts`, and its test changed; EventPipeline integration coverage
+  did not require a modification.
+- Amend the existing frontend candidate only. Report its new SHA to the
+  coordinator and stop; independent QA remains coordinator-owned.

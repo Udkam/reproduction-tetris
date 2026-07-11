@@ -1,17 +1,17 @@
-import { createAnimationPlan, type AnimationPlan, type AnimationDirection } from "../animation/transitions";
-import type { SimulationCommand } from "../core/commands";
-import { hashState } from "../core/hash";
-import type { SimulationSession, HistoryRecord } from "../core/history";
-import { dispatchCommand } from "../core/reducer";
-import type { TransitionEvent } from "../core/types";
+import { createAnimationPlan, type AnimationPlan } from "../animation/transitions";
+import type { PublicCommand } from "../core/commands";
+import type { SimulationSession } from "../core/history";
+import { dispatchPublicCommand } from "../core/reducer";
+import type { CommandResult, RejectionCode, SemanticEvent } from "../core/types";
 import { createProjectionFromSimulationState } from "../projection/simulationProjection";
 import type { WorldProjection } from "../projection/types";
 
 export interface EventPipelineResult {
   readonly accepted: boolean;
-  readonly reason?: string;
+  readonly rejectionCode?: RejectionCode;
   readonly session: SimulationSession;
-  readonly events: readonly TransitionEvent[];
+  readonly result: CommandResult;
+  readonly events: readonly SemanticEvent[];
   readonly animationPlan: AnimationPlan;
   readonly previousHash: string;
   readonly nextHash: string;
@@ -20,53 +20,26 @@ export interface EventPipelineResult {
 }
 
 export class EventPipeline {
-  dispatch(session: SimulationSession, command: SimulationCommand): EventPipelineResult {
+  dispatch(session: SimulationSession, command: PublicCommand): EventPipelineResult {
     const previousState = session.present;
-    const historyRecord = getHistoryRecordForCommand(session, command);
-    const coreResult = dispatchCommand(session, command);
-    const animationDirection = getAnimationDirection(command);
-    const events = getEventsForAnimation(coreResult.events, historyRecord, animationDirection);
-    const animationPlan = createAnimationPlan(events, { direction: animationDirection });
+    const envelope = dispatchPublicCommand(session, command);
+    const result = envelope.result;
+    const events = result.kind === "accepted" ? result.transaction.events : result.events;
+    const animationPlan = createAnimationPlan(events, result.command);
+    const previousHash = result.kind === "accepted" ? result.transaction.stateHashBefore : result.stateHashBefore;
+    const nextHash = result.kind === "accepted" ? result.transaction.stateHashAfter : result.stateHashAfter;
 
     return {
-      accepted: coreResult.accepted,
-      reason: coreResult.reason,
-      session: coreResult.session,
+      accepted: result.kind === "accepted",
+      ...(result.kind === "rejected" ? { rejectionCode: result.rejection.code } : {}),
+      session: envelope.session,
+      result,
       events,
       animationPlan,
-      previousHash: hashState(previousState),
-      nextHash: hashState(coreResult.session.present),
+      previousHash,
+      nextHash,
       previousProjection: createProjectionFromSimulationState(previousState),
-      nextProjection: createProjectionFromSimulationState(coreResult.session.present),
+      nextProjection: createProjectionFromSimulationState(envelope.session.present),
     };
   }
-}
-
-function getHistoryRecordForCommand(
-  session: SimulationSession,
-  command: SimulationCommand,
-): HistoryRecord | undefined {
-  if (command.type === "undo") {
-    return session.history.past.at(-1);
-  }
-  if (command.type === "redo") {
-    return session.history.future[0];
-  }
-  return undefined;
-}
-
-function getAnimationDirection(command: SimulationCommand): AnimationDirection {
-  return command.type === "undo" ? "reverse" : "forward";
-}
-
-function getEventsForAnimation(
-  events: readonly TransitionEvent[],
-  historyRecord: HistoryRecord | undefined,
-  direction: AnimationDirection,
-) {
-  if (direction === "reverse") {
-    return historyRecord?.transitionEvents ?? events;
-  }
-
-  return events.length > 0 ? events : (historyRecord?.transitionEvents ?? events);
 }

@@ -1,8 +1,7 @@
-import { Enter, Exit, Move, Redo, Reset, Undo, type SimulationCommand } from "../core/commands";
+import { Redo, Reset, Step, Undo, type PublicCommand } from "../core/commands";
 
 export interface InteractionPrototypeOptions {
-  onCommand: (command: SimulationCommand) => void;
-  getRecursiveCommand: () => SimulationCommand;
+  onCommand: (command: PublicCommand) => void;
 }
 
 export class InteractionPrototype {
@@ -12,7 +11,7 @@ export class InteractionPrototype {
       return;
     }
 
-    const command = commandFromKeyboardEvent(event, this.options.getRecursiveCommand);
+    const command = commandFromKeyboardEvent(event);
     if (!command) {
       return;
     }
@@ -44,21 +43,20 @@ export class InteractionPrototype {
 
 export function commandFromKeyboardEvent(
   event: Pick<KeyboardEvent, "key" | "shiftKey">,
-  getRecursiveCommand: () => SimulationCommand = () => Enter("container-b"),
-): SimulationCommand | null {
+): PublicCommand | null {
   const key = event.key.toLowerCase();
 
   if (key === "arrowup" || key === "w") {
-    return Move("up");
+    return Step("up");
   }
   if (key === "arrowdown" || key === "s") {
-    return Move("down");
+    return Step("down");
   }
   if (key === "arrowleft" || key === "a") {
-    return Move("left");
+    return Step("left");
   }
   if (key === "arrowright" || key === "d") {
-    return Move("right");
+    return Step("right");
   }
   if (key === "z") {
     return event.shiftKey ? Redo() : Undo();
@@ -72,9 +70,5 @@ export function commandFromKeyboardEvent(
   if (key === "r") {
     return Reset();
   }
-  if (key === "e") {
-    return getRecursiveCommand();
-  }
-
   return null;
 }
