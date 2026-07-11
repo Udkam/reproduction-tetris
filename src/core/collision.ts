@@ -1,6 +1,6 @@
-import type { Direction, Entity, EntityId, GridPosition, SimulationState } from "./types";
-import { getEntitiesInWorld, isPositionInsideWorld } from "./worldGraph";
 import { nextPosition } from "./grid";
+import { getEntitiesInWorld, isPositionInsideWorld } from "./worldGraph";
+import type { Direction, Entity, EntityId, GridPosition, SimulationState } from "./types";
 
 export interface Occupancy {
   readonly position: GridPosition;
@@ -8,24 +8,9 @@ export interface Occupancy {
 }
 
 export type PushChainResolution =
-  | {
-      readonly type: "empty";
-      readonly target: GridPosition;
-    }
-  | {
-      readonly type: "blocked";
-      readonly attemptedPosition: GridPosition;
-      readonly reason: string;
-      readonly blockers: readonly Entity[];
-    }
-  | {
-      readonly type: "push";
-      readonly chain: readonly {
-        readonly entity: Entity;
-        readonly from: GridPosition;
-        readonly to: GridPosition;
-      }[];
-    };
+  | { readonly kind: "not-applicable" }
+  | { readonly kind: "blocked"; readonly code: "target-out-of-bounds" | "target-solid-not-pushable" | "push-chain-out-of-bounds"; readonly attemptedPosition: GridPosition }
+  | { readonly kind: "accepted"; readonly chain: readonly { readonly entity: Entity; readonly from: GridPosition; readonly to: GridPosition }[] };
 
 export function getSolidOccupantsAt(
   state: SimulationState,
@@ -36,7 +21,6 @@ export function getSolidOccupantsAt(
     if (entity.id === excludedEntityId || !state.components.solids[entity.id]) {
       return false;
     }
-
     const entityPosition = state.components.positions[entity.id];
     return entityPosition?.x === position.x && entityPosition.y === position.y;
   });
@@ -47,10 +31,7 @@ export function getOccupancy(
   position: GridPosition,
   excludedEntityId?: EntityId,
 ): Occupancy {
-  return {
-    position,
-    solids: getSolidOccupantsAt(state, position, excludedEntityId),
-  };
+  return { position, solids: getSolidOccupantsAt(state, position, excludedEntityId) };
 }
 
 export function resolvePushChain(
@@ -60,54 +41,33 @@ export function resolvePushChain(
   actorId: EntityId,
 ): PushChainResolution {
   if (!isPositionInsideWorld(state, target)) {
-    return {
-      type: "blocked",
-      attemptedPosition: target,
-      reason: "target-out-of-bounds",
-      blockers: [],
-    };
+    return { kind: "not-applicable" };
   }
-
   const chain: { entity: Entity; from: GridPosition; to: GridPosition }[] = [];
   let cursor = target;
-
+  const initialSolids = getSolidOccupantsAt(state, cursor, actorId);
+  if (initialSolids.length === 0) {
+    return { kind: "not-applicable" };
+  }
   while (true) {
-    const occupancy = getOccupancy(state, cursor, actorId);
-
-    if (occupancy.solids.length === 0) {
-      if (chain.length === 0) {
-        return { type: "empty", target };
-      }
-
-      return { type: "push", chain };
+    const solids = getSolidOccupantsAt(state, cursor, actorId);
+    if (solids.length === 0) {
+      return { kind: "accepted", chain };
     }
-
-    const unpushable = occupancy.solids.filter((entity) => !state.components.pushables[entity.id]);
-    if (unpushable.length > 0) {
-      return {
-        type: "blocked",
-        attemptedPosition: cursor,
-        reason: "target-solid-not-pushable",
-        blockers: unpushable,
-      };
+    if (solids.some((entity) => !state.components.pushables[entity.id])) {
+      return { kind: "blocked", code: "target-solid-not-pushable", attemptedPosition: cursor };
     }
-
-    for (const entity of occupancy.solids) {
+    for (const entity of solids) {
       const from = state.components.positions[entity.id];
-      const to = nextPosition(from, direction);
-
-      if (!isPositionInsideWorld(state, to)) {
-        return {
-          type: "blocked",
-          attemptedPosition: to,
-          reason: "push-chain-out-of-bounds",
-          blockers: [entity],
-        };
+      if (!from) {
+        return { kind: "blocked", code: "target-solid-not-pushable", attemptedPosition: cursor };
       }
-
+      const to = nextPosition(from, direction);
+      if (!isPositionInsideWorld(state, to)) {
+        return { kind: "blocked", code: "push-chain-out-of-bounds", attemptedPosition: to };
+      }
       chain.push({ entity, from, to });
     }
-
     cursor = nextPosition(cursor, direction);
   }
 }

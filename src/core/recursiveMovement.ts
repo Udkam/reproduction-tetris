@@ -1,2 +1,2 @@
-export { enterContainer, exitContainer } from "./recursiveTransitions";
-export type { RecursiveTransitionResolution } from "./recursiveTransitions";
+export { selectEntryPort, selectExitPort } from "./ports";
+export type { PortSelection } from "./ports";

@@ -1,20 +1,21 @@
 import { getContainerComponent, getPosition } from "./components";
-import type {
-  ContainerComponent,
-  Entity,
-  EntityId,
-  GridPosition,
-  SimulationState,
-  WorldId,
-  WorldNode,
-} from "./types";
-
-const DIRECTION_ORDER = ["up", "right", "down", "left"] as const;
+import { validateInitialSimulationState, type SimulationLoadResult } from "./validation";
+import type { Entity, EntityId, GridPosition, SimulationState, WorldId, WorldNode } from "./types";
 
 export function createSimulationState(state: SimulationState): SimulationState {
-  const cloned = cloneSimulationState(state);
-  assertValidSimulationState(cloned);
-  return cloned;
+  return cloneSimulationState(state);
+}
+
+export function loadSimulationState(input: unknown): SimulationLoadResult {
+  const preflight = validateInitialSimulationState(input);
+  if (preflight.kind === "invalid") return { kind: "rejected", diagnostics: preflight.diagnostics };
+  try {
+    const cloned = cloneSimulationState(input as SimulationState);
+    const validation = validateInitialSimulationState(cloned);
+    return validation.kind === "valid" ? { kind: "accepted", state: cloned } : { kind: "rejected", diagnostics: validation.diagnostics };
+  } catch {
+    return { kind: "rejected", diagnostics: [{ code: "invalid-level-data", message: "state clone failed structural validation" }] };
+  }
 }
 
 export function cloneSimulationState(state: SimulationState): SimulationState {
@@ -24,27 +25,28 @@ export function cloneSimulationState(state: SimulationState): SimulationState {
     activeWorldId: state.activeWorldId,
     playerId: state.playerId,
     focusPath: [...state.focusPath],
+    ruleSet: {
+      version: state.ruleSet.version,
+      cycleMode: state.ruleSet.cycleMode,
+      ruleEnablement: { ...state.ruleSet.ruleEnablement },
+      interactionPriority: [...state.ruleSet.interactionPriority],
+    },
+    portTables: [...state.portTables].sort((left, right) => compareIdentifiers(left.containerId, right.containerId)).map((table) => ({
+      containerId: table.containerId,
+      ports: [...table.ports].sort((left, right) => compareIdentifiers(left.id, right.id)).map((port) => ({
+        id: port.id,
+        outerApproach: port.outerApproach,
+        innerLanding: { ...port.innerLanding },
+        innerExit: port.innerExit,
+      })),
+    })),
     worlds: Object.fromEntries(Object.entries(state.worlds).map(([id, world]) => [id, { ...world, size: { ...world.size } }])),
     entities: Object.fromEntries(Object.entries(state.entities).map(([id, entity]) => [id, { ...entity }])),
     components: {
-      positions: Object.fromEntries(
-        Object.entries(state.components.positions).map(([id, position]) => [id, { ...position }]),
-      ),
-      containers: Object.fromEntries(
-        Object.entries(state.components.containers).map(([id, container]) => [
-          id,
-          {
-            ...container,
-            entrances: Object.fromEntries(
-              Object.entries(container.entrances).map(([direction, entrance]) => [direction, { ...entrance }]),
-            ),
-          },
-        ]),
-      ),
+      positions: Object.fromEntries(Object.entries(state.components.positions).map(([id, position]) => [id, { ...position }])),
+      containers: Object.fromEntries(Object.entries(state.components.containers).map(([id, container]) => [id, { ...container }])),
       solids: Object.fromEntries(Object.entries(state.components.solids).map(([id, solid]) => [id, { ...solid }])),
-      pushables: Object.fromEntries(
-        Object.entries(state.components.pushables).map(([id, pushable]) => [id, { ...pushable }]),
-      ),
+      pushables: Object.fromEntries(Object.entries(state.components.pushables).map(([id, pushable]) => [id, { ...pushable }])),
       players: Object.fromEntries(Object.entries(state.components.players).map(([id, player]) => [id, { ...player }])),
       goals: Object.fromEntries(Object.entries(state.components.goals).map(([id, goal]) => [id, { ...goal }])),
       visuals: Object.fromEntries(Object.entries(state.components.visuals).map(([id, visual]) => [id, { ...visual }])),
@@ -52,64 +54,18 @@ export function cloneSimulationState(state: SimulationState): SimulationState {
   };
 }
 
-export function assertValidSimulationState(state: SimulationState) {
-  if (state.version !== 1) {
-    throw new Error(`Unsupported simulation state version "${state.version}".`);
-  }
-
-  if (!state.worlds[state.rootWorldId]) {
-    throw new Error(`Root world "${state.rootWorldId}" does not exist.`);
-  }
-
-  if (!state.worlds[state.activeWorldId]) {
-    throw new Error(`Active world "${state.activeWorldId}" does not exist.`);
-  }
-
-  if (!state.entities[state.playerId]) {
-    throw new Error(`Player entity "${state.playerId}" does not exist.`);
-  }
-
-  if (!state.components.players[state.playerId]) {
-    throw new Error(`Player entity "${state.playerId}" has no player component.`);
-  }
-
-  assertComponentEntityReferences(state);
-  assertPositionReferences(state);
-  assertSolidOccupancy(state);
-  assertContainerReferences(state);
-  assertFocusPath(state);
-}
-
 export function getWorld(state: SimulationState, worldId: WorldId): WorldNode | undefined {
   return state.worlds[worldId];
-}
-
-export function requireWorld(state: SimulationState, worldId: WorldId): WorldNode {
-  const world = getWorld(state, worldId);
-  if (!world) {
-    throw new Error(`World "${worldId}" does not exist.`);
-  }
-
-  return world;
 }
 
 export function getEntity(state: SimulationState, entityId: EntityId): Entity | undefined {
   return state.entities[entityId];
 }
 
-export function requireEntity(state: SimulationState, entityId: EntityId): Entity {
-  const entity = getEntity(state, entityId);
-  if (!entity) {
-    throw new Error(`Entity "${entityId}" does not exist.`);
-  }
-
-  return entity;
-}
-
 export function getEntitiesInWorld(state: SimulationState, worldId: WorldId): readonly Entity[] {
   return Object.values(state.entities)
     .filter((entity) => state.components.positions[entity.id]?.worldId === worldId)
-    .sort((left, right) => left.id.localeCompare(right.id));
+    .sort((left, right) => compareIdentifiers(left.id, right.id));
 }
 
 export function getWorldParentContainers(
@@ -121,11 +77,10 @@ export function getWorldParentContainers(
       if (container.innerWorldId !== worldId) {
         return [];
       }
-
       const position = getPosition(state, entityId);
       return position ? [{ entityId, parentWorldId: position.worldId }] : [];
     })
-    .sort((left, right) => left.entityId.localeCompare(right.entityId));
+    .sort((left, right) => compareIdentifiers(left.entityId, right.entityId));
 }
 
 export function findEntityAt(
@@ -137,7 +92,6 @@ export function findEntityAt(
     if (entity.id === excludedEntityId) {
       return false;
     }
-
     const entityPosition = getPosition(state, entity.id);
     return entityPosition?.x === position.x && entityPosition.y === position.y;
   });
@@ -156,35 +110,28 @@ export function isPositionInsideWorld(state: SimulationState, position: GridPosi
   );
 }
 
-export function chooseContainerEntrance(container: ContainerComponent): { readonly x: number; readonly y: number } {
-  for (const direction of DIRECTION_ORDER) {
-    const entrance = container.entrances[direction];
-    if (entrance) {
-      return { x: entrance.x, y: entrance.y };
-    }
-  }
-
-  return { x: 0, y: 0 };
-}
-
 export function createStage3BSimulationState(): SimulationState {
-  return createSimulationState({
+  const fixture: SimulationState = {
     version: 1,
     rootWorldId: "world-a",
     activeWorldId: "world-a",
     playerId: "player-a",
     focusPath: [],
+    ruleSet: {
+      version: 1,
+      cycleMode: "forbid",
+      ruleEnablement: { push: "enabled", enter: "enabled", exit: "enabled" },
+      interactionPriority: ["enter", "push", "exit"],
+    },
+    portTables: [
+      {
+        containerId: "container-b",
+        ports: [{ id: "port-b-south", outerApproach: "down", innerLanding: { x: 2, y: 2 }, innerExit: "up" }],
+      },
+    ],
     worlds: {
-      "world-a": {
-        id: "world-a",
-        paletteId: "void-lab",
-        size: { width: 10, height: 8 },
-      },
-      "world-c": {
-        id: "world-c",
-        paletteId: "inner-mint",
-        size: { width: 8, height: 6 },
-      },
+      "world-a": { id: "world-a", paletteId: "void-lab", size: { width: 10, height: 8 } },
+      "world-c": { id: "world-c", paletteId: "inner-mint", size: { width: 8, height: 6 } },
     },
     entities: {
       "player-a": { id: "player-a" },
@@ -203,33 +150,16 @@ export function createStage3BSimulationState(): SimulationState {
         "goal-c": { worldId: "world-c", x: 1, y: 1 },
         "box-c": { worldId: "world-c", x: 5, y: 3 },
       },
-      containers: {
-        "container-b": {
-          innerWorldId: "world-c",
-          entrances: {
-            down: { x: 2, y: 2, facing: "down" },
-          },
-          allowsRecursiveCycle: false,
-        },
-      },
+      containers: { "container-b": { innerWorldId: "world-c" } },
       solids: {
         "player-a": { blocksMovement: true },
         "box-a": { blocksMovement: true },
         "container-b": { blocksMovement: true },
         "box-c": { blocksMovement: true },
       },
-      pushables: {
-        "box-a": { pushable: true },
-        "container-b": { pushable: true },
-        "box-c": { pushable: true },
-      },
-      players: {
-        "player-a": { controlled: true },
-      },
-      goals: {
-        "goal-a": { acceptsVisualKind: "box" },
-        "goal-c": { acceptsVisualKind: "box" },
-      },
+      pushables: { "box-a": { pushable: true }, "container-b": { pushable: true }, "box-c": { pushable: true } },
+      players: { "player-a": { controlled: true } },
+      goals: { "goal-a": { acceptsVisualKind: "box" }, "goal-c": { acceptsVisualKind: "box" } },
       visuals: {
         "player-a": { kind: "player", width: 1.25, height: 1.25, offsetX: 0.1, offsetY: 0.1 },
         "box-a": { kind: "box", width: 1.25, height: 1.25, offsetX: -0.25, offsetY: 0.1 },
@@ -239,121 +169,43 @@ export function createStage3BSimulationState(): SimulationState {
         "box-c": { kind: "box", width: 1.35, height: 1.35, offsetX: -0.35, offsetY: 0.2 },
       },
     },
-  });
+  };
+
+  const loaded = loadSimulationState(fixture);
+  return loaded.kind === "accepted" ? loaded.state : createInternalFallbackState();
 }
 
-function assertComponentEntityReferences(state: SimulationState) {
-  for (const [componentName, components] of Object.entries(state.components)) {
-    for (const entityId of Object.keys(components)) {
-      if (!state.entities[entityId]) {
-        throw new Error(`Component "${componentName}" references unknown entity "${entityId}".`);
-      }
-    }
-  }
-}
-
-function assertPositionReferences(state: SimulationState) {
-  for (const [entityId, position] of Object.entries(state.components.positions)) {
-    if (!isPositionInsideWorld(state, position)) {
-      throw new Error(`Entity "${entityId}" has invalid position in world "${position.worldId}".`);
-    }
-  }
-}
-
-function assertSolidOccupancy(state: SimulationState) {
-  const occupied = new Map<string, EntityId>();
-
-  for (const entityId of Object.keys(state.components.solids)) {
-    const position = getPosition(state, entityId);
-    if (!position) {
-      continue;
-    }
-
-    const key = `${position.worldId}:${position.x}:${position.y}`;
-    const existingEntityId = occupied.get(key);
-
-    if (existingEntityId) {
-      throw new Error(
-        `Impossible position: solid entities "${existingEntityId}" and "${entityId}" overlap at "${key}".`,
-      );
-    }
-
-    occupied.set(key, entityId);
-  }
-}
-
-function assertContainerReferences(state: SimulationState) {
-  const edges = getContainmentEdges(state);
-
-  for (const [entityId, container] of Object.entries(state.components.containers)) {
-    if (!state.worlds[container.innerWorldId]) {
-      throw new Error(`Container "${entityId}" references unknown inner world "${container.innerWorldId}".`);
-    }
-
-    const ownerWorldId = getPosition(state, entityId)?.worldId;
-    if (!ownerWorldId) {
-      throw new Error(`Container "${entityId}" has no owner world position.`);
-    }
-
-    if (!container.allowsRecursiveCycle && hasWorldPath(edges, container.innerWorldId, ownerWorldId)) {
-      throw new Error(`Container "${entityId}" creates an unsupported recursive cycle.`);
-    }
-  }
-}
-
-function assertFocusPath(state: SimulationState) {
-  let currentWorldId = state.rootWorldId;
-
-  for (const containerId of state.focusPath) {
+export function resolveWorldAddress(state: SimulationState, address: readonly EntityId[]): WorldId | undefined {
+  let worldId = state.rootWorldId;
+  for (const containerId of address) {
     const position = getPosition(state, containerId);
     const container = getContainerComponent(state, containerId);
-
-    if (!position || !container || position.worldId !== currentWorldId) {
-      throw new Error(`Focus path references invalid container "${containerId}".`);
+    if (!position || !container || position.worldId !== worldId) {
+      return undefined;
     }
-
-    currentWorldId = container.innerWorldId;
+    worldId = container.innerWorldId;
   }
-
-  if (currentWorldId !== state.activeWorldId) {
-    throw new Error(`Focus path resolves to "${currentWorldId}", not active world "${state.activeWorldId}".`);
-  }
+  return worldId;
 }
 
-function getContainmentEdges(state: SimulationState): ReadonlyMap<WorldId, readonly WorldId[]> {
-  const edgeEntries = new Map<WorldId, WorldId[]>();
-
-  for (const [entityId, container] of Object.entries(state.components.containers)) {
-    const ownerWorldId = getPosition(state, entityId)?.worldId;
-    if (!ownerWorldId) {
-      continue;
-    }
-
-    const targets = edgeEntries.get(ownerWorldId) ?? [];
-    targets.push(container.innerWorldId);
-    edgeEntries.set(ownerWorldId, targets);
-  }
-
-  return edgeEntries;
+function compareIdentifiers(left: string, right: string): number {
+  return left < right ? -1 : left > right ? 1 : 0;
 }
 
-function hasWorldPath(edges: ReadonlyMap<WorldId, readonly WorldId[]>, fromWorldId: WorldId, toWorldId: WorldId) {
-  const visited = new Set<WorldId>();
-  const stack = [fromWorldId];
-
-  while (stack.length > 0) {
-    const currentWorldId = stack.pop();
-    if (!currentWorldId || visited.has(currentWorldId)) {
-      continue;
-    }
-
-    if (currentWorldId === toWorldId) {
-      return true;
-    }
-
-    visited.add(currentWorldId);
-    stack.push(...(edges.get(currentWorldId) ?? []));
-  }
-
-  return false;
+function createInternalFallbackState(): SimulationState {
+  return {
+    version: 1,
+    rootWorldId: "fallback-world",
+    activeWorldId: "fallback-world",
+    playerId: "fallback-player",
+    focusPath: [],
+    ruleSet: { version: 1, cycleMode: "forbid", ruleEnablement: { push: "disabled", enter: "disabled", exit: "disabled" }, interactionPriority: [] },
+    portTables: [],
+    worlds: { "fallback-world": { id: "fallback-world", paletteId: "void-lab", size: { width: 3, height: 3 } } },
+    entities: { "fallback-player": { id: "fallback-player" } },
+    components: {
+      positions: { "fallback-player": { worldId: "fallback-world", x: 1, y: 1 } },
+      containers: {}, solids: { "fallback-player": { blocksMovement: true } }, pushables: {}, players: { "fallback-player": { controlled: true } }, goals: {}, visuals: {},
+    },
+  };
 }

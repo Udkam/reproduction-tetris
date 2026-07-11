@@ -8,7 +8,6 @@ export type Direction = "up" | "down" | "left" | "right";
 export type CorePaletteId = "void-lab" | "inner-mint";
 export type VisualKind = "player" | "box" | "recursive-container" | "goal";
 
-/** Frozen R1 public values. I1 only adapts legacy movement into these shapes. */
 export type CycleMode = "forbid";
 export type InteractionRule = "walk" | "push" | "enter" | "exit";
 export type PrioritizedInteractionRule = Exclude<InteractionRule, "walk">;
@@ -85,16 +84,8 @@ export interface Entity {
 
 export interface PositionComponent extends GridPosition {}
 
-export interface ContainerEntrance {
-  readonly x: number;
-  readonly y: number;
-  readonly facing?: Direction;
-}
-
 export interface ContainerComponent {
   readonly innerWorldId: WorldId;
-  readonly entrances: Partial<Record<Direction, ContainerEntrance>>;
-  readonly allowsRecursiveCycle: boolean;
 }
 
 export interface SolidComponent {
@@ -137,53 +128,12 @@ export interface SimulationState {
   readonly activeWorldId: WorldId;
   readonly playerId: EntityId;
   readonly focusPath: readonly EntityId[];
+  readonly ruleSet: RuleSetR1;
+  readonly portTables: readonly ContainerPortTable[];
   readonly worlds: Readonly<Record<WorldId, WorldNode>>;
   readonly entities: Readonly<Record<EntityId, Entity>>;
   readonly components: ComponentStore;
 }
-
-/** @deprecated I1-only legacy event compatibility. Use SemanticEvent at the public boundary. */
-export type TransitionEvent =
-  | {
-      readonly type: "move";
-      readonly entityId: EntityId;
-      readonly from: GridPosition;
-      readonly to: GridPosition;
-    }
-  | {
-      readonly type: "push";
-      readonly actorId: EntityId;
-      readonly direction: Direction;
-      readonly pushed: readonly {
-        readonly entityId: EntityId;
-        readonly from: GridPosition;
-        readonly to: GridPosition;
-      }[];
-    }
-  | {
-      readonly type: "blocked";
-      readonly actorId: EntityId;
-      readonly direction?: Direction;
-      readonly attemptedPosition?: GridPosition;
-      readonly reason: string;
-    }
-  | {
-      readonly type: "enterWorld";
-      readonly actorId: EntityId;
-      readonly containerId: EntityId;
-      readonly fromWorldId: WorldId;
-      readonly toWorldId: WorldId;
-    }
-  | {
-      readonly type: "exitWorld";
-      readonly actorId: EntityId;
-      readonly containerId: EntityId;
-      readonly fromWorldId: WorldId;
-      readonly toWorldId: WorldId;
-    }
-  | {
-      readonly type: "reset";
-    };
 
 export type RejectionCode =
   | "actor-not-active"
@@ -210,7 +160,6 @@ type RejectionContext = {
   readonly port?: PortOccurrenceAddress;
 };
 
-/** Frozen R1 code-to-reason mapping; free-form rejection text is not public. */
 export type Rejection =
   | (RejectionContext & { readonly code: "actor-not-active"; readonly reason: { readonly kind: "actor" } })
   | (RejectionContext & { readonly code: "focus-invalid"; readonly reason: { readonly kind: "focus" } })
@@ -245,20 +194,9 @@ export type Rejection =
     });
 
 export type AttemptOutcome =
-  | {
-      readonly kind: "not-applicable";
-      readonly rule: InteractionRule;
-    }
-  | {
-      readonly kind: "blocked";
-      readonly rule: AttemptRule;
-      readonly rejection: Rejection;
-    }
-  | {
-      readonly kind: "accepted";
-      readonly rule: InteractionRule;
-      readonly transaction: Transaction;
-    };
+  | { readonly kind: "not-applicable"; readonly rule: InteractionRule }
+  | { readonly kind: "blocked"; readonly rule: AttemptRule; readonly rejection: Rejection }
+  | { readonly kind: "accepted"; readonly rule: InteractionRule; readonly transaction: Transaction };
 
 export interface Transaction {
   readonly id: TransactionId;
@@ -354,12 +292,7 @@ export type StepCommandResult =
 
 export type NonStepCommand = Exclude<PublicCommand, { readonly type: "step" }>;
 export type NonStepCommandResult =
-  | {
-      readonly kind: "accepted";
-      readonly command: NonStepCommand;
-      readonly transaction: Transaction;
-      readonly attempts: readonly [];
-    }
+  | { readonly kind: "accepted"; readonly command: NonStepCommand; readonly transaction: Transaction; readonly attempts: readonly [] }
   | {
       readonly kind: "rejected";
       readonly command: NonStepCommand;

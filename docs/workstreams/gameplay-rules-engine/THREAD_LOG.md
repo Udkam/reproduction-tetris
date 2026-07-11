@@ -660,6 +660,34 @@ blocker without weakening the ordinary cross-workstream public-type freeze.
   paths are the I1 gameplay/core sources/tests plus this log; no frontend
   notification, C1 work, merge, rebase, or push is authorized after commit.
 
+## 2026-07-12 — C1 deterministic core-safety execution (active)
+
+- Thread ID: `019f4e82-7cb8-73c1-b4a1-d333273b359f`; coordinator:
+  `019f4deb-7e83-7583-8cd5-8e6f075bc331`; independent reviewer:
+  `019f4e80-1462-7b32-8146-19ded692836c`.
+- Authorization base: `d3552c81894a43805854611822bcfab86e993538`, checked out
+  detached after `git status --short` confirmed a clean worktree. No merge or
+  rebase was performed.
+- Before editing, read the root operating contract, `CURRENT_TASK.md`, the
+  relevant core/presentation boundary in `DESIGN.md`, the accepted R1 contract,
+  and the latest coordinator, gameplay, and QA logs. The coordinator records
+  the accepted I1 chain as gameplay `a4633c2` / frontend `ef27c9c` / QA
+  `9579446`, integrated before this C1 base.
+- Inspected every C1-owned core module/test and all current I1 runtime and
+  animation consumers. `src/runtime/EventPipeline.ts`, `GameRuntime.ts`,
+  `InteractionPrototype.ts`, and `src/animation/transitions.ts` consume only
+  `PublicCommand`, `dispatchPublicCommand`, `PublicDispatchEnvelope`,
+  `CommandResult`, and `SemanticEvent`; they do not import legacy core command
+  or event names. The legacy `Move`/`Enter`/`Exit`, `SimulationCommand`,
+  `CommandDispatchResult`, `TransitionEvent`, and adapter references are
+  confined to `src/core/**` at the C1 base.
+- C1 implementation assumption: preserve those public I1 names/signatures
+  unchanged while replacing only their internal deterministic resolution. The
+  historical Stage3B fixture is minimally migrated solely to keep unchanged
+  runtime consumers compiling; it is not new content. Rejected valid public
+  commands must be typed and non-throwing; out-of-domain JavaScript values
+  remain outside that union and may fail closed before dispatch.
+
 ### Coordinator-authorized I1 gameplay correction
 
 - Coordinator read-only review rejected the first candidate before any
@@ -688,3 +716,347 @@ blocker without weakening the ordinary cross-workstream public-type freeze.
   (`10` files / `45` tests); and `npm.cmd run build` with only the existing
   520.29 kB Vite chunk advisory. `git diff --check`, exact-path review, and
   fixture/container/port hard-code searches passed for the correction delta.
+
+### C1 implementation, contract decisions, and verification
+
+- Replaced the I1 bridge with direct R1 dispatch in `reducer.ts` while keeping
+  the stable `PublicCommand`, `dispatchPublicCommand(session, command)`,
+  `PublicDispatchEnvelope`, `CommandResult`, `SemanticEvent`, address, and
+  transaction names/signatures unchanged for runtime/animation consumers.
+  `PublicDispatchEnvelope` now lives in the reducer rather than an adapter.
+- Removed `legacyRuntimeAdapter.ts` and its test, plus all legacy core command,
+  result, event, wrapper, system, and replay surfaces. The exact case-sensitive
+  search for `Move`, `Enter`, `Exit`, `SimulationCommand`,
+  `StateChangingCommand`, `CommandDispatchResult`, `TransitionEvent`,
+  `legacyRuntimeAdapter`, `dispatchCommand`, `moveActor`, `enterContainer`,
+  `exitContainer`, `createSimulationSystems`, and `replayCommands` has zero
+  matches in `src/core/**`.
+- Added one canonical R1 `ruleSet` and `portTables` state home, deep cloning
+  and canonical table/port ordering, stable canonical hashing, non-throwing
+  `loadSimulationState` validation, present-state validation before dispatch,
+  and candidate-state validation before every commit. A malformed supplied
+  session with a valid `PublicCommand` returns typed unchanged
+  `invalid-level-data`; only an out-of-domain runtime command fails closed
+  with the existing deterministic `TypeError("Invalid PublicCommand.")`.
+- Implemented literal data-driven resolution: walk accepts immediately when
+  possible, otherwise only the exact enabled `interactionPriority` order is
+  evaluated. Disabled rules do not appear in attempts; all-not-applicable
+  resolution ends in the frozen fallback. Entry and exit use resolved
+  root-plus-focus-path addresses, exact port mappings, inverse directions, and
+  focused occurrence selection. Entry versus push is priority-driven, not
+  fixture-driven; exit remains after walk.
+- Coordinator clarification consumed: an entity with a container component is
+  normally pushable only when it has `PushableComponent`. Same-world pushing
+  moves only that entity's parent-world position and preserves its contained
+  world reference; it never performs a cross-port/world transfer. Tests cover
+  both a pushable container under push-first priority and a non-pushable solid
+  container block, plus entry-first priority for the same arrangement.
+- Added deterministic full-graph `cycleMode: "forbid"` validation across all
+  worlds, including unreachable components. Traversal and witnesses use
+  code-point ordering rather than locale ordering. Load validation covers IDs,
+  component references, bounds, solid occupancy, focus, rule masks/priority,
+  every port uniqueness/inverse/landing branch, legacy cycle-enable input, and
+  self/two/three/unreachable cycle cases.
+- History now stores canonical transaction records. Undo reverses event order,
+  reindexes, swaps endpoints, reverses portal mode/movement direction, and
+  carries `sourceTransactionId`; redo restores forward events. Win changes are
+  emitted only for a true predicate transition, including reverse/forward
+  history behavior. Reset emits reset plus win change only when needed.
+- Stress suite: exact `xorshift32`, master seed `0x51CEB00C`, anchors case 0
+  `2116095627`, case 1 `2116365994`, and case 999 `1908512370`; 1,000 valid
+  generated fixtures and 64-command arrays reused for direct/replay; 3,000
+  initial Undo/Redo/Reset subcases; all eight rule masks; deterministic invalid
+  mutation coverage; invariant oracle; and canonical JSON failure report with
+  deterministic 1-minimal command reduction. The executed run completed with
+  zero uncaught failures.
+- Exact changed paths: `src/core/types.ts`, `commands.ts`, `components.ts`,
+  `worldGraph.ts`, `collision.ts`, `movement.ts`, `movementResolver.ts`,
+  `recursiveMovement.ts`, `recursiveTransitions.ts`, `reducer.ts`,
+  `history.ts`, `replay.ts`, `systems.ts`, deleted
+  `legacyRuntimeAdapter.ts` and `legacyRuntimeAdapter.test.ts`, new `ports.ts`,
+  new `validation.ts`, updated `core.test.ts` / `replay.test.ts`, new
+  `ports.test.ts` / `validation.test.ts` / `stress.test.ts`, and this log.
+  `grid.ts`, `win.ts`, and `hash.ts` were inspected and consumed without
+  modification. No runtime, projection, animation, render, package,
+  configuration, level, serialization, root-document, changelog, merge,
+  rebase, or push path changed.
+- Environment/evidence: Node `v24.12.0`, npm `11.6.2`; `npm.cmd ci --no-audit
+  --no-fund` passed (64 packages added); `npm.cmd run typecheck` passed;
+  `npm.cmd run test` passed (`12` files / `43` tests); `npm.cmd run build`
+  passed. The existing Vite advisory remains: the 533.46 kB minified main
+  chunk exceeds 500 kB; no build/package configuration was changed.
+  `git diff --check` passed. The source searches also found zero fixture IDs in
+  `reducer.ts`, `ports.ts`, and `validation.ts`.
+- Representative deterministic public traces: Stage3B initial hash
+  `bc289b3b`; `Step("right")` accepts transaction sequence 1, rule `walk`,
+  with root empty-path actor occurrence and final hash `f7dbec3a`. An
+  unpushable right target rejects with `target-solid-not-pushable`, attempt
+  trace `walk:not-applicable`, `enter:not-applicable`, `push:blocked`, one
+  non-transactional command-blocked event, and unchanged hash `bb435b20`.
+
+### C1 handoff status
+
+- Candidate is ready for exact-path staging and the one authorized C1 commit.
+  No QA/frontend notification, C1 follow-on work, merge, rebase, or push is
+  authorized after the commit; await coordinator scope review and independent
+  QA.
+
+## 2026-07-12 — C1 conditional-reject amendment and final verification
+
+- Coordinator `019f4deb-7e83-7583-8cd5-8e6f075bc331` conditionally rejected
+  candidate `5b18eb0edc8398d6822e71cfed58e5a7d08e61d1` and authorized only an
+  amendment on its unchanged parent
+  `d3552c81894a43805854611822bcfab86e993538`. This remains the gameplay
+  workstream's exact established 23-path C1 candidate; no new path, public API
+  migration, frontend/QA contact, merge, rebase, or push is authorized.
+- Corrected boundary push applicability: an empty out-of-bounds target is
+  `push:not-applicable`, allowing later literal-priority exit evaluation;
+  a started chain that runs out of bounds remains terminally blocked. Tests
+  exercise both push/exit priority orders and the blocking pushable-target
+  path. An accepted push now labels the actor `entity-moved` event
+  `cause:"push"`; exact forward and reversed Undo event traces retain one
+  aggregate push impact.
+- Added candidate validation before Undo (`previousState`), Redo (`nextState`),
+  and Reset (`initialState`) commits. Malformed candidates yield the frozen
+  rejected non-Step result (empty attempts, one `invalid-level-data` blocked
+  event) while preserving the supplied session's canonical hash, history,
+  focus, and sequence.
+- Made loading structurally total before clone/dereference and separated
+  initial from runtime landing occupancy. Runtime accepts the controlled actor
+  on a landing only at the final focused container occurrence, resolved active
+  inner world, and exact active cell; a player at an unrelated landing remains
+  invalid. Initial loading rejects every solid landing occupant. Port direction
+  values are verified before inverse-direction calculation, and an internally
+  rejected Stage3B fixture uses a deterministic valid fallback rather than
+  returning an invalid clone.
+- Cycle witnesses now slice the active gray-edge cycle rather than include a
+  DFS prefix, while preserving code-point-stable traversal and unreachable
+  component coverage. Validation/port tests cover the specified duplicate,
+  direction, landing, table, rule-mask/priority, alias, depth-two, and
+  malformed-input branches.
+- Completed the stress oracle corrections: immutable initial/history/future
+  snapshots are saved once and checked after every dispatch; event occurrences,
+  push moved cells, focus/reset/win shapes, and actual win-transition cardinality
+  are independently resolved against before/after snapshots. The deterministic
+  free-cell helper never returns an occupied fallback. Fault-injection tests
+  cover first-prefix selection, same-class 1-minimal reduction, and
+  report-contained invalid fixture/diagnostic replay. The suite remains exactly
+  1,000 fixtures, 64 commands per fixture, and 3,000 initial non-Step
+  subcases, with fixed xorshift anchors and no time/random API.
+- The prior focused stress run at the original 120,000 ms bound reached
+  `124.289s` and failed only the Vitest timeout (four companion tests passed;
+  there was no oracle failure report). At an intermediate 180,000 ms bound,
+  the focused file passed (`1` file / `5` tests; stress body `179.76s`, total
+  `180.94s`), which was too close to the bound. Per coordinator direction the
+  bound alone is now `240000` ms; scale, data domain, and oracle are unchanged.
+  The required subsequent full-suite second green run passed `12` files / `56`
+  tests in `116.24s` (`114.77s` test time).
+- Final verification on Node `v24.12.0` and npm `11.6.2`: clean
+  `npm.cmd ci --no-audit --no-fund` passed (64 packages added);
+  `npm.cmd run typecheck` passed; the full `npm.cmd run test` passed as above;
+  and `npm.cmd run build` passed. The existing Vite chunk-size advisory remains
+  (537.15 kB minified main chunk); no package/configuration change was made.
+  `git diff --check` passed. Core legacy-surface, fixture-selection, and stress
+  non-determinism searches returned zero matches.
+- The frozen I1 boundary decision remains explicit: the valid
+  `PublicCommand` domain is total and non-throwing, whereas a forced
+  out-of-domain JavaScript value is rejected by `isPublicCommand` before core
+  dispatch with deterministic `TypeError("Invalid PublicCommand.")`. C1 does
+  not widen the public command/result/rejection unions to represent that
+  out-of-domain condition.
+- Amendment staging is restricted to the same 23 paths already present between
+  the C1 parent and candidate: this owner log; `collision.ts`, `commands.ts`,
+  `components.ts`, `core.test.ts`, `history.ts`, deleted
+  `legacyRuntimeAdapter.ts` and `legacyRuntimeAdapter.test.ts`, `movement.ts`,
+  `movementResolver.ts`, `ports.ts`, `ports.test.ts`, `recursiveMovement.ts`,
+  `recursiveTransitions.ts`, `reducer.ts`, `replay.ts`, `replay.test.ts`,
+  `stress.test.ts`, `systems.ts`, `types.ts`, `validation.ts`,
+  `validation.test.ts`, and `worldGraph.ts`. `grid.ts`, `win.ts`, and
+  `hash.ts` remain unmodified. The next action is only `git commit --amend`
+  with the existing C1 message, followed by a coordinator-only SHA handoff.
+
+## 2026-07-12 — C1 second conditional-reject amendment (active candidate)
+
+- Coordinator `019f4deb-7e83-7583-8cd5-8e6f075bc331` conditionally rejected
+  `15ae9e3c488eb41d6bbf367caecec23f6bcd1362` and authorized one final
+  amendment on the same exact parent
+  `d3552c81894a43805854611822bcfab86e993538`. The allowlist is the established
+  23 C1 candidate paths plus `src/core/win.ts` (24 maximum); no public type
+  migration, frontend/projection/runtime/animation/render/package/config/root
+  document/changelog/level/serialization/push-in-out/cycle feature, merge,
+  rebase, push, QA contact, or V1 work is authorized.
+- `validation.ts` now validates unknown state data before typed use or cloning:
+  scalar IDs/version/focus paths; world/entity IDs, size/palette; complete
+  component literals/cross-invariants/visuals; exact rules; and ports. Tables
+  and ports sort by canonical keys before duplicate/inverse/landing checks, so
+  reversed input produces identical diagnostics. False/unknown literals,
+  malformed records, inconsistent IDs, and non-solid containers reject stably.
+- Initial loading rejects every solid landing occupant. Runtime accepts legal
+  occupancy, allowing push-to-landing and then exact public
+  `port-landing-occupied` rejection on entry. Tests cover player/box initial
+  rejection, legal post-enter/runtime box occupancy, and unchanged rejection.
+- `win.ts` now searches all colocated non-goal entities: goals cannot satisfy
+  each other, optional visual filters need a matching non-goal overlay, and
+  absent filters accept any non-goal candidate. Tests cover goal-only, decoy-
+  before-box, multi-world all/partial satisfaction, and insertion-order safety.
+- Undo/Redo authenticate selected history records before traversal: runtime
+  snapshots, hash/address/transaction/source fields, exact forward stored-event
+  shape, snapshot occurrence/cell/port/focus/portal positions, rule-specific
+  base sequences, optional win transition, and deterministic re-dispatch must
+  all agree. Known-shaped wrong cells/addresses/events, unknown events, hashes,
+  IDs, and wrong rules reject unchanged `invalid-level-data`.
+- Reset validates `session.initialState` with initial-state validation; a forged
+  initial box on a port landing now rejects empty-attempt/null-transaction
+  unchanged. Undo/Redo intentionally use runtime validation for legal gameplay
+  landing occupancy.
+- Stress now catches generation/mutation/load/direct/replay faults into a
+  canonical report; asserts mutation code/message/witness; isolates two-world
+  cycles; finds first replay divergence incrementally; and tests replay-only
+  1-minimal reduction. It independently checks command/result/attempt/hash/
+  address/transaction/event/history/win fields per dispatch. The fixed seed,
+  1,000 fixtures, 64 commands, eight masks, 3,000 initial non-Step subcases,
+  no random/time APIs, and 240,000 ms bound remain unchanged.
+- Representative traces: a runtime box at `container-b`'s landing blocks root
+  `Step("down")`; a focused actor can push a box onto that landing, then entry
+  blocks. A matching box solves a filtered goal despite a decoy; goal-only is
+  false. Known-shaped wrong historical walk cells and reset-in-walk events are
+  rejected before Undo traversal.
+- Efficiency authority consumed: while editing, only targeted typecheck and
+  core/validation/port/replay tests ran. One final `npm.cmd run test` ran the
+  complete suite: **12 files / 63 tests passed in 200.50s** (199.94s test body)
+  inside the unchanged 240,000 ms bound. No separate focused stress run followed.
+- Final evidence: Node `v24.12.0`, npm `11.6.2`; clean
+  `npm.cmd ci --no-audit --no-fund` added 64 packages; typecheck and build
+  passed. The existing Vite 537.15 kB advisory remains. `git diff --check`
+  passed; legacy-core/random-time/fixed-ID-or-fixture-selection searches are
+  clean. The frozen out-of-domain command remains deterministic `TypeError`
+  before dispatch. `target-out-of-bounds` remains compatibility-only: empty OOB
+  push is not-applicable and total fallback is `no-enabled-rule-applies`.
+- Pending final amend only: stage this log plus `core.test.ts`, `reducer.ts`,
+  `stress.test.ts`, `validation.test.ts`, `validation.ts`, and `win.ts`; amend
+  with unchanged message `phase a c1: implement deterministic recursive rules`.
+  The final candidate is the previous 23 paths plus `win.ts` (24 total), then
+  report only to coordinator and stop.
+
+## 2026-07-12 — C1 final proof/oracle amendment (active candidate)
+
+- Coordinator `019f4deb-7e83-7583-8cd5-8e6f075bc331` conditionally rejected
+  `53472f21a0ea49683ca8ef7fb526be54ea01aae6` only on proof/oracle evidence.
+  Semantics and scope otherwise passed. The correction amends the same exact
+  parent `d3552c81894a43805854611822bcfab86e993538`, retains the 24-path
+  maximum, does not alter public APIs or scope, and remains closed to QA/V1,
+  push, merge, rebase, and every non-C1 path.
+- Production stored-history authentication (`reducer.ts`) now resolves a port
+  occurrence only when its root equals the snapshot root, its parent container
+  path resolves to the container's actual parent world, its table/port and
+  declared inner world resolve, and the container anchor is known. Portal
+  geometry is exact: enter begins one cell opposite `outerApproach` from that
+  anchor and ends at the addressed inner landing; exit begins at the addressed
+  inner landing and ends at that parent destination. The same checks naturally
+  validate Undo's swapped endpoints/mode.
+- The independent stress event oracle applies the same root/parent/table/
+  inner-world/outer-approach geometry. Targeted production and oracle tests
+  inject a known-shaped wrong root and a wrong outer cell; both reject rather
+  than passing as merely structurally valid history/event data.
+- Accepted-result proof is now exact: transaction rule equals the Step terminal
+  accepted rule or command rule; final Step attempt deep-equals its enclosing
+  transaction; only Undo uses reverse direction; base event sequences are
+  fixed for walk/push/enter/exit/reset plus optional true win transition; and
+  Undo/Redo preserve selected source type order (reversed for Undo) and exact
+  source transaction identity.
+- Replay failure reporting is now first-prefix accurate only on failure paths:
+  length differences use the first missing/extra index; replay throws replay
+  deterministic prefixes to find the first throw; final-only hash/win/address
+  differences compare direct per-command checkpoints to replay prefixes. The
+  normal 1,000-case path stays single-pass. The evaluator/minimizer is total;
+  it verifies same-code 1-minimality or emits a distinct `minimizer-failure`,
+  never silently reports an unminimized prefix. Cheap synthetic tests cover
+  length, throw, final-only mismatch, and replay-only reduction.
+- Independent history tests now assert Exit Redo portal/focus forward order,
+  full addresses/cells/port/index/direction/source ID, and solved → Reset →
+  Undo → Redo traces: `[reset, win false]`, reversed `[win true, reset]`, then
+  forward `[reset, win false]`, each with the expected source identity.
+- Verification efficiency: one erroneous broad targeted command that included
+  stress was terminated before completion and is not evidence. After stable
+  fast typecheck/core/validation/port/replay checks, exactly one completed full
+  `npm.cmd run test` ran the exhaustive suite: **12 files / 67 tests passed in
+  129.52s** (128.84s test body), inside the unchanged 240,000 ms bound. No
+  separate focused stress result was used.
+- Clean final gate: Node `v24.12.0`, npm `11.6.2`; `npm.cmd ci --no-audit
+  --no-fund` added 64 packages; typecheck and build passed. The existing Vite
+  537.15 kB chunk advisory remains unchanged. `git diff --check` passed;
+  legacy-core, fixed-ID/fixture-selection, and random/time searches return
+  zero. Working correction paths are this log plus `core.test.ts`,
+  `reducer.ts`, and `stress.test.ts`; the amended candidate must retain the
+  prior 24 paths total, unchanged commit message, clean worktree, and a
+  coordinator-only handoff.
+
+## 2026-07-12 — C1 final two-bug stress-oracle amendment (active candidate)
+
+- Coordinator `019f4deb-7e83-7583-8cd5-8e6f075bc331` conditionally rejected
+  `0f79588d24af37987fe09517e6eb9025f387bb0e` only for two stress-oracle proof
+  defects. The correction keeps the exact parent
+  `d3552c81894a43805854611822bcfab86e993538`, unchanged commit message, same
+  24-path maximum, frozen production semantics/workload/timeout/public types,
+  and the no-QA/V1/push/merge/rebase scope boundary.
+- `evaluateFixture(validState, [])` is now a valid no-code trace: with no
+  direct checkpoint, replay's final active address is compared with the initial
+  state's active address. A real evaluator-path injected final replay mismatch
+  verifies minimization retains its nonempty command rather than treating empty
+  evaluation as the same code; this uses `evaluateFixture` with a test replay
+  runner rather than the prior synthetic bypass helper.
+- `stepAttemptTraceValid` accepts exhausted terminal `step-fallback` only with
+  exact `no-enabled-rule-applies` plus reason kind `step-fallback`. The distinct
+  immediate invalid-level fallback remains limited to its zero-interaction
+  validation path. Fast negative coverage rejects wrong code and wrong reason
+  with empty enabled priority, exercising zero enabled rules.
+- Verification efficiency: an initial npm-exec targeted invocation did not
+  forward its test-name argument and was terminated before any test result; it
+  is not evidence. The corrected direct Vitest helper invocation passed **2
+  selected tests / 8 skipped in 15ms**. Then exactly one full `npm.cmd run
+  test` executed the exhaustive protocol: **12 files / 69 tests passed in
+  135.27s** (134.64s test body), within the unchanged 240,000 ms bound. No
+  separate focused exhaustive stress run was used.
+- Final clean gate: Node `v24.12.0`, npm `11.6.2`; `npm.cmd ci --no-audit
+  --no-fund` added 64 packages; typecheck and build passed. The existing Vite
+  537.15 kB advisory remains. The final correction changes only this owner log
+  and `src/core/stress.test.ts`; after amend the candidate retains the existing
+  24 total paths, passes diff/staged/show checks and purity searches, and is
+  reported only to coordinator before stopping.
+
+## 2026-07-12 — C1 stored-history sequence-authentication amendment (active)
+
+- Independent QA conditionally rejected
+  `d6677c9e2a6d2818f898fbf97f7b2d123546b522` only for a P1 source-transaction
+  sequence forgery. No QA acceptance/log commit exists. Coordinator authority
+  remains an in-place amendment on exact parent
+  `d3552c81894a43805854611822bcfab86e993538`, unchanged message, maximum 24
+  paths, and no QA/V1/push/new-scope work.
+- `dispatchPublicCommand` now fail-closes before transaction creation or source
+  replay unless `publicTransactionSequence` is a finite nonnegative integer.
+  Negative, fractional, `NaN`, and infinite forged metadata return frozen
+  unchanged invalid-level-data shapes: Step keeps ordered walk/fallback
+  attempts; non-Step keeps empty attempts and one null-transaction blocked event.
+- Selected stored source records now require ID sequence integer `>= 1` and
+  `<= session.publicTransactionSequence` before synthetic reproduction. This
+  prevents a forged source sequence from self-validating. Existing initial-hash,
+  event-ID, geometry, rule, state, and hash authentication remains intact;
+  accepted transaction sequencing and history record shape are unchanged.
+- Independent core coverage reproduces QA's forged past record with source ID
+  and every top-level/nested event ID rewritten to `999`, and equivalent future
+  Redo forgery: both reject unchanged invalid-level-data. It also covers
+  `-1`, `1.5`, `NaN`, and `Infinity` session sequence for Step and Undo, plus
+  legitimate source sequence `1` accepting during real Undo/Redo after public
+  sequence advances.
+- The stress oracle now independently requires session sequence finite integer
+  `>= 0`, every past/future source record sequence `>= 1` and `<=` current,
+  and top-level/nested stored-event IDs matching their source ID. The fixed
+  1,000-fixture/64-command/3,000-subcase workload and 240,000 ms bound remain.
+- Verification efficiency: targeted typecheck plus core/validation/port/replay
+  tests passed **4 files / 37 tests in 1.12s**. Exactly one final full
+  `npm.cmd run test` passed **12 files / 70 tests in 117.06s** (116.56s test
+  body), including exhaustive stress; no focused exhaustive run followed. Node
+  `v24.12.0`, npm `11.6.2`: clean ci added 64 packages; typecheck/build passed
+  with only the existing Vite advisory. Final correction paths are this log,
+  `src/core/core.test.ts`, `src/core/reducer.ts`, and `src/core/stress.test.ts`;
+  amend, coordinator-only report, then stop.
