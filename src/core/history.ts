@@ -1,7 +1,13 @@
 import type { StateChangingCommand } from "./commands";
 import { hashState } from "./hash";
-import type { SimulationState, TransitionEvent } from "./types";
+import type { SemanticEvent, SimulationState, TransactionId, TransitionEvent } from "./types";
 import { cloneSimulationState } from "./worldGraph";
+
+/** I1-only session metadata used to make public undo/redo traces deterministic. */
+export interface PublicHistoryMetadata {
+  readonly transactionId: TransactionId;
+  readonly events: readonly SemanticEvent[];
+}
 
 export interface HistoryRecord {
   readonly command: StateChangingCommand;
@@ -11,6 +17,7 @@ export interface HistoryRecord {
   readonly nextState: SimulationState;
   readonly transitionEvents: readonly TransitionEvent[];
   readonly moveNumber: number;
+  readonly publicMetadata?: PublicHistoryMetadata;
 }
 
 export interface HistoryStore {
@@ -22,6 +29,8 @@ export interface SimulationSession {
   readonly initialState: SimulationState;
   readonly present: SimulationState;
   readonly history: HistoryStore;
+  /** Session metadata only; never included in canonical SimulationState hashing. */
+  readonly publicTransactionSequence: number;
 }
 
 export function createSimulationSession(initialState: SimulationState): SimulationSession {
@@ -32,6 +41,7 @@ export function createSimulationSession(initialState: SimulationState): Simulati
       past: [],
       future: [],
     },
+    publicTransactionSequence: 0,
   };
 }
 
@@ -100,6 +110,31 @@ export function redoSession(session: SimulationSession): SimulationSession {
     history: {
       past: [...session.history.past, record],
       future: session.history.future.slice(1),
+    },
+  };
+}
+
+export function withPublicTransactionSequence(session: SimulationSession, sequence: number): SimulationSession {
+  return {
+    ...session,
+    publicTransactionSequence: sequence,
+  };
+}
+
+export function attachLatestPublicHistoryMetadata(
+  session: SimulationSession,
+  metadata: PublicHistoryMetadata,
+): SimulationSession {
+  const latest = session.history.past.at(-1);
+  if (!latest) {
+    return session;
+  }
+
+  return {
+    ...session,
+    history: {
+      ...session.history,
+      past: [...session.history.past.slice(0, -1), { ...latest, publicMetadata: metadata }],
     },
   };
 }

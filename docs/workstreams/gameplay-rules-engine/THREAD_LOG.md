@@ -555,3 +555,136 @@ blocker without weakening the ordinary cross-workstream public-type freeze.
 - No executable tests were run: this was a documentation-only delta review.
 - Commit: pending one log-only acceptance commit. Report its SHA to the
   coordinator and stop. This acceptance does not begin I1 or C1 code.
+
+## 2026-07-11 - I1 gameplay/core public-interface bridge
+
+- Thread ID: `019f4e82-7cb8-73c1-b4a1-d333273b359f`
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Independent QA task: `019f4e80-1462-7b32-8146-19ded692836c`
+- Authorization base: `0b7ebc38cc51b1fd314cdaeb3f1c8bdfa43140e6`
+  (`docs: open Phase A interface bridge`), checked out detached without merge
+  or rebase after a clean-worktree check.
+- Authorization: only the gameplay/core half of I1. The frontend consumer half
+  remains coordinator-gated after this candidate; C1 and all later slices stay
+  closed.
+
+### Contracts, consumer inventory, and assumptions
+
+- Read the accepted root `AGENTS.md`, `DESIGN.md`, `CURRENT_TASK.md`, accepted
+  R1 contract, and the latest coordinator, independent-QA, frontend, and
+  gameplay logs before editing. The I1 four-condition shared-migration gate is
+  satisfied by the named owners, exact disjoint paths, linear handoff, complete
+  verification, and later full-chain QA.
+- Inspected every current consumer of `SimulationCommand`, `Move`/`Enter`/
+  `Exit`, `CommandDispatchResult`, `TransitionEvent`, history/session, and
+  systems. Gameplay-owned compatibility consumers are `commands`, `reducer`,
+  `history`, `replay`, `systems`, and core tests. The remaining runtime and
+  animation consumers are frontend-owned and intentionally unchanged in this
+  first commit.
+- I1 public dispatch will expose only `PublicCommand` (`Step`, `Undo`, `Redo`,
+  `Reset`) and a stable reducer `dispatchPublicCommand(session, command)` entry
+  returning the next internal `SimulationSession` plus frozen `CommandResult`.
+  Legacy `dispatchCommand`, `SimulationCommand`, `Move`/`Enter`/`Exit`,
+  `CommandDispatchResult`, and `TransitionEvent` remain explicitly deprecated
+  compatibility only for unchanged consumers.
+- The bridge translates only public `Step(direction)` to legacy `Move` and
+  translates legacy movement/push/history/reset outcomes into frozen public
+  shapes. It does not implement R1 port/enter/exit/cycle rules, select a
+  container/port/world/destination, or contain a fixture ID. Directionless
+  legacy `Enter(containerId)`/`Exit(containerId)` are not public and are never
+  mapped to `Step`.
+- Public transaction sequence is session metadata, not canonical state/hash.
+  Accepted bridge transactions retain semantic-event metadata on legacy history
+  records solely to make public undo/redo deterministic; C1 must remove this
+  temporary compatibility layer while retaining the public reducer surface.
+- Any unsafe legacy preflight, unrepresentable history record, or caught legacy
+  exception returns one typed unchanged-state public rejection. This bridge
+  makes no recursive-correctness claim.
+
+### Allowed paths and planned verification
+
+- Allowed production/test paths are exactly the I1 gameplay list in
+  `CURRENT_TASK.md`, plus this log. No runtime, animation, projection, render,
+  app, audio, package/config, root documentation/changelog, level, screenshot,
+  merge, rebase, or push change is permitted.
+- Planned checks: clean `npm.cmd ci --no-audit --no-fund`, typecheck, Vitest,
+  build, `git diff --check`, exact changed-path audit, and source searches that
+  the new adapter/public dispatch contains no `container-b` or fixture
+  selection.
+
+### Implemented bridge and verification evidence
+
+- Added the frozen R1 public data shapes in `src/core/types.ts`: addressed
+  cells/entities/ports, attempts, typed rejection code/reason values,
+  transaction IDs, `CommandResult`, and `SemanticEvent`. The legacy
+  `TransitionEvent` remains marked deprecated and is not redefined as public.
+- Added `Step(direction)`, `PublicCommand`, and `isPublicCommand` in
+  `commands.ts`; `Move`/`Enter`/`Exit`/`SimulationCommand` remain documented
+  I1-only compatibility. `dispatchPublicCommand(session, command)` in
+  `reducer.ts` is the stable frontend-facing entry and returns
+  `PublicDispatchEnvelope { session, result }`.
+- Added `legacyRuntimeAdapter.ts` as the only legacy translation boundary. It
+  maps public Step to legacy Move atomically, emits walk/push transactions and
+  semantic events, records session-only transaction sequence/history metadata
+  for deterministic public undo/redo, and maps unsafe/unrepresentable cases to
+  typed unchanged-state rejections. It contains no `container-b` or fixture
+  selection. It does not call or map legacy Enter/Exit.
+- Added public replay/system conveniences while preserving legacy APIs and
+  existing callers. C1 must replace/delete the adapter internals and legacy
+  exports without changing `dispatchPublicCommand` or frozen public types.
+- `npm.cmd ci --no-audit --no-fund`: passed, 64 packages added.
+- Verification runtime: Node `v24.12.0`; npm `11.6.2`.
+- `npm.cmd run typecheck`: passed.
+- `npm.cmd run test`: passed, 10 files / 44 tests. New coverage includes public
+  walk/push translation, ordered attempts, typed unchanged rejection, actor
+  preflight, initial and accepted Undo/Redo/Reset shapes, transaction/event/
+  address invariants, legacy compatibility, directionless Enter/Exit exclusion,
+  caught-adapter exception conversion, and deterministic public replay.
+- `npm.cmd run build`: passed. The existing Vite chunk-size advisory remains
+  (520.29 kB minified main chunk); no package/configuration change was made.
+- `git diff --check`: passed. Static boundary search found no `container-b` or
+  fixture occurrence in `legacyRuntimeAdapter.ts` or `dispatchPublicCommand`.
+  The search also confirms all remaining legacy runtime/animation consumers are
+  the explicitly frontend-owned I1 paths.
+- Representative deterministic trace: the Stage 3B initial canonical hash is
+  `aeaaa2a1`; `dispatchPublicCommand(session, Step("right"))` accepts as
+  transaction sequence `1`, `rule: "walk"`, changes canonical hash to
+  `dedf1068`, emits one forward `entity-moved` event at root address
+  `world-a`/empty path, and leaves the corresponding public Undo/Redo trace
+  deterministic in tests. Session transaction metadata is not passed to
+  `hashState`.
+
+### Handoff status
+
+- Candidate commit: pending exact scoped staging. The only permitted candidate
+  paths are the I1 gameplay/core sources/tests plus this log; no frontend
+  notification, C1 work, merge, rebase, or push is authorized after commit.
+
+### Coordinator-authorized I1 gameplay correction
+
+- Coordinator read-only review rejected the first candidate before any
+  frontend-half authorization. The correction remains inside the I1 gameplay
+  half and is limited to `legacyRuntimeAdapter.ts`, its test, and this owner
+  log; C1, frontend consumer edits, merge/rebase, push, and root changelog work
+  remain closed.
+- The public adapter now validates the runtime command value before invoking
+  the legacy dispatcher. Forced legacy `Enter`/`Exit` and unknown command
+  objects fail closed with the deterministic `TypeError("Invalid
+  PublicCommand.")`; they cannot fall through to reset, cannot call the legacy
+  dispatcher, and cannot mutate state, history, focus, hash, or transaction
+  sequence.
+- The non-Step compatibility mapping is exhaustive over only `undo`, `redo`,
+  and `reset`. No default branch treats an unknown discriminant as reset.
+- After actor/focus preflight succeeds, both a caught legacy exception and an
+  accepted legacy result containing unsupported events now produce the frozen
+  rejected-Step shape: a leading `walk` attempt, terminal `step-fallback`
+  blocked attempt, exactly one non-transactional `command-blocked` event, and
+  the original unchanged session metadata.
+- Added forced-cast Enter/Exit/unknown regression coverage plus exact exception
+  and unsupported-event trace/invariant coverage. Full verification and the
+  amended replacement candidate SHA are recorded at handoff; no first-candidate
+  SHA may be passed to the frontend owner.
+- Correction verification passed: `npm.cmd run typecheck`; all Vitest suites
+  (`10` files / `45` tests); and `npm.cmd run build` with only the existing
+  520.29 kB Vite chunk advisory. `git diff --check`, exact-path review, and
+  fixture/container/port hard-code searches passed for the correction delta.

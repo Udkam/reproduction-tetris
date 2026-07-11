@@ -1,6 +1,6 @@
-import { Move, type SimulationCommand } from "./commands";
+import { Move, type PublicCommand, type SimulationCommand } from "./commands";
 import { createSimulationSession, type SimulationSession } from "./history";
-import { dispatchCommand, type CommandDispatchResult } from "./reducer";
+import { dispatchCommand, dispatchPublicCommand, type CommandDispatchResult, type PublicDispatchEnvelope } from "./reducer";
 import type { SimulationState } from "./types";
 import { createStage3BSimulationState } from "./worldGraph";
 
@@ -8,9 +8,19 @@ export interface SimulationSystems {
   readonly dispatch: (session: SimulationSession, command: SimulationCommand) => CommandDispatchResult;
 }
 
+export interface PublicSimulationSystems {
+  readonly dispatch: (session: SimulationSession, command: PublicCommand) => PublicDispatchEnvelope;
+}
+
 export function createSimulationSystems(): SimulationSystems {
   return {
     dispatch: dispatchCommand,
+  };
+}
+
+export function createPublicSimulationSystems(): PublicSimulationSystems {
+  return {
+    dispatch: dispatchPublicCommand,
   };
 }
 

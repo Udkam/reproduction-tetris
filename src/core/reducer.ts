@@ -1,9 +1,14 @@
-import type { SimulationCommand } from "./commands";
+import type { PublicCommand, SimulationCommand } from "./commands";
 import { commitStateChange, redoSession, resetSession, type SimulationSession, undoSession } from "./history";
+import {
+  dispatchWithLegacyRuntimeAdapter,
+  type PublicDispatchEnvelope,
+} from "./legacyRuntimeAdapter";
 import { resolveMovement } from "./movementResolver";
 import { enterContainer, exitContainer } from "./recursiveMovement";
 import type { TransitionEvent } from "./types";
 
+/** @deprecated I1-only compatibility for unchanged legacy consumers. */
 export interface CommandDispatchResult {
   readonly accepted: boolean;
   readonly session: SimulationSession;
@@ -11,6 +16,7 @@ export interface CommandDispatchResult {
   readonly reason?: string;
 }
 
+/** @deprecated I1-only compatibility for unchanged runtime and animation consumers. */
 export function dispatchCommand(session: SimulationSession, command: SimulationCommand): CommandDispatchResult {
   if (command.type === "undo") {
     const nextSession = undoSession(session);
@@ -64,3 +70,13 @@ export function dispatchCommand(session: SimulationSession, command: SimulationC
     events: resolution.events,
   };
 }
+
+/** Stable public reducer entry. C1 replaces the bridge internals without changing this surface. */
+export function dispatchPublicCommand(
+  session: SimulationSession,
+  command: PublicCommand,
+): PublicDispatchEnvelope {
+  return dispatchWithLegacyRuntimeAdapter(session, command, dispatchCommand);
+}
+
+export type { PublicDispatchEnvelope } from "./legacyRuntimeAdapter";
