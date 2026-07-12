@@ -503,3 +503,185 @@ gaps without starting production work.
   V2-V4, release, or a completion claim.
 - Commit this log-only review on the candidate baseline, report its SHA to the
   coordinator, and stop. Independent QA notification remains coordinator-owned.
+
+## 2026-07-12 — V1 Occurrence Rendering and Visual Transaction Implementation
+
+- Frontend owner task: `019f4e80-145a-7520-81e1-41a45b2bec13`
+- Coordinator task: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Independent QA task: `019f4e80-1462-7b32-8146-19ded692836c`
+- Exact pushed baseline: `e45d2ea3c5880bd59cc80417aa2272da4976e16a`
+  (`origin/main`), fetched and checked out detached after a clean-worktree
+  check, without merge or rebase.
+- Authority consumed: accepted V1 authorization chain
+  `f2c47c3 -> c604d53 -> 272e138`, accepted C1 implementation `63750f9`, and
+  accepted QA-C1/V1 records. V1 is the only active production slice.
+
+### Assumptions and implementation boundaries
+
+- The public C1 `WorldAddress` and `EntityOccurrenceAddress` remain the only
+  semantic address values. V1 may derive collision-safe structural keys inside
+  its owned projection path but may not create a competing core contract or
+  mutate C1.
+- `GameCanvasHost` is the sole composition point for the temporary normal study
+  state and for fail-closed V1 QA scenario selection. Runtime, projection,
+  animation, camera, and renderer remain fixture-agnostic.
+- `VisualTransactionController` will own the one normalized visual transaction
+  and runtime-local one-slot submission disposition. `input-buffer-full` never
+  crosses into C1 `CommandResult` or any core type.
+- V1 fixes desktop occurrence/continuity and transaction correctness only. It
+  does not claim V2 composition/material completion, V3 retained-graph or
+  performance acceptance, or V4 DPR/mobile/reduced-motion/pointer/touch/
+  accessibility/general capture automation.
+- Browser evidence is restricted to the exact approved QA URLs and files at
+  1440x900 effective DPR 1. All imagery remains original procedural Pixi output;
+  no external/reference asset is introduced.
+
+### Initial inventory
+
+- Current fixed/fallback seams are in the owned projection and Pixi paths;
+  current independent animation/camera/recursive timelines are in owned V1
+  paths. `AudioManager` consumes the unchanged `AudioCue` value only and is
+  intentionally unmodified.
+- The final candidate must change only the V1 allowlist, contain the exact QA
+  evidence files, pass the single final full test run (including C1 stress),
+  and be committed once as `phase a v1: unify occurrence rendering`.
+
+### Implementation and capture disposition
+
+- Implementation/tests commit: `66b51da04be24aa6a2fe63fa32567e8d568f4124`
+  (`phase a v1: unify occurrence rendering`), parent
+  `e45d2ea3c5880bd59cc80417aa2272da4976e16a`. It contains only V1-owned
+  implementation/test paths; this log and the generated captures remain
+  unstaged pending a valid evidence gate.
+- Verification before capture: `npm.cmd ci --no-audit --no-fund`,
+  `npm.cmd run typecheck`, `npm.cmd run build`, `git diff --check`, and the
+  source-boundary searches passed. The direct one-worker Vitest JSON run
+  passed `36/36` suites and `81/81` tests (zero failures), report
+  `C:\Users\Alex Chen\AppData\Local\Temp\game1-v1-vitest-1492bafa4471428e85f826b11389ad21.json`.
+- Seven fresh-context dev QA captures were generated locally at 1440x900 DPR 1
+  against exactly `66b51da`; each had one canvas, host-descendant canvas only,
+  zero gameplay DOM, no listener-captured console/page/request/WebGL problem,
+  ticker disabled, and stable manual progress. They are intentionally
+  uncommitted.
+- **Capture acceptance blocked:** at `enter-50` and `exit-50`, the parent
+  world CSS bounds were `x=-380.4..1820.4`, `y=-336..1236` under
+  `camera={x:-380.4,y:-336,scale:3.275}`. The parent *outer rim* therefore
+  has zero ancestor-mask-and-viewport-clipped visible region; only child and
+  aperture rim samples are available. A large intersecting world rectangle or
+  nonblank frame cannot substitute for the frozen parent-rim gate. No browser
+  evidence commit was created; await a bounded coordinator decision.
+
+### Coordinator-authorized V1 recovery continuation
+
+- The coordinator authorized continuation in this exact detached worktree
+  after the frontend task repeatedly failed at the tool boundary. The base,
+  implementation commit, owned paths, candidate message, independent reviewer,
+  and V1 exclusions are unchanged; this is not a new slice.
+- Preserve the first correction pass already present in the worktree. Its
+  fail-closed QA startup, active-address projection, current-frame diagnostics,
+  addressed portal selection, manual Pixi render/ticker state, audio dispatch
+  reservation, and Redo/Reset/completion tests remain in scope.
+- The remaining bounded corrections are: (1) draw nested worlds in their
+  immediate parent-local coordinates while accumulating root-space world,
+  entity, aperture, portal, and ancestor-clip geometry at every depth; (2)
+  keep non-portal movement camera composition fixed on the fully addressed
+  active world for V1 so a nested move cannot use root/depth-zero geometry or
+  snap on completion; and (3) drain a re-entrant buffered command after a
+  dispatch callback that returns without starting a visual transaction.
+- Tests must include a real two-level nested address chain for focus, portal,
+  accumulated diagnostics, and clip ancestry. The seven existing PNGs remain
+  rejected local artifacts and may only be overwritten after the amended
+  implementation SHA is frozen.
+- No new dependency is open. If the parent-rim midpoint gate still fails after
+  these corrections, implementation may be tuned only inside the V1-owned
+  camera/transition paths; evidence must not be committed until the exact
+  browser hard gate passes.
+
+### V1 deterministic browser-evidence handoff
+
+- Frozen implementation under review:
+  `cef6ab2b2f45e6a7f7e70579f5ddc951f9380074`, exact parent
+  `e45d2ea3c5880bd59cc80417aa2272da4976e16a`. The amended implementation
+  remains the same 24 V1-owned source/test paths and commit message.
+- Final source evidence: the sole post-correction exhaustive JSON run passed
+  `36/36` suites and `91/91` tests in about `79.3 s`; clean dependency install
+  added 64 packages; typecheck and build passed. The only build notice is the
+  existing `553.09 kB` Vite chunk advisory. The first clean-install attempt
+  encountered one exact residual Vite child holding the Rolldown native
+  binding; after that worktree-owned process was stopped, the single retry
+  passed. No exhaustive test was repeated.
+- Browser evidence now consists of the exact seven approved PNGs,
+  `docs/qa/v1-browser-evidence.json`, and
+  `docs/qa/V1_BROWSER_EVIDENCE.md`. Each valid frame used a fresh system-Chrome
+  context at `1440x900`, DPR/renderer resolution `1`, a real C1 dispatch, and
+  explicit controller progress with the actual ticker stopped. The record has
+  `hardGates.allPassed=true`, seven valid captures, and three invalid-query
+  probes that created neither runtime nor canvas.
+- Objective gates passed in the evidence record: one canvas, zero gameplay
+  DOM/problem events, current explicit render, complete structural addresses,
+  no stale frame diagnostics, stable move camera, true midpoint parent shell
+  plus child rim/floor and aperture-stroke geometry/raster, identical visible
+  world-address sets, and all three enter/exit continuity comparisons within
+  `0.5` CSS px.
+- This is candidate evidence only, not frontend self-acceptance. Independent
+  QA must review the exact two-commit chain before coordinator integration.
+  V2-V4, retained-graph/performance, responsive/mobile/reduced-motion/input,
+  levels/content, Stage 6, release, and framework completion remain excluded.
+
+### Frozen recovery candidate and final V1 browser evidence
+
+- The amended, frozen V1 implementation is
+  `cef6ab2b2f45e6a7f7e70579f5ddc951f9380074`
+  (`phase a v1: unify occurrence rendering`), with exact parent
+  `e45d2ea3c5880bd59cc80417aa2272da4976e16a`. The recovery preserved a
+  single implementation commit rather than adding an intermediate correction
+  commit. No production source, test, package, config, root contract, or root
+  changelog file changed during the final evidence-only pass.
+- Frozen-candidate verification had already passed typecheck, build,
+  `git diff --check`, and `36/36` Vitest suites with `91/91` tests. The retained
+  one-worker JSON report is
+  `C:\Users\Alex Chen\AppData\Local\Temp\game1-v1-final-vitest-b7c0bf607ee246fa8d6d16011bc62609.json`.
+  The evidence-only pass did not rerun the full suite.
+- The final capture used the existing system Chrome `150.0.7871.115` against a
+  local Vite dev server at `127.0.0.1:5173`. Every valid and invalid query used
+  a fresh isolated context/page at exactly `1440x900`, reported DPR 1 and
+  renderer resolution 1. The real C1 `PublicCommand`/`EventPipeline` result and
+  semantic events drove the runtime; manual `VisualTransactionController`
+  progress selected each frame without wall-clock or ticker advancement.
+- Fresh captures passed for exactly `move-50`, `enter-00/50/100`, and
+  `exit-00/50/100`. Every capture had one canvas, only that canvas below the
+  host, zero gameplay DOM, zero warning/error/assert/page-error/unhandled-
+  rejection/request-failure/HTTP 4xx-or-5xx/WebGL-loss event, stopped ticker,
+  current explicit render revision, and stable progress/revision across two
+  requestAnimationFrame reads. All CSS, backing, and screenshot dimensions
+  were `1440x900`.
+- Structured world, entity-occurrence, container, and port addresses were
+  complete and unique with no stale duplicate frame records. The rendered
+  world-address set was identical across all six enter/exit frames. `move-50`
+  kept the addressed root camera fixed at `{x:367.2,y:198,scale:1.05}` and put
+  the actor center `{x:192,y:240}` strictly between endpoint cell centers
+  `{x:144,y:240}` and `{x:240,y:240}`.
+- Camera plus world/aperture screen, shell, ancestor-clip, clipped, and rim
+  geometry matched with no differences at the frozen `0.5` CSS-pixel tolerance
+  for `enter-100 == exit-00`, `enter-50 == exit-50`, and
+  `enter-00 == exit-100`.
+- At both midpoint frames the real parent outer shell/rim, child rim and floor,
+  and aperture stroke each had nonzero ancestor-plus-viewport-clipped geometry
+  and exact authored canvas pixels. The checks sampled the reported rim/stroke
+  regions directly; they did not substitute a floor rectangle, generic bounds,
+  or a nonblank-frame count for the parent-rim gate.
+- The exact duplicate-parameter, extra-parameter, and `progress=0.50` probes all
+  published `invalid-query`, reported `runtimeConstructed: false`, and had an
+  empty host with zero canvases and zero problem events.
+- Final owned evidence is limited to
+  `docs/qa/V1_BROWSER_EVIDENCE.md`,
+  `docs/qa/v1-browser-evidence.json`, and the seven approved PNGs under
+  `docs/screenshots/v1/`. The JSON includes implementation SHA, OS/browser/UA/
+  WebGL, exact queries/commands/results/transactions/hashes/focus, normalized
+  progress, dimensions/DPR, DOM/console arrays, structured geometry,
+  continuity comparisons, raster samples, invalid-query results, and every PNG
+  SHA-256.
+- V3 retained-graph/performance acceptance and V4 mobile/DPR-cap,
+  reduced-motion, pointer/touch, accessibility, and general capture automation
+  remain explicitly deferred. These synthetic non-level QA states make no V2,
+  content, release, or completion claim.
