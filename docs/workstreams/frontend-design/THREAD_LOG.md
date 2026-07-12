@@ -432,3 +432,74 @@ The corrected D0 contract resolves every condition in frontend review
   did not require a modification.
 - Amend the existing frontend candidate only. Report its new SHA to the
   coordinator and stop; independent QA remains coordinator-owned.
+
+## 2026-07-12 — V1 Authorization-Document Review
+
+- Reviewer task: `019f4e80-145a-7520-81e1-41a45b2bec13`
+- Coordinator task: `019f4deb-7e83-7583-8cd5-8e6f075bc331`
+- Independent QA task: `019f4e80-1462-7b32-8146-19ded692836c`
+- Candidate reviewed: `f2c47c3fa31875a8fb5ac2a8a6943f02c3ffbc3a`
+  (`docs: freeze V1 implementation boundary`) directly atop accepted QA-C1
+  `8cdf0f3f2628498fb6fcfc6eee89f996e2e0e15a`; accepted C1 implementation is
+  `63750f9d1e9bf53b90074d9c341e8c5eec6f5f7a`.
+- Review baseline: clean detached `f2c47c3`; no product source, package,
+  configuration, root documentation/changelog, merge, rebase, or push change.
+
+### Verdict: ACCEPT
+
+The exact three-path documentation candidate is implementable against the
+current C1 source tree and resolves the previously identified V1 preflight
+gaps without starting production work.
+
+1. **Status and order are correct.** C1 and QA-C1 are accepted/integrated;
+   V1 remains documentation-only until frontend-owner and independent-QA
+   acceptance followed by coordinator integration/push. `CURRENT_STATUS.md`
+   keeps all level/content/serialization work frozen through V1-V4 and names
+   one original showcase acceptance level as the later first content slice.
+2. **Ownership is bounded and complete.** The path list includes the host, all
+   current projection/runtime/animation/render consumers, their existing or
+   explicitly new tests, `VisualTransactionController` plus test,
+   `v1QaScenario` plus test, and an exact finite evidence list. It contains no
+   catch-all test/tooling clause and explicitly excludes core, audio, layers,
+   primitives, metrics, package/configuration, and general automation. The
+   only current non-owned consumer is `AudioManager`, which consumes the
+   unchanged `AudioCue` value type and requires no V1 edit.
+3. **Occurrence identity is executable.** The candidate replaces the current
+   projection-local address/path and delimiter-built `projectionId`, removes
+   production recursive-projection fallback/fixed-ID selection, and requires
+   C1 `WorldAddress`/`EntityOccurrenceAddress`, structural keys, delimiter-ID
+   coverage, repeated canonical occurrences, and nested focus through every
+   listed consumer.
+4. **The visual lifecycle is singular and testable.** The controller exclusively
+   owns normalized progress, completion, buffer, cancellation, and destroy;
+   its requirements preserve core-supplied Undo values, define the one-slot
+   policy for every public command/result presentation, and state natural,
+   non-destroy cancellation, destroy, and synchronous zero-duration outcomes
+   exactly.
+5. **The QA/evidence boundary is closed.** Only the declared dev query forms
+   are allowed, invalid values fail closed, ticker advancement is disabled,
+   scenarios dispatch real C1 commands through `EventPipeline`, and synthetic
+   state selection remains at application composition. The exact 1440x900 DPR
+   1 files and metadata are fixed; V3 retained/performance and V4
+   mobile/DPR/reduced-motion/pointer/accessibility/general automation remain
+   explicit deferrals.
+
+### Evidence
+
+- Read candidate `CURRENT_TASK.md`, `docs/reboot/CURRENT_STATUS.md`, and the
+  coordinator record; read accepted C1 and QA-C1 workstream decisions.
+- Re-read the current `AGENTS.md`, relevant `DESIGN.md` rendering contract,
+  this workstream's prior V1 preflight/I1 address-debt records, and all current
+  projection/runtime/animation/render consumers and tests from the candidate
+  tree.
+- `git show --check f2c47c3` and full candidate-range whitespace checks passed.
+  The candidate changes exactly `CURRENT_TASK.md`, `docs/reboot/CURRENT_STATUS.md`,
+  and `docs/workstreams/coordinator/THREAD_LOG.md`.
+
+### Handoff
+
+- This is an acceptance of V1 authorization documentation only. It does not
+  authorize V1 source edits, browser evidence capture, levels/content,
+  V2-V4, release, or a completion claim.
+- Commit this log-only review on the candidate baseline, report its SHA to the
+  coordinator, and stop. Independent QA notification remains coordinator-owned.
