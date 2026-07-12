@@ -560,6 +560,100 @@ separate start conditions and each requires later independent QA by SHA.
 - Follow-up commit hash: pending creation; report it with this log path to the
   coordinator after committing. No push, merge, or rebase is authorized.
 
+## Entry: independent QA review and acceptance of the V1 authorization documents
+
+- Workstream thread ID: `019f4e80-1462-7b32-8146-19ded692836c`.
+- Coordinator thread ID: `019f4deb-7e83-7583-8cd5-8e6f075bc331`.
+- Timestamp: 2026-07-12 Asia/Shanghai.
+- Accepted C1 QA baseline: `8cdf0f3f2628498fb6fcfc6eee89f996e2e0e15a`;
+  accepted C1 implementation: `63750f9d1e9bf53b90074d9c341e8c5eec6f5f7a`.
+- Reviewed root authorization commit:
+  `f2c47c3fa31875a8fb5ac2a8a6943f02c3ffbc3a`, whose direct parent is the
+  accepted C1 QA baseline.
+- Reviewed complete V1 documentation-chain head and frontend-owner read-only
+  acceptance: `c604d530ce8408fa561053a538db3beb9ea15839`, whose direct parent
+  is `f2c47c3`.
+
+### Scope, ancestry, and hygiene
+
+- The chain is exactly `8cdf0f3 -> f2c47c3 -> c604d53`; local `main` contains
+  the accepted C1 QA baseline. The direct child `c604d53` changes only the
+  frontend workstream log.
+- The cumulative documentation diff changes exactly four paths:
+  `CURRENT_TASK.md`, `docs/reboot/CURRENT_STATUS.md`, the coordinator log, and
+  the frontend log. It changes no source, test, package, configuration, root
+  changelog, level, screenshot, or QA artifact.
+- `git diff --check 8cdf0f3..c604d53` and `git show --check c604d53` pass. A
+  clean detached QA worktree was created directly at `c604d53`; this QA verdict
+  is its only added path. No V1 production command, browser capture, clean
+  install, typecheck, test, or build was run because this candidate is strictly
+  documentation-only and the already accepted C1 code is unchanged.
+
+### Authority and implementation-boundary review
+
+1. **Authority and completion truth hold.** `AGENTS.md` retains its precedence
+   over `CURRENT_TASK.md` and prevents a task document from weakening the
+   accepted R1 public contract or applicable QA gate. The C1 implementation,
+   QA SHA, clean-install/typecheck/12-file/70-test/build evidence, and
+   integrated-main status recorded by the candidate agree with the accepted C1
+   chain. `CURRENT_STATUS.md` correctly keeps overall completion below 10% and
+   treats Stage 6 as historical only.
+2. **V1 remains closed before this decision is integrated and pushed.** The
+   authorization says no V1 source edit starts until the frontend-owner and
+   independent-QA decisions for this exact text are accepted, then the
+   coordinator integrates and pushes them, and the frontend owner begins from
+   that named pushed baseline. The frontend log truthfully records a read-only
+   ACCEPT rather than a production result.
+3. **Ownership is finite and sufficient.** The exact allowlist covers the
+   present host, projection, runtime, animation, and renderer consumers plus
+   explicitly named existing/new tests and nine fixed evidence paths. It
+   excludes catch-all tooling and all unowned core, audio, layer, primitive,
+   metric, package/configuration, level, serialization, and general
+   automation paths. Candidate-tree searches confirm that the historical
+   production projection/renderer fixed-identity sites are in named V1 paths;
+   their removal is a V1 requirement, not an unearned claim. The unowned
+   `AudioManager` only consumes the unchanged `AudioCue` value type and needs
+   no V1 modification.
+4. **Occurrence identity is executable without a parallel contract.** V1 must
+   consume C1 `WorldAddress` and `EntityOccurrenceAddress`, preserve the full
+   root-plus-container path in every projection/event/animation/camera/render
+   diagnostic, use structural collision-safe keys, and reject delimiter-built
+   identity. Required tests include delimiter-like IDs, repeated aliases,
+   nested focus, and two containers; production fixture/projection fallback is
+   forbidden outside the narrow application-composition-only QA scenario.
+5. **The visual lifecycle and QA surface are fully bounded.** A single
+   `VisualTransactionController` owns normalized 0-to-1 progress, completion,
+   buffering, cancellation, and destruction. The one-slot FIFO rules cover
+   accepted and rejected Step/Undo/Redo/Reset, natural completion,
+   non-destroy cancellation, destroy, and zero-duration behavior without a
+   second Undo reversal. Dev QA is fail-closed, disables wall-clock advancement,
+   accepts only move 0.5 and enter/exit 0/0.5/1, and dispatches real C1 commands
+   through `EventPipeline` without fabricated results or events.
+6. **Evidence and deferred gates are truthful.** V1 fixes desktop-only
+   1440x900 effective-DPR-1 evidence paths and required metadata, including
+   middle-frame occurrence and world-frame continuity. It does not claim V3
+   retained-render/performance or V4 mobile/DPR/reduced-motion/pointer/
+   accessibility/general-capture completion. Level/content/serialization work
+   stays frozen through V1-V4, followed by exactly one original showcase
+   acceptance level before test-level expansion.
+
+### QA verdict
+
+**Accept the documentation-only V1 authorization chain ending at `c604d53`.**
+No P0, P1, or authority/scope blocker remains in this documentation gate.
+
+This acceptance authorizes only coordinator integration and push of the V1
+authorization documents, after which the frontend owner may start V1 source
+work from the named pushed baseline. It does not accept V1 implementation,
+V2-V4, C1 again, frontend/engine completion, levels, Stage 6, release, or a
+target-completion claim.
+
+### Handoff
+
+- Files changed by this QA follow-up: this `THREAD_LOG.md` only.
+- Follow-up commit hash: pending creation; report it with this log path to the
+  coordinator after committing. No push, merge, or rebase is authorized.
+
 ## Entry: independent QA-C1 re-review and acceptance
 
 - Workstream thread ID: `019f4e80-1462-7b32-8146-19ded692836c`
