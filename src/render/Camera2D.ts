@@ -2,42 +2,36 @@ import type { Container } from "pixi.js";
 import type { Rect2D, Size2D } from "../projection/types";
 
 export interface CameraState {
-  x: number;
-  y: number;
-  scale: number;
+  readonly x: number;
+  readonly y: number;
+  readonly scale: number;
 }
 
 export interface FitWorldOptions {
-  margin: number;
-  minScale?: number;
-  maxScale?: number;
+  readonly margin: number;
+  readonly minScale?: number;
+  readonly maxScale?: number;
 }
 
 interface CameraTransition {
-  from: CameraState;
-  to: CameraState;
-  elapsedMs: number;
-  durationMs: number;
+  readonly from: CameraState;
+  readonly to: CameraState;
 }
 
 interface CameraImpact {
-  offsetX: number;
-  offsetY: number;
-  elapsedMs: number;
-  durationMs: number;
+  readonly offsetX: number;
+  readonly offsetY: number;
 }
 
+/** Consumes controller progress only; it never advances time independently. */
 export class Camera2D {
   private state: CameraState = { x: 0, y: 0, scale: 1 };
   private transition: CameraTransition | null = null;
   private impact: CameraImpact | null = null;
+  private impactOffset = { x: 0, y: 0 };
 
   get current() {
     return { ...this.state };
-  }
-
-  get isTransitioning() {
-    return this.transition !== null;
   }
 
   get hasActiveEffects() {
@@ -69,126 +63,75 @@ export class Camera2D {
     viewport: Size2D,
     worldBounds: Rect2D,
     targetBounds: Rect2D,
-    options: FitWorldOptions & { followStrength?: number },
+    options: FitWorldOptions & { readonly followStrength?: number },
   ): CameraState {
     const fit = this.getFitState(viewport, worldBounds, options);
     const followStrength = Math.min(1, Math.max(0, options.followStrength ?? 0.5));
-    const worldCenter = {
-      x: worldBounds.x + worldBounds.width * 0.5,
-      y: worldBounds.y + worldBounds.height * 0.5,
-    };
-    const targetCenter = {
-      x: targetBounds.x + targetBounds.width * 0.5,
-      y: targetBounds.y + targetBounds.height * 0.5,
-    };
+    const worldCenter = { x: worldBounds.x + worldBounds.width * 0.5, y: worldBounds.y + worldBounds.height * 0.5 };
+    const targetCenter = { x: targetBounds.x + targetBounds.width * 0.5, y: targetBounds.y + targetBounds.height * 0.5 };
     const focus = {
       x: lerp(worldCenter.x, targetCenter.x, followStrength),
       y: lerp(worldCenter.y, targetCenter.y, followStrength),
     };
 
-    return {
-      x: viewport.width * 0.5 - focus.x * fit.scale,
-      y: viewport.height * 0.5 - focus.y * fit.scale,
-      scale: fit.scale,
-    };
+    return { x: viewport.width * 0.5 - focus.x * fit.scale, y: viewport.height * 0.5 - focus.y * fit.scale, scale: fit.scale };
   }
 
   setState(state: CameraState) {
     this.state = { ...state };
     this.transition = null;
+    this.impact = null;
+    this.impactOffset = { x: 0, y: 0 };
   }
 
-  beginZoomTransition(target: CameraState, durationMs: number) {
-    this.transition = {
-      from: this.current,
-      to: { ...target },
-      elapsedMs: 0,
-      durationMs: Math.max(1, durationMs),
-    };
+  beginFollowTransition(target: CameraState) {
+    this.transition = { from: this.current, to: { ...target } };
   }
 
-  beginFollowTransition(target: CameraState, durationMs: number) {
-    this.beginZoomTransition(target, durationMs);
+  beginImpact(offsetX: number, offsetY: number) {
+    this.impact = { offsetX, offsetY };
   }
 
-  beginImpact(offsetX: number, offsetY: number, durationMs: number) {
-    this.impact = {
-      offsetX,
-      offsetY,
-      elapsedMs: 0,
-      durationMs: Math.max(1, durationMs),
-    };
+  applyProgress(progress: number) {
+    const normalized = Math.max(0, Math.min(1, progress));
+    if (this.transition) {
+      this.state = interpolateCamera(this.transition.from, this.transition.to, smoothstep(normalized));
+    }
+    if (this.impact) {
+      const falloff = Math.sin(normalized * Math.PI) * (1 - normalized);
+      this.impactOffset = { x: this.impact.offsetX * falloff, y: this.impact.offsetY * falloff };
+    }
+  }
+
+  settle() {
+    if (this.transition) {
+      this.state = { ...this.transition.to };
+    }
+    this.transition = null;
+    this.impact = null;
+    this.impactOffset = { x: 0, y: 0 };
   }
 
   cancelTransition() {
     this.transition = null;
     this.impact = null;
-  }
-
-  stepTransition(deltaMs: number) {
-    const steppedTransition = this.stepCameraTransition(deltaMs);
-    const steppedImpact = this.stepImpact(deltaMs);
-
-    return steppedTransition || steppedImpact;
+    this.impactOffset = { x: 0, y: 0 };
   }
 
   applyTo(container: Container) {
-    const impact = this.getImpactOffset();
-    container.position.set(this.state.x + impact.x, this.state.y + impact.y);
+    container.position.set(this.state.x + this.impactOffset.x, this.state.y + this.impactOffset.y);
     container.scale.set(this.state.scale);
-  }
-
-  private stepCameraTransition(deltaMs: number) {
-    if (!this.transition) {
-      return false;
-    }
-
-    const transition = this.transition;
-    transition.elapsedMs = Math.min(transition.durationMs, transition.elapsedMs + Math.max(0, deltaMs));
-    const t = transition.elapsedMs / transition.durationMs;
-    const eased = t * t * (3 - 2 * t);
-
-    this.state = {
-      x: lerp(transition.from.x, transition.to.x, eased),
-      y: lerp(transition.from.y, transition.to.y, eased),
-      scale: lerp(transition.from.scale, transition.to.scale, eased),
-    };
-
-    if (transition.elapsedMs >= transition.durationMs) {
-      this.transition = null;
-    }
-
-    return true;
-  }
-
-  private stepImpact(deltaMs: number) {
-    if (!this.impact) {
-      return false;
-    }
-
-    this.impact.elapsedMs = Math.min(this.impact.durationMs, this.impact.elapsedMs + Math.max(0, deltaMs));
-    if (this.impact.elapsedMs >= this.impact.durationMs) {
-      this.impact = null;
-    }
-
-    return true;
-  }
-
-  private getImpactOffset() {
-    if (!this.impact) {
-      return { x: 0, y: 0 };
-    }
-
-    const t = this.impact.elapsedMs / this.impact.durationMs;
-    const falloff = Math.sin(t * Math.PI) * (1 - t);
-
-    return {
-      x: this.impact.offsetX * falloff,
-      y: this.impact.offsetY * falloff,
-    };
   }
 }
 
-function lerp(from: number, to: number, t: number) {
-  return from + (to - from) * t;
+function smoothstep(progress: number) {
+  return progress * progress * (3 - 2 * progress);
+}
+
+function interpolateCamera(from: CameraState, to: CameraState, progress: number): CameraState {
+  return { x: lerp(from.x, to.x, progress), y: lerp(from.y, to.y, progress), scale: lerp(from.scale, to.scale, progress) };
+}
+
+function lerp(from: number, to: number, progress: number) {
+  return from + (to - from) * progress;
 }

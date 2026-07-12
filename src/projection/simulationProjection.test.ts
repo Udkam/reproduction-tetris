@@ -1,21 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { createStage4PlayableCoreState } from "../core/systems";
-import { createProjectionFromSimulationState, createStage4PlayableCoreProjection } from "./simulationProjection";
+import { createStage3BSimulationState } from "../core/worldGraph";
+import { createProjectionFromSimulationState } from "./simulationProjection";
 
 describe("simulation projection handoff", () => {
-  it("projects a simulation snapshot for the existing renderer", () => {
-    const projection = createProjectionFromSimulationState(createStage4PlayableCoreState());
-    const recursiveContainer = projection.entities.find((entity) => entity.entity.id === "container-b");
-    const player = projection.entities.find((entity) => entity.entity.id === "player-a");
-    const pushedBox = projection.entities.find((entity) => entity.entity.id === "box-a");
+  it("projects the injected simulation snapshot with a complete root-plus-path address", () => {
+    const projection = createProjectionFromSimulationState(createStage3BSimulationState());
+    const recursiveContainer = projection.entities.find((entity) => entity.occurrence.entityId === "container-b");
+    const player = projection.entities.find((entity) => entity.occurrence.entityId === "player-a");
 
-    expect(projection.world.id).toBe("world-a");
-    expect(player?.entity.bounds).toMatchObject({ x: 6, y: 2, width: 1, height: 1 });
-    expect(pushedBox?.entity.bounds).toMatchObject({ x: 7, y: 2, width: 1, height: 1 });
-    expect(recursiveContainer?.childWorld?.world.id).toBe("world-c");
+    expect(projection.address).toEqual({ rootWorldId: "world-a", containerPath: [] });
+    expect(projection.activeAddress).toEqual({ rootWorldId: "world-a", containerPath: [] });
+    expect(projection.projectionId).toBe('["world-a"]');
+    expect(player?.occurrence).toEqual({ world: projection.address, entityId: "player-a" });
+    expect(recursiveContainer?.childWorld?.address).toEqual({ rootWorldId: "world-a", containerPath: ["container-b"] });
   });
 
-  it("creates the Stage 4 playable core projection", () => {
-    expect(createStage4PlayableCoreProjection().projectionId).toBe("world-a");
+  it("copies canonical focus into every recursive projection rather than inferring it from draw order", () => {
+    const base = createStage3BSimulationState();
+    const focused = { ...base, activeWorldId: "world-c", focusPath: ["container-b"] };
+    const projection = createProjectionFromSimulationState(focused);
+    const child = projection.entities.find((entity) => entity.occurrence.entityId === "container-b")?.childWorld;
+    expect(projection.activeAddress).toEqual({ rootWorldId: "world-a", containerPath: ["container-b"] });
+    expect(child?.activeAddress).toEqual(projection.activeAddress);
   });
 });

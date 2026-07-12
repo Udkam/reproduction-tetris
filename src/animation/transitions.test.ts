@@ -22,24 +22,22 @@ describe("semantic animation mapping", () => {
     const actorMotion = requireMotion(plan, "actor");
 
     expect(plan.direction).toBe("forward");
-    expect(plan.entityMotions.map((motion) => [motion.entityId, motion.kind])).toEqual([
+    expect(plan.entityMotions.map((motion) => [motion.occurrence.entityId, motion.kind])).toEqual([
       ["crate", "push"],
       ["actor", "move"],
     ]);
     expect(boxMotion).toMatchObject({
       occurrence: { world: nested, entityId: "crate" },
-      fromAddress: { world: nested, x: 3, y: 2 },
-      toAddress: { world: nested, x: 4, y: 2 },
-      from: { worldId: "root", x: 3, y: 2 },
-      to: { worldId: "root", x: 4, y: 2 },
+      from: { world: nested, x: 3, y: 2 },
+      to: { world: nested, x: 4, y: 2 },
       anticipationMs: expect.any(Number),
       settleMs: expect.any(Number),
       facing: "right",
     });
     expect(actorMotion).toMatchObject({
       occurrence: { world: root, entityId: "actor" },
-      fromAddress: { world: root, x: 2, y: 2 },
-      toAddress: { world: root, x: 3, y: 2 },
+      from: { world: root, x: 2, y: 2 },
+      to: { world: root, x: 3, y: 2 },
     });
     expect(actorMotion).not.toHaveProperty("anticipationMs");
     expect(actorMotion).not.toHaveProperty("settleMs");
@@ -64,13 +62,13 @@ describe("semantic animation mapping", () => {
     expect(plan.direction).toBe("reverse");
     expect(actorMotion).toMatchObject({
       kind: "move",
-      from: { worldId: "root", x: 3, y: 2 },
-      to: { worldId: "root", x: 2, y: 2 },
+      from: { world: root, x: 3, y: 2 },
+      to: { world: root, x: 2, y: 2 },
     });
     expect(boxMotion).toMatchObject({
       kind: "push",
-      from: { worldId: "root", x: 4, y: 2 },
-      to: { worldId: "root", x: 3, y: 2 },
+      from: { world: nested, x: 4, y: 2 },
+      to: { world: nested, x: 3, y: 2 },
     });
     expect(plan.cameraCues.filter((cue) => cue.kind === "impact")).toEqual([
       expect.objectContaining({ direction: "left" }),
@@ -116,9 +114,9 @@ describe("semantic animation mapping", () => {
 
     expect(plan.direction).toBe("reverse");
     expect(plan.entityMotions[0]).toMatchObject({
-      entityId: "actor",
-      from: { worldId: "root", x: 3, y: 2 },
-      to: { worldId: "root", x: 2, y: 2 },
+      occurrence: { entityId: "actor" },
+      from: { world: root, x: 3, y: 2 },
+      to: { world: root, x: 2, y: 2 },
     });
   });
 
@@ -206,7 +204,7 @@ function moved(
 }
 
 function requireMotion(plan: ReturnType<typeof createAnimationPlan>, entityId: string) {
-  const motion = plan.entityMotions.find((candidate) => candidate.entityId === entityId);
+  const motion = plan.entityMotions.find((candidate) => candidate.occurrence.entityId === entityId);
   if (!motion) {
     throw new Error(`Expected a motion for ${entityId}.`);
   }

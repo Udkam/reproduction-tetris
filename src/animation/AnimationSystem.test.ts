@@ -1,59 +1,40 @@
 import { describe, expect, it } from "vitest";
+import { entityOccurrenceKey } from "../projection/types";
 import { AnimationSystem } from "./AnimationSystem";
 import type { AnimationPlan } from "./transitions";
 
+const occurrence = { world: { rootWorldId: "root", containerPath: ["nest"] }, entityId: "player" } as const;
+
 describe("AnimationSystem", () => {
-  it("advances entity progress and completes a timeline", () => {
+  it("samples controller-owned normalized progress without keeping a clock", () => {
     const system = new AnimationSystem();
-    const first = system.start({
-      direction: "forward",
-      durationMs: 120,
-      entityMotions: [
-        {
-          kind: "move",
-          entityId: "player-a",
-          from: { worldId: "world-a", x: 2, y: 2 },
-          to: { worldId: "world-a", x: 3, y: 2 },
-          durationMs: 120,
-          facing: "right",
-        },
-      ],
-      blockedImpacts: [],
-      cameraCues: [],
-      audioCues: [],
-    });
+    const plan = motionPlan();
+    const first = system.frame(plan, 0, true);
+    const middle = system.frame(plan, 0.5, true);
+    const done = system.frame(plan, 1, false);
 
-    expect(first.running).toBe(true);
-    expect(first.entityProgress["player-a"]).toBe(0);
-
-    const middle = system.step(60);
-    expect(middle.running).toBe(true);
-    expect(middle.entityProgress["player-a"]).toBeGreaterThan(0);
-    expect(middle.entityProgress["player-a"]).toBeLessThan(1);
-
-    const done = system.step(60);
-    expect(done.running).toBe(false);
-    expect(done.complete).toBe(true);
-    expect(done.entityProgress["player-a"]).toBe(1);
+    expect(first.entityProgress[entityOccurrenceKey(occurrence)]).toBe(0);
+    expect(middle.entityProgress[entityOccurrenceKey(occurrence)]).toBeGreaterThan(0);
+    expect(middle.entityProgress[entityOccurrenceKey(occurrence)]).toBeLessThan(1);
+    expect(done).toMatchObject({ progress: 1, running: false, complete: true });
+    expect(done.entityProgress[entityOccurrenceKey(occurrence)]).toBe(1);
   });
 
-  it("cancels the active plan and clears transient impact progress", () => {
-    const system = new AnimationSystem();
-    const plan: AnimationPlan = {
-      direction: "forward",
-      durationMs: 100,
-      entityMotions: [],
-      blockedImpacts: [{ actorId: "player-a", direction: "up", durationMs: 90 }],
-      cameraCues: [{ kind: "impact", direction: "up", strength: 10, durationMs: 90 }],
-      audioCues: [],
-    };
-
-    system.start(plan);
-    expect(system.step(20).blockedImpact).toBeGreaterThan(0);
-
-    const cancelled = system.cancel();
-    expect(cancelled.running).toBe(false);
-    expect(cancelled.complete).toBe(false);
-    expect(cancelled.blockedImpact).toBe(0);
+  it("keeps blocked feedback a pure sample and clamps malformed input", () => {
+    const frame = new AnimationSystem().frame({ ...motionPlan(), entityMotions: [], blockedImpacts: [{ direction: "up", durationMs: 90 }] }, 3, false);
+    expect(frame.progress).toBe(1);
+    expect(frame.blockedImpact).toBe(0);
   });
 });
+
+function motionPlan(): AnimationPlan {
+  return {
+    direction: "forward",
+    durationMs: 120,
+    entityMotions: [{ kind: "move", occurrence, from: { world: occurrence.world, x: 2, y: 2 }, to: { world: occurrence.world, x: 3, y: 2 }, durationMs: 120 }],
+    blockedImpacts: [],
+    cameraCues: [],
+    portalTransitions: [],
+    audioCues: [],
+  };
+}

@@ -1,116 +1,67 @@
-import type {
-  EntityProjection,
-  PrototypeWorldGraph,
-  WorldAddress,
-  WorldId,
-  WorldProjection,
-} from "./types";
+import { getContainerComponent, getPosition, getVisualComponent } from "../core/components";
+import type { SimulationState, WorldAddress } from "../core/types";
+import { getEntitiesInWorld, resolveWorldAddress } from "../core/worldGraph";
+import { worldAddressKey, type EntityProjection, type WorldProjection } from "./types";
 
-const STAGE2_PROTOTYPE_GRAPH: PrototypeWorldGraph = {
-  rootWorldId: "world-a",
-  worlds: {
-    "world-a": {
-      id: "world-a",
-      paletteId: "void-lab",
-      size: { width: 10, height: 8 },
-    },
-    "world-c": {
-      id: "world-c",
-      paletteId: "inner-mint",
-      size: { width: 8, height: 6 },
-    },
-  },
-  entities: [
-    {
-      id: "player-a",
-      kind: "player",
-      worldId: "world-a",
-      bounds: { x: 2, y: 2, width: 1, height: 1 },
-    },
-    {
-      id: "box-a",
-      kind: "box",
-      worldId: "world-a",
-      bounds: { x: 6, y: 2, width: 1, height: 1 },
-    },
-    {
-      id: "container-b",
-      kind: "recursive-container",
-      worldId: "world-a",
-      bounds: { x: 5, y: 4, width: 1, height: 1 },
-      innerWorldId: "world-c",
-    },
-    {
-      id: "goal-a",
-      kind: "goal",
-      worldId: "world-a",
-      bounds: { x: 1, y: 5, width: 1, height: 1 },
-    },
-    {
-      id: "goal-c",
-      kind: "goal",
-      worldId: "world-c",
-      bounds: { x: 1, y: 1, width: 1, height: 1 },
-    },
-    {
-      id: "box-c",
-      kind: "box",
-      worldId: "world-c",
-      bounds: { x: 5, y: 3, width: 1, height: 1 },
-    },
-  ],
-};
-
-export function createRecursiveInteractionProjection(maxDepth = 2) {
-  return projectWorldGraph(STAGE2_PROTOTYPE_GRAPH, STAGE2_PROTOTYPE_GRAPH.rootWorldId, maxDepth);
-}
-
-export const createStage2Projection = createRecursiveInteractionProjection;
-
-export function projectWorldGraph(
-  graph: PrototypeWorldGraph,
-  rootWorldId: WorldId,
-  maxDepth: number,
-): WorldProjection {
-  const rootAddress: WorldAddress = { rootWorldId, path: [] };
-  return projectWorld(graph, rootWorldId, rootAddress, 0, maxDepth);
-}
-
-function projectWorld(
-  graph: PrototypeWorldGraph,
-  worldId: WorldId,
+export function projectWorldOccurrence(
+  state: SimulationState,
   address: WorldAddress,
   depth: number,
   maxDepth: number,
+  activeAddress: WorldAddress = { rootWorldId: state.rootWorldId, containerPath: [...state.focusPath] },
 ): WorldProjection {
-  const world = graph.worlds[worldId];
-  if (!world) {
-    throw new Error(`Projection references unknown world "${worldId}".`);
+  if (address.rootWorldId !== state.rootWorldId) {
+    throw new Error("Projection root address does not match simulation state.");
   }
 
-  const entities: EntityProjection[] = graph.entities
-    .filter((entity) => entity.worldId === worldId)
-    .map((entity) => {
-      if (entity.kind !== "recursive-container" || !entity.innerWorldId || depth >= maxDepth) {
-        return { entity };
-      }
+  const worldId = resolveWorldAddress(state, address.containerPath);
+  const world = worldId ? state.worlds[worldId] : undefined;
+  if (!world || !worldId) {
+    throw new Error("Projection address does not resolve to a world.");
+  }
 
-      return {
-        entity,
-        childWorld: projectWorld(
-          graph,
-          entity.innerWorldId,
-          { rootWorldId: address.rootWorldId, path: [...address.path, entity.id] },
-          depth + 1,
-          maxDepth,
-        ),
-      };
-    });
+  const entities: EntityProjection[] = getEntitiesInWorld(state, worldId).flatMap((entity) => {
+    const position = getPosition(state, entity.id);
+    const visual = getVisualComponent(state, entity.id);
+    if (!position || !visual) {
+      return [];
+    }
+
+    const container = getContainerComponent(state, entity.id);
+    const occurrence = { world: address, entityId: entity.id } as const;
+    const projected = {
+      occurrence,
+      entity: {
+        id: entity.id,
+        kind: visual.kind,
+        bounds: { x: position.x, y: position.y, width: 1, height: 1 },
+        ...(container ? { innerWorldId: container.innerWorldId } : {}),
+      },
+    } satisfies EntityProjection;
+
+    // maxDepth bounds presentation only; every visible occurrence keeps its
+    // complete root-plus-containerPath identity.
+    if (!container || depth >= maxDepth) {
+      return [projected];
+    }
+
+    return [{
+      ...projected,
+      childWorld: projectWorldOccurrence(
+        state,
+        { rootWorldId: address.rootWorldId, containerPath: [...address.containerPath, entity.id] },
+        depth + 1,
+        maxDepth,
+        activeAddress,
+      ),
+    }];
+  });
 
   return {
-    projectionId: [worldId, ...address.path].join(":"),
-    world,
+    projectionId: worldAddressKey(address),
+    world: { id: world.id, paletteId: world.paletteId, size: world.size },
     address,
+    activeAddress,
     depth,
     entities,
   };

@@ -1,6 +1,6 @@
 import { clamp01, easeInOutCubic, easeOutBack, easeOutCubic } from "./easing";
-import { Timeline } from "./Timeline";
 import type { AnimationPlan, EntityMotion } from "./transitions";
+import { entityOccurrenceKey } from "../projection/types";
 
 export interface AnimationFrameState {
   readonly progress: number;
@@ -10,59 +10,33 @@ export interface AnimationFrameState {
   readonly blockedImpact: number;
 }
 
+/**
+ * Maps controller-owned normalized progress to per-occurrence visual values.
+ * It intentionally owns no clock, readiness state, or completion lifecycle.
+ */
 export class AnimationSystem {
-  private readonly timeline = new Timeline(1);
-  private activePlan: AnimationPlan | null = null;
+  frame(plan: AnimationPlan, progress: number, running: boolean): AnimationFrameState {
+    const normalized = clamp01(progress);
+    const entityProgress = Object.fromEntries(
+      plan.entityMotions.map((motion) => [entityOccurrenceKey(motion.occurrence), getMotionProgress(motion, normalized)]),
+    );
 
-  start(plan: AnimationPlan): AnimationFrameState {
-    this.activePlan = plan;
-    this.timeline.start(plan.direction, plan.durationMs, plan.direction === "forward" ? 0 : 1);
-    return this.createFrameState();
+    return {
+      progress: normalized,
+      running,
+      complete: !running && normalized === 1,
+      entityProgress,
+      blockedImpact: getBlockedImpact(normalized, plan),
+    };
   }
 
-  step(deltaMs: number): AnimationFrameState {
-    this.timeline.step(deltaMs);
-    return this.createFrameState();
-  }
-
-  cancel(): AnimationFrameState {
-    this.timeline.cancel();
-    this.activePlan = null;
+  empty(): AnimationFrameState {
     return {
       progress: 0,
       running: false,
       complete: false,
       entityProgress: {},
       blockedImpact: 0,
-    };
-  }
-
-  private createFrameState(): AnimationFrameState {
-    const plan = this.activePlan;
-    const snapshot = this.timeline.snapshot;
-
-    if (!plan) {
-      return {
-        progress: 0,
-        running: false,
-        complete: false,
-        entityProgress: {},
-        blockedImpact: 0,
-      };
-    }
-
-    const rawProgress = plan.direction === "forward" ? snapshot.rawProgress : 1 - snapshot.rawProgress;
-    const progress = clamp01(rawProgress);
-    const entityProgress = Object.fromEntries(
-      plan.entityMotions.map((motion) => [motion.entityId, getMotionProgress(motion, progress)]),
-    );
-
-    return {
-      progress,
-      running: snapshot.running,
-      complete: snapshot.complete,
-      entityProgress,
-      blockedImpact: getBlockedImpact(progress, plan),
     };
   }
 }
@@ -80,6 +54,8 @@ function getBlockedImpact(progress: number, plan: AnimationPlan) {
   if (plan.blockedImpacts.length === 0) {
     return 0;
   }
+
+  if (progress === 0 || progress === 1) return 0;
 
   return Math.sin(easeOutCubic(progress) * Math.PI);
 }

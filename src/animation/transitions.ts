@@ -4,8 +4,11 @@ import type {
   Direction,
   EntityMovedEvent,
   EntityOccurrenceAddress,
+  PortOccurrenceAddress,
   SemanticEvent,
+  WorldAddress,
 } from "../core/types";
+import { sameEntityOccurrence, sameWorldAddress } from "../projection/types";
 
 export type AnimationDirection = "forward" | "reverse";
 export type EntityMotionKind = "move" | "push";
@@ -14,18 +17,9 @@ export type CameraCueKind = "follow" | "impact" | "enter" | "exit";
 
 export interface EntityMotion {
   readonly kind: EntityMotionKind;
-  readonly entityId: string;
-  /** I1 keeps the occurrence available until V1 replaces entity-ID animation keys. */
-  readonly occurrence?: EntityOccurrenceAddress;
-  /**
-   * Temporary Pixi compatibility positions. V1 must remove these GridPosition
-   * projections in favor of the addressed values below; current consumers use
-   * only x/y and never reconstruct a world identity from a container path.
-   */
-  readonly from: GridPositionCompatibility;
-  readonly to: GridPositionCompatibility;
-  readonly fromAddress?: CellAddress;
-  readonly toAddress?: CellAddress;
+  readonly occurrence: EntityOccurrenceAddress;
+  readonly from: CellAddress;
+  readonly to: CellAddress;
   readonly durationMs: number;
   readonly anticipationMs?: number;
   readonly settleMs?: number;
@@ -41,10 +35,22 @@ export interface BlockedImpact {
 
 export interface CameraCue {
   readonly kind: CameraCueKind;
-  readonly entityId?: string;
+  readonly occurrence?: EntityOccurrenceAddress;
+  readonly world?: WorldAddress;
+  readonly portal?: PortalTransition;
   readonly direction?: Direction;
   readonly strength?: number;
   readonly durationMs: number;
+}
+
+/** Explicit portal bridge; actor occurrences intentionally differ across a traversal. */
+export interface PortalTransition {
+  readonly mode: "enter" | "exit";
+  readonly actorBefore: EntityOccurrenceAddress;
+  readonly actorAfter: EntityOccurrenceAddress;
+  readonly port: PortOccurrenceAddress;
+  readonly from: CellAddress;
+  readonly to: CellAddress;
 }
 
 export interface AudioCue {
@@ -58,18 +64,8 @@ export interface AnimationPlan {
   readonly entityMotions: readonly EntityMotion[];
   readonly blockedImpacts: readonly BlockedImpact[];
   readonly cameraCues: readonly CameraCue[];
+  readonly portalTransitions: readonly PortalTransition[];
   readonly audioCues: readonly AudioCue[];
-}
-
-/**
- * Kept structurally compatible with the current renderer until V1 owns its
- * occurrence-addressed interpolation. The addressed fields on EntityMotion
- * remain the lossless source of identity for the bridge.
- */
-export interface GridPositionCompatibility {
-  readonly worldId: string;
-  readonly x: number;
-  readonly y: number;
 }
 
 const DURATION = {
@@ -92,6 +88,7 @@ export function createAnimationPlan(
   const entityMotions: EntityMotion[] = [];
   const blockedImpacts: BlockedImpact[] = [];
   const cameraCues: CameraCue[] = [];
+  const portalTransitions: PortalTransition[] = [];
   const audioCues: AudioCue[] = [];
 
   for (const event of events) {
@@ -103,7 +100,7 @@ export function createAnimationPlan(
       const isAggregatePushActor = isPushResolvedActor(event, events);
       addEntityMotion(entityMotions, event, isAggregatePushActor ? "move" : event.cause === "push" ? "push" : "move");
       if (event.cause === "walk") {
-        cameraCues.push({ kind: "follow", entityId: event.occurrence.entityId, durationMs: DURATION.move });
+        cameraCues.push({ kind: "follow", occurrence: event.occurrence, durationMs: DURATION.move });
         audioCues.push({ kind: "move", volume: 0.45 });
       }
       continue;
@@ -136,7 +133,21 @@ export function createAnimationPlan(
 
     if (event.type === "portal-traversed") {
       const durationMs = event.mode === "enter" ? DURATION.enter : DURATION.exit;
-      cameraCues.push({ kind: event.mode, durationMs });
+      const portal: PortalTransition = {
+        mode: event.mode,
+        actorBefore: event.actorBefore,
+        actorAfter: event.actorAfter,
+        port: event.port,
+        from: event.from,
+        to: event.to,
+      };
+      portalTransitions.push(portal);
+      cameraCues.push({
+        kind: event.mode,
+        world: event.mode === "enter" ? event.actorAfter.world : event.actorBefore.world,
+        portal,
+        durationMs,
+      });
       audioCues.push({ kind: event.mode, volume: event.mode === "enter" ? 0.5 : 0.48 });
       continue;
     }
@@ -157,6 +168,7 @@ export function createAnimationPlan(
     entityMotions,
     blockedImpacts,
     cameraCues,
+    portalTransitions,
     audioCues,
   };
 }
@@ -169,12 +181,9 @@ function addEntityMotion(
 ) {
   motions.push({
     kind,
-    entityId: event.occurrence.entityId,
     occurrence: event.occurrence,
-    from: toGridPositionCompatibility(event.from),
-    to: toGridPositionCompatibility(event.to),
-    fromAddress: event.from,
-    toAddress: event.to,
+    from: event.from,
+    to: event.to,
     durationMs: kind === "push" ? DURATION.push : DURATION.move,
     ...(kind === "push" ? { anticipationMs: 34, settleMs: 42 } : {}),
     facing,
@@ -194,34 +203,17 @@ function isPushResolvedActor(event: EntityMovedEvent, events: readonly SemanticE
 }
 
 function sameEntityMotion(left: EntityMovedEvent, right: EntityMovedEvent) {
-  return sameOccurrenceAddress(left.occurrence, right.occurrence) &&
+  return sameEntityOccurrence(left.occurrence, right.occurrence) &&
     sameCellAddress(left.from, right.from) &&
     sameCellAddress(left.to, right.to);
 }
 
 function sameOccurrenceAddress(left: EntityOccurrenceAddress, right: EntityOccurrenceAddress) {
-  return left.entityId === right.entityId && sameWorldAddress(left.world, right.world);
+  return sameEntityOccurrence(left, right);
 }
 
 function sameCellAddress(left: CellAddress, right: CellAddress) {
   return left.x === right.x && left.y === right.y && sameWorldAddress(left.world, right.world);
-}
-
-function sameWorldAddress(
-  left: EntityOccurrenceAddress["world"],
-  right: EntityOccurrenceAddress["world"],
-) {
-  return left.rootWorldId === right.rootWorldId &&
-    left.containerPath.length === right.containerPath.length &&
-    left.containerPath.every((entry, index) => entry === right.containerPath[index]);
-}
-
-function toGridPositionCompatibility(address: CellAddress): GridPositionCompatibility {
-  return {
-    worldId: address.world.rootWorldId,
-    x: address.x,
-    y: address.y,
-  };
 }
 
 function getPlanDuration(
@@ -229,8 +221,11 @@ function getPlanDuration(
   impacts: readonly BlockedImpact[],
   cameraCues: readonly CameraCue[],
 ) {
+  if (motions.length === 0 && impacts.length === 0 && cameraCues.length === 0) {
+    return 0;
+  }
   return Math.max(
-    DURATION.move,
+    0,
     ...motions.map((motion) => motion.durationMs),
     ...impacts.map((impact) => impact.durationMs),
     ...cameraCues.map((cue) => cue.durationMs),
