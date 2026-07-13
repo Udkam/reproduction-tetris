@@ -6,16 +6,16 @@
       "geometry": {
         "renderer": {
           "canvas": {
-            "width": 869,
-            "height": 722,
+            "width": 957,
+            "height": 770,
             "resolution": 1
           },
           "board": {
-            "x": 260,
+            "x": 292,
             "y": 12,
-            "width": 349,
-            "height": 698,
-            "cell": 34.9
+            "width": 373,
+            "height": 746,
+            "cell": 37.3
           },
           "activeCells": [
             {
@@ -53,13 +53,21 @@
               "y": 39
             }
           ],
-          "visibleLockedCells": 0
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
         },
         "state": {
           "status": "ready",
           "score": 0,
           "lines": 0,
           "level": 0,
+          "mode": "marathon",
+          "pieceCount": 0,
           "active": {
             "type": "J",
             "rotation": 0,
@@ -82,23 +90,23 @@
       },
       "consoleErrors": [],
       "screenshot": "docs/screenshots/tetris/desktop-ready.png",
-      "sha256": "d6f89eb300b642f0c89fdc8a06e6dbc419c6d49de4e843a7e42b247b959d84cb"
+      "sha256": "7aa59af046e9f83dbb660e3b1e852b8b97c39a7f77dc33982ef6e56cf1ae1555"
     },
     {
       "name": "desktop-playing",
       "geometry": {
         "renderer": {
           "canvas": {
-            "width": 869,
-            "height": 722,
+            "width": 957,
+            "height": 770,
             "resolution": 1
           },
           "board": {
-            "x": 260,
+            "x": 292,
             "y": 12,
-            "width": 349,
-            "height": 698,
-            "cell": 34.9
+            "width": 373,
+            "height": 746,
+            "cell": 37.3
           },
           "activeCells": [
             {
@@ -136,13 +144,21 @@
               "y": 26
             }
           ],
-          "visibleLockedCells": 36
+          "visibleLockedCells": 36,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
         },
         "state": {
           "status": "playing",
-          "score": 244,
+          "score": 233,
           "lines": 0,
           "level": 0,
+          "mode": "marathon",
+          "pieceCount": 9,
           "active": {
             "type": "Z",
             "rotation": 0,
@@ -165,7 +181,7 @@
       },
       "consoleErrors": [],
       "screenshot": "docs/screenshots/tetris/desktop-playing.png",
-      "sha256": "9a31c179d5b8ae91a7aacea501ff5ac8cf3936a0cff8bd0fca01930ee664fba3"
+      "sha256": "f6801a24e9ad4575bc24bd00ee760b57164d095e811f1f8eef88669dd2272fe4"
     },
     {
       "name": "desktop-four-line-midpoint",
@@ -180,29 +196,71 @@
         ]
       },
       "screenshot": "docs/screenshots/tetris/desktop-four-line-midpoint.png",
-      "sha256": "48be6f39053f9cac135de169037dc4adc6add4e51025e27fada7c8a6bdbf82e0"
+      "sha256": "8724c68979b32e2f008db31be8b9aa59e50b2d1975c6ce1896715d6ec38cc401"
     },
     {
       "name": "desktop-paused",
       "screenshot": "docs/screenshots/tetris/desktop-paused.png",
-      "sha256": "fc0e7556ac77b1e81a1efacbfbf1e77933d291df3df5bd40d3a39738cd75baea"
-    },
-    {
-      "name": "desktop-high-contrast",
-      "screenshot": "docs/screenshots/tetris/desktop-high-contrast.png",
-      "sha256": "65e5a850213d85e9e6252fae9c3c23c29e26fc86594ef59ecb4e1527c0d3cd86"
+      "sha256": "951a6372f06f49d399a10bfa1bb1ebd813265e17585dce2c14a46933a49fcc34"
     },
     {
       "name": "desktop-performance",
       "renderCpuMetrics": {
-        "meanMs": 0.17937499997206033,
-        "p95Ms": 0.30000000447034836,
-        "maxMs": 1.1000000014901161
+        "meanMs": 0.13624999998137355,
+        "p95Ms": 0.20000000298023224,
+        "maxMs": 3
       },
       "headlessRafMetrics": {
-        "meanMs": 67.76500000000001,
-        "p95Ms": 83.39999999999964,
-        "maxMs": 133.40000000000055
+        "meanMs": 23.010833333333334,
+        "p95Ms": 33.40000000000009,
+        "maxMs": 33.5
+      },
+      "softDropEvidence": {
+        "beforeY": 19,
+        "afterY": 30,
+        "afterReleaseY": 30,
+        "samples": [
+          {
+            "coreY": 20,
+            "visualY": 19.967732033431865
+          },
+          {
+            "coreY": 21,
+            "visualY": 20.849706433276225
+          },
+          {
+            "coreY": 22,
+            "visualY": 21.830578812394837
+          },
+          {
+            "coreY": 24,
+            "visualY": 23.95401250446745
+          },
+          {
+            "coreY": 25,
+            "visualY": 24.847708931650082
+          },
+          {
+            "coreY": 26,
+            "visualY": 25.83028461002117
+          },
+          {
+            "coreY": 27,
+            "visualY": 26.829694707473994
+          },
+          {
+            "coreY": 28,
+            "visualY": 27.827631381887077
+          },
+          {
+            "coreY": 29,
+            "visualY": 28.831266608731152
+          },
+          {
+            "coreY": 30,
+            "visualY": 29.827862899636536
+          }
+        ]
       },
       "note": "Render CPU preparation is the hard gate. Headless rAF can be environment-throttled and is recorded only."
     },
@@ -211,65 +269,73 @@
       "geometry": {
         "renderer": {
           "canvas": {
-            "width": 364,
-            "height": 547,
+            "width": 370,
+            "height": 506,
             "resolution": 2
           },
           "board": {
-            "x": 69.0275,
-            "y": 83.11,
-            "width": 225.945,
-            "height": 451.89,
-            "cell": 22.5945
+            "x": 88.5,
+            "y": 108,
+            "width": 193,
+            "height": 386,
+            "cell": 19.3
           },
           "activeCells": [
             {
               "x": 7,
-              "y": 20
+              "y": 26
             },
             {
               "x": 8,
-              "y": 20
+              "y": 26
             },
             {
               "x": 7,
-              "y": 21
+              "y": 27
             },
             {
               "x": 8,
-              "y": 21
+              "y": 27
             }
           ],
           "ghostCells": [
             {
               "x": 7,
-              "y": 30
+              "y": 31
             },
             {
               "x": 8,
-              "y": 30
+              "y": 31
             },
             {
               "x": 7,
-              "y": 31
+              "y": 32
             },
             {
               "x": 8,
-              "y": 31
+              "y": 32
             }
           ],
-          "visibleLockedCells": 28
+          "visibleLockedCells": 28,
+          "presentation": {
+            "x": 7,
+            "y": 26,
+            "offsetX": 0,
+            "offsetY": 0
+          }
         },
         "state": {
           "status": "playing",
-          "score": 186,
+          "score": 171,
           "lines": 0,
           "level": 0,
+          "mode": "marathon",
+          "pieceCount": 7,
           "active": {
             "type": "O",
             "rotation": 0,
             "x": 7,
-            "y": 20
+            "y": 26
           },
           "lockedCells": 28
         },
@@ -287,13 +353,18 @@
       },
       "consoleErrors": [],
       "screenshot": "docs/screenshots/tetris/mobile-portrait.png",
-      "sha256": "23d24747eebe58e3dabb4c25c571bbf8965ac4775615ae24e69f99c760f128d1",
+      "sha256": "307a7f734944816f38329dc2b7f54527de3ec802d27865dea713122be2d6d3f4",
       "touchEvidence": {
         "pointerType": "touch",
         "longHold": {
           "beforeX": 4,
           "heldX": 7,
           "releasedX": 7
+        },
+        "softDropHold": {
+          "beforeY": 19,
+          "heldY": 26,
+          "releasedY": 26
         },
         "releaseStoppedRepeat": true,
         "pauseResume": [
@@ -307,33 +378,33 @@
       "geometry": {
         "renderer": {
           "canvas": {
-            "width": 536,
-            "height": 320,
+            "width": 567,
+            "height": 600,
             "resolution": 2
           },
           "board": {
-            "x": 194,
-            "y": 12,
-            "width": 148,
-            "height": 296,
-            "cell": 14.8
+            "x": 163.5,
+            "y": 108,
+            "width": 240,
+            "height": 480,
+            "cell": 24
           },
           "activeCells": [
             {
               "x": 7,
-              "y": 20
+              "y": 27
             },
             {
               "x": 8,
-              "y": 20
+              "y": 27
             },
             {
               "x": 7,
-              "y": 21
+              "y": 28
             },
             {
               "x": 8,
-              "y": 21
+              "y": 28
             }
           ],
           "ghostCells": [
@@ -354,18 +425,26 @@
               "y": 31
             }
           ],
-          "visibleLockedCells": 28
+          "visibleLockedCells": 28,
+          "presentation": {
+            "x": 7,
+            "y": 27,
+            "offsetX": 0,
+            "offsetY": 0
+          }
         },
         "state": {
           "status": "playing",
-          "score": 186,
+          "score": 181,
           "lines": 0,
           "level": 0,
+          "mode": "marathon",
+          "pieceCount": 7,
           "active": {
             "type": "O",
             "rotation": 0,
             "x": 7,
-            "y": 20
+            "y": 27
           },
           "lockedCells": 28
         },
@@ -383,13 +462,18 @@
       },
       "consoleErrors": [],
       "screenshot": "docs/screenshots/tetris/mobile-landscape.png",
-      "sha256": "25bcd497927ca4f5f063f35bb0a34c8bc224f1197f9e5fa50438f67e74df4a46",
+      "sha256": "35a33419aedfe8e4061771e46443d79a9c3b406ba319db4750442a1f45397e1d",
       "touchEvidence": {
         "pointerType": "touch",
         "longHold": {
           "beforeX": 4,
           "heldX": 7,
           "releasedX": 7
+        },
+        "softDropHold": {
+          "beforeY": 19,
+          "heldY": 26,
+          "releasedY": 26
         },
         "releaseStoppedRepeat": true,
         "pauseResume": [
@@ -399,48 +483,69 @@
       }
     },
     {
+      "name": "desktop-race",
+      "state": {
+        "mode": "race",
+        "pieceCount": 1,
+        "gravityTicks": 6
+      },
+      "consoleErrors": [],
+      "screenshot": "docs/screenshots/tetris/desktop-race.png",
+      "sha256": "f84fd33c100312edbf0fbc33a05a1e97deab824046f96d61c9cb470a571fdf23"
+    },
+    {
       "name": "desktop-game-over",
       "state": {
         "status": "game-over",
         "score": 228,
-        "lines": 0
+        "lines": 0,
+        "pieceCount": 12
       },
+      "leaderboard": [
+        {
+          "score": 228,
+          "lines": 0,
+          "pieces": 12,
+          "mode": "marathon",
+          "completedAt": "2026-07-13T22:23:09.454Z"
+        }
+      ],
       "consoleErrors": [],
       "screenshot": "docs/screenshots/tetris/desktop-game-over.png",
-      "sha256": "7d3a2d37c3fbbcb0ab3d114c84c97c47d9f2c843cea537d2fafcd9d7c6e20151"
+      "sha256": "3a61e59285ab8c031233218c3c98738e3975ff35c6fe9d315538e9aa652db144"
     },
     {
       "name": "mobile-reduced-motion",
       "geometry": {
         "renderer": {
           "canvas": {
-            "width": 364,
-            "height": 547,
+            "width": 370,
+            "height": 506,
             "resolution": 2
           },
           "board": {
-            "x": 69.0275,
-            "y": 83.11,
-            "width": 225.945,
-            "height": 451.89,
-            "cell": 22.5945
+            "x": 88.5,
+            "y": 108,
+            "width": 193,
+            "height": 386,
+            "cell": 19.3
           },
           "activeCells": [
             {
               "x": 8,
-              "y": 21
+              "y": 27
             },
             {
               "x": 6,
-              "y": 22
+              "y": 28
             },
             {
               "x": 7,
-              "y": 22
+              "y": 28
             },
             {
               "x": 8,
-              "y": 22
+              "y": 28
             }
           ],
           "ghostCells": [
@@ -461,18 +566,26 @@
               "y": 34
             }
           ],
-          "visibleLockedCells": 16
+          "visibleLockedCells": 16,
+          "presentation": {
+            "x": 6,
+            "y": 27,
+            "offsetX": 0,
+            "offsetY": 0
+          }
         },
         "state": {
           "status": "playing",
-          "score": 122,
+          "score": 133,
           "lines": 0,
           "level": 0,
+          "mode": "marathon",
+          "pieceCount": 4,
           "active": {
             "type": "L",
             "rotation": 0,
             "x": 6,
-            "y": 21
+            "y": 27
           },
           "lockedCells": 16
         },
@@ -496,6 +609,11 @@
           "heldX": 6,
           "releasedX": 6
         },
+        "softDropHold": {
+          "beforeY": 19,
+          "heldY": 26,
+          "releasedY": 26
+        },
         "releaseStoppedRepeat": true,
         "pauseResume": [
           "paused",
@@ -504,7 +622,7 @@
       },
       "consoleErrors": [],
       "screenshot": "docs/screenshots/tetris/mobile-reduced-motion.png",
-      "sha256": "85656e31ab75c1605ee8a80bb88c5cede017fb6f0f3ba7dbaa493376cecc67c5"
+      "sha256": "901c706953123698b86fb7b8afc3cdd4ad672142cabc7419615ac3455b85f882"
     }
   ],
   "result": "passed"

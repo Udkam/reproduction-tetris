@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { ARR_TICKS, DAS_TICKS, InputController, SOFT_DROP_TICKS, type InputAction } from './InputController';
+import {
+  ARR_TICKS,
+  DAS_TICKS,
+  InputController,
+  SOFT_DROP_INITIAL_DELAY_TICKS,
+  SOFT_DROP_REPEAT_TICKS,
+  type InputAction,
+} from './InputController';
 
 describe('InputController', () => {
   it('fires immediately, then follows deterministic DAS and ARR ticks', () => {
@@ -24,15 +31,23 @@ describe('InputController', () => {
     expect(actions).toEqual(['left', 'right', 'left']);
   });
 
-  it('repeats soft drop independently and clears held state', () => {
+  it('soft drops immediately, pauses briefly, then repeats every simulation tick until release', () => {
     const actions: InputAction[] = [];
     const input = new InputController((action) => actions.push(action), null);
     input.press('soft-drop');
-    for (let tick = 0; tick < SOFT_DROP_TICKS * 2; tick += 1) input.step();
-    expect(actions.filter((action) => action === 'soft-drop')).toHaveLength(3);
-    input.clearHeld();
-    for (let tick = 0; tick < SOFT_DROP_TICKS * 2; tick += 1) input.step();
-    expect(actions.filter((action) => action === 'soft-drop')).toHaveLength(3);
+    expect(actions).toEqual(['soft-drop']);
+
+    for (let tick = 1; tick < SOFT_DROP_INITIAL_DELAY_TICKS; tick += 1) input.step();
+    expect(actions).toEqual(['soft-drop']);
+
+    input.step();
+    expect(actions).toEqual(['soft-drop', 'soft-drop']);
+    for (let tick = 0; tick < SOFT_DROP_REPEAT_TICKS * 3; tick += 1) input.step();
+    expect(actions.filter((action) => action === 'soft-drop')).toHaveLength(5);
+
+    input.release('soft-drop');
+    for (let tick = 0; tick < SOFT_DROP_INITIAL_DELAY_TICKS + 3; tick += 1) input.step();
+    expect(actions.filter((action) => action === 'soft-drop')).toHaveLength(5);
   });
 
   it('clears held input and requests suspension on window blur', () => {

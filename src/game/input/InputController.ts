@@ -1,6 +1,7 @@
 export const DAS_TICKS = 10;
 export const ARR_TICKS = 2;
-export const SOFT_DROP_TICKS = 2;
+export const SOFT_DROP_INITIAL_DELAY_TICKS = 3;
+export const SOFT_DROP_REPEAT_TICKS = 1;
 
 export type InputAction =
   | 'left'
@@ -103,7 +104,15 @@ export class InputController {
     const softDrop = this.held['soft-drop'];
     if (softDrop.pressed) {
       softDrop.heldTicks += 1;
-      if (softDrop.heldTicks % SOFT_DROP_TICKS === 0) this.emit('soft-drop');
+      if (
+        softDrop.heldTicks === SOFT_DROP_INITIAL_DELAY_TICKS
+        || (
+          softDrop.heldTicks > SOFT_DROP_INITIAL_DELAY_TICKS
+          && (softDrop.heldTicks - SOFT_DROP_INITIAL_DELAY_TICKS) % SOFT_DROP_REPEAT_TICKS === 0
+        )
+      ) {
+        this.emit('soft-drop');
+      }
     }
   }
 

@@ -1,108 +1,99 @@
-# Signal Foundry — Design Contract
+# Tetris — Design Contract
 
 ## Product intent
 
-Signal Foundry is a polished, original falling-block puzzle game for desktop and mobile browsers. It preserves the strategic clarity of classic Tetris-style play—seven four-cell pieces, a 10 × 20 visible matrix, increasing gravity, line clears, scoring, and top-out—without copying protected branding, music, assets, or commercial screen layouts.
+Tetris is a deterministic falling-block puzzle for desktop and mobile browsers. It implements the familiar seven four-cell pieces, a 10 × 20 visible matrix, hold, one-piece preview, increasing gravity, line clears, scoring, and top-out without copying commercial art, music, fonts, logos, level layouts, or screen trade dress.
 
-The first release is one complete Marathon mode. It must feel finished rather than like an engine demo.
+The product has two rule modes:
 
-## Aesthetic direction
+- **马拉松**：gravity follows line-based levels.
+- **竞速**：every five locked pieces advances one speed tier. The fixed gravity curve is `42 → 36 → 30 → 25 → 21 → 18 → 15 → 13 → 11 → 9 → 8 → 7 → 6 → 5 → 4 → 3 → 2` ticks per cell and caps at two ticks.
 
-The world is a precision signal instrument built from smoked glass, cold metal, and illuminated mineral cells.
+Mode and locked-piece count are canonical simulation state, are included in hashing, and replay deterministically. Browser storage is presentation-shell state only.
 
-- Background: deep navy-black, faint technical grid, restrained aurora haze.
-- Board: recessed glass well with a crisp structural rim and low-contrast cell grid.
-- Signature gesture: an energy rail surrounding the board. Locking and clearing sends a short pulse into the score readout.
-- Blocks: translucent mineral modules with an inner light core, one-pixel highlight, stable gaps, and no real-time blur filter per cell.
-- Tone: controlled, tactile, modern, and calm under pressure. Avoid generic neon overload.
+## Visual direction
+
+The board is the sole protagonist: one deep graphite physical well placed on a light measured sheet.
+
+- Background: fresh paper, a 32 px dot field, and a 96 px measurement grid.
+- Signature: an asymmetric `T` and jade square imprint; no ornamental product slogan.
+- Board: deep graphite well, thin jade measurement rail, quiet cell grid, one cell metric.
+- Blocks: pressed mineral modules with a physical offset shadow and thin highlight.
+- Surrounding UI: one narrow data rail, one-piece `Hold`, one-piece `Next`, and two compact header actions.
+- Motion is causal only. There is no glow, ambient particle field, glass card stack, fake telemetry, settings dashboard, or seed display.
 
 ### Palette
 
 | Token | Value |
 | --- | --- |
-| Background | `#070A12` |
-| Board well | `#0B101C` |
-| Panel | `#131B2D` |
-| Structural edge | `#2B3752` |
-| Primary text | `#F4F7FF` |
-| Muted text | `#93A1BC` |
-| Signal accent | `#C6FF5E` |
-| Danger | `#FF5B73` |
+| Paper | `#F1F9F8` |
+| Paper highlight | `#F8FCFB` |
+| Graphite / board well | `#0E1E23` / `#071013` |
+| Structural edge | `#CADCDB` |
+| Muted text | `#6C7E82` |
+| Jade signal | `#12AE9D` |
+| Warm response | `#E26944` |
 
-Piece colors are original to this project: coral, seafoam, amber, periwinkle, acid green, violet, and rose. Color is never the only identifier; high-contrast mode adds per-piece surface patterns.
+Piece colors are original mineral tones: coral, seafoam, amber, periwinkle, green, violet, and rose.
+
+## Interface content
+
+- The game name is exactly `Tetris`; all other player-facing text is natural Chinese.
+- Visible session data is limited to score, lines, level, speed, and mode.
+- `Hold` and `Next` show exactly one piece each, with `Next` below `Hold`.
+- Audio is the only persistent preference exposed by the page.
+- Reduced motion follows `prefers-reduced-motion` automatically and has no manual toggle or storage key.
+- There is no pattern/high-contrast preference.
+- Pause is both a clearly labelled header action and a high-recognition `已暂停` state inside the board area.
+- Ready and game-over views include a flat, bounded local leaderboard rather than cards.
 
 ## Layout
 
 ### Desktop
 
-- Three-column instrument layout: statistics, board, queue/hold/status.
-- Board height is clamped to the viewport and always keeps a strict 1:2 visible ratio.
-- Side panels remain subordinate to the board and use compact numeric typography.
+- Two-column layout: a narrow data/keyboard rail and the Pixi board stage.
+- The board stays the largest and darkest object and preserves a strict 1:2 ratio.
+- Empty space is intentional; no right-hand settings column exists.
 
 ### Mobile portrait
 
-- Score, level, and lines form a compact top rail.
-- Hold and next previews sit beside or directly above the complete board.
-- Touch controls remain at least 48 × 48 CSS pixels and respect safe-area insets.
-- The 10 × 20 matrix must never be cropped.
+- Score, level, lines, and speed form one compact rail.
+- The complete board remains visible above six touch-safe controls.
+- Each touch control is at least 44 CSS px high and respects safe-area insets.
 
 ### Mobile landscape
 
-- Board sits left; statistics, queue, and controls use the right region.
-- No horizontal page scroll.
+- Board sits left and the six controls sit right.
+- Pause remains visible in the header.
+- The document has no horizontal overflow.
 
-## Motion
+## Motion and responsiveness
 
-Simulation remains discrete; rendering interpolates presentation only.
+Simulation remains discrete and fixed at 60 Hz; Pixi interpolates presentation only.
 
-| Action | Target duration | Presentation |
-| --- | ---: | --- |
-| Horizontal move | 60 ms | direct eased slide |
-| Rotation | 100 ms | quarter-turn sweep without overshoot |
-| Hard drop | 120 ms | trailing echoes and restrained impact |
-| Lock | 70 ms | inner-core pulse |
-| Line clear | 260 ms | center-out signal collapse |
-| Four-line clear | 320 ms | stronger rail pulse, no full-screen flash |
-| Level up | 360 ms | rail and HUD response |
-| Game over | 650 ms | rows dim from top to bottom |
+| Action | Presentation |
+| --- | --- |
+| Horizontal move | bounded eased follow, about 56 ms |
+| Gravity step | continuous follow, about 82 ms |
+| Soft drop | immediate command, 3-tick initial delay, then every tick; visual follow about 26 ms |
+| Hard drop | brief trail and restrained physical impact |
+| Lock | short cell-local outline pulse |
+| Line clear | center-out row collapse, no full-screen flash or generic particles |
 
-Reduced-motion mode removes trails, rotation arcs, shake, and scaling. State changes remain immediately legible with short opacity cues.
+Entry delay is three fixed ticks. React-facing routine state is coalesced at 100 ms while Pixi continues rendering every frame, so simulation and presentation do not stall on component rerenders.
 
-## Audio
+## Local leaderboard
 
-Audio is synthesized at runtime after a user gesture. No melody or sound from an existing Tetris product is used.
-
-- move: dry glass tick
-- rotate: short two-tone click
-- hold: bidirectional suction cue
-- lock: ceramic impact
-- hard drop: low-frequency thump
-- one to four lines: progressively wider original chord
-- game over: descending filtered noise texture
-
-Audio can be disabled. Repeated movement cues are rate-limited.
-
-## Input
-
-Keyboard defaults:
-
-- left/right or A/D: move
-- down or S: soft drop
-- Space: hard drop
-- Z/Q: rotate counter-clockwise
-- X/W/up: rotate clockwise
-- C/Shift: hold
-- Escape/P: pause
-- R: restart from paused/game-over state
-
-Default repeat behavior follows the fixed 60 Hz simulation clock: DAS 10 ticks (about 167 ms), ARR 2 ticks (about 33 ms), and soft-drop repeat 2 ticks (about 33 ms). Touch controls expose move, rotate, soft drop, hard drop, hold, and pause without relying on hover.
+Completed runs record score, lines, locked-piece count, mode, and ISO completion time. Records are validated fail-closed, sorted deterministically by score/lines/pieces/time/mode, and capped at eight entries. Storage never enters the simulation core.
 
 ## Acceptance
 
-- The core rules are deterministic under a seed and command sequence.
-- The full 10 × 20 matrix is visible at 1440 × 900 and 390 × 844.
-- Settled cells, active piece, ghost, particles, and previews derive from one cell metric and one transform pipeline.
-- Cell alignment error is at most 0.25 CSS px in structured browser evidence.
-- Canvas count is exactly one; gameplay cells are not React DOM nodes.
-- Desktop and mobile interaction complete without console errors.
-- Restart/unmount does not multiply ticker listeners, event handlers, audio nodes, or canvases.
+- Same seed, mode, and command sequence produce the same final hash.
+- The 10 × 20 matrix is complete at 1440 × 900, 390 × 844 DPR3, and 844 × 390 DPR3.
+- Canvas count is exactly one and gameplay DOM-cell count is zero.
+- Keyboard soft drop and touch soft drop both repeat quickly and stop immediately on release.
+- Race selection and the first counted lock are browser-verified.
+- Game over writes exactly one valid local leaderboard record.
+- System reduced-motion mode retains complete interaction without a manual preference.
+- Desktop and mobile contexts produce zero console errors.
+- Restart and unmount do not multiply listeners, ticker callbacks, audio nodes, or canvases.

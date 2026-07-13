@@ -2,7 +2,6 @@ import { Application, Container, Graphics, Text, type Ticker } from 'pixi.js';
 import {
   BOARD_WIDTH,
   LINE_CLEAR_DELAY_TICKS,
-  NEXT_QUEUE_SIZE,
   PIECE_SHAPES,
   VISIBLE_HEIGHT,
   VISIBLE_START_ROW,
@@ -13,10 +12,10 @@ import {
   type GameState,
   type PieceType,
 } from '../core';
-import { COLORS, PIECE_MATERIALS, PIECE_PATTERN_INDEX } from './theme';
+import { COLORS, PIECE_MATERIALS } from './theme';
+import { approachPresentationPoint, lineClearCellProgress } from './presentation';
 
 interface RenderOptions {
-  highContrast: boolean;
   reducedMotion: boolean;
 }
 
@@ -29,11 +28,11 @@ interface BoardLayout {
   compact: boolean;
 }
 
-interface MotionState {
-  dx: number;
-  dy: number;
-  elapsed: number;
-  duration: number;
+interface PiecePresentation {
+  type: PieceType;
+  x: number;
+  y: number;
+  settleMs: number;
 }
 
 interface TrailState {
@@ -44,14 +43,11 @@ interface TrailState {
   piece: PieceType;
 }
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  maxLife: number;
-  color: number;
+interface LockPulse {
+  cells: Cell[];
+  elapsed: number;
+  duration: number;
+  piece: PieceType;
 }
 
 export interface RendererSnapshot {
@@ -60,6 +56,7 @@ export interface RendererSnapshot {
   activeCells: Cell[];
   ghostCells: Cell[];
   visibleLockedCells: number;
+  presentation: { x: number; y: number; offsetX: number; offsetY: number } | null;
 }
 
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
@@ -72,27 +69,28 @@ export class TetrisRenderer {
   private readonly effectGraphics = new Graphics();
   private readonly labels = new Container();
   private readonly holdLabel = new Text({
-    text: 'HOLD',
-    style: { fontFamily: 'JetBrains Mono Variable', fontSize: 11, fill: COLORS.muted, letterSpacing: 2 },
+    text: '暂存',
+    style: { fontFamily: 'Microsoft YaHei, sans-serif', fontSize: 11, fill: COLORS.muted },
   });
   private readonly nextLabel = new Text({
-    text: 'NEXT',
-    style: { fontFamily: 'JetBrains Mono Variable', fontSize: 11, fill: COLORS.muted, letterSpacing: 2 },
+    text: '下一个',
+    style: { fontFamily: 'Microsoft YaHei, sans-serif', fontSize: 11, fill: COLORS.muted },
   });
 
   private frameCallback: ((deltaMs: number) => void) | null = null;
-  private motion: MotionState | null = null;
+  private presentation: PiecePresentation | null = null;
   private trail: TrailState | null = null;
-  private particles: Particle[] = [];
+  private lockPulse: LockPulse | null = null;
   private impact = 0;
   private rotationPulse = 0;
-  private options: RenderOptions = { highContrast: false, reducedMotion: false };
+  private options: RenderOptions = { reducedMotion: false };
   private snapshot: RendererSnapshot = {
     canvas: { width: 0, height: 0, resolution: 1 },
     board: { x: 0, y: 0, width: 0, height: 0, cell: 0 },
     activeCells: [],
     ghostCells: [],
     visibleLockedCells: 0,
+    presentation: null,
   };
 
   async init(host: HTMLElement): Promise<void> {
@@ -106,7 +104,7 @@ export class TetrisRenderer {
       preference: 'webgl',
     });
     app.canvas.dataset.testid = 'game-canvas';
-    app.canvas.setAttribute('aria-label', 'Signal Foundry falling-block game board');
+    app.canvas.setAttribute('aria-label', 'Tetris 棋盘');
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
@@ -124,9 +122,9 @@ export class TetrisRenderer {
   setOptions(options: Partial<RenderOptions>): void {
     this.options = { ...this.options, ...options };
     if (this.options.reducedMotion) {
-      this.motion = null;
+      this.presentation = null;
       this.trail = null;
-      this.particles = [];
+      this.lockPulse = null;
       this.impact = 0;
       this.rotationPulse = 0;
     }
@@ -137,6 +135,7 @@ export class TetrisRenderer {
     if (!app) return;
     this.consumeEvents(events);
     this.advanceEffects(deltaMs);
+    this.advancePresentation(state, deltaMs);
     const layout = this.calculateLayout(app.screen.width, app.screen.height);
     this.drawBoard(state, layout);
     this.drawPieces(state, layout);
@@ -172,7 +171,8 @@ export class TetrisRenderer {
     this.frameCallback = null;
     this.app.destroy({ removeView: true }, { children: true });
     this.app = null;
-    this.particles = [];
+    this.presentation = null;
+    this.lockPulse = null;
   }
 
   private readonly onTick = (ticker: Ticker): void => {
@@ -181,7 +181,7 @@ export class TetrisRenderer {
 
   private calculateLayout(width: number, height: number): BoardLayout {
     const compact = width < 620 && height > width * 1.05;
-    const topBand = compact ? Math.min(82, height * 0.13) : 0;
+    const topBand = compact ? Math.min(96, height * 0.19) : 0;
     const horizontalAllowance = compact ? 18 : Math.min(260, width * 0.34);
     const cell = Math.max(8, Math.min((height - topBand - 24) / VISIBLE_HEIGHT, (width - horizontalAllowance) / BOARD_WIDTH));
     const boardWidth = cell * BOARD_WIDTH;
@@ -202,13 +202,13 @@ export class TetrisRenderer {
     const pulse = this.options.reducedMotion ? 0 : this.impact;
     const railInset = 7 + pulse * 2;
     graphics
-      .roundRect(layout.x + 6, layout.y + 10, layout.width, layout.height, Math.max(8, layout.cell * 0.22))
-      .fill({ color: 0x000000, alpha: 0.42 });
+      .roundRect(layout.x + Math.max(4, layout.cell * 0.16), layout.y + Math.max(5, layout.cell * 0.2), layout.width, layout.height, 3)
+      .fill({ color: 0x0e1e23, alpha: 0.18 });
     graphics
-      .roundRect(layout.x - railInset, layout.y - railInset, layout.width + railInset * 2, layout.height + railInset * 2, Math.max(10, layout.cell * 0.28))
-      .stroke({ color: COLORS.signal, alpha: 0.28 + pulse * 0.42, width: 1.5 + pulse * 1.5 });
+      .roundRect(layout.x - railInset, layout.y - railInset, layout.width + railInset * 2, layout.height + railInset * 2, 3)
+      .stroke({ color: COLORS.signal, alpha: 0.42 + pulse * 0.3, width: 1.25 + pulse });
     graphics
-      .roundRect(layout.x - 3, layout.y - 3, layout.width + 6, layout.height + 6, Math.max(8, layout.cell * 0.2))
+      .roundRect(layout.x - 3, layout.y - 3, layout.width + 6, layout.height + 6, 3)
       .fill({ color: COLORS.panel, alpha: 0.98 })
       .stroke({ color: COLORS.edge, alpha: 0.95, width: 2 });
     graphics.rect(layout.x, layout.y, layout.width, layout.height).fill({ color: COLORS.well, alpha: 1 });
@@ -240,7 +240,21 @@ export class TetrisRenderer {
       row.forEach((cell, x) => {
         if (!cell) return;
         visibleLockedCells += 1;
-        this.drawCell(graphics, layout, x, boardY - VISIBLE_START_ROW, cell, 1, false, 0, 0);
+        const clearProgress = state.phase === 'line-clear' && state.pendingClearRows.includes(boardY)
+          ? lineClearCellProgress(state.phaseTicks / LINE_CLEAR_DELAY_TICKS, x, BOARD_WIDTH)
+          : 0;
+        this.drawCell(
+          graphics,
+          layout,
+          x,
+          boardY - VISIBLE_START_ROW,
+          cell,
+          1 - clearProgress * 0.92,
+          false,
+          0,
+          0,
+          1 - clearProgress * 0.72,
+        );
       });
     });
 
@@ -263,13 +277,18 @@ export class TetrisRenderer {
 
     for (const cell of ghostCells) {
       if (cell.y < VISIBLE_START_ROW) continue;
-      this.drawCell(graphics, layout, cell.x, cell.y - VISIBLE_START_ROW, state.active!.type, 0.36, true, 0, 0);
+      const ghostOffsetX = this.presentation && state.active
+        ? (this.presentation.x - state.active.x) * layout.cell
+        : 0;
+      this.drawCell(graphics, layout, cell.x, cell.y - VISIBLE_START_ROW, state.active!.type, 0.36, true, ghostOffsetX, 0);
     }
 
-    const motionProgress = this.motion ? Math.min(1, this.motion.elapsed / this.motion.duration) : 1;
-    const motionEase = easeOutCubic(motionProgress);
-    const offsetX = this.motion && !this.options.reducedMotion ? -this.motion.dx * layout.cell * (1 - motionEase) : 0;
-    const offsetY = this.motion && !this.options.reducedMotion ? -this.motion.dy * layout.cell * (1 - motionEase) : 0;
+    const offsetX = this.presentation && state.active && !this.options.reducedMotion
+      ? (this.presentation.x - state.active.x) * layout.cell
+      : 0;
+    const offsetY = this.presentation && state.active && !this.options.reducedMotion
+      ? (this.presentation.y - state.active.y) * layout.cell
+      : 0;
     const rotationScale = this.options.reducedMotion ? 1 : 1 + this.rotationPulse * 0.035;
     for (const cell of activeCells) {
       if (cell.y < VISIBLE_START_ROW) continue;
@@ -308,7 +327,7 @@ export class TetrisRenderer {
     const scaleInset = (layout.cell - gap * 2 - size) / 2;
     const x = layout.x + gridX * layout.cell + gap + scaleInset + offsetX;
     const y = layout.y + gridY * layout.cell + gap + scaleInset + offsetY;
-    const radius = Math.max(2.5, layout.cell * 0.11);
+    const radius = Math.max(1.5, layout.cell * 0.055);
 
     if (ghost) {
       graphics
@@ -318,38 +337,17 @@ export class TetrisRenderer {
       return;
     }
 
-    graphics.roundRect(x + 1, y + 2, size, size, radius).fill({ color: 0x000000, alpha: alpha * 0.26 });
+    const shadowOffset = Math.max(2, layout.cell * 0.14);
+    graphics.roundRect(x + shadowOffset, y + shadowOffset, size, size, radius).fill({ color: 0x071013, alpha: alpha * 0.24 });
     graphics.roundRect(x, y, size, size, radius).fill({ color: material.outer, alpha });
-    const inset = Math.max(2, layout.cell * 0.105);
+    const inset = Math.max(2, layout.cell * 0.09);
     graphics
       .roundRect(x + inset, y + inset, size - inset * 2, size - inset * 2, Math.max(1.5, radius * 0.56))
-      .fill({ color: material.inner, alpha: alpha * 0.82 });
+      .fill({ color: material.inner, alpha: alpha * 0.28 });
     graphics
       .roundRect(x + inset, y + inset, size - inset * 2, Math.max(1, layout.cell * 0.055), radius * 0.4)
-      .fill({ color: material.highlight, alpha: alpha * 0.58 });
+      .fill({ color: material.highlight, alpha: alpha * 0.66 });
 
-    if (this.options.highContrast) this.drawPattern(graphics, type, x, y, size, alpha);
-  }
-
-  private drawPattern(graphics: Graphics, type: PieceType, x: number, y: number, size: number, alpha: number): void {
-    const pattern = PIECE_PATTERN_INDEX[type];
-    const color = 0x08101e;
-    const lineWidth = Math.max(1, size * 0.045);
-    if (pattern === 0 || pattern === 3) {
-      const offset = pattern === 0 ? 0.35 : 0.65;
-      graphics.moveTo(x + size * 0.18, y + size * offset).lineTo(x + size * 0.82, y + size * offset).stroke({ color, alpha: alpha * 0.62, width: lineWidth });
-    } else if (pattern === 1 || pattern === 4) {
-      const radius = size * (pattern === 1 ? 0.1 : 0.16);
-      graphics.circle(x + size / 2, y + size / 2, radius).stroke({ color, alpha: alpha * 0.62, width: lineWidth });
-    } else if (pattern === 2 || pattern === 5) {
-      const reverse = pattern === 5;
-      graphics
-        .moveTo(x + size * 0.2, y + size * (reverse ? 0.25 : 0.75))
-        .lineTo(x + size * 0.8, y + size * (reverse ? 0.75 : 0.25))
-        .stroke({ color, alpha: alpha * 0.62, width: lineWidth });
-    } else {
-      graphics.roundRect(x + size * 0.27, y + size * 0.27, size * 0.46, size * 0.46, size * 0.08).stroke({ color, alpha: alpha * 0.62, width: lineWidth });
-    }
   }
 
   private drawEffects(state: GameState, layout: BoardLayout): void {
@@ -367,10 +365,18 @@ export class TetrisRenderer {
       }
     }
 
-    for (const particle of this.particles) {
-      if (particle.life <= 0) continue;
-      const alpha = particle.life / particle.maxLife;
-      graphics.circle(layout.x + particle.x * layout.cell, layout.y + particle.y * layout.cell, Math.max(1, layout.cell * 0.055)).fill({ color: particle.color, alpha });
+    if (this.lockPulse && !this.options.reducedMotion) {
+      const progress = Math.min(1, this.lockPulse.elapsed / this.lockPulse.duration);
+      const material = PIECE_MATERIALS[this.lockPulse.piece];
+      const alpha = (1 - easeOutCubic(progress)) * 0.72;
+      for (const cell of this.lockPulse.cells) {
+        if (cell.y < VISIBLE_START_ROW) continue;
+        const x = layout.x + cell.x * layout.cell + layout.cell * 0.06;
+        const y = layout.y + (cell.y - VISIBLE_START_ROW) * layout.cell + layout.cell * 0.06;
+        graphics
+          .roundRect(x, y, layout.cell * 0.88, layout.cell * 0.88, layout.cell * 0.12)
+          .stroke({ color: material.highlight, alpha, width: Math.max(1, layout.cell * 0.06) });
+      }
     }
   }
 
@@ -378,41 +384,24 @@ export class TetrisRenderer {
     const graphics = this.pieceGraphics;
     const width = this.app?.screen.width ?? 0;
     if (layout.compact) {
-      const topY = Math.max(8, layout.y - Math.min(72, layout.cell * 2.2));
+      const topY = Math.max(7, layout.y - Math.min(92, layout.cell * 4.7));
       const unit = Math.max(4, Math.min(8, layout.cell * 0.24));
-      const holdCenterX = layout.x + layout.cell * 1.5;
-      this.drawPreviewCard(graphics, holdCenterX, topY + 26, layout.cell * 2.8, 48);
-      if (state.hold) this.drawPreviewPiece(graphics, state.hold, holdCenterX, topY + 30, unit);
-      const queueStart = layout.x + layout.cell * 4.3;
-      state.queue.slice(0, NEXT_QUEUE_SIZE).forEach((piece, index) => {
-        const centerX = queueStart + index * layout.cell * 1.18;
-        this.drawPreviewPiece(graphics, piece, centerX, topY + 30, unit * (index === 0 ? 1 : 0.78));
-      });
-      this.holdLabel.position.set(layout.x, topY - 4);
-      this.nextLabel.position.set(queueStart - layout.cell, topY - 4);
+      const previewCenterX = layout.x + layout.cell * 2.5;
+      if (state.hold) this.drawPreviewPiece(graphics, state.hold, previewCenterX, topY + 21, unit);
+      const next = state.queue[0];
+      if (next) this.drawPreviewPiece(graphics, next, previewCenterX, topY + 62, unit);
+      this.holdLabel.position.set(layout.x, topY);
+      this.nextLabel.position.set(layout.x, topY + 42);
     } else {
       const sideWidth = Math.max(92, (width - layout.width) / 2 - 22);
       const leftX = Math.max(12, layout.x - sideWidth - 14);
-      const rightX = layout.x + layout.width + 14;
       const cardWidth = Math.max(78, sideWidth);
-      this.drawPreviewCard(graphics, leftX + cardWidth / 2, layout.y + layout.cell * 2.15, cardWidth, layout.cell * 3.3);
       if (state.hold) this.drawPreviewPiece(graphics, state.hold, leftX + cardWidth / 2, layout.y + layout.cell * 2.2, Math.min(14, layout.cell * 0.48));
-      state.queue.slice(0, NEXT_QUEUE_SIZE).forEach((piece, index) => {
-        const centerY = layout.y + layout.cell * (1.6 + index * 3.55);
-        const scale = index === 0 ? 0.48 : 0.38;
-        this.drawPreviewCard(graphics, rightX + cardWidth / 2, centerY, cardWidth, layout.cell * 2.9);
-        this.drawPreviewPiece(graphics, piece, rightX + cardWidth / 2, centerY, Math.min(14, layout.cell * scale));
-      });
+      const next = state.queue[0];
+      if (next) this.drawPreviewPiece(graphics, next, leftX + cardWidth / 2, layout.y + layout.cell * 6.1, Math.min(14, layout.cell * 0.48));
       this.holdLabel.position.set(leftX, layout.y);
-      this.nextLabel.position.set(rightX, layout.y);
+      this.nextLabel.position.set(leftX, layout.y + layout.cell * 4.2);
     }
-  }
-
-  private drawPreviewCard(graphics: Graphics, centerX: number, centerY: number, width: number, height: number): void {
-    graphics
-      .roundRect(centerX - width / 2, centerY - height / 2, width, height, 10)
-      .fill({ color: COLORS.panel, alpha: 0.72 })
-      .stroke({ color: COLORS.edge, alpha: 0.72, width: 1 });
   }
 
   private drawPreviewPiece(graphics: Graphics, type: PieceType, centerX: number, centerY: number, unit: number): void {
@@ -435,14 +424,21 @@ export class TetrisRenderer {
   private consumeEvents(events: readonly GameEvent[]): void {
     for (const event of events) {
       if (event.type === 'piece-moved') {
-        this.motion = {
-          dx: event.dx,
-          dy: event.dy,
-          elapsed: 0,
-          duration: this.options.reducedMotion ? 1 : event.cause === 'soft-drop' ? 42 : 62,
-        };
+        if (this.presentation) {
+          const settleMs = event.cause === 'soft-drop' ? 26 : event.cause === 'gravity' ? 82 : 56;
+          this.presentation.settleMs = Math.min(this.presentation.settleMs, settleMs);
+        }
       } else if (event.type === 'piece-rotated') {
         this.rotationPulse = this.options.reducedMotion ? 0 : 1;
+      } else if (event.type === 'piece-held' || event.type === 'restarted') {
+        this.presentation = null;
+      } else if (event.type === 'piece-locked') {
+        this.lockPulse = {
+          cells: event.cells,
+          elapsed: 0,
+          duration: this.options.reducedMotion ? 1 : 105,
+          piece: event.piece,
+        };
       } else if (event.type === 'hard-dropped') {
         this.impact = this.options.reducedMotion ? 0.25 : 1;
         const lock = events.find((candidate) => candidate.type === 'piece-locked');
@@ -457,51 +453,49 @@ export class TetrisRenderer {
         }
       } else if (event.type === 'lines-cleared') {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
-        if (!this.options.reducedMotion) this.spawnClearParticles(event.rows, event.count);
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
       }
     }
   }
 
-  private spawnClearParticles(rows: readonly number[], count: number): void {
-    const color = count === 4 ? COLORS.signal : COLORS.text;
-    rows.forEach((row, rowIndex) => {
-      if (row < VISIBLE_START_ROW) return;
-      for (let index = 0; index < 14; index += 1) {
-        const direction = index % 2 === 0 ? -1 : 1;
-        this.particles.push({
-          x: 5 + direction * (index % 7) * 0.42,
-          y: row - VISIBLE_START_ROW + 0.5,
-          vx: direction * (1.3 + (index % 4) * 0.38),
-          vy: -0.8 - rowIndex * 0.15 + (index % 3) * 0.32,
-          life: 420,
-          maxLife: 420,
-          color,
-        });
-      }
-    });
-    if (this.particles.length > 180) this.particles = this.particles.slice(-180);
-  }
-
   private advanceEffects(deltaMs: number): void {
-    if (this.motion) {
-      this.motion.elapsed += deltaMs;
-      if (this.motion.elapsed >= this.motion.duration) this.motion = null;
-    }
     if (this.trail) {
       this.trail.elapsed += deltaMs;
       if (this.trail.elapsed >= this.trail.duration) this.trail = null;
     }
+    if (this.lockPulse) {
+      this.lockPulse.elapsed += deltaMs;
+      if (this.lockPulse.elapsed >= this.lockPulse.duration) this.lockPulse = null;
+    }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);
-    for (const particle of this.particles) {
-      particle.life -= deltaMs;
-      particle.x += particle.vx * (deltaMs / 1000);
-      particle.y += particle.vy * (deltaMs / 1000);
-      particle.vy += 3.4 * (deltaMs / 1000);
+  }
+
+  private advancePresentation(state: GameState, deltaMs: number): void {
+    const active = state.active;
+    if (!active) {
+      this.presentation = null;
+      return;
     }
-    this.particles = this.particles.filter((particle) => particle.life > 0);
+    if (
+      !this.presentation
+      || this.presentation.type !== active.type
+      || Math.abs(this.presentation.x - active.x) + Math.abs(this.presentation.y - active.y) > 4
+      || this.options.reducedMotion
+    ) {
+      this.presentation = { type: active.type, x: active.x, y: active.y, settleMs: 56 };
+      return;
+    }
+    const next = approachPresentationPoint(
+      this.presentation,
+      active,
+      deltaMs,
+      this.presentation.settleMs,
+    );
+    this.presentation.x = next.x;
+    this.presentation.y = next.y;
+    this.presentation.settleMs += (64 - this.presentation.settleMs) * Math.min(1, deltaMs / 90);
   }
 
   private updateSnapshot(state: GameState, layout: BoardLayout, app: Application): void {
@@ -514,6 +508,14 @@ export class TetrisRenderer {
       activeCells,
       ghostCells,
       visibleLockedCells: this.snapshot.visibleLockedCells,
+      presentation: state.active && this.presentation
+        ? {
+            x: this.presentation.x,
+            y: this.presentation.y,
+            offsetX: this.presentation.x - state.active.x,
+            offsetY: this.presentation.y - state.active.y,
+          }
+        : null,
     };
   }
 }

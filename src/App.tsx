@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { type GameEvent, type GameState, createInitialState } from './game/core';
+import { type GameEvent, type GameMode, type GameState, createInitialState } from './game/core';
 import { type InputAction } from './game/input/InputController';
 import { GameRuntime } from './game/runtime/GameRuntime';
+import {
+  LEADERBOARD_KEY,
+  insertScoreRecord,
+  parseLeaderboard,
+  type ScoreRecord,
+} from './leaderboard';
 
-const HIGH_SCORE_KEY = 'signal-foundry:high-score';
-const AUDIO_KEY = 'signal-foundry:audio';
-const CONTRAST_KEY = 'signal-foundry:contrast';
-const MOTION_KEY = 'signal-foundry:reduced-motion';
+const AUDIO_KEY = 'stack-order:audio';
 
 function readBoolean(key: string, fallback: boolean): boolean {
   try {
@@ -17,12 +20,11 @@ function readBoolean(key: string, fallback: boolean): boolean {
   }
 }
 
-function readNumber(key: string, fallback: number): number {
+function readLeaderboard(): ScoreRecord[] {
   try {
-    const value = Number(localStorage.getItem(key));
-    return Number.isFinite(value) ? value : fallback;
+    return parseLeaderboard(localStorage.getItem(LEADERBOARD_KEY));
   } catch {
-    return fallback;
+    return [];
   }
 }
 
@@ -30,26 +32,35 @@ function formatScore(value: number): string {
   return Math.max(0, value).toString().padStart(7, '0');
 }
 
-function statusCopy(state: GameState): { eyebrow: string; title: string; body: string } | null {
+function modeLabel(mode: GameMode): string {
+  return mode === 'race' ? '竞速' : '马拉松';
+}
+
+function statusLabel(state: GameState): string {
+  if (state.status === 'ready') return '准备';
+  if (state.status === 'playing') return '进行中';
+  if (state.status === 'paused') return '已暂停';
+  return '本局结束';
+}
+
+function statusCopy(state: GameState): { eyebrow: string; title: string; summary?: string } | null {
   if (state.status === 'ready') {
     return {
-      eyebrow: 'SYSTEM READY',
-      title: 'Begin calibration',
-      body: 'Build clean signals. Hold a piece, read the queue, and keep the matrix below the skyline.',
+      eyebrow: modeLabel(state.mode),
+      title: 'Tetris',
     };
   }
   if (state.status === 'paused') {
     return {
-      eyebrow: 'FLOW SUSPENDED',
-      title: 'Instrument paused',
-      body: 'The simulation and input repeat clocks are frozen. Resume when you are ready.',
+      eyebrow: '暂停',
+      title: '已暂停',
     };
   }
   if (state.status === 'game-over') {
     return {
-      eyebrow: 'SIGNAL SATURATED',
-      title: 'Matrix overflow',
-      body: `Final score ${formatScore(state.score)} · ${state.lines} lines resolved.`,
+      eyebrow: '本局结束',
+      title: '本局结束',
+      summary: `${formatScore(state.score)} 分 · ${state.lines} 行 · ${state.pieceCount} 块`,
     };
   }
   return null;
@@ -61,17 +72,15 @@ interface TouchButtonProps {
   glyph: string;
   runtime: GameRuntime | null;
   primary?: boolean;
-  disabled?: boolean;
 }
 
-function TouchButton({ action, label, glyph, runtime, primary = false, disabled = false }: TouchButtonProps) {
+function TouchButton({ action, label, glyph, runtime, primary = false }: TouchButtonProps) {
   const release = useCallback(() => runtime?.release(action), [action, runtime]);
   return (
     <button
       className={`touch-key${primary ? ' touch-key--primary' : ''}`}
       type="button"
       aria-label={label}
-      disabled={disabled}
       onPointerDown={(event) => {
         event.preventDefault();
         event.currentTarget.setPointerCapture(event.pointerId);
@@ -91,16 +100,12 @@ function TouchButton({ action, label, glyph, runtime, primary = false, disabled 
 export default function App() {
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
+  const lastRecordedRunRef = useRef<string | null>(null);
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
   const [state, setState] = useState<GameState>(() => createInitialState(0x51a1f00d));
-  const [highScore, setHighScore] = useState(() => readNumber(HIGH_SCORE_KEY, 0));
+  const [leaderboard, setLeaderboard] = useState<ScoreRecord[]>(readLeaderboard);
   const [audioEnabled, setAudioEnabled] = useState(() => readBoolean(AUDIO_KEY, true));
-  const [highContrast, setHighContrast] = useState(() => readBoolean(CONTRAST_KEY, false));
-  const [reducedMotion, setReducedMotion] = useState(() => {
-    const system = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return readBoolean(MOTION_KEY, system);
-  });
-  const [liveMessage, setLiveMessage] = useState('Signal Foundry ready.');
+  const [liveMessage, setLiveMessage] = useState('Tetris 已准备好。');
   const focusBoard = useCallback(() => {
     requestAnimationFrame(() => hostRef.current?.querySelector('canvas')?.focus({ preventScroll: true }));
   }, []);
@@ -112,20 +117,34 @@ export default function App() {
     const nextRuntime = new GameRuntime({
       seed: 0x51a1f00d,
       audioEnabled,
-      highContrast,
-      reducedMotion,
+      reducedMotion: typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches,
       onState: (nextState, events) => {
         if (disposed) return;
-        setState(structuredClone(nextState));
+        setState(nextState);
         const notable = [...events].reverse().find((event) =>
           event.type === 'lines-cleared' || event.type === 'level-up' || event.type === 'paused' || event.type === 'resumed' || event.type === 'game-over',
         );
         if (notable) setLiveMessage(eventMessage(notable));
-        setHighScore((current) => {
-          if (nextState.score <= current) return current;
-          try { localStorage.setItem(HIGH_SCORE_KEY, String(nextState.score)); } catch { /* storage is optional */ }
-          return nextState.score;
-        });
+
+        if (nextState.status === 'ready') lastRecordedRunRef.current = null;
+        if (nextState.status === 'game-over') {
+          const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}`;
+          if (lastRecordedRunRef.current !== runKey) {
+            lastRecordedRunRef.current = runKey;
+            const record: ScoreRecord = {
+              score: nextState.score,
+              lines: nextState.lines,
+              pieces: nextState.pieceCount,
+              mode: nextState.mode,
+              completedAt: new Date().toISOString(),
+            };
+            setLeaderboard((current) => {
+              const next = insertScoreRecord(current, record);
+              try { localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(next)); } catch { /* storage is optional */ }
+              return next;
+            });
+          }
+        }
       },
     });
     runtimeRef.current = nextRuntime;
@@ -137,7 +156,7 @@ export default function App() {
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
       setRuntime(null);
     };
-    // Runtime is intentionally mounted once. Settings are synchronized below.
+    // Runtime is intentionally mounted once. Preferences are synchronized below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,143 +165,137 @@ export default function App() {
     try { localStorage.setItem(AUDIO_KEY, String(audioEnabled)); } catch { /* optional */ }
   }, [audioEnabled]);
 
-  useEffect(() => {
-    runtimeRef.current?.setHighContrast(highContrast);
-    try { localStorage.setItem(CONTRAST_KEY, String(highContrast)); } catch { /* optional */ }
-  }, [highContrast]);
-
-  useEffect(() => {
-    runtimeRef.current?.setReducedMotion(reducedMotion);
-    try { localStorage.setItem(MOTION_KEY, String(reducedMotion)); } catch { /* optional */ }
-  }, [reducedMotion]);
-
   const overlay = statusCopy(state);
   const levelProgress = useMemo(() => `${state.lines % 10} / 10`, [state.lines]);
-  const elapsed = Math.floor(state.elapsedTicks / 60);
-  const elapsedLabel = `${String(Math.floor(elapsed / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`;
+  const speed = state.mode === 'race' ? Math.min(17, Math.floor(state.pieceCount / 5) + 1) : state.level + 1;
+  const showLeaderboard = state.status === 'ready' || state.status === 'game-over';
 
   return (
-    <div className={`app${highContrast ? ' is-high-contrast' : ''}${reducedMotion ? ' is-reduced-motion' : ''}`}>
-      <div className="ambient ambient--one" aria-hidden="true" />
-      <div className="ambient ambient--two" aria-hidden="true" />
-      <div className="grain" aria-hidden="true" />
-
+    <div className="app">
       <header className="topbar">
         <div className="brand-lockup">
-          <span className="brand-mark" aria-hidden="true"><i /><i /><i /><i /></span>
-          <div>
-            <p className="kicker">PRECISION MATRIX / SF–01</p>
-            <h1>SIGNAL FOUNDRY</h1>
-          </div>
+          <span className="brand-mark" aria-hidden="true"><b>T</b><i>■</i></span>
+          <h1>Tetris</h1>
         </div>
-        <div className="system-state" aria-label={`Game status: ${state.status}`}>
+
+        <div className="topbar-tools" aria-label="快捷设置">
+          <button type="button" aria-label={audioEnabled ? '关闭声音' : '打开声音'} aria-pressed={audioEnabled} onClick={() => setAudioEnabled((value) => !value)}>
+            <span aria-hidden="true">{audioEnabled ? '♪' : '×'}</span>
+          </button>
+          <button
+            className="header-pause"
+            type="button"
+            onClick={() => runtime?.togglePause()}
+            disabled={state.status === 'ready' || state.status === 'game-over'}
+            aria-label={state.status === 'paused' ? '继续游戏' : '暂停游戏'}
+          >
+            {state.status === 'paused' ? '继续' : '暂停'}
+          </button>
+        </div>
+
+        <div className="system-state" aria-label={`游戏状态：${statusLabel(state)}`}>
           <span className={`status-light status-light--${state.status}`} />
           <div>
-            <strong>{state.status === 'playing' ? 'FLOW ACTIVE' : state.status.replace('-', ' ').toUpperCase()}</strong>
-            <small>MARATHON · LEVEL {String(state.level).padStart(2, '0')}</small>
+            <strong>{statusLabel(state)}</strong>
+            <small>{modeLabel(state.mode)} · 等级 {String(state.level).padStart(2, '0')}</small>
           </div>
         </div>
       </header>
 
       <main id="game" className="game-layout">
-        <aside className="instrument-panel instrument-panel--stats" aria-label="Session statistics">
-          <p className="panel-label">LIVE TELEMETRY</p>
+        <aside className="instrument-panel instrument-panel--stats" aria-label="本局数据">
+          <p className="panel-label">{modeLabel(state.mode)}</p>
           <div className="score-block">
-            <span>Score</span>
+            <span>得分</span>
             <strong>{formatScore(state.score)}</strong>
           </div>
           <div className="stat-grid">
-            <article><span>Level</span><strong>{String(state.level).padStart(2, '0')}</strong></article>
-            <article><span>Lines</span><strong>{String(state.lines).padStart(3, '0')}</strong></article>
-            <article><span>Time</span><strong>{elapsedLabel}</strong></article>
-            <article><span>Best</span><strong>{formatScore(highScore)}</strong></article>
+            <article><span>等级</span><strong>{String(state.level).padStart(2, '0')}</strong></article>
+            <article><span>消行</span><strong>{String(state.lines).padStart(3, '0')}</strong></article>
+            <article><span>速度</span><strong>{String(speed).padStart(2, '0')}</strong></article>
           </div>
-          <div className="level-rail" aria-label={`Level progress ${levelProgress}`}>
-            <div className="level-rail__header"><span>NEXT PHASE</span><strong>{levelProgress}</strong></div>
+          <div className="level-rail" aria-label={`升级进度 ${levelProgress}`}>
+            <div className="level-rail__header"><span>距离升级</span><strong>{levelProgress}</strong></div>
             <div className="level-rail__track"><i style={{ width: `${(state.lines % 10) * 10}%` }} /></div>
           </div>
-          <div className="keyboard-map" aria-label="Keyboard controls">
-            <p>MOVE <kbd>←</kbd><kbd>→</kbd></p>
-            <p>ROTATE <kbd>Z</kbd><kbd>X</kbd></p>
-            <p>DROP <kbd>↓</kbd><kbd>SPACE</kbd></p>
-            <p>HOLD <kbd>C</kbd></p>
+          <div className="keyboard-map" aria-label="键盘操作">
+            <p>移动 <kbd>←</kbd><kbd>→</kbd></p>
+            <p>旋转 <kbd>Z</kbd><kbd>X</kbd></p>
+            <p>下落 <kbd>↓</kbd><kbd>空格</kbd></p>
+            <p>暂存 <kbd>C</kbd></p>
           </div>
         </aside>
 
-        <section className="game-stage" aria-label="Game instrument">
-          <div className="stage-corners" aria-hidden="true"><i /><i /><i /><i /></div>
+        <section className="game-stage" aria-label="Tetris 棋盘">
           <div ref={hostRef} className="canvas-host" data-testid="canvas-host" />
           {overlay && (
-            <div className="game-overlay" data-testid="game-overlay">
-              <p>{overlay.eyebrow}</p>
-              <h2>{overlay.title}</h2>
-              <span>{overlay.body}</span>
-              <div className="overlay-actions">
-                {state.status === 'ready' && <button type="button" onClick={() => { runtime?.start(); focusBoard(); }}>Initialize run</button>}
-                {state.status === 'paused' && <button type="button" onClick={() => { runtime?.togglePause(); focusBoard(); }}>Resume flow</button>}
-                {state.status === 'game-over' && <button type="button" onClick={() => { runtime?.restart(); focusBoard(); }}>Reforge matrix</button>}
+            <div className={`game-overlay game-overlay--${state.status}`} data-testid="game-overlay">
+              <div className="overlay-sheet">
+                <p>{overlay.eyebrow}</p>
+                <h2>{overlay.title}</h2>
+                {overlay.summary && <span>{overlay.summary}</span>}
+                {state.status === 'ready' && (
+                  <div className="mode-choice" aria-label="游戏模式">
+                    <button type="button" aria-pressed={state.mode === 'marathon'} onClick={() => runtime?.selectMode('marathon')}>马拉松</button>
+                    <button type="button" aria-pressed={state.mode === 'race'} onClick={() => runtime?.selectMode('race')}>竞速</button>
+                  </div>
+                )}
+                <div className="overlay-actions">
+                  {state.status === 'ready' && <button type="button" onClick={() => { runtime?.start(); focusBoard(); }}>开始</button>}
+                  {state.status === 'paused' && <button type="button" onClick={() => { runtime?.togglePause(); focusBoard(); }}>继续</button>}
+                  {state.status === 'game-over' && <button type="button" onClick={() => { runtime?.restart(); focusBoard(); }}>再来一局</button>}
+                </div>
+                {showLeaderboard && <Leaderboard records={leaderboard} />}
               </div>
             </div>
           )}
         </section>
-
-        <aside className="instrument-panel instrument-panel--settings" aria-label="Instrument settings">
-          <p className="panel-label">SIGNAL CONTROL</p>
-          <button className="setting-toggle" type="button" aria-pressed={audioEnabled} onClick={() => setAudioEnabled((value) => !value)}>
-            <span><i className="setting-icon">◉</i> Audio</span><strong>{audioEnabled ? 'ON' : 'OFF'}</strong>
-          </button>
-          <button className="setting-toggle" type="button" aria-pressed={highContrast} onClick={() => setHighContrast((value) => !value)}>
-            <span><i className="setting-icon">◫</i> Cell codes</span><strong>{highContrast ? 'ON' : 'OFF'}</strong>
-          </button>
-          <button className="setting-toggle" type="button" aria-pressed={reducedMotion} onClick={() => setReducedMotion((value) => !value)}>
-            <span><i className="setting-icon">≈</i> Quiet motion</span><strong>{reducedMotion ? 'ON' : 'OFF'}</strong>
-          </button>
-          <div className="session-note">
-            <span>SESSION SEED</span>
-            <code>{state.seed.toString(16).toUpperCase().padStart(8, '0')}</code>
-            <p>One seed, one command stream, one reproducible matrix.</p>
-          </div>
-          <button className="pause-button" type="button" onClick={() => runtime?.togglePause()} disabled={state.status === 'ready' || state.status === 'game-over'}>
-            {state.status === 'paused' ? 'Resume session' : 'Pause session'}
-          </button>
-        </aside>
       </main>
 
-      <section className="touch-deck" aria-label="Touch controls">
+      <section className="touch-deck" aria-label="触控操作">
         <div className="touch-deck__cluster">
-          <TouchButton action="left" label="Move left" glyph="←" runtime={runtime} />
-          <TouchButton action="right" label="Move right" glyph="→" runtime={runtime} />
-          <TouchButton action="soft-drop" label="Soft drop" glyph="↓" runtime={runtime} />
-          <TouchButton
-            action="pause"
-            label={state.status === 'paused' ? 'Resume' : 'Pause'}
-            glyph={state.status === 'paused' ? '▶' : 'Ⅱ'}
-            runtime={runtime}
-            disabled={state.status === 'ready' || state.status === 'game-over'}
-          />
+          <TouchButton action="left" label="左移" glyph="←" runtime={runtime} />
+          <TouchButton action="right" label="右移" glyph="→" runtime={runtime} />
+          <TouchButton action="rotate-cw" label="旋转" glyph="↻" runtime={runtime} />
         </div>
         <div className="touch-deck__cluster">
-          <TouchButton action="rotate-ccw" label="Rotate left" glyph="↺" runtime={runtime} />
-          <TouchButton action="rotate-cw" label="Rotate right" glyph="↻" runtime={runtime} />
-          <TouchButton action="hold" label="Hold piece" glyph="◇" runtime={runtime} />
-          <TouchButton action="hard-drop" label="Hard drop" glyph="⇣" runtime={runtime} primary />
+          <TouchButton action="soft-drop" label="快速下落" glyph="↓" runtime={runtime} />
+          <TouchButton action="hold" label="暂存" glyph="◇" runtime={runtime} />
+          <TouchButton action="hard-drop" label="直接落底" glyph="⇣" runtime={runtime} primary />
         </div>
       </section>
 
-      <footer className="footer-note">
-        <span>ORIGINAL CLEAN-ROOM FALLING-BLOCK STUDY</span>
-        <span>REACT · TYPESCRIPT · PIXIJS</span>
-      </footer>
       <div className="sr-only" aria-live="polite">{liveMessage}</div>
     </div>
   );
 }
 
+function Leaderboard({ records }: { records: readonly ScoreRecord[] }) {
+  return (
+    <section className="leaderboard" aria-label="本地记录">
+      <div className="leaderboard__head"><span>本地记录</span><small>前 {Math.min(5, records.length || 5)} 局</small></div>
+      {records.length === 0 ? (
+        <p className="leaderboard__empty">暂无记录</p>
+      ) : (
+        <ol>
+          {records.slice(0, 5).map((record, index) => (
+            <li key={`${record.completedAt}:${record.mode}:${record.score}:${index}`}>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{formatScore(record.score)}</strong>
+              <small>{modeLabel(record.mode)} · {record.lines} 行 · {record.pieces} 块</small>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 function eventMessage(event: GameEvent): string {
-  if (event.type === 'lines-cleared') return `${event.count} ${event.count === 1 ? 'line' : 'lines'} cleared.`;
-  if (event.type === 'level-up') return `Level ${event.level}.`;
-  if (event.type === 'paused') return 'Game paused.';
-  if (event.type === 'resumed') return 'Game resumed.';
-  if (event.type === 'game-over') return 'Matrix overflow. Game over.';
+  if (event.type === 'lines-cleared') return `消除了 ${event.count} 行。`;
+  if (event.type === 'level-up') return `进入等级 ${event.level}。`;
+  if (event.type === 'paused') return '游戏已暂停。';
+  if (event.type === 'resumed') return '继续游戏。';
+  if (event.type === 'game-over') return '堆叠到顶，本局结束。';
   return '';
 }

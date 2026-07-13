@@ -1,15 +1,16 @@
 import { AudioEngine } from '../audio/AudioEngine';
-import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameState } from '../core';
+import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameMode, type GameState } from '../core';
 import { InputController, type InputAction } from '../input/InputController';
 import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer';
 import { createFourLineClearScenario } from './qaScenario';
 
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
+const UI_SYNC_INTERVAL_MS = 100;
 
 export interface RuntimeOptions {
   seed?: number;
-  highContrast?: boolean;
+  mode?: GameMode;
   reducedMotion?: boolean;
   audioEnabled?: boolean;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
@@ -39,12 +40,15 @@ export class GameRuntime {
   private input: InputController | null = null;
   private accumulator = 0;
   private pendingEvents: GameEvent[] = [];
+  private pendingUiEvents: GameEvent[] = [];
+  private uiSyncElapsedMs = 0;
+  private uiStateDirty = false;
   private destroyed = false;
   private qaFrozen = false;
   private readonly onState?: RuntimeOptions['onState'];
 
   constructor(private readonly options: RuntimeOptions = {}) {
-    this.state = createInitialState(options.seed);
+    this.state = createInitialState(options.seed, options.mode);
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
   }
@@ -56,11 +60,10 @@ export class GameRuntime {
       return;
     }
     this.renderer.setOptions({
-      highContrast: this.options.highContrast ?? false,
       reducedMotion: this.options.reducedMotion ?? false,
     });
     this.renderer.setFrameCallback(this.frame);
-    this.input = new InputController(this.handleAction, window, this.onWindowBlur);
+    this.input = new InputController((action) => this.handleAction(action, true), window, this.onWindowBlur);
     document.addEventListener('visibilitychange', this.onVisibilityChange);
     this.onState?.(this.state, []);
     this.renderer.render(this.state, [], 0);
@@ -69,10 +72,11 @@ export class GameRuntime {
       window.__SIGNAL_FOUNDRY_QA__ = {
         getState: () => structuredClone(this.state),
         getRendererSnapshot: () => this.renderer.getSnapshot(),
-        action: (action) => this.handleAction(action),
+        action: (action) => this.handleAction(action, false),
         release: (action) => this.input?.release(action),
         advanceTicks: (ticks) => {
           for (let index = 0; index < ticks; index += 1) this.fixedStep();
+          this.flushUiState();
           this.flushRender(0);
         },
         loadScenario: (name) => {
@@ -80,6 +84,9 @@ export class GameRuntime {
           this.state = createFourLineClearScenario(this.state.seed);
           this.accumulator = 0;
           this.pendingEvents = [];
+          this.pendingUiEvents = [];
+          this.uiStateDirty = false;
+          this.uiSyncElapsedMs = 0;
           this.input?.clearHeld();
           this.onState?.(this.state, []);
           this.renderer.render(this.state, [], 0);
@@ -94,7 +101,6 @@ export class GameRuntime {
   }
 
   press(action: InputAction): void {
-    void this.audio.prime();
     this.input?.press(action);
   }
 
@@ -104,12 +110,18 @@ export class GameRuntime {
   }
 
   togglePause(): void {
-    this.handleAction('pause');
+    this.handleAction('pause', true);
   }
 
-  restart(seed = this.state.seed): void {
+  restart(seed = this.state.seed, mode = this.state.mode): void {
     void this.audio.prime();
-    this.apply({ type: 'restart', seed });
+    this.apply({ type: 'restart', seed, mode });
+    this.input?.clearHeld();
+  }
+
+  selectMode(mode: GameMode): void {
+    if (this.state.status !== 'ready' && this.state.status !== 'game-over') return;
+    this.apply({ type: 'restart', seed: this.state.seed, mode });
     this.input?.clearHeld();
   }
 
@@ -120,14 +132,6 @@ export class GameRuntime {
   setAudioEnabled(enabled: boolean): void {
     this.audio.setEnabled(enabled);
     if (enabled) void this.audio.prime();
-  }
-
-  setHighContrast(enabled: boolean): void {
-    this.renderer.setOptions({ highContrast: enabled });
-  }
-
-  setReducedMotion(enabled: boolean): void {
-    this.renderer.setOptions({ reducedMotion: enabled });
   }
 
   getState(): GameState {
@@ -143,6 +147,7 @@ export class GameRuntime {
     this.renderer.destroy();
     this.audio.destroy();
     this.pendingEvents = [];
+    this.pendingUiEvents = [];
     delete window.__SIGNAL_FOUNDRY_QA__;
   }
 
@@ -153,12 +158,14 @@ export class GameRuntime {
       return;
     }
     this.accumulator += deltaMs;
+    this.uiSyncElapsedMs += deltaMs;
     let steps = 0;
     while (this.accumulator >= FIXED_STEP_MS && steps < MAX_STEPS_PER_FRAME) {
       this.fixedStep();
       this.accumulator -= FIXED_STEP_MS;
       steps += 1;
     }
+    if (this.uiStateDirty && this.uiSyncElapsedMs >= UI_SYNC_INTERVAL_MS) this.flushUiState();
     this.flushRender(deltaMs);
   };
 
@@ -178,12 +185,23 @@ export class GameRuntime {
     if (transition.state === this.state && transition.events.length === 0) return;
     this.state = transition.state;
     this.pendingEvents.push(...transition.events);
+    this.pendingUiEvents.push(...transition.events);
+    this.uiStateDirty = true;
     this.audio.play(transition.events);
-    this.onState?.(this.state, transition.events);
+    if (transition.events.some(isImmediateUiEvent)) this.flushUiState();
   }
 
-  private readonly handleAction = (action: InputAction): void => {
-    void this.audio.prime();
+  private flushUiState(): void {
+    if (!this.uiStateDirty) return;
+    const events = this.pendingUiEvents;
+    this.pendingUiEvents = [];
+    this.uiStateDirty = false;
+    this.uiSyncElapsedMs = 0;
+    this.onState?.(this.state, events);
+  }
+
+  private readonly handleAction = (action: InputAction, shouldPrimeAudio: boolean): void => {
+    if (shouldPrimeAudio) void this.audio.prime();
     if (action === 'pause') {
       if (this.state.status === 'paused') this.apply({ type: 'resume' });
       else if (this.state.status === 'playing') this.apply({ type: 'pause' });
@@ -225,4 +243,15 @@ export class GameRuntime {
     this.apply({ type: 'pause' });
     this.audio.suspend();
   };
+}
+
+function isImmediateUiEvent(event: GameEvent): boolean {
+  return event.type === 'started'
+    || event.type === 'restarted'
+    || event.type === 'paused'
+    || event.type === 'resumed'
+    || event.type === 'clear-started'
+    || event.type === 'lines-cleared'
+    || event.type === 'level-up'
+    || event.type === 'game-over';
 }

@@ -7,13 +7,13 @@ import {
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
   VISIBLE_START_ROW,
-  gravityForLevel,
+  gravityForMode,
 } from './constants';
 import { canPlace, clearRows, createBoard, fullRows, isGrounded, mergePiece } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
-import type { ActivePiece, GameCommand, GameEvent, GameState, GameTransition, PieceType } from './types';
+import type { ActivePiece, GameCommand, GameEvent, GameMode, GameState, GameTransition, PieceType } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
@@ -54,7 +54,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   };
 }
 
-export function createInitialState(seed = 0x51a1f00d): GameState {
+export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon'): GameState {
   const base: GameState = {
     board: createBoard(),
     active: null,
@@ -64,6 +64,8 @@ export function createInitialState(seed = 0x51a1f00d): GameState {
     score: 0,
     lines: 0,
     level: 0,
+    mode,
+    pieceCount: 0,
     status: 'ready',
     phase: 'active',
     phaseTicks: 0,
@@ -116,13 +118,14 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
   const board = mergePiece(state.board, state.active);
+  const pieceCount = state.pieceCount + 1;
   const lockedEvent: GameEvent = { type: 'piece-locked', piece: state.active.type, cells };
   const rows = fullRows(board);
   const lockOut = cells.every((cell) => cell.y < VISIBLE_START_ROW) && rows.length === 0;
 
   if (lockOut) {
     return {
-      state: { ...state, board, active: null, status: 'game-over' },
+      state: { ...state, board, active: null, status: 'game-over', pieceCount },
       events: [...extraEvents, lockedEvent, { type: 'game-over', reason: 'lock-out' }],
     };
   }
@@ -132,6 +135,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       state: {
         ...state,
         board,
+        pieceCount,
         active: null,
         phase: 'line-clear',
         phaseTicks: 0,
@@ -147,6 +151,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
     state: {
       ...state,
       board,
+      pieceCount,
       active: null,
       phase: 'entry',
       phaseTicks: 0,
@@ -262,7 +267,7 @@ function tick(state: GameState): GameTransition {
   }
 
   const gravityTicks = next.gravityTicks + 1;
-  if (gravityTicks >= gravityForLevel(next.level)) {
+  if (gravityTicks >= gravityForMode(next.mode, next.level, next.pieceCount)) {
     const moved = moveActive({ ...next, gravityTicks: 0 }, 0, 1, 'gravity');
     return moved;
   }
@@ -271,7 +276,10 @@ function tick(state: GameState): GameTransition {
 
 export function dispatch(state: GameState, command: GameCommand): GameTransition {
   if (command.type === 'restart') {
-    return { state: createInitialState(command.seed ?? state.seed), events: [{ type: 'restarted' }] };
+    return {
+      state: createInitialState(command.seed ?? state.seed, command.mode ?? state.mode),
+      events: [{ type: 'restarted' }],
+    };
   }
   if (command.type === 'start' && state.status === 'ready') {
     return { state: { ...state, status: 'playing' }, events: [{ type: 'started' }] };
@@ -308,8 +316,8 @@ export function dropDistance(state: GameState): number {
   return distance;
 }
 
-export function replay(seed: number, commands: readonly GameCommand[]): GameState {
-  return commands.reduce((state, command) => dispatch(state, command).state, createInitialState(seed));
+export function replay(seed: number, commands: readonly GameCommand[], mode: GameMode = 'marathon'): GameState {
+  return commands.reduce((state, command) => dispatch(state, command).state, createInitialState(seed, mode));
 }
 
 export function stateHash(state: GameState): string {

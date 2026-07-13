@@ -29,7 +29,8 @@ def wait_for_runtime(page: Page) -> None:
 
 
 def play_sequence(page: Page, pieces: int = 7) -> None:
-    page.get_by_role("button", name="Initialize run").click()
+    if page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().status") == "ready":
+        page.get_by_role("button", name="开始", exact=True).click()
     for index in range(pieces):
         if index % 3 == 0:
             page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('left')")
@@ -72,36 +73,47 @@ def touch_tap(page: Page, session: Any, label: str) -> None:
 
 
 def play_touch_sequence(page: Page, session: Any, pieces: int = 7) -> None:
-    page.get_by_role("button", name="Initialize run").click()
+    page.get_by_role("button", name="开始", exact=True).click()
     for index in range(pieces):
-        touch_tap(page, session, "Move left" if index % 2 == 0 else "Move right")
+        touch_tap(page, session, "左移" if index % 2 == 0 else "右移")
         if index % 2 == 0:
-            touch_tap(page, session, "Rotate right")
-        touch_tap(page, session, "Hard drop")
+            touch_tap(page, session, "旋转")
+        touch_tap(page, session, "直接落底")
         page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(18)")
 
 
 def exercise_touch_controls(page: Page, session: Any) -> dict[str, Any]:
     page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(true)")
     before_x = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.x")
-    touch_start(page, session, "Move right")
+    touch_start(page, session, "右移")
     page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(12)")
     held_x = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.x")
     touch_end(session)
     page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(6)")
     released_x = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.x")
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(false)")
     assert held_x > before_x, {"before": before_x, "held": held_x}
     assert released_x == held_x, {"held": held_x, "released": released_x}
 
-    touch_tap(page, session, "Pause")
+    before_y = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    touch_start(page, session, "快速下落")
+    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(8)")
+    held_y = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    touch_end(session)
+    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(4)")
+    released_y = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(false)")
+    assert held_y - before_y >= 6, {"before": before_y, "held": held_y}
+    assert released_y == held_y, {"held": held_y, "released": released_y}
+
+    touch_tap(page, session, "暂停游戏")
     page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'paused'")
-    assert page.get_by_role("heading", name="Instrument paused").is_visible()
-    touch_tap(page, session, "Resume")
+    assert page.get_by_role("heading", name="已暂停").is_visible()
+    touch_tap(page, session, "继续游戏")
     page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'")
     return {
         "pointerType": "touch",
         "longHold": {"beforeX": before_x, "heldX": held_x, "releasedX": released_x},
+        "softDropHold": {"beforeY": before_y, "heldY": held_y, "releasedY": released_y},
         "releaseStoppedRepeat": True,
         "pauseResume": ["paused", "playing"],
     }
@@ -121,6 +133,8 @@ def geometry(page: Page) -> dict[str, Any]:
               score: state.score,
               lines: state.lines,
               level: state.level,
+              mode: state.mode,
+              pieceCount: state.pieceCount,
               active: state.active,
               lockedCells: state.board.flat().filter(Boolean).length,
             },
@@ -159,6 +173,35 @@ def measure_frames(page: Page, frame_count: int = 120) -> dict[str, float]:
         """,
         frame_count,
     )
+
+
+def measure_soft_drop_motion(page: Page) -> dict[str, Any]:
+    before = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    page.keyboard.down("ArrowDown")
+    samples = page.evaluate(
+        """
+        async () => {
+          const samples = [];
+          for (let index = 0; index < 10; index += 1) {
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+            const state = window.__SIGNAL_FOUNDRY_QA__.getState();
+            const presentation = window.__SIGNAL_FOUNDRY_QA__.getRendererSnapshot().presentation;
+            samples.push({ coreY: state.active?.y ?? null, visualY: presentation?.y ?? null });
+          }
+          return samples;
+        }
+        """
+    )
+    page.keyboard.up("ArrowDown")
+    after = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    page.wait_for_timeout(80)
+    after_release = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    visual = [sample["visualY"] for sample in samples if sample["visualY"] is not None]
+    assert after - before >= 4, {"before": before, "after": after, "samples": samples}
+    assert all(right >= left for left, right in zip(visual, visual[1:])), samples
+    assert all(sample["visualY"] <= sample["coreY"] for sample in samples if sample["visualY"] is not None), samples
+    assert after_release == after, {"after": after, "afterRelease": after_release}
+    return {"beforeY": before, "afterY": after, "afterReleaseY": after_release, "samples": samples}
 
 
 def assert_geometry(snapshot: dict[str, Any]) -> None:
@@ -244,6 +287,8 @@ def main() -> None:
         page.screenshot(path=str(ready_path), full_page=True)
         ready_geometry = geometry(page)
         assert_geometry(ready_geometry)
+        page.get_by_role("button", name="开始", exact=True).click()
+        soft_drop_evidence = measure_soft_drop_motion(page)
         play_sequence(page, pieces=9)
         playing_path = SCREENSHOT_DIR / "desktop-playing.png"
         page.screenshot(path=str(playing_path), full_page=True)
@@ -270,21 +315,18 @@ def main() -> None:
         page.wait_for_timeout(80)
         pause_path = SCREENSHOT_DIR / "desktop-paused.png"
         page.screenshot(path=str(pause_path), full_page=True)
-        assert page.get_by_role("heading", name="Instrument paused").is_visible()
-        page.get_by_role("button", name="Cell codes").click()
-        contrast_path = SCREENSHOT_DIR / "desktop-high-contrast.png"
-        page.screenshot(path=str(contrast_path), full_page=True)
+        assert page.get_by_role("heading", name="已暂停").is_visible()
         assert not console_errors, console_errors
         captures.extend([
             {"name": "desktop-ready", "geometry": ready_geometry, "consoleErrors": console_errors, "screenshot": str(ready_path.relative_to(ROOT)).replace("\\", "/"), "sha256": sha256(ready_path)},
             {"name": "desktop-playing", "geometry": playing_geometry, "consoleErrors": console_errors, "screenshot": str(playing_path.relative_to(ROOT)).replace("\\", "/"), "sha256": sha256(playing_path)},
             {"name": "desktop-four-line-midpoint", "state": {"phase": clear_state["phase"], "phaseTicks": clear_state["phaseTicks"], "rows": clear_state["pendingClearRows"]}, "screenshot": str(clear_path.relative_to(ROOT)).replace("\\", "/"), "sha256": sha256(clear_path)},
             {"name": "desktop-paused", "screenshot": str(pause_path.relative_to(ROOT)).replace("\\", "/"), "sha256": sha256(pause_path)},
-            {"name": "desktop-high-contrast", "screenshot": str(contrast_path.relative_to(ROOT)).replace("\\", "/"), "sha256": sha256(contrast_path)},
             {
                 "name": "desktop-performance",
                 "renderCpuMetrics": render_cpu_metrics,
                 "headlessRafMetrics": frame_metrics,
+                "softDropEvidence": soft_drop_evidence,
                 "note": "Render CPU preparation is the hard gate. Headless rAF can be environment-throttled and is recorded only.",
             },
         ])
@@ -293,13 +335,38 @@ def main() -> None:
         captures.append(capture_context(browser, "mobile-portrait", 390, 844, 3, True))
         captures.append(capture_context(browser, "mobile-landscape", 844, 390, 3, True))
 
+        race = browser.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
+        race_page = race.new_page()
+        race_errors: list[str] = []
+        race_page.on("console", lambda message: race_errors.append(message.text) if message.type == "error" else None)
+        race_page.on("pageerror", lambda error: race_errors.append(str(error)))
+        wait_for_runtime(race_page)
+        race_page.get_by_role("button", name="竞速", exact=True).click()
+        assert race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().mode") == "race"
+        race_page.get_by_role("button", name="开始", exact=True).click()
+        race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
+        race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(6)")
+        race_state = race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState()")
+        assert race_state["mode"] == "race" and race_state["pieceCount"] == 1, race_state
+        race_path = SCREENSHOT_DIR / "desktop-race.png"
+        race_page.screenshot(path=str(race_path), full_page=True)
+        assert not race_errors, race_errors
+        captures.append({
+            "name": "desktop-race",
+            "state": {"mode": race_state["mode"], "pieceCount": race_state["pieceCount"], "gravityTicks": race_state["gravityTicks"]},
+            "consoleErrors": race_errors,
+            "screenshot": str(race_path.relative_to(ROOT)).replace("\\", "/"),
+            "sha256": sha256(race_path),
+        })
+        race.close()
+
         game_over = browser.new_context(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
         game_over_page = game_over.new_page()
         game_over_errors: list[str] = []
         game_over_page.on("console", lambda message: game_over_errors.append(message.text) if message.type == "error" else None)
         game_over_page.on("pageerror", lambda error: game_over_errors.append(str(error)))
         wait_for_runtime(game_over_page)
-        game_over_page.get_by_role("button", name="Initialize run").click()
+        game_over_page.get_by_role("button", name="开始", exact=True).click()
         for _ in range(60):
             status = game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().status")
             if status == "game-over":
@@ -308,13 +375,18 @@ def main() -> None:
             game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(18)")
         final_state = game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState()")
         assert final_state["status"] == "game-over", final_state
-        assert game_over_page.get_by_role("heading", name="Matrix overflow").is_visible()
+        assert game_over_page.get_by_role("heading", name="本局结束").is_visible()
+        game_over_page.wait_for_function("document.querySelectorAll('.leaderboard li').length > 0")
+        stored_records = game_over_page.evaluate("JSON.parse(localStorage.getItem('stack-order:leaderboard:v1') ?? '[]')")
+        assert len(stored_records) == 1, stored_records
+        assert stored_records[0]["pieces"] == final_state["pieceCount"], {"records": stored_records, "state": final_state}
         game_over_path = SCREENSHOT_DIR / "desktop-game-over.png"
         game_over_page.screenshot(path=str(game_over_path), full_page=True)
         assert not game_over_errors, game_over_errors
         captures.append({
             "name": "desktop-game-over",
-            "state": {"status": final_state["status"], "score": final_state["score"], "lines": final_state["lines"]},
+            "state": {"status": final_state["status"], "score": final_state["score"], "lines": final_state["lines"], "pieceCount": final_state["pieceCount"]},
+            "leaderboard": stored_records,
             "consoleErrors": game_over_errors,
             "screenshot": str(game_over_path.relative_to(ROOT)).replace("\\", "/"),
             "sha256": sha256(game_over_path),
@@ -333,7 +405,9 @@ def main() -> None:
         reduced_page.on("console", lambda message: reduced_errors.append(message.text) if message.type == "error" else None)
         reduced_page.on("pageerror", lambda error: reduced_errors.append(str(error)))
         wait_for_runtime(reduced_page)
-        assert reduced_page.get_by_role("button", name="Quiet motion").get_attribute("aria-pressed") == "true"
+        assert reduced_page.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches") is True
+        assert reduced_page.get_by_role("button", name="辨识纹理").count() == 0
+        assert reduced_page.get_by_role("button", name="减少动态").count() == 0
         play_touch_sequence(reduced_page, reduced_session, pieces=4)
         reduced_touch_evidence = exercise_touch_controls(reduced_page, reduced_session)
         reduced_path = SCREENSHOT_DIR / "mobile-reduced-motion.png"

@@ -25,6 +25,7 @@ export interface RandomizerState {
 
 export type GameStatus = 'ready' | 'playing' | 'paused' | 'game-over';
 export type GamePhase = 'active' | 'entry' | 'line-clear';
+export type GameMode = 'marathon' | 'race';
 
 export interface GameState {
   board: Board;
@@ -35,6 +36,8 @@ export interface GameState {
   score: number;
   lines: number;
   level: number;
+  mode: GameMode;
+  pieceCount: number;
   status: GameStatus;
   phase: GamePhase;
   phaseTicks: number;
@@ -57,7 +60,7 @@ export type GameCommand =
   | { type: 'hold' }
   | { type: 'pause' }
   | { type: 'resume' }
-  | { type: 'restart'; seed?: number };
+  | { type: 'restart'; seed?: number; mode?: GameMode };
 
 export type GameEvent =
   | { type: 'started' }

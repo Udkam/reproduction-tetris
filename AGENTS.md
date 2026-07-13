@@ -1,18 +1,33 @@
 # Game-1 Working Agreement
 
-## Active branch boundary
+## Coordinator and workstream boundary
 
-- `codex/tetris` owns the falling-block puzzle implementation.
-- `codex/temple-run` is reserved for the endless-runner implementation and must remain unchanged until the Tetris branch is reviewed and pushed.
-- Never merge gameplay code between these branches. Shared ideas must be re-evaluated for the target game instead of copied automatically.
+- The primary Codex task is the coordinator. It owns scope, sequencing, integration,
+  `docs/logs/CHANGELOG.md`, final browser review, commit, and push.
+- `codex/tetris` owns only the falling-block puzzle in `E:\Proj\Game-1`.
+- `codex/temple-run` owns only the endless runner in `E:\Proj\Game-1-temple`.
+- The two branches may progress in parallel because they use separate worktrees. Never
+  merge gameplay code, evidence, screenshots, or generated assets between them.
+- Each implementation slice has one writer. Independent QA is read-only until the
+  implementation owner produces a candidate SHA or explicitly requests an audit.
+- A design or QA task may not self-authorize production edits. Only the coordinator's
+  current bounded instruction opens an implementation slice.
 
-## Delivery order
+## Required execution order for every slice
 
-1. Finish, verify, commit, and push the Tetris game.
-2. Record the Tetris acceptance evidence.
-3. Only then switch to `codex/temple-run` and begin its design contract.
+1. Read `AGENTS.md`, `DESIGN.md`, `CURRENT_TASK.md`, and the latest changelog entry.
+2. Update `DESIGN.md` and `CURRENT_TASK.md` before code when behavior, visual direction,
+   ownership, or acceptance criteria changed. Never label unverified work complete.
+3. Implement only the named branch slice and exact product boundary.
+4. Use targeted tests while editing. Do not repeat full suites for reassurance.
+5. After the last source change, run one final typecheck, one full test suite, one build,
+   and one browser-evidence pass when the slice is visual or interactive.
+6. Produce a candidate SHA and exact path/evidence summary for independent QA.
+7. The coordinator resolves QA findings, updates `docs/logs/CHANGELOG.md`, commits any
+   final documentation delta, pushes the branch, and reports acceptance.
 
-Parallel implementation of the two games is prohibited.
+If two workers would edit the same path, the later worker must stop and report the
+collision instead of merging or overwriting the other worker's dirty state.
 
 ## Product boundary
 
@@ -36,7 +51,9 @@ Every implementation slice must preserve:
 - deterministic seeded replay tests
 - no listener, ticker, audio, or canvas leaks after restart/unmount
 
-Do not accept a nonblank screenshot as visual proof. Browser evidence must verify the board geometry, visible state, controls, and responsive layout.
+Do not accept a nonblank screenshot as visual proof. Browser evidence must verify the
+board geometry, visible state, controls, responsive layout, and canonical values claimed
+by the report. Evidence files must come from the final candidate, not fabricated state.
 
 ## Encoding and file editing
 
