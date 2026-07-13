@@ -1,13 +1,37 @@
-# Game-1
+# Signal Foundry
 
-This `main` branch is intentionally reset as a neutral starting point for a
-different future game.
+An original, polished falling-block puzzle study built with React, TypeScript,
+Vite, and PixiJS. The project reproduces the familiar strategic rules of the
+genre while using original presentation, audio, naming, and interface design.
 
-The previous clean-room recursive spatial puzzle study, including its source,
-design records, tests, workstream logs, and visual evidence, is preserved on:
+```bash
+npm.cmd install
+npm.cmd run dev
+```
 
-[`archive/patricks-parabox-2026-07-13`](https://github.com/Udkam/Game-1/tree/archive/patricks-parabox-2026-07-13)
+## Controls
 
-No engine, framework, genre, or implementation contract has been selected for
-the next game yet. New project instructions and architecture should be created
-from the next game's requirements rather than copied from the archived study.
+- Move: `Left` / `Right` or `A` / `D`
+- Soft drop: `Down` or `S`
+- Hard drop: `Space`
+- Rotate clockwise: `Up`, `X`, or `W`
+- Rotate counter-clockwise: `Z`
+- Hold: `C` or `Shift`
+- Pause: `P` or `Escape`
+- Restart: `R`
+
+Portrait and landscape touch controls are provided automatically on compact viewports. Audio, reduced motion, and high-contrast rendering can be changed from the interface.
+
+Quality gates:
+
+```bash
+npm.cmd run typecheck
+npm.cmd run test
+npm.cmd run build
+```
+
+Browser evidence and hashed screenshots are recorded in
+`docs/qa/tetris-browser-evidence.json` and `docs/screenshots/tetris/`.
+
+The separate `codex/temple-run` branch is reserved for the endless-runner study
+and remains untouched until this branch is accepted.
