@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tetris — Mineral Shelf D5 static prototype</title>
+    <link rel="stylesheet" href="./d5-light-prototype.css" />
+    <link rel="stylesheet" href="./d5-light-adjustments.css" />
+    <link rel="stylesheet" href="./d5-reboot-correction.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#d5-board">跳到棋盘</a>
+    <main class="app" data-state="ready" data-mode="marathon">
+      <header class="topbar">
+        <h1>Tetris</h1>
+      </header>
+
+      <section class="game-shell" aria-label="Tetris Mineral Shelf 静态原型">
+        <section class="context ready-context" aria-label="开始游戏">
+          <p class="eyebrow">选择模式</p>
+          <div class="mode-choices"><button class="mode-choice selected">马拉松模式</button><button class="mode-choice">竞速模式</button><button class="mode-choice">解谜模式</button></div>
+          <p class="selected-summary"><b>马拉松模式</b><span>目标：累积得分　结束：堆叠到顶</span></p>
+          <button class="primary-action">开始</button>
+        </section>
+
+        <section class="context session-context" aria-label="本局信息">
+          <div class="mode-row"><strong class="session-mode">马拉松模式</strong><button>切换模式</button></div>
+          <div class="next-preview" aria-label="下一个方块"><p>下一个方块</p><div class="mini-piece" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+          <button class="pause-key">暂停</button>
+          <div class="puzzle-actions"><button>重新开始关卡</button><button>返回关卡选择</button></div>
+        </section>
+
+        <section class="context switch-context" aria-label="切换模式">
+          <p class="eyebrow">切换模式</p>
+          <div class="mode-choices"><button class="mode-choice selected">马拉松模式</button><button class="mode-choice">竞速模式</button><button class="mode-choice">解谜模式</button></div>
+          <p class="selected-summary"><b>马拉松模式</b><span>目标：累积得分　结束：堆叠到顶</span></p>
+          <button class="primary-action">应用并重新开始</button>
+          <button class="secondary-action">返回本局</button>
+        </section>
+
+        <section class="context puzzle-select-context" aria-label="选择解谜关卡">
+          <p class="eyebrow">解谜模式 · 选择关卡</p>
+          <button class="level-line"><strong>关卡 1/3　砂岩起步 · 简单</strong><span>固定后续序列：4 块</span><small>目标：清空棋盘</small></button>
+          <button class="level-line"><strong>关卡 2/3　岩脊折返 · 困难</strong><span>固定后续序列：5 块</span><small>目标：清空棋盘</small></button>
+          <button class="level-line selected"><strong>关卡 3/3　浅层缺口 · 困难</strong><span>固定后续序列：6 块</span><small>目标：清空棋盘</small></button>
+          <p class="selection-note">已选：关卡 3/3　浅层缺口 · 困难<br />固定后续序列 6 块；方块用尽即失败</p>
+          <button class="primary-action">开始关卡</button>
+          <button class="secondary-action">返回模式选择</button>
+        </section>
+
+        <section class="board-stage" id="d5-board" aria-label="10 乘 20 游戏棋盘">
+          <div class="board-surface" aria-hidden="true">
+            <div class="ghost ghost-a"></div><div class="ghost ghost-b"></div><div class="ghost ghost-c"></div><div class="ghost ghost-d"></div>
+            <div class="active active-a"></div><div class="active active-b"></div><div class="active active-c"></div><div class="active active-d"></div>
+            <div class="locked locked-a"></div><div class="locked locked-b"></div><div class="locked locked-c"></div><div class="locked locked-d"></div><div class="locked locked-e"></div><div class="locked locked-f"></div>
+          </div>
+          <div class="pause-band" role="status"><b>暂停</b><span></span><button>继续</button><button>重新开始</button></div>
+          <div class="result-band"><b class="result-title">解谜完成</b><span class="result-copy">棋盘已清空</span><button>下一关</button></div>
+        </section>
+
+        <section class="stats" aria-label="模式统计">
+          <dl class="marathon-stats"><div><dt>得分</dt><dd>42,600</dd></div><div><dt>消行</dt><dd>14</dd></div><div><dt>等级</dt><dd>04</dd></div></dl>
+          <dl class="race-stats"><div><dt>用时</dt><dd>02:18</dd></div><div><dt>剩余行</dt><dd>08</dd></div><div><dt>速度档</dt><dd>03</dd></div></dl>
+          <dl class="puzzle-stats"><div><dt>关卡</dt><dd>3/3　浅层缺口 · 困难</dd></div><div><dt>固定后续序列</dt><dd>6 块</dd></div><div><dt>剩余方块</dt><dd>04</dd></div><div><dt>目标</dt><dd>清空棋盘</dd></div></dl>
+        </section>
+
+        <p class="control-help">← → 移动　↑ 旋转　↓ 快速下落　<br class="portrait-help-break" />空格/⇣ 直接落底</p>
+        <nav class="control-rail" aria-label="触控操作">
+          <button aria-label="左移"><b>←</b><small>左移</small></button><button aria-label="右移"><b>→</b><small>右移</small></button><button aria-label="旋转"><b>↑</b><small>旋转</small></button><button aria-label="快速下落"><b>↓</b><small>快速下落</small></button><button aria-label="直接落底"><b>⇣</b><small>直接落底</small></button>
+        </nav>
+      </section>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const state = params.get('state') || 'ready';
+      const mode = params.get('mode') || 'marathon';
+      const app = document.querySelector('.app');
+      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];
+      const validModes = ['marathon', 'race', 'puzzle'];
+      app.dataset.state = validStates.includes(state) ? state : 'ready';
+      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';
+      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};
+      document.querySelector('.session-mode').textContent = names[app.dataset.mode];
+      const rules = {
+        marathon: '目标：累积得分　结束：堆叠到顶',
+        race: '目标：完成 40 行　结束：完成目标',
+        puzzle: '目标：清空棋盘　结束：方块用尽',
+      };
+      document.querySelectorAll('.mode-choice').forEach((choice) => {
+        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);
+      });
+      document.querySelectorAll('.selected-summary').forEach((summary) => {
+        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;
+      });
+      if (params.get('stress') === 'puzzle-long') {
+        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/3　玄武裂隙 · 困难';
+        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';
+        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';
+        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';
+      }
+    </script>
+  </body>
+</html>

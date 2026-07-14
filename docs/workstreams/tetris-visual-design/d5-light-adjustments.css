@@ -1,0 +1,5 @@
+/* Ratio-safe D5 mineral ledge: the 6px foot sits outside the 10 × 20 surface. */
+.board-stage{height:calc(var(--cell)*20 + 6px)}
+.board-surface{height:calc(100% - 6px)}
+@media(min-width:600px) and (min-height:561px){[data-state="ready"] .board-stage{--cell:22px}}
+@media(min-width:600px) and (min-height:561px){[data-state="puzzle-playing"] .board-stage,[data-state="puzzle-complete"] .board-stage,[data-state="puzzle-fail"] .board-stage{--cell:27px}}
