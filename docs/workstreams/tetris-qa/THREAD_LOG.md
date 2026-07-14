@@ -34,3 +34,15 @@ Verdict: **ACCEPT**
   a clear board-local `已暂停` state without a heavy card treatment.
 
 QA handoff: this commit adds only this workstream log and is intentionally not pushed.
+
+## 2026-07-14 — TETRIS-QA-003 canonical Git-blob checksum review
+
+REPORT TETRIS-QA TETRIS-QA-003 ACCEPTED
+HEAD `9d704d95850ce5c04f03bbe6406bbd97873f38d9`; PARENT `b4a51c19d372d72870c416181566855c8c9dcc19`; QA_SHA pending log-only commit.
+SCOPE direct delta is only `docs/qa/evidence/tetris-t2/SHA256SUMS.md` and `docs/workstreams/tetris-t2/THREAD_LOG.md`; whitespace clean, with no product/evidence JSON/PNG/package/config/Temple/root CHANGELOG delta.
+CHECKSUMS manifest explicitly specifies canonical raw Git blob SHA-256 (not working-tree/checkout-filter bytes); streamed all 18 `git show` blobs under `core.autocrlf=true` and `false`: 0 mismatches.
+CHECKSUMS required values matched in both runs: `browser-evidence.json=bd1bed9445d058143b9aac6c8af5f6eaccf634addb2a5f5eaf1baa1b203b6c10`; `rules-replay.json=97fafadc2c29c6161aa56a3ac21e60b2d12545def7ab5f2fec1511b2016c9194`.
+REUSED GATES QA-001 clean ci/typecheck/47-test/build plus rules and visual findings; this docs-only delta ran no npm, tests, build, browser, capture, or selector probe.
+BLOCKER none; QA-002 commit `eabbcb6d5746ac4c90fa82e357c82eed73d42a29` is superseded and neither integrated nor pushed.
+NEXT coordinator integration/push authorization only; no production changes.
+LOG `docs/workstreams/tetris-qa/THREAD_LOG.md` only.
