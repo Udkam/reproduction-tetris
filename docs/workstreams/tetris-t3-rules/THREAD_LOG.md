@@ -66,3 +66,15 @@ LOG=E:\Proj\Game-1\docs\workstreams\tetris-t3-rules\THREAD_LOG.md
 - Final same-file rerun: `1 passed` test file, `18 passed` tests. This is the sole completed
   workstream test gate after the correction sequence; no full Vitest, build, browser, or source
   change was run.
+
+## TETRIS-T3R-004 bounded QA correction
+
+- QA-001 found one P1: the high-difficulty assertion allowed two distinct landing columns while
+  the frozen invariant requires at least three. The existing replay data is already `5/4/3` for
+  levels 4–6, so no level or replay artifact changed.
+- The verifier now fails closed at `distinctLandingXs >= 3` for levels 4–6. A single same-file
+  targeted run follows this last edit; no production, D5, Temple, package/config, root changelog,
+  full suite, build, browser, npm ci, or push is authorized.
+- Targeted result: `npm.cmd run test -- docs/workstreams/tetris-t3-rules/tests/campaign.verifier.test.ts`
+  → `1 passed` file, `18 passed` tests. The verified high-difficulty landing counts remain
+  level 4 = 5, level 5 = 4, level 6 = 3.

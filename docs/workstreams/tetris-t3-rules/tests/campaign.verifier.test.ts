@@ -242,7 +242,7 @@ describe('TETRIS-T3R canonical six-level campaign verifier', () => {
   it.each(references.replays.slice(3))('$levelId is a five-piece high-difficulty route with real rotations and multiple landings', (reference) => {
     expect(reference.lockedPieces).toBeGreaterThanOrEqual(5);
     expect(reference.effectiveRotations).toBeGreaterThanOrEqual(2);
-    expect(reference.distinctLandingXs).toBeGreaterThanOrEqual(2);
+    expect(reference.distinctLandingXs).toBeGreaterThanOrEqual(3);
   });
 
   it('rejects an initially empty board and an authored full row', () => {
