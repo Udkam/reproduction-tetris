@@ -95,3 +95,15 @@ GATES fresh detached dependency install (`npm.cmd ci --no-audit --no-fund`, 105 
 BLOCKERS none.
 NEXT coordinator integration decision only; this QA acceptance does not authorize push, frontend work, or further production edits.
 LOG `docs/workstreams/tetris-qa/THREAD_LOG.md` only.
+
+## 2026-07-14 — TETRIS-T3-V1-QA-002 narrow evidence-integrity acceptance
+
+REPORT TETRIS-T3-V1-QA TETRIS-T3-V1-QA-002 ACCEPTED
+HEAD `6fb1728f6a3e9cf4398304ac9a638df2ddf4c1d7`; PARENT `3bed71f8a84e4608beae4bbaf4479cfbed4e69ed`; QA_SHA pending log-only commit.
+SCOPE relative to QA-001-rejected `0a9fdd8f4466c03c3951e30d9fd426754af75e53`, the correction is exactly the two T3 `SHA256SUMS.txt` files and `tetris-t3-frontend/THREAD_LOG.md`; direct candidate scope is otherwise identical, whitespace clean, with no source/evidence JSON/PNG/package/core/Temple/root CHANGELOG correction delta.
+CHECKSUMS each manifest explicitly defines SHA-256 over raw candidate Git blob bytes, not checkout-filtered worktree bytes. Streamed all 32 listed blobs through `git show` under `core.autocrlf=true` and `false`: 32/32 match and config-identical; all 30 PNG hashes are unchanged from QA-001.
+CHECKSUMS browser JSON raw blob hashes match `development=ff88e171ff9dca0b47d1ab2d1d3656553e371e709c10fcc1d09ea8353f281fef` and `final=3a53f191118396a2b327aa920b70d034f6af6dce3fb006733afa6133e920baaf`.
+REUSED GATES QA-001's fresh `npm.cmd ci`, typecheck, 12-file/78-test suite, build, and four-viewport browser review; this evidence-only re-review ran no npm/test/build/browser command.
+BLOCKERS none.
+NEXT coordinator integration/push decision only; acceptance authorizes no Temple or further Tetris scope.
+LOG `docs/workstreams/tetris-qa/THREAD_LOG.md` only.
