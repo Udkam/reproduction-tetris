@@ -138,3 +138,14 @@
 
 - D5 candidate：本日志所在的 design-only commit，是当前 D4 `7fc8143` 的直接子提交；最终 SHA 由提交完成后回报统筹线程，避免在 commit 本身写入会因 amend 改变的自指 SHA。
 - 未决仅限生产落地：必须把 mock state 替换为真实 core/UI state、用单一 Pixi canvas 实现等比棋盘与双层脚缘、接入真实输入/暂停/reduced-motion；本设计候选没有授权这些代码改动。
+
+## D5-QA-001 conditional-rejection correction
+
+- QA-001 保留 D5 浅岩台方向，仅授权 `f7afb0a` 的直接子提交做 design-only 修正：标题 safe inset、landscape 12px、竞速 20 行、六关容量。没有生产改动、push 或游戏全量测试。
+- 标题：desktop/portrait 的 `.topbar` 现在有固定高度、12px 安全上内边距与 `line-height:1.2`；verifier 对 16 个 case 断言 topbar/h1 的 left/top/right/bottom 都在 viewport、`overflow-x/y=visible`、标题和 header 文本都严格为 `Tetris`，并纳入无裁切检查。
+- Landscape：844 × 390 的 context、help、五键标签、stats、action 与关卡文字统一为 12px；右侧 controls/stats 扩到 300px，五键仍各自 ≥44px，无交叠。
+- 规则：只读确认生产 `9d704d9` 的 canonical evidence 为 20-line race；原型规则改为 `目标：完成 20 行`，并在 verifier 禁止整个 DOM 出现过期 `40 行`。
+- 多关：原型数据明确为代表性，未冻结 T3R 名称。选择面改为六条 flat rows（selected `关卡 3/6`）的可滚动 list；verifier 把 list 滚到底，断言第六条完整可达；各 desktop/portrait/landscape case 均覆盖这个语义。
+- 单次最终命令：`$env:D5_CAPTURE='1'; python docs/workstreams/tetris-visual-design/verify_d5_light.py`。结果：16/16、12 formal PNG、0 console errors、无横纵溢出、board ratio `2 ± .02`、topbar bounds 16/16、landscape essential minimum 12px、五键最低 44 × 44、六关 reachability 通过。
+- 人工复核替换图：desktop/portrait playing、desktop/portrait puzzle-select、landscape playing/puzzle-select 的 `Tetris` 可见且未裁切；六关 list 保持扁平而非 card/modal，landscape 的 12px help/五键完整。该次静态运行也按全局 safe inset 覆盖了其余正式 PNG。
+- QA-001 candidate：本日志所在 commit 是 `f7afb0a` 的直接子提交；最终 SHA 由提交完成后回报统筹，避免在 commit 文件中写入会因 amend 改变的自指 SHA。

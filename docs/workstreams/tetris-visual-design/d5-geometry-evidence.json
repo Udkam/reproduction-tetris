@@ -1,5 +1,5 @@
 {
-  "candidate": "D5 Mineral Shelf",
+  "candidate": "D5 Mineral Shelf QA-001",
   "results": {
     "1440x900-ready-marathon": {
       "viewport": {
@@ -10,18 +10,18 @@
       },
       "board": {
         "left": 567,
-        "top": 197.296875,
+        "top": 210.296875,
         "right": 873,
-        "bottom": 809.296875,
+        "bottom": 822.296875,
         "width": 306,
         "height": 612,
         "visible": true
       },
       "context": {
         "left": 410,
-        "top": 47,
+        "top": 60,
         "right": 1030,
-        "bottom": 187.296875,
+        "bottom": 200.296875,
         "width": 620,
         "height": 140.296875,
         "visible": true
@@ -37,18 +37,18 @@
       },
       "controlsBox": {
         "left": 565,
-        "top": 841.09375,
+        "top": 844.09375,
         "right": 875,
-        "bottom": 891.09375,
+        "bottom": 894.09375,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 565,
-        "top": 819.296875,
+        "top": 826.296875,
         "right": 875,
-        "bottom": 836.09375,
+        "bottom": 843.09375,
         "width": 310,
         "height": 16.796875,
         "visible": true
@@ -80,6 +80,28 @@
         "height": 0,
         "visible": false
       },
+      "topbar": {
+        "left": 410,
+        "top": 8,
+        "right": 1030,
+        "bottom": 56,
+        "width": 620,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 410,
+        "top": 23.59375,
+        "right": 474.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
+      },
       "boardRatio": 2,
       "boardCenterError": 0,
       "nonOverlap": {
@@ -109,9 +131,11 @@
       },
       "nextCount": 0,
       "visibleText": "跳到棋盘 Tetris 选择模式 马拉松模式 竞速模式 解谜模式 马拉松模式 目标：累积得分　结束：堆叠到顶 开始 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          开始\n        \n\n        \n          马拉松模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "选择模式",
@@ -161,7 +185,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "1440x900-playing-race": {
       "viewport": {
@@ -172,45 +201,45 @@
       },
       "board": {
         "left": 567,
-        "top": 120,
+        "top": 133,
         "right": 873,
-        "bottom": 732,
+        "bottom": 745,
         "width": 306,
         "height": 612,
         "visible": true
       },
       "context": {
         "left": 565,
-        "top": 47,
+        "top": 60,
         "right": 875,
-        "bottom": 110,
+        "bottom": 123,
         "width": 310,
         "height": 63,
         "visible": true
       },
       "stats": {
         "left": 565,
-        "top": 744,
+        "top": 757,
         "right": 875,
-        "bottom": 794,
+        "bottom": 807,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "controlsBox": {
         "left": 565,
-        "top": 825.796875,
+        "top": 828.796875,
         "right": 875,
-        "bottom": 875.796875,
+        "bottom": 878.796875,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 565,
-        "top": 804,
+        "top": 811,
         "right": 875,
-        "bottom": 820.796875,
+        "bottom": 827.796875,
         "width": 310,
         "height": 16.796875,
         "visible": true
@@ -235,12 +264,34 @@
       },
       "next": {
         "left": 565,
-        "top": 77,
+        "top": 90,
         "right": 875,
-        "bottom": 106,
+        "bottom": 119,
         "width": 310,
         "height": 29,
         "visible": true
+      },
+      "topbar": {
+        "left": 410,
+        "top": 8,
+        "right": 1030,
+        "bottom": 56,
+        "width": 620,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 410,
+        "top": 23.59375,
+        "right": 474.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -271,9 +322,11 @@
       },
       "nextCount": 1,
       "visibleText": "跳到棋盘 Tetris 竞速模式 切换模式 下一个方块 暂停 用时 02:18 剩余行 08 速度档 03 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          开始\n        \n\n        \n          竞速模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "竞速模式",
@@ -335,7 +388,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "1440x900-paused-marathon": {
       "viewport": {
@@ -346,54 +404,54 @@
       },
       "board": {
         "left": 567,
-        "top": 120,
+        "top": 133,
         "right": 873,
-        "bottom": 732,
+        "bottom": 745,
         "width": 306,
         "height": 612,
         "visible": true
       },
       "context": {
         "left": 565,
-        "top": 47,
+        "top": 60,
         "right": 875,
-        "bottom": 110,
+        "bottom": 123,
         "width": 310,
         "height": 63,
         "visible": true
       },
       "stats": {
         "left": 565,
-        "top": 744,
+        "top": 757,
         "right": 875,
-        "bottom": 794,
+        "bottom": 807,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "controlsBox": {
         "left": 565,
-        "top": 825.796875,
+        "top": 828.796875,
         "right": 875,
-        "bottom": 875.796875,
+        "bottom": 878.796875,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 565,
-        "top": 804,
+        "top": 811,
         "right": 875,
-        "bottom": 820.796875,
+        "bottom": 827.796875,
         "width": 310,
         "height": 16.796875,
         "visible": true
       },
       "pause": {
         "left": 578,
-        "top": 381.578125,
+        "top": 394.578125,
         "right": 858,
-        "bottom": 439.578125,
+        "bottom": 452.578125,
         "width": 280,
         "height": 58,
         "visible": true
@@ -409,12 +467,34 @@
       },
       "next": {
         "left": 565,
-        "top": 77,
+        "top": 90,
         "right": 875,
-        "bottom": 106,
+        "bottom": 119,
         "width": 310,
         "height": 29,
         "visible": true
+      },
+      "topbar": {
+        "left": 410,
+        "top": 8,
+        "right": 1030,
+        "bottom": 56,
+        "width": 620,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 410,
+        "top": 23.59375,
+        "right": 474.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -445,9 +525,11 @@
       },
       "nextCount": 1,
       "visibleText": "跳到棋盘 Tetris 马拉松模式 切换模式 下一个方块 暂停 继续 重新开始 得分 42,600 消行 14 等级 04 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          开始\n        \n\n        \n          马拉松模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "暂停\n继续\n重新开始",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "马拉松模式",
@@ -517,7 +599,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "1440x900-puzzle-select-puzzle": {
       "viewport": {
@@ -527,21 +614,21 @@
         "scrollHeight": 900
       },
       "board": {
-        "left": 627,
-        "top": 431.90625,
-        "right": 813,
-        "bottom": 803.90625,
-        "width": 186,
-        "height": 372,
+        "left": 642,
+        "top": 459.96875,
+        "right": 798,
+        "bottom": 771.96875,
+        "width": 156,
+        "height": 312,
         "visible": true
       },
       "context": {
         "left": 565,
-        "top": 47,
+        "top": 60,
         "right": 875,
-        "bottom": 421.90625,
+        "bottom": 449.96875,
         "width": 310,
-        "height": 374.90625,
+        "height": 389.96875,
         "visible": true
       },
       "stats": {
@@ -555,18 +642,18 @@
       },
       "controlsBox": {
         "left": 565,
-        "top": 835.703125,
+        "top": 793.765625,
         "right": 875,
-        "bottom": 885.703125,
+        "bottom": 843.765625,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 565,
-        "top": 813.90625,
+        "top": 775.96875,
         "right": 875,
-        "bottom": 830.703125,
+        "bottom": 792.765625,
         "width": 310,
         "height": 16.796875,
         "visible": true
@@ -598,6 +685,28 @@
         "height": 0,
         "visible": false
       },
+      "topbar": {
+        "left": 410,
+        "top": 8,
+        "right": 1030,
+        "bottom": 56,
+        "width": 620,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 410,
+        "top": 23.59375,
+        "right": 474.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
+      },
       "boardRatio": 2,
       "boardCenterError": 0,
       "nonOverlap": {
@@ -626,17 +735,19 @@
         "minHeight": 48
       },
       "nextCount": 0,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 · 选择关卡 关卡 1/3　砂岩起步 · 简单 固定后续序列：4 块 目标：清空棋盘 关卡 2/3　岩脊折返 · 困难 固定后续序列：5 块 目标：清空棋盘 关卡 3/3　浅层缺口 · 困难 固定后续序列：6 块 目标：清空棋盘 开始关卡 返回模式选择 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 · 选择关卡 示例关卡（布局支持 6+） 关卡 1/6　岩台起步 · 简单 固定后续序列：4 块 目标：清空棋盘 关卡 2/6　折返练习 · 中等 固定后续序列：5 块 目标：清空棋盘 关卡 3/6　错位通道 · 困难 固定后续序列：6 块 目标：清空棋盘 关卡 4/6　石缝转角 · 困难 固定后续序列：7 块 目标：清空棋盘 关卡 5/6　浅层回廊 · 困难 固定后续序列：8 块 目标：清空棋盘 关卡 6/6　矿脊终局 · 困难 固定后续序列：9 块 目标：清空棋盘 开始关卡 返回模式选择 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式 · 选择关卡",
           "px": 12
         },
         {
-          "text": "关卡 1/3　砂岩起步 · 简单",
+          "text": "关卡 1/6　岩台起步 · 简单",
           "px": 14
         },
         {
@@ -648,7 +759,7 @@
           "px": 12
         },
         {
-          "text": "关卡 2/3　岩脊折返 · 困难",
+          "text": "关卡 2/6　折返练习 · 中等",
           "px": 14
         },
         {
@@ -660,7 +771,7 @@
           "px": 12
         },
         {
-          "text": "关卡 3/3　浅层缺口 · 困难",
+          "text": "关卡 3/6　错位通道 · 困难",
           "px": 14
         },
         {
@@ -672,7 +783,43 @@
           "px": 12
         },
         {
-          "text": "已选：关卡 3/3　浅层缺口 · 困难固定后续序列 6 块；方块用尽即失败",
+          "text": "关卡 4/6　石缝转角 · 困难",
+          "px": 14
+        },
+        {
+          "text": "固定后续序列：7 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "关卡 5/6　浅层回廊 · 困难",
+          "px": 14
+        },
+        {
+          "text": "固定后续序列：8 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "关卡 6/6　矿脊终局 · 困难",
+          "px": 14
+        },
+        {
+          "text": "固定后续序列：9 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败",
           "px": 12
         },
         {
@@ -707,7 +854,14 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": true,
+        "reachable": true,
+        "scrollHeight": 357,
+        "clientHeight": 187
+      }
     },
     "1440x900-puzzle-playing-puzzle": {
       "viewport": {
@@ -718,45 +872,45 @@
       },
       "board": {
         "left": 582,
-        "top": 159,
+        "top": 172,
         "right": 858,
-        "bottom": 711,
+        "bottom": 724,
         "width": 276,
         "height": 552,
         "visible": true
       },
       "context": {
         "left": 565,
-        "top": 47,
+        "top": 60,
         "right": 875,
-        "bottom": 149,
+        "bottom": 162,
         "width": 310,
         "height": 102,
         "visible": true
       },
       "stats": {
         "left": 565,
-        "top": 723,
+        "top": 736,
         "right": 875,
-        "bottom": 813,
+        "bottom": 826,
         "width": 310,
         "height": 90,
         "visible": true
       },
       "controlsBox": {
         "left": 565,
-        "top": 844.796875,
+        "top": 847.796875,
         "right": 875,
-        "bottom": 894.796875,
+        "bottom": 897.796875,
         "width": 310,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 565,
-        "top": 823,
+        "top": 830,
         "right": 875,
-        "bottom": 839.796875,
+        "bottom": 846.796875,
         "width": 310,
         "height": 16.796875,
         "visible": true
@@ -781,12 +935,34 @@
       },
       "next": {
         "left": 565,
-        "top": 77,
+        "top": 90,
         "right": 875,
-        "bottom": 106,
+        "bottom": 119,
         "width": 310,
         "height": 29,
         "visible": true
+      },
+      "topbar": {
+        "left": 410,
+        "top": 8,
+        "right": 1030,
+        "bottom": 56,
+        "width": 620,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 410,
+        "top": 23.59375,
+        "right": 474.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -816,10 +992,12 @@
         "minHeight": 48
       },
       "nextCount": 1,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 关卡 3/3　浅层缺口 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 关卡 3/6　示例：错位通道 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式",
@@ -846,7 +1024,7 @@
           "px": 12
         },
         {
-          "text": "3/3　浅层缺口 · 困难",
+          "text": "3/6　示例：错位通道 · 困难",
           "px": 12
         },
         {
@@ -897,7 +1075,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-ready-marathon": {
       "viewport": {
@@ -908,18 +1091,18 @@
       },
       "board": {
         "left": 87,
-        "top": 225.984375,
+        "top": 229.984375,
         "right": 303,
-        "bottom": 657.984375,
+        "bottom": 661.984375,
         "width": 216,
         "height": 432,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 216.984375,
+        "bottom": 220.984375,
         "width": 260,
         "height": 160.984375,
         "visible": true
@@ -935,18 +1118,18 @@
       },
       "controlsBox": {
         "left": 65,
-        "top": 705.578125,
+        "top": 701.578125,
         "right": 325,
-        "bottom": 755.578125,
+        "bottom": 751.578125,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 666.984375,
+        "top": 665.984375,
         "right": 325,
-        "bottom": 700.578125,
+        "bottom": 699.578125,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -978,6 +1161,28 @@
         "height": 0,
         "visible": false
       },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
+      },
       "boardRatio": 2,
       "boardCenterError": 0,
       "nonOverlap": {
@@ -1007,9 +1212,11 @@
       },
       "nextCount": 0,
       "visibleText": "跳到棋盘 Tetris 选择模式 马拉松模式 竞速模式 解谜模式 马拉松模式 目标：累积得分　结束：堆叠到顶 开始 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          开始\n        \n\n        \n          马拉松模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "选择模式",
@@ -1059,7 +1266,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-playing-marathon": {
       "viewport": {
@@ -1070,45 +1282,45 @@
       },
       "board": {
         "left": 62,
-        "top": 123,
+        "top": 127,
         "right": 328,
-        "bottom": 655,
+        "bottom": 659,
         "width": 266,
         "height": 532,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 114,
+        "bottom": 118,
         "width": 260,
         "height": 58,
         "visible": true
       },
       "stats": {
         "left": 65,
-        "top": 666,
+        "top": 670,
         "right": 325,
-        "bottom": 711,
+        "bottom": 715,
         "width": 260,
         "height": 45,
         "visible": true
       },
       "controlsBox": {
         "left": 65,
-        "top": 758.59375,
+        "top": 754.59375,
         "right": 325,
-        "bottom": 808.59375,
+        "bottom": 804.59375,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 720,
+        "top": 719,
         "right": 325,
-        "bottom": 753.59375,
+        "bottom": 752.59375,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -1133,12 +1345,34 @@
       },
       "next": {
         "left": 65,
-        "top": 83,
+        "top": 87,
         "right": 325,
-        "bottom": 110,
+        "bottom": 114,
         "width": 260,
         "height": 27,
         "visible": true
+      },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -1169,9 +1403,11 @@
       },
       "nextCount": 1,
       "visibleText": "跳到棋盘 Tetris 马拉松模式 切换模式 下一个方块 暂停 得分 42,600 消行 14 等级 04 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          开始\n        \n\n        \n          马拉松模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          马拉松模式目标：累积得分　结束：堆叠到顶\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "马拉松模式",
@@ -1233,7 +1469,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-paused-race": {
       "viewport": {
@@ -1244,54 +1485,54 @@
       },
       "board": {
         "left": 62,
-        "top": 123,
+        "top": 127,
         "right": 328,
-        "bottom": 655,
+        "bottom": 659,
         "width": 266,
         "height": 532,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 114,
+        "bottom": 118,
         "width": 260,
         "height": 58,
         "visible": true
       },
       "stats": {
         "left": 65,
-        "top": 666,
+        "top": 670,
         "right": 325,
-        "bottom": 711,
+        "bottom": 715,
         "width": 260,
         "height": 45,
         "visible": true
       },
       "controlsBox": {
         "left": 65,
-        "top": 758.59375,
+        "top": 754.59375,
         "right": 325,
-        "bottom": 808.59375,
+        "bottom": 804.59375,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 720,
+        "top": 719,
         "right": 325,
-        "bottom": 753.59375,
+        "bottom": 752.59375,
         "width": 260,
         "height": 33.59375,
         "visible": true
       },
       "pause": {
         "left": 70,
-        "top": 350.171875,
+        "top": 354.171875,
         "right": 316,
-        "bottom": 402.171875,
+        "bottom": 406.171875,
         "width": 246,
         "height": 52,
         "visible": true
@@ -1307,12 +1548,34 @@
       },
       "next": {
         "left": 65,
-        "top": 83,
+        "top": 87,
         "right": 325,
-        "bottom": 110,
+        "bottom": 114,
         "width": 260,
         "height": 27,
         "visible": true
+      },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -1343,9 +1606,11 @@
       },
       "nextCount": 1,
       "visibleText": "跳到棋盘 Tetris 竞速模式 切换模式 下一个方块 暂停 继续 重新开始 用时 02:18 剩余行 08 速度档 03 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          开始\n        \n\n        \n          竞速模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "暂停\n继续\n重新开始",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "竞速模式",
@@ -1415,7 +1680,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-puzzle-select-puzzle": {
       "viewport": {
@@ -1425,21 +1695,21 @@
         "scrollHeight": 844
       },
       "board": {
-        "left": 112,
-        "top": 390.71875,
-        "right": 278,
-        "bottom": 722.71875,
-        "width": 166,
-        "height": 332,
+        "left": 117,
+        "top": 425.96875,
+        "right": 273,
+        "bottom": 737.96875,
+        "width": 156,
+        "height": 312,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 381.71875,
+        "bottom": 416.96875,
         "width": 260,
-        "height": 325.71875,
+        "height": 356.96875,
         "visible": true
       },
       "stats": {
@@ -1453,18 +1723,18 @@
       },
       "controlsBox": {
         "left": 65,
-        "top": 770.3125,
+        "top": 777.5625,
         "right": 325,
-        "bottom": 820.3125,
+        "bottom": 827.5625,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 731.71875,
+        "top": 741.96875,
         "right": 325,
-        "bottom": 765.3125,
+        "bottom": 775.5625,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -1496,6 +1766,28 @@
         "height": 0,
         "visible": false
       },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
+      },
       "boardRatio": 2,
       "boardCenterError": 0,
       "nonOverlap": {
@@ -1524,17 +1816,19 @@
         "minHeight": 48
       },
       "nextCount": 0,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 · 选择关卡 关卡 1/3　砂岩起步 · 简单 固定后续序列：4 块 目标：清空棋盘 关卡 2/3　岩脊折返 · 困难 固定后续序列：5 块 目标：清空棋盘 关卡 3/3　浅层缺口 · 困难 固定后续序列：6 块 目标：清空棋盘 开始关卡 返回模式选择 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 · 选择关卡 示例关卡（布局支持 6+） 关卡 1/6　岩台起步 · 简单 固定后续序列：4 块 目标：清空棋盘 关卡 2/6　折返练习 · 中等 固定后续序列：5 块 目标：清空棋盘 关卡 3/6　错位通道 · 困难 固定后续序列：6 块 目标：清空棋盘 关卡 4/6　石缝转角 · 困难 固定后续序列：7 块 目标：清空棋盘 关卡 5/6　浅层回廊 · 困难 固定后续序列：8 块 目标：清空棋盘 关卡 6/6　矿脊终局 · 困难 固定后续序列：9 块 目标：清空棋盘 开始关卡 返回模式选择 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式 · 选择关卡",
           "px": 12
         },
         {
-          "text": "关卡 1/3　砂岩起步 · 简单",
+          "text": "关卡 1/6　岩台起步 · 简单",
           "px": 13
         },
         {
@@ -1546,7 +1840,7 @@
           "px": 12
         },
         {
-          "text": "关卡 2/3　岩脊折返 · 困难",
+          "text": "关卡 2/6　折返练习 · 中等",
           "px": 13
         },
         {
@@ -1558,7 +1852,7 @@
           "px": 12
         },
         {
-          "text": "关卡 3/3　浅层缺口 · 困难",
+          "text": "关卡 3/6　错位通道 · 困难",
           "px": 13
         },
         {
@@ -1570,7 +1864,43 @@
           "px": 12
         },
         {
-          "text": "已选：关卡 3/3　浅层缺口 · 困难固定后续序列 6 块；方块用尽即失败",
+          "text": "关卡 4/6　石缝转角 · 困难",
+          "px": 13
+        },
+        {
+          "text": "固定后续序列：7 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "关卡 5/6　浅层回廊 · 困难",
+          "px": 13
+        },
+        {
+          "text": "固定后续序列：8 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "关卡 6/6　矿脊终局 · 困难",
+          "px": 13
+        },
+        {
+          "text": "固定后续序列：9 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败",
           "px": 12
         },
         {
@@ -1605,7 +1935,14 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": true,
+        "reachable": true,
+        "scrollHeight": 309,
+        "clientHeight": 167
+      }
     },
     "390x844-puzzle-playing-puzzle": {
       "viewport": {
@@ -1616,45 +1953,45 @@
       },
       "board": {
         "left": 87,
-        "top": 158,
+        "top": 162,
         "right": 303,
-        "bottom": 590,
+        "bottom": 594,
         "width": 216,
         "height": 432,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 149,
+        "bottom": 153,
         "width": 260,
         "height": 93,
         "visible": true
       },
       "stats": {
         "left": 65,
-        "top": 601,
+        "top": 605,
         "right": 325,
-        "bottom": 687,
+        "bottom": 691,
         "width": 260,
         "height": 86,
         "visible": true
       },
       "controlsBox": {
         "left": 65,
-        "top": 734.59375,
+        "top": 730.59375,
         "right": 325,
-        "bottom": 784.59375,
+        "bottom": 780.59375,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 696,
+        "top": 695,
         "right": 325,
-        "bottom": 729.59375,
+        "bottom": 728.59375,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -1679,12 +2016,34 @@
       },
       "next": {
         "left": 65,
-        "top": 83,
+        "top": 87,
         "right": 325,
-        "bottom": 110,
+        "bottom": 114,
         "width": 260,
         "height": 27,
         "visible": true
+      },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -1714,10 +2073,12 @@
         "minHeight": 48
       },
       "nextCount": 1,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 关卡 3/3　浅层缺口 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 关卡 3/6　示例：错位通道 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式",
@@ -1744,7 +2105,7 @@
           "px": 12
         },
         {
-          "text": "3/3　浅层缺口 · 困难",
+          "text": "3/6　示例：错位通道 · 困难",
           "px": 12
         },
         {
@@ -1795,7 +2156,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "844x390-playing-race": {
       "viewport": {
@@ -1806,47 +2172,47 @@
       },
       "board": {
         "left": 344,
-        "top": 42,
+        "top": 44,
         "right": 500,
-        "bottom": 354,
+        "bottom": 356,
         "width": 156,
         "height": 312,
         "visible": true
       },
       "context": {
         "left": 16,
-        "top": 42,
-        "right": 206,
-        "bottom": 138,
-        "width": 190,
-        "height": 96,
+        "top": 44,
+        "right": 236,
+        "bottom": 152,
+        "width": 220,
+        "height": 108,
         "visible": true
       },
       "stats": {
-        "left": 646,
-        "top": 42,
+        "left": 528,
+        "top": 44,
         "right": 828,
-        "bottom": 81,
-        "width": 182,
-        "height": 39,
+        "bottom": 85,
+        "width": 300,
+        "height": 41,
         "visible": true
       },
       "controlsBox": {
-        "left": 608,
-        "top": 336,
+        "left": 528,
+        "top": 340,
         "right": 828,
-        "bottom": 382,
-        "width": 220,
-        "height": 46,
+        "bottom": 390,
+        "width": 300,
+        "height": 50,
         "visible": true
       },
       "help": {
-        "left": 608,
-        "top": 321,
+        "left": 528,
+        "top": 322.40625,
         "right": 828,
-        "bottom": 334,
-        "width": 220,
-        "height": 13,
+        "bottom": 338,
+        "width": 300,
+        "height": 15.59375,
         "visible": true
       },
       "pause": {
@@ -1869,12 +2235,34 @@
       },
       "next": {
         "left": 16,
-        "top": 72,
-        "right": 206,
-        "bottom": 101,
-        "width": 190,
+        "top": 75,
+        "right": 236,
+        "bottom": 104,
+        "width": 220,
         "height": 29,
         "visible": true
+      },
+      "topbar": {
+        "left": 16,
+        "top": 4,
+        "right": 828,
+        "bottom": 44,
+        "width": 812,
+        "height": 40,
+        "visible": true
+      },
+      "title": {
+        "left": 16,
+        "top": 14.796875,
+        "right": 75.15625,
+        "bottom": 41.1875,
+        "width": 59.15625,
+        "height": 26.390625,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -1900,30 +2288,32 @@
           "↓快速下落",
           "⇣直接落底"
         ],
-        "minWidth": 44,
-        "minHeight": 44
+        "minWidth": 60,
+        "minHeight": 48
       },
       "nextCount": 1,
       "visibleText": "跳到棋盘 Tetris 竞速模式 切换模式 下一个方块 暂停 用时 02:18 剩余行 08 速度档 03 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          开始\n        \n\n        \n          竞速模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "竞速模式",
-          "px": 14
+          "px": 12
         },
         {
           "text": "切换模式",
-          "px": 11
+          "px": 12
         },
         {
           "text": "下一个方块",
-          "px": 10
+          "px": 12
         },
         {
           "text": "用时",
-          "px": 10
+          "px": 12
         },
         {
           "text": "02:18",
@@ -1931,7 +2321,7 @@
         },
         {
           "text": "剩余行",
-          "px": 10
+          "px": 12
         },
         {
           "text": "08",
@@ -1939,7 +2329,7 @@
         },
         {
           "text": "速度档",
-          "px": 10
+          "px": 12
         },
         {
           "text": "03",
@@ -1947,29 +2337,34 @@
         },
         {
           "text": "← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底",
-          "px": 9
+          "px": 12
         },
         {
           "text": "左移",
-          "px": 9
+          "px": 12
         },
         {
           "text": "右移",
-          "px": 9
+          "px": 12
         },
         {
           "text": "旋转",
-          "px": 9
+          "px": 12
         },
         {
           "text": "快速下落",
-          "px": 9
+          "px": 12
         },
         {
           "text": "直接落底",
-          "px": 9
+          "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "844x390-puzzle-select-puzzle": {
       "viewport": {
@@ -1980,20 +2375,20 @@
       },
       "board": {
         "left": 344,
-        "top": 42,
+        "top": 44,
         "right": 500,
-        "bottom": 354,
+        "bottom": 356,
         "width": 156,
         "height": 312,
         "visible": true
       },
       "context": {
         "left": 16,
-        "top": 42,
-        "right": 222,
-        "bottom": 308.09375,
-        "width": 206,
-        "height": 266.09375,
+        "top": 44,
+        "right": 236,
+        "bottom": 350.90625,
+        "width": 220,
+        "height": 306.90625,
         "visible": true
       },
       "stats": {
@@ -2006,21 +2401,21 @@
         "visible": false
       },
       "controlsBox": {
-        "left": 608,
-        "top": 336,
+        "left": 528,
+        "top": 340,
         "right": 828,
-        "bottom": 382,
-        "width": 220,
-        "height": 46,
+        "bottom": 390,
+        "width": 300,
+        "height": 50,
         "visible": true
       },
       "help": {
-        "left": 608,
-        "top": 321,
+        "left": 528,
+        "top": 322.40625,
         "right": 828,
-        "bottom": 334,
-        "width": 220,
-        "height": 13,
+        "bottom": 338,
+        "width": 300,
+        "height": 15.59375,
         "visible": true
       },
       "pause": {
@@ -2049,6 +2444,28 @@
         "width": 0,
         "height": 0,
         "visible": false
+      },
+      "topbar": {
+        "left": 16,
+        "top": 4,
+        "right": 828,
+        "bottom": 44,
+        "width": 812,
+        "height": 40,
+        "visible": true
+      },
+      "title": {
+        "left": 16,
+        "top": 14.796875,
+        "right": 75.15625,
+        "bottom": 41.1875,
+        "width": 59.15625,
+        "height": 26.390625,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -2074,92 +2491,137 @@
           "↓快速下落",
           "⇣直接落底"
         ],
-        "minWidth": 44,
-        "minHeight": 44
+        "minWidth": 60,
+        "minHeight": 48
       },
       "nextCount": 0,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 · 选择关卡 关卡 1/3　砂岩起步 · 简单 固定后续序列：4 块 目标：清空棋盘 关卡 2/3　岩脊折返 · 困难 固定后续序列：5 块 目标：清空棋盘 关卡 3/3　浅层缺口 · 困难 固定后续序列：6 块 目标：清空棋盘 开始关卡 返回模式选择 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 · 选择关卡 示例关卡（布局支持 6+） 关卡 1/6　岩台起步 · 简单 固定后续序列：4 块 目标：清空棋盘 关卡 2/6　折返练习 · 中等 固定后续序列：5 块 目标：清空棋盘 关卡 3/6　错位通道 · 困难 固定后续序列：6 块 目标：清空棋盘 关卡 4/6　石缝转角 · 困难 固定后续序列：7 块 目标：清空棋盘 关卡 5/6　浅层回廊 · 困难 固定后续序列：8 块 目标：清空棋盘 关卡 6/6　矿脊终局 · 困难 固定后续序列：9 块 目标：清空棋盘 开始关卡 返回模式选择 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式 · 选择关卡",
-          "px": 11
+          "px": 12
         },
         {
-          "text": "关卡 1/3　砂岩起步 · 简单",
-          "px": 11
+          "text": "关卡 1/6　岩台起步 · 简单",
+          "px": 12
         },
         {
           "text": "固定后续序列：4 块",
-          "px": 9
+          "px": 12
         },
         {
           "text": "目标：清空棋盘",
-          "px": 9
+          "px": 12
         },
         {
-          "text": "关卡 2/3　岩脊折返 · 困难",
-          "px": 11
+          "text": "关卡 2/6　折返练习 · 中等",
+          "px": 12
         },
         {
           "text": "固定后续序列：5 块",
-          "px": 9
+          "px": 12
         },
         {
           "text": "目标：清空棋盘",
-          "px": 9
+          "px": 12
         },
         {
-          "text": "关卡 3/3　浅层缺口 · 困难",
-          "px": 11
+          "text": "关卡 3/6　错位通道 · 困难",
+          "px": 12
         },
         {
           "text": "固定后续序列：6 块",
-          "px": 9
+          "px": 12
         },
         {
           "text": "目标：清空棋盘",
-          "px": 9
+          "px": 12
         },
         {
-          "text": "已选：关卡 3/3　浅层缺口 · 困难固定后续序列 6 块；方块用尽即失败",
-          "px": 9
+          "text": "关卡 4/6　石缝转角 · 困难",
+          "px": 12
+        },
+        {
+          "text": "固定后续序列：7 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "关卡 5/6　浅层回廊 · 困难",
+          "px": 12
+        },
+        {
+          "text": "固定后续序列：8 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "关卡 6/6　矿脊终局 · 困难",
+          "px": 12
+        },
+        {
+          "text": "固定后续序列：9 块",
+          "px": 12
+        },
+        {
+          "text": "目标：清空棋盘",
+          "px": 12
+        },
+        {
+          "text": "已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败",
+          "px": 12
         },
         {
           "text": "开始关卡",
-          "px": 10
+          "px": 12
         },
         {
           "text": "返回模式选择",
-          "px": 10
+          "px": 12
         },
         {
           "text": "← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底",
-          "px": 9
+          "px": 12
         },
         {
           "text": "左移",
-          "px": 9
+          "px": 12
         },
         {
           "text": "右移",
-          "px": 9
+          "px": 12
         },
         {
           "text": "旋转",
-          "px": 9
+          "px": 12
         },
         {
           "text": "快速下落",
-          "px": 9
+          "px": 12
         },
         {
           "text": "直接落底",
-          "px": 9
+          "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": true,
+        "reachable": true,
+        "scrollHeight": 312,
+        "clientHeight": 155
+      }
     },
     "360x800-puzzle-playing-puzzle-long": {
       "viewport": {
@@ -2170,45 +2632,45 @@
       },
       "board": {
         "left": 72,
-        "top": 158,
+        "top": 162,
         "right": 288,
-        "bottom": 590,
+        "bottom": 594,
         "width": 216,
         "height": 432,
         "visible": true
       },
       "context": {
         "left": 50,
-        "top": 56,
+        "top": 60,
         "right": 310,
-        "bottom": 149,
+        "bottom": 153,
         "width": 260,
         "height": 93,
         "visible": true
       },
       "stats": {
         "left": 50,
-        "top": 601,
+        "top": 605,
         "right": 310,
-        "bottom": 687,
+        "bottom": 691,
         "width": 260,
         "height": 86,
         "visible": true
       },
       "controlsBox": {
         "left": 50,
-        "top": 734.59375,
+        "top": 730.59375,
         "right": 310,
-        "bottom": 784.59375,
+        "bottom": 780.59375,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 50,
-        "top": 696,
+        "top": 695,
         "right": 310,
-        "bottom": 729.59375,
+        "bottom": 728.59375,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -2233,12 +2695,34 @@
       },
       "next": {
         "left": 50,
-        "top": 83,
+        "top": 87,
         "right": 310,
-        "bottom": 110,
+        "bottom": 114,
         "width": 260,
         "height": 27,
         "visible": true
+      },
+      "topbar": {
+        "left": 50,
+        "top": 8,
+        "right": 310,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 50,
+        "top": 23.59375,
+        "right": 114.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -2268,10 +2752,12 @@
         "minHeight": 48
       },
       "nextCount": 1,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 关卡 3/3　玄武裂隙 · 困难 固定后续序列 12 块 剩余方块 12 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 关卡 3/6　示例：玄武裂隙 · 困难 固定后续序列 12 块 剩余方块 12 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：玄武裂隙 · 困难固定后续序列12 块剩余方块12目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式",
@@ -2298,7 +2784,7 @@
           "px": 12
         },
         {
-          "text": "3/3　玄武裂隙 · 困难",
+          "text": "3/6　示例：玄武裂隙 · 困难",
           "px": 12
         },
         {
@@ -2349,7 +2835,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-puzzle-complete-puzzle": {
       "viewport": {
@@ -2360,45 +2851,45 @@
       },
       "board": {
         "left": 87,
-        "top": 158,
+        "top": 162,
         "right": 303,
-        "bottom": 590,
+        "bottom": 594,
         "width": 216,
         "height": 432,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 149,
+        "bottom": 153,
         "width": 260,
         "height": 93,
         "visible": true
       },
       "stats": {
         "left": 65,
-        "top": 601,
+        "top": 605,
         "right": 325,
-        "bottom": 687,
+        "bottom": 691,
         "width": 260,
         "height": 86,
         "visible": true
       },
       "controlsBox": {
         "left": 65,
-        "top": 734.59375,
+        "top": 730.59375,
         "right": 325,
-        "bottom": 784.59375,
+        "bottom": 780.59375,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 696,
+        "top": 695,
         "right": 325,
-        "bottom": 729.59375,
+        "bottom": 728.59375,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -2414,21 +2905,43 @@
       },
       "result": {
         "left": 95,
-        "top": 329.390625,
+        "top": 333.390625,
         "right": 291,
-        "bottom": 381.390625,
+        "bottom": 385.390625,
         "width": 196,
         "height": 52,
         "visible": true
       },
       "next": {
         "left": 65,
-        "top": 83,
+        "top": 87,
         "right": 325,
-        "bottom": 110,
+        "bottom": 114,
         "width": 260,
         "height": 27,
         "visible": true
+      },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -2458,10 +2971,12 @@
         "minHeight": 48
       },
       "nextCount": 1,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 解谜完成 棋盘已清空 下一关 关卡 3/3　浅层缺口 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 解谜完成 棋盘已清空 下一关 关卡 3/6　示例：错位通道 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "解谜完成\n棋盘已清空\n下一关",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式",
@@ -2492,7 +3007,7 @@
           "px": 12
         },
         {
-          "text": "3/3　浅层缺口 · 困难",
+          "text": "3/6　示例：错位通道 · 困难",
           "px": 12
         },
         {
@@ -2543,7 +3058,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-puzzle-fail-puzzle": {
       "viewport": {
@@ -2554,45 +3074,45 @@
       },
       "board": {
         "left": 87,
-        "top": 158,
+        "top": 162,
         "right": 303,
-        "bottom": 590,
+        "bottom": 594,
         "width": 216,
         "height": 432,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 149,
+        "bottom": 153,
         "width": 260,
         "height": 93,
         "visible": true
       },
       "stats": {
         "left": 65,
-        "top": 601,
+        "top": 605,
         "right": 325,
-        "bottom": 687,
+        "bottom": 691,
         "width": 260,
         "height": 86,
         "visible": true
       },
       "controlsBox": {
         "left": 65,
-        "top": 734.59375,
+        "top": 730.59375,
         "right": 325,
-        "bottom": 784.59375,
+        "bottom": 780.59375,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 696,
+        "top": 695,
         "right": 325,
-        "bottom": 729.59375,
+        "bottom": 728.59375,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -2608,21 +3128,43 @@
       },
       "result": {
         "left": 95,
-        "top": 329.390625,
+        "top": 333.390625,
         "right": 291,
-        "bottom": 381.390625,
+        "bottom": 385.390625,
         "width": 196,
         "height": 52,
         "visible": true
       },
       "next": {
         "left": 65,
-        "top": 83,
+        "top": 87,
         "right": 325,
-        "bottom": 110,
+        "bottom": 114,
         "width": 260,
         "height": 27,
         "visible": true
+      },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -2652,10 +3194,12 @@
         "minHeight": 48
       },
       "nextCount": 1,
-      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 解谜完成 棋盘已清空 下一关 关卡 3/3　浅层缺口 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 解谜模式 切换模式 下一个方块 暂停 重新开始关卡 返回关卡选择 解谜完成 棋盘已清空 下一关 关卡 3/6　示例：错位通道 · 困难 固定后续序列 6 块 剩余方块 04 目标 清空棋盘 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          开始\n        \n\n        \n          解谜模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          解谜模式目标：清空棋盘　结束：方块用尽\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "解谜完成\n棋盘已清空\n下一关",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "解谜模式",
@@ -2686,7 +3230,7 @@
           "px": 12
         },
         {
-          "text": "3/3　浅层缺口 · 困难",
+          "text": "3/6　示例：错位通道 · 困难",
           "px": 12
         },
         {
@@ -2737,7 +3281,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     },
     "390x844-modes-race": {
       "viewport": {
@@ -2748,18 +3297,18 @@
       },
       "board": {
         "left": 97,
-        "top": 268.984375,
+        "top": 272.984375,
         "right": 293,
-        "bottom": 660.984375,
+        "bottom": 664.984375,
         "width": 196,
         "height": 392,
         "visible": true
       },
       "context": {
         "left": 65,
-        "top": 56,
+        "top": 60,
         "right": 325,
-        "bottom": 259.984375,
+        "bottom": 263.984375,
         "width": 260,
         "height": 203.984375,
         "visible": true
@@ -2775,18 +3324,18 @@
       },
       "controlsBox": {
         "left": 65,
-        "top": 708.578125,
+        "top": 704.578125,
         "right": 325,
-        "bottom": 758.578125,
+        "bottom": 754.578125,
         "width": 260,
         "height": 50,
         "visible": true
       },
       "help": {
         "left": 65,
-        "top": 669.984375,
+        "top": 668.984375,
         "right": 325,
-        "bottom": 703.578125,
+        "bottom": 702.578125,
         "width": 260,
         "height": 33.59375,
         "visible": true
@@ -2817,6 +3366,28 @@
         "width": 0,
         "height": 0,
         "visible": false
+      },
+      "topbar": {
+        "left": 65,
+        "top": 8,
+        "right": 325,
+        "bottom": 56,
+        "width": 260,
+        "height": 48,
+        "visible": true
+      },
+      "title": {
+        "left": 65,
+        "top": 23.59375,
+        "right": 129.53125,
+        "bottom": 52.390625,
+        "width": 64.53125,
+        "height": 28.796875,
+        "visible": true
+      },
+      "topbarOverflow": {
+        "x": "visible",
+        "y": "visible"
       },
       "boardRatio": 2,
       "boardCenterError": 0,
@@ -2846,10 +3417,12 @@
         "minHeight": 48
       },
       "nextCount": 0,
-      "visibleText": "跳到棋盘 Tetris 切换模式 马拉松模式 竞速模式 解谜模式 竞速模式 目标：完成 40 行　结束：完成目标 应用并重新开始 返回本局 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "visibleText": "跳到棋盘 Tetris 切换模式 马拉松模式 竞速模式 解谜模式 竞速模式 目标：完成 20 行　结束：完成目标 应用并重新开始 返回本局 ← 左移 → 右移 ↑ 旋转 ↓ 快速下落 ⇣ 直接落底",
+      "allText": "\n    跳到棋盘\n    \n      \n        Tetris\n      \n\n      \n        \n          选择模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          开始\n        \n\n        \n          竞速模式切换模式\n          下一个方块\n          暂停\n          重新开始关卡返回关卡选择\n        \n\n        \n          切换模式\n          马拉松模式竞速模式解谜模式\n          竞速模式目标：完成 20 行　结束：完成目标\n          应用并重新开始\n          返回本局\n        \n\n        \n          解谜模式 · 选择关卡\n          示例关卡（布局支持 6+）\n          \n            关卡 1/6　岩台起步 · 简单固定后续序列：4 块目标：清空棋盘\n            关卡 2/6　折返练习 · 中等固定后续序列：5 块目标：清空棋盘\n            关卡 3/6　错位通道 · 困难固定后续序列：6 块目标：清空棋盘\n            关卡 4/6　石缝转角 · 困难固定后续序列：7 块目标：清空棋盘\n            关卡 5/6　浅层回廊 · 困难固定后续序列：8 块目标：清空棋盘\n            关卡 6/6　矿脊终局 · 困难固定后续序列：9 块目标：清空棋盘\n          \n          已选：关卡 3/6　示例：错位通道 · 困难固定后续序列 6 块；方块用尽即失败\n          开始关卡\n          返回模式选择\n        \n\n        \n          \n            \n            \n            \n          \n          暂停继续重新开始\n          解谜完成棋盘已清空下一关\n        \n\n        \n          得分42,600消行14等级04\n          用时02:18剩余行08速度档03\n          关卡3/6　示例：错位通道 · 困难固定后续序列6 块剩余方块04目标清空棋盘\n        \n\n        ← → 移动　↑ 旋转　↓ 快速下落　空格/⇣ 直接落底\n        \n          ←左移→右移↑旋转↓快速下落⇣直接落底\n        \n      \n    \n    \n      const params = new URLSearchParams(location.search);\n      const state = params.get('state') || 'ready';\n      const mode = params.get('mode') || 'marathon';\n      const app = document.querySelector('.app');\n      const validStates = ['ready', 'playing', 'paused', 'modes', 'puzzle-select', 'puzzle-playing', 'puzzle-complete', 'puzzle-fail'];\n      const validModes = ['marathon', 'race', 'puzzle'];\n      app.dataset.state = validStates.includes(state) ? state : 'ready';\n      app.dataset.mode = validModes.includes(mode) ? mode : 'marathon';\n      const names = {marathon: '马拉松模式', race: '竞速模式', puzzle: '解谜模式'};\n      document.querySelector('.session-mode').textContent = names[app.dataset.mode];\n      const rules = {\n        marathon: '目标：累积得分　结束：堆叠到顶',\n        race: '目标：完成 20 行　结束：完成目标',\n        puzzle: '目标：清空棋盘　结束：方块用尽',\n      };\n      document.querySelectorAll('.mode-choice').forEach((choice) => {\n        choice.classList.toggle('selected', choice.textContent.trim() === names[app.dataset.mode]);\n      });\n      document.querySelectorAll('.selected-summary').forEach((summary) => {\n        summary.innerHTML = `<b>${names[app.dataset.mode]}</b><span>${rules[app.dataset.mode]}</span>`;\n      });\n      if (params.get('stress') === 'puzzle-long') {\n        document.querySelector('.puzzle-stats div:nth-child(1) dd').textContent = '3/6　示例：玄武裂隙 · 困难';\n        document.querySelector('.puzzle-stats div:nth-child(2) dd').textContent = '12 块';\n        document.querySelector('.puzzle-stats div:nth-child(3) dd').textContent = '12';\n        document.querySelector('.puzzle-stats div:nth-child(4) dd').textContent = '清空棋盘';\n      }\n    \n  \n\n",
       "boardText": "",
       "h1": 1,
       "topbarText": "Tetris",
+      "titleText": "Tetris",
       "essentialFonts": [
         {
           "text": "切换模式",
@@ -2868,7 +3441,7 @@
           "px": 12
         },
         {
-          "text": "竞速模式目标：完成 40 行　结束：完成目标",
+          "text": "竞速模式目标：完成 20 行　结束：完成目标",
           "px": 12
         },
         {
@@ -2903,7 +3476,12 @@
           "text": "直接落底",
           "px": 12
         }
-      ]
+      ],
+      "levelRows": 6,
+      "levelReachability": {
+        "applicable": false,
+        "reachable": true
+      }
     }
   },
   "consoleErrors": [],
@@ -2911,6 +3489,9 @@
     "cases": 16,
     "formalScreenshots": 12,
     "touchSystems": 16,
-    "bannedOldTerms": 7
+    "bannedOldTerms": 8,
+    "topbarBounds": 16,
+    "levelRows": 6,
+    "landscapeEssentialMinPx": 12
   }
 }

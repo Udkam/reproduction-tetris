@@ -40,11 +40,34 @@
   .mode-link,.eyebrow,.mode-row button,.next-preview p,.stats dt,.control-help,.control-rail small,.puzzle-actions button,.level-line span,.level-line small,.selection-note{font-size:12px}
   .mode-choice{min-height:42px;font-size:12px}.selected-summary{font-size:12px}.selected-summary b{font-size:13px}.level-line strong,.mode-row strong{font-size:13px}.stats .puzzle-stats dd{font-size:12px}.pause-band button,.result-band button{font-size:12px}
   .control-help{white-space:normal;line-height:1.4}.portrait-help-break{display:block}.control-rail small{font-size:12px;margin-top:4px}.primary-action,.secondary-action{font-size:13px}.puzzle-actions button{font-size:12px}
-  [data-state="puzzle-select"] .board-stage{--cell:16px}
+  [data-state="puzzle-select"] .board-stage{--cell:15px}
   [data-mode="puzzle"][data-state="puzzle-playing"] .board-stage,[data-mode="puzzle"][data-state="puzzle-complete"] .board-stage,[data-mode="puzzle"][data-state="puzzle-fail"] .board-stage{--cell:21px}
   .control-rail button{min-height:48px}
 }
 
 @media (max-height:560px) and (min-width:600px){
   .primary-action{min-height:32px;font-size:10px}.puzzle-actions button{min-height:24px;font-size:8px}.control-help{font-size:9px}
+}
+
+/* QA-001: reserve a real title inset; keep six representative flat rows reachable. */
+.prototype-note{margin:0 0 4px;color:var(--muted);font-size:12px;line-height:1.35}.level-list{overflow-y:auto;border-top:1px solid var(--line);scrollbar-width:thin;scrollbar-color:var(--reply) transparent}.level-list .level-line{border-top:0}.level-list .level-line:last-child{border-bottom:1px solid var(--line)}
+
+@media (min-width:600px) and (min-height:561px){
+  .app{padding-top:8px;padding-bottom:0}.topbar{height:48px;margin:0 auto 4px;padding-top:12px;overflow:visible}.topbar h1{display:block;font-size:24px;line-height:1.2}
+  .control-help{margin-top:4px;margin-bottom:1px}.puzzle-select-context .level-list{height:188px}.puzzle-select-context .level-line{min-height:52px;padding-top:4px;padding-bottom:4px}
+  [data-state="puzzle-select"] .board-stage{--cell:15px}
+}
+
+@media (max-width:599px){
+  .app{padding:8px 16px 12px}.topbar{height:48px;margin:0 auto 4px;padding-top:12px;overflow:visible}.topbar h1{display:block;font-size:24px;line-height:1.2}
+  .control-help{margin-top:4px;margin-bottom:2px}
+  .puzzle-select-context .level-list{height:168px}.puzzle-select-context .level-line{min-height:50px;padding-top:3px;padding-bottom:3px}
+}
+
+@media (max-height:560px) and (min-width:600px){
+  .app{padding:4px 16px 0}.topbar{height:40px;margin:0 auto;padding-top:8px;overflow:visible}.topbar h1{display:block;font-size:22px;line-height:1.2}
+  .game-shell{height:346px}.context,.puzzle-select-context{width:220px}.session-context{min-height:108px}.eyebrow,.mode-row strong,.mode-row button,.pause-key,.next-preview p,.stats dt,.control-help,.control-rail small,.puzzle-actions button,.level-line strong,.level-line span,.level-line small,.selection-note,.prototype-note,.primary-action,.secondary-action,.pause-band button,.result-band button{font-size:12px}
+  .mode-row{padding-bottom:5px}.mode-row button{margin-top:2px}.next-preview{gap:8px}.pause-key{top:74px;width:78px;min-height:28px}.session-context .mode-row{padding-right:0}
+  .puzzle-select-context .level-list{height:156px}.puzzle-select-context .level-line{min-height:52px;padding:3px 0 3px 9px}.selection-note{margin-top:4px;padding:4px 0;line-height:1.28}.primary-action,.secondary-action{min-height:30px;margin-top:4px}.secondary-action{margin-top:3px}
+  .stats{width:300px}.stats dl>div{padding:4px 6px}.stats dd,.stats .puzzle-stats dd{font-size:12px}.control-help{right:0;bottom:52px;width:300px;white-space:normal;line-height:1.3}.control-rail{right:0;bottom:0;width:300px}.control-rail button{min-height:48px}.control-rail b{font-size:16px}.control-rail small{margin-top:3px;white-space:nowrap}
 }
