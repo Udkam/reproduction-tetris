@@ -33,11 +33,17 @@ Owner: the Tetris gameplay/rules implementation task.
 - `src/game/core/rules.test.ts`
 - optional new `src/game/core/puzzleCampaign.ts`
 - optional new `src/game/core/puzzleCampaign.test.ts`
+- `src/game/runtime/qaScenario.ts`
+- `src/game/runtime/qaScenario.test.ts`
 - `docs/workstreams/tetris-t3-core/THREAD_LOG.md`
 
+The two runtime QA-scenario paths are the sole consumer-migration exception: they may
+replace the hard-coded legacy `offset-02` fixture with an accepted T3R level ID and
+update its deterministic expectations, but may not change runtime architecture.
+
 No other path is writable in C1. In particular, C1 may not edit React, CSS, Pixi,
-runtime, input, audio, persistence, QA scenarios, package/config, root documents,
-Temple files, or `docs/logs/CHANGELOG.md`.
+GameRuntime, input, audio, persistence, package/config, root documents, Temple files,
+or `docs/logs/CHANGELOG.md`.
 
 ### Required behavior
 
