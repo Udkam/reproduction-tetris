@@ -109,18 +109,7 @@ describe('lockdown and rotation invariants', () => {
   });
 });
 
-describe('hold, restart, and serializable invariants', () => {
-  it('restores hold only after the current piece locks and entry delay completes', () => {
-    let state = start(772);
-    state = dispatch(state, { type: 'hold' }).state;
-    expect(state.canHold).toBe(false);
-    state = dispatch(state, { type: 'hard-drop' }).state;
-    expect(state.canHold).toBe(false);
-    state = ticks(state, ENTRY_DELAY_TICKS);
-    expect(state.canHold).toBe(true);
-    expect(state.active).not.toBeNull();
-  });
-
+describe('restart and serializable invariants', () => {
   it('restarts the exact same seed with the exact same initial hash', () => {
     const initial = createInitialState(541);
     let changed = dispatch(initial, { type: 'start' }).state;
@@ -137,7 +126,6 @@ describe('hold, restart, and serializable invariants', () => {
       { type: 'hard-drop' },
       { type: 'rotate', direction: -1 },
       { type: 'rotate', direction: 1 },
-      { type: 'hold' },
       { type: 'tick' },
     ];
     let random = 0x1234abcd;

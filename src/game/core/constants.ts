@@ -26,6 +26,7 @@ export const GRAVITY_TICKS = [
  * row, preserving one deterministic input/render tick between falls.
  */
 export const RACE_PIECES_PER_SPEED_STEP = 5;
+export const RACE_TARGET_LINES = 20;
 export const RACE_GRAVITY_TICKS = [
   42, 36, 30, 25, 21, 18, 15, 13, 11, 9, 8, 7, 6, 5, 4, 3, 2,
 ] as const;
@@ -46,7 +47,9 @@ export function gravityForRace(pieceCount: number): number {
 }
 
 export function gravityForMode(mode: GameMode, level: number, pieceCount: number): number {
-  return mode === 'race' ? gravityForRace(pieceCount) : gravityForLevel(level);
+  if (mode === 'race') return gravityForRace(pieceCount);
+  if (mode === 'puzzle') return Number.MAX_SAFE_INTEGER;
+  return gravityForLevel(level);
 }
 
 export const LINE_CLEAR_BASE_SCORE = [0, 40, 100, 300, 1200] as const;

@@ -23,20 +23,22 @@ export interface RandomizerState {
   bag: PieceType[];
 }
 
-export type GameStatus = 'ready' | 'playing' | 'paused' | 'game-over';
+export type GameStatus = 'ready' | 'playing' | 'paused' | 'game-over' | 'finished';
 export type GamePhase = 'active' | 'entry' | 'line-clear';
-export type GameMode = 'marathon' | 'race';
+export type GameMode = 'marathon' | 'race' | 'puzzle';
+export type PuzzleId = 'offset-01' | 'offset-02' | 'offset-03';
 
 export interface GameState {
   board: Board;
   active: ActivePiece | null;
   queue: PieceType[];
-  hold: PieceType | null;
-  canHold: boolean;
   score: number;
   lines: number;
   level: number;
   mode: GameMode;
+  puzzleId: PuzzleId | null;
+  puzzleTargetLines: number | null;
+  puzzlePieceBudget: number | null;
   pieceCount: number;
   status: GameStatus;
   phase: GamePhase;
@@ -57,10 +59,9 @@ export type GameCommand =
   | { type: 'soft-drop' }
   | { type: 'hard-drop' }
   | { type: 'rotate'; direction: -1 | 1 }
-  | { type: 'hold' }
   | { type: 'pause' }
   | { type: 'resume' }
-  | { type: 'restart'; seed?: number; mode?: GameMode };
+  | { type: 'restart'; seed?: number; mode?: GameMode; puzzleId?: PuzzleId };
 
 export type GameEvent =
   | { type: 'started' }
@@ -69,13 +70,13 @@ export type GameEvent =
   | { type: 'resumed' }
   | { type: 'piece-moved'; piece: PieceType; dx: number; dy: number; cause: 'move' | 'gravity' | 'soft-drop' }
   | { type: 'piece-rotated'; piece: PieceType; direction: -1 | 1 }
-  | { type: 'piece-held'; held: PieceType; activated: PieceType }
   | { type: 'hard-dropped'; piece: PieceType; distance: number }
   | { type: 'piece-locked'; piece: PieceType; cells: Cell[] }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }
   | { type: 'level-up'; level: number }
-  | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'invalid-state' };
+  | { type: 'finished'; completionTicks: number }
+  | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'puzzle-budget' | 'invalid-state' };
 
 export interface GameTransition {
   state: GameState;

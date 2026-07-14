@@ -62,4 +62,15 @@ describe('InputController', () => {
     expect(suspensions).toBe(1);
     input.destroy();
   });
+
+  it('maps ArrowUp to the visible clockwise rotation action', () => {
+    const actions: InputAction[] = [];
+    const target = new EventTarget() as Window;
+    const input = new InputController((action) => actions.push(action), target);
+    const event = new Event('keydown') as KeyboardEvent;
+    Object.defineProperty(event, 'code', { value: 'ArrowUp' });
+    target.dispatchEvent(event);
+    expect(actions).toEqual(['rotate-cw']);
+    input.destroy();
+  });
 });

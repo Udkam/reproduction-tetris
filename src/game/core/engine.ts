@@ -6,16 +6,19 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
+  RACE_TARGET_LINES,
   VISIBLE_START_ROW,
   gravityForMode,
 } from './constants';
 import { canPlace, clearRows, createBoard, fullRows, isGrounded, mergePiece } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
+import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
-import type { ActivePiece, GameCommand, GameEvent, GameMode, GameState, GameTransition, PieceType } from './types';
+import type { ActivePiece, GameCommand, GameEvent, GameMode, GameState, GameTransition, PieceType, PuzzleId } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
+  if (state.mode === 'puzzle') return state;
   const queue = [...state.queue];
   let randomizer = state.randomizer;
   while (queue.length < minimum) {
@@ -54,17 +57,19 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   };
 }
 
-export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon'): GameState {
+export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon', puzzleId?: PuzzleId): GameState {
+  const selectedPuzzle = mode === 'puzzle' ? getPuzzleDefinition(puzzleId ?? defaultPuzzleId()) : null;
   const base: GameState = {
-    board: createBoard(),
+    board: selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard(),
     active: null,
-    queue: [],
-    hold: null,
-    canHold: true,
+    queue: selectedPuzzle ? [...selectedPuzzle.queue] : [],
     score: 0,
     lines: 0,
     level: 0,
     mode,
+    puzzleId: selectedPuzzle?.id ?? null,
+    puzzleTargetLines: selectedPuzzle?.targetLines ?? null,
+    puzzlePieceBudget: selectedPuzzle?.pieceBudget ?? null,
     pieceCount: 0,
     status: 'ready',
     phase: 'active',
@@ -131,19 +136,28 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
   }
 
   if (rows.length > 0) {
+    const clearing: GameState = {
+      ...state,
+      board,
+      pieceCount,
+      active: null,
+      phase: 'line-clear',
+      phaseTicks: 0,
+      pendingClearRows: rows,
+      gravityTicks: 0,
+      lockTicks: 0,
+    };
+    if (state.mode === 'puzzle') {
+      const resolved = finishLineClear(clearing);
+      return { state: resolved.state, events: [...extraEvents, lockedEvent, { type: 'clear-started', rows }, ...resolved.events] };
+    }
+    return { state: clearing, events: [...extraEvents, lockedEvent, { type: 'clear-started', rows }] };
+  }
+
+  if (state.mode === 'puzzle' && pieceCount >= (state.puzzlePieceBudget ?? 0)) {
     return {
-      state: {
-        ...state,
-        board,
-        pieceCount,
-        active: null,
-        phase: 'line-clear',
-        phaseTicks: 0,
-        pendingClearRows: rows,
-        gravityTicks: 0,
-        lockTicks: 0,
-      },
-      events: [...extraEvents, lockedEvent, { type: 'clear-started', rows }],
+      state: { ...state, board, active: null, pieceCount, phase: 'active', status: 'game-over' },
+      events: [...extraEvents, lockedEvent, { type: 'game-over', reason: 'puzzle-budget' }],
     };
   }
 
@@ -201,21 +215,6 @@ function rotate(state: GameState, direction: -1 | 1): GameTransition {
   return { state, events: [] };
 }
 
-function hold(state: GameState): GameTransition {
-  if (!withActive(state) || !state.canHold) return { state, events: [] };
-  const held = state.active.type;
-  const activated = state.hold ?? state.queue[0];
-  if (!activated) return invalidState(state);
-  const base = state.hold
-    ? { ...state, active: null, hold: held, canHold: false }
-    : { ...state, active: null, hold: held, queue: state.queue.slice(1), canHold: false };
-  const spawned = spawnPiece(base, activated);
-  return {
-    state: { ...spawned.state, canHold: false },
-    events: [{ type: 'piece-held', held, activated }, ...spawned.events],
-  };
-}
-
 function finishLineClear(state: GameState): GameTransition {
   const rows = [...state.pendingClearRows];
   const count = rows.length;
@@ -230,11 +229,57 @@ function finishLineClear(state: GameState): GameTransition {
     level,
     pendingClearRows: [],
     phaseTicks: 0,
-    canHold: true,
   };
-  const spawned = spawnPiece(cleared);
   const events: GameEvent[] = [{ type: 'lines-cleared', rows, count, score: clearScore }];
   if (level > state.level) events.push({ type: 'level-up', level });
+  if (cleared.mode === 'race' && lines >= RACE_TARGET_LINES) {
+    return {
+      state: {
+        ...cleared,
+        active: null,
+        phase: 'active',
+        status: 'finished',
+        gravityTicks: 0,
+        lockTicks: 0,
+        lockResets: 0,
+      },
+      events: [...events, { type: 'finished', completionTicks: cleared.elapsedTicks }],
+    };
+  }
+  if (cleared.mode === 'puzzle') {
+    const target = cleared.puzzleTargetLines;
+    const budget = cleared.puzzlePieceBudget;
+    if (!target || !budget) return invalidState(cleared);
+    if (lines >= target) {
+      return {
+        state: {
+          ...cleared,
+          active: null,
+          phase: 'active',
+          status: 'finished',
+          gravityTicks: 0,
+          lockTicks: 0,
+          lockResets: 0,
+        },
+        events: [...events, { type: 'finished', completionTicks: cleared.elapsedTicks }],
+      };
+    }
+    if (cleared.pieceCount >= budget) {
+      return {
+        state: {
+          ...cleared,
+          active: null,
+          phase: 'active',
+          status: 'game-over',
+          gravityTicks: 0,
+          lockTicks: 0,
+          lockResets: 0,
+        },
+        events: [...events, { type: 'game-over', reason: 'puzzle-budget' }],
+      };
+    }
+  }
+  const spawned = spawnPiece(cleared);
   return { state: spawned.state, events: [...events, ...spawned.events] };
 }
 
@@ -245,7 +290,7 @@ function tick(state: GameState): GameTransition {
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
     if (phaseTicks >= ENTRY_DELAY_TICKS) {
-      const spawned = spawnPiece({ ...next, phaseTicks: 0, canHold: true });
+      const spawned = spawnPiece({ ...next, phaseTicks: 0 });
       return spawned;
     }
     return { state: { ...next, phaseTicks }, events: [] };
@@ -258,6 +303,10 @@ function tick(state: GameState): GameTransition {
   }
 
   if (!withActive(next)) return invalidState(next);
+
+  // Puzzle gravity is intentionally disabled. Fixed ticks still advance elapsed
+  // deterministic time, but only a public hard-drop command may lock a piece.
+  if (next.mode === 'puzzle') return { state: next, events: [] };
 
   if (isGrounded(next.board, next.active)) {
     next = { ...next, lockTicks: next.lockTicks + 1 };
@@ -277,7 +326,7 @@ function tick(state: GameState): GameTransition {
 export function dispatch(state: GameState, command: GameCommand): GameTransition {
   if (command.type === 'restart') {
     return {
-      state: createInitialState(command.seed ?? state.seed, command.mode ?? state.mode),
+      state: createInitialState(command.seed ?? state.seed, command.mode ?? state.mode, command.puzzleId ?? state.puzzleId ?? undefined),
       events: [{ type: 'restarted' }],
     };
   }
@@ -302,8 +351,6 @@ export function dispatch(state: GameState, command: GameCommand): GameTransition
       return hardDrop(state);
     case 'rotate':
       return rotate(state, command.direction);
-    case 'hold':
-      return hold(state);
     default:
       return { state, events: [] };
   }
@@ -316,8 +363,8 @@ export function dropDistance(state: GameState): number {
   return distance;
 }
 
-export function replay(seed: number, commands: readonly GameCommand[], mode: GameMode = 'marathon'): GameState {
-  return commands.reduce((state, command) => dispatch(state, command).state, createInitialState(seed, mode));
+export function replay(seed: number, commands: readonly GameCommand[], mode: GameMode = 'marathon', puzzleId?: PuzzleId): GameState {
+  return commands.reduce((state, command) => dispatch(state, command).state, createInitialState(seed, mode, puzzleId));
 }
 
 export function stateHash(state: GameState): string {

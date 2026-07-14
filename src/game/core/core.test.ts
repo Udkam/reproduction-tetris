@@ -108,17 +108,15 @@ describe('movement, rotation, drop, and lock', () => {
   });
 });
 
-describe('hold, clear, score, and game state', () => {
-  it('allows hold once per piece and preserves five previews', () => {
+describe('clear, score, and game state', () => {
+  it('keeps a deterministic active piece and next queue through entry', () => {
     const state = playing(83);
-    const first = state.active!.type;
-    const next = state.queue[0];
-    const held = dispatch(state, { type: 'hold' }).state;
-    expect(held.hold).toBe(first);
-    expect(held.active?.type).toBe(next);
-    expect(held.canHold).toBe(false);
-    expect(held.queue).toHaveLength(5);
-    expect(dispatch(held, { type: 'hold' }).state).toEqual(held);
+    expect(state.active).not.toBeNull();
+    expect(state.queue).toHaveLength(5);
+    const locked = dispatch(state, { type: 'hard-drop' }).state;
+    const spawned = advance(locked, 3);
+    expect(spawned.active).not.toBeNull();
+    expect(spawned.queue).toHaveLength(5);
   });
 
   it('clears a completed line atomically and awards classic line score', () => {
@@ -150,20 +148,6 @@ describe('hold, clear, score, and game state', () => {
     expect(dispatch(afterTicks, { type: 'resume' }).state.status).toBe('playing');
   });
 
-  it('fails closed when a held piece cannot spawn', () => {
-    let board = createBoard();
-    for (const cell of cellsForPiece(createSpawnPiece('I'))) board = setCell(board, cell.x, cell.y, 'Z');
-    const state: GameState = {
-      ...playing(),
-      board,
-      active: { type: 'O', rotation: 0, x: 4, y: 30 },
-      hold: 'I',
-      canHold: true,
-    };
-    const transition = dispatch(state, { type: 'hold' });
-    expect(transition.state.status).toBe('game-over');
-    expect(transition.events.some((event) => event.type === 'game-over' && event.reason === 'block-out')).toBe(true);
-  });
 });
 
 describe('replay', () => {
@@ -176,7 +160,7 @@ describe('replay', () => {
       { type: 'soft-drop' },
       { type: 'hard-drop' },
       ...Array.from({ length: 6 }, () => ({ type: 'tick' } as const)),
-      { type: 'hold' },
+      { type: 'rotate', direction: -1 },
     ];
     expect(stateHash(replay(4455, commands))).toBe(stateHash(replay(4455, commands)));
     expect(stateHash(replay(4455, commands))).not.toBe(stateHash(replay(4456, commands)));

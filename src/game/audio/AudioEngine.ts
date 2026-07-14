@@ -52,9 +52,6 @@ export class AudioEngine {
       } else if (event.type === 'piece-rotated') {
         this.tone({ frequency: 310, endFrequency: 465, duration: 0.045, gain: 0.09, type: 'square' });
         this.tone({ frequency: 620, duration: 0.028, gain: 0.04, delay: 0.018, type: 'sine' });
-      } else if (event.type === 'piece-held') {
-        this.tone({ frequency: 420, endFrequency: 230, duration: 0.09, gain: 0.08, type: 'sine' });
-        this.tone({ frequency: 240, endFrequency: 520, duration: 0.1, gain: 0.06, delay: 0.035, type: 'triangle' });
       } else if (event.type === 'hard-dropped') {
         this.tone({ frequency: 92, endFrequency: 46, duration: 0.11, gain: 0.2, type: 'triangle' });
       } else if (event.type === 'piece-locked') {
@@ -63,6 +60,8 @@ export class AudioEngine {
         this.clearChord(event.count);
       } else if (event.type === 'level-up') {
         [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.11, gain: 0.055, delay: index * 0.055, type: 'sine' }));
+      } else if (event.type === 'finished') {
+        [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.16, gain: 0.06, delay: index * 0.06, type: 'sine' }));
       } else if (event.type === 'game-over') {
         this.tone({ frequency: 180, endFrequency: 48, duration: 0.62, gain: 0.13, type: 'sawtooth' });
       }

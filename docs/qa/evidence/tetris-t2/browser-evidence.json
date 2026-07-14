@@ -1,0 +1,6125 @@
+{
+  "sourceHead": "0a28a1f4efad72296e46b0a91d859c45cc300edf",
+  "browser": "Playwright Chromium (real Vite runtime)",
+  "method": "All UI and replay states are reached through user events or existing public runtime QA command/replay surfaces; no canonical board is fabricated.",
+  "captures": [
+    {
+      "name": "desktop-ready",
+      "state": "ready",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 57.609375,
+            "height": 15,
+            "right": 643.9375,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": null,
+          "stats": null,
+          "pauseStrip": null,
+          "modeList": {
+            "left": 423,
+            "top": 149,
+            "width": 208,
+            "height": 211,
+            "right": 631,
+            "bottom": 360
+          },
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "ready",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 0,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-ready.png",
+      "sha256": "72ef48265914bd30f3aab8061bec3f5259074c09c70ef1eb39289a510f841301"
+    },
+    {
+      "name": "desktop-playing",
+      "state": "playing",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 57.609375,
+            "height": 15,
+            "right": 643.9375,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": {
+            "left": 423,
+            "top": 187,
+            "width": 208,
+            "height": 86,
+            "right": 631,
+            "bottom": 273
+          },
+          "stats": {
+            "left": 423,
+            "top": 353,
+            "width": 208,
+            "height": 73,
+            "right": 631,
+            "bottom": 426
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "O",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 27,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-playing.png",
+      "sha256": "4b71d9131cf684ad856b284cb92adef6af4a6054e44f66c83d93d96b63e88c37"
+    },
+    {
+      "name": "desktop-paused",
+      "state": "paused",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 57.609375,
+            "height": 15,
+            "right": 643.9375,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": {
+            "left": 423,
+            "top": 187,
+            "width": 208,
+            "height": 86,
+            "right": 631,
+            "bottom": 273
+          },
+          "stats": {
+            "left": 423,
+            "top": 353,
+            "width": 208,
+            "height": 73,
+            "right": 631,
+            "bottom": 426
+          },
+          "pauseStrip": {
+            "left": 681.5625,
+            "top": 411.859375,
+            "width": 301.859375,
+            "height": 62,
+            "right": 983.421875,
+            "bottom": 473.859375
+          },
+          "modeList": null,
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0.07595425869108205,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "暂停继续重新开始",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "O",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702
+          },
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "paused",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 46,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-paused.png",
+      "sha256": "e4b968696b90049507de31d9dda8e95e274b9f853f13d39d6706bf92a8f0a3b2"
+    },
+    {
+      "name": "desktop-mode-switch",
+      "state": "mode-switch",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 57.609375,
+            "height": 15,
+            "right": 643.9375,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": null,
+          "stats": null,
+          "pauseStrip": null,
+          "modeList": {
+            "left": 423,
+            "top": 149,
+            "width": 208,
+            "height": 211,
+            "right": 631,
+            "bottom": 360
+          },
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          },
+          "previewCanvasResidue": false,
+          "previewClearRegion": {
+            "left": 423,
+            "top": 187,
+            "right": 631,
+            "bottom": 273,
+            "piece": "O"
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "previewClearBounds": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewClearPiece": "O",
+          "scrim": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702
+          },
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "paused",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 46,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-mode-switch.png",
+      "sha256": "06bc2fc5e27263a4deb35ccf40caf9f5927dfa965bf3c10e224b63d3f22e124d"
+    },
+    {
+      "name": "portrait-ready",
+      "state": "ready",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 75,
+            "top": 13,
+            "width": 240,
+            "height": 58,
+            "right": 315,
+            "bottom": 71
+          },
+          "brand": {
+            "left": 75,
+            "top": 13,
+            "width": 79.875,
+            "height": 30.265625,
+            "right": 154.875,
+            "bottom": 43.265625
+          },
+          "currentMode": {
+            "left": 160.875,
+            "top": 16,
+            "width": 47.15625,
+            "height": 12,
+            "right": 208.03125,
+            "bottom": 28
+          },
+          "rotationHint": {
+            "left": 292.171875,
+            "top": 21,
+            "width": 22.828125,
+            "height": 10,
+            "right": 315,
+            "bottom": 31
+          },
+          "canvasHost": {
+            "left": 75,
+            "top": 71,
+            "width": 240,
+            "height": 736,
+            "right": 315,
+            "bottom": 807
+          },
+          "board": {
+            "left": 75,
+            "top": 247,
+            "width": 240,
+            "height": 480,
+            "right": 315,
+            "bottom": 727
+          },
+          "next": null,
+          "stats": null,
+          "pauseStrip": null,
+          "modeList": {
+            "left": 75,
+            "top": 71,
+            "width": 240,
+            "height": 73,
+            "right": 315,
+            "bottom": 144
+          },
+          "touchRail": {
+            "left": 75,
+            "top": 747,
+            "width": 240,
+            "height": 60,
+            "right": 315,
+            "bottom": 807
+          },
+          "touchZones": [
+            {
+              "left": 75,
+              "top": 748,
+              "width": 48,
+              "height": 58,
+              "right": 123,
+              "bottom": 806
+            },
+            {
+              "left": 123,
+              "top": 748,
+              "width": 48,
+              "height": 58,
+              "right": 171,
+              "bottom": 806
+            },
+            {
+              "left": 171,
+              "top": 748,
+              "width": 48,
+              "height": 58,
+              "right": 219,
+              "bottom": 806
+            },
+            {
+              "left": 219,
+              "top": 748,
+              "width": 48,
+              "height": 58,
+              "right": 267,
+              "bottom": 806
+            },
+            {
+              "left": 267,
+              "top": 748,
+              "width": 48,
+              "height": 58,
+              "right": 315,
+              "bottom": 806
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 58,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 480,
+            "height": 1472
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 240,
+            "height": 736,
+            "resolution": 2
+          },
+          "board": {
+            "x": 0,
+            "y": 176,
+            "width": 240,
+            "height": 480,
+            "cell": 24
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "ready",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 0,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/portrait-ready.png",
+      "sha256": "cbb5ffc6fd1ff618a8833965cf408e5f4a2b13864311f537605ad6c3c90be30a"
+    },
+    {
+      "name": "portrait-playing",
+      "state": "playing",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 75,
+            "top": 13,
+            "width": 240,
+            "height": 58,
+            "right": 315,
+            "bottom": 71
+          },
+          "brand": {
+            "left": 75,
+            "top": 13,
+            "width": 79.875,
+            "height": 30.265625,
+            "right": 154.875,
+            "bottom": 43.265625
+          },
+          "currentMode": {
+            "left": 160.875,
+            "top": 16,
+            "width": 47.15625,
+            "height": 12,
+            "right": 208.03125,
+            "bottom": 28
+          },
+          "rotationHint": {
+            "left": 292.171875,
+            "top": 21,
+            "width": 22.828125,
+            "height": 10,
+            "right": 315,
+            "bottom": 31
+          },
+          "canvasHost": {
+            "left": 75,
+            "top": 71,
+            "width": 240,
+            "height": 721,
+            "right": 315,
+            "bottom": 792
+          },
+          "board": {
+            "left": 75,
+            "top": 168,
+            "width": 240,
+            "height": 480,
+            "right": 315,
+            "bottom": 648
+          },
+          "next": {
+            "left": 75,
+            "top": 100,
+            "width": 240,
+            "height": 58,
+            "right": 315,
+            "bottom": 158
+          },
+          "stats": {
+            "left": 75,
+            "top": 658,
+            "width": 240,
+            "height": 64,
+            "right": 315,
+            "bottom": 722
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": {
+            "left": 75,
+            "top": 732,
+            "width": 240,
+            "height": 60,
+            "right": 315,
+            "bottom": 792
+          },
+          "touchZones": [
+            {
+              "left": 75,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 123,
+              "bottom": 791
+            },
+            {
+              "left": 123,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 171,
+              "bottom": 791
+            },
+            {
+              "left": 171,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 219,
+              "bottom": 791
+            },
+            {
+              "left": 219,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 267,
+              "bottom": 791
+            },
+            {
+              "left": 267,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 315,
+              "bottom": 791
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 58,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 480,
+            "height": 1472
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 240,
+            "height": 736,
+            "resolution": 2
+          },
+          "board": {
+            "x": 0,
+            "y": 97,
+            "width": 240,
+            "height": 480,
+            "cell": 24
+          },
+          "preview": {
+            "x": 0,
+            "y": 29,
+            "width": 240,
+            "height": 58
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "O",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 29,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/portrait-playing.png",
+      "sha256": "7d78443cb29697433cbe4b02474620ce03e3bcfd3edeb1da2c0414cfc99a7312"
+    },
+    {
+      "name": "portrait-paused",
+      "state": "paused",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 75,
+            "top": 13,
+            "width": 240,
+            "height": 58,
+            "right": 315,
+            "bottom": 71
+          },
+          "brand": {
+            "left": 75,
+            "top": 13,
+            "width": 79.875,
+            "height": 30.265625,
+            "right": 154.875,
+            "bottom": 43.265625
+          },
+          "currentMode": {
+            "left": 160.875,
+            "top": 16,
+            "width": 47.15625,
+            "height": 12,
+            "right": 208.03125,
+            "bottom": 28
+          },
+          "rotationHint": {
+            "left": 292.171875,
+            "top": 21,
+            "width": 22.828125,
+            "height": 10,
+            "right": 315,
+            "bottom": 31
+          },
+          "canvasHost": {
+            "left": 75,
+            "top": 71,
+            "width": 240,
+            "height": 721,
+            "right": 315,
+            "bottom": 792
+          },
+          "board": {
+            "left": 75,
+            "top": 168,
+            "width": 240,
+            "height": 480,
+            "right": 315,
+            "bottom": 648
+          },
+          "next": {
+            "left": 75,
+            "top": 100,
+            "width": 240,
+            "height": 58,
+            "right": 315,
+            "bottom": 158
+          },
+          "stats": {
+            "left": 75,
+            "top": 658,
+            "width": 240,
+            "height": 64,
+            "right": 315,
+            "bottom": 722
+          },
+          "pauseStrip": {
+            "left": 84.59375,
+            "top": 374.390625,
+            "width": 220.796875,
+            "height": 56,
+            "right": 305.390625,
+            "bottom": 430.390625
+          },
+          "modeList": null,
+          "touchRail": {
+            "left": 75,
+            "top": 732,
+            "width": 240,
+            "height": 60,
+            "right": 315,
+            "bottom": 792
+          },
+          "touchZones": [
+            {
+              "left": 75,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 123,
+              "bottom": 791
+            },
+            {
+              "left": 123,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 171,
+              "bottom": 791
+            },
+            {
+              "left": 171,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 219,
+              "bottom": 791
+            },
+            {
+              "left": 219,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 267,
+              "bottom": 791
+            },
+            {
+              "left": 267,
+              "top": 733,
+              "width": 48,
+              "height": 58,
+              "right": 315,
+              "bottom": 791
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0.10733181423611111,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 58,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "暂停继续重新开始",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 480,
+            "height": 1472
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 240,
+            "height": 736,
+            "resolution": 2
+          },
+          "board": {
+            "x": 0,
+            "y": 97,
+            "width": 240,
+            "height": 480,
+            "cell": 24
+          },
+          "preview": {
+            "x": 0,
+            "y": 29,
+            "width": 240,
+            "height": 58
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "O",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": {
+            "x": 0,
+            "y": 97,
+            "width": 240,
+            "height": 480
+          },
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 3,
+              "y": 21
+            },
+            {
+              "x": 4,
+              "y": 21
+            },
+            {
+              "x": 5,
+              "y": 21
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 20,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "paused",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 64,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 20
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/portrait-paused.png",
+      "sha256": "eac99eff5575405fb2a53b40a35fd41f273a4ce13176468ef22838f50283f63d"
+    },
+    {
+      "name": "portrait-mode-switch",
+      "state": "mode-switch",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 75,
+            "top": 13,
+            "width": 240,
+            "height": 58,
+            "right": 315,
+            "bottom": 71
+          },
+          "brand": {
+            "left": 75,
+            "top": 13,
+            "width": 79.875,
+            "height": 30.265625,
+            "right": 154.875,
+            "bottom": 43.265625
+          },
+          "currentMode": {
+            "left": 160.875,
+            "top": 16,
+            "width": 47.15625,
+            "height": 12,
+            "right": 208.03125,
+            "bottom": 28
+          },
+          "rotationHint": {
+            "left": 292.171875,
+            "top": 21,
+            "width": 22.828125,
+            "height": 10,
+            "right": 315,
+            "bottom": 31
+          },
+          "canvasHost": {
+            "left": 75,
+            "top": 71,
+            "width": 240,
+            "height": 739,
+            "right": 315,
+            "bottom": 810
+          },
+          "board": {
+            "left": 75,
+            "top": 250,
+            "width": 240,
+            "height": 480,
+            "right": 315,
+            "bottom": 730
+          },
+          "next": null,
+          "stats": null,
+          "pauseStrip": null,
+          "modeList": {
+            "left": 75,
+            "top": 71,
+            "width": 240,
+            "height": 73,
+            "right": 315,
+            "bottom": 144
+          },
+          "touchRail": {
+            "left": 75,
+            "top": 750,
+            "width": 240,
+            "height": 60,
+            "right": 315,
+            "bottom": 810
+          },
+          "touchZones": [
+            {
+              "left": 75,
+              "top": 751,
+              "width": 48,
+              "height": 58,
+              "right": 123,
+              "bottom": 809
+            },
+            {
+              "left": 123,
+              "top": 751,
+              "width": 48,
+              "height": 58,
+              "right": 171,
+              "bottom": 809
+            },
+            {
+              "left": 171,
+              "top": 751,
+              "width": 48,
+              "height": 58,
+              "right": 219,
+              "bottom": 809
+            },
+            {
+              "left": 219,
+              "top": 751,
+              "width": 48,
+              "height": 58,
+              "right": 267,
+              "bottom": 809
+            },
+            {
+              "left": 267,
+              "top": 751,
+              "width": 48,
+              "height": 58,
+              "right": 315,
+              "bottom": 809
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 58,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 480,
+            "height": 1472
+          },
+          "previewCanvasResidue": false,
+          "previewClearRegion": {
+            "left": 225,
+            "top": 300,
+            "right": 945,
+            "bottom": 474,
+            "piece": "O"
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 240,
+            "height": 736,
+            "resolution": 2
+          },
+          "board": {
+            "x": 0,
+            "y": 179,
+            "width": 240,
+            "height": 480,
+            "cell": 24
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "previewClearBounds": {
+            "x": 0,
+            "y": 29,
+            "width": 240,
+            "height": 58
+          },
+          "previewClearPiece": "O",
+          "scrim": {
+            "x": 0,
+            "y": 179,
+            "width": 240,
+            "height": 480
+          },
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 3,
+              "y": 21
+            },
+            {
+              "x": 4,
+              "y": 21
+            },
+            {
+              "x": 5,
+              "y": 21
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 20,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "paused",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 64,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 20
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/portrait-mode-switch.png",
+      "sha256": "e865bc2713b0a096097a39c670d5686c98fd72ba57affe0d34046f93319f136b"
+    },
+    {
+      "name": "landscape-ready",
+      "state": "ready",
+      "viewport": {
+        "width": 844,
+        "height": 390,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 37,
+            "top": 6,
+            "width": 557,
+            "height": 38,
+            "right": 594,
+            "bottom": 44
+          },
+          "brand": {
+            "left": 37,
+            "top": 6,
+            "width": 68.734375,
+            "height": 26.03125,
+            "right": 105.734375,
+            "bottom": 32.03125
+          },
+          "currentMode": {
+            "left": 116.734375,
+            "top": 8,
+            "width": 44.8125,
+            "height": 11,
+            "right": 161.546875,
+            "bottom": 19
+          },
+          "rotationHint": {
+            "left": 572.515625,
+            "top": 10,
+            "width": 21.484375,
+            "height": 10,
+            "right": 594,
+            "bottom": 20
+          },
+          "canvasHost": {
+            "left": 37,
+            "top": 44,
+            "width": 557,
+            "height": 286,
+            "right": 594,
+            "bottom": 330
+          },
+          "board": {
+            "left": 231,
+            "top": 44,
+            "width": 143,
+            "height": 286,
+            "right": 374,
+            "bottom": 330
+          },
+          "next": null,
+          "stats": null,
+          "pauseStrip": null,
+          "modeList": {
+            "left": 37,
+            "top": 60,
+            "width": 180,
+            "height": 152.65625,
+            "right": 217,
+            "bottom": 212.65625
+          },
+          "touchRail": {
+            "left": 374,
+            "top": 282,
+            "width": 220,
+            "height": 48,
+            "right": 594,
+            "bottom": 330
+          },
+          "touchZones": [
+            {
+              "left": 374,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 418,
+              "bottom": 329
+            },
+            {
+              "left": 418,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 462,
+              "bottom": 329
+            },
+            {
+              "left": 462,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 506,
+              "bottom": 329
+            },
+            {
+              "left": 506,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 550,
+              "bottom": 329
+            },
+            {
+              "left": 550,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 594,
+              "bottom": 329
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 46,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 1114,
+            "height": 572
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 557,
+            "height": 286,
+            "resolution": 2
+          },
+          "board": {
+            "x": 194,
+            "y": 0,
+            "width": 143,
+            "height": 286,
+            "cell": 14.3
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "ready",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 0,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/landscape-ready.png",
+      "sha256": "749faf811f085d7f03fa17dfed4278f96021d4d28f462d93c8694ed8191a4b89"
+    },
+    {
+      "name": "landscape-playing",
+      "state": "playing",
+      "viewport": {
+        "width": 844,
+        "height": 390,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 37,
+            "top": 6,
+            "width": 557,
+            "height": 38,
+            "right": 594,
+            "bottom": 44
+          },
+          "brand": {
+            "left": 37,
+            "top": 6,
+            "width": 68.734375,
+            "height": 26.03125,
+            "right": 105.734375,
+            "bottom": 32.03125
+          },
+          "currentMode": {
+            "left": 116.734375,
+            "top": 8,
+            "width": 44.8125,
+            "height": 11,
+            "right": 161.546875,
+            "bottom": 19
+          },
+          "rotationHint": {
+            "left": 572.515625,
+            "top": 10,
+            "width": 21.484375,
+            "height": 10,
+            "right": 594,
+            "bottom": 20
+          },
+          "canvasHost": {
+            "left": 37,
+            "top": 44,
+            "width": 557,
+            "height": 286,
+            "right": 594,
+            "bottom": 330
+          },
+          "board": {
+            "left": 231,
+            "top": 44,
+            "width": 143,
+            "height": 286,
+            "right": 374,
+            "bottom": 330
+          },
+          "next": {
+            "left": 37,
+            "top": 85,
+            "width": 180,
+            "height": 52,
+            "right": 217,
+            "bottom": 137
+          },
+          "stats": {
+            "left": 37,
+            "top": 176,
+            "width": 180,
+            "height": 53,
+            "right": 217,
+            "bottom": 229
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": {
+            "left": 374,
+            "top": 282,
+            "width": 220,
+            "height": 48,
+            "right": 594,
+            "bottom": 330
+          },
+          "touchZones": [
+            {
+              "left": 374,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 418,
+              "bottom": 329
+            },
+            {
+              "left": 418,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 462,
+              "bottom": 329
+            },
+            {
+              "left": 462,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 506,
+              "bottom": 329
+            },
+            {
+              "left": 506,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 550,
+              "bottom": 329
+            },
+            {
+              "left": 550,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 594,
+              "bottom": 329
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 46,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 1114,
+            "height": 572
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 557,
+            "height": 286,
+            "resolution": 2
+          },
+          "board": {
+            "x": 194,
+            "y": 0,
+            "width": 143,
+            "height": 286,
+            "cell": 14.3
+          },
+          "preview": {
+            "x": 0,
+            "y": 41,
+            "width": 180,
+            "height": 52
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "O",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 29,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/landscape-playing.png",
+      "sha256": "fd0db1b546268d8b7ad55d6556b6ec5426cef2ac6f1c7126ef6b347e03b80e4e"
+    },
+    {
+      "name": "landscape-paused",
+      "state": "paused",
+      "viewport": {
+        "width": 844,
+        "height": 390,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 37,
+            "top": 6,
+            "width": 557,
+            "height": 38,
+            "right": 594,
+            "bottom": 44
+          },
+          "brand": {
+            "left": 37,
+            "top": 6,
+            "width": 68.734375,
+            "height": 26.03125,
+            "right": 105.734375,
+            "bottom": 32.03125
+          },
+          "currentMode": {
+            "left": 116.734375,
+            "top": 8,
+            "width": 44.8125,
+            "height": 11,
+            "right": 161.546875,
+            "bottom": 19
+          },
+          "rotationHint": {
+            "left": 572.515625,
+            "top": 10,
+            "width": 21.484375,
+            "height": 10,
+            "right": 594,
+            "bottom": 20
+          },
+          "canvasHost": {
+            "left": 37,
+            "top": 44,
+            "width": 557,
+            "height": 286,
+            "right": 594,
+            "bottom": 330
+          },
+          "board": {
+            "left": 231,
+            "top": 44,
+            "width": 143,
+            "height": 286,
+            "right": 374,
+            "bottom": 330
+          },
+          "next": {
+            "left": 37,
+            "top": 85,
+            "width": 180,
+            "height": 52,
+            "right": 217,
+            "bottom": 137
+          },
+          "stats": {
+            "left": 37,
+            "top": 176,
+            "width": 180,
+            "height": 53,
+            "right": 217,
+            "bottom": 229
+          },
+          "pauseStrip": {
+            "left": 236.71875,
+            "top": 166.96875,
+            "width": 131.546875,
+            "height": 50,
+            "right": 368.265625,
+            "bottom": 216.96875
+          },
+          "modeList": null,
+          "touchRail": {
+            "left": 374,
+            "top": 282,
+            "width": 220,
+            "height": 48,
+            "right": 594,
+            "bottom": 330
+          },
+          "touchZones": [
+            {
+              "left": 374,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 418,
+              "bottom": 329
+            },
+            {
+              "left": 418,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 462,
+              "bottom": 329
+            },
+            {
+              "left": 462,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 506,
+              "bottom": 329
+            },
+            {
+              "left": 506,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 550,
+              "bottom": 329
+            },
+            {
+              "left": 550,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 594,
+              "bottom": 329
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0.1608231148222407,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 46,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "暂停继续重新开始",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 1114,
+            "height": 572
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 557,
+            "height": 286,
+            "resolution": 2
+          },
+          "board": {
+            "x": 194,
+            "y": 0,
+            "width": 143,
+            "height": 286,
+            "cell": 14.3
+          },
+          "preview": {
+            "x": 0,
+            "y": 41,
+            "width": 180,
+            "height": 52
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "O",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": {
+            "x": 194,
+            "y": 0,
+            "width": 143,
+            "height": 286
+          },
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 3,
+              "y": 21
+            },
+            {
+              "x": 4,
+              "y": 21
+            },
+            {
+              "x": 5,
+              "y": 21
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 20,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "paused",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 75,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 20
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/landscape-paused.png",
+      "sha256": "a50d3c127486c683948c1096a25e2f33c8af43644d0ef209fbf076b47767dbd1"
+    },
+    {
+      "name": "landscape-mode-switch",
+      "state": "mode-switch",
+      "viewport": {
+        "width": 844,
+        "height": 390,
+        "dpr": 3
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 37,
+            "top": 6,
+            "width": 557,
+            "height": 38,
+            "right": 594,
+            "bottom": 44
+          },
+          "brand": {
+            "left": 37,
+            "top": 6,
+            "width": 68.734375,
+            "height": 26.03125,
+            "right": 105.734375,
+            "bottom": 32.03125
+          },
+          "currentMode": {
+            "left": 116.734375,
+            "top": 8,
+            "width": 44.8125,
+            "height": 11,
+            "right": 161.546875,
+            "bottom": 19
+          },
+          "rotationHint": {
+            "left": 572.515625,
+            "top": 10,
+            "width": 21.484375,
+            "height": 10,
+            "right": 594,
+            "bottom": 20
+          },
+          "canvasHost": {
+            "left": 37,
+            "top": 44,
+            "width": 557,
+            "height": 286,
+            "right": 594,
+            "bottom": 330
+          },
+          "board": {
+            "left": 231,
+            "top": 44,
+            "width": 143,
+            "height": 286,
+            "right": 374,
+            "bottom": 330
+          },
+          "next": null,
+          "stats": null,
+          "pauseStrip": null,
+          "modeList": {
+            "left": 37,
+            "top": 60,
+            "width": 180,
+            "height": 152.65625,
+            "right": 217,
+            "bottom": 212.65625
+          },
+          "touchRail": {
+            "left": 374,
+            "top": 282,
+            "width": 220,
+            "height": 48,
+            "right": 594,
+            "bottom": 330
+          },
+          "touchZones": [
+            {
+              "left": 374,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 418,
+              "bottom": 329
+            },
+            {
+              "left": 418,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 462,
+              "bottom": 329
+            },
+            {
+              "left": 462,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 506,
+              "bottom": 329
+            },
+            {
+              "left": 506,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 550,
+              "bottom": 329
+            },
+            {
+              "left": 550,
+              "top": 283,
+              "width": 44,
+              "height": 46,
+              "right": 594,
+              "bottom": 329
+            }
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 46,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 1114,
+            "height": 572
+          },
+          "previewCanvasResidue": false,
+          "previewClearRegion": {
+            "left": 111,
+            "top": 255,
+            "right": 651,
+            "bottom": 411,
+            "piece": "O"
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 557,
+            "height": 286,
+            "resolution": 2
+          },
+          "board": {
+            "x": 194,
+            "y": 0,
+            "width": 143,
+            "height": 286,
+            "cell": 14.3
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "previewClearBounds": {
+            "x": 0,
+            "y": 41,
+            "width": 180,
+            "height": 52
+          },
+          "previewClearPiece": "O",
+          "scrim": {
+            "x": 194,
+            "y": 0,
+            "width": 143,
+            "height": 286
+          },
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 3,
+              "y": 21
+            },
+            {
+              "x": 4,
+              "y": 21
+            },
+            {
+              "x": 5,
+              "y": 21
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 20,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "paused",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 75,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 20
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/landscape-mode-switch.png",
+      "sha256": "cd4001bc267c08928c70706e9381ef49a8f33ca194cf5fdf46306cb8d680bb39"
+    },
+    {
+      "name": "desktop-race-first-lock",
+      "state": "playing",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 46.09375,
+            "height": 15,
+            "right": 632.421875,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": {
+            "left": 423,
+            "top": 187,
+            "width": 208,
+            "height": 86,
+            "right": 631,
+            "bottom": 273
+          },
+          "stats": {
+            "left": 423,
+            "top": 353,
+            "width": 208,
+            "height": 73,
+            "right": 631,
+            "bottom": 426
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "S",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 4,
+              "y": 37
+            },
+            {
+              "x": 5,
+              "y": 37
+            },
+            {
+              "x": 4,
+              "y": 38
+            },
+            {
+              "x": 5,
+              "y": 38
+            }
+          ],
+          "visibleLockedCells": 4,
+          "presentation": {
+            "x": 4,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        }
+      },
+      "canonical": {
+        "status": "playing",
+        "mode": "race",
+        "score": 38,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 1,
+        "elapsedTicks": 47,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "O",
+          "rotation": 0,
+          "x": 4,
+          "y": 19
+        }
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-race-first-lock.png",
+      "sha256": "9a59ed06bbc19698a1e301cef438e33e3bcfbc5b1b9a2ab5974c9d4deb2f11c5"
+    },
+    {
+      "name": "desktop-race-finished",
+      "state": "finished",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 46.09375,
+            "height": 15,
+            "right": 632.421875,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": {
+            "left": 423,
+            "top": 187,
+            "width": 208,
+            "height": 86,
+            "right": 631,
+            "bottom": 273
+          },
+          "stats": {
+            "left": 423,
+            "top": 353,
+            "width": 208,
+            "height": 73,
+            "right": 631,
+            "bottom": 426
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "20 行完成00:05 · 61 块再来一局竞速完成榜100:0561 块",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702
+          },
+          "activeCells": [],
+          "ghostCells": [],
+          "visibleLockedCells": 44,
+          "presentation": null
+        }
+      },
+      "canonical": {
+        "status": "finished",
+        "mode": "race",
+        "score": 3330,
+        "lines": 20,
+        "level": 2,
+        "pieceCount": 61,
+        "elapsedTicks": 354,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": null
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-race-finished.png",
+      "sha256": "70a929489c4b654ba16373ba7173ea3c69c04e12994aead579690bdc7ea8c28a"
+    },
+    {
+      "name": "desktop-marathon-top-out",
+      "state": "game-over",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 57.609375,
+            "height": 15,
+            "right": 643.9375,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": {
+            "left": 423,
+            "top": 187,
+            "width": 208,
+            "height": 86,
+            "right": 631,
+            "bottom": 273
+          },
+          "stats": {
+            "left": 423,
+            "top": 353,
+            "width": 208,
+            "height": 73,
+            "right": 631,
+            "bottom": 426
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "堆叠到顶228 分 · 0 行再来一局马拉松记录122812 块",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702
+          },
+          "activeCells": [],
+          "ghostCells": [],
+          "visibleLockedCells": 47,
+          "presentation": null
+        }
+      },
+      "canonical": {
+        "status": "game-over",
+        "mode": "marathon",
+        "score": 228,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 12,
+        "elapsedTicks": 59,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": null
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-marathon-top-out.png",
+      "sha256": "3367318af013d01e6e5228d4b61761e612b81c36863b591b42896dc177f0a75e"
+    },
+    {
+      "name": "desktop-puzzle-rotation-finished",
+      "state": "finished",
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "dpr": 1
+      },
+      "geometry": {
+        "bounds": {
+          "header": {
+            "left": 423,
+            "top": 28,
+            "width": 594,
+            "height": 82,
+            "right": 1017,
+            "bottom": 110
+          },
+          "brand": {
+            "left": 423,
+            "top": 28,
+            "width": 152.328125,
+            "height": 57.71875,
+            "right": 575.328125,
+            "bottom": 85.71875
+          },
+          "currentMode": {
+            "left": 586.328125,
+            "top": 35,
+            "width": 46.09375,
+            "height": 15,
+            "right": 632.421875,
+            "bottom": 50
+          },
+          "rotationHint": {
+            "left": 989.703125,
+            "top": 35,
+            "width": 27.296875,
+            "height": 12,
+            "right": 1017,
+            "bottom": 47
+          },
+          "canvasHost": {
+            "left": 423,
+            "top": 110,
+            "width": 585,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "board": {
+            "left": 657,
+            "top": 110,
+            "width": 351,
+            "height": 702,
+            "right": 1008,
+            "bottom": 812
+          },
+          "next": {
+            "left": 423,
+            "top": 187,
+            "width": 208,
+            "height": 86,
+            "right": 631,
+            "bottom": 273
+          },
+          "stats": {
+            "left": 423,
+            "top": 353,
+            "width": 208,
+            "height": 95,
+            "right": 631,
+            "bottom": 448
+          },
+          "pauseStrip": null,
+          "modeList": null,
+          "touchRail": null,
+          "touchZones": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        "assertions": {
+          "boardRatio": 2,
+          "pauseStripRatio": 0,
+          "pauseInsideBoard": true,
+          "headerPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "structuralPairwiseIntersection": [
+            0,
+            0,
+            0
+          ],
+          "touchMinHeight": 0,
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noOverflow": true,
+          "boardText": "解谜完成1 块完成再来一局",
+          "previewLayerHidden": true,
+          "canvasSize": {
+            "width": 585,
+            "height": 702
+          }
+        },
+        "renderer": {
+          "canvas": {
+            "width": 585,
+            "height": 702,
+            "resolution": 1
+          },
+          "board": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702,
+            "cell": 35.1
+          },
+          "preview": {
+            "x": 0,
+            "y": 77,
+            "width": 208,
+            "height": 86
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": {
+            "x": 234,
+            "y": 0,
+            "width": 351,
+            "height": 702
+          },
+          "activeCells": [],
+          "ghostCells": [],
+          "visibleLockedCells": 3,
+          "presentation": null
+        }
+      },
+      "canonical": {
+        "status": "finished",
+        "mode": "puzzle",
+        "score": 74,
+        "lines": 1,
+        "level": 0,
+        "pieceCount": 1,
+        "elapsedTicks": 0,
+        "puzzleId": "offset-02",
+        "puzzleTargetLines": 1,
+        "puzzlePieceBudget": 3,
+        "active": null
+      },
+      "consoleErrorsAtCapture": [],
+      "screenshot": "docs/qa/evidence/tetris-t2/desktop-puzzle-rotation-finished.png",
+      "sha256": "837222cf3eed422d934b55c6f9a60b32ef323914ade0ca4c923b498fa6020e45"
+    }
+  ],
+  "inputEvidence": {
+    "keyboardArrowUp": {
+      "before": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 16,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "after": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 38,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 1,
+          "x": 3,
+          "y": 19
+        }
+      }
+    },
+    "touchRotateSoftDrop": {
+      "before": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 0,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 45,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 1,
+          "x": 3,
+          "y": 19
+        }
+      },
+      "after": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 1,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 0,
+        "elapsedTicks": 142,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "J",
+          "rotation": 2,
+          "x": 3,
+          "y": 22
+        }
+      }
+    },
+    "touchHardDrop": {
+      "beforePieces": 0,
+      "after": {
+        "status": "playing",
+        "mode": "marathon",
+        "score": 29,
+        "lines": 0,
+        "level": 0,
+        "pieceCount": 1,
+        "elapsedTicks": 195,
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzlePieceBudget": null,
+        "active": {
+          "type": "O",
+          "rotation": 0,
+          "x": 4,
+          "y": 19
+        }
+      }
+    },
+    "keyboardPauseResume": [
+      "paused",
+      "playing"
+    ]
+  },
+  "raceReplay": {
+    "commandCount": 598,
+    "hash": "d20b2d32",
+    "commands": [
+      {
+        "type": "start"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "move",
+        "dx": -1
+      },
+      {
+        "type": "rotate",
+        "direction": -1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "move",
+        "dx": 1
+      },
+      {
+        "type": "rotate",
+        "direction": 1
+      },
+      {
+        "type": "hard-drop"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      },
+      {
+        "type": "tick"
+      }
+    ]
+  },
+  "raceFirstLock": {
+    "status": "playing",
+    "mode": "race",
+    "score": 38,
+    "lines": 0,
+    "level": 0,
+    "pieceCount": 1,
+    "elapsedTicks": 27,
+    "puzzleId": null,
+    "puzzleTargetLines": null,
+    "puzzlePieceBudget": null,
+    "active": {
+      "type": "O",
+      "rotation": 0,
+      "x": 4,
+      "y": 19
+    }
+  },
+  "marathonTopOut": {
+    "commands": 12,
+    "state": {
+      "status": "game-over",
+      "mode": "marathon",
+      "score": 228,
+      "lines": 0,
+      "level": 0,
+      "pieceCount": 12,
+      "elapsedTicks": 59,
+      "puzzleId": null,
+      "puzzleTargetLines": null,
+      "puzzlePieceBudget": null,
+      "active": null
+    }
+  },
+  "puzzleRotation": {
+    "replay": {
+      "commandCount": 7,
+      "hash": "e6936c36",
+      "commands": [
+        {
+          "type": "start"
+        },
+        {
+          "type": "rotate",
+          "direction": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "hard-drop"
+        }
+      ]
+    },
+    "state": {
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "I"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "I"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "I"
+        ]
+      ],
+      "active": null,
+      "queue": [
+        "T",
+        "O"
+      ],
+      "score": 74,
+      "lines": 1,
+      "level": 0,
+      "mode": "puzzle",
+      "puzzleId": "offset-02",
+      "puzzleTargetLines": 1,
+      "puzzlePieceBudget": 3,
+      "pieceCount": 1,
+      "status": "finished",
+      "phase": "active",
+      "phaseTicks": 0,
+      "pendingClearRows": [],
+      "gravityTicks": 0,
+      "lockTicks": 0,
+      "lockResets": 0,
+      "elapsedTicks": 0,
+      "randomizer": {
+        "seed": 1369567245,
+        "bag": []
+      },
+      "seed": 1369567245
+    }
+  },
+  "consoleAndPageErrors": [],
+  "result": "passed"
+}

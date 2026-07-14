@@ -10,7 +10,6 @@ export type InputAction =
   | 'hard-drop'
   | 'rotate-cw'
   | 'rotate-ccw'
-  | 'hold'
   | 'pause'
   | 'restart';
 
@@ -35,9 +34,6 @@ const KEY_BINDINGS: Record<string, InputAction> = {
   KeyX: 'rotate-cw',
   KeyQ: 'rotate-ccw',
   KeyZ: 'rotate-ccw',
-  KeyC: 'hold',
-  ShiftLeft: 'hold',
-  ShiftRight: 'hold',
   Escape: 'pause',
   KeyP: 'pause',
   KeyR: 'restart',

@@ -1,0 +1,1818 @@
+{
+  "desktop-ready-1440x900": {
+    "board": {
+      "left": 657,
+      "top": 110,
+      "width": 351,
+      "height": 702,
+      "right": 1008,
+      "bottom": 812
+    },
+    "next": null,
+    "stats": null,
+    "pauseStrip": null,
+    "modeList": {
+      "left": 423,
+      "top": 149,
+      "width": 208,
+      "height": 211,
+      "right": 631,
+      "bottom": 360
+    },
+    "touchRail": null,
+    "touchZones": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rendererPreview": null,
+    "rendererScrim": null,
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 0,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "canvasSize": {
+        "width": 585,
+        "height": 702
+      }
+    }
+  },
+  "desktop-playing-1440x900": {
+    "board": {
+      "left": 657,
+      "top": 110,
+      "width": 351,
+      "height": 702,
+      "right": 1008,
+      "bottom": 812
+    },
+    "next": {
+      "left": 423,
+      "top": 187,
+      "width": 208,
+      "height": 86,
+      "right": 631,
+      "bottom": 273
+    },
+    "stats": {
+      "left": 423,
+      "top": 353,
+      "width": 208,
+      "height": 73,
+      "right": 631,
+      "bottom": 426
+    },
+    "pauseStrip": null,
+    "modeList": null,
+    "touchRail": null,
+    "touchZones": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rendererPreview": {
+      "x": 0,
+      "y": 77,
+      "width": 208,
+      "height": 86
+    },
+    "rendererScrim": null,
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 0,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "canvasSize": {
+        "width": 585,
+        "height": 702
+      }
+    }
+  },
+  "desktop-paused-1440x900": {
+    "board": {
+      "left": 657,
+      "top": 110,
+      "width": 351,
+      "height": 702,
+      "right": 1008,
+      "bottom": 812
+    },
+    "next": {
+      "left": 423,
+      "top": 187,
+      "width": 208,
+      "height": 86,
+      "right": 631,
+      "bottom": 273
+    },
+    "stats": {
+      "left": 423,
+      "top": 353,
+      "width": 208,
+      "height": 73,
+      "right": 631,
+      "bottom": 426
+    },
+    "pauseStrip": {
+      "left": 681.5625,
+      "top": 411.859375,
+      "width": 301.859375,
+      "height": 62,
+      "right": 983.421875,
+      "bottom": 473.859375
+    },
+    "modeList": null,
+    "touchRail": null,
+    "touchZones": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rendererPreview": {
+      "x": 0,
+      "y": 77,
+      "width": 208,
+      "height": 86
+    },
+    "rendererScrim": {
+      "x": 234,
+      "y": 0,
+      "width": 351,
+      "height": 702
+    },
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0.07595425869108205,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 0,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "暂停继续重新开始",
+      "canvasSize": {
+        "width": 585,
+        "height": 702
+      }
+    }
+  },
+  "desktop-mode-switch-1440x900": {
+    "board": {
+      "left": 657,
+      "top": 110,
+      "width": 351,
+      "height": 702,
+      "right": 1008,
+      "bottom": 812
+    },
+    "next": null,
+    "stats": null,
+    "pauseStrip": null,
+    "modeList": {
+      "left": 423,
+      "top": 149,
+      "width": 208,
+      "height": 211,
+      "right": 631,
+      "bottom": 360
+    },
+    "touchRail": null,
+    "touchZones": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "rendererPreview": null,
+    "rendererScrim": {
+      "x": 234,
+      "y": 0,
+      "width": 351,
+      "height": 702
+    },
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 0,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "previewLayerHidden": true,
+      "canvasSize": {
+        "width": 585,
+        "height": 702
+      },
+      "previewCanvasResidue": false,
+      "previewClearRegion": {
+        "left": 423,
+        "top": 187,
+        "right": 631,
+        "bottom": 273,
+        "piece": "O"
+      }
+    },
+    "renderer": {
+      "canvas": {
+        "width": 585,
+        "height": 702,
+        "resolution": 1
+      },
+      "board": {
+        "x": 234,
+        "y": 0,
+        "width": 351,
+        "height": 702,
+        "cell": 35.1
+      },
+      "preview": null,
+      "previewLayerVisible": false,
+      "previewPiece": null,
+      "previewClearBounds": {
+        "x": 0,
+        "y": 77,
+        "width": 208,
+        "height": 86
+      },
+      "previewClearPiece": "O",
+      "scrim": {
+        "x": 234,
+        "y": 0,
+        "width": 351,
+        "height": 702
+      },
+      "activeCells": [
+        {
+          "x": 3,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        },
+        {
+          "x": 5,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 3,
+          "y": 38
+        },
+        {
+          "x": 3,
+          "y": 39
+        },
+        {
+          "x": 4,
+          "y": 39
+        },
+        {
+          "x": 5,
+          "y": 39
+        }
+      ],
+      "visibleLockedCells": 0,
+      "presentation": {
+        "x": 3,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    },
+    "bounds": {
+      "header": {
+        "left": 423,
+        "top": 28,
+        "width": 594,
+        "height": 82,
+        "right": 1017,
+        "bottom": 110
+      },
+      "brand": {
+        "left": 423,
+        "top": 28,
+        "width": 152.328125,
+        "height": 57.71875,
+        "right": 575.328125,
+        "bottom": 85.71875
+      },
+      "currentMode": {
+        "left": 586.328125,
+        "top": 35,
+        "width": 57.609375,
+        "height": 15,
+        "right": 643.9375,
+        "bottom": 50
+      },
+      "rotationHint": {
+        "left": 989.703125,
+        "top": 35,
+        "width": 27.296875,
+        "height": 12,
+        "right": 1017,
+        "bottom": 47
+      },
+      "canvasHost": {
+        "left": 423,
+        "top": 110,
+        "width": 585,
+        "height": 702,
+        "right": 1008,
+        "bottom": 812
+      },
+      "board": {
+        "left": 657,
+        "top": 110,
+        "width": 351,
+        "height": 702,
+        "right": 1008,
+        "bottom": 812
+      },
+      "next": null,
+      "stats": null,
+      "pauseStrip": null,
+      "modeList": {
+        "left": 423,
+        "top": 149,
+        "width": 208,
+        "height": 211,
+        "right": 631,
+        "bottom": 360
+      },
+      "touchRail": null,
+      "touchZones": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "consoleErrors": []
+  },
+  "portrait-playing-390x844": {
+    "board": {
+      "left": 75,
+      "top": 168,
+      "width": 240,
+      "height": 480,
+      "right": 315,
+      "bottom": 648
+    },
+    "next": {
+      "left": 75,
+      "top": 100,
+      "width": 240,
+      "height": 58,
+      "right": 315,
+      "bottom": 158
+    },
+    "stats": {
+      "left": 75,
+      "top": 658,
+      "width": 240,
+      "height": 64,
+      "right": 315,
+      "bottom": 722
+    },
+    "pauseStrip": null,
+    "modeList": null,
+    "touchRail": {
+      "left": 75,
+      "top": 732,
+      "width": 240,
+      "height": 60,
+      "right": 315,
+      "bottom": 792
+    },
+    "touchZones": [
+      {
+        "left": 75,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 123,
+        "bottom": 791
+      },
+      {
+        "left": 123,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 171,
+        "bottom": 791
+      },
+      {
+        "left": 171,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 219,
+        "bottom": 791
+      },
+      {
+        "left": 219,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 267,
+        "bottom": 791
+      },
+      {
+        "left": 267,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 315,
+        "bottom": 791
+      }
+    ],
+    "rendererPreview": {
+      "x": 0,
+      "y": 29,
+      "width": 240,
+      "height": 58
+    },
+    "rendererScrim": null,
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 58,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "canvasSize": {
+        "width": 480,
+        "height": 1472
+      }
+    }
+  },
+  "portrait-paused-390x844": {
+    "board": {
+      "left": 75,
+      "top": 168,
+      "width": 240,
+      "height": 480,
+      "right": 315,
+      "bottom": 648
+    },
+    "next": {
+      "left": 75,
+      "top": 100,
+      "width": 240,
+      "height": 58,
+      "right": 315,
+      "bottom": 158
+    },
+    "stats": {
+      "left": 75,
+      "top": 658,
+      "width": 240,
+      "height": 64,
+      "right": 315,
+      "bottom": 722
+    },
+    "pauseStrip": {
+      "left": 84.59375,
+      "top": 374.390625,
+      "width": 220.796875,
+      "height": 56,
+      "right": 305.390625,
+      "bottom": 430.390625
+    },
+    "modeList": null,
+    "touchRail": {
+      "left": 75,
+      "top": 732,
+      "width": 240,
+      "height": 60,
+      "right": 315,
+      "bottom": 792
+    },
+    "touchZones": [
+      {
+        "left": 75,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 123,
+        "bottom": 791
+      },
+      {
+        "left": 123,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 171,
+        "bottom": 791
+      },
+      {
+        "left": 171,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 219,
+        "bottom": 791
+      },
+      {
+        "left": 219,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 267,
+        "bottom": 791
+      },
+      {
+        "left": 267,
+        "top": 733,
+        "width": 48,
+        "height": 58,
+        "right": 315,
+        "bottom": 791
+      }
+    ],
+    "rendererPreview": {
+      "x": 0,
+      "y": 29,
+      "width": 240,
+      "height": 58
+    },
+    "rendererScrim": {
+      "x": 0,
+      "y": 97,
+      "width": 240,
+      "height": 480
+    },
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0.10733181423611111,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 58,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "暂停继续重新开始",
+      "canvasSize": {
+        "width": 480,
+        "height": 1472
+      }
+    }
+  },
+  "portrait-mode-switch-390x844": {
+    "board": {
+      "left": 75,
+      "top": 250,
+      "width": 240,
+      "height": 480,
+      "right": 315,
+      "bottom": 730
+    },
+    "next": null,
+    "stats": null,
+    "pauseStrip": null,
+    "modeList": {
+      "left": 75,
+      "top": 71,
+      "width": 240,
+      "height": 73,
+      "right": 315,
+      "bottom": 144
+    },
+    "touchRail": {
+      "left": 75,
+      "top": 750,
+      "width": 240,
+      "height": 60,
+      "right": 315,
+      "bottom": 810
+    },
+    "touchZones": [
+      {
+        "left": 75,
+        "top": 751,
+        "width": 48,
+        "height": 58,
+        "right": 123,
+        "bottom": 809
+      },
+      {
+        "left": 123,
+        "top": 751,
+        "width": 48,
+        "height": 58,
+        "right": 171,
+        "bottom": 809
+      },
+      {
+        "left": 171,
+        "top": 751,
+        "width": 48,
+        "height": 58,
+        "right": 219,
+        "bottom": 809
+      },
+      {
+        "left": 219,
+        "top": 751,
+        "width": 48,
+        "height": 58,
+        "right": 267,
+        "bottom": 809
+      },
+      {
+        "left": 267,
+        "top": 751,
+        "width": 48,
+        "height": 58,
+        "right": 315,
+        "bottom": 809
+      }
+    ],
+    "rendererPreview": null,
+    "rendererScrim": {
+      "x": 0,
+      "y": 179,
+      "width": 240,
+      "height": 480
+    },
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 58,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "canvasSize": {
+        "width": 480,
+        "height": 1472
+      }
+    }
+  },
+  "landscape-playing-844x390": {
+    "board": {
+      "left": 231,
+      "top": 44,
+      "width": 143,
+      "height": 286,
+      "right": 374,
+      "bottom": 330
+    },
+    "next": {
+      "left": 37,
+      "top": 85,
+      "width": 180,
+      "height": 52,
+      "right": 217,
+      "bottom": 137
+    },
+    "stats": {
+      "left": 37,
+      "top": 176,
+      "width": 180,
+      "height": 53,
+      "right": 217,
+      "bottom": 229
+    },
+    "pauseStrip": null,
+    "modeList": null,
+    "touchRail": {
+      "left": 374,
+      "top": 282,
+      "width": 220,
+      "height": 48,
+      "right": 594,
+      "bottom": 330
+    },
+    "touchZones": [
+      {
+        "left": 374,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 418,
+        "bottom": 329
+      },
+      {
+        "left": 418,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 462,
+        "bottom": 329
+      },
+      {
+        "left": 462,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 506,
+        "bottom": 329
+      },
+      {
+        "left": 506,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 550,
+        "bottom": 329
+      },
+      {
+        "left": 550,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 594,
+        "bottom": 329
+      }
+    ],
+    "rendererPreview": {
+      "x": 0,
+      "y": 41,
+      "width": 180,
+      "height": 52
+    },
+    "rendererScrim": null,
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 46,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "canvasSize": {
+        "width": 1114,
+        "height": 572
+      }
+    }
+  },
+  "landscape-paused-844x390": {
+    "board": {
+      "left": 231,
+      "top": 44,
+      "width": 143,
+      "height": 286,
+      "right": 374,
+      "bottom": 330
+    },
+    "next": {
+      "left": 37,
+      "top": 85,
+      "width": 180,
+      "height": 52,
+      "right": 217,
+      "bottom": 137
+    },
+    "stats": {
+      "left": 37,
+      "top": 176,
+      "width": 180,
+      "height": 53,
+      "right": 217,
+      "bottom": 229
+    },
+    "pauseStrip": {
+      "left": 236.71875,
+      "top": 166.96875,
+      "width": 131.546875,
+      "height": 50,
+      "right": 368.265625,
+      "bottom": 216.96875
+    },
+    "modeList": null,
+    "touchRail": {
+      "left": 374,
+      "top": 282,
+      "width": 220,
+      "height": 48,
+      "right": 594,
+      "bottom": 330
+    },
+    "touchZones": [
+      {
+        "left": 374,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 418,
+        "bottom": 329
+      },
+      {
+        "left": 418,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 462,
+        "bottom": 329
+      },
+      {
+        "left": 462,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 506,
+        "bottom": 329
+      },
+      {
+        "left": 506,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 550,
+        "bottom": 329
+      },
+      {
+        "left": 550,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 594,
+        "bottom": 329
+      }
+    ],
+    "rendererPreview": {
+      "x": 0,
+      "y": 41,
+      "width": 180,
+      "height": 52
+    },
+    "rendererScrim": {
+      "x": 194,
+      "y": 0,
+      "width": 143,
+      "height": 286
+    },
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0.1608231148222407,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 46,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "暂停继续重新开始",
+      "canvasSize": {
+        "width": 1114,
+        "height": 572
+      }
+    }
+  },
+  "landscape-mode-switch-844x390": {
+    "board": {
+      "left": 231,
+      "top": 44,
+      "width": 143,
+      "height": 286,
+      "right": 374,
+      "bottom": 330
+    },
+    "next": null,
+    "stats": null,
+    "pauseStrip": null,
+    "modeList": {
+      "left": 37,
+      "top": 60,
+      "width": 180,
+      "height": 152.65625,
+      "right": 217,
+      "bottom": 212.65625
+    },
+    "touchRail": {
+      "left": 374,
+      "top": 282,
+      "width": 220,
+      "height": 48,
+      "right": 594,
+      "bottom": 330
+    },
+    "touchZones": [
+      {
+        "left": 374,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 418,
+        "bottom": 329
+      },
+      {
+        "left": 418,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 462,
+        "bottom": 329
+      },
+      {
+        "left": 462,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 506,
+        "bottom": 329
+      },
+      {
+        "left": 506,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 550,
+        "bottom": 329
+      },
+      {
+        "left": 550,
+        "top": 283,
+        "width": 44,
+        "height": 46,
+        "right": 594,
+        "bottom": 329
+      }
+    ],
+    "rendererPreview": null,
+    "rendererScrim": {
+      "x": 194,
+      "y": 0,
+      "width": 143,
+      "height": 286
+    },
+    "assertions": {
+      "boardRatio": 2,
+      "pauseStripRatio": 0,
+      "pauseInsideBoard": true,
+      "headerPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "structuralPairwiseIntersection": [
+        0,
+        0,
+        0
+      ],
+      "touchMinHeight": 46,
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "noOverflow": true,
+      "boardText": "",
+      "previewLayerHidden": true,
+      "canvasSize": {
+        "width": 1114,
+        "height": 572
+      },
+      "previewCanvasResidue": false,
+      "previewClearRegion": {
+        "left": 111,
+        "top": 255,
+        "right": 651,
+        "bottom": 411,
+        "piece": "O"
+      }
+    },
+    "renderer": {
+      "canvas": {
+        "width": 557,
+        "height": 286,
+        "resolution": 2
+      },
+      "board": {
+        "x": 194,
+        "y": 0,
+        "width": 143,
+        "height": 286,
+        "cell": 14.3
+      },
+      "preview": null,
+      "previewLayerVisible": false,
+      "previewPiece": null,
+      "previewClearBounds": {
+        "x": 0,
+        "y": 41,
+        "width": 180,
+        "height": 52
+      },
+      "previewClearPiece": "O",
+      "scrim": {
+        "x": 194,
+        "y": 0,
+        "width": 143,
+        "height": 286
+      },
+      "activeCells": [
+        {
+          "x": 3,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        },
+        {
+          "x": 5,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 3,
+          "y": 38
+        },
+        {
+          "x": 3,
+          "y": 39
+        },
+        {
+          "x": 4,
+          "y": 39
+        },
+        {
+          "x": 5,
+          "y": 39
+        }
+      ],
+      "visibleLockedCells": 0,
+      "presentation": {
+        "x": 3,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      }
+    },
+    "bounds": {
+      "header": {
+        "left": 37,
+        "top": 6,
+        "width": 557,
+        "height": 38,
+        "right": 594,
+        "bottom": 44
+      },
+      "brand": {
+        "left": 37,
+        "top": 6,
+        "width": 68.734375,
+        "height": 26.03125,
+        "right": 105.734375,
+        "bottom": 32.03125
+      },
+      "currentMode": {
+        "left": 116.734375,
+        "top": 8,
+        "width": 44.8125,
+        "height": 11,
+        "right": 161.546875,
+        "bottom": 19
+      },
+      "rotationHint": {
+        "left": 572.515625,
+        "top": 10,
+        "width": 21.484375,
+        "height": 10,
+        "right": 594,
+        "bottom": 20
+      },
+      "canvasHost": {
+        "left": 37,
+        "top": 44,
+        "width": 557,
+        "height": 286,
+        "right": 594,
+        "bottom": 330
+      },
+      "board": {
+        "left": 231,
+        "top": 44,
+        "width": 143,
+        "height": 286,
+        "right": 374,
+        "bottom": 330
+      },
+      "next": null,
+      "stats": null,
+      "pauseStrip": null,
+      "modeList": {
+        "left": 37,
+        "top": 60,
+        "width": 180,
+        "height": 152.65625,
+        "right": 217,
+        "bottom": 212.65625
+      },
+      "touchRail": {
+        "left": 374,
+        "top": 282,
+        "width": 220,
+        "height": 48,
+        "right": 594,
+        "bottom": 330
+      },
+      "touchZones": [
+        {
+          "left": 374,
+          "top": 283,
+          "width": 44,
+          "height": 46,
+          "right": 418,
+          "bottom": 329
+        },
+        {
+          "left": 418,
+          "top": 283,
+          "width": 44,
+          "height": 46,
+          "right": 462,
+          "bottom": 329
+        },
+        {
+          "left": 462,
+          "top": 283,
+          "width": 44,
+          "height": 46,
+          "right": 506,
+          "bottom": 329
+        },
+        {
+          "left": 506,
+          "top": 283,
+          "width": 44,
+          "height": 46,
+          "right": 550,
+          "bottom": 329
+        },
+        {
+          "left": 550,
+          "top": 283,
+          "width": 44,
+          "height": 46,
+          "right": 594,
+          "bottom": 329
+        }
+      ]
+    },
+    "consoleErrors": []
+  },
+  "consoleErrors": [],
+  "puzzleProof": {
+    "replay": {
+      "commandCount": 7,
+      "hash": "e6936c36",
+      "commands": [
+        {
+          "type": "start"
+        },
+        {
+          "type": "rotate",
+          "direction": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "hard-drop"
+        }
+      ]
+    },
+    "canonical": {
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "I"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "I"
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "I"
+        ]
+      ],
+      "active": null,
+      "queue": [
+        "T",
+        "O"
+      ],
+      "score": 74,
+      "lines": 1,
+      "level": 0,
+      "mode": "puzzle",
+      "puzzleId": "offset-02",
+      "puzzleTargetLines": 1,
+      "puzzlePieceBudget": 3,
+      "pieceCount": 1,
+      "status": "finished",
+      "phase": "active",
+      "phaseTicks": 0,
+      "pendingClearRows": [],
+      "gravityTicks": 0,
+      "lockTicks": 0,
+      "lockResets": 0,
+      "elapsedTicks": 0,
+      "randomizer": {
+        "seed": 1369567245,
+        "bag": []
+      },
+      "seed": 1369567245
+    }
+  }
+}

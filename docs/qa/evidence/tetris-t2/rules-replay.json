@@ -1,0 +1,214 @@
+{
+  "sourceHead": "0a28a1f4efad72296e46b0a91d859c45cc300edf",
+  "method": "Actual core modules loaded by Vite SSR; every terminal state is produced only by public dispatch/replay commands.",
+  "marathon": {
+    "commandCount": 45,
+    "hash": "faa67e78",
+    "status": "game-over",
+    "mode": "marathon",
+    "lines": 0,
+    "score": 230,
+    "pieces": 11,
+    "elapsedTicks": 33,
+    "puzzleId": null,
+    "puzzleTargetLines": null,
+    "puzzlePieceBudget": null,
+    "queue": [
+      "O",
+      "I",
+      "T",
+      "O",
+      "L"
+    ],
+    "active": null
+  },
+  "race": {
+    "commandCount": 573,
+    "hash": "5accdf23",
+    "status": "finished",
+    "mode": "race",
+    "lines": 20,
+    "score": 3262,
+    "pieces": 58,
+    "elapsedTicks": 336,
+    "puzzleId": null,
+    "puzzleTargetLines": null,
+    "puzzlePieceBudget": null,
+    "queue": [
+      "L",
+      "S",
+      "Z",
+      "T",
+      "O"
+    ],
+    "active": null
+  },
+  "puzzles": {
+    "offset-01": {
+      "commands": [
+        {
+          "type": "start"
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "hard-drop"
+        }
+      ],
+      "hash": "854b4f0a",
+      "status": "finished",
+      "mode": "puzzle",
+      "lines": 1,
+      "score": 78,
+      "pieces": 1,
+      "elapsedTicks": 0,
+      "puzzleId": "offset-01",
+      "puzzleTargetLines": 1,
+      "puzzlePieceBudget": 1,
+      "queue": [],
+      "active": null
+    },
+    "offset-02": {
+      "commands": [
+        {
+          "type": "start"
+        },
+        {
+          "type": "rotate",
+          "direction": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "hard-drop"
+        }
+      ],
+      "hash": "b2e45436",
+      "status": "finished",
+      "mode": "puzzle",
+      "lines": 1,
+      "score": 74,
+      "pieces": 1,
+      "elapsedTicks": 0,
+      "puzzleId": "offset-02",
+      "puzzleTargetLines": 1,
+      "puzzlePieceBudget": 3,
+      "queue": [
+        "T",
+        "O"
+      ],
+      "active": null
+    },
+    "offset-03": {
+      "commands": [
+        {
+          "type": "start"
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "hard-drop"
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "move",
+          "dx": 1
+        },
+        {
+          "type": "hard-drop"
+        }
+      ],
+      "hash": "e01c8f3f",
+      "status": "finished",
+      "mode": "puzzle",
+      "lines": 2,
+      "score": 156,
+      "pieces": 2,
+      "elapsedTicks": 0,
+      "puzzleId": "offset-03",
+      "puzzleTargetLines": 2,
+      "puzzlePieceBudget": 2,
+      "queue": [],
+      "active": null
+    }
+  },
+  "puzzleBudgetFailure": {
+    "commands": [
+      {
+        "type": "start"
+      },
+      {
+        "type": "hard-drop"
+      }
+    ],
+    "hash": "f4f2fb5a",
+    "status": "game-over",
+    "mode": "puzzle",
+    "lines": 0,
+    "score": 36,
+    "pieces": 1,
+    "elapsedTicks": 0,
+    "puzzleId": "offset-01",
+    "puzzleTargetLines": 1,
+    "puzzlePieceBudget": 1,
+    "queue": [],
+    "active": null
+  },
+  "leaderboardOwnership": {
+    "marathon": [
+      {
+        "mode": "marathon",
+        "outcome": "top-out",
+        "score": 230
+      }
+    ],
+    "race": [
+      {
+        "mode": "race",
+        "outcome": "finished",
+        "completionTicks": 336
+      }
+    ]
+  }
+}

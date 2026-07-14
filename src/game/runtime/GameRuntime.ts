@@ -1,8 +1,8 @@
 import { AudioEngine } from '../audio/AudioEngine';
-import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameMode, type GameState } from '../core';
+import { createInitialState, dispatch, stateHash, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
 import { InputController, type InputAction } from '../input/InputController';
 import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer';
-import { createFourLineClearScenario } from './qaScenario';
+import { replayPuzzleRotation, replayRaceCompletion } from './qaScenario';
 
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
@@ -11,6 +11,7 @@ const UI_SYNC_INTERVAL_MS = 100;
 export interface RuntimeOptions {
   seed?: number;
   mode?: GameMode;
+  puzzleId?: PuzzleId;
   reducedMotion?: boolean;
   audioEnabled?: boolean;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
@@ -22,7 +23,7 @@ export interface RuntimeQaSurface {
   action: (action: InputAction) => void;
   release: (action: InputAction) => void;
   advanceTicks: (ticks: number) => void;
-  loadScenario: (name: 'four-line-clear') => void;
+  replayScenario: (name: 'race-completion' | 'puzzle-rotation') => { commandCount: number; hash: string; commands: readonly GameCommand[] };
   setFrozen: (frozen: boolean) => void;
   benchmarkRender: (iterations?: number) => { meanMs: number; p95Ms: number; maxMs: number };
 }
@@ -48,7 +49,7 @@ export class GameRuntime {
   private readonly onState?: RuntimeOptions['onState'];
 
   constructor(private readonly options: RuntimeOptions = {}) {
-    this.state = createInitialState(options.seed, options.mode);
+    this.state = createInitialState(options.seed, options.mode, options.puzzleId);
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
   }
@@ -79,9 +80,11 @@ export class GameRuntime {
           this.flushUiState();
           this.flushRender(0);
         },
-        loadScenario: (name) => {
-          if (name !== 'four-line-clear') return;
-          this.state = createFourLineClearScenario(this.state.seed);
+        replayScenario: (name) => {
+          const scenario = name === 'race-completion'
+            ? replayRaceCompletion(this.state.seed)
+            : replayPuzzleRotation(this.state.seed);
+          this.state = scenario.state;
           this.accumulator = 0;
           this.pendingEvents = [];
           this.pendingUiEvents = [];
@@ -90,6 +93,7 @@ export class GameRuntime {
           this.input?.clearHeld();
           this.onState?.(this.state, []);
           this.renderer.render(this.state, [], 0);
+          return { commandCount: scenario.commands.length, hash: stateHash(this.state), commands: scenario.commands };
         },
         setFrozen: (frozen) => {
           this.qaFrozen = frozen;
@@ -113,16 +117,21 @@ export class GameRuntime {
     this.handleAction('pause', true);
   }
 
-  restart(seed = this.state.seed, mode = this.state.mode): void {
+  restart(seed = this.state.seed, mode = this.state.mode, puzzleId = this.state.puzzleId ?? undefined): void {
     void this.audio.prime();
-    this.apply({ type: 'restart', seed, mode });
+    this.apply({ type: 'restart', seed, mode, puzzleId });
     this.input?.clearHeld();
   }
 
   selectMode(mode: GameMode): void {
-    if (this.state.status !== 'ready' && this.state.status !== 'game-over') return;
+    if (this.state.status !== 'ready' && this.state.status !== 'game-over' && this.state.status !== 'finished') return;
     this.apply({ type: 'restart', seed: this.state.seed, mode });
     this.input?.clearHeld();
+  }
+
+  setModeSwitch(open: boolean): void {
+    this.renderer.setOptions({ modeSwitch: open });
+    this.flushRender(0);
   }
 
   release(action: InputAction): void {
@@ -136,6 +145,10 @@ export class GameRuntime {
 
   getState(): GameState {
     return this.state;
+  }
+
+  getRendererSnapshot(): RendererSnapshot {
+    return this.renderer.getSnapshot();
   }
 
   destroy(): void {
@@ -209,7 +222,7 @@ export class GameRuntime {
       return;
     }
     if (action === 'restart') {
-      if (this.state.status === 'game-over' || this.state.status === 'paused' || this.state.status === 'ready') {
+      if (this.state.status === 'game-over' || this.state.status === 'finished' || this.state.status === 'paused' || this.state.status === 'ready') {
         this.apply({ type: 'restart', seed: this.state.seed });
         this.input?.clearHeld();
       }
@@ -225,7 +238,6 @@ export class GameRuntime {
       'hard-drop': { type: 'hard-drop' },
       'rotate-cw': { type: 'rotate', direction: 1 },
       'rotate-ccw': { type: 'rotate', direction: -1 },
-      hold: { type: 'hold' },
     };
     this.apply(command[action]);
   };
@@ -253,5 +265,6 @@ function isImmediateUiEvent(event: GameEvent): boolean {
     || event.type === 'clear-started'
     || event.type === 'lines-cleared'
     || event.type === 'level-up'
+    || event.type === 'finished'
     || event.type === 'game-over';
 }

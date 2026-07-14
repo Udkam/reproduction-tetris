@@ -7,14 +7,14 @@ export interface PieceMaterial {
 }
 
 export const COLORS = {
-  background: 0x071013,
-  well: 0x071013,
-  panel: 0xf8fcfb,
-  edge: 0x789492,
-  text: 0x0e1e23,
-  muted: 0x6c7e82,
-  signal: 0x12ae9d,
-  danger: 0xe26944,
+  background: 0xf4ebdd,
+  well: 0x101819,
+  panel: 0xf4ebdd,
+  edge: 0x222323,
+  text: 0x222323,
+  muted: 0x756a5e,
+  signal: 0x4767a7,
+  danger: 0xd85b3f,
 } as const;
 
 export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {

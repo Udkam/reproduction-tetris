@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
   ENTRY_DELAY_TICKS,
+  LINE_CLEAR_DELAY_TICKS,
   RACE_GRAVITY_TICKS,
   RACE_MIN_GRAVITY_TICKS,
   RACE_PIECES_PER_SPEED_STEP,
+  RACE_TARGET_LINES,
   gravityForMode,
   gravityForRace,
 } from './constants';
 import { createInitialState, dispatch, replay, stateHash } from './engine';
+import { createBoard, setCell } from './board';
 import type { GameCommand, GameState } from './types';
 
 function start(seed: number, mode: 'marathon' | 'race' = 'marathon'): GameState {
@@ -80,6 +83,31 @@ describe('race state and deterministic replay', () => {
     const switched = dispatch(usedRace, { type: 'restart', mode: 'marathon' }).state;
     expect(switched.mode).toBe('marathon');
     expect(switched.pieceCount).toBe(0);
+  });
+
+  it('finishes exactly at the twenty-line target without spawning a successor', () => {
+    let board = createBoard();
+    for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'J');
+    const state: GameState = {
+      ...start(0x2020, 'race'),
+      board,
+      active: { type: 'O', rotation: 0, x: 8, y: 38 },
+      lines: RACE_TARGET_LINES - 1,
+      score: 0,
+      gravityTicks: 0,
+      lockTicks: 0,
+    };
+    const locked = dispatch(state, { type: 'hard-drop' }).state;
+    const beforeFinish = advance(locked, LINE_CLEAR_DELAY_TICKS - 1);
+    const finished = dispatch(beforeFinish, { type: 'tick' });
+
+    expect(finished.state.status).toBe('finished');
+    expect(finished.state.lines).toBe(RACE_TARGET_LINES);
+    expect(finished.state.active).toBeNull();
+    expect(finished.state.phase).toBe('active');
+    expect(finished.state.queue).toEqual(locked.queue);
+    expect(finished.events).toContainEqual({ type: 'finished', completionTicks: LINE_CLEAR_DELAY_TICKS });
+    expect(dispatch(finished.state, { type: 'tick' }).state).toEqual(finished.state);
   });
 
   it('includes mode and piece count in hashes and replays race commands identically', () => {

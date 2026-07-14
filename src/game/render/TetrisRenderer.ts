@@ -17,6 +17,7 @@ import { approachPresentationPoint, lineClearCellProgress } from './presentation
 
 interface RenderOptions {
   reducedMotion: boolean;
+  modeSwitch: boolean;
 }
 
 interface BoardLayout {
@@ -53,6 +54,12 @@ interface LockPulse {
 export interface RendererSnapshot {
   canvas: { width: number; height: number; resolution: number };
   board: { x: number; y: number; width: number; height: number; cell: number };
+  preview: { x: number; y: number; width: number; height: number } | null;
+  previewLayerVisible: boolean;
+  previewPiece: PieceType | null;
+  previewClearBounds: { x: number; y: number; width: number; height: number } | null;
+  previewClearPiece: PieceType | null;
+  scrim: { x: number; y: number; width: number; height: number } | null;
   activeCells: Cell[];
   ghostCells: Cell[];
   visibleLockedCells: number;
@@ -63,17 +70,14 @@ const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
 
 export class TetrisRenderer {
   private app: Application | null = null;
+  private host: HTMLElement | null = null;
   private readonly world = new Container();
   private readonly boardGraphics = new Graphics();
   private readonly pieceGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
   private readonly labels = new Container();
-  private readonly holdLabel = new Text({
-    text: '暂存',
-    style: { fontFamily: 'Microsoft YaHei, sans-serif', fontSize: 11, fill: COLORS.muted },
-  });
   private readonly nextLabel = new Text({
-    text: '下一个',
+    text: '下一个方块',
     style: { fontFamily: 'Microsoft YaHei, sans-serif', fontSize: 11, fill: COLORS.muted },
   });
 
@@ -83,10 +87,24 @@ export class TetrisRenderer {
   private lockPulse: LockPulse | null = null;
   private impact = 0;
   private rotationPulse = 0;
-  private options: RenderOptions = { reducedMotion: false };
+  private options: RenderOptions = { reducedMotion: false, modeSwitch: false };
+  private previewBounds: RendererSnapshot['preview'] = null;
+  private previewLayerVisible = false;
+  private previewPiece: PieceType | null = null;
+  private lastPreviewBounds: RendererSnapshot['preview'] = null;
+  private lastPreviewPiece: PieceType | null = null;
+  private previewClearBounds: RendererSnapshot['previewClearBounds'] = null;
+  private previewClearPiece: PieceType | null = null;
+  private scrimBounds: RendererSnapshot['scrim'] = null;
   private snapshot: RendererSnapshot = {
     canvas: { width: 0, height: 0, resolution: 1 },
     board: { x: 0, y: 0, width: 0, height: 0, cell: 0 },
+    preview: null,
+    previewLayerVisible: false,
+    previewPiece: null,
+    previewClearBounds: null,
+    previewClearPiece: null,
+    scrim: null,
     activeCells: [],
     ghostCells: [],
     visibleLockedCells: 0,
@@ -94,6 +112,7 @@ export class TetrisRenderer {
   };
 
   async init(host: HTMLElement): Promise<void> {
+    this.host = host;
     const app = new Application();
     await app.init({
       resizeTo: host,
@@ -109,7 +128,7 @@ export class TetrisRenderer {
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
     this.world.addChild(this.boardGraphics, this.pieceGraphics, this.effectGraphics, this.labels);
-    this.labels.addChild(this.holdLabel, this.nextLabel);
+    this.labels.addChild(this.nextLabel);
     app.stage.addChild(this.world);
     app.ticker.add(this.onTick);
     this.app = app;
@@ -136,7 +155,7 @@ export class TetrisRenderer {
     this.consumeEvents(events);
     this.advanceEffects(deltaMs);
     this.advancePresentation(state, deltaMs);
-    const layout = this.calculateLayout(app.screen.width, app.screen.height);
+    const layout = this.calculateLayout(app.screen.width, app.screen.height, state.status === 'ready');
     this.drawBoard(state, layout);
     this.drawPieces(state, layout);
     this.drawEffects(state, layout);
@@ -171,6 +190,7 @@ export class TetrisRenderer {
     this.frameCallback = null;
     this.app.destroy({ removeView: true }, { children: true });
     this.app = null;
+    this.host = null;
     this.presentation = null;
     this.lockPulse = null;
   }
@@ -179,15 +199,31 @@ export class TetrisRenderer {
     this.frameCallback?.(Math.min(ticker.deltaMS, 100));
   };
 
-  private calculateLayout(width: number, height: number): BoardLayout {
+  private calculateLayout(width: number, height: number, ready: boolean): BoardLayout {
+    const hostBounds = this.host?.getBoundingClientRect();
+    const boardElement = document.querySelector<HTMLElement>('[data-testid="board-frame"]');
+    const requestedBounds = boardElement?.getBoundingClientRect();
+    if (hostBounds && requestedBounds && requestedBounds.width > 0 && requestedBounds.height > 0) {
+      const boardWidth = requestedBounds.width;
+      return {
+        x: requestedBounds.left - hostBounds.left,
+        y: requestedBounds.top - hostBounds.top,
+        width: boardWidth,
+        height: requestedBounds.height,
+        cell: boardWidth / BOARD_WIDTH,
+        compact: requestedBounds.width <= 260,
+      };
+    }
     const compact = width < 620 && height > width * 1.05;
-    const topBand = compact ? Math.min(96, height * 0.19) : 0;
+    const topBand = compact && !ready ? Math.min(96, height * 0.19) : 0;
     const horizontalAllowance = compact ? 18 : Math.min(260, width * 0.34);
     const cell = Math.max(8, Math.min((height - topBand - 24) / VISIBLE_HEIGHT, (width - horizontalAllowance) / BOARD_WIDTH));
     const boardWidth = cell * BOARD_WIDTH;
     const boardHeight = cell * VISIBLE_HEIGHT;
     return {
-      x: (width - boardWidth) / 2,
+      x: compact
+        ? (width - boardWidth) / 2
+        : Math.max(0, (width - boardWidth) / 2 - Math.min(130, width * 0.14)),
       y: compact ? topBand + (height - topBand - boardHeight) / 2 : (height - boardHeight) / 2,
       width: boardWidth,
       height: boardHeight,
@@ -200,33 +236,22 @@ export class TetrisRenderer {
     const graphics = this.boardGraphics;
     graphics.clear();
     const pulse = this.options.reducedMotion ? 0 : this.impact;
-    const railInset = 7 + pulse * 2;
+    const railInset = 2 + pulse * 2;
     graphics
-      .roundRect(layout.x + Math.max(4, layout.cell * 0.16), layout.y + Math.max(5, layout.cell * 0.2), layout.width, layout.height, 3)
-      .fill({ color: 0x0e1e23, alpha: 0.18 });
+      .rect(layout.x + 5, layout.y + 5, layout.width, layout.height)
+      .fill({ color: 0x4767a7, alpha: 0.92 });
     graphics
-      .roundRect(layout.x - railInset, layout.y - railInset, layout.width + railInset * 2, layout.height + railInset * 2, 3)
-      .stroke({ color: COLORS.signal, alpha: 0.42 + pulse * 0.3, width: 1.25 + pulse });
+      .rect(layout.x + 2, layout.y + 2, layout.width, layout.height)
+      .fill({ color: COLORS.danger, alpha: 0.94 });
     graphics
-      .roundRect(layout.x - 3, layout.y - 3, layout.width + 6, layout.height + 6, 3)
-      .fill({ color: COLORS.panel, alpha: 0.98 })
-      .stroke({ color: COLORS.edge, alpha: 0.95, width: 2 });
+      .rect(layout.x - railInset, layout.y - railInset, layout.width + railInset * 2, layout.height + railInset * 2)
+      .fill({ color: COLORS.edge, alpha: 0.94 + pulse * 0.04 });
     graphics.rect(layout.x, layout.y, layout.width, layout.height).fill({ color: COLORS.well, alpha: 1 });
-
-    for (let x = 1; x < BOARD_WIDTH; x += 1) {
-      const px = layout.x + x * layout.cell;
-      graphics.moveTo(px, layout.y).lineTo(px, layout.y + layout.height).stroke({ color: 0xb7c8ee, alpha: 0.045, width: 1 });
-    }
-    for (let y = 1; y < VISIBLE_HEIGHT; y += 1) {
-      const py = layout.y + y * layout.cell;
-      graphics.moveTo(layout.x, py).lineTo(layout.x + layout.width, py).stroke({ color: 0xb7c8ee, alpha: 0.045, width: 1 });
-    }
-
-    if (state.status === 'paused') {
-      graphics.rect(layout.x, layout.y, layout.width, layout.height).fill({ color: COLORS.background, alpha: 0.38 });
-    }
-    if (state.status === 'game-over') {
-      graphics.rect(layout.x, layout.y, layout.width, layout.height).fill({ color: COLORS.background, alpha: 0.52 });
+    this.scrimBounds = null;
+    if (state.status === 'paused' || state.status === 'game-over' || state.status === 'finished' || this.options.modeSwitch) {
+      const alpha = state.status === 'paused' ? 0.58 : this.options.modeSwitch ? 0.62 : 0.46;
+      graphics.rect(layout.x, layout.y, layout.width, layout.height).fill({ color: 0x101819, alpha });
+      this.scrimBounds = { x: layout.x, y: layout.y, width: layout.width, height: layout.height };
     }
   }
 
@@ -270,10 +295,13 @@ export class TetrisRenderer {
       }
     }
 
-    const activeCells = state.active ? cellsForPiece(state.active) : [];
+    const activeCells = state.status === 'ready' || !state.active ? [] : cellsForPiece(state.active);
     const ghostCells = state.active
       ? activeCells.map((cell) => ({ x: cell.x, y: cell.y + dropDistance(state) }))
       : [];
+    if (state.status === 'ready' && state.active) {
+      ghostCells.splice(0, ghostCells.length, ...cellsForPiece(state.active).map((cell) => ({ x: cell.x, y: cell.y + dropDistance(state) })));
+    }
 
     for (const cell of ghostCells) {
       if (cell.y < VISIBLE_START_ROW) continue;
@@ -307,6 +335,8 @@ export class TetrisRenderer {
     }
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
+    this.pieceGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
+    this.effectGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
   }
 
   private drawCell(
@@ -382,25 +412,67 @@ export class TetrisRenderer {
 
   private drawPreviews(state: GameState, layout: BoardLayout): void {
     const graphics = this.pieceGraphics;
+    this.previewBounds = null;
+    this.previewLayerVisible = false;
+    this.previewPiece = null;
+    if (state.status === 'ready') {
+      this.nextLabel.visible = false;
+      this.previewClearBounds = null;
+      this.previewClearPiece = null;
+      return;
+    }
+    if (this.options.modeSwitch) {
+      // drawPieces clears its Graphics at the start of this same frame. Hiding the
+      // label and refusing fallback placement here prevents the old Pixi preview
+      // from surviving after React removes the DOM slot for mode switching.
+      this.nextLabel.visible = false;
+      this.previewClearBounds = this.lastPreviewBounds;
+      this.previewClearPiece = this.lastPreviewPiece;
+      return;
+    }
+    this.nextLabel.visible = true;
+    this.previewClearBounds = null;
+    this.previewClearPiece = null;
+    const hostBounds = this.host?.getBoundingClientRect();
+    const slot = document.querySelector<HTMLElement>('[data-testid="next-slot"]')?.getBoundingClientRect();
+    if (hostBounds && slot && slot.width > 0 && slot.height > 0) {
+      const x = slot.left - hostBounds.left;
+      const y = slot.top - hostBounds.top;
+      this.nextLabel.position.set(x, y + 2);
+      const next = state.queue[0];
+      if (next) this.drawPreviewPiece(graphics, next, x + slot.width / 2, y + Math.min(slot.height - 14, 43), Math.max(6, Math.min(14, slot.width / 5)));
+      this.previewBounds = { x, y, width: slot.width, height: slot.height };
+      this.previewLayerVisible = next !== undefined;
+      this.previewPiece = next ?? null;
+      this.lastPreviewBounds = this.previewBounds;
+      this.lastPreviewPiece = this.previewPiece;
+      return;
+    }
     const width = this.app?.screen.width ?? 0;
     if (layout.compact) {
       const topY = Math.max(7, layout.y - Math.min(92, layout.cell * 4.7));
       const unit = Math.max(4, Math.min(8, layout.cell * 0.24));
       const previewCenterX = layout.x + layout.cell * 2.5;
-      if (state.hold) this.drawPreviewPiece(graphics, state.hold, previewCenterX, topY + 21, unit);
       const next = state.queue[0];
-      if (next) this.drawPreviewPiece(graphics, next, previewCenterX, topY + 62, unit);
-      this.holdLabel.position.set(layout.x, topY);
-      this.nextLabel.position.set(layout.x, topY + 42);
+      if (next) this.drawPreviewPiece(graphics, next, previewCenterX, topY + 25, unit);
+      this.nextLabel.position.set(layout.x, topY);
+      this.previewBounds = { x: layout.x, y: topY, width: layout.cell * 5, height: Math.max(42, layout.cell * 4) };
+      this.previewLayerVisible = next !== undefined;
+      this.previewPiece = next ?? null;
+      this.lastPreviewBounds = this.previewBounds;
+      this.lastPreviewPiece = this.previewPiece;
     } else {
       const sideWidth = Math.max(92, (width - layout.width) / 2 - 22);
       const leftX = Math.max(12, layout.x - sideWidth - 14);
       const cardWidth = Math.max(78, sideWidth);
-      if (state.hold) this.drawPreviewPiece(graphics, state.hold, leftX + cardWidth / 2, layout.y + layout.cell * 2.2, Math.min(14, layout.cell * 0.48));
       const next = state.queue[0];
-      if (next) this.drawPreviewPiece(graphics, next, leftX + cardWidth / 2, layout.y + layout.cell * 6.1, Math.min(14, layout.cell * 0.48));
-      this.holdLabel.position.set(leftX, layout.y);
-      this.nextLabel.position.set(leftX, layout.y + layout.cell * 4.2);
+      if (next) this.drawPreviewPiece(graphics, next, leftX + cardWidth / 2, layout.y + layout.cell * 2.2, Math.min(14, layout.cell * 0.48));
+      this.nextLabel.position.set(leftX, layout.y);
+      this.previewBounds = { x: leftX, y: layout.y, width: cardWidth, height: Math.max(52, layout.cell * 4) };
+      this.previewLayerVisible = next !== undefined;
+      this.previewPiece = next ?? null;
+      this.lastPreviewBounds = this.previewBounds;
+      this.lastPreviewPiece = this.previewPiece;
     }
   }
 
@@ -430,7 +502,7 @@ export class TetrisRenderer {
         }
       } else if (event.type === 'piece-rotated') {
         this.rotationPulse = this.options.reducedMotion ? 0 : 1;
-      } else if (event.type === 'piece-held' || event.type === 'restarted') {
+      } else if (event.type === 'restarted') {
         this.presentation = null;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
@@ -505,6 +577,12 @@ export class TetrisRenderer {
     this.snapshot = {
       canvas: { width: app.screen.width, height: app.screen.height, resolution: app.renderer.resolution },
       board: { x: layout.x, y: layout.y, width: layout.width, height: layout.height, cell: layout.cell },
+      preview: this.previewBounds,
+      previewLayerVisible: this.previewLayerVisible,
+      previewPiece: this.previewPiece,
+      previewClearBounds: this.previewClearBounds,
+      previewClearPiece: this.previewClearPiece,
+      scrim: this.scrimBounds,
       activeCells,
       ghostCells,
       visibleLockedCells: this.snapshot.visibleLockedCells,

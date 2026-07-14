@@ -1,52 +1,72 @@
-# Tetris Acceptance Matrix
+# Tetris T2 D4 Production Acceptance Matrix
 
-Result: **passed locally on 2026-07-14**, pending coordinator commit and push.
+Result: **candidate awaiting independent QA** against baseline
+`0a28a1f4efad72296e46b0a91d859c45cc300edf`. This is not an independent acceptance,
+release, or push claim.
 
-## Deterministic rules
+## Frozen deterministic rules
 
-- Seven-bag, movement, collision, wall kicks, hold, hard drop, lock, clear, scoring, pause, restart, and top-out are renderer-independent.
-- Marathon mode uses the established line-level gravity curve.
-- Race mode advances one tier per five locked pieces and caps at two ticks per cell.
-- `mode` and `pieceCount` participate in hash and replay.
-- Every actual lock, including lock-out, increments `pieceCount` exactly once.
-- Restart resets the piece count and preserves or explicitly selects mode.
+- Seven-bag, movement, collision, wall kicks, hard drop, lock, clear, scoring,
+  pause, restart, top-out, and Race completion are renderer-independent.
+- Hold/暂存 is absent from state, commands, events, inputs, renderer, controls, hash,
+  replay, and tests.
+- Marathon has no fixed terminal target; top-out ends the run. Lines raise the level
+  and level selects gravity.
+- Race targets 20 cleared lines, derives elapsed time only from fixed ticks, advances
+  gravity every five locks, and caps at the final fixed gravity tier.
+- A Race finishing clear immediately changes state to `finished`; it does not spawn a
+  new piece. Failed or incomplete Race runs cannot become completion records.
+- Mode, piece count, elapsed ticks, and completion state participate in deterministic
+  hash/replay coverage.
+- Puzzle is the sole third mode: three typed, validated clean-room definitions carry
+  fixed board/queue/budget/target data in canonical state/hash/replay; it has no
+  automatic gravity and terminates only by target completion or exhausted budget.
 
-## Input and presentation
+## Frozen interface and persistence requirements
 
-- Fixed-step simulation is independent of display refresh rate.
-- Left/right use deterministic DAS/ARR and most-recent direction priority.
-- Soft drop fires immediately, waits three ticks, then repeats every fixed tick.
-- Renderer presentation approaches canonical positions monotonically without overshoot.
-- Entry delay is three ticks and routine React-facing state updates are coalesced without slowing Pixi frames.
-- Window blur and document hiding suspend active play.
-- Restart/unmount cleanup remains covered by runtime tests.
+- Formal game name is exactly `Tetris`; mode labels are always `马拉松模式`、`竞速模式`、
+  `解谜模式`; other player-facing copy is concise Chinese.
+- D4 Offset Drop uses warm ungridded paper, a deep-ink 1:2 board, one cinnabar title
+  drop-band, and restrained cobalt/cinnabar edge offset—never `T.`, jade dashboard,
+  cards, modal/glass framing, or fake telemetry.
+- Ready is a board-led local start page with three flat mode lines, goal/end data,
+  empty board+ghost, and one start. It has no live stats, `下一个方块`, or leaderboard.
+- Playing has one `下一个方块`, appropriate three-field stats, and no Hold region.
+- Pause scrim and ≤18%-board paper strip stay exactly inside the board. Mode switch
+  freezes/dims the board with empty board inner text and keeps its mode list outside.
+- Keyboard `C`/`Shift` and touch Hold/暂存 controls are absent. ArrowUp dispatches
+  clockwise rotation; hidden Z/X compatibility is allowed but no visible help shows
+  it. Five controls are ≥44 px: ←, →, ↑ 旋转, ↓ 快速下落, ⇣ 直接落底.
+- Marathon records sort score desc, lines desc, pieces desc, fixed-tick time asc.
+- Race completion records sort completion ticks asc, pieces asc, score desc,
+  fixed-tick time asc.
+- The versioned local schema validates and migrates fail-closed, caps each mode at
+  eight records, and never enters the simulation core.
 
-## Interface
+## Candidate browser evidence recorded
 
-- Formal game name is `Tetris`; other player-facing copy is concise Chinese.
-- Desktop has one data rail and one board stage, with no settings/card column.
-- Hold and Next each render one piece; Next appears below Hold.
-- Pattern/high-contrast and manual reduced-motion preferences are absent.
-- `prefers-reduced-motion` remains automatic.
-- Pause appears as a labelled header action and a large board-local `已暂停` state.
-- Local leaderboard validates corrupted data fail-closed, sorts deterministically, and caps at eight records.
+- Official local-candidate manifest and real PNGs cover both ready explanations,
+  Marathon play, Race selection plus true first-lock state, true command/replay-built
+  20-line completion, both leaderboards, explicit pause, and desktop/portrait/
+  landscape contexts.
+- 1440 × 900 DPR1, 390 × 844 DPR3, and 844 × 390 DPR3 retain the complete 10 × 20
+  board with no horizontal overflow.
+- Each geometry capture proves exactly one canvas, zero gameplay DOM cells, zero
+  console errors, 1:2 board ratio, non-overlapping cluster bounds, board-contained
+  pause strip, and touch zones ≥44 CSS px.
+- Keyboard and touch soft drop prove quick repeated movement and immediate stop on
+  release.
+- The 16 visible candidate PNGs were manually reviewed where state-specific visual
+  judgment matters; `browser-evidence.json` reports `result: "passed"`, zero
+  console/page errors, and SHA-256 values matching every referenced PNG. The rules
+  evidence and complete SHA-256 record are in `docs/qa/evidence/tetris-t2/`.
 
-## Browser evidence
+## Candidate gate record (independent QA still required)
 
-- Manifest: `docs/qa/tetris-browser-evidence.json`
-- 1440 × 900 DPR1: ready, live play, four-line midpoint, paused, race, and game-over states.
-- 390 × 844 DPR3: complete board, stats rail, six controls, real touch holds and release cancellation.
-- 844 × 390 DPR3: complete board-left / controls-right landscape composition without overflow.
-- Reduced-motion context uses the system media preference and exposes no manual controls.
-- Exactly one canvas, zero gameplay DOM cells, and zero console errors.
-- Keyboard soft drop: Y `19 → 30`, remained `30` after release.
-- Touch soft drop: Y `19 → 26`, remained `26` after release.
-- Race evidence: selected mode `race`, first lock produced `pieceCount = 1`.
-- Game-over evidence: persisted one record matching score, lines, piece count, mode, and timestamp schema.
-- Pixi preparation benchmark: mean 0.136 ms, p95 0.20 ms, max 3.00 ms over 160 samples.
-
-## Build gates
-
-- `npm.cmd run typecheck`: passed.
-- `npm.cmd run test`: 8 files / 41 tests passed.
-- `npm.cmd run build`: passed; main JS 374.56 kB before gzip.
+- No dependency install was required because the dependency tree was present.
+- Before the 001A correction: one full 47/47 Vitest run and one build passed.
+- After the correction: `npm.cmd run typecheck` and the 2-file/5-test
+  renderer/runtime delta suite passed.
+- One formal browser-evidence pass completed with `result: "passed"`; its 16 PNG
+  hashes match its JSON references. Do not rerun these gates in this worktree.
+- Independent QA must perform the clean gate and make the acceptance decision.

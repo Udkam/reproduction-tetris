@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { LINE_CLEAR_DELAY_TICKS, dispatch } from '../core';
-import { createFourLineClearScenario } from './qaScenario';
+import { RACE_TARGET_LINES, stateHash } from '../core';
+import { replayRaceCompletion } from './qaScenario';
 
-describe('four-line browser QA scenario', () => {
-  it('reaches a real four-line clear through the public hard-drop command', () => {
-    let state = createFourLineClearScenario();
-    state = dispatch(state, { type: 'hard-drop' }).state;
-    expect(state.phase).toBe('line-clear');
-    expect(state.pendingClearRows).toEqual([36, 37, 38, 39]);
-    for (let tick = 0; tick < LINE_CLEAR_DELAY_TICKS; tick += 1) state = dispatch(state, { type: 'tick' }).state;
-    expect(state.lines).toBe(4);
-    expect(state.score).toBe(1234);
+describe('Race browser QA replay', () => {
+  it('reaches the canonical finish state from public commands only', () => {
+    const first = replayRaceCompletion(0x51a1f00d);
+    const second = replayRaceCompletion(0x51a1f00d);
+
+    expect(first.commands[0]).toEqual({ type: 'start' });
+    expect(first.commands.some((command) => command.type === 'hard-drop')).toBe(true);
+    expect(first.commands.some((command) => command.type === 'tick')).toBe(true);
+    expect(first.state.status).toBe('finished');
+    expect(first.state.lines).toBeGreaterThanOrEqual(RACE_TARGET_LINES);
+    expect(first.state.active).toBeNull();
+    expect(stateHash(first.state)).toBe(stateHash(second.state));
+    expect(first.commands).toEqual(second.commands);
   });
 });
