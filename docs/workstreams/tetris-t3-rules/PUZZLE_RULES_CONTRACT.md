@@ -10,11 +10,11 @@ Every Puzzle run is an authored level, never a bag or seeded random draw. The la
 type PuzzleRunState = {
   mode: 'puzzle';
   puzzleLevelId: PuzzleLevelId;
-  puzzleBoardRows: readonly BoardRow[]; // initialization source, 20 rows × 10 cells
+  puzzleBoardRows: readonly BoardRow[]; // visible initialization source, 20 rows × 10 cells
   puzzleQueue: readonly PieceType[];    // fixed full sequence
   puzzleQueueIndex: number;             // index of the next unspawned piece
   puzzlePieceBudget: number;
-  puzzleGoal: 'visible-board-empty';
+  puzzleGoal: 'canonical-board-empty';
   puzzleCompletion: 'active' | 'finished' | 'failed-top-out' | 'failed-budget';
   completedLevelId: PuzzleLevelId | null;
   unlockedLevelId: PuzzleLevelId | null;
@@ -23,7 +23,7 @@ type PuzzleRunState = {
 
 `puzzleQueueIndex` is `1` immediately after the first queue item becomes the active piece. It advances exactly once on each successful spawn and never advances on a blocked spawn. The fixed queue, index, budget, goal, completion result, completed level ID, and unlock result belong to canonical state; therefore they participate in state hash and deterministic replay.
 
-The authored board is a visible, non-empty 10 × 20 matrix. Each cell is either `.` or one of `I/O/T/S/Z/J/L`; construction occurs only while creating the initial state. Thereafter, only public core commands may alter the run.
+The authored board is a visible, non-empty 10 × 20 matrix. Each cell is either `.` or one of `I/O/T/S/Z/J/L`; construction occurs only while creating the initial state. The canonical board also contains the existing hidden buffer, which the initializer must leave empty. Thereafter, only public core commands may alter the run.
 
 ## 2. Mechanics and commands
 
@@ -37,12 +37,12 @@ The authored board is a visible, non-empty 10 × 20 matrix. Each cell is either 
 
 After every public lock, run normal core line resolution first. Then apply this ordering:
 
-1. If the lock produces a top-out (`lock-out`), invalid state, or a next-piece spawn cannot be placed (`block-out`), fail as `failed-top-out`.
-2. Otherwise count occupied cells across all 20 visible rows. If the count is zero, finish immediately as `finished`.
-3. Otherwise, if the piece budget has been consumed or there is no next fixed-queue piece to spawn, fail as `failed-budget`.
-4. Otherwise spawn exactly the next authored piece and continue.
+1. If the lock produces `lock-out`, an invalid state, or leaves any occupied hidden-buffer cell, fail as `failed-top-out`.
+2. Otherwise count occupied cells across the entire canonical board: hidden buffer plus all 20 visible rows. If the count is zero, finish immediately as `finished`.
+3. Otherwise, if the piece budget has been consumed or the authored queue has no next item, fail as `failed-budget`.
+4. Otherwise spawn exactly the next authored piece. A blocked spawn is `failed-top-out` / `invalid-spawn`.
 
-Success is never based on a line total, score, elapsed time, a hidden target, or presentation storage. A clearing lock that leaves even one visible cell is not success. If an empty board and final budget consumption happen together, empty-board success wins after the top-out check.
+Success is never based on a line total, score, elapsed time, a hidden target, or presentation storage. A clearing lock that leaves even one canonical-board cell is not success. The visible UI says `清空棋盘`; the validator guarantees this also means no hidden-buffer cell exists. If an empty board and final budget consumption happen together, empty-board success wins after the top-out check.
 
 ## 4. Restart, replay, and campaign unlock
 
@@ -56,8 +56,8 @@ The rendering shell receives real state only:
 
 | Surface | Required data |
 | --- | --- |
-| Select | full Chinese level name, `index/total`, difficulty, unlocked status, fixed goal `清空可见棋盘` |
-| Playing | full Chinese level name, `index/total`, remaining pieces (`budget - pieceCount`), visible-board-empty goal, active/paused status |
+| Select | full Chinese level name, `index/total`, difficulty, unlocked status, fixed goal `清空棋盘` |
+| Playing | full Chinese level name, `index/total`, remaining pieces (`budget - pieceCount`), canonical-board-empty goal, active/paused status |
 | Next | exactly `puzzleQueue[puzzleQueueIndex]` when it exists; no second preview |
 | Complete | completed level ID/name, board-empty result, next unlocked level or campaign-complete state |
 | Fail | level ID/name and one factual reason: top-out, invalid spawn, or budget exhausted |
@@ -66,9 +66,9 @@ Do not expose score, Marathon level, Race timer, a second queue preview, a targe
 
 ## 6. Fail-closed validation and forbidden shortcuts
 
-The typed level validator fails closed for: fewer or more than 20 rows; row width other than 10; unsupported cell type; initially empty board; duplicate or out-of-range sparse input when converting legacy forms; empty queue; invalid piece type; non-positive budget; budget greater than queue length; or non-positive goal metadata.
+The typed level validator fails closed for: fewer or more than 20 rows; row width other than 10; unsupported cell type; initially empty board; any initially complete row; a non-empty hidden buffer; duplicate or out-of-range sparse input when converting legacy forms; empty queue; invalid piece type; non-positive budget; a budget not exactly equal to queue length; or non-positive goal metadata.
 
-The validator must reject a replay if its level ID, queue, command hash, final canonical hash, locked-piece count, line resolution, or board-empty result differs from its reference contract. The campaign must not inject a finished state, clear board cells directly after initialization, write local storage into core, or use a browser-only state override to manufacture completion.
+The validator must reject a replay if its level ID, queue, command digest, ordered event digest, initial/final adapter hash, locked-piece count, line resolution, queue-consumption count, cell-conservation equation, or canonical-board-empty result differs from its reference contract. It runs each reference replay twice from fresh initialization. The campaign must not inject a finished state, clear board cells directly after initialization, write local storage into core, or use a browser-only state override to manufacture completion.
 
 ## 7. Exact later production delta
 

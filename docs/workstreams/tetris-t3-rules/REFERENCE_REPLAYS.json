@@ -1,8 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "semantics": {
-    "commandSource": "Every listed command is passed to the current public core dispatch function after workstream-local authored initialization.",
-    "finalHash": "currentEngineStateHash is the existing core stateHash result. It intentionally cannot distinguish all proposed campaign levels until the documented production delta adds level identity and queue index to canonical state."
+    "commandSource": "The workstream adapter constructs only the authored initial board. Every listed replay command then calls the current public core dispatch function.",
+    "currentAdapterHashes": "These are current core stateHash values from the faithful adapter, not claims that the production engine already has T3R campaign identity/queue-index semantics.",
+    "digests": "commandDigest and eventDigest are FNV-1a digests of ordered JSON records recomputed by the verifier; stored values are never trusted without recomputation."
   },
   "replays": [
     {
@@ -14,12 +15,9 @@
         {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
         {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"move","dx":1}, {"type":"hard-drop"}
       ],
-      "commandCount": 21,
-      "lockedPieces": 3,
-      "clearedLines": 4,
-      "finalOccupiedCells": 0,
-      "finalState": "finished",
-      "currentEngineStateHash": "68f86f9f"
+      "commandCount": 21, "lockedPieces": 3, "clearedLines": 4, "consumedQueueCount": 3,
+      "effectiveRotations": 3, "landingXs": [3, -1, 7], "distinctLandingXs": 3, "finalFullBoardOccupiedCells": 0, "proposedFinalOutcome": "finished",
+      "currentAdapterInitialHash": "1746d493", "currentAdapterFinalHash": "68f86f9f", "commandDigest": "3b4dc6af", "eventDigest": "3268440c"
     },
     {
       "levelId": "t3r-shaft-02",
@@ -32,12 +30,9 @@
         {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
         {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"move","dx":1}, {"type":"hard-drop"}
       ],
-      "commandCount": 28,
-      "lockedPieces": 4,
-      "clearedLines": 4,
-      "finalOccupiedCells": 0,
-      "finalState": "finished",
-      "currentEngineStateHash": "f839a801"
+      "commandCount": 28, "lockedPieces": 4, "clearedLines": 4, "consumedQueueCount": 4,
+      "effectiveRotations": 4, "landingXs": [3, 1, -1, 7], "distinctLandingXs": 4, "finalFullBoardOccupiedCells": 0, "proposedFinalOutcome": "finished",
+      "currentAdapterInitialHash": "7ddba1a3", "currentAdapterFinalHash": "f839a801", "commandDigest": "969a0812", "eventDigest": "e6b91c62"
     },
     {
       "levelId": "t3r-shaft-03",
@@ -50,54 +45,58 @@
         {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
         {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"}
       ],
-      "commandCount": 26,
-      "lockedPieces": 4,
-      "clearedLines": 4,
-      "finalOccupiedCells": 0,
-      "finalState": "finished",
-      "currentEngineStateHash": "f839a801"
+      "commandCount": 26, "lockedPieces": 4, "clearedLines": 4, "consumedQueueCount": 4,
+      "effectiveRotations": 4, "landingXs": [2, 4, 0, 6], "distinctLandingXs": 4, "finalFullBoardOccupiedCells": 0, "proposedFinalOutcome": "finished",
+      "currentAdapterInitialHash": "335f3563", "currentAdapterFinalHash": "f839a801", "commandDigest": "f058713c", "eventDigest": "7d71e279"
     },
     {
-      "levelId": "t3r-well-04",
+      "levelId": "t3r-shaft-04",
       "commands": [
-        {"type":"start"}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"hard-drop"},
-        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
-        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"}
+        {"type":"start"}, {"type":"rotate","direction":-1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"rotate","direction":-1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"rotate","direction":-1}, {"type":"move","dx":-1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"move","dx":1}, {"type":"hard-drop"}
       ],
-      "commandCount": 17,
-      "lockedPieces": 3,
-      "clearedLines": 4,
-      "finalOccupiedCells": 0,
-      "finalState": "finished",
-      "currentEngineStateHash": "1652d858"
+      "commandCount": 34, "lockedPieces": 5, "clearedLines": 4, "consumedQueueCount": 5,
+      "effectiveRotations": 5, "landingXs": [3, 4, 1, -1, 7], "distinctLandingXs": 5, "finalFullBoardOccupiedCells": 0, "proposedFinalOutcome": "finished",
+      "currentAdapterInitialHash": "60bba115", "currentAdapterFinalHash": "83201ff5", "commandDigest": "aa9262ae", "eventDigest": "335254a9"
     },
     {
-      "levelId": "t3r-well-05",
+      "levelId": "t3r-cascade-05",
       "commands": [
-        {"type":"start"}, {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
-        {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
-        {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"}
+        {"type":"start"}, {"type":"rotate","direction":-1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":-1}, {"type":"rotate","direction":-1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"rotate","direction":-1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"hard-drop"},
+        {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"move","dx":-1}, {"type":"hard-drop"}
       ],
-      "commandCount": 10,
-      "lockedPieces": 3,
-      "clearedLines": 4,
-      "finalOccupiedCells": 0,
-      "finalState": "finished",
-      "currentEngineStateHash": "3532001d"
+      "commandCount": 29, "lockedPieces": 5, "clearedLines": 4, "consumedQueueCount": 5,
+      "effectiveRotations": 3, "landingXs": [3, 2, 1, 0, 0], "distinctLandingXs": 4, "finalFullBoardOccupiedCells": 0, "proposedFinalOutcome": "finished",
+      "currentAdapterInitialHash": "53d0a5bd", "currentAdapterFinalHash": "48ce7474", "commandDigest": "4e2e5098", "eventDigest": "d608d129"
     },
     {
-      "levelId": "t3r-well-06",
+      "levelId": "t3r-cascade-06",
       "commands": [
-        {"type":"start"}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
-        {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
-        {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"}
+        {"type":"start"}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"hard-drop"},
+        {"type":"tick"}, {"type":"tick"}, {"type":"tick"},
+        {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"rotate","direction":1}, {"type":"move","dx":1}, {"type":"hard-drop"},
+        {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"move","dx":1}, {"type":"hard-drop"}
       ],
-      "commandCount": 22,
-      "lockedPieces": 3,
-      "clearedLines": 4,
-      "finalOccupiedCells": 0,
-      "finalState": "finished",
-      "currentEngineStateHash": "3532001d"
+      "commandCount": 29, "lockedPieces": 5, "clearedLines": 4, "consumedQueueCount": 5,
+      "effectiveRotations": 3, "landingXs": [3, 4, 7, 7, 7], "distinctLandingXs": 3, "finalFullBoardOccupiedCells": 0, "proposedFinalOutcome": "finished",
+      "currentAdapterInitialHash": "0a510ff5", "currentAdapterFinalHash": "48ce7474", "commandDigest": "75573280", "eventDigest": "e45039d9"
     }
   ]
 }

@@ -41,3 +41,28 @@ LOG=E:\Proj\Game-1\docs\workstreams\tetris-t3-rules\THREAD_LOG.md
 - Remaining production delta: implement the proposed typed 20-row loader/validator,
   canonical level/queue-index/completion/unlock state, board-empty completion ordering,
   and production replay/hash tests. This workstream does not apply that source change.
+
+## TETRIS-T3R-002 conditional-review correction
+
+- Coordinator review kept the design-only boundary but rejected the former 3-piece levels
+  4–6 and visible-only oracle as insufficient for the high-difficulty campaign contract.
+- Replaced levels 4–6 with `t3r-shaft-04` (five unequal I shafts, five locks) and
+  `t3r-cascade-05` / `t3r-cascade-06` (five-piece, distinct-queue cavity cascades).
+  All authored boards remain non-empty 20 × 10 boards and contain no complete starting row.
+- Strengthened the contract and verifier to require full canonical-board emptiness,
+  hidden-buffer top-out detection, exact queue/budget consumption, valid command phases,
+  effective rotations, distinct landing columns, event/command digests, conservation,
+  terminal-tail rejection, and two fresh deterministic replays.
+- Only the workstream Vitest file will be run after this fixture/verifier rewrite; no production
+  source, root document, full suite, build, browser, push, or Temple path action is authorized.
+- First targeted attempt after the rewrite: 4 passed / 14 failed before replay because the
+  complete-row guard was inverted and rejected every non-empty row. The correction changes only
+  that verifier predicate; no level, replay, production, or root file changed. One safe rerun of
+  the same command is required.
+- Safe rerun: 17 passed / 1 failed. The unused-tail negative reached a stale-initial-hash check
+  before queue-consumption auditing. The verifier now audits exact locks, budget, piece count,
+  and remaining queue before hashes, which proves the required failure cause. One final same-file
+  rerun is required; no gameplay fixture changed.
+- Final same-file rerun: `1 passed` test file, `18 passed` tests. This is the sole completed
+  workstream test gate after the correction sequence; no full Vitest, build, browser, or source
+  change was run.

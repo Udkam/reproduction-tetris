@@ -11,7 +11,7 @@ For each item in `levels.json` expose:
 - `index` and `total` (the current set is 1–6 / 6)
 - `difficulty`
 - `unlocked: boolean`
-- fixed goal label: `清空可见棋盘`
+- fixed goal label: `清空棋盘`
 
 The select surface must not show score, a leaderboard rank, a time target, a second queue preview, or a fake success percentage.
 
@@ -21,7 +21,7 @@ Use canonical run data to expose:
 
 - full level name and `index/total`
 - `remainingPieces = puzzlePieceBudget - pieceCount`
-- `goal = visible-board-empty`
+- `goal = canonical-board-empty` (the initial hidden buffer is validator-required empty)
 - factual status: `ready`, `playing`, or `paused`
 - exactly one Next item: `puzzleQueue[puzzleQueueIndex]`, when it exists
 
@@ -29,6 +29,6 @@ Do not render Marathon score/level or Race time/remaining lines/speed in Puzzle.
 
 ## Complete and fail
 
-On complete expose `completedLevelId`, full Chinese level name, `boardEmpty: true`, and either `nextUnlockedLevel` or `campaignComplete: true`. On fail expose the same level identity plus exactly one factual code: `top-out`, `invalid-spawn`, or `budget-exhausted`.
+On complete expose `completedLevelId`, full Chinese level name, `canonicalBoardEmpty: true`, and either `nextUnlockedLevel` or `campaignComplete: true`. On fail expose the same level identity plus exactly one factual code: `top-out`, `invalid-spawn`, or `budget-exhausted`.
 
-Neither surface may derive completion from score, line count, timer, stored leaderboard data, or a UI-only flag. The board-empty predicate and campaign transition must come from canonical run output.
+Neither surface may derive completion from score, line count, timer, stored leaderboard data, or a UI-only flag. The full canonical-board-empty predicate and campaign transition must come from canonical run output.
