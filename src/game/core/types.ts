@@ -53,7 +53,7 @@ export interface GameState {
   puzzleId: PuzzleId | null;
   /**
    * Temporary presentation bridge for the frozen T2 shell. Puzzle core rules
-   * never read this field: T3 success is exclusively canonical-board-empty.
+   * never read this field: T5 success is exclusively canonical-board-empty.
    * @deprecated Remove when the presentation shell consumes puzzleGoal.
    */
   puzzleTargetLines: number | null;

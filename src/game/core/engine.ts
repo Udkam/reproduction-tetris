@@ -6,7 +6,6 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
-  RACE_TARGET_LINES,
   VISIBLE_START_ROW,
   gravityForMode,
 } from './constants';
@@ -361,20 +360,6 @@ function finishLineClear(state: GameState): GameTransition {
   };
   const events: GameEvent[] = [{ type: 'lines-cleared', rows, count, score: clearScore }];
   if (level > state.level) events.push({ type: 'level-up', level });
-  if (cleared.mode === 'race' && lines >= RACE_TARGET_LINES) {
-    return {
-      state: {
-        ...cleared,
-        active: null,
-        phase: 'active',
-        status: 'finished',
-        gravityTicks: 0,
-        lockTicks: 0,
-        lockResets: 0,
-      },
-      events: [...events, { type: 'finished', completionTicks: cleared.elapsedTicks }],
-    };
-  }
   if (cleared.mode === 'puzzle') {
     const resolved = resolvePuzzleAfterLock(cleared, true);
     return { state: resolved.state, events: [...events, ...resolved.events] };
@@ -404,10 +389,6 @@ function tick(state: GameState): GameTransition {
 
   if (!withActive(next)) return invalidState(next);
 
-  // Puzzle gravity is intentionally disabled. Fixed ticks still advance elapsed
-  // deterministic time, but only a public hard-drop command may lock a piece.
-  if (next.mode === 'puzzle') return { state: next, events: [] };
-
   if (isGrounded(next.board, next.active)) {
     next = { ...next, lockTicks: next.lockTicks + 1 };
     if (next.lockTicks >= LOCK_DELAY_TICKS) return lockActive(next);
@@ -415,8 +396,12 @@ function tick(state: GameState): GameTransition {
     next = { ...next, lockTicks: 0 };
   }
 
+  // Puzzle gravity is intentionally disabled. A piece moved to the floor by
+  // soft drop still shares the normal grounded lock delay above.
+  if (next.mode === 'puzzle') return { state: next, events: [] };
+
   const gravityTicks = next.gravityTicks + 1;
-  if (gravityTicks >= gravityForMode(next.mode, next.level, next.pieceCount)) {
+  if (gravityTicks >= gravityForMode(next.mode, next.level, next.pieceCount, next.lines)) {
     const moved = moveActive({ ...next, gravityTicks: 0 }, 0, 1, 'gravity');
     return moved;
   }
@@ -472,7 +457,7 @@ export function replay(seed: number, commands: readonly GameCommand[], mode: Gam
 }
 
 export function stateHash(state: GameState): string {
-  // T3-only fields are irrelevant to Marathon/Race and intentionally omitted
+  // Puzzle-only fields are irrelevant to Marathon/Race and intentionally omitted
   // there so their established replay hashes remain stable. Puzzle state hashes
   // include the entire authored campaign payload and outcome fields.
   const canonicalState = state.mode === 'puzzle'

@@ -21,11 +21,14 @@ export const GRAVITY_TICKS = [
 ] as const;
 
 /**
- * Race speed advances one step for every five locked pieces. The final entry
- * is the intentional speed cap: gravity never becomes faster than 2 ticks per
- * row, preserving one deterministic input/render tick between falls.
+ * Race speed advances through two deterministic signals: locked pieces and
+ * cleared lines. The final entry is the intentional speed cap: gravity never
+ * becomes faster than 2 ticks per row, preserving one deterministic
+ * input/render tick between falls.
  */
 export const RACE_PIECES_PER_SPEED_STEP = 5;
+export const RACE_LINES_PER_SPEED_STEP = 4;
+/** @deprecated T5 Race has no line target. Retained until the frontend slice migrates its copy. */
 export const RACE_TARGET_LINES = 20;
 export const RACE_GRAVITY_TICKS = [
   42, 36, 30, 25, 21, 18, 15, 13, 11, 9, 8, 7, 6, 5, 4, 3, 2,
@@ -40,14 +43,20 @@ export function gravityForLevel(level: number): number {
   return 1;
 }
 
-export function gravityForRace(pieceCount: number): number {
+export function raceSpeedTier(pieceCount: number, lines: number): number {
   const lockedPieces = Math.max(0, Math.floor(pieceCount));
-  const speedStep = Math.floor(lockedPieces / RACE_PIECES_PER_SPEED_STEP);
-  return RACE_GRAVITY_TICKS[Math.min(speedStep, RACE_GRAVITY_TICKS.length - 1)] ?? RACE_MIN_GRAVITY_TICKS;
+  const clearedLines = Math.max(0, Math.floor(lines));
+  const step = Math.floor(lockedPieces / RACE_PIECES_PER_SPEED_STEP)
+    + Math.floor(clearedLines / RACE_LINES_PER_SPEED_STEP);
+  return Math.min(step, RACE_GRAVITY_TICKS.length - 1);
 }
 
-export function gravityForMode(mode: GameMode, level: number, pieceCount: number): number {
-  if (mode === 'race') return gravityForRace(pieceCount);
+export function gravityForRace(pieceCount: number, lines: number): number {
+  return RACE_GRAVITY_TICKS[raceSpeedTier(pieceCount, lines)] ?? RACE_MIN_GRAVITY_TICKS;
+}
+
+export function gravityForMode(mode: GameMode, level: number, pieceCount: number, lines: number): number {
+  if (mode === 'race') return gravityForRace(pieceCount, lines);
   if (mode === 'puzzle') return Number.MAX_SAFE_INTEGER;
   return gravityForLevel(level);
 }

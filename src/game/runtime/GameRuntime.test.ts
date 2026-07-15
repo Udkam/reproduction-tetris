@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { getPuzzleDefinition } from '../core';
 import { GameRuntime } from './GameRuntime';
 
 describe('GameRuntime public state boundary', () => {
@@ -40,7 +41,7 @@ describe('GameRuntime public state boundary', () => {
     expect(state.status).toBe('ready');
     expect(state.mode).toBe('puzzle');
     expect(state.puzzleId).toBe('t3r-cascade-06');
-    expect(state.puzzleQueue).toEqual(['I', 'I', 'O', 'I', 'O']);
+    expect(state.puzzleQueue).toEqual(getPuzzleDefinition('t3r-cascade-06').queue);
     expect(state.puzzleCompletion).toBe('active');
   });
 });

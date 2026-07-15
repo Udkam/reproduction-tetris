@@ -2,7 +2,7 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { createInitialState, dispatch, stateHash, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
 import { InputController, type InputAction } from '../input/InputController';
 import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer';
-import { replayPuzzleRotation, replayRaceCompletion } from './qaScenario';
+import { replayPuzzleChallenge, replayRaceEndurance } from './qaScenario';
 
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
@@ -27,7 +27,7 @@ export interface RuntimeQaSurface {
   action: (action: InputAction) => void;
   release: (action: InputAction) => void;
   advanceTicks: (ticks: number) => void;
-  replayScenario: (name: 'race-completion' | 'puzzle-rotation') => { commandCount: number; hash: string; commands: readonly GameCommand[] };
+  replayScenario: (name: 'race-endurance' | 'puzzle-challenge') => { commandCount: number; hash: string; commands: readonly GameCommand[] };
   setFrozen: (frozen: boolean) => void;
   benchmarkRender: (iterations?: number) => { meanMs: number; p95Ms: number; maxMs: number };
 }
@@ -89,9 +89,16 @@ export class GameRuntime {
           this.flushRender(0);
         },
         replayScenario: (name) => {
-          const scenario = name === 'race-completion'
-            ? replayRaceCompletion(this.state.seed)
-            : replayPuzzleRotation(this.state.seed);
+          const scenario = (() => {
+            switch (name) {
+              case 'race-endurance':
+                return replayRaceEndurance(this.state.seed);
+              case 'puzzle-challenge':
+                return replayPuzzleChallenge(this.state.seed);
+              default:
+                throw new Error(`Unknown QA scenario: ${String(name)}`);
+            }
+          })();
           this.state = scenario.state;
           this.accumulator = 0;
           this.pendingEvents = [];

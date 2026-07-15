@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createInitialState, dispatch } from './game/core';
+import referencesFile from '../docs/workstreams/tetris-t5-core/puzzle-references.json';
+import { createInitialState, dispatch, type GameCommand, type GameState, type PuzzleId, type Rotation } from './game/core';
 import {
   CAMPAIGN_LEVELS,
   defaultPuzzleProgress,
@@ -8,16 +9,44 @@ import {
   recordCanonicalPuzzleCompletion,
 } from './puzzleProgress';
 
-describe('T3 puzzle campaign presentation data', () => {
-  it('binds the six accepted IDs, names, difficulties, and flat campaign indices', () => {
-    expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name, level.difficulty, level.index, level.total])).toEqual([
-      ['t3r-shaft-01', '三井初鸣', 4, 1, 6],
-      ['t3r-shaft-02', '四井错拍', 5, 2, 6],
-      ['t3r-shaft-03', '偏置立柱', 5, 3, 6],
-      ['t3r-shaft-04', '五井精裁', 6, 4, 6],
-      ['t3r-cascade-05', '左岸级联', 7, 5, 6],
-      ['t3r-cascade-06', '右岸回流', 8, 6, 6],
-    ]);
+type PuzzleProgressFixture = {
+  id: PuzzleId;
+  name: string;
+  difficulty: number;
+  reference: { placements: Array<{ rotation: Rotation; x: number }> };
+};
+
+const t5Levels = (referencesFile as unknown as { levels: PuzzleProgressFixture[] }).levels;
+
+function rotationCommands(rotation: Rotation): GameCommand[] {
+  if (rotation === 1) return [{ type: 'rotate', direction: 1 }];
+  if (rotation === 2) return [{ type: 'rotate', direction: 1 }, { type: 'rotate', direction: 1 }];
+  if (rotation === 3) return [{ type: 'rotate', direction: -1 }];
+  return [];
+}
+
+function completeFirstT5Puzzle(): GameState {
+  const reference = t5Levels[0]!;
+  let state = createInitialState(0x51a1f00d, 'puzzle', reference.id);
+  state = dispatch(state, { type: 'start' }).state;
+  for (const placement of reference.reference.placements) {
+    for (const command of rotationCommands(placement.rotation)) state = dispatch(state, command).state;
+    while (state.active && state.active.x !== placement.x) {
+      state = dispatch(state, { type: 'move', dx: placement.x < state.active.x ? -1 : 1 }).state;
+    }
+    state = dispatch(state, { type: 'hard-drop' }).state;
+    while (state.status === 'playing' && (!state.active || state.phase !== 'active')) {
+      state = dispatch(state, { type: 'tick' }).state;
+    }
+  }
+  return state;
+}
+
+describe('T5 puzzle campaign presentation data', () => {
+  it('binds the six T5 fixture IDs and labels to flat campaign indices', () => {
+    expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name, level.difficulty, level.index, level.total])).toEqual(
+      t5Levels.map((level, index) => [level.id, level.name, level.difficulty, index + 1, t5Levels.length]),
+    );
   });
 
   it('fails closed to only level one for malformed, obsolete, and unknown storage', () => {
@@ -30,17 +59,7 @@ describe('T3 puzzle campaign presentation data', () => {
   });
 
   it('advances only from a real canonical completion and never from failures or a locked run', () => {
-    let state = createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01');
-    for (const command of [
-      { type: 'start' as const }, { type: 'rotate' as const, direction: -1 as const }, { type: 'hard-drop' as const },
-      { type: 'tick' as const }, { type: 'tick' as const }, { type: 'tick' as const },
-      { type: 'move' as const, dx: -1 as const }, { type: 'move' as const, dx: -1 as const }, { type: 'move' as const, dx: -1 as const },
-      { type: 'rotate' as const, direction: -1 as const }, { type: 'move' as const, dx: -1 as const }, { type: 'hard-drop' as const },
-      { type: 'tick' as const }, { type: 'tick' as const }, { type: 'tick' as const },
-      { type: 'move' as const, dx: 1 as const }, { type: 'move' as const, dx: 1 as const }, { type: 'move' as const, dx: 1 as const },
-      { type: 'rotate' as const, direction: 1 as const }, { type: 'move' as const, dx: 1 as const }, { type: 'hard-drop' as const },
-      ...Array.from({ length: 12 }, () => ({ type: 'tick' as const })),
-    ]) state = dispatch(state, command).state;
+    const state = completeFirstT5Puzzle();
 
     const progressed = recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), state);
     expect(progressed.nextUnlockedLevelId).toBe('t3r-shaft-02');

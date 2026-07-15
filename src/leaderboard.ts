@@ -1,31 +1,29 @@
 export type RunMode = 'marathon' | 'race';
-export type RunOutcome = 'top-out' | 'finished';
+export type RunOutcome = 'top-out';
 
 export interface ScoreRecord {
-  version: 2;
+  version: 3;
   score: number;
   lines: number;
   pieces: number;
   elapsedTicks: number;
-  completionTicks: number | null;
   mode: RunMode;
   outcome: RunOutcome;
   completedAt: string;
 }
 
 export interface Leaderboard {
-  version: 2;
+  version: 3;
   marathon: ScoreRecord[];
   race: ScoreRecord[];
 }
 
-export const LEADERBOARD_KEY = 'stack-order:leaderboard:v2';
-export const LEGACY_LEADERBOARD_KEY = 'stack-order:leaderboard:v1';
+export const LEADERBOARD_KEY = 'tetris:leaderboard:v3';
+export const LEGACY_LEADERBOARD_KEYS = ['stack-order:leaderboard:v2', 'stack-order:leaderboard:v1'] as const;
 export const LEADERBOARD_LIMIT = 8;
-export const RACE_COMPLETION_LINES = 20;
 
 export function emptyLeaderboard(): Leaderboard {
-  return { version: 2, marathon: [], race: [] };
+  return { version: 3, marathon: [], race: [] };
 }
 
 function isNonNegativeInteger(value: unknown): value is number {
@@ -46,23 +44,18 @@ export function isScoreRecord(value: unknown): value is ScoreRecord {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const record = value as Partial<ScoreRecord>;
   if (
-    record.version !== 2
+    record.version !== 3
     || !isNonNegativeInteger(record.score)
     || !isNonNegativeInteger(record.lines)
     || !isNonNegativeInteger(record.pieces)
     || !isNonNegativeInteger(record.elapsedTicks)
     || (record.mode !== 'marathon' && record.mode !== 'race')
-    || (record.outcome !== 'top-out' && record.outcome !== 'finished')
+    || record.outcome !== 'top-out'
     || !isIsoDate(record.completedAt)
   ) {
     return false;
   }
-  if (record.mode === 'marathon') {
-    return record.outcome === 'top-out' && record.completionTicks === null;
-  }
-  return record.outcome === 'finished'
-    && record.lines >= RACE_COMPLETION_LINES
-    && record.completionTicks === record.elapsedTicks;
+  return true;
 }
 
 export function sortRecords(mode: RunMode, records: readonly ScoreRecord[]): ScoreRecord[] {
@@ -74,8 +67,8 @@ export function sortRecords(mode: RunMode, records: readonly ScoreRecord[]): Sco
         || left.elapsedTicks - right.elapsedTicks
         || compareText(left.completedAt, right.completedAt);
     }
-    return (left.completionTicks ?? Number.MAX_SAFE_INTEGER) - (right.completionTicks ?? Number.MAX_SAFE_INTEGER)
-      || left.pieces - right.pieces
+    return right.pieces - left.pieces
+      || right.lines - left.lines
       || right.score - left.score
       || left.elapsedTicks - right.elapsedTicks
       || compareText(left.completedAt, right.completedAt);
@@ -90,7 +83,7 @@ function recordsAreValid(mode: RunMode, records: unknown): records is ScoreRecor
 function isLeaderboard(value: unknown): value is Leaderboard {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const board = value as Partial<Leaderboard>;
-  return board.version === 2
+  return board.version === 3
     && recordsAreValid('marathon', board.marathon)
     && recordsAreValid('race', board.race);
 }
@@ -101,7 +94,7 @@ export function parseLeaderboard(raw: string | null): Leaderboard {
     const value: unknown = JSON.parse(raw);
     if (!isLeaderboard(value)) return emptyLeaderboard();
     return {
-      version: 2,
+      version: 3,
       marathon: sortRecords('marathon', value.marathon).slice(0, LEADERBOARD_LIMIT),
       race: sortRecords('race', value.race).slice(0, LEADERBOARD_LIMIT),
     };
@@ -111,8 +104,8 @@ export function parseLeaderboard(raw: string | null): Leaderboard {
 }
 
 /**
- * V1 rows do not have fixed-tick elapsed time or an outcome, so no safe,
- * deterministic migration is possible. Returning an empty v2 store is the
+ * Legacy rows do not provide the v3 top-out endurance contract, so no safe,
+ * deterministic migration is possible. Returning an empty v3 store is the
  * deliberate fail-closed migration result.
  */
 export function migrateLegacyLeaderboard(_raw: string | null): Leaderboard {

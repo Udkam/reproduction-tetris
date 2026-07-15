@@ -10,12 +10,11 @@ import {
 } from './leaderboard';
 
 const marathonRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
-  version: 2,
+  version: 3,
   score: 1200,
   lines: 8,
   pieces: 31,
   elapsedTicks: 3600,
-  completionTicks: null,
   mode: 'marathon',
   outcome: 'top-out',
   completedAt: '2026-07-14T01:00:00.000Z',
@@ -23,30 +22,29 @@ const marathonRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
 });
 
 const raceRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
-  version: 2,
+  version: 3,
   score: 1200,
   lines: 20,
   pieces: 31,
   elapsedTicks: 3600,
-  completionTicks: 3600,
   mode: 'race',
-  outcome: 'finished',
+  outcome: 'top-out',
   completedAt: '2026-07-14T01:00:00.000Z',
   ...overrides,
 });
 
 describe('local leaderboard boundary', () => {
-  it('fails closed on malformed schema, incomplete race rows, and legacy v1 rows', () => {
+  it('fails closed on malformed schema, obsolete completion rows, and legacy stores', () => {
     expect(parseLeaderboard('{broken')).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 2,
+      version: 3,
       marathon: [marathonRecord(), { ...marathonRecord(), pieces: -1 }],
       race: [],
     }))).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 2,
+      version: 3,
       marathon: [],
-      race: [raceRecord({ lines: 19 })],
+      race: [{ ...raceRecord(), version: 2, outcome: 'finished', completionTicks: 3600 }],
     }))).toEqual(emptyLeaderboard());
     expect(migrateLegacyLeaderboard(JSON.stringify([{ score: 1200, lines: 8, pieces: 31, mode: 'marathon', completedAt: '2026-07-14T01:00:00.000Z' }])))
       .toEqual(emptyLeaderboard());
@@ -64,9 +62,9 @@ describe('local leaderboard boundary', () => {
       }));
       leaderboard = insertScoreRecord(leaderboard, raceRecord({
         score: 800 + index,
+        lines: index,
         pieces: 40 - index,
         elapsedTicks: 3000 + index,
-        completionTicks: 3000 + index,
         completedAt: new Date(Date.UTC(2026, 6, 14, 2, index)).toISOString(),
       }));
     }
@@ -74,7 +72,7 @@ describe('local leaderboard boundary', () => {
     expect(recordsForMode(leaderboard, 'marathon')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'race')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'marathon')[0]?.score).toBe(1200);
-    expect(recordsForMode(leaderboard, 'race')[0]?.completionTicks).toBe(3000);
+    expect(recordsForMode(leaderboard, 'race')[0]?.pieces).toBe(40);
     expect(parseLeaderboard(JSON.stringify(leaderboard))).toEqual(leaderboard);
   });
 
@@ -88,14 +86,16 @@ describe('local leaderboard boundary', () => {
     leaderboard = insertScoreRecord(leaderboard, marathonBetterScore);
     expect(recordsForMode(leaderboard, 'marathon')).toEqual([marathonBetterScore, marathonMoreLines, marathonFast]);
 
-    const raceSlower = raceRecord({ completionTicks: 200, elapsedTicks: 200, pieces: 1, score: 1 });
-    const raceFewerPieces = raceRecord({ completionTicks: 100, elapsedTicks: 100, pieces: 8, score: 1 });
-    const raceHigherScore = raceRecord({ completionTicks: 100, elapsedTicks: 100, pieces: 8, score: 2 });
-    const raceWinner = raceRecord({ completionTicks: 100, elapsedTicks: 100, pieces: 7, score: 0 });
-    leaderboard = insertScoreRecord(leaderboard, raceSlower);
+    const raceFewerPieces = raceRecord({ lines: 99, elapsedTicks: 100, pieces: 69, score: 9000 });
+    const raceFewerLines = raceRecord({ lines: 19, elapsedTicks: 100, pieces: 70, score: 9000 });
+    const raceLowerScore = raceRecord({ lines: 20, elapsedTicks: 100, pieces: 70, score: 3000 });
+    const raceSlower = raceRecord({ lines: 20, elapsedTicks: 600, pieces: 70, score: 4000 });
+    const raceWinner = raceRecord({ lines: 20, elapsedTicks: 300, pieces: 70, score: 4000 });
+    leaderboard = insertScoreRecord(leaderboard, raceLowerScore);
     leaderboard = insertScoreRecord(leaderboard, raceFewerPieces);
-    leaderboard = insertScoreRecord(leaderboard, raceHigherScore);
+    leaderboard = insertScoreRecord(leaderboard, raceFewerLines);
+    leaderboard = insertScoreRecord(leaderboard, raceSlower);
     leaderboard = insertScoreRecord(leaderboard, raceWinner);
-    expect(recordsForMode(leaderboard, 'race')).toEqual([raceWinner, raceHigherScore, raceFewerPieces, raceSlower]);
+    expect(recordsForMode(leaderboard, 'race')).toEqual([raceWinner, raceSlower, raceLowerScore, raceFewerLines, raceFewerPieces]);
   });
 });

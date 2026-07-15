@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "semantics": {
+    "commandSource": "Each placement is converted to public rotate, move, hard-drop, and tick commands and executed from createInitialState.",
+    "boardRule": "Every authored cell is part of a bottom-supported solid skyline; there are no floating cells or blank layers inside the stack.",
+    "terminalRule": "References consume the exact fixed queue and finish only when the canonical board is empty after ordinary line resolution.",
+    "evidenceRule": "Initial/final state hashes plus command/event digests are frozen from two identical public-dispatch runs.",
+    "negativeRule": "Each recorded one-column neighboring decision is replayed through the remaining authored route and must end failed-budget with residual cells."
+  },
+  "levels": [
+    {
+      "id": "t3r-shaft-01",
+      "name": "青脊回旋",
+      "difficulty": 8,
+      "boardRows": [
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........",
+        ".J.J.J....", ".J.J.J....", ".J.JJJ...J", ".J.JJJ...J", ".J.JJJ...J", ".JJJJJ..JJ", ".JJJJJ.JJJ"
+      ],
+      "queue": ["I", "S", "I", "L", "Z", "I", "J", "O", "J", "T", "I"],
+      "pieceBudget": 11,
+      "reference": {
+        "seed": 1975558150,
+        "placements": [
+          {"type":"I","rotation":1,"x":-2,"landingY":36,"clearedLines":0},
+          {"type":"S","rotation":0,"x":6,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":1,"x":0,"landingY":35,"clearedLines":0},
+          {"type":"L","rotation":0,"x":6,"landingY":36,"clearedLines":1},
+          {"type":"Z","rotation":1,"x":5,"landingY":36,"clearedLines":1},
+          {"type":"I","rotation":1,"x":-2,"landingY":35,"clearedLines":1},
+          {"type":"J","rotation":1,"x":5,"landingY":37,"clearedLines":1},
+          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":0},
+          {"type":"J","rotation":1,"x":3,"landingY":37,"clearedLines":1},
+          {"type":"T","rotation":2,"x":1,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
+        ],
+        "metrics": {"pieceTypes":7,"effectiveRotations":8,"distinctLandingXs":7,"nonClearingLocks":3,"clearPhases":8,"clearedLines":8},
+        "evidence": {"initialHash":"706958fe","finalHash":"d1a62f4f","commandDigest":"456b9958","eventDigest":"a9abf6ac","commandCount":157},
+        "negativeRoutes": [
+          {"placementIndex":0,"x":-1,"expectedCompletion":"failed-budget","finalHash":"fd151397"}
+        ]
+      }
+    },
+    {
+      "id": "t3r-shaft-02",
+      "name": "深湾折返",
+      "difficulty": 9,
+      "boardRows": [
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........",
+        ".....JJ...", "..J..JJ...", "..J..JJ...", "..J..JJ...", "..J..JJ.J.", "J.J..JJ.J.", "J.J.JJJJJJ"
+      ],
+      "queue": ["L", "J", "I", "L", "S", "O", "T", "Z", "J", "I", "O", "I", "I"],
+      "pieceBudget": 13,
+      "reference": {
+        "seed": 1975558151,
+        "placements": [
+          {"type":"L","rotation":3,"x":0,"landingY":37,"clearedLines":0},
+          {"type":"J","rotation":1,"x":2,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":1,"x":5,"landingY":36,"clearedLines":0},
+          {"type":"L","rotation":3,"x":8,"landingY":37,"clearedLines":1},
+          {"type":"S","rotation":1,"x":2,"landingY":37,"clearedLines":1},
+          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"T","rotation":3,"x":3,"landingY":37,"clearedLines":0},
+          {"type":"Z","rotation":0,"x":7,"landingY":38,"clearedLines":1},
+          {"type":"J","rotation":2,"x":7,"landingY":37,"clearedLines":0},
+          {"type":"I","rotation":0,"x":0,"landingY":37,"clearedLines":1},
+          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
+        ],
+        "metrics": {"pieceTypes":7,"effectiveRotations":8,"distinctLandingXs":7,"nonClearingLocks":5,"clearPhases":8,"clearedLines":8},
+        "evidence": {"initialHash":"883978b5","finalHash":"70796ae5","commandDigest":"57df17e1","eventDigest":"7ee458ea","commandCount":168},
+        "negativeRoutes": [
+          {"placementIndex":4,"x":3,"expectedCompletion":"failed-budget","finalHash":"934ab68d"}
+        ]
+      }
+    },
+    {
+      "id": "t3r-shaft-03",
+      "name": "双岸错层",
+      "difficulty": 9,
+      "boardRows": [
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........",
+        "...J....J.", ".J.J....J.", ".J.J....J.", ".JJJ....J.", ".JJJJ..JJJ", ".JJJJ..JJJ", "JJJJJ..JJJ"
+      ],
+      "queue": ["I", "S", "Z", "T", "I", "L", "T", "J", "J", "O", "I", "O", "I", "I"],
+      "pieceBudget": 14,
+      "reference": {
+        "seed": 1975558146,
+        "placements": [
+          {"type":"I","rotation":1,"x":-2,"landingY":35,"clearedLines":0},
+          {"type":"S","rotation":1,"x":4,"landingY":37,"clearedLines":1},
+          {"type":"Z","rotation":1,"x":5,"landingY":36,"clearedLines":1},
+          {"type":"T","rotation":3,"x":4,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":1,"x":7,"landingY":36,"clearedLines":1},
+          {"type":"L","rotation":3,"x":1,"landingY":37,"clearedLines":0},
+          {"type":"T","rotation":2,"x":5,"landingY":37,"clearedLines":0},
+          {"type":"J","rotation":1,"x":3,"landingY":37,"clearedLines":1},
+          {"type":"J","rotation":1,"x":-1,"landingY":37,"clearedLines":1},
+          {"type":"O","rotation":0,"x":6,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
+          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":4,"landingY":38,"clearedLines":0},
+          {"type":"I","rotation":0,"x":0,"landingY":38,"clearedLines":1}
+        ],
+        "metrics": {"pieceTypes":7,"effectiveRotations":10,"distinctLandingXs":11,"nonClearingLocks":5,"clearPhases":9,"clearedLines":9},
+        "evidence": {"initialHash":"dd21abcf","finalHash":"ef0cf574","commandDigest":"89d1933d","eventDigest":"c46c0907","commandCount":180},
+        "negativeRoutes": [
+          {"placementIndex":7,"x":2,"expectedCompletion":"failed-budget","finalHash":"6ce9f0e8"}
+        ]
+      }
+    },
+    {
+      "id": "t3r-shaft-04",
+      "name": "侧槽逆流",
+      "difficulty": 10,
+      "boardRows": [
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........",
+        ".....J...J", ".J...J...J", ".JJ..J...J", ".JJ..J...J", ".JJJ.J.J.J", "JJJJ.J.J.J", "JJJJ.J.JJJ"
+      ],
+      "queue": ["I", "I", "L", "I", "Z", "J", "S", "O", "T", "L", "I", "O", "I", "I"],
+      "pieceBudget": 14,
+      "reference": {
+        "seed": 1975558149,
+        "placements": [
+          {"type":"I","rotation":1,"x":2,"landingY":36,"clearedLines":0},
+          {"type":"I","rotation":1,"x":4,"landingY":36,"clearedLines":1},
+          {"type":"L","rotation":3,"x":7,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":1,"x":-2,"landingY":36,"clearedLines":1},
+          {"type":"Z","rotation":1,"x":2,"landingY":37,"clearedLines":1},
+          {"type":"J","rotation":2,"x":6,"landingY":37,"clearedLines":0},
+          {"type":"S","rotation":0,"x":2,"landingY":37,"clearedLines":1},
+          {"type":"O","rotation":0,"x":6,"landingY":38,"clearedLines":1},
+          {"type":"T","rotation":2,"x":7,"landingY":37,"clearedLines":0},
+          {"type":"L","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":3,"landingY":38,"clearedLines":0},
+          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
+        ],
+        "metrics": {"pieceTypes":7,"effectiveRotations":9,"distinctLandingXs":7,"nonClearingLocks":5,"clearPhases":9,"clearedLines":9},
+        "evidence": {"initialHash":"73bbdcf6","finalHash":"3dbf23db","commandDigest":"e012f528","eventDigest":"cc797e1e","commandCount":180},
+        "negativeRoutes": [
+          {"placementIndex":10,"x":4,"expectedCompletion":"failed-budget","finalHash":"72962aaf"}
+        ]
+      }
+    },
+    {
+      "id": "t3r-cascade-05",
+      "name": "潮线汇流",
+      "difficulty": 10,
+      "boardRows": [
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........",
+        "....J.....", "....J.....", "...JJ....J", "...JJJ..JJ", "...JJJ..JJ", "...JJJJJJJ", "J..JJJJJJJ"
+      ],
+      "queue": ["Z", "T", "O", "S", "J", "I", "J", "L", "I", "I", "L", "I", "O", "I", "I"],
+      "pieceBudget": 15,
+      "reference": {
+        "seed": 1975558145,
+        "placements": [
+          {"type":"Z","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"T","rotation":3,"x":1,"landingY":37,"clearedLines":1},
+          {"type":"O","rotation":0,"x":6,"landingY":38,"clearedLines":0},
+          {"type":"S","rotation":0,"x":0,"landingY":37,"clearedLines":1},
+          {"type":"J","rotation":1,"x":-1,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":0,"x":5,"landingY":38,"clearedLines":1},
+          {"type":"J","rotation":3,"x":2,"landingY":37,"clearedLines":0},
+          {"type":"L","rotation":3,"x":4,"landingY":37,"clearedLines":0},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":0},
+          {"type":"L","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":0},
+          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
+          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
+        ],
+        "metrics": {"pieceTypes":7,"effectiveRotations":4,"distinctLandingXs":7,"nonClearingLocks":6,"clearPhases":9,"clearedLines":9},
+        "evidence": {"initialHash":"73671a92","finalHash":"cff0d920","commandDigest":"349f06c4","eventDigest":"65388eea","commandCount":184},
+        "negativeRoutes": [
+          {"placementIndex":13,"x":3,"expectedCompletion":"failed-budget","finalHash":"18a40943"}
+        ]
+      }
+    },
+    {
+      "id": "t3r-cascade-06",
+      "name": "远岸终局",
+      "difficulty": 10,
+      "boardRows": [
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........", "..........", "..........",
+        "..........", "..........", "..........",
+        ".J........", ".J...JJ...", ".J...JJ...", ".J..JJJ...", ".J..JJJJ..", ".J.JJJJJ..", "JJJJJJJJ.."
+      ],
+      "queue": ["O", "I", "T", "Z", "J", "L", "S", "L", "J", "I", "Z", "I", "O", "I", "I"],
+      "pieceBudget": 15,
+      "reference": {
+        "seed": 1975558148,
+        "placements": [
+          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":1,"x":-2,"landingY":36,"clearedLines":0},
+          {"type":"T","rotation":1,"x":1,"landingY":37,"clearedLines":1},
+          {"type":"Z","rotation":0,"x":7,"landingY":38,"clearedLines":1},
+          {"type":"J","rotation":2,"x":7,"landingY":37,"clearedLines":0},
+          {"type":"L","rotation":0,"x":2,"landingY":37,"clearedLines":1},
+          {"type":"S","rotation":1,"x":1,"landingY":37,"clearedLines":1},
+          {"type":"L","rotation":0,"x":7,"landingY":38,"clearedLines":0},
+          {"type":"J","rotation":1,"x":-1,"landingY":37,"clearedLines":1},
+          {"type":"I","rotation":0,"x":5,"landingY":38,"clearedLines":0},
+          {"type":"Z","rotation":0,"x":2,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":4,"landingY":38,"clearedLines":0},
+          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":1},
+          {"type":"I","rotation":0,"x":4,"landingY":38,"clearedLines":0},
+          {"type":"I","rotation":0,"x":0,"landingY":38,"clearedLines":1}
+        ],
+        "metrics": {"pieceTypes":7,"effectiveRotations":6,"distinctLandingXs":9,"nonClearingLocks":6,"clearPhases":9,"clearedLines":9},
+        "evidence": {"initialHash":"31591b83","finalHash":"9a08bd22","commandDigest":"874cee7a","eventDigest":"7c232eb4","commandCount":190},
+        "negativeRoutes": [
+          {"placementIndex":10,"x":3,"expectedCompletion":"failed-budget","finalHash":"5789b4c8"}
+        ]
+      }
+    }
+  ]
+}

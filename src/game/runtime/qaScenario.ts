@@ -5,6 +5,8 @@ import {
   stateHash,
   type GameCommand,
   type GameState,
+  type PieceType,
+  type Rotation,
 } from '../core';
 
 interface Route {
@@ -88,15 +90,17 @@ function reachableLandings(state: GameState): Route[] {
 }
 
 /**
- * Produces a deterministic, command-only Race completion replay. The planner reads
+ * Produces a deterministic, command-only endless Race endurance replay. The planner reads
  * normal simulation states to choose public movement, rotation, hard-drop, and tick
  * commands; it never creates or mutates a canonical board.
  */
-export function createRaceCompletionReplay(seed = 0x51a1f00d): readonly GameCommand[] {
+export const RACE_ENDURANCE_QA_LINES = 24;
+
+export function createRaceEnduranceReplay(seed = 0x51a1f00d): readonly GameCommand[] {
   let state = dispatch(createInitialState(seed, 'race'), { type: 'start' }).state;
   const commands: GameCommand[] = [{ type: 'start' }];
 
-  for (let piece = 0; piece < 180 && state.status === 'playing'; piece += 1) {
+  for (let piece = 0; piece < 220 && state.status === 'playing' && state.lines < RACE_ENDURANCE_QA_LINES; piece += 1) {
     const options = reachableLandings(state);
     if (options.length === 0) throw new Error('Race replay planner found no legal landing.');
     let selected = options[0]!;
@@ -112,41 +116,72 @@ export function createRaceCompletionReplay(seed = 0x51a1f00d): readonly GameComm
     state = selected.state;
   }
 
-  if (state.status !== 'finished') {
-    throw new Error(`Race replay did not finish: ${state.status} after ${state.lines} lines.`);
+  if (state.status !== 'playing' || state.lines < RACE_ENDURANCE_QA_LINES) {
+    throw new Error(`Race endurance replay missed its live milestone: ${state.status} after ${state.lines} lines.`);
   }
   return commands;
 }
 
-export function replayRaceCompletion(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState } {
-  const commands = createRaceCompletionReplay(seed);
+export function replayRaceEndurance(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState } {
+  const commands = createRaceEnduranceReplay(seed);
   let state = createInitialState(seed, 'race');
   for (const command of commands) state = dispatch(state, command).state;
   return { commands, state };
 }
 
-/** A public-command-only T3 route with ordinary delayed line resolution. */
-export function replayPuzzleRotation(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState; hash: string } {
-  const commands: readonly GameCommand[] = [
-    { type: 'start' },
-    { type: 'rotate', direction: -1 },
-    { type: 'hard-drop' },
-    { type: 'tick' }, { type: 'tick' }, { type: 'tick' },
-    { type: 'move', dx: -1 }, { type: 'move', dx: -1 }, { type: 'move', dx: -1 },
-    { type: 'rotate', direction: -1 }, { type: 'move', dx: -1 },
-    { type: 'hard-drop' },
-    { type: 'tick' }, { type: 'tick' }, { type: 'tick' },
-    { type: 'move', dx: 1 }, { type: 'move', dx: 1 }, { type: 'move', dx: 1 },
-    { type: 'rotate', direction: 1 }, { type: 'move', dx: 1 },
-    { type: 'hard-drop' },
-    { type: 'tick' }, { type: 'tick' }, { type: 'tick' }, { type: 'tick' },
-    { type: 'tick' }, { type: 'tick' }, { type: 'tick' }, { type: 'tick' },
-    { type: 'tick' }, { type: 'tick' }, { type: 'tick' }, { type: 'tick' },
-  ];
+interface PuzzleQaPlacement {
+  type: PieceType;
+  rotation: Rotation;
+  x: number;
+}
+
+const PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = [
+  { type: 'I', rotation: 1, x: -2 },
+  { type: 'S', rotation: 0, x: 6 },
+  { type: 'I', rotation: 1, x: 0 },
+  { type: 'L', rotation: 0, x: 6 },
+  { type: 'Z', rotation: 1, x: 5 },
+  { type: 'I', rotation: 1, x: -2 },
+  { type: 'J', rotation: 1, x: 5 },
+  { type: 'O', rotation: 0, x: 8 },
+  { type: 'J', rotation: 1, x: 3 },
+  { type: 'T', rotation: 2, x: 1 },
+  { type: 'I', rotation: 0, x: 6 },
+];
+
+function qaRotationCommands(rotation: Rotation): readonly GameCommand[] {
+  if (rotation === 1) return [{ type: 'rotate', direction: 1 }];
+  if (rotation === 2) return [{ type: 'rotate', direction: 1 }, { type: 'rotate', direction: 1 }];
+  if (rotation === 3) return [{ type: 'rotate', direction: -1 }];
+  return [];
+}
+
+/** A complete public-command-only T5 challenge route with ordinary delayed resolution. */
+export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState; hash: string } {
   let state = createInitialState(seed, 'puzzle', 't3r-shaft-01');
-  for (const command of commands) state = dispatch(state, command).state;
-  if (state.status !== 'finished' || state.lines !== 4 || state.pieceCount !== 3 || state.puzzleCompletion !== 'finished') {
-    throw new Error(`Puzzle rotation replay did not finish: ${state.status}, ${state.lines} lines, ${state.pieceCount} pieces.`);
+  const commands: GameCommand[] = [];
+  const apply = (command: GameCommand): void => {
+    commands.push(command);
+    state = dispatch(state, command).state;
+  };
+
+  apply({ type: 'start' });
+  for (const placement of PUZZLE_CHALLENGE_QA_ROUTE) {
+    if (!state.active || state.active.type !== placement.type) {
+      throw new Error(`Puzzle challenge QA route expected ${placement.type}, received ${state.active?.type ?? 'none'}.`);
+    }
+    for (const command of qaRotationCommands(placement.rotation)) apply(command);
+    while (state.active && state.active.x !== placement.x) {
+      const beforeX: number = state.active.x;
+      apply({ type: 'move', dx: placement.x < beforeX ? -1 : 1 });
+      if (state.active?.x === beforeX) throw new Error(`Puzzle challenge QA route could not reach x=${placement.x}.`);
+    }
+    apply({ type: 'hard-drop' });
+    while (state.status === 'playing' && (!state.active || state.phase !== 'active')) apply({ type: 'tick' });
+  }
+
+  if (state.status !== 'finished' || state.lines !== 8 || state.pieceCount !== 11 || state.puzzleCompletion !== 'finished') {
+    throw new Error(`Puzzle challenge replay did not finish: ${state.status}, ${state.lines} lines, ${state.pieceCount} pieces.`);
   }
   return { commands, state, hash: stateHash(state) };
 }

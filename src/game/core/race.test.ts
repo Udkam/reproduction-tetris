@@ -3,11 +3,12 @@ import {
   ENTRY_DELAY_TICKS,
   LINE_CLEAR_DELAY_TICKS,
   RACE_GRAVITY_TICKS,
+  RACE_LINES_PER_SPEED_STEP,
   RACE_MIN_GRAVITY_TICKS,
   RACE_PIECES_PER_SPEED_STEP,
-  RACE_TARGET_LINES,
   gravityForMode,
   gravityForRace,
+  raceSpeedTier,
 } from './constants';
 import { createInitialState, dispatch, replay, stateHash } from './engine';
 import { createBoard, setCell } from './board';
@@ -24,33 +25,39 @@ function advance(state: GameState, ticks: number): GameState {
 }
 
 describe('race speed curve', () => {
-  it('accelerates monotonically by locked pieces and stops at the explicit cap', () => {
-    let previous = gravityForRace(0);
+  it('accelerates monotonically by locked pieces plus cleared lines and stops at the explicit cap', () => {
+    let previous = gravityForRace(0, 0);
     expect(previous).toBe(RACE_GRAVITY_TICKS[0]);
 
-    const capStart = (RACE_GRAVITY_TICKS.length - 1) * RACE_PIECES_PER_SPEED_STEP;
-    for (let pieceCount = 1; pieceCount <= capStart + 100; pieceCount += 1) {
-      const current = gravityForRace(pieceCount);
+    const capStep = RACE_GRAVITY_TICKS.length - 1;
+    for (let speedStep = 1; speedStep <= capStep + 100; speedStep += 1) {
+      const pieceCount = speedStep * RACE_PIECES_PER_SPEED_STEP;
+      const current = gravityForRace(pieceCount, 0);
       expect(current).toBeLessThanOrEqual(previous);
       expect(current).toBeGreaterThanOrEqual(RACE_MIN_GRAVITY_TICKS);
       previous = current;
     }
 
-    expect(gravityForRace(capStart)).toBe(RACE_MIN_GRAVITY_TICKS);
-    expect(gravityForRace(capStart + 10_000)).toBe(RACE_MIN_GRAVITY_TICKS);
+    expect(raceSpeedTier(RACE_PIECES_PER_SPEED_STEP - 1, RACE_LINES_PER_SPEED_STEP - 1)).toBe(0);
+    expect(raceSpeedTier(RACE_PIECES_PER_SPEED_STEP, RACE_LINES_PER_SPEED_STEP)).toBe(2);
+    expect(raceSpeedTier(10_000, 10_000)).toBe(RACE_GRAVITY_TICKS.length - 1);
+    expect(gravityForRace(capStep * RACE_PIECES_PER_SPEED_STEP, 0)).toBe(RACE_MIN_GRAVITY_TICKS);
+    expect(gravityForRace(10_000, 10_000)).toBe(RACE_MIN_GRAVITY_TICKS);
   });
 
-  it('uses piece count for race while marathon retains level gravity', () => {
-    expect(gravityForMode('race', 29, 0)).toBe(RACE_GRAVITY_TICKS[0]);
-    expect(gravityForMode('race', 0, RACE_PIECES_PER_SPEED_STEP)).toBe(RACE_GRAVITY_TICKS[1]);
-    expect(gravityForMode('marathon', 29, 0)).toBe(1);
-    expect(gravityForMode('marathon', 0, 10_000)).toBe(48);
+  it('uses locked pieces and lines for race while marathon retains level gravity', () => {
+    expect(gravityForMode('race', 29, 0, 0)).toBe(RACE_GRAVITY_TICKS[0]);
+    expect(gravityForMode('race', 0, RACE_PIECES_PER_SPEED_STEP, 0)).toBe(RACE_GRAVITY_TICKS[1]);
+    expect(gravityForMode('race', 0, 0, RACE_LINES_PER_SPEED_STEP)).toBe(RACE_GRAVITY_TICKS[1]);
+    expect(gravityForMode('marathon', 29, 0, 0)).toBe(1);
+    expect(gravityForMode('marathon', 0, 10_000, 10_000)).toBe(48);
   });
 
   it('applies the race cadence to gravity ticks in the simulation', () => {
     const pieceCount = RACE_PIECES_PER_SPEED_STEP * 3;
-    const cadence = gravityForRace(pieceCount);
-    const state: GameState = { ...start(0x7ace, 'race'), pieceCount, gravityTicks: 0 };
+    const lines = RACE_LINES_PER_SPEED_STEP * 2;
+    const cadence = gravityForRace(pieceCount, lines);
+    const state: GameState = { ...start(0x7ace, 'race'), pieceCount, lines, gravityTicks: 0 };
     const startY = state.active!.y;
     const beforeFall = advance(state, cadence - 1);
 
@@ -85,29 +92,27 @@ describe('race state and deterministic replay', () => {
     expect(switched.pieceCount).toBe(0);
   });
 
-  it('finishes exactly at the twenty-line target without spawning a successor', () => {
+  it.each([19, 20, 199])('continues after a clear from %i lines and spawns the successor', (startingLines) => {
     let board = createBoard();
     for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'J');
     const state: GameState = {
       ...start(0x2020, 'race'),
       board,
       active: { type: 'O', rotation: 0, x: 8, y: 38 },
-      lines: RACE_TARGET_LINES - 1,
+      lines: startingLines,
       score: 0,
       gravityTicks: 0,
       lockTicks: 0,
     };
     const locked = dispatch(state, { type: 'hard-drop' }).state;
-    const beforeFinish = advance(locked, LINE_CLEAR_DELAY_TICKS - 1);
-    const finished = dispatch(beforeFinish, { type: 'tick' });
+    const beforeResolution = advance(locked, LINE_CLEAR_DELAY_TICKS - 1);
+    const resolved = dispatch(beforeResolution, { type: 'tick' });
 
-    expect(finished.state.status).toBe('finished');
-    expect(finished.state.lines).toBe(RACE_TARGET_LINES);
-    expect(finished.state.active).toBeNull();
-    expect(finished.state.phase).toBe('active');
-    expect(finished.state.queue).toEqual(locked.queue);
-    expect(finished.events).toContainEqual({ type: 'finished', completionTicks: LINE_CLEAR_DELAY_TICKS });
-    expect(dispatch(finished.state, { type: 'tick' }).state).toEqual(finished.state);
+    expect(resolved.state.status).toBe('playing');
+    expect(resolved.state.lines).toBe(startingLines + 1);
+    expect(resolved.state.active).not.toBeNull();
+    expect(resolved.state.phase).toBe('active');
+    expect(resolved.events.some((event) => event.type === 'finished')).toBe(false);
   });
 
   it('includes mode and piece count in hashes and replays race commands identically', () => {
