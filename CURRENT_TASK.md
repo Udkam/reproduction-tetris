@@ -42,8 +42,12 @@ The core writer may change only:
 - directly related tests under `src/game/core/*.test.ts`, including a new focused
   Puzzle-flow test if useful;
 - `src/game/runtime/qaScenario.ts`, `qaScenario.test.ts`, `GameRuntime.ts`, and
-  `GameRuntime.test.ts` only to migrate the obsolete Race-completion QA surface;
+  `GameRuntime.test.ts` to migrate obsolete Race-completion and stale Puzzle QA paths;
 - `src/leaderboard.ts` and `src/leaderboard.test.ts` for endless-Race records;
+- `src/puzzleProgress.test.ts` only to replace hard-coded old 3–5-piece completion
+  fixtures; `src/puzzleProgress.ts` remains forbidden;
+- `src/game/render/presentation.test.ts` only to replace hard-coded old Puzzle queue
+  expectations; renderer/presentation production files remain forbidden;
 - new `docs/workstreams/tetris-t5-core/**` fixtures and `THREAD_LOG.md`.
 
 The core writer must not edit `src/App.tsx`, `src/styles.css`,
@@ -60,6 +64,8 @@ Core acceptance:
 - soft drop can reach the floor, complete lock delay, and continue the queue;
 - hard-drop and line-clear paths spawn the exact next authored piece;
 - focused tests and the new T5 verifier pass;
+- after the last Core source change, one typecheck, one complete Vitest suite, and one
+  build pass without weakening or deleting historical evidence checks;
 - candidate SHA and exact evidence are logged before independent read-only QA.
 
 ## Slice B — T5 Frontend
