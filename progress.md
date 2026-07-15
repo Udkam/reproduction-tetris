@@ -13,3 +13,13 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
 - Final local gates passed once: typecheck, 36-file/234-test Vitest, build, and a
   19-capture browser matrix under `docs/qa/evidence/tetris-t4/`.
 - Active TODO: independent QA, coordinator changelog integration, and one push.
+
+## 2026-07-16 — T5 opened
+
+- User rejected the T4 Mineral Shelf presentation and requested a full light cyan/light-blue rebuild with a dedicated three-mode entry page.
+- Race changed from a 20-line finish to endless accelerating normal play; only explicit exit or top-out ends the run.
+- Puzzle changed to all levels available, no numeric-difficulty gating, longer non-obvious authored queues, and a hard requirement that consecutive pieces continue.
+- Root-cause audit found Puzzle soft drop can reach the floor but never lock because puzzle ticks return before grounded lock-delay handling.
+- Preserved the rejected T4 follow-up on local branch `codex/tetris-t4-rejected-preservation` at `1362c664629b2a83f0659f836259b84c21750fee`, then returned to a clean `codex/tetris-recovery` tree.
+- T5 uses the `4c85828` deterministic core/rule authority while retaining `dd7e31e` only as a historical ancestor.
+- Active TODO: implement and independently verify T5 core, then Aqua Blueprint frontend, then one combined final gate/evidence pass and final QA.

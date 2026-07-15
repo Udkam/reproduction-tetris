@@ -1,279 +1,207 @@
-# Tetris — T3 Mineral Shelf Production Contract
+# Tetris — T5 Aqua Blueprint Production Contract
 
 ## Status and authority
 
-T2 is an accepted historical milestone, not the current visual or Puzzle contract.
-The dark **Offset Drop** layout and its three line-target puzzles are deprecated for
-future production work.
+The user's 2026-07-16 direction opens T5 and supersedes every conflicting T3/T4
+product rule:
 
-The current accepted inputs are:
+- the T4 Mineral Shelf presentation is rejected and must be replaced, not patched;
+- Race is endless accelerating play, not a 20-line target;
+- Puzzle levels are all available, are not gated by displayed difficulty, and must be
+  materially longer and less obvious;
+- the reported one-piece Puzzle stall is a release blocker.
 
-- D5 visual candidate `4e13fcc01f2fec703e66f9027d7df25847bbe235`,
-  independently accepted by QA `e31a0b665ff0864a0af35ab05dde4072bc96bbf5`.
-- T3R rules candidate `a096d96056457ebd2158bb6955cf7760fc36e238`,
-  independently accepted by QA `0cf78e3efccff4ee9dff0098d231b48f3dec5657`.
+The deterministic architecture integrated at
+`4c8582854088695ebac90467842dc2bc0cef3a20` remains the rule baseline. The rejected
+T4 candidate `dd7e31ea3547c18a797b2308f04161310d1412ce` remains in history but is not
+an accepted visual baseline. Its uncommitted follow-up is preserved on local branch
+`codex/tetris-t4-rejected-preservation` at
+`1362c664629b2a83f0659f836259b84c21750fee`.
 
-Those approvals froze the design and rule contracts before implementation. The T3-V1
-implementation candidate `6fb1728f6a3e9cf4398304ac9a638df2ddf4c1d7` now binds them to
-the real C1 core and was independently accepted by QA commit
-`fdd1ffbf1657a3fcc53cc3f292ae8c2a783a83e4`; this is a clean-room Tetris milestone,
-not authorization for additional modes or campaign scope.
+T3/T4 screenshots, manifests, reference files, and workstream logs are historical
+evidence only. T5 uses new paths and does not rewrite those artifacts.
 
-## Product intent
+## Product and architecture invariants
 
-Tetris is a clean-room, deterministic falling-block game for desktop and mobile
-browsers. It retains the familiar seven four-cell pieces, 10 × 20 visible board,
-hidden spawn buffer, SRS rotation, one-piece preview, line clear, scoring, top-out,
-keyboard controls, and touch controls without copying commercial logos, art, fonts,
-music, level layouts, copy, or screen trade dress.
+- This is a clean-room deterministic falling-block game for desktop and mobile.
+- React owns screen composition and lifecycle. PixiJS owns the board, pieces, preview,
+  effects, and frame rendering.
+- Gameplay uses one Pixi canvas and no DOM cell grid.
+- Core state stays serializable and independent from React, PixiJS, DOM, audio,
+  storage, browser timing, and viewport geometry.
+- There is no Hold mechanic.
+- Keyboard and touch expose left, right, clockwise rotation, soft drop, hard drop,
+  pause/resume, restart, and an explicit route back to the mode home.
+- Restart, mode exit, and unmount must not multiply listeners, tickers, audio nodes, or
+  canvases.
 
-React owns the page shell and lifecycle. PixiJS owns the board, pieces, preview,
-particles, and presentation interpolation. The gameplay board must never become a DOM
-cell grid. Core state remains serializable and independent from React, PixiJS, DOM,
-audio, storage, browser timing, and viewport geometry.
+## T5 mode rules
 
-There is no Hold/暂存 mechanic or surface.
+### Marathon
 
-## Frozen mode rules
+- Open-ended familiar play.
+- Scoring, line count, level progression, and deterministic gravity remain.
+- The run ends only on top-out or explicit player exit.
 
-### 马拉松模式
+### Race
 
-- No finish line; top-out ends the run.
-- Line clears raise the level and select the established deterministic gravity curve.
-- The playing surface shows 得分、消行、等级.
-- The local leaderboard remains score-first and fail-closed.
+Race is normal open-ended play with an additional deterministic acceleration curve.
 
-### 竞速模式
+- There is no line target and no successful terminal state.
+- Clearing 20 lines, or any other line count, must never set `status = "finished"`.
+- Scoring, seven-bag generation, clearing, and top-out match normal play.
+- Speed tier is `floor(pieceCount / 5) + floor(lines / 4)`, clamped to the bounded
+  production gravity curve.
+- Player-facing statistics are score, cleared lines, and current speed tier.
+- The run ends only on top-out or explicit player exit to the mode home.
+- Race leaderboard rows, if retained, are top-out endurance results rather than
+  completion-time results.
+- All copy and tests referring to “20 行”, “剩余行”, “完成目标”, or Race completion are
+  removed or migrated.
 
-- The exact goal is 20 cleared lines.
-- Time comes only from fixed simulation ticks.
-- Every five locked pieces advances the frozen gravity tier; the final tier is capped.
-- The finishing clear changes canonical status to `finished` before any successor
-  piece can spawn.
-- The playing surface shows 用时、剩余行、速度档.
-- Only completed runs enter the Race leaderboard.
+### Puzzle library
 
-### 解谜模式 — six-level authored campaign
+Puzzle is a library of authored board-clearing challenges, not an unlock ladder.
 
-Puzzle is an authored campaign, not a random bag and not a target-line variant.
+- All six T5 levels are selectable from first launch. No level row is disabled or
+  hidden behind prior completion.
+- Numeric difficulty is not shown and does not control ordering or availability.
+  Completion persistence is informational only.
+- The goal remains canonical board empty after ordinary line resolution, including
+  the hidden buffer.
+- Every level has an empty hidden buffer, a non-empty authored 20 × 10 visible board,
+  one finite fixed queue, and a piece budget exactly equal to queue length.
+- Every production queue contains 10–16 pieces, at least four piece types, and no run
+  longer than two identical pieces.
+- Every accepted reference solution uses the full budget, at least four effective
+  rotations, at least five landing columns, at least one non-clearing setup lock, and
+  more than one separated line-resolution phase.
+- The initial stack covers at least six rows and uses at least four distinct non-empty
+  row shapes. Repeated floor templates, vertical-I-only wells, and one-obvious-drop
+  openings are forbidden.
+- Puzzle has no automatic gravity. A piece moved to the floor by soft drop must still
+  lock after the shared lock delay and continue the queue.
+- A public hard drop locks immediately. A no-clear lock spawns the next authored piece
+  through the deterministic entry path; a clear uses the shared clear delay and then
+  spawns exactly the next authored piece.
+- The engine checks hidden occupancy/invalid state, canonical-board-empty success,
+  exhausted budget/queue, then exact authored spawn.
+- References initialize with `createInitialState(seed, "puzzle", level.id)` and use
+  public `dispatch` only. No verifier may construct or mutate canonical state.
 
-| Index | ID | Name | Difficulty |
-| ---: | --- | --- | ---: |
-| 1 | `t3r-shaft-01` | 三井初鸣 | 4 |
-| 2 | `t3r-shaft-02` | 四井错拍 | 5 |
-| 3 | `t3r-shaft-03` | 偏置立柱 | 5 |
-| 4 | `t3r-shaft-04` | 五井精裁 | 6 |
-| 5 | `t3r-cascade-05` | 左岸级联 | 7 |
-| 6 | `t3r-cascade-06` | 右岸回流 | 8 |
+## T5 visual direction — 青流蓝图 / Aqua Blueprint
 
-Every definition contains:
+T5 is a full visual replacement. The signature gesture is a 45-degree clipped corner
+paired with fine blueprint ticks and one offset cyan route line. Warm paper, ochre
+shelf feet, mineral shadows, inset rectangles, and the current block material language
+are removed.
 
-- one non-empty authored 20 × 10 visible board;
-- an initially empty hidden buffer;
-- one finite fixed piece sequence;
-- a piece budget exactly equal to the sequence length;
-- full Chinese name, campaign index, total, difficulty, and goal
-  `canonical-board-empty`.
-
-Puzzle has no automatic gravity. Movement, SRS rotation, soft drop, and hard drop use
-the same public deterministic core commands as the other modes. There is no Puzzle
-undo and no bag refill.
-
-After each lock, normal line resolution runs first. The engine then applies this exact
-order:
-
-1. lock-out, invalid state, or any occupied hidden-buffer cell → failed top-out;
-2. zero occupied cells across hidden buffer plus all 20 visible rows → finished;
-3. consumed budget or no next authored item → failed budget;
-4. otherwise spawn exactly the next authored piece; blocked spawn → invalid-spawn
-   top-out.
-
-Success is never derived from cleared-line total, score, timer, UI state, storage, or
-a hidden solver flag. If the final allowed piece empties the canonical board, success
-wins over budget exhaustion.
-
-## Canonical Puzzle state
-
-The production core must hash and replay at least:
-
-- `puzzleLevelId`;
-- validated authored board identity and full fixed queue;
-- `puzzleQueueIndex` (next unspawned item);
-- piece budget and canonical-board-empty goal;
-- completion code;
-- completed level ID and newly unlocked level ID.
-
-Restart reconstructs the same level, board, queue, first active piece, queue index,
-budget, and initial hash. Reference replays end at the first terminal state, consume
-the exact queue prefix, have no trailing command, and reproduce identical initial
-hash, final hash, ordered command digest, and ordered event digest.
-
-Campaign persistence lives outside the core and is versioned, bounded, and
-fail-closed. A successful canonical run may unlock only the next level. Storage may
-remember completed/unlocked levels, but it cannot manufacture a completion or alter a
-replay result.
-
-The accepted campaign evidence is in
-`docs/workstreams/tetris-t3-rules/`. The workstream adapter is proof of fixture
-solvability only; production must use typed core definitions and public commands.
-
-## Visual direction — 浅岩台 / Mineral Shelf
-
-The sole production direction is D5 **浅岩台**. Its purpose is a bright, quiet,
-board-first game surface.
-
-The recognizable gesture is a double mineral shelf shared by the board, Next, and
-control rail:
-
-- a thin ochre foot below;
-- a blue-grey foot to the right.
-
-It is structural, not a banner, card, modal, dashboard, or decorative stripe.
-
-### Tokens
+### Palette
 
 | Role | Token |
 | --- | --- |
-| Warm paper | `#F7F4EC` |
-| Light mineral board | `#E1E5DC` |
-| Mineral highlight/depth | `#FDFCF8` / `#C7CFC3` |
-| Ink/muted | `#31413E` / `#6D7A74` |
-| Ochre shelf | `#C56E4F` |
-| Blue-grey shelf | `#6D879B` |
-| Piece palette | restrained ochre, blue-grey, olive, and grey-violet inks |
+| Page | `#F4FCFD` |
+| Main surface | `#FFFFFF` |
+| Cyan surface | `#DFF7F8` |
+| Blue surface | `#E8F1FF` |
+| Board well | `#EAF8FC` |
+| Grid / edge | `#BCDDE6` / `#8FC9D5` |
+| Primary / secondary text | `#102F3B` / `#486775` |
+| Cyan / blue action | `#0B7385` / `#2F65AE` |
+| Focus | `#005FCC` |
+| Success / failure | `#176B54` / `#A33A55` |
 
-- Zero border radius.
-- One-pixel restrained borders.
-- Board-only stepped shelf shadows; no floating cards.
-- Small complete `Tetris` wordmark; no repeated current mode in the header.
-- Natural Chinese typography. Display serif is limited to the wordmark and concise
-  state headings; controls and body copy use readable system Chinese fonts.
-- All essential/help/control/action copy is at least 12 CSS px.
-- Motion is local and bounded; `prefers-reduced-motion` removes decorative
-  displacement without changing rules or controls.
+Light colors are surfaces, not text colors. Essential text, borders, focus, and state
+labels must meet WCAG AA contrast.
 
-Forbidden: deep/dark board well, giant title, diagonal drop band, page grid,
-glassmorphism, cards, pills, modal mode selection, fake telemetry, mode abbreviations,
-`T.`, Hold, 暂存, multiple graphical queue previews, or copied commercial assets.
+### Piece language
 
-## State and layout contract
+- Every mino is a single cool-color plane with a shared deep-cyan outline and one
+  consistent clipped corner or small radius.
+- Remove detached shadows, inner square panels, mineral insets, and highlight bars.
+- The seven pieces use distinguishable cyan, sky, blue, indigo, violet, mint, and
+  blue-grey values while retaining the shared outline.
+- Active cells use a stronger outline; locked cells use the standard outline.
+- Ghost cells use corner brackets only, not translucent filled blocks.
+- Board and Next reuse the same cell drawing primitive.
+- Line clear uses local contraction/fade. Reduced motion switches immediately without
+  trail, pulse, or positional interpolation.
 
-The measurable board frame, including shelf feet, is always `1:2 ± .02`.
+## Information architecture
 
-### Ready
+### Mode home
 
-- Header contains only `Tetris`.
-- Three complete flat mode names form one typographic rail with no vertical cells.
-- Only the selected mode's factual goal/end rule is shown.
-- One compact primary start action.
-- Empty board plus optional ghost; no live stats and no Next.
+- The app opens on a dedicated mode home with no gameplay board.
+- Marathon, Race, and Puzzle are three separate, fully clickable entries with complete
+  Chinese names, concise factual rules, and an explicit enter action.
+- Race copy is `速度持续提升｜无终点｜主动退出或堆叠到顶结束`.
+- Mode selection is not a small rail beside the board.
 
-### Playing
+### Puzzle library
 
-- Exactly one graphical `下一个方块`.
-- Current complete mode, mode switch, and pause stay outside the board.
-- Only mode-owned stats appear.
-- The five controls are one continuous rail:
-  `← 左移`, `→ 右移`, `↑ 旋转`, `↓ 快速下落`, `⇣ 直接落底`.
-  Every zone is at least 44 × 44 CSS px.
+- Every level entry is enabled and shows name, board-clearing goal, available-piece
+  count, and optional completion status.
+- It does not show numeric difficulty or lock state.
+- Starting a level must keep the visible selection, canonical `puzzleId`, queue index,
+  active piece, and remaining count aligned.
 
-### Pause
+### Game screen
 
-Pause is a narrow paper strip fully inside the board and no higher than 18% of its
-height. It contains `暂停`, `继续`, and `重新开始`. There is no page-wide dark
-scrim and no duplicate external pause action while paused.
+- Top actions provide mode-home exit, current mode, and pause.
+- Desktop uses a clear information / board / Next-status composition.
+- Mobile uses a compact information band above the board and a five-action deck below.
+- Pause, exit confirmation, success, and failure use accessible light action sheets
+  with buttons at least 44 × 44 CSS px.
+- Race shows score, lines, and speed tier. Puzzle shows level name, remaining pieces,
+  goal, and one Next item.
 
-### Mode switch
+## Responsive and accessibility contract
 
-Mode switch stays outside the board, uses the three complete mode names and factual
-goal/end text, and offers `应用并重新开始` and `返回本局`. The frozen board has no
-inner text and no stale Next preview.
+- All visible buttons are at least 44 × 44 CSS px; primary mobile controls target
+  48 px or larger.
+- Canvas focus has a visible 3 px high-contrast focus ring.
+- Dialog-like sheets expose a readable title, correct role/label, intentional initial
+  focus, Escape/cancel behavior, and focus restoration.
+- Mode and state are never communicated by color alone.
+- `prefers-reduced-motion` is honored initially and when the media query changes.
+- Required viewports: 1440 × 900, 2048 × 1152, 390 × 844 DPR3, 844 × 390 DPR3, and
+  360 × 800.
+- No horizontal overflow, clipped essential text, overlapping modules, or accidental
+  gameplay page scroll.
 
-### Puzzle select and play
+## Implementation ownership and sequence
 
-Select presents six or more reachable flat rows, not cards: index/total, production
-name, difficulty, fixed goal, unlocked state, and selection. Prototype example names
-must never replace the accepted T3R names in production.
+1. Coordinator freezes this contract and exact path boundaries.
+2. T5 Core owns Race/Puzzle rules, authored data, deterministic T5 fixtures, runtime QA
+   migration, leaderboard semantics, and focused tests. It does not edit frontend.
+3. Independent read-only core QA verifies the candidate SHA.
+4. T5 Frontend owns mode home, Puzzle library, game composition, completion display,
+   Aqua Blueprint CSS, Pixi rendering, and presentation tests.
+5. Coordinator runs one combined final typecheck, full suite, build, and browser pass
+   after the last product change.
+6. Independent read-only final QA verifies the exact combined candidate before
+   changelog integration and push.
 
-Puzzle play shows level index/total, full name, difficulty, remaining fixed pieces,
-goal `清空棋盘`, one Next item, restart, and return-to-level-select. It does not show
-score, Marathon level, Race time, or a line-target progress counter.
+Historical T3/T4 evidence stays unchanged. New reference and browser evidence lives
+only under `docs/workstreams/tetris-t5-*` and `docs/qa/evidence/tetris-t5`.
 
-Complete/fail uses a board-contained result strip and one factual code:
-canonical-board-empty success, top-out, invalid spawn, or budget exhausted.
-
-### Responsive targets
-
-| Viewport | Contract |
-| --- | --- |
-| 1440 × 900 | centered board-first cluster; regular board target 380 × 760 CSS px (acceptable 370–390 × 740–780) |
-| 2048 × 1152 | wide desktop cluster; regular board target 460 × 920 CSS px (acceptable 440–470 × 880–940) |
-| 390 × 844 | single column; board approximately 266 × 532; puzzle board may be 216 × 432 |
-| 844 × 390 | compact horizontal stage; board approximately 156 × 312; all essential text remains ≥12px |
-| 360 × 800 probe | long Puzzle values remain visible without overlap or page scrolling |
-
-One canvas, zero gameplay DOM cells, no horizontal overflow, no clipped title, no
-module overlap, and no page scroll are hard gates. The pause-strip ratio is its height
-divided by board height and must remain at or below 0.18; an area ratio is not valid
-evidence.
-
-## Presentation and input
-
-Simulation stays fixed-step and discrete. Pixi interpolation must never delay or alter
-canonical state.
-
-- Horizontal/gravity/soft-drop transitions remain continuous and cancellation-safe.
-- Held keyboard and touch soft drop start promptly, repeat quickly, and stop
-  immediately on release/cancel/blur.
-- Hard drop is immediate and may use only a short local trail/settle cue.
-- Line clear is local and restrained; no full-screen flash or generic particle shower.
-- Restart/unmount must not multiply listeners, ticker callbacks, audio nodes, or
-  canvases.
-
-## Production sequence and atomic release boundary
-
-T3 is implemented as a linear two-owner chain:
-
-1. **T3-C1 Core campaign** — typed six-level definitions, validation, canonical
-   queue/completion/unlock fields, exact success/failure ordering, hash/replay/restart
-   tests. It may retain deprecated compile-only fields temporarily, but no rule may
-   read them.
-2. **T3-V1 Mineral Shelf shell** — real campaign selection/progress storage, canonical
-   Puzzle copy/state, D5 page/board/controls, responsive composition, and final browser
-   evidence.
-
-C1 is not a user-facing release and is not pushed as a completed T3 milestone by
-itself. V1 must remove the deprecated UI bridge and prove the real combined state
-before the coordinator publishes the production chain.
-
-Implementation status on 2026-07-15: C1 candidate `8323203`, V1 candidate `6fb1728`,
-and their independent QA records are integrated in the pure Tetris baseline `4c85828`.
-The six-level campaign core is frozen. T4 changes presentation geometry only.
-
-## T4 desktop recovery direction
-
-The Mineral Shelf direction remains: warm light paper, pale mineral playfield, quiet
-blue-grey and ochre feet, restrained block color, and Chinese-first controls. T4 removes
-the accidental “tiny web widget” behavior. The desktop game cluster scales from the
-viewport, the playfield remains exactly 1:2, the mode rail and control deck receive real
-text width, and supporting information stays adjacent to the playfield instead of
-floating through empty page space. This is a proportional/layout correction, not a new
-theme and not permission to add decorative modules.
-
-## Final acceptance
-
-The final combined candidate must pass once, after the final source change:
+## Acceptance gates
 
 - `npm.cmd run typecheck`;
 - complete Vitest suite;
 - production build;
-- deterministic six-level reference replay verification;
-- fresh browser evidence at 1440 × 900 DPR1, 390 × 844 DPR3,
-  844 × 390 DPR3, and 360 × 800 long-value probe;
-- one canvas, zero gameplay DOM cells, zero console/page errors, no overflow/overlap;
-- real keyboard and touch rotation, quick drop, hard drop, pause/resume, restart,
-  mode switch, Puzzle selection, Puzzle completion/failure, and progression;
-- evidence and screenshot hashes from the final candidate.
+- deterministic Race replay proving lines never finish the run and acceleration is
+  monotonic through its safe cap;
+- all six Puzzle references, exact budget consumption, restart/hash determinism,
+  soft-drop floor locking, and consecutive multi-piece play;
+- negative routes for at least three authored decision points must fail by budget;
+- UI-driven evidence selects modes and levels through visible controls;
+- at least one Puzzle scenario after three consecutive locks, with visible/canonical
+  level, active piece, queue index, and remaining count aligned;
+- mode-home → game → mode-home → game proof with no canvas/ticker/listener leaks;
+- one gameplay canvas, zero gameplay DOM cells, zero console/page errors;
+- keyboard, touch, pause/resume, restart, explicit exit, failure, success, and reduced
+  motion verified at required viewports.
 
-No acceptance may be inferred from a nonblank screenshot, mock state, or design-only
-approval.
+A nonblank screenshot, internal QA state injection, or mock terminal state is not
+acceptance evidence.

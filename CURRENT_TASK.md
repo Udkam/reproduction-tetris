@@ -1,68 +1,112 @@
-# Current Task — T4 Repository Separation and Desktop Layout Recovery
+# Current Task — T5 Rules Repair and Aqua Blueprint Rebuild
 
 Branch: `codex/tetris-recovery`
-Baseline: `4c8582854088695ebac90467842dc2bc0cef3a20`
 
-Status: **active, bounded implementation slice**
+Core/rule authority: `4c8582854088695ebac90467842dc2bc0cef3a20`
 
-## Why this slice exists
+Current historical ancestor: `dd7e31ea3547c18a797b2308f04161310d1412ce`
+(rejected T4 presentation candidate)
 
-The accepted T3 rules and six-level fixed-queue Puzzle campaign are correct, but the
-desktop presentation is not acceptable. At wide viewports the whole game is capped at
-718 CSS px, the board at 306 × 612 px, three Chinese mode labels wrap inside a 174 px
-rail, and five controls crowd a 306 px row. The two `.qa-*` directories were retained
-QA clones with the same product tree, not alternate game versions. Post-`4c85828`
-Temple coordination commits changed documentation only and are intentionally excluded
-from this recovery branch.
+Preserved rejected follow-up: local branch
+`codex/tetris-t4-rejected-preservation` at
+`1362c664629b2a83f0659f836259b84c21750fee`
 
-## Product contract retained
+Status: **active — T5 contract frozen; core implementation is the first writer slice**
 
-- Keep Marathon, Race (20 lines), and the six-level Puzzle campaign unchanged.
-- Puzzle success remains canonical visible-board empty after normal line resolution.
-- Keep deterministic replay/hash, fixed queues, unlock persistence, keyboard and touch.
-- React owns page composition; PixiJS owns the single gameplay canvas; no DOM cell grid.
-- Keep the original light Mineral Shelf language, but make it board-first and legible.
+## User-visible problems to resolve
 
-## Exact implementation boundary
+1. Replace the current frontend and block treatment with a new light cyan/light-blue,
+   high-contrast design.
+2. Add a dedicated entry page with separate Marathon, Race, and Puzzle entrances.
+3. Make Race endless accelerating normal play. It has no line target and stops only
+   through player exit or top-out.
+4. Repair Puzzle consecutive-piece play, unlock every level, remove numeric-difficulty
+   gating, and replace short obvious queues with longer authored challenges.
 
-Writer may change only:
+## Baseline policy
 
+- Do not reset or rewrite `dd7e31e`; it remains a historical ancestor.
+- Do not merge the rejected T4 preservation branch into T5.
+- Migrate the valid 44 px and real-UI QA requirements into T5, not the old T4 styling.
+- Do not modify T3/T4 screenshots, manifests, fixtures, capture scripts, or logs.
+- New fixtures, logs, and browser evidence use T5-specific paths.
+
+## Slice A — T5 Core
+
+Task ID: `TETRIS-T5-CORE-001`
+
+The core writer may change only:
+
+- `src/game/core/constants.ts`, `engine.ts`, `puzzles.ts`, `types.ts`, and `index.ts`
+  if public exports require it;
+- directly related tests under `src/game/core/*.test.ts`, including a new focused
+  Puzzle-flow test if useful;
+- `src/game/runtime/qaScenario.ts`, `qaScenario.test.ts`, `GameRuntime.ts`, and
+  `GameRuntime.test.ts` only to migrate the obsolete Race-completion QA surface;
+- `src/leaderboard.ts` and `src/leaderboard.test.ts` for endless-Race records;
+- new `docs/workstreams/tetris-t5-core/**` fixtures and `THREAD_LOG.md`.
+
+The core writer must not edit `src/App.tsx`, `src/styles.css`,
+`src/puzzleProgress.ts`, `src/game/render/**`, T3/T4 evidence, coordinator docs,
+changelog, or the frontend log.
+
+Core acceptance:
+
+- no Race line count produces `finished`;
+- Race speed uses locked pieces plus cleared lines, grows monotonically, and reaches
+  its safe cap;
+- every Puzzle level has 10–16 pieces, at least four piece types, a validated
+  nontrivial public-command reference, and exact restart/hash behavior;
+- soft drop can reach the floor, complete lock delay, and continue the queue;
+- hard-drop and line-clear paths spawn the exact next authored piece;
+- focused tests and the new T5 verifier pass;
+- candidate SHA and exact evidence are logged before independent read-only QA.
+
+## Slice B — T5 Frontend
+
+Task ID: `TETRIS-T5-FRONTEND-001`
+
+This slice remains blocked until the core candidate and independent core QA exist.
+
+The frontend writer may change only:
+
+- `src/App.tsx`;
 - `src/styles.css`;
-- `src/App.tsx` only if semantic grouping or labels must change to remove overlap;
-- directly related presentation/runtime tests when an assertion must describe the new
-  geometry;
-- `AGENTS.md`, `DESIGN.md`, `CURRENT_TASK.md`, `progress.md`;
-- T4 browser evidence and one Tetris-only workstream log;
-- `docs/logs/CHANGELOG.md` at coordinator integration.
+- `src/puzzleProgress.ts` and `src/puzzleProgress.test.ts`;
+- `src/game/render/theme.ts`;
+- `src/game/render/TetrisRenderer.ts`;
+- `src/game/render/presentation.ts` and its test when necessary;
+- new components under `src/ui/**`;
+- directly related frontend/presentation tests when required;
+- new `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`.
 
-Do not change `src/game/core/**`, Puzzle definitions, hashes, persistence semantics,
-audio rules, dependencies, build configuration, Temple files, or Patrick files.
+The frontend writer must not change core rules, Puzzle definitions/fixtures, build
+configuration, dependencies, T3/T4 evidence, changelog, or coordinator docs.
 
-## Visual acceptance
+Frontend acceptance:
 
-- At 1440 × 900 and 2048 × 1152, the board/game cluster is the clear focal point and
-  uses available space without becoming a tiny website widget.
-- Target regular boards are 380 × 760 at 1440 × 900 and 460 × 920 at 2048 × 1152;
-  responsive variance is allowed only when the complete cluster remains in viewport.
-- Complete Chinese mode names remain on one line or move to a layout with intentional
-  wrapping; no clipped labels.
-- The five actions remain distinct, designed, and at least 44 × 44 CSS px. `↑` is the
-  rotation control; quick drop and hard drop never overlap.
-- Ready, playing, paused, mode select, Puzzle select, Puzzle play, success, and failure
-  remain visually distinct. Pause stays inside the board.
-- 390 × 844 and 844 × 390 remain overflow-free and touch-safe.
-- One canvas, zero gameplay DOM cells, zero console/page errors, no horizontal overflow.
+- dedicated three-entry mode home;
+- all Puzzle levels enabled, no numeric difficulty UI, completion only informational;
+- Race copy/statistics contain no 20-line goal or remaining-line value;
+- Aqua Blueprint tokens and completely new cell renderer;
+- all visible buttons at least 44 × 44 CSS px and visible focus treatment;
+- accessible pause/exit/result action sheets;
+- one canvas per gameplay screen and no lifecycle leaks;
+- targeted component/presentation checks before coordinator final gates.
 
-## Verification order
+## Coordinator final integration
 
-Use targeted checks while editing. After the last source change run exactly one final
-typecheck, one complete Vitest suite, one build, and one browser-evidence pass covering
-desktop plus the two mobile orientations. Visually inspect the screenshots; a nonblank
-canvas is not acceptance.
+After both accepted slices and the last product change, run exactly one final:
 
-## Deferred
+1. `npm.cmd run typecheck`;
+2. `npm.cmd run test`;
+3. `npm.cmd run build`;
+4. T5 browser-evidence pass at every required viewport.
 
-- No fourth mode, multiplayer, backend, account system, level editor, Puzzle undo,
-  Hold/暂存, commercial assets, or Temple development.
-- Do not delete the retained `.local/qa-archives`; they are evidence archives and not
-  runtime inputs.
+Browser evidence must use visible UI, exercise at least three consecutive Puzzle locks,
+and compare visible level/remaining values with canonical state. Internal state
+replacement is not valid setup evidence.
+
+The coordinator routes the exact combined candidate to independent read-only QA,
+resolves findings with newly bounded writer slices, updates
+`docs/logs/CHANGELOG.md`, commits the documentation delta, and decides whether to push.
