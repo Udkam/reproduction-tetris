@@ -1,8 +1,7 @@
 import { AudioEngine } from '../audio/AudioEngine';
-import { createInitialState, dispatch, stateHash, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
+import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
 import { InputController, type InputAction } from '../input/InputController';
 import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer';
-import { replayPuzzleChallenge, replayRaceEndurance } from './qaScenario';
 
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
@@ -27,7 +26,6 @@ export interface RuntimeQaSurface {
   action: (action: InputAction) => void;
   release: (action: InputAction) => void;
   advanceTicks: (ticks: number) => void;
-  replayScenario: (name: 'race-endurance' | 'puzzle-challenge') => { commandCount: number; hash: string; commands: readonly GameCommand[] };
   setFrozen: (frozen: boolean) => void;
   benchmarkRender: (iterations?: number) => { meanMs: number; p95Ms: number; maxMs: number };
 }
@@ -88,28 +86,6 @@ export class GameRuntime {
           this.flushUiState();
           this.flushRender(0);
         },
-        replayScenario: (name) => {
-          const scenario = (() => {
-            switch (name) {
-              case 'race-endurance':
-                return replayRaceEndurance(this.state.seed);
-              case 'puzzle-challenge':
-                return replayPuzzleChallenge(this.state.seed);
-              default:
-                throw new Error(`Unknown QA scenario: ${String(name)}`);
-            }
-          })();
-          this.state = scenario.state;
-          this.accumulator = 0;
-          this.pendingEvents = [];
-          this.pendingUiEvents = [];
-          this.uiStateDirty = false;
-          this.uiSyncElapsedMs = 0;
-          this.input?.clearHeld();
-          this.onState?.(this.state, []);
-          this.renderer.render(this.state, [], 0);
-          return { commandCount: scenario.commands.length, hash: stateHash(this.state), commands: scenario.commands };
-        },
         setFrozen: (frozen) => {
           this.qaFrozen = frozen;
           this.accumulator = 0;
@@ -154,6 +130,10 @@ export class GameRuntime {
   setModeSwitch(open: boolean): void {
     this.renderer.setOptions({ modeSwitch: open });
     this.flushRender(0);
+  }
+
+  setReducedMotion(reducedMotion: boolean): void {
+    this.renderer.setOptions({ reducedMotion });
   }
 
   release(action: InputAction): void {

@@ -110,3 +110,153 @@
 - Next: independent read-only Core QA must inspect the exact reported candidate SHA,
   rerun only the proportionate Core/T5 checks it needs, and report ACCEPT or REJECT to
   the coordinator before the frontend slice begins.
+
+## 2026-07-16 — QA FIX PAUSED FOR CONTRACT UPDATE
+
+- Task: `TETRIS-T5-CORE-QA-FIX-001`
+- Base SHA: `3bf170ec252cc971b1f65d73b4649fabb2500dbb`
+- Independent QA result: **REJECT**. The sole finding was the DEV
+  `RuntimeQaSurface.replayScenario` hook assigning an offline replay terminal state
+  directly into the mounted live runtime, bypassing visible UI and canonical play.
+- Exact changed paths so far:
+  - `src/game/runtime/GameRuntime.ts`
+  - `src/game/runtime/GameRuntime.test.ts`
+  - `docs/workstreams/tetris-t5-core/THREAD_LOG.md`
+- Fix: removed the replay imports, QA-surface type member, live callback, and all direct
+  replay-state assignment. The pure functions in `qaScenario.ts` remain isolated unit
+  helpers and are not exposed on `window`.
+- Proof: the mounted QA surface has no `replayScenario`, `setState`, or `replaceState`;
+  mutating the structured clone returned by `getState()` cannot alter runtime state.
+- Targeted command:
+  `npm.cmd run test -- src/game/runtime/GameRuntime.test.ts` — PASS, 3 files / 10 tests.
+- Final typecheck/full test/build: intentionally not run. The coordinator paused the
+  candidate after the user superseded the finite-queue Puzzle contract with normal-play
+  seeded seven-bag, automatic-gravity, no-budget Puzzle rules.
+- Commit/push: not performed.
+- Blocker: `DESIGN.md` and `CURRENT_TASK.md` must be updated before any new Puzzle rule
+  implementation is authorized.
+- Next: retain this minimal QA fix in the dirty worktree and wait for the coordinator's
+  revised bounded Puzzle slice.
+
+## 2026-07-16 — NORMAL-PLAY PUZZLE CANDIDATE READY
+
+- Task: `TETRIS-T5-PUZZLE-NORMALPLAY-002`
+- Branch: `codex/tetris-recovery`
+- Base SHA: `79f60dd7a5c9ee16cb8a4c8fb8e958e2208e906e`
+- Preserved intake delta: the three-path `TETRIS-T5-CORE-QA-FIX-001` removal of the
+  mounted `replayScenario` state-injection path above.
+- Candidate SHA: this single writer commit; exact SHA is reported immediately after
+  commit creation.
+
+### Exact changed paths
+
+- `src/game/core/constants.ts`
+- `src/game/core/engine.ts`
+- `src/game/core/puzzles.ts`
+- `src/game/core/types.ts`
+- `src/game/core/puzzles.test.ts`
+- `src/game/core/puzzleFlow.test.ts`
+- `src/game/core/puzzleCampaign.test.ts`
+- `src/game/runtime/GameRuntime.ts`
+- `src/game/runtime/GameRuntime.test.ts`
+- `src/game/runtime/qaScenario.ts`
+- `src/game/runtime/qaScenario.test.ts`
+- `src/puzzleProgress.test.ts` (test-only fixture migration)
+- `src/game/render/presentation.test.ts` (test-only generated-Next migration)
+- `docs/workstreams/tetris-t5-core/search-puzzles.mjs`
+- `docs/workstreams/tetris-t5-core/puzzle-references.json`
+- `docs/workstreams/tetris-t5-core/THREAD_LOG.md`
+
+No frontend/render production path, `puzzleProgress.ts`, coordinator document,
+changelog, T3/T4 evidence, or QA archive was edited.
+
+### Delivered behavior and production evidence
+
+- Puzzle now changes only the stable starting board, level-owned seed, and
+  canonical-board-empty success condition. It shares Marathon gravity, score, SRS,
+  lock delay, entry delay, clear delay, soft/hard drop, and the continuously
+  replenishing deterministic seven-bag.
+- The engine does not read an authored Puzzle queue, piece budget, remaining count,
+  or numeric difficulty. It does not emit `failed-budget`; an unsolved game continues
+  until success, restart/exit, or ordinary `block-out`/`lock-out`, both mapped to
+  `failed-top-out` for the Puzzle result surface.
+- Each known Puzzle ID is bound to one exact stable nonzero seed. The first 84 pieces
+  for every seed are frozen and verified as twelve complete consecutive seven-bags.
+- The six original boards occupy 10/10/10/8/8/10 rows. Every board has 8–10 unique row
+  shapes, four row densities (6/7/8/9 occupied cells), 7–8 covered-hole columns, and
+  10–15 buried cavities. No board is a repeated floor template or single I-well.
+- `puzzle-references.json` freezes two same-seed routes per level. Locked-piece counts
+  are 35/35, 35/35, 30/30, 29/29, 34/34, and 30/30. The second routes differ at
+  29/24/4/4/15/5 semantic lock indices and every pair has an intermediate canonical
+  board-hash divergence.
+- All twelve routes use all seven types, 9–11 landing x values, 19–30 effective
+  rotations, 14–21 non-clearing locks, and 13–19 separated clear phases. They finish
+  only when the canonical 40 × 10 board is empty.
+- The authoritative verifier drives production `createInitialState` and public
+  `dispatch` only. It verifies spawn type, every effective rotation, every horizontal
+  movement path, hard-drop landing Y, clear count, delayed entry/clear resolution,
+  terminal state, restart hash, route diversity, and frozen initial/final,
+  command/event, and board-trace digests. The value 70 exists only as its safety guard.
+- `GameRuntime.setReducedMotion(boolean)` forwards only the renderer option and does
+  not rebuild or replace canonical state. Mounted DEV QA exposes a structured-clone
+  read view and no replay, `setState`, or `replaceState` hook.
+
+### Bounded authoring search evidence
+
+- `search-puzzles.mjs` is an authoring helper only; its geometry proposals were not
+  accepted until the TypeScript public-dispatch verifier passed.
+- The initial one-hole-per-row prototype found 6/6 pairs quickly but was discarded
+  because it violated the frozen no-repeated-floor-template rule.
+- A fully random 1–4-hole prototype produced no Level 1 route within 120 seconds and
+  was also discarded. The final generator uses staggered 1–5-cell cavity profiles,
+  at least three row densities, and multiple covered holes.
+- Successful bounded searches were:
+  - `node docs/workstreams/tetris-t5-core/search-puzzles.mjs 0 18 4000 120000`
+  - `node docs/workstreams/tetris-t5-core/search-puzzles.mjs 1 12 4000 180000 7`
+  - `node docs/workstreams/tetris-t5-core/search-puzzles.mjs 2 16 4000 180000 0`
+  - `node docs/workstreams/tetris-t5-core/search-puzzles.mjs 3 16 4000 180000 0`
+  - `node docs/workstreams/tetris-t5-core/search-puzzles.mjs 4 20 4000 210000 0`
+  - `node docs/workstreams/tetris-t5-core/search-puzzles.mjs 5 20 4000 240000 6`
+- Bounded failure evidence was retained instead of weakening thresholds: early Level 2
+  candidates found 32- and 24-lock first routes but no second route in 150 seconds;
+  early Level 6 candidates found a 29-lock first route but no second route in 210
+  seconds. Later candidate indices produced the accepted pairs.
+
+### Commands actually run
+
+- `node --check docs/workstreams/tetris-t5-core/search-puzzles.mjs` — PASS after the
+  final helper change.
+- Focused convergence command covering Core definitions/flow/campaign, runtime QA,
+  runtime boundary, progress fixture, and presentation Next:
+  `npm.cmd run test -- src/game/core/puzzles.test.ts src/game/core/puzzleFlow.test.ts src/game/core/puzzleCampaign.test.ts src/game/runtime/qaScenario.test.ts src/game/runtime/GameRuntime.test.ts src/puzzleProgress.test.ts src/game/render/presentation.test.ts`
+  — PASS, 19 files / 92 tests.
+- Final focused stable-seed validation:
+  `npm.cmd run test -- src/game/core/puzzles.test.ts` — PASS, 3 files / 16 tests.
+- Final `npm.cmd run typecheck` — PASS.
+- Final `npm.cmd run test` — PASS, 37 files / 236 tests.
+- Final `npm.cmd run build` — PASS; Vite transformed 738 modules and produced the
+  production bundle.
+
+### Deliberate compatibility debt for the frontend slice
+
+- `puzzlePieceBudget` remains a deprecated state-field bridge and is always `null`.
+- `puzzleQueue`/`puzzleQueueIndex` remain a deprecated generated-Next bridge: they
+  mirror the shared queue at index zero and have no generation or terminal authority.
+- `failed-budget`, `failed-invalid-spawn`, and the two matching event-reason literals
+  remain type-only compatibility values; production Puzzle engine paths never emit them.
+- `nextUnlockedLevelId` remains navigation/progress compatibility only and never
+  controls Core availability. The frontend slice owns the all-levels-enabled UI and
+  completion-only persistence migration.
+- `PUZZLE_DEFINITIONS` exposes a deprecated type-only `difficulty` facade so the
+  forbidden old `puzzleProgress.ts` compiles; runtime definition objects contain no
+  numeric difficulty. Frontend must remove that read, then the facade can be deleted.
+- `RACE_TARGET_LINES` remains the already documented frontend compile bridge; no
+  Core/runtime rule reads it.
+
+### Handoff
+
+- Blocker: none.
+- Commit: one candidate commit is created after final diff/path checks.
+- Push: not performed; coordinator owns integration and push decisions.
+- Next: independent read-only Core QA verifies the exact candidate SHA before the
+  coordinator authorizes frontend integration.

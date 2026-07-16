@@ -39,7 +39,9 @@ export type PuzzleCompletion =
   | 'active'
   | 'finished'
   | 'failed-top-out'
+  /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn'
+  /** @deprecated Compatibility-only; Puzzle has no finite piece budget. */
   | 'failed-budget';
 
 export interface GameState {
@@ -57,16 +59,21 @@ export interface GameState {
    * @deprecated Remove when the presentation shell consumes puzzleGoal.
    */
   puzzleTargetLines: number | null;
+  /** @deprecated Compatibility-only; always null for normal-play Puzzle. */
   puzzlePieceBudget: number | null;
   /** Immutable authored visible board source; the mutable canonical board is above. */
   puzzleBoardRows: readonly string[] | null;
-  /** Immutable full authored sequence, including the currently active item. */
+  /**
+   * @deprecated Generated-preview bridge for the blocked renderer only. It mirrors
+   * the shared queue and is never read by generation or terminal rules.
+   */
   puzzleQueue: readonly PieceType[] | null;
-  /** Number of authored items successfully spawned into active play. */
+  /** @deprecated Generated-preview bridge index; always zero. Use pieceCount for placed pieces. */
   puzzleQueueIndex: number;
   puzzleGoal: PuzzleGoal | null;
   puzzleCompletion: PuzzleCompletion | null;
   completedLevelId: PuzzleId | null;
+  /** @deprecated Navigation/progress bridge only; T5 level availability is always unrestricted. */
   nextUnlockedLevelId: PuzzleId | null;
   pieceCount: number;
   status: GameStatus;

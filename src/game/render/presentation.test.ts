@@ -31,13 +31,16 @@ describe('presentation interpolation', () => {
     expect(lineClearCellProgress(1, 9, 10)).toBe(1);
   });
 
-  it('uses exactly the authored canonical next item for Puzzle and no terminal preview', () => {
+  it('uses the generated shared next item for Puzzle and no terminal preview', () => {
     const ready = createInitialState(9, 'puzzle', 't3r-cascade-06');
     const playing = dispatch(ready, { type: 'start' }).state;
-    expect(nextPreviewPiece(playing)).toBe('I');
+    expect(nextPreviewPiece(playing)).toBe(playing.queue[0]);
 
-    const afterFirstLock = dispatch(playing, { type: 'hard-drop' }).state;
-    expect(nextPreviewPiece(afterFirstLock)).toBe('I');
+    let afterFirstLock = dispatch(playing, { type: 'hard-drop' }).state;
+    for (let guard = 0; afterFirstLock.status === 'playing' && (!afterFirstLock.active || afterFirstLock.phase !== 'active') && guard < 64; guard += 1) {
+      afterFirstLock = dispatch(afterFirstLock, { type: 'tick' }).state;
+    }
+    expect(nextPreviewPiece(afterFirstLock)).toBe(afterFirstLock.queue[0]);
     expect(nextPreviewPiece({ ...afterFirstLock, status: 'finished' })).toBeNull();
   });
 });

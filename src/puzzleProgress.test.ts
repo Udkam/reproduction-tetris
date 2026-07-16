@@ -12,8 +12,7 @@ import {
 type PuzzleProgressFixture = {
   id: PuzzleId;
   name: string;
-  difficulty: number;
-  reference: { placements: Array<{ rotation: Rotation; x: number }> };
+  routes: Array<{ placements: Array<{ rotation: Rotation; x: number }> }>;
 };
 
 const t5Levels = (referencesFile as unknown as { levels: PuzzleProgressFixture[] }).levels;
@@ -29,7 +28,7 @@ function completeFirstT5Puzzle(): GameState {
   const reference = t5Levels[0]!;
   let state = createInitialState(0x51a1f00d, 'puzzle', reference.id);
   state = dispatch(state, { type: 'start' }).state;
-  for (const placement of reference.reference.placements) {
+  for (const placement of reference.routes[0]!.placements) {
     for (const command of rotationCommands(placement.rotation)) state = dispatch(state, command).state;
     while (state.active && state.active.x !== placement.x) {
       state = dispatch(state, { type: 'move', dx: placement.x < state.active.x ? -1 : 1 }).state;
@@ -43,10 +42,11 @@ function completeFirstT5Puzzle(): GameState {
 }
 
 describe('T5 puzzle campaign presentation data', () => {
-  it('binds the six T5 fixture IDs and labels to flat campaign indices', () => {
-    expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name, level.difficulty, level.index, level.total])).toEqual(
-      t5Levels.map((level, index) => [level.id, level.name, level.difficulty, index + 1, t5Levels.length]),
+  it('binds the six T5 fixture IDs and labels without restoring numeric difficulty authority', () => {
+    expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name, level.index, level.total])).toEqual(
+      t5Levels.map((level, index) => [level.id, level.name, index + 1, t5Levels.length]),
     );
+    expect(CAMPAIGN_LEVELS.every((level) => level.difficulty === undefined)).toBe(true);
   });
 
   it('fails closed to only level one for malformed, obsolete, and unknown storage', () => {
@@ -63,7 +63,7 @@ describe('T5 puzzle campaign presentation data', () => {
 
     const progressed = recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), state);
     expect(progressed.nextUnlockedLevelId).toBe('t3r-shaft-02');
-    expect(recordCanonicalPuzzleCompletion(progressed, { ...state, puzzleCompletion: 'failed-budget' })).toBe(progressed);
+    expect(recordCanonicalPuzzleCompletion(progressed, { ...state, puzzleCompletion: 'failed-top-out' })).toBe(progressed);
     expect(recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), { ...state, completedLevelId: 't3r-shaft-04', nextUnlockedLevelId: 't3r-cascade-05' })).toEqual(defaultPuzzleProgress());
   });
 });

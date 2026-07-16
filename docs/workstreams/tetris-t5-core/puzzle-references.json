@@ -1,232 +1,3693 @@
 {
-  "schemaVersion": 1,
-  "semantics": {
-    "commandSource": "Each placement is converted to public rotate, move, hard-drop, and tick commands and executed from createInitialState.",
-    "boardRule": "Every authored cell is part of a bottom-supported solid skyline; there are no floating cells or blank layers inside the stack.",
-    "terminalRule": "References consume the exact fixed queue and finish only when the canonical board is empty after ordinary line resolution.",
-    "evidenceRule": "Initial/final state hashes plus command/event digests are frozen from two identical public-dispatch runs.",
-    "negativeRule": "Each recorded one-column neighboring decision is replayed through the remaining authored route and must end failed-budget with residual cells."
-  },
+  "taskId": "TETRIS-T5-PUZZLE-NORMALPLAY-002",
+  "contract": "Normal-play Puzzle: shared gravity, replenishing seeded seven-bag, canonical-board-empty success.",
+  "verifierLockGuard": 70,
   "levels": [
     {
       "id": "t3r-shaft-01",
       "name": "青脊回旋",
-      "difficulty": 8,
+      "seed": 1975562497,
+      "authoringCandidate": 2,
       "boardRows": [
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........",
-        ".J.J.J....", ".J.J.J....", ".J.JJJ...J", ".J.JJJ...J", ".J.JJJ...J", ".JJJJJ..JJ", ".JJJJJ.JJJ"
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "JJ.J.JJJ..",
+        "JJJ.J..JJJ",
+        ".JJ..JJJJJ",
+        "JJJ.JJJJJ.",
+        "JJJ..JJJJJ",
+        "JJ..JJJJJJ",
+        "JJJJJJJJJ.",
+        "JJJJJJ.JJJ",
+        "JJJJJ.JJJJ",
+        ".JJJJJJJJJ"
       ],
-      "queue": ["I", "S", "I", "L", "Z", "I", "J", "O", "J", "T", "I"],
-      "pieceBudget": 11,
-      "reference": {
-        "seed": 1975558150,
-        "placements": [
-          {"type":"I","rotation":1,"x":-2,"landingY":36,"clearedLines":0},
-          {"type":"S","rotation":0,"x":6,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":1,"x":0,"landingY":35,"clearedLines":0},
-          {"type":"L","rotation":0,"x":6,"landingY":36,"clearedLines":1},
-          {"type":"Z","rotation":1,"x":5,"landingY":36,"clearedLines":1},
-          {"type":"I","rotation":1,"x":-2,"landingY":35,"clearedLines":1},
-          {"type":"J","rotation":1,"x":5,"landingY":37,"clearedLines":1},
-          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":0},
-          {"type":"J","rotation":1,"x":3,"landingY":37,"clearedLines":1},
-          {"type":"T","rotation":2,"x":1,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
-        ],
-        "metrics": {"pieceTypes":7,"effectiveRotations":8,"distinctLandingXs":7,"nonClearingLocks":3,"clearPhases":8,"clearedLines":8},
-        "evidence": {"initialHash":"706958fe","finalHash":"d1a62f4f","commandDigest":"456b9958","eventDigest":"a9abf6ac","commandCount":157},
-        "negativeRoutes": [
-          {"placementIndex":0,"x":-1,"expectedCompletion":"failed-budget","finalHash":"fd151397"}
-        ]
-      }
+      "first84": [
+        "S",
+        "L",
+        "O",
+        "T",
+        "J",
+        "I",
+        "Z",
+        "I",
+        "S",
+        "J",
+        "T",
+        "Z",
+        "O",
+        "L",
+        "Z",
+        "T",
+        "O",
+        "L",
+        "S",
+        "J",
+        "I",
+        "O",
+        "L",
+        "Z",
+        "T",
+        "S",
+        "I",
+        "J",
+        "Z",
+        "S",
+        "O",
+        "I",
+        "T",
+        "J",
+        "L",
+        "O",
+        "L",
+        "I",
+        "J",
+        "T",
+        "S",
+        "Z",
+        "L",
+        "J",
+        "I",
+        "O",
+        "S",
+        "Z",
+        "T",
+        "L",
+        "T",
+        "Z",
+        "O",
+        "J",
+        "S",
+        "I",
+        "T",
+        "O",
+        "S",
+        "J",
+        "Z",
+        "L",
+        "I",
+        "O",
+        "T",
+        "S",
+        "J",
+        "L",
+        "I",
+        "Z",
+        "J",
+        "T",
+        "L",
+        "I",
+        "O",
+        "S",
+        "Z",
+        "Z",
+        "J",
+        "L",
+        "S",
+        "O",
+        "T",
+        "I"
+      ],
+      "routes": [
+        {
+          "id": "route-1",
+          "placements": [
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 28,
+              "clearedLines": 2
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 5,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 8,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 2,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 35,
+            "pieceTypes": 7,
+            "effectiveRotations": 25,
+            "distinctLandingXs": 11,
+            "nonClearingLocks": 16,
+            "clearPhases": 19,
+            "clearedLines": 22,
+            "semanticDifferences": 0,
+            "boardHashDiverged": false
+          },
+          "evidence": {
+            "initialHash": "c3233e57",
+            "finalHash": "d4365030",
+            "commandDigest": "28d59c9e",
+            "eventDigest": "b8915772",
+            "boardTraceDigest": "cc161077",
+            "commandCount": 422
+          }
+        },
+        {
+          "id": "route-2",
+          "placements": [
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 8,
+              "landingY": 26,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 3,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 6,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 33,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 35,
+              "clearedLines": 3
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 5,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 3,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 35,
+            "pieceTypes": 7,
+            "effectiveRotations": 30,
+            "distinctLandingXs": 11,
+            "nonClearingLocks": 17,
+            "clearPhases": 18,
+            "clearedLines": 22,
+            "semanticDifferences": 29,
+            "boardHashDiverged": true
+          },
+          "evidence": {
+            "initialHash": "c3233e57",
+            "finalHash": "51cd35ba",
+            "commandDigest": "1cd13b43",
+            "eventDigest": "c5a4d51a",
+            "boardTraceDigest": "ab7f0d28",
+            "commandCount": 416
+          }
+        }
+      ]
     },
     {
       "id": "t3r-shaft-02",
       "name": "深湾折返",
-      "difficulty": 9,
+      "seed": 1975562754,
+      "authoringCandidate": 7,
       "boardRows": [
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........",
-        ".....JJ...", "..J..JJ...", "..J..JJ...", "..J..JJ...", "..J..JJ.J.", "J.J..JJ.J.", "J.J.JJJJJJ"
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "JJJ.J..JJ.",
+        "J...JJJJJJ",
+        "J..JJJJJ.J",
+        "JJJJ.JJJJ.",
+        "JJJJJ.JJ.J",
+        "JJ..JJJJJJ",
+        "JJ.JJJJJJJ",
+        "JJJJ.JJJJJ",
+        ".JJJJJJJJJ",
+        "JJJJJJJJJ."
       ],
-      "queue": ["L", "J", "I", "L", "S", "O", "T", "Z", "J", "I", "O", "I", "I"],
-      "pieceBudget": 13,
-      "reference": {
-        "seed": 1975558151,
-        "placements": [
-          {"type":"L","rotation":3,"x":0,"landingY":37,"clearedLines":0},
-          {"type":"J","rotation":1,"x":2,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":1,"x":5,"landingY":36,"clearedLines":0},
-          {"type":"L","rotation":3,"x":8,"landingY":37,"clearedLines":1},
-          {"type":"S","rotation":1,"x":2,"landingY":37,"clearedLines":1},
-          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"T","rotation":3,"x":3,"landingY":37,"clearedLines":0},
-          {"type":"Z","rotation":0,"x":7,"landingY":38,"clearedLines":1},
-          {"type":"J","rotation":2,"x":7,"landingY":37,"clearedLines":0},
-          {"type":"I","rotation":0,"x":0,"landingY":37,"clearedLines":1},
-          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
-        ],
-        "metrics": {"pieceTypes":7,"effectiveRotations":8,"distinctLandingXs":7,"nonClearingLocks":5,"clearPhases":8,"clearedLines":8},
-        "evidence": {"initialHash":"883978b5","finalHash":"70796ae5","commandDigest":"57df17e1","eventDigest":"7ee458ea","commandCount":168},
-        "negativeRoutes": [
-          {"placementIndex":4,"x":3,"expectedCompletion":"failed-budget","finalHash":"934ab68d"}
-        ]
-      }
+      "first84": [
+        "S",
+        "O",
+        "L",
+        "J",
+        "I",
+        "T",
+        "Z",
+        "T",
+        "J",
+        "L",
+        "O",
+        "Z",
+        "I",
+        "S",
+        "Z",
+        "S",
+        "I",
+        "L",
+        "O",
+        "T",
+        "J",
+        "L",
+        "I",
+        "T",
+        "O",
+        "J",
+        "S",
+        "Z",
+        "T",
+        "Z",
+        "J",
+        "O",
+        "I",
+        "S",
+        "L",
+        "O",
+        "I",
+        "Z",
+        "L",
+        "S",
+        "T",
+        "J",
+        "O",
+        "S",
+        "J",
+        "T",
+        "I",
+        "L",
+        "Z",
+        "O",
+        "Z",
+        "L",
+        "T",
+        "S",
+        "J",
+        "I",
+        "J",
+        "L",
+        "S",
+        "Z",
+        "O",
+        "T",
+        "I",
+        "S",
+        "L",
+        "O",
+        "J",
+        "I",
+        "T",
+        "Z",
+        "Z",
+        "I",
+        "L",
+        "J",
+        "T",
+        "O",
+        "S",
+        "Z",
+        "O",
+        "L",
+        "J",
+        "S",
+        "I",
+        "T"
+      ],
+      "routes": [
+        {
+          "id": "route-1",
+          "placements": [
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 4,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 0,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 2
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 30,
+              "clearedLines": 3
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 4,
+              "landingY": 32,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 38,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 35,
+            "pieceTypes": 7,
+            "effectiveRotations": 25,
+            "distinctLandingXs": 10,
+            "nonClearingLocks": 20,
+            "clearPhases": 15,
+            "clearedLines": 22,
+            "semanticDifferences": 0,
+            "boardHashDiverged": false
+          },
+          "evidence": {
+            "initialHash": "7d2b8067",
+            "finalHash": "e76fc57b",
+            "commandDigest": "3f0f1a0d",
+            "eventDigest": "aa090778",
+            "boardTraceDigest": "3d3b7be5",
+            "commandCount": 386
+          }
+        },
+        {
+          "id": "route-2",
+          "placements": [
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 2,
+              "x": 5,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 25,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 2,
+              "landingY": 28,
+              "clearedLines": 2
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 29,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 7,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 2
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 38,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 35,
+            "pieceTypes": 7,
+            "effectiveRotations": 27,
+            "distinctLandingXs": 9,
+            "nonClearingLocks": 19,
+            "clearPhases": 16,
+            "clearedLines": 22,
+            "semanticDifferences": 24,
+            "boardHashDiverged": true
+          },
+          "evidence": {
+            "initialHash": "7d2b8067",
+            "finalHash": "ec79e03c",
+            "commandDigest": "d3be87d8",
+            "eventDigest": "585f6173",
+            "boardTraceDigest": "1ca6bbba",
+            "commandCount": 395
+          }
+        }
+      ]
     },
     {
       "id": "t3r-shaft-03",
       "name": "双岸错层",
-      "difficulty": 9,
+      "seed": 1975563011,
+      "authoringCandidate": 2,
       "boardRows": [
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........",
-        "...J....J.", ".J.J....J.", ".J.J....J.", ".JJJ....J.", ".JJJJ..JJJ", ".JJJJ..JJJ", "JJJJJ..JJJ"
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "JJ...JJJ.J",
+        "JJJ...JJJJ",
+        "JJ.JJJJJ..",
+        "J.JJJ.JJJJ",
+        "J.JJJJ.JJJ",
+        "JJJJ..JJJJ",
+        "JJJJJJJ.JJ",
+        "JJJJJJJJJ.",
+        "JJJJJJJJ.J",
+        "J.JJJJJJJJ"
       ],
-      "queue": ["I", "S", "Z", "T", "I", "L", "T", "J", "J", "O", "I", "O", "I", "I"],
-      "pieceBudget": 14,
-      "reference": {
-        "seed": 1975558146,
-        "placements": [
-          {"type":"I","rotation":1,"x":-2,"landingY":35,"clearedLines":0},
-          {"type":"S","rotation":1,"x":4,"landingY":37,"clearedLines":1},
-          {"type":"Z","rotation":1,"x":5,"landingY":36,"clearedLines":1},
-          {"type":"T","rotation":3,"x":4,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":1,"x":7,"landingY":36,"clearedLines":1},
-          {"type":"L","rotation":3,"x":1,"landingY":37,"clearedLines":0},
-          {"type":"T","rotation":2,"x":5,"landingY":37,"clearedLines":0},
-          {"type":"J","rotation":1,"x":3,"landingY":37,"clearedLines":1},
-          {"type":"J","rotation":1,"x":-1,"landingY":37,"clearedLines":1},
-          {"type":"O","rotation":0,"x":6,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
-          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":4,"landingY":38,"clearedLines":0},
-          {"type":"I","rotation":0,"x":0,"landingY":38,"clearedLines":1}
-        ],
-        "metrics": {"pieceTypes":7,"effectiveRotations":10,"distinctLandingXs":11,"nonClearingLocks":5,"clearPhases":9,"clearedLines":9},
-        "evidence": {"initialHash":"dd21abcf","finalHash":"ef0cf574","commandDigest":"89d1933d","eventDigest":"c46c0907","commandCount":180},
-        "negativeRoutes": [
-          {"placementIndex":7,"x":2,"expectedCompletion":"failed-budget","finalHash":"6ce9f0e8"}
-        ]
-      }
+      "first84": [
+        "O",
+        "S",
+        "I",
+        "L",
+        "T",
+        "Z",
+        "J",
+        "T",
+        "O",
+        "Z",
+        "J",
+        "S",
+        "L",
+        "I",
+        "I",
+        "L",
+        "S",
+        "J",
+        "Z",
+        "O",
+        "T",
+        "O",
+        "T",
+        "I",
+        "L",
+        "S",
+        "J",
+        "Z",
+        "J",
+        "L",
+        "Z",
+        "T",
+        "O",
+        "S",
+        "I",
+        "O",
+        "Z",
+        "L",
+        "I",
+        "S",
+        "T",
+        "J",
+        "T",
+        "O",
+        "Z",
+        "J",
+        "S",
+        "I",
+        "L",
+        "L",
+        "O",
+        "T",
+        "S",
+        "J",
+        "Z",
+        "I",
+        "L",
+        "I",
+        "T",
+        "Z",
+        "J",
+        "O",
+        "S",
+        "Z",
+        "O",
+        "T",
+        "L",
+        "J",
+        "I",
+        "S",
+        "S",
+        "Z",
+        "T",
+        "I",
+        "O",
+        "L",
+        "J",
+        "S",
+        "J",
+        "Z",
+        "T",
+        "L",
+        "I",
+        "O"
+      ],
+      "routes": [
+        {
+          "id": "route-1",
+          "placements": [
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 24,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 7,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 29,
+              "clearedLines": 2
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 30,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 34,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 1,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 30,
+            "pieceTypes": 7,
+            "effectiveRotations": 22,
+            "distinctLandingXs": 11,
+            "nonClearingLocks": 16,
+            "clearPhases": 14,
+            "clearedLines": 20,
+            "semanticDifferences": 0,
+            "boardHashDiverged": false
+          },
+          "evidence": {
+            "initialHash": "85ef2223",
+            "finalHash": "3d7d2f80",
+            "commandDigest": "3e1a71df",
+            "eventDigest": "ba799edf",
+            "boardTraceDigest": "a61ea640",
+            "commandCount": 342
+          }
+        },
+        {
+          "id": "route-2",
+          "placements": [
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 24,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 7,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 29,
+              "clearedLines": 2
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 30,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 34,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 1,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 30,
+            "pieceTypes": 7,
+            "effectiveRotations": 22,
+            "distinctLandingXs": 11,
+            "nonClearingLocks": 16,
+            "clearPhases": 14,
+            "clearedLines": 20,
+            "semanticDifferences": 4,
+            "boardHashDiverged": true
+          },
+          "evidence": {
+            "initialHash": "85ef2223",
+            "finalHash": "9df985a4",
+            "commandDigest": "522a2ab7",
+            "eventDigest": "426bfb4b",
+            "boardTraceDigest": "08cb1a4d",
+            "commandCount": 342
+          }
+        }
+      ]
     },
     {
       "id": "t3r-shaft-04",
       "name": "侧槽逆流",
-      "difficulty": 10,
+      "seed": 1975563268,
+      "authoringCandidate": 5,
       "boardRows": [
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........",
-        ".....J...J", ".J...J...J", ".JJ..J...J", ".JJ..J...J", ".JJJ.J.J.J", "JJJJ.J.J.J", "JJJJ.J.JJJ"
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..JJJ.JJ.J",
+        "JJ.JJJ.J.J",
+        "...JJJJJJJ",
+        "J.JJJJJJ.J",
+        "JJJJJJJJJ.",
+        "JJJJJ.JJJJ",
+        "J.JJJJJJJJ",
+        "JJJ.JJJJJJ"
       ],
-      "queue": ["I", "I", "L", "I", "Z", "J", "S", "O", "T", "L", "I", "O", "I", "I"],
-      "pieceBudget": 14,
-      "reference": {
-        "seed": 1975558149,
-        "placements": [
-          {"type":"I","rotation":1,"x":2,"landingY":36,"clearedLines":0},
-          {"type":"I","rotation":1,"x":4,"landingY":36,"clearedLines":1},
-          {"type":"L","rotation":3,"x":7,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":1,"x":-2,"landingY":36,"clearedLines":1},
-          {"type":"Z","rotation":1,"x":2,"landingY":37,"clearedLines":1},
-          {"type":"J","rotation":2,"x":6,"landingY":37,"clearedLines":0},
-          {"type":"S","rotation":0,"x":2,"landingY":37,"clearedLines":1},
-          {"type":"O","rotation":0,"x":6,"landingY":38,"clearedLines":1},
-          {"type":"T","rotation":2,"x":7,"landingY":37,"clearedLines":0},
-          {"type":"L","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":3,"landingY":38,"clearedLines":0},
-          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
-        ],
-        "metrics": {"pieceTypes":7,"effectiveRotations":9,"distinctLandingXs":7,"nonClearingLocks":5,"clearPhases":9,"clearedLines":9},
-        "evidence": {"initialHash":"73bbdcf6","finalHash":"3dbf23db","commandDigest":"e012f528","eventDigest":"cc797e1e","commandCount":180},
-        "negativeRoutes": [
-          {"placementIndex":10,"x":4,"expectedCompletion":"failed-budget","finalHash":"72962aaf"}
-        ]
-      }
+      "first84": [
+        "I",
+        "L",
+        "J",
+        "S",
+        "Z",
+        "T",
+        "O",
+        "Z",
+        "I",
+        "O",
+        "S",
+        "J",
+        "T",
+        "L",
+        "S",
+        "O",
+        "I",
+        "J",
+        "L",
+        "Z",
+        "T",
+        "L",
+        "I",
+        "Z",
+        "T",
+        "O",
+        "J",
+        "S",
+        "I",
+        "J",
+        "S",
+        "O",
+        "Z",
+        "L",
+        "T",
+        "L",
+        "T",
+        "Z",
+        "J",
+        "I",
+        "O",
+        "S",
+        "O",
+        "L",
+        "J",
+        "S",
+        "T",
+        "Z",
+        "I",
+        "T",
+        "O",
+        "J",
+        "S",
+        "L",
+        "Z",
+        "I",
+        "I",
+        "O",
+        "S",
+        "T",
+        "L",
+        "J",
+        "Z",
+        "L",
+        "Z",
+        "O",
+        "S",
+        "T",
+        "I",
+        "J",
+        "Z",
+        "L",
+        "O",
+        "S",
+        "J",
+        "T",
+        "I",
+        "O",
+        "I",
+        "J",
+        "Z",
+        "T",
+        "S",
+        "L"
+      ],
+      "routes": [
+        {
+          "id": "route-1",
+          "placements": [
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 8,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 30,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 2,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 33,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 0,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 38,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 2,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 38,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 38,
+              "clearedLines": 1
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 29,
+            "pieceTypes": 7,
+            "effectiveRotations": 19,
+            "distinctLandingXs": 10,
+            "nonClearingLocks": 15,
+            "clearPhases": 14,
+            "clearedLines": 18,
+            "semanticDifferences": 0,
+            "boardHashDiverged": false
+          },
+          "evidence": {
+            "initialHash": "0a9a48af",
+            "finalHash": "dfb99a85",
+            "commandDigest": "a519f830",
+            "eventDigest": "31874c8c",
+            "boardTraceDigest": "417fc820",
+            "commandCount": 335
+          }
+        },
+        {
+          "id": "route-2",
+          "placements": [
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 8,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 30,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 33,
+              "clearedLines": 2
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 0,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 1,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 38,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 2,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 38,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 1,
+              "landingY": 38,
+              "clearedLines": 1
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 29,
+            "pieceTypes": 7,
+            "effectiveRotations": 22,
+            "distinctLandingXs": 10,
+            "nonClearingLocks": 15,
+            "clearPhases": 14,
+            "clearedLines": 18,
+            "semanticDifferences": 4,
+            "boardHashDiverged": true
+          },
+          "evidence": {
+            "initialHash": "0a9a48af",
+            "finalHash": "0101267e",
+            "commandDigest": "b97dce52",
+            "eventDigest": "0ff56579",
+            "boardTraceDigest": "9570211d",
+            "commandCount": 338
+          }
+        }
+      ]
     },
     {
       "id": "t3r-cascade-05",
       "name": "潮线汇流",
-      "difficulty": 10,
+      "seed": 1975563525,
+      "authoringCandidate": 0,
       "boardRows": [
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........",
-        "....J.....", "....J.....", "...JJ....J", "...JJJ..JJ", "...JJJ..JJ", "...JJJJJJJ", "J..JJJJJJJ"
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "J.J...JJJJ",
+        ".JJJJJ.J.J",
+        ".J.JJJJ.JJ",
+        ".JJJ.JJJJJ",
+        ".JJJJJJJJJ",
+        "J.JJJJJJJJ",
+        "JJJJJ.JJJJ",
+        "JJJJ.JJJJJ"
       ],
-      "queue": ["Z", "T", "O", "S", "J", "I", "J", "L", "I", "I", "L", "I", "O", "I", "I"],
-      "pieceBudget": 15,
-      "reference": {
-        "seed": 1975558145,
-        "placements": [
-          {"type":"Z","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"T","rotation":3,"x":1,"landingY":37,"clearedLines":1},
-          {"type":"O","rotation":0,"x":6,"landingY":38,"clearedLines":0},
-          {"type":"S","rotation":0,"x":0,"landingY":37,"clearedLines":1},
-          {"type":"J","rotation":1,"x":-1,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":0,"x":5,"landingY":38,"clearedLines":1},
-          {"type":"J","rotation":3,"x":2,"landingY":37,"clearedLines":0},
-          {"type":"L","rotation":3,"x":4,"landingY":37,"clearedLines":0},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":0},
-          {"type":"L","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":0},
-          {"type":"O","rotation":0,"x":0,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":2,"landingY":38,"clearedLines":0},
-          {"type":"I","rotation":0,"x":6,"landingY":38,"clearedLines":1}
-        ],
-        "metrics": {"pieceTypes":7,"effectiveRotations":4,"distinctLandingXs":7,"nonClearingLocks":6,"clearPhases":9,"clearedLines":9},
-        "evidence": {"initialHash":"73671a92","finalHash":"cff0d920","commandDigest":"349f06c4","eventDigest":"65388eea","commandCount":184},
-        "negativeRoutes": [
-          {"placementIndex":13,"x":3,"expectedCompletion":"failed-budget","finalHash":"18a40943"}
-        ]
-      }
+      "first84": [
+        "J",
+        "I",
+        "O",
+        "L",
+        "Z",
+        "T",
+        "S",
+        "I",
+        "O",
+        "S",
+        "J",
+        "L",
+        "Z",
+        "T",
+        "S",
+        "L",
+        "Z",
+        "O",
+        "T",
+        "J",
+        "I",
+        "L",
+        "Z",
+        "S",
+        "I",
+        "T",
+        "J",
+        "O",
+        "S",
+        "Z",
+        "I",
+        "J",
+        "L",
+        "T",
+        "O",
+        "Z",
+        "I",
+        "T",
+        "S",
+        "L",
+        "O",
+        "J",
+        "I",
+        "T",
+        "S",
+        "L",
+        "J",
+        "Z",
+        "O",
+        "O",
+        "S",
+        "I",
+        "T",
+        "Z",
+        "J",
+        "L",
+        "S",
+        "O",
+        "Z",
+        "T",
+        "J",
+        "L",
+        "I",
+        "J",
+        "L",
+        "S",
+        "T",
+        "O",
+        "Z",
+        "I",
+        "L",
+        "Z",
+        "J",
+        "T",
+        "O",
+        "I",
+        "S",
+        "L",
+        "J",
+        "Z",
+        "I",
+        "T",
+        "O",
+        "S"
+      ],
+      "routes": [
+        {
+          "id": "route-1",
+          "placements": [
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 25,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 4,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 7,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 0,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 1,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 4,
+              "landingY": 34,
+              "clearedLines": 2
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 8,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 2,
+              "x": 0,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 6,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 34,
+            "pieceTypes": 7,
+            "effectiveRotations": 29,
+            "distinctLandingXs": 11,
+            "nonClearingLocks": 18,
+            "clearPhases": 16,
+            "clearedLines": 20,
+            "semanticDifferences": 0,
+            "boardHashDiverged": false
+          },
+          "evidence": {
+            "initialHash": "ea5e0a53",
+            "finalHash": "c1e1b631",
+            "commandDigest": "95168d30",
+            "eventDigest": "648806ad",
+            "boardTraceDigest": "2363b0b6",
+            "commandCount": 395
+          }
+        },
+        {
+          "id": "route-2",
+          "placements": [
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 25,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 4,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 30,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 7,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 0,
+              "landingY": 32,
+              "clearedLines": 2
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 5,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": 6,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 30,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 33,
+              "clearedLines": 3
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 4,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 35,
+              "clearedLines": 2
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 4,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 4,
+              "landingY": 36,
+              "clearedLines": 2
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 38,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": -2,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 6,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 34,
+            "pieceTypes": 7,
+            "effectiveRotations": 29,
+            "distinctLandingXs": 11,
+            "nonClearingLocks": 21,
+            "clearPhases": 13,
+            "clearedLines": 20,
+            "semanticDifferences": 15,
+            "boardHashDiverged": true
+          },
+          "evidence": {
+            "initialHash": "ea5e0a53",
+            "finalHash": "54b8075d",
+            "commandDigest": "c70045f5",
+            "eventDigest": "824d4faf",
+            "boardTraceDigest": "83b27ed0",
+            "commandCount": 369
+          }
+        }
+      ]
     },
     {
       "id": "t3r-cascade-06",
       "name": "远岸终局",
-      "difficulty": 10,
+      "seed": 1975563782,
+      "authoringCandidate": 7,
       "boardRows": [
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........", "..........", "..........",
-        "..........", "..........", "..........",
-        ".J........", ".J...JJ...", ".J...JJ...", ".J..JJJ...", ".J..JJJJ..", ".J.JJJJJ..", "JJJJJJJJ.."
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "JJJJJ...J.",
+        ".JJ..JJJJJ",
+        "JJJ.JJ..JJ",
+        "J.JJJJJJJ.",
+        "..JJJJJJJJ",
+        "JJJ.J.JJJJ",
+        "J.JJJJJJJJ",
+        "JJJJJ.JJJJ",
+        "JJJ.JJJJJJ",
+        "JJJJJJJJ.J"
       ],
-      "queue": ["O", "I", "T", "Z", "J", "L", "S", "L", "J", "I", "Z", "I", "O", "I", "I"],
-      "pieceBudget": 15,
-      "reference": {
-        "seed": 1975558148,
-        "placements": [
-          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":1,"x":-2,"landingY":36,"clearedLines":0},
-          {"type":"T","rotation":1,"x":1,"landingY":37,"clearedLines":1},
-          {"type":"Z","rotation":0,"x":7,"landingY":38,"clearedLines":1},
-          {"type":"J","rotation":2,"x":7,"landingY":37,"clearedLines":0},
-          {"type":"L","rotation":0,"x":2,"landingY":37,"clearedLines":1},
-          {"type":"S","rotation":1,"x":1,"landingY":37,"clearedLines":1},
-          {"type":"L","rotation":0,"x":7,"landingY":38,"clearedLines":0},
-          {"type":"J","rotation":1,"x":-1,"landingY":37,"clearedLines":1},
-          {"type":"I","rotation":0,"x":5,"landingY":38,"clearedLines":0},
-          {"type":"Z","rotation":0,"x":2,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":4,"landingY":38,"clearedLines":0},
-          {"type":"O","rotation":0,"x":8,"landingY":38,"clearedLines":1},
-          {"type":"I","rotation":0,"x":4,"landingY":38,"clearedLines":0},
-          {"type":"I","rotation":0,"x":0,"landingY":38,"clearedLines":1}
-        ],
-        "metrics": {"pieceTypes":7,"effectiveRotations":6,"distinctLandingXs":9,"nonClearingLocks":6,"clearPhases":9,"clearedLines":9},
-        "evidence": {"initialHash":"31591b83","finalHash":"9a08bd22","commandDigest":"874cee7a","eventDigest":"7c232eb4","commandCount":190},
-        "negativeRoutes": [
-          {"placementIndex":10,"x":3,"expectedCompletion":"failed-budget","finalHash":"5789b4c8"}
-        ]
-      }
+      "first84": [
+        "J",
+        "O",
+        "L",
+        "S",
+        "Z",
+        "I",
+        "T",
+        "S",
+        "T",
+        "I",
+        "O",
+        "Z",
+        "L",
+        "J",
+        "I",
+        "O",
+        "L",
+        "Z",
+        "S",
+        "T",
+        "J",
+        "O",
+        "J",
+        "I",
+        "S",
+        "T",
+        "L",
+        "Z",
+        "L",
+        "T",
+        "O",
+        "S",
+        "I",
+        "Z",
+        "J",
+        "O",
+        "I",
+        "Z",
+        "J",
+        "L",
+        "T",
+        "S",
+        "S",
+        "L",
+        "O",
+        "J",
+        "Z",
+        "T",
+        "I",
+        "Z",
+        "J",
+        "T",
+        "L",
+        "I",
+        "S",
+        "O",
+        "O",
+        "Z",
+        "J",
+        "S",
+        "T",
+        "I",
+        "L",
+        "O",
+        "T",
+        "L",
+        "I",
+        "J",
+        "Z",
+        "S",
+        "J",
+        "L",
+        "O",
+        "S",
+        "I",
+        "T",
+        "Z",
+        "L",
+        "Z",
+        "O",
+        "J",
+        "I",
+        "S",
+        "T"
+      ],
+      "routes": [
+        {
+          "id": "route-1",
+          "placements": [
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 5,
+              "landingY": 26,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 3
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 32,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 5,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 34,
+              "clearedLines": 2
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 30,
+            "pieceTypes": 7,
+            "effectiveRotations": 27,
+            "distinctLandingXs": 10,
+            "nonClearingLocks": 15,
+            "clearPhases": 15,
+            "clearedLines": 20,
+            "semanticDifferences": 0,
+            "boardHashDiverged": false
+          },
+          "evidence": {
+            "initialHash": "eac57406",
+            "finalHash": "af92bded",
+            "commandDigest": "c56b78d1",
+            "eventDigest": "dd193ab4",
+            "boardTraceDigest": "157f8204",
+            "commandCount": 359
+          }
+        },
+        {
+          "id": "route-2",
+          "placements": [
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 5,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 5,
+              "landingY": 26,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 29,
+              "clearedLines": 0
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 28,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 27,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 28,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 29,
+              "clearedLines": 3
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 6,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 0,
+              "landingY": 31,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 31,
+              "clearedLines": 1
+            },
+            {
+              "type": "J",
+              "rotation": 0,
+              "x": 3,
+              "landingY": 32,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 0,
+              "x": 4,
+              "landingY": 32,
+              "clearedLines": 0
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 0,
+              "landingY": 33,
+              "clearedLines": 2
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 5,
+              "landingY": 33,
+              "clearedLines": 0
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 2,
+              "landingY": 33,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 1,
+              "landingY": 34,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 8,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "O",
+              "rotation": 0,
+              "x": 7,
+              "landingY": 35,
+              "clearedLines": 0
+            },
+            {
+              "type": "J",
+              "rotation": 3,
+              "x": 5,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "I",
+              "rotation": 1,
+              "x": 3,
+              "landingY": 34,
+              "clearedLines": 1
+            },
+            {
+              "type": "S",
+              "rotation": 1,
+              "x": 1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "T",
+              "rotation": 3,
+              "x": 3,
+              "landingY": 36,
+              "clearedLines": 0
+            },
+            {
+              "type": "L",
+              "rotation": 1,
+              "x": -1,
+              "landingY": 36,
+              "clearedLines": 1
+            },
+            {
+              "type": "Z",
+              "rotation": 1,
+              "x": 7,
+              "landingY": 37,
+              "clearedLines": 1
+            },
+            {
+              "type": "L",
+              "rotation": 2,
+              "x": 1,
+              "landingY": 37,
+              "clearedLines": 0
+            },
+            {
+              "type": "T",
+              "rotation": 2,
+              "x": 6,
+              "landingY": 37,
+              "clearedLines": 2
+            }
+          ],
+          "metrics": {
+            "lockedPieces": 30,
+            "pieceTypes": 7,
+            "effectiveRotations": 28,
+            "distinctLandingXs": 10,
+            "nonClearingLocks": 14,
+            "clearPhases": 16,
+            "clearedLines": 20,
+            "semanticDifferences": 5,
+            "boardHashDiverged": true
+          },
+          "evidence": {
+            "initialHash": "eac57406",
+            "finalHash": "b8211f69",
+            "commandDigest": "828fa698",
+            "eventDigest": "a2f9d3b0",
+            "boardTraceDigest": "be7c5526",
+            "commandCount": 369
+          }
+        }
+      ]
     }
   ]
 }

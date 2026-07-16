@@ -136,17 +136,41 @@ interface PuzzleQaPlacement {
 }
 
 const PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = [
-  { type: 'I', rotation: 1, x: -2 },
-  { type: 'S', rotation: 0, x: 6 },
-  { type: 'I', rotation: 1, x: 0 },
-  { type: 'L', rotation: 0, x: 6 },
-  { type: 'Z', rotation: 1, x: 5 },
-  { type: 'I', rotation: 1, x: -2 },
-  { type: 'J', rotation: 1, x: 5 },
-  { type: 'O', rotation: 0, x: 8 },
+  { type: 'S', rotation: 1, x: 6 },
+  { type: 'L', rotation: 3, x: 8 },
+  { type: 'O', rotation: 0, x: 5 },
+  { type: 'T', rotation: 3, x: 3 },
+  { type: 'J', rotation: 2, x: 0 },
+  { type: 'I', rotation: 0, x: 0 },
+  { type: 'Z', rotation: 0, x: 4 },
+  { type: 'I', rotation: 1, x: 1 },
+  { type: 'S', rotation: 1, x: 1 },
+  { type: 'J', rotation: 0, x: 7 },
+  { type: 'T', rotation: 3, x: 5 },
+  { type: 'Z', rotation: 0, x: 7 },
+  { type: 'O', rotation: 0, x: 0 },
+  { type: 'L', rotation: 1, x: 2 },
+  { type: 'Z', rotation: 1, x: 3 },
+  { type: 'T', rotation: 1, x: -1 },
+  { type: 'O', rotation: 0, x: 6 },
+  { type: 'L', rotation: 3, x: 8 },
+  { type: 'S', rotation: 1, x: 0 },
   { type: 'J', rotation: 1, x: 3 },
-  { type: 'T', rotation: 2, x: 1 },
-  { type: 'I', rotation: 0, x: 6 },
+  { type: 'I', rotation: 0, x: 4 },
+  { type: 'O', rotation: 0, x: 8 },
+  { type: 'L', rotation: 0, x: 6 },
+  { type: 'Z', rotation: 1, x: 1 },
+  { type: 'T', rotation: 1, x: -1 },
+  { type: 'S', rotation: 1, x: 0 },
+  { type: 'I', rotation: 1, x: 7 },
+  { type: 'J', rotation: 0, x: 3 },
+  { type: 'Z', rotation: 1, x: 5 },
+  { type: 'S', rotation: 1, x: 3 },
+  { type: 'O', rotation: 0, x: 5 },
+  { type: 'I', rotation: 1, x: -2 },
+  { type: 'T', rotation: 2, x: 7 },
+  { type: 'J', rotation: 0, x: 1 },
+  { type: 'L', rotation: 2, x: 2 },
 ];
 
 function qaRotationCommands(rotation: Rotation): readonly GameCommand[] {
@@ -156,7 +180,7 @@ function qaRotationCommands(rotation: Rotation): readonly GameCommand[] {
   return [];
 }
 
-/** A complete public-command-only T5 challenge route with ordinary delayed resolution. */
+/** A complete public-command-only normal-play Puzzle route with ordinary delayed resolution. */
 export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState; hash: string } {
   let state = createInitialState(seed, 'puzzle', 't3r-shaft-01');
   const commands: GameCommand[] = [];
@@ -177,10 +201,12 @@ export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly G
       if (state.active?.x === beforeX) throw new Error(`Puzzle challenge QA route could not reach x=${placement.x}.`);
     }
     apply({ type: 'hard-drop' });
-    while (state.status === 'playing' && (!state.active || state.phase !== 'active')) apply({ type: 'tick' });
+    for (let guard = 0; state.status === 'playing' && (!state.active || state.phase !== 'active') && guard < 64; guard += 1) {
+      apply({ type: 'tick' });
+    }
   }
 
-  if (state.status !== 'finished' || state.lines !== 8 || state.pieceCount !== 11 || state.puzzleCompletion !== 'finished') {
+  if (state.status !== 'finished' || state.lines !== 22 || state.pieceCount !== 35 || state.puzzleCompletion !== 'finished') {
     throw new Error(`Puzzle challenge replay did not finish: ${state.status}, ${state.lines} lines, ${state.pieceCount} pieces.`);
   }
   return { commands, state, hash: stateHash(state) };

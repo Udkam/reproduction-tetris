@@ -1,6 +1,43 @@
+// @vitest-environment jsdom
+
 import { describe, expect, it, vi } from 'vitest';
-import { getPuzzleDefinition } from '../core';
 import { GameRuntime } from './GameRuntime';
+
+const rendererSetOptions = vi.hoisted(() => vi.fn());
+
+vi.mock('../audio/AudioEngine', () => ({
+  AudioEngine: class {
+    setEnabled(): void {}
+    async prime(): Promise<void> {}
+    play(): void {}
+    suspend(): void {}
+    destroy(): void {}
+  },
+}));
+
+vi.mock('../input/InputController', () => ({
+  InputController: class {
+    press(): void {}
+    release(): void {}
+    step(): void {}
+    clearHeld(): void {}
+    destroy(): void {}
+  },
+}));
+
+vi.mock('../render/TetrisRenderer', () => ({
+  TetrisRenderer: class {
+    async init(): Promise<void> {}
+    setOptions(options: unknown): void { rendererSetOptions(options); }
+    setFrameCallback(): void {}
+    render(): void {}
+    destroy(): void {}
+    getSnapshot(): Record<string, never> { return {}; }
+    benchmark(): { meanMs: number; p95Ms: number; maxMs: number } {
+      return { meanMs: 0, p95Ms: 0, maxMs: 0 };
+    }
+  },
+}));
 
 describe('GameRuntime public state boundary', () => {
   it('starts from a deterministic ready state without browser mounting', () => {
@@ -41,7 +78,38 @@ describe('GameRuntime public state boundary', () => {
     expect(state.status).toBe('ready');
     expect(state.mode).toBe('puzzle');
     expect(state.puzzleId).toBe('t3r-cascade-06');
-    expect(state.puzzleQueue).toEqual(getPuzzleDefinition('t3r-cascade-06').queue);
+    expect(state.puzzleQueue).toEqual(state.queue);
+    expect(state.queue).toHaveLength(5);
+    expect(state.puzzlePieceBudget).toBeNull();
     expect(state.puzzleCompletion).toBe('active');
+  });
+
+  it('updates reduced motion in place without rebuilding runtime state', () => {
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
+    const before = runtime.getState();
+    rendererSetOptions.mockClear();
+
+    runtime.setReducedMotion(true);
+
+    expect(rendererSetOptions).toHaveBeenCalledWith({ reducedMotion: true });
+    expect(runtime.getState()).toBe(before);
+  });
+
+  it('mounts a read-only QA state view without replay or state-replacement hooks', async () => {
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
+    await runtime.mount(document.createElement('div'));
+
+    const qaSurface = window.__SIGNAL_FOUNDRY_QA__;
+    expect(qaSurface).toBeDefined();
+    expect(qaSurface).not.toHaveProperty('replayScenario');
+    expect(qaSurface).not.toHaveProperty('setState');
+    expect(qaSurface).not.toHaveProperty('replaceState');
+
+    const exposedState = qaSurface!.getState();
+    exposedState.status = 'finished';
+    expect(runtime.getState().status).toBe('ready');
+
+    runtime.destroy();
+    expect(window.__SIGNAL_FOUNDRY_QA__).toBeUndefined();
   });
 });

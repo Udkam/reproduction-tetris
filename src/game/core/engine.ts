@@ -17,7 +17,6 @@ import { kickTests } from './rotation';
 import type { ActivePiece, GameCommand, GameEvent, GameMode, GameState, GameTransition, PieceType, PuzzleCompletion, PuzzleId } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
-  if (state.mode === 'puzzle') return state;
   const queue = [...state.queue];
   let randomizer = state.randomizer;
   while (queue.length < minimum) {
@@ -52,46 +51,11 @@ function puzzleFailure(
   };
 }
 
-function hasHiddenOccupancy(state: GameState): boolean {
-  return state.board.slice(0, VISIBLE_START_ROW).some((row) => row.some((cell) => cell !== null));
-}
-
 function canonicalOccupiedCount(state: GameState): number {
   return state.board.flat().filter((cell) => cell !== null).length;
 }
 
-function spawnPuzzlePiece(state: GameState): GameTransition {
-  const queue = state.puzzleQueue;
-  const queueIndex = state.puzzleQueueIndex;
-  if (!queue || state.puzzleGoal !== 'canonical-board-empty' || state.puzzlePieceBudget !== queue.length) {
-    return invalidState(state);
-  }
-  const pieceType = queue[queueIndex];
-  if (!pieceType) return puzzleFailure(state, 'failed-budget', 'puzzle-budget');
-  const active = createSpawnPiece(pieceType);
-  if (!canPlace(state.board, active)) return puzzleFailure(state, 'failed-invalid-spawn', 'puzzle-invalid-spawn');
-  return {
-    state: {
-      ...state,
-      active,
-      queue: queue.slice(queueIndex + 1),
-      puzzleQueueIndex: queueIndex + 1,
-      phase: 'active',
-      phaseTicks: 0,
-      pendingClearRows: [],
-      gravityTicks: 0,
-      lockTicks: 0,
-      lockResets: 0,
-    },
-    events: [],
-  };
-}
-
 function spawnPiece(state: GameState, type?: PieceType): GameTransition {
-  if (state.mode === 'puzzle') {
-    if (type) return invalidState(state);
-    return spawnPuzzlePiece(state);
-  }
   let next = refillQueue(state, type ? NEXT_QUEUE_SIZE : NEXT_QUEUE_SIZE + 1);
   const queue = [...next.queue];
   const pieceType = type ?? queue.shift();
@@ -99,6 +63,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   next = refillQueue({ ...next, queue }, NEXT_QUEUE_SIZE);
   const active = createSpawnPiece(pieceType);
   if (!canPlace(next.board, active)) {
+    if (next.mode === 'puzzle') return puzzleFailure(next, 'failed-top-out', 'block-out');
     return {
       state: { ...next, active: null, status: 'game-over', phase: 'active' },
       events: [{ type: 'game-over', reason: 'block-out' }],
@@ -108,6 +73,8 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
     state: {
       ...next,
       active,
+      puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
+      puzzleQueueIndex: 0,
       phase: 'active',
       phaseTicks: 0,
       pendingClearRows: [],
@@ -121,19 +88,20 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
 
 export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon', puzzleId?: PuzzleId): GameState {
   const selectedPuzzle = mode === 'puzzle' ? getPuzzleDefinition(puzzleId ?? defaultPuzzleId()) : null;
+  const effectiveSeed = selectedPuzzle?.seed ?? seed;
   const base: GameState = {
     board: selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard(),
     active: null,
-    queue: selectedPuzzle ? [...selectedPuzzle.queue] : [],
+    queue: [],
     score: 0,
     lines: 0,
     level: 0,
     mode,
     puzzleId: selectedPuzzle?.id ?? null,
     puzzleTargetLines: null,
-    puzzlePieceBudget: selectedPuzzle?.pieceBudget ?? null,
+    puzzlePieceBudget: null,
     puzzleBoardRows: selectedPuzzle?.boardRows ?? null,
-    puzzleQueue: selectedPuzzle?.queue ?? null,
+    puzzleQueue: null,
     puzzleQueueIndex: 0,
     puzzleGoal: selectedPuzzle ? 'canonical-board-empty' : null,
     puzzleCompletion: selectedPuzzle ? 'active' : null,
@@ -148,11 +116,11 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     lockTicks: 0,
     lockResets: 0,
     elapsedTicks: 0,
-    randomizer: createRandomizer(seed),
-    seed,
+    randomizer: createRandomizer(effectiveSeed),
+    seed: effectiveSeed,
   };
-  if (selectedPuzzle) return base;
-  return { ...spawnPiece(base).state, status: 'ready' };
+  const spawned = spawnPiece(base).state;
+  return spawned.status === 'game-over' ? spawned : { ...spawned, status: 'ready' };
 }
 
 function invalidState(state: GameState): GameTransition {
@@ -187,15 +155,8 @@ function finishPuzzleSuccess(state: GameState): GameTransition {
 
 /** Puzzle-only post-lock resolution after shared merge and ordinary line clearing. */
 function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): GameTransition {
-  const queue = state.puzzleQueue;
-  if (!queue || state.puzzleGoal !== 'canonical-board-empty' || state.puzzlePieceBudget !== queue.length) {
-    return invalidState(state);
-  }
-  if (hasHiddenOccupancy(state)) return puzzleFailure(state, 'failed-top-out', 'lock-out');
+  if (state.puzzleGoal !== 'canonical-board-empty') return invalidState(state);
   if (canonicalOccupiedCount(state) === 0) return finishPuzzleSuccess(state);
-  if (state.pieceCount >= state.puzzlePieceBudget || state.puzzleQueueIndex >= queue.length) {
-    return puzzleFailure(state, 'failed-budget', 'puzzle-budget');
-  }
   if (spawnImmediately) return spawnPiece(state);
   return {
     state: {
@@ -396,10 +357,6 @@ function tick(state: GameState): GameTransition {
     next = { ...next, lockTicks: 0 };
   }
 
-  // Puzzle gravity is intentionally disabled. A piece moved to the floor by
-  // soft drop still shares the normal grounded lock delay above.
-  if (next.mode === 'puzzle') return { state: next, events: [] };
-
   const gravityTicks = next.gravityTicks + 1;
   if (gravityTicks >= gravityForMode(next.mode, next.level, next.pieceCount, next.lines)) {
     const moved = moveActive({ ...next, gravityTicks: 0 }, 0, 1, 'gravity');
@@ -416,10 +373,6 @@ export function dispatch(state: GameState, command: GameCommand): GameTransition
     };
   }
   if (command.type === 'start' && state.status === 'ready') {
-    if (state.mode === 'puzzle') {
-      const spawned = spawnPiece({ ...state, status: 'playing' });
-      return { state: spawned.state, events: [{ type: 'started' }, ...spawned.events] };
-    }
     return { state: { ...state, status: 'playing' }, events: [{ type: 'started' }] };
   }
   if (command.type === 'pause' && state.status === 'playing') {

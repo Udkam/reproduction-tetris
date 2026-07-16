@@ -57,7 +57,6 @@ export function gravityForRace(pieceCount: number, lines: number): number {
 
 export function gravityForMode(mode: GameMode, level: number, pieceCount: number, lines: number): number {
   if (mode === 'race') return gravityForRace(pieceCount, lines);
-  if (mode === 'puzzle') return Number.MAX_SAFE_INTEGER;
   return gravityForLevel(level);
 }
 
