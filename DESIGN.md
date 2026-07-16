@@ -1,4 +1,4 @@
-# Tetris — T5 Aqua Blueprint Production Contract
+# 青流方阵 — T5 Aqua Blueprint Production Contract
 
 ## Status and authority
 
@@ -121,6 +121,13 @@ paired with fine blueprint ticks and one offset cyan route line. Warm paper, och
 shelf feet, mineral shadows, inset rectangles, and the current block material language
 are removed.
 
+- The player-facing product name is `青流方阵`. `Tetris` is removed from the document
+  title, metadata, visible heading, live-region copy, canvas label, and favicon concept.
+- `index.html` uses the original product name, an original falling-block description,
+  the Aqua Blueprint theme color, and a `跳到主要内容` skip link.
+- Internal filenames and clean-room rule terminology may remain technical; they are not
+  player-facing brand or borrowed trade dress.
+
 ### Palette
 
 | Role | Token |
@@ -157,6 +164,8 @@ labels must meet WCAG AA contrast.
 ### Mode home
 
 - The app opens on a dedicated mode home with no gameplay board.
+- The mode home and Puzzle library do not mount a runtime or canvas. Entering a run
+  creates one runtime/canvas; returning home destroys both before showing the home.
 - Marathon, Race, and Puzzle are three separate, fully clickable entries with complete
   Chinese names, concise factual rules, and an explicit enter action.
 - Race copy is `速度持续提升｜无终点｜主动退出或堆叠到顶结束`.
@@ -190,6 +199,8 @@ labels must meet WCAG AA contrast.
   focus, Escape/cancel behavior, and focus restoration.
 - Mode and state are never communicated by color alone.
 - `prefers-reduced-motion` is honored initially and when the media query changes.
+  Runtime changes use `GameRuntime.setReducedMotion` and do not rebuild or replace the
+  current canonical game state.
 - Required viewports: 1440 × 900, 2048 × 1152, 390 × 844 DPR3, 844 × 390 DPR3, and
   360 × 800.
 - No horizontal overflow, clipped essential text, overlapping modules, or accidental

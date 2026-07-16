@@ -28,6 +28,9 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
 - Core candidate `3bf170e` proved endless Race and repaired consecutive Puzzle locking,
   but independent QA rejected its live runtime replay-state injection. The injection
   deletion is retained uncommitted while the finite-queue Puzzle work is superseded.
-- Active TODO: implement and independently verify the revised normal-play/multi-route
-  Puzzle core, then the original Aqua Blueprint frontend, then one combined final
-  gate/evidence pass and final QA.
+- Revised Core candidate `630fb30` implements seeded normal play, twelve verified
+  multi-route references, automatic gravity, continuous seven-bag input, and no budget
+  terminal. Independent read-only QA accepted it after 22-file / 140-test focused
+  verification and typecheck.
+- Active TODO: implement and verify the original `青流方阵` Aqua Blueprint frontend,
+  then one combined final gate/evidence pass and final QA.

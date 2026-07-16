@@ -11,7 +11,7 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — revised Puzzle normal-play contract is the current authority**
+Status: **active — Core accepted at `630fb30`; T5 Frontend is the active writer slice**
 
 ## User-visible problems to resolve
 
@@ -95,10 +95,14 @@ Core acceptance:
 
 Task ID: `TETRIS-T5-FRONTEND-001`
 
-This slice remains blocked until the core candidate and independent core QA exist.
+Base SHA: `630fb30e115db9d0b4e6328e679987f9e8608939`
+
+Core QA result: **ACCEPT** — focused 22 files / 140 tests, typecheck, and diff check
+passed independently. This slice is now unblocked.
 
 The frontend writer may change only:
 
+- `index.html`;
 - `src/App.tsx`;
 - `src/styles.css`;
 - `src/puzzleProgress.ts` and `src/puzzleProgress.test.ts`;
@@ -114,7 +118,10 @@ configuration, dependencies, T3/T4 evidence, changelog, or coordinator docs.
 
 Frontend acceptance:
 
-- dedicated three-entry mode home;
+- original player-facing brand `青流方阵` in metadata, heading, live copy, favicon,
+  skip link, and canvas label; no player-facing `Tetris` brand remains;
+- dedicated three-entry mode home with no mounted runtime or canvas;
+- entering gameplay creates exactly one runtime/canvas and returning home destroys it;
 - all Puzzle levels enabled, no numeric difficulty UI, completion only informational;
 - Puzzle UI contains no piece budget or remaining-piece counter; it shows ordinary
   gameplay stats, goal, placed-piece count, and Next preview;
@@ -122,6 +129,8 @@ Frontend acceptance:
 - Aqua Blueprint tokens and completely new cell renderer;
 - all visible buttons at least 44 × 44 CSS px and visible focus treatment;
 - accessible pause/exit/result action sheets;
+- live `prefers-reduced-motion` changes call `GameRuntime.setReducedMotion` without
+  rebuilding the run or changing canonical state;
 - one canvas per gameplay screen and no lifecycle leaks;
 - targeted component/presentation checks before coordinator final gates.
 
