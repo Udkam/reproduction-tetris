@@ -2,6 +2,11 @@
 
 ## Status and authority
 
+Final disposition (2026-07-17): this T5 contract is implemented and independently
+accepted at product source `effb353c0a4d1bef26fa524ed38d3d3653f45eb8` with formal
+evidence `c0832e43dc1cdd31c074066919c229d4a9fe5518`. There is no active
+product writer; any later behavior or visual change requires a new bounded slice.
+
 The user's 2026-07-16 direction opens T5 and supersedes every conflicting T3/T4
 product rule. The later Puzzle clarification in the same session also supersedes the
 first T5 finite-queue draft:

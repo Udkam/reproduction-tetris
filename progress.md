@@ -258,3 +258,24 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
   path per piece type. The expanded allowlist adds only App silhouette source/tests and
   theme/renderer presentation paths; engine, board data, runtime, `index.html`,
   dependencies, coordinator evidence, and other product subsystems stay unchanged.
+
+## 2026-07-17 — T5 cohesive mineral release candidate accepted
+
+- Final source `effb353` presents plain-text `Tetris`, player-facing `经典`, endless
+  accelerating Race, and fifteen all-enabled legal mid-game Puzzle endgames with a
+  continuous seeded seven-bag and two verified public-command routes per level.
+- Board, active, Next, Ghost, silhouettes, and locked stacks now use cohesive mineral
+  components with suppressed internal borders and one restrained directional bevel;
+  the exact deep natural seven-material mapping remains fixed.
+- Space Grotesk and Noto Sans SC load through Google Fonts with a geometry-safe system
+  fallback. Statistic dividers use explicit semantic roles, and every required mobile
+  view retains visible Next, keyboard context, complete goals, and 44 px controls.
+- Final post-source gates passed: typecheck; 40 test files with 39 passed / 1 skipped;
+  258 tests with 256 passed / 2 skipped; 739-module build; action client; loaded-font
+  and blocked-font five-viewport matrices.
+- Independent source QA accepted candidate tip `ba5d387`. Formal evidence `c0832e4`
+  contains 23 captures tied to source `effb353`; evidence QA inspected 23/23 at original
+  detail and reproduced 25/25 raw Git blob hashes with zero CRLF manifest drift.
+- `index.html`, dependencies, historical T3/T4 evidence, and other game repositories
+  were not changed by the final frontend/evidence repairs. Next action: coordinator
+  push of `codex/tetris-recovery`.

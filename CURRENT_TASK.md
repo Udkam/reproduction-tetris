@@ -11,9 +11,9 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — Slice K-R candidate `f4fcbb5` is rejected by independent QA;
-bounded Slice K-R2 now owns semantic statistic roles and the 844 × 390 mode-action
-overflow as the sole active product boundary**
+Status: **complete — final product source `effb353` and formal evidence `c0832e4`
+are independently accepted; no product writer remains active and the branch is
+eligible for coordinator push**
 
 ## User-visible problems to resolve
 
@@ -753,7 +753,8 @@ or decides whether to push.
 
 Task ID: `TETRIS-T5-MINERAL-TYPE-DIVIDER-011`
 
-Status: **OPEN — sole active product writer boundary**.
+Status: **SUPERSEDED — the K-R candidate was repaired and accepted only through
+Slice K-R2**.
 
 Product base: rejected-as-final Slice K candidate
 `9c128abae1c3ddb3e1de2e783be0b1c37210fc9c`; all accepted Core behavior and the
@@ -820,7 +821,8 @@ checkpoint before formal evidence, changelog integration, or push.
 
 Task ID: `TETRIS-T5-MINERAL-SEMANTIC-REPAIR-012`
 
-Status: **OPEN — sole active product writer boundary**.
+Status: **ACCEPTED — source `effb353`, candidate tip `ba5d387`, formal evidence
+`c0832e4`**.
 
 Product base: rejected-as-final Slice K-R candidate
 `f4fcbb582ac5dfd8fce6fa4a2e3e7cc91e0f4102`; frozen product source
@@ -864,3 +866,10 @@ Slice K-R2 acceptance:
 
 Independent static/functional and visual/browser QA must accept the exact K-R2 source
 checkpoint before formal evidence, changelog integration, or push.
+
+Disposition: independent static/functional and visual/browser QA accepted exact source
+range `bcc25d6..effb353`. The post-source candidate tip `ba5d387` changes only the
+frontend workstream log. Formal generator `4d2733b` produced 23 screenshots and
+evidence child `c0832e4`; independent evidence QA accepted 23/23 original-detail
+captures and reproduced all 25/25 raw-Git-blob SHA-256 entries with zero CRLF in the
+JSON and checksum manifest.

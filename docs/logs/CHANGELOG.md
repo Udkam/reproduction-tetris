@@ -150,3 +150,33 @@
   required for any atomic exception.
 - Recorded the inherited `CURRENT_TASK.md` and `DESIGN.md` edits as separately owned docs
   work; neither may be silently bundled with the next gameplay or frontend commit.
+
+## 2026-07-17 — T5 authored endgames and cohesive mineral interface accepted
+
+- Completed the clean-room T5 product as plain-text `Tetris` with player-facing
+  `经典`, endless accelerating Race, and fifteen all-enabled Puzzle残局. Each残局 is a
+  legal zero-clear mid-game snapshot with source-piece colors, normal gravity,
+  continuous seeded seven-bag input, and two verified public-command solutions.
+- Replaced isolated tile cards with cohesive Pixi tetromino components across active,
+  locked, Next, and whole-piece Ghost rendering. Internal shared edges are suppressed;
+  depth comes only from the frozen restrained mineral bevel and exact coordinated
+  garnet/sea-pine/ochre/storm/moss/rock-violet/lake mapping.
+- Adopted Space Grotesk plus Noto Sans SC through Google Fonts with a complete system
+  fallback. Restored visible Next and keyboard context at every required viewport,
+  capped the clear sweep at nine ticks, and replaced positional statistic borders with
+  semantic roles so desktop and compact dividers remain continuous.
+- Final product source is `effb353c0a4d1bef26fa524ed38d3d3653f45eb8`;
+  post-source candidate tip is `ba5d387f6c32224a4869ccc4e84564d7bcd64b50`.
+  The last-source gates passed typecheck, 40 files / 258 tests (39 files and 256 tests
+  passed; 1 file and 2 tests skipped), the 739-module production build, the prescribed
+  action client, and loaded/blocked-font five-viewport browser matrices.
+- Independent static/functional and visual/browser QA accepted the source. Formal
+  evidence `c0832e43dc1cdd31c074066919c229d4a9fe5518` records 23 screenshots across
+  all five exact viewports, first/eighth/fifteenth Puzzle binding, three real gravity
+  locks, ordinary Race top-out, and first-level completion at 35 pieces / 22 lines.
+- Independent evidence QA inspected 23/23 captures at original detail and reproduced
+  25/25 SHA-256 entries from raw Git blobs. `browser-evidence.json` and
+  `SHA256SUMS.txt` both contain zero CRLF; one-canvas/zero-DOM-cell geometry, 2:1
+  boards, 44 px controls, lifecycle teardown, and zero unexpected browser errors pass.
+- `index.html`, dependencies, historical T3/T4 evidence, and all separate game
+  repositories remain unchanged by the accepted final repair.

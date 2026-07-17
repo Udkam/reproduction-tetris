@@ -1056,8 +1056,8 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Branch/base: `codex/tetris-recovery` at
   `bcc25d6ce8a9556f8471b67c8770a92ebd5123de`; intake was clean.
 - Frozen product tip/range:
-  `effb353ae816549eb2faf80a8340b01b6af48ac7` and
-  `bcc25d6ce8a9556f8471b67c8770a92ebd5123de..effb353ae816549eb2faf80a8340b01b6af48ac7`.
+  `effb353c0a4d1bef26fa524ed38d3d3653f45eb8` and
+  `bcc25d6ce8a9556f8471b67c8770a92ebd5123de..effb353c0a4d1bef26fa524ed38d3d3653f45eb8`.
 - Ordered checkpoints:
   1. `5b1d486` — `fix(ui): bind stat roles and contain mode actions`; changed only
      `src/App.tsx`, `src/styles.css`, and `src/App.test.ts`.
