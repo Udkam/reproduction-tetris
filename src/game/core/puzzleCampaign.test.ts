@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 import { createInitialState, dispatch, dropDistance, replay, stateHash } from './engine';
 import { PUZZLE_DEFINITIONS, getPuzzleDefinition } from './puzzles';
+import { VISIBLE_START_ROW } from './constants';
 import type { Cell, GameCommand, GameEvent, GameState, PieceType, PuzzleId, Rotation } from './types';
 
 type Placement = {
@@ -22,6 +23,8 @@ type RouteMetrics = {
   clearedLines: number;
   semanticDifferences: number;
   boardHashDiverged: boolean;
+  boardHashDivergences: number;
+  firstDivergenceLock: number | null;
 };
 
 type RouteEvidence = {
@@ -44,6 +47,7 @@ type LevelReference = {
   id: PuzzleId;
   name: string;
   seed: number;
+  setup: { seed: number; placements: Array<Pick<Placement, 'type' | 'rotation' | 'x'>> };
   boardRows: string[];
   first84: PieceType[];
   routes: RouteReference[];
@@ -82,6 +86,34 @@ function rotationCommands(rotation: Rotation): GameCommand[] {
   if (rotation === 2) return [{ type: 'rotate', direction: 1 }, { type: 'rotate', direction: 1 }];
   if (rotation === 3) return [{ type: 'rotate', direction: -1 }];
   return [];
+}
+
+function executeSetup(level: LevelReference) {
+  let state = dispatch(createInitialState(level.setup.seed, 'marathon'), { type: 'start' }).state;
+  for (const [index, placement] of level.setup.placements.entries()) {
+    expect(state.active?.type, `${level.id}/setup type ${index}`).toBe(placement.type);
+    for (const command of rotationCommands(placement.rotation)) state = dispatch(state, command).state;
+    for (let guard = 0; state.active && state.active.x !== placement.x && guard < 16; guard += 1) {
+      const beforeX: number = state.active.x;
+      state = dispatch(state, { type: 'move', dx: placement.x < beforeX ? -1 : 1 }).state;
+      expect(state.active?.x, `${level.id}/setup x ${index}`).not.toBe(beforeX);
+    }
+    const locked = dispatch(state, { type: 'hard-drop' });
+    state = locked.state;
+    expect(locked.events.some((event) => event.type === 'clear-started' || event.type === 'lines-cleared')).toBe(false);
+    const lock = locked.events.find(
+      (event): event is Extract<GameEvent, { type: 'piece-locked' }> => event.type === 'piece-locked',
+    );
+    expect(lock?.cells).toHaveLength(4);
+    expect(lock?.cells.every(({ y }) => y >= VISIBLE_START_ROW)).toBe(true);
+    for (let guard = 0; state.status === 'playing' && (!state.active || state.phase !== 'active') && guard < 64; guard += 1) {
+      state = dispatch(state, { type: 'tick' }).state;
+    }
+  }
+  expect(state.lines).toBe(0);
+  expect(state.pieceCount).toBe(level.setup.placements.length);
+  expect(state.board.slice(0, VISIBLE_START_ROW).flat().every((cell) => cell === null)).toBe(true);
+  expect(state.board.slice(VISIBLE_START_ROW).map((row) => row.map((cell) => cell ?? '.').join(''))).toEqual(level.boardRows);
 }
 
 function execute(level: LevelReference, route: RouteReference) {
@@ -191,8 +223,10 @@ describe('T5 normal-play Puzzle campaign verifier', () => {
   it.each(references)('$id has two successful same-seed public-dispatch routes', (level) => {
     const definition = getPuzzleDefinition(level.id);
     expect(definition.seed).toBe(level.seed);
+    expect(definition.setup).toEqual(level.setup);
     expect(definition.boardRows).toEqual(level.boardRows);
     expect(level.routes).toHaveLength(2);
+    executeSetup(level);
 
     const runs = level.routes.map((route) => execute(level, route));
     for (let routeIndex = 0; routeIndex < runs.length; routeIndex += 1) {
@@ -216,13 +250,13 @@ describe('T5 normal-play Puzzle campaign verifier', () => {
       expect(run.nonClearingLocks).toBe(metrics.nonClearingLocks);
       expect(run.clearPhases).toBe(metrics.clearPhases);
       expect(run.clearedLines).toBe(metrics.clearedLines);
-      expect(run.lockedPieces).toBeGreaterThanOrEqual(28);
-      expect(run.lockedPieces).toBeLessThanOrEqual(35);
+      expect(run.lockedPieces).toBeGreaterThanOrEqual(30);
+      expect(run.lockedPieces).toBeLessThanOrEqual(42);
       expect(run.lockedTypes.size).toBe(7);
-      expect(run.effectiveRotations).toBeGreaterThanOrEqual(6);
-      expect(new Set(run.landingXs).size).toBeGreaterThanOrEqual(6);
-      expect(run.nonClearingLocks).toBeGreaterThanOrEqual(3);
-      expect(run.clearPhases).toBeGreaterThanOrEqual(3);
+      expect(run.effectiveRotations).toBeGreaterThanOrEqual(8);
+      expect(new Set(run.landingXs).size).toBeGreaterThanOrEqual(7);
+      expect(run.nonClearingLocks).toBeGreaterThanOrEqual(5);
+      expect(run.clearPhases).toBeGreaterThanOrEqual(4);
       expect(occupied(run.state)).toBe(0);
       expect(run.initialOccupied + run.lockedPieces * 4).toBe(run.clearedLines * 10);
       expect(run.firstTerminal).toBe(run.commands.length - 1);
@@ -242,6 +276,8 @@ describe('T5 normal-play Puzzle campaign verifier', () => {
 
     expect(runs[0]!.initialHash).toBe(runs[1]!.initialHash);
     let semanticDifferences = 0;
+    let boardHashDivergences = 0;
+    let firstDivergenceLock: number | null = null;
     for (let index = 0; index < Math.min(runs[0]!.placementCells.length, runs[1]!.placementCells.length); index += 1) {
       const left = level.routes[0]!.placements[index]!;
       const right = level.routes[1]!.placements[index]!;
@@ -249,14 +285,17 @@ describe('T5 normal-play Puzzle campaign verifier', () => {
         || left.x !== right.x
         || left.rotation !== right.rotation) {
         semanticDifferences += 1;
+        firstDivergenceLock ??= index + 1;
       }
+      if (runs[0]!.boardHashes[index] !== runs[1]!.boardHashes[index]) boardHashDivergences += 1;
     }
     expect(semanticDifferences).toBe(level.routes[1]!.metrics.semanticDifferences);
-    expect(semanticDifferences).toBeGreaterThanOrEqual(3);
-    const commonBoardTraceLength = Math.min(runs[0]!.boardHashes.length, runs[1]!.boardHashes.length);
-    expect(runs[0]!.boardHashes.slice(0, commonBoardTraceLength)
-      .some((hash, index) => hash !== runs[1]!.boardHashes[index])).toBe(true);
-    expect(level.routes[1]!.metrics.boardHashDiverged).toBe(true);
+    expect(semanticDifferences).toBeGreaterThanOrEqual(5);
+    expect(firstDivergenceLock).toBe(level.routes[1]!.metrics.firstDivergenceLock);
+    expect(firstDivergenceLock!).toBeLessThanOrEqual(5);
+    expect(boardHashDivergences).toBe(level.routes[1]!.metrics.boardHashDivergences);
+    expect(boardHashDivergences).toBeGreaterThanOrEqual(2);
+    expect(level.routes[1]!.metrics.boardHashDiverged).toBe(boardHashDivergences > 0);
   });
 
   it('keeps the 70-lock value verifier-only and never restores budget authority', () => {

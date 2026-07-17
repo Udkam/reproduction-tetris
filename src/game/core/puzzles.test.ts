@@ -3,38 +3,19 @@ import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-refe
 import { createInitialState, dispatch, stateHash } from './engine';
 import { PUZZLE_DEFINITIONS, getPuzzleDefinition, validatePuzzleDefinition, type PuzzleDefinition } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
+import { PIECE_SHAPES } from './pieces';
 import { PIECE_TYPES, type PieceType, type PuzzleId } from './types';
 
 type T5Level = {
   id: PuzzleId;
   name: string;
   seed: number;
+  setup: PuzzleDefinition['setup'];
   boardRows: string[];
   first84: PieceType[];
 };
 
 const t5Levels = (referencesFile as unknown as { levels: T5Level[] }).levels;
-
-const LEGACY_OCCUPANCY_MASKS = [
-  { id: 't3r-shaft-01', top: 10, rows: [
-    'JJ.J.JJJ..', 'JJJ.J..JJJ', '.JJ..JJJJJ', 'JJJ.JJJJJ.', 'JJJ..JJJJJ', 'JJ..JJJJJJ', 'JJJJJJJJJ.', 'JJJJJJ.JJJ', 'JJJJJ.JJJJ', '.JJJJJJJJJ',
-  ] },
-  { id: 't3r-shaft-02', top: 10, rows: [
-    'JJJ.J..JJ.', 'J...JJJJJJ', 'J..JJJJJ.J', 'JJJJ.JJJJ.', 'JJJJJ.JJ.J', 'JJ..JJJJJJ', 'JJ.JJJJJJJ', 'JJJJ.JJJJJ', '.JJJJJJJJJ', 'JJJJJJJJJ.',
-  ] },
-  { id: 't3r-shaft-03', top: 10, rows: [
-    'JJ...JJJ.J', 'JJJ...JJJJ', 'JJ.JJJJJ..', 'J.JJJ.JJJJ', 'J.JJJJ.JJJ', 'JJJJ..JJJJ', 'JJJJJJJ.JJ', 'JJJJJJJJJ.', 'JJJJJJJJ.J', 'J.JJJJJJJJ',
-  ] },
-  { id: 't3r-shaft-04', top: 12, rows: [
-    '..JJJ.JJ.J', 'JJ.JJJ.J.J', '...JJJJJJJ', 'J.JJJJJJ.J', 'JJJJJJJJJ.', 'JJJJJ.JJJJ', 'J.JJJJJJJJ', 'JJJ.JJJJJJ',
-  ] },
-  { id: 't3r-cascade-05', top: 12, rows: [
-    'J.J...JJJJ', '.JJJJJ.J.J', '.J.JJJJ.JJ', '.JJJ.JJJJJ', '.JJJJJJJJJ', 'J.JJJJJJJJ', 'JJJJJ.JJJJ', 'JJJJ.JJJJJ',
-  ] },
-  { id: 't3r-cascade-06', top: 10, rows: [
-    'JJJJJ...J.', '.JJ..JJJJJ', 'JJJ.JJ..JJ', 'J.JJJJJJJ.', '..JJJJJJJJ', 'JJJ.J.JJJJ', 'J.JJJJJJJJ', 'JJJJJ.JJJJ', 'JJJ.JJJJJJ', 'JJJJJJJJ.J',
-  ] },
-] as const;
 
 function invalid(definition: PuzzleDefinition, patch: Partial<PuzzleDefinition>): PuzzleDefinition {
   return { ...definition, ...patch };
@@ -81,14 +62,48 @@ function topology(definition: PuzzleDefinition) {
   };
 }
 
+function normalizedCells(cells: readonly { x: number; y: number }[]): string {
+  const minimumX = Math.min(...cells.map(({ x }) => x));
+  const minimumY = Math.min(...cells.map(({ y }) => y));
+  return cells.map(({ x, y }) => `${x - minimumX},${y - minimumY}`).sort().join('|');
+}
+
+function sameTypeComponents(definition: PuzzleDefinition) {
+  const seen = new Set<string>();
+  const components: Array<{ type: PieceType; cells: Array<{ x: number; y: number }> }> = [];
+  for (let y = 0; y < definition.boardRows.length; y += 1) for (let x = 0; x < 10; x += 1) {
+    const type = definition.boardRows[y]![x] as PieceType | '.';
+    const start = `${x},${y}`;
+    if (type === '.' || seen.has(start)) continue;
+    const cells: Array<{ x: number; y: number }> = [];
+    const pending = [{ x, y }];
+    seen.add(start);
+    while (pending.length > 0) {
+      const cell = pending.pop()!;
+      cells.push(cell);
+      for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+        const next = { x: cell.x + dx, y: cell.y + dy };
+        const key = `${next.x},${next.y}`;
+        if (!seen.has(key) && definition.boardRows[next.y]?.[next.x] === type) {
+          seen.add(key);
+          pending.push(next);
+        }
+      }
+    }
+    components.push({ type, cells });
+  }
+  return components;
+}
+
 describe('T5 normal-play Puzzle definitions', () => {
   it('matches the fifteen-level fixture and enforces normalized authored topology', () => {
     expect(PUZZLE_DEFINITIONS).toHaveLength(15);
     expect(t5Levels).toHaveLength(15);
-    expect(PUZZLE_DEFINITIONS.map(({ id, name, seed, boardRows }) => ({ id, name, seed, boardRows })))
-      .toEqual(t5Levels.map(({ id, name, seed, boardRows }) => ({ id, name, seed, boardRows })));
+    expect(PUZZLE_DEFINITIONS.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })))
+      .toEqual(t5Levels.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })));
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(15);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(15);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ setup }) => setup.seed)).size).toBe(15);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(15);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.map(occupancyRow).join('/'))).size).toBe(15);
     expect(PUZZLE_DEFINITIONS.slice(0, 6).map(({ id, seed }) => [id, seed])).toEqual([
@@ -99,30 +114,41 @@ describe('T5 normal-play Puzzle definitions', () => {
       ['t3r-cascade-05', 0x75c0b505],
       ['t3r-cascade-06', 0x75c0b606],
     ]);
-    expect(PUZZLE_DEFINITIONS.slice(0, 6).map((definition) => ({
-      id: definition.id,
-      top: definition.boardRows.findIndex((row) => row !== '..........'),
-      rows: definition.boardRows.filter((row) => row !== '..........')
-        .map((row) => row.replace(/[IOTSZJL]/g, 'J')),
-    }))).toEqual(LEGACY_OCCUPANCY_MASKS);
-
     const campaignColors = new Set<string>();
-    for (const [index, definition] of PUZZLE_DEFINITIONS.entries()) {
+    for (const definition of PUZZLE_DEFINITIONS) {
       expect(() => validatePuzzleDefinition(definition)).not.toThrow();
       expect('difficulty' in definition).toBe(false);
       expect('queue' in definition).toBe(false);
       expect('pieceBudget' in definition).toBe(false);
       const metrics = topology(definition);
-      expect(metrics.nonEmptyRows.length).toBeGreaterThanOrEqual(index < 6 ? 8 : 9);
+      expect(definition.setup.placements.length).toBeGreaterThanOrEqual(16);
+      expect(definition.setup.placements.length).toBeLessThanOrEqual(22);
+      expect(new Set(definition.setup.placements.map(({ type }) => type))).toEqual(new Set(PIECE_TYPES));
+      expect(metrics.nonEmptyRows.length).toBeGreaterThanOrEqual(8);
       expect(metrics.nonEmptyRows.length).toBeLessThanOrEqual(12);
-      expect(metrics.occupancyShapes).toBeGreaterThanOrEqual(6);
+      expect(metrics.occupancyShapes).toBeGreaterThanOrEqual(7);
       expect(metrics.densityClasses).toBeGreaterThanOrEqual(4);
       expect(metrics.coveredColumns).toBeGreaterThanOrEqual(5);
       expect(metrics.buriedHoles).toBeGreaterThanOrEqual(8);
-      expect(metrics.colors.size).toBeGreaterThanOrEqual(5);
+      expect(metrics.colors).toEqual(new Set(PIECE_TYPES));
+      const components = sameTypeComponents(definition);
+      expect(components).toHaveLength(definition.setup.placements.length);
+      for (const component of components) {
+        expect(component.cells).toHaveLength(4);
+        expect(Object.values(PIECE_SHAPES[component.type])
+          .some((shape) => normalizedCells(shape) === normalizedCells(component.cells))).toBe(true);
+      }
       for (const color of metrics.colors) campaignColors.add(color);
     }
     expect(campaignColors).toEqual(new Set(PIECE_TYPES));
+    for (let left = 0; left < PUZZLE_DEFINITIONS.length; left += 1) {
+      for (let right = left + 1; right < PUZZLE_DEFINITIONS.length; right += 1) {
+        const first = PUZZLE_DEFINITIONS[left]!.boardRows.join('');
+        const second = PUZZLE_DEFINITIONS[right]!.boardRows.join('');
+        const hamming = [...first].filter((cell, index) => (cell === '.') !== (second[index] === '.')).length;
+        expect(hamming, `${PUZZLE_DEFINITIONS[left]!.id}/${PUZZLE_DEFINITIONS[right]!.id}`).toBeGreaterThanOrEqual(20);
+      }
+    }
   });
 
   it('proves twelve consecutive complete seven-bags per stable level seed', () => {
@@ -138,46 +164,31 @@ describe('T5 normal-play Puzzle definitions', () => {
     }
   });
 
-  it('fails closed for malformed, shallow, color-faked, template-like, monochrome, or hidden authored content', () => {
+  it('fails closed when the frozen setup or its derived board is altered', () => {
     const first = getPuzzleDefinition('t3r-shaft-01');
     expect(() => validatePuzzleDefinition(invalid(first, { seed: 0 }))).toThrow(/seed/i);
     expect(() => validatePuzzleDefinition(invalid(first, { seed: getPuzzleDefinition('t3r-shaft-02').seed }))).toThrow(/stable level seed/i);
     expect(() => validatePuzzleDefinition(invalid(first, { boardRows: first.boardRows.slice(1) }))).toThrow(/exactly/i);
-    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), '.........'] }))).toThrow(/malformed/i);
-    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), 'QJJJ.JJJJ.'] }))).toThrow(/illegal/i);
-    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: Array.from({ length: 20 }, () => '..........') }))).toThrow(/non-empty/i);
-    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), 'JJJJJJJJJJ'] }))).toThrow(/full visible row/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), '.........'] }))).toThrow(/byte-match/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), 'QJJJ.JJJJ.'] }))).toThrow(/byte-match/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { boardRows: Array.from({ length: 20 }, () => '..........') }))).toThrow(/byte-match/i);
     expect(() => validatePuzzleDefinition(invalid(first, {
-      boardRows: [...Array.from({ length: 14 }, () => '..........'), ...Array.from({ length: 6 }, () => 'J.........')],
-    }))).toThrow(/8-12/i);
+      setup: { ...first.setup, seed: 0 },
+    }))).toThrow(/setup history/i);
     expect(() => validatePuzzleDefinition(invalid(first, {
-      boardRows: [...Array.from({ length: 12 }, () => '..........'), ...Array.from({ length: 8 }, () => 'J.........')],
-    }))).toThrow(/six distinct occupancy/i);
+      setup: { ...first.setup, placements: first.setup.placements.slice(0, 15) },
+    }))).toThrow(/16-22/i);
     expect(() => validatePuzzleDefinition(invalid(first, {
-      boardRows: [...Array.from({ length: 11 }, () => '..........'),
-        '.IOTSZJLI.', '.OTSZJLIO.', '.TSZJLIOT.', '.SZJLIOTS.', '.ZJLIOTSZ.',
-        '.JLIOTSZJ.', '.LIOTSZJL.', '.IOTSZJLI.', '.OTSZJLIO.'],
-    }))).toThrow(/six distinct occupancy/i);
-    expect(() => validatePuzzleDefinition(invalid(first, {
-      boardRows: [...Array.from({ length: 12 }, () => '..........'), ...Array.from({ length: 8 }, (_, index) => (
-        'J'.repeat(index) + '.' + 'J'.repeat(9 - index)
-      ))],
-    }))).toThrow(/floor templates/i);
-    expect(() => validatePuzzleDefinition(invalid(first, {
-      boardRows: first.boardRows.map((row) => row.replace(/[IOTSZJL]/g, 'J')),
-    }))).toThrow(/five deterministic starting-board colors/i);
-    const newLevel = getPuzzleDefinition('t5r-delta-07');
-    const firstOccupiedRow = newLevel.boardRows.findIndex((row) => row !== '..........');
-    expect(() => validatePuzzleDefinition(invalid(newLevel, {
-      boardRows: newLevel.boardRows.map((row, index) => (
-        index === firstOccupiedRow || index === firstOccupiedRow + 1 ? '..........' : row
-      )),
-    }))).toThrow(/9-12/i);
+      setup: {
+        ...first.setup,
+        placements: [{ ...first.setup.placements[0]!, type: first.setup.placements[0]!.type === 'I' ? 'O' : 'I' }, ...first.setup.placements.slice(1)],
+      },
+    }))).toThrow(/frozen legal setup/i);
     expect(() => validatePuzzleDefinition(invalid(first, { hiddenCells: [{ x: 0, y: 0, type: 'J' }] }))).toThrow(/hidden buffer/i);
   });
 });
 describe('T5 Puzzle deterministic initialization', () => {
-  it('uses every level seed for gameplay without consuming it during board colorization', () => {
+  it('uses every gameplay seed without consuming it during separate setup reconstruction', () => {
     for (const definition of PUZZLE_DEFINITIONS) {
       const ready = createInitialState(7, 'puzzle', definition.id);
       const expected = generatedPieces(definition.seed, 6);

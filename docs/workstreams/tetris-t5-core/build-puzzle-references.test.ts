@@ -1,9 +1,10 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import referencesFile from './puzzle-references.json';
 import { createInitialState, dispatch, dropDistance, stateHash } from '../../../src/game/core/engine';
 import { PUZZLE_DEFINITIONS } from '../../../src/game/core/puzzles';
+import { VISIBLE_START_ROW } from '../../../src/game/core/constants';
+import { PIECE_SHAPES } from '../../../src/game/core/pieces';
 import { createRandomizer, drawPiece } from '../../../src/game/core/random';
 import type {
   Cell,
@@ -14,6 +15,7 @@ import type {
   PuzzleId,
   Rotation,
 } from '../../../src/game/core/types';
+import { PIECE_TYPES } from '../../../src/game/core/types';
 
 type Placement = {
   type: PieceType;
@@ -28,10 +30,18 @@ type SourceRoute = {
   placements: Placement[];
 };
 
+type SetupPlacement = Pick<Placement, 'type' | 'rotation' | 'x'>;
+
+type SetupSource = {
+  seed: number;
+  placements: SetupPlacement[];
+};
+
 type SourceLevel = {
   id: PuzzleId;
   seed: number;
   authoringCandidate: number;
+  setup: SetupSource;
   routes: SourceRoute[];
 };
 
@@ -39,6 +49,8 @@ type SearchResultFile = {
   result: null | {
     seed: number;
     candidateIndex: number;
+    boardRows: string[];
+    setup: SetupSource;
     routes: Array<{ placements: Placement[] }>;
   };
 };
@@ -53,6 +65,8 @@ type RouteMetrics = {
   clearedLines: number;
   semanticDifferences: number;
   boardHashDiverged: boolean;
+  boardHashDivergences: number;
+  firstDivergenceLock: number | null;
 };
 
 type RouteEvidence = {
@@ -63,8 +77,6 @@ type RouteEvidence = {
   boardTraceDigest: string;
   commandCount: number;
 };
-
-const sourceLevels = (referencesFile as unknown as { levels: SourceLevel[] }).levels;
 
 function authoringSourceLevels(): SourceLevel[] {
   const paths = process.env.PUZZLE_AUTHORING_RESULTS?.split(';').filter(Boolean) ?? [];
@@ -78,6 +90,10 @@ function authoringSourceLevels(): SourceLevel[] {
       id: definition!.id,
       seed: search.result!.seed,
       authoringCandidate: search.result!.candidateIndex,
+      setup: {
+        seed: search.result!.setup.seed,
+        placements: search.result!.setup.placements,
+      },
       routes: search.result!.routes.map((route, index) => ({
         id: `route-${index + 1}`,
         placements: route.placements,
@@ -113,6 +129,60 @@ function rotationCommands(rotation: Rotation): GameCommand[] {
   if (rotation === 2) return [{ type: 'rotate', direction: 1 }, { type: 'rotate', direction: 1 }];
   if (rotation === 3) return [{ type: 'rotate', direction: -1 }];
   return [];
+}
+
+function normalizedCells(cells: readonly Cell[]): string {
+  const minimumX = Math.min(...cells.map(({ x }) => x));
+  const minimumY = Math.min(...cells.map(({ y }) => y));
+  return cells.map(({ x, y }) => `${x - minimumX},${y - minimumY}`).sort().join('|');
+}
+
+function executeSetup(setup: SetupSource, expectedRows: readonly string[]) {
+  expect(setup.placements.length).toBeGreaterThanOrEqual(16);
+  expect(setup.placements.length).toBeLessThanOrEqual(22);
+  let state = dispatch(createInitialState(setup.seed, 'marathon'), { type: 'start' }).state;
+  const owners: Array<{ type: PieceType; cells: Cell[] }> = [];
+  for (const [placementIndex, placement] of setup.placements.entries()) {
+    expect(state.status, `setup status ${placementIndex}`).toBe('playing');
+    expect(state.phase, `setup phase ${placementIndex}`).toBe('active');
+    expect(state.active?.type, `setup type ${placementIndex}`).toBe(placement.type);
+    for (const command of rotationCommands(placement.rotation)) state = dispatch(state, command).state;
+    expect(state.active?.rotation, `setup rotation ${placementIndex}`).toBe(placement.rotation);
+    for (let guard = 0; state.active && state.active.x !== placement.x && guard < 16; guard += 1) {
+      const beforeX: number = state.active.x;
+      state = dispatch(state, { type: 'move', dx: placement.x < beforeX ? -1 : 1 }).state;
+      expect(state.active?.x, `setup blocked x ${placementIndex}`).not.toBe(beforeX);
+    }
+    expect(state.active?.x, `setup x ${placementIndex}`).toBe(placement.x);
+    const locked = dispatch(state, { type: 'hard-drop' });
+    state = locked.state;
+    expect(locked.events.some((event) => event.type === 'clear-started' || event.type === 'lines-cleared')).toBe(false);
+    const lock = locked.events.find(
+      (event): event is Extract<GameEvent, { type: 'piece-locked' }> => event.type === 'piece-locked',
+    );
+    expect(lock, `setup lock ${placementIndex}`).toBeDefined();
+    expect(lock!.cells).toHaveLength(4);
+    expect(lock!.cells.every(({ y }) => y >= VISIBLE_START_ROW)).toBe(true);
+    expect(normalizedCells(lock!.cells)).toBe(normalizedCells(PIECE_SHAPES[placement.type][placement.rotation]));
+    for (const owner of owners.filter(({ type }) => type === placement.type)) {
+      const oldCells = new Set(owner.cells.map(({ x, y }) => `${x},${y}`));
+      expect(lock!.cells.some(({ x, y }) => (
+        oldCells.has(`${x - 1},${y}`) || oldCells.has(`${x + 1},${y}`)
+          || oldCells.has(`${x},${y - 1}`) || oldCells.has(`${x},${y + 1}`)
+      ))).toBe(false);
+    }
+    owners.push({ type: placement.type, cells: lock!.cells });
+    for (let guard = 0; state.status === 'playing' && (!state.active || state.phase !== 'active') && guard < 64; guard += 1) {
+      state = dispatch(state, { type: 'tick' }).state;
+    }
+  }
+  expect(state.lines).toBe(0);
+  expect(state.status).toBe('playing');
+  expect(new Set(owners.map(({ type }) => type))).toEqual(new Set(PIECE_TYPES));
+  expect(state.board.slice(0, VISIBLE_START_ROW).flat().every((cell) => cell === null)).toBe(true);
+  const boardRows = state.board.slice(VISIBLE_START_ROW).map((row) => row.map((cell) => cell ?? '.').join(''));
+  expect(boardRows).toEqual(expectedRows);
+  return boardRows;
 }
 
 function generatedPieces(seed: number, count: number): PieceType[] {
@@ -209,6 +279,8 @@ function execute(levelId: PuzzleId, seed: number, route: SourceRoute) {
     clearedLines,
     semanticDifferences: 0,
     boardHashDiverged: false,
+    boardHashDivergences: 0,
+    firstDivergenceLock: null,
   };
   const evidence: RouteEvidence = {
     initialHash,
@@ -222,13 +294,13 @@ function execute(levelId: PuzzleId, seed: number, route: SourceRoute) {
   expect(state.status, `${levelId}/${route.id} terminal`).toBe('finished');
   expect(state.puzzleCompletion).toBe('finished');
   expect(occupied(state)).toBe(0);
-  expect(lockedPieces).toBeGreaterThanOrEqual(28);
-  expect(lockedPieces).toBeLessThanOrEqual(35);
+  expect(lockedPieces).toBeGreaterThanOrEqual(30);
+  expect(lockedPieces).toBeLessThanOrEqual(42);
   expect(lockedTypes.size).toBe(7);
-  expect(effectiveRotations).toBeGreaterThanOrEqual(6);
-  expect(new Set(landingXs).size).toBeGreaterThanOrEqual(6);
-  expect(nonClearingLocks).toBeGreaterThanOrEqual(3);
-  expect(clearPhases).toBeGreaterThanOrEqual(3);
+  expect(effectiveRotations).toBeGreaterThanOrEqual(8);
+  expect(new Set(landingXs).size).toBeGreaterThanOrEqual(7);
+  expect(nonClearingLocks).toBeGreaterThanOrEqual(5);
+  expect(clearPhases).toBeGreaterThanOrEqual(4);
   expect(initialOccupied + lockedPieces * 4).toBe(clearedLines * 10);
   expect(firstTerminal).toBe(commands.length - 1);
   expect(stateHash(dispatch(state, { type: 'restart' }).state)).toBe(initialHash);
@@ -238,31 +310,39 @@ function execute(levelId: PuzzleId, seed: number, route: SourceRoute) {
 
 const referenceBuilderEnabled = process.env.WRITE_PUZZLE_REFERENCES === '1'
   || process.env.VERIFY_PUZZLE_AUTHORING === '1';
+const setupVerifierEnabled = process.env.VERIFY_PUZZLE_SETUP === '1';
+
+describe.skipIf(!setupVerifierEnabled)('T5 authored endgame setup verifier', () => {
+  it('replays every supplied setup through public Marathon dispatch with zero clears', () => {
+    const paths = process.env.PUZZLE_AUTHORING_RESULTS?.split(';').filter(Boolean) ?? [];
+    expect(paths.length).toBeGreaterThan(0);
+    for (const path of paths) {
+      const search = JSON.parse(readFileSync(path, { encoding: 'utf8' })) as SearchResultFile;
+      expect(search.result, `missing successful result in ${path}`).not.toBeNull();
+      executeSetup(search.result!.setup, search.result!.boardRows);
+    }
+  });
+});
 
 describe.skipIf(!referenceBuilderEnabled)('T5 Puzzle reference builder', () => {
   it('regenerates every reference only after all production public-dispatch proofs pass', { timeout: 120_000 }, () => {
-    const sourceById = new Map(sourceLevels.map((level) => [level.id, level]));
-    for (const authoringLevel of authoringSourceLevels()) {
-      const existing = sourceById.get(authoringLevel.id);
-      if (existing) {
-        expect(authoringLevel.seed, `${authoringLevel.id} authoring seed changed`).toBe(existing.seed);
-        expect(authoringLevel.routes.map((route) => route.placements), `${authoringLevel.id} placements changed`)
-          .toEqual(existing.routes.map((route) => route.placements));
-      }
-      sourceById.set(authoringLevel.id, authoringLevel);
-    }
-    const combinedSourceLevels = [...sourceById.values()];
+    const combinedSourceLevels = authoringSourceLevels();
     expect(combinedSourceLevels).toHaveLength(PUZZLE_DEFINITIONS.length);
+    expect(new Set(combinedSourceLevels.map(({ id }) => id)).size).toBe(PUZZLE_DEFINITIONS.length);
     if (process.env.WRITE_PUZZLE_REFERENCES === '1') expect(PUZZLE_DEFINITIONS).toHaveLength(15);
 
     const levels = PUZZLE_DEFINITIONS.map((definition) => {
       const source = combinedSourceLevels.find((candidate) => candidate.id === definition.id);
       expect(source, `missing authoring source for ${definition.id}`).toBeDefined();
       expect(source!.seed).toBe(definition.seed);
+      expect(source!.setup).toEqual(definition.setup);
+      executeSetup(source!.setup, definition.boardRows);
       expect(source!.routes).toHaveLength(2);
       const runs = source!.routes.map((route) => execute(definition.id, definition.seed, route));
 
       let semanticDifferences = 0;
+      let boardHashDivergences = 0;
+      let firstDivergenceLock: number | null = null;
       for (let index = 0; index < Math.min(runs[0]!.placementCells.length, runs[1]!.placementCells.length); index += 1) {
         const left = source!.routes[0]!.placements[index]!;
         const right = source!.routes[1]!.placements[index]!;
@@ -270,21 +350,26 @@ describe.skipIf(!referenceBuilderEnabled)('T5 Puzzle reference builder', () => {
           || left.x !== right.x
           || left.rotation !== right.rotation) {
           semanticDifferences += 1;
+          firstDivergenceLock ??= index + 1;
         }
+        if (runs[0]!.boardHashes[index] !== runs[1]!.boardHashes[index]) boardHashDivergences += 1;
       }
-      const commonBoardTraceLength = Math.min(runs[0]!.boardHashes.length, runs[1]!.boardHashes.length);
-      const boardHashDiverged = runs[0]!.boardHashes.slice(0, commonBoardTraceLength)
-        .some((hash, index) => hash !== runs[1]!.boardHashes[index]);
-      expect(semanticDifferences).toBeGreaterThanOrEqual(3);
-      expect(boardHashDiverged).toBe(true);
+      const boardHashDiverged = boardHashDivergences > 0;
+      expect(semanticDifferences).toBeGreaterThanOrEqual(5);
+      expect(firstDivergenceLock).not.toBeNull();
+      expect(firstDivergenceLock!).toBeLessThanOrEqual(5);
+      expect(boardHashDivergences).toBeGreaterThanOrEqual(2);
       runs[1]!.metrics.semanticDifferences = semanticDifferences;
       runs[1]!.metrics.boardHashDiverged = boardHashDiverged;
+      runs[1]!.metrics.boardHashDivergences = boardHashDivergences;
+      runs[1]!.metrics.firstDivergenceLock = firstDivergenceLock;
 
       return {
         id: definition.id,
         name: definition.name,
         seed: definition.seed,
         authoringCandidate: source!.authoringCandidate,
+        setup: source!.setup,
         boardRows: definition.boardRows,
         first84: generatedPieces(definition.seed, 84),
         routes: source!.routes.map((route, index) => ({
@@ -297,8 +382,8 @@ describe.skipIf(!referenceBuilderEnabled)('T5 Puzzle reference builder', () => {
     });
 
     const output = {
-      taskId: 'TETRIS-T5-PUZZLE-CAMPAIGN-15-006',
-      contract: 'Fifteen all-enabled multi-color boards with continuous seeded seven-bag play and two public-dispatch routes each.',
+      taskId: 'TETRIS-T5-PUZZLE-AUTHORED-ENDGAMES-009',
+      contract: 'Fifteen legal zero-clear authored setup histories with source-piece colors and two strengthened public-dispatch routes each.',
       verifierLockGuard: 70,
       levels,
     };
