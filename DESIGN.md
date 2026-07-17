@@ -385,6 +385,10 @@ and error states always add a higher-contrast or non-color cue.
   complete first row, with Race and Puzzle as two independent complete buttons in the
   second row. One-pixel dividers and selected-state tone establish grouping; they are
   not three floating cards or a settings list.
+- Every mode entrance keeps its complete action label and rounded arrow control inside
+  the shared surface at all required viewports. In particular, 844 × 390 DPR3 must
+  satisfy `scrollWidth <= clientWidth` for each mode button and action cluster; the
+  right edge may not be hidden by the surface's clipping boundary.
 - The standalone selected-mode preview pane and its explanatory copy are removed. A
   small original four-cell signal may live inside a mode entrance, uses the same
   matte-plate language, and never becomes a logo or looping hero.
@@ -442,7 +446,9 @@ and error states always add a higher-contrast or non-color cue.
   placed/cleared pair shares the middle row. Every internal separator is continuous;
   a half-width dangling line, stray vertical segment, or empty fake quadrant is a
   rendering defect. Compact grids may rearrange the same values only when their
-  complete row/column boundaries remain visually coherent.
+  complete row/column boundaries remain visually coherent. Every statistic article
+  exposes an explicit semantic role, and all grid spans/dividers select those roles;
+  `nth-child`, `nth-of-type`, `odd`, and `even` are forbidden for statistic geometry.
 - Remove visible `本局数据`, long `.mode-rule` explanations, and explanatory pause or
   exit paragraphs. Result copy is limited to `棋盘已清空` plus `X 方块 · Y 消行`,
   `堆叠到顶`, or `竞速结束` plus the necessary statistics. Mode/level name, back,

@@ -11,9 +11,9 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — Slice K candidate `9c128ab` is rejected; bounded Slice K-R now owns
-typography, dividers, responsive copy/motion, and the user's cohesive dimensional
-tetromino repair as the sole active product boundary**
+Status: **active — Slice K-R candidate `f4fcbb5` is rejected by independent QA;
+bounded Slice K-R2 now owns semantic statistic roles and the 844 × 390 mode-action
+overflow as the sole active product boundary**
 
 ## User-visible problems to resolve
 
@@ -814,4 +814,53 @@ Slice K-R acceptance:
   lines, plus a log-only checkpoint; do not push.
 
 Independent static/functional and visual/browser QA must accept the exact K-R source
+checkpoint before formal evidence, changelog integration, or push.
+
+## Slice K-R2 — Semantic statistic roles and landscape action containment
+
+Task ID: `TETRIS-T5-MINERAL-SEMANTIC-REPAIR-012`
+
+Status: **OPEN — sole active product writer boundary**.
+
+Product base: rejected-as-final Slice K-R candidate
+`f4fcbb582ac5dfd8fce6fa4a2e3e7cc91e0f4102`; frozen product source
+`e38c55c4631beb68eecb648b84d205e4376245b0` remains the implementation base.
+Independent static QA rejected generic `nth-child(odd)` inference in the compact
+Puzzle statistic grid. Independent visual QA additionally proved every 844 × 390
+DPR3 home action cluster is clipped at the shared surface's right boundary in both
+loaded-font and blocked-font conditions. All other K-R source and browser gates remain
+accepted inputs to this bounded repair, not final release acceptance.
+
+The repair writer may change only:
+
+- `src/App.tsx` only to add explicit statistic-role hooks;
+- `src/styles.css` only to replace statistic positional selectors and contain the
+  landscape mode actions;
+- `src/App.test.ts` only for direct semantic-role/structure regressions;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md` only after source is frozen.
+
+Slice K-R2 acceptance:
+
+- every Classic, Race, and Puzzle statistic article exposes an explicit semantic role;
+  all statistic spans and dividers select those roles. No statistic geometry may use
+  `nth-child`, `nth-of-type`, `odd`, or `even`;
+- preserve the exact desktop and compact row topology already accepted visually:
+  Puzzle level/objective full-width on desktop, placed/cleared in the middle, and a
+  coherent 2 × 2 compact grid with no half line, dangling segment, doubled edge, or
+  fake empty quadrant;
+- at 844 × 390 DPR3, all three home entrances show their complete action label and
+  rounded arrow border. Each mode button and `.mode-gate__action` must have
+  `scrollWidth <= clientWidth`; keep each action at least 44 × 44 px and preserve the
+  one-surface 1+2 composition;
+- preserve the exact typography, palette/material values, cohesive Pixi grouping,
+  concise copy, visible Next/keyboard map, 4 px entrance, nine-tick clear sweep,
+  fifteen enabled levels, 2:1 board, 44 px controls, and one-canvas lifecycle from
+  frozen source `e38c55c`;
+- run focused App tests while editing. After the final source change, run one
+  typecheck, one complete suite, one production build, the prescribed action client,
+  and one fresh five-viewport loaded-font/blocked-font home/library/game matrix with
+  original-detail inspection. Create one bounded source checkpoint and one log-only
+  checkpoint; do not push.
+
+Independent static/functional and visual/browser QA must accept the exact K-R2 source
 checkpoint before formal evidence, changelog integration, or push.
