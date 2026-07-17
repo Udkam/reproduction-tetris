@@ -1049,3 +1049,68 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Next: independent read-only static/functional and visual QA audits exact source range
   `41b29ab08a06bfb51ebdc80b054f625281876f6c..e38c55c`; if accepted, the coordinator
   records the changelog disposition and pushes the branch.
+
+## 2026-07-17 — SEMANTIC STATISTICS / LANDSCAPE ACTION REPAIR CANDIDATE READY
+
+- Task: `TETRIS-T5-MINERAL-SEMANTIC-REPAIR-012`.
+- Branch/base: `codex/tetris-recovery` at
+  `bcc25d6ce8a9556f8471b67c8770a92ebd5123de`; intake was clean.
+- Frozen product tip/range:
+  `effb353ae816549eb2faf80a8340b01b6af48ac7` and
+  `bcc25d6ce8a9556f8471b67c8770a92ebd5123de..effb353ae816549eb2faf80a8340b01b6af48ac7`.
+- Ordered checkpoints:
+  1. `5b1d486` — `fix(ui): bind stat roles and contain mode actions`; changed only
+     `src/App.tsx`, `src/styles.css`, and `src/App.test.ts`.
+  2. `effb353` — `fix(ui): reserve active arrow travel`; changed only
+     `src/styles.css`.
+- Every Classic, Race, and Puzzle statistic article now owns an explicit
+  `data-stat-role`. Grid spans and dividers use only those roles; the direct App test
+  freezes all three role sets and rejects `nth-child`, `nth-of-type`, `odd`, or `even`
+  in every `.run-stats` selector.
+- Desktop Puzzle keeps full-width level/objective around the placed/lines pair;
+  compact Puzzle keeps the coherent 2 × 2 role grid. Classic and Race retain their
+  accepted full-width final statistic on desktop and three-column compact band.
+- The 844 × 390 mode grid now allocates an intrinsic action column. A separate 2 px
+  inline-end capacity contains the accepted active-arrow travel without clipping or
+  changing its motion, label, 1 px border, 9 px radius, or 44 px action height.
+- No renderer/theme, Core, runtime/input/audio, `index.html`, dependency, evidence,
+  coordinator-document, changelog, or `progress.md` path changed. `frontend-design`
+  and `develop-web-game` were followed; the active allowlist routes progress here.
+
+### Verification actually run
+
+- Targeted `npm.cmd run test -- src/App.test.ts` passed after each source claim:
+  1 file / 4 tests; jsdom printed only its known non-failing Canvas diagnostic.
+- The first loaded matrix found the accepted arrow's 2 px transform in Marathon
+  action `scrollWidth` (73/71), producing the explicit second checkpoint above. All
+  earlier gate results were treated as pre-final and not reused.
+- After `effb353`, exactly one final `npm.cmd run typecheck` passed; exactly one final
+  `npm.cmd run test` passed (40 files: 39 passed / 1 skipped; 258 tests:
+  256 passed / 2 skipped); exactly one final `npm.cmd run build` passed with
+  739 transformed modules.
+- Prescribed client command:
+  `node 'C:\Users\Alex Chen\.codex\skills\develop-web-game\scripts\web_game_playwright_client.js' --url http://127.0.0.1:4173/ --actions-file 'C:\Users\Alex Chen\.codex\skills\develop-web-game\references\action_payloads.json' --click-selector '[data-testid="enter-marathon"]' --iterations 3 --pause-ms 250 --screenshot-dir '.local\slice-kr2-writer\final-action-client'`
+  passed; final state was internal `marathon` / visible Classic, playing, score 98,
+  placed pieces 3, active Z, Next L. `shot-2.png` was inspected at original detail.
+- Fresh matrix commands `node .local\slice-kr2-writer\layout-preflight.mjs` and
+  the same command after PowerShell `$env:BLOCK_FONTS = '1'` each passed
+  5 home plus 15 game scenarios at 1440 × 900 DPR1, 2048 × 1152 DPR1,
+  390 × 844 DPR3, 844 × 390 DPR3, and 360 × 800 DPR1.
+- Loaded fonts resolved Space Grotesk and Noto Sans SC in 15/15 games. The blocked run
+  intercepted the Google request in 15/15 games; its only console message was the
+  expected aborted-resource `net::ERR_FAILED`, with no unexpected error.
+- At 844 × 390 in both runs, mode button scroll/client widths were 712/712, 355/355,
+  and 356/356; all three actions were 73/73 and 73 × 44, remained inside the button
+  and shared surface, and showed the complete rounded arrow. All three game boards
+  were 129 × 258 with one canvas, no overflow, and exact semantic role/divider maps.
+- Loaded/fallback metrics are under ignored
+  `.local/slice-kr2-writer/layout-preflight/`; both `metrics.json` files record zero
+  failures. Existing contract captures inspected at original detail include both
+  844 home conditions, desktop and compact three-mode statistics, blocked-font compact
+  Puzzle, and the final action-client board. No extra screenshot was added.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: independent read-only static/functional and visual/browser QA audits exact
+  source range `bcc25d6..effb353`; the coordinator owns acceptance, changelog, and push.
