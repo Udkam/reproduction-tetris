@@ -30,6 +30,8 @@ evidence only. T5 uses new paths and does not rewrite those artifacts.
 ## Product and architecture invariants
 
 - This is a clean-room deterministic falling-block game for desktop and mobile.
+- Delivery remains a browser HTML webpage built by Vite. T5 does not add a native-app
+  wrapper, PWA install surface, or packaged application target.
 - React owns screen composition and lifecycle. PixiJS owns the board, pieces, preview,
   effects, and frame rendering.
 - Gameplay uses one Pixi canvas and no DOM cell grid.
@@ -121,7 +123,7 @@ paired with fine blueprint ticks and one offset cyan route line. Warm paper, och
 shelf feet, mineral shadows, inset rectangles, and the current block material language
 are removed.
 
-- The in-app player-facing product name is `青流方阵`. `Tetris` is removed from visible
+- The page-facing product name is `青流方阵`. `Tetris` is removed from visible
   headings, live-region copy, and canvas labels.
 - Per the user's later direction, `index.html` is outside the T5 redesign slice and
   remains unchanged as the required Vite entry document.
@@ -163,7 +165,7 @@ labels must meet WCAG AA contrast.
 
 ### Mode home
 
-- The app opens on a dedicated mode home with no gameplay board.
+- The webpage opens on a dedicated mode home with no gameplay board.
 - The mode home and Puzzle library do not mount a runtime or canvas. Entering a run
   creates one runtime/canvas; returning home destroys both before showing the home.
 - Marathon, Race, and Puzzle are three separate, fully clickable entries with complete

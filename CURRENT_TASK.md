@@ -117,8 +117,10 @@ configuration, dependencies, T3/T4 evidence, changelog, or coordinator docs.
 
 Frontend acceptance:
 
-- original in-app brand `青流方阵` in heading, live copy, and canvas label; no in-app
-  player-facing `Tetris` brand remains; `index.html` stays unchanged by user direction;
+- original page-facing brand `青流方阵` in heading, live copy, and canvas label; no
+  page-facing `Tetris` brand remains; `index.html` stays unchanged by user direction;
+- browser HTML delivery remains unchanged; no native wrapper, PWA install surface, or
+  packaged-application work is authorized;
 - dedicated three-entry mode home with no mounted runtime or canvas;
 - entering gameplay creates exactly one runtime/canvas and returning home destroys it;
 - all Puzzle levels enabled, no numeric difficulty UI, completion only informational;

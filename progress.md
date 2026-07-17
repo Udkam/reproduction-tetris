@@ -35,4 +35,5 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
 - Active TODO: implement and verify the original `青流方阵` Aqua Blueprint frontend,
   then one combined final gate/evidence pass and final QA.
 - User removed `index.html` from the redesign scope; it remains unchanged as the Vite
-  entry while in-app branding and accessibility copy are rebuilt under `src`.
+  entry while page branding and accessibility copy are rebuilt under `src`.
+- User clarified the product remains a browser HTML webpage, not a native app or PWA.
