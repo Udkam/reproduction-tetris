@@ -758,3 +758,160 @@ No writer diff exists in Core/Puzzle definitions, references or routes,
   and push decisions.
 - Next: create the single bounded candidate commit and route its exact SHA to
   independent read-only functional and visual QA.
+
+## 2026-07-17 — DEEP MINERAL MINIMAL CANDIDATE READY
+
+### Intake and ownership
+
+- Task: `TETRIS-T5-DEEP-MINERAL-MINIMAL-010`.
+- Branch: `codex/tetris-recovery`.
+- Intake/base SHA: `fadc63eddab14732c3798f3e4aaa462c46bbca3f`.
+- Intake status: clean.
+- Writer boundary: sole frontend/render writer for the bounded deep-mineral visual,
+  copy-reduction, responsive, and renderer-material slice. Core/Puzzle definitions,
+  campaign references/routes, progress persistence, presentation/runtime/input/audio,
+  dependencies, build config, coordinator documents, changelog, and formal evidence
+  remained untouched.
+- Required intake was read before implementation: root `AGENTS.md`, `DESIGN.md`,
+  `CURRENT_TASK.md`, latest `docs/logs/CHANGELOG.md`, `docs/COMMIT_POLICY.md`, this
+  workstream log, and `progress.md`.
+- Applied `frontend-design` for the bounded original visual replacement and
+  `develop-web-game` for the prescribed action-payload loop plus browser inspection.
+  The latter skill's ordinary `progress.md` update was explicitly replaced by this
+  authorized frontend workstream log to preserve the coordinator's exact allowlist;
+  `progress.md` was not edited.
+
+### Ordered product checkpoints
+
+1. `5d572c5` — `feat(render): apply matte mineral cells`
+   - `src/game/render/theme.ts`
+   - `src/game/render/theme.test.ts`
+   - `src/game/render/TetrisRenderer.ts`
+2. `e5c1b7c` — `refactor(ui): reduce visible game copy`
+   - `src/App.tsx`
+   - `src/App.test.ts`
+3. `0405266` — `style(ui): apply deep mineral surfaces`
+   - `src/styles.css`
+4. `1b1bfdb` — `fix(render): freeze ghost outline width`
+   - `src/game/render/theme.ts`
+   - `src/game/render/theme.test.ts`
+   - `src/game/render/TetrisRenderer.ts`
+
+Every checkpoint staged exact paths, inspected the cached path list/stat, passed
+`git diff --cached --check`, and committed the first green reviewable claim before
+the next concern. The CSS replacement was 151 insertions / 397 deletions; the large
+diff is removal of the rejected spectral surface, not a bundled second subsystem.
+
+### Delivered renderer and page contract
+
+- Replaced the prior bright spectral renderer with the exact seven matte mineral
+  materials, each frozen as `fillStart/fillEnd/edge/innerEdge`:
+  `I AE4761/A1445A/542532/C78A99`,
+  `O 3E988F/347F78/204944/80B9B4`,
+  `T AD7D43/946C3C/503A22/C6A078`,
+  `S 4F67B0/5264A2/283653/8795C2`,
+  `Z 759A4C/637F43/3A4A2A/A0B584`,
+  `J 8A53A2/835294/432A4D/AF8FBA`, and
+  `L 43829D/386E86/244452/81AABB`.
+- Board and Next retain one shared Pixi primitive. Locked cells use a quiet 135-degree
+  material fill, radius at most 1.75 px, and edge at most 1 px. Active cells replace
+  the dark edge with the restrained material signal edge; no aura/filter layer remains.
+  Ghost is zero-fill with exact 1 px signal outline at maximum alpha 0.45. Lock response
+  is a 90 ms / 0.12-alpha low fill rather than a glow or second perimeter.
+- Applied the exact deep page system: page `#0B1422`, surface `#111D2E`, raised
+  `#172538`, selected `#1D2D43`, well `#07101C`, ink `#EDF2F7`, muted `#AAB5C4`,
+  line `#34445A`, edge `#566981`; mode signals `#5A918B/#6F87B7/#9A81A8`,
+  selection `#B57686`, action `#365B8D`, hover `#426A9D`, focus `#9ABCE6`,
+  success `#6F9A7D`, and danger `#B16A78`.
+- The only gradient outside Pixi material fills is the exact 72 × 2 px phase seam
+  `linear-gradient(90deg,#5a918b,#6f87b7,#9a81a8)`. There are no radial gradients,
+  backdrop filters, ambient fields, glow shadows, or floating cards. Only the three
+  main screen shells use `0 22px 60px rgba(2,7,14,.28)`.
+- Home remains one 1+2 selector surface with visible copy limited to `Tetris`, one
+  `选择模式`, the three names, `分数 · 消行 · 等级`, `速度递增 · 无终点`,
+  `15 关残局 · 清空棋盘`, and their direct actions.
+- Library exposes `解谜`, `← 返回`, fifteen ordinal/name rows with optional `已完成`,
+  one selected silhouette/name/ordinal, `目标 清空棋盘`, and `开始`. Removed rule,
+  queue, setup-board, current-selection, and repeated objective prose while retaining
+  complete ARIA names and stable test IDs.
+- Gameplay retains exactly one canvas, the Board/Next/stats/keyboard/touch instrument,
+  concise pause/exit/result sheets, and the complete `清空棋盘` goal. No DOM cell grid,
+  external art, commercial logo, trade dress, or copied visual asset was introduced.
+
+### Commands and results actually run
+
+- Renderer/theme targeted:
+  `npm.cmd run test -- src/game/render/theme.test.ts src/game/runtime/GameRuntime.test.ts`
+  — PASS, 4 files / 14 tests; checkpoint typecheck PASS.
+- App targeted after copy change:
+  `npm.cmd run test -- src/App.test.ts` — PASS, 1 file / 3 tests; checkpoint typecheck
+  PASS. The first edit-loop run correctly caught a retained decorative chevron in row
+  text; the chevron was removed and the same targeted suite passed.
+- Page/theme/runtime targeted after final responsive CSS corrections:
+  `npm.cmd run test -- src/App.test.ts src/game/render/theme.test.ts src/game/runtime/GameRuntime.test.ts`
+  — PASS, 5 files / 17 tests; checkpoint typecheck PASS. jsdom printed only its known
+  non-failing Canvas `getContext()` diagnostic.
+- Exact ghost-width targeted rerun:
+  `npm.cmd run test -- src/game/render/theme.test.ts src/game/runtime/GameRuntime.test.ts`
+  — PASS, 4 files / 14 tests; checkpoint typecheck PASS.
+- Static style audit found only the authorized phase `linear-gradient`, only the three
+  authorized main-shell shadows, and only the frozen hex tokens plus authorized rgba
+  scrim/shadow values. Final `git diff --check` passed with line-ending notices only.
+- The first prescribed `develop-web-game` client attempt reported
+  `ERR_MODULE_NOT_FOUND: Cannot find package 'playwright'` from the skill script's own
+  module lookup. A verified temporary junction to the already-installed Playwright
+  cache resolved that environment-only issue without dependency or product changes.
+- After renderer/page changes, the prescribed original client and supplied
+  `action_payloads.json` passed three iterations. After the final source checkpoint,
+  one shell-quoting attempt supplied a malformed selector and stopped before gameplay;
+  the corrected exact selector immediately passed. Final state was marathon/playing,
+  score 106, 3 placed pieces, active Z, Next L. `final-client/shot-2.png` was inspected
+  at original detail and no client error artifact exists.
+- After the actual last product-source change, exactly one final
+  `npm.cmd run typecheck` — PASS.
+- After the actual last product-source change, exactly one final `npm.cmd run test`
+  — PASS: 40 files total, 39 passed / 1 skipped; 255 tests total, 253 passed / 2 skipped.
+- After the actual last product-source change, exactly one final `npm.cmd run build`
+  — PASS; Vite transformed 739 modules.
+
+### Final browser evidence inspected
+
+- Final matrix covered 1440 × 900 DPR1, 2048 × 1152 DPR1, 390 × 844 DPR3,
+  844 × 390 DPR3, and 360 × 800 DPR1. Results and sixteen captures are under ignored
+  `.local/slice-k-writer/final-matrix/`; `results.json` records the complete assertions.
+- Every home kept all three actions inside the first viewport, zero canvases, no page
+  overflow, solid `rgb(11, 20, 34)` body, exactly one shell shadow, and the exact
+  72 × 2 px seam. Forbidden verbose home copy was absent.
+- Libraries used 3 × 5 at desktop/wide/landscape and 2 × 8 at portrait/narrow. All
+  fifteen rows were enabled, unclipped, at least 44 px high, with exactly one visible
+  selected silhouette and no horizontal overflow. Portrait/narrow library-only vertical
+  scrolling is intentional.
+- Real visible controls selected and started the first, eighth, and fifteenth levels in
+  every viewport. Canonical bindings were respectively `t3r-shaft-01` S → L,
+  `t5r-drift-08` T → O, and `t5r-horizon-15` S → I; each initial board exposed all
+  seven locked types `IJLOSTZ`.
+- Every game had exactly one canvas, zero DOM cells, no horizontal or vertical overflow,
+  exact 2:1 board geometry, labels at least 14 px, values at least 18 px, touch labels at
+  least 12 px, and buttons at least 44 px. Goal client/scroll widths were 195/195,
+  195/195, 123/123, 115/115, and 132/132; `清空棋盘` never clipped.
+- The desktop matrix drove the signed first-level reference route only through visible
+  keyboard controls and reached the canonical success sheet: `棋盘已清空`,
+  `35 方块 · 22 消行`. It also proved a paused reduced-motion state unchanged for
+  250 ms, all five touch controls, restart to zero placed pieces, and canvas removal on
+  confirmed unmount.
+- Both formal-harness retries were test-script timing corrections only: first wait for
+  React's read-only QA text after a public key action, then reread the finished state
+  after the already-visible success heading. No product file changed. The complete
+  final rerun passed with all console/page error arrays empty.
+- All sixteen final PNGs — `{desktop,wide,portrait,landscape,narrow}` ×
+  `{home,library,level-08}` plus `desktop-puzzle-clear.png` — were individually opened
+  at original detail. They show the solid deep-mineral system, matte authored pieces,
+  zero-fill ghost, shared-material Next, complete controls/goals, and no clipping or
+  overlap requiring another product edit.
+
+### Handoff
+
+- Blocker: none.
+- Push: not performed; coordinator owns independent QA, changelog, integration, and push.
+- Next: independent read-only QA should audit ordered source range
+  `5d572c5^..1b1bfdb` against this log and the ignored final matrix.
