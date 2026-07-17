@@ -441,12 +441,16 @@ and error states always add a higher-contrast or non-color cue.
 1. Coordinator freezes this contract and exact path boundaries.
 2. Puzzle Slice J replaces all fifteen boards with frozen legal zero-clear setup
    histories, regenerates thirty routes/references, and changes no frontend path.
-3. Independent read-only Core QA verifies the exact Slice J candidate SHA.
-4. Frontend Slice K owns the `暮海矿物` theme, matte renderer, reduced visible copy,
+3. If the signed references invalidate an internal browser-QA replay, Slice J-R may
+   replace only that replay's frozen placement fixture and its direct test. This is a
+   QA-fixture migration: it does not change Puzzle rules, runtime timing, or product
+   behavior, and the fixture remains public-command-only.
+4. Independent read-only Core/runtime QA verifies the exact Slice J candidate range.
+5. Frontend Slice K owns the `暮海矿物` theme, matte renderer, reduced visible copy,
    and related presentation tests. It changes no Core definition or reference.
-5. Coordinator runs one combined final typecheck, full suite, build, and browser pass
+6. Coordinator runs one combined final typecheck, full suite, build, and browser pass
    after the last product change.
-6. Independent read-only functional and visual QA verify the exact combined candidate
+7. Independent read-only functional and visual QA verify the exact combined candidate
    before evidence, changelog integration, or push.
 
 Historical T3/T4 evidence stays unchanged. New reference and browser evidence lives

@@ -11,8 +11,9 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — local Slice I checkpoint `e552b3c` is rejected and unpushed;
-Slice J legal authored endgames is open before Slice K deep natural frontend**
+Status: **active — Slice J authored endgames passed its targeted verifier; the final
+suite exposed one stale internal QA route, so bounded Slice J-R is open before Core QA
+and Slice K deep natural frontend**
 
 ## User-visible problems to resolve
 
@@ -638,6 +639,42 @@ Slice J acceptance:
 Independent read-only Core QA must accept the exact Slice J candidate before Slice K
 opens. The old random-color masks, state hashes, reference SHA, screenshots, and
 routes are rejected evidence and may not be reused.
+
+## Slice J-R — migrate the stale Puzzle browser-QA route
+
+Task ID: `TETRIS-T5-QA-ROUTE-MIGRATION-009R`
+
+Status: **OPEN — sole runtime-QA fixture writer boundary; Slice J Core paths remain
+owned by the Core writer and may not be touched**.
+
+Trigger: the post-source full suite passed 39 files / 251 tests and failed only
+`src/game/runtime/qaScenario.test.ts` because `PUZZLE_CHALLENGE_QA_ROUTE` still owns
+the rejected pre-Slice-J first-level placements. The new first level retains the same
+35-lock / 22-line public-command completion contract.
+
+The runtime-QA fixture writer may change only:
+
+- `src/game/runtime/qaScenario.ts`;
+- `src/game/runtime/qaScenario.test.ts` only if a direct assertion must change;
+- `docs/workstreams/tetris-t5-runtime/THREAD_LOG.md`.
+
+Slice J-R acceptance:
+
+- replace only the frozen `PUZZLE_CHALLENGE_QA_ROUTE` placement stream with the new
+  signed first-level route; do not import the large reference JSON into production
+  source and do not alter Race fixtures;
+- preserve `replayPuzzleChallenge` as public `start` / rotate / move / hard-drop /
+  tick dispatch only, with 35 locks, 22 lines, deterministic hash, finished status,
+  completed `t3r-shaft-01`, and next level `t3r-shaft-02`;
+- do not change Core, engine, timing, rendering, frontend, input/audio/storage,
+  dependencies, `index.html`, coordinator documents, changelog, or evidence;
+- run the focused `qaScenario.test.ts`, explicit-path stage/diff checks, create one
+  bounded runtime-QA source checkpoint, and do not push.
+
+After Slice J-R is green, the Core writer runs the still-pending single final build and
+complete 15-setup / 30-route verifier; the already completed final typecheck and full
+suite attempt remain recorded, but acceptance requires one green complete suite after
+the fixture migration. Independent QA reviews the contiguous Slice J + J-R range.
 
 ## Slice K — `暮海矿物` theme and minimal visible copy
 

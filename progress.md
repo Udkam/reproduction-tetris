@@ -188,3 +188,17 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
   garnet/sea-pine/ochre/storm/moss/rock-violet/lake piece mapping, removes BlurFilter
   aura and glass effects, and reduces visible copy to names, controls, statistics,
   completion, and the immediate board-clear objective.
+
+## 2026-07-17 — authored endgames generated; stale QA replay isolated
+
+- Slice J generated fifteen legal zero-clear setup histories and thirty successful
+  public-dispatch routes. Its targeted production verifier passed 63 tests, with the
+  reference JSON rebuilt from the new signed histories.
+- The first complete suite passed 39 files / 251 tests and failed only the internal
+  `PUZZLE_CHALLENGE_QA_ROUTE`, which still contained the rejected former first-level
+  placements. Typecheck passed; build and the final complete reference verification
+  correctly stopped pending the last source fix.
+- Slice J-R is a separate exact-path migration for only `qaScenario.ts`, its direct
+  test if required, and a runtime workstream log. It may update the frozen 35-lock
+  public-command fixture but may not change Puzzle rules, runtime behavior, Core,
+  frontend, or `index.html`.
