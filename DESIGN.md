@@ -27,6 +27,11 @@ The user's 2026-07-17 visual review supersedes the first T5 frontend candidate:
 - plain-text naming does not authorize copying a commercial logo, multicolor wordmark,
   proprietary font, existing product layout, or other trade dress.
 
+The user's later typography and panel review authorizes an original open-source Google
+Fonts pairing and rejects broken statistic dividers. This does not authorize a logo
+font or copied wordmark: `Tetris` remains editable plain text, while typography and
+numeric rhythm become part of the surrounding original interface.
+
 The user's later 2026-07-17 review also rejects the complete second frontend
 presentation at `c9135f3252abfa3bd6d7e94c5eb2e11fc3c72a18`. It is not a visual baseline
 that can be accepted through local polish. The new authority is light neo-tech
@@ -299,8 +304,13 @@ and error states always add a higher-contrast or non-color cue.
 
 ### Typography, surfaces, and piece language
 
-- Use the system sans stack for Chinese and normal product copy. A display sans may be
-  used for the plain-text `Tetris` name; monospace is reserved for numeric values.
+- Load the open-source Google Fonts pairing `Space Grotesk` + `Noto Sans SC` from CSS,
+  not `index.html`. The frozen CSS v2 request is
+  `https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap`.
+  `Space Grotesk` owns Latin text, the plain `Tetris` title, `Next`, and tabular-style
+  numerals; `Noto Sans SC` owns Chinese glyphs. Both fall back through Segoe UI /
+  Microsoft YaHei UI / PingFang SC / system sans so a blocked font request remains
+  readable, does not create blank text, and preserves the responsive geometry.
 - The page uses solid deep structural planes. It has no colored ambient field,
   `backdrop-filter`, repeating grid, measurement mark, grain, diagonal stripe, route
   diagram, gradient CTA, or glow shadow.
@@ -409,6 +419,12 @@ and error states always add a higher-contrast or non-color cue.
 - Race shows score, lines, and speed tier. Puzzle shows level name, cleared lines,
   placed pieces, the board-empty goal, and one Next item. It never shows a finite
   remaining-piece value or a suggested solution.
+- Statistic borders are role-based, never inferred from generic odd/even item rules.
+  On the desktop Puzzle dock, the level and objective span both columns and the
+  placed/cleared pair shares the middle row. Every internal separator is continuous;
+  a half-width dangling line, stray vertical segment, or empty fake quadrant is a
+  rendering defect. Compact grids may rearrange the same values only when their
+  complete row/column boundaries remain visually coherent.
 - Remove visible `本局数据`, long `.mode-rule` explanations, and explanatory pause or
   exit paragraphs. Result copy is limited to `棋盘已清空` plus `X 方块 · Y 消行`,
   `堆叠到顶`, or `竞速结束` plus the necessary statistics. Mode/level name, back,

@@ -221,3 +221,22 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
   exact coordinated `暮海矿物` palette, matte anodized Board/Next cells, and concise
   names/controls/statistics/objective copy. Core, runtime, `index.html`, dependencies,
   coordinator docs, changelog, and formal evidence remain read-only to its writer.
+
+## 2026-07-17 — Slice K rejected; typography and divider repair opened
+
+- Slice K source `1b1bfdb` passed writer typecheck, 253 tests, build, action client,
+  and a five-viewport matrix. Independent visual review accepted the deep mineral
+  palette, matte cells, all fifteen distinct multi-color boards, geometry, contrast,
+  lifecycle, and concise `经典` presentation.
+- Independent QA rejected three frozen-contract deviations: portrait/narrow/844
+  landscape hide visible `Next` and the keyboard map; `surface-in` travels 6 px rather
+  than at most 4 px; and the renderer's line-clear sweep lasts the full 200 ms phase
+  rather than 120–160 ms. ARIA does not replace required visible copy.
+- The user's screenshot also proves the statistic grid's generic odd/even border rules
+  produce a half horizontal divider and stray vertical segment. The repair freezes
+  role-based Puzzle rows so level and objective span both columns around the middle
+  placed/cleared pair.
+- Slice K-R additionally adopts the open-source Google Fonts combination `Space
+  Grotesk` + `Noto Sans SC` through CSS v2 with `display=swap` and system fallbacks.
+  It keeps `Tetris` as plain text and leaves `index.html`, dependencies, Core,
+  runtime, input/audio/storage, and formal evidence unchanged.

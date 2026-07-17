@@ -11,8 +11,9 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — Slice J + J-R are independently accepted through candidate
-`676d804`; Slice K `暮海矿物` frontend is now the sole active product boundary**
+Status: **active — Slice K candidate `9c128ab` is rejected by independent QA; bounded
+Slice K-R typography, divider, responsive-copy, and motion repair is the sole active
+product boundary**
 
 ## User-visible problems to resolve
 
@@ -683,7 +684,8 @@ the fixture migration. Independent QA reviews the contiguous Slice J + J-R range
 
 Task ID: `TETRIS-T5-DEEP-MINERAL-MINIMAL-010`
 
-Status: **OPEN — sole active product writer boundary**.
+Status: **REJECTED BY INDEPENDENT QA** at log candidate `9c128ab`; frozen product
+source `1b1bfdbf150afa6708859b81cf12cd876b77d320` remains the repair base only.
 
 Product base: independently accepted Slice J + J-R candidate
 `676d804c2be74b107d429c61639ecc03e70e6509`.
@@ -746,3 +748,53 @@ Slice K acceptance:
 Independent read-only functional and visual QA must accept the exact Slice K candidate
 before the coordinator regenerates explicit-LF formal evidence, updates the changelog,
 or decides whether to push.
+
+## Slice K-R — Google typography, coherent dividers, and QA motion repair
+
+Task ID: `TETRIS-T5-MINERAL-TYPE-DIVIDER-011`
+
+Status: **OPEN — sole active product writer boundary**.
+
+Product base: rejected-as-final Slice K candidate
+`9c128abae1c3ddb3e1de2e783be0b1c37210fc9c`; all accepted Core behavior and the
+coordinated mineral palette/material remain fixed.
+
+The repair writer may change only:
+
+- `src/styles.css`;
+- `src/App.test.ts` only for direct visible-copy/structure regression coverage;
+- `src/game/render/TetrisRenderer.ts`;
+- `src/game/render/presentation.ts`;
+- `src/game/render/presentation.test.ts`;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`.
+
+Slice K-R acceptance:
+
+- import the exact `Space Grotesk` + `Noto Sans SC` Google Fonts CSS v2 request frozen
+  in `DESIGN.md` as the first CSS statement, with `display=swap` and the complete
+  system fallback. Do not edit `index.html`, add a dependency, imitate a logo, or
+  require the network for legibility/layout correctness;
+- apply the pairing consistently to title/UI/numerals, then verify both successful
+  font loading and a blocked-font fallback at the five required viewports. No font
+  swap may clip names, controls, statistics, or the complete `清空棋盘` goal;
+- replace the generic statistic odd/even borders with explicit Classic/Race/Puzzle
+  geometry. Puzzle level and objective span full rows on the desktop dock, placed and
+  cleared share one middle row, and no viewport contains the reported half divider,
+  stray vertical segment, or empty fake quadrant;
+- restore visible `Next` and the compact keyboard map at 390 × 844, 360 × 800, and
+  844 × 390 without shrinking below 12 px, breaking the board's 1:2 geometry,
+  clipping the goal, or adding gameplay scroll;
+- reduce `surface-in` to at most 4 px over 180 ms. Cap the ordinary line-clear tonal
+  sweep to nine 60 Hz presentation ticks (150 ms) without changing Core clear delay;
+  reduced motion must show no positional or sweep transition;
+- preserve the exact palette/material values, concise copy, `经典`, stable selectors,
+  fifteen enabled levels, first/eighth/fifteenth binding, 44 px controls, 12/14/18 px
+  floors, one canvas/zero DOM cells, lifecycle, endless Race, and continuous Puzzle;
+- run focused App/presentation/renderer tests while editing. After the final product
+  source change, run one typecheck, one complete suite, one production build, the
+  prescribed action client, and a fresh five-viewport home/library/game matrix with
+  original-detail inspection. Use one bounded source checkpoint plus a log-only
+  checkpoint; do not push.
+
+Independent static/functional and visual/browser QA must accept the exact K-R source
+checkpoint before formal evidence, changelog integration, or push.
