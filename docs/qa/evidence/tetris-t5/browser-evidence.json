@@ -1,12 +1,12 @@
 {
-  "taskId": "TETRIS-T5-FINAL-BROWSER-001",
-  "candidateSha": "b480e7db93aa7b6f2b2a1feb160985f4aa42e493",
+  "taskId": "TETRIS-T5-FINAL-BROWSER-002",
+  "candidateSha": "f277c2a86f6aa46174dfda9af14bebb29761066a",
   "baseUrl": "http://127.0.0.1:4175/",
-  "method": "Visible UI keyboard/pointer input plus read-only canonical-state comparison; no state replacement or fabricated terminal state.",
+  "method": "First-viewport screenshots from visible UI; real keyboard and touch input; three Puzzle locks by normal gravity; detached canonical/text/renderer snapshot comparison only. Deterministic time advances ticks without replacing state, and no terminal state is fabricated.",
   "captures": [
     {
       "file": "desktop-home-1440x900.png",
-      "sha256": "9551299dcca9e34e109d0c7204fef19591aab5684e937dd73dc265d76c885795",
+      "sha256": "e3d866e30641649874bb2b29f0c50e8656a4d5f20411c2a349894c1d6f730e5c",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -23,33 +23,111 @@
         "canvasCount": 0,
         "domCellCount": 0,
         "runtimeQaPresent": false,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 365.59375,
-          "height": 419.71875
+          "width": 304.015625,
+          "height": 295.96875
         },
         "buttons": [
           {
-            "text": "01开放堆叠马拉松模式分数与等级持续累积，堆叠到顶结束。进入马拉松↗",
-            "width": 365.59375,
-            "height": 419.71875
+            "text": "马拉松持续消行，刷新分数与等级。开始→",
+            "width": 608.03125,
+            "height": 308.03125
           },
           {
-            "text": "02持续加速竞速模式速度持续提升｜无终点｜主动退出或堆叠到顶结束进入竞速↗",
-            "width": 365.609375,
-            "height": 419.71875
+            "text": "竞速速度持续提升｜无终点｜主动退出或堆叠到顶结束开始→",
+            "width": 304.015625,
+            "height": 295.96875
           },
           {
-            "text": "03清空棋盘解谜模式六个关卡全部开放，使用连续七袋方块寻找自己的清空路线。查看关卡↗",
-            "width": 365.59375,
-            "height": 419.71875
+            "text": "解谜六关全开，连续七袋方块，目标是清空棋盘。选关→",
+            "width": 304.015625,
+            "height": 295.96875
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": {
+              "x": 657.96875,
+              "y": 222,
+              "width": 608.03125,
+              "height": 308.03125,
+              "right": 1266,
+              "bottom": 530.03125
+            },
+            "race": {
+              "x": 657.96875,
+              "y": 530.03125,
+              "width": 304.015625,
+              "height": 295.96875,
+              "right": 961.984375,
+              "bottom": 826
+            },
+            "puzzle": {
+              "x": 961.984375,
+              "y": 530.03125,
+              "width": 304.015625,
+              "height": 295.96875,
+              "right": 1266,
+              "bottom": 826
+            }
+          },
+          "phaseCount": 1,
+          "phase": {
+            "x": 681.96875,
+            "y": 222,
+            "width": 72,
+            "height": 2,
+            "transitionDuration": "0.22s, 0.22s, 0.22s"
+          },
+          "selection": "marathon",
+          "fonts": {
+            "previewKicker": [
+              12
+            ],
+            "previewCopy": [
+              13
+            ],
+            "input": [
+              12
+            ],
+            "intro": [
+              13
+            ],
+            "modeCopy": [
+              12,
+              12,
+              12
+            ]
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": null,
           "stats": null,
           "next": null,
-          "touch": null
+          "touch": null,
+          "canvasHost": null
         },
         "boardRatio": null,
         "overlap": {
@@ -58,12 +136,151 @@
           "touchBoard": 0
         },
         "state": null,
-        "textState": null
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
+      }
+    },
+    {
+      "file": "desktop-home-phase-focus-1440x900.png",
+      "sha256": "2747637c0644f5d97bf2977830c6caf67a4473c69f6ad1a665e5e8db04a30fda",
+      "metrics": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 1440,
+          "scrollHeight": 900,
+          "clientWidth": 1440,
+          "clientHeight": 900
+        },
+        "screen": "mode-home",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
+        "buttonMinimum": {
+          "width": 304.015625,
+          "height": 295.96875
+        },
+        "buttons": [
+          {
+            "text": "马拉松持续消行，刷新分数与等级。开始→",
+            "width": 608.03125,
+            "height": 308.03125
+          },
+          {
+            "text": "竞速速度持续提升｜无终点｜主动退出或堆叠到顶结束开始→",
+            "width": 304.015625,
+            "height": 295.96875
+          },
+          {
+            "text": "解谜六关全开，连续七袋方块，目标是清空棋盘。选关→",
+            "width": 304.015625,
+            "height": 295.96875
+          }
+        ],
+        "home": {
+          "modes": {
+            "marathon": {
+              "x": 657.96875,
+              "y": 222,
+              "width": 608.03125,
+              "height": 308.03125,
+              "right": 1266,
+              "bottom": 530.03125
+            },
+            "race": {
+              "x": 657.96875,
+              "y": 530.03125,
+              "width": 304.015625,
+              "height": 295.96875,
+              "right": 961.984375,
+              "bottom": 826
+            },
+            "puzzle": {
+              "x": 961.984375,
+              "y": 530.03125,
+              "width": 304.015625,
+              "height": 295.96875,
+              "right": 1266,
+              "bottom": 826
+            }
+          },
+          "phaseCount": 1,
+          "phase": {
+            "x": 985.984375,
+            "y": 524,
+            "width": 168,
+            "height": 2,
+            "transitionDuration": "0.22s, 0.22s, 0.22s"
+          },
+          "selection": "puzzle",
+          "fonts": {
+            "previewKicker": [
+              12
+            ],
+            "previewCopy": [
+              13
+            ],
+            "input": [
+              12
+            ],
+            "intro": [
+              13
+            ],
+            "modeCopy": [
+              12,
+              12,
+              12
+            ]
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null,
+          "canvasHost": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
       }
     },
     {
       "file": "desktop-marathon-playing-1440x900.png",
-      "sha256": "f51a5562746a40d85b987b4bfebcd153af3d5fb239300a9de50fd97d1b594951",
+      "sha256": "90740ce5a67750bf4f4acc051485d02cfaee5c8a348677e125e02fdeb21f0b6b",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -80,80 +297,140 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 60,
+          "width": 58,
           "height": 44
         },
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 102.3125,
+            "width": 98.8125,
             "height": 44
           },
           {
             "text": "暂停",
-            "width": 60,
+            "width": 58,
             "height": 44
           },
           {
             "text": "←左移",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.8125,
+            "height": 57
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            20,
+            20,
+            20
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 534.5,
-            "y": 74,
-            "width": 371,
-            "height": 742,
-            "right": 905.5,
-            "bottom": 816
+            "x": 409,
+            "y": 85,
+            "width": 358,
+            "height": 716,
+            "right": 767,
+            "bottom": 801
           },
           "stats": {
-            "x": 244.90625,
-            "y": 382.46875,
-            "width": 214,
-            "height": 131,
-            "right": 458.90625,
-            "bottom": 513.46875
+            "x": 816,
+            "y": 248.625,
+            "width": 215,
+            "height": 127.1875,
+            "right": 1031,
+            "bottom": 375.8125
           },
           "next": {
-            "x": 981.09375,
-            "y": 367,
-            "width": 154,
-            "height": 116,
-            "right": 1135.09375,
-            "bottom": 483
+            "x": 816,
+            "y": 460.8125,
+            "width": 215,
+            "height": 112,
+            "right": 1031,
+            "bottom": 572.8125
           },
           "touch": {
-            "x": 380,
-            "y": 826,
-            "width": 680,
-            "height": 74,
-            "right": 1060,
-            "bottom": 900
+            "x": 256,
+            "y": 815,
+            "width": 928,
+            "height": 72,
+            "right": 1184,
+            "bottom": 887
+          },
+          "canvasHost": {
+            "x": 256,
+            "y": 71,
+            "width": 928,
+            "height": 744,
+            "right": 1184,
+            "bottom": 815
           }
         },
         "boardRatio": 2,
@@ -219,12 +496,85 @@
             "...JOO....",
             "...JJJ...."
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 928,
+            "height": 744,
+            "resolution": 1
+          },
+          "board": {
+            "x": 153,
+            "y": 14,
+            "width": 358,
+            "height": 716,
+            "cell": 35.8
+          },
+          "preview": {
+            "x": 560,
+            "y": 389.8125,
+            "width": 215,
+            "height": 112
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "Z",
+          "activeCells": [
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 4,
+              "y": 35
+            },
+            {
+              "x": 5,
+              "y": 35
+            },
+            {
+              "x": 3,
+              "y": 36
+            },
+            {
+              "x": 4,
+              "y": 36
+            }
+          ],
+          "visibleLockedCells": 8,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       }
     },
     {
       "file": "desktop-marathon-paused-1440x900.png",
-      "sha256": "6409e4f84ff4bffc6e4e3bfbeee32de1dcf1371820e61e862b3378c7af72f641",
+      "sha256": "26b3896ce48823acd46aff6368ed2392c3098acee3edf9ff4ef5e0e7a83209e2",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -241,95 +591,155 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 60,
+          "width": 58,
           "height": 44
         },
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 102.3125,
+            "width": 98.8125,
             "height": 44
           },
           {
             "text": "继续",
-            "width": 60,
+            "width": 58,
             "height": 44
           },
           {
             "text": "←左移",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.8125,
+            "height": 57
           },
           {
             "text": "继续游戏",
-            "width": 228,
+            "width": 217,
             "height": 44
           },
           {
             "text": "重新开始",
-            "width": 228,
+            "width": 217,
             "height": 44
           },
           {
             "text": "离开本局",
-            "width": 464,
+            "width": 442,
             "height": 44
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            20,
+            20,
+            20
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 3,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 534.5,
-            "y": 74,
-            "width": 371,
-            "height": 742,
-            "right": 905.5,
-            "bottom": 816
+            "x": 409,
+            "y": 85,
+            "width": 358,
+            "height": 716,
+            "right": 767,
+            "bottom": 801
           },
           "stats": {
-            "x": 244.90625,
-            "y": 382.46875,
-            "width": 214,
-            "height": 131,
-            "right": 458.90625,
-            "bottom": 513.46875
+            "x": 816,
+            "y": 248.625,
+            "width": 215,
+            "height": 127.1875,
+            "right": 1031,
+            "bottom": 375.8125
           },
           "next": {
-            "x": 981.09375,
-            "y": 367,
-            "width": 154,
-            "height": 116,
-            "right": 1135.09375,
-            "bottom": 483
+            "x": 816,
+            "y": 460.8125,
+            "width": 215,
+            "height": 112,
+            "right": 1031,
+            "bottom": 572.8125
           },
           "touch": {
-            "x": 380,
-            "y": 826,
-            "width": 680,
-            "height": 74,
-            "right": 1060,
-            "bottom": 900
+            "x": 256,
+            "y": 815,
+            "width": 928,
+            "height": 72,
+            "right": 1184,
+            "bottom": 887
+          },
+          "canvasHost": {
+            "x": 256,
+            "y": 71,
+            "width": 928,
+            "height": 744,
+            "right": 1184,
+            "bottom": 815
           }
         },
         "boardRatio": 2,
@@ -395,12 +805,85 @@
             "...JOO....",
             "...JJJ...."
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 928,
+            "height": 744,
+            "resolution": 1
+          },
+          "board": {
+            "x": 153,
+            "y": 14,
+            "width": 358,
+            "height": 716,
+            "cell": 35.8
+          },
+          "preview": {
+            "x": 560,
+            "y": 389.8125,
+            "width": 215,
+            "height": 112
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "Z",
+          "activeCells": [
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 4,
+              "y": 35
+            },
+            {
+              "x": 5,
+              "y": 35
+            },
+            {
+              "x": 3,
+              "y": 36
+            },
+            {
+              "x": 4,
+              "y": 36
+            }
+          ],
+          "visibleLockedCells": 8,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       }
     },
     {
       "file": "desktop-home-returned-1440x900.png",
-      "sha256": "9551299dcca9e34e109d0c7204fef19591aab5684e937dd73dc265d76c885795",
+      "sha256": "a1f28989e39c473263f2195428438d920d0ea2e1e0aba6ce0ac387b907900f14",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -417,33 +900,111 @@
         "canvasCount": 0,
         "domCellCount": 0,
         "runtimeQaPresent": false,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 365.59375,
-          "height": 419.71875
+          "width": 304.015625,
+          "height": 295.96875
         },
         "buttons": [
           {
-            "text": "01开放堆叠马拉松模式分数与等级持续累积，堆叠到顶结束。进入马拉松↗",
-            "width": 365.59375,
-            "height": 419.71875
+            "text": "马拉松持续消行，刷新分数与等级。开始→",
+            "width": 608.03125,
+            "height": 308.0312805175781
           },
           {
-            "text": "02持续加速竞速模式速度持续提升｜无终点｜主动退出或堆叠到顶结束进入竞速↗",
-            "width": 365.609375,
-            "height": 419.71875
+            "text": "竞速速度持续提升｜无终点｜主动退出或堆叠到顶结束开始→",
+            "width": 304.015625,
+            "height": 295.96875
           },
           {
-            "text": "03清空棋盘解谜模式六个关卡全部开放，使用连续七袋方块寻找自己的清空路线。查看关卡↗",
-            "width": 365.59375,
-            "height": 419.71875
+            "text": "解谜六关全开，连续七袋方块，目标是清空棋盘。选关→",
+            "width": 304.015625,
+            "height": 295.96875
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": {
+              "x": 657.96875,
+              "y": 222.05923461914062,
+              "width": 608.03125,
+              "height": 308.0312805175781,
+              "right": 1266,
+              "bottom": 530.0905151367188
+            },
+            "race": {
+              "x": 657.96875,
+              "y": 530.0905151367188,
+              "width": 304.015625,
+              "height": 295.96875,
+              "right": 961.984375,
+              "bottom": 826.0592651367188
+            },
+            "puzzle": {
+              "x": 961.984375,
+              "y": 530.0905151367188,
+              "width": 304.015625,
+              "height": 295.96875,
+              "right": 1266,
+              "bottom": 826.0592651367188
+            }
+          },
+          "phaseCount": 1,
+          "phase": {
+            "x": 681.96875,
+            "y": 222.05923461914062,
+            "width": 165.265625,
+            "height": 2,
+            "transitionDuration": "0.22s, 0.22s, 0.22s"
+          },
+          "selection": "marathon",
+          "fonts": {
+            "previewKicker": [
+              12
+            ],
+            "previewCopy": [
+              13
+            ],
+            "input": [
+              12
+            ],
+            "intro": [
+              13
+            ],
+            "modeCopy": [
+              12,
+              12,
+              12
+            ]
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": null,
           "stats": null,
           "next": null,
-          "touch": null
+          "touch": null,
+          "canvasHost": null
         },
         "boardRatio": null,
         "overlap": {
@@ -452,12 +1013,14 @@
           "touchBoard": 0
         },
         "state": null,
-        "textState": null
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
       }
     },
     {
       "file": "wide-race-playing-2048x1152.png",
-      "sha256": "a3396f5ece93523a4a6b04f6cd5838a72c9d67ec0c5d3c2f27e3341b4fcaded8",
+      "sha256": "0bc1bef624e7ec5907b04713eb54a37170e1a182a8d01a325ae64f9236170302",
       "metrics": {
         "viewport": {
           "width": 2048,
@@ -474,80 +1037,140 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 60,
+          "width": 58,
           "height": 44
         },
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 102.3125,
+            "width": 98.8125,
             "height": 44
           },
           {
             "text": "暂停",
-            "width": 60,
+            "width": 58,
             "height": 44
           },
           {
             "text": "←左移",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.8125,
+            "height": 57
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            20,
+            20,
+            20
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 794,
-            "y": 111,
+            "x": 662,
+            "y": 109,
             "width": 460,
             "height": 920,
-            "right": 1254,
-            "bottom": 1031
+            "right": 1122,
+            "bottom": 1029
           },
           "stats": {
-            "x": 504,
-            "y": 499.953125,
-            "width": 214,
-            "height": 131,
-            "right": 718,
-            "bottom": 630.953125
+            "x": 1171,
+            "y": 365.625,
+            "width": 215,
+            "height": 127.1875,
+            "right": 1386,
+            "bottom": 492.8125
           },
           "next": {
-            "x": 1330,
-            "y": 493,
-            "width": 154,
-            "height": 116,
-            "right": 1484,
-            "bottom": 609
+            "x": 1171,
+            "y": 595.8125,
+            "width": 215,
+            "height": 112,
+            "right": 1386,
+            "bottom": 707.8125
           },
           "touch": {
-            "x": 684,
-            "y": 1078,
-            "width": 680,
-            "height": 74,
-            "right": 1364,
-            "bottom": 1152
+            "x": 560,
+            "y": 1067,
+            "width": 928,
+            "height": 72,
+            "right": 1488,
+            "bottom": 1139
+          },
+          "canvasHost": {
+            "x": 560,
+            "y": 71,
+            "width": 928,
+            "height": 996,
+            "right": 1488,
+            "bottom": 1067
           }
         },
         "boardRatio": 2,
@@ -613,12 +1236,85 @@
             "...JOO....",
             "...JJJ...."
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 928,
+            "height": 996,
+            "resolution": 1
+          },
+          "board": {
+            "x": 102,
+            "y": 38,
+            "width": 460,
+            "height": 920,
+            "cell": 46
+          },
+          "preview": {
+            "x": 611,
+            "y": 524.8125,
+            "width": 215,
+            "height": 112
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "Z",
+          "activeCells": [
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 4,
+              "y": 35
+            },
+            {
+              "x": 5,
+              "y": 35
+            },
+            {
+              "x": 3,
+              "y": 36
+            },
+            {
+              "x": 4,
+              "y": 36
+            }
+          ],
+          "visibleLockedCells": 8,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       }
     },
     {
       "file": "wide-race-topout-2048x1152.png",
-      "sha256": "91a6f32cdddc36ceb0d03c4cb25dd3b25c8e947b05d1e1f19f1fcbcc6f37c16c",
+      "sha256": "f65fa191a673a4738ef741bbd48f689e777e939e8d9aa12712ee631bd3ee1ed5",
       "metrics": {
         "viewport": {
           "width": 2048,
@@ -635,90 +1331,150 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 60,
+          "width": 58,
           "height": 44
         },
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 102.3125,
+            "width": 98.8125,
             "height": 44
           },
           {
             "text": "暂停",
-            "width": 60,
+            "width": 58,
             "height": 44
           },
           {
             "text": "←左移",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.8125,
+            "height": 57
           },
           {
             "text": "再来一局",
-            "width": 228,
+            "width": 217,
             "height": 44
           },
           {
             "text": "返回模式首页",
-            "width": 228,
+            "width": 217,
             "height": 44
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            20,
+            20,
+            20
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 3,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 794,
-            "y": 111,
+            "x": 662,
+            "y": 109,
             "width": 460,
             "height": 920,
-            "right": 1254,
-            "bottom": 1031
+            "right": 1122,
+            "bottom": 1029
           },
           "stats": {
-            "x": 504,
-            "y": 499.953125,
-            "width": 214,
-            "height": 131,
-            "right": 718,
-            "bottom": 630.953125
+            "x": 1171,
+            "y": 365.625,
+            "width": 215,
+            "height": 127.1875,
+            "right": 1386,
+            "bottom": 492.8125
           },
           "next": {
-            "x": 1330,
-            "y": 493,
-            "width": 154,
-            "height": 116,
-            "right": 1484,
-            "bottom": 609
+            "x": 1171,
+            "y": 595.8125,
+            "width": 215,
+            "height": 112,
+            "right": 1386,
+            "bottom": 707.8125
           },
           "touch": {
-            "x": 684,
-            "y": 1078,
-            "width": 680,
-            "height": 74,
-            "right": 1364,
-            "bottom": 1152
+            "x": 560,
+            "y": 1067,
+            "width": 928,
+            "height": 72,
+            "right": 1488,
+            "bottom": 1139
+          },
+          "canvasHost": {
+            "x": 560,
+            "y": 71,
+            "width": 928,
+            "height": 996,
+            "right": 1488,
+            "bottom": 1067
           }
         },
         "boardRatio": 2,
@@ -774,12 +1530,41 @@
             "...JOO....",
             "...JJJ...."
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 928,
+            "height": 996,
+            "resolution": 1
+          },
+          "board": {
+            "x": 102,
+            "y": 38,
+            "width": 460,
+            "height": 920,
+            "cell": 46
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "activeCells": [],
+          "ghostCells": [],
+          "visibleLockedCells": 47,
+          "presentation": null
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       }
     },
     {
-      "file": "portrait-puzzle-library-390x844-dpr3.png",
-      "sha256": "657ec93aefb0817479426aad910df5bb94da75440487f0ee156eb78dc08929b2",
+      "file": "portrait-home-390x844-dpr3.png",
+      "sha256": "7d34682ba9c12e62171f110c05ce3fbc408900b79b1d1ef261416a6060d19510",
       "metrics": {
         "viewport": {
           "width": 390,
@@ -788,66 +1573,119 @@
         },
         "document": {
           "scrollWidth": 390,
-          "scrollHeight": 1364,
+          "scrollHeight": 844,
           "clientWidth": 390,
           "clientHeight": 844
         },
-        "screen": "puzzle-library",
+        "screen": "mode-home",
         "canvasCount": 0,
         "domCellCount": 0,
         "runtimeQaPresent": false,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 95.796875,
-          "height": 44
+          "width": 169,
+          "height": 236.5
         },
         "buttons": [
           {
-            "text": "← 返回模式首页",
-            "width": 95.796875,
-            "height": 44
+            "text": "马拉松持续消行，刷新分数与等级。开始→",
+            "width": 338,
+            "height": 236.5
           },
           {
-            "text": "01可直接进入青脊回旋目标：清空完整棋盘连续七袋→",
-            "width": 358,
-            "height": 132
+            "text": "竞速速度持续提升｜无终点｜主动退出或堆叠到顶结束开始→",
+            "width": 169,
+            "height": 313.5
           },
           {
-            "text": "02可直接进入深湾折返目标：清空完整棋盘连续七袋→",
-            "width": 358,
-            "height": 132
-          },
-          {
-            "text": "03可直接进入双岸错层目标：清空完整棋盘连续七袋→",
-            "width": 358,
-            "height": 132
-          },
-          {
-            "text": "04可直接进入侧槽逆流目标：清空完整棋盘连续七袋→",
-            "width": 358,
-            "height": 132
-          },
-          {
-            "text": "05可直接进入潮线汇流目标：清空完整棋盘连续七袋→",
-            "width": 358,
-            "height": 132
-          },
-          {
-            "text": "06可直接进入远岸终局目标：清空完整棋盘连续七袋→",
-            "width": 358,
-            "height": 132
-          },
-          {
-            "text": "进入所选关卡",
-            "width": 320,
-            "height": 44
+            "text": "解谜六关全开，连续七袋方块，目标是清空棋盘。选关→",
+            "width": 169,
+            "height": 313.5
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": {
+              "x": 26,
+              "y": 273,
+              "width": 338,
+              "height": 236.5,
+              "right": 364,
+              "bottom": 509.5
+            },
+            "race": {
+              "x": 26,
+              "y": 509.5,
+              "width": 169,
+              "height": 313.5,
+              "right": 195,
+              "bottom": 823
+            },
+            "puzzle": {
+              "x": 195,
+              "y": 509.5,
+              "width": 169,
+              "height": 313.5,
+              "right": 364,
+              "bottom": 823
+            }
+          },
+          "phaseCount": 1,
+          "phase": {
+            "x": 40,
+            "y": 273,
+            "width": 72,
+            "height": 2,
+            "transitionDuration": "0.22s, 0.22s, 0.22s"
+          },
+          "selection": "marathon",
+          "fonts": {
+            "previewKicker": [
+              12
+            ],
+            "previewCopy": [
+              12
+            ],
+            "input": [
+              12
+            ],
+            "intro": [
+              12
+            ],
+            "modeCopy": [
+              12,
+              12,
+              12
+            ]
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": null,
           "stats": null,
           "next": null,
-          "touch": null
+          "touch": null,
+          "canvasHost": null
         },
         "boardRatio": null,
         "overlap": {
@@ -856,12 +1694,216 @@
           "touchBoard": 0
         },
         "state": null,
-        "textState": null
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
+      }
+    },
+    {
+      "file": "portrait-puzzle-library-390x844-dpr3.png",
+      "sha256": "8a1d8b3baa5e89ba522949334792a61566a904fd01f47375245c6ab879c7b14e",
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "dpr": 3
+        },
+        "document": {
+          "scrollWidth": 390,
+          "scrollHeight": 844,
+          "clientWidth": 390,
+          "clientHeight": 844
+        },
+        "screen": "puzzle-library",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
+        "buttonMinimum": {
+          "width": 101.671875,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 返回模式首页",
+            "width": 101.671875,
+            "height": 44
+          },
+          {
+            "text": "01青脊回旋可直接进入›",
+            "width": 364,
+            "height": 60
+          },
+          {
+            "text": "开始这一关",
+            "width": 340,
+            "height": 44
+          },
+          {
+            "text": "02深湾折返可直接进入›",
+            "width": 364,
+            "height": 60
+          },
+          {
+            "text": "03双岸错层可直接进入›",
+            "width": 364,
+            "height": 60
+          },
+          {
+            "text": "04侧槽逆流可直接进入›",
+            "width": 364,
+            "height": 60.000030517578125
+          },
+          {
+            "text": "05潮线汇流可直接进入›",
+            "width": 364,
+            "height": 60
+          },
+          {
+            "text": "06远岸终局可直接进入›",
+            "width": 364,
+            "height": 60
+          }
+        ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [
+            {
+              "text": "01青脊回旋可直接进入›",
+              "x": 13,
+              "y": 164.72091674804688,
+              "width": 364,
+              "height": 60,
+              "right": 377,
+              "bottom": 224.72091674804688,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "02深湾折返可直接进入›",
+              "x": 13,
+              "y": 364.7209167480469,
+              "width": 364,
+              "height": 60,
+              "right": 377,
+              "bottom": 424.7209167480469,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "03双岸错层可直接进入›",
+              "x": 13,
+              "y": 425.7209167480469,
+              "width": 364,
+              "height": 60,
+              "right": 377,
+              "bottom": 485.7209167480469,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "04侧槽逆流可直接进入›",
+              "x": 13,
+              "y": 486.7209167480469,
+              "width": 364,
+              "height": 60.000030517578125,
+              "right": 377,
+              "bottom": 546.720947265625,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "05潮线汇流可直接进入›",
+              "x": 13,
+              "y": 547.720947265625,
+              "width": 364,
+              "height": 60,
+              "right": 377,
+              "bottom": 607.720947265625,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "06远岸终局可直接进入›",
+              "x": 13,
+              "y": 608.720947265625,
+              "width": 364,
+              "height": 60,
+              "right": 377,
+              "bottom": 668.720947265625,
+              "disabled": false,
+              "firstViewport": true
+            }
+          ],
+          "starts": [
+            {
+              "text": "开始这一关",
+              "x": 25,
+              "y": 307.7209167480469,
+              "width": 340,
+              "height": 44,
+              "right": 365,
+              "bottom": 351.7209167480469,
+              "disabled": false,
+              "firstViewport": true
+            }
+          ]
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null,
+          "canvasHost": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
       }
     },
     {
       "file": "portrait-puzzle-three-locks-390x844-dpr3.png",
-      "sha256": "5c7d06dbd929a0bb223a2d61a2122204452b8de85d6d537180fb00d6cb039af8",
+      "sha256": "bc1bc8597b8b04fd1e12e89464acbeb5aeffb36d05108137c9be55edffe3b08f",
       "metrics": {
         "viewport": {
           "width": 390,
@@ -878,7 +1920,13 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 0,
+          "texts": [],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 44,
           "height": 44
@@ -886,7 +1934,7 @@
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 67.796875,
+            "width": 71.671875,
             "height": 44
           },
           {
@@ -896,62 +1944,116 @@
           },
           {
             "text": "←左移",
-            "width": 72.390625,
-            "height": 58
+            "width": 72.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 72.40625,
-            "height": 58
+            "width": 72.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 72.390625,
-            "height": 58
+            "width": 72.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 72.40625,
-            "height": 58
+            "width": 72.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 72.40625,
-            "height": 58
+            "width": 72.8125,
+            "height": 57
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            18,
+            18,
+            18,
+            18
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 40,
-            "y": 146,
-            "width": 310,
-            "height": 620,
-            "right": 350,
-            "bottom": 766
+            "x": 51,
+            "y": 183,
+            "width": 288,
+            "height": 576,
+            "right": 339,
+            "bottom": 759
           },
           "stats": {
-            "x": 20,
-            "y": 85,
-            "width": 252,
-            "height": 55,
-            "right": 272,
-            "bottom": 140
+            "x": 15,
+            "y": 73,
+            "width": 270,
+            "height": 109.375,
+            "right": 285,
+            "bottom": 182.375
           },
           "next": {
-            "x": 293,
-            "y": 84,
-            "width": 59.640625,
-            "height": 54,
-            "right": 352.640625,
-            "bottom": 138
+            "x": 302,
+            "y": 73,
+            "width": 73,
+            "height": 109.375,
+            "right": 375,
+            "bottom": 182.375
           },
           "touch": {
-            "x": 6,
-            "y": 772,
-            "width": 378,
-            "height": 72,
-            "right": 384,
-            "bottom": 844
+            "x": 7,
+            "y": 767,
+            "width": 376,
+            "height": 70,
+            "right": 383,
+            "bottom": 837
+          },
+          "canvasHost": {
+            "x": 7,
+            "y": 61,
+            "width": 376,
+            "height": 706,
+            "right": 383,
+            "bottom": 767
           }
         },
         "boardRatio": 2,
@@ -964,17 +2066,17 @@
           "mode": "puzzle",
           "status": "playing",
           "phase": "active",
-          "puzzleId": "t3r-cascade-06",
+          "puzzleId": "t3r-shaft-01",
           "puzzleCompletion": "active",
           "pieceCount": 3,
           "lines": 0,
           "active": {
-            "type": "S",
+            "type": "T",
             "x": 3,
             "y": 19,
             "rotation": 0
           },
-          "next": "Z"
+          "next": "J"
         },
         "textState": {
           "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
@@ -982,52 +2084,466 @@
           "mode": "puzzle",
           "status": "playing",
           "phase": "active",
-          "puzzleId": "t3r-cascade-06",
+          "puzzleId": "t3r-shaft-01",
           "puzzleCompletion": "active",
-          "score": 46,
+          "score": 0,
           "lines": 0,
           "level": 0,
           "placedPieces": 3,
           "active": {
-            "type": "S",
+            "type": "T",
             "x": 3,
             "y": 19,
             "rotation": 0
           },
-          "next": "Z",
+          "next": "J",
           "visibleBoard": [
             "..........",
             "..........",
             "..........",
             "..........",
-            "..........",
+            "....OO....",
+            "....OO....",
             ".....L....",
             "...LLL....",
-            "....OO....",
-            "...JOO....",
-            "...JJJ....",
-            "JJJJJ...J.",
+            "....SS....",
+            "...SS.....",
+            "JJ.J.JJJ..",
+            "JJJ.J..JJJ",
             ".JJ..JJJJJ",
-            "JJJ.JJ..JJ",
-            "J.JJJJJJJ.",
-            "..JJJJJJJJ",
-            "JJJ.J.JJJJ",
-            "J.JJJJJJJJ",
+            "JJJ.JJJJJ.",
+            "JJJ..JJJJJ",
+            "JJ..JJJJJJ",
+            "JJJJJJJJJ.",
+            "JJJJJJ.JJJ",
             "JJJJJ.JJJJ",
-            "JJJ.JJJJJJ",
-            "JJJJJJJJ.J"
+            ".JJJJJJJJJ"
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 376,
+            "height": 706,
+            "resolution": 2
+          },
+          "board": {
+            "x": 44,
+            "y": 122,
+            "width": 288,
+            "height": 576,
+            "cell": 28.8
+          },
+          "preview": {
+            "x": 295,
+            "y": 12,
+            "width": 73,
+            "height": 109.375
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "J",
+          "activeCells": [
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 4,
+              "y": 22
+            },
+            {
+              "x": 3,
+              "y": 23
+            },
+            {
+              "x": 4,
+              "y": 23
+            },
+            {
+              "x": 5,
+              "y": 23
+            }
+          ],
+          "visibleLockedCells": 92,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 44,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       },
       "checks": {
-        "puzzleId": "t3r-cascade-06",
+        "input": "normal gravity only",
+        "puzzleId": "t3r-shaft-01",
         "pieceCount": 3,
-        "next": "Z"
+        "next": "J",
+        "pausedStateCompared": true
+      }
+    },
+    {
+      "file": "landscape-home-844x390-dpr3.png",
+      "sha256": "639977314d2e5b055f5ab3fc25e74417b0384e1962ade112245a6ed152405f3f",
+      "metrics": {
+        "viewport": {
+          "width": 844,
+          "height": 390,
+          "dpr": 3
+        },
+        "document": {
+          "scrollWidth": 844,
+          "scrollHeight": 390,
+          "clientWidth": 844,
+          "clientHeight": 390
+        },
+        "screen": "mode-home",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
+        "buttonMinimum": {
+          "width": 238.265625,
+          "height": 116
+        },
+        "buttons": [
+          {
+            "text": "马拉松持续消行，刷新分数与等级。开始→",
+            "width": 476.53125,
+            "height": 116
+          },
+          {
+            "text": "竞速速度持续提升｜无终点｜主动退出或堆叠到顶结束开始→",
+            "width": 238.265625,
+            "height": 116
+          },
+          {
+            "text": "解谜六关全开，连续七袋方块，目标是清空棋盘。选关→",
+            "width": 238.265625,
+            "height": 116
+          }
+        ],
+        "home": {
+          "modes": {
+            "marathon": {
+              "x": 331.46875,
+              "y": 129,
+              "width": 476.53125,
+              "height": 116,
+              "right": 808,
+              "bottom": 245
+            },
+            "race": {
+              "x": 331.46875,
+              "y": 245,
+              "width": 238.265625,
+              "height": 116,
+              "right": 569.734375,
+              "bottom": 361
+            },
+            "puzzle": {
+              "x": 569.734375,
+              "y": 245,
+              "width": 238.265625,
+              "height": 116,
+              "right": 808,
+              "bottom": 361
+            }
+          },
+          "phaseCount": 1,
+          "phase": {
+            "x": 355.46875,
+            "y": 129,
+            "width": 72,
+            "height": 2,
+            "transitionDuration": "0.22s, 0.22s, 0.22s"
+          },
+          "selection": "marathon",
+          "fonts": {
+            "previewKicker": [
+              12
+            ],
+            "previewCopy": [
+              12
+            ],
+            "input": [
+              12
+            ],
+            "intro": [
+              13
+            ],
+            "modeCopy": [
+              12,
+              12,
+              12
+            ]
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null,
+          "canvasHost": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
+      }
+    },
+    {
+      "file": "landscape-puzzle-library-844x390-dpr3.png",
+      "sha256": "ce926e10cb1980fa6e6fd574f56e606bf71779cc3ee5294bdd4bb67d700e8869",
+      "metrics": {
+        "viewport": {
+          "width": 844,
+          "height": 390,
+          "dpr": 3
+        },
+        "document": {
+          "scrollWidth": 844,
+          "scrollHeight": 390,
+          "clientWidth": 844,
+          "clientHeight": 390
+        },
+        "screen": "puzzle-library",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
+        "buttonMinimum": {
+          "width": 124.8125,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 返回模式首页",
+            "width": 124.8125,
+            "height": 44
+          },
+          {
+            "text": "01青脊回旋可直接进入›",
+            "width": 531,
+            "height": 45.65625
+          },
+          {
+            "text": "02深湾折返可直接进入›",
+            "width": 531,
+            "height": 45.671875
+          },
+          {
+            "text": "03双岸错层可直接进入›",
+            "width": 531,
+            "height": 45.671875
+          },
+          {
+            "text": "04侧槽逆流可直接进入›",
+            "width": 531,
+            "height": 45.65626525878906
+          },
+          {
+            "text": "05潮线汇流可直接进入›",
+            "width": 531,
+            "height": 45.671875
+          },
+          {
+            "text": "06远岸终局可直接进入›",
+            "width": 531,
+            "height": 46.671875
+          },
+          {
+            "text": "开始这一关",
+            "width": 262,
+            "height": 44
+          }
+        ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [
+            {
+              "text": "01青脊回旋可直接进入›",
+              "x": 11,
+              "y": 102.05961608886719,
+              "width": 531,
+              "height": 45.65625,
+              "right": 542,
+              "bottom": 147.7158660888672,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "02深湾折返可直接进入›",
+              "x": 11,
+              "y": 148.7158660888672,
+              "width": 531,
+              "height": 45.671875,
+              "right": 542,
+              "bottom": 194.3877410888672,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "03双岸错层可直接进入›",
+              "x": 11,
+              "y": 195.3877410888672,
+              "width": 531,
+              "height": 45.671875,
+              "right": 542,
+              "bottom": 241.0596160888672,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "04侧槽逆流可直接进入›",
+              "x": 11,
+              "y": 242.0596160888672,
+              "width": 531,
+              "height": 45.65626525878906,
+              "right": 542,
+              "bottom": 287.71588134765625,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "05潮线汇流可直接进入›",
+              "x": 11,
+              "y": 288.71588134765625,
+              "width": 531,
+              "height": 45.671875,
+              "right": 542,
+              "bottom": 334.38775634765625,
+              "disabled": false,
+              "firstViewport": true
+            },
+            {
+              "text": "06远岸终局可直接进入›",
+              "x": 11,
+              "y": 335.38775634765625,
+              "width": 531,
+              "height": 46.671875,
+              "right": 542,
+              "bottom": 382.05963134765625,
+              "disabled": false,
+              "firstViewport": true
+            }
+          ],
+          "starts": [
+            {
+              "text": "开始这一关",
+              "x": 557,
+              "y": 330.05963134765625,
+              "width": 262,
+              "height": 44,
+              "right": 819,
+              "bottom": 374.05963134765625,
+              "disabled": false,
+              "firstViewport": true
+            }
+          ]
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null,
+          "canvasHost": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
       }
     },
     {
       "file": "landscape-marathon-844x390-dpr3.png",
-      "sha256": "2695208ae2a4bd90f606345c651552275fd46941311a3031091c45785214c0fb",
+      "sha256": "8940c012bb4adc9e0f2f0bc1689ba5bd89ff91b3be529e9aeee48034e4acb62d",
       "metrics": {
         "viewport": {
           "width": 844,
@@ -1044,7 +2560,13 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 0,
+          "texts": [],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 44,
           "height": 44
@@ -1052,7 +2574,7 @@
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 68.546875,
+            "width": 75.671875,
             "height": 44
           },
           {
@@ -1062,62 +2584,114 @@
           },
           {
             "text": "←左移",
-            "width": 120,
-            "height": 48
+            "width": 149.1875,
+            "height": 49
           },
           {
             "text": "→右移",
-            "width": 120,
-            "height": 48
+            "width": 149.203125,
+            "height": 49
           },
           {
             "text": "↻旋转",
-            "width": 120,
-            "height": 48
+            "width": 149.203125,
+            "height": 49
           },
           {
             "text": "↓快速下落",
-            "width": 120,
-            "height": 48
+            "width": 149.203125,
+            "height": 49
           },
           {
             "text": "⇣直接落底",
-            "width": 120,
-            "height": 48
+            "width": 149.1875,
+            "height": 49
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            18,
+            18,
+            18
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 351,
-            "y": 48,
-            "width": 142,
-            "height": 284,
-            "right": 493,
-            "bottom": 332
+            "x": 239.5,
+            "y": 61,
+            "width": 129,
+            "height": 258,
+            "right": 368.5,
+            "bottom": 319
           },
           "stats": {
-            "x": 123,
-            "y": 153,
-            "width": 200,
-            "height": 95,
-            "right": 323,
-            "bottom": 248
+            "x": 399.5,
+            "y": 136.8125,
+            "width": 129,
+            "height": 106.375,
+            "right": 528.5,
+            "bottom": 243.1875
           },
           "next": {
-            "x": 521,
-            "y": 162.5,
-            "width": 130,
-            "height": 76,
-            "right": 651,
-            "bottom": 238.5
+            "x": 545.5,
+            "y": 136.8125,
+            "width": 59,
+            "height": 72,
+            "right": 604.5,
+            "bottom": 208.8125
           },
           "touch": {
-            "x": 112,
-            "y": 336,
-            "width": 620,
-            "height": 54,
-            "right": 732,
-            "bottom": 390
+            "x": 43,
+            "y": 325,
+            "width": 758,
+            "height": 58,
+            "right": 801,
+            "bottom": 383
+          },
+          "canvasHost": {
+            "x": 43,
+            "y": 55,
+            "width": 758,
+            "height": 270,
+            "right": 801,
+            "bottom": 325
           }
         },
         "boardRatio": 2,
@@ -1183,12 +2757,222 @@
             "...J......",
             "...JJJ...."
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 758,
+            "height": 270,
+            "resolution": 2
+          },
+          "board": {
+            "x": 196.5,
+            "y": 6,
+            "width": 129,
+            "height": 258,
+            "cell": 12.9
+          },
+          "preview": {
+            "x": 502.5,
+            "y": 81.8125,
+            "width": 59,
+            "height": 72
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "S",
+          "activeCells": [
+            {
+              "x": 4,
+              "y": 19
+            },
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 4,
+              "y": 37
+            },
+            {
+              "x": 5,
+              "y": 37
+            },
+            {
+              "x": 4,
+              "y": 38
+            },
+            {
+              "x": 5,
+              "y": 38
+            }
+          ],
+          "visibleLockedCells": 4,
+          "presentation": {
+            "x": 4,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 44,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       }
     },
     {
+      "file": "narrow-home-360x800.png",
+      "sha256": "e8861251e0075d134320b0c8353faab17d40b998a64ced79e81c53b8f1ed54ad",
+      "metrics": {
+        "viewport": {
+          "width": 360,
+          "height": 800,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 360,
+          "scrollHeight": 800,
+          "clientWidth": 360,
+          "clientHeight": 800
+        },
+        "screen": "mode-home",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "qaCollectPresent": false,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
+        "buttonMinimum": {
+          "width": 154,
+          "height": 227.03125
+        },
+        "buttons": [
+          {
+            "text": "马拉松持续消行，刷新分数与等级。开始→",
+            "width": 308,
+            "height": 227.03125
+          },
+          {
+            "text": "竞速速度持续提升｜无终点｜主动退出或堆叠到顶结束开始→",
+            "width": 154,
+            "height": 300.96875
+          },
+          {
+            "text": "解谜六关全开，连续七袋方块，目标是清空棋盘。选关→",
+            "width": 154,
+            "height": 300.96875
+          }
+        ],
+        "home": {
+          "modes": {
+            "marathon": {
+              "x": 26,
+              "y": 251,
+              "width": 308,
+              "height": 227.03125,
+              "right": 334,
+              "bottom": 478.03125
+            },
+            "race": {
+              "x": 26,
+              "y": 478.03125,
+              "width": 154,
+              "height": 300.96875,
+              "right": 180,
+              "bottom": 779
+            },
+            "puzzle": {
+              "x": 180,
+              "y": 478.03125,
+              "width": 154,
+              "height": 300.96875,
+              "right": 334,
+              "bottom": 779
+            }
+          },
+          "phaseCount": 1,
+          "phase": {
+            "x": 40,
+            "y": 251,
+            "width": 72,
+            "height": 2,
+            "transitionDuration": "0.22s, 0.22s, 0.22s"
+          },
+          "selection": "marathon",
+          "fonts": {
+            "previewKicker": [
+              12
+            ],
+            "previewCopy": [
+              12
+            ],
+            "input": [
+              12
+            ],
+            "intro": [
+              12
+            ],
+            "modeCopy": [
+              12,
+              12,
+              12
+            ]
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [],
+          "statValues": [],
+          "touchLabels": []
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null,
+          "canvasHost": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null,
+        "renderer": null,
+        "runtimeAssertions": null
+      }
+    },
+    {
       "file": "narrow-puzzle-360x800.png",
-      "sha256": "21da873a04062aa871015ade154636f6aed5cd22f7c7c3173fe51b16dd757a29",
+      "sha256": "2f61976d278106776b886dabe97cbfd16bcce436cde3d714b55fefe4b1b3aeec",
       "metrics": {
         "viewport": {
           "width": 360,
@@ -1205,7 +2989,13 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 0,
+          "texts": [],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 44,
           "height": 44
@@ -1213,7 +3003,7 @@
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 67.796875,
+            "width": 71.671875,
             "height": 44
           },
           {
@@ -1223,62 +3013,116 @@
           },
           {
             "text": "←左移",
-            "width": 66.390625,
-            "height": 58
+            "width": 66.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 66.40625,
-            "height": 58
+            "width": 66.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 66.390625,
-            "height": 58
+            "width": 66.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 66.40625,
-            "height": 58
+            "width": 66.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 66.40625,
-            "height": 58
+            "width": 66.8125,
+            "height": 57
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            18,
+            18,
+            18,
+            18
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 36,
-            "y": 146,
-            "width": 288,
-            "height": 576,
-            "right": 324,
-            "bottom": 722
+            "x": 47,
+            "y": 183,
+            "width": 266,
+            "height": 532,
+            "right": 313,
+            "bottom": 715
           },
           "stats": {
-            "x": 20,
-            "y": 85,
-            "width": 222,
-            "height": 55,
-            "right": 242,
-            "bottom": 140
+            "x": 15,
+            "y": 73,
+            "width": 240,
+            "height": 109.375,
+            "right": 255,
+            "bottom": 182.375
           },
           "next": {
-            "x": 263,
-            "y": 84,
-            "width": 59.640625,
-            "height": 54,
-            "right": 322.640625,
-            "bottom": 138
+            "x": 272,
+            "y": 73,
+            "width": 73,
+            "height": 109.375,
+            "right": 345,
+            "bottom": 182.375
           },
           "touch": {
-            "x": 6,
-            "y": 728,
-            "width": 348,
-            "height": 72,
-            "right": 354,
-            "bottom": 800
+            "x": 7,
+            "y": 723,
+            "width": 346,
+            "height": 70,
+            "right": 353,
+            "bottom": 793
+          },
+          "canvasHost": {
+            "x": 7,
+            "y": 61,
+            "width": 346,
+            "height": 662,
+            "right": 353,
+            "bottom": 723
           }
         },
         "boardRatio": 2,
@@ -1344,12 +3188,85 @@
             "J.JJJJJJJJ",
             "JJJ.JJJJJJ"
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 346,
+            "height": 662,
+            "resolution": 1
+          },
+          "board": {
+            "x": 40,
+            "y": 122,
+            "width": 266,
+            "height": 532,
+            "cell": 26.6
+          },
+          "preview": {
+            "x": 265,
+            "y": 12,
+            "width": 73,
+            "height": 109.375
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "J",
+          "activeCells": [
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 5,
+              "y": 29
+            },
+            {
+              "x": 3,
+              "y": 30
+            },
+            {
+              "x": 4,
+              "y": 30
+            },
+            {
+              "x": 5,
+              "y": 30
+            }
+          ],
+          "visibleLockedCells": 68,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 44,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       }
     },
     {
       "file": "desktop-puzzle-success-1440x900.png",
-      "sha256": "5e4b7699b375c2c9ee0abd3cdfb50134f1cb0200d138598abd151c915a48a127",
+      "sha256": "206868392561db630ba8aa43fae94f4095d1bfa13322a4ead929d2ccca6afb9e",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -1366,90 +3283,152 @@
         "canvasCount": 1,
         "domCellCount": 0,
         "runtimeQaPresent": true,
-        "renderedTetrisBrand": false,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
         "buttonMinimum": {
-          "width": 60,
+          "width": 58,
           "height": 44
         },
         "buttons": [
           {
             "text": "← 模式首页",
-            "width": 102.3125,
+            "width": 98.8125,
             "height": 44
           },
           {
             "text": "暂停",
-            "width": 60,
+            "width": 58,
             "height": 44
           },
           {
             "text": "←左移",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "→右移",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↻旋转",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "↓快速下落",
-            "width": 131.203125,
-            "height": 54
+            "width": 182.796875,
+            "height": 57
           },
           {
             "text": "⇣直接落底",
-            "width": 131.1875,
-            "height": 54
+            "width": 182.8125,
+            "height": 57
           },
           {
             "text": "再来一局",
-            "width": 228,
+            "width": 217,
             "height": 44
           },
           {
             "text": "返回关卡库",
-            "width": 228,
+            "width": 217,
             "height": 44
           }
         ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            20,
+            20,
+            20,
+            20
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ]
+        },
+        "motion": {
+          "animatedCount": 3,
+          "infiniteCount": 0
+        },
         "bounds": {
           "board": {
-            "x": 534.5,
-            "y": 74,
-            "width": 371,
-            "height": 742,
-            "right": 905.5,
-            "bottom": 816
+            "x": 409,
+            "y": 85,
+            "width": 358,
+            "height": 716,
+            "right": 767,
+            "bottom": 801
           },
           "stats": {
-            "x": 244.90625,
-            "y": 341.453125,
-            "width": 214,
-            "height": 196,
-            "right": 458.90625,
-            "bottom": 537.453125
+            "x": 816,
+            "y": 208.078125,
+            "width": 215,
+            "height": 190.28125,
+            "right": 1031,
+            "bottom": 398.359375
           },
           "next": {
-            "x": 981.09375,
-            "y": 367,
-            "width": 154,
-            "height": 116,
-            "right": 1135.09375,
-            "bottom": 483
+            "x": 816,
+            "y": 501.359375,
+            "width": 215,
+            "height": 112,
+            "right": 1031,
+            "bottom": 613.359375
           },
           "touch": {
-            "x": 380,
-            "y": 826,
-            "width": 680,
-            "height": 74,
-            "right": 1060,
-            "bottom": 900
+            "x": 256,
+            "y": 815,
+            "width": 928,
+            "height": 72,
+            "right": 1184,
+            "bottom": 887
+          },
+          "canvasHost": {
+            "x": 256,
+            "y": 71,
+            "width": 928,
+            "height": 744,
+            "right": 1184,
+            "bottom": 815
           }
         },
         "boardRatio": 2,
@@ -1505,6 +3484,35 @@
             "..........",
             ".........."
           ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 928,
+            "height": 744,
+            "resolution": 1
+          },
+          "board": {
+            "x": 153,
+            "y": 14,
+            "width": 358,
+            "height": 716,
+            "cell": 35.8
+          },
+          "preview": null,
+          "previewLayerVisible": false,
+          "previewPiece": null,
+          "activeCells": [],
+          "ghostCells": [],
+          "visibleLockedCells": 0,
+          "presentation": null
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
         }
       },
       "checks": {
@@ -1515,14 +3523,36 @@
     }
   ],
   "checks": {
+    "homePhaseSeam": {
+      "count": 1,
+      "idleWidth": 72,
+      "focusWidth": 168,
+      "raceY": 524,
+      "puzzleX": 985.984375
+    },
     "restartVisibleUi": true,
-    "homeGameHomeTeardown": true,
+    "homeGameHomeTeardown": {
+      "canvasCount": 0,
+      "runtimeQaPresent": false
+    },
+    "homeGameHomeReentryInput": {
+      "pieceCount": 1
+    },
+    "detachedQaSnapshot": {
+      "canonicalDetached": true,
+      "collectedStateDetached": true,
+      "rendererDetached": true
+    },
     "liveReducedMotionPreservesState": true,
     "raceTopOutOnlyTerminal": {
       "pieceCount": 12,
       "lines": 0
     },
-    "puzzleThreeVisibleLocks": true,
+    "puzzleThreeNormalGravityLocks": {
+      "puzzleId": "t3r-shaft-01",
+      "pieceCount": 3,
+      "status": "playing"
+    },
     "puzzleVisibleKeyboardSuccess": {
       "levelId": "t3r-shaft-01",
       "routeId": "route-1",
