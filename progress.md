@@ -44,3 +44,14 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
   `__TETRIS_D4_QA__.collect()` exposes the runtime state object by reference. The
   bounded `TETRIS-T5-FINAL-QA-FIX-001` slice must return a detached snapshot, prove
   nested mutation isolation, and refresh final-SHA browser evidence before integration.
+
+## 2026-07-17 — first T5 frontend rejected
+
+- User rejected both the `青流方阵` name and the complete Aqua Blueprint page;
+  candidate `b480e7d` and evidence child `9b7e552` remain local rejected history.
+- The standalone snapshot-only fix was stopped before it changed any file. Its
+  state-clone regression requirement moves into `TETRIS-T5-FRONTEND-REDESIGN-002`.
+- Current frontend authority is plain-text `Tetris`, a clean light cyan/light-blue
+  game interface, compact layered mode entrances, a non-overlapping Puzzle selector,
+  one coherent game surface, and rounded ceramic cells. No commercial logo, font,
+  product layout, or trade dress may be copied.

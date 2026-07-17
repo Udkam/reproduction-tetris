@@ -43,7 +43,9 @@ collision instead of merging or overwriting the other worker's dirty state.
 
 - This repository contains clean-room studies of game mechanics.
 - Do not copy commercial logos, music, fonts, sprites, level layouts, text, or trade dress.
-- The Tetris branch uses an original title and visual system while reproducing the familiar falling-block rules.
+- The page-facing title is the plain-text word `Tetris` by direct user instruction.
+  Do not imitate a commercial logo, multicolor wordmark, proprietary font, interface,
+  level layout, or trade dress; the surrounding visual system remains original.
 - Core simulation is deterministic and renderer-independent. PixiJS, React, DOM, audio, storage, and browser timing must not enter `src/game/core`.
 - React owns page composition and lifecycle. PixiJS owns the board, pieces, particles, and frame rendering. Do not create a DOM cell grid.
 

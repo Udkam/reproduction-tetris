@@ -1,4 +1,4 @@
-# 青流方阵 — T5 Aqua Blueprint Production Contract
+# Tetris — T5 Production Contract
 
 ## Status and authority
 
@@ -16,6 +16,16 @@ first T5 finite-queue draft:
   clearing. T5 board layouts, names, copy, visual language, interaction structure,
   code, fixtures, and assets are original clean-room work;
 - the reported one-piece Puzzle stall is a release blocker.
+
+The user's 2026-07-17 visual review supersedes the first T5 frontend candidate:
+
+- the player-facing name is the plain-text word `Tetris`;
+- `青流方阵`, its custom mark, and the complete Aqua Blueprint presentation are
+  rejected rather than eligible for incremental polish;
+- the replacement must remain light cyan/light-blue and high contrast, but must read as
+  a direct game interface rather than a marketing page or engineering console;
+- plain-text naming does not authorize copying a commercial logo, multicolor wordmark,
+  proprietary font, existing product layout, or other trade dress.
 
 The deterministic architecture integrated at
 `4c8582854088695ebac90467842dc2bc0cef3a20` remains the rule baseline. The rejected
@@ -119,50 +129,58 @@ otherwise follow ordinary Marathon play.
   and use public `dispatch` only. No verifier, runtime QA hook, or browser setup may
   construct, replace, or mutate canonical state.
 
-## T5 visual direction — 青流蓝图 / Aqua Blueprint
+## T5 revised visual direction
 
-T5 is a full visual replacement. The signature gesture is a 45-degree clipped corner
-paired with fine blueprint ticks and one offset cyan route line. Warm paper, ochre
-shelf feet, mineral shadows, inset rectangles, and the current block material language
-are removed.
+The accepted visual target is a clean, light game interface. It removes the rejected
+blueprint/CAD vocabulary completely instead of recoloring its existing skeleton. The
+only player-facing brand is `Tetris` set as ordinary text in the product type system.
 
-- The page-facing product name is `青流方阵`. `Tetris` is removed from visible
-  headings, live-region copy, and canvas labels.
-- Per the user's later direction, `index.html` is outside the T5 redesign slice and
-  remains unchanged as the required Vite entry document.
-- Internal filenames and clean-room rule terminology may remain technical; they are not
-  player-facing brand or borrowed trade dress.
+- Remove the custom brand glyph, `青流方阵`, `AQUA ROUTE`, coordinates, route lines,
+  blueprint grids and ticks, diagonal page bands, clipped corners, decorative mode
+  numbers, all-caps engineering labels, and the oversized marketing slogan.
+- Do not imitate an official Tetris logo, multicolor wordmark, commercial font, or
+  existing product composition.
+- Per the user's earlier direction, `index.html` remains unchanged as the required Vite
+  entry document; it already provides the browser HTML shell and `Tetris` document title.
+- The page uses one restrained visual gesture: three wide rounded mode bands offset by
+  small steps on desktop. No second decorative metaphor competes with it.
 
 ### Palette
 
 | Role | Token |
 | --- | --- |
-| Page | `#F4FCFD` |
+| Page | `#F6FCFF` |
 | Main surface | `#FFFFFF` |
-| Cyan surface | `#DFF7F8` |
-| Blue surface | `#E8F1FF` |
-| Board well | `#EAF8FC` |
-| Grid / edge | `#BCDDE6` / `#8FC9D5` |
-| Primary / secondary text | `#102F3B` / `#486775` |
-| Cyan / blue action | `#0B7385` / `#2F65AE` |
-| Focus | `#005FCC` |
+| Cyan surface | `#E5F8FA` |
+| Blue surface | `#EDF4FF` |
+| Board well | `#EFF9FD` |
+| Grid / edge | `#D4EAF1` / `#9CC9D8` |
+| Primary / secondary text | `#0C2B3A` / `#526E7A` |
+| Cyan / blue action | `#087F8C` / `#2866C7` |
+| Focus | `#004FCE` |
 | Success / failure | `#176B54` / `#A33A55` |
 
 Light colors are surfaces, not text colors. Essential text, borders, focus, and state
 labels must meet WCAG AA contrast.
 
-### Piece language
+### Typography, surfaces, and piece language
 
-- Every mino is a single cool-color plane with a shared deep-cyan outline and one
-  consistent clipped corner or small radius.
-- Remove detached shadows, inner square panels, mineral insets, and highlight bars.
-- The seven pieces use distinguishable cyan, sky, blue, indigo, violet, mint, and
-  blue-grey values while retaining the shared outline.
-- Active cells use a stronger outline; locked cells use the standard outline.
-- Ghost cells use corner brackets only, not translucent filled blocks.
-- Board and Next reuse the same cell drawing primitive.
-- Line clear uses local contraction/fade. Reduced motion switches immediately without
-  trail, pulse, or positional interpolation.
+- Use the system sans stack for Chinese and normal product copy. A display sans may be
+  used for the plain-text `Tetris` name; monospace is reserved for numeric values.
+- The background contains at most two broad low-opacity cyan/blue light fields. It has
+  no repeating grid, measurement marks, grain, diagonal stripe, or route diagram.
+- Primary surfaces use 20–26 px radii, fine cool borders, and restrained soft depth.
+  Cards, buttons, action sheets, the board, and cells have no clipped corners.
+- Every mino is a rounded “soft ceramic tile”: a clearly colored face, a subtle
+  same-hue lower edge, and one restrained translucent top highlight. It has no dark
+  universal outline, cut corner, detached shadow, inner square panel, or mineral inset.
+- The seven pieces remain distinguishable through hue and value, not seven near-equal
+  blue stickers. The overall page remains cyan/light-blue even when pieces use bounded
+  mint, lavender, coral, or amber accents for gameplay legibility.
+- Active cells gain a light rim or restrained glow; locked cells do not. Ghost cells
+  use a complete fine rounded outline with transparent fill, never four corner brackets.
+- Board and Next reuse the same cell drawing primitive. Line clear remains local and
+  reduced motion removes positional, pulse, and glow animation immediately.
 
 ## Information architecture
 
@@ -171,8 +189,13 @@ labels must meet WCAG AA contrast.
 - The webpage opens on a dedicated mode home with no gameplay board.
 - The mode home and Puzzle library do not mount a runtime or canvas. Entering a run
   creates one runtime/canvas; returning home destroys both before showing the home.
-- Marathon, Race, and Puzzle are three separate, fully clickable entries with complete
-  Chinese names, concise factual rules, and an explicit enter action.
+- A compact `Tetris` header and short `选择模式` introduction lead directly to Marathon,
+  Race, and Puzzle. There is no large poetic or marketing hero.
+- Desktop places the three fully clickable entrances as 96–112 px rounded horizontal
+  bands with small 0 / 24 / 48 px offsets. Mobile reduces those offsets so all three
+  entrances fit comfortably in the first 390 × 844 viewport.
+- Each entrance contains only its Chinese mode name, concise factual rules, and an
+  explicit action. Decorative `01 / 02 / 03` numbering is forbidden.
 - Race copy is `速度持续提升｜无终点｜主动退出或堆叠到顶结束`.
 - Mode selection is not a small rail beside the board.
 
@@ -181,14 +204,24 @@ labels must meet WCAG AA contrast.
 - Every level entry is enabled and shows name, board-clearing goal, available-piece
   stream description, and optional completion status.
 - It does not show numeric difficulty or lock state.
+- Desktop uses a compact six-row selector beside one selected-level detail panel and
+  one primary start action. Mobile expands the selected row in place with its details
+  and start action.
+- No sticky or fixed selection panel may cover a level row. The title is a compact
+  `解谜关卡`, not a multi-line marketing statement.
 - Starting a level must keep the visible selection, canonical `puzzleId`, level seed,
   active piece, and Next preview aligned.
 
 ### Game screen
 
 - Top actions provide mode-home exit, current mode, and pause.
-- Desktop uses a clear information / board / Next-status composition.
+- Desktop uses one coherent rounded game surface: the board is the dominant left
+  element and one 200–240 px right rail contains Next, statistics, the factual mode
+  rule, and keyboard help. It does not return to two detached side cards.
 - Mobile uses a compact information band above the board and a five-action deck below.
+- The visible focus ring maps to the board frame rather than outlining the full-page
+  Pixi canvas. The canvas may still cover the complete arena so it can render both the
+  board and Next against DOM geometry anchors.
 - Pause, exit confirmation, success, and failure use accessible light action sheets
   with buttons at least 44 × 44 CSS px.
 - Race shows score, lines, and speed tier. Puzzle shows level name, cleared lines,
@@ -208,6 +241,8 @@ labels must meet WCAG AA contrast.
   current canonical game state.
 - Required viewports: 1440 × 900, 2048 × 1152, 390 × 844 DPR3, 844 × 390 DPR3, and
   360 × 800.
+- Mobile visible body copy is at least 12 px, statistics at least 14 px, and touch
+  labels at least 11 px.
 - No horizontal overflow, clipped essential text, overlapping modules, or accidental
   gameplay page scroll.
 
@@ -218,7 +253,7 @@ labels must meet WCAG AA contrast.
    migration, leaderboard semantics, and focused tests. It does not edit frontend.
 3. Independent read-only core QA verifies the candidate SHA.
 4. T5 Frontend owns mode home, Puzzle library, game composition, completion display,
-   Aqua Blueprint CSS, Pixi rendering, and presentation tests.
+   the revised clean light CSS, Pixi rendering, and presentation tests.
 5. Coordinator runs one combined final typecheck, full suite, build, and browser pass
    after the last product change.
 6. Independent read-only final QA verifies the exact combined candidate before
@@ -240,6 +275,13 @@ only under `docs/workstreams/tetris-t5-*` and `docs/qa/evidence/tetris-t5`.
 - first-84-piece seven-bag integrity for every level seed with no queue exhaustion or
   budget terminal;
 - UI-driven evidence selects modes and levels through visible controls;
+- plain-text `Tetris` is the only visible brand; `青流方阵`, `AQUA ROUTE`, blueprint
+  coordinates, technical column labels, grids, ticks, clipped corners, and route
+  decoration are absent from the live page;
+- all three mode entries are visible without scroll at 1440 × 900 and 390 × 844;
+- the mobile Puzzle selector has no overlay covering any level content;
+- rounded ceramic minos, full rounded-outline ghost cells, and Next share one drawing
+  primitive; the rejected cut-corner and bracket-ghost styles are absent;
 - at least one Puzzle scenario after three consecutive locks, with visible/canonical
   level, active piece, placed-piece count, and Next preview aligned;
 - mode-home → game → mode-home → game proof with no canvas/ticker/listener leaks;

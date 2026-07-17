@@ -1,4 +1,4 @@
-# Current Task — T5 Rules Repair and Aqua Blueprint Rebuild
+# Current Task — T5 Rules Repair and Tetris Frontend Redesign
 
 Branch: `codex/tetris-recovery`
 
@@ -11,12 +11,12 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — final QA rejected one DEV snapshot reference leak; bounded fix active**
+Status: **active — user rejected the first T5 frontend; full replacement slice active**
 
 ## User-visible problems to resolve
 
-1. Replace the current frontend and block treatment with a new light cyan/light-blue,
-   high-contrast design.
+1. Replace the rejected Aqua Blueprint frontend and block treatment with a clean light
+   cyan/light-blue, high-contrast game interface named only `Tetris`.
 2. Add a dedicated entry page with separate Marathon, Race, and Puzzle entrances.
 3. Make Race endless accelerating normal play. It has no line target and stops only
    through player exit or top-out.
@@ -25,6 +25,9 @@ Status: **active — final QA rejected one DEV snapshot reference leak; bounded 
    every level unlocked, and at least two proven successful routes per level.
 5. Keep all level layouts, copy, frontend composition, block language, and assets
    original. Similar games are abstract mechanics research only.
+6. Remove the current engineering-dashboard vocabulary, oversized slogan, custom
+   brand glyph, `青流方阵` name, grid/coordinate/route decoration, clipped corners,
+   oversized level cards, and bracket-style ghost cells.
 
 ## Baseline policy
 
@@ -33,6 +36,9 @@ Status: **active — final QA rejected one DEV snapshot reference leak; bounded 
 - Migrate the valid 44 px and real-UI QA requirements into T5, not the old T4 styling.
 - Do not modify T3/T4 screenshots, manifests, fixtures, capture scripts, or logs.
 - New fixtures, logs, and browser evidence use T5-specific paths.
+- Frontend candidate `b480e7db93aa7b6f2b2a1feb160985f4aa42e493` and its evidence
+  child `9b7e552e83426d5578d86010571a4cbce83616ac` are rejected visual history.
+  They must not be pushed or described as the current frontend baseline.
 
 ## Slice A — T5 Core
 
@@ -98,7 +104,11 @@ Task ID: `TETRIS-T5-FRONTEND-001`
 Base SHA: `630fb30e115db9d0b4e6328e679987f9e8608939`
 
 Core QA result: **ACCEPT** — focused 22 files / 140 tests, typecheck, and diff check
-passed independently. This slice is now unblocked.
+passed independently.
+
+Frontend result: **REJECTED BY USER** at candidate `b480e7d`; coordinator evidence
+child `9b7e552` is obsolete. The path list and acceptance bullets below are retained as
+historical slice evidence only and do not authorize further Aqua Blueprint work.
 
 The frontend writer may change only:
 
@@ -115,25 +125,10 @@ The frontend writer may change only:
 The frontend writer must not change core rules, Puzzle definitions/fixtures, build
 configuration, dependencies, T3/T4 evidence, changelog, or coordinator docs.
 
-Frontend acceptance:
-
-- original page-facing brand `青流方阵` in heading, live copy, and canvas label; no
-  page-facing `Tetris` brand remains; `index.html` stays unchanged by user direction;
-- browser HTML delivery remains unchanged; no native wrapper, PWA install surface, or
-  packaged-application work is authorized;
-- dedicated three-entry mode home with no mounted runtime or canvas;
-- entering gameplay creates exactly one runtime/canvas and returning home destroys it;
-- all Puzzle levels enabled, no numeric difficulty UI, completion only informational;
-- Puzzle UI contains no piece budget or remaining-piece counter; it shows ordinary
-  gameplay stats, goal, placed-piece count, and Next preview;
-- Race copy/statistics contain no 20-line goal or remaining-line value;
-- Aqua Blueprint tokens and completely new cell renderer;
-- all visible buttons at least 44 × 44 CSS px and visible focus treatment;
-- accessible pause/exit/result action sheets;
-- live `prefers-reduced-motion` changes call `GameRuntime.setReducedMotion` without
-  rebuilding the run or changing canonical state;
-- one canvas per gameplay screen and no lifecycle leaks;
-- targeted component/presentation checks before coordinator final gates.
+The rejected slice's detailed visual acceptance is archived in its workstream log.
+Only its verified lifecycle, accessibility, progress, and mode-rule behavior may be
+retained; its brand, page composition, CSS language, and cell renderer are forbidden
+as the new visual baseline.
 
 ## Coordinator final integration
 
@@ -165,6 +160,9 @@ Independent final QA result on the base: **REJECT** with one blocker. The DEV-on
 the returned reference. All other audited areas passed, including the visual review,
 evidence checksums, `index.html` boundary, typecheck, and targeted tests.
 
+Status: **superseded as a standalone slice**. The exact state-isolation requirement is
+carried into Slice D so no work continues against the rejected visual candidate.
+
 The frontend fix writer may change only:
 
 - `src/App.tsx`;
@@ -182,3 +180,61 @@ After the fix candidate is independently accepted, the coordinator regenerates t
 T5 browser evidence against the exact new product SHA, reruns the final gates required
 after the last source change, and routes the exact evidence child to independent QA
 before changelog integration or push.
+
+## Slice D — clean light `Tetris` frontend replacement
+
+Task ID: `TETRIS-T5-FRONTEND-REDESIGN-002`
+
+Base SHA: coordinator documentation child of
+`1ec551ef902bd331b411cee95e35d2f8e879eb51`.
+
+The frontend writer may change only:
+
+- `src/App.tsx` and `src/styles.css`;
+- `src/game/render/theme.ts` and `src/game/render/TetrisRenderer.ts`;
+- `src/ui/ActionSheet.tsx`;
+- new or directly related frontend/renderer tests under `src/**`;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`.
+
+The writer must not change `index.html`, dependencies, Vite/build configuration,
+`src/game/core/**`, Puzzle definitions/references, `GameRuntime`, input/audio/storage
+semantics, `puzzleProgress.ts`, `presentation.ts`, coordinator documents, changelog,
+historical T3/T4 evidence, or committed T5 browser evidence.
+
+Implementation requirements:
+
+- preserve the existing conditional `home → puzzle-library → game` lifecycle, the
+  `GameSession` key, async mount disposal guard, media-query cleanup, pointer capture,
+  and exact one-runtime/one-canvas teardown behavior;
+- use plain text `Tetris` for visible branding, the canvas label, and startup live
+  message; remove `青流方阵`, its glyph, English brand subtitle, blueprint labels,
+  coordinates, route decoration, page grid, diagonal band, ticks, cut corners, and
+  giant marketing copy;
+- home: compact introduction plus three 96–112 px rounded horizontal mode bands,
+  lightly stepped on desktop and all visible without scroll at 390 × 844;
+- Puzzle: compact six-row selector plus selected details; desktop uses list/detail
+  columns, mobile expands the selected row in place; no sticky overlay may cover a row;
+- game: one coherent rounded surface with a dominant board and one right information
+  rail on desktop, compact information above the board on mobile, and controls aligned
+  with that surface; retain existing test IDs and DOM geometry anchors;
+- renderer: rounded ceramic cells with same-hue lower edge and restrained top
+  highlight; active/locked/ghost remain distinguishable; ghost is a complete rounded
+  outline; Board and Next reuse the primitive; remove cut corners, universal thick
+  outline, bracket ghost, blueprint ticks, and Pixi `NEXT` text duplication;
+- DEV `__TETRIS_D4_QA__.collect().state` is a detached structured clone. Direct tests
+  mutate snapshot `status`, `active.x`, `queue[0]`, and a nested board cell and prove
+  canonical runtime state and nested identities remain isolated;
+- visible mobile body copy is at least 12 px, statistics at least 14 px, touch labels
+  at least 11 px; every button remains at least 44 × 44 CSS px;
+- retain reduced-motion, accessible action-sheet, keyboard/touch, mode rule, all-level
+  availability, continuous Puzzle stream, and endless Race behavior unchanged.
+
+Writer validation order: targeted frontend tests while editing, then after the final
+source change one typecheck, one complete Vitest suite, one production build, and a
+writer browser smoke at desktop plus 390 × 844 and 360 × 800. Record exact paths,
+commands, screenshots inspected, and candidate SHA; do not push.
+
+After the writer candidate, independent read-only visual/functional QA must accept the
+exact SHA before the coordinator replaces all obsolete T5 browser evidence across the
+five required viewports. Only the final evidence child may proceed to changelog and
+push.
