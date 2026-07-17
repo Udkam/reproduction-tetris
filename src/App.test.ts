@@ -3,8 +3,9 @@
 import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { describe, expect, it, vi } from 'vitest';
+import styles from './styles.css?raw';
 import { createInitialState, type PuzzleId } from './game/core';
-import { cloneQaState, ModeHome, PuzzleLibrary, puzzleSilhouettePaths } from './App';
+import { cloneQaState, ModeHome, PuzzleLibrary, puzzleSilhouettePaths, RunStats } from './App';
 import { CAMPAIGN_LEVELS, defaultPuzzleProgress } from './puzzleProgress';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -50,6 +51,30 @@ describe('DEV QA state snapshot isolation', () => {
 });
 
 describe('T5 frontend campaign binding', () => {
+  it('binds every statistic to an explicit role without positional CSS inference', () => {
+    const cases = [
+      { state: createInitialState(0x51a1f00d, 'marathon'), roles: ['score', 'lines', 'classic-level'] },
+      { state: createInitialState(0x51a1f00d, 'race'), roles: ['score', 'lines', 'race-speed'] },
+      {
+        state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
+        roles: ['puzzle-level', 'placed', 'lines', 'objective'],
+      },
+    ];
+
+    for (const { state, roles } of cases) {
+      const view = render(createElement(RunStats, { state }));
+      const articles = [...view.container.querySelectorAll<HTMLElement>('[data-testid="stats"] article')];
+      expect(articles.map((article) => article.dataset.statRole)).toEqual(roles);
+      expect(new Set(articles.map((article) => article.dataset.statRole)).size).toBe(roles.length);
+      view.unmount();
+    }
+
+    const statisticSelectors = [...styles.matchAll(/([^{}]*\.run-stats[^{}]*)\{/g)]
+      .map((match) => match[1]!.trim())
+      .join('\n');
+    expect(statisticSelectors).not.toMatch(/nth-child|nth-of-type|\bodd\b|\beven\b/);
+  });
+
   it('shows 经典 while retaining the internal marathon entry selector', () => {
     const onEnter = vi.fn();
     const view = render(createElement(ModeHome, { onEnter }));

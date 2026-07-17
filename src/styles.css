@@ -728,7 +728,7 @@ p {
   border-block: 1px solid var(--line);
 }
 
-.run-stats article {
+.run-stats [data-stat-role] {
   min-width: 0;
   min-height: 62px;
   padding: 9px 10px;
@@ -736,22 +736,26 @@ p {
   border: 0;
 }
 
-.run-stats:not(.run-stats--puzzle) article:nth-child(1) {
+.run-stats:not(.run-stats--puzzle) [data-stat-role="score"] {
   border-right: 1px solid var(--line);
-}
-
-.run-stats:not(.run-stats--puzzle) article:nth-child(-n + 2),
-.run-stats--puzzle article:nth-child(-n + 3) {
   border-bottom: 1px solid var(--line);
 }
 
-.run-stats:not(.run-stats--puzzle) article:nth-child(3),
-.run-stats--puzzle article:nth-child(1),
-.run-stats--puzzle article:nth-child(4) {
+.run-stats:not(.run-stats--puzzle) [data-stat-role="lines"],
+.run-stats--puzzle [data-stat-role="puzzle-level"],
+.run-stats--puzzle [data-stat-role="placed"],
+.run-stats--puzzle [data-stat-role="lines"] {
+  border-bottom: 1px solid var(--line);
+}
+
+.run-stats:not(.run-stats--puzzle) [data-stat-role="classic-level"],
+.run-stats:not(.run-stats--puzzle) [data-stat-role="race-speed"],
+.run-stats--puzzle [data-stat-role="puzzle-level"],
+.run-stats--puzzle [data-stat-role="objective"] {
   grid-column: 1 / -1;
 }
 
-.run-stats--puzzle article:nth-child(2) {
+.run-stats--puzzle [data-stat-role="placed"] {
   border-right: 1px solid var(--line);
 }
 
@@ -1285,8 +1289,7 @@ p {
     border-radius: 0;
   }
 
-  .run-stats article,
-  .run-stats__wide {
+  .run-stats [data-stat-role] {
     display: grid;
     grid-column: auto !important;
     align-content: center;
@@ -1295,7 +1298,8 @@ p {
     border: 0 !important;
   }
 
-  .run-stats:not(.run-stats--puzzle) article:nth-child(-n + 2) {
+  .run-stats:not(.run-stats--puzzle) [data-stat-role="score"],
+  .run-stats:not(.run-stats--puzzle) [data-stat-role="lines"] {
     border-right: 1px solid var(--line) !important;
   }
 
@@ -1304,11 +1308,13 @@ p {
     grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 
-  .run-stats--puzzle article:nth-child(odd) {
+  .run-stats--puzzle [data-stat-role="puzzle-level"],
+  .run-stats--puzzle [data-stat-role="lines"] {
     border-right: 1px solid var(--line) !important;
   }
 
-  .run-stats--puzzle article:nth-child(-n + 2) {
+  .run-stats--puzzle [data-stat-role="puzzle-level"],
+  .run-stats--puzzle [data-stat-role="placed"] {
     border-bottom: 1px solid var(--line) !important;
   }
 
@@ -1580,7 +1586,7 @@ p {
   }
 
   .mode-gate {
-    grid-template-columns: 46px minmax(0, 1fr) 38px;
+    grid-template-columns: 46px minmax(0, 1fr) auto;
     gap: 10px;
     padding: 10px 14px;
   }

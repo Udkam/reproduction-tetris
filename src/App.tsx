@@ -305,13 +305,13 @@ function TouchButton({ action, label, glyph, runtime }: TouchButtonProps) {
   );
 }
 
-function RunStats({ state }: { state: GameState }) {
+export function RunStats({ state }: { state: GameState }) {
   if (state.mode === 'race') {
     return (
       <section className="run-stats" data-testid="stats" aria-label="竞速模式数据">
-        <article><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-        <article><span>消行</span><strong>{state.lines}</strong></article>
-        <article><span>速度档</span><strong>{raceSpeedTier(state.pieceCount, state.lines) + 1}</strong></article>
+        <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
+        <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="race-speed"><span>速度档</span><strong>{raceSpeedTier(state.pieceCount, state.lines) + 1}</strong></article>
       </section>
     );
   }
@@ -319,18 +319,18 @@ function RunStats({ state }: { state: GameState }) {
     const level = campaignLevel(state.puzzleId);
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
-        <article className="run-stats__wide"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
-        <article><span>已放置</span><strong>{state.pieceCount}</strong></article>
-        <article><span>消行</span><strong>{state.lines}</strong></article>
-        <article className="run-stats__wide"><span>目标</span><strong>清空棋盘</strong></article>
+        <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
+        <article data-stat-role="placed"><span>已放置</span><strong>{state.pieceCount}</strong></article>
+        <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="objective"><span>目标</span><strong>清空棋盘</strong></article>
       </section>
     );
   }
   return (
     <section className="run-stats" data-testid="stats" aria-label="经典模式数据">
-      <article><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-      <article><span>消行</span><strong>{state.lines}</strong></article>
-      <article><span>等级</span><strong>{state.level}</strong></article>
+      <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
+      <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
+      <article data-stat-role="classic-level"><span>等级</span><strong>{state.level}</strong></article>
     </section>
   );
 }
