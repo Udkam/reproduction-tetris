@@ -58,17 +58,20 @@ describe('T5 frontend campaign binding', () => {
     expect(classic).not.toBeNull();
     expect(classic?.textContent).toContain('经典');
     expect(view.container.textContent).not.toContain('马拉松');
-    expect(view.container.querySelector('[aria-label="经典方块示意"]')).not.toBeNull();
+    expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
+    expect(view.container.textContent).toContain('分数 · 消行 · 等级');
+    expect(view.container.textContent).toContain('速度递增 · 无终点');
+    expect(view.container.textContent).toContain('15 关残局 · 清空棋盘');
+    expect(view.container.querySelector('.mode-preview')).toBeNull();
+
+    for (const banned of ['当前选择', '三种玩法', '随时开始，也可随时退出。', '键盘与触控均可操作']) {
+      expect(view.container.textContent).not.toContain(banned);
+    }
 
     for (const selector of ['enter-marathon', 'enter-race', 'enter-puzzle']) {
       const entry = view.container.querySelector<HTMLButtonElement>(`[data-testid="${selector}"]`);
       act(() => entry?.focus());
-      const materialPaths = [...view.container.querySelectorAll<SVGPathElement>('.mode-signal path[data-piece-type]')];
-      const pieceTypes = materialPaths.map((path) => path.dataset.pieceType);
-      expect(materialPaths).toHaveLength(2);
-      expect(new Set(pieceTypes).size).toBe(materialPaths.length);
-      expect(materialPaths.every((path) => path.getAttribute('fill')?.startsWith('url(#mode-signal-'))).toBe(true);
-      expect(materialPaths.every((path) => /^#[0-9a-f]{6}$/.test(path.getAttribute('stroke') ?? ''))).toBe(true);
+      expect(entry?.getAttribute('aria-pressed')).toBe('true');
     }
 
     act(() => classic?.click());
@@ -95,7 +98,11 @@ describe('T5 frontend campaign binding', () => {
     expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
     expect(rows.every((row) => !row.disabled && row.getAttribute('aria-pressed') !== null)).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('15 个可用解谜关卡');
-    expect(view.container.textContent).toContain('15 关全部开放');
+    expect(rows[0]?.textContent).toBe(`01${CAMPAIGN_LEVELS[0]!.name}`);
+    for (const banned of ['清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
+      expect(view.container.textContent).not.toContain(banned);
+    }
+    expect(view.container.textContent).toContain('目标清空棋盘');
 
     act(() => rows[7]!.click());
     expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[7]!.id);
@@ -120,6 +127,8 @@ describe('T5 frontend campaign binding', () => {
     const mobileStart = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle-mobile"]');
     expect(desktopStart).not.toBeNull();
     expect(mobileStart).not.toBeNull();
+    expect(desktopStart?.textContent).toBe('开始');
+    expect(mobileStart?.textContent).toBe('开始');
     act(() => {
       desktopStart?.click();
       mobileStart?.click();

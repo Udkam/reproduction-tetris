@@ -36,34 +36,22 @@ const MODE_COPY: Record<GameMode, {
 }> = {
   marathon: {
     label: '经典',
-    detail: '持续消行，刷新分数与等级。',
+    detail: '分数 · 消行 · 等级',
     action: '开始',
   },
   race: {
     label: '竞速',
-    detail: '速度持续提升｜无终点｜主动退出或堆叠到顶结束',
+    detail: '速度递增 · 无终点',
     action: '开始',
   },
   puzzle: {
     label: '解谜',
-    detail: `${CAMPAIGN_LEVELS.length} 关全开，连续七袋方块，目标是清空棋盘。`,
+    detail: `${CAMPAIGN_LEVELS.length} 关残局 · 清空棋盘`,
     action: '选关',
   },
 };
 
 const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'puzzle'];
-
-const MODE_SIGNAL_CELLS: Record<GameMode, readonly (readonly [number, number])[]> = {
-  marathon: [[0, 0], [1, 0], [2, 0], [1, 1]],
-  race: [[0, 0], [1, 0], [1, 1], [2, 1]],
-  puzzle: [[0, 1], [1, 1], [2, 1], [2, 0]],
-};
-
-const MODE_SIGNAL_TYPES: Record<GameMode, readonly PieceType[]> = {
-  marathon: ['O', 'O', 'L', 'L'],
-  race: ['S', 'S', 'J', 'J'],
-  puzzle: ['J', 'J', 'J', 'I'],
-};
 
 export function cloneQaState(state: GameState): GameState {
   return structuredClone(state);
@@ -90,22 +78,22 @@ function campaignLevel(id: PuzzleId | null) {
 function terminalCopy(state: GameState): { title: string; detail: string; success: boolean } | null {
   if (state.mode === 'puzzle') {
     if (state.puzzleCompletion === 'finished') {
-      return { title: '棋盘已清空', detail: `使用 ${state.pieceCount} 个方块，完成 ${state.lines} 次消行。`, success: true };
+      return { title: '棋盘已清空', detail: `${state.pieceCount} 方块 · ${state.lines} 消行`, success: true };
     }
     if (state.puzzleCompletion && state.puzzleCompletion !== 'active') {
-      return { title: '本局在这里结束', detail: '堆叠触及顶部，可以重新整理清空方法。', success: false };
+      return { title: '堆叠到顶', detail: `${state.pieceCount} 方块 · ${state.lines} 消行`, success: false };
     }
     return null;
   }
   if (state.status !== 'game-over') return null;
   if (state.mode === 'race') {
     return {
-      title: '本轮竞速结束',
-      detail: `${state.lines} 行 · ${state.pieceCount} 个方块 · 速度 ${raceSpeedTier(state.pieceCount, state.lines) + 1} 档`,
+      title: '竞速结束',
+      detail: `${state.lines} 消行 · ${state.pieceCount} 方块 · 速度 ${raceSpeedTier(state.pieceCount, state.lines) + 1}`,
       success: false,
     };
   }
-  return { title: '堆叠触及顶部', detail: `${formatScore(state.score)} 分 · ${state.lines} 行`, success: false };
+  return { title: '堆叠到顶', detail: `${formatScore(state.score)} 分 · ${state.lines} 消行`, success: false };
 }
 
 function Brand({ compact = false }: { compact?: boolean }) {
@@ -113,42 +101,6 @@ function Brand({ compact = false }: { compact?: boolean }) {
     <div className={`brand ${compact ? 'brand--compact' : ''}`} data-testid="brand">
       <strong>Tetris</strong>
     </div>
-  );
-}
-
-function ModeSignal({ mode }: { mode: GameMode }) {
-  const paths = new Map<PieceType, string>();
-  MODE_SIGNAL_CELLS[mode].forEach(([x, y], index) => {
-    const type = MODE_SIGNAL_TYPES[mode][index]!;
-    const segment = `M${x * 36} ${y * 36}h32v32h-32z`;
-    paths.set(type, `${paths.get(type) ?? ''}${segment}`);
-  });
-  return (
-    <svg className={`mode-signal mode-signal--${mode}`} viewBox="0 0 152 104" role="img" aria-label={`${MODE_COPY[mode].label}方块示意`}>
-      <defs>
-        {[...paths].map(([type]) => {
-          const material = PIECE_MATERIALS[type];
-          return (
-            <linearGradient key={type} id={`mode-signal-${mode}-${type}`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor={cssHex(material.fillStart)} />
-              <stop offset="1" stopColor={cssHex(material.fillEnd)} />
-            </linearGradient>
-          );
-        })}
-      </defs>
-      <g transform="translate(22 18)">
-        {[...paths].map(([type, path]) => (
-          <path
-            key={type}
-            className="mode-signal__cell"
-            data-piece-type={type}
-            d={path}
-            fill={`url(#mode-signal-${mode}-${type})`}
-            stroke={cssHex(PIECE_MATERIALS[type].edge)}
-          />
-        ))}
-      </g>
-    </svg>
   );
 }
 
@@ -164,30 +116,15 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
 
 export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
   const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
-  const preview = MODE_COPY[previewMode];
   return (
     <main id="game" className="landing-shell" data-testid="mode-home">
       <header className="landing-header">
         <Brand />
-        <span>选择模式</span>
       </header>
       <section className="landing-stage" aria-labelledby="home-title">
-        <section className="mode-preview" aria-live="polite">
-          <div className="mode-preview__copy">
-            <small>当前选择</small>
-            <h2>{preview.label}</h2>
-            <p>{preview.detail}</p>
-          </div>
-          <ModeSignal mode={previewMode} />
-          <p className="mode-preview__input"><i aria-hidden="true" />键盘与触控均可操作</p>
-        </section>
         <section className="mode-chooser">
           <div className="landing-intro">
-            <div>
-              <small>三种玩法</small>
-              <h1 id="home-title">选择模式</h1>
-            </div>
-            <p>随时开始，也可随时退出。</p>
+            <h1 id="home-title">选择模式</h1>
           </div>
           <div
             className="mode-gates"
@@ -206,6 +143,7 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
                   type="button"
                   data-testid={`enter-${mode}`}
                   data-selected={active || undefined}
+                  aria-pressed={active}
                   onPointerEnter={() => setPreviewMode(mode)}
                   onFocus={() => setPreviewMode(mode)}
                   onClick={() => onEnter(mode)}
@@ -246,7 +184,7 @@ export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<PieceType, stri
 
 function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
   return (
-    <svg className="puzzle-silhouette" viewBox="0 0 40 48" role="img" aria-label={`${name}起始棋盘轮廓`}>
+    <svg className="puzzle-silhouette" viewBox="0 0 40 48" role="img" aria-label={`${name}棋盘轮廓`}>
       {[...puzzleSilhouettePaths(id)].map(([type, path]) => {
         const material = PIECE_MATERIALS[type];
         return (
@@ -281,11 +219,10 @@ export function PuzzleLibrary({
     <main id="game" className="library-shell" data-testid="puzzle-library">
       <header className="library-header">
         <Brand compact />
-        <button className="text-action" type="button" onClick={onBack}>← 返回模式首页</button>
+        <button className="text-action" type="button" aria-label="返回模式首页" onClick={onBack}>← 返回</button>
       </header>
       <section className="library-intro" aria-labelledby="library-title">
-        <h1 id="library-title">解谜关卡</h1>
-        <p>{CAMPAIGN_LEVELS.length} 关全部开放。持续出块，规则与经典一致；清空完整棋盘。</p>
+        <h1 id="library-title">解谜</h1>
       </section>
       <section className="library-content" aria-label="全部解谜关卡">
         <div className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个可用解谜关卡`} data-testid="level-list">
@@ -300,47 +237,38 @@ export function PuzzleLibrary({
                   data-testid="level-row"
                   data-level-id={level.id}
                   aria-pressed={selectedLevel}
+                  aria-label={`${String(level.index).padStart(2, '0')} ${level.name}${complete ? '，已完成' : ''}`}
                   onClick={() => onSelect(level.id)}
                 >
                   <span className="level-entry__number">{String(level.index).padStart(2, '0')}</span>
                   <span className="level-entry__copy">
                     <strong>{level.name}</strong>
-                    <small>清空棋盘{complete ? ' · 已完成' : ''}</small>
+                    {complete && <small>已完成</small>}
                   </span>
-                  <span className="level-entry__chevron" aria-hidden="true">›</span>
                 </button>
               </article>
             );
           })}
         </div>
-        <section className="level-inline-detail" aria-live="polite" aria-label={`当前选择：${selected.name}`}>
+        <section className="level-inline-detail" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
           <PuzzleSilhouette id={selected.id} name={selected.name} />
           <div>
-            <small>{selected.index}/{selected.total} · 当前选择</small>
+            <small>{String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</small>
             <h2>{selected.name}</h2>
-            <p>清空完整棋盘</p>
-            <span>连续七袋方块 · 不限定唯一解法</span>
+            <p><span>目标</span><strong>清空棋盘</strong></p>
           </div>
-          <button className="primary-action" type="button" data-testid="start-selected-puzzle-mobile" onClick={onStart}>开始这一关</button>
+          <button className="primary-action" type="button" data-testid="start-selected-puzzle-mobile" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
         </section>
         <aside className="level-detail" aria-live="polite">
           <div className="level-detail__visual">
             <PuzzleSilhouette id={selected.id} name={selected.name} />
-            <span>起始棋盘</span>
           </div>
           <div className="level-detail__heading">
             <span className="level-detail__count">{String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
-            <div>
-              <small>当前选择</small>
-              <h2>{selected.name}</h2>
-            </div>
+            <h2>{selected.name}</h2>
           </div>
-          <dl>
-            <div><dt>目标</dt><dd>清空完整棋盘</dd></div>
-            <div><dt>方块</dt><dd>持续补充的七袋序列</dd></div>
-            <div><dt>规则</dt><dd>与普通模式一致，不限定唯一解法</dd></div>
-          </dl>
-          <button className="primary-action" type="button" data-testid="start-selected-puzzle" onClick={onStart}>开始这一关</button>
+          <p className="level-detail__objective"><span>目标</span><strong>清空棋盘</strong></p>
+          <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
         </aside>
       </section>
     </main>
@@ -394,7 +322,7 @@ function RunStats({ state }: { state: GameState }) {
         <article className="run-stats__wide"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
         <article><span>已放置</span><strong>{state.pieceCount}</strong></article>
         <article><span>消行</span><strong>{state.lines}</strong></article>
-        <article className="run-stats__wide"><span>目标</span><strong>清空完整棋盘</strong></article>
+        <article className="run-stats__wide"><span>目标</span><strong>清空棋盘</strong></article>
       </section>
     );
   }
@@ -597,7 +525,8 @@ function GameSession({
             event.currentTarget.focus({ preventScroll: true });
             requestExit();
           }}
-        >← 模式首页</button>
+          aria-label={state.mode === 'puzzle' ? '返回解谜关卡' : '返回模式首页'}
+        >← 返回</button>
         <div className="play-identity">
           <Brand compact />
           <h1 data-testid="current-mode">{MODE_COPY[state.mode].label}</h1>
@@ -620,12 +549,10 @@ function GameSession({
           <section className="board-frame" data-testid="board-frame" aria-label="10 × 20 游戏棋盘" />
           <aside className="game-side-panel" data-testid="side-rail">
             <div className="info-rail" data-testid="context-top">
-              <p className="rail-label">本局数据</p>
               <RunStats state={state} />
-              <p className="mode-rule">{MODE_COPY[state.mode].detail}</p>
             </div>
             <div className="preview-rail">
-              <p className="rail-label">下一个</p>
+              <p className="rail-label">Next</p>
               <div className="next-slot" data-testid="next-slot" aria-label="下一个方块" />
             </div>
             <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span></p>
@@ -643,8 +570,8 @@ function GameSession({
 
       <ActionSheet
         open={pauseOpen}
-        title="本局已暂停"
-        description="棋盘状态已保留。继续、重新开始，或离开本局。"
+        title="已暂停"
+        description=""
         onCancel={resumeRun}
       >
         <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>继续游戏</button>
@@ -654,8 +581,8 @@ function GameSession({
 
       <ActionSheet
         open={exitOpen}
-        title="要离开本局吗？"
-        description="本局尚未保存；已完成的解谜记录不会受影响。"
+        title="离开本局？"
+        description=""
         tone="danger"
         onCancel={cancelExit}
       >
