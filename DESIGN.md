@@ -43,14 +43,28 @@ release:
 
 - the player-facing `马拉松` name becomes `经典`; the internal deterministic mode key
   remains `marathon` only for compatibility and is never player-facing;
-- the seven edge-lit plates use a restrained, original multi-hue mineral-signal
-  palette rather than seven near-equal cyan/blue fills or the standard commercial
-  piece-color mapping;
+- the seven pieces use an original multi-hue mapping rather than seven near-equal
+  cyan/blue fills or the standard commercial piece-color mapping;
 - Puzzle contains exactly fifteen all-enabled original levels for this milestone;
 - every authored starting board is visibly multi-colored while its color assignment
   stays independent from gameplay randomization and never changes collision geometry;
 - the nine new levels strengthen the existing topology and multi-route proof instead
   of duplicating or recoloring the first six.
+
+The user's subsequent review of frontend candidate
+`248ca89551ce1293abe88e651c9953e132c816be` rejects its visual finish while preserving
+its behavior and responsive information architecture. The page must feel more premium,
+and the current muted, double-outlined rounded minos are specifically rejected as ugly.
+The latest authority is therefore:
+
+- every piece color is bright, saturated, and clearly separated from the other six;
+- the rendering language is a precision luminous slab, not a candy, ceramic, mineral,
+  jelly, or plastic tile;
+- higher perceived quality comes from hierarchy, controlled translucent depth, one
+  spectral cyan-to-blue rail, and reduced component repetition, not dark neon, a
+  marketing hero, decorative English telemetry, or copied trade dress;
+- all accepted rules, fifteen-level bindings, selectors, accessibility, responsive
+  geometry, and lifecycle proofs from `248ca89` remain mandatory.
 
 The deterministic architecture integrated at
 `4c8582854088695ebac90467842dc2bc0cef3a20` remains the rule baseline. The rejected
@@ -220,27 +234,35 @@ labels must meet WCAG AA contrast.
   rely on one-pixel cool borders, spacing, and tone rather than repeated shadows.
 - Primary surfaces use 16–20 px radii. Buttons, action sheets, the board, and cells
   have no clipped corners; nested large pill/card stacks are forbidden.
-- Every mino is an `edge-lit plate`: 3–4 px radius, a same-hue fill gradient whose
-  value shift is no greater than about 6%, and fine same-hue outer/inner edges. It has
-  no white highlight bar, thick lower lip, jelly gloss, ceramic bevel, embossing,
-  detached unit shadow, dark universal outline, cut corner, or mineral inset.
-- The seven pieces remain distinguishable through hue and value. Their mapping is the
-  original muted mineral-signal palette below, deliberately different from the
-  standard commercial cyan/yellow/purple/green/red/blue/orange assignment. The page
-  remains light cyan/light-blue; richer hues belong only to gameplay pieces and
-  canonical board previews.
+- Every mino is a `precision luminous slab`: a high-chroma diagonal color field,
+  1.25–2.5 px corner radius, one fine same-hue dark edge, and no permanent full inner
+  perimeter. Locked cells remain flat and shadowless. Active cells may add one soft
+  outer aura using the light material color; that aura must not become a thick border.
+  The style has no white highlight bar, lower lip, full double outline, jelly gloss,
+  ceramic bevel, embossing, detached unit shadow, universal black outline, cut corner,
+  or mineral inset.
+- `innerEdge` is reserved for the active aura and brief lock response rather than a
+  second outline on every locked cell. Ghost cells use no more than 3% fill plus one
+  fine complete outline; they never use corner brackets.
+- Board, Next, canonical silhouettes, active cells, and locked cells use the same
+  exact material mapping. Board and Next use the same Pixi drawing primitive; the
+  silhouette may simplify the material to fill plus edge but may not remap colors.
+- The original bright luminous-spectrum mapping below deliberately differs from the
+  standard commercial cyan/yellow/purple/green/red/blue/orange assignment. All seven
+  fills are bright and saturated as explicitly requested; the light cyan/light-blue
+  page remains restrained so gameplay color carries the visual energy.
 
 | Piece | Fill start | Fill end | Edge | Inner edge |
 | --- | --- | --- | --- | --- |
-| I | `#C7486C` | `#A83858` | `#6E2139` | `#EA93A8` |
-| O | `#2C7E80` | `#176A70` | `#0D474E` | `#8DCAC8` |
-| T | `#B2701F` | `#965A12` | `#603709` | `#E4BE78` |
-| S | `#5063B5` | `#3E4E9B` | `#273164` | `#AAB5E5` |
-| Z | `#6E8637` | `#596E28` | `#394819` | `#BACB82` |
-| J | `#9A4F9E` | `#813D85` | `#542255` | `#D5A0D2` |
-| L | `#2875A1` | `#1C608A` | `#103E5C` | `#91C3D9` |
-- Active cells gain only a low-intensity edge glow. Locked cells stay flat. Ghost
-  cells use a complete fine outline with no more than 6% fill, never corner brackets.
+| I | `#FF4F7B` | `#EB2F62` | `#8A1838` | `#FFB7C8` |
+| O | `#00C9B7` | `#00A99D` | `#056067` | `#9AF5EA` |
+| T | `#FFB020` | `#EE8500` | `#874500` | `#FFE09A` |
+| S | `#6375FF` | `#4357E8` | `#25328E` | `#C0C7FF` |
+| Z | `#8EDB3F` | `#65B91E` | `#376A12` | `#DBF7A0` |
+| J | `#D75BFF` | `#B838E8` | `#69208A` | `#F0B5FF` |
+| L | `#24A8FF` | `#087EDB` | `#07518A` | `#A7DDFF` |
+- Active cells gain only the low-intensity light-color aura described above. Locked
+  cells stay flat. Ghost cells use a complete fine outline with no more than 3% fill.
 - Board and Next reuse the exact drawing primitive. Page entrance is 180 ms over at
   most 6 px; line clear is one local 160 ms sweep. No ornamental animation loops, and
   reduced motion removes positional, sweep, and glow transitions immediately.
@@ -259,7 +281,7 @@ labels must meet WCAG AA contrast.
   second row. One-pixel dividers and selected-state tone establish grouping; they are
   not three floating cards or a settings list.
 - A small original four-cell composition may reflect the selected mode, but it uses
-  the same edge-lit plate language, stays subordinate to selection, and never becomes
+  the same precision-slab language, stays subordinate to selection, and never becomes
   a logo, commercial composition, or looping hero.
 - Each entrance contains only its Chinese mode name, concise factual rules, and an
   explicit action. Decorative `01 / 02 / 03` numbering and redundant `Tetris` labels
@@ -365,9 +387,9 @@ only under `docs/workstreams/tetris-t5-*` and `docs/qa/evidence/tetris-t5`.
 - the home is one coherent 1+2 mode surface and the `phase seam` is its only
   ornamental motion;
 - the mobile Puzzle selector has no overlay covering any level content;
-- edge-lit plate minos, full fine-outline ghost cells, and Next share one drawing
-  primitive; rejected cut-corner, ceramic, highlight-bar, thick-lip, and bracket-ghost
-  styles are absent;
+- bright precision-slab minos, full fine-outline ghost cells, and Next share one
+  drawing primitive; rejected double-outline, toy/candy, cut-corner, ceramic,
+  highlight-bar, thick-lip, and bracket-ghost styles are absent;
 - player-facing copy contains no legacy `路线`; use `解法`, `本局`, or `对局` only when
   that meaning is actually needed;
 - computed mobile body, statistic, and touch-label sizes are recorded by browser

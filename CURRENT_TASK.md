@@ -11,14 +11,14 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — accepted neo-tech foundation is being extended to fifteen
-multi-color Puzzle levels and the player-facing `经典` mode name**
+Status: **active — fifteen-level behavior is accepted; premium bright-block visual
+replacement Slice I is open after the user rejected candidate `248ca89` styling**
 
 ## User-visible problems to resolve
 
-1. Keep the accepted original light cyan/light-blue, high-contrast, neo-tech minimal
-   interface named only `Tetris`, but give the seven pieces a more varied original
-   multi-hue edge-lit palette.
+1. Keep the original light cyan/light-blue, high-contrast, neo-tech minimal interface
+   named only `Tetris`, but raise its perceived quality and replace the rejected
+   muted, double-outlined rounded blocks with bright precision luminous slabs.
 2. Keep the dedicated entry page with separate Classic (`经典`), Race, and Puzzle
    entrances. The internal `marathon` key remains compatibility-only.
 3. Make Race endless accelerating normal play. It has no line target and stops only
@@ -448,12 +448,14 @@ Core acceptance:
 Independent read-only Core QA must accept the exact Slice G candidate before Slice H
 starts. A Core-only 15-level candidate is not releasable through the six-row frontend.
 
-## Slice H — `经典`, mineral-signal palette, and fifteen-level library
+## Slice H — `经典`, multi-color palette, and fifteen-level library
 
 Task ID: `TETRIS-T5-FRONTEND-CAMPAIGN-15-007`
 
-Status: **active — frontend writer may start only from the coordinator acknowledgement
-commit that records the accepted Core candidate**.
+Status: **FUNCTIONAL CANDIDATE READY** at
+`248ca89551ce1293abe88e651c9953e132c816be`, but **VISUALLY REJECTED / SUPERSEDED** by
+the user's request for a more premium page and bright redesigned blocks. It is a clean
+fallback, not a release candidate and not eligible for formal evidence or push.
 
 Product base: independently accepted Slice G candidate
 `48a229ef55b94d7b6e1de4ba88539bebb1909ec0`.
@@ -501,7 +503,63 @@ Frontend acceptance:
   suite, one production build, and the five-viewport browser matrix. Inspect actual
   captures, log exact values, create one frontend candidate commit, and do not push.
 
-After independent frontend QA accepts Slice H, the coordinator updates only the T5
-formal evidence for fifteen levels, explicit-LF hashing, the `经典` label, multi-color
-Board/Next, and first/middle/fifteenth real selection. The exact evidence child must
-pass raw-Git-blob, visual, and browser QA before changelog integration or push.
+Slice H's functional and responsive results carry into Slice I, but its visual QA was
+stopped when the user rejected the finish. No Slice H formal evidence is regenerated.
+
+## Slice I — premium surface and bright precision blocks
+
+Task ID: `TETRIS-T5-PREMIUM-BRIGHT-BLOCKS-008`
+
+Product base: rejected-as-final but functionally complete candidate
+`248ca89551ce1293abe88e651c9953e132c816be`.
+
+Writer base: the coordinator contract commit that opens Slice I.
+
+The single frontend/render writer may change only:
+
+- `src/App.tsx`;
+- `src/App.test.ts`;
+- `src/styles.css`;
+- `src/game/render/theme.ts`;
+- `src/game/render/theme.test.ts`;
+- `src/game/render/TetrisRenderer.ts`;
+- at most one new focused test under `src/game/render/`;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`.
+
+The writer must not change Core/Puzzle definitions, references or routes,
+`puzzleProgress.ts`, presentation/runtime/input/audio, dependencies, `index.html`,
+coordinator documents, changelog, or formal evidence.
+
+Slice I acceptance:
+
+- all 28 piece material values exactly match the bright luminous-spectrum table in
+  `DESIGN.md`; no muted material from `248ca89` remains;
+- Board and Next share one precision-slab renderer primitive with 1.25–2.5 px radius,
+  one fine same-hue dark edge, no permanent inner perimeter, no detached unit shadow,
+  and no candy/ceramic/mineral bevel. Active uses only a low-intensity light-color
+  aura; locked is flat; Ghost is a full fine outline with at most 3% fill;
+- canonical silhouettes use the same bright mapping, at most one path per present
+  piece type, and no DOM gameplay grid;
+- page refinement keeps the light cyan/light-blue direction but replaces template-like
+  flatness with controlled translucent depth, tighter type/spacing hierarchy, and one
+  restrained spectral rail. It does not add a dark neon theme, decorative telemetry,
+  repeating page grid, marketing hero, external font/asset, or copied trade dress;
+- the 15-level matrix remains continuous. Selected state is unmistakable without
+  becoming a floating card; repetitive cell copy is shortened without hiding names;
+  at 360/390 the fifteenth odd item spans the two-column row instead of leaving an
+  empty half-cell, and the selected detail remains outside/after the list;
+- HUD, Next, statistics, and the five-action control deck read as one coherent game
+  instrument rather than repeated rounded cards. All existing selectors, action order,
+  labels, 44 px controls, 12/14/18 px floors, complete goal, and accessibility remain;
+- visible `经典`, endless Race, continuous Puzzle, exact 15 all-enabled levels,
+  first/eighth/fifteenth canonical bindings, seven locked colors, 1+2 mode home,
+  reduced motion, and one-canvas/zero-DOM-cell lifecycle do not regress;
+- the writer runs targeted theme/renderer/App tests while iterating and the prescribed
+  real Playwright action client after each meaningful visual change. After the final
+  product source change, run one typecheck, one complete suite, one production build,
+  and one five-viewport browser matrix; inspect every library, home, and gameplay PNG,
+  create one candidate commit, and do not push.
+
+Independent read-only functional and visual QA must accept the exact Slice I candidate
+before the coordinator regenerates explicit-LF formal evidence, updates the changelog,
+or decides whether to push.

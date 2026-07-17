@@ -137,3 +137,23 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
   seven-color mineral-signal theme, and the responsive fifteen-entry level library.
   Core definitions, routes, engine, randomizer, `index.html`, and formal evidence stay
   read-only until frontend QA accepts its exact candidate.
+
+## 2026-07-17 — Slice H functional candidate visually superseded
+
+- Slice H candidate `248ca89` completed `经典`, dynamic fifteen-level binding, 3 × 5
+  desktop/844 and two-column mobile selectors, canonical first/eighth/fifteenth UI
+  starts, and seven-color Board/Next/silhouettes. Writer gates passed after its last
+  source fix: typecheck, 40 files / 252 tests with one intentional skipped helper,
+  739-module build, and the five-viewport browser matrix.
+- The user rejected this finish before independent acceptance: the page must look more
+  premium, the current blocks are specifically ugly, and every piece must use bright
+  color. `248ca89` remains a clean fallback only; no evidence or push may use it.
+- Read-only visual diagnosis found the ordinary feel came from table-wall repetition,
+  empty detail space, repeated rounded HUD cards, generic segmented controls, and the
+  muted double-outlined minos reading as plastic/candy at mobile scale.
+- Slice I now owns one bounded frontend/render replacement. It preserves all accepted
+  behavior and responsive geometry while introducing the exact bright luminous-spectrum
+  mapping, a flat precision-slab Pixi primitive, tighter premium hierarchy, coherent
+  HUD/control surfaces, and a filled final mobile grid row. Core, dependencies,
+  `index.html`, coordinator docs after this contract, and formal evidence remain
+  read-only for the writer.
