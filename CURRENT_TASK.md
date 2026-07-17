@@ -11,7 +11,7 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **active — Core accepted at `630fb30`; T5 Frontend is the active writer slice**
+Status: **active — final QA rejected one DEV snapshot reference leak; bounded fix active**
 
 ## User-visible problems to resolve
 
@@ -152,3 +152,33 @@ evidence.
 The coordinator routes the exact combined candidate to independent read-only QA,
 resolves findings with newly bounded writer slices, updates
 `docs/logs/CHANGELOG.md`, commits the documentation delta, and decides whether to push.
+
+## Slice C — final QA snapshot isolation fix
+
+Task ID: `TETRIS-T5-FINAL-QA-FIX-001`
+
+Base SHA: `9b7e552e83426d5578d86010571a4cbce83616ac`
+
+Independent final QA result on the base: **REJECT** with one blocker. The DEV-only
+`window.__TETRIS_D4_QA__.collect()` surface returns the object from
+`GameRuntime.getState()` directly, so page script can mutate canonical state through
+the returned reference. All other audited areas passed, including the visual review,
+evidence checksums, `index.html` boundary, typecheck, and targeted tests.
+
+The frontend fix writer may change only:
+
+- `src/App.tsx`;
+- one directly related frontend test file under `src/**` when needed;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`.
+
+The writer must not change `GameRuntime`, core rules, renderer, styles, Puzzle data,
+dependencies, `index.html`, coordinator documents, changelog, or any committed browser
+evidence. The implementation must make `collect().state` a detached structured clone
+without adding any state setter, replay injector, or replacement hook. A regression
+test must mutate nested fields of the returned snapshot and prove the source canonical
+state is unchanged.
+
+After the fix candidate is independently accepted, the coordinator regenerates the
+T5 browser evidence against the exact new product SHA, reruns the final gates required
+after the last source change, and routes the exact evidence child to independent QA
+before changelog integration or push.

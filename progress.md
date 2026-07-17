@@ -37,3 +37,10 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
 - User removed `index.html` from the redesign scope; it remains unchanged as the Vite
   entry while page branding and accessibility copy are rebuilt under `src`.
 - User clarified the product remains a browser HTML webpage, not a native app or PWA.
+- Frontend candidate `b480e7d` and coordinator evidence child `9b7e552` passed the
+  combined typecheck, 37-file / 237-test suite, build, five-viewport browser matrix,
+  visible keyboard/touch scenarios, and visual review.
+- Independent final QA rejected `9b7e552` on one fail-closed issue: DEV
+  `__TETRIS_D4_QA__.collect()` exposes the runtime state object by reference. The
+  bounded `TETRIS-T5-FINAL-QA-FIX-001` slice must return a detached snapshot, prove
+  nested mutation isolation, and refresh final-SHA browser evidence before integration.

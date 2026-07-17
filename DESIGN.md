@@ -37,6 +37,9 @@ evidence only. T5 uses new paths and does not rewrite those artifacts.
 - Gameplay uses one Pixi canvas and no DOM cell grid.
 - Core state stays serializable and independent from React, PixiJS, DOM, audio,
   storage, browser timing, and viewport geometry.
+- Every DEV/browser diagnostic snapshot must be detached from canonical runtime state.
+  Mutating any object returned by a QA collector must not change the live run; no
+  collector may expose a writable state reference or state-replacement path.
 - There is no Hold mechanic.
 - Keyboard and touch expose left, right, clockwise rotation, soft drop, hard drop,
   pause/resume, restart, and an explicit route back to the mode home.
@@ -240,6 +243,8 @@ only under `docs/workstreams/tetris-t5-*` and `docs/qa/evidence/tetris-t5`.
 - at least one Puzzle scenario after three consecutive locks, with visible/canonical
   level, active piece, placed-piece count, and Next preview aligned;
 - mode-home → game → mode-home → game proof with no canvas/ticker/listener leaks;
+- direct regression proof that nested mutation of every DEV QA state snapshot leaves
+  canonical runtime state unchanged;
 - one gameplay canvas, zero gameplay DOM cells, zero console/page errors;
 - keyboard, touch, pause/resume, restart, explicit exit, failure, success, and reduced
   motion verified at required viewports.
