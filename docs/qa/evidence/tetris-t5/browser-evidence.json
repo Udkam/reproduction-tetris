@@ -1,0 +1,1533 @@
+{
+  "taskId": "TETRIS-T5-FINAL-BROWSER-001",
+  "candidateSha": "b480e7db93aa7b6f2b2a1feb160985f4aa42e493",
+  "baseUrl": "http://127.0.0.1:4175/",
+  "method": "Visible UI keyboard/pointer input plus read-only canonical-state comparison; no state replacement or fabricated terminal state.",
+  "captures": [
+    {
+      "file": "desktop-home-1440x900.png",
+      "sha256": "9551299dcca9e34e109d0c7204fef19591aab5684e937dd73dc265d76c885795",
+      "metrics": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 1440,
+          "scrollHeight": 900,
+          "clientWidth": 1440,
+          "clientHeight": 900
+        },
+        "screen": "mode-home",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 365.59375,
+          "height": 419.71875
+        },
+        "buttons": [
+          {
+            "text": "01开放堆叠马拉松模式分数与等级持续累积，堆叠到顶结束。进入马拉松↗",
+            "width": 365.59375,
+            "height": 419.71875
+          },
+          {
+            "text": "02持续加速竞速模式速度持续提升｜无终点｜主动退出或堆叠到顶结束进入竞速↗",
+            "width": 365.609375,
+            "height": 419.71875
+          },
+          {
+            "text": "03清空棋盘解谜模式六个关卡全部开放，使用连续七袋方块寻找自己的清空路线。查看关卡↗",
+            "width": 365.59375,
+            "height": 419.71875
+          }
+        ],
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null
+      }
+    },
+    {
+      "file": "desktop-marathon-playing-1440x900.png",
+      "sha256": "f51a5562746a40d85b987b4bfebcd153af3d5fb239300a9de50fd97d1b594951",
+      "metrics": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 1440,
+          "scrollHeight": 900,
+          "clientWidth": 1440,
+          "clientHeight": 900
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 60,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 102.3125,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 60,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "→右移",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↻旋转",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↓快速下落",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 131.1875,
+            "height": 54
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 534.5,
+            "y": 74,
+            "width": 371,
+            "height": 742,
+            "right": 905.5,
+            "bottom": 816
+          },
+          "stats": {
+            "x": 244.90625,
+            "y": 382.46875,
+            "width": 214,
+            "height": 131,
+            "right": 458.90625,
+            "bottom": 513.46875
+          },
+          "next": {
+            "x": 981.09375,
+            "y": 367,
+            "width": 154,
+            "height": 116,
+            "right": 1135.09375,
+            "bottom": 483
+          },
+          "touch": {
+            "x": 380,
+            "y": 826,
+            "width": 680,
+            "height": 74,
+            "right": 1060,
+            "bottom": 900
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "marathon",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "pieceCount": 2,
+          "lines": 0,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "marathon",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "score": 74,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 2,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "....OO....",
+            "...JOO....",
+            "...JJJ...."
+          ]
+        }
+      }
+    },
+    {
+      "file": "desktop-marathon-paused-1440x900.png",
+      "sha256": "6409e4f84ff4bffc6e4e3bfbeee32de1dcf1371820e61e862b3378c7af72f641",
+      "metrics": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 1440,
+          "scrollHeight": 900,
+          "clientWidth": 1440,
+          "clientHeight": 900
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 60,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 102.3125,
+            "height": 44
+          },
+          {
+            "text": "继续",
+            "width": 60,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "→右移",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↻旋转",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↓快速下落",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "继续游戏",
+            "width": 228,
+            "height": 44
+          },
+          {
+            "text": "重新开始",
+            "width": 228,
+            "height": 44
+          },
+          {
+            "text": "离开本局",
+            "width": 464,
+            "height": 44
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 534.5,
+            "y": 74,
+            "width": 371,
+            "height": 742,
+            "right": 905.5,
+            "bottom": 816
+          },
+          "stats": {
+            "x": 244.90625,
+            "y": 382.46875,
+            "width": 214,
+            "height": 131,
+            "right": 458.90625,
+            "bottom": 513.46875
+          },
+          "next": {
+            "x": 981.09375,
+            "y": 367,
+            "width": 154,
+            "height": 116,
+            "right": 1135.09375,
+            "bottom": 483
+          },
+          "touch": {
+            "x": 380,
+            "y": 826,
+            "width": 680,
+            "height": 74,
+            "right": 1060,
+            "bottom": 900
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "marathon",
+          "status": "paused",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "pieceCount": 2,
+          "lines": 0,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "marathon",
+          "status": "paused",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "score": 74,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 2,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "....OO....",
+            "...JOO....",
+            "...JJJ...."
+          ]
+        }
+      }
+    },
+    {
+      "file": "desktop-home-returned-1440x900.png",
+      "sha256": "9551299dcca9e34e109d0c7204fef19591aab5684e937dd73dc265d76c885795",
+      "metrics": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 1440,
+          "scrollHeight": 900,
+          "clientWidth": 1440,
+          "clientHeight": 900
+        },
+        "screen": "mode-home",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 365.59375,
+          "height": 419.71875
+        },
+        "buttons": [
+          {
+            "text": "01开放堆叠马拉松模式分数与等级持续累积，堆叠到顶结束。进入马拉松↗",
+            "width": 365.59375,
+            "height": 419.71875
+          },
+          {
+            "text": "02持续加速竞速模式速度持续提升｜无终点｜主动退出或堆叠到顶结束进入竞速↗",
+            "width": 365.609375,
+            "height": 419.71875
+          },
+          {
+            "text": "03清空棋盘解谜模式六个关卡全部开放，使用连续七袋方块寻找自己的清空路线。查看关卡↗",
+            "width": 365.59375,
+            "height": 419.71875
+          }
+        ],
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null
+      }
+    },
+    {
+      "file": "wide-race-playing-2048x1152.png",
+      "sha256": "a3396f5ece93523a4a6b04f6cd5838a72c9d67ec0c5d3c2f27e3341b4fcaded8",
+      "metrics": {
+        "viewport": {
+          "width": 2048,
+          "height": 1152,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 2048,
+          "scrollHeight": 1152,
+          "clientWidth": 2048,
+          "clientHeight": 1152
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 60,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 102.3125,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 60,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "→右移",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↻旋转",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↓快速下落",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 131.1875,
+            "height": 54
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 794,
+            "y": 111,
+            "width": 460,
+            "height": 920,
+            "right": 1254,
+            "bottom": 1031
+          },
+          "stats": {
+            "x": 504,
+            "y": 499.953125,
+            "width": 214,
+            "height": 131,
+            "right": 718,
+            "bottom": 630.953125
+          },
+          "next": {
+            "x": 1330,
+            "y": 493,
+            "width": 154,
+            "height": 116,
+            "right": 1484,
+            "bottom": 609
+          },
+          "touch": {
+            "x": 684,
+            "y": 1078,
+            "width": 680,
+            "height": 74,
+            "right": 1364,
+            "bottom": 1152
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "race",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "pieceCount": 2,
+          "lines": 0,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "score": 74,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 2,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "....OO....",
+            "...JOO....",
+            "...JJJ...."
+          ]
+        }
+      }
+    },
+    {
+      "file": "wide-race-topout-2048x1152.png",
+      "sha256": "91a6f32cdddc36ceb0d03c4cb25dd3b25c8e947b05d1e1f19f1fcbcc6f37c16c",
+      "metrics": {
+        "viewport": {
+          "width": 2048,
+          "height": 1152,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 2048,
+          "scrollHeight": 1152,
+          "clientWidth": 2048,
+          "clientHeight": 1152
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 60,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 102.3125,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 60,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "→右移",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↻旋转",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↓快速下落",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "再来一局",
+            "width": 228,
+            "height": 44
+          },
+          {
+            "text": "返回模式首页",
+            "width": 228,
+            "height": 44
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 794,
+            "y": 111,
+            "width": 460,
+            "height": 920,
+            "right": 1254,
+            "bottom": 1031
+          },
+          "stats": {
+            "x": 504,
+            "y": 499.953125,
+            "width": 214,
+            "height": 131,
+            "right": 718,
+            "bottom": 630.953125
+          },
+          "next": {
+            "x": 1330,
+            "y": 493,
+            "width": 154,
+            "height": 116,
+            "right": 1484,
+            "bottom": 609
+          },
+          "touch": {
+            "x": 684,
+            "y": 1078,
+            "width": 680,
+            "height": 74,
+            "right": 1364,
+            "bottom": 1152
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "race",
+          "status": "game-over",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "pieceCount": 12,
+          "lines": 0,
+          "active": null,
+          "next": "T"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "game-over",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "score": 226,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 12,
+          "active": null,
+          "next": "T",
+          "visibleBoard": [
+            "...JJJ....",
+            "...IIII...",
+            "...ZZ.....",
+            "....ZZ....",
+            "....SS....",
+            "...SS.....",
+            "....OO....",
+            "....OO....",
+            "....T.....",
+            "...TTT....",
+            "...IIII...",
+            ".....L....",
+            "...LLL....",
+            "...ZZ.....",
+            "....ZZ....",
+            "....SS....",
+            "...SS.....",
+            "....OO....",
+            "...JOO....",
+            "...JJJ...."
+          ]
+        }
+      }
+    },
+    {
+      "file": "portrait-puzzle-library-390x844-dpr3.png",
+      "sha256": "657ec93aefb0817479426aad910df5bb94da75440487f0ee156eb78dc08929b2",
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "dpr": 3
+        },
+        "document": {
+          "scrollWidth": 390,
+          "scrollHeight": 1364,
+          "clientWidth": 390,
+          "clientHeight": 844
+        },
+        "screen": "puzzle-library",
+        "canvasCount": 0,
+        "domCellCount": 0,
+        "runtimeQaPresent": false,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 95.796875,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 返回模式首页",
+            "width": 95.796875,
+            "height": 44
+          },
+          {
+            "text": "01可直接进入青脊回旋目标：清空完整棋盘连续七袋→",
+            "width": 358,
+            "height": 132
+          },
+          {
+            "text": "02可直接进入深湾折返目标：清空完整棋盘连续七袋→",
+            "width": 358,
+            "height": 132
+          },
+          {
+            "text": "03可直接进入双岸错层目标：清空完整棋盘连续七袋→",
+            "width": 358,
+            "height": 132
+          },
+          {
+            "text": "04可直接进入侧槽逆流目标：清空完整棋盘连续七袋→",
+            "width": 358,
+            "height": 132
+          },
+          {
+            "text": "05可直接进入潮线汇流目标：清空完整棋盘连续七袋→",
+            "width": 358,
+            "height": 132
+          },
+          {
+            "text": "06可直接进入远岸终局目标：清空完整棋盘连续七袋→",
+            "width": 358,
+            "height": 132
+          },
+          {
+            "text": "进入所选关卡",
+            "width": 320,
+            "height": 44
+          }
+        ],
+        "bounds": {
+          "board": null,
+          "stats": null,
+          "next": null,
+          "touch": null
+        },
+        "boardRatio": null,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": null,
+        "textState": null
+      }
+    },
+    {
+      "file": "portrait-puzzle-three-locks-390x844-dpr3.png",
+      "sha256": "5c7d06dbd929a0bb223a2d61a2122204452b8de85d6d537180fb00d6cb039af8",
+      "metrics": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "dpr": 3
+        },
+        "document": {
+          "scrollWidth": 390,
+          "scrollHeight": 844,
+          "clientWidth": 390,
+          "clientHeight": 844
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 44,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 67.796875,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 72.390625,
+            "height": 58
+          },
+          {
+            "text": "→右移",
+            "width": 72.40625,
+            "height": 58
+          },
+          {
+            "text": "↻旋转",
+            "width": 72.390625,
+            "height": 58
+          },
+          {
+            "text": "↓快速下落",
+            "width": 72.40625,
+            "height": 58
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 72.40625,
+            "height": 58
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 40,
+            "y": 146,
+            "width": 310,
+            "height": 620,
+            "right": 350,
+            "bottom": 766
+          },
+          "stats": {
+            "x": 20,
+            "y": 85,
+            "width": 252,
+            "height": 55,
+            "right": 272,
+            "bottom": 140
+          },
+          "next": {
+            "x": 293,
+            "y": 84,
+            "width": 59.640625,
+            "height": 54,
+            "right": 352.640625,
+            "bottom": 138
+          },
+          "touch": {
+            "x": 6,
+            "y": 772,
+            "width": 378,
+            "height": 72,
+            "right": 384,
+            "bottom": 844
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "puzzle",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": "t3r-cascade-06",
+          "puzzleCompletion": "active",
+          "pieceCount": 3,
+          "lines": 0,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "puzzle",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": "t3r-cascade-06",
+          "puzzleCompletion": "active",
+          "score": 46,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 3,
+          "active": {
+            "type": "S",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "Z",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            ".....L....",
+            "...LLL....",
+            "....OO....",
+            "...JOO....",
+            "...JJJ....",
+            "JJJJJ...J.",
+            ".JJ..JJJJJ",
+            "JJJ.JJ..JJ",
+            "J.JJJJJJJ.",
+            "..JJJJJJJJ",
+            "JJJ.J.JJJJ",
+            "J.JJJJJJJJ",
+            "JJJJJ.JJJJ",
+            "JJJ.JJJJJJ",
+            "JJJJJJJJ.J"
+          ]
+        }
+      },
+      "checks": {
+        "puzzleId": "t3r-cascade-06",
+        "pieceCount": 3,
+        "next": "Z"
+      }
+    },
+    {
+      "file": "landscape-marathon-844x390-dpr3.png",
+      "sha256": "2695208ae2a4bd90f606345c651552275fd46941311a3031091c45785214c0fb",
+      "metrics": {
+        "viewport": {
+          "width": 844,
+          "height": 390,
+          "dpr": 3
+        },
+        "document": {
+          "scrollWidth": 844,
+          "scrollHeight": 390,
+          "clientWidth": 844,
+          "clientHeight": 390
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 44,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 68.546875,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 120,
+            "height": 48
+          },
+          {
+            "text": "→右移",
+            "width": 120,
+            "height": 48
+          },
+          {
+            "text": "↻旋转",
+            "width": 120,
+            "height": 48
+          },
+          {
+            "text": "↓快速下落",
+            "width": 120,
+            "height": 48
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 120,
+            "height": 48
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 351,
+            "y": 48,
+            "width": 142,
+            "height": 284,
+            "right": 493,
+            "bottom": 332
+          },
+          "stats": {
+            "x": 123,
+            "y": 153,
+            "width": 200,
+            "height": 95,
+            "right": 323,
+            "bottom": 248
+          },
+          "next": {
+            "x": 521,
+            "y": 162.5,
+            "width": 130,
+            "height": 76,
+            "right": 651,
+            "bottom": 238.5
+          },
+          "touch": {
+            "x": 112,
+            "y": 336,
+            "width": 620,
+            "height": 54,
+            "right": 732,
+            "bottom": 390
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "marathon",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "pieceCount": 1,
+          "lines": 0,
+          "active": {
+            "type": "O",
+            "x": 4,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "S"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "marathon",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "score": 38,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 1,
+          "active": {
+            "type": "O",
+            "x": 4,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "S",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...J......",
+            "...JJJ...."
+          ]
+        }
+      }
+    },
+    {
+      "file": "narrow-puzzle-360x800.png",
+      "sha256": "21da873a04062aa871015ade154636f6aed5cd22f7c7c3173fe51b16dd757a29",
+      "metrics": {
+        "viewport": {
+          "width": 360,
+          "height": 800,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 360,
+          "scrollHeight": 800,
+          "clientWidth": 360,
+          "clientHeight": 800
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 44,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 67.796875,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 66.390625,
+            "height": 58
+          },
+          {
+            "text": "→右移",
+            "width": 66.40625,
+            "height": 58
+          },
+          {
+            "text": "↻旋转",
+            "width": 66.390625,
+            "height": 58
+          },
+          {
+            "text": "↓快速下落",
+            "width": 66.40625,
+            "height": 58
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 66.40625,
+            "height": 58
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 36,
+            "y": 146,
+            "width": 288,
+            "height": 576,
+            "right": 324,
+            "bottom": 722
+          },
+          "stats": {
+            "x": 20,
+            "y": 85,
+            "width": 222,
+            "height": 55,
+            "right": 242,
+            "bottom": 140
+          },
+          "next": {
+            "x": 263,
+            "y": 84,
+            "width": 59.640625,
+            "height": 54,
+            "right": 322.640625,
+            "bottom": 138
+          },
+          "touch": {
+            "x": 6,
+            "y": 728,
+            "width": 348,
+            "height": 72,
+            "right": 354,
+            "bottom": 800
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "puzzle",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": "t3r-shaft-04",
+          "puzzleCompletion": "active",
+          "pieceCount": 1,
+          "lines": 0,
+          "active": {
+            "type": "L",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "J"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "puzzle",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": "t3r-shaft-04",
+          "puzzleCompletion": "active",
+          "score": 22,
+          "lines": 0,
+          "level": 0,
+          "placedPieces": 1,
+          "active": {
+            "type": "L",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "J",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...IIII...",
+            "..JJJ.JJ.J",
+            "JJ.JJJ.J.J",
+            "...JJJJJJJ",
+            "J.JJJJJJ.J",
+            "JJJJJJJJJ.",
+            "JJJJJ.JJJJ",
+            "J.JJJJJJJJ",
+            "JJJ.JJJJJJ"
+          ]
+        }
+      }
+    },
+    {
+      "file": "desktop-puzzle-success-1440x900.png",
+      "sha256": "5e4b7699b375c2c9ee0abd3cdfb50134f1cb0200d138598abd151c915a48a127",
+      "metrics": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 1440,
+          "scrollHeight": 900,
+          "clientWidth": 1440,
+          "clientHeight": 900
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "renderedTetrisBrand": false,
+        "buttonMinimum": {
+          "width": 60,
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 模式首页",
+            "width": 102.3125,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 60,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "→右移",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↻旋转",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "↓快速下落",
+            "width": 131.203125,
+            "height": 54
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 131.1875,
+            "height": 54
+          },
+          {
+            "text": "再来一局",
+            "width": 228,
+            "height": 44
+          },
+          {
+            "text": "返回关卡库",
+            "width": 228,
+            "height": 44
+          }
+        ],
+        "bounds": {
+          "board": {
+            "x": 534.5,
+            "y": 74,
+            "width": 371,
+            "height": 742,
+            "right": 905.5,
+            "bottom": 816
+          },
+          "stats": {
+            "x": 244.90625,
+            "y": 341.453125,
+            "width": 214,
+            "height": 196,
+            "right": 458.90625,
+            "bottom": 537.453125
+          },
+          "next": {
+            "x": 981.09375,
+            "y": 367,
+            "width": 154,
+            "height": 116,
+            "right": 1135.09375,
+            "bottom": 483
+          },
+          "touch": {
+            "x": 380,
+            "y": 826,
+            "width": 680,
+            "height": 74,
+            "right": 1060,
+            "bottom": 900
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "puzzle",
+          "status": "finished",
+          "phase": "active",
+          "puzzleId": "t3r-shaft-01",
+          "puzzleCompletion": "finished",
+          "pieceCount": 35,
+          "lines": 22,
+          "active": null,
+          "next": "O"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "puzzle",
+          "status": "finished",
+          "phase": "active",
+          "puzzleId": "t3r-shaft-01",
+          "puzzleCompletion": "finished",
+          "score": 2524,
+          "lines": 22,
+          "level": 2,
+          "placedPieces": 35,
+          "active": null,
+          "next": "O",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            ".........."
+          ]
+        }
+      },
+      "checks": {
+        "routeId": "route-1",
+        "pieceCount": 35,
+        "lines": 22
+      }
+    }
+  ],
+  "checks": {
+    "restartVisibleUi": true,
+    "homeGameHomeTeardown": true,
+    "liveReducedMotionPreservesState": true,
+    "raceTopOutOnlyTerminal": {
+      "pieceCount": 12,
+      "lines": 0
+    },
+    "puzzleThreeVisibleLocks": true,
+    "puzzleVisibleKeyboardSuccess": {
+      "levelId": "t3r-shaft-01",
+      "routeId": "route-1",
+      "pieceCount": 35
+    }
+  },
+  "errors": []
+}
