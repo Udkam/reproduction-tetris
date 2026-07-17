@@ -1,4 +1,4 @@
-import { Application, BlurFilter, Container, FillGradient, Graphics, type Ticker } from 'pixi.js';
+import { Application, Container, FillGradient, Graphics, type Ticker } from 'pixi.js';
 import {
   BOARD_WIDTH,
   LINE_CLEAR_DELAY_TICKS,
@@ -73,14 +73,8 @@ export class TetrisRenderer {
   private host: HTMLElement | null = null;
   private readonly world = new Container();
   private readonly boardGraphics = new Graphics();
-  private readonly auraGraphics = new Graphics();
   private readonly pieceGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
-  private readonly auraFilter = new BlurFilter({
-    strength: CELL_STYLE.activeAuraBlurStrength,
-    quality: CELL_STYLE.activeAuraBlurQuality,
-    kernelSize: CELL_STYLE.activeAuraBlurKernelSize,
-  });
   private readonly cellGradients = new Map<PieceType, FillGradient>();
 
   private frameCallback: ((deltaMs: number) => void) | null = null;
@@ -129,8 +123,7 @@ export class TetrisRenderer {
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
-    this.auraGraphics.filters = [this.auraFilter];
-    this.world.addChild(this.boardGraphics, this.auraGraphics, this.pieceGraphics, this.effectGraphics);
+    this.world.addChild(this.boardGraphics, this.pieceGraphics, this.effectGraphics);
     app.stage.addChild(this.world);
     app.ticker.add(this.onTick);
     this.app = app;
@@ -193,7 +186,6 @@ export class TetrisRenderer {
     for (const gradient of this.cellGradients.values()) gradient.destroy();
     this.cellGradients.clear();
     this.app.destroy({ removeView: true }, { children: true });
-    this.auraFilter.destroy();
     this.app = null;
     this.host = null;
     this.presentation = null;
@@ -255,7 +247,6 @@ export class TetrisRenderer {
 
   private drawPieces(state: GameState, layout: BoardLayout): void {
     const graphics = this.pieceGraphics;
-    this.auraGraphics.clear();
     graphics.clear();
     let visibleLockedCells = 0;
 
@@ -336,7 +327,6 @@ export class TetrisRenderer {
     }
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
-    this.auraGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
     this.pieceGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
     this.effectGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
   }
@@ -399,16 +389,14 @@ export class TetrisRenderer {
       CELL_STYLE.edgeWidthMin,
       Math.min(CELL_STYLE.edgeWidthMax, size * CELL_STYLE.edgeWidthRatio),
     );
-    if (active) {
-      const expand = CELL_STYLE.activeAuraExpand;
-      this.auraGraphics
-        .roundRect(x - expand, y - expand, size + expand * 2, size + expand * 2, radius + expand)
-        .fill({ color: material.innerEdge, alpha: Math.min(CELL_STYLE.activeAuraAlpha, alpha * CELL_STYLE.activeAuraAlpha) });
-    }
     graphics
       .roundRect(x, y, size, size, radius)
       .fill({ fill: this.gradientFor(type), alpha })
-      .stroke({ color: material.edge, alpha: Math.min(.92, alpha * .9), width: borderWidth });
+      .stroke({
+        color: active ? material.innerEdge : material.edge,
+        alpha: active ? Math.min(1, alpha) : Math.min(.92, alpha * .9),
+        width: borderWidth,
+      });
   }
 
   private drawGhostCell(
@@ -432,8 +420,7 @@ export class TetrisRenderer {
     );
     graphics
       .roundRect(x + inset, y + inset, ghostSize, ghostSize, radius)
-      .fill({ color: material.fillStart, alpha: Math.min(CELL_STYLE.ghostFillAlpha, alpha * CELL_STYLE.ghostFillAlpha) })
-      .stroke({ color: material.edge, alpha: Math.min(CELL_STYLE.ghostStrokeAlpha, alpha * CELL_STYLE.ghostStrokeAlpha), width: borderWidth });
+      .stroke({ color: material.innerEdge, alpha: Math.min(CELL_STYLE.ghostStrokeAlpha, alpha), width: borderWidth });
   }
 
   private drawEffects(state: GameState, layout: BoardLayout): void {
@@ -447,14 +434,14 @@ export class TetrisRenderer {
         const y = layout.y + (row - VISIBLE_START_ROW) * layout.cell;
         graphics
           .rect(layout.x + (layout.width - width) / 2, y + layout.cell * 0.12, width, layout.cell * 0.76)
-          .fill({ color: COLORS.cyan, alpha: this.options.reducedMotion ? 0.28 : 0.18 + progress * 0.4 });
+          .fill({ color: COLORS.classic, alpha: this.options.reducedMotion ? 0.28 : 0.18 + progress * 0.4 });
       }
     }
 
     if (this.lockPulse && !this.options.reducedMotion) {
       const progress = Math.min(1, this.lockPulse.elapsed / this.lockPulse.duration);
       const material = PIECE_MATERIALS[this.lockPulse.piece];
-      const alpha = (1 - easeOutCubic(progress)) * 0.72;
+      const alpha = (1 - easeOutCubic(progress)) * CELL_STYLE.lockFillAlpha;
       for (const cell of this.lockPulse.cells) {
         if (cell.y < VISIBLE_START_ROW) continue;
         const x = layout.x + cell.x * layout.cell + layout.cell * 0.06;
@@ -466,7 +453,7 @@ export class TetrisRenderer {
         );
         graphics
           .roundRect(x, y, size, size, radius)
-          .stroke({ color: material.innerEdge, alpha: alpha * .24, width: Math.max(.8, Math.min(1.2, layout.cell * .03)) });
+          .fill({ color: material.innerEdge, alpha });
       }
     }
   }
@@ -564,7 +551,7 @@ export class TetrisRenderer {
         this.lockPulse = {
           cells: event.cells,
           elapsed: 0,
-          duration: this.options.reducedMotion ? 1 : 105,
+          duration: this.options.reducedMotion ? 1 : CELL_STYLE.lockFillDurationMs,
           piece: event.piece,
         };
       } else if (event.type === 'hard-dropped') {

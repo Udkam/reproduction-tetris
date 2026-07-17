@@ -1,40 +1,62 @@
 import { describe, expect, it } from 'vitest';
-import { CELL_STYLE, PIECE_MATERIALS } from './theme';
+import { CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
 
-describe('T5 bright precision-slab piece palette', () => {
+describe('T5 deep mineral matte material', () => {
   it('keeps the exact frozen four-value material for every piece', () => {
     expect(PIECE_MATERIALS).toEqual({
-      I: { fillStart: 0xff4f7b, fillEnd: 0xeb2f62, edge: 0x8a1838, innerEdge: 0xffb7c8 },
-      O: { fillStart: 0x00c9b7, fillEnd: 0x00a99d, edge: 0x056067, innerEdge: 0x9af5ea },
-      T: { fillStart: 0xffb020, fillEnd: 0xee8500, edge: 0x874500, innerEdge: 0xffe09a },
-      S: { fillStart: 0x6375ff, fillEnd: 0x4357e8, edge: 0x25328e, innerEdge: 0xc0c7ff },
-      Z: { fillStart: 0x8edb3f, fillEnd: 0x65b91e, edge: 0x376a12, innerEdge: 0xdbf7a0 },
-      J: { fillStart: 0xd75bff, fillEnd: 0xb838e8, edge: 0x69208a, innerEdge: 0xf0b5ff },
-      L: { fillStart: 0x24a8ff, fillEnd: 0x087edb, edge: 0x07518a, innerEdge: 0xa7ddff },
+      I: { fillStart: 0xae4761, fillEnd: 0xa1445a, edge: 0x542532, innerEdge: 0xc78a99 },
+      O: { fillStart: 0x3e988f, fillEnd: 0x347f78, edge: 0x204944, innerEdge: 0x80b9b4 },
+      T: { fillStart: 0xad7d43, fillEnd: 0x946c3c, edge: 0x503a22, innerEdge: 0xc6a078 },
+      S: { fillStart: 0x4f67b0, fillEnd: 0x5264a2, edge: 0x283653, innerEdge: 0x8795c2 },
+      Z: { fillStart: 0x759a4c, fillEnd: 0x637f43, edge: 0x3a4a2a, innerEdge: 0xa0b584 },
+      J: { fillStart: 0x8a53a2, fillEnd: 0x835294, edge: 0x432a4d, innerEdge: 0xaf8fba },
+      L: { fillStart: 0x43829d, fillEnd: 0x386e86, edge: 0x244452, innerEdge: 0x81aabb },
     });
   });
 
-  it('freezes the restrained slab, active aura, and fine ghost limits', () => {
+  it('freezes the complete page and state palette', () => {
+    expect(COLORS).toEqual({
+      page: 0x0b1422,
+      surface: 0x111d2e,
+      raised: 0x172538,
+      selected: 0x1d2d43,
+      well: 0x07101c,
+      text: 0xedf2f7,
+      muted: 0xaab5c4,
+      line: 0x34445a,
+      edge: 0x566981,
+      classic: 0x5a918b,
+      race: 0x6f87b7,
+      puzzle: 0x9a81a8,
+      selection: 0xb57686,
+      action: 0x365b8d,
+      hover: 0x426a9d,
+      focus: 0x9abce6,
+      success: 0x6f9a7d,
+      danger: 0xb16a78,
+      scrim: 0x07101c,
+    });
+  });
+
+  it('freezes the matte plate, signal edge, zero-fill ghost, and lock response', () => {
     expect(CELL_STYLE).toEqual({
       gapMin: 1.25,
       gapRatio: 0.055,
       radiusMin: 1.25,
-      radiusMax: 2.5,
-      radiusRatio: 0.085,
+      radiusMax: 1.75,
+      radiusRatio: 0.065,
       edgeWidthMin: 0.75,
-      edgeWidthMax: 1.1,
+      edgeWidthMax: 1,
       edgeWidthRatio: 0.032,
-      activeAuraExpand: 1.25,
-      activeAuraAlpha: 0.16,
-      activeAuraBlurStrength: 2.2,
-      activeAuraBlurQuality: 1,
-      activeAuraBlurKernelSize: 5,
       ghostInsetMin: 0.75,
       ghostInsetRatio: 0.045,
-      ghostFillAlpha: 0.03,
-      ghostStrokeAlpha: 0.68,
+      ghostStrokeAlpha: 0.45,
+      lockFillAlpha: 0.12,
+      lockFillDurationMs: 90,
     });
-    expect(CELL_STYLE.edgeWidthMax).toBeLessThanOrEqual(1.1);
-    expect(CELL_STYLE.ghostFillAlpha).toBeLessThanOrEqual(0.03);
+    expect(CELL_STYLE.radiusMax).toBeLessThanOrEqual(1.75);
+    expect(CELL_STYLE.edgeWidthMax).toBeLessThanOrEqual(1);
+    expect(CELL_STYLE.lockFillDurationMs).toBeGreaterThanOrEqual(80);
+    expect(CELL_STYLE.lockFillDurationMs).toBeLessThanOrEqual(100);
   });
 });
