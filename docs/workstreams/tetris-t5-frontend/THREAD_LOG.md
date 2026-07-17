@@ -407,3 +407,69 @@ coordinator documents, changelog, and evidence directories have no writer diff.
 - Push: not performed; the coordinator owns the push decision after QA.
 - Next: create the bounded two-path candidate commit and route its exact SHA to
   independent read-only QA.
+
+## 2026-07-17 — NARROW PUZZLE GOAL COPY FIX CANDIDATE READY
+
+- Task: `TETRIS-T5-FRONTEND-NARROW-COPY-FIX-005`.
+- Branch: `codex/tetris-recovery`.
+- Base SHA: `5881692786cbd1a9d8bbcba41e2e85f0234b7533`.
+- Intake: branch and HEAD matched the coordinator instruction and the working tree was
+  clean before the first source edit.
+- Bounded finding: at 360 × 800, the Puzzle target value did not fully preserve the
+  exact canonical text `清空完整棋盘` in its statistics cell.
+
+### Exact changed paths
+
+- `src/styles.css`
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`
+
+No tracked path outside this two-file boundary changed. `App.tsx`, renderer/theme,
+tests, Core/runtime/Puzzle data, `index.html`, dependencies, coordinator documents,
+changelog, and evidence directories have no writer diff.
+
+### Delivered correction
+
+- Added one `max-width: 365px` Puzzle-statistics grid override, assigning 40% to the
+  level/cleared column and 60% to the placed/target column.
+- Preserved the exact target copy, statistic-value size, component structure, and all
+  wider portrait, landscape, desktop, home, and library layouts. No scaling, hiding,
+  or font-size reduction was used.
+
+### Commands and evidence actually run
+
+- Ran the prescribed `develop-web-game` Playwright client against the Vite page with
+  the supplied `action_payloads.json`, visible `enter-marathon` control, two
+  iterations, and intentional pauses. It exited 0; the final state was Marathon,
+  playing, score 74, placed pieces 2, active S, and Next Z. Opened and inspected the
+  actual `shot-1.png`; the board, statistics, Next, and controls were visible.
+- Ran a real visible-control Puzzle matrix at 360 × 800 DPR1, 390 × 844 DPR3, and
+  844 × 390 DPR3. Each case selected and started `t3r-shaft-01`, then used a real
+  `touch-hard-drop` action; console/page errors and assertion failures were `[]`.
+- At 360 × 800 the target strong element reported exact text `清空完整棋盘`,
+  `clientWidth = scrollWidth = 131`, `clientHeight = scrollHeight = 22`, and
+  computed font size 18 px. At 390 × 844 it reported
+  `clientWidth = scrollWidth = 122` and 18 px. At 844 × 390 it reported
+  `clientWidth = scrollWidth = 113` and 18 px.
+- Across all three viewports, statistic labels were 14 px, statistic values were
+  18 px, all five touch labels were 12 px, the minimum visible button was 44 × 44 px,
+  document overflow was zero, exactly one gameplay canvas was present, and gameplay
+  DOM cells were zero. Board geometry remained 2:1: 266 × 532, 288 × 576, and
+  129 × 258 px respectively.
+- Opened and visually inspected the actual `narrow-puzzle.png`,
+  `portrait-puzzle.png`, and `landscape-puzzle.png` captures under the ignored
+  `.local/t5-narrow-slice/screenshots/` directory. The complete target copy was
+  readable, and the board, statistics, Next, and controls showed no clipping or
+  overlap.
+- After the final product source change, exactly one final
+  `npm.cmd run typecheck` — PASS.
+- After the final product source change, exactly one final `npm.cmd run test` — PASS,
+  38 files / 238 tests.
+- After the final product source change, exactly one final `npm.cmd run build` — PASS;
+  Vite transformed 739 modules.
+
+### Handoff
+
+- Blocker: none.
+- Push: not performed; the coordinator owns the push decision after independent QA.
+- Next: create the bounded two-path candidate commit and route its exact SHA to
+  independent read-only QA.

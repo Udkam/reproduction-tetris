@@ -1506,6 +1506,10 @@ p {
 }
 
 @media (max-width: 365px) {
+  .run-stats--puzzle {
+    grid-template-columns: minmax(0, 40%) minmax(0, 60%);
+  }
+
   .landing-stage {
     grid-template-rows: 154px minmax(0, 1fr);
   }
