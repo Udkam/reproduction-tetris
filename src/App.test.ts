@@ -60,6 +60,17 @@ describe('T5 frontend campaign binding', () => {
     expect(view.container.textContent).not.toContain('马拉松');
     expect(view.container.querySelector('[aria-label="经典方块示意"]')).not.toBeNull();
 
+    for (const selector of ['enter-marathon', 'enter-race', 'enter-puzzle']) {
+      const entry = view.container.querySelector<HTMLButtonElement>(`[data-testid="${selector}"]`);
+      act(() => entry?.focus());
+      const materialPaths = [...view.container.querySelectorAll<SVGPathElement>('.mode-signal path[data-piece-type]')];
+      const pieceTypes = materialPaths.map((path) => path.dataset.pieceType);
+      expect(materialPaths).toHaveLength(2);
+      expect(new Set(pieceTypes).size).toBe(materialPaths.length);
+      expect(materialPaths.every((path) => path.getAttribute('fill')?.startsWith('url(#mode-signal-'))).toBe(true);
+      expect(materialPaths.every((path) => /^#[0-9a-f]{6}$/.test(path.getAttribute('stroke') ?? ''))).toBe(true);
+    }
+
     act(() => classic?.click());
     expect(onEnter).toHaveBeenCalledWith('marathon');
     view.unmount();

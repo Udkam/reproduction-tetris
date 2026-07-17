@@ -59,6 +59,12 @@ const MODE_SIGNAL_CELLS: Record<GameMode, readonly (readonly [number, number])[]
   puzzle: [[0, 1], [1, 1], [2, 1], [2, 0]],
 };
 
+const MODE_SIGNAL_TYPES: Record<GameMode, readonly PieceType[]> = {
+  marathon: ['O', 'O', 'L', 'L'],
+  race: ['S', 'S', 'J', 'J'],
+  puzzle: ['J', 'J', 'J', 'I'],
+};
+
 export function cloneQaState(state: GameState): GameState {
   return structuredClone(state);
 }
@@ -111,24 +117,34 @@ function Brand({ compact = false }: { compact?: boolean }) {
 }
 
 function ModeSignal({ mode }: { mode: GameMode }) {
+  const paths = new Map<PieceType, string>();
+  MODE_SIGNAL_CELLS[mode].forEach(([x, y], index) => {
+    const type = MODE_SIGNAL_TYPES[mode][index]!;
+    const segment = `M${x * 36} ${y * 36}h32v32h-32z`;
+    paths.set(type, `${paths.get(type) ?? ''}${segment}`);
+  });
   return (
     <svg className={`mode-signal mode-signal--${mode}`} viewBox="0 0 152 104" role="img" aria-label={`${MODE_COPY[mode].label}方块示意`}>
       <defs>
-        <linearGradient id="mode-signal-fill" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#e7f7fa" />
-          <stop offset="1" stopColor="#dfefff" />
-        </linearGradient>
+        {[...paths].map(([type]) => {
+          const material = PIECE_MATERIALS[type];
+          return (
+            <linearGradient key={type} id={`mode-signal-${mode}-${type}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor={cssHex(material.fillStart)} />
+              <stop offset="1" stopColor={cssHex(material.fillEnd)} />
+            </linearGradient>
+          );
+        })}
       </defs>
       <g transform="translate(22 18)">
-        {MODE_SIGNAL_CELLS[mode].map(([x, y], index) => (
-          <rect
-            key={`${x}:${y}`}
-            className={`mode-signal__cell mode-signal__cell--${index + 1}`}
-            x={x * 36}
-            y={y * 36}
-            width="32"
-            height="32"
-            rx="3"
+        {[...paths].map(([type, path]) => (
+          <path
+            key={type}
+            className="mode-signal__cell"
+            data-piece-type={type}
+            d={path}
+            fill={`url(#mode-signal-${mode}-${type})`}
+            stroke={cssHex(PIECE_MATERIALS[type].edge)}
           />
         ))}
       </g>
@@ -269,7 +285,7 @@ export function PuzzleLibrary({
       </header>
       <section className="library-intro" aria-labelledby="library-title">
         <h1 id="library-title">解谜关卡</h1>
-        <p>{CAMPAIGN_LEVELS.length} 关全部开放。方块持续补充，操作与普通模式一致；目标是清空完整棋盘。</p>
+        <p>{CAMPAIGN_LEVELS.length} 关全部开放。持续出块，规则与经典一致；清空完整棋盘。</p>
       </section>
       <section className="library-content" aria-label="全部解谜关卡">
         <div className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个可用解谜关卡`} data-testid="level-list">
@@ -289,7 +305,7 @@ export function PuzzleLibrary({
                   <span className="level-entry__number">{String(level.index).padStart(2, '0')}</span>
                   <span className="level-entry__copy">
                     <strong>{level.name}</strong>
-                    <small>清空棋盘 · 七袋持续{complete ? ' · 已完成' : ''}</small>
+                    <small>清空棋盘{complete ? ' · 已完成' : ''}</small>
                   </span>
                   <span className="level-entry__chevron" aria-hidden="true">›</span>
                 </button>

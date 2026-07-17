@@ -610,3 +610,151 @@ configuration, `index.html`, coordinator documents, changelog, or formal evidenc
   decision.
 - Next: create the single bounded candidate commit and route its exact SHA to
   independent read-only frontend QA before any formal evidence or changelog update.
+
+## 2026-07-17 — PREMIUM SPECTRAL SURFACE AND BRIGHT BLOCK CANDIDATE READY
+
+- Task: `TETRIS-T5-PREMIUM-BRIGHT-BLOCKS-008`.
+- Branch: `codex/tetris-recovery`.
+- Writer base / final parent before candidate:
+  `5114a08614e6b9c2b5c66923164f7c220143d3e8`.
+- Intake: the branch matched the coordinator instruction. The coordinator committed
+  the final spectral-glass contract while the writer's three bounded renderer/theme
+  paths were dirty; those paths remained intact and no source collision occurred.
+- Skills followed: `frontend-design` supplied the restrained spectral-glass hierarchy
+  and continuous-surface polish. `develop-web-game` supplied the required original
+  Playwright client and action payload. Its normal `progress.md` write was replaced by
+  this authorized workstream log because Slice I forbids writer edits to
+  `progress.md`.
+- Candidate identity: the single bounded commit created from this recorded tree; its
+  exact SHA is returned to the coordinator with this log.
+
+### Exact changed paths
+
+- `src/App.tsx`
+- `src/App.test.ts`
+- `src/styles.css`
+- `src/game/render/theme.ts`
+- `src/game/render/theme.test.ts`
+- `src/game/render/TetrisRenderer.ts`
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md`
+
+No writer diff exists in Core/Puzzle definitions, references or routes,
+`puzzleProgress.ts`, presentation/runtime/input/audio, dependencies or build config,
+`index.html`, coordinator documents, changelog, or formal evidence.
+
+### Delivered visual replacement
+
+- Replaced all 28 muted material values with the exact bright luminous-spectrum table
+  frozen in `DESIGN.md`. Theme regression now freezes every palette value plus the
+  complete precision-slab style token object.
+- Replaced the rounded double-outline plate with one Board/Next slab primitive:
+  1.25–2.5 px radius, one 0.75–1.1 px same-hue dark edge, no locked inner perimeter,
+  no highlight/lip/shadow, and no ceramic, candy, mineral, or plastic bevel.
+- Added a separate active-aura layer using the material `innerEdge` as one low-alpha
+  blurred fill behind the slab, so the active cue is soft rather than a second stroke.
+  The layer follows mode-switch alpha and its Pixi filter is explicitly destroyed.
+  Locked cells remain flat; the short lock pulse is the only other `innerEdge` use.
+- Ghost uses one complete fine outline and a maximum configured 3% fill. At the
+  production draw alpha its actual fill is 2.46%. Board and Next continue to share
+  the same fill-gradient cache and exact drawing primitive.
+- Rebuilt the selected-mode composition as at most one SVG path per present piece type
+  and bound its fill, gradient, and edge directly to the bright shared material map.
+  Canonical Puzzle silhouettes retain the same one-path-per-type rule and create no
+  gameplay DOM cell grid.
+- Applied the exact spectral-glass page tokens: ice `#F5F7FF`, ink `#081426`, muted
+  `#52627A`, hairline `#B9CBE4`, cyan `#00BFC8`, cobalt `#4767F5`, violet
+  `#8A5CF6`, and small coral `#FF5B7C`. The background contains only three broad
+  low-opacity light fields and the phase seam is the single three-stop spectral rail.
+- Kept the frozen bright accents as visual signals while deriving darker action
+  tokens for white control text: cyan action `#087B88` measures 5.00:1, blue action
+  `#3653C9` measures 6.49:1, and violet action `#6845CE` measures 6.30:1. The final
+  CTA, pause, and active-touch gradients use those accessible action tokens rather
+  than white text on the much lighter decorative accents.
+- Preserved the light 1+2 mode structure while giving Classic cyan/cobalt, Race
+  cobalt/violet, and Puzzle violet with restrained coral selection treatment. No dark
+  neon, page grid, telemetry, marketing hero, external asset/font, or uncontrolled
+  rainbow was added.
+- Replaced the Puzzle table wall with an unboxed continuous 3 × 5 / 2-column selector,
+  shorter one-line secondary copy, a clear coral selected rail, and a denser detail
+  instrument. On 360/390 the fifteenth odd entry spans both columns and the selected
+  detail remains a following sibling outside the list.
+- The selected level uses a 3 px `#C62C50` inset rail whose contrast is approximately
+  4.80:1–5.06:1 across the allowed soft selected backgrounds. Exact bright coral is
+  limited to a 5 px signal dot, while 800-weight title text provides a non-color
+  selection cue. Final compact-mode preflight also tightened the 390/360 home rows so
+  all three mode entries fit the first viewport with no overflow.
+- Unified statistics, Next, keyboard context, and the five ordered controls into one
+  continuous instrument surface. Internal repeated card shadows/radii were removed;
+  all stable selectors, labels, action order, complete goal, and responsive type/touch
+  floors remain unchanged.
+
+### Commands and results actually run
+
+- Renderer/theme targeted
+  `npm.cmd run test -- src/game/render/theme.test.ts src/game/runtime/GameRuntime.test.ts`
+  — PASS, 4 files / 13 tests.
+- Page/theme/runtime targeted
+  `npm.cmd run test -- src/App.test.ts src/game/render/theme.test.ts src/game/runtime/GameRuntime.test.ts`
+  — PASS, 5 files / 16 tests. jsdom printed only its known non-failing Canvas
+  `getContext()` diagnostic.
+- Intermediate `npm.cmd run typecheck` after the filtered-aura integration — PASS.
+- Ran the prescribed original `develop-web-game` Playwright client with the supplied
+  `action_payloads.json` after both renderer and complete page changes. The final
+  three-iteration pass reached score 106 / placed pieces 3 / active Z / Next L; its
+  final canvas capture was opened at original detail and no error artifact appeared.
+- An earlier all-green gate set was treated as pre-final after subsequent compact
+  mobile, action-contrast, and selected-state CSS corrections. The final-gate count
+  was restarted after the actual last product-source change; no result from the
+  earlier set is being claimed as final evidence.
+- After the final product source change, exactly one final
+  `npm.cmd run typecheck` — PASS.
+- After the final product source change, exactly one final `npm.cmd run test` — PASS:
+  40 files total, 39 passed / 1 skipped; 253 tests total, 252 passed / 1 skipped.
+- After the final product source change, exactly one final `npm.cmd run build` — PASS;
+  Vite transformed 739 modules.
+- Final browser matrix covered 1440 × 900, 1024 × 768, 844 × 390 DPR3,
+  390 × 844 DPR3, and 360 × 800 DPR3. Results are in ignored
+  `.local/premium-writer/final-matrix/results.json`.
+- The first combined-matrix attempt stopped only because its temporary harness used
+  exact subpixel equality for mobile detail/list bounds. Direct measurement showed
+  both at the same boundary; the ignored harness was corrected to prove DOM-following
+  order plus a 1 px render tolerance. No product file changed, and the complete rerun
+  passed.
+
+### Final browser evidence inspected
+
+- Every home showed all three mode controls inside the first viewport, visible
+  `经典`, one 72 × 2 px / 220 ms phase seam, zero canvases, and no page overflow.
+- At 390 × 844 and 360 × 800, the compact home stage measured 488 px and 476 px high
+  respectively; all three mode rows remained fully visible in the first viewport.
+- Libraries used 3 columns × 5 rows at 1440/1024/844 and 2 columns × 8 rows at
+  390/360. All fifteen buttons were enabled, unclipped, and at least 44 px high;
+  library-only portrait scroll was intentional. The fifteenth row spans both mobile
+  columns, and selected detail is outside and after the list.
+- Real visible controls selected and started the first, eighth, and fifteenth levels
+  in all five viewports. Canonical IDs, names, active/Next values, and all seven locked
+  colors matched; home/library had zero canvases and gameplay had exactly one canvas
+  plus zero DOM cells.
+- Gameplay had no horizontal or vertical overflow. Statistic labels were at least
+  14 px, values at least 18 px, touch labels at least 12 px, and visible buttons at
+  least 44 px. The complete `清空完整棋盘` measured client/scroll widths 195/195,
+  115/115, 123/123, and 132/132 across the responsive cases.
+- Desktop lifecycle remained one canvas → zero on confirmed home exit → one after
+  re-entry. Live reduced-motion switching preserved the detached canonical state.
+  All console/page error arrays were empty.
+- All fifteen final PNGs — `{desktop,tablet,landscape,portrait,narrow}` ×
+  `{home,library,level-08}` — under
+  `.local/premium-writer/final-matrix/` were individually opened with original detail.
+  They show the bright precision slabs, shared-material Next, complete mobile goal,
+  unboxed selector, explicit selection, and non-overlapping continuous controls.
+- This complete five-viewport matrix was rerun only after the corrected final source
+  gates, regenerating `results.json` and all fifteen captures from the same frozen
+  candidate tree.
+
+### Handoff
+
+- Blocker: none.
+- Push: not performed; the coordinator owns QA routing, formal evidence, changelog,
+  and push decisions.
+- Next: create the single bounded candidate commit and route its exact SHA to
+  independent read-only functional and visual QA.
