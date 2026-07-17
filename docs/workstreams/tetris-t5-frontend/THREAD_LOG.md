@@ -915,3 +915,137 @@ diff is removal of the rejected spectral surface, not a bundled second subsystem
 - Push: not performed; coordinator owns independent QA, changelog, integration, and push.
 - Next: independent read-only QA should audit ordered source range
   `5d572c5^..1b1bfdb` against this log and the ignored final matrix.
+
+## 2026-07-17 — COHESIVE MINERAL / TYPE / DIVIDER REPAIR CANDIDATE READY
+
+### Intake and ownership
+
+- Task: `TETRIS-T5-MINERAL-TYPE-DIVIDER-011`.
+- Branch: `codex/tetris-recovery`.
+- Contract/base SHA: `41b29ab08a06bfb51ebdc80b054f625281876f6c`.
+- Intake status: clean; the writer remained the sole owner of the bounded frontend and
+  renderer repair paths.
+- Product source is frozen at `e38c55c`; the ordered source range for independent QA is
+  `41b29ab08a06bfb51ebdc80b054f625281876f6c..e38c55c`.
+- `frontend-design` guided the restrained cohesive-mineral, typography, and continuous
+  divider repair. `develop-web-game` supplied the prescribed action client and browser
+  inspection loop. Its ordinary `progress.md` update was replaced by this authorized
+  workstream log; `progress.md` was not edited.
+
+### Ordered product checkpoints and exact changed paths
+
+1. `2dfcee1` — `feat: render cohesive mineral tetrominoes`
+   - `src/App.tsx`
+   - `src/App.test.ts`
+   - `src/game/render/TetrisRenderer.ts`
+   - `src/game/render/presentation.ts`
+   - `src/game/render/presentation.test.ts`
+   - `src/game/render/theme.ts`
+   - `src/game/render/theme.test.ts`
+2. `e38c55c` — `fix: restore responsive type and panels`
+   - `src/styles.css`
+
+This log is the only post-source path. Core/Puzzle definitions, campaign
+references/routes, progress persistence, runtime/input/audio, dependencies/build
+configuration, coordinator documents, changelog, `progress.md`, and formal evidence
+remain untouched. No generated browser artifact is part of the candidate.
+
+### Delivered repair contract
+
+- Added pure orthogonal component grouping and exposed-edge helpers, then used them for
+  active, locked, Next, and Ghost presentation. Each tetromino now reads as one cohesive
+  mineral silhouette with restrained directional relief and only faint internal joins;
+  Board and Next continue to share the same material language.
+- Ghost now draws only the complete exterior perimeter of the grouped piece. The
+  nine-tick clear presentation keeps the locked stack coherent through the real
+  `line-clear` phase and restores the fragmented post-clear board without detached
+  cell-card treatment.
+- Kept exactly one gameplay canvas and no DOM cell grid. The direct App regression and
+  renderer presentation/theme tests freeze the cohesive silhouette, boundary grouping,
+  Ghost perimeter, and clear-phase behavior without entering Core.
+- Restored the exact Google CSS import for Space Grotesk and Noto Sans SC, followed by
+  `Segoe UI`, `Microsoft YaHei UI`, `PingFang SC`, system UI, and sans-serif fallbacks.
+  The same fallback stack remains readable when the Google request is deliberately
+  blocked.
+- Repaired the role-based continuous panel divider topology, the 4 px / 180 ms surface
+  entrance, and compact game composition. Mobile and 844 × 390 landscape keep Next and
+  keyboard context visible; the complete goal, controls, board, and responsive type
+  no longer clip or overflow.
+
+### Commands and results actually run
+
+- Intermediate `npm.cmd run typecheck` — PASS.
+- Targeted
+  `npm.cmd run test -- src/App.test.ts src/game/render/theme.test.ts src/game/render/presentation.test.ts src/game/runtime/GameRuntime.test.ts`
+  — PASS, 8 files / 31 tests.
+- Ran the prescribed renderer action client with the installed skill's supplied
+  `action_payloads.json`; the resulting real three-piece board was opened at original
+  detail and passed coordinator visual review for cohesive active/locked/Next material,
+  exterior-only Ghost, and restrained relief.
+- After the actual last product-source change, exactly one final
+  `npm.cmd run typecheck` — PASS.
+- After the actual last product-source change, exactly one final `npm.cmd run test`
+  — PASS: 40 files total, 39 passed / 1 skipped; 257 tests total,
+  255 passed / 2 skipped. jsdom printed only its known non-failing Canvas
+  `getContext()` diagnostic.
+- After the actual last product-source change, exactly one final `npm.cmd run build`
+  — PASS; Vite transformed 739 modules.
+- Final prescribed action command:
+  `node 'C:\Users\Alex Chen\.codex\skills\develop-web-game\scripts\web_game_playwright_client.js' --url http://127.0.0.1:4173/ --actions-file 'C:\Users\Alex Chen\.codex\skills\develop-web-game\references\action_payloads.json' --click-selector '[data-testid="enter-marathon"]' --iterations 3 --pause-ms 250 --screenshot-dir '.local\slice-kr-writer\final-action-client'`
+  — PASS; final state was Marathon/playing, score 98, placed pieces 3, with no error
+  artifact.
+- Fresh loaded-font and blocked-font matrix commands used only the ignored harness:
+  `node .local\slice-kr-writer\layout-preflight.mjs` and
+  `node .local\slice-kr-writer\layout-preflight.mjs fallback` — PASS.
+- All-level and real-clear command:
+  `node .local\slice-kr-writer\all15-postclear.mjs` — final bounded rerun PASS. The
+  first run reached and captured the real clear but the ignored harness read phase only
+  after PNG encoding consumed the 200 ms Core clear interval (`actual 'active'`,
+  `expected 'line-clear'`). It was corrected to retain the already-read locked state
+  before capture; no product source changed.
+- Every product checkpoint staged exact paths, inspected the cached path list, and
+  passed `git diff --cached --check`. No push was performed.
+
+### Final browser evidence inspected
+
+- Loaded-font and blocked-font outputs are under ignored
+  `.local/slice-kr-writer/layout-preflight/`, with `metrics.json` in each root and the
+  blocked-font run under `fallback/`. The matrix covers 1440 × 900 DPR1,
+  2048 × 1152 DPR1, 390 × 844 DPR3, 844 × 390 DPR3, and 360 × 800 DPR1 across home,
+  library, Classic, Race, and Puzzle.
+- All 15 gameplay rows in both font conditions had body/key/goal width overflow 0,
+  exact 2:1 board geometry, one valid canvas, and unexpected errors `[]`. Loaded pages
+  resolved Space Grotesk and Noto Sans SC in all 15 gameplay cases; fallback pages
+  deliberately blocked all 15 Google CSS requests and remained geometrically and
+  typographically valid.
+- The final 844 × 390 keyboard panel measured scroll/client widths 265/265, the board
+  measured 129 × 258, and Next remained visible at 67 × 72. The 360 Puzzle goal kept
+  equal scroll/client widths at 18 px. Desktop and compact Classic/Race/Puzzle dividers
+  had no doubled, half-width, or dangling boundary.
+- The prescribed action artifacts are
+  `.local/slice-kr-writer/final-action-client/shot-2.png` and `state-2.json`.
+  The renderer review artifact is
+  `.local/slice-kr-writer/renderer-client-game/shot-1.png`. Each relevant final capture
+  was opened at original detail.
+- All-level and real-clear outputs are under ignored
+  `.local/slice-kr-writer/all15-postclear/`; `results.json` records the assertions.
+  Desktop 1440 and mobile 390 DPR3 each selected and started all fifteen levels through
+  visible controls. Every level matched its exact Puzzle ID and authored active/Next
+  pair, exposed all seven locked types `IJLOSTZ`, used one canvas and zero DOM cells,
+  kept exact 2:1 board geometry, had no overflow, and recorded errors `[]`.
+- All thirty level PNGs were individually opened at original detail. They show varied
+  authored stacks, cohesive locked/active/Next pieces, complete exterior Ghosts, and
+  intact desktop/mobile controls and copy.
+- The real Level 1 route reached its first clear at lock 1 on both sizes. Captured clear
+  state was `phase = line-clear`, `lines = 0`, `placedPieces = 1`, `active = null`,
+  `next = L`; post-clear state was `phase = active`, `lines = 1`,
+  `placedPieces = 1`, `active = L`, `next = O`. Desktop and mobile line-clear/post-clear
+  PNGs were opened at original detail and visibly agree with those canonical states.
+
+### Handoff
+
+- Blocker: none.
+- Push: not performed; coordinator owns acceptance, changelog, and push.
+- Next: independent read-only static/functional and visual QA audits exact source range
+  `41b29ab08a06bfb51ebdc80b054f625281876f6c..e38c55c`; if accepted, the coordinator
+  records the changelog disposition and pushes the branch.
