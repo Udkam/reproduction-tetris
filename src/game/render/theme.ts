@@ -18,6 +18,7 @@ export const CELL_STYLE = {
   edgeWidthRatio: 0.032,
   ghostInsetMin: 0.75,
   ghostInsetRatio: 0.045,
+  ghostStrokeWidth: 1,
   ghostStrokeAlpha: 0.45,
   lockFillAlpha: 0.12,
   lockFillDurationMs: 90,

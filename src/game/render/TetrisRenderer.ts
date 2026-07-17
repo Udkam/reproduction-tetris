@@ -414,13 +414,13 @@ export class TetrisRenderer {
       CELL_STYLE.radiusMin,
       Math.min(CELL_STYLE.radiusMax, ghostSize * CELL_STYLE.radiusRatio),
     );
-    const borderWidth = Math.max(
-      CELL_STYLE.edgeWidthMin,
-      Math.min(CELL_STYLE.edgeWidthMax, size * CELL_STYLE.edgeWidthRatio),
-    );
     graphics
       .roundRect(x + inset, y + inset, ghostSize, ghostSize, radius)
-      .stroke({ color: material.innerEdge, alpha: Math.min(CELL_STYLE.ghostStrokeAlpha, alpha), width: borderWidth });
+      .stroke({
+        color: material.innerEdge,
+        alpha: Math.min(CELL_STYLE.ghostStrokeAlpha, alpha),
+        width: CELL_STYLE.ghostStrokeWidth,
+      });
   }
 
   private drawEffects(state: GameState, layout: BoardLayout): void {

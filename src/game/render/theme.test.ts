@@ -50,12 +50,14 @@ describe('T5 deep mineral matte material', () => {
       edgeWidthRatio: 0.032,
       ghostInsetMin: 0.75,
       ghostInsetRatio: 0.045,
+      ghostStrokeWidth: 1,
       ghostStrokeAlpha: 0.45,
       lockFillAlpha: 0.12,
       lockFillDurationMs: 90,
     });
     expect(CELL_STYLE.radiusMax).toBeLessThanOrEqual(1.75);
     expect(CELL_STYLE.edgeWidthMax).toBeLessThanOrEqual(1);
+    expect(CELL_STYLE.ghostStrokeWidth).toBe(1);
     expect(CELL_STYLE.lockFillDurationMs).toBeGreaterThanOrEqual(80);
     expect(CELL_STYLE.lockFillDurationMs).toBeLessThanOrEqual(100);
   });
