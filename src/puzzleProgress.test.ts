@@ -4,7 +4,8 @@ import { createInitialState, dispatch, type GameCommand, type GameState, type Pu
 import {
   CAMPAIGN_LEVELS,
   defaultPuzzleProgress,
-  isPuzzleUnlocked,
+  isPuzzleComplete,
+  migrateLegacyPuzzleProgress,
   parsePuzzleProgress,
   recordCanonicalPuzzleCompletion,
 } from './puzzleProgress';
@@ -41,29 +42,38 @@ function completeFirstT5Puzzle(): GameState {
   return state;
 }
 
-describe('T5 puzzle campaign presentation data', () => {
-  it('binds the six T5 fixture IDs and labels without restoring numeric difficulty authority', () => {
+describe('T5 puzzle completion presentation data', () => {
+  it('binds all six T5 levels without difficulty or availability gates', () => {
     expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name, level.index, level.total])).toEqual(
       t5Levels.map((level, index) => [level.id, level.name, index + 1, t5Levels.length]),
     );
-    expect(CAMPAIGN_LEVELS.every((level) => level.difficulty === undefined)).toBe(true);
+    expect(CAMPAIGN_LEVELS).toHaveLength(6);
+    expect(CAMPAIGN_LEVELS.every((level) => !('difficulty' in level))).toBe(true);
   });
 
-  it('fails closed to only level one for malformed, obsolete, and unknown storage', () => {
-    for (const raw of [null, '{', '[]', '{"version":0,"nextUnlockedLevelId":"t3r-shaft-06"}', '{"version":1,"nextUnlockedLevelId":"offset-01"}']) {
-      const progress = parsePuzzleProgress(raw);
-      expect(progress).toEqual(defaultPuzzleProgress());
-      expect(isPuzzleUnlocked(progress, 't3r-shaft-01')).toBe(true);
-      expect(isPuzzleUnlocked(progress, 't3r-shaft-02')).toBe(false);
+  it('reads completion-only v2 data in campaign order and fails closed on malformed entries', () => {
+    expect(parsePuzzleProgress('{"version":2,"completedLevelIds":["t3r-shaft-03","t3r-shaft-01","t3r-shaft-03"]}')).toEqual({
+      version: 2,
+      completedLevelIds: ['t3r-shaft-01', 't3r-shaft-03'],
+    });
+    for (const raw of [null, '{', '[]', '{"version":1,"completedLevelIds":[]}', '{"version":2,"completedLevelIds":["offset-01"]}']) {
+      expect(parsePuzzleProgress(raw)).toEqual(defaultPuzzleProgress());
     }
   });
 
-  it('advances only from a real canonical completion and never from failures or a locked run', () => {
-    const state = completeFirstT5Puzzle();
+  it('safely migrates the old highest-unlocked marker into prior completions only', () => {
+    expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":"t3r-shaft-04"}')).toEqual({
+      version: 2,
+      completedLevelIds: ['t3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03'],
+    });
+    expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":"offset-01"}')).toEqual(defaultPuzzleProgress());
+  });
 
+  it('records a real canonical completion once and ignores non-success states', () => {
+    const state = completeFirstT5Puzzle();
     const progressed = recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), state);
-    expect(progressed.nextUnlockedLevelId).toBe('t3r-shaft-02');
-    expect(recordCanonicalPuzzleCompletion(progressed, { ...state, puzzleCompletion: 'failed-top-out' })).toBe(progressed);
-    expect(recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), { ...state, completedLevelId: 't3r-shaft-04', nextUnlockedLevelId: 't3r-cascade-05' })).toEqual(defaultPuzzleProgress());
+    expect(isPuzzleComplete(progressed, 't3r-shaft-01')).toBe(true);
+    expect(recordCanonicalPuzzleCompletion(progressed, state)).toBe(progressed);
+    expect(recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), { ...state, puzzleCompletion: 'failed-top-out' })).toEqual(defaultPuzzleProgress());
   });
 });

@@ -77,7 +77,7 @@ export class TetrisRenderer {
   private readonly effectGraphics = new Graphics();
   private readonly labels = new Container();
   private readonly nextLabel = new Text({
-    text: '下一个方块',
+    text: 'NEXT / 下一个',
     style: { fontFamily: 'Microsoft YaHei, sans-serif', fontSize: 12, fill: COLORS.muted },
   });
 
@@ -123,7 +123,7 @@ export class TetrisRenderer {
       preference: 'webgl',
     });
     app.canvas.dataset.testid = 'game-canvas';
-    app.canvas.setAttribute('aria-label', 'Tetris 棋盘');
+    app.canvas.setAttribute('aria-label', '青流方阵 10 × 20 游戏棋盘');
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
@@ -235,25 +235,55 @@ export class TetrisRenderer {
   private drawBoard(state: GameState, layout: BoardLayout): void {
     const graphics = this.boardGraphics;
     graphics.clear();
-    const pulse = this.options.reducedMotion ? 0 : this.impact;
-    const foot = Math.max(4, layout.cell * 0.22);
+    const cut = Math.min(12, layout.cell * 0.42);
+    const outline = [
+      layout.x,
+      layout.y,
+      layout.x + layout.width - cut,
+      layout.y,
+      layout.x + layout.width,
+      layout.y + cut,
+      layout.x + layout.width,
+      layout.y + layout.height,
+      layout.x + cut,
+      layout.y + layout.height,
+      layout.x,
+      layout.y + layout.height - cut,
+    ];
     graphics
-      .rect(layout.x, layout.y, layout.width, layout.height)
-      .fill({ color: COLORS.mineralHighlight, alpha: 1 });
+      .poly(outline, true)
+      .fill({ color: COLORS.well, alpha: 1 })
+      .stroke({ color: COLORS.edge, width: Math.max(1.5, layout.cell * 0.065) });
+
+    for (let column = 1; column < BOARD_WIDTH; column += 1) {
+      const x = layout.x + column * layout.cell;
+      graphics.moveTo(x, layout.y + 1).lineTo(x, layout.y + layout.height - 1)
+        .stroke({ color: COLORS.grid, alpha: 0.62, width: 1 });
+    }
+    for (let row = 1; row < VISIBLE_HEIGHT; row += 1) {
+      const y = layout.y + row * layout.cell;
+      graphics.moveTo(layout.x + 1, y).lineTo(layout.x + layout.width - 1, y)
+        .stroke({ color: COLORS.grid, alpha: 0.62, width: 1 });
+    }
+    for (let column = 0; column <= BOARD_WIDTH; column += 5) {
+      const x = layout.x + column * layout.cell;
+      graphics.moveTo(x, layout.y).lineTo(x, layout.y + Math.min(6, layout.cell * 0.25))
+        .stroke({ color: COLORS.cyan, alpha: 0.92, width: 1.5 });
+    }
+    for (let row = 0; row <= VISIBLE_HEIGHT; row += 5) {
+      const y = layout.y + row * layout.cell;
+      graphics.moveTo(layout.x, y).lineTo(layout.x + Math.min(6, layout.cell * 0.25), y)
+        .stroke({ color: COLORS.blue, alpha: 0.82, width: 1.5 });
+    }
     graphics
-      .rect(layout.x + 1, layout.y + 1, layout.width - foot - 2, layout.height - foot - 2)
-      .fill({ color: COLORS.well, alpha: 1 });
-    graphics
-      .rect(layout.x, layout.y + layout.height - foot, layout.width - foot, foot)
-      .fill({ color: COLORS.danger, alpha: 0.94 + pulse * 0.04 });
-    graphics
-      .rect(layout.x + layout.width - foot, layout.y + foot, foot, layout.height - foot)
-      .fill({ color: COLORS.signal, alpha: 0.94 + pulse * 0.04 });
-    graphics.rect(layout.x, layout.y, layout.width - foot, layout.height - foot).stroke({ color: COLORS.edge, width: 1 });
+      .moveTo(layout.x + layout.width - 3, layout.y + cut)
+      .lineTo(layout.x + layout.width - 3, layout.y + layout.height * 0.64)
+      .lineTo(layout.x + layout.width - layout.cell * 1.4, layout.y + layout.height * 0.64)
+      .stroke({ color: COLORS.cyan, alpha: 0.76, width: 2 });
     this.scrimBounds = null;
     if (state.status === 'paused' || state.status === 'game-over' || state.status === 'finished' || this.options.modeSwitch) {
       const alpha = state.status === 'paused' ? 0.22 : this.options.modeSwitch ? 0.38 : 0.16;
-      graphics.rect(layout.x, layout.y, layout.width - foot, layout.height - foot).fill({ color: COLORS.mineralDeep, alpha });
+      graphics.poly(outline, true).fill({ color: COLORS.scrim, alpha });
       this.scrimBounds = { x: layout.x, y: layout.y, width: layout.width, height: layout.height };
     }
   }
@@ -281,7 +311,8 @@ export class TetrisRenderer {
           false,
           0,
           0,
-          1 - clearProgress * 0.72,
+          false,
+          this.options.reducedMotion ? 1 : 1 - clearProgress * 0.72,
         );
       });
     });
@@ -311,7 +342,7 @@ export class TetrisRenderer {
       const ghostOffsetX = this.presentation && state.active
         ? (this.presentation.x - state.active.x) * layout.cell
         : 0;
-      this.drawCell(graphics, layout, cell.x, cell.y - VISIBLE_START_ROW, state.active!.type, 0.36, true, ghostOffsetX, 0);
+      this.drawCell(graphics, layout, cell.x, cell.y - VISIBLE_START_ROW, state.active!.type, 0.82, true, ghostOffsetX, 0);
     }
 
     const offsetX = this.presentation && state.active && !this.options.reducedMotion
@@ -333,6 +364,7 @@ export class TetrisRenderer {
         false,
         offsetX,
         offsetY,
+        true,
         rotationScale,
       );
     }
@@ -352,33 +384,64 @@ export class TetrisRenderer {
     ghost: boolean,
     offsetX: number,
     offsetY: number,
+    active = false,
     scale = 1,
   ): void {
-    const material = PIECE_MATERIALS[type];
     const gap = Math.max(1.25, layout.cell * 0.055);
     const size = (layout.cell - gap * 2) * scale;
     const scaleInset = (layout.cell - gap * 2 - size) / 2;
     const x = layout.x + gridX * layout.cell + gap + scaleInset + offsetX;
     const y = layout.y + gridY * layout.cell + gap + scaleInset + offsetY;
     if (ghost) {
-      graphics
-        .rect(x, y, size, size)
-        .fill({ color: material.outer, alpha: alpha * 0.08 })
-        .stroke({ color: material.inner, alpha, width: Math.max(1, layout.cell * 0.045) });
+      this.drawGhostCorners(graphics, x, y, size, type, alpha);
       return;
     }
+    this.drawFlatCell(graphics, x, y, size, type, alpha, active);
+  }
 
-    const shadowOffset = Math.max(1, layout.cell * 0.09);
-    graphics.rect(x + shadowOffset, y + shadowOffset, size, size).fill({ color: COLORS.mineralDeep, alpha: alpha * 0.46 });
-    graphics.rect(x, y, size, size).fill({ color: material.outer, alpha });
-    const inset = Math.max(2, layout.cell * 0.09);
+  private drawFlatCell(
+    graphics: Graphics,
+    x: number,
+    y: number,
+    size: number,
+    type: PieceType,
+    alpha: number,
+    active: boolean,
+  ): void {
+    const material = PIECE_MATERIALS[type];
+    const cut = Math.max(1.5, Math.min(size * 0.2, 4));
+    const cellPath = [x, y, x + size - cut, y, x + size, y + cut, x + size, y + size, x, y + size];
     graphics
-      .rect(x + inset, y + inset, size - inset * 2, size - inset * 2)
-      .fill({ color: material.inner, alpha: alpha * 0.28 });
-    graphics
-      .rect(x + inset, y + inset, size - inset * 2, Math.max(1, layout.cell * 0.055))
-      .fill({ color: material.highlight, alpha: alpha * 0.66 });
+      .poly(cellPath, true)
+      .fill({ color: material.fill, alpha })
+      .stroke({
+        color: material.outline,
+        alpha: Math.min(1, alpha * 1.12),
+        width: active ? Math.max(1.8, size * 0.085) : Math.max(1, size * 0.05),
+      });
+  }
 
+  private drawGhostCorners(
+    graphics: Graphics,
+    x: number,
+    y: number,
+    size: number,
+    type: PieceType,
+    alpha: number,
+  ): void {
+    const material = PIECE_MATERIALS[type];
+    const arm = Math.max(3, size * 0.28);
+    const inset = Math.max(1, size * 0.06);
+    const left = x + inset;
+    const right = x + size - inset;
+    const top = y + inset;
+    const bottom = y + size - inset;
+    graphics
+      .moveTo(left + arm, top).lineTo(left, top).lineTo(left, top + arm)
+      .moveTo(right - arm, top).lineTo(right, top).lineTo(right, top + arm)
+      .moveTo(left, bottom - arm).lineTo(left, bottom).lineTo(left + arm, bottom)
+      .moveTo(right, bottom - arm).lineTo(right, bottom).lineTo(right - arm, bottom)
+      .stroke({ color: material.outline, alpha, width: Math.max(1.2, size * 0.065) });
   }
 
   private drawEffects(state: GameState, layout: BoardLayout): void {
@@ -392,7 +455,7 @@ export class TetrisRenderer {
         const y = layout.y + (row - VISIBLE_START_ROW) * layout.cell;
         graphics
           .rect(layout.x + (layout.width - width) / 2, y + layout.cell * 0.12, width, layout.cell * 0.76)
-          .fill({ color: COLORS.signal, alpha: this.options.reducedMotion ? 0.32 : 0.2 + progress * 0.42 });
+          .fill({ color: COLORS.cyan, alpha: this.options.reducedMotion ? 0.28 : 0.18 + progress * 0.4 });
       }
     }
 
@@ -406,7 +469,7 @@ export class TetrisRenderer {
         const y = layout.y + (cell.y - VISIBLE_START_ROW) * layout.cell + layout.cell * 0.06;
         graphics
           .rect(x, y, layout.cell * 0.88, layout.cell * 0.88)
-          .stroke({ color: material.highlight, alpha, width: Math.max(1, layout.cell * 0.06) });
+          .stroke({ color: material.outline, alpha, width: Math.max(1, layout.cell * 0.06) });
       }
     }
   }
@@ -485,12 +548,10 @@ export class TetrisRenderer {
     const maxY = Math.max(...shape.map((cell) => cell.y));
     const width = (maxX - minX + 1) * unit;
     const height = (maxY - minY + 1) * unit;
-    const material = PIECE_MATERIALS[type];
     for (const cell of shape) {
       const x = centerX - width / 2 + (cell.x - minX) * unit;
       const y = centerY - height / 2 + (cell.y - minY) * unit;
-      graphics.rect(x + 0.7, y + 0.7, unit - 1.4, unit - 1.4).fill({ color: material.outer, alpha: 0.94 });
-      graphics.rect(x + unit * 0.24, y + unit * 0.24, unit * 0.52, unit * 0.52).fill({ color: material.inner, alpha: 0.8 });
+      this.drawFlatCell(graphics, x + 0.7, y + 0.7, unit - 1.4, type, 0.96, false);
     }
   }
 
