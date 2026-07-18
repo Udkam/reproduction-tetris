@@ -1,5 +1,61 @@
 # Tetris — T6 Three-Mode Rules Contract
 
+## T7 timed Survival and restrained motion refinement
+
+The user's 2026-07-18 review supersedes T6's fixed-speed Classic/Survival contract and
+the five-lines-adds-bedrock rule. It also removes the short decorative phase bars on
+the mode surface and action sheets, requires the rules to be visible and unambiguous,
+and reopens motion only for small stateful feedback.
+
+### Classic and shared falling speed
+
+- Classic and Survival share one line-driven gravity table. Speed tier is
+  `floor(clearedLines / 10)` and the exact ticks per automatic row are
+  `48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3`; the last value is the cap.
+- Classic retains consecutive-clear combo scoring. It has no terminal line target and
+  displays the current automatic fall cadence rather than a player-facing level.
+- Puzzle remains at the fixed accepted 48-tick cadence so the fifteen authored
+  challenge references and their event/hash evidence stay unchanged.
+
+### Timed Survival pressure and five-line reward
+
+- Survival starts with a 40-second bedrock interval. After every five cumulative
+  cleared lines the interval decreases by exactly two seconds, down to a 10-second
+  minimum: `max(10, 40 - 2 × floor(lines / 5))`.
+- The timer advances only while canonical status is `playing`; pause, ready, game-over,
+  and finished states do not consume it. When it reaches zero it becomes pending and
+  stops accumulating. The pending row rises at the next safe lock/clear resolution,
+  before the next piece spawns, so no active tetromino is teleported or overlapped.
+- A timed rise shifts the remaining board upward and appends one full unbreakable
+  bedrock row. Top overflow ends the run. Restart clears the timer, pending state, and
+  all bedrock.
+- Crossing each five-line threshold resolves the ordinary clear first, then any
+  already-pending timed rise, then removes exactly one bottom bedrock row if present.
+  Removing a row shifts the remaining board down and inserts one empty row at the top.
+  The reward resets the timer to zero under the newly shortened interval; if no
+  bedrock exists, the interval reduction and timer reset still apply.
+- Survival visibly exposes current bedrock height and the next-rise countdown. A
+  pending rise reads `待上升`; otherwise the countdown rounds up to complete seconds.
+  State hashes and seeded replay include timer and pending pressure.
+
+### Rules, line removal, and motion language
+
+- Remove `.phase-seam` from the mode selector and the colored `action-sheet::before`
+  bar. Structural borders remain only where they divide real regions or statistics.
+- Home rules stay concise but complete: Classic states combo scoring and acceleration
+  every ten lines; Survival states 40-second starting pressure, one-layer removal and
+  two-second interval reduction every five lines, plus the ten-second floor; Puzzle
+  states authored endgame and board-empty success.
+- The game dock repeats only the immediate active rule and direct cadence/countdown
+  values. It does not restore long marketing explanations or a generic level label.
+- Motion uses three purposeful signatures: one staggered mode-card entrance, a small
+  hover/focus tetromino gesture, and brief bedrock rise/removal feedback with countdown
+  urgency. No decorative phase line, perpetual ambient loop, glow, confetti, particle
+  field, or layout motion is allowed. `prefers-reduced-motion` removes transforms,
+  pulses, and renderer feedback without changing timing or canonical state.
+- The accepted palette, typography, layout skeleton, divided facet geometry, touch
+  controls, countdown gate, and plain-text `Tetris` identity remain unchanged.
+
 ## T6 bedrock material refinement
 
 The user's 2026-07-18 review reopens only the Survival bedrock material color. The

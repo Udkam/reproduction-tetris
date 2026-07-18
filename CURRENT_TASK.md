@@ -1,4 +1,4 @@
-# Current Task — T6 Bedrock Material Refinement
+# Current Task — T7 Timed Survival and Motion Refinement
 
 Branch: `codex/tetris-recovery`
 
@@ -11,8 +11,52 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **COMPLETE / ACCEPTED — product source `4b27a98`; formal evidence `367a443`;
-independent static and visual QA both ACCEPT with no open finding**
+Status: **IN PROGRESS — contract frozen; Core writer first, frontend writer second**
+
+## Slice N — progressive gravity and timed Survival pressure
+
+Task ID: `TETRIS-T7-TIMED-SURVIVAL-MOTION-019`
+
+Base: clean accepted and pushed coordinator tip
+`d0bbb7dc32e0e625b5aa41a2e58453975057efb7`.
+
+Core writer boundary:
+
+- `src/game/core/constants.ts`, `src/game/core/types.ts`, `src/game/core/board.ts`, and
+  `src/game/core/engine.ts`;
+- directly related `src/game/core/race.test.ts` and `src/game/core/rules.test.ts`;
+- `docs/workstreams/tetris-t5-core/THREAD_LOG.md` after source freeze.
+
+Core acceptance is the exact gravity, timer, pending-rise, five-line removal, ordering,
+pause/restart, overflow, replay/hash, and Puzzle-compatibility contract in `DESIGN.md`.
+The Core checkpoint must keep Puzzle's thirty references unchanged and may not edit
+React, Pixi, runtime, styles, dependencies, evidence, or coordinator documents.
+
+Frontend/renderer writer boundary after Core source freeze:
+
+- `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`;
+- `src/game/runtime/qaScenario.ts` and `src/game/runtime/qaScenario.test.ts` only to
+  replace obsolete five-lines-raises-bedrock evidence with public-command timed-rise
+  and five-line-removal evidence;
+- `src/game/render/TetrisRenderer.ts` and its direct presentation/renderer tests only
+  for brief deterministic bedrock rise/removal feedback;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md` after source freeze.
+
+Frontend acceptance:
+
+- remove the mode `.phase-seam` and action-sheet colored lead bar at every viewport;
+- show the concise complete rules and direct fall cadence/countdown values frozen in
+  `DESIGN.md`, including `40 秒`, `每 5 行`, `-2 秒`, and `最短 10 秒`;
+- add only the bounded entrance, hover/focus, bedrock feedback, and urgency motion;
+  reduced motion must suppress presentation transforms without altering rules;
+- preserve exactly one canvas, zero DOM board cells, 44 px actions, lifecycle/input
+  safety, layout, palette, ordinary tetromino geometry, Puzzle library, dependencies,
+  and `index.html`.
+
+Each writer creates exact-path source and log checkpoints without push. After the last
+source edit, the coordinator runs exactly one final typecheck, full suite, build, and
+browser-evidence pass, then routes the exact source and evidence to independent static
+and visual QA before changelog integration or push.
 
 ## Slice M — warm mineral bedrock recolor
 
