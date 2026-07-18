@@ -455,8 +455,7 @@ def validate_layout(metrics: dict[str, Any], *, gameplay: bool) -> None:
             require(abs(race["y"] - puzzle["y"]) <= 1.5 and abs(race["height"] - puzzle["height"]) <= 1.5, f"Second-row mode geometry drift: {modes}")
             require(abs(marathon["width"] - (race["width"] + puzzle["width"])) <= 2.5, f"Home is not continuous 1+2 geometry: {modes}")
             phase = metrics["home"]
-            require(phase["phaseCount"] == 1 and phase["phase"], f"Home must expose one phase seam: {phase}")
-            require(abs(phase["phase"]["height"] - 2) <= 0.6, f"Phase seam thickness drifted: {phase}")
+            require(phase["phaseCount"] == 0 and phase["phase"] is None, f"Removed home rule resurfaced: {phase}")
             for mode, action in phase["actions"].items():
                 require(action["button"] and action["action"] and action["arrow"], f"Missing {mode} action geometry: {action}")
                 require(action["button"]["scrollWidth"] <= action["button"]["clientWidth"], f"{mode} button clips: {action}")
@@ -490,8 +489,8 @@ def validate_layout(metrics: dict[str, Any], *, gameplay: bool) -> None:
     require(metrics["bounds"]["nextLabel"] is not None, "Visible Next label is missing.")
     require(metrics["bounds"]["keyboard"] is not None, "Visible keyboard map is missing.")
     expected_roles = {
-        "marathon": ["score", "lines", "classic-combo"],
-        "race": ["score", "lines", "survival-bedrock"],
+        "marathon": ["score", "lines", "classic-combo", "fall-cadence"],
+        "race": ["score", "lines", "survival-bedrock", "survival-next"],
         "puzzle": ["puzzle-level", "placed", "lines", "objective"],
     }
     require(metrics["stats"]["roles"] == expected_roles[state["mode"]], f"Statistic roles drifted: {metrics['stats']}")
@@ -541,9 +540,14 @@ def capture(page: Page, name: str, *, gameplay: bool, extra: dict[str, Any] | No
     if gameplay:
         page.wait_for_function("() => Boolean(window.__SIGNAL_FOUNDRY_QA__)")
         page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(true)")
+        # Flush queued React/renderer state without advancing canonical time. This
+        # avoids freezing between a touch action and the next ordinary UI sync.
+        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(0)")
         frozen = True
     try:
-        page.wait_for_timeout(100)
+        # Home gates use a short staggered entrance; measure their settled geometry,
+        # not the intermediate transform immediately after returning from gameplay.
+        page.wait_for_timeout(480 if not gameplay else 100)
         metrics = rect_metrics(page)
         validate_layout(metrics, gameplay=gameplay)
         path = OUTPUT_DIR / name
@@ -633,28 +637,20 @@ def exercise_marathon_desktop(browser: Browser) -> None:
     context, page, page_errors = open_page(browser, width=1440, height=900, dpr=1, label="desktop-marathon")
     try:
         initial_home = capture(page, "desktop-home-1440x900.png", gameplay=False)
-        initial_phase = initial_home["metrics"]["home"]["phase"]
         require(initial_home["metrics"]["home"]["selection"] == "marathon", "Home must default to Marathon selection.")
-        require(abs(float(initial_phase["width"]) - 72) <= 0.6, f"Idle phase seam width drifted: {initial_phase}")
+        require(initial_home["metrics"]["home"]["phaseCount"] == 0, "Removed home rule is still rendered.")
 
         page.locator('[data-testid="enter-race"]').focus()
         page.wait_for_function("() => document.querySelector('[data-testid=mode-list]')?.getAttribute('data-selection') === 'race'")
         page.wait_for_timeout(260)
-        race_phase = rect_metrics(page)["home"]["phase"]
         page.locator('[data-testid="enter-puzzle"]').focus()
         page.wait_for_function("() => document.querySelector('[data-testid=mode-list]')?.getAttribute('data-selection') === 'puzzle'")
         page.wait_for_timeout(260)
         puzzle_focus = capture(page, "desktop-home-phase-focus-1440x900.png", gameplay=False)
-        puzzle_phase = puzzle_focus["metrics"]["home"]["phase"]
-        require(float(race_phase["y"]) > float(initial_phase["y"]), "Race focus did not move the phase seam to row two.")
-        require(float(puzzle_phase["x"]) > float(race_phase["x"]), "Puzzle focus did not move the phase seam to column two.")
-        require(float(race_phase["width"]) > float(initial_phase["width"]), "Focus did not extend the phase seam.")
-        CHECKS["homePhaseSeam"] = {
-            "count": initial_home["metrics"]["home"]["phaseCount"],
-            "idleWidth": initial_phase["width"],
-            "focusWidth": puzzle_phase["width"],
-            "raceY": race_phase["y"],
-            "puzzleX": puzzle_phase["x"],
+        require(puzzle_focus["metrics"]["home"]["phaseCount"] == 0, "Focus restored the removed home rule.")
+        CHECKS["decorativeRuleRemoval"] = {
+            "homeRuleCount": initial_home["metrics"]["home"]["phaseCount"],
+            "focusedHomeRuleCount": puzzle_focus["metrics"]["home"]["phaseCount"],
         }
 
         page.locator('[data-testid="enter-marathon"]').click()
@@ -666,6 +662,8 @@ def exercise_marathon_desktop(browser: Browser) -> None:
 
         page.get_by_role("button", name="暂停", exact=True).click()
         page.get_by_role("dialog", name="已暂停").wait_for(state="visible")
+        pause_rule = page.evaluate("getComputedStyle(document.querySelector('.action-sheet'), '::before').content")
+        require(pause_rule in ("none", "normal", '""'), f"Pause sheet decorative rule resurfaced: {pause_rule}")
         require(qa_state(page)["status"] == "paused", "Pause sheet did not pause canonical state.")
         require(page.evaluate("document.activeElement?.textContent?.trim()") == "继续游戏", "Pause initial focus is wrong.")
         page.keyboard.press("Shift+Tab")
@@ -686,6 +684,9 @@ def exercise_marathon_desktop(browser: Browser) -> None:
 
         page.locator('[data-testid="cluster-header"] .topbar-action').first.click()
         page.get_by_role("dialog", name="离开本局？").wait_for(state="visible")
+        exit_rule = page.evaluate("getComputedStyle(document.querySelector('.action-sheet'), '::before').content")
+        require(exit_rule in ("none", "normal", '""'), f"Exit sheet decorative rule resurfaced: {exit_rule}")
+        CHECKS["decorativeRuleRemoval"].update({"pausePseudoContent": pause_rule, "exitPseudoContent": exit_rule})
         page.get_by_role("button", name="留在本局", exact=True).click()
         page.wait_for_function("() => window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'")
         page.locator('[data-testid="cluster-header"] .topbar-action').first.click()
@@ -775,8 +776,8 @@ def drive_survival_bedrock(page: Page) -> dict[str, Any]:
         }"""
     )
     page.wait_for_function(
-        "() => window.__SIGNAL_FOUNDRY_QA__.getState().lines >= 24"
-        " && window.__SIGNAL_FOUNDRY_QA__.getState().survivalBedrockRows >= 4"
+        "() => window.__SIGNAL_FOUNDRY_QA__.getState().elapsedTicks >= 2400"
+        " && window.__SIGNAL_FOUNDRY_QA__.getState().survivalBedrockRows >= 1"
     )
     return result
 
@@ -785,15 +786,15 @@ def exercise_survival_wide(browser: Browser) -> None:
     context, page, page_errors = open_page(browser, width=2048, height=1152, dpr=1, label="wide-survival")
     try:
         body = page.locator("body").inner_text()
-        require("生存" in body and "基岩上升" in body, "Survival rising-floor copy is missing.")
+        require("生存" in body and "40 秒/层" in body and "每 5 行" in body, "Timed Survival rules are missing.")
         for forbidden in ("竞速", "等级", "速度档", "速度递增", "20 行", "剩余行", "完成目标"):
             require(forbidden not in body, f"Obsolete Race/level copy remains: {forbidden}")
         enter_mode(page, "race")
         replay_result = drive_survival_bedrock(page)
         state = replay_result["state"]
-        require(state["status"] == "playing" and state["lines"] >= 24, f"Survival replay did not stay live: {state}")
-        require(state["survivalBedrockRows"] == state["lines"] // 5, f"Survival bedrock height drifted: {state}")
-        require(state["survivalBedrockRows"] >= 4, f"Survival bedrock did not rise: {state}")
+        require(state["status"] == "playing" and state["elapsedTicks"] >= 2400, f"Timed Survival replay did not stay live: {state}")
+        require(state["lines"] < 5, f"Timed rise must precede the first five-line reward: {state}")
+        require(state["survivalBedrockRows"] == 1, f"First timed Survival bedrock did not rise: {state}")
         require(state["board"][-1] == ["B"] * 10, f"Survival bottom row is not canonical bedrock: {state['board'][-1]}")
         body = page.locator("body").inner_text()
         require("基岩" in body and str(state["survivalBedrockRows"]) in body, "Visible Survival bedrock statistic drifted.")
@@ -816,6 +817,8 @@ def exercise_survival_wide(browser: Browser) -> None:
             "replayCommandCount": replay_result["commandCount"],
             "publicOperations": replay_result["operations"],
             "bedrockRows": state["survivalBedrockRows"],
+            "elapsedTicks": state["elapsedTicks"],
+            "nextIntervalSeconds": 40,
             "bottomRow": "".join(state["board"][-1]),
             "pieceCount": terminal["pieceCount"],
             "lines": terminal["lines"],
@@ -1060,7 +1063,7 @@ def exercise_puzzle_success(browser: Browser) -> None:
 
 def write_manifest(source_sha: str, candidate_tip: str, capture_head: str) -> None:
     manifest = {
-        "taskId": "TETRIS-T6-BEDROCK-RECOLOR-018",
+        "taskId": "TETRIS-T7-TIMED-SURVIVAL-019",
         "candidateSha": source_sha,
         "sourceSha": source_sha,
         "candidateTip": candidate_tip,
@@ -1073,8 +1076,8 @@ def write_manifest(source_sha: str, candidate_tip: str, capture_head: str) -> No
         "method": (
             "First-viewport screenshots from visible UI; loaded and deliberately blocked Google Fonts; active 844x390 mode actions; "
             "first/eighth/fifteenth Puzzle binding; real keyboard and touch input; three Puzzle locks by normal gravity; detached "
-            "entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison; public-command Survival replay "
-            "to 24 lines and four permanent bedrock rows. Deterministic time advances "
+            "entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison; removed decorative-rule checks; "
+            "public-command Survival replay through ordinary gravity to the first 40-second timed bedrock rise. Deterministic time advances "
             "ticks without replacing state, and no terminal state is fabricated."
         ),
         "captures": CAPTURES,
