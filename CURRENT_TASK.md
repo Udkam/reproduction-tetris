@@ -38,7 +38,17 @@ Core writer boundary:
 - `src/game/core/constants.ts`, `src/game/core/board.ts`,
   `src/game/core/engine.ts`, and `src/game/core/types.ts`;
 - directly related tests under `src/game/core/*.test.ts`;
+- `src/game/render/theme.ts`, `src/game/render/TetrisRenderer.ts`, and their directly
+  related tests only for the minimum type-safe bedrock material/render binding;
 - `docs/workstreams/tetris-t5-core/THREAD_LOG.md` after the source checkpoint.
+
+Atomic boundary exception: canonical bedrock widens `BoardCell` from
+`PieceType | null` to `PieceType | BedrockCell | null`. The same source checkpoint
+must therefore bind a real bedrock material and renderer path; casting the sentinel to
+`PieceType`, leaving an undefined material lookup, or committing a typechecking but
+runtime-broken intermediate state is forbidden. This exact Core + renderer bridge is
+pre-authorized despite crossing the normal subsystem boundary and remains within the
+default ten-path checkpoint budget.
 
 Core acceptance:
 
@@ -64,8 +74,6 @@ Frontend/renderer writer boundary after Core source is frozen:
 
 - `src/App.tsx` and `src/App.test.ts`;
 - `src/styles.css` only for the renamed semantic statistic role;
-- `src/game/render/theme.ts`, `src/game/render/TetrisRenderer.ts`, and directly related
-  renderer/theme tests for the bedrock material only;
 - `src/game/runtime/qaScenario.ts` and `src/game/runtime/qaScenario.test.ts` only to
   replace obsolete Race-speed evidence with real Survival bedrock evidence;
 - `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md` after the source checkpoint.
