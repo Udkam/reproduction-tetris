@@ -1506,3 +1506,65 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Blocker: none. Push: not performed.
 - Next: coordinator runs the single final gate/evidence batch and routes exact source
   `4b27a98` to independent read-only visual QA.
+
+## 2026-07-18 — T7 TIMED SURVIVAL FRONTEND / MOTION READY
+
+### Intake and checkpoints
+
+- Task: `TETRIS-T7-TIMED-SURVIVAL-MOTION-019`.
+- Base: accepted pushed tip `d0bbb7dc32e0e625b5aa41a2e58453975057efb7`;
+  contract `2221b3e`; frozen accepted Core source `ff90d61` and Core log `71b637c`.
+- Frontend checkpoints are intentionally separated:
+  - `d94fc0d` — `src/App.tsx`, `src/App.test.ts`, `src/styles.css`;
+  - `7d8a266` — `src/game/render/TetrisRenderer.ts`,
+    `src/game/render/presentation.ts`, `src/game/render/presentation.test.ts`;
+  - `b8e5e6e` — `src/game/runtime/qaScenario.ts`,
+    `src/game/runtime/qaScenario.test.ts`.
+- Formal evidence checkpoint: `83d579a`, limited to the existing
+  `docs/qa/evidence/tetris-t5` capture script, manifest, checksums, and refreshed
+  visible screenshots. Dependencies, Puzzle references, theme tokens, `index.html`,
+  and unrelated source did not change.
+
+### Delivered frontend and presentation
+
+- Removed the home `.phase-seam` element/styles and the action-sheet lead-bar
+  pseudo-element. Real region/statistic borders remain.
+- Home rules now state Classic combo plus ten-line acceleration, Survival's
+  `40 秒/层`, five-line one-layer removal, two-second reduction, and ten-second floor,
+  and Puzzle's fifteen endgames plus board-empty objective. Classic shows direct fall
+  cadence; Survival shows bedrock height and the canonical next-rise countdown.
+- Added restrained staggered mode entrance, focus/hover tetromino gesture, urgent
+  countdown pulse, and a brief renderer-only stack shift for timed bedrock raise/lower.
+  Reduced motion clears the renderer shift and the existing CSS reduced-motion rule
+  suppresses transforms/pulses without changing Core time.
+- Replaced the obsolete 24-line/four-row browser planner with a public-command replay
+  that positions pieces and waits for ordinary gravity. It performs no hard drop or
+  state injection and reaches the first timed bedrock before five cleared lines.
+
+### Commands and evidence actually run
+
+- Focused App regression: 1 file / 7 tests PASS; focused presentation regression:
+  3 files / 15 tests PASS; focused runtime replay regression: 3 files / 6 tests PASS.
+- Focused typechecks after each source concern — PASS. Prescribed develop-web-game
+  action client ran on the home and Survival surfaces with no `errors-*.json`; the
+  final 1024x768 home original showed settled two-line rules and no top phase bar.
+- After the last product source change, the coordinator's single final gates passed:
+  `npm.cmd run typecheck`; `npm.cmd run test` with 39 files passed / 1 skipped and
+  267 tests passed / 2 skipped; `npm.cmd run build` with 739 transformed modules.
+- The formal browser pass completed 24 visible captures with zero console/page errors.
+  It records zero home rule elements, `none` pseudo-content on pause and exit sheets,
+  44px controls, one canvas, zero DOM cells, responsive layouts, font fallback, and
+  first/eighth/fifteenth Puzzle binding. The command-only Survival replay reaches one
+  full `BBBBBBBBBB` bedrock row at 2763 elapsed ticks with zero cleared lines; all 26
+  manifest file hashes verify.
+- Two initial evidence attempts failed closed on capture-tool timing: a returning-home
+  entrance transform was measured before settling, then a touch hard drop was frozen
+  before React's queued text snapshot flushed. The script now waits for the bounded
+  home entrance and calls `advanceTicks(0)` after freezing; neither repair changes or
+  fabricates canonical game time.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: independent static and visual QA audit exact product `b8e5e6e` and evidence
+  `83d579a`; the coordinator owns acceptance documents, changelog, and push.
