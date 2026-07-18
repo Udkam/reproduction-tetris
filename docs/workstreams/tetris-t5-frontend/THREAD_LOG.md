@@ -1474,3 +1474,35 @@ remain untouched. No generated browser artifact is part of the candidate.
   `5a3c35af325e4fa43841190e8acfb4867c8f1ebc` together with frozen Core source
   `34184cbc04b10b736a4340c29df019aaa3307981`; the coordinator owns combined final
   gates, evidence, changelog integration, and push.
+
+## 2026-07-18 — T6 BEDROCK MATERIAL RECOLOR READY
+
+### Intake and ownership
+
+- Task: `TETRIS-T6-BEDROCK-RECOLOR-018`.
+- Base: clean accepted coordinator tip
+  `2c7e5f3352ceaae48db48f0134ed9970a6e3e696`.
+- Contract: `07fdbbf`; source: `4b27a98`.
+- Exact source paths: `src/game/render/theme.ts` and
+  `src/game/render/theme.test.ts`.
+
+### Delivered material
+
+- Replaced only the permanent Survival bedrock's blue-grey renderer tokens with the
+  frozen warm rock-brown set `#9C8B73 / #76664F / #40372D / #CDBEAA`.
+- Both face endpoints retain at least 3:1 contrast against the deep navy board well.
+- Bedrock geometry, divided facets, seams, behavior, five-line threshold, all seven
+  tetromino materials, layout, copy, dependencies, and `index.html` are unchanged.
+
+### Commands actually run
+
+- `npm.cmd run test -- src/game/render/theme.test.ts` — PASS, 1 file / 6 tests.
+- `npm.cmd run typecheck` — PASS.
+- `git diff --check`, exact two-path staging, cached path inspection, and
+  `git diff --cached --check` — PASS; Git emitted only existing LF-to-CRLF notices.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: coordinator runs the single final gate/evidence batch and routes exact source
+  `4b27a98` to independent read-only visual QA.
