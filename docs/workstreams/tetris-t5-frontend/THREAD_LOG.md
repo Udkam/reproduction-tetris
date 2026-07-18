@@ -1405,3 +1405,72 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Next: independent read-only frontend QA reviews exact repair source range
   `62399b90e1d4ec6b8737e4dda152e89b7d43f762..48176fe3d23cbc450fe39b38310c8a6b6eb71945`;
   the coordinator owns final combined gates, changelog disposition, and push.
+
+## 2026-07-18 — T6 CLASSIC / SURVIVAL FRONTEND BINDING READY
+
+### Intake and ownership
+
+- Task: `TETRIS-T6-THREE-DISTINCT-MODES-017`.
+- Branch/base: clean `codex/tetris-recovery` at
+  `067d70cfdfc285cf41b06f2c662efd60af578eaf`; frozen Core source is
+  `34184cbc04b10b736a4340c29df019aaa3307981`.
+- Source checkpoint:
+  `5a3c35af325e4fa43841190e8acfb4867c8f1ebc` —
+  `feat(survival): bind bedrock interface`.
+- Exact source paths: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/game/runtime/qaScenario.ts`, and `src/game/runtime/qaScenario.test.ts`.
+  The CSS change only migrates the two semantic statistic-role selectors.
+- Core, renderer/theme, layout, Puzzle data/references, dependencies/configuration,
+  `index.html`, coordinator documents, changelog, formal evidence, and `progress.md`
+  did not change. `develop-web-game` supplied the prescribed client/action loop;
+  its ordinary progress update is recorded here under the exact path allowlist.
+
+### Delivered binding
+
+- Classic home/statistics now expose `分数 · 消行 · 连消` and explicit
+  `score` / `lines` / `classic-combo` roles; the value is canonical `state.combo`.
+- Internal mode `race` is player-facing `生存`, with `每 5 行 · 基岩上升`, a
+  restrained layered/rising glyph, and explicit `score` / `lines` /
+  `survival-bedrock` roles. Its result is `生存结束` plus lines, placed pieces,
+  and bedrock layers; `bedrock-raised` has a live-region message.
+- Player-visible and DEV text state no longer expose Classic level or Survival speed.
+  The detached `render_game_to_text` payload removes `level` and adds canonical
+  `combo` plus `bedrockRows`.
+- Runtime QA names now describe Survival bedrock. The unchanged command-only planner
+  reaches its existing live 24-line milestone, proves canonical bedrock height from
+  the five-line threshold, proves the complete bottom row is `BEDROCK_CELL`, and
+  proves command/state-hash determinism without state injection.
+- Puzzle roles, copy, selection, replay, and accepted reference behavior remain
+  unchanged. Direct App regressions reject visible `竞速`, `等级`, and `速度档`.
+
+### Commands and evidence actually run
+
+- Pre-migration `npm.cmd run test -- src/game/runtime/qaScenario.test.ts` reached the
+  existing live replay milestone and failed only the obsolete
+  `raceSpeedTier(...) > 0` assertion: 3 files, 5 passed / 1 failed.
+- Final focused
+  `npm.cmd run test -- src/App.test.ts src/game/runtime/qaScenario.test.ts` — PASS,
+  4 files / 12 tests.
+- Final `npm.cmd run typecheck` — PASS.
+- Prescribed client command:
+  `node 'C:\Users\Alex Chen\.codex\skills\develop-web-game\scripts\web_game_playwright_client.js' --url http://127.0.0.1:5173/ --actions-file 'C:\Users\Alex Chen\.codex\skills\develop-web-game\references\action_payloads.json' --click-selector '[data-testid="enter-race"]' --iterations 6 --pause-ms 500 --screenshot-dir '.local\t6-frontend-20260718-1122\action-client'`
+  — PASS against the local Vite development page.
+- Six text states prove countdown-gated public input, internal `race`, absence of
+  `level`, and presence of `combo` / `bedrockRows`. The final state is playing after
+  two real hard drops with score 72, active S, Next Z, and zero bedrock before the
+  first five-line threshold. No `errors-*.json` artifact was emitted.
+- Opened `shot-5.png` at original detail. The board, cohesive pieces, Next, controls,
+  and the visible `分数` / `消行` / `基岩` statistic surface were complete and
+  unclipped. The temporary client output is ignored and was not staged.
+- `git diff --check`, exact five-path staging, cached path inspection, and
+  `git diff --cached --check` passed; Git emitted only existing LF-to-CRLF notices.
+- Per coordinator instruction, no complete suite, production build, final viewport
+  matrix, formal evidence, changelog update, or push was performed.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: independent read-only frontend/runtime QA audits source
+  `5a3c35af325e4fa43841190e8acfb4867c8f1ebc` together with frozen Core source
+  `34184cbc04b10b736a4340c29df019aaa3307981`; the coordinator owns combined final
+  gates, evidence, changelog integration, and push.
