@@ -1568,3 +1568,41 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Blocker: none. Push: not performed.
 - Next: independent static and visual QA audit exact product `b8e5e6e` and evidence
   `83d579a`; the coordinator owns acceptance documents, changelog, and push.
+
+## 2026-07-18 — T7 STATIC-QA REPAIR READY
+
+### Rejection and bounded repair
+
+- Independent visual QA accepted 24/24 captures with no P0–P3. Independent static QA
+  rejected product `b8e5e6e` / evidence `83d579a` on two P2 findings: reduced motion
+  left new CSS transforms active, and the public-command scenario stopped after the
+  first timed rise without proving the five-line bedrock removal.
+- Repair `e76b9a0` changes only `src/styles.css`,
+  `src/game/runtime/qaScenario.ts`, and its direct test. The replay records separate
+  first-rise and removal command counts: normal gravity reaches the first 40-second
+  rise, then ordinary public hard drops reach five lines before another timed rise.
+  The final state proves one bedrock row was removed, pressure reset to zero, and the
+  next interval is 38 seconds.
+- Follow-up `356440c` changes only `src/styles.css` to explicitly disable reduced-mode
+  transitions and transforms for glyph, motif, action arrow, and touch-key feedback.
+  A live computed-style probe returns `none` for the gate animation and glyph, motif,
+  and arrow transforms.
+
+### Final repair gates and evidence
+
+- Focused App/runtime regressions: 4 files / 13 tests PASS; focused typecheck PASS.
+- After final source `356440c`, typecheck PASS; full suite 39 files passed / 1 skipped,
+  267 tests passed / 2 skipped; production build PASS with 739 transformed modules.
+- Evidence `9ef2708` completes 25 visible captures and 27 verified file hashes with
+  zero browser/page errors. Computed reduced-motion evidence records gate animation,
+  glyph transform, and motif transform all `none`.
+- Public-command evidence records first rise at 2763 ticks with one full
+  `BBBBBBBBBB` row, then exactly five cleared lines, zero bedrock, zero pressure ticks,
+  and a visible `38 秒` next interval. `wide-survival-reward-2048x1152.png` is the new
+  visible post-reward capture; the pre-removal bedrock capture remains in the matrix.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: independent QA re-audits only the two rejected P2 findings against product
+  `356440c` and evidence `9ef2708`; coordinator acceptance remains pending.
