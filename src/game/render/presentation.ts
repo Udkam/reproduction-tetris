@@ -18,6 +18,8 @@ export interface InternalCellSeam {
   end: Cell;
 }
 
+export type BoardShiftDirection = 'up' | 'down';
+
 export const LINE_CLEAR_SWEEP_TICKS = 9;
 
 const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = [
@@ -128,6 +130,20 @@ export function lineClearCellProgress(phaseProgress: number, column: number, wid
 export function lineClearPresentationProgress(phaseTicks: number, reducedMotion: boolean): number {
   if (reducedMotion) return 0;
   return Math.max(0, Math.min(1, phaseTicks / LINE_CLEAR_SWEEP_TICKS));
+}
+
+/** Briefly preserves the stack's previous visual position while Core applies a bedrock shift. */
+export function boardShiftPresentationOffset(
+  direction: BoardShiftDirection,
+  elapsedMs: number,
+  durationMs: number,
+  unit: number,
+): number {
+  if (durationMs <= 0 || elapsedMs >= durationMs || unit <= 0) return 0;
+  const progress = Math.max(0, Math.min(1, elapsedMs / durationMs));
+  const remaining = Math.pow(1 - progress, 3);
+  const distance = unit * 0.34 * remaining;
+  return direction === 'up' ? distance : -distance;
 }
 
 /** Every mode previews the same continuously generated canonical queue. */

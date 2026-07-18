@@ -16,12 +16,14 @@ import {
 import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
 import {
   approachPresentationPoint,
+  boardShiftPresentationOffset,
   exposedCellEdges,
   internalCellSeams,
   lineClearPresentationProgress,
   nextPreviewPiece,
   orthogonalCellComponents,
   type CellEdge,
+  type BoardShiftDirection,
 } from './presentation';
 
 interface RenderOptions {
@@ -60,6 +62,12 @@ interface LockPulse {
   piece: PieceType;
 }
 
+interface BoardShift {
+  direction: BoardShiftDirection;
+  elapsed: number;
+  duration: number;
+}
+
 interface GroupDrawOptions {
   originX: number;
   originY: number;
@@ -85,6 +93,7 @@ export interface RendererSnapshot {
   ghostCells: Cell[];
   visibleLockedCells: number;
   presentation: { x: number; y: number; offsetX: number; offsetY: number } | null;
+  boardShiftOffsetY: number;
 }
 
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
@@ -104,6 +113,7 @@ export class TetrisRenderer {
   private lockPulse: LockPulse | null = null;
   private impact = 0;
   private rotationPulse = 0;
+  private boardShift: BoardShift | null = null;
   private options: RenderOptions = { reducedMotion: false, modeSwitch: false };
   private previewBounds: RendererSnapshot['preview'] = null;
   private previewLayerVisible = false;
@@ -126,6 +136,7 @@ export class TetrisRenderer {
     ghostCells: [],
     visibleLockedCells: 0,
     presentation: null,
+    boardShiftOffsetY: 0,
   };
 
   async init(host: HTMLElement): Promise<void> {
@@ -162,6 +173,7 @@ export class TetrisRenderer {
       this.lockPulse = null;
       this.impact = 0;
       this.rotationPulse = 0;
+      this.boardShift = null;
     }
   }
 
@@ -271,6 +283,14 @@ export class TetrisRenderer {
     graphics.clear();
     let visibleLockedCells = 0;
     const lockedByType = new Map<BoardMaterial, Cell[]>();
+    const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
+      ? boardShiftPresentationOffset(
+          this.boardShift.direction,
+          this.boardShift.elapsed,
+          this.boardShift.duration,
+          layout.cell,
+        )
+      : 0;
 
     state.board.forEach((row, boardY) => {
       if (boardY < VISIBLE_START_ROW) return;
@@ -287,6 +307,7 @@ export class TetrisRenderer {
         originX: layout.x,
         originY: layout.y,
         unit: layout.cell,
+        offsetY: boardShiftOffsetY,
       });
     }
 
@@ -359,6 +380,7 @@ export class TetrisRenderer {
     }
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
+    this.snapshot.boardShiftOffsetY = boardShiftOffsetY;
     this.pieceGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
     this.effectGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
   }
@@ -737,6 +759,7 @@ export class TetrisRenderer {
         this.rotationPulse = this.options.reducedMotion ? 0 : 1;
       } else if (event.type === 'restarted') {
         this.presentation = null;
+        this.boardShift = null;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
           cells: event.cells,
@@ -760,6 +783,14 @@ export class TetrisRenderer {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
+      } else if (event.type === 'bedrock-raised' || event.type === 'bedrock-lowered') {
+        this.boardShift = this.options.reducedMotion
+          ? null
+          : {
+              direction: event.type === 'bedrock-raised' ? 'up' : 'down',
+              elapsed: 0,
+              duration: 180,
+            };
       }
     }
   }
@@ -772,6 +803,10 @@ export class TetrisRenderer {
     if (this.lockPulse) {
       this.lockPulse.elapsed += deltaMs;
       if (this.lockPulse.elapsed >= this.lockPulse.duration) this.lockPulse = null;
+    }
+    if (this.boardShift) {
+      this.boardShift.elapsed += deltaMs;
+      if (this.boardShift.elapsed >= this.boardShift.duration) this.boardShift = null;
     }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);
@@ -827,6 +862,7 @@ export class TetrisRenderer {
             offsetY: this.presentation.y - state.active.y,
           }
         : null,
+      boardShiftOffsetY: this.snapshot.boardShiftOffsetY,
     };
   }
 }

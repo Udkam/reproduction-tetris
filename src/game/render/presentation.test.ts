@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   approachPresentationPoint,
+  boardShiftPresentationOffset,
   exposedCellEdges,
   internalCellSeams,
   lineClearCellProgress,
@@ -42,6 +43,18 @@ describe('presentation interpolation', () => {
     expect(center).toBeGreaterThan(edge);
     expect(lineClearCellProgress(1, 0, 10)).toBe(1);
     expect(lineClearCellProgress(1, 9, 10)).toBe(1);
+  });
+
+  it('settles timed bedrock shifts in their canonical direction without overshoot', () => {
+    const upStart = boardShiftPresentationOffset('up', 0, 180, 30);
+    const upMiddle = boardShiftPresentationOffset('up', 90, 180, 30);
+    const downStart = boardShiftPresentationOffset('down', 0, 180, 30);
+    expect(upStart).toBeCloseTo(10.2);
+    expect(upMiddle).toBeGreaterThan(0);
+    expect(upMiddle).toBeLessThan(upStart);
+    expect(downStart).toBeCloseTo(-10.2);
+    expect(boardShiftPresentationOffset('up', 180, 180, 30)).toBe(0);
+    expect(boardShiftPresentationOffset('down', 20, 0, 30)).toBe(0);
   });
 
   it('groups every canonical tetromino, preserves its outer perimeter, and enumerates each inner seam once', () => {
