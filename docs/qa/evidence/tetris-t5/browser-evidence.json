@@ -1,14 +1,11 @@
 {
-  "taskId": "TETRIS-T6-THREE-DISTINCT-MODES-017",
-  "candidateSha": "5a3c35af325e4fa43841190e8acfb4867c8f1ebc",
-  "sourceSha": "5a3c35af325e4fa43841190e8acfb4867c8f1ebc",
-  "candidateTip": "2308d80a104177025d0bfcb3d52cab69ac054ac0",
-  "captureHead": "2308d80a104177025d0bfcb3d52cab69ac054ac0",
+  "taskId": "TETRIS-T6-BEDROCK-RECOLOR-018",
+  "candidateSha": "4b27a9813c809369ff6ad82d1809c9fbeee92422",
+  "sourceSha": "4b27a9813c809369ff6ad82d1809c9fbeee92422",
+  "candidateTip": "da399481041a1d199f9f4a228e7f019f8d8ebd02",
+  "captureHead": "da399481041a1d199f9f4a228e7f019f8d8ebd02",
   "independentQa": {
-    "coreRules": "ACCEPT — independent Core cross-QA of 34184cb",
-    "staticFunctional": "ACCEPT — focused source verification of 5a3c35a",
-    "visualBrowser": "ACCEPT — independent combined browser QA of 34184cb + 5a3c35a",
-    "visualChecks": "24/24 captures; 26/26 checksums; zero integrity failures",
+    "disposition": "Recorded separately after source-bound capture",
     "matrixExecutionErrors": 0
   },
   "baseUrl": "http://127.0.0.1:4175/",
@@ -1006,7 +1003,7 @@
     },
     {
       "file": "desktop-classic-playing-1440x900.png",
-      "sha256": "93f18b401426582ee427dbd09c2774f9ad8f8e9d7fdc739e61c5d53035c14fa5",
+      "sha256": "1c33921ecca43878be4b0362e5d83725cc97e2afb84e63a45b93b4bc3bf9bc73",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -1302,7 +1299,7 @@
           "phase": "active",
           "puzzleId": null,
           "puzzleCompletion": null,
-          "score": 74,
+          "score": 40,
           "lines": 0,
           "combo": 0,
           "bedrockRows": 0,
@@ -1414,7 +1411,7 @@
     },
     {
       "file": "desktop-classic-paused-1440x900.png",
-      "sha256": "4b2d94352324bfed1aac3586113adf44f14e33aaa69a5909c9de41f5b3491b21",
+      "sha256": "ef064bd238907b124667346f943f43c695b0a63d597f1571764b158f246de4d1",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -1442,7 +1439,7 @@
         "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 58,
-          "height": 43.999969482421875
+          "height": 44
         },
         "buttons": [
           {
@@ -1493,7 +1490,7 @@
           {
             "text": "离开本局",
             "width": 442,
-            "height": 43.999969482421875
+            "height": 44
           }
         ],
         "home": {
@@ -1711,7 +1708,7 @@
           "active": {
             "type": "S",
             "x": 3,
-            "y": 19,
+            "y": 20,
             "rotation": 0
           },
           "next": "Z"
@@ -1725,7 +1722,7 @@
           "phase": "active",
           "puzzleId": null,
           "puzzleCompletion": null,
-          "score": 74,
+          "score": 40,
           "lines": 0,
           "combo": 0,
           "bedrockRows": 0,
@@ -1733,7 +1730,7 @@
           "active": {
             "type": "S",
             "x": 3,
-            "y": 19,
+            "y": 20,
             "rotation": 0
           },
           "next": "Z",
@@ -1784,19 +1781,19 @@
           "activeCells": [
             {
               "x": 4,
-              "y": 19
+              "y": 20
             },
             {
               "x": 5,
-              "y": 19
+              "y": 20
             },
             {
               "x": 3,
-              "y": 20
+              "y": 21
             },
             {
               "x": 4,
-              "y": 20
+              "y": 21
             }
           ],
           "ghostCells": [
@@ -1820,7 +1817,7 @@
           "visibleLockedCells": 8,
           "presentation": {
             "x": 3,
-            "y": 19,
+            "y": 20,
             "offsetX": 0,
             "offsetY": 0
           }
@@ -1829,7 +1826,7 @@
           "canvasCount": 1,
           "domCellCount": 0,
           "minButtonWidth": 58,
-          "minButtonHeight": 43.999969482421875,
+          "minButtonHeight": 44,
           "noHorizontalOverflow": true,
           "noVerticalOverflow": true
         }
@@ -1837,7 +1834,7 @@
     },
     {
       "file": "desktop-home-returned-1440x900.png",
-      "sha256": "b64e554e8cb1953e00fccc9576a53412cfd068b501a4fb0c1f22a32eb7cf795d",
+      "sha256": "26e9e141986a764cb33560964803456cfaf4c26391e87ae89cce8cfac9701867",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -1888,11 +1885,11 @@
           "modes": {
             "marathon": {
               "x": 360,
-              "y": 290.0843505859375,
+              "y": 290.08447265625,
               "width": 720,
               "height": 227.96875,
               "right": 1080,
-              "bottom": 518.0531005859375,
+              "bottom": 518.05322265625,
               "clientWidth": 720,
               "clientHeight": 227,
               "scrollWidth": 720,
@@ -1900,11 +1897,11 @@
             },
             "race": {
               "x": 360,
-              "y": 518.0531005859375,
+              "y": 518.05322265625,
               "width": 360,
               "height": 219.03125,
               "right": 720,
-              "bottom": 737.0843505859375,
+              "bottom": 737.08447265625,
               "clientWidth": 359,
               "clientHeight": 219,
               "scrollWidth": 359,
@@ -1912,11 +1909,11 @@
             },
             "puzzle": {
               "x": 720,
-              "y": 518.0531005859375,
+              "y": 518.05322265625,
               "width": 360,
               "height": 219.03125,
               "right": 1080,
-              "bottom": 737.0843505859375,
+              "bottom": 737.08447265625,
               "clientWidth": 360,
               "clientHeight": 219,
               "scrollWidth": 360,
@@ -1926,7 +1923,7 @@
           "phaseCount": 1,
           "phase": {
             "x": 384,
-            "y": 290.0843505859375,
+            "y": 290.08447265625,
             "width": 163.515625,
             "height": 2,
             "transitionDuration": "0.22s, 0.22s, 0.22s"
@@ -1936,11 +1933,11 @@
             "marathon": {
               "button": {
                 "x": 360,
-                "y": 290.0843505859375,
+                "y": 290.08447265625,
                 "width": 720,
                 "height": 227.96875,
                 "right": 1080,
-                "bottom": 518.0531005859375,
+                "bottom": 518.05322265625,
                 "clientWidth": 720,
                 "clientHeight": 227,
                 "scrollWidth": 720,
@@ -1948,11 +1945,11 @@
               },
               "action": {
                 "x": 979,
-                "y": 381.5687255859375,
+                "y": 381.56884765625,
                 "width": 77,
                 "height": 44,
                 "right": 1056,
-                "bottom": 425.5687255859375,
+                "bottom": 425.56884765625,
                 "clientWidth": 77,
                 "clientHeight": 44,
                 "scrollWidth": 77,
@@ -1960,11 +1957,11 @@
               },
               "arrow": {
                 "x": 1014,
-                "y": 382.5687255859375,
+                "y": 382.56884765625,
                 "width": 42,
                 "height": 42,
                 "right": 1056,
-                "bottom": 424.5687255859375,
+                "bottom": 424.56884765625,
                 "clientWidth": 40,
                 "clientHeight": 40,
                 "scrollWidth": 40,
@@ -1981,11 +1978,11 @@
             "race": {
               "button": {
                 "x": 360,
-                "y": 518.0531005859375,
+                "y": 518.05322265625,
                 "width": 360,
                 "height": 219.03125,
                 "right": 720,
-                "bottom": 737.0843505859375,
+                "bottom": 737.08447265625,
                 "clientWidth": 359,
                 "clientHeight": 219,
                 "scrollWidth": 359,
@@ -1993,11 +1990,11 @@
               },
               "action": {
                 "x": 618,
-                "y": 605.5687255859375,
+                "y": 605.56884765625,
                 "width": 77,
                 "height": 44,
                 "right": 695,
-                "bottom": 649.5687255859375,
+                "bottom": 649.56884765625,
                 "clientWidth": 77,
                 "clientHeight": 44,
                 "scrollWidth": 77,
@@ -2005,11 +2002,11 @@
               },
               "arrow": {
                 "x": 651,
-                "y": 606.5687255859375,
+                "y": 606.56884765625,
                 "width": 42,
                 "height": 42,
                 "right": 693,
-                "bottom": 648.5687255859375,
+                "bottom": 648.56884765625,
                 "clientWidth": 40,
                 "clientHeight": 40,
                 "scrollWidth": 40,
@@ -2026,11 +2023,11 @@
             "puzzle": {
               "button": {
                 "x": 720,
-                "y": 518.0531005859375,
+                "y": 518.05322265625,
                 "width": 360,
                 "height": 219.03125,
                 "right": 1080,
-                "bottom": 737.0843505859375,
+                "bottom": 737.08447265625,
                 "clientWidth": 360,
                 "clientHeight": 219,
                 "scrollWidth": 360,
@@ -2038,11 +2035,11 @@
               },
               "action": {
                 "x": 979,
-                "y": 605.5687255859375,
+                "y": 605.56884765625,
                 "width": 77,
                 "height": 44,
                 "right": 1056,
-                "bottom": 649.5687255859375,
+                "bottom": 649.56884765625,
                 "clientWidth": 77,
                 "clientHeight": 44,
                 "scrollWidth": 77,
@@ -2050,11 +2047,11 @@
               },
               "arrow": {
                 "x": 1012,
-                "y": 606.5687255859375,
+                "y": 606.56884765625,
                 "width": 42,
                 "height": 42,
                 "right": 1054,
-                "bottom": 648.5687255859375,
+                "bottom": 648.56884765625,
                 "clientWidth": 40,
                 "clientHeight": 40,
                 "scrollWidth": 40,
@@ -2126,7 +2123,7 @@
     },
     {
       "file": "wide-survival-bedrock-2048x1152.png",
-      "sha256": "20d501a3c4f99b7a20399c22f4a26a5e4b12b2f6b00804f3c4740fef1d4c8811",
+      "sha256": "c9328ac70aa3896ca41341dda1a64fee1a3c4029c414112b10af3996b8ebafcf",
       "metrics": {
         "viewport": {
           "width": 2048,
@@ -2159,7 +2156,7 @@
         "buttons": [
           {
             "text": "← 返回",
-            "width": 74.3125,
+            "width": 72.53125,
             "height": 44
           },
           {
@@ -2422,7 +2419,7 @@
           "phase": "active",
           "puzzleId": null,
           "puzzleCompletion": null,
-          "score": 3036,
+          "score": 3032,
           "lines": 24,
           "combo": 0,
           "bedrockRows": 4,
@@ -2538,7 +2535,7 @@
     },
     {
       "file": "wide-survival-topout-2048x1152.png",
-      "sha256": "88eacac2caa96980d6ea7e799cf5b2550743e3a844647442659498dbc422764c",
+      "sha256": "e419c20b5c0c57e0eef85c0ad30f9b2d9cacc7d5c6b8c83484b6afe0042cb8df",
       "metrics": {
         "viewport": {
           "width": 2048,
@@ -2839,7 +2836,7 @@
           "phase": "active",
           "puzzleId": null,
           "puzzleCompletion": null,
-          "score": 3112,
+          "score": 3102,
           "lines": 24,
           "combo": 0,
           "bedrockRows": 4,
@@ -3359,165 +3356,165 @@
             {
               "text": "01青脊回旋",
               "x": 25,
-              "y": 137.08465576171875,
+              "y": 137,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 205.08465576171875,
+              "bottom": 205,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "02深湾折返",
               "x": 198.5,
-              "y": 137.08465576171875,
+              "y": 137,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 205.08465576171875,
+              "bottom": 205,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "03双岸错层",
               "x": 25,
-              "y": 208.08465576171875,
+              "y": 208,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 276.08465576171875,
+              "bottom": 276,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "04侧槽逆流",
               "x": 198.5,
-              "y": 208.08465576171875,
+              "y": 208,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 276.08465576171875,
+              "bottom": 276,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "05潮线汇流",
               "x": 25,
-              "y": 279.08465576171875,
+              "y": 279,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 347.08465576171875,
+              "bottom": 347,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "06远岸终局",
               "x": 198.5,
-              "y": 279.08465576171875,
+              "y": 279,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 347.08465576171875,
+              "bottom": 347,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "07折光浅湾",
               "x": 25,
-              "y": 350.08465576171875,
+              "y": 350,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 418.08465576171875,
+              "bottom": 418,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "08微澜错屿",
               "x": 198.5,
-              "y": 350.08465576171875,
+              "y": 350,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 418.08465576171875,
+              "bottom": 418,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "09蓝桥叠汐",
               "x": 25,
-              "y": 421.08465576171875,
+              "y": 421,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 489.08465576171875,
+              "bottom": 489,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "10薄雾回廊",
               "x": 198.5,
-              "y": 421.08465576171875,
+              "y": 421,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 489.08465576171875,
+              "bottom": 489,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "11棱湾交错",
               "x": 25,
-              "y": 492.08465576171875,
+              "y": 492,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 560.0846557617188,
+              "bottom": 560,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "12双潮折线",
               "x": 198.5,
-              "y": 492.08465576171875,
+              "y": 492,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 560.0846557617188,
+              "bottom": 560,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "13静弧深槽",
               "x": 25,
-              "y": 563.0846557617188,
+              "y": 563,
               "width": 166.5,
               "height": 68,
               "right": 191.5,
-              "bottom": 631.0846557617188,
+              "bottom": 631,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "14脉光群岛",
               "x": 198.5,
-              "y": 563.0846557617188,
+              "y": 563,
               "width": 166.5,
               "height": 68,
               "right": 365,
-              "bottom": 631.0846557617188,
+              "bottom": 631,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "15远蓝合流",
               "x": 25,
-              "y": 634.0846557617188,
+              "y": 634,
               "width": 340,
               "height": 68,
               "right": 365,
-              "bottom": 702.0846557617188,
+              "bottom": 702,
               "disabled": false,
               "firstViewport": true
             }
@@ -3526,11 +3523,11 @@
             {
               "text": "开始",
               "x": 25,
-              "y": 820.0846557617188,
+              "y": 820,
               "width": 340,
               "height": 44,
               "right": 365,
-              "bottom": 864.0846557617188,
+              "bottom": 864,
               "disabled": false,
               "firstViewport": false
             }
@@ -4947,17 +4944,17 @@
           {
             "text": "07折光浅湾",
             "width": 169,
-            "height": 51.609375
+            "height": 51.60939025878906
           },
           {
             "text": "08微澜错屿",
             "width": 169,
-            "height": 51.609375
+            "height": 51.60939025878906
           },
           {
             "text": "09蓝桥叠汐",
             "width": 169,
-            "height": 51.609375
+            "height": 51.60939025878906
           },
           {
             "text": "10薄雾回廊",
@@ -5046,75 +5043,75 @@
             {
               "text": "01青脊回旋",
               "x": 21,
-              "y": 109.03955078125,
+              "y": 109.03953552246094,
               "width": 166,
               "height": 51.59375,
               "right": 187,
-              "bottom": 160.63330078125,
+              "bottom": 160.63328552246094,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "02深湾折返",
               "x": 192,
-              "y": 109.03955078125,
+              "y": 109.03953552246094,
               "width": 169,
               "height": 51.59375,
               "right": 361,
-              "bottom": 160.63330078125,
+              "bottom": 160.63328552246094,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "03双岸错层",
               "x": 366,
-              "y": 109.03955078125,
+              "y": 109.03953552246094,
               "width": 169,
               "height": 51.59375,
               "right": 535,
-              "bottom": 160.63330078125,
+              "bottom": 160.63328552246094,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "04侧槽逆流",
               "x": 18,
-              "y": 162.63330078125,
+              "y": 162.63328552246094,
               "width": 169,
               "height": 51.59375,
               "right": 187,
-              "bottom": 214.22705078125,
+              "bottom": 214.22703552246094,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "05潮线汇流",
               "x": 192,
-              "y": 162.63330078125,
+              "y": 162.63328552246094,
               "width": 169,
               "height": 51.59375,
               "right": 361,
-              "bottom": 214.22705078125,
+              "bottom": 214.22703552246094,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "06远岸终局",
               "x": 366,
-              "y": 162.63330078125,
+              "y": 162.63328552246094,
               "width": 169,
               "height": 51.59375,
               "right": 535,
-              "bottom": 214.22705078125,
+              "bottom": 214.22703552246094,
               "disabled": false,
               "firstViewport": true
             },
             {
               "text": "07折光浅湾",
               "x": 18,
-              "y": 216.22705078125,
+              "y": 216.22703552246094,
               "width": 169,
-              "height": 51.609375,
+              "height": 51.60939025878906,
               "right": 187,
               "bottom": 267.83642578125,
               "disabled": false,
@@ -5123,9 +5120,9 @@
             {
               "text": "08微澜错屿",
               "x": 192,
-              "y": 216.22705078125,
+              "y": 216.22703552246094,
               "width": 169,
-              "height": 51.609375,
+              "height": 51.60939025878906,
               "right": 361,
               "bottom": 267.83642578125,
               "disabled": false,
@@ -5134,9 +5131,9 @@
             {
               "text": "09蓝桥叠汐",
               "x": 366,
-              "y": 216.22705078125,
+              "y": 216.22703552246094,
               "width": 169,
-              "height": 51.609375,
+              "height": 51.60939025878906,
               "right": 535,
               "bottom": 267.83642578125,
               "disabled": false,
@@ -5264,7 +5261,7 @@
     },
     {
       "file": "landscape-classic-844x390-dpr3.png",
-      "sha256": "e986a0ccbbf1d2a2271fc967fc67a6455fa1c892efdc08e0ab767cd0487a9b2c",
+      "sha256": "99e8eeeaa51ba8333bd6205a9fd93cff370f8aaf42ba4b6e6a7302430f1885d8",
       "metrics": {
         "viewport": {
           "width": 844,
@@ -5959,7 +5956,7 @@
     },
     {
       "file": "narrow-puzzle-360x800.png",
-      "sha256": "5c76402c3fd44de998ce3d4c9ae830ecf1528ed7a5aea51ee20be6d6493e3a01",
+      "sha256": "05424b39d8806a23ec3db1adfec0a04a70dcc5f1b80e1016b639d451653f6a71",
       "metrics": {
         "viewport": {
           "width": 360,
@@ -8109,7 +8106,7 @@
     },
     {
       "file": "desktop-puzzle-success-1440x900.png",
-      "sha256": "87a030bde8878ec864b435ce83a90d986774a82f2b5223bd3ba1bf9d9186498c",
+      "sha256": "1840634cee9a1a5c1399cbae799c2d684f19c403af57ebb89e70c7d43b8f184f",
       "metrics": {
         "viewport": {
           "width": 1440,
@@ -8137,7 +8134,7 @@
         "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 58,
-          "height": 43.999969482421875
+          "height": 44
         },
         "buttons": [
           {
@@ -8178,12 +8175,12 @@
           {
             "text": "再来一局",
             "width": 217,
-            "height": 43.999969482421875
+            "height": 44
           },
           {
             "text": "返回关卡库",
             "width": 217,
-            "height": 43.999969482421875
+            "height": 44
           }
         ],
         "home": {
@@ -8486,7 +8483,7 @@
           "canvasCount": 1,
           "domCellCount": 0,
           "minButtonWidth": 58,
-          "minButtonHeight": 43.999969482421875,
+          "minButtonHeight": 44,
           "noHorizontalOverflow": true,
           "noVerticalOverflow": true
         }

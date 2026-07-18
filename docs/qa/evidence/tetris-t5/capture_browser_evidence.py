@@ -108,8 +108,8 @@ def open_page(
         context.route("https://fonts.gstatic.com/**", abort_font)
     page = context.new_page()
     page_errors = attach_error_tracking(page, label, allow_blocked_fonts=block_fonts)
-    page.goto(BASE_URL, wait_until="networkidle")
-    page.evaluate("document.fonts && document.fonts.ready")
+    page.goto(BASE_URL, wait_until="domcontentloaded")
+    page.evaluate("() => document.fonts ? document.fonts.ready : Promise.resolve()")
     page.wait_for_timeout(150)
     return context, page, page_errors
 
@@ -1060,16 +1060,13 @@ def exercise_puzzle_success(browser: Browser) -> None:
 
 def write_manifest(source_sha: str, candidate_tip: str, capture_head: str) -> None:
     manifest = {
-        "taskId": "TETRIS-T6-THREE-DISTINCT-MODES-017",
+        "taskId": "TETRIS-T6-BEDROCK-RECOLOR-018",
         "candidateSha": source_sha,
         "sourceSha": source_sha,
         "candidateTip": candidate_tip,
         "captureHead": capture_head,
         "independentQa": {
-            "coreRules": "ACCEPT — independent Core cross-QA of 34184cb",
-            "staticFunctional": "ACCEPT — focused source verification of 5a3c35a",
-            "visualBrowser": "ACCEPT — independent combined browser QA of 34184cb + 5a3c35a",
-            "visualChecks": "24/24 captures; 26/26 checksums; zero integrity failures",
+            "disposition": "Recorded separately after source-bound capture",
             "matrixExecutionErrors": 0,
         },
         "baseUrl": BASE_URL,
