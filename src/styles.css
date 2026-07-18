@@ -108,7 +108,9 @@ p {
   color: var(--ink);
 }
 
-.brand strong {
+.brand strong,
+.brand h1 {
+  margin: 0;
   font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
   font-size: clamp(28px, 3vw, 34px);
   font-weight: 700;
@@ -120,11 +122,17 @@ p {
   font-size: 22px;
 }
 
+.landing-header .brand h1 {
+  font-size: clamp(42px, 5.2vw, 64px);
+  font-weight: 760;
+  letter-spacing: -.08em;
+}
+
 /* Mode home */
 
 .landing-shell {
   display: grid;
-  grid-template-rows: 54px minmax(0, 1fr);
+  grid-template-rows: 82px minmax(0, 1fr);
   width: min(1240px, 100%);
   height: 100dvh;
   margin: 0 auto;
@@ -172,7 +180,7 @@ p {
   gap: 24px;
 }
 
-.landing-intro h1,
+.landing-intro h2,
 .library-intro h1 {
   margin: 5px 0 0;
   color: var(--ink);
@@ -502,11 +510,17 @@ p {
 }
 
 .library-intro {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 30px;
-  padding: 4px 5px 18px;
+  display: grid;
+  gap: 5px;
+  padding: 4px 5px 14px;
+}
+
+.library-intro > span {
+  color: var(--puzzle);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 
 .library-intro h1 {
@@ -515,7 +529,7 @@ p {
 
 .library-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 380px;
   min-height: min(560px, calc(100dvh - 220px));
   overflow: hidden;
   background: var(--surface);
@@ -530,34 +544,34 @@ p {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(5, minmax(72px, 1fr));
   min-width: 0;
-  gap: 8px;
-  padding: 14px;
-  background: var(--raised);
+  gap: 10px;
+  padding: 16px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--raised) 88%, white), var(--raised));
   border-right: 1px solid var(--line);
 }
 
 .level-item {
   position: relative;
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid transparent;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(40, 66, 92, .04);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 92%, white), var(--surface));
+  border: 1px solid color-mix(in srgb, var(--line) 72%, white);
+  border-radius: 12px;
+  box-shadow: 0 5px 12px rgba(40, 66, 92, .06);
   transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms var(--ease);
 }
 
 .level-item--selected {
-  background: var(--selected);
-  border-color: var(--selection);
-  box-shadow: inset 4px 0 0 var(--selection), 0 8px 16px rgba(40, 66, 92, .1);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--selected) 82%, white), var(--selected));
+  border-color: var(--puzzle);
+  box-shadow: inset 0 3px 0 var(--puzzle), 0 10px 20px rgba(40, 66, 92, .12);
 }
 
 .level-item--selected::after {
   position: absolute;
   top: 8px;
   right: 8px;
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   content: "";
   background: var(--selection);
   border-radius: 50%;
@@ -571,13 +585,13 @@ p {
 
 .level-entry {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) 50px;
+  grid-template-columns: 30px minmax(0, 1fr) 58px;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
   height: 100%;
-  min-height: 78px;
-  padding: 8px 9px 8px 12px;
+  min-height: 92px;
+  padding: 10px 10px 10px 12px;
   text-align: left;
   background: transparent;
 }
@@ -608,7 +622,7 @@ p {
 
 .level-entry__copy strong {
   overflow: hidden;
-  font-size: 16px;
+  font-size: 17px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -624,19 +638,20 @@ p {
 
 .level-entry__preview {
   display: grid;
-  width: 44px;
-  height: 54px;
+  width: 58px;
+  height: 70px;
   place-items: center;
   justify-self: end;
   overflow: hidden;
   background: var(--well);
   border: 1px solid color-mix(in srgb, var(--edge) 58%, var(--well));
-  border-radius: 7px;
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .018);
 }
 
 .puzzle-silhouette.puzzle-silhouette--compact {
-  width: 29px;
-  height: 36px;
+  width: 39px;
+  height: 48px;
 }
 
 .level-inline-detail {
@@ -648,8 +663,9 @@ p {
   grid-template-rows: minmax(230px, 1fr) auto 52px;
   gap: 18px;
   min-width: 0;
-  padding: 22px;
-  background: var(--raised);
+  padding: 24px;
+  color: #eaf3fb;
+  background: linear-gradient(160deg, #10243a, #071525);
 }
 
 .level-detail__visual {
@@ -657,10 +673,10 @@ p {
   display: grid;
   place-items: center;
   min-height: 0;
-  background: var(--well);
-  border: 1px solid color-mix(in srgb, var(--edge) 58%, var(--well));
-  border-radius: 12px;
-  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, .018);
+  background: radial-gradient(circle at 50% 38%, #142f49, var(--well) 68%);
+  border: 1px solid rgba(188, 210, 230, .24);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, .018), 0 14px 30px rgba(2, 15, 28, .22);
 }
 
 .level-detail__visual::before,
@@ -691,7 +707,7 @@ p {
   position: absolute;
   top: 14px;
   right: 16px;
-  color: color-mix(in srgb, var(--surface) 68%, transparent);
+  color: color-mix(in srgb, #eaf3fb 68%, transparent);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   letter-spacing: .08em;
@@ -702,7 +718,7 @@ p {
   width: 168px;
   height: 202px;
   place-items: center;
-  border: 1px solid rgba(181, 197, 213, .22);
+  border: 1px solid rgba(218, 235, 249, .26);
   border-radius: 8px;
 }
 
@@ -726,7 +742,8 @@ p {
 
 .level-detail h2 {
   margin: 4px 0 0;
-  font-size: 25px;
+  color: #f6fbff;
+  font-size: 27px;
   letter-spacing: -.035em;
 }
 
@@ -734,6 +751,7 @@ p {
   align-self: end;
   width: 100%;
   min-height: 52px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
 }
 
 /* Gameplay */
@@ -1284,7 +1302,8 @@ p {
     padding-inline: 3px;
   }
 
-  .brand strong {
+  .brand strong,
+  .landing-header .brand h1 {
     font-size: 27px;
   }
 
@@ -1307,7 +1326,7 @@ p {
     align-items: center;
   }
 
-  .landing-intro h1 {
+  .landing-intro h2 {
     margin: 0;
     font-size: 23px;
   }
@@ -1796,11 +1815,11 @@ p {
   }
 
   .landing-shell {
-    grid-template-rows: 42px minmax(0, 1fr);
+    grid-template-rows: 52px minmax(0, 1fr);
     padding: 5px 12px 9px;
   }
 
-  .landing-header .brand strong {
+  .landing-header .brand h1 {
     font-size: 25px;
   }
 

@@ -200,10 +200,10 @@ describe('entry countdown', () => {
 describe('T6 frontend mode binding', () => {
   it('binds every statistic to an explicit role without positional CSS inference', () => {
     const classic = { ...createInitialState(0x51a1f00d, 'marathon'), combo: 3 };
-    const survival = { ...createInitialState(0x51a1f00d, 'race'), survivalBedrockRows: 4 };
+    const survival = createInitialState(0x51a1f00d, 'race');
     const cases = [
       { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒/格'] },
-      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '4', '20 秒'] },
+      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '5', '15 秒'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-level', 'placed', 'lines', 'objective'],
@@ -240,7 +240,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
     expect(view.container.textContent).toContain('连消加分\n每 10 行提高下落速度');
-    expect(view.container.textContent).toContain('生存20 秒 → 10 秒\n每 5 行降层 / -1 秒');
+    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetris');
+    expect(view.container.textContent).toContain('生存开局 5 层基岩\n15 秒 → 8 秒 · 每 3 行降层 / 提速');
     expect(view.container.textContent).toContain('15 关残局');
     expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();
@@ -316,12 +317,14 @@ describe('T6 frontend mode binding', () => {
 
   it('shows direct progressive cadence and pending pressure instead of a level label', () => {
     const classic = { ...createInitialState(0x51a1f00d, 'marathon'), lines: 10 };
+    const survival = { ...createInitialState(0x51a1f00d, 'race'), lines: 3 };
     const pending = {
       ...createInitialState(0x51a1f00d, 'race'),
       lines: 5,
       survivalRisePending: true,
     };
     expect(fallCadenceLabel(classic)).toBe('0.7 秒/格');
+    expect(fallCadenceLabel(survival)).toBe('0.7 秒/格');
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 

@@ -57,7 +57,7 @@ const MODE_COPY: Record<GameMode, {
   },
   race: {
     label: '生存',
-    detail: '20 秒 → 10 秒\n每 5 行降层 / -1 秒',
+    detail: '开局 5 层基岩\n15 秒 → 8 秒 · 每 3 行降层 / 提速',
     action: '开始',
   },
   puzzle: {
@@ -155,10 +155,11 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
   };
 }
 
-function Brand({ compact = false }: { compact?: boolean }) {
+function Brand({ compact = false, primary = false }: { compact?: boolean; primary?: boolean }) {
+  const wordmark = primary ? <h1>Tetris</h1> : <strong>Tetris</strong>;
   return (
     <div className={`brand ${compact ? 'brand--compact' : ''}`} data-testid="brand">
-      <strong>Tetris</strong>
+      {wordmark}
     </div>
   );
 }
@@ -185,12 +186,12 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
   return (
     <main id="game" className="landing-shell" data-testid="mode-home">
       <header className="landing-header">
-        <Brand />
+        <Brand primary />
       </header>
       <section className="landing-stage" aria-labelledby="home-title">
         <section className="mode-chooser">
           <div className="landing-intro">
-            <h1 id="home-title">选择模式</h1>
+            <h2 id="home-title">选择模式</h2>
           </div>
           <div
             className="mode-gates"
@@ -298,7 +299,8 @@ export function PuzzleLibrary({
         <Brand compact />
       </header>
       <section className="library-intro" aria-labelledby="library-title">
-        <h1 id="library-title">解谜</h1>
+        <span>15 个原创残局</span>
+        <h1 id="library-title">解谜档案</h1>
       </section>
       <section className="library-content" aria-label="全部解谜关卡">
         <div className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个可用解谜关卡`} data-testid="level-list">
