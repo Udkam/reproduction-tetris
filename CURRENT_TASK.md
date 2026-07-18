@@ -12,7 +12,8 @@ Preserved rejected follow-up: local branch
 `1362c664629b2a83f0659f836259b84c21750fee`
 
 Status: **ACTIVE — T5 remains accepted at product source `48176fe`; T6 changes only
-Classic/Race/Puzzle rule identity and the matching Classic statistic binding**
+Classic/Survival/Puzzle rule identity, Survival bedrock rendering, and matching
+statistics/QA bindings**
 
 ## Slice L — three independent mode rules
 
@@ -26,36 +27,47 @@ User-visible outcome:
 - Classic is fixed-speed chain-score survival: 48 ticks per automatic cell for the
   full run; consecutive clearing pieces build a visible `连消` counter and score
   bonus, while any non-clearing lock breaks the chain;
-- Race begins at Classic's exact 48-tick speed and is the only mode that accelerates,
-  using `floor(pieceCount / 5) + floor(lines / 4)` and ending only on top-out or exit;
+- Survival replaces player-facing Race: it uses Classic's fixed 48-tick gravity and
+  raises one permanent, unbreakable bedrock row from the bottom for every five
+  cumulative cleared lines;
 - Puzzle shares Classic's fixed 48-tick speed but starts from one of fifteen authored
   legal endgames and wins only when the complete canonical board becomes empty.
 
 Core writer boundary:
 
-- `src/game/core/constants.ts`, `src/game/core/engine.ts`, and
-  `src/game/core/types.ts`;
+- `src/game/core/constants.ts`, `src/game/core/board.ts`,
+  `src/game/core/engine.ts`, and `src/game/core/types.ts`;
 - directly related tests under `src/game/core/*.test.ts`;
 - `docs/workstreams/tetris-t5-core/THREAD_LOG.md` after the source checkpoint.
 
 Core acceptance:
 
-- Classic and Puzzle remain at 48 ticks after any line or piece count;
-- Race tier zero is 48 ticks, then decreases monotonically to its existing safe cap;
+- Classic, Survival, and Puzzle remain at 48 ticks after any line or piece count;
 - all modes use fixed base line-clear scores `40 / 100 / 300 / 1200`; Classic alone
   adds `50 × (combo - 1)` after the first consecutive clearing piece;
 - Classic combo starts at `0`, becomes `1` on the first clearing piece, increments on
   every immediately consecutive clearing piece, and resets on a non-clearing lock;
-  Race and Puzzle remain at combo `0` and receive no combo bonus;
-- the compatibility `state.level` remains exactly `0`, no line threshold emits
-  `level-up`, and Race tiering never reads it;
-- Race has no successful line-count terminal state; Puzzle board-empty success and
-  continuous seeded seven-bag input remain unchanged;
+  Survival and Puzzle remain at combo `0` and receive no combo bonus;
+- the compatibility `state.level` remains exactly `0` and no line threshold emits
+  `level-up`;
+- Survival's internal key remains `race`, but it has no speed curve or successful
+  line-count terminal state;
+- each crossed five-line threshold clears/scores first, then shifts the remaining
+  board up and adds one full bedrock row; bedrock blocks pieces, never clears, and
+  overflow from the top ends the run before the next spawn;
+- restart reconstructs zero bedrock, while deterministic replay/hash includes the
+  canonical bedrock state and height;
+- Puzzle board-empty success and continuous seeded seven-bag input remain unchanged;
 - focused Core tests and typecheck pass before an exact-path source checkpoint.
 
-Frontend writer boundary after Core source is frozen:
+Frontend/renderer writer boundary after Core source is frozen:
 
 - `src/App.tsx` and `src/App.test.ts`;
+- `src/styles.css` only for the renamed semantic statistic role;
+- `src/game/render/theme.ts`, `src/game/render/TetrisRenderer.ts`, and directly related
+  renderer/theme tests for the bedrock material only;
+- `src/game/runtime/qaScenario.ts` and `src/game/runtime/qaScenario.test.ts` only to
+  replace obsolete Race-speed evidence with real Survival bedrock evidence;
 - `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md` after the source checkpoint.
 
 Frontend acceptance:
@@ -63,10 +75,14 @@ Frontend acceptance:
 - Classic statistics are exactly score, cleared lines, and current `连消`;
 - no player-facing or DEV text snapshot describes a Classic level; the detached text
   snapshot exposes the current combo instead;
-- Race retains score, cleared lines, and speed tier; Puzzle retains its existing
-  level/placed/cleared objective statistics;
-- no CSS, layout, theme, renderer, control, countdown, dependency, or `index.html`
-  change is authorized;
+- every visible `竞速` label becomes `生存`; Survival statistics are score, cleared
+  lines, and bedrock height, with no speed-tier copy;
+- bedrock renders as a restrained coherent mineral stratum compatible with the frozen
+  palette, visibly distinct from all seven tetromino materials and retaining readable
+  unit seams;
+- Puzzle retains its existing level/placed/cleared objective statistics;
+- no layout, ordinary tetromino theme/geometry, control, countdown, dependency, or
+  `index.html` change is authorized;
 - focused App tests, typecheck, and the prescribed browser action client pass.
 
 After the two source checkpoints, the coordinator runs exactly one final typecheck,

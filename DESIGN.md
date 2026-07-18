@@ -3,18 +3,18 @@
 ## Status and authority
 
 The user's 2026-07-18 rule review opens T6 only for the three gameplay identities.
-Their subsequent request for a more creative separation supersedes the first
-fixed-base-score-only Classic draft while retaining its fixed gravity:
+Their subsequent request for a more creative separation, followed by the explicit
+replacement of Race with Survival, supersedes both earlier T6 drafts:
 
 The accepted T5 layout, typography, `雾昼矿物` palette, divided cohesive tetromino
 facets, fifteen authored Puzzle endgames, 18-tick lock window, entry countdown,
 responsive behavior, and accessibility remain frozen. T6 supersedes only the former
-Classic level progression and the Race curve's faster opening speed:
+Classic level progression and the complete Race acceleration rule:
 
 - Classic is fixed-speed chain-score survival: consecutive clearing pieces build a
   visible scoring chain and any non-clearing lock breaks it;
-- Race begins at the same standard speed as Classic and is the only mode whose
-  gravity accelerates during a run;
+- Survival uses Classic's fixed gravity but raises one permanent unbreakable bedrock
+  row from the floor for every five cumulative cleared lines;
 - Puzzle uses the same fixed standard speed as Classic but changes the initial board
   and terminal objective to an authored board-clearing challenge.
 
@@ -22,9 +22,10 @@ The serialized `level` field remains pinned to `0` for replay/state compatibilit
 this bounded slice. It is not displayed, never increments, never multiplies score,
 and never emits a `level-up` event. Removing the compatibility field or event type is
 outside T6 unless a separately authorized migration proves old replay handling.
-Classic owns one deterministic `combo` counter. Race and Puzzle keep it at `0`, and
-non-Classic hashes remain stable by excluding that irrelevant field from their
-canonical hash payload.
+Classic owns one deterministic `combo` counter. Survival and Puzzle keep it at `0`,
+and non-Classic hashes remain stable by excluding that irrelevant field from their
+canonical hash payload. The internal mode key remains `race` only for replay/storage
+compatibility; every player-facing label is `生存`.
 
 The 2026-07-17 T5 milestone was independently accepted at product source
 `effb353c0a4d1bef26fa524ed38d3d3653f45eb8` with formal evidence
@@ -89,7 +90,7 @@ complete and opens no page redesign. It authorizes only two controlled changes:
   not from a dark theme, neon, decorative telemetry, or new interface machinery.
 
 The subsequent start-flow refinement adds one functional layer without reopening the
-page design. After a player activates Classic or Race `开始`, or activates `开始` for a
+page design. After a player activates Classic or Survival `开始`, or activates `开始` for a
 selected Puzzle level, the game shell appears with a centered `3`, `2`, `1` countdown.
 Each number occupies exactly one second. The runtime remains in its deterministic
 `ready` state throughout the countdown: gravity, elapsed ticks, audio events, keyboard
@@ -206,7 +207,7 @@ evidence only. T5 uses new paths and does not rewrite those artifacts.
 - There is no Hold mechanic.
 - Grounded pieces lock after exactly 18 fixed ticks unless an already-supported legal
   move or rotation resets the timer within the unchanged reset cap. The same shortened
-  window applies to Classic, Race, and Puzzle and remains deterministic.
+  window applies to Classic, Survival, and Puzzle and remains deterministic.
 - Initial entry into a run has exactly one `3`, `2`, `1` countdown. While it is visible,
   the canonical state remains `ready`, every gameplay input is gated, and the runtime
   starts exactly once only after the final second.
@@ -228,29 +229,37 @@ evidence only. T5 uses new paths and does not rewrite those artifacts.
   simultaneous lines. The first clearing piece starts chain `1`; every immediately
   consecutive clearing piece increases it by one and adds `50 × (chain - 1)` bonus
   points. A locked piece that clears no line resets the chain to `0`. There is no level
-  multiplier and no chain bonus in Race or Puzzle.
+  multiplier and no chain bonus in Survival or Puzzle.
 - Player-facing statistics are score, cleared lines, and current chain (`连消`).
   `等级` is not displayed or described.
 - The run ends only on top-out or explicit player exit.
 
-### Race
+### Survival (`race` internal key)
 
-Race is Classic's open-ended play with one exclusive deterministic acceleration rule.
+Survival is fixed-speed pressure endurance. It shares Classic's 48-tick gravity but
+replaces Classic's chain scoring with a board-changing floor hazard.
 
-- There is no line target and no successful terminal state.
-- Clearing 20 lines, or any other line count, must never set `status = "finished"`.
-- Seven-bag generation, clearing, base line score, and top-out match normal play.
-  Race does not use Classic's chain counter or chain bonus.
-- Speed tier zero uses the same 48-tick gravity as Classic. Race then accelerates and
-  never becomes slower; Classic and Puzzle never use this curve.
-- Speed tier is `floor(pieceCount / 5) + floor(lines / 4)`, clamped to the bounded
-  production gravity curve.
-- Player-facing statistics are score, cleared lines, and current speed tier.
-- The run ends only on top-out or explicit player exit to the mode home.
-- Race leaderboard rows, if retained, are top-out endurance results rather than
+- The only player-facing name is `生存`; `竞速` and speed-tier copy are removed.
+- There is no line target, speed curve, or successful terminal state.
+- Seven-bag generation, movement, clearing, base line score, and ordinary top-out
+  match normal play. Survival does not use Classic's chain counter or chain bonus.
+- For every five cumulative cleared lines, exactly one solid bedrock row rises from
+  the bottom. The threshold is cumulative: crossing multiple five-line boundaries in
+  one resolution raises the corresponding number of rows.
+- A rise occurs after the triggering normal lines have been removed and scored. Each
+  rise shifts the entire remaining canonical board upward by one row and appends one
+  full bedrock row at the bottom.
+- Bedrock is a distinct canonical board-cell material. It blocks movement and locking,
+  is visible as one coherent mineral stratum with internal units, and is never returned
+  by full-row detection or removed by line clearing.
+- If a rise would discard any occupied cell from the canonical top row, the run ends
+  immediately as game over before spawning the next piece.
+- Player-facing statistics are score, cleared lines, and current bedrock height.
+- The run ends only on bedrock overflow, ordinary top-out, or explicit exit.
+- Survival leaderboard rows, if retained, are endurance results rather than
   completion-time results.
-- All copy and tests referring to “20 行”, “剩余行”, “完成目标”, or Race completion are
-  removed or migrated.
+- All copy and tests referring to “20 行”, “速度档”, Race acceleration, or Race
+  completion are removed or migrated.
 
 ### Puzzle library
 
@@ -378,7 +387,7 @@ set as ordinary text in the product type system.
 | Board well | `#0B1726` |
 | Primary / secondary text | `#14243A` / `#52677F` |
 | Line / structural edge | `#B5C5D5` / `#879DB3` |
-| Classic / Race / Puzzle / selection | `#357F78` / `#526EB0` / `#80639D` / `#A75E71` |
+| Classic / Survival / Puzzle / selection | `#357F78` / `#526EB0` / `#80639D` / `#A75E71` |
 | Action / hover / focus / action ink | `#315F96` / `#3D70A8` / `#245E9C` / `#F7FAFD` |
 | Success / failure | `#3F7F5D` / `#A64E61` |
 
@@ -474,10 +483,10 @@ non-color cue.
 - The webpage opens on a dedicated mode home with no gameplay board.
 - The mode home and Puzzle library do not mount a runtime or canvas. Entering a run
   creates one runtime/canvas; returning home destroys both before showing the home.
-- A compact `Tetris` header and one `选择模式` heading lead directly to `经典`, Race,
+- A compact `Tetris` header and one `选择模式` heading lead directly to `经典`, Survival,
   and Puzzle. There is no poetic or marketing hero.
 - The three entrances share one continuous 1+2 mode surface: Classic occupies the
-  complete first row, with Race and Puzzle as two independent complete buttons in the
+  complete first row, with Survival and Puzzle as two independent complete buttons in the
   second row. One-pixel dividers and selected-state tone establish grouping; they are
   not three floating cards or a settings list.
 - Every mode entrance keeps its complete action label and rounded arrow control inside
@@ -488,8 +497,8 @@ non-color cue.
   small original four-cell signal may live inside a mode entrance, uses the same
   matte-plate language, and never becomes a logo or looping hero.
 - Visible home copy is frozen to `Tetris`, one `选择模式`, the three Chinese mode
-  names, and these terse factual lines: Classic `分数 · 消行 · 等级`, Race
-  `速度递增 · 无终点`, and Puzzle `15 关残局 · 清空棋盘`, plus `开始` / `选关`.
+  names, and these terse factual lines: Classic `分数 · 消行 · 连消`, Survival
+  `每 5 行 · 基岩上升`, and Puzzle `15 关残局 · 清空棋盘`, plus `开始` / `选关`.
   `当前选择`, `三种玩法`, `随时开始，也可随时退出。`, `键盘与触控均可操作`,
   full-sentence rule explanations, decorative numbering, and redundant brand labels
   are removed from the visible home.
@@ -533,7 +542,7 @@ non-color cue.
   board and Next against DOM geometry anchors.
 - Pause, exit confirmation, success, and failure use accessible light action sheets
   with buttons at least 44 × 44 CSS px.
-- Race shows score, lines, and speed tier. Puzzle shows level name, cleared lines,
+- Survival shows score, lines, and bedrock height. Puzzle shows level name, cleared lines,
   placed pieces, the board-empty goal, and one Next item. It never shows a finite
   remaining-piece value or a suggested solution.
 - Statistic borders are role-based, never inferred from generic odd/even item rules.
@@ -546,7 +555,7 @@ non-color cue.
   `nth-child`, `nth-of-type`, `odd`, and `even` are forbidden for statistic geometry.
 - Remove visible `本局数据`, long `.mode-rule` explanations, and explanatory pause or
   exit paragraphs. Result copy is limited to `棋盘已清空` plus `X 方块 · Y 消行`,
-  `堆叠到顶`, or `竞速结束` plus the necessary statistics. Mode/level name, back,
+  `堆叠到顶`, or `生存结束` plus the necessary statistics. Mode/level name, back,
   pause, score/statistics, objective, Next, keyboard map, and the five touch labels
   remain visible.
 
@@ -600,8 +609,9 @@ only under `docs/workstreams/tetris-t5-*` and `docs/qa/evidence/tetris-t5`.
 - `npm.cmd run typecheck`;
 - complete Vitest suite;
 - production build;
-- deterministic Race replay proving lines never finish the run and acceleration is
-  monotonic through its safe cap;
+- deterministic Survival replay proving the fifth cleared line raises one permanent
+  bedrock row, later thresholds accumulate, bedrock never clears, and overflow ends
+  the run;
 - all fifteen Puzzle levels, two distinct successful public-command routes per level,
   restart/hash determinism, normal automatic gravity, grounded locking, continuous
   seven-bag replenishment, consecutive multi-piece play, and exact regeneration from
