@@ -470,3 +470,10 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   production build PASS. Browser review proves the mute toggle and 0% slider are
   clickable beside Pause, with zero console errors. Independent Core plus
   visual/browser QA remain required before changelog or push.
+
+## 2026-07-19 — Recovery publication authorization
+
+- The user explicitly authorized publication of the existing committed `main`
+  candidate to `origin/main` as a recoverable remote checkpoint. This is a
+  recovery record only: the candidate remains pending independent Core and
+  visual/browser QA, and no changelog acceptance claim is made.

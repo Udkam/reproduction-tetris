@@ -24,6 +24,11 @@ one browser action pass with visible timer/anchors and no browser errors. Indepe
 visual/browser QA must accept the extended candidate before changelog
 integration or push.
 
+Publication exception (2026-07-19): the user explicitly authorizes a recovery
+push of the committed candidate to `origin/main`. This publication preserves a
+recoverable remote checkpoint only; it does not replace the pending independent
+Core and visual/browser QA or mark T10 accepted.
+
 The correction also adds an explicit in-session audio control beside Pause:
 mute plus a 0–100% master-volume slider. It must make all game feedback audible
 without placing browser audio APIs in `src/game/core`.
