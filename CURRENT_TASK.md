@@ -23,9 +23,9 @@ Contract base: accepted and pushed T5 coordinator tip
 
 User-visible outcome:
 
-- Classic is fixed-speed score survival: 48 ticks per automatic cell for the full
-  run, fixed base line-clear scoring, no level display, no level acceleration, and no
-  level score multiplier;
+- Classic is fixed-speed chain-score survival: 48 ticks per automatic cell for the
+  full run; consecutive clearing pieces build a visible `连消` counter and score
+  bonus, while any non-clearing lock breaks the chain;
 - Race begins at Classic's exact 48-tick speed and is the only mode that accelerates,
   using `floor(pieceCount / 5) + floor(lines / 4)` and ending only on top-out or exit;
 - Puzzle shares Classic's fixed 48-tick speed but starts from one of fifteen authored
@@ -33,7 +33,8 @@ User-visible outcome:
 
 Core writer boundary:
 
-- `src/game/core/constants.ts` and `src/game/core/engine.ts`;
+- `src/game/core/constants.ts`, `src/game/core/engine.ts`, and
+  `src/game/core/types.ts`;
 - directly related tests under `src/game/core/*.test.ts`;
 - `docs/workstreams/tetris-t5-core/THREAD_LOG.md` after the source checkpoint.
 
@@ -41,7 +42,11 @@ Core acceptance:
 
 - Classic and Puzzle remain at 48 ticks after any line or piece count;
 - Race tier zero is 48 ticks, then decreases monotonically to its existing safe cap;
-- all modes use fixed base line-clear scores `40 / 100 / 300 / 1200`;
+- all modes use fixed base line-clear scores `40 / 100 / 300 / 1200`; Classic alone
+  adds `50 × (combo - 1)` after the first consecutive clearing piece;
+- Classic combo starts at `0`, becomes `1` on the first clearing piece, increments on
+  every immediately consecutive clearing piece, and resets on a non-clearing lock;
+  Race and Puzzle remain at combo `0` and receive no combo bonus;
 - the compatibility `state.level` remains exactly `0`, no line threshold emits
   `level-up`, and Race tiering never reads it;
 - Race has no successful line-count terminal state; Puzzle board-empty success and
@@ -55,8 +60,9 @@ Frontend writer boundary after Core source is frozen:
 
 Frontend acceptance:
 
-- Classic statistics are exactly score, cleared lines, and placed pieces;
-- no player-facing or DEV text snapshot describes a Classic level;
+- Classic statistics are exactly score, cleared lines, and current `连消`;
+- no player-facing or DEV text snapshot describes a Classic level; the detached text
+  snapshot exposes the current combo instead;
 - Race retains score, cleared lines, and speed tier; Puzzle retains its existing
   level/placed/cleared objective statistics;
 - no CSS, layout, theme, renderer, control, countdown, dependency, or `index.html`

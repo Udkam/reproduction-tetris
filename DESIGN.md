@@ -3,12 +3,16 @@
 ## Status and authority
 
 The user's 2026-07-18 rule review opens T6 only for the three gameplay identities.
+Their subsequent request for a more creative separation supersedes the first
+fixed-base-score-only Classic draft while retaining its fixed gravity:
+
 The accepted T5 layout, typography, `雾昼矿物` palette, divided cohesive tetromino
 facets, fifteen authored Puzzle endgames, 18-tick lock window, entry countdown,
 responsive behavior, and accessibility remain frozen. T6 supersedes only the former
 Classic level progression and the Race curve's faster opening speed:
 
-- Classic is fixed-speed score survival with no player-facing level system;
+- Classic is fixed-speed chain-score survival: consecutive clearing pieces build a
+  visible scoring chain and any non-clearing lock breaks it;
 - Race begins at the same standard speed as Classic and is the only mode whose
   gravity accelerates during a run;
 - Puzzle uses the same fixed standard speed as Classic but changes the initial board
@@ -18,6 +22,9 @@ The serialized `level` field remains pinned to `0` for replay/state compatibilit
 this bounded slice. It is not displayed, never increments, never multiplies score,
 and never emits a `level-up` event. Removing the compatibility field or event type is
 outside T6 unless a separately authorized migration proves old replay handling.
+Classic owns one deterministic `combo` counter. Race and Puzzle keep it at `0`, and
+non-Classic hashes remain stable by excluding that irrelevant field from their
+canonical hash payload.
 
 The 2026-07-17 T5 milestone was independently accepted at product source
 `effb353c0a4d1bef26fa524ed38d3d3653f45eb8` with formal evidence
@@ -214,13 +221,16 @@ evidence only. T5 uses new paths and does not rewrite those artifacts.
 
 - The only player-facing mode name is `经典`; `马拉松` is removed from visible copy
   and accessibility labels.
-- Classic is open-ended fixed-speed score survival.
+- Classic is open-ended fixed-speed chain-score survival.
 - Gravity is exactly 48 fixed ticks per automatic cell for the complete run. Clearing
   lines and placing pieces never accelerate it.
 - Line clears award the fixed base table `40 / 100 / 300 / 1200` for one through four
-  simultaneous lines. There is no level multiplier.
-- Player-facing statistics are score, cleared lines, and placed pieces. `等级` is not
-  displayed or described.
+  simultaneous lines. The first clearing piece starts chain `1`; every immediately
+  consecutive clearing piece increases it by one and adds `50 × (chain - 1)` bonus
+  points. A locked piece that clears no line resets the chain to `0`. There is no level
+  multiplier and no chain bonus in Race or Puzzle.
+- Player-facing statistics are score, cleared lines, and current chain (`连消`).
+  `等级` is not displayed or described.
 - The run ends only on top-out or explicit player exit.
 
 ### Race
@@ -229,7 +239,8 @@ Race is Classic's open-ended play with one exclusive deterministic acceleration 
 
 - There is no line target and no successful terminal state.
 - Clearing 20 lines, or any other line count, must never set `status = "finished"`.
-- Scoring, seven-bag generation, clearing, and top-out match normal play.
+- Seven-bag generation, clearing, base line score, and top-out match normal play.
+  Race does not use Classic's chain counter or chain bonus.
 - Speed tier zero uses the same 48-tick gravity as Classic. Race then accelerates and
   never becomes slower; Classic and Puzzle never use this curve.
 - Speed tier is `floor(pieceCount / 5) + floor(lines / 4)`, clamped to the bounded
@@ -245,7 +256,7 @@ Race is Classic's open-ended play with one exclusive deterministic acceleration 
 
 Puzzle is a library of authored board-clearing challenges, not an unlock ladder and
 not a finite input-sequence exercise. It changes the starting board and win condition;
-movement, rotation, fixed 48-tick gravity, locking, scoring, line resolution, and
+movement, rotation, fixed 48-tick gravity, locking, base scoring, line resolution, and
 piece generation otherwise follow Classic play.
 
 - All fifteen T5 levels are selectable from first launch. No level row is disabled or
@@ -261,8 +272,9 @@ piece generation otherwise follow Classic play.
   `failed-budget` outcome. An unsolved run continues until canonical success, top-out,
   restart, or explicit exit.
 - Puzzle uses Classic fixed gravity, grounded lock delay, entry delay, clear
-  delay, scoring, soft drop, hard drop, and SRS rotation. A no-clear lock and a clear
-  both continue through the ordinary deterministic spawn path.
+  delay, base line scoring, soft drop, hard drop, and SRS rotation, but not Classic's
+  chain counter or chain bonus. A no-clear lock and a clear both continue through the
+  ordinary deterministic spawn path.
 - The initial stack occupies 8–12 visible rows and is produced by 16–22 frozen setup
   pieces. It contains all seven piece types, at least seven distinct non-empty row
   shapes, four row-density classes, covered cavities in at least five columns, and at
