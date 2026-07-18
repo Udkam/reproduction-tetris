@@ -25,6 +25,8 @@ reward, 20-to-10-second Survival pressure, and the visually flat Puzzle library.
   start action. Keep all fifteen levels enabled, every touch action at least 44 px,
   the exact 2:1 board data, keyboard focus, responsive portrait/landscape behavior,
   one game canvas, and reduced-motion support.
+- Archive tiles carry no decorative status dot and no miniature board. The selected
+  canonical board is the only Puzzle thumbnail on the selection surface.
 
 ## T8 Interface, Survival, and Records Contract
 
