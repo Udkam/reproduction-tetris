@@ -1174,3 +1174,82 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Next: independent read-only static/functional and visual/browser QA audit exact
   source range `423d2e3..acaf405`. If accepted, the coordinator regenerates formal T5
   evidence for the new source, records the changelog disposition, and decides push.
+
+## 2026-07-18 — BRIGHT `雾昼矿物` RETONE SOURCE READY
+
+### Intake and ownership
+
+- Task: `TETRIS-T5-BRIGHT-MINERAL-RETONE-015`.
+- Branch/intake: clean `codex/tetris-recovery` at
+  `8a2c1cb4d4e08d64a3149bbe377940b7d55226b4`.
+- The shared branch advanced through the non-overlapping K-R4 timing checkpoint to
+  `4fed07c3a522afcb4bb5d1208f54a549d4256273` before this slice staged its files.
+  The three K-R5 paths remained collision-free and became source checkpoint
+  `fd5f901faa2a7ca1100ef83fd52c99a6b5692204` —
+  `style(theme): apply bright mineral retone`.
+- Exact source paths: `src/styles.css`, `src/game/render/theme.ts`, and
+  `src/game/render/theme.test.ts`. No App, renderer/presentation geometry, Core,
+  runtime, Puzzle data, dependency/configuration, `index.html`, coordinator document,
+  changelog, evidence, or countdown path changed.
+- `frontend-design` guided the bounded precise-light mineral hierarchy and matte
+  material review. `develop-web-game` supplied the prescribed action payload/client
+  loop. Its ordinary `progress.md` write was replaced by this authorized workstream
+  log; `progress.md` was not edited.
+
+### Delivered retone
+
+- Replaced the deep page and state colors with the exact `雾昼矿物` table: page
+  `#DCE7F2`; surfaces `#F7FAFD/#EAF1F7/#DCE8F2`; well `#0B1726`; ink
+  `#14243A/#52677F`; structure `#B5C5D5/#879DB3`; mode/selection
+  `#357F78/#526EB0/#80639D/#A75E71`; actions
+  `#315F96/#3D70A8/#245E9C/#F7FAFD`; success/failure `#3F7F5D/#A64E61`.
+- Changed the root to `color-scheme: light`, changed the three existing shell shadows
+  to the exact `0 18px 44px rgba(31, 59, 86, .14)`, retained the phase seam as the
+  only page gradient with the new teal/blue/violet stops, and derived the dialog scrim
+  from the deep board well.
+- Added `--action-ink` and applied it to every text-bearing solid action state: skip
+  link, active mode arrow, primary action, pause action, and active touch key. Direct
+  tests freeze these selectors and verify AA text/action contrast.
+- Replaced all 28 Pixi piece-material values with the exact brighter garnet,
+  sea-pine, ochre, storm, moss, rock-violet, and lake table. Both fill endpoints retain
+  at least 3:1 contrast against `#0B1726`.
+- `CELL_STYLE` and all K-R3 facet/gap/groove/bevel/Ghost geometry stayed byte-for-byte
+  unchanged. No layout, type scale, spacing, copy, divider, control, phase-motion, or
+  presentation token changed.
+
+### Commands and evidence actually run
+
+- Focused edit-loop attempts first exposed test-only harness issues: Vite returned an
+  empty string for CSS `?raw`/`?inline`; an initial count also included the decorative
+  action-sheet color bar; and the first direct `node:fs` typecheck reported `TS2591`
+  because product tsconfig intentionally omits Node globals. No product token failed.
+  The direct CSS test now reads UTF-8 through Vitest's Node runtime with a localized
+  expected type suppression and checks the five text-bearing action selectors rather
+  than the non-text bar.
+- Final focused
+  `npm.cmd run test -- src/game/render/theme.test.ts src/App.test.ts` — PASS,
+  2 files / 9 tests. jsdom emitted only its existing non-failing Canvas
+  `getContext()` diagnostic.
+- Final `npm.cmd run typecheck` — PASS.
+- Prescribed client command:
+  `node 'C:\Users\Alex Chen\.codex\skills\develop-web-game\scripts\web_game_playwright_client.js' --url http://127.0.0.1:4173/ --actions-file 'C:\Users\Alex Chen\.codex\skills\develop-web-game\references\action_payloads.json' --click-selector '[data-testid="enter-marathon"]' --iterations 3 --pause-ms 250 --screenshot-dir '.local\slice-kr5-writer\action-client'`
+  — PASS against the existing root Vite server. State progressed through three real
+  hard drops to Classic/playing, score 104, 3 placed pieces, active Z, and Next L;
+  no error artifact was produced.
+- Opened
+  `.local/slice-kr5-writer/action-client/shot-2.png` at original detail. It shows the
+  visibly brighter page/information planes around the deep well, legible statistics
+  and keyboard copy, brighter cohesive locked pieces, matching Next material, and a
+  whole-shape Ghost with internal guides. The K-R3 external channels, engraved seams,
+  raised facets, joined outer silhouettes, and restrained non-plastic finish remain
+  intact.
+- Per coordinator instruction, this slice did not run the complete suite, production
+  build, or five-viewport final matrix; those are one combined post-K-R4/K-R5 gate.
+  Every source commit staged exact paths, inspected the cached path list, and passed
+  `git diff --cached --check`.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: coordinator runs the single combined final gates/matrix for K-R4 + K-R5 and
+  routes the exact candidate to independent cross-QA before formal evidence or push.
