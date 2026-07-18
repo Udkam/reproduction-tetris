@@ -651,3 +651,20 @@ changelog, T3/T4 evidence, or QA archive was edited.
 - Next: the authorized frontend/runtime writer binds the new pressure fields and
   events, then independent read-only Core QA reviews source `ff90d61` in the combined
   T7 candidate.
+
+## 2026-07-19 — T9 five-layer Survival descent candidate
+
+- Task: `TETRIS-T9-SURVIVAL-DESCENT-020`; base `502f978` on `main`; source
+  checkpoint `0ebb0cb feat(survival): add five-layer descent`.
+- Exact paths: `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+  `src/game/core/race.test.ts`, `src/game/core/rules.test.ts`,
+  `src/game/runtime/qaScenario.ts`, and `src/game/runtime/qaScenario.test.ts`.
+- Implemented five initial/restart bedrock rows, the 15→8-second three-line pressure
+  formula, one removed row for each crossed three-line boundary, and the matching
+  three-line Survival gravity tier. Puzzle remains fixed at 48 ticks; Classic stays
+  on ten-line tiers.
+- Commands run: focused `npm.cmd run test -- src/game/core/race.test.ts
+  src/game/core/rules.test.ts src/game/runtime/qaScenario.test.ts src/App.test.ts`
+  (10 files / 65 tests PASS); final coordinator typecheck, full suite, and build are
+  recorded in the T9 candidate log. Blocker: independent Core QA. Next: review
+  `502f978..7910e91`; no push by this writer.

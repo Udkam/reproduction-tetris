@@ -1620,3 +1620,19 @@ remain untouched. No generated browser artifact is part of the candidate.
   motion values all `none`, and canonical rise/removal milestones. Product source is
   `356440cf0f785b2558745c6eddd307b1654525e6`.
 - Blocker: none. Next: coordinator acceptance documents and push.
+
+## 2026-07-19 — T9 Puzzle archive and home identity candidate
+
+- Task: `TETRIS-T9-PUZZLE-ARCHIVE-021`; base `0ebb0cb` on `main`; source checkpoint
+  `7910e91 feat(ui): rebuild puzzle archive`.
+- Exact paths: `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`.
+- Reframed the home `Tetris` text as the primary heading, added direct Survival copy
+  for the five-layer / three-line rule, and rebuilt the full Puzzle selection as a
+  compact archive board with complete colored thumbnails, clear focus/selection, and
+  a strong dark selected-preview panel. No canvas, Puzzle definition, or dependency
+  changed.
+- Commands/evidence: focused App/core/runtime tests PASS; final `npm.cmd run typecheck`,
+  full `npm.cmd run test` (40 files, 269 passed / 2 skipped), and `npm.cmd run build`
+  (741 modules) PASS. The web-game client inspected home, Puzzle archive, and live
+  Survival opening with no console-error artifact. Blocker: independent visual/browser
+  QA. Next: review `502f978..7910e91`; do not push.

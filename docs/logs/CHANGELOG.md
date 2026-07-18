@@ -319,3 +319,17 @@
   and changelog records are no longer excluded by a broad log-file pattern.
 - This is documentation and ignore-policy maintenance only. No product source, test,
   build, browser evidence, dependencies, or generated artifact changed or was run.
+
+## 2026-07-19 — T9 Survival descent and Puzzle archive candidate
+
+- Added a five-layer Survival opening, `max(8, 15 - floor(lines / 3))` pressure, one
+  removable bedrock row per three-line boundary, and a matching three-line gravity
+  ladder. Restart returns to the five-row opening; Classic and Puzzle retain their
+  previous cadence contracts.
+- Made the original plain-text `Tetris` identity unmistakable on the home screen and
+  rebuilt the fifteen-level Puzzle selector as a compact archive with colored board
+  tiles and a high-contrast selected preview.
+- Candidate range `502f978..7910e91` passed typecheck, 269 passed / 2 skipped tests,
+  and the 741-module production build. The web-game browser client produced no errors;
+  visible inspection confirms the home, archive, and live five-layer Survival opening.
+- Status: **pending independent Core and visual/browser QA; not pushed**.

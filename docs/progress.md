@@ -382,3 +382,21 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   Classic/Survival top-out records rendered with their correct primary metric.
 - No open implementation TODO remains for this request. Generated browser captures are
   local QA artifacts only and are not product source.
+
+## 2026-07-19 — T9 candidate: Survival descent and Puzzle archive
+
+- Survival now opens with five warm-mineral bedrock rows; restart restores the same
+  canonical opening. Pressure is `15 → 8` seconds and both the pressure interval and
+  gravity table advance once per three cleared lines. Each boundary removes one bottom
+  bedrock row when available, while Puzzle remains at 48 ticks and Classic retains its
+  ten-line progression.
+- The home `Tetris` heading is now the primary identity. The Puzzle selector is rebuilt
+  as a compact `解谜档案` board with colored canonical thumbnails and a dark selected
+  preview; all fifteen levels remain enabled.
+- Candidate range: contract `502f978`, core/runtime `0ebb0cb`, frontend `7910e91`.
+  Final gates: typecheck PASS; 40 files / 269 tests passed with 2 skipped; 741-module
+  production build PASS. Browser inspection has zero error output and visibly proves
+  the home title, archive layout, and a live Survival state with 5 bedrock rows,
+  15-second interval, and 48 ticks per cell.
+- Next action: independent Core and visual/browser QA of `502f978..7910e91`; do not
+  push before its acceptance.

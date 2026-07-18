@@ -6,16 +6,16 @@ Current base: `beb47643ca6e80cbdae2fbb2a7459b1d6fffc1e6`
 
 Current execution status (2026-07-19): **T9 is authorized and in progress.**
 
-Status: **IN PROGRESS — T9 five-layer Survival opening, 15→8-second pressure,
-three-line rewards/gravity, stronger home identity, and Puzzle archive redesign**
+Status: **CANDIDATE READY — pending independent Core and visual/browser QA**
 
-T8 remains the accepted baseline at `32ed0c7`. T9 may change only the Survival core
-and direct tests, Survival UI copy/statistics, the home identity, Puzzle-library React
-and CSS, their direct tests, this task/design contract, the coordinator changelog, and
-the Tetris frontend/core workstream logs. After source freeze, run one typecheck, one
-complete suite, one production build, and one browser-evidence pass before independent
-QA and coordinator publication. This file retains earlier slice contracts below as
-historical record.
+T8 remains the accepted baseline at `32ed0c7`. T9 candidate range is
+`502f978..7910e91`: it adds the five-layer opening, 15→8-second / three-line Survival
+descent, a matching three-line gravity ladder, a prominent home `Tetris` heading, and
+the Puzzle archive surface. Typecheck, 269 passed / 2 skipped tests across 40 files,
+the 741-module production build, and browser inspection of the homepage, Puzzle archive,
+and real Survival opening passed. Independent Core and visual/browser QA are required
+before coordinator acceptance or push. This file retains earlier slice contracts below
+as historical record.
 
 ## Slice N — progressive gravity and timed Survival pressure
 
