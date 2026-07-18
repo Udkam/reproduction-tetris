@@ -57,7 +57,7 @@ const fixture = referencesFile as unknown as {
   verifierLockGuard: number;
   levels: LevelReference[];
 };
-const references = fixture.levels;
+const references = fixture.levels.filter((level) => getPuzzleDefinition(level.id).variant === 'legacy');
 
 function digest(value: unknown): string {
   const canonical = JSON.stringify(value);
@@ -214,10 +214,11 @@ function execute(level: LevelReference, route: RouteReference) {
 }
 
 describe('T5 normal-play Puzzle campaign verifier', () => {
-  it('binds exactly fifteen definitions and thirty frozen public-dispatch routes', () => {
+  it('retains twelve legacy definitions and twenty-four frozen public-dispatch routes alongside three anchor trials', () => {
     expect(PUZZLE_DEFINITIONS).toHaveLength(15);
-    expect(references).toHaveLength(15);
-    expect(references.flatMap((level) => level.routes)).toHaveLength(30);
+    expect(references).toHaveLength(12);
+    expect(references.flatMap((level) => level.routes)).toHaveLength(24);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.variant === 'anchor-trial')).toHaveLength(3);
   });
 
   it.each(references)('$id has two successful same-seed public-dispatch routes', (level) => {

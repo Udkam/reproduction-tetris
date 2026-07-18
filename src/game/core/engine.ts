@@ -6,6 +6,7 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
+  PUZZLE_VOLATILE_PIECE_TICKS,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
@@ -17,7 +18,7 @@ import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
-import type { ActivePiece, GameCommand, GameEvent, GameMode, GameState, GameTransition, PieceType, PuzzleCompletion, PuzzleId } from './types';
+import { ANCHOR_CELL, BEDROCK_CELL, PIECE_TYPES, type ActivePiece, type Board, type Cell, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId, type VolatilePiece } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
@@ -55,7 +56,15 @@ function puzzleFailure(
 }
 
 function canonicalOccupiedCount(state: GameState): number {
-  return state.board.flat().filter((cell) => cell !== null).length;
+  return state.board.flat().filter((cell): cell is PieceType => cell !== null && PIECE_TYPES.includes(cell as PieceType)).length;
+}
+
+function volatileSpawnFor(seed: number, spawnIndex: number): boolean {
+  let value = (seed ^ Math.imul(spawnIndex + 1, 0x9e3779b9)) >>> 0;
+  value ^= value << 13;
+  value ^= value >>> 17;
+  value ^= value << 5;
+  return (value >>> 0) % 4 === 0;
 }
 
 function spawnPiece(state: GameState, type?: PieceType): GameTransition {
@@ -78,6 +87,10 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
       active,
       puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
       puzzleQueueIndex: 0,
+      puzzleSpawnCount: next.mode === 'puzzle' ? next.puzzleSpawnCount + 1 : next.puzzleSpawnCount,
+      puzzleActiveVolatile: next.mode === 'puzzle' && next.puzzleId !== null && getPuzzleDefinition(next.puzzleId).variant === 'anchor-trial'
+        ? volatileSpawnFor(next.seed, next.puzzleSpawnCount)
+        : false,
       phase: 'active',
       phaseTicks: 0,
       pendingClearRows: [],
@@ -109,7 +122,10 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     puzzleBoardRows: selectedPuzzle?.boardRows ?? null,
     puzzleQueue: null,
     puzzleQueueIndex: 0,
-    puzzleGoal: selectedPuzzle ? 'canonical-board-empty' : null,
+    puzzleSpawnCount: 0,
+    puzzleActiveVolatile: false,
+    puzzleVolatilePieces: [],
+    puzzleGoal: selectedPuzzle ? (selectedPuzzle.variant === 'anchor-trial' ? 'removable-board-empty' : 'canonical-board-empty') : null,
     puzzleCompletion: selectedPuzzle ? 'active' : null,
     completedLevelId: null,
     nextUnlockedLevelId: null,
@@ -164,7 +180,7 @@ function finishPuzzleSuccess(state: GameState): GameTransition {
 
 /** Puzzle-only post-lock resolution after shared merge and ordinary line clearing. */
 function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): GameTransition {
-  if (state.puzzleGoal !== 'canonical-board-empty') return invalidState(state);
+  if (state.puzzleGoal !== 'canonical-board-empty' && state.puzzleGoal !== 'removable-board-empty') return invalidState(state);
   if (canonicalOccupiedCount(state) === 0) return finishPuzzleSuccess(state);
   if (spawnImmediately) return spawnPiece(state);
   return {
@@ -193,6 +209,101 @@ function advanceSurvivalPressure(state: GameState): GameState {
     ...state,
     survivalPressureTicks,
     survivalRisePending: survivalPressureTicks >= intervalTicks,
+  };
+}
+
+function keyFor(cell: Cell): string {
+  return `${cell.x},${cell.y}`;
+}
+
+function mapVolatileAfterClear(pieces: readonly VolatilePiece[], board: Board, rows: readonly number[]): readonly VolatilePiece[] {
+  const cleared = new Set(rows);
+  const removed = [...cleared].filter((index) => !board[index]?.includes(BEDROCK_CELL) && !board[index]?.includes(ANCHOR_CELL));
+  return pieces.flatMap((piece) => {
+    const cells = piece.cells.flatMap((cell) => {
+      if (cleared.has(cell.y)) return [];
+      const shiftedY = cell.y + removed.length - removed.filter((index) => index < cell.y).length;
+      return [{ ...cell, y: shiftedY }];
+    });
+    return cells.length > 0 ? [{ ...piece, cells: Object.freeze(cells) }] : [];
+  });
+}
+
+function normalComponents(board: Board): Array<{ type: PieceType; cells: Cell[] }> {
+  const seen = new Set<string>();
+  const components: Array<{ type: PieceType; cells: Cell[] }> = [];
+  for (let y = 0; y < BOARD_HEIGHT; y += 1) {
+    for (let x = 0; x < board[y]!.length; x += 1) {
+      const type = board[y]![x];
+      const origin = `${x},${y}`;
+      if (!PIECE_TYPES.includes(type as PieceType) || seen.has(origin)) continue;
+      const cells: Cell[] = [];
+      const queue: Cell[] = [{ x, y }];
+      seen.add(origin);
+      while (queue.length > 0) {
+        const cell = queue.shift()!;
+        cells.push(cell);
+        for (const neighbor of [
+          { x: cell.x - 1, y: cell.y }, { x: cell.x + 1, y: cell.y },
+          { x: cell.x, y: cell.y - 1 }, { x: cell.x, y: cell.y + 1 },
+        ]) {
+          const neighborKey = keyFor(neighbor);
+          if (neighbor.x < 0 || neighbor.x >= board[0]!.length || neighbor.y < 0 || neighbor.y >= BOARD_HEIGHT
+            || seen.has(neighborKey) || board[neighbor.y]![neighbor.x] !== type) continue;
+          seen.add(neighborKey);
+          queue.push(neighbor);
+        }
+      }
+      components.push({ type: type as PieceType, cells });
+    }
+  }
+  return components;
+}
+
+function settleAfterVolatileExpiry(board: Board, pieces: readonly VolatilePiece[]): { board: Board; pieces: readonly VolatilePiece[] } {
+  const next = board.map((row) => [...row]) as Board;
+  let tracked = pieces.map((piece) => ({ ...piece, cells: piece.cells.map((cell) => ({ ...cell })) }));
+  for (let guard = 0; guard < BOARD_HEIGHT; guard += 1) {
+    let moved = false;
+    const components = normalComponents(next).sort((left, right) => Math.max(...right.cells.map((cell) => cell.y)) - Math.max(...left.cells.map((cell) => cell.y)));
+    for (const component of components) {
+      const occupied = new Set(component.cells.map(keyFor));
+      const canFall = component.cells.every((cell) => {
+        const y = cell.y + 1;
+        return y < BOARD_HEIGHT && (next[y]![cell.x] === null || occupied.has(`${cell.x},${y}`));
+      });
+      if (!canFall) continue;
+      for (const cell of component.cells) next[cell.y]![cell.x] = null;
+      for (const cell of component.cells) next[cell.y + 1]![cell.x] = component.type;
+      const movedCells = new Set(component.cells.map(keyFor));
+      tracked = tracked.map((piece) => ({
+        ...piece,
+        cells: piece.cells.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell),
+      }));
+      moved = true;
+    }
+    if (!moved) break;
+  }
+  return { board: next, pieces: Object.freeze(tracked.map((piece) => ({ ...piece, cells: Object.freeze(piece.cells) }))) };
+}
+
+function advanceVolatilePieces(state: GameState): GameTransition {
+  if (state.mode !== 'puzzle' || state.puzzleVolatilePieces.length === 0) return { state, events: [] };
+  const expiring = state.puzzleVolatilePieces.filter((piece) => piece.expiryTicks <= 1);
+  const surviving = state.puzzleVolatilePieces
+    .filter((piece) => piece.expiryTicks > 1)
+    .map((piece) => ({ ...piece, expiryTicks: piece.expiryTicks - 1 }));
+  if (expiring.length === 0) return { state: { ...state, puzzleVolatilePieces: Object.freeze(surviving) }, events: [] };
+  const board = state.board.map((row) => [...row]) as Board;
+  for (const piece of expiring) {
+    for (const cell of piece.cells) {
+      if (board[cell.y]?.[cell.x] === piece.type) board[cell.y]![cell.x] = null;
+    }
+  }
+  const settled = settleAfterVolatileExpiry(board, surviving);
+  return {
+    state: { ...state, board: settled.board, puzzleVolatilePieces: settled.pieces },
+    events: expiring.map((piece) => ({ type: 'piece-expired', piece: piece.type })),
   };
 }
 
@@ -248,6 +359,9 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
   const board = mergePiece(state.board, state.active);
+  const puzzleVolatilePieces = state.mode === 'puzzle' && state.puzzleActiveVolatile
+    ? Object.freeze([...state.puzzleVolatilePieces, { type: state.active.type, cells: Object.freeze(cells.map((cell) => ({ ...cell }))), expiryTicks: PUZZLE_VOLATILE_PIECE_TICKS }])
+    : state.puzzleVolatilePieces;
   const pieceCount = state.pieceCount + 1;
   const lockedEvent: GameEvent = { type: 'piece-locked', piece: state.active.type, cells };
   const rows = fullRows(board);
@@ -255,7 +369,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
 
   if (lockOut) {
     if (state.mode === 'puzzle') {
-      const failed = puzzleFailure({ ...state, board, active: null, pieceCount }, 'failed-top-out', 'lock-out');
+      const failed = puzzleFailure({ ...state, board, active: null, pieceCount, puzzleActiveVolatile: false, puzzleVolatilePieces }, 'failed-top-out', 'lock-out');
       return { state: failed.state, events: [...extraEvents, lockedEvent, ...failed.events] };
     }
     return {
@@ -273,6 +387,8 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       phase: 'line-clear',
       phaseTicks: 0,
       pendingClearRows: rows,
+      puzzleActiveVolatile: false,
+      puzzleVolatilePieces,
       gravityTicks: 0,
       lockTicks: 0,
     };
@@ -292,6 +408,8 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       lockTicks: 0,
       lockResets: 0,
       combo: 0,
+      puzzleActiveVolatile: false,
+      puzzleVolatilePieces,
     }, false);
     return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
   }
@@ -309,6 +427,8 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       lockTicks: 0,
       lockResets: 0,
       combo: 0,
+      puzzleActiveVolatile: false,
+      puzzleVolatilePieces,
     });
     if (resolved.state.status === 'game-over') {
       return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
@@ -330,6 +450,8 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       gravityTicks: 0,
       lockTicks: 0,
       combo: 0,
+      puzzleActiveVolatile: false,
+      puzzleVolatilePieces,
     },
     events: [...extraEvents, lockedEvent],
   };
@@ -386,6 +508,7 @@ function finishLineClear(state: GameState): GameTransition {
   let cleared: GameState = {
     ...state,
     board: clearRows(state.board, rows),
+    puzzleVolatilePieces: state.mode === 'puzzle' ? mapVolatileAfterClear(state.puzzleVolatilePieces, state.board, rows) : state.puzzleVolatilePieces,
     score: state.score + clearScore,
     lines,
     combo,
@@ -432,30 +555,41 @@ function finishLineClear(state: GameState): GameTransition {
 
 function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
-  let next: GameState = advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 });
+  const volatile = advanceVolatilePieces(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 }));
+  let next: GameState = volatile.state;
+  const timedEvents = volatile.events;
 
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
     if (phaseTicks >= ENTRY_DELAY_TICKS) {
       const resolved = resolvePendingSurvivalRise({ ...next, phaseTicks: 0 });
-      if (resolved.state.status === 'game-over') return resolved;
+      if (resolved.state.status === 'game-over') return { state: resolved.state, events: [...timedEvents, ...resolved.events] };
       const spawned = spawnPiece(resolved.state);
-      return { state: spawned.state, events: [...resolved.events, ...spawned.events] };
+      return { state: spawned.state, events: [...timedEvents, ...resolved.events, ...spawned.events] };
     }
-    return { state: { ...next, phaseTicks }, events: [] };
+    return { state: { ...next, phaseTicks }, events: timedEvents };
   }
 
   if (next.phase === 'line-clear') {
     const phaseTicks = next.phaseTicks + 1;
-    if (phaseTicks >= LINE_CLEAR_DELAY_TICKS) return finishLineClear(next);
-    return { state: { ...next, phaseTicks }, events: [] };
+    if (phaseTicks >= LINE_CLEAR_DELAY_TICKS) {
+      const finished = finishLineClear(next);
+      return { state: finished.state, events: [...timedEvents, ...finished.events] };
+    }
+    return { state: { ...next, phaseTicks }, events: timedEvents };
   }
 
-  if (!withActive(next)) return invalidState(next);
+  if (!withActive(next)) {
+    const invalid = invalidState(next);
+    return { state: invalid.state, events: [...timedEvents, ...invalid.events] };
+  }
 
   if (isGrounded(next.board, next.active)) {
     next = { ...next, lockTicks: next.lockTicks + 1 };
-    if (next.lockTicks >= LOCK_DELAY_TICKS) return lockActive(next);
+    if (next.lockTicks >= LOCK_DELAY_TICKS) {
+      const locked = lockActive(next);
+      return { state: locked.state, events: [...timedEvents, ...locked.events] };
+    }
   } else if (next.lockTicks !== 0) {
     next = { ...next, lockTicks: 0 };
   }
@@ -463,9 +597,9 @@ function tick(state: GameState): GameTransition {
   const gravityTicks = next.gravityTicks + 1;
   if (gravityTicks >= gravityForMode(next.mode, next.level, next.pieceCount, next.lines)) {
     const moved = moveActive({ ...next, gravityTicks: 0 }, 0, 1, 'gravity');
-    return moved;
+    return { state: moved.state, events: [...timedEvents, ...moved.events] };
   }
-  return { state: { ...next, gravityTicks }, events: [] };
+  return { state: { ...next, gravityTicks }, events: timedEvents };
 }
 
 export function dispatch(state: GameState, command: GameCommand): GameTransition {
@@ -525,6 +659,15 @@ export function stateHash(state: GameState): string {
         survivalRisePending: _survivalRisePending,
         ...puzzleState
       } = state;
+      if (state.puzzleGoal === 'canonical-board-empty') {
+        const {
+          puzzleSpawnCount: _puzzleSpawnCount,
+          puzzleActiveVolatile: _puzzleActiveVolatile,
+          puzzleVolatilePieces: _puzzleVolatilePieces,
+          ...legacyPuzzleState
+        } = puzzleState;
+        return legacyPuzzleState;
+      }
       return puzzleState;
     })()
     : (() => {
@@ -532,6 +675,9 @@ export function stateHash(state: GameState): string {
         puzzleBoardRows: _puzzleBoardRows,
         puzzleQueue: _puzzleQueue,
         puzzleQueueIndex: _puzzleQueueIndex,
+        puzzleSpawnCount: _puzzleSpawnCount,
+        puzzleActiveVolatile: _puzzleActiveVolatile,
+        puzzleVolatilePieces: _puzzleVolatilePieces,
         puzzleGoal: _puzzleGoal,
         puzzleCompletion: _puzzleCompletion,
         completedLevelId: _completedLevelId,

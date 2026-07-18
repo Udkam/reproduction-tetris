@@ -3,7 +3,9 @@ export const PIECE_TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
 export type PieceType = (typeof PIECE_TYPES)[number];
 export const BEDROCK_CELL = 'B' as const;
 export type BedrockCell = typeof BEDROCK_CELL;
-export type BoardMaterial = PieceType | BedrockCell;
+export const ANCHOR_CELL = 'A' as const;
+export type AnchorCell = typeof ANCHOR_CELL;
+export type BoardMaterial = PieceType | BedrockCell | AnchorCell;
 export type Rotation = 0 | 1 | 2 | 3;
 
 export interface Cell {
@@ -16,6 +18,14 @@ export interface ActivePiece {
   rotation: Rotation;
   x: number;
   y: number;
+}
+
+export interface VolatilePiece {
+  type: PieceType;
+  /** Canonical occupied cells; updated by line clears and support settlement. */
+  cells: readonly Cell[];
+  /** Remaining playing ticks after the piece locked. */
+  expiryTicks: number;
 }
 
 export type BoardCell = BoardMaterial | null;
@@ -46,7 +56,7 @@ export type PuzzleId =
   | 't5r-pulse-14'
   | 't5r-horizon-15';
 
-export type PuzzleGoal = 'canonical-board-empty';
+export type PuzzleGoal = 'canonical-board-empty' | 'removable-board-empty';
 export type PuzzleCompletion =
   | 'active'
   | 'finished'
@@ -83,6 +93,12 @@ export interface GameState {
   puzzleQueue: readonly PieceType[] | null;
   /** @deprecated Generated-preview bridge index; always zero. Use pieceCount for placed pieces. */
   puzzleQueueIndex: number;
+  /** Number of seeded Puzzle pieces that have entered the board, including the active piece. */
+  puzzleSpawnCount: number;
+  /** Whether the currently falling Puzzle input will become volatile after it locks. */
+  puzzleActiveVolatile: boolean;
+  /** Locked volatile Puzzle inputs that are waiting to disappear. */
+  puzzleVolatilePieces: readonly VolatilePiece[];
   puzzleGoal: PuzzleGoal | null;
   puzzleCompletion: PuzzleCompletion | null;
   completedLevelId: PuzzleId | null;
@@ -125,6 +141,7 @@ export type GameEvent =
   | { type: 'piece-moved'; piece: PieceType; dx: number; dy: number; cause: 'move' | 'gravity' | 'soft-drop' }
   | { type: 'piece-rotated'; piece: PieceType; direction: -1 | 1 }
   | { type: 'hard-dropped'; piece: PieceType; distance: number }
+  | { type: 'piece-expired'; piece: PieceType }
   | { type: 'piece-locked'; piece: PieceType; cells: Cell[] }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }

@@ -2,7 +2,7 @@ import { BOARD_WIDTH, VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
 import { canPlace, createBoard, fullRows, mergePiece } from './board';
 import { cellsForPiece, createSpawnPiece } from './pieces';
 import { createRandomizer, drawPiece } from './random';
-import { PIECE_TYPES, type ActivePiece, type Board, type Cell, type PieceType, type PuzzleId, type Rotation } from './types';
+import { ANCHOR_CELL, PIECE_TYPES, type ActivePiece, type Board, type Cell, type PieceType, type PuzzleId, type Rotation } from './types';
 
 export interface PuzzleCell {
   x: number;
@@ -22,6 +22,10 @@ export interface PuzzleDefinition {
   boardRows: readonly string[];
   /** Always empty for authored T5 levels; makes hidden-buffer validation explicit. */
   hiddenCells: readonly PuzzleCell[];
+  /** Legacy endgames retain the original deep stack; trials teach the new anchor rule. */
+  variant: 'legacy' | 'anchor-trial';
+  /** Deterministically scattered, permanent visible single cells. */
+  anchorCells: readonly Cell[];
 }
 
 export interface PuzzleSetupPlacement {
@@ -99,11 +103,61 @@ function definition(
     setup: authoredSetup,
     boardRows: setupBoardRows(authoredSetup),
     hiddenCells: EMPTY_HIDDEN_CELLS,
+    variant: 'legacy',
+    anchorCells: EMPTY_HIDDEN_CELLS,
+  });
+}
+
+function nextAnchorSeed(seed: number): number {
+  let value = seed >>> 0;
+  value ^= value << 13;
+  value ^= value >>> 17;
+  value ^= value << 5;
+  return value >>> 0;
+}
+
+function seededAnchors(seed: number, count = 2): readonly Cell[] {
+  const anchors: Cell[] = [];
+  let value = seed >>> 0 || 0x6d2b79f5;
+  while (anchors.length < count) {
+    value = nextAnchorSeed(value);
+    // Keep the teaching lane (column 9) clear for the seeded vertical I input.
+    const candidate = { x: value % 6, y: 8 + ((value >>> 8) % 7) };
+    if (!anchors.some((anchor) => anchor.x === candidate.x && anchor.y === candidate.y)) anchors.push(candidate);
+  }
+  return Object.freeze(anchors.map((anchor) => Object.freeze(anchor)));
+}
+
+function trialRows(colors: readonly [PieceType, PieceType, PieceType]): readonly string[] {
+  const rows = Array.from({ length: VISIBLE_HEIGHT }, () => EMPTY_ROW);
+  rows[16] = `${colors[0].repeat(9)}.`;
+  rows[17] = `${colors[1].repeat(9)}.`;
+  rows[18] = `${colors[2].repeat(9)}.`;
+  rows[19] = `${colors[0].repeat(9)}.`;
+  return Object.freeze(rows);
+}
+
+function anchorTrialDefinition(
+  id: PuzzleId,
+  name: string,
+  seed: number,
+  anchorSeed: number,
+  colors: readonly [PieceType, PieceType, PieceType],
+): PuzzleDefinition {
+  return Object.freeze({
+    id,
+    name,
+    seed,
+    setup: setup(anchorSeed, []),
+    boardRows: trialRows(colors),
+    hiddenCells: EMPTY_HIDDEN_CELLS,
+    variant: 'anchor-trial',
+    anchorCells: seededAnchors(anchorSeed),
   });
 }
 
 /** Clean-room T5 endgames, each reconstructed from its own frozen legal setup history. */
-const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = [
+const LEGACY_PUZZLE_LIBRARY: readonly PuzzleDefinition[] = [
   definition('t3r-shaft-01', '青脊回旋', 0x75c0b101, setup(0x86dcb145, [{ type: 'Z', rotation: 0, x: 1 }, { type: 'S', rotation: 1, x: 1 }, { type: 'L', rotation: 1, x: 3 }, { type: 'I', rotation: 0, x: 6 }, { type: 'J', rotation: 1, x: -1 }, { type: 'O', rotation: 2, x: 0 }, { type: 'T', rotation: 0, x: 6 }, { type: 'T', rotation: 0, x: 2 }, { type: 'J', rotation: 1, x: 4 }, { type: 'S', rotation: 0, x: 0 }, { type: 'Z', rotation: 2, x: 3 }, { type: 'O', rotation: 3, x: 8 }, { type: 'I', rotation: 0, x: 0 }, { type: 'L', rotation: 3, x: 5 }, { type: 'J', rotation: 0, x: 7 }, { type: 'L', rotation: 2, x: 0 }, { type: 'I', rotation: 1, x: 5 }, { type: 'T', rotation: 3, x: 8 }, { type: 'O', rotation: 2, x: 5 }, { type: 'Z', rotation: 1, x: 7 }])),
   definition('t3r-shaft-02', '深湾折返', 0x75c0b202, setup(0x24853895, [{ type: 'I', rotation: 2, x: 6 }, { type: 'L', rotation: 0, x: 3 }, { type: 'Z', rotation: 1, x: 3 }, { type: 'S', rotation: 0, x: 7 }, { type: 'T', rotation: 1, x: 5 }, { type: 'J', rotation: 2, x: 7 }, { type: 'O', rotation: 3, x: 1 }, { type: 'J', rotation: 1, x: 2 }, { type: 'T', rotation: 1, x: 1 }, { type: 'I', rotation: 0, x: 6 }, { type: 'S', rotation: 1, x: 3 }, { type: 'L', rotation: 0, x: 5 }, { type: 'Z', rotation: 1, x: -1 }, { type: 'O', rotation: 1, x: 0 }, { type: 'L', rotation: 1, x: 1 }, { type: 'Z', rotation: 1, x: 2 }, { type: 'S', rotation: 3, x: 5 }, { type: 'O', rotation: 2, x: 8 }, { type: 'I', rotation: 1, x: -2 }, { type: 'J', rotation: 1, x: 0 }])),
   definition('t3r-shaft-03', '双岸错层', 0x75c0b303, setup(0x12345678, [{ type: 'S', rotation: 2, x: 3 }, { type: 'T', rotation: 0, x: 0 }, { type: 'O', rotation: 3, x: 2 }, { type: 'I', rotation: 0, x: 6 }, { type: 'Z', rotation: 3, x: 1 }, { type: 'L', rotation: 1, x: 5 }, { type: 'J', rotation: 1, x: -1 }, { type: 'J', rotation: 0, x: 3 }, { type: 'I', rotation: 1, x: 5 }, { type: 'T', rotation: 1, x: 4 }, { type: 'L', rotation: 3, x: 3 }, { type: 'O', rotation: 0, x: 8 }, { type: 'S', rotation: 1, x: 0 }, { type: 'Z', rotation: 2, x: 2 }, { type: 'Z', rotation: 3, x: 8 }, { type: 'S', rotation: 2, x: 6 }, { type: 'I', rotation: 3, x: -1 }, { type: 'J', rotation: 1, x: 5 }, { type: 'L', rotation: 3, x: 8 }])),
@@ -121,6 +175,14 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = [
   definition('t5r-horizon-15', '远蓝合流', 0x8ea45d17, setup(0xa1b2c3e3, [{ type: 'Z', rotation: 3, x: 8 }, { type: 'L', rotation: 0, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'S', rotation: 0, x: 7 }, { type: 'J', rotation: 0, x: 2 }, { type: 'I', rotation: 1, x: 4 }, { type: 'T', rotation: 3, x: 3 }, { type: 'L', rotation: 3, x: 4 }, { type: 'S', rotation: 1, x: 5 }, { type: 'J', rotation: 3, x: 0 }, { type: 'O', rotation: 3, x: 2 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'T', rotation: 3, x: 4 }, { type: 'I', rotation: 0, x: 0 }, { type: 'J', rotation: 2, x: 5 }, { type: 'I', rotation: 1, x: 7 }, { type: 'O', rotation: 2, x: 1 }, { type: 'L', rotation: 3, x: 7 }, { type: 'Z', rotation: 3, x: 3 }, { type: 'T', rotation: 1, x: -1 }])),
 ] as const;
 
+/** The final three entries are deliberately light-touch introductions to T10 rules. */
+const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze(LEGACY_PUZZLE_LIBRARY.map((candidate) => {
+  if (candidate.id === 't5r-arc-13') return anchorTrialDefinition(candidate.id, candidate.name, 26, 0x5c29f6a1, ['T', 'L', 'J']);
+  if (candidate.id === 't5r-pulse-14') return anchorTrialDefinition(candidate.id, candidate.name, 112, 0xf2a7634b, ['S', 'Z', 'I']);
+  if (candidate.id === 't5r-horizon-15') return anchorTrialDefinition(candidate.id, candidate.name, 137, 0x8ea45d17, ['O', 'J', 'T']);
+  return candidate;
+}));
+
 // See LegacyPuzzleDefinitionView above. No runtime object contains a numeric difficulty.
 export const PUZZLE_DEFINITIONS = PUZZLE_LIBRARY as readonly LegacyPuzzleDefinitionView[];
 
@@ -128,7 +190,7 @@ const PIECE_TYPE_SET = new Set<string>(PIECE_TYPES);
 const PUZZLE_ID_SET = new Set<string>(PUZZLE_LIBRARY.map((candidate) => candidate.id));
 const PUZZLE_SEED_SET = new Set<number>(PUZZLE_LIBRARY.map((candidate) => candidate.seed));
 const PUZZLE_SETUP_SEED_SET = new Set<number>(PUZZLE_LIBRARY.map((candidate) => candidate.setup.seed));
-const CAMPAIGN_COLOR_SET = new Set(PUZZLE_LIBRARY.flatMap((candidate) => (
+const CAMPAIGN_COLOR_SET = new Set(PUZZLE_LIBRARY.filter((candidate) => candidate.variant === 'legacy').flatMap((candidate) => (
   candidate.boardRows.flatMap((row) => [...row].filter((cell): cell is PieceType => PIECE_TYPE_SET.has(cell)))
 )));
 
@@ -138,6 +200,7 @@ if (CAMPAIGN_COLOR_SET.size !== PIECE_TYPES.length) {
 
 for (let left = 0; left < PUZZLE_LIBRARY.length; left += 1) {
   for (let right = left + 1; right < PUZZLE_LIBRARY.length; right += 1) {
+    if (PUZZLE_LIBRARY[left]!.variant !== 'legacy' || PUZZLE_LIBRARY[right]!.variant !== 'legacy') continue;
     const first = PUZZLE_LIBRARY[left]!.boardRows.join('');
     const second = PUZZLE_LIBRARY[right]!.boardRows.join('');
     const hamming = [...first].filter((cell, index) => (cell === '.') !== (second[index] === '.')).length;
@@ -168,6 +231,27 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   }
   if (definition.seed !== canonical.seed) throw new Error(`Puzzle ${definition.id} must retain its stable level seed.`);
   if (PUZZLE_SEED_SET.size !== PUZZLE_LIBRARY.length) throw new Error('Puzzle level seeds must be unique.');
+  if (definition.variant === 'anchor-trial') {
+    if (canonical.variant !== 'anchor-trial' || definition.anchorCells.length !== 2) {
+      throw new Error(`Puzzle ${definition.id} has an invalid anchor trial contract.`);
+    }
+    if (JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {
+      throw new Error(`Puzzle ${definition.id} must retain its seeded anchors.`);
+    }
+    if (definition.boardRows.length !== VISIBLE_HEIGHT || definition.setup.placements.length !== 0) {
+      throw new Error(`Puzzle ${definition.id} anchor trial is malformed.`);
+    }
+    for (const anchor of definition.anchorCells) {
+      if (anchor.x < 0 || anchor.x >= BOARD_WIDTH || anchor.y < 0 || anchor.y >= 17 || definition.boardRows[anchor.y]?.[anchor.x] !== '.') {
+        throw new Error(`Puzzle ${definition.id} has an invalid anchor position.`);
+      }
+    }
+    validateSeedBags(definition);
+    return;
+  }
+  if (definition.variant !== 'legacy' || definition.anchorCells.length !== 0) {
+    throw new Error(`Puzzle ${definition.id} has an invalid legacy anchor payload.`);
+  }
   if (!definition.setup || !Number.isSafeInteger(definition.setup.seed) || definition.setup.seed <= 0
     || definition.setup.seed > 0xffff_ffff || !Array.isArray(definition.setup.placements)) {
     throw new Error(`Puzzle ${definition.id} has an invalid setup history.`);
@@ -269,6 +353,7 @@ export function createPuzzleBoard(definition: PuzzleDefinition): Board {
       if (type !== '.') board[VISIBLE_START_ROW + y]![x] = type as PieceType;
     }
   }
+  for (const anchor of definition.anchorCells) board[VISIBLE_START_ROW + anchor.y]![anchor.x] = ANCHOR_CELL;
   return board;
 }
 

@@ -1,6 +1,6 @@
 import { BOARD_HEIGHT, BOARD_WIDTH } from './constants';
 import { cellsForPiece } from './pieces';
-import { BEDROCK_CELL, type ActivePiece, type Board, type BoardCell, type Cell } from './types';
+import { ANCHOR_CELL, BEDROCK_CELL, type ActivePiece, type Board, type BoardCell, type Cell } from './types';
 
 export function createBoard(): Board {
   return Array.from({ length: BOARD_HEIGHT }, () => Array.from({ length: BOARD_WIDTH }, () => null));
@@ -40,10 +40,18 @@ export function fullRows(board: Board): number[] {
 }
 
 export function clearRows(board: Board, rows: readonly number[]): Board {
-  const removed = new Set(rows.filter((index) => !board[index]?.includes(BEDROCK_CELL)));
+  const anchoredRows = new Set(rows.filter((index) => board[index]?.includes(ANCHOR_CELL)));
+  const removed = new Set(rows.filter((index) => !board[index]?.includes(BEDROCK_CELL) && !anchoredRows.has(index)));
   const remaining = board.filter((_, index) => !removed.has(index)).map((row) => [...row]);
   const blanks = Array.from({ length: removed.size }, () => Array.from({ length: BOARD_WIDTH }, () => null));
-  return [...blanks, ...remaining] as Board;
+  const settled = [...blanks, ...remaining] as Board;
+  for (const index of anchoredRows) {
+    const shiftedIndex = index + removed.size - [...removed].filter((removedIndex) => removedIndex < index).length;
+    const row = settled[shiftedIndex];
+    if (!row) continue;
+    settled[shiftedIndex] = row.map((cell) => cell === ANCHOR_CELL ? ANCHOR_CELL : null);
+  }
+  return settled;
 }
 
 export function raiseBedrock(board: Board, count: number): { board: Board; added: number; overflow: boolean } {
