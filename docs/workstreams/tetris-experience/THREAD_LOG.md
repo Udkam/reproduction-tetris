@@ -4,15 +4,15 @@ Workstream owner: `/root/tetris_experience_refactor`
 
 Coordinator: primary task `019f4deb-7e83-7583-8cd5-8e6f075bc331`
 
-Branch/worktree: `codex/tetris` / `E:\Proj\Game-1`
+Branch/worktree: `codex/tetris` / `E:\Proj\reproduction-patricks-parabox`
 
 ## 2026-07-14 — T1 implementation handoff
 
 - Scope: remove the generic dashboard treatment, make the player-facing surface concise
   Chinese under the exact title `Tetris`, improve held soft drop and continuous
   presentation, add deterministic Race mode, and add a bounded local leaderboard.
-- Ownership: Tetris source, focused tests, browser evidence, `DESIGN.md`,
-  `CURRENT_TASK.md`, and Tetris QA documentation. No Temple or archived recursive-game
+- Ownership: Tetris source, focused tests, browser evidence, `docs/DESIGN.md`,
+  `docs/CURRENT_TASK.md`, and Tetris QA documentation. No Temple or archived recursive-game
   implementation was authorized.
 - Local implementation result: typecheck passed; Vitest passed 8 files / 41 tests;
   production build passed; one final browser-evidence pass recorded 10 accepted entries.

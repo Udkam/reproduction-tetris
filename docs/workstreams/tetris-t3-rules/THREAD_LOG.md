@@ -15,7 +15,7 @@ AUDIT=current Puzzle has three sparse-cell definitions, fixed finite queue, publ
 SEMANTIC DELTA=current success is `lines >= puzzleTargetLines`, not visible-board empty; validator permits an empty authored board; canonical state has no explicit queue index, level progress, or campaign unlock.
 LATER PRODUCTION DELTA=typed 20-row level schema plus level index/queue index/goal-empty/campaign completion state; empty-board predicate after normal clear; fail ordering for top-out/invalid spawn/queue exhaustion; hash/replay coverage.
 NEXT=author a six-level clean-room campaign and a faithful workstream adapter/verifier using only current public core commands, then report a design-only candidate.
-LOG=E:\Proj\Game-1\docs\workstreams\tetris-t3-rules\THREAD_LOG.md
+LOG=E:\Proj\reproduction-patricks-parabox\docs\workstreams\tetris-t3-rules\THREAD_LOG.md
 
 ## Verification iteration
 

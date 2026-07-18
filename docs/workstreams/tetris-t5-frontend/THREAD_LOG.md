@@ -7,7 +7,7 @@
 - Visual direction: `青流蓝图 / Aqua Blueprint`.
 - Scope: mode home, all-available Puzzle library, new game composition, light
   cyan/light-blue tokens, new Pixi cell language, accessibility and responsiveness.
-- Exact path boundary: the Frontend paths listed in `CURRENT_TASK.md` plus this log.
+- Exact path boundary: the Frontend paths listed in `docs/CURRENT_TASK.md` plus this log.
 - Forbidden: core rules/definitions, T3/T4 evidence, coordinator docs, changelog,
   commit/push.
 - Blocker: waits for the T5 Core candidate and independent core QA.
@@ -224,7 +224,7 @@ documents, changelog, historical evidence, or committed T5 evidence.
 - Direction: original light cyan/light-blue neo-tech minimal interface, one continuous
   1+2 mode surface, one-shot phase seam, coherent Puzzle/game surfaces, and flat
   edge-lit plate Board/Next cells.
-- Exact allowed and forbidden paths are frozen in `CURRENT_TASK.md` Slice E.
+- Exact allowed and forbidden paths are frozen in `docs/CURRENT_TASK.md` Slice E.
 - Status: waits for the coordinator documentation commit; no source edit or push is
   authorized before that commit.
 - Next: one bounded writer implements Slice E and records exact final gates/evidence.
@@ -484,8 +484,8 @@ changelog, and evidence directories have no writer diff.
   frontend edit.
 - Skills followed: `frontend-design` preserved the accepted original light neo-tech
   minimal language and continuous surfaces; `develop-web-game` supplied the real
-  input/screenshot loop. Its normal `progress.md` write was intentionally replaced by
-  this authorized log because Slice H forbids `progress.md` changes.
+  input/screenshot loop. Its normal `docs/progress.md` write was intentionally replaced by
+  this authorized log because Slice H forbids `docs/progress.md` changes.
 - Candidate identity: the single bounded writer commit created from this recorded
   tree; its exact SHA is returned to the coordinator with this log.
 
@@ -508,7 +508,7 @@ configuration, `index.html`, coordinator documents, changelog, or formal evidenc
   retaining the internal `marathon` mode key, `enter-marathon` selector, and existing
   CSS compatibility keys.
 - Replaced the seven cool near-blue materials with the exact four-value
-  mineral-signal palette frozen in `DESIGN.md`. Board, Next, active, locked, and Ghost
+  mineral-signal palette frozen in `docs/DESIGN.md`. Board, Next, active, locked, and Ghost
   rendering still share the existing `TetrisRenderer` edge-lit plate primitive; no
   renderer logic changed.
 - Removed the `六关` / `六个` frontend constants. Home copy, library copy, and the
@@ -622,9 +622,9 @@ configuration, `index.html`, coordinator documents, changelog, or formal evidenc
   paths were dirty; those paths remained intact and no source collision occurred.
 - Skills followed: `frontend-design` supplied the restrained spectral-glass hierarchy
   and continuous-surface polish. `develop-web-game` supplied the required original
-  Playwright client and action payload. Its normal `progress.md` write was replaced by
+  Playwright client and action payload. Its normal `docs/progress.md` write was replaced by
   this authorized workstream log because Slice I forbids writer edits to
-  `progress.md`.
+  `docs/progress.md`.
 - Candidate identity: the single bounded commit created from this recorded tree; its
   exact SHA is returned to the coordinator with this log.
 
@@ -645,7 +645,7 @@ No writer diff exists in Core/Puzzle definitions, references or routes,
 ### Delivered visual replacement
 
 - Replaced all 28 muted material values with the exact bright luminous-spectrum table
-  frozen in `DESIGN.md`. Theme regression now freezes every palette value plus the
+  frozen in `docs/DESIGN.md`. Theme regression now freezes every palette value plus the
   complete precision-slab style token object.
 - Replaced the rounded double-outline plate with one Board/Next slab primitive:
   1.25–2.5 px radius, one 0.75–1.1 px same-hue dark edge, no locked inner perimeter,
@@ -772,14 +772,14 @@ No writer diff exists in Core/Puzzle definitions, references or routes,
   campaign references/routes, progress persistence, presentation/runtime/input/audio,
   dependencies, build config, coordinator documents, changelog, and formal evidence
   remained untouched.
-- Required intake was read before implementation: root `AGENTS.md`, `DESIGN.md`,
-  `CURRENT_TASK.md`, latest `docs/logs/CHANGELOG.md`, `docs/COMMIT_POLICY.md`, this
-  workstream log, and `progress.md`.
+- Required intake was read before implementation: root `AGENTS.md`, `docs/DESIGN.md`,
+  `docs/CURRENT_TASK.md`, latest `docs/logs/CHANGELOG.md`, `docs/COMMIT_POLICY.md`, this
+  workstream log, and `docs/progress.md`.
 - Applied `frontend-design` for the bounded original visual replacement and
   `develop-web-game` for the prescribed action-payload loop plus browser inspection.
-  The latter skill's ordinary `progress.md` update was explicitly replaced by this
+  The latter skill's ordinary `docs/progress.md` update was explicitly replaced by this
   authorized frontend workstream log to preserve the coordinator's exact allowlist;
-  `progress.md` was not edited.
+  `docs/progress.md` was not edited.
 
 ### Ordered product checkpoints
 
@@ -929,8 +929,8 @@ diff is removal of the rejected spectral surface, not a bundled second subsystem
   `41b29ab08a06bfb51ebdc80b054f625281876f6c..e38c55c`.
 - `frontend-design` guided the restrained cohesive-mineral, typography, and continuous
   divider repair. `develop-web-game` supplied the prescribed action client and browser
-  inspection loop. Its ordinary `progress.md` update was replaced by this authorized
-  workstream log; `progress.md` was not edited.
+  inspection loop. Its ordinary `docs/progress.md` update was replaced by this authorized
+  workstream log; `docs/progress.md` was not edited.
 
 ### Ordered product checkpoints and exact changed paths
 
@@ -947,7 +947,7 @@ diff is removal of the rejected spectral surface, not a bundled second subsystem
 
 This log is the only post-source path. Core/Puzzle definitions, campaign
 references/routes, progress persistence, runtime/input/audio, dependencies/build
-configuration, coordinator documents, changelog, `progress.md`, and formal evidence
+configuration, coordinator documents, changelog, `docs/progress.md`, and formal evidence
 remain untouched. No generated browser artifact is part of the candidate.
 
 ### Delivered repair contract
@@ -1074,7 +1074,7 @@ remain untouched. No generated browser artifact is part of the candidate.
   inline-end capacity contains the accepted active-arrow travel without clipping or
   changing its motion, label, 1 px border, 9 px radius, or 44 px action height.
 - No renderer/theme, Core, runtime/input/audio, `index.html`, dependency, evidence,
-  coordinator-document, changelog, or `progress.md` path changed. `frontend-design`
+  coordinator-document, changelog, or `docs/progress.md` path changed. `frontend-design`
   and `develop-web-game` were followed; the active allowlist routes progress here.
 
 ### Verification actually run
@@ -1121,7 +1121,7 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Branch/intake: clean `codex/tetris-recovery` at
   `028c1580cec7eff92013db614b40491fa4eac9d6`.
 - Contract checkpoint: `423d2e3` — `docs(t5): define divided cohesive facets`;
-  changed only `DESIGN.md` and `CURRENT_TASK.md`.
+  changed only `docs/DESIGN.md` and `docs/CURRENT_TASK.md`.
 - Frozen product checkpoint: `acaf40589a2a4e802f0cfcd253f0c37161f3219d` —
   `feat(render): divide cohesive mineral facets`; changed only
   `src/game/render/TetrisRenderer.ts`, `presentation.ts`, `presentation.test.ts`,
@@ -1193,8 +1193,8 @@ remain untouched. No generated browser artifact is part of the candidate.
   changelog, evidence, or countdown path changed.
 - `frontend-design` guided the bounded precise-light mineral hierarchy and matte
   material review. `develop-web-game` supplied the prescribed action payload/client
-  loop. Its ordinary `progress.md` write was replaced by this authorized workstream
-  log; `progress.md` was not edited.
+  loop. Its ordinary `docs/progress.md` write was replaced by this authorized workstream
+  log; `docs/progress.md` was not edited.
 
 ### Delivered retone
 
@@ -1272,7 +1272,7 @@ remain untouched. No generated browser artifact is part of the candidate.
 - `frontend-design` kept the overlay as one restrained board-local state using the
   existing mineral tokens, with no card, glow, telemetry, or new composition.
   `develop-web-game` supplied the prescribed client and action payload. Its ordinary
-  `progress.md` write was replaced by this authorized workstream log; `progress.md`
+  `docs/progress.md` write was replaced by this authorized workstream log; `docs/progress.md`
   was not edited.
 
 ### Delivered countdown and gate
@@ -1350,7 +1350,7 @@ remain untouched. No generated browser artifact is part of the candidate.
   dependency/configuration, `index.html`, coordinator document, changelog, or formal
   evidence path changed.
 - `develop-web-game` supplied the prescribed client/action loop and screenshot review.
-  Its ordinary `progress.md` write remained outside this exact-path repair; the file
+  Its ordinary `docs/progress.md` write remained outside this exact-path repair; the file
   was read but not edited, and this authorized log records the durable handoff.
 
 ### Delivered fail-closed behavior
@@ -1421,7 +1421,7 @@ remain untouched. No generated browser artifact is part of the candidate.
   `src/game/runtime/qaScenario.ts`, and `src/game/runtime/qaScenario.test.ts`.
   The CSS change only migrates the two semantic statistic-role selectors.
 - Core, renderer/theme, layout, Puzzle data/references, dependencies/configuration,
-  `index.html`, coordinator documents, changelog, formal evidence, and `progress.md`
+  `index.html`, coordinator documents, changelog, formal evidence, and `docs/progress.md`
   did not change. `develop-web-game` supplied the prescribed client/action loop;
   its ordinary progress update is recorded here under the exact path allowlist.
 

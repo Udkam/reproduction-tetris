@@ -5,7 +5,7 @@
 - Task: `TETRIS-T4-LAYOUT-001`
 - Base: `4c8582854088695ebac90467842dc2bc0cef3a20`
 - Branch: `codex/tetris-recovery`
-- Repository: `E:\Proj\Game-1-tetris`
+- Repository: `E:\Proj\reproduction-tetris`
 - Scope: desktop/mobile presentation geometry only; accepted core rules and Puzzle data
   are frozen.
 - Evidence required: targeted tests while editing, then coordinator-owned final
@@ -20,8 +20,8 @@
 - Candidate: uncommitted bounded working-tree candidate; coordinator owns final gates,
   commit, and push.
 - Exact write scope: `src/styles.css`, `src/App.tsx`, and this `THREAD_LOG.md`.
-- Preserved dirty paths: coordinator-owned `AGENTS.md`, `DESIGN.md`,
-  `CURRENT_TASK.md`, and `progress.md` were read but not edited by this task.
+- Preserved dirty paths: coordinator-owned `AGENTS.md`, `docs/DESIGN.md`,
+  `docs/CURRENT_TASK.md`, and `docs/progress.md` were read but not edited by this task.
 - Implementation: replaced the 718 px/306 px desktop caps with a viewport-height
   board scale; the measured board is 380 × 760 at 1440 × 900 and 460 × 920 at
   2048 × 1152. Desktop context/side rails and gaps scale with the cluster, the three
@@ -55,9 +55,9 @@
 
 - Task: `TETRIS-T4-LAYOUT-001`.
 - Base: `4c8582854088695ebac90467842dc2bc0cef3a20` on
-  `codex/tetris-recovery` in `E:\Proj\Game-1-tetris`.
+  `codex/tetris-recovery` in `E:\Proj\reproduction-tetris`.
 - Exact product delta: `src/styles.css` and `src/App.tsx`; repository contracts,
-  this log, `progress.md`, one repeatable T4 capture wrapper, and T4 evidence are
+  this log, `docs/progress.md`, one repeatable T4 capture wrapper, and T4 evidence are
   the only supporting paths.
 - Final gates run exactly once after the last product change:
   `npm.cmd run typecheck` passed; `npm.cmd run test` passed 36 files / 234 tests;

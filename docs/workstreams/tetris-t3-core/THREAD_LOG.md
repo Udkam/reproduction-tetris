@@ -11,7 +11,7 @@
 
 ## C1 implementation record
 
-- Inspected with Python UTF-8: `AGENTS.md`, `DESIGN.md`, `CURRENT_TASK.md`, latest
+- Inspected with Python UTF-8: `AGENTS.md`, `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, latest
   `docs/logs/CHANGELOG.md`, all accepted `docs/workstreams/tetris-t3-rules/` contract,
   level, replay, verifier, and handoff artifacts, plus the current core and QA scenario.
 - Replaced only the legacy production `offset-01..03` Puzzle data with the accepted six

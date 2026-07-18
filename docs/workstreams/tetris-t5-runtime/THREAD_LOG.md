@@ -21,8 +21,8 @@ Status: **CANDIDATE — pending independent QA; not pushed**
 
 ### Commands and evidence
 
-- Read in full: `AGENTS.md`, `docs/COMMIT_POLICY.md`, `DESIGN.md`,
-  `CURRENT_TASK.md`, `docs/logs/CHANGELOG.md`, and the existing `progress.md` required
+- Read in full: `AGENTS.md`, `docs/COMMIT_POLICY.md`, `docs/DESIGN.md`,
+  `docs/CURRENT_TASK.md`, `docs/logs/CHANGELOG.md`, and the existing `docs/progress.md` required
   by the selected web-game workflow. The frozen path boundary overrides that workflow's
   progress/browser-writing steps for this non-visual fixture migration.
 - `git status --short`, `git branch --show-current`, `git rev-parse HEAD`, and

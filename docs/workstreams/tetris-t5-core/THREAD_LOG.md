@@ -8,7 +8,7 @@
 - Rule authority: `4c8582854088695ebac90467842dc2bc0cef3a20`
 - Scope: endless accelerating Race; longer Puzzle definitions; grounded soft-drop
   lock/queue repair; deterministic T5 references; runtime QA and leaderboard migration.
-- Exact path boundary: the Core paths listed in `CURRENT_TASK.md` plus this log.
+- Exact path boundary: the Core paths listed in `docs/CURRENT_TASK.md` plus this log.
 - Forbidden: frontend/render/progress files, T3/T4 evidence, coordinator docs,
   changelog, commit/push.
 - Required candidate: one writer commit with exact commands/evidence and a read-only
@@ -133,7 +133,7 @@
   candidate after the user superseded the finite-queue Puzzle contract with normal-play
   seeded seven-bag, automatic-gravity, no-budget Puzzle rules.
 - Commit/push: not performed.
-- Blocker: `DESIGN.md` and `CURRENT_TASK.md` must be updated before any new Puzzle rule
+- Blocker: `docs/DESIGN.md` and `docs/CURRENT_TASK.md` must be updated before any new Puzzle rule
   implementation is authorized.
 - Next: retain this minimal QA fix in the dirty worktree and wait for the coordinator's
   revised bounded Puzzle slice.

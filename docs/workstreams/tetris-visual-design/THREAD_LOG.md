@@ -9,13 +9,13 @@
 ## 范围
 
 - 允许写入：仅 `docs/workstreams/tetris-visual-design/`。
-- 明确不写：根 `DESIGN.md`、`CURRENT_TASK.md`、`docs/logs/CHANGELOG.md`、任一 `src/`、生产 App/CSS、游戏测试或构建产物。
+- 明确不写：根 `docs/DESIGN.md`、`docs/CURRENT_TASK.md`、`docs/logs/CHANGELOG.md`、任一 `src/`、生产 App/CSS、游戏测试或构建产物。
 - 交付：原创方向、全状态布局规格、独立静态 HTML/CSS 原型、七张最终 D2 Playwright 截图、设计审查和本日志。
 
 ## 研究来源（只读）
 
-- 当前 worktree：`AGENTS.md`、`DESIGN.md`、`CURRENT_TASK.md`、`docs/logs/CHANGELOG.md`。
-- 方法参考：`E:\Proj\personal-web\DESIGN.md`、`README.md`、`src/`、`screenshots/home-1440x900-final.png`、`screenshots/home-1920x1080-final.png`。
+- 当前 worktree：`AGENTS.md`、`docs/DESIGN.md`、`docs/CURRENT_TASK.md`、`docs/logs/CHANGELOG.md`。
+- 方法参考：`E:\Proj\personal-web\docs/DESIGN.md`、`README.md`、`src/`、`screenshots/home-1440x900-final.png`、`screenshots/home-1920x1080-final.png`。
 - 否决样本：
   - `C:\Users\Alex Chen\AppData\Local\Temp\codex-clipboard-8a607198-cdd2-4573-b6d9-7d034423c4e5.png`
   - `C:\Users\Alex Chen\AppData\Local\Temp\codex-clipboard-e04568d9-faab-43d5-8f3d-009f95b9c279.png`
@@ -98,8 +98,8 @@
 
 ### 范围与研究
 
-- 线程：`019f4deb-7e83-7583-8cd5-8e6f075bc331` 的 design-only D5 委派；工作树为 `C:\Users\Alex Chen\.codex\worktrees\e469\Game-1`。只写本目录；未编辑 production、根 `DESIGN.md` / `CURRENT_TASK.md` / CHANGELOG、package/config 或 Temple，未 push。
-- Python UTF-8 只读来源：当前 worktree 的 `AGENTS.md`、`DESIGN.md`、`CURRENT_TASK.md` 与本日志；`E:\Proj\Game-1` 在 `0700faffe6f50aa49af2fef81f07f90113bd7c70` 的已推送状态和 T2 正式证据；否决截图 `C:\Users\ALEXCH~1\AppData\Local\Temp\codex-clipboard-17f91a73-8aab-4744-aff6-c9aa1b148fa9.png`。
+- 线程：`019f4deb-7e83-7583-8cd5-8e6f075bc331` 的 design-only D5 委派；工作树为 `C:\Users\Alex Chen\.codex\worktrees\e469\Game-1`。只写本目录；未编辑 production、根 `docs/DESIGN.md` / `docs/CURRENT_TASK.md` / CHANGELOG、package/config 或 Temple，未 push。
+- Python UTF-8 只读来源：当前 worktree 的 `AGENTS.md`、`docs/DESIGN.md`、`docs/CURRENT_TASK.md` 与本日志；`E:\Proj\reproduction-patricks-parabox` 在 `0700faffe6f50aa49af2fef81f07f90113bd7c70` 的已推送状态和 T2 正式证据；否决截图 `C:\Users\ALEXCH~1\AppData\Local\Temp\codex-clipboard-17f91a73-8aab-4744-aff6-c9aa1b148fa9.png`。
 - 研究结论：否决方向的巨大标题、斜条、深色井和松散 rail 让游戏变成编辑页。D5 冻结唯一新方向 `浅岩台 / Mineral Shelf`：浅纸与浅矿物 board、双层赭石/蓝灰矿脊脚、小型完整 Tetris、board-first 和连续五键轨。
 
 ### 技能与具体影响
