@@ -668,3 +668,21 @@ changelog, T3/T4 evidence, or QA archive was edited.
   (10 files / 65 tests PASS); final coordinator typecheck, full suite, and build are
   recorded in the T9 candidate log. Blocker: independent Core QA. Next: review
   `502f978..7910e91`; no push by this writer.
+
+## 2026-07-19 — T10 Puzzle anchors and post-lock expiry candidate
+
+- Task: `TETRIS-T10-PUZZLE-ANCHORS-023`; base `15e6412` on `main`.
+- Exact paths: `src/game/core/constants.ts`, `src/game/core/types.ts`,
+  `src/game/core/board.ts`, `src/game/core/engine.ts`, `src/game/core/puzzles.ts`,
+  `src/game/core/puzzles.test.ts`, `src/game/core/puzzleFlow.test.ts`, and
+  `src/game/core/puzzleCampaign.test.ts`.
+- Added permanent Puzzle-only `A` anchors, retained-anchor row resolution,
+  removable-only victory, seeded volatile locks with a 600-tick timer, expiry events,
+  metadata remapping across clears, and whole-component falling after expiry.
+  Replaced levels 13–15 with deterministic low-pressure vertical-I anchor trials;
+  the first twelve legacy route hashes remain frozen and pass unchanged.
+- Commands: focused core suite (7 files / 66 tests) PASS; final typecheck PASS; full
+  suite (40 files / 270 passed / 2 skipped) PASS; production build (741 modules) PASS.
+  Browser review is recorded in the coordinator progress log.
+- Blocker: independent Core and visual/browser QA. Next: review this exact source
+  checkpoint with the unpushed T9 range; do not push.

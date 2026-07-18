@@ -1,4 +1,28 @@
-# Current Task — T9 Survival Descent and Puzzle Archive
+# Current Task — T10 Puzzle Anchors and Vanishing Inputs
+
+Branch: `main`
+
+Current base: `15e6412`; source checkpoints: `1ffe8fd`, `4427d7a`
+
+Current execution status (2026-07-19): **T10 is authorized and in progress.**
+
+T10 extends the unpushed T9 candidate with deterministic, sparse Puzzle-only
+anchors and ten-second volatile pieces. Victory must ignore retained anchors
+but not ordinary tetromino cells. Levels 13–15 become low-pressure one-lock
+anchor trials; gameplay and DEV state expose every locked volatile countdown.
+Classic and Survival remain unchanged.
+
+Required evidence before any publication: targeted core/replay/UI coverage for
+anchor occupancy and retained-anchor clearing, removable-only victory,
+pause-safe 600-tick post-lock expiry, support-constrained falling after expiry,
+event ordering, restart/hash determinism, and the three trials; then typecheck, the full suite, build, and one browser action
+pass with visible timer/anchors and no browser errors. Independent Core and
+visual/browser QA must accept the extended candidate before changelog
+integration or push.
+
+---
+
+# Historical Current Task — T9 Survival Descent and Puzzle Archive
 
 Branch: `main`
 

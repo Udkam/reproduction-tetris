@@ -412,3 +412,22 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Candidate is now `502f978..15e6412`; independent Core and visual/browser QA remain
   required before push. The proposed immutable-cell and expiring-piece Puzzle redesign
   remains intentionally unimplemented pending a precise rule decision.
+
+## 2026-07-19 — T10 Puzzle anchors and post-lock expiry candidate
+
+- Superseded the deferred Puzzle-mechanics note with deterministic sparse anchors and
+  post-lock volatile inputs. Anchors remain after a completed row while ordinary cells
+  clear; Puzzle success now requires only that removable tetromino cells are gone.
+- Reauthored levels 13–15 as low-pressure one-lock vertical-I trials with two seeded
+  anchors each. The legacy twelve-level reference routes and their historical hashes
+  remain valid; the three replacement trials have focused public-command coverage.
+- A volatile piece locks normally, then expires after 600 playing ticks. Its removal
+  performs a deterministic whole-component support fall: components that can descend
+  together fall, while blocked components remain fixed. Pause freezes the counter.
+- Source checkpoints: `1ffe8fd feat(puzzle): add anchors and volatile locks` and
+  `4427d7a feat(ui): surface puzzle anchors and timers`. Typecheck, full suite
+  (40 files, 270 passed / 2 skipped), and 741-module build passed. Browser inspection at 1440 × 900 shows the
+  selected level-15 anchor preview and a real locked volatile piece at `限时 10 秒`,
+  with 2 anchors, 590 ticks remaining, and zero console/page errors.
+- Next: exact-path source checkpoints, then independent Core and visual/browser QA of
+  the extended `502f978..` candidate. Do not push before acceptance.

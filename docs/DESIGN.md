@@ -1,4 +1,40 @@
-# Tetris — T9 Survival Descent and Puzzle Archive Contract
+# Tetris — T10 Puzzle Anchors and Vanishing Pieces Contract
+
+## T10 immutable Puzzle anchors and ten-second vanishing inputs
+
+The user's 2026-07-19 direction supersedes the T5 assumption that every Puzzle
+cell is removable and that every incoming piece remains active until it locks.
+
+- Puzzle owns a second permanent material, the `A` anchor. Anchors are visible,
+  deterministic, single-cell blockers: an active tetromino cannot overlap one,
+  an anchor is never erased, and a completed non-bedrock row containing anchors
+  clears its removable cells while retaining each anchor. Normal rows and
+  Survival bedrock semantics remain unchanged.
+- Puzzle victory is `removable-board-empty`: every ordinary tetromino cell in
+  both the hidden buffer and visible board must be gone; retained anchors do
+  not make an otherwise solved level fail. The state hash, replay, renderer,
+  preview, and QA text expose this canonical distinction.
+- A deterministic, level-seeded subset of Puzzle inputs is volatile. It plays
+  and locks normally; from that lock it receives exactly 600 playing ticks
+  (10 seconds). Paused, ready, terminal, and non-Puzzle states never consume
+  its timer. At zero that locked tetromino disappears, emits `piece-expired`,
+  and triggers one deterministic support-resolution pass: complete supported
+  tetromino components above a new gap fall straight down as far as they can;
+  a component that cannot make a normal whole-component fall remains still.
+  The expiry neither undoes normal score/line/placed-piece credit nor creates a
+  replacement piece.
+- The archive keeps all fifteen entries. Levels 13–15 become low-pressure
+  anchor trials: two deterministic scattered anchors sit above a one-lock,
+  four-row clearance exercise. Their first seeded vertical `I` intentionally
+  complete the authored removable stack before anchors can add late-board
+  pressure. This makes the new rule legible rather than making every existing
+  endgame harsher.
+- Gameplay states show `限时` while a locked volatile input remains, with an
+  exact rounded-up seconds value. The live DEV state includes the active
+  volatile records and anchor count so browser evidence can compare visible and
+  canonical state.
+
+## T9 five-layer Survival opening and Puzzle archive surface
 
 ## T9 five-layer Survival opening and Puzzle archive surface
 

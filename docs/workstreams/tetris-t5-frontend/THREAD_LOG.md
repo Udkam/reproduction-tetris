@@ -1648,3 +1648,20 @@ remain untouched. No generated browser artifact is part of the candidate.
   typecheck, full suite (40 files / 269 passed / 2 skipped), and 741-module build PASS.
   The web-game client screenshot was visually checked and has no error artifact.
   Blocker: independent QA; next action: audit `502f978..15e6412`; no push.
+
+## 2026-07-19 — T10 Puzzle anchors and volatile-status surface
+
+- Task: `TETRIS-T10-PUZZLE-ANCHORS-023`; base `15e6412` on `main`.
+- Exact paths: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/game/render/theme.ts`, and `src/game/render/TetrisRenderer.ts`.
+- Added an original mineral anchor material to Pixi and the selected archive preview.
+  Puzzle statistics now exchange the objective label for an exact `限时 N 秒` value
+  while a locked volatile input remains; DEV state exposes anchors, volatile records,
+  and remaining seconds. Expiry announcements are live-region eligible and urgent
+  values respect reduced motion.
+- Commands: focused App/core/runtime/render tests (18 files / 134 tests) PASS; final
+  typecheck PASS; full suite (40 files / 270 passed / 2 skipped) PASS; 741-module build
+  PASS. Browser review at 1440 × 900 shows the level-15 anchor preview and a live
+  `限时 10 秒` state with zero console/page errors.
+- Blocker: independent Core and visual/browser QA. Next: audit this source together
+  with the extended candidate; no push.
