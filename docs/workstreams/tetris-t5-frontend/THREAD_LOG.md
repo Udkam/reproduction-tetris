@@ -1665,3 +1665,36 @@ remain untouched. No generated browser artifact is part of the candidate.
   `限时 10 秒` state with zero console/page errors.
 - Blocker: independent Core and visual/browser QA. Next: audit this source together
   with the extended candidate; no push.
+
+## 2026-07-19 — T10 five-second volatile material correction candidate
+
+- Task: `TETRIS-T10-PUZZLE-ANCHORS-023` correction; base `3dfedca` on `main`.
+- Exact paths: `src/App.tsx`, `src/App.test.ts`, `src/game/render/theme.ts`,
+  `src/game/render/theme.test.ts`, and `src/game/render/TetrisRenderer.ts`.
+- Replaced the ten-second copy with `限时块 / 落定后 5 秒` for marked active
+  inputs, retaining exact remaining seconds after lock. Pixi applies one
+  high-contrast warm material to the active piece, its ghost, and every locked
+  volatile record, without changing ordinary seven-piece materials.
+- Commands: focused App/core/render regression suite PASS (9 files / 82 tests);
+  typecheck, full suite, build, and browser review are recorded by coordinator.
+  Browser evidence shows a live warm volatile piece and no console errors.
+  Blocker: independent visual/browser QA. Next: review the exact committed
+  correction; no push.
+
+## 2026-07-19 — T10 audio clarity and master control candidate
+
+- Task: `TETRIS-T10-PUZZLE-ANCHORS-023` correction; base `3dfedca` on `main`.
+- Exact paths: `src/game/audio/AudioEngine.ts`, `src/game/runtime/GameRuntime.ts`,
+  `src/game/runtime/GameRuntime.test.ts`, `src/App.tsx`, `src/App.test.ts`, and
+  `src/styles.css`.
+- Added a bounded master-gain API, stronger ordinary action feedback, and distinct
+  start/pause/resume, volatile-expiry, and Survival pressure sounds. The visible
+  top-bar control beside Pause provides mute plus 0–100% volume without
+  introducing audio into the deterministic core.
+- Source checkpoints: `d480c9a feat(ui): clarify volatile blocks and audio` and
+  `07c974e fix(ui): place audio controls beside pause`.
+  Commands: focused Puzzle flow / runtime / App tests PASS (5 files / 33 tests);
+  final typecheck, full suite, build, and browser review PASS. The browser proves
+  the mute control and 0% slider remain clickable beside Pause with zero console
+  errors. Blocker: independent visual/browser QA. Next: review the
+  control and no-leak lifecycle before candidate acceptance; no push.

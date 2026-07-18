@@ -1,6 +1,6 @@
 # Tetris — T10 Puzzle Anchors and Vanishing Pieces Contract
 
-## T10 immutable Puzzle anchors and ten-second vanishing inputs
+## T10 immutable Puzzle anchors and five-second vanishing inputs
 
 The user's 2026-07-19 direction supersedes the T5 assumption that every Puzzle
 cell is removable and that every incoming piece remains active until it locks.
@@ -15,24 +15,36 @@ cell is removable and that every incoming piece remains active until it locks.
   not make an otherwise solved level fail. The state hash, replay, renderer,
   preview, and QA text expose this canonical distinction.
 - A deterministic, level-seeded subset of Puzzle inputs is volatile. It plays
-  and locks normally; from that lock it receives exactly 600 playing ticks
-  (10 seconds). Paused, ready, terminal, and non-Puzzle states never consume
+  and locks normally; from that lock it receives exactly 300 playing ticks
+  (5 seconds). Paused, ready, terminal, and non-Puzzle states never consume
   its timer. At zero that locked tetromino disappears, emits `piece-expired`,
-  and triggers one deterministic support-resolution pass: complete supported
-  tetromino components above a new gap fall straight down as far as they can;
-  a component that cannot make a normal whole-component fall remains still.
+  and triggers one deterministic support-resolution pass: only complete
+  tetromino components immediately above a newly opened cell may fall straight
+  down as far as they can; a component that cannot make a normal
+  whole-component fall, or is not reached from that new gap, remains still.
   The expiry neither undoes normal score/line/placed-piece credit nor creates a
   replacement piece.
-- The archive keeps all fifteen entries. Levels 13–15 become low-pressure
-  anchor trials: two deterministic scattered anchors sit above a one-lock,
-  four-row clearance exercise. Their first seeded vertical `I` intentionally
-  complete the authored removable stack before anchors can add late-board
-  pressure. This makes the new rule legible rather than making every existing
-  endgame harsher.
-- Gameplay states show `限时` while a locked volatile input remains, with an
-  exact rounded-up seconds value. The live DEV state includes the active
-  volatile records and anchor count so browser evidence can compare visible and
-  canonical state.
+- The archive keeps all fifteen entries. Every entry retains its previous legal
+  setup history, stable seed, deep multi-color endgame mask, and continuous
+  seven-bag generation. Anchors are sparse and level-seeded rather than a
+  final-three-only rule: four earlier/mid-archive entries receive one anchor,
+  the final three receive two, and the remaining entries receive none. Every
+  anchor occupies a pre-existing empty visible cell; the overlay is the sole
+  added board difficulty and never replaces an authored stack with a simplified
+  tutorial shape. Anchored entries also participate in the volatile-input draw,
+  so the two mechanics can combine without being mandatory in every puzzle.
+- Volatile inputs use a distinct warm-signal material while falling and after
+  locking; the ordinary seven-piece materials remain unchanged. Gameplay states
+  show `限时块 / 落定后 5 秒` while the marked input is active, then an exact
+  rounded-up seconds value while its locked timer remains. The live DEV state
+  includes the active volatile records and anchor count so browser evidence can
+  compare visible and canonical state.
+- Gameplay audio uses a single Web Audio master gain with an explicit mute
+  control and a persistent-in-session 0–100% volume slider beside Pause.
+  Distinct, audible
+  feedback covers start/pause, movement/rotation, hard drop/lock, line clears,
+  volatile expiry, Survival pressure, and terminal outcomes; all audio stays
+  outside core simulation and must be released on unmount.
 
 ## T9 five-layer Survival opening and Puzzle archive surface
 

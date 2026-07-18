@@ -431,3 +431,42 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   with 2 anchors, 590 ticks remaining, and zero console/page errors.
 - Next: exact-path source checkpoints, then independent Core and visual/browser QA of
   the extended `502f978..` candidate. Do not push before acceptance.
+
+## 2026-07-19 — T10 anchor distribution and five-second visual correction candidate
+
+- Restored levels 13–15 to their previous full, legal generated endgames; no trial
+  board, seed, setup history, or seven-bag sequence was substituted. The anchor
+  overlay now spans seven deterministic archive entries: levels 3, 6, 9, and 12
+  receive one anchor, while levels 13–15 receive two. Every anchor is a
+  pre-existing empty visible cell, so the two mechanics can combine without
+  adding blockers to every level.
+- Volatile locks now last 300 playing ticks (5 seconds). The Pixi board renders
+  active, ghost, and locked volatile cells in a distinct warm-signal material;
+  the puzzle status reads `限时块 / 落定后 5 秒` before lock and exact remaining
+  seconds after lock.
+- Verification: focused 9 files / 82 tests PASS; typecheck PASS; full suite 39
+  passed / 1 skipped, 272 passed / 2 skipped; 741-module production build PASS.
+  Browser review at 996 × 934 has zero console errors and visibly confirms a
+  level-9 original-board preview with one anchor plus a real warm volatile state
+  and `落定后 5 秒` status. Candidate SHA pending exact-path checkpoints.
+- Next: independent Core and visual/browser QA; changelog integration and push
+  remain prohibited until both accept.
+
+## 2026-07-19 — T10 volatile-resolution and audio-control correction candidate
+
+- Reworked volatile expiry resolution to begin only from cells opened by the
+  disappeared volatile piece. A complete component directly above one of those
+  cells falls as a normal whole component to its resting position; unrelated
+  floating components do not move. This corrects the former global gravity pass.
+- Increased feedback clarity and coverage through the Web Audio engine: stronger
+  move/rotate/drop/lock/clear/terminal voices plus start, pause/resume, volatile
+  expiry, and Survival rise/lower cues. The top bar now exposes `声音开/关` and
+  a 0–100% master-volume slider immediately beside Pause; core state remains
+  audio-free.
+- Candidate checkpoints: `ea04f6c fix(puzzle): constrain volatile expiry fallout`,
+  `d480c9a feat(ui): clarify volatile blocks and audio`, and
+  `07c974e fix(ui): place audio controls beside pause`. Final typecheck,
+  full suite (39 passed / 1 skipped, 274 passed / 2 skipped), and 741-module
+  production build PASS. Browser review proves the mute toggle and 0% slider are
+  clickable beside Pause, with zero console errors. Independent Core plus
+  visual/browser QA remain required before changelog or push.

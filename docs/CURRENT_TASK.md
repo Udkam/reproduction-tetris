@@ -2,23 +2,31 @@
 
 Branch: `main`
 
-Current base: `15e6412`; source checkpoints: `1ffe8fd`, `4427d7a`
+Current base: `15e6412`; source checkpoints: `1ffe8fd`, `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`
 
-Current execution status (2026-07-19): **T10 is authorized and in progress.**
+Current execution status (2026-07-19): **CANDIDATE READY — pending independent Core and visual/browser QA.**
 
 T10 extends the unpushed T9 candidate with deterministic, sparse Puzzle-only
-anchors and ten-second volatile pieces. Victory must ignore retained anchors
-but not ordinary tetromino cells. Levels 13–15 become low-pressure one-lock
-anchor trials; gameplay and DEV state expose every locked volatile countdown.
+anchors and five-second volatile pieces. Victory must ignore retained anchors
+but not ordinary tetromino cells. The archive retains every prior legal, deep
+generated endgame: four earlier/mid entries receive one deterministic anchor
+and the final three receive two, always in empty cells. Anchored entries may
+also draw volatile inputs, and gameplay and DEV state expose every locked
+volatile countdown.
 Classic and Survival remain unchanged.
 
 Required evidence before any publication: targeted core/replay/UI coverage for
 anchor occupancy and retained-anchor clearing, removable-only victory,
-pause-safe 600-tick post-lock expiry, support-constrained falling after expiry,
-event ordering, restart/hash determinism, and the three trials; then typecheck, the full suite, build, and one browser action
-pass with visible timer/anchors and no browser errors. Independent Core and
+pause-safe 300-tick post-lock expiry, gap-origin-constrained falling after expiry,
+event ordering, restart/hash determinism, sparse archive-wide anchor placement,
+and combined-anchor/volatile states; then typecheck, the full suite, build, and
+one browser action pass with visible timer/anchors and no browser errors. Independent Core and
 visual/browser QA must accept the extended candidate before changelog
 integration or push.
+
+The correction also adds an explicit in-session audio control beside Pause:
+mute plus a 0–100% master-volume slider. It must make all game feedback audible
+without placing browser audio APIs in `src/game/core`.
 
 ---
 

@@ -686,3 +686,33 @@ changelog, T3/T4 evidence, or QA archive was edited.
   Browser review is recorded in the coordinator progress log.
 - Blocker: independent Core and visual/browser QA. Next: review this exact source
   checkpoint with the unpushed T9 range; do not push.
+
+## 2026-07-19 — T10 sparse archive overlay correction candidate
+
+- Task: `TETRIS-T10-PUZZLE-ANCHORS-023` correction; base `3dfedca` on `main`.
+- Exact paths: `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+  `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+  `src/game/core/puzzleFlow.test.ts`, and `src/game/core/puzzleCampaign.test.ts`.
+- Restored the original data for levels 13–15 and overlaid deterministic anchors
+  only: one on levels 3/6/9/12 and two on levels 13/14/15. All seven anchored
+  entries use removable-only victory and may draw volatile inputs. The timer is
+  now exactly 300 playing ticks (5 seconds); original empty-board data, legal
+  setup history, stable seed, and seven-bag checks remain frozen.
+- Commands: focused core campaign/flow/definition suite PASS (7 files / 66
+  tests); focused combined regression suite and typecheck recorded by coordinator.
+  Blocker: independent Core QA. Next: review the exact committed correction; no push.
+
+## 2026-07-19 — T10 expiry-origin correction candidate
+
+- Task: `TETRIS-T10-PUZZLE-ANCHORS-023` correction; base `3dfedca` on `main`.
+- Exact path: `src/game/core/engine.ts`, with direct regression coverage in
+  `src/game/core/puzzleFlow.test.ts`.
+- Replaced the global post-expiry gravity scan. Only a complete component directly
+  above a cell opened by the expired volatile piece can begin falling; it then
+  descends as a whole to normal rest. An unrelated floating J component is now
+  explicitly proven not to move.
+- Source checkpoint: `ea04f6c fix(puzzle): constrain volatile expiry fallout`.
+  Commands: focused Puzzle flow / runtime / App tests PASS (5 files / 33 tests);
+  final typecheck, full suite, and build are recorded in the coordinator log.
+  Blocker: independent Core QA. Next: review the committed correction with the
+  archive overlay work; no push.
