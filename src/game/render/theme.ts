@@ -80,8 +80,8 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  fillStart: 0x7e91a3,
-  fillEnd: 0x5c7186,
-  edge: 0x26394d,
-  innerEdge: 0xaab8c5,
+  fillStart: 0x9c8b73,
+  fillEnd: 0x76664f,
+  edge: 0x40372d,
+  innerEdge: 0xcdbeaa,
 };

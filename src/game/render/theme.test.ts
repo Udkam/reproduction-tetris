@@ -34,12 +34,12 @@ describe('T5 bright mineral matte material', () => {
     });
   });
 
-  it('adds one coordinated mineral material for permanent Survival bedrock', () => {
+  it('uses one warm rock-brown material for permanent Survival bedrock', () => {
     expect(BEDROCK_MATERIAL).toEqual({
-      fillStart: 0x7e91a3,
-      fillEnd: 0x5c7186,
-      edge: 0x26394d,
-      innerEdge: 0xaab8c5,
+      fillStart: 0x9c8b73,
+      fillEnd: 0x76664f,
+      edge: 0x40372d,
+      innerEdge: 0xcdbeaa,
     });
     expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(BEDROCK_MATERIAL);
     expect(contrastRatio(BEDROCK_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
