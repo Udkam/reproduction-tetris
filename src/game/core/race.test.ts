@@ -58,13 +58,13 @@ describe('progressive gravity and Survival intervals', () => {
     expect(gravityForMode('puzzle', 99, 50_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });
 
-  it('starts at twelve seconds, drops one second every five lines, and caps at five', () => {
-    expect(survivalIntervalSeconds(0)).toBe(12);
-    expect(survivalIntervalSeconds(4)).toBe(12);
-    expect(survivalIntervalSeconds(5)).toBe(11);
-    expect(survivalIntervalSeconds(35)).toBe(5);
-    expect(survivalIntervalSeconds(10_000)).toBe(5);
-    expect(survivalIntervalTicks(5)).toBe(11 * TICKS_PER_SECOND);
+  it('starts at twenty seconds, drops one second every five lines, and caps at ten', () => {
+    expect(survivalIntervalSeconds(0)).toBe(20);
+    expect(survivalIntervalSeconds(4)).toBe(20);
+    expect(survivalIntervalSeconds(5)).toBe(19);
+    expect(survivalIntervalSeconds(50)).toBe(10);
+    expect(survivalIntervalSeconds(10_000)).toBe(10);
+    expect(survivalIntervalTicks(5)).toBe(19 * TICKS_PER_SECOND);
   });
 });
 
@@ -158,7 +158,7 @@ describe('timed Survival pressure and five-line reward', () => {
     expect(transition.state.survivalBedrockRows).toBe(0);
     expect(transition.state.survivalPressureTicks).toBe(0);
     expect(transition.events.some((event) => event.type === 'bedrock-lowered')).toBe(false);
-    expect(survivalIntervalTicks(transition.state.lines)).toBe(11 * TICKS_PER_SECOND);
+    expect(survivalIntervalTicks(transition.state.lines)).toBe(19 * TICKS_PER_SECOND);
   });
 
   it('fails closed on pressure overflow before the next spawn', () => {

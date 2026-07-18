@@ -203,7 +203,7 @@ describe('T6 frontend mode binding', () => {
     const survival = { ...createInitialState(0x51a1f00d, 'race'), survivalBedrockRows: 4 };
     const cases = [
       { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒/格'] },
-      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '4', '12 秒'] },
+      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '4', '20 秒'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-level', 'placed', 'lines', 'objective'],
@@ -240,7 +240,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
     expect(view.container.textContent).toContain('连消加分\n每 10 行提高下落速度');
-    expect(view.container.textContent).toContain('生存12 秒 → 5 秒\n每 5 行降层 / -1 秒');
+    expect(view.container.textContent).toContain('生存20 秒 → 10 秒\n每 5 行降层 / -1 秒');
     expect(view.container.textContent).toContain('15 关残局');
     expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();

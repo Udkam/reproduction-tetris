@@ -295,8 +295,8 @@
   portrait 3 × 5 selection. Removed `目标：清空棋盘` from home and library.
 - Corrected compact preview sizing so full canonical boards render instead of clipped
   corner fragments.
-- Changed Survival pressure to 12 seconds initially, minus one second every five
-  cleared lines, with a five-second minimum; the existing bedrock reward/reset and
+- Changed Survival pressure to 20 seconds initially, minus one second every five
+  cleared lines, with a ten-second minimum; the existing bedrock reward/reset and
   shared progressive gravity remain intact.
 - Restored the local result leaderboard within the current action-sheet design.
   Classic ranks by score; Survival ranks by cleared lines.

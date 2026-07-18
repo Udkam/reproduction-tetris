@@ -57,7 +57,7 @@ const MODE_COPY: Record<GameMode, {
   },
   race: {
     label: '生存',
-    detail: '12 秒 → 5 秒\n每 5 行降层 / -1 秒',
+    detail: '20 秒 → 10 秒\n每 5 行降层 / -1 秒',
     action: '开始',
   },
   puzzle: {
