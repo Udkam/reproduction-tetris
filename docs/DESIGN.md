@@ -1,4 +1,32 @@
-# Tetris — T8 Interface, Survival, and Records Contract
+# Tetris — T9 Survival Descent and Puzzle Archive Contract
+
+## T9 five-layer Survival opening and Puzzle archive surface
+
+The user's 2026-07-19 direction supersedes T8's zero-bedrock opening, five-line
+reward, 20-to-10-second Survival pressure, and the visually flat Puzzle library.
+
+- Survival begins with exactly five full, unbreakable warm-mineral bedrock rows.
+  Restart creates the same five-row opening; Classic and Puzzle begin with none.
+- Survival pressure begins at 15 seconds and shortens by one second on each cumulative
+  three-line boundary, to an eight-second floor:
+  `max(8, 15 - floor(lines / 3))`. Pending-rise, safe lock/clear ordering, pause,
+  restart, deterministic hashes, and top-overflow remain fail-closed.
+- Crossing each three-line boundary resolves the ordinary clear, then any already
+  pending rise, then removes one bottom bedrock row per crossed boundary when present.
+  The timer resets under the new interval even when no bedrock can be removed.
+- Survival gravity shares the existing fixed tick table but advances one table step per
+  three cleared lines, capped at the existing fastest value. Classic remains on its
+  ten-line progression and Puzzle remains at its accepted fixed 48-tick cadence.
+- The home-facing plain-text `Tetris` identity is a clear primary heading, not a quiet
+  utility label. It remains original editable text, never a copied logo or wordmark.
+- Rebuild the Puzzle level selection as an original `解谜档案` surface: compact colored
+  board tiles carry level number, name, completion state, and selection signal; the
+  selected canonical board becomes a single strong preview and a clearly associated
+  start action. Keep all fifteen levels enabled, every touch action at least 44 px,
+  the exact 2:1 board data, keyboard focus, responsive portrait/landscape behavior,
+  one game canvas, and reduced-motion support.
+
+## T8 Interface, Survival, and Records Contract
 
 ## T8 mode field, Puzzle library, Survival interval, and records
 

@@ -1,21 +1,21 @@
-# Current Task — T8 Interface, Survival, and Records Refinement
+# Current Task — T9 Survival Descent and Puzzle Archive
 
 Branch: `main`
 
-Current accepted product tip: `32ed0c768c8c525aff645fa0584759ad6348ef52`
+Current base: `beb47643ca6e80cbdae2fbb2a7459b1d6fffc1e6`
 
-Current execution status (2026-07-19): **T8 is accepted; no product implementation
-task is open.** The remaining coordinator work is to commit the completed documentation
-archive and publish the already accepted local history.
+Current execution status (2026-07-19): **T9 is authorized and in progress.**
 
-Status: **ACCEPTED — T8 mode field, Puzzle library, 20→10-second Survival pressure,
-mode-owned records, and Loading handoff verified**
+Status: **IN PROGRESS — T9 five-layer Survival opening, 15→8-second pressure,
+three-line rewards/gravity, stronger home identity, and Puzzle archive redesign**
 
-The accepted T8 source is `9fe8e8b`; follow-up `32ed0c7` corrects the Survival
-interval formula to `max(10, 20 - floor(lines / 5))`. Final verification recorded
-268 passed / 2 skipped tests, a 741-module production build, and desktop, portrait,
-and landscape browser checks with zero console errors or viewport overflow. This file
-retains earlier slice contracts below as historical record.
+T8 remains the accepted baseline at `32ed0c7`. T9 may change only the Survival core
+and direct tests, Survival UI copy/statistics, the home identity, Puzzle-library React
+and CSS, their direct tests, this task/design contract, the coordinator changelog, and
+the Tetris frontend/core workstream logs. After source freeze, run one typecheck, one
+complete suite, one production build, and one browser-evidence pass before independent
+QA and coordinator publication. This file retains earlier slice contracts below as
+historical record.
 
 ## Slice N — progressive gravity and timed Survival pressure
 
