@@ -285,3 +285,24 @@
   rewritten or deleted.
 - Updated the active README repository boundary; historical logs, evidence, and
   local QA archives retain their original paths and branch names.
+
+## 2026-07-18 — Mode field, Puzzle library, Survival, and records refinement
+
+- Replaced the rigid mode table with a stepped Tetris landing field and a stable
+  four-cell Puzzle icon that no longer tilts upward on hover.
+- Rebuilt the fifteen-level Puzzle library around canonical colored thumbnails, a
+  larger selected-board preview, a prominent `返回模式` action, and compact
+  portrait 3 × 5 selection. Removed `目标：清空棋盘` from home and library.
+- Corrected compact preview sizing so full canonical boards render instead of clipped
+  corner fragments.
+- Changed Survival pressure to 12 seconds initially, minus one second every five
+  cleared lines, with a five-second minimum; the existing bedrock reward/reset and
+  shared progressive gravity remain intact.
+- Restored the local result leaderboard within the current action-sheet design.
+  Classic ranks by score; Survival ranks by cleared lines.
+- Turned `index.html` into a real reduced-motion-aware Tetris Loading screen that
+  hands off after the React surface paints.
+- Final gates passed 268 tests with 2 skipped across 40 files, the 741-module
+  production build, the prescribed action client, and desktop/portrait/landscape
+  browser checks with zero console errors or viewport overflow. Real top-out runs
+  persisted and rendered both mode-owned ranking metrics.

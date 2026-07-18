@@ -67,9 +67,9 @@ export function sortRecords(mode: RunMode, records: readonly ScoreRecord[]): Sco
         || left.elapsedTicks - right.elapsedTicks
         || compareText(left.completedAt, right.completedAt);
     }
-    return right.pieces - left.pieces
-      || right.lines - left.lines
+    return right.lines - left.lines
       || right.score - left.score
+      || right.pieces - left.pieces
       || left.elapsedTicks - right.elapsedTicks
       || compareText(left.completedAt, right.completedAt);
   });

@@ -1,4 +1,4 @@
-Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
+Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
 ## 2026-07-15
 
@@ -357,3 +357,28 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
 - Independent static and visual QA accepted with no P0–P3 finding. `index.html`,
   dependencies, Puzzle data, ordinary material tokens, and separate repositories did
   not change. Next action: coordinator push of `codex/tetris-recovery`.
+
+## 2026-07-18 — T8 interface and Survival refinement complete
+
+- Replaced the home 1+2 table with a responsive stepped mode field and replaced the
+  Puzzle stair glyph with a stable T tetromino.
+- Rebuilt Puzzle selection with a prominent return action, canonical per-level board
+  thumbnails, a larger selected-board preview, and no library/home `目标：清空棋盘`.
+- Browser inspection found compact SVGs were inheriting the later large-preview size;
+  the small container clipped most of each board. A higher-specificity compact size
+  now renders the complete canonical board.
+- Changed Survival pressure to 12 seconds initially, minus one second per five lines,
+  with a five-second floor. Targeted core/runtime tests pass.
+- Rebound the v3 local result leaderboard: Classic ranks by score and Survival by
+  cleared lines. Duplicate terminal callbacks are suppressed per run.
+- Added an `index.html` Tetris Loading screen with reduced-motion behavior and a
+  post-paint handoff.
+- Final exact-source gates pass: 39 test files passed / 1 skipped, 268 tests passed /
+  2 skipped, TypeScript plus a 741-module production build, and the prescribed web-game
+  action client.
+- Browser checks passed at 1280 × 720, 390 × 844, and 844 × 390 with no console or
+  page errors, no viewport overflow, visible 44 px return/start actions, correct full
+  Puzzle previews, reduced-motion suppression, post-paint Loading removal, and real
+  Classic/Survival top-out records rendered with their correct primary metric.
+- No open implementation TODO remains for this request. Generated browser captures are
+  local QA artifacts only and are not product source.

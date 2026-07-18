@@ -7,9 +7,100 @@
     <meta name="description" content="Tetris——一款简洁、确定性的方块堆叠游戏。" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23f1f9f8'/%3E%3Cpath d='M12 12h20v20H12zm20 20h20v20H32z' fill='%230e1e23'/%3E%3Cpath d='M32 12h20v20H32zM12 32h20v20H12z' fill='%2312ae9d'/%3E%3C/svg%3E" />
     <title>Tetris</title>
+    <style>
+      #boot-screen {
+        position: fixed;
+        z-index: 9999;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: #14243a;
+        background: #dce7f2;
+        transition: opacity 220ms ease, visibility 220ms ease;
+      }
+
+      #boot-screen.boot-screen--leaving {
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .boot-lockup {
+        display: grid;
+        justify-items: center;
+        gap: 18px;
+      }
+
+      .boot-piece {
+        display: grid;
+        grid-template-columns: repeat(3, 18px);
+        grid-template-rows: repeat(2, 18px);
+        filter: drop-shadow(0 8px 12px rgba(31, 59, 86, .14));
+        animation: boot-drop 920ms cubic-bezier(.2, .82, .24, 1) infinite alternate;
+      }
+
+      .boot-piece i {
+        width: 17px;
+        height: 17px;
+        background: #526eb0;
+        border: 1px solid #334f88;
+        border-radius: 3px;
+        box-shadow: inset 2px 2px 0 rgba(255, 255, 255, .28);
+      }
+
+      .boot-piece i:first-child { grid-column: 2; }
+      .boot-piece i:nth-child(2) { grid-column: 1; grid-row: 2; }
+      .boot-piece i:nth-child(3) { grid-column: 2; grid-row: 2; }
+      .boot-piece i:nth-child(4) { grid-column: 3; grid-row: 2; }
+
+      .boot-title {
+        margin: 0;
+        font: 700 34px/1 "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
+        letter-spacing: -.055em;
+      }
+
+      .boot-status {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #52677f;
+        font: 600 11px/1 "Segoe UI", system-ui, sans-serif;
+        letter-spacing: .16em;
+      }
+
+      .boot-status::before {
+        width: 28px;
+        height: 2px;
+        content: "";
+        background: #357f78;
+        animation: boot-pulse 920ms ease-in-out infinite alternate;
+      }
+
+      @keyframes boot-drop {
+        from { transform: translateY(-7px); }
+        to { transform: translateY(4px); }
+      }
+
+      @keyframes boot-pulse {
+        from { transform: scaleX(.36); transform-origin: left; }
+        to { transform: scaleX(1); transform-origin: left; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .boot-piece,
+        .boot-status::before { animation: none; }
+        #boot-screen { transition: none; }
+      }
+    </style>
   </head>
   <body>
     <a class="skip-link" href="#game">跳到棋盘</a>
+    <div id="boot-screen" role="status" aria-label="Tetris 正在加载">
+      <div class="boot-lockup">
+        <span class="boot-piece" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <p class="boot-title">Tetris</p>
+        <span class="boot-status">LOADING</span>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

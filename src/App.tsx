@@ -26,6 +26,18 @@ import {
 } from './puzzleProgress';
 import { PIECE_MATERIALS } from './game/render/theme';
 import { ActionSheet } from './ui/ActionSheet';
+import {
+  LEADERBOARD_KEY,
+  LEGACY_LEADERBOARD_KEYS,
+  emptyLeaderboard,
+  insertScoreRecord,
+  migrateLegacyLeaderboard,
+  parseLeaderboard,
+  recordsForMode,
+  type Leaderboard,
+  type RunMode,
+  type ScoreRecord,
+} from './leaderboard';
 
 type AppScreen = 'home' | 'puzzle-library' | 'game';
 type ExitDestination = 'home' | 'puzzle-library';
@@ -45,12 +57,12 @@ const MODE_COPY: Record<GameMode, {
   },
   race: {
     label: '生存',
-    detail: '40 秒/层 → 最短 10 秒\n每 5 行：降 1 层 · -2 秒/层',
+    detail: '12 秒 → 5 秒\n每 5 行降层 / -1 秒',
     action: '开始',
   },
   puzzle: {
     label: '解谜',
-    detail: `${CAMPAIGN_LEVELS.length} 关残局\n目标：清空棋盘`,
+    detail: `${CAMPAIGN_LEVELS.length} 关残局`,
     action: '选关',
   },
 };
@@ -69,6 +81,20 @@ function readPuzzleProgress(): PuzzleProgress {
   } catch {
     return defaultPuzzleProgress();
   }
+}
+
+function readLeaderboard(): Leaderboard {
+  try {
+    const current = localStorage.getItem(LEADERBOARD_KEY);
+    if (current !== null) return parseLeaderboard(current);
+    for (const key of LEGACY_LEADERBOARD_KEYS) {
+      const legacy = localStorage.getItem(key);
+      if (legacy !== null) return migrateLegacyLeaderboard(legacy);
+    }
+  } catch {
+    return emptyLeaderboard();
+  }
+  return emptyLeaderboard();
 }
 
 function formatScore(value: number): string {
@@ -115,6 +141,20 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
   return { title: '堆叠到顶', detail: `${formatScore(state.score)} 分 · ${state.lines} 消行`, success: false };
 }
 
+export function scoreRecordForState(state: GameState, completedAt: string): ScoreRecord | null {
+  if ((state.mode !== 'marathon' && state.mode !== 'race') || state.status !== 'game-over') return null;
+  return {
+    version: 3,
+    score: state.score,
+    lines: state.lines,
+    pieces: state.pieceCount,
+    elapsedTicks: state.elapsedTicks,
+    mode: state.mode,
+    outcome: 'top-out',
+    completedAt,
+  };
+}
+
 function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <div className={`brand ${compact ? 'brand--compact' : ''}`} data-testid="brand">
@@ -130,7 +170,14 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
   if (mode === 'race') {
     return <svg viewBox="0 0 40 40" aria-hidden="true"><path className="mode-glyph__soft" d="M5 31h30M5 25h30" /><path d="M10 25v-6h8v6m5 0V14h8v11M27 14V7m-4 4 4-4 4 4" /></svg>;
   }
-  return <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 30h8v-8h7v8h7V14h8v16" /></svg>;
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="15.5" y="6.5" width="9" height="9" />
+      <rect x="6.5" y="15.5" width="9" height="9" />
+      <rect x="15.5" y="15.5" width="9" height="9" />
+      <rect x="24.5" y="15.5" width="9" height="9" />
+    </svg>
+  );
 }
 
 export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
@@ -171,9 +218,9 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
                     <strong>{item.label}</strong>
                     <span>{item.detail}</span>
                   </span>
-                  {mode === 'marathon' && (
-                    <span className="mode-gate__motif" aria-hidden="true"><i /><i /><i /><i /></span>
-                  )}
+                  <span className={`mode-gate__motif mode-gate__motif--${mode}`} aria-hidden="true">
+                    <i /><i /><i /><i />
+                  </span>
                   <span className="mode-gate__action"><span>{item.action}</span><b aria-hidden="true">→</b></span>
                 </button>
               );
@@ -203,9 +250,15 @@ export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<PieceType, stri
   return paths;
 }
 
-function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
+function PuzzleSilhouette({ id, name, compact = false }: { id: PuzzleId; name: string; compact?: boolean }) {
   return (
-    <svg className="puzzle-silhouette" viewBox="0 0 40 48" role="img" aria-label={`${name}棋盘轮廓`}>
+    <svg
+      className={`puzzle-silhouette ${compact ? 'puzzle-silhouette--compact' : ''}`}
+      viewBox="0 0 40 48"
+      role={compact ? undefined : 'img'}
+      aria-hidden={compact || undefined}
+      aria-label={compact ? undefined : `${name}棋盘轮廓`}
+    >
       {[...puzzleSilhouettePaths(id)].map(([type, path]) => {
         const material = PIECE_MATERIALS[type];
         return (
@@ -239,8 +292,10 @@ export function PuzzleLibrary({
   return (
     <main id="game" className="library-shell" data-testid="puzzle-library">
       <header className="library-header">
+        <button className="library-back" type="button" aria-label="返回模式首页" onClick={onBack}>
+          <b aria-hidden="true">←</b><span>返回模式</span>
+        </button>
         <Brand compact />
-        <button className="text-action" type="button" aria-label="返回模式首页" onClick={onBack}>← 返回</button>
       </header>
       <section className="library-intro" aria-labelledby="library-title">
         <h1 id="library-title">解谜</h1>
@@ -266,6 +321,9 @@ export function PuzzleLibrary({
                     <strong>{level.name}</strong>
                     {complete && <small>已完成</small>}
                   </span>
+                  <span className="level-entry__preview" aria-hidden="true">
+                    <PuzzleSilhouette id={level.id} name={level.name} compact />
+                  </span>
                 </button>
               </article>
             );
@@ -276,23 +334,47 @@ export function PuzzleLibrary({
           <div>
             <small>{String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</small>
             <h2>{selected.name}</h2>
-            <p><span>目标</span><strong>清空棋盘</strong></p>
           </div>
-          <button className="primary-action" type="button" data-testid="start-selected-puzzle-mobile" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
+          <button className="primary-action" type="button" data-testid="start-selected-puzzle-mobile" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
         </section>
         <aside className="level-detail" aria-live="polite">
           <div className="level-detail__visual">
-            <PuzzleSilhouette id={selected.id} name={selected.name} />
+            <span className="level-detail__visual-index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
+            <div className="level-detail__board">
+              <PuzzleSilhouette id={selected.id} name={selected.name} />
+            </div>
           </div>
           <div className="level-detail__heading">
             <span className="level-detail__count">{String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
             <h2>{selected.name}</h2>
           </div>
-          <p className="level-detail__objective"><span>目标</span><strong>清空棋盘</strong></p>
-          <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
+          <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
         </aside>
       </section>
     </main>
+  );
+}
+
+export function LeaderboardPanel({ mode, records }: { mode: RunMode; records: readonly ScoreRecord[] }) {
+  const survival = mode === 'race';
+  return (
+    <section className="result-leaderboard" aria-label={survival ? '生存排行榜' : '经典排行榜'}>
+      <header>
+        <strong>{survival ? '生存排行' : '经典排行'}</strong>
+        <span>{survival ? '消行' : '分数'}</span>
+      </header>
+      {records.length === 0 ? <p>暂无记录</p> : (
+        <ol>
+          {records.slice(0, 5).map((record, index) => (
+            <li key={`${record.completedAt}:${index}`}>
+              <b>{String(index + 1).padStart(2, '0')}</b>
+              <strong>{survival ? `${record.lines} 行` : formatScore(record.score)}</strong>
+              <small>{survival ? `${record.pieces} 方块` : `${record.lines} 行`}</small>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }
 
@@ -394,15 +476,20 @@ export function GameSession({
   puzzleId,
   onExit,
   onCanonicalCompletion,
+  leaderboard = emptyLeaderboard(),
+  onRunFinished,
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
   onExit: (destination: ExitDestination) => void;
   onCanonicalCompletion: (state: GameState) => void;
+  leaderboard?: Leaderboard;
+  onRunFinished?: (state: GameState) => void;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
   const exitWasPlayingRef = useRef(false);
+  const lastRecordedRunRef = useRef<string | null>(null);
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
   const [state, setState] = useState<GameState>(() => createInitialState(APP_SEED, mode, mode === 'puzzle' ? puzzleId : undefined));
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
@@ -428,6 +515,14 @@ export function GameSession({
       onState: (nextState, events) => {
         if (disposed) return;
         setState(nextState);
+        if (nextState.status === 'ready') lastRecordedRunRef.current = null;
+        if ((nextState.mode === 'marathon' || nextState.mode === 'race') && nextState.status === 'game-over') {
+          const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}`;
+          if (lastRecordedRunRef.current !== runKey) {
+            lastRecordedRunRef.current = runKey;
+            onRunFinished?.(nextState);
+          }
+        }
         const notable = [...events].reverse().find((event) => (
           event.type === 'lines-cleared'
           || event.type === 'bedrock-raised'
@@ -477,7 +572,7 @@ export function GameSession({
       nextRuntime.destroy();
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
-  }, [focusBoard, mode, onCanonicalCompletion, puzzleId]);
+  }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId]);
 
   useEffect(() => {
     if (!import.meta.env.DEV || !runtime) return;
@@ -573,6 +668,7 @@ export function GameSession({
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
   const pauseOpen = state.status === 'paused' && !exitOpen;
   const resultOpen = terminal !== null && !exitOpen;
+  const leaderboardRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
 
   return (
     <main id="game" className="play-shell" data-testid="game-screen">
@@ -674,6 +770,7 @@ export function GameSession({
         description={terminal?.detail ?? ''}
         tone={terminal?.success ? 'success' : 'danger'}
       >
+        {state.mode !== 'puzzle' && <LeaderboardPanel mode={state.mode} records={leaderboardRecords} />}
         <button className="primary-action" data-autofocus type="button" onClick={restartRun}>再来一局</button>
         <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
           {exitDestination === 'puzzle-library' ? '返回关卡库' : '返回模式首页'}
@@ -690,6 +787,7 @@ export default function App() {
   const [mode, setMode] = useState<GameMode>('marathon');
   const [selectedPuzzleId, setSelectedPuzzleId] = useState<PuzzleId>(CAMPAIGN_LEVELS[0]!.id);
   const [progress, setProgress] = useState<PuzzleProgress>(readPuzzleProgress);
+  const [leaderboard, setLeaderboard] = useState<Leaderboard>(readLeaderboard);
 
   const enterMode = useCallback((nextMode: GameMode) => {
     setMode(nextMode);
@@ -707,6 +805,16 @@ export default function App() {
       if (updated !== current) {
         try { localStorage.setItem(PUZZLE_PROGRESS_KEY, JSON.stringify(updated)); } catch { /* optional local completion record */ }
       }
+      return updated;
+    });
+  }, []);
+
+  const recordRun = useCallback((state: GameState) => {
+    const record = scoreRecordForState(state, new Date().toISOString());
+    if (!record) return;
+    setLeaderboard((current) => {
+      const updated = insertScoreRecord(current, record);
+      try { localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(updated)); } catch { /* optional local leaderboard */ }
       return updated;
     });
   }, []);
@@ -734,6 +842,8 @@ export default function App() {
           puzzleId={selectedPuzzleId}
           onExit={exitGame}
           onCanonicalCompletion={recordCompletion}
+          leaderboard={leaderboard}
+          onRunFinished={recordRun}
         />
       )}
     </div>

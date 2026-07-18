@@ -3,6 +3,7 @@ dist/
 coverage/
 .playwright-mcp/
 .vite/
+output/web-game/
 
 *.log
 npm-debug.log*

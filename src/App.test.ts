@@ -10,14 +10,17 @@ import {
   eventMessage,
   fallCadenceLabel,
   GameSession,
+  LeaderboardPanel,
   ModeHome,
   PuzzleLibrary,
   puzzleSilhouettePaths,
   RunStats,
+  scoreRecordForState,
   survivalCountdownLabel,
   terminalCopy,
 } from './App';
 import { CAMPAIGN_LEVELS, defaultPuzzleProgress } from './puzzleProgress';
+import type { ScoreRecord } from './leaderboard';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 
@@ -129,11 +132,13 @@ describe('entry countdown', () => {
       callback(0);
       return 1;
     }));
+    const onRunFinished = vi.fn();
     const view = render(createElement(GameSession, {
       mode: 'marathon',
       puzzleId: CAMPAIGN_LEVELS[0]!.id,
       onExit: vi.fn(),
       onCanonicalCompletion: vi.fn(),
+      onRunFinished,
     }));
     await act(async () => Promise.resolve());
 
@@ -173,6 +178,21 @@ describe('entry countdown', () => {
     expect(pause.disabled).toBe(false);
     expect(touchButtons.every((button) => !button.disabled)).toBe(true);
     expect(document.activeElement).toBe(view.container.querySelector('canvas'));
+
+    const terminalState = {
+      ...createInitialState(0x51a1f00d, 'marathon'),
+      status: 'game-over' as const,
+      score: 4321,
+      lines: 12,
+      pieceCount: 44,
+      elapsedTicks: 3600,
+    };
+    act(() => {
+      runtime.options.onState?.(terminalState, []);
+      runtime.options.onState?.(terminalState, []);
+    });
+    expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(terminalState);
+    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行分数暂无记录');
     view.unmount();
   });
 });
@@ -183,7 +203,7 @@ describe('T6 frontend mode binding', () => {
     const survival = { ...createInitialState(0x51a1f00d, 'race'), survivalBedrockRows: 4 };
     const cases = [
       { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒/格'] },
-      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '4', '40 秒'] },
+      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '4', '12 秒'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-level', 'placed', 'lines', 'objective'],
@@ -220,12 +240,17 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
     expect(view.container.textContent).toContain('连消加分\n每 10 行提高下落速度');
-    expect(view.container.textContent).toContain('生存40 秒/层 → 最短 10 秒\n每 5 行：降 1 层 · -2 秒/层');
-    expect(view.container.textContent).toContain('15 关残局\n目标：清空棋盘');
+    expect(view.container.textContent).toContain('生存12 秒 → 5 秒\n每 5 行降层 / -1 秒');
+    expect(view.container.textContent).toContain('15 关残局');
+    expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();
     expect(view.container.querySelector('.phase-seam')).toBeNull();
+    expect(view.container.querySelectorAll('.mode-gate__motif')).toHaveLength(3);
+    expect([...view.container.querySelectorAll('.mode-gate__motif')].every((motif) => motif.children.length === 4)).toBe(true);
+    expect(view.container.querySelectorAll('[data-testid="enter-puzzle"] .mode-gate__glyph rect')).toHaveLength(4);
     expect(styles).not.toContain('.phase-seam');
     expect(styles).not.toContain('.action-sheet::before');
+    expect(styles).not.toContain('rotate(3deg)');
 
     for (const banned of ['当前选择', '三种玩法', '随时开始，也可随时退出。', '键盘与触控均可操作']) {
       expect(view.container.textContent).not.toContain(banned);
@@ -240,6 +265,35 @@ describe('T6 frontend mode binding', () => {
     act(() => classic?.click());
     expect(onEnter).toHaveBeenCalledWith('marathon');
     view.unmount();
+  });
+
+  it('ranks and labels Classic by score while Survival is led by cleared lines', () => {
+    const base: ScoreRecord = {
+      version: 3,
+      score: 3200,
+      lines: 18,
+      pieces: 62,
+      elapsedTicks: 4200,
+      mode: 'marathon',
+      outcome: 'top-out',
+      completedAt: '2026-07-18T12:00:00.000Z',
+    };
+    const classic = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [base] }));
+    expect(classic.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('经典排行榜');
+    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('经典排行分数');
+    expect(classic.container.querySelector('.result-leaderboard li')?.textContent).toBe('013,20018 行');
+    classic.unmount();
+
+    const survivalRecord = { ...base, mode: 'race' as const, score: 900, lines: 27 };
+    const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
+    expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('生存排行榜');
+    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行消行');
+    expect(survival.container.querySelector('.result-leaderboard li')?.textContent).toBe('0127 行62 方块');
+    survival.unmount();
+
+    const ended = { ...createInitialState(1, 'race'), status: 'game-over' as const, score: 900, lines: 27, pieceCount: 62, elapsedTicks: 4200 };
+    expect(scoreRecordForState(ended, base.completedAt)).toMatchObject({ mode: 'race', score: 900, lines: 27, outcome: 'top-out' });
+    expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
   });
 
   it('reports Survival terminal data and bedrock rise announcements', () => {
@@ -275,13 +329,14 @@ describe('T6 frontend mode binding', () => {
     expect(CAMPAIGN_LEVELS).toHaveLength(15);
     const onSelect = vi.fn();
     const onStart = vi.fn();
+    const onBack = vi.fn();
     const selectedIndexes = [0, 7, CAMPAIGN_LEVELS.length - 1];
     const props = (selectedId: PuzzleId) => ({
       progress: defaultPuzzleProgress(),
       selectedId,
       onSelect,
       onStart,
-      onBack: vi.fn(),
+      onBack,
     });
     const view = render(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id)));
 
@@ -291,10 +346,14 @@ describe('T6 frontend mode binding', () => {
     expect(rows.every((row) => !row.disabled && row.getAttribute('aria-pressed') !== null)).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('15 个可用解谜关卡');
     expect(rows[0]?.textContent).toBe(`01${CAMPAIGN_LEVELS[0]!.name}`);
-    for (const banned of ['清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
+    expect(view.container.querySelectorAll('.level-entry__preview .puzzle-silhouette--compact')).toHaveLength(15);
+    expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
+    for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
       expect(view.container.textContent).not.toContain(banned);
     }
-    expect(view.container.textContent).toContain('目标清空棋盘');
+
+    act(() => view.container.querySelector<HTMLButtonElement>('.library-back')?.click());
+    expect(onBack).toHaveBeenCalledTimes(1);
 
     act(() => rows[7]!.click());
     expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[7]!.id);
@@ -320,8 +379,8 @@ describe('T6 frontend mode binding', () => {
     const mobileStart = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle-mobile"]');
     expect(desktopStart).not.toBeNull();
     expect(mobileStart).not.toBeNull();
-    expect(desktopStart?.textContent).toBe('开始');
-    expect(mobileStart?.textContent).toBe('开始');
+    expect(desktopStart?.textContent).toBe('开始本关');
+    expect(mobileStart?.textContent).toBe('开始本关');
     act(() => {
       desktopStart?.click();
       mobileStart?.click();

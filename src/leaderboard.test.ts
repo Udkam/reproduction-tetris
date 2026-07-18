@@ -72,7 +72,7 @@ describe('local leaderboard boundary', () => {
     expect(recordsForMode(leaderboard, 'marathon')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'race')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'marathon')[0]?.score).toBe(1200);
-    expect(recordsForMode(leaderboard, 'race')[0]?.pieces).toBe(40);
+    expect(recordsForMode(leaderboard, 'race')[0]?.lines).toBe(LEADERBOARD_LIMIT + 3);
     expect(parseLeaderboard(JSON.stringify(leaderboard))).toEqual(leaderboard);
   });
 
@@ -86,16 +86,16 @@ describe('local leaderboard boundary', () => {
     leaderboard = insertScoreRecord(leaderboard, marathonBetterScore);
     expect(recordsForMode(leaderboard, 'marathon')).toEqual([marathonBetterScore, marathonMoreLines, marathonFast]);
 
-    const raceFewerPieces = raceRecord({ lines: 99, elapsedTicks: 100, pieces: 69, score: 9000 });
+    const raceMostLines = raceRecord({ lines: 99, elapsedTicks: 100, pieces: 69, score: 100 });
     const raceFewerLines = raceRecord({ lines: 19, elapsedTicks: 100, pieces: 70, score: 9000 });
     const raceLowerScore = raceRecord({ lines: 20, elapsedTicks: 100, pieces: 70, score: 3000 });
     const raceSlower = raceRecord({ lines: 20, elapsedTicks: 600, pieces: 70, score: 4000 });
     const raceWinner = raceRecord({ lines: 20, elapsedTicks: 300, pieces: 70, score: 4000 });
     leaderboard = insertScoreRecord(leaderboard, raceLowerScore);
-    leaderboard = insertScoreRecord(leaderboard, raceFewerPieces);
+    leaderboard = insertScoreRecord(leaderboard, raceMostLines);
     leaderboard = insertScoreRecord(leaderboard, raceFewerLines);
     leaderboard = insertScoreRecord(leaderboard, raceSlower);
     leaderboard = insertScoreRecord(leaderboard, raceWinner);
-    expect(recordsForMode(leaderboard, 'race')).toEqual([raceWinner, raceSlower, raceLowerScore, raceFewerLines, raceFewerPieces]);
+    expect(recordsForMode(leaderboard, 'race')).toEqual([raceMostLines, raceWinner, raceSlower, raceLowerScore, raceFewerLines]);
   });
 });

@@ -1,4 +1,28 @@
-# Tetris — T6 Three-Mode Rules Contract
+# Tetris — T8 Interface, Survival, and Records Contract
+
+## T8 mode field, Puzzle library, Survival interval, and records
+
+The user's latest 2026-07-18 direction supersedes the earlier rigid 1+2 mode surface,
+small Puzzle return action, cropped Puzzle thumbnails, 40-to-10-second Survival
+interval, and missing result leaderboard binding.
+
+- Home is an original Tetris-shaped mode field: the three complete mode entrances land
+  in a stepped composition, retain concise factual rules, and use a distinct four-cell
+  motif. Puzzle uses a stable T tetromino icon and never tilts or rises on hover.
+- The Puzzle library keeps all fifteen levels enabled, gives every desktop level its
+  canonical colored endgame thumbnail, enlarges the selected board preview, and exposes
+  an unmistakable 44 px or larger `返回模式` action. Library and home copy do not
+  repeat `目标：清空棋盘`; the in-game objective statistic remains the active rule.
+- Survival bedrock pressure starts at 12 seconds. Each five cumulative cleared lines
+  removes one existing bottom bedrock row when present, resets pressure, and reduces
+  the next interval by one second to a five-second floor:
+  `max(5, 12 - floor(lines / 5))`.
+- The local result leaderboard remains mode-owned and fail-closed. Classic ranks and
+  presents score as its primary record; Survival ranks and presents cleared lines as
+  its primary record. Puzzle completion continues to use the separate campaign store.
+- `index.html` owns a lightweight Tetris Loading screen. The four-cell loader is
+  removed only after the React surface has painted and becomes static under
+  `prefers-reduced-motion`.
 
 ## T7 timed Survival and restrained motion refinement
 
