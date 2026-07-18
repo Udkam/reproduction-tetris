@@ -1,6 +1,7 @@
 import { Application, Container, FillGradient, Graphics, type Ticker } from 'pixi.js';
 import {
   BOARD_WIDTH,
+  BEDROCK_CELL,
   PIECE_SHAPES,
   VISIBLE_HEIGHT,
   VISIBLE_START_ROW,
@@ -9,9 +10,10 @@ import {
   type Cell,
   type GameEvent,
   type GameState,
+  type BoardMaterial,
   type PieceType,
 } from '../core';
-import { CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
+import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
 import {
   approachPresentationPoint,
   exposedCellEdges,
@@ -94,7 +96,7 @@ export class TetrisRenderer {
   private readonly boardGraphics = new Graphics();
   private readonly pieceGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
-  private readonly cellGradients = new Map<PieceType, FillGradient>();
+  private readonly cellGradients = new Map<BoardMaterial, FillGradient>();
 
   private frameCallback: ((deltaMs: number) => void) | null = null;
   private presentation: PiecePresentation | null = null;
@@ -268,7 +270,7 @@ export class TetrisRenderer {
     const graphics = this.pieceGraphics;
     graphics.clear();
     let visibleLockedCells = 0;
-    const lockedByType = new Map<PieceType, Cell[]>();
+    const lockedByType = new Map<BoardMaterial, Cell[]>();
 
     state.board.forEach((row, boardY) => {
       if (boardY < VISIBLE_START_ROW) return;
@@ -364,7 +366,7 @@ export class TetrisRenderer {
   private drawCellGroups(
     graphics: Graphics,
     cells: readonly Cell[],
-    type: PieceType,
+    type: BoardMaterial,
     alpha: number,
     options: GroupDrawOptions,
   ): void {
@@ -373,10 +375,14 @@ export class TetrisRenderer {
     }
   }
 
-  private gradientFor(type: PieceType): FillGradient {
+  private materialFor(type: BoardMaterial) {
+    return type === BEDROCK_CELL ? BEDROCK_MATERIAL : PIECE_MATERIALS[type];
+  }
+
+  private gradientFor(type: BoardMaterial): FillGradient {
     const existing = this.cellGradients.get(type);
     if (existing) return existing;
-    const material = PIECE_MATERIALS[type];
+    const material = this.materialFor(type);
     const gradient = new FillGradient({
       type: 'linear',
       start: { x: 0, y: 0 },
@@ -394,7 +400,7 @@ export class TetrisRenderer {
   private drawCellComponent(
     graphics: Graphics,
     cells: readonly Cell[],
-    type: PieceType,
+    type: BoardMaterial,
     alpha: number,
     options: GroupDrawOptions,
   ): void {
@@ -415,7 +421,7 @@ export class TetrisRenderer {
       : 0;
     const gap = (baseGap + ghostInset) * scale;
     const size = scaledUnit - gap * 2;
-    const material = PIECE_MATERIALS[type];
+    const material = this.materialFor(type);
     const radius = Math.max(CELL_STYLE.radiusMin, Math.min(CELL_STYLE.radiusMax, size * CELL_STYLE.radiusRatio));
     const borderWidth = Math.max(
       CELL_STYLE.edgeWidthMin,

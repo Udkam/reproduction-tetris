@@ -1,6 +1,6 @@
 import { BOARD_HEIGHT, BOARD_WIDTH } from './constants';
 import { cellsForPiece } from './pieces';
-import type { ActivePiece, Board, Cell, PieceType } from './types';
+import { BEDROCK_CELL, type ActivePiece, type Board, type BoardCell, type Cell } from './types';
 
 export function createBoard(): Board {
   return Array.from({ length: BOARD_HEIGHT }, () => Array.from({ length: BOARD_WIDTH }, () => null));
@@ -34,19 +34,34 @@ export function mergePiece(board: Board, piece: ActivePiece): Board {
 export function fullRows(board: Board): number[] {
   const rows: number[] = [];
   board.forEach((row, index) => {
-    if (row.every((cell) => cell !== null)) rows.push(index);
+    if (row.every((cell) => cell !== null && cell !== BEDROCK_CELL)) rows.push(index);
   });
   return rows;
 }
 
 export function clearRows(board: Board, rows: readonly number[]): Board {
-  const removed = new Set(rows);
+  const removed = new Set(rows.filter((index) => !board[index]?.includes(BEDROCK_CELL)));
   const remaining = board.filter((_, index) => !removed.has(index)).map((row) => [...row]);
-  const blanks = Array.from({ length: rows.length }, () => Array.from({ length: BOARD_WIDTH }, () => null));
+  const blanks = Array.from({ length: removed.size }, () => Array.from({ length: BOARD_WIDTH }, () => null));
   return [...blanks, ...remaining] as Board;
 }
 
-export function setCell(board: Board, x: number, y: number, value: PieceType | null): Board {
+export function raiseBedrock(board: Board, count: number): { board: Board; added: number; overflow: boolean } {
+  let next = cloneBoard(board);
+  let added = 0;
+  const requested = Math.max(0, Math.floor(count));
+  while (added < requested) {
+    if (next[0]!.some((cell) => cell !== null)) return { board: next, added, overflow: true };
+    next = [
+      ...next.slice(1).map((row) => [...row]),
+      Array.from({ length: BOARD_WIDTH }, () => BEDROCK_CELL),
+    ];
+    added += 1;
+  }
+  return { board: next, added, overflow: false };
+}
+
+export function setCell(board: Board, x: number, y: number, value: BoardCell): Board {
   const next = cloneBoard(board);
   if (!next[y] || x < 0 || x >= BOARD_WIDTH) throw new Error('Test cell is outside the canonical board.');
   next[y]![x] = value;

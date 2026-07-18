@@ -1,20 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  BOARD_HEIGHT,
   ENTRY_DELAY_TICKS,
   LINE_CLEAR_DELAY_TICKS,
-  RACE_GRAVITY_TICKS,
-  RACE_LINES_PER_SPEED_STEP,
-  RACE_MIN_GRAVITY_TICKS,
-  RACE_PIECES_PER_SPEED_STEP,
+  STANDARD_GRAVITY_TICKS,
+  SURVIVAL_LINES_PER_BEDROCK,
   gravityForMode,
-  gravityForRace,
   raceSpeedTier,
 } from './constants';
+import { canPlace, clearRows, createBoard, fullRows, setCell } from './board';
 import { createInitialState, dispatch, replay, stateHash } from './engine';
-import { createBoard, setCell } from './board';
-import type { GameCommand, GameState } from './types';
+import { BEDROCK_CELL, type Board, type GameCommand, type GameState } from './types';
 
-function start(seed: number, mode: 'marathon' | 'race' = 'marathon'): GameState {
+function start(seed: number, mode: 'marathon' | 'race' | 'puzzle' = 'marathon'): GameState {
   return dispatch(createInitialState(seed, mode), { type: 'start' }).state;
 }
 
@@ -24,113 +22,126 @@ function advance(state: GameState, ticks: number): GameState {
   return next;
 }
 
-describe('race speed curve', () => {
-  it('accelerates monotonically by locked pieces plus cleared lines and stops at the explicit cap', () => {
-    let previous = gravityForRace(0, 0);
-    expect(previous).toBe(RACE_GRAVITY_TICKS[0]);
+function singleClearBoard(bedrockRows = 0): { board: Board; active: GameState['active'] } {
+  let board = createBoard();
+  for (let offset = 0; offset < bedrockRows; offset += 1) {
+    for (let x = 0; x < 10; x += 1) board = setCell(board, x, BOARD_HEIGHT - 1 - offset, BEDROCK_CELL);
+  }
+  const row = BOARD_HEIGHT - 1 - bedrockRows;
+  for (let x = 0; x < 8; x += 1) board = setCell(board, x, row, 'J');
+  return { board, active: { type: 'O', rotation: 0, x: 8, y: row - 1 } };
+}
 
-    const capStep = RACE_GRAVITY_TICKS.length - 1;
-    for (let speedStep = 1; speedStep <= capStep + 100; speedStep += 1) {
-      const pieceCount = speedStep * RACE_PIECES_PER_SPEED_STEP;
-      const current = gravityForRace(pieceCount, 0);
-      expect(current).toBeLessThanOrEqual(previous);
-      expect(current).toBeGreaterThanOrEqual(RACE_MIN_GRAVITY_TICKS);
-      previous = current;
+function resolveClear(state: GameState) {
+  let transition = dispatch(state, { type: 'hard-drop' });
+  expect(transition.state.phase).toBe('line-clear');
+  for (let index = 0; index < LINE_CLEAR_DELAY_TICKS; index += 1) {
+    transition = dispatch(transition.state, { type: 'tick' });
+  }
+  return transition;
+}
+
+describe('Survival rising-floor rules', () => {
+  it('uses one fixed cadence in all three modes and retires the speed tier', () => {
+    for (const mode of ['marathon', 'race', 'puzzle'] as const) {
+      expect(gravityForMode(mode, 29, 10_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
     }
-
-    expect(raceSpeedTier(RACE_PIECES_PER_SPEED_STEP - 1, RACE_LINES_PER_SPEED_STEP - 1)).toBe(0);
-    expect(raceSpeedTier(RACE_PIECES_PER_SPEED_STEP, RACE_LINES_PER_SPEED_STEP)).toBe(2);
-    expect(raceSpeedTier(10_000, 10_000)).toBe(RACE_GRAVITY_TICKS.length - 1);
-    expect(gravityForRace(capStep * RACE_PIECES_PER_SPEED_STEP, 0)).toBe(RACE_MIN_GRAVITY_TICKS);
-    expect(gravityForRace(10_000, 10_000)).toBe(RACE_MIN_GRAVITY_TICKS);
+    expect(raceSpeedTier(10_000, 10_000)).toBe(0);
   });
 
-  it('uses locked pieces and lines for race while marathon retains level gravity', () => {
-    expect(gravityForMode('race', 29, 0, 0)).toBe(RACE_GRAVITY_TICKS[0]);
-    expect(gravityForMode('race', 0, RACE_PIECES_PER_SPEED_STEP, 0)).toBe(RACE_GRAVITY_TICKS[1]);
-    expect(gravityForMode('race', 0, 0, RACE_LINES_PER_SPEED_STEP)).toBe(RACE_GRAVITY_TICKS[1]);
-    expect(gravityForMode('marathon', 29, 0, 0)).toBe(1);
-    expect(gravityForMode('marathon', 0, 10_000, 10_000)).toBe(48);
-  });
-
-  it('applies the race cadence to gravity ticks in the simulation', () => {
-    const pieceCount = RACE_PIECES_PER_SPEED_STEP * 3;
-    const lines = RACE_LINES_PER_SPEED_STEP * 2;
-    const cadence = gravityForRace(pieceCount, lines);
-    const state: GameState = { ...start(0x7ace, 'race'), pieceCount, lines, gravityTicks: 0 };
-    const startY = state.active!.y;
-    const beforeFall = advance(state, cadence - 1);
-
-    expect(beforeFall.active?.y).toBe(startY);
-    expect(dispatch(beforeFall, { type: 'tick' }).state.active?.y).toBe(startY + 1);
-  });
-});
-
-describe('race state and deterministic replay', () => {
-  it('counts every locked piece exactly once', () => {
-    let state = start(0xace, 'race');
-
-    for (let expected = 1; expected <= 3; expected += 1) {
-      const transition = dispatch(state, { type: 'hard-drop' });
-      expect(transition.events.filter((event) => event.type === 'piece-locked')).toHaveLength(1);
-      expect(transition.state.pieceCount).toBe(expected);
-      state = advance(transition.state, ENTRY_DELAY_TICKS);
-      expect(state.pieceCount).toBe(expected);
-    }
-  });
-
-  it('defaults to marathon and restarts in the current or explicitly selected mode', () => {
-    expect(createInitialState(21).mode).toBe('marathon');
-
-    const usedRace = dispatch(start(21, 'race'), { type: 'hard-drop' }).state;
-    const preserved = dispatch(usedRace, { type: 'restart' }).state;
-    expect(preserved.mode).toBe('race');
-    expect(preserved.pieceCount).toBe(0);
-
-    const switched = dispatch(usedRace, { type: 'restart', mode: 'marathon' }).state;
-    expect(switched.mode).toBe('marathon');
-    expect(switched.pieceCount).toBe(0);
-  });
-
-  it.each([19, 20, 199])('continues after a clear from %i lines and spawns the successor', (startingLines) => {
-    let board = createBoard();
-    for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'J');
-    const state: GameState = {
-      ...start(0x2020, 'race'),
-      board,
-      active: { type: 'O', rotation: 0, x: 8, y: 38 },
-      lines: startingLines,
+  it('raises the first permanent bedrock row when cleared lines move from four to five', () => {
+    const setup = singleClearBoard();
+    const transition = resolveClear({
+      ...start(0x5005, 'race'),
+      ...setup,
+      lines: SURVIVAL_LINES_PER_BEDROCK - 1,
       score: 0,
-      gravityTicks: 0,
-      lockTicks: 0,
-    };
-    const locked = dispatch(state, { type: 'hard-drop' }).state;
-    const beforeResolution = advance(locked, LINE_CLEAR_DELAY_TICKS - 1);
-    const resolved = dispatch(beforeResolution, { type: 'tick' });
+      combo: 0,
+    });
 
-    expect(resolved.state.status).toBe('playing');
-    expect(resolved.state.lines).toBe(startingLines + 1);
-    expect(resolved.state.active).not.toBeNull();
-    expect(resolved.state.phase).toBe('active');
-    expect(resolved.events.some((event) => event.type === 'finished')).toBe(false);
+    expect(transition.state.status).toBe('playing');
+    expect(transition.state.lines).toBe(5);
+    expect(transition.state.score).toBe(40);
+    expect(transition.state.combo).toBe(0);
+    expect(transition.state.level).toBe(0);
+    expect(transition.state.survivalBedrockRows).toBe(1);
+    expect(transition.state.board.at(-1)).toEqual(Array(10).fill(BEDROCK_CELL));
+    expect(transition.events).toContainEqual({ type: 'bedrock-raised', count: 1, height: 1 });
+    expect(transition.events.some((event) => event.type === 'level-up')).toBe(false);
   });
 
-  it('includes mode and piece count in hashes and replays race commands identically', () => {
+  it('keeps earlier bedrock and raises a second stratum at ten cleared lines', () => {
+    const setup = singleClearBoard(1);
+    const transition = resolveClear({
+      ...start(0x5010, 'race'),
+      ...setup,
+      lines: 9,
+      survivalBedrockRows: 1,
+    });
+
+    expect(transition.state.survivalBedrockRows).toBe(2);
+    expect(transition.state.board.slice(-2)).toEqual([
+      Array(10).fill(BEDROCK_CELL),
+      Array(10).fill(BEDROCK_CELL),
+    ]);
+  });
+
+  it('never detects or removes bedrock as a clearable full row and blocks placement', () => {
+    let board = createBoard();
+    for (let x = 0; x < 10; x += 1) board = setCell(board, x, BOARD_HEIGHT - 1, BEDROCK_CELL);
+
+    expect(fullRows(board)).toEqual([]);
+    expect(clearRows(board, [BOARD_HEIGHT - 1])).toEqual(board);
+    expect(canPlace(board, { type: 'O', rotation: 0, x: 4, y: BOARD_HEIGHT - 2 })).toBe(false);
+  });
+
+  it('fails closed before spawn when a catch-up rise would discard an occupied top row', () => {
+    const setup = singleClearBoard();
+    let board = setCell(setup.board, 0, 0, 'T');
+    const transition = resolveClear({
+      ...start(0x50ff, 'race'),
+      ...setup,
+      board,
+      lines: 9,
+      survivalBedrockRows: 0,
+    });
+
+    expect(transition.state.status).toBe('game-over');
+    expect(transition.state.active).toBeNull();
+    expect(transition.state.survivalBedrockRows).toBe(1);
+    expect(transition.events).toContainEqual({ type: 'bedrock-raised', count: 1, height: 1 });
+    expect(transition.events).toContainEqual({ type: 'game-over', reason: 'bedrock-overflow' });
+  });
+
+  it('keeps Survival replay deterministic and restart removes every bedrock row', () => {
     const commands: GameCommand[] = [
       { type: 'start' },
       { type: 'hard-drop' },
       ...Array.from({ length: ENTRY_DELAY_TICKS }, () => ({ type: 'tick' } as const)),
-      { type: 'move', dx: -1 },
       { type: 'hard-drop' },
     ];
-    const raceA = replay(0x5150, commands, 'race');
-    const raceB = replay(0x5150, commands, 'race');
-    const marathon = replay(0x5150, commands);
+    const first = replay(0x5150, commands, 'race');
+    const second = replay(0x5150, commands, 'race');
+    expect(stateHash(first)).toBe(stateHash(second));
+    expect(stateHash(first)).not.toBe(stateHash({ ...first, survivalBedrockRows: first.survivalBedrockRows + 1 }));
 
-    expect(raceA.mode).toBe('race');
-    expect(raceA.pieceCount).toBe(2);
-    expect(stateHash(raceA)).toBe(stateHash(raceB));
-    expect(stateHash(raceA)).not.toBe(stateHash(marathon));
-    expect(stateHash(raceA)).not.toBe(stateHash({ ...raceA, pieceCount: raceA.pieceCount + 1 }));
+    const setup = singleClearBoard();
+    const raised = resolveClear({ ...start(0x5150, 'race'), ...setup, lines: 4 }).state;
+    const restarted = dispatch(raised, { type: 'restart' }).state;
+    expect(restarted.mode).toBe('race');
+    expect(restarted.survivalBedrockRows).toBe(0);
+    expect(restarted.board.flat()).not.toContain(BEDROCK_CELL);
+  });
+
+  it('keeps Puzzle on base scoring with no Classic combo', () => {
+    const setup = singleClearBoard();
+    const transition = resolveClear({
+      ...start(0x5151, 'puzzle'),
+      ...setup,
+      score: 0,
+      combo: 7,
+    });
+    expect(transition.state.combo).toBe(0);
+    expect(transition.state.score).toBe(40);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, BOARD_WIDTH, ENTRY_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, gravityForLevel } from './constants';
+import { BOARD_HEIGHT, BOARD_WIDTH, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, STANDARD_GRAVITY_TICKS, gravityForMode } from './constants';
 import { canPlace, createBoard, setCell } from './board';
 import { createInitialState, dispatch, stateHash } from './engine';
 import { cellsForPiece } from './pieces';
@@ -16,16 +16,9 @@ function ticks(state: GameState, count: number): GameState {
 }
 
 describe('Modern Classic timing and score contract', () => {
-  it('uses the frozen gravity table at every range boundary', () => {
-    expect(gravityForLevel(0)).toBe(48);
-    expect(gravityForLevel(9)).toBe(6);
-    expect(gravityForLevel(10)).toBe(5);
-    expect(gravityForLevel(12)).toBe(5);
-    expect(gravityForLevel(13)).toBe(4);
-    expect(gravityForLevel(18)).toBe(3);
-    expect(gravityForLevel(19)).toBe(2);
-    expect(gravityForLevel(28)).toBe(2);
-    expect(gravityForLevel(29)).toBe(1);
+  it('keeps Classic at the standard gravity regardless of legacy level or progress', () => {
+    expect(gravityForMode('marathon', 0, 0, 0)).toBe(STANDARD_GRAVITY_TICKS);
+    expect(gravityForMode('marathon', 29, 10_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });
 
   it('soft drop moves one row and scores exactly one point', () => {
@@ -43,7 +36,7 @@ describe('Modern Classic timing and score contract', () => {
     });
   });
 
-  it('uses the post-clear level multiplier at the ten-line boundary', () => {
+  it('removes level acceleration and starts a chain at the ten-line boundary', () => {
     let board = createBoard();
     for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'S');
     let state: GameState = {
@@ -54,11 +47,41 @@ describe('Modern Classic timing and score contract', () => {
       level: 0,
       score: 0,
     };
-    state = dispatch(state, { type: 'hard-drop' }).state;
-    state = ticks(state, 12);
-    expect(state.lines).toBe(10);
-    expect(state.level).toBe(1);
-    expect(state.score).toBe(80);
+    let transition = dispatch(state, { type: 'hard-drop' });
+    for (let index = 0; index < LINE_CLEAR_DELAY_TICKS; index += 1) {
+      transition = dispatch(transition.state, { type: 'tick' });
+    }
+    expect(transition.state.lines).toBe(10);
+    expect(transition.state.level).toBe(0);
+    expect(transition.state.combo).toBe(1);
+    expect(transition.state.score).toBe(40);
+    expect(transition.events.some((event) => event.type === 'level-up')).toBe(false);
+  });
+
+  it('adds a Classic chain bonus and breaks the chain on a non-clearing lock', () => {
+    const clearSetup = (state: GameState): GameState => {
+      let board = createBoard();
+      for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'S');
+      return { ...state, board, active: { type: 'O', rotation: 0, x: 8, y: 38 } };
+    };
+    const resolve = (state: GameState): GameState => {
+      let next = dispatch(state, { type: 'hard-drop' }).state;
+      return ticks(next, LINE_CLEAR_DELAY_TICKS);
+    };
+
+    let state = resolve(clearSetup({ ...start(), score: 0, combo: 0 }));
+    expect(state.score).toBe(40);
+    expect(state.combo).toBe(1);
+    state = resolve(clearSetup(state));
+    expect(state.score).toBe(130);
+    expect(state.combo).toBe(2);
+
+    state = dispatch({
+      ...state,
+      board: createBoard(),
+      active: { type: 'O', rotation: 0, x: 4, y: 38 },
+    }, { type: 'hard-drop' }).state;
+    expect(state.combo).toBe(0);
   });
 });
 

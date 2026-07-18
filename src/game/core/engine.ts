@@ -6,10 +6,11 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
+  SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
   gravityForMode,
 } from './constants';
-import { canPlace, clearRows, createBoard, fullRows, isGrounded, mergePiece } from './board';
+import { canPlace, clearRows, createBoard, fullRows, isGrounded, mergePiece, raiseBedrock } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
@@ -95,6 +96,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     queue: [],
     score: 0,
     lines: 0,
+    combo: 0,
     level: 0,
     mode,
     puzzleId: selectedPuzzle?.id ?? null,
@@ -108,6 +110,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     completedLevelId: null,
     nextUnlockedLevelId: null,
     pieceCount: 0,
+    survivalBedrockRows: 0,
     status: 'ready',
     phase: 'active',
     phaseTicks: 0,
@@ -214,7 +217,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       return { state: failed.state, events: [...extraEvents, lockedEvent, ...failed.events] };
     }
     return {
-      state: { ...state, board, active: null, status: 'game-over', pieceCount },
+      state: { ...state, board, active: null, status: 'game-over', pieceCount, combo: 0 },
       events: [...extraEvents, lockedEvent, { type: 'game-over', reason: 'lock-out' }],
     };
   }
@@ -246,6 +249,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       gravityTicks: 0,
       lockTicks: 0,
       lockResets: 0,
+      combo: 0,
     }, false);
     return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
   }
@@ -260,6 +264,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       phaseTicks: 0,
       gravityTicks: 0,
       lockTicks: 0,
+      combo: 0,
     },
     events: [...extraEvents, lockedEvent],
   };
@@ -308,22 +313,45 @@ function finishLineClear(state: GameState): GameTransition {
   const rows = [...state.pendingClearRows];
   const count = rows.length;
   const lines = state.lines + count;
-  const level = Math.floor(lines / 10);
-  const clearScore = (LINE_CLEAR_BASE_SCORE[count] ?? 0) * (level + 1);
-  const cleared: GameState = {
+  const combo = state.mode === 'marathon' ? state.combo + 1 : 0;
+  const comboBonus = state.mode === 'marathon' ? 50 * Math.max(0, combo - 1) : 0;
+  const level = state.mode === 'puzzle' ? Math.floor(lines / 10) : 0;
+  const baseScore = LINE_CLEAR_BASE_SCORE[count] ?? 0;
+  const clearScore = state.mode === 'puzzle' ? baseScore * (level + 1) : baseScore + comboBonus;
+  let cleared: GameState = {
     ...state,
     board: clearRows(state.board, rows),
     score: state.score + clearScore,
     lines,
+    combo,
     level,
     pendingClearRows: [],
     phaseTicks: 0,
   };
   const events: GameEvent[] = [{ type: 'lines-cleared', rows, count, score: clearScore }];
-  if (level > state.level) events.push({ type: 'level-up', level });
+  if (state.mode === 'puzzle' && level > state.level) events.push({ type: 'level-up', level });
   if (cleared.mode === 'puzzle') {
     const resolved = resolvePuzzleAfterLock(cleared, true);
     return { state: resolved.state, events: [...events, ...resolved.events] };
+  }
+  if (cleared.mode === 'race') {
+    const targetHeight = Math.floor(lines / SURVIVAL_LINES_PER_BEDROCK);
+    const requested = Math.max(0, targetHeight - cleared.survivalBedrockRows);
+    const raised = raiseBedrock(cleared.board, requested);
+    cleared = {
+      ...cleared,
+      board: raised.board,
+      survivalBedrockRows: cleared.survivalBedrockRows + raised.added,
+    };
+    if (raised.added > 0) {
+      events.push({ type: 'bedrock-raised', count: raised.added, height: cleared.survivalBedrockRows });
+    }
+    if (raised.overflow) {
+      return {
+        state: { ...cleared, active: null, status: 'game-over', phase: 'active' },
+        events: [...events, { type: 'game-over', reason: 'bedrock-overflow' }],
+      };
+    }
   }
   const spawned = spawnPiece(cleared);
   return { state: spawned.state, events: [...events, ...spawned.events] };
@@ -414,7 +442,10 @@ export function stateHash(state: GameState): string {
   // there so their established replay hashes remain stable. Puzzle state hashes
   // include the entire authored campaign payload and outcome fields.
   const canonicalState = state.mode === 'puzzle'
-    ? state
+    ? (() => {
+      const { combo: _combo, survivalBedrockRows: _survivalBedrockRows, ...puzzleState } = state;
+      return puzzleState;
+    })()
     : (() => {
       const {
         puzzleBoardRows: _puzzleBoardRows,
@@ -426,7 +457,12 @@ export function stateHash(state: GameState): string {
         nextUnlockedLevelId: _nextUnlockedLevelId,
         ...legacyState
       } = state;
-      return legacyState;
+      if (state.mode === 'marathon') {
+        const { survivalBedrockRows: _survivalBedrockRows, ...classicState } = legacyState;
+        return classicState;
+      }
+      const { combo: _combo, ...survivalState } = legacyState;
+      return survivalState;
     })();
   const canonical = JSON.stringify(canonicalState);
   let hash = 2166136261;

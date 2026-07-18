@@ -78,3 +78,10 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
   J: { fillStart: 0x9a65b1, fillEnd: 0x87579e, edge: 0x553663, innerEdge: 0xcfa9dc },
   L: { fillStart: 0x4d91ad, fillEnd: 0x407d99, edge: 0x295567, innerEdge: 0x95c8d9 },
 };
+
+export const BEDROCK_MATERIAL: PieceMaterial = {
+  fillStart: 0x7e91a3,
+  fillEnd: 0x5c7186,
+  edge: 0x26394d,
+  innerEdge: 0xaab8c5,
+};

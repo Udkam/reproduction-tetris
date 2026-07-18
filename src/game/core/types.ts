@@ -1,6 +1,9 @@
 export const PIECE_TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
 
 export type PieceType = (typeof PIECE_TYPES)[number];
+export const BEDROCK_CELL = 'B' as const;
+export type BedrockCell = typeof BEDROCK_CELL;
+export type BoardMaterial = PieceType | BedrockCell;
 export type Rotation = 0 | 1 | 2 | 3;
 
 export interface Cell {
@@ -15,7 +18,7 @@ export interface ActivePiece {
   y: number;
 }
 
-export type BoardCell = PieceType | null;
+export type BoardCell = BoardMaterial | null;
 export type Board = BoardCell[][];
 
 export interface RandomizerState {
@@ -59,6 +62,7 @@ export interface GameState {
   queue: PieceType[];
   score: number;
   lines: number;
+  combo: number;
   level: number;
   mode: GameMode;
   puzzleId: PuzzleId | null;
@@ -85,6 +89,7 @@ export interface GameState {
   /** @deprecated Navigation/progress bridge only; T5 level availability is always unrestricted. */
   nextUnlockedLevelId: PuzzleId | null;
   pieceCount: number;
+  survivalBedrockRows: number;
   status: GameStatus;
   phase: GamePhase;
   phaseTicks: number;
@@ -119,9 +124,10 @@ export type GameEvent =
   | { type: 'piece-locked'; piece: PieceType; cells: Cell[] }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }
+  | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'level-up'; level: number }
   | { type: 'finished'; completionTicks: number }
-  | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'puzzle-budget' | 'puzzle-invalid-spawn' | 'invalid-state' };
+  | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'bedrock-overflow' | 'puzzle-budget' | 'puzzle-invalid-spawn' | 'invalid-state' };
 
 export interface GameTransition {
   state: GameState;

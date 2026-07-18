@@ -1,7 +1,7 @@
 // @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
+import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
 
 const styles = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
 
@@ -32,6 +32,18 @@ describe('T5 bright mineral matte material', () => {
       J: { fillStart: 0x9a65b1, fillEnd: 0x87579e, edge: 0x553663, innerEdge: 0xcfa9dc },
       L: { fillStart: 0x4d91ad, fillEnd: 0x407d99, edge: 0x295567, innerEdge: 0x95c8d9 },
     });
+  });
+
+  it('adds one coordinated mineral material for permanent Survival bedrock', () => {
+    expect(BEDROCK_MATERIAL).toEqual({
+      fillStart: 0x7e91a3,
+      fillEnd: 0x5c7186,
+      edge: 0x26394d,
+      innerEdge: 0xaab8c5,
+    });
+    expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(BEDROCK_MATERIAL);
+    expect(contrastRatio(BEDROCK_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(BEDROCK_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
   });
 
   it('freezes the complete page and state palette', () => {
