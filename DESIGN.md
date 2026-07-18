@@ -1,5 +1,23 @@
 # Tetris — T6 Three-Mode Rules Contract
 
+## T6 bedrock material refinement
+
+The user's 2026-07-18 review reopens only the Survival bedrock material color. The
+existing blue-grey bedrock is too close to the cool-blue tetromino materials and does
+not read clearly enough as a permanent geological layer. Replace its four renderer
+color tokens with one restrained warm rock-brown material:
+
+- face start `#9C8B73`;
+- face end `#76664F`;
+- outer edge `#40372D`;
+- inner signal edge `#CDBEAA`.
+
+This low-saturation warm mineral set separates bedrock from all seven playable piece
+materials while remaining compatible with the cool `雾昼矿物` page and deep navy
+well. Both face endpoints must retain at least 3:1 contrast against the well. Bedrock
+geometry, divided facets, seams, relief direction, behavior, height thresholds, and
+all ordinary tetromino colors remain frozen.
+
 ## Status and authority
 
 The user's 2026-07-18 rule review opens T6 only for the three gameplay identities.

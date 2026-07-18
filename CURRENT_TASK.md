@@ -1,4 +1,4 @@
-# Current Task — T6 Three Independent Mode Rules
+# Current Task — T6 Bedrock Material Refinement
 
 Branch: `codex/tetris-recovery`
 
@@ -11,9 +11,36 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **COMPLETE / ACCEPTED — final product source `5a3c35a`; formal evidence
-`a26d989`; independent Core, combined browser, and evidence QA all ACCEPT with no
-open finding**
+Status: **IN PROGRESS — bounded visual recolor; no gameplay or geometry change**
+
+## Slice M — warm mineral bedrock recolor
+
+Task ID: `TETRIS-T6-BEDROCK-RECOLOR-018`
+
+Base: accepted and pushed T6 coordinator tip
+`2c7e5f3352ceaae48db48f0134ed9970a6e3e696`.
+
+One writer may change only:
+
+- `src/game/render/theme.ts`;
+- `src/game/render/theme.test.ts` for the exact token and contrast regression;
+- `docs/workstreams/tetris-t5-frontend/THREAD_LOG.md` after source freeze.
+
+Acceptance:
+
+- change only `BEDROCK_MATERIAL` to the exact warm rock-brown tokens frozen in
+  `DESIGN.md`;
+- retain the existing bedrock geometry, divided facets, material rendering path,
+  Survival behavior, five-line threshold, and all seven ordinary piece materials;
+- both bedrock face endpoints keep at least 3:1 contrast against the board well and
+  the material remains unequal to every tetromino material;
+- run the focused theme test and typecheck before an exact-path source checkpoint;
+- after the final source change, run exactly one final typecheck, complete suite,
+  build, and browser-evidence pass; route the exact candidate to independent read-only
+  visual QA before changelog integration or push.
+
+No layout, copy, Core/runtime/Puzzle data, dependency, `index.html`, ordinary piece
+palette, renderer geometry, or separate game repository change is authorized.
 
 ## Slice L — three independent mode rules
 
