@@ -251,14 +251,13 @@ export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<PieceType, stri
   return paths;
 }
 
-function PuzzleSilhouette({ id, name, compact = false }: { id: PuzzleId; name: string; compact?: boolean }) {
+function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
   return (
     <svg
-      className={`puzzle-silhouette ${compact ? 'puzzle-silhouette--compact' : ''}`}
+      className="puzzle-silhouette"
       viewBox="0 0 40 48"
-      role={compact ? undefined : 'img'}
-      aria-hidden={compact || undefined}
-      aria-label={compact ? undefined : `${name}棋盘轮廓`}
+      role="img"
+      aria-label={`${name}棋盘轮廓`}
     >
       {[...puzzleSilhouettePaths(id)].map(([type, path]) => {
         const material = PIECE_MATERIALS[type];
@@ -322,9 +321,6 @@ export function PuzzleLibrary({
                   <span className="level-entry__copy">
                     <strong>{level.name}</strong>
                     {complete && <small>已完成</small>}
-                  </span>
-                  <span className="level-entry__preview" aria-hidden="true">
-                    <PuzzleSilhouette id={level.id} name={level.name} compact />
                   </span>
                 </button>
               </article>
