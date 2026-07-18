@@ -421,15 +421,17 @@ function AudioControls({
   volume,
   onEnabledChange,
   onVolumeChange,
+  placement = 'side',
 }: {
   enabled: boolean;
   volume: number;
   onEnabledChange: (enabled: boolean) => void;
   onVolumeChange: (volume: number) => void;
+  placement?: 'side' | 'topbar';
 }) {
   const percent = Math.round(volume * 100);
   return (
-    <section className="audio-controls" aria-label="声音控制">
+    <section className={`audio-controls audio-controls--${placement}`} aria-label="声音控制">
       <button
         className="audio-toggle"
         type="button"
@@ -752,15 +754,24 @@ export function GameSession({
           <h1 data-testid="current-mode">{MODE_COPY[state.mode].label}</h1>
           {level && <small>{level.index}/{level.total} · {level.name}</small>}
         </div>
-        <button
-          className="topbar-action"
-          type="button"
-          onClick={(event) => {
-            event.currentTarget.focus({ preventScroll: true });
-            runtime?.togglePause();
-          }}
-          disabled={countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused')}
-        >{state.status === 'paused' ? '继续' : '暂停'}</button>
+        <div className="topbar-actions">
+          <AudioControls
+            enabled={audioEnabled}
+            volume={audioVolume}
+            onEnabledChange={setAudioEnabled}
+            onVolumeChange={setAudioVolume}
+            placement="topbar"
+          />
+          <button
+            className="topbar-action"
+            type="button"
+            onClick={(event) => {
+              event.currentTarget.focus({ preventScroll: true });
+              runtime?.togglePause();
+            }}
+            disabled={countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused')}
+          >{state.status === 'paused' ? '继续' : '暂停'}</button>
+        </div>
       </header>
 
       <section className="play-surface" aria-label={`${MODE_COPY[state.mode].label}游戏面板`}>
@@ -787,12 +798,6 @@ export function GameSession({
           <aside className="game-side-panel" data-testid="side-rail">
             <div className="info-rail" data-testid="context-top">
               <RunStats state={state} />
-              <AudioControls
-                enabled={audioEnabled}
-                volume={audioVolume}
-                onEnabledChange={setAudioEnabled}
-                onVolumeChange={setAudioVolume}
-              />
             </div>
             <div className="preview-rail">
               <p className="rail-label">Next</p>
