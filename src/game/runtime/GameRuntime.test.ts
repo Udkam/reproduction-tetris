@@ -6,11 +6,12 @@ import { GameRuntime } from './GameRuntime';
 const rendererSetOptions = vi.hoisted(() => vi.fn());
 const inputClearHeld = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
+const audioPrime = vi.hoisted(() => vi.fn());
 
 vi.mock('../audio/AudioEngine', () => ({
   AudioEngine: class {
     setEnabled(): void {}
-    async prime(): Promise<void> {}
+    async prime(): Promise<void> { audioPrime(); }
     play(): void {}
     suspend(): void {}
     destroy(): void {}
@@ -52,13 +53,18 @@ describe('GameRuntime public state boundary', () => {
     expect(onState).not.toHaveBeenCalled();
   });
 
-  it('gates public start, touch input, QA actions, and pause until input is enabled', async () => {
+  it('gates every public and QA gameplay entry until input is enabled', async () => {
     const onState = vi.fn();
     const runtime = new GameRuntime({ seed: 123, onState, audioEnabled: false, inputEnabled: false });
     await runtime.mount(document.createElement('div'));
     onState.mockClear();
     inputClearHeld.mockClear();
-    const ready = structuredClone(runtime.getState());
+    audioPrime.mockClear();
+    const readyState = runtime.getState();
+    const readySnapshot = structuredClone(readyState);
+    const readyActive = readyState.active;
+    const readyQueue = readyState.queue;
+    const readyBoard = readyState.board;
 
     runtime.start();
     runtime.press('left');
@@ -66,9 +72,32 @@ describe('GameRuntime public state boundary', () => {
     window.__SIGNAL_FOUNDRY_QA__?.action('hard-drop');
     window.__SIGNAL_FOUNDRY_QA__?.advanceTicks(180);
 
-    expect(runtime.getState()).toEqual(ready);
-    expect(onState).not.toHaveBeenCalled();
-    expect(inputClearHeld).not.toHaveBeenCalled();
+    const qaSurface = window.__SIGNAL_FOUNDRY_QA__!;
+    const gatedEntries = [
+      { name: 'direct restart', run: () => runtime.restart(456, 'race') },
+      { name: 'direct mode selection', run: () => runtime.selectMode('race') },
+      { name: 'direct Puzzle selection', run: () => runtime.selectPuzzle('t3r-cascade-06') },
+      { name: 'QA restart', run: () => qaSurface.restart() },
+      { name: 'QA mode selection', run: () => qaSurface.selectMode('race') },
+      { name: 'QA Puzzle selection', run: () => qaSurface.selectPuzzle('t3r-cascade-06') },
+    ];
+
+    for (const entry of gatedEntries) {
+      entry.run();
+      const current = runtime.getState();
+      expect(current, entry.name).toBe(readyState);
+      expect(current, entry.name).toEqual(readySnapshot);
+      expect(current.seed, entry.name).toBe(123);
+      expect(current.status, entry.name).toBe('ready');
+      expect(current.mode, entry.name).toBe('marathon');
+      expect(current.puzzleId, entry.name).toBeNull();
+      expect(current.active, entry.name).toBe(readyActive);
+      expect(current.queue, entry.name).toBe(readyQueue);
+      expect(current.board, entry.name).toBe(readyBoard);
+      expect(onState, entry.name).not.toHaveBeenCalled();
+      expect(audioPrime, entry.name).not.toHaveBeenCalled();
+      expect(inputClearHeld, entry.name).not.toHaveBeenCalled();
+    }
 
     runtime.setInputEnabled(true);
     expect(inputClearHeld).toHaveBeenCalledTimes(1);
@@ -77,6 +106,7 @@ describe('GameRuntime public state boundary', () => {
     runtime.start();
 
     expect(runtime.getState().status).toBe('playing');
+    expect(audioPrime).toHaveBeenCalledTimes(1);
     expect(onState).toHaveBeenCalledTimes(1);
     expect(onState.mock.calls[0]?.[1]).toEqual([{ type: 'started' }]);
 

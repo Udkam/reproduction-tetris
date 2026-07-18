@@ -113,12 +113,14 @@ export class GameRuntime {
   }
 
   restart(seed = this.state.seed, mode = this.state.mode, puzzleId = this.state.puzzleId ?? undefined): void {
+    if (!this.inputEnabled) return;
     void this.audio.prime();
     this.apply({ type: 'restart', seed, mode, puzzleId });
     this.input?.clearHeld();
   }
 
   selectMode(mode: GameMode): void {
+    if (!this.inputEnabled) return;
     if (this.state.status !== 'ready' && this.state.status !== 'game-over' && this.state.status !== 'finished') return;
     this.apply({ type: 'restart', seed: this.state.seed, mode });
     this.input?.clearHeld();
@@ -126,6 +128,7 @@ export class GameRuntime {
 
   /** Selects a validated authored Puzzle level through the public restart command. */
   selectPuzzle(puzzleId: PuzzleId): void {
+    if (!this.inputEnabled) return;
     if (this.state.status !== 'ready' && this.state.status !== 'game-over' && this.state.status !== 'finished') return;
     this.apply({ type: 'restart', seed: this.state.seed, mode: 'puzzle', puzzleId });
     this.input?.clearHeld();
