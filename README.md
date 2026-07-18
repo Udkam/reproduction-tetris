@@ -33,5 +33,5 @@ npm.cmd run build
 Browser evidence and hashed screenshots are recorded in
 `docs/qa/tetris-browser-evidence.json` and `docs/screenshots/tetris/`.
 
-The separate `codex/temple-run` branch is reserved for the endless-runner study
-and remains untouched until this branch is accepted.
+The endless-runner study and recursive-puzzle archive live in the separate
+`reproduction-temple-run` and `reproduction-patricks-parabox` repositories.

@@ -283,3 +283,5 @@
 - Repointed `origin` and the active repository contracts to the standalone
   repository and its `main` branch. The historical `Udkam/Game-1` remote was not
   rewritten or deleted.
+- Updated the active README repository boundary; historical logs, evidence, and
+  local QA archives retain their original paths and branch names.
