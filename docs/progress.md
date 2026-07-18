@@ -367,8 +367,8 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Browser inspection found compact SVGs were inheriting the later large-preview size;
   the small container clipped most of each board. A higher-specificity compact size
   now renders the complete canonical board.
-- Changed Survival pressure to 12 seconds initially, minus one second per five lines,
-  with a five-second floor. Targeted core/runtime tests pass.
+- Changed Survival pressure to 20 seconds initially, minus one second per five lines,
+  with a ten-second floor. Targeted core/runtime tests pass.
 - Rebound the v3 local result leaderboard: Classic ranks by score and Survival by
   cleared lines. Duplicate terminal callbacks are suppressed per run.
 - Added an `index.html` Tetris Loading screen with reduced-motion behavior and a

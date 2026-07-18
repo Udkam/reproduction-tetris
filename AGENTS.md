@@ -26,8 +26,8 @@
 
 ## Required execution order for every slice
 
-1. Read `AGENTS.md`, `DESIGN.md`, `CURRENT_TASK.md`, and the latest changelog entry.
-2. Update `DESIGN.md` and `CURRENT_TASK.md` before code when behavior, visual direction,
+1. Read `AGENTS.md`, `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, and the latest changelog entry.
+2. Update `docs/DESIGN.md` and `docs/CURRENT_TASK.md` before code when behavior, visual direction,
    ownership, or acceptance criteria changed. Never label unverified work complete.
 3. Implement only the named branch slice and exact product boundary.
 4. Use targeted tests while editing. Do not repeat full suites for reassurance.
@@ -52,7 +52,7 @@ collision instead of merging or overwriting the other worker's dirty state.
 - Never use `git add .`, `git add -A`, wildcard staging, or a commit command that captures
   paths outside the declared checkpoint. Stage exact paths and inspect the cached path
   list before every commit.
-- At adoption, the existing uncommitted `CURRENT_TASK.md` and `DESIGN.md` are inherited
+- At adoption, the existing uncommitted `docs/CURRENT_TASK.md` and `docs/DESIGN.md` are inherited
   documentation paths. They must be assigned to bounded docs checkpoints or left
   untouched; they cannot be silently bundled with the next gameplay/frontend commit.
 

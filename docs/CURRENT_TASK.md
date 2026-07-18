@@ -1,17 +1,21 @@
-# Current Task — T7 Timed Survival and Motion Refinement
+# Current Task — T8 Interface, Survival, and Records Refinement
 
 Branch: `main`
 
-Core/rule authority: `4c8582854088695ebac90467842dc2bc0cef3a20`
+Current accepted product tip: `32ed0c768c8c525aff645fa0584759ad6348ef52`
 
-Current historical ancestor: `dd7e31ea3547c18a797b2308f04161310d1412ce`
-(rejected T4 presentation candidate)
+Current execution status (2026-07-19): **T8 is accepted; no product implementation
+task is open.** The remaining coordinator work is to commit the completed documentation
+archive and publish the already accepted local history.
 
-Preserved rejected follow-up: local branch
-`codex/tetris-t4-rejected-preservation` at
-`1362c664629b2a83f0659f836259b84c21750fee`
+Status: **ACCEPTED — T8 mode field, Puzzle library, 20→10-second Survival pressure,
+mode-owned records, and Loading handoff verified**
 
-Status: **ACCEPTED — T7 timed Survival, rules UI, and restrained motion verified**
+The accepted T8 source is `9fe8e8b`; follow-up `32ed0c7` corrects the Survival
+interval formula to `max(10, 20 - floor(lines / 5))`. Final verification recorded
+268 passed / 2 skipped tests, a 741-module production build, and desktop, portrait,
+and landscape browser checks with zero console errors or viewport overflow. This file
+retains earlier slice contracts below as historical record.
 
 ## Slice N — progressive gravity and timed Survival pressure
 

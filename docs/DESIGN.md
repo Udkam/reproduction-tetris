@@ -13,10 +13,10 @@ interval, and missing result leaderboard binding.
   canonical colored endgame thumbnail, enlarges the selected board preview, and exposes
   an unmistakable 44 px or larger `返回模式` action. Library and home copy do not
   repeat `目标：清空棋盘`; the in-game objective statistic remains the active rule.
-- Survival bedrock pressure starts at 12 seconds. Each five cumulative cleared lines
+- Survival bedrock pressure starts at 20 seconds. Each five cumulative cleared lines
   removes one existing bottom bedrock row when present, resets pressure, and reduces
-  the next interval by one second to a five-second floor:
-  `max(5, 12 - floor(lines / 5))`.
+  the next interval by one second to a ten-second floor:
+  `max(10, 20 - floor(lines / 5))`.
 - The local result leaderboard remains mode-owned and fail-closed. Classic ranks and
   presents score as its primary record; Survival ranks and presents cleared lines as
   its primary record. Puzzle completion continues to use the separate campaign store.

@@ -90,7 +90,7 @@
   spawn, queue exhaustion, stale digests, unused queue, and terminal tail commands.
   Independent T3R QA accepted `a096d96` with QA `0cf78e3` after one targeted 18-test
   verifier run in a clean dependency environment.
-- Replaced root `DESIGN.md` and `CURRENT_TASK.md` with an atomic T3 production plan:
+- Replaced root `docs/DESIGN.md` and `docs/CURRENT_TASK.md` with an atomic T3 production plan:
   C1 implements and independently verifies the core campaign first; V1 then binds the
   accepted D5 frontend and real campaign progression before the coordinator publishes
   a completed T3 milestone. No T3 production source is claimed complete by this entry.
@@ -148,7 +148,7 @@
 - Set a default source checkpoint budget of 10 product/test paths, 500 hand-authored
   changed lines, and one subsystem or user-visible claim, with explicit pre-authorization
   required for any atomic exception.
-- Recorded the inherited `CURRENT_TASK.md` and `DESIGN.md` edits as separately owned docs
+- Recorded the inherited `docs/CURRENT_TASK.md` and `docs/DESIGN.md` edits as separately owned docs
   work; neither may be silently bundled with the next gameplay or frontend commit.
 
 ## 2026-07-17 — T5 authored endgames and cohesive mineral interface accepted
@@ -306,3 +306,16 @@
   production build, the prescribed action client, and desktop/portrait/landscape
   browser checks with zero console errors or viewport overflow. Real top-out runs
   persisted and rendered both mode-owned ranking metrics.
+
+## 2026-07-19 — Documentation archive and execution-state reconciliation
+
+- Archived the root project contracts and progress record under `docs/`, then updated
+  active governance references to the new locations while preserving the historical
+  workstream logs included in the archive.
+- Reconciled `docs/CURRENT_TASK.md` with the accepted T8 product tip `32ed0c7`:
+  no product implementation task remains open, and publication is the only pending
+  coordinator action.
+- Narrowed the repository ignore rule from `*.log` to `debug.log`; durable workstream
+  and changelog records are no longer excluded by a broad log-file pattern.
+- This is documentation and ignore-policy maintenance only. No product source, test,
+  build, browser evidence, dependencies, or generated artifact changed or was run.

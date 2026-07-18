@@ -4,7 +4,7 @@ Status: authoritative for every task and worker in `E:\Proj\reproduction-tetris`
 
 This policy prevents a workstream from accumulating an entire rules change, frontend
 pass, evidence matrix, and QA history into one opaque commit. It complements
-`AGENTS.md`; where a task needs an exception, `CURRENT_TASK.md` must authorize that exact
+`AGENTS.md`; where a task needs an exception, `docs/CURRENT_TASK.md` must authorize that exact
 exception before editing begins.
 
 ## 1. One commit, one reviewable claim
@@ -34,7 +34,7 @@ they must be placed in a separate evidence commit. Direct tests for the claim be
 with the source commit.
 
 If a change is truly atomic and must exceed a limit, stop before editing beyond the
-limit. `CURRENT_TASK.md` must then name the exception, exact paths, reason it cannot be
+limit. `docs/CURRENT_TASK.md` must then name the exception, exact paths, reason it cannot be
 split, owners, and required whole-range verification. File-count pressure is never a
 reason to commit unrelated concerns together.
 
@@ -103,7 +103,7 @@ forbidden:
 ## 7. Tetris adoption state
 
 At policy adoption on 2026-07-17, branch `codex/tetris-recovery` is based at `e552b3c`.
-The observed inherited dirty paths are `CURRENT_TASK.md` and `DESIGN.md`.
+The observed inherited dirty paths are `docs/CURRENT_TASK.md` and `docs/DESIGN.md`.
 
 Before the next source edit, their owner must either place each path in an explicit docs
 checkpoint with a single contract claim or leave it untouched and report it as inherited
