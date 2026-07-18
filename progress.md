@@ -329,3 +329,13 @@ Original prompt: separate Tetris into E:\Proj\Game-1-tetris, diagnose the mixed 
 - `index.html`, dependencies, Puzzle definitions/references, and separate game
   repositories were not changed. Next action: coordinator push of
   `codex/tetris-recovery`.
+
+## 2026-07-18 — Survival bedrock recolor accepted
+
+- Product source `4b27a98` changes only the permanent bedrock material to a restrained
+  warm rock-brown, separating it from the cool blue/teal playable pieces without
+  changing geometry or rules.
+- Both face colors retain 5.455291:1 / 3.248488:1 contrast against the board well.
+- Final typecheck, 261 passed / 2 skipped tests, 739-module build, action client, and
+  24-capture browser matrix passed. Independent static and visual/evidence QA accepted
+  with no finding; evidence `367a443` reproduced 26/26 checksums and zero errors.

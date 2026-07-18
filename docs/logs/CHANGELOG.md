@@ -234,3 +234,18 @@
   26 raw-Git-blob SHA-256 entries with zero CRLF or integrity failure.
 - `index.html`, dependencies, Puzzle definitions/references, ordinary tetromino
   geometry/palette, and every separate game repository remain unchanged.
+
+## 2026-07-18 — Survival bedrock warm-mineral recolor accepted
+
+- Replaced only the permanent bedrock's blue-grey material with the low-saturation
+  warm rock-brown set `#9C8B73 / #76664F / #40372D / #CDBEAA`. This creates a clear
+  geological layer beneath the seven brighter playable materials while preserving
+  the existing divided facets, seams, and directional relief.
+- Source `4b27a98` leaves all ordinary piece colors, renderer geometry, gameplay,
+  layout, copy, dependencies, and `index.html` unchanged. Direct contrast regression
+  holds both face endpoints above 3:1 against the board well.
+- Final gates passed typecheck, 261 passed / 2 skipped tests across 40 files, the
+  739-module build, the prescribed action client, and one 24-capture browser matrix.
+- Independent static and visual/evidence QA both accepted with no P0–P3 finding.
+  Evidence `367a443` contains zero browser errors, four visible full bedrock rows at
+  24 lines, and 26/26 matching raw-Git-blob checksums.

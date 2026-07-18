@@ -11,7 +11,8 @@ Preserved rejected follow-up: local branch
 `codex/tetris-t4-rejected-preservation` at
 `1362c664629b2a83f0659f836259b84c21750fee`
 
-Status: **IN PROGRESS — bounded visual recolor; no gameplay or geometry change**
+Status: **COMPLETE / ACCEPTED — product source `4b27a98`; formal evidence `367a443`;
+independent static and visual QA both ACCEPT with no open finding**
 
 ## Slice M — warm mineral bedrock recolor
 
@@ -41,6 +42,21 @@ Acceptance:
 
 No layout, copy, Core/runtime/Puzzle data, dependency, `index.html`, ordinary piece
 palette, renderer geometry, or separate game repository change is authorized.
+
+Disposition: **ACCEPTED**.
+
+- Source `4b27a98` changes only the four `BEDROCK_MATERIAL` tokens and their direct
+  regression. Contract `07fdbbf`; source-log tip `da39948`.
+- Final gates passed: typecheck; 40 test files with 39 passed / 1 skipped; 263 tests
+  with 261 passed / 2 skipped; 739-module production build; prescribed action client;
+  and one completed 24-capture formal browser matrix.
+- Independent static QA found no P0–P3 issue and reproduced 5.455291:1 / 3.248488:1
+  face-to-well contrast. Independent visual/evidence QA accepted both wide Survival
+  originals plus 24/24 captures and 26/26 raw-Git-blob checksums with zero browser
+  error or integrity failure.
+- Evidence `367a443` binds exact source `4b27a98` and candidate tip `da39948`; its
+  public-command replay shows 24 cleared lines, four full bedrock rows, and canonical
+  bottom row `BBBBBBBBBB`.
 
 ## Slice L — three independent mode rules
 
