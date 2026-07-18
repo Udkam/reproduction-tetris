@@ -1636,3 +1636,15 @@ remain untouched. No generated browser artifact is part of the candidate.
   (741 modules) PASS. The web-game client inspected home, Puzzle archive, and live
   Survival opening with no console-error artifact. Blocker: independent visual/browser
   QA. Next: review `502f978..7910e91`; do not push.
+
+## 2026-07-19 — T9 archive cleanup follow-up
+
+- Task: `TETRIS-T9-PUZZLE-ARCHIVE-CLEANUP-022`; base `1a81b23`; contract `575a81c`;
+  source `15e6412 fix(ui): simplify puzzle archive tiles`.
+- Exact paths: `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`.
+- Removed only the selected-card dot and the fifteen compact board silhouettes. The
+  selected preview remains the single canonical puzzle image.
+- Commands: `npm.cmd run test -- src/App.test.ts` PASS (1 file / 8 tests); final
+  typecheck, full suite (40 files / 269 passed / 2 skipped), and 741-module build PASS.
+  The web-game client screenshot was visually checked and has no error artifact.
+  Blocker: independent QA; next action: audit `502f978..15e6412`; no push.

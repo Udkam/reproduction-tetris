@@ -6,19 +6,19 @@ Current base: `beb47643ca6e80cbdae2fbb2a7459b1d6fffc1e6`
 
 Current execution status (2026-07-19): **T9 is authorized and in progress.**
 
-Status: **IN PROGRESS — T9 Puzzle archive cleanup before independent QA**
+Status: **CANDIDATE READY — pending independent Core and visual/browser QA**
 
 T8 remains the accepted baseline at `32ed0c7`. T9 candidate range is
-`502f978..7910e91`: it adds the five-layer opening, 15→8-second / three-line Survival
+`502f978..15e6412`: it adds the five-layer opening, 15→8-second / three-line Survival
 descent, a matching three-line gravity ladder, a prominent home `Tetris` heading, and
 the Puzzle archive surface. Typecheck, 269 passed / 2 skipped tests across 40 files,
 the 741-module production build, and browser inspection of the homepage, Puzzle archive,
 and real Survival opening passed. Independent Core and visual/browser QA are required
-before coordinator acceptance or push. The authorized cleanup removes the archive
+before coordinator acceptance or push. The completed cleanup removes the archive
 selection dot and all per-level miniature boards; it retains only the selected preview.
 The requested unbreakable random cells and ten-second incoming-piece rule are a later
-Puzzle-contract decision, not part of this visual cleanup. This file retains earlier
-slice contracts below as historical record.
+Puzzle-contract decision, not part of this candidate. This file retains earlier slice
+contracts below as historical record.
 
 ## Slice N — progressive gravity and timed Survival pressure
 

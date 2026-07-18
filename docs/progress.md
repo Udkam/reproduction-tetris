@@ -400,3 +400,15 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   15-second interval, and 48 ticks per cell.
 - Next action: independent Core and visual/browser QA of `502f978..7910e91`; do not
   push before its acceptance.
+
+## 2026-07-19 — T9 Puzzle archive cleanup candidate
+
+- Removed the selection-dot ornament and all fifteen list thumbnails. The selected
+  canonical board remains the sole preview, preserving focus, touch size, and all
+  enabled level selection behavior.
+- Source checkpoint `15e6412` follows contract `575a81c`. Typecheck, the full 269
+  passed / 2 skipped suite, and the 741-module build passed. Browser inspection shows
+  no tile dots or miniatures and retains the selected large preview with no errors.
+- Candidate is now `502f978..15e6412`; independent Core and visual/browser QA remain
+  required before push. The proposed immutable-cell and expiring-piece Puzzle redesign
+  remains intentionally unimplemented pending a precise rule decision.

@@ -333,3 +333,12 @@
   and the 741-module production build. The web-game browser client produced no errors;
   visible inspection confirms the home, archive, and live five-layer Survival opening.
 - Status: **pending independent Core and visual/browser QA; not pushed**.
+
+## 2026-07-19 — T9 Puzzle archive cleanup candidate
+
+- Removed the decorative selection dot and all per-level miniature boards from the
+  archive; the selected canonical board is now the only Puzzle preview.
+- Contract `575a81c` and UI source `15e6412` passed typecheck, 269 passed / 2 skipped
+  tests, a 741-module production build, and a zero-error browser inspection.
+- The extended candidate range is `502f978..15e6412`; independent QA remains pending
+  and nothing was pushed.
