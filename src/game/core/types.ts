@@ -90,6 +90,10 @@ export interface GameState {
   nextUnlockedLevelId: PuzzleId | null;
   pieceCount: number;
   survivalBedrockRows: number;
+  /** Playing ticks consumed in the current Survival pressure interval. */
+  survivalPressureTicks: number;
+  /** A due pressure row waiting for the next safe lock/clear resolution. */
+  survivalRisePending: boolean;
   status: GameStatus;
   phase: GamePhase;
   phaseTicks: number;
@@ -125,6 +129,7 @@ export type GameEvent =
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }
   | { type: 'bedrock-raised'; count: number; height: number }
+  | { type: 'bedrock-lowered'; count: number; height: number }
   | { type: 'level-up'; level: number }
   | { type: 'finished'; completionTicks: number }
   | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'bedrock-overflow' | 'puzzle-budget' | 'puzzle-invalid-spawn' | 'invalid-state' };

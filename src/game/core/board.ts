@@ -49,16 +49,31 @@ export function clearRows(board: Board, rows: readonly number[]): Board {
 export function raiseBedrock(board: Board, count: number): { board: Board; added: number; overflow: boolean } {
   let next = cloneBoard(board);
   let added = 0;
+  let overflow = false;
   const requested = Math.max(0, Math.floor(count));
   while (added < requested) {
-    if (next[0]!.some((cell) => cell !== null)) return { board: next, added, overflow: true };
+    overflow ||= next[0]!.some((cell) => cell !== null);
     next = [
       ...next.slice(1).map((row) => [...row]),
       Array.from({ length: BOARD_WIDTH }, () => BEDROCK_CELL),
     ];
     added += 1;
   }
-  return { board: next, added, overflow: false };
+  return { board: next, added, overflow };
+}
+
+export function lowerBedrock(board: Board, count: number): { board: Board; removed: number } {
+  let next = cloneBoard(board);
+  let removed = 0;
+  const requested = Math.max(0, Math.floor(count));
+  while (removed < requested && next.at(-1)?.every((cell) => cell === BEDROCK_CELL)) {
+    next = [
+      Array.from({ length: BOARD_WIDTH }, () => null),
+      ...next.slice(0, -1).map((row) => [...row]),
+    ];
+    removed += 1;
+  }
+  return { board: next, removed };
 }
 
 export function setCell(board: Board, x: number, y: number, value: BoardCell): Board {

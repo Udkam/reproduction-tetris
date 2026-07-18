@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, BOARD_WIDTH, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, STANDARD_GRAVITY_TICKS, gravityForMode } from './constants';
+import { BOARD_HEIGHT, BOARD_WIDTH, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, PROGRESSIVE_GRAVITY_TICKS, STANDARD_GRAVITY_TICKS, gravityForMode } from './constants';
 import { canPlace, createBoard, setCell } from './board';
 import { createInitialState, dispatch, stateHash } from './engine';
 import { cellsForPiece } from './pieces';
@@ -16,9 +16,12 @@ function ticks(state: GameState, count: number): GameState {
 }
 
 describe('Modern Classic timing and score contract', () => {
-  it('keeps Classic at the standard gravity regardless of legacy level or progress', () => {
-    expect(gravityForMode('marathon', 0, 0, 0)).toBe(STANDARD_GRAVITY_TICKS);
-    expect(gravityForMode('marathon', 29, 10_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
+  it('accelerates Classic every ten lines using the shared exact gravity table', () => {
+    PROGRESSIVE_GRAVITY_TICKS.forEach((expected, tier) => {
+      expect(gravityForMode('marathon', 0, 0, tier * 10)).toBe(expected);
+    });
+    expect(gravityForMode('marathon', 29, 10_000, 10_000)).toBe(3);
+    expect(gravityForMode('puzzle', 29, 10_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });
 
   it('soft drop moves one row and scores exactly one point', () => {
@@ -36,7 +39,7 @@ describe('Modern Classic timing and score contract', () => {
     });
   });
 
-  it('removes level acceleration and starts a chain at the ten-line boundary', () => {
+  it('starts a chain and advances gravity at the ten-line boundary without exposing level', () => {
     let board = createBoard();
     for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'S');
     let state: GameState = {
@@ -55,6 +58,7 @@ describe('Modern Classic timing and score contract', () => {
     expect(transition.state.level).toBe(0);
     expect(transition.state.combo).toBe(1);
     expect(transition.state.score).toBe(40);
+    expect(gravityForMode('marathon', transition.state.level, transition.state.pieceCount, transition.state.lines)).toBe(43);
     expect(transition.events.some((event) => event.type === 'level-up')).toBe(false);
   });
 

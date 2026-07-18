@@ -9,8 +9,9 @@ import {
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
   gravityForMode,
+  survivalIntervalTicks,
 } from './constants';
-import { canPlace, clearRows, createBoard, fullRows, isGrounded, mergePiece, raiseBedrock } from './board';
+import { canPlace, clearRows, createBoard, fullRows, isGrounded, lowerBedrock, mergePiece, raiseBedrock } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
@@ -111,6 +112,8 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     nextUnlockedLevelId: null,
     pieceCount: 0,
     survivalBedrockRows: 0,
+    survivalPressureTicks: 0,
+    survivalRisePending: false,
     status: 'ready',
     phase: 'active',
     phaseTicks: 0,
@@ -177,6 +180,42 @@ function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): Ga
 
 function withActive(state: GameState): state is GameState & { active: ActivePiece } {
   return state.active !== null;
+}
+
+function advanceSurvivalPressure(state: GameState): GameState {
+  if (state.mode !== 'race' || state.survivalRisePending) return state;
+  const intervalTicks = survivalIntervalTicks(state.lines);
+  const survivalPressureTicks = Math.min(intervalTicks, state.survivalPressureTicks + 1);
+  return {
+    ...state,
+    survivalPressureTicks,
+    survivalRisePending: survivalPressureTicks >= intervalTicks,
+  };
+}
+
+interface SurvivalRiseResolution extends GameTransition {
+  overflow: boolean;
+}
+
+function resolvePendingSurvivalRise(state: GameState, deferOverflow = false): SurvivalRiseResolution {
+  if (state.mode !== 'race' || !state.survivalRisePending) return { state, events: [], overflow: false };
+  const raised = raiseBedrock(state.board, 1);
+  const next: GameState = {
+    ...state,
+    board: raised.board,
+    survivalBedrockRows: state.survivalBedrockRows + raised.added,
+    survivalPressureTicks: 0,
+    survivalRisePending: false,
+  };
+  const events: GameEvent[] = raised.added > 0
+    ? [{ type: 'bedrock-raised', count: raised.added, height: next.survivalBedrockRows }]
+    : [];
+  if (!raised.overflow || deferOverflow) return { state: next, events, overflow: raised.overflow };
+  return {
+    state: { ...next, active: null, status: 'game-over', phase: 'active' },
+    events: [...events, { type: 'game-over', reason: 'bedrock-overflow' }],
+    overflow: true,
+  };
 }
 
 function moveActive(state: GameState, dx: number, dy: number, cause: 'move' | 'gravity' | 'soft-drop'): GameTransition {
@@ -252,6 +291,29 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       combo: 0,
     }, false);
     return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
+  }
+
+  if (state.mode === 'race') {
+    const resolved = resolvePendingSurvivalRise({
+      ...state,
+      board,
+      active: null,
+      pieceCount,
+      phase: 'active',
+      phaseTicks: 0,
+      pendingClearRows: [],
+      gravityTicks: 0,
+      lockTicks: 0,
+      lockResets: 0,
+      combo: 0,
+    });
+    if (resolved.state.status === 'game-over') {
+      return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
+    }
+    return {
+      state: { ...resolved.state, phase: 'entry' },
+      events: [...extraEvents, lockedEvent, ...resolved.events],
+    };
   }
 
   return {
@@ -335,18 +397,26 @@ function finishLineClear(state: GameState): GameTransition {
     return { state: resolved.state, events: [...events, ...resolved.events] };
   }
   if (cleared.mode === 'race') {
-    const targetHeight = Math.floor(lines / SURVIVAL_LINES_PER_BEDROCK);
-    const requested = Math.max(0, targetHeight - cleared.survivalBedrockRows);
-    const raised = raiseBedrock(cleared.board, requested);
-    cleared = {
-      ...cleared,
-      board: raised.board,
-      survivalBedrockRows: cleared.survivalBedrockRows + raised.added,
-    };
-    if (raised.added > 0) {
-      events.push({ type: 'bedrock-raised', count: raised.added, height: cleared.survivalBedrockRows });
+    const risen = resolvePendingSurvivalRise(cleared, true);
+    cleared = risen.state;
+    events.push(...risen.events);
+
+    const crossedRewardThreshold = Math.floor(lines / SURVIVAL_LINES_PER_BEDROCK)
+      > Math.floor(state.lines / SURVIVAL_LINES_PER_BEDROCK);
+    if (crossedRewardThreshold) {
+      const lowered = lowerBedrock(cleared.board, 1);
+      cleared = {
+        ...cleared,
+        board: lowered.board,
+        survivalBedrockRows: Math.max(0, cleared.survivalBedrockRows - lowered.removed),
+        survivalPressureTicks: 0,
+        survivalRisePending: false,
+      };
+      if (lowered.removed > 0) {
+        events.push({ type: 'bedrock-lowered', count: lowered.removed, height: cleared.survivalBedrockRows });
+      }
     }
-    if (raised.overflow) {
+    if (risen.overflow && !crossedRewardThreshold) {
       return {
         state: { ...cleared, active: null, status: 'game-over', phase: 'active' },
         events: [...events, { type: 'game-over', reason: 'bedrock-overflow' }],
@@ -359,13 +429,15 @@ function finishLineClear(state: GameState): GameTransition {
 
 function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
-  let next: GameState = { ...state, elapsedTicks: state.elapsedTicks + 1 };
+  let next: GameState = advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 });
 
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
     if (phaseTicks >= ENTRY_DELAY_TICKS) {
-      const spawned = spawnPiece({ ...next, phaseTicks: 0 });
-      return spawned;
+      const resolved = resolvePendingSurvivalRise({ ...next, phaseTicks: 0 });
+      if (resolved.state.status === 'game-over') return resolved;
+      const spawned = spawnPiece(resolved.state);
+      return { state: spawned.state, events: [...resolved.events, ...spawned.events] };
     }
     return { state: { ...next, phaseTicks }, events: [] };
   }
@@ -443,7 +515,13 @@ export function stateHash(state: GameState): string {
   // include the entire authored campaign payload and outcome fields.
   const canonicalState = state.mode === 'puzzle'
     ? (() => {
-      const { combo: _combo, survivalBedrockRows: _survivalBedrockRows, ...puzzleState } = state;
+      const {
+        combo: _combo,
+        survivalBedrockRows: _survivalBedrockRows,
+        survivalPressureTicks: _survivalPressureTicks,
+        survivalRisePending: _survivalRisePending,
+        ...puzzleState
+      } = state;
       return puzzleState;
     })()
     : (() => {
@@ -458,7 +536,12 @@ export function stateHash(state: GameState): string {
         ...legacyState
       } = state;
       if (state.mode === 'marathon') {
-        const { survivalBedrockRows: _survivalBedrockRows, ...classicState } = legacyState;
+        const {
+          survivalBedrockRows: _survivalBedrockRows,
+          survivalPressureTicks: _survivalPressureTicks,
+          survivalRisePending: _survivalRisePending,
+          ...classicState
+        } = legacyState;
         return classicState;
       }
       const { combo: _combo, ...survivalState } = legacyState;

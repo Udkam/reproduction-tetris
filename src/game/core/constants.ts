@@ -15,20 +15,39 @@ export const NEXT_QUEUE_SIZE = 5;
 
 export const STANDARD_GRAVITY_TICKS = 48;
 export const SURVIVAL_LINES_PER_BEDROCK = 5;
+export const TICKS_PER_SECOND = 60;
+export const SURVIVAL_INITIAL_INTERVAL_SECONDS = 40;
+export const SURVIVAL_INTERVAL_STEP_SECONDS = 2;
+export const SURVIVAL_MIN_INTERVAL_SECONDS = 10;
 
-/** @deprecated T6 Survival has no speed tier. Retained until the frontend binding migrates. */
+export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
+
+export function speedTierForLines(lines: number): number {
+  return Math.min(PROGRESSIVE_GRAVITY_TICKS.length - 1, Math.max(0, Math.floor(lines / 10)));
+}
+
+export function survivalIntervalSeconds(lines: number): number {
+  return Math.max(
+    SURVIVAL_MIN_INTERVAL_SECONDS,
+    SURVIVAL_INITIAL_INTERVAL_SECONDS - SURVIVAL_INTERVAL_STEP_SECONDS * Math.floor(Math.max(0, lines) / SURVIVAL_LINES_PER_BEDROCK),
+  );
+}
+
+export function survivalIntervalTicks(lines: number): number {
+  return survivalIntervalSeconds(lines) * TICKS_PER_SECOND;
+}
+
+/** @deprecated Use speedTierForLines. Retained until the frontend binding migrates. */
 export function raceSpeedTier(pieceCount: number, lines: number): number {
   void pieceCount;
-  void lines;
-  return 0;
+  return speedTierForLines(lines);
 }
 
 export function gravityForMode(mode: GameMode, level: number, pieceCount: number, lines: number): number {
-  void mode;
   void level;
   void pieceCount;
-  void lines;
-  return STANDARD_GRAVITY_TICKS;
+  if (mode === 'puzzle') return STANDARD_GRAVITY_TICKS;
+  return PROGRESSIVE_GRAVITY_TICKS[speedTierForLines(lines)]!;
 }
 
 export const LINE_CLEAR_BASE_SCORE = [0, 40, 100, 300, 1200] as const;
