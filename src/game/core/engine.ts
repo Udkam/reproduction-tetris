@@ -88,7 +88,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
       puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
       puzzleQueueIndex: 0,
       puzzleSpawnCount: next.mode === 'puzzle' ? next.puzzleSpawnCount + 1 : next.puzzleSpawnCount,
-      puzzleActiveVolatile: next.mode === 'puzzle' && next.puzzleId !== null && getPuzzleDefinition(next.puzzleId).variant === 'anchor-trial'
+      puzzleActiveVolatile: next.mode === 'puzzle' && next.puzzleId !== null && getPuzzleDefinition(next.puzzleId).variant === 'anchored-legacy'
         ? volatileSpawnFor(next.seed, next.puzzleSpawnCount)
         : false,
       phase: 'active',
@@ -125,7 +125,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     puzzleSpawnCount: 0,
     puzzleActiveVolatile: false,
     puzzleVolatilePieces: [],
-    puzzleGoal: selectedPuzzle ? (selectedPuzzle.variant === 'anchor-trial' ? 'removable-board-empty' : 'canonical-board-empty') : null,
+    puzzleGoal: selectedPuzzle ? (selectedPuzzle.variant === 'anchored-legacy' ? 'removable-board-empty' : 'canonical-board-empty') : null,
     puzzleCompletion: selectedPuzzle ? 'active' : null,
     completedLevelId: null,
     nextUnlockedLevelId: null,
@@ -260,27 +260,44 @@ function normalComponents(board: Board): Array<{ type: PieceType; cells: Cell[] 
   return components;
 }
 
-function settleAfterVolatileExpiry(board: Board, pieces: readonly VolatilePiece[]): { board: Board; pieces: readonly VolatilePiece[] } {
+function settleAfterVolatileExpiry(
+  board: Board,
+  pieces: readonly VolatilePiece[],
+  openedCells: readonly Cell[],
+): { board: Board; pieces: readonly VolatilePiece[] } {
   const next = board.map((row) => [...row]) as Board;
   let tracked = pieces.map((piece) => ({ ...piece, cells: piece.cells.map((cell) => ({ ...cell })) }));
+  const openBelow = new Set(openedCells.map(keyFor));
   for (let guard = 0; guard < BOARD_HEIGHT; guard += 1) {
     let moved = false;
     const components = normalComponents(next).sort((left, right) => Math.max(...right.cells.map((cell) => cell.y)) - Math.max(...left.cells.map((cell) => cell.y)));
     for (const component of components) {
-      const occupied = new Set(component.cells.map(keyFor));
-      const canFall = component.cells.every((cell) => {
-        const y = cell.y + 1;
-        return y < BOARD_HEIGHT && (next[y]![cell.x] === null || occupied.has(`${cell.x},${y}`));
-      });
-      if (!canFall) continue;
-      for (const cell of component.cells) next[cell.y]![cell.x] = null;
-      for (const cell of component.cells) next[cell.y + 1]![cell.x] = component.type;
-      const movedCells = new Set(component.cells.map(keyFor));
-      tracked = tracked.map((piece) => ({
-        ...piece,
-        cells: piece.cells.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell),
-      }));
-      moved = true;
+      // A volatile gap only releases a component directly above it. Unrelated
+      // floating stacks must not receive a gravity pass merely because another
+      // part of the board expired.
+      const isReleasedFromGap = component.cells.some((cell) => openBelow.has(`${cell.x},${cell.y + 1}`));
+      if (!isReleasedFromGap) continue;
+      let fallingCells = component.cells;
+      let fell = false;
+      while (true) {
+        const occupied = new Set(fallingCells.map(keyFor));
+        const canFall = fallingCells.every((cell) => {
+          const y = cell.y + 1;
+          return y < BOARD_HEIGHT && (next[y]![cell.x] === null || occupied.has(`${cell.x},${y}`));
+        });
+        if (!canFall) break;
+        for (const cell of fallingCells) next[cell.y]![cell.x] = null;
+        for (const cell of fallingCells) next[cell.y + 1]![cell.x] = component.type;
+        for (const cell of fallingCells) openBelow.add(keyFor(cell));
+        const movedCells = new Set(fallingCells.map(keyFor));
+        tracked = tracked.map((piece) => ({
+          ...piece,
+          cells: piece.cells.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell),
+        }));
+        fallingCells = fallingCells.map((cell) => ({ ...cell, y: cell.y + 1 }));
+        fell = true;
+      }
+      moved ||= fell;
     }
     if (!moved) break;
   }
@@ -300,7 +317,7 @@ function advanceVolatilePieces(state: GameState): GameTransition {
       if (board[cell.y]?.[cell.x] === piece.type) board[cell.y]![cell.x] = null;
     }
   }
-  const settled = settleAfterVolatileExpiry(board, surviving);
+  const settled = settleAfterVolatileExpiry(board, surviving, expiring.flatMap((piece) => piece.cells));
   return {
     state: { ...state, board: settled.board, puzzleVolatilePieces: settled.pieces },
     events: expiring.map((piece) => ({ type: 'piece-expired', piece: piece.type })),

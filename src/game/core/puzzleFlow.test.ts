@@ -3,6 +3,7 @@ import { BOARD_HEIGHT, ENTRY_DELAY_TICKS, LOCK_DELAY_TICKS, PUZZLE_VOLATILE_PIEC
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch } from './engine';
 import { ANCHOR_CELL, type GameState, type PieceType } from './types';
+import { getPuzzleDefinition } from './puzzles';
 
 function advance(state: GameState, ticks: number): GameState {
   let next = state;
@@ -73,32 +74,39 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.puzzleCompletion).toBe('active');
   });
 
-  it.each(['t5r-arc-13', 't5r-pulse-14', 't5r-horizon-15'] as const)('solves low-pressure anchor trial %s in one seeded lock while retaining anchors', (id) => {
-    let state = dispatch(createInitialState(1, 'puzzle', id), { type: 'start' }).state;
-    expect(state.active?.type).toBe('I');
-    state = dispatch(state, { type: 'rotate', direction: 1 }).state;
-    while (state.active!.x < 7) state = dispatch(state, { type: 'move', dx: 1 }).state;
-    const firstDrop = dispatch(state, { type: 'hard-drop' });
-    state = firstDrop.state;
-    state = advance(state, 16);
+  it.each([
+    ['t3r-shaft-03', 1], ['t3r-cascade-06', 1], ['t5r-lattice-09', 1], ['t5r-current-12', 1],
+    ['t5r-arc-13', 2], ['t5r-pulse-14', 2], ['t5r-horizon-15', 2],
+  ] as const)('keeps the authored deep endgame for %s and overlays %i anchors', (id, anchorCount) => {
+    const definition = getPuzzleDefinition(id);
+    const state = createInitialState(1, 'puzzle', id);
 
-    expect(state.status).toBe('finished');
-    expect(state.puzzleCompletion).toBe('finished');
-    expect(state.pieceCount).toBe(1);
-    expect(state.board.flat().filter((cell) => cell === ANCHOR_CELL)).toHaveLength(2);
-    expect(state.board.flat().filter((cell) => cell !== null && cell !== ANCHOR_CELL)).toHaveLength(0);
+    expect(definition.variant).toBe('anchored-legacy');
+    expect(definition.setup.placements.length).toBeGreaterThanOrEqual(16);
+    expect(definition.boardRows.filter((row) => row !== '..........').length).toBeGreaterThanOrEqual(8);
+    expect(definition.anchorCells).toHaveLength(anchorCount);
+    expect(state.puzzleGoal).toBe('removable-board-empty');
+    expect(state.board.flat().filter((cell) => cell === ANCHOR_CELL)).toHaveLength(anchorCount);
+    for (const anchor of definition.anchorCells) expect(definition.boardRows[anchor.y]?.[anchor.x]).toBe('.');
   });
 
-  it('expires a settled volatile input after 600 playing ticks, pauses safely, and settles complete components above it', () => {
+  it('expires a settled volatile input after 300 playing ticks, pauses safely, and settles complete components above it', () => {
     let board = createBoard();
     for (let x = 3; x <= 6; x += 1) board = setCell(board, x, BOARD_HEIGHT - 5, 'I');
     for (const cell of [{ x: 4, y: BOARD_HEIGHT - 7 }, { x: 5, y: BOARD_HEIGHT - 7 }, { x: 4, y: BOARD_HEIGHT - 6 }, { x: 5, y: BOARD_HEIGHT - 6 }]) {
       board = setCell(board, cell.x, cell.y, 'O');
     }
+    const unrelatedCells = [
+      { x: 0, y: BOARD_HEIGHT - 8 }, { x: 0, y: BOARD_HEIGHT - 7 },
+      { x: 1, y: BOARD_HEIGHT - 7 }, { x: 2, y: BOARD_HEIGHT - 7 },
+    ];
+    for (const cell of unrelatedCells) board = setCell(board, cell.x, cell.y, 'J');
     let state = dispatch(createInitialState(1, 'puzzle', 't5r-arc-13'), { type: 'start' }).state;
     state = {
       ...state,
       board,
+      gravityTicks: -1_000,
+      puzzleActiveVolatile: false,
       puzzleVolatilePieces: [{ type: 'I', cells: [{ x: 3, y: BOARD_HEIGHT - 5 }, { x: 4, y: BOARD_HEIGHT - 5 }, { x: 5, y: BOARD_HEIGHT - 5 }, { x: 6, y: BOARD_HEIGHT - 5 }], expiryTicks: PUZZLE_VOLATILE_PIECE_TICKS }],
     };
     state = dispatch(state, { type: 'pause' }).state;
@@ -113,5 +121,6 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.puzzleVolatilePieces).toEqual([]);
     expect(state.board[BOARD_HEIGHT - 2]?.[4]).toBe('O');
     expect(state.board[BOARD_HEIGHT - 1]?.[5]).toBe('O');
+    for (const cell of unrelatedCells) expect(state.board[cell.y]?.[cell.x]).toBe('J');
   });
 });

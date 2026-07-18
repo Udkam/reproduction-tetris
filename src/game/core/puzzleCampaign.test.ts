@@ -214,11 +214,11 @@ function execute(level: LevelReference, route: RouteReference) {
 }
 
 describe('T5 normal-play Puzzle campaign verifier', () => {
-  it('retains twelve legacy definitions and twenty-four frozen public-dispatch routes alongside three anchor trials', () => {
+  it('retains eight untouched legacy definitions and sixteen frozen public-dispatch routes alongside seven full-depth anchored endgames', () => {
     expect(PUZZLE_DEFINITIONS).toHaveLength(15);
-    expect(references).toHaveLength(12);
-    expect(references.flatMap((level) => level.routes)).toHaveLength(24);
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.variant === 'anchor-trial')).toHaveLength(3);
+    expect(references).toHaveLength(8);
+    expect(references.flatMap((level) => level.routes)).toHaveLength(16);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.variant === 'anchored-legacy')).toHaveLength(7);
   });
 
   it.each(references)('$id has two successful same-seed public-dispatch routes', (level) => {
