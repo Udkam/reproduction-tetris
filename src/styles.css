@@ -965,6 +965,11 @@ p {
   animation: pressure-urgent 720ms ease-in-out infinite alternate;
 }
 
+.run-stats--puzzle [data-stat-role="objective"][data-urgent="true"] strong {
+  color: var(--danger);
+  animation: pressure-urgent 720ms ease-in-out infinite alternate;
+}
+
 .preview-rail {
   padding-top: 13px;
   border-top: 1px solid var(--line);
@@ -2018,7 +2023,8 @@ p {
   .entry-countdown__digit,
   .mode-gate,
   .action-sheet,
-  .run-stats [data-stat-role="survival-next"][data-urgent="true"] strong {
+  .run-stats [data-stat-role="survival-next"][data-urgent="true"] strong,
+  .run-stats--puzzle [data-stat-role="objective"][data-urgent="true"] strong {
     animation: none;
   }
 

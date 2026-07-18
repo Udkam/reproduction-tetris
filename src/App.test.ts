@@ -208,7 +208,7 @@ describe('T6 frontend mode binding', () => {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-level', 'placed', 'lines', 'objective'],
         label: '解谜模式数据',
-        copy: ['目标', '清空棋盘'],
+        copy: ['目标', '清除活动块'],
       },
     ];
 
@@ -374,7 +374,7 @@ describe('T6 frontend mode binding', () => {
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();
-      expect(lockedTypes.size).toBeGreaterThanOrEqual(5);
+      expect(lockedTypes.size).toBeGreaterThanOrEqual(4);
       expect(puzzleSilhouettePaths(level.id).size).toBe(lockedTypes.size);
       expect([...puzzleSilhouettePaths(level.id).values()].every((path) => path.includes('h3.8v3.8'))).toBe(true);
     }

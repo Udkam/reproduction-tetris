@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   PIECE_TYPES,
+  ANCHOR_CELL,
+  BEDROCK_CELL,
   TICKS_PER_SECOND,
   type GameEvent,
   type GameMode,
   type GameState,
   type PieceType,
+  type BoardMaterial,
   type PuzzleId,
   createInitialState,
   gravityForMode,
@@ -24,7 +27,7 @@ import {
   recordCanonicalPuzzleCompletion,
   type PuzzleProgress,
 } from './puzzleProgress';
-import { PIECE_MATERIALS } from './game/render/theme';
+import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
 import { ActionSheet } from './ui/ActionSheet';
 import {
   LEADERBOARD_KEY,
@@ -114,6 +117,11 @@ export function survivalCountdownSeconds(state: GameState): number {
 
 export function survivalCountdownLabel(state: GameState): string {
   return state.survivalRisePending ? '待上升' : `${survivalCountdownSeconds(state)} 秒`;
+}
+
+export function puzzleExpirySeconds(state: GameState): number | null {
+  if (state.mode !== 'puzzle' || state.puzzleVolatilePieces.length === 0) return null;
+  return Math.max(0, Math.ceil(Math.min(...state.puzzleVolatilePieces.map((piece) => piece.expiryTicks)) / TICKS_PER_SECOND));
 }
 
 function campaignLevel(id: PuzzleId | null) {
@@ -237,12 +245,12 @@ function cssHex(color: number): string {
   return `#${color.toString(16).padStart(6, '0')}`;
 }
 
-export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<PieceType, string> {
+export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<BoardMaterial, string> {
   const board = createInitialState(APP_SEED, 'puzzle', id).board.slice(-12);
   const unit = 4;
   const face = 3.8;
-  const paths = new Map<PieceType, string>();
-  for (const type of PIECE_TYPES) {
+  const paths = new Map<BoardMaterial, string>();
+  for (const type of [...PIECE_TYPES, ANCHOR_CELL] as const) {
     const path = board.flatMap((row, y) => row.map((cell, x) => (
       cell === type ? `M${x * unit + .1} ${y * unit + .1}h${face}v${face}h-${face}z` : ''
     ))).join('');
@@ -260,7 +268,7 @@ function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
       aria-label={`${name}棋盘轮廓`}
     >
       {[...puzzleSilhouettePaths(id)].map(([type, path]) => {
-        const material = PIECE_MATERIALS[type];
+        const material = type === ANCHOR_CELL ? ANCHOR_MATERIAL : type === BEDROCK_CELL ? BEDROCK_MATERIAL : PIECE_MATERIALS[type];
         return (
           <path
             key={type}
@@ -424,12 +432,15 @@ export function RunStats({ state }: { state: GameState }) {
   }
   if (state.mode === 'puzzle') {
     const level = campaignLevel(state.puzzleId);
+    const expirySeconds = puzzleExpirySeconds(state);
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
         <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
         <article data-stat-role="placed"><span>已放置</span><strong>{state.pieceCount}</strong></article>
         <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="objective"><span>目标</span><strong>清空棋盘</strong></article>
+        <article data-stat-role="objective" data-urgent={expirySeconds !== null && expirySeconds <= 3 || undefined}>
+          <span>{expirySeconds === null ? '目标' : '限时'}</span><strong>{expirySeconds === null ? '清除活动块' : `${expirySeconds} 秒`}</strong>
+        </article>
       </section>
     );
   }
@@ -447,6 +458,7 @@ export function eventMessage(event: GameEvent): string {
   if (event.type === 'lines-cleared') return `消除了 ${event.count} 行。`;
   if (event.type === 'bedrock-raised') return `基岩升至 ${event.height} 层。`;
   if (event.type === 'bedrock-lowered') return `基岩降至 ${event.height} 层。`;
+  if (event.type === 'piece-expired') return `限时 ${event.piece} 方块已消散。`;
   if (event.type === 'paused') return '本局已暂停。';
   if (event.type === 'resumed') return '继续本局。';
   if (event.type === 'finished') return '棋盘已清空。';
@@ -525,6 +537,7 @@ export function GameSession({
           event.type === 'lines-cleared'
           || event.type === 'bedrock-raised'
           || event.type === 'bedrock-lowered'
+          || event.type === 'piece-expired'
           || event.type === 'paused'
           || event.type === 'resumed'
           || event.type === 'finished'
@@ -583,6 +596,10 @@ export function GameSession({
       phase: state.phase,
       puzzleId: state.puzzleId,
       puzzleCompletion: state.puzzleCompletion,
+      puzzleActiveVolatile: state.puzzleActiveVolatile,
+      puzzleVolatilePieces: state.puzzleVolatilePieces,
+      puzzleExpirySeconds: puzzleExpirySeconds(state),
+      anchorCells: state.board.flat().filter((cell) => cell === ANCHOR_CELL).length,
       score: state.score,
       lines: state.lines,
       combo: state.combo,

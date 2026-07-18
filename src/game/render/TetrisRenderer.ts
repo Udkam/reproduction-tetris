@@ -1,6 +1,7 @@
 import { Application, Container, FillGradient, Graphics, type Ticker } from 'pixi.js';
 import {
   BOARD_WIDTH,
+  ANCHOR_CELL,
   BEDROCK_CELL,
   PIECE_SHAPES,
   VISIBLE_HEIGHT,
@@ -13,7 +14,7 @@ import {
   type BoardMaterial,
   type PieceType,
 } from '../core';
-import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
+import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
 import {
   approachPresentationPoint,
   boardShiftPresentationOffset,
@@ -398,6 +399,7 @@ export class TetrisRenderer {
   }
 
   private materialFor(type: BoardMaterial) {
+    if (type === ANCHOR_CELL) return ANCHOR_MATERIAL;
     return type === BEDROCK_CELL ? BEDROCK_MATERIAL : PIECE_MATERIALS[type];
   }
 

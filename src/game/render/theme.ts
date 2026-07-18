@@ -85,3 +85,11 @@ export const BEDROCK_MATERIAL: PieceMaterial = {
   edge: 0x40372d,
   innerEdge: 0xcdbeaa,
 };
+
+/** Puzzle-only immutable cells use a pale mineral core rather than a playable hue. */
+export const ANCHOR_MATERIAL: PieceMaterial = {
+  fillStart: 0xb7aa92,
+  fillEnd: 0x8f826b,
+  edge: 0x514735,
+  innerEdge: 0xe0d4bc,
+};
