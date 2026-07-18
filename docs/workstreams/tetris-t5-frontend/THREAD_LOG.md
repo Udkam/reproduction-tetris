@@ -1330,3 +1330,78 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Next: independent read-only QA audits exact source range
   `1e7e5e34005953c8f25f533ce480b73346a0d91a..7f0b7668a0c42dd16d6cedbca58693ed71eb516d`;
   the coordinator owns final combined gates, changelog disposition, and push.
+
+## 2026-07-18 — ENTRY COUNTDOWN FAIL-CLOSED REPAIR READY
+
+### Intake and blocker
+
+- Task: `TETRIS-T5-ENTRY-COUNTDOWN-016R` (K-R6-R).
+- Branch/base: clean `codex/tetris-recovery` at
+  `62399b90e1d4ec6b8737e4dda152e89b7d43f762`.
+- Independent frontend QA correctly found that K-R6 gated `start()` and the shared
+  action path but left public `restart`, `selectMode`, and `selectPuzzle` callable
+  during the entry countdown. The DEV QA surface forwards to those methods, so a page
+  script could replace the canonical ready state before `1` completed.
+- Exact repair source checkpoint:
+  `48176fe3d23cbc450fe39b38310c8a6b6eb71945` —
+  `fix(runtime): gate countdown reset entry points`.
+- Exact source paths: `src/game/runtime/GameRuntime.ts` and
+  `src/game/runtime/GameRuntime.test.ts`. No App/CSS, Core/Puzzle, renderer/theme,
+  dependency/configuration, `index.html`, coordinator document, changelog, or formal
+  evidence path changed.
+- `develop-web-game` supplied the prescribed client/action loop and screenshot review.
+  Its ordinary `progress.md` write remained outside this exact-path repair; the file
+  was read but not edited, and this authorized log records the durable handoff.
+
+### Delivered fail-closed behavior
+
+- `restart`, `selectMode`, and `selectPuzzle` now return immediately when
+  `inputEnabled` is false, before audio prime, dispatch, state publication, or held-input
+  clearing. Their DEV QA wrappers inherit the same gate without adding another state
+  path or bypass.
+- Existing `start()` and shared keyboard/touch/QA action gating remain unchanged.
+  Once the gate is enabled, all existing public behavior remains available; the direct
+  regression still enables the gate, primes audio through public start, publishes one
+  `started` event, and reaches `playing`.
+- The strengthened countdown-like test calls direct and QA restart, direct and QA mode
+  selection, and direct and QA Puzzle selection separately. After every attempt it
+  proves the canonical object identity, seed, status, mode, Puzzle ID, active object,
+  queue object, board object, and complete detached snapshot are unchanged, with zero
+  audio prime, state publication, or held-input clear.
+
+### Commands and evidence actually run
+
+- Edit-loop `npm.cmd run test -- src/game/runtime/GameRuntime.test.ts` — PASS,
+  3 files / 12 tests.
+- Final focused
+  `npm.cmd run test -- src/game/runtime/GameRuntime.test.ts src/App.test.ts` — PASS,
+  4 files / 17 tests.
+- Final `npm.cmd run typecheck` — PASS. `git diff --check`, exact two-path staging,
+  `git diff --cached --name-only`, and `git diff --cached --check` — PASS.
+- One prescribed repair client batch against the existing root server:
+  `node 'C:\Users\Alex Chen\.codex\skills\develop-web-game\scripts\web_game_playwright_client.js' --url http://127.0.0.1:4173 --click-selector '[data-testid="enter-marathon"]' --actions-file 'C:\Users\Alex Chen\.codex\skills\develop-web-game\references\action_payloads.json' --iterations 6 --pause-ms 500 --screenshot-dir '.local\slice-kr6-repair\client'`.
+  States were countdown `2/1/1` with `ready`, Marathon, zero placed pieces, and stable
+  active x/y `3/19`; countdown then became `null` with `playing` and zero pieces before
+  later enabled iterations placed pieces. The client produced no error artifact.
+- Because the prescribed client cannot call DEV QA methods, one bounded in-page
+  Playwright probe in the same repair batch invoked gated QA hard drop, Race selection,
+  Puzzle `t3r-cascade-06` selection, and restart. Its
+  `.local/slice-kr6-repair/qa-gate-state.json` is tied to full source SHA `48176fe...`,
+  records `canonicalEqual: true`, `ready`, Marathon, null Puzzle ID, zero pieces, and
+  true seed/status/active/queue/board assertions before and after the attempted bypass
+  sequence. `.local/slice-kr6-repair/qa-post-state.json` then records countdown `null`
+  and `playing`; `.local/slice-kr6-repair/qa-errors.json` is `[]`.
+- Opened `.local/slice-kr6-repair/qa-gate-countdown.png`,
+  `.local/slice-kr6-repair/client/shot-1.png`, and
+  `.local/slice-kr6-repair/qa-post-playing.png` at original detail. They show a visible
+  centered `2`, a visible centered `1`, and the normal post-countdown playing board.
+  All repair artifacts are ignored by `.git/info/exclude` and were not staged.
+- Per coordinator instruction, no complete suite, production build, or viewport matrix
+  ran in this repair.
+
+### Handoff
+
+- Blocker: none. Push: not performed.
+- Next: independent read-only frontend QA reviews exact repair source range
+  `62399b90e1d4ec6b8737e4dda152e89b7d43f762..48176fe3d23cbc450fe39b38310c8a6b6eb71945`;
+  the coordinator owns final combined gates, changelog disposition, and push.
