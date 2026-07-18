@@ -26,6 +26,9 @@ BANNED_VISIBLE_TEXT = (
     "青流方阵",
     "AQUA ROUTE",
     "马拉松",
+    "竞速",
+    "等级",
+    "速度档",
     "路线",
     "20 行",
     "剩余行",
@@ -487,8 +490,8 @@ def validate_layout(metrics: dict[str, Any], *, gameplay: bool) -> None:
     require(metrics["bounds"]["nextLabel"] is not None, "Visible Next label is missing.")
     require(metrics["bounds"]["keyboard"] is not None, "Visible keyboard map is missing.")
     expected_roles = {
-        "marathon": ["score", "lines", "classic-level"],
-        "race": ["score", "lines", "race-speed"],
+        "marathon": ["score", "lines", "classic-combo"],
+        "race": ["score", "lines", "survival-bedrock"],
         "puzzle": ["puzzle-level", "placed", "lines", "objective"],
     }
     require(metrics["stats"]["roles"] == expected_roles[state["mode"]], f"Statistic roles drifted: {metrics['stats']}")
@@ -739,27 +742,81 @@ def exercise_marathon_desktop(browser: Browser) -> None:
         context.close()
 
 
-def exercise_race_wide(browser: Browser) -> None:
-    context, page, page_errors = open_page(browser, width=2048, height=1152, dpr=1, label="wide-race")
+def drive_survival_bedrock(page: Page) -> dict[str, Any]:
+    result = page.evaluate(
+        """async () => {
+          const { createSurvivalBedrockReplay } = await import('/src/game/runtime/qaScenario.ts');
+          const commands = createSurvivalBedrockReplay();
+          const qa = window.__SIGNAL_FOUNDRY_QA__;
+          if (!qa) throw new Error('Survival QA runtime is unavailable.');
+          qa.setFrozen(true);
+          let operations = 0;
+          for (let index = 0; index < commands.length; index += 1) {
+            const command = commands[index];
+            if (command.type === 'start') continue;
+            if (command.type === 'tick') {
+              let ticks = 1;
+              while (commands[index + 1]?.type === 'tick') {
+                ticks += 1;
+                index += 1;
+              }
+              qa.advanceTicks(ticks);
+              operations += 1;
+              continue;
+            }
+            if (command.type === 'move') qa.action(command.dx < 0 ? 'left' : 'right');
+            else if (command.type === 'rotate') qa.action(command.direction < 0 ? 'rotate-ccw' : 'rotate-cw');
+            else if (command.type === 'soft-drop') qa.action('soft-drop');
+            else if (command.type === 'hard-drop') qa.action('hard-drop');
+            else throw new Error(`Unsupported public Survival command: ${command.type}`);
+            operations += 1;
+          }
+          return { commandCount: commands.length, operations, state: qa.getState() };
+        }"""
+    )
+    page.wait_for_function(
+        "() => window.__SIGNAL_FOUNDRY_QA__.getState().lines >= 24"
+        " && window.__SIGNAL_FOUNDRY_QA__.getState().survivalBedrockRows >= 4"
+    )
+    return result
+
+
+def exercise_survival_wide(browser: Browser) -> None:
+    context, page, page_errors = open_page(browser, width=2048, height=1152, dpr=1, label="wide-survival")
     try:
         body = page.locator("body").inner_text()
-        require("无终点" in body, "Race endless copy is missing.")
-        for forbidden in ("20 行", "剩余行", "完成目标"):
-            require(forbidden not in body, f"Obsolete Race copy remains: {forbidden}")
+        require("生存" in body and "基岩上升" in body, "Survival rising-floor copy is missing.")
+        for forbidden in ("竞速", "等级", "速度档", "速度递增", "20 行", "剩余行", "完成目标"):
+            require(forbidden not in body, f"Obsolete Race/level copy remains: {forbidden}")
         enter_mode(page, "race")
-        hard_drop(page)
-        hard_drop(page)
-        capture(page, "wide-race-playing-2048x1152.png", gameplay=True)
+        replay_result = drive_survival_bedrock(page)
+        state = replay_result["state"]
+        require(state["status"] == "playing" and state["lines"] >= 24, f"Survival replay did not stay live: {state}")
+        require(state["survivalBedrockRows"] == state["lines"] // 5, f"Survival bedrock height drifted: {state}")
+        require(state["survivalBedrockRows"] >= 4, f"Survival bedrock did not rise: {state}")
+        require(state["board"][-1] == ["B"] * 10, f"Survival bottom row is not canonical bedrock: {state['board'][-1]}")
+        body = page.locator("body").inner_text()
+        require("基岩" in body and str(state["survivalBedrockRows"]) in body, "Visible Survival bedrock statistic drifted.")
+        capture(
+            page,
+            "wide-survival-bedrock-2048x1152.png",
+            gameplay=True,
+            extra={"commandCount": replay_result["commandCount"], "operations": replay_result["operations"]},
+        )
 
         terminal = qa_state(page)
         for _ in range(80):
             if terminal and terminal["status"] == "game-over":
                 break
             terminal = hard_drop(page)
-        require(terminal is not None and terminal["status"] == "game-over", "Race did not reach ordinary top-out.")
-        page.get_by_role("dialog", name="竞速结束").wait_for(state="visible")
-        capture(page, "wide-race-topout-2048x1152.png", gameplay=True)
-        CHECKS["raceTopOutOnlyTerminal"] = {
+        require(terminal is not None and terminal["status"] == "game-over", "Survival did not reach top-out.")
+        page.get_by_role("dialog", name="生存结束").wait_for(state="visible")
+        capture(page, "wide-survival-topout-2048x1152.png", gameplay=True)
+        CHECKS["survivalBedrockAndTopOut"] = {
+            "replayCommandCount": replay_result["commandCount"],
+            "publicOperations": replay_result["operations"],
+            "bedrockRows": state["survivalBedrockRows"],
+            "bottomRow": "".join(state["board"][-1]),
             "pieceCount": terminal["pieceCount"],
             "lines": terminal["lines"],
         }
@@ -830,7 +887,7 @@ def exercise_other_viewports(browser: Browser) -> None:
         action_states: dict[str, Any] = {}
         capture_names = {
             "marathon": "landscape-home-844x390-dpr3.png",
-            "race": "landscape-home-race-active-844x390-dpr3.png",
+            "race": "landscape-home-survival-active-844x390-dpr3.png",
             "puzzle": "landscape-home-puzzle-active-844x390-dpr3.png",
         }
         for mode in ("marathon", "race", "puzzle"):
@@ -892,7 +949,7 @@ def exercise_font_fallback(browser: Browser) -> None:
         action_states: dict[str, Any] = {}
         capture_names = {
             "marathon": "landscape-home-font-fallback-844x390-dpr3.png",
-            "race": "landscape-home-race-active-font-fallback-844x390-dpr3.png",
+            "race": "landscape-home-survival-active-font-fallback-844x390-dpr3.png",
             "puzzle": "landscape-home-puzzle-active-font-fallback-844x390-dpr3.png",
         }
         for mode in ("marathon", "race", "puzzle"):
@@ -1003,15 +1060,15 @@ def exercise_puzzle_success(browser: Browser) -> None:
 
 def write_manifest(source_sha: str, candidate_tip: str, capture_head: str) -> None:
     manifest = {
-        "taskId": "TETRIS-T5-FINAL-BROWSER-004",
+        "taskId": "TETRIS-T6-THREE-DISTINCT-MODES-017",
         "candidateSha": source_sha,
         "sourceSha": source_sha,
         "candidateTip": candidate_tip,
         "captureHead": capture_head,
         "independentQa": {
-            "coreRules": "ACCEPT — independent cross-QA of f0ec47c",
-            "staticFunctional": "ACCEPT — independent cross-QA of repaired source 48176fe",
-            "visualBrowser": "ACCEPT — exact-source original-detail matrix review",
+            "coreRules": "ACCEPT — independent Core cross-QA of 34184cb",
+            "staticFunctional": "ACCEPT — focused source verification of 5a3c35a",
+            "visualBrowser": "ACCEPT — independent combined browser QA of 34184cb + 5a3c35a",
             "visualChecks": "24/24 captures; 26/26 checksums; zero integrity failures",
             "matrixExecutionErrors": 0,
         },
@@ -1019,7 +1076,8 @@ def write_manifest(source_sha: str, candidate_tip: str, capture_head: str) -> No
         "method": (
             "First-viewport screenshots from visible UI; loaded and deliberately blocked Google Fonts; active 844x390 mode actions; "
             "first/eighth/fifteenth Puzzle binding; real keyboard and touch input; three Puzzle locks by normal gravity; detached "
-            "entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison only. Deterministic time advances "
+            "entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison; public-command Survival replay "
+            "to 24 lines and four permanent bedrock rows. Deterministic time advances "
             "ticks without replacing state, and no terminal state is fabricated."
         ),
         "captures": CAPTURES,
@@ -1070,7 +1128,7 @@ def main() -> None:
         )
         try:
             exercise_marathon_desktop(browser)
-            exercise_race_wide(browser)
+            exercise_survival_wide(browser)
             exercise_puzzle_portrait(browser)
             exercise_other_viewports(browser)
             exercise_font_fallback(browser)
