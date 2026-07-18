@@ -1,6 +1,6 @@
 # Current Task — T7 Timed Survival and Motion Refinement
 
-Branch: `codex/tetris-recovery`
+Branch: `main`
 
 Core/rule authority: `4c8582854088695ebac90467842dc2bc0cef3a20`
 

@@ -1,6 +1,6 @@
 # Bounded Commit Policy
 
-Status: authoritative for every task and worker in `E:\Proj\Game-1-tetris`.
+Status: authoritative for every task and worker in `E:\Proj\reproduction-tetris`.
 
 This policy prevents a workstream from accumulating an entire rules change, frontend
 pass, evidence matrix, and QA history into one opaque commit. It complements

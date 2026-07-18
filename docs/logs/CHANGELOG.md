@@ -273,3 +273,13 @@
   match. Independent static and visual QA accepted with no P0–P3 finding.
 - `index.html`, dependencies, Puzzle data/references, ordinary piece materials, and
   every separate game repository remain unchanged.
+
+## 2026-07-18 — Standalone repository migration
+
+- Published only the latest `codex/tetris-recovery` history as the sole `main`
+  branch of `https://github.com/Udkam/reproduction-tetris`, from exact source
+  `1e2ac983f66466b96c2530f589fdc393350e8c04`.
+- The older `codex/tetris` history was deliberately not migrated to the new remote.
+- Repointed `origin` and the active repository contracts to the standalone
+  repository and its `main` branch. The historical `Udkam/Game-1` remote was not
+  rewritten or deleted.
