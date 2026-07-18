@@ -416,6 +416,46 @@ function TouchButton({ action, label, glyph, runtime, disabled = false }: TouchB
   );
 }
 
+function AudioControls({
+  enabled,
+  volume,
+  onEnabledChange,
+  onVolumeChange,
+}: {
+  enabled: boolean;
+  volume: number;
+  onEnabledChange: (enabled: boolean) => void;
+  onVolumeChange: (volume: number) => void;
+}) {
+  const percent = Math.round(volume * 100);
+  return (
+    <section className="audio-controls" aria-label="声音控制">
+      <button
+        className="audio-toggle"
+        type="button"
+        data-testid="audio-toggle"
+        aria-label={enabled ? '关闭声音' : '开启声音'}
+        aria-pressed={enabled}
+        onClick={() => onEnabledChange(!enabled)}
+      >{enabled ? '声音开' : '声音关'}</button>
+      <label className="audio-volume">
+        <span>音量</span>
+        <input
+          type="range"
+          data-testid="audio-volume"
+          min="0"
+          max="100"
+          step="1"
+          value={percent}
+          aria-label="音量"
+          onChange={(event) => onVolumeChange(Number(event.currentTarget.value) / 100)}
+        />
+        <output>{percent}%</output>
+      </label>
+    </section>
+  );
+}
+
 export function RunStats({ state }: { state: GameState }) {
   if (state.mode === 'race') {
     const nextSeconds = survivalCountdownSeconds(state);
@@ -433,13 +473,14 @@ export function RunStats({ state }: { state: GameState }) {
   if (state.mode === 'puzzle') {
     const level = campaignLevel(state.puzzleId);
     const expirySeconds = puzzleExpirySeconds(state);
+    const hasVolatileSignal = state.puzzleActiveVolatile || expirySeconds !== null;
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
         <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
         <article data-stat-role="placed"><span>已放置</span><strong>{state.pieceCount}</strong></article>
         <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
         <article data-stat-role="objective" data-urgent={expirySeconds !== null && expirySeconds <= 3 || undefined}>
-          <span>{expirySeconds === null ? '目标' : '限时'}</span><strong>{expirySeconds === null ? '清除活动块' : `${expirySeconds} 秒`}</strong>
+          <span>{hasVolatileSignal ? '限时块' : '目标'}</span><strong>{expirySeconds !== null ? `${expirySeconds} 秒` : state.puzzleActiveVolatile ? '落定后 5 秒' : '清除活动块'}</strong>
         </article>
       </section>
     );
@@ -505,6 +546,8 @@ export function GameSession({
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [exitOpen, setExitOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [audioVolume, setAudioVolume] = useState(0.78);
 
   const focusBoard = useCallback(() => {
     requestAnimationFrame(() => hostRef.current?.querySelector('canvas')?.focus({ preventScroll: true }));
@@ -522,6 +565,8 @@ export function GameSession({
       puzzleId: mode === 'puzzle' ? puzzleId : undefined,
       inputEnabled: false,
       reducedMotion: motionQuery.matches,
+      audioEnabled,
+      audioVolume,
       onState: (nextState, events) => {
         if (disposed) return;
         setState(nextState);
@@ -584,6 +629,11 @@ export function GameSession({
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
   }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId]);
+
+  useEffect(() => {
+    runtime?.setAudioEnabled(audioEnabled);
+    runtime?.setAudioVolume(audioVolume);
+  }, [audioEnabled, audioVolume, runtime]);
 
   useEffect(() => {
     if (!import.meta.env.DEV || !runtime) return;
@@ -737,6 +787,12 @@ export function GameSession({
           <aside className="game-side-panel" data-testid="side-rail">
             <div className="info-rail" data-testid="context-top">
               <RunStats state={state} />
+              <AudioControls
+                enabled={audioEnabled}
+                volume={audioVolume}
+                onEnabledChange={setAudioEnabled}
+                onVolumeChange={setAudioVolume}
+              />
             </div>
             <div className="preview-rail">
               <p className="rail-label">Next</p>

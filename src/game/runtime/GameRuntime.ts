@@ -14,6 +14,7 @@ export interface RuntimeOptions {
   inputEnabled?: boolean;
   reducedMotion?: boolean;
   audioEnabled?: boolean;
+  audioVolume?: number;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
 }
 
@@ -57,6 +58,7 @@ export class GameRuntime {
     this.inputEnabled = options.inputEnabled ?? true;
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
+    this.audio.setVolume(options.audioVolume ?? 0.78);
   }
 
   async mount(host: HTMLElement): Promise<void> {
@@ -156,6 +158,10 @@ export class GameRuntime {
   setAudioEnabled(enabled: boolean): void {
     this.audio.setEnabled(enabled);
     if (enabled) void this.audio.prime();
+  }
+
+  setAudioVolume(volume: number): void {
+    this.audio.setVolume(volume);
   }
 
   getState(): GameState {

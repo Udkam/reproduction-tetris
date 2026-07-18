@@ -1,7 +1,7 @@
 // @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
+import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS, VOLATILE_MATERIAL } from './theme';
 
 const styles = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
 
@@ -44,6 +44,18 @@ describe('T5 bright mineral matte material', () => {
     expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(BEDROCK_MATERIAL);
     expect(contrastRatio(BEDROCK_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
     expect(contrastRatio(BEDROCK_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
+  });
+
+  it('reserves a high-contrast warm material for five-second volatile Puzzle inputs', () => {
+    expect(VOLATILE_MATERIAL).toEqual({
+      fillStart: 0xffc56a,
+      fillEnd: 0xd96e43,
+      edge: 0x74351f,
+      innerEdge: 0xffe3ab,
+    });
+    expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(VOLATILE_MATERIAL);
+    expect(contrastRatio(VOLATILE_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(VOLATILE_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
   });
 
   it('freezes the complete page and state palette', () => {

@@ -36,6 +36,8 @@ interface RuntimeTestInstance {
   options: RuntimeTestOptions;
   setInputEnabled: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
+  setAudioEnabled: ReturnType<typeof vi.fn>;
+  setAudioVolume: ReturnType<typeof vi.fn>;
 }
 
 const runtimeHarness = vi.hoisted(() => ({ instances: [] as RuntimeTestInstance[] }));
@@ -47,6 +49,8 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     private canvas: HTMLCanvasElement | null = null;
     readonly setInputEnabled = vi.fn();
     readonly setReducedMotion = vi.fn();
+    readonly setAudioEnabled = vi.fn();
+    readonly setAudioVolume = vi.fn();
     readonly start = vi.fn(() => {
       const transition = core.dispatch(this.state, { type: 'start' });
       this.state = transition.state;
@@ -228,6 +232,38 @@ describe('T6 frontend mode binding', () => {
       .map((match) => match[1]!.trim())
       .join('\n');
     expect(statisticSelectors).not.toMatch(/nth-child|nth-of-type|\bodd\b|\beven\b/);
+  });
+
+  it('labels an incoming volatile Puzzle piece before its five-second lock timer begins', () => {
+    const state = {
+      ...createInitialState(0x51a1f00d, 'puzzle', 't5r-lattice-09'),
+      puzzleActiveVolatile: true,
+    };
+    const view = render(createElement(RunStats, { state }));
+    const objective = view.container.querySelector<HTMLElement>('[data-stat-role="objective"]');
+    expect(objective?.textContent).toContain('限时块');
+    expect(objective?.textContent).toContain('落定后 5 秒');
+    view.unmount();
+  });
+
+  it('exposes an audible, adjustable in-session audio control', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
+    const volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
+    expect(toggle.textContent).toBe('声音开');
+    expect(volume.value).toBe('78');
+    act(() => toggle.click());
+    expect(toggle.textContent).toBe('声音关');
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(volume, '56');
+    act(() => volume.dispatchEvent(new Event('input', { bubbles: true })));
+    expect(view.container.textContent).toContain('56%');
+    view.unmount();
   });
 
   it('shows the distinct Classic, Survival, and Puzzle copy while retaining internal selectors', () => {

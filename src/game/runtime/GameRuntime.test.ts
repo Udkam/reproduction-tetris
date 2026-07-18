@@ -7,10 +7,12 @@ const rendererSetOptions = vi.hoisted(() => vi.fn());
 const inputClearHeld = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
 const audioPrime = vi.hoisted(() => vi.fn());
+const audioSetVolume = vi.hoisted(() => vi.fn());
 
 vi.mock('../audio/AudioEngine', () => ({
   AudioEngine: class {
     setEnabled(): void {}
+    setVolume(volume: number): void { audioSetVolume(volume); }
     async prime(): Promise<void> { audioPrime(); }
     play(): void {}
     suspend(): void {}
@@ -158,6 +160,19 @@ describe('GameRuntime public state boundary', () => {
     runtime.setReducedMotion(true);
 
     expect(rendererSetOptions).toHaveBeenCalledWith({ reducedMotion: true });
+    expect(runtime.getState()).toBe(before);
+  });
+
+  it('routes a bounded user volume through audio without touching game state', () => {
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
+    const before = runtime.getState();
+    audioSetVolume.mockClear();
+
+    runtime.setAudioVolume(2);
+    runtime.setAudioVolume(-1);
+
+    expect(audioSetVolume).toHaveBeenNthCalledWith(1, 2);
+    expect(audioSetVolume).toHaveBeenNthCalledWith(2, -1);
     expect(runtime.getState()).toBe(before);
   });
 

@@ -14,7 +14,7 @@ import {
   type BoardMaterial,
   type PieceType,
 } from '../core';
-import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
+import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS, VOLATILE_MATERIAL, type PieceMaterial } from './theme';
 import {
   approachPresentationPoint,
   boardShiftPresentationOffset,
@@ -79,6 +79,7 @@ interface GroupDrawOptions {
   active?: boolean;
   ghost?: boolean;
   faceColor?: number;
+  material?: PieceMaterial;
 }
 
 export interface RendererSnapshot {
@@ -107,6 +108,7 @@ export class TetrisRenderer {
   private readonly pieceGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
   private readonly cellGradients = new Map<BoardMaterial, FillGradient>();
+  private readonly overrideGradients = new Map<PieceMaterial, FillGradient>();
 
   private frameCallback: ((deltaMs: number) => void) | null = null;
   private presentation: PiecePresentation | null = null;
@@ -219,6 +221,8 @@ export class TetrisRenderer {
     this.frameCallback = null;
     for (const gradient of this.cellGradients.values()) gradient.destroy();
     this.cellGradients.clear();
+    for (const gradient of this.overrideGradients.values()) gradient.destroy();
+    this.overrideGradients.clear();
     this.app.destroy({ removeView: true }, { children: true });
     this.app = null;
     this.host = null;
@@ -283,7 +287,8 @@ export class TetrisRenderer {
     const graphics = this.pieceGraphics;
     graphics.clear();
     let visibleLockedCells = 0;
-    const lockedByType = new Map<BoardMaterial, Cell[]>();
+    const volatileCells = new Set(state.puzzleVolatilePieces.flatMap((piece) => piece.cells.map((cell) => `${cell.x},${cell.y}`)));
+    const lockedByMaterial = new Map<string, { type: BoardMaterial; cells: Cell[]; volatile: boolean }>();
     const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
       ? boardShiftPresentationOffset(
           this.boardShift.direction,
@@ -298,17 +303,20 @@ export class TetrisRenderer {
       row.forEach((cell, x) => {
         if (!cell) return;
         visibleLockedCells += 1;
-        const cells = lockedByType.get(cell) ?? [];
-        cells.push({ x, y: boardY - VISIBLE_START_ROW });
-        lockedByType.set(cell, cells);
+        const volatile = volatileCells.has(`${x},${boardY}`);
+        const key = `${cell}:${volatile ? 'volatile' : 'ordinary'}`;
+        const group = lockedByMaterial.get(key) ?? { type: cell, cells: [], volatile };
+        group.cells.push({ x, y: boardY - VISIBLE_START_ROW });
+        lockedByMaterial.set(key, group);
       });
     });
-    for (const [type, cells] of lockedByType) {
+    for (const { type, cells, volatile } of lockedByMaterial.values()) {
       this.drawCellGroups(graphics, cells, type, 1, {
         originX: layout.x,
         originY: layout.y,
         unit: layout.cell,
         offsetY: boardShiftOffsetY,
+        material: volatile ? VOLATILE_MATERIAL : undefined,
       });
     }
 
@@ -350,6 +358,7 @@ export class TetrisRenderer {
         unit: layout.cell,
         offsetX: ghostOffsetX,
         ghost: true,
+        material: state.puzzleActiveVolatile ? VOLATILE_MATERIAL : undefined,
       });
     }
 
@@ -376,6 +385,7 @@ export class TetrisRenderer {
           offsetY,
           active: true,
           scale: rotationScale,
+          material: state.puzzleActiveVolatile ? VOLATILE_MATERIAL : undefined,
         },
       );
     }
@@ -403,10 +413,22 @@ export class TetrisRenderer {
     return type === BEDROCK_CELL ? BEDROCK_MATERIAL : PIECE_MATERIALS[type];
   }
 
-  private gradientFor(type: BoardMaterial): FillGradient {
+  private gradientFor(type: BoardMaterial, materialOverride?: PieceMaterial): FillGradient {
+    if (materialOverride) {
+      const existingOverride = this.overrideGradients.get(materialOverride);
+      if (existingOverride) return existingOverride;
+      const gradient = this.createGradient(materialOverride);
+      this.overrideGradients.set(materialOverride, gradient);
+      return gradient;
+    }
     const existing = this.cellGradients.get(type);
     if (existing) return existing;
-    const material = this.materialFor(type);
+    const gradient = this.createGradient(this.materialFor(type));
+    this.cellGradients.set(type, gradient);
+    return gradient;
+  }
+
+  private createGradient(material: PieceMaterial): FillGradient {
     const gradient = new FillGradient({
       type: 'linear',
       start: { x: 0, y: 0 },
@@ -417,7 +439,6 @@ export class TetrisRenderer {
         { offset: 1, color: material.fillEnd },
       ],
     });
-    this.cellGradients.set(type, gradient);
     return gradient;
   }
 
@@ -445,7 +466,7 @@ export class TetrisRenderer {
       : 0;
     const gap = (baseGap + ghostInset) * scale;
     const size = scaledUnit - gap * 2;
-    const material = this.materialFor(type);
+    const material = options.material ?? this.materialFor(type);
     const radius = Math.max(CELL_STYLE.radiusMin, Math.min(CELL_STYLE.radiusMax, size * CELL_STYLE.radiusRatio));
     const borderWidth = Math.max(
       CELL_STYLE.edgeWidthMin,
@@ -492,7 +513,7 @@ export class TetrisRenderer {
           graphics.rect(entry.x + size, entry.y + size, gap * 2, gap * 2);
         }
       }
-      if (options.faceColor === undefined) graphics.fill({ fill: this.gradientFor(type), alpha });
+      if (options.faceColor === undefined) graphics.fill({ fill: this.gradientFor(type, options.material), alpha });
       else graphics.fill({ color: options.faceColor, alpha });
       if (options.faceColor !== undefined) return;
 
