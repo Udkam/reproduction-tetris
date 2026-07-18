@@ -1,21 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { BEDROCK_CELL, BOARD_WIDTH, SURVIVAL_LINES_PER_BEDROCK, stateHash } from '../core';
-import { SURVIVAL_BEDROCK_QA_LINES, replayPuzzleChallenge, replaySurvivalBedrock } from './qaScenario';
+import { BEDROCK_CELL, BOARD_WIDTH, TICKS_PER_SECOND, stateHash } from '../core';
+import { SURVIVAL_BEDROCK_QA_ROWS, replayPuzzleChallenge, replaySurvivalBedrock } from './qaScenario';
 
 describe('Survival bedrock browser QA replay', () => {
-  it('reaches a deterministic live bedrock milestone from public commands only', () => {
+  it('reaches the first deterministic timed rise through ordinary gravity and public commands only', () => {
     const first = replaySurvivalBedrock(0x51a1f00d);
     const second = replaySurvivalBedrock(0x51a1f00d);
 
     expect(first.commands[0]).toEqual({ type: 'start' });
-    expect(first.commands.some((command) => command.type === 'hard-drop')).toBe(true);
+    expect(first.commands.some((command) => command.type === 'move')).toBe(true);
+    expect(first.commands.some((command) => command.type === 'hard-drop')).toBe(false);
     expect(first.commands.some((command) => command.type === 'tick')).toBe(true);
     expect(first.state.mode).toBe('race');
     expect(first.state.status).toBe('playing');
-    expect(first.state.lines).toBeGreaterThanOrEqual(SURVIVAL_BEDROCK_QA_LINES);
+    expect(first.state.elapsedTicks).toBeGreaterThanOrEqual(40 * TICKS_PER_SECOND);
     expect(first.state.active).not.toBeNull();
-    expect(first.state.survivalBedrockRows).toBeGreaterThanOrEqual(1);
-    expect(first.state.survivalBedrockRows).toBe(Math.floor(first.state.lines / SURVIVAL_LINES_PER_BEDROCK));
+    expect(first.state.survivalBedrockRows).toBe(SURVIVAL_BEDROCK_QA_ROWS);
+    expect(first.state.lines).toBeLessThan(5);
     expect(first.state.board.at(-1)).toEqual(Array.from({ length: BOARD_WIDTH }, () => BEDROCK_CELL));
     expect(stateHash(first.state)).toBe(stateHash(second.state));
     expect(first.commands).toEqual(second.commands);
