@@ -535,7 +535,14 @@ def validate_layout(metrics: dict[str, Any], *, gameplay: bool) -> None:
         require(fonts["keyboard"] and min(fonts["keyboard"]) >= 11.9, f"Mobile keyboard map below 12 px: {fonts}")
 
 
-def capture(page: Page, name: str, *, gameplay: bool, extra: dict[str, Any] | None = None) -> dict[str, Any]:
+def capture(
+    page: Page,
+    name: str,
+    *,
+    gameplay: bool,
+    extra: dict[str, Any] | None = None,
+    keep_frozen: bool = False,
+) -> dict[str, Any]:
     frozen = False
     if gameplay:
         page.wait_for_function("() => Boolean(window.__SIGNAL_FOUNDRY_QA__)")
@@ -558,7 +565,7 @@ def capture(page: Page, name: str, *, gameplay: bool, extra: dict[str, Any] | No
         CAPTURES.append(record)
         return record
     finally:
-        if frozen:
+        if frozen and not keep_frozen:
             page.evaluate("window.__SIGNAL_FOUNDRY_QA__?.setFrozen(false)")
 
 
@@ -653,6 +660,22 @@ def exercise_marathon_desktop(browser: Browser) -> None:
             "focusedHomeRuleCount": puzzle_focus["metrics"]["home"]["phaseCount"],
         }
 
+        page.emulate_media(reduced_motion="reduce")
+        page.wait_for_timeout(50)
+        reduced_home = page.evaluate(
+            """() => ({
+              gateAnimation: getComputedStyle(document.querySelector('.mode-gate')).animationName,
+              glyphTransform: getComputedStyle(document.querySelector('.mode-gate__glyph svg')).transform,
+              motifTransform: getComputedStyle(document.querySelector('.mode-gate__motif')).transform,
+            })"""
+        )
+        require(
+            reduced_home == {"gateAnimation": "none", "glyphTransform": "none", "motifTransform": "none"},
+            f"Reduced-motion home transforms remain active: {reduced_home}",
+        )
+        CHECKS["reducedMotionHome"] = reduced_home
+        page.emulate_media(reduced_motion="no-preference")
+
         page.locator('[data-testid="enter-marathon"]').click()
         capture_entry_countdown(page, "desktop-classic-countdown-1440x900.png", "marathon")
         wait_for_game(page, "marathon")
@@ -743,26 +766,40 @@ def exercise_marathon_desktop(browser: Browser) -> None:
         context.close()
 
 
-def drive_survival_bedrock(page: Page) -> dict[str, Any]:
-    result = page.evaluate(
+def prepare_survival_bedrock(page: Page) -> dict[str, int]:
+    return page.evaluate(
         """async () => {
-          const { createSurvivalBedrockReplay } = await import('/src/game/runtime/qaScenario.ts');
-          const commands = createSurvivalBedrockReplay();
+          const { createSurvivalBedrockQaReplay } = await import('/src/game/runtime/qaScenario.ts');
+          const replay = createSurvivalBedrockQaReplay();
           const qa = window.__SIGNAL_FOUNDRY_QA__;
           if (!qa) throw new Error('Survival QA runtime is unavailable.');
           qa.setFrozen(true);
-          let operations = 0;
-          for (let index = 0; index < commands.length; index += 1) {
-            const command = commands[index];
-            if (command.type === 'start') continue;
+          window.__T7_SURVIVAL_REPLAY__ = { replay, cursor: 1, operations: 0 };
+          return {
+            commandCount: replay.commands.length,
+            firstRiseCommandCount: replay.firstRiseCommandCount,
+            removalCommandCount: replay.removalCommandCount,
+          };
+        }"""
+    )
+
+
+def drive_survival_bedrock(page: Page, target_count: int) -> dict[str, Any]:
+    return page.evaluate(
+        """target => {
+          const session = window.__T7_SURVIVAL_REPLAY__;
+          const qa = window.__SIGNAL_FOUNDRY_QA__;
+          if (!session || !qa) throw new Error('Prepared Survival replay is unavailable.');
+          while (session.cursor < target) {
+            const command = session.replay.commands[session.cursor];
             if (command.type === 'tick') {
               let ticks = 1;
-              while (commands[index + 1]?.type === 'tick') {
+              while (session.cursor + ticks < target && session.replay.commands[session.cursor + ticks]?.type === 'tick') {
                 ticks += 1;
-                index += 1;
               }
               qa.advanceTicks(ticks);
-              operations += 1;
+              session.cursor += ticks;
+              session.operations += 1;
               continue;
             }
             if (command.type === 'move') qa.action(command.dx < 0 ? 'left' : 'right');
@@ -770,16 +807,14 @@ def drive_survival_bedrock(page: Page) -> dict[str, Any]:
             else if (command.type === 'soft-drop') qa.action('soft-drop');
             else if (command.type === 'hard-drop') qa.action('hard-drop');
             else throw new Error(`Unsupported public Survival command: ${command.type}`);
-            operations += 1;
+            session.cursor += 1;
+            session.operations += 1;
           }
-          return { commandCount: commands.length, operations, state: qa.getState() };
-        }"""
+          qa.advanceTicks(0);
+          return { cursor: session.cursor, operations: session.operations, state: qa.getState() };
+        }""",
+        target_count,
     )
-    page.wait_for_function(
-        "() => window.__SIGNAL_FOUNDRY_QA__.getState().elapsedTicks >= 2400"
-        " && window.__SIGNAL_FOUNDRY_QA__.getState().survivalBedrockRows >= 1"
-    )
-    return result
 
 
 def exercise_survival_wide(browser: Browser) -> None:
@@ -790,19 +825,34 @@ def exercise_survival_wide(browser: Browser) -> None:
         for forbidden in ("竞速", "等级", "速度档", "速度递增", "20 行", "剩余行", "完成目标"):
             require(forbidden not in body, f"Obsolete Race/level copy remains: {forbidden}")
         enter_mode(page, "race")
-        replay_result = drive_survival_bedrock(page)
-        state = replay_result["state"]
-        require(state["status"] == "playing" and state["elapsedTicks"] >= 2400, f"Timed Survival replay did not stay live: {state}")
-        require(state["lines"] < 5, f"Timed rise must precede the first five-line reward: {state}")
-        require(state["survivalBedrockRows"] == 1, f"First timed Survival bedrock did not rise: {state}")
-        require(state["board"][-1] == ["B"] * 10, f"Survival bottom row is not canonical bedrock: {state['board'][-1]}")
+        milestones = prepare_survival_bedrock(page)
+        rise_result = drive_survival_bedrock(page, milestones["firstRiseCommandCount"])
+        rise_state = rise_result["state"]
+        require(rise_state["status"] == "playing" and rise_state["elapsedTicks"] >= 2400, f"Timed Survival replay did not stay live: {rise_state}")
+        require(rise_state["lines"] < 5 and rise_state["survivalBedrockRows"] == 1, f"First timed rise drifted: {rise_state}")
+        require(rise_state["board"][-1] == ["B"] * 10, f"Survival bottom row is not canonical bedrock: {rise_state['board'][-1]}")
         body = page.locator("body").inner_text()
-        require("基岩" in body and str(state["survivalBedrockRows"]) in body, "Visible Survival bedrock statistic drifted.")
+        require("基岩" in body and "1" in body, "Visible Survival bedrock statistic drifted.")
         capture(
             page,
             "wide-survival-bedrock-2048x1152.png",
             gameplay=True,
-            extra={"commandCount": replay_result["commandCount"], "operations": replay_result["operations"]},
+            extra={"commandCount": milestones["commandCount"], "operations": rise_result["operations"]},
+            keep_frozen=True,
+        )
+
+        removal_result = drive_survival_bedrock(page, milestones["removalCommandCount"])
+        state = removal_result["state"]
+        require(state["status"] == "playing" and state["lines"] >= 5, f"Five-line reward replay did not stay live: {state}")
+        require(state["survivalBedrockRows"] == 0, f"Five-line reward did not lower one bedrock row: {state}")
+        require(state["survivalPressureTicks"] == 0, f"Five-line reward did not reset pressure: {state}")
+        text_state = json.loads(page.evaluate("window.render_game_to_text()"))
+        require(text_state["bedrockIntervalSeconds"] == 38 and text_state["bedrockNextSeconds"] == 38, f"Shortened interval is not visible: {text_state}")
+        capture(
+            page,
+            "wide-survival-reward-2048x1152.png",
+            gameplay=True,
+            extra={"lines": state["lines"], "bedrockRows": 0, "intervalSeconds": 38},
         )
 
         terminal = qa_state(page)
@@ -814,12 +864,10 @@ def exercise_survival_wide(browser: Browser) -> None:
         page.get_by_role("dialog", name="生存结束").wait_for(state="visible")
         capture(page, "wide-survival-topout-2048x1152.png", gameplay=True)
         CHECKS["survivalBedrockAndTopOut"] = {
-            "replayCommandCount": replay_result["commandCount"],
-            "publicOperations": replay_result["operations"],
-            "bedrockRows": state["survivalBedrockRows"],
-            "elapsedTicks": state["elapsedTicks"],
-            "nextIntervalSeconds": 40,
-            "bottomRow": "".join(state["board"][-1]),
+            "replayCommandCount": milestones["commandCount"],
+            "publicOperations": removal_result["operations"],
+            "rise": {"bedrockRows": 1, "elapsedTicks": rise_state["elapsedTicks"], "bottomRow": "".join(rise_state["board"][-1])},
+            "reward": {"lines": state["lines"], "bedrockRows": 0, "pressureTicks": 0, "nextIntervalSeconds": 38},
             "pieceCount": terminal["pieceCount"],
             "lines": terminal["lines"],
         }
@@ -1077,7 +1125,8 @@ def write_manifest(source_sha: str, candidate_tip: str, capture_head: str) -> No
             "First-viewport screenshots from visible UI; loaded and deliberately blocked Google Fonts; active 844x390 mode actions; "
             "first/eighth/fifteenth Puzzle binding; real keyboard and touch input; three Puzzle locks by normal gravity; detached "
             "entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison; removed decorative-rule checks; "
-            "public-command Survival replay through ordinary gravity to the first 40-second timed bedrock rise. Deterministic time advances "
+            "public-command Survival replay through ordinary gravity to the first 40-second rise, then normal hard drops to the five-line "
+            "bedrock removal, 38-second interval, and pressure reset. Deterministic time advances "
             "ticks without replacing state, and no terminal state is fabricated."
         ),
         "captures": CAPTURES,

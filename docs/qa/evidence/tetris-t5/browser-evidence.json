@@ -1,15 +1,15 @@
 {
   "taskId": "TETRIS-T7-TIMED-SURVIVAL-019",
-  "candidateSha": "b8e5e6e71afbdbe87c476bcb91edade0f3abebe4",
-  "sourceSha": "b8e5e6e71afbdbe87c476bcb91edade0f3abebe4",
-  "candidateTip": "b8e5e6e71afbdbe87c476bcb91edade0f3abebe4",
-  "captureHead": "b8e5e6e71afbdbe87c476bcb91edade0f3abebe4",
+  "candidateSha": "356440cf0f785b2558745c6eddd307b1654525e6",
+  "sourceSha": "356440cf0f785b2558745c6eddd307b1654525e6",
+  "candidateTip": "356440cf0f785b2558745c6eddd307b1654525e6",
+  "captureHead": "356440cf0f785b2558745c6eddd307b1654525e6",
   "independentQa": {
     "disposition": "Recorded separately after source-bound capture",
     "matrixExecutionErrors": 0
   },
   "baseUrl": "http://127.0.0.1:4175/",
-  "method": "First-viewport screenshots from visible UI; loaded and deliberately blocked Google Fonts; active 844x390 mode actions; first/eighth/fifteenth Puzzle binding; real keyboard and touch input; three Puzzle locks by normal gravity; detached entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison; removed decorative-rule checks; public-command Survival replay through ordinary gravity to the first 40-second timed bedrock rise. Deterministic time advances ticks without replacing state, and no terminal state is fabricated.",
+  "method": "First-viewport screenshots from visible UI; loaded and deliberately blocked Google Fonts; active 844x390 mode actions; first/eighth/fifteenth Puzzle binding; real keyboard and touch input; three Puzzle locks by normal gravity; detached entry countdown QA entry-point gating; canonical/text/renderer snapshot comparison; removed decorative-rule checks; public-command Survival replay through ordinary gravity to the first 40-second rise, then normal hard drops to the five-line bedrock removal, 38-second interval, and pressure reset. Deterministic time advances ticks without replacing state, and no terminal state is fabricated.",
   "captures": [
     {
       "file": "desktop-home-1440x900.png",
@@ -1455,7 +1455,7 @@
         "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 58,
-          "height": 43.993438720703125
+          "height": 43.98602294921875
         },
         "buttons": [
           {
@@ -1495,18 +1495,18 @@
           },
           {
             "text": "继续游戏",
-            "width": 216.96774291992188,
-            "height": 43.993438720703125
+            "width": 216.93124389648438,
+            "height": 43.986053466796875
           },
           {
             "text": "重新开始",
-            "width": 216.9677734375,
-            "height": 43.993438720703125
+            "width": 216.93121337890625,
+            "height": 43.986053466796875
           },
           {
             "text": "离开本局",
-            "width": 441.9342956542969,
-            "height": 43.99346923828125
+            "width": 441.8599548339844,
+            "height": 43.98602294921875
           }
         ],
         "home": {
@@ -1856,7 +1856,7 @@
           "canvasCount": 1,
           "domCellCount": 0,
           "minButtonWidth": 58,
-          "minButtonHeight": 43.993438720703125,
+          "minButtonHeight": 43.98602294921875,
           "noHorizontalOverflow": true,
           "noVerticalOverflow": true
         }
@@ -2567,13 +2567,13 @@
         }
       },
       "checks": {
-        "commandCount": 2758,
+        "commandCount": 2884,
         "operations": 9
       }
     },
     {
-      "file": "wide-survival-topout-2048x1152.png",
-      "sha256": "4a2a30e75310144cdef7df539b0fbd9cb57c546c1b79bbe75dcc9f5bb732b046",
+      "file": "wide-survival-reward-2048x1152.png",
+      "sha256": "c196d6b1ebb9afa57589ed3893f7950b8d3ebbff97f84e97e4210701594428fa",
       "metrics": {
         "viewport": {
           "width": 2048,
@@ -2601,7 +2601,434 @@
         "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 58,
-          "height": 43.97369384765625
+          "height": 44
+        },
+        "buttons": [
+          {
+            "text": "← 返回",
+            "width": 74.3125,
+            "height": 44
+          },
+          {
+            "text": "暂停",
+            "width": 58,
+            "height": 44
+          },
+          {
+            "text": "←左移",
+            "width": 185.59375,
+            "height": 71
+          },
+          {
+            "text": "→右移",
+            "width": 185.59375,
+            "height": 71
+          },
+          {
+            "text": "↻旋转",
+            "width": 185.609375,
+            "height": 71
+          },
+          {
+            "text": "↓快速下落",
+            "width": 185.59375,
+            "height": 71
+          },
+          {
+            "text": "⇣直接落底",
+            "width": 185.609375,
+            "height": 71
+          }
+        ],
+        "home": {
+          "modes": {
+            "marathon": null,
+            "race": null,
+            "puzzle": null
+          },
+          "phaseCount": 0,
+          "phase": null,
+          "selection": null,
+          "actions": {
+            "marathon": {
+              "button": null,
+              "action": null,
+              "arrow": null,
+              "actionInsideButton": false,
+              "arrowInsideButton": false,
+              "actionInsideSurface": false,
+              "arrowStyle": null
+            },
+            "race": {
+              "button": null,
+              "action": null,
+              "arrow": null,
+              "actionInsideButton": false,
+              "arrowInsideButton": false,
+              "actionInsideSurface": false,
+              "arrowStyle": null
+            },
+            "puzzle": {
+              "button": null,
+              "action": null,
+              "arrow": null,
+              "actionInsideButton": false,
+              "arrowInsideButton": false,
+              "actionInsideSurface": false,
+              "arrowStyle": null
+            }
+          },
+          "fonts": {
+            "previewKicker": [],
+            "previewCopy": [],
+            "input": [],
+            "intro": [],
+            "modeCopy": []
+          }
+        },
+        "library": {
+          "rows": [],
+          "starts": []
+        },
+        "fonts": {
+          "statLabels": [
+            14,
+            14,
+            14,
+            14
+          ],
+          "statValues": [
+            20,
+            20,
+            20,
+            20
+          ],
+          "touchLabels": [
+            12,
+            12,
+            12,
+            12,
+            12
+          ],
+          "nextLabels": [
+            12
+          ],
+          "keyboard": [
+            12
+          ],
+          "spaceGroteskReady": true,
+          "notoSansReady": true
+        },
+        "motion": {
+          "animatedCount": 1,
+          "infiniteCount": 0
+        },
+        "stats": {
+          "roles": [
+            "score",
+            "lines",
+            "survival-bedrock",
+            "survival-next"
+          ],
+          "borders": [
+            {
+              "role": "score",
+              "top": 0,
+              "right": 1,
+              "bottom": 1,
+              "left": 0
+            },
+            {
+              "role": "lines",
+              "top": 0,
+              "right": 0,
+              "bottom": 1,
+              "left": 0
+            },
+            {
+              "role": "survival-bedrock",
+              "top": 0,
+              "right": 1,
+              "bottom": 0,
+              "left": 0
+            },
+            {
+              "role": "survival-next",
+              "top": 0,
+              "right": 0,
+              "bottom": 0,
+              "left": 0
+            }
+          ]
+        },
+        "bounds": {
+          "board": {
+            "x": 662,
+            "y": 109,
+            "width": 460,
+            "height": 920,
+            "right": 1122,
+            "bottom": 1029,
+            "clientWidth": 460,
+            "clientHeight": 920,
+            "scrollWidth": 460,
+            "scrollHeight": 920
+          },
+          "stats": {
+            "x": 1171,
+            "y": 378.625,
+            "width": 215,
+            "height": 127.1875,
+            "right": 1386,
+            "bottom": 505.8125,
+            "clientWidth": 215,
+            "clientHeight": 125,
+            "scrollWidth": 215,
+            "scrollHeight": 125
+          },
+          "next": {
+            "x": 1171,
+            "y": 559.8125,
+            "width": 215,
+            "height": 112,
+            "right": 1386,
+            "bottom": 671.8125,
+            "clientWidth": 213,
+            "clientHeight": 110,
+            "scrollWidth": 213,
+            "scrollHeight": 110
+          },
+          "touch": {
+            "x": 560,
+            "y": 1067,
+            "width": 928,
+            "height": 72,
+            "right": 1488,
+            "bottom": 1139,
+            "clientWidth": 928,
+            "clientHeight": 71,
+            "scrollWidth": 928,
+            "scrollHeight": 71
+          },
+          "nextLabel": {
+            "x": 1171,
+            "y": 534.8125,
+            "width": 215,
+            "height": 16,
+            "right": 1386,
+            "bottom": 550.8125,
+            "clientWidth": 215,
+            "clientHeight": 16,
+            "scrollWidth": 215,
+            "scrollHeight": 16
+          },
+          "keyboard": {
+            "x": 1171,
+            "y": 686.8125,
+            "width": 215,
+            "height": 72.5625,
+            "right": 1386,
+            "bottom": 759.375,
+            "clientWidth": 215,
+            "clientHeight": 72,
+            "scrollWidth": 215,
+            "scrollHeight": 72
+          },
+          "goal": null,
+          "canvasHost": {
+            "x": 560,
+            "y": 71,
+            "width": 928,
+            "height": 996,
+            "right": 1488,
+            "bottom": 1067,
+            "clientWidth": 928,
+            "clientHeight": 996,
+            "scrollWidth": 928,
+            "scrollHeight": 996
+          }
+        },
+        "boardRatio": 2,
+        "overlap": {
+          "statsBoard": 0,
+          "nextBoard": 0,
+          "touchBoard": 0
+        },
+        "state": {
+          "mode": "race",
+          "status": "playing",
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "pieceCount": 16,
+          "lines": 5,
+          "active": {
+            "type": "L",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "T"
+        },
+        "textState": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "score": 638,
+          "lines": 5,
+          "combo": 0,
+          "bedrockRows": 0,
+          "bedrockIntervalSeconds": 38,
+          "bedrockNextSeconds": 38,
+          "bedrockPending": false,
+          "fallTicks": 48,
+          "placedPieces": 16,
+          "active": {
+            "type": "L",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "T",
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            ".T..Z.OOS.",
+            "IZSSLLOOL."
+          ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 928,
+            "height": 996,
+            "resolution": 1
+          },
+          "board": {
+            "x": 102,
+            "y": 38,
+            "width": 460,
+            "height": 920,
+            "cell": 46
+          },
+          "preview": {
+            "x": 611,
+            "y": 488.8125,
+            "width": 215,
+            "height": 112
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "activeCells": [
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 5,
+              "y": 36
+            },
+            {
+              "x": 3,
+              "y": 37
+            },
+            {
+              "x": 4,
+              "y": 37
+            },
+            {
+              "x": 5,
+              "y": 37
+            }
+          ],
+          "visibleLockedCells": 14,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          }
+        },
+        "runtimeAssertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
+        }
+      },
+      "checks": {
+        "lines": 5,
+        "bedrockRows": 0,
+        "intervalSeconds": 38
+      }
+    },
+    {
+      "file": "wide-survival-topout-2048x1152.png",
+      "sha256": "b9c10c88f87a734293c8979096271203e4c53d6f3d78b106314e7af272b70319",
+      "metrics": {
+        "viewport": {
+          "width": 2048,
+          "height": 1152,
+          "dpr": 1
+        },
+        "document": {
+          "scrollWidth": 2048,
+          "scrollHeight": 1152,
+          "clientWidth": 2048,
+          "clientHeight": 1152
+        },
+        "screen": "game-screen",
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "runtimeQaPresent": true,
+        "qaCollectPresent": true,
+        "brand": {
+          "count": 1,
+          "texts": [
+            "Tetris"
+          ],
+          "hasGraphic": false
+        },
+        "bannedVisibleText": [],
+        "buttonMinimum": {
+          "width": 58,
+          "height": 43.9736328125
         },
         "buttons": [
           {
@@ -2641,13 +3068,13 @@
           },
           {
             "text": "再来一局",
-            "width": 216.870361328125,
-            "height": 43.97369384765625
+            "width": 216.87005615234375,
+            "height": 43.9736328125
           },
           {
             "text": "返回模式首页",
-            "width": 216.870361328125,
-            "height": 43.97369384765625
+            "width": 216.8701171875,
+            "height": 43.9736328125
           }
         ],
         "home": {
@@ -2870,10 +3297,10 @@
           "phase": "active",
           "puzzleId": null,
           "puzzleCompletion": null,
-          "pieceCount": 13,
-          "lines": 0,
+          "pieceCount": 26,
+          "lines": 5,
           "active": null,
-          "next": "O"
+          "next": "Z"
         },
         "textState": {
           "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
@@ -2884,38 +3311,38 @@
           "phase": "active",
           "puzzleId": null,
           "puzzleCompletion": null,
-          "score": 158,
-          "lines": 0,
+          "score": 812,
+          "lines": 5,
           "combo": 0,
-          "bedrockRows": 1,
-          "bedrockIntervalSeconds": 40,
-          "bedrockNextSeconds": 39,
+          "bedrockRows": 0,
+          "bedrockIntervalSeconds": 38,
+          "bedrockNextSeconds": 38,
           "bedrockPending": false,
           "fallTicks": 48,
-          "placedPieces": 13,
+          "placedPieces": 26,
           "active": null,
-          "next": "O",
+          "next": "Z",
           "visibleBoard": [
+            ".....L....",
             "...LLL....",
-            "...J......",
-            "...JJJ....",
-            "...IIII...",
-            "...ZZ.....",
-            "....ZZ....",
-            "....SS....",
-            "...SS.....",
-            "....OO....",
-            "....OO....",
             "....T.....",
             "...TTT....",
             "...IIII...",
+            "....OO....",
+            "....OO....",
+            "....SS....",
+            "...SS.....",
+            "...IIII...",
+            "...J......",
+            "...JJJ....",
+            "...ZZ.....",
+            "....ZZ....",
+            "....T.....",
+            "...TTT....",
             ".....L....",
             "...LLL....",
-            "...ZZ.....",
-            "..SSZZ....",
-            "JSSOO.....",
-            "JJJOO.....",
-            "BBBBBBBBBB"
+            ".T..Z.OOS.",
+            "IZSSLLOOL."
           ]
         },
         "renderer": {
@@ -2936,14 +3363,14 @@
           "previewPiece": null,
           "activeCells": [],
           "ghostCells": [],
-          "visibleLockedCells": 61,
+          "visibleLockedCells": 54,
           "presentation": null
         },
         "runtimeAssertions": {
           "canvasCount": 1,
           "domCellCount": 0,
           "minButtonWidth": 58,
-          "minButtonHeight": 43.97369384765625,
+          "minButtonHeight": 43.9736328125,
           "noHorizontalOverflow": true,
           "noVerticalOverflow": true
         }
@@ -5293,7 +5720,7 @@
     },
     {
       "file": "landscape-classic-844x390-dpr3.png",
-      "sha256": "26df211c02d03108da9cc1214bc08e67f974b1f5bd5a4f782ce667c9ea732114",
+      "sha256": "f702f7c3493ff1f78a6a61e6c789ae47cedb27a766539a9933c307dc3ec65b69",
       "metrics": {
         "viewport": {
           "width": 844,
@@ -5996,7 +6423,7 @@
     },
     {
       "file": "narrow-puzzle-360x800.png",
-      "sha256": "7c99906ce0af2ec60c04c5b707870568dca47a0498833a6a2fa1c25d10804560",
+      "sha256": "05424b39d8806a23ec3db1adfec0a04a70dcc5f1b80e1016b639d451653f6a71",
       "metrics": {
         "viewport": {
           "width": 360,
@@ -8168,7 +8595,7 @@
         "bannedVisibleText": [],
         "buttonMinimum": {
           "width": 58,
-          "height": 43.997650146484375
+          "height": 44
         },
         "buttons": [
           {
@@ -8208,13 +8635,13 @@
           },
           {
             "text": "再来一局",
-            "width": 216.98837280273438,
-            "height": 43.997650146484375
+            "width": 217,
+            "height": 44
           },
           {
             "text": "返回关卡库",
-            "width": 216.9884033203125,
-            "height": 43.997650146484375
+            "width": 217,
+            "height": 44
           }
         ],
         "home": {
@@ -8521,7 +8948,7 @@
           "canvasCount": 1,
           "domCellCount": 0,
           "minButtonWidth": 58,
-          "minButtonHeight": 43.997650146484375,
+          "minButtonHeight": 44,
           "noHorizontalOverflow": true,
           "noVerticalOverflow": true
         }
@@ -8539,6 +8966,11 @@
       "focusedHomeRuleCount": 0,
       "pausePseudoContent": "none",
       "exitPseudoContent": "none"
+    },
+    "reducedMotionHome": {
+      "gateAnimation": "none",
+      "glyphTransform": "none",
+      "motifTransform": "none"
     },
     "entryCountdown": {
       "digit": "3",
@@ -8564,14 +8996,21 @@
     },
     "liveReducedMotionPreservesState": true,
     "survivalBedrockAndTopOut": {
-      "replayCommandCount": 2758,
-      "publicOperations": 9,
-      "bedrockRows": 1,
-      "elapsedTicks": 2763,
-      "nextIntervalSeconds": 40,
-      "bottomRow": "BBBBBBBBBB",
-      "pieceCount": 13,
-      "lines": 0
+      "replayCommandCount": 2884,
+      "publicOperations": 73,
+      "rise": {
+        "bedrockRows": 1,
+        "elapsedTicks": 2763,
+        "bottomRow": "BBBBBBBBBB"
+      },
+      "reward": {
+        "lines": 5,
+        "bedrockRows": 0,
+        "pressureTicks": 0,
+        "nextIntervalSeconds": 38
+      },
+      "pieceCount": 26,
+      "lines": 5
     },
     "puzzleThreeNormalGravityLocks": {
       "puzzleId": "t3r-shaft-01",
