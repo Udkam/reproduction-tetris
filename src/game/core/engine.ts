@@ -6,6 +6,7 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
+  INITIAL_SURVIVAL_BEDROCK_ROWS,
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
   gravityForMode,
@@ -91,8 +92,10 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
 export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon', puzzleId?: PuzzleId): GameState {
   const selectedPuzzle = mode === 'puzzle' ? getPuzzleDefinition(puzzleId ?? defaultPuzzleId()) : null;
   const effectiveSeed = selectedPuzzle?.seed ?? seed;
+  const initialBoard = selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard();
+  const openingBedrock = mode === 'race' ? raiseBedrock(initialBoard, INITIAL_SURVIVAL_BEDROCK_ROWS) : null;
   const base: GameState = {
-    board: selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard(),
+    board: openingBedrock?.board ?? initialBoard,
     active: null,
     queue: [],
     score: 0,
@@ -111,7 +114,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     completedLevelId: null,
     nextUnlockedLevelId: null,
     pieceCount: 0,
-    survivalBedrockRows: 0,
+    survivalBedrockRows: openingBedrock?.added ?? 0,
     survivalPressureTicks: 0,
     survivalRisePending: false,
     status: 'ready',
@@ -401,10 +404,10 @@ function finishLineClear(state: GameState): GameTransition {
     cleared = risen.state;
     events.push(...risen.events);
 
-    const crossedRewardThreshold = Math.floor(lines / SURVIVAL_LINES_PER_BEDROCK)
-      > Math.floor(state.lines / SURVIVAL_LINES_PER_BEDROCK);
-    if (crossedRewardThreshold) {
-      const lowered = lowerBedrock(cleared.board, 1);
+    const crossedRewardThresholds = Math.floor(lines / SURVIVAL_LINES_PER_BEDROCK)
+      - Math.floor(state.lines / SURVIVAL_LINES_PER_BEDROCK);
+    if (crossedRewardThresholds > 0) {
+      const lowered = lowerBedrock(cleared.board, crossedRewardThresholds);
       cleared = {
         ...cleared,
         board: lowered.board,
@@ -416,7 +419,7 @@ function finishLineClear(state: GameState): GameTransition {
         events.push({ type: 'bedrock-lowered', count: lowered.removed, height: cleared.survivalBedrockRows });
       }
     }
-    if (risen.overflow && !crossedRewardThreshold) {
+    if (risen.overflow && crossedRewardThresholds === 0) {
       return {
         state: { ...cleared, active: null, status: 'game-over', phase: 'active' },
         events: [...events, { type: 'game-over', reason: 'bedrock-overflow' }],

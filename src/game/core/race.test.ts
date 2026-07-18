@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   BOARD_HEIGHT,
   ENTRY_DELAY_TICKS,
+  INITIAL_SURVIVAL_BEDROCK_ROWS,
   LINE_CLEAR_DELAY_TICKS,
   PROGRESSIVE_GRAVITY_TICKS,
   STANDARD_GRAVITY_TICKS,
@@ -46,29 +47,37 @@ function resolveClear(state: GameState) {
 }
 
 describe('progressive gravity and Survival intervals', () => {
-  it('uses the exact shared ten-line gravity table with a final cap while Puzzle stays fixed', () => {
+  it('uses ten-line Classic tiers and matching three-line Survival tiers with a final cap', () => {
     PROGRESSIVE_GRAVITY_TICKS.forEach((ticks, tier) => {
-      const lines = tier * 10;
-      expect(gravityForMode('marathon', 0, 0, lines)).toBe(ticks);
-      expect(gravityForMode('race', 0, 50_000, lines + 9)).toBe(ticks);
-      expect(raceSpeedTier(50_000, lines)).toBe(tier);
+      expect(gravityForMode('marathon', 0, 0, tier * 10)).toBe(ticks);
+      expect(gravityForMode('race', 0, 50_000, tier * SURVIVAL_LINES_PER_BEDROCK)).toBe(ticks);
+      expect(raceSpeedTier(50_000, tier * SURVIVAL_LINES_PER_BEDROCK)).toBe(tier);
     });
     expect(gravityForMode('marathon', 0, 0, 10_000)).toBe(3);
     expect(gravityForMode('race', 0, 0, 10_000)).toBe(3);
     expect(gravityForMode('puzzle', 99, 50_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });
 
-  it('starts at twenty seconds, drops one second every five lines, and caps at ten', () => {
-    expect(survivalIntervalSeconds(0)).toBe(20);
-    expect(survivalIntervalSeconds(4)).toBe(20);
-    expect(survivalIntervalSeconds(5)).toBe(19);
-    expect(survivalIntervalSeconds(50)).toBe(10);
-    expect(survivalIntervalSeconds(10_000)).toBe(10);
-    expect(survivalIntervalTicks(5)).toBe(19 * TICKS_PER_SECOND);
+  it('starts at fifteen seconds, drops one second every three lines, and caps at eight', () => {
+    expect(survivalIntervalSeconds(0)).toBe(15);
+    expect(survivalIntervalSeconds(2)).toBe(15);
+    expect(survivalIntervalSeconds(3)).toBe(14);
+    expect(survivalIntervalSeconds(21)).toBe(8);
+    expect(survivalIntervalSeconds(10_000)).toBe(8);
+    expect(survivalIntervalTicks(3)).toBe(14 * TICKS_PER_SECOND);
   });
 });
 
-describe('timed Survival pressure and five-line reward', () => {
+describe('timed Survival pressure and three-line reward', () => {
+  it('opens and restarts with exactly five unbreakable bedrock rows', () => {
+    const opened = createInitialState(0x5000, 'race');
+    expect(opened.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
+    expect(opened.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
+
+    const restarted = dispatch({ ...opened, survivalBedrockRows: 1, board: createBoard() }, { type: 'restart' }).state;
+    expect(restarted.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
+    expect(restarted.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
+  });
   it('advances only while playing, becomes pending exactly at zero, and then stops', () => {
     const ready = createInitialState(0x5040, 'race');
     expect(dispatch(ready, { type: 'tick' }).state.survivalPressureTicks).toBe(0);
@@ -90,6 +99,7 @@ describe('timed Survival pressure and five-line reward', () => {
     const transition = dispatch({
       ...start(0x5001, 'race'),
       board: createBoard(),
+      survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 4, y: 38 },
       survivalPressureTicks: survivalIntervalTicks(0),
       survivalRisePending: true,
@@ -117,24 +127,24 @@ describe('timed Survival pressure and five-line reward', () => {
     };
     const transition = dispatch(state, { type: 'tick' });
     expect(transition.state.active).not.toBeNull();
-    expect(transition.state.survivalBedrockRows).toBe(1);
+    expect(transition.state.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS + 1);
     expect(transition.state.survivalPressureTicks).toBe(0);
-    expect(transition.events).toContainEqual({ type: 'bedrock-raised', count: 1, height: 1 });
+    expect(transition.events).toContainEqual({ type: 'bedrock-raised', count: 1, height: INITIAL_SURVIVAL_BEDROCK_ROWS + 1 });
   });
 
-  it('orders ordinary clear, pending rise, and one five-line bedrock removal', () => {
+  it('orders ordinary clear, pending rise, and one three-line bedrock removal', () => {
     const setup = singleClearBoard(1);
     const transition = resolveClear({
       ...start(0x5005, 'race'),
       ...setup,
       lines: SURVIVAL_LINES_PER_BEDROCK - 1,
       survivalBedrockRows: 1,
-      survivalPressureTicks: survivalIntervalTicks(4),
+      survivalPressureTicks: survivalIntervalTicks(2),
       survivalRisePending: true,
       score: 0,
     });
 
-    expect(transition.state.lines).toBe(5);
+    expect(transition.state.lines).toBe(3);
     expect(transition.state.score).toBe(40);
     expect(transition.state.survivalBedrockRows).toBe(1);
     expect(transition.state.survivalPressureTicks).toBe(0);
@@ -146,19 +156,20 @@ describe('timed Survival pressure and five-line reward', () => {
     ]);
   });
 
-  it('resets under the shorter interval at five lines even when no bedrock exists', () => {
+  it('resets under the shorter interval at three lines even when no bedrock exists', () => {
     const setup = singleClearBoard();
     const transition = resolveClear({
       ...start(0x5038, 'race'),
       ...setup,
-      lines: 4,
+      lines: 2,
+      survivalBedrockRows: 0,
       survivalPressureTicks: 0,
     });
-    expect(transition.state.lines).toBe(5);
+    expect(transition.state.lines).toBe(3);
     expect(transition.state.survivalBedrockRows).toBe(0);
     expect(transition.state.survivalPressureTicks).toBe(0);
     expect(transition.events.some((event) => event.type === 'bedrock-lowered')).toBe(false);
-    expect(survivalIntervalTicks(transition.state.lines)).toBe(19 * TICKS_PER_SECOND);
+    expect(survivalIntervalTicks(transition.state.lines)).toBe(14 * TICKS_PER_SECOND);
   });
 
   it('fails closed on pressure overflow before the next spawn', () => {
@@ -167,6 +178,7 @@ describe('timed Survival pressure and five-line reward', () => {
     const transition = dispatch({
       ...start(0x50ff, 'race'),
       board,
+      survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 4, y: 38 },
       survivalPressureTicks: survivalIntervalTicks(0),
       survivalRisePending: true,
@@ -179,7 +191,7 @@ describe('timed Survival pressure and five-line reward', () => {
     expect(transition.events).toContainEqual({ type: 'game-over', reason: 'bedrock-overflow' });
   });
 
-  it('keeps replay deterministic, hashes pressure state, and restart clears all pressure', () => {
+  it('keeps replay deterministic, hashes pressure state, and restart restores the five-row opening', () => {
     const commands: GameCommand[] = [
       { type: 'start' },
       ...Array.from({ length: 30 }, () => ({ type: 'tick' } as const)),
@@ -203,10 +215,10 @@ describe('timed Survival pressure and five-line reward', () => {
     };
     const restarted = dispatch(withBedrock, { type: 'restart' }).state;
     expect(restarted.mode).toBe('race');
-    expect(restarted.survivalBedrockRows).toBe(0);
+    expect(restarted.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
     expect(restarted.survivalPressureTicks).toBe(0);
     expect(restarted.survivalRisePending).toBe(false);
-    expect(restarted.board.flat()).not.toContain(BEDROCK_CELL);
+    expect(restarted.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
   });
 });
 

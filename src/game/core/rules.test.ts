@@ -16,9 +16,10 @@ function ticks(state: GameState, count: number): GameState {
 }
 
 describe('Modern Classic timing and score contract', () => {
-  it('accelerates Classic every ten lines using the shared exact gravity table', () => {
+  it('keeps Classic at ten-line tiers while Survival advances through the same table every three lines', () => {
     PROGRESSIVE_GRAVITY_TICKS.forEach((expected, tier) => {
       expect(gravityForMode('marathon', 0, 0, tier * 10)).toBe(expected);
+      expect(gravityForMode('race', 0, 0, tier * 3)).toBe(expected);
     });
     expect(gravityForMode('marathon', 29, 10_000, 10_000)).toBe(3);
     expect(gravityForMode('puzzle', 29, 10_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);

@@ -115,7 +115,7 @@ export interface SurvivalBedrockQaReplay {
   removalCommandCount: number;
 }
 
-/** Builds public-command milestones for the first timed rise and five-line removal. */
+/** Builds public-command milestones for the first timed rise and three-line removal. */
 export function createSurvivalBedrockQaReplay(seed = 0x51a1f00d): SurvivalBedrockQaReplay {
   let state = dispatch(createInitialState(seed, 'race'), { type: 'start' }).state;
   const commands: GameCommand[] = [{ type: 'start' }];
@@ -142,7 +142,7 @@ export function createSurvivalBedrockQaReplay(seed = 0x51a1f00d): SurvivalBedroc
     state = settled.state;
     if (firstRiseCommandCount === 0 && state.survivalBedrockRows > previousRows) {
       firstRiseCommandCount = commands.length;
-    } else if (firstRiseCommandCount > 0 && state.survivalBedrockRows < previousRows && state.lines >= 5) {
+    } else if (firstRiseCommandCount > 0 && state.survivalBedrockRows < previousRows && state.lines >= 3) {
       removalCommandCount = commands.length;
     }
   }
