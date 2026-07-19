@@ -24,9 +24,10 @@ audio palette.
   make an all-original-target objective impossible. Five-second volatile inputs remain
   optional, seeded later-play mechanics and never count as original targets.
 - Pixi keeps each original target's ordinary material and connected-piece geometry,
-  then adds one quiet, high-contrast machined target inset. The marker survives normal
-  state updates and moves with the canonical target coordinate; it is neither a glow,
-  a DOM cell, nor a full per-cell outer-box treatment.
+  then adds a restrained warm-gold inset corner bracket at its upper-left edge. It is
+  a quiet piece of the existing bevel language rather than a dot, rivet, tail, glow,
+  or full per-cell outer box. The marker survives normal state updates and moves with
+  the canonical target coordinate; it is neither a DOM cell nor a new cell material.
 - Puzzle statistics show original targets remaining, the bounded used/available solver
   locks, and a prominent countdown of the locks still available. Terminal success and
   failure copy state the target outcome rather than claiming that the full board is

@@ -1760,3 +1760,24 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Blocker: independent Core and visual/browser QA remains required; recovery push is
   authorized but is not acceptance. Next: commit this documentation checkpoint and
   publish the recovery record.
+
+## TETRIS-T11-FRONTEND-AUDIO-032 — candidate report
+
+- Task: display target/budget feedback, terminal leaderboard result feedback, audio
+  refinement, and final target-marker presentation; base `526f394` on `main`.
+  Exact product paths: `src/App.tsx`, `src/styles.css`, `src/game/audio/AudioEngine.ts`,
+  `src/game/render/TetrisRenderer.ts`, `src/game/render/theme.ts`, and their tests.
+- Puzzle HUD exposes original targets, remaining usable locks, and volatile status.
+  Original targets use a subdued warm-gold upper-left bracket within the existing bevel
+  language, replacing the visually noisy dot-and-tail marker while preserving state
+  readability. The result table highlights a retained Classic/Survival record and
+  explicitly states when the result does not qualify.
+- Restart's visible confirmation is `确认`; all event feedback is sine-only and a hard
+  drop owns its landing sound. The final presentation checkpoint is
+  `c1c262e fix(puzzle): refine original target marker`; local screenshot capture
+  hygiene is `4ba5903 chore(gitignore): ignore t11 browser captures`.
+- Commands: focused theme test PASS (1 file / 7 tests); final typecheck, full suite,
+  and build PASS. Live Puzzle level 2 visual inspection confirms bracket treatment,
+  target/budget stats, Next, one canvas, and zero browser console errors.
+- Blocker: independent visual/browser QA remains required. Next: inspect the final
+  candidate screenshot and range; recovery push is not an acceptance signal.

@@ -716,3 +716,24 @@ changelog, T3/T4 evidence, or QA archive was edited.
   final typecheck, full suite, and build are recorded in the coordinator log.
   Blocker: independent Core QA. Next: review the committed correction with the
   archive overlay work; no push.
+
+## TETRIS-T11-PUZZLE-SURVIVAL-031 — candidate report
+
+- Task: target-clear Puzzle budget and Survival baseline; base `526f394` on `main`.
+  Exact core paths: `src/game/core/types.ts`, `src/game/core/engine.ts`,
+  `src/game/core/puzzles.ts`, Puzzle/core/replay QA tests, and runtime seed handling.
+- Original authored cells are canonical targets that move through normal clears and
+  bounded volatile settlement. Completion clears every target on or before the
+  per-level solver budget plus ten locks; anchors remain deterministic but only occupy
+  authored-empty visible rows outside the target set. Puzzle retains its fixed level
+  queue while Classic and Survival request a fresh runtime seed for every run/restart.
+- Survival now starts with ten bedrock rows, rises on its existing 15→8 second
+  pressure, removes one row per three cleared lines, and keeps a fixed 40-tick gravity.
+- Source checkpoints: `1c91bbf feat(puzzle): track original targets within budget`,
+  `f0dc8dd feat(survival): open with fixed ten-row pressure`, and
+  `e754d09 feat(runtime): refresh ordinary run seeds`.
+- Commands: focused core/replay coverage, final typecheck, full suite, and production
+  build PASS; final suite is 40 files / 288 tests passed with 1 file / 2 tests skipped.
+  Browser evidence confirms canonical Puzzle target/budget state and Survival opening.
+- Blocker: independent Core QA. Next: read the candidate range and the coordinator's
+  visual/browser evidence; recovery publication is not acceptance.

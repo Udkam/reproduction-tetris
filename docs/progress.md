@@ -535,3 +535,22 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   recovery checkpoint, not an acceptance or changelog entry. Next: coordinator
   commits the documentation record and may publish it under the existing recovery
   authorization.
+
+## 2026-07-19 — T11 target-budget, Survival baseline, and result feedback candidate
+
+- Candidate source range: `1c91bbf..c1c262e` on `main`; maintenance checkpoint
+  `4ba5903` ignores local T11 browser captures. The range implements original-target
+  Puzzle clearance with a per-level solver budget plus ten locks, sparse safe anchors,
+  Puzzle countdown, ten-row fixed-cadence Survival, fresh Classic/Survival seeds,
+  fixed Puzzle seeds, sine-only event feedback, restart copy, and retained-rank
+  highlighting/non-qualification feedback.
+- Visual refinement: original targets keep their own material and now use a restrained
+  warm-gold upper-left inset corner bracket, replacing the prior dot-and-tail marker.
+- Verification: final `npm.cmd run typecheck` PASS; final `npm.cmd run test` PASS
+  (40 files / 288 tests; 1 file / 2 tests skipped); final `npm.cmd run build` PASS
+  (741 modules). Focused theme coverage passes (1 file / 7 tests). Live browser review
+  of Puzzle level 2 shows target brackets, original-target and remaining-lock stats,
+  a visible Next piece, one canvas, and zero console errors; the prescribed Survival
+  action capture shows 10 initial bedrock rows and fixed 40-tick gravity.
+- Blocker: independent Core and visual/browser QA remain required. The user-authorized
+  `origin/main` push is a recoverable checkpoint only, not a changelog acceptance.

@@ -6,8 +6,9 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`
 
-Current execution status (2026-07-19): **IN PROGRESS — T11 contract checkpoint; no
-source candidate yet.**
+Current execution status (2026-07-19): **CANDIDATE — source range
+`1c91bbf..c1c262e` is locally verified; independent Core plus visual/browser QA is
+still pending.**
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
@@ -42,6 +43,15 @@ fixed gravity, sine-only audio event routing, and bare restart confirmation; the
 typecheck, the full suite, build, and one browser action pass with visible target
 markers/budget and no browser errors. Independent Core and visual/browser QA must
 accept the extended candidate before changelog integration or acceptance.
+
+Local candidate evidence now covers the target budget/state transitions, fixed ten-row
+Survival opening and cadence, fresh ordinary-run seeds, fixed Puzzle selection, audio
+event routing, restart confirmation, leaderboard result feedback, and target marker.
+`npm.cmd run typecheck` passes; the final full suite passes (40 files / 288 tests,
+with 1 file / 2 tests skipped); the final production build passes (741 modules).
+The prescribed Race action capture shows ten bedrock rows and 40-tick fixed gravity;
+the live Puzzle browser review shows the warm-gold target brackets, target/budget
+statistics, Next preview, one canvas, and zero console errors.
 
 Publication exception (2026-07-19): the user explicitly authorizes a recovery
 push of the committed candidate to `origin/main`. This publication preserves a
