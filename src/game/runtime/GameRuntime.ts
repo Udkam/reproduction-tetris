@@ -58,7 +58,7 @@ export class GameRuntime {
     this.inputEnabled = options.inputEnabled ?? true;
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
-    this.audio.setVolume(options.audioVolume ?? 0.78);
+    this.audio.setVolume(options.audioVolume ?? 1);
   }
 
   async mount(host: HTMLElement): Promise<void> {
@@ -244,10 +244,8 @@ export class GameRuntime {
       return;
     }
     if (action === 'restart') {
-      if (this.state.status === 'game-over' || this.state.status === 'finished' || this.state.status === 'paused' || this.state.status === 'ready') {
-        this.apply({ type: 'restart', seed: this.state.seed });
-        this.input?.clearHeld();
-      }
+      this.restart();
+      this.start();
       return;
     }
     if (this.state.status === 'ready') this.apply({ type: 'start' });

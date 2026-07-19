@@ -12,9 +12,11 @@ interface ToneOptions {
 export class AudioEngine {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
+  private compressor: DynamicsCompressorNode | null = null;
   private enabled = true;
-  private volume = 0.78;
+  private volume = 1;
   private lastMoveAt = 0;
+  private lastSoftDropAt = 0;
   private voices = 0;
 
   setEnabled(enabled: boolean): void {
@@ -23,7 +25,7 @@ export class AudioEngine {
   }
 
   setVolume(volume: number): void {
-    this.volume = Math.max(0, Math.min(1, Number.isFinite(volume) ? volume : 0.78));
+    this.volume = Math.max(0, Math.min(1, Number.isFinite(volume) ? volume : 1));
     this.applyMasterGain();
   }
 
@@ -40,8 +42,15 @@ export class AudioEngine {
     if (!this.context) {
       this.context = new AudioContext();
       this.master = this.context.createGain();
+      this.compressor = this.context.createDynamicsCompressor();
+      this.compressor.threshold.value = -12;
+      this.compressor.knee.value = 12;
+      this.compressor.ratio.value = 8;
+      this.compressor.attack.value = 0.003;
+      this.compressor.release.value = 0.18;
       this.applyMasterGain();
-      this.master.connect(this.context.destination);
+      this.master.connect(this.compressor);
+      this.compressor.connect(this.context.destination);
     }
     if (this.context.state === 'suspended') await this.context.resume();
   }
@@ -56,35 +65,44 @@ export class AudioEngine {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = performance.now();
         if (now - this.lastMoveAt > 28) {
-          this.tone({ frequency: 178, endFrequency: 204, duration: 0.026, gain: 0.11, type: 'triangle' });
+          this.tone({ frequency: 178, endFrequency: 204, duration: 0.03, gain: 0.16, type: 'triangle' });
           this.lastMoveAt = now;
         }
+      } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
+        const now = performance.now();
+        if (now - this.lastSoftDropAt > 52) {
+          this.tone({ frequency: 248, endFrequency: 224, duration: 0.022, gain: 0.09, type: 'sine' });
+          this.lastSoftDropAt = now;
+        }
       } else if (event.type === 'piece-rotated') {
-        this.tone({ frequency: 310, endFrequency: 465, duration: 0.045, gain: 0.14, type: 'square' });
-        this.tone({ frequency: 620, duration: 0.028, gain: 0.07, delay: 0.018, type: 'sine' });
+        this.tone({ frequency: 310, endFrequency: 465, duration: 0.055, gain: 0.22, type: 'square' });
+        this.tone({ frequency: 620, duration: 0.035, gain: 0.11, delay: 0.018, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
-        this.tone({ frequency: 92, endFrequency: 46, duration: 0.11, gain: 0.3, type: 'triangle' });
+        this.tone({ frequency: 92, endFrequency: 46, duration: 0.12, gain: 0.38, type: 'triangle' });
       } else if (event.type === 'piece-locked') {
-        this.tone({ frequency: 132, duration: 0.045, gain: 0.12, type: 'square' });
+        this.tone({ frequency: 132, duration: 0.05, gain: 0.18, type: 'square' });
       } else if (event.type === 'lines-cleared') {
         this.clearChord(event.count);
       } else if (event.type === 'piece-expired') {
-        this.tone({ frequency: 720, endFrequency: 340, duration: 0.16, gain: 0.18, type: 'sawtooth' });
-        this.tone({ frequency: 460, endFrequency: 230, duration: 0.19, gain: 0.12, delay: 0.055, type: 'triangle' });
+        this.tone({ frequency: 720, endFrequency: 340, duration: 0.18, gain: 0.28, type: 'sawtooth' });
+        this.tone({ frequency: 460, endFrequency: 230, duration: 0.22, gain: 0.18, delay: 0.055, type: 'triangle' });
       } else if (event.type === 'bedrock-raised') {
-        this.tone({ frequency: 108, endFrequency: 72, duration: 0.18, gain: 0.2, type: 'triangle' });
+        this.tone({ frequency: 108, endFrequency: 72, duration: 0.2, gain: 0.26, type: 'triangle' });
       } else if (event.type === 'bedrock-lowered') {
-        this.tone({ frequency: 174, endFrequency: 246, duration: 0.14, gain: 0.16, type: 'sine' });
+        this.tone({ frequency: 174, endFrequency: 246, duration: 0.15, gain: 0.22, type: 'sine' });
       } else if (event.type === 'level-up') {
-        [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.11, gain: 0.095, delay: index * 0.055, type: 'sine' }));
+        [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.11, gain: 0.15, delay: index * 0.055, type: 'sine' }));
       } else if (event.type === 'finished') {
-        [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.16, gain: 0.1, delay: index * 0.06, type: 'sine' }));
+        [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.16, gain: 0.15, delay: index * 0.06, type: 'sine' }));
       } else if (event.type === 'game-over') {
-        this.tone({ frequency: 180, endFrequency: 48, duration: 0.62, gain: 0.22, type: 'sawtooth' });
+        this.tone({ frequency: 180, endFrequency: 48, duration: 0.62, gain: 0.32, type: 'sawtooth' });
       } else if (event.type === 'started' || event.type === 'resumed') {
-        this.tone({ frequency: 392, endFrequency: 523, duration: 0.08, gain: 0.11, type: 'sine' });
+        this.tone({ frequency: 392, endFrequency: 523, duration: 0.09, gain: 0.17, type: 'sine' });
       } else if (event.type === 'paused') {
-        this.tone({ frequency: 270, endFrequency: 210, duration: 0.08, gain: 0.08, type: 'sine' });
+        this.tone({ frequency: 270, endFrequency: 210, duration: 0.09, gain: 0.13, type: 'sine' });
+      } else if (event.type === 'restarted') {
+        this.tone({ frequency: 294, endFrequency: 392, duration: 0.07, gain: 0.15, type: 'sine' });
+        this.tone({ frequency: 440, duration: 0.07, gain: 0.12, delay: 0.045, type: 'triangle' });
       }
     }
   }
@@ -92,6 +110,8 @@ export class AudioEngine {
   destroy(): void {
     this.master?.disconnect();
     this.master = null;
+    this.compressor?.disconnect();
+    this.compressor = null;
     const context = this.context;
     this.context = null;
     if (context) void context.close();
@@ -104,7 +124,7 @@ export class AudioEngine {
     notes.forEach((ratio, index) => this.tone({
       frequency: base * ratio,
       duration: 0.12 + count * 0.025,
-      gain: 0.085 + count * 0.016,
+      gain: 0.13 + count * 0.02,
       delay: index * 0.022,
       type: index % 2 === 0 ? 'sine' : 'triangle',
     }));

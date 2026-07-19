@@ -176,6 +176,22 @@ describe('GameRuntime public state boundary', () => {
     expect(runtime.getState()).toBe(before);
   });
 
+  it('restarts immediately from active play when the public R action is received', async () => {
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
+    await runtime.mount(document.createElement('div'));
+    runtime.start();
+    runtime.press('left');
+    const before = runtime.getState();
+    expect(before.status).toBe('playing');
+
+    inputHarness.emit?.('restart');
+
+    expect(runtime.getState().status).toBe('playing');
+    expect(runtime.getState().elapsedTicks).toBe(0);
+    expect(runtime.getState().seed).toBe(before.seed);
+    runtime.destroy();
+  });
+
   it('mounts a read-only QA state view without replay or state-replacement hooks', async () => {
     const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
     await runtime.mount(document.createElement('div'));
