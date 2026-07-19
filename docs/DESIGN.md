@@ -29,6 +29,23 @@ piece must never become visible beyond the playable well.
   This is renderer-only: no spawn coordinate, collision, queue, timing, seed, or puzzle
   setup may change.
 
+## T12.3 Puzzle double-Next and final archive fit
+
+The 2026-07-19 follow-up adds more planning information to Puzzle without changing its
+fixed queue, and closes the one desktop viewport fit finding from visual QA.
+
+- Puzzle's existing `Next` instrument renders exactly the first two already-generated
+  queue items, in order: `queue[0]` then `queue[1]`. They share the same canvas-owned
+  slot as a paired compact preview, and the label/accessible description makes the
+  count explicit. Classic and Survival retain their single `queue[0]` preview; neither
+  mode's random per-run queue contract changes. Ready and terminal states show neither
+  future piece, and the preview must never invent, consume, reorder, or mutate queue
+  data.
+- The archive's desktop 1280 × 720 composition must fit within the viewport without a
+  document-level vertical scrollbar. The catalog itself may scroll for long campaigns;
+  the selected preview/detail remains in view. Portrait and landscape narrow layouts
+  retain their existing internal-catalog scrolling and zero horizontal overflow.
+
 ## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
 
 The user's 2026-07-19 direction supersedes T11's volatile Puzzle input mechanism and

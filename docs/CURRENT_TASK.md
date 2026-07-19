@@ -6,7 +6,8 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`; current T12 source checkpoint: `95c7da7`.
 
-Current execution status (2026-07-19): **IN PROGRESS — T12.2 renderer QA correction.**
+Current execution status (2026-07-19): **IN PROGRESS — T12.2 renderer QA correction and
+T12.3 Puzzle preview/viewport follow-up.**
 Independent renderer QA rejected T12.1 candidate `7ae1190..b0889c7` on a P2
 fractional-edge scale overhang, so it is not accepted. Source `95c7da7` remains the
 locally verified T12 baseline; T11 remains a recoverable baseline at `a76eea2`, pending
@@ -105,6 +106,37 @@ closed. Required proof adds translated-to-top and translated-to-bottom regressio
 which retain their offset yet report effective edge contact; a fresh browser top-edge
 capture plus typecheck, full suite, build, and renewed independent renderer QA are
 required before candidate status is restored.
+
+### T12.3 Puzzle double-Next, archive viewport fit, and local solution artifact
+
+Puzzle now needs planning visibility for its next two fixed inputs. The renderer must
+draw `queue[0]` and `queue[1]` as an ordered compact pair in the existing Puzzle Next
+slot, with an explicit two-item label and accessible description. Classic and Survival
+remain single-Next; no mode may mutate, pre-consume, randomize, or otherwise alter its
+queue merely to display it. Ready/terminal states retain no preview.
+
+Visual QA accepted the archive interaction/content at 1280×720, 390×844, and 844×390,
+but found a small 1280×720 document overflow (`scrollHeight:765`), so T12.3 also reduces
+the desktop archive shell height enough to keep the outer document within the viewport
+while letting only the catalog scroll internally. The known renderer P2 remains open
+until T12.2 is re-reviewed.
+
+The requested Level 01 walkthrough is a local player artifact at
+`Solutions/Solution-1.md`; `Solutions/` must be ignored by Git. Its content must be
+derived from the fixed deterministic solver route, document every lock's board snapshot,
+and name the route's exact minimum lock count rather than presenting a heuristic as
+optimal. It is not a product asset and must not enter the Git candidate.
+
+T12.3 allowed product/test paths are `.gitignore`, `src/App.tsx`, `src/App.test.ts`,
+`src/styles.css`, `src/game/render/TetrisRenderer.ts`,
+`src/game/render/presentation.ts`, and `src/game/render/presentation.test.ts`; the
+ignored local artifact is `Solutions/Solution-1.md`. It may update this/design contract
+before code and progress/workstream records after verification. Core rules, Puzzle
+definitions, setup histories, seeds, queue generation, audio, storage, dependencies,
+and the formal changelog remain closed. Required proof adds direct queue-preview tests,
+desktop/portrait/landscape browser inspection of the second Puzzle preview, zero console
+errors, no document-level overflow, and renewed independent renderer plus visual/browser
+QA before formal acceptance or publication.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
