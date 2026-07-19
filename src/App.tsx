@@ -317,6 +317,9 @@ export function PuzzleLibrary({
 }) {
   const selected = campaignLevel(selectedId);
   const unlockedCount = unlockedPuzzleLevelCount(progress);
+  const selectedComplete = progress.completedLevelIds.includes(selected.id);
+  const selectedStatus = selectedComplete ? '已完成' : '已开放';
+  const openedPercent = (unlockedCount / CAMPAIGN_LEVELS.length) * 100;
   return (
     <main id="game" className="library-shell" data-testid="puzzle-library">
       <header className="library-header">
@@ -326,57 +329,84 @@ export function PuzzleLibrary({
         <Brand compact />
       </header>
       <section className="library-intro" aria-labelledby="library-title">
-        <span data-testid="campaign-availability">{CAMPAIGN_LEVELS.length} 个原创残局 · 已开放 {unlockedCount}/{CAMPAIGN_LEVELS.length}</span>
-        <h1 id="library-title">解谜档案</h1>
+        <div className="library-intro__meta">
+          <span className="library-intro__eyebrow">Puzzle campaign</span>
+          <span className="library-intro__availability" data-testid="campaign-availability">{unlockedCount} / {CAMPAIGN_LEVELS.length} 已开放</span>
+        </div>
+        <div className="library-intro__heading">
+          <div>
+            <h1 id="library-title">解谜档案</h1>
+            <p>二十个原创残局，逐层解封。</p>
+          </div>
+          <div
+            className="campaign-meter"
+            role="progressbar"
+            aria-label="解谜档案开放进度"
+            aria-valuemin={0}
+            aria-valuemax={CAMPAIGN_LEVELS.length}
+            aria-valuenow={unlockedCount}
+            aria-valuetext={`已开放 ${unlockedCount} / ${CAMPAIGN_LEVELS.length}`}
+          >
+            <span aria-hidden="true" style={{ width: `${openedPercent}%` }} />
+          </div>
+        </div>
       </section>
       <section className="library-content" aria-label="全部解谜关卡">
-        <div className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
-          {CAMPAIGN_LEVELS.map((level) => {
-            const complete = progress.completedLevelIds.includes(level.id);
-            const unlocked = isPuzzleUnlocked(progress, level.id);
-            const selectedLevel = selectedId === level.id;
-            const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
-            return (
-              <article className={`level-item ${selectedLevel ? 'level-item--selected' : ''} ${unlocked ? '' : 'level-item--locked'}`} key={level.id}>
-                <button
-                  className={`level-entry ${unlocked ? '' : 'level-entry--locked'}`}
-                  type="button"
-                  data-testid="level-row"
-                  data-level-id={level.id}
-                  data-unlocked={unlocked}
-                  aria-pressed={selectedLevel}
-                  aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
-                  disabled={!unlocked}
-                  onClick={() => onSelect(level.id)}
-                >
-                  <span className="level-entry__number">{String(level.index).padStart(2, '0')}</span>
-                  <span className="level-entry__copy">
-                    <strong>{level.name}</strong>
-                    <small>难度 {String(level.difficulty).padStart(2, '0')} · {status}</small>
-                  </span>
-                </button>
-              </article>
-            );
-          })}
-        </div>
-        <section className="level-inline-detail" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
-          <PuzzleSilhouette id={selected.id} name={selected.name} />
-          <div>
-            <small>难度 {String(selected.difficulty).padStart(2, '0')} · {String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</small>
-            <h2>{selected.name}</h2>
-          </div>
-          <button className="primary-action" type="button" data-testid="start-selected-puzzle-mobile" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
+        <section className="library-catalog" aria-labelledby="catalog-title">
+          <header className="library-catalog__header">
+            <div>
+              <span>Level index</span>
+              <h2 id="catalog-title">关卡目录</h2>
+            </div>
+            <small>{CAMPAIGN_LEVELS.length} 组残局</small>
+          </header>
+          <ol className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
+            {CAMPAIGN_LEVELS.map((level) => {
+              const complete = progress.completedLevelIds.includes(level.id);
+              const unlocked = isPuzzleUnlocked(progress, level.id);
+              const selectedLevel = selectedId === level.id;
+              const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
+              const visualStatus = complete ? '完成' : unlocked ? '开放' : '封存';
+              const statusKey = complete ? 'complete' : unlocked ? 'open' : 'locked';
+              return (
+                <li className={`level-item ${selectedLevel ? 'level-item--selected' : ''} ${unlocked ? '' : 'level-item--locked'}`} key={level.id}>
+                  <button
+                    className={`level-entry ${unlocked ? '' : 'level-entry--locked'}`}
+                    type="button"
+                    data-testid="level-row"
+                    data-level-id={level.id}
+                    data-unlocked={unlocked}
+                    aria-pressed={selectedLevel}
+                    aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
+                    disabled={!unlocked}
+                    onClick={() => onSelect(level.id)}
+                  >
+                    <span className="level-entry__number">{String(level.index).padStart(2, '0')}</span>
+                    <span className="level-entry__copy">
+                      <strong>{level.name}</strong>
+                      <small>难度 {String(level.difficulty).padStart(2, '0')}</small>
+                    </span>
+                    <span className="level-entry__state" data-state={statusKey} aria-hidden="true">{visualStatus}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
         </section>
-        <aside className="level-detail" aria-live="polite">
+        <aside className="level-detail" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
           <div className="level-detail__visual">
+            <span className="level-detail__visual-label">原局预览</span>
             <span className="level-detail__visual-index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
             <div className="level-detail__board">
               <PuzzleSilhouette id={selected.id} name={selected.name} />
             </div>
           </div>
           <div className="level-detail__heading">
-            <span className="level-detail__count">难度 {String(selected.difficulty).padStart(2, '0')} · {String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
-            <h2>{selected.name}</h2>
+            <div>
+              <span className="level-detail__count">难度 {String(selected.difficulty).padStart(2, '0')} · {String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
+              <h2>{selected.name}</h2>
+            </div>
+            <span className="level-detail__status" data-state={selectedComplete ? 'complete' : 'open'}>{selectedStatus}</span>
           </div>
           <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
         </aside>

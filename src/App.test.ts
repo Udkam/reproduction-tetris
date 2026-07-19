@@ -438,11 +438,15 @@ describe('T6 frontend mode binding', () => {
     expect(rows.slice(0, 3).every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
     expect(rows.slice(3).every((row) => row.disabled && row.dataset.unlocked === 'false')).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('20 个解谜关卡，已开放 3 个');
-    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('20 个原创残局 · 已开放 3/20');
+    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('3 / 20 已开放');
+    expect(view.container.querySelector('[role="progressbar"]')?.getAttribute('aria-valuetext')).toBe('已开放 3 / 20');
     expect(rows[0]?.textContent).toContain(`01${CAMPAIGN_LEVELS[0]!.name}`);
-    expect(rows[0]?.textContent).toContain('难度 01 · 已开放');
-    expect(rows[3]?.textContent).toContain('未解锁');
+    expect(rows[0]?.textContent).toContain('难度 01');
+    expect(rows[0]?.textContent).toContain('开放');
+    expect(rows[3]?.textContent).toContain('封存');
     expect(view.container.querySelectorAll('.level-entry__preview')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.level-list .puzzle-silhouette')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.level-detail .puzzle-silhouette')).toHaveLength(1);
     expect(styles).not.toContain('.level-item--selected::after');
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
@@ -480,17 +484,12 @@ describe('T6 frontend mode binding', () => {
     act(() => unlockedRows[7]!.click());
     expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[7]!.id);
 
-    const desktopStart = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
-    const mobileStart = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle-mobile"]');
-    expect(desktopStart).not.toBeNull();
-    expect(mobileStart).not.toBeNull();
-    expect(desktopStart?.textContent).toBe('开始本关');
-    expect(mobileStart?.textContent).toBe('开始本关');
-    act(() => {
-      desktopStart?.click();
-      mobileStart?.click();
-    });
-    expect(onStart).toHaveBeenCalledTimes(2);
+    const start = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
+    expect(start).not.toBeNull();
+    expect(view.container.querySelectorAll('[data-testid^="start-selected-puzzle"]')).toHaveLength(1);
+    expect(start?.textContent).toBe('开始本关');
+    act(() => start?.click());
+    expect(onStart).toHaveBeenCalledTimes(1);
     view.unmount();
   });
 });
