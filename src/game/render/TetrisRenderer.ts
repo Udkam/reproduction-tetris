@@ -698,6 +698,42 @@ export class TetrisRenderer {
     this.previewBounds = null;
     this.previewLayerVisible = false;
     this.previewPiece = null;
+    const hostBounds = this.host?.getBoundingClientRect();
+    const slot = document.querySelector<HTMLElement>('[data-testid="next-slot"]')?.getBoundingClientRect();
+    if (hostBounds && slot && slot.width > 0 && slot.height > 0) {
+      const x = slot.left - hostBounds.left;
+      const y = slot.top - hostBounds.top;
+      // The slot is a DOM geometry anchor above the canvas. Its old opaque CSS
+      // background hid the canvas-drawn Next tetromino, so the renderer owns both
+      // the well and the piece on the same canvas layer.
+      this.drawPreviewBackdrop(x, y, slot.width, slot.height);
+      if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
+        this.previewClearBounds = null;
+        this.previewClearPiece = null;
+        return;
+      }
+      if (this.options.modeSwitch) {
+        // drawPieces clears its Graphics at the start of this same frame. Hiding the
+        // preview and refusing fallback placement here prevents the old Pixi preview
+        // from surviving after React removes the DOM slot for mode switching.
+        this.previewClearBounds = this.lastPreviewBounds;
+        this.previewClearPiece = this.lastPreviewPiece;
+        return;
+      }
+      this.previewClearBounds = null;
+      this.previewClearPiece = null;
+      const next = nextPreviewPiece(state);
+      if (next) {
+        const unit = Math.max(5, Math.min(15, slot.width / 5, slot.height / 3));
+        this.drawPreviewPiece(graphics, next, x + slot.width / 2, y + slot.height / 2, unit);
+      }
+      this.previewBounds = { x, y, width: slot.width, height: slot.height };
+      this.previewLayerVisible = next !== undefined;
+      this.previewPiece = next ?? null;
+      this.lastPreviewBounds = this.previewBounds;
+      this.lastPreviewPiece = this.previewPiece;
+      return;
+    }
     if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
       this.previewClearBounds = null;
       this.previewClearPiece = null;
@@ -713,23 +749,6 @@ export class TetrisRenderer {
     }
     this.previewClearBounds = null;
     this.previewClearPiece = null;
-    const hostBounds = this.host?.getBoundingClientRect();
-    const slot = document.querySelector<HTMLElement>('[data-testid="next-slot"]')?.getBoundingClientRect();
-    if (hostBounds && slot && slot.width > 0 && slot.height > 0) {
-      const x = slot.left - hostBounds.left;
-      const y = slot.top - hostBounds.top;
-      const next = nextPreviewPiece(state);
-      if (next) {
-        const unit = Math.max(5, Math.min(15, slot.width / 5, slot.height / 3));
-        this.drawPreviewPiece(graphics, next, x + slot.width / 2, y + slot.height / 2, unit);
-      }
-      this.previewBounds = { x, y, width: slot.width, height: slot.height };
-      this.previewLayerVisible = next !== undefined;
-      this.previewPiece = next ?? null;
-      this.lastPreviewBounds = this.previewBounds;
-      this.lastPreviewPiece = this.previewPiece;
-      return;
-    }
     const width = this.app?.screen.width ?? 0;
     if (layout.compact) {
       const topY = Math.max(7, layout.y - Math.min(92, layout.cell * 4.7));
@@ -754,6 +773,14 @@ export class TetrisRenderer {
       this.lastPreviewBounds = this.previewBounds;
       this.lastPreviewPiece = this.previewPiece;
     }
+  }
+
+  private drawPreviewBackdrop(x: number, y: number, width: number, height: number): void {
+    const radius = Math.max(6, Math.min(8, Math.min(width, height) * 0.075));
+    this.boardGraphics
+      .roundRect(x, y, width, height, radius)
+      .fill({ color: COLORS.well, alpha: 1 })
+      .stroke({ color: COLORS.edge, alpha: 0.86, width: 1 });
   }
 
   private drawPreviewPiece(graphics: Graphics, type: PieceType, centerX: number, centerY: number, unit: number): void {

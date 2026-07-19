@@ -549,7 +549,7 @@ export function GameSession({
   const [exitOpen, setExitOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
-  const [audioVolume, setAudioVolume] = useState(0.78);
+  const [audioVolume, setAudioVolume] = useState(1);
 
   const focusBoard = useCallback(() => {
     requestAnimationFrame(() => hostRef.current?.querySelector('canvas')?.focus({ preventScroll: true }));
@@ -763,6 +763,14 @@ export function GameSession({
             placement="topbar"
           />
           <button
+            className="topbar-action topbar-action--restart"
+            type="button"
+            data-testid="restart-game"
+            aria-label="重新开始（R）"
+            disabled={countdownDigit !== null}
+            onClick={restartRun}
+          ><span className="restart-label--long">重新开始</span><span className="restart-label--short">重开</span></button>
+          <button
             className="topbar-action"
             type="button"
             onClick={(event) => {
@@ -803,7 +811,7 @@ export function GameSession({
               <p className="rail-label">Next</p>
               <div className="next-slot" data-testid="next-slot" aria-label="下一个方块" />
             </div>
-            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span></p>
+            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>R 重新开始</span></p>
           </aside>
         </section>
 

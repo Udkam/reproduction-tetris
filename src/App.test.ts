@@ -36,6 +36,7 @@ interface RuntimeTestInstance {
   options: RuntimeTestOptions;
   setInputEnabled: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
+  restart: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
 }
@@ -71,7 +72,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     press(): void {}
     release(): void {}
     togglePause(): void {}
-    restart(): void {}
+    readonly restart = vi.fn();
     getState(): GameState { return this.state; }
     getRendererSnapshot(): Record<string, never> { return {}; }
     destroy(): void { this.canvas?.remove(); }
@@ -257,12 +258,34 @@ describe('T6 frontend mode binding', () => {
     const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
     const volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
     expect(toggle.textContent).toBe('声音开');
-    expect(volume.value).toBe('78');
+    expect(volume.value).toBe('100');
     act(() => toggle.click());
     expect(toggle.textContent).toBe('声音关');
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(volume, '56');
     act(() => volume.dispatchEvent(new Event('input', { bubbles: true })));
     expect(view.container.textContent).toContain('56%');
+    view.unmount();
+  });
+
+  it('places a standalone restart action beside Pause and invokes the runtime restart path', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    runtimeHarness.instances.at(-1)?.restart.mockClear();
+    runtimeHarness.instances.at(-1)?.start.mockClear();
+    const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="restart-game"]')!;
+    const topbar = view.container.querySelector<HTMLElement>('[data-testid="cluster-header"]')!;
+    expect(restart.textContent).toContain('重新开始');
+    expect(restart.disabled).toBe(false);
+    expect(topbar.textContent).toContain('暂停');
+    act(() => restart.click());
+    expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
+    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
     view.unmount();
   });
 

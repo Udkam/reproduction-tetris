@@ -757,6 +757,16 @@ p {
   background: var(--raised);
 }
 
+.topbar-action--restart {
+  color: var(--focus);
+  background: var(--raised);
+  border: 1px solid var(--line);
+}
+
+.restart-label--short {
+  display: none;
+}
+
 .topbar-action:last-child {
   justify-self: end;
   color: var(--action-ink);
@@ -1046,7 +1056,8 @@ p {
   position: relative;
   width: 100%;
   height: 112px;
-  background: var(--well);
+  /* The Pixi canvas draws the dark well and the Next tetromino behind this geometry anchor. */
+  background: transparent;
   border: 1px solid var(--line);
   border-radius: 8px;
 }
@@ -1526,6 +1537,18 @@ p {
     font-size: 12px;
   }
 
+  .topbar-action--restart {
+    min-width: 42px;
+  }
+
+  .restart-label--long {
+    display: none;
+  }
+
+  .restart-label--short {
+    display: inline;
+  }
+
   .audio-controls--topbar {
     grid-template-columns: auto 58px;
     width: 118px;
@@ -1575,6 +1598,9 @@ p {
   }
 
   .game-side-panel {
+    /* Keep the mobile information band below the transparent Pixi canvas so its
+       opaque raised surface cannot mask the canvas-owned Next preview. */
+    z-index: 3;
     grid-row: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 86px;
