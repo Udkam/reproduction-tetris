@@ -6,8 +6,9 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`; current T12 source checkpoint: `95c7da7`.
 
-Current execution status (2026-07-19): **IN PROGRESS — T12.2 renderer QA correction and
-T12.3 Puzzle preview/viewport follow-up.**
+Current execution status (2026-07-19): **IN PROGRESS — T12.4 solver-backed Puzzle
+campaign recalibration, with T12.2 renderer QA correction and T12.3 Puzzle
+preview/viewport follow-up retained in the same unaccepted candidate.**
 Independent renderer QA rejected T12.1 candidate `7ae1190..b0889c7` on a P2
 fractional-edge scale overhang, so it is not accepted. Source `95c7da7` remains the
 locally verified T12 baseline; T11 remains a recoverable baseline at `a76eea2`, pending
@@ -137,6 +138,61 @@ and the formal changelog remain closed. Required proof adds direct queue-preview
 desktop/portrait/landscape browser inspection of the second Puzzle preview, zero console
 errors, no document-level overflow, and renewed independent renderer plus visual/browser
 QA before formal acceptance or publication.
+
+### T12.4 current Puzzle solver recalculation, campaign reorder, doubled budgets, and tiered unlocks
+
+The user requires every current Puzzle level—not only the former first level—to be
+correctly solved against its actual fixed-anchor state before any difficulty, budget,
+or player walkthrough claim is published. This supersedes all inherited
+`SOLVER_PIECE_BUDGETS` values and all old reference-route assumptions. The legacy
+fifteen-route fixture was authored for a different target/anchor contract; it cannot
+be presented as a solution, lower bound, or budget authority.
+
+The solver work must define a finite public-command domain and enumerate locks in
+ascending order. It must independently replay the first successful route for each of
+the twenty unchanged puzzle definitions through `dispatch()` with its actual seed,
+anchor coordinates, target mapping, and line-clear behavior. A result record must
+carry the exact command/placement route, replay digest, first successful lock count,
+and a per-depth completion proof sufficient to distinguish an exhaustive result from
+a heuristic candidate. A failed, timed-out, or beam-only search is not an optimum and
+may not be used to set the requested player budget.
+
+After all twenty verified minima exist, `PUZZLE_DEFINITIONS` must be reordered by
+ascending `optimalLocks`; ties use the stable route-complexity tuple `(cleared rows,
+rotations, distinct landing columns, anchor count, id)`. IDs, authored boards,
+fixed anchors, setup histories, and per-level seeds do not change. Each revised
+`puzzlePieceBudget` is exactly twice that level's verified `optimalLocks`, with no
+separate +10 slack.
+
+The new unlock frontier is tiered after that ordering: levels 01–03 are initially
+open; levels 04–06, 07–09, 10–12, 13–15, 16–18, and 19–20 each open when any two
+distinct canonical completions in the immediately preceding tier exist. Valid stored
+completion IDs migrate without loss, unlocked IDs are always recomputed from the new
+order, and a direct caller cannot record a completion for a still-locked level. The
+archive must state the next tier condition concisely and accessibly.
+
+T12.4 opens the following paths after its solver-contract checkpoint:
+
+- `tools/solve-puzzle-campaign.*` and only directly related solver verification helpers;
+- one committed solver-result artifact under `docs/workstreams/tetris-t12-core/`;
+- `src/game/core/puzzles.ts`, its direct tests, and the current Puzzle campaign
+  verifier/reference fixture only as needed to make the verified minima authoritative;
+- `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`,
+  `src/App.test.ts`, and directly related styles for tier-gate persistence/copy;
+- `Solutions/Solution-1.md` as a deliberately ignored local player walkthrough,
+  regenerated only after the reordering identifies the new level 01;
+- `docs/DESIGN.md`, this task record, `docs/progress.md`, and the assigned T12 core,
+  frontend, and coordinator logs.
+
+T12.4 does not authorize changed physics, rotation, row resolution, anchors,
+authored setup/board content, seed generation, audio, dependencies, browser assets,
+or work in another repository. The source chain must keep solver infrastructure,
+authoritative core data, progress migration, and archive UI as separately reviewable
+checkpoints. After the last source change: run focused solver/replay/progress tests,
+one final typecheck, full test suite, build, and one browser matrix covering a new
+archive, tier unlock transition, Puzzle double Next, and the renderer top edge. Fresh
+independent Core and visual/browser QA must accept the final contiguous candidate
+before `CHANGELOG.md` integration or push.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special

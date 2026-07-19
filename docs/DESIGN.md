@@ -46,6 +46,60 @@ fixed queue, and closes the one desktop viewport fit finding from visual QA.
   the selected preview/detail remains in view. Portrait and landscape narrow layouts
   retain their existing internal-catalog scrolling and zero horizontal overflow.
 
+## T12.4 solver-backed Puzzle campaign recalibration
+
+The 2026-07-19 direction supersedes the inherited route-budget table and its old
+linear unlock frontier. The previous fifteen route fixtures predate the current
+original-target win condition and selected fixed anchors; they are historical evidence
+only and must not be used as a budget, difficulty, or walkthrough authority.
+
+- A dedicated deterministic campaign solver must calculate a legal public-command
+  route for every one of the twenty current Puzzle definitions, including its current
+  fixed anchor overlay, fixed seven-bag input sequence, original-target tracking, and
+  anchor-aware line resolution. A candidate route is valid only after an independent
+  replay through `dispatch()` reaches `puzzleCompletion: 'finished'`; a historical
+  route or an anchorless board simulation is not evidence.
+- The solver must search lock counts in ascending order and retain a reproducible
+  bounded proof record for the first successful count. Each published `optimalLocks`
+  value means the minimum in that explicit public-command solver domain—not an
+  unverified heuristic beam result. The solver record must name the domain,
+  deterministic tie-break, per-depth completion status, route, and replay digest so
+  later changes can reproduce or invalidate the claim.
+- Every Puzzle's public `puzzlePieceBudget` becomes exactly `optimalLocks * 2`.
+  The engine still permits success on the final allowed lock after line resolution.
+  There is no generic fixed slack and no legacy route count may survive as the source
+  of a budget.
+- The published campaign order is sorted by increasing `optimalLocks`. Equal lock
+  counts sort by the deterministic route-complexity tuple `(cleared rows, rotations,
+  distinct landing columns, anchor count, id)` so the visible difficulty index is
+  stable, explainable, and derived from the recomputation rather than the prior
+  authoring order. Puzzle IDs, seeds, authored setups, boards, and anchor coordinates
+  remain stable; only their campaign order and derived difficulty index change.
+- A new save opens the first three solved-and-sorted levels. The remaining roster is
+  grouped into tiers `[04–06]`, `[07–09]`, `[10–12]`, `[13–15]`, `[16–18]`, and
+  `[19–20]`. A complete tier opens when any two distinct levels from the immediately
+  preceding tier have been canonically completed. This gives a recovery choice inside
+  each difficulty band while preserving a visible ascending campaign. Existing
+  completed IDs remain completed during migration; unlocks are recalculated against
+  the new ordered tiers and never erase a valid prior completion.
+- The archive must explain the tier gate in concise Chinese, preserve one selected
+  canonical preview, keep locked entries inert, and announce both the current open
+  count and the next gate accessibly. Its two-item Puzzle Next preview remains queue
+  display only and is independent of solving, budgets, ordering, or unlock state.
+
+The bounded T12.4 implementation may change only the following product/test paths
+after a reviewed solver result exists: `src/game/core/puzzles.ts`, direct Core campaign
+tests and a new solver-result fixture/helper, `src/puzzleProgress.ts`,
+`src/puzzleProgress.test.ts`, `src/App.tsx`, `src/App.test.ts`, and directly related
+styles. It may add one deterministic local authoring solver under `tools/` plus its
+committed result artifact under `docs/workstreams/`; both must remain isolated from the
+runtime loop. It must update `Solutions/Solution-1.md` from the new first level's
+verified route but keep that player walkthrough ignored by Git. It must not change
+piece physics, rotation, line-clear behavior, anchors, authored boards, seeds, audio,
+dependencies, or another game repository. Before publication it requires focused
+solver/replay/progress tests, typecheck, the full suite, production build, browser
+evidence for archive gates and two-Next, and independent Core plus visual/browser QA.
+
 ## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
 
 The user's 2026-07-19 direction supersedes T11's volatile Puzzle input mechanism and
