@@ -37,6 +37,7 @@ interface RuntimeTestInstance {
   setInputEnabled: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
   restart: ReturnType<typeof vi.fn>;
+  togglePause: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
 }
@@ -71,7 +72,11 @@ vi.mock('./game/runtime/GameRuntime', async () => {
 
     press(): void {}
     release(): void {}
-    togglePause(): void {}
+    readonly togglePause = vi.fn(() => {
+      if (this.state.status === 'playing') this.state = { ...this.state, status: 'paused' };
+      else if (this.state.status === 'paused') this.state = { ...this.state, status: 'playing' };
+      this.options.onState?.(this.state, []);
+    });
     readonly restart = vi.fn();
     getState(): GameState { return this.state; }
     getRendererSnapshot(): Record<string, never> { return {}; }
@@ -267,7 +272,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('places a standalone restart action beside Pause and invokes the runtime restart path', async () => {
+  it('keeps restart out of Pause and requires an Enter-confirmed header restart', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -278,14 +283,29 @@ describe('T6 frontend mode binding', () => {
     await act(async () => vi.advanceTimersByTimeAsync(3000));
     runtimeHarness.instances.at(-1)?.restart.mockClear();
     runtimeHarness.instances.at(-1)?.start.mockClear();
+    runtimeHarness.instances.at(-1)?.togglePause.mockClear();
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="restart-game"]')!;
+    const pause = [...view.container.querySelectorAll<HTMLButtonElement>('.topbar-action')].at(-1)!;
     const topbar = view.container.querySelector<HTMLElement>('[data-testid="cluster-header"]')!;
     expect(restart.textContent).toContain('重新开始');
     expect(restart.disabled).toBe(false);
     expect(topbar.textContent).toContain('暂停');
+
+    act(() => pause.click());
+    const pauseSheet = view.container.querySelector<HTMLElement>('.action-sheet')!;
+    expect(pauseSheet.textContent).toContain('已暂停');
+    expect(pauseSheet.textContent).not.toContain('重新开始');
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+
     act(() => restart.click());
+    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
+    expect(view.container.textContent).toContain('重新开始？');
+    expect(view.container.textContent).toContain('按 Enter 确认。');
+    expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
     expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
+    expect(view.container.querySelector('[data-testid="confirm-restart"]')).toBeNull();
     view.unmount();
   });
 

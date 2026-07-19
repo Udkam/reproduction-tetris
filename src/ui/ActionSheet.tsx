@@ -6,6 +6,7 @@ interface ActionSheetProps {
   description: string;
   tone?: 'default' | 'success' | 'danger';
   onCancel?: () => void;
+  onConfirm?: () => void;
   children: ReactNode;
 }
 
@@ -24,6 +25,7 @@ export function ActionSheet({
   description,
   tone = 'default',
   onCancel,
+  onConfirm,
   children,
 }: ActionSheetProps) {
   const titleId = useId();
@@ -46,6 +48,12 @@ export function ActionSheet({
         event.preventDefault();
         event.stopPropagation();
         onCancel();
+        return;
+      }
+      if (event.key === 'Enter' && onConfirm && !event.isComposing) {
+        event.preventDefault();
+        event.stopPropagation();
+        onConfirm();
         return;
       }
       if (event.key !== 'Tab' || !panel) return;
@@ -74,7 +82,7 @@ export function ActionSheet({
         requestAnimationFrame(() => previouslyFocused?.focus({ preventScroll: true }));
       });
     };
-  }, [onCancel, open]);
+  }, [onCancel, onConfirm, open]);
 
   if (!open) return null;
 

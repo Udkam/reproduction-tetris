@@ -542,11 +542,13 @@ export function GameSession({
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
   const exitWasPlayingRef = useRef(false);
+  const restartWasPlayingRef = useRef(false);
   const lastRecordedRunRef = useRef<string | null>(null);
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
   const [state, setState] = useState<GameState>(() => createInitialState(APP_SEED, mode, mode === 'puzzle' ? puzzleId : undefined));
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [exitOpen, setExitOpen] = useState(false);
+  const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
@@ -709,10 +711,24 @@ export function GameSession({
 
   const restartRun = useCallback(() => {
     setExitOpen(false);
+    setRestartConfirmOpen(false);
+    restartWasPlayingRef.current = false;
     runtime?.restart();
     runtime?.start();
     focusBoard();
   }, [focusBoard, runtime]);
+
+  const requestRestart = useCallback(() => {
+    restartWasPlayingRef.current = runtime?.getState().status === 'playing';
+    if (restartWasPlayingRef.current) runtime?.togglePause();
+    setRestartConfirmOpen(true);
+  }, [runtime]);
+
+  const cancelRestart = useCallback(() => {
+    setRestartConfirmOpen(false);
+    if (restartWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
+    restartWasPlayingRef.current = false;
+  }, [runtime]);
 
   const resumeRun = useCallback(() => {
     if (runtime?.getState().status === 'paused') runtime.togglePause();
@@ -733,8 +749,8 @@ export function GameSession({
   const terminal = terminalCopy(state);
   const level = state.mode === 'puzzle' ? campaignLevel(state.puzzleId) : null;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
-  const pauseOpen = state.status === 'paused' && !exitOpen;
-  const resultOpen = terminal !== null && !exitOpen;
+  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen;
+  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen;
   const leaderboardRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
 
   return (
@@ -768,7 +784,7 @@ export function GameSession({
             data-testid="restart-game"
             aria-label="重新开始（R）"
             disabled={countdownDigit !== null}
-            onClick={restartRun}
+            onClick={requestRestart}
           ><span className="restart-label--long">重新开始</span><span className="restart-label--short">重开</span></button>
           <button
             className="topbar-action"
@@ -831,8 +847,19 @@ export function GameSession({
         onCancel={resumeRun}
       >
         <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>继续游戏</button>
-        <button className="secondary-action" type="button" onClick={restartRun}>重新开始</button>
-        <button className="text-action" type="button" onClick={requestExit}>离开本局</button>
+        <button className="secondary-action" type="button" onClick={requestExit}>离开本局</button>
+      </ActionSheet>
+
+      <ActionSheet
+        open={restartConfirmOpen}
+        title="重新开始？"
+        description="当前对局进度将清空。按 Enter 确认。"
+        tone="danger"
+        onCancel={cancelRestart}
+        onConfirm={restartRun}
+      >
+        <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>确认重新开始</button>
+        <button className="secondary-action" type="button" onClick={cancelRestart}>取消</button>
       </ActionSheet>
 
       <ActionSheet
