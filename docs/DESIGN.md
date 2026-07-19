@@ -39,12 +39,16 @@ cell is removable and that every incoming piece remains active until it locks.
   rounded-up seconds value while its locked timer remains. The live DEV state
   includes the active volatile records and anchor count so browser evidence can
   compare visible and canonical state.
-- Gameplay audio uses a single Web Audio master gain with an explicit mute
-  control and a persistent-in-session 0–100% volume slider beside Pause.
-  Distinct, audible
+- Gameplay audio uses a single Web Audio master gain and a compressor safety
+  stage. Its default is 100%, with an explicit mute control and a
+  persistent-in-session 0–100% volume slider beside Pause. Distinct, audible
   feedback covers start/pause, movement/rotation, hard drop/lock, line clears,
   volatile expiry, Survival pressure, and terminal outcomes; all audio stays
   outside core simulation and must be released on unmount.
+- The game header keeps three direct controls together: audio, `重新开始`, and
+  Pause. `R` is the keyboard mapping for an immediate deterministic restart in
+  every playable/paused/terminal state; it clears held input and returns to the
+  same selected mode or Puzzle level without changing the seed contract.
 
 ## T9 five-layer Survival opening and Puzzle archive surface
 
@@ -719,6 +723,9 @@ non-color cue.
 - The visible focus ring maps to the board frame rather than outlining the full-page
   Pixi canvas. The canvas may still cover the complete arena so it can render both the
   board and Next against DOM geometry anchors.
+- Pixi owns both the dark Next well and its exact canonical tetromino. The DOM
+  `next-slot` is a transparent geometry anchor only; an opaque compact information
+  band must sit below that canvas layer so it cannot mask the preview on mobile.
 - Pause, exit confirmation, success, and failure use accessible light action sheets
   with buttons at least 44 × 44 CSS px.
 - Survival shows score, lines, and bedrock height. Puzzle shows level name, cleared lines,

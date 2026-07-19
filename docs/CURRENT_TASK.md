@@ -2,7 +2,8 @@
 
 Branch: `main`
 
-Current base: `15e6412`; source checkpoints: `1ffe8fd`, `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`
+Current base: recovery publication `4813e55`; source checkpoints: `1ffe8fd`,
+`4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`
 
 Current execution status (2026-07-19): **CANDIDATE READY — pending independent Core and visual/browser QA.**
 
@@ -29,9 +30,17 @@ push of the committed candidate to `origin/main`. This publication preserves a
 recoverable remote checkpoint only; it does not replace the pending independent
 Core and visual/browser QA or mark T10 accepted.
 
-The correction also adds an explicit in-session audio control beside Pause:
-mute plus a 0–100% master-volume slider. It must make all game feedback audible
-without placing browser audio APIs in `src/game/core`.
+The correction also adds explicit header controls beside Pause: mute plus a
+0–100% master-volume slider (default 100%), then a standalone `重新开始` button.
+`R` must invoke the same deterministic restart during play, pause, or terminal
+states. A compressor safety stage and louder distinct feedback must make game
+events audible without placing browser audio APIs in `src/game/core`.
+
+The shared Pixi canvas owns the dark Next well and canonical tetromino while the
+DOM `next-slot` remains only a transparent geometry anchor. This prevents the
+opaque compact information band from covering the Next rendering at narrow
+viewports; the visible preview must equal `queue[0]` at desktop, portrait, and
+landscape sizes.
 
 ---
 

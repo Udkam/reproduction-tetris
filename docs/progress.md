@@ -477,3 +477,26 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   candidate to `origin/main` as a recoverable remote checkpoint. This is a
   recovery record only: the candidate remains pending independent Core and
   visual/browser QA, and no changelog acceptance claim is made.
+
+## 2026-07-19 — T10 recovery follow-up: audible feedback, restart, and Next repair
+
+- Raised the Web Audio default to 100%, placed the master gain behind a compressor
+  safety stage, and retuned the distinct move, rotation, soft-drop, lock, clear,
+  terminal, volatile, and Survival cues. Core simulation remains audio-free.
+- Added the separate `重新开始` header control beside Pause. It uses the same
+  deterministic restart path as `R`, works from active play, pause, and terminal
+  states, clears held input, preserves the selected mode/level and seed, and resumes
+  immediately without a second entry countdown.
+- Repaired the Next preview regression: the mobile information band's opaque raised
+  background was masking the canvas-owned preview. Pixi now paints the Next well and
+  the DOM slot is transparent; the compact band is layered beneath the canvas.
+- Source checkpoints: `7707c56 feat(audio): amplify feedback and active restart` and
+  `e3aeed9 fix(ui): restore next preview and header restart`.
+- Final gates: `npm.cmd run typecheck` PASS; full suite 39 passed / 1 skipped,
+  276 passed / 2 skipped; 741-module production build PASS; prescribed browser
+  action client PASS. Browser inspection verified matching canonical/renderer Next
+  values after a lock, `R` returning an active run to zero placed pieces, one canvas,
+  no DOM cells, no overflow, and zero console errors at 1440 × 900, 390 × 844, and
+  844 × 390. Captures are local ignored artifacts only.
+- This is still a recovery candidate pending independent Core and visual/browser QA;
+  no changelog acceptance entry is made.

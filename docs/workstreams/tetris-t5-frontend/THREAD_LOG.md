@@ -1698,3 +1698,24 @@ remain untouched. No generated browser artifact is part of the candidate.
   the mute control and 0% slider remain clickable beside Pause with zero console
   errors. Blocker: independent visual/browser QA. Next: review the
   control and no-leak lifecycle before candidate acceptance; no push.
+
+## 2026-07-19 — T10 recovery follow-up: audio, restart, and Next preview
+
+- Task: `TETRIS-T10-AUDIO-RESTART-PREVIEW-024`; base `4813e55` on `main`.
+- Exact product paths: `src/game/audio/AudioEngine.ts`,
+  `src/game/runtime/GameRuntime.ts`, `src/game/runtime/GameRuntime.test.ts`,
+  `src/App.tsx`, `src/App.test.ts`, `src/game/render/TetrisRenderer.ts`, and
+  `src/styles.css`.
+- Source `7707c56` sets the Web Audio default to 100%, adds a compressor safety
+  stage, strengthens distinct event voices, and makes public `R` restart an active
+  run immediately. Source `e3aeed9` places the separate header restart control beside
+  Pause and restores the canvas-owned Next preview at desktop and compact layouts.
+- Commands: focused App/runtime/Puzzle tests PASS; final `npm.cmd run typecheck` PASS;
+  final `npm.cmd run test` PASS (39 passed / 1 skipped; 276 passed / 2 skipped);
+  final `npm.cmd run build` PASS (741 modules); prescribed web-game action client
+  PASS. Browser evidence at 1440 × 900, 390 × 844, and 844 × 390 shows the visible
+  Next item equals canonical `queue[0]`, `R` resets an active run to zero placed
+  pieces, one canvas, zero DOM cells, no overflow, and zero console errors.
+- Blocker: independent Core and visual/browser QA remains required; this is a
+  recovery checkpoint, not acceptance. Next: coordinator commits the documentation
+  record and may push it under the user's existing recovery-publication authority.
