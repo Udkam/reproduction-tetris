@@ -1,4 +1,44 @@
-# Tetris — T11 Puzzle Target Budget and Survival Baseline Contract
+# Tetris — T12 Progressive Puzzle Curriculum and Anchor Stability Contract
+
+## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
+
+The user's 2026-07-19 direction supersedes T11's volatile Puzzle input mechanism and
+the unrestricted fifteen-level archive. It corrects the current anchor clear bug
+without changing Classic or Survival rules.
+
+- Puzzle has exactly twenty original authored levels, ordered from difficulty `01` to
+  `20`. Difficulty is a monotonic campaign property: target density, cavities, fixed
+  anchors, and the accepted solver lock budget never make a later level easier than
+  an earlier one in the authored curriculum profile. All levels retain a stable,
+  level-owned deterministic seed and original clean-room setup history.
+- A new save begins with levels `01`–`03` available. Every distinct canonical Puzzle
+  completion opens one additional next-locked level, up to all twenty. Completion
+  remains persistent, malformed or older data fails closed, and historic completion
+  records migrate without losing their completed-level information. Locked entries
+  are visible in the archive but cannot be selected or started; completion and unlock
+  state are announced accessibly.
+- `A` anchors are permanent **coordinate-pinned** obstacles. No line clear, including
+  one below an anchor, may change an anchor's `{x,y}`. When an ordinary clear occurs
+  in a Puzzle with anchors, normal cells resolve inside the vertical segments delimited
+  by those fixed coordinates; normal targets continue to move deterministically and
+  are removed only when their own cleared row is resolved. A line containing an anchor
+  clears its removable cells while leaving the anchor in place.
+- Remove the timed/volatile Puzzle-input design completely. No Puzzle input can expire,
+  disappear, invoke support settlement, receive a warm volatile material, show a timer,
+  or emit an expiry event/audio cue. Puzzle uses only ordinary deterministic seven-bag
+  inputs, original targets, and optional fixed anchors.
+- The visible `0–100%` sound control remains beside Pause, but `100%` is rebalanced as
+  a clearly audible game mix: a modest master headroom boost, less aggressive
+  compression, and stronger bounded sine envelopes. The mix remains transient,
+  sine-only, free of distortion-prone waveforms and ambient loops, and must not clip
+  ordinary overlapping gameplay cues.
+- The archive retains its selected canonical preview as its only board thumbnail. Its
+  new progression signal is compact and semantic—difficulty, completion, and lock
+  status—not a decorative dot or per-entry miniature board. Touch, keyboard, reduced
+  motion, responsive geometry, one canvas, and the plain-text `Tetris` identity remain
+  required.
+
+## T11 target-marked Puzzle budgets, acoustic refinement, and fixed Survival pace
 
 ## T11 target-marked Puzzle budgets, acoustic refinement, and fixed Survival pace
 

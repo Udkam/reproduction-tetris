@@ -554,3 +554,15 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   action capture shows 10 initial bedrock rows and fixed 40-tick gravity.
 - Blocker: independent Core and visual/browser QA remain required. The user-authorized
   `origin/main` push is a recoverable checkpoint only, not a changelog acceptance.
+
+## 2026-07-19 — T12 progressive Puzzle curriculum opened
+
+- Original prompt: make full-volume feedback audibly stronger; fix Puzzle anchors that
+  move after unrelated line clears; remove timed Puzzle blocks; expand the campaign to
+  twenty progressive levels with only the first three initially available.
+- Contract decision: anchors are coordinate-pinned and split ordinary post-clear
+  settlement into vertical segments; volatile input state, material, HUD, event, and
+  audio are removed; every distinct canonical completion opens one next locked level.
+- Next: generate five original late-campaign definitions, then implement the core and
+  progression checkpoints with targeted deterministic tests before the final browser
+  evidence pass.

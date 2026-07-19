@@ -1,4 +1,4 @@
-# Current Task — T11 Puzzle Target Budget and Survival Baseline
+# Current Task — T12 Progressive Puzzle Curriculum and Anchor Stability
 
 Branch: `main`
 
@@ -6,9 +6,26 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`
 
-Current execution status (2026-07-19): **CANDIDATE — source range
-`1c91bbf..c1c262e` is locally verified; independent Core plus visual/browser QA is
-still pending.**
+Current execution status (2026-07-19): **IN PROGRESS — T12 contract checkpoint;
+no T12 source candidate yet.** T11 remains a recoverable, locally verified baseline
+at `a76eea2`, pending its separate independent QA disposition.
+
+T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
+level a monotonic visible difficulty index. A new campaign opens only levels 01–03;
+each distinct canonical completion unlocks exactly one next locked level. The archive
+shows locked entries but neither selects nor starts them. Existing persisted completed
+IDs migrate forward and remain valid; malformed progress is fail-closed.
+
+T12 removes all volatile/expiring Puzzle input behavior, related renderer material,
+HUD state, expiry events, audio, timers, and volatile support settlement. Puzzle inputs
+are exclusively ordinary fixed-seed seven-bag pieces. Its sparse anchors remain, but
+are now coordinate-pinned through every line-clear resolution: ordinary cells resolve
+inside anchor-delimited vertical segments, target identity follows that exact movement,
+and no anchor may be displaced by clearing a row below it.
+
+The existing 0–100% header audio control stays in place. At 100% its master/headroom,
+compressor, and sine envelopes must be materially louder without reviving the rejected
+electrical landing sound or allowing an unclipped overlapping mix.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
@@ -36,13 +53,14 @@ terminal Classic/Survival score survives leaderboard insertion, its row is highl
 in the result table; otherwise the result sheet displays a compact non-qualification
 notice.
 
-Required evidence before any publication: targeted core/replay/UI coverage for all
-fifteen solver budgets, target identity across line clear and volatile settlement,
-Xth-lock success and exhausted-budget failure, ten-row Survival restart/pressure and
-fixed gravity, sine-only audio event routing, and bare restart confirmation; then
-typecheck, the full suite, build, and one browser action pass with visible target
-markers/budget and no browser errors. Independent Core and visual/browser QA must
-accept the extended candidate before changelog integration or acceptance.
+Required T12 evidence before any publication: targeted core/replay/UI coverage for all
+twenty fixed-seed levels and progressive unlock persistence; stationary anchors when
+clearing both their own and lower rows; target-coordinate mapping through that
+resolution; absence of any volatile timer, event, material, or HUD state; and boosted
+bounded sine routing at full volume. Then run typecheck, the full suite, build, and one
+browser action pass with the locked/unlocked archive, visible target/budget state, and
+zero browser errors. Independent Core and visual/browser QA must accept the extended
+candidate before changelog integration or acceptance.
 
 Local candidate evidence now covers the target budget/state transitions, fixed ten-row
 Survival opening and cadence, fresh ordinary-run seeds, fixed Puzzle selection, audio
