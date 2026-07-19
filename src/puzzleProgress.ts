@@ -37,9 +37,9 @@ export const CAMPAIGN_LEVELS: readonly CampaignLevel[] = Object.freeze(
 );
 
 /**
- * The v2 save format was written before solver-backed ordering. It is deliberately
- * literal rather than derived from CAMPAIGN_LEVELS, which will be reordered in v3.
- * Migration uses this order only to interpret old data, then stores canonical IDs.
+ * The v2 save format predates T12.4's temporary solver ordering. Keep its literal
+ * natural-ID order so T12.5 can retain valid completions while restoring the gentle
+ * authored curriculum order. Migration uses it only to interpret old data.
  */
 export const V2_CAMPAIGN_ORDER: readonly PuzzleId[] = Object.freeze([
   't3r-shaft-01',
@@ -187,7 +187,7 @@ export function parsePuzzleProgress(raw: string | null): PuzzleProgress {
   }
 }
 
-/** Migrates a v2 canonical-ID record through the frozen v2 order into the v3 format. */
+/** Migrates a v2 canonical-ID record into the current tiered campaign format. */
 export function migrateV2PuzzleProgress(raw: string | null): PuzzleProgress {
   if (raw === null) return defaultPuzzleProgress();
   try {
@@ -209,7 +209,7 @@ export function migrateV2PuzzleProgress(raw: string | null): PuzzleProgress {
 
 /**
  * The old v1 record stored the next sequentially selectable level. Its old campaign
- * order is frozen with v2 so a later solver sort cannot reinterpret its frontier.
+ * order is frozen with v2 so a later curriculum reorder cannot reinterpret its frontier.
  */
 export function migrateLegacyPuzzleProgress(raw: string | null): PuzzleProgress {
   if (raw === null) return defaultPuzzleProgress();

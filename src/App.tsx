@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   PIECE_TYPES,
-  ANCHOR_CELL,
-  BEDROCK_CELL,
   TICKS_PER_SECOND,
   type GameEvent,
   type GameMode,
   type GameState,
   type PieceType,
-  type BoardMaterial,
   type PuzzleId,
   createInitialState,
   gravityForMode,
@@ -19,6 +16,7 @@ import { type InputAction } from './game/input/InputController';
 import { GameRuntime, randomRunSeed } from './game/runtime/GameRuntime';
 import {
   CAMPAIGN_LEVELS,
+  CAMPAIGN_TIERS,
   LEGACY_PUZZLE_PROGRESS_KEY,
   PUZZLE_PROGRESS_KEY,
   V2_PUZZLE_PROGRESS_KEY,
@@ -32,7 +30,7 @@ import {
   unlockedPuzzleLevelCount,
   type PuzzleProgress,
 } from './puzzleProgress';
-import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
+import { PIECE_MATERIALS } from './game/render/theme';
 import { ActionSheet } from './ui/ActionSheet';
 import {
   LEADERBOARD_KEY,
@@ -139,12 +137,11 @@ function campaignLevel(id: PuzzleId | null) {
 export function terminalCopy(state: GameState): { title: string; detail: string; success: boolean } | null {
   if (state.mode === 'puzzle') {
     if (state.puzzleCompletion === 'finished') {
-      return { title: '原有方块已清除', detail: `${state.pieceCount}/${state.puzzlePieceBudget ?? '—'} 方块 · ${state.lines} 消行`, success: true };
+      return { title: '原有方块已清除', detail: `${state.pieceCount} 方块 · ${state.lines} 消行`, success: true };
     }
     if (state.puzzleCompletion && state.puzzleCompletion !== 'active') {
       const remaining = state.puzzleTargetCells.length;
-      const title = state.puzzleCompletion === 'failed-budget' ? '步数耗尽' : '堆叠到顶';
-      return { title, detail: `剩余 ${remaining} 原有方块 · ${state.pieceCount}/${state.puzzlePieceBudget ?? '—'} 方块`, success: false };
+      return { title: '堆叠到顶', detail: `剩余 ${remaining} 原有方块 · 已落 ${state.pieceCount} 块`, success: false };
     }
     return null;
   }
@@ -269,12 +266,12 @@ function cssHex(color: number): string {
   return `#${color.toString(16).padStart(6, '0')}`;
 }
 
-export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<BoardMaterial, string> {
+export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<PieceType, string> {
   const board = createInitialState(APP_SEED, 'puzzle', id).board.slice(-12);
   const unit = 4;
   const face = 3.8;
-  const paths = new Map<BoardMaterial, string>();
-  for (const type of [...PIECE_TYPES, ANCHOR_CELL] as const) {
+  const paths = new Map<PieceType, string>();
+  for (const type of PIECE_TYPES) {
     const path = board.flatMap((row, y) => row.map((cell, x) => (
       cell === type ? `M${x * unit + .1} ${y * unit + .1}h${face}v${face}h-${face}z` : ''
     ))).join('');
@@ -292,7 +289,7 @@ function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
       aria-label={`${name}棋盘轮廓`}
     >
       {[...puzzleSilhouettePaths(id)].map(([type, path]) => {
-        const material = type === ANCHOR_CELL ? ANCHOR_MATERIAL : type === BEDROCK_CELL ? BEDROCK_MATERIAL : PIECE_MATERIALS[type];
+        const material = PIECE_MATERIALS[type];
         return (
           <path
             key={type}
@@ -305,6 +302,14 @@ function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
       })}
     </svg>
   );
+}
+
+const ATLAS_TIER_NAMES = ['起航', '填隙', '转角', '连线', '叠层', '合流', '终章'] as const;
+
+function campaignRange(levels: readonly { index: number }[]): string {
+  const first = levels[0]!;
+  const last = levels.at(-1)!;
+  return `${String(first.index).padStart(2, '0')}–${String(last.index).padStart(2, '0')}`;
 }
 
 export function PuzzleLibrary({
@@ -327,32 +332,32 @@ export function PuzzleLibrary({
   const selectedStatus = selectedComplete ? '已完成' : '已开放';
   const openedPercent = (unlockedCount / CAMPAIGN_LEVELS.length) * 100;
   return (
-    <main id="game" className="library-shell" data-testid="puzzle-library">
+    <main id="game" className="library-shell library-shell--atlas" data-testid="puzzle-library">
       <header className="library-header">
         <button className="library-back" type="button" aria-label="返回模式首页" onClick={onBack}>
           <b aria-hidden="true">←</b><span>返回模式</span>
         </button>
         <Brand compact />
       </header>
-      <section className="library-intro" aria-labelledby="library-title">
+      <section className="library-intro library-intro--atlas" aria-labelledby="library-title">
         <div className="library-intro__meta">
-          <span className="library-intro__eyebrow">Puzzle campaign</span>
+          <span className="library-intro__eyebrow">解谜航图 · 01</span>
           <div className="library-intro__stats">
             <span className="library-intro__availability" data-testid="campaign-availability">{unlockedCount} / {CAMPAIGN_LEVELS.length} 已开放</span>
             <span className="library-intro__gate" data-testid="campaign-gate">
               {nextTierGate === null
                 ? '全部档案已开放'
-                : `解锁下一档：本档完成 ${nextTierGate.completedCount} / ${nextTierGate.requiredCount}`}
+                : `下一航段：${campaignRange(nextTierGate.prerequisiteTier)} 完成 ${nextTierGate.completedCount} / ${nextTierGate.requiredCount}`}
             </span>
           </div>
         </div>
         <div className="library-intro__heading">
           <div>
-            <h1 id="library-title">解谜档案</h1>
-            <p>二十个原创残局，逐层解封。</p>
+            <h1 id="library-title">解谜航图</h1>
+            <p>从一眼可见的缺口，走向连续的清场路线。</p>
           </div>
           <div
-            className="campaign-meter"
+            className="campaign-meter campaign-meter--atlas"
             role="progressbar"
             aria-label="解谜档案开放进度"
             aria-valuemin={0}
@@ -363,52 +368,84 @@ export function PuzzleLibrary({
             <span aria-hidden="true" style={{ width: `${openedPercent}%` }} />
           </div>
         </div>
+        <section className="campaign-rule" data-testid="campaign-rules" aria-labelledby="campaign-rule-title">
+          <header>
+            <span>解锁规则</span>
+            <strong id="campaign-rule-title">航图通行章</strong>
+          </header>
+          <dl>
+            <div><dt>01–03</dt><dd>新档案直接开放</dd></div>
+            <div><dt>04–18</dt><dd>完成前一档任意 2 关，开放下一档 3 关</dd></div>
+            <div><dt>19–20</dt><dd>完成 16–18 任意 2 关后开放</dd></div>
+          </dl>
+        </section>
       </section>
-      <section className="library-content" aria-label="全部解谜关卡">
-        <section className="library-catalog" aria-labelledby="catalog-title">
+      <section className="library-content library-content--atlas" aria-label="全部解谜关卡">
+        <section className="library-catalog library-catalog--atlas" aria-labelledby="catalog-title">
           <header className="library-catalog__header">
             <div>
-              <span>Level index</span>
-              <h2 id="catalog-title">关卡目录</h2>
+              <span>航图索引</span>
+              <h2 id="catalog-title">航段目录</h2>
             </div>
-            <small>{CAMPAIGN_LEVELS.length} 组残局</small>
+            <small>{CAMPAIGN_TIERS.length} 段 · {CAMPAIGN_LEVELS.length} 关</small>
           </header>
-          <ol className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
-            {CAMPAIGN_LEVELS.map((level) => {
-              const complete = progress.completedLevelIds.includes(level.id);
-              const unlocked = isPuzzleUnlocked(progress, level.id);
-              const selectedLevel = selectedId === level.id;
-              const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
-              const visualStatus = complete ? '完成' : unlocked ? '开放' : '封存';
-              const statusKey = complete ? 'complete' : unlocked ? 'open' : 'locked';
+          <div className="campaign-atlas" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
+            {CAMPAIGN_TIERS.map((tier, tierIndex) => {
+              const tierUnlocked = tier.every((level) => isPuzzleUnlocked(progress, level.id));
+              const tierComplete = tier.filter((level) => progress.completedLevelIds.includes(level.id)).length;
+              const tierName = ATLAS_TIER_NAMES[tierIndex] ?? `航段 ${tierIndex + 1}`;
               return (
-                <li className={`level-item ${selectedLevel ? 'level-item--selected' : ''} ${unlocked ? '' : 'level-item--locked'}`} key={level.id}>
-                  <button
-                    className={`level-entry ${unlocked ? '' : 'level-entry--locked'}`}
-                    type="button"
-                    data-testid="level-row"
-                    data-level-id={level.id}
-                    data-unlocked={unlocked}
-                    aria-pressed={selectedLevel}
-                    aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
-                    disabled={!unlocked}
-                    onClick={() => onSelect(level.id)}
-                  >
-                    <span className="level-entry__number">{String(level.index).padStart(2, '0')}</span>
-                    <span className="level-entry__copy">
-                      <strong>{level.name}</strong>
-                      <small>难度 {String(level.difficulty).padStart(2, '0')}</small>
-                    </span>
-                    <span className="level-entry__state" data-state={statusKey} aria-hidden="true">{visualStatus}</span>
-                  </button>
-                </li>
+                <section
+                  className={`campaign-tier ${tierUnlocked ? 'campaign-tier--open' : 'campaign-tier--sealed'}`}
+                  data-tier-index={tierIndex + 1}
+                  key={tier[0]!.id}
+                  aria-labelledby={`campaign-tier-${tierIndex + 1}`}
+                >
+                  <header className="campaign-tier__header">
+                    <span className="campaign-tier__serial">航段 {String(tierIndex + 1).padStart(2, '0')}</span>
+                    <h3 id={`campaign-tier-${tierIndex + 1}`}>{tierName} <small>{campaignRange(tier)}</small></h3>
+                    <span className="campaign-tier__progress">{tierComplete} / {tier.length}</span>
+                  </header>
+                  <ol className="campaign-tier__levels" start={tier[0]!.index}>
+                    {tier.map((level) => {
+                      const complete = progress.completedLevelIds.includes(level.id);
+                      const unlocked = isPuzzleUnlocked(progress, level.id);
+                      const selectedLevel = selectedId === level.id;
+                      const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
+                      const visualStatus = complete ? '完成' : unlocked ? '开放' : '封存';
+                      const statusKey = complete ? 'complete' : unlocked ? 'open' : 'locked';
+                      return (
+                        <li className={`atlas-waypoint ${selectedLevel ? 'atlas-waypoint--selected' : ''} ${unlocked ? '' : 'atlas-waypoint--locked'}`} key={level.id}>
+                          <button
+                            className="atlas-level-entry"
+                            type="button"
+                            data-testid="level-row"
+                            data-level-id={level.id}
+                            data-unlocked={unlocked}
+                            aria-pressed={selectedLevel}
+                            aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
+                            disabled={!unlocked}
+                            onClick={() => onSelect(level.id)}
+                          >
+                            <span className="atlas-level-entry__number">{String(level.index).padStart(2, '0')}</span>
+                            <span className="atlas-level-entry__copy">
+                              <strong>{level.name}</strong>
+                              <small>难度 {String(level.difficulty).padStart(2, '0')}</small>
+                            </span>
+                            <span className="atlas-level-entry__state" data-state={statusKey} aria-hidden="true">{visualStatus}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </section>
               );
             })}
-          </ol>
+          </div>
         </section>
-        <aside className="level-detail" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
+        <aside className="level-detail level-detail--atlas" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
           <div className="level-detail__visual">
-            <span className="level-detail__visual-label">原局预览</span>
+            <span className="level-detail__visual-label">原局地形</span>
             <span className="level-detail__visual-index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
             <div className="level-detail__board">
               <PuzzleSilhouette id={selected.id} name={selected.name} />
@@ -416,11 +453,12 @@ export function PuzzleLibrary({
           </div>
           <div className="level-detail__heading">
             <div>
-              <span className="level-detail__count">难度 {String(selected.difficulty).padStart(2, '0')} · {String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
+              <span className="level-detail__count">航段 {String(Math.floor((selected.index - 1) / 3) + 1).padStart(2, '0')} · 难度 {String(selected.difficulty).padStart(2, '0')}</span>
               <h2>{selected.name}</h2>
             </div>
             <span className="level-detail__status" data-state={selectedComplete ? 'complete' : 'open'}>{selectedStatus}</span>
           </div>
+          <p className="level-detail__brief">清除所有原有方块即可通关</p>
           <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
         </aside>
       </section>
@@ -492,6 +530,22 @@ function TouchButton({ action, label, glyph, runtime, disabled = false }: TouchB
   );
 }
 
+function PuzzleUndoButton({ runtime, disabled = false }: { runtime: GameRuntime | null; disabled?: boolean }) {
+  return (
+    <button
+      className="touch-key touch-key--undo"
+      type="button"
+      data-testid="touch-undo"
+      aria-label="撤回上一次落子（B）"
+      aria-keyshortcuts="B"
+      disabled={disabled}
+      onClick={() => runtime?.undoPuzzle()}
+    >
+      <b aria-hidden="true">↶</b><small>撤回</small>
+    </button>
+  );
+}
+
 function AudioControls({
   enabled,
   volume,
@@ -553,10 +607,10 @@ export function RunStats({ state }: { state: GameState }) {
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
         <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
-        <article data-stat-role="puzzle-targets"><span>原有方块</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
-        <article data-stat-role="puzzle-remaining"><span>剩余可用</span><strong>{Math.max(0, (state.puzzlePieceBudget ?? 0) - state.pieceCount)} 块</strong></article>
+        <article data-stat-role="puzzle-targets"><span>原有方块（剩余/总数）</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
+        <article data-stat-role="puzzle-placed"><span>已落子</span><strong>{state.pieceCount}</strong></article>
         <article data-stat-role="objective">
-          <span>已用方块</span><strong>{state.pieceCount}/{state.puzzlePieceBudget ?? '—'}</strong>
+          <span>通关目标</span><strong>清除全部原有方块</strong>
         </article>
       </section>
     );
@@ -577,6 +631,7 @@ export function eventMessage(event: GameEvent): string {
   if (event.type === 'bedrock-lowered') return `基岩降至 ${event.height} 层。`;
   if (event.type === 'paused') return '本局已暂停。';
   if (event.type === 'resumed') return '继续本局。';
+  if (event.type === 'puzzle-undone') return '已撤回上一次落子。';
   if (event.type === 'finished') return '原有方块已清除。';
   if (event.type === 'game-over') return '本局结束。';
   return '';
@@ -670,6 +725,7 @@ export function GameSession({
            || event.type === 'bedrock-lowered'
            || event.type === 'paused'
           || event.type === 'resumed'
+          || event.type === 'puzzle-undone'
           || event.type === 'finished'
           || event.type === 'game-over'
         ));
@@ -733,9 +789,7 @@ export function GameSession({
       puzzleCompletion: state.puzzleCompletion,
       puzzleTargetsRemaining: state.puzzleTargetCells.length,
       puzzleTargetsInitial: state.puzzleInitialTargetCount,
-      puzzlePieceBudget: state.puzzlePieceBudget,
-      puzzlePiecesRemaining: state.puzzlePieceBudget === null ? null : Math.max(0, state.puzzlePieceBudget - state.pieceCount),
-      anchorCells: state.board.flat().filter((cell) => cell === ANCHOR_CELL).length,
+      puzzleUndoDepth: state.mode === 'puzzle' ? state.puzzleUndoHistory.length : 0,
       score: state.score,
       lines: state.lines,
       combo: state.combo,
@@ -920,16 +974,17 @@ export function GameSession({
                 aria-label={puzzleDoublePreview ? '后续两个方块，按顺序显示' : '下一个方块'}
               />
             </div>
-            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>R 重新开始</span></p>
+            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>R 重新开始</span>{state.mode === 'puzzle' && <span>B 撤回</span>}</p>
           </aside>
         </section>
 
-        <section className="touch-deck" data-testid="touch-rail" aria-label="触控操作">
+        <section className={`touch-deck ${state.mode === 'puzzle' ? 'touch-deck--puzzle' : ''}`} data-testid="touch-rail" aria-label={state.mode === 'puzzle' ? '解谜触控操作' : '触控操作'}>
           <TouchButton action="left" label="左移" glyph="←" runtime={runtime} disabled={countdownDigit !== null} />
           <TouchButton action="right" label="右移" glyph="→" runtime={runtime} disabled={countdownDigit !== null} />
           <TouchButton action="rotate-cw" label="旋转" glyph="↻" runtime={runtime} disabled={countdownDigit !== null} />
           <TouchButton action="soft-drop" label="快速下落" glyph="↓" runtime={runtime} disabled={countdownDigit !== null} />
           <TouchButton action="hard-drop" label="直接落底" glyph="⇣" runtime={runtime} disabled={countdownDigit !== null} />
+          {state.mode === 'puzzle' && <PuzzleUndoButton runtime={runtime} disabled={countdownDigit !== null || state.status === 'finished'} />}
         </section>
       </section>
 

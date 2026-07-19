@@ -857,6 +857,16 @@ export class TetrisRenderer {
       } else if (event.type === 'restarted') {
         this.presentation = null;
         this.boardShift = null;
+      } else if (event.type === 'puzzle-undone') {
+        // Undo restores a pre-lock Core snapshot. Any lock, trail, line-impact, or
+        // interpolation residue belongs to the discarded timeline and must not
+        // linger over the restored board for a frame.
+        this.presentation = null;
+        this.trail = null;
+        this.lockPulse = null;
+        this.impact = 0;
+        this.rotationPulse = 0;
+        this.boardShift = null;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
           cells: event.cells,

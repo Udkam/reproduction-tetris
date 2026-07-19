@@ -5,10 +5,7 @@ import {
   stateHash,
   type GameCommand,
   type GameState,
-  type PieceType,
-  type Rotation,
 } from '../core';
-import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 
 interface Route {
   state: GameState;
@@ -173,64 +170,13 @@ export function replaySurvivalBedrock(seed = 0x51a1f00d): {
   return { replay, riseState, state };
 }
 
-interface PuzzleQaPlacement {
-  type: PieceType;
-  rotation: Rotation;
-  x: number;
-}
-
-const LEGACY_PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = [
-  { type: 'S', rotation: 1, x: 2 },
-  { type: 'L', rotation: 0, x: 4 },
-  { type: 'O', rotation: 0, x: 4 },
-  { type: 'T', rotation: 2, x: 7 },
-  { type: 'J', rotation: 2, x: 4 },
-  { type: 'I', rotation: 1, x: -1 },
-  { type: 'Z', rotation: 1, x: 1 },
-  { type: 'I', rotation: 1, x: -2 },
-  { type: 'S', rotation: 1, x: 6 },
-  { type: 'J', rotation: 1, x: 1 },
-  { type: 'T', rotation: 3, x: 8 },
-  { type: 'Z', rotation: 1, x: 4 },
-  { type: 'O', rotation: 0, x: 3 },
-  { type: 'L', rotation: 1, x: 3 },
-  { type: 'Z', rotation: 1, x: 1 },
-  { type: 'T', rotation: 1, x: 6 },
-  { type: 'O', rotation: 0, x: 0 },
-  { type: 'L', rotation: 1, x: 7 },
-  { type: 'S', rotation: 1, x: 4 },
-  { type: 'J', rotation: 0, x: 0 },
-  { type: 'I', rotation: 1, x: 7 },
-  { type: 'O', rotation: 0, x: 2 },
-  { type: 'L', rotation: 1, x: 3 },
-  { type: 'Z', rotation: 1, x: 7 },
-  { type: 'T', rotation: 3, x: 6 },
-  { type: 'S', rotation: 1, x: 4 },
-  { type: 'I', rotation: 1, x: -1 },
-  { type: 'J', rotation: 1, x: -1 },
-  { type: 'Z', rotation: 1, x: 7 },
-  { type: 'S', rotation: 1, x: 5 },
-  { type: 'O', rotation: 0, x: 2 },
-  { type: 'I', rotation: 0, x: 1 },
-  { type: 'T', rotation: 2, x: 6 },
-  { type: 'J', rotation: 2, x: 3 },
-  { type: 'L', rotation: 2, x: 0 },
-];
-
-const QA_PUZZLE_ID = 't3r-shaft-02' as const;
-const PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = (
-  referencesFile as unknown as {
-    levels: Array<{ id: string; routes: Array<{ placements: PuzzleQaPlacement[] }> }>;
-  }
-).levels.find((level) => level.id === QA_PUZZLE_ID)!.routes[0]!.placements;
-void LEGACY_PUZZLE_CHALLENGE_QA_ROUTE;
-
-function qaRotationCommands(rotation: Rotation): readonly GameCommand[] {
-  if (rotation === 1) return [{ type: 'rotate', direction: 1 }];
-  if (rotation === 2) return [{ type: 'rotate', direction: 1 }, { type: 'rotate', direction: 1 }];
-  if (rotation === 3) return [{ type: 'rotate', direction: -1 }];
-  return [];
-}
+const QA_PUZZLE_ID = 't5r-drift-08' as const;
+const PUZZLE_CHALLENGE_QA_ROUTE: readonly GameCommand[] = Object.freeze([
+  { type: 'start' },
+  { type: 'rotate', direction: 1 },
+  { type: 'hard-drop' },
+  ...Array.from({ length: 12 }, (): GameCommand => ({ type: 'tick' })),
+]);
 
 /** A complete public-command-only normal-play Puzzle route with ordinary delayed resolution. */
 export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState; hash: string } {
@@ -241,23 +187,7 @@ export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly G
     state = dispatch(state, command).state;
   };
 
-  apply({ type: 'start' });
-  for (const placement of PUZZLE_CHALLENGE_QA_ROUTE) {
-    if (state.status === 'finished') break;
-    if (!state.active || state.active.type !== placement.type) {
-      throw new Error(`Puzzle challenge QA route expected ${placement.type}, received ${state.active?.type ?? 'none'}.`);
-    }
-    for (const command of qaRotationCommands(placement.rotation)) apply(command);
-    while (state.active && state.active.x !== placement.x) {
-      const beforeX: number = state.active.x;
-      apply({ type: 'move', dx: placement.x < beforeX ? -1 : 1 });
-      if (state.active?.x === beforeX) throw new Error(`Puzzle challenge QA route could not reach x=${placement.x}.`);
-    }
-    apply({ type: 'hard-drop' });
-    for (let guard = 0; state.status === 'playing' && (!state.active || state.phase !== 'active') && guard < 64; guard += 1) {
-      apply({ type: 'tick' });
-    }
-  }
+  for (const command of PUZZLE_CHALLENGE_QA_ROUTE) apply(command);
 
   if (state.status !== 'finished' || state.puzzleTargetCells.length !== 0 || state.puzzleCompletion !== 'finished') {
     throw new Error(`Puzzle challenge replay did not finish: ${state.status}, ${state.lines} lines, ${state.pieceCount} pieces.`);

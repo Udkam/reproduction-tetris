@@ -127,6 +127,14 @@ export class GameRuntime {
     this.handleAction('pause', true);
   }
 
+  /** Puzzle-only undo entrypoint for the touch-safe game control. */
+  undoPuzzle(): void {
+    if (!this.inputEnabled) return;
+    void this.audio.prime();
+    this.input?.clearHeld();
+    this.apply({ type: 'undo' });
+  }
+
   restart(seed?: number, mode = this.state.mode, puzzleId = this.state.puzzleId ?? undefined): void {
     if (!this.inputEnabled) return;
     void this.audio.prime();
@@ -195,6 +203,7 @@ export class GameRuntime {
     this.audio.destroy();
     this.pendingEvents = [];
     this.pendingUiEvents = [];
+    this.state = { ...this.state, puzzleUndoHistory: Object.freeze([]) };
     delete window.__SIGNAL_FOUNDRY_QA__;
   }
 
@@ -261,10 +270,15 @@ export class GameRuntime {
       this.start();
       return;
     }
+    if (action === 'undo') {
+      this.input?.clearHeld();
+      this.apply({ type: 'undo' });
+      return;
+    }
     if (this.state.status === 'ready') this.apply({ type: 'start' });
     if (this.state.status !== 'playing') return;
 
-    const command: Record<Exclude<InputAction, 'pause' | 'restart'>, GameCommand> = {
+    const command: Record<Exclude<InputAction, 'pause' | 'restart' | 'undo'>, GameCommand> = {
       left: { type: 'move', dx: -1 },
       right: { type: 'move', dx: 1 },
       'soft-drop': { type: 'soft-drop' },
@@ -295,6 +309,7 @@ function isImmediateUiEvent(event: GameEvent): boolean {
     || event.type === 'restarted'
     || event.type === 'paused'
     || event.type === 'resumed'
+    || event.type === 'puzzle-undone'
     || event.type === 'clear-started'
     || event.type === 'lines-cleared'
     || event.type === 'level-up'

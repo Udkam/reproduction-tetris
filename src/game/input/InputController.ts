@@ -11,7 +11,8 @@ export type InputAction =
   | 'rotate-cw'
   | 'rotate-ccw'
   | 'pause'
-  | 'restart';
+  | 'restart'
+  | 'undo';
 
 type HeldAction = 'left' | 'right' | 'soft-drop';
 
@@ -37,6 +38,7 @@ const KEY_BINDINGS: Record<string, InputAction> = {
   Escape: 'pause',
   KeyP: 'pause',
   KeyR: 'restart',
+  KeyB: 'undo',
 };
 
 export class InputController {

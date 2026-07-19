@@ -1,13 +1,10 @@
-// Deterministic offline candidate-route finder for the current Tetra Puzzle campaign.
+// Historical T12.4 offline candidate-route finder.
 //
-// This is deliberately an upper-bound tool, not an optimality prover.  It parses the
-// authored setup records from src/game/core/puzzles.ts, reproduces the fixed seven-bag
-// queue and fixed anchors, and searches a finite public-command macro domain:
-//   spawn -> zero-time rotate/move commands -> hard-drop -> exact Core settle ticks.
-//
-// The output JSON includes a fully public-command replay stream, but a candidate must
-// still be replayed through TypeScript dispatch() before it is made authoritative.
-// No result from this program is a proof of global optimality.
+// T12.5 replaces its parsed deep setup records, anchors, and route budgets with direct
+// shallow teaching boards. The current source of truth is the TypeScript-dispatched
+// route fixture in docs/workstreams/tetris-t12-core/puzzle-solver-results.json; this
+// program is retained only as a historical authoring reference and is not invoked by
+// the current test/build pipeline or presented as a solver/optimality authority.
 //
 // Build (from the repository root):
 //   g++ -std=c++20 -O3 -Wall -Wextra -pedantic tools/solve-puzzle-campaign.cpp -o %TEMP%\\tetra-puzzle-solver.exe

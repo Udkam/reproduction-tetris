@@ -184,7 +184,7 @@ def fail_second_puzzle(page: Page) -> None:
         runtime(page, "action('hard-drop')")
         runtime(page, "advanceTicks(12)")
     page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().puzzleCompletion && window.__SIGNAL_FOUNDRY_QA__.getState().puzzleCompletion !== 'active'")
-    assert game_state(page)["puzzleCompletion"] in {"failed-top-out", "failed-invalid-spawn", "failed-budget"}
+    assert game_state(page)["puzzleCompletion"] in {"failed-top-out", "failed-invalid-spawn"}
 
 
 def keyboard_release_probe(page: Page) -> dict[str, int]:

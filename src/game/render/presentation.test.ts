@@ -160,7 +160,11 @@ describe('presentation interpolation', () => {
     expect(nextPreviewPieces(classic)).toEqual(classic.queue.slice(0, 1));
     expect(nextPreviewPieces(survival)).toEqual(survival.queue.slice(0, 1));
 
-    let afterFirstLock = dispatch(playing, { type: 'hard-drop' }).state;
+    // Level 01's intended opening hard-drop now legitimately finishes the board.
+    // Use the deterministic rotation-teaching level here so the post-lock Puzzle
+    // state remains live and continues to exercise the two-item queue preview.
+    const nonFinishingPuzzle = dispatch(createInitialState(5, 'puzzle', 't5r-drift-08'), { type: 'start' }).state;
+    let afterFirstLock = dispatch(nonFinishingPuzzle, { type: 'hard-drop' }).state;
     for (let guard = 0; afterFirstLock.status === 'playing' && (!afterFirstLock.active || afterFirstLock.phase !== 'active') && guard < 64; guard += 1) {
       afterFirstLock = dispatch(afterFirstLock, { type: 'tick' }).state;
     }

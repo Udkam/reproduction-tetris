@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, VISIBLE_START_ROW } from './constants';
+import { ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, VISIBLE_HEIGHT } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch } from './engine';
-import { ANCHOR_CELL, type GameState, type PieceType } from './types';
 import { getPuzzleDefinition } from './puzzles';
+import type { GameState, PieceType } from './types';
 
 function advance(state: GameState, ticks: number): GameState {
   let next = state;
@@ -19,9 +19,12 @@ function resolveToActive(state: GameState): GameState {
   return next;
 }
 
-describe('T5 Puzzle ordinary consecutive-piece flow', () => {
-  it('applies automatic gravity, shared grounded lock delay, and ordinary entry', () => {
+describe('T12.5 Puzzle ordinary consecutive-piece flow', () => {
+  it('applies automatic gravity, shared grounded lock delay, and ordinary entry after a non-clearing lock', () => {
     let state = dispatch(createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'), { type: 'start' }).state;
+    // Deliberately leave the visible gap; the test exercises normal continuation,
+    // not the one-lock teaching solution.
+    state = dispatch(state, { type: 'move', dx: -1 }).state;
     const spawnY = state.active!.y;
     state = advance(state, 48);
     expect(state.active?.y).toBe(spawnY + 1);
@@ -41,16 +44,15 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     state = advance(state, 1);
     expect(state.pieceCount).toBe(1);
     expect(state.active).toBeNull();
-    expect(['entry', 'line-clear']).toContain(state.phase);
+    expect(state.phase).toBe('entry');
 
-    const phaseAtLock = state.phase;
     state = resolveToActive(state);
     expect(state.status).toBe('playing');
     expect(state.active?.type).toBe(expectedNext);
     expect(state.queue).toHaveLength(5);
     expect(state.puzzleQueue).toEqual(state.queue);
     expect(state.puzzleQueueIndex).toBe(0);
-    if (phaseAtLock === 'entry') expect(state.elapsedTicks).toBeGreaterThanOrEqual(48 + LOCK_DELAY_TICKS + ENTRY_DELAY_TICKS);
+    expect(state.elapsedTicks).toBeGreaterThanOrEqual(48 + LOCK_DELAY_TICKS + ENTRY_DELAY_TICKS);
   });
 
   it('keeps replenishing after multiple public hard-drop locks without a queue or budget stop', () => {
@@ -70,27 +72,23 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.status).toBe('playing');
     expect(state.active).not.toBeNull();
     expect(state.queue).toHaveLength(5);
-    expect(state.puzzlePieceBudget).toBeGreaterThan(state.pieceCount);
     expect(state.puzzleCompletion).toBe('active');
   });
 
   it.each([
-    ['t3r-shaft-01', 1], ['t3r-shaft-03', 1], ['t3r-cascade-05', 0], ['t5r-delta-07', 0],
-    ['t5r-lattice-09', 0], ['t5r-prism-11', 1], ['t5r-arc-13', 0], ['t5r-horizon-15', 0],
-  ] as const)('keeps the authored deep endgame for %s with %i current safe anchors', (id, anchorCount) => {
+    't3r-shaft-01', 't5r-lattice-09', 't5r-prism-11', 't5r-horizon-15', 't6r-bastion-19',
+  ] as const)('keeps %s as a shallow anchor-free teaching board', (id) => {
     const definition = getPuzzleDefinition(id);
     const state = createInitialState(1, 'puzzle', id);
+    const occupiedRows = definition.boardRows.filter((row) => row !== '..........');
 
-    expect(definition.setup.placements.length).toBeGreaterThanOrEqual(16);
-    expect(definition.boardRows.filter((row) => row !== '..........').length).toBeGreaterThanOrEqual(8);
-    expect(definition.anchorCells).toHaveLength(anchorCount);
+    expect(occupiedRows.length).toBeGreaterThanOrEqual(1);
+    expect(occupiedRows.length).toBeLessThanOrEqual(4);
+    expect(definition.boardRows.slice(0, VISIBLE_HEIGHT - occupiedRows.length)).toEqual(
+      Array.from({ length: VISIBLE_HEIGHT - occupiedRows.length }, () => '..........'),
+    );
     expect(state.puzzleGoal).toBe('original-targets-cleared');
-    expect(state.board.flat().filter((cell) => cell === ANCHOR_CELL)).toHaveLength(anchorCount);
-    for (const anchor of definition.anchorCells) {
-      const visibleY = anchor.y - VISIBLE_START_ROW;
-      expect(definition.boardRows[visibleY]?.[anchor.x]).toBe('.');
-      expect(definition.boardRows[visibleY]).toBe('..........');
-    }
+    expect(state.board.flat().includes('A')).toBe(false);
   });
 
   it('tracks only original targets through a normal cleared row', () => {
@@ -110,5 +108,4 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     state = dispatch(state, { type: 'tick' }).state;
     expect(state.puzzleTargetCells).toHaveLength(state.puzzleInitialTargetCount - clearedTargetCount);
   });
-
 });

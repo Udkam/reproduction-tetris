@@ -148,7 +148,7 @@ describe('GameRuntime public state boundary', () => {
     expect(state.puzzleId).toBe('t3r-cascade-06');
     expect(state.puzzleQueue).toEqual(state.queue);
     expect(state.queue).toHaveLength(5);
-    expect(state.puzzlePieceBudget).toBeGreaterThan(0);
+    expect(state.puzzleUndoHistory).toEqual([]);
     expect(state.puzzleCompletion).toBe('active');
   });
 

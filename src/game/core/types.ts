@@ -59,9 +59,7 @@ export type PuzzleCompletion =
   | 'finished'
   | 'failed-top-out'
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
-  | 'failed-invalid-spawn'
-  /** Puzzle route exceeded its published lock allowance. */
-  | 'failed-budget';
+  | 'failed-invalid-spawn';
 
 export interface GameState {
   board: Board;
@@ -79,8 +77,6 @@ export interface GameState {
    * @deprecated Remove when the presentation shell consumes puzzleGoal.
    */
   puzzleTargetLines: number | null;
-  /** Published Puzzle lock allowance, derived from the verified route length. */
-  puzzlePieceBudget: number | null;
   /** Original authored cells still awaiting an ordinary line clear. */
   puzzleTargetCells: readonly Cell[];
   /** Stable original-target count used for the player-facing progress display. */
@@ -98,6 +94,11 @@ export interface GameState {
   puzzleSpawnCount: number;
   puzzleGoal: PuzzleGoal | null;
   puzzleCompletion: PuzzleCompletion | null;
+  /**
+   * Puzzle-only, run-local pre-lock checkpoints. Snapshots intentionally omit this
+   * field so a history cannot recursively retain earlier histories.
+   */
+  puzzleUndoHistory: readonly PuzzleUndoSnapshot[];
   completedLevelId: PuzzleId | null;
   /** @deprecated Navigation/progress bridge only; T5 level availability is always unrestricted. */
   nextUnlockedLevelId: PuzzleId | null;
@@ -119,6 +120,9 @@ export interface GameState {
   seed: number;
 }
 
+/** A nonrecursive Puzzle checkpoint containing all canonical state except its own history. */
+export type PuzzleUndoSnapshot = Omit<GameState, 'puzzleUndoHistory'>;
+
 export type GameCommand =
   | { type: 'start' }
   | { type: 'tick' }
@@ -128,6 +132,7 @@ export type GameCommand =
   | { type: 'rotate'; direction: -1 | 1 }
   | { type: 'pause' }
   | { type: 'resume' }
+  | { type: 'undo' }
   | { type: 'restart'; seed?: number; mode?: GameMode; puzzleId?: PuzzleId };
 
 export type GameEvent =
@@ -139,13 +144,14 @@ export type GameEvent =
   | { type: 'piece-rotated'; piece: PieceType; direction: -1 | 1 }
   | { type: 'hard-dropped'; piece: PieceType; distance: number }
   | { type: 'piece-locked'; piece: PieceType; cells: Cell[] }
+  | { type: 'puzzle-undone' }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }
   | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'bedrock-lowered'; count: number; height: number }
   | { type: 'level-up'; level: number }
   | { type: 'finished'; completionTicks: number }
-  | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'bedrock-overflow' | 'puzzle-budget' | 'puzzle-invalid-spawn' | 'invalid-state' };
+  | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'bedrock-overflow' | 'puzzle-invalid-spawn' | 'invalid-state' };
 
 export interface GameTransition {
   state: GameState;

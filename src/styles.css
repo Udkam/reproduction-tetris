@@ -1173,7 +1173,7 @@ p {
 .run-stats:not(.run-stats--puzzle) [data-stat-role="lines"],
 .run-stats--puzzle [data-stat-role="puzzle-level"],
 .run-stats--puzzle [data-stat-role="puzzle-targets"],
-.run-stats--puzzle [data-stat-role="puzzle-remaining"] {
+.run-stats--puzzle [data-stat-role="puzzle-placed"] {
   border-bottom: 1px solid var(--line);
 }
 
@@ -1913,7 +1913,7 @@ p {
   }
 
   .run-stats--puzzle [data-stat-role="puzzle-level"],
-  .run-stats--puzzle [data-stat-role="puzzle-remaining"] {
+  .run-stats--puzzle [data-stat-role="puzzle-placed"] {
     border-right: 1px solid var(--line) !important;
   }
 
@@ -2427,6 +2427,1019 @@ p {
   }
 }
 
+/* T12.5 — Puzzle campaign atlas. The route seam and terrain planes create a
+   navigable archive without turning the catalog into a thumbnail wall. */
+
+.library-shell--atlas {
+  position: relative;
+  isolation: isolate;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  width: min(1320px, 100%);
+  height: 100dvh;
+  min-height: 0;
+  gap: clamp(10px, 1.6vh, 16px);
+  overflow: hidden;
+  padding: clamp(12px, 2.5vw, 30px);
+}
+
+.library-shell--atlas::before {
+  position: absolute;
+  z-index: -1;
+  inset: 70px 16px 16px;
+  content: "";
+  pointer-events: none;
+  opacity: .62;
+  background:
+    linear-gradient(104deg, transparent 0 21%, color-mix(in srgb, var(--puzzle) 9%, transparent) 21.1% 21.35%, transparent 21.5% 46%, color-mix(in srgb, var(--action) 8%, transparent) 46.1% 46.3%, transparent 46.5% 100%),
+    repeating-linear-gradient(158deg, transparent 0 31px, color-mix(in srgb, var(--edge) 10%, transparent) 32px 33px, transparent 34px 68px);
+  border: 1px solid color-mix(in srgb, var(--edge) 18%, transparent);
+  border-radius: 24px;
+}
+
+.library-shell--atlas .library-header {
+  min-height: 44px;
+  padding-inline: 0;
+}
+
+.library-shell--atlas .library-header .brand {
+  padding: 0 10px;
+  color: color-mix(in srgb, var(--ink) 86%, var(--puzzle));
+}
+
+.library-shell--atlas .library-back {
+  gap: 8px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 84%, var(--raised));
+  border-color: color-mix(in srgb, var(--edge) 82%, var(--line));
+  border-radius: 8px 14px 14px 8px;
+  box-shadow: 0 8px 18px rgba(31, 59, 86, .08);
+}
+
+.library-shell--atlas .library-back b {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-radius: 5px 9px 5px 9px;
+}
+
+.library-intro--atlas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 430px);
+  grid-template-rows: auto auto;
+  gap: 9px 24px;
+  padding: 4px 4px 0;
+}
+
+.library-intro--atlas .library-intro__meta {
+  grid-column: 1 / -1;
+  min-height: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--edge) 40%, transparent);
+}
+
+.library-intro--atlas .library-intro__eyebrow {
+  color: var(--puzzle);
+  font-size: 11px;
+  letter-spacing: .16em;
+}
+
+.library-intro--atlas .library-intro__availability {
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.library-intro--atlas .library-intro__gate {
+  padding-left: 12px;
+  color: color-mix(in srgb, var(--ink) 74%, var(--muted));
+  border-left-color: color-mix(in srgb, var(--puzzle) 42%, var(--line));
+}
+
+.library-intro--atlas .library-intro__heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(138px, 240px);
+  grid-column: 1 / 2;
+  align-items: end;
+  gap: 14px;
+}
+
+.library-intro--atlas h1 {
+  position: relative;
+  margin: 0;
+  font-size: clamp(30px, 3.3vw, 42px);
+  letter-spacing: -.07em;
+}
+
+.library-intro--atlas h1::after {
+  display: inline-block;
+  width: 34px;
+  height: 5px;
+  margin: 0 0 .1em 12px;
+  content: "";
+  vertical-align: middle;
+  background: linear-gradient(90deg, var(--puzzle), color-mix(in srgb, var(--puzzle) 26%, transparent));
+  clip-path: polygon(0 0, 100% 0, 76% 100%, 0 100%);
+}
+
+.library-intro--atlas p {
+  max-width: 35rem;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.campaign-meter--atlas {
+  align-self: end;
+  width: 100%;
+  height: 10px;
+  background:
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--raised) 80%, white) 0 16px, color-mix(in srgb, var(--line) 42%, transparent) 16px 17px);
+  border: 1px solid color-mix(in srgb, var(--edge) 74%, var(--line));
+  border-radius: 3px;
+  box-shadow: inset 0 1px 2px rgba(22, 43, 65, .1);
+}
+
+.campaign-meter--atlas > span {
+  min-width: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 66%, white), var(--puzzle));
+  border-radius: 1px;
+  box-shadow: none;
+}
+
+.campaign-rule {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: 106px minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 12px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--puzzle) 8%, var(--surface)), var(--surface)),
+    repeating-linear-gradient(0deg, transparent 0 5px, color-mix(in srgb, var(--puzzle) 7%, transparent) 5px 6px);
+  border: 1px solid color-mix(in srgb, var(--puzzle) 36%, var(--edge));
+  border-radius: 6px 15px 6px 15px;
+  box-shadow: 0 10px 22px rgba(42, 63, 88, .07);
+}
+
+.campaign-rule header {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  padding-right: 10px;
+  border-right: 1px solid color-mix(in srgb, var(--puzzle) 24%, var(--line));
+}
+
+.campaign-rule header span {
+  color: var(--puzzle);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .13em;
+}
+
+.campaign-rule header strong {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.campaign-rule dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.campaign-rule dl > div {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.campaign-rule dt {
+  color: var(--puzzle);
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.campaign-rule dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.library-content--atlas {
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 390px);
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 92%, var(--raised));
+  border-color: color-mix(in srgb, var(--edge) 84%, var(--line));
+  border-radius: 10px 22px 10px 22px;
+  box-shadow: 0 18px 42px rgba(31, 59, 86, .13);
+}
+
+.library-catalog--atlas {
+  grid-template-rows: auto minmax(0, 1fr);
+  background:
+    linear-gradient(140deg, color-mix(in srgb, var(--raised) 85%, white), color-mix(in srgb, var(--surface) 68%, var(--raised)));
+  border-right-color: color-mix(in srgb, var(--edge) 48%, var(--line));
+}
+
+.library-catalog--atlas .library-catalog__header {
+  position: relative;
+  align-items: end;
+  padding: 14px 18px 12px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 10%, transparent), transparent 58%);
+  border-bottom-color: color-mix(in srgb, var(--puzzle) 26%, var(--line));
+}
+
+.library-catalog--atlas .library-catalog__header::after {
+  position: absolute;
+  right: 18px;
+  bottom: -1px;
+  width: 58px;
+  height: 3px;
+  content: "";
+  background: var(--puzzle);
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+}
+
+.library-catalog--atlas .library-catalog__header h2 {
+  font-size: 20px;
+}
+
+.campaign-atlas {
+  display: grid;
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px 16px 18px;
+  overflow-y: auto;
+  scrollbar-color: color-mix(in srgb, var(--puzzle) 56%, var(--line)) transparent;
+  scrollbar-gutter: stable;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 4%, transparent), transparent 28%),
+    repeating-linear-gradient(0deg, transparent 0 34px, color-mix(in srgb, var(--edge) 6%, transparent) 35px 36px);
+}
+
+.campaign-tier {
+  position: relative;
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  min-height: 111px;
+  padding: 10px 10px 10px 28px;
+  overflow: hidden;
+  background:
+    linear-gradient(112deg, color-mix(in srgb, var(--surface) 82%, var(--raised)), color-mix(in srgb, var(--surface) 92%, white));
+  border: 1px solid color-mix(in srgb, var(--edge) 48%, var(--line));
+  border-radius: 5px 13px 5px 13px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .76);
+}
+
+.campaign-tier::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 13px;
+  width: 2px;
+  content: "";
+  background: linear-gradient(var(--puzzle), color-mix(in srgb, var(--puzzle) 18%, transparent));
+}
+
+.campaign-tier::after {
+  position: absolute;
+  top: 15px;
+  left: 8px;
+  width: 12px;
+  height: 8px;
+  content: "";
+  background: var(--puzzle);
+  clip-path: polygon(0 0, 100% 0, 72% 100%, 0 100%);
+}
+
+.campaign-tier--sealed {
+  background: linear-gradient(112deg, color-mix(in srgb, var(--raised) 88%, var(--surface)), var(--raised));
+  border-style: dashed;
+}
+
+.campaign-tier--sealed::before,
+.campaign-tier--sealed::after {
+  opacity: .38;
+}
+
+.campaign-tier__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.campaign-tier__serial {
+  color: var(--puzzle);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+.campaign-tier__header h3 {
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  letter-spacing: -.02em;
+}
+
+.campaign-tier__header h3 small {
+  margin-left: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.campaign-tier__progress {
+  padding: 2px 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--raised) 74%, white);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, white);
+  border-radius: 3px;
+}
+
+.campaign-tier__levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.atlas-waypoint {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 92%, white);
+  border: 1px solid color-mix(in srgb, var(--line) 72%, white);
+  border-left: 3px solid color-mix(in srgb, var(--puzzle) 42%, var(--line));
+  border-radius: 4px 9px 4px 9px;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, transform 180ms var(--ease);
+}
+
+.atlas-waypoint::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 62%, transparent), transparent 72%);
+}
+
+.atlas-waypoint:hover:not(.atlas-waypoint--locked),
+.atlas-waypoint:focus-within:not(.atlas-waypoint--locked) {
+  z-index: 1;
+  border-color: color-mix(in srgb, var(--puzzle) 70%, var(--edge));
+  box-shadow: 0 7px 16px rgba(36, 61, 88, .1);
+  transform: translateY(-2px);
+}
+
+.atlas-waypoint--selected {
+  background: linear-gradient(128deg, color-mix(in srgb, var(--selected) 82%, white), color-mix(in srgb, var(--surface) 74%, var(--selected)));
+  border-color: var(--puzzle);
+  border-left-width: 5px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--puzzle) 16%, transparent), 0 8px 17px rgba(52, 59, 102, .12);
+}
+
+.atlas-waypoint--selected::before {
+  height: 3px;
+  background: linear-gradient(90deg, var(--puzzle), color-mix(in srgb, var(--puzzle) 26%, transparent));
+}
+
+.atlas-waypoint--locked {
+  background: color-mix(in srgb, var(--raised) 84%, var(--surface));
+  border-color: color-mix(in srgb, var(--line) 82%, var(--raised));
+  border-left-color: color-mix(in srgb, var(--edge) 38%, var(--line));
+}
+
+.atlas-level-entry {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 66px;
+  padding: 8px 8px 8px 7px;
+  color: var(--ink);
+  text-align: left;
+  background: transparent;
+}
+
+.atlas-level-entry:disabled {
+  color: color-mix(in srgb, var(--ink) 56%, var(--muted));
+  opacity: 1;
+}
+
+.atlas-level-entry__number {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  color: var(--puzzle);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  border-right: 1px solid color-mix(in srgb, var(--puzzle) 20%, var(--line));
+}
+
+.atlas-waypoint--locked .atlas-level-entry__number {
+  color: color-mix(in srgb, var(--puzzle) 44%, var(--muted));
+}
+
+.atlas-level-entry__copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.atlas-level-entry__copy strong,
+.atlas-level-entry__copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.atlas-level-entry__copy strong {
+  font-size: 14px;
+  letter-spacing: -.018em;
+}
+
+.atlas-level-entry__copy small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.atlas-level-entry__state,
+.level-detail--atlas .level-detail__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 3px 5px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--raised) 72%, white);
+  border: 1px solid color-mix(in srgb, var(--line) 68%, white);
+  border-radius: 3px;
+}
+
+.atlas-level-entry__state[data-state="open"],
+.level-detail--atlas .level-detail__status[data-state="open"] {
+  color: var(--puzzle);
+  background: color-mix(in srgb, var(--puzzle) 10%, var(--surface));
+  border-color: color-mix(in srgb, var(--puzzle) 34%, var(--line));
+}
+
+.atlas-level-entry__state[data-state="complete"],
+.level-detail--atlas .level-detail__status[data-state="complete"] {
+  color: var(--success);
+  background: color-mix(in srgb, var(--success) 9%, var(--surface));
+  border-color: color-mix(in srgb, var(--success) 35%, var(--line));
+}
+
+.atlas-level-entry__state[data-state="locked"] {
+  color: color-mix(in srgb, var(--muted) 82%, var(--surface));
+  background: color-mix(in srgb, var(--raised) 72%, var(--surface));
+}
+
+.level-detail--atlas {
+  grid-template-rows: minmax(190px, 1fr) auto auto 52px;
+  gap: 13px;
+  padding: 20px;
+  color: #eaf3fb;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(128, 99, 157, .26), transparent 34%),
+    linear-gradient(156deg, #162b43, #091726 68%);
+}
+
+.level-detail--atlas .level-detail__visual {
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(168deg, transparent 0 19px, rgba(179, 203, 225, .1) 20px 21px, transparent 22px 42px),
+    radial-gradient(circle at 50% 38%, #193752, var(--well) 70%);
+  border-color: rgba(188, 210, 230, .31);
+  border-radius: 7px 17px 7px 17px;
+}
+
+.level-detail--atlas .level-detail__visual::before,
+.level-detail--atlas .level-detail__visual::after {
+  border-color: color-mix(in srgb, var(--selection) 72%, white);
+}
+
+.level-detail--atlas .level-detail__board {
+  border-color: rgba(218, 235, 249, .32);
+  border-radius: 5px 10px 5px 10px;
+}
+
+.level-detail--atlas .level-detail__count {
+  color: color-mix(in srgb, #eaf3fb 72%, var(--selection));
+  font-size: 11px;
+  letter-spacing: .04em;
+}
+
+.level-detail--atlas h2 {
+  font-size: clamp(25px, 2.6vw, 32px);
+}
+
+.level-detail__brief {
+  margin: -4px 0 0;
+  color: color-mix(in srgb, #eaf3fb 68%, #8fa8bf);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.level-detail--atlas .primary-action {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px 13px 6px 13px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .22);
+}
+
+.level-detail--atlas .primary-action::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -18px;
+  width: 4px;
+  content: "";
+  background: color-mix(in srgb, white 72%, transparent);
+  transform: skewX(-24deg);
+  transition: left 220ms var(--ease);
+}
+
+.level-detail--atlas .primary-action:hover::after {
+  left: calc(100% + 18px);
+}
+
+.run-stats--puzzle [data-stat-role="puzzle-placed"] {
+  border-bottom: 1px solid var(--line);
+}
+
+.run-stats--puzzle [data-stat-role="puzzle-targets"] {
+  border-right: 1px solid var(--line);
+}
+
+.run-stats--puzzle [data-stat-role="objective"] {
+  color: var(--ink);
+}
+
+.run-stats--puzzle [data-stat-role="objective"] strong {
+  font-size: 17px;
+  letter-spacing: -.035em;
+}
+
+.touch-deck--puzzle {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.touch-key--undo {
+  color: var(--puzzle);
+  background: color-mix(in srgb, var(--puzzle) 8%, var(--surface));
+}
+
+.touch-key--undo:hover,
+.touch-key--undo:active {
+  color: var(--action-ink);
+  background: var(--puzzle);
+}
+
+@media (max-width: 1050px) {
+  .library-content--atlas {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 340px);
+  }
+
+  .campaign-tier__levels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .library-shell--atlas {
+    display: grid;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .library-shell--atlas::before {
+    inset: 55px 8px 8px;
+    border-radius: 16px;
+  }
+
+  .library-intro--atlas {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .library-intro--atlas .library-intro__heading {
+    grid-column: 1;
+  }
+
+  .campaign-rule {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .library-content--atlas {
+    grid-template-columns: 1fr;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 8px 18px 8px 18px;
+  }
+
+  .library-catalog--atlas {
+    border-right: 0;
+  }
+
+  .campaign-atlas {
+    max-height: min(49dvh, 470px);
+  }
+
+  .level-detail--atlas {
+    grid-template-columns: 66px minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 7px 10px;
+    padding: 10px 12px 12px;
+    color: var(--ink);
+    background:
+      linear-gradient(138deg, color-mix(in srgb, var(--puzzle) 10%, var(--raised)), var(--raised));
+    border-top: 1px solid color-mix(in srgb, var(--puzzle) 28%, var(--line));
+  }
+
+  .level-detail--atlas .level-detail__visual {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 66px;
+    height: 82px;
+    min-height: 0;
+    background: var(--well);
+    border-radius: 5px 11px 5px 11px;
+  }
+
+  .level-detail--atlas .level-detail__visual::before,
+  .level-detail--atlas .level-detail__visual::after,
+  .level-detail--atlas .level-detail__visual-label,
+  .level-detail--atlas .level-detail__visual-index {
+    display: none;
+  }
+
+  .level-detail--atlas .level-detail__board,
+  .level-detail--atlas .level-detail__visual .puzzle-silhouette {
+    width: 62px;
+    height: 78px;
+    border: 0;
+  }
+
+  .level-detail--atlas .level-detail__heading {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .level-detail--atlas .level-detail__count {
+    color: var(--puzzle);
+  }
+
+  .level-detail--atlas h2 {
+    margin-top: 1px;
+    color: var(--ink);
+    font-size: 20px;
+  }
+
+  .level-detail--atlas .level-detail__brief {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .level-detail--atlas .primary-action {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: stretch;
+    width: auto;
+    min-width: 90px;
+    min-height: 44px;
+    padding-inline: 10px;
+    box-shadow: none;
+  }
+
+  .level-detail--atlas .primary-action::after {
+    display: none;
+  }
+
+  .run-stats--puzzle [data-stat-role="puzzle-level"],
+  .run-stats--puzzle [data-stat-role="puzzle-placed"] {
+    border-right: 1px solid var(--line) !important;
+  }
+
+  .run-stats--puzzle [data-stat-role="puzzle-level"],
+  .run-stats--puzzle [data-stat-role="puzzle-targets"] {
+    border-bottom: 1px solid var(--line) !important;
+  }
+}
+
+@media (max-width: 599px) {
+  .library-shell--atlas {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .library-intro--atlas .library-intro__meta {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+
+  .library-intro--atlas .library-intro__stats {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .library-intro--atlas .library-intro__heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .library-intro--atlas .campaign-meter--atlas {
+    width: 100%;
+  }
+
+  .library-intro--atlas h1 {
+    font-size: 29px;
+  }
+
+  .library-intro--atlas p {
+    margin-top: 3px;
+    font-size: 12px;
+  }
+
+  .campaign-rule {
+    grid-template-columns: 1fr;
+    gap: 7px;
+    padding: 9px 10px;
+  }
+
+  .campaign-rule header {
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 8px;
+    padding: 0 0 5px;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--puzzle) 24%, var(--line));
+  }
+
+  .campaign-rule dl {
+    gap: 5px;
+  }
+
+  .campaign-rule dt,
+  .campaign-rule dd {
+    font-size: 10px;
+  }
+
+  .library-catalog--atlas .library-catalog__header {
+    padding: 10px 12px 9px;
+  }
+
+  .campaign-atlas {
+    gap: 8px;
+    padding: 9px 8px 12px;
+  }
+
+  .campaign-tier {
+    gap: 6px;
+    padding: 8px 7px 8px 24px;
+  }
+
+  .campaign-tier::before {
+    left: 11px;
+  }
+
+  .campaign-tier::after {
+    top: 13px;
+    left: 6px;
+    width: 10px;
+  }
+
+  .campaign-tier__header {
+    gap: 5px;
+  }
+
+  .campaign-tier__serial {
+    font-size: 9px;
+  }
+
+  .campaign-tier__header h3 {
+    font-size: 13px;
+  }
+
+  .campaign-tier__levels {
+    gap: 5px;
+  }
+
+  .atlas-level-entry {
+    grid-template-columns: 23px minmax(0, 1fr) auto;
+    gap: 5px;
+    min-height: 60px;
+    padding: 7px 6px;
+  }
+
+  .atlas-level-entry__number {
+    font-size: 11px;
+  }
+
+  .atlas-level-entry__copy strong {
+    font-size: 13px;
+  }
+
+  .atlas-level-entry__copy small {
+    font-size: 9px;
+  }
+
+  .atlas-level-entry__state {
+    min-height: 20px;
+    padding-inline: 4px;
+    font-size: 8px;
+  }
+
+  .touch-deck--puzzle .touch-key {
+    gap: 1px;
+    padding-inline: 1px;
+  }
+
+  .touch-deck--puzzle .touch-key small {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 600px) and (max-height: 520px) {
+  .library-shell--atlas {
+    grid-template-rows: 44px 90px minmax(0, 1fr);
+    gap: 5px;
+    padding: 5px 10px 7px;
+  }
+
+  .library-intro--atlas {
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 470px);
+    grid-template-rows: 22px minmax(0, 1fr);
+    gap: 3px 16px;
+    padding: 0 3px;
+  }
+
+  .library-intro--atlas .library-intro__meta {
+    min-height: 0;
+    padding-bottom: 3px;
+  }
+
+  .library-intro--atlas p {
+    display: none;
+  }
+
+  .library-intro--atlas h1 {
+    font-size: 25px;
+  }
+
+  .library-intro--atlas .library-intro__heading {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .library-intro--atlas .campaign-meter--atlas {
+    width: 100%;
+  }
+
+  .campaign-rule {
+    padding: 6px 9px;
+  }
+
+  .campaign-rule header strong {
+    font-size: 12px;
+  }
+
+  .campaign-rule dt,
+  .campaign-rule dd {
+    font-size: 9px;
+  }
+
+  .library-content--atlas {
+    grid-template-columns: minmax(0, 1fr) 290px;
+  }
+
+  .library-catalog--atlas .library-catalog__header {
+    min-height: 32px;
+    padding: 3px 10px;
+  }
+
+  .library-catalog--atlas .library-catalog__header h2 {
+    font-size: 14px;
+  }
+
+  .campaign-atlas {
+    gap: 5px;
+    padding: 6px 7px;
+  }
+
+  .campaign-tier {
+    gap: 3px;
+    padding: 5px 6px 5px 22px;
+  }
+
+  .campaign-tier__levels {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .atlas-level-entry {
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    min-height: 38px;
+    padding: 3px 5px;
+  }
+
+  .atlas-level-entry__copy small,
+  .campaign-tier__serial {
+    display: none;
+  }
+
+  .atlas-level-entry__copy strong {
+    font-size: 12px;
+  }
+
+  .atlas-level-entry__state {
+    min-height: 18px;
+    font-size: 8px;
+  }
+
+  .level-detail--atlas {
+    grid-template-columns: 86px minmax(0, 1fr);
+    grid-template-rows: minmax(80px, 1fr) auto 40px;
+    gap: 5px;
+    padding: 8px 12px;
+  }
+
+  .level-detail--atlas .level-detail__visual {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    border-radius: 5px 10px 5px 10px;
+  }
+
+  .level-detail--atlas .level-detail__board {
+    width: 64px;
+    height: 76px;
+  }
+
+  .level-detail--atlas .level-detail__visual .puzzle-silhouette {
+    width: 50px;
+    height: 64px;
+  }
+
+  .level-detail--atlas .level-detail__heading {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .level-detail--atlas .level-detail__brief {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    font-size: 10px;
+  }
+
+  .level-detail--atlas .primary-action {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    min-height: 44px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entry-countdown__digit,
   .mode-gate,
@@ -2440,8 +3453,10 @@ p {
   .mode-gate__motif,
   .mode-gate__action b,
   .level-item,
+  .atlas-waypoint,
   .library-back,
-  .touch-key {
+  .touch-key,
+  .level-detail--atlas .primary-action::after {
     transition: none !important;
   }
 
@@ -2450,6 +3465,7 @@ p {
   .mode-gate__motif,
   .mode-gate__action b,
   .level-item,
+  .atlas-waypoint,
   .library-back,
   .touch-key:active {
     transform: none !important;

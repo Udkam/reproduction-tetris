@@ -37,10 +37,10 @@ describe('T5 puzzle browser QA replay', () => {
     expect(first.commands.some((command) => command.type === 'rotate')).toBe(true);
     expect(first.commands.filter((command) => command.type === 'hard-drop').length).toBeGreaterThan(0);
     expect(first.state.status).toBe('finished');
-    expect(first.state.puzzleId).toBe('t3r-shaft-02');
+    expect(first.state.puzzleId).toBe('t5r-drift-08');
     expect(first.state.puzzleCompletion).toBe('finished');
-    expect(first.state.completedLevelId).toBe('t3r-shaft-02');
-    expect(first.state.nextUnlockedLevelId).toBe('t6r-veil-16');
+    expect(first.state.completedLevelId).toBe('t5r-drift-08');
+    expect(first.state.nextUnlockedLevelId).toBe('t5r-lattice-09');
     expect(first.state.puzzleTargetCells).toEqual([]);
     expect(first.hash).toBe(second.hash);
     expect(first.commands).toEqual(second.commands);

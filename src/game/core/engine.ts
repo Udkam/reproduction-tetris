@@ -17,7 +17,7 @@ import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
-import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId } from './types';
+import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId, type PuzzleUndoSnapshot } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
@@ -103,7 +103,6 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     mode,
     puzzleId: selectedPuzzle?.id ?? null,
     puzzleTargetLines: null,
-    puzzlePieceBudget: selectedPuzzle?.solverPieceBudget ?? null,
     puzzleTargetCells,
     puzzleInitialTargetCount: puzzleTargetCells.length,
     puzzleBoardRows: selectedPuzzle?.boardRows ?? null,
@@ -112,6 +111,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     puzzleSpawnCount: 0,
     puzzleGoal: selectedPuzzle ? 'original-targets-cleared' : null,
     puzzleCompletion: selectedPuzzle ? 'active' : null,
+    puzzleUndoHistory: Object.freeze([]),
     completedLevelId: null,
     nextUnlockedLevelId: null,
     pieceCount: 0,
@@ -167,9 +167,6 @@ function finishPuzzleSuccess(state: GameState): GameTransition {
 function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): GameTransition {
   if (state.puzzleGoal !== 'original-targets-cleared') return invalidState(state);
   if (state.puzzleTargetCells.length === 0) return finishPuzzleSuccess(state);
-  if (state.puzzlePieceBudget !== null && state.pieceCount >= state.puzzlePieceBudget) {
-    return puzzleFailure(state, 'failed-budget', 'puzzle-budget');
-  }
   if (spawnImmediately) return spawnPiece(state);
   return {
     state: {
@@ -197,6 +194,41 @@ function advanceSurvivalPressure(state: GameState): GameState {
     ...state,
     survivalPressureTicks,
     survivalRisePending: survivalPressureTicks >= intervalTicks,
+  };
+}
+
+/** Restores the latest pre-lock Puzzle checkpoint. Finished levels remain terminal. */
+function undoPuzzle(state: GameState): GameTransition {
+  if (state.mode !== 'puzzle' || state.status === 'finished') return { state, events: [] };
+  if (state.status !== 'playing' && state.status !== 'paused' && state.status !== 'game-over') return { state, events: [] };
+  const checkpoint = state.puzzleUndoHistory.at(-1);
+  if (!checkpoint) return { state, events: [] };
+
+  return {
+    state: {
+      // Start from the current shape so JSON-backed state hashes retain their
+      // canonical property order while checkpoint values replace every field.
+      ...state,
+      ...checkpoint,
+      // Undo from Pause stays paused; recovery from top-out returns to the live checkpoint.
+      status: state.status === 'paused' ? 'paused' : checkpoint.status,
+      puzzleUndoHistory: Object.freeze(state.puzzleUndoHistory.slice(0, -1)),
+    },
+    events: [{ type: 'puzzle-undone' }],
+  };
+}
+
+/** Creates a self-contained pre-lock checkpoint without recursively retaining prior histories. */
+function puzzleUndoCheckpoint(state: GameState): PuzzleUndoSnapshot {
+  const { puzzleUndoHistory: _puzzleUndoHistory, ...checkpoint } = state;
+  return checkpoint;
+}
+
+function appendPuzzleUndoCheckpoint(state: GameState, checkpoint: PuzzleUndoSnapshot | null): GameState {
+  if (checkpoint === null) return state;
+  return {
+    ...state,
+    puzzleUndoHistory: Object.freeze([...state.puzzleUndoHistory, checkpoint]),
   };
 }
 
@@ -247,8 +279,13 @@ function moveActive(state: GameState, dx: number, dy: number, cause: 'move' | 'g
   };
 }
 
-function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransition {
+function lockActive(
+  state: GameState,
+  extraEvents: GameEvent[] = [],
+  checkpointBeforeLock?: PuzzleUndoSnapshot,
+): GameTransition {
   if (!withActive(state)) return { state, events: extraEvents };
+  const undoCheckpoint = checkpointBeforeLock ?? (state.mode === 'puzzle' ? puzzleUndoCheckpoint(state) : null);
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
   const board = mergePiece(state.board, state.active);
@@ -260,7 +297,10 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
   if (lockOut) {
     if (state.mode === 'puzzle') {
       const failed = puzzleFailure({ ...state, board, active: null, pieceCount }, 'failed-top-out', 'lock-out');
-      return { state: failed.state, events: [...extraEvents, lockedEvent, ...failed.events] };
+      return {
+        state: appendPuzzleUndoCheckpoint(failed.state, undoCheckpoint),
+        events: [...extraEvents, lockedEvent, ...failed.events],
+      };
     }
     return {
       state: { ...state, board, active: null, status: 'game-over', pieceCount, combo: 0 },
@@ -280,7 +320,10 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       gravityTicks: 0,
       lockTicks: 0,
     };
-    return { state: clearing, events: [...extraEvents, lockedEvent, { type: 'clear-started', rows }] };
+    return {
+      state: appendPuzzleUndoCheckpoint(clearing, undoCheckpoint),
+      events: [...extraEvents, lockedEvent, { type: 'clear-started', rows }],
+    };
   }
 
   if (state.mode === 'puzzle') {
@@ -297,7 +340,10 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       lockResets: 0,
       combo: 0,
     }, false);
-    return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
+    return {
+      state: appendPuzzleUndoCheckpoint(resolved.state, undoCheckpoint),
+      events: [...extraEvents, lockedEvent, ...resolved.events],
+    };
   }
 
   if (state.mode === 'race') {
@@ -341,6 +387,8 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
 
 function hardDrop(state: GameState): GameTransition {
   if (!withActive(state)) return { state, events: [] };
+  // Puzzle's checkpoint must predate both the hard-drop score and landing translation.
+  const checkpointBeforeLock = state.mode === 'puzzle' ? puzzleUndoCheckpoint(state) : undefined;
   let distance = 0;
   let candidate = state.active;
   while (canPlace(state.board, { ...candidate, y: candidate.y + 1 })) {
@@ -348,7 +396,7 @@ function hardDrop(state: GameState): GameTransition {
     distance += 1;
   }
   const next = { ...state, active: candidate, score: state.score + distance * 2 };
-  return lockActive(next, [{ type: 'hard-dropped', piece: candidate.type, distance }]);
+  return lockActive(next, [{ type: 'hard-dropped', piece: candidate.type, distance }], checkpointBeforeLock);
 }
 
 function rotate(state: GameState, direction: -1 | 1): GameTransition {
@@ -499,6 +547,7 @@ export function dispatch(state: GameState, command: GameCommand): GameTransition
   if (command.type === 'resume' && state.status === 'paused') {
     return { state: { ...state, status: 'playing' }, events: [{ type: 'resumed' }] };
   }
+  if (command.type === 'undo') return undoPuzzle(state);
   if (command.type === 'tick') return tick(state);
   if (state.status !== 'playing' || state.phase !== 'active') return { state, events: [] };
 
@@ -545,7 +594,6 @@ export function stateHash(state: GameState): string {
     : (() => {
       const {
         puzzleBoardRows: _puzzleBoardRows,
-        puzzlePieceBudget: _puzzlePieceBudget,
         puzzleTargetCells: _puzzleTargetCells,
         puzzleInitialTargetCount: _puzzleInitialTargetCount,
         puzzleQueue: _puzzleQueue,
@@ -553,6 +601,7 @@ export function stateHash(state: GameState): string {
         puzzleSpawnCount: _puzzleSpawnCount,
         puzzleGoal: _puzzleGoal,
         puzzleCompletion: _puzzleCompletion,
+        puzzleUndoHistory: _puzzleUndoHistory,
         completedLevelId: _completedLevelId,
         nextUnlockedLevelId: _nextUnlockedLevelId,
         ...legacyState
