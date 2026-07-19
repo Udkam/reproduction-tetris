@@ -148,8 +148,28 @@ describe('GameRuntime public state boundary', () => {
     expect(state.puzzleId).toBe('t3r-cascade-06');
     expect(state.puzzleQueue).toEqual(state.queue);
     expect(state.queue).toHaveLength(5);
-    expect(state.puzzlePieceBudget).toBeNull();
+    expect(state.puzzlePieceBudget).toBeGreaterThan(0);
     expect(state.puzzleCompletion).toBe('active');
+  });
+
+  it('refreshes ordinary run seeds while retaining a selected Puzzle sequence', () => {
+    vi.stubGlobal('crypto', {
+      getRandomValues: (values: Uint32Array) => {
+        values[0] = 0x7a11beef;
+        return values;
+      },
+    });
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
+    runtime.restart();
+    expect(runtime.getState().mode).toBe('marathon');
+    expect(runtime.getState().seed).toBe(0x7a11beef);
+
+    runtime.selectPuzzle('t3r-cascade-06');
+    const puzzleSeed = runtime.getState().seed;
+    runtime.restart();
+    expect(runtime.getState().mode).toBe('puzzle');
+    expect(runtime.getState().seed).toBe(puzzleSeed);
+    vi.unstubAllGlobals();
   });
 
   it('updates reduced motion in place without rebuilding runtime state', () => {
@@ -177,6 +197,12 @@ describe('GameRuntime public state boundary', () => {
   });
 
   it('restarts immediately from active play when the public R action is received', async () => {
+    vi.stubGlobal('crypto', {
+      getRandomValues: (values: Uint32Array) => {
+        values[0] = 0x7a11beef;
+        return values;
+      },
+    });
     const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
     await runtime.mount(document.createElement('div'));
     runtime.start();
@@ -188,8 +214,9 @@ describe('GameRuntime public state boundary', () => {
 
     expect(runtime.getState().status).toBe('playing');
     expect(runtime.getState().elapsedTicks).toBe(0);
-    expect(runtime.getState().seed).toBe(before.seed);
+    expect(runtime.getState().seed).toBe(0x7a11beef);
     runtime.destroy();
+    vi.unstubAllGlobals();
   });
 
   it('mounts a read-only QA state view without replay or state-replacement hooks', async () => {

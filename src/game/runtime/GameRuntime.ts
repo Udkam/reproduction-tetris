@@ -6,6 +6,19 @@ import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer'
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
 const UI_SYNC_INTERVAL_MS = 100;
+let runtimeSeedNonce = 0;
+
+/** A non-zero presentation/runtime seed for an ordinary new run. Puzzle replaces it with its authored seed. */
+export function randomRunSeed(): number {
+  const cryptographic = globalThis.crypto;
+  if (cryptographic?.getRandomValues) {
+    const values = new Uint32Array(1);
+    cryptographic.getRandomValues(values);
+    return values[0] || 1;
+  }
+  runtimeSeedNonce = (runtimeSeedNonce + 0x9e3779b9) >>> 0;
+  return ((Date.now() ^ Math.floor(performance.now() * 1000) ^ runtimeSeedNonce) >>> 0) || 1;
+}
 
 export interface RuntimeOptions {
   seed?: number;
@@ -114,17 +127,17 @@ export class GameRuntime {
     this.handleAction('pause', true);
   }
 
-  restart(seed = this.state.seed, mode = this.state.mode, puzzleId = this.state.puzzleId ?? undefined): void {
+  restart(seed?: number, mode = this.state.mode, puzzleId = this.state.puzzleId ?? undefined): void {
     if (!this.inputEnabled) return;
     void this.audio.prime();
-    this.apply({ type: 'restart', seed, mode, puzzleId });
+    this.apply({ type: 'restart', seed: mode === 'puzzle' ? this.state.seed : seed ?? randomRunSeed(), mode, puzzleId });
     this.input?.clearHeld();
   }
 
   selectMode(mode: GameMode): void {
     if (!this.inputEnabled) return;
     if (this.state.status !== 'ready' && this.state.status !== 'game-over' && this.state.status !== 'finished') return;
-    this.apply({ type: 'restart', seed: this.state.seed, mode });
+    this.apply({ type: 'restart', seed: mode === 'puzzle' ? this.state.seed : randomRunSeed(), mode });
     this.input?.clearHeld();
   }
 
