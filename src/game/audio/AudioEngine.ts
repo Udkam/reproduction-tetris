@@ -78,7 +78,8 @@ export class AudioEngine {
         this.tone({ frequency: 310, endFrequency: 465, duration: 0.055, gain: 0.22, type: 'square' });
         this.tone({ frequency: 620, duration: 0.035, gain: 0.11, delay: 0.018, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
-        this.tone({ frequency: 92, endFrequency: 46, duration: 0.12, gain: 0.38, type: 'triangle' });
+        this.tone({ frequency: 132, endFrequency: 82, duration: 0.075, gain: 0.18, type: 'sine' });
+        this.tone({ frequency: 78, endFrequency: 52, duration: 0.16, gain: 0.26, delay: 0.006, type: 'sine' });
       } else if (event.type === 'piece-locked') {
         this.tone({ frequency: 132, duration: 0.05, gain: 0.18, type: 'square' });
       } else if (event.type === 'lines-cleared') {

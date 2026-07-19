@@ -104,6 +104,11 @@ function formatScore(value: number): string {
   return Math.max(0, value).toLocaleString('zh-CN');
 }
 
+export function elapsedTimeLabel(elapsedTicks: number): string {
+  const seconds = Math.floor(Math.max(0, elapsedTicks) / TICKS_PER_SECOND);
+  return `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`;
+}
+
 export function fallCadenceLabel(state: GameState): string {
   const ticks = gravityForMode(state.mode, state.level, state.pieceCount, state.lines);
   const seconds = ticks / TICKS_PER_SECOND;
@@ -367,15 +372,15 @@ export function LeaderboardPanel({ mode, records }: { mode: RunMode; records: re
     <section className="result-leaderboard" aria-label={survival ? '生存排行榜' : '经典排行榜'}>
       <header>
         <strong>{survival ? '生存排行' : '经典排行'}</strong>
-        <span>{survival ? '消行' : '分数'}</span>
+        <span>{survival ? '生存时间' : '消行'}</span>
       </header>
       {records.length === 0 ? <p>暂无记录</p> : (
         <ol>
           {records.slice(0, 5).map((record, index) => (
             <li key={`${record.completedAt}:${index}`}>
               <b>{String(index + 1).padStart(2, '0')}</b>
-              <strong>{survival ? `${record.lines} 行` : formatScore(record.score)}</strong>
-              <small>{survival ? `${record.pieces} 方块` : `${record.lines} 行`}</small>
+              <strong>{survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
+              <small>{survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
             </li>
           ))}
         </ol>

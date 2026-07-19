@@ -7,6 +7,7 @@ import styles from './styles.css?raw';
 import { createInitialState, type GameEvent, type GameMode, type GameState, type PuzzleId } from './game/core';
 import {
   cloneQaState,
+  elapsedTimeLabel,
   eventMessage,
   fallCadenceLabel,
   GameSession,
@@ -202,7 +203,7 @@ describe('entry countdown', () => {
       runtime.options.onState?.(terminalState, []);
     });
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(terminalState);
-    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行分数暂无记录');
+    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行消行暂无记录');
     view.unmount();
   });
 });
@@ -347,7 +348,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('ranks and labels Classic by score while Survival is led by cleared lines', () => {
+  it('ranks and labels Classic by cleared lines while Survival is led by elapsed time', () => {
     const base: ScoreRecord = {
       version: 3,
       score: 3200,
@@ -360,16 +361,18 @@ describe('T6 frontend mode binding', () => {
     };
     const classic = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [base] }));
     expect(classic.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('经典排行榜');
-    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('经典排行分数');
-    expect(classic.container.querySelector('.result-leaderboard li')?.textContent).toBe('013,20018 行');
+    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('经典排行消行');
+    expect(classic.container.querySelector('.result-leaderboard li')?.textContent).toBe('0118 行3,200 分');
     classic.unmount();
 
     const survivalRecord = { ...base, mode: 'race' as const, score: 900, lines: 27 };
     const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
     expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('生存排行榜');
-    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行消行');
-    expect(survival.container.querySelector('.result-leaderboard li')?.textContent).toBe('0127 行62 方块');
+    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行生存时间');
+    expect(survival.container.querySelector('.result-leaderboard li')?.textContent).toBe('011 分 10 秒27 行 · 62 方块');
     survival.unmount();
+
+    expect(elapsedTimeLabel(65 * 60)).toBe('1 分 5 秒');
 
     const ended = { ...createInitialState(1, 'race'), status: 'game-over' as const, score: 900, lines: 27, pieceCount: 62, elapsedTicks: 4200 };
     expect(scoreRecordForState(ended, base.completedAt)).toMatchObject({ mode: 'race', score: 900, lines: 27, outcome: 'top-out' });

@@ -61,16 +61,16 @@ export function isScoreRecord(value: unknown): value is ScoreRecord {
 export function sortRecords(mode: RunMode, records: readonly ScoreRecord[]): ScoreRecord[] {
   return [...records].sort((left, right) => {
     if (mode === 'marathon') {
-      return right.score - left.score
-        || right.lines - left.lines
+      return right.lines - left.lines
+        || right.score - left.score
         || right.pieces - left.pieces
         || left.elapsedTicks - right.elapsedTicks
         || compareText(left.completedAt, right.completedAt);
     }
-    return right.lines - left.lines
+    return right.elapsedTicks - left.elapsedTicks
+      || right.lines - left.lines
       || right.score - left.score
       || right.pieces - left.pieces
-      || left.elapsedTicks - right.elapsedTicks
       || compareText(left.completedAt, right.completedAt);
   });
 }

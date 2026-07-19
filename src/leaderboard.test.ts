@@ -71,31 +71,29 @@ describe('local leaderboard boundary', () => {
 
     expect(recordsForMode(leaderboard, 'marathon')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'race')).toHaveLength(LEADERBOARD_LIMIT);
-    expect(recordsForMode(leaderboard, 'marathon')[0]?.score).toBe(1200);
-    expect(recordsForMode(leaderboard, 'race')[0]?.lines).toBe(LEADERBOARD_LIMIT + 3);
+    expect(recordsForMode(leaderboard, 'marathon')[0]?.lines).toBe(LEADERBOARD_LIMIT + 3);
+    expect(recordsForMode(leaderboard, 'race')[0]?.elapsedTicks).toBe(3000 + LEADERBOARD_LIMIT + 3);
     expect(parseLeaderboard(JSON.stringify(leaderboard))).toEqual(leaderboard);
   });
 
-  it('uses the frozen tie-break order for both modes', () => {
+  it('ranks Classic by cleared lines and Survival by elapsed survival time', () => {
     let leaderboard = emptyLeaderboard();
-    const marathonFast = marathonRecord({ elapsedTicks: 100 });
-    const marathonMoreLines = marathonRecord({ lines: 9, elapsedTicks: 900 });
-    const marathonBetterScore = marathonRecord({ score: 1300, lines: 1, pieces: 1, elapsedTicks: 900 });
-    leaderboard = insertScoreRecord(leaderboard, marathonFast);
-    leaderboard = insertScoreRecord(leaderboard, marathonMoreLines);
-    leaderboard = insertScoreRecord(leaderboard, marathonBetterScore);
-    expect(recordsForMode(leaderboard, 'marathon')).toEqual([marathonBetterScore, marathonMoreLines, marathonFast]);
+    const marathonLowerLines = marathonRecord({ lines: 8, score: 9000, elapsedTicks: 100 });
+    const marathonHigherScore = marathonRecord({ lines: 9, score: 1300, elapsedTicks: 900 });
+    const marathonWinner = marathonRecord({ lines: 9, score: 1600, elapsedTicks: 1200 });
+    leaderboard = insertScoreRecord(leaderboard, marathonLowerLines);
+    leaderboard = insertScoreRecord(leaderboard, marathonHigherScore);
+    leaderboard = insertScoreRecord(leaderboard, marathonWinner);
+    expect(recordsForMode(leaderboard, 'marathon')).toEqual([marathonWinner, marathonHigherScore, marathonLowerLines]);
 
-    const raceMostLines = raceRecord({ lines: 99, elapsedTicks: 100, pieces: 69, score: 100 });
-    const raceFewerLines = raceRecord({ lines: 19, elapsedTicks: 100, pieces: 70, score: 9000 });
-    const raceLowerScore = raceRecord({ lines: 20, elapsedTicks: 100, pieces: 70, score: 3000 });
-    const raceSlower = raceRecord({ lines: 20, elapsedTicks: 600, pieces: 70, score: 4000 });
-    const raceWinner = raceRecord({ lines: 20, elapsedTicks: 300, pieces: 70, score: 4000 });
-    leaderboard = insertScoreRecord(leaderboard, raceLowerScore);
-    leaderboard = insertScoreRecord(leaderboard, raceMostLines);
-    leaderboard = insertScoreRecord(leaderboard, raceFewerLines);
-    leaderboard = insertScoreRecord(leaderboard, raceSlower);
+    const raceMostLinesShorter = raceRecord({ lines: 99, elapsedTicks: 100, pieces: 69, score: 100 });
+    const raceTieFewerLines = raceRecord({ lines: 19, elapsedTicks: 600, pieces: 70, score: 9000 });
+    const raceTieWinner = raceRecord({ lines: 20, elapsedTicks: 600, pieces: 70, score: 4000 });
+    const raceWinner = raceRecord({ lines: 1, elapsedTicks: 900, pieces: 70, score: 20 });
+    leaderboard = insertScoreRecord(leaderboard, raceTieFewerLines);
+    leaderboard = insertScoreRecord(leaderboard, raceMostLinesShorter);
+    leaderboard = insertScoreRecord(leaderboard, raceTieWinner);
     leaderboard = insertScoreRecord(leaderboard, raceWinner);
-    expect(recordsForMode(leaderboard, 'race')).toEqual([raceMostLines, raceWinner, raceSlower, raceLowerScore, raceFewerLines]);
+    expect(recordsForMode(leaderboard, 'race')).toEqual([raceWinner, raceTieWinner, raceTieFewerLines, raceMostLinesShorter]);
   });
 });
