@@ -1,4 +1,65 @@
-# Tetra — T12 Progressive Puzzle Curriculum and Anchor Stability Contract
+# Tetra — T12.5 Low-Pressure Puzzle Curriculum, Undo, and Campaign Atlas Contract
+
+## T12.5 low-pressure Puzzle rebuild, local undo, and campaign-atlas archive
+
+The 2026-07-19 follow-up supersedes T12.4's solver-derived piece budgets, dense
+endgame requirement, retained anchors, and flat archive treatment before that candidate
+is accepted or published. Puzzle is now an approachable authored curriculum, not a
+long-route endurance test.
+
+- A Puzzle is won **only** when every original target cell from its starting board has
+  been removed by ordinary line resolution. There is no solver allowance, remaining
+  piece counter, budget terminal state, or `failed-budget` result. Normal top-out,
+  invalid-spawn, restart, and explicit exit behavior remain ordinary game behavior.
+  `pieceCount` may remain an informational non-limiting statistic, but it may not be
+  presented as a maximum, fraction, countdown, or failure cause.
+- Replace all twenty prior deep stacks with twenty stable, fixed-seed, shallow authored
+  teaching boards. The campaign progresses from direct one-piece gaps through simple
+  rotations, then clear two- through four-row vertical channels. Every published route must
+  use only understandable public inputs (horizontal movement, at most one ordinary
+  rotation per piece where needed, hard drop, and settlement ticks); it must not rely
+  on kicks, hidden support tricks, soft-drop timing, deep covered cavities, or an
+  obscure multi-line workaround. Boards have a small target band near the floor, no
+  timed inputs, and no permanent anchors in this curriculum. IDs and completion-store
+  compatibility remain stable, while authored seeds and boards may change to make the
+  intended opening input unambiguous.
+- The route fixture is a regression proof of clearability and curriculum ordering, not
+  an optimality claim, player-facing walkthrough, score rule, or runtime constraint.
+  Its exact Core replay must finish every board. Difficulty is authored from the
+  verified route's simple lock/rotation/move complexity and presented as a gentle
+  ascending campaign index.
+- Puzzle adds a run-local **撤回** action. `B` invokes it, and the active Puzzle shell
+  also exposes an equivalent touch-safe control. It restores the exact state immediately
+  before the most recently locked piece: board and original-target ownership, active
+  piece, queue/randomizer, score, lines, timers, and placed-piece count all return
+  together. The history is private to the live Puzzle run, starts empty, is never
+  persisted or exposed through QA state replacement, and is unavailable in Classic and
+  Survival. Repeated use walks backwards through earlier locks; with no checkpoint it
+  is a harmless no-op. Undo cannot create, consume, reorder, or reseed a Puzzle input.
+- The selector becomes an original **campaign atlas** rather than a uniform list of
+  cards. It uses one coherent dossier/terrain language: a readable tier route, quiet
+  terrain bands that indicate the learning arc, level records as waypoints, and a
+  single selected-board detail panel. It must not restore per-level miniatures,
+  upper-corner dots, a decorative progress-dot system, or a second board preview.
+  Texture and depth come from restrained CSS planes, contours, route seams, and
+  type hierarchy—not a copied game screen, dashboard telemetry, or generic floating
+  cards. Locked and complete states remain semantic and accessible without hue alone.
+- The unlock rule is visible in full, not merely inferred from a counter: `01–03`
+  are open on a new save; `04–18` open in successive three-level tiers when any two
+  levels in the immediately preceding tier are complete; `19–20` open when any two
+  of `16–18` are complete. Existing valid completion IDs migrate without loss and a
+  sealed entry remains inert.
+- The selected detail keeps Puzzle's ordered double-Next preview. Gameplay keeps one
+  canvas, no DOM board grid, fixed deterministic Puzzle seeds, responsive/touch-safe
+  controls, the established target marker treatment, and reduced-motion behavior.
+
+T12.5 may change the direct Puzzle Core/runtime definitions and tests, Puzzle progress
+copy, App/UI/styles, the isolated campaign-route fixture/helper, and the assigned T12
+workstream documentation. It does not authorize a physics, rotation, ordinary
+line-resolution, audio, dependency, browser-asset, or other-repository change. Before
+publication it requires focused route/undo/progress/UI tests, one final typecheck, full
+suite, production build, browser evidence at desktop and narrow viewports, and fresh
+independent Core plus visual/browser QA.
 
 ## T12.1 archive worktable and visible-board presentation clamp
 

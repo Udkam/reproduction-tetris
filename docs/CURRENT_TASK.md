@@ -1,4 +1,4 @@
-# Current Task — T12 Progressive Puzzle Curriculum and Anchor Stability
+# Current Task — T12.5 Low-Pressure Puzzle Curriculum, Undo, and Campaign Atlas
 
 Branch: `main`
 
@@ -6,21 +6,36 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`; current T12 source checkpoint: `95c7da7`.
 
-Current execution status (2026-07-19): **IN PROGRESS — T12.4 solver-backed Puzzle
-campaign recalibration, with T12.2 renderer QA correction and T12.3 Puzzle
-preview/viewport follow-up retained in the same unaccepted candidate.**
+Current execution status (2026-07-19): **IN PROGRESS — T12.5 replaces the unaccepted
+T12.4 budget/reorder candidate with a low-pressure twenty-level Puzzle curriculum,
+Puzzle-local undo, and a themed campaign-atlas selector.**
 Independent renderer QA rejected T12.1 candidate `7ae1190..b0889c7` on a P2
 fractional-edge scale overhang, so it is not accepted. Source `95c7da7` remains the
 locally verified T12 baseline; T11 remains a recoverable baseline at `a76eea2`, pending
 its separate independent QA disposition.
 
-T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
-level a monotonic visible difficulty index. T12.4 replaces the inherited topology-only
-ordering, route minima, and fixed `+10` slack with a Core-replayed solver-result
-archive. A new campaign opens only levels 01–03; later three-level tiers open after
-two canonical completions in the immediately preceding tier. The archive shows locked
-entries but neither selects nor starts them. Existing persisted completed IDs migrate
-forward and remain valid; malformed progress is fail-closed.
+T12.5 keeps the twenty-level fixed-seed campaign and its completion-store compatibility,
+but replaces T12.4's dense boards, retained anchors, solver budgets, and budget-driven
+ordering before publication. Each new authored board is deliberately shallow and
+intuitive: direct gaps first, ordinary rotations next, then clear two- through four-row
+vertical channels. No new curriculum board has an anchor or timed input. Success is
+strictly removal of all original targets; no count of placed pieces can fail a run.
+Every selected route is revalidated through Core `dispatch()` as a clearability and
+difficulty-order proof only, never as an optimum or player restriction.
+
+Puzzle receives a current-run-only undo stack. `B` and an equivalent visible Puzzle
+control restore the exact pre-lock checkpoint for the most recently locked piece,
+including target ownership, board, active piece, queue/randomizer, timers, score,
+lines, and piece count. The history never persists, changes seed/queue order, appears
+in Classic/Survival, or becomes a QA state-injection surface. It is a no-op when there
+is no prior lock.
+
+A fresh campaign still opens `01–03`. The page must state the full gate rule visibly:
+complete any two of `01–03` for `04–06`, then any two of each preceding three-level
+tier for the next tier through `16–18`; complete any two of `16–18` for `19–20`.
+Sealed rows remain readable yet inert. The archive visual is rebuilt as an original
+campaign atlas with a restrained route/terrain hierarchy and one selected canonical
+preview only—no entry thumbnails, corner dots, or ornamental progress dots.
 
 The player-facing identity changes to the short plain-text `Tetra`. It makes the
 four-cell falling-block vocabulary legible without a copied logo treatment or a visible
