@@ -3,8 +3,9 @@
 ## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
 
 The user's 2026-07-19 direction supersedes T11's volatile Puzzle input mechanism and
-the unrestricted fifteen-level archive. It corrects the current anchor clear bug
-without changing Classic or Survival rules.
+the unrestricted fifteen-level archive. It corrects the current anchor clear bug and
+changes only Survival's opening bedrock height; Classic and all other Survival rules
+remain unchanged.
 
 - Puzzle has exactly twenty original authored levels, ordered from difficulty `01` to
   `20`. Difficulty is a monotonic campaign property: target density, cavities, fixed
@@ -37,6 +38,9 @@ without changing Classic or Survival rules.
   status—not a decorative dot or per-entry miniature board. Touch, keyboard, reduced
   motion, responsive geometry, one canvas, and the plain-text `Tetris` identity remain
   required.
+- Survival now begins with exactly seven warm-mineral bedrock rows. Its 15→8-second
+  pressure, one-row-per-three-lines removal, fixed 40-tick gravity, restart behavior,
+  ranking, and ordinary-run random-seed contract are unchanged.
 
 ## T11 target-marked Puzzle budgets, acoustic refinement, and fixed Survival pace
 

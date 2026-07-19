@@ -27,6 +27,10 @@ The existing 0–100% header audio control stays in place. At 100% its master/he
 compressor, and sine envelopes must be materially louder without reviving the rejected
 electrical landing sound or allowing an unclipped overlapping mix.
 
+Survival's opening bedrock height changes from ten rows to exactly seven. Its existing
+15→8-second pressure, three-line removal, fixed 40-tick gravity, restart behavior,
+and ranking order remain unchanged.
+
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
 marker, and remains a target while rows clear or it moves through the bounded volatile
@@ -57,10 +61,11 @@ Required T12 evidence before any publication: targeted core/replay/UI coverage f
 twenty fixed-seed levels and progressive unlock persistence; stationary anchors when
 clearing both their own and lower rows; target-coordinate mapping through that
 resolution; absence of any volatile timer, event, material, or HUD state; and boosted
-bounded sine routing at full volume. Then run typecheck, the full suite, build, and one
-browser action pass with the locked/unlocked archive, visible target/budget state, and
-zero browser errors. Independent Core and visual/browser QA must accept the extended
-candidate before changelog integration or acceptance.
+bounded sine routing at full volume; and seven-row Survival opening/restart/pressure.
+Then run typecheck, the full suite, build, and one browser action pass with the
+locked/unlocked archive, visible target/budget state, and zero browser errors.
+Independent Core and visual/browser QA must accept the extended candidate before
+changelog integration or acceptance.
 
 Local candidate evidence now covers the target budget/state transitions, fixed ten-row
 Survival opening and cadence, fresh ordinary-run seeds, fixed Puzzle selection, audio
