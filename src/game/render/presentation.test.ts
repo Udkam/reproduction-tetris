@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   approachPresentationPoint,
   boardShiftPresentationOffset,
+  clampActivePresentationOffsetY,
   exposedCellEdges,
   internalCellSeams,
   lineClearCellProgress,
@@ -43,6 +44,33 @@ describe('presentation interpolation', () => {
     expect(center).toBeGreaterThan(edge);
     expect(lineClearCellProgress(1, 0, 10)).toBe(1);
     expect(lineClearCellProgress(1, 9, 10)).toBe(1);
+  });
+
+  it('keeps interpolated active cells within the visible well at both edges', () => {
+    const unit = 30;
+    const height = 20;
+    const topSquare: Cell[] = [
+      { x: 4, y: 0 }, { x: 5, y: 0 },
+      { x: 4, y: 1 }, { x: 5, y: 1 },
+    ];
+    const middleSquare: Cell[] = topSquare.map((cell) => ({ ...cell, y: cell.y + 5 }));
+    const bottomSquare: Cell[] = topSquare.map((cell) => ({ ...cell, y: cell.y + 18 }));
+
+    expect(clampActivePresentationOffsetY(-unit, topSquare, unit, height)).toBe(0);
+    expect(clampActivePresentationOffsetY(-unit, middleSquare, unit, height)).toBe(-unit);
+    expect(clampActivePresentationOffsetY(unit, bottomSquare, unit, height)).toBe(0);
+
+    for (const [cells, requestedOffsetY] of [
+      [topSquare, -unit],
+      [middleSquare, -unit],
+      [bottomSquare, unit],
+    ] as const) {
+      const offsetY = clampActivePresentationOffsetY(requestedOffsetY, cells, unit, height);
+      for (const cell of cells) {
+        expect(cell.y * unit + offsetY).toBeGreaterThanOrEqual(0);
+        expect((cell.y + 1) * unit + offsetY).toBeLessThanOrEqual(height * unit);
+      }
+    }
   });
 
   it('settles timed bedrock shifts in their canonical direction without overshoot', () => {

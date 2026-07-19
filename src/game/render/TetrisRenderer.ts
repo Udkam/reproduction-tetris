@@ -18,6 +18,7 @@ import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS,
 import {
   approachPresentationPoint,
   boardShiftPresentationOffset,
+  clampActivePresentationOffsetY,
   exposedCellEdges,
   internalCellSeams,
   lineClearPresentationProgress,
@@ -343,7 +344,7 @@ export class TetrisRenderer {
     }
 
     const visibleGhostCells = ghostCells
-      .filter((cell) => cell.y >= VISIBLE_START_ROW)
+      .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
     const ghostOffsetX = this.presentation && state.active
       ? (this.presentation.x - state.active.x) * layout.cell
@@ -361,16 +362,21 @@ export class TetrisRenderer {
     const offsetX = this.presentation && state.active && !this.options.reducedMotion
       ? (this.presentation.x - state.active.x) * layout.cell
       : 0;
-    const offsetY = this.presentation && state.active && !this.options.reducedMotion
+    const rawOffsetY = this.presentation && state.active && !this.options.reducedMotion
       ? (this.presentation.y - state.active.y) * layout.cell
       : 0;
-    const rotationScale = this.options.reducedMotion ? 1 : 1 + this.rotationPulse * 0.035;
+    const visibleActiveCells = activeCells
+      .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
+      .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
+    const offsetY = clampActivePresentationOffsetY(rawOffsetY, visibleActiveCells, layout.cell, VISIBLE_HEIGHT);
+    const activeTouchesVisibleEdge = visibleActiveCells.some((cell) => cell.y === 0 || cell.y === VISIBLE_HEIGHT - 1);
+    const rotationScale = this.options.reducedMotion || activeTouchesVisibleEdge || offsetY !== rawOffsetY
+      ? 1
+      : 1 + this.rotationPulse * 0.035;
     if (state.active) {
       this.drawCellGroups(
         graphics,
-        activeCells
-          .filter((cell) => cell.y >= VISIBLE_START_ROW)
-          .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW })),
+        visibleActiveCells,
         state.active.type,
         1,
         {

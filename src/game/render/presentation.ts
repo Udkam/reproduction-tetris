@@ -120,6 +120,22 @@ export function approachPresentationPoint(
   };
 }
 
+/** Keeps renderer-only active-piece interpolation inside the visible well without touching Core coordinates. */
+export function clampActivePresentationOffsetY(
+  requestedOffsetY: number,
+  visibleCells: readonly Cell[],
+  unit: number,
+  visibleHeight: number,
+): number {
+  if (!Number.isFinite(requestedOffsetY) || !visibleCells.length || unit <= 0 || visibleHeight <= 0) return 0;
+  const minY = Math.min(...visibleCells.map((cell) => cell.y));
+  const maxY = Math.max(...visibleCells.map((cell) => cell.y));
+  const minimumOffsetY = -Math.max(0, minY) * unit;
+  const maximumOffsetY = Math.max(0, visibleHeight - Math.min(visibleHeight - 1, maxY) - 1) * unit;
+  const clampedOffsetY = Math.min(maximumOffsetY, Math.max(minimumOffsetY, requestedOffsetY));
+  return clampedOffsetY === 0 ? 0 : clampedOffsetY;
+}
+
 export function lineClearCellProgress(phaseProgress: number, column: number, width: number): number {
   if (width <= 1) return Math.max(0, Math.min(1, phaseProgress));
   const centerDistance = Math.abs(column - (width - 1) / 2) / ((width - 1) / 2);
