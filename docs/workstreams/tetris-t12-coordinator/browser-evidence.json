@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 2,
+  "sourceCommit": "d2469e3f66072d5edc905981200d0df90b06780f",
+  "runner": "Playwright Chromium with ANGLE SwiftShader; prescribed web-game client plus coordinator interaction matrix; captures retained under %TEMP% only",
+  "cases": [
+    {
+      "name": "atlas-initial-desktop",
+      "viewport": "1280x720",
+      "availability": "3 / 20 已开放",
+      "catalog": { "rows": 20, "enabled": 3, "disabled": 17, "atlasPreviews": 0, "selectedPreviews": 1 },
+      "noHorizontalOverflow": true,
+      "noVerticalOverflow": true,
+      "consoleErrors": 0
+    },
+    {
+      "name": "atlas-initial-portrait",
+      "viewport": "390x844",
+      "availability": "3 / 20 已开放",
+      "catalog": { "rows": 20, "enabled": 3, "disabled": 17, "atlasPreviews": 0, "selectedPreviews": 1 },
+      "noHorizontalOverflow": true,
+      "noVerticalOverflow": true,
+      "consoleErrors": 0
+    },
+    {
+      "name": "atlas-initial-landscape",
+      "viewport": "844x390",
+      "availability": "3 / 20 已开放",
+      "catalog": { "rows": 20, "enabled": 3, "disabled": 17, "atlasPreviews": 0, "selectedPreviews": 1 },
+      "noHorizontalOverflow": true,
+      "noVerticalOverflow": true,
+      "consoleErrors": 0
+    },
+    {
+      "name": "atlas-tier-transition",
+      "viewport": "1280x720",
+      "seededCompletionIds": ["t3r-shaft-01", "t3r-shaft-02"],
+      "availability": "6 / 20 已开放",
+      "catalog": { "enabled": 6, "disabled": 14 },
+      "noHorizontalOverflow": true,
+      "noVerticalOverflow": true,
+      "consoleErrors": 0
+    },
+    {
+      "name": "puzzle-double-next-and-undo",
+      "viewport": "1280x720",
+      "puzzleId": "t5r-drift-08",
+      "nextPreviews": ["Z", "L"],
+      "keyboardUndo": { "score": [36, 0], "placed": [1, 0] },
+      "touchUndo": { "score": [36, 0], "placed": [1, 0] },
+      "canvas": 1,
+      "domBoardCells": 0,
+      "noHorizontalOverflow": true,
+      "noVerticalOverflow": true,
+      "consoleErrors": 0
+    }
+  ],
+  "captures": [
+    "%TEMP%/t12-5-candidate-d2469e3/atlas-1280x720.png",
+    "%TEMP%/t12-5-candidate-d2469e3/atlas-390x844.png",
+    "%TEMP%/t12-5-candidate-d2469e3/atlas-844x390.png",
+    "%TEMP%/t12-5-candidate-d2469e3/puzzle-undo-before-keyboard.png",
+    "%TEMP%/t12-5-candidate-d2469e3/puzzle-undo-restored.png"
+  ],
+  "visualReview": "Inspected all three atlas captures and both gameplay captures. The themed route hierarchy stays readable, complete gate text remains visible, entries have no thumbnails or corner dots, and exactly one selected silhouette remains. The active input piece stays inside the well; keyboard and touch undo both restore the pre-drop visual board and state."
+}
