@@ -13,7 +13,7 @@ T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every i
 ordinary authored cell is an original target, receives a renderer-owned special
 marker, and remains a target while rows clear or it moves through the bounded volatile
 settlement path. Every later player cell is non-target. The current budget X is the
-shortest lock count among that level's verified deterministic solver routes plus twenty
+shortest lock count among that level's verified deterministic solver routes plus ten
 locks of fixed slack; success can occur on its Xth resolved lock, while remaining
 targets after that lock produce an explicit Puzzle budget failure. Sparse anchor
 overlays remain, but are seeded only into initially wholly empty visible rows so they
