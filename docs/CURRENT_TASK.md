@@ -29,6 +29,12 @@ uses exactly `确认` with no description. Audio is re-authored as a sine-only,
 envelope-shaped event palette, with the hard drop owning its landing sound so a lock
 event cannot recreate an electrical buzz.
 
+Classic and Survival receive a freshly generated run seed on every new run, restart,
+or replay; Puzzle always retains the selected level's deterministic seed. When a
+terminal Classic/Survival score survives leaderboard insertion, its row is highlighted
+in the result table; otherwise the result sheet displays a compact non-qualification
+notice.
+
 Required evidence before any publication: targeted core/replay/UI coverage for all
 fifteen solver budgets, target identity across line clear and volatile settlement,
 Xth-lock success and exhausted-budget failure, ten-row Survival restart/pressure and

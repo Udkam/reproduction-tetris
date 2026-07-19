@@ -37,6 +37,12 @@ audio palette.
   falling piece; Classic and Puzzle retain their existing independent cadence rules.
 - The restart sheet remains keyboard-confirmable with Enter, but its visible primary
   action is exactly `确认` and it has no explanatory small copy.
+- Each new Classic or Survival run, including restart and replay, receives a fresh
+  runtime seed and therefore a new seven-bag sequence. Puzzle ignores that runtime
+  seed and always restores its selected level's fixed authored sequence.
+- A terminal Classic or Survival record that survives leaderboard insertion is visibly
+  highlighted in the result table. If it does not survive the ranked list, the result
+  sheet instead gives a compact explicit non-qualification notice.
 - All game feedback uses short, bounded sine-based acoustic cues with a shared soft
   envelope; square, triangle, and sawtooth voices are removed. A hard drop owns the
   complete landing voice, so its accompanying lock event cannot stack a second sharp
