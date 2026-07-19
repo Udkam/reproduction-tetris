@@ -23,8 +23,11 @@ piece must never become visible beyond the playable well.
   active cell, outline, or rotation pulse may not render above the board's top edge.
   When interpolation would move the active group above its first visible row, the
   renderer clamps that presentation offset at the visible boundary and suppresses the
-  scale pulse for that frame. This is renderer-only: no spawn coordinate, collision,
-  queue, timing, seed, or puzzle setup may change.
+  scale pulse for that frame. Edge contact is evaluated from the **effective
+  post-offset group bounds**, so an otherwise interior group translated exactly onto an
+  edge also receives neutral scale; source cell coordinates alone are insufficient.
+  This is renderer-only: no spawn coordinate, collision, queue, timing, seed, or puzzle
+  setup may change.
 
 ## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
 

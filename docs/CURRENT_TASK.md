@@ -6,12 +6,11 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`; current T12 source checkpoint: `95c7da7`.
 
-Current execution status (2026-07-19): **CANDIDATE READY — T12.1 source range
-`7ae1190..b0889c7` is locally verified; independent renderer and visual/browser QA
-remain pending.** Source `95c7da7` remains the locally verified T12 baseline, but its
-pending independent QA disposition cannot carry across the new presentation correction.
-T11 remains a recoverable baseline at `a76eea2`, pending its separate independent QA
-disposition.
+Current execution status (2026-07-19): **IN PROGRESS — T12.2 renderer QA correction.**
+Independent renderer QA rejected T12.1 candidate `7ae1190..b0889c7` on a P2
+fractional-edge scale overhang, so it is not accepted. Source `95c7da7` remains the
+locally verified T12 baseline; T11 remains a recoverable baseline at `a76eea2`, pending
+its separate independent QA disposition.
 
 T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
 level a monotonic visible difficulty index. The index is an authored topology/anchor
@@ -86,6 +85,26 @@ and no horizontal overflow. A frozen real Survival frame records an active `J` a
 piece remains fully inside the board's top edge. This is candidate evidence only:
 independent renderer and visual/browser QA remain mandatory before changelog integration
 or publication.
+
+### T12.2 renderer QA correction — effective-edge scale guard
+
+Renderer QA found that T12.1 neutralizes a rotation pulse only for an unshifted source
+edge cell or a numerically changed clamp. It misses an interior group whose unchanged
+interpolation offset lands it exactly on the visible top/bottom edge (for example local
+rows `1–2` at `-1 × unit`). The group then retains a `1.035` scale and may leak a
+fractional face/stroke beyond the well. T12.2 must calculate edge contact from the
+effective post-offset bounds and force scale `1` whenever either rendered group bound
+touches an edge, regardless of whether the clamp changed its number.
+
+T12.2 allowed product/test paths are `src/game/render/TetrisRenderer.ts`,
+`src/game/render/presentation.ts`, and `src/game/render/presentation.test.ts`. It may
+update only this task/design contract before source and the progress/workstream records
+after verification. Core, spawn rows, collision, seeds, queues, replay fixtures, Puzzle
+content, UI, styles, audio, storage, dependencies, and the formal changelog remain
+closed. Required proof adds translated-to-top and translated-to-bottom regression cases
+which retain their offset yet report effective edge contact; a fresh browser top-edge
+capture plus typecheck, full suite, build, and renewed independent renderer QA are
+required before candidate status is restored.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
