@@ -11,7 +11,9 @@ no T12 source candidate yet.** T11 remains a recoverable, locally verified basel
 at `a76eea2`, pending its separate independent QA disposition.
 
 T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
-level a monotonic visible difficulty index. A new campaign opens only levels 01–03;
+level a monotonic visible difficulty index. The index is an authored topology/anchor
+curriculum rather than a misleading raw budget ranking; the added 16–20 routes use
+accepted minima of 30, 33, 33, 34, and 42 locks before the fixed +10 slack. A new campaign opens only levels 01–03;
 each distinct canonical completion unlocks exactly one next locked level. The archive
 shows locked entries but neither selects nor starts them. Existing persisted completed
 IDs migrate forward and remain valid; malformed progress is fail-closed.
@@ -71,6 +73,28 @@ Then run typecheck, the full suite, build, and one browser action pass with the
 locked/unlocked archive, visible target/budget state, and zero browser errors.
 Independent Core and visual/browser QA must accept the extended candidate before
 changelog integration or acceptance.
+
+### T12 source-checkpoint exception — coupled rule migration
+
+The following exact T12 candidate range is permitted to exceed the normal per-commit
+path budget because it removes a required `GameState`/`GameEvent` contract across core,
+renderer, audio, React HUD, DEV state, persistence, and direct tests while introducing
+the twenty-ID campaign those consumers must type-check against. This is not file-count
+bundling: any intermediate SHA which changes the typed volatile fields/events without
+their consumers would fail the build, while the archive cannot expose its new IDs before
+the core validates them. The coordinator owns the entire range and must run the whole
+targeted matrix, final typecheck, full suite, production build, and browser pass.
+
+Exact product/test paths: `index.html`; `src/App.tsx`; `src/App.test.ts`;
+`src/main.tsx`; `src/styles.css`; `src/puzzleProgress.ts`;
+`src/puzzleProgress.test.ts`; `src/game/audio/AudioEngine.ts`;
+`src/game/audio/AudioEngine.test.ts`; `src/game/core/board.ts`;
+`src/game/core/board.test.ts`; `src/game/core/constants.ts`;
+`src/game/core/engine.ts`; `src/game/core/puzzleFlow.test.ts`;
+`src/game/core/puzzleCampaign.test.ts`; `src/game/core/puzzles.ts`;
+`src/game/core/puzzles.test.ts`; `src/game/core/types.ts`;
+`src/game/render/TetrisRenderer.ts`; `src/game/render/theme.ts`; and
+`src/game/render/theme.test.ts`.
 
 Local candidate evidence now covers the target budget/state transitions, fixed ten-row
 Survival opening and cadence, fresh ordinary-run seeds, fixed Puzzle selection, audio

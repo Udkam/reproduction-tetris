@@ -8,10 +8,12 @@ changes only Survival's opening bedrock height; Classic and all other Survival r
 remain unchanged.
 
 - Puzzle has exactly twenty original authored levels, ordered from difficulty `01` to
-  `20`. Difficulty is a monotonic campaign property: target density, cavities, fixed
-  anchors, and the accepted solver lock budget never make a later level easier than
-  an earlier one in the authored curriculum profile. All levels retain a stable,
-  level-owned deterministic seed and original clean-room setup history.
+  `20`. Difficulty is a monotonic campaign index authored from target topology,
+  cavity recovery demand, and sparse fixed-anchor placement; the route-specific
+  solver budget remains a bounded success allowance rather than a linear difficulty
+  score. The new `16`–`20` band uses accepted route minima of `30`, `33`, `33`, `34`,
+  and `42` locks before its fixed +10 slack. All levels retain a stable, level-owned
+  deterministic seed and original clean-room setup history.
 - A new save begins with levels `01`–`03` available. Every distinct canonical Puzzle
   completion opens one additional next-locked level, up to all twenty. Completion
   remains persistent, malformed or older data fails closed, and historic completion
