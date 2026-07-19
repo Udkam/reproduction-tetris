@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, ENTRY_DELAY_TICKS, LOCK_DELAY_TICKS, PUZZLE_VOLATILE_PIECE_TICKS } from './constants';
+import { BOARD_HEIGHT, ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, PUZZLE_VOLATILE_PIECE_TICKS, VISIBLE_START_ROW } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch } from './engine';
 import { ANCHOR_CELL, type GameState, type PieceType } from './types';
@@ -70,24 +70,45 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.status).toBe('playing');
     expect(state.active).not.toBeNull();
     expect(state.queue).toHaveLength(5);
-    expect(state.puzzlePieceBudget).toBeNull();
+    expect(state.puzzlePieceBudget).toBeGreaterThan(state.pieceCount);
     expect(state.puzzleCompletion).toBe('active');
   });
 
   it.each([
-    ['t3r-shaft-03', 1], ['t3r-cascade-06', 1], ['t5r-lattice-09', 1], ['t5r-current-12', 1],
-    ['t5r-arc-13', 2], ['t5r-pulse-14', 2], ['t5r-horizon-15', 2],
-  ] as const)('keeps the authored deep endgame for %s and overlays %i anchors', (id, anchorCount) => {
+    ['t3r-shaft-01', 1], ['t3r-shaft-03', 1], ['t3r-cascade-05', 1], ['t5r-delta-07', 2],
+    ['t5r-lattice-09', 1], ['t5r-prism-11', 1], ['t5r-arc-13', 2], ['t5r-horizon-15', 1],
+  ] as const)('keeps the authored deep endgame for %s and overlays %i safe anchors', (id, anchorCount) => {
     const definition = getPuzzleDefinition(id);
     const state = createInitialState(1, 'puzzle', id);
 
-    expect(definition.variant).toBe('anchored-legacy');
     expect(definition.setup.placements.length).toBeGreaterThanOrEqual(16);
     expect(definition.boardRows.filter((row) => row !== '..........').length).toBeGreaterThanOrEqual(8);
     expect(definition.anchorCells).toHaveLength(anchorCount);
-    expect(state.puzzleGoal).toBe('removable-board-empty');
+    expect(state.puzzleGoal).toBe('original-targets-cleared');
     expect(state.board.flat().filter((cell) => cell === ANCHOR_CELL)).toHaveLength(anchorCount);
-    for (const anchor of definition.anchorCells) expect(definition.boardRows[anchor.y]?.[anchor.x]).toBe('.');
+    for (const anchor of definition.anchorCells) {
+      const visibleY = anchor.y - VISIBLE_START_ROW;
+      expect(definition.boardRows[visibleY]?.[anchor.x]).toBe('.');
+      expect(definition.boardRows[visibleY]).toBe('..........');
+    }
+  });
+
+  it('tracks only original targets through a normal cleared row', () => {
+    let state = dispatch(createInitialState(1, 'puzzle', 't3r-shaft-02'), { type: 'start' }).state;
+    const row = state.puzzleTargetCells[0]!.y;
+    const clearedTargetCount = state.puzzleTargetCells.filter((cell) => cell.y === row).length;
+    let board = createBoard();
+    for (let x = 0; x < 10; x += 1) board = setCell(board, x, row, 'J');
+    state = {
+      ...state,
+      board,
+      active: null,
+      phase: 'line-clear',
+      phaseTicks: LINE_CLEAR_DELAY_TICKS - 1,
+      pendingClearRows: [row],
+    };
+    state = dispatch(state, { type: 'tick' }).state;
+    expect(state.puzzleTargetCells).toHaveLength(state.puzzleInitialTargetCount - clearedTargetCount);
   });
 
   it('expires a settled volatile input after 300 playing ticks, pauses safely, and settles complete components above it', () => {
@@ -107,6 +128,8 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
       board,
       gravityTicks: -1_000,
       puzzleActiveVolatile: false,
+      puzzleTargetCells: [{ x: 4, y: BOARD_HEIGHT - 7 }],
+      puzzleInitialTargetCount: 1,
       puzzleVolatilePieces: [{ type: 'I', cells: [{ x: 3, y: BOARD_HEIGHT - 5 }, { x: 4, y: BOARD_HEIGHT - 5 }, { x: 5, y: BOARD_HEIGHT - 5 }, { x: 6, y: BOARD_HEIGHT - 5 }], expiryTicks: PUZZLE_VOLATILE_PIECE_TICKS }],
     };
     state = dispatch(state, { type: 'pause' }).state;
@@ -121,6 +144,7 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.puzzleVolatilePieces).toEqual([]);
     expect(state.board[BOARD_HEIGHT - 2]?.[4]).toBe('O');
     expect(state.board[BOARD_HEIGHT - 1]?.[5]).toBe('O');
+    expect(state.puzzleTargetCells).toContainEqual({ x: 4, y: BOARD_HEIGHT - 2 });
     for (const cell of unrelatedCells) expect(state.board[cell.y]?.[cell.x]).toBe('J');
   });
 });

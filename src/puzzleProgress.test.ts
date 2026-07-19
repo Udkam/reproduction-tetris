@@ -26,7 +26,7 @@ function rotationCommands(rotation: Rotation): GameCommand[] {
 }
 
 function completeFirstT5Puzzle(): GameState {
-  const reference = t5Levels[0]!;
+  const reference = t5Levels.find((level) => level.id === 't3r-shaft-02')!;
   let state = createInitialState(0x51a1f00d, 'puzzle', reference.id);
   state = dispatch(state, { type: 'start' }).state;
   for (const placement of reference.routes[0]!.placements) {
@@ -72,7 +72,7 @@ describe('T5 puzzle completion presentation data', () => {
   it('records a real canonical completion once and ignores non-success states', () => {
     const state = completeFirstT5Puzzle();
     const progressed = recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), state);
-    expect(isPuzzleComplete(progressed, 't3r-shaft-01')).toBe(true);
+    expect(isPuzzleComplete(progressed, 't3r-shaft-02')).toBe(true);
     expect(recordCanonicalPuzzleCompletion(progressed, state)).toBe(progressed);
     expect(recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), { ...state, puzzleCompletion: 'failed-top-out' })).toEqual(defaultPuzzleProgress());
   });

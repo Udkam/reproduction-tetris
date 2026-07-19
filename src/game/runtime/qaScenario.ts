@@ -8,6 +8,7 @@ import {
   type PieceType,
   type Rotation,
 } from '../core';
+import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 
 interface Route {
   state: GameState;
@@ -178,7 +179,7 @@ interface PuzzleQaPlacement {
   x: number;
 }
 
-const PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = [
+const LEGACY_PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = [
   { type: 'S', rotation: 1, x: 2 },
   { type: 'L', rotation: 0, x: 4 },
   { type: 'O', rotation: 0, x: 4 },
@@ -216,6 +217,14 @@ const PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = [
   { type: 'L', rotation: 2, x: 0 },
 ];
 
+const QA_PUZZLE_ID = 't3r-shaft-02' as const;
+const PUZZLE_CHALLENGE_QA_ROUTE: readonly PuzzleQaPlacement[] = (
+  referencesFile as unknown as {
+    levels: Array<{ id: string; routes: Array<{ placements: PuzzleQaPlacement[] }> }>;
+  }
+).levels.find((level) => level.id === QA_PUZZLE_ID)!.routes[0]!.placements;
+void LEGACY_PUZZLE_CHALLENGE_QA_ROUTE;
+
 function qaRotationCommands(rotation: Rotation): readonly GameCommand[] {
   if (rotation === 1) return [{ type: 'rotate', direction: 1 }];
   if (rotation === 2) return [{ type: 'rotate', direction: 1 }, { type: 'rotate', direction: 1 }];
@@ -225,7 +234,7 @@ function qaRotationCommands(rotation: Rotation): readonly GameCommand[] {
 
 /** A complete public-command-only normal-play Puzzle route with ordinary delayed resolution. */
 export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState; hash: string } {
-  let state = createInitialState(seed, 'puzzle', 't3r-shaft-01');
+  let state = createInitialState(seed, 'puzzle', QA_PUZZLE_ID);
   const commands: GameCommand[] = [];
   const apply = (command: GameCommand): void => {
     commands.push(command);
@@ -234,6 +243,7 @@ export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly G
 
   apply({ type: 'start' });
   for (const placement of PUZZLE_CHALLENGE_QA_ROUTE) {
+    if (state.status === 'finished') break;
     if (!state.active || state.active.type !== placement.type) {
       throw new Error(`Puzzle challenge QA route expected ${placement.type}, received ${state.active?.type ?? 'none'}.`);
     }
@@ -249,7 +259,7 @@ export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly G
     }
   }
 
-  if (state.status !== 'finished' || state.lines !== 22 || state.pieceCount !== 35 || state.puzzleCompletion !== 'finished') {
+  if (state.status !== 'finished' || state.puzzleTargetCells.length !== 0 || state.puzzleCompletion !== 'finished') {
     throw new Error(`Puzzle challenge replay did not finish: ${state.status}, ${state.lines} lines, ${state.pieceCount} pieces.`);
   }
   return { commands, state, hash: stateHash(state) };

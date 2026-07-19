@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 import { createInitialState, dispatch, stateHash } from './engine';
-import { PUZZLE_DEFINITIONS, getPuzzleDefinition, validatePuzzleDefinition, type PuzzleDefinition } from './puzzles';
+import { PUZZLE_DEFINITIONS, PUZZLE_SOLVER_SLACK, getPuzzleDefinition, validatePuzzleDefinition, type PuzzleDefinition } from './puzzles';
+import { VISIBLE_START_ROW } from './constants';
 import { createRandomizer, drawPiece } from './random';
 import { PIECE_SHAPES } from './pieces';
 import { PIECE_TYPES, type PieceType, type PuzzleId } from './types';
@@ -120,12 +121,14 @@ describe('T5 normal-play Puzzle definitions', () => {
       expect('difficulty' in definition).toBe(false);
       expect('queue' in definition).toBe(false);
       expect('pieceBudget' in definition).toBe(false);
-      if (definition.variant === 'anchored-legacy') {
+      if (definition.anchorCells.length > 0) {
         expect(definition.anchorCells.length).toBeGreaterThanOrEqual(1);
         expect(definition.anchorCells.length).toBeLessThanOrEqual(2);
-        for (const anchor of definition.anchorCells) expect(definition.boardRows[anchor.y]?.[anchor.x]).toBe('.');
-      } else {
-        expect(definition.anchorCells).toEqual([]);
+        for (const anchor of definition.anchorCells) {
+          const visibleY = anchor.y - VISIBLE_START_ROW;
+          expect(definition.boardRows[visibleY]?.[anchor.x]).toBe('.');
+          expect(definition.boardRows[visibleY]).toBe('..........');
+        }
       }
       const metrics = topology(definition);
       expect(definition.setup.placements.length).toBeGreaterThanOrEqual(16);
@@ -148,9 +151,10 @@ describe('T5 normal-play Puzzle definitions', () => {
       for (const color of metrics.colors) campaignColors.add(color);
     }
     expect(campaignColors).toEqual(new Set(PIECE_TYPES));
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.variant === 'anchored-legacy')).toHaveLength(7);
+    expect(PUZZLE_SOLVER_SLACK).toBe(10);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0)).toHaveLength(8);
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length === 2).map(({ id }) => id)).toEqual([
-      't5r-arc-13', 't5r-pulse-14', 't5r-horizon-15',
+      't5r-delta-07', 't5r-arc-13',
     ]);
     for (let left = 0; left < PUZZLE_DEFINITIONS.length; left += 1) {
       for (let right = left + 1; right < PUZZLE_DEFINITIONS.length; right += 1) {
@@ -197,8 +201,8 @@ describe('T5 normal-play Puzzle definitions', () => {
     }))).toThrow(/frozen legal setup/i);
     expect(() => validatePuzzleDefinition(invalid(first, { hiddenCells: [{ x: 0, y: 0, type: 'J' }] }))).toThrow(/hidden buffer/i);
     const anchored = getPuzzleDefinition('t5r-arc-13');
-    expect(() => validatePuzzleDefinition(invalid(anchored, { anchorCells: [] }))).toThrow(/seeded anchors/i);
-    expect(() => validatePuzzleDefinition(invalid(anchored, { anchorCells: [{ x: 0, y: 8 }, { x: 1, y: 8 }] }))).toThrow(/seeded anchors/i);
+    expect(() => validatePuzzleDefinition(invalid(anchored, { anchorCells: [] }))).toThrow(/deterministic anchor/i);
+    expect(() => validatePuzzleDefinition(invalid(anchored, { anchorCells: [{ x: 0, y: 8 }, { x: 1, y: 8 }] }))).toThrow(/deterministic anchor/i);
   });
 });
 describe('T5 Puzzle deterministic initialization', () => {
@@ -213,8 +217,10 @@ describe('T5 Puzzle deterministic initialization', () => {
       expect(ready.queue).toEqual(expected.slice(1));
       expect(ready.puzzleQueue).toEqual(ready.queue);
       expect(ready.puzzleQueueIndex).toBe(0);
-      expect(ready.puzzlePieceBudget).toBeNull();
-      expect(ready.puzzleGoal).toBe(definition.variant === 'anchored-legacy' ? 'removable-board-empty' : 'canonical-board-empty');
+      expect(ready.puzzlePieceBudget).toBe(definition.solverPieceBudget);
+      expect(ready.puzzleGoal).toBe('original-targets-cleared');
+      expect(ready.puzzleInitialTargetCount).toBeGreaterThan(0);
+      expect(ready.puzzleTargetCells).toHaveLength(ready.puzzleInitialTargetCount);
       expect(ready.puzzleCompletion).toBe('active');
       expect(ready.puzzleTargetLines).toBeNull();
 

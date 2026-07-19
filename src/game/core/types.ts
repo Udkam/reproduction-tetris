@@ -56,7 +56,7 @@ export type PuzzleId =
   | 't5r-pulse-14'
   | 't5r-horizon-15';
 
-export type PuzzleGoal = 'canonical-board-empty' | 'removable-board-empty';
+export type PuzzleGoal = 'original-targets-cleared';
 export type PuzzleCompletion =
   | 'active'
   | 'finished'
@@ -78,12 +78,16 @@ export interface GameState {
   puzzleId: PuzzleId | null;
   /**
    * Temporary presentation bridge for the frozen T2 shell. Puzzle core rules
-   * never read this field: T5 success is exclusively canonical-board-empty.
+   * never read this field: T11 success is exclusively original-targets-cleared.
    * @deprecated Remove when the presentation shell consumes puzzleGoal.
    */
   puzzleTargetLines: number | null;
   /** @deprecated Compatibility-only; always null for normal-play Puzzle. */
   puzzlePieceBudget: number | null;
+  /** Original authored cells still awaiting an ordinary line clear. */
+  puzzleTargetCells: readonly Cell[];
+  /** Stable original-target count used for the player-facing progress display. */
+  puzzleInitialTargetCount: number;
   /** Immutable authored visible board source; the mutable canonical board is above. */
   puzzleBoardRows: readonly string[] | null;
   /**

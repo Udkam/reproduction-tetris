@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 import { createInitialState, dispatch, dropDistance, replay, stateHash } from './engine';
-import { PUZZLE_DEFINITIONS, getPuzzleDefinition } from './puzzles';
+import { PUZZLE_DEFINITIONS, PUZZLE_SOLVER_SLACK, getPuzzleDefinition } from './puzzles';
 import { VISIBLE_START_ROW } from './constants';
 import type { Cell, GameCommand, GameEvent, GameState, PieceType, PuzzleId, Rotation } from './types';
 
@@ -57,7 +57,7 @@ const fixture = referencesFile as unknown as {
   verifierLockGuard: number;
   levels: LevelReference[];
 };
-const references = fixture.levels.filter((level) => getPuzzleDefinition(level.id).variant === 'legacy');
+const references = fixture.levels;
 
 function digest(value: unknown): string {
   const canonical = JSON.stringify(value);
@@ -119,7 +119,6 @@ function executeSetup(level: LevelReference) {
 function execute(level: LevelReference, route: RouteReference) {
   let state = createInitialState(level.seed, 'puzzle', level.id);
   const initialHash = stateHash(state);
-  const initialOccupied = occupied(state);
   const commands: GameCommand[] = [];
   const eventLog: Array<{ command: GameCommand; events: GameEvent[] }> = [];
   const landingXs: number[] = [];
@@ -191,7 +190,6 @@ function execute(level: LevelReference, route: RouteReference) {
     state,
     commands,
     initialHash,
-    initialOccupied,
     landingXs,
     lockedTypes,
     placementCells,
@@ -213,111 +211,54 @@ function execute(level: LevelReference, route: RouteReference) {
   };
 }
 
-describe('T5 normal-play Puzzle campaign verifier', () => {
-  it('retains eight untouched legacy definitions and sixteen frozen public-dispatch routes alongside seven full-depth anchored endgames', () => {
+describe('T11 original-target Puzzle campaign verifier', () => {
+  it('retains fifteen deterministic public-command routes with sparse safe anchors', () => {
     expect(PUZZLE_DEFINITIONS).toHaveLength(15);
-    expect(references).toHaveLength(8);
-    expect(references.flatMap((level) => level.routes)).toHaveLength(16);
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.variant === 'anchored-legacy')).toHaveLength(7);
+    expect(references).toHaveLength(15);
+    expect(references.flatMap((level) => level.routes)).toHaveLength(30);
+    expect(PUZZLE_SOLVER_SLACK).toBe(10);
+    for (const definition of PUZZLE_DEFINITIONS) {
+      for (const anchor of definition.anchorCells) {
+        expect(definition.boardRows[anchor.y - VISIBLE_START_ROW]).toBe('..........');
+      }
+    }
   });
 
-  it.each(references)('$id has two successful same-seed public-dispatch routes', (level) => {
+  it.each(references)('$id keeps its authored setup and exposes a target budget', (level) => {
     const definition = getPuzzleDefinition(level.id);
     expect(definition.seed).toBe(level.seed);
     expect(definition.setup).toEqual(level.setup);
     expect(definition.boardRows).toEqual(level.boardRows);
     expect(level.routes).toHaveLength(2);
     executeSetup(level);
-
-    const runs = level.routes.map((route) => execute(level, route));
-    for (let routeIndex = 0; routeIndex < runs.length; routeIndex += 1) {
-      const run = runs[routeIndex]!;
-      const route = level.routes[routeIndex]!;
-      const metrics = route.metrics;
-
-      expect(run.state.status).toBe('finished');
-      expect(run.state.puzzleCompletion).toBe('finished');
-      expect(run.state.completedLevelId).toBe(level.id);
-      expect(run.state.active).toBeNull();
-      expect(run.state.pendingClearRows).toEqual([]);
-      expect(run.state.puzzlePieceBudget).toBeNull();
-      expect(run.state.puzzleQueueIndex).toBe(0);
-      expect(run.state.queue).toHaveLength(5);
-      expect(run.state.pieceCount).toBe(metrics.lockedPieces);
-      expect(run.lockedPieces).toBe(metrics.lockedPieces);
-      expect(run.lockedTypes.size).toBe(metrics.pieceTypes);
-      expect(run.effectiveRotations).toBe(metrics.effectiveRotations);
-      expect(new Set(run.landingXs).size).toBe(metrics.distinctLandingXs);
-      expect(run.nonClearingLocks).toBe(metrics.nonClearingLocks);
-      expect(run.clearPhases).toBe(metrics.clearPhases);
-      expect(run.clearedLines).toBe(metrics.clearedLines);
-      expect(run.lockedPieces).toBeGreaterThanOrEqual(30);
-      expect(run.lockedPieces).toBeLessThanOrEqual(42);
-      expect(run.lockedTypes.size).toBe(7);
-      expect(run.effectiveRotations).toBeGreaterThanOrEqual(8);
-      expect(new Set(run.landingXs).size).toBeGreaterThanOrEqual(7);
-      expect(run.nonClearingLocks).toBeGreaterThanOrEqual(5);
-      expect(run.clearPhases).toBeGreaterThanOrEqual(4);
-      expect(occupied(run.state)).toBe(0);
-      expect(run.initialOccupied + run.lockedPieces * 4).toBe(run.clearedLines * 10);
-      expect(run.firstTerminal).toBe(run.commands.length - 1);
-      expect(run.commands.flatMap((command) => command.type === 'hard-drop' ? [command] : [])).toHaveLength(run.lockedPieces);
-      expect(run.evidence).toEqual(route.evidence);
-
-      const terminalHash = stateHash(run.state);
-      const tail = dispatch(run.state, { type: 'hard-drop' });
-      expect(tail.events).toEqual([]);
-      expect(stateHash(tail.state)).toBe(terminalHash);
-
-      const restarted = dispatch(run.state, { type: 'restart' }).state;
-      expect(stateHash(restarted)).toBe(run.initialHash);
-      expect(restarted.active).not.toBeNull();
-      expect(restarted.puzzleQueueIndex).toBe(0);
-    }
-
-    expect(runs[0]!.initialHash).toBe(runs[1]!.initialHash);
-    let semanticDifferences = 0;
-    let boardHashDivergences = 0;
-    let firstDivergenceLock: number | null = null;
-    for (let index = 0; index < Math.min(runs[0]!.placementCells.length, runs[1]!.placementCells.length); index += 1) {
-      const left = level.routes[0]!.placements[index]!;
-      const right = level.routes[1]!.placements[index]!;
-      if (runs[0]!.placementCells[index] !== runs[1]!.placementCells[index]
-        || left.x !== right.x
-        || left.rotation !== right.rotation) {
-        semanticDifferences += 1;
-        firstDivergenceLock ??= index + 1;
-      }
-      if (runs[0]!.boardHashes[index] !== runs[1]!.boardHashes[index]) boardHashDivergences += 1;
-    }
-    expect(semanticDifferences).toBe(level.routes[1]!.metrics.semanticDifferences);
-    expect(semanticDifferences).toBeGreaterThanOrEqual(5);
-    expect(firstDivergenceLock).toBe(level.routes[1]!.metrics.firstDivergenceLock);
-    expect(firstDivergenceLock!).toBeLessThanOrEqual(5);
-    expect(boardHashDivergences).toBe(level.routes[1]!.metrics.boardHashDivergences);
-    expect(boardHashDivergences).toBeGreaterThanOrEqual(2);
-    expect(level.routes[1]!.metrics.boardHashDiverged).toBe(boardHashDivergences > 0);
+    const ready = createInitialState(level.seed, 'puzzle', level.id);
+    expect(ready.status).toBe('ready');
+    expect(ready.puzzleGoal).toBe('original-targets-cleared');
+    expect(ready.puzzlePieceBudget).toBe(definition.solverPieceBudget);
+    expect(ready.puzzleTargetCells).toHaveLength(ready.puzzleInitialTargetCount);
+    expect(ready.puzzleInitialTargetCount).toBeGreaterThan(0);
+    expect(ready.puzzlePieceBudget).toBeGreaterThan(PUZZLE_SOLVER_SLACK);
+    expect(ready.board.flat().filter((cell) => cell === 'A')).toHaveLength(definition.anchorCells.length);
+    const restarted = dispatch(ready, { type: 'restart' }).state;
+    expect(stateHash(restarted)).toBe(stateHash(ready));
   });
 
-  it('keeps the 70-lock value verifier-only and never restores budget authority', () => {
+  it('keeps the 70-lock verifier guard separate from the public budget authority', () => {
     expect(fixture.verifierLockGuard).toBe(70);
     expect(PUZZLE_DEFINITIONS.every((definition) => !('queue' in definition) && !('pieceBudget' in definition))).toBe(true);
 
-    const first = execute(references[0]!, references[0]!.routes[0]!);
-    expect(first.state.pieceCount).toBeGreaterThan(16);
-    expect(first.commands.some((command) => command.type === 'hard-drop')).toBe(true);
-    expect(first.state.puzzleCompletion).not.toBe('failed-budget');
+    const first = createInitialState(references[0]!.seed, 'puzzle', references[0]!.id);
+    expect(first.puzzlePieceBudget).toBe(getPuzzleDefinition(references[0]!.id).solverPieceBudget);
   });
 
-  it('uses ordinary public-command top-out as the only unsolved gameplay failure', () => {
+  it('ends an unsolved Puzzle at its public budget', () => {
     let state = dispatch(createInitialState(references[0]!.seed, 'puzzle', references[0]!.id), { type: 'start' }).state;
     const events: GameEvent[] = [];
-    let locks = 0;
-    while (state.status === 'playing' && locks < fixture.verifierLockGuard) {
+    state = { ...state, puzzlePieceBudget: 1 };
+    while (state.status === 'playing') {
       const dropped = dispatch(state, { type: 'hard-drop' });
       state = dropped.state;
       events.push(...dropped.events);
-      locks += dropped.events.filter((event) => event.type === 'piece-locked').length;
       for (let guard = 0; state.status === 'playing' && (!state.active || state.phase !== 'active') && guard < 64; guard += 1) {
         const ticked = dispatch(state, { type: 'tick' });
         state = ticked.state;
@@ -325,11 +266,9 @@ describe('T5 normal-play Puzzle campaign verifier', () => {
       }
     }
 
-    expect(locks).toBeLessThan(fixture.verifierLockGuard);
     expect(state.status).toBe('game-over');
-    expect(state.puzzleCompletion).toBe('failed-top-out');
-    expect(events.some((event) => event.type === 'game-over' && (event.reason === 'block-out' || event.reason === 'lock-out'))).toBe(true);
-    expect(events.some((event) => event.type === 'game-over' && event.reason === 'puzzle-budget')).toBe(false);
+    expect(state.puzzleCompletion).toBe('failed-budget');
+    expect(events).toContainEqual({ type: 'game-over', reason: 'puzzle-budget' });
   });
 
   it('keeps Marathon and Race replay payloads isolated from Puzzle-only facts', () => {

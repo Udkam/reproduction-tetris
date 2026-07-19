@@ -15,7 +15,7 @@ import {
 } from './constants';
 import { canPlace, clearRows, createBoard, fullRows, isGrounded, lowerBedrock, mergePiece, raiseBedrock } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
-import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId } from './puzzles';
+import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
 import { ANCHOR_CELL, BEDROCK_CELL, PIECE_TYPES, type ActivePiece, type Board, type Cell, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId, type VolatilePiece } from './types';
@@ -55,10 +55,6 @@ function puzzleFailure(
   };
 }
 
-function canonicalOccupiedCount(state: GameState): number {
-  return state.board.flat().filter((cell): cell is PieceType => cell !== null && PIECE_TYPES.includes(cell as PieceType)).length;
-}
-
 function volatileSpawnFor(seed: number, spawnIndex: number): boolean {
   let value = (seed ^ Math.imul(spawnIndex + 1, 0x9e3779b9)) >>> 0;
   value ^= value << 13;
@@ -88,7 +84,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
       puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
       puzzleQueueIndex: 0,
       puzzleSpawnCount: next.mode === 'puzzle' ? next.puzzleSpawnCount + 1 : next.puzzleSpawnCount,
-      puzzleActiveVolatile: next.mode === 'puzzle' && next.puzzleId !== null && getPuzzleDefinition(next.puzzleId).variant === 'anchored-legacy'
+      puzzleActiveVolatile: next.mode === 'puzzle' && next.puzzleId !== null && getPuzzleDefinition(next.puzzleId).volatileInputs
         ? volatileSpawnFor(next.seed, next.puzzleSpawnCount)
         : false,
       phase: 'active',
@@ -106,6 +102,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
   const selectedPuzzle = mode === 'puzzle' ? getPuzzleDefinition(puzzleId ?? defaultPuzzleId()) : null;
   const effectiveSeed = selectedPuzzle?.seed ?? seed;
   const initialBoard = selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard();
+  const puzzleTargetCells = selectedPuzzle ? originalTargetCells(selectedPuzzle) : Object.freeze([]);
   const openingBedrock = mode === 'race' ? raiseBedrock(initialBoard, INITIAL_SURVIVAL_BEDROCK_ROWS) : null;
   const base: GameState = {
     board: openingBedrock?.board ?? initialBoard,
@@ -118,14 +115,16 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     mode,
     puzzleId: selectedPuzzle?.id ?? null,
     puzzleTargetLines: null,
-    puzzlePieceBudget: null,
+    puzzlePieceBudget: selectedPuzzle?.solverPieceBudget ?? null,
+    puzzleTargetCells,
+    puzzleInitialTargetCount: puzzleTargetCells.length,
     puzzleBoardRows: selectedPuzzle?.boardRows ?? null,
     puzzleQueue: null,
     puzzleQueueIndex: 0,
     puzzleSpawnCount: 0,
     puzzleActiveVolatile: false,
     puzzleVolatilePieces: [],
-    puzzleGoal: selectedPuzzle ? (selectedPuzzle.variant === 'anchored-legacy' ? 'removable-board-empty' : 'canonical-board-empty') : null,
+    puzzleGoal: selectedPuzzle ? 'original-targets-cleared' : null,
     puzzleCompletion: selectedPuzzle ? 'active' : null,
     completedLevelId: null,
     nextUnlockedLevelId: null,
@@ -180,8 +179,11 @@ function finishPuzzleSuccess(state: GameState): GameTransition {
 
 /** Puzzle-only post-lock resolution after shared merge and ordinary line clearing. */
 function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): GameTransition {
-  if (state.puzzleGoal !== 'canonical-board-empty' && state.puzzleGoal !== 'removable-board-empty') return invalidState(state);
-  if (canonicalOccupiedCount(state) === 0) return finishPuzzleSuccess(state);
+  if (state.puzzleGoal !== 'original-targets-cleared') return invalidState(state);
+  if (state.puzzleTargetCells.length === 0) return finishPuzzleSuccess(state);
+  if (state.puzzlePieceBudget !== null && state.pieceCount >= state.puzzlePieceBudget) {
+    return puzzleFailure(state, 'failed-budget', 'puzzle-budget');
+  }
   if (spawnImmediately) return spawnPiece(state);
   return {
     state: {
@@ -216,16 +218,20 @@ function keyFor(cell: Cell): string {
   return `${cell.x},${cell.y}`;
 }
 
-function mapVolatileAfterClear(pieces: readonly VolatilePiece[], board: Board, rows: readonly number[]): readonly VolatilePiece[] {
+function mapCellsAfterClear(cells: readonly Cell[], board: Board, rows: readonly number[]): readonly Cell[] {
   const cleared = new Set(rows);
   const removed = [...cleared].filter((index) => !board[index]?.includes(BEDROCK_CELL) && !board[index]?.includes(ANCHOR_CELL));
+  return Object.freeze(cells.flatMap((cell) => {
+    if (cleared.has(cell.y)) return [];
+    const shiftedY = cell.y + removed.length - removed.filter((index) => index < cell.y).length;
+    return [Object.freeze({ ...cell, y: shiftedY })];
+  }));
+}
+
+function mapVolatileAfterClear(pieces: readonly VolatilePiece[], board: Board, rows: readonly number[]): readonly VolatilePiece[] {
   return pieces.flatMap((piece) => {
-    const cells = piece.cells.flatMap((cell) => {
-      if (cleared.has(cell.y)) return [];
-      const shiftedY = cell.y + removed.length - removed.filter((index) => index < cell.y).length;
-      return [{ ...cell, y: shiftedY }];
-    });
-    return cells.length > 0 ? [{ ...piece, cells: Object.freeze(cells) }] : [];
+    const cells = mapCellsAfterClear(piece.cells, board, rows);
+    return cells.length > 0 ? [{ ...piece, cells }] : [];
   });
 }
 
@@ -264,9 +270,11 @@ function settleAfterVolatileExpiry(
   board: Board,
   pieces: readonly VolatilePiece[],
   openedCells: readonly Cell[],
-): { board: Board; pieces: readonly VolatilePiece[] } {
+  targetCells: readonly Cell[],
+): { board: Board; pieces: readonly VolatilePiece[]; targetCells: readonly Cell[] } {
   const next = board.map((row) => [...row]) as Board;
   let tracked = pieces.map((piece) => ({ ...piece, cells: piece.cells.map((cell) => ({ ...cell })) }));
+  let targets = targetCells.map((cell) => ({ ...cell }));
   const openBelow = new Set(openedCells.map(keyFor));
   for (let guard = 0; guard < BOARD_HEIGHT; guard += 1) {
     let moved = false;
@@ -294,6 +302,7 @@ function settleAfterVolatileExpiry(
           ...piece,
           cells: piece.cells.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell),
         }));
+        targets = targets.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell);
         fallingCells = fallingCells.map((cell) => ({ ...cell, y: cell.y + 1 }));
         fell = true;
       }
@@ -301,7 +310,11 @@ function settleAfterVolatileExpiry(
     }
     if (!moved) break;
   }
-  return { board: next, pieces: Object.freeze(tracked.map((piece) => ({ ...piece, cells: Object.freeze(piece.cells) }))) };
+  return {
+    board: next,
+    pieces: Object.freeze(tracked.map((piece) => ({ ...piece, cells: Object.freeze(piece.cells) }))),
+    targetCells: Object.freeze(targets.map((cell) => Object.freeze(cell))),
+  };
 }
 
 function advanceVolatilePieces(state: GameState): GameTransition {
@@ -317,9 +330,9 @@ function advanceVolatilePieces(state: GameState): GameTransition {
       if (board[cell.y]?.[cell.x] === piece.type) board[cell.y]![cell.x] = null;
     }
   }
-  const settled = settleAfterVolatileExpiry(board, surviving, expiring.flatMap((piece) => piece.cells));
+  const settled = settleAfterVolatileExpiry(board, surviving, expiring.flatMap((piece) => piece.cells), state.puzzleTargetCells);
   return {
-    state: { ...state, board: settled.board, puzzleVolatilePieces: settled.pieces },
+    state: { ...state, board: settled.board, puzzleVolatilePieces: settled.pieces, puzzleTargetCells: settled.targetCells },
     events: expiring.map((piece) => ({ type: 'piece-expired', piece: piece.type })),
   };
 }
@@ -526,6 +539,7 @@ function finishLineClear(state: GameState): GameTransition {
     ...state,
     board: clearRows(state.board, rows),
     puzzleVolatilePieces: state.mode === 'puzzle' ? mapVolatileAfterClear(state.puzzleVolatilePieces, state.board, rows) : state.puzzleVolatilePieces,
+    puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.puzzleTargetCells, state.board, rows) : state.puzzleTargetCells,
     score: state.score + clearScore,
     lines,
     combo,
@@ -676,20 +690,14 @@ export function stateHash(state: GameState): string {
         survivalRisePending: _survivalRisePending,
         ...puzzleState
       } = state;
-      if (state.puzzleGoal === 'canonical-board-empty') {
-        const {
-          puzzleSpawnCount: _puzzleSpawnCount,
-          puzzleActiveVolatile: _puzzleActiveVolatile,
-          puzzleVolatilePieces: _puzzleVolatilePieces,
-          ...legacyPuzzleState
-        } = puzzleState;
-        return legacyPuzzleState;
-      }
       return puzzleState;
     })()
     : (() => {
       const {
         puzzleBoardRows: _puzzleBoardRows,
+        puzzlePieceBudget: _puzzlePieceBudget,
+        puzzleTargetCells: _puzzleTargetCells,
+        puzzleInitialTargetCount: _puzzleInitialTargetCount,
         puzzleQueue: _puzzleQueue,
         puzzleQueueIndex: _puzzleQueueIndex,
         puzzleSpawnCount: _puzzleSpawnCount,

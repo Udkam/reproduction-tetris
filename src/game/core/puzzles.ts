@@ -22,9 +22,11 @@ export interface PuzzleDefinition {
   boardRows: readonly string[];
   /** Always empty for authored T5 levels; makes hidden-buffer validation explicit. */
   hiddenCells: readonly PuzzleCell[];
-  /** Legacy endgames retain their stacks; selected entries add anchors only. */
-  variant: 'legacy' | 'anchored-legacy';
-  /** Deterministically scattered, permanent visible single cells. */
+  /** Shortest currently verified public-command solver route, in locked pieces. */
+  solverPieceBudget: number;
+  /** Whether this level's ongoing inputs may use the five-second volatile rule. */
+  volatileInputs: boolean;
+  /** Sparse unbreakable cells, seeded only into completely empty starting rows. */
   anchorCells: readonly Cell[];
 }
 
@@ -47,6 +49,10 @@ type LegacyPuzzleDefinitionView = PuzzleDefinition & { readonly difficulty: numb
 
 const EMPTY_ROW = '.'.repeat(BOARD_WIDTH);
 const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
+const EMPTY_ANCHOR_CELLS: readonly Cell[] = Object.freeze([]);
+
+/** Deliberate recovery room above the verified public-command solver route. */
+export const PUZZLE_SOLVER_SLACK = 10;
 
 function occupancyRow(row: string): string {
   return [...row].map((cell) => cell === '.' ? '.' : '#').join('');
@@ -103,38 +109,9 @@ function definition(
     setup: authoredSetup,
     boardRows: setupBoardRows(authoredSetup),
     hiddenCells: EMPTY_HIDDEN_CELLS,
-    variant: 'legacy',
-    anchorCells: EMPTY_HIDDEN_CELLS,
-  });
-}
-
-function nextAnchorSeed(seed: number): number {
-  let value = seed >>> 0;
-  value ^= value << 13;
-  value ^= value >>> 17;
-  value ^= value << 5;
-  return value >>> 0;
-}
-
-function seededAnchors(seed: number, rows: readonly string[], count = 2): readonly Cell[] {
-  const anchors: Cell[] = [];
-  let value = seed >>> 0 || 0x6d2b79f5;
-  while (anchors.length < count) {
-    value = nextAnchorSeed(value);
-    // Keep anchors in the previewable upper portion of the authored endgame.
-    const candidate = { x: value % BOARD_WIDTH, y: 8 + ((value >>> 8) % 2) };
-    if (rows[candidate.y]?.[candidate.x] === '.' && !anchors.some((anchor) => anchor.x === candidate.x && anchor.y === candidate.y)) {
-      anchors.push(candidate);
-    }
-  }
-  return Object.freeze(anchors.map((anchor) => Object.freeze(anchor)));
-}
-
-function anchoredLegacyDefinition(candidate: PuzzleDefinition, anchorSeed: number, anchorCount: number): PuzzleDefinition {
-  return Object.freeze({
-    ...candidate,
-    variant: 'anchored-legacy',
-    anchorCells: seededAnchors(anchorSeed, candidate.boardRows, anchorCount),
+    solverPieceBudget: 0,
+    volatileInputs: false,
+    anchorCells: EMPTY_ANCHOR_CELLS,
   });
 }
 
@@ -157,20 +134,81 @@ const LEGACY_PUZZLE_LIBRARY: readonly PuzzleDefinition[] = [
   definition('t5r-horizon-15', '远蓝合流', 0x8ea45d17, setup(0xa1b2c3e3, [{ type: 'Z', rotation: 3, x: 8 }, { type: 'L', rotation: 0, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'S', rotation: 0, x: 7 }, { type: 'J', rotation: 0, x: 2 }, { type: 'I', rotation: 1, x: 4 }, { type: 'T', rotation: 3, x: 3 }, { type: 'L', rotation: 3, x: 4 }, { type: 'S', rotation: 1, x: 5 }, { type: 'J', rotation: 3, x: 0 }, { type: 'O', rotation: 3, x: 2 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'T', rotation: 3, x: 4 }, { type: 'I', rotation: 0, x: 0 }, { type: 'J', rotation: 2, x: 5 }, { type: 'I', rotation: 1, x: 7 }, { type: 'O', rotation: 2, x: 1 }, { type: 'L', rotation: 3, x: 7 }, { type: 'Z', rotation: 3, x: 3 }, { type: 'T', rotation: 1, x: -1 }])),
 ] as const;
 
-const ANCHOR_OVERLAYS: Readonly<Partial<Record<PuzzleId, { seed: number; count: number }>>> = Object.freeze({
-  't3r-shaft-03': { seed: 0x3509a31c, count: 1 },
-  't3r-cascade-06': { seed: 0x6c22e809, count: 1 },
-  't5r-lattice-09': { seed: 0x915f40d2, count: 1 },
-  't5r-current-12': { seed: 0xbe7aa416, count: 1 },
-  't5r-arc-13': { seed: 0x5c29f6a1, count: 2 },
-  't5r-pulse-14': { seed: 0xf2a7634b, count: 2 },
-  't5r-horizon-15': { seed: 0x8ea45d17, count: 2 },
+/**
+ * Generated from the shortest accepted public-command route in the bounded Puzzle
+ * solver fixture. These are reproducible solver results, not a global-optimum claim.
+ */
+const SOLVER_PIECE_BUDGETS: Readonly<Record<PuzzleId, number>> = Object.freeze({
+  't3r-shaft-01': 35,
+  't3r-shaft-02': 35,
+  't3r-shaft-03': 36,
+  't3r-shaft-04': 35,
+  't3r-cascade-05': 35,
+  't3r-cascade-06': 39,
+  't5r-delta-07': 30,
+  't5r-drift-08': 38,
+  't5r-lattice-09': 35,
+  't5r-rift-10': 34,
+  't5r-prism-11': 39,
+  't5r-current-12': 36,
+  't5r-arc-13': 39,
+  't5r-pulse-14': 33,
+  't5r-horizon-15': 35,
 });
 
-/** Selected entries retain their original endgames and gain only a sparse anchor overlay. */
+function nextAnchorSeed(seed: number): number {
+  let value = seed >>> 0;
+  value ^= value << 13;
+  value ^= value >>> 17;
+  value ^= value << 5;
+  return value >>> 0;
+}
+
+function seededAnchors(seed: number, rows: readonly string[], count: number): readonly Cell[] {
+  // Keep the spawn envelope clear: anchors remain visible but never overlap a
+  // freshly spawned tetromino before the player has any control.
+  const emptyRows = rows.flatMap((row, y) => row === EMPTY_ROW && y >= 3 ? [y] : []);
+  if (emptyRows.length === 0) throw new Error('Puzzle anchors require an initially empty visible row.');
+  const anchors: Cell[] = [];
+  const used = new Set<string>();
+  let value = seed >>> 0;
+  while (anchors.length < count) {
+    value = nextAnchorSeed(value);
+    const x = value % BOARD_WIDTH;
+    const y = emptyRows[(value >>> 12) % emptyRows.length]!;
+    const key = `${x},${y}`;
+    if (used.has(key)) continue;
+    used.add(key);
+    anchors.push(Object.freeze({ x, y: VISIBLE_START_ROW + y }));
+  }
+  return Object.freeze(anchors);
+}
+
+const ANCHOR_OVERLAYS: Readonly<Partial<Record<PuzzleId, { seed: number; count: number }>>> = Object.freeze({
+  't3r-shaft-01': { seed: 0x1108a1d1, count: 1 },
+  't3r-shaft-03': { seed: 0x3308a1d3, count: 1 },
+  't3r-cascade-05': { seed: 0x5508a1d5, count: 1 },
+  't5r-delta-07': { seed: 0x7708a1d7, count: 2 },
+  't5r-lattice-09': { seed: 0x9908a1d9, count: 1 },
+  't5r-prism-11': { seed: 0xbb08a1db, count: 1 },
+  't5r-arc-13': { seed: 0xdd08a1dd, count: 2 },
+  't5r-horizon-15': { seed: 0xff08a1df, count: 1 },
+});
+
+const VOLATILE_LEVEL_IDS = new Set<PuzzleId>([
+  't3r-shaft-03', 't3r-cascade-06', 't5r-lattice-09', 't5r-current-12',
+  't5r-arc-13', 't5r-pulse-14', 't5r-horizon-15',
+]);
+
+/** Every authored board begins target-marked; selected levels retain anchors and volatile inputs. */
 const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze(LEGACY_PUZZLE_LIBRARY.map((candidate) => {
   const overlay = ANCHOR_OVERLAYS[candidate.id];
-  return overlay ? anchoredLegacyDefinition(candidate, overlay.seed, overlay.count) : candidate;
+  return Object.freeze({
+    ...candidate,
+    solverPieceBudget: SOLVER_PIECE_BUDGETS[candidate.id] + PUZZLE_SOLVER_SLACK,
+    volatileInputs: VOLATILE_LEVEL_IDS.has(candidate.id),
+    anchorCells: overlay ? seededAnchors(overlay.seed, candidate.boardRows, overlay.count) : EMPTY_ANCHOR_CELLS,
+  });
 }));
 
 // See LegacyPuzzleDefinitionView above. No runtime object contains a numeric difficulty.
@@ -220,17 +258,16 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   }
   if (definition.seed !== canonical.seed) throw new Error(`Puzzle ${definition.id} must retain its stable level seed.`);
   if (PUZZLE_SEED_SET.size !== PUZZLE_LIBRARY.length) throw new Error('Puzzle level seeds must be unique.');
-  if (definition.variant !== canonical.variant || (definition.variant !== 'legacy' && definition.variant !== 'anchored-legacy')) {
-    throw new Error(`Puzzle ${definition.id} has an invalid anchor variant.`);
+  if (!Number.isSafeInteger(definition.solverPieceBudget) || definition.solverPieceBudget <= 0
+    || definition.solverPieceBudget !== canonical.solverPieceBudget) {
+    throw new Error(`Puzzle ${definition.id} must retain its verified solver budget.`);
   }
-  const expectedAnchors = canonical.anchorCells.length;
-  if (definition.anchorCells.length !== expectedAnchors || JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {
-    throw new Error(`Puzzle ${definition.id} must retain its seeded anchors.`);
+  if (definition.volatileInputs !== canonical.volatileInputs) {
+    throw new Error(`Puzzle ${definition.id} must retain its volatile-input contract.`);
   }
-  for (const anchor of definition.anchorCells) {
-    if (anchor.x < 0 || anchor.x >= BOARD_WIDTH || anchor.y < 0 || anchor.y >= VISIBLE_HEIGHT || definition.boardRows[anchor.y]?.[anchor.x] !== '.') {
-      throw new Error(`Puzzle ${definition.id} has an invalid anchor position.`);
-    }
+  if (!Array.isArray(definition.anchorCells)
+    || JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {
+    throw new Error(`Puzzle ${definition.id} must retain its deterministic anchor overlay.`);
   }
   if (!definition.setup || !Number.isSafeInteger(definition.setup.seed) || definition.setup.seed <= 0
     || definition.setup.seed > 0xffff_ffff || !Array.isArray(definition.setup.placements)) {
@@ -312,6 +349,20 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   if (coveredEmptyColumns.size < 5 || buriedHoles < 8) {
     throw new Error(`Puzzle ${definition.id} requires at least five covered-cavity columns and eight buried holes.`);
   }
+  const anchorKeys = new Set<string>();
+  for (const anchor of definition.anchorCells) {
+    if (!Number.isInteger(anchor.x) || !Number.isInteger(anchor.y) || anchor.x < 0 || anchor.x >= BOARD_WIDTH
+      || anchor.y < VISIBLE_START_ROW || anchor.y >= VISIBLE_START_ROW + VISIBLE_HEIGHT) {
+      throw new Error(`Puzzle ${definition.id} contains an out-of-bounds anchor.`);
+    }
+    const visibleY = anchor.y - VISIBLE_START_ROW;
+    if (definition.boardRows[visibleY] !== EMPTY_ROW) {
+      throw new Error(`Puzzle ${definition.id} anchors must use an initially empty visible row.`);
+    }
+    const key = `${anchor.x},${anchor.y}`;
+    if (anchorKeys.has(key)) throw new Error(`Puzzle ${definition.id} contains duplicate anchors.`);
+    anchorKeys.add(key);
+  }
 
   validateSeedBags(definition);
 }
@@ -333,8 +384,16 @@ export function createPuzzleBoard(definition: PuzzleDefinition): Board {
       if (type !== '.') board[VISIBLE_START_ROW + y]![x] = type as PieceType;
     }
   }
-  for (const anchor of definition.anchorCells) board[VISIBLE_START_ROW + anchor.y]![anchor.x] = ANCHOR_CELL;
+  for (const anchor of definition.anchorCells) board[anchor.y]![anchor.x] = ANCHOR_CELL;
   return board;
+}
+
+/** Canonical coordinates for all authored ordinary cells that must be cleared. */
+export function originalTargetCells(definition: PuzzleDefinition): readonly Cell[] {
+  validatePuzzleDefinition(definition);
+  return Object.freeze(definition.boardRows.flatMap((row, y) => [...row].flatMap((cell, x) => (
+    cell === '.' ? [] : [Object.freeze({ x, y: VISIBLE_START_ROW + y })]
+  ))));
 }
 
 export function defaultPuzzleId(): PuzzleId {
