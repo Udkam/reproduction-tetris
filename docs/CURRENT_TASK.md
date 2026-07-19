@@ -3,7 +3,7 @@
 Branch: `main`
 
 Current base: recovery publication `4813e55`; source checkpoints: `1ffe8fd`,
-`4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`
+`4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`
 
 Current execution status (2026-07-19): **CANDIDATE READY — pending independent Core and visual/browser QA.**
 
@@ -32,9 +32,12 @@ Core and visual/browser QA or mark T10 accepted.
 
 The correction also adds explicit header controls beside Pause: mute plus a
 0–100% master-volume slider (default 100%), then a standalone `重新开始` button.
-`R` must invoke the same deterministic restart during play, pause, or terminal
-states. A compressor safety stage and louder distinct feedback must make game
-events audible without placing browser audio APIs in `src/game/core`.
+Clicking the header restart button must first open a confirmation sheet, whose
+primary confirmation is available through Enter. The Pause sheet contains only
+continue and exit actions. `R` remains the immediate deterministic restart during
+play, pause, or terminal states. A compressor safety stage and louder distinct
+feedback must make game events audible without placing browser audio APIs in
+`src/game/core`.
 
 The shared Pixi canvas owns the dark Next well and canonical tetromino while the
 DOM `next-slot` remains only a transparent geometry anchor. This prevents the

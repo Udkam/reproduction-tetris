@@ -46,9 +46,12 @@ cell is removable and that every incoming piece remains active until it locks.
   volatile expiry, Survival pressure, and terminal outcomes; all audio stays
   outside core simulation and must be released on unmount.
 - The game header keeps three direct controls together: audio, `重新开始`, and
-  Pause. `R` is the keyboard mapping for an immediate deterministic restart in
-  every playable/paused/terminal state; it clears held input and returns to the
-  same selected mode or Puzzle level without changing the seed contract.
+  Pause. Clicking `重新开始` pauses a live run and opens a confirmation sheet;
+  Enter confirms its primary action and Escape/cancel restores the prior paused or
+  playing state. The Pause sheet itself offers only continue and exit. `R` remains
+  the keyboard mapping for an immediate deterministic restart in every
+  playable/paused/terminal state; it clears held input and returns to the same
+  selected mode or Puzzle level without changing the seed contract.
 
 ## T9 five-layer Survival opening and Puzzle archive surface
 

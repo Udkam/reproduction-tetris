@@ -500,3 +500,18 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   844 × 390. Captures are local ignored artifacts only.
 - This is still a recovery candidate pending independent Core and visual/browser QA;
   no changelog acceptance entry is made.
+
+## 2026-07-19 — T10 restart confirmation correction
+
+- The Pause sheet now intentionally contains only `继续游戏` and `离开本局`.
+- Clicking the header `重新开始` pauses a live run and opens a confirmation sheet;
+  its primary action receives focus and Enter confirms. Escape/cancel restores a run
+  that had been playing and leaves an already-paused run paused. `R` remains the
+  immediate deterministic keyboard restart.
+- Source checkpoint: `a05f8ab fix(ui): confirm header restart separately`.
+- Verification: focused App test PASS (11 tests); final typecheck PASS; full suite
+  39 passed / 1 skipped, 276 passed / 2 skipped; 741-module build PASS; action-client
+  capture inspected. Browser verification proves the pause sheet has no restart
+  action, the confirmation sheet is visible and Enter resets the live run to zero
+  placed pieces, Escape returns a live run to `playing`, and the console has zero
+  errors. This remains a recovery checkpoint pending independent QA.

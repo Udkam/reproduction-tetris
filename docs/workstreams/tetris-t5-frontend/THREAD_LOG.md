@@ -1719,3 +1719,23 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Blocker: independent Core and visual/browser QA remains required; this is a
   recovery checkpoint, not acceptance. Next: coordinator commits the documentation
   record and may push it under the user's existing recovery-publication authority.
+
+## 2026-07-19 — T10 restart-confirmation correction
+
+- Task: `TETRIS-T10-AUDIO-RESTART-PREVIEW-024` correction; base `6b9a322` on
+  `main`; source `a05f8ab fix(ui): confirm header restart separately`.
+- Exact product paths: `src/App.tsx`, `src/App.test.ts`, and
+  `src/ui/ActionSheet.tsx`.
+- The Pause sheet now exposes only continue and exit. Header restart pauses a live
+  run before opening `重新开始？`; Enter invokes the focused primary confirmation,
+  while Escape/cancel restores a previously playing state. The existing `R` shortcut
+  remains immediate and deterministic.
+- Commands: focused `npm.cmd run test -- --run src/App.test.ts` PASS (11 tests);
+  final `npm.cmd run typecheck` PASS; final `npm.cmd run test` PASS (39 passed /
+  1 skipped; 276 passed / 2 skipped); final `npm.cmd run build` PASS (741 modules);
+  prescribed action client PASS. Browser review at 1440 × 900 visually verifies the
+  two-action Pause sheet, focused confirmation surface, Enter confirmation, Escape
+  restore, one canvas, and zero console errors.
+- Blocker: independent Core and visual/browser QA remains required; recovery push is
+  authorized but is not an acceptance claim. Next: coordinator records the docs-only
+  checkpoint and may publish it.
