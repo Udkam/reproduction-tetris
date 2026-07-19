@@ -4,11 +4,13 @@ Branch: `main`
 
 Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd`,
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
-`526f394`
+`526f394`; current T12 source checkpoint: `95c7da7`.
 
-Current execution status (2026-07-19): **IN PROGRESS — T12 contract checkpoint;
-no T12 source candidate yet.** T11 remains a recoverable, locally verified baseline
-at `a76eea2`, pending its separate independent QA disposition.
+Current execution status (2026-07-19): **IN PROGRESS — T12.1 archive and visible-board
+correction.** Source `95c7da7` remains a locally verified T12 baseline, but its pending
+independent QA disposition cannot carry across the new presentation correction. T11
+remains a recoverable baseline at `a76eea2`, pending its separate independent QA
+disposition.
 
 T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
 level a monotonic visible difficulty index. The index is an authored topology/anchor
@@ -37,6 +39,39 @@ electrical landing sound or allowing an unclipped overlapping mix.
 Survival's opening bedrock height changes from ten rows to exactly seven. Its existing
 15→8-second pressure, three-line removal, fixed 40-tick gravity, restart behavior,
 and ranking order remain unchanged.
+
+### T12.1 archive worktable and active-piece boundary correction
+
+T12.1 changes neither simulation nor campaign content. The 20-level archive remains
+fixed-seed, text-first, and selected-preview-only, but its flat three-column card wall
+is rebuilt as a calmer archive worktable: a continuous opened-count rail, clearly
+separated catalog records, solid readable sealed states, and a single selected detail
+instrument. It must not restore per-level thumbnails, upper-corner dots, or any
+decorative progress-dot system.
+
+The user-visible Survival screenshot also exposes a renderer-only defect: a normal
+interpolated active piece can be drawn above the top board frame when the core piece
+uses its hidden spawn buffer. T12.1 must preserve the hidden buffer and every core
+deterministic/replay coordinate. It instead clamps the active group's rendered vertical
+presentation at the first visible board row and removes a rotation-scale overhang while
+that clamp is engaged. Ghost, lock, board, and Next rendering must retain their existing
+contracts.
+
+T12.1 allowed product/test paths are `src/App.tsx`, `src/App.test.ts`,
+`src/styles.css`, `src/game/render/TetrisRenderer.ts`, and the direct renderer or
+presentation test that proves the clamped active-group offset. It may update only this
+task/design contract before source and the progress/workstream records after verified
+source. It must not edit Core, Puzzle definitions, replay fixtures, sequence generation,
+audio, storage, dependencies, or the formal changelog.
+
+Required T12.1 candidate evidence: a direct renderer/presentation test exercises a
+stale negative interpolation offset at the visible top row and proves no active group
+can cross the well; targeted App coverage preserves 20 rows, exactly one selected
+preview, three initially enabled entries, inert sealed entries, and accessible state
+labels. Browser evidence at desktop and narrow mobile must visibly inspect the revised
+archive, an initial Survival board, the outer board geometry, the active input, and zero
+console errors. Then typecheck, full suite, build, and fresh independent visual/browser
+and renderer QA are required before changelog integration or publication.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
@@ -95,6 +130,14 @@ Exact product/test paths: `index.html`; `src/App.tsx`; `src/App.test.ts`;
 `src/game/core/puzzles.test.ts`; `src/game/core/types.ts`;
 `src/game/render/TetrisRenderer.ts`; `src/game/render/theme.ts`; and
 `src/game/render/theme.test.ts`.
+
+T12 local verification is complete for the candidate: targeted matrix 14 files / 109
+tests; `npm.cmd run typecheck`; full `npm.cmd run test` (41 files / 292 tests, with 1
+file / 2 tests skipped); and `npm.cmd run build` (741 modules) all pass. The final
+browser pass has no console errors and visibly proves Tetra home branding, a 20-row
+archive with only 01–03 enabled, Puzzle target/budget/anchor state, and a seven-row
+Survival opening. This is evidence for independent QA, not acceptance or changelog
+authority.
 
 Local candidate evidence now covers the target budget/state transitions, fixed ten-row
 Survival opening and cadence, fresh ordinary-run seeds, fixed Puzzle selection, audio

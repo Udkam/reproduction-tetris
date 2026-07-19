@@ -1,5 +1,31 @@
 # Tetra — T12 Progressive Puzzle Curriculum and Anchor Stability Contract
 
+## T12.1 archive worktable and visible-board presentation clamp
+
+The 2026-07-19 follow-up keeps T12's campaign, fixed-seed Puzzle routes, and seven-row
+Survival rules intact. It corrects two presentation defects only: the archive must read
+as a deliberate campaign instrument rather than a flat card wall, and a buffered-spawn
+piece must never become visible beyond the playable well.
+
+- The Puzzle selector is an **archive worktable**. A compact campaign rail communicates
+  the opened count as one continuous bar and an explicit `opened / total` value; it has
+  no decorative dots. The catalog uses numbered text records with a clear state label
+  (open, complete, or sealed), a narrow selected-state edge, and a restrained mineral
+  surface. There are no per-level miniatures. The single selected canonical-board
+  preview remains in the detail instrument, where its ordinal, difficulty, title, and
+  start action form one stable reading order.
+- A sealed entry remains readable but inert: it may not take selection, start a run, or
+  masquerade as an error state. Its subdued color, solid surface, and state label must
+  remain distinguishable without relying on hue alone. Keyboard focus, the existing
+  button semantics, responsive reflow, and reduced-motion support remain mandatory.
+- The visible twenty-row well is a hard renderer presentation boundary. Core may retain
+  its normal hidden spawn buffer and deterministic replay coordinates, but a visible
+  active cell, outline, or rotation pulse may not render above the board's top edge.
+  When interpolation would move the active group above its first visible row, the
+  renderer clamps that presentation offset at the visible boundary and suppresses the
+  scale pulse for that frame. This is renderer-only: no spawn coordinate, collision,
+  queue, timing, seed, or puzzle setup may change.
+
 ## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
 
 The user's 2026-07-19 direction supersedes T11's volatile Puzzle input mechanism and
