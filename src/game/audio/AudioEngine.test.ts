@@ -85,12 +85,40 @@ describe('AudioEngine hard drop', () => {
     const audio = new AudioEngine();
     await audio.prime();
 
-    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }, { type: 'piece-locked', piece: 'T', cells: [] }]);
 
     expect(oscillators).toHaveLength(2);
     expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['sine', 'sine']);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([132, 78]);
-    expect(oscillators.map((oscillator) => oscillator.frequency.ramps[0])).toEqual([82, 52]);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([64, 108]);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    audio.destroy();
+  });
+
+  it('routes every event through bounded sine voices', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.play([
+      { type: 'piece-moved', piece: 'T', dx: 1, dy: 0, cause: 'move' },
+      { type: 'piece-moved', piece: 'T', dx: 0, dy: 1, cause: 'soft-drop' },
+      { type: 'piece-rotated', piece: 'T', direction: 1 },
+      { type: 'piece-locked', piece: 'T', cells: [] },
+      { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
+      { type: 'piece-expired', piece: 'T' },
+      { type: 'bedrock-raised', count: 1, height: 11 },
+      { type: 'bedrock-lowered', count: 1, height: 10 },
+      { type: 'level-up', level: 1 },
+      { type: 'finished', completionTicks: 1 },
+      { type: 'game-over', reason: 'block-out' },
+      { type: 'started' },
+      { type: 'paused' },
+      { type: 'resumed' },
+      { type: 'restarted' },
+    ]);
+
+    expect(oscillators.length).toBeGreaterThan(0);
+    expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
     audio.destroy();
   });
 });

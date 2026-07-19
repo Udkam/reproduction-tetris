@@ -61,49 +61,49 @@ export class AudioEngine {
 
   play(events: readonly GameEvent[]): void {
     if (!this.enabled || !this.context || !this.master) return;
+    const includesHardDrop = events.some((event) => event.type === 'hard-dropped');
     for (const event of events) {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = performance.now();
         if (now - this.lastMoveAt > 28) {
-          this.tone({ frequency: 178, endFrequency: 204, duration: 0.03, gain: 0.16, type: 'triangle' });
+          this.tone({ frequency: 212, duration: 0.026, gain: 0.11, type: 'sine' });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
         const now = performance.now();
         if (now - this.lastSoftDropAt > 52) {
-          this.tone({ frequency: 248, endFrequency: 224, duration: 0.022, gain: 0.09, type: 'sine' });
+          this.tone({ frequency: 164, duration: 0.024, gain: 0.09, type: 'sine' });
           this.lastSoftDropAt = now;
         }
       } else if (event.type === 'piece-rotated') {
-        this.tone({ frequency: 310, endFrequency: 465, duration: 0.055, gain: 0.22, type: 'square' });
-        this.tone({ frequency: 620, duration: 0.035, gain: 0.11, delay: 0.018, type: 'sine' });
+        this.tone({ frequency: 392, duration: 0.045, gain: 0.17, type: 'sine' });
+        this.tone({ frequency: 587, duration: 0.035, gain: 0.1, delay: 0.018, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
-        this.tone({ frequency: 132, endFrequency: 82, duration: 0.075, gain: 0.18, type: 'sine' });
-        this.tone({ frequency: 78, endFrequency: 52, duration: 0.16, gain: 0.26, delay: 0.006, type: 'sine' });
-      } else if (event.type === 'piece-locked') {
-        this.tone({ frequency: 132, duration: 0.05, gain: 0.18, type: 'square' });
+        this.landingThump();
+      } else if (event.type === 'piece-locked' && !includesHardDrop) {
+        this.tone({ frequency: 96, duration: 0.085, gain: 0.16, type: 'sine' });
       } else if (event.type === 'lines-cleared') {
         this.clearChord(event.count);
       } else if (event.type === 'piece-expired') {
-        this.tone({ frequency: 720, endFrequency: 340, duration: 0.18, gain: 0.28, type: 'sawtooth' });
-        this.tone({ frequency: 460, endFrequency: 230, duration: 0.22, gain: 0.18, delay: 0.055, type: 'triangle' });
+        this.tone({ frequency: 622, duration: 0.09, gain: 0.18, type: 'sine' });
+        this.tone({ frequency: 466, duration: 0.12, gain: 0.13, delay: 0.055, type: 'sine' });
       } else if (event.type === 'bedrock-raised') {
-        this.tone({ frequency: 108, endFrequency: 72, duration: 0.2, gain: 0.26, type: 'triangle' });
+        this.tone({ frequency: 82, duration: 0.16, gain: 0.2, type: 'sine' });
       } else if (event.type === 'bedrock-lowered') {
-        this.tone({ frequency: 174, endFrequency: 246, duration: 0.15, gain: 0.22, type: 'sine' });
+        this.tone({ frequency: 220, duration: 0.11, gain: 0.17, type: 'sine' });
       } else if (event.type === 'level-up') {
         [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.11, gain: 0.15, delay: index * 0.055, type: 'sine' }));
       } else if (event.type === 'finished') {
         [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.16, gain: 0.15, delay: index * 0.06, type: 'sine' }));
       } else if (event.type === 'game-over') {
-        this.tone({ frequency: 180, endFrequency: 48, duration: 0.62, gain: 0.32, type: 'sawtooth' });
+        [174, 131, 98].forEach((frequency, index) => this.tone({ frequency, duration: 0.15, gain: 0.16, delay: index * 0.12, type: 'sine' }));
       } else if (event.type === 'started' || event.type === 'resumed') {
-        this.tone({ frequency: 392, endFrequency: 523, duration: 0.09, gain: 0.17, type: 'sine' });
+        this.tone({ frequency: 440, duration: 0.075, gain: 0.14, type: 'sine' });
       } else if (event.type === 'paused') {
-        this.tone({ frequency: 270, endFrequency: 210, duration: 0.09, gain: 0.13, type: 'sine' });
+        this.tone({ frequency: 262, duration: 0.08, gain: 0.11, type: 'sine' });
       } else if (event.type === 'restarted') {
-        this.tone({ frequency: 294, endFrequency: 392, duration: 0.07, gain: 0.15, type: 'sine' });
-        this.tone({ frequency: 440, duration: 0.07, gain: 0.12, delay: 0.045, type: 'triangle' });
+        this.tone({ frequency: 294, duration: 0.065, gain: 0.13, type: 'sine' });
+        this.tone({ frequency: 440, duration: 0.065, gain: 0.1, delay: 0.045, type: 'sine' });
       }
     }
   }
@@ -127,8 +127,13 @@ export class AudioEngine {
       duration: 0.12 + count * 0.025,
       gain: 0.13 + count * 0.02,
       delay: index * 0.022,
-      type: index % 2 === 0 ? 'sine' : 'triangle',
+      type: 'sine',
     }));
+  }
+
+  private landingThump(): void {
+    this.tone({ frequency: 64, duration: 0.105, gain: 0.25, type: 'sine' });
+    this.tone({ frequency: 108, duration: 0.038, gain: 0.1, delay: 0.002, type: 'sine' });
   }
 
   private tone(options: ToneOptions): void {
