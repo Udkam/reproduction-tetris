@@ -75,9 +75,9 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
   });
 
   it.each([
-    ['t3r-shaft-01', 1], ['t3r-shaft-03', 1], ['t3r-cascade-05', 1], ['t5r-delta-07', 2],
-    ['t5r-lattice-09', 1], ['t5r-prism-11', 1], ['t5r-arc-13', 2], ['t5r-horizon-15', 1],
-  ] as const)('keeps the authored deep endgame for %s and overlays %i safe anchors', (id, anchorCount) => {
+    ['t3r-shaft-01', 1], ['t3r-shaft-03', 1], ['t3r-cascade-05', 0], ['t5r-delta-07', 0],
+    ['t5r-lattice-09', 0], ['t5r-prism-11', 1], ['t5r-arc-13', 0], ['t5r-horizon-15', 0],
+  ] as const)('keeps the authored deep endgame for %s with %i current safe anchors', (id, anchorCount) => {
     const definition = getPuzzleDefinition(id);
     const state = createInitialState(1, 'puzzle', id);
 

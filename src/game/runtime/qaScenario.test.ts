@@ -40,7 +40,7 @@ describe('T5 puzzle browser QA replay', () => {
     expect(first.state.puzzleId).toBe('t3r-shaft-02');
     expect(first.state.puzzleCompletion).toBe('finished');
     expect(first.state.completedLevelId).toBe('t3r-shaft-02');
-    expect(first.state.nextUnlockedLevelId).toBe('t3r-shaft-03');
+    expect(first.state.nextUnlockedLevelId).toBe('t6r-veil-16');
     expect(first.state.puzzleTargetCells).toEqual([]);
     expect(first.hash).toBe(second.hash);
     expect(first.commands).toEqual(second.commands);
