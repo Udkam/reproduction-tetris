@@ -465,6 +465,7 @@ describe('T6 frontend mode binding', () => {
     expect(rows.slice(3).every((row) => row.disabled && row.dataset.unlocked === 'false')).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('20 个解谜关卡，已开放 3 个');
     expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('3 / 20 已开放');
+    expect(view.container.querySelector('[data-testid="campaign-gate"]')?.textContent).toBe('解锁下一档：本档完成 0 / 2');
     expect(view.container.querySelector('[role="progressbar"]')?.getAttribute('aria-valuetext')).toBe('已开放 3 / 20');
     expect(rows[0]?.textContent).toContain(`01${CAMPAIGN_LEVELS[0]!.name}`);
     expect(rows[0]?.textContent).toContain('难度 01');
@@ -486,7 +487,7 @@ describe('T6 frontend mode binding', () => {
     expect(onSelect).not.toHaveBeenCalled();
 
     const fullyUnlocked = {
-      version: 2 as const,
+      version: 3 as const,
       completedLevelIds: CAMPAIGN_LEVELS.map((level) => level.id),
     };
     for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {

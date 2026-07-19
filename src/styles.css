@@ -523,6 +523,14 @@ p {
   gap: 16px;
 }
 
+.library-intro__stats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
 .library-intro__eyebrow,
 .library-catalog__header > div > span {
   color: var(--puzzle);
@@ -536,6 +544,15 @@ p {
   color: var(--muted);
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+}
+
+.library-intro__gate {
+  border-left: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  padding-left: 10px;
+  white-space: nowrap;
 }
 
 .library-intro h1 {
@@ -1558,6 +1575,17 @@ p {
 }
 
 @media (max-width: 599px) {
+  .library-intro__meta {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+
+  .library-intro__stats {
+    justify-content: space-between;
+    width: 100%;
+  }
+
   .landing-shell {
     grid-template-rows: 46px minmax(0, 1fr);
     padding: 8px 12px;

@@ -21,9 +21,12 @@ import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
   PUZZLE_PROGRESS_KEY,
+  V2_PUZZLE_PROGRESS_KEY,
   defaultPuzzleProgress,
   isPuzzleUnlocked,
   migrateLegacyPuzzleProgress,
+  migrateV2PuzzleProgress,
+  nextPuzzleTierGate,
   parsePuzzleProgress,
   recordCanonicalPuzzleCompletion,
   unlockedPuzzleLevelCount,
@@ -83,6 +86,8 @@ function readPuzzleProgress(): PuzzleProgress {
   try {
     const current = localStorage.getItem(PUZZLE_PROGRESS_KEY);
     if (current !== null) return parsePuzzleProgress(current);
+    const v2 = localStorage.getItem(V2_PUZZLE_PROGRESS_KEY);
+    if (v2 !== null) return migrateV2PuzzleProgress(v2);
     return migrateLegacyPuzzleProgress(localStorage.getItem(LEGACY_PUZZLE_PROGRESS_KEY));
   } catch {
     return defaultPuzzleProgress();
@@ -317,6 +322,7 @@ export function PuzzleLibrary({
 }) {
   const selected = campaignLevel(selectedId);
   const unlockedCount = unlockedPuzzleLevelCount(progress);
+  const nextTierGate = nextPuzzleTierGate(progress);
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedStatus = selectedComplete ? '已完成' : '已开放';
   const openedPercent = (unlockedCount / CAMPAIGN_LEVELS.length) * 100;
@@ -331,7 +337,14 @@ export function PuzzleLibrary({
       <section className="library-intro" aria-labelledby="library-title">
         <div className="library-intro__meta">
           <span className="library-intro__eyebrow">Puzzle campaign</span>
-          <span className="library-intro__availability" data-testid="campaign-availability">{unlockedCount} / {CAMPAIGN_LEVELS.length} 已开放</span>
+          <div className="library-intro__stats">
+            <span className="library-intro__availability" data-testid="campaign-availability">{unlockedCount} / {CAMPAIGN_LEVELS.length} 已开放</span>
+            <span className="library-intro__gate" data-testid="campaign-gate">
+              {nextTierGate === null
+                ? '全部档案已开放'
+                : `解锁下一档：本档完成 ${nextTierGate.completedCount} / ${nextTierGate.requiredCount}`}
+            </span>
+          </div>
         </div>
         <div className="library-intro__heading">
           <div>
