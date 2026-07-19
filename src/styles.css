@@ -999,8 +999,8 @@ p {
 
 .run-stats:not(.run-stats--puzzle) [data-stat-role="lines"],
 .run-stats--puzzle [data-stat-role="puzzle-level"],
-.run-stats--puzzle [data-stat-role="placed"],
-.run-stats--puzzle [data-stat-role="lines"] {
+.run-stats--puzzle [data-stat-role="puzzle-targets"],
+.run-stats--puzzle [data-stat-role="puzzle-remaining"] {
   border-bottom: 1px solid var(--line);
 }
 
@@ -1014,7 +1014,7 @@ p {
   grid-column: 1 / -1;
 }
 
-.run-stats--puzzle [data-stat-role="placed"] {
+.run-stats--puzzle [data-stat-role="puzzle-targets"] {
   border-right: 1px solid var(--line);
 }
 
@@ -1244,6 +1244,15 @@ p {
   border-top: 0;
 }
 
+.result-leaderboard li[data-current-record="true"] {
+  background: color-mix(in srgb, var(--selection) 16%, var(--raised));
+  box-shadow: inset 3px 0 0 var(--selection);
+}
+
+.result-leaderboard li[data-current-record="true"] strong {
+  color: var(--selection);
+}
+
 .result-leaderboard li b {
   color: var(--selection);
   font-size: 12px;
@@ -1258,6 +1267,17 @@ p {
 .result-leaderboard li small {
   color: var(--muted);
   font-size: 12px;
+}
+
+.result-rank-notice {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--line) 82%, var(--selection));
+  border-radius: 9px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
 }
 
 .sr-only {
@@ -1648,12 +1668,12 @@ p {
   }
 
   .run-stats--puzzle [data-stat-role="puzzle-level"],
-  .run-stats--puzzle [data-stat-role="lines"] {
+  .run-stats--puzzle [data-stat-role="puzzle-remaining"] {
     border-right: 1px solid var(--line) !important;
   }
 
   .run-stats--puzzle [data-stat-role="puzzle-level"],
-  .run-stats--puzzle [data-stat-role="placed"] {
+  .run-stats--puzzle [data-stat-role="puzzle-targets"] {
     border-bottom: 1px solid var(--line) !important;
   }
 

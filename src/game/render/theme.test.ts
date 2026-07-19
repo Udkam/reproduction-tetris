@@ -73,6 +73,7 @@ describe('T5 bright mineral matte material', () => {
       race: 0x526eb0,
       puzzle: 0x80639d,
       selection: 0xa75e71,
+      target: 0xf0d39a,
       action: 0x315f96,
       hover: 0x3d70a8,
       focus: 0x245e9c,

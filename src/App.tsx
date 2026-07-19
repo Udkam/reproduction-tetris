@@ -16,7 +16,7 @@ import {
   survivalIntervalTicks,
 } from './game/core';
 import { type InputAction } from './game/input/InputController';
-import { GameRuntime } from './game/runtime/GameRuntime';
+import { GameRuntime, randomRunSeed } from './game/runtime/GameRuntime';
 import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
@@ -60,7 +60,7 @@ const MODE_COPY: Record<GameMode, {
   },
   race: {
     label: '生存',
-    detail: '开局 5 层基岩\n15 秒 → 8 秒 · 每 3 行降层 / 提速',
+    detail: '开局 10 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落',
     action: '开始',
   },
   puzzle: {
@@ -136,10 +136,12 @@ function campaignLevel(id: PuzzleId | null) {
 export function terminalCopy(state: GameState): { title: string; detail: string; success: boolean } | null {
   if (state.mode === 'puzzle') {
     if (state.puzzleCompletion === 'finished') {
-      return { title: '棋盘已清空', detail: `${state.pieceCount} 方块 · ${state.lines} 消行`, success: true };
+      return { title: '原有方块已清除', detail: `${state.pieceCount}/${state.puzzlePieceBudget ?? '—'} 方块 · ${state.lines} 消行`, success: true };
     }
     if (state.puzzleCompletion && state.puzzleCompletion !== 'active') {
-      return { title: '堆叠到顶', detail: `${state.pieceCount} 方块 · ${state.lines} 消行`, success: false };
+      const remaining = state.puzzleTargetCells.length;
+      const title = state.puzzleCompletion === 'failed-budget' ? '步数耗尽' : '堆叠到顶';
+      return { title, detail: `剩余 ${remaining} 原有方块 · ${state.pieceCount}/${state.puzzlePieceBudget ?? '—'} 方块`, success: false };
     }
     return null;
   }
@@ -166,6 +168,16 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
     outcome: 'top-out',
     completedAt,
   };
+}
+
+export function scoreRecordKey(record: ScoreRecord): string {
+  return [record.mode, record.completedAt, record.score, record.lines, record.pieces, record.elapsedTicks].join(':');
+}
+
+export function scoreRecordRank(records: readonly ScoreRecord[], record: ScoreRecord | null): number | null {
+  if (!record) return null;
+  const index = records.findIndex((candidate) => scoreRecordKey(candidate) === scoreRecordKey(record));
+  return index >= 0 ? index + 1 : null;
 }
 
 function Brand({ compact = false, primary = false }: { compact?: boolean; primary?: boolean }) {
@@ -366,8 +378,17 @@ export function PuzzleLibrary({
   );
 }
 
-export function LeaderboardPanel({ mode, records }: { mode: RunMode; records: readonly ScoreRecord[] }) {
+export function LeaderboardPanel({
+  mode,
+  records,
+  highlightRecord = null,
+}: {
+  mode: RunMode;
+  records: readonly ScoreRecord[];
+  highlightRecord?: ScoreRecord | null;
+}) {
   const survival = mode === 'race';
+  const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
   return (
     <section className="result-leaderboard" aria-label={survival ? '生存排行榜' : '经典排行榜'}>
       <header>
@@ -376,8 +397,8 @@ export function LeaderboardPanel({ mode, records }: { mode: RunMode; records: re
       </header>
       {records.length === 0 ? <p>暂无记录</p> : (
         <ol>
-          {records.slice(0, 5).map((record, index) => (
-            <li key={`${record.completedAt}:${index}`}>
+          {records.map((record, index) => (
+            <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
               <strong>{survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
               <small>{survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
@@ -484,10 +505,10 @@ export function RunStats({ state }: { state: GameState }) {
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
         <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
-        <article data-stat-role="placed"><span>已放置</span><strong>{state.pieceCount}</strong></article>
-        <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="puzzle-targets"><span>原有方块</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
+        <article data-stat-role="puzzle-remaining"><span>剩余可用</span><strong>{Math.max(0, (state.puzzlePieceBudget ?? 0) - state.pieceCount)} 块</strong></article>
         <article data-stat-role="objective" data-urgent={expirySeconds !== null && expirySeconds <= 3 || undefined}>
-          <span>{hasVolatileSignal ? '限时块' : '目标'}</span><strong>{expirySeconds !== null ? `${expirySeconds} 秒` : state.puzzleActiveVolatile ? '落定后 5 秒' : '清除活动块'}</strong>
+          <span>{hasVolatileSignal ? '限时块' : '已用方块'}</span><strong>{expirySeconds !== null ? `${expirySeconds} 秒` : state.puzzleActiveVolatile ? '落定后 5 秒' : `${state.pieceCount}/${state.puzzlePieceBudget ?? '—'}`}</strong>
         </article>
       </section>
     );
@@ -509,7 +530,7 @@ export function eventMessage(event: GameEvent): string {
   if (event.type === 'piece-expired') return `限时 ${event.piece} 方块已消散。`;
   if (event.type === 'paused') return '本局已暂停。';
   if (event.type === 'resumed') return '继续本局。';
-  if (event.type === 'finished') return '棋盘已清空。';
+  if (event.type === 'finished') return '原有方块已清除。';
   if (event.type === 'game-over') return '本局结束。';
   return '';
 }
@@ -542,21 +563,23 @@ export function GameSession({
   onExit: (destination: ExitDestination) => void;
   onCanonicalCompletion: (state: GameState) => void;
   leaderboard?: Leaderboard;
-  onRunFinished?: (state: GameState) => void;
+  onRunFinished?: (record: ScoreRecord) => void;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
   const lastRecordedRunRef = useRef<string | null>(null);
+  const [runSeed] = useState(() => mode === 'puzzle' ? APP_SEED : randomRunSeed());
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
-  const [state, setState] = useState<GameState>(() => createInitialState(APP_SEED, mode, mode === 'puzzle' ? puzzleId : undefined));
+  const [state, setState] = useState<GameState>(() => createInitialState(runSeed, mode, mode === 'puzzle' ? puzzleId : undefined));
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
+  const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
 
   const focusBoard = useCallback(() => {
     requestAnimationFrame(() => hostRef.current?.querySelector('canvas')?.focus({ preventScroll: true }));
@@ -569,7 +592,7 @@ export function GameSession({
     let countdownComplete = false;
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const nextRuntime = new GameRuntime({
-      seed: APP_SEED,
+      seed: runSeed,
       mode,
       puzzleId: mode === 'puzzle' ? puzzleId : undefined,
       inputEnabled: false,
@@ -579,12 +602,19 @@ export function GameSession({
       onState: (nextState, events) => {
         if (disposed) return;
         setState(nextState);
-        if (nextState.status === 'ready') lastRecordedRunRef.current = null;
+        if (nextState.status === 'ready') {
+          lastRecordedRunRef.current = null;
+          setResultRecord(null);
+        }
         if ((nextState.mode === 'marathon' || nextState.mode === 'race') && nextState.status === 'game-over') {
           const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}`;
           if (lastRecordedRunRef.current !== runKey) {
             lastRecordedRunRef.current = runKey;
-            onRunFinished?.(nextState);
+            const record = scoreRecordForState(nextState, new Date().toISOString());
+            if (record) {
+              setResultRecord(record);
+              onRunFinished?.(record);
+            }
           }
         }
         const notable = [...events].reverse().find((event) => (
@@ -637,7 +667,7 @@ export function GameSession({
       nextRuntime.destroy();
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
-  }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId]);
+  }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId, runSeed]);
 
   useEffect(() => {
     runtime?.setAudioEnabled(audioEnabled);
@@ -658,6 +688,10 @@ export function GameSession({
       puzzleActiveVolatile: state.puzzleActiveVolatile,
       puzzleVolatilePieces: state.puzzleVolatilePieces,
       puzzleExpirySeconds: puzzleExpirySeconds(state),
+      puzzleTargetsRemaining: state.puzzleTargetCells.length,
+      puzzleTargetsInitial: state.puzzleInitialTargetCount,
+      puzzlePieceBudget: state.puzzlePieceBudget,
+      puzzlePiecesRemaining: state.puzzlePieceBudget === null ? null : Math.max(0, state.puzzlePieceBudget - state.pieceCount),
       anchorCells: state.board.flat().filter((cell) => cell === ANCHOR_CELL).length,
       score: state.score,
       lines: state.lines,
@@ -756,7 +790,11 @@ export function GameSession({
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
   const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen;
   const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen;
-  const leaderboardRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
+  const storedRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
+  const leaderboardRecords = resultRecord && scoreRecordRank(storedRecords, resultRecord) === null
+    ? recordsForMode(insertScoreRecord(leaderboard, resultRecord), resultRecord.mode)
+    : storedRecords;
+  const resultRank = state.mode === 'puzzle' ? null : scoreRecordRank(leaderboardRecords, resultRecord);
 
   return (
     <main id="game" className="play-shell" data-testid="game-screen">
@@ -858,12 +896,12 @@ export function GameSession({
       <ActionSheet
         open={restartConfirmOpen}
         title="重新开始？"
-        description="当前对局进度将清空。按 Enter 确认。"
+        description=""
         tone="danger"
         onCancel={cancelRestart}
         onConfirm={restartRun}
       >
-        <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>确认重新开始</button>
+        <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>确认</button>
         <button className="secondary-action" type="button" onClick={cancelRestart}>取消</button>
       </ActionSheet>
 
@@ -886,7 +924,10 @@ export function GameSession({
         description={terminal?.detail ?? ''}
         tone={terminal?.success ? 'success' : 'danger'}
       >
-        {state.mode !== 'puzzle' && <LeaderboardPanel mode={state.mode} records={leaderboardRecords} />}
+        {state.mode !== 'puzzle' && <>
+          <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} />
+          {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">本局未进入排行榜</p>}
+        </>}
         <button className="primary-action" data-autofocus type="button" onClick={restartRun}>再来一局</button>
         <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
           {exitDestination === 'puzzle-library' ? '返回关卡库' : '返回模式首页'}
@@ -925,9 +966,7 @@ export default function App() {
     });
   }, []);
 
-  const recordRun = useCallback((state: GameState) => {
-    const record = scoreRecordForState(state, new Date().toISOString());
-    if (!record) return;
+  const recordRun = useCallback((record: ScoreRecord) => {
     setLeaderboard((current) => {
       const updated = insertScoreRecord(current, record);
       try { localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(updated)); } catch { /* optional local leaderboard */ }

@@ -319,6 +319,7 @@ export class TetrisRenderer {
         material: volatile ? VOLATILE_MATERIAL : undefined,
       });
     }
+    this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
 
     if (this.trail && !this.options.reducedMotion) {
       const progress = Math.min(1, this.trail.elapsed / this.trail.duration);
@@ -394,6 +395,24 @@ export class TetrisRenderer {
     this.snapshot.boardShiftOffsetY = boardShiftOffsetY;
     this.pieceGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
     this.effectGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
+  }
+
+  private drawPuzzleTargetMarkers(graphics: Graphics, state: GameState, layout: BoardLayout, offsetY: number): void {
+    if (state.mode !== 'puzzle' || state.puzzleTargetCells.length === 0) return;
+    const inset = Math.max(2, layout.cell * 0.22);
+    const mark = Math.max(2, layout.cell * 0.17);
+    const stroke = Math.max(1, layout.cell * 0.045);
+    for (const cell of state.puzzleTargetCells) {
+      if (cell.y < VISIBLE_START_ROW || cell.y >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+      const material = state.board[cell.y]?.[cell.x];
+      if (!material || material === ANCHOR_CELL || material === BEDROCK_CELL) continue;
+      const x = layout.x + cell.x * layout.cell + inset;
+      const y = layout.y + (cell.y - VISIBLE_START_ROW) * layout.cell + inset + offsetY;
+      graphics.roundRect(x, y, mark, mark, mark * 0.35).fill({ color: COLORS.target, alpha: 0.9 });
+      graphics.moveTo(x + mark + stroke, y + mark * 0.5)
+        .lineTo(x + mark + stroke + Math.max(2, layout.cell * 0.16), y + mark * 0.5)
+        .stroke({ color: COLORS.target, alpha: 0.72, width: stroke });
+    }
   }
 
   private drawCellGroups(
