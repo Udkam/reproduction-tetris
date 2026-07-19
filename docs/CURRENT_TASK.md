@@ -37,6 +37,26 @@ Sealed rows remain readable yet inert. The archive visual is rebuilt as an origi
 campaign atlas with a restrained route/terrain hierarchy and one selected canonical
 preview only—no entry thumbnails, corner dots, or ornamental progress dots.
 
+### T12.5 writer boundaries and checkpoint sequence
+
+The coupled Core checkpoint may change only `src/game/core/puzzles.ts`,
+`src/game/core/types.ts`, `src/game/core/engine.ts`, direct Puzzle/Core tests,
+`src/game/runtime/GameRuntime.ts`, `src/game/runtime/qaScenario.ts`, their direct
+tests, `src/game/input/InputController.ts` and its test, the isolated T12 route fixture,
+the historical route-tool header, and `scripts/capture-tetris-t3-evidence.py` only to
+remove the obsolete budget terminal. This cross-boundary exception is necessary because
+the canonical `GameState` removes one field while adding a nonrecursive undo snapshot
+field that Core, input, runtime, replay, and direct tests must agree on. It does not
+change ordinary physics or row resolution.
+
+The independent UI checkpoint may change only `src/App.tsx`, `src/App.test.ts`,
+`src/styles.css`, `src/game/render/TetrisRenderer.ts`, and direct renderer/App tests.
+It owns the campaign-atlas composition, full gate copy, target-only HUD, touch-safe
+undo control, and undo-presentation cleanup. It must preserve existing data test IDs,
+one canvas, selected-preview-only semantics, locked-entry inertness, responsive layout,
+and reduced motion. The coordinator owns the contract/progress/workstream logs,
+browser evidence, changelog, exact-path staging, independent QA, and push.
+
 The player-facing identity changes to the short plain-text `Tetra`. It makes the
 four-cell falling-block vocabulary legible without a copied logo treatment or a visible
 Chinese companion name. Browser title, loading shell, visible header, and accessible
