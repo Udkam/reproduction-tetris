@@ -39,23 +39,34 @@ preview only—no entry thumbnails, corner dots, or ornamental progress dots.
 
 ### T12.5 writer boundaries and checkpoint sequence
 
-The coupled Core checkpoint may change only `src/game/core/puzzles.ts`,
-`src/game/core/types.ts`, `src/game/core/engine.ts`, direct Puzzle/Core tests,
-`src/game/runtime/GameRuntime.ts`, `src/game/runtime/qaScenario.ts`, their direct
-tests, `src/game/input/InputController.ts` and its test, the isolated T12 route fixture,
-the historical route-tool header, and `scripts/capture-tetris-t3-evidence.py` only to
-remove the obsolete budget terminal. This cross-boundary exception is necessary because
-the canonical `GameState` removes one field while adding a nonrecursive undo snapshot
-field that Core, input, runtime, replay, and direct tests must agree on. It does not
-change ordinary physics or row resolution.
+This is one explicitly authorized atomic source checkpoint despite exceeding the normal
+path and line budget. Its exact paths are
+`docs/workstreams/tetris-t12-core/puzzle-solver-results.json`,
+`scripts/capture-tetris-t3-evidence.py`, `src/App.tsx`, `src/App.test.ts`,
+`src/game/core/engine.ts`, `src/game/core/puzzleCampaign.test.ts`,
+`src/game/core/puzzleFlow.test.ts`, `src/game/core/puzzleSolverResults.test.ts`,
+`src/game/core/puzzles.test.ts`, `src/game/core/puzzles.ts`,
+`src/game/core/puzzleUndo.test.ts`, `src/game/core/types.ts`,
+`src/game/input/InputController.test.ts`, `src/game/input/InputController.ts`,
+`src/game/render/TetrisRenderer.test.ts`, `src/game/render/TetrisRenderer.ts`,
+`src/game/render/presentation.test.ts`, `src/game/runtime/GameRuntime.test.ts`,
+`src/game/runtime/GameRuntime.ts`, `src/game/runtime/qaScenario.test.ts`,
+`src/game/runtime/qaScenario.ts`, `src/puzzleProgress.ts`, `src/styles.css`, and
+`tools/solve-puzzle-campaign.cpp`. The Core/input/runtime writer owns the deterministic
+rules and undo state; the UI/renderer writer owns atlas composition and presentation;
+the coordinator owns the integrated checkpoint and all subsequent evidence/QA/docs.
 
-The independent UI checkpoint may change only `src/App.tsx`, `src/App.test.ts`,
-`src/styles.css`, `src/game/render/TetrisRenderer.ts`, and direct renderer/App tests.
-It owns the campaign-atlas composition, full gate copy, target-only HUD, touch-safe
-undo control, and undo-presentation cleanup. It must preserve existing data test IDs,
-one canvas, selected-preview-only semantics, locked-entry inertness, responsive layout,
-and reduced motion. The coordinator owns the contract/progress/workstream logs,
-browser evidence, changelog, exact-path staging, independent QA, and push.
+The checkpoint cannot be split into individually typechecking commits: removing the
+canonical budget field while adding `GameRuntime.undoPuzzle()` changes the Core state
+contract, input mapping, runtime surface, React HUD, and renderer event handling at the
+same time. The atlas markup and its responsive/reduced-motion selectors are likewise a
+single visual contract. It changes no ordinary physics or row resolution. Required
+whole-range verification is typecheck, direct Core/input/runtime/UI/renderer tests, the
+full suite, production build, desktop/portrait/landscape browser evidence, and separate
+read-only Core and visual QA before acceptance.
+
+The coordinator owns the contract/progress/workstream logs, browser evidence,
+changelog, exact-path staging, independent QA, and push.
 
 The player-facing identity changes to the short plain-text `Tetra`. It makes the
 four-cell falling-block vocabulary legible without a copied logo treatment or a visible
