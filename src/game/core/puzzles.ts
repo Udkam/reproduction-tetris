@@ -24,7 +24,7 @@ export interface PuzzleDefinition {
   boardRows: readonly string[];
   /** Always empty for authored T5 levels; makes hidden-buffer validation explicit. */
   hiddenCells: readonly PuzzleCell[];
-  /** Shortest currently verified public-command solver route, in locked pieces. */
+  /** Public Puzzle allowance: exactly two times the verified playable route locks. */
   solverPieceBudget: number;
   /** Sparse unbreakable cells, seeded only into completely empty starting rows. */
   anchorCells: readonly Cell[];
@@ -45,8 +45,8 @@ const EMPTY_ROW = '.'.repeat(BOARD_WIDTH);
 const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
 const EMPTY_ANCHOR_CELLS: readonly Cell[] = Object.freeze([]);
 
-/** Deliberate recovery room above the verified public-command solver route. */
-export const PUZZLE_SOLVER_SLACK = 10;
+/** The player receives exactly twice the verified route length for recovery room. */
+export const PUZZLE_SOLUTION_BUDGET_MULTIPLIER = 2;
 
 function occupancyRow(row: string): string {
   return [...row].map((cell) => cell === '.' ? '.' : '#').join('');
@@ -130,7 +130,7 @@ const LEGACY_PUZZLE_LIBRARY: readonly PuzzleDefinition[] = [
 
 /**
  * T12 extends the original archive with five independently generated, legal
- * endgames. Their accepted route minima rise across this final campaign band.
+ * endgames. Their Core-replayed route evidence is calibrated with the shared roster.
  */
 const T12_PUZZLE_EXTENSION: readonly PuzzleDefinition[] = [
   definition('t6r-veil-16', '澄湾折层', 0x6f100020, setup(0x6f200020, [{ type: 'Z', rotation: 2, x: 0 }, { type: 'S', rotation: 1, x: 0 }, { type: 'T', rotation: 0, x: 5 }, { type: 'J', rotation: 1, x: 3 }, { type: 'O', rotation: 1, x: 8 }, { type: 'L', rotation: 2, x: 0 }, { type: 'I', rotation: 3, x: 2 }, { type: 'L', rotation: 1, x: 3 }, { type: 'O', rotation: 1, x: 6 }, { type: 'S', rotation: 2, x: 2 }, { type: 'T', rotation: 1, x: 4 }, { type: 'Z', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 7 }, { type: 'I', rotation: 1, x: 7 }, { type: 'S', rotation: 1, x: 5 }, { type: 'I', rotation: 3, x: -1 }, { type: 'O', rotation: 2, x: 1 }, { type: 'T', rotation: 0, x: 1 }, { type: 'L', rotation: 3, x: 3 }, { type: 'J', rotation: 1, x: 4 }])),
@@ -139,33 +139,6 @@ const T12_PUZZLE_EXTENSION: readonly PuzzleDefinition[] = [
   definition('t6r-bastion-19', '深湾阈门', 0x6f100016, setup(0x6f200016, [{ type: 'S', rotation: 0, x: 7 }, { type: 'Z', rotation: 1, x: 5 }, { type: 'J', rotation: 0, x: 2 }, { type: 'L', rotation: 3, x: 4 }, { type: 'T', rotation: 3, x: 8 }, { type: 'O', rotation: 1, x: 0 }, { type: 'I', rotation: 0, x: 4 }, { type: 'S', rotation: 0, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'J', rotation: 1, x: 5 }, { type: 'L', rotation: 0, x: 1 }, { type: 'Z', rotation: 1, x: 3 }, { type: 'T', rotation: 2, x: 7 }, { type: 'O', rotation: 2, x: 5 }, { type: 'S', rotation: 0, x: 2 }, { type: 'O', rotation: 1, x: 0 }])),
   definition('t6r-keystone-20', '层界基石', 0x6f100018, setup(0x6f200018, [{ type: 'T', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 5 }, { type: 'Z', rotation: 1, x: 6 }, { type: 'I', rotation: 3, x: 8 }, { type: 'S', rotation: 2, x: 3 }, { type: 'O', rotation: 0, x: 1 }, { type: 'L', rotation: 0, x: 2 }, { type: 'O', rotation: 0, x: 5 }, { type: 'J', rotation: 1, x: 6 }, { type: 'L', rotation: 0, x: 7 }, { type: 'Z', rotation: 3, x: 5 }, { type: 'T', rotation: 1, x: -1 }, { type: 'I', rotation: 0, x: 1 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 6 }, { type: 'S', rotation: 0, x: 0 }, { type: 'O', rotation: 3, x: 4 }])),
 ] as const;
-
-/**
- * Generated from the shortest accepted public-command route in the bounded Puzzle
- * solver fixture. These are reproducible solver results, not a global-optimum claim.
- */
-const SOLVER_PIECE_BUDGETS: Readonly<Record<PuzzleId, number>> = Object.freeze({
-  't3r-shaft-01': 35,
-  't3r-shaft-02': 35,
-  't3r-shaft-03': 36,
-  't3r-shaft-04': 35,
-  't3r-cascade-05': 35,
-  't3r-cascade-06': 39,
-  't5r-delta-07': 30,
-  't5r-drift-08': 38,
-  't5r-lattice-09': 35,
-  't5r-rift-10': 34,
-  't5r-prism-11': 39,
-  't5r-current-12': 36,
-  't5r-arc-13': 39,
-  't5r-pulse-14': 33,
-  't5r-horizon-15': 35,
-  't6r-veil-16': 30,
-  't6r-cairn-17': 33,
-  't6r-terrace-18': 33,
-  't6r-bastion-19': 34,
-  't6r-keystone-20': 42,
-});
 
 function nextAnchorSeed(seed: number): number {
   let value = seed >>> 0;
@@ -198,15 +171,7 @@ function seededAnchors(seed: number, rows: readonly string[], count: number): re
 const ANCHOR_OVERLAYS: Readonly<Partial<Record<PuzzleId, { seed: number; count: number }>>> = Object.freeze({
   't3r-shaft-01': { seed: 0x1108a1d1, count: 1 },
   't3r-shaft-03': { seed: 0x3308a1d3, count: 1 },
-  't3r-cascade-05': { seed: 0x5508a1d5, count: 1 },
-  't5r-delta-07': { seed: 0x7708a1d7, count: 2 },
-  't5r-lattice-09': { seed: 0x9908a1d9, count: 1 },
   't5r-prism-11': { seed: 0xbb08a1db, count: 1 },
-  't5r-arc-13': { seed: 0xdd08a1dd, count: 2 },
-  't5r-horizon-15': { seed: 0xff08a1df, count: 1 },
-  't6r-cairn-17': { seed: 0x17a8c1e1, count: 1 },
-  't6r-terrace-18': { seed: 0x18a8c1e2, count: 1 },
-  't6r-keystone-20': { seed: 0x20a8c1e4, count: 2 },
 });
 
 /** Every authored board begins target-marked; selected levels retain fixed anchors. */
@@ -215,12 +180,50 @@ const AUTHORED_PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
   ...T12_PUZZLE_EXTENSION,
 ]);
 
-const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze(AUTHORED_PUZZLE_LIBRARY.map((candidate, index) => {
+/**
+ * Campaign order comes from Core-replayed routes in the T12.4 result artifact.
+ * These values are verified playable route lengths, not mathematical-optimum claims.
+ */
+const CAMPAIGN_SOLUTION_CALIBRATIONS = Object.freeze([
+  { id: 't6r-bastion-19', verifiedSolutionLocks: 24 },
+  { id: 't5r-prism-11', verifiedSolutionLocks: 24 },
+  { id: 't5r-arc-13', verifiedSolutionLocks: 26 },
+  { id: 't5r-pulse-14', verifiedSolutionLocks: 26 },
+  { id: 't5r-lattice-09', verifiedSolutionLocks: 26 },
+  { id: 't5r-delta-07', verifiedSolutionLocks: 26 },
+  { id: 't5r-horizon-15', verifiedSolutionLocks: 26 },
+  { id: 't3r-cascade-05', verifiedSolutionLocks: 27 },
+  { id: 't6r-cairn-17', verifiedSolutionLocks: 27 },
+  { id: 't3r-cascade-06', verifiedSolutionLocks: 28 },
+  { id: 't5r-drift-08', verifiedSolutionLocks: 29 },
+  { id: 't5r-rift-10', verifiedSolutionLocks: 29 },
+  { id: 't5r-current-12', verifiedSolutionLocks: 30 },
+  { id: 't3r-shaft-04', verifiedSolutionLocks: 30 },
+  { id: 't3r-shaft-02', verifiedSolutionLocks: 30 },
+  { id: 't6r-veil-16', verifiedSolutionLocks: 30 },
+  { id: 't6r-terrace-18', verifiedSolutionLocks: 30 },
+  { id: 't6r-keystone-20', verifiedSolutionLocks: 32 },
+  { id: 't3r-shaft-01', verifiedSolutionLocks: 32 },
+  { id: 't3r-shaft-03', verifiedSolutionLocks: 37 },
+] as const satisfies readonly { id: PuzzleId; verifiedSolutionLocks: number }[]);
+
+const AUTHORED_PUZZLES_BY_ID = new Map<PuzzleId, PuzzleDefinition>(
+  AUTHORED_PUZZLE_LIBRARY.map((candidate) => [candidate.id, candidate]),
+);
+
+if (CAMPAIGN_SOLUTION_CALIBRATIONS.length !== AUTHORED_PUZZLE_LIBRARY.length
+  || new Set(CAMPAIGN_SOLUTION_CALIBRATIONS.map(({ id }) => id)).size !== AUTHORED_PUZZLE_LIBRARY.length) {
+  throw new Error('Puzzle campaign calibration must contain each authored Puzzle exactly once.');
+}
+
+const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze(CAMPAIGN_SOLUTION_CALIBRATIONS.map((calibration, index) => {
+  const candidate = AUTHORED_PUZZLES_BY_ID.get(calibration.id);
+  if (!candidate) throw new Error(`Unknown calibrated Puzzle: ${calibration.id}`);
   const overlay = ANCHOR_OVERLAYS[candidate.id];
   return Object.freeze({
     ...candidate,
     difficulty: index + 1,
-    solverPieceBudget: SOLVER_PIECE_BUDGETS[candidate.id] + PUZZLE_SOLVER_SLACK,
+    solverPieceBudget: calibration.verifiedSolutionLocks * PUZZLE_SOLUTION_BUDGET_MULTIPLIER,
     anchorCells: overlay ? seededAnchors(overlay.seed, candidate.boardRows, overlay.count) : EMPTY_ANCHOR_CELLS,
   });
 }));
@@ -277,7 +280,7 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   }
   if (!Number.isSafeInteger(definition.solverPieceBudget) || definition.solverPieceBudget <= 0
     || definition.solverPieceBudget !== canonical.solverPieceBudget) {
-    throw new Error(`Puzzle ${definition.id} must retain its verified solver budget.`);
+    throw new Error(`Puzzle ${definition.id} must retain its calibrated route budget.`);
   }
   if (!Array.isArray(definition.anchorCells)
     || JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {

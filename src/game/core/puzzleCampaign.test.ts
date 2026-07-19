@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 import { createInitialState, dispatch, dropDistance, replay, stateHash } from './engine';
-import { PUZZLE_DEFINITIONS, PUZZLE_SOLVER_SLACK, getPuzzleDefinition } from './puzzles';
+import { PUZZLE_DEFINITIONS, PUZZLE_SOLUTION_BUDGET_MULTIPLIER, getPuzzleDefinition } from './puzzles';
 import { VISIBLE_START_ROW } from './constants';
 import type { Cell, GameCommand, GameEvent, GameState, PieceType, PuzzleId, Rotation } from './types';
 
@@ -211,13 +211,16 @@ function execute(level: LevelReference, route: RouteReference) {
   };
 }
 
-describe('T12 original-target Puzzle campaign verifier', () => {
-  it('retains the fifteen deterministic public-command routes and extends the safe-anchor campaign to twenty levels', () => {
+describe('T12 Puzzle setup and calibrated-budget verifier', () => {
+  it('retains the fifteen setup fixtures and exposes the twenty-level calibrated campaign', () => {
     expect(PUZZLE_DEFINITIONS).toHaveLength(20);
     expect(references).toHaveLength(15);
     expect(references.flatMap((level) => level.routes)).toHaveLength(30);
-    expect(PUZZLE_SOLVER_SLACK).toBe(10);
+    expect(PUZZLE_SOLUTION_BUDGET_MULTIPLIER).toBe(2);
     expect(PUZZLE_DEFINITIONS.map((definition) => definition.difficulty)).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
+    expect(PUZZLE_DEFINITIONS.slice(0, 3).map(({ id }) => id)).toEqual([
+      't6r-bastion-19', 't5r-prism-11', 't5r-arc-13',
+    ]);
     for (const definition of PUZZLE_DEFINITIONS) {
       for (const anchor of definition.anchorCells) {
         expect(definition.boardRows[anchor.y - VISIBLE_START_ROW]).toBe('..........');
@@ -225,19 +228,21 @@ describe('T12 original-target Puzzle campaign verifier', () => {
     }
   });
 
-  it('initializes the five generated extension levels with their deterministic source budgets', () => {
-    const extension = PUZZLE_DEFINITIONS.filter((definition) => !references.some((level) => level.id === definition.id));
+  it('initializes the five generated extension levels with calibrated doubled budgets', () => {
+    const extension = [
+      't6r-veil-16', 't6r-cairn-17', 't6r-terrace-18', 't6r-bastion-19', 't6r-keystone-20',
+    ].map((id) => getPuzzleDefinition(id as PuzzleId));
     expect(extension.map(({ id }) => id)).toEqual([
       't6r-veil-16', 't6r-cairn-17', 't6r-terrace-18', 't6r-bastion-19', 't6r-keystone-20',
     ]);
-    expect(extension.map(({ solverPieceBudget }) => solverPieceBudget)).toEqual([40, 43, 43, 44, 52]);
+    expect(extension.map(({ solverPieceBudget }) => solverPieceBudget)).toEqual([60, 54, 60, 48, 64]);
     for (const definition of extension) {
       const ready = createInitialState(0x51a1f00d, 'puzzle', definition.id);
       expect(ready.seed).toBe(definition.seed);
       expect(ready.puzzlePieceBudget).toBe(definition.solverPieceBudget);
       expect(ready.puzzleInitialTargetCount).toBeGreaterThan(0);
       expect(ready.board.flat().filter((cell) => cell === 'A')).toHaveLength(definition.anchorCells.length);
-      expect(definition.difficulty).toBeGreaterThanOrEqual(16);
+      expect(definition.solverPieceBudget % PUZZLE_SOLUTION_BUDGET_MULTIPLIER).toBe(0);
     }
   });
 
@@ -254,7 +259,7 @@ describe('T12 original-target Puzzle campaign verifier', () => {
     expect(ready.puzzlePieceBudget).toBe(definition.solverPieceBudget);
     expect(ready.puzzleTargetCells).toHaveLength(ready.puzzleInitialTargetCount);
     expect(ready.puzzleInitialTargetCount).toBeGreaterThan(0);
-    expect(ready.puzzlePieceBudget).toBeGreaterThan(PUZZLE_SOLVER_SLACK);
+    expect(ready.puzzlePieceBudget).toBeGreaterThanOrEqual(PUZZLE_SOLUTION_BUDGET_MULTIPLIER);
     expect(ready.board.flat().filter((cell) => cell === 'A')).toHaveLength(definition.anchorCells.length);
     const restarted = dispatch(ready, { type: 'restart' }).state;
     expect(stateHash(restarted)).toBe(stateHash(ready));

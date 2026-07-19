@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import referencesFile from '../../../docs/workstreams/tetris-t5-core/puzzle-references.json';
 import { createInitialState, dispatch, stateHash } from './engine';
-import { PUZZLE_DEFINITIONS, PUZZLE_SOLVER_SLACK, getPuzzleDefinition, validatePuzzleDefinition, type PuzzleDefinition } from './puzzles';
+import { PUZZLE_DEFINITIONS, PUZZLE_SOLUTION_BUDGET_MULTIPLIER, getPuzzleDefinition, validatePuzzleDefinition, type PuzzleDefinition } from './puzzles';
 import { VISIBLE_START_ROW } from './constants';
 import { createRandomizer, drawPiece } from './random';
 import { PIECE_SHAPES } from './pieces';
@@ -97,31 +97,30 @@ function sameTypeComponents(definition: PuzzleDefinition) {
 }
 
 describe('T12 progressive Puzzle definitions', () => {
-  it('preserves the fifteen-level fixture, adds five generated endgames, and enforces normalized authored topology', () => {
+  it('preserves every authored board while calibrating the verified-route campaign order', () => {
     expect(PUZZLE_DEFINITIONS).toHaveLength(20);
     expect(t5Levels).toHaveLength(15);
-    const legacyDefinitions = PUZZLE_DEFINITIONS.filter((definition) => t5Levels.some((level) => level.id === definition.id));
-    expect(legacyDefinitions.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })))
-      .toEqual(t5Levels.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })));
+    expect(t5Levels.map(({ id }) => {
+      const definition = getPuzzleDefinition(id);
+      return { id: definition.id, name: definition.name, seed: definition.seed, setup: definition.setup, boardRows: definition.boardRows };
+    })).toEqual(t5Levels.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })));
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ setup }) => setup.seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.map(occupancyRow).join('/'))).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.map(({ difficulty }) => difficulty)).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
-    expect(PUZZLE_DEFINITIONS.slice(0, 6).map(({ id, seed }) => [id, seed])).toEqual([
-      ['t3r-shaft-01', 0x75c0b101],
-      ['t3r-shaft-02', 0x75c0b202],
-      ['t3r-shaft-03', 0x75c0b303],
-      ['t3r-shaft-04', 0x75c0b404],
-      ['t3r-cascade-05', 0x75c0b505],
-      ['t3r-cascade-06', 0x75c0b606],
+    expect(PUZZLE_DEFINITIONS.slice(0, 3).map(({ id, solverPieceBudget }) => [id, solverPieceBudget])).toEqual([
+      ['t6r-bastion-19', 48],
+      ['t5r-prism-11', 48],
+      ['t5r-arc-13', 52],
     ]);
     const campaignColors = new Set<string>();
     for (const definition of PUZZLE_DEFINITIONS) {
       expect(() => validatePuzzleDefinition(definition)).not.toThrow();
       expect(definition.difficulty).toBeGreaterThanOrEqual(1);
       expect(definition.difficulty).toBeLessThanOrEqual(20);
+      expect(definition.solverPieceBudget % PUZZLE_SOLUTION_BUDGET_MULTIPLIER).toBe(0);
       expect('queue' in definition).toBe(false);
       expect('pieceBudget' in definition).toBe(false);
       if (definition.anchorCells.length > 0) {
@@ -154,11 +153,11 @@ describe('T12 progressive Puzzle definitions', () => {
       for (const color of metrics.colors) campaignColors.add(color);
     }
     expect(campaignColors).toEqual(new Set(PIECE_TYPES));
-    expect(PUZZLE_SOLVER_SLACK).toBe(10);
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).length).toBeGreaterThanOrEqual(8);
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length === 2).map(({ id }) => id)).toEqual(
-      expect.arrayContaining(['t5r-delta-07', 't5r-arc-13', 't6r-keystone-20']),
-    );
+    expect(PUZZLE_SOLUTION_BUDGET_MULTIPLIER).toBe(2);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id).sort()).toEqual([
+      't3r-shaft-01', 't3r-shaft-03', 't5r-prism-11',
+    ]);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).every(({ anchorCells }) => anchorCells.length === 1)).toBe(true);
     for (let left = 0; left < PUZZLE_DEFINITIONS.length; left += 1) {
       for (let right = left + 1; right < PUZZLE_DEFINITIONS.length; right += 1) {
         const first = PUZZLE_DEFINITIONS[left]!.boardRows.join('');
@@ -205,7 +204,7 @@ describe('T12 progressive Puzzle definitions', () => {
       },
     }))).toThrow(/frozen legal setup/i);
     expect(() => validatePuzzleDefinition(invalid(first, { hiddenCells: [{ x: 0, y: 0, type: 'J' }] }))).toThrow(/hidden buffer/i);
-    const anchored = getPuzzleDefinition('t5r-arc-13');
+    const anchored = getPuzzleDefinition('t5r-prism-11');
     expect(() => validatePuzzleDefinition(invalid(anchored, { anchorCells: [] }))).toThrow(/deterministic anchor/i);
     expect(() => validatePuzzleDefinition(invalid(anchored, { anchorCells: [{ x: 0, y: 8 }, { x: 1, y: 8 }] }))).toThrow(/deterministic anchor/i);
   });

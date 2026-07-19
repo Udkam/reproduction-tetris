@@ -60,7 +60,7 @@ export type PuzzleCompletion =
   | 'failed-top-out'
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn'
-  /** @deprecated Compatibility-only; Puzzle has no finite piece budget. */
+  /** Puzzle route exceeded its published lock allowance. */
   | 'failed-budget';
 
 export interface GameState {
@@ -79,7 +79,7 @@ export interface GameState {
    * @deprecated Remove when the presentation shell consumes puzzleGoal.
    */
   puzzleTargetLines: number | null;
-  /** @deprecated Compatibility-only; always null for normal-play Puzzle. */
+  /** Published Puzzle lock allowance, derived from the verified route length. */
   puzzlePieceBudget: number | null;
   /** Original authored cells still awaiting an ordinary line clear. */
   puzzleTargetCells: readonly Cell[];
