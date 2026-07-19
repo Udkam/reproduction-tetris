@@ -23,7 +23,7 @@ import {
   exposedCellEdges,
   internalCellSeams,
   lineClearPresentationProgress,
-  nextPreviewPiece,
+  nextPreviewPieces,
   orthogonalCellComponents,
   type CellEdge,
   type BoardShiftDirection,
@@ -90,6 +90,7 @@ export interface RendererSnapshot {
   preview: { x: number; y: number; width: number; height: number } | null;
   previewLayerVisible: boolean;
   previewPiece: PieceType | null;
+  previewPieces: PieceType[];
   previewClearBounds: { x: number; y: number; width: number; height: number } | null;
   previewClearPiece: PieceType | null;
   scrim: { x: number; y: number; width: number; height: number } | null;
@@ -123,6 +124,7 @@ export class TetrisRenderer {
   private previewBounds: RendererSnapshot['preview'] = null;
   private previewLayerVisible = false;
   private previewPiece: PieceType | null = null;
+  private previewPieces: PieceType[] = [];
   private lastPreviewBounds: RendererSnapshot['preview'] = null;
   private lastPreviewPiece: PieceType | null = null;
   private previewClearBounds: RendererSnapshot['previewClearBounds'] = null;
@@ -134,6 +136,7 @@ export class TetrisRenderer {
     preview: null,
     previewLayerVisible: false,
     previewPiece: null,
+    previewPieces: [],
     previewClearBounds: null,
     previewClearPiece: null,
     scrim: null,
@@ -724,6 +727,7 @@ export class TetrisRenderer {
     this.previewBounds = null;
     this.previewLayerVisible = false;
     this.previewPiece = null;
+    this.previewPieces = [];
     const hostBounds = this.host?.getBoundingClientRect();
     const slot = document.querySelector<HTMLElement>('[data-testid="next-slot"]')?.getBoundingClientRect();
     if (hostBounds && slot && slot.width > 0 && slot.height > 0) {
@@ -748,14 +752,12 @@ export class TetrisRenderer {
       }
       this.previewClearBounds = null;
       this.previewClearPiece = null;
-      const next = nextPreviewPiece(state);
-      if (next) {
-        const unit = Math.max(5, Math.min(15, slot.width / 5, slot.height / 3));
-        this.drawPreviewPiece(graphics, next, x + slot.width / 2, y + slot.height / 2, unit);
-      }
+      const previews = nextPreviewPieces(state);
+      this.drawPreviewPieces(graphics, previews, x, y, slot.width, slot.height);
       this.previewBounds = { x, y, width: slot.width, height: slot.height };
-      this.previewLayerVisible = next !== undefined;
-      this.previewPiece = next ?? null;
+      this.previewLayerVisible = previews.length > 0;
+      this.previewPieces = [...previews];
+      this.previewPiece = previews[0] ?? null;
       this.lastPreviewBounds = this.previewBounds;
       this.lastPreviewPiece = this.previewPiece;
       return;
@@ -778,24 +780,24 @@ export class TetrisRenderer {
     const width = this.app?.screen.width ?? 0;
     if (layout.compact) {
       const topY = Math.max(7, layout.y - Math.min(92, layout.cell * 4.7));
-      const unit = Math.max(4, Math.min(8, layout.cell * 0.24));
-      const previewCenterX = layout.x + layout.cell * 2.5;
-      const next = nextPreviewPiece(state);
-      if (next) this.drawPreviewPiece(graphics, next, previewCenterX, topY + 25, unit);
       this.previewBounds = { x: layout.x, y: topY, width: layout.cell * 5, height: Math.max(42, layout.cell * 4) };
-      this.previewLayerVisible = next !== undefined;
-      this.previewPiece = next ?? null;
+      const previews = nextPreviewPieces(state);
+      this.drawPreviewPieces(graphics, previews, this.previewBounds.x, this.previewBounds.y, this.previewBounds.width, this.previewBounds.height);
+      this.previewLayerVisible = previews.length > 0;
+      this.previewPieces = [...previews];
+      this.previewPiece = previews[0] ?? null;
       this.lastPreviewBounds = this.previewBounds;
       this.lastPreviewPiece = this.previewPiece;
     } else {
       const sideWidth = Math.max(92, (width - layout.width) / 2 - 22);
       const leftX = Math.max(12, layout.x - sideWidth - 14);
       const cardWidth = Math.max(78, sideWidth);
-      const next = nextPreviewPiece(state);
-      if (next) this.drawPreviewPiece(graphics, next, leftX + cardWidth / 2, layout.y + layout.cell * 2.2, Math.min(14, layout.cell * 0.48));
       this.previewBounds = { x: leftX, y: layout.y, width: cardWidth, height: Math.max(52, layout.cell * 4) };
-      this.previewLayerVisible = next !== undefined;
-      this.previewPiece = next ?? null;
+      const previews = nextPreviewPieces(state);
+      this.drawPreviewPieces(graphics, previews, this.previewBounds.x, this.previewBounds.y, this.previewBounds.width, this.previewBounds.height);
+      this.previewLayerVisible = previews.length > 0;
+      this.previewPieces = [...previews];
+      this.previewPiece = previews[0] ?? null;
       this.lastPreviewBounds = this.previewBounds;
       this.lastPreviewPiece = this.previewPiece;
     }
@@ -822,6 +824,25 @@ export class TetrisRenderer {
       originY: centerY - height / 2 - minY * unit,
       unit,
     });
+  }
+
+  private drawPreviewPieces(
+    graphics: Graphics,
+    pieces: readonly PieceType[],
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+  ): void {
+    if (!pieces.length) return;
+    const dualPreview = pieces.length > 1;
+    const unit = dualPreview
+      ? Math.max(4, Math.min(15, width / 5, height / 6.4))
+      : Math.max(5, Math.min(15, width / 5, height / 3));
+    for (const [index, piece] of pieces.entries()) {
+      const centerY = y + height * ((index + 0.5) / pieces.length);
+      this.drawPreviewPiece(graphics, piece, x + width / 2, centerY, unit);
+    }
   }
 
   private consumeEvents(events: readonly GameEvent[]): void {
@@ -924,6 +945,7 @@ export class TetrisRenderer {
       preview: this.previewBounds,
       previewLayerVisible: this.previewLayerVisible,
       previewPiece: this.previewPiece,
+      previewPieces: [...this.previewPieces],
       previewClearBounds: this.previewClearBounds,
       previewClearPiece: this.previewClearPiece,
       scrim: this.scrimBounds,

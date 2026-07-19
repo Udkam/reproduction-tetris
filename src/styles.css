@@ -571,8 +571,8 @@ p {
 .library-content {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(322px, 360px);
-  height: min(610px, calc(100dvh - 220px));
-  min-height: 460px;
+  height: min(610px, calc(100dvh - 266px));
+  min-height: 0;
   overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--edge);
@@ -1216,6 +1216,15 @@ p {
   background: transparent;
   border: 1px solid var(--line);
   border-radius: 8px;
+}
+
+.preview-rail--puzzle .rail-label::after {
+  content: "队列";
+  margin-left: 7px;
+  color: var(--puzzle);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .08em;
 }
 
 .keyboard-map {

@@ -276,6 +276,32 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
+  it('labels Puzzle Next as two ordered canonical inputs while live modes retain one', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const puzzle = render(createElement(GameSession, {
+      mode: 'puzzle', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    const puzzleSlot = puzzle.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
+    expect(puzzle.container.querySelector('.preview-rail')?.textContent).toContain('Next · 2');
+    expect(puzzleSlot.dataset.previewCount).toBe('2');
+    expect(puzzleSlot.getAttribute('aria-label')).toBe('后续两个方块，按顺序显示');
+    puzzle.unmount();
+
+    const classic = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    const classicSlot = classic.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
+    expect(classic.container.querySelector('.preview-rail')?.textContent).toContain('Next');
+    expect(classic.container.querySelector('.preview-rail')?.textContent).not.toContain('Next · 2');
+    expect(classicSlot.dataset.previewCount).toBe('1');
+    expect(classicSlot.getAttribute('aria-label')).toBe('下一个方块');
+    classic.unmount();
+  });
+
   it('keeps restart out of Pause and requires an Enter-confirmed header restart', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));

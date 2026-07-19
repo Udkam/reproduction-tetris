@@ -734,6 +734,7 @@ export function GameSession({
       placedPieces: state.pieceCount,
       active: state.active ? { type: state.active.type, x: state.active.x, y: state.active.y, rotation: state.active.rotation } : null,
       next: state.queue[0] ?? null,
+      nextPreviews: state.mode === 'puzzle' ? state.queue.slice(0, 2) : state.queue.slice(0, 1),
       visibleBoard: state.board.slice(-20).map((row) => row.map((cell) => cell ?? '.').join('')),
     });
     window.advanceTime = (ms: number) => {
@@ -825,6 +826,7 @@ export function GameSession({
     ? recordsForMode(insertScoreRecord(leaderboard, resultRecord), resultRecord.mode)
     : storedRecords;
   const resultRank = state.mode === 'puzzle' ? null : scoreRecordRank(leaderboardRecords, resultRecord);
+  const puzzleDoublePreview = state.mode === 'puzzle';
 
   return (
     <main id="game" className="play-shell" data-testid="game-screen">
@@ -896,9 +898,14 @@ export function GameSession({
             <div className="info-rail" data-testid="context-top">
               <RunStats state={state} />
             </div>
-            <div className="preview-rail">
-              <p className="rail-label">Next</p>
-              <div className="next-slot" data-testid="next-slot" aria-label="下一个方块" />
+            <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
+              <p className="rail-label">{puzzleDoublePreview ? 'Next · 2' : 'Next'}</p>
+              <div
+                className="next-slot"
+                data-testid="next-slot"
+                data-preview-count={puzzleDoublePreview ? 2 : 1}
+                aria-label={puzzleDoublePreview ? '后续两个方块，按顺序显示' : '下一个方块'}
+              />
             </div>
             <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>R 重新开始</span></p>
           </aside>

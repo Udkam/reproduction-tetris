@@ -179,8 +179,17 @@ export function boardShiftPresentationOffset(
   return direction === 'up' ? distance : -distance;
 }
 
-/** Every mode previews the same continuously generated canonical queue. */
+/**
+ * The queue remains the canonical source in every mode. Puzzle exposes the
+ * first two authored inputs; Classic and Survival retain their focused single
+ * preview. This presentation helper never consumes or mutates that queue.
+ */
+export function nextPreviewPieces(state: GameState): PieceType[] {
+  if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') return [];
+  return state.mode === 'puzzle' ? state.queue.slice(0, 2) : state.queue.slice(0, 1);
+}
+
+/** Compatibility wrapper for integrations that only need the first preview. */
 export function nextPreviewPiece(state: GameState): PieceType | null {
-  if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') return null;
-  return state.queue[0] ?? null;
+  return nextPreviewPieces(state)[0] ?? null;
 }

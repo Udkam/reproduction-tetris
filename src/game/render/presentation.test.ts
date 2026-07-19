@@ -8,6 +8,7 @@ import {
   internalCellSeams,
   lineClearCellProgress,
   lineClearPresentationProgress,
+  nextPreviewPieces,
   nextPreviewPiece,
   orthogonalCellComponents,
 } from './presentation';
@@ -144,16 +145,27 @@ describe('presentation interpolation', () => {
     ]);
   });
 
-  it('uses the generated shared next item for Puzzle and no terminal preview', () => {
-    const ready = createInitialState(9, 'puzzle', 't3r-cascade-06');
+  it('uses the canonical queue for a two-item Puzzle preview and one-item live previews', () => {
+    const ready = createInitialState(9, 'puzzle', 't3r-shaft-01');
     const playing = dispatch(ready, { type: 'start' }).state;
+    const puzzleQueueBeforePreview = [...playing.queue];
+
+    expect(nextPreviewPieces(ready)).toEqual([]);
+    expect(nextPreviewPieces(playing)).toEqual(playing.queue.slice(0, 2));
     expect(nextPreviewPiece(playing)).toBe(playing.queue[0]);
+    expect(playing.queue).toEqual(puzzleQueueBeforePreview);
+
+    const classic = dispatch(createInitialState(9, 'marathon'), { type: 'start' }).state;
+    const survival = dispatch(createInitialState(9, 'race'), { type: 'start' }).state;
+    expect(nextPreviewPieces(classic)).toEqual(classic.queue.slice(0, 1));
+    expect(nextPreviewPieces(survival)).toEqual(survival.queue.slice(0, 1));
 
     let afterFirstLock = dispatch(playing, { type: 'hard-drop' }).state;
     for (let guard = 0; afterFirstLock.status === 'playing' && (!afterFirstLock.active || afterFirstLock.phase !== 'active') && guard < 64; guard += 1) {
       afterFirstLock = dispatch(afterFirstLock, { type: 'tick' }).state;
     }
-    expect(nextPreviewPiece(afterFirstLock)).toBe(afterFirstLock.queue[0]);
+    expect(nextPreviewPieces(afterFirstLock)).toEqual(afterFirstLock.queue.slice(0, 2));
     expect(nextPreviewPiece({ ...afterFirstLock, status: 'finished' })).toBeNull();
+    expect(nextPreviewPieces({ ...afterFirstLock, status: 'finished' })).toEqual([]);
   });
 });
