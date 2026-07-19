@@ -13,7 +13,7 @@ audio palette.
   ordinary row clear and the bounded volatile support-settlement rule, and is removed
   only when that original cell clears.
 - `X` is the shortest lock count among the level's currently verified deterministic
-  public-command solver routes plus eight locks of fixed slack. It is a reproducible
+  public-command solver routes plus twenty locks of fixed slack. It is a reproducible
   accepted-solver bound with room for recovery, not a claim of a globally proven
   mathematical optimum. The engine permits success on the Xth lock after line
   resolution; if targets remain then, it ends with the explicit budget failure. Each
