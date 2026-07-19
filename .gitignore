@@ -5,6 +5,9 @@ coverage/
 .vite/
 output/web-game/
 
+# Local player walkthroughs and per-step solution snapshots
+Solutions/
+
 # Local browser-review captures
 t10-*.png
 t11-*.png
