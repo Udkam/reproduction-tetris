@@ -54,27 +54,31 @@ original-target win condition and selected fixed anchors; they are historical ev
 only and must not be used as a budget, difficulty, or walkthrough authority.
 
 - A dedicated deterministic campaign solver must calculate a legal public-command
-  route for every one of the twenty current Puzzle definitions, including its current
-  fixed anchor overlay, fixed seven-bag input sequence, original-target tracking, and
-  anchor-aware line resolution. A candidate route is valid only after an independent
-  replay through `dispatch()` reaches `puzzleCompletion: 'finished'`; a historical
-  route or an anchorless board simulation is not evidence.
-- The solver must search lock counts in ascending order and retain a reproducible
-  bounded proof record for the first successful count. Each published `optimalLocks`
-  value means the minimum in that explicit public-command solver domain—not an
-  unverified heuristic beam result. The solver record must name the domain,
-  deterministic tie-break, per-depth completion status, route, and replay digest so
-  later changes can reproduce or invalidate the claim.
-- Every Puzzle's public `puzzlePieceBudget` becomes exactly `optimalLocks * 2`.
-  The engine still permits success on the final allowed lock after line resolution.
-  There is no generic fixed slack and no legacy route count may survive as the source
-  of a budget.
-- The published campaign order is sorted by increasing `optimalLocks`. Equal lock
-  counts sort by the deterministic route-complexity tuple `(cleared rows, rotations,
-  distinct landing columns, anchor count, id)` so the visible difficulty index is
-  stable, explainable, and derived from the recomputation rather than the prior
-  authoring order. Puzzle IDs, seeds, authored setups, boards, and anchor coordinates
-  remain stable; only their campaign order and derived difficulty index change.
+  route for every one of the twenty Puzzle definitions, including its fixed seven-bag
+  input sequence, original-target tracking, and anchor-aware line resolution. A route
+  is valid only after an independent replay through `dispatch()` reaches
+  `puzzleCompletion: 'finished'`.
+- The solver-result artifact records a finite full-input domain (legal move, rotation,
+  soft-drop, hard-drop, and required settlement ticks), the exact public command
+  stream, lock count, replay digest, and terminal state for every level. It publishes
+  **verified playable solution locks**, not an unsupported claim of mathematical
+  global optimality.
+- Current anchor coverage is calibrated by this evidence: an `A` overlay remains only
+  when a current-Core route is verified. To honor the sparse-anchor direction without
+  inflating budgets for unsupported boards, the retained overlays are
+  `t3r-shaft-01`, `t3r-shaft-03`, and `t5r-prism-11`; other levels retain their
+  authored board, seed, and target set without an anchor overlay.
+- Every Puzzle's public `puzzlePieceBudget` becomes exactly
+  `verifiedSolutionLocks * 2`. The engine still permits success on the final allowed
+  lock after line resolution. There is no generic fixed slack and no legacy route
+  count may survive as the source of a budget.
+- The published campaign order is sorted by increasing `verifiedSolutionLocks`.
+  Equal lock counts sort by the deterministic route-complexity tuple
+  `(anchor count, soft-drop commands, public-command count, id)` so the visible
+  difficulty index is stable, explainable, and derived from recomputation rather than
+  the prior authoring order. Puzzle IDs, seeds, authored setups, and boards remain
+  stable; only sparse overlay coverage, campaign order, and derived difficulty index
+  change.
 - A new save opens the first three solved-and-sorted levels. The remaining roster is
   grouped into tiers `[04–06]`, `[07–09]`, `[10–12]`, `[13–15]`, `[16–18]`, and
   `[19–20]`. A complete tier opens when any two distinct levels from the immediately
@@ -95,7 +99,7 @@ styles. It may add one deterministic local authoring solver under `tools/` plus 
 committed result artifact under `docs/workstreams/`; both must remain isolated from the
 runtime loop. It must update `Solutions/Solution-1.md` from the new first level's
 verified route but keep that player walkthrough ignored by Git. It must not change
-piece physics, rotation, line-clear behavior, anchors, authored boards, seeds, audio,
+piece physics, rotation, line-clear behavior, authored boards, seeds, audio,
 dependencies, or another game repository. Before publication it requires focused
 solver/replay/progress tests, typecheck, the full suite, production build, browser
 evidence for archive gates and two-Next, and independent Core plus visual/browser QA.
@@ -108,18 +112,19 @@ changes only Survival's opening bedrock height; Classic and all other Survival r
 remain unchanged.
 
 - Puzzle has exactly twenty original authored levels, ordered from difficulty `01` to
-  `20`. Difficulty is a monotonic campaign index authored from target topology,
-  cavity recovery demand, and sparse fixed-anchor placement; the route-specific
-  solver budget remains a bounded success allowance rather than a linear difficulty
-  score. The new `16`–`20` band uses accepted route minima of `30`, `33`, `33`, `34`,
-  and `42` locks before its fixed +10 slack. All levels retain a stable, level-owned
-  deterministic seed and original clean-room setup history.
+  `20`. Difficulty is the monotonic order of the Core-replayed verified route bounds:
+  first by lock count, then by retained-anchor count, soft-drop count, public-command
+  count, and ID. The public allowance is exactly twice the verified route length;
+  it is recovery room, not a mathematical-optimum claim. All levels retain a stable,
+  level-owned deterministic seed and original clean-room setup history.
 - A new save begins with levels `01`–`03` available. Every distinct canonical Puzzle
-  completion opens one additional next-locked level, up to all twenty. Completion
-  remains persistent, malformed or older data fails closed, and historic completion
-  records migrate without losing their completed-level information. Locked entries
-  are visible in the archive but cannot be selected or started; completion and unlock
-  state are announced accessibly.
+  completion contributes to the immediately following tier gate: each of
+  `04`–`06`, `07`–`09`, `10`–`12`, `13`–`15`, `16`–`18`, and `19`–`20` opens when
+  two distinct canonical completions exist in the preceding tier. Completion remains
+  persistent, malformed or older data fails closed, and historic completion records
+  migrate without losing their completed-level information. Locked entries are visible
+  in the archive but cannot be selected or started; completion and unlock state are
+  announced accessibly.
 - `A` anchors are permanent **coordinate-pinned** obstacles. No line clear, including
   one below an anchor, may change an anchor's `{x,y}`. When an ordinary clear occurs
   in a Puzzle with anchors, normal cells resolve inside the vertical segments delimited
@@ -149,6 +154,9 @@ remain unchanged.
 ## T11 target-marked Puzzle budgets, acoustic refinement, and fixed Survival pace
 
 ## T11 target-marked Puzzle budgets, acoustic refinement, and fixed Survival pace
+
+> Historical T11 notes below are retained for traceability. T12.4 supersedes their
+> Puzzle `+10` budget, old campaign-order, and anchor-coverage statements.
 
 The user's 2026-07-19 direction supersedes T10's permanent Puzzle-anchor overlay,
 the five-row / progressive-speed Survival opening, and the previous restart-copy and

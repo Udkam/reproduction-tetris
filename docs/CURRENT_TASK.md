@@ -15,12 +15,12 @@ locally verified T12 baseline; T11 remains a recoverable baseline at `a76eea2`, 
 its separate independent QA disposition.
 
 T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
-level a monotonic visible difficulty index. The index is an authored topology/anchor
-curriculum rather than a misleading raw budget ranking; the added 16–20 routes use
-accepted minima of 30, 33, 33, 34, and 42 locks before the fixed +10 slack. A new campaign opens only levels 01–03;
-each distinct canonical completion unlocks exactly one next locked level. The archive
-shows locked entries but neither selects nor starts them. Existing persisted completed
-IDs migrate forward and remain valid; malformed progress is fail-closed.
+level a monotonic visible difficulty index. T12.4 replaces the inherited topology-only
+ordering, route minima, and fixed `+10` slack with a Core-replayed solver-result
+archive. A new campaign opens only levels 01–03; later three-level tiers open after
+two canonical completions in the immediately preceding tier. The archive shows locked
+entries but neither selects nor starts them. Existing persisted completed IDs migrate
+forward and remain valid; malformed progress is fail-closed.
 
 The player-facing identity changes to the short plain-text `Tetra`. It makes the
 four-cell falling-block vocabulary legible without a copied logo treatment or a visible
@@ -125,8 +125,9 @@ until T12.2 is re-reviewed.
 The requested Level 01 walkthrough is a local player artifact at
 `Solutions/Solution-1.md`; `Solutions/` must be ignored by Git. Its content must be
 derived from the fixed deterministic solver route, document every lock's board snapshot,
-and name the route's exact minimum lock count rather than presenting a heuristic as
-optimal. It is not a product asset and must not enter the Git candidate.
+and name the route's Core-replayed verified lock count as a playable upper bound, not
+as a mathematical optimum. It is not a product asset and must not enter the Git
+candidate.
 
 T12.3 allowed product/test paths are `.gitignore`, `src/App.tsx`, `src/App.test.ts`,
 `src/styles.css`, `src/game/render/TetrisRenderer.ts`,
@@ -141,28 +142,27 @@ QA before formal acceptance or publication.
 
 ### T12.4 current Puzzle solver recalculation, campaign reorder, doubled budgets, and tiered unlocks
 
-The user requires every current Puzzle level—not only the former first level—to be
-correctly solved against its actual fixed-anchor state before any difficulty, budget,
-or player walkthrough claim is published. This supersedes all inherited
-`SOLVER_PIECE_BUDGETS` values and all old reference-route assumptions. The legacy
-fifteen-route fixture was authored for a different target/anchor contract; it cannot
-be presented as a solution, lower bound, or budget authority.
+The user requires every Puzzle level—not only the former first level—to have a
+correctly Core-replayed route before any difficulty, budget, or player walkthrough
+claim is published. This supersedes all inherited `SOLVER_PIECE_BUDGETS` values and
+old reference-route assumptions. The legacy fifteen-route fixture is historical input
+only; it cannot itself be presented as a current solution or budget authority.
 
-The solver work must define a finite public-command domain and enumerate locks in
-ascending order. It must independently replay the first successful route for each of
-the twenty unchanged puzzle definitions through `dispatch()` with its actual seed,
-anchor coordinates, target mapping, and line-clear behavior. A result record must
-carry the exact command/placement route, replay digest, first successful lock count,
-and a per-depth completion proof sufficient to distinguish an exhaustive result from
-a heuristic candidate. A failed, timed-out, or beam-only search is not an optimum and
-may not be used to set the requested player budget.
+The solver record defines a finite public-command domain: legal move, rotation,
+soft-drop, hard-drop, and required settlement ticks. It independently replays every
+published route through `dispatch()` with the actual seed, target mapping, and
+line-clear behavior. Its result field is `verifiedSolutionLocks`: a reproducible,
+playable upper bound with exact command stream and replay digest, **not** a claim of
+global mathematical optimality. Failed or timed-out searches are excluded from the
+artifact rather than converted into a budget.
 
-After all twenty verified minima exist, `PUZZLE_DEFINITIONS` must be reordered by
-ascending `optimalLocks`; ties use the stable route-complexity tuple `(cleared rows,
-rotations, distinct landing columns, anchor count, id)`. IDs, authored boards,
-fixed anchors, setup histories, and per-level seeds do not change. Each revised
-`puzzlePieceBudget` is exactly twice that level's verified `optimalLocks`, with no
-separate +10 slack.
+The recalibration keeps anchor mechanics but reduces unsupported coverage. Retained
+fixed overlays are `t3r-shaft-01`, `t3r-shaft-03`, and `t5r-prism-11`; current
+overlays without a verified route are removed. All IDs, authored boards, setup
+histories, and seeds remain stable. `PUZZLE_DEFINITIONS` is reordered by ascending
+`verifiedSolutionLocks`, with ties by `(anchor count, soft-drop commands,
+public-command count, id)`. Each revised `puzzlePieceBudget` is exactly twice that
+level's `verifiedSolutionLocks`, with no separate `+10` slack.
 
 The new unlock frontier is tiered after that ordering: levels 01–03 are initially
 open; levels 04–06, 07–09, 10–12, 13–15, 16–18, and 19–20 each open when any two
@@ -176,7 +176,8 @@ T12.4 opens the following paths after its solver-contract checkpoint:
 - `tools/solve-puzzle-campaign.*` and only directly related solver verification helpers;
 - one committed solver-result artifact under `docs/workstreams/tetris-t12-core/`;
 - `src/game/core/puzzles.ts`, its direct tests, and the current Puzzle campaign
-  verifier/reference fixture only as needed to make the verified minima authoritative;
+  verifier/reference fixture only as needed to make the verified route bounds
+  authoritative;
 - `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`,
   `src/App.test.ts`, and directly related styles for tier-gate persistence/copy;
 - `Solutions/Solution-1.md` as a deliberately ignored local player walkthrough,
@@ -184,8 +185,8 @@ T12.4 opens the following paths after its solver-contract checkpoint:
 - `docs/DESIGN.md`, this task record, `docs/progress.md`, and the assigned T12 core,
   frontend, and coordinator logs.
 
-T12.4 does not authorize changed physics, rotation, row resolution, anchors,
-authored setup/board content, seed generation, audio, dependencies, browser assets,
+T12.4 does not authorize changed physics, rotation, row resolution, authored
+setup/board content, seed generation, audio, dependencies, browser assets,
 or work in another repository. The source chain must keep solver infrastructure,
 authoritative core data, progress migration, and archive UI as separately reviewable
 checkpoints. After the last source change: run focused solver/replay/progress tests,
@@ -193,6 +194,9 @@ one final typecheck, full test suite, build, and one browser matrix covering a n
 archive, tier unlock transition, Puzzle double Next, and the renderer top edge. Fresh
 independent Core and visual/browser QA must accept the final contiguous candidate
 before `CHANGELOG.md` integration or push.
+
+> Historical T11 notes below are retained for traceability. T12.4 supersedes their
+> Puzzle `+10` budget, legacy unlock, and anchor-coverage statements.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special
