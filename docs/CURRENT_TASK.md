@@ -16,11 +16,10 @@ each distinct canonical completion unlocks exactly one next locked level. The ar
 shows locked entries but neither selects nor starts them. Existing persisted completed
 IDs migrate forward and remain valid; malformed progress is fail-closed.
 
-The player-facing identity changes to plain-text `TetraStrata`, with the Chinese design
-name `四格层界` available as explanatory copy rather than a copied logo treatment.
-`Tetra` makes the four-cell falling-block vocabulary legible; `Strata` carries the
-layered Puzzle-anchor and Survival-bedrock idea. Browser title, loading shell, visible
-header, and accessible live copy must no longer present `Tetris` as the game title.
+The player-facing identity changes to the short plain-text `Tetra`. It makes the
+four-cell falling-block vocabulary legible without a copied logo treatment or a visible
+Chinese companion name. Browser title, loading shell, visible header, and accessible
+live copy must no longer present `Tetris` as the game title.
 
 T12 removes all volatile/expiring Puzzle input behavior, related renderer material,
 HUD state, expiry events, audio, timers, and volatile support settlement. Puzzle inputs
