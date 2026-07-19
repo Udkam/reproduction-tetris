@@ -16,6 +16,7 @@ import {
 } from '../core';
 import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS, type PieceMaterial } from './theme';
 import {
+  activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
   boardShiftPresentationOffset,
   clampActivePresentationOffsetY,
@@ -369,10 +370,16 @@ export class TetrisRenderer {
       .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
     const offsetY = clampActivePresentationOffsetY(rawOffsetY, visibleActiveCells, layout.cell, VISIBLE_HEIGHT);
-    const activeTouchesVisibleEdge = visibleActiveCells.some((cell) => cell.y === 0 || cell.y === VISIBLE_HEIGHT - 1);
-    const rotationScale = this.options.reducedMotion || activeTouchesVisibleEdge || offsetY !== rawOffsetY
-      ? 1
-      : 1 + this.rotationPulse * 0.035;
+    const requestedRotationScale = this.options.reducedMotion ? 1 : 1 + this.rotationPulse * 0.035;
+    const rotationScale = activePresentationScaleFitsVisibleWell(
+      visibleActiveCells,
+      offsetY,
+      layout.cell,
+      VISIBLE_HEIGHT,
+      requestedRotationScale,
+    )
+      ? requestedRotationScale
+      : 1;
     if (state.active) {
       this.drawCellGroups(
         graphics,

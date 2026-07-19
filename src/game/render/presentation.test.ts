@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
   boardShiftPresentationOffset,
   clampActivePresentationOffsetY,
@@ -55,10 +56,18 @@ describe('presentation interpolation', () => {
     ];
     const middleSquare: Cell[] = topSquare.map((cell) => ({ ...cell, y: cell.y + 5 }));
     const bottomSquare: Cell[] = topSquare.map((cell) => ({ ...cell, y: cell.y + 18 }));
+    const translatedTopSquare: Cell[] = topSquare.map((cell) => ({ ...cell, y: cell.y + 1 }));
+    const translatedBottomSquare: Cell[] = topSquare.map((cell) => ({ ...cell, y: cell.y + 17 }));
+    const pulseScale = 1.035;
 
     expect(clampActivePresentationOffsetY(-unit, topSquare, unit, height)).toBe(0);
     expect(clampActivePresentationOffsetY(-unit, middleSquare, unit, height)).toBe(-unit);
     expect(clampActivePresentationOffsetY(unit, bottomSquare, unit, height)).toBe(0);
+    expect(clampActivePresentationOffsetY(-unit, translatedTopSquare, unit, height)).toBe(-unit);
+    expect(clampActivePresentationOffsetY(unit, translatedBottomSquare, unit, height)).toBe(unit);
+    expect(activePresentationScaleFitsVisibleWell(translatedTopSquare, -unit, unit, height, pulseScale)).toBe(false);
+    expect(activePresentationScaleFitsVisibleWell(translatedBottomSquare, unit, unit, height, pulseScale)).toBe(false);
+    expect(activePresentationScaleFitsVisibleWell(middleSquare, -unit, unit, height, pulseScale)).toBe(true);
 
     for (const [cells, requestedOffsetY] of [
       [topSquare, -unit],

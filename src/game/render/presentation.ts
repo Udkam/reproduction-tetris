@@ -136,6 +136,23 @@ export function clampActivePresentationOffsetY(
   return clampedOffsetY === 0 ? 0 : clampedOffsetY;
 }
 
+/** Verifies that a component-centered active-piece scale remains inside the visible well. */
+export function activePresentationScaleFitsVisibleWell(
+  visibleCells: readonly Cell[],
+  offsetY: number,
+  unit: number,
+  visibleHeight: number,
+  scale: number,
+): boolean {
+  if (!visibleCells.length || !Number.isFinite(offsetY) || unit <= 0 || visibleHeight <= 0 || scale < 1) return false;
+  const minY = Math.min(...visibleCells.map((cell) => cell.y));
+  const maxY = Math.max(...visibleCells.map((cell) => cell.y));
+  const centerY = ((minY + maxY + 1) * unit) / 2;
+  const scaledTop = centerY + (minY * unit - centerY) * scale + offsetY;
+  const scaledBottom = centerY + ((maxY + 1) * unit - centerY) * scale + offsetY;
+  return scaledTop > 0 && scaledBottom < visibleHeight * unit;
+}
+
 export function lineClearCellProgress(phaseProgress: number, column: number, width: number): number {
   if (width <= 1) return Math.max(0, Math.min(1, phaseProgress));
   const centerDistance = Math.abs(column - (width - 1) / 2) / ((width - 1) / 2);
