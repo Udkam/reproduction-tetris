@@ -96,17 +96,19 @@ function sameTypeComponents(definition: PuzzleDefinition) {
   return components;
 }
 
-describe('T5 normal-play Puzzle definitions', () => {
-  it('matches the fifteen-level fixture and enforces normalized authored topology', () => {
-    expect(PUZZLE_DEFINITIONS).toHaveLength(15);
+describe('T12 progressive Puzzle definitions', () => {
+  it('preserves the fifteen-level fixture, adds five generated endgames, and enforces normalized authored topology', () => {
+    expect(PUZZLE_DEFINITIONS).toHaveLength(20);
     expect(t5Levels).toHaveLength(15);
-    expect(PUZZLE_DEFINITIONS.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })))
+    const legacyDefinitions = PUZZLE_DEFINITIONS.filter((definition) => t5Levels.some((level) => level.id === definition.id));
+    expect(legacyDefinitions.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })))
       .toEqual(t5Levels.map(({ id, name, seed, setup, boardRows }) => ({ id, name, seed, setup, boardRows })));
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(15);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(15);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ setup }) => setup.seed)).size).toBe(15);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(15);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.map(occupancyRow).join('/'))).size).toBe(15);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(20);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ setup }) => setup.seed)).size).toBe(20);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(20);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.map(occupancyRow).join('/'))).size).toBe(20);
+    expect(PUZZLE_DEFINITIONS.map(({ difficulty }) => difficulty)).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
     expect(PUZZLE_DEFINITIONS.slice(0, 6).map(({ id, seed }) => [id, seed])).toEqual([
       ['t3r-shaft-01', 0x75c0b101],
       ['t3r-shaft-02', 0x75c0b202],
@@ -118,7 +120,8 @@ describe('T5 normal-play Puzzle definitions', () => {
     const campaignColors = new Set<string>();
     for (const definition of PUZZLE_DEFINITIONS) {
       expect(() => validatePuzzleDefinition(definition)).not.toThrow();
-      expect('difficulty' in definition).toBe(false);
+      expect(definition.difficulty).toBeGreaterThanOrEqual(1);
+      expect(definition.difficulty).toBeLessThanOrEqual(20);
       expect('queue' in definition).toBe(false);
       expect('pieceBudget' in definition).toBe(false);
       if (definition.anchorCells.length > 0) {
@@ -152,10 +155,10 @@ describe('T5 normal-play Puzzle definitions', () => {
     }
     expect(campaignColors).toEqual(new Set(PIECE_TYPES));
     expect(PUZZLE_SOLVER_SLACK).toBe(10);
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0)).toHaveLength(8);
-    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length === 2).map(({ id }) => id)).toEqual([
-      't5r-delta-07', 't5r-arc-13',
-    ]);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).length).toBeGreaterThanOrEqual(8);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length === 2).map(({ id }) => id)).toEqual(
+      expect.arrayContaining(['t5r-delta-07', 't5r-arc-13', 't6r-keystone-20']),
+    );
     for (let left = 0; left < PUZZLE_DEFINITIONS.length; left += 1) {
       for (let right = left + 1; right < PUZZLE_DEFINITIONS.length; right += 1) {
         const first = PUZZLE_DEFINITIONS[left]!.boardRows.join('');
@@ -167,10 +170,11 @@ describe('T5 normal-play Puzzle definitions', () => {
   });
 
   it('proves twelve consecutive complete seven-bags per stable level seed', () => {
-    for (const level of t5Levels) {
+    for (const level of PUZZLE_DEFINITIONS) {
       const generated = generatedPieces(level.seed, 91);
       const first84 = generated.slice(0, 84);
-      expect(first84).toEqual(level.first84);
+      const legacy = t5Levels.find((candidate) => candidate.id === level.id);
+      if (legacy) expect(first84).toEqual(legacy.first84);
       for (let bagIndex = 0; bagIndex < 12; bagIndex += 1) {
         const bag = first84.slice(bagIndex * 7, bagIndex * 7 + 7);
         expect(new Set(bag)).toEqual(new Set(PIECE_TYPES));
@@ -183,6 +187,7 @@ describe('T5 normal-play Puzzle definitions', () => {
     const first = getPuzzleDefinition('t3r-shaft-01');
     expect(() => validatePuzzleDefinition(invalid(first, { seed: 0 }))).toThrow(/seed/i);
     expect(() => validatePuzzleDefinition(invalid(first, { seed: getPuzzleDefinition('t3r-shaft-02').seed }))).toThrow(/stable level seed/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { difficulty: 20 }))).toThrow(/difficulty/i);
     expect(() => validatePuzzleDefinition(invalid(first, { boardRows: first.boardRows.slice(1) }))).toThrow(/exactly/i);
     expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), '.........'] }))).toThrow(/byte-match/i);
     expect(() => validatePuzzleDefinition(invalid(first, { boardRows: [...first.boardRows.slice(0, 19), 'QJJJ.JJJJ.'] }))).toThrow(/byte-match/i);

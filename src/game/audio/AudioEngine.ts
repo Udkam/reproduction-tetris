@@ -9,6 +9,11 @@ interface ToneOptions {
   endFrequency?: number;
 }
 
+/** Full-volume mix gain is deliberately above unity, then safely contained by the compressor. */
+const FULL_VOLUME_MASTER_GAIN = 1.35;
+const VOICE_GAIN_CEILING = 0.46;
+const VOICE_GAIN_BOOST = 1.22;
+
 export class AudioEngine {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -43,11 +48,14 @@ export class AudioEngine {
       this.context = new AudioContext();
       this.master = this.context.createGain();
       this.compressor = this.context.createDynamicsCompressor();
-      this.compressor.threshold.value = -12;
-      this.compressor.knee.value = 12;
-      this.compressor.ratio.value = 8;
-      this.compressor.attack.value = 0.003;
-      this.compressor.release.value = 0.18;
+      // Let individual sine transients stay present at 100%, then catch only
+      // genuinely dense overlaps. The earlier hard compression made every cue
+      // quiet and flattened into a buzzy landing tone.
+      this.compressor.threshold.value = -6;
+      this.compressor.knee.value = 8;
+      this.compressor.ratio.value = 3.5;
+      this.compressor.attack.value = 0.004;
+      this.compressor.release.value = 0.14;
       this.applyMasterGain();
       this.master.connect(this.compressor);
       this.compressor.connect(this.context.destination);
@@ -66,44 +74,41 @@ export class AudioEngine {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = performance.now();
         if (now - this.lastMoveAt > 28) {
-          this.tone({ frequency: 212, duration: 0.026, gain: 0.11, type: 'sine' });
+          this.tone({ frequency: 228, duration: 0.03, gain: 0.13, endFrequency: 244, type: 'sine' });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
         const now = performance.now();
         if (now - this.lastSoftDropAt > 52) {
-          this.tone({ frequency: 164, duration: 0.024, gain: 0.09, type: 'sine' });
+          this.tone({ frequency: 176, duration: 0.03, gain: 0.11, endFrequency: 162, type: 'sine' });
           this.lastSoftDropAt = now;
         }
       } else if (event.type === 'piece-rotated') {
-        this.tone({ frequency: 392, duration: 0.045, gain: 0.17, type: 'sine' });
-        this.tone({ frequency: 587, duration: 0.035, gain: 0.1, delay: 0.018, type: 'sine' });
+        this.tone({ frequency: 392, duration: 0.055, gain: 0.19, endFrequency: 454, type: 'sine' });
+        this.tone({ frequency: 587, duration: 0.045, gain: 0.12, delay: 0.018, endFrequency: 660, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
         this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop) {
-        this.tone({ frequency: 96, duration: 0.085, gain: 0.16, type: 'sine' });
+        this.tone({ frequency: 122, duration: 0.1, gain: 0.2, endFrequency: 98, type: 'sine' });
       } else if (event.type === 'lines-cleared') {
         this.clearChord(event.count);
-      } else if (event.type === 'piece-expired') {
-        this.tone({ frequency: 622, duration: 0.09, gain: 0.18, type: 'sine' });
-        this.tone({ frequency: 466, duration: 0.12, gain: 0.13, delay: 0.055, type: 'sine' });
       } else if (event.type === 'bedrock-raised') {
-        this.tone({ frequency: 82, duration: 0.16, gain: 0.2, type: 'sine' });
+        this.tone({ frequency: 92, duration: 0.17, gain: 0.23, endFrequency: 78, type: 'sine' });
       } else if (event.type === 'bedrock-lowered') {
-        this.tone({ frequency: 220, duration: 0.11, gain: 0.17, type: 'sine' });
+        this.tone({ frequency: 220, duration: 0.12, gain: 0.2, endFrequency: 278, type: 'sine' });
       } else if (event.type === 'level-up') {
-        [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.11, gain: 0.15, delay: index * 0.055, type: 'sine' }));
+        [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.13, gain: 0.18, delay: index * 0.055, type: 'sine' }));
       } else if (event.type === 'finished') {
-        [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.16, gain: 0.15, delay: index * 0.06, type: 'sine' }));
+        [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.18, gain: 0.19, delay: index * 0.06, type: 'sine' }));
       } else if (event.type === 'game-over') {
-        [174, 131, 98].forEach((frequency, index) => this.tone({ frequency, duration: 0.15, gain: 0.16, delay: index * 0.12, type: 'sine' }));
+        [174, 131, 98].forEach((frequency, index) => this.tone({ frequency, duration: 0.17, gain: 0.19, delay: index * 0.12, type: 'sine' }));
       } else if (event.type === 'started' || event.type === 'resumed') {
-        this.tone({ frequency: 440, duration: 0.075, gain: 0.14, type: 'sine' });
+        this.tone({ frequency: 440, duration: 0.09, gain: 0.17, endFrequency: 554, type: 'sine' });
       } else if (event.type === 'paused') {
-        this.tone({ frequency: 262, duration: 0.08, gain: 0.11, type: 'sine' });
+        this.tone({ frequency: 262, duration: 0.09, gain: 0.14, endFrequency: 218, type: 'sine' });
       } else if (event.type === 'restarted') {
-        this.tone({ frequency: 294, duration: 0.065, gain: 0.13, type: 'sine' });
-        this.tone({ frequency: 440, duration: 0.065, gain: 0.1, delay: 0.045, type: 'sine' });
+        this.tone({ frequency: 294, duration: 0.08, gain: 0.16, endFrequency: 330, type: 'sine' });
+        this.tone({ frequency: 440, duration: 0.08, gain: 0.14, delay: 0.045, endFrequency: 494, type: 'sine' });
       }
     }
   }
@@ -125,15 +130,17 @@ export class AudioEngine {
     notes.forEach((ratio, index) => this.tone({
       frequency: base * ratio,
       duration: 0.12 + count * 0.025,
-      gain: 0.13 + count * 0.02,
+      gain: 0.16 + count * 0.022,
       delay: index * 0.022,
       type: 'sine',
     }));
   }
 
   private landingThump(): void {
-    this.tone({ frequency: 64, duration: 0.105, gain: 0.25, type: 'sine' });
-    this.tone({ frequency: 108, duration: 0.038, gain: 0.1, delay: 0.002, type: 'sine' });
+    // A short, descending low-mid sine pair reads as a physical block landing;
+    // it deliberately avoids the sustained 64 Hz hum the prior version produced.
+    this.tone({ frequency: 132, duration: 0.095, gain: 0.31, endFrequency: 98, type: 'sine' });
+    this.tone({ frequency: 198, duration: 0.042, gain: 0.13, delay: 0.002, endFrequency: 154, type: 'sine' });
   }
 
   private tone(options: ToneOptions): void {
@@ -149,7 +156,10 @@ export class AudioEngine {
     oscillator.frequency.setValueAtTime(options.frequency, start);
     if (options.endFrequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(1, options.endFrequency), end);
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, Math.min(0.38, options.gain)), start + Math.min(0.012, options.duration * 0.25));
+    gain.gain.exponentialRampToValueAtTime(
+      Math.max(0.0001, Math.min(VOICE_GAIN_CEILING, options.gain * VOICE_GAIN_BOOST)),
+      start + Math.min(0.012, options.duration * 0.25),
+    );
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
     oscillator.connect(gain);
     gain.connect(master);
@@ -164,7 +174,7 @@ export class AudioEngine {
 
   private applyMasterGain(): void {
     if (!this.master) return;
-    const value = this.enabled ? this.volume : 0;
+    const value = this.enabled ? this.volume * FULL_VOLUME_MASTER_GAIN : 0;
     if (this.context) this.master.gain.setTargetAtTime(value, this.context.currentTime, 0.012);
     else this.master.gain.value = value;
   }

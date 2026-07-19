@@ -39,17 +39,54 @@ export function fullRows(board: Board): number[] {
   return rows;
 }
 
+function removableRows(board: Board, rows: readonly number[]): ReadonlySet<number> {
+  return new Set(rows.filter((index) => !board[index]?.includes(BEDROCK_CELL)));
+}
+
+function nearestAnchorBelow(board: Board, x: number, y: number): number {
+  for (let nextY = y + 1; nextY < BOARD_HEIGHT; nextY += 1) {
+    if (board[nextY]![x] === ANCHOR_CELL) return nextY;
+  }
+  return BOARD_HEIGHT;
+}
+
+/**
+ * Returns the coordinate after a line clear while treating Puzzle anchors as fixed
+ * world coordinates. A clear below an anchor cannot pull a cell through that anchor.
+ */
+function destinationAfterClear(board: Board, removed: ReadonlySet<number>, cell: Cell): Cell {
+  const floor = nearestAnchorBelow(board, cell.x, cell.y);
+  let shift = 0;
+  for (const row of removed) if (row > cell.y && row < floor) shift += 1;
+  return { x: cell.x, y: cell.y + shift };
+}
+
+/** Maps tracked canonical Puzzle cells through the exact anchor-aware line-clear rule. */
+export function mapCellsAfterClear(board: Board, rows: readonly number[], cells: readonly Cell[]): readonly Cell[] {
+  const removed = removableRows(board, rows);
+  return Object.freeze(cells.flatMap((cell) => (
+    removed.has(cell.y) ? [] : [Object.freeze(destinationAfterClear(board, removed, cell))]
+  )));
+}
+
 export function clearRows(board: Board, rows: readonly number[]): Board {
-  const anchoredRows = new Set(rows.filter((index) => board[index]?.includes(ANCHOR_CELL)));
-  const removed = new Set(rows.filter((index) => !board[index]?.includes(BEDROCK_CELL) && !anchoredRows.has(index)));
-  const remaining = board.filter((_, index) => !removed.has(index)).map((row) => [...row]);
-  const blanks = Array.from({ length: removed.size }, () => Array.from({ length: BOARD_WIDTH }, () => null));
-  const settled = [...blanks, ...remaining] as Board;
-  for (const index of anchoredRows) {
-    const shiftedIndex = index + removed.size - [...removed].filter((removedIndex) => removedIndex < index).length;
-    const row = settled[shiftedIndex];
-    if (!row) continue;
-    settled[shiftedIndex] = row.map((cell) => cell === ANCHOR_CELL ? ANCHOR_CELL : null);
+  const removed = removableRows(board, rows);
+  if (removed.size === 0) return cloneBoard(board);
+  const settled = createBoard();
+
+  // Anchors are obstacles tied to their original world coordinates. Lay them down
+  // first, then resolve every ordinary cell against its own anchor-bounded segment.
+  for (let y = 0; y < BOARD_HEIGHT; y += 1) for (let x = 0; x < BOARD_WIDTH; x += 1) {
+    if (board[y]![x] === ANCHOR_CELL) settled[y]![x] = ANCHOR_CELL;
+  }
+  for (let y = 0; y < BOARD_HEIGHT; y += 1) for (let x = 0; x < BOARD_WIDTH; x += 1) {
+    const material = board[y]![x];
+    if (material === null || material === ANCHOR_CELL || removed.has(y)) continue;
+    const destination = destinationAfterClear(board, removed, { x, y });
+    if (settled[destination.y]![destination.x] !== null) {
+      throw new Error('Line clear attempted to move a cell through a fixed anchor.');
+    }
+    settled[destination.y]![destination.x] = material;
   }
   return settled;
 }

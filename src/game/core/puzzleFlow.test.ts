@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, PUZZLE_VOLATILE_PIECE_TICKS, VISIBLE_START_ROW } from './constants';
+import { ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, VISIBLE_START_ROW } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch } from './engine';
 import { ANCHOR_CELL, type GameState, type PieceType } from './types';
@@ -111,40 +111,4 @@ describe('T5 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.puzzleTargetCells).toHaveLength(state.puzzleInitialTargetCount - clearedTargetCount);
   });
 
-  it('expires a settled volatile input after 300 playing ticks, pauses safely, and settles complete components above it', () => {
-    let board = createBoard();
-    for (let x = 3; x <= 6; x += 1) board = setCell(board, x, BOARD_HEIGHT - 5, 'I');
-    for (const cell of [{ x: 4, y: BOARD_HEIGHT - 7 }, { x: 5, y: BOARD_HEIGHT - 7 }, { x: 4, y: BOARD_HEIGHT - 6 }, { x: 5, y: BOARD_HEIGHT - 6 }]) {
-      board = setCell(board, cell.x, cell.y, 'O');
-    }
-    const unrelatedCells = [
-      { x: 0, y: BOARD_HEIGHT - 8 }, { x: 0, y: BOARD_HEIGHT - 7 },
-      { x: 1, y: BOARD_HEIGHT - 7 }, { x: 2, y: BOARD_HEIGHT - 7 },
-    ];
-    for (const cell of unrelatedCells) board = setCell(board, cell.x, cell.y, 'J');
-    let state = dispatch(createInitialState(1, 'puzzle', 't5r-arc-13'), { type: 'start' }).state;
-    state = {
-      ...state,
-      board,
-      gravityTicks: -1_000,
-      puzzleActiveVolatile: false,
-      puzzleTargetCells: [{ x: 4, y: BOARD_HEIGHT - 7 }],
-      puzzleInitialTargetCount: 1,
-      puzzleVolatilePieces: [{ type: 'I', cells: [{ x: 3, y: BOARD_HEIGHT - 5 }, { x: 4, y: BOARD_HEIGHT - 5 }, { x: 5, y: BOARD_HEIGHT - 5 }, { x: 6, y: BOARD_HEIGHT - 5 }], expiryTicks: PUZZLE_VOLATILE_PIECE_TICKS }],
-    };
-    state = dispatch(state, { type: 'pause' }).state;
-    state = advance(state, 8);
-    expect(state.puzzleVolatilePieces[0]?.expiryTicks).toBe(PUZZLE_VOLATILE_PIECE_TICKS);
-    state = dispatch(state, { type: 'resume' }).state;
-    state = advance(state, PUZZLE_VOLATILE_PIECE_TICKS - 1);
-    expect(state.puzzleVolatilePieces[0]?.expiryTicks).toBe(1);
-    const expired = dispatch(state, { type: 'tick' });
-    state = expired.state;
-    expect(expired.events).toContainEqual({ type: 'piece-expired', piece: 'I' });
-    expect(state.puzzleVolatilePieces).toEqual([]);
-    expect(state.board[BOARD_HEIGHT - 2]?.[4]).toBe('O');
-    expect(state.board[BOARD_HEIGHT - 1]?.[5]).toBe('O');
-    expect(state.puzzleTargetCells).toContainEqual({ x: 4, y: BOARD_HEIGHT - 2 });
-    for (const cell of unrelatedCells) expect(state.board[cell.y]?.[cell.x]).toBe('J');
-  });
 });

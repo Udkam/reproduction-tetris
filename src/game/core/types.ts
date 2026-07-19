@@ -20,14 +20,6 @@ export interface ActivePiece {
   y: number;
 }
 
-export interface VolatilePiece {
-  type: PieceType;
-  /** Canonical occupied cells; updated by line clears and support settlement. */
-  cells: readonly Cell[];
-  /** Remaining playing ticks after the piece locked. */
-  expiryTicks: number;
-}
-
 export type BoardCell = BoardMaterial | null;
 export type Board = BoardCell[][];
 
@@ -54,7 +46,12 @@ export type PuzzleId =
   | 't5r-current-12'
   | 't5r-arc-13'
   | 't5r-pulse-14'
-  | 't5r-horizon-15';
+  | 't5r-horizon-15'
+  | 't6r-veil-16'
+  | 't6r-cairn-17'
+  | 't6r-terrace-18'
+  | 't6r-bastion-19'
+  | 't6r-keystone-20';
 
 export type PuzzleGoal = 'original-targets-cleared';
 export type PuzzleCompletion =
@@ -99,10 +96,6 @@ export interface GameState {
   puzzleQueueIndex: number;
   /** Number of seeded Puzzle pieces that have entered the board, including the active piece. */
   puzzleSpawnCount: number;
-  /** Whether the currently falling Puzzle input will become volatile after it locks. */
-  puzzleActiveVolatile: boolean;
-  /** Locked volatile Puzzle inputs that are waiting to disappear. */
-  puzzleVolatilePieces: readonly VolatilePiece[];
   puzzleGoal: PuzzleGoal | null;
   puzzleCompletion: PuzzleCompletion | null;
   completedLevelId: PuzzleId | null;
@@ -145,7 +138,6 @@ export type GameEvent =
   | { type: 'piece-moved'; piece: PieceType; dx: number; dy: number; cause: 'move' | 'gravity' | 'soft-drop' }
   | { type: 'piece-rotated'; piece: PieceType; direction: -1 | 1 }
   | { type: 'hard-dropped'; piece: PieceType; distance: number }
-  | { type: 'piece-expired'; piece: PieceType }
   | { type: 'piece-locked'; piece: PieceType; cells: Cell[] }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }

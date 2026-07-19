@@ -219,7 +219,7 @@ describe('T6 frontend mode binding', () => {
     const survival = createInitialState(0x51a1f00d, 'race');
     const cases = [
       { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒/格'] },
-      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '10', '15 秒'] },
+      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '7', '15 秒'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-level', 'puzzle-targets', 'puzzle-remaining', 'objective'],
@@ -246,15 +246,13 @@ describe('T6 frontend mode binding', () => {
     expect(statisticSelectors).not.toMatch(/nth-child|nth-of-type|\bodd\b|\beven\b/);
   });
 
-  it('labels an incoming volatile Puzzle piece before its five-second lock timer begins', () => {
-    const state = {
-      ...createInitialState(0x51a1f00d, 'puzzle', 't5r-lattice-09'),
-      puzzleActiveVolatile: true,
-    };
+  it('shows the fixed Puzzle piece budget without a volatile timer', () => {
+    const state = createInitialState(0x51a1f00d, 'puzzle', 't5r-lattice-09');
     const view = render(createElement(RunStats, { state }));
     const objective = view.container.querySelector<HTMLElement>('[data-stat-role="objective"]');
-    expect(objective?.textContent).toContain('限时块');
-    expect(objective?.textContent).toContain('落定后 5 秒');
+    expect(objective?.textContent).toContain('已用方块');
+    expect(objective?.textContent).toContain(`0/${state.puzzlePieceBudget}`);
+    expect(objective?.textContent).not.toMatch(/限时|落定后|秒/);
     view.unmount();
   });
 
@@ -326,9 +324,10 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
     expect(view.container.textContent).toContain('连消加分\n每 10 行提高下落速度');
-    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetris');
-    expect(view.container.textContent).toContain('生存开局 10 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落');
-    expect(view.container.textContent).toContain('15 关残局');
+    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetra');
+    expect(view.container.querySelector('[data-testid="brand"]')?.getAttribute('aria-label')).toBe('Tetra');
+    expect(view.container.textContent).toContain('生存开局 7 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落');
+    expect(view.container.textContent).toContain(`${CAMPAIGN_LEVELS.length} 关残局`);
     expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();
     expect(view.container.querySelector('.phase-seam')).toBeNull();
@@ -419,14 +418,13 @@ describe('T6 frontend mode binding', () => {
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 
-  it('mounts all fifteen enabled levels and binds first, eighth, and fifteenth selections', () => {
-    expect(CAMPAIGN_LEVELS).toHaveLength(15);
+  it('shows twenty progressive levels, locks the unopened archive entries, and binds unlocked selections', () => {
+    expect(CAMPAIGN_LEVELS).toHaveLength(20);
     const onSelect = vi.fn();
     const onStart = vi.fn();
     const onBack = vi.fn();
-    const selectedIndexes = [0, 7, CAMPAIGN_LEVELS.length - 1];
-    const props = (selectedId: PuzzleId) => ({
-      progress: defaultPuzzleProgress(),
+    const props = (selectedId: PuzzleId, progress = defaultPuzzleProgress()) => ({
+      progress,
       selectedId,
       onSelect,
       onStart,
@@ -437,9 +435,13 @@ describe('T6 frontend mode binding', () => {
     const rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
     expect(rows).toHaveLength(CAMPAIGN_LEVELS.length);
     expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
-    expect(rows.every((row) => !row.disabled && row.getAttribute('aria-pressed') !== null)).toBe(true);
-    expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('15 个可用解谜关卡');
-    expect(rows[0]?.textContent).toBe(`01${CAMPAIGN_LEVELS[0]!.name}`);
+    expect(rows.slice(0, 3).every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
+    expect(rows.slice(3).every((row) => row.disabled && row.dataset.unlocked === 'false')).toBe(true);
+    expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('20 个解谜关卡，已开放 3 个');
+    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('20 个原创残局 · 已开放 3/20');
+    expect(rows[0]?.textContent).toContain(`01${CAMPAIGN_LEVELS[0]!.name}`);
+    expect(rows[0]?.textContent).toContain('难度 01 · 已开放');
+    expect(rows[3]?.textContent).toContain('未解锁');
     expect(view.container.querySelectorAll('.level-entry__preview')).toHaveLength(0);
     expect(styles).not.toContain('.level-item--selected::after');
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
@@ -451,24 +453,32 @@ describe('T6 frontend mode binding', () => {
     expect(onBack).toHaveBeenCalledTimes(1);
 
     act(() => rows[7]!.click());
-    expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[7]!.id);
+    expect(onSelect).not.toHaveBeenCalled();
 
-    for (const index of selectedIndexes) {
+    const fullyUnlocked = {
+      version: 2 as const,
+      completedLevelIds: CAMPAIGN_LEVELS.map((level) => level.id),
+    };
+    for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {
       const level = CAMPAIGN_LEVELS[index]!;
-      view.rerender(createElement(PuzzleLibrary, props(level.id)));
+      view.rerender(createElement(PuzzleLibrary, props(level.id, fullyUnlocked)));
       const pressed = view.container.querySelector<HTMLButtonElement>('[data-testid="level-row"][aria-pressed="true"]');
       const canonical = createInitialState(0x51a1f00d, 'puzzle', level.id);
-      const lockedTypes = new Set(canonical.board.flat().filter((cell): cell is NonNullable<typeof cell> => cell !== null && cell !== 'A'));
+      const visibleMaterials = new Set(canonical.board.slice(-12).flat().filter((cell): cell is NonNullable<typeof cell> => cell !== null));
 
       expect(pressed?.dataset.levelId).toBe(level.id);
       expect(view.container.querySelector('.level-detail h2')?.textContent).toBe(level.name);
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();
-      expect(lockedTypes.size).toBeGreaterThanOrEqual(4);
-      expect(puzzleSilhouettePaths(level.id).size).toBe(lockedTypes.size);
+      expect(visibleMaterials.size).toBeGreaterThanOrEqual(4);
+      expect(puzzleSilhouettePaths(level.id).size).toBe(visibleMaterials.size);
       expect([...puzzleSilhouettePaths(level.id).values()].every((path) => path.includes('h3.8v3.8'))).toBe(true);
     }
+
+    const unlockedRows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
+    act(() => unlockedRows[7]!.click());
+    expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[7]!.id);
 
     const desktopStart = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
     const mobileStart = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle-mobile"]');

@@ -14,7 +14,7 @@ import {
   type BoardMaterial,
   type PieceType,
 } from '../core';
-import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS, VOLATILE_MATERIAL, type PieceMaterial } from './theme';
+import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS, type PieceMaterial } from './theme';
 import {
   approachPresentationPoint,
   boardShiftPresentationOffset,
@@ -154,7 +154,7 @@ export class TetrisRenderer {
       preference: 'webgl',
     });
     app.canvas.dataset.testid = 'game-canvas';
-    app.canvas.setAttribute('aria-label', 'Tetris 10 × 20 游戏棋盘');
+    app.canvas.setAttribute('aria-label', 'Tetra 10 × 20 游戏棋盘');
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
@@ -287,8 +287,7 @@ export class TetrisRenderer {
     const graphics = this.pieceGraphics;
     graphics.clear();
     let visibleLockedCells = 0;
-    const volatileCells = new Set(state.puzzleVolatilePieces.flatMap((piece) => piece.cells.map((cell) => `${cell.x},${cell.y}`)));
-    const lockedByMaterial = new Map<string, { type: BoardMaterial; cells: Cell[]; volatile: boolean }>();
+    const lockedByMaterial = new Map<BoardMaterial, Cell[]>();
     const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
       ? boardShiftPresentationOffset(
           this.boardShift.direction,
@@ -303,20 +302,17 @@ export class TetrisRenderer {
       row.forEach((cell, x) => {
         if (!cell) return;
         visibleLockedCells += 1;
-        const volatile = volatileCells.has(`${x},${boardY}`);
-        const key = `${cell}:${volatile ? 'volatile' : 'ordinary'}`;
-        const group = lockedByMaterial.get(key) ?? { type: cell, cells: [], volatile };
-        group.cells.push({ x, y: boardY - VISIBLE_START_ROW });
-        lockedByMaterial.set(key, group);
+        const cells = lockedByMaterial.get(cell) ?? [];
+        cells.push({ x, y: boardY - VISIBLE_START_ROW });
+        lockedByMaterial.set(cell, cells);
       });
     });
-    for (const { type, cells, volatile } of lockedByMaterial.values()) {
+    for (const [type, cells] of lockedByMaterial) {
       this.drawCellGroups(graphics, cells, type, 1, {
         originX: layout.x,
         originY: layout.y,
         unit: layout.cell,
         offsetY: boardShiftOffsetY,
-        material: volatile ? VOLATILE_MATERIAL : undefined,
       });
     }
     this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
@@ -359,7 +355,6 @@ export class TetrisRenderer {
         unit: layout.cell,
         offsetX: ghostOffsetX,
         ghost: true,
-        material: state.puzzleActiveVolatile ? VOLATILE_MATERIAL : undefined,
       });
     }
 
@@ -386,7 +381,6 @@ export class TetrisRenderer {
           offsetY,
           active: true,
           scale: rotationScale,
-          material: state.puzzleActiveVolatile ? VOLATILE_MATERIAL : undefined,
         },
       );
     }

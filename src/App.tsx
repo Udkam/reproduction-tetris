@@ -22,9 +22,11 @@ import {
   LEGACY_PUZZLE_PROGRESS_KEY,
   PUZZLE_PROGRESS_KEY,
   defaultPuzzleProgress,
+  isPuzzleUnlocked,
   migrateLegacyPuzzleProgress,
   parsePuzzleProgress,
   recordCanonicalPuzzleCompletion,
+  unlockedPuzzleLevelCount,
   type PuzzleProgress,
 } from './puzzleProgress';
 import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
@@ -47,6 +49,7 @@ type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
 
 const APP_SEED = 0x51a1f00d;
+const PRODUCT_NAME = 'Tetra';
 
 const MODE_COPY: Record<GameMode, {
   label: string;
@@ -60,7 +63,7 @@ const MODE_COPY: Record<GameMode, {
   },
   race: {
     label: '生存',
-    detail: '开局 10 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落',
+    detail: '开局 7 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落',
     action: '开始',
   },
   puzzle: {
@@ -124,11 +127,6 @@ export function survivalCountdownLabel(state: GameState): string {
   return state.survivalRisePending ? '待上升' : `${survivalCountdownSeconds(state)} 秒`;
 }
 
-export function puzzleExpirySeconds(state: GameState): number | null {
-  if (state.mode !== 'puzzle' || state.puzzleVolatilePieces.length === 0) return null;
-  return Math.max(0, Math.ceil(Math.min(...state.puzzleVolatilePieces.map((piece) => piece.expiryTicks)) / TICKS_PER_SECOND));
-}
-
 function campaignLevel(id: PuzzleId | null) {
   return CAMPAIGN_LEVELS.find((level) => level.id === id) ?? CAMPAIGN_LEVELS[0]!;
 }
@@ -181,9 +179,13 @@ export function scoreRecordRank(records: readonly ScoreRecord[], record: ScoreRe
 }
 
 function Brand({ compact = false, primary = false }: { compact?: boolean; primary?: boolean }) {
-  const wordmark = primary ? <h1>Tetris</h1> : <strong>Tetris</strong>;
+  const wordmark = primary ? <h1>{PRODUCT_NAME}</h1> : <strong>{PRODUCT_NAME}</strong>;
   return (
-    <div className={`brand ${compact ? 'brand--compact' : ''}`} data-testid="brand">
+    <div
+      className={`brand ${compact ? 'brand--compact' : ''}`}
+      data-testid="brand"
+      aria-label={PRODUCT_NAME}
+    >
       {wordmark}
     </div>
   );
@@ -314,6 +316,7 @@ export function PuzzleLibrary({
   onBack: () => void;
 }) {
   const selected = campaignLevel(selectedId);
+  const unlockedCount = unlockedPuzzleLevelCount(progress);
   return (
     <main id="game" className="library-shell" data-testid="puzzle-library">
       <header className="library-header">
@@ -323,29 +326,33 @@ export function PuzzleLibrary({
         <Brand compact />
       </header>
       <section className="library-intro" aria-labelledby="library-title">
-        <span>15 个原创残局</span>
+        <span data-testid="campaign-availability">{CAMPAIGN_LEVELS.length} 个原创残局 · 已开放 {unlockedCount}/{CAMPAIGN_LEVELS.length}</span>
         <h1 id="library-title">解谜档案</h1>
       </section>
       <section className="library-content" aria-label="全部解谜关卡">
-        <div className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个可用解谜关卡`} data-testid="level-list">
+        <div className="level-list" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
           {CAMPAIGN_LEVELS.map((level) => {
             const complete = progress.completedLevelIds.includes(level.id);
+            const unlocked = isPuzzleUnlocked(progress, level.id);
             const selectedLevel = selectedId === level.id;
+            const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
             return (
-              <article className={`level-item ${selectedLevel ? 'level-item--selected' : ''}`} key={level.id}>
+              <article className={`level-item ${selectedLevel ? 'level-item--selected' : ''} ${unlocked ? '' : 'level-item--locked'}`} key={level.id}>
                 <button
-                  className="level-entry"
+                  className={`level-entry ${unlocked ? '' : 'level-entry--locked'}`}
                   type="button"
                   data-testid="level-row"
                   data-level-id={level.id}
+                  data-unlocked={unlocked}
                   aria-pressed={selectedLevel}
-                  aria-label={`${String(level.index).padStart(2, '0')} ${level.name}${complete ? '，已完成' : ''}`}
+                  aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
+                  disabled={!unlocked}
                   onClick={() => onSelect(level.id)}
                 >
                   <span className="level-entry__number">{String(level.index).padStart(2, '0')}</span>
                   <span className="level-entry__copy">
                     <strong>{level.name}</strong>
-                    {complete && <small>已完成</small>}
+                    <small>难度 {String(level.difficulty).padStart(2, '0')} · {status}</small>
                   </span>
                 </button>
               </article>
@@ -355,7 +362,7 @@ export function PuzzleLibrary({
         <section className="level-inline-detail" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
           <PuzzleSilhouette id={selected.id} name={selected.name} />
           <div>
-            <small>{String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</small>
+            <small>难度 {String(selected.difficulty).padStart(2, '0')} · {String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</small>
             <h2>{selected.name}</h2>
           </div>
           <button className="primary-action" type="button" data-testid="start-selected-puzzle-mobile" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
@@ -368,7 +375,7 @@ export function PuzzleLibrary({
             </div>
           </div>
           <div className="level-detail__heading">
-            <span className="level-detail__count">{String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
+            <span className="level-detail__count">难度 {String(selected.difficulty).padStart(2, '0')} · {String(selected.index).padStart(2, '0')} / {String(selected.total).padStart(2, '0')}</span>
             <h2>{selected.name}</h2>
           </div>
           <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
@@ -500,15 +507,13 @@ export function RunStats({ state }: { state: GameState }) {
   }
   if (state.mode === 'puzzle') {
     const level = campaignLevel(state.puzzleId);
-    const expirySeconds = puzzleExpirySeconds(state);
-    const hasVolatileSignal = state.puzzleActiveVolatile || expirySeconds !== null;
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
         <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
         <article data-stat-role="puzzle-targets"><span>原有方块</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
         <article data-stat-role="puzzle-remaining"><span>剩余可用</span><strong>{Math.max(0, (state.puzzlePieceBudget ?? 0) - state.pieceCount)} 块</strong></article>
-        <article data-stat-role="objective" data-urgent={expirySeconds !== null && expirySeconds <= 3 || undefined}>
-          <span>{hasVolatileSignal ? '限时块' : '已用方块'}</span><strong>{expirySeconds !== null ? `${expirySeconds} 秒` : state.puzzleActiveVolatile ? '落定后 5 秒' : `${state.pieceCount}/${state.puzzlePieceBudget ?? '—'}`}</strong>
+        <article data-stat-role="objective">
+          <span>已用方块</span><strong>{state.pieceCount}/{state.puzzlePieceBudget ?? '—'}</strong>
         </article>
       </section>
     );
@@ -527,7 +532,6 @@ export function eventMessage(event: GameEvent): string {
   if (event.type === 'lines-cleared') return `消除了 ${event.count} 行。`;
   if (event.type === 'bedrock-raised') return `基岩升至 ${event.height} 层。`;
   if (event.type === 'bedrock-lowered') return `基岩降至 ${event.height} 层。`;
-  if (event.type === 'piece-expired') return `限时 ${event.piece} 方块已消散。`;
   if (event.type === 'paused') return '本局已暂停。';
   if (event.type === 'resumed') return '继续本局。';
   if (event.type === 'finished') return '原有方块已清除。';
@@ -619,10 +623,9 @@ export function GameSession({
         }
         const notable = [...events].reverse().find((event) => (
           event.type === 'lines-cleared'
-          || event.type === 'bedrock-raised'
-          || event.type === 'bedrock-lowered'
-          || event.type === 'piece-expired'
-          || event.type === 'paused'
+           || event.type === 'bedrock-raised'
+           || event.type === 'bedrock-lowered'
+           || event.type === 'paused'
           || event.type === 'resumed'
           || event.type === 'finished'
           || event.type === 'game-over'
@@ -650,7 +653,7 @@ export function GameSession({
         nextRuntime.setInputEnabled(true);
         nextRuntime.start();
         setCountdownDigit(null);
-        setLiveMessage('Tetris 已开始。');
+        setLiveMessage(`${PRODUCT_NAME} 已开始。`);
         focusBoard();
       }, 3000),
     ];
@@ -685,9 +688,6 @@ export function GameSession({
       phase: state.phase,
       puzzleId: state.puzzleId,
       puzzleCompletion: state.puzzleCompletion,
-      puzzleActiveVolatile: state.puzzleActiveVolatile,
-      puzzleVolatilePieces: state.puzzleVolatilePieces,
-      puzzleExpirySeconds: puzzleExpirySeconds(state),
       puzzleTargetsRemaining: state.puzzleTargetCells.length,
       puzzleTargetsInitial: state.puzzleInitialTargetCount,
       puzzlePieceBudget: state.puzzlePieceBudget,

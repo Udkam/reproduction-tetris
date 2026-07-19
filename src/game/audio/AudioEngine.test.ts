@@ -49,6 +49,7 @@ class FakeCompressor {
 }
 
 const oscillators: FakeOscillator[] = [];
+const gains: FakeGain[] = [];
 
 class FakeAudioContext {
   currentTime = 0;
@@ -56,7 +57,9 @@ class FakeAudioContext {
   readonly destination = {} as AudioDestinationNode;
 
   createGain(): GainNode {
-    return new FakeGain() as unknown as GainNode;
+    const gain = new FakeGain();
+    gains.push(gain);
+    return gain as unknown as GainNode;
   }
 
   createDynamicsCompressor(): DynamicsCompressorNode {
@@ -76,6 +79,7 @@ class FakeAudioContext {
 
 afterEach(() => {
   oscillators.length = 0;
+  gains.length = 0;
   vi.unstubAllGlobals();
 });
 
@@ -89,8 +93,8 @@ describe('AudioEngine hard drop', () => {
 
     expect(oscillators).toHaveLength(2);
     expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['sine', 'sine']);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([64, 108]);
-    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([132, 198]);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length > 0)).toBe(true);
     audio.destroy();
   });
 
@@ -105,7 +109,6 @@ describe('AudioEngine hard drop', () => {
       { type: 'piece-rotated', piece: 'T', direction: 1 },
       { type: 'piece-locked', piece: 'T', cells: [] },
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
-      { type: 'piece-expired', piece: 'T' },
       { type: 'bedrock-raised', count: 1, height: 11 },
       { type: 'bedrock-lowered', count: 1, height: 10 },
       { type: 'level-up', level: 1 },
@@ -119,6 +122,18 @@ describe('AudioEngine hard drop', () => {
 
     expect(oscillators.length).toBeGreaterThan(0);
     expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
+    audio.destroy();
+  });
+
+  it('gives the 100% volume setting a boosted bounded master gain', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    expect(gains[0]?.gain.value).toBeGreaterThan(1);
+    audio.setVolume(0.5);
+    expect(gains[0]?.gain.value).toBeGreaterThan(0.5);
+    expect(gains[0]?.gain.value).toBeLessThan(1);
     audio.destroy();
   });
 });

@@ -211,16 +211,33 @@ function execute(level: LevelReference, route: RouteReference) {
   };
 }
 
-describe('T11 original-target Puzzle campaign verifier', () => {
-  it('retains fifteen deterministic public-command routes with sparse safe anchors', () => {
-    expect(PUZZLE_DEFINITIONS).toHaveLength(15);
+describe('T12 original-target Puzzle campaign verifier', () => {
+  it('retains the fifteen deterministic public-command routes and extends the safe-anchor campaign to twenty levels', () => {
+    expect(PUZZLE_DEFINITIONS).toHaveLength(20);
     expect(references).toHaveLength(15);
     expect(references.flatMap((level) => level.routes)).toHaveLength(30);
     expect(PUZZLE_SOLVER_SLACK).toBe(10);
+    expect(PUZZLE_DEFINITIONS.map((definition) => definition.difficulty)).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
     for (const definition of PUZZLE_DEFINITIONS) {
       for (const anchor of definition.anchorCells) {
         expect(definition.boardRows[anchor.y - VISIBLE_START_ROW]).toBe('..........');
       }
+    }
+  });
+
+  it('initializes the five generated extension levels with their deterministic source budgets', () => {
+    const extension = PUZZLE_DEFINITIONS.filter((definition) => !references.some((level) => level.id === definition.id));
+    expect(extension.map(({ id }) => id)).toEqual([
+      't6r-veil-16', 't6r-cairn-17', 't6r-terrace-18', 't6r-bastion-19', 't6r-keystone-20',
+    ]);
+    expect(extension.map(({ solverPieceBudget }) => solverPieceBudget)).toEqual([40, 43, 43, 44, 52]);
+    for (const definition of extension) {
+      const ready = createInitialState(0x51a1f00d, 'puzzle', definition.id);
+      expect(ready.seed).toBe(definition.seed);
+      expect(ready.puzzlePieceBudget).toBe(definition.solverPieceBudget);
+      expect(ready.puzzleInitialTargetCount).toBeGreaterThan(0);
+      expect(ready.board.flat().filter((cell) => cell === 'A')).toHaveLength(definition.anchorCells.length);
+      expect(definition.difficulty).toBeGreaterThanOrEqual(16);
     }
   });
 

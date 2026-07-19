@@ -94,11 +94,3 @@ export const ANCHOR_MATERIAL: PieceMaterial = {
   edge: 0x514735,
   innerEdge: 0xe0d4bc,
 };
-
-/** Puzzle-only volatile inputs are deliberately warmer than the ordinary seven-piece palette. */
-export const VOLATILE_MATERIAL: PieceMaterial = {
-  fillStart: 0xffc56a,
-  fillEnd: 0xd96e43,
-  edge: 0x74351f,
-  innerEdge: 0xffe3ab,
-};

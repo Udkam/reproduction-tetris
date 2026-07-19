@@ -14,6 +14,8 @@ export interface PuzzleCell {
 export interface PuzzleDefinition {
   id: PuzzleId;
   name: string;
+  /** Authored campaign order, surfaced as the visible progressive difficulty. */
+  difficulty: number;
   /** Stable level-owned seed for the shared deterministic seven-bag. */
   seed: number;
   /** Separate legal zero-clear stacking history that authors the starting endgame. */
@@ -24,8 +26,6 @@ export interface PuzzleDefinition {
   hiddenCells: readonly PuzzleCell[];
   /** Shortest currently verified public-command solver route, in locked pieces. */
   solverPieceBudget: number;
-  /** Whether this level's ongoing inputs may use the five-second volatile rule. */
-  volatileInputs: boolean;
   /** Sparse unbreakable cells, seeded only into completely empty starting rows. */
   anchorCells: readonly Cell[];
 }
@@ -40,12 +40,6 @@ export interface PuzzleSetup {
   seed: number;
   placements: readonly PuzzleSetupPlacement[];
 }
-
-/**
- * Temporary type-only facade for the blocked frontend's old `level.difficulty` read.
- * Runtime definitions do not own this property; the frontend slice removes the read.
- */
-type LegacyPuzzleDefinitionView = PuzzleDefinition & { readonly difficulty: number };
 
 const EMPTY_ROW = '.'.repeat(BOARD_WIDTH);
 const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
@@ -105,12 +99,12 @@ function definition(
   return Object.freeze({
     id,
     name,
+    difficulty: 0,
     seed,
     setup: authoredSetup,
     boardRows: setupBoardRows(authoredSetup),
     hiddenCells: EMPTY_HIDDEN_CELLS,
     solverPieceBudget: 0,
-    volatileInputs: false,
     anchorCells: EMPTY_ANCHOR_CELLS,
   });
 }
@@ -135,6 +129,18 @@ const LEGACY_PUZZLE_LIBRARY: readonly PuzzleDefinition[] = [
 ] as const;
 
 /**
+ * T12 extends the original archive with five independently generated, legal
+ * endgames. Their accepted route minima rise across this final campaign band.
+ */
+const T12_PUZZLE_EXTENSION: readonly PuzzleDefinition[] = [
+  definition('t6r-veil-16', '澄湾折层', 0x6f100020, setup(0x6f200020, [{ type: 'Z', rotation: 2, x: 0 }, { type: 'S', rotation: 1, x: 0 }, { type: 'T', rotation: 0, x: 5 }, { type: 'J', rotation: 1, x: 3 }, { type: 'O', rotation: 1, x: 8 }, { type: 'L', rotation: 2, x: 0 }, { type: 'I', rotation: 3, x: 2 }, { type: 'L', rotation: 1, x: 3 }, { type: 'O', rotation: 1, x: 6 }, { type: 'S', rotation: 2, x: 2 }, { type: 'T', rotation: 1, x: 4 }, { type: 'Z', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 7 }, { type: 'I', rotation: 1, x: 7 }, { type: 'S', rotation: 1, x: 5 }, { type: 'I', rotation: 3, x: -1 }, { type: 'O', rotation: 2, x: 1 }, { type: 'T', rotation: 0, x: 1 }, { type: 'L', rotation: 3, x: 3 }, { type: 'J', rotation: 1, x: 4 }])),
+  definition('t6r-cairn-17', '层岩交径', 0x6f100017, setup(0x6f200017, [{ type: 'I', rotation: 1, x: 7 }, { type: 'J', rotation: 0, x: 3 }, { type: 'O', rotation: 3, x: 1 }, { type: 'L', rotation: 0, x: 6 }, { type: 'Z', rotation: 0, x: 3 }, { type: 'T', rotation: 2, x: 5 }, { type: 'S', rotation: 3, x: 7 }, { type: 'I', rotation: 2, x: 2 }, { type: 'J', rotation: 2, x: 7 }, { type: 'Z', rotation: 3, x: 3 }, { type: 'O', rotation: 2, x: 5 }, { type: 'S', rotation: 2, x: 7 }, { type: 'L', rotation: 1, x: -1 }, { type: 'T', rotation: 2, x: 5 }, { type: 'I', rotation: 2, x: 5 }, { type: 'O', rotation: 3, x: 1 }, { type: 'J', rotation: 3, x: 3 }])),
+  definition('t6r-terrace-18', '岚阶回环', 0x6f100022, setup(0x6f200022, [{ type: 'S', rotation: 0, x: 7 }, { type: 'Z', rotation: 3, x: 8 }, { type: 'I', rotation: 0, x: 0 }, { type: 'J', rotation: 2, x: 2 }, { type: 'O', rotation: 0, x: 0 }, { type: 'L', rotation: 1, x: 4 }, { type: 'T', rotation: 3, x: 6 }, { type: 'S', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 7 }, { type: 'I', rotation: 3, x: 5 }, { type: 'J', rotation: 2, x: 0 }, { type: 'T', rotation: 0, x: 7 }, { type: 'O', rotation: 2, x: 4 }, { type: 'Z', rotation: 1, x: 4 }, { type: 'T', rotation: 2, x: 2 }, { type: 'O', rotation: 3, x: 7 }, { type: 'L', rotation: 1, x: -1 }, { type: 'I', rotation: 1, x: 7 }, { type: 'S', rotation: 1, x: -1 }, { type: 'J', rotation: 0, x: 2 }, { type: 'Z', rotation: 0, x: 0 }, { type: 'L', rotation: 3, x: 2 }])),
+  definition('t6r-bastion-19', '深湾阈门', 0x6f100016, setup(0x6f200016, [{ type: 'S', rotation: 0, x: 7 }, { type: 'Z', rotation: 1, x: 5 }, { type: 'J', rotation: 0, x: 2 }, { type: 'L', rotation: 3, x: 4 }, { type: 'T', rotation: 3, x: 8 }, { type: 'O', rotation: 1, x: 0 }, { type: 'I', rotation: 0, x: 4 }, { type: 'S', rotation: 0, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'J', rotation: 1, x: 5 }, { type: 'L', rotation: 0, x: 1 }, { type: 'Z', rotation: 1, x: 3 }, { type: 'T', rotation: 2, x: 7 }, { type: 'O', rotation: 2, x: 5 }, { type: 'S', rotation: 0, x: 2 }, { type: 'O', rotation: 1, x: 0 }])),
+  definition('t6r-keystone-20', '层界基石', 0x6f100018, setup(0x6f200018, [{ type: 'T', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 5 }, { type: 'Z', rotation: 1, x: 6 }, { type: 'I', rotation: 3, x: 8 }, { type: 'S', rotation: 2, x: 3 }, { type: 'O', rotation: 0, x: 1 }, { type: 'L', rotation: 0, x: 2 }, { type: 'O', rotation: 0, x: 5 }, { type: 'J', rotation: 1, x: 6 }, { type: 'L', rotation: 0, x: 7 }, { type: 'Z', rotation: 3, x: 5 }, { type: 'T', rotation: 1, x: -1 }, { type: 'I', rotation: 0, x: 1 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 6 }, { type: 'S', rotation: 0, x: 0 }, { type: 'O', rotation: 3, x: 4 }])),
+] as const;
+
+/**
  * Generated from the shortest accepted public-command route in the bounded Puzzle
  * solver fixture. These are reproducible solver results, not a global-optimum claim.
  */
@@ -154,6 +160,11 @@ const SOLVER_PIECE_BUDGETS: Readonly<Record<PuzzleId, number>> = Object.freeze({
   't5r-arc-13': 39,
   't5r-pulse-14': 33,
   't5r-horizon-15': 35,
+  't6r-veil-16': 30,
+  't6r-cairn-17': 33,
+  't6r-terrace-18': 33,
+  't6r-bastion-19': 34,
+  't6r-keystone-20': 42,
 });
 
 function nextAnchorSeed(seed: number): number {
@@ -193,26 +204,28 @@ const ANCHOR_OVERLAYS: Readonly<Partial<Record<PuzzleId, { seed: number; count: 
   't5r-prism-11': { seed: 0xbb08a1db, count: 1 },
   't5r-arc-13': { seed: 0xdd08a1dd, count: 2 },
   't5r-horizon-15': { seed: 0xff08a1df, count: 1 },
+  't6r-cairn-17': { seed: 0x17a8c1e1, count: 1 },
+  't6r-terrace-18': { seed: 0x18a8c1e2, count: 1 },
+  't6r-keystone-20': { seed: 0x20a8c1e4, count: 2 },
 });
 
-const VOLATILE_LEVEL_IDS = new Set<PuzzleId>([
-  't3r-shaft-03', 't3r-cascade-06', 't5r-lattice-09', 't5r-current-12',
-  't5r-arc-13', 't5r-pulse-14', 't5r-horizon-15',
+/** Every authored board begins target-marked; selected levels retain fixed anchors. */
+const AUTHORED_PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
+  ...LEGACY_PUZZLE_LIBRARY,
+  ...T12_PUZZLE_EXTENSION,
 ]);
 
-/** Every authored board begins target-marked; selected levels retain anchors and volatile inputs. */
-const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze(LEGACY_PUZZLE_LIBRARY.map((candidate) => {
+const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze(AUTHORED_PUZZLE_LIBRARY.map((candidate, index) => {
   const overlay = ANCHOR_OVERLAYS[candidate.id];
   return Object.freeze({
     ...candidate,
+    difficulty: index + 1,
     solverPieceBudget: SOLVER_PIECE_BUDGETS[candidate.id] + PUZZLE_SOLVER_SLACK,
-    volatileInputs: VOLATILE_LEVEL_IDS.has(candidate.id),
     anchorCells: overlay ? seededAnchors(overlay.seed, candidate.boardRows, overlay.count) : EMPTY_ANCHOR_CELLS,
   });
 }));
 
-// See LegacyPuzzleDefinitionView above. No runtime object contains a numeric difficulty.
-export const PUZZLE_DEFINITIONS = PUZZLE_LIBRARY as readonly LegacyPuzzleDefinitionView[];
+export const PUZZLE_DEFINITIONS = PUZZLE_LIBRARY;
 
 const PIECE_TYPE_SET = new Set<string>(PIECE_TYPES);
 const PUZZLE_ID_SET = new Set<string>(PUZZLE_LIBRARY.map((candidate) => candidate.id));
@@ -258,12 +271,13 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   }
   if (definition.seed !== canonical.seed) throw new Error(`Puzzle ${definition.id} must retain its stable level seed.`);
   if (PUZZLE_SEED_SET.size !== PUZZLE_LIBRARY.length) throw new Error('Puzzle level seeds must be unique.');
+  if (!Number.isSafeInteger(definition.difficulty) || definition.difficulty < 1
+    || definition.difficulty > PUZZLE_LIBRARY.length || definition.difficulty !== canonical.difficulty) {
+    throw new Error(`Puzzle ${definition.id} must retain its authored campaign difficulty.`);
+  }
   if (!Number.isSafeInteger(definition.solverPieceBudget) || definition.solverPieceBudget <= 0
     || definition.solverPieceBudget !== canonical.solverPieceBudget) {
     throw new Error(`Puzzle ${definition.id} must retain its verified solver budget.`);
-  }
-  if (definition.volatileInputs !== canonical.volatileInputs) {
-    throw new Error(`Puzzle ${definition.id} must retain its volatile-input contract.`);
   }
   if (!Array.isArray(definition.anchorCells)
     || JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {

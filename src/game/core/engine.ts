@@ -6,19 +6,18 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
-  PUZZLE_VOLATILE_PIECE_TICKS,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
   gravityForMode,
   survivalIntervalTicks,
 } from './constants';
-import { canPlace, clearRows, createBoard, fullRows, isGrounded, lowerBedrock, mergePiece, raiseBedrock } from './board';
+import { canPlace, clearRows, createBoard, fullRows, isGrounded, lowerBedrock, mapCellsAfterClear, mergePiece, raiseBedrock } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
-import { ANCHOR_CELL, BEDROCK_CELL, PIECE_TYPES, type ActivePiece, type Board, type Cell, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId, type VolatilePiece } from './types';
+import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
@@ -55,14 +54,6 @@ function puzzleFailure(
   };
 }
 
-function volatileSpawnFor(seed: number, spawnIndex: number): boolean {
-  let value = (seed ^ Math.imul(spawnIndex + 1, 0x9e3779b9)) >>> 0;
-  value ^= value << 13;
-  value ^= value >>> 17;
-  value ^= value << 5;
-  return (value >>> 0) % 4 === 0;
-}
-
 function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   let next = refillQueue(state, type ? NEXT_QUEUE_SIZE : NEXT_QUEUE_SIZE + 1);
   const queue = [...next.queue];
@@ -84,9 +75,6 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
       puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
       puzzleQueueIndex: 0,
       puzzleSpawnCount: next.mode === 'puzzle' ? next.puzzleSpawnCount + 1 : next.puzzleSpawnCount,
-      puzzleActiveVolatile: next.mode === 'puzzle' && next.puzzleId !== null && getPuzzleDefinition(next.puzzleId).volatileInputs
-        ? volatileSpawnFor(next.seed, next.puzzleSpawnCount)
-        : false,
       phase: 'active',
       phaseTicks: 0,
       pendingClearRows: [],
@@ -122,8 +110,6 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     puzzleQueue: null,
     puzzleQueueIndex: 0,
     puzzleSpawnCount: 0,
-    puzzleActiveVolatile: false,
-    puzzleVolatilePieces: [],
     puzzleGoal: selectedPuzzle ? 'original-targets-cleared' : null,
     puzzleCompletion: selectedPuzzle ? 'active' : null,
     completedLevelId: null,
@@ -214,129 +200,6 @@ function advanceSurvivalPressure(state: GameState): GameState {
   };
 }
 
-function keyFor(cell: Cell): string {
-  return `${cell.x},${cell.y}`;
-}
-
-function mapCellsAfterClear(cells: readonly Cell[], board: Board, rows: readonly number[]): readonly Cell[] {
-  const cleared = new Set(rows);
-  const removed = [...cleared].filter((index) => !board[index]?.includes(BEDROCK_CELL) && !board[index]?.includes(ANCHOR_CELL));
-  return Object.freeze(cells.flatMap((cell) => {
-    if (cleared.has(cell.y)) return [];
-    const shiftedY = cell.y + removed.length - removed.filter((index) => index < cell.y).length;
-    return [Object.freeze({ ...cell, y: shiftedY })];
-  }));
-}
-
-function mapVolatileAfterClear(pieces: readonly VolatilePiece[], board: Board, rows: readonly number[]): readonly VolatilePiece[] {
-  return pieces.flatMap((piece) => {
-    const cells = mapCellsAfterClear(piece.cells, board, rows);
-    return cells.length > 0 ? [{ ...piece, cells }] : [];
-  });
-}
-
-function normalComponents(board: Board): Array<{ type: PieceType; cells: Cell[] }> {
-  const seen = new Set<string>();
-  const components: Array<{ type: PieceType; cells: Cell[] }> = [];
-  for (let y = 0; y < BOARD_HEIGHT; y += 1) {
-    for (let x = 0; x < board[y]!.length; x += 1) {
-      const type = board[y]![x];
-      const origin = `${x},${y}`;
-      if (!PIECE_TYPES.includes(type as PieceType) || seen.has(origin)) continue;
-      const cells: Cell[] = [];
-      const queue: Cell[] = [{ x, y }];
-      seen.add(origin);
-      while (queue.length > 0) {
-        const cell = queue.shift()!;
-        cells.push(cell);
-        for (const neighbor of [
-          { x: cell.x - 1, y: cell.y }, { x: cell.x + 1, y: cell.y },
-          { x: cell.x, y: cell.y - 1 }, { x: cell.x, y: cell.y + 1 },
-        ]) {
-          const neighborKey = keyFor(neighbor);
-          if (neighbor.x < 0 || neighbor.x >= board[0]!.length || neighbor.y < 0 || neighbor.y >= BOARD_HEIGHT
-            || seen.has(neighborKey) || board[neighbor.y]![neighbor.x] !== type) continue;
-          seen.add(neighborKey);
-          queue.push(neighbor);
-        }
-      }
-      components.push({ type: type as PieceType, cells });
-    }
-  }
-  return components;
-}
-
-function settleAfterVolatileExpiry(
-  board: Board,
-  pieces: readonly VolatilePiece[],
-  openedCells: readonly Cell[],
-  targetCells: readonly Cell[],
-): { board: Board; pieces: readonly VolatilePiece[]; targetCells: readonly Cell[] } {
-  const next = board.map((row) => [...row]) as Board;
-  let tracked = pieces.map((piece) => ({ ...piece, cells: piece.cells.map((cell) => ({ ...cell })) }));
-  let targets = targetCells.map((cell) => ({ ...cell }));
-  const openBelow = new Set(openedCells.map(keyFor));
-  for (let guard = 0; guard < BOARD_HEIGHT; guard += 1) {
-    let moved = false;
-    const components = normalComponents(next).sort((left, right) => Math.max(...right.cells.map((cell) => cell.y)) - Math.max(...left.cells.map((cell) => cell.y)));
-    for (const component of components) {
-      // A volatile gap only releases a component directly above it. Unrelated
-      // floating stacks must not receive a gravity pass merely because another
-      // part of the board expired.
-      const isReleasedFromGap = component.cells.some((cell) => openBelow.has(`${cell.x},${cell.y + 1}`));
-      if (!isReleasedFromGap) continue;
-      let fallingCells = component.cells;
-      let fell = false;
-      while (true) {
-        const occupied = new Set(fallingCells.map(keyFor));
-        const canFall = fallingCells.every((cell) => {
-          const y = cell.y + 1;
-          return y < BOARD_HEIGHT && (next[y]![cell.x] === null || occupied.has(`${cell.x},${y}`));
-        });
-        if (!canFall) break;
-        for (const cell of fallingCells) next[cell.y]![cell.x] = null;
-        for (const cell of fallingCells) next[cell.y + 1]![cell.x] = component.type;
-        for (const cell of fallingCells) openBelow.add(keyFor(cell));
-        const movedCells = new Set(fallingCells.map(keyFor));
-        tracked = tracked.map((piece) => ({
-          ...piece,
-          cells: piece.cells.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell),
-        }));
-        targets = targets.map((cell) => movedCells.has(keyFor(cell)) ? { ...cell, y: cell.y + 1 } : cell);
-        fallingCells = fallingCells.map((cell) => ({ ...cell, y: cell.y + 1 }));
-        fell = true;
-      }
-      moved ||= fell;
-    }
-    if (!moved) break;
-  }
-  return {
-    board: next,
-    pieces: Object.freeze(tracked.map((piece) => ({ ...piece, cells: Object.freeze(piece.cells) }))),
-    targetCells: Object.freeze(targets.map((cell) => Object.freeze(cell))),
-  };
-}
-
-function advanceVolatilePieces(state: GameState): GameTransition {
-  if (state.mode !== 'puzzle' || state.puzzleVolatilePieces.length === 0) return { state, events: [] };
-  const expiring = state.puzzleVolatilePieces.filter((piece) => piece.expiryTicks <= 1);
-  const surviving = state.puzzleVolatilePieces
-    .filter((piece) => piece.expiryTicks > 1)
-    .map((piece) => ({ ...piece, expiryTicks: piece.expiryTicks - 1 }));
-  if (expiring.length === 0) return { state: { ...state, puzzleVolatilePieces: Object.freeze(surviving) }, events: [] };
-  const board = state.board.map((row) => [...row]) as Board;
-  for (const piece of expiring) {
-    for (const cell of piece.cells) {
-      if (board[cell.y]?.[cell.x] === piece.type) board[cell.y]![cell.x] = null;
-    }
-  }
-  const settled = settleAfterVolatileExpiry(board, surviving, expiring.flatMap((piece) => piece.cells), state.puzzleTargetCells);
-  return {
-    state: { ...state, board: settled.board, puzzleVolatilePieces: settled.pieces, puzzleTargetCells: settled.targetCells },
-    events: expiring.map((piece) => ({ type: 'piece-expired', piece: piece.type })),
-  };
-}
-
 interface SurvivalRiseResolution extends GameTransition {
   overflow: boolean;
 }
@@ -389,9 +252,6 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
   const board = mergePiece(state.board, state.active);
-  const puzzleVolatilePieces = state.mode === 'puzzle' && state.puzzleActiveVolatile
-    ? Object.freeze([...state.puzzleVolatilePieces, { type: state.active.type, cells: Object.freeze(cells.map((cell) => ({ ...cell }))), expiryTicks: PUZZLE_VOLATILE_PIECE_TICKS }])
-    : state.puzzleVolatilePieces;
   const pieceCount = state.pieceCount + 1;
   const lockedEvent: GameEvent = { type: 'piece-locked', piece: state.active.type, cells };
   const rows = fullRows(board);
@@ -399,7 +259,7 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
 
   if (lockOut) {
     if (state.mode === 'puzzle') {
-      const failed = puzzleFailure({ ...state, board, active: null, pieceCount, puzzleActiveVolatile: false, puzzleVolatilePieces }, 'failed-top-out', 'lock-out');
+      const failed = puzzleFailure({ ...state, board, active: null, pieceCount }, 'failed-top-out', 'lock-out');
       return { state: failed.state, events: [...extraEvents, lockedEvent, ...failed.events] };
     }
     return {
@@ -417,8 +277,6 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       phase: 'line-clear',
       phaseTicks: 0,
       pendingClearRows: rows,
-      puzzleActiveVolatile: false,
-      puzzleVolatilePieces,
       gravityTicks: 0,
       lockTicks: 0,
     };
@@ -438,8 +296,6 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       lockTicks: 0,
       lockResets: 0,
       combo: 0,
-      puzzleActiveVolatile: false,
-      puzzleVolatilePieces,
     }, false);
     return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
   }
@@ -457,8 +313,6 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       lockTicks: 0,
       lockResets: 0,
       combo: 0,
-      puzzleActiveVolatile: false,
-      puzzleVolatilePieces,
     });
     if (resolved.state.status === 'game-over') {
       return { state: resolved.state, events: [...extraEvents, lockedEvent, ...resolved.events] };
@@ -480,8 +334,6 @@ function lockActive(state: GameState, extraEvents: GameEvent[] = []): GameTransi
       gravityTicks: 0,
       lockTicks: 0,
       combo: 0,
-      puzzleActiveVolatile: false,
-      puzzleVolatilePieces,
     },
     events: [...extraEvents, lockedEvent],
   };
@@ -538,8 +390,7 @@ function finishLineClear(state: GameState): GameTransition {
   let cleared: GameState = {
     ...state,
     board: clearRows(state.board, rows),
-    puzzleVolatilePieces: state.mode === 'puzzle' ? mapVolatileAfterClear(state.puzzleVolatilePieces, state.board, rows) : state.puzzleVolatilePieces,
-    puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.puzzleTargetCells, state.board, rows) : state.puzzleTargetCells,
+    puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.board, rows, state.puzzleTargetCells) : state.puzzleTargetCells,
     score: state.score + clearScore,
     lines,
     combo,
@@ -586,9 +437,8 @@ function finishLineClear(state: GameState): GameTransition {
 
 function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
-  const volatile = advanceVolatilePieces(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 }));
-  let next: GameState = volatile.state;
-  const timedEvents = volatile.events;
+  let next: GameState = advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 });
+  const timedEvents: GameEvent[] = [];
 
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
@@ -701,8 +551,6 @@ export function stateHash(state: GameState): string {
         puzzleQueue: _puzzleQueue,
         puzzleQueueIndex: _puzzleQueueIndex,
         puzzleSpawnCount: _puzzleSpawnCount,
-        puzzleActiveVolatile: _puzzleActiveVolatile,
-        puzzleVolatilePieces: _puzzleVolatilePieces,
         puzzleGoal: _puzzleGoal,
         puzzleCompletion: _puzzleCompletion,
         completedLevelId: _completedLevelId,

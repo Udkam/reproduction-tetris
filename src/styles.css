@@ -571,6 +571,18 @@ p {
   letter-spacing: -.012em;
 }
 
+.level-item--locked {
+  background: color-mix(in srgb, var(--surface) 82%, var(--raised));
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.level-item--locked:hover {
+  border-color: color-mix(in srgb, var(--line) 88%, var(--muted));
+  box-shadow: none;
+  transform: none;
+}
+
 .level-entry {
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);
@@ -586,6 +598,18 @@ p {
 
 .level-entry:hover {
   background: transparent;
+}
+
+.level-entry--locked {
+  color: color-mix(in srgb, var(--ink) 58%, var(--muted));
+}
+
+.level-entry--locked .level-entry__number {
+  color: color-mix(in srgb, var(--puzzle) 46%, var(--muted));
+}
+
+.level-entry--locked .level-entry__copy small {
+  color: color-mix(in srgb, var(--muted) 82%, var(--surface));
 }
 
 .level-item:hover {
