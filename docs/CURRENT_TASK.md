@@ -6,10 +6,11 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`; current T12 source checkpoint: `95c7da7`.
 
-Current execution status (2026-07-19): **IN PROGRESS — T12.1 archive and visible-board
-correction.** Source `95c7da7` remains a locally verified T12 baseline, but its pending
-independent QA disposition cannot carry across the new presentation correction. T11
-remains a recoverable baseline at `a76eea2`, pending its separate independent QA
+Current execution status (2026-07-19): **CANDIDATE READY — T12.1 source range
+`7ae1190..b0889c7` is locally verified; independent renderer and visual/browser QA
+remain pending.** Source `95c7da7` remains the locally verified T12 baseline, but its
+pending independent QA disposition cannot carry across the new presentation correction.
+T11 remains a recoverable baseline at `a76eea2`, pending its separate independent QA
 disposition.
 
 T12 expands the authored Puzzle campaign from fifteen to twenty levels and gives each
@@ -72,6 +73,19 @@ labels. Browser evidence at desktop and narrow mobile must visibly inspect the r
 archive, an initial Survival board, the outer board geometry, the active input, and zero
 console errors. Then typecheck, full suite, build, and fresh independent visual/browser
 and renderer QA are required before changelog integration or publication.
+
+T12.1 local verification is complete for `7ae1190 fix(t12): contain active piece
+presentation` and `b0889c7 feat(t12): refine puzzle archive worktable`: targeted
+`src/App.test.ts` and `src/game/render/presentation.test.ts` pass (27 tests), followed
+by final `npm.cmd run typecheck`, the full `npm.cmd run test` (41 files / 293 tests,
+with 1 file / 2 tests skipped), and `npm.cmd run build` (741 modules). Browser review
+has zero console errors at 1280×720, 390×844, and 844×390. It confirms 20 archive rows,
+zero catalog thumbnails, exactly one selected preview, a semantic `3 / 20` progress bar,
+and no horizontal overflow. A frozen real Survival frame records an active `J` at core
+`y:20` while presentation remains stale at `y:19.542…` (`offsetY:-0.457…`); the visible
+piece remains fully inside the board's top edge. This is candidate evidence only:
+independent renderer and visual/browser QA remain mandatory before changelog integration
+or publication.
 
 T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
 ordinary authored cell is an original target, receives a renderer-owned special

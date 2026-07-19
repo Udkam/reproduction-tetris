@@ -1781,3 +1781,42 @@ remain untouched. No generated browser artifact is part of the candidate.
   target/budget stats, Next, one canvas, and zero browser console errors.
 - Blocker: independent visual/browser QA remains required. Next: inspect the final
   candidate screenshot and range; recovery push is not an acceptance signal.
+
+## 2026-07-19 — T12 archive, sound, and Tetra candidate
+
+- Task: `TETRIS-T12-CAMPAIGN-UI-034`; base `a76eea2` recovery baseline on `main`;
+  source `95c7da7 feat(t12): deliver coupled Puzzle campaign migration`.
+- Exact presentation paths: `index.html`, `src/main.tsx`, `src/App.tsx`,
+  `src/App.test.ts`, `src/styles.css`, `src/puzzleProgress.ts`,
+  `src/puzzleProgress.test.ts`, `src/game/audio/AudioEngine.ts`,
+  `src/game/audio/AudioEngine.test.ts`, `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/theme.ts`, and `src/game/render/theme.test.ts`.
+- The archive presents 20 rows with difficulty and semantic complete/open/locked
+  labels, only three initially enabled, and the selected board as the only thumbnail.
+  The title is the short plain-text `Tetra` with no displayed Chinese companion name.
+  Puzzle has no volatile timer/status. Full-volume audio uses a bounded 1.35 master
+  gain, lighter compression, and a short descending sine landing cue; Survival copy
+  and state show seven initial bedrock rows.
+- Commands: targeted matrix PASS (14 files / 109 tests); final typecheck, full suite,
+  and production build PASS. Browser review at 1280×720 verifies Tetra home, 20-row
+  locked archive, Puzzle target/budget/anchor state, Survival 7-row board, one canvas,
+  and zero console errors.
+- Blocker: independent visual/browser QA remains required. Next: inspect source
+  `95c7da7` and the coordinator browser record; this remains a local candidate.
+
+## 2026-07-19 — T12.1 Puzzle archive worktable candidate
+
+- Task: `TETRIS-T12-ARCHIVE-WORKTABLE-036`; base `95c7da7` with T12.1 contract
+  `91e9c0f`; source `b0889c7 feat(t12): refine puzzle archive worktable`.
+- Exact paths: `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`.
+- The 20-level archive becomes a semantic worktable: a continuous `3 / 20` campaign
+  meter, numbered catalog records, visible open/complete/sealed labels, solid readable
+  sealed entries, and a single responsive selected preview/start instrument. No catalog
+  thumbnail, upper-corner marker, or duplicate mobile preview remains.
+- Commands: targeted App/presentation PASS (27 tests); final typecheck PASS; full suite
+  PASS (41 files / 293 tests, 1 file / 2 tests skipped); production build PASS
+  (741 modules). Final browser review has zero console errors and proves desktop
+  1280×720, portrait 390×844, and landscape 844×390 archive geometry, 20 rows,
+  no horizontal overflow, zero catalog silhouettes, and exactly one selected silhouette.
+- Blocker: independent renderer and visual/browser QA. Next: inspect `b0889c7` with the
+  final captures and candidate range; do not mark accepted or publish as QA-complete.

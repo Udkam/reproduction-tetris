@@ -566,3 +566,53 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Next: generate five original late-campaign definitions, then implement the core and
   progression checkpoints with targeted deterministic tests before the final browser
   evidence pass.
+
+## 2026-07-19 — T12 coupled Puzzle campaign candidate
+
+- Candidate source checkpoint: `95c7da7 feat(t12): deliver coupled Puzzle campaign
+  migration`, preceded by the T12 contract checkpoints through `e770279`.
+- Puzzle now has 20 deterministic authored levels, only 01–03 initially open, one
+  additional sequential unlock per distinct canonical completion, and visible
+  difficulty/complete/locked semantics. The five extension histories were generated
+  as legal zero-clear setups and retain accepted route budgets of 40, 43, 43, 44, and
+  52 locks (including fixed +10 slack).
+- Anchors are coordinate-pinned across both lower-row and same-row clears; volatile
+  inputs, expiry events, renderer material, HUD timer, audio route, and settlement
+  logic are removed. Survival starts at seven bedrock rows with fixed 40-tick gravity.
+- Player-facing brand is the short plain-text `Tetra`; no Chinese companion name is
+  rendered. Full volume uses a 1.35 bounded master gain with less aggressive
+  compression and a short descending sine landing cue.
+- Verification: targeted matrix PASS (14 files / 109 tests); final
+  `npm.cmd run typecheck` PASS; full `npm.cmd run test` PASS (41 files / 292 tests,
+  1 file / 2 tests skipped); final `npm.cmd run build` PASS (741 modules). Browser
+  review at 1280×720 shows Tetra home, 7-layer Survival, all 20 archive rows with only
+  the first three enabled, selected preview only, a fixed-anchor Puzzle board, target/
+  budget HUD, one canvas, and zero console errors. Local captures are in `%TEMP%` and
+  the temporary Vite server was stopped.
+- Blocker: independent Core and visual/browser QA disposition remains required before
+  changelog acceptance or publication; this is a recoverable local candidate only.
+
+## 2026-07-19 — T12.1 archive worktable and visible-board candidate
+
+- Contract checkpoint: `91e9c0f docs(t12): define archive and viewport correction`.
+  Candidate sources: `7ae1190 fix(t12): contain active piece presentation` and
+  `b0889c7 feat(t12): refine puzzle archive worktable`.
+- The archive is now a text-first worktable: one continuous opened-count rail, semantic
+  open/complete/sealed labels, a catalog that contains no thumbnails, and exactly one
+  selected canonical-board preview/start action at every breakpoint. Sealed entries keep
+  readable solid surfaces and remain inert.
+- Active-piece rendering now clamps stale interpolation at both visible vertical board
+  edges without changing hidden spawn coordinates, Core collision, seeds, queues,
+  replays, or Puzzle setups. Edge contact suppresses the transient rotation scale for
+  that frame. A direct presentation test covers the screenshot case (top-row O with a
+  negative one-cell request), an interior interpolation, and the bottom boundary.
+- Verification: targeted App/presentation matrix PASS (27 tests); final typecheck PASS;
+  full suite PASS (41 files / 293 tests, 1 file / 2 tests skipped); final build PASS
+  (741 modules). Browser review has zero console errors: desktop 1280×720, portrait
+  390×844, and landscape 844×390 all have no horizontal overflow; the archive exposes
+  20 rows, no catalog miniature, exactly one selected preview, and `3 / 20` semantic
+  progress. A frozen real Survival state has core active `J@3,20` with stale presentation
+  `offsetY:-0.457…`; its visible purple J remains inside the well's top edge.
+- Blocker: independent renderer and visual/browser QA are still required. Next: review
+  `91e9c0f..b0889c7`, then integrate the formal changelog and publish only after both
+  dispositions accept the candidate.

@@ -737,3 +737,44 @@ changelog, T3/T4 evidence, or QA archive was edited.
   Browser evidence confirms canonical Puzzle target/budget state and Survival opening.
 - Blocker: independent Core QA. Next: read the candidate range and the coordinator's
   visual/browser evidence; recovery publication is not acceptance.
+
+## 2026-07-19 — T12 pinned-anchor and curriculum candidate
+
+- Task: `TETRIS-T12-PUZZLE-CURRICULUM-033`; base `a76eea2` recovery baseline on
+  `main`; source `95c7da7 feat(t12): deliver coupled Puzzle campaign migration`.
+- Exact core paths: `src/game/core/board.ts`, `src/game/core/board.test.ts`,
+  `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+  `src/game/core/puzzleFlow.test.ts`, `src/game/core/puzzleCampaign.test.ts`,
+  `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`, and
+  `src/game/core/types.ts`.
+- `A` anchors now remain at their authored coordinates through a clear below them and
+  through a full anchor row. Ordinary cells and original targets only settle inside
+  their own anchor-delimited vertical segment; all volatile/expiry state, events, and
+  support-settlement code are removed. The campaign has 20 deterministic legal setup
+  histories, with only the first three available through persistence and five new
+  accepted solver budgets of 40/43/43/44/52 locks.
+- Commands: targeted core, campaign, persistence, App, audio, and theme matrix PASS
+  (14 files / 109 tests); final typecheck PASS; full suite PASS (41 files / 292 tests,
+  1 file / 2 tests skipped); production build PASS (741 modules). Browser review is
+  in the coordinator progress record.
+- Blocker: independent Core and visual/browser QA. Next: review the contiguous
+  `a76eea2..95c7da7` candidate range; do not mark accepted or publish as QA-complete.
+
+## 2026-07-19 — T12.1 active-piece visible-boundary candidate
+
+- Task: `TETRIS-T12-RENDER-BOUNDARY-035`; base `95c7da7` with T12.1 contract
+  `91e9c0f`; source `7ae1190 fix(t12): contain active piece presentation`.
+- Exact paths: `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/presentation.ts`, and
+  `src/game/render/presentation.test.ts`.
+- Renderer-only repair: Core retains `y:19` buffered spawn and every deterministic
+  replay coordinate. The visible active group is filtered to rows 0–19, its requested
+  interpolation is clamped to both vertical well edges, and its scale pulse is neutral
+  whenever it touches or is clamped at an edge. Next/ghost contracts remain separate.
+- Commands: targeted App/presentation PASS (27 tests); final typecheck PASS; full suite
+  PASS (41 files / 293 tests, 1 file / 2 tests skipped); production build PASS
+  (741 modules). Browser evidence freezes a real Survival `J@3,20` whose presentation
+  still reports `offsetY:-0.457…`; visual output stays within the top board frame with
+  zero console errors.
+- Blocker: independent renderer and visual/browser QA. Next: review `7ae1190` against
+  the T12.1 contract; do not call the candidate accepted or publish it as QA-complete.
