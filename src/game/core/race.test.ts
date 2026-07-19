@@ -6,10 +6,10 @@ import {
   LINE_CLEAR_DELAY_TICKS,
   PROGRESSIVE_GRAVITY_TICKS,
   STANDARD_GRAVITY_TICKS,
+  SURVIVAL_GRAVITY_TICKS,
   SURVIVAL_LINES_PER_BEDROCK,
   TICKS_PER_SECOND,
   gravityForMode,
-  raceSpeedTier,
   survivalIntervalSeconds,
   survivalIntervalTicks,
 } from './constants';
@@ -47,14 +47,13 @@ function resolveClear(state: GameState) {
 }
 
 describe('progressive gravity and Survival intervals', () => {
-  it('uses ten-line Classic tiers and matching three-line Survival tiers with a final cap', () => {
+  it('uses ten-line Classic tiers and a faster fixed Survival cadence', () => {
     PROGRESSIVE_GRAVITY_TICKS.forEach((ticks, tier) => {
       expect(gravityForMode('marathon', 0, 0, tier * 10)).toBe(ticks);
-      expect(gravityForMode('race', 0, 50_000, tier * SURVIVAL_LINES_PER_BEDROCK)).toBe(ticks);
-      expect(raceSpeedTier(50_000, tier * SURVIVAL_LINES_PER_BEDROCK)).toBe(tier);
     });
     expect(gravityForMode('marathon', 0, 0, 10_000)).toBe(3);
-    expect(gravityForMode('race', 0, 0, 10_000)).toBe(3);
+    expect(gravityForMode('race', 0, 0, 0)).toBe(SURVIVAL_GRAVITY_TICKS);
+    expect(gravityForMode('race', 0, 50_000, 10_000)).toBe(SURVIVAL_GRAVITY_TICKS);
     expect(gravityForMode('puzzle', 99, 50_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });
 
@@ -69,7 +68,7 @@ describe('progressive gravity and Survival intervals', () => {
 });
 
 describe('timed Survival pressure and three-line reward', () => {
-  it('opens and restarts with exactly five unbreakable bedrock rows', () => {
+  it('opens and restarts with exactly ten unbreakable bedrock rows', () => {
     const opened = createInitialState(0x5000, 'race');
     expect(opened.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
     expect(opened.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
