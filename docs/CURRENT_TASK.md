@@ -9,14 +9,17 @@ Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd
 Current execution status (2026-07-19): **IN PROGRESS — T11 contract checkpoint; no
 source candidate yet.**
 
-T11 replaces the permanent-anchor Puzzle goal with a target-clear budget. Every
-initial ordinary authored cell is an original target, receives a renderer-owned
-special marker, and remains a target while rows clear or it moves through the bounded
-volatile settlement path. Every later player cell is non-target. The current budget X
-is the shortest lock count among that level's verified deterministic solver routes;
-success can occur on its Xth resolved lock, while remaining targets after that lock
-produce an explicit Puzzle budget failure. Anchor overlays are retired because a
-non-clearable cell can make an all-original-target objective impossible. Volatile
+T11 replaces the old board-empty Puzzle goal with a target-clear budget. Every initial
+ordinary authored cell is an original target, receives a renderer-owned special
+marker, and remains a target while rows clear or it moves through the bounded volatile
+settlement path. Every later player cell is non-target. The current budget X is the
+shortest lock count among that level's verified deterministic solver routes plus eight
+locks of fixed slack; success can occur on its Xth resolved lock, while remaining
+targets after that lock produce an explicit Puzzle budget failure. Sparse anchor
+overlays remain, but are seeded only into initially wholly empty visible rows so they
+never share a starting row with target cells or prevent their objective. The in-level
+statistics show remaining original targets plus an explicit locks-remaining countdown.
+Volatile
 five-second input expiry remains Puzzle-only and never makes a player lock a target.
 
 Survival opens with ten unbreakable bedrock rows. The 15→8-second pressure and each

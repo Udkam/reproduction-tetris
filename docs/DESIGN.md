@@ -13,21 +13,24 @@ audio palette.
   ordinary row clear and the bounded volatile support-settlement rule, and is removed
   only when that original cell clears.
 - `X` is the shortest lock count among the level's currently verified deterministic
-  public-command solver routes. It is a reproducible accepted-solver bound, not a
-  claim of a globally proven mathematical optimum. The engine permits success on the
-  Xth lock after line resolution; if targets remain then, it ends with the explicit
-  budget failure. Each level owns and exposes its own solver result.
-- Permanent random `A` anchors are retired: a non-clearable initial cell would make a
-  target-clear objective impossible whenever it shares a row with an original target.
-  Five-second volatile inputs remain optional, seeded later-play mechanics and never
-  count as original targets.
+  public-command solver routes plus eight locks of fixed slack. It is a reproducible
+  accepted-solver bound with room for recovery, not a claim of a globally proven
+  mathematical optimum. The engine permits success on the Xth lock after line
+  resolution; if targets remain then, it ends with the explicit budget failure. Each
+  level owns and exposes its own solver result and its applied slack.
+- Random permanent `A` anchors remain sparse and deterministic, but may occupy only a
+  visible row that was entirely empty in the authored initial board. They never share
+  an initial row with original targets, never count as targets, and therefore cannot
+  make an all-original-target objective impossible. Five-second volatile inputs remain
+  optional, seeded later-play mechanics and never count as original targets.
 - Pixi keeps each original target's ordinary material and connected-piece geometry,
   then adds one quiet, high-contrast machined target inset. The marker survives normal
   state updates and moves with the canonical target coordinate; it is neither a glow,
   a DOM cell, nor a full per-cell outer-box treatment.
-- Puzzle statistics show original targets remaining and the bounded used/available
-  solver locks. Terminal success and failure copy state the target outcome rather than
-  claiming that the full board is empty.
+- Puzzle statistics show original targets remaining, the bounded used/available solver
+  locks, and a prominent countdown of the locks still available. Terminal success and
+  failure copy state the target outcome rather than claiming that the full board is
+  empty.
 - Survival opens with exactly ten warm-mineral bedrock rows. It retains its 15→8-second
   pressure and three-line bedrock removal, but its automatic gravity is one fixed,
   slightly faster cadence for the whole run. Clearing lines never accelerates the
