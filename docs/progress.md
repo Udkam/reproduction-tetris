@@ -569,6 +569,8 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 
 ## 2026-07-19 — T12 coupled Puzzle campaign candidate
 
+- Historical T12 candidate, superseded for Puzzle ordering, budgets, anchors, and
+  unlock rules by the T12.4 Core-replayed campaign recalibration below.
 - Candidate source checkpoint: `95c7da7 feat(t12): deliver coupled Puzzle campaign
   migration`, preceded by the T12 contract checkpoints through `e770279`.
 - Puzzle now has 20 deterministic authored levels, only 01–03 initially open, one
@@ -616,3 +618,62 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Blocker: independent renderer and visual/browser QA are still required. Next: review
   `91e9c0f..b0889c7`, then integrate the formal changelog and publish only after both
   dispositions accept the candidate.
+
+## 2026-07-19 — T12.4 replay-verified Puzzle curriculum candidate
+
+- Candidate range: `f98423a..69eec5f`; contract correction `9f5a38c`, calibrated
+  Core order/budgets `4fc52a0`, offline candidate finder `4615706`, replay artifact
+  `896a18a`, tiered progress `67c9e64`, archive gate `8cdfedc`, and the stale-fixture
+  correction `69eec5f`.
+- All twenty fixed-seed Puzzle command streams now Core-replay to `finished` with zero
+  targets remaining. These are verified playable route upper bounds, not mathematical
+  optimum certificates. Campaign order is the recorded ascending tuple `(locks,
+  anchors, soft drops, command count, id)`; public allowances are exactly `2 × locks`.
+  Unsupported anchor coverage was reduced to levels 01/03/11 by ID, while authored
+  boards, setups, and seeds remain unchanged.
+- The new campaign opens the first three sorted levels: `深湾阈门` (24 locks,
+  allowance 48), `棱湾交错` (24, 48), and `静弧深槽` (26, 52). Every later tier
+  opens after two distinct completions in the immediately preceding tier; v1/v2
+  completion records migrate to v3 canonical IDs without granting a false cascade.
+- Verification: focused solver/campaign/progress/App coverage PASS (11 files / 91
+  tests); final `npm.cmd run typecheck` PASS; full `npm.cmd run test` PASS (42 files /
+  297 tests, 1 file / 2 tests skipped); final `npm.cmd run build` PASS (741 modules).
+  Browser matrix at 1280×720, 390×844, and 844×390 found zero console errors and no
+  horizontal/document overflow; it confirms three initial opens, a six-open tier after
+  two canonical completions, Puzzle `Next · 2`, one canvas/zero DOM cells during play,
+  and a top-spawn Survival piece contained within the well. Local screenshots remain
+  under `%TEMP%`; compact details are in the T12.4 coordinator evidence record.
+- Local-only player walkthrough `Solutions/Solution-1.md` contains all 24 stable
+  post-lock snapshots for the newly sorted Level 01 and is confirmed ignored by
+  `.gitignore`; it is intentionally absent from the candidate.
+- Blocker: fresh independent Core and visual/browser QA dispositions are still required
+  before changelog integration or push. Next: review the exact range and evidence.
+
+## 2026-07-19 — T12.5 low-pressure Puzzle curriculum accepted
+
+- T12.5 supersedes the unaccepted T12.4 source outcome for campaign order, deep
+  anchor boards, public piece budgets, and solver-derived player limits. The accepted
+  source is `d2469e3f66072d5edc905981200d0df90b06780f`; the supporting contract chain
+  is `5f830d7`, `0f1ee20`, and `8bd9108`.
+- The twenty fixed-seed Puzzle levels are now a gentle authored sequence: obvious
+  near-floor gaps, one normal rotation, then clear vertical two- through four-row I
+  channels. Puzzle wins only by clearing all original targets; it has no anchors,
+  timed inputs, usable-piece cap, or budget failure. The Core-dispatched route fixture
+  is clearability evidence, never a player constraint or optimum claim.
+- Puzzle-local `B` undo and the matching touch control restore the exact pre-lock
+  checkpoint. It covers hard-drop score, board, target ownership, active block,
+  queue/randomizer, timers, lines, and placed count; it remains a no-op for Classic and
+  Survival. The renderer clears discarded landing/clear presentation on rollback.
+- The library is a seven-tier themed `解谜航图`: levels 01–03 open immediately, every
+  next three-level tier opens after any two completions in its predecessor, and 19–20
+  open after any two of 16–18. The full rule remains visible; entries have no thumbnail
+  or corner dot and only the selected record has a preview.
+- Final gates: `npm.cmd run typecheck` PASS; `npm.cmd run test` PASS (44 files / 286
+  tests, 1 skipped file / 2 skipped tests); `npm.cmd run build` PASS (741 modules).
+  Fresh browser evidence at 1280×720, 390×844, and 844×390 reports no document
+  overflow or console error, one gameplay canvas/zero DOM cells, two Puzzle Next
+  pieces, and keyboard/touch undo score 36→0 with placed count 1→0.
+- Independent Core and visual/browser QA both accepted `69eec5f..d2469e3` with no
+  P0–P2 finding; their disposition is recorded in
+  `docs/workstreams/tetris-t12-coordinator/QA_T12_5.md`. `Solutions/Solution-1.md`
+  remains local-only and is confirmed ignored by the existing `Solutions/` rule.

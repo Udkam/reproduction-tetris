@@ -24,5 +24,5 @@
 - Commands run: focused Core/input/runtime undo matrix (10 files / 72 tests), focused
   curriculum/replay matrix (12 files / 69 tests), focused presentation test (3 files /
   16 tests), then coordinator final typecheck/full suite/build.
-- Blocker: independent read-only Core QA is pending. Next: accept/reject the exact
-  `69eec5f..d2469e3` candidate range without changing source.
+- Independent read-only Core QA accepted `69eec5f..d2469e3` with no P0–P2 finding;
+  its disposition is recorded in `aa23394`. Next: coordinator publication only.

@@ -17,5 +17,5 @@
 - Evidence: the final coordinator browser matrix observes 3/20 initial opening,
   6/20 after two Tier-1 completions, full rule copy, no document overflow/console
   error, two visible Next pieces, and actual keyboard/touch rollback.
-- Blocker: independent visual/browser QA is pending. Next: read-only review of
-  `69eec5f..d2469e3` and the coordinator evidence record.
+- Independent visual/browser QA accepted `69eec5f..d2469e3` with no P0–P2 finding;
+  its disposition is recorded in `aa23394`. Next: coordinator publication only.

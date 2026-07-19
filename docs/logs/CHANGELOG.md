@@ -342,3 +342,26 @@
   tests, a 741-module production build, and a zero-error browser inspection.
 - The extended candidate range is `502f978..15e6412`; independent QA remains pending
   and nothing was pushed.
+
+## 2026-07-19 — T12.5 gentle Puzzle campaign and undo accepted
+
+- Replaced the unaccepted budget/anchor-heavy T12.4 Puzzle outcome with twenty fixed
+  shallow teaching boards. Levels progress from obvious direct gaps through one normal
+  rotation to clear vertical I channels; clearing all original targets is the sole win
+  condition. There is no timed input, public piece allowance, anchor requirement, or
+  budget terminal.
+- Added deterministic Puzzle-only undo on `B` and the sixth touch control. It restores
+  the pre-lock board, original-target ownership, active piece, queue/randomizer,
+  timers, score, lines, and placed count, including hard-drop scoring; Classic and
+  Survival remain unaffected. Renderer rollback clears stale landing/clear effects.
+- Rebuilt level selection as the seven-tier `解谜航图`, with complete visible unlock
+  rules, three initial levels, two-completion tier gates, readable inert sealed entries,
+  no per-entry thumbnail/corner-dot decoration, and exactly one selected preview.
+- Source candidate `d2469e3` passed typecheck, 44 passing / 1 skipped test files
+  (286 passing / 2 skipped tests), and the 741-module production build. Browser
+  evidence `ae49069` verifies 1280×720, 390×844, and 844×390 layouts, zero console
+  errors/overflow, two Puzzle Next previews, one canvas/zero DOM cells, and keyboard
+  plus touch undo restoring score 36→0 and placed count 1→0.
+- Independent Core and visual/browser QA accepted `69eec5f..d2469e3` without P0–P2
+  findings in `aa23394`. The existing `.gitignore` continues to keep local
+  `Solutions/` walkthroughs out of publication.

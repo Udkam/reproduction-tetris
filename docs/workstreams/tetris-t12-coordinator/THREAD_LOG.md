@@ -16,5 +16,6 @@
   paths. The real browser replay verifies level 08 keyboard and touch undo restore
   score 36→0, placed count 1→0, board/queue/targets, two Next pieces, one canvas,
   zero DOM cells, zero console errors, and no document overflow.
-- Blocker: independent Core and visual/browser QA verdicts are pending. Next: record
-  read-only dispositions, then integrate accepted progress/changelog metadata and push.
+- Independent Core and visual/browser QA both accepted the source range with no P0–P2
+  finding; their read-only disposition is `aa23394`. Next: finalize coordinator
+  progress/changelog metadata and perform the ordinary `main` push.
