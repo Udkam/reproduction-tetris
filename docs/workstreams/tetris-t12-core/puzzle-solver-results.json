@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "4fc52a0c3d810b1099ece19345ff3b8f94853804",
+  "claim": "Verified playable route upper bounds only. Each lossless public-command stream below is Core-replayed; the data is not a mathematical optimality proof.",
+  "commandEncoding": {
+    "S": {
+      "type": "start"
+    },
+    "T": {
+      "type": "tick"
+    },
+    "L": {
+      "type": "move",
+      "dx": -1
+    },
+    "R": {
+      "type": "move",
+      "dx": 1
+    },
+    "D": {
+      "type": "soft-drop"
+    },
+    "H": {
+      "type": "hard-drop"
+    },
+    "C": {
+      "type": "rotate",
+      "direction": 1
+    },
+    "A": {
+      "type": "rotate",
+      "direction": -1
+    }
+  },
+  "orderTieBreak": [
+    "solutionLocks-ascending",
+    "retainedAnchorCount-ascending",
+    "softDropCount-ascending",
+    "commandCount-ascending",
+    "puzzleId-lexicographic"
+  ],
+  "campaignOrder": [
+    "t6r-bastion-19",
+    "t5r-prism-11",
+    "t5r-arc-13",
+    "t5r-pulse-14",
+    "t5r-lattice-09",
+    "t5r-delta-07",
+    "t5r-horizon-15",
+    "t3r-cascade-05",
+    "t6r-cairn-17",
+    "t3r-cascade-06",
+    "t5r-drift-08",
+    "t5r-rift-10",
+    "t5r-current-12",
+    "t3r-shaft-04",
+    "t3r-shaft-02",
+    "t6r-veil-16",
+    "t6r-terrace-18",
+    "t6r-keystone-20",
+    "t3r-shaft-01",
+    "t3r-shaft-03"
+  ],
+  "levels": [
+    {
+      "id": "t6r-bastion-19",
+      "solutionLocks": 24,
+      "budget": 48,
+      "retainedAnchorCount": 0,
+      "routeSource": "extension-route-transcript",
+      "commandStream": "SLLDDDDDDDDDDDDCLHTTTLDDDDDDDDDDDDHTTTRRRDDDDDDDDDDAHTTTLLADDDDDDDDDDDDHTTTTTTTTTTTTRRRCRDDDDDDDDDDDHTTTTTTTTTTTTLLLDDDDDDDDDDDDCHTTTTTTTTTTTTRRDDDDDDDDDDDDDAHTTTTTTTTTTTTRRCDDDDDDDDDDDDHTTTLDDDDDDDDDDDDDDHTTTTTTTTTTTTRRRRDDDDDDDDDDDDDHTTTLADDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDCHTTTCDDDDDDDDDDDDDDHTTTTTTTTTTTTLLADDDDDDDDDDDDDDHTTTTTTTTTTTTCDDDDDDDDDDDDDDHTTTTTTTTTTTTLLDDDDDDDDDDDDDDHTTTRRAADDDDDDDDDDDDDDHTTTTTTTTTTTTLLLDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDCDDDHTTTTTTTTTTTTRRRRCDDDDDDDDDDDDDDDDHTTTTTTTTTTTTDDDDDDDDDDDDDDDAADHTTTTTTTTTTTTRRRDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTDDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTRRRDDDDDDDDDDDDDDDDDCHTTTTTTTTTTTT",
+      "commandCount": 631,
+      "commandDigest": "e330b77a",
+      "softDropCount": 329,
+      "rotationCount": 19,
+      "moveCount": 51,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "26230cbf"
+      }
+    },
+    {
+      "id": "t5r-prism-11",
+      "solutionLocks": 24,
+      "budget": 48,
+      "retainedAnchorCount": 1,
+      "routeSource": "guided-soft",
+      "commandStream": "SLLLHTTTARRRHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTCRRRRHTTTLLHTTTCLLLLHTTTTTTTTTTTTRCDDDDDDDDDLHTTTTTTTTTTTTLLAHTTTTTTTTTTTTRRRRARHTTTTTTTTTTTTRRRCHTTTTTTTTTTTTADDDDDDDADDAHTTTLLLAHTTTCDDDDDDDCDDCHTTTLLLLHTTTLAHTTTRCHTTTTTTTTTTTTLLDDDDDDDDDRHTTTLLDDDDDDDDDDRHTTTRRRRHTTTTTTTTTTTTRCHTTTTTTTTTTTTRRCHTTTDDDDDDDCDADAHTTTRRRRCHTTTTTTTTTTTTLLLALHTTTTTTTTTTTT",
+      "commandCount": 346,
+      "commandDigest": "3f23f33a",
+      "softDropCount": 55,
+      "rotationCount": 24,
+      "moveCount": 62,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "9392f14e"
+      }
+    },
+    {
+      "id": "t5r-arc-13",
+      "solutionLocks": 26,
+      "budget": 52,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCCLLLHTTTTTTTTTTTTLHTTTCHTTTARRRRRHTTTLLLLHTTTTTTTTTTTTCRHTTTCLLHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTCHTTTLLLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTARRRHTTTARHTTTTTTTTTTTTCRRRRHTTTCLLLLHTTTTTTTTTTTTCLLLLLHTTTLLLHTTTTTTTTTTTTCRRRRHTTTCLHTTTRHTTTHTTTRRRRHTTTCLLLHTTTTTTTTTTTTARRRHTTTALLHTTTTTTTTTTTTARRHTTTTTTTTTTTT",
+      "commandCount": 298,
+      "commandDigest": "414037fb",
+      "softDropCount": 0,
+      "rotationCount": 20,
+      "moveCount": 65,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "90e638b8"
+      }
+    },
+    {
+      "id": "t5r-pulse-14",
+      "solutionLocks": 26,
+      "budget": 52,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SALLLHTTTCLHTTTCLLHTTTTTTTTTTTTCRHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTRRRRHTTTLLHTTTCRRRHTTTTTTTTTTTTCLLHTTTCCRRRHTTTRRRHTTTCRRRRHTTTTTTTTTTTTCHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTALHTTTTTTTTTTTTCLHTTTCRHTTTALLLHTTTTTTTTTTTTCRRHTTTRHTTTCRRRRHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCCLLLHTTTTTTTTTTTTLLLLHTTTHTTTCRRRRHTTTTTTTTTTTT",
+      "commandCount": 306,
+      "commandDigest": "681688c9",
+      "softDropCount": 0,
+      "rotationCount": 22,
+      "moveCount": 62,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "6f381576"
+      }
+    },
+    {
+      "id": "t5r-lattice-09",
+      "solutionLocks": 26,
+      "budget": 52,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTCRRRRHTTTCRRRHTTTRHTTTLLLHTTTCLHTTTTTTTTTTTTCRRHTTTCLLLLHTTTHTTTTTTTTTTTTLLLHTTTCCHTTTCRRRRHTTTTTTTTTTTTCLLLLLHTTTTTTTTTTTTLHTTTTTTTTTTTTCRRRRHTTTCHTTTTTTTTTTTTLHTTTCLLLHTTTTTTTTTTTTARRRRRHTTTLLLHTTTCRRHTTTTTTTTTTTTRRRHTTTTTTTTTTTTCLLHTTTTTTTTTTTTHTTTTTTTTTTTTARRRRRHTTTTTTTTTTTT",
+      "commandCount": 310,
+      "commandDigest": "3e240bb8",
+      "softDropCount": 0,
+      "rotationCount": 17,
+      "moveCount": 62,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "48cee5f6"
+      }
+    },
+    {
+      "id": "t5r-delta-07",
+      "solutionLocks": 26,
+      "budget": 52,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SARRRRRHTTTTTTTTTTTTARRRRRHTTTRHTTTTTTTTTTTTLLLLHTTTRRRHTTTCLLHTTTTTTTTTTTTCRRHTTTARHTTTTTTTTTTTTLHTTTTTTTTTTTTCHTTTAHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTLLLLHTTTTTTTTTTTTCLLLHTTTRRRRHTTTLHTTTCRRHTTTTTTTTTTTTLLHTTTCLLLLLHTTTTTTTTTTTTLLLHTTTRRHTTTTTTTTTTTTCCRRRRHTTTTTTTTTTTTRRRRHTTTCLHTTTTTTTTTTTTLLLHTTTCLLLLLHTTTTTTTTTTTT",
+      "commandCount": 317,
+      "commandDigest": "c5609b60",
+      "softDropCount": 0,
+      "rotationCount": 15,
+      "moveCount": 71,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "43febbe3"
+      }
+    },
+    {
+      "id": "t5r-horizon-15",
+      "solutionLocks": 26,
+      "budget": 52,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCLLLHTTTHTTTTTTTTTTTTCCLHTTTTTTTTTTTTCRRHTTTTTTTTTTTTRHTTTCLLLLHTTTTTTTTTTTTRRRRHTTTLLHTTTTTTTTTTTTCRHTTTTTTTTTTTTCLHTTTTTTTTTTTTCCHTTTARRRHTTTCLLLLLHTTTLLLHTTTARRRRRHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTCRRHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTRRRRHTTTCRRRHTTTCLLLLHTTTCLHTTTARHTTTTTTTTTTTTHTTTCRRRRHTTTTTTTTTTTT",
+      "commandCount": 317,
+      "commandDigest": "0d2d57f6",
+      "softDropCount": 0,
+      "rotationCount": 21,
+      "moveCount": 65,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "28fd1608"
+      }
+    },
+    {
+      "id": "t3r-cascade-05",
+      "solutionLocks": 27,
+      "budget": 54,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCCHTTTCLLLLLHTTTLLLHTTTTTTTTTTTTCCRRRHTTTTTTTTTTTTLLLHTTTARRRRRHTTTCLHTTTTTTTTTTTTRHTTTTTTTTTTTTLLHTTTCHTTTTTTTTTTTTCCRRRHTTTTTTTTTTTTCCRRHTTTTTTTTTTTTRRRRHTTTCLLLLHTTTTTTTTTTTTCRRRRHTTTCCHTTTCLLLHTTTTTTTTTTTTLLLLHTTTALHTTTCCRHTTTTTTTTTTTTCRRHTTTTTTTTTTTTCCRHTTTTTTTTTTTTHTTTCRRRHTTTCRRRRHTTTTTTTTTTTTARRHTTTCCLLLHTTTTTTTTTTTT",
+      "commandCount": 327,
+      "commandDigest": "ffb60a7b",
+      "softDropCount": 0,
+      "rotationCount": 28,
+      "moveCount": 64,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "e2ed6fe8"
+      }
+    },
+    {
+      "id": "t6r-cairn-17",
+      "solutionLocks": 27,
+      "budget": 54,
+      "retainedAnchorCount": 0,
+      "routeSource": "extension-route-transcript",
+      "commandStream": "SLLLDDDDDDDDDDDDDCHTTTTTTTTTTTTRRRRCDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDHTTTTTTTTTTTTLLDDDDDDDDDDDDDDHTTTTTTTTTTTTLLLDDDDDDDDDDDDDHTTTRRDDDDDDDDDDDDDHTTTTTTTTTTTTAADDDDDDDDDDDDDHTTTRDDDDDDDDDDDDAAHTTTLLADDDDDDDDDDDDHTTTRRRDDDDDDDDDDDCDHTTTTTTTTTTTTLLDDDDDDDDDDDCLDDHTTTTTTTTTTTTRRRDDDDDDDDDDDDDADHTTTRRRRDDDDDDDDDDDDHTTTDDDDDDDDDDDDDCDHTTTTTTTTTTTTLLLDDDDDDDDDDDDDDCHTTTRCDDDDDDDDDDDDDDDHTTTRRDDDDDDDDDDDDDDHTTTADDDDDDDDDDDDDADHTTTTTTTTTTTTRCDDDDDDDDDDDDDDHTTTLLDDDDDDDDDDDDDDCHTTTTTTTTTTTTADDDDDDDDDDDDDDDADHTTTTTTTTTTTTLLLCLLDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTLDDDDDDDDDDDDDDDDDDHTTTDDDDDDDDDDDDDDDDDHTTTRRRRDDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTLADDDDDDDDDDDDDDDDDHTTTRRRCDDDDDDDDDDDDDDDDDDHTTTTTTTTTTTT",
+      "commandCount": 689,
+      "commandDigest": "0e9d516d",
+      "softDropCount": 385,
+      "rotationCount": 22,
+      "moveCount": 56,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "ba5cf7ba"
+      }
+    },
+    {
+      "id": "t3r-cascade-06",
+      "solutionLocks": 28,
+      "budget": 56,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SALHTTTRRRRHTTTCCRRRRHTTTCLLLLHTTTLLLHTTTCRHTTTTTTTTTTTTCHTTTTTTTTTTTTCHTTTTTTTTTTTTCLLHTTTCRRRRHTTTTTTTTTTTTLLLLHTTTCRRRHTTTTTTTTTTTTCCRRHTTTTTTTTTTTTCCRRRHTTTTTTTTTTTTRRRHTTTHTTTALHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTCRRHTTTTTTTTTTTTAHTTTTTTTTTTTTARRRRRHTTTRRRHTTTCRHTTTCLLLLLHTTTCLLLHTTTTTTTTTTTTCCLHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTT",
+      "commandCount": 344,
+      "commandDigest": "3bfad8b7",
+      "softDropCount": 0,
+      "rotationCount": 26,
+      "moveCount": 70,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "7cd9b86f"
+      }
+    },
+    {
+      "id": "t5r-drift-08",
+      "solutionLocks": 29,
+      "budget": 58,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCLLHTTTTTTTTTTTTLHTTTARHTTTLLLHTTTRRRHTTTTTTTTTTTTCRRHTTTCRRRRHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTCCRRRHTTTALHTTTTTTTTTTTTCLLHTTTCHTTTCLLLLHTTTTTTTTTTTTRHTTTALLHTTTTTTTTTTTTCLLLLLHTTTCCRRRRHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTCRRHTTTLLLHTTTCCRRRRHTTTCHTTTTTTTTTTTTHTTTTTTTTTTTTCCRRHTTTTTTTTTTTTLLLHTTTLHTTTLLLHTTTCRRRRHTTTARRRRHTTTTTTTTTTTT",
+      "commandCount": 329,
+      "commandDigest": "581773e3",
+      "softDropCount": 0,
+      "rotationCount": 24,
+      "moveCount": 71,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "0fb0ea1b"
+      }
+    },
+    {
+      "id": "t5r-rift-10",
+      "solutionLocks": 29,
+      "budget": 58,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCRRRHTTTCLLLLHTTTTTTTTTTTTCRRRRHTTTAHTTTLLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCCRRHTTTTTTTTTTTTLLLLHTTTTTTTTTTTTCCRRHTTTCCRRRHTTTRHTTTCLLHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTRRRRHTTTTTTTTTTTTARRRRHTTTCRRRRHTTTAHTTTTTTTTTTTTLHTTTALLHTTTRRHTTTTTTTTTTTTCRHTTTCLLLLHTTTTTTTTTTTTLHTTTCRRRHTTTTTTTTTTTTCCRRHTTTCRRRRHTTTRHTTTCLLLHTTTTTTTTTTTT",
+      "commandCount": 341,
+      "commandDigest": "870870d1",
+      "softDropCount": 0,
+      "rotationCount": 25,
+      "moveCount": 73,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "25bae238"
+      }
+    },
+    {
+      "id": "t5r-current-12",
+      "solutionLocks": 30,
+      "budget": 60,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCCHTTTALLLHTTTRRHTTTRRRRHTTTTTTTTTTTTCLHTTTTTTTTTTTTCLLLHTTTALLHTTTCLLLLLHTTTCCRRRRHTTTTTTTTTTTTAHTTTTTTTTTTTTCRHTTTRRRHTTTRHTTTCRRRRHTTTTTTTTTTTTCRRHTTTARRRRRHTTTTTTTTTTTTLHTTTTTTTTTTTTCCLLLHTTTTTTTTTTTTARRRRRHTTTCLHTTTTTTTTTTTTCRHTTTTTTTTTTTTRRHTTTCCHTTTRRHTTTCRRRHTTTTTTTTTTTTLLLHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCLLHTTTARRRRRHTTTTTTTTTTTT",
+      "commandCount": 356,
+      "commandDigest": "5d1632e0",
+      "softDropCount": 0,
+      "rotationCount": 26,
+      "moveCount": 74,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "b3dde31f"
+      }
+    },
+    {
+      "id": "t3r-shaft-04",
+      "solutionLocks": 30,
+      "budget": 60,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCLLLLLHTTTCCLLHTTTARRRRRHTTTTTTTTTTTTCLLLLHTTTRRRHTTTTTTTTTTTTCCRRRRHTTTHTTTTTTTTTTTTCLLHTTTTTTTTTTTTRRRHTTTHTTTCLLLHTTTTTTTTTTTTARRRRRHTTTCCRRHTTTTTTTTTTTTRRRHTTTHTTTTTTTTTTTTLLHTTTRHTTTCLLLLHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTLLLHTTTTTTTTTTTTALHTTTARRRRRHTTTCRRHTTTTTTTTTTTTCLLHTTTARRHTTTTTTTTTTTTLLLLHTTTLLLHTTTRHTTTTTTTTTTTTCLHTTTTTTTTTTTTCCRRRRHTTTTTTTTTTTT",
+      "commandCount": 358,
+      "commandDigest": "1d5d56ed",
+      "softDropCount": 0,
+      "rotationCount": 22,
+      "moveCount": 80,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "192d3388"
+      }
+    },
+    {
+      "id": "t3r-shaft-02",
+      "solutionLocks": 30,
+      "budget": 60,
+      "retainedAnchorCount": 0,
+      "routeSource": "legacy-route-1",
+      "commandStream": "SCRRHTTTRRRRHTTTTTTTTTTTTRRRRHTTTCCLLHTTTTTTTTTTTTCLLLLLHTTTCHTTTTTTTTTTTTCRHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTARHTTTALHTTTTTTTTTTTTLLLHTTTCRRRRHTTTCRRHTTTTTTTTTTTTCLHTTTCRRRRHTTTCLHTTTCRHTTTTTTTTTTTTCCLLLHTTTTTTTTTTTTRRRHTTTCCRHTTTTTTTTTTTTRRRRHTTTCCLLLHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTARRRRRHTTTTTTTTTTTTLLLLHTTTHTTTCRHTTTTTTTTTTTTRRRHTTTAHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTT",
+      "commandCount": 364,
+      "commandDigest": "cbd922ee",
+      "softDropCount": 0,
+      "rotationCount": 26,
+      "moveCount": 73,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "e59a2d40"
+      }
+    },
+    {
+      "id": "t6r-veil-16",
+      "solutionLocks": 30,
+      "budget": 60,
+      "retainedAnchorCount": 0,
+      "routeSource": "extension-route-transcript",
+      "commandStream": "SLLLDDDDDDDDDCHTTTLLLCLLDDDDDHTTTRRRRDDDDDDDDDDDHTTTRRRRDDDDDDDDDAHTTTTTTTTTTTTLLDDDDDDDDDDHTTTRRCDDDDDDDDDDHTTTTTTTTTTTTDDDDDDDDDDDHTTTTTTTTTTTTRRRRDDDDDDDDDDDHTTTRRRRDDDDDDDDDHTTTLADDDDDDDDDDDHTTTTTTTTTTTTDDDDDDDDDDDAADHTTTTTTTTTTTTLDDDDDDDDDDDDCLDHTTTTTTTTTTTTRDDDDDDDDDDDDCHTTTTTTTTTTTTLADDDDDDDDDDDDDDHTTTLLDDDDDDDDDDDCDHTTTRDDDDDDDDDDDDDDAHTTTTTTTTTTTTRDDDDDDDDDDDDDDHTTTTTTTTTTTTCDDDDDDDDDDDDDDHTTTTTTTTTTTTDDDDDDDDDDDDDCLDDHTTTTTTTTTTTTCDDDDDDDDDDDDDHTTTRRRRDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTRRRRDDDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDDDCDHTTTTTTTTTTTTDDDDDDDDDDDDDCLDDDHTTTLLDDDDDDDDDDDDDDDHTTTDDDDDDDDDDDDDARRDDDDHTTTTTTTTTTTTRCDDDDDDDDDDDDDDCRDDHTTTTTTTTTTTTCDDDDDDDDDDDDDDDDHTTTTTTTTTTTTRRRRDDDDDDDDDDDDDDDDDAHTTTLLDDDDDDDDDDDDDDDDCLDDHTTTTTTTTTTTT",
+      "commandCount": 753,
+      "commandDigest": "854452d9",
+      "softDropCount": 393,
+      "rotationCount": 23,
+      "moveCount": 63,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "e465e169"
+      }
+    },
+    {
+      "id": "t6r-terrace-18",
+      "solutionLocks": 30,
+      "budget": 60,
+      "retainedAnchorCount": 0,
+      "routeSource": "extension-route-transcript",
+      "commandStream": "SRRRRCDDDDDDDDHTTTRRCDDDDDDDDDHTTTDDDDDDDDDDDHTTTTTTTTTTTTCDDDDDDDDDHTTTADDDDDDDADDDHTTTTTTTTTTTTRDDDDDDDDARDDDHTTTTTTTTTTTTLLLDDDDDDDDDDDCDHTTTTTTTTTTTTADDDDDDDDDDDDADHTTTTTTTTTTTTRRRRCDDDDDDDDDDDDDDHTTTLLDDDDDDDDDDDDDCCHTTTTTTTTTTTTRRRDDDDDDDDDDDDDDHTTTRCDDDDDDDDDDDHTTTLCDDDDDDDDDDDDDDHTTTTTTTTTTTTLLLLDDDDDDDDDDDDDDDDHTTTLLDDDDDDDDDDDDDDDHTTTRADDDDDDDDDDDDDDDHTTTTTTTTTTTTRRRRDDDDDDDDDDDDDDDAHTTTTTTTTTTTTDDDDDDDDDDDDDDDHTTTRRRCDDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDDDDHTTTTTTTTTTTTLLLDDDDDDDDDDDDDDCHTTTTTTTTTTTTRRCDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDDDDHTTTCDDDDDDDDDDDDDDDDHTTTRRRDDDDDDDDDDDDARDDDDHTTTTTTTTTTTTRCDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTLLADDDDDDDDDDDDDDDDHTTTLCDDDDDDDDDDDDDDDDDHTTTTTTTTTTTTDDDDDDDDDDDDDDDDARDHTTTRRRRCDDDDDDDDDDDDDDDDDDHTTTTTTTTTTTT",
+      "commandCount": 759,
+      "commandDigest": "e2462116",
+      "softDropCount": 417,
+      "rotationCount": 26,
+      "moveCount": 60,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "73a5fa58"
+      }
+    },
+    {
+      "id": "t6r-keystone-20",
+      "solutionLocks": 32,
+      "budget": 64,
+      "retainedAnchorCount": 0,
+      "routeSource": "extension-route-transcript",
+      "commandStream": "SDDDDDDDDDCDCDAHTTTLLLDDDDDDDDDDDDHTTTLADDDDDDDDDDDHTTTTTTTTTTTTLLDDDDDDDDDDCCHTTTDDDDDDDDDDAHTTTLDDDDDDDDDDHTTTRRRRCDDDDDDDDDDHTTTTTTTTTTTTLLLLDDDDDDDDDDHTTTLLDDDDDDDDDHTTTRRCDDDDDDDDDDDHTTTTTTTTTTTTLCDDDDDDDDDDDHTTTTTTTTTTTTRRRRDDDDDDDDDDDDADHTTTRCDDDDDDDDDDDCDHTTTTTTTTTTTTDDDDDDDDDDDDARDHTTTTTTTTTTTTLLLDDDDDDDDDDDDDCDHTTTRRRCDDDDDDDDDDDDDDHTTTTTTTTTTTTLADDDDDDDDDDDDDDDHTTTRRRDDDDDDDDDDDDDARDHTTTTTTTTTTTTDDDDDDDDDDDDDDDHTTTTTTTTTTTTLLLDDDDDDDDDDDDDDDHTTTRRRRCDDDDDDDDDDDDDDHTTTRRDDDDDDDDDDDDDDDHTTTTTTTTTTTTRRRDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDDDDHTTTTTTTTTTTTCDDDDDDDDDDDDDDDHTTTTTTTTTTTTLDDDDDDDDDDDDDDDDDCHTTTTTTTTTTTTADDDDDDDDDDDDDDDDDHTTTTTTTTTTTTLDDDDDDDDDDDDDDDDCCDHTTTRRRRDDDDDDDDDDDDDDDDDHTTTRRRRDDDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDDDDHTTTLLLDDDDDDDDDDDDDCDDDDHTTTTTTTTTTTT",
+      "commandCount": 788,
+      "commandDigest": "47cf76bf",
+      "softDropCount": 431,
+      "rotationCount": 25,
+      "moveCount": 68,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "06a0b77a"
+      }
+    },
+    {
+      "id": "t3r-shaft-01",
+      "solutionLocks": 32,
+      "budget": 64,
+      "retainedAnchorCount": 1,
+      "routeSource": "guided-soft",
+      "commandStream": "SCLHTTTTTTTTTTTTRHTTTHTTTCCRRRRHTTTTTTTTTTTTCCRHTTTCLLLLHTTTADDDDDDLHTTTTTTTTTTTTLLLALHTTTTTTTTTTTTRRRCHTTTLCDDDDDDDLHTTTTTTTTTTTTRRRRARHTTTTTTTTTTTTRCHTTTTTTTTTTTTLHTTTLADDDDDCDLHTTTDDDDDDDLHTTTRRRCHTTTTTTTTTTTTLDDDDDDDLHTTTLADDDDDADAHTTTCHTTTLLLAHTTTLADDDDDDDLHTTTHTTTRRRRCHTTTTTTTTTTTTRRCHTTTTTTTTTTTTHTTTCHTTTRRRCRHTTTTTTTTTTTTLLLCLHTTTTTTTTTTTTRRRRCHTTTDDDDDDDDDDDARRDDDDDAHTTTTTTTTTTTTRRHTTTLLLAHTTTTTTTTTTTT",
+      "commandCount": 414,
+      "commandDigest": "5e687f44",
+      "softDropCount": 62,
+      "rotationCount": 30,
+      "moveCount": 67,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "1c403630"
+      }
+    },
+    {
+      "id": "t3r-shaft-03",
+      "solutionLocks": 37,
+      "budget": 74,
+      "retainedAnchorCount": 1,
+      "routeSource": "guided-soft",
+      "commandStream": "SRRRRHTTTCLLLLHTTTDDDDDDDDLHTTTTTTTTTTTTCHTTTRRRAHTTTTTTTTTTTTADDDDDDDDLHTTTRCHTTTTTTTTTTTTLLDDDDDDCLDCHTTTTTTTTTTTTHTTTRRRRCHTTTTTTTTTTTTRRRAAHTTTADDDDDDDDDLHTTTLADDDDDDDADAHTTTLLLAHTTTTTTTTTTTTLLLALHTTTTTTTTTTTTRRAHTTTTTTTTTTTTLLLAHTTTRRRRAAHTTTTTTTTTTTTRRRHTTTLDDDDDDDDDLLHTTTRRRRARHTTTLDDDDDDDDDLLHTTTAAHTTTTTTTTTTTTLAHTTTTTTTTTTTTCHTTTTTTTTTTTTCHTTTADDDDDDDLADCHTTTRRRRCHTTTADDDDDDDLADAHTTTDDDDDDDDDDDDDARRDDDCHTTTTTTTTTTTTRRCHTTTTTTTTTTTTRRRRCHTTTLDDDDDDDDDLLHTTTRRRRCHTTTLLLALHTTTTTTTTTTTTLDDDDDDDDDLLHTTTRCHTTTTTTTTTTTT",
+      "commandCount": 527,
+      "commandDigest": "e5f5b7ae",
+      "softDropCount": 108,
+      "rotationCount": 40,
+      "moveCount": 86,
+      "finalState": {
+        "status": "finished",
+        "completion": "finished",
+        "targetsRemaining": 0,
+        "stateHash": "79540c75"
+      }
+    }
+  ]
+}
