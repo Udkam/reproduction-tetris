@@ -1,30 +1,38 @@
-# Current Task — T10 Puzzle Anchors and Vanishing Inputs
+# Current Task — T11 Puzzle Target Budget and Survival Baseline
 
 Branch: `main`
 
-Current base: recovery publication `4813e55`; source checkpoints: `1ffe8fd`,
+Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd`,
 `4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
 `526f394`
 
-Current execution status (2026-07-19): **CANDIDATE READY — pending independent Core and visual/browser QA.**
+Current execution status (2026-07-19): **IN PROGRESS — T11 contract checkpoint; no
+source candidate yet.**
 
-T10 extends the unpushed T9 candidate with deterministic, sparse Puzzle-only
-anchors and five-second volatile pieces. Victory must ignore retained anchors
-but not ordinary tetromino cells. The archive retains every prior legal, deep
-generated endgame: four earlier/mid entries receive one deterministic anchor
-and the final three receive two, always in empty cells. Anchored entries may
-also draw volatile inputs, and gameplay and DEV state expose every locked
-volatile countdown.
-Classic and Survival remain unchanged.
+T11 replaces the permanent-anchor Puzzle goal with a target-clear budget. Every
+initial ordinary authored cell is an original target, receives a renderer-owned
+special marker, and remains a target while rows clear or it moves through the bounded
+volatile settlement path. Every later player cell is non-target. The current budget X
+is the shortest lock count among that level's verified deterministic solver routes;
+success can occur on its Xth resolved lock, while remaining targets after that lock
+produce an explicit Puzzle budget failure. Anchor overlays are retired because a
+non-clearable cell can make an all-original-target objective impossible. Volatile
+five-second input expiry remains Puzzle-only and never makes a player lock a target.
 
-Required evidence before any publication: targeted core/replay/UI coverage for
-anchor occupancy and retained-anchor clearing, removable-only victory,
-pause-safe 300-tick post-lock expiry, gap-origin-constrained falling after expiry,
-event ordering, restart/hash determinism, sparse archive-wide anchor placement,
-and combined-anchor/volatile states; then typecheck, the full suite, build, and
-one browser action pass with visible timer/anchors and no browser errors. Independent Core and
-visual/browser QA must accept the extended candidate before changelog
-integration or push.
+Survival opens with ten unbreakable bedrock rows. The 15→8-second pressure and each
+three-line bedrock removal remain, while gravity becomes one fixed faster cadence for
+the entire Survival run: no line count can accelerate the active piece. Header restart
+uses exactly `确认` with no description. Audio is re-authored as a sine-only,
+envelope-shaped event palette, with the hard drop owning its landing sound so a lock
+event cannot recreate an electrical buzz.
+
+Required evidence before any publication: targeted core/replay/UI coverage for all
+fifteen solver budgets, target identity across line clear and volatile settlement,
+Xth-lock success and exhausted-budget failure, ten-row Survival restart/pressure and
+fixed gravity, sine-only audio event routing, and bare restart confirmation; then
+typecheck, the full suite, build, and one browser action pass with visible target
+markers/budget and no browser errors. Independent Core and visual/browser QA must
+accept the extended candidate before changelog integration or acceptance.
 
 Publication exception (2026-07-19): the user explicitly authorizes a recovery
 push of the committed candidate to `origin/main`. This publication preserves a

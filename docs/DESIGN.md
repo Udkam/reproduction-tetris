@@ -1,11 +1,51 @@
-# Tetris — T10 Puzzle Anchors and Vanishing Pieces Contract
+# Tetris — T11 Puzzle Target Budget and Survival Baseline Contract
+
+## T11 target-marked Puzzle budgets, acoustic refinement, and fixed Survival pace
+
+The user's 2026-07-19 direction supersedes T10's permanent Puzzle-anchor overlay,
+the five-row / progressive-speed Survival opening, and the previous restart-copy and
+audio palette.
+
+- A Puzzle's goal is to clear every *original target block* within that level's
+  solver budget `X`. Original targets are the ordinary tetromino cells present in the
+  authored visible board at startup; later player locks, active pieces, ghosts, and
+  volatile pieces never become targets. Target identity follows its cell through an
+  ordinary row clear and the bounded volatile support-settlement rule, and is removed
+  only when that original cell clears.
+- `X` is the shortest lock count among the level's currently verified deterministic
+  public-command solver routes. It is a reproducible accepted-solver bound, not a
+  claim of a globally proven mathematical optimum. The engine permits success on the
+  Xth lock after line resolution; if targets remain then, it ends with the explicit
+  budget failure. Each level owns and exposes its own solver result.
+- Permanent random `A` anchors are retired: a non-clearable initial cell would make a
+  target-clear objective impossible whenever it shares a row with an original target.
+  Five-second volatile inputs remain optional, seeded later-play mechanics and never
+  count as original targets.
+- Pixi keeps each original target's ordinary material and connected-piece geometry,
+  then adds one quiet, high-contrast machined target inset. The marker survives normal
+  state updates and moves with the canonical target coordinate; it is neither a glow,
+  a DOM cell, nor a full per-cell outer-box treatment.
+- Puzzle statistics show original targets remaining and the bounded used/available
+  solver locks. Terminal success and failure copy state the target outcome rather than
+  claiming that the full board is empty.
+- Survival opens with exactly ten warm-mineral bedrock rows. It retains its 15→8-second
+  pressure and three-line bedrock removal, but its automatic gravity is one fixed,
+  slightly faster cadence for the whole run. Clearing lines never accelerates the
+  falling piece; Classic and Puzzle retain their existing independent cadence rules.
+- The restart sheet remains keyboard-confirmable with Enter, but its visible primary
+  action is exactly `确认` and it has no explanatory small copy.
+- All game feedback uses short, bounded sine-based acoustic cues with a shared soft
+  envelope; square, triangle, and sawtooth voices are removed. A hard drop owns the
+  complete landing voice, so its accompanying lock event cannot stack a second sharp
+  waveform on top. Event differences come from timing, octave, chord shape, and
+  envelope, never buzzy oscillator types or a sustained background loop.
 
 ## T10 immutable Puzzle anchors and five-second vanishing inputs
 
 The user's 2026-07-19 direction supersedes the T5 assumption that every Puzzle
 cell is removable and that every incoming piece remains active until it locks.
 
-- Puzzle owns a second permanent material, the `A` anchor. Anchors are visible,
+- Historical only — Puzzle owned a second permanent material, the `A` anchor. Anchors were visible,
   deterministic, single-cell blockers: an active tetromino cannot overlap one,
   an anchor is never erased, and a completed non-bedrock row containing anchors
   clears its removable cells while retaining each anchor. Normal rows and
@@ -62,7 +102,7 @@ cell is removable and that every incoming piece remains active until it locks.
 The user's 2026-07-19 direction supersedes T8's zero-bedrock opening, five-line
 reward, 20-to-10-second Survival pressure, and the visually flat Puzzle library.
 
-- Survival begins with exactly five full, unbreakable warm-mineral bedrock rows.
+- Historical only — Survival began with exactly five full, unbreakable warm-mineral bedrock rows.
   Restart creates the same five-row opening; Classic and Puzzle begin with none.
 - Survival pressure begins at 15 seconds and shortens by one second on each cumulative
   three-line boundary, to an eight-second floor:
