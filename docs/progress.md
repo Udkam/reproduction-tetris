@@ -515,3 +515,23 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   action, the confirmation sheet is visible and Enter resets the live run to zero
   placed pieces, Escape returns a live run to `playing`, and the console has zero
   errors. This remains a recovery checkpoint pending independent QA.
+
+## 2026-07-19 — T10 hard-drop and leaderboard metric correction
+
+- Replaced the hard-drop triangle sweep with a short paired sine landing thump,
+  retaining the event timing while removing the electrical-sounding waveform.
+  The deterministic core remains free of browser audio.
+- Classic now ranks and presents cleared lines first. Survival now ranks and
+  presents elapsed survival time first, longest run first; saved v3 rows are
+  re-sorted on read, so no data migration is required.
+- Source checkpoint: `526f394 fix(gameplay): refine hard drop and leaderboard ranks`.
+- Verification: focused audio, leaderboard, and App tests PASS (5 files / 21 tests);
+  final `npm.cmd run typecheck` PASS; final `npm.cmd run test` PASS (40 passed /
+  1 skipped; 277 passed / 2 skipped); final `npm.cmd run build` PASS (741 modules).
+  Browser review plays and tops out both modes with one canvas and zero console
+  errors: Classic visibly orders 12 lines above 8 lines, while Survival visibly
+  orders 15 seconds above 10 seconds despite fewer lines.
+- Blocker: independent Core and visual/browser QA remains required. This is a
+  recovery checkpoint, not an acceptance or changelog entry. Next: coordinator
+  commits the documentation record and may publish it under the existing recovery
+  authorization.

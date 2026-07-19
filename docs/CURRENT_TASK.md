@@ -3,7 +3,8 @@
 Branch: `main`
 
 Current base: recovery publication `4813e55`; source checkpoints: `1ffe8fd`,
-`4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`
+`4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
+`526f394`
 
 Current execution status (2026-07-19): **CANDIDATE READY — pending independent Core and visual/browser QA.**
 
@@ -38,6 +39,10 @@ continue and exit actions. `R` remains the immediate deterministic restart durin
 play, pause, or terminal states. A compressor safety stage and louder distinct
 feedback must make game events audible without placing browser audio APIs in
 `src/game/core`.
+Hard drop specifically uses a restrained paired sine landing thump instead of an
+electrical-sounding waveform sweep. The local Classic leaderboard ranks by cleared
+lines, while Survival ranks by `elapsedTicks` (longer survival first); both visible
+primary labels must match their persisted sort order.
 
 The shared Pixi canvas owns the dark Next well and canonical tetromino while the
 DOM `next-slot` remains only a transparent geometry anchor. This prevents the

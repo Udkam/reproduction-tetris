@@ -1739,3 +1739,24 @@ remain untouched. No generated browser artifact is part of the candidate.
 - Blocker: independent Core and visual/browser QA remains required; recovery push is
   authorized but is not an acceptance claim. Next: coordinator records the docs-only
   checkpoint and may publish it.
+
+## 2026-07-19 — T10 hard-drop and leaderboard metric correction
+
+- Task: `TETRIS-T10-AUDIO-LEADERBOARD-025`; base `159b01a` on `main`; source
+  `526f394 fix(gameplay): refine hard drop and leaderboard ranks`.
+- Exact product paths: `src/game/audio/AudioEngine.ts`,
+  `src/game/audio/AudioEngine.test.ts`, `src/leaderboard.ts`,
+  `src/leaderboard.test.ts`, `src/App.tsx`, and `src/App.test.ts`.
+- Hard drop now uses a two-voice sine landing thump (132→82 Hz and 78→52 Hz)
+  rather than a triangle sweep. Classic primary rank/display is cleared lines;
+  Survival primary rank/display is elapsed ticks, longer first. Existing valid
+  v3 records re-sort when read and need no schema change.
+- Commands: focused audio/leaderboard/App suite PASS (5 files / 21 tests); final
+  `npm.cmd run typecheck` PASS; final `npm.cmd run test` PASS (40 passed / 1
+  skipped; 277 passed / 2 skipped); final `npm.cmd run build` PASS (741 modules);
+  prescribed browser action client PASS. Browser top-out review shows 12-line
+  Classic above 8-line Classic, 15-second Survival above 10-second Survival,
+  one canvas, and zero console errors.
+- Blocker: independent Core and visual/browser QA remains required; recovery push is
+  authorized but is not acceptance. Next: commit this documentation checkpoint and
+  publish the recovery record.

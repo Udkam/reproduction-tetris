@@ -45,6 +45,8 @@ cell is removable and that every incoming piece remains active until it locks.
   feedback covers start/pause, movement/rotation, hard drop/lock, line clears,
   volatile expiry, Survival pressure, and terminal outcomes; all audio stays
   outside core simulation and must be released on unmount.
+- Hard drop is a short paired sine landing thump, not a triangle, square, or
+  sawtooth sweep: it must read as physical weight without an electrical buzz.
 - The game header keeps three direct controls together: audio, `重新开始`, and
   Pause. Clicking `重新开始` pauses a live run and opens a confirmation sheet;
   Enter confirms its primary action and Escape/cancel restores the prior paused or
@@ -103,8 +105,10 @@ interval, and missing result leaderboard binding.
   the next interval by one second to a ten-second floor:
   `max(10, 20 - floor(lines / 5))`.
 - The local result leaderboard remains mode-owned and fail-closed. Classic ranks and
-  presents score as its primary record; Survival ranks and presents cleared lines as
-  its primary record. Puzzle completion continues to use the separate campaign store.
+  presents cleared lines as its primary record; Survival ranks and presents elapsed
+  survival time in descending order. Score, lines, pieces, and timestamp are stable
+  secondary tie-breaks only. Puzzle completion continues to use the separate campaign
+  store.
 - `index.html` owns a lightweight Tetris Loading screen. The four-cell loader is
   removed only after the React surface has painted and becomes static under
   `prefers-reduced-motion`.
