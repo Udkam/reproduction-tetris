@@ -1,4 +1,4 @@
-# Tetris — T12 Progressive Puzzle Curriculum and Anchor Stability Contract
+# TetraStrata（四格层界）— T12 Progressive Puzzle Curriculum and Anchor Stability Contract
 
 ## T12 fixed anchors, no timed inputs, progressive access, and stronger feedback
 
@@ -36,8 +36,10 @@ remain unchanged.
 - The archive retains its selected canonical preview as its only board thumbnail. Its
   new progression signal is compact and semantic—difficulty, completion, and lock
   status—not a decorative dot or per-entry miniature board. Touch, keyboard, reduced
-  motion, responsive geometry, one canvas, and the plain-text `Tetris` identity remain
-  required.
+  motion, responsive geometry, one canvas, and the plain-text `TetraStrata` identity
+  remain required. The Chinese design name is `四格层界`: `Tetra` communicates the
+  four-cell input vocabulary, while `Strata` connects the Puzzle anchors, layered
+  clears, and Survival bedrock without borrowing the Tetris product name or logo.
 - Survival now begins with exactly seven warm-mineral bedrock rows. Its 15→8-second
   pressure, one-row-per-three-lines removal, fixed 40-tick gravity, restart behavior,
   ranking, and ordinary-run random-seed contract are unchanged.
