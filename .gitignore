@@ -7,6 +7,7 @@ output/web-game/
 
 # Local browser-review captures
 t10-*.png
+t11-*.png
 audit-*.png
 
 debug.log
