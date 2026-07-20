@@ -1,10 +1,73 @@
-# Current Task — T12.5 Low-Pressure Puzzle Curriculum, Undo, and Campaign Atlas
+# Current Task — T12.6 Layered Puzzle Curriculum and Current-Rail Selector
 
 Branch: `main`
 
-Current base: recovery publication `437255e`; prior source checkpoints: `1ffe8fd`,
-`4427d7a`, `ea04f6c`, `d480c9a`, `07c974e`, `7707c56`, `e3aeed9`, `a05f8ab`,
-`526f394`; current T12 source checkpoint: `95c7da7`.
+Current base: accepted T12.5 coordinator publication `3709fa3`; prior source
+checkpoints remain historical evidence. T12.5 source `d2469e3` is accepted and must
+not be rewritten.
+
+Current execution status (2026-07-21): **IN PROGRESS — T12.6 replaces the accepted
+T12.5 shallow one- through four-row curriculum and campaign-atlas presentation with
+a replay-verified three- through seven-row curriculum and a minimal animated current
+rail.**
+
+T12.6 preserves the normal fixed-seed seven-bag, original-target-only win condition,
+unlimited ordinary play after a route, local `B` undo, existing seven-tier unlock
+semantics, one selected preview, and all Classic/Survival behavior. It changes only
+the authored twenty Puzzle boards/route evidence and the library's presentation.
+There are no anchors, timed pieces, piece budgets, altered row resolution, or hidden
+setup cells. `01–03` use three original target rows, `04–06` four, `07–10` five,
+`11–15` six, and `16–20` seven; every band is contiguous at the floor and every row
+is initially incomplete. Within each band, verified Core routes must increase the
+stable difficulty tuple `(targetRowCount, locks, rotations, horizontalMoves,
+commandCount, id)` without a lower row-band appearing later.
+
+The player-facing unlock statement remains explicit: levels `01–03` are open on a
+new save; complete any two in the immediately preceding three-level tier to open the
+next tier through `16–18`; complete any two of `16–18` to open `19–20`. Completion
+IDs retain their migration behavior. The new selector is a text-first **current rail**:
+one vertical route, compact numbered stops, one dark selected preview, and semantic
+open/complete/sealed labels. It must use one-shot staggered reveal and selected-current
+pulse motion, with a full reduced-motion fallback; it must not reintroduce level
+thumbnails, corner dots, a dot-progress system, cards, or the rejected atlas planes.
+
+### T12.6 writer boundaries and checkpoint sequence
+
+1. **Contract checkpoint (coordinator):** `docs/DESIGN.md` and
+   `docs/CURRENT_TASK.md` define the three- through seven-row, current-rail contract
+   before source changes.
+2. **Core-route checkpoint (coordinator):**
+   `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+   `src/game/core/puzzleCampaign.test.ts`, `src/game/core/puzzleFlow.test.ts`,
+   `src/game/core/puzzleSolverResults.test.ts`, and
+   `docs/workstreams/tetris-t12-core/puzzle-solver-results.json` own the new boards,
+   validation, replayed route metrics, and sorted campaign evidence. This checkpoint
+   is explicitly allowed to exceed 500 changed lines because twenty complete authored
+   board patterns and their twenty replay command streams must be reviewed together;
+   it changes no physics or runtime interface.
+3. **Selector checkpoint (coordinator):** `src/App.tsx`, `src/App.test.ts`, and
+   `src/styles.css` own the current-rail markup, state copy, responsive behavior, and
+   motion. This checkpoint is explicitly allowed to exceed 500 changed lines only if
+   replacing the former atlas selectors requires it; no renderer or gameplay path is
+   included.
+4. **Local recovery artifacts:** `Solutions/Solution-01.md` through
+   `Solutions/Solution-20.md` and their embedded images are regenerated only after
+   the Core route checkpoint. They remain ignored by the existing `Solutions/` rule,
+   are never staged, and are inspected as local reference material.
+5. **Evidence and acceptance:** after the last source change, run focused tests, then
+   exactly one final typecheck, full suite, build, and desktop/portrait/landscape
+   browser-evidence pass. Record candidate SHA/range and evidence; obtain independent
+   read-only Core and visual/browser QA; only then append coordinator log/changelog,
+   commit exact documentation paths, and push `main`.
+
+The coordinator owns every checkpoint, local walkthrough generation, browser evidence,
+independent-QA request/disposition, exact-path staging, changelog, and push. No other
+repository, asset, audio, dependency, randomizer, line-resolution, or score path is
+in scope.
+
+---
+
+Historical T12.5 task text (accepted at `3709fa3`) follows for provenance only.
 
 Current execution status (2026-07-19): **IN PROGRESS — T12.5 replaces the unaccepted
 T12.4 budget/reorder candidate with a low-pressure twenty-level Puzzle curriculum,

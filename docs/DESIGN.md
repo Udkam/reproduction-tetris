@@ -1,4 +1,67 @@
-# Tetra — T12.5 Low-Pressure Puzzle Curriculum, Undo, and Campaign Atlas Contract
+# Tetra — T12.6 Layered Puzzle Curriculum and Current-Rail Selector Contract
+
+## T12.6 layered original-target campaign and minimal current rail
+
+The 2026-07-21 direction supersedes T12.5's one- through four-row, single-piece
+teaching boards and its visually dense campaign atlas. Puzzle remains a fixed-seed,
+ordinary falling-block game, but each authored target now asks the player to read a
+small multi-row clearing composition rather than spot one obvious gap.
+
+- Keep the current original-target victory rule exactly: a Puzzle ends only after
+  normal line resolution has removed every cell that existed in the authored starting
+  board. There is still no usable-piece budget, target counter limit, timed input,
+  permanent anchor, altered collision rule, special line-clear rule, or hidden
+  support trick. The normal deterministic seven-bag continues indefinitely after an
+  attempted route, so a verified route is teaching evidence rather than a runtime
+  restriction.
+- Replace all twenty T12.5 boards with visible, contiguous floor bands containing
+  **three through seven non-empty original-target rows**. Campaign row bands ascend
+  without regression: levels `01–03` have three rows, `04–06` four, `07–10` five,
+  `11–15` six, and `16–20` seven. Each occupied row begins incomplete and every
+  target stays within the twenty visible board rows. The openings must require a
+  plausible multi-piece composition under ordinary rotation and hard drop; a direct
+  single-piece gap, a concealed top stack, or a puzzle that asks the player to infer
+  an untelegraphed trick is not an acceptable replacement.
+- A deterministic authoring search and an independent replay through Core `dispatch()`
+  must produce a legal public-command route for every level. The campaign order is
+  the stable ascending tuple `(targetRowCount, locks, rotations, horizontalMoves,
+  commandCount, id)` from those replayed routes; the tuple is a transparent
+  feasibility/difficulty calibration, not a mathematical global-optimum claim or a
+  player-facing allowance. A route may use ordinary left/right moves, clockwise or
+  counter-clockwise rotation, hard drop, and required settlement ticks only.
+- Keep the established three-first tier gate and state it plainly in the selector:
+  `01–03` start open; completing any two levels in the preceding three-level tier
+  opens the next tier through `16–18`; completing any two of `16–18` opens `19–20`.
+  Existing completion IDs remain valid and sealed entries remain readable but inert.
+- Generate a local, ignored `Solutions/Solution-01.md` through
+  `Solutions/Solution-20.md` walkthrough set from the final replay routes. Each file
+  records the command steps and embeds a board image after every locked piece. These
+  are recovery/reference artifacts only: they are excluded by `.gitignore`, never
+  bundled into runtime or source checkpoints, and must be regenerated after a route
+  changes.
+- Rebuild the selector as an original **current rail**, not a card grid or a terrain
+  atlas. It uses a single quiet vertical route, compact numbered textual stops, one
+  selected preview, and a restrained dark well motif that connects back to the game
+  board. Decorative thumbnails, corner dots, progress-dot systems, faux 3-D planes,
+  dashboard telemetry, and stacked floating cards remain forbidden. The page has a
+  deliberate one-shot reveal: rail stops cascade in when the library opens and a
+  selected stop sends one short current pulse into the preview. Hover/focus/press
+  motion is similarly brief and spatially useful. `prefers-reduced-motion` removes
+  those transitions while preserving every state distinction and control.
+- The selector remains responsive and keyboard/touch-safe. It must maintain one
+  selected canonical preview only, preserve the visible unlock explanation and state
+  labels, fit the 1280 × 720 desktop composition without document scrolling, and use
+  internal scrolling/reflow rather than horizontal overflow on portrait or landscape
+  narrow viewports. Gameplay remains one Pixi canvas with no DOM cell grid.
+
+T12.6 may change the Puzzle definitions and their direct Core tests, the replay route
+fixture/test, the Puzzle catalog markup/tests/styles, and the assigned T12
+documentation/evidence records. It does not authorize physics, randomizer behavior,
+ordinary line resolution, audio, renderer mechanics, dependencies, browser assets, or
+other-repository changes. Before publication it requires focused Core/UI tests, one
+final typecheck, full suite, production build, browser evidence at desktop and two
+narrow viewports, regenerated ignored walkthrough artifacts, and new independent Core
+plus visual/browser QA.
 
 ## T12.5 low-pressure Puzzle rebuild, local undo, and campaign-atlas archive
 
