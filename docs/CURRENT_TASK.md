@@ -14,7 +14,8 @@ observatory.**
 T12.6 preserves the normal fixed-seed seven-bag, original-target-only win condition,
 unlimited ordinary play after a route, local `B` undo, existing seven-tier unlock
 semantics, one selected preview, and all Classic/Survival behavior. It changes only
-the authored twenty Puzzle boards/route evidence and the library's presentation.
+the authored twenty Puzzle boards/route evidence, the QA replay that consumes an
+authored route, and the library's presentation.
 There are no timed pieces, piece budgets, altered row resolution, or hidden setup
 cells. A small authored distribution of immutable single anchors is restored: anchors
 are non-target cells, never count toward victory, stay at their world coordinates on
@@ -66,7 +67,11 @@ of scope.
    `Solutions/Solution-20.md` and their embedded images are regenerated only after
    the Core route checkpoint. They remain ignored by the existing `Solutions/` rule,
    are never staged, and are inspected as local reference material.
-5. **Evidence and acceptance:** after the last source change, run focused tests, then
+5. **QA replay repair (coordinator):** `src/game/runtime/qaScenario.ts` and
+   `src/game/runtime/qaScenario.test.ts` may consume the current recorded public
+   route for `t5r-drift-08` only. This is a deterministic test-fixture update, not a
+   new solver, simulation rule, or runtime game behavior.
+6. **Evidence and acceptance:** after the last source change, run focused tests, then
    exactly one final typecheck, full suite, build, and desktop/portrait/landscape
    browser-evidence pass. Record candidate SHA/range and evidence; obtain independent
    read-only Core and visual/browser QA; only then append coordinator log/changelog,
