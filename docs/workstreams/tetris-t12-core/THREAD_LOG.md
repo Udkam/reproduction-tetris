@@ -1,5 +1,62 @@
 # T12 Core Workstream Log
 
+## 2026-07-21 — TETRIS-T12.6-OBSERVATORY-004 coordinator candidate
+
+- Base: `d3c643a`; source candidate: `0149f60` through the ordered checkpoints
+  `7759c28`, `de6eed7`, `b8e1516`, and `0149f60`. Exact changed paths are
+  `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, `src/App.tsx`, `src/App.test.ts`,
+  `src/styles.css`, and `src/game/runtime/qaScenario.ts`. Ignored local recovery
+  paths under `Solutions/` remain outside the candidate.
+- Result: Puzzle selection is now the text-light Current Observatory: seven numbered
+  route sectors, only the active tier's three compact stops, one dominant selected
+  deep-well preview, one selected name/status/anchor note/start action, and a compact
+  tier-gate line. It has one-shot field/route/well motion, a complete reduced-motion
+  fallback, local bundled-font loading, and no route thumbnails, card wall, duplicate
+  field labels, row counters, or technical-English decoration. The runtime QA replay
+  now consumes the recorded public route for current `t5r-drift-08`, so the whole
+  suite exercises the revised five-row challenge instead of the superseded one-lock
+  board.
+- Commands run: focused `npm.cmd run typecheck` plus `vitest run src/App.test.ts`
+  (13 tests passed); focused `vitest run src/game/runtime/qaScenario.test.ts`
+  (3 files / 6 tests passed); final `npm.cmd run typecheck`, `npm.cmd run test`
+  (45 passed / 1 skipped files; 287 passed / 2 skipped tests), and `npm.cmd run
+  build` (741-module production build passed).
+- Browser evidence: local Playwright audit captured 1440 × 900, 390 × 844, and
+  844 × 390 selector frames. Each has document dimensions equal to its viewport,
+  exactly one selected preview, zero route previews, seven sector controls, three
+  active-tier stops, and zero console errors. A 390 × 844 reduced-motion pass reports
+  `none` for field, sector, stop, well, and sweep animations. Starting the selected
+  board produced exactly one canvas with no console error.
+- QA disposition: this is coordinator validation only, not independent acceptance.
+  No independent reviewer is available in the current single-coordinator task; any
+  recovery push must remain explicitly pending independent read-only Core and visual
+  QA.
+- Blocker: none for a user-authorized recovery record. Next: append the non-acceptance
+  changelog record, create the documentation checkpoint, and push the recoverable
+  `main` history without calling the candidate accepted.
+
+## 2026-07-21 — TETRIS-T12.6-SOLUTION-RECHECK-003 local recovery artifacts
+
+- Base: `d3c643a`; no runtime or Core source changed. Persistent local-only outputs are
+  ignored `Solutions/Solution-1.md` through `Solutions/Solution-20.md` plus 126 linked
+  PNG board snapshots. The ignored local generator and rasterizer remain only to
+  regenerate those recovery artifacts; neither enters a source checkpoint.
+- Result: every artifact command stream was freshly replayed through public Core
+  `dispatch()` from the fixed Puzzle state. All twenty finish on their last command,
+  leave zero original targets, match the recorded lock count, and preserve every
+  authored immutable anchor at its world coordinate. The campaign remains in ascending
+  `(target rows, locks, rotations, moves, command count, id)` order; no reordering was
+  required.
+- Commands run: local walkthrough generator/replay; focused
+  `vitest run src/game/core/puzzles.test.ts src/game/core/puzzleCampaign.test.ts
+  src/game/core/puzzleFlow.test.ts src/game/core/puzzleSolverResults.test.ts
+  src/App.test.ts` (9 files / 71 tests passed); `npm.cmd run typecheck`; and a local
+  Markdown-link resolver for all 20 walkthroughs. Three representative PNGs, including
+  an anchored level-20 terminal state, were rendered and visually inspected.
+- Blocker: none for the local recovery artifacts. Next: finish the selector checkpoint,
+  then run the whole-slice verification, independent QA disposition, changelog update,
+  and coordinator push.
+
 ## 2026-07-21 — TETRIS-T12.6-CORE-ANCHOR-002 source candidate
 
 - Base: `6cc1ebf`; candidate: `433562f` (`feat(puzzle): restore immutable curriculum anchors`).

@@ -365,3 +365,33 @@
 - Independent Core and visual/browser QA accepted `69eec5f..d2469e3` without P0–P2
   findings in `aa23394`. The existing `.gitignore` continues to keep local
   `Solutions/` walkthroughs out of publication.
+
+## 2026-07-21 — T12.6 layered Puzzle curriculum and Current Observatory recovery candidate
+
+- Replaced the twenty shallow teaching boards with replay-verified three- through
+  seven-row original-target bands that rise through the campaign. Selected boards add
+  sparse immutable single anchors outside their original-target rows; anchors remain
+  optional spatial constraints, never move on line clears, and do not count toward
+  victory. Puzzle still has unlimited ordinary play, fixed deterministic sequences,
+  and no timed block or usable-piece limit.
+- Reordered the campaign by recorded replay difficulty and kept the clear tier rule:
+  `01–03` are immediately open; completing any two of a prior three-level tier opens
+  the next; completing any two of `16–18` opens `19–20`. The ignored local
+  `Solutions/Solution-1.md` through `Solutions/Solution-20.md` set now provides a
+  verified public-command walkthrough with a starting board and post-lock PNG image
+  for every step.
+- Replaced the dense Puzzle selector with a text-light Current Observatory: a single
+  dominant dark selected-board well, seven numbered switchback sectors, only the
+  selected tier's three compact stops, one selected name/status/anchor note/action,
+  and one concise unlock line. The design has purposeful entry/sweep motion with a
+  tested reduced-motion fallback, local bundled typography, no miniature route boards,
+  no cards, no decorative dots, and no repeated technical labels or row counters.
+- Refreshed the deterministic public-command QA route for current `t5r-drift-08`,
+  restoring the whole-suite completion replay after the board redesign.
+- Candidate range `3709fa3..0149f60` passed final typecheck, 45 passed / 1 skipped
+  test files (287 passed / 2 skipped tests), and the 741-module production build.
+  Browser checks at 1440×900, 390×844, and 844×390 report no overflow or console
+  errors, one selected preview and no route previews; reduced motion removes all
+  observatory animations; starting a selected level produces exactly one canvas.
+- Status: **user-authorized recovery candidate; pending independent read-only Core and
+  visual/browser QA, and not an acceptance claim.**
