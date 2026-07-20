@@ -1,13 +1,20 @@
 import { BOARD_WIDTH, VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
 import { createBoard } from './board';
 import { createRandomizer, drawPiece } from './random';
-import { PIECE_TYPES, type Board, type Cell, type PieceType, type PuzzleId } from './types';
+import { ANCHOR_CELL, PIECE_TYPES, type Board, type Cell, type PieceType, type PuzzleId } from './types';
 
 export interface PuzzleCell {
   x: number;
   /** Visible-board coordinate, where 0 is the top and 19 is the floor. */
   y: number;
   type: PieceType;
+}
+
+/** A visible, fixed-world-coordinate Puzzle obstacle that never counts as a target. */
+export interface PuzzleAnchorCell {
+  x: number;
+  /** Visible-board coordinate, where 0 is the top and 19 is the floor. */
+  y: number;
 }
 
 export interface PuzzleDefinition {
@@ -21,10 +28,13 @@ export interface PuzzleDefinition {
   boardRows: readonly string[];
   /** Always empty: every authored target begins inside the visible well. */
   hiddenCells: readonly PuzzleCell[];
+  /** Zero to two authored immutable single blocks outside the target floor band. */
+  anchorCells: readonly PuzzleAnchorCell[];
 }
 
 const EMPTY_ROW = '.'.repeat(BOARD_WIDTH);
 const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
+const EMPTY_ANCHOR_CELLS: readonly PuzzleAnchorCell[] = Object.freeze([]);
 const PIECE_TYPE_SET = new Set<string>(PIECE_TYPES);
 
 /**
@@ -53,6 +63,7 @@ function curriculum(
   seed: number,
   pattern: readonly string[],
   materialOffset: number,
+  anchorCells: readonly PuzzleAnchorCell[] = EMPTY_ANCHOR_CELLS,
 ): PuzzleDefinition {
   return Object.freeze({
     id,
@@ -61,6 +72,7 @@ function curriculum(
     seed,
     boardRows: targetBandRows(pattern, materialOffset),
     hiddenCells: EMPTY_HIDDEN_CELLS,
+    anchorCells: Object.freeze(anchorCells.map((anchor) => Object.freeze({ ...anchor }))),
   });
 }
 
@@ -89,7 +101,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TT........',
     'TT.T..TTTT',
     'TTTT.TTTTT',
-  ], 1),
+  ], 1, [{ x: 0, y: 14 }]),
   curriculum('t3r-shaft-03', '双岸错层', 3, 1, [
     'TT........',
     'TTT.TTTT..',
@@ -102,7 +114,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TT.....TTT',
     'TTTT...TTT',
     'TTTTT..TTT',
-  ], 3),
+  ], 3, [{ x: 7, y: 13 }]),
   curriculum('t3r-cascade-05', '潮线汇流', 5, 7, [
     'T.......TT',
     'T.TT....TT',
@@ -123,7 +135,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'T.....TTTT',
     'TT....TTTT',
     'TTTTT.TTTT',
-  ], 6),
+  ], 6, [{ x: 6, y: 12 }]),
   curriculum('t5r-drift-08', '微澜错屿', 8, 15, [
     'TT......TT',
     'TT..T...TT',
@@ -137,7 +149,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'T.....TTTT',
     'TT..T.TTTT',
     'TTT.T.TTTT',
-  ], 1),
+  ], 1, [{ x: 8, y: 11 }]),
   curriculum('t5r-rift-10', '薄雾回廊', 10, 5, [
     '.......TTT',
     '.T.....TTT',
@@ -154,7 +166,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TTTT.TTTTT',
     'TTTT.TTTTT',
     'TTTT.TTTTT',
-  ], 3),
+  ], 3, [{ x: 9, y: 10 }]),
   curriculum('t5r-current-12', '双潮折线', 12, 57, [
     'TTT.......',
     'TTT.......',
@@ -178,7 +190,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TT...T.TTT',
     'TTTTTT.TTT',
     'TTTTTT.TTT',
-  ], 6),
+  ], 6, [{ x: 0, y: 10 }, { x: 9, y: 12 }]),
   curriculum('t5r-horizon-15', '远蓝合流', 15, 46, [
     'T......TTT',
     'T.....TTTT',
@@ -197,7 +209,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TTTT..TTTT',
     'TTTT..TTTT',
     'TTTTT.TTTT',
-  ], 1),
+  ], 1, [{ x: 0, y: 8 }]),
   curriculum('t6r-cairn-17', '层岩交径', 17, 416, [
     'TTT.......',
     'TTT.......',
@@ -215,7 +227,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TTTT...TTT',
     'TTTTT..TTT',
     'TTTTT..TTT',
-  ], 3),
+  ], 3, [{ x: 0, y: 6 }]),
   curriculum('t6r-bastion-19', '深湾阈门', 19, 107, [
     'T.........',
     'T..T......',
@@ -233,7 +245,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
     'TTTT.T...T',
     'TTTTTT.TTT',
     'TTTTTT.TTT',
-  ], 5),
+  ], 5, [{ x: 2, y: 9 }]),
 ]);
 
 export const PUZZLE_DEFINITIONS = PUZZLE_LIBRARY;
@@ -273,6 +285,9 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   if (!Array.isArray(definition.hiddenCells) || definition.hiddenCells.length !== 0) {
     throw new Error(`Puzzle ${definition.id} must begin with an empty hidden buffer.`);
   }
+  if (!Array.isArray(definition.anchorCells) || definition.anchorCells.length > 2) {
+    throw new Error(`Puzzle ${definition.id} may contain zero, one, or two immutable anchors.`);
+  }
   if (!Array.isArray(definition.boardRows) || definition.boardRows.length !== VISIBLE_HEIGHT) {
     throw new Error(`Puzzle ${definition.id} requires exactly ${VISIBLE_HEIGHT} visible board rows.`);
   }
@@ -311,6 +326,19 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   if (definition.boardRows.slice(0, expectedStart).some((row) => row !== EMPTY_ROW)) {
     throw new Error(`Puzzle ${definition.id} may not hide targets above its floor band.`);
   }
+  const anchorKeys = new Set<string>();
+  for (const anchor of definition.anchorCells) {
+    if (!Number.isSafeInteger(anchor.x) || !Number.isSafeInteger(anchor.y)
+      || anchor.x < 0 || anchor.x >= BOARD_WIDTH || anchor.y < 2 || anchor.y >= expectedStart) {
+      throw new Error(`Puzzle ${definition.id} anchor must remain above the target band and clear of the spawn lane.`);
+    }
+    const key = `${anchor.x}:${anchor.y}`;
+    if (anchorKeys.has(key)) throw new Error(`Puzzle ${definition.id} contains duplicate immutable anchors.`);
+    anchorKeys.add(key);
+  }
+  if (JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {
+    throw new Error(`Puzzle ${definition.id} must retain its authored immutable-anchor distribution.`);
+  }
 
   validateSeedBags(definition);
 }
@@ -331,6 +359,9 @@ export function createPuzzleBoard(definition: PuzzleDefinition): Board {
       const type = row[x]!;
       if (type !== '.') board[VISIBLE_START_ROW + y]![x] = type as PieceType;
     }
+  }
+  for (const anchor of definition.anchorCells) {
+    board[VISIBLE_START_ROW + anchor.y]![anchor.x] = ANCHOR_CELL;
   }
   return board;
 }

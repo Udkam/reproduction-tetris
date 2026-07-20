@@ -11,7 +11,7 @@ import {
   type PuzzleDefinition,
 } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
-import { PIECE_TYPES, type PieceType, type PuzzleId } from './types';
+import { ANCHOR_CELL, PIECE_TYPES, type PieceType, type PuzzleId } from './types';
 
 function invalid(definition: PuzzleDefinition, patch: Partial<PuzzleDefinition>): PuzzleDefinition {
   return { ...definition, ...patch };
@@ -32,6 +32,12 @@ function generatedPieces(seed: number, count: number): PieceType[] {
   return pieces;
 }
 
+function visibleBoardRows(definition: PuzzleDefinition): string[] {
+  const rows = definition.boardRows.map((row) => [...row]);
+  for (const anchor of definition.anchorCells) rows[anchor.y]![anchor.x] = ANCHOR_CELL;
+  return rows.map((row) => row.join(''));
+}
+
 describe('T12.6 layered Puzzle definitions', () => {
   it('keeps twenty stable IDs in the replay-calibrated natural campaign order', () => {
     expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual([
@@ -46,7 +52,12 @@ describe('T12.6 layered Puzzle definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.every((definition) => !('solverPieceBudget' in definition))).toBe(true);
-    expect(PUZZLE_DEFINITIONS.every((definition) => !('anchorCells' in definition))).toBe(true);
+    expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
+      't3r-shaft-02', 't3r-shaft-04', 't5r-delta-07', 't5r-lattice-09', 't5r-prism-11',
+      't5r-pulse-14', 't6r-veil-16', 't6r-terrace-18', 't6r-keystone-20',
+    ] satisfies PuzzleId[]);
+    expect(PUZZLE_DEFINITIONS.reduce((count, definition) => count + definition.anchorCells.length, 0)).toBe(10);
+    expect(PUZZLE_DEFINITIONS.every((definition) => definition.anchorCells.length <= 2)).toBe(true);
   });
 
   it('uses the required contiguous three-to-seven-row target bands at the floor', () => {
@@ -68,6 +79,13 @@ describe('T12.6 layered Puzzle definitions', () => {
       );
       expect(occupiedCount(definition), definition.id).toBeGreaterThanOrEqual(12);
       expect(occupiedCount(definition), definition.id).toBeLessThanOrEqual(48);
+      const targetBandStart = VISIBLE_HEIGHT - occupiedRows.length;
+      for (const anchor of definition.anchorCells) {
+        expect(anchor.x, definition.id).toBeGreaterThanOrEqual(0);
+        expect(anchor.x, definition.id).toBeLessThan(10);
+        expect(anchor.y, definition.id).toBeGreaterThanOrEqual(2);
+        expect(anchor.y, definition.id).toBeLessThan(targetBandStart);
+      }
 
       for (const row of definition.boardRows) {
         expect(row).toHaveLength(10);
@@ -92,8 +110,14 @@ describe('T12.6 layered Puzzle definitions', () => {
         Array.from({ length: VISIBLE_START_ROW * 10 }, () => null),
       );
       expect(ready.board.slice(VISIBLE_START_ROW).map((row) => row.map((cell) => cell ?? '.').join('')), definition.id)
-        .toEqual(definition.boardRows);
-      expect(ready.board.flat().includes('A')).toBe(false);
+        .toEqual(visibleBoardRows(definition));
+      expect(ready.board.flat().filter((cell) => cell === ANCHOR_CELL), definition.id)
+        .toHaveLength(definition.anchorCells.length);
+      for (const anchor of definition.anchorCells) {
+        expect(ready.board[VISIBLE_START_ROW + anchor.y]?.[anchor.x], definition.id).toBe(ANCHOR_CELL);
+        expect(ready.puzzleTargetCells.some((target) => target.x === anchor.x && target.y === VISIBLE_START_ROW + anchor.y), definition.id)
+          .toBe(false);
+      }
 
       const firstEightyFour = generatedPieces(definition.seed, 84);
       for (let bag = 0; bag < 12; bag += 1) {
@@ -113,6 +137,8 @@ describe('T12.6 layered Puzzle definitions', () => {
       boardRows: [...first.boardRows.slice(0, 19), 'IIIIIIIIII'],
     }))).toThrow(/target pattern/i);
     expect(() => validatePuzzleDefinition(invalid(first, { hiddenCells: [{ x: 0, y: 0, type: 'J' }] }))).toThrow(/hidden buffer/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 0, y: 19 }] }))).toThrow(/anchor/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 0, y: 2 }, { x: 0, y: 2 }] }))).toThrow(/duplicate/i);
   });
 
   it('restarts a level with the exact same board, target ownership, queue, and hash', () => {

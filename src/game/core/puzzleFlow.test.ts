@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, VISIBLE_HEIGHT } from './constants';
+import { ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch } from './engine';
 import { getPuzzleDefinition } from './puzzles';
-import type { GameState, PieceType } from './types';
+import { ANCHOR_CELL, type GameState, type PieceType } from './types';
 
 function advance(state: GameState, ticks: number): GameState {
   let next = state;
@@ -77,7 +77,7 @@ describe('T12.6 Puzzle ordinary consecutive-piece flow', () => {
 
   it.each([
     't3r-shaft-01', 't5r-lattice-09', 't5r-prism-11', 't5r-horizon-15', 't6r-bastion-19',
-  ] as const)('keeps %s as a layered anchor-free teaching board', (id) => {
+  ] as const)('keeps %s as a layered teaching board with only its authored fixed anchors', (id) => {
     const definition = getPuzzleDefinition(id);
     const state = createInitialState(1, 'puzzle', id);
     const occupiedRows = definition.boardRows.filter((row) => row !== '..........');
@@ -88,7 +88,10 @@ describe('T12.6 Puzzle ordinary consecutive-piece flow', () => {
       Array.from({ length: VISIBLE_HEIGHT - occupiedRows.length }, () => '..........'),
     );
     expect(state.puzzleGoal).toBe('original-targets-cleared');
-    expect(state.board.flat().includes('A')).toBe(false);
+    expect(state.board.flat().filter((cell) => cell === ANCHOR_CELL)).toHaveLength(definition.anchorCells.length);
+    for (const anchor of definition.anchorCells) {
+      expect(state.board[VISIBLE_START_ROW + anchor.y]?.[anchor.x]).toBe(ANCHOR_CELL);
+    }
   });
 
   it('tracks only original targets through a normal cleared row', () => {

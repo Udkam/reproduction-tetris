@@ -12,7 +12,7 @@ function settle(state: GameState): GameState {
 }
 
 describe('T12.6 Puzzle campaign behavior', () => {
-  it('uses the natural 01–20 curriculum order without anchors or a public allowance', () => {
+  it('uses the natural 01–20 curriculum order with only authored immutable anchors and no public allowance', () => {
     expect(PUZZLE_DEFINITIONS.map((definition) => definition.id)).toEqual([
       't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-shaft-04', 't3r-cascade-05',
       't3r-cascade-06', 't5r-delta-07', 't5r-drift-08', 't5r-lattice-09', 't5r-rift-10',
@@ -20,6 +20,8 @@ describe('T12.6 Puzzle campaign behavior', () => {
       't6r-veil-16', 't6r-cairn-17', 't6r-terrace-18', 't6r-bastion-19', 't6r-keystone-20',
     ] satisfies PuzzleId[]);
     expect(PUZZLE_DEFINITIONS.every((definition) => !('solverPieceBudget' in definition))).toBe(true);
+    expect(PUZZLE_DEFINITIONS.some((definition) => definition.anchorCells.length > 0)).toBe(true);
+    expect(PUZZLE_DEFINITIONS.every((definition) => definition.anchorCells.length <= 2)).toBe(true);
   });
 
   it('continues an unsolved Puzzle through ordinary locks instead of failing by a piece count', () => {

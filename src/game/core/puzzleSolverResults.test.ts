@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import artifactFile from '../../../docs/workstreams/tetris-t12-core/puzzle-solver-results.json';
+import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
-import { expectedPuzzleTargetRows, PUZZLE_DEFINITIONS, getPuzzleDefinition } from './puzzles';
-import type { GameCommand, PuzzleId } from './types';
+import { expectedPuzzleTargetRows, PUZZLE_DEFINITIONS, getPuzzleDefinition, type PuzzleAnchorCell } from './puzzles';
+import { ANCHOR_CELL, type GameCommand, type PuzzleId } from './types';
 
 type CommandToken = 'S' | 'T' | 'L' | 'R' | 'H' | 'C';
 
@@ -10,6 +11,7 @@ type VerifiedLevel = {
   id: PuzzleId;
   routeClass: string;
   targetRowCount: number;
+  anchorCells: readonly PuzzleAnchorCell[];
   commandStream: string;
   commandCount: number;
   locks: number;
@@ -18,7 +20,7 @@ type VerifiedLevel = {
 };
 
 type CurriculumArtifact = {
-  schemaVersion: 3;
+  schemaVersion: 4;
   claim: string;
   commandEncoding: Record<CommandToken, GameCommand>;
   difficultyTuple: readonly ['targetRowCount', 'locks', 'rotationCount', 'moveCount', 'commandCount', 'id'];
@@ -74,7 +76,7 @@ function compareDifficulty(left: readonly (number | string)[], right: readonly (
 
 describe('T12.6 verified layered Puzzle routes', () => {
   it('binds a public-command route to each three-to-seven-row level and records the ascending calibration', () => {
-    expect(artifact.schemaVersion).toBe(3);
+    expect(artifact.schemaVersion).toBe(4);
     expect(artifact.claim).toContain('not a mathematical optimality claim');
     expect(Object.keys(artifact.commandEncoding).sort()).toEqual(['C', 'H', 'L', 'R', 'S', 'T']);
     expect(artifact.difficultyTuple).toEqual(['targetRowCount', 'locks', 'rotationCount', 'moveCount', 'commandCount', 'id']);
@@ -89,6 +91,7 @@ describe('T12.6 verified layered Puzzle routes', () => {
       expect(definition.difficulty).toBe(index + 1);
       expect(level.targetRowCount).toBe(expectedPuzzleTargetRows(definition.difficulty));
       expect(level.targetRowCount).toBe(targetRows(level.id));
+      expect(level.anchorCells, level.id).toEqual(definition.anchorCells);
       expect(routeMetrics(level.commandStream), level.id).toEqual({
         commandCount: level.commandCount,
         locks: level.locks,
@@ -107,6 +110,7 @@ describe('T12.6 verified layered Puzzle routes', () => {
 
   it('replays every clearable route through real Core commands to the original-target victory', () => {
     for (const level of artifact.levels) {
+      const definition = getPuzzleDefinition(level.id);
       const commands = decode(level.commandStream);
       expect(commands, `${level.id} command count`).toHaveLength(level.commandCount);
 
@@ -122,7 +126,10 @@ describe('T12.6 verified layered Puzzle routes', () => {
       expect(state.puzzleCompletion, level.id).toBe('finished');
       expect(state.puzzleTargetCells, level.id).toHaveLength(0);
       expect(state.pieceCount, level.id).toBe(level.locks);
-      expect(state.board.flat().includes('A'), level.id).toBe(false);
+      expect(state.board.flat().filter((cell) => cell === ANCHOR_CELL), level.id).toHaveLength(definition.anchorCells.length);
+      for (const anchor of definition.anchorCells) {
+        expect(state.board[VISIBLE_START_ROW + anchor.y]?.[anchor.x], level.id).toBe(ANCHOR_CELL);
+      }
     }
   });
 });
