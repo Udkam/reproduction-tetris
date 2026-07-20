@@ -4,7 +4,7 @@ import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import styles from './styles.css?raw';
-import { createInitialState, type GameEvent, type GameMode, type GameState, type PuzzleId } from './game/core';
+import { PIECE_TYPES, createInitialState, getPuzzleDefinition, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
 import {
   cloneQaState,
   elapsedTimeLabel,
@@ -14,6 +14,7 @@ import {
   LeaderboardPanel,
   ModeHome,
   PuzzleLibrary,
+  puzzleAnchorSilhouettePath,
   puzzleSilhouettePaths,
   RunStats,
   scoreRecordRank,
@@ -496,7 +497,7 @@ describe('T6 frontend mode binding', () => {
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 
-  it('shows twenty progressive levels, locks the unopened archive entries, and binds unlocked selections', () => {
+  it('uses a sparse tier route while keeping one canonical selected-board observatory', () => {
     expect(CAMPAIGN_LEVELS).toHaveLength(20);
     const onSelect = vi.fn();
     const onStart = vi.fn();
@@ -511,36 +512,37 @@ describe('T6 frontend mode binding', () => {
     const view = render(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id)));
 
     const rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    expect(rows).toHaveLength(CAMPAIGN_LEVELS.length);
-    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
-    expect(rows.slice(0, 3).every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
-    expect(rows.slice(3).every((row) => row.disabled && row.dataset.unlocked === 'false')).toBe(true);
+    const sectors = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="sector-row"]')];
+    expect(rows).toHaveLength(3);
+    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id));
+    expect(rows.every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
+    expect(sectors).toHaveLength(7);
+    expect(sectors[0]?.disabled).toBe(false);
+    expect(sectors.slice(1).every((sector) => sector.disabled && sector.dataset.unlocked === 'false')).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('20 个解谜关卡，已开放 3 个');
-    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('3 / 20 已开放');
-    expect(view.container.querySelector('[data-testid="campaign-gate"]')?.textContent).toBe('下一航段：01–03 完成 0 / 2');
-    expect(view.container.querySelector('[role="progressbar"]')?.getAttribute('aria-valuetext')).toBe('已开放 3 / 20');
-    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('01–03新档案直接开放');
-    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('04–18完成前一档任意 2 关，开放下一档 3 关');
-    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('19–20完成 16–18 任意 2 关后开放');
-    expect(view.container.querySelectorAll('.campaign-tier')).toHaveLength(7);
-    expect(view.container.querySelectorAll('.campaign-tier__levels')).toHaveLength(7);
-    expect(rows[0]?.textContent).toContain(`01${CAMPAIGN_LEVELS[0]!.name}`);
-    expect(rows[0]?.textContent).toContain('难度 01');
-    expect(rows[0]?.textContent).toContain('开放');
-    expect(rows[3]?.textContent).toContain('封存');
-    expect(view.container.querySelectorAll('.atlas-level-entry .puzzle-silhouette')).toHaveLength(0);
-    expect(view.container.querySelectorAll('.campaign-atlas .puzzle-silhouette')).toHaveLength(0);
-    expect(view.container.querySelectorAll('.level-detail .puzzle-silhouette')).toHaveLength(1);
-    expect(styles).not.toContain('.atlas-waypoint--selected::after');
+    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('03/20');
+    expect(view.container.querySelector('[data-testid="campaign-gate"]')?.textContent).toBe('01–03 0/2');
+    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('01–03 直接开放');
+    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('每段完成任意 2 关解锁下一段');
+    expect(view.container.querySelectorAll('.observatory-sector')).toHaveLength(7);
+    expect(view.container.querySelectorAll('.observatory-stop')).toHaveLength(3);
+    expect(rows[0]?.textContent).toContain('01');
+    expect(rows[0]?.getAttribute('aria-label')).toContain(CAMPAIGN_LEVELS[0]!.name);
+    expect(view.container.querySelectorAll('.observatory-route .puzzle-silhouette')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.observatory-focus .puzzle-silhouette')).toHaveLength(1);
+    expect(rows.every((row) => row.closest('.observatory-stop')?.getAttribute('style')?.includes('animation-delay'))).toBe(true);
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
+      expect(view.container.textContent).not.toContain(banned);
+    }
+    for (const banned of ['ORIGINAL FIELD', 'ROWS', 'SECTOR', 'OPEN']) {
       expect(view.container.textContent).not.toContain(banned);
     }
 
     act(() => view.container.querySelector<HTMLButtonElement>('.library-back')?.click());
     expect(onBack).toHaveBeenCalledTimes(1);
 
-    act(() => rows[7]!.click());
+    act(() => sectors[2]!.click());
     expect(onSelect).not.toHaveBeenCalled();
 
     const fullyUnlocked = {
@@ -552,26 +554,31 @@ describe('T6 frontend mode binding', () => {
       view.rerender(createElement(PuzzleLibrary, props(level.id, fullyUnlocked)));
       const pressed = view.container.querySelector<HTMLButtonElement>('[data-testid="level-row"][aria-pressed="true"]');
       const canonical = createInitialState(0x51a1f00d, 'puzzle', level.id);
-      const visibleMaterials = new Set(canonical.board.slice(-12).flat().filter((cell): cell is NonNullable<typeof cell> => cell !== null));
+      const visibleMaterials = new Set(canonical.board.slice(-12).flat().filter((cell): cell is PieceType => PIECE_TYPES.includes(cell as PieceType)));
+      const definition = getPuzzleDefinition(level.id);
 
       expect(pressed?.dataset.levelId).toBe(level.id);
-      expect(view.container.querySelector('.level-detail h2')?.textContent).toBe(level.name);
+      expect(view.container.querySelector('.observatory-focus h2')?.textContent).toBe(level.name);
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();
       expect(visibleMaterials.size).toBeGreaterThan(0);
       expect(puzzleSilhouettePaths(level.id).size).toBe(visibleMaterials.size);
       expect([...puzzleSilhouettePaths(level.id).values()].every((path) => path.includes('h3.8v3.8'))).toBe(true);
+      expect(Boolean(puzzleAnchorSilhouettePath(level.id))).toBe(definition.anchorCells.length > 0);
+      expect(view.container.querySelectorAll('.observatory-focus .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
+        definition.anchorCells.length > 0 ? 1 : 0,
+      );
     }
 
-    const unlockedRows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    act(() => unlockedRows[7]!.click());
-    expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[7]!.id);
+    const unlockedSectors = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="sector-row"]')];
+    act(() => unlockedSectors[2]!.click());
+    expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[6]!.id);
 
     const start = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
     expect(start).not.toBeNull();
     expect(view.container.querySelectorAll('[data-testid^="start-selected-puzzle"]')).toHaveLength(1);
-    expect(start?.textContent).toBe('开始本关');
+    expect(start?.textContent).toBe('开始');
     act(() => start?.click());
     expect(onStart).toHaveBeenCalledTimes(1);
     view.unmount();

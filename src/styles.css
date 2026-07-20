@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
-
 :root {
   color: #14243a;
   background: #dce7f2;
@@ -3440,10 +3438,778 @@ p {
   }
 }
 
+/* T12.6 — Puzzle current observatory. The selected field is the focal object;
+   the route is sparse navigation, not a wall of repeated text. */
+
+.library-shell--observatory {
+  position: relative;
+  isolation: isolate;
+  align-content: stretch;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(1240px, 100%);
+  height: 100dvh;
+  min-height: 0;
+  gap: clamp(9px, 1.6vh, 15px);
+  overflow: hidden;
+  padding: clamp(12px, 2.5vw, 30px);
+}
+
+.library-shell--observatory::before {
+  position: absolute;
+  z-index: -1;
+  inset: 58px 14px 14px;
+  content: "";
+  pointer-events: none;
+  opacity: .62;
+  background:
+    linear-gradient(111deg, transparent 0 23%, color-mix(in srgb, var(--puzzle) 8%, transparent) 23.1% 23.24%, transparent 23.38% 100%),
+    repeating-linear-gradient(0deg, transparent 0 42px, color-mix(in srgb, var(--edge) 7%, transparent) 43px 44px),
+    linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 5%, transparent), transparent 43%);
+  border: 1px solid color-mix(in srgb, var(--edge) 22%, transparent);
+  border-radius: 23px;
+}
+
+.observatory-header {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 44px;
+  padding-inline: 0 !important;
+}
+
+.observatory-header .library-back {
+  justify-self: start;
+  gap: 8px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 82%, var(--raised));
+  border-color: color-mix(in srgb, var(--edge) 76%, var(--line));
+  border-radius: 7px 13px 13px 7px;
+  box-shadow: 0 7px 16px rgba(31, 59, 86, .08);
+}
+
+.observatory-header .library-back b {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-radius: 4px 8px 4px 8px;
+}
+
+.observatory-header .brand {
+  justify-self: center;
+  padding: 0 10px;
+  color: color-mix(in srgb, var(--ink) 88%, var(--puzzle));
+}
+
+.observatory-header__open {
+  display: inline-flex;
+  align-items: baseline;
+  justify-self: end;
+  gap: 3px;
+  color: var(--ink);
+  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-size: 17px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.04em;
+}
+
+.observatory-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 92%, var(--raised));
+  border: 1px solid color-mix(in srgb, var(--edge) 82%, var(--line));
+  border-radius: 9px 22px 9px 22px;
+  box-shadow: 0 18px 42px rgba(31, 59, 86, .13);
+  animation: observatory-field-in 400ms var(--ease) both;
+}
+
+.observatory-route {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px 20px 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(132deg, color-mix(in srgb, var(--puzzle) 7%, transparent), transparent 42%),
+    linear-gradient(145deg, color-mix(in srgb, var(--raised) 87%, white), var(--raised));
+  border-right: 1px solid color-mix(in srgb, var(--edge) 50%, var(--line));
+}
+
+.observatory-route::before {
+  position: absolute;
+  top: 70px;
+  bottom: 72px;
+  left: 36px;
+  width: 1px;
+  content: "";
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--puzzle) 56%, var(--line)) 6%, color-mix(in srgb, var(--puzzle) 26%, var(--line)) 94%, transparent);
+}
+
+.observatory-route__heading {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--puzzle) 24%, var(--line));
+}
+
+.observatory-route__heading h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 25px;
+  letter-spacing: -.065em;
+}
+
+.observatory-sector-list {
+  display: grid;
+  align-content: space-between;
+  gap: 3px;
+  min-height: 0;
+  margin: 0;
+  padding: 15px 0 12px;
+  list-style: none;
+}
+
+.observatory-sector {
+  position: relative;
+  min-width: 0;
+  opacity: 0;
+  animation: observatory-stop-in 350ms var(--ease) both;
+}
+
+.observatory-sector:nth-child(1) { animation-delay: 35ms; }
+.observatory-sector:nth-child(2) { animation-delay: 70ms; }
+.observatory-sector:nth-child(3) { animation-delay: 105ms; }
+.observatory-sector:nth-child(4) { animation-delay: 140ms; }
+.observatory-sector:nth-child(5) { animation-delay: 175ms; }
+.observatory-sector:nth-child(6) { animation-delay: 210ms; }
+.observatory-sector:nth-child(7) { animation-delay: 245ms; }
+
+.observatory-sector::before {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 10px;
+  width: 11px;
+  height: 2px;
+  content: "";
+  pointer-events: none;
+  background: color-mix(in srgb, var(--puzzle) 46%, var(--line));
+  transform: translateY(-50%);
+}
+
+.observatory-sector:nth-child(even) button { margin-left: 14px; }
+
+.observatory-sector button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  width: calc(100% - 22px);
+  min-height: 44px;
+  margin-left: 22px;
+  padding: 4px 8px 4px 17px;
+  color: color-mix(in srgb, var(--ink) 73%, var(--muted));
+  text-align: left;
+  background: transparent;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 65%, transparent);
+  transition: color 180ms ease, background-color 180ms ease, padding-left 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.observatory-sector button > span {
+  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 780;
+  font-variant-numeric: tabular-nums;
+}
+
+.observatory-sector button > i,
+.observatory-stop button > i {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  border-radius: 2px;
+}
+
+.observatory-sector--open button > i,
+.observatory-stop--open button > i {
+  color: var(--puzzle);
+  border-color: color-mix(in srgb, var(--puzzle) 52%, var(--line));
+}
+
+.observatory-sector--complete button > i,
+.observatory-stop--complete button > i {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 50%, var(--line));
+}
+
+.observatory-sector--active::before {
+  width: 20px;
+  background: var(--puzzle);
+}
+
+.observatory-sector--active button {
+  color: var(--ink);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 14%, transparent), transparent 78%);
+  border-bottom-color: color-mix(in srgb, var(--puzzle) 46%, var(--line));
+}
+
+.observatory-sector:not(.observatory-sector--locked) button:hover,
+.observatory-sector:not(.observatory-sector--locked) button:focus-visible {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--puzzle) 8%, transparent);
+  padding-left: 22px;
+}
+
+.observatory-sector--locked button {
+  color: color-mix(in srgb, var(--ink) 45%, var(--muted));
+}
+
+.observatory-levels {
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--puzzle) 25%, var(--line));
+}
+
+.observatory-levels ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.observatory-stop {
+  min-width: 0;
+  opacity: 0;
+  animation: observatory-stop-in 370ms var(--ease) both;
+}
+
+.observatory-stop button {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 5px 6px;
+  color: color-mix(in srgb, var(--ink) 72%, var(--muted));
+  text-align: left;
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-radius: 2px;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 200ms var(--ease);
+}
+
+.observatory-stop button > span {
+  padding-left: 2px;
+  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.observatory-stop button > i {
+  width: 17px;
+  height: 17px;
+  font-size: 9px;
+}
+
+.observatory-stop--selected button {
+  color: var(--ink);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--puzzle) 20%, var(--surface)), color-mix(in srgb, var(--surface) 82%, white));
+  border-color: var(--puzzle);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--puzzle) 16%, transparent);
+}
+
+.observatory-stop--selected button::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: var(--puzzle);
+  animation: observatory-route-sweep 720ms var(--ease) both;
+}
+
+.observatory-stop:not(.observatory-stop--locked) button:hover,
+.observatory-stop:not(.observatory-stop--locked) button:focus-visible {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--puzzle) 60%, var(--edge));
+  transform: translateY(-2px);
+}
+
+.observatory-stop--locked button {
+  color: color-mix(in srgb, var(--ink) 44%, var(--muted));
+  background: color-mix(in srgb, var(--raised) 76%, transparent);
+}
+
+.observatory-focus {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(205px, .43fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 16px 20px;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(18px, 3vw, 34px);
+  overflow: hidden;
+  color: #eaf3fb;
+  background:
+    linear-gradient(90deg, rgba(159, 126, 187, .1) 1px, transparent 1px) 0 0 / 32px 100%,
+    radial-gradient(circle at 90% 12%, rgba(130, 100, 158, .3), transparent 29%),
+    linear-gradient(157deg, #152a42, #081625 72%);
+}
+
+.observatory-focus::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 37%;
+  content: "";
+  pointer-events: none;
+  opacity: .54;
+  background: linear-gradient(154deg, transparent 0 40%, rgba(180, 155, 203, .1) 40.15% 40.5%, transparent 40.65% 100%);
+}
+
+.observatory-focus__well {
+  position: relative;
+  grid-row: 1 / -1;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, transparent 0 49%, rgba(185, 212, 233, .1) 50%, transparent 51%),
+    linear-gradient(0deg, transparent 0 49%, rgba(185, 212, 233, .1) 50%, transparent 51%),
+    radial-gradient(circle at 50% 38%, #183650, var(--well) 72%);
+  background-size: 28px 28px, 28px 28px, auto;
+  border: 1px solid rgba(201, 222, 239, .28);
+  border-radius: 8px 18px 8px 18px;
+  box-shadow: inset 0 0 0 8px rgba(255, 255, 255, .018), 0 18px 34px rgba(2, 12, 24, .22);
+  animation: observatory-well-in 440ms var(--ease) both;
+}
+
+.observatory-focus__well::before,
+.observatory-focus__well::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.observatory-focus__well::before {
+  inset: 13px;
+  border: 1px solid rgba(202, 223, 241, .16);
+  border-radius: 4px 10px 4px 10px;
+}
+
+.observatory-focus__well::after {
+  top: 0;
+  bottom: 0;
+  left: -42%;
+  width: 28%;
+  opacity: .52;
+  background: linear-gradient(90deg, transparent, rgba(183, 149, 211, .55), transparent);
+  transform: skewX(-17deg);
+  animation: observatory-well-sweep 880ms 110ms var(--ease) both;
+}
+
+.observatory-focus__index {
+  position: absolute;
+  z-index: 1;
+  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.observatory-focus__index {
+  top: 9px;
+  right: 15px;
+  color: rgba(233, 240, 255, .25);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -.08em;
+}
+
+.observatory-focus__board {
+  display: grid;
+  width: min(79%, 296px);
+  height: min(79%, 350px);
+  place-items: center;
+  border: 1px solid rgba(214, 234, 249, .27);
+  border-radius: 5px 12px 5px 12px;
+}
+
+.observatory-focus__board .puzzle-silhouette {
+  width: min(84%, 236px);
+  height: min(86%, 292px);
+}
+
+.observatory-focus__copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  align-self: end;
+}
+
+.observatory-focus__copy h2 {
+  margin: 5px 0 0;
+  color: #f7fbff;
+  font-size: clamp(27px, 3.2vw, 42px);
+  letter-spacing: -.065em;
+  line-height: .96;
+}
+
+.observatory-focus__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 3px 6px;
+  color: color-mix(in srgb, #eaf3fb 76%, var(--muted));
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  background: rgba(235, 246, 255, .08);
+  border: 1px solid rgba(217, 235, 250, .22);
+  border-radius: 3px;
+}
+
+.observatory-focus__status[data-state="open"] {
+  color: color-mix(in srgb, var(--selection) 55%, white);
+  background: color-mix(in srgb, var(--puzzle) 24%, transparent);
+  border-color: color-mix(in srgb, var(--puzzle) 58%, transparent);
+}
+
+.observatory-focus__status[data-state="complete"] {
+  color: #a5e3ba;
+  background: rgba(68, 143, 97, .2);
+  border-color: rgba(121, 208, 149, .42);
+}
+
+.observatory-focus__brief {
+  position: relative;
+  z-index: 1;
+  grid-column: 2;
+  margin: -7px 0 0;
+  color: color-mix(in srgb, #eaf3fb 69%, var(--muted));
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.observatory-focus__start {
+  position: relative;
+  z-index: 1;
+  grid-column: 2;
+  min-height: 52px;
+  overflow: hidden;
+  background: linear-gradient(104deg, var(--action), color-mix(in srgb, var(--action) 78%, var(--puzzle)));
+  box-shadow: 0 9px 19px rgba(0, 0, 0, .2);
+}
+
+.observatory-focus__start::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -25%;
+  width: 18%;
+  content: "";
+  opacity: .48;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .72), transparent);
+  transform: skewX(-18deg);
+  transition: left 360ms var(--ease);
+}
+
+.observatory-focus__start:hover::after { left: 108%; }
+
+.observatory-transit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0 5px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.observatory-transit strong {
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.observatory-transit__gate {
+  overflow: hidden;
+  margin-left: auto;
+  padding-left: 12px;
+  text-overflow: ellipsis;
+  border-left: 1px solid color-mix(in srgb, var(--puzzle) 31%, var(--line));
+}
+
+.puzzle-silhouette__anchor {
+  stroke-width: .45;
+  stroke-dasharray: .72 .36;
+}
+
+@keyframes observatory-field-in {
+  from { opacity: 0; transform: translateY(8px) scale(.992); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes observatory-stop-in {
+  from { opacity: 0; transform: translateX(-9px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes observatory-well-in {
+  from { opacity: .4; transform: scale(.972); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes observatory-well-sweep {
+  from { transform: translateX(0) skewX(-17deg); }
+  to { transform: translateX(520%) skewX(-17deg); }
+}
+
+@keyframes observatory-route-sweep {
+  from { transform: scaleX(0); transform-origin: left; }
+  to { transform: scaleX(1); transform-origin: left; }
+}
+
+@media (max-width: 860px) {
+  .library-shell--observatory {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .library-shell--observatory::before {
+    inset: 54px 7px 8px;
+    border-radius: 16px;
+  }
+
+  .observatory-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: 166px minmax(0, 1fr);
+    border-radius: 8px 18px 8px 18px;
+  }
+
+  .observatory-route {
+    grid-template-rows: auto auto auto;
+    padding: 10px 12px 11px;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--edge) 42%, var(--line));
+  }
+
+  .observatory-route::before { display: none; }
+
+  .observatory-route__heading {
+    padding-bottom: 6px;
+  }
+
+  .observatory-route__heading h1 { font-size: 21px; }
+
+  .observatory-sector-list {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+    padding: 7px 0;
+  }
+
+  .observatory-sector::before { display: none; }
+  .observatory-sector:nth-child(even) button { margin-left: 0; }
+
+  .observatory-sector button {
+    width: 100%;
+    min-height: 44px;
+    margin-left: 0;
+    padding: 4px;
+    text-align: center;
+    background: color-mix(in srgb, var(--surface) 50%, transparent);
+    border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  }
+
+  .observatory-sector button > span { font-size: 11px; }
+  .observatory-sector button > i { display: none; }
+  .observatory-sector--active button { border-color: var(--puzzle); }
+  .observatory-sector:not(.observatory-sector--locked) button:hover,
+  .observatory-sector:not(.observatory-sector--locked) button:focus-visible { padding-left: 4px; }
+
+  .observatory-levels {
+    padding-top: 7px;
+  }
+
+  .observatory-levels ol { gap: 6px; }
+  .observatory-stop button { min-height: 44px; }
+
+  .observatory-focus {
+    grid-template-columns: minmax(0, 1fr) minmax(155px, .48fr);
+    gap: 11px 14px;
+    padding: 14px;
+  }
+
+  .observatory-focus__board {
+    width: min(78%, 230px);
+    height: min(78%, 286px);
+  }
+
+  .observatory-focus__copy h2 { font-size: 27px; }
+  .observatory-focus__brief { font-size: 11px; }
+}
+
+@media (max-width: 599px) {
+  .observatory-header { min-height: 44px; }
+
+  .observatory-header .library-back {
+    min-height: 44px;
+    padding-right: 8px;
+    font-size: 11px;
+  }
+
+  .observatory-header .library-back b {
+    width: 32px;
+    height: 32px;
+  }
+
+  .observatory-header .brand--compact strong { font-size: 21px; }
+  .observatory-header__open { font-size: 15px; }
+
+  .observatory-stage {
+    grid-template-rows: 164px minmax(0, 1fr);
+  }
+
+  .observatory-route { padding-inline: 10px; }
+  .observatory-route__heading h1 { font-size: 19px; }
+  .observatory-sector-list { gap: 3px; }
+  .observatory-sector button { min-height: 44px; }
+  .observatory-levels { padding-top: 6px; }
+  .observatory-stop button { min-height: 44px; }
+  .observatory-sector button > span,
+  .observatory-stop button > span { font-size: 12px; }
+
+  .observatory-focus {
+    grid-template-columns: minmax(0, 1fr) 148px;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    gap: 9px 8px;
+    padding: 11px;
+  }
+
+  .observatory-focus__well { border-radius: 6px 13px 6px 13px; }
+  .observatory-focus__index { top: 7px; right: 10px; font-size: 24px; }
+
+  .observatory-focus__board {
+    width: min(80%, 184px);
+    height: min(76%, 230px);
+  }
+
+  .observatory-focus__board .puzzle-silhouette {
+    width: min(82%, 160px);
+    height: min(85%, 204px);
+  }
+
+  .observatory-focus__copy h2 { font-size: 22px; }
+  .observatory-focus__status { min-height: 24px; padding-inline: 5px; font-size: 10px; }
+  .observatory-focus__brief { margin-top: -4px; font-size: 12px; }
+  .observatory-focus__start { min-height: 44px; padding-inline: 7px; font-size: 12px; }
+
+  .observatory-transit {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2px 8px;
+    padding: 0 2px;
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  .observatory-transit strong { font-size: 12px; }
+  .observatory-transit__gate {
+    grid-column: 1 / -1;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (min-width: 600px) and (max-height: 520px) {
+  .library-shell--observatory {
+    grid-template-rows: 42px minmax(0, 1fr) 24px;
+    gap: 5px;
+    padding: 5px 10px 7px;
+  }
+
+  .observatory-stage {
+    grid-template-columns: 224px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .observatory-route {
+    padding: 8px 12px;
+  }
+
+  .observatory-route__heading {
+    padding-bottom: 5px;
+  }
+
+  .observatory-route__heading h1 { font-size: 19px; }
+  .observatory-route::before { top: 44px; bottom: 66px; left: 23px; }
+  .observatory-sector-list {
+    grid-template-columns: repeat(4, minmax(44px, 1fr));
+    grid-template-rows: repeat(2, 44px);
+    gap: 4px;
+    padding: 7px 0;
+  }
+  .observatory-sector button { min-height: 44px; padding-block: 2px; }
+  .observatory-sector button > i { width: 16px; height: 16px; font-size: 8px; }
+  .observatory-levels { padding-top: 6px; }
+  .observatory-levels ol { gap: 3px; }
+  .observatory-stop button { min-height: 44px; padding-block: 2px; }
+  .observatory-stop button > i { display: none; }
+
+  .observatory-focus {
+    grid-template-columns: minmax(0, 1fr) 186px;
+    gap: 7px 12px;
+    padding: 9px 12px;
+  }
+
+  .observatory-focus__well::before { inset: 8px; }
+  .observatory-focus__index { top: 6px; right: 10px; font-size: 24px; }
+  .observatory-focus__board { width: min(71%, 166px); height: min(75%, 206px); }
+  .observatory-focus__board .puzzle-silhouette { width: min(79%, 130px); height: min(82%, 164px); }
+  .observatory-focus__copy h2 { font-size: 24px; }
+  .observatory-focus__brief { margin-top: -2px; font-size: 10px; }
+  .observatory-focus__start { min-height: 40px; }
+
+  .observatory-transit {
+    gap: 8px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+
+  .observatory-transit strong { font-size: 12px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entry-countdown__digit,
   .mode-gate,
   .action-sheet,
+  .observatory-stage,
+  .observatory-sector,
+  .observatory-stop,
+  .observatory-focus__well,
+  .observatory-focus__well::after,
+  .observatory-stop--selected button::after,
   .run-stats [data-stat-role="survival-next"][data-urgent="true"] strong,
   .run-stats--puzzle [data-stat-role="objective"][data-urgent="true"] strong {
     animation: none;
@@ -3454,9 +4220,12 @@ p {
   .mode-gate__action b,
   .level-item,
   .atlas-waypoint,
+  .observatory-sector button,
+  .observatory-stop button,
   .library-back,
   .touch-key,
-  .level-detail--atlas .primary-action::after {
+  .level-detail--atlas .primary-action::after,
+  .observatory-focus__start::after {
     transition: none !important;
   }
 
@@ -3466,6 +4235,11 @@ p {
   .mode-gate__action b,
   .level-item,
   .atlas-waypoint,
+  .observatory-stage,
+  .observatory-sector,
+  .observatory-stop,
+  .observatory-focus__well,
+  .observatory-focus__well::after,
   .library-back,
   .touch-key:active {
     transform: none !important;

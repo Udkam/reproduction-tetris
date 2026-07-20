@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ANCHOR_CELL,
   PIECE_TYPES,
   TICKS_PER_SECOND,
   type GameEvent,
@@ -8,6 +9,7 @@ import {
   type PieceType,
   type PuzzleId,
   createInitialState,
+  getPuzzleDefinition,
   gravityForMode,
   survivalIntervalSeconds,
   survivalIntervalTicks,
@@ -30,7 +32,7 @@ import {
   unlockedPuzzleLevelCount,
   type PuzzleProgress,
 } from './puzzleProgress';
-import { PIECE_MATERIALS } from './game/render/theme';
+import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
 import { ActionSheet } from './ui/ActionSheet';
 import {
   LEADERBOARD_KEY,
@@ -280,7 +282,18 @@ export function puzzleSilhouettePaths(id: PuzzleId): ReadonlyMap<PieceType, stri
   return paths;
 }
 
+/** One canonical preview keeps immutable anchors legible without adding list thumbnails. */
+export function puzzleAnchorSilhouettePath(id: PuzzleId): string {
+  const board = createInitialState(APP_SEED, 'puzzle', id).board.slice(-12);
+  const unit = 4;
+  const face = 3.8;
+  return board.flatMap((row, y) => row.map((cell, x) => (
+    cell === ANCHOR_CELL ? `M${x * unit + .1} ${y * unit + .1}h${face}v${face}h-${face}z` : ''
+  ))).join('');
+}
+
 function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
+  const anchorPath = puzzleAnchorSilhouettePath(id);
   return (
     <svg
       className="puzzle-silhouette"
@@ -300,11 +313,18 @@ function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
           />
         );
       })}
+      {anchorPath && (
+        <path
+          className="puzzle-silhouette__anchor"
+          data-piece-type="anchor"
+          d={anchorPath}
+          fill={cssHex(ANCHOR_MATERIAL.fillStart)}
+          stroke={cssHex(ANCHOR_MATERIAL.edge)}
+        />
+      )}
     </svg>
   );
 }
-
-const ATLAS_TIER_NAMES = ['起航', '填隙', '转角', '连线', '叠层', '合流', '终章'] as const;
 
 function campaignRange(levels: readonly { index: number }[]): string {
   const first = levels[0]!;
@@ -326,142 +346,110 @@ export function PuzzleLibrary({
   onBack: () => void;
 }) {
   const selected = campaignLevel(selectedId);
+  const selectedDefinition = getPuzzleDefinition(selected.id);
   const unlockedCount = unlockedPuzzleLevelCount(progress);
   const nextTierGate = nextPuzzleTierGate(progress);
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
-  const selectedStatus = selectedComplete ? '已完成' : '已开放';
-  const openedPercent = (unlockedCount / CAMPAIGN_LEVELS.length) * 100;
+  const selectedUnlocked = isPuzzleUnlocked(progress, selected.id);
+  const selectedStatus = selectedComplete ? '已完成' : selectedUnlocked ? '已开放' : '待解锁';
+  const selectedAnchorCount = selectedDefinition.anchorCells.length;
+  const selectedTierIndex = Math.max(0, CAMPAIGN_TIERS.findIndex((tier) => tier.some((level) => level.id === selected.id)));
+  const selectedTier = CAMPAIGN_TIERS[selectedTierIndex]!;
   return (
-    <main id="game" className="library-shell library-shell--atlas" data-testid="puzzle-library">
-      <header className="library-header">
+    <main id="game" className="library-shell library-shell--observatory" data-testid="puzzle-library">
+      <header className="library-header observatory-header">
         <button className="library-back" type="button" aria-label="返回模式首页" onClick={onBack}>
           <b aria-hidden="true">←</b><span>返回模式</span>
         </button>
         <Brand compact />
+        <span className="observatory-header__open" data-testid="campaign-availability" aria-label={`已开放 ${unlockedCount} / ${CAMPAIGN_LEVELS.length}`}>
+          {String(unlockedCount).padStart(2, '0')}/{String(CAMPAIGN_LEVELS.length).padStart(2, '0')}
+        </span>
       </header>
-      <section className="library-intro library-intro--atlas" aria-labelledby="library-title">
-        <div className="library-intro__meta">
-          <span className="library-intro__eyebrow">解谜航图 · 01</span>
-          <div className="library-intro__stats">
-            <span className="library-intro__availability" data-testid="campaign-availability">{unlockedCount} / {CAMPAIGN_LEVELS.length} 已开放</span>
-            <span className="library-intro__gate" data-testid="campaign-gate">
-              {nextTierGate === null
-                ? '全部档案已开放'
-                : `下一航段：${campaignRange(nextTierGate.prerequisiteTier)} 完成 ${nextTierGate.completedCount} / ${nextTierGate.requiredCount}`}
-            </span>
+      <section className="observatory-stage" aria-labelledby="library-title">
+        <nav className="observatory-route" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
+          <div className="observatory-route__heading">
+            <h1 id="library-title">解谜</h1>
           </div>
-        </div>
-        <div className="library-intro__heading">
-          <div>
-            <h1 id="library-title">解谜航图</h1>
-            <p>从一眼可见的缺口，走向连续的清场路线。</p>
-          </div>
-          <div
-            className="campaign-meter campaign-meter--atlas"
-            role="progressbar"
-            aria-label="解谜档案开放进度"
-            aria-valuemin={0}
-            aria-valuemax={CAMPAIGN_LEVELS.length}
-            aria-valuenow={unlockedCount}
-            aria-valuetext={`已开放 ${unlockedCount} / ${CAMPAIGN_LEVELS.length}`}
-          >
-            <span aria-hidden="true" style={{ width: `${openedPercent}%` }} />
-          </div>
-        </div>
-        <section className="campaign-rule" data-testid="campaign-rules" aria-labelledby="campaign-rule-title">
-          <header>
-            <span>解锁规则</span>
-            <strong id="campaign-rule-title">航图通行章</strong>
-          </header>
-          <dl>
-            <div><dt>01–03</dt><dd>新档案直接开放</dd></div>
-            <div><dt>04–18</dt><dd>完成前一档任意 2 关，开放下一档 3 关</dd></div>
-            <div><dt>19–20</dt><dd>完成 16–18 任意 2 关后开放</dd></div>
-          </dl>
-        </section>
-      </section>
-      <section className="library-content library-content--atlas" aria-label="全部解谜关卡">
-        <section className="library-catalog library-catalog--atlas" aria-labelledby="catalog-title">
-          <header className="library-catalog__header">
-            <div>
-              <span>航图索引</span>
-              <h2 id="catalog-title">航段目录</h2>
-            </div>
-            <small>{CAMPAIGN_TIERS.length} 段 · {CAMPAIGN_LEVELS.length} 关</small>
-          </header>
-          <div className="campaign-atlas" aria-label={`${CAMPAIGN_LEVELS.length} 个解谜关卡，已开放 ${unlockedCount} 个`} data-testid="level-list">
+          <ol className="observatory-sector-list" aria-label="解谜流段">
             {CAMPAIGN_TIERS.map((tier, tierIndex) => {
               const tierUnlocked = tier.every((level) => isPuzzleUnlocked(progress, level.id));
               const tierComplete = tier.filter((level) => progress.completedLevelIds.includes(level.id)).length;
-              const tierName = ATLAS_TIER_NAMES[tierIndex] ?? `航段 ${tierIndex + 1}`;
+              const activeTier = tierIndex === selectedTierIndex;
+              const sectorStatus = tierComplete === tier.length ? 'complete' : tierUnlocked ? 'open' : 'locked';
+              const sectorTarget = tier.find((level) => isPuzzleUnlocked(progress, level.id)) ?? tier[0]!;
               return (
-                <section
-                  className={`campaign-tier ${tierUnlocked ? 'campaign-tier--open' : 'campaign-tier--sealed'}`}
-                  data-tier-index={tierIndex + 1}
-                  key={tier[0]!.id}
-                  aria-labelledby={`campaign-tier-${tierIndex + 1}`}
-                >
-                  <header className="campaign-tier__header">
-                    <span className="campaign-tier__serial">航段 {String(tierIndex + 1).padStart(2, '0')}</span>
-                    <h3 id={`campaign-tier-${tierIndex + 1}`}>{tierName} <small>{campaignRange(tier)}</small></h3>
-                    <span className="campaign-tier__progress">{tierComplete} / {tier.length}</span>
-                  </header>
-                  <ol className="campaign-tier__levels" start={tier[0]!.index}>
-                    {tier.map((level) => {
-                      const complete = progress.completedLevelIds.includes(level.id);
-                      const unlocked = isPuzzleUnlocked(progress, level.id);
-                      const selectedLevel = selectedId === level.id;
-                      const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
-                      const visualStatus = complete ? '完成' : unlocked ? '开放' : '封存';
-                      const statusKey = complete ? 'complete' : unlocked ? 'open' : 'locked';
-                      return (
-                        <li className={`atlas-waypoint ${selectedLevel ? 'atlas-waypoint--selected' : ''} ${unlocked ? '' : 'atlas-waypoint--locked'}`} key={level.id}>
-                          <button
-                            className="atlas-level-entry"
-                            type="button"
-                            data-testid="level-row"
-                            data-level-id={level.id}
-                            data-unlocked={unlocked}
-                            aria-pressed={selectedLevel}
-                            aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
-                            disabled={!unlocked}
-                            onClick={() => onSelect(level.id)}
-                          >
-                            <span className="atlas-level-entry__number">{String(level.index).padStart(2, '0')}</span>
-                            <span className="atlas-level-entry__copy">
-                              <strong>{level.name}</strong>
-                              <small>难度 {String(level.difficulty).padStart(2, '0')}</small>
-                            </span>
-                            <span className="atlas-level-entry__state" data-state={statusKey} aria-hidden="true">{visualStatus}</span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ol>
-                </section>
+                <li className={`observatory-sector ${activeTier ? 'observatory-sector--active' : ''} observatory-sector--${sectorStatus}`} key={tier[0]!.id}>
+                  <button
+                    type="button"
+                    data-testid="sector-row"
+                    data-tier-index={tierIndex + 1}
+                    data-unlocked={tierUnlocked}
+                    aria-pressed={activeTier}
+                    aria-label={`流段 ${String(tierIndex + 1).padStart(2, '0')}，${campaignRange(tier)}，${tierComplete} / ${tier.length} 已完成，${tierUnlocked ? '已开放' : '未解锁'}`}
+                    disabled={!tierUnlocked}
+                    onClick={() => onSelect(sectorTarget.id)}
+                  >
+                    <span>{String(tierIndex + 1).padStart(2, '0')}</span>
+                    <i data-state={sectorStatus} aria-hidden="true">{sectorStatus === 'complete' ? '✓' : sectorStatus === 'open' ? '→' : '×'}</i>
+                  </button>
+                </li>
               );
             })}
-          </div>
-        </section>
-        <aside className="level-detail level-detail--atlas" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
-          <div className="level-detail__visual">
-            <span className="level-detail__visual-label">原局地形</span>
-            <span className="level-detail__visual-index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
-            <div className="level-detail__board">
+          </ol>
+          <section className="observatory-levels" aria-label={`当前关卡段 ${campaignRange(selectedTier)}`}>
+            <ol>
+              {selectedTier.map((level, levelIndex) => {
+                const complete = progress.completedLevelIds.includes(level.id);
+                const unlocked = isPuzzleUnlocked(progress, level.id);
+                const selectedLevel = selectedId === level.id;
+                const status = complete ? '已完成' : unlocked ? '已开放' : '未解锁';
+                const statusKey = complete ? 'complete' : unlocked ? 'open' : 'locked';
+                return (
+                  <li className={`observatory-stop ${selectedLevel ? 'observatory-stop--selected' : ''} observatory-stop--${statusKey}`} key={level.id} style={{ animationDelay: `${levelIndex * 70}ms` }}>
+                    <button
+                      type="button"
+                      data-testid="level-row"
+                      data-level-id={level.id}
+                      data-unlocked={unlocked}
+                      aria-pressed={selectedLevel}
+                      aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，难度 ${String(level.difficulty).padStart(2, '0')}，${status}`}
+                      disabled={!unlocked}
+                      onClick={() => onSelect(level.id)}
+                    >
+                      <span>{String(level.index).padStart(2, '0')}</span>
+                      <i data-state={statusKey} aria-hidden="true">{statusKey === 'complete' ? '✓' : statusKey === 'open' ? '→' : '×'}</i>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        </nav>
+        <aside className="observatory-focus" aria-live="polite" aria-label={`已选关卡：${selected.name}`}>
+          <div className="observatory-focus__well" key={selected.id}>
+            <span className="observatory-focus__index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
+            <div className="observatory-focus__board">
               <PuzzleSilhouette id={selected.id} name={selected.name} />
             </div>
           </div>
-          <div className="level-detail__heading">
+          <div className="observatory-focus__copy">
             <div>
-              <span className="level-detail__count">航段 {String(Math.floor((selected.index - 1) / 3) + 1).padStart(2, '0')} · 难度 {String(selected.difficulty).padStart(2, '0')}</span>
               <h2>{selected.name}</h2>
             </div>
-            <span className="level-detail__status" data-state={selectedComplete ? 'complete' : 'open'}>{selectedStatus}</span>
+            <span className="observatory-focus__status" data-state={selectedComplete ? 'complete' : selectedUnlocked ? 'open' : 'locked'}>{selectedStatus}</span>
           </div>
-          <p className="level-detail__brief">清除所有原有方块即可通关</p>
-          <button className="primary-action" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始本关</button>
+          <p className="observatory-focus__brief">{selectedAnchorCount > 0 ? `固定锚点 × ${selectedAnchorCount}` : '清除原有方块'}</p>
+          <button className="primary-action observatory-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
         </aside>
       </section>
+      <footer className="observatory-transit" data-testid="campaign-rules" aria-label="解谜关卡解锁规则">
+        <strong>01–03 直接开放</strong>
+        <span>每段完成任意 2 关解锁下一段</span>
+        <span className="observatory-transit__gate" data-testid="campaign-gate">
+          {nextTierGate === null ? '全部开放' : `${campaignRange(nextTierGate.prerequisiteTier)} ${nextTierGate.completedCount}/${nextTierGate.requiredCount}`}
+        </span>
+      </footer>
     </main>
   );
 }
