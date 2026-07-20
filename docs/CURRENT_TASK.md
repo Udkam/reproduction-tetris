@@ -1,4 +1,4 @@
-# Current Task — T12.6 Layered Puzzle Curriculum and Current-Rail Selector
+# Current Task — T12.6 Layered Puzzle Curriculum and Current-Observatory Selector
 
 Branch: `main`
 
@@ -9,7 +9,7 @@ not be rewritten.
 Current execution status (2026-07-21): **IN PROGRESS — T12.6 replaces the accepted
 T12.5 shallow one- through four-row curriculum and campaign-atlas presentation with
 a replay-verified three- through seven-row curriculum and a minimal animated current
-rail.**
+observatory.**
 
 T12.6 preserves the normal fixed-seed seven-bag, original-target-only win condition,
 unlimited ordinary play after a route, local `B` undo, existing seven-tier unlock
@@ -29,16 +29,24 @@ commandCount, id)` without a lower row-band appearing later.
 The player-facing unlock statement remains explicit: levels `01–03` are open on a
 new save; complete any two in the immediately preceding three-level tier to open the
 next tier through `16–18`; complete any two of `16–18` to open `19–20`. Completion
-IDs retain their migration behavior. The new selector is a text-first **current rail**:
-one vertical route, compact numbered stops, one dark selected preview, and semantic
-open/complete/sealed labels. It must use one-shot staggered reveal and selected-current
-pulse motion, with a full reduced-motion fallback; it must not reintroduce level
-thumbnails, corner dots, a dot-progress system, cards, or the rejected atlas planes.
+IDs retain their migration behavior. The new selector is a text-light **current
+observatory**: one dominant dark selected preview, a sparse numbered switchback route,
+and only one occurrence of the selected level name/status/start action. The full unlock
+policy is one compact always-visible transit line, not a prose dashboard. It must use a
+one-shot observatory-field reveal and selected-well sweep motion, with a full
+reduced-motion fallback; it must not reintroduce level thumbnails, corner dots, a
+dot-progress system, cards, text walls, or the rejected atlas planes. The selector uses
+bundled local Latin typography plus system CJK fallbacks only, so its first frame never
+depends on a remote font request. Visible copy is number-led and deliberately sparse:
+only the selected name/status/required fixed-anchor note/start action appear in the
+focal stage, while the transit line is the sole explanatory sentence. Decorative
+technical English, duplicate field labels, row counters, and section captions are out
+of scope.
 
 ### T12.6 writer boundaries and checkpoint sequence
 
 1. **Contract checkpoint (coordinator):** `docs/DESIGN.md` and
-   `docs/CURRENT_TASK.md` define the three- through seven-row, current-rail contract
+   `docs/CURRENT_TASK.md` define the three- through seven-row, current-observatory contract
    before source changes.
 2. **Core-route checkpoint (coordinator):**
    `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
@@ -50,11 +58,11 @@ thumbnails, corner dots, a dot-progress system, cards, or the rejected atlas pla
    board patterns and their twenty replay command streams must be reviewed together;
    it changes no physics or runtime interface.
 3. **Selector checkpoint (coordinator):** `src/App.tsx`, `src/App.test.ts`, and
-   `src/styles.css` own the current-rail markup, state copy, responsive behavior, and
+   `src/styles.css` own the current-observatory markup, state copy, responsive behavior, and
    motion. This checkpoint is explicitly allowed to exceed 500 changed lines only if
    replacing the former atlas selectors requires it; no renderer or gameplay path is
    included.
-4. **Local recovery artifacts:** `Solutions/Solution-01.md` through
+4. **Local recovery artifacts:** `Solutions/Solution-1.md` through
    `Solutions/Solution-20.md` and their embedded images are regenerated only after
    the Core route checkpoint. They remain ignored by the existing `Solutions/` rule,
    are never staged, and are inspected as local reference material.

@@ -1,6 +1,6 @@
-# Tetra — T12.6 Layered Puzzle Curriculum and Current-Rail Selector Contract
+# Tetra — T12.6 Layered Puzzle Curriculum and Current-Observatory Selector Contract
 
-## T12.6 layered original-target campaign and minimal current rail
+## T12.6 layered original-target campaign and minimal current observatory
 
 The 2026-07-21 direction supersedes T12.5's one- through four-row, single-piece
 teaching boards and its visually dense campaign atlas. Puzzle remains a fixed-seed,
@@ -42,21 +42,30 @@ small multi-row clearing composition rather than spot one obvious gap.
   `01–03` start open; completing any two levels in the preceding three-level tier
   opens the next tier through `16–18`; completing any two of `16–18` opens `19–20`.
   Existing completion IDs remain valid and sealed entries remain readable but inert.
-- Generate a local, ignored `Solutions/Solution-01.md` through
+- Generate a local, ignored `Solutions/Solution-1.md` through
   `Solutions/Solution-20.md` walkthrough set from the final replay routes. Each file
   records the command steps and embeds a board image after every locked piece. These
   are recovery/reference artifacts only: they are excluded by `.gitignore`, never
   bundled into runtime or source checkpoints, and must be regenerated after a route
   changes.
-- Rebuild the selector as an original **current rail**, not a card grid or a terrain
-  atlas. It uses a single quiet vertical route, compact numbered textual stops, one
-  selected preview, and a restrained dark well motif that connects back to the game
-  board. Decorative thumbnails, corner dots, progress-dot systems, faux 3-D planes,
-  dashboard telemetry, and stacked floating cards remain forbidden. The page has a
-  deliberate one-shot reveal: rail stops cascade in when the library opens and a
-  selected stop sends one short current pulse into the preview. Hover/focus/press
-  motion is similarly brief and spatially useful. `prefers-reduced-motion` removes
-  those transitions while preserving every state distinction and control.
+- Rebuild the selector as an original **current observatory**, not a card grid, a
+  long-form archive, or a terrain atlas. The selected board is the dominant deep-well
+  focal object; a sparse numbered switchback route is only a navigation instrument at
+  its side. A level name, completion state, fixed-anchor note, and start action appear
+  once in that focal stage—not redundantly on every stop. Decorative thumbnails,
+  corner dots, progress-dot systems, faux 3-D planes, dashboard telemetry, stacked
+  floating cards, and explanatory text walls remain forbidden. The full unlock policy
+  is one compact, always visible transit line rather than three prose panels. The page
+  has a deliberate one-shot reveal: the observatory field resolves on entry and a
+  selected route sends one short sweep through the focal well. Hover/focus/press motion
+  is similarly brief and spatially useful. `prefers-reduced-motion` removes those
+  transitions while preserving every state distinction and control.
+- Visible copy stays deliberately sparse: route sectors are number-led, and the focal
+  stage carries only its selected name, semantic state, required fixed-anchor note,
+  and start action. Decorative technical English, duplicate field labels, row counts,
+  and section captions are forbidden; the gate remains the sole explanatory sentence.
+- The selector uses the bundled local Space Grotesk face with the system CJK fallback
+  stack; it must not make a runtime remote-font request merely to render the library.
 - The selector remains responsive and keyboard/touch-safe. It must maintain one
   selected canonical preview only, preserve the visible unlock explanation and state
   labels, fit the 1280 × 720 desktop composition without document scrolling, and use
