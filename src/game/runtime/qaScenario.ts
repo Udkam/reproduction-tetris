@@ -171,12 +171,23 @@ export function replaySurvivalBedrock(seed = 0x51a1f00d): {
 }
 
 const QA_PUZZLE_ID = 't5r-drift-08' as const;
-const PUZZLE_CHALLENGE_QA_ROUTE: readonly GameCommand[] = Object.freeze([
-  { type: 'start' },
-  { type: 'rotate', direction: 1 },
-  { type: 'hard-drop' },
-  ...Array.from({ length: 12 }, (): GameCommand => ({ type: 'tick' })),
-]);
+const QA_PUZZLE_ROUTE_TOKENS = 'SCRHTTTCRRHTTTCLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTHTTTTTTTTTTTT';
+
+function puzzleRouteCommand(token: string): GameCommand {
+  switch (token) {
+    case 'S': return { type: 'start' };
+    case 'T': return { type: 'tick' };
+    case 'L': return { type: 'move', dx: -1 };
+    case 'R': return { type: 'move', dx: 1 };
+    case 'H': return { type: 'hard-drop' };
+    case 'C': return { type: 'rotate', direction: 1 };
+    default: throw new Error(`Unknown Puzzle QA route token: ${token}`);
+  }
+}
+
+const PUZZLE_CHALLENGE_QA_ROUTE: readonly GameCommand[] = Object.freeze(
+  [...QA_PUZZLE_ROUTE_TOKENS].map(puzzleRouteCommand),
+);
 
 /** A complete public-command-only normal-play Puzzle route with ordinary delayed resolution. */
 export function replayPuzzleChallenge(seed = 0x51a1f00d): { commands: readonly GameCommand[]; state: GameState; hash: string } {
