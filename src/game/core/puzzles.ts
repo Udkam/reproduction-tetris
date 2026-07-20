@@ -13,13 +13,13 @@ export interface PuzzleCell {
 export interface PuzzleDefinition {
   id: PuzzleId;
   name: string;
-  /** Authored curriculum position, surfaced as the visible gentle difficulty. */
+  /** Replay-calibrated campaign position, surfaced as the visible difficulty. */
   difficulty: number;
   /** Stable level-owned seed for the fixed deterministic seven-bag. */
   seed: number;
   /** Exactly twenty rows, each with the visible board width. */
   boardRows: readonly string[];
-  /** Always empty: the authored target band begins inside the visible well. */
+  /** Always empty: every authored target begins inside the visible well. */
   hiddenCells: readonly PuzzleCell[];
 }
 
@@ -28,21 +28,20 @@ const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
 const PIECE_TYPE_SET = new Set<string>(PIECE_TYPES);
 
 /**
- * A shallow target row uses the existing seven-piece material vocabulary only for
- * visual variety. Its dots are the intentionally obvious holes the incoming piece
- * completes; material never changes collision or target ownership.
+ * Source glyphs describe target occupancy only: `T` is a normal original target and
+ * `.` is an opening. The material cycle makes the still-ordinary target band legible
+ * without introducing a new collision material or renderer rule.
  */
-function targetRow(gaps: readonly number[], materialOffset: number): string {
-  const gapSet = new Set(gaps);
-  return Array.from({ length: BOARD_WIDTH }, (_, x) => (
-    gapSet.has(x) ? '.' : PIECE_TYPES[(x + materialOffset) % PIECE_TYPES.length]!
-  )).join('');
-}
-
-function shallowRows(rowCount: number, gaps: readonly number[], materialOffset: number): readonly string[] {
+function targetBandRows(pattern: readonly string[], materialOffset: number): readonly string[] {
   const rows = Array.from({ length: VISIBLE_HEIGHT }, () => EMPTY_ROW);
-  for (let index = 0; index < rowCount; index += 1) {
-    rows[VISIBLE_HEIGHT - rowCount + index] = targetRow(gaps, materialOffset + index * 2);
+  const start = VISIBLE_HEIGHT - pattern.length;
+  for (const [relativeY, source] of pattern.entries()) {
+    if (source.length !== BOARD_WIDTH || [...source].some((cell) => cell !== 'T' && cell !== '.')) {
+      throw new Error('Puzzle target-band source must contain ten T-or-dot cells.');
+    }
+    rows[start + relativeY] = [...source].map((cell, x) => (
+      cell === '.' ? '.' : PIECE_TYPES[(x + materialOffset + relativeY * 3) % PIECE_TYPES.length]!
+    )).join('');
   }
   return Object.freeze(rows);
 }
@@ -52,8 +51,7 @@ function curriculum(
   name: string,
   difficulty: number,
   seed: number,
-  rowCount: number,
-  gaps: readonly number[],
+  pattern: readonly string[],
   materialOffset: number,
 ): PuzzleDefinition {
   return Object.freeze({
@@ -61,39 +59,181 @@ function curriculum(
     name,
     difficulty,
     seed,
-    boardRows: shallowRows(rowCount, gaps, materialOffset),
+    boardRows: targetBandRows(pattern, materialOffset),
     hiddenCells: EMPTY_HIDDEN_CELLS,
   });
 }
 
+/** Visible original-target rows promised by the T12.6 curriculum. */
+export function expectedPuzzleTargetRows(difficulty: number): number {
+  if (difficulty <= 3) return 3;
+  if (difficulty <= 6) return 4;
+  if (difficulty <= 10) return 5;
+  if (difficulty <= 15) return 6;
+  return 7;
+}
+
 /**
- * T12.5's low-pressure curriculum. Every board is a visible near-floor gap:
- * 01–07 introduce the seven shapes without rotation, 08–13 add one ordinary
- * rotation, and 14–20 use a clear vertical I-channel across two to four rows.
- * The fixed seed supplies the intended opening block while normal seven-bag play
- * remains available after a mistake.
+ * T12.6's replay-calibrated original-target curriculum. Every source pattern is a
+ * three-to-seven-row floor composition with ordinary holes; each matching route is
+ * independently replayed from its fixed seven-bag in puzzleSolverResults.test.ts.
  */
 const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
-  curriculum('t3r-shaft-01', '青脊回旋', 1, 3, 1, [3, 4, 5, 6], 0),
-  curriculum('t3r-shaft-02', '深湾折返', 2, 6, 2, [4, 5], 1),
-  curriculum('t3r-shaft-03', '双岸错层', 3, 10, 1, [3, 4, 5], 2),
-  curriculum('t3r-shaft-04', '侧槽逆流', 4, 9, 1, [3, 4], 3),
-  curriculum('t3r-cascade-05', '潮线汇流', 5, 1, 1, [4, 5], 4),
-  curriculum('t3r-cascade-06', '远岸终局', 6, 2, 1, [3, 4, 5], 5),
-  curriculum('t5r-delta-07', '折光浅湾', 7, 4, 1, [3, 4, 5], 6),
-  curriculum('t5r-drift-08', '微澜错屿', 8, 5, 1, [5], 1),
-  curriculum('t5r-lattice-09', '蓝桥叠汐', 9, 35, 1, [4], 2),
-  curriculum('t5r-rift-10', '薄雾回廊', 10, 41, 1, [5], 3),
-  curriculum('t5r-prism-11', '棱湾交错', 11, 12, 1, [5, 6], 4),
-  curriculum('t5r-current-12', '双潮折线', 12, 19, 1, [6], 5),
-  curriculum('t5r-arc-13', '静弧深槽', 13, 22, 1, [2], 6),
-  curriculum('t5r-pulse-14', '脉光群岛', 14, 13, 2, [5], 0),
-  curriculum('t5r-horizon-15', '远蓝合流', 15, 26, 2, [7], 1),
-  curriculum('t6r-veil-16', '澄湾折层', 16, 39, 2, [2], 2),
-  curriculum('t6r-cairn-17', '层岩交径', 17, 49, 3, [5], 3),
-  curriculum('t6r-terrace-18', '岚阶回环', 18, 66, 3, [7], 4),
-  curriculum('t6r-bastion-19', '深湾阈门', 19, 75, 4, [5], 5),
-  curriculum('t6r-keystone-20', '层界基石', 20, 97, 4, [7], 6),
+  // 01–03: three rows — read one compact clearing composition.
+  curriculum('t3r-shaft-01', '青脊回旋', 1, 8, [
+    'TTTT....TT',
+    'TTTT....TT',
+    'TTTT....TT',
+  ], 0),
+  curriculum('t3r-shaft-02', '深湾折返', 2, 3, [
+    'TT........',
+    'TT.T..TTTT',
+    'TTTT.TTTTT',
+  ], 1),
+  curriculum('t3r-shaft-03', '双岸错层', 3, 1, [
+    'TT........',
+    'TTT.TTTT..',
+    'TTTTTTTT.T',
+  ], 2),
+
+  // 04–06: four rows — alternate shelves and ordinary turns.
+  curriculum('t3r-shaft-04', '侧槽逆流', 4, 9, [
+    'T......TTT',
+    'TT.....TTT',
+    'TTTT...TTT',
+    'TTTTT..TTT',
+  ], 3),
+  curriculum('t3r-cascade-05', '潮线汇流', 5, 7, [
+    'T.......TT',
+    'T.TT....TT',
+    'TTTT.T..TT',
+    'TTTTTT.TTT',
+  ], 4),
+  curriculum('t3r-cascade-06', '远岸终局', 6, 10, [
+    'T......TTT',
+    'T..T...TTT',
+    'T..T..TTTT',
+    'TT.TTTTTTT',
+  ], 5),
+
+  // 07–10: five rows — a readable current that has to be built in stages.
+  curriculum('t5r-delta-07', '折光浅湾', 7, 27, [
+    'T.....TTTT',
+    'T.....TTTT',
+    'T.....TTTT',
+    'TT....TTTT',
+    'TTTTT.TTTT',
+  ], 6),
+  curriculum('t5r-drift-08', '微澜错屿', 8, 15, [
+    'TT......TT',
+    'TT..T...TT',
+    'TT..T..TTT',
+    'TT..T..TTT',
+    'TT.TTTTTTT',
+  ], 0),
+  curriculum('t5r-lattice-09', '蓝桥叠汐', 9, 22, [
+    'T.....TTTT',
+    'T.....TTTT',
+    'T.....TTTT',
+    'TT..T.TTTT',
+    'TTT.T.TTTT',
+  ], 1),
+  curriculum('t5r-rift-10', '薄雾回廊', 10, 5, [
+    '.......TTT',
+    '.T.....TTT',
+    'TT....TTTT',
+    'TT.T.TTTTT',
+    'TT.TTTTTTT',
+  ], 2),
+
+  // 11–15: six rows — longer layered currents, still with no special rule.
+  curriculum('t5r-prism-11', '棱湾交错', 11, 61, [
+    'T.......TT',
+    'T.......TT',
+    'T.......TT',
+    'TTTT.TTTTT',
+    'TTTT.TTTTT',
+    'TTTT.TTTTT',
+  ], 3),
+  curriculum('t5r-current-12', '双潮折线', 12, 57, [
+    'TTT.......',
+    'TTT.......',
+    'TTTT.T...T',
+    'TTTT.T..TT',
+    'TTTT.T.TTT',
+    'TTTTTT.TTT',
+  ], 4),
+  curriculum('t5r-arc-13', '静弧深槽', 13, 35, [
+    'T......TTT',
+    'TT.....TTT',
+    'TTT....TTT',
+    'TTT....TTT',
+    'TTT...TTTT',
+    'TTT..TTTTT',
+  ], 5),
+  curriculum('t5r-pulse-14', '脉光群岛', 14, 24, [
+    'T......TTT',
+    'T......TTT',
+    'T......TTT',
+    'TT...T.TTT',
+    'TTTTTT.TTT',
+    'TTTTTT.TTT',
+  ], 6),
+  curriculum('t5r-horizon-15', '远蓝合流', 15, 46, [
+    'T......TTT',
+    'T.....TTTT',
+    'T.....TTTT',
+    'T.....TTTT',
+    'TT.T.TTTTT',
+    'TT.TTTTTTT',
+  ], 0),
+
+  // 16–20: seven rows — complete a deep but transparent clearing current.
+  curriculum('t6r-veil-16', '澄湾折层', 16, 599, [
+    'T.........',
+    'TT........',
+    'TTT....TTT',
+    'TTTT..TTTT',
+    'TTTT..TTTT',
+    'TTTT..TTTT',
+    'TTTTT.TTTT',
+  ], 1),
+  curriculum('t6r-cairn-17', '层岩交径', 17, 416, [
+    'TTT.......',
+    'TTT.......',
+    'TTTT......',
+    'TTTT.TT..T',
+    'TTTTTTT..T',
+    'TTTTTTT..T',
+    'TTTTTTT.TT',
+  ], 2),
+  curriculum('t6r-terrace-18', '岚阶回环', 18, 414, [
+    'T.........',
+    'TT.T...T..',
+    'TTTT...TTT',
+    'TTTT...TTT',
+    'TTTT...TTT',
+    'TTTTT..TTT',
+    'TTTTT..TTT',
+  ], 3),
+  curriculum('t6r-bastion-19', '深湾阈门', 19, 107, [
+    'T.........',
+    'T..T......',
+    'T..T.T..TT',
+    'TT.T.T.TTT',
+    'TTTT.TTTTT',
+    'TTTT.TTTTT',
+    'TTTT.TTTTT',
+  ], 4),
+  curriculum('t6r-keystone-20', '层界基石', 20, 104, [
+    'TTT.......',
+    'TTT.......',
+    'TTTT.T...T',
+    'TTTT.T...T',
+    'TTTT.T...T',
+    'TTTTTT.TTT',
+    'TTTTTT.TTT',
+  ], 5),
 ]);
 
 export const PUZZLE_DEFINITIONS = PUZZLE_LIBRARY;
@@ -116,7 +256,7 @@ function validateSeedBags(definition: PuzzleDefinition): void {
   }
 }
 
-/** Validates direct authored teaching boards rather than an obsolete deep-stack history. */
+/** Validates direct authored multi-row target bands, not an obsolete deep-stack history. */
 export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   if (!PUZZLE_ID_SET.has(definition.id)) throw new Error(`Unknown puzzle id: ${definition.id}`);
   const canonical = PUZZLE_LIBRARY.find((candidate) => candidate.id === definition.id)!;
@@ -157,18 +297,19 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
     }
   }
 
-  if (occupied < 6 || occupied > 36) {
-    throw new Error(`Puzzle ${definition.id} requires a small, non-empty original target band.`);
+  if (occupied < 12 || occupied > 48) {
+    throw new Error(`Puzzle ${definition.id} requires a compact multi-row original-target band.`);
   }
-  if (nonEmptyRows.length < 1 || nonEmptyRows.length > 4) {
-    throw new Error(`Puzzle ${definition.id} requires one to four authored target rows.`);
+  const expectedRows = expectedPuzzleTargetRows(definition.difficulty);
+  if (nonEmptyRows.length !== expectedRows) {
+    throw new Error(`Puzzle ${definition.id} requires exactly ${expectedRows} authored target rows for its campaign band.`);
   }
   const expectedStart = VISIBLE_HEIGHT - nonEmptyRows.length;
   if (nonEmptyRows.some((y, index) => y !== expectedStart + index)) {
-    throw new Error(`Puzzle ${definition.id} target rows must form one shallow contiguous band at the floor.`);
+    throw new Error(`Puzzle ${definition.id} target rows must form one contiguous band at the floor.`);
   }
   if (definition.boardRows.slice(0, expectedStart).some((row) => row !== EMPTY_ROW)) {
-    throw new Error(`Puzzle ${definition.id} may not hide targets above its shallow band.`);
+    throw new Error(`Puzzle ${definition.id} may not hide targets above its floor band.`);
   }
 
   validateSeedBags(definition);

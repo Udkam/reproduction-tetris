@@ -11,7 +11,7 @@ function settle(state: GameState): GameState {
   return next;
 }
 
-describe('T12.5 Puzzle campaign behavior', () => {
+describe('T12.6 Puzzle campaign behavior', () => {
   it('uses the natural 01–20 curriculum order without anchors or a public allowance', () => {
     expect(PUZZLE_DEFINITIONS.map((definition) => definition.id)).toEqual([
       't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-shaft-04', 't3r-cascade-05',
@@ -24,8 +24,8 @@ describe('T12.5 Puzzle campaign behavior', () => {
 
   it('continues an unsolved Puzzle through ordinary locks instead of failing by a piece count', () => {
     let state = dispatch(createInitialState(0, 'puzzle', 't3r-shaft-01'), { type: 'start' }).state;
-    // Move the opening I away from its obvious gap. It locks without clearing the
-    // original target row, yet the game must continue via normal entry/spawn flow.
+    // Move the opening piece away from the replayed composition. It locks without
+    // clearing every original target, yet the game must continue via normal flow.
     state = dispatch(state, { type: 'move', dx: -1 }).state;
     const locked = dispatch(state, { type: 'hard-drop' });
     state = settle(locked.state);

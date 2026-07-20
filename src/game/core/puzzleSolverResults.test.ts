@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import artifactFile from '../../../docs/workstreams/tetris-t12-core/puzzle-solver-results.json';
 import { createInitialState, dispatch } from './engine';
-import { PUZZLE_DEFINITIONS, getPuzzleDefinition } from './puzzles';
+import { expectedPuzzleTargetRows, PUZZLE_DEFINITIONS, getPuzzleDefinition } from './puzzles';
 import type { GameCommand, PuzzleId } from './types';
 
 type CommandToken = 'S' | 'T' | 'L' | 'R' | 'H' | 'C';
@@ -9,6 +9,7 @@ type CommandToken = 'S' | 'T' | 'L' | 'R' | 'H' | 'C';
 type VerifiedLevel = {
   id: PuzzleId;
   routeClass: string;
+  targetRowCount: number;
   commandStream: string;
   commandCount: number;
   locks: number;
@@ -17,9 +18,10 @@ type VerifiedLevel = {
 };
 
 type CurriculumArtifact = {
-  schemaVersion: 2;
+  schemaVersion: 3;
   claim: string;
   commandEncoding: Record<CommandToken, GameCommand>;
+  difficultyTuple: readonly ['targetRowCount', 'locks', 'rotationCount', 'moveCount', 'commandCount', 'id'];
   campaignOrder: readonly PuzzleId[];
   levels: readonly VerifiedLevel[];
 };
@@ -54,31 +56,52 @@ function routeMetrics(stream: string) {
   };
 }
 
-describe('T12.5 verified low-pressure Puzzle routes', () => {
-  it('binds a short public-command route to each level without a solver budget', () => {
-    expect(artifact.schemaVersion).toBe(2);
+function targetRows(id: PuzzleId): number {
+  return getPuzzleDefinition(id).boardRows.filter((row) => row !== '..........').length;
+}
+
+function difficultyKey(level: VerifiedLevel): readonly [number, number, number, number, number, string] {
+  return [level.targetRowCount, level.locks, level.rotationCount, level.moveCount, level.commandCount, level.id];
+}
+
+function compareDifficulty(left: readonly (number | string)[], right: readonly (number | string)[]): number {
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] === right[index]) continue;
+    return left[index]! < right[index]! ? -1 : 1;
+  }
+  return 0;
+}
+
+describe('T12.6 verified layered Puzzle routes', () => {
+  it('binds a public-command route to each three-to-seven-row level and records the ascending calibration', () => {
+    expect(artifact.schemaVersion).toBe(3);
     expect(artifact.claim).toContain('not a mathematical optimality claim');
     expect(Object.keys(artifact.commandEncoding).sort()).toEqual(['C', 'H', 'L', 'R', 'S', 'T']);
+    expect(artifact.difficultyTuple).toEqual(['targetRowCount', 'locks', 'rotationCount', 'moveCount', 'commandCount', 'id']);
     expect(artifact.levels).toHaveLength(20);
     expect(new Set(artifact.levels.map(({ id }) => id)).size).toBe(20);
     expect(artifact.campaignOrder).toEqual(artifact.levels.map(({ id }) => id));
     expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual(artifact.campaignOrder);
 
+    let prior: readonly (number | string)[] | null = null;
     for (const [index, level] of artifact.levels.entries()) {
       const definition = getPuzzleDefinition(level.id);
       expect(definition.difficulty).toBe(index + 1);
+      expect(level.targetRowCount).toBe(expectedPuzzleTargetRows(definition.difficulty));
+      expect(level.targetRowCount).toBe(targetRows(level.id));
       expect(routeMetrics(level.commandStream), level.id).toEqual({
         commandCount: level.commandCount,
         locks: level.locks,
         rotationCount: level.rotationCount,
         moveCount: level.moveCount,
       });
-      expect(level.locks, level.id).toBe(1);
-      expect(level.rotationCount, level.id).toBeLessThanOrEqual(1);
-      expect(level.moveCount, level.id).toBeLessThanOrEqual(3);
+      expect(level.locks, level.id).toBeGreaterThanOrEqual(level.targetRowCount);
       expect(level.commandStream.includes('D'), level.id).toBe(false);
       expect(level.commandStream.includes('A'), level.id).toBe(false);
       expect('solverPieceBudget' in definition, level.id).toBe(false);
+      const key = difficultyKey(level);
+      if (prior) expect(compareDifficulty(prior, key), level.id).toBeLessThanOrEqual(0);
+      prior = key;
     }
   });
 

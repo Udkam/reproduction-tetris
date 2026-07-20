@@ -19,11 +19,11 @@ function resolveToActive(state: GameState): GameState {
   return next;
 }
 
-describe('T12.5 Puzzle ordinary consecutive-piece flow', () => {
+describe('T12.6 Puzzle ordinary consecutive-piece flow', () => {
   it('applies automatic gravity, shared grounded lock delay, and ordinary entry after a non-clearing lock', () => {
     let state = dispatch(createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'), { type: 'start' }).state;
-    // Deliberately leave the visible gap; the test exercises normal continuation,
-    // not the one-lock teaching solution.
+    // Deliberately deviate from the replayed composition; the test exercises normal
+    // continuation rather than a curriculum walkthrough.
     state = dispatch(state, { type: 'move', dx: -1 }).state;
     const spawnY = state.active!.y;
     state = advance(state, 48);
@@ -77,13 +77,13 @@ describe('T12.5 Puzzle ordinary consecutive-piece flow', () => {
 
   it.each([
     't3r-shaft-01', 't5r-lattice-09', 't5r-prism-11', 't5r-horizon-15', 't6r-bastion-19',
-  ] as const)('keeps %s as a shallow anchor-free teaching board', (id) => {
+  ] as const)('keeps %s as a layered anchor-free teaching board', (id) => {
     const definition = getPuzzleDefinition(id);
     const state = createInitialState(1, 'puzzle', id);
     const occupiedRows = definition.boardRows.filter((row) => row !== '..........');
 
-    expect(occupiedRows.length).toBeGreaterThanOrEqual(1);
-    expect(occupiedRows.length).toBeLessThanOrEqual(4);
+    expect(occupiedRows.length).toBeGreaterThanOrEqual(3);
+    expect(occupiedRows.length).toBeLessThanOrEqual(7);
     expect(definition.boardRows.slice(0, VISIBLE_HEIGHT - occupiedRows.length)).toEqual(
       Array.from({ length: VISIBLE_HEIGHT - occupiedRows.length }, () => '..........'),
     );

@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 2,
-  "claim": "Each stream is a deterministic Core-replayed low-pressure curriculum proof, not a mathematical optimality claim, player limit, or route budget.",
+  "schemaVersion": 3,
+  "claim": "Each stream is a deterministic Core-replayed clearability proof for a layered three-to-seven-row Puzzle board. The recorded tuple calibrates campaign order; it is not a mathematical optimality claim, player limit, or route budget.",
   "commandEncoding": {
     "S": { "type": "start" },
     "T": { "type": "tick" },
@@ -9,6 +9,7 @@
     "H": { "type": "hard-drop" },
     "C": { "type": "rotate", "direction": 1 }
   },
+  "difficultyTuple": ["targetRowCount", "locks", "rotationCount", "moveCount", "commandCount", "id"],
   "campaignOrder": [
     "t3r-shaft-01",
     "t3r-shaft-02",
@@ -32,25 +33,205 @@
     "t6r-keystone-20"
   ],
   "levels": [
-    { "id": "t3r-shaft-01", "routeClass": "direct gap", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t3r-shaft-02", "routeClass": "direct window", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t3r-shaft-03", "routeClass": "direct bridge", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t3r-shaft-04", "routeClass": "direct step", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t3r-cascade-05", "routeClass": "direct step", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t3r-cascade-06", "routeClass": "direct bridge", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t5r-delta-07", "routeClass": "direct bridge", "commandStream": "SHTTTTTTTTTTTT", "commandCount": 14, "locks": 1, "rotationCount": 0, "moveCount": 0 },
-    { "id": "t5r-drift-08", "routeClass": "vertical turn", "commandStream": "SCHTTTTTTTTTTTT", "commandCount": 15, "locks": 1, "rotationCount": 1, "moveCount": 0 },
-    { "id": "t5r-lattice-09", "routeClass": "left turn", "commandStream": "SCLHTTTTTTTTTTTT", "commandCount": 16, "locks": 1, "rotationCount": 1, "moveCount": 1 },
-    { "id": "t5r-rift-10", "routeClass": "right turn", "commandStream": "SCRHTTTTTTTTTTTT", "commandCount": 16, "locks": 1, "rotationCount": 1, "moveCount": 1 },
-    { "id": "t5r-prism-11", "routeClass": "window turn", "commandStream": "SCRHTTTTTTTTTTTT", "commandCount": 16, "locks": 1, "rotationCount": 1, "moveCount": 1 },
-    { "id": "t5r-current-12", "routeClass": "far turn", "commandStream": "SCRRHTTTTTTTTTTTT", "commandCount": 17, "locks": 1, "rotationCount": 1, "moveCount": 2 },
-    { "id": "t5r-arc-13", "routeClass": "far turn", "commandStream": "SCLLHTTTTTTTTTTTT", "commandCount": 17, "locks": 1, "rotationCount": 1, "moveCount": 2 },
-    { "id": "t5r-pulse-14", "routeClass": "two-row channel", "commandStream": "SCHTTTTTTTTTTTT", "commandCount": 15, "locks": 1, "rotationCount": 1, "moveCount": 0 },
-    { "id": "t5r-horizon-15", "routeClass": "two-row channel", "commandStream": "SCRRHTTTTTTTTTTTT", "commandCount": 17, "locks": 1, "rotationCount": 1, "moveCount": 2 },
-    { "id": "t6r-veil-16", "routeClass": "two-row channel", "commandStream": "SCLLLHTTTTTTTTTTTT", "commandCount": 18, "locks": 1, "rotationCount": 1, "moveCount": 3 },
-    { "id": "t6r-cairn-17", "routeClass": "three-row channel", "commandStream": "SCHTTTTTTTTTTTT", "commandCount": 15, "locks": 1, "rotationCount": 1, "moveCount": 0 },
-    { "id": "t6r-terrace-18", "routeClass": "three-row channel", "commandStream": "SCRRHTTTTTTTTTTTT", "commandCount": 17, "locks": 1, "rotationCount": 1, "moveCount": 2 },
-    { "id": "t6r-bastion-19", "routeClass": "four-row channel", "commandStream": "SCHTTTTTTTTTTTT", "commandCount": 15, "locks": 1, "rotationCount": 1, "moveCount": 0 },
-    { "id": "t6r-keystone-20", "routeClass": "four-row channel", "commandStream": "SCRRHTTTTTTTTTTTT", "commandCount": 17, "locks": 1, "rotationCount": 1, "moveCount": 2 }
+    {
+      "id": "t3r-shaft-01",
+      "routeClass": "three-row inlet",
+      "targetRowCount": 3,
+      "commandStream": "SRRHTTTRRHTTTCHTTTTTTTTTTTT",
+      "commandCount": 27,
+      "locks": 3,
+      "rotationCount": 1,
+      "moveCount": 4
+    },
+    {
+      "id": "t3r-shaft-02",
+      "routeClass": "three-row counterflow",
+      "targetRowCount": 3,
+      "commandStream": "SRRRHTTTCHTTTTTTTTTTTTCCLHTTTTTTTTTTTT",
+      "commandCount": 38,
+      "locks": 3,
+      "rotationCount": 3,
+      "moveCount": 4
+    },
+    {
+      "id": "t3r-shaft-03",
+      "routeClass": "three-row split shelf",
+      "targetRowCount": 3,
+      "commandStream": "SCRRRRHTTTTTTTTTTTTRRHTTTCCLHTTTTTTTTTTTT",
+      "commandCount": 41,
+      "locks": 3,
+      "rotationCount": 3,
+      "moveCount": 7
+    },
+    {
+      "id": "t3r-shaft-04",
+      "routeClass": "four-row rising shelf",
+      "targetRowCount": 4,
+      "commandStream": "SCHTTTLLHTTTCRHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 42,
+      "locks": 4,
+      "rotationCount": 4,
+      "moveCount": 3
+    },
+    {
+      "id": "t3r-cascade-05",
+      "routeClass": "four-row offset bays",
+      "targetRowCount": 4,
+      "commandStream": "SCRRHTTTTTTTTTTTTCCLLHTTTRRHTTTCHTTTTTTTTTTTT",
+      "commandCount": 45,
+      "locks": 4,
+      "rotationCount": 4,
+      "moveCount": 6
+    },
+    {
+      "id": "t3r-cascade-06",
+      "routeClass": "four-row turn lattice",
+      "targetRowCount": 4,
+      "commandStream": "SCCCLLHTTTTTTTTTTTTCRHTTTCCLLHTTTCHTTTTTTTTTTTT",
+      "commandCount": 47,
+      "locks": 4,
+      "rotationCount": 7,
+      "moveCount": 5
+    },
+    {
+      "id": "t5r-delta-07",
+      "routeClass": "five-row wide current",
+      "targetRowCount": 5,
+      "commandStream": "SLHTTTLLHTTTCHTTTTTTTTTTTTCCLLHTTTCHTTTTTTTTTTTT",
+      "commandCount": 48,
+      "locks": 5,
+      "rotationCount": 4,
+      "moveCount": 5
+    },
+    {
+      "id": "t5r-drift-08",
+      "routeClass": "five-row staggered current",
+      "targetRowCount": 5,
+      "commandStream": "SCRHTTTCRRHTTTCLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTHTTTTTTTTTTTT",
+      "commandCount": 59,
+      "locks": 5,
+      "rotationCount": 4,
+      "moveCount": 7
+    },
+    {
+      "id": "t5r-lattice-09",
+      "routeClass": "five-row split bridge",
+      "targetRowCount": 5,
+      "commandStream": "SCLHTTTCLLLHTTTLLHTTTCHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 50,
+      "locks": 5,
+      "rotationCount": 5,
+      "moveCount": 6
+    },
+    {
+      "id": "t5r-rift-10",
+      "routeClass": "five-row offset channel",
+      "targetRowCount": 5,
+      "commandStream": "SCLLLHTTTTTTTTTTTTCRHTTTCCLLLHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 63,
+      "locks": 5,
+      "rotationCount": 7,
+      "moveCount": 8
+    },
+    {
+      "id": "t5r-prism-11",
+      "routeClass": "six-row narrow basin",
+      "targetRowCount": 6,
+      "commandStream": "SRRHTTTLLHTTTLLHTTTRRHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 55,
+      "locks": 6,
+      "rotationCount": 3,
+      "moveCount": 9
+    },
+    {
+      "id": "t5r-current-12",
+      "routeClass": "six-row stair current",
+      "targetRowCount": 6,
+      "commandStream": "SCRRHTTTTTTTTTTTTRRRHTTTRRRRRHTTTRRHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 69,
+      "locks": 6,
+      "rotationCount": 4,
+      "moveCount": 13
+    },
+    {
+      "id": "t5r-arc-13",
+      "routeClass": "six-row braided lane",
+      "targetRowCount": 6,
+      "commandStream": "SHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCCLLHTTTRHTTTTTTTTTTTTCRHTTTCHTTTTTTTTTTTT",
+      "commandCount": 72,
+      "locks": 6,
+      "rotationCount": 5,
+      "moveCount": 6
+    },
+    {
+      "id": "t5r-pulse-14",
+      "routeClass": "six-row stepped shelf",
+      "targetRowCount": 6,
+      "commandStream": "SLHTTTLLHTTTCCLLHTTTCRHTTTTTTTTTTTTCRHTTTCHTTTTTTTTTTTT",
+      "commandCount": 55,
+      "locks": 6,
+      "rotationCount": 5,
+      "moveCount": 7
+    },
+    {
+      "id": "t5r-horizon-15",
+      "routeClass": "six-row tight braid",
+      "targetRowCount": 6,
+      "commandStream": "SCHTTTCCCLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCLLLHTTTCCHTTTTTTTTTTTTHTTTTTTTTTTTT",
+      "commandCount": 76,
+      "locks": 6,
+      "rotationCount": 8,
+      "moveCount": 7
+    },
+    {
+      "id": "t6r-veil-16",
+      "routeClass": "seven-row deep inlet",
+      "targetRowCount": 7,
+      "commandStream": "SCHTTTTTTTTTTTTRRRRRHTTTCRHTTTTTTTTTTTTRRHTTTCCCHTTTTTTTTTTTTLLHTTTTTTTTTTTTHTTTTTTTTTTTT",
+      "commandCount": 89,
+      "locks": 7,
+      "rotationCount": 5,
+      "moveCount": 10
+    },
+    {
+      "id": "t6r-cairn-17",
+      "routeClass": "seven-row tiered channel",
+      "targetRowCount": 7,
+      "commandStream": "SCRRRHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTRRHTTTRRRRRHTTTRRRHTTTCHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 86,
+      "locks": 7,
+      "rotationCount": 5,
+      "moveCount": 16
+    },
+    {
+      "id": "t6r-terrace-18",
+      "routeClass": "seven-row braided current",
+      "targetRowCount": 7,
+      "commandStream": "SCRHTTTTTTTTTTTTCRHTTTTTTTTTTTTRRRRRHTTTCHTTTTTTTTTTTTRRHTTTCCLLHTTTCHTTTTTTTTTTTT",
+      "commandCount": 82,
+      "locks": 7,
+      "rotationCount": 6,
+      "moveCount": 11
+    },
+    {
+      "id": "t6r-bastion-19",
+      "routeClass": "seven-row split crossing",
+      "targetRowCount": 7,
+      "commandStream": "SRRRRRHTTTCRRHTTTRRHTTTCCCLLHTTTCLHTTTTTTTTTTTTCCLLHTTTCHTTTTTTTTTTTT",
+      "commandCount": 69,
+      "locks": 7,
+      "rotationCount": 8,
+      "moveCount": 14
+    },
+    {
+      "id": "t6r-keystone-20",
+      "routeClass": "seven-row terminal braid",
+      "targetRowCount": 7,
+      "commandStream": "SCRRHTTTTTTTTTTTTCCCRRRRHTTTCRRHTTTRRHTTTRRRRRHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT",
+      "commandCount": 80,
+      "locks": 7,
+      "rotationCount": 8,
+      "moveCount": 16
+    }
   ]
 }
