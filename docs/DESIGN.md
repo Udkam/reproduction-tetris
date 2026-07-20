@@ -8,12 +8,21 @@ ordinary falling-block game, but each authored target now asks the player to rea
 small multi-row clearing composition rather than spot one obvious gap.
 
 - Keep the current original-target victory rule exactly: a Puzzle ends only after
-  normal line resolution has removed every cell that existed in the authored starting
-  board. There is still no usable-piece budget, target counter limit, timed input,
-  permanent anchor, altered collision rule, special line-clear rule, or hidden
+  normal line resolution has removed every **removable** cell that existed in the
+  authored starting board. There is still no usable-piece budget, target counter
+  limit, timed input, altered collision rule, special line-clear rule, or hidden
   support trick. The normal deterministic seven-bag continues indefinitely after an
   attempted route, so a verified route is teaching evidence rather than a runtime
   restriction.
+- Reintroduce a small, authored distribution of **immutable single blocks** (fixed
+  anchors). They are not original targets, never count toward victory, and never move
+  when a line clears; ordinary target cells continue to follow the existing
+  anchor-aware line-clear mapping. An anchor is fixed per level—not runtime-random—so
+  Puzzle remains replayable. It may appear in only selected levels, with at most two
+  singles in a board, must sit outside that board's initial original-target rows, and
+  must not become a hidden spawn blocker. Every anchor placement needs a fresh Core
+  replay route proving that it is an optional spatial constraint rather than an
+  unresolvable obstruction.
 - Replace all twenty T12.5 boards with visible, contiguous floor bands containing
   **three through seven non-empty original-target rows**. Campaign row bands ascend
   without regression: levels `01–03` have three rows, `04–06` four, `07–10` five,

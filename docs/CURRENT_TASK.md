@@ -15,8 +15,12 @@ T12.6 preserves the normal fixed-seed seven-bag, original-target-only win condit
 unlimited ordinary play after a route, local `B` undo, existing seven-tier unlock
 semantics, one selected preview, and all Classic/Survival behavior. It changes only
 the authored twenty Puzzle boards/route evidence and the library's presentation.
-There are no anchors, timed pieces, piece budgets, altered row resolution, or hidden
-setup cells. `01–03` use three original target rows, `04–06` four, `07–10` five,
+There are no timed pieces, piece budgets, altered row resolution, or hidden setup
+cells. A small authored distribution of immutable single anchors is restored: anchors
+are non-target cells, never count toward victory, stay at their world coordinates on
+ordinary line clears, and are limited to zero, one, or two per selected board. They
+must not occupy an initial original-target row or create an initial hidden-spawn
+blocker; every placement requires a route replay. `01–03` use three original target rows, `04–06` four, `07–10` five,
 `11–15` six, and `16–20` seven; every band is contiguous at the floor and every row
 is initially incomplete. Within each band, verified Core routes must increase the
 stable difficulty tuple `(targetRowCount, locks, rotations, horizontalMoves,
