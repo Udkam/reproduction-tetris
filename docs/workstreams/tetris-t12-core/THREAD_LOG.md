@@ -1,5 +1,26 @@
 # T12 Core Workstream Log
 
+## 2026-07-21 — TETRIS-T12.6-CORE-ANCHOR-002 source candidate
+
+- Base: `6cc1ebf`; candidate: `433562f` (`feat(puzzle): restore immutable curriculum anchors`).
+- Exact paths: `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+  `src/game/core/puzzleCampaign.test.ts`, `src/game/core/puzzleFlow.test.ts`,
+  `src/game/core/puzzleSolverResults.test.ts`, and
+  `docs/workstreams/tetris-t12-core/puzzle-solver-results.json`.
+- Result: nine authored levels now carry ten total immutable single anchors (one
+  selected board carries two). Every anchor is above its initial three-through-seven
+  row target band, outside the opening spawn lane, excluded from original-target
+  ownership, and loaded as the renderer's existing anchor material. The route artifact
+  is schema v4 and records every anchor coordinate alongside the pre-existing command
+  stream.
+- Commands run: `npm.cmd run typecheck`; `vitest run`
+  `src/game/core/puzzles.test.ts src/game/core/puzzleCampaign.test.ts`
+  `src/game/core/puzzleFlow.test.ts src/game/core/puzzleSolverResults.test.ts`
+  (8 files / 58 tests passed). The replay test proves every final board preserves each
+  anchor at its original world coordinate after ordinary line resolution.
+- Blocker: none. Next: replace the Puzzle atlas selector with the T12.6 current rail,
+  then run the single final whole-slice verification and independent QA.
+
 ## 2026-07-20 — TETRIS-T12.5-CORE-041 source candidate
 
 - Base: `69eec5f`; integrated source candidate: `d2469e3`.
