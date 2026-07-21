@@ -1,3 +1,68 @@
+# Current Task — T12.7 Multi-route Puzzle Guidance and Curriculum Calibration
+
+Branch: `main`
+
+Current base: repository-hygiene recovery record `c47b90c`. The T12.6 candidate and
+its local walkthroughs remain valid recovery evidence, but its single-route artifact is
+not sufficient for this task.
+
+Current execution status (2026-07-22): **IN PROGRESS — T12.7 deepens the T12.6 Puzzle
+campaign with replay-verified alternatives and a gradual in-game strategy guide.** The
+player must never be told that a single recorded solution is the only way through a
+level. Each level needs at least two real Core-replayed route families whose locked
+placements diverge, while remaining an approachable fixed-seed, ordinary falling-block
+composition with three through seven original-target rows and the accepted sparse
+immutable anchors.
+
+The guide is Puzzle-only and presentation/persistence-only. It unlocks for a canonical
+level after two placed pieces or twenty active seconds, persists through restart, then
+offers a structural reading cue and two named verified strategy families. A chosen
+family reveals one placement intention at a time; no guide button may dispatch an input,
+change the queue, change completion, or reveal a mandatory raw command stream. `B`
+undo remains the player recovery path. Classic, Survival, their random sequences,
+physics, normal line resolution, renderer, audio, dependencies, and browser assets are
+closed.
+
+The curriculum audit may change authored patterns and their stable per-level seeds only
+when the current stream cannot furnish two readable routes. Any retained or revised
+level preserves its canonical ID, original-target win condition, anchor restrictions,
+fixed deterministic Puzzle queue, and completion migration. Difficulty/order is
+recomputed from all replayed routes, considering target rows, shortest route locks,
+planning complexity, meaningful divergence, and recovery room; it cannot regress into a
+forced trick. The selector's existing tier gate continues to state the canonical
+two-completions-per-previous-tier rule.
+
+### T12.7 writer boundaries and checkpoint sequence
+
+1. **Contract checkpoint (coordinator):** `docs/DESIGN.md` and this task file define
+   the multi-route, sequence, hint-unlock, and verification contract before source
+   changes.
+2. **Route/curriculum checkpoint (coordinator):**
+   `src/game/core/puzzles.ts`, its direct Puzzle tests,
+   `src/game/core/puzzleRouteSearch.ts`,
+   `src/game/core/puzzleRouteSearch.test.ts`,
+   `src/game/core/puzzleSolverResults.test.ts`, and
+   `docs/workstreams/tetris-t12-core/puzzle-solver-results.json` own only the authored
+   curriculum, deterministic alternative search/replay, route metrics, and evidence.
+   This checkpoint may exceed the normal line budget if all twenty route records must
+   move together; it changes no live physics or game rules.
+3. **Guidance checkpoint (coordinator):** `src/puzzleHints.ts`,
+   `src/puzzleHints.test.ts`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`
+   own hint persistence, route-family presentation, unlock copy, responsive layout,
+   and accessibility. It does not modify Core state or runtime input.
+4. **Local reference recovery:** regenerate ignored `Solutions/Solution-1.md` through
+   `Solutions/Solution-20.md` and embedded images from the new canonical routes after
+   the route checkpoint. They stay ignored and are never staged.
+5. **Evidence and handoff:** run focused route/persistence/UI tests, then exactly one
+   final typecheck, full suite, build, and desktop/portrait/landscape browser pass
+   covering the locked guide, both strategy choices, one-step disclosure, restart
+   persistence, no gameplay mutation, and reduced motion. Record base SHA, exact
+   candidate paths, commands, evidence, blocker, and next action in the T12 workstream
+   log. Obtain independent read-only Core and visual/browser QA before an acceptance
+   claim; a user-authorized recovery push must still state that it is pending QA.
+
+---
+
 # Current Task — T12.6 Layered Puzzle Curriculum and Current-Observatory Selector
 
 Branch: `main`

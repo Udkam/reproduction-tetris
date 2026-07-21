@@ -1,3 +1,68 @@
+# Tetra — T12.7 Multi-route Puzzle Guidance Contract
+
+## T12.7 verified alternatives, gradual guidance, and authored fixed sequences
+
+The 2026-07-22 direction extends T12.6 rather than replacing its three-through-seven-row
+original-target curriculum, fixed anchors, fixed-seed Puzzle queue, undo, or current
+observatory. A recorded clear route is no longer sufficient evidence for a player-facing
+Puzzle: the curriculum must make room for more than one understandable approach and
+must explain that room without turning the game into a command-by-command spoiler.
+
+- Every published Puzzle level must own at least two **Core-replayed reference routes**.
+  A reference route ends only at ordinary `puzzleCompletion: 'finished'`, clears every
+  original target, preserves every immutable anchor, and uses the level-owned fixed
+  seven-bag without mutating or pre-consuming it. The alternatives must diverge at a
+  real locked-piece placement (not merely use redundant movement, an equivalent
+  rotation, or a different number of settlement ticks). Their distinct opening or
+  mid-board posture is a deliberate player choice, not a solver accident.
+- The committed route artifact becomes the authority for every reference route and its
+  replay metrics. It records a canonical route plus a second named strategy family for
+  each level, the first differing lock, and a compact difficulty profile. All recorded
+  routes are regression evidence only: they are neither a piece allowance, a mandatory
+  sequence, an optimality claim, nor a runtime restriction.
+- Recalibrate board patterns and their stable deterministic seeds where the current
+  fixed input stream offers only a forced or opaque solution. Keep the visible
+  three-to-seven-row bands and the existing sparse-anchor limits, but favor readable
+  low channels, alternate bridge/fill order, and recoverable staging over concealed
+  cavities, timing, kicks, or one-pixel-perfect placements. The first few arrivals
+  must make both recorded families plausible from the visible well and the two-item
+  Next rail. Any campaign reorder is evidence-led and preserves canonical IDs and
+  completion-store migration.
+- Difficulty is authored and displayed as a rising learning curve, not just the length
+  of one route: target-row band, shortest verified lock count, amount of rotation and
+  horizontal planning, the depth at which the two route families diverge, and recovery
+  room all inform the ordering. A higher tier may ask for a longer composition, but it
+  may not require an untelegraphed trick or remove all reasonable alternatives.
+- Puzzle receives a local, presentation-only guidance layer. It is initially sealed so
+  a new board gets a fair read; it unlocks permanently for that level after the player
+  has placed two pieces **or** spent twenty active seconds in that level. A restart does
+  not relock an earned hint. The first layer names the structural reading cue (target
+  channel, bridge, anchor, or safe staging area); the second offers the two verified
+  strategy families; each chosen family reveals only one short placement intention at
+  a time. It never sends inputs, changes state, marks a level complete, exposes a hard
+  command stream, or claims a single required answer. `B` undo remains the recovery
+  affordance and should be mentioned when a guide is open.
+- Guidance progress is its own small, versioned local record. It fails closed on
+  malformed storage, is keyed only by canonical Puzzle IDs, and is independent from
+  completion/unlock progression. Classic and Survival never render, load, or mutate
+  the guide record.
+- The gameplay trigger and sheet are restrained additions to the existing field: a
+  compact Puzzle-only strategy action communicates its locked/unlocked state without
+  crowding the audio, restart, pause, board, Next, or touch controls. The sheet uses
+  semantic buttons and readable route choice, supports keyboard and touch, traps focus
+  through the existing dialog primitive, and uses only brief purposeful motion with a
+  full reduced-motion fallback.
+
+T12.7 may change the authored Puzzle patterns/seeds and direct Core tests, the
+route-search helper and committed route artifact, Puzzle-local hint persistence and
+tests, and the Puzzle gameplay markup/tests/styles. It must not alter general physics,
+rotation, normal line resolution, the randomizer contract of Classic/Survival, audio,
+renderer ownership, dependencies, browser assets, or another repository. Before
+publication it requires a replay of every recorded alternative, focused Core/persistence/UI
+tests, one final typecheck, full suite, production build, and a desktop plus two narrow
+browser-evidence pass covering locked and unlocked guidance, route selection, and
+reduced motion.
+
 # Tetra — T12.6 Layered Puzzle Curriculum and Current-Observatory Selector Contract
 
 ## T12.6 layered original-target campaign and minimal current observatory
