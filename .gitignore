@@ -1,14 +1,15 @@
 node_modules/
 dist/
 coverage/
+.local/
 .playwright-mcp/
 .vite/
-output/web-game/
+output/
 
 # Local player walkthroughs and per-step solution snapshots
 Solutions/
 
-# Local browser-review captures
+# Legacy root-capture safety; new local audits belong in .local/audits/.
 t10-*.png
 t11-*.png
 audit-*.png

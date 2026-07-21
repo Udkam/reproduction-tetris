@@ -32,6 +32,7 @@ npm.cmd run build
 
 Browser evidence and hashed screenshots are recorded in
 `docs/qa/tetris-browser-evidence.json` and `docs/screenshots/tetris/`.
+The maintained file layout is documented in `docs/PROJECT_STRUCTURE.md`.
 
 The endless-runner study and recursive-puzzle archive live in the separate
 `reproduction-temple-run` and `reproduction-patricks-parabox` repositories.
