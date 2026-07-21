@@ -2233,6 +2233,64 @@ p {
 }
 
 @media (min-width: 600px) and (max-height: 520px) {
+  .action-sheet:has(.puzzle-guide) {
+    box-sizing: border-box;
+    max-height: calc(100dvh - 16px);
+    padding: 12px 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .action-sheet:has(.puzzle-guide) h2 {
+    margin-bottom: 2px;
+    font-size: 22px;
+  }
+
+  .puzzle-guide {
+    gap: 7px;
+  }
+
+  .puzzle-guide__cue,
+  .puzzle-guide__undo {
+    font-size: 11px;
+    line-height: 1.32;
+  }
+
+  .puzzle-guide__routes {
+    gap: 6px;
+  }
+
+  .puzzle-guide__route {
+    min-height: 48px;
+    padding: 7px 9px;
+  }
+
+  .puzzle-guide__route small {
+    font-size: 10px;
+    line-height: 1.25;
+  }
+
+  .puzzle-guide__step {
+    min-height: 72px;
+    padding: 8px 11px;
+  }
+
+  .puzzle-guide__step > strong {
+    font-size: 15px;
+  }
+
+  .puzzle-guide__step > p {
+    font-size: 11px;
+    line-height: 1.32;
+  }
+
+  .puzzle-guide__close {
+    min-height: 30px;
+  }
+}
+
+@media (min-width: 600px) and (max-height: 520px) {
   .library-shell {
     grid-template-rows: 44px 44px minmax(0, 1fr);
     gap: 4px;
