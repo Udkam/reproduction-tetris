@@ -6,13 +6,13 @@ Current base: repository-hygiene recovery record `c47b90c`. The T12.6 candidate 
 its local walkthroughs remain valid recovery evidence, but its single-route artifact is
 not sufficient for this task.
 
-Current execution status (2026-07-22): **IN PROGRESS — T12.7 deepens the T12.6 Puzzle
-campaign with replay-verified alternatives and a gradual in-game strategy guide.** The
-player must never be told that a single recorded solution is the only way through a
-level. Each level needs at least two real Core-replayed route families whose locked
-placements diverge, while remaining an approachable fixed-seed, ordinary falling-block
-composition with three through seven original-target rows and the accepted sparse
-immutable anchors.
+Current execution status (2026-07-22): **CANDIDATE VERIFIED — T12.7 deepens the T12.6
+Puzzle campaign with replay-verified alternatives and a gradual in-game strategy
+guide.** The player is never told that a recorded route is the only way through a
+level. Every one of the twenty fixed-seed levels now has two real Core-replayed route
+families whose locked placements diverge at lock one or two, while remaining an
+approachable ordinary falling-block composition with three through seven
+original-target rows and the accepted sparse immutable anchors.
 
 The guide is Puzzle-only and presentation/persistence-only. It unlocks for a canonical
 level after two placed pieces or twenty active seconds, persists through restart, then
@@ -31,6 +31,18 @@ recomputed from all replayed routes, considering target rows, shortest route loc
 planning complexity, meaningful divergence, and recovery room; it cannot regress into a
 forced trick. The selector's existing tier gate continues to state the canonical
 two-completions-per-previous-tier rule.
+
+The candidate audit found genuine alternate locked placements for all existing streams,
+with alternate routes needing no more than two extra locks (and matching the canonical
+lock count on levels 07 and 17). The authored patterns, seeds, IDs, and ascending
+canonical difficulty order are therefore retained rather than churned merely to create
+input variation. Candidate source checkpoints are `8ad3943` through `c17fdcd`; ignored
+local `Solutions/` walkthroughs were regenerated from the retained canonical routes
+only. Final coordinator validation passed `npm.cmd run typecheck`, the full Vitest
+suite (47 passed / 1 skipped files; 294 passed / 2 skipped tests), `npm.cmd run build`
+(744 modules), and live desktop/portrait/landscape browser audits. Independent
+read-only Core and visual/browser QA remains required before any acceptance claim; a
+user-authorized recovery push must remain explicitly pending that QA.
 
 ### T12.7 writer boundaries and checkpoint sequence
 

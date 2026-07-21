@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-07-22 — T12.7 multi-route Puzzle guidance candidate (pending independent QA)
+
+- Kept the deterministic twenty-level Puzzle campaign, fixed per-level queues,
+  three-through-seven-row target progression, anchor contract, and existing tier unlock
+  rule; Classic and Survival randomness, gameplay physics, line resolution, renderer,
+  audio, and dependencies are unchanged.
+- Replayed every level through the Core and recorded two genuine route families in the
+  schema-v5 route artifact. Each alternate diverges at an actual locked placement at
+  lock one or two, not merely in redundant inputs, and stays within zero to two locks of
+  the canonical route. The existing queue/pattern order already provides readable
+  choice, so no artificial seed or layout churn was introduced.
+- Added a Puzzle-only strategy guide that unlocks after two placed pieces or twenty
+  active seconds and persists per level through restart. It gives one structural cue,
+  two named strategy families, and one placement intention at a time; it never reveals
+  raw command streams or mutates the live queue, board, completion, or input state.
+  Opening it pauses play and closing it restores the exact in-progress state; `B` is
+  called out as the recovery path.
+- Repaired the guide for short landscape viewports with an intentionally compact,
+  scrollable sheet, while preserving the full reduced-motion fallback. Ignored local
+  `Solutions/` walkthroughs were regenerated from canonical routes (20 Markdown files,
+  126 linked PNG snapshots) and remain outside Git.
+- Final coordinator gates passed: `npm.cmd run typecheck`; `npm.cmd run test` (47
+  passed / 1 skipped files; 294 passed / 2 skipped tests); `npm.cmd run build` (744
+  modules); and a live Playwright audit at 1440 × 900, 390 × 844, and 844 × 390. The
+  audit used real locks to unlock the desktop guide, switched strategy/step, verified
+  pause/resume without state mutation, one canvas, zero DOM board cells, no viewport
+  overflow, zero console/page errors, and disabled guide transitions under reduced
+  motion.
+- Candidate source range: `c47b90c..c17fdcd`. This is a coordinator-verified recovery
+  candidate only, not an acceptance: independent read-only Core and visual/browser QA
+  is still pending.
+
 ## 2026-07-13 — New two-game branch sequence
 
 - Created and pushed `codex/tetris` and `codex/temple-run` from the neutral `main` baseline.

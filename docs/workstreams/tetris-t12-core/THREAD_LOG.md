@@ -1,5 +1,45 @@
 # T12 Core Workstream Log
 
+## 2026-07-22 — TETRIS-T12.7-GUIDANCE-005 coordinator candidate
+
+- Base: `c47b90c`; ordered candidate checkpoints are `8ad3943`
+  (`docs(puzzle): define multi-route guidance contract`), `6acccdd`
+  (`feat(puzzle): record alternate replay routes`), `8190f72`
+  (`feat(puzzle): add gradual strategy guidance`), and `c17fdcd`
+  (`fix(puzzle): fit strategy guide in short viewports`). Exact changed source and
+  contract paths are `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/workstreams/tetris-t12-core/puzzle-solver-results.json`, `src/App.tsx`,
+  `src/App.test.ts`, `src/styles.css`, `src/puzzleHints.ts`, `src/puzzleHints.test.ts`,
+  `src/game/core/puzzleRouteSearch.ts`, `src/game/core/puzzleRouteSearch.test.ts`, and
+  `src/game/core/puzzleSolverResults.test.ts`. Ignored local `Solutions/` and `.local/`
+  evidence paths remain outside the candidate.
+- Result: all twenty fixed Puzzle queues have two Core-replayed route families with a
+  genuine locked-placement divergence at lock one or two. Alternate routes finish
+  within zero to two locks of the canonical replay, so the already ascending
+  three-through-seven-row curriculum retains its authored patterns, IDs, queues, and
+  unlock order rather than manufacturing a second answer through redundant commands.
+  The new guide gates after two placed pieces or twenty active seconds, persists once
+  unlocked for that level, presents a structural reading cue plus two named plans and one intention
+  at a time, and leaves the live puzzle untouched. Opening pauses a running Puzzle;
+  closing resumes that exact state. It retains `B` undo as player-controlled recovery.
+- Commands run: targeted route/persistence/UI tests while editing; local ignored
+  walkthrough replay plus Markdown-link verification (20 walkthroughs, 126 linked PNG
+  snapshots); final `npm.cmd run typecheck`; final `npm.cmd run test` (47 passed / 1
+  skipped files; 294 passed / 2 skipped tests); final `npm.cmd run build` (744 modules);
+  and a live Playwright audit at 1440 × 900, 390 × 844, and 844 × 390. The browser
+  audit used two real desktop hard drops to unlock the guide, switched to the alternate
+  strategy and next intention, closed it to prove pause/resume and unchanged runtime
+  state, and checked one canvas, zero DOM cells, zero document overflow, zero
+  console/page errors, plus `prefers-reduced-motion` transition removal.
+- Evidence: local final-candidate screenshots and audit summary are under ignored
+  `.local/audits/t12.7-hints/`; the landscape repair keeps the return control readable
+  and clickable in the 844 × 390 view. No browser listener, ticker, audio, canvas, Core
+  rule, or randomizer change is part of this slice.
+- QA disposition: coordinator validation only. Independent read-only Core and
+  visual/browser QA is still pending, so this candidate must not be described as
+  accepted. Blocker: none for the user-authorized recovery record. Next: push the
+  recoverable `main` history, then obtain and record independent QA before acceptance.
+
 ## 2026-07-21 — TETRIS-T12.6-OBSERVATORY-004 coordinator candidate
 
 - Base: `d3c643a`; source candidate: `0149f60` through the ordered checkpoints
