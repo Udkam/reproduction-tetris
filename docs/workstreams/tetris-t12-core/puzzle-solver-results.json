@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 4,
-  "claim": "Each stream is a deterministic Core-replayed clearability proof for a layered three-to-seven-row Puzzle board, including any listed fixed immutable anchors. The recorded tuple calibrates campaign order; it is not a mathematical optimality claim, player limit, or route budget.",
+  "schemaVersion": 5,
+  "claim": "Each primary and alternate stream is a deterministic Core-replayed clearability proof for a layered three-to-seven-row Puzzle board, including any listed fixed immutable anchors. The paired routes diverge at a genuine locked placement and calibrate an authored choice profile; they are not mathematical optimality claims, player limits, route budgets, or mandatory answers.",
   "commandEncoding": {
     "S": { "type": "start" },
     "T": { "type": "tick" },
@@ -42,7 +42,13 @@
       "commandCount": 27,
       "locks": 3,
       "rotationCount": 1,
-      "moveCount": 4
+      "moveCount": 4,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SRRHTTTRRHTTTCHTTTTTTTTTTTT", "commandCount": 27, "locks": 3, "rotationCount": 1, "moveCount": 4 },
+        { "id": "alternate", "commandStream": "SCCRHTTTCLHTTTCCRRHTTTTTTTTTTTTRRHTTTTTTTTTTTT", "commandCount": 46, "locks": 4, "rotationCount": 5, "moveCount": 6 }
+      ]
     },
     {
       "id": "t3r-shaft-02",
@@ -53,7 +59,13 @@
       "commandCount": 38,
       "locks": 3,
       "rotationCount": 3,
-      "moveCount": 4
+      "moveCount": 4,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SRRRHTTTCHTTTTTTTTTTTTCCLHTTTTTTTTTTTT", "commandCount": 38, "locks": 3, "rotationCount": 3, "moveCount": 4 },
+        { "id": "alternate", "commandStream": "SCLHTTTTTTTTTTTTCLLHTTTCCRRHTTTTTTTTTTTTRRRRHTTTTTTTTTTTT", "commandCount": 57, "locks": 4, "rotationCount": 4, "moveCount": 9 }
+      ]
     },
     {
       "id": "t3r-shaft-03",
@@ -64,7 +76,13 @@
       "commandCount": 41,
       "locks": 3,
       "rotationCount": 3,
-      "moveCount": 7
+      "moveCount": 7,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 2,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRRRRHTTTTTTTTTTTTRRHTTTCCLHTTTTTTTTTTTT", "commandCount": 41, "locks": 3, "rotationCount": 3, "moveCount": 7 },
+        { "id": "alternate", "commandStream": "SCLHTTTCLLLHTTTCRRRRHTTTTTTTTTTTTCRRRRHTTTRRHTTTTTTTTTTTT", "commandCount": 57, "locks": 5, "rotationCount": 4, "moveCount": 14 }
+      ]
     },
     {
       "id": "t3r-shaft-04",
@@ -75,7 +93,13 @@
       "commandCount": 42,
       "locks": 4,
       "rotationCount": 4,
-      "moveCount": 3
+      "moveCount": 3,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCHTTTLLHTTTCRHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 42, "locks": 4, "rotationCount": 4, "moveCount": 3 },
+        { "id": "alternate", "commandStream": "SCLLLHTTTRHTTTTTTTTTTTTHTTTTTTTTTTTTCCRHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 67, "locks": 5, "rotationCount": 5, "moveCount": 5 }
+      ]
     },
     {
       "id": "t3r-cascade-05",
@@ -86,7 +110,13 @@
       "commandCount": 45,
       "locks": 4,
       "rotationCount": 4,
-      "moveCount": 6
+      "moveCount": 6,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRRHTTTTTTTTTTTTCCLLHTTTRRHTTTCHTTTTTTTTTTTT", "commandCount": 45, "locks": 4, "rotationCount": 4, "moveCount": 6 },
+        { "id": "alternate", "commandStream": "SCHTTTCCLLHTTTCLHTTTCRRHTTTTTTTTTTTTCCCRRRHTTTTTTTTTTTT", "commandCount": 55, "locks": 5, "rotationCount": 8, "moveCount": 8 }
+      ]
     },
     {
       "id": "t3r-cascade-06",
@@ -97,7 +127,13 @@
       "commandCount": 47,
       "locks": 4,
       "rotationCount": 7,
-      "moveCount": 5
+      "moveCount": 5,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCCCLLHTTTTTTTTTTTTCRHTTTCCLLHTTTCHTTTTTTTTTTTT", "commandCount": 47, "locks": 4, "rotationCount": 7, "moveCount": 5 },
+        { "id": "alternate", "commandStream": "SCLLLHTTTRRRRHTTTRHTTTTTTTTTTTTCLLHTTTTTTTTTTTTHTTTTTTTTTTTT", "commandCount": 60, "locks": 5, "rotationCount": 2, "moveCount": 10 }
+      ]
     },
     {
       "id": "t5r-delta-07",
@@ -108,7 +144,13 @@
       "commandCount": 48,
       "locks": 5,
       "rotationCount": 4,
-      "moveCount": 5
+      "moveCount": 5,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 0,
+      "routes": [
+        { "id": "primary", "commandStream": "SLHTTTLLHTTTCHTTTTTTTTTTTTCCLLHTTTCHTTTTTTTTTTTT", "commandCount": 48, "locks": 5, "rotationCount": 4, "moveCount": 5 },
+        { "id": "alternate", "commandStream": "SHTTTCLLLHTTTTTTTTTTTTCHTTTTTTTTTTTTLHTTTTTTTTTTTTCCLLHTTTTTTTTTTTT", "commandCount": 67, "locks": 5, "rotationCount": 4, "moveCount": 6 }
+      ]
     },
     {
       "id": "t5r-drift-08",
@@ -119,7 +161,13 @@
       "commandCount": 59,
       "locks": 5,
       "rotationCount": 4,
-      "moveCount": 7
+      "moveCount": 7,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRHTTTCRRHTTTCLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTHTTTTTTTTTTTT", "commandCount": 59, "locks": 5, "rotationCount": 4, "moveCount": 7 },
+        { "id": "alternate", "commandStream": "SCCCRRHTTTCLLHTTTTTTTTTTTTCLLHTTTCRRHTTTTTTTTTTTTCHTTTTTTTTTTTTCCCHTTTTTTTTTTTT", "commandCount": 79, "locks": 6, "rotationCount": 10, "moveCount": 8 }
+      ]
     },
     {
       "id": "t5r-lattice-09",
@@ -130,7 +178,13 @@
       "commandCount": 50,
       "locks": 5,
       "rotationCount": 5,
-      "moveCount": 6
+      "moveCount": 6,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 2,
+      "routes": [
+        { "id": "primary", "commandStream": "SCLHTTTCLLLHTTTLLHTTTCHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 50, "locks": 5, "rotationCount": 5, "moveCount": 6 },
+        { "id": "alternate", "commandStream": "SCCCRRRHTTTCLLLHTTTCLHTTTCHTTTTTTTTTTTTCCCLHTTTTTTTTTTTTHTTTCLLLHTTTTTTTTTTTT", "commandCount": 77, "locks": 7, "rotationCount": 10, "moveCount": 11 }
+      ]
     },
     {
       "id": "t5r-rift-10",
@@ -141,7 +195,13 @@
       "commandCount": 63,
       "locks": 5,
       "rotationCount": 7,
-      "moveCount": 8
+      "moveCount": 8,
+      "firstDivergenceLock": 2,
+      "alternateLockMargin": 2,
+      "routes": [
+        { "id": "primary", "commandStream": "SCLLLHTTTTTTTTTTTTCRHTTTCCLLLHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 63, "locks": 5, "rotationCount": 7, "moveCount": 8 },
+        { "id": "alternate", "commandStream": "SCLLLHTTTTTTTTTTTTCLLLLHTTTRRRRHTTTCLHTTTTTTTTTTTTCCRHTTTTTTTTTTTTLLHTTTRHTTTTTTTTTTTT", "commandCount": 86, "locks": 7, "rotationCount": 5, "moveCount": 16 }
+      ]
     },
     {
       "id": "t5r-prism-11",
@@ -152,7 +212,13 @@
       "commandCount": 55,
       "locks": 6,
       "rotationCount": 3,
-      "moveCount": 9
+      "moveCount": 9,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 2,
+      "routes": [
+        { "id": "primary", "commandStream": "SRRHTTTLLHTTTLLHTTTRRHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 55, "locks": 6, "rotationCount": 3, "moveCount": 9 },
+        { "id": "alternate", "commandStream": "SCLLLHTTTCHTTTTTTTTTTTTRRHTTTCRRHTTTLHTTTTTTTTTTTTCCLHTTTTTTTTTTTTRRRHTTTCLHTTTTTTTTTTTT", "commandCount": 88, "locks": 8, "rotationCount": 6, "moveCount": 13 }
+      ]
     },
     {
       "id": "t5r-current-12",
@@ -163,7 +229,13 @@
       "commandCount": 69,
       "locks": 6,
       "rotationCount": 4,
-      "moveCount": 13
+      "moveCount": 13,
+      "firstDivergenceLock": 2,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRRHTTTTTTTTTTTTRRRHTTTRRRRRHTTTRRHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 69, "locks": 6, "rotationCount": 4, "moveCount": 13 },
+        { "id": "alternate", "commandStream": "SCRRHTTTTTTTTTTTTCRRRRHTTTRRHTTTCRRRRHTTTCLHTTTTTTTTTTTTCCRRHTTTCLHTTTTTTTTTTTT", "commandCount": 79, "locks": 7, "rotationCount": 7, "moveCount": 16 }
+      ]
     },
     {
       "id": "t5r-arc-13",
@@ -174,7 +246,13 @@
       "commandCount": 72,
       "locks": 6,
       "rotationCount": 5,
-      "moveCount": 6
+      "moveCount": 6,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCCLLHTTTRHTTTTTTTTTTTTCRHTTTCHTTTTTTTTTTTT", "commandCount": 72, "locks": 6, "rotationCount": 5, "moveCount": 6 },
+        { "id": "alternate", "commandStream": "SCLHTTTCRHTTTCCCRHTTTTTTTTTTTTCCCLHTTTTTTTTTTTTCHTTTTTTTTTTTTCCCLLHTTTLHTTTTTTTTTTTT", "commandCount": 84, "locks": 7, "rotationCount": 12, "moveCount": 7 }
+      ]
     },
     {
       "id": "t5r-pulse-14",
@@ -185,7 +263,13 @@
       "commandCount": 55,
       "locks": 6,
       "rotationCount": 5,
-      "moveCount": 7
+      "moveCount": 7,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SLHTTTLLHTTTCCLLHTTTCRHTTTTTTTTTTTTCRHTTTCHTTTTTTTTTTTT", "commandCount": 55, "locks": 6, "rotationCount": 5, "moveCount": 7 },
+        { "id": "alternate", "commandStream": "SCCCHTTTLLHTTTCCLLHTTTCRHTTTTTTTTTTTTCRHTTTTTTTTTTTTCCCRHTTTTTTTTTTTTLLHTTTTTTTTTTTT", "commandCount": 84, "locks": 7, "rotationCount": 10, "moveCount": 9 }
+      ]
     },
     {
       "id": "t5r-horizon-15",
@@ -196,7 +280,13 @@
       "commandCount": 76,
       "locks": 6,
       "rotationCount": 8,
-      "moveCount": 7
+      "moveCount": 7,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 2,
+      "routes": [
+        { "id": "primary", "commandStream": "SCHTTTCCCLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTCLLLHTTTCCHTTTTTTTTTTTTHTTTTTTTTTTTT", "commandCount": 76, "locks": 6, "rotationCount": 8, "moveCount": 7 },
+        { "id": "alternate", "commandStream": "SCRRHTTTHTTTCLLLHTTTTTTTTTTTTCCLHTTTTTTTTTTTTCCCLLHTTTTTTTTTTTTCHTTTLHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTT", "commandCount": 100, "locks": 8, "rotationCount": 9, "moveCount": 13 }
+      ]
     },
     {
       "id": "t6r-veil-16",
@@ -207,7 +297,13 @@
       "commandCount": 89,
       "locks": 7,
       "rotationCount": 5,
-      "moveCount": 10
+      "moveCount": 10,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCHTTTTTTTTTTTTRRRRRHTTTCRHTTTTTTTTTTTTRRHTTTCCCHTTTTTTTTTTTTLLHTTTTTTTTTTTTHTTTTTTTTTTTT", "commandCount": 89, "locks": 7, "rotationCount": 5, "moveCount": 10 },
+        { "id": "alternate", "commandStream": "SCLLLHTTTHTTTTTTTTTTTTCRHTTTTTTTTTTTTRRRRHTTTCCCHTTTTTTTTTTTTCLHTTTRRHTTTTTTTTTTTTRHTTTTTTTTTTTT", "commandCount": 96, "locks": 8, "rotationCount": 6, "moveCount": 12 }
+      ]
     },
     {
       "id": "t6r-cairn-17",
@@ -218,7 +314,13 @@
       "commandCount": 86,
       "locks": 7,
       "rotationCount": 5,
-      "moveCount": 16
+      "moveCount": 16,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 0,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRRRHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTRRHTTTRRRRRHTTTRRRHTTTCHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 86, "locks": 7, "rotationCount": 5, "moveCount": 16 },
+        { "id": "alternate", "commandStream": "SCHTTTCRRRHTTTTTTTTTTTTCRRHTTTLHTTTCRRRHTTTTTTTTTTTTCCRRHTTTCCCRRRRRHTTTTTTTTTTTT", "commandCount": 81, "locks": 7, "rotationCount": 9, "moveCount": 16 }
+      ]
     },
     {
       "id": "t6r-terrace-18",
@@ -229,7 +331,13 @@
       "commandCount": 82,
       "locks": 7,
       "rotationCount": 6,
-      "moveCount": 11
+      "moveCount": 11,
+      "firstDivergenceLock": 1,
+      "alternateLockMargin": 2,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRHTTTTTTTTTTTTCRHTTTTTTTTTTTTRRRRRHTTTCHTTTTTTTTTTTTRRHTTTCCLLHTTTCHTTTTTTTTTTTT", "commandCount": 82, "locks": 7, "rotationCount": 6, "moveCount": 11 },
+        { "id": "alternate", "commandStream": "SCCCRHTTTCRHTTTTTTTTTTTTHTTTTTTTTTTTTRRRRHTTTCLLLHTTTCCCRRHTTTTTTTTTTTTCCRRRRHTTTCHTTTTTTTTTTTTCCCLHTTTTTTTTTTTT", "commandCount": 112, "locks": 9, "rotationCount": 14, "moveCount": 16 }
+      ]
     },
     {
       "id": "t6r-bastion-19",
@@ -240,7 +348,13 @@
       "commandCount": 69,
       "locks": 7,
       "rotationCount": 8,
-      "moveCount": 14
+      "moveCount": 14,
+      "firstDivergenceLock": 2,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SRRRRRHTTTCRRHTTTRRHTTTCCCLLHTTTCLHTTTTTTTTTTTTCCLLHTTTCHTTTTTTTTTTTT", "commandCount": 69, "locks": 7, "rotationCount": 8, "moveCount": 14 },
+        { "id": "alternate", "commandStream": "SRRRRHTTTRRHTTTCLLLHTTTCCCLLHTTTCLHTTTTTTTTTTTTCCCHTTTTTTTTTTTTCCRRHTTTTTTTTTTTTCRRHTTTTTTTTTTTT", "commandCount": 96, "locks": 8, "rotationCount": 11, "moveCount": 16 }
+      ]
     },
     {
       "id": "t6r-keystone-20",
@@ -251,7 +365,13 @@
       "commandCount": 80,
       "locks": 7,
       "rotationCount": 8,
-      "moveCount": 16
+      "moveCount": 16,
+      "firstDivergenceLock": 2,
+      "alternateLockMargin": 1,
+      "routes": [
+        { "id": "primary", "commandStream": "SCRRHTTTTTTTTTTTTCCCRRRRHTTTCRRHTTTRRHTTTRRRRRHTTTCLHTTTTTTTTTTTTCCHTTTTTTTTTTTT", "commandCount": 80, "locks": 7, "rotationCount": 8, "moveCount": 16 },
+        { "id": "alternate", "commandStream": "SCRRHTTTTTTTTTTTTCCCRRRHTTTCRRRRHTTTCLHTTTTTTTTTTTTRHTTTTTTTTTTTTCLHTTTCCCRRRRHTTTTTTTTTTTTCRRHTTTTTTTTTTTT", "commandCount": 107, "locks": 8, "rotationCount": 11, "moveCount": 18 }
+      ]
     }
   ]
 }
