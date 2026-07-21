@@ -934,6 +934,51 @@ p {
   white-space: nowrap;
 }
 
+.puzzle-hint-trigger {
+  display: inline-grid;
+  grid-template-columns: auto;
+  justify-items: center;
+  min-width: 62px;
+  min-height: 34px;
+  padding: 4px 8px;
+  color: var(--puzzle);
+  line-height: 1;
+  background: color-mix(in srgb, var(--puzzle) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--puzzle) 46%, var(--line));
+}
+
+.puzzle-hint-trigger:hover:not(:disabled) {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-color: var(--puzzle);
+}
+
+.puzzle-hint-trigger[data-state="locked"] {
+  color: var(--muted);
+  background: transparent;
+  border-style: dashed;
+}
+
+.puzzle-hint-trigger[data-state="locked"]:hover:not(:disabled) {
+  color: var(--focus);
+  background: var(--raised);
+  border-color: var(--focus);
+}
+
+.puzzle-hint-trigger small {
+  margin-top: 2px;
+  font-size: 8px;
+  font-weight: 760;
+  letter-spacing: .05em;
+}
+
+.puzzle-hint-trigger__short {
+  display: none;
+  font-family: "Space Grotesk", "Noto Sans SC", system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
 .restart-label--short {
   display: none;
 }
@@ -1371,6 +1416,123 @@ p {
   grid-column: 1 / -1;
 }
 
+/* T12.7 — deliberately compact Puzzle strategy guidance. The route cards expose
+   intent one lock at a time; neither changes game state nor exposes input scripts. */
+.action-sheet__actions > .puzzle-guide {
+  grid-column: 1 / -1;
+}
+
+.puzzle-guide {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+}
+
+.puzzle-guide--locked {
+  gap: 14px;
+}
+
+.puzzle-guide__locked-copy,
+.puzzle-guide__cue,
+.puzzle-guide__undo {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.puzzle-guide__cue {
+  padding-left: 10px;
+  color: var(--ink);
+  border-left: 2px solid var(--puzzle);
+}
+
+.puzzle-guide__routes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.puzzle-guide__route {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-height: 78px;
+  padding: 10px;
+  text-align: left;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, transform 150ms var(--ease);
+}
+
+.puzzle-guide__route:hover,
+.puzzle-guide__route:focus-visible,
+.puzzle-guide__route[aria-selected="true"] {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--puzzle) 10%, var(--surface));
+  border-color: var(--puzzle);
+}
+
+.puzzle-guide__route:hover { transform: translateY(-1px); }
+
+.puzzle-guide__route strong {
+  color: inherit;
+  font-size: 14px;
+}
+
+.puzzle-guide__route small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.puzzle-guide__step {
+  display: grid;
+  gap: 4px;
+  min-height: 106px;
+  padding: 13px 14px;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.puzzle-guide__step > span {
+  color: var(--puzzle);
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.puzzle-guide__step > strong {
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.puzzle-guide__step > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.puzzle-guide__controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.puzzle-guide__controls > button,
+.puzzle-guide--locked > .primary-action {
+  width: 100%;
+}
+
+.puzzle-guide__close {
+  justify-self: center;
+  min-height: 36px;
+  color: var(--focus);
+}
+
 .result-leaderboard {
   grid-column: 1 / -1;
   overflow: hidden;
@@ -1804,6 +1966,21 @@ p {
     min-width: 42px;
   }
 
+  .puzzle-hint-trigger {
+    min-width: 40px;
+    min-height: 42px;
+    padding: 3px;
+  }
+
+  .puzzle-hint-trigger__long,
+  .puzzle-hint-trigger small {
+    display: none;
+  }
+
+  .puzzle-hint-trigger__short {
+    display: block;
+  }
+
   .restart-label--long {
     display: none;
   }
@@ -2006,9 +2183,26 @@ p {
   .action-sheet__actions .text-action:last-child:nth-child(odd) {
     grid-column: auto;
   }
+
+  .puzzle-guide__routes {
+    grid-template-columns: 1fr;
+  }
+
+  .puzzle-guide__route {
+    min-height: 58px;
+  }
 }
 
 @media (max-width: 365px) {
+  .audio-controls--topbar {
+    grid-template-columns: auto;
+    width: auto;
+  }
+
+  .audio-controls--topbar .audio-volume {
+    display: none;
+  }
+
   .run-stats--puzzle {
     grid-template-columns: minmax(0, 40%) minmax(0, 60%);
   }
@@ -4226,6 +4420,10 @@ p {
   .touch-key,
   .level-detail--atlas .primary-action::after,
   .observatory-focus__start::after {
+    transition: none !important;
+  }
+
+  .puzzle-guide__route {
     transition: none !important;
   }
 

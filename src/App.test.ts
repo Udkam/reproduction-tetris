@@ -44,6 +44,7 @@ interface RuntimeTestInstance {
   togglePause: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
+  getState: () => GameState;
 }
 
 const runtimeHarness = vi.hoisted(() => ({ instances: [] as RuntimeTestInstance[] }));
@@ -95,6 +96,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
+  localStorage.clear();
   runtimeHarness.instances.length = 0;
 });
 
@@ -338,6 +340,66 @@ describe('T6 frontend mode binding', () => {
     await act(async () => Promise.resolve());
     expect(classic.container.querySelector('[data-testid="touch-undo"]')).toBeNull();
     expect(classic.container.querySelector('.keyboard-map')?.textContent).not.toContain('B 撤回');
+    classic.unmount();
+  });
+
+  it('unlocks paired Puzzle strategy hints after a real attempt, then reveals one intent without changing inputs', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'puzzle', puzzleId: 't3r-shaft-01', onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+
+    const runtime = runtimeHarness.instances.at(-1)!;
+    const trigger = view.container.querySelector<HTMLButtonElement>('[data-testid="puzzle-hint-trigger"]')!;
+    const queueBeforeHint = [...runtime.getState().queue];
+    expect(trigger.dataset.state).toBe('locked');
+    expect(trigger.getAttribute('aria-label')).toContain('再落 2 块');
+
+    act(() => trigger.click());
+    expect(view.container.querySelector('[data-testid="puzzle-guide-sheet"]')?.textContent).toContain('再落 2 块');
+    expect(runtime.togglePause).toHaveBeenCalledTimes(1);
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="puzzle-guide-sheet"] .primary-action')?.click());
+    expect(runtime.togglePause).toHaveBeenCalledTimes(2);
+    expect(runtime.getState().queue).toEqual(queueBeforeHint);
+
+    const unlockedState = {
+      ...createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
+      status: 'playing' as const,
+      pieceCount: 2,
+    };
+    act(() => runtime.options.onState?.(unlockedState, []));
+    expect(trigger.dataset.state).toBe('open');
+    expect(localStorage.getItem('tetra:puzzle-hints:v1')).toContain('t3r-shaft-01');
+
+    act(() => trigger.click());
+    const guide = view.container.querySelector<HTMLElement>('[data-testid="puzzle-guide-sheet"]')!;
+    const step = view.container.querySelector<HTMLElement>('[data-testid="puzzle-hint-step"]')!;
+    expect(guide.textContent).toContain('直补通道');
+    expect(guide.textContent).toContain('边缘搭桥');
+    expect(step.textContent).toContain('第 1 块');
+    expect(guide.textContent).not.toMatch(/SRRHT/);
+    const alternate = [...guide.querySelectorAll<HTMLButtonElement>('[role="tab"]')].find((button) => button.textContent?.includes('边缘搭桥'))!;
+    act(() => alternate.click());
+    expect(step.textContent).toContain('边缘搭桥');
+    const next = [...guide.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '下一意图')!;
+    act(() => next.click());
+    expect(step.textContent).toContain('第 2 块');
+    view.unmount();
+  });
+
+  it('keeps strategy hints out of Classic and Survival sessions', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const classic = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    expect(classic.container.querySelector('[data-testid="puzzle-hint-trigger"]')).toBeNull();
     classic.unmount();
   });
 
