@@ -33,10 +33,7 @@ const KEY_BINDINGS: Record<string, InputAction> = {
   KeyW: 'rotate-cw',
   KeyX: 'rotate-cw',
   KeyQ: 'rotate-ccw',
-  KeyZ: 'rotate-ccw',
-  Escape: 'pause',
   KeyP: 'pause',
-  KeyB: 'undo',
 };
 
 export class InputController {

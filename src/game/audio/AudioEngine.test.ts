@@ -94,8 +94,8 @@ describe('AudioEngine original feedback', () => {
     audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }, { type: 'piece-locked', piece: 'T', cells: [] }]);
 
     expect(oscillators).toHaveLength(2);
-    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine']);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([168, 252]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'triangle']);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([174, 286]);
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length > 0)).toBe(true);
     audio.destroy();
   });
@@ -111,6 +111,7 @@ describe('AudioEngine original feedback', () => {
       { type: 'piece-rotated', piece: 'T', direction: 1 },
       { type: 'piece-locked', piece: 'T', cells: [] },
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
       { type: 'bedrock-raised', count: 1, height: 11 },
       { type: 'bedrock-lowered', count: 1, height: 10 },
       { type: 'level-up', level: 1 },
@@ -127,19 +128,27 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
-  it('starts a low original music bed only after play begins and stops it on pause', async () => {
+  it('starts an audible original piano-like phrase only after play begins and silences its bus on pause', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
     expect(oscillators).toHaveLength(0);
 
     audio.play([{ type: 'started' }]);
-    const music = oscillators.slice(0, 2);
-    expect(music.map((oscillator) => oscillator.type)).toEqual(['sine', 'triangle']);
-    expect(oscillators).toHaveLength(4);
+    const music = oscillators.slice(0, 34);
+    expect(music).toHaveLength(34);
+    expect(music.slice(0, 4).map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine', 'triangle', 'sine']);
+    const firstFrequencies = music.slice(0, 4).map((oscillator) => oscillator.frequency.setValues[0] ?? 0);
+    expect(firstFrequencies[0]).toBeCloseTo(146.83, 5);
+    expect(firstFrequencies[1]).toBeCloseTo(146.83 * 2.01, 5);
+    expect(firstFrequencies[2]).toBeCloseTo(293.66, 5);
+    expect(firstFrequencies[3]).toBeCloseTo(293.66 * 2.01, 5);
+    expect(music.every((oscillator) => oscillator.stops.length === 1)).toBe(true);
+    expect(oscillators).toHaveLength(35);
+    expect(gains[2]?.gain.value).toBeGreaterThan(0.1);
 
     audio.play([{ type: 'paused' }]);
-    expect(music.every((oscillator) => oscillator.stops.length === 1)).toBe(true);
+    expect(gains[2]?.gain.value).toBe(0);
     audio.destroy();
   });
 
@@ -151,8 +160,8 @@ describe('AudioEngine original feedback', () => {
 
     await audio.prime();
 
-    expect(oscillators.slice(0, 2).map((oscillator) => oscillator.type)).toEqual(['sine', 'triangle']);
-    expect(oscillators).toHaveLength(3);
+    expect(oscillators.slice(0, 4).map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine', 'triangle', 'sine']);
+    expect(oscillators).toHaveLength(34);
     audio.destroy();
   });
 

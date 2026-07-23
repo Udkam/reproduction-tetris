@@ -21,6 +21,7 @@ const FOCUSABLE = [
 ].join(',');
 
 const ACTION_BUTTONS = '.action-sheet__actions > button:not([disabled])';
+const ARROW_NAVIGABLE = '[data-arrow-nav]:not([disabled])';
 
 export function ActionSheet({
   open,
@@ -44,6 +45,17 @@ export function ActionSheet({
     actions.forEach((action, actionIndex) => {
       if (actionIndex === index) action.dataset.actionSelected = 'true';
       else delete action.dataset.actionSelected;
+    });
+  };
+
+  const syncArrowSelection = (target: EventTarget | null) => {
+    const panel = panelRef.current;
+    const controls = panel ? [...panel.querySelectorAll<HTMLButtonElement>(ARROW_NAVIGABLE)] : [];
+    const index = controls.indexOf(target as HTMLButtonElement);
+    if (index < 0) return;
+    controls.forEach((control, controlIndex) => {
+      if (controlIndex === index) control.dataset.arrowSelected = 'true';
+      else delete control.dataset.arrowSelected;
     });
   };
 
@@ -80,10 +92,39 @@ export function ActionSheet({
         syncSelectedAction(next);
         return;
       }
+      const arrowControls = [...panel?.querySelectorAll<HTMLButtonElement>(ARROW_NAVIGABLE) ?? []];
+      const activeElement = browserPlatform.activeElement();
+      const focusedRange = activeElement instanceof HTMLInputElement && activeElement.type === 'range';
+      if (
+        !focusedRange
+        && arrowControls.length > 0
+        && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(keyboardEvent.key)
+      ) {
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
+        const selectedIndex = arrowControls.findIndex((control) => control.dataset.arrowSelected === 'true');
+        const focusedIndex = arrowControls.indexOf(activeElement as HTMLButtonElement);
+        const currentIndex = selectedIndex >= 0 ? selectedIndex : Math.max(focusedIndex, 0);
+        const offset = keyboardEvent.key === 'ArrowLeft' ? -1
+          : keyboardEvent.key === 'ArrowRight' ? 1
+            : keyboardEvent.key === 'ArrowUp' ? -2 : 2;
+        const nextIndex = (currentIndex + offset + arrowControls.length) % arrowControls.length;
+        const next = arrowControls[nextIndex]!;
+        next.focus({ preventScroll: true });
+        syncArrowSelection(next);
+        return;
+      }
       if (keyboardEvent.key === 'Enter' && !keyboardEvent.isComposing && actionButtons.length === 2) {
         keyboardEvent.preventDefault();
         keyboardEvent.stopPropagation();
         const selected = actionButtons.find((action) => action.dataset.actionSelected === 'true') ?? actionButtons[0]!;
+        selected.click();
+        return;
+      }
+      if (!focusedRange && keyboardEvent.key === 'Enter' && !keyboardEvent.isComposing && arrowControls.length > 0) {
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
+        const selected = arrowControls.find((control) => control.dataset.arrowSelected === 'true') ?? arrowControls[0]!;
         selected.click();
         return;
       }
@@ -133,7 +174,10 @@ export function ActionSheet({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
-        onFocusCapture={(event) => syncSelectedAction(event.target)}
+        onFocusCapture={(event) => {
+          syncSelectedAction(event.target);
+          syncArrowSelection(event.target);
+        }}
       >
         <h2 id={titleId}>{title}</h2>
         <p id={descriptionId}>{description}</p>

@@ -6,6 +6,7 @@ import {
   type GameEvent,
   type GameMode,
   type GameState,
+  type MutationItem,
   type PieceType,
   type PuzzleId,
   createInitialState,
@@ -54,6 +55,7 @@ type EntryCountdownDigit = 3 | 2 | 1;
 
 const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'Tetris';
+const MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 
 const MODE_COPY: Record<GameMode, {
   label: string;
@@ -62,30 +64,74 @@ const MODE_COPY: Record<GameMode, {
 }> = {
   marathon: {
     label: '经典',
-    detail: '消行得分，每 10 行加速；按消行排行',
+    detail: '补全横行获得分数；每消 10 行下落加快。',
     action: '开始',
   },
   race: {
     label: '生存',
-    detail: '顶住基岩压力；13 秒 → 6 秒升层；按时长排行',
+    detail: '在上升基岩上坚持；每消 3 行移除一层。',
     action: '开始',
   },
   sprint: {
-    label: '坍缩',
-    detail: '消行后逐列坍落；堆顶结束；按消行排行',
+    label: '异变',
+    detail: '核心方块触发道具；每消 6 行下落加快。',
     action: '开始',
   },
   puzzle: {
     label: '解谜',
-    detail: '清除原有方块；固定序列；记录最少落子',
+    detail: '清除全部原有方块；固定序列，可确认撤回。',
     action: '选关',
   },
+};
+
+const MODE_RULES: Record<GameMode, readonly string[]> = {
+  marathon: [
+    '补满任意横行即可消除并得分。',
+    '每累计消除 10 行，下落速度提升一级。',
+    '方块堆到顶端时，本局结束。',
+  ],
+  race: [
+    '开局有 3 层基岩，基岩会持续向上推进。',
+    '压力从 13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。',
+    '方块被基岩顶到顶端时，本局结束。',
+  ],
+  sprint: [
+    '像经典模式一样补满横行；每累计消除 6 行，下落速度提升一级。',
+    '带核心标记的方块携带道具，消除其任一格即可触发一次效果。',
+    '冻结停止自动下落；坍缩让各列独立下沉；炸弹清除底部 3 行；倍增在 10 秒内使消行得分翻倍。',
+    '方块堆到顶端时，本局结束。',
+  ],
+  puzzle: [
+    '使用固定出现顺序的方块，清除全部原有方块即可通关。',
+    '没有落子数量限制；按 Z 后确认，可撤回到上一个方块刚出现时。',
+    '清除完成后记录本关最少落子数。',
+  ],
 };
 
 const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'sprint', 'puzzle'];
 
 export function cloneQaState(state: GameState): GameState {
   return structuredClone(state);
+}
+
+function readModeRuleIntros(): readonly GameMode[] {
+  try {
+    const raw = browserPlatform.readStorage(MODE_RULE_INTROS_KEY);
+    if (raw === null) return Object.freeze([]);
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return Object.freeze([]);
+    return Object.freeze(parsed.filter((value): value is GameMode => MODE_ORDER.includes(value as GameMode)));
+  } catch {
+    return Object.freeze([]);
+  }
+}
+
+function writeModeRuleIntros(modes: readonly GameMode[]): void {
+  try {
+    browserPlatform.writeStorage(MODE_RULE_INTROS_KEY, JSON.stringify([...new Set(modes)]));
+  } catch {
+    // Storage is optional. A blocked browser simply shows the short rule sheet again.
+  }
 }
 
 function readPuzzleProgress(): PuzzleProgress {
@@ -108,7 +154,11 @@ function readLeaderboard(): Leaderboard {
     if (current !== null) return parseLeaderboard(current);
     for (const key of LEGACY_LEADERBOARD_KEYS) {
       const legacy = browserPlatform.readStorage(key);
-      if (legacy !== null) return migrateLegacyLeaderboard(legacy);
+      if (legacy !== null) {
+        const migrated = migrateLegacyLeaderboard(legacy);
+        browserPlatform.writeStorage(LEADERBOARD_KEY, JSON.stringify(migrated));
+        return migrated;
+      }
     }
   } catch {
     return emptyLeaderboard();
@@ -163,8 +213,8 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
   if (state.mode === 'sprint') {
     if (state.status === 'game-over') {
       return {
-        title: '坍缩到顶',
-        detail: `${state.lines} 消行 · ${formatScore(state.score)} 分 · 最高 ${state.sprintBestCascade} 连锁`,
+        title: '异变到顶',
+        detail: `${state.lines} 消行 · ${formatScore(state.score)} 分`,
         success: false,
       };
     }
@@ -186,12 +236,12 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
   if (!isTopOutRun) return null;
   const mode: RunMode = state.mode === 'sprint' ? 'sprint' : state.mode === 'race' ? 'race' : 'marathon';
   return {
-    version: 6,
+    version: 7,
     score: state.score,
     lines: state.lines,
     pieces: state.pieceCount,
     elapsedTicks: state.elapsedTicks,
-    chain: mode === 'sprint' ? state.sprintBestCascade : 0,
+    chain: 0,
     mode,
     outcome: 'top-out',
     completedAt,
@@ -242,6 +292,17 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
   );
 }
 
+function ModeRuleSummary({ mode, testId }: { mode: GameMode; testId?: string }) {
+  return (
+    <section className="mode-rule-summary" data-testid={testId} aria-label={`${MODE_COPY[mode].label}规则`}>
+      <strong>规则</strong>
+      <ul>
+        {MODE_RULES[mode].map((rule) => <li key={rule}>{rule}</li>)}
+      </ul>
+    </section>
+  );
+}
+
 export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
   const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
   return (
@@ -278,7 +339,6 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
                   <span className="mode-gate__glyph"><ModeGlyph mode={mode} /></span>
                   <span className="mode-gate__body">
                     <strong>{item.label}</strong>
-                    <span>{item.detail}</span>
                   </span>
                   <span className="mode-gate__action"><span>{item.action}</span><b aria-hidden="true">→</b></span>
                 </button>
@@ -392,9 +452,11 @@ export function PuzzleLibrary({
             </div>
             <div className="console-focus__facts" aria-label="残局特性">
               {selectedAnchorCount > 0 && <span>固定锚点</span>}
-              {selectedBest !== null && <span data-testid="selected-puzzle-best">最少 {selectedBest} 步</span>}
             </div>
-            <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
+            <div className="console-focus__action">
+              {selectedBest !== null && <span data-testid="selected-puzzle-start-best">最少 {selectedBest} 步</span>}
+              <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
+            </div>
           </section>
         </aside>
         <nav className="console-route" aria-label={`${CAMPAIGN_LEVELS.length} 个开放解谜残局`} data-testid="level-list">
@@ -448,19 +510,22 @@ export function LeaderboardPanel({
   mode,
   records,
   highlightRecord = null,
+  variant = 'result',
 }: {
   mode: RunMode;
   records: readonly ScoreRecord[];
   highlightRecord?: ScoreRecord | null;
+  variant?: 'result' | 'settings';
 }) {
   const survival = mode === 'race';
   const sprint = mode === 'sprint';
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
+  const title = variant === 'settings' ? '本模式排行' : sprint ? '异变排行' : survival ? '生存排行' : '经典排行';
   return (
-    <section className="result-leaderboard" aria-label={sprint ? '坍缩排行榜' : survival ? '生存排行榜' : '经典排行榜'}>
+    <section className={`result-leaderboard result-leaderboard--${variant}`} data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined} aria-label={title}>
       <header>
-        <strong>{sprint ? '坍缩排行' : survival ? '生存排行' : '经典排行'}</strong>
-        <span>{sprint ? '消行 · 前 10' : survival ? '生存时间' : '消行'}</span>
+        <strong>{title}</strong>
+        <span>{survival ? '生存时间 · 前 5' : '消行 · 前 5'}</span>
       </header>
       {records.length === 0 ? <p>暂无记录</p> : (
         <ol>
@@ -468,7 +533,7 @@ export function LeaderboardPanel({
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
               <strong>{sprint ? `${record.lines} 行` : survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
-              <small>{sprint ? `${formatScore(record.score)} 分 · 最高 ${record.chain} 连锁` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
+              <small>{sprint ? `${formatScore(record.score)} 分 · ${record.pieces} 方块` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`} · {record.completedAt.slice(0, 10).replaceAll('-', '.')}</small>
             </li>
           ))}
         </ol>
@@ -509,16 +574,16 @@ function TouchButton({ action, label, glyph, runtime, disabled = false }: TouchB
   );
 }
 
-function PuzzleUndoButton({ runtime, disabled = false }: { runtime: GameRuntime | null; disabled?: boolean }) {
+function PuzzleUndoButton({ onRequestUndo, disabled = false }: { onRequestUndo: () => void; disabled?: boolean }) {
   return (
     <button
       className="touch-key touch-key--undo"
       type="button"
       data-testid="touch-undo"
-      aria-label="撤回上一次落子（B）"
-      aria-keyshortcuts="B"
+      aria-label="撤回上一次落子（Z）"
+      aria-keyshortcuts="Z"
       disabled={disabled}
-      onClick={() => runtime?.undoPuzzle()}
+      onClick={onRequestUndo}
     >
       <b aria-hidden="true">↶</b><small>撤回</small>
     </button>
@@ -548,6 +613,7 @@ function AudioControls({
           className="audio-toggle"
           type="button"
           data-testid="audio-toggle"
+          data-arrow-nav
           aria-label={enabled ? '关闭音效' : '开启音效'}
           aria-pressed={enabled}
           onClick={() => onEnabledChange(!enabled)}
@@ -556,6 +622,7 @@ function AudioControls({
           className="audio-toggle"
           type="button"
           data-testid="music-toggle"
+          data-arrow-nav
           aria-label={musicEnabled ? '关闭音乐' : '开启音乐'}
           aria-pressed={musicEnabled}
           onClick={() => onMusicEnabledChange(!musicEnabled)}
@@ -575,6 +642,46 @@ function AudioControls({
         />
         <output>{percent}%</output>
       </label>
+    </section>
+  );
+}
+
+export function SettingsRecord({
+  mode,
+  puzzleId,
+  leaderboard,
+  progress,
+}: {
+  mode: GameMode;
+  puzzleId: PuzzleId;
+  leaderboard: Leaderboard;
+  progress: PuzzleProgress;
+}) {
+  if (mode === 'puzzle') {
+    const bestPieces = puzzleBestPieceCount(progress, puzzleId);
+    return (
+      <section className="settings-record settings-record--puzzle" data-testid="settings-record" aria-label="当前关纪录">
+        <span>当前关纪录</span>
+        <strong>{bestPieces === null ? '尚未通关' : `最少 ${bestPieces} 步`}</strong>
+      </section>
+    );
+  }
+
+  return <LeaderboardPanel mode={mode} records={recordsForMode(leaderboard, mode)} variant="settings" />;
+}
+
+function SettingsShortcutGuide({ mode }: { mode: GameMode }) {
+  return (
+    <section className="settings-shortcuts" data-testid="settings-shortcuts" aria-label="键盘说明">
+      <strong>键盘</strong>
+      <span><kbd>S</kbd> 设置</span>
+      <span><kbd>P</kbd> 暂停</span>
+      <span><kbd>R</kbd> 重开</span>
+      <span><kbd>Esc</kbd> 返回</span>
+      <span><kbd>←→</kbd> 选择</span>
+      <span><kbd>↑↓</kbd> 切换</span>
+      <span><kbd>Enter</kbd> 执行</span>
+      {mode === 'puzzle' && <span><kbd>Z</kbd> 撤回</span>}
     </section>
   );
 }
@@ -608,11 +715,11 @@ export function RunStats({ state }: { state: GameState }) {
   }
   if (state.mode === 'sprint') {
     return (
-      <section className="run-stats run-stats--collapse" data-testid="stats" aria-label="坍缩模式数据">
+      <section className="run-stats run-stats--mutation" data-testid="stats" aria-label="异变模式数据">
         <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-        <article data-stat-role="sprint-chain"><span>当前连锁</span><strong>{state.sprintCascadeDepth}</strong></article>
-        <article data-stat-role="sprint-best"><span>最高连锁</span><strong>{state.sprintBestCascade}</strong></article>
         <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="mutation-speed"><span>下落</span><strong>{fallCadenceLabel(state)}</strong></article>
+        <article data-stat-role="mutation-carriers"><span>核心</span><strong>{state.mutationCarriers.length + (state.mutationActiveCarrier ? 1 : 0)}</strong></article>
       </section>
     );
   }
@@ -626,6 +733,39 @@ export function RunStats({ state }: { state: GameState }) {
   );
 }
 
+const MUTATION_ITEM_LABEL: Record<MutationItem, string> = {
+  freeze: '冻结',
+  collapse: '坍缩',
+  bomb: '炸弹',
+  multiplier: '倍增',
+};
+
+function mutationEffectLabel(item: MutationItem, ticks: number): string {
+  return `${MUTATION_ITEM_LABEL[item]} · ${Math.ceil(ticks / TICKS_PER_SECOND)} 秒`;
+}
+
+export function MutationStatus({ state }: { state: GameState }) {
+  if (state.mode !== 'sprint') return null;
+  const candidates: Array<{ item: MutationItem; ticks: number }> = [
+    { item: 'freeze', ticks: state.mutationFreezeTicks },
+    { item: 'collapse', ticks: state.mutationCollapseTicks },
+    { item: 'multiplier', ticks: state.mutationMultiplierTicks },
+  ];
+  const active = candidates.filter((effect) => effect.ticks > 0);
+  const showInstant = active.length === 0 && state.mutationLastItem === 'bomb' && state.mutationLastItemTicks > 0;
+  return (
+    <section className="mutation-status" data-testid="mutation-status" aria-label="异变状态">
+      <strong>异变状态</strong>
+      <div>
+        {state.mutationActiveCarrier && <span data-mutation-state="carrier">核心：{MUTATION_ITEM_LABEL[state.mutationActiveCarrier.item]}</span>}
+        {active.map((effect) => <span key={effect.item} data-mutation-state={effect.item}>{mutationEffectLabel(effect.item, effect.ticks)}</span>)}
+        {showInstant && <span data-mutation-state="bomb">炸弹 · 底部 3 行已清除</span>}
+        {!state.mutationActiveCarrier && active.length === 0 && !showInstant && <span data-mutation-state="idle">等待核心方块</span>}
+      </div>
+    </section>
+  );
+}
+
 export function eventMessage(event: GameEvent): string {
   if (event.type === 'lines-cleared') return `消除了 ${event.count} 行。`;
   if (event.type === 'bedrock-raised') return `基岩升至 ${event.height} 层。`;
@@ -633,6 +773,10 @@ export function eventMessage(event: GameEvent): string {
   if (event.type === 'paused') return '本局已暂停。';
   if (event.type === 'resumed') return '继续本局。';
   if (event.type === 'puzzle-undone') return '已撤回上一次落子。';
+  if (event.type === 'mutation-activated') {
+    if (event.item === 'bomb') return '炸弹触发：底部 3 行已清除。';
+    return `${MUTATION_ITEM_LABEL[event.item]} 已触发，持续 10 秒。`;
+  }
   if (event.type === 'finished') return '目标已达成。';
   if (event.type === 'game-over') return '本局结束。';
   return '';
@@ -659,6 +803,7 @@ export function GameSession({
   onExit,
   onCanonicalCompletion,
   leaderboard = emptyLeaderboard(),
+  puzzleProgress = defaultPuzzleProgress(),
   onRunFinished,
 }: {
   mode: GameMode;
@@ -666,6 +811,7 @@ export function GameSession({
   onExit: (destination: ExitDestination) => void;
   onCanonicalCompletion: (state: GameState) => void;
   leaderboard?: Leaderboard;
+  puzzleProgress?: PuzzleProgress;
   onRunFinished?: (record: ScoreRecord) => void;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -673,6 +819,7 @@ export function GameSession({
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
   const settingsWasPlayingRef = useRef(false);
+  const undoWasPlayingRef = useRef(false);
   const lastRecordedRunRef = useRef<string | null>(null);
   const [runSeed] = useState(() => mode === 'puzzle' ? APP_SEED : randomRunSeed());
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
@@ -680,12 +827,28 @@ export function GameSession({
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
+  const [undoConfirmOpen, setUndoConfirmOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
   const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
+
+  const changeAudioEnabled = useCallback((enabled: boolean) => {
+    runtime?.setAudioEnabled(enabled);
+    setAudioEnabled(enabled);
+  }, [runtime]);
+
+  const changeMusicEnabled = useCallback((enabled: boolean) => {
+    runtime?.setMusicEnabled(enabled);
+    setMusicEnabled(enabled);
+  }, [runtime]);
+
+  const changeAudioVolume = useCallback((volume: number) => {
+    runtime?.setAudioVolume(volume);
+    setAudioVolume(volume);
+  }, [runtime]);
 
   const focusBoard = useCallback(() => {
     browserPlatform.defer(() => {
@@ -718,7 +881,7 @@ export function GameSession({
         const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race' || nextState.mode === 'sprint')
           && nextState.status === 'game-over';
         if (recordableRun) {
-          const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}:${nextState.sprintBestCascade}`;
+          const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}`;
           if (lastRecordedRunRef.current !== runKey) {
             lastRecordedRunRef.current = runKey;
             const record = scoreRecordForState(nextState, new Date().toISOString());
@@ -734,7 +897,8 @@ export function GameSession({
            || event.type === 'bedrock-lowered'
            || event.type === 'paused'
           || event.type === 'resumed'
-          || event.type === 'puzzle-undone'
+           || event.type === 'puzzle-undone'
+          || event.type === 'mutation-activated'
           || event.type === 'finished'
           || event.type === 'game-over'
         ));
@@ -799,9 +963,14 @@ export function GameSession({
       puzzleTargetsRemaining: state.puzzleTargetCells.length,
       puzzleTargetsInitial: state.puzzleInitialTargetCount,
       puzzleUndoDepth: state.mode === 'puzzle' ? state.puzzleUndoHistory.length : 0,
-      sprintGoal: state.sprintGoal,
-      sprintCascadeDepth: state.sprintCascadeDepth,
-      sprintBestCascade: state.sprintBestCascade,
+      mutation: state.mode === 'sprint' ? {
+        activeCarrier: state.mutationActiveCarrier?.item ?? null,
+        lockedCarriers: state.mutationCarriers.length,
+        freezeTicks: state.mutationFreezeTicks,
+        collapseTicks: state.mutationCollapseTicks,
+        multiplierTicks: state.mutationMultiplierTicks,
+        lastItem: state.mutationLastItem,
+      } : null,
       score: state.score,
       lines: state.lines,
       combo: state.combo,
@@ -859,14 +1028,14 @@ export function GameSession({
   }, [countdownDigit, runtime, state]);
 
   const openSettings = useCallback(() => {
-    if (!runtime || settingsOpen || restartConfirmOpen) return;
+    if (!runtime || settingsOpen || restartConfirmOpen || undoConfirmOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     settingsWasPlayingRef.current = runtimeState.status === 'playing';
     if (settingsWasPlayingRef.current) runtime.togglePause();
     runtime.setInputEnabled(false);
     setSettingsOpen(true);
-  }, [restartConfirmOpen, runtime, settingsOpen]);
+  }, [restartConfirmOpen, runtime, settingsOpen, undoConfirmOpen]);
 
   const closeSettings = useCallback(() => {
     setSettingsOpen(false);
@@ -880,8 +1049,10 @@ export function GameSession({
     setExitOpen(false);
     setSettingsOpen(false);
     setRestartConfirmOpen(false);
+    setUndoConfirmOpen(false);
     settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
+    undoWasPlayingRef.current = false;
     runtime?.setInputEnabled(true);
     runtime?.restart();
     runtime?.start();
@@ -889,7 +1060,7 @@ export function GameSession({
   }, [focusBoard, runtime]);
 
   const requestRestart = useCallback(() => {
-    if (!runtime || restartConfirmOpen) return;
+    if (!runtime || restartConfirmOpen || undoConfirmOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     restartWasPlayingRef.current = runtimeState.status === 'playing' || settingsWasPlayingRef.current;
@@ -899,7 +1070,7 @@ export function GameSession({
     settingsWasPlayingRef.current = false;
     setSettingsOpen(false);
     setRestartConfirmOpen(true);
-  }, [restartConfirmOpen, runtime]);
+  }, [restartConfirmOpen, runtime, undoConfirmOpen]);
 
   const cancelRestart = useCallback(() => {
     setRestartConfirmOpen(false);
@@ -907,6 +1078,33 @@ export function GameSession({
     if (restartWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     restartWasPlayingRef.current = false;
   }, [runtime]);
+
+  const requestPuzzleUndo = useCallback(() => {
+    if (!runtime || countdownDigit !== null || state.mode !== 'puzzle' || undoConfirmOpen || exitOpen || restartConfirmOpen || settingsOpen) return;
+    const runtimeState = runtime.getState();
+    if (runtimeState.status !== 'playing' || runtimeState.puzzleUndoHistory.length === 0) return;
+    undoWasPlayingRef.current = true;
+    runtime.togglePause();
+    runtime.setInputEnabled(false);
+    setUndoConfirmOpen(true);
+  }, [countdownDigit, exitOpen, restartConfirmOpen, runtime, settingsOpen, state.mode, undoConfirmOpen]);
+
+  const confirmPuzzleUndo = useCallback(() => {
+    setUndoConfirmOpen(false);
+    runtime?.setInputEnabled(true);
+    runtime?.undoPuzzle();
+    if (undoWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
+    undoWasPlayingRef.current = false;
+    focusBoard();
+  }, [focusBoard, runtime]);
+
+  const cancelPuzzleUndo = useCallback(() => {
+    setUndoConfirmOpen(false);
+    runtime?.setInputEnabled(true);
+    if (undoWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
+    undoWasPlayingRef.current = false;
+    focusBoard();
+  }, [focusBoard, runtime]);
 
   const resumeRun = useCallback(() => {
     if (runtime?.getState().status === 'paused') runtime.togglePause();
@@ -917,41 +1115,68 @@ export function GameSession({
     const handleRestartShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyR' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.status !== 'playing' || restartConfirmOpen || settingsOpen) return;
+      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
       keyboardEvent.preventDefault();
       requestRestart();
     };
     return browserPlatform.listenWindow('keydown', handleRestartShortcut);
-  }, [countdownDigit, requestRestart, restartConfirmOpen, settingsOpen, state.status]);
+  }, [countdownDigit, exitOpen, requestRestart, restartConfirmOpen, settingsOpen, state.status, undoConfirmOpen]);
 
   useEffect(() => {
     const handleSettingsShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyS' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || restartConfirmOpen || settingsOpen) return;
+      if (countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
       keyboardEvent.preventDefault();
       openSettings();
     };
     return browserPlatform.listenWindow('keydown', handleSettingsShortcut);
-  }, [countdownDigit, openSettings, restartConfirmOpen, settingsOpen]);
+  }, [countdownDigit, exitOpen, openSettings, restartConfirmOpen, settingsOpen, undoConfirmOpen]);
 
   const requestExit = useCallback(() => {
-    exitWasPlayingRef.current = runtime?.getState().status === 'playing';
-    if (exitWasPlayingRef.current) runtime?.togglePause();
+    if (!runtime || countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+    const runtimeState = runtime.getState();
+    if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
+    exitWasPlayingRef.current = runtimeState.status === 'playing';
+    if (exitWasPlayingRef.current) runtime.togglePause();
+    runtime.setInputEnabled(false);
     setExitOpen(true);
-  }, [runtime]);
+  }, [countdownDigit, exitOpen, restartConfirmOpen, runtime, settingsOpen, undoConfirmOpen]);
 
   const cancelExit = useCallback(() => {
     setExitOpen(false);
+    runtime?.setInputEnabled(true);
     if (exitWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     exitWasPlayingRef.current = false;
   }, [runtime]);
 
+  useEffect(() => {
+    const handlePuzzleUndoShortcut = (event: Event) => {
+      const keyboardEvent = event as KeyboardEvent;
+      if (keyboardEvent.code !== 'KeyZ' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
+      if (countdownDigit !== null || state.mode !== 'puzzle' || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+      keyboardEvent.preventDefault();
+      requestPuzzleUndo();
+    };
+    return browserPlatform.listenWindow('keydown', handlePuzzleUndoShortcut);
+  }, [countdownDigit, exitOpen, requestPuzzleUndo, restartConfirmOpen, settingsOpen, state.mode, state.status, undoConfirmOpen]);
+
+  useEffect(() => {
+    const handleExitShortcut = (event: Event) => {
+      const keyboardEvent = event as KeyboardEvent;
+      if (keyboardEvent.code !== 'Escape' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
+      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+      keyboardEvent.preventDefault();
+      requestExit();
+    };
+    return browserPlatform.listenWindow('keydown', handleExitShortcut);
+  }, [countdownDigit, exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status, undoConfirmOpen]);
+
   const terminal = terminalCopy(state);
   const level = state.mode === 'puzzle' ? campaignLevel(state.puzzleId) : null;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
-  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !settingsOpen;
-  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !settingsOpen;
+  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !undoConfirmOpen && !settingsOpen;
+  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !undoConfirmOpen && !settingsOpen;
   const storedRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
   const leaderboardRecords = resultRecord && scoreRecordRank(storedRecords, resultRecord) === null
     ? recordsForMode(insertScoreRecord(leaderboard, resultRecord), resultRecord.mode)
@@ -970,6 +1195,7 @@ export function GameSession({
             requestExit();
           }}
           aria-label={state.mode === 'puzzle' ? '返回解谜关卡' : '返回模式首页'}
+          aria-keyshortcuts="Escape"
         >← 返回</button>
         <div className="play-identity">
           <Brand compact />
@@ -1014,6 +1240,7 @@ export function GameSession({
           <aside className={`game-side-panel game-side-panel--${state.mode}`} data-testid="side-rail">
             <div className="info-rail" data-testid="context-top">
               <RunStats state={state} />
+              <MutationStatus state={state} />
             </div>
             <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
               <p className="rail-label">{puzzleDoublePreview ? 'Next · 2' : 'Next'}</p>
@@ -1024,7 +1251,7 @@ export function GameSession({
                 aria-label={puzzleDoublePreview ? '后续两个方块，按顺序显示' : '下一个方块'}
               />
             </div>
-            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>S 设置</span><span>P 暂停 / 继续</span><span>R 重开确认</span>{state.mode === 'puzzle' && <span>B 撤回</span>}</p>
+            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>S 设置</span><span>P 暂停 / 继续</span><span>R 重开确认</span><span>Esc 返回</span>{state.mode === 'puzzle' && <span>Z 撤回</span>}</p>
           </aside>
         </section>
 
@@ -1034,7 +1261,7 @@ export function GameSession({
           <TouchButton action="rotate-cw" label="旋转" glyph="↻" runtime={runtime} disabled={countdownDigit !== null} />
           <TouchButton action="soft-drop" label="快速下落" glyph="↓" runtime={runtime} disabled={countdownDigit !== null} />
           <TouchButton action="hard-drop" label="直接落底" glyph="⇣" runtime={runtime} disabled={countdownDigit !== null} />
-          {state.mode === 'puzzle' && <PuzzleUndoButton runtime={runtime} disabled={countdownDigit !== null || state.status === 'finished'} />}
+          {state.mode === 'puzzle' && <PuzzleUndoButton onRequestUndo={requestPuzzleUndo} disabled={countdownDigit !== null || state.status !== 'playing' || state.puzzleUndoHistory.length === 0 || undoConfirmOpen} />}
         </section>
       </section>
 
@@ -1055,17 +1282,25 @@ export function GameSession({
         onCancel={closeSettings}
       >
         <section className="settings-sheet" data-testid="settings-sheet" aria-label="本局设置">
+          <SettingsRecord
+            mode={state.mode}
+            puzzleId={state.puzzleId ?? puzzleId}
+            leaderboard={leaderboard}
+            progress={puzzleProgress}
+          />
+          <ModeRuleSummary mode={state.mode} testId="settings-rules" />
           <AudioControls
             enabled={audioEnabled}
             musicEnabled={musicEnabled}
             volume={audioVolume}
-            onEnabledChange={setAudioEnabled}
-            onMusicEnabledChange={setMusicEnabled}
-            onVolumeChange={setAudioVolume}
+            onEnabledChange={changeAudioEnabled}
+            onMusicEnabledChange={changeMusicEnabled}
+            onVolumeChange={changeAudioVolume}
           />
+          <SettingsShortcutGuide mode={state.mode} />
           <div className="settings-sheet__actions">
-            <button className="secondary-action" type="button" data-testid="settings-restart" onClick={requestRestart}>重新开始</button>
-            <button className="primary-action" data-autofocus type="button" onClick={closeSettings}>
+            <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>重新开始</button>
+            <button className="primary-action" data-autofocus type="button" data-arrow-nav onClick={closeSettings}>
               {settingsWasPlayingRef.current ? '继续游戏' : '返回暂停'}
             </button>
           </div>
@@ -1082,6 +1317,17 @@ export function GameSession({
       >
         <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>确认</button>
         <button className="secondary-action" type="button" onClick={cancelRestart}>取消</button>
+      </ActionSheet>
+
+      <ActionSheet
+        open={undoConfirmOpen}
+        title="撤回上一步？"
+        description=""
+        onCancel={cancelPuzzleUndo}
+        onConfirm={confirmPuzzleUndo}
+      >
+        <button className="primary-action" data-autofocus data-testid="confirm-puzzle-undo" type="button" onClick={confirmPuzzleUndo}>确认</button>
+        <button className="secondary-action" type="button" onClick={cancelPuzzleUndo}>取消</button>
       </ActionSheet>
 
       <ActionSheet
@@ -1124,11 +1370,32 @@ export default function App() {
   const [selectedPuzzleId, setSelectedPuzzleId] = useState<PuzzleId>(CAMPAIGN_LEVELS[0]!.id);
   const [progress, setProgress] = useState<PuzzleProgress>(readPuzzleProgress);
   const [leaderboard, setLeaderboard] = useState<Leaderboard>(readLeaderboard);
+  const [introducedModes, setIntroducedModes] = useState<readonly GameMode[]>(readModeRuleIntros);
+  const [ruleIntroMode, setRuleIntroMode] = useState<GameMode | null>(null);
 
-  const enterMode = useCallback((nextMode: GameMode) => {
+  const openMode = useCallback((nextMode: GameMode) => {
     setMode(nextMode);
     setScreen(nextMode === 'puzzle' ? 'puzzle-library' : 'game');
   }, []);
+
+  const enterMode = useCallback((nextMode: GameMode) => {
+    if (!introducedModes.includes(nextMode)) {
+      setRuleIntroMode(nextMode);
+      return;
+    }
+    openMode(nextMode);
+  }, [introducedModes, openMode]);
+
+  const beginIntroducedMode = useCallback(() => {
+    if (ruleIntroMode === null) return;
+    const nextIntroduced = introducedModes.includes(ruleIntroMode)
+      ? introducedModes
+      : Object.freeze([...introducedModes, ruleIntroMode]);
+    setIntroducedModes(nextIntroduced);
+    writeModeRuleIntros(nextIntroduced);
+    openMode(ruleIntroMode);
+    setRuleIntroMode(null);
+  }, [introducedModes, openMode, ruleIntroMode]);
 
   const startPuzzle = useCallback(() => {
     setMode('puzzle');
@@ -1177,9 +1444,21 @@ export default function App() {
           onExit={exitGame}
           onCanonicalCompletion={recordCompletion}
           leaderboard={leaderboard}
+          puzzleProgress={progress}
           onRunFinished={recordRun}
         />
       )}
+      <ActionSheet
+        open={ruleIntroMode !== null}
+        title={ruleIntroMode === null ? '规则' : `${MODE_COPY[ruleIntroMode].label}规则`}
+        description="首次进入说明"
+        onCancel={() => setRuleIntroMode(null)}
+        onConfirm={beginIntroducedMode}
+      >
+        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} testId="entry-mode-rules" />}
+        <button className="primary-action" data-autofocus type="button" onClick={beginIntroducedMode}>开始</button>
+        <button className="secondary-action" type="button" onClick={() => setRuleIntroMode(null)}>返回</button>
+      </ActionSheet>
     </div>
   );
 }

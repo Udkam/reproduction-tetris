@@ -85,14 +85,16 @@ describe('InputController', () => {
     input.destroy();
   });
 
-  it('maps B to the Puzzle undo action without treating it as a held control', () => {
+  it('leaves Z, B, and Escape to the React-owned confirmation and return controls', () => {
     const actions: InputAction[] = [];
     const target = new EventTarget() as Window;
     const input = new InputController((action) => actions.push(action), target);
-    const event = new Event('keydown') as KeyboardEvent;
-    Object.defineProperty(event, 'code', { value: 'KeyB' });
-    target.dispatchEvent(event);
-    expect(actions).toEqual(['undo']);
+    for (const code of ['KeyZ', 'KeyB', 'Escape']) {
+      const event = new Event('keydown') as KeyboardEvent;
+      Object.defineProperty(event, 'code', { value: code });
+      target.dispatchEvent(event);
+    }
+    expect(actions).toEqual([]);
     input.destroy();
   });
 

@@ -11,6 +11,7 @@ import {
   type Cell,
   type GameEvent,
   type GameState,
+  type MutationItem,
   type BoardMaterial,
   type PieceType,
 } from '../core';
@@ -71,6 +72,12 @@ interface BoardShift {
   duration: number;
 }
 
+interface MutationFlash {
+  item: MutationItem;
+  elapsed: number;
+  duration: number;
+}
+
 interface GroupDrawOptions {
   originX: number;
   originY: number;
@@ -120,6 +127,7 @@ export class TetrisRenderer {
   private impact = 0;
   private rotationPulse = 0;
   private boardShift: BoardShift | null = null;
+  private mutationFlash: MutationFlash | null = null;
   private options: RenderOptions = { reducedMotion: false, modeSwitch: false };
   private previewBounds: RendererSnapshot['preview'] = null;
   private previewLayerVisible = false;
@@ -182,6 +190,7 @@ export class TetrisRenderer {
       this.impact = 0;
       this.rotationPulse = 0;
       this.boardShift = null;
+      this.mutationFlash = null;
     }
   }
 
@@ -233,6 +242,7 @@ export class TetrisRenderer {
     this.host = null;
     this.presentation = null;
     this.lockPulse = null;
+    this.mutationFlash = null;
   }
 
   private readonly onTick = (ticker: Ticker): void => {
@@ -321,6 +331,7 @@ export class TetrisRenderer {
       });
     }
     this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
+    this.drawMutationCarrierMarks(graphics, state, layout, boardShiftOffsetY);
 
     if (this.trail && !this.options.reducedMotion) {
       const progress = Math.min(1, this.trail.elapsed / this.trail.duration);
@@ -399,6 +410,7 @@ export class TetrisRenderer {
           scale: rotationScale,
         },
       );
+      this.drawActiveMutationCarrierMark(graphics, state, layout, offsetX, offsetY);
     }
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
@@ -423,6 +435,67 @@ export class TetrisRenderer {
         .lineTo(x, y + bracket)
         .stroke({ color: COLORS.target, alpha: 0.76, width: stroke });
     }
+  }
+
+  private mutationColor(item: MutationItem): number {
+    if (item === 'freeze') return 0x7bc8ff;
+    if (item === 'collapse') return 0xbc8cff;
+    if (item === 'bomb') return 0xff8b70;
+    return 0xffd166;
+  }
+
+  private drawMutationCore(
+    graphics: Graphics,
+    cell: Cell,
+    item: MutationItem,
+    layout: BoardLayout,
+    offsetX = 0,
+    offsetY = 0,
+  ): void {
+    if (cell.y < 0 || cell.y >= VISIBLE_HEIGHT) return;
+    const centerX = layout.x + (cell.x + 0.5) * layout.cell + offsetX;
+    const centerY = layout.y + (cell.y + 0.5) * layout.cell + offsetY;
+    const outer = Math.max(2, layout.cell * 0.23);
+    const inner = Math.max(1.2, layout.cell * 0.09);
+    const color = this.mutationColor(item);
+    graphics.circle(centerX, centerY, outer).fill({ color, alpha: 0.22 }).stroke({ color, alpha: 0.92, width: Math.max(1, layout.cell * 0.045) });
+    graphics.circle(centerX, centerY, inner).fill({ color: 0xf8fbff, alpha: 0.94 });
+  }
+
+  private drawMutationCarrierMarks(graphics: Graphics, state: GameState, layout: BoardLayout, offsetY: number): void {
+    if (state.mode !== 'sprint') return;
+    for (const carrier of state.mutationCarriers) {
+      const firstVisible = carrier.cells.find((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT);
+      if (!firstVisible) continue;
+      this.drawMutationCore(
+        graphics,
+        { x: firstVisible.x, y: firstVisible.y - VISIBLE_START_ROW },
+        carrier.item,
+        layout,
+        0,
+        offsetY,
+      );
+    }
+  }
+
+  private drawActiveMutationCarrierMark(
+    graphics: Graphics,
+    state: GameState,
+    layout: BoardLayout,
+    offsetX: number,
+    offsetY: number,
+  ): void {
+    if (state.mode !== 'sprint' || !state.active || !state.mutationActiveCarrier) return;
+    const firstVisible = cellsForPiece(state.active).find((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT);
+    if (!firstVisible) return;
+    this.drawMutationCore(
+      graphics,
+      { x: firstVisible.x, y: firstVisible.y - VISIBLE_START_ROW },
+      state.mutationActiveCarrier.item,
+      layout,
+      offsetX,
+      offsetY,
+    );
   }
 
   private drawCellGroups(
@@ -689,6 +762,13 @@ export class TetrisRenderer {
   private drawEffects(state: GameState, layout: BoardLayout): void {
     const graphics = this.effectGraphics;
     graphics.clear();
+    if (this.mutationFlash) {
+      const progress = Math.min(1, this.mutationFlash.elapsed / this.mutationFlash.duration);
+      const alpha = this.options.reducedMotion ? 0.16 : Math.max(0, 0.28 * (1 - progress));
+      graphics
+        .roundRect(layout.x, layout.y, layout.width, layout.height, Math.max(8, layout.cell * 0.38))
+        .fill({ color: this.mutationColor(this.mutationFlash.item), alpha });
+    }
     if (state.phase === 'line-clear' && !this.options.reducedMotion) {
       const progress = lineClearPresentationProgress(state.phaseTicks, false);
       const width = layout.width * Math.sin(progress * Math.PI);
@@ -857,6 +937,7 @@ export class TetrisRenderer {
       } else if (event.type === 'restarted') {
         this.presentation = null;
         this.boardShift = null;
+        this.mutationFlash = null;
       } else if (event.type === 'puzzle-undone') {
         // Undo restores a pre-lock Core snapshot. Any lock, trail, line-impact, or
         // interpolation residue belongs to the discarded timeline and must not
@@ -867,6 +948,7 @@ export class TetrisRenderer {
         this.impact = 0;
         this.rotationPulse = 0;
         this.boardShift = null;
+        this.mutationFlash = null;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
           cells: event.cells,
@@ -888,6 +970,13 @@ export class TetrisRenderer {
         }
       } else if (event.type === 'lines-cleared') {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
+      } else if (event.type === 'mutation-activated') {
+        this.mutationFlash = {
+          item: event.item,
+          elapsed: 0,
+          duration: this.options.reducedMotion ? 1 : 380,
+        };
+        this.impact = this.options.reducedMotion ? 0.3 : 1.05;
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
       } else if (event.type === 'bedrock-raised' || event.type === 'bedrock-lowered') {
@@ -914,6 +1003,10 @@ export class TetrisRenderer {
     if (this.boardShift) {
       this.boardShift.elapsed += deltaMs;
       if (this.boardShift.elapsed >= this.boardShift.duration) this.boardShift = null;
+    }
+    if (this.mutationFlash) {
+      this.mutationFlash.elapsed += deltaMs;
+      if (this.mutationFlash.elapsed >= this.mutationFlash.duration) this.mutationFlash = null;
     }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);
