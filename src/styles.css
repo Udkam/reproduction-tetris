@@ -4747,7 +4747,7 @@ p {
 }
 
 /* Completion is expressed by the selected level name, not duplicate status glyphs. */
-.console-focus__title--complete {
+.console-focus__heading .console-focus__title--complete {
   color: #9fd6bc;
   text-shadow: 0 0 18px rgba(104, 197, 147, .16);
 }
