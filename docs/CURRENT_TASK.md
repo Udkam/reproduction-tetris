@@ -50,6 +50,13 @@ across Core terminal state, local score schema, HUD/result text, and direct test
 single source checkpoint may use the named Collapse/Survival/persistence/UI paths above
 despite the ordinary ten-path budget; it may not capture any unrelated path.
 
+Audio follow-up boundary: after the rule and Puzzle source checkpoints are stable,
+perform one separate audio slice limited to the existing AudioEngine/runtime/app control
+paths and their direct tests. It may improve event contours and add user-gesture-gated,
+original procedural music with an independent control. Do not add third-party music,
+network media, renderer dependencies, or a second canvas; verify mute/volume/pause/
+restart/unmount lifecycle behavior before the final candidate.
+
 ### T13.2 fourth-mode Collapse correction
 
 The user clarified that the rejected fourth mode is Sprint, not Puzzle. Puzzle is

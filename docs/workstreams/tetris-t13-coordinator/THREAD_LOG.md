@@ -9,6 +9,10 @@
 - Follow-up clarification supersedes the one-row reading: Collapse's local leaderboard
   retains its top ten top-outs and orders them by lines, then score, chain, and fewer
   pieces.
+- New finishing requirement: audit the existing Web Audio event layer and add optional,
+  original procedural background music in a separate bounded audio checkpoint. It must
+  remain controllable, use no external/copyrighted media, and stop cleanly with the
+  runtime lifecycle.
 - Exact future source boundary: Collapse constants/types/engine/sprint/direct tests,
   leaderboard/persistence, App/App tests/styles; Survival constants/race/runtime
   tests; and the coupled Puzzle definitions, hints, direct Core tests, schema route

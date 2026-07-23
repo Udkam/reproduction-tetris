@@ -10,6 +10,9 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   40-tick cadence, seven-row opening, and one-second-per-three-lines curve.
 - Collapse ranking keeps its ten strongest local top-outs rather than one personal-best
   row. It ranks cleared lines first, then score, chain, and fewer pieces.
+- Audio is now a planned separate finishing pass: retune the existing event sounds and
+  add an original, optional, user-gesture-gated procedural music bed without external
+  media or persistent sources after pause/restart/unmount.
 - Puzzle source is no longer globally frozen: only the sparse anchor distribution,
   short structural level names, guide copy, route evidence, and ignored walkthroughs
   are reopened. A read-only Core audit found every current anchor on the bottom target

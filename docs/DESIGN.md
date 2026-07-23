@@ -20,6 +20,12 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
 - Survival keeps its seven-row warm-mineral opening, fixed 40-tick gravity, and
   three-line bedrock reward. Pressure now begins at **13 seconds**, falls by one
   second for every three cleared lines, and bottoms out at **6 seconds**.
+- Audio is a separate finishing pass: every game event must use a distinct, audible
+  but non-harsh original Web Audio contour at the existing 100% default master level.
+  Add a low-key original procedural background music bed after a user gesture, with an
+  independent on/off control that remains subordinate to gameplay effects. It may not
+  download, sample, or imitate copyrighted music; mute, volume changes, pause, restart,
+  unmount, and browser audio suspension must leave no continuing audio source.
 - Puzzle retains twenty deterministic, legal five-through-eight-row setups, fixed
   queues, unlimited ordinary pieces, B undo, and two teaching routes per level. It
   has no volatile or expiring input mechanic. Level names become short, structural
