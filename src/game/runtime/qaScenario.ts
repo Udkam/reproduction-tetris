@@ -171,7 +171,9 @@ export function replaySurvivalBedrock(seed = 0x51a1f00d): {
 }
 
 const QA_PUZZLE_ID = 't5r-drift-08' as const;
-const QA_PUZZLE_ROUTE_TOKENS = 'SCRHTTTCRRHTTTCLLHTTTTTTTTTTTTCLLHTTTTTTTTTTTTHTTTTTTTTTTTT';
+// Schema-6 T13 primary public route for the retained QA specimen. This remains a
+// normal command replay rather than a test-only state injection.
+const QA_PUZZLE_ROUTE_TOKENS = 'SLHTTTRRRHTTTRRHTTTCRRRRHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTCRHTTTRRRRHTTTCHTTTCCCLLHTTTTTTTTTTTTCLLLLHTTTRRRRHTTTTTTTTTTTTCLHTTTTTTTTTTTTRRHTTTTTTTTTTTTCCLLHTTTTTTTTTTTT';
 
 function puzzleRouteCommand(token: string): GameCommand {
   switch (token) {
