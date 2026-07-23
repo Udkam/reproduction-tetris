@@ -46,6 +46,12 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   arrow-key selection and Enter execution. A compact shortcut reference must promote
   `S`, `P`, `R`, selection/confirm, and Puzzle-only `B`, without hiding the range
   input's native arrow behavior.
+- Homepage follow-up is included in the same bounded UI slice: mode-card action keys
+  retain their own accents through hover/focus/selection; selected state strengthens
+  the current card and theme rather than turning the action blue. Static text weights
+  prevent a transient bold flash while moving between modes. The four descriptions
+  will state only their actual play rules, with no ranking or personal-record wording;
+  Collapse explicitly explains independent column settling and possible chain clears.
 
 ## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
 

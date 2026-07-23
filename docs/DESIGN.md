@@ -40,6 +40,16 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   the selected button. The sheet presents a compact **快捷键** keycap reference for
   `S`, `P`, `R`, selection/confirm, and Puzzle-only `B`; the volume range retains its
   native arrow adjustment when it owns focus.
+- The homepage mode cards separate navigation from visual selection. Hover, focus, and
+  selection keep the **开始**/**选关** key in its own mode accent instead of recoloring
+  it blue; selection strengthens that mode's card, border, icon, and accent surface.
+  Card text has a fixed rendered weight throughout the transition, with motion limited
+  to color, border, background, and position rather than an animated font change.
+  Each card carries only one clear gameplay rule—Classic: keep clearing and accelerate
+  every ten lines; Survival: outlast rising bedrock and remove one layer per three
+  lines; Collapse: after every lock columns settle independently and may chain clears
+  until top-out; Puzzle: clear every original block with its fixed sequence and undo.
+  Homepage cards never state ranking or personal-record language.
 - Music must be audibly present after the player's next valid in-game gesture at the
   default 100% setting—not merely allocated as silent Web Audio nodes. Preserve the
   original, low-key procedural character and separate toggle, but give it a distinct

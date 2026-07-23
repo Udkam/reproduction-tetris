@@ -54,7 +54,12 @@ only; this section is the authoritative live scope.
    preview motion and reduced-motion fallbacks. Promote the active mode name. The
    in-run right header becomes one accessible `设置` control; `S` opens the same sheet
    containing effects/music, volume, pause/continue, and confirmation-gated restart.
-   Every visible rule must state only objective, distinct mechanic, and ranking basis.
+   The homepage mode cards use one concise gameplay sentence only: state the objective
+   and the distinct mechanic, but never advertise ranking or personal-record wording.
+   Their action key keeps its own mode color through hover/focus/selection; selected
+   state is communicated by a stronger card and mode hue, not a blue call-to-action.
+   Text weight is static during card transitions so moving between modes never flashes
+   a briefly bold label. Every other visible rule remains concise and factual.
    All two-action sheets expose visible `←`/`→` selection, and `Enter` activates the
    selected action; pointer, touch, Escape, and cancel behavior remain correct.
    Settings also shows one compact current-mode record: Classic and Collapse expose

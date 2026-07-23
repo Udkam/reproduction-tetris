@@ -15,6 +15,12 @@
   `↑`/`↓` moves control rows, and `Enter` invokes the selected button. A concise visible
   shortcut keycap strip promotes `S`, `P`, `R`, selection/confirm, and Puzzle-only
   `B`; a focused volume range keeps native arrow adjustment.
+- Homepage extension: hover/focus/selection must not recolor a mode's **开始**/**选关**
+  key blue. Its own accent remains stable while the selected card, border, glyph, and
+  accent surface become stronger. Keep card text at a fixed rendered weight through
+  the transition. Replace ranking/personal-record copy with concise real rules; in
+  particular, 坍缩 must say that every lock independently settles columns and may
+  chain clears until top-out.
 - Planned source/test paths: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
   `src/ui/ActionSheet.tsx`, `src/game/audio/AudioEngine.ts`, and
   `src/game/audio/AudioEngine.test.ts`; runtime glue may be added only if a direct
