@@ -7,6 +7,7 @@ import {
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
+  SPRINT_TARGET_LINES,
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
   gravityForMode,
@@ -118,6 +119,8 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalBedrockRows: openingBedrock?.added ?? 0,
     survivalPressureTicks: 0,
     survivalRisePending: false,
+    sprintTargetLines: mode === 'sprint' ? SPRINT_TARGET_LINES : null,
+    sprintCompletion: mode === 'sprint' ? 'active' : null,
     status: 'ready',
     phase: 'active',
     phaseTicks: 0,
@@ -184,6 +187,28 @@ function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): Ga
 
 function withActive(state: GameState): state is GameState & { active: ActivePiece } {
   return state.active !== null;
+}
+
+/** Sprint completion is independent from Puzzle target ownership and ordinary top-out. */
+function finishSprintSuccess(state: GameState): GameTransition {
+  if (state.mode !== 'sprint' || state.sprintTargetLines === null || state.lines < state.sprintTargetLines) {
+    return invalidState(state);
+  }
+  return {
+    state: {
+      ...state,
+      active: null,
+      status: 'finished',
+      phase: 'active',
+      phaseTicks: 0,
+      pendingClearRows: [],
+      gravityTicks: 0,
+      lockTicks: 0,
+      lockResets: 0,
+      sprintCompletion: 'finished',
+    },
+    events: [{ type: 'finished', completionTicks: state.elapsedTicks }],
+  };
 }
 
 function advanceSurvivalPressure(state: GameState): GameState {
@@ -452,6 +477,10 @@ function finishLineClear(state: GameState): GameTransition {
     const resolved = resolvePuzzleAfterLock(cleared, true);
     return { state: resolved.state, events: [...events, ...resolved.events] };
   }
+  if (cleared.mode === 'sprint' && cleared.sprintTargetLines !== null && lines >= cleared.sprintTargetLines) {
+    const finished = finishSprintSuccess(cleared);
+    return { state: finished.state, events: [...events, ...finished.events] };
+  }
   if (cleared.mode === 'race') {
     const risen = resolvePendingSurvivalRise(cleared, true);
     cleared = risen.state;
@@ -577,9 +606,9 @@ export function replay(seed: number, commands: readonly GameCommand[], mode: Gam
 }
 
 export function stateHash(state: GameState): string {
-  // Puzzle-only fields are irrelevant to Marathon/Race and intentionally omitted
-  // there so their established replay hashes remain stable. Puzzle state hashes
-  // include the entire authored campaign payload and outcome fields.
+  // Mode-private fields stay out of unrelated replays so the established Classic,
+  // Survival, and Puzzle hash domains remain stable. Sprint keeps its objective and
+  // explicit completion state in its own canonical payload.
   const canonicalState = state.mode === 'puzzle'
     ? (() => {
       const {
@@ -587,6 +616,8 @@ export function stateHash(state: GameState): string {
         survivalBedrockRows: _survivalBedrockRows,
         survivalPressureTicks: _survivalPressureTicks,
         survivalRisePending: _survivalRisePending,
+        sprintTargetLines: _sprintTargetLines,
+        sprintCompletion: _sprintCompletion,
         ...puzzleState
       } = state;
       return puzzleState;
@@ -611,11 +642,28 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
+          sprintTargetLines: _sprintTargetLines,
+          sprintCompletion: _sprintCompletion,
           ...classicState
         } = legacyState;
         return classicState;
       }
-      const { combo: _combo, ...survivalState } = legacyState;
+      if (state.mode === 'sprint') {
+        const {
+          combo: _combo,
+          survivalBedrockRows: _survivalBedrockRows,
+          survivalPressureTicks: _survivalPressureTicks,
+          survivalRisePending: _survivalRisePending,
+          ...sprintState
+        } = legacyState;
+        return sprintState;
+      }
+      const {
+        combo: _combo,
+        sprintTargetLines: _sprintTargetLines,
+        sprintCompletion: _sprintCompletion,
+        ...survivalState
+      } = legacyState;
       return survivalState;
     })();
   const canonical = JSON.stringify(canonicalState);

@@ -10,7 +10,7 @@ import {
 } from './leaderboard';
 
 const marathonRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
-  version: 3,
+  version: 4,
   score: 1200,
   lines: 8,
   pieces: 31,
@@ -22,7 +22,7 @@ const marathonRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
 });
 
 const raceRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
-  version: 3,
+  version: 4,
   score: 1200,
   lines: 20,
   pieces: 31,
@@ -33,21 +33,47 @@ const raceRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
   ...overrides,
 });
 
+const sprintRecord = (overrides: Partial<ScoreRecord> = {}): ScoreRecord => ({
+  version: 4,
+  score: 2400,
+  lines: 40,
+  pieces: 55,
+  elapsedTicks: 2700,
+  mode: 'sprint',
+  outcome: 'finished',
+  completedAt: '2026-07-14T01:00:00.000Z',
+  ...overrides,
+});
+
 describe('local leaderboard boundary', () => {
-  it('fails closed on malformed schema, obsolete completion rows, and legacy stores', () => {
+  it('fails closed on malformed schema, invalid outcomes, and non-migratable old stores', () => {
     expect(parseLeaderboard('{broken')).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 3,
+      version: 4,
       marathon: [marathonRecord(), { ...marathonRecord(), pieces: -1 }],
       race: [],
+      sprint: [],
     }))).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 3,
+      version: 4,
       marathon: [],
-      race: [{ ...raceRecord(), version: 2, outcome: 'finished', completionTicks: 3600 }],
+      race: [],
+      sprint: [{ ...sprintRecord(), outcome: 'top-out' }],
     }))).toEqual(emptyLeaderboard());
-    expect(migrateLegacyLeaderboard(JSON.stringify([{ score: 1200, lines: 8, pieces: 31, mode: 'marathon', completedAt: '2026-07-14T01:00:00.000Z' }])))
-      .toEqual(emptyLeaderboard());
+    expect(migrateLegacyLeaderboard(JSON.stringify([{ score: 1200, lines: 8, pieces: 31, mode: 'marathon', completedAt: '2026-07-14T01:00:00.000Z' }]))).toEqual(emptyLeaderboard());
+  });
+
+  it('preserves a valid v3 Classic/Survival store while opening an empty Sprint table', () => {
+    const legacy = {
+      version: 3,
+      marathon: [{ ...marathonRecord(), version: 3, mode: 'marathon' as const }],
+      race: [{ ...raceRecord(), version: 3, mode: 'race' as const }],
+    };
+    const migrated = migrateLegacyLeaderboard(JSON.stringify(legacy));
+    expect(migrated.version).toBe(4);
+    expect(migrated.marathon[0]).toMatchObject({ version: 4, mode: 'marathon', outcome: 'top-out' });
+    expect(migrated.race[0]).toMatchObject({ version: 4, mode: 'race', outcome: 'top-out' });
+    expect(migrated.sprint).toEqual([]);
   });
 
   it('keeps separately bounded, mode-specific deterministic records', () => {
@@ -67,16 +93,24 @@ describe('local leaderboard boundary', () => {
         elapsedTicks: 3000 + index,
         completedAt: new Date(Date.UTC(2026, 6, 14, 2, index)).toISOString(),
       }));
+      leaderboard = insertScoreRecord(leaderboard, sprintRecord({
+        score: 800 + index,
+        pieces: 80 - index,
+        elapsedTicks: 3000 - index,
+        completedAt: new Date(Date.UTC(2026, 6, 14, 3, index)).toISOString(),
+      }));
     }
 
     expect(recordsForMode(leaderboard, 'marathon')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'race')).toHaveLength(LEADERBOARD_LIMIT);
+    expect(recordsForMode(leaderboard, 'sprint')).toHaveLength(LEADERBOARD_LIMIT);
     expect(recordsForMode(leaderboard, 'marathon')[0]?.lines).toBe(LEADERBOARD_LIMIT + 3);
     expect(recordsForMode(leaderboard, 'race')[0]?.elapsedTicks).toBe(3000 + LEADERBOARD_LIMIT + 3);
+    expect(recordsForMode(leaderboard, 'sprint')[0]?.elapsedTicks).toBe(3000 - (LEADERBOARD_LIMIT + 3));
     expect(parseLeaderboard(JSON.stringify(leaderboard))).toEqual(leaderboard);
   });
 
-  it('ranks Classic by cleared lines and Survival by elapsed survival time', () => {
+  it('ranks Classic by lines, Survival by endurance, and Sprint by low time then low piece count', () => {
     let leaderboard = emptyLeaderboard();
     const marathonLowerLines = marathonRecord({ lines: 8, score: 9000, elapsedTicks: 100 });
     const marathonHigherScore = marathonRecord({ lines: 9, score: 1300, elapsedTicks: 900 });
@@ -95,5 +129,15 @@ describe('local leaderboard boundary', () => {
     leaderboard = insertScoreRecord(leaderboard, raceTieWinner);
     leaderboard = insertScoreRecord(leaderboard, raceWinner);
     expect(recordsForMode(leaderboard, 'race')).toEqual([raceWinner, raceTieWinner, raceTieFewerLines, raceMostLinesShorter]);
+
+    const sprintSlow = sprintRecord({ elapsedTicks: 1000, pieces: 40, score: 9000 });
+    const sprintTieMorePieces = sprintRecord({ elapsedTicks: 900, pieces: 41, score: 9000 });
+    const sprintTieHigherScore = sprintRecord({ elapsedTicks: 900, pieces: 40, score: 1500 });
+    const sprintWinner = sprintRecord({ elapsedTicks: 900, pieces: 40, score: 1900 });
+    leaderboard = insertScoreRecord(leaderboard, sprintSlow);
+    leaderboard = insertScoreRecord(leaderboard, sprintTieMorePieces);
+    leaderboard = insertScoreRecord(leaderboard, sprintTieHigherScore);
+    leaderboard = insertScoreRecord(leaderboard, sprintWinner);
+    expect(recordsForMode(leaderboard, 'sprint')).toEqual([sprintWinner, sprintTieHigherScore, sprintTieMorePieces, sprintSlow]);
   });
 });

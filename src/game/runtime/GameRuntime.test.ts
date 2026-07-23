@@ -169,6 +169,12 @@ describe('GameRuntime public state boundary', () => {
     runtime.restart();
     expect(runtime.getState().mode).toBe('puzzle');
     expect(runtime.getState().seed).toBe(puzzleSeed);
+
+    runtime.selectMode('sprint');
+    expect(runtime.getState().mode).toBe('sprint');
+    expect(runtime.getState().sprintCompletion).toBe('active');
+    expect(runtime.getState().sprintTargetLines).toBe(40);
+    expect(runtime.getState().seed).toBe(0x7a11beef);
     vi.unstubAllGlobals();
   });
 

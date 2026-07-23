@@ -30,7 +30,7 @@ export interface RandomizerState {
 
 export type GameStatus = 'ready' | 'playing' | 'paused' | 'game-over' | 'finished';
 export type GamePhase = 'active' | 'entry' | 'line-clear';
-export type GameMode = 'marathon' | 'race' | 'puzzle';
+export type GameMode = 'marathon' | 'race' | 'sprint' | 'puzzle';
 export type PuzzleId =
   | 't3r-shaft-01'
   | 't3r-shaft-02'
@@ -60,6 +60,9 @@ export type PuzzleCompletion =
   | 'failed-top-out'
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn';
+
+/** Sprint only ends successfully after the fixed 40-line objective. */
+export type SprintCompletion = 'active' | 'finished';
 
 export interface GameState {
   board: Board;
@@ -108,6 +111,10 @@ export interface GameState {
   survivalPressureTicks: number;
   /** A due pressure row waiting for the next safe lock/clear resolution. */
   survivalRisePending: boolean;
+  /** Fixed Sprint objective, null for every non-Sprint run. */
+  sprintTargetLines: number | null;
+  /** Distinguishes a Sprint time completion from a Puzzle target completion. */
+  sprintCompletion: SprintCompletion | null;
   status: GameStatus;
   phase: GamePhase;
   phaseTicks: number;

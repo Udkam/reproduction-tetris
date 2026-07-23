@@ -22,6 +22,9 @@ export const SURVIVAL_INTERVAL_STEP_SECONDS = 1;
 export const SURVIVAL_MIN_INTERVAL_SECONDS = 8;
 /** Survival stays brisk but never accelerates as lines increase. */
 export const SURVIVAL_GRAVITY_TICKS = 40;
+/** Sprint is brisk but steady: reading and execution, not escalating speed, decide the run. */
+export const SPRINT_GRAVITY_TICKS = 36;
+export const SPRINT_TARGET_LINES = 40;
 
 export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
 
@@ -52,6 +55,7 @@ export function gravityForMode(mode: GameMode, level: number, pieceCount: number
   void pieceCount;
   if (mode === 'puzzle') return STANDARD_GRAVITY_TICKS;
   if (mode === 'race') return SURVIVAL_GRAVITY_TICKS;
+  if (mode === 'sprint') return SPRINT_GRAVITY_TICKS;
   return PROGRESSIVE_GRAVITY_TICKS[speedTierForLines(lines)]!;
 }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, BOARD_WIDTH, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, PROGRESSIVE_GRAVITY_TICKS, STANDARD_GRAVITY_TICKS, SURVIVAL_GRAVITY_TICKS, gravityForMode } from './constants';
+import { BOARD_HEIGHT, BOARD_WIDTH, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, PROGRESSIVE_GRAVITY_TICKS, SPRINT_GRAVITY_TICKS, STANDARD_GRAVITY_TICKS, SURVIVAL_GRAVITY_TICKS, gravityForMode } from './constants';
 import { canPlace, createBoard, setCell } from './board';
 import { createInitialState, dispatch, stateHash } from './engine';
 import { cellsForPiece } from './pieces';
@@ -16,12 +16,14 @@ function ticks(state: GameState, count: number): GameState {
 }
 
 describe('Modern Classic timing and score contract', () => {
-  it('keeps Classic at ten-line tiers while Survival stays at its fixed cadence', () => {
+  it('keeps Classic at ten-line tiers while Survival and Sprint stay at their fixed cadences', () => {
     PROGRESSIVE_GRAVITY_TICKS.forEach((expected, tier) => {
       expect(gravityForMode('marathon', 0, 0, tier * 10)).toBe(expected);
     });
     expect(gravityForMode('race', 0, 0, 0)).toBe(SURVIVAL_GRAVITY_TICKS);
     expect(gravityForMode('race', 0, 0, 30)).toBe(SURVIVAL_GRAVITY_TICKS);
+    expect(gravityForMode('sprint', 0, 0, 0)).toBe(SPRINT_GRAVITY_TICKS);
+    expect(gravityForMode('sprint', 99, 99_999, 99_999)).toBe(SPRINT_GRAVITY_TICKS);
     expect(gravityForMode('marathon', 29, 10_000, 10_000)).toBe(3);
     expect(gravityForMode('puzzle', 29, 10_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });

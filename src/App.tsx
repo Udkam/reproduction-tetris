@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ANCHOR_CELL,
   PIECE_TYPES,
+  SPRINT_TARGET_LINES,
   TICKS_PER_SECOND,
   type GameEvent,
   type GameMode,
@@ -80,6 +81,11 @@ const MODE_COPY: Record<GameMode, {
     detail: '开局 7 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落',
     action: '开始',
   },
+  sprint: {
+    label: '冲刺',
+    detail: '空场 40 行\n固定高速下落 · 以完成时间排名',
+    action: '冲刺',
+  },
   puzzle: {
     label: '解谜',
     detail: `${CAMPAIGN_LEVELS.length} 关残局`,
@@ -87,7 +93,7 @@ const MODE_COPY: Record<GameMode, {
   },
 };
 
-const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'puzzle'];
+const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'sprint', 'puzzle'];
 
 export function cloneQaState(state: GameState): GameState {
   return structuredClone(state);
@@ -158,6 +164,23 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
     }
     return null;
   }
+  if (state.mode === 'sprint') {
+    if (state.sprintCompletion === 'finished') {
+      return {
+        title: '40 行冲刺完成',
+        detail: `${elapsedTimeLabel(state.elapsedTicks)} · ${state.pieceCount} 方块 · ${formatScore(state.score)} 分`,
+        success: true,
+      };
+    }
+    if (state.status === 'game-over') {
+      return {
+        title: '冲刺中断',
+        detail: `${state.lines}/${state.sprintTargetLines ?? SPRINT_TARGET_LINES} 行 · ${state.pieceCount} 方块`,
+        success: false,
+      };
+    }
+    return null;
+  }
   if (state.status !== 'game-over') return null;
   if (state.mode === 'race') {
     return {
@@ -170,15 +193,18 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
 }
 
 export function scoreRecordForState(state: GameState, completedAt: string): ScoreRecord | null {
-  if ((state.mode !== 'marathon' && state.mode !== 'race') || state.status !== 'game-over') return null;
+  const isTopOutRun = (state.mode === 'marathon' || state.mode === 'race') && state.status === 'game-over';
+  const isSprintFinish = state.mode === 'sprint' && state.status === 'finished' && state.sprintCompletion === 'finished';
+  if (!isTopOutRun && !isSprintFinish) return null;
+  const mode: RunMode = state.mode === 'sprint' ? 'sprint' : state.mode === 'race' ? 'race' : 'marathon';
   return {
-    version: 3,
+    version: 4,
     score: state.score,
     lines: state.lines,
     pieces: state.pieceCount,
     elapsedTicks: state.elapsedTicks,
-    mode: state.mode,
-    outcome: 'top-out',
+    mode,
+    outcome: mode === 'sprint' ? 'finished' : 'top-out',
     completedAt,
   };
 }
@@ -212,6 +238,9 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
   }
   if (mode === 'race') {
     return <svg viewBox="0 0 40 40" aria-hidden="true"><path className="mode-glyph__soft" d="M5 31h30M5 25h30" /><path d="M10 25v-6h8v6m5 0V14h8v11M27 14V7m-4 4 4-4 4 4" /></svg>;
+  }
+  if (mode === 'sprint') {
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><path className="mode-glyph__soft" d="M6 30h28M11 23h18" /><path d="M8 17h13l-4-4m4 4-4 4m3-10h12v10H20z" /></svg>;
   }
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true">
@@ -475,20 +504,21 @@ export function LeaderboardPanel({
   highlightRecord?: ScoreRecord | null;
 }) {
   const survival = mode === 'race';
+  const sprint = mode === 'sprint';
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
   return (
-    <section className="result-leaderboard" aria-label={survival ? '生存排行榜' : '经典排行榜'}>
+    <section className="result-leaderboard" aria-label={sprint ? '冲刺排行榜' : survival ? '生存排行榜' : '经典排行榜'}>
       <header>
-        <strong>{survival ? '生存排行' : '经典排行'}</strong>
-        <span>{survival ? '生存时间' : '消行'}</span>
+        <strong>{sprint ? '冲刺排行' : survival ? '生存排行' : '经典排行'}</strong>
+        <span>{sprint ? '完成时间' : survival ? '生存时间' : '消行'}</span>
       </header>
       {records.length === 0 ? <p>暂无记录</p> : (
         <ol>
           {records.map((record, index) => (
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
-              <strong>{survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
-              <small>{survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
+              <strong>{sprint || survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
+              <small>{sprint ? `${record.pieces} 方块 · ${formatScore(record.score)} 分` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
             </li>
           ))}
         </ol>
@@ -707,6 +737,16 @@ export function RunStats({ state }: { state: GameState }) {
       </section>
     );
   }
+  if (state.mode === 'sprint') {
+    return (
+      <section className="run-stats" data-testid="stats" aria-label="冲刺模式数据">
+        <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
+        <article data-stat-role="sprint-progress"><span>进度</span><strong>{state.lines}/{state.sprintTargetLines ?? SPRINT_TARGET_LINES}</strong></article>
+        <article data-stat-role="sprint-pieces"><span>已落子</span><strong>{state.pieceCount}</strong></article>
+        <article data-stat-role="sprint-time"><span>用时</span><strong>{elapsedTimeLabel(state.elapsedTicks)}</strong></article>
+      </section>
+    );
+  }
   return (
     <section className="run-stats" data-testid="stats" aria-label="经典模式数据">
       <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
@@ -724,7 +764,7 @@ export function eventMessage(event: GameEvent): string {
   if (event.type === 'paused') return '本局已暂停。';
   if (event.type === 'resumed') return '继续本局。';
   if (event.type === 'puzzle-undone') return '已撤回上一次落子。';
-  if (event.type === 'finished') return '原有方块已清除。';
+  if (event.type === 'finished') return '目标已达成。';
   if (event.type === 'game-over') return '本局结束。';
   return '';
 }
@@ -817,7 +857,9 @@ export function GameSession({
             return next;
           });
         }
-        if ((nextState.mode === 'marathon' || nextState.mode === 'race') && nextState.status === 'game-over') {
+        const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race') && nextState.status === 'game-over'
+          || nextState.mode === 'sprint' && nextState.sprintCompletion === 'finished';
+        if (recordableRun) {
           const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}`;
           if (lastRecordedRunRef.current !== runKey) {
             lastRecordedRunRef.current = runKey;
@@ -899,6 +941,8 @@ export function GameSession({
       puzzleTargetsRemaining: state.puzzleTargetCells.length,
       puzzleTargetsInitial: state.puzzleInitialTargetCount,
       puzzleUndoDepth: state.mode === 'puzzle' ? state.puzzleUndoHistory.length : 0,
+      sprintTargetLines: state.sprintTargetLines,
+      sprintCompletion: state.sprintCompletion,
       score: state.score,
       lines: state.lines,
       combo: state.combo,
