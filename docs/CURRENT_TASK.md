@@ -126,10 +126,13 @@ live scope.
    award score, and count three cleared-line equivalents), and **倍增** (ten seconds of
    double points from normal clears and item clears). Timers are deterministic game
    ticks, stack by taking the later expiry for the same timed effect, and are visible.
-   Carrier art uses the ordinary piece material plus an original core/halo treatment;
-   activation produces a bounded board-local flash/particle response and an accessible
-   event message. The variant's record schema must discard legacy Collapse rows while
-   preserving valid Classic and Survival rows.
+   Carrier art uses one of four full, item-specific materials—ice blue Freeze, violet
+   Collapse, ember-coral Bomb, or warm-gold Multiplier—plus an original core/halo
+   treatment across the same tetromino. A bounded item-colored arrival pulse and
+   activation flash/particle response make both the carried and triggered state clear;
+   reduced motion preserves the special color/state without continuous motion. The
+   variant's record schema must discard legacy Collapse rows while preserving valid
+   Classic and Survival rows.
 9. **Mode-rule disclosure.** The homepage selector removes visible rule/record prose:
    cards retain only their name, icon, accent, and entry action. The first entry into
    each mode instead presents one concise, dismissible, mode-specific rule sheet before

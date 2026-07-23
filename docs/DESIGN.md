@@ -31,10 +31,14 @@ make local tactical changes without altering Puzzle or Survival's identity.
   normal-clear and item-clear points double for ten seconds. Timed effects refresh to
   the later expiry rather than spawning ambiguous stacks.
 - The rail adds a compact **异变状态** surface: an icon/name plus `10 秒` countdown for
-  a timed effect, or one brief factual result for an instant effect. Carrier blocks use
-  ordinary material colors with an original halo/core mark; activation is paired with a
-  bounded board-local flash/particle and a concise accessible event message. Reduced
-  motion preserves color/state changes without continuous motion.
+  a timed effect, or one brief factual result for an instant effect. Each carrier's
+  full four-cell material is unmistakably item-specific—ice blue for **冻结**, violet
+  for **坍缩**, ember coral for **炸弹**, and warm gold for **倍增**—while a central
+  halo/core confirms that it is one carried item rather than an ordinary recolor. The
+  piece has a bounded arrival pulse; activation gets an item-matched board flash and
+  short particle response plus a concise accessible event message. Reduced motion
+  preserves the four material colors and one static activation state without
+  continuous motion.
 - The home mode selector is intentionally navigational, not instructional: it shows
   only each mode's name, identity mark, and enter action. The first real entry into a
   mode opens a compact, dismissible rule introduction before input begins; it states
