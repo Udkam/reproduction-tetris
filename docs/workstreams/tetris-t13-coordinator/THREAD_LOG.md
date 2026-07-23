@@ -1,5 +1,28 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-021 contract checkpoint
+
+- The user rejects Collapse as a full fourth mode and replaces it with **异变**. Its
+  top-out run retains a fresh Classic-like bag but increases gravity only every six
+  cleared-line equivalents. Marked, deterministic item carriers begin after the first
+  two inputs; clearing any cell belonging to the locked carrier invokes its one effect.
+- Required first effects: ten-second freeze, ten-second temporary column collapse,
+  immediate bottom-three-row bomb with score/three line equivalents, and ten-second
+  score multiplier. Carrier identity must survive clears/collapse without duplicate
+  triggering; the right rail shows an active timer or instant result, the renderer
+  shows a special core/halo, and activation has bounded visual/audio feedback. Existing
+  Collapse records are reset while Classic/Survival valid records survive the new
+  top-five schema.
+- Survival opening height changes from seven to three bedrock rows; its fixed gravity,
+  13→6 pressure, and three-line-removal reward remain unchanged. Puzzle authoring,
+  queue, anchor, target, route, selector matrix, preview, and win condition remain
+  frozen; only the already-authorized Z confirmation and selected-start best display
+  may move there.
+- New Core/render/runtime/leaderboard source boundary and final verification matrix are
+  recorded in `CURRENT_TASK.md`/`DESIGN.md`. This contract supersedes all live
+  Collapse-facing scope; no product source has been changed under it yet. Next: revise
+  data model and direct tests before the App/renderer integration.
+
 ## 2026-07-24 — TETRIS-T13.8-RAIL-UNDO-020 contract checkpoint
 
 - User extension to the open T13.7 source slice: all four live modes will use one

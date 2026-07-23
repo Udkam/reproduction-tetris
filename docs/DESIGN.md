@@ -3,6 +3,44 @@
 > The current page-facing identity is the plain-text `Tetris`. Older `Tetra` headings
 > below are retained only as historical contract provenance.
 
+## T13.9 replaces Collapse with 异变
+
+The user rejects Collapse as a standalone mode: its column-settling rule is interesting
+only as a short-lived disruption, not as the whole game. The fourth visible mode is now
+**异变**. It begins and ends like a readable Classic run, but its marked carrier pieces
+make local tactical changes without altering Puzzle or Survival's identity.
+
+- 异变 uses a fresh normal seven-bag and top-out end state. Its gravity begins at the
+  Classic opening cadence and steps up after every **six** cleared-line equivalents.
+  The legacy internal `sprint` identifier may remain private to avoid an unnecessary
+  public API migration; no page-facing copy, record, or player-facing data calls it
+  Collapse or Sprint.
+- After the first two input pieces, a seeded deterministic item roll may attach one
+  item identity to an incoming tetromino. The one identity is carried by all four
+  locked cells, while a single core-marked cell makes the carrier unmistakable. No
+  item exists in Classic, Survival, or Puzzle; no carrier is inserted from wall-clock
+  randomness or a non-replayable source.
+- Clearing any cell belonging to a carrier activates that carrier exactly once. If
+  sibling cells remain, they become ordinary cells. Metadata follows ordinary line
+  clears and temporary column collapse so it cannot drift, duplicate, or fire twice.
+- The first item set is deliberately legible: **冻结** stops automatic gravity for ten
+  game-time seconds while leaving manual movement/drop available; **坍缩** settles the
+  board's columns independently after each lock for ten seconds and resolves cascaded
+  full rows; **炸弹** immediately removes the bottom three board rows whether full or
+  sparse, grants score, and contributes three cleared-line equivalents; **倍增** makes
+  normal-clear and item-clear points double for ten seconds. Timed effects refresh to
+  the later expiry rather than spawning ambiguous stacks.
+- The rail adds a compact **异变状态** surface: an icon/name plus `10 秒` countdown for
+  a timed effect, or one brief factual result for an instant effect. Carrier blocks use
+  ordinary material colors with an original halo/core mark; activation is paired with a
+  bounded board-local flash/particle and a concise accessible event message. Reduced
+  motion preserves color/state changes without continuous motion.
+- Existing v6 Collapse (`sprint`) records are semantically incompatible. The new
+  persistence schema preserves valid Classic and Survival entries but resets only the
+  fourth-mode table; all three current tables retain at most five date-stamped rows.
+- Survival's initial bedrock is **three rows**, retains fixed 40-tick gravity, removes
+  one row per three cleared lines, and raises pressure from 13 seconds down to 6.
+
 ## T13.5 replaces the time limit, not the Collapse identity
 
 The 2026-07-24 review keeps **坍缩** because independent column settling makes it

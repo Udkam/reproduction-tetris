@@ -7,17 +7,20 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.8 SETTINGS / RAIL / PUZZLE-UNDO
+Current execution status (2026-07-24): **T13.9 MUTATION MODE / SURVIVAL / SETTINGS
 FOLLOW-UP — contract checkpoint open.** The prior product candidate `6411b5e` has a
 clean isolated reproducibility result (default Vitest first output at 294 ms, 22 files
 / 138 tests, build, Core replay, and cross-size browser pass), while the separate
 external read-only disposition is still pending. The user now adds one bounded source
 slice: Settings must show the current mode's compact leaderboard, the original
 music/effects mix must be actually audible at default volume, every live mode must use
-one coherent right-side rail, and Puzzle may change only its visible undo interaction
-and selected start call-to-action. This slice may not change Puzzle definitions,
-levels, queues, anchors, previews, selector matrix, routes, or any win rule. A fresh
-independent review is required after this new source slice. The earlier T12/T13
+one coherent right-side rail, Survival must correct its opening bedrock height, and
+the rejected Collapse run is replaced by the new **异变** item mode. Puzzle may change
+only its visible undo interaction and selected start call-to-action. This slice may
+not change Puzzle definitions, levels, queues, anchors, previews, selector matrix,
+routes, or any win rule. It authorizes the named Core/renderer/runtime/persistence
+paths needed by 异变; all old Collapse records are incompatible and must not migrate. A
+fresh independent review is required after this new source slice. The earlier T12/T13
 narratives below are retained as provenance only; this section is the authoritative
 live scope.
 
@@ -31,11 +34,14 @@ live scope.
    dependencies or an installer in this delivery.
 2. **Four clearly different modes.** Classic and Survival begin each run from fresh
    random seven-bag sequences; Puzzle keeps fixed canonical queues. Classic ranks by
-   cleared lines. Survival starts with seven bedrock rows, uses fixed 40-tick gravity,
+   cleared lines. Survival starts with three bedrock rows, uses fixed 40-tick gravity,
    raises pressure every three cleared lines from 13 seconds down to 6 seconds, and
-   ranks by survival time. Collapse remains a fresh random, endless column-settling
-   run: it ends only at top-out, ranks its top five by lines, score, best chain, then
-   fewer pieces, and must never resemble Classic or show a time limit.
+   ranks by survival time. **异变** (the legacy internal `sprint` key may remain only as
+   an implementation detail) uses a fresh random seven-bag like Classic, ends at
+   top-out, and raises gravity every six cleared lines. Its random carrier tetrominoes
+   are visibly marked; clearing any cell from that tetromino activates its single item.
+   It ranks its top five by lines, score, then fewer pieces, and must read as a clear
+   item variant rather than a Collapse run or a second Classic screen.
 3. **Puzzle authoring and readability.** Keep twenty deterministic, legal 5–8-row
    endgames with unlimited ordinary input, no piece budget, no timed/volatile blocks,
    Z-confirmed undo, and two upcoming pieces. Levels remain all-open. Names are short structural
@@ -81,7 +87,8 @@ live scope.
    adding it to the selector matrix. Every mode's live right rail uses the same compact
    metric-card, Next-well, and keyboard-help rhythm; the four modes keep their own
    metrics but no mode may retain a visually incompatible ruled table or unrelated card
-   treatment.
+   treatment. 异变 reserves a concise live-effect status area for its active timer or
+   immediate trigger result; it cannot hide an effect behind transient audio alone.
    In the Puzzle selector, remove the selected `X 行残局` label and all visible
    completion checkmarks; when the selected level is completed, use its name color—not
    an extra glyph or row-count label—to communicate that state. Preserve the compact
@@ -106,6 +113,34 @@ live scope.
    Tetris-owned processes, ports, and memory; release only clearly idle Tetris
    resources, never shared Codex tooling. Then update logs/changelog, commit exact
    paths, push `main`, and state any remaining independent-QA blocker explicitly.
+8. **异变 item contract.** An item carrier is at most one marked cell group per random
+   input tetromino; a carrier appears only in 异变, never before the opening two pieces,
+   never in Puzzle, and is generated deterministically from that run's fresh seed. Its
+   four locked cells retain one carrier identity. Clearing any of those cells activates
+   the item once and removes that identity from any surviving siblings. The first
+   delivery contains: **冻结** (ten seconds without automatic gravity), **坍缩** (ten
+   seconds in which each locked board settles by independent columns and resolves any
+   resulting clears), **炸弹** (remove the bottom three board rows regardless of fill,
+   award score, and count three cleared-line equivalents), and **倍增** (ten seconds of
+   double points from normal clears and item clears). Timers are deterministic game
+   ticks, stack by taking the later expiry for the same timed effect, and are visible.
+   Carrier art uses the ordinary piece material plus an original core/halo treatment;
+   activation produces a bounded board-local flash/particle response and an accessible
+   event message. The variant's record schema must discard legacy Collapse rows while
+   preserving valid Classic and Survival rows.
+
+### T13.9 authorized implementation boundary
+
+This deliberately replaces the prior Collapse gameplay slice. Exact product/test paths
+are `src/game/core/constants.ts`, `src/game/core/types.ts`, `src/game/core/engine.ts`,
+`src/game/core/sprint.ts` and direct tests, any new isolated item helper/test,
+`src/game/runtime/GameRuntime.ts` and direct test, `src/game/render/TetrisRenderer.ts`,
+`src/game/render/presentation.ts` and direct tests, `src/App.tsx`, `src/App.test.ts`,
+`src/styles.css`, `src/leaderboard.ts`, `src/leaderboard.test.ts`, and the existing
+AudioEngine/direct test only for activation feedback. `src/game/input/InputController.ts`
+and its direct test retain their narrow `Z`/Escape ownership work. The exact preceding
+docs records may move with checkpoints; no package target, external media, or frozen
+Puzzle authoring path may move.
 
 ### Historical reconciliation notes (superseded by the ledger above)
 

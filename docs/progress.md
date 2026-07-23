@@ -54,6 +54,15 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   metric-card / Next-well / keyboard-help treatment. Collapse persistence is reduced
   from ten to the requested date-stamped top five. A signed-in music service remains
   a listening reference only; shipped audio stays original procedural work.
+- T13.9 supersedes the fourth-mode portion of that plan. Survival's opening is now
+  three bedrock rows. The former endless Collapse mode becomes **异变**: a Classic-like
+  random run that accelerates every six cleared lines and uses deterministically seeded,
+  visibly marked carrier tetrominoes. Clearing any carrier cell triggers one of
+  freeze, temporary column-collapse, bottom-three-row bomb, or timed score multiplier;
+  the active state is visible in the shared rail and activation has bounded visual/audio
+  feedback. Fourth-mode legacy records must reset rather than mix across the semantic
+  change; Classic/Survival retain their date-stamped top five. Puzzle rules and authored
+  data remain frozen.
 - Homepage follow-up is included in the same bounded UI slice: mode-card action keys
   retain their own accents through hover/focus/selection; selected state strengthens
   the current card and theme rather than turning the action blue. Static text weights
