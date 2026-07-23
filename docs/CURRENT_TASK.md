@@ -7,18 +7,70 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **COORDINATOR RECORDING — T13 converts every
-Puzzle entry into an open, legal five-through-eight-row endgame workshop; aligns
-P/R/Enter behavior with the visible controls; and replaces the rejected Sprint with
-the distinct Collapse mode.** The final local-artifact recovery has regenerated the
-current T13 routes and separated stale T12 material into its documented local archive.
-This is a verified coordinator record, not an independent-QA acceptance.
+Current execution status (2026-07-24): **IMPLEMENTATION — the T13.5 correction is
+active and has not reached final QA or release.** Contract reconciliation is complete;
+Collapse/Survival corrections, the readable Puzzle authoring pass, and player-facing
+hint removal have local source checkpoints. Puzzle personal-best persistence is the
+current in-progress slice and is not yet verified. The earlier T12/T13 narratives
+below are retained as provenance only; this section is the authoritative live scope.
 
-### Live unresolved-goal ledger (2026-07-24)
+### Authoritative active delivery goals (2026-07-24)
 
-The following is the complete current delivery ledger. An item is not complete merely
-because a local implementation exists; it remains open until its stated proof belongs
-to the final candidate.
+1. **Product boundary and future packaging readiness.** Work only in this standalone
+   clean-room repository. Keep the page-facing plain-text `Tetris` title without a
+   Chinese companion title or copied trade dress. Do not package yet, but keep browser
+   lifecycle, storage, keyboard/touch, focus, audio teardown, responsive layout, and
+   platform seams safe for a later desktop wrapper; do not add Electron/Tauri/native
+   dependencies or an installer in this delivery.
+2. **Four clearly different modes.** Classic and Survival begin each run from fresh
+   random seven-bag sequences; Puzzle keeps fixed canonical queues. Classic ranks by
+   cleared lines. Survival starts with seven bedrock rows, uses fixed 40-tick gravity,
+   raises pressure every three cleared lines from 13 seconds down to 6 seconds, and
+   ranks by survival time. Collapse remains a fresh random, endless column-settling
+   run: it ends only at top-out, ranks its top ten by lines, score, best chain, then
+   fewer pieces, and must never resemble Classic or show a time limit.
+3. **Puzzle authoring and readability.** Keep twenty deterministic, legal 5–8-row
+   endgames with unlimited ordinary input, no piece budget, no timed/volatile blocks,
+   B undo, and two upcoming pieces. Levels remain all-open. Names are short structural
+   Chinese labels. Fixed anchors are sparse, are never initial target cells/rows, sit
+   directly above the target band, visibly affect a legal landing or post-clear state,
+   and have two Core-replayed early-divergent routes. The selected preview must show
+   real board cells, targets, and anchors clearly with cohesive material colors.
+4. **Puzzle guidance and results.** Remove the current player-facing strategy/hint
+   system entirely—no trigger, unlock condition, cue, route/step UI, or hidden command
+   transcript. Keep routes only as regression evidence. Do not create or regenerate
+   `Solutions/` images in this delivery. Persist each level's real minimum successful
+   locked-piece count, show it compactly in the selector, and change only the Puzzle
+   success primary action to `重来`; other modes retain `再来一局`.
+5. **Visual, controls, and concise copy.** Keep entry/home/Puzzle pages calm and
+   original: no decorative grids/stray horizontal rules, meaningless English/telemetry,
+   invalid block glyphs, thumbnails, or clipped active pieces. Preserve clear selected
+   preview motion and reduced-motion fallbacks. Promote the active mode name. The
+   in-run right header becomes one accessible `设置` control; `S` opens the same sheet
+   containing effects/music, volume, pause/continue, and confirmation-gated restart.
+   Every visible rule must state only objective, distinct mechanic, and ranking basis.
+   All two-action sheets expose visible `←`/`→` selection, and `Enter` activates the
+   selected action; pointer, touch, Escape, and cancel behavior remain correct.
+6. **Audio.** Rework every original event contour so 100% effects are distinct and
+   audible but never electrical or harsh. Add only an original, user-gesture-gated,
+   separately toggleable procedural music bed. It must stop or suspend correctly on
+   mute, pause, restart, unmount, and browser audio suspension; no external media,
+   samples, or copyrighted music.
+7. **Verification, resource hygiene, and release.** After each source checkpoint run
+   targeted tests. At the final candidate run typecheck, the current-source full suite,
+   build, Core route replay validation (without walkthrough-image generation), and
+   desktop/portrait/landscape browser evidence. Prove one canvas, zero DOM cell grid,
+   no overflow/console error, reduced motion, controls/shortcuts, storage behavior,
+   and audio/runtime teardown. Before and after long test/browser phases, inspect only
+   Tetris-owned processes, ports, and memory; release only clearly idle Tetris
+   resources, never shared Codex tooling. Then update logs/changelog, commit exact
+   paths, push `main`, and state any remaining independent-QA blocker explicitly.
+
+### Historical reconciliation notes (superseded by the ledger above)
+
+The following notes preserve the sequence of earlier corrections. An item is not
+complete merely because a local implementation exists; it remains open until its
+stated proof belongs to the final candidate.
 
 1. **Puzzle anchor and curriculum repair.** Move the sparse fixed pegs out of original
    target rows and into visible headroom, retain only positions that materially change

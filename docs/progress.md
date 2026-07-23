@@ -2,23 +2,25 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 
 ### Active goal ledger — 2026-07-24
 
-- Pending Puzzle work: author only sparse above-band anchors with two replayed routes
-  per level; recalculate the six migrated route pairs, route artifact, concise names,
-  and preview legibility. Walkthrough-image generation is deferred.
-- Puzzle hints are deliberately removed from the player-facing product for now; paired
-  routes remain Core regression evidence only and no replacement copy is in scope.
-- Pending Puzzle completion UX: persist and show each level's best successful
-  locked-piece count, and use `重来` rather than `再来一局` after a Puzzle win.
-- Pending mode verification: Collapse remains endless with a lines-first top-ten table
-  and no rail rules; Survival remains seven-row, 40-tick, three-line reward, 13→6 s.
-- Pending finish: audible original effects plus optional procedural music; one `S`
-  settings sheet; prominent mode heading; concise factual mode copy; final gates,
-  browser evidence, changelog, exact commits, and user-authorized push.
-- Pending dialog input: two-action confirmation sheets must expose `←`/`→` selection
-  and let `Enter` activate the visibly selected action.
-- Resource discipline: inspect project-owned listeners/processes before and after long
-  verification phases; release only clearly idle Tetris resources and leave shared
-  Codex tooling untouched.
+- The authoritative live scope is now `docs/CURRENT_TASK.md`: four distinct modes,
+  readable fixed-queue Puzzle endgames, no player-facing strategy hints, personal-best
+  Puzzle records, concise Settings-first controls, original effects/music, future
+  packaging readiness, and final validation/release hygiene.
+- Implemented local checkpoints still awaiting final candidate proof: endless
+  lines-first Collapse/top-ten persistence, Survival 7-bedrock + 13→6 pressure,
+  sparse above-band Puzzle anchors/names/routes, and complete removal of the old
+  hint UI/storage. Walkthrough-image generation remains explicitly deferred.
+- Current source slice: store and display each successful Puzzle level's lowest
+  locked-piece count and use `重来` after Puzzle success. It is not marked verified
+  until direct persistence/UI tests pass.
+- Remaining implementation slices: arrow-selectable confirmation sheets; one `S`
+  Settings sheet with effects/music/volume/pause/restart; distinct audible original
+  sound contours and optional procedural music; concise mode copy and final visual
+  checks. Final gates, changelog, exact commits, user-authorized push, and independent
+  QA disposition remain pending.
+- Resource discipline remains mandatory: inspect/release only Tetris-owned idle
+  listeners/processes before and after long validation; leave Codex/shared tooling
+  untouched.
 
 ## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
 

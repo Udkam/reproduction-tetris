@@ -40,6 +40,10 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   queues, unlimited ordinary pieces, B undo, and two teaching routes per level. It
   has no volatile or expiring input mechanic. Level names become short, structural
   Chinese labels (two to four characters), rather than opaque literary phrases.
+- Classic and Survival receive a fresh random seven-bag sequence for each run, while
+  Puzzle queues remain fixed by canonical level. The browser implementation must stay
+  wrapper-ready (safe lifecycle, storage, focus, input, and audio teardown) for a
+  future application package, but this delivery adds no desktop runtime or package.
 - Completing a Puzzle records the player's lowest **落子数** for that canonical level;
   the selector shows that compact personal best beside completion state. It changes
   only after a real successful run with fewer locked pieces, remains safe when storage
