@@ -43,3 +43,18 @@
   `p-pause.png` and `r-restart-confirm.png` were visually inspected. Blocker: none.
   Next: archive local-only legacy material by route, then start the atomic endgame Core
   authoring checkpoint from this candidate.
+
+## 2026-07-23 — TETRIS-T13-DESKTOP-READINESS-003 contract addendum
+
+- Base: `447ec1e`; this record changes only the T13 contract/documentation while the
+  independent endgame-Core authoring work remains uncommitted. Exact paths:
+  `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, `docs/progress.md`, and this log.
+- User direction: prepare the browser game for a later application package, but do not
+  package it now. The bounded follow-up must keep Core platform-free, isolate browser
+  storage/lifecycle/timer/focus/audio boundaries behind safe capability adapters, retain
+  Vite-relative offline assets, and prove remount/capability-loss cleanup. Electron,
+  Tauri, Capacitor, native dependencies, installers, signing, and binaries are out of
+  scope for T13.
+- Commands run: inspected current `package.json`, Vite config, browser-global callers,
+  and the active commit policy. Blocker: none. Next: finish and checkpoint the atomic
+  endgame Core/route evidence before beginning this separate platform-boundary slice.

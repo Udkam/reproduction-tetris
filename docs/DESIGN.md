@@ -80,6 +80,26 @@ sequence, level layout, visual language, or puzzle wording.
   Classic/Survival records and fails closed on malformed data. Core state, replay, and
   UI must distinguish Sprint completion from Puzzle completion.
 
+### Desktop-packaging readiness (not a packaging release)
+
+- T13 continues to ship as a browser-first Vite application. It does **not** add an
+  Electron, Tauri, Capacitor, installer, signing workflow, native dependency, or a
+  packaged binary in this task.
+- The app is nevertheless prepared for a later desktop shell: deterministic Core stays
+  free of browser globals; local persistence, visibility lifecycle, timer ownership,
+  audio capability checks, and focus/keyboard handling have explicit browser-boundary
+  adapters with safe no-capability fallbacks. A desktop host may replace those adapters
+  without changing Puzzle, Sprint, scoring, or rendering rules.
+- Production assets must remain Vite-relative and offline-safe. No runtime feature may
+  require a remote font, URL scheme, popup, service worker, browser tab title, or direct
+  filesystem access. Existing local-only saves must retain their versioned fail-closed
+  migration behavior when the storage adapter is unavailable.
+- The readiness check is structural and browser-tested only: build output still opens
+  under a static local host, production code has no development QA globals, and closing,
+  hiding, remounting, or losing storage/audio capability leaves one clean runtime with
+  no listener, ticker, canvas, or state leak. Packaging itself remains an explicitly
+  deferred, separately approved release task.
+
 ### Presentation and verification
 
 - Retain the original light mineral/signal system but refine the all-open Puzzle
@@ -90,7 +110,7 @@ sequence, level layout, visual language, or puzzle wording.
 - The home surface becomes a balanced four-mode composition with a distinct Sprint
   glyph and concise rule. Gameplay remains one Pixi canvas with no DOM cell grid.
 - Before publication: replay every setup and paired route through public Core dispatch,
-  run targeted Core/input/persistence/UI tests, regenerate local ignored walkthroughs,
+  run targeted Core/input/persistence/UI/platform-boundary tests, regenerate local ignored walkthroughs,
   run one final typecheck/full suite/build, and inspect desktop, portrait, and landscape
   browser evidence for controls, open selection, all four modes, exact end states,
   no overflow, one canvas, and zero console errors.

@@ -36,14 +36,20 @@ tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
 5. **Workshop presentation checkpoint:** `src/App.tsx`, `src/App.test.ts`, and
    `src/styles.css` own all-open observatory copy/layout/motion and the four-mode home
    treatment. No Core authoring or storage migration is mixed into this checkpoint.
-6. **Local recovery and archive checkpoint:** move stale ignored captures only into the
+6. **Desktop-readiness checkpoint (no package):** a browser-bound platform adapter,
+   its direct tests, and the smallest consuming UI/runtime/audio paths may make storage,
+   visibility, timer, focus, and audio capability loss safe to host in a later desktop
+   shell. Do not add Electron, Tauri, Capacitor, native dependencies, installers,
+   signing, or an actual packaged artifact. Core rules, route artifacts, and the Vite
+   browser delivery remain authoritative.
+7. **Local recovery and archive checkpoint:** move stale ignored captures only into the
    documented `.local/` archive routes, regenerate `Solutions/Solution-1.md` through
    `Solution-20.md` plus their images from the final primary paths, and leave all such
    local files ignored. Do not delete material by wildcard or stage it.
-7. **Final coordinator checkpoint:** after the last source edit, run the exact final
+8. **Final coordinator checkpoint:** after the last source edit, run the exact final
    typecheck, full suite, build, and one desktop/portrait/landscape browser evidence
    pass; record base SHA, ordered commits, exact paths, commands, local cleanup,
-   evidence, blocker, and next action in the T13 log; update changelog, commit the
+   evidence, desktop-readiness disposition, blocker, and next action in the T13 log; update changelog, commit the
    record, push `main`, and verify both Git and the supported local artifact map are
    clean. Independent read-only Core and visual/browser QA remains required before an
    acceptance claim.

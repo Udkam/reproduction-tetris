@@ -15,6 +15,16 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Current next action: complete the contract checkpoint, then implement shortcut parity
   as the first independent source slice before touching Puzzle definitions.
 
+## 2026-07-23 — T13 desktop-readiness addendum
+
+- The user requires future application packaging compatibility, but explicitly does not
+  authorize a package in T13. The browser-first Vite product remains the current
+  deliverable; no Electron/Tauri/Capacitor/native dependency or binary is introduced.
+- A later bounded platform-boundary checkpoint will make storage, visibility, timer,
+  focus, and audio capability handling host-replaceable while preserving pure Core
+  simulation, Vite-relative offline assets, current versioned save migration, and the
+  one-canvas lifecycle. Final evidence must record this readiness disposition.
+
 ## 2026-07-23 — T13 direct-control checkpoint
 
 - Source checkpoint `447ec1e` makes `R` page-level confirmation only, leaves `P` on
