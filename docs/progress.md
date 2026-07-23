@@ -17,9 +17,11 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   plus real 1440×900, 390×844, and 844×390 browser checks with zero errors or overflow.
   The game view has one canvas and zero DOM board cells; the compact Puzzle best record
   persists and removed hints remain absent.
-- Remaining delivery mechanics: record the final evidence, release the clearly
-  Tetris-owned development listener, and perform the user-authorized `main` push.
-  Independent read-only QA has not issued a disposition, so this remains a
+- Newly opened selector-polish slice: remove the selected Puzzle row-count caption and
+  all visible completion checks. A solved selected level instead uses its name color,
+  while anchor and minimum-piece facts stay compact. This requires a direct UI test and
+  fresh browser frame before the coordinator record/push resumes.
+- Independent read-only QA has not issued a disposition, so this remains a
   coordinator-verified candidate rather than an acceptance claim.
 - Resource discipline remains mandatory: inspect/release only Tetris-owned idle
   listeners/processes before and after long validation; leave Codex/shared tooling

@@ -7,15 +7,16 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **FINAL COORDINATOR RECORDING — the entire
-authorized T13.5 source range is locally complete and verified.** Targeted checkpoints,
-the current-source full suite, typecheck, build, canonical route replay coverage, and
-real desktop/portrait/landscape browser evidence now pass. The remaining delivery
-mechanics are the exact evidence/log record, scoped Tetris-owned resource release, and
-the user-authorized `main` push. No independent QA disposition has been issued, so this
-is a coordinator-verified candidate rather than an acceptance. The earlier T12/T13
-narratives below are retained as provenance only; this section is the authoritative
-live scope.
+Current execution status (2026-07-24): **IMPLEMENTATION — the verified T13.5
+candidate has one newly opened Puzzle-selector polish slice.** The preceding source
+range, targeted checkpoints, full suite, typecheck, build, canonical route replay
+coverage, and desktop/portrait/landscape browser evidence remain recorded. This slice
+removes redundant selected-level metadata and completion glyphs, then expresses a
+completed Puzzle level through its selected name color. It must receive direct UI tests
+and a fresh browser frame before the coordinator record and user-authorized `main`
+push resume. No independent QA disposition has been issued, so no acceptance is
+claimed. The earlier T12/T13 narratives below are retained as provenance only; this
+section is the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
@@ -54,6 +55,10 @@ live scope.
    Every visible rule must state only objective, distinct mechanic, and ranking basis.
    All two-action sheets expose visible `←`/`→` selection, and `Enter` activates the
    selected action; pointer, touch, Escape, and cancel behavior remain correct.
+   In the Puzzle selector, remove the selected `X 行残局` label and all visible
+   completion checkmarks; when the selected level is completed, use its name color—not
+   an extra glyph or row-count label—to communicate that state. Preserve the compact
+   personal-best count and concise anchor fact where applicable.
 6. **Audio.** Rework every original event contour so 100% effects are distinct and
    audible but never electrical or harsh. Add only an original, user-gesture-gated,
    separately toggleable procedural music bed. It must stop or suspend correctly on

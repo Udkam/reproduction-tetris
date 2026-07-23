@@ -1,5 +1,21 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.6-PUZZLE-SELECTOR-017 contract checkpoint
+
+- Base: `66f8ff5`; user review reopens only the selected Puzzle-preview completion
+  treatment. The row-count caption (`X 行残局`) and visible checkmarks are redundant
+  and must disappear from the selected preview and level nodes alike. Completion is
+  instead communicated by the selected level name's color. The compact minimum-piece
+  record and fixed-anchor fact remain; no Puzzle board, queue, route, hint, unlock,
+  record semantics, or other mode may change.
+- Exact planned paths: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `docs/progress.md`,
+  this log, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`. No renderer,
+  Core, persistence, dependency, asset, or package path is in scope.
+- Required proof: direct PuzzleLibrary test for absent caption/checkmarks and completed
+  name color; one fresh browser screenshot showing an existing record; then typecheck,
+  the affected UI test, coordinator log/changelog, and the delayed user-authorized
+  push. Blocker: none. Next: implement this one visual slice.
+
 ## 2026-07-24 — TETRIS-T13.5-COORDINATOR-016 verified candidate
 
 - Base: `b6b2d3f`; product-source candidate: `6c65150`

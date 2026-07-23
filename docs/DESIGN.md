@@ -57,6 +57,10 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   routes remain regression evidence for reachability and early divergence only; no
   hint trigger, unlock condition, cue, strategy label, route step, or hidden input
   transcript is shown until a future explicit design pass.
+- The selected Puzzle preview deliberately avoids repeated status chrome: it shows no
+  `X 行残局` caption and no completion checkmark. The level name itself takes the calm
+  completed-state color when that level has a record; compact personal-best and
+  anchor facts remain available without turning the preview into telemetry.
 - Immutable anchors remain a sparse teaching mechanic rather than scenery. An anchor
   may appear only on a curated subset of levels, never on an original target cell or
   on any initial target row. It sits in visible headroom directly above the initial
