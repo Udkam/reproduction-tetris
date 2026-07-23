@@ -1,7 +1,7 @@
 // @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS } from './theme';
+import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, MUTATION_MATERIALS, PIECE_MATERIALS } from './theme';
 
 const styles = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
 
@@ -44,6 +44,21 @@ describe('T5 bright mineral matte material', () => {
     expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(BEDROCK_MATERIAL);
     expect(contrastRatio(BEDROCK_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
     expect(contrastRatio(BEDROCK_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
+  });
+
+  it('assigns four high-contrast full-piece materials to the four 异变 items', () => {
+    expect(MUTATION_MATERIALS).toEqual({
+      freeze: { fillStart: 0x84d4ff, fillEnd: 0x458fc7, edge: 0x1e5278, innerEdge: 0xd4f2ff },
+      collapse: { fillStart: 0xc798ff, fillEnd: 0x8b5cd0, edge: 0x4c2b79, innerEdge: 0xe8d6ff },
+      bomb: { fillStart: 0xff8c70, fillEnd: 0xc84f46, edge: 0x742d2a, innerEdge: 0xffc1ad },
+      multiplier: { fillStart: 0xffd166, fillEnd: 0xc78a28, edge: 0x744710, innerEdge: 0xffedb7 },
+    });
+    const starts = Object.values(MUTATION_MATERIALS).map((material) => material.fillStart);
+    expect(new Set(starts).size).toBe(4);
+    for (const material of Object.values(MUTATION_MATERIALS)) {
+      expect(contrastRatio(material.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
+      expect(contrastRatio(material.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
+    }
   });
 
   it('freezes the complete page and state palette', () => {

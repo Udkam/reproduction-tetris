@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import type { GameEvent } from '../core';
+import type { GameEvent, MutationItem } from '../core';
+import { MUTATION_MATERIALS, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
 let originalCanvasContext: PropertyDescriptor | undefined;
@@ -13,7 +14,12 @@ type RendererInternals = {
   impact: number;
   rotationPulse: number;
   boardShift: unknown;
+  mutationFlash: unknown;
+  mutationArrival: unknown;
+  activeMutationCarrierId: number | null;
   consumeEvents: (events: readonly GameEvent[]) => void;
+  advanceEffects: (deltaMs: number) => void;
+  mutationMaterial: (item: MutationItem) => PieceMaterial;
 };
 
 describe('Puzzle undo presentation reset', () => {
@@ -48,5 +54,19 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.impact).toBe(0);
     expect(internals.rotationPulse).toBe(0);
     expect(internals.boardShift).toBeNull();
+  });
+
+  it('maps each item to a full special material and clears bounded mutation effects', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    expect(internals.mutationMaterial('freeze')).toBe(MUTATION_MATERIALS.freeze);
+    expect(internals.mutationMaterial('collapse')).toBe(MUTATION_MATERIALS.collapse);
+    expect(internals.mutationMaterial('bomb')).toBe(MUTATION_MATERIALS.bomb);
+    expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
+
+    internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 380 });
+    internals.advanceEffects(380);
+    expect(internals.mutationFlash).toBeNull();
   });
 });

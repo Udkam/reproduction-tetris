@@ -15,7 +15,7 @@ import {
   type BoardMaterial,
   type PieceType,
 } from '../core';
-import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, PIECE_MATERIALS, type PieceMaterial } from './theme';
+import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, MUTATION_MATERIALS, PIECE_MATERIALS, type PieceMaterial } from './theme';
 import {
   activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
@@ -78,6 +78,12 @@ interface MutationFlash {
   duration: number;
 }
 
+interface MutationArrival {
+  carrierId: number;
+  elapsed: number;
+  duration: number;
+}
+
 interface GroupDrawOptions {
   originX: number;
   originY: number;
@@ -128,6 +134,8 @@ export class TetrisRenderer {
   private rotationPulse = 0;
   private boardShift: BoardShift | null = null;
   private mutationFlash: MutationFlash | null = null;
+  private mutationArrival: MutationArrival | null = null;
+  private activeMutationCarrierId: number | null = null;
   private options: RenderOptions = { reducedMotion: false, modeSwitch: false };
   private previewBounds: RendererSnapshot['preview'] = null;
   private previewLayerVisible = false;
@@ -191,6 +199,8 @@ export class TetrisRenderer {
       this.rotationPulse = 0;
       this.boardShift = null;
       this.mutationFlash = null;
+      this.mutationArrival = null;
+      this.activeMutationCarrierId = null;
     }
   }
 
@@ -243,6 +253,8 @@ export class TetrisRenderer {
     this.presentation = null;
     this.lockPulse = null;
     this.mutationFlash = null;
+    this.mutationArrival = null;
+    this.activeMutationCarrierId = null;
   }
 
   private readonly onTick = (ticker: Ticker): void => {
@@ -301,6 +313,7 @@ export class TetrisRenderer {
   private drawPieces(state: GameState, layout: BoardLayout): void {
     const graphics = this.pieceGraphics;
     graphics.clear();
+    this.syncMutationArrival(state);
     let visibleLockedCells = 0;
     const lockedByMaterial = new Map<BoardMaterial, Cell[]>();
     const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
@@ -331,6 +344,7 @@ export class TetrisRenderer {
       });
     }
     this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
+    this.drawMutationCarrierMaterials(graphics, state, layout, boardShiftOffsetY);
     this.drawMutationCarrierMarks(graphics, state, layout, boardShiftOffsetY);
 
     if (this.trail && !this.options.reducedMotion) {
@@ -364,6 +378,9 @@ export class TetrisRenderer {
     const ghostOffsetX = this.presentation && state.active
       ? (this.presentation.x - state.active.x) * layout.cell
       : 0;
+    const activeMutationMaterial = state.mode === 'sprint' && state.mutationActiveCarrier
+      ? this.mutationMaterial(state.mutationActiveCarrier.item)
+      : undefined;
     if (state.active) {
       this.drawCellGroups(graphics, visibleGhostCells, state.active.type, 0.82, {
         originX: layout.x,
@@ -371,6 +388,7 @@ export class TetrisRenderer {
         unit: layout.cell,
         offsetX: ghostOffsetX,
         ghost: true,
+        material: activeMutationMaterial,
       });
     }
 
@@ -385,16 +403,25 @@ export class TetrisRenderer {
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
     const offsetY = clampActivePresentationOffsetY(rawOffsetY, visibleActiveCells, layout.cell, VISIBLE_HEIGHT);
     const requestedRotationScale = this.options.reducedMotion ? 1 : 1 + this.rotationPulse * 0.035;
+    const requestedCarrierScale = requestedRotationScale * this.mutationArrivalScale();
     const rotationScale = activePresentationScaleFitsVisibleWell(
       visibleActiveCells,
       offsetY,
       layout.cell,
       VISIBLE_HEIGHT,
-      requestedRotationScale,
+      requestedCarrierScale,
     )
-      ? requestedRotationScale
+      ? requestedCarrierScale
       : 1;
     if (state.active) {
+      this.drawMutationArrivalPulse(
+        graphics,
+        visibleActiveCells,
+        state.mutationActiveCarrier?.item ?? null,
+        layout,
+        offsetX,
+        offsetY,
+      );
       this.drawCellGroups(
         graphics,
         visibleActiveCells,
@@ -408,6 +435,7 @@ export class TetrisRenderer {
           offsetY,
           active: true,
           scale: rotationScale,
+          material: activeMutationMaterial,
         },
       );
       this.drawActiveMutationCarrierMark(graphics, state, layout, offsetX, offsetY);
@@ -438,10 +466,52 @@ export class TetrisRenderer {
   }
 
   private mutationColor(item: MutationItem): number {
-    if (item === 'freeze') return 0x7bc8ff;
-    if (item === 'collapse') return 0xbc8cff;
-    if (item === 'bomb') return 0xff8b70;
-    return 0xffd166;
+    return this.mutationMaterial(item).fillStart;
+  }
+
+  private mutationMaterial(item: MutationItem): PieceMaterial {
+    return MUTATION_MATERIALS[item];
+  }
+
+  private syncMutationArrival(state: GameState): void {
+    const carrierId = state.mode === 'sprint' && state.active && state.mutationActiveCarrier
+      ? state.mutationActiveCarrier.id
+      : null;
+    if (carrierId === this.activeMutationCarrierId) return;
+    this.activeMutationCarrierId = carrierId;
+    this.mutationArrival = carrierId === null || this.options.reducedMotion
+      ? null
+      : { carrierId, elapsed: 0, duration: 440 };
+  }
+
+  private mutationArrivalScale(): number {
+    if (!this.mutationArrival || this.options.reducedMotion) return 1;
+    const progress = Math.min(1, this.mutationArrival.elapsed / this.mutationArrival.duration);
+    return 1 + (1 - easeOutCubic(progress)) * 0.065;
+  }
+
+  private drawMutationArrivalPulse(
+    graphics: Graphics,
+    cells: readonly Cell[],
+    item: MutationItem | null,
+    layout: BoardLayout,
+    offsetX: number,
+    offsetY: number,
+  ): void {
+    if (!item || !this.mutationArrival || this.options.reducedMotion || cells.length === 0) return;
+    const progress = Math.min(1, this.mutationArrival.elapsed / this.mutationArrival.duration);
+    const alpha = Math.max(0, 0.18 * (1 - easeOutCubic(progress)));
+    if (alpha === 0) return;
+    this.drawCellGroups(graphics, cells, 'O', alpha, {
+      originX: layout.x,
+      originY: layout.y,
+      unit: layout.cell,
+      offsetX,
+      offsetY,
+      scale: 1.12 - progress * 0.08,
+      faceColor: this.mutationColor(item),
+      material: this.mutationMaterial(item),
+    });
   }
 
   private drawMutationCore(
@@ -475,6 +545,23 @@ export class TetrisRenderer {
         0,
         offsetY,
       );
+    }
+  }
+
+  private drawMutationCarrierMaterials(graphics: Graphics, state: GameState, layout: BoardLayout, offsetY: number): void {
+    if (state.mode !== 'sprint') return;
+    for (const carrier of state.mutationCarriers) {
+      const cells = carrier.cells
+        .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
+        .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
+      if (cells.length === 0) continue;
+      this.drawCellGroups(graphics, cells, 'O', 1, {
+        originX: layout.x,
+        originY: layout.y,
+        unit: layout.cell,
+        offsetY,
+        material: this.mutationMaterial(carrier.item),
+      });
     }
   }
 
@@ -938,6 +1025,8 @@ export class TetrisRenderer {
         this.presentation = null;
         this.boardShift = null;
         this.mutationFlash = null;
+        this.mutationArrival = null;
+        this.activeMutationCarrierId = null;
       } else if (event.type === 'puzzle-undone') {
         // Undo restores a pre-lock Core snapshot. Any lock, trail, line-impact, or
         // interpolation residue belongs to the discarded timeline and must not
@@ -949,6 +1038,8 @@ export class TetrisRenderer {
         this.rotationPulse = 0;
         this.boardShift = null;
         this.mutationFlash = null;
+        this.mutationArrival = null;
+        this.activeMutationCarrierId = null;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
           cells: event.cells,
@@ -1007,6 +1098,10 @@ export class TetrisRenderer {
     if (this.mutationFlash) {
       this.mutationFlash.elapsed += deltaMs;
       if (this.mutationFlash.elapsed >= this.mutationFlash.duration) this.mutationFlash = null;
+    }
+    if (this.mutationArrival) {
+      this.mutationArrival.elapsed += deltaMs;
+      if (this.mutationArrival.elapsed >= this.mutationArrival.duration) this.mutationArrival = null;
     }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);

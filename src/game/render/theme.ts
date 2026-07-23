@@ -1,4 +1,4 @@
-import type { PieceType } from '../core';
+import type { MutationItem, PieceType } from '../core';
 
 export interface PieceMaterial {
   fillStart: number;
@@ -78,6 +78,14 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
   Z: { fillStart: 0x83aa57, fillEnd: 0x6f914a, edge: 0x425a2b, innerEdge: 0xbcd79a },
   J: { fillStart: 0x9a65b1, fillEnd: 0x87579e, edge: 0x553663, innerEdge: 0xcfa9dc },
   L: { fillStart: 0x4d91ad, fillEnd: 0x407d99, edge: 0x295567, innerEdge: 0x95c8d9 },
+};
+
+/** Full-piece carrier materials are deliberately separate from the ordinary seven hues. */
+export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
+  freeze: { fillStart: 0x84d4ff, fillEnd: 0x458fc7, edge: 0x1e5278, innerEdge: 0xd4f2ff },
+  collapse: { fillStart: 0xc798ff, fillEnd: 0x8b5cd0, edge: 0x4c2b79, innerEdge: 0xe8d6ff },
+  bomb: { fillStart: 0xff8c70, fillEnd: 0xc84f46, edge: 0x742d2a, innerEdge: 0xffc1ad },
+  multiplier: { fillStart: 0xffd166, fillEnd: 0xc78a28, edge: 0x744710, innerEdge: 0xffedb7 },
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
