@@ -7,15 +7,21 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **FINAL COORDINATOR RECORDING — the T13.6
-Puzzle-selector polish slice is locally complete and verified.** It removes redundant
+Current execution status (2026-07-24): **ISOLATED READ-ONLY REPRODUCIBILITY QA
+RECORDED — technical result PASS; external independent acceptance remains pending.**
+The T13.6 Puzzle-selector polish at product candidate `6411b5e` removes redundant
 selected-level metadata and completion glyphs, then expresses every completed selected
-Puzzle level through its name color. Direct UI testing, typecheck, the current-source
-full suite, build, and fresh browser evidence pass; the remaining delivery mechanics
-are this evidence/log record and the user-authorized `main` push. No independent QA
-disposition has been issued, so this is a coordinator-verified candidate rather than
-an acceptance. The earlier T12/T13 narratives below are retained as provenance only;
-this section is the authoritative live scope.
+Puzzle level through its name color. A fresh detached worktree reproduced dependency
+installation, typecheck, the 22-file / 138-test current-source suite, and the
+743-module build; the default Vitest command emitted its first normal output after
+294 ms rather than hanging silently. Read-only Core checks replayed the schema-6
+two-route / immutable-anchor evidence, and browser review covered desktop, portrait,
+landscape, reduced motion, all four modes, one canvas, zero DOM cells, no overflow,
+and zero console errors. The isolated port-5174 Vite tree and temporary worktree were
+released; the pre-existing user-owned port-5173 listener was retained. This is a
+coordinator-run isolated audit, not an external reviewer disposition, so it cannot be
+called an independent acceptance. The earlier T12/T13 narratives below are retained
+as provenance only; this section is the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 

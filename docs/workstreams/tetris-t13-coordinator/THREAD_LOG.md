@@ -1,5 +1,33 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.7-READONLY-REPRO-018 coordinator audit record
+
+- Product candidate: `6411b5efaead87c91138285305b3ce7e9c48988e` on `main`; no product
+  source, Puzzle definitions, queues, anchors, routes, selector, or visual surface was
+  modified by this audit. A fresh detached worktree at the exact candidate received
+  one `npm.cmd ci --no-audit --no-fund` before all reproducibility checks.
+- Gates: `npm.cmd run typecheck` passed; default `npm.cmd run test` passed 22 files /
+  138 tests in 32.38 s; `npm.cmd run build` passed with 743 modules in 883 ms. A
+  separately streamed default test command emitted first stdout at 294 ms, had no
+  stderr, and exited 0, so the reported silent-start symptom is not reproducible on a
+  clean current candidate.
+- Read-only Core review covers the schema-6 artifact and the current tests for all 20
+  Puzzle route pairs, public `dispatch()` terminal replay, immutable anchors, fixed
+  Puzzle queues, fresh random normal-play bags, Survival 7 bedrock / fixed 40 ticks /
+  13→6 pressure, and endless Collapse top-ten ordering.
+- Browser evidence against the isolated candidate Vite server passed at 1440×900,
+  390×844, 844×390, and reduced motion. It verifies Settings, all four modes,
+  Survival's visible seven rows and 13-second pressure, untimed Collapse, Puzzle's
+  all-open selector, no visible row caption/checkmark, `B` undo, two Next pieces, one
+  canvas during play, zero DOM cells, no overflow, and zero errors. The seven fresh
+  frames were visually inspected.
+- Resource audit: only the isolated port-5174 Vite `cmd`/`npm`/`node` tree was stopped;
+  the exact temporary QA worktree was then removed. The pre-existing port-5173 VS Code
+  listener remains untouched. Technical disposition: **PASS**. External independent
+  QA disposition: **PENDING** — this is a coordinator-run isolated read-only audit,
+  not a substitute for an independent reviewer. Next: preserve this record and await
+  an independent disposition before claiming formal acceptance.
+
 ## 2026-07-24 — TETRIS-T13.6-PUZZLE-SELECTOR-017 source checkpoint
 
 - Base: `509765d`; candidates: `88fbbab` and corrective CSS follow-up `8cab0e4`.

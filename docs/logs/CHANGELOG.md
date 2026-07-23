@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-07-24 — T13 isolated reproducibility QA record
+
+- Read-only reproduction of product candidate `6411b5e` in a clean detached worktree
+  passed `npm.cmd ci --no-audit --no-fund`, `npm.cmd run typecheck`, the default
+  `npm.cmd run test` (22 files / 138 tests), and `npm.cmd run build` (743 modules).
+  A separate streamed invocation observed its first normal test output at 294 ms with
+  no stderr, so the previous silent default-Vitest startup symptom did not reproduce.
+- Static Core review verified schema-6 Puzzle route evidence for all 20 levels: two
+  public-dispatch route families per level, early divergence, legal terminal replay,
+  and immutable sparse anchors. It also rechecked the fixed-queue Puzzle boundary,
+  fresh random Classic/Survival bags, 7-row / 13→6 Survival pressure, and endless
+  top-ten Collapse sorting.
+- Fresh browser evidence at desktop, portrait, landscape, and reduced-motion states
+  confirms the four modes, Settings sheet, Survival bedrock, untimed Collapse rail,
+  Puzzle undo/two-Next queue, one canvas during play, zero DOM board cells, no
+  overflow, and zero console/page errors. Visual inspection found no stray rail line,
+  clipped active piece, obsolete Puzzle row caption, or visible completion checkmark.
+  Ignored local audit output is retained under `.local/audits/t13-readonly-browser/`.
+- The isolated Vite tree on port 5174 and its exact temporary detached worktree were
+  released after audit. An unrelated pre-existing VS Code listener on port 5173 was
+  intentionally retained. Technical disposition is **PASS**; an external independent
+  QA acceptance remains pending because this was a coordinator-run isolated audit.
+
 ## 2026-07-24 — T13.6 Puzzle selector completion treatment candidate
 
 - Removed the selected `X 行残局` caption and all visible Puzzle completion checkmarks.

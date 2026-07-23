@@ -19,11 +19,19 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   persists and removed hints remain absent.
 - Selector-polish slice verified: the selected Puzzle row-count caption and all visible
   completion checks are gone. A solved selected level instead uses its name color,
-  while anchor and minimum-piece facts stay compact. Direct UI testing, typecheck, the
-  full 22-file/138-test suite, build, and a fresh browser frame pass; only the final
-  record and delayed user-authorized push remain.
-- Independent read-only QA has not issued a disposition, so this remains a
-  coordinator-verified candidate rather than an acceptance claim.
+  while anchor and minimum-piece facts stay compact.
+- A clean detached-worktree, read-only reproducibility audit of product candidate
+  `6411b5e` passed dependency installation, typecheck, the 22-file / 138-test suite,
+  and the 743-module build. Its streamed default `npm.cmd run test` produced first
+  normal output in 294 ms with no stderr, confirming the current Vitest discovery path
+  does not reproduce the historical silent-start symptom. Core route/anchor evidence,
+  desktop/portrait/landscape/reduced-motion browser states, settings, Survival,
+  Collapse, Puzzle undo/two-Next behavior, canvas/DOM/overflow, and zero browser
+  errors were all checked read-only.
+- Technical disposition: **PASS**. Acceptance disposition: **PENDING** — the isolated
+  audit was run by the coordinator, so it is not presented as an external independent
+  reviewer sign-off. The isolated Vite listener on port 5174 and its detached worktree
+  were released; the unrelated pre-existing port-5173 VS Code listener was retained.
 - Resource discipline remains mandatory: inspect/release only Tetris-owned idle
   listeners/processes before and after long validation; leave Codex/shared tooling
   untouched.
