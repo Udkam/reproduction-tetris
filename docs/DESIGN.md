@@ -90,6 +90,16 @@ sequence, level layout, visual language, or puzzle wording.
   audio capability checks, and focus/keyboard handling have explicit browser-boundary
   adapters with safe no-capability fallbacks. A desktop host may replace those adapters
   without changing Puzzle, Sprint, scoring, or rendering rules.
+- `src/platform/browserPlatform.ts` is the sole T13 browser capability seam for these
+  concerns. It owns guarded local storage, media-query subscription, frame/timeout
+  scheduling and cancellation, document/window listener teardown, deferred focus, and
+  AudioContext construction. Its default implementation uses the browser only when a
+  capability exists; an injected unavailable host returns inert listeners, `null`
+  timers/audio, and default reduced-motion/storage values without mutating Core state.
+  GameRuntime receives this boundary as an optional presentation dependency and must
+  release every acquired listener on destroy. React presentation may use it for local
+  saves, countdown/focus, restart keys, and action-sheet focus trapping. Pixi renderer
+  DOM geometry remains browser-bound by design, but is not part of Core or a package API.
 - Production assets must remain Vite-relative and offline-safe. No runtime feature may
   require a remote font, URL scheme, popup, service worker, browser tab title, or direct
   filesystem access. Existing local-only saves must retain their versioned fail-closed

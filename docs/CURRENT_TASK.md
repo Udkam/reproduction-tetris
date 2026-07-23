@@ -56,12 +56,16 @@ tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
    open-workshop contract. It requires direct typecheck/App coverage before its local
    checkpoint and the final whole-range typecheck, suite, build, and browser pass. No
    Core authoring, storage migration, or desktop packaging target is mixed into it.
-7. **Desktop-readiness checkpoint (no package):** a browser-bound platform adapter,
-   its direct tests, and the smallest consuming UI/runtime/audio paths may make storage,
-   visibility, timer, focus, and audio capability loss safe to host in a later desktop
-   shell. Do not add Electron, Tauri, Capacitor, native dependencies, installers,
-   signing, or an actual packaged artifact. Core rules, route artifacts, and the Vite
-   browser delivery remain authoritative.
+7. **Desktop-readiness checkpoint (no package):** `src/platform/browserPlatform.ts`,
+   its direct test, `src/App.tsx`, `src/puzzleHints.ts`, `src/ui/ActionSheet.tsx`, and
+   the smallest GameRuntime/AudioEngine paths plus their direct tests may make storage,
+   visibility, timer, focus, keyboard, and audio capability loss safe to host in a later
+   desktop shell. The adapter owns safe storage reads/writes, media-query subscription,
+   timeout/frame cancellation, visibility/window listener teardown, focus deferral, and
+   AudioContext construction; unavailable capabilities must become no-ops or default
+   values rather than change a game run. Do not add Electron, Tauri, Capacitor, native
+   dependencies, installers, signing, or an actual packaged artifact. Core rules, route
+   artifacts, renderer primitives, and Vite browser delivery remain authoritative.
 8. **Local recovery and archive checkpoint:** move stale ignored captures only into the
    documented `.local/` archive routes, regenerate `Solutions/Solution-1.md` through
    `Solution-20.md` plus their images from the final primary paths, and leave all such

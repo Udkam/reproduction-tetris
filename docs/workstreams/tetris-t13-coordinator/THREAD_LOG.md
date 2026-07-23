@@ -154,3 +154,20 @@
   `.local/audits/t13-relay/` and remain ignored.
 - Blocker: none. Next: implement the separate browser platform adapter required for
   future desktop-host packaging readiness, without adding a package target.
+
+## 2026-07-23 — TETRIS-T13-PLATFORM-009 contract addendum
+
+- Base: `a336eba`. This checkpoint changes only the T13 contract and coordinator log.
+  The authorized implementation set is `src/platform/browserPlatform.ts` plus direct
+  tests; the smallest App, Puzzle hint persistence, ActionSheet, GameRuntime, and
+  AudioEngine consumers plus their direct tests. No Core rules, Puzzle artifact,
+  renderer primitive, dependency, or package target is included.
+- Direction: retain the browser-first Vite delivery while establishing one replaceable
+  capability boundary for local storage, media queries, timeout/frame ownership,
+  document/window visibility and keyboard listeners, focus, and AudioContext creation.
+  Missing or denied capabilities must fail closed to inert UI persistence/lifecycle
+  behavior, never alter a deterministic game state, and leave no listener/timer/audio
+  leak after runtime destroy or React unmount.
+- Commands run: reviewed the current direct browser-global callers and their existing
+  tests. Blocker: none. Next: implement the adapter and targeted safety tests, then
+  record a source checkpoint before final whole-range validation.
