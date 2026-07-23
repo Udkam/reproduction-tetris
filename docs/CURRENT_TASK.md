@@ -45,6 +45,11 @@ desktop package target is in scope. Before a candidate claim: run direct tests a
 each checkpoint, then typecheck, the unqualified current-source suite, build, route
 replay/walkthrough regeneration, and a desktop/portrait/landscape browser pass.
 
+Cross-boundary exception: retiring the Collapse timer changes one inseparable behavior
+across Core terminal state, local score schema, HUD/result text, and direct tests. Its
+single source checkpoint may use the named Collapse/Survival/persistence/UI paths above
+despite the ordinary ten-path budget; it may not capture any unrelated path.
+
 ### T13.2 fourth-mode Collapse correction
 
 The user clarified that the rejected fourth mode is Sprint, not Puzzle. Puzzle is
