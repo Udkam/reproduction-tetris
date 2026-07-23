@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-07-24 — T13.9 异变 item mode and carrier presentation accepted
+
+- Replaced the retired fourth-mode Collapse run with **异变**: a fresh seeded
+  top-out run that increases gravity every six cleared-line equivalents and introduces
+  deterministic item carriers after the opening two pieces. Clearing any carrier cell
+  activates Freeze, Collapse, Bomb, or Multiplier; the shared rail exposes the active
+  result/timer. Survival now begins at three bedrock rows while keeping its 13→6-second
+  pressure curve. Legacy fourth-mode records reset, while valid Classic/Survival
+  date-stamped top-five records remain.
+- Carrier bodies now use four full, high-separation materials rather than ordinary
+  tetromino hues: ice blue Freeze, violet Collapse, coral Bomb, and warm-gold
+  Multiplier. Each keeps the original core/halo treatment, has a bounded arrival pulse,
+  and triggers an item-coloured board flash. Reduced-motion users receive the same
+  special state as a static 240 ms flash rather than an animation.
+- The initial independent review found that a 1 ms reduced-motion flash expired before
+  it could paint. The targeted repair adds a direct 16 ms-frame draw regression and a
+  fresh independent recheck accepts candidate `ca8c7f6` with no P0–P2 findings.
+- Final gates pass: typecheck; 22 test files / 146 tests; production build with 744
+  modules; and a fresh 1440×900, reduced-motion 390×844, and 844×390 browser audit
+  showing one canvas, zero DOM cells, no overflow, and zero console/page errors. The
+  coordinator-owned 5176 audit listener was released; unrelated 5173 remains untouched.
+
 ## 2026-07-24 — T13 isolated reproducibility QA record
 
 - Read-only reproduction of product candidate `6411b5e` in a clean detached worktree

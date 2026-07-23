@@ -1,5 +1,23 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-026 acceptance and release record
+
+- Coordinator read both independent verdicts and their durable log: `ce35cb1` correctly
+  rejected the initial material candidate for the reduced-motion P2, and `d993e49`
+  accepts repaired product candidate `ca8c7f6` over `59bc5ef..ca8c7f6` with no P0–P2
+  findings. The accepted repair is limited to the static 240 ms item-coloured flash and
+  its 16 ms draw regression; no Puzzle authoring path changed.
+- Final evidence belongs to the repaired candidate: `npm.cmd run typecheck`, default
+  `npm.cmd run test` (22 files / 146 tests, 18.25 s), `npm.cmd run build` (744 modules),
+  and `.local/audits/t13-9-mutation/audit.mjs` at desktop, reduced-motion portrait, and
+  landscape. Evidence confirms the coral bomb carrier/core/status state, rules and
+  Settings surfaces, three-row Survival/13→6 copy, one canvas, zero DOM cells, no
+  overflow, and zero browser errors.
+- Resource release was independently verified: only the coordinator-owned Vite child
+  `44016` at `127.0.0.1:5176` was stopped after audit; the unknown-owner 5173 listener
+  remains. The user-authorized next action is to commit this final documentation and
+  push `main` without rewriting history.
+
 ## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-024 reduced-motion repair candidate
 
 - Base: independent QA failure verdict `ce35cb1` against product candidate `02b9ba9`.

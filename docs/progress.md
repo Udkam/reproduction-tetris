@@ -42,12 +42,13 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   before its bounded 240 ms lifetime expires. Captures were visually inspected and
   remain ignored local evidence.
 - The first independent read-only review correctly rejected `02b9ba9` for a P2
-  reduced-motion flash lifetime defect; `ca8c7f6` resolves it with a direct regression.
-  Technical disposition: **candidate PASS**. Acceptance remains **PENDING** until a
-  fresh independent read-only Core and browser/visual QA reviews `59bc5ef..ca8c7f6`.
-- Resource discipline remains mandatory: port 5176 is the coordinator-owned audit
-  Vite listener and will be released after QA; the pre-existing port-5173 Tetris
-  listener has an unknown owner and is retained. Shared Codex tooling remains untouched.
+  reduced-motion flash lifetime defect; `ca8c7f6` resolves it with a direct regression,
+  and fresh independent recheck `d993e49` accepts `59bc5ef..ca8c7f6` with no P0–P2
+  findings. Technical disposition: **ACCEPTED**.
+- Resource hygiene is complete: the coordinator-owned audit Vite listener on port 5176
+  was released after the final browser pass. The pre-existing port-5173 Tetris listener
+  has an unknown owner and remains intentionally retained; shared Codex tooling was
+  untouched.
 
 ## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
 

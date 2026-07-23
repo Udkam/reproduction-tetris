@@ -8,21 +8,16 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-24): **T13.9 MUTATION MODE / SURVIVAL / SETTINGS
-FOLLOW-UP — contract checkpoint open.** The prior product candidate `6411b5e` has a
-clean isolated reproducibility result (default Vitest first output at 294 ms, 22 files
-/ 138 tests, build, Core replay, and cross-size browser pass), while the separate
-external read-only disposition is still pending. The user now adds one bounded source
-slice: Settings must show the current mode's compact leaderboard, the original
-music/effects mix must be actually audible at default volume, every live mode must use
-one coherent right-side rail, Survival must correct its opening bedrock height, and
-the rejected Collapse run is replaced by the new **异变** item mode. Puzzle may change
-only its visible undo interaction and selected start call-to-action. This slice may
-not change Puzzle definitions, levels, queues, anchors, previews, selector matrix,
-routes, or any win rule. It authorizes the named Core/renderer/runtime/persistence
-paths needed by 异变; all old Collapse records are incompatible and must not migrate. A
-fresh independent review is required after this new source slice. The earlier T12/T13
-narratives below are retained as provenance only; this section is the authoritative
-live scope.
+FOLLOW-UP — accepted for release.** Product candidate `ca8c7f6` completes the bounded
+Core, persistence, rail, audio, first-entry-rule, and renderer surface while leaving
+Puzzle authored content untouched. Independent QA first found a reduced-motion
+activation-flash P2 in `02b9ba9`; `ca8c7f6` repairs it with a static 240 ms
+item-coloured state and a real-frame regression, and the fresh independent recheck
+`d993e49` accepts the result. Final typecheck, 146-test suite, build, and
+desktop/portrait/landscape browser evidence pass. The coordinator-owned audit listener
+on port 5176 was released; the unrelated pre-existing 5173 listener remains untouched.
+The earlier T12/T13 narratives below are retained as provenance only; this section is
+the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
