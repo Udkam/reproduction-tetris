@@ -6,11 +6,12 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   readable fixed-queue Puzzle endgames, no player-facing strategy hints, personal-best
   Puzzle records, concise Settings-first controls, original effects/music, future
   packaging readiness, and final validation/release hygiene.
-- Source candidate `59bc5ef..02b9ba9` is locally complete in six reviewable
+- Source candidate `59bc5ef..ca8c7f6` is locally complete in seven reviewable
   checkpoints: rule-disclosure contract `842dcce`; deterministic 异变 Core plus
   three-row Survival `3429911`; top-five v7 record migration `fcdca83`; the
   visible rules/settings/audio/renderer/input surface `1d9c90c`; the item-material
-  contract `af3d739`; and its renderer implementation `02b9ba9`.
+  contract `af3d739`; its renderer implementation `02b9ba9`; and the reduced-motion
+  activation-feedback repair `ca8c7f6`.
 - **异变** now replaces the former Collapse run: it keeps fresh seeded seven-bags and
   top-out, accelerates every six cleared-line equivalents, and begins deterministic
   marked carrier pieces after the opening two inputs. Any cleared carrier cell triggers
@@ -28,7 +29,7 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   same facts remain under **规则** in Settings. Settings also shows its current record
   surface, keyboard map, original effects/music controls, and arrow/Enter operation.
 - Final coordinator gates pass: `npm.cmd run typecheck`; default `npm.cmd run test`
-  (22 files / 145 tests, 19.35 s); and `npm.cmd run build` (744 transformed modules).
+  (22 files / 146 tests, 18.25 s); and `npm.cmd run build` (744 transformed modules).
   Targeted Core, persistence, UI/input/renderer, audio, and four-material renderer
   checkpoints also pass.
 - Fresh browser audit `.local/audits/t13-9-mutation/audit.mjs` passes at 1440×900,
@@ -36,11 +37,14 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   prose, deterministic visible 异变 bomb carrier state, its coral full-piece material
   and core/status treatment, Settings rules/records/keyboard navigation, Escape return,
   Puzzle entry, one gameplay canvas, zero DOM cells, no overflow, no dialog clipping,
-  and zero console/page errors. Renderer tests cover the four distinct materials and
-  the bounded item-coloured activation flash. Captures were visually inspected and
+  and zero console/page errors. Renderer tests cover the four distinct materials and a
+  real 16 ms reduced-motion frame: its static item-coloured activation flash is drawn
+  before its bounded 240 ms lifetime expires. Captures were visually inspected and
   remain ignored local evidence.
-- Technical disposition: **candidate PASS**. Acceptance remains **PENDING** until a
-  fresh independent read-only Core and browser/visual QA reviews `59bc5ef..02b9ba9`.
+- The first independent read-only review correctly rejected `02b9ba9` for a P2
+  reduced-motion flash lifetime defect; `ca8c7f6` resolves it with a direct regression.
+  Technical disposition: **candidate PASS**. Acceptance remains **PENDING** until a
+  fresh independent read-only Core and browser/visual QA reviews `59bc5ef..ca8c7f6`.
 - Resource discipline remains mandatory: port 5176 is the coordinator-owned audit
   Vite listener and will be released after QA; the pre-existing port-5173 Tetris
   listener has an unknown owner and is retained. Shared Codex tooling remains untouched.

@@ -1,5 +1,34 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-024 reduced-motion repair candidate
+
+- Base: independent QA failure verdict `ce35cb1` against product candidate `02b9ba9`.
+  Exact source repair: `ca8c7f6`; refreshed product candidate range is
+  `59bc5ef..ca8c7f6`. No Core, item, Puzzle, persistence, or user-copy behavior
+  changed: this repair only makes the already-required reduced-motion trigger state
+  paint reliably.
+- Exact changed paths: `src/game/render/TetrisRenderer.ts` and
+  `src/game/render/TetrisRenderer.test.ts`. Reduced motion formerly assigned a 1 ms
+  mutation-flash duration, but effect advancement occurs before drawing; an ordinary
+  frame therefore removed the state without a paint. The renderer now holds a static,
+  item-coloured flash for 240 ms. It contains no continuous animation and still clears
+  predictably.
+- Regression proof: the direct renderer test enables reduced motion, consumes a Freeze
+  activation, advances a realistic 16 ms frame, and spies the draw path for the exact
+  ice-blue fill at static alpha 0.16. It then advances the remaining 224 ms and proves
+  that the bounded state clears. Targeted typecheck plus renderer/theme tests passed
+  (2 files / 10 tests).
+- Final coordinator gates rerun after the repair: `npm.cmd run typecheck`; default
+  `npm.cmd run test` (22 files / 146 tests, 18.25 s); and `npm.cmd run build`
+  (744 transformed modules). Fresh `.local/audits/t13-9-mutation/audit.mjs` evidence
+  again passed desktop 1440×900, reduced-motion portrait 390×844, and landscape
+  844×390: deterministic coral bomb carrier, rule disclosure, Settings, three-row
+  Survival/13→6 copy, one canvas, zero DOM cells, no overflow, and zero console/page
+  errors.
+- The earlier QA failure remains valid historical evidence and is not overwritten.
+  Blocker: this repaired source candidate requires a fresh independent read-only
+  verdict before acceptance, changelog, or push. Next: request that review.
+
 ## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-022 source candidate
 
 - Base: `59bc5ef`; contract checkpoints `842dcce` and `af3d739`; source candidate
