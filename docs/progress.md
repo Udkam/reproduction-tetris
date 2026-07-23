@@ -13,6 +13,9 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   the live randomizer, fixed brisk fall, and time leaderboard but gains target-cell
   tracking and a clear/opening-read objective distinct from Classic, Survival, and
   fixed Puzzle endgames.
+- The selected Puzzle preview is now explicitly a readability target: it must enlarge
+  its actual board cells and use a cohesive, high-separation palette on the quiet dark
+  well. The selector remains number-led; no decorative thumbnail system returns.
 - Two prior final-suite attempts are explicitly inconclusive, not passes: default
   Vitest ended at 124 seconds without output, and a later single-worker run was
   deliberately stopped after an extended no-output wait. Existing targeted checks and

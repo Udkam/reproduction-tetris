@@ -257,3 +257,12 @@
   124-second default run and one stopped single-worker run produced no result.
   Blocker: none. Next: implement and directly test the isolated Sprint Core change,
   then quiet the App/CSS visual surface before fresh browser evidence.
+
+### TETRIS-T13.1 preview-readability amendment
+
+- User additionally requires the Puzzle selector's sole selected preview to become
+  clearer, more pattern-legible, and color-coherent after the decorative cleanup. It
+  remains the real authored setup, not a generated symbol: enlarge the cells, preserve
+  their material differences on the dark well, use a quiet anchor accent, and keep the
+  numeric matrix sparse so it does not compete with the preview. This remains inside
+  the existing `src/App.tsx` / `src/App.test.ts` / `src/styles.css` visual boundary.

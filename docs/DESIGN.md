@@ -25,6 +25,13 @@ choose a mode or a Puzzle endgame.
   specimen. There is no looping grid, sweep, count-up, or motion that hides the
   first useful frame. `prefers-reduced-motion` receives the same final arrangement
   with no transition.
+- The Puzzle library's single preview is the visual explanation of a selected level:
+  enlarge it enough to read its actual cell structure at desktop and narrow widths,
+  give every piece material a cohesive but clearly separated value/chroma treatment
+  against the dark well, and reserve one quiet mineral accent for immutable anchors.
+  Do not recolor it into an unrelated icon, blur the cell edges, or replace the real
+  setup with a generic illustration. The numeric selector stays deliberately sparse
+  so the preview, not decorative navigation, carries the pattern.
 
 ### Excavation Sprint
 

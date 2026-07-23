@@ -24,7 +24,10 @@ bounded correction sequence:
    pseudo-block ornaments. They retain four reachable mode actions, the one selected
    real Puzzle preview, 20 open Puzzle controls, all existing routes, 44 px controls,
    keyboard semantics, and reduced-motion final state. Only exact four-cell, connected
-   mode glyphs may remain.
+   mode glyphs may remain. The one real Puzzle preview must become more legible rather
+   than more ornamental: larger actual cells, coherent high-separation material
+   colors on its dark well, and a quiet distinct anchor accent; numeric stops stay
+   sparse and never become thumbnails.
 2. **Excavation Sprint checkpoint:** `src/game/core/sprint.ts` and its direct test,
    `src/game/core/constants.ts`, `src/game/core/types.ts`, `src/game/core/engine.ts`,
    relevant Core exports/rules tests, `src/App.tsx`, and `src/App.test.ts` may replace
