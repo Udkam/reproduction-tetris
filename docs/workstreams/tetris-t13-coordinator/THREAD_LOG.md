@@ -1,5 +1,55 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-022 source candidate
+
+- Base: `59bc5ef`; contract checkpoints `842dcce` and `af3d739`; source candidate
+  range `59bc5ef..02b9ba9`. The work is deliberately split into `3429911` (Core),
+  `fcdca83` (persistence), `1d9c90c` (visible interaction/audio/renderer), and
+  `02b9ba9` (four item-specific carrier materials), so the state model, records, and
+  player surface remain separately reviewable.
+- Exact changed paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`; Core
+  `src/game/core/constants.ts`, `engine.ts`, `index.ts`, `mutation.ts`, `random.ts`,
+  `rules.test.ts`, `sprint.test.ts`, `sprint.ts`, `types.ts`, and
+  `src/game/runtime/GameRuntime.test.ts`; persistence `src/leaderboard.ts` and its
+  test; visible surface `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/ui/ActionSheet.tsx`, `src/game/input/InputController.ts` and its test,
+  `src/game/render/TetrisRenderer.ts`, `src/game/render/theme.ts`, their direct tests,
+  and `src/game/audio/AudioEngine.ts` and its test.
+- Product result: Survival starts with three bedrock rows. The public fourth mode is
+  **异变**, a fresh seeded seven-bag top-out run that increases gravity every six
+  cleared-line equivalents. After two opening inputs, one marked carrier may attach to
+  an incoming tetromino; clearing a carrier cell activates exactly one deterministic
+  freeze/collapse/bomb/multiplier effect. Carrier metadata follows ordinary clears and
+  temporary column collapse. Carrier bodies use item-specific ice-blue, violet, coral,
+  or warm-gold materials; a bounded arrival pulse, core/halo, status label, and
+  item-coloured activation flash make the carrier and its trigger legible. v7 preserves
+  Classic/Survival records while resetting the incompatible fourth-mode table to the
+  requested five date-stamped slots. Home has no
+  rules; first entry and Settings show concise mode-specific rules. Existing Z-confirm
+  Puzzle undo and Puzzle authoring remain intact.
+- Commands passed: targeted Core `npm.cmd run test -- --run
+  src/game/core/sprint.test.ts src/game/core/rules.test.ts src/game/core/race.test.ts
+  src/game/core/core.test.ts` (4 files / 40 tests); leaderboard (1 / 6); UI/audio/
+  renderer/input (4 / 31); and material/renderer `npm.cmd run test -- --run
+  src/game/render/theme.test.ts src/game/render/TetrisRenderer.test.ts
+  src/game/core/sprint.test.ts` (3 files / 16 tests). Final coordinator gates then
+  passed: `npm.cmd run typecheck`; default `npm.cmd run test` (22 files / 145 tests,
+  19.35 s); and `npm.cmd run build` (744 transformed modules).
+- Browser evidence: `.local/audits/t13-9-mutation/audit.mjs` passed desktop 1440×900,
+  reduced-motion portrait 390×844, and landscape 844×390. It proved clean home copy,
+  complete first-entry rules, a seeded bomb-carrier after two locks, its coral full
+  carrier material plus core mark and rail status, Settings record/rules/keyboard arrow
+  control, Escape return, Puzzle library entry, one canvas/zero DOM cells, no overflow
+  or clipped dialog, and zero console/page errors. Direct renderer tests cover all four
+  materials and the bounded item-coloured flash lifecycle. Captures `desktop-home.png`,
+  `desktop-mutation-rules.png`, `desktop-mutation-carrier.png`, `desktop-settings.png`,
+  and the responsive frames were visually inspected.
+- Resource check before validation found Vite listeners on 5176 (coordinator-owned,
+  `E:\Proj\reproduction-tetris`, 164.2 MB) and pre-existing 5173 (same project path,
+  unknown owner, 296.6 MB). No shared/unknown process was terminated. Blocker:
+  independent QA has not yet reviewed `59bc5ef..02b9ba9`. Next: obtain read-only Core
+  and browser/visual verdicts, then add the coordinator changelog record and push.
+
 ## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-021 contract checkpoint
 
 - The user rejects Collapse as a full fourth mode and replaces it with **异变**. Its

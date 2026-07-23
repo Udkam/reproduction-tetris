@@ -6,69 +6,44 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   readable fixed-queue Puzzle endgames, no player-facing strategy hints, personal-best
   Puzzle records, concise Settings-first controls, original effects/music, future
   packaging readiness, and final validation/release hygiene.
-- The source checkpoints are now locally complete: endless lines-first
-  Collapse/top-ten persistence; Survival's seven-bedrock, 13→6 pressure; sparse
-  above-band Puzzle anchors/names/routes; hint removal; per-level minimum successful
-  piece records; arrow-selectable two-action sheets; the `S` Settings sheet; and the
-  effects/music contour pass. Walkthrough-image generation remains explicitly
-  deferred.
-- Final coordinator evidence passes: `npm.cmd run typecheck`, the current-source full
-  suite (22 files / 138 tests), and `npm.cmd run build` (743 transformed modules),
-  plus real 1440×900, 390×844, and 844×390 browser checks with zero errors or overflow.
-  The game view has one canvas and zero DOM board cells; the compact Puzzle best record
-  persists and removed hints remain absent.
-- Selector-polish slice verified: the selected Puzzle row-count caption and all visible
-  completion checks are gone. A solved selected level instead uses its name color,
-  while anchor and minimum-piece facts stay compact.
-- A clean detached-worktree, read-only reproducibility audit of product candidate
-  `6411b5e` passed dependency installation, typecheck, the 22-file / 138-test suite,
-  and the 743-module build. Its streamed default `npm.cmd run test` produced first
-  normal output in 294 ms with no stderr, confirming the current Vitest discovery path
-  does not reproduce the historical silent-start symptom. Core route/anchor evidence,
-  desktop/portrait/landscape/reduced-motion browser states, settings, Survival,
-  Collapse, Puzzle undo/two-Next behavior, canvas/DOM/overflow, and zero browser
-  errors were all checked read-only.
-- Technical disposition: **PASS**. Acceptance disposition: **PENDING** — the isolated
-  audit was run by the coordinator, so it is not presented as an external independent
-  reviewer sign-off. The isolated Vite listener on port 5174 and its detached worktree
-  were released; the unrelated pre-existing port-5173 VS Code listener was retained.
-- Resource discipline remains mandatory: inspect/release only Tetris-owned idle
-  listeners/processes before and after long validation; leave Codex/shared tooling
-  untouched.
-- T13.7 follow-up is now contract-open: Settings will show the current non-Puzzle
-  mode's date-stamped top five, persist only five live-mode results, and retain Puzzle
-  as the selected level's minimum pieces or `尚未通关` only. The original Web Audio bed
-  will be made audibly present after a valid in-game gesture at default volume as an
-  original, wordless piano-like accompaniment, with a small effects contour review.
-  This must not modify frozen Puzzle authoring, queue, anchor, selector, or
-  visual-surface files; a fresh independent review follows the new source checkpoint.
-- The same Settings slice makes the setting buttons keyboard-operable with visible
-  arrow-key selection and Enter execution. Its **键盘** reference promotes `S`, `P`,
-  `R`, `Esc` return, selection/confirm, and Puzzle-only `Z`, without hiding the range
-  input's native arrow behavior. `Esc` uses the visible in-run return confirmation,
-  whose two options remain arrow-selectable and Enter-confirmable.
-- T13.8 extends that bounded UI slice without reopening Puzzle authoring: its visible
-  undo moves from `B` to a `Z`-triggered **确认**/**取消** sheet and confirmed rollback
-  uses the existing exact pre-lock Core checkpoint. A completed selected level shows
-  its `最少 N 步` immediately above **开始**. All four live rails will share the same
-  metric-card / Next-well / keyboard-help treatment. Collapse persistence is reduced
-  from ten to the requested date-stamped top five. A signed-in music service remains
-  a listening reference only; shipped audio stays original procedural work.
-- T13.9 supersedes the fourth-mode portion of that plan. Survival's opening is now
-  three bedrock rows. The former endless Collapse mode becomes **异变**: a Classic-like
-  random run that accelerates every six cleared lines and uses deterministically seeded,
-  visibly marked carrier tetrominoes. Clearing any carrier cell triggers one of
-  freeze, temporary column-collapse, bottom-three-row bomb, or timed score multiplier;
-  the active state is visible in the shared rail and activation has bounded visual/audio
-  feedback. Fourth-mode legacy records must reset rather than mix across the semantic
-  change; Classic/Survival retain their date-stamped top five. Puzzle rules and authored
-  data remain frozen.
-- Homepage follow-up is included in the same bounded UI slice: mode-card action keys
-  retain their own accents through hover/focus/selection; selected state strengthens
-  the current card and theme rather than turning the action blue. Static text weights
-  prevent a transient bold flash while moving between modes. The four descriptions
-  will state only their actual play rules, with no ranking or personal-record wording;
-  Collapse explicitly explains independent column settling and possible chain clears.
+- Source candidate `59bc5ef..02b9ba9` is locally complete in six reviewable
+  checkpoints: rule-disclosure contract `842dcce`; deterministic 异变 Core plus
+  three-row Survival `3429911`; top-five v7 record migration `fcdca83`; the
+  visible rules/settings/audio/renderer/input surface `1d9c90c`; the item-material
+  contract `af3d739`; and its renderer implementation `02b9ba9`.
+- **异变** now replaces the former Collapse run: it keeps fresh seeded seven-bags and
+  top-out, accelerates every six cleared-line equivalents, and begins deterministic
+  marked carrier pieces after the opening two inputs. Any cleared carrier cell triggers
+  freeze, temporary independent-column collapse, a bottom-three-row bomb, or a timed
+  score multiplier. Full carrier materials now map directly to their item—ice blue
+  (冻结), violet (坍缩), coral (炸弹), or warm gold (倍增)—rather than retaining an
+  ordinary tetromino hue. The shared rail, core/halo, carrier arrival pulse, and
+  item-coloured activation flash surface that state; legacy fourth-mode rows reset while
+  Classic and Survival retain their date-stamped top
+  five. Survival now begins with three bedrock rows and retains fixed gravity plus the
+  13→6-second/three-line pressure rule. Puzzle authoring remains unchanged.
+- Homepage cards are now navigational only—name, identity mark, accent, and entry
+  action—with no visible gameplay, ranking, or personal-record prose. A concise,
+  keyboard/touch-operable rule sheet appears before each mode's first entry and the
+  same facts remain under **规则** in Settings. Settings also shows its current record
+  surface, keyboard map, original effects/music controls, and arrow/Enter operation.
+- Final coordinator gates pass: `npm.cmd run typecheck`; default `npm.cmd run test`
+  (22 files / 145 tests, 19.35 s); and `npm.cmd run build` (744 transformed modules).
+  Targeted Core, persistence, UI/input/renderer, audio, and four-material renderer
+  checkpoints also pass.
+- Fresh browser audit `.local/audits/t13-9-mutation/audit.mjs` passes at 1440×900,
+  390×844 reduced-motion, and 844×390. It verifies first-entry rules, no home rule
+  prose, deterministic visible 异变 bomb carrier state, its coral full-piece material
+  and core/status treatment, Settings rules/records/keyboard navigation, Escape return,
+  Puzzle entry, one gameplay canvas, zero DOM cells, no overflow, no dialog clipping,
+  and zero console/page errors. Renderer tests cover the four distinct materials and
+  the bounded item-coloured activation flash. Captures were visually inspected and
+  remain ignored local evidence.
+- Technical disposition: **candidate PASS**. Acceptance remains **PENDING** until a
+  fresh independent read-only Core and browser/visual QA reviews `59bc5ef..02b9ba9`.
+- Resource discipline remains mandatory: port 5176 is the coordinator-owned audit
+  Vite listener and will be released after QA; the pre-existing port-5173 Tetris
+  listener has an unknown owner and is retained. Shared Codex tooling remains untouched.
 
 ## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
 
