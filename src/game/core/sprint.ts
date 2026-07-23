@@ -1,5 +1,5 @@
 import { createBoard } from './board';
-import { BOARD_HEIGHT, BOARD_WIDTH, SPRINT_DURATION_TICKS } from './constants';
+import { BOARD_HEIGHT, BOARD_WIDTH } from './constants';
 import type { Board } from './types';
 
 /**
@@ -19,8 +19,4 @@ export function collapseSprintColumns(board: Board): Board {
     }
   }
   return collapsed;
-}
-
-export function sprintRemainingTicks(elapsedTicks: number): number {
-  return Math.max(0, SPRINT_DURATION_TICKS - Math.max(0, elapsedTicks));
 }

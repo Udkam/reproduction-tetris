@@ -1265,6 +1265,32 @@ p {
   border-right: 1px solid var(--line);
 }
 
+/* Collapse reads as four quiet metric slabs rather than a ruled data grid. */
+.run-stats--collapse {
+  gap: 6px;
+  overflow: visible;
+  border: 0;
+}
+
+.run-stats--collapse [data-stat-role] {
+  min-height: 64px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--raised) 72%, var(--surface));
+  border: 0 !important;
+  border-radius: 9px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.game-side-panel--sprint {
+  gap: 18px;
+}
+
+.game-side-panel--sprint .preview-rail,
+.game-side-panel--sprint .keyboard-map {
+  padding-top: 0;
+  border-top: 0;
+}
+
 .run-stats span {
   display: block;
   margin-bottom: 4px;
@@ -2114,6 +2140,26 @@ p {
     border-right: 1px solid var(--line) !important;
   }
 
+  .game-side-panel--sprint {
+    gap: 5px 8px;
+    background: transparent;
+    border-bottom: 0;
+  }
+
+  .run-stats--collapse {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .run-stats--collapse [data-stat-role] {
+    min-height: 0;
+    padding: 3px 6px;
+    border: 0 !important;
+    border-radius: 7px;
+    box-shadow: none;
+  }
+
   .run-stats--puzzle {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
@@ -2155,6 +2201,10 @@ p {
     line-height: 1.2;
     white-space: nowrap;
     border-top: 1px solid var(--line);
+  }
+
+  .game-side-panel--sprint .keyboard-map {
+    border-top: 0;
   }
 
   .keyboard-map b {

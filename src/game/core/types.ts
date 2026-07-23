@@ -61,8 +61,6 @@ export type PuzzleCompletion =
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn';
 
-/** Sprint only ends when its fixed Collapse round reaches its clock. */
-export type SprintCompletion = 'active' | 'finished';
 export type SprintGoal = 'cascade-score-attack';
 
 export interface GameState {
@@ -114,12 +112,10 @@ export interface GameState {
   survivalRisePending: boolean;
   /** The current post-clear Collapse depth. It resets after the chain settles. */
   sprintCascadeDepth: number;
-  /** Best completed or active Collapse depth for this short score-attack round. */
+  /** Best active Collapse depth for this endless score-and-chain run. */
   sprintBestCascade: number;
-  /** Distinguishes the timed Collapse round from Puzzle completion. */
+  /** Identifies Collapse-specific score and settlement semantics. */
   sprintGoal: SprintGoal | null;
-  /** Distinguishes a completed Collapse clock from a Puzzle target completion. */
-  sprintCompletion: SprintCompletion | null;
   status: GameStatus;
   phase: GamePhase;
   phaseTicks: number;

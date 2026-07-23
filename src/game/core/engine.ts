@@ -6,7 +6,6 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
-  SPRINT_DURATION_TICKS,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
@@ -123,7 +122,6 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     sprintCascadeDepth: 0,
     sprintBestCascade: 0,
     sprintGoal: mode === 'sprint' ? 'cascade-score-attack' : null,
-    sprintCompletion: mode === 'sprint' ? 'active' : null,
     status: 'ready',
     phase: 'active',
     phaseTicks: 0,
@@ -190,29 +188,6 @@ function resolvePuzzleAfterLock(state: GameState, spawnImmediately: boolean): Ga
 
 function withActive(state: GameState): state is GameState & { active: ActivePiece } {
   return state.active !== null;
-}
-
-/** Collapse completes only when its fixed score-attack clock expires. */
-function finishSprintRound(state: GameState): GameTransition {
-  if (state.mode !== 'sprint' || state.sprintGoal !== 'cascade-score-attack') {
-    return invalidState(state);
-  }
-  return {
-    state: {
-      ...state,
-      active: null,
-      status: 'finished',
-      phase: 'active',
-      phaseTicks: 0,
-      pendingClearRows: [],
-      gravityTicks: 0,
-      lockTicks: 0,
-      lockResets: 0,
-      sprintCascadeDepth: 0,
-      sprintCompletion: 'finished',
-    },
-    events: [{ type: 'finished', completionTicks: state.elapsedTicks }],
-  };
 }
 
 function advanceSurvivalPressure(state: GameState): GameState {
@@ -589,11 +564,6 @@ function tick(state: GameState): GameTransition {
   let next: GameState = advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 });
   const timedEvents: GameEvent[] = [];
 
-  if (next.mode === 'sprint' && next.elapsedTicks >= SPRINT_DURATION_TICKS) {
-    const finished = finishSprintRound(next);
-    return { state: finished.state, events: [...timedEvents, ...finished.events] };
-  }
-
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
     if (phaseTicks >= ENTRY_DELAY_TICKS) {
@@ -684,8 +654,8 @@ export function replay(seed: number, commands: readonly GameCommand[], mode: Gam
 
 export function stateHash(state: GameState): string {
   // Mode-private fields stay out of unrelated replays so the established Classic,
-  // Survival, and Puzzle hash domains remain stable. Sprint keeps Collapse depth and
-  // explicit round completion in its own canonical payload.
+  // Survival, and Puzzle hash domains remain stable. Sprint keeps only its Collapse
+  // depth and goal in its own canonical payload.
   const canonicalState = state.mode === 'puzzle'
     ? (() => {
       const {
@@ -696,7 +666,6 @@ export function stateHash(state: GameState): string {
         sprintCascadeDepth: _sprintCascadeDepth,
         sprintBestCascade: _sprintBestCascade,
         sprintGoal: _sprintGoal,
-        sprintCompletion: _sprintCompletion,
         ...puzzleState
       } = state;
       return puzzleState;
@@ -724,7 +693,6 @@ export function stateHash(state: GameState): string {
           sprintCascadeDepth: _sprintCascadeDepth,
           sprintBestCascade: _sprintBestCascade,
           sprintGoal: _sprintGoal,
-          sprintCompletion: _sprintCompletion,
           ...classicState
         } = legacyState;
         return classicState;
@@ -744,7 +712,6 @@ export function stateHash(state: GameState): string {
         sprintCascadeDepth: _sprintCascadeDepth,
         sprintBestCascade: _sprintBestCascade,
         sprintGoal: _sprintGoal,
-        sprintCompletion: _sprintCompletion,
         ...survivalState
       } = legacyState;
       return survivalState;

@@ -4,7 +4,7 @@ import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import styles from './styles.css?raw';
-import { PIECE_TYPES, SPRINT_DURATION_TICKS, createInitialState, getPuzzleDefinition, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
+import { PIECE_TYPES, createInitialState, getPuzzleDefinition, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
 import {
   cloneQaState,
   countdownTimeLabel,
@@ -224,11 +224,11 @@ describe('T6 frontend mode binding', () => {
     const classic = { ...createInitialState(0x51a1f00d, 'marathon'), combo: 3 };
     const survival = createInitialState(0x51a1f00d, 'race');
     const sprintBase = createInitialState(0x51a1f00d, 'sprint');
-    const sprint = { ...sprintBase, sprintCascadeDepth: 2, sprintBestCascade: 4, pieceCount: 19, elapsedTicks: 540 };
+    const sprint = { ...sprintBase, sprintCascadeDepth: 2, sprintBestCascade: 4, lines: 9, pieceCount: 19, elapsedTicks: 540 };
     const cases = [
       { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒/格'] },
-      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '7', '15 秒'] },
-      { state: sprint, roles: ['score', 'sprint-chain', 'sprint-best', 'sprint-time'], label: '坍缩模式数据', copy: ['当前连锁', '2', '最高连锁', '4', '剩余', '1:06'] },
+      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '7', '13 秒'] },
+      { state: sprint, roles: ['score', 'sprint-chain', 'sprint-best', 'lines'], label: '坍缩模式数据', copy: ['当前连锁', '2', '最高连锁', '4', '消行', '9'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-level', 'puzzle-targets', 'puzzle-placed', 'objective'],
@@ -467,8 +467,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).toContain('连消加分\n每 10 行提高下落速度');
     expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetra');
     expect(view.container.querySelector('[data-testid="brand"]')?.getAttribute('aria-label')).toBe('Tetra');
-    expect(view.container.textContent).toContain('生存开局 7 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落');
-    expect(view.container.textContent).toContain('坍缩消行后逐列坍落\n75 秒内制造连锁');
+    expect(view.container.textContent).toContain('生存开局 7 层基岩\n13 秒 → 6 秒 · 每 3 行降层 · 固定下落');
+    expect(view.container.textContent).toContain('坍缩消行后逐列坍落\n堆叠到顶前制造连锁');
     expect(view.container.textContent).toContain(`${CAMPAIGN_LEVELS.length} 关残局`);
     expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();
@@ -499,9 +499,9 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('ranks and labels Classic by cleared lines, Survival by endurance, and Collapse by score', () => {
+  it('ranks and labels Classic by cleared lines, Survival by endurance, and Collapse by cleared lines', () => {
     const base: ScoreRecord = {
-      version: 5,
+      version: 6,
       score: 3200,
       lines: 18,
       pieces: 62,
@@ -527,11 +527,11 @@ describe('T6 frontend mode binding', () => {
     expect(survival.container.querySelector('.result-leaderboard li')?.textContent).toBe('011 分 10 秒27 行 · 62 方块');
     survival.unmount();
 
-    const sprintRecord = { ...base, mode: 'sprint' as const, outcome: 'finished' as const, score: 1800, lines: 40, pieces: 48, elapsedTicks: SPRINT_DURATION_TICKS, chain: 3 };
+    const sprintRecord = { ...base, mode: 'sprint' as const, score: 1800, lines: 40, pieces: 48, elapsedTicks: 5400, chain: 3 };
     const sprint = render(createElement(LeaderboardPanel, { mode: 'sprint', records: [sprintRecord] }));
     expect(sprint.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('坍缩排行榜');
-    expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('坍缩排行分数');
-    expect(sprint.container.querySelector('.result-leaderboard li')?.textContent).toBe('011,800 分最高 3 连锁 · 40 行');
+    expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('坍缩排行消行 · 前 10');
+    expect(sprint.container.querySelector('.result-leaderboard li')?.textContent).toBe('0140 行1,800 分 · 最高 3 连锁');
     sprint.unmount();
 
     expect(elapsedTimeLabel(65 * 60)).toBe('1 分 5 秒');
@@ -539,8 +539,8 @@ describe('T6 frontend mode binding', () => {
 
     const ended = { ...createInitialState(1, 'race'), status: 'game-over' as const, score: 900, lines: 27, pieceCount: 62, elapsedTicks: 4200 };
     expect(scoreRecordForState(ended, base.completedAt)).toMatchObject({ mode: 'race', score: 900, lines: 27, outcome: 'top-out' });
-    const completedSprint = { ...createInitialState(1, 'sprint'), status: 'finished' as const, sprintCompletion: 'finished' as const, sprintBestCascade: 3, score: 1800, lines: 40, pieceCount: 48, elapsedTicks: SPRINT_DURATION_TICKS };
-    expect(scoreRecordForState(completedSprint, base.completedAt)).toMatchObject({ mode: 'sprint', score: 1800, lines: 40, chain: 3, outcome: 'finished' });
+    const endedSprint = { ...createInitialState(1, 'sprint'), status: 'game-over' as const, sprintBestCascade: 3, score: 1800, lines: 40, pieceCount: 48, elapsedTicks: 5400 };
+    expect(scoreRecordForState(endedSprint, base.completedAt)).toMatchObject({ mode: 'sprint', score: 1800, lines: 40, chain: 3, outcome: 'top-out' });
     expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
   });
 
@@ -575,32 +575,17 @@ describe('T6 frontend mode binding', () => {
       success: true,
     });
 
-    const completedSprint: GameState = {
+    const endedSprint: GameState = {
       ...createInitialState(0x51a1f00d, 'sprint'),
-      status: 'finished',
-      sprintCompletion: 'finished',
+      status: 'game-over',
       sprintBestCascade: 4,
       lines: 22,
       pieceCount: 47,
       score: 1800,
-      elapsedTicks: SPRINT_DURATION_TICKS,
     };
-    expect(terminalCopy(completedSprint)).toEqual({
-      title: '坍缩结束',
-      detail: '最高 4 连锁 · 22 消行 · 1,800 分',
-      success: true,
-    });
-
-    const interruptedSprint: GameState = {
-      ...createInitialState(0x51a1f00d, 'sprint'),
-      status: 'game-over',
-      sprintBestCascade: 2,
-      lines: 7,
-      pieceCount: 12,
-    };
-    expect(terminalCopy(interruptedSprint)).toEqual({
-      title: '坍缩中断',
-      detail: '最高 2 连锁 · 7 消行 · 12 方块',
+    expect(terminalCopy(endedSprint)).toEqual({
+      title: '坍缩到顶',
+      detail: '22 消行 · 1,800 分 · 最高 4 连锁',
       success: false,
     });
   });

@@ -11,7 +11,6 @@ import {
   createInitialState,
   getPuzzleDefinition,
   gravityForMode,
-  sprintRemainingTicks,
   survivalIntervalSeconds,
   survivalIntervalTicks,
 } from './game/core';
@@ -76,12 +75,12 @@ const MODE_COPY: Record<GameMode, {
   },
   race: {
     label: '生存',
-    detail: '开局 7 层基岩\n15 秒 → 8 秒 · 每 3 行降层 · 固定下落',
+    detail: '开局 7 层基岩\n13 秒 → 6 秒 · 每 3 行降层 · 固定下落',
     action: '开始',
   },
   sprint: {
     label: '坍缩',
-    detail: '消行后逐列坍落\n75 秒内制造连锁',
+    detail: '消行后逐列坍落\n堆叠到顶前制造连锁',
     action: '开始',
   },
   puzzle: {
@@ -168,17 +167,10 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
     return null;
   }
   if (state.mode === 'sprint') {
-    if (state.sprintCompletion === 'finished') {
-      return {
-        title: '坍缩结束',
-        detail: `最高 ${state.sprintBestCascade} 连锁 · ${state.lines} 消行 · ${formatScore(state.score)} 分`,
-        success: true,
-      };
-    }
     if (state.status === 'game-over') {
       return {
-        title: '坍缩中断',
-        detail: `最高 ${state.sprintBestCascade} 连锁 · ${state.lines} 消行 · ${state.pieceCount} 方块`,
+        title: '坍缩到顶',
+        detail: `${state.lines} 消行 · ${formatScore(state.score)} 分 · 最高 ${state.sprintBestCascade} 连锁`,
         success: false,
       };
     }
@@ -196,19 +188,18 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
 }
 
 export function scoreRecordForState(state: GameState, completedAt: string): ScoreRecord | null {
-  const isTopOutRun = (state.mode === 'marathon' || state.mode === 'race') && state.status === 'game-over';
-  const isSprintFinish = state.mode === 'sprint' && state.status === 'finished' && state.sprintCompletion === 'finished';
-  if (!isTopOutRun && !isSprintFinish) return null;
+  const isTopOutRun = (state.mode === 'marathon' || state.mode === 'race' || state.mode === 'sprint') && state.status === 'game-over';
+  if (!isTopOutRun) return null;
   const mode: RunMode = state.mode === 'sprint' ? 'sprint' : state.mode === 'race' ? 'race' : 'marathon';
   return {
-    version: 5,
+    version: 6,
     score: state.score,
     lines: state.lines,
     pieces: state.pieceCount,
     elapsedTicks: state.elapsedTicks,
     chain: mode === 'sprint' ? state.sprintBestCascade : 0,
     mode,
-    outcome: mode === 'sprint' ? 'finished' : 'top-out',
+    outcome: 'top-out',
     completedAt,
   };
 }
@@ -476,15 +467,15 @@ export function LeaderboardPanel({
     <section className="result-leaderboard" aria-label={sprint ? '坍缩排行榜' : survival ? '生存排行榜' : '经典排行榜'}>
       <header>
         <strong>{sprint ? '坍缩排行' : survival ? '生存排行' : '经典排行'}</strong>
-        <span>{sprint ? '分数' : survival ? '生存时间' : '消行'}</span>
+        <span>{sprint ? '消行 · 前 10' : survival ? '生存时间' : '消行'}</span>
       </header>
       {records.length === 0 ? <p>暂无记录</p> : (
         <ol>
           {records.map((record, index) => (
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
-              <strong>{sprint ? `${formatScore(record.score)} 分` : survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
-              <small>{sprint ? `最高 ${record.chain} 连锁 · ${record.lines} 行` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
+              <strong>{sprint ? `${record.lines} 行` : survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
+              <small>{sprint ? `${formatScore(record.score)} 分 · 最高 ${record.chain} 连锁` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
             </li>
           ))}
         </ol>
@@ -705,11 +696,11 @@ export function RunStats({ state }: { state: GameState }) {
   }
   if (state.mode === 'sprint') {
     return (
-      <section className="run-stats" data-testid="stats" aria-label="坍缩模式数据">
+      <section className="run-stats run-stats--collapse" data-testid="stats" aria-label="坍缩模式数据">
         <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
         <article data-stat-role="sprint-chain"><span>当前连锁</span><strong>{state.sprintCascadeDepth}</strong></article>
         <article data-stat-role="sprint-best"><span>最高连锁</span><strong>{state.sprintBestCascade}</strong></article>
-        <article data-stat-role="sprint-time"><span>剩余</span><strong>{countdownTimeLabel(sprintRemainingTicks(state.elapsedTicks))}</strong></article>
+        <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
       </section>
     );
   }
@@ -825,8 +816,8 @@ export function GameSession({
             return next;
           });
         }
-        const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race') && nextState.status === 'game-over'
-          || nextState.mode === 'sprint' && nextState.sprintCompletion === 'finished';
+        const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race' || nextState.mode === 'sprint')
+          && nextState.status === 'game-over';
         if (recordableRun) {
           const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}:${nextState.sprintBestCascade}`;
           if (lastRecordedRunRef.current !== runKey) {
@@ -911,7 +902,6 @@ export function GameSession({
       sprintGoal: state.sprintGoal,
       sprintCascadeDepth: state.sprintCascadeDepth,
       sprintBestCascade: state.sprintBestCascade,
-      sprintCompletion: state.sprintCompletion,
       score: state.score,
       lines: state.lines,
       combo: state.combo,
@@ -1127,7 +1117,7 @@ export function GameSession({
               </div>
             )}
           </section>
-          <aside className="game-side-panel" data-testid="side-rail">
+          <aside className={`game-side-panel game-side-panel--${state.mode}`} data-testid="side-rail">
             <div className="info-rail" data-testid="context-top">
               <RunStats state={state} />
             </div>

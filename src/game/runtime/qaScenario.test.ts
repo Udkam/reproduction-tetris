@@ -14,7 +14,7 @@ describe('Survival bedrock browser QA replay', () => {
     expect(first.replay.firstRiseCommandCount).toBeLessThan(first.replay.removalCommandCount);
     expect(first.state.mode).toBe('race');
     expect(first.state.status).toBe('playing');
-    expect(first.riseState.elapsedTicks).toBeGreaterThanOrEqual(15 * TICKS_PER_SECOND);
+    expect(first.riseState.elapsedTicks).toBeGreaterThanOrEqual(13 * TICKS_PER_SECOND);
     expect(first.riseState.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS + 1);
     expect(first.riseState.lines).toBeLessThan(3);
     expect(first.riseState.board.at(-1)).toEqual(Array.from({ length: BOARD_WIDTH }, () => BEDROCK_CELL));
@@ -22,7 +22,7 @@ describe('Survival bedrock browser QA replay', () => {
     expect(first.state.lines).toBeGreaterThanOrEqual(3);
     expect(first.state.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
     expect(first.state.survivalPressureTicks).toBe(0);
-    expect(survivalIntervalSeconds(first.state.lines)).toBe(14);
+    expect(survivalIntervalSeconds(first.state.lines)).toBe(12);
     expect(stateHash(first.state)).toBe(stateHash(second.state));
     expect(first.replay).toEqual(second.replay);
   });

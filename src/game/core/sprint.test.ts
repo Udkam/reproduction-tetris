@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
   LINE_CLEAR_DELAY_TICKS,
-  SPRINT_DURATION_TICKS,
   SPRINT_GRAVITY_TICKS,
   gravityForMode,
 } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch, replay, stateHash } from './engine';
-import { collapseSprintColumns, sprintRemainingTicks } from './sprint';
+import { collapseSprintColumns } from './sprint';
 import type { GameState } from './types';
 
 function collapseReadyState(seed = 0x5a71): GameState {
@@ -55,7 +54,7 @@ describe('Collapse mode', () => {
     expect(collapsed.flat().filter((cell) => cell !== null).sort()).toEqual(['I', 'L', 'O', 'T']);
   });
 
-  it('starts an empty fixed-clock Collapse round with fresh live bags and no Puzzle/Survival state', () => {
+  it('starts an empty endless Collapse run with fresh live bags and no Puzzle/Survival state', () => {
     const first = createInitialState(0x5a70, 'sprint');
     const second = createInitialState(0x5a70, 'sprint');
     const otherSeed = createInitialState(0x5a71, 'sprint');
@@ -64,14 +63,12 @@ describe('Collapse mode', () => {
     expect(first.sprintGoal).toBe('cascade-score-attack');
     expect(first.sprintCascadeDepth).toBe(0);
     expect(first.sprintBestCascade).toBe(0);
-    expect(first.sprintCompletion).toBe('active');
     expect(first.board.flat().every((cell) => cell === null)).toBe(true);
     expect(first.queue).toEqual(second.queue);
     expect(first.queue).not.toEqual(otherSeed.queue);
     expect(first.puzzleCompletion).toBeNull();
     expect(first.survivalBedrockRows).toBe(0);
     expect(gravityForMode('sprint', 99, 99_999, 99_999)).toBe(SPRINT_GRAVITY_TICKS);
-    expect(sprintRemainingTicks(0)).toBe(SPRINT_DURATION_TICKS);
   });
 
   it('compacts columns on a non-clearing lock, so Collapse differs before its first line', () => {
@@ -111,20 +108,21 @@ describe('Collapse mode', () => {
     expect(resolved.events.map((event) => event.type)).toEqual(['lines-cleared']);
   });
 
-  it('finishes only on the fixed Collapse clock, and leaves early top-outs unranked', () => {
-    const nearlyOver = {
+  it('continues past the retired 75-second threshold and still accepts a later lock', () => {
+    const beyondFormerLimit = {
       ...dispatch(createInitialState(0x5a72, 'sprint'), { type: 'start' }).state,
-      elapsedTicks: SPRINT_DURATION_TICKS - 1,
+      elapsedTicks: 75 * 60,
       sprintBestCascade: 3,
     };
-    const finished = dispatch(nearlyOver, { type: 'tick' });
-    expect(finished.state.status).toBe('finished');
-    expect(finished.state.sprintCompletion).toBe('finished');
-    expect(finished.state.elapsedTicks).toBe(SPRINT_DURATION_TICKS);
-    expect(finished.state.sprintCascadeDepth).toBe(0);
-    expect(sprintRemainingTicks(finished.state.elapsedTicks)).toBe(0);
-    expect(finished.events.map((event) => event.type)).toEqual(['finished']);
-    expect(dispatch(finished.state, { type: 'hard-drop' }).state).toBe(finished.state);
+    const continued = dispatch(beyondFormerLimit, { type: 'tick' });
+    expect(continued.state.status).toBe('playing');
+    expect(continued.state.elapsedTicks).toBe(75 * 60 + 1);
+    expect(continued.events).toEqual([]);
+
+    const locked = dispatch(continued.state, { type: 'hard-drop' });
+    expect(locked.state.pieceCount).toBe(1);
+    expect(locked.state.status).toBe('playing');
+    expect(locked.events.some((event) => event.type === 'piece-locked')).toBe(true);
   });
 
   it('keeps Collapse replays and state hashes deterministic while separating chain state', () => {

@@ -17,16 +17,13 @@ export const STANDARD_GRAVITY_TICKS = 48;
 export const INITIAL_SURVIVAL_BEDROCK_ROWS = 7;
 export const SURVIVAL_LINES_PER_BEDROCK = 3;
 export const TICKS_PER_SECOND = 60;
-export const SURVIVAL_INITIAL_INTERVAL_SECONDS = 15;
+export const SURVIVAL_INITIAL_INTERVAL_SECONDS = 13;
 export const SURVIVAL_INTERVAL_STEP_SECONDS = 1;
-export const SURVIVAL_MIN_INTERVAL_SECONDS = 8;
+export const SURVIVAL_MIN_INTERVAL_SECONDS = 6;
 /** Survival stays brisk but never accelerates as lines increase. */
 export const SURVIVAL_GRAVITY_TICKS = 40;
-/** Sprint is brisk but steady: reading and execution, not escalating speed, decide the run. */
+/** Collapse is brisk but steady: reading and execution, not escalating speed, decide the run. */
 export const SPRINT_GRAVITY_TICKS = 36;
-/** Collapse is a short score-attack round, not a line-count race. */
-export const SPRINT_DURATION_SECONDS = 75;
-export const SPRINT_DURATION_TICKS = SPRINT_DURATION_SECONDS * TICKS_PER_SECOND;
 
 export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
 

@@ -1,8 +1,8 @@
 export type RunMode = 'marathon' | 'race' | 'sprint';
-export type RunOutcome = 'top-out' | 'finished';
+export type RunOutcome = 'top-out';
 
 export interface ScoreRecord {
-  version: 5;
+  version: 6;
   score: number;
   lines: number;
   pieces: number;
@@ -15,18 +15,23 @@ export interface ScoreRecord {
 }
 
 export interface Leaderboard {
-  version: 5;
+  version: 6;
   marathon: ScoreRecord[];
   race: ScoreRecord[];
   sprint: ScoreRecord[];
 }
 
-export const LEADERBOARD_KEY = 'tetris:leaderboard:v5';
-export const LEGACY_LEADERBOARD_KEYS = ['tetris:leaderboard:v4', 'tetris:leaderboard:v3', 'stack-order:leaderboard:v2', 'stack-order:leaderboard:v1'] as const;
+export const LEADERBOARD_KEY = 'tetris:leaderboard:v6';
+export const LEGACY_LEADERBOARD_KEYS = ['tetris:leaderboard:v5', 'tetris:leaderboard:v4', 'tetris:leaderboard:v3', 'stack-order:leaderboard:v2', 'stack-order:leaderboard:v1'] as const;
 export const LEADERBOARD_LIMIT = 8;
+export const COLLAPSE_LEADERBOARD_LIMIT = 10;
+
+export function leaderboardLimit(mode: RunMode): number {
+  return mode === 'sprint' ? COLLAPSE_LEADERBOARD_LIMIT : LEADERBOARD_LIMIT;
+}
 
 export function emptyLeaderboard(): Leaderboard {
-  return { version: 5, marathon: [], race: [], sprint: [] };
+  return { version: 6, marathon: [], race: [], sprint: [] };
 }
 
 function isNonNegativeInteger(value: unknown): value is number {
@@ -47,41 +52,43 @@ export function isScoreRecord(value: unknown): value is ScoreRecord {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const record = value as Partial<ScoreRecord>;
   if (
-    record.version !== 5
+    record.version !== 6
     || !isNonNegativeInteger(record.score)
     || !isNonNegativeInteger(record.lines)
     || !isNonNegativeInteger(record.pieces)
     || !isNonNegativeInteger(record.elapsedTicks)
     || !isNonNegativeInteger(record.chain)
     || (record.mode !== 'marathon' && record.mode !== 'race' && record.mode !== 'sprint')
+    || record.outcome !== 'top-out'
     || !isIsoDate(record.completedAt)
   ) return false;
-  if (record.mode === 'sprint') return record.outcome === 'finished';
-  return record.outcome === 'top-out' && record.chain === 0;
+  return record.mode === 'sprint' || record.chain === 0;
+}
+
+/** Negative means left ranks above right without using the timestamp tiebreaker. */
+function compareRecordRank(mode: RunMode, left: ScoreRecord, right: ScoreRecord): number {
+  if (mode === 'marathon') {
+    return right.lines - left.lines
+      || right.score - left.score
+      || right.pieces - left.pieces
+      || left.elapsedTicks - right.elapsedTicks;
+  }
+  if (mode === 'race') {
+    return right.elapsedTicks - left.elapsedTicks
+      || right.lines - left.lines
+      || right.score - left.score
+      || right.pieces - left.pieces;
+  }
+  return right.lines - left.lines
+    || right.score - left.score
+    || right.chain - left.chain
+    || left.pieces - right.pieces;
 }
 
 export function sortRecords(mode: RunMode, records: readonly ScoreRecord[]): ScoreRecord[] {
-  return [...records].sort((left, right) => {
-    if (mode === 'marathon') {
-      return right.lines - left.lines
-        || right.score - left.score
-        || right.pieces - left.pieces
-        || left.elapsedTicks - right.elapsedTicks
-        || compareText(left.completedAt, right.completedAt);
-    }
-    if (mode === 'race') {
-      return right.elapsedTicks - left.elapsedTicks
-        || right.lines - left.lines
-        || right.score - left.score
-        || right.pieces - left.pieces
-        || compareText(left.completedAt, right.completedAt);
-    }
-    return right.score - left.score
-      || right.chain - left.chain
-      || right.lines - left.lines
-      || left.pieces - right.pieces
-      || compareText(left.completedAt, right.completedAt);
-  });
+  return [...records].sort((left, right) => (
+    compareRecordRank(mode, left, right) || compareText(left.completedAt, right.completedAt)
+  ));
 }
 
 function recordsAreValid(mode: RunMode, records: unknown): records is ScoreRecord[] {
@@ -92,7 +99,7 @@ function recordsAreValid(mode: RunMode, records: unknown): records is ScoreRecor
 function isLeaderboard(value: unknown): value is Leaderboard {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const board = value as Partial<Leaderboard>;
-  return board.version === 5
+  return board.version === 6
     && recordsAreValid('marathon', board.marathon)
     && recordsAreValid('race', board.race)
     && recordsAreValid('sprint', board.sprint);
@@ -104,25 +111,42 @@ export function parseLeaderboard(raw: string | null): Leaderboard {
     const value: unknown = JSON.parse(raw);
     if (!isLeaderboard(value)) return emptyLeaderboard();
     return {
-      version: 5,
-      marathon: sortRecords('marathon', value.marathon).slice(0, LEADERBOARD_LIMIT),
-      race: sortRecords('race', value.race).slice(0, LEADERBOARD_LIMIT),
-      sprint: sortRecords('sprint', value.sprint).slice(0, LEADERBOARD_LIMIT),
+      version: 6,
+      marathon: sortRecords('marathon', value.marathon).slice(0, leaderboardLimit('marathon')),
+      race: sortRecords('race', value.race).slice(0, leaderboardLimit('race')),
+      sprint: sortRecords('sprint', value.sprint).slice(0, leaderboardLimit('sprint')),
     };
   } catch {
     return emptyLeaderboard();
   }
 }
 
-interface LegacyV4ScoreRecord {
-  version: 4;
+interface LegacyRecordFields {
   score: number;
   lines: number;
   pieces: number;
   elapsedTicks: number;
-  mode: RunMode;
-  outcome: RunOutcome;
   completedAt: string;
+}
+
+interface LegacyV5ScoreRecord extends LegacyRecordFields {
+  version: 5;
+  chain: number;
+  mode: RunMode;
+  outcome: 'top-out' | 'finished';
+}
+
+interface LegacyV5Leaderboard {
+  version: 5;
+  marathon: LegacyV5ScoreRecord[];
+  race: LegacyV5ScoreRecord[];
+  sprint: LegacyV5ScoreRecord[];
+}
+
+interface LegacyV4ScoreRecord extends LegacyRecordFields {
+  version: 4;
+  mode: RunMode;
+  outcome: 'top-out' | 'finished';
 }
 
 interface LegacyV4Leaderboard {
@@ -132,15 +156,10 @@ interface LegacyV4Leaderboard {
   sprint: LegacyV4ScoreRecord[];
 }
 
-interface LegacyV3ScoreRecord {
+interface LegacyV3ScoreRecord extends LegacyRecordFields {
   version: 3;
-  score: number;
-  lines: number;
-  pieces: number;
-  elapsedTicks: number;
   mode: 'marathon' | 'race';
   outcome: 'top-out';
-  completedAt: string;
 }
 
 interface LegacyV3Leaderboard {
@@ -149,17 +168,38 @@ interface LegacyV3Leaderboard {
   race: LegacyV3ScoreRecord[];
 }
 
-function isLegacyV3Record(value: unknown): value is LegacyV3ScoreRecord {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-  const record = value as Partial<LegacyV3ScoreRecord>;
-  return record.version === 3
-    && isNonNegativeInteger(record.score)
+function hasLegacyFields(record: Partial<LegacyRecordFields>): boolean {
+  return isNonNegativeInteger(record.score)
     && isNonNegativeInteger(record.lines)
     && isNonNegativeInteger(record.pieces)
     && isNonNegativeInteger(record.elapsedTicks)
-    && (record.mode === 'marathon' || record.mode === 'race')
-    && record.outcome === 'top-out'
     && isIsoDate(record.completedAt);
+}
+
+function isLegacyV5Record(value: unknown): value is LegacyV5ScoreRecord {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const record = value as Partial<LegacyV5ScoreRecord>;
+  if (
+    record.version !== 5
+    || !hasLegacyFields(record)
+    || !isNonNegativeInteger(record.chain)
+    || (record.mode !== 'marathon' && record.mode !== 'race' && record.mode !== 'sprint')
+  ) return false;
+  return record.mode === 'sprint'
+    ? record.outcome === 'finished'
+    : record.outcome === 'top-out' && record.chain === 0;
+}
+
+function isLegacyV5Leaderboard(value: unknown): value is LegacyV5Leaderboard {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const board = value as Partial<LegacyV5Leaderboard>;
+  return board.version === 5
+    && Array.isArray(board.marathon)
+    && board.marathon.every((record) => isLegacyV5Record(record) && record.mode === 'marathon')
+    && Array.isArray(board.race)
+    && board.race.every((record) => isLegacyV5Record(record) && record.mode === 'race')
+    && Array.isArray(board.sprint)
+    && board.sprint.every((record) => isLegacyV5Record(record) && record.mode === 'sprint');
 }
 
 function isLegacyV4Record(value: unknown): value is LegacyV4ScoreRecord {
@@ -167,12 +207,8 @@ function isLegacyV4Record(value: unknown): value is LegacyV4ScoreRecord {
   const record = value as Partial<LegacyV4ScoreRecord>;
   if (
     record.version !== 4
-    || !isNonNegativeInteger(record.score)
-    || !isNonNegativeInteger(record.lines)
-    || !isNonNegativeInteger(record.pieces)
-    || !isNonNegativeInteger(record.elapsedTicks)
+    || !hasLegacyFields(record)
     || (record.mode !== 'marathon' && record.mode !== 'race' && record.mode !== 'sprint')
-    || !isIsoDate(record.completedAt)
   ) return false;
   return record.mode === 'sprint' ? record.outcome === 'finished' : record.outcome === 'top-out';
 }
@@ -189,6 +225,15 @@ function isLegacyV4Leaderboard(value: unknown): value is LegacyV4Leaderboard {
     && board.sprint.every((record) => isLegacyV4Record(record) && record.mode === 'sprint');
 }
 
+function isLegacyV3Record(value: unknown): value is LegacyV3ScoreRecord {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const record = value as Partial<LegacyV3ScoreRecord>;
+  return record.version === 3
+    && hasLegacyFields(record)
+    && (record.mode === 'marathon' || record.mode === 'race')
+    && record.outcome === 'top-out';
+}
+
 function isLegacyV3Leaderboard(value: unknown): value is LegacyV3Leaderboard {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const board = value as Partial<LegacyV3Leaderboard>;
@@ -199,29 +244,42 @@ function isLegacyV3Leaderboard(value: unknown): value is LegacyV3Leaderboard {
     && board.race.every((record) => isLegacyV3Record(record) && record.mode === 'race');
 }
 
-/** Preserves valid Classic/Survival rows while rejecting every malformed or older schema. */
+function migrateStandardRecords(
+  records: readonly LegacyRecordFields[],
+  mode: 'marathon' | 'race',
+): ScoreRecord[] {
+  return sortRecords(mode, records.map((record) => ({
+    version: 6 as const,
+    score: record.score,
+    lines: record.lines,
+    pieces: record.pieces,
+    elapsedTicks: record.elapsedTicks,
+    chain: 0,
+    mode,
+    outcome: 'top-out' as const,
+    completedAt: record.completedAt,
+  }))).slice(0, leaderboardLimit(mode));
+}
+
+/** Preserves valid Classic/Survival rows while clearing incompatible timed Collapse rows. */
 export function migrateLegacyLeaderboard(raw: string | null): Leaderboard {
   if (raw === null) return emptyLeaderboard();
   try {
     const value: unknown = JSON.parse(raw);
-    if (isLegacyV4Leaderboard(value)) {
-      const migrateMode = (records: readonly LegacyV4ScoreRecord[], mode: 'marathon' | 'race') => sortRecords(mode, records
-        .filter((record) => record.mode === mode)
-        .map((record) => ({ ...record, version: 5 as const, chain: 0 })))
-        .slice(0, LEADERBOARD_LIMIT);
+    if (isLegacyV5Leaderboard(value) || isLegacyV4Leaderboard(value)) {
       return {
-        version: 5,
-        marathon: migrateMode(value.marathon, 'marathon'),
-        race: migrateMode(value.race, 'race'),
-        // Old Sprint records use incompatible excavation-time semantics.
+        version: 6,
+        marathon: migrateStandardRecords(value.marathon, 'marathon'),
+        race: migrateStandardRecords(value.race, 'race'),
+        // Timed score-attack rows are incomparable with endless Collapse records.
         sprint: [],
       };
     }
     if (!isLegacyV3Leaderboard(value)) return emptyLeaderboard();
     return {
-      version: 5,
-      marathon: sortRecords('marathon', value.marathon.map((record) => ({ ...record, version: 5 as const, chain: 0 }))).slice(0, LEADERBOARD_LIMIT),
-      race: sortRecords('race', value.race.map((record) => ({ ...record, version: 5 as const, chain: 0 }))).slice(0, LEADERBOARD_LIMIT),
+      version: 6,
+      marathon: migrateStandardRecords(value.marathon, 'marathon'),
+      race: migrateStandardRecords(value.race, 'race'),
       sprint: [],
     };
   } catch {
@@ -236,7 +294,7 @@ export function recordsForMode(leaderboard: Leaderboard, mode: RunMode): ScoreRe
 export function insertScoreRecord(leaderboard: Leaderboard, record: ScoreRecord): Leaderboard {
   if (!isLeaderboard(leaderboard) || !isScoreRecord(record)) return emptyLeaderboard();
   const current = leaderboard[record.mode];
-  const next = sortRecords(record.mode, [...current, record]).slice(0, LEADERBOARD_LIMIT);
+  const next = sortRecords(record.mode, [...current, record]).slice(0, leaderboardLimit(record.mode));
   return {
     ...leaderboard,
     [record.mode]: next,
