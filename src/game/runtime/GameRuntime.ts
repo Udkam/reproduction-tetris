@@ -2,6 +2,7 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
 import { InputController, type InputAction } from '../input/InputController';
 import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer';
+import { browserPlatform, type BrowserPlatform, type PlatformUnsubscribe } from '../../platform/browserPlatform';
 
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
@@ -17,7 +18,7 @@ export function randomRunSeed(): number {
     return values[0] || 1;
   }
   runtimeSeedNonce = (runtimeSeedNonce + 0x9e3779b9) >>> 0;
-  return ((Date.now() ^ Math.floor(performance.now() * 1000) ^ runtimeSeedNonce) >>> 0) || 1;
+  return ((Date.now() ^ Math.floor(browserPlatform.now() * 1000) ^ runtimeSeedNonce) >>> 0) || 1;
 }
 
 export interface RuntimeOptions {
@@ -28,6 +29,7 @@ export interface RuntimeOptions {
   reducedMotion?: boolean;
   audioEnabled?: boolean;
   audioVolume?: number;
+  platform?: BrowserPlatform;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
 }
 
@@ -54,8 +56,10 @@ declare global {
 export class GameRuntime {
   private state: GameState;
   private readonly renderer = new TetrisRenderer();
-  private readonly audio = new AudioEngine();
+  private readonly audio: AudioEngine;
+  private readonly platform: BrowserPlatform;
   private input: InputController | null = null;
+  private removeVisibilityListener: PlatformUnsubscribe | null = null;
   private accumulator = 0;
   private pendingEvents: GameEvent[] = [];
   private pendingUiEvents: GameEvent[] = [];
@@ -67,6 +71,8 @@ export class GameRuntime {
   private readonly onState?: RuntimeOptions['onState'];
 
   constructor(private readonly options: RuntimeOptions = {}) {
+    this.platform = options.platform ?? browserPlatform;
+    this.audio = new AudioEngine(this.platform);
     this.state = createInitialState(options.seed, options.mode, options.puzzleId);
     this.inputEnabled = options.inputEnabled ?? true;
     this.onState = options.onState;
@@ -84,13 +90,14 @@ export class GameRuntime {
       reducedMotion: this.options.reducedMotion ?? false,
     });
     this.renderer.setFrameCallback(this.frame);
-    this.input = new InputController((action) => this.handleAction(action, true), window, this.onWindowBlur);
-    document.addEventListener('visibilitychange', this.onVisibilityChange);
+    this.input = new InputController((action) => this.handleAction(action, true), this.platform.windowTarget(), this.onWindowBlur);
+    this.removeVisibilityListener = this.platform.listenVisibility(this.onVisibilityChange);
     this.onState?.(this.state, []);
     this.renderer.render(this.state, [], 0);
 
     if (import.meta.env.DEV) {
-      window.__SIGNAL_FOUNDRY_QA__ = {
+      const target = this.platform.windowTarget();
+      if (target) target.__SIGNAL_FOUNDRY_QA__ = {
         getState: () => structuredClone(this.state),
         getRendererSnapshot: () => this.renderer.getSnapshot(),
         start: () => this.start(),
@@ -196,7 +203,8 @@ export class GameRuntime {
   destroy(): void {
     if (this.destroyed) return;
     this.destroyed = true;
-    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.removeVisibilityListener?.();
+    this.removeVisibilityListener = null;
     this.input?.destroy();
     this.input = null;
     this.renderer.destroy();
@@ -204,7 +212,8 @@ export class GameRuntime {
     this.pendingEvents = [];
     this.pendingUiEvents = [];
     this.state = { ...this.state, puzzleUndoHistory: Object.freeze([]) };
-    delete window.__SIGNAL_FOUNDRY_QA__;
+    const target = this.platform.windowTarget();
+    if (target) delete target.__SIGNAL_FOUNDRY_QA__;
   }
 
   private readonly frame = (deltaMs: number): void => {
@@ -290,7 +299,7 @@ export class GameRuntime {
   };
 
   private readonly onVisibilityChange = (): void => {
-    if (document.hidden && this.state.status === 'playing') {
+    if (this.platform.documentHidden() && this.state.status === 'playing') {
       this.apply({ type: 'pause' });
       this.input?.clearHeld();
       this.audio.suspend();

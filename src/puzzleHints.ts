@@ -1,6 +1,7 @@
 import artifactFile from '../docs/workstreams/tetris-t13-core/puzzle-endgame-results.json';
 import { PUZZLE_DEFINITIONS, TICKS_PER_SECOND, type GameState, type PuzzleId } from './game/core';
 import { replayPuzzleRoute } from './game/core/puzzleRouteSearch';
+import { browserPlatform } from './platform/browserPlatform';
 
 /** Separate from completion history: a player earns a guide after making a real attempt. */
 export const PUZZLE_HINT_PROGRESS_KEY = 'tetra:puzzle-hints:v1';
@@ -269,15 +270,7 @@ export function puzzleHintLockCopy(state: GameState): string {
   return `再落 ${pieces} 块，或继续观察 ${seconds} 秒，即可解锁两条参考路线。`;
 }
 
-function browserStorage(): Storage | null {
-  try {
-    return typeof window === 'undefined' ? null : window.localStorage;
-  } catch {
-    return null;
-  }
-}
-
-export function readPuzzleHintProgress(storage: Storage | null = browserStorage()): PuzzleHintProgress {
+export function readPuzzleHintProgress(storage: Storage | null = browserPlatform.storage()): PuzzleHintProgress {
   try {
     return parsePuzzleHintProgress(storage?.getItem(PUZZLE_HINT_PROGRESS_KEY) ?? null);
   } catch {
@@ -285,7 +278,7 @@ export function readPuzzleHintProgress(storage: Storage | null = browserStorage(
   }
 }
 
-export function persistPuzzleHintProgress(progress: PuzzleHintProgress, storage: Storage | null = browserStorage()): void {
+export function persistPuzzleHintProgress(progress: PuzzleHintProgress, storage: Storage | null = browserPlatform.storage()): void {
   try {
     storage?.setItem(PUZZLE_HINT_PROGRESS_KEY, JSON.stringify(progress));
   } catch {

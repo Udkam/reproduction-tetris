@@ -17,6 +17,7 @@ import {
 } from './game/core';
 import { type InputAction } from './game/input/InputController';
 import { GameRuntime, randomRunSeed } from './game/runtime/GameRuntime';
+import { browserPlatform, type PlatformTimeout } from './platform/browserPlatform';
 import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
@@ -98,11 +99,11 @@ export function cloneQaState(state: GameState): GameState {
 
 function readPuzzleProgress(): PuzzleProgress {
   try {
-    const current = localStorage.getItem(PUZZLE_PROGRESS_KEY);
+    const current = browserPlatform.readStorage(PUZZLE_PROGRESS_KEY);
     if (current !== null) return parsePuzzleProgress(current);
-    const v2 = localStorage.getItem(V2_PUZZLE_PROGRESS_KEY);
+    const v2 = browserPlatform.readStorage(V2_PUZZLE_PROGRESS_KEY);
     if (v2 !== null) return migrateV2PuzzleProgress(v2);
-    return migrateLegacyPuzzleProgress(localStorage.getItem(LEGACY_PUZZLE_PROGRESS_KEY));
+    return migrateLegacyPuzzleProgress(browserPlatform.readStorage(LEGACY_PUZZLE_PROGRESS_KEY));
   } catch {
     return defaultPuzzleProgress();
   }
@@ -110,10 +111,10 @@ function readPuzzleProgress(): PuzzleProgress {
 
 function readLeaderboard(): Leaderboard {
   try {
-    const current = localStorage.getItem(LEADERBOARD_KEY);
+    const current = browserPlatform.readStorage(LEADERBOARD_KEY);
     if (current !== null) return parseLeaderboard(current);
     for (const key of LEGACY_LEADERBOARD_KEYS) {
-      const legacy = localStorage.getItem(key);
+      const legacy = browserPlatform.readStorage(key);
       if (legacy !== null) return migrateLegacyLeaderboard(legacy);
     }
   } catch {
@@ -791,7 +792,9 @@ export function GameSession({
   const [hintStepIndex, setHintStepIndex] = useState(0);
 
   const focusBoard = useCallback(() => {
-    requestAnimationFrame(() => hostRef.current?.querySelector('canvas')?.focus({ preventScroll: true }));
+    browserPlatform.defer(() => {
+      browserPlatform.deferFocus(hostRef.current?.querySelector('canvas') ?? null);
+    });
   }, []);
 
   useEffect(() => {
@@ -799,7 +802,7 @@ export function GameSession({
     if (!host) return;
     let disposed = false;
     let countdownComplete = false;
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motionQuery = browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)');
     const nextRuntime = new GameRuntime({
       seed: runSeed,
       mode,
@@ -856,18 +859,17 @@ export function GameSession({
         }
       },
     });
-    const handleMotionChange = (event: MediaQueryListEvent) => nextRuntime.setReducedMotion(event.matches);
-    motionQuery.addEventListener('change', handleMotionChange);
+    const removeMotionListener = motionQuery.subscribe((matches) => nextRuntime.setReducedMotion(matches));
     runtimeRef.current = nextRuntime;
     setRuntime(nextRuntime);
-    const countdownTimers = [
-      window.setTimeout(() => {
+    const countdownTimers: PlatformTimeout[] = [
+      browserPlatform.scheduleTimeout(() => {
         if (!disposed) setCountdownDigit(2);
       }, 1000),
-      window.setTimeout(() => {
+      browserPlatform.scheduleTimeout(() => {
         if (!disposed) setCountdownDigit(1);
       }, 2000),
-      window.setTimeout(() => {
+      browserPlatform.scheduleTimeout(() => {
         if (disposed) return;
         countdownComplete = true;
         nextRuntime.setInputEnabled(true);
@@ -885,8 +887,8 @@ export function GameSession({
 
     return () => {
       disposed = true;
-      for (const timer of countdownTimers) window.clearTimeout(timer);
-      motionQuery.removeEventListener('change', handleMotionChange);
+      for (const timer of countdownTimers) browserPlatform.cancelTimeout(timer);
+      removeMotionListener();
       nextRuntime.destroy();
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
@@ -1001,14 +1003,14 @@ export function GameSession({
   }, [focusBoard, runtime]);
 
   useEffect(() => {
-    const handleRestartShortcut = (event: KeyboardEvent) => {
-      if (event.code !== 'KeyR' || event.repeat || event.isComposing) return;
+    const handleRestartShortcut = (event: Event) => {
+      const keyboardEvent = event as KeyboardEvent;
+      if (keyboardEvent.code !== 'KeyR' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
       if (countdownDigit !== null || state.status !== 'playing' || restartConfirmOpen) return;
-      event.preventDefault();
+      keyboardEvent.preventDefault();
       requestRestart();
     };
-    window.addEventListener('keydown', handleRestartShortcut);
-    return () => window.removeEventListener('keydown', handleRestartShortcut);
+    return browserPlatform.listenWindow('keydown', handleRestartShortcut);
   }, [countdownDigit, requestRestart, restartConfirmOpen, state.status]);
 
   const requestExit = useCallback(() => {
@@ -1255,7 +1257,7 @@ export default function App() {
     setProgress((current) => {
       const updated = recordCanonicalPuzzleCompletion(current, state);
       if (updated !== current) {
-        try { localStorage.setItem(PUZZLE_PROGRESS_KEY, JSON.stringify(updated)); } catch { /* optional local completion record */ }
+        browserPlatform.writeStorage(PUZZLE_PROGRESS_KEY, JSON.stringify(updated));
       }
       return updated;
     });
@@ -1264,7 +1266,7 @@ export default function App() {
   const recordRun = useCallback((record: ScoreRecord) => {
     setLeaderboard((current) => {
       const updated = insertScoreRecord(current, record);
-      try { localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(updated)); } catch { /* optional local leaderboard */ }
+      browserPlatform.writeStorage(LEADERBOARD_KEY, JSON.stringify(updated));
       return updated;
     });
   }, []);

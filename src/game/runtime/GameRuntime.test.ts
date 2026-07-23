@@ -2,6 +2,7 @@
 
 import { describe, expect, it, vi } from 'vitest';
 import { GameRuntime } from './GameRuntime';
+import { createBrowserPlatform } from '../../platform/browserPlatform';
 
 const rendererSetOptions = vi.hoisted(() => vi.fn());
 const inputClearHeld = vi.hoisted(() => vi.fn());
@@ -53,6 +54,17 @@ describe('GameRuntime public state boundary', () => {
     expect(runtime.getState().queue).toHaveLength(5);
     expect(runtime.getState().active).not.toBeNull();
     expect(onState).not.toHaveBeenCalled();
+  });
+
+  it('mounts and tears down when an eventual package host exposes no window or document', async () => {
+    const platform = createBrowserPlatform({ window: null, document: null, audioContextFactory: null });
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false, platform });
+
+    await runtime.mount(document.createElement('div'));
+    runtime.start();
+
+    expect(runtime.getState().status).toBe('playing');
+    expect(() => runtime.destroy()).not.toThrow();
   });
 
   it('gates every public and QA gameplay entry until input is enabled', async () => {

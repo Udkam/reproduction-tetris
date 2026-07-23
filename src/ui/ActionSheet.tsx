@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { browserPlatform } from '../platform/browserPlatform';
 
 interface ActionSheetProps {
   open: boolean;
@@ -34,52 +35,53 @@ export function ActionSheet({
 
   useEffect(() => {
     if (!open) return;
-    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previouslyFocused = browserPlatform.activeElement();
     const panel = panelRef.current;
     const focusInitial = () => {
       const preferred = panel?.querySelector<HTMLElement>('[data-autofocus]');
       const first = panel?.querySelector<HTMLElement>(FOCUSABLE);
       (preferred ?? first ?? panel)?.focus({ preventScroll: true });
     };
-    const frame = requestAnimationFrame(focusInitial);
+    const frame = browserPlatform.defer(focusInitial);
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && onCancel) {
-        event.preventDefault();
-        event.stopPropagation();
+    const handleKeyDown = (event: Event) => {
+      const keyboardEvent = event as KeyboardEvent;
+      if (keyboardEvent.key === 'Escape' && onCancel) {
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
         onCancel();
         return;
       }
-      if (event.key === 'Enter' && onConfirm && !event.isComposing) {
-        event.preventDefault();
-        event.stopPropagation();
+      if (keyboardEvent.key === 'Enter' && onConfirm && !keyboardEvent.isComposing) {
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
         onConfirm();
         return;
       }
-      if (event.key !== 'Tab' || !panel) return;
+      if (keyboardEvent.key !== 'Tab' || !panel) return;
       const focusable = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
       if (focusable.length === 0) {
-        event.preventDefault();
+        keyboardEvent.preventDefault();
         panel.focus();
         return;
       }
       const first = focusable[0]!;
       const last = focusable.at(-1)!;
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
+      if (keyboardEvent.shiftKey && browserPlatform.activeElement() === first) {
+        keyboardEvent.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
+      } else if (!keyboardEvent.shiftKey && browserPlatform.activeElement() === last) {
+        keyboardEvent.preventDefault();
         first.focus();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown, true);
+    const removeKeyDown = browserPlatform.listenDocument('keydown', handleKeyDown, true);
     return () => {
-      cancelAnimationFrame(frame);
-      document.removeEventListener('keydown', handleKeyDown, true);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => previouslyFocused?.focus({ preventScroll: true }));
+      browserPlatform.cancelFrame(frame);
+      removeKeyDown();
+      browserPlatform.defer(() => {
+        browserPlatform.deferFocus(previouslyFocused);
       });
     };
   }, [onCancel, onConfirm, open]);

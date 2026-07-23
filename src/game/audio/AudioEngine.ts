@@ -1,4 +1,5 @@
 import type { GameEvent } from '../core';
+import { browserPlatform, type BrowserPlatform } from '../../platform/browserPlatform';
 
 interface ToneOptions {
   frequency: number;
@@ -24,6 +25,8 @@ export class AudioEngine {
   private lastSoftDropAt = 0;
   private voices = 0;
 
+  constructor(private readonly platform: BrowserPlatform = browserPlatform) {}
+
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     this.applyMasterGain();
@@ -43,9 +46,11 @@ export class AudioEngine {
   }
 
   async prime(): Promise<void> {
-    if (!this.enabled || typeof AudioContext === 'undefined') return;
+    if (!this.enabled) return;
     if (!this.context) {
-      this.context = new AudioContext();
+      const context = this.platform.createAudioContext();
+      if (!context) return;
+      this.context = context;
       this.master = this.context.createGain();
       this.compressor = this.context.createDynamicsCompressor();
       // Let individual sine transients stay present at 100%, then catch only
@@ -72,13 +77,13 @@ export class AudioEngine {
     const includesHardDrop = events.some((event) => event.type === 'hard-dropped');
     for (const event of events) {
       if (event.type === 'piece-moved' && event.cause === 'move') {
-        const now = performance.now();
+        const now = this.platform.now();
         if (now - this.lastMoveAt > 28) {
           this.tone({ frequency: 228, duration: 0.03, gain: 0.13, endFrequency: 244, type: 'sine' });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
-        const now = performance.now();
+        const now = this.platform.now();
         if (now - this.lastSoftDropAt > 52) {
           this.tone({ frequency: 176, duration: 0.03, gain: 0.11, endFrequency: 162, type: 'sine' });
           this.lastSoftDropAt = now;

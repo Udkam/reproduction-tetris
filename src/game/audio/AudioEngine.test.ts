@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AudioEngine } from './AudioEngine';
+import { createBrowserPlatform } from '../../platform/browserPlatform';
 
 class FakeAudioParam {
   value = 0;
@@ -134,6 +135,20 @@ describe('AudioEngine hard drop', () => {
     audio.setVolume(0.5);
     expect(gains[0]?.gain.value).toBeGreaterThan(0.5);
     expect(gains[0]?.gain.value).toBeLessThan(1);
+    audio.destroy();
+  });
+
+  it('degrades to silence when a future desktop host has no AudioContext capability', async () => {
+    const audio = new AudioEngine(createBrowserPlatform({
+      window: null,
+      document: null,
+      audioContextFactory: null,
+    }));
+
+    await audio.prime();
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+
+    expect(oscillators).toEqual([]);
     audio.destroy();
   });
 });
