@@ -6,9 +6,9 @@
   feedback supersedes the pending acceptance route: Collapse is retained but its
   75-second end condition and ruled side rail are rejected; Survival pressure changes
   from 15→8 to 13→6 seconds; and Puzzle's anchor/name authoring boundary is reopened.
-- Follow-up clarification: Collapse's local leaderboard is not an attempt history.
-  It retains one strictly best top-out using its published score/chain/lines/pieces
-  ordering; lower or tied attempts do not replace that record.
+- Follow-up clarification supersedes the one-row reading: Collapse's local leaderboard
+  retains its top ten top-outs and orders them by lines, then score, chain, and fewer
+  pieces.
 - Exact future source boundary: Collapse constants/types/engine/sprint/direct tests,
   leaderboard/persistence, App/App tests/styles; Survival constants/race/runtime
   tests; and the coupled Puzzle definitions, hints, direct Core tests, schema route

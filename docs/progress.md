@@ -8,9 +8,8 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   will replace repeated horizontal rules with a quieter metric grouping.
 - Survival pressure changes from 15→8 seconds to 13→6 seconds, preserving the fixed
   40-tick cadence, seven-row opening, and one-second-per-three-lines curve.
-- Collapse ranking is a local personal-best record rather than an attempt history: at
-  most one row is kept, and only a strictly stronger top-out replaces it (score,
-  chain, lines, then fewer pieces).
+- Collapse ranking keeps its ten strongest local top-outs rather than one personal-best
+  row. It ranks cleared lines first, then score, chain, and fewer pieces.
 - Puzzle source is no longer globally frozen: only the sparse anchor distribution,
   short structural level names, guide copy, route evidence, and ignored walkthroughs
   are reopened. A read-only Core audit found every current anchor on the bottom target
