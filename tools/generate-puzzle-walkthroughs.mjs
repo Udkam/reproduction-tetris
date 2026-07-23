@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
@@ -209,7 +209,7 @@ async function writeWalkthrough({ levelNumber, level, definition, replay, consta
   await writeFile(join(outputRoot, `${solutionName}.md`), lines.join('\n'), OUTPUT_ENCODING);
 }
 
-const artifact = JSON.parse(await (await fetch(new URL(`file://${artifactPath.replaceAll('\\', '/')}`))).text());
+const artifact = JSON.parse(await readFile(artifactPath, OUTPUT_ENCODING));
 await mkdir(outputRoot, { recursive: true });
 const vite = await createServer({ root: workspaceRoot, appType: 'custom', logLevel: 'error', server: { middlewareMode: true } });
 try {
