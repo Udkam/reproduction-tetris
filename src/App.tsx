@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ANCHOR_CELL,
   PIECE_TYPES,
-  SPRINT_TARGET_LINES,
   TICKS_PER_SECOND,
   type GameEvent,
   type GameMode,
@@ -12,6 +11,7 @@ import {
   createInitialState,
   getPuzzleDefinition,
   gravityForMode,
+  sprintRemainingTicks,
   survivalIntervalSeconds,
   survivalIntervalTicks,
 } from './game/core';
@@ -80,9 +80,9 @@ const MODE_COPY: Record<GameMode, {
     action: '开始',
   },
   sprint: {
-    label: '冲刺',
-    detail: '空场 40 行\n固定高速下落 · 以完成时间排名',
-    action: '冲刺',
+    label: '坍缩',
+    detail: '消行后逐列坍落\n75 秒内制造连锁',
+    action: '开始',
   },
   puzzle: {
     label: '解谜',
@@ -132,6 +132,11 @@ export function elapsedTimeLabel(elapsedTicks: number): string {
   return `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`;
 }
 
+export function countdownTimeLabel(remainingTicks: number): string {
+  const seconds = Math.ceil(Math.max(0, remainingTicks) / TICKS_PER_SECOND);
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
 export function fallCadenceLabel(state: GameState): string {
   const ticks = gravityForMode(state.mode, state.level, state.pieceCount, state.lines);
   const seconds = ticks / TICKS_PER_SECOND;
@@ -165,15 +170,15 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
   if (state.mode === 'sprint') {
     if (state.sprintCompletion === 'finished') {
       return {
-        title: '40 行冲刺完成',
-        detail: `${elapsedTimeLabel(state.elapsedTicks)} · ${state.pieceCount} 方块 · ${formatScore(state.score)} 分`,
+        title: '坍缩结束',
+        detail: `最高 ${state.sprintBestCascade} 连锁 · ${state.lines} 消行 · ${formatScore(state.score)} 分`,
         success: true,
       };
     }
     if (state.status === 'game-over') {
       return {
-        title: '冲刺中断',
-        detail: `${state.lines}/${state.sprintTargetLines ?? SPRINT_TARGET_LINES} 行 · ${state.pieceCount} 方块`,
+        title: '坍缩中断',
+        detail: `最高 ${state.sprintBestCascade} 连锁 · ${state.lines} 消行 · ${state.pieceCount} 方块`,
         success: false,
       };
     }
@@ -196,11 +201,12 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
   if (!isTopOutRun && !isSprintFinish) return null;
   const mode: RunMode = state.mode === 'sprint' ? 'sprint' : state.mode === 'race' ? 'race' : 'marathon';
   return {
-    version: 4,
+    version: 5,
     score: state.score,
     lines: state.lines,
     pieces: state.pieceCount,
     elapsedTicks: state.elapsedTicks,
+    chain: mode === 'sprint' ? state.sprintBestCascade : 0,
     mode,
     outcome: mode === 'sprint' ? 'finished' : 'top-out',
     completedAt,
@@ -208,7 +214,7 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
 }
 
 export function scoreRecordKey(record: ScoreRecord): string {
-  return [record.mode, record.completedAt, record.score, record.lines, record.pieces, record.elapsedTicks].join(':');
+  return [record.mode, record.completedAt, record.score, record.lines, record.pieces, record.elapsedTicks, record.chain].join(':');
 }
 
 export function scoreRecordRank(records: readonly ScoreRecord[], record: ScoreRecord | null): number | null {
@@ -231,21 +237,22 @@ function Brand({ compact = false, primary = false }: { compact?: boolean; primar
 }
 
 function ModeGlyph({ mode }: { mode: GameMode }) {
+  const cell = { width: 8, height: 8, rx: 1 };
   if (mode === 'marathon') {
-    return <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 31h9V22h9v-9h8" /></svg>;
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="16" {...cell} /><rect x="12" y="16" {...cell} /><rect x="20" y="16" {...cell} /><rect x="28" y="16" {...cell} /></svg>;
   }
   if (mode === 'race') {
-    return <svg viewBox="0 0 40 40" aria-hidden="true"><path className="mode-glyph__soft" d="M5 31h30M5 25h30" /><path d="M10 25v-6h8v6m5 0V14h8v11M27 14V7m-4 4 4-4 4 4" /></svg>;
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="12" y="12" {...cell} /><rect x="20" y="12" {...cell} /><rect x="12" y="20" {...cell} /><rect x="20" y="20" {...cell} /></svg>;
   }
   if (mode === 'sprint') {
-    return <svg viewBox="0 0 40 40" aria-hidden="true"><path className="mode-glyph__soft" d="M6 30h28M11 23h18" /><path d="M8 17h13l-4-4m4 4-4 4m3-10h12v10H20z" /></svg>;
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="12" y="8" {...cell} /><rect x="12" y="16" {...cell} /><rect x="12" y="24" {...cell} /><rect x="20" y="24" {...cell} /></svg>;
   }
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true">
-      <rect x="15.5" y="6.5" width="9" height="9" />
-      <rect x="6.5" y="15.5" width="9" height="9" />
-      <rect x="15.5" y="15.5" width="9" height="9" />
-      <rect x="24.5" y="15.5" width="9" height="9" />
+      <rect x="16" y="8" {...cell} />
+      <rect x="8" y="16" {...cell} />
+      <rect x="16" y="16" {...cell} />
+      <rect x="24" y="16" {...cell} />
     </svg>
   );
 }
@@ -256,15 +263,11 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
     <main id="game" className="landing-shell landing-shell--workbench" data-testid="mode-home">
       <header className="landing-header">
         <Brand primary />
-        <span className="landing-header__signal" aria-hidden="true"><b>04</b><i /><i /><i /><i /></span>
       </header>
       <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
-            <span className="landing-intro__eyebrow">GRAVITY FIELD</span>
             <h2 id="home-title">选择模式</h2>
-            <p>选择一条重力轨迹。</p>
-            <span className="landing-intro__mark" aria-hidden="true"><i /><i /><i /><i /><i /></span>
           </div>
           <div
             className="mode-gates mode-gates--workbench"
@@ -272,7 +275,7 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
             aria-label="选择游戏模式"
             data-testid="mode-list"
           >
-            {MODE_ORDER.map((mode, index) => {
+            {MODE_ORDER.map((mode) => {
               const item = MODE_COPY[mode];
               const active = previewMode === mode;
               return (
@@ -287,14 +290,10 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
                   onFocus={() => setPreviewMode(mode)}
                   onClick={() => onEnter(mode)}
                 >
-                  <span className="mode-gate__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                   <span className="mode-gate__glyph"><ModeGlyph mode={mode} /></span>
                   <span className="mode-gate__body">
                     <strong>{item.label}</strong>
                     <span>{item.detail}</span>
-                  </span>
-                  <span className={`mode-gate__motif mode-gate__motif--${mode}`} aria-hidden="true">
-                    <i /><i /><i /><i />
                   </span>
                   <span className="mode-gate__action"><span>{item.action}</span><b aria-hidden="true">→</b></span>
                 </button>
@@ -395,28 +394,22 @@ export function PuzzleLibrary({
           <b aria-hidden="true">←</b><span>返回模式</span>
         </button>
         <Brand compact />
-        <span className="console-header__count" data-testid="campaign-availability" aria-label={`${CAMPAIGN_LEVELS.length} 个残局均可进入`}>
-          {String(CAMPAIGN_LEVELS.length).padStart(2, '0')}<small>/ {String(CAMPAIGN_LEVELS.length).padStart(2, '0')}</small>
-        </span>
       </header>
       <section className="console-workbench" aria-labelledby="library-title">
         <aside className="console-focus" aria-live="polite" aria-label={`已选残局：${selected.name}`}>
           <div className="console-focus__well" key={selected.id}>
-            <span className="console-focus__index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
-            <span className="console-focus__pulse" aria-hidden="true" />
             <div className="console-focus__board">
               <PuzzleSilhouette id={selected.id} name={selected.name} />
             </div>
           </div>
           <section className="console-focus__copy">
             <div className="console-focus__heading">
-              <span>{String(selected.index).padStart(2, '0')} · {selectedRows} 行残局</span>
+              <span>{selectedRows} 行残局</span>
               <h2>{selected.name}</h2>
               {selectedComplete && <i aria-label="已完成">✓</i>}
             </div>
             <p>{selectedGuide.cue}</p>
             <div className="console-focus__facts" aria-label="残局特性">
-              <span>{selectedRows} 行残局</span>
               {selectedAnchorCount > 0 && <span>固定锚点</span>}
             </div>
             <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
@@ -424,16 +417,15 @@ export function PuzzleLibrary({
         </aside>
         <nav className="console-route" aria-label={`${CAMPAIGN_LEVELS.length} 个开放解谜残局`} data-testid="level-list">
           <div className="console-route__heading">
-            <span>20 个残局</span>
             <h1 id="library-title">解谜</h1>
           </div>
           <ol className="console-bands" aria-label="残局行数分段">
             {PUZZLE_ROW_BANDS.map((band, bandIndex) => {
               const rows = bandIndex + 5;
-              const activeBand = band.some((level) => level.id === selected.id);
-              return (
-                <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={rows} key={band[0]!.id}>
-                  <span className="console-band__label" aria-label={`${rows} 行残局`}>{String(rows).padStart(2, '0')}<small>{rows} 行</small></span>
+                const activeBand = band.some((level) => level.id === selected.id);
+                return (
+                  <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={rows} aria-label={`${rows} 行残局`} key={band[0]!.id}>
+                  <span className="console-band__label" aria-hidden="true"><small>{rows} 行</small></span>
                   <ol className="console-nodes">
                     {band.map((level) => {
                       const complete = progress.completedLevelIds.includes(level.id);
@@ -464,9 +456,6 @@ export function PuzzleLibrary({
           </ol>
         </nav>
       </section>
-      <footer className="console-footer" data-testid="campaign-rules" aria-label="开放解谜工作坊说明">
-        <strong>20 个残局 · 全部可进入</strong><span>B 撤回 · 先试，再读提示</span>
-      </footer>
     </main>
   );
 }
@@ -484,18 +473,18 @@ export function LeaderboardPanel({
   const sprint = mode === 'sprint';
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
   return (
-    <section className="result-leaderboard" aria-label={sprint ? '冲刺排行榜' : survival ? '生存排行榜' : '经典排行榜'}>
+    <section className="result-leaderboard" aria-label={sprint ? '坍缩排行榜' : survival ? '生存排行榜' : '经典排行榜'}>
       <header>
-        <strong>{sprint ? '冲刺排行' : survival ? '生存排行' : '经典排行'}</strong>
-        <span>{sprint ? '完成时间' : survival ? '生存时间' : '消行'}</span>
+        <strong>{sprint ? '坍缩排行' : survival ? '生存排行' : '经典排行'}</strong>
+        <span>{sprint ? '分数' : survival ? '生存时间' : '消行'}</span>
       </header>
       {records.length === 0 ? <p>暂无记录</p> : (
         <ol>
           {records.map((record, index) => (
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
-              <strong>{sprint || survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
-              <small>{sprint ? `${record.pieces} 方块 · ${formatScore(record.score)} 分` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
+              <strong>{sprint ? `${formatScore(record.score)} 分` : survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
+              <small>{sprint ? `最高 ${record.chain} 连锁 · ${record.lines} 行` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`}</small>
             </li>
           ))}
         </ol>
@@ -716,11 +705,11 @@ export function RunStats({ state }: { state: GameState }) {
   }
   if (state.mode === 'sprint') {
     return (
-      <section className="run-stats" data-testid="stats" aria-label="冲刺模式数据">
+      <section className="run-stats" data-testid="stats" aria-label="坍缩模式数据">
         <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-        <article data-stat-role="sprint-progress"><span>进度</span><strong>{state.lines}/{state.sprintTargetLines ?? SPRINT_TARGET_LINES}</strong></article>
-        <article data-stat-role="sprint-pieces"><span>已落子</span><strong>{state.pieceCount}</strong></article>
-        <article data-stat-role="sprint-time"><span>用时</span><strong>{elapsedTimeLabel(state.elapsedTicks)}</strong></article>
+        <article data-stat-role="sprint-chain"><span>当前连锁</span><strong>{state.sprintCascadeDepth}</strong></article>
+        <article data-stat-role="sprint-best"><span>最高连锁</span><strong>{state.sprintBestCascade}</strong></article>
+        <article data-stat-role="sprint-time"><span>剩余</span><strong>{countdownTimeLabel(sprintRemainingTicks(state.elapsedTicks))}</strong></article>
       </section>
     );
   }
@@ -839,7 +828,7 @@ export function GameSession({
         const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race') && nextState.status === 'game-over'
           || nextState.mode === 'sprint' && nextState.sprintCompletion === 'finished';
         if (recordableRun) {
-          const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}`;
+          const runKey = `${nextState.seed}:${nextState.mode}:${nextState.elapsedTicks}:${nextState.pieceCount}:${nextState.score}:${nextState.lines}:${nextState.sprintBestCascade}`;
           if (lastRecordedRunRef.current !== runKey) {
             lastRecordedRunRef.current = runKey;
             const record = scoreRecordForState(nextState, new Date().toISOString());
@@ -919,7 +908,9 @@ export function GameSession({
       puzzleTargetsRemaining: state.puzzleTargetCells.length,
       puzzleTargetsInitial: state.puzzleInitialTargetCount,
       puzzleUndoDepth: state.mode === 'puzzle' ? state.puzzleUndoHistory.length : 0,
-      sprintTargetLines: state.sprintTargetLines,
+      sprintGoal: state.sprintGoal,
+      sprintCascadeDepth: state.sprintCascadeDepth,
+      sprintBestCascade: state.sprintBestCascade,
       sprintCompletion: state.sprintCompletion,
       score: state.score,
       lines: state.lines,

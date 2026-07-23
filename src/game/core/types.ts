@@ -61,8 +61,9 @@ export type PuzzleCompletion =
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn';
 
-/** Sprint only ends successfully after the fixed 40-line objective. */
+/** Sprint only ends when its fixed Collapse round reaches its clock. */
 export type SprintCompletion = 'active' | 'finished';
+export type SprintGoal = 'cascade-score-attack';
 
 export interface GameState {
   board: Board;
@@ -111,9 +112,13 @@ export interface GameState {
   survivalPressureTicks: number;
   /** A due pressure row waiting for the next safe lock/clear resolution. */
   survivalRisePending: boolean;
-  /** Fixed Sprint objective, null for every non-Sprint run. */
-  sprintTargetLines: number | null;
-  /** Distinguishes a Sprint time completion from a Puzzle target completion. */
+  /** The current post-clear Collapse depth. It resets after the chain settles. */
+  sprintCascadeDepth: number;
+  /** Best completed or active Collapse depth for this short score-attack round. */
+  sprintBestCascade: number;
+  /** Distinguishes the timed Collapse round from Puzzle completion. */
+  sprintGoal: SprintGoal | null;
+  /** Distinguishes a completed Collapse clock from a Puzzle target completion. */
   sprintCompletion: SprintCompletion | null;
   status: GameStatus;
   phase: GamePhase;

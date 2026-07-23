@@ -6,8 +6,8 @@ import {
   LOCK_DELAY_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
+  SPRINT_DURATION_TICKS,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
-  SPRINT_TARGET_LINES,
   SURVIVAL_LINES_PER_BEDROCK,
   VISIBLE_START_ROW,
   gravityForMode,
@@ -18,6 +18,7 @@ import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
 import { createRandomizer, drawPiece } from './random';
 import { kickTests } from './rotation';
+import { collapseSprintColumns } from './sprint';
 import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId, type PuzzleUndoSnapshot } from './types';
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
@@ -119,7 +120,9 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalBedrockRows: openingBedrock?.added ?? 0,
     survivalPressureTicks: 0,
     survivalRisePending: false,
-    sprintTargetLines: mode === 'sprint' ? SPRINT_TARGET_LINES : null,
+    sprintCascadeDepth: 0,
+    sprintBestCascade: 0,
+    sprintGoal: mode === 'sprint' ? 'cascade-score-attack' : null,
     sprintCompletion: mode === 'sprint' ? 'active' : null,
     status: 'ready',
     phase: 'active',
@@ -189,9 +192,9 @@ function withActive(state: GameState): state is GameState & { active: ActivePiec
   return state.active !== null;
 }
 
-/** Sprint completion is independent from Puzzle target ownership and ordinary top-out. */
-function finishSprintSuccess(state: GameState): GameTransition {
-  if (state.mode !== 'sprint' || state.sprintTargetLines === null || state.lines < state.sprintTargetLines) {
+/** Collapse completes only when its fixed score-attack clock expires. */
+function finishSprintRound(state: GameState): GameTransition {
+  if (state.mode !== 'sprint' || state.sprintGoal !== 'cascade-score-attack') {
     return invalidState(state);
   }
   return {
@@ -205,6 +208,7 @@ function finishSprintSuccess(state: GameState): GameTransition {
       gravityTicks: 0,
       lockTicks: 0,
       lockResets: 0,
+      sprintCascadeDepth: 0,
       sprintCompletion: 'finished',
     },
     events: [{ type: 'finished', completionTicks: state.elapsedTicks }],
@@ -344,10 +348,50 @@ function lockActive(
       pendingClearRows: rows,
       gravityTicks: 0,
       lockTicks: 0,
+      sprintCascadeDepth: state.mode === 'sprint' ? 1 : state.sprintCascadeDepth,
     };
     return {
       state: appendPuzzleUndoCheckpoint(clearing, undoCheckpoint),
       events: [...extraEvents, lockedEvent, { type: 'clear-started', rows }],
+    };
+  }
+
+  if (state.mode === 'sprint') {
+    const collapsedBoard = collapseSprintColumns(board);
+    const cascadeRows = fullRows(collapsedBoard);
+    if (cascadeRows.length > 0) {
+      return {
+        state: {
+          ...state,
+          board: collapsedBoard,
+          pieceCount,
+          active: null,
+          phase: 'line-clear',
+          phaseTicks: 0,
+          pendingClearRows: cascadeRows,
+          gravityTicks: 0,
+          lockTicks: 0,
+          lockResets: 0,
+          sprintCascadeDepth: 1,
+        },
+        events: [...extraEvents, lockedEvent, { type: 'clear-started', rows: cascadeRows }],
+      };
+    }
+    return {
+      state: {
+        ...state,
+        board: collapsedBoard,
+        pieceCount,
+        active: null,
+        phase: 'entry',
+        phaseTicks: 0,
+        gravityTicks: 0,
+        lockTicks: 0,
+        lockResets: 0,
+        combo: 0,
+        sprintCascadeDepth: 0,
+      },
+      events: [...extraEvents, lockedEvent],
     };
   }
 
@@ -459,7 +503,12 @@ function finishLineClear(state: GameState): GameTransition {
   const comboBonus = state.mode === 'marathon' ? 50 * Math.max(0, combo - 1) : 0;
   const level = state.mode === 'puzzle' ? Math.floor(lines / 10) : 0;
   const baseScore = LINE_CLEAR_BASE_SCORE[count] ?? 0;
-  const clearScore = state.mode === 'puzzle' ? baseScore * (level + 1) : baseScore + comboBonus;
+  const cascadeDepth = state.mode === 'sprint' ? Math.max(1, state.sprintCascadeDepth) : 0;
+  const clearScore = state.mode === 'puzzle'
+    ? baseScore * (level + 1)
+    : state.mode === 'sprint'
+      ? baseScore * cascadeDepth * cascadeDepth
+      : baseScore + comboBonus;
   let cleared: GameState = {
     ...state,
     board: clearRows(state.board, rows),
@@ -470,6 +519,10 @@ function finishLineClear(state: GameState): GameTransition {
     level,
     pendingClearRows: [],
     phaseTicks: 0,
+    sprintCascadeDepth: state.mode === 'sprint' ? cascadeDepth : state.sprintCascadeDepth,
+    sprintBestCascade: state.mode === 'sprint'
+      ? Math.max(state.sprintBestCascade, cascadeDepth)
+      : state.sprintBestCascade,
   };
   const events: GameEvent[] = [{ type: 'lines-cleared', rows, count, score: clearScore }];
   if (state.mode === 'puzzle' && level > state.level) events.push({ type: 'level-up', level });
@@ -477,9 +530,28 @@ function finishLineClear(state: GameState): GameTransition {
     const resolved = resolvePuzzleAfterLock(cleared, true);
     return { state: resolved.state, events: [...events, ...resolved.events] };
   }
-  if (cleared.mode === 'sprint' && cleared.sprintTargetLines !== null && lines >= cleared.sprintTargetLines) {
-    const finished = finishSprintSuccess(cleared);
-    return { state: finished.state, events: [...events, ...finished.events] };
+  if (cleared.mode === 'sprint') {
+    const collapsedBoard = collapseSprintColumns(cleared.board);
+    const cascadeRows = fullRows(collapsedBoard);
+    if (cascadeRows.length > 0) {
+      return {
+        state: {
+          ...cleared,
+          board: collapsedBoard,
+          phase: 'line-clear',
+          phaseTicks: 0,
+          pendingClearRows: cascadeRows,
+          sprintCascadeDepth: cascadeDepth + 1,
+        },
+        events: [...events, { type: 'clear-started', rows: cascadeRows }],
+      };
+    }
+    const spawned = spawnPiece({
+      ...cleared,
+      board: collapsedBoard,
+      sprintCascadeDepth: 0,
+    });
+    return { state: spawned.state, events: [...events, ...spawned.events] };
   }
   if (cleared.mode === 'race') {
     const risen = resolvePendingSurvivalRise(cleared, true);
@@ -516,6 +588,11 @@ function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
   let next: GameState = advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 });
   const timedEvents: GameEvent[] = [];
+
+  if (next.mode === 'sprint' && next.elapsedTicks >= SPRINT_DURATION_TICKS) {
+    const finished = finishSprintRound(next);
+    return { state: finished.state, events: [...timedEvents, ...finished.events] };
+  }
 
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
@@ -607,8 +684,8 @@ export function replay(seed: number, commands: readonly GameCommand[], mode: Gam
 
 export function stateHash(state: GameState): string {
   // Mode-private fields stay out of unrelated replays so the established Classic,
-  // Survival, and Puzzle hash domains remain stable. Sprint keeps its objective and
-  // explicit completion state in its own canonical payload.
+  // Survival, and Puzzle hash domains remain stable. Sprint keeps Collapse depth and
+  // explicit round completion in its own canonical payload.
   const canonicalState = state.mode === 'puzzle'
     ? (() => {
       const {
@@ -616,7 +693,9 @@ export function stateHash(state: GameState): string {
         survivalBedrockRows: _survivalBedrockRows,
         survivalPressureTicks: _survivalPressureTicks,
         survivalRisePending: _survivalRisePending,
-        sprintTargetLines: _sprintTargetLines,
+        sprintCascadeDepth: _sprintCascadeDepth,
+        sprintBestCascade: _sprintBestCascade,
+        sprintGoal: _sprintGoal,
         sprintCompletion: _sprintCompletion,
         ...puzzleState
       } = state;
@@ -642,7 +721,9 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
-          sprintTargetLines: _sprintTargetLines,
+          sprintCascadeDepth: _sprintCascadeDepth,
+          sprintBestCascade: _sprintBestCascade,
+          sprintGoal: _sprintGoal,
           sprintCompletion: _sprintCompletion,
           ...classicState
         } = legacyState;
@@ -660,7 +741,9 @@ export function stateHash(state: GameState): string {
       }
       const {
         combo: _combo,
-        sprintTargetLines: _sprintTargetLines,
+        sprintCascadeDepth: _sprintCascadeDepth,
+        sprintBestCascade: _sprintBestCascade,
+        sprintGoal: _sprintGoal,
         sprintCompletion: _sprintCompletion,
         ...survivalState
       } = legacyState;

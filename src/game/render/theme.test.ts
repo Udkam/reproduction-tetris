@@ -85,6 +85,7 @@ describe('T5 bright mineral matte material', () => {
       '--edge': '#879db3',
       '--classic': '#357f78',
       '--race': '#526eb0',
+      '--sprint': '#ad6c37',
       '--puzzle': '#80639d',
       '--selection': '#a75e71',
       '--action': '#315f96',
@@ -99,7 +100,7 @@ describe('T5 bright mineral matte material', () => {
       expect(styles).toContain(`${token}: ${value};`);
     }
     expect(styles).toContain('color-scheme: light;');
-    expect(styles).toContain('--phase: linear-gradient(90deg, #357f78, #526eb0, #80639d);');
+    expect(styles).toContain('--phase: linear-gradient(90deg, #357f78, #526eb0, #ad6c37, #80639d);');
     expect(styles).toContain('--shadow: 0 18px 44px rgba(31, 59, 86, .14);');
     const actionTextRules = [
       /\.skip-link\s*\{[^}]*color: var\(--action-ink\);[^}]*background: var\(--action\);/s,

@@ -185,7 +185,9 @@ describe('GameRuntime public state boundary', () => {
     runtime.selectMode('sprint');
     expect(runtime.getState().mode).toBe('sprint');
     expect(runtime.getState().sprintCompletion).toBe('active');
-    expect(runtime.getState().sprintTargetLines).toBe(40);
+    expect(runtime.getState().sprintGoal).toBe('cascade-score-attack');
+    expect(runtime.getState().sprintCascadeDepth).toBe(0);
+    expect(runtime.getState().sprintBestCascade).toBe(0);
     expect(runtime.getState().seed).toBe(0x7a11beef);
     vi.unstubAllGlobals();
   });

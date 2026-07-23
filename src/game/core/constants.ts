@@ -24,7 +24,9 @@ export const SURVIVAL_MIN_INTERVAL_SECONDS = 8;
 export const SURVIVAL_GRAVITY_TICKS = 40;
 /** Sprint is brisk but steady: reading and execution, not escalating speed, decide the run. */
 export const SPRINT_GRAVITY_TICKS = 36;
-export const SPRINT_TARGET_LINES = 40;
+/** Collapse is a short score-attack round, not a line-count race. */
+export const SPRINT_DURATION_SECONDS = 75;
+export const SPRINT_DURATION_TICKS = SPRINT_DURATION_SECONDS * TICKS_PER_SECOND;
 
 export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
 
