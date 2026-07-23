@@ -603,6 +603,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelectorAll('.console-route .puzzle-silhouette')).toHaveLength(0);
     expect(view.container.querySelectorAll('.console-focus .puzzle-silhouette')).toHaveLength(1);
     expect(view.container.querySelector('.console-focus__index, .console-focus__pulse')).toBeNull();
+    expect(view.container.querySelector('.console-focus__heading > span, .console-focus__heading > i')).toBeNull();
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
       expect(view.container.textContent).not.toContain(banned);
@@ -622,6 +623,8 @@ describe('T6 frontend mode binding', () => {
     view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id, fullyUnlocked)));
     expect(view.container.querySelector('[data-testid="selected-puzzle-best"]')?.textContent).toBe('最少 7 步');
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
+    expect(view.container.querySelectorAll('.console-focus__heading > span, .console-focus__heading > i, .console-node i')).toHaveLength(0);
+    expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
     for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {
       const level = CAMPAIGN_LEVELS[index]!;
       view.rerender(createElement(PuzzleLibrary, props(level.id, fullyUnlocked)));
@@ -632,6 +635,7 @@ describe('T6 frontend mode binding', () => {
 
       expect(pressed?.dataset.levelId).toBe(level.id);
       expect(view.container.querySelector('.console-focus h2')?.textContent).toBe(level.name);
+      expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();

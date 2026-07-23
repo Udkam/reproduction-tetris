@@ -370,7 +370,6 @@ export function PuzzleLibrary({
   const selectedDefinition = getPuzzleDefinition(selected.id);
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedAnchorCount = selectedDefinition.anchorCells.length;
-  const selectedRows = selectedDefinition.boardRows.filter((row) => row !== '..........').length;
   const selectedBest = puzzleBestPieceCount(progress, selected.id);
   return (
     <main id="game" className="library-shell library-shell--console" data-testid="puzzle-library">
@@ -389,9 +388,7 @@ export function PuzzleLibrary({
           </div>
           <section className="console-focus__copy">
             <div className="console-focus__heading">
-              <span>{selectedRows} 行残局</span>
-              <h2>{selected.name}</h2>
-              {selectedComplete && <i aria-label="已完成">✓</i>}
+              <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selected.name}</h2>
             </div>
             <div className="console-focus__facts" aria-label="残局特性">
               {selectedAnchorCount > 0 && <span>固定锚点</span>}
@@ -418,7 +415,7 @@ export function PuzzleLibrary({
                       const selectedLevel = selectedId === level.id;
                       const bestPieces = puzzleBestPieceCount(progress, level.id);
                       return (
-                        <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''} ${complete ? 'console-node--complete' : ''}`} key={level.id}>
+                        <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''}`} key={level.id}>
                           <button
                             type="button"
                             data-testid="level-row"
@@ -432,7 +429,6 @@ export function PuzzleLibrary({
                           >
                             <span>{String(level.index).padStart(2, '0')}</span>
                             {bestPieces !== null && <small aria-label={`最少 ${bestPieces} 步`}>{bestPieces}</small>}
-                            {complete && <i aria-hidden="true">✓</i>}
                           </button>
                         </li>
                       );

@@ -4746,6 +4746,12 @@ p {
   .console-node--selected button { animation: none !important; transition: none !important; }
 }
 
+/* Completion is expressed by the selected level name, not duplicate status glyphs. */
+.console-focus__title--complete {
+  color: #9fd6bc;
+  text-shadow: 0 0 18px rgba(104, 197, 147, .16);
+}
+
 /* Collapse keeps its four live values readable on the narrow game data rail. */
 .run-stats [data-stat-role="sprint-chain"] span,
 .run-stats [data-stat-role="sprint-best"] span,
