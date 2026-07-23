@@ -36,9 +36,17 @@ tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
    non-spoiling guidance to the schema-6 route evidence. Historic completion records
    remain valid player history; no Core rule, renderer, or generic storage migration
    is changed.
-5. **Sprint checkpoint:** Game-mode types/engine/rules/runtime direct tests,
-   leaderboard persistence/tests, and the exact Sprint UI binding may change together
-   only as required for an empty-board 40-line completion with time-ranked results.
+5. **Sprint checkpoint (authorized integration exception):**
+   `src/game/core/types.ts`, `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+   `src/game/core/sprint.test.ts`, `src/game/core/rules.test.ts`,
+   `src/game/runtime/GameRuntime.test.ts`, `src/leaderboard.ts`,
+   `src/leaderboard.test.ts`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`
+   may change together only as required for an empty-board 40-line completion with a
+   steady brisk fall, an explicit Core completion state, fresh ordinary-run seeds,
+   time-ranked Sprint records, and its exact visible mode/home/result bindings. These
+   cross Core/persistence/UI paths are atomic because the expanded `GameMode` must
+   typecheck through all three boundaries; no Puzzle source, renderer primitive,
+   dependency, or packaging target is included.
 6. **Workshop presentation checkpoint:** `src/App.tsx`, `src/App.test.ts`, and
    `src/styles.css` own all-open observatory copy/layout/motion and the four-mode home
    treatment. No Core authoring or storage migration is mixed into this checkpoint.
