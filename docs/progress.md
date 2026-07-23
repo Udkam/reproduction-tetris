@@ -1,5 +1,17 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-24 — T13.4 production-test discovery correction opened
+
+- The current product candidate is clean and pushed, but the unqualified Vitest command
+  scans ignored local archive material. A list-only probe isolated the stale
+  `.local/audits/t12.6-walkthrough-legacy-20260724/generate-solution-walkthroughs.test.ts`
+  import as the first discovery failure; it references the intentionally archived T12
+  route artifact through a no-longer-valid relative path.
+- Scope is configuration-only: restrict default Vitest discovery to current `src/`
+  tests and preserve all archived/docs tests as non-default evidence. Puzzle product
+  code and surfaces remain closed. Next: make the smallest Vite/Vitest configuration
+  change, run the default suite, then typecheck/build and record the outcome.
+
 ## 2026-07-24 — T13.3 current walkthrough artifact recovery verified locally
 
 - Archived the exact stale local T12 walkthroughs, screenshots, candidate scratch

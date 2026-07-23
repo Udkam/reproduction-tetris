@@ -45,6 +45,21 @@ explicit ignored recovery route
 `.local/audits/t12.6-walkthrough-legacy-20260724/`. This keeps both rollback material
 and player-facing output unambiguous.
 
+## T13.4 production-test discovery boundary
+
+The default product test command is a current-source quality gate, not a recursive
+archive verifier. Vitest must discover only current `src/` test files. Historical
+artifact checks beneath `docs/workstreams/` and ignored local recovery material beneath
+`.local/` remain readable reference evidence, but they may not enter `npm.cmd run test`
+or import obsolete route artifacts. This prevents an ignored, intentionally retained
+walkthrough helper from changing the production test result.
+
+The scoped repair may change only the repository's Vitest/Vite test-discovery
+configuration and its direct documentation/tests if needed. It does not alter game
+rules, Puzzle definitions, queues, anchors, selectors, rendering, storage, or the
+browser bundle. Acceptance requires the unqualified default test command to list and
+run the current source suite to completion, followed by typecheck and build.
+
 # Tetra — T13.1 Quiet Fields and Excavation Sprint Contract
 
 ## T13.1 feedback correction

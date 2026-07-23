@@ -49,6 +49,21 @@ with zero targets remaining. The `Solutions/` top level is now exactly those twe
 walkthroughs and their twenty image directories, while the retained legacy material is
 under the documented `.local/audits/` route.
 
+### T13.4 production-test discovery correction
+
+Default `npm.cmd run test` currently discovers an ignored historical walkthrough test
+under `.local/audits/`, whose relative imports intentionally no longer resolve after
+the recovery archive move. This is a test-discovery boundary defect, not a Puzzle
+route, Core, or gameplay failure. The coordinator may modify only the Vite/Vitest
+configuration and direct test/documentation paths necessary to limit the default suite
+to current `src/` tests. Historical tests below `docs/workstreams/` and ignored local
+archives remain preserved evidence but are excluded from the product command.
+
+Required proof is a default `npm.cmd run test` that completes with only current source
+tests, followed by `npm.cmd run typecheck` and `npm.cmd run build`. Do not modify any
+Puzzle source, rule, setup, queue, anchor, selector, preview, or visual surface in
+this correction.
+
 ### T13.1 feedback-correction checkpoint
 
 The user rejected the decorative grid/telemetry treatment and the 40-line Sprint as

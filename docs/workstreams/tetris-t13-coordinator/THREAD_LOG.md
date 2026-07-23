@@ -1,5 +1,20 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.4-TEST-DISCOVERY-014 contract checkpoint
+
+- Base: `f86a64e`; exact planned source boundary: `vite.config.ts` only, plus this
+  T13 documentation record and the final changelog. No game or Puzzle source is in
+  scope.
+- Read-only diagnosis: `node node_modules/vitest/vitest.mjs list` reaches ignored
+  `.local/audits/t12.6-walkthrough-legacy-20260724/generate-solution-walkthroughs.test.ts`
+  and fails to import its retired relative T12 artifact path. The default recursive
+  discovery also includes historical `docs/workstreams/` test artifacts, while the
+  current product suite lives wholly beneath `src/`.
+- Decision: configure Vitest to discover current `src/` tests only. Historical
+  workstream and local recovery checks remain archived/readable but must not define the
+  `npm.cmd run test` quality gate. Blocker: none. Next: implement the configuration
+  change and run the unqualified suite once.
+
 ## 2026-07-23 — TETRIS-T13-CONTRACT-001 active scope
 
 - Base: `550d77e` on `main`; no product source is changed in this checkpoint.
