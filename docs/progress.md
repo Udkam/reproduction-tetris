@@ -1,16 +1,25 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
-## 2026-07-24 — T13.4 production-test discovery correction opened
+## 2026-07-24 — T13.4 production-test discovery correction verified locally
 
 - The current product candidate is clean and pushed, but the unqualified Vitest command
   scans ignored local archive material. A list-only probe isolated the stale
   `.local/audits/t12.6-walkthrough-legacy-20260724/generate-solution-walkthroughs.test.ts`
   import as the first discovery failure; it references the intentionally archived T12
   route artifact through a no-longer-valid relative path.
-- Scope is configuration-only: restrict default Vitest discovery to current `src/`
-  tests and preserve all archived/docs tests as non-default evidence. Puzzle product
-  code and surfaces remain closed. Next: make the smallest Vite/Vitest configuration
-  change, run the default suite, then typecheck/build and record the outcome.
+- Scope stayed configuration-only: `vite.config.ts` now declares the current source
+  include pattern and imports `defineConfig` from `vitest/config`. The unqualified
+  command now discovers 23 `src/` files and passes 138 tests in 11.40 seconds; it no
+  longer discovers ignored/local or historical docs tests.
+- Final candidate `dc9acca` also passes `npm.cmd run typecheck` and `npm.cmd run
+  build` (746 modules). A real-time Playwright audit at 1440×900, 390×844, and
+  844×390 confirms Collapse's real hard drops, all 20 open Puzzle controls, one canvas,
+  zero DOM board cells, no overflow, reduced motion, and zero errors. The generic
+  web-game client was invoked but cannot advance the product countdown without an
+  `advanceTime` hook; it is not used as acceptance evidence.
+- No Puzzle product source or surface changed. The remaining acceptance condition is
+  an independent read-only Core and visual/browser QA disposition, not a known product
+  or test-runner blocker.
 
 ## 2026-07-24 — T13.3 current walkthrough artifact recovery verified locally
 

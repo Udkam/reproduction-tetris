@@ -62,7 +62,11 @@ archives remain preserved evidence but are excluded from the product command.
 Required proof is a default `npm.cmd run test` that completes with only current source
 tests, followed by `npm.cmd run typecheck` and `npm.cmd run build`. Do not modify any
 Puzzle source, rule, setup, queue, anchor, selector, preview, or visual surface in
-this correction.
+this correction. Result (2026-07-24): the configured default suite now discovers only
+23 current `src/` files and passes all 138 tests. Typecheck, build, and the final
+desktop/portrait/landscape browser audit also pass on candidate `dc9acca`; the generic
+web-game client still cannot cross the app's countdown because no deterministic
+`advanceTime` hook exists, so the real-time browser audit remains authoritative.
 
 ### T13.1 feedback-correction checkpoint
 

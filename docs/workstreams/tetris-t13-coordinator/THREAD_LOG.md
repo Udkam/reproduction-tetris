@@ -15,6 +15,28 @@
   `npm.cmd run test` quality gate. Blocker: none. Next: implement the configuration
   change and run the unqualified suite once.
 
+## 2026-07-24 — TETRIS-T13.4-TEST-DISCOVERY-014 source checkpoint
+
+- Candidate: `dc9acca` (`test(t13): scope default discovery to product sources`).
+  Exact source path: `vite.config.ts`; it uses Vitest's config helper and scopes
+  default discovery to `src/**/*.{test,spec}.?(c|m)[jt]s?(x)`. No game, Puzzle,
+  renderer, persistence, package, or browser-runtime source changed.
+- Verification: `vitest list` reports current `src/` cases only. The unqualified
+  `npm.cmd run test` completes: 23 files / 138 tests passed in 11.40 seconds;
+  `npm.cmd run typecheck` passes; `npm.cmd run build` passes (746 transformed modules).
+  This resolves the archive-import discovery failure without deleting its recovery
+  material.
+- Browser evidence: reran `.local/audits/t13-relay/audit.mjs` against `dc9acca` at
+  1440×900, 390×844, and 844×390. It verifies the live 75-second 坍缩 state, two
+  hard-drop locks, all-open Puzzle access, one selected preview, one canvas/zero DOM
+  cells, no overflow, reduced motion, and zero errors. The desktop Collapse and
+  Puzzle-library screenshots were visually inspected. The required generic web-game
+  client was invoked but timed out at the app countdown because this product lacks a
+  deterministic `advanceTime` hook; the real-time audit is the valid evidence.
+- Blocker: no product/test failure remains. Independent read-only Core and visual QA
+  has not yet issued a disposition, so this is a coordinator-verified candidate rather
+  than an acceptance. Next: preserve the clean candidate range for that review.
+
 ## 2026-07-23 — TETRIS-T13-CONTRACT-001 active scope
 
 - Base: `550d77e` on `main`; no product source is changed in this checkpoint.

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-24 — T13 production-test discovery recovery candidate
+
+- Fixed the default Vitest quality gate so it discovers only current `src/` test files.
+  Ignored local recovery helpers and historical workstream tests remain preserved but
+  no longer execute as product tests or import retired route artifacts.
+- The unqualified `npm.cmd run test` now passes 23 files / 138 tests. `npm.cmd run
+  typecheck` and `npm.cmd run build` (746 transformed modules) also pass. The change is
+  confined to `vite.config.ts`; Puzzle rules, levels, queues, anchors, selector, and
+  visual surfaces are unchanged.
+- Fresh real-time browser evidence at 1440×900, 390×844, and 844×390 confirms the
+  existing Collapse and Puzzle interaction contract: two live hard drops, all 20
+  Puzzle levels open, one canvas, zero DOM board cells, no viewport overflow, reduced
+  motion, and no browser errors. Candidate: `dc9acca`.
+- This resolves the concrete test-runner blocker. Independent read-only Core and
+  visual/browser QA is still pending before any acceptance claim.
+
 ## 2026-07-24 — T13 current walkthrough recovery record
 
 - Reclassified the ignored local walkthrough map without deleting any recovery
