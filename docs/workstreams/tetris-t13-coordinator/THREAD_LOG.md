@@ -1,5 +1,27 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.5-PERSISTENT-COLLAPSE-015 contract checkpoint
+
+- Base: `b6b2d3f`; no product source is changed in this contract checkpoint. User
+  feedback supersedes the pending acceptance route: Collapse is retained but its
+  75-second end condition and ruled side rail are rejected; Survival pressure changes
+  from 15→8 to 13→6 seconds; and Puzzle's anchor/name authoring boundary is reopened.
+- Exact future source boundary: Collapse constants/types/engine/sprint/direct tests,
+  leaderboard/persistence, App/App tests/styles; Survival constants/race/runtime
+  tests; and the coupled Puzzle definitions, hints, direct Core tests, schema route
+  artifact, generator, and ignored `Solutions/` output. No renderer primitive,
+  package/dependency, unrelated game repository, or desktop package target is allowed.
+- Read-only anchor diagnosis: all six current anchors occupy the bottom initial target
+  row, while current validation forbids any anchor outside the target band. That is
+  incompatible with the user’s stated rule. A real-Core provisional search already
+  found above-band, structurally active two-route candidates for `t3r-shaft-01`; it
+  will be used as a method, not a reason to move an anchor without a route proof.
+- Acceptance: do not call the previous T13 candidate accepted. Each new Core/UI
+  checkpoint needs targeted tests; the final range needs current-source full tests,
+  typecheck, build, all Puzzle route replays/walkthroughs, and desktop/portrait/
+  landscape browser evidence. Next: complete candidate search and author the coupled
+  Collapse, Survival, and Puzzle corrections.
+
 ## 2026-07-24 — TETRIS-T13.4-TEST-DISCOVERY-014 contract checkpoint
 
 - Base: `f86a64e`; exact planned source boundary: `vite.config.ts` only, plus this

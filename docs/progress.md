@@ -1,5 +1,23 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
+
+- User feedback reopens the current T13 candidate before acceptance. Collapse keeps
+  its successful per-column cascade mechanic but loses the arbitrary 75-second limit;
+  its valid score records will end at top-out rather than a clock, and its right rail
+  will replace repeated horizontal rules with a quieter metric grouping.
+- Survival pressure changes from 15→8 seconds to 13→6 seconds, preserving the fixed
+  40-tick cadence, seven-row opening, and one-second-per-three-lines curve.
+- Puzzle source is no longer globally frozen: only the sparse anchor distribution,
+  short structural level names, guide copy, route evidence, and ignored walkthroughs
+  are reopened. A read-only Core audit found every current anchor on the bottom target
+  row, contrary to the intended “not in an initial target row” rule. New anchors will
+  be searched above the target band and accepted only with two divergent replay routes
+  plus a real anchor-caused landing or settlement difference. No timed Puzzle input is
+  being reintroduced.
+- The previous coordinator-only QA conclusion is superseded; no acceptance claim is
+  valid until this correction is implemented and reverified.
+
 ## 2026-07-24 — T13.4 production-test discovery correction verified locally
 
 - The current product candidate is clean and pushed, but the unqualified Vitest command

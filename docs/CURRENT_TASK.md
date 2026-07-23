@@ -13,6 +13,37 @@ the distinct Collapse mode.** The final local-artifact recovery has regenerated 
 current T13 routes and separated stale T12 material into its documented local archive.
 This is a verified coordinator record, not an independent-QA acceptance.
 
+### T13.5 persistent Collapse, readable anchors, and faster Survival correction
+
+The user accepts Collapse's column-settling play but rejects its 75-second cutoff and
+the repeated horizontal rules in its right rail. This correction supersedes the
+time-limit portion of T13.2: Collapse is an endless score/chain run that ends only at
+ordinary top-out and records that top-out by score, best chain, lines, and fewer
+pieces. Its rail must expose score/current chain/best chain/lines with no clock and no
+decorative horizontal dividers through stats, Next, or controls. Existing timed
+Collapse records are incompatible and must not be retained alongside the new mode;
+valid Classic and Survival data continues to migrate.
+
+The same user review reopens the fixed Puzzle anchor authoring boundary. The twenty
+legal setup histories, fixed queues, unlimited ordinary play, B undo, selected-preview
+contract, and five-through-eight-row bands remain; no volatile/timed Puzzle mechanism
+may return. Reauthor only the sparse immutable-anchor subset, names, hint copy, route
+artifact, and local walkthroughs as one Core-verifiable unit. Every anchor must be
+above the initial target-row band, never overlap an original target, make at least one
+landing or post-clear result differ from the no-anchor state, and retain two public
+Core-replayed routes with an early lock divergence. Replace opaque level names with
+short structural Chinese labels. Separately, Survival pressure changes from 15→8 to
+13→6 seconds while retaining the one-second-per-three-lines curve, seven-row opening,
+fixed 40-tick gravity, and three-line bedrock reward.
+
+Authorized source/test boundary: Collapse Core constants/types/engine/sprint and
+direct tests; leaderboard and persistence tests; App/App tests/styles; Survival
+constants/race/runtime tests; and the coupled Puzzle definition/hint/route
+artifact/direct-test/generator paths. No renderer primitive, package dependency, or
+desktop package target is in scope. Before a candidate claim: run direct tests after
+each checkpoint, then typecheck, the unqualified current-source suite, build, route
+replay/walkthrough regeneration, and a desktop/portrait/landscape browser pass.
+
 ### T13.2 fourth-mode Collapse correction
 
 The user clarified that the rejected fourth mode is Sprint, not Puzzle. Puzzle is

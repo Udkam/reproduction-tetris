@@ -1,3 +1,35 @@
+# Tetra — T13.5 Persistent Collapse, Clear Anchors, and Survival Pressure Contract
+
+## T13.5 replaces the time limit, not the Collapse identity
+
+The 2026-07-24 review keeps **坍缩** because independent column settling makes it
+feel distinct, but rejects its arbitrary 75-second cutoff and the ruled data rail.
+It also reopens Puzzle's authored anchor distribution and level names; this is a
+new bounded authoring pass, not permission to restore volatile/timed Puzzle pieces.
+
+- **坍缩** is an endless score-and-chain run. It has no countdown, time limit, finish
+  event, or time-based record. A run ends only through an ordinary top-out; a valid
+  top-out is recorded by score, then best collapse depth, lines, and fewer pieces.
+  Timed v5 Collapse rows are incompatible with this rule and must not mix with the
+  new table; valid Classic and Survival rows continue to migrate.
+- Its live rail shows only **分数 / 当前连锁 / 最高连锁 / 消行**. It groups those
+  values as quiet, touch-safe metric surfaces without horizontal rules through the
+  stats, Next, or keyboard sections. The dark Next well remains visually distinct,
+  but spacing and tonal surfaces—not decorative divider lines—create the hierarchy.
+- Survival keeps its seven-row warm-mineral opening, fixed 40-tick gravity, and
+  three-line bedrock reward. Pressure now begins at **13 seconds**, falls by one
+  second for every three cleared lines, and bottoms out at **6 seconds**.
+- Puzzle retains twenty deterministic, legal five-through-eight-row setups, fixed
+  queues, unlimited ordinary pieces, B undo, and two teaching routes per level. It
+  has no volatile or expiring input mechanic. Level names become short, structural
+  Chinese labels (two to four characters), rather than opaque literary phrases.
+- Immutable anchors remain a sparse teaching mechanic rather than scenery. An anchor
+  may appear only on a curated subset of levels, never on an original target cell or
+  on any initial target row. It sits in visible headroom directly above the initial
+  target band, is announced as a fixed peg, and must be Core-verified to alter at
+  least one legal landing or post-clear state. Every anchored level still needs two
+  public-command solutions with a real early locked-piece divergence.
+
 # Tetra — T13.2 Collapse Mode Redesign Contract
 
 ## 坍缩 is not Classic with a different counter
