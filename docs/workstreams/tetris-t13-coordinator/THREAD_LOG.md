@@ -75,3 +75,21 @@
   hint, selector, and stylesheet contracts before amending the source boundary.
   Blocker: none. Next: update all-open progression and schema-6 guide binding as its
   own source/test checkpoint before changing the React/CSS presentation.
+
+## 2026-07-23 — TETRIS-T13-OPEN-ACCESS-006 source checkpoint
+
+- Base: `b2ddd3f`; candidate: `cf1ee73`
+  (`feat(puzzle): open workshop access and refresh guidance`). Exact paths:
+  `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, and `src/puzzleHints.ts`.
+- Result: all 20 Puzzle specimens are selectable on a fresh save. The retained campaign
+  bands are now 5/6/7/8-row presentation groups only; completion records still migrate,
+  normalize, and display as player history, but no longer unlock or block a level.
+  The retired v2/v1 import routes remain fail-closed.
+- Guidance now reads the schema-6 T13 evidence, verifies its full 20-level shape at
+  module load, and replaces stale target-floor / wrong-anchor copy with structural
+  opening cues and paired non-command approaches for the actual legal endgames. The
+  existing two-piece-or-20-second reveal and player-owned `B` experimentation remain.
+- Commands run: `npm.cmd run typecheck`; targeted
+  `npm.cmd run test -- src/puzzleProgress.test.ts src/puzzleHints.test.ts`
+  (4 files / 15 tests passed). Blocker: none. Next: add Sprint mechanics and its
+  leaderboard as a separate source checkpoint, then connect the all-open relay UI.
