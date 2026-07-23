@@ -7,21 +7,18 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **ISOLATED READ-ONLY REPRODUCIBILITY QA
-RECORDED — technical result PASS; external independent acceptance remains pending.**
-The T13.6 Puzzle-selector polish at product candidate `6411b5e` removes redundant
-selected-level metadata and completion glyphs, then expresses every completed selected
-Puzzle level through its name color. A fresh detached worktree reproduced dependency
-installation, typecheck, the 22-file / 138-test current-source suite, and the
-743-module build; the default Vitest command emitted its first normal output after
-294 ms rather than hanging silently. Read-only Core checks replayed the schema-6
-two-route / immutable-anchor evidence, and browser review covered desktop, portrait,
-landscape, reduced motion, all four modes, one canvas, zero DOM cells, no overflow,
-and zero console errors. The isolated port-5174 Vite tree and temporary worktree were
-released; the pre-existing user-owned port-5173 listener was retained. This is a
-coordinator-run isolated audit, not an external reviewer disposition, so it cannot be
-called an independent acceptance. The earlier T12/T13 narratives below are retained
-as provenance only; this section is the authoritative live scope.
+Current execution status (2026-07-24): **T13.7 SETTINGS-RECORD / AUDIO-AUDIBILITY
+FOLLOW-UP — contract checkpoint open.** The prior product candidate `6411b5e` has a
+clean isolated reproducibility result (default Vitest first output at 294 ms, 22 files
+/ 138 tests, build, Core replay, and cross-size browser pass), while the separate
+external read-only disposition is still pending. The user now adds one bounded source
+slice: Settings must show the current mode's compact record, and the original
+music/effects mix must be actually audible at default volume. This slice may change
+only Settings/UI, audio/runtime glue, their direct tests, and records/docs; it must
+not change frozen Puzzle rules, levels, queues, anchors, selected preview, selector,
+or any Puzzle visual treatment. A fresh independent review is required after this
+new source slice. The earlier T12/T13 narratives below are retained as provenance
+only; this section is the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
@@ -60,15 +57,24 @@ as provenance only; this section is the authoritative live scope.
    Every visible rule must state only objective, distinct mechanic, and ranking basis.
    All two-action sheets expose visible `←`/`→` selection, and `Enter` activates the
    selected action; pointer, touch, Escape, and cancel behavior remain correct.
+   Settings also shows one compact current-mode record: Classic and Collapse expose
+   their best cleared-line result, Survival its longest survival duration, and Puzzle
+   only the selected level's minimum locked-piece count after completion (otherwise
+   `尚未通关`). It is a summary, never a second leaderboard or Puzzle-progress view.
+   In Settings itself, `←`/`→` selects actionable controls, `↑`/`↓` moves between
+   control rows, and `Enter` activates the selected control; a compact visible
+   shortcut reference makes `S`, `P`, `R`, selection/confirm, and Puzzle-only `B`
+   immediately discoverable. A focused volume range retains native arrow adjustment.
    In the Puzzle selector, remove the selected `X 行残局` label and all visible
    completion checkmarks; when the selected level is completed, use its name color—not
    an extra glyph or row-count label—to communicate that state. Preserve the compact
    personal-best count and concise anchor fact where applicable.
 6. **Audio.** Rework every original event contour so 100% effects are distinct and
    audible but never electrical or harsh. Add only an original, user-gesture-gated,
-   separately toggleable procedural music bed. It must stop or suspend correctly on
-   mute, pause, restart, unmount, and browser audio suspension; no external media,
-   samples, or copyrighted music.
+   separately toggleable procedural music bed. At the default 100%, it must become
+   audibly present after the next valid player gesture rather than remaining a silent
+   allocation. It must stop or suspend correctly on mute, pause, restart, unmount,
+   and browser audio suspension; no external media, samples, or copyrighted music.
 7. **Verification, resource hygiene, and release.** After each source checkpoint run
    targeted tests. At the final candidate run typecheck, the current-source full suite,
    build, Core route replay validation (without walkthrough-image generation), and

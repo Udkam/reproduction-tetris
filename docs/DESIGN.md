@@ -29,6 +29,23 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   independent on/off control that remains subordinate to gameplay effects. It may not
   download, sample, or imitate copyrighted music; mute, volume changes, pause, restart,
   unmount, and browser audio suspension must leave no continuing audio source.
+- The Settings sheet additionally carries one compact **本模式纪录** surface, not a
+  second leaderboard: Classic and Collapse show their current top cleared-line result;
+  Survival shows the current longest survival time; and Puzzle shows only the selected
+  level's minimum locked-piece count after a real completion (otherwise `尚未通关`).
+  It never exposes other Puzzle progress, route data, rank history, a hint, or a
+  selector-side control.
+- Settings is keyboard-complete as well as pointer/touch-safe: its actionable controls
+  use a visible roving `←`/`→` selection and `↑`/`↓` row movement, while `Enter` uses
+  the selected button. The sheet presents a compact **快捷键** keycap reference for
+  `S`, `P`, `R`, selection/confirm, and Puzzle-only `B`; the volume range retains its
+  native arrow adjustment when it owns focus.
+- Music must be audibly present after the player's next valid in-game gesture at the
+  default 100% setting—not merely allocated as silent Web Audio nodes. Preserve the
+  original, low-key procedural character and separate toggle, but give it a distinct
+  midrange bed and enough bounded gain to survive ordinary laptop output. Effects keep
+  their short physical contours; landing must remain a dry impact rather than a
+  sustained electrical hum.
 - The in-run header keeps the back action and a clear current-mode title, but its right
   side exposes one **设置** control only. `S` opens the same accessible settings sheet;
   that sheet owns effects/music controls, the volume slider, pause/continue, and the

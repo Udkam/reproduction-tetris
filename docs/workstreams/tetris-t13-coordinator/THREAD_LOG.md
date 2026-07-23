@@ -1,5 +1,32 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.7-SETTINGS-AUDIO-019 contract checkpoint
+
+- User follow-up opens one bounded Settings/audio slice after the `6411b5e` product
+  candidate and the pre-slice isolated audit. Settings gains a compact **本模式纪录**
+  summary: Classic and Collapse use their current best cleared lines; Survival uses
+  longest duration; Puzzle shows only the selected cleared level's minimum locked-piece
+  count or `尚未通关`. It is not a leaderboard, history, hint, or selector change.
+- Audio contract: after a valid in-game user gesture, enabled original music must be
+  genuinely audible at 100% rather than only represented by low-gain/suspended Web
+  Audio nodes. Preserve the user-gesture gate, separate toggle, bounded original
+  procedural tone, lifecycle teardown, and non-electrical physical landing character.
+- Settings interaction extension: `←`/`→` roves visible actionable control selection,
+  `↑`/`↓` moves control rows, and `Enter` invokes the selected button. A concise visible
+  shortcut keycap strip promotes `S`, `P`, `R`, selection/confirm, and Puzzle-only
+  `B`; a focused volume range keeps native arrow adjustment.
+- Planned source/test paths: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/ui/ActionSheet.tsx`, `src/game/audio/AudioEngine.ts`, and
+  `src/game/audio/AudioEngine.test.ts`; runtime glue may be added only if a direct
+  user-gesture path cannot otherwise be proven.
+  Frozen exclusions: `src/game/core/puzzles.ts`, Puzzle definition/route artifacts,
+  queues, anchors, `PuzzleLibrary`, selector layout, and Puzzle preview/visual files.
+- Required proof: targeted UI/persistence and audio tests, typecheck, full suite,
+  build, and a fresh desktop/portrait browser pass that visibly opens Settings and
+  exercises a user-gesture music start. The independent pre-slice audit remains a
+  baseline only; after source changes, a new read-only review is required. Blocker:
+  none. Next: implement this exact slice.
+
 ## 2026-07-24 — TETRIS-T13.7-READONLY-REPRO-018 coordinator audit record
 
 - Product candidate: `6411b5efaead87c91138285305b3ce7e9c48988e` on `main`; no product
