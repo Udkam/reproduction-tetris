@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-24 — T13.6 Puzzle selector completion treatment candidate
+
+- Removed the selected `X 行残局` caption and all visible Puzzle completion checkmarks.
+  Completion now appears only through the selected structural level name's calm green
+  color; this works for every completed level. The compact fixed-anchor fact and
+  personal best remain, so the selection surface stays informative without duplicate
+  status chrome.
+- `npm.cmd run typecheck`, the 22-file / 138-test full suite, and the production build
+  pass. Fresh browser evidence seeds a real completion record, verifies the computed
+  title color for more than one completed level, confirms no obsolete caption/glyph,
+  and finds zero overflow or console/page errors. The generic web-game client also
+  passes; ignored captures remain under `.local/audits/t13-6-selector/` and
+  `output/web-game/t13-6-selector-client/`.
+- The coordinator-started Vite tree was released and port 5173 was confirmed free.
+  Independent read-only QA remains pending, so this is a coordinator-verified recovery
+  candidate rather than an acceptance disposition.
+
 ## 2026-07-24 — T13.5 coordinator verification candidate
 
 - Reconciled the live goal with every later correction: the page-facing identity is

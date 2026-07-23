@@ -7,16 +7,15 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **IMPLEMENTATION — the verified T13.5
-candidate has one newly opened Puzzle-selector polish slice.** The preceding source
-range, targeted checkpoints, full suite, typecheck, build, canonical route replay
-coverage, and desktop/portrait/landscape browser evidence remain recorded. This slice
-removes redundant selected-level metadata and completion glyphs, then expresses a
-completed Puzzle level through its selected name color. It must receive direct UI tests
-and a fresh browser frame before the coordinator record and user-authorized `main`
-push resume. No independent QA disposition has been issued, so no acceptance is
-claimed. The earlier T12/T13 narratives below are retained as provenance only; this
-section is the authoritative live scope.
+Current execution status (2026-07-24): **FINAL COORDINATOR RECORDING — the T13.6
+Puzzle-selector polish slice is locally complete and verified.** It removes redundant
+selected-level metadata and completion glyphs, then expresses every completed selected
+Puzzle level through its name color. Direct UI testing, typecheck, the current-source
+full suite, build, and fresh browser evidence pass; the remaining delivery mechanics
+are this evidence/log record and the user-authorized `main` push. No independent QA
+disposition has been issued, so this is a coordinator-verified candidate rather than
+an acceptance. The earlier T12/T13 narratives below are retained as provenance only;
+this section is the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 

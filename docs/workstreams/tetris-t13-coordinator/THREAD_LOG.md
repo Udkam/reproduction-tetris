@@ -1,5 +1,26 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.6-PUZZLE-SELECTOR-017 source checkpoint
+
+- Base: `509765d`; candidates: `88fbbab` and corrective CSS follow-up `8cab0e4`.
+  Exact source paths: `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`.
+  The selected preview no longer renders `X 行残局` or a completion glyph; level nodes
+  no longer render checkmarks either. A completed selected level renders its structural
+  name with the completion color, while the compact best-piece and anchor facts remain.
+- Verification: targeted `npm.cmd run test -- src/App.test.ts --no-file-parallelism
+  --maxWorkers=1` passes 13 tests; `npm.cmd run typecheck` passes. The final full
+  gates pass: typecheck, `npm.cmd run test` (22 files / 138 tests, 39.94 seconds), and
+  `npm.cmd run build` (743 transformed modules, 190 ms). The generic web-game client
+  and `.local/audits/t13-6-selector.mjs` both pass against the coordinator-started
+  Vite server. The latter seeds a real completion record, checks the computed title
+  color for two completed levels, confirms no obsolete caption/glyph, no overflow, and
+  no console/page errors; its screenshot was visually inspected.
+- Resource audit: the coordinator-started Vite `npm`/`cmd`/`node` tree on port 5173
+  was stopped after evidence. A follow-up check confirms no port-5173 listener and no
+  Tetris-owned development process remains. Blocker: independent read-only QA has not
+  issued a disposition. Next: add the changelog/coordinator record and perform the
+  delayed user-authorized `main` push without claiming acceptance.
+
 ## 2026-07-24 — TETRIS-T13.6-PUZZLE-SELECTOR-017 contract checkpoint
 
 - Base: `66f8ff5`; user review reopens only the selected Puzzle-preview completion
