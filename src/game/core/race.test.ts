@@ -68,7 +68,7 @@ describe('progressive gravity and Survival intervals', () => {
 });
 
 describe('timed Survival pressure and three-line reward', () => {
-  it('opens and restarts with exactly ten unbreakable bedrock rows', () => {
+  it('opens and restarts with the configured seven unbreakable bedrock rows', () => {
     const opened = createInitialState(0x5000, 'race');
     expect(opened.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
     expect(opened.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
@@ -190,7 +190,7 @@ describe('timed Survival pressure and three-line reward', () => {
     expect(transition.events).toContainEqual({ type: 'game-over', reason: 'bedrock-overflow' });
   });
 
-  it('keeps replay deterministic, hashes pressure state, and restart restores the five-row opening', () => {
+  it('keeps replay deterministic, hashes pressure state, and restart restores the configured seven-row opening', () => {
     const commands: GameCommand[] = [
       { type: 'start' },
       ...Array.from({ length: 30 }, () => ({ type: 'tick' } as const)),
