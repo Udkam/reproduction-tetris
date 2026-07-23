@@ -131,3 +131,26 @@
   belongs to this exception.
 - Blocker: none. Next: create the bounded presentation candidate, inspect it in the
   browser, then begin the separate desktop-boundary implementation.
+
+## 2026-07-23 — TETRIS-T13-RELAY-008 source checkpoint
+
+- Base: `8bda126`; candidate: `299ba74`
+  (`feat(puzzle): present all-open relay workshop`). Exact source/test paths are
+  `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; the documented visual
+  exception applies only to this three-path selector replacement.
+- Result: the retired locked-sector observatory is now a sparse 5/6/7/8-row relay.
+  All twenty numeric stops are immediately enabled; a quiet completion check and an
+  optional anchor notch are the only per-stop detail. The selected specimen is the
+  single large preview, with its ordinal, row/anchor facts, one structural cue, and
+  one start action. Selection motion uses a scan and glow without transiently shrinking
+  the 44 px target; reduced motion renders the final state directly.
+- Commands run: `npm.cmd run typecheck`; `npm.cmd run test -- src/App.test.ts`
+  (1 file / 15 tests passed); prescribed web-game action client; and an ignored local
+  Playwright audit at desktop 1440×900, portrait 390×844, and landscape 844×390.
+  The final audit selected level 08, verified all 20 enabled stops, one focus preview,
+  no route preview, 44 px minimum library control, no page overflow, reduced-motion
+  suppression, a real selected-level start into exactly one canvas / zero DOM cells,
+  and zero console or page errors. Latest captures and `summary.json` are under
+  `.local/audits/t13-relay/` and remain ignored.
+- Blocker: none. Next: implement the separate browser platform adapter required for
+  future desktop-host packaging readiness, without adding a package target.
