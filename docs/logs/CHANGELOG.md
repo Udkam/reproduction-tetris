@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-07-24 — T13.5 coordinator verification candidate
+
+- Reconciled the live goal with every later correction: the page-facing identity is
+  plain-text `Tetris`; Classic, Survival, Collapse, and Puzzle have distinct stated
+  objectives and ranking rules; and the browser remains wrapper-ready without adding
+  a desktop package.
+- Delivered the bounded product range through `6c65150`: endless lines-first
+  Collapse/top-ten persistence; Survival's seven-bedrock 13→6-second pressure;
+  deterministic, readable fixed-queue Puzzle anchors/routes with no exposed hint
+  system; compact per-level best-clear counts; selected confirmation actions; and one
+  `S`-reachable Settings sheet for effects, procedural music, volume, pause/continue,
+  and restart confirmation. Puzzle success now says `重来`; non-Puzzle results retain
+  `再来一局`.
+- Final local gates pass: `npm.cmd run typecheck`; `npm.cmd run test` (22 files /
+  138 tests, 38.99 seconds); and `npm.cmd run build` (743 transformed modules,
+  291 ms). Real browser evidence at 1440×900, 390×844, and 844×390 has no console or
+  page errors and no overflow; the game has one canvas and no DOM cell grid. The
+  settings and Puzzle frames were visually inspected; temporary evidence remains
+  ignored beneath `.local/audits/t13-final-browser/`.
+- The coordinator-started Vite tree was released after review and port 5173 was
+  confirmed free. Independent read-only QA remains pending, so this is a verified
+  recovery candidate rather than an acceptance disposition.
+
 ## 2026-07-24 — T13 production-test discovery recovery candidate
 
 - Fixed the default Vitest quality gate so it discovers only current `src/` test files.

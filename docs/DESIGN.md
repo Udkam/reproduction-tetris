@@ -1,4 +1,7 @@
-# Tetra — T13.5 Persistent Collapse, Clear Anchors, and Survival Pressure Contract
+# Tetris — T13.5 Persistent Collapse, Clear Anchors, and Survival Pressure Contract
+
+> The current page-facing identity is the plain-text `Tetris`. Older `Tetra` headings
+> below are retained only as historical contract provenance.
 
 ## T13.5 replaces the time limit, not the Collapse identity
 

@@ -7,12 +7,15 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **IMPLEMENTATION — the T13.5 correction is
-active and has not reached final QA or release.** Contract reconciliation is complete;
-Collapse/Survival corrections, the readable Puzzle authoring pass, and player-facing
-hint removal have local source checkpoints. Puzzle personal-best persistence is the
-current in-progress slice and is not yet verified. The earlier T12/T13 narratives
-below are retained as provenance only; this section is the authoritative live scope.
+Current execution status (2026-07-24): **FINAL COORDINATOR RECORDING — the entire
+authorized T13.5 source range is locally complete and verified.** Targeted checkpoints,
+the current-source full suite, typecheck, build, canonical route replay coverage, and
+real desktop/portrait/landscape browser evidence now pass. The remaining delivery
+mechanics are the exact evidence/log record, scoped Tetris-owned resource release, and
+the user-authorized `main` push. No independent QA disposition has been issued, so this
+is a coordinator-verified candidate rather than an acceptance. The earlier T12/T13
+narratives below are retained as provenance only; this section is the authoritative
+live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 

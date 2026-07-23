@@ -2,22 +2,25 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 
 ### Active goal ledger — 2026-07-24
 
-- The authoritative live scope is now `docs/CURRENT_TASK.md`: four distinct modes,
+- The authoritative live scope remains `docs/CURRENT_TASK.md`: four distinct modes,
   readable fixed-queue Puzzle endgames, no player-facing strategy hints, personal-best
   Puzzle records, concise Settings-first controls, original effects/music, future
   packaging readiness, and final validation/release hygiene.
-- Implemented local checkpoints still awaiting final candidate proof: endless
-  lines-first Collapse/top-ten persistence, Survival 7-bedrock + 13→6 pressure,
-  sparse above-band Puzzle anchors/names/routes, and complete removal of the old
-  hint UI/storage. Walkthrough-image generation remains explicitly deferred.
-- Current source slice: store and display each successful Puzzle level's lowest
-  locked-piece count and use `重来` after Puzzle success. It is not marked verified
-  until direct persistence/UI tests pass.
-- Remaining implementation slices: arrow-selectable confirmation sheets; one `S`
-  Settings sheet with effects/music/volume/pause/restart; distinct audible original
-  sound contours and optional procedural music; concise mode copy and final visual
-  checks. Final gates, changelog, exact commits, user-authorized push, and independent
-  QA disposition remain pending.
+- The source checkpoints are now locally complete: endless lines-first
+  Collapse/top-ten persistence; Survival's seven-bedrock, 13→6 pressure; sparse
+  above-band Puzzle anchors/names/routes; hint removal; per-level minimum successful
+  piece records; arrow-selectable two-action sheets; the `S` Settings sheet; and the
+  effects/music contour pass. Walkthrough-image generation remains explicitly
+  deferred.
+- Final coordinator evidence passes: `npm.cmd run typecheck`, the current-source full
+  suite (22 files / 138 tests), and `npm.cmd run build` (743 transformed modules),
+  plus real 1440×900, 390×844, and 844×390 browser checks with zero errors or overflow.
+  The game view has one canvas and zero DOM board cells; the compact Puzzle best record
+  persists and removed hints remain absent.
+- Remaining delivery mechanics: record the final evidence, release the clearly
+  Tetris-owned development listener, and perform the user-authorized `main` push.
+  Independent read-only QA has not issued a disposition, so this remains a
+  coordinator-verified candidate rather than an acceptance claim.
 - Resource discipline remains mandatory: inspect/release only Tetris-owned idle
   listeners/processes before and after long validation; leave Codex/shared tooling
   untouched.

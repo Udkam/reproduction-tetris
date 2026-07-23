@@ -1,5 +1,53 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.5-COORDINATOR-016 verified candidate
+
+- Base: `b6b2d3f`; product-source candidate: `6c65150`
+  (`fix(brand): align visible title with Tetris`). The ordered local range is
+  `a8f183f..6c65150`: persistent Collapse/Survival corrections, puzzle-anchor
+  reconciliation, hint removal, personal-best storage, confirmation selection,
+  Settings/audio/music, and the final plain-text title alignment.
+- Exact product and contract paths in that range are
+  `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `docs/progress.md`, this log,
+  `docs/workstreams/tetris-t13-core/puzzle-endgame-results.json`, `index.html`,
+  `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+  `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+  `src/game/core/race.test.ts`, `src/game/core/sprint.ts`,
+  `src/game/core/sprint.test.ts`, `src/game/core/types.ts`,
+  `src/game/audio/AudioEngine.ts`, `src/game/audio/AudioEngine.test.ts`,
+  `src/game/input/InputController.ts`, `src/game/input/InputController.test.ts`,
+  `src/game/runtime/GameRuntime.ts`, `src/game/runtime/GameRuntime.test.ts`,
+  `src/game/runtime/qaScenario.test.ts`, `src/game/render/TetrisRenderer.ts`,
+  `src/leaderboard.ts`, `src/leaderboard.test.ts`, `src/puzzleProgress.ts`,
+  `src/puzzleProgress.test.ts`, `src/ui/ActionSheet.tsx`, and `src/main.tsx`.
+  `src/puzzleHints.ts` and `src/puzzleHints.test.ts` are intentionally deleted.
+- Outcome: Collapse is endless and lines-first ranked; Survival starts with seven
+  bedrock rows and applies 13→6-second pressure; all twenty fixed Puzzle boards keep
+  legal, sparse above-band anchors and internal route evidence but no player-facing
+  hints; each solved level retains the real minimum locked-piece count. Puzzle uses
+  `重来`; other modes retain `再来一局`. The header exposes only Settings (`S`), whose
+  sheet owns effects/music/volume/continue/restart. Two-action sheets select with
+  `←`/`→` and confirm the selected action with Enter. The page-facing title is the
+  plain-text `Tetris`.
+- Commands/evidence: targeted route, persistence, input, runtime, audio, and App
+  checks passed during their checkpoints. Final `npm.cmd run typecheck` passed;
+  `npm.cmd run test` passed 22 files / 138 tests in 38.99 seconds; and
+  `npm.cmd run build` passed with 743 transformed modules in 291 ms. The required
+  generic web-game Playwright client exited successfully against a live Classic run.
+  The final ignored audit `.local/audits/t13-final-browser.mjs` then passed at
+  1440×900, 390×844, and 844×390: zero console/page errors or overflow, one game
+  canvas, zero DOM board cells, compact Puzzle best persistence, and no returned hint
+  surface. Its settings and three Puzzle screenshots were visually inspected.
+- Resource audit: no pre-existing Tetris listener was found. The final browser check
+  used only the coordinator-started Vite tree (`npm`/`cmd`/`node`, port 5173); it was
+  stopped after evidence. A follow-up check confirms port 5173 is released and no
+  Tetris-owned Vite/npm/web-game process remains. Codex-owned shared tooling was not
+  touched.
+- Blocker: independent read-only Core and visual QA has not issued a disposition.
+  This is a coordinator-verified recovery candidate, not an acceptance claim. Next:
+  add the coordinator changelog record and perform the user-authorized `main` push.
+
 ## 2026-07-24 — TETRIS-T13.5-PERSISTENT-COLLAPSE-015 contract checkpoint
 
 - Base: `b6b2d3f`; no product source is changed in this contract checkpoint. User
