@@ -30,17 +30,6 @@ import {
   recordCanonicalPuzzleCompletion,
   type PuzzleProgress,
 } from './puzzleProgress';
-import {
-  isPuzzleHintUnlocked,
-  persistPuzzleHintProgress,
-  puzzleHintGuide,
-  puzzleHintLockCopy,
-  readPuzzleHintProgress,
-  shouldUnlockPuzzleHint,
-  unlockPuzzleHint,
-  type PuzzleHintGuide,
-  type PuzzleHintProgress,
-} from './puzzleHints';
 import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
 import { ActionSheet } from './ui/ActionSheet';
 import {
@@ -377,7 +366,6 @@ export function PuzzleLibrary({
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedAnchorCount = selectedDefinition.anchorCells.length;
   const selectedRows = selectedDefinition.boardRows.filter((row) => row !== '..........').length;
-  const selectedGuide = puzzleHintGuide(selected.id);
   return (
     <main id="game" className="library-shell library-shell--console" data-testid="puzzle-library">
       <header className="library-header console-header">
@@ -399,7 +387,6 @@ export function PuzzleLibrary({
               <h2>{selected.name}</h2>
               {selectedComplete && <i aria-label="已完成">✓</i>}
             </div>
-            <p>{selectedGuide.cue}</p>
             <div className="console-focus__facts" aria-label="残局特性">
               {selectedAnchorCount > 0 && <span>固定锚点</span>}
             </div>
@@ -529,99 +516,6 @@ function PuzzleUndoButton({ runtime, disabled = false }: { runtime: GameRuntime 
     >
       <b aria-hidden="true">↶</b><small>撤回</small>
     </button>
-  );
-}
-
-function PuzzleHintTrigger({
-  state,
-  unlocked,
-  disabled = false,
-  onOpen,
-}: {
-  state: GameState;
-  unlocked: boolean;
-  disabled?: boolean;
-  onOpen: () => void;
-}) {
-  const lockCopy = puzzleHintLockCopy(state);
-  return (
-    <button
-      className="topbar-action puzzle-hint-trigger"
-      type="button"
-      data-testid="puzzle-hint-trigger"
-      data-state={unlocked ? 'open' : 'locked'}
-      aria-label={unlocked ? '打开策略提示' : `策略提示未解锁：${lockCopy}`}
-      disabled={disabled}
-      onClick={onOpen}
-    >
-      <span className="puzzle-hint-trigger__long">提示</span>
-      <span className="puzzle-hint-trigger__short" aria-hidden="true">?</span>
-      <small>{unlocked ? '策略' : '待解锁'}</small>
-    </button>
-  );
-}
-
-function PuzzleGuideSheet({
-  guide,
-  unlocked,
-  lockCopy,
-  strategyId,
-  stepIndex,
-  onStrategyChange,
-  onStepChange,
-  onClose,
-}: {
-  guide: PuzzleHintGuide;
-  unlocked: boolean;
-  lockCopy: string;
-  strategyId: 'primary' | 'alternate';
-  stepIndex: number;
-  onStrategyChange: (id: 'primary' | 'alternate') => void;
-  onStepChange: (index: number) => void;
-  onClose: () => void;
-}) {
-  if (!unlocked) {
-    return (
-      <div className="puzzle-guide puzzle-guide--locked" data-testid="puzzle-guide-sheet">
-        <p className="puzzle-guide__locked-copy">{lockCopy}</p>
-        <button className="primary-action" data-autofocus type="button" onClick={onClose}>继续尝试</button>
-      </div>
-    );
-  }
-
-  const strategy = guide.strategies.find((candidate) => candidate.id === strategyId) ?? guide.strategies[0];
-  const visibleIndex = Math.min(Math.max(0, stepIndex), strategy.steps.length - 1);
-  const step = strategy.steps[visibleIndex]!;
-  return (
-    <div className="puzzle-guide" data-testid="puzzle-guide-sheet">
-      <p className="puzzle-guide__cue">{guide.cue}</p>
-      <div className="puzzle-guide__routes" role="tablist" aria-label="参考策略">
-        {guide.strategies.map((candidate) => (
-          <button
-            key={candidate.id}
-            className="puzzle-guide__route"
-            type="button"
-            role="tab"
-            aria-selected={candidate.id === strategy.id}
-            data-autofocus={candidate.id === strategy.id || undefined}
-            onClick={() => onStrategyChange(candidate.id)}
-          >
-            <strong>{candidate.title}</strong><small>{candidate.summary}</small>
-          </button>
-        ))}
-      </div>
-      <section className="puzzle-guide__step" aria-live="polite" data-testid="puzzle-hint-step">
-        <span>{strategy.title} · {step.index}/{strategy.steps.length}</span>
-        <strong>{step.title}</strong>
-        <p>{step.detail}</p>
-      </section>
-      <div className="puzzle-guide__controls">
-        <button className="secondary-action" type="button" disabled={visibleIndex === 0} onClick={() => onStepChange(visibleIndex - 1)}>上一步</button>
-        <button className="primary-action" type="button" disabled={visibleIndex === strategy.steps.length - 1} onClick={() => onStepChange(visibleIndex + 1)}>下一意图</button>
-      </div>
-      <p className="puzzle-guide__undo">想换一种尝试？按 B 可撤回上一次落子。</p>
-      <button className="text-action puzzle-guide__close" type="button" onClick={onClose}>返回本局</button>
-    </div>
   );
 }
 
@@ -771,11 +665,6 @@ export function GameSession({
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
   const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
-  const hintWasPlayingRef = useRef(false);
-  const [hintProgress, setHintProgress] = useState<PuzzleHintProgress>(() => readPuzzleHintProgress());
-  const [hintOpen, setHintOpen] = useState(false);
-  const [hintStrategyId, setHintStrategyId] = useState<'primary' | 'alternate'>('primary');
-  const [hintStepIndex, setHintStepIndex] = useState(0);
 
   const focusBoard = useCallback(() => {
     browserPlatform.defer(() => {
@@ -803,18 +692,6 @@ export function GameSession({
         if (nextState.status === 'ready') {
           lastRecordedRunRef.current = null;
           setResultRecord(null);
-          hintWasPlayingRef.current = false;
-          setHintOpen(false);
-          setHintStrategyId('primary');
-          setHintStepIndex(0);
-        }
-        if (shouldUnlockPuzzleHint(nextState) && nextState.puzzleId) {
-          const levelId = nextState.puzzleId;
-          setHintProgress((current) => {
-            const next = unlockPuzzleHint(current, levelId);
-            if (next !== current) persistPuzzleHintProgress(next);
-            return next;
-          });
         }
         const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race' || nextState.mode === 'sprint')
           && nextState.status === 'game-over';
@@ -1012,28 +889,11 @@ export function GameSession({
     exitWasPlayingRef.current = false;
   }, [runtime]);
 
-  const guide = state.mode === 'puzzle' && state.puzzleId ? puzzleHintGuide(state.puzzleId) : null;
-  const hintUnlocked = state.mode === 'puzzle' && state.puzzleId !== null && isPuzzleHintUnlocked(hintProgress, state.puzzleId);
-  const openPuzzleHint = useCallback(() => {
-    if (!guide) return;
-    hintWasPlayingRef.current = runtime?.getState().status === 'playing';
-    if (hintWasPlayingRef.current) runtime?.togglePause();
-    setHintStrategyId('primary');
-    setHintStepIndex(0);
-    setHintOpen(true);
-  }, [guide, runtime]);
-  const closePuzzleHint = useCallback(() => {
-    const resume = hintWasPlayingRef.current;
-    hintWasPlayingRef.current = false;
-    setHintOpen(false);
-    if (resume && runtime?.getState().status === 'paused') runtime.togglePause();
-  }, [runtime]);
-
   const terminal = terminalCopy(state);
   const level = state.mode === 'puzzle' ? campaignLevel(state.puzzleId) : null;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
-  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !hintOpen;
-  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !hintOpen;
+  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen;
+  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen;
   const storedRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
   const leaderboardRecords = resultRecord && scoreRecordRank(storedRecords, resultRecord) === null
     ? recordsForMode(insertScoreRecord(leaderboard, resultRecord), resultRecord.mode)
@@ -1066,14 +926,6 @@ export function GameSession({
             onVolumeChange={setAudioVolume}
             placement="topbar"
           />
-          {guide && (
-            <PuzzleHintTrigger
-              state={state}
-              unlocked={hintUnlocked}
-              disabled={countdownDigit !== null || state.status === 'finished'}
-              onOpen={openPuzzleHint}
-            />
-          )}
           <button
             className="topbar-action topbar-action--restart"
             type="button"
@@ -1165,29 +1017,6 @@ export function GameSession({
         <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>确认</button>
         <button className="secondary-action" type="button" onClick={cancelRestart}>取消</button>
       </ActionSheet>
-
-      {guide && (
-        <ActionSheet
-          open={hintOpen}
-          title="策略提示"
-          description={hintUnlocked ? '先读残局，再任选一条参考路线；它们都不是唯一答案。' : puzzleHintLockCopy(state)}
-          onCancel={closePuzzleHint}
-        >
-          <PuzzleGuideSheet
-            guide={guide}
-            unlocked={hintUnlocked}
-            lockCopy={puzzleHintLockCopy(state)}
-            strategyId={hintStrategyId}
-            stepIndex={hintStepIndex}
-            onStrategyChange={(id) => {
-              setHintStrategyId(id);
-              setHintStepIndex(0);
-            }}
-            onStepChange={setHintStepIndex}
-            onClose={closePuzzleHint}
-          />
-        </ActionSheet>
-      )}
 
       <ActionSheet
         open={exitOpen}
