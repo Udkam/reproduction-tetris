@@ -208,3 +208,29 @@
   responsive stylesheet, and App semantic tests before authorizing this replacement.
   Blocker: none. Next: implement the three-path visual checkpoint and inspect it at
   desktop, portrait, and landscape before final coordinator validation.
+
+## 2026-07-23 — TETRIS-T13-GRAVITY-WORKBENCH-010 source checkpoint
+
+- Base: `a1b7ad9`; candidate: `ac25dba`
+  (`feat(ui): compose gravity workbench entry surfaces`). Exact paths are
+  `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; the documented visual
+  exception applies only to this responsive semantic/layout unit.
+- Result: Home is no longer a loose, staggered card pile. It is one dark board-well
+  masthead and four connected gravity lanes with ordinal, glyph, concise rule, original
+  cell mark, and action. The selected/focused lane receives a bounded accent beam and
+  lateral settle. Puzzle is no longer a sparse route canvas: it is one compact dark
+  endgame console with a single real selected well and a dense four-band 20-stop matrix.
+  All 20 levels remain open, only the focus surface owns a board preview, completion and
+  anchor indicators remain quiet, and the 44 px route targets/reduced-motion fallback
+  remain intact. The short-landscape lane alignment was corrected from grid placement
+  to a stable flex rail after direct browser inspection found clipped label geometry.
+- Commands run: `npm.cmd run typecheck`; `npm.cmd run test -- src/App.test.ts`
+  (1 file / 15 tests passed); prescribed `web_game_playwright_client.js`; and the
+  ignored Playwright audit under `.local/audits/t13-relay/` at 1440×900, 390×844, and
+  844×390. The final matrix verifies four Home entries, no viewport overflow, all 20
+  enabled Puzzle controls, one focus preview/no route preview, 44 px minimum Puzzle
+  control, selection of level 08, one canvas/zero DOM cells after start, reduced-motion
+  suppression, and zero console/page errors. Captures were visually inspected.
+- Blocker: none. Next: regenerate/archive local walkthrough material, run final
+  whole-range gates, update the coordinator record/changelog, and push only the
+  reviewed `main` history.

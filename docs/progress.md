@@ -49,6 +49,19 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   row bands, and a single selected well; all 20 stops are available from a fresh save.
   Guides remain optional, compact, and non-spoiling.
 
+## 2026-07-23 — T13 gravity-workbench presentation checkpoint
+
+- Source checkpoint `ac25dba` replaces the rejected loose home cards and sparse relay
+  canvas with a unified dark-well/mineral-paper entry system: four connected mode lanes
+  on home and a compact selected-endgame console beside a dense 20-stop Puzzle matrix.
+- Visual verification covers desktop, portrait, and short landscape: all four mode
+  entries, 20 open levels, the one selected board preview, 44 px Puzzle targets,
+  no page overflow, reduced motion, selected-level start into one canvas/zero DOM cells,
+  and zero browser errors. A short-landscape label overlap was found during inspection
+  and corrected by changing the lane internals from grid to flex alignment.
+- Next: complete T13 local walkthrough/archive recovery and final whole-range gates;
+  the user-visible redesign source is checkpointed but not yet a final publication.
+
 ## 2026-07-15
 
 - Created standalone Tetris repository and retained QA clones under `.local/qa-archives`.
