@@ -334,3 +334,27 @@
 - Blocker: no independent Core or visual/browser QA disposition exists, so this is a
   verified candidate rather than an acceptance. Next: commit the coordinator
   changelog/record and make the user-authorized recovery push.
+
+## 2026-07-24 — TETRIS-T13.3-WALKTHROUGH-013 contract checkpoint
+
+- Base: `d288453`. Live inventory proves the versioned repository is clean and pushed,
+  but ignored `Solutions/` is not semantically clean: it mixes stale T12 three-row
+  walkthroughs/images, local selector audits, authoring scratch material, and obsolete
+  helper scripts with the requested player-facing solution files.
+- Scope: no product source or Puzzle behavior may change. Exact versioned paths are
+  `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, `docs/progress.md`, this log, the final
+  changelog record, and `tools/generate-puzzle-walkthroughs.mjs`. The local moves are
+  exact existing `Solutions/` targets only; they preserve recovery material beneath
+  `.local/audits/t12.6-walkthrough-legacy-20260724/` rather than deleting it.
+- Contract: the generator replays only schema-6 T13 primary public routes through the
+  real Core, validates terminal completion/zero targets, writes one current
+  `Solution-1.md` through `Solution-20.md` plus linked SVG snapshots, and labels each
+  route as feasible evidence rather than a unique or optimum answer.
+- Commands/evidence so far: focused Core/UI/control coverage passed 22 files / 130
+  tests; real browser audits passed the P/Enter pause path, click/R/Enter restart path,
+  current 20-entry Puzzle selector, Collapse hard drops, one canvas, no DOM cells,
+  no overflow, and zero errors. Full explicit single-worker matrix later passed 45
+  files / 270 tests; typecheck and build passed. The default Vitest invocation was
+  stopped after a no-output runner startup hang and is not reported as passing.
+- Blocker: none. Next: commit this boundary, then execute the local archive and
+  generator slice with fresh output verification.

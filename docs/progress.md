@@ -1,5 +1,21 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-24 — T13.3 current walkthrough artifact recovery opened
+
+- Live local inventory found that ignored `Solutions/` mixed current player-facing
+  walkthroughs with stale T12 three-row docs/images, obsolete selector-audit captures,
+  authoring scratch JSON, and local-only generator/render scripts. This violates the
+  declared split between `Solutions/` output and versioned durable tooling even though
+  Git itself is clean.
+- The bounded recovery leaves every product Puzzle definition, queue, anchor, route,
+  selector, and visual surface untouched. It will archive the exact stale set under
+  `.local/audits/t12.6-walkthrough-legacy-20260724/`, version a schema-6 generator in
+  `tools/`, then regenerate twenty current one-based `Solution-x.md` walkthroughs and
+  SVG snapshots from the authoritative primary Core routes.
+- Next: commit this contract checkpoint, move the verified local targets without
+  deletion, run the generator and its route/output checks, then record and push the
+  recovery checkpoint with a clean map.
+
 ## 2026-07-23 — T13.2 Collapse source candidate
 
 - Source candidate `eaf88d0` replaces the rejected Sprint with **坍缩**: a 75-second

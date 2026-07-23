@@ -9,8 +9,10 @@ its local walkthrough output must be regenerated rather than reused as T13 evide
 Current execution status (2026-07-23): **COORDINATOR RECORDING — T13 converts every
 Puzzle entry into an open, legal five-through-eight-row endgame workshop; aligns
 P/R/Enter behavior with the visible controls; and replaces the rejected Sprint with
-the distinct Collapse mode.** The verified candidate range is being recorded and
-pushed under the user's recovery authorization; it is not an independent-QA acceptance.
+the distinct Collapse mode.** A final local-artifact recovery is in progress: stale
+T12 walkthrough material must be archived and the current T13 routes regenerated
+before the supported local map is considered clean. This is not an independent-QA
+acceptance.
 
 ### T13.2 fourth-mode Collapse correction
 
@@ -26,6 +28,22 @@ types, leaderboard/persistence paths, relevant App bindings/tests, and styles; t
 gameplay renderer may receive only the smallest event/presentation support needed for
 the visible cascade state. This is a fresh mechanics candidate, not a claim that the
 current excavation Sprint was accepted.
+
+### T13.3 current Solution artifact routing
+
+The current Puzzle product remains closed: this checkpoint may not change a Puzzle
+definition, setup, queue, anchor, route, rule, selector, or visual surface. It owns
+only the local walkthrough map. `Solutions/` must contain exactly the regenerated
+current `Solution-1.md` through `Solution-20.md` files and their linked SVG snapshots,
+each replayed from the schema-6 T13 artifact's primary public route. The walkthroughs
+are evidence of one feasible route, never a unique-answer or mathematical-optimum
+claim. The durable explicit generator belongs at
+`tools/generate-puzzle-walkthroughs.mjs`, while stale T12 docs, images, candidate
+scratch data, and obsolete local scripts move together—without deletion—to
+`.local/audits/t12.6-walkthrough-legacy-20260724/`. `Solutions/` remains ignored;
+the generator, its documentation, and archive record are versioned. Required proof is
+one successful regeneration, twenty readable Markdown files with linked snapshots,
+Core terminal validation for all routes, and a clean Git/local top-level map.
 
 ### T13.1 feedback-correction checkpoint
 
