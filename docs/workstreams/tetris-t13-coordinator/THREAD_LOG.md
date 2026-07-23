@@ -93,3 +93,24 @@
   `npm.cmd run test -- src/puzzleProgress.test.ts src/puzzleHints.test.ts`
   (4 files / 15 tests passed). Blocker: none. Next: add Sprint mechanics and its
   leaderboard as a separate source checkpoint, then connect the all-open relay UI.
+
+## 2026-07-23 — TETRIS-T13-SPRINT-007 source checkpoint
+
+- Base: `3cd093f`; candidate: `3485568`
+  (`feat(sprint): add 40-line time trial mode`). Exact source paths are the declared
+  Sprint integration set in `docs/CURRENT_TASK.md`: Core mode/state/constants/engine
+  and direct tests, runtime direct test, versioned leaderboard/persistence tests, and
+  the visible home/game/result/style bindings.
+- Result: `sprint` starts from an empty ordinary board with a fresh run seed, fixed
+  36-tick gravity, no bedrock or special pieces, and a Core-owned 40-line target. A
+  normal line-clear that reaches 40 produces `status: finished` plus an explicit
+  `sprintCompletion: finished` state, distinct from Puzzle success. Classic and
+  Survival retain top-out records; a v4 leaderboard migrates valid v3 Classic/Survival
+  rows, fails closed otherwise, and ranks Sprint by lower time, then fewer pieces,
+  then score.
+- Commands run: `npm.cmd run typecheck`; full targeted
+  `npm.cmd run test -- src/game/core/sprint.test.ts src/game/core/rules.test.ts
+  src/game/runtime/GameRuntime.test.ts src/leaderboard.test.ts`
+  (10 files / 53 tests passed); targeted App Sprint binding tests (5 passed).
+  Blocker: none. Next: replace the remaining retired locked-sector selector with the
+  all-open four-band relay presentation and perform its browser loop.
