@@ -1,5 +1,25 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-027 closure audit
+
+- Base/state: pushed `a1d8b16` on `main`, with product candidate `ca8c7f6` unchanged.
+  `git diff --name-only ca8c7f6..HEAD` contains only acceptance/QA/coordinator docs;
+  no frozen Puzzle definition, queue, route, selector, or renderer path moved after
+  independent acceptance.
+- Commands actually rerun: `npm.cmd run test` passed with normal startup output
+  (22 files / 146 tests, 15.37 s). The scoped route/definition, survival, 异变,
+  leaderboard, App/Settings, and AudioEngine matrix passed (8 files / 60 tests).
+  `vite.config.ts` still limits default discovery to current `src/` tests.
+- Evidence re-read and visually inspected: schema-6 records two public Core-replayed
+  routes for each of 20 fixed Puzzle levels; direct tests bind legal setup, fixed queues,
+  target ownership, sparse anchors, and early route divergence. The ignored final
+  browser report retains the seeded coral bomb carrier, one canvas, zero DOM cells,
+  error-free desktop/portrait/landscape bounds, first-entry rules, Settings navigation,
+  Escape return, and Puzzle entry. No source action is authorized or needed.
+- Final local mapping is clean; `origin/main` matches `a1d8b16`. Port 5176 remains
+  released; pre-existing unknown-owner 5173 is intentionally retained. This closes the
+  T13.9 delivery verification unless a future user request opens a new bounded slice.
+
 ## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-026 acceptance and release record
 
 - Coordinator read both independent verdicts and their durable log: `ce35cb1` correctly

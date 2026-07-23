@@ -8,7 +8,7 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-24): **T13.9 MUTATION MODE / SURVIVAL / SETTINGS
-FOLLOW-UP — accepted for release.** Product candidate `ca8c7f6` completes the bounded
+FOLLOW-UP — accepted and pushed.** Product candidate `ca8c7f6` completes the bounded
 Core, persistence, rail, audio, first-entry-rule, and renderer surface while leaving
 Puzzle authored content untouched. Independent QA first found a reduced-motion
 activation-flash P2 in `02b9ba9`; `ca8c7f6` repairs it with a static 240 ms
