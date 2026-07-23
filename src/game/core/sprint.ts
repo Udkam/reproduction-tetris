@@ -3,9 +3,8 @@ import { BOARD_HEIGHT, BOARD_WIDTH } from './constants';
 import type { Board } from './types';
 
 /**
- * Collapse mode keeps material identities but lets each occupied column settle on its
- * own after a clear. It is deliberately independent from ordinary line-clear gravity,
- * and receives only the all-ordinary Sprint board.
+ * The temporary 异变坍缩 item keeps material identities while letting each occupied
+ * column settle on its own. It remains independent from ordinary line-clear gravity.
  */
 export function collapseSprintColumns(board: Board): Board {
   const collapsed = createBoard();

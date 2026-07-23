@@ -9,6 +9,19 @@ function nextSeed(seed: number): number {
   return value >>> 0;
 }
 
+/**
+ * Draws a deterministic scalar without disturbing the seven-bag itself. The fourth
+ * mode uses this only for optional carrier scheduling; all modes keep their normal
+ * bag guarantees.
+ */
+export function drawRandom(randomizer: RandomizerState): { value: number; randomizer: RandomizerState } {
+  const seed = nextSeed(randomizer.seed);
+  return {
+    value: seed / 0x1_0000_0000,
+    randomizer: { seed, bag: [...randomizer.bag] },
+  };
+}
+
 export function createRandomizer(seed: number): RandomizerState {
   return { seed: seed >>> 0 || 0x6d2b79f5, bag: [] };
 }

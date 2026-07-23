@@ -61,7 +61,20 @@ export type PuzzleCompletion =
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn';
 
-export type SprintGoal = 'cascade-score-attack';
+export type MutationItem = 'freeze' | 'collapse' | 'bomb' | 'multiplier';
+
+/** One incoming carrier is represented once, even though all four locked cells carry it. */
+export interface MutationCarrier {
+  id: number;
+  item: MutationItem;
+  cells: readonly Cell[];
+}
+
+/** The carrier attached to the currently falling tetromino, before it reaches the board. */
+export interface MutationActiveCarrier {
+  id: number;
+  item: MutationItem;
+}
 
 export interface GameState {
   board: Board;
@@ -110,12 +123,19 @@ export interface GameState {
   survivalPressureTicks: number;
   /** A due pressure row waiting for the next safe lock/clear resolution. */
   survivalRisePending: boolean;
-  /** The current post-clear Collapse depth. It resets after the chain settles. */
-  sprintCascadeDepth: number;
-  /** Best active Collapse depth for this endless score-and-chain run. */
-  sprintBestCascade: number;
-  /** Identifies Collapse-specific score and settlement semantics. */
-  sprintGoal: SprintGoal | null;
+  /** A random, deterministic item identity attached to the active fourth-mode piece. */
+  mutationActiveCarrier: MutationActiveCarrier | null;
+  /** Locked carrier metadata follows line clears and temporary column settling. */
+  mutationCarriers: readonly MutationCarrier[];
+  /** Monotonic local identity used to make every carrier activate once. */
+  mutationNextCarrierId: number;
+  /** Remaining game-time ticks for the three timed fourth-mode effects. */
+  mutationFreezeTicks: number;
+  mutationCollapseTicks: number;
+  mutationMultiplierTicks: number;
+  /** Brief UI-facing report of the most recently activated item. */
+  mutationLastItem: MutationItem | null;
+  mutationLastItemTicks: number;
   status: GameStatus;
   phase: GamePhase;
   phaseTicks: number;
@@ -155,6 +175,7 @@ export type GameEvent =
   | { type: 'puzzle-undone' }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }
+  | { type: 'mutation-activated'; item: MutationItem; durationTicks: number; score: number; rowsRemoved: number }
   | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'bedrock-lowered'; count: number; height: number }
   | { type: 'level-up'; level: number }

@@ -4,6 +4,11 @@ import {
   LINE_CLEAR_BASE_SCORE,
   LINE_CLEAR_DELAY_TICKS,
   LOCK_DELAY_TICKS,
+  MUTATION_BOMB_ROWS,
+  MUTATION_BOMB_SCORE,
+  MUTATION_CARRIER_CHANCE,
+  MUTATION_EFFECT_TICKS,
+  MUTATION_RESULT_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
@@ -15,10 +20,13 @@ import {
 import { canPlace, clearRows, createBoard, fullRows, isGrounded, lowerBedrock, mapCellsAfterClear, mergePiece, raiseBedrock } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
-import { createRandomizer, drawPiece } from './random';
+import { createRandomizer, drawPiece, drawRandom } from './random';
 import { kickTests } from './rotation';
 import { collapseSprintColumns } from './sprint';
-import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type PieceType, type PuzzleCompletion, type PuzzleId, type PuzzleUndoSnapshot } from './types';
+import { collapseMutationCarriers, mapMutationCarriersAfterClear, mutationCarriersClearedByRows } from './mutation';
+import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type MutationCarrier, type MutationItem, type PieceType, type PuzzleCompletion, type PuzzleId, type PuzzleUndoSnapshot } from './types';
+
+const MUTATION_ITEMS: readonly MutationItem[] = Object.freeze(['freeze', 'collapse', 'bomb', 'multiplier']);
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
@@ -29,6 +37,25 @@ function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState
     randomizer = draw.randomizer;
   }
   return { ...state, queue, randomizer };
+}
+
+/** Schedules an optional marked carrier without weakening the normal seven-bag. */
+function assignMutationCarrier(state: GameState): GameState {
+  if (state.mode !== 'sprint' || state.pieceCount < 2) {
+    return state.mutationActiveCarrier === null ? state : { ...state, mutationActiveCarrier: null };
+  }
+  const chance = drawRandom(state.randomizer);
+  if (chance.value >= MUTATION_CARRIER_CHANCE) {
+    return { ...state, randomizer: chance.randomizer, mutationActiveCarrier: null };
+  }
+  const itemRoll = drawRandom(chance.randomizer);
+  const item = MUTATION_ITEMS[Math.floor(itemRoll.value * MUTATION_ITEMS.length)] ?? 'freeze';
+  return {
+    ...state,
+    randomizer: itemRoll.randomizer,
+    mutationActiveCarrier: { id: state.mutationNextCarrierId, item },
+    mutationNextCarrierId: state.mutationNextCarrierId + 1,
+  };
 }
 
 function puzzleFailure(
@@ -62,6 +89,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   if (!pieceType) return invalidState(next);
   next = refillQueue({ ...next, queue }, NEXT_QUEUE_SIZE);
   const active = createSpawnPiece(pieceType);
+  next = assignMutationCarrier(next);
   if (!canPlace(next.board, active)) {
     if (next.mode === 'puzzle') return puzzleFailure(next, 'failed-top-out', 'block-out');
     return {
@@ -119,9 +147,14 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalBedrockRows: openingBedrock?.added ?? 0,
     survivalPressureTicks: 0,
     survivalRisePending: false,
-    sprintCascadeDepth: 0,
-    sprintBestCascade: 0,
-    sprintGoal: mode === 'sprint' ? 'cascade-score-attack' : null,
+    mutationActiveCarrier: null,
+    mutationCarriers: Object.freeze([]),
+    mutationNextCarrierId: 1,
+    mutationFreezeTicks: 0,
+    mutationCollapseTicks: 0,
+    mutationMultiplierTicks: 0,
+    mutationLastItem: null,
+    mutationLastItemTicks: 0,
     status: 'ready',
     phase: 'active',
     phaseTicks: 0,
@@ -283,6 +316,98 @@ function moveActive(state: GameState, dx: number, dy: number, cause: 'move' | 'g
   };
 }
 
+function mutationScoreMultiplier(state: GameState): number {
+  return state.mode === 'sprint' && state.mutationMultiplierTicks > 0 ? 2 : 1;
+}
+
+function bottomBombRows(): number[] {
+  return Array.from({ length: MUTATION_BOMB_ROWS }, (_, index) => BOARD_HEIGHT - MUTATION_BOMB_ROWS + index);
+}
+
+interface MutationActivation {
+  state: GameState;
+  events: GameEvent[];
+}
+
+/**
+ * Applies every carrier triggered by one resolved clear. Bombs may remove another
+ * carrier, so the deterministic queue handles that finite chain without a second
+ * render or browser-timing pass.
+ */
+function activateMutationCarriers(state: GameState, triggered: readonly MutationCarrier[]): MutationActivation {
+  if (state.mode !== 'sprint' || triggered.length === 0) return { state, events: [] };
+
+  let next = state;
+  const events: GameEvent[] = [];
+  const pending = triggered.map((carrier) => carrier.id);
+  const queued = new Set(pending);
+  const activated = new Set<number>();
+
+  while (pending.length > 0) {
+    const id = pending.shift();
+    if (id === undefined || activated.has(id)) continue;
+    const carrier = next.mutationCarriers.find((candidate) => candidate.id === id);
+    if (!carrier) continue;
+    activated.add(id);
+    next = {
+      ...next,
+      mutationCarriers: Object.freeze(next.mutationCarriers.filter((candidate) => candidate.id !== id)),
+    };
+
+    let durationTicks = 0;
+    let score = 0;
+    let rowsRemoved = 0;
+    if (carrier.item === 'freeze') {
+      durationTicks = MUTATION_EFFECT_TICKS;
+      next = { ...next, mutationFreezeTicks: Math.max(next.mutationFreezeTicks, durationTicks) };
+    } else if (carrier.item === 'collapse') {
+      durationTicks = MUTATION_EFFECT_TICKS;
+      next = { ...next, mutationCollapseTicks: Math.max(next.mutationCollapseTicks, durationTicks) };
+    } else if (carrier.item === 'multiplier') {
+      durationTicks = MUTATION_EFFECT_TICKS;
+      next = { ...next, mutationMultiplierTicks: Math.max(next.mutationMultiplierTicks, durationTicks) };
+    } else {
+      const rows = bottomBombRows();
+      const bombTriggered = mutationCarriersClearedByRows(next.mutationCarriers, rows);
+      score = MUTATION_BOMB_SCORE * mutationScoreMultiplier(next);
+      rowsRemoved = rows.length;
+      next = {
+        ...next,
+        board: clearRows(next.board, rows),
+        mutationCarriers: mapMutationCarriersAfterClear(next.board, rows, next.mutationCarriers),
+        score: next.score + score,
+        lines: next.lines + rowsRemoved,
+      };
+      events.push({ type: 'lines-cleared', rows, count: rowsRemoved, score });
+      for (const candidate of bombTriggered) {
+        if (!activated.has(candidate.id) && !queued.has(candidate.id)) {
+          queued.add(candidate.id);
+          pending.push(candidate.id);
+        }
+      }
+    }
+
+    next = {
+      ...next,
+      mutationLastItem: carrier.item,
+      mutationLastItemTicks: durationTicks > 0 ? durationTicks : MUTATION_RESULT_TICKS,
+    };
+    events.push({ type: 'mutation-activated', item: carrier.item, durationTicks, score, rowsRemoved });
+  }
+  return { state: next, events };
+}
+
+function advanceMutationEffects(state: GameState): GameState {
+  if (state.mode !== 'sprint') return state;
+  return {
+    ...state,
+    mutationFreezeTicks: Math.max(0, state.mutationFreezeTicks - 1),
+    mutationCollapseTicks: Math.max(0, state.mutationCollapseTicks - 1),
+    mutationMultiplierTicks: Math.max(0, state.mutationMultiplierTicks - 1),
+    mutationLastItemTicks: Math.max(0, state.mutationLastItemTicks - 1),
+  };
+}
+
 function lockActive(
   state: GameState,
   extraEvents: GameEvent[] = [],
@@ -292,38 +417,59 @@ function lockActive(
   const undoCheckpoint = checkpointBeforeLock ?? (state.mode === 'puzzle' ? puzzleUndoCheckpoint(state) : null);
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
-  const board = mergePiece(state.board, state.active);
+  let board = mergePiece(state.board, state.active);
   const pieceCount = state.pieceCount + 1;
   const lockedEvent: GameEvent = { type: 'piece-locked', piece: state.active.type, cells };
+  let mutationCarriers = state.mutationCarriers;
+  if (state.mode === 'sprint') {
+    if (state.mutationActiveCarrier !== null) {
+      mutationCarriers = Object.freeze([
+        ...mutationCarriers,
+        {
+          id: state.mutationActiveCarrier.id,
+          item: state.mutationActiveCarrier.item,
+          cells: Object.freeze(cells.map((cell) => ({ ...cell }))),
+        },
+      ]);
+    }
+    if (state.mutationCollapseTicks > 0) {
+      mutationCarriers = collapseMutationCarriers(board, mutationCarriers);
+      board = collapseSprintColumns(board);
+    }
+  }
+  const lockedState: GameState = {
+    ...state,
+    board,
+    active: null,
+    pieceCount,
+    mutationActiveCarrier: null,
+    mutationCarriers,
+  };
   const rows = fullRows(board);
   const lockOut = cells.every((cell) => cell.y < VISIBLE_START_ROW) && rows.length === 0;
 
   if (lockOut) {
     if (state.mode === 'puzzle') {
-      const failed = puzzleFailure({ ...state, board, active: null, pieceCount }, 'failed-top-out', 'lock-out');
+      const failed = puzzleFailure(lockedState, 'failed-top-out', 'lock-out');
       return {
         state: appendPuzzleUndoCheckpoint(failed.state, undoCheckpoint),
         events: [...extraEvents, lockedEvent, ...failed.events],
       };
     }
     return {
-      state: { ...state, board, active: null, status: 'game-over', pieceCount, combo: 0 },
+      state: { ...lockedState, status: 'game-over', combo: 0 },
       events: [...extraEvents, lockedEvent, { type: 'game-over', reason: 'lock-out' }],
     };
   }
 
   if (rows.length > 0) {
     const clearing: GameState = {
-      ...state,
-      board,
-      pieceCount,
-      active: null,
+      ...lockedState,
       phase: 'line-clear',
       phaseTicks: 0,
       pendingClearRows: rows,
       gravityTicks: 0,
       lockTicks: 0,
-      sprintCascadeDepth: state.mode === 'sprint' ? 1 : state.sprintCascadeDepth,
     };
     return {
       state: appendPuzzleUndoCheckpoint(clearing, undoCheckpoint),
@@ -332,39 +478,15 @@ function lockActive(
   }
 
   if (state.mode === 'sprint') {
-    const collapsedBoard = collapseSprintColumns(board);
-    const cascadeRows = fullRows(collapsedBoard);
-    if (cascadeRows.length > 0) {
-      return {
-        state: {
-          ...state,
-          board: collapsedBoard,
-          pieceCount,
-          active: null,
-          phase: 'line-clear',
-          phaseTicks: 0,
-          pendingClearRows: cascadeRows,
-          gravityTicks: 0,
-          lockTicks: 0,
-          lockResets: 0,
-          sprintCascadeDepth: 1,
-        },
-        events: [...extraEvents, lockedEvent, { type: 'clear-started', rows: cascadeRows }],
-      };
-    }
     return {
       state: {
-        ...state,
-        board: collapsedBoard,
-        pieceCount,
-        active: null,
+        ...lockedState,
         phase: 'entry',
         phaseTicks: 0,
         gravityTicks: 0,
         lockTicks: 0,
         lockResets: 0,
         combo: 0,
-        sprintCascadeDepth: 0,
       },
       events: [...extraEvents, lockedEvent],
     };
@@ -372,10 +494,7 @@ function lockActive(
 
   if (state.mode === 'puzzle') {
     const resolved = resolvePuzzleAfterLock({
-      ...state,
-      board,
-      active: null,
-      pieceCount,
+      ...lockedState,
       phase: 'active',
       phaseTicks: 0,
       pendingClearRows: [],
@@ -392,10 +511,7 @@ function lockActive(
 
   if (state.mode === 'race') {
     const resolved = resolvePendingSurvivalRise({
-      ...state,
-      board,
-      active: null,
-      pieceCount,
+      ...lockedState,
       phase: 'active',
       phaseTicks: 0,
       pendingClearRows: [],
@@ -415,10 +531,7 @@ function lockActive(
 
   return {
     state: {
-      ...state,
-      board,
-      pieceCount,
-      active: null,
+      ...lockedState,
       phase: 'entry',
       phaseTicks: 0,
       gravityTicks: 0,
@@ -478,26 +591,27 @@ function finishLineClear(state: GameState): GameTransition {
   const comboBonus = state.mode === 'marathon' ? 50 * Math.max(0, combo - 1) : 0;
   const level = state.mode === 'puzzle' ? Math.floor(lines / 10) : 0;
   const baseScore = LINE_CLEAR_BASE_SCORE[count] ?? 0;
-  const cascadeDepth = state.mode === 'sprint' ? Math.max(1, state.sprintCascadeDepth) : 0;
   const clearScore = state.mode === 'puzzle'
     ? baseScore * (level + 1)
     : state.mode === 'sprint'
-      ? baseScore * cascadeDepth * cascadeDepth
+      ? baseScore * mutationScoreMultiplier(state)
       : baseScore + comboBonus;
+  const triggeredCarriers = state.mode === 'sprint'
+    ? mutationCarriersClearedByRows(state.mutationCarriers, rows)
+    : Object.freeze([]);
   let cleared: GameState = {
     ...state,
     board: clearRows(state.board, rows),
     puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.board, rows, state.puzzleTargetCells) : state.puzzleTargetCells,
+    mutationCarriers: state.mode === 'sprint'
+      ? mapMutationCarriersAfterClear(state.board, rows, state.mutationCarriers)
+      : state.mutationCarriers,
     score: state.score + clearScore,
     lines,
     combo,
     level,
     pendingClearRows: [],
     phaseTicks: 0,
-    sprintCascadeDepth: state.mode === 'sprint' ? cascadeDepth : state.sprintCascadeDepth,
-    sprintBestCascade: state.mode === 'sprint'
-      ? Math.max(state.sprintBestCascade, cascadeDepth)
-      : state.sprintBestCascade,
   };
   const events: GameEvent[] = [{ type: 'lines-cleared', rows, count, score: clearScore }];
   if (state.mode === 'puzzle' && level > state.level) events.push({ type: 'level-up', level });
@@ -506,27 +620,9 @@ function finishLineClear(state: GameState): GameTransition {
     return { state: resolved.state, events: [...events, ...resolved.events] };
   }
   if (cleared.mode === 'sprint') {
-    const collapsedBoard = collapseSprintColumns(cleared.board);
-    const cascadeRows = fullRows(collapsedBoard);
-    if (cascadeRows.length > 0) {
-      return {
-        state: {
-          ...cleared,
-          board: collapsedBoard,
-          phase: 'line-clear',
-          phaseTicks: 0,
-          pendingClearRows: cascadeRows,
-          sprintCascadeDepth: cascadeDepth + 1,
-        },
-        events: [...events, { type: 'clear-started', rows: cascadeRows }],
-      };
-    }
-    const spawned = spawnPiece({
-      ...cleared,
-      board: collapsedBoard,
-      sprintCascadeDepth: 0,
-    });
-    return { state: spawned.state, events: [...events, ...spawned.events] };
+    const activated = activateMutationCarriers(cleared, triggeredCarriers);
+    const spawned = spawnPiece(activated.state);
+    return { state: spawned.state, events: [...events, ...activated.events, ...spawned.events] };
   }
   if (cleared.mode === 'race') {
     const risen = resolvePendingSurvivalRise(cleared, true);
@@ -561,7 +657,7 @@ function finishLineClear(state: GameState): GameTransition {
 
 function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
-  let next: GameState = advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 });
+  let next: GameState = advanceMutationEffects(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 }));
   const timedEvents: GameEvent[] = [];
 
   if (next.phase === 'entry') {
@@ -597,6 +693,10 @@ function tick(state: GameState): GameTransition {
     }
   } else if (next.lockTicks !== 0) {
     next = { ...next, lockTicks: 0 };
+  }
+
+  if (next.mode === 'sprint' && next.mutationFreezeTicks > 0) {
+    return { state: { ...next, gravityTicks: 0 }, events: timedEvents };
   }
 
   const gravityTicks = next.gravityTicks + 1;
@@ -654,8 +754,8 @@ export function replay(seed: number, commands: readonly GameCommand[], mode: Gam
 
 export function stateHash(state: GameState): string {
   // Mode-private fields stay out of unrelated replays so the established Classic,
-  // Survival, and Puzzle hash domains remain stable. Sprint keeps only its Collapse
-  // depth and goal in its own canonical payload.
+  // Survival, and Puzzle hash domains remain stable. 异变 keeps its item/timer state
+  // in its own canonical payload because that state changes legal future play.
   const canonicalState = state.mode === 'puzzle'
     ? (() => {
       const {
@@ -663,9 +763,14 @@ export function stateHash(state: GameState): string {
         survivalBedrockRows: _survivalBedrockRows,
         survivalPressureTicks: _survivalPressureTicks,
         survivalRisePending: _survivalRisePending,
-        sprintCascadeDepth: _sprintCascadeDepth,
-        sprintBestCascade: _sprintBestCascade,
-        sprintGoal: _sprintGoal,
+        mutationActiveCarrier: _mutationActiveCarrier,
+        mutationCarriers: _mutationCarriers,
+        mutationNextCarrierId: _mutationNextCarrierId,
+        mutationFreezeTicks: _mutationFreezeTicks,
+        mutationCollapseTicks: _mutationCollapseTicks,
+        mutationMultiplierTicks: _mutationMultiplierTicks,
+        mutationLastItem: _mutationLastItem,
+        mutationLastItemTicks: _mutationLastItemTicks,
         ...puzzleState
       } = state;
       return puzzleState;
@@ -690,9 +795,14 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
-          sprintCascadeDepth: _sprintCascadeDepth,
-          sprintBestCascade: _sprintBestCascade,
-          sprintGoal: _sprintGoal,
+          mutationActiveCarrier: _mutationActiveCarrier,
+          mutationCarriers: _mutationCarriers,
+          mutationNextCarrierId: _mutationNextCarrierId,
+          mutationFreezeTicks: _mutationFreezeTicks,
+          mutationCollapseTicks: _mutationCollapseTicks,
+          mutationMultiplierTicks: _mutationMultiplierTicks,
+          mutationLastItem: _mutationLastItem,
+          mutationLastItemTicks: _mutationLastItemTicks,
           ...classicState
         } = legacyState;
         return classicState;
@@ -709,9 +819,14 @@ export function stateHash(state: GameState): string {
       }
       const {
         combo: _combo,
-        sprintCascadeDepth: _sprintCascadeDepth,
-        sprintBestCascade: _sprintBestCascade,
-        sprintGoal: _sprintGoal,
+        mutationActiveCarrier: _mutationActiveCarrier,
+        mutationCarriers: _mutationCarriers,
+        mutationNextCarrierId: _mutationNextCarrierId,
+        mutationFreezeTicks: _mutationFreezeTicks,
+        mutationCollapseTicks: _mutationCollapseTicks,
+        mutationMultiplierTicks: _mutationMultiplierTicks,
+        mutationLastItem: _mutationLastItem,
+        mutationLastItemTicks: _mutationLastItemTicks,
         ...survivalState
       } = legacyState;
       return survivalState;

@@ -1,6 +1,7 @@
 export * from './board';
 export * from './constants';
 export * from './engine';
+export * from './mutation';
 export * from './pieces';
 export * from './puzzles';
 export * from './random';
