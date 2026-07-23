@@ -22,7 +22,7 @@ import {
   survivalCountdownLabel,
   terminalCopy,
 } from './App';
-import { CAMPAIGN_LEVELS, defaultPuzzleProgress } from './puzzleProgress';
+import { CAMPAIGN_LEVELS, defaultPuzzleProgress, PUZZLE_ROW_BANDS } from './puzzleProgress';
 import type { ScoreRecord } from './leaderboard';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -598,7 +598,7 @@ describe('T6 frontend mode binding', () => {
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 
-  it('uses a sparse tier route while keeping one canonical selected-board observatory', () => {
+  it('uses an all-open four-band relay while keeping one canonical selected-board focus', () => {
     expect(CAMPAIGN_LEVELS).toHaveLength(20);
     const onSelect = vi.fn();
     const onStart = vi.fn();
@@ -613,38 +613,33 @@ describe('T6 frontend mode binding', () => {
     const view = render(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id)));
 
     const rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    const sectors = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="sector-row"]')];
-    expect(rows).toHaveLength(3);
-    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id));
+    expect(rows).toHaveLength(20);
+    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
     expect(rows.every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
-    expect(sectors).toHaveLength(7);
-    expect(sectors[0]?.disabled).toBe(false);
-    expect(sectors.slice(1).every((sector) => sector.disabled && sector.dataset.unlocked === 'false')).toBe(true);
-    expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('20 个解谜关卡，已开放 3 个');
-    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent).toBe('03/20');
-    expect(view.container.querySelector('[data-testid="campaign-gate"]')?.textContent).toBe('01–03 0/2');
-    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('01–03 直接开放');
-    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('每段完成任意 2 关解锁下一段');
-    expect(view.container.querySelectorAll('.observatory-sector')).toHaveLength(7);
-    expect(view.container.querySelectorAll('.observatory-stop')).toHaveLength(3);
+    expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('20 个开放解谜残局');
+    expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent?.replace(/\s/g, '')).toBe('20/20');
+    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('20 个残局 · 全部可进入');
+    expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('B 撤回');
+    expect(view.container.querySelectorAll('.relay-band')).toHaveLength(4);
+    expect(PUZZLE_ROW_BANDS.every((band, index) => (
+      view.container.querySelectorAll(`.relay-band[data-rows="${index + 5}"] .relay-node`).length === band.length
+    ))).toBe(true);
+    expect(view.container.querySelectorAll('[data-testid="sector-row"]')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.observatory-sector, .observatory-stop')).toHaveLength(0);
     expect(rows[0]?.textContent).toContain('01');
     expect(rows[0]?.getAttribute('aria-label')).toContain(CAMPAIGN_LEVELS[0]!.name);
-    expect(view.container.querySelectorAll('.observatory-route .puzzle-silhouette')).toHaveLength(0);
-    expect(view.container.querySelectorAll('.observatory-focus .puzzle-silhouette')).toHaveLength(1);
-    expect(rows.every((row) => row.closest('.observatory-stop')?.getAttribute('style')?.includes('animation-delay'))).toBe(true);
+    expect(view.container.querySelectorAll('.relay-route .puzzle-silhouette')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.relay-focus .puzzle-silhouette')).toHaveLength(1);
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
       expect(view.container.textContent).not.toContain(banned);
     }
-    for (const banned of ['ORIGINAL FIELD', 'ROWS', 'SECTOR', 'OPEN']) {
+    for (const banned of ['SECTOR', 'OPEN', '解锁下一段']) {
       expect(view.container.textContent).not.toContain(banned);
     }
 
     act(() => view.container.querySelector<HTMLButtonElement>('.library-back')?.click());
     expect(onBack).toHaveBeenCalledTimes(1);
-
-    act(() => sectors[2]!.click());
-    expect(onSelect).not.toHaveBeenCalled();
 
     const fullyUnlocked = {
       version: 3 as const,
@@ -659,7 +654,7 @@ describe('T6 frontend mode binding', () => {
       const definition = getPuzzleDefinition(level.id);
 
       expect(pressed?.dataset.levelId).toBe(level.id);
-      expect(view.container.querySelector('.observatory-focus h2')?.textContent).toBe(level.name);
+      expect(view.container.querySelector('.relay-focus h2')?.textContent).toBe(level.name);
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();
@@ -667,13 +662,12 @@ describe('T6 frontend mode binding', () => {
       expect(puzzleSilhouettePaths(level.id).size).toBe(visibleMaterials.size);
       expect([...puzzleSilhouettePaths(level.id).values()].every((path) => path.includes('h3.8v3.8'))).toBe(true);
       expect(Boolean(puzzleAnchorSilhouettePath(level.id))).toBe(definition.anchorCells.length > 0);
-      expect(view.container.querySelectorAll('.observatory-focus .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
+      expect(view.container.querySelectorAll('.relay-focus .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
         definition.anchorCells.length > 0 ? 1 : 0,
       );
     }
 
-    const unlockedSectors = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="sector-row"]')];
-    act(() => unlockedSectors[2]!.click());
+    act(() => rows[6]!.click());
     expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[6]!.id);
 
     const start = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');

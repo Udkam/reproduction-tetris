@@ -4557,3 +4557,685 @@ p {
     transform: scale(1);
   }
 }
+
+/* T13 — Puzzle relay workshop. The navigation is a single illuminated circuit:
+   twenty numbered stations, no thumbnail wall, and one changing endgame field. */
+
+.library-shell--relay {
+  position: relative;
+  isolation: isolate;
+  align-content: stretch;
+  grid-template-rows: 48px minmax(0, 1fr) 26px;
+  width: min(1240px, 100%);
+  height: 100dvh;
+  min-height: 0;
+  gap: clamp(8px, 1.4vh, 14px);
+  overflow: hidden;
+  padding: clamp(10px, 2.4vw, 28px);
+}
+
+.library-shell--relay::before {
+  position: absolute;
+  z-index: -1;
+  inset: 54px 14px 14px;
+  content: "";
+  pointer-events: none;
+  opacity: .64;
+  background:
+    linear-gradient(115deg, transparent 0 28%, color-mix(in srgb, var(--puzzle) 10%, transparent) 28.1% 28.25%, transparent 28.4% 100%),
+    repeating-linear-gradient(0deg, transparent 0 56px, color-mix(in srgb, var(--edge) 7%, transparent) 57px 58px),
+    linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 6%, transparent), transparent 48%);
+  border: 1px solid color-mix(in srgb, var(--edge) 23%, transparent);
+  border-radius: 22px;
+}
+
+.relay-header {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 44px;
+  padding-inline: 0 !important;
+}
+
+.relay-header .library-back {
+  justify-self: start;
+  gap: 8px;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 84%, var(--raised));
+  border-color: color-mix(in srgb, var(--edge) 74%, var(--line));
+  border-radius: 7px 13px 13px 7px;
+  box-shadow: 0 7px 16px rgba(31, 59, 86, .08);
+}
+
+.relay-header .library-back b {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-radius: 4px 8px 4px 8px;
+}
+
+.relay-header .brand {
+  justify-self: center;
+  padding: 0 10px;
+  color: color-mix(in srgb, var(--ink) 88%, var(--puzzle));
+}
+
+.relay-header__count {
+  display: inline-flex;
+  align-items: baseline;
+  justify-self: end;
+  gap: 4px;
+  color: var(--ink);
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 17px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.055em;
+}
+
+.relay-header__count small {
+  color: var(--puzzle);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.relay-workbench {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(376px, .89fr) minmax(0, 1.11fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-content: stretch;
+  align-items: stretch;
+  min-height: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 92%, var(--raised));
+  border: 1px solid color-mix(in srgb, var(--edge) 82%, var(--line));
+  border-radius: 10px 22px 10px 22px;
+  box-shadow: 0 18px 42px rgba(31, 59, 86, .13);
+  animation: relay-workbench-in 440ms var(--ease) both;
+}
+
+.relay-route {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-self: stretch;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(16px, 2.2vw, 25px);
+  overflow: hidden;
+  background:
+    linear-gradient(138deg, color-mix(in srgb, var(--puzzle) 8%, transparent), transparent 42%),
+    linear-gradient(145deg, color-mix(in srgb, var(--raised) 87%, white), var(--raised));
+  border-right: 1px solid color-mix(in srgb, var(--edge) 50%, var(--line));
+}
+
+.relay-route__heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 1px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--puzzle) 24%, var(--line));
+}
+
+.relay-route__heading::after {
+  width: 50px;
+  height: 3px;
+  content: "";
+  background: linear-gradient(90deg, var(--puzzle), color-mix(in srgb, var(--puzzle) 16%, transparent));
+  clip-path: polygon(0 0, 100% 0, 82% 100%, 0 100%);
+}
+
+.relay-route__heading span {
+  order: 2;
+  margin-bottom: 4px;
+  color: var(--puzzle);
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.relay-route__heading h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(24px, 2.35vw, 31px);
+  font-weight: 760;
+  letter-spacing: -.075em;
+  line-height: .92;
+}
+
+.relay-bands {
+  display: grid;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  align-content: stretch;
+  gap: 7px;
+  min-height: 0;
+  margin: 0;
+  padding: 11px 0 4px;
+  list-style: none;
+}
+
+.relay-band {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.relay-band__label {
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  min-width: 0;
+  color: color-mix(in srgb, var(--ink) 57%, var(--muted));
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 14px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.07em;
+  line-height: 1;
+  transition: color 200ms ease, transform 240ms var(--ease);
+}
+
+.relay-band__label small {
+  color: inherit;
+  font: inherit;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.relay-band--active .relay-band__label {
+  color: var(--puzzle);
+  transform: translateX(2px);
+}
+
+.relay-nodes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(44px, 1fr));
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relay-nodes::before {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: 22px;
+  left: 22px;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 17%, var(--line)), color-mix(in srgb, var(--puzzle) 52%, var(--line)), color-mix(in srgb, var(--puzzle) 17%, var(--line)));
+}
+
+.relay-band--active .relay-nodes::before {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--puzzle) 28%, var(--line)), var(--puzzle), color-mix(in srgb, var(--puzzle) 28%, var(--line)));
+}
+
+.relay-node {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  opacity: 0;
+  animation: relay-node-in 340ms var(--ease) both;
+}
+
+.relay-node:nth-child(1) { animation-delay: 70ms; }
+.relay-node:nth-child(2) { animation-delay: 105ms; }
+.relay-node:nth-child(3) { animation-delay: 140ms; }
+.relay-node:nth-child(4) { animation-delay: 175ms; }
+.relay-node:nth-child(5) { animation-delay: 210ms; }
+.relay-band:nth-child(2) .relay-node { animation-delay: 115ms; }
+.relay-band:nth-child(3) .relay-node { animation-delay: 155ms; }
+.relay-band:nth-child(4) .relay-node { animation-delay: 195ms; }
+
+.relay-node button {
+  position: relative;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  justify-self: center;
+  padding: 0;
+  color: color-mix(in srgb, var(--ink) 72%, var(--muted));
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 12px;
+  font-weight: 780;
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--surface) 90%, var(--raised));
+  border: 1px solid color-mix(in srgb, var(--line) 86%, var(--surface));
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(36, 61, 88, .06);
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 200ms ease, transform 220ms var(--ease);
+}
+
+.relay-node button:hover,
+.relay-node button:focus-visible {
+  z-index: 2;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--puzzle) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--puzzle) 70%, var(--edge));
+  box-shadow: 0 7px 13px rgba(51, 61, 104, .14);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.relay-node button[data-anchor="true"]::after {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  content: "";
+  background: #b38550;
+  border: 1px solid color-mix(in srgb, #b38550 64%, var(--ink));
+  border-radius: 1px;
+  transform: rotate(45deg);
+}
+
+.relay-node--selected button {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-color: var(--puzzle);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--puzzle) 13%, transparent), 0 8px 18px rgba(59, 54, 96, .22);
+  animation: relay-node-select 460ms var(--ease) both;
+}
+
+.relay-node--selected button[data-anchor="true"]::after {
+  background: #dfc28c;
+  border-color: #f4e6bf;
+}
+
+.relay-node--complete button {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 44%, var(--line));
+}
+
+.relay-node--complete.relay-node--selected button { color: var(--action-ink); }
+
+.relay-node button i {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  color: var(--action-ink);
+  font-family: inherit;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 900;
+  background: var(--success);
+  border: 1px solid var(--surface);
+  border-radius: 50%;
+}
+
+.relay-focus {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(235px, .72fr);
+  align-self: stretch;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--well) 97%, #17233b), var(--well));
+}
+
+.relay-focus__well {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(90deg, transparent 49.7%, rgba(192, 216, 238, .045) 49.8% 50.2%, transparent 50.3%),
+    linear-gradient(180deg, rgba(255,255,255,.032), transparent 28%),
+    var(--well);
+  border-right: 1px solid color-mix(in srgb, var(--edge) 42%, var(--well));
+  animation: relay-well-shift 460ms var(--ease) both;
+}
+
+.relay-focus__well::before {
+  position: absolute;
+  z-index: -1;
+  inset: clamp(14px, 3.4vw, 34px);
+  content: "";
+  border: 1px solid rgba(187, 214, 237, .18);
+  border-radius: 7px 16px 7px 16px;
+}
+
+.relay-focus__well::after {
+  position: absolute;
+  z-index: -1;
+  inset: -16% -50%;
+  content: "";
+  pointer-events: none;
+  opacity: .4;
+  background: linear-gradient(115deg, transparent 43%, color-mix(in srgb, var(--puzzle) 34%, transparent) 49%, transparent 55%);
+  transform: translateX(-42%);
+  animation: relay-well-scan 840ms 100ms var(--ease) both;
+}
+
+.relay-focus__index {
+  position: absolute;
+  z-index: 2;
+  top: 15px;
+  right: 18px;
+  color: rgba(228, 239, 248, .66);
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: clamp(25px, 3.2vw, 44px);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.1em;
+  line-height: 1;
+}
+
+.relay-focus__board {
+  display: grid;
+  width: min(74%, 290px);
+  height: min(76%, 372px);
+  place-items: center;
+  border: 1px solid rgba(177, 206, 230, .22);
+  border-radius: 6px 14px 6px 14px;
+  background: rgba(7, 18, 31, .42);
+  box-shadow: inset 0 0 34px rgba(0, 0, 0, .2);
+}
+
+.relay-focus__board .puzzle-silhouette {
+  width: min(75%, 206px);
+  height: min(82%, 282px);
+}
+
+.relay-focus__copy {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  align-content: start;
+  gap: clamp(10px, 1.5vh, 17px);
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(18px, 3.2vw, 42px) clamp(17px, 3.2vw, 40px);
+  color: #e2edf5;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--puzzle) 14%, transparent), transparent 42%),
+    linear-gradient(160deg, #122238, #0c1a2c);
+}
+
+.relay-focus__heading {
+  position: relative;
+  padding-bottom: 13px;
+  border-bottom: 1px solid rgba(184, 208, 229, .22);
+}
+
+.relay-focus__heading > span {
+  display: block;
+  margin-bottom: 7px;
+  color: #b8a8cd;
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .09em;
+}
+
+.relay-focus__heading h2 {
+  margin: 0;
+  color: #f1f6fa;
+  font-size: clamp(24px, 2.65vw, 38px);
+  font-weight: 760;
+  letter-spacing: -.08em;
+  line-height: .98;
+}
+
+.relay-focus__heading i {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  color: #e9f7ed;
+  font-size: 12px;
+  font-style: normal;
+  background: var(--success);
+  border-radius: 50%;
+}
+
+.relay-focus__copy > p {
+  align-self: center;
+  max-width: 26ch;
+  margin: 0;
+  color: #bed0df;
+  font-size: clamp(13px, 1.15vw, 15px);
+  line-height: 1.65;
+}
+
+.relay-focus__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.relay-focus__facts span {
+  padding: 5px 7px;
+  color: #cedde8;
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: .05em;
+  background: rgba(202, 224, 241, .075);
+  border: 1px solid rgba(190, 215, 234, .2);
+  border-radius: 3px 7px 3px 7px;
+}
+
+.relay-focus__start {
+  position: relative;
+  overflow: hidden;
+  min-height: 46px;
+  background: #b7a1d0;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .2);
+}
+
+.relay-focus__start:hover { background: #c6b2dc; }
+
+.relay-focus__start::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -50%;
+  width: 32%;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.26), transparent);
+  transform: skewX(-22deg);
+  transition: transform 360ms var(--ease);
+}
+
+.relay-focus__start:hover::after,
+.relay-focus__start:focus-visible::after { transform: translateX(480%) skewX(-22deg); }
+
+.relay-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+  padding-inline: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.relay-footer strong {
+  color: var(--ink);
+  font-weight: 760;
+}
+
+.relay-footer span {
+  color: var(--puzzle);
+  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .02em;
+}
+
+@keyframes relay-workbench-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes relay-node-in {
+  from { opacity: 0; transform: translateX(-5px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes relay-node-select {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--puzzle) 32%, transparent), 0 8px 18px rgba(59, 54, 96, .22); }
+  62% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--puzzle) 0%, transparent), 0 8px 18px rgba(59, 54, 96, .22); }
+  100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--puzzle) 13%, transparent), 0 8px 18px rgba(59, 54, 96, .22); }
+}
+
+@keyframes relay-well-shift {
+  from { opacity: .58; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes relay-well-scan {
+  from { transform: translateX(-42%); }
+  to { transform: translateX(42%); }
+}
+
+@media (max-width: 860px) {
+  .library-shell--relay {
+    grid-template-rows: 46px minmax(0, 1fr) 24px;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .relay-workbench {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 222px minmax(0, 1fr);
+  }
+
+  .relay-route {
+    padding: 12px 14px 10px;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--edge) 50%, var(--line));
+  }
+
+  .relay-route__heading { padding-bottom: 8px; }
+  .relay-route__heading h1 { font-size: 23px; }
+  .relay-bands { gap: 4px; padding-top: 7px; }
+  .relay-band { grid-template-columns: 40px minmax(0, 1fr); gap: 7px; }
+  .relay-band__label { font-size: 12px; }
+  .relay-nodes { gap: 3px; }
+
+  .relay-focus { grid-template-columns: minmax(0, 1fr) minmax(205px, .72fr); }
+  .relay-focus__board { width: min(68%, 246px); height: min(74%, 294px); }
+  .relay-focus__board .puzzle-silhouette { width: min(75%, 176px); height: min(80%, 230px); }
+  .relay-focus__copy { padding: 17px 20px; }
+}
+
+@media (max-width: 599px) {
+  .relay-header .library-back { min-height: 44px; padding-right: 8px; font-size: 11px; }
+  .relay-header .library-back b { width: 32px; height: 32px; }
+  .relay-header .brand--compact strong { font-size: 21px; }
+  .relay-header__count { font-size: 14px; }
+  .relay-header__count small { font-size: 9px; }
+
+  .relay-workbench { grid-template-rows: 210px minmax(0, 1fr); border-radius: 8px 16px 8px 16px; }
+  .relay-route { padding: 10px 11px 8px; }
+  .relay-route__heading { padding-bottom: 7px; }
+  .relay-route__heading h1 { font-size: 20px; }
+  .relay-route__heading span { font-size: 8px; }
+  .relay-route__heading::after { width: 34px; height: 2px; }
+  .relay-bands { gap: 3px; padding-top: 5px; }
+  .relay-band { grid-template-columns: 32px minmax(0, 1fr); gap: 4px; }
+  .relay-band__label { font-size: 10px; }
+  .relay-band__label small { font-size: 6px; letter-spacing: .03em; }
+  .relay-nodes { gap: 1px; }
+  .relay-node button { width: 44px; height: 44px; font-size: 11px; }
+
+  .relay-focus { grid-template-columns: minmax(0, 1fr) minmax(145px, .82fr); }
+  .relay-focus__well::before { inset: 10px; }
+  .relay-focus__index { top: 7px; right: 10px; font-size: 22px; }
+  .relay-focus__board { width: min(78%, 174px); height: min(75%, 220px); }
+  .relay-focus__board .puzzle-silhouette { width: min(80%, 142px); height: min(82%, 184px); }
+  .relay-focus__copy { gap: 8px; padding: 12px 11px; }
+  .relay-focus__heading { padding-bottom: 8px; }
+  .relay-focus__heading > span { margin-bottom: 5px; font-size: 8px; }
+  .relay-focus__heading h2 { font-size: 21px; }
+  .relay-focus__heading i { width: 17px; height: 17px; font-size: 9px; }
+  .relay-focus__copy > p { font-size: 11px; line-height: 1.45; }
+  .relay-focus__facts span { padding: 3px 4px; font-size: 7px; }
+  .relay-focus__start { min-height: 44px; padding-inline: 9px; font-size: 12px; }
+  .relay-footer { gap: 8px; font-size: 9px; }
+  .relay-footer span { font-size: 8px; }
+}
+
+@media (min-width: 600px) and (max-height: 520px) {
+  .library-shell--relay {
+    grid-template-rows: 48px minmax(0, 1fr) 20px;
+    gap: 5px;
+    padding: 5px 10px 7px;
+  }
+
+  .relay-workbench { grid-template-columns: 286px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .relay-route { padding: 8px 12px; }
+  .relay-route__heading { padding-bottom: 5px; }
+  .relay-route__heading h1 { font-size: 19px; }
+  .relay-route__heading span { margin-bottom: 2px; font-size: 8px; }
+  .relay-bands { gap: 2px; padding-top: 6px; }
+  .relay-band { grid-template-columns: 36px minmax(0, 1fr); gap: 4px; }
+  .relay-band__label { font-size: 11px; }
+  .relay-nodes { gap: 1px; }
+  .relay-focus { grid-template-columns: minmax(0, 1fr) 184px; }
+  .relay-focus__well::before { inset: 8px; }
+  .relay-focus__index { top: 6px; right: 10px; font-size: 24px; }
+  .relay-focus__board { width: min(70%, 166px); height: min(75%, 206px); }
+  .relay-focus__board .puzzle-silhouette { width: min(78%, 132px); height: min(82%, 168px); }
+  .relay-focus__copy { gap: 6px; padding: 10px 12px; }
+  .relay-focus__heading { padding-bottom: 7px; }
+  .relay-focus__heading > span { margin-bottom: 4px; font-size: 8px; }
+  .relay-focus__heading h2 { font-size: 23px; }
+  .relay-focus__copy > p { font-size: 10px; line-height: 1.42; }
+  .relay-focus__facts span { padding: 3px 4px; font-size: 7px; }
+  .relay-focus__start { min-height: 44px; }
+  .relay-footer { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relay-workbench,
+  .relay-node,
+  .relay-node--selected button,
+  .relay-focus__well,
+  .relay-focus__well::after {
+    animation: none !important;
+  }
+
+  .relay-node button,
+  .relay-band__label,
+  .relay-focus__start::after {
+    transition: none !important;
+  }
+
+  .relay-node button:hover,
+  .relay-node button:focus-visible,
+  .relay-band--active .relay-band__label,
+  .relay-focus__well {
+    transform: none !important;
+  }
+}
