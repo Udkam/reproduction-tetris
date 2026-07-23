@@ -1,5 +1,20 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-23 — T13.2 fourth-mode Puzzle redesign opened
+
+- User rejected the current fourth-mode Puzzle presentation even after the T13.1
+  decoration cleanup. The next bounded work is a visual reframe only: existing fixed
+  Puzzle levels, queues, anchors, completion history, undo, hints, and game rules are
+  closed.
+- The replacement will make one real selected endgame the primary visual specimen and
+  turn the twenty open numeric controls into a compact 44 px access deck. It may not
+  reintroduce grids, telemetry, miniature per-level boards, meaningless copy, or
+  pseudo-tetromino decoration. It must be reviewed at desktop, portrait, and short
+  landscape before any acceptance/push claim.
+- The prior landscape browser audit found a real 32/40 px control regression. The
+  active stylesheet correction restores 44 px targets; it must be re-audited with the
+  final T13.2 layout rather than treated as resolved by source inspection alone.
+
 ## 2026-07-23 — T13.1 feedback correction opened
 
 - User rejected the recent workbench ornament: background field lines, technical

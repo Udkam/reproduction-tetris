@@ -266,3 +266,20 @@
   their material differences on the dark well, use a quiet anchor accent, and keep the
   numeric matrix sparse so it does not compete with the preview. This remains inside
   the existing `src/App.tsx` / `src/App.test.ts` / `src/styles.css` visual boundary.
+
+## 2026-07-23 — TETRIS-T13.2-PUZZLE-SPECIMEN-012 direction addendum
+
+- Base: `6cee03d`. User rejected the current fourth-mode Puzzle presentation. This
+  opens an App/CSS/Test-only visual correction; it does not authorize changes to fixed
+  Puzzle definitions, Core physics, queue/anchor rules, persistence, hints, or the
+  game renderer.
+- Direction: Home must identify Puzzle as a compact original endgame specimen rather
+  than a fourth generic lane; the library must use one enlarged real chosen board and
+  a sparse 20-stop numeric access deck. All cell material colors and anchors need to
+  read clearly against the dark slab. No grid/scanline/telemetry/English filler,
+  decorative thumbnails, arbitrary blocks, or undersized landscape controls returns.
+- Required proof: App semantics/direct test, typecheck, full suite, build, and fresh
+  desktop/portrait/landscape browser evidence showing all 20 enabled levels, one real
+  preview, 44 px controls, reduced-motion final state, no overflow, one game canvas,
+  and zero console errors. The interrupted earlier browser audit is invalidated by this
+  new direction.

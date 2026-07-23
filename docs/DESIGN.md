@@ -1,3 +1,36 @@
+# Tetra — T13.2 Puzzle Specimen Redesign Contract
+
+## Puzzle is a reading space, not a fourth generic card
+
+The 2026-07-23 feedback rejects the current fourth-mode Puzzle presentation as an
+acceptable endpoint. The revised work is a presentation-only correction: it preserves
+the twenty fixed, deterministic Puzzle definitions, all-open access, canonical queues,
+anchors, undo, hint behavior, keyboard/touch semantics, and one-canvas game screen.
+It changes neither Core rules nor level content.
+
+- On Home, Puzzle is still one of four reachable mode actions, but it must read as a
+  compact **残局 specimen** rather than a copy of the three live-mode lanes. Its entry
+  may use its real four-cell T glyph and one quiet violet mineral field; it may not use
+  a miniature board, fabricated blocks, ordinal telemetry, a generic decorative badge,
+  or extra explanatory copy.
+- The level selector is rebuilt around one enlarged, real selected board on a dark
+  matte slab. The board is the immediate visual anchor: all occupied cells must be
+  individually readable, material colors must remain clearly differentiated, and
+  immutable anchors receive one restrained warm-mineral treatment. There is no board
+  grid, scanline, pseudo-data frame, or generated illustration.
+- The twenty level controls become a compact, deliberately ordered **access deck**:
+  visually light numeric stops grouped by their existing row-depth bands, with selection,
+  completion, and keyboard focus legible without thumbnails or a surplus of labels.
+  It must use 44 px minimum targets in desktop, portrait, and short landscape and may
+  scroll internally where necessary rather than shrinking controls.
+- The selected state may settle the specimen and shift the chosen access stop once;
+  motion is short, non-looping, and absent under `prefers-reduced-motion`. The first
+  frame must already show the selected pattern and a reachable start action.
+- Visible copy stays sparse: back, `解谜`, the selected level name, its row depth,
+  its anchor fact when relevant, the numeric stops, and start. Aesthetic novelty must
+  come from hierarchy, proportion, color value, and the real board—not telemetry,
+  ornamental English, empty scaffolding, or unrelated tetromino art.
+
 # Tetra — T13.1 Quiet Fields and Excavation Sprint Contract
 
 ## T13.1 feedback correction

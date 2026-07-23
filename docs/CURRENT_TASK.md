@@ -8,9 +8,21 @@ its local walkthrough output must be regenerated rather than reused as T13 evide
 
 Current execution status (2026-07-23): **IN PROGRESS — T13 converts every Puzzle entry
 into an open, legal five-through-eight-row endgame workshop; aligns P/R/Enter behavior
-with the visible controls; and introduces a distinct 40-line Sprint mode.** No T13
+with the visible controls; and introduces a distinct excavation Sprint mode.** No T13
 source or visual claim is complete until the complete candidate range is replayed,
 tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
+
+### T13.2 fourth-mode Puzzle presentation correction
+
+The user has rejected the current fourth-mode Puzzle presentation. Before acceptance,
+the coordinator must replace only its Home entry and Puzzle-library composition in
+`src/App.tsx`, `src/App.test.ts`, and `src/styles.css`. The twenty existing fixed
+levels, all-open selection, canonical queue/anchor/undo/hint rules, and game screen are
+closed. The new surface must make the one selected real endgame immediately more
+legible, use a compact numeric access deck rather than level thumbnails, keep every
+visible target at least 44 px in desktop/portrait/landscape, avoid grids/telemetry/
+meaningless copy, and preserve reduced-motion, keyboard, and touch behavior. This is a
+fresh visual candidate, not a claim that the prior T13.1 presentation was accepted.
 
 ### T13.1 feedback-correction checkpoint
 
