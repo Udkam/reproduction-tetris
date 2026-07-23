@@ -1,3 +1,55 @@
+# Current Task — T13 Endgame Workshop, Direct Controls, and Sprint
+
+Branch: `main`
+
+Current base: coordinator-verified T12.7 recovery record `550d77e`. It is historical
+evidence only: its target-floor boards and tier gate are superseded by this task, and
+its local walkthrough output must be regenerated rather than reused as T13 evidence.
+
+Current execution status (2026-07-23): **IN PROGRESS — T13 converts every Puzzle entry
+into an open, legal five-through-eight-row endgame workshop; aligns P/R/Enter behavior
+with the visible controls; and introduces a distinct 40-line Sprint mode.** No T13
+source or visual claim is complete until the complete candidate range is replayed,
+tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
+
+### T13 implementation boundaries and checkpoints
+
+1. **Contract and file-map checkpoint (coordinator):** `docs/DESIGN.md`, this task
+   file, `docs/progress.md`, and the T13 coordinator log define endgame provenance,
+   all-open selection, anchor impact, direct shortcut parity, Sprint semantics,
+   artifact routing, and the ordered reversible checkpoints before product edits.
+2. **Input checkpoint:** `src/App.tsx`, `src/App.test.ts`,
+   `src/game/input/InputController.ts`, `src/game/input/InputController.test.ts`, and
+   `src/game/runtime/GameRuntime.ts`/its direct test own only P/R/Enter parity and the
+   single-action pause sheet. `R` must request the same React confirmation as the
+   visible restart control; it cannot restart via Runtime input.
+3. **Endgame Core checkpoint (authorized atomic exception):**
+   `src/game/core/puzzles.ts`, Puzzle direct tests, the route-search helper/tests, and
+   `docs/workstreams/tetris-t13-core/puzzle-endgame-results.json` may move together.
+   The twenty definitions, legal setup histories, target ownership, anchors, route
+   evidence, and difficulty ordering are atomically coupled; this is expressly allowed
+   to exceed the normal file/line budget. It changes no ordinary physics, renderer, or
+   randomizer rule.
+4. **Sprint checkpoint:** Game-mode types/engine/rules/runtime direct tests,
+   leaderboard persistence/tests, and the exact Sprint UI binding may change together
+   only as required for an empty-board 40-line completion with time-ranked results.
+5. **Workshop presentation checkpoint:** `src/App.tsx`, `src/App.test.ts`, and
+   `src/styles.css` own all-open observatory copy/layout/motion and the four-mode home
+   treatment. No Core authoring or storage migration is mixed into this checkpoint.
+6. **Local recovery and archive checkpoint:** move stale ignored captures only into the
+   documented `.local/` archive routes, regenerate `Solutions/Solution-1.md` through
+   `Solution-20.md` plus their images from the final primary paths, and leave all such
+   local files ignored. Do not delete material by wildcard or stage it.
+7. **Final coordinator checkpoint:** after the last source edit, run the exact final
+   typecheck, full suite, build, and one desktop/portrait/landscape browser evidence
+   pass; record base SHA, ordered commits, exact paths, commands, local cleanup,
+   evidence, blocker, and next action in the T13 log; update changelog, commit the
+   record, push `main`, and verify both Git and the supported local artifact map are
+   clean. Independent read-only Core and visual/browser QA remains required before an
+   acceptance claim.
+
+---
+
 # Current Task — T12.7 Multi-route Puzzle Guidance and Curriculum Calibration
 
 Branch: `main`

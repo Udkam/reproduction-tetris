@@ -1,3 +1,100 @@
+# Tetra — T13 Endgame Workshop, Direct Controls, and Sprint Contract
+
+## T13 product direction
+
+The 2026-07-23 direction supersedes T12.7's shallow target-floor curriculum and its
+tier gate. Puzzle should feel like an authored **残局**: a compact, legal mid-game
+position that asks the player to read surviving structure, recognize recoverable
+channels, and choose an approach, rather than fill an obvious prepared shaft. It stays
+an original clean-room falling-block study; it does not copy any commercial board,
+sequence, level layout, visual language, or puzzle wording.
+
+### Repository and checkpoint discipline
+
+- Keep versioned source, contracts, reusable authoring tools, and formal evidence in
+  their mapped locations (`src/`, `docs/`, `tools/`, `scripts/`). `Solutions/`,
+  `output/`, `.playwright-mcp/`, and ad-hoc browser captures are local material only;
+  a source dependency or durable verifier may not live only in one of those ignored
+  directories. Legacy local captures are archived below `.local/audits/` or
+  `.local/logs/` by explicit topic, never left as unclassified root files.
+- This T13 chain uses separate, reversible checkpoints: contract/file-map record;
+  input/confirmation behavior; authored endgame Core/route evidence; Sprint Core and
+  leaderboard behavior; selector/home/runtime presentation; then final evidence and
+  coordinator record. Each checkpoint has an exact path list, targeted test, workstream
+  log entry, and a commit before the next subsystem begins.
+
+### Direct controls and confirmation parity
+
+- `P` is the explicit Pause shortcut. It invokes exactly the same pause/resume action
+  as the visible header control; `Escape` may retain that same action as an additional
+  accessibility shortcut. A pause sheet contains only the focused **继续游戏** action,
+  and `Enter` invokes it.
+- Clicking **重新开始** or pressing `R` takes the identical route: when a run is active,
+  it pauses once and opens one confirmation dialog. Its focused **确认** button accepts
+  `Enter`; cancellation restores only a run that was playing before the request. `R`
+  never directly recreates a game state. Runtime/test-only restart APIs remain direct
+  programmatic APIs, not browser shortcut behavior.
+- Keyboard routes must not leak through an open confirmation dialog into game input;
+  pause, restart, completion, countdown, and focus behavior are covered by DOM and
+  runtime tests plus browser interaction evidence.
+
+### Open endgame workshop
+
+- Every one of the twenty Puzzle entries is selectable on a fresh save. Completion is
+  still persisted for player history and hint state, but it gates neither selection nor
+  start. The library must communicate an open workshop, not a locked campaign.
+- Every starting board is a visible **five through eight non-empty-row** endgame. It is
+  rebuilt from a recorded legal setup history of ordinary public hard drops on an empty
+  board, has no setup line clears or hidden-buffer occupancy, and preserves every
+  source tetromino as an exact connected four-cell same-material component. It is not a
+  randomly excavated mask or a contiguous bottom template.
+- Victory remains `original-targets-cleared`: every ordinary cell that existed in the
+  authored start must leave through normal line clears. Normal seeded seven-bag play
+  continues with no piece budget or timer. Each level retains a stable distinct seed
+  and at least two Core-replayed successful reference routes with a real locked-piece
+  divergence; routes are teaching/verifier evidence, never a mandatory solution.
+- The twenty boards rise in authored complexity in four visible bands: levels 01–05 use
+  five rows, 06–10 six, 11–15 seven, and 16–20 eight. Within a band, more decisions,
+  deeper but telegraphed cavities, anchor placement, rotation planning, and modest
+  recovery room—not opaque tricks or a unique opening—define the progression.
+- Add one or two **immutable anchors** to a curated subset of boards. They are visible,
+  non-target, fixed-world-coordinate obstacles that survive ordinary clears. Each
+  included anchor must be structurally consequential: replay evidence proves an
+  anchor-aware landing or post-clear state differs from the same route on an otherwise
+  anchor-free board. Anchors must neither occupy a setup cell nor make all verified
+  routes collapse to a single forced answer.
+- The Puzzle guide remains optional and one-intention-at-a-time. Its cue explains the
+  readable endgame feature (bridge, shelf, pocket, anchor seam, or release lane), then
+  presents two named approaches without input scripts or automated moves. `B` undo is
+  retained as the player-controlled experimentation tool.
+
+### Fourth mode: Sprint
+
+- Add an original fourth mode, **冲刺** (`sprint` internally), distinct from Classic's
+  escalating score chase and Survival's rising-bedrock endurance. It starts from an
+  empty board with a fresh random seven-bag and a steady, slightly brisk gravity,
+  completing immediately when the player clears **40 lines**. There are no special
+  pieces, hidden board changes, or Puzzle targets.
+- Sprint has a completion result and a local leaderboard ranked by lower completion
+  time, then fewer placed pieces, then score. Its storage migration preserves valid
+  Classic/Survival records and fails closed on malformed data. Core state, replay, and
+  UI must distinguish Sprint completion from Puzzle completion.
+
+### Presentation and verification
+
+- Retain the original light mineral/signal system but refine the all-open Puzzle
+  observatory into a compact workshop route: a single selected real endgame well,
+  all twenty immediately active numbered stops, a short row-band legend, and brief
+  purposeful selection motion. It may not regress to a thumbnail grid, repeated card
+  wall, or text-heavy dashboard. `prefers-reduced-motion` removes nonessential motion.
+- The home surface becomes a balanced four-mode composition with a distinct Sprint
+  glyph and concise rule. Gameplay remains one Pixi canvas with no DOM cell grid.
+- Before publication: replay every setup and paired route through public Core dispatch,
+  run targeted Core/input/persistence/UI tests, regenerate local ignored walkthroughs,
+  run one final typecheck/full suite/build, and inspect desktop, portrait, and landscape
+  browser evidence for controls, open selection, all four modes, exact end states,
+  no overflow, one canvas, and zero console errors.
+
 # Tetra — T12.7 Multi-route Puzzle Guidance Contract
 
 ## T12.7 verified alternatives, gradual guidance, and authored fixed sequences

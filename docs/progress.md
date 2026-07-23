@@ -1,5 +1,20 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-23 — T13 baseline and active contract
+
+- New user objective supersedes the T12.7 target-floor campaign: every Puzzle board
+  must become a five-through-eight-row legal mid-game endgame with meaningful fixed
+  anchors, multiple Core-replayed routes, all entries open, and an improved selector.
+- T13 additionally requires click-parity P/R/Enter controls, a pause sheet containing
+  only Continue, a confirmation-gated R restart, a fourth 40-line Sprint mode, staged
+  rollback commits, and final Git/local-artifact cleanup.
+- Baseline: `main`/`origin/main` are clean at `550d77e`; versioned root contents already
+  follow the project map. Local ignored historical material exists under sanctioned
+  `Solutions/`, `output/`, `.playwright-mcp/`, and `.local/`; it will be archived or
+  regenerated only through explicit T13 cleanup steps, never broadly deleted.
+- Current next action: complete the contract checkpoint, then implement shortcut parity
+  as the first independent source slice before touching Puzzle definitions.
+
 ## 2026-07-15
 
 - Created standalone Tetris repository and retained QA clones under `.local/qa-archives`.
