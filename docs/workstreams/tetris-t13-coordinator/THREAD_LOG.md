@@ -267,19 +267,20 @@
   numeric matrix sparse so it does not compete with the preview. This remains inside
   the existing `src/App.tsx` / `src/App.test.ts` / `src/styles.css` visual boundary.
 
-## 2026-07-23 — TETRIS-T13.2-PUZZLE-SPECIMEN-012 direction addendum
+## 2026-07-23 — TETRIS-T13.2-COLLAPSE-012 scope correction
 
-- Base: `6cee03d`. User rejected the current fourth-mode Puzzle presentation. This
-  opens an App/CSS/Test-only visual correction; it does not authorize changes to fixed
-  Puzzle definitions, Core physics, queue/anchor rules, persistence, hints, or the
-  game renderer.
-- Direction: Home must identify Puzzle as a compact original endgame specimen rather
-  than a fourth generic lane; the library must use one enlarged real chosen board and
-  a sparse 20-stop numeric access deck. All cell material colors and anchors need to
-  read clearly against the dark slab. No grid/scanline/telemetry/English filler,
-  decorative thumbnails, arbitrary blocks, or undersized landscape controls returns.
-- Required proof: App semantics/direct test, typecheck, full suite, build, and fresh
-  desktop/portrait/landscape browser evidence showing all 20 enabled levels, one real
-  preview, 44 px controls, reduced-motion final state, no overflow, one game canvas,
-  and zero console errors. The interrupted earlier browser audit is invalidated by this
-  new direction.
+- Base: `0d45113`. The immediately preceding direction was based on a coordinator
+  misread. The user clarified that the rejected fourth mode is Sprint, not Puzzle.
+  No Puzzle source or visual edit was made after that mistaken direction; it is now
+  superseded and Puzzle is closed pending a separate request.
+- Direction: replace excavation Sprint with **坍缩**, a 75-second deterministic
+  score-attack where normal line clears trigger independent-column settling and any
+  resulting full rows resolve as a multi-stage cascade. The primary score/rank measure
+  becomes score plus best chain, not fastest completion. The renamed mode may change
+  its existing Core, App, leaderboard, direct-test, and required small renderer/event
+  paths only; Classic, Survival, Puzzle, dependencies, and package targets are closed.
+- Required proof: direct Core cascade/countdown/replay tests, relevant Runtime/App and
+  leaderboard tests, typecheck, full suite, build, and new desktop/portrait/landscape
+  browser evidence. The evidence must show a live 75-second Collapse state, no legacy
+  `冲刺`/`清障` labels, visible chain HUD, 44 px controls, one canvas, no overflow, and
+  zero console/page errors.

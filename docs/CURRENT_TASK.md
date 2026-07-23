@@ -12,17 +12,20 @@ with the visible controls; and introduces a distinct excavation Sprint mode.** N
 source or visual claim is complete until the complete candidate range is replayed,
 tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
 
-### T13.2 fourth-mode Puzzle presentation correction
+### T13.2 fourth-mode Collapse correction
 
-The user has rejected the current fourth-mode Puzzle presentation. Before acceptance,
-the coordinator must replace only its Home entry and Puzzle-library composition in
-`src/App.tsx`, `src/App.test.ts`, and `src/styles.css`. The twenty existing fixed
-levels, all-open selection, canonical queue/anchor/undo/hint rules, and game screen are
-closed. The new surface must make the one selected real endgame immediately more
-legible, use a compact numeric access deck rather than level thumbnails, keep every
-visible target at least 44 px in desktop/portrait/landscape, avoid grids/telemetry/
-meaningless copy, and preserve reduced-motion, keyboard, and touch behavior. This is a
-fresh visual candidate, not a claim that the prior T13.1 presentation was accepted.
+The user clarified that the rejected fourth mode is Sprint, not Puzzle. Puzzle is
+closed: no further source, selector, preview, level, queue, anchor, undo, hint, or
+visual changes are authorized. The coordinator may replace only the current Sprint
+implementation and its direct Core/runtime/leaderboard/App/test bindings with a new
+75-second **坍缩** score attack. It must apply independent per-column settling after
+each clear and resolve resulting lines as a scoring cascade, rank completed rounds by
+score/best-chain/lines/fewer pieces, and never present a rubble target, time-to-finish,
+or `冲刺` label. Required source scope is the existing Sprint Core paths, constants,
+types, leaderboard/persistence paths, relevant App bindings/tests, and styles; the
+gameplay renderer may receive only the smallest event/presentation support needed for
+the visible cascade state. This is a fresh mechanics candidate, not a claim that the
+current excavation Sprint was accepted.
 
 ### T13.1 feedback-correction checkpoint
 
