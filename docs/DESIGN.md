@@ -8,10 +8,11 @@ It also reopens Puzzle's authored anchor distribution and level names; this is a
 new bounded authoring pass, not permission to restore volatile/timed Puzzle pieces.
 
 - **坍缩** is an endless score-and-chain run. It has no countdown, time limit, finish
-  event, or time-based record. A run ends only through an ordinary top-out; a valid
-  top-out is recorded by score, then best collapse depth, lines, and fewer pieces.
-  Timed v5 Collapse rows are incompatible with this rule and must not mix with the
-  new table; valid Classic and Survival rows continue to migrate.
+  event, or time-based record. A run ends only through an ordinary top-out; it retains
+  exactly one local personal-best record, replacing it only when a new top-out ranks
+  higher by score, then best collapse depth, lines, and fewer pieces. Timed v5 Collapse
+  rows are incompatible with this rule and must not mix with the new table; valid
+  Classic and Survival rows continue to migrate.
 - Its live rail shows only **分数 / 当前连锁 / 最高连锁 / 消行**. It groups those
   values as quiet, touch-safe metric surfaces without horizontal rules through the
   stats, Next, or keyboard sections. The dark Next well remains visually distinct,

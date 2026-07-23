@@ -18,8 +18,9 @@ This is a verified coordinator record, not an independent-QA acceptance.
 The user accepts Collapse's column-settling play but rejects its 75-second cutoff and
 the repeated horizontal rules in its right rail. This correction supersedes the
 time-limit portion of T13.2: Collapse is an endless score/chain run that ends only at
-ordinary top-out and records that top-out by score, best chain, lines, and fewer
-pieces. Its rail must expose score/current chain/best chain/lines with no clock and no
+ordinary top-out and retains only one local personal-best top-out, replacing it by
+score, best chain, lines, and fewer pieces. Its rail must expose score/current
+chain/best chain/lines with no clock and no
 decorative horizontal dividers through stats, Next, or controls. Existing timed
 Collapse records are incompatible and must not be retained alongside the new mode;
 valid Classic and Survival data continues to migrate.
