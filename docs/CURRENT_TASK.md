@@ -7,10 +7,12 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.9 MUTATION MODE / SURVIVAL / SETTINGS
-FOLLOW-UP — accepted and pushed.** Product candidate `ca8c7f6` completes the bounded
-Core, persistence, rail, audio, first-entry-rule, and renderer surface while leaving
-Puzzle authored content untouched. Independent QA first found a reduced-motion
+Current execution status (2026-07-24): **T13.10 TETRAMORPH BRAND IDENTITY — contract
+open.** T13.9 MUTATION MODE / SURVIVAL / SETTINGS FOLLOW-UP is accepted and pushed at
+product candidate `ca8c7f6`; the new slice is deliberately limited to live branding,
+homepage typography, and metadata, with no gameplay, Puzzle, renderer, or audio change.
+T13.9 completed the bounded Core, persistence, rail, audio, first-entry-rule, and
+renderer surface while leaving Puzzle authored content untouched. Independent QA first found a reduced-motion
 activation-flash P2 in `02b9ba9`; `ca8c7f6` repairs it with a static 240 ms
 item-coloured state and a real-frame regression, and the fresh independent recheck
 `d993e49` accepts the result. Final typecheck, 146-test suite, build, and
@@ -22,8 +24,9 @@ the authoritative live scope.
 ### Authoritative active delivery goals (2026-07-24)
 
 1. **Product boundary and future packaging readiness.** Work only in this standalone
-   clean-room repository. Keep the page-facing plain-text `Tetris` title without a
-   Chinese companion title or copied trade dress. Do not package yet, but keep browser
+   clean-room repository. Keep the page-facing plain-text `Tetramorph` title without a
+   Chinese companion title, copied trade dress, or affiliation claim. Do not package
+   yet, but keep browser
    lifecycle, storage, keyboard/touch, focus, audio teardown, responsive layout, and
    platform seams safe for a later desktop wrapper; do not add Electron/Tauri/native
    dependencies or an installer in this delivery.
@@ -136,6 +139,19 @@ the authoritative live scope.
    durable **规则** section with the same facts. Completion is stored safely per mode,
    supports pointer/touch plus arrow/Enter operation, does not alter Core state, and
    never changes Puzzle authored content.
+
+10. **Tetramorph branding.** `Tetramorph` is the live product name: `Tetra` preserves
+    the four-cell vocabulary and `morph` names the game's changing board states. It
+    replaces all current browser, loading, visible header, and accessible brand labels;
+    the old `Tetra`/`Tetris` strings remain only in historical documentation. The
+    homepage's left-field `选择模式` heading is replaced by this single wordmark, while
+    mode cards stay navigation-only. The wordmark uses locally bundled Google Font
+    **Bricolage Grotesque** with original, restrained mineral-light CSS; no network font
+    request, copied logo, extra decorative grid/line, or Chinese subtitle is allowed.
+    The source boundary is `index.html`, `package.json`, `package-lock.json`,
+    `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; current
+    design/task records precede source, and final proof includes desktop/narrow/reduced
+    motion browser evidence with no overflow or console errors.
 
 ### T13.9 authorized implementation boundary
 

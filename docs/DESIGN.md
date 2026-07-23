@@ -1,7 +1,42 @@
-# Tetris — T13.5 Persistent Collapse, Clear Anchors, and Survival Pressure Contract
+# Tetramorph — T13.10 Brand Identity Contract
 
-> The current page-facing identity is the plain-text `Tetris`. Older `Tetra` headings
-> below are retained only as historical contract provenance.
+> The current page-facing identity is the plain-text `Tetramorph`. Older `Tetra` and
+> `Tetris` headings below are retained only as historical contract provenance.
+
+## T13.10 restores an independent Tetramorph identity
+
+The earlier `Tetra` identity was replaced by `Tetris` while reconciling an older visual
+contract. That now conflicts with the requested independent game name, so the live
+product returns to a distinct name as **Tetramorph**: `Tetra` keeps the four-cell
+falling-block vocabulary legible, while `morph` describes the changing board states,
+Survival pressure, Puzzle routes, and 异变 items without claiming a copied product
+identity.
+
+- Every live product mark—the browser document title, loading shell, home header,
+  gameplay/library header, and accessible brand label—uses the editable plain text
+  `Tetramorph`. There is no Chinese companion name, commercial logo treatment, or
+  claim of affiliation with another game.
+- The homepage's dark left field replaces the generic `选择模式` heading with the
+  Tetramorph wordmark. It is a single calm, high-contrast typographic focal point;
+  the four mode entrances remain the interaction surface and retain no rule or record
+  prose. The effect may use only original CSS light/shadow and the existing mineral
+  palette—no grid, scanline, diagonal ornament, or copied mark.
+- The display face is **Bricolage Grotesque**, sourced through its local
+  `@fontsource-variable` package rather than a network stylesheet. Chinese UI copy
+  keeps the existing readable system/Noto fallback chain. This keeps the visual result
+  available offline and suitable for a later application package.
+- This is a frontend/metadata-only slice: it must not change game Core, mode rules,
+  Puzzle definitions, persistence values, renderer geometry, or audio behavior.
+  The visual proof must cover desktop and narrow responsive layouts, reduced motion,
+  zero overflow, and zero browser errors.
+
+### T13.10 authorized implementation boundary
+
+Before the final documentation/archive records, only `index.html`, `package.json`,
+`package-lock.json`, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and
+`src/styles.css` may change. `docs/progress.md` and the coordinator workstream log may
+record verified evidence after the source checkpoint. No historical contract prose is
+rewritten solely to rename its past state.
 
 ## T13.9 replaces Collapse with 异变
 
