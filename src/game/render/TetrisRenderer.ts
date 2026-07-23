@@ -159,7 +159,7 @@ export class TetrisRenderer {
       preference: 'webgl',
     });
     app.canvas.dataset.testid = 'game-canvas';
-    app.canvas.setAttribute('aria-label', 'Tetra 10 × 20 游戏棋盘');
+    app.canvas.setAttribute('aria-label', 'Tetris 10 × 20 游戏棋盘');
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
