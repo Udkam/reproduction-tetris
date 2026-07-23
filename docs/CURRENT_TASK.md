@@ -7,18 +7,19 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.7 SETTINGS-RECORD / AUDIO-AUDIBILITY
+Current execution status (2026-07-24): **T13.8 SETTINGS / RAIL / PUZZLE-UNDO
 FOLLOW-UP — contract checkpoint open.** The prior product candidate `6411b5e` has a
 clean isolated reproducibility result (default Vitest first output at 294 ms, 22 files
 / 138 tests, build, Core replay, and cross-size browser pass), while the separate
 external read-only disposition is still pending. The user now adds one bounded source
-slice: Settings must show the current mode's compact record, and the original
-music/effects mix must be actually audible at default volume. This slice may change
-only Settings/UI, audio/runtime glue, their direct tests, and records/docs; it must
-not change frozen Puzzle rules, levels, queues, anchors, selected preview, selector,
-or any Puzzle visual treatment. A fresh independent review is required after this
-new source slice. The earlier T12/T13 narratives below are retained as provenance
-only; this section is the authoritative live scope.
+slice: Settings must show the current mode's compact leaderboard, the original
+music/effects mix must be actually audible at default volume, every live mode must use
+one coherent right-side rail, and Puzzle may change only its visible undo interaction
+and selected start call-to-action. This slice may not change Puzzle definitions,
+levels, queues, anchors, previews, selector matrix, routes, or any win rule. A fresh
+independent review is required after this new source slice. The earlier T12/T13
+narratives below are retained as provenance only; this section is the authoritative
+live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
@@ -33,11 +34,11 @@ only; this section is the authoritative live scope.
    cleared lines. Survival starts with seven bedrock rows, uses fixed 40-tick gravity,
    raises pressure every three cleared lines from 13 seconds down to 6 seconds, and
    ranks by survival time. Collapse remains a fresh random, endless column-settling
-   run: it ends only at top-out, ranks its top ten by lines, score, best chain, then
+   run: it ends only at top-out, ranks its top five by lines, score, best chain, then
    fewer pieces, and must never resemble Classic or show a time limit.
 3. **Puzzle authoring and readability.** Keep twenty deterministic, legal 5–8-row
    endgames with unlimited ordinary input, no piece budget, no timed/volatile blocks,
-   B undo, and two upcoming pieces. Levels remain all-open. Names are short structural
+   Z-confirmed undo, and two upcoming pieces. Levels remain all-open. Names are short structural
    Chinese labels. Fixed anchors are sparse, are never initial target cells/rows, sit
    directly above the target band, visibly affect a legal landing or post-clear state,
    and have two Core-replayed early-divergent routes. The selected preview must show
@@ -70,10 +71,17 @@ only; this section is the authoritative live scope.
    In Settings itself, `←`/`→` selects actionable controls, `↑`/`↓` moves between
    control rows, and `Enter` activates the selected control; a compact visible
    shortcut reference is headed **键盘** and makes `S`, `P`, `R`, `Esc` return,
-   selection/confirm, and Puzzle-only `B` immediately discoverable. `Esc` opens the
+   selection/confirm, and Puzzle-only `Z` immediately discoverable. `Esc` opens the
    same confirmation as the in-run return button; confirmation sheets keep `←`/`→`
    selection and `Enter` confirmation. A focused volume range retains native arrow
-   adjustment.
+   adjustment. Puzzle undo is never immediate: `Z` or its visible control opens a
+   two-action `确认`/`取消` sheet, and confirmation restores the exact pre-lock
+   checkpoint—the point when the previous input piece had just appeared. The selected
+   completed Puzzle places `最少 N 步` directly above its **开始** action, without
+   adding it to the selector matrix. Every mode's live right rail uses the same compact
+   metric-card, Next-well, and keyboard-help rhythm; the four modes keep their own
+   metrics but no mode may retain a visually incompatible ruled table or unrelated card
+   treatment.
    In the Puzzle selector, remove the selected `X 行残局` label and all visible
    completion checkmarks; when the selected level is completed, use its name color—not
    an extra glyph or row-count label—to communicate that state. Preserve the compact
@@ -84,9 +92,11 @@ only; this section is the authoritative live scope.
    audibly present after the next valid player gesture rather than remaining a silent
    allocation. The bed is original, wordless, and piano-like—clear soft attacks, short
    resonance, and a restrained melodic loop rather than electronic beeps, percussion,
-   or an external track. It must stop or suspend correctly on mute, pause, restart,
-   unmount, and browser audio suspension; no external media, samples, or copyrighted
-   music.
+   or an external track. A signed-in music service may be used only as a read-only
+   listening/reference source; no subscriber or third-party recording is downloaded,
+   embedded, or redistributed. It must stop or suspend correctly on mute, pause,
+   restart, unmount, and browser audio suspension; no external media, samples, or
+   copyrighted music.
 7. **Verification, resource hygiene, and release.** After each source checkpoint run
    targeted tests. At the final candidate run typecheck, the current-source full suite,
    build, Core route replay validation (without walkthrough-image generation), and

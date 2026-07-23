@@ -12,7 +12,7 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
 
 - **坍缩** is an endless score-and-chain run. It has no countdown, time limit, finish
   event, or time-based record. A run ends only through an ordinary top-out; its local
-  table retains the top ten top-outs, ranked first by cleared lines, then score, best
+  table retains the top five top-outs, ranked first by cleared lines, then score, best
   collapse depth, and fewer pieces. Timed v5 Collapse rows are incompatible with this
   rule and must not mix with the new table; valid Classic and Survival rows continue to
   migrate.
@@ -38,7 +38,7 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
 - Settings is keyboard-complete as well as pointer/touch-safe: its actionable controls
   use a visible roving `←`/`→` selection and `↑`/`↓` row movement, while `Enter` uses
   the selected button. The sheet presents a compact **键盘** keycap reference for
-  `S`, `P`, `R`, `Esc` return, selection/confirm, and Puzzle-only `B`; the volume range
+  `S`, `P`, `R`, `Esc` return, selection/confirm, and Puzzle-only `Z`; the volume range
   retains native arrow adjustment when it owns focus. During play, `Esc` invokes the
   exact same return confirmation as the visible return button; that confirmation stays
   navigable with `←`/`→` and confirmable with `Enter`.
@@ -70,7 +70,7 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   `←`/`→`; `Enter` activates the currently selected action rather than an invisible
   default. Escape/cancel behavior and pointer/touch operation remain unchanged.
 - Puzzle retains twenty deterministic, legal five-through-eight-row setups, fixed
-  queues, unlimited ordinary pieces, B undo, and two teaching routes per level. It
+  queues, unlimited ordinary pieces, Z-confirmed undo, and two teaching routes per level. It
   has no volatile or expiring input mechanic. Level names become short, structural
   Chinese labels (two to four characters), rather than opaque literary phrases.
 - Classic and Survival receive a fresh random seven-bag sequence for each run, while
@@ -83,6 +83,18 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   is unavailable, and never changes a queue, route, or win condition. The local
   `Solutions/` walkthrough images are deferred: do not regenerate or present them in
   this delivery unless the user explicitly reopens that output.
+- Puzzle's visible undo is deliberately confirmation-gated: pressing `Z` or using its
+  touch-safe control opens exactly **确认** and **取消**. Confirming restores the
+  Core-owned checkpoint from immediately before the latest lock, when that input piece
+  had just appeared; cancelling returns to the current run unchanged. This changes no
+  Puzzle definition, queue, anchor, route, target, or win condition.
+- A completed selected Puzzle places its personal **最少 N 步** directly above the
+  primary **开始** action. It is action-local rather than a new selector label,
+  thumbnail, checkmark, or row-count fact.
+- Classic, Survival, Collapse, and Puzzle use one shared live-rail grammar: soft
+  metric cards, a dark bounded Next well, then compact keyboard help. Metric labels and
+  values remain mode-specific, but borders, spacing, corner language, and responsive
+  stacking remain consistent and do not introduce decorative rules.
 - The current player-facing Puzzle hint system is removed. The paired Core-replayed
   routes remain regression evidence for reachability and early divergence only; no
   hint trigger, unlock condition, cue, strategy label, route step, or hidden input

@@ -44,9 +44,16 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   visual-surface files; a fresh independent review follows the new source checkpoint.
 - The same Settings slice makes the setting buttons keyboard-operable with visible
   arrow-key selection and Enter execution. Its **键盘** reference promotes `S`, `P`,
-  `R`, `Esc` return, selection/confirm, and Puzzle-only `B`, without hiding the range
+  `R`, `Esc` return, selection/confirm, and Puzzle-only `Z`, without hiding the range
   input's native arrow behavior. `Esc` uses the visible in-run return confirmation,
   whose two options remain arrow-selectable and Enter-confirmable.
+- T13.8 extends that bounded UI slice without reopening Puzzle authoring: its visible
+  undo moves from `B` to a `Z`-triggered **确认**/**取消** sheet and confirmed rollback
+  uses the existing exact pre-lock Core checkpoint. A completed selected level shows
+  its `最少 N 步` immediately above **开始**. All four live rails will share the same
+  metric-card / Next-well / keyboard-help treatment. Collapse persistence is reduced
+  from ten to the requested date-stamped top five. A signed-in music service remains
+  a listening reference only; shipped audio stays original procedural work.
 - Homepage follow-up is included in the same bounded UI slice: mode-card action keys
   retain their own accents through hover/focus/selection; selected state strengthens
   the current card and theme rather than turning the action blue. Static text weights

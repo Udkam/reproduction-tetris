@@ -1,5 +1,30 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.8-RAIL-UNDO-020 contract checkpoint
+
+- User extension to the open T13.7 source slice: all four live modes will use one
+  coherent right-rail card grammar; Settings retains only a date-stamped top five per
+  live mode; and Puzzle's visible undo changes from `B` to `Z`.
+- Puzzle authoring stays frozen. `Z` or the touch-safe undo action opens exactly
+  **确认** and **取消**; confirmation calls the existing Core pre-lock rollback and
+  therefore returns to the state in which the last input piece had just appeared.
+  Cancellation preserves the current run. A solved selected level shows `最少 N 步`
+  immediately above its **开始** action. This is the only authorized Puzzle selector
+  adjustment; definitions, queue, anchor, target, route, preview, matrix, and win
+  condition remain closed.
+- Added exact source/test boundary: `src/game/input/InputController.ts` and
+  `src/game/input/InputController.test.ts` may remove the old `B` mapping so the React
+  confirmation owns `Z`; `src/App.tsx`, `src/App.test.ts`, and `src/styles.css` own the
+  visible interaction, unified rail, and CTA. `src/leaderboard.ts` and its direct test
+  own the five-entry persistence cap. Audio remains original procedural code only;
+  authenticated music-service browsing is read-only reference research, never a
+  shipping asset.
+- Required proof: focused App/input/leaderboard/audio tests, typecheck, current-source
+  full suite, build, route replay, and desktop/portrait/landscape browser evidence
+  proving the two-action undo sheet, exact rollback, start-adjacent best count,
+  top-five dates, rail consistency, no overflow/errors, one canvas, and teardown.
+  A new independent read-only review is still required after the source candidate.
+
 ## 2026-07-24 — TETRIS-T13.7-SETTINGS-AUDIO-019 contract checkpoint
 
 - User follow-up opens one bounded Settings/audio slice after the `6411b5e` product
