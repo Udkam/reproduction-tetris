@@ -19,3 +19,27 @@
   authoring history. No test/build/browser run is claimed for this docs-only scope.
 - Blocker: none. Next: implement and test the bounded input confirmation checkpoint;
   commit it before beginning Core endgame authoring.
+
+## 2026-07-23 — TETRIS-T13-INPUT-002 source checkpoint
+
+- Base: `220f8df`; candidate: `447ec1e`
+  (`fix(input): align restart shortcut with confirmation`). Exact paths are
+  `src/App.tsx`, `src/App.test.ts`, `src/game/input/InputController.ts`, and
+  `src/game/input/InputController.test.ts`.
+- Result: `P` remains the same Runtime pause/resume action as the header control;
+  `R` is removed from the low-level game-input map and is instead handled by the page
+  with the same confirmation request as a click on **重新开始**. A live request pauses
+  once, disables gameplay input behind the confirmation, and `Enter` confirms the
+  focused action. The pause dialog contains exactly one visible **继续游戏** button and
+  now accepts `Enter`; cancelling a restart restores only the previously live run.
+- Commands run: targeted `npm.cmd run test -- src/game/input/InputController.test.ts
+  src/App.test.ts` (4 files / 32 tests passed); `npm.cmd run typecheck`; attempted the
+  prescribed Web-game action client, which timed out in its legacy virtual-time layer;
+  then ran the cached-Playwright replacement against the live Vite page. The direct
+  browser audit clicked Classic, used `P` and `Enter`, clicked restart then cancelled,
+  pressed `R` then confirmed with `Enter`, and checked a playing zero-piece new run,
+  one canvas, zero DOM cells, no document overflow, and zero console/page errors.
+- Evidence: ignored screenshots and report are under `.local/audits/t13-input/`;
+  `p-pause.png` and `r-restart-confirm.png` were visually inspected. Blocker: none.
+  Next: archive local-only legacy material by route, then start the atomic endgame Core
+  authoring checkpoint from this candidate.

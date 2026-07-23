@@ -15,6 +15,18 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Current next action: complete the contract checkpoint, then implement shortcut parity
   as the first independent source slice before touching Puzzle definitions.
 
+## 2026-07-23 — T13 direct-control checkpoint
+
+- Source checkpoint `447ec1e` makes `R` page-level confirmation only, leaves `P` on
+  the same Runtime pause action as the visible header control, lets `Enter` continue a
+  pause or confirm a restart, and removes the pause-sheet exit action.
+- Targeted App/input tests and typecheck pass. A real local browser audit confirms
+  P-pause/Enter-resume, click-restart/Escape-cancel, R-restart/Enter-confirm, zero
+  console errors, one canvas, no DOM cells, and no viewport overflow. Local evidence
+  is under `.local/audits/t13-input/`.
+- Next: use the explicit archive routes for legacy ignored material, then replace the
+  target-floor curriculum with generated legal five-through-eight-row endgames.
+
 ## 2026-07-15
 
 - Created standalone Tetris repository and retained QA clones under `.local/qa-archives`.
