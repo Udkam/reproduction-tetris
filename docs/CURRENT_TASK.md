@@ -13,6 +13,42 @@ the distinct Collapse mode.** The final local-artifact recovery has regenerated 
 current T13 routes and separated stale T12 material into its documented local archive.
 This is a verified coordinator record, not an independent-QA acceptance.
 
+### Live unresolved-goal ledger (2026-07-24)
+
+The following is the complete current delivery ledger. An item is not complete merely
+because a local implementation exists; it remains open until its stated proof belongs
+to the final candidate.
+
+1. **Puzzle anchor and curriculum repair.** Move the sparse fixed pegs out of original
+   target rows and into visible headroom, retain only positions that materially change
+   a legal landing or post-clear state, and keep all twenty boards approachable with
+   multiple early-divergent solutions. Recompute the six affected routes (campaign
+   01, 08, 13, 15, 16, and 18), update the schema route artifact, short structural
+   names, concise guide copy, and ignored walkthroughs. Audit the selected preview so
+   target cells, fixed pegs, and the actual endgame shape remain clear and compatible.
+2. **Collapse correctness and presentation.** Verify the endless top-out-only rule,
+   current-chain/best-chain/score/lines rail, absence of decorative horizontal rules,
+   and local top-ten table sorted by lines, score, chain, then fewer pieces. Confirm
+   incompatible timed Collapse rows cannot leak into the new table.
+3. **Survival pressure.** Verify the seven-row opening, fixed 40-tick fall cadence,
+   one-row reward per three lines, and the corrected 13-second-to-6-second pressure
+   curve in both Core and visible play.
+4. **Audio finishing pass.** Redesign every existing event contour so it is distinct,
+   audible at the default 100%, and non-electrical/non-harsh. Add an original,
+   user-gesture-gated optional procedural music bed with independent control and no
+   persistent source after pause, restart, unmount, or browser suspension.
+5. **Settings, hierarchy, and copy.** Make the active mode name prominent. Replace
+   the right-header control cluster with a single accessible **设置** control and `S`
+   shortcut; place effects, music, volume, pause/continue, and confirmation-gated
+   restart inside it. Recheck every visible explanation: it must state only the mode
+   objective, distinct mechanic, and ranking basis in concise factual language.
+6. **Final evidence and release.** After the source slices, run targeted tests, then
+   typecheck, the current-source full suite, build, route replay/walkthrough
+   regeneration, and real desktop/portrait/landscape browser evidence. Verify controls
+   and shortcuts, one canvas/zero DOM cells, no overflow or console errors, reduced
+   motion, and runtime/audio teardown; record the evidence, update the changelog,
+   commit exact paths, push `main`, and report any remaining blocker explicitly.
+
 ### T13.5 persistent Collapse, readable anchors, and faster Survival correction
 
 The user accepts Collapse's column-settling play but rejects its 75-second cutoff and

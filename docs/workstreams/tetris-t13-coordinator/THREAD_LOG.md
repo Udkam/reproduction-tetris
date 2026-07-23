@@ -17,6 +17,11 @@
   `S` shortcut opens the same sheet for effects/music/volume, pause, and restart.
   Promote the active mode name and keep all player-facing mode explanations concise,
   factual, and free of decorative copy.
+- Open-goal reconciliation: source acceptance is pending for six migrated Puzzle route
+  pairs and their schema/guidance/walkthrough evidence; Collapse's endless top-ten
+  persistence/rail and Survival's 13→6 pressure need final direct and browser proof;
+  the audio/music and Settings pass is not yet implemented; then final gates, log,
+  changelog, and push remain. This list is the coordinator's complete live ledger.
 - Exact future source boundary: Collapse constants/types/engine/sprint/direct tests,
   leaderboard/persistence, App/App tests/styles; Survival constants/race/runtime
   tests; and the coupled Puzzle definitions, hints, direct Core tests, schema route

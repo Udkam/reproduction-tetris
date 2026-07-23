@@ -1,5 +1,16 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### Active goal ledger — 2026-07-24
+
+- Pending Puzzle work: author only sparse above-band anchors with two replayed routes
+  per level; recalculate the six migrated route pairs, route artifact, concise names,
+  guide copy, and ignored walkthroughs; audit preview legibility.
+- Pending mode verification: Collapse remains endless with a lines-first top-ten table
+  and no rail rules; Survival remains seven-row, 40-tick, three-line reward, 13→6 s.
+- Pending finish: audible original effects plus optional procedural music; one `S`
+  settings sheet; prominent mode heading; concise factual mode copy; final gates,
+  browser evidence, changelog, exact commits, and user-authorized push.
+
 ## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
 
 - User feedback reopens the current T13 candidate before acceptance. Collapse keeps
