@@ -62,14 +62,18 @@ only; this section is the authoritative live scope.
    a briefly bold label. Every other visible rule remains concise and factual.
    All two-action sheets expose visible `←`/`→` selection, and `Enter` activates the
    selected action; pointer, touch, Escape, and cancel behavior remain correct.
-   Settings also shows one compact current-mode record: Classic and Collapse expose
-   their best cleared-line result, Survival its longest survival duration, and Puzzle
-   only the selected level's minimum locked-piece count after completion (otherwise
-   `尚未通关`). It is a summary, never a second leaderboard or Puzzle-progress view.
+   Settings shows the current non-Puzzle mode's compact top-five leaderboard, including
+   each result date; Classic and Collapse remain lines-first, while Survival remains
+   duration-first. Persist only those five results for each live mode. Puzzle remains
+   different: show only the selected level's minimum locked-piece count after completion
+   (otherwise `尚未通关`), with no Puzzle leaderboard or extra progress view.
    In Settings itself, `←`/`→` selects actionable controls, `↑`/`↓` moves between
    control rows, and `Enter` activates the selected control; a compact visible
-   shortcut reference makes `S`, `P`, `R`, selection/confirm, and Puzzle-only `B`
-   immediately discoverable. A focused volume range retains native arrow adjustment.
+   shortcut reference is headed **键盘** and makes `S`, `P`, `R`, `Esc` return,
+   selection/confirm, and Puzzle-only `B` immediately discoverable. `Esc` opens the
+   same confirmation as the in-run return button; confirmation sheets keep `←`/`→`
+   selection and `Enter` confirmation. A focused volume range retains native arrow
+   adjustment.
    In the Puzzle selector, remove the selected `X 行残局` label and all visible
    completion checkmarks; when the selected level is completed, use its name color—not
    an extra glyph or row-count label—to communicate that state. Preserve the compact
@@ -78,8 +82,11 @@ only; this section is the authoritative live scope.
    audible but never electrical or harsh. Add only an original, user-gesture-gated,
    separately toggleable procedural music bed. At the default 100%, it must become
    audibly present after the next valid player gesture rather than remaining a silent
-   allocation. It must stop or suspend correctly on mute, pause, restart, unmount,
-   and browser audio suspension; no external media, samples, or copyrighted music.
+   allocation. The bed is original, wordless, and piano-like—clear soft attacks, short
+   resonance, and a restrained melodic loop rather than electronic beeps, percussion,
+   or an external track. It must stop or suspend correctly on mute, pause, restart,
+   unmount, and browser audio suspension; no external media, samples, or copyrighted
+   music.
 7. **Verification, resource hygiene, and release.** After each source checkpoint run
    targeted tests. At the final candidate run typecheck, the current-source full suite,
    build, Core route replay validation (without walkthrough-image generation), and

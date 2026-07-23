@@ -35,17 +35,18 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Resource discipline remains mandatory: inspect/release only Tetris-owned idle
   listeners/processes before and after long validation; leave Codex/shared tooling
   untouched.
-- T13.7 follow-up is now contract-open: Settings will add one compact current-mode
-  record (Classic/Collapse best cleared lines, Survival longest duration, Puzzle only
-  the selected cleared level's minimum pieces or `尚未通关`). The original Web Audio
-  bed will be made audibly present after a valid in-game gesture at default volume,
-  with a small effects contour review. This must not modify frozen Puzzle authoring,
-  queue, anchor, selector, or visual-surface files; a fresh independent review follows
-  the new source checkpoint.
+- T13.7 follow-up is now contract-open: Settings will show the current non-Puzzle
+  mode's date-stamped top five, persist only five live-mode results, and retain Puzzle
+  as the selected level's minimum pieces or `尚未通关` only. The original Web Audio bed
+  will be made audibly present after a valid in-game gesture at default volume as an
+  original, wordless piano-like accompaniment, with a small effects contour review.
+  This must not modify frozen Puzzle authoring, queue, anchor, selector, or
+  visual-surface files; a fresh independent review follows the new source checkpoint.
 - The same Settings slice makes the setting buttons keyboard-operable with visible
-  arrow-key selection and Enter execution. A compact shortcut reference must promote
-  `S`, `P`, `R`, selection/confirm, and Puzzle-only `B`, without hiding the range
-  input's native arrow behavior.
+  arrow-key selection and Enter execution. Its **键盘** reference promotes `S`, `P`,
+  `R`, `Esc` return, selection/confirm, and Puzzle-only `B`, without hiding the range
+  input's native arrow behavior. `Esc` uses the visible in-run return confirmation,
+  whose two options remain arrow-selectable and Enter-confirmable.
 - Homepage follow-up is included in the same bounded UI slice: mode-card action keys
   retain their own accents through hover/focus/selection; selected state strengthens
   the current card and theme rather than turning the action blue. Static text weights

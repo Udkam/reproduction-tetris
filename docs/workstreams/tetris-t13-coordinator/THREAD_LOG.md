@@ -3,18 +3,23 @@
 ## 2026-07-24 — TETRIS-T13.7-SETTINGS-AUDIO-019 contract checkpoint
 
 - User follow-up opens one bounded Settings/audio slice after the `6411b5e` product
-  candidate and the pre-slice isolated audit. Settings gains a compact **本模式纪录**
-  summary: Classic and Collapse use their current best cleared lines; Survival uses
-  longest duration; Puzzle shows only the selected cleared level's minimum locked-piece
-  count or `尚未通关`. It is not a leaderboard, history, hint, or selector change.
+  candidate and the pre-slice isolated audit. Settings gains the current non-Puzzle
+  mode's compact date-stamped **本模式排行**, persisting only the top five live-mode
+  results. Puzzle stays separate: it shows only the selected cleared level's minimum
+  locked-piece count or `尚未通关`, never a Puzzle leaderboard, history, hint, or
+  selector change.
 - Audio contract: after a valid in-game user gesture, enabled original music must be
   genuinely audible at 100% rather than only represented by low-gain/suspended Web
   Audio nodes. Preserve the user-gesture gate, separate toggle, bounded original
-  procedural tone, lifecycle teardown, and non-electrical physical landing character.
+  lifecycle, and non-electrical physical landing character, but replace the rejected
+  electronic bed with an original wordless piano-like accompaniment—soft note attacks,
+  short resonance, restrained melody, and no sample/external/copyrighted track.
 - Settings interaction extension: `←`/`→` roves visible actionable control selection,
-  `↑`/`↓` moves control rows, and `Enter` invokes the selected button. A concise visible
-  shortcut keycap strip promotes `S`, `P`, `R`, selection/confirm, and Puzzle-only
-  `B`; a focused volume range keeps native arrow adjustment.
+  `↑`/`↓` moves control rows, and `Enter` invokes the selected button. Its concise
+  visible **键盘** keycap strip promotes `S`, `P`, `R`, `Esc` return,
+  selection/confirm, and Puzzle-only `B`; a focused volume range keeps native arrow
+  adjustment. In play, `Esc` invokes the same confirmation as the visible return
+  button, and that confirmation is arrow-selectable and Enter-confirmable.
 - Homepage extension: hover/focus/selection must not recolor a mode's **开始**/**选关**
   key blue. Its own accent remains stable while the selected card, border, glyph, and
   accent surface become stronger. Keep card text at a fixed rendered weight through
@@ -22,9 +27,9 @@
   particular, 坍缩 must say that every lock independently settles columns and may
   chain clears until top-out.
 - Planned source/test paths: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
-  `src/ui/ActionSheet.tsx`, `src/game/audio/AudioEngine.ts`, and
-  `src/game/audio/AudioEngine.test.ts`; runtime glue may be added only if a direct
-  user-gesture path cannot otherwise be proven.
+  `src/leaderboard.ts`, `src/leaderboard.test.ts`, `src/ui/ActionSheet.tsx`,
+  `src/game/audio/AudioEngine.ts`, and `src/game/audio/AudioEngine.test.ts`; runtime
+  glue may be added only if a direct user-gesture path cannot otherwise be proven.
   Frozen exclusions: `src/game/core/puzzles.ts`, Puzzle definition/route artifacts,
   queues, anchors, `PuzzleLibrary`, selector layout, and Puzzle preview/visual files.
 - Required proof: targeted UI/persistence and audio tests, typecheck, full suite,
