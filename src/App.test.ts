@@ -588,9 +588,13 @@ describe('T6 frontend mode binding', () => {
     expect(onBack).toHaveBeenCalledTimes(1);
 
     const fullyUnlocked = {
-      version: 3 as const,
+      version: 4 as const,
       completedLevelIds: CAMPAIGN_LEVELS.map((level) => level.id),
+      bestPieceCounts: { [CAMPAIGN_LEVELS[0]!.id]: 7 },
     };
+    view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id, fullyUnlocked)));
+    expect(view.container.querySelector('[data-testid="selected-puzzle-best"]')?.textContent).toBe('最少 7 步');
+    expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
     for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {
       const level = CAMPAIGN_LEVELS[index]!;
       view.rerender(createElement(PuzzleLibrary, props(level.id, fullyUnlocked)));

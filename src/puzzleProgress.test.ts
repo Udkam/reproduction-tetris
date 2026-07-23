@@ -10,25 +10,28 @@ import {
   isPuzzleComplete,
   isPuzzleUnlocked,
   migrateLegacyPuzzleProgress,
+  migrateV3PuzzleProgress,
   migrateV2PuzzleProgress,
   nextLockedPuzzleLevel,
   nextPuzzleTierGate,
   parsePuzzleProgress,
+  puzzleBestPieceCount,
   recordCanonicalPuzzleCompletion,
   unlockedPuzzleLevelCount,
 } from './puzzleProgress';
 
-function finishedPuzzleState(levelId: PuzzleId): GameState {
+function finishedPuzzleState(levelId: PuzzleId, pieceCount: number): GameState {
   return {
     ...createInitialState(0x51a1f00d, 'puzzle', levelId),
     status: 'finished',
     puzzleCompletion: 'finished',
     completedLevelId: levelId,
+    pieceCount,
   };
 }
 
 function progressWith(...completedLevelIds: PuzzleId[]) {
-  return parsePuzzleProgress(JSON.stringify({ version: 3, completedLevelIds }));
+  return parsePuzzleProgress(JSON.stringify({ version: 4, completedLevelIds, bestPieceCounts: {} }));
 }
 
 function unlockedIds(progress = defaultPuzzleProgress()): PuzzleId[] {
@@ -70,36 +73,52 @@ describe('all-open Puzzle workshop persistence', () => {
     expect(nextPuzzleTierGate(historic)).toBeNull();
   });
 
-  it('records any canonical completed specimen as history without changing access', () => {
+  it('records only a real canonical win and retains the lowest successful locked-piece count', () => {
     const late = CAMPAIGN_LEVELS.at(-1)!;
     const first = CAMPAIGN_LEVELS[0]!;
     let progress = defaultPuzzleProgress();
 
-    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(late.id));
+    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(late.id, 12));
     expect(progress.completedLevelIds).toEqual([late.id]);
-    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id));
+    expect(puzzleBestPieceCount(progress, late.id)).toBe(12);
+    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 7));
     expect(progress.completedLevelIds).toEqual([first.id, late.id]);
-    expect(recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id))).toBe(progress);
+    expect(puzzleBestPieceCount(progress, first.id)).toBe(7);
+    expect(recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 8))).toBe(progress);
+    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 5));
+    expect(puzzleBestPieceCount(progress, first.id)).toBe(5);
+    expect(puzzleBestPieceCount(progress, CAMPAIGN_LEVELS[1]!.id)).toBeNull();
     expect(unlockedPuzzleLevelCount(progress)).toBe(CAMPAIGN_LEVELS.length);
   });
 
-  it('migrates v3, then frozen-order v2, then v1 records without losing canonical IDs', () => {
+  it('parses v4 bests and migrates completion-only v3, frozen-order v2, and v1 records', () => {
     const first = V2_CAMPAIGN_ORDER[0]!;
     const third = V2_CAMPAIGN_ORDER[2]!;
     const fourth = V2_CAMPAIGN_ORDER[3]!;
     const late = V2_CAMPAIGN_ORDER.at(-1)!;
 
     const current = parsePuzzleProgress(JSON.stringify({
+      version: 4,
+      completedLevelIds: [third, first, third],
+      bestPieceCounts: { [first]: 5, [third]: 8 },
+    }));
+    expect(current).toEqual({
+      version: 4,
+      completedLevelIds: orderedCampaignIds(first, third),
+      bestPieceCounts: { [first]: 5, [third]: 8 },
+    });
+
+    const v3 = migrateV3PuzzleProgress(JSON.stringify({
       version: 3,
       completedLevelIds: [third, first, third],
     }));
-    expect(current).toEqual({ version: 3, completedLevelIds: orderedCampaignIds(first, third) });
+    expect(v3).toEqual({ version: 4, completedLevelIds: orderedCampaignIds(first, third), bestPieceCounts: {} });
 
     const v2 = migrateV2PuzzleProgress(JSON.stringify({
       version: 2,
       completedLevelIds: [late, third, first, third],
     }));
-    expect(v2).toEqual({ version: 3, completedLevelIds: orderedCampaignIds(first, third, late) });
+    expect(v2).toEqual({ version: 4, completedLevelIds: orderedCampaignIds(first, third, late), bestPieceCounts: {} });
     expect(isPuzzleComplete(v2, late)).toBe(true);
 
     const legacy = migrateLegacyPuzzleProgress(JSON.stringify({
@@ -107,7 +126,8 @@ describe('all-open Puzzle workshop persistence', () => {
       nextUnlockedLevelId: fourth,
     }));
     expect(new Set(legacy.completedLevelIds)).toEqual(new Set(V2_CAMPAIGN_ORDER.slice(0, 3)));
-    expect(legacy.version).toBe(3);
+    expect(legacy.version).toBe(4);
+    expect(legacy.bestPieceCounts).toEqual({});
   });
 
   it('fails closed on malformed persisted values while preserving the all-open workshop', () => {
@@ -120,6 +140,9 @@ describe('all-open Puzzle workshop persistence', () => {
       '{"version":2,"completedLevelIds":"t3r-shaft-01"}',
       '{"version":3,"completedLevelIds":["offset-01"]}',
       '{"version":3,"completedLevelIds":["t3r-shaft-01",42]}',
+      '{"version":4,"completedLevelIds":[]}',
+      '{"version":4,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"offset-01":4}}',
+      '{"version":4,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"t3r-shaft-01":0}}',
     ];
 
     for (const raw of malformed) {
@@ -128,6 +151,7 @@ describe('all-open Puzzle workshop persistence', () => {
       expect(unlockedPuzzleLevelCount(parsed)).toBe(CAMPAIGN_LEVELS.length);
     }
 
+    expect(migrateV3PuzzleProgress('{"version":3,"completedLevelIds":["offset-01"]}')).toEqual(baseline);
     expect(migrateV2PuzzleProgress('{"version":2,"completedLevelIds":["offset-01"]}')).toEqual(baseline);
     expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":"offset-01"}')).toEqual(baseline);
     expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":null}')).toEqual(baseline);

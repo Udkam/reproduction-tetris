@@ -22,11 +22,14 @@ import {
   LEGACY_PUZZLE_PROGRESS_KEY,
   PUZZLE_ROW_BANDS,
   PUZZLE_PROGRESS_KEY,
+  V3_PUZZLE_PROGRESS_KEY,
   V2_PUZZLE_PROGRESS_KEY,
   defaultPuzzleProgress,
   migrateLegacyPuzzleProgress,
+  migrateV3PuzzleProgress,
   migrateV2PuzzleProgress,
   parsePuzzleProgress,
+  puzzleBestPieceCount,
   recordCanonicalPuzzleCompletion,
   type PuzzleProgress,
 } from './puzzleProgress';
@@ -89,6 +92,8 @@ function readPuzzleProgress(): PuzzleProgress {
   try {
     const current = browserPlatform.readStorage(PUZZLE_PROGRESS_KEY);
     if (current !== null) return parsePuzzleProgress(current);
+    const v3 = browserPlatform.readStorage(V3_PUZZLE_PROGRESS_KEY);
+    if (v3 !== null) return migrateV3PuzzleProgress(v3);
     const v2 = browserPlatform.readStorage(V2_PUZZLE_PROGRESS_KEY);
     if (v2 !== null) return migrateV2PuzzleProgress(v2);
     return migrateLegacyPuzzleProgress(browserPlatform.readStorage(LEGACY_PUZZLE_PROGRESS_KEY));
@@ -366,6 +371,7 @@ export function PuzzleLibrary({
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedAnchorCount = selectedDefinition.anchorCells.length;
   const selectedRows = selectedDefinition.boardRows.filter((row) => row !== '..........').length;
+  const selectedBest = puzzleBestPieceCount(progress, selected.id);
   return (
     <main id="game" className="library-shell library-shell--console" data-testid="puzzle-library">
       <header className="library-header console-header">
@@ -389,6 +395,7 @@ export function PuzzleLibrary({
             </div>
             <div className="console-focus__facts" aria-label="残局特性">
               {selectedAnchorCount > 0 && <span>固定锚点</span>}
+              {selectedBest !== null && <span data-testid="selected-puzzle-best">最少 {selectedBest} 步</span>}
             </div>
             <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
           </section>
@@ -409,6 +416,7 @@ export function PuzzleLibrary({
                       const complete = progress.completedLevelIds.includes(level.id);
                       const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
                       const selectedLevel = selectedId === level.id;
+                      const bestPieces = puzzleBestPieceCount(progress, level.id);
                       return (
                         <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''} ${complete ? 'console-node--complete' : ''}`} key={level.id}>
                           <button
@@ -417,11 +425,13 @@ export function PuzzleLibrary({
                             data-level-id={level.id}
                             data-unlocked="true"
                             data-anchor={hasAnchor || undefined}
+                            data-best-pieces={bestPieces ?? undefined}
                             aria-pressed={selectedLevel}
-                            aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，${rows} 行残局${hasAnchor ? '，含固定锚点' : ''}${complete ? '，已完成' : '，可进入'}`}
+                            aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，${rows} 行残局${hasAnchor ? '，含固定锚点' : ''}${complete ? '，已完成' : '，可进入'}${bestPieces !== null ? `，最少 ${bestPieces} 步` : ''}`}
                             onClick={() => onSelect(level.id)}
                           >
                             <span>{String(level.index).padStart(2, '0')}</span>
+                            {bestPieces !== null && <small aria-label={`最少 ${bestPieces} 步`}>{bestPieces}</small>}
                             {complete && <i aria-hidden="true">✓</i>}
                           </button>
                         </li>
@@ -1041,7 +1051,7 @@ export function GameSession({
           <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} />
           {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">本局未进入排行榜</p>}
         </>}
-        <button className="primary-action" data-autofocus type="button" onClick={restartRun}>再来一局</button>
+        <button className="primary-action" data-autofocus type="button" onClick={restartRun}>{state.mode === 'puzzle' ? '重来' : '再来一局'}</button>
         <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
           {exitDestination === 'puzzle-library' ? '返回关卡库' : '返回模式首页'}
         </button>

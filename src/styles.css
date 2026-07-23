@@ -6336,6 +6336,23 @@ p {
 
 .console-node--complete.console-node--selected button { color: #f6fbfc; }
 
+.console-node button[data-best-pieces] > span { transform: translateY(-3px); }
+
+.console-node button small {
+  position: absolute;
+  bottom: 3px;
+  left: 5px;
+  color: #a9c5d8;
+  font-family: inherit;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  line-height: 1;
+}
+
+.console-node--complete button small { color: #9bd4b0; }
+.console-node--selected button small { color: rgba(255, 255, 255, .78); }
+
 .console-node button i {
   position: absolute;
   right: -4px;

@@ -1,10 +1,12 @@
 import { PUZZLE_DEFINITIONS, type GameState, type PuzzleId } from './game/core';
 
-/** Current persisted format. Keep v2/v1 keys for one-way local migration only. */
-export const PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v3';
+/** Current persisted format. Keep v3/v2/v1 keys for one-way local migration only. */
+export const PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v4';
+export const V3_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v3';
 export const V2_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v2';
 export const LEGACY_PUZZLE_PROGRESS_KEY = 'tetris:puzzle-progress:v1';
-const PROGRESS_VERSION = 3;
+const PROGRESS_VERSION = 4;
+const V3_PROGRESS_VERSION = 3;
 const V2_PROGRESS_VERSION = 2;
 const LEGACY_PROGRESS_VERSION = 1;
 
@@ -15,6 +17,8 @@ export interface PuzzleProgress {
   version: typeof PROGRESS_VERSION;
   /** Canonical IDs only; completion is history, never an access gate. */
   completedLevelIds: PuzzleId[];
+  /** Lowest number of locked pieces from a real completed attempt, by canonical level. */
+  bestPieceCounts: Partial<Record<PuzzleId, number>>;
 }
 
 export interface CampaignLevel {
@@ -101,7 +105,7 @@ if (V2_CAMPAIGN_ORDER.length !== LEVEL_IDS.size || V2_LEVEL_IDS.size !== LEVEL_I
 }
 
 export function defaultPuzzleProgress(): PuzzleProgress {
-  return { version: PROGRESS_VERSION, completedLevelIds: [] };
+  return { version: PROGRESS_VERSION, completedLevelIds: [], bestPieceCounts: {} };
 }
 
 function isPuzzleId(value: unknown): value is PuzzleId {
@@ -124,6 +128,29 @@ function orderedV2Unique(ids: readonly PuzzleId[]): PuzzleId[] {
   return V2_CAMPAIGN_ORDER.filter((id) => completed.has(id));
 }
 
+function isBestPieceCount(value: unknown): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value > 0;
+}
+
+function orderedBestPieceCounts(
+  value: unknown,
+  completedIds: readonly PuzzleId[],
+): Partial<Record<PuzzleId, number>> | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  const completed = new Set(completedIds);
+  const entries = Object.entries(raw);
+  if (!entries.every(([levelId, count]) => isPuzzleId(levelId) && completed.has(levelId) && isBestPieceCount(count))) {
+    return null;
+  }
+  const ordered: Partial<Record<PuzzleId, number>> = {};
+  for (const level of CAMPAIGN_LEVELS) {
+    const count = raw[level.id];
+    if (count !== undefined) ordered[level.id] = count as number;
+  }
+  return ordered;
+}
+
 function completedIdsFrom(progress: PuzzleProgress | null | undefined): PuzzleId[] | null {
   if (
     !progress
@@ -132,6 +159,10 @@ function completedIdsFrom(progress: PuzzleProgress | null | undefined): PuzzleId
     || !progress.completedLevelIds.every(isPuzzleId)
   ) return null;
   return orderedUnique(progress.completedLevelIds);
+}
+
+function bestPieceCountsFrom(progress: PuzzleProgress, completedIds: readonly PuzzleId[]): Partial<Record<PuzzleId, number>> | null {
+  return orderedBestPieceCounts(progress.bestPieceCounts, completedIds);
 }
 
 function unlockedLevelIdsFrom(_progress: PuzzleProgress): ReadonlySet<PuzzleId> {
@@ -148,12 +179,36 @@ export function parsePuzzleProgress(raw: string | null): PuzzleProgress {
   try {
     const value: unknown = JSON.parse(raw);
     if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultPuzzleProgress();
-    const candidate = value as { version?: unknown; completedLevelIds?: unknown };
+    const candidate = value as { version?: unknown; completedLevelIds?: unknown; bestPieceCounts?: unknown };
     if (candidate.version !== PROGRESS_VERSION || !Array.isArray(candidate.completedLevelIds)) {
       return defaultPuzzleProgress();
     }
     if (!candidate.completedLevelIds.every(isPuzzleId)) return defaultPuzzleProgress();
-    return { version: PROGRESS_VERSION, completedLevelIds: orderedUnique(candidate.completedLevelIds) };
+    const completedLevelIds = orderedUnique(candidate.completedLevelIds);
+    const bestPieceCounts = orderedBestPieceCounts(candidate.bestPieceCounts, completedLevelIds);
+    if (bestPieceCounts === null) return defaultPuzzleProgress();
+    return { version: PROGRESS_VERSION, completedLevelIds, bestPieceCounts };
+  } catch {
+    return defaultPuzzleProgress();
+  }
+}
+
+/** Migrates the former completion-only v3 record into v4's personal-best format. */
+export function migrateV3PuzzleProgress(raw: string | null): PuzzleProgress {
+  if (raw === null) return defaultPuzzleProgress();
+  try {
+    const value: unknown = JSON.parse(raw);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultPuzzleProgress();
+    const candidate = value as { version?: unknown; completedLevelIds?: unknown };
+    if (candidate.version !== V3_PROGRESS_VERSION || !Array.isArray(candidate.completedLevelIds)) {
+      return defaultPuzzleProgress();
+    }
+    if (!candidate.completedLevelIds.every(isPuzzleId)) return defaultPuzzleProgress();
+    return {
+      version: PROGRESS_VERSION,
+      completedLevelIds: orderedUnique(candidate.completedLevelIds),
+      bestPieceCounts: {},
+    };
   } catch {
     return defaultPuzzleProgress();
   }
@@ -173,6 +228,7 @@ export function migrateV2PuzzleProgress(raw: string | null): PuzzleProgress {
     return {
       version: PROGRESS_VERSION,
       completedLevelIds: orderedUnique(orderedV2Unique(candidate.completedLevelIds)),
+      bestPieceCounts: {},
     };
   } catch {
     return defaultPuzzleProgress();
@@ -196,6 +252,7 @@ export function migrateLegacyPuzzleProgress(raw: string | null): PuzzleProgress 
     return {
       version: PROGRESS_VERSION,
       completedLevelIds: orderedUnique(V2_CAMPAIGN_ORDER.slice(0, Math.max(0, nextIndex))),
+      bestPieceCounts: {},
     };
   } catch {
     return defaultPuzzleProgress();
@@ -204,6 +261,13 @@ export function migrateLegacyPuzzleProgress(raw: string | null): PuzzleProgress 
 
 export function isPuzzleComplete(progress: PuzzleProgress, levelId: PuzzleId): boolean {
   return completedIdsFrom(progress)?.includes(levelId) ?? false;
+}
+
+/** The selector only exposes a value after a real canonical successful run. */
+export function puzzleBestPieceCount(progress: PuzzleProgress, levelId: PuzzleId): number | null {
+  const completedIds = completedIdsFrom(progress);
+  if (completedIds === null || !completedIds.includes(levelId)) return null;
+  return bestPieceCountsFrom(progress, completedIds)?.[levelId] ?? null;
 }
 
 /** Completion history never changes the workshop's available specimen count. */
@@ -223,18 +287,28 @@ export function nextLockedPuzzleLevel(progress: PuzzleProgress): CampaignLevel |
 /** Records only a core-reported completion; every current level is selectable. */
 export function recordCanonicalPuzzleCompletion(progress: PuzzleProgress, state: GameState): PuzzleProgress {
   const completedIds = completedIdsFrom(progress);
+  const bestPieceCounts = completedIds === null ? null : bestPieceCountsFrom(progress, completedIds);
   if (
     completedIds === null
+    || bestPieceCounts === null
     || state.mode !== 'puzzle'
     || state.puzzleCompletion !== 'finished'
     || state.completedLevelId === null
     || !LEVEL_IDS.has(state.completedLevelId)
     || !isPuzzleUnlocked(progress, state.completedLevelId)
-    || completedIds.includes(state.completedLevelId)
+    || !isBestPieceCount(state.pieceCount)
   ) return progress;
+
+  const levelId = state.completedLevelId;
+  const existingBest = bestPieceCounts[levelId];
+  if (completedIds.includes(levelId) && existingBest !== undefined && state.pieceCount >= existingBest) return progress;
 
   return {
     version: PROGRESS_VERSION,
-    completedLevelIds: orderedUnique([...completedIds, state.completedLevelId]),
+    completedLevelIds: orderedUnique([...completedIds, levelId]),
+    bestPieceCounts: {
+      ...bestPieceCounts,
+      [levelId]: existingBest === undefined ? state.pieceCount : Math.min(existingBest, state.pieceCount),
+    },
   };
 }
