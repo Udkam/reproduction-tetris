@@ -1,8 +1,8 @@
-import artifactFile from '../docs/workstreams/tetris-t12-core/puzzle-solver-results.json';
+import artifactFile from '../docs/workstreams/tetris-t13-core/puzzle-endgame-results.json';
 import { PUZZLE_DEFINITIONS, TICKS_PER_SECOND, type GameState, type PuzzleId } from './game/core';
 import { replayPuzzleRoute } from './game/core/puzzleRouteSearch';
 
-/** Separate from completion progression: a player earns a guide after making a real attempt. */
+/** Separate from completion history: a player earns a guide after making a real attempt. */
 export const PUZZLE_HINT_PROGRESS_KEY = 'tetra:puzzle-hints:v1';
 export const PUZZLE_HINT_UNLOCK_PIECES = 2;
 export const PUZZLE_HINT_UNLOCK_SECONDS = 20;
@@ -52,107 +52,107 @@ const artifact = artifactFile as unknown as { schemaVersion: number; levels: rea
 const PUZZLE_IDS = Object.freeze(PUZZLE_DEFINITIONS.map((level) => level.id));
 const PUZZLE_ID_SET = new Set<PuzzleId>(PUZZLE_IDS);
 
-/** The small amount of authored language turns a replay into a reading aid, not a raw answer key. */
+/** Curated language names a structural choice without disclosing an input transcript. */
 const GUIDE_COPY: Record<PuzzleId, GuideCopy> = {
   't3r-shaft-01': {
-    cue: '三行共用一条竖槽。先盯住最低端：直补和边缘搭桥都能把通道留活。',
-    primary: { title: '直补通道', summary: '第一块就对准共用缺口，尽快让三行具备收口条件。' },
-    alternate: { title: '边缘搭桥', summary: '先垫平外沿，再从侧面回收竖槽，给自己多一次调整机会。' },
+    cue: '右下固定块会替你封住底边末端。先让中段保持回流，再决定是直补还是先搭桥。',
+    primary: { title: '直补通道', summary: '把第一块用于贯通中缝，尽早让底层具备自然收口。' },
+    alternate: { title: '边缘搭桥', summary: '先稳住外沿，再从侧面回收中缝，给旋转留出余地。' },
   },
   't3r-shaft-02': {
-    cue: '左侧锚点不参与消行；把它当作边界，别让中部回转空间被第一块堵死。',
-    primary: { title: '顺流填槽', summary: '沿着低槽推进，把旋转留给最后的窄口。' },
-    alternate: { title: '回填搭桥', summary: '先铺出一层可站的平台，再回到左下缺口。' },
+    cue: '右墙的竖向残片和左侧湾口相互牵制。不要急着填最深的洞，先留下回转层。',
+    primary: { title: '深湾顺流', summary: '沿低处推进，让中段台阶逐层变平。' },
+    alternate: { title: '右墙回收', summary: '先借右侧立边建立平台，再折返补低湾。' },
   },
   't3r-shaft-03': {
-    cue: '两岸缺口高度不同。先选一岸做支点，另一岸可以作为回收路线。',
-    primary: { title: '右岸直入', summary: '先压住较低的一岸，让后续块自然收向中缝。' },
-    alternate: { title: '左岸回旋', summary: '先在左侧形成稳定台面，再把中缝接回去。' },
-  },
-  't3r-shaft-04': {
-    cue: '这是由下向上变窄的台阶；先让底层保持连通，锚点右侧不要提前封死。',
-    primary: { title: '低层上推', summary: '从最宽处开始逐层抬高，最后才处理顶端窄口。' },
-    alternate: { title: '外沿缓冲', summary: '把第一块放在外沿当桥面，换取一次中段重排。' },
+    cue: '两岸高度不等，中缝是共享资源。选一岸做主坡时，另一岸要保持可回收。',
+    primary: { title: '左坡下沉', summary: '先压住左侧较深的台阶，让中缝持续可用。' },
+    alternate: { title: '右岸桥接', summary: '先在右边形成落脚面，再向中部合拢。' },
   },
   't3r-cascade-05': {
-    cue: '两处错位湾口会互相借力。每落一块都检查底行是否仍能一口气连通。',
-    primary: { title: '双湾顺填', summary: '先补更低的湾口，再让下一块跨向另一侧。' },
-    alternate: { title: '桥面回收', summary: '先形成横向桥面，再从中间向两边回填。' },
+    cue: '两段错层会彼此借力。每落一块都看底行是否仍保留横向连通。',
+    primary: { title: '双湾顺填', summary: '先服务低湾，再让下一块跨向另一侧。' },
+    alternate: { title: '桥面回收', summary: '先做横向桥面，随后从中间向两端回填。' },
+  },
+  't3r-shaft-04': {
+    cue: '底部 I 形梁已经给出一条长边。关键是别把梁上方的窄槽提前封死。',
+    primary: { title: '梁上递进', summary: '沿着长边由低到高推进，最后才处理顶端小口。' },
+    alternate: { title: '外沿缓冲', summary: '让外沿先成为平台，再回到中段收束。' },
   },
   't3r-cascade-06': {
-    cue: '转角很多，但没有时机要求。先找能同时服务两行的落点，不必急着塞最深的洞。',
-    primary: { title: '转角直补', summary: '用连续转向沿着内侧阶梯推进。' },
-    alternate: { title: '平面回填', summary: '先做出平整落脚面，再利用横块回收深角。' },
+    cue: '六行残局出现了连续折角。优先寻找能同时服务两层的落点，而不是逐洞填塞。',
+    primary: { title: '折角直补', summary: '顺着内侧阶梯推进，保持下一次旋转的入口。' },
+    alternate: { title: '平面回填', summary: '先铺出稳定台面，再从横向回收深角。' },
   },
   't5r-delta-07': {
-    cue: '宽槽已经把棋盘分成两半。看 Next 后决定是直接穿过，还是先给中段留缓冲。',
-    primary: { title: '穿槽直流', summary: '优先把长缺口接通，让每次落子都靠近消行。' },
-    alternate: { title: '中段缓冲', summary: '先让第一块成为台面，随后从两侧往中间收。' },
+    cue: '右侧高台与左下长槽把棋盘拉开。先看 Next：可以穿槽，也可以把它当缓冲带。',
+    primary: { title: '穿槽直流', summary: '优先接通长缺口，让每次落子都接近一条完整行。' },
+    alternate: { title: '中段缓冲', summary: '先用首块做台面，再从两侧向中间回收。' },
+  },
+  't5r-lattice-09': {
+    cue: '左下固定块是释放底行的最后一格，不是要避开的装饰。中段桥面仍有两种建法。',
+    primary: { title: '低槽优先', summary: '先填最深的连续缺口，避免左岸被切成孤岛。' },
+    alternate: { title: '桥接回收', summary: '先跨过低槽搭桥，随后回收两段结构。' },
   },
   't5r-drift-08': {
-    cue: '底行断点和中列凹口要同时照顾。别把后续两块的共同落点提前占掉。',
+    cue: '左下竖墙和右侧阶梯需要同时照顾。不要让一块方便的填充占掉两块的共同落点。',
     primary: { title: '中缝直补', summary: '先锁定中间低槽，保持右侧回收口完整。' },
     alternate: { title: '侧翼回填', summary: '先稳住一侧，再借台面把中缝补齐。' },
   },
-  't5r-lattice-09': {
-    cue: '右侧锚点只是一道边界。真正的选择在左侧低槽：直补更快，搭桥更宽容。',
-    primary: { title: '低槽优先', summary: '先填最深的连续缺口，避免把左岸切成孤岛。' },
-    alternate: { title: '桥接回收', summary: '先做出跨槽桥面，再回收被分开的两段。' },
-  },
   't5r-rift-10': {
-    cue: '首块之后才出现真正分流。先保留左低右高的过渡带，第二块再决定方向。',
-    primary: { title: '内侧收束', summary: '顺着内侧阶梯压低高度，最后收口。' },
-    alternate: { title: '外沿绕行', summary: '把中段留给回转，用外沿先建立支撑。' },
-  },
-  't5r-prism-11': {
-    cue: '窄盆地旁有固定锚点。锚点不是目标，先让盆地底部可清，再处理外侧余量。',
-    primary: { title: '盆地直补', summary: '以最窄处为主线，保持每层都有落脚面。' },
-    alternate: { title: '外侧回收', summary: '先把外沿垫高一层，再从侧向收回盆地。' },
-  },
-  't5r-current-12': {
-    cue: '阶梯前两块可以共用，第三块才是分流点。提前给转角留一格横向空间。',
-    primary: { title: '阶梯顺推', summary: '沿低到高的顺序推进，让台阶自然变平。' },
-    alternate: { title: '中段折返', summary: '先在中部搭一个折返点，再回补两端。' },
-  },
-  't5r-arc-13': {
-    cue: '弧形通道最怕中间断层。先让底边连续，再把高度差留给可旋转的块。',
-    primary: { title: '弧底连通', summary: '沿着弧底铺开，尽量不制造单格凹陷。' },
-    alternate: { title: '高侧回收', summary: '先稳住高侧，再借中部台面回补低侧。' },
+    cue: '横向梁把底部变成两个可互通的口袋。第一块可以铺路，第二块再决定收束方向。',
+    primary: { title: '内侧收束', summary: '顺着内侧阶梯压低高度，保留最后的窄口。' },
+    alternate: { title: '外沿绕行', summary: '先在外沿建立支撑，把中段留给回转。' },
   },
   't5r-pulse-14': {
-    cue: '两颗锚点把两端固定住。中间仍可自由整形，优先保留一条横向通路。',
-    primary: { title: '中线直补', summary: '先把中线压平，让两端锚点只充当边界。' },
-    alternate: { title: '双端回填', summary: '先在两端各留可落点，再从中间一次回收。' },
+    cue: '七行结构开始有纵深：左侧竖脊和底部横梁之间的空带，是整局的呼吸口。',
+    primary: { title: '中线整形', summary: '先压平中线，使两侧高度能互相消化。' },
+    alternate: { title: '双端回填', summary: '两端各保留一块落脚面，再从中间合拢。' },
+  },
+  't5r-arc-13': {
+    cue: '右侧弧壁连续但中间有断层。先让底边能连通，再把高度差交给可旋转的块。',
+    primary: { title: '弧底连通', summary: '沿弧底铺开，尽量不制造新的单格凹陷。' },
+    alternate: { title: '高侧回收', summary: '先稳住高侧，再借中部台面回补低侧。' },
+  },
+  't5r-current-12': {
+    cue: '左下固定块会在首个完整底行后留下稳定边界。真正的选择是先抬中段还是先接右坡。',
+    primary: { title: '阶梯顺推', summary: '沿低到高的顺序推进，让台阶自然变平。' },
+    alternate: { title: '中段折返', summary: '先在中部做折返点，再回补两端。' },
+  },
+  't5r-prism-11': {
+    cue: '中部盆地很窄，但外侧仍有回旋空间。别只盯着最深点，先确保它有可落的上沿。',
+    primary: { title: '盆地直补', summary: '以窄处为主线，保持每层都有落脚面。' },
+    alternate: { title: '外侧回收', summary: '先垫出外沿，再从侧向收回盆地。' },
   },
   't5r-horizon-15': {
-    cue: '紧密编织不是速度关。每次转向前都确认下一块还有平面可站。',
-    primary: { title: '内线编织', summary: '沿内侧的连续缺口走，逐层缩小收口。' },
-    alternate: { title: '外线缓冲', summary: '先在外侧建立一层，换来更宽的回转空间。' },
-  },
-  't6r-veil-16': {
-    cue: '深槽从低处开始才透明。左侧锚点附近不需要填满，保留它上方的回流带。',
-    primary: { title: '深槽直流', summary: '按最低层到最高层推进，持续保持一条开口。' },
-    alternate: { title: '回流台面', summary: '先做出中段台面，再从右侧向深槽回流。' },
+    cue: '中下固定块把底行变成一条有缺口的地平线。先保留它两侧的通路，再决定谁先落低。',
+    primary: { title: '内线编织', summary: '沿内侧连续缺口走，逐层缩小收口。' },
+    alternate: { title: '外线缓冲', summary: '先在外侧建立一层，换取更宽的回转空间。' },
   },
   't6r-cairn-17': {
-    cue: '层岩结构可从两边进入。选择一边做主坡，另一边就会成为自然的回收带。',
-    primary: { title: '主坡上推', summary: '顺着主坡逐层补齐，避免在中层留下尖洞。' },
-    alternate: { title: '双坡交替', summary: '两边轮流落子，让中线保持平整。' },
+    cue: '右下固定块封住一角，八行层岩却可从两侧进入。选择主坡，另一侧自然成为回收带。',
+    primary: { title: '主坡上推', summary: '顺主坡逐层补齐，避免在中层留下尖洞。' },
+    alternate: { title: '双坡交替', summary: '两边轮流落子，让中线始终平整。' },
   },
   't6r-terrace-18': {
-    cue: '台阶多但每层都能做平台。先确定哪侧承担高度，再用 Next 安排回收。',
-    primary: { title: '台阶顺填', summary: '沿着连续低阶推进，最后再收最窄的一层。' },
-    alternate: { title: '平台折返', summary: '先建宽平台，用更长的回收路线解开中段。' },
+    cue: '台阶很多但每层都能做平台。先确定哪侧承担高度，再为 Next 预留回收落点。',
+    primary: { title: '台阶顺填', summary: '沿连续低阶推进，最后再收最窄的一层。' },
+    alternate: { title: '平台折返', summary: '先建宽平台，用长一点的路线解开中段。' },
+  },
+  't6r-keystone-20': {
+    cue: '中下固定块是“基石”：它会固定一个释放点，却没有替你决定左右哪边先收。',
+    primary: { title: '基石内收', summary: '围绕中段缺口逐层收紧，保持底部连续。' },
+    alternate: { title: '双侧回流', summary: '先从两侧铺出回流带，最后在中段合拢。' },
   },
   't6r-bastion-19': {
-    cue: '首块可以共用，第二块才决定交叉方式。先把交汇口留空，别急着封边。',
+    cue: '右上堡垒与底部横梁给出交叉结构。把交汇口留空，比抢着封边更重要。',
     primary: { title: '交叉内收', summary: '从交汇口向内压缩，让两侧同步靠近消行。' },
     alternate: { title: '外环回补', summary: '先绕外沿建立缓冲，再回到交汇口收束。' },
   },
-  't6r-keystone-20': {
-    cue: '这一关的钥匙是第二块后的中段选择。先保留基石两侧的通路，再决定哪侧先收。',
-    primary: { title: '基石内收', summary: '围绕中段缺口逐层收紧，保持底部连续。' },
-    alternate: { title: '双侧回流', summary: '先从两侧铺出回流带，最后在中段合拢。' },
+  't6r-veil-16': {
+    cue: '最深的八行残局有多条可见缺口。先从低处读出一条回流线，不必急着填满任何一侧。',
+    primary: { title: '深槽直流', summary: '按最低层到最高层推进，持续保留一条开口。' },
+    alternate: { title: '回流台面', summary: '先做中段台面，再从侧面向深槽回流。' },
   },
 };
 
@@ -177,11 +177,11 @@ function routePlacementDetail(
   const lane = center < 3.4 ? '左侧' : center > 5.6 ? '右侧' : '中段';
   const posture = columns === 1 ? '立放' : rows === 1 ? '横放' : '转角落位';
   const purpose = index + 1 === total
-    ? '把已连通的目标行收口。'
+    ? '只在目标行已经连通时再收口。'
     : index === 0
-      ? '先把这条路线的起点定稳。'
-      : '保持低槽与下一块的落点连通。';
-  return `将 ${piece} 放到${lane}${posture}，${purpose}`;
+      ? '先定住路线的起手，同时保留另一条回收线。'
+      : '检查低槽与下一块的落点仍然相通。';
+  return `让 ${piece} 在${lane}${posture}，${purpose}`;
 }
 
 function buildStrategy(levelId: PuzzleId, route: ArtifactRoute, copy: GuideCopy['primary']): PuzzleHintStrategy {
@@ -199,6 +199,10 @@ function buildStrategy(levelId: PuzzleId, route: ArtifactRoute, copy: GuideCopy[
       detail: routePlacementDetail(lock.piece, lock.cells, index, replay.locks.length),
     }))),
   });
+}
+
+if (artifact.schemaVersion !== 6 || artifact.levels.length !== PUZZLE_DEFINITIONS.length) {
+  throw new Error('Puzzle guidance requires the complete schema-6 T13 route artifact.');
 }
 
 const GUIDE_BY_ID: ReadonlyMap<PuzzleId, PuzzleHintGuide> = new Map(

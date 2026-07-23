@@ -8,13 +8,12 @@ const PROGRESS_VERSION = 3;
 const V2_PROGRESS_VERSION = 2;
 const LEGACY_PROGRESS_VERSION = 1;
 
-/** The first three puzzles form the campaign's on-ramp. */
-export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = 3;
-const COMPLETIONS_REQUIRED_PER_TIER = 2;
+/** T13 treats the set as an open workshop: every specimen is selectable immediately. */
+export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = PUZZLE_DEFINITIONS.length;
 
 export interface PuzzleProgress {
   version: typeof PROGRESS_VERSION;
-  /** Canonical IDs only; unlocked state is always derived from the current campaign tiers. */
+  /** Canonical IDs only; completion is history, never an access gate. */
   completedLevelIds: PuzzleId[];
 }
 
@@ -64,23 +63,25 @@ export const V2_CAMPAIGN_ORDER: readonly PuzzleId[] = Object.freeze([
   't6r-keystone-20',
 ]);
 
-const TIER_LENGTHS = [INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT, 3, 3, 3, 3, 3, 2] as const;
+const ROW_BAND_LENGTHS = [5, 5, 5, 5] as const;
 
-function buildCampaignTiers(levels: readonly CampaignLevel[]): readonly (readonly CampaignLevel[])[] {
+function buildRowBands(levels: readonly CampaignLevel[]): readonly (readonly CampaignLevel[])[] {
   const tiers: (readonly CampaignLevel[])[] = [];
   let cursor = 0;
-  for (const length of TIER_LENGTHS) {
+  for (const length of ROW_BAND_LENGTHS) {
     const tier = levels.slice(cursor, cursor + length);
-    if (tier.length !== length) throw new Error('Puzzle campaign tiering requires exactly twenty levels.');
+    if (tier.length !== length) throw new Error('Puzzle row bands require exactly twenty levels.');
     tiers.push(Object.freeze(tier));
     cursor += length;
   }
-  if (cursor !== levels.length) throw new Error('Puzzle campaign tiering contains an unassigned level.');
+  if (cursor !== levels.length) throw new Error('Puzzle row bands contain an unassigned level.');
   return Object.freeze(tiers);
 }
 
-/** [01–03], [04–06], … [16–18], [19–20]. */
-export const CAMPAIGN_TIERS = buildCampaignTiers(CAMPAIGN_LEVELS);
+/** Four visible 5/6/7/8-row workshop bands; these are presentation grouping only. */
+export const PUZZLE_ROW_BANDS = buildRowBands(CAMPAIGN_LEVELS);
+/** @deprecated Compatibility export; no access gate is derived from these groups. */
+export const CAMPAIGN_TIERS = PUZZLE_ROW_BANDS;
 
 export interface PuzzleTierGate {
   /** The already-open tier whose completions are counted. */
@@ -88,7 +89,7 @@ export interface PuzzleTierGate {
   /** The next closed tier this gate will unlock. */
   unlocksTier: readonly CampaignLevel[];
   completedCount: number;
-  requiredCount: typeof COMPLETIONS_REQUIRED_PER_TIER;
+  requiredCount: number;
 }
 
 const LEVEL_IDS = new Set<PuzzleId>(CAMPAIGN_LEVELS.map((level) => level.id));
@@ -133,41 +134,12 @@ function completedIdsFrom(progress: PuzzleProgress | null | undefined): PuzzleId
   return orderedUnique(progress.completedLevelIds);
 }
 
-function completedCountInTier(completedIds: ReadonlySet<PuzzleId>, tier: readonly CampaignLevel[]): number {
-  return tier.reduce((count, level) => count + Number(completedIds.has(level.id)), 0);
+function unlockedLevelIdsFrom(_progress: PuzzleProgress): ReadonlySet<PuzzleId> {
+  return new Set<PuzzleId>(CAMPAIGN_LEVELS.map((level) => level.id));
 }
 
-function unlockedLevelIdsFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
-  const completedIds = completedIdsFrom(progress) ?? [];
-  const completed = new Set(completedIds);
-  const unlocked = new Set<PuzzleId>(CAMPAIGN_TIERS[0]!.map((level) => level.id));
-
-  for (let tierIndex = 1; tierIndex < CAMPAIGN_TIERS.length; tierIndex += 1) {
-    const prerequisite = CAMPAIGN_TIERS[tierIndex - 1]!;
-    if (completedCountInTier(completed, prerequisite) < COMPLETIONS_REQUIRED_PER_TIER) break;
-    for (const level of CAMPAIGN_TIERS[tierIndex]!) unlocked.add(level.id);
-  }
-
-  // Historic canonical completions remain selectable, but never advance a missing gate.
-  for (const levelId of completedIds) unlocked.add(levelId);
-  return unlocked;
-}
-
-/** Returns the first unmet tier gate for concise archive copy, or null when all tiers are open. */
-export function nextPuzzleTierGate(progress: PuzzleProgress): PuzzleTierGate | null {
-  const completed = new Set(completedIdsFrom(progress) ?? []);
-  for (let tierIndex = 1; tierIndex < CAMPAIGN_TIERS.length; tierIndex += 1) {
-    const prerequisiteTier = CAMPAIGN_TIERS[tierIndex - 1]!;
-    const completedCount = completedCountInTier(completed, prerequisiteTier);
-    if (completedCount < COMPLETIONS_REQUIRED_PER_TIER) {
-      return {
-        prerequisiteTier,
-        unlocksTier: CAMPAIGN_TIERS[tierIndex]!,
-        completedCount,
-        requiredCount: COMPLETIONS_REQUIRED_PER_TIER,
-      };
-    }
-  }
+/** T13 has no locked progression frontier; retained for callers that render a nullable notice. */
+export function nextPuzzleTierGate(_progress: PuzzleProgress): PuzzleTierGate | null {
   return null;
 }
 
@@ -234,7 +206,7 @@ export function isPuzzleComplete(progress: PuzzleProgress, levelId: PuzzleId): b
   return completedIdsFrom(progress)?.includes(levelId) ?? false;
 }
 
-/** First tier is open immediately; every later tier requires two completions in the tier before it. */
+/** Completion history never changes the workshop's available specimen count. */
 export function unlockedPuzzleLevelCount(progress: PuzzleProgress): number {
   return unlockedLevelIdsFrom(progress).size;
 }
@@ -244,11 +216,11 @@ export function isPuzzleUnlocked(progress: PuzzleProgress, levelId: PuzzleId): b
 }
 
 export function nextLockedPuzzleLevel(progress: PuzzleProgress): CampaignLevel | null {
-  const unlockedIds = unlockedLevelIdsFrom(progress);
-  return CAMPAIGN_LEVELS.find((level) => !unlockedIds.has(level.id)) ?? null;
+  void progress;
+  return null;
 }
 
-/** Records only a core-reported completion of a level that was already selectable. */
+/** Records only a core-reported completion; every current level is selectable. */
 export function recordCanonicalPuzzleCompletion(progress: PuzzleProgress, state: GameState): PuzzleProgress {
   const completedIds = completedIdsFrom(progress);
   if (
