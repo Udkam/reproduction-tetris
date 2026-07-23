@@ -1,20 +1,25 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
-## 2026-07-24 — T13.3 current walkthrough artifact recovery opened
+## 2026-07-24 — T13.3 current walkthrough artifact recovery verified locally
 
-- Live local inventory found that ignored `Solutions/` mixed current player-facing
-  walkthroughs with stale T12 three-row docs/images, obsolete selector-audit captures,
-  authoring scratch JSON, and local-only generator/render scripts. This violates the
-  declared split between `Solutions/` output and versioned durable tooling even though
-  Git itself is clean.
-- The bounded recovery leaves every product Puzzle definition, queue, anchor, route,
-  selector, and visual surface untouched. It will archive the exact stale set under
-  `.local/audits/t12.6-walkthrough-legacy-20260724/`, version a schema-6 generator in
-  `tools/`, then regenerate twenty current one-based `Solution-x.md` walkthroughs and
-  SVG snapshots from the authoritative primary Core routes.
-- Next: commit this contract checkpoint, move the verified local targets without
-  deletion, run the generator and its route/output checks, then record and push the
-  recovery checkpoint with a clean map.
+- Archived the exact stale local T12 walkthroughs, screenshots, candidate scratch
+  data, and retired helper scripts under
+  `.local/audits/t12.6-walkthrough-legacy-20260724/`; nothing was deleted or staged.
+  `Solutions/` is now exactly twenty current one-based Markdown walkthroughs plus
+  their twenty SVG snapshot directories.
+- Versioned `tools/generate-puzzle-walkthroughs.mjs`, which loads the schema-6 route
+  artifact from disk, replays each primary public command route through the real Core,
+  validates `finished` plus zero remaining original targets, and writes current
+  snapshots after every automatic settlement. It makes no product startup, Puzzle
+  rule, selector, queue, anchor, or visual change.
+- Regeneration passed with 20 Markdown walkthroughs and 265 linked SVG snapshots; all
+  links resolve and the replayed target-row distribution remains five each of 5, 6, 7,
+  and 8 rows. `npm.cmd run typecheck`, the explicit 45-file / 270-test single-worker
+  matrix, `npm.cmd run build` (746 transformed modules), and desktop/portrait/
+  landscape browser audit all pass. The latter also rechecks Collapse, all-open Puzzle
+  access, one canvas, no DOM cells, no overflow, reduced motion, and zero errors.
+- Candidate chain: `3fa71e0..41fbfec`. This is a coordinator recovery record, not an
+  independent-QA acceptance.
 
 ## 2026-07-23 — T13.2 Collapse source candidate
 

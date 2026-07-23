@@ -358,3 +358,34 @@
   stopped after a no-output runner startup hang and is not reported as passing.
 - Blocker: none. Next: commit this boundary, then execute the local archive and
   generator slice with fresh output verification.
+
+## 2026-07-24 — TETRIS-T13.3-WALKTHROUGH-013 output checkpoint
+
+- Base: `d288453`; contract checkpoint: `3fa71e0`; durable generator checkpoints:
+  `5f1cd33` and `41fbfec`. Exact versioned source path:
+  `tools/generate-puzzle-walkthroughs.mjs`. The second small checkpoint replaces an
+  unsupported `file:` fetch with explicit UTF-8 disk loading; the tool otherwise has
+  no product-runtime import or Puzzle-facing effect.
+- Local output map: `Solutions/` has exactly `Solution-1.md` through
+  `Solution-20.md` and their matching image directories. The generator replayed the
+  current schema-6 primary routes through the real Core, wrote 265 SVG snapshots, and
+  checked all 20 terminal states, target counts, route lock counts, immutable-anchor
+  counts, and 5/6/7/8-row source bands. Markdown links were verified against every
+  SVG path.
+  Legacy ignored material remains recoverable under
+  `.local/audits/t12.6-walkthrough-legacy-20260724/`; no local output was staged.
+- Commands passed after the final tool edit: `node --check
+  tools\\generate-puzzle-walkthroughs.mjs`; `node
+  tools\\generate-puzzle-walkthroughs.mjs`; `npm.cmd run typecheck`; the explicit
+  `npm.cmd run test -- … --no-file-parallelism --maxWorkers=1` matrix (45 files / 270
+  tests); and `npm.cmd run build` (746 transformed modules). The default Vitest
+  invocation remains recorded as an outputless startup hang and is not represented as
+  a pass.
+- Browser evidence: `.local/audits/t13-relay/audit.mjs` reran at 1440×900, 390×844,
+  and 844×390. It confirms the 75-second 坍缩 state, two visible real hard-drop locks,
+  score/chain/clock HUD, no legacy Sprint labels, four reachable modes, 20 open
+  Puzzle controls, one selected preview, 44 px Puzzle targets, one gameplay canvas,
+  zero DOM cells, no overflow, reduced motion, and zero browser errors.
+- Blocker: no independent Core or visual/browser QA disposition exists. Next:
+  coordinator record commit and the already user-authorized `main` recovery push; do
+  not claim acceptance.

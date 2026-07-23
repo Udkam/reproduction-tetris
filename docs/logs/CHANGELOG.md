@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-07-24 — T13 current walkthrough recovery record
+
+- Reclassified the ignored local walkthrough map without deleting any recovery
+  material: obsolete T12 docs, images, selector audits, candidate scratch data, and
+  retired scripts now live under
+  `.local/audits/t12.6-walkthrough-legacy-20260724/`. `Solutions/` contains only the
+  current `Solution-1.md` through `Solution-20.md` outputs and their SVG snapshots.
+- Added the durable `tools/generate-puzzle-walkthroughs.mjs` generator. It reads the
+  schema-6 artifact from disk, replays each current primary public route through the
+  real Core, rejects any non-terminal/target/anchor/lock-count mismatch, and emits one
+  feasible-route walkthrough per level. It does not change Puzzle definitions, queues,
+  anchors, rules, selector, or gameplay UI.
+- Fresh regeneration produced 20 Markdown files with 265 linked SVG snapshots. All
+  links resolve, and the documented campaign remains five levels each across 5-, 6-,
+  7-, and 8-row original-target bands. The routes are evidence of feasible solutions,
+  not a claim of a unique or optimal answer.
+- Final coordinator verification passed `npm.cmd run typecheck`, the explicit
+  single-worker 45-file / 270-test matrix, `npm.cmd run build` (746 transformed
+  modules), and a live browser audit at 1440×900, 390×844, and 844×390. It rechecked
+  Collapse hard drops, one canvas, no DOM cells, all-open Puzzle access, responsive
+  layout, reduced motion, and zero browser errors.
+- Candidate chain: `3fa71e0..41fbfec`. This is a user-authorized recovery record and
+  publication checkpoint, not an independent-QA acceptance.
+
 ## 2026-07-23 — T13 Collapse mode candidate (user-authorized recovery push)
 
 - Replaced the rejected Sprint time trial with **坍缩**, a 75-second score attack that
