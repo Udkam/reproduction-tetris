@@ -33,10 +33,19 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   heading rather than a small suffix. Each visible mode rule is one compact factual
   sentence: objective, unusual mechanic, and ranking basis only—no decorative labels
   or repeated keyboard prose.
+- Every two-action confirmation sheet keeps its visible focus selection in sync with
+  `←`/`→`; `Enter` activates the currently selected action rather than an invisible
+  default. Escape/cancel behavior and pointer/touch operation remain unchanged.
 - Puzzle retains twenty deterministic, legal five-through-eight-row setups, fixed
   queues, unlimited ordinary pieces, B undo, and two teaching routes per level. It
   has no volatile or expiring input mechanic. Level names become short, structural
   Chinese labels (two to four characters), rather than opaque literary phrases.
+- Completing a Puzzle records the player's lowest **落子数** for that canonical level;
+  the selector shows that compact personal best beside completion state. It changes
+  only after a real successful run with fewer locked pieces, remains safe when storage
+  is unavailable, and never changes a queue, route, or win condition. The local
+  `Solutions/` walkthrough images are deferred: do not regenerate or present them in
+  this delivery unless the user explicitly reopens that output.
 - Immutable anchors remain a sparse teaching mechanic rather than scenery. An anchor
   may appear only on a curated subset of levels, never on an original target cell or
   on any initial target row. It sits in visible headroom directly above the initial

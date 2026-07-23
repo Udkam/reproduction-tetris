@@ -4,7 +4,8 @@ Branch: `main`
 
 Current base: coordinator-verified T12.7 recovery record `550d77e`. It is historical
 evidence only: its target-floor boards and tier gate are superseded by this task, and
-its local walkthrough output must be regenerated rather than reused as T13 evidence.
+its local walkthrough output remains historical ignored evidence and is not regenerated
+in this delivery.
 
 Current execution status (2026-07-24): **COORDINATOR RECORDING — T13 converts every
 Puzzle entry into an open, legal five-through-eight-row endgame workshop; aligns
@@ -24,7 +25,7 @@ to the final candidate.
    a legal landing or post-clear state, and keep all twenty boards approachable with
    multiple early-divergent solutions. Recompute the six affected routes (campaign
    01, 08, 13, 15, 16, and 18), update the schema route artifact, short structural
-   names, concise guide copy, and ignored walkthroughs. Audit the selected preview so
+   names, and concise guide copy. Walkthrough-image generation is deferred. Audit the selected preview so
    target cells, fixed pegs, and the actual endgame shape remain clear and compatible.
 2. **Collapse correctness and presentation.** Verify the endless top-out-only rule,
    current-chain/best-chain/score/lines rail, absence of decorative horizontal rules,
@@ -41,13 +42,22 @@ to the final candidate.
    the right-header control cluster with a single accessible **设置** control and `S`
    shortcut; place effects, music, volume, pause/continue, and confirmation-gated
    restart inside it. Recheck every visible explanation: it must state only the mode
-   objective, distinct mechanic, and ranking basis in concise factual language.
-6. **Final evidence and release.** After the source slices, run targeted tests, then
+   objective, distinct mechanic, and ranking basis in concise factual language. Every
+   two-action confirmation sheet must support `←`/`→` focus selection and `Enter` on
+   that selected action.
+6. **Puzzle completion record.** Persist each canonical level's lowest successful
+   locked-piece count, show that compact best on the all-open selector, and retain
+   graceful no-storage behavior. The Puzzle result primary action is `重来`, while
+   non-Puzzle results remain `再来一局`.
+7. **Final evidence and release.** After the source slices, run targeted tests, then
    typecheck, the current-source full suite, build, route replay/walkthrough
-   regeneration, and real desktop/portrait/landscape browser evidence. Verify controls
+   validation (but no walkthrough-image generation), and real desktop/portrait/landscape browser evidence. Verify controls
    and shortcuts, one canvas/zero DOM cells, no overflow or console errors, reduced
    motion, and runtime/audio teardown; record the evidence, update the changelog,
    commit exact paths, push `main`, and report any remaining blocker explicitly.
+   Before and after every long test/browser phase, inspect project-owned processes,
+   listeners, and memory; release only clearly Tetris-owned idle resources, verify the
+   release, and never terminate Codex-owned shared tooling or another project's work.
 
 ### T13.5 persistent Collapse, readable anchors, and faster Survival correction
 
@@ -64,8 +74,8 @@ valid Classic and Survival data continues to migrate.
 The same user review reopens the fixed Puzzle anchor authoring boundary. The twenty
 legal setup histories, fixed queues, unlimited ordinary play, B undo, selected-preview
 contract, and five-through-eight-row bands remain; no volatile/timed Puzzle mechanism
-may return. Reauthor only the sparse immutable-anchor subset, names, hint copy, route
-artifact, and local walkthroughs as one Core-verifiable unit. Every anchor must be
+may return. Reauthor only the sparse immutable-anchor subset, names, hint copy, and
+route artifact as one Core-verifiable unit; local walkthrough images are deferred. Every anchor must be
 above the initial target-row band, never overlap an original target, make at least one
 landing or post-clear result differ from the no-anchor state, and retain two public
 Core-replayed routes with an early lock divergence. Replace opaque level names with
@@ -75,11 +85,11 @@ fixed 40-tick gravity, and three-line bedrock reward.
 
 Authorized source/test boundary: Collapse Core constants/types/engine/sprint and
 direct tests; leaderboard and persistence tests; App/App tests/styles; Survival
-constants/race/runtime tests; and the coupled Puzzle definition/hint/route
-artifact/direct-test/generator paths. No renderer primitive, package dependency, or
+constants/race/runtime tests; and the coupled Puzzle definition/hint/progress/route
+artifact/direct-test paths. No renderer primitive, package dependency, or
 desktop package target is in scope. Before a candidate claim: run direct tests after
 each checkpoint, then typecheck, the unqualified current-source suite, build, route
-replay/walkthrough regeneration, and a desktop/portrait/landscape browser pass.
+replay validation, and a desktop/portrait/landscape browser pass.
 
 Cross-boundary exception: retiring the Collapse timer changes one inseparable behavior
 across Core terminal state, local score schema, HUD/result text, and direct tests. Its

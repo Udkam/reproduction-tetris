@@ -10,6 +10,11 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Pending finish: audible original effects plus optional procedural music; one `S`
   settings sheet; prominent mode heading; concise factual mode copy; final gates,
   browser evidence, changelog, exact commits, and user-authorized push.
+- Pending dialog input: two-action confirmation sheets must expose `←`/`→` selection
+  and let `Enter` activate the visibly selected action.
+- Resource discipline: inspect project-owned listeners/processes before and after long
+  verification phases; release only clearly idle Tetris resources and leave shared
+  Codex tooling untouched.
 
 ## 2026-07-24 — T13.5 persistent Collapse and Puzzle anchor readability opened
 

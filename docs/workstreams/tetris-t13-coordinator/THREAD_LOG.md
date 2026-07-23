@@ -22,10 +22,20 @@
   persistence/rail and Survival's 13→6 pressure need final direct and browser proof;
   the audio/music and Settings pass is not yet implemented; then final gates, log,
   changelog, and push remain. This list is the coordinator's complete live ledger.
+- Latest Puzzle UX scope: do not create or regenerate local `Solutions/` images in
+  this delivery. Persist/show a per-level minimum successful locked-piece record in
+  the selector, and change the Puzzle result primary action to `重来`.
+- Confirmation follow-up: add visible `←`/`→` selection to every two-action sheet;
+  `Enter` activates the focused/selected action rather than a hidden fixed default.
+- Resource audit (2026-07-24): no Tetris dev server/test process or known local web
+  listener was present. The observed Playwright MCP trees are direct children of the
+  active Codex app and have no listener, so they remain untouched. Repeat this scoped
+  audit before/after long validation phases and release only clearly Tetris-owned idle
+  processes.
 - Exact future source boundary: Collapse constants/types/engine/sprint/direct tests,
   leaderboard/persistence, App/App tests/styles; Survival constants/race/runtime
-  tests; and the coupled Puzzle definitions, hints, direct Core tests, schema route
-  artifact, generator, and ignored `Solutions/` output. No renderer primitive,
+  tests; and the coupled Puzzle definitions, hints/progress/direct tests, and schema
+  route artifact. No renderer primitive,
   package/dependency, unrelated game repository, or desktop package target is allowed.
 - Read-only anchor diagnosis: all six current anchors occupy the bottom initial target
   row, while current validation forbids any anchor outside the target band. That is
