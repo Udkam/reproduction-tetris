@@ -1,5 +1,32 @@
 # Tetris Independent QA Log
 
+## 2026-07-24 — TETRIS-T13-QA-READONLY-001 isolated reproducibility audit
+
+REPORT TETRIS-T13-QA TETRIS-T13-QA-READONLY-001 TECHNICAL-PASS / EXTERNAL-DISPOSITION-PENDING
+HEAD `6411b5efaead87c91138285305b3ce7e9c48988e`; detached clean-worktree audit only;
+no product source, Puzzle definitions, queues, anchors, selector, or visuals changed.
+ENVIRONMENT fresh `npm.cmd ci --no-audit --no-fund` in an exact detached candidate
+worktree, then `npm.cmd run typecheck`, default `npm.cmd run test` (22 files / 138
+tests), and `npm.cmd run build` (743 modules) all exited 0. A separately streamed
+default test run produced first stdout at 294 ms and no stderr, so the historic
+silent-start symptom is not reproducible on this candidate.
+CORE schema-6 static/test review covers all 20 Puzzle IDs, two public-dispatch route
+families per level, early divergence, terminal target clearance, immutable anchors,
+fixed Puzzle queues, fresh random Classic/Survival bags, Survival's seven bedrock rows
+and 13→6 pressure, and endless Collapse top-ten ordering.
+BROWSER isolated Vite evidence at 1440×900, 390×844, 844×390, and reduced motion
+records Settings, four modes, seven visible Survival bedrock rows, 13-second opening
+pressure, untimed Collapse rail, all-open Puzzle selection, absent row caption and
+checkmark, `B` undo, two Next pieces, one gameplay canvas, zero DOM board cells, no
+overflow, zero console/page errors, and visual inspection of seven fresh frames.
+RESOURCES only audit-owned port 5174 and its exact detached worktree were released;
+the pre-existing VS Code listener on port 5173 was retained.
+LIMITATION this isolated read-only audit was executed by the coordinator, not an
+external independent reviewer. It establishes a technical PASS but must not be treated
+as an independent acceptance signature.
+NEXT retain the candidate and request/await external independent disposition before
+formal acceptance. LOG `docs/workstreams/tetris-qa/THREAD_LOG.md` only.
+
 Coordinator: primary task `019f4deb-7e83-7583-8cd5-8e6f075bc331`
 
 Candidate: `b2075ba5093defee1c397b9e2b48bceaa0e92962`
