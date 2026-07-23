@@ -14,10 +14,13 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   rule, selector, queue, anchor, or visual change.
 - Regeneration passed with 20 Markdown walkthroughs and 265 linked SVG snapshots; all
   links resolve and the replayed target-row distribution remains five each of 5, 6, 7,
-  and 8 rows. `npm.cmd run typecheck`, the explicit 45-file / 270-test single-worker
-  matrix, `npm.cmd run build` (746 transformed modules), and desktop/portrait/
-  landscape browser audit all pass. The latter also rechecks Collapse, all-open Puzzle
-  access, one canvas, no DOM cells, no overflow, reduced motion, and zero errors.
+  and 8 rows. `npm.cmd run typecheck`, `npm.cmd run build` (746 transformed modules),
+  and the earlier desktop/portrait/landscape browser audit pass. The audit rechecks
+  Collapse, all-open Puzzle access, one canvas, no DOM cells, no overflow, reduced
+  motion, and zero errors. The preceding product source had passed the explicit
+  45-file / 270-test single-worker matrix before this tools-only change; a post-change
+  full Vitest attempt emitted no startup output and was stopped, so it is not counted
+  as a passing suite.
 - Candidate chain: `3fa71e0..41fbfec`. This is a coordinator recovery record, not an
   independent-QA acceptance.
 

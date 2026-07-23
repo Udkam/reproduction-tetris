@@ -376,11 +376,12 @@
   `.local/audits/t12.6-walkthrough-legacy-20260724/`; no local output was staged.
 - Commands passed after the final tool edit: `node --check
   tools\\generate-puzzle-walkthroughs.mjs`; `node
-  tools\\generate-puzzle-walkthroughs.mjs`; `npm.cmd run typecheck`; the explicit
-  `npm.cmd run test -- … --no-file-parallelism --maxWorkers=1` matrix (45 files / 270
-  tests); and `npm.cmd run build` (746 transformed modules). The default Vitest
-  invocation remains recorded as an outputless startup hang and is not represented as
-  a pass.
+  tools\\generate-puzzle-walkthroughs.mjs`; `npm.cmd run typecheck`; and `npm.cmd run
+  build` (746 transformed modules). The unchanged product source had passed the
+  explicit `npm.cmd run test -- … --no-file-parallelism --maxWorkers=1` matrix (45
+  files / 270 tests) before this tools-only edit. A post-edit full Vitest attempt
+  remained outputless during startup and was stopped, so it is not represented as a
+  pass.
 - Browser evidence: `.local/audits/t13-relay/audit.mjs` reran at 1440×900, 390×844,
   and 844×390. It confirms the 75-second 坍缩 state, two visible real hard-drop locks,
   score/chain/clock HUD, no legacy Sprint labels, four reachable modes, 20 open

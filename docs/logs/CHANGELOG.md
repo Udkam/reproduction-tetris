@@ -16,11 +16,14 @@
   links resolve, and the documented campaign remains five levels each across 5-, 6-,
   7-, and 8-row original-target bands. The routes are evidence of feasible solutions,
   not a claim of a unique or optimal answer.
-- Final coordinator verification passed `npm.cmd run typecheck`, the explicit
-  single-worker 45-file / 270-test matrix, `npm.cmd run build` (746 transformed
-  modules), and a live browser audit at 1440×900, 390×844, and 844×390. It rechecked
-  Collapse hard drops, one canvas, no DOM cells, all-open Puzzle access, responsive
-  layout, reduced motion, and zero browser errors.
+- Final tools-only verification passed `node --check`, `npm.cmd run typecheck`, and
+  `npm.cmd run build` (746 transformed modules), alongside the 20-route regeneration.
+  The unchanged product source had already passed the explicit single-worker 45-file /
+  270-test matrix and a live browser audit at 1440×900, 390×844, and 844×390. That
+  audit rechecked Collapse hard drops, one canvas, no DOM cells, all-open Puzzle
+  access, responsive layout, reduced motion, and zero browser errors. A post-tools
+  full Vitest attempt emitted no startup output and was stopped; it is not counted as
+  a pass.
 - Candidate chain: `3fa71e0..41fbfec`. This is a user-authorized recovery record and
   publication checkpoint, not an independent-QA acceptance.
 
