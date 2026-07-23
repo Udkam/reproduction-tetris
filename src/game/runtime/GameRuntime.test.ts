@@ -9,10 +9,12 @@ const inputClearHeld = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
 const audioPrime = vi.hoisted(() => vi.fn());
 const audioSetVolume = vi.hoisted(() => vi.fn());
+const audioSetMusicEnabled = vi.hoisted(() => vi.fn());
 
 vi.mock('../audio/AudioEngine', () => ({
   AudioEngine: class {
     setEnabled(): void {}
+    setMusicEnabled(enabled: boolean): void { audioSetMusicEnabled(enabled); }
     setVolume(volume: number): void { audioSetVolume(volume); }
     async prime(): Promise<void> { audioPrime(); }
     play(): void {}
@@ -213,6 +215,20 @@ describe('GameRuntime public state boundary', () => {
     expect(audioSetVolume).toHaveBeenNthCalledWith(1, 2);
     expect(audioSetVolume).toHaveBeenNthCalledWith(2, -1);
     expect(runtime.getState()).toBe(before);
+  });
+
+  it('keeps music preference outside deterministic gameplay state', () => {
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false, musicEnabled: false });
+    const before = runtime.getState();
+    audioSetMusicEnabled.mockClear();
+
+    runtime.setMusicEnabled(true);
+    runtime.setMusicEnabled(false);
+
+    expect(audioSetMusicEnabled).toHaveBeenNthCalledWith(1, true);
+    expect(audioSetMusicEnabled).toHaveBeenNthCalledWith(2, false);
+    expect(runtime.getState()).toBe(before);
+    runtime.destroy();
   });
 
   it('restarts immediately from active play when the public R action is received', async () => {

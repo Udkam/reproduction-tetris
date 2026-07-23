@@ -44,6 +44,7 @@ interface RuntimeTestInstance {
   undoPuzzle: ReturnType<typeof vi.fn>;
   togglePause: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
+  setMusicEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
   getState: () => GameState;
 }
@@ -60,6 +61,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     readonly setInputEnabled = vi.fn();
     readonly setReducedMotion = vi.fn();
     readonly setAudioEnabled = vi.fn();
+    readonly setMusicEnabled = vi.fn();
     readonly setAudioVolume = vi.fn();
     readonly start = vi.fn(() => {
       const transition = core.dispatch(this.state, { type: 'start' });
@@ -268,7 +270,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('exposes an audible, adjustable in-session audio control', async () => {
+  it('keeps the header to one S-accessible settings control and groups audio controls inside it', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -276,15 +278,37 @@ describe('T6 frontend mode binding', () => {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
     }));
     await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    const header = view.container.querySelector<HTMLElement>('[data-testid="cluster-header"]')!;
+    const settings = view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')!;
+    expect(settings.textContent).toBe('设置');
+    expect(settings.getAttribute('aria-keyshortcuts')).toBe('S');
+    expect(header.querySelectorAll('button')).toHaveLength(2);
+    expect(header.querySelector('[data-testid="restart-game"], [data-testid="pause-game"], [data-testid="audio-toggle"]')).toBeNull();
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
+    const sheet = view.container.querySelector<HTMLElement>('[data-testid="settings-sheet"]')!;
+    expect(sheet).not.toBeNull();
+    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalled();
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
     const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
+    const music = view.container.querySelector<HTMLButtonElement>('[data-testid="music-toggle"]')!;
     const volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
-    expect(toggle.textContent).toBe('声音开');
+    expect(toggle.textContent).toBe('音效开');
+    expect(music.textContent).toBe('音乐开');
     expect(volume.value).toBe('100');
     act(() => toggle.click());
-    expect(toggle.textContent).toBe('声音关');
+    expect(toggle.textContent).toBe('音效关');
+    act(() => music.click());
+    expect(music.textContent).toBe('音乐关');
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(volume, '56');
     act(() => volume.dispatchEvent(new Event('input', { bubbles: true })));
     expect(view.container.textContent).toContain('56%');
+    expect(runtimeHarness.instances.at(-1)?.setAudioEnabled).toHaveBeenLastCalledWith(false);
+    expect(runtimeHarness.instances.at(-1)?.setMusicEnabled).toHaveBeenLastCalledWith(false);
+    act(() => [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')?.click());
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
     view.unmount();
   });
 
@@ -347,7 +371,7 @@ describe('T6 frontend mode binding', () => {
     classic.unmount();
   });
 
-  it('keeps Pause to Continue and routes header/R restart through the same Enter confirmation', async () => {
+  it('pauses through Settings and routes Settings/R restart through the same Enter confirmation', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -359,23 +383,16 @@ describe('T6 frontend mode binding', () => {
     runtimeHarness.instances.at(-1)?.restart.mockClear();
     runtimeHarness.instances.at(-1)?.start.mockClear();
     runtimeHarness.instances.at(-1)?.togglePause.mockClear();
-    const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="restart-game"]')!;
-    const pause = view.container.querySelector<HTMLButtonElement>('[data-testid="pause-game"]')!;
+    const settings = view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')!;
     const topbar = view.container.querySelector<HTMLElement>('[data-testid="cluster-header"]')!;
-    expect(restart.textContent).toContain('重新开始');
-    expect(restart.disabled).toBe(false);
-    expect(topbar.textContent).toContain('暂停');
+    expect(settings.disabled).toBe(false);
+    expect(topbar.textContent).toContain('设置');
+    expect(topbar.textContent).not.toContain('重新开始暂停声音');
 
-    act(() => pause.click());
-    const pauseSheet = view.container.querySelector<HTMLElement>('.action-sheet')!;
-    expect(pauseSheet.textContent).toContain('已暂停');
-    expect(pauseSheet.textContent).not.toContain('重新开始');
-    expect([...pauseSheet.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['继续游戏']);
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
-    expect(view.container.textContent).not.toContain('已暂停');
-
-    act(() => restart.click());
-    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
+    act(() => settings.click());
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).toContain('继续游戏');
+    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(1);
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
     expect(view.container.textContent).toContain('重新开始？');
     expect(view.container.textContent).not.toContain('按 Enter 确认。');
     const confirmRestart = view.container.querySelector<HTMLButtonElement>('[data-testid="confirm-restart"]')!;
@@ -391,10 +408,12 @@ describe('T6 frontend mode binding', () => {
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(view.container.textContent).not.toContain('重新开始？');
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
+    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(2);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.textContent).toContain('重新开始？');
     expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
+    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
     expect(view.container.querySelector('[data-testid="confirm-restart"]')?.getAttribute('data-action-selected')).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
@@ -412,12 +431,12 @@ describe('T6 frontend mode binding', () => {
     expect(classic?.textContent).toContain('经典');
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
-    expect(view.container.textContent).toContain('连消加分\n每 10 行提高下落速度');
-    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetra');
-    expect(view.container.querySelector('[data-testid="brand"]')?.getAttribute('aria-label')).toBe('Tetra');
-    expect(view.container.textContent).toContain('生存开局 7 层基岩\n13 秒 → 6 秒 · 每 3 行降层 · 固定下落');
-    expect(view.container.textContent).toContain('坍缩消行后逐列坍落\n堆叠到顶前制造连锁');
-    expect(view.container.textContent).toContain(`${CAMPAIGN_LEVELS.length} 关残局`);
+    expect(view.container.textContent).toContain('消行得分，每 10 行加速；按消行排行');
+    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetris');
+    expect(view.container.querySelector('[data-testid="brand"]')?.getAttribute('aria-label')).toBe('Tetris');
+    expect(view.container.textContent).toContain('顶住基岩压力；13 秒 → 6 秒升层；按时长排行');
+    expect(view.container.textContent).toContain('消行后逐列坍落；堆顶结束；按消行排行');
+    expect(view.container.textContent).toContain('清除原有方块；固定序列；记录最少落子');
     expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();
     expect(view.container.querySelector('.phase-seam')).toBeNull();

@@ -74,6 +74,17 @@ describe('InputController', () => {
     input.destroy();
   });
 
+  it('leaves S available for the page-level settings shortcut', () => {
+    const actions: InputAction[] = [];
+    const target = new EventTarget() as Window;
+    const input = new InputController((action) => actions.push(action), target);
+    const event = new Event('keydown') as KeyboardEvent;
+    Object.defineProperty(event, 'code', { value: 'KeyS' });
+    target.dispatchEvent(event);
+    expect(actions).toEqual([]);
+    input.destroy();
+  });
+
   it('maps B to the Puzzle undo action without treating it as a held control', () => {
     const actions: InputAction[] = [];
     const target = new EventTarget() as Window;

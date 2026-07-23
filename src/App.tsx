@@ -53,7 +53,7 @@ type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
 
 const APP_SEED = 0x51a1f00d;
-const PRODUCT_NAME = 'Tetra';
+const PRODUCT_NAME = 'Tetris';
 
 const MODE_COPY: Record<GameMode, {
   label: string;
@@ -62,22 +62,22 @@ const MODE_COPY: Record<GameMode, {
 }> = {
   marathon: {
     label: '经典',
-    detail: '连消加分\n每 10 行提高下落速度',
+    detail: '消行得分，每 10 行加速；按消行排行',
     action: '开始',
   },
   race: {
     label: '生存',
-    detail: '开局 7 层基岩\n13 秒 → 6 秒 · 每 3 行降层 · 固定下落',
+    detail: '顶住基岩压力；13 秒 → 6 秒升层；按时长排行',
     action: '开始',
   },
   sprint: {
     label: '坍缩',
-    detail: '消行后逐列坍落\n堆叠到顶前制造连锁',
+    detail: '消行后逐列坍落；堆顶结束；按消行排行',
     action: '开始',
   },
   puzzle: {
     label: '解谜',
-    detail: `${CAMPAIGN_LEVELS.length} 关残局`,
+    detail: '清除原有方块；固定序列；记录最少落子',
     action: '选关',
   },
 };
@@ -531,28 +531,40 @@ function PuzzleUndoButton({ runtime, disabled = false }: { runtime: GameRuntime 
 
 function AudioControls({
   enabled,
+  musicEnabled,
   volume,
   onEnabledChange,
+  onMusicEnabledChange,
   onVolumeChange,
-  placement = 'side',
 }: {
   enabled: boolean;
+  musicEnabled: boolean;
   volume: number;
   onEnabledChange: (enabled: boolean) => void;
+  onMusicEnabledChange: (enabled: boolean) => void;
   onVolumeChange: (volume: number) => void;
-  placement?: 'side' | 'topbar';
 }) {
   const percent = Math.round(volume * 100);
   return (
-    <section className={`audio-controls audio-controls--${placement}`} aria-label="声音控制">
-      <button
-        className="audio-toggle"
-        type="button"
-        data-testid="audio-toggle"
-        aria-label={enabled ? '关闭声音' : '开启声音'}
-        aria-pressed={enabled}
-        onClick={() => onEnabledChange(!enabled)}
-      >{enabled ? '声音开' : '声音关'}</button>
+    <section className="audio-controls" aria-label="声音控制">
+      <div className="audio-controls__switches">
+        <button
+          className="audio-toggle"
+          type="button"
+          data-testid="audio-toggle"
+          aria-label={enabled ? '关闭音效' : '开启音效'}
+          aria-pressed={enabled}
+          onClick={() => onEnabledChange(!enabled)}
+        >{enabled ? '音效开' : '音效关'}</button>
+        <button
+          className="audio-toggle"
+          type="button"
+          data-testid="music-toggle"
+          aria-label={musicEnabled ? '关闭音乐' : '开启音乐'}
+          aria-pressed={musicEnabled}
+          onClick={() => onMusicEnabledChange(!musicEnabled)}
+        >{musicEnabled ? '音乐开' : '音乐关'}</button>
+      </div>
       <label className="audio-volume">
         <span>音量</span>
         <input
@@ -664,6 +676,7 @@ export function GameSession({
   const runtimeRef = useRef<GameRuntime | null>(null);
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
+  const settingsWasPlayingRef = useRef(false);
   const lastRecordedRunRef = useRef<string | null>(null);
   const [runSeed] = useState(() => mode === 'puzzle' ? APP_SEED : randomRunSeed());
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
@@ -671,8 +684,10 @@ export function GameSession({
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const [musicEnabled, setMusicEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
   const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
 
@@ -695,6 +710,7 @@ export function GameSession({
       inputEnabled: false,
       reducedMotion: motionQuery.matches,
       audioEnabled,
+      musicEnabled,
       audioVolume,
       onState: (nextState, events) => {
         if (disposed) return;
@@ -769,8 +785,9 @@ export function GameSession({
 
   useEffect(() => {
     runtime?.setAudioEnabled(audioEnabled);
+    runtime?.setMusicEnabled(musicEnabled);
     runtime?.setAudioVolume(audioVolume);
-  }, [audioEnabled, audioVolume, runtime]);
+  }, [audioEnabled, audioVolume, musicEnabled, runtime]);
 
   useEffect(() => {
     if (!import.meta.env.DEV || !runtime) return;
@@ -845,9 +862,29 @@ export function GameSession({
     };
   }, [countdownDigit, runtime, state]);
 
+  const openSettings = useCallback(() => {
+    if (!runtime || settingsOpen || restartConfirmOpen) return;
+    const runtimeState = runtime.getState();
+    if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
+    settingsWasPlayingRef.current = runtimeState.status === 'playing';
+    if (settingsWasPlayingRef.current) runtime.togglePause();
+    runtime.setInputEnabled(false);
+    setSettingsOpen(true);
+  }, [restartConfirmOpen, runtime, settingsOpen]);
+
+  const closeSettings = useCallback(() => {
+    setSettingsOpen(false);
+    runtime?.setInputEnabled(true);
+    if (settingsWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
+    settingsWasPlayingRef.current = false;
+    focusBoard();
+  }, [focusBoard, runtime]);
+
   const restartRun = useCallback(() => {
     setExitOpen(false);
+    setSettingsOpen(false);
     setRestartConfirmOpen(false);
+    settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
     runtime?.setInputEnabled(true);
     runtime?.restart();
@@ -856,11 +893,15 @@ export function GameSession({
   }, [focusBoard, runtime]);
 
   const requestRestart = useCallback(() => {
-    if (!runtime || restartConfirmOpen || runtime.getState().status !== 'playing') return;
-    restartWasPlayingRef.current = true;
-    runtime.togglePause();
+    if (!runtime || restartConfirmOpen) return;
+    const runtimeState = runtime.getState();
+    if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
+    restartWasPlayingRef.current = runtimeState.status === 'playing' || settingsWasPlayingRef.current;
+    if (runtimeState.status === 'playing') runtime.togglePause();
     // The confirmation is a UI transaction: no keyboard control may leak through it.
     runtime.setInputEnabled(false);
+    settingsWasPlayingRef.current = false;
+    setSettingsOpen(false);
     setRestartConfirmOpen(true);
   }, [restartConfirmOpen, runtime]);
 
@@ -880,12 +921,23 @@ export function GameSession({
     const handleRestartShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyR' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.status !== 'playing' || restartConfirmOpen) return;
+      if (countdownDigit !== null || state.status !== 'playing' || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestRestart();
     };
     return browserPlatform.listenWindow('keydown', handleRestartShortcut);
-  }, [countdownDigit, requestRestart, restartConfirmOpen, state.status]);
+  }, [countdownDigit, requestRestart, restartConfirmOpen, settingsOpen, state.status]);
+
+  useEffect(() => {
+    const handleSettingsShortcut = (event: Event) => {
+      const keyboardEvent = event as KeyboardEvent;
+      if (keyboardEvent.code !== 'KeyS' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
+      if (countdownDigit !== null || restartConfirmOpen || settingsOpen) return;
+      keyboardEvent.preventDefault();
+      openSettings();
+    };
+    return browserPlatform.listenWindow('keydown', handleSettingsShortcut);
+  }, [countdownDigit, openSettings, restartConfirmOpen, settingsOpen]);
 
   const requestExit = useCallback(() => {
     exitWasPlayingRef.current = runtime?.getState().status === 'playing';
@@ -902,8 +954,8 @@ export function GameSession({
   const terminal = terminalCopy(state);
   const level = state.mode === 'puzzle' ? campaignLevel(state.puzzleId) : null;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
-  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen;
-  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen;
+  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !settingsOpen;
+  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !settingsOpen;
   const storedRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
   const leaderboardRecords = resultRecord && scoreRecordRank(storedRecords, resultRecord) === null
     ? recordsForMode(insertScoreRecord(leaderboard, resultRecord), resultRecord.mode)
@@ -929,32 +981,16 @@ export function GameSession({
           {level && <small>{level.index}/{level.total} · {level.name}</small>}
         </div>
         <div className="topbar-actions">
-          <AudioControls
-            enabled={audioEnabled}
-            volume={audioVolume}
-            onEnabledChange={setAudioEnabled}
-            onVolumeChange={setAudioVolume}
-            placement="topbar"
-          />
           <button
-            className="topbar-action topbar-action--restart"
+            className="topbar-action topbar-action--settings"
             type="button"
-            data-testid="restart-game"
-            aria-label="重新开始（R）"
-            disabled={countdownDigit !== null}
-            onClick={requestRestart}
-          ><span className="restart-label--long">重新开始</span><span className="restart-label--short">重开</span></button>
-          <button
-            className="topbar-action"
-            type="button"
-            data-testid="pause-game"
-            onClick={(event) => {
-              event.currentTarget.focus({ preventScroll: true });
-              runtime?.togglePause();
-            }}
-            aria-label={state.status === 'paused' ? '继续游戏（P）' : '暂停（P）'}
+            data-testid="open-settings"
+            aria-label="设置（S）"
+            aria-keyshortcuts="S"
+            aria-expanded={settingsOpen}
             disabled={countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused')}
-          >{state.status === 'paused' ? '继续' : '暂停'}</button>
+            onClick={openSettings}
+          >设置</button>
         </div>
       </header>
 
@@ -992,7 +1028,7 @@ export function GameSession({
                 aria-label={puzzleDoublePreview ? '后续两个方块，按顺序显示' : '下一个方块'}
               />
             </div>
-            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>P 暂停 / 继续</span><span>R 重开确认</span>{state.mode === 'puzzle' && <span>B 撤回</span>}</p>
+            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>S 设置</span><span>P 暂停 / 继续</span><span>R 重开确认</span>{state.mode === 'puzzle' && <span>B 撤回</span>}</p>
           </aside>
         </section>
 
@@ -1014,6 +1050,30 @@ export function GameSession({
         onConfirm={resumeRun}
       >
         <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>继续游戏</button>
+      </ActionSheet>
+
+      <ActionSheet
+        open={settingsOpen}
+        title="设置"
+        description=""
+        onCancel={closeSettings}
+      >
+        <section className="settings-sheet" data-testid="settings-sheet" aria-label="本局设置">
+          <AudioControls
+            enabled={audioEnabled}
+            musicEnabled={musicEnabled}
+            volume={audioVolume}
+            onEnabledChange={setAudioEnabled}
+            onMusicEnabledChange={setMusicEnabled}
+            onVolumeChange={setAudioVolume}
+          />
+          <div className="settings-sheet__actions">
+            <button className="secondary-action" type="button" data-testid="settings-restart" onClick={requestRestart}>重新开始</button>
+            <button className="primary-action" data-autofocus type="button" onClick={closeSettings}>
+              {settingsWasPlayingRef.current ? '继续游戏' : '返回暂停'}
+            </button>
+          </div>
+        </section>
       </ActionSheet>
 
       <ActionSheet

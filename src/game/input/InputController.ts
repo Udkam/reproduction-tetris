@@ -28,7 +28,6 @@ const KEY_BINDINGS: Record<string, InputAction> = {
   ArrowRight: 'right',
   KeyD: 'right',
   ArrowDown: 'soft-drop',
-  KeyS: 'soft-drop',
   Space: 'hard-drop',
   ArrowUp: 'rotate-cw',
   KeyW: 'rotate-cw',

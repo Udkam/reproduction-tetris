@@ -28,6 +28,7 @@ export interface RuntimeOptions {
   inputEnabled?: boolean;
   reducedMotion?: boolean;
   audioEnabled?: boolean;
+  musicEnabled?: boolean;
   audioVolume?: number;
   platform?: BrowserPlatform;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
@@ -77,6 +78,7 @@ export class GameRuntime {
     this.inputEnabled = options.inputEnabled ?? true;
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
+    this.audio.setMusicEnabled(options.musicEnabled ?? true);
     this.audio.setVolume(options.audioVolume ?? 1);
   }
 
@@ -190,6 +192,11 @@ export class GameRuntime {
 
   setAudioVolume(volume: number): void {
     this.audio.setVolume(volume);
+  }
+
+  setMusicEnabled(enabled: boolean): void {
+    this.audio.setMusicEnabled(enabled);
+    if (enabled && this.state.status === 'playing') void this.audio.prime();
   }
 
   getState(): GameState {

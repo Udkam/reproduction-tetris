@@ -930,7 +930,7 @@ p {
 .play-shell {
   position: relative;
   display: grid;
-  grid-template-rows: 58px minmax(0, 1fr);
+  grid-template-rows: 64px minmax(0, 1fr);
   width: 100%;
   height: 100dvh;
   overflow: hidden;
@@ -940,7 +940,7 @@ p {
   position: relative;
   z-index: 6;
   display: grid;
-  grid-template-columns: minmax(116px, 1fr) auto minmax(116px, 1fr);
+  grid-template-columns: minmax(92px, 1fr) auto minmax(92px, 1fr);
   align-items: center;
   gap: 16px;
   padding: 6px clamp(12px, 3vw, 34px);
@@ -956,17 +956,6 @@ p {
 
 .topbar-action:hover {
   background: var(--raised);
-}
-
-.topbar-action--restart {
-  color: var(--focus);
-  background: var(--raised);
-  border: 1px solid var(--line);
-  white-space: nowrap;
-}
-
-.restart-label--short {
-  display: none;
 }
 
 .topbar-action:last-child {
@@ -986,7 +975,11 @@ p {
 
 .play-identity > h1 {
   margin: 0;
-  font-size: 14px;
+  color: var(--ink);
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 820;
+  letter-spacing: -.055em;
+  line-height: 1;
 }
 
 .play-identity > small {
@@ -998,19 +991,17 @@ p {
 
 .audio-controls {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 8px;
+  gap: 11px;
   align-items: center;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
+  padding: 13px 0;
+  border-block: 1px solid var(--line);
   pointer-events: auto;
 }
 
-.audio-controls--topbar {
-  grid-template-columns: auto minmax(118px, 1fr);
-  width: 210px;
-  padding: 0;
-  border: 0;
+.audio-controls__switches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .topbar-actions {
@@ -1024,8 +1015,8 @@ p {
 }
 
 .audio-toggle {
-  min-height: 32px;
-  padding: 5px 8px;
+  min-height: 42px;
+  padding: 7px 10px;
   color: var(--focus);
   font-size: 12px;
   font-weight: 750;
@@ -1042,7 +1033,7 @@ p {
 
 .audio-volume {
   display: grid;
-  grid-template-columns: auto minmax(54px, 1fr) auto;
+  grid-template-columns: auto minmax(80px, 1fr) auto;
   gap: 6px;
   align-items: center;
   color: var(--muted);
@@ -1061,6 +1052,18 @@ p {
   color: var(--ink);
   font-variant-numeric: tabular-nums;
   text-align: right;
+}
+
+.settings-sheet {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+.settings-sheet__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .play-surface {
@@ -1849,7 +1852,7 @@ p {
   }
 
   .play-shell {
-    grid-template-rows: 54px minmax(0, 1fr);
+    grid-template-rows: 56px minmax(0, 1fr);
   }
 
   .play-topbar {
@@ -1863,39 +1866,13 @@ p {
     font-size: 12px;
   }
 
-  .topbar-action--restart {
-    min-width: 42px;
-  }
-
-  .restart-label--long {
-    display: none;
-  }
-
-  .restart-label--short {
-    display: inline;
-  }
-
-  .audio-controls--topbar {
-    grid-template-columns: auto 58px;
-    width: 118px;
-  }
-
-  .audio-controls--topbar .audio-volume > span,
-  .audio-controls--topbar .audio-volume output {
-    display: none;
-  }
-
-  .audio-controls--topbar .audio-volume {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .play-identity .brand {
     display: none;
   }
 
   .play-identity > h1 {
     overflow: hidden;
-    font-size: 13px;
+    font-size: 18px;
     text-overflow: ellipsis;
   }
 
@@ -2097,15 +2074,6 @@ p {
 }
 
 @media (max-width: 365px) {
-  .audio-controls--topbar {
-    grid-template-columns: auto;
-    width: auto;
-  }
-
-  .audio-controls--topbar .audio-volume {
-    display: none;
-  }
-
   .run-stats--puzzle {
     grid-template-columns: minmax(0, 40%) minmax(0, 60%);
   }

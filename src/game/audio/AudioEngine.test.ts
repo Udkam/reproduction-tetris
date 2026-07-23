@@ -32,11 +32,12 @@ class FakeOscillator {
   type: OscillatorType = 'sine';
   readonly frequency = new FakeAudioParam();
   onended: (() => void) | null = null;
+  readonly stops: number[] = [];
 
   connect(): void {}
   disconnect(): void {}
   start(): void {}
-  stop(): void {}
+  stop(time = 0): void { this.stops.push(time); this.onended?.(); }
 }
 
 class FakeCompressor {
@@ -84,8 +85,8 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('AudioEngine hard drop', () => {
-  it('uses a paired sine landing thump instead of an electrical waveform', async () => {
+describe('AudioEngine original feedback', () => {
+  it('uses a short physical landing thump instead of an electrical low-sine hum', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -93,13 +94,13 @@ describe('AudioEngine hard drop', () => {
     audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }, { type: 'piece-locked', piece: 'T', cells: [] }]);
 
     expect(oscillators).toHaveLength(2);
-    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['sine', 'sine']);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([132, 198]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine']);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([168, 252]);
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length > 0)).toBe(true);
     audio.destroy();
   });
 
-  it('routes every event through bounded sine voices', async () => {
+  it('routes every event through bounded original oscillator voices', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -122,7 +123,36 @@ describe('AudioEngine hard drop', () => {
     ]);
 
     expect(oscillators.length).toBeGreaterThan(0);
-    expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
+    expect(oscillators.every((oscillator) => oscillator.type === 'sine' || oscillator.type === 'triangle')).toBe(true);
+    audio.destroy();
+  });
+
+  it('starts a low original music bed only after play begins and stops it on pause', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+    expect(oscillators).toHaveLength(0);
+
+    audio.play([{ type: 'started' }]);
+    const music = oscillators.slice(0, 2);
+    expect(music.map((oscillator) => oscillator.type)).toEqual(['sine', 'triangle']);
+    expect(oscillators).toHaveLength(4);
+
+    audio.play([{ type: 'paused' }]);
+    expect(music.every((oscillator) => oscillator.stops.length === 1)).toBe(true);
+    audio.destroy();
+  });
+
+  it('starts deferred music after a later user-gesture audio prime', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    audio.play([{ type: 'started' }]);
+    expect(oscillators).toHaveLength(0);
+
+    await audio.prime();
+
+    expect(oscillators.slice(0, 2).map((oscillator) => oscillator.type)).toEqual(['sine', 'triangle']);
+    expect(oscillators).toHaveLength(3);
     audio.destroy();
   });
 

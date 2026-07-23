@@ -10,16 +10,29 @@ interface ToneOptions {
   endFrequency?: number;
 }
 
+interface MusicVoice {
+  oscillator: OscillatorNode;
+  gain: GainNode;
+}
+
 /** Full-volume mix gain is deliberately above unity, then safely contained by the compressor. */
-const FULL_VOLUME_MASTER_GAIN = 1.35;
-const VOICE_GAIN_CEILING = 0.46;
-const VOICE_GAIN_BOOST = 1.22;
+const FULL_VOLUME_MASTER_GAIN = 1.55;
+const VOICE_GAIN_CEILING = 0.5;
+const VOICE_GAIN_BOOST = 1.3;
+const MUSIC_BUS_GAIN = 0.055;
 
 export class AudioEngine {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
+  private effects: GainNode | null = null;
+  private musicBus: GainNode | null = null;
   private compressor: DynamicsCompressorNode | null = null;
   private enabled = true;
+  private musicEnabled = true;
+  private musicPlaybackActive = false;
+  private musicVoices: MusicVoice[] = [];
+  private musicLfo: OscillatorNode | null = null;
+  private musicLfoGain: GainNode | null = null;
   private volume = 1;
   private lastMoveAt = 0;
   private lastSoftDropAt = 0;
@@ -29,7 +42,13 @@ export class AudioEngine {
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
-    this.applyMasterGain();
+    this.applyEffectsGain();
+  }
+
+  setMusicEnabled(enabled: boolean): void {
+    this.musicEnabled = enabled;
+    if (!enabled) this.stopMusic();
+    else if (this.musicPlaybackActive) this.startMusic();
   }
 
   setVolume(volume: number): void {
@@ -45,13 +64,19 @@ export class AudioEngine {
     return this.enabled;
   }
 
+  isMusicEnabled(): boolean {
+    return this.musicEnabled;
+  }
+
   async prime(): Promise<void> {
-    if (!this.enabled) return;
+    if (!this.enabled && !this.musicEnabled) return;
     if (!this.context) {
       const context = this.platform.createAudioContext();
       if (!context) return;
       this.context = context;
       this.master = this.context.createGain();
+      this.effects = this.context.createGain();
+      this.musicBus = this.context.createGain();
       this.compressor = this.context.createDynamicsCompressor();
       // Let individual sine transients stay present at 100%, then catch only
       // genuinely dense overlaps. The earlier hard compression made every cue
@@ -62,39 +87,61 @@ export class AudioEngine {
       this.compressor.attack.value = 0.004;
       this.compressor.release.value = 0.14;
       this.applyMasterGain();
+      this.applyEffectsGain();
+      this.musicBus.gain.setValueAtTime(0, this.context.currentTime);
+      this.effects.connect(this.master);
+      this.musicBus.connect(this.master);
       this.master.connect(this.compressor);
       this.compressor.connect(this.context.destination);
     }
     if (this.context.state === 'suspended') await this.context.resume();
+    if (this.musicPlaybackActive) this.startMusic();
   }
 
   suspend(): void {
+    this.stopMusic();
     void this.context?.suspend();
   }
 
   play(events: readonly GameEvent[]): void {
-    if (!this.enabled || !this.context || !this.master) return;
+    const stopMusic = events.some((event) => (
+      event.type === 'paused'
+      || event.type === 'restarted'
+      || event.type === 'finished'
+      || event.type === 'game-over'
+    ));
+    const startMusic = events.some((event) => event.type === 'started' || event.type === 'resumed');
+    if (stopMusic) {
+      this.musicPlaybackActive = false;
+      this.stopMusic();
+    } else if (startMusic) {
+      this.musicPlaybackActive = true;
+      this.startMusic();
+    }
+
+    if (!this.context || !this.master) return;
+    if (!this.enabled) return;
     const includesHardDrop = events.some((event) => event.type === 'hard-dropped');
     for (const event of events) {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = this.platform.now();
         if (now - this.lastMoveAt > 28) {
-          this.tone({ frequency: 228, duration: 0.03, gain: 0.13, endFrequency: 244, type: 'sine' });
+          this.tone({ frequency: 244, duration: 0.028, gain: 0.14, endFrequency: 258, type: 'triangle' });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
         const now = this.platform.now();
         if (now - this.lastSoftDropAt > 52) {
-          this.tone({ frequency: 176, duration: 0.03, gain: 0.11, endFrequency: 162, type: 'sine' });
+          this.tone({ frequency: 184, duration: 0.032, gain: 0.13, endFrequency: 170, type: 'triangle' });
           this.lastSoftDropAt = now;
         }
       } else if (event.type === 'piece-rotated') {
-        this.tone({ frequency: 392, duration: 0.055, gain: 0.19, endFrequency: 454, type: 'sine' });
-        this.tone({ frequency: 587, duration: 0.045, gain: 0.12, delay: 0.018, endFrequency: 660, type: 'sine' });
+        this.tone({ frequency: 392, duration: 0.052, gain: 0.21, endFrequency: 466, type: 'triangle' });
+        this.tone({ frequency: 587, duration: 0.04, gain: 0.14, delay: 0.018, endFrequency: 660, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
         this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop) {
-        this.tone({ frequency: 122, duration: 0.1, gain: 0.2, endFrequency: 98, type: 'sine' });
+        this.tone({ frequency: 154, duration: 0.075, gain: 0.24, endFrequency: 116, type: 'triangle' });
       } else if (event.type === 'lines-cleared') {
         this.clearChord(event.count);
       } else if (event.type === 'bedrock-raised') {
@@ -119,6 +166,12 @@ export class AudioEngine {
   }
 
   destroy(): void {
+    this.musicPlaybackActive = false;
+    this.stopMusic();
+    this.effects?.disconnect();
+    this.effects = null;
+    this.musicBus?.disconnect();
+    this.musicBus = null;
     this.master?.disconnect();
     this.master = null;
     this.compressor?.disconnect();
@@ -142,16 +195,16 @@ export class AudioEngine {
   }
 
   private landingThump(): void {
-    // A short, descending low-mid sine pair reads as a physical block landing;
-    // it deliberately avoids the sustained 64 Hz hum the prior version produced.
-    this.tone({ frequency: 132, duration: 0.095, gain: 0.31, endFrequency: 98, type: 'sine' });
-    this.tone({ frequency: 198, duration: 0.042, gain: 0.13, delay: 0.002, endFrequency: 154, type: 'sine' });
+    // A short triangle impact plus a brief upper knock avoids the sustained electrical
+    // hum of the prior low sine pair while staying clear beneath a line-clear chord.
+    this.tone({ frequency: 168, duration: 0.072, gain: 0.36, endFrequency: 124, type: 'triangle' });
+    this.tone({ frequency: 252, duration: 0.028, gain: 0.12, delay: 0.004, endFrequency: 206, type: 'sine' });
   }
 
   private tone(options: ToneOptions): void {
     const context = this.context;
-    const master = this.master;
-    if (!context || !master || this.voices >= 16) return;
+    const effects = this.effects;
+    if (!context || !effects || this.voices >= 16) return;
     const start = context.currentTime + (options.delay ?? 0);
     const end = start + options.duration;
     const oscillator = context.createOscillator();
@@ -167,7 +220,7 @@ export class AudioEngine {
     );
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
     oscillator.connect(gain);
-    gain.connect(master);
+    gain.connect(effects);
     oscillator.start(start);
     oscillator.stop(end + 0.01);
     oscillator.onended = () => {
@@ -179,8 +232,64 @@ export class AudioEngine {
 
   private applyMasterGain(): void {
     if (!this.master) return;
-    const value = this.enabled ? this.volume * FULL_VOLUME_MASTER_GAIN : 0;
+    const value = this.volume * FULL_VOLUME_MASTER_GAIN;
     if (this.context) this.master.gain.setTargetAtTime(value, this.context.currentTime, 0.012);
     else this.master.gain.value = value;
+  }
+
+  private applyEffectsGain(): void {
+    if (!this.effects) return;
+    const value = this.enabled ? 1 : 0;
+    if (this.context) this.effects.gain.setTargetAtTime(value, this.context.currentTime, 0.008);
+    else this.effects.gain.value = value;
+  }
+
+  private startMusic(): void {
+    const context = this.context;
+    const musicBus = this.musicBus;
+    if (!this.musicEnabled || !this.musicPlaybackActive || !context || !musicBus || this.musicVoices.length > 0) return;
+
+    const now = context.currentTime;
+    musicBus.gain.setTargetAtTime(MUSIC_BUS_GAIN, now, 0.12);
+    for (const voice of [
+      { frequency: 110, gain: 0.58, type: 'sine' as OscillatorType },
+      { frequency: 164.81, gain: 0.17, type: 'triangle' as OscillatorType },
+    ]) {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = voice.type;
+      oscillator.frequency.setValueAtTime(voice.frequency, now);
+      gain.gain.setValueAtTime(voice.gain, now);
+      oscillator.connect(gain);
+      gain.connect(musicBus);
+      oscillator.start(now);
+      this.musicVoices.push({ oscillator, gain });
+    }
+    const lfo = context.createOscillator();
+    const lfoGain = context.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(0.11, now);
+    lfoGain.gain.setValueAtTime(0.012, now);
+    lfo.connect(lfoGain);
+    lfoGain.connect(musicBus.gain);
+    lfo.start(now);
+    this.musicLfo = lfo;
+    this.musicLfoGain = lfoGain;
+  }
+
+  private stopMusic(): void {
+    const context = this.context;
+    if (context && this.musicBus) this.musicBus.gain.setTargetAtTime(0, context.currentTime, 0.025);
+    for (const voice of this.musicVoices) {
+      voice.oscillator.stop();
+      voice.oscillator.disconnect();
+      voice.gain.disconnect();
+    }
+    this.musicVoices = [];
+    this.musicLfo?.stop();
+    this.musicLfo?.disconnect();
+    this.musicLfoGain?.disconnect();
+    this.musicLfo = null;
+    this.musicLfoGain = null;
   }
 }
