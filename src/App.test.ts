@@ -471,6 +471,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toContain('目标：清空棋盘');
     expect(view.container.querySelector('.mode-preview')).toBeNull();
     expect(view.container.querySelector('.phase-seam')).toBeNull();
+    expect(view.container.querySelector('.landing-shell--workbench .mode-chooser--workbench')).not.toBeNull();
+    expect(view.container.querySelectorAll('.mode-gate__index')).toHaveLength(4);
     expect(view.container.querySelectorAll('.mode-gate__motif')).toHaveLength(4);
     expect([...view.container.querySelectorAll('.mode-gate__motif')].every((motif) => motif.children.length === 4)).toBe(true);
     expect(view.container.querySelectorAll('[data-testid="enter-puzzle"] .mode-gate__glyph rect')).toHaveLength(4);
@@ -598,7 +600,7 @@ describe('T6 frontend mode binding', () => {
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 
-  it('uses an all-open four-band relay while keeping one canonical selected-board focus', () => {
+  it('uses an all-open compact endgame console while keeping one canonical selected-board focus', () => {
     expect(CAMPAIGN_LEVELS).toHaveLength(20);
     const onSelect = vi.fn();
     const onStart = vi.fn();
@@ -620,16 +622,16 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="campaign-availability"]')?.textContent?.replace(/\s/g, '')).toBe('20/20');
     expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('20 个残局 · 全部可进入');
     expect(view.container.querySelector('[data-testid="campaign-rules"]')?.textContent).toContain('B 撤回');
-    expect(view.container.querySelectorAll('.relay-band')).toHaveLength(4);
+    expect(view.container.querySelectorAll('.console-band')).toHaveLength(4);
     expect(PUZZLE_ROW_BANDS.every((band, index) => (
-      view.container.querySelectorAll(`.relay-band[data-rows="${index + 5}"] .relay-node`).length === band.length
+      view.container.querySelectorAll(`.console-band[data-rows="${index + 5}"] .console-node`).length === band.length
     ))).toBe(true);
     expect(view.container.querySelectorAll('[data-testid="sector-row"]')).toHaveLength(0);
     expect(view.container.querySelectorAll('.observatory-sector, .observatory-stop')).toHaveLength(0);
     expect(rows[0]?.textContent).toContain('01');
     expect(rows[0]?.getAttribute('aria-label')).toContain(CAMPAIGN_LEVELS[0]!.name);
-    expect(view.container.querySelectorAll('.relay-route .puzzle-silhouette')).toHaveLength(0);
-    expect(view.container.querySelectorAll('.relay-focus .puzzle-silhouette')).toHaveLength(1);
+    expect(view.container.querySelectorAll('.console-route .puzzle-silhouette')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.console-focus .puzzle-silhouette')).toHaveLength(1);
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
       expect(view.container.textContent).not.toContain(banned);
@@ -654,7 +656,7 @@ describe('T6 frontend mode binding', () => {
       const definition = getPuzzleDefinition(level.id);
 
       expect(pressed?.dataset.levelId).toBe(level.id);
-      expect(view.container.querySelector('.relay-focus h2')?.textContent).toBe(level.name);
+      expect(view.container.querySelector('.console-focus h2')?.textContent).toBe(level.name);
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();
@@ -662,7 +664,7 @@ describe('T6 frontend mode binding', () => {
       expect(puzzleSilhouettePaths(level.id).size).toBe(visibleMaterials.size);
       expect([...puzzleSilhouettePaths(level.id).values()].every((path) => path.includes('h3.8v3.8'))).toBe(true);
       expect(Boolean(puzzleAnchorSilhouettePath(level.id))).toBe(definition.anchorCells.length > 0);
-      expect(view.container.querySelectorAll('.relay-focus .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
+      expect(view.container.querySelectorAll('.console-focus .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
         definition.anchorCells.length > 0 ? 1 : 0,
       );
     }

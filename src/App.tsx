@@ -253,22 +253,26 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
 export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
   const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
   return (
-    <main id="game" className="landing-shell" data-testid="mode-home">
+    <main id="game" className="landing-shell landing-shell--workbench" data-testid="mode-home">
       <header className="landing-header">
         <Brand primary />
+        <span className="landing-header__signal" aria-hidden="true"><b>04</b><i /><i /><i /><i /></span>
       </header>
-      <section className="landing-stage" aria-labelledby="home-title">
-        <section className="mode-chooser">
+      <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
+        <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
+            <span className="landing-intro__eyebrow">GRAVITY FIELD</span>
             <h2 id="home-title">选择模式</h2>
+            <p>选择一条重力轨迹。</p>
+            <span className="landing-intro__mark" aria-hidden="true"><i /><i /><i /><i /><i /></span>
           </div>
           <div
-            className="mode-gates"
+            className="mode-gates mode-gates--workbench"
             data-selection={previewMode}
             aria-label="选择游戏模式"
             data-testid="mode-list"
           >
-            {MODE_ORDER.map((mode) => {
+            {MODE_ORDER.map((mode, index) => {
               const item = MODE_COPY[mode];
               const active = previewMode === mode;
               return (
@@ -283,6 +287,7 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
                   onFocus={() => setPreviewMode(mode)}
                   onClick={() => onEnter(mode)}
                 >
+                  <span className="mode-gate__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
                   <span className="mode-gate__glyph"><ModeGlyph mode={mode} /></span>
                   <span className="mode-gate__body">
                     <strong>{item.label}</strong>
@@ -384,36 +389,58 @@ export function PuzzleLibrary({
   const selectedRows = selectedDefinition.boardRows.filter((row) => row !== '..........').length;
   const selectedGuide = puzzleHintGuide(selected.id);
   return (
-    <main id="game" className="library-shell library-shell--relay" data-testid="puzzle-library">
-      <header className="library-header relay-header">
+    <main id="game" className="library-shell library-shell--console" data-testid="puzzle-library">
+      <header className="library-header console-header">
         <button className="library-back" type="button" aria-label="返回模式首页" onClick={onBack}>
           <b aria-hidden="true">←</b><span>返回模式</span>
         </button>
         <Brand compact />
-        <span className="relay-header__count" data-testid="campaign-availability" aria-label={`${CAMPAIGN_LEVELS.length} 个残局均可进入`}>
+        <span className="console-header__count" data-testid="campaign-availability" aria-label={`${CAMPAIGN_LEVELS.length} 个残局均可进入`}>
           {String(CAMPAIGN_LEVELS.length).padStart(2, '0')}<small>/ {String(CAMPAIGN_LEVELS.length).padStart(2, '0')}</small>
         </span>
       </header>
-      <section className="relay-workbench" aria-labelledby="library-title">
-        <nav className="relay-route" aria-label={`${CAMPAIGN_LEVELS.length} 个开放解谜残局`} data-testid="level-list">
-          <div className="relay-route__heading">
-            <span>ENDGAME</span>
+      <section className="console-workbench" aria-labelledby="library-title">
+        <aside className="console-focus" aria-live="polite" aria-label={`已选残局：${selected.name}`}>
+          <div className="console-focus__well" key={selected.id}>
+            <span className="console-focus__index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
+            <span className="console-focus__pulse" aria-hidden="true" />
+            <div className="console-focus__board">
+              <PuzzleSilhouette id={selected.id} name={selected.name} />
+            </div>
+          </div>
+          <section className="console-focus__copy">
+            <div className="console-focus__heading">
+              <span>{String(selected.index).padStart(2, '0')} · {selectedRows} 行残局</span>
+              <h2>{selected.name}</h2>
+              {selectedComplete && <i aria-label="已完成">✓</i>}
+            </div>
+            <p>{selectedGuide.cue}</p>
+            <div className="console-focus__facts" aria-label="残局特性">
+              <span>{selectedRows} 行残局</span>
+              {selectedAnchorCount > 0 && <span>固定锚点</span>}
+            </div>
+            <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
+          </section>
+        </aside>
+        <nav className="console-route" aria-label={`${CAMPAIGN_LEVELS.length} 个开放解谜残局`} data-testid="level-list">
+          <div className="console-route__heading">
+            <span>20 个残局</span>
             <h1 id="library-title">解谜</h1>
           </div>
-          <ol className="relay-bands" aria-label="残局行数分段">
+          <ol className="console-bands" aria-label="残局行数分段">
             {PUZZLE_ROW_BANDS.map((band, bandIndex) => {
               const rows = bandIndex + 5;
               const activeBand = band.some((level) => level.id === selected.id);
               return (
-                <li className={`relay-band ${activeBand ? 'relay-band--active' : ''}`} data-rows={rows} key={band[0]!.id}>
-                  <span className="relay-band__label" aria-label={`${rows} 行残局`}>{String(rows).padStart(2, '0')}<small>ROWS</small></span>
-                  <ol className="relay-nodes">
+                <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={rows} key={band[0]!.id}>
+                  <span className="console-band__label" aria-label={`${rows} 行残局`}>{String(rows).padStart(2, '0')}<small>{rows} 行</small></span>
+                  <ol className="console-nodes">
                     {band.map((level) => {
                       const complete = progress.completedLevelIds.includes(level.id);
                       const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
                       const selectedLevel = selectedId === level.id;
                       return (
-                        <li className={`relay-node ${selectedLevel ? 'relay-node--selected' : ''} ${complete ? 'relay-node--complete' : ''}`} key={level.id}>
+                        <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''} ${complete ? 'console-node--complete' : ''}`} key={level.id}>
                           <button
                             type="button"
                             data-testid="level-row"
@@ -436,29 +463,8 @@ export function PuzzleLibrary({
             })}
           </ol>
         </nav>
-        <aside className="relay-focus" aria-live="polite" aria-label={`已选残局：${selected.name}`}>
-          <div className="relay-focus__well" key={selected.id}>
-            <span className="relay-focus__index" aria-hidden="true">{String(selected.index).padStart(2, '0')}</span>
-            <div className="relay-focus__board">
-              <PuzzleSilhouette id={selected.id} name={selected.name} />
-            </div>
-          </div>
-          <section className="relay-focus__copy">
-            <div className="relay-focus__heading">
-              <span>{String(selected.index).padStart(2, '0')} · {selectedRows} ROWS</span>
-              <h2>{selected.name}</h2>
-              {selectedComplete && <i aria-label="已完成">✓</i>}
-            </div>
-            <p>{selectedGuide.cue}</p>
-            <div className="relay-focus__facts" aria-label="残局特性">
-              <span>{selectedRows} 行残局</span>
-              {selectedAnchorCount > 0 && <span>固定锚点</span>}
-            </div>
-            <button className="primary-action relay-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
-          </section>
-        </aside>
       </section>
-      <footer className="relay-footer" data-testid="campaign-rules" aria-label="开放解谜工作坊说明">
+      <footer className="console-footer" data-testid="campaign-rules" aria-label="开放解谜工作坊说明">
         <strong>20 个残局 · 全部可进入</strong><span>B 撤回 · 先试，再读提示</span>
       </footer>
     </main>
