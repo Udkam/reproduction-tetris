@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fullRows } from './board';
-import { LINE_CLEAR_DELAY_TICKS, VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
+import { VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch, stateHash } from './engine';
 import {
   PUZZLE_DEFINITIONS,
@@ -12,6 +11,7 @@ import {
   validatePuzzleDefinition,
   type PuzzleDefinition,
 } from './puzzles';
+import { puzzleLandings } from './puzzleRouteSearch';
 import { createRandomizer, drawPiece } from './random';
 import { ANCHOR_CELL, PIECE_TYPES, type PieceType, type PuzzleId } from './types';
 
@@ -40,11 +40,10 @@ function visibleBoardRows(definition: PuzzleDefinition): string[] {
   return rows.map((row) => row.join(''));
 }
 
-function advanceLineResolution(state: ReturnType<typeof createInitialState>): ReturnType<typeof createInitialState> {
-  let next = dispatch(state, { type: 'start' }).state;
-  next = dispatch(next, { type: 'hard-drop' }).state;
-  for (let tick = 0; tick <= LINE_CLEAR_DELAY_TICKS; tick += 1) next = dispatch(next, { type: 'tick' }).state;
-  return next;
+function initialLandingSignatures(definition: PuzzleDefinition, includeAnchors: boolean): string[] {
+  let state = dispatch(createInitialState(0x51a1f00d, 'puzzle', definition.id), { type: 'start' }).state;
+  if (!includeAnchors) state = { ...state, board: createPuzzleBoard(definition, false) };
+  return puzzleLandings(state).map(({ lock }) => lock.signature).sort();
 }
 
 describe('T13 legal endgame workshop definitions', () => {
@@ -58,11 +57,14 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(PUZZLE_DEFINITIONS.map(({ difficulty }) => difficulty)).toEqual(Array.from({ length: 20 }, (_, index) => index + 1));
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(20);
+    expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
+      '开槽', '回转', '错层', '双湾', '侧槽', '折角', '长槽', '搭桥', '交错', '双仓',
+      '竖脊', '弧底', '双折', '盆地', '缺口', '双坡', '阶梯', '基石', '交口', '深槽',
+    ]);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
-      't3r-shaft-01', 't5r-lattice-09', 't5r-current-12',
-      't5r-horizon-15', 't6r-cairn-17', 't6r-keystone-20',
+      't3r-shaft-01', 't5r-lattice-09',
     ] satisfies PuzzleId[]);
   });
 
@@ -93,7 +95,9 @@ describe('T13 legal endgame workshop definitions', () => {
         if (row !== '..........') expect([...row]).toContain('.');
       }
       for (const anchor of definition.anchorCells) {
-        expect(anchor.y, definition.id).toBe(19);
+        const targetStart = VISIBLE_HEIGHT - expectedPuzzleTargetRows(definition.difficulty);
+        expect(anchor.y, definition.id).toBeGreaterThanOrEqual(Math.max(0, targetStart - 2));
+        expect(anchor.y, definition.id).toBeLessThan(targetStart);
         expect(definition.boardRows[anchor.y]?.[anchor.x], definition.id).toBe('.');
       }
     }
@@ -127,20 +131,13 @@ describe('T13 legal endgame workshop definitions', () => {
     }
   });
 
-  it('proves every curated anchor changes ordinary post-lock resolution without covering a target', () => {
+  it('keeps every curated anchor in headroom and proves it changes a legal landing without covering a target', () => {
     for (const definition of PUZZLE_DEFINITIONS.filter((level) => level.anchorCells.length > 0)) {
-      const anchoredBoard = createPuzzleBoard(definition);
-      const anchorFreeBoard = createPuzzleBoard(definition, false);
-      expect(fullRows(anchoredBoard), definition.id).toContain(VISIBLE_START_ROW + 19);
-      expect(fullRows(anchorFreeBoard), definition.id).not.toContain(VISIBLE_START_ROW + 19);
-
-      const initial = createInitialState(0x51a1f00d, 'puzzle', definition.id);
-      const anchored = advanceLineResolution(initial);
-      const anchorFree = advanceLineResolution({ ...initial, board: anchorFreeBoard });
-      expect(anchored.puzzleTargetCells.length, definition.id).toBeLessThan(anchorFree.puzzleTargetCells.length);
-      expect(anchored.board, definition.id).not.toEqual(anchorFree.board);
+      const anchoredLandings = initialLandingSignatures(definition, true);
+      const anchorFreeLandings = initialLandingSignatures(definition, false);
+      expect(anchoredLandings, definition.id).not.toEqual(anchorFreeLandings);
       for (const anchor of definition.anchorCells) {
-        expect(anchored.board[VISIBLE_START_ROW + anchor.y]?.[anchor.x], definition.id).toBe(ANCHOR_CELL);
+        expect(definition.boardRows[anchor.y]?.[anchor.x], definition.id).toBe('.');
       }
     }
   });
@@ -160,7 +157,7 @@ describe('T13 legal endgame workshop definitions', () => {
     }))).toThrow(/setup history/i);
     expect(() => validatePuzzleDefinition(invalid(first, { hiddenCells: [{ x: 0, y: 0, type: 'J' }] }))).toThrow(/hidden buffer/i);
     expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 0, y: 19 }] }))).toThrow(/anchor/i);
-    expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 9, y: 19 }, { x: 9, y: 19 }] }))).toThrow(/duplicate/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 3, y: 14 }, { x: 3, y: 14 }] }))).toThrow(/duplicate/i);
   });
 
   it('restarts a level with the exact same derived board, target ownership, queue, and hash', () => {

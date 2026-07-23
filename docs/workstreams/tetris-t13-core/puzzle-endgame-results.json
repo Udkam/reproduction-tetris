@@ -65,26 +65,26 @@
       },
       "anchorCells": [
         {
-          "x": 9,
-          "y": 19
+          "x": 3,
+          "y": 14
         }
       ],
       "routes": [
         {
           "id": "primary",
-          "commandStream": "SCCCRRRHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTCCCRRRRRHTTTTTTTTTTTTLLLLHTTTCHTTTTTTTTTTTTCLLHTTTTTTTTTTTT",
-          "commandCount": 97,
-          "locks": 6,
+          "commandStream": "SCLLLLHTTTCCCRRRRRHTTTTTTTTTTTTCCRRHTTTCRRRRHTTTTTTTTTTTTCLLLHTTTRRRHTTTCHTTTTTTTTTTTT",
+          "commandCount": 86,
+          "locks": 7,
           "rotationCount": 9,
-          "moveCount": 18
+          "moveCount": 21
         },
         {
           "id": "alternate",
-          "commandStream": "SCCRRRRHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTCCCLLLHTTTRRHTTTCHTTTTTTTTTTTTCLLHTTTTTTTTTTTT",
-          "commandCount": 84,
-          "locks": 6,
-          "rotationCount": 8,
-          "moveCount": 15
+          "commandStream": "SCCRRRRHTTTTTTTTTTTTCCCRRRRRHTTTTTTTTTTTTCCCRRHTTTLLLLHTTTCRRHTTTCRRRRHTTTTTTTTTTTTCHTTTCCCLLHTTTTTTTTTTTT",
+          "commandCount": 106,
+          "locks": 8,
+          "rotationCount": 14,
+          "moveCount": 23
         }
       ],
       "firstDivergenceLock": 1
@@ -273,26 +273,26 @@
       },
       "anchorCells": [
         {
-          "x": 0,
-          "y": 19
+          "x": 9,
+          "y": 13
         }
       ],
       "routes": [
         {
           "id": "primary",
-          "commandStream": "SRRRHTTTTTTTTTTTTCCLLLHTTTTTTTTTTTTLLLHTTTCHTTTTTTTTTTTTLLHTTTTTTTTTTTTCRRHTTTTTTTTTTTTLHTTTRRRRHTTTCCCLLLHTTTTTTTTTTTT",
-          "commandCount": 119,
-          "locks": 9,
-          "rotationCount": 7,
-          "moveCount": 21
+          "commandStream": "SLLHTTTRHTTTCLLLLLHTTTTTTTTTTTTCRRRHTTTCCCLLLHTTTTTTTTTTTTLHTTTTTTTTTTTTHTTTHTTTCCCLHTTTCLLLLHTTTTTTTTTTTTCRRHTTTTTTTTTTTT",
+          "commandCount": 122,
+          "locks": 11,
+          "rotationCount": 10,
+          "moveCount": 22
         },
         {
           "id": "alternate",
-          "commandStream": "SLLLHTTTTTTTTTTTTRRHTTTTTTTTTTTTCLLLLLHTTTLLHTTTCCCHTTTTTTTTTTTTCRRHTTTTTTTTTTTTLLLHTTTLLLHTTTCCCRRRRHTTTCLHTTTCRHTTTTTTTTTTTT",
-          "commandCount": 126,
-          "locks": 11,
-          "rotationCount": 10,
-          "moveCount": 26
+          "commandStream": "SRRRHTTTCRRRHTTTCLLLLLHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTCCHTTTCCCLLLHTTTTTTTTTTTTLLHTTTTTTTTTTTTLLHTTTCCCRRRRHTTTCCCRRHTTTTTTTTTTTTCLLLLHTTTCLHTTTTTTTTTTTT",
+          "commandCount": 151,
+          "locks": 12,
+          "rotationCount": 16,
+          "moveCount": 32
         }
       ],
       "firstDivergenceLock": 1
@@ -421,28 +421,23 @@
         "seed": 287454031,
         "placementCount": 10
       },
-      "anchorCells": [
-        {
-          "x": 0,
-          "y": 19
-        }
-      ],
+      "anchorCells": [],
       "routes": [
         {
           "id": "primary",
-          "commandStream": "SLLHTTTTTTTTTTTTCLLLLHTTTCHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTCLLLLLHTTTCRHTTTTTTTTTTTTCCLLHTTTRRRHTTTTTTTTTTTTCLHTTTCCRHTTTCRRRRHTTTTTTTTTTTTCLLLHTTTTTTTTTTTTCRRRHTTTTTTTTTTTT",
-          "commandCount": 171,
-          "locks": 13,
-          "rotationCount": 13,
-          "moveCount": 33
+          "commandStream": "SLHTTTCLLLLHTTTTTTTTTTTTCCLLLHTTTTTTTTTTTTLLHTTTCLLLLLHTTTCLLLHTTTCCCRHTTTTTTTTTTTTRRRHTTTCRHTTTTTTTTTTTTCCCHTTTCRRRRHTTTTTTTTTTTTCCCRRRHTTTTTTTTTTTT",
+          "commandCount": 149,
+          "locks": 12,
+          "rotationCount": 16,
+          "moveCount": 30
         },
         {
           "id": "alternate",
-          "commandStream": "SLLLLHTTTTTTTTTTTTLHTTTHTTTCLLLLHTTTTTTTTTTTTCLLLLHTTTCRHTTTTTTTTTTTTCLLHTTTRRRHTTTTTTTTTTTTCLHTTTCCRHTTTCLLLLLHTTTCCCRRRRRHTTTTTTTTTTTTLLHTTTCRRRHTTTTTTTTTTTT",
-          "commandCount": 159,
-          "locks": 14,
-          "rotationCount": 12,
-          "moveCount": 36
+          "commandStream": "SRRRHTTTCLLLLHTTTTTTTTTTTTCCLLLHTTTHTTTTTTTTTTTTLLLHTTTTTTTTTTTTCRHTTTCCLLLHTTTTTTTTTTTTLLLLHTTTCLHTTTTTTTTTTTTCLLHTTTCRRRRHTTTTTTTTTTTTCHTTTTTTTTTTTTCRRRHTTTTTTTTTTTT",
+          "commandCount": 167,
+          "locks": 13,
+          "rotationCount": 11,
+          "moveCount": 31
         }
       ],
       "firstDivergenceLock": 1
@@ -484,28 +479,23 @@
         "seed": 305419896,
         "placementCount": 10
       },
-      "anchorCells": [
-        {
-          "x": 3,
-          "y": 19
-        }
-      ],
+      "anchorCells": [],
       "routes": [
         {
           "id": "primary",
-          "commandStream": "SCCRRRRHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTCCRRRRHTTTRHTTTTTTTTTTTTCRRRRHTTTCCRRRHTTTLLLLHTTTTTTTTTTTTRRHTTTCRRRRHTTTCLLLHTTTTTTTTTTTTCHTTTTTTTTTTTTCCLLLHTTTCRRRRHTTTRRRHTTTCHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTT",
-          "commandCount": 199,
-          "locks": 16,
-          "rotationCount": 16,
-          "moveCount": 46
+          "commandStream": "SCCRRRRHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTCCRRRRHTTTRHTTTTTTTTTTTTCRRRRHTTTCCRRRHTTTLLLLHTTTTTTTTTTTTRRHTTTCRRRRHTTTCLLLHTTTTTTTTTTTTCHTTTTTTTTTTTTCLLLLHTTTCLLHTTTTTTTTTTTT",
+          "commandCount": 167,
+          "locks": 13,
+          "rotationCount": 13,
+          "moveCount": 38
         },
         {
           "id": "alternate",
-          "commandStream": "SCCCRRRRRHTTTTTTTTTTTTCRRRHTTTCCCRRHTTTRRRRHTTTCRRRRHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTLLLHTTTRRRHTTTCHTTTTTTTTTTTTCRHTTTCCCHTTTTTTTTTTTTCRRRHTTTTTTTTTTTT",
+          "commandStream": "SCCCRRRRRHTTTTTTTTTTTTCRRRHTTTCCCRRHTTTRRRRHTTTCRRRRHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTLLLHTTTLLLLHTTTCHTTTTTTTTTTTTCRHTTTCRRRHTTTTTTTTTTTTCLHTTTTTTTTTTTT",
           "commandCount": 150,
           "locks": 12,
-          "rotationCount": 15,
-          "moveCount": 32
+          "rotationCount": 13,
+          "moveCount": 34
         }
       ],
       "firstDivergenceLock": 1
@@ -518,28 +508,23 @@
         "seed": 270544960,
         "placementCount": 12
       },
-      "anchorCells": [
-        {
-          "x": 9,
-          "y": 19
-        }
-      ],
+      "anchorCells": [],
       "routes": [
         {
           "id": "primary",
-          "commandStream": "SCRRRRHTTTTTTTTTTTTCCLLLHTTTLLLLHTTTCRRRHTTTCRRRRHTTTTTTTTTTTTCRRRRHTTTCCRRHTTTTTTTTTTTTCCRRRHTTTLHTTTCHTTTTTTTTTTTTRRHTTTTTTTTTTTTCLLLHTTTTTTTTTTTT",
-          "commandCount": 148,
-          "locks": 12,
-          "rotationCount": 12,
-          "moveCount": 33
+          "commandStream": "SCLLHTTTCCCRRRRRHTTTTTTTTTTTTRRRRHTTTTTTTTTTTTCRHTTTCRRRRHTTTCLLLLHTTTCRRRHTTTTTTTTTTTTCCCRRRRHTTTTTTTTTTTTCLLLLHTTTRRRHTTTRHTTTCLHTTTCCRRRRHTTTTTTTTTTTTCCCLHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTCCCRHTTTTTTTTTTTTCRRHTTTTTTTTTTTTRHTTTCLLLHTTTCRRRRHTTTTTTTTTTTT",
+          "commandCount": 252,
+          "locks": 20,
+          "rotationCount": 25,
+          "moveCount": 56
         },
         {
           "id": "alternate",
-          "commandStream": "SCCCRRRRRHTTTTTTTTTTTTRRRRHTTTTTTTTTTTTLLLHTTTCRRRHTTTTTTTTTTTTCLLLLLHTTTCRRRRHTTTCCRRHTTTTTTTTTTTTHTTTTTTTTTTTTCLHTTTCRHTTTRRRHTTTTTTTTTTTTCLLLHTTTTTTTTTTTT",
-          "commandCount": 157,
-          "locks": 12,
-          "rotationCount": 11,
-          "moveCount": 34
+          "commandStream": "SCLLLLHTTTCCCRRRRRHTTTTTTTTTTTTRRRRHTTTTTTTTTTTTCHTTTCRRRRHTTTRRRHTTTTTTTTTTTTCCCRRRRHTTTTTTTTTTTTCRRHTTTCLLHTTTTTTTTTTTTCLLLLHTTTTTTTTTTTTRRRRHTTTCRRHTTTCRHTTTRRRRHTTTCLLHTTTTTTTTTTTTCCLLLHTTTCCRHTTTTTTTTTTTTLHTTTTTTTTTTTTCRHTTTTTTTTTTTTCCLLLHTTTCRRRHTTTTTTTTTTTT",
+          "commandCount": 264,
+          "locks": 21,
+          "rotationCount": 23,
+          "moveCount": 57
         }
       ],
       "firstDivergenceLock": 1
@@ -581,31 +566,26 @@
         "seed": 305419896,
         "placementCount": 13
       },
-      "anchorCells": [
-        {
-          "x": 3,
-          "y": 19
-        }
-      ],
+      "anchorCells": [],
       "routes": [
         {
           "id": "primary",
-          "commandStream": "SCRRHTTTTTTTTTTTTRRRRHTTTCRHTTTTTTTTTTTTCLLLHTTTCCRHTTTTTTTTTTTTRRRRHTTTTTTTTTTTTCLLLLHTTTCLLLLHTTTCCRRHTTTTTTTTTTTTLHTTTCRRRRHTTTTTTTTTTTTCCCRHTTTTTTTTTTTTCCLHTTTRRRHTTTTTTTTTTTT",
-          "commandCount": 179,
-          "locks": 14,
-          "rotationCount": 15,
-          "moveCount": 35
+          "commandStream": "SRRHTTTRRRRHTTTCCRRHTTTTTTTTTTTTCLHTTTTTTTTTTTTCLLHTTTRRRRHTTTRRHTTTTTTTTTTTTCLLLLHTTTCRHTTTTTTTTTTTTRRRHTTTCRRRRHTTTTTTTTTTTTCCCLHTTTTTTTTTTTTCCCLLLHTTTTTTTTTTTTCRHTTTTTTTTTTTTCHTTTTTTTTTTTTCRRRHTTTTTTTTTTTTCCCLHTTTTTTTTTTTT",
+          "commandCount": 225,
+          "locks": 17,
+          "rotationCount": 19,
+          "moveCount": 38
         },
         {
           "id": "alternate",
-          "commandStream": "SRRHTTTTTTTTTTTTRRRRHTTTCCRRHTTTTTTTTTTTTCLLLHTTTCCRHTTTTTTTTTTTTRRRRHTTTTTTTTTTTTCLLLLHTTTCLLLLHTTTCCHTTTTTTTTTTTTRRHTTTCLLHTTTCCCRRRRRHTTTTTTTTTTTTCCCRHTTTTTTTTTTTTRRRHTTTTTTTTTTTT",
-          "commandCount": 182,
-          "locks": 14,
-          "rotationCount": 16,
-          "moveCount": 37
+          "commandStream": "SRHTTTLLHTTTCCRRRRHTTTTTTTTTTTTRRRHTTTTTTTTTTTTRRRHTTTCCCRHTTTTTTTTTTTTCLLLLHTTTCLLLLHTTTCCLHTTTRRHTTTTTTTTTTTTCRRRRHTTTTTTTTTTTTCCCRHTTTTTTTTTTTTCCCLLLHTTTRRRHTTTTTTTTTTTTRRHTTTCCCRRRRHTTTTTTTTTTTTCCCLHTTTTTTTTTTTT",
+          "commandCount": 215,
+          "locks": 17,
+          "rotationCount": 22,
+          "moveCount": 43
         }
       ],
-      "firstDivergenceLock": 1
+      "firstDivergenceLock": 2
     },
     {
       "id": "t6r-bastion-19",
