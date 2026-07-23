@@ -10,13 +10,14 @@ any Puzzle source or visual surface.
 - Sprint is renamed **坍缩**. It is a fixed 75-second score attack with a fresh live
   seven-bag and steady brisk gravity. It has no opening rubble, no target-cell list,
   no clear-a-number-of-lines finish, and no time-to-completion ranking.
-- On every completed line clear, all ordinary cells settle independently within their
-  own columns. The engine then checks for newly formed full lines and resolves them in
-  sequence. One placed tetromino can therefore create a multi-stage collapse; a normal
-  Classic line clear cannot.
-- Clear score is multiplied by the current collapse depth. The HUD exposes current
-  chain, best chain, total score, and time remaining. The round ends only when its
-  clock expires; topping out ends an attempt early without a ranked result.
+- Every placed tetromino triggers an independent-column settling pass as soon as it
+  locks; a completed line triggers the same pass again after it is removed. The engine
+  then checks for newly formed full lines and resolves them in sequence. One placed
+  tetromino can therefore create a multi-stage collapse; a normal Classic lock cannot.
+- Clear score is multiplied by the square of the current collapse depth. The HUD
+  exposes current chain, best chain, total score, and time remaining. The round ends
+  only when its clock expires; topping out ends an attempt early without a ranked
+  result.
 - The renamed mode ranks completed rounds by score, then best collapse depth, total
   lines, and fewer pieces. Its title/result text must say `坍缩`, never `冲刺`,
   `清障`, `开局方块`, or `完成时间`.
@@ -61,7 +62,7 @@ choose a mode or a Puzzle endgame.
   setup with a generic illustration. The numeric selector stays deliberately sparse
   so the preview, not decorative navigation, carries the pattern.
 
-### Excavation Sprint
+### Superseded excavation Sprint (historical only)
 
 - `sprint` becomes **清障冲刺**, not a 40-line variant of Classic. Each fresh run uses
   its own random seed to generate a low seven-row ordinary rubble field with readable

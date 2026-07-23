@@ -6,11 +6,11 @@ Current base: coordinator-verified T12.7 recovery record `550d77e`. It is histor
 evidence only: its target-floor boards and tier gate are superseded by this task, and
 its local walkthrough output must be regenerated rather than reused as T13 evidence.
 
-Current execution status (2026-07-23): **IN PROGRESS — T13 converts every Puzzle entry
-into an open, legal five-through-eight-row endgame workshop; aligns P/R/Enter behavior
-with the visible controls; and introduces a distinct excavation Sprint mode.** No T13
-source or visual claim is complete until the complete candidate range is replayed,
-tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
+Current execution status (2026-07-23): **COORDINATOR RECORDING — T13 converts every
+Puzzle entry into an open, legal five-through-eight-row endgame workshop; aligns
+P/R/Enter behavior with the visible controls; and replaces the rejected Sprint with
+the distinct Collapse mode.** The verified candidate range is being recorded and
+pushed under the user's recovery authorization; it is not an independent-QA acceptance.
 
 ### T13.2 fourth-mode Collapse correction
 
@@ -19,7 +19,7 @@ closed: no further source, selector, preview, level, queue, anchor, undo, hint, 
 visual changes are authorized. The coordinator may replace only the current Sprint
 implementation and its direct Core/runtime/leaderboard/App/test bindings with a new
 75-second **坍缩** score attack. It must apply independent per-column settling after
-each clear and resolve resulting lines as a scoring cascade, rank completed rounds by
+every lock and again after each clear, resolving resulting lines as a scoring cascade, rank completed rounds by
 score/best-chain/lines/fewer pieces, and never present a rubble target, time-to-finish,
 or `冲刺` label. Required source scope is the existing Sprint Core paths, constants,
 types, leaderboard/persistence paths, relevant App bindings/tests, and styles; the
@@ -83,17 +83,20 @@ bounded correction sequence:
    non-spoiling guidance to the schema-6 route evidence. Historic completion records
    remain valid player history; no Core rule, renderer, or generic storage migration
    is changed.
-5. **Sprint checkpoint (authorized integration exception):**
+5. **Collapse checkpoint (authorized integration exception):**
    `src/game/core/types.ts`, `src/game/core/constants.ts`, `src/game/core/engine.ts`,
-   `src/game/core/sprint.test.ts`, `src/game/core/rules.test.ts`,
-   `src/game/runtime/GameRuntime.test.ts`, `src/leaderboard.ts`,
-   `src/leaderboard.test.ts`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`
-   may change together only as required for an empty-board 40-line completion with a
-   steady brisk fall, an explicit Core completion state, fresh ordinary-run seeds,
-   time-ranked Sprint records, and its exact visible mode/home/result bindings. These
-   cross Core/persistence/UI paths are atomic because the expanded `GameMode` must
-   typecheck through all three boundaries; no Puzzle source, renderer primitive,
-   dependency, or packaging target is included.
+   `src/game/core/index.ts`, `src/game/core/sprint.ts`,
+   `src/game/core/sprint.test.ts`, `src/game/runtime/GameRuntime.test.ts`,
+   `src/leaderboard.ts`, `src/leaderboard.test.ts`, `src/App.tsx`, `src/App.test.ts`,
+   `src/styles.css`, and `src/game/render/theme.test.ts` may change together only to
+   replace Sprint with the 75-second 坍缩 score attack: settle each column after every
+   lock and again after every clear, score chain depth, rank completed runs by
+   score/chain/lines/pieces, persist the renamed record schema, and bind the exact
+   HUD/home/result surface. These Core/persistence/UI/style paths are atomic because
+   the revised `GameState`, storage schema, and four mode surfaces must typecheck as
+   one behavior; this expressly permits the documented path/line-budget exception.
+   No Puzzle source or visual surface, renderer primitive, dependency, or packaging
+   target is included.
 6. **Workshop presentation checkpoint (authorized visual exception):** `src/App.tsx`,
    `src/App.test.ts`, and `src/styles.css` own the all-open relay copy/layout/motion
    and the four-mode home treatment. The responsive four-band circuit, focus well,

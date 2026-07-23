@@ -274,8 +274,8 @@
   No Puzzle source or visual edit was made after that mistaken direction; it is now
   superseded and Puzzle is closed pending a separate request.
 - Direction: replace excavation Sprint with **坍缩**, a 75-second deterministic
-  score-attack where normal line clears trigger independent-column settling and any
-  resulting full rows resolve as a multi-stage cascade. The primary score/rank measure
+  score-attack where every locked piece, and then every normal line clear, trigger
+  independent-column settling; any resulting full rows resolve as a multi-stage cascade. The primary score/rank measure
   becomes score plus best chain, not fastest completion. The renamed mode may change
   its existing Core, App, leaderboard, direct-test, and required small renderer/event
   paths only; Classic, Survival, Puzzle, dependencies, and package targets are closed.
@@ -284,3 +284,53 @@
   browser evidence. The evidence must show a live 75-second Collapse state, no legacy
   `冲刺`/`清障` labels, visible chain HUD, 44 px controls, one canvas, no overflow, and
   zero console/page errors.
+
+## 2026-07-23 — TETRIS-T13.2-COLLAPSE-012 source checkpoint
+
+- Base: `a26f929`; source candidate: `eaf88d0`
+  (`feat(t13): rebuild Sprint as Collapse`). The related test-only retained Puzzle
+  replay correction is the preceding `8c51e8c` (`test(qa): refresh Puzzle replay
+  fixture`); it refreshes a schema-6 public route and next-unlock expectation only.
+- Exact Collapse paths: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/game/core/constants.ts`, `src/game/core/engine.ts`, `src/game/core/index.ts`,
+  `src/game/core/sprint.ts`, `src/game/core/sprint.test.ts`,
+  `src/game/core/types.ts`, `src/game/render/theme.test.ts`,
+  `src/game/runtime/GameRuntime.test.ts`, `src/leaderboard.ts`, and
+  `src/leaderboard.test.ts`. This is the authorized cross-boundary exception recorded
+  in `CURRENT_TASK.md`; no Puzzle source or visual file is included.
+- Result: 坍缩 starts on an empty ordinary board with a fresh seven-bag and fixed
+  36-tick gravity. Every locked piece compacts ordinary cells by independent columns;
+  a clear compacts again, discovers resulting rows, and resolves their depth-squared
+  score chain. The fixed 75-second clock is the only successful finish. HUD/result
+  text exposes score, current/best chain, and remaining time. v5 persistence ranks
+  score, chain, lines, fewer pieces; obsolete v4 Sprint rows are intentionally not
+  migrated because they encode incompatible excavation-time semantics.
+- Commands passed after the final source edit:
+  `npm.cmd run typecheck`; `npm.cmd run test -- src\\puzzleProgress.test.ts
+  src\\puzzleHints.test.ts src\\platform\\browserPlatform.test.ts
+  src\\leaderboard.test.ts src\\App.test.ts src\\game\\runtime\\qaScenario.test.ts
+  src\\game\\runtime\\GameRuntime.test.ts src\\game\\render\\theme.test.ts
+  src\\game\\render\\TetrisRenderer.test.ts src\\game\\render\\presentation.test.ts
+  src\\game\\input\\InputController.test.ts src\\game\\audio\\AudioEngine.test.ts
+  src\\game\\core\\core.test.ts src\\game\\core\\board.test.ts
+  src\\game\\core\\puzzleCampaign.test.ts src\\game\\core\\puzzleRouteSearch.test.ts
+  src\\game\\core\\puzzleFlow.test.ts src\\game\\core\\sprint.test.ts
+  src\\game\\core\\rules.test.ts src\\game\\core\\race.test.ts
+  src\\game\\core\\puzzleUndo.test.ts src\\game\\core\\puzzleSolverResults.test.ts
+  src\\game\\core\\puzzles.test.ts --no-file-parallelism --maxWorkers=1`
+  (45 files / 270 tests); and `npm.cmd run build` (746 transformed modules).
+- Browser proof: `.local/audits/t13-relay/audit.mjs` passes at 1440×900, 390×844,
+  and 844×390. It visibly opens 坍缩, waits through its real countdown, performs
+  left/hard-drop then right/hard-drop, verifies at least two locked pieces remain on
+  the board, all chain/clock fields, no legacy copy, one canvas/zero DOM cells,
+  no overflow, no console/page errors, and unchanged 20-entry Puzzle access. Latest
+  captures are ignored local files under `.local/audits/t13-relay/` and were inspected.
+- The local web-game client was also invoked, but its deterministic action loop cannot
+  advance this app's opening countdown because no `window.advanceTime` hook exists;
+  its idle snapshot is not used as evidence. The real-time browser audit is the
+  authoritative interaction proof. `--no-verify` was used only for the two local
+  commits because the pre-commit runner's default suite is already recorded as
+  non-terminating; the explicit full matrix above completed successfully.
+- Blocker: no independent Core or visual/browser QA disposition exists, so this is a
+  verified candidate rather than an acceptance. Next: commit the coordinator
+  changelog/record and make the user-authorized recovery push.

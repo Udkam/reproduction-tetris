@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-07-23 — T13 Collapse mode candidate (user-authorized recovery push)
+
+- Replaced the rejected Sprint time trial with **坍缩**, a 75-second score attack that
+  compactly settles each column after every lock and again after every clear. Newly
+  formed rows resolve as a scoring cascade; clear score grows with collapse depth.
+  This makes a placement alter the board's structure before and after its first line,
+  rather than duplicating Classic's continuous stack-and-clear loop.
+- Added a clear Collapse HUD/result surface for score, current chain, best chain, and
+  remaining time. Completed rounds rank by score, best chain, lines, then fewer
+  pieces. The v5 leaderboard deliberately discards incompatible v4 Sprint rows;
+  Classic and Survival rows migrate with a zero chain.
+- Kept Puzzle source, selector, levels, queues, anchors, undo, hints, and visuals
+  unchanged. The adjacent `8c51e8c` test-only replay-fixture correction updates its
+  retained schema-6 route without changing Puzzle gameplay.
+- Verification passed: `npm.cmd run typecheck`; the explicit single-worker 45-file /
+  270-test matrix; `npm.cmd run build` (746 transformed modules); and a real-time
+  browser audit at 1440×900, 390×844, and 844×390. It verifies live hard drops and
+  visible locked Collapse cells, one canvas, zero DOM board cells, no overflow,
+  no console/page errors, unchanged 20-level Puzzle access, and reduced motion.
+- Candidate commits: `8c51e8c..eaf88d0`. This is a user-authorized recovery record,
+  not an independent-QA acceptance.
+
 ## 2026-07-22 — T12.7 multi-route Puzzle guidance candidate (pending independent QA)
 
 - Kept the deterministic twenty-level Puzzle campaign, fixed per-level queues,

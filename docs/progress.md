@@ -1,12 +1,34 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-23 — T13.2 Collapse source candidate
+
+- Source candidate `eaf88d0` replaces the rejected Sprint with **坍缩**: a 75-second
+  score attack using fresh live seven-bags, steady brisk gravity, per-column collapse
+  after every lock and after each clear, depth-squared clear scoring, and a clock-only
+  finish. The renamed leaderboard ranks score, best chain, lines, then fewer pieces;
+  incompatible v4 Sprint rows are deliberately excluded while Classic/Survival rows
+  migrate with a zero chain.
+- The candidate also records the quiet entry treatment, replaces legacy player-facing
+  Sprint wording, and keeps the current Puzzle implementation untouched. The separate
+  test-only replay-fixture correction is `8c51e8c`; it changes no Puzzle gameplay.
+- Final gates pass: `npm.cmd run typecheck`; the explicit 45-file / 270-test
+  single-worker Vitest matrix; `npm.cmd run build` (746 transformed modules); and a
+  real-time Playwright audit at 1440×900, 390×844, and 844×390. The audit verifies
+  two live hard drops, visible locked cells, one canvas, zero DOM board cells, no
+  overflow, no console/page errors, 20 unchanged open Puzzle controls, and reduced
+  motion. Local captures remain ignored under `.local/audits/t13-relay/`.
+- The generic web-game client was invoked as required, but the app exposes no
+  `advanceTime` hook for it to cross the opening countdown; the real-time audit above
+  is the authoritative input proof. Next: commit the coordinator record/changelog and
+  make the user-authorized recovery push without calling this candidate accepted.
+
 ## 2026-07-23 — T13.2 fourth-mode Collapse redesign opened
 
 - User clarified that the rejected fourth mode is Sprint, not Puzzle. Puzzle is now
   explicitly closed to source and visual changes pending a separate future request.
 - The replacement is **坍缩**: a 75-second score attack where ordinary cells settle
-  separately in their columns after every line clear, creating deterministic cascades
-  from a single placement. Its rank uses score, best chain, lines, and fewer pieces;
+  separately in their columns after every locked piece and after every line clear,
+  creating deterministic cascades from a single placement. Its rank uses score, best chain, lines, and fewer pieces;
   the prior excavation target/time-completion design is superseded.
 - The prior landscape browser audit found a real 32/40 px control regression. The
   active stylesheet correction restores 44 px targets; it must be re-audited with the
