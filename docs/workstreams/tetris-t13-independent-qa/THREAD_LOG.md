@@ -39,3 +39,33 @@
   `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
 - **Next action:** coordinator fixes the P2 reduced-motion renderer defect; this QA
   workstream remains read-only until a new candidate SHA is supplied.
+
+## 2026-07-24 — TETRIS-T13.9-INDEPENDENT-QA-025 repaired-candidate recheck
+
+- **Review boundary:** fresh read-only review of repaired product candidate
+  `ca8c7f6a02572973164934fed2eedef8fc7b6fee` over `59bc5ef..ca8c7f6`, with the
+  coordinator repair record `625cf0e`. The only source repair is the renderer plus
+  its direct test; no Puzzle definition, queue, route, campaign, or selector-source
+  path appears in the refreshed candidate path list.
+- **P2 recheck:** `mutation-activated` now keeps the reduced-motion flash for 240 ms,
+  exceeding a realistic 16 ms frame. The direct regression enables reduced motion,
+  advances 16 ms, verifies retained `{ item: 'freeze', elapsed: 16, duration: 240 }`,
+  calls the real `drawEffects` path, and observes exactly the ice-blue
+  `MUTATION_MATERIALS.freeze.fillStart` at static alpha `0.16`. Advancing the remaining
+  224 ms clears the bounded state. This proves a static item-coloured paint occurs
+  before expiry with no continuous reduced-motion animation.
+- **Commands and evidence:** independently ran `npm.cmd run test -- --run
+  src/game/render/TetrisRenderer.test.ts src/game/render/theme.test.ts` (2 files /
+  10 tests passed); read `git show ca8c7f6`; inspected the existing fresh ignored
+  `t13-9-mutation` audit report and its visually checked carrier capture. The audit
+  reports deterministic seed `2`, active `bomb` carrier after two locks, one canvas,
+  zero DOM cells, no desktop/portrait/landscape overflow, and zero console/page
+  errors. The coordinator record supplies the post-repair typecheck, full 22-file /
+  146-test suite, and 744-module build PASS results.
+- **Disposition:** **PASS — no P0–P2 findings.** The prior P2 reduced-motion defect
+  is resolved by `ca8c7f6`; the product candidate `59bc5ef..ca8c7f6` is accepted for
+  coordinator changelog integration and push.
+- **Exact changed path:** this independent recheck log only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator may complete final acceptance documentation and push;
+  no further QA action is required unless product source changes again.
