@@ -13,6 +13,9 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Audio is now a planned separate finishing pass: retune the existing event sounds and
   add an original, optional, user-gesture-gated procedural music bed without external
   media or persistent sources after pause/restart/unmount.
+- The same finishing pass will consolidate in-run controls into one `S`-accessible
+  settings sheet, make the active mode title prominent, and replace vague/repeated
+  explanations with short factual mode rules.
 - Puzzle source is no longer globally frozen: only the sparse anchor distribution,
   short structural level names, guide copy, route evidence, and ignored walkthroughs
   are reopened. A read-only Core audit found every current anchor on the bottom target

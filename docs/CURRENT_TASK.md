@@ -57,6 +57,15 @@ original procedural music with an independent control. Do not add third-party mu
 network media, renderer dependencies, or a second canvas; verify mute/volume/pause/
 restart/unmount lifecycle behavior before the final candidate.
 
+Settings and copy follow-up boundary: this same App-level finishing pass may replace
+the exposed right-header control cluster with one accessible **设置** trigger and its
+`S` shortcut. The sheet may contain the existing effects/volume controls, the new music
+control, pause/continue, and confirmation-gated restart; no game rule or Core input
+mapping changes are implied. The header's current mode name becomes visually primary,
+and visible mode descriptions are reduced to concise factual objective/mechanic/ranking
+copy. `src/App.tsx`, `src/App.test.ts`, `src/styles.css`, the existing ActionSheet
+component where necessary, and direct audio/runtime tests are the authorized UI scope.
+
 ### T13.2 fourth-mode Collapse correction
 
 The user clarified that the rejected fourth mode is Sprint, not Puzzle. Puzzle is

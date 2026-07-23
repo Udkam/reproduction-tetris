@@ -13,6 +13,10 @@
   original procedural background music in a separate bounded audio checkpoint. It must
   remain controllable, use no external/copyrighted media, and stop cleanly with the
   runtime lifecycle.
+- Follow-up UI direction: the game header should show one `设置` control at right; its
+  `S` shortcut opens the same sheet for effects/music/volume, pause, and restart.
+  Promote the active mode name and keep all player-facing mode explanations concise,
+  factual, and free of decorative copy.
 - Exact future source boundary: Collapse constants/types/engine/sprint/direct tests,
   leaderboard/persistence, App/App tests/styles; Survival constants/race/runtime
   tests; and the coupled Puzzle definitions, hints, direct Core tests, schema route

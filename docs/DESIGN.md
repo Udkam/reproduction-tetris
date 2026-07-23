@@ -26,6 +26,13 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   independent on/off control that remains subordinate to gameplay effects. It may not
   download, sample, or imitate copyrighted music; mute, volume changes, pause, restart,
   unmount, and browser audio suspension must leave no continuing audio source.
+- The in-run header keeps the back action and a clear current-mode title, but its right
+  side exposes one **设置** control only. `S` opens the same accessible settings sheet;
+  that sheet owns effects/music controls, the volume slider, pause/continue, and the
+  confirmation-gated restart action. The current mode label must read as a primary
+  heading rather than a small suffix. Each visible mode rule is one compact factual
+  sentence: objective, unusual mechanic, and ranking basis only—no decorative labels
+  or repeated keyboard prose.
 - Puzzle retains twenty deterministic, legal five-through-eight-row setups, fixed
   queues, unlimited ordinary pieces, B undo, and two teaching routes per level. It
   has no volatile or expiring input mechanic. Level names become short, structural
