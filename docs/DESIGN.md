@@ -103,10 +103,21 @@ sequence, level layout, visual language, or puzzle wording.
 ### Presentation and verification
 
 - Retain the original light mineral/signal system but refine the all-open Puzzle
-  observatory into a compact workshop route: a single selected real endgame well,
-  all twenty immediately active numbered stops, a short row-band legend, and brief
-  purposeful selection motion. It may not regress to a thumbnail grid, repeated card
-  wall, or text-heavy dashboard. `prefers-reduced-motion` removes nonessential motion.
+  observatory into a compact workshop route. Its signature gesture is a **single
+  illuminated relay line**: four quiet row bands (5/6/7/8) hold twenty immediately
+  active numeric stops, while one selected real endgame well acts as the only large
+  visual object. Stops carry only an ordinal, completion mark, and optional anchor
+  notch—not repeated title cards, thumbnails, lock icons, or explanatory paragraphs.
+  The selection advances a short scan along the relay line, shifts the focused well,
+  and then settles; `prefers-reduced-motion` renders the final state without the scan.
+- The selected panel is deliberately sparse: ordinal, name, row-band / anchor fact,
+  a one-sentence structural cue, and one start action. Completion is a quiet check,
+  never a gate. The optional in-game guide uses the same restraint: one readable cue
+  plus two named approaches, with no command transcript or automatic move. This should
+  feel like choosing a workbench specimen, not reading a campaign dashboard.
+- It may not regress to a thumbnail grid, repeated card wall, decorative corner dots,
+  simulated telemetry, a lock-state drama, or text-heavy dashboard. The route must
+  remain keyboard/touch-safe with a visible focus state and a 44 px or larger target.
 - The home surface becomes a balanced four-mode composition with a distinct Sprint
   glyph and concise rule. Gameplay remains one Pixi canvas with no DOM cell grid.
 - Before publication: replay every setup and paired route through public Core dispatch,

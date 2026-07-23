@@ -37,6 +37,18 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Next: use the explicit archive routes for legacy ignored material, then replace the
   target-floor curriculum with generated legal five-through-eight-row endgames.
 
+## 2026-07-23 — T13 endgame Core checkpoint and open-workshop direction
+
+- Source checkpoint `b789833` replaces all hand-shaped Puzzle starts with 20 legal
+  zero-clear setup histories, ordered as five 5-row, five 6-row, five 7-row, and five
+  8-row endgames. The schema-6 route record proves two divergent public-input Core
+  routes for every level; six anchors are tested as consequential non-target release
+  seams rather than decorative blocks.
+- The next independent source step retires the old tier gate while preserving historic
+  completions as history. The selector will use one illuminated relay line, four quiet
+  row bands, and a single selected well; all 20 stops are available from a fresh save.
+  Guides remain optional, compact, and non-spoiling.
+
 ## 2026-07-15
 
 - Created standalone Tetris repository and retained QA clones under `.local/qa-archives`.

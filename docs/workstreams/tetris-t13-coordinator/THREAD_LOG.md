@@ -58,3 +58,20 @@
 - Commands run: inspected current `package.json`, Vite config, browser-global callers,
   and the active commit policy. Blocker: none. Next: finish and checkpoint the atomic
   endgame Core/route evidence before beginning this separate platform-boundary slice.
+
+## 2026-07-23 — TETRIS-T13-WORKSHOP-DIRECTION-005 contract addendum
+
+- Base: `a08f132`; exact paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/progress.md`, and this log. This is a visual/access contract only; no product
+  source is changed here.
+- Direction: retire the T12 tier gate as a separate access/guidance checkpoint, retain
+  historic completions as player history, and make every T13 endgame selectable on a
+  fresh save. The replacement selector is a sparse four-band relay line with 20 numeric
+  stops and one selected real well—not a card grid, thumbnail wall, lock narrative, or
+  telemetry panel. The selected surface contains only identity, row/anchor fact, a
+  structural cue, and start; a short scan gives selection motion and is disabled under
+  reduced motion.
+- Commands run: read the current T13 Core checkpoint/log, existing App, progress,
+  hint, selector, and stylesheet contracts before amending the source boundary.
+  Blocker: none. Next: update all-open progression and schema-6 guide binding as its
+  own source/test checkpoint before changing the React/CSS presentation.
