@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import type { GameEvent, MutationItem } from '../core';
+import type { GameEvent, GameState, MutationItem } from '../core';
 import { MUTATION_MATERIALS, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -19,6 +19,7 @@ type RendererInternals = {
   activeMutationCarrierId: number | null;
   consumeEvents: (events: readonly GameEvent[]) => void;
   advanceEffects: (deltaMs: number) => void;
+  drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   mutationMaterial: (item: MutationItem) => PieceMaterial;
 };
 
@@ -67,6 +68,35 @@ describe('Puzzle undo presentation reset', () => {
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 380 });
     internals.advanceEffects(380);
+    expect(internals.mutationFlash).toBeNull();
+  });
+
+  it('renders one static item-coloured activation frame for reduced motion', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const fills: unknown[] = [];
+    const graphics = {
+      clear: () => graphics,
+      roundRect: () => graphics,
+      fill: (options: unknown) => {
+        fills.push(options);
+        return graphics;
+      },
+    };
+    (internals as unknown as { effectGraphics: typeof graphics }).effectGraphics = graphics;
+
+    renderer.setOptions({ reducedMotion: true });
+    internals.consumeEvents([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 }]);
+    internals.advanceEffects(16);
+
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 240 });
+    internals.drawEffects(
+      { phase: 'active', pendingClearRows: [] } as unknown as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.fillStart, alpha: 0.16 });
+
+    internals.advanceEffects(224);
     expect(internals.mutationFlash).toBeNull();
   });
 });

@@ -1065,7 +1065,10 @@ export class TetrisRenderer {
         this.mutationFlash = {
           item: event.item,
           elapsed: 0,
-          duration: this.options.reducedMotion ? 1 : 380,
+          // Reduced-motion feedback is deliberately static, not instantaneous. The
+          // renderer advances effects before drawing, so a one-millisecond lifetime
+          // would disappear on an ordinary frame before its first visible paint.
+          duration: this.options.reducedMotion ? 240 : 380,
         };
         this.impact = this.options.reducedMotion ? 0.3 : 1.05;
       } else if (event.type === 'level-up') {
