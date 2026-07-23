@@ -4,7 +4,11 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 
 - Pending Puzzle work: author only sparse above-band anchors with two replayed routes
   per level; recalculate the six migrated route pairs, route artifact, concise names,
-  guide copy, and ignored walkthroughs; audit preview legibility.
+  and preview legibility. Walkthrough-image generation is deferred.
+- Puzzle hints are deliberately removed from the player-facing product for now; paired
+  routes remain Core regression evidence only and no replacement copy is in scope.
+- Pending Puzzle completion UX: persist and show each level's best successful
+  locked-piece count, and use `重来` rather than `再来一局` after a Puzzle win.
 - Pending mode verification: Collapse remains endless with a lines-first top-ten table
   and no rail rules; Survival remains seven-row, 40-tick, three-line reward, 13→6 s.
 - Pending finish: audible original effects plus optional procedural music; one `S`

@@ -25,6 +25,9 @@
 - Latest Puzzle UX scope: do not create or regenerate local `Solutions/` images in
   this delivery. Persist/show a per-level minimum successful locked-piece record in
   the selector, and change the Puzzle result primary action to `重来`.
+- Latest Puzzle guidance direction: remove the currently exposed hint trigger, unlock
+  state, cue, strategy, and step UI. Keep paired routes only as internal Core evidence;
+  do not author a new player-facing guidance system in this delivery.
 - Confirmation follow-up: add visible `←`/`→` selection to every two-action sheet;
   `Enter` activates the focused/selected action rather than a hidden fixed default.
 - Resource audit (2026-07-24): no Tetris dev server/test process or known local web

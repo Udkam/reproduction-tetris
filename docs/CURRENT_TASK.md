@@ -25,7 +25,8 @@ to the final candidate.
    a legal landing or post-clear state, and keep all twenty boards approachable with
    multiple early-divergent solutions. Recompute the six affected routes (campaign
    01, 08, 13, 15, 16, and 18), update the schema route artifact, short structural
-   names, and concise guide copy. Walkthrough-image generation is deferred. Audit the selected preview so
+   names. Player-facing Puzzle hints are removed; walkthrough-image generation is
+   deferred. Audit the selected preview so
    target cells, fixed pegs, and the actual endgame shape remain clear and compatible.
 2. **Collapse correctness and presentation.** Verify the endless top-out-only rule,
    current-chain/best-chain/score/lines rail, absence of decorative horizontal rules,
@@ -85,8 +86,9 @@ fixed 40-tick gravity, and three-line bedrock reward.
 
 Authorized source/test boundary: Collapse Core constants/types/engine/sprint and
 direct tests; leaderboard and persistence tests; App/App tests/styles; Survival
-constants/race/runtime tests; and the coupled Puzzle definition/hint/progress/route
-artifact/direct-test paths. No renderer primitive, package dependency, or
+constants/race/runtime tests; and the coupled Puzzle definition/progress/route
+artifact/direct-test paths, plus the removal of the existing hint UI and persistence.
+No renderer primitive, package dependency, or
 desktop package target is in scope. Before a candidate claim: run direct tests after
 each checkpoint, then typecheck, the unqualified current-source suite, build, route
 replay validation, and a desktop/portrait/landscape browser pass.

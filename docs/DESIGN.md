@@ -46,6 +46,10 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   is unavailable, and never changes a queue, route, or win condition. The local
   `Solutions/` walkthrough images are deferred: do not regenerate or present them in
   this delivery unless the user explicitly reopens that output.
+- The current player-facing Puzzle hint system is removed. The paired Core-replayed
+  routes remain regression evidence for reachability and early divergence only; no
+  hint trigger, unlock condition, cue, strategy label, route step, or hidden input
+  transcript is shown until a future explicit design pass.
 - Immutable anchors remain a sparse teaching mechanic rather than scenery. An anchor
   may appear only on a curated subset of levels, never on an original target cell or
   on any initial target row. It sits in visible headroom directly above the initial
