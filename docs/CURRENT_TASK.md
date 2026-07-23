@@ -61,8 +61,10 @@ live scope.
    preview motion and reduced-motion fallbacks. Promote the active mode name. The
    in-run right header becomes one accessible `设置` control; `S` opens the same sheet
    containing effects/music, volume, pause/continue, and confirmation-gated restart.
-   The homepage mode cards use one concise gameplay sentence only: state the objective
-   and the distinct mechanic, but never advertise ranking or personal-record wording.
+   The homepage mode cards are navigation only: they show no gameplay-rule, ranking,
+   or personal-record prose. Each card retains only its name, identity mark, accent,
+   and entry action; its clear rule copy appears once on first entry and later in
+   Settings.
    Their action key keeps its own mode color through hover/focus/selection; selected
    state is communicated by a stronger card and mode hue, not a blue call-to-action.
    Text weight is static during card transitions so moving between modes never flashes
@@ -70,7 +72,7 @@ live scope.
    All two-action sheets expose visible `←`/`→` selection, and `Enter` activates the
    selected action; pointer, touch, Escape, and cancel behavior remain correct.
    Settings shows the current non-Puzzle mode's compact top-five leaderboard, including
-   each result date; Classic and Collapse remain lines-first, while Survival remains
+   each result date; Classic and 异变 remain lines-first, while Survival remains
    duration-first. Persist only those five results for each live mode. Puzzle remains
    different: show only the selected level's minimum locked-piece count after completion
    (otherwise `尚未通关`), with no Puzzle leaderboard or extra progress view.
@@ -128,6 +130,14 @@ live scope.
    activation produces a bounded board-local flash/particle response and an accessible
    event message. The variant's record schema must discard legacy Collapse rows while
    preserving valid Classic and Survival rows.
+9. **Mode-rule disclosure.** The homepage selector removes visible rule/record prose:
+   cards retain only their name, icon, accent, and entry action. The first entry into
+   each mode instead presents one concise, dismissible, mode-specific rule sheet before
+   live input begins; it must state objective, special mechanic, pressure or speed
+   cadence, relevant item trigger/effects, and terminal condition. Settings adds a
+   durable **规则** section with the same facts. Completion is stored safely per mode,
+   supports pointer/touch plus arrow/Enter operation, does not alter Core state, and
+   never changes Puzzle authored content.
 
 ### T13.9 authorized implementation boundary
 

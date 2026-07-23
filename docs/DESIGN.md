@@ -35,6 +35,14 @@ make local tactical changes without altering Puzzle or Survival's identity.
   ordinary material colors with an original halo/core mark; activation is paired with a
   bounded board-local flash/particle and a concise accessible event message. Reduced
   motion preserves color/state changes without continuous motion.
+- The home mode selector is intentionally navigational, not instructional: it shows
+  only each mode's name, identity mark, and enter action. The first real entry into a
+  mode opens a compact, dismissible rule introduction before input begins; it states
+  the objective, special rule, acceleration/pressure rule, item trigger where
+  applicable, and how the run ends in plain Chinese. A **规则** section in Settings
+  repeats the same mode-specific facts for later reference. The introduction is
+  acknowledged per mode in safe local storage, is keyboard/touch accessible, and
+  never changes a deterministic game state or Puzzle definition.
 - Existing v6 Collapse (`sprint`) records are semantically incompatible. The new
   persistence schema preserves valid Classic and Survival entries but resets only the
   fourth-mode table; all three current tables retain at most five date-stamped rows.
@@ -69,7 +77,7 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   unmount, and browser audio suspension must leave no continuing audio source.
 - The Settings sheet carries the current live mode's compact **本模式排行**, preserving
   only the top five records and showing the date beside each result. Classic and
-  Collapse are lines-first; Survival is duration-first. Puzzle deliberately stays out
+  异变 are lines-first; Survival is duration-first. Puzzle deliberately stays out
   of that table: it shows only the selected level's minimum locked-piece count after a
   real completion (otherwise `尚未通关`), never other Puzzle progress, route data, a
   hint, or a selector-side control.
@@ -84,12 +92,10 @@ new bounded authoring pass, not permission to restore volatile/timed Puzzle piec
   selection keep the **开始**/**选关** key in its own mode accent instead of recoloring
   it blue; selection strengthens that mode's card, border, icon, and accent surface.
   Card text has a fixed rendered weight throughout the transition, with motion limited
-  to color, border, background, and position rather than an animated font change.
-  Each card carries only one clear gameplay rule—Classic: keep clearing and accelerate
-  every ten lines; Survival: outlast rising bedrock and remove one layer per three
-  lines; Collapse: after every lock columns settle independently and may chain clears
-  until top-out; Puzzle: clear every original block with its fixed sequence and undo.
-  Homepage cards never state ranking or personal-record language.
+  to color, border, background, and position rather than an animated font change. The
+  selector carries no gameplay-rule, ranking, or personal-record prose: it is only a
+  clear route into a mode. A compact rule sheet appears before that mode's first live
+  run, and the same factual copy remains available under **规则** in Settings.
 - Music must be audibly present after the player's next valid in-game gesture at the
   default 100% setting—not merely allocated as silent Web Audio nodes. Preserve the
   original, separate-toggle procedural boundary, but write it as a wordless
