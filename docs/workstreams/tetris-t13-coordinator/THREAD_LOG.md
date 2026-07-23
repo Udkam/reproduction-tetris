@@ -171,3 +171,40 @@
 - Commands run: reviewed the current direct browser-global callers and their existing
   tests. Blocker: none. Next: implement the adapter and targeted safety tests, then
   record a source checkpoint before final whole-range validation.
+
+## 2026-07-23 — TETRIS-T13-PLATFORM-009 source checkpoint
+
+- Base: `c040f3f`; candidate: `e7c9567`
+  (`feat(platform): isolate browser host capabilities`). Exact paths are
+  `src/platform/browserPlatform.ts`, its direct test, and the authorized App, Puzzle
+  hint, ActionSheet, AudioEngine, and GameRuntime consumers/tests.
+- Result: one injectible BrowserPlatform owns guarded storage, media subscription,
+  timeout/frame cancellation, window/document listener cleanup, focus deferral,
+  monotonic clock access, and AudioContext construction. Storage denial/no host,
+  unavailable media/timer/DOM/audio APIs, and a no-window Runtime mount now degrade to
+  inert presentation behavior without changing a game state. Runtime destroy releases
+  the visibility listener; React restart keys, countdown, saves, dialog focus, hint
+  saves, and audio all route through the boundary. No packaging target, native
+  dependency, Core rule, route artifact, or renderer primitive changed.
+- Commands run: `npm.cmd run typecheck`; `npm.cmd run test --
+  src/platform/browserPlatform.test.ts src/game/runtime/GameRuntime.test.ts
+  src/game/audio/AudioEngine.test.ts src/puzzleHints.test.ts src/App.test.ts`
+  (7 files / 40 tests passed); cached diff check and exact-path staging. Blocker: none.
+  Next: replace the rejected interim home/relay presentation using the new
+  gravity-workbench visual contract, then perform final whole-range validation.
+
+## 2026-07-23 — TETRIS-T13-GRAVITY-WORKBENCH-010 direction addendum
+
+- Base: `e7c9567`; exact future source/test paths are `src/App.tsx`,
+  `src/App.test.ts`, and `src/styles.css`. The user rejected the interim loose
+  mode-card stack and the Puzzle relay's broad unused left route canvas.
+- Direction: make the two entry pages one visual family. Home becomes a unified
+  four-lane gravity field rather than four floating cards. Puzzle becomes a compact
+  endgame console: one selected real well with sparse facts, beside a dense 5/6/7/8
+  all-open numeric control matrix. Motion is a bounded lane settle / coordinate pulse,
+  with a complete reduced-motion final state. The existing routes, all-open access,
+  completion indicators, semantic labels, and 44 px controls remain intact.
+- Commands run: reviewed the active T13 design/task contract, current relay markup,
+  responsive stylesheet, and App semantic tests before authorizing this replacement.
+  Blocker: none. Next: implement the three-path visual checkpoint and inspect it at
+  desktop, portrait, and landscape before final coordinator validation.

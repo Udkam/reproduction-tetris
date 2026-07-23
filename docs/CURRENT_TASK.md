@@ -77,6 +77,16 @@ tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
    record, push `main`, and verify both Git and the supported local artifact map are
    clean. Independent read-only Core and visual/browser QA remains required before an
    acceptance claim.
+10. **Gravity-workbench presentation refinement (authorized visual exception):** the
+    user rejected the interim loose mode-card stack and sparse relay selector. Only
+    `src/App.tsx`, `src/App.test.ts`, and `src/styles.css` may replace them with the
+    documented unified four-lane mode field and compact endgame console: a single
+    selected real preview plus a dense four-band, all-open numeric matrix. Preserve
+    the 20-entry access contract, unique preview, no thumbnails/corner dots/lock
+    states, B undo, 44 px controls, reduced-motion fallback, and all existing routes.
+    The exact three-path visual/test unit may exceed 500 lines because responsive
+    composition, keyboard semantics, and motion must remain coherent. It must not
+    alter Core, persistence, package tooling, assets, or gameplay rendering.
 
 ---
 

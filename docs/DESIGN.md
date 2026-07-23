@@ -112,24 +112,34 @@ sequence, level layout, visual language, or puzzle wording.
 
 ### Presentation and verification
 
-- Retain the original light mineral/signal system but refine the all-open Puzzle
-  observatory into a compact workshop route. Its signature gesture is a **single
-  illuminated relay line**: four quiet row bands (5/6/7/8) hold twenty immediately
-  active numeric stops, while one selected real endgame well acts as the only large
-  visual object. Stops carry only an ordinal, completion mark, and optional anchor
-  notch—not repeated title cards, thumbnails, lock icons, or explanatory paragraphs.
-  The selection advances a short scan along the relay line, shifts the focused well,
-  and then settles; `prefers-reduced-motion` renders the final state without the scan.
-- The selected panel is deliberately sparse: ordinal, name, row-band / anchor fact,
-  a one-sentence structural cue, and one start action. Completion is a quiet check,
-  never a gate. The optional in-game guide uses the same restraint: one readable cue
-  plus two named approaches, with no command transcript or automatic move. This should
-  feel like choosing a workbench specimen, not reading a campaign dashboard.
-- It may not regress to a thumbnail grid, repeated card wall, decorative corner dots,
-  simulated telemetry, a lock-state drama, or text-heavy dashboard. The route must
-  remain keyboard/touch-safe with a visible focus state and a 44 px or larger target.
-- The home surface becomes a balanced four-mode composition with a distinct Sprint
-  glyph and concise rule. Gameplay remains one Pixi canvas with no DOM cell grid.
+The 2026-07-23 redesign supersedes the first all-open relay treatment shown in the
+interim T13 captures. It keeps the same functional contract, but replaces its loose
+light cards and unused left-side canvas with one original **gravity workbench** visual
+system: near-ink wells, mineral-paper surrounds, precise blue/green/purple state
+accents, and sparse but consequential motion. This is a clean-room composition, not a
+copy of a commercial game surface or control arrangement.
+
+- **Mode home:** use one coherent mode field rather than a floating card stack. A clear
+  product masthead and a compact four-lane gravity matrix share the same frame. Each
+  lane carries only ordinal, original glyph, title, brief rule, falling-cell marker,
+  and an unambiguous action. The active/hover/focus lane gains a contained accent beam
+  and a short lateral settle; it must not read as four independent marketing cards.
+- **Puzzle library:** use one compact endgame console. The selected real well remains
+  the sole large board preview; its ordinal, name, row/anchor fact, structural cue,
+  and start action live as one focused specimen surface. The twenty all-open numeric
+  stops move into a dense four-band control matrix beside it, so the selector has no
+  broad unused route canvas. Stops retain only ordinal, quiet completion check, and
+  optional anchor notch—never thumbnails, lock icons, repeated titles, or corner dots.
+  Selection sends a brief coordinate pulse from the matrix into the focused well, then
+  settles; `prefers-reduced-motion` paints the final state directly.
+- Both surfaces must be visually restrained but not flat: use hierarchy, contrast,
+  alignment, shadows, and original tetromino-derived marks rather than explanatory
+  copy or ornamental telemetry. All controls remain keyboard/touch-safe with visible
+  focus and at least 44 px targets. No thumbnail grid, repeated card wall, faux
+  dashboard, lock-state drama, text wall, or decorative progress-dot system returns.
+- Gameplay remains one Pixi canvas with no DOM cell grid. The Puzzle guide stays a
+  concise player-controlled reading aid: one cue plus two approaches, never a command
+  transcript or automated input.
 - Before publication: replay every setup and paired route through public Core dispatch,
   run targeted Core/input/persistence/UI/platform-boundary tests, regenerate local ignored walkthroughs,
   run one final typecheck/full suite/build, and inspect desktop, portrait, and landscape
