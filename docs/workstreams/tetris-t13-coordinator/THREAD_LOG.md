@@ -114,3 +114,20 @@
   (10 files / 53 tests passed); targeted App Sprint binding tests (5 passed).
   Blocker: none. Next: replace the remaining retired locked-sector selector with the
   all-open four-band relay presentation and perform its browser loop.
+
+## 2026-07-23 — TETRIS-T13-RELAY-008 visual-exception addendum
+
+- Base: `f55fef5`. Exact future source/test paths are `src/App.tsx`,
+  `src/App.test.ts`, and `src/styles.css`. The T13 contract already fixes the visual
+  goal as an all-open four-band relay; this addendum explicitly authorizes the one
+  responsive UI/test unit to exceed the normal 500-line checkpoint budget.
+- Reason: semantic station markup, its direct DOM contract, desktop/portrait/landscape
+  layouts, focus well, selection scan, and reduced-motion fallback are one inseparable
+  replacement for the retired locked-sector selector. Splitting it would temporarily
+  regress the open-workshop presentation or leave a non-functional motion contract.
+- Required proof: direct typecheck and `src/App.test.ts` now; after the final source
+  slice, the T13 whole range receives the complete suite, production build, and live
+  desktop/portrait/landscape browser review. No Core, storage, or packaging behavior
+  belongs to this exception.
+- Blocker: none. Next: create the bounded presentation candidate, inspect it in the
+  browser, then begin the separate desktop-boundary implementation.

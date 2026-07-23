@@ -47,9 +47,15 @@ tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
    cross Core/persistence/UI paths are atomic because the expanded `GameMode` must
    typecheck through all three boundaries; no Puzzle source, renderer primitive,
    dependency, or packaging target is included.
-6. **Workshop presentation checkpoint:** `src/App.tsx`, `src/App.test.ts`, and
-   `src/styles.css` own all-open observatory copy/layout/motion and the four-mode home
-   treatment. No Core authoring or storage migration is mixed into this checkpoint.
+6. **Workshop presentation checkpoint (authorized visual exception):** `src/App.tsx`,
+   `src/App.test.ts`, and `src/styles.css` own the all-open relay copy/layout/motion
+   and the four-mode home treatment. The responsive four-band circuit, focus well,
+   selection scan, reduced-motion fallback, and semantic test must move together, so
+   this exact three-path UI/test checkpoint may exceed the normal 500-line source
+   budget. It cannot be split without an intermediate selector that contradicts the
+   open-workshop contract. It requires direct typecheck/App coverage before its local
+   checkpoint and the final whole-range typecheck, suite, build, and browser pass. No
+   Core authoring, storage migration, or desktop packaging target is mixed into it.
 7. **Desktop-readiness checkpoint (no package):** a browser-bound platform adapter,
    its direct tests, and the smallest consuming UI/runtime/audio paths may make storage,
    visibility, timer, focus, and audio capability loss safe to host in a later desktop
