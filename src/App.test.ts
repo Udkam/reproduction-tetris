@@ -403,7 +403,7 @@ describe('T6 frontend mode binding', () => {
     classic.unmount();
   });
 
-  it('keeps restart out of Pause and requires an Enter-confirmed header restart', async () => {
+  it('keeps Pause to Continue and routes header/R restart through the same Enter confirmation', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -416,7 +416,7 @@ describe('T6 frontend mode binding', () => {
     runtimeHarness.instances.at(-1)?.start.mockClear();
     runtimeHarness.instances.at(-1)?.togglePause.mockClear();
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="restart-game"]')!;
-    const pause = [...view.container.querySelectorAll<HTMLButtonElement>('.topbar-action')].at(-1)!;
+    const pause = view.container.querySelector<HTMLButtonElement>('[data-testid="pause-game"]')!;
     const topbar = view.container.querySelector<HTMLElement>('[data-testid="cluster-header"]')!;
     expect(restart.textContent).toContain('重新开始');
     expect(restart.disabled).toBe(false);
@@ -426,13 +426,23 @@ describe('T6 frontend mode binding', () => {
     const pauseSheet = view.container.querySelector<HTMLElement>('.action-sheet')!;
     expect(pauseSheet.textContent).toContain('已暂停');
     expect(pauseSheet.textContent).not.toContain('重新开始');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect([...pauseSheet.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['继续游戏']);
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    expect(view.container.textContent).not.toContain('已暂停');
 
     act(() => restart.click());
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
     expect(view.container.textContent).toContain('重新开始？');
     expect(view.container.textContent).not.toContain('按 Enter 确认。');
     expect(view.container.querySelector('[data-testid="confirm-restart"]')?.textContent).toBe('确认');
+    expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(view.container.textContent).not.toContain('重新开始？');
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.textContent).toContain('重新开始？');
     expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);

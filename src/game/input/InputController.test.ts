@@ -84,4 +84,18 @@ describe('InputController', () => {
     expect(actions).toEqual(['undo']);
     input.destroy();
   });
+
+  it('maps P to the visible pause action while leaving R to the page-level confirmation flow', () => {
+    const actions: InputAction[] = [];
+    const target = new EventTarget() as Window;
+    const input = new InputController((action) => actions.push(action), target);
+    const pause = new Event('keydown') as KeyboardEvent;
+    Object.defineProperty(pause, 'code', { value: 'KeyP' });
+    target.dispatchEvent(pause);
+    const restart = new Event('keydown') as KeyboardEvent;
+    Object.defineProperty(restart, 'code', { value: 'KeyR' });
+    target.dispatchEvent(restart);
+    expect(actions).toEqual(['pause']);
+    input.destroy();
+  });
 });

@@ -959,26 +959,43 @@ export function GameSession({
     setExitOpen(false);
     setRestartConfirmOpen(false);
     restartWasPlayingRef.current = false;
+    runtime?.setInputEnabled(true);
     runtime?.restart();
     runtime?.start();
     focusBoard();
   }, [focusBoard, runtime]);
 
   const requestRestart = useCallback(() => {
-    restartWasPlayingRef.current = runtime?.getState().status === 'playing';
-    if (restartWasPlayingRef.current) runtime?.togglePause();
+    if (!runtime || restartConfirmOpen || runtime.getState().status !== 'playing') return;
+    restartWasPlayingRef.current = true;
+    runtime.togglePause();
+    // The confirmation is a UI transaction: no keyboard control may leak through it.
+    runtime.setInputEnabled(false);
     setRestartConfirmOpen(true);
-  }, [runtime]);
+  }, [restartConfirmOpen, runtime]);
 
   const cancelRestart = useCallback(() => {
     setRestartConfirmOpen(false);
+    runtime?.setInputEnabled(true);
     if (restartWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     restartWasPlayingRef.current = false;
   }, [runtime]);
 
   const resumeRun = useCallback(() => {
     if (runtime?.getState().status === 'paused') runtime.togglePause();
-  }, [runtime]);
+    focusBoard();
+  }, [focusBoard, runtime]);
+
+  useEffect(() => {
+    const handleRestartShortcut = (event: KeyboardEvent) => {
+      if (event.code !== 'KeyR' || event.repeat || event.isComposing) return;
+      if (countdownDigit !== null || state.status !== 'playing' || restartConfirmOpen) return;
+      event.preventDefault();
+      requestRestart();
+    };
+    window.addEventListener('keydown', handleRestartShortcut);
+    return () => window.removeEventListener('keydown', handleRestartShortcut);
+  }, [countdownDigit, requestRestart, restartConfirmOpen, state.status]);
 
   const requestExit = useCallback(() => {
     exitWasPlayingRef.current = runtime?.getState().status === 'playing';
@@ -1065,10 +1082,12 @@ export function GameSession({
           <button
             className="topbar-action"
             type="button"
+            data-testid="pause-game"
             onClick={(event) => {
               event.currentTarget.focus({ preventScroll: true });
               runtime?.togglePause();
             }}
+            aria-label={state.status === 'paused' ? '继续游戏（P）' : '暂停（P）'}
             disabled={countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused')}
           >{state.status === 'paused' ? '继续' : '暂停'}</button>
         </div>
@@ -1108,7 +1127,7 @@ export function GameSession({
                 aria-label={puzzleDoublePreview ? '后续两个方块，按顺序显示' : '下一个方块'}
               />
             </div>
-            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>R 重新开始</span>{state.mode === 'puzzle' && <span>B 撤回</span>}</p>
+            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>P 暂停 / 继续</span><span>R 重开确认</span>{state.mode === 'puzzle' && <span>B 撤回</span>}</p>
           </aside>
         </section>
 
@@ -1127,9 +1146,9 @@ export function GameSession({
         title="已暂停"
         description=""
         onCancel={resumeRun}
+        onConfirm={resumeRun}
       >
         <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>继续游戏</button>
-        <button className="secondary-action" type="button" onClick={requestExit}>离开本局</button>
       </ActionSheet>
 
       <ActionSheet

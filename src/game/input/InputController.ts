@@ -37,7 +37,6 @@ const KEY_BINDINGS: Record<string, InputAction> = {
   KeyZ: 'rotate-ccw',
   Escape: 'pause',
   KeyP: 'pause',
-  KeyR: 'restart',
   KeyB: 'undo',
 };
 
