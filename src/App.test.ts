@@ -378,16 +378,24 @@ describe('T6 frontend mode binding', () => {
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
     expect(view.container.textContent).toContain('重新开始？');
     expect(view.container.textContent).not.toContain('按 Enter 确认。');
-    expect(view.container.querySelector('[data-testid="confirm-restart"]')?.textContent).toBe('确认');
+    const confirmRestart = view.container.querySelector<HTMLButtonElement>('[data-testid="confirm-restart"]')!;
+    const cancelRestart = [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')]
+      .find((button) => button.textContent === '取消')!;
+    expect(confirmRestart.textContent).toBe('确认');
+    expect(confirmRestart.dataset.actionSelected).toBe('true');
     expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+    expect(cancelRestart.dataset.actionSelected).toBe('true');
+    expect(confirmRestart.dataset.actionSelected).toBeUndefined();
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(view.container.textContent).not.toContain('重新开始？');
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.textContent).toContain('重新开始？');
     expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
+    expect(view.container.querySelector('[data-testid="confirm-restart"]')?.getAttribute('data-action-selected')).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
     expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);

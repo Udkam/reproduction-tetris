@@ -20,6 +20,8 @@ const FOCUSABLE = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
+const ACTION_BUTTONS = '.action-sheet__actions > button:not([disabled])';
+
 export function ActionSheet({
   open,
   title,
@@ -33,6 +35,18 @@ export function ActionSheet({
   const descriptionId = useId();
   const panelRef = useRef<HTMLElement>(null);
 
+  const syncSelectedAction = (target: EventTarget | null) => {
+    const panel = panelRef.current;
+    const actions = panel ? [...panel.querySelectorAll<HTMLButtonElement>(ACTION_BUTTONS)] : [];
+    if (actions.length !== 2) return;
+    const index = actions.indexOf(target as HTMLButtonElement);
+    if (index < 0) return;
+    actions.forEach((action, actionIndex) => {
+      if (actionIndex === index) action.dataset.actionSelected = 'true';
+      else delete action.dataset.actionSelected;
+    });
+  };
+
   useEffect(() => {
     if (!open) return;
     const previouslyFocused = browserPlatform.activeElement();
@@ -40,7 +54,9 @@ export function ActionSheet({
     const focusInitial = () => {
       const preferred = panel?.querySelector<HTMLElement>('[data-autofocus]');
       const first = panel?.querySelector<HTMLElement>(FOCUSABLE);
-      (preferred ?? first ?? panel)?.focus({ preventScroll: true });
+      const target = preferred ?? first ?? panel;
+      target?.focus({ preventScroll: true });
+      syncSelectedAction(target);
     };
     const frame = browserPlatform.defer(focusInitial);
 
@@ -50,6 +66,25 @@ export function ActionSheet({
         keyboardEvent.preventDefault();
         keyboardEvent.stopPropagation();
         onCancel();
+        return;
+      }
+      const actionButtons = [...panel?.querySelectorAll<HTMLButtonElement>(ACTION_BUTTONS) ?? []];
+      if ((keyboardEvent.key === 'ArrowLeft' || keyboardEvent.key === 'ArrowRight') && actionButtons.length === 2) {
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
+        const currentIndex = actionButtons.findIndex((action) => action.dataset.actionSelected === 'true');
+        const direction = keyboardEvent.key === 'ArrowLeft' ? -1 : 1;
+        const nextIndex = (Math.max(currentIndex, 0) + direction + actionButtons.length) % actionButtons.length;
+        const next = actionButtons[nextIndex]!;
+        next.focus({ preventScroll: true });
+        syncSelectedAction(next);
+        return;
+      }
+      if (keyboardEvent.key === 'Enter' && !keyboardEvent.isComposing && actionButtons.length === 2) {
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
+        const selected = actionButtons.find((action) => action.dataset.actionSelected === 'true') ?? actionButtons[0]!;
+        selected.click();
         return;
       }
       if (keyboardEvent.key === 'Enter' && onConfirm && !keyboardEvent.isComposing) {
@@ -98,6 +133,7 @@ export function ActionSheet({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
+        onFocusCapture={(event) => syncSelectedAction(event.target)}
       >
         <h2 id={titleId}>{title}</h2>
         <p id={descriptionId}>{description}</p>

@@ -1428,6 +1428,11 @@ p {
   grid-column: 1 / -1;
 }
 
+.action-sheet__actions > button[data-action-selected="true"] {
+  outline: 2px solid color-mix(in srgb, var(--focus) 74%, white);
+  outline-offset: 2px;
+}
+
 .result-leaderboard {
   grid-column: 1 / -1;
   overflow: hidden;
