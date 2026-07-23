@@ -12,6 +12,35 @@ with the visible controls; and introduces a distinct 40-line Sprint mode.** No T
 source or visual claim is complete until the complete candidate range is replayed,
 tested, built, browser-reviewed, recorded, and pushed with a clean worktree.
 
+### T13.1 feedback-correction checkpoint
+
+The user rejected the decorative grid/telemetry treatment and the 40-line Sprint as
+too close to Classic. Before final validation, the coordinator must complete one
+bounded correction sequence:
+
+1. **Quiet-surface visual checkpoint:** `src/App.tsx`, `src/App.test.ts`, and
+   `src/styles.css` remove background field lines, technical/decorative copy, large
+   ordinals, redundant counters/footer copy, arbitrary pixel stacks, and slanted
+   pseudo-block ornaments. They retain four reachable mode actions, the one selected
+   real Puzzle preview, 20 open Puzzle controls, all existing routes, 44 px controls,
+   keyboard semantics, and reduced-motion final state. Only exact four-cell, connected
+   mode glyphs may remain.
+2. **Excavation Sprint checkpoint:** `src/game/core/sprint.ts` and its direct test,
+   `src/game/core/constants.ts`, `src/game/core/types.ts`, `src/game/core/engine.ts`,
+   relevant Core exports/rules tests, `src/App.tsx`, and `src/App.test.ts` may replace
+   the empty-board 40-line target with a fresh-seed seven-row ordinary rubble field
+   whose original opening cells must all clear through normal lines. It must preserve
+   fixed brisk gravity, fresh live-mode seven-bags, lower-time Sprint ranking, and
+   all non-Sprint rules. No Puzzle source, renderer primitive, persistence format,
+   external dependency, or package target is in scope.
+3. **Correction proof:** run the new direct Core/UI tests and typecheck after each
+   source checkpoint; after the final source edit, rerun build and browser evidence
+   for desktop, portrait, and landscape. The earlier whole-suite attempts are recorded
+   as inconclusive: one 124-second default run and one single-worker no-output run
+   were stopped rather than treated as passing. Do not claim final T13 completion
+   until a complete suite result is obtained or a concrete, isolated blocker is
+   recorded.
+
 ### T13 implementation boundaries and checkpoints
 
 1. **Contract and file-map checkpoint (coordinator):** `docs/DESIGN.md`, this task

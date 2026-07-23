@@ -1,5 +1,25 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+## 2026-07-23 — T13.1 feedback correction opened
+
+- User rejected the recent workbench ornament: background field lines, technical
+  English, telemetry-like ordinals/counts, the footer strip, the five-cell rising
+  cluster, and slanted pseudo-block marks are all now out of scope. The replacement
+  keeps only useful copy, real four-cell glyphs, an ungridded selected endgame well,
+  and restrained state motion.
+- User also rejected the empty-board 40-line Sprint as too close to Classic. The
+  authorized replacement is a fresh-seed **清障冲刺**: a low seven-row ordinary rubble
+  field whose original opening cells must be cleared as quickly as possible. It keeps
+  the live randomizer, fixed brisk fall, and time leaderboard but gains target-cell
+  tracking and a clear/opening-read objective distinct from Classic, Survival, and
+  fixed Puzzle endgames.
+- Two prior final-suite attempts are explicitly inconclusive, not passes: default
+  Vitest ended at 124 seconds without output, and a later single-worker run was
+  deliberately stopped after an extended no-output wait. Existing targeted checks and
+  browser audit evidence remain useful checkpoint evidence only.
+- Next: commit this documentation boundary, then implement/test Core Sprint first and
+  quiet the two entry surfaces as a separate visual checkpoint.
+
 ## 2026-07-23 — T13 baseline and active contract
 
 - New user objective supersedes the T12.7 target-floor campaign: every Puzzle board

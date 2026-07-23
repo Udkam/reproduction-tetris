@@ -1,3 +1,54 @@
+# Tetra — T13.1 Quiet Fields and Excavation Sprint Contract
+
+## T13.1 feedback correction
+
+The 2026-07-23 feedback rejects the just-authored gravity-workbench decoration as a
+finished visual direction. The product must not simulate technical depth with grid
+lines, scanlines, oversized ordinal telemetry, ornamental English, or arbitrary pixel
+clusters. Those elements obscure the playable objects rather than helping a player
+choose a mode or a Puzzle endgame.
+
+### Quiet entry surfaces
+
+- Home and the Puzzle library use calm, flat mineral-paper surrounds and one dark,
+  ungridded play well. Remove every decorative horizontal/vertical field line,
+  `GRAVITY FIELD` label, header signal number, giant selected-level ordinal, redundant
+  availability counter, and footer instruction strip. A title, an actual mode rule,
+  a real selected endgame, and a reachable action are meaningful; visual telemetry is
+  not.
+- Remove the five-cell rising cluster and every arbitrary slanted or pseudo-tetromino
+  ornament. Any remaining mode glyph is a valid connected four-cell arrangement with
+  four equal square cells: Classic uses I, Survival O, Sprint L, and Puzzle T. No
+  decorative extra cell, diagonal accent, or non-game block silhouette may appear.
+- Keep the entry interaction restrained: hover/focus can tint a selected lane and
+  shift it by only a few pixels; Puzzle selection can briefly settle the selected
+  specimen. There is no looping grid, sweep, count-up, or motion that hides the
+  first useful frame. `prefers-reduced-motion` receives the same final arrangement
+  with no transition.
+
+### Excavation Sprint
+
+- `sprint` becomes **清障冲刺**, not a 40-line variant of Classic. Each fresh run uses
+  its own random seed to generate a low seven-row ordinary rubble field with readable
+  two-cell openings and no full starting row. Its normal seven-bag is fresh too; there
+  are no special pieces, fixed authored route, hidden changes, timer expiry, or rising
+  bedrock.
+- Its objective is to clear every ordinary cell that existed in that generated opening
+  field. Those opening cells are tracked as Sprint targets through normal line clears;
+  later player pieces do not count. Completing the target set immediately finishes the
+  run. A top-out ends the attempt without a record. This creates a fast opening-read,
+  digging, and recovery challenge rather than an endless stack with a 40-line counter.
+- Sprint keeps a brisk fixed fall cadence and time leaderboard: lower completion time,
+  then fewer placed pieces, then score. The game HUD shows remaining/total opening
+  rubble, placed pieces, and elapsed time. Its result copy says **清障完成** or
+  **清障中断** and reports remaining opening rubble, never `40 行`.
+- The generator is deterministic for a supplied seed, contains only ordinary
+  tetromino materials, occupies only visible bottom rows, and is directly unit-tested
+  for dimensions, target ownership, non-full initial rows, replay determinism, target
+  mapping, completion, and fresh-run seed behavior. It remains separate from fixed
+  Puzzle setups and never changes Classic, Survival, Puzzle physics, or leaderboard
+  ranking policy.
+
 # Tetra — T13 Endgame Workshop, Direct Controls, and Sprint Contract
 
 ## T13 product direction

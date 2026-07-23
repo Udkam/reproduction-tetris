@@ -234,3 +234,26 @@
 - Blocker: none. Next: regenerate/archive local walkthrough material, run final
   whole-range gates, update the coordinator record/changelog, and push only the
   reviewed `main` history.
+
+## 2026-07-23 — TETRIS-T13.1-QUIET-EXCAVATION-011 direction addendum
+
+- Base: `046a19b`; this is a documentation-only correction boundary. Exact paths are
+  `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, `docs/progress.md`, and this coordinator
+  log. No source behavior is claimed complete here.
+- User feedback: the workbench's background lines, technical `GRAVITY FIELD` label,
+  decorative numbers, redundant footer/count copy, five-cell rising cluster, and
+  slanted pseudo-block motifs read as arbitrary decoration rather than gameplay. The
+  visual replacement must be quiet, flat, and useful: only connected four-cell glyphs
+  and real selected-board cells remain.
+- Sprint is also superseded: the empty-board 40-line time trial feels too close to
+  Classic. The bounded Core/UI follow-up becomes fresh-seed **清障冲刺**, with a
+  deterministic seven-row ordinary rubble opening and a target set of those original
+  cells. Normal line clearing removes targets; completion is fastest full excavation,
+  while top-out is a failed attempt. Classic, Survival, fixed Puzzle boards, and Sprint
+  leaderboard ranking remain otherwise closed.
+- Commands run: reviewed the active T13 contract/task/log, current App/Core Sprint
+  implementation/tests, responsive styles, and the user-provided desktop/portrait
+  captures. Final-suite status is intentionally recorded as inconclusive: one
+  124-second default run and one stopped single-worker run produced no result.
+  Blocker: none. Next: implement and directly test the isolated Sprint Core change,
+  then quiet the App/CSS visual surface before fresh browser evidence.
