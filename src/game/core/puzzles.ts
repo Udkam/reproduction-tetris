@@ -1,7 +1,8 @@
 import { BOARD_WIDTH, VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
-import { createBoard } from './board';
+import { canPlace, createBoard, fullRows, mergePiece } from './board';
+import { cellsForPiece, createSpawnPiece } from './pieces';
 import { createRandomizer, drawPiece } from './random';
-import { ANCHOR_CELL, PIECE_TYPES, type Board, type Cell, type PieceType, type PuzzleId } from './types';
+import { ANCHOR_CELL, PIECE_TYPES, type Board, type Cell, type PieceType, type PuzzleId, type Rotation } from './types';
 
 export interface PuzzleCell {
   x: number;
@@ -17,18 +18,33 @@ export interface PuzzleAnchorCell {
   y: number;
 }
 
+/** One legal hard-drop in the empty-board history that authored a Puzzle start. */
+export interface PuzzleSetupPlacement {
+  type: PieceType;
+  rotation: Rotation;
+  x: number;
+}
+
+/** Stable separate seven-bag source for a visible authored endgame. */
+export interface PuzzleSetupHistory {
+  seed: number;
+  placements: readonly PuzzleSetupPlacement[];
+}
+
 export interface PuzzleDefinition {
   id: PuzzleId;
   name: string;
-  /** Replay-calibrated campaign position, surfaced as the visible difficulty. */
+  /** Stable curriculum order; the player can select every entry immediately. */
   difficulty: number;
-  /** Stable level-owned seed for the fixed deterministic seven-bag. */
+  /** Stable level-owned seed for the normal deterministic gameplay seven-bag. */
   seed: number;
-  /** Exactly twenty rows, each with the visible board width. */
+  /** Legal zero-clear setup replay that owns every ordinary original target. */
+  setup: PuzzleSetupHistory;
+  /** Exactly twenty visible rows derived from `setup`; never a hand-excavated mask. */
   boardRows: readonly string[];
   /** Always empty: every authored target begins inside the visible well. */
   hiddenCells: readonly PuzzleCell[];
-  /** Zero to two authored immutable single blocks outside the target floor band. */
+  /** Zero to two authored immutable single blocks outside the original targets. */
   anchorCells: readonly PuzzleAnchorCell[];
 }
 
@@ -37,32 +53,91 @@ const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
 const EMPTY_ANCHOR_CELLS: readonly PuzzleAnchorCell[] = Object.freeze([]);
 const PIECE_TYPE_SET = new Set<string>(PIECE_TYPES);
 
-/**
- * Source glyphs describe target occupancy only: `T` is a normal original target and
- * `.` is an opening. The material cycle makes the still-ordinary target band legible
- * without introducing a new collision material or renderer rule.
- */
-function targetBandRows(pattern: readonly string[], materialOffset: number): readonly string[] {
-  const rows = Array.from({ length: VISIBLE_HEIGHT }, () => EMPTY_ROW);
-  const start = VISIBLE_HEIGHT - pattern.length;
-  for (const [relativeY, source] of pattern.entries()) {
-    if (source.length !== BOARD_WIDTH || [...source].some((cell) => cell !== 'T' && cell !== '.')) {
-      throw new Error('Puzzle target-band source must contain ten T-or-dot cells.');
-    }
-    rows[start + relativeY] = [...source].map((cell, x) => (
-      cell === '.' ? '.' : PIECE_TYPES[(x + materialOffset + relativeY * 3) % PIECE_TYPES.length]!
-    )).join('');
-  }
-  return Object.freeze(rows);
+function setup(seed: number, placements: readonly PuzzleSetupPlacement[]): PuzzleSetupHistory {
+  return Object.freeze({
+    seed,
+    placements: Object.freeze(placements.map((placement) => Object.freeze({ ...placement }))),
+  });
 }
 
-function curriculum(
+function anchors(cells: readonly PuzzleAnchorCell[] = EMPTY_ANCHOR_CELLS): readonly PuzzleAnchorCell[] {
+  return Object.freeze(cells.map((cell) => Object.freeze({ ...cell })));
+}
+
+function isRotation(value: number): value is Rotation {
+  return value === 0 || value === 1 || value === 2 || value === 3;
+}
+
+function coordinateKey(x: number, y: number): string {
+  return `${x}:${y}`;
+}
+
+/**
+ * Replays one authoring history without the engine or renderer. This intentionally uses
+ * the same bag, spawn, collision, hard-drop, and merge primitives as normal play while
+ * rejecting setup clears, hidden cells, malformed rotations, and merged same-type owners.
+ */
+export function replayPuzzleSetup(history: PuzzleSetupHistory): Board {
+  if (!Number.isSafeInteger(history.seed) || history.seed <= 0 || history.seed > 0xffff_ffff) {
+    throw new Error('Puzzle setup history needs a nonzero uint32 seed.');
+  }
+  if (!Array.isArray(history.placements) || history.placements.length < 8 || history.placements.length > 14) {
+    throw new Error('Puzzle setup history must contain eight through fourteen legal drops.');
+  }
+
+  let board = createBoard();
+  let randomizer = createRandomizer(history.seed);
+  const owners = new Map<string, string>();
+  for (const [index, placement] of history.placements.entries()) {
+    if (!PIECE_TYPE_SET.has(placement.type) || !isRotation(placement.rotation) || !Number.isSafeInteger(placement.x)) {
+      throw new Error(`Puzzle setup placement ${index + 1} is malformed.`);
+    }
+    const draw = drawPiece(randomizer);
+    randomizer = draw.randomizer;
+    if (draw.piece !== placement.type) {
+      throw new Error(`Puzzle setup placement ${index + 1} does not match its seeded seven-bag draw.`);
+    }
+
+    let piece = { ...createSpawnPiece(placement.type), rotation: placement.rotation, x: placement.x };
+    if (!canPlace(board, piece)) throw new Error(`Puzzle setup placement ${index + 1} cannot spawn legally.`);
+    while (canPlace(board, { ...piece, y: piece.y + 1 })) piece = { ...piece, y: piece.y + 1 };
+
+    const owner = `${placement.type}:${index}`;
+    const cells = [...new Set(cellsForPiece(piece).map((cell) => coordinateKey(cell.x, cell.y)))];
+    if (cells.length !== 4) throw new Error(`Puzzle setup placement ${index + 1} must own exactly four cells.`);
+    for (const key of cells) {
+      const [xText, yText] = key.split(':');
+      const x = Number(xText);
+      const y = Number(yText);
+      for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]] as const) {
+        const neighbor = owners.get(coordinateKey(x + dx, y + dy));
+        if (neighbor && neighbor !== owner && neighbor.startsWith(`${placement.type}:`)) {
+          throw new Error(`Puzzle setup placement ${index + 1} merges two same-type source tetrominoes.`);
+        }
+      }
+      owners.set(key, owner);
+    }
+    board = mergePiece(board, piece);
+    if (fullRows(board).length > 0) throw new Error(`Puzzle setup placement ${index + 1} clears a row.`);
+  }
+
+  if (board.slice(0, VISIBLE_START_ROW).some((row) => row.some((cell) => cell !== null))) {
+    throw new Error('Puzzle setup may not leave cells in the hidden buffer.');
+  }
+  return board;
+}
+
+function rowsForSetup(history: PuzzleSetupHistory): readonly string[] {
+  const board = replayPuzzleSetup(history);
+  return Object.freeze(board.slice(VISIBLE_START_ROW).map((row) => row.map((cell) => cell ?? '.').join('')));
+}
+
+function endgame(
   id: PuzzleId,
   name: string,
   difficulty: number,
   seed: number,
-  pattern: readonly string[],
-  materialOffset: number,
+  history: PuzzleSetupHistory,
   anchorCells: readonly PuzzleAnchorCell[] = EMPTY_ANCHOR_CELLS,
 ): PuzzleDefinition {
   return Object.freeze({
@@ -70,185 +145,60 @@ function curriculum(
     name,
     difficulty,
     seed,
-    boardRows: targetBandRows(pattern, materialOffset),
+    setup: history,
+    boardRows: rowsForSetup(history),
     hiddenCells: EMPTY_HIDDEN_CELLS,
-    anchorCells: Object.freeze(anchorCells.map((anchor) => Object.freeze({ ...anchor }))),
+    anchorCells: anchors(anchorCells),
   });
 }
 
-/** Visible original-target rows promised by the T12.6 curriculum. */
+/** Visible original-target rows promised by the T13 endgame workshop. */
 export function expectedPuzzleTargetRows(difficulty: number): number {
-  if (difficulty <= 3) return 3;
-  if (difficulty <= 6) return 4;
-  if (difficulty <= 10) return 5;
-  if (difficulty <= 15) return 6;
-  return 7;
+  if (difficulty <= 5) return 5;
+  if (difficulty <= 10) return 6;
+  if (difficulty <= 15) return 7;
+  return 8;
 }
 
 /**
- * T12.6's replay-calibrated original-target curriculum. Every source pattern is a
- * three-to-seven-row floor composition with ordinary holes; each matching route is
- * independently replayed from its fixed seven-bag in puzzleSolverResults.test.ts.
+ * T13's all-open legal endgame workshop. Each board below is derived at module load
+ * from its own deterministic setup history; gameplay has a separate stable seed and
+ * continues normally after any non-winning lock.
  */
 const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
-  // 01–03: three rows — read one compact clearing composition.
-  curriculum('t3r-shaft-01', '青脊回旋', 1, 8, [
-    'TTTT....TT',
-    'TTTT....TT',
-    'TTTT....TT',
-  ], 0),
-  curriculum('t3r-shaft-02', '深湾折返', 2, 3, [
-    'TT........',
-    'TT.T..TTTT',
-    'TTTT.TTTTT',
-  ], 1, [{ x: 0, y: 14 }]),
-  curriculum('t3r-shaft-03', '双岸错层', 3, 1, [
-    'TT........',
-    'TTT.TTTT..',
-    'TTTTTTTT.T',
-  ], 2),
+  // 01–05: five rows — identify a usable channel, then choose a safe staging order.
+  endgame('t3r-shaft-01', '青脊回旋', 1, 994121443, setup(1588444911, [{ type: 'I', rotation: 0, x: 5 }, { type: 'O', rotation: 0, x: 1 }, { type: 'J', rotation: 1, x: -1 }, { type: 'S', rotation: 2, x: 3 }, { type: 'T', rotation: 1, x: 2 }, { type: 'Z', rotation: 2, x: 3 }, { type: 'L', rotation: 1, x: 5 }, { type: 'L', rotation: 0, x: 0 }]), [{ x: 9, y: 19 }]),
+  endgame('t3r-shaft-02', '深湾折返', 2, 2718281828, setup(1431655765, [{ type: 'T', rotation: 0, x: 7 }, { type: 'Z', rotation: 3, x: 7 }, { type: 'I', rotation: 3, x: 8 }, { type: 'O', rotation: 1, x: 5 }, { type: 'J', rotation: 3, x: 3 }, { type: 'S', rotation: 0, x: 1 }, { type: 'L', rotation: 2, x: 5 }, { type: 'S', rotation: 0, x: 3 }])),
+  endgame('t3r-shaft-03', '双岸错层', 3, 3141592653, setup(1717986918, [{ type: 'L', rotation: 1, x: 0 }, { type: 'J', rotation: 0, x: 4 }, { type: 'S', rotation: 3, x: 2 }, { type: 'I', rotation: 1, x: -2 }, { type: 'Z', rotation: 0, x: 0 }, { type: 'T', rotation: 3, x: 5 }, { type: 'O', rotation: 2, x: 7 }, { type: 'L', rotation: 2, x: 3 }])),
+  endgame('t3r-shaft-04', '侧槽逆流', 5, 1618033988, setup(2004318071, [{ type: 'S', rotation: 2, x: 0 }, { type: 'L', rotation: 1, x: 2 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 1, x: -1 }, { type: 'T', rotation: 3, x: 4 }, { type: 'J', rotation: 2, x: 0 }, { type: 'O', rotation: 2, x: 6 }, { type: 'O', rotation: 2, x: 3 }])),
+  endgame('t3r-cascade-05', '潮线汇流', 4, 1073741827, setup(305419896, [{ type: 'S', rotation: 3, x: 2 }, { type: 'T', rotation: 0, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 3, x: 3 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'L', rotation: 1, x: -1 }, { type: 'J', rotation: 0, x: 1 }, { type: 'J', rotation: 0, x: 5 }])),
 
-  // 04–06: four rows — alternate shelves and ordinary turns.
-  curriculum('t3r-shaft-04', '侧槽逆流', 4, 9, [
-    'T......TTT',
-    'TT.....TTT',
-    'TTTT...TTT',
-    'TTTTT..TTT',
-  ], 3, [{ x: 7, y: 13 }]),
-  curriculum('t3r-cascade-05', '潮线汇流', 5, 7, [
-    'T.......TT',
-    'T.TT....TT',
-    'TTTT.T..TT',
-    'TTTTTT.TTT',
-  ], 4),
-  curriculum('t3r-cascade-06', '远岸终局', 6, 10, [
-    'T......TTT',
-    'T..T...TTT',
-    'T..T..TTTT',
-    'TT.TTTTTTT',
-  ], 5),
+  // 06–10: six rows — read overhangs before committing a bridge or a side release.
+  endgame('t3r-cascade-06', '远岸终局', 6, 1717986918, setup(305419896, [{ type: 'S', rotation: 2, x: 0 }, { type: 'T', rotation: 1, x: -1 }, { type: 'O', rotation: 1, x: 3 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 1 }, { type: 'L', rotation: 3, x: 3 }, { type: 'J', rotation: 1, x: 4 }, { type: 'J', rotation: 0, x: 0 }])),
+  endgame('t5r-delta-07', '折光浅湾', 7, 452198731, setup(1588444911, [{ type: 'I', rotation: 0, x: 2 }, { type: 'O', rotation: 1, x: 6 }, { type: 'J', rotation: 3, x: 8 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 3, x: 4 }, { type: 'Z', rotation: 1, x: 5 }, { type: 'L', rotation: 2, x: 5 }, { type: 'L', rotation: 2, x: 1 }])),
+  endgame('t5r-drift-08', '微澜错屿', 9, 2309737967, setup(878082202, [{ type: 'S', rotation: 0, x: 6 }, { type: 'T', rotation: 0, x: 3 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'I', rotation: 3, x: -1 }, { type: 'O', rotation: 1, x: 1 }, { type: 'J', rotation: 2, x: 1 }, { type: 'L', rotation: 0, x: 2 }, { type: 'Z', rotation: 0, x: 0 }])),
+  endgame('t5r-lattice-09', '蓝桥叠汐', 8, 2004318071, setup(591751049, [{ type: 'L', rotation: 0, x: 6 }, { type: 'J', rotation: 0, x: 3 }, { type: 'S', rotation: 0, x: 4 }, { type: 'T', rotation: 1, x: 6 }, { type: 'I', rotation: 1, x: 7 }, { type: 'Z', rotation: 1, x: 7 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 2, x: 3 }]), [{ x: 0, y: 19 }]),
+  endgame('t5r-rift-10', '薄雾回廊', 10, 1311768467, setup(1588444911, [{ type: 'I', rotation: 2, x: 1 }, { type: 'O', rotation: 3, x: 5 }, { type: 'J', rotation: 0, x: 7 }, { type: 'S', rotation: 3, x: 8 }, { type: 'T', rotation: 1, x: 3 }, { type: 'Z', rotation: 0, x: 5 }, { type: 'L', rotation: 0, x: 7 }, { type: 'L', rotation: 0, x: 1 }])),
 
-  // 07–10: five rows — a readable current that has to be built in stages.
-  curriculum('t5r-delta-07', '折光浅湾', 7, 27, [
-    'T.....TTTT',
-    'T.....TTTT',
-    'T.....TTTT',
-    'TT....TTTT',
-    'TTTTT.TTTT',
-  ], 6, [{ x: 6, y: 12 }]),
-  curriculum('t5r-drift-08', '微澜错屿', 8, 15, [
-    'TT......TT',
-    'TT..T...TT',
-    'TT..T..TTT',
-    'TT..T..TTT',
-    'TT.TTTTTTT',
-  ], 0),
-  curriculum('t5r-lattice-09', '蓝桥叠汐', 9, 22, [
-    'T.....TTTT',
-    'T.....TTTT',
-    'T.....TTTT',
-    'TT..T.TTTT',
-    'TTT.T.TTTT',
-  ], 1, [{ x: 8, y: 11 }]),
-  curriculum('t5r-rift-10', '薄雾回廊', 10, 5, [
-    '.......TTT',
-    '.T.....TTT',
-    'TT....TTTT',
-    'TT.T.TTTTT',
-    'TT.TTTTTTT',
-  ], 2),
+  // 11–15: seven rows — preserve recovery room while resolving paired cavities.
+  endgame('t5r-prism-11', '棱湾交错', 14, 3177056438, setup(878082202, [{ type: 'S', rotation: 2, x: 4 }, { type: 'T', rotation: 0, x: 1 }, { type: 'Z', rotation: 1, x: 0 }, { type: 'I', rotation: 1, x: -2 }, { type: 'O', rotation: 0, x: 3 }, { type: 'J', rotation: 0, x: 7 }, { type: 'L', rotation: 3, x: 0 }, { type: 'Z', rotation: 2, x: 4 }, { type: 'J', rotation: 0, x: 2 }, { type: 'T', rotation: 0, x: 3 }])),
+  endgame('t5r-current-12', '双潮折线', 13, 1832906719, setup(287454031, [{ type: 'L', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 4 }, { type: 'T', rotation: 1, x: 2 }, { type: 'I', rotation: 1, x: 4 }, { type: 'S', rotation: 1, x: 6 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'O', rotation: 1, x: 1 }, { type: 'S', rotation: 0, x: 5 }, { type: 'L', rotation: 2, x: 2 }, { type: 'T', rotation: 3, x: 8 }]), [{ x: 0, y: 19 }]),
+  endgame('t5r-arc-13', '静弧深槽', 12, 2882400001, setup(591751049, [{ type: 'L', rotation: 1, x: 7 }, { type: 'J', rotation: 0, x: 5 }, { type: 'S', rotation: 0, x: 6 }, { type: 'T', rotation: 0, x: 2 }, { type: 'I', rotation: 3, x: 8 }, { type: 'Z', rotation: 3, x: 1 }, { type: 'O', rotation: 2, x: 3 }, { type: 'I', rotation: 3, x: 4 }, { type: 'Z', rotation: 3, x: 6 }, { type: 'J', rotation: 1, x: 7 }])),
+  endgame('t5r-pulse-14', '脉光群岛', 11, 3471557507, setup(1164413355, [{ type: 'J', rotation: 0, x: 3 }, { type: 'Z', rotation: 0, x: 3 }, { type: 'L', rotation: 0, x: 0 }, { type: 'T', rotation: 0, x: 6 }, { type: 'S', rotation: 2, x: 5 }, { type: 'I', rotation: 1, x: -2 }, { type: 'O', rotation: 2, x: 1 }, { type: 'L', rotation: 0, x: 3 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'S', rotation: 3, x: 0 }])),
+  endgame('t5r-horizon-15', '远蓝合流', 15, 2596069104, setup(305419896, [{ type: 'S', rotation: 0, x: 1 }, { type: 'T', rotation: 1, x: 0 }, { type: 'O', rotation: 1, x: 4 }, { type: 'I', rotation: 3, x: -1 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'L', rotation: 3, x: 4 }, { type: 'J', rotation: 0, x: 7 }, { type: 'J', rotation: 2, x: 0 }, { type: 'I', rotation: 1, x: 4 }, { type: 'T', rotation: 1, x: 2 }]), [{ x: 3, y: 19 }]),
 
-  // 11–15: six rows — longer layered currents, still with no special rule.
-  curriculum('t5r-prism-11', '棱湾交错', 11, 61, [
-    'T.......TT',
-    'T.......TT',
-    'T.......TT',
-    'TTTT.TTTTT',
-    'TTTT.TTTTT',
-    'TTTT.TTTTT',
-  ], 3, [{ x: 9, y: 10 }]),
-  curriculum('t5r-current-12', '双潮折线', 12, 57, [
-    'TTT.......',
-    'TTT.......',
-    'TTTT.T...T',
-    'TTTT.T..TT',
-    'TTTT.T.TTT',
-    'TTTTTT.TTT',
-  ], 4),
-  curriculum('t5r-arc-13', '静弧深槽', 13, 35, [
-    'T......TTT',
-    'TT.....TTT',
-    'TTT....TTT',
-    'TTT....TTT',
-    'TTT...TTTT',
-    'TTT..TTTTT',
-  ], 5),
-  curriculum('t5r-pulse-14', '脉光群岛', 14, 24, [
-    'T......TTT',
-    'T......TTT',
-    'T......TTT',
-    'TT...T.TTT',
-    'TTTTTT.TTT',
-    'TTTTTT.TTT',
-  ], 6, [{ x: 0, y: 10 }, { x: 9, y: 12 }]),
-  curriculum('t5r-horizon-15', '远蓝合流', 15, 46, [
-    'T......TTT',
-    'T.....TTTT',
-    'T.....TTTT',
-    'T.....TTTT',
-    'TT.T.TTTTT',
-    'TT.TTTTTTT',
-  ], 0),
-
-  // 16–20: seven rows — complete a deep but transparent clearing current.
-  curriculum('t6r-veil-16', '澄湾折层', 16, 599, [
-    'T.........',
-    'TT........',
-    'TTT....TTT',
-    'TTTT..TTTT',
-    'TTTT..TTTT',
-    'TTTT..TTTT',
-    'TTTTT.TTTT',
-  ], 1, [{ x: 0, y: 8 }]),
-  curriculum('t6r-cairn-17', '层岩交径', 17, 416, [
-    'TTT.......',
-    'TTT.......',
-    'TTTT......',
-    'TTTT.TT..T',
-    'TTTTTTT..T',
-    'TTTTTTT..T',
-    'TTTTTTT.TT',
-  ], 2),
-  curriculum('t6r-terrace-18', '岚阶回环', 18, 414, [
-    'T.........',
-    'TT.T...T..',
-    'TTTT...TTT',
-    'TTTT...TTT',
-    'TTTT...TTT',
-    'TTTTT..TTT',
-    'TTTTT..TTT',
-  ], 3, [{ x: 0, y: 6 }]),
-  curriculum('t6r-bastion-19', '深湾阈门', 19, 107, [
-    'T.........',
-    'T..T......',
-    'T..T.T..TT',
-    'TT.T.T.TTT',
-    'TTTT.TTTTT',
-    'TTTT.TTTTT',
-    'TTTT.TTTTT',
-  ], 4),
-  curriculum('t6r-keystone-20', '层界基石', 20, 104, [
-    'TTT.......',
-    'TTT.......',
-    'TTTT.T...T',
-    'TTTT.T...T',
-    'TTTT.T...T',
-    'TTTTTT.TTT',
-    'TTTTTT.TTT',
-  ], 5, [{ x: 2, y: 9 }]),
+  // 16–20: eight rows — plan release lanes across a true deep endgame.
+  endgame('t6r-veil-16', '澄湾折层', 20, 324508639, setup(1588444911, [{ type: 'I', rotation: 1, x: 0 }, { type: 'O', rotation: 0, x: 0 }, { type: 'J', rotation: 0, x: 3 }, { type: 'S', rotation: 3, x: 3 }, { type: 'T', rotation: 3, x: 0 }, { type: 'Z', rotation: 2, x: 5 }, { type: 'L', rotation: 3, x: 7 }, { type: 'L', rotation: 2, x: 0 }, { type: 'O', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 3 }, { type: 'T', rotation: 3, x: 4 }, { type: 'S', rotation: 2, x: 3 }])),
+  endgame('t6r-cairn-17', '层岩交径', 16, 3735928559, setup(270544960, [{ type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 1, x: 4 }, { type: 'S', rotation: 1, x: 2 }, { type: 'J', rotation: 1, x: 0 }, { type: 'Z', rotation: 0, x: 6 }, { type: 'I', rotation: 3, x: -1 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 0, x: 4 }, { type: 'Z', rotation: 3, x: 0 }, { type: 'S', rotation: 1, x: 4 }, { type: 'J', rotation: 0, x: 2 }, { type: 'O', rotation: 0, x: 3 }]), [{ x: 9, y: 19 }]),
+  endgame('t6r-terrace-18', '岚阶回环', 17, 5783321, setup(1164413355, [{ type: 'J', rotation: 0, x: 0 }, { type: 'Z', rotation: 2, x: 0 }, { type: 'L', rotation: 0, x: 3 }, { type: 'T', rotation: 3, x: 2 }, { type: 'S', rotation: 0, x: 0 }, { type: 'I', rotation: 1, x: 4 }, { type: 'O', rotation: 1, x: 4 }, { type: 'L', rotation: 1, x: 6 }, { type: 'Z', rotation: 0, x: 5 }, { type: 'S', rotation: 1, x: 2 }, { type: 'O', rotation: 1, x: 1 }, { type: 'J', rotation: 1, x: -1 }])),
+  endgame('t6r-bastion-19', '深湾阈门', 19, 521288629, setup(591751049, [{ type: 'L', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 5 }, { type: 'S', rotation: 1, x: 6 }, { type: 'T', rotation: 3, x: 8 }, { type: 'I', rotation: 2, x: 1 }, { type: 'Z', rotation: 1, x: 3 }, { type: 'O', rotation: 2, x: 2 }, { type: 'I', rotation: 2, x: 4 }, { type: 'Z', rotation: 3, x: 2 }, { type: 'J', rotation: 0, x: 7 }, { type: 'L', rotation: 0, x: 4 }, { type: 'O', rotation: 1, x: 8 }])),
+  endgame('t6r-keystone-20', '层界基石', 18, 19088743, setup(305419896, [{ type: 'S', rotation: 2, x: 1 }, { type: 'T', rotation: 1, x: -1 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 1, x: 4 }, { type: 'L', rotation: 3, x: 3 }, { type: 'J', rotation: 1, x: -1 }, { type: 'J', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }, { type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 2 }, { type: 'O', rotation: 0, x: 0 }, { type: 'S', rotation: 0, x: 7 }]), [{ x: 3, y: 19 }]),
 ]);
 
-export const PUZZLE_DEFINITIONS = PUZZLE_LIBRARY;
+/** The visible workshop order is authored from replayed complexity, not legacy ID order. */
+export const PUZZLE_DEFINITIONS: readonly PuzzleDefinition[] = Object.freeze(
+  [...PUZZLE_LIBRARY].sort((left, right) => left.difficulty - right.difficulty || left.id.localeCompare(right.id)),
+);
 
 const PUZZLE_ID_SET = new Set<string>(PUZZLE_LIBRARY.map((candidate) => candidate.id));
 const PUZZLE_SEED_SET = new Set<number>(PUZZLE_LIBRARY.map((candidate) => candidate.seed));
@@ -262,13 +212,15 @@ function validateSeedBags(definition: PuzzleDefinition): void {
       randomizer = draw.randomizer;
       bag.add(draw.piece);
     }
-    if (bag.size !== PIECE_TYPES.length) {
-      throw new Error(`Puzzle ${definition.id} seed does not produce complete seven-bags.`);
-    }
+    if (bag.size !== PIECE_TYPES.length) throw new Error(`Puzzle ${definition.id} seed does not produce complete seven-bags.`);
   }
 }
 
-/** Validates direct authored multi-row target bands, not an obsolete deep-stack history. */
+function sameJson(left: unknown, right: unknown): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+/** Validates T13's derived, legal five-through-eight-row endgames. */
 export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   if (!PUZZLE_ID_SET.has(definition.id)) throw new Error(`Unknown puzzle id: ${definition.id}`);
   const canonical = PUZZLE_LIBRARY.find((candidate) => candidate.id === definition.id)!;
@@ -282,28 +234,23 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
     throw new Error(`Puzzle ${definition.id} must retain its authored campaign difficulty.`);
   }
   if (definition.name !== canonical.name) throw new Error(`Puzzle ${definition.id} must retain its authored name.`);
+  if (!sameJson(definition.setup, canonical.setup)) throw new Error(`Puzzle ${definition.id} must retain its legal setup history.`);
   if (!Array.isArray(definition.hiddenCells) || definition.hiddenCells.length !== 0) {
     throw new Error(`Puzzle ${definition.id} must begin with an empty hidden buffer.`);
-  }
-  if (!Array.isArray(definition.anchorCells) || definition.anchorCells.length > 2) {
-    throw new Error(`Puzzle ${definition.id} may contain zero, one, or two immutable anchors.`);
   }
   if (!Array.isArray(definition.boardRows) || definition.boardRows.length !== VISIBLE_HEIGHT) {
     throw new Error(`Puzzle ${definition.id} requires exactly ${VISIBLE_HEIGHT} visible board rows.`);
   }
-  if (JSON.stringify(definition.boardRows) !== JSON.stringify(canonical.boardRows)) {
-    throw new Error(`Puzzle ${definition.id} must retain its authored target pattern.`);
+  const derivedRows = rowsForSetup(definition.setup);
+  if (!sameJson(definition.boardRows, derivedRows) || !sameJson(definition.boardRows, canonical.boardRows)) {
+    throw new Error(`Puzzle ${definition.id} board must be derived exactly from its legal setup history.`);
   }
 
   let occupied = 0;
   const nonEmptyRows: number[] = [];
   for (const [y, row] of definition.boardRows.entries()) {
-    if (typeof row !== 'string' || row.length !== BOARD_WIDTH) {
-      throw new Error(`Puzzle ${definition.id} contains a malformed board row.`);
-    }
-    if ([...row].some((cell) => cell !== '.' && !PIECE_TYPE_SET.has(cell))) {
-      throw new Error(`Puzzle ${definition.id} contains an illegal board cell.`);
-    }
+    if (typeof row !== 'string' || row.length !== BOARD_WIDTH) throw new Error(`Puzzle ${definition.id} contains a malformed board row.`);
+    if ([...row].some((cell) => cell !== '.' && !PIECE_TYPE_SET.has(cell))) throw new Error(`Puzzle ${definition.id} contains an illegal board cell.`);
     const rowOccupied = [...row].filter((cell) => cell !== '.').length;
     if (rowOccupied === BOARD_WIDTH) throw new Error(`Puzzle ${definition.id} contains an initially full visible row.`);
     if (rowOccupied > 0) {
@@ -312,34 +259,39 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
     }
   }
 
-  if (occupied < 12 || occupied > 48) {
-    throw new Error(`Puzzle ${definition.id} requires a compact multi-row original-target band.`);
+  if (occupied !== definition.setup.placements.length * 4) {
+    throw new Error(`Puzzle ${definition.id} must preserve every source tetromino as four ordinary targets.`);
   }
   const expectedRows = expectedPuzzleTargetRows(definition.difficulty);
   if (nonEmptyRows.length !== expectedRows) {
-    throw new Error(`Puzzle ${definition.id} requires exactly ${expectedRows} authored target rows for its campaign band.`);
+    throw new Error(`Puzzle ${definition.id} requires exactly ${expectedRows} visible endgame rows for its campaign band.`);
   }
-  const expectedStart = VISIBLE_HEIGHT - nonEmptyRows.length;
+  const expectedStart = VISIBLE_HEIGHT - expectedRows;
   if (nonEmptyRows.some((y, index) => y !== expectedStart + index)) {
-    throw new Error(`Puzzle ${definition.id} target rows must form one contiguous band at the floor.`);
+    throw new Error(`Puzzle ${definition.id} must remain a contiguous visible endgame band at the floor.`);
   }
   if (definition.boardRows.slice(0, expectedStart).some((row) => row !== EMPTY_ROW)) {
-    throw new Error(`Puzzle ${definition.id} may not hide targets above its floor band.`);
+    throw new Error(`Puzzle ${definition.id} may not hide targets above its visible endgame band.`);
+  }
+  if (!Array.isArray(definition.anchorCells) || definition.anchorCells.length > 2) {
+    throw new Error(`Puzzle ${definition.id} may contain zero, one, or two immutable anchors.`);
   }
   const anchorKeys = new Set<string>();
   for (const anchor of definition.anchorCells) {
     if (!Number.isSafeInteger(anchor.x) || !Number.isSafeInteger(anchor.y)
-      || anchor.x < 0 || anchor.x >= BOARD_WIDTH || anchor.y < 2 || anchor.y >= expectedStart) {
-      throw new Error(`Puzzle ${definition.id} anchor must remain above the target band and clear of the spawn lane.`);
+      || anchor.x < 0 || anchor.x >= BOARD_WIDTH || anchor.y < expectedStart || anchor.y >= VISIBLE_HEIGHT) {
+      throw new Error(`Puzzle ${definition.id} anchor must remain inside the visible endgame band.`);
     }
-    const key = `${anchor.x}:${anchor.y}`;
+    if (definition.boardRows[anchor.y]![anchor.x] !== '.') {
+      throw new Error(`Puzzle ${definition.id} anchor may not occupy an original target cell.`);
+    }
+    const key = coordinateKey(anchor.x, anchor.y);
     if (anchorKeys.has(key)) throw new Error(`Puzzle ${definition.id} contains duplicate immutable anchors.`);
     anchorKeys.add(key);
   }
-  if (JSON.stringify(definition.anchorCells) !== JSON.stringify(canonical.anchorCells)) {
+  if (!sameJson(definition.anchorCells, canonical.anchorCells)) {
     throw new Error(`Puzzle ${definition.id} must retain its authored immutable-anchor distribution.`);
   }
-
   validateSeedBags(definition);
 }
 
@@ -350,19 +302,11 @@ export function getPuzzleDefinition(id: PuzzleId): PuzzleDefinition {
   return selected;
 }
 
-export function createPuzzleBoard(definition: PuzzleDefinition): Board {
+export function createPuzzleBoard(definition: PuzzleDefinition, includeAnchors = true): Board {
   validatePuzzleDefinition(definition);
-  const board = createBoard();
-  for (let y = 0; y < definition.boardRows.length; y += 1) {
-    const row = definition.boardRows[y]!;
-    for (let x = 0; x < row.length; x += 1) {
-      const type = row[x]!;
-      if (type !== '.') board[VISIBLE_START_ROW + y]![x] = type as PieceType;
-    }
-  }
-  for (const anchor of definition.anchorCells) {
-    board[VISIBLE_START_ROW + anchor.y]![anchor.x] = ANCHOR_CELL;
-  }
+  const board = replayPuzzleSetup(definition.setup);
+  if (!includeAnchors) return board;
+  for (const anchor of definition.anchorCells) board[VISIBLE_START_ROW + anchor.y]![anchor.x] = ANCHOR_CELL;
   return board;
 }
 
@@ -375,10 +319,10 @@ export function originalTargetCells(definition: PuzzleDefinition): readonly Cell
 }
 
 export function defaultPuzzleId(): PuzzleId {
-  return PUZZLE_LIBRARY[0]!.id;
+  return PUZZLE_DEFINITIONS[0]!.id;
 }
 
 export function nextPuzzleId(id: PuzzleId): PuzzleId | null {
-  const index = PUZZLE_LIBRARY.findIndex((candidate) => candidate.id === id);
-  return index >= 0 ? PUZZLE_LIBRARY[index + 1]?.id ?? null : null;
+  const index = PUZZLE_DEFINITIONS.findIndex((candidate) => candidate.id === id);
+  return index >= 0 ? PUZZLE_DEFINITIONS[index + 1]?.id ?? null : null;
 }

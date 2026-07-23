@@ -255,12 +255,11 @@ function firstDivergence(canonical: readonly PuzzleLockPlacement[], alternative:
   return canonical.length === alternative.length ? null : bound + 1;
 }
 
-function searchWithBannedPlacement(
+function searchRoute(
   levelId: PuzzleId,
-  bannedLock: PuzzleLockPlacement,
-  bannedLockIndex: number,
   maxLocks: number,
   beamWidth: number,
+  banned?: { lock: PuzzleLockPlacement; index: number },
 ): PuzzleRouteReplay | null {
   const started = dispatch(createInitialState(0x51a1f00d, 'puzzle', levelId), { type: 'start' }).state;
   if (!isActive(started)) return null;
@@ -270,7 +269,7 @@ function searchWithBannedPlacement(
     const deduplicated = new Map<string, SearchNode>();
     for (const parent of beam) {
       for (const landing of puzzleLandings(parent.state)) {
-        if (depth === bannedLockIndex && landing.lock.signature === bannedLock.signature) continue;
+        if (depth === banned?.index && landing.lock.signature === banned.lock.signature) continue;
         const node: SearchNode = {
           state: landing.state,
           parent,
@@ -292,6 +291,11 @@ function searchWithBannedPlacement(
     if (beam.length === 0) return null;
   }
   return null;
+}
+
+/** Finds one legal Core-replayed route without making it a product rule or hint script. */
+export function findPuzzleRoute(levelId: PuzzleId, options: PuzzleRouteSearchOptions = {}): PuzzleRouteReplay | null {
+  return searchRoute(levelId, options.maxLocks ?? 30, options.beamWidth ?? 480);
 }
 
 export function decodePuzzleRoute(commandStream: string): readonly GameCommand[] {
@@ -343,7 +347,7 @@ export function findPuzzleAlternativeRoute(
   }
 
   for (let index = 0; index < canonical.locks.length; index += 1) {
-    const alternative = searchWithBannedPlacement(levelId, canonical.locks[index]!, index, maxLocks, beamWidth);
+    const alternative = searchRoute(levelId, maxLocks, beamWidth, { lock: canonical.locks[index]!, index });
     if (!alternative) continue;
     const divergence = firstDivergence(canonical.locks, alternative.locks);
     if (divergence !== null) return Object.freeze({ canonical, alternative, firstDivergenceLock: divergence });

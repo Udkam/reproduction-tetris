@@ -19,9 +19,9 @@ function resolveToActive(state: GameState): GameState {
   return next;
 }
 
-describe('T12.6 Puzzle ordinary consecutive-piece flow', () => {
+describe('T13 Puzzle ordinary consecutive-piece flow', () => {
   it('applies automatic gravity, shared grounded lock delay, and ordinary entry after a non-clearing lock', () => {
-    let state = dispatch(createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'), { type: 'start' }).state;
+    let state = dispatch(createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-02'), { type: 'start' }).state;
     // Deliberately deviate from the replayed composition; the test exercises normal
     // continuation rather than a curriculum walkthrough.
     state = dispatch(state, { type: 'move', dx: -1 }).state;
@@ -82,8 +82,8 @@ describe('T12.6 Puzzle ordinary consecutive-piece flow', () => {
     const state = createInitialState(1, 'puzzle', id);
     const occupiedRows = definition.boardRows.filter((row) => row !== '..........');
 
-    expect(occupiedRows.length).toBeGreaterThanOrEqual(3);
-    expect(occupiedRows.length).toBeLessThanOrEqual(7);
+    expect(occupiedRows.length).toBeGreaterThanOrEqual(5);
+    expect(occupiedRows.length).toBeLessThanOrEqual(8);
     expect(definition.boardRows.slice(0, VISIBLE_HEIGHT - occupiedRows.length)).toEqual(
       Array.from({ length: VISIBLE_HEIGHT - occupiedRows.length }, () => '..........'),
     );
