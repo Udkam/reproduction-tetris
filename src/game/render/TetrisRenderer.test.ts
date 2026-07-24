@@ -57,6 +57,7 @@ type RendererInternals = {
   ) => void;
   queueCollapseSettlementTrail: (previousBoard: GameState['board'], cells: readonly Cell[]) => void;
   drawPreviewPieces: (graphics: unknown, pieces: readonly ('I' | 'O')[], x: number, y: number, width: number, height: number, labelInset?: number) => void;
+  drawPreviewQueueMarker: (graphics: unknown, value: number, centerX: number, centerY: number, height: number) => void;
 };
 
 describe('Puzzle undo presentation reset', () => {
@@ -296,5 +297,27 @@ describe('Puzzle undo presentation reset', () => {
     calls.length = 0;
     internals.drawPreviewPieces({}, ['O'], 0, 0, 120, 64, 18);
     expect(calls[0]?.centerY).toBe(41);
+  });
+
+  it('draws plain 1 and 2 queue markers inside one shared Puzzle well', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const strokes: Array<{ color?: number; alpha?: number; width?: number }> = [];
+    const graphics = {
+      moveTo: () => graphics,
+      lineTo: () => graphics,
+      stroke: (options: { color?: number; alpha?: number; width?: number }) => {
+        strokes.push(options);
+        return graphics;
+      },
+    };
+
+    internals.drawPreviewQueueMarker(graphics, 1, 12, 20, 12);
+    expect(strokes).toHaveLength(1);
+    expect(strokes.every((stroke) => stroke.color === 0x879db3 && stroke.alpha === .92)).toBe(true);
+
+    strokes.length = 0;
+    internals.drawPreviewQueueMarker(graphics, 2, 12, 20, 12);
+    expect(strokes).toHaveLength(1);
   });
 });

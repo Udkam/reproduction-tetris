@@ -481,11 +481,11 @@ describe('T6 frontend mode binding', () => {
     expect(puzzleSlot.dataset.previewCount).toBe('2');
     expect(segments).toHaveLength(2);
     expect(segments[0]?.dataset.previewSegment).toBe('1');
-    expect(segments[0]?.getAttribute('aria-label')).toBe('① 下一个方块');
-    expect(segments[0]?.textContent).toBe('①下一个方块');
+    expect(segments[0]?.getAttribute('aria-label')).toBe('1 下一个方块');
+    expect(segments[0]?.textContent).toBe('1');
     expect(segments[1]?.dataset.previewSegment).toBe('2');
-    expect(segments[1]?.getAttribute('aria-label')).toBe('② 后一个方块');
-    expect(segments[1]?.textContent).toBe('②后一个方块');
+    expect(segments[1]?.getAttribute('aria-label')).toBe('2 后一个方块');
+    expect(segments[1]?.textContent).toBe('2');
     puzzle.unmount();
 
     const classic = render(createElement(GameSession, {

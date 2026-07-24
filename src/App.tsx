@@ -1302,11 +1302,11 @@ export function GameSession({
               >
                 {puzzleDoublePreview && (
                   <>
-                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="1" role="img" aria-label={`① ${copy.labels.nextPiece}`}>
-                      <span className="next-slot__segment-label" aria-hidden="true"><b>①</b><small>{copy.labels.nextPiece}</small></span>
+                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="1" role="img" aria-label={`1 ${copy.labels.nextPiece}`}>
+                      <span className="next-slot__segment-label" aria-hidden="true"><b>1</b></span>
                     </div>
-                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="2" role="img" aria-label={`② ${copy.labels.followingPiece}`}>
-                      <span className="next-slot__segment-label" aria-hidden="true"><b>②</b><small>{copy.labels.followingPiece}</small></span>
+                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="2" role="img" aria-label={`2 ${copy.labels.followingPiece}`}>
+                      <span className="next-slot__segment-label" aria-hidden="true"><b>2</b></span>
                     </div>
                   </>
                 )}

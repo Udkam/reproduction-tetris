@@ -1111,24 +1111,44 @@ export class TetrisRenderer {
               y: bounds.top - hostBounds.top,
               width: bounds.width,
               height: bounds.height,
-              labelInset: Math.min(18, Math.max(9, bounds.height * .28)),
+              labelInset: 0,
             };
           })
           .filter((segment): segment is PreviewSlot => segment !== null)
         : [];
       const previewSlots = segmentSlots.length ? segmentSlots : [fallbackSlot];
-      // The DOM slots establish the exact visual relationship between each Puzzle
-      // caption and its piece. Pixi still owns each dark well and tetromino, so the
-      // game keeps one canvas and no DOM cell grid.
-      for (const previewSlot of previewSlots) {
+      // Puzzle has one ordinary Next well, divided into two numbered rows. The DOM
+      // establishes those row bounds and labels; Pixi owns the shared well and pieces.
+      const segmentedQueue = segmentSlots.length > 1;
+      const segmentInset = segmentedQueue ? 0 : 1;
+      if (segmentedQueue) {
         this.drawPreviewBackdrop(
-          previewSlot.x,
-          previewSlot.y,
-          previewSlot.width,
-          previewSlot.height,
-          1,
-          previewSlot.labelInset,
+          fallbackSlot.x + 1,
+          fallbackSlot.y + 1,
+          Math.max(8, fallbackSlot.width - 2),
+          Math.max(8, fallbackSlot.height - 2),
+          segmentSlots.length,
         );
+        for (const [index, previewSlot] of segmentSlots.entries()) {
+          this.drawPreviewQueueMarker(
+            this.boardGraphics,
+            index + 1,
+            previewSlot.x + Math.max(10, previewSlot.width * .065),
+            previewSlot.y + previewSlot.height / 2,
+            Math.min(13, Math.max(8, previewSlot.height * .34)),
+          );
+        }
+      } else {
+        for (const previewSlot of previewSlots) {
+          this.drawPreviewBackdrop(
+            previewSlot.x + segmentInset,
+            previewSlot.y + segmentInset,
+            Math.max(8, previewSlot.width - segmentInset * 2),
+            Math.max(8, previewSlot.height - segmentInset * 2),
+            1,
+            previewSlot.labelInset,
+          );
+        }
       }
       if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
         this.previewClearBounds = null;
@@ -1153,10 +1173,10 @@ export class TetrisRenderer {
           this.drawPreviewPieces(
             graphics,
             [piece],
-            previewSlot.x,
-            previewSlot.y,
-            previewSlot.width,
-            previewSlot.height,
+            previewSlot.x + segmentInset,
+            previewSlot.y + segmentInset,
+            Math.max(8, previewSlot.width - segmentInset * 2),
+            Math.max(8, previewSlot.height - segmentInset * 2),
             previewSlot.labelInset,
           );
         }
@@ -1231,6 +1251,26 @@ export class TetrisRenderer {
         .lineTo(x + width - dividerInset, dividerY)
         .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
     }
+  }
+
+  /** Small vector numerals keep the two Puzzle rows legible inside the same
+   * canvas-owned well without layering a second DOM card over it. */
+  private drawPreviewQueueMarker(graphics: Graphics, value: number, centerX: number, centerY: number, height: number): void {
+    const width = height * .58;
+    const left = centerX - width / 2;
+    const right = centerX + width / 2;
+    const top = centerY - height / 2;
+    const middle = centerY;
+    const bottom = centerY + height / 2;
+    const points = value === 1
+      // Keep the diagonal head, upright stem, and baseline in one path.  The former
+      // corner-shaped stroke read like an incomplete glyph at small preview sizes.
+      ? [[left + width * .18, top + height * .28], [left + width * .61, top + height * .06], [left + width * .61, bottom - height * .08], [left + width * .24, bottom - height * .08]]
+      : [[left, top], [right, top], [right, middle], [left, middle], [left, bottom], [right, bottom]];
+    const [startX, startY] = points[0]!;
+    graphics.moveTo(startX, startY);
+    for (const [toX, toY] of points.slice(1)) graphics.lineTo(toX, toY);
+    graphics.stroke({ color: COLORS.edge, alpha: .92, width: Math.max(1, height * .13) });
   }
 
   /** Persistent, low-obstruction board treatment makes every ten-second state legible. */

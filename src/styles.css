@@ -8546,92 +8546,266 @@ kbd,
   .settings-sheet > .settings-record { padding: 8px 10px; }
 }
 
-/* T13.14 second Settings correction: use a single content-led sequence instead of
-   balancing two unrelated top cards. Each band owns a complete purpose and stops at
-   its intrinsic height, so no empty quadrant has to be disguised as symmetry. */
+/* T13.14 third correction: Settings is one connected console, not four stacked
+   cards or two unrelated cards. Puzzle forecast is one two-part instrument. */
 .action-sheet:has(.settings-sheet) {
-  width: min(856px, calc(100vw - 24px));
-  padding: clamp(16px, 1.65vw, 20px);
+  width: min(842px, calc(100vw - 28px));
+  padding: clamp(16px, 2vw, 22px);
+  background: #f7fafb;
+  border-color: #91adbd;
+  box-shadow: 0 22px 58px rgba(11, 36, 53, .28);
+}
+
+.action-sheet:has(.settings-sheet) h2 {
+  margin-bottom: 14px;
+  color: #17324a;
+  font-family: var(--font-ui);
+  font-size: clamp(26px, 3.1vw, 34px);
+  font-weight: 760;
+  letter-spacing: -.055em;
 }
 
 .settings-sheet {
   display: grid;
   width: 100%;
   min-width: 0;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(290px, .82fr) minmax(0, 1.18fr);
   grid-template-areas:
-    "controls"
-    "keyboard"
-    "rules"
-    "record";
-  gap: 8px;
-  align-items: start;
+    "controls keyboard"
+    "rules rules"
+    "record record";
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+  background: #edf4f7;
+  border: 1px solid #b8cdd8;
+  border-radius: 12px;
+}
+
+.settings-sheet > .settings-controls,
+.settings-sheet > .settings-shortcuts,
+.settings-sheet > .mode-rule-summary,
+.settings-sheet > .settings-record,
+.settings-sheet > .result-leaderboard {
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .settings-sheet > .settings-controls {
   grid-area: controls !important;
-  grid-template-columns: auto minmax(192px, .9fr) minmax(220px, 1.25fr);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-areas:
-    "heading language sound"
-    "actions actions actions";
-  align-items: center;
-  align-content: start;
-  gap: 7px 12px;
-  padding: 11px 13px;
+    "heading heading"
+    "language sound"
+    "actions actions";
+  align-content: space-between;
+  align-self: stretch;
+  gap: 9px 10px;
+  padding: 15px 16px;
 }
 
-.settings-sheet > .settings-controls > strong { grid-area: heading; }
+.settings-sheet > .settings-controls > strong {
+  grid-area: heading;
+  color: #42677b;
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: .075em;
+}
 
 .settings-controls .language-control {
   grid-area: language;
+  min-width: 0;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 7px;
+  gap: 6px;
+  align-items: center;
+  color: #527185;
+  font-size: 10.5px;
+  font-weight: 720;
 }
+
+.settings-controls .language-control > div { gap: 4px; }
+.settings-controls .language-control button { min-height: 34px; padding: 4px 6px; border-radius: 6px; }
 
 .settings-controls .audio-controls {
   grid-area: sound;
-  grid-template-columns: minmax(76px, .4fr) minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: minmax(72px, .68fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
   padding: 0;
   border: 0;
 }
 
+.settings-controls .audio-controls__switches { display: block; }
+.settings-controls .audio-toggle { width: 100%; min-height: 34px; padding-inline: 6px; }
+.settings-controls .audio-volume { grid-template-columns: auto minmax(34px, 1fr) auto; gap: 4px; font-size: 10.5px; }
+
 .settings-controls .settings-sheet__actions {
   grid-area: actions;
   gap: 8px;
+  margin: 0;
 }
 
-.settings-controls .audio-toggle,
-.settings-controls .settings-sheet__actions > button { min-height: 36px; }
+.settings-controls .settings-sheet__actions > button { min-height: 38px; }
 
 .settings-sheet > .settings-shortcuts {
   grid-area: keyboard !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-content: start;
-  gap: 6px 12px;
-  padding: 10px 13px;
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  grid-template-areas:
+    "heading heading"
+    "gameplay shortcuts";
+  align-content: space-between;
+  align-self: stretch;
+  gap: 8px 14px;
+  padding: 15px 17px;
+  border-left: 1px solid #c4d5de;
 }
+
+.settings-shortcuts > strong {
+  grid-area: heading;
+  color: #42677b;
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: .075em;
+}
+
+.settings-shortcuts [data-testid="keyboard-gameplay"] { grid-area: gameplay; }
+.settings-shortcuts [data-testid="keyboard-shortcuts"] { grid-area: shortcuts; }
+
+.settings-shortcuts__group,
+.settings-shortcuts [data-testid="keyboard-shortcuts"],
+.settings-shortcuts:lang(en) [data-testid="keyboard-shortcuts"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 8px;
+}
+
+.settings-shortcuts__group > span {
+  min-height: 18px;
+  color: #527185;
+  font-size: 10.5px;
+  line-height: 1.25;
+}
+
+.settings-shortcuts__group-label {
+  color: #2e6a80 !important;
+  font-size: 9px !important;
+  font-weight: 780;
+  letter-spacing: .06em;
+}
+
+.settings-shortcuts kbd { padding: 1px 4px; margin-right: 2px; }
+.settings-shortcuts--puzzle [data-testid="keyboard-gameplay"] > span:last-child,
+.settings-shortcuts [data-testid="keyboard-shortcuts"] > span:last-child { grid-column: 1 / -1; }
 
 .settings-sheet > .mode-rule-summary {
   grid-area: rules !important;
-  gap: 6px;
-  min-height: 0 !important;
-  padding: 10px 13px;
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 12px 16px;
+  border-top: 1px solid #c4d5de;
+  background: color-mix(in srgb, #f7fafb 64%, #edf4f7);
+}
+
+.settings-sheet > .mode-rule-summary > strong {
+  padding-top: 1px;
+  color: #42677b;
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: .075em;
+}
+
+.settings-sheet > .mode-rule-summary ul,
+.settings-sheet > .mode-rule-summary--marathon ul,
+.settings-sheet > .mode-rule-summary--race ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 15px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Classic has exactly three short rules: keep them in one complete desktop row
+   instead of manufacturing an empty fourth cell. */
+.settings-sheet > .mode-rule-summary--marathon ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.settings-sheet > .mode-rule-summary li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px;
+  align-items: start;
+  min-width: 0;
+  color: #527185;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.settings-sheet > .mode-rule-summary li b {
+  color: #2e6a80;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 780;
+  letter-spacing: -.02em;
+  white-space: nowrap;
 }
 
 .settings-sheet > .settings-record,
-.settings-sheet > .result-leaderboard { grid-area: record !important; }
+.settings-sheet > .result-leaderboard {
+  grid-area: record !important;
+  min-height: 0;
+  border-top: 1px solid #c4d5de;
+  background: #f2f7f8;
+}
 
-/* The forecast labels live inside the exact Pixi geometry they name. Pixi leaves
-   their shallow caption strips transparent, so the labels stay visible while the
-   single canvas continues to own each dark well and tetromino. */
+.settings-sheet > .settings-record { padding: 10px 16px; }
 
+/* An empty table remains a compact status strip rather than a hollow card. */
+.settings-sheet > .result-leaderboard[data-empty="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.settings-sheet > .result-leaderboard[data-empty="true"] > header {
+  min-height: 0;
+  padding: 10px 16px;
+  border-bottom: 0;
+}
+
+.settings-sheet > .result-leaderboard[data-empty="true"] > p {
+  min-height: 0;
+  margin: 0;
+  padding: 10px 16px;
+  border-left: 1px solid #c4d5de;
+  color: #527185;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Puzzle reuses the ordinary Next well: its two queued pieces are simple numbered
+   rows, not a second visual system. Pixi draws one shared well and its divider. */
 .preview-rail--puzzle .next-slot--dual {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  height: 134px;
-  padding: 4px;
+  height: 112px;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  border-color: var(--line);
+  border-radius: 8px;
+  box-shadow: none;
 }
 
 .next-slot__segment {
@@ -8641,50 +8815,35 @@ kbd,
   pointer-events: none;
 }
 
-.next-slot__segment-label {
-  position: absolute;
-  z-index: 1;
-  top: 4px;
-  left: 5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: #3f6276;
-  font-family: var(--font-ui);
-  font-size: 9px;
-  font-weight: 760;
-  letter-spacing: .01em;
-  line-height: 1;
-  pointer-events: none;
+.preview-rail--puzzle .next-slot__segment-label {
+  display: none;
 }
 
-.next-slot__segment-label b {
-  display: grid;
-  width: 15px;
-  height: 15px;
-  place-items: center;
-  color: #eefafb;
-  background: #34788d;
-  border: 1px solid #4b8fa1;
-  border-radius: 50%;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  line-height: 1;
-}
-
-.next-slot__segment:nth-child(2) .next-slot__segment-label b {
-  background: #80639d;
-  border-color: #997cb7;
-}
-
-.next-slot__segment-label small {
+.preview-rail--puzzle .next-slot__segment-label b {
+  width: auto;
+  height: auto;
   color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 0;
   font: inherit;
-  white-space: nowrap;
+  line-height: 1;
 }
+
+.preview-rail--puzzle .next-slot__segment-label small { display: none; }
 
 @media (max-width: 700px) {
-  .settings-sheet { gap: 8px; }
+  .action-sheet:has(.settings-sheet) { width: min(520px, calc(100vw - 18px)); padding: 16px; }
+  .action-sheet:has(.settings-sheet) h2 { margin-bottom: 12px; }
+
+  .settings-sheet {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "controls"
+      "keyboard"
+      "rules"
+      "record";
+  }
 
   .settings-sheet > .settings-controls {
     grid-template-columns: minmax(0, 1fr);
@@ -8693,49 +8852,134 @@ kbd,
       "language"
       "sound"
       "actions";
-    gap: 7px;
-    padding: 11px;
+    gap: 9px;
+    padding: 14px;
   }
 
   .settings-sheet > .settings-shortcuts {
     grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
-    padding: 10px 11px;
+    grid-template-areas:
+      "heading"
+      "gameplay"
+      "shortcuts";
+    gap: 8px;
+    padding: 14px;
+    border-top: 1px solid #c4d5de;
+    border-left: 0;
   }
 
-  .settings-sheet > .mode-rule-summary,
+  .settings-sheet > .mode-rule-summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 14px;
+  }
+
   .settings-sheet > .mode-rule-summary ul,
   .settings-sheet > .mode-rule-summary--marathon ul,
   .settings-sheet > .mode-rule-summary--race ul { grid-template-columns: minmax(0, 1fr); }
 
-  .settings-sheet > .mode-rule-summary { padding: 10px 11px; }
+  .settings-sheet > .settings-record { padding: 11px 14px; }
+  .settings-sheet > .result-leaderboard[data-empty="true"] > header,
+  .settings-sheet > .result-leaderboard[data-empty="true"] > p { padding: 11px 14px; }
 
-  .preview-rail--puzzle .next-slot--dual { height: 100%; min-height: 0; padding: 2px; gap: 2px; }
-  .next-slot__segment-label { top: 3px; left: 3px; }
-  .next-slot__segment-label small { display: none; }
+  .preview-rail--puzzle .next-slot--dual { height: 100px; padding: 3px; }
+  .next-slot__segment-label { top: 5px; left: 6px; font-size: 9px; }
+  .next-slot__segment-label b { font-size: 9px; }
+
+  /* A two-piece puzzle queue must never be squeezed into the generic narrow
+     preview column. It becomes its own full-width, connected instrument. */
+  .game-side-panel:has(.preview-rail--puzzle) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 94px;
+    align-content: center;
+    gap: 8px;
+    height: 208px;
+  }
+
+  .game-arena:has(.preview-rail--puzzle) { grid-template-rows: 208px minmax(0, 1fr); }
+
+  .game-side-panel:has(.preview-rail--puzzle) .info-rail {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-rows: minmax(0, 1fr);
+    padding: 0;
+    border: 0;
+  }
+
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label { display: none; }
+
+  .game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
+    width: 100%;
+    height: 94px;
+  }
+
 }
 
 @media (min-width: 701px) and (max-height: 520px) {
   .action-sheet:has(.settings-sheet) { width: min(820px, calc(100vw - 20px)); padding: 10px 14px; }
-  .action-sheet:has(.settings-sheet) h2 { margin-bottom: 4px; font-size: 23px; }
-  .settings-sheet { gap: 6px; }
-  .settings-sheet > .settings-controls {
-    grid-template-columns: auto minmax(172px, .9fr) minmax(196px, 1.25fr);
-    gap: 5px 9px;
-    padding: 8px 10px;
-  }
-  .settings-controls .language-control { gap: 6px; font-size: 10px; }
-  .settings-controls .language-control button { min-height: 28px; padding: 3px 6px; }
-  .settings-controls .audio-controls { gap: 6px; }
+  .action-sheet:has(.settings-sheet) h2 { margin-bottom: 8px; font-size: 23px; }
+  .settings-sheet { grid-template-columns: minmax(264px, .82fr) minmax(0, 1.18fr); }
+  .settings-sheet > .settings-controls { gap: 7px 8px; padding: 10px 12px; }
+  .settings-controls .language-control { gap: 4px; font-size: 10px; }
+  .settings-controls .language-control button { min-height: 32px; padding: 3px 5px; }
+  .settings-controls .audio-controls { gap: 4px; }
   .settings-controls .audio-toggle,
-  .settings-controls .settings-sheet__actions > button { min-height: 32px; }
-  .settings-sheet > .settings-shortcuts { gap: 4px 9px; padding: 8px 10px; }
-  .settings-sheet > .mode-rule-summary { gap: 4px; padding: 8px 10px; }
+  .settings-controls .settings-sheet__actions > button { min-height: 34px; }
+  .settings-sheet > .settings-shortcuts { gap: 6px 10px; padding: 10px 12px; }
+  .settings-shortcuts__group,
+  .settings-shortcuts [data-testid="keyboard-shortcuts"],
+  .settings-shortcuts:lang(en) [data-testid="keyboard-shortcuts"] { gap: 3px 7px; }
+  .settings-shortcuts__group > span { min-height: 16px; font-size: 10px; }
+  .settings-shortcuts kbd { font-size: 9.5px; }
+  .settings-sheet > .mode-rule-summary { grid-template-columns: 54px minmax(0, 1fr); gap: 10px; padding: 8px 12px; }
   .settings-sheet > .mode-rule-summary ul { gap: 4px 10px; }
-  .settings-sheet > .mode-rule-summary li { font-size: 9px; line-height: 1.2; }
-  .preview-rail--puzzle .next-slot--dual { height: 72px; padding: 2px; gap: 2px; }
-  .next-slot__segment-label { top: 2px; left: 3px; }
-  .next-slot__segment-label small { display: none; }
+  .settings-sheet > .mode-rule-summary li { font-size: 10px; line-height: 1.25; }
+  .settings-sheet > .mode-rule-summary li b { font-size: 9px; }
+  .settings-sheet > .settings-record { padding: 8px 12px; }
+  .settings-sheet > .result-leaderboard[data-empty="true"] > header,
+  .settings-sheet > .result-leaderboard[data-empty="true"] > p { padding: 8px 12px; }
+  .preview-rail--puzzle .next-slot--dual { height: 74px; padding: 3px; }
+  .next-slot__segment-label { top: 4px; left: 6px; font-size: 9px; }
+  .next-slot__segment-label b { font-size: 9px; }
+  .next-slot__segment-label small { padding-bottom: 2px; }
+
+  /* Short landscape used a 76px generic preview rail. Give the two puzzle
+     forecasts a dedicated row instead: each half stays readable at 280px. */
+  .game-side-panel:has(.preview-rail--puzzle) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 84px;
+    align-content: center;
+    gap: 8px;
+  }
+
+  .game-side-panel:has(.preview-rail--puzzle) .info-rail {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-rows: minmax(0, 1fr);
+    padding: 0;
+    border: 0;
+  }
+
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label { display: none; }
+
+  .game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
+    width: 100%;
+    height: 84px;
+  }
+
 }
 
 /* T13.11: retain the four mode identities while giving their compact glyphs a clearer,
