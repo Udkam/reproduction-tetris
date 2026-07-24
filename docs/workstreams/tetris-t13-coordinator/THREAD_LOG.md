@@ -974,3 +974,27 @@
 - Blocker: none for the entry overlay itself. Next: T13.14 Settings composition, rail
   terminology/forecast, and Survival leaderboard display; `package-lock.json` remains
   inherited and unstaged.
+
+## 2026-07-24 — T13.14 Settings density and Survival record checkpoint
+
+- Base: `9a867f0`; source checkpoints `ce14ba7`, `40c0385`, `d1afaeb`, and
+  `0fb2b88`. Exact product paths are `src/styles.css`, `src/leaderboard.ts`,
+  `src/ui/localization.ts`, `src/App.test.ts`, and `src/leaderboard.test.ts`.
+- Delivered so far: the Settings sheet now uses a deliberately aligned two-column
+  control/reference composition, intrinsic keyboard/rule rows, compact bilingual key
+  groups, and a full-width record footer. No fractional grid row or unmatched card
+  bottom is used to manufacture whitespace. Survival ranking now compares duration,
+  then cleared lines only; its Settings record line visibly omits piece count.
+- Commands/evidence: `npm.cmd run test -- src/App.test.ts` passed 20/20, then
+  `npm.cmd run test -- src/App.test.ts src/leaderboard.test.ts` passed 26/26.
+  Local Playwright desktop Chinese and English checks show no overflow and confirm
+  aligned top-card bottoms, readable shortcut labels, and duration-plus-lines-only
+  Survival records. The required web-game client was attempted for the interim
+  Settings state, but its timed-out child browser was explicitly released; final
+  visual evidence came from direct local Playwright against the existing project Vite
+  listener.
+- Blocker: none for the bounded visual/record work. The setting composition must be
+  revisited after the separate music-removal slice because it deliberately removes one
+  current control. Next: Puzzle terminology and dual in-panel forecast, then music
+  removal and the remaining T13.14 mechanics. `package-lock.json` remains inherited
+  and unstaged.

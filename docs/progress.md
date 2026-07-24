@@ -11,6 +11,21 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   the visible 3, 2, and 1 sequence, overlay removal after three seconds, and a playing
   runtime. Remaining work is the eight-item T13.14 contract, starting with Settings.
 
+### T13.14 Settings density and Survival record checkpoint — 2026-07-24
+
+- The Settings sheet is now an aligned, compact two-column composition: controls on
+  the left, a two-part keyboard/rules reference on the right, and the record surface
+  as the final full-width footer. Keyboard groups use compact internal grids without
+  stretching a row to match another panel; Chinese and English desktop captures both
+  retain readable labels and no horizontal overflow. This is a bounded checkpoint, not
+  final Settings acceptance: the later required music-removal slice will remove one
+  control and requires another density review.
+- Survival records now rank and display only duration and cleared lines. Targeted
+  `App` and leaderboard coverage passes 26/26 after the change; the browser record
+  surface shows `1分10秒` and `27行` with no piece-count copy. Remaining T13.14 work
+  continues with the Puzzle rail/typography, music removal, Mutation redesign, and
+  Survival debris stream.
+
 ### T13.12 selector, settings, and Mutation expression accepted — 2026-07-24
 
 - Accepted source range: `9b6188f..ec36924`. The Puzzle selector now holds a stable
