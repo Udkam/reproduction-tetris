@@ -5299,6 +5299,28 @@ kbd,
   touch-action: none;
 }
 
+/* T13.14: the Pixi canvas is intentionally above the ordinary board frame, but the
+   entry overlay must become the one temporary layer above it. Keep this late in the
+   cascade so the generic board-frame ownership cannot hide 3 → 2 → 1 again. */
+.board-frame--countdown {
+  position: relative;
+  z-index: 8;
+}
+
+.entry-countdown {
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 46%, color-mix(in srgb, var(--action) 18%, transparent) 0 9%, transparent 36%),
+    color-mix(in srgb, var(--well) 74%, #071427 26%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #d5edf0 16%, transparent), inset 0 0 72px rgba(1, 11, 24, .48);
+}
+
+.entry-countdown__digit {
+  color: #f1fbfc;
+  text-shadow: 0 3px 16px rgba(105, 211, 213, .25);
+}
+
 .game-side-panel,
 .game-side-panel--sprint {
   gap: 13px;
