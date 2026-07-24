@@ -69,3 +69,44 @@
   `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
 - **Next action:** coordinator may complete final acceptance documentation and push;
   no further QA action is required unless product source changes again.
+
+## 2026-07-24 — T13.10 TetraMorph refinement independent QA acceptance
+
+- **Review boundary:** independent review of final candidate `a1d8b16..b005a14`.
+  Reviewed the active execution contract and coordinator record before verification.
+  The product/test changes stay within the authorized T13.10 branding/localization,
+  `App`/`ActionSheet`, direct Puzzle undo, level-name, and responsive-style boundary.
+  `git diff --check a1d8b16..b005a14` reports no whitespace errors; no generated
+  artifact or other-repository path is present.
+- **Independent gates:** `npm.cmd run typecheck` passed; `npm.cmd run test` passed
+  22 files / 146 tests; `npm.cmd run build` passed with 746 transformed modules.
+- **Direct Puzzle undo:** after a real lock, `Z` restored the same `L` piece from
+  `{ x: 3, y: 19, rotation: 0 }` at its normal top spawn, reduced undo depth
+  `1 → 0`, and showed no confirmation sheet. The live Puzzle surface has no
+  selected-level name or `1/20` fraction, exactly one canvas, and zero DOM board
+  cells.
+- **Frontend and Settings:** at 1440 × 900, Home has one `TetraMorph` wordmark,
+  no duplicate top-left title or visible `选择模式`, and all four glyphs contain four
+  cells. Local Playwrite NZ Basic, Space Grotesk, and JetBrains Mono checks passed.
+  Chinese/English Settings fully switch the visible Controls/Keyboard/Rules/Undo
+  copy, update `html[lang]`, retain JetBrains Mono keycaps, and clicking the empty
+  Settings backdrop resumes play. Console and page errors were zero.
+- **P1 repair recheck:** the initial 390 × 844 reduced-motion capture ellipsized the
+  Puzzle objective, so the candidate was held. Dedicated source checkpoint `b005a14`
+  makes the mobile objective span the information width. Fresh 390 × 844 evidence
+  shows the complete `清除全部原有方块` (117/117 px, no ellipsis) at scroll bounds
+  390 × 844; 844 × 390 likewise shows it complete (152/152 px), with one canvas,
+  zero DOM cells, and zero errors. Ignored captures:
+  `.local/audits/t13-10-independent-qa/browser/portrait-reduced-puzzle-fixed.png`
+  and `.local/audits/t13-10-independent-qa/browser/landscape-reduced-puzzle-fixed.png`.
+- **Resource disposition:** QA browser instances were closed and no Playwright
+  Chrome process remains. The coordinator-owned Vite listener remains on
+  `127.0.0.1:5176` (PID 70576) for integration; port 5173 was never touched and
+  had no listener in the final check. Existing unrelated Python processes were
+  preserved.
+- **Disposition:** **PASS — ACCEPT.** `a1d8b16..b005a14` has no remaining P0–P2
+  finding and may be accepted by the coordinator.
+- **Exact changed path:** this independent acceptance log only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator may add its acceptance/changelog record and push after
+  its own exact-path documentation checkpoint.
