@@ -4,7 +4,7 @@ import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import styles from './styles.css?raw';
-import { PIECE_TYPES, createInitialState, getPuzzleDefinition, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
+import { PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
 import App, {
   cloneQaState,
   countdownTimeLabel,
@@ -91,14 +91,9 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     });
     readonly restart = vi.fn();
     readonly undoPuzzle = vi.fn(() => {
-      const checkpoint = this.state.puzzleUndoHistory.at(-1);
-      if (!checkpoint) return;
-      this.state = {
-        ...checkpoint,
-        status: this.state.status === 'paused' ? 'paused' : checkpoint.status,
-        puzzleUndoHistory: this.state.puzzleUndoHistory.slice(0, -1),
-      };
-      this.options.onState?.(this.state, [{ type: 'puzzle-undone' }]);
+      const transition = core.dispatch(this.state, { type: 'undo' });
+      this.state = transition.state;
+      this.options.onState?.(this.state, transition.events);
     });
     getState(): GameState { return this.state; }
     setState(state: GameState): void {
@@ -238,6 +233,7 @@ describe('entry countdown', () => {
 
 describe('T6 frontend mode binding', () => {
   it('moves mode rules out of home, then shows and stores the first-entry introduction', () => {
+    localStorage.setItem('tetramorph:language:v1', 'zh-CN');
     const view = render(createElement(App));
     const mutation = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-sprint"]')!;
     expect(view.container.querySelector('[data-testid="entry-mode-rules"]')).toBeNull();
@@ -255,6 +251,7 @@ describe('T6 frontend mode binding', () => {
     expect(JSON.parse(localStorage.getItem('tetris:mode-rule-intros:v1') ?? '[]')).toContain('sprint');
     expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
     view.unmount();
+    view.unmount();
   });
 
   it('binds every statistic to an explicit role without positional CSS inference', () => {
@@ -268,7 +265,7 @@ describe('T6 frontend mode binding', () => {
       { state: sprint, roles: ['score', 'lines', 'mutation-speed', 'mutation-carriers'], label: '异变模式数据', copy: ['消行', '9', '下落', '核心', '1'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
-        roles: ['puzzle-level', 'puzzle-targets', 'puzzle-placed', 'objective'],
+        roles: ['puzzle-targets', 'puzzle-placed', 'objective'],
         label: '解谜模式数据',
         copy: ['原有方块', '已落子', '通关目标'],
       },
@@ -361,7 +358,7 @@ describe('T6 frontend mode binding', () => {
     expect(controls.textContent).toContain('控制');
     expect(settingsLeaderboard.textContent).toContain('本模式排行消行 · 前 50112 行3,210 分 · 2026.07.24');
     expect(rules.textContent).toContain('补满任意横行即可消除并得分。');
-    expect(shortcuts.textContent).toContain('键盘S 设置P 暂停R 重开Esc 返回←→ 选择↑↓ 切换Enter 执行');
+    expect(shortcuts.textContent).toContain('键盘S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行← → 移动↑ 旋转↓ 快速下落Space 直接落底');
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     expect(resume.dataset.arrowSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));
@@ -377,7 +374,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).toContain('56%');
     expect(runtimeHarness.instances.at(-1)?.setAudioEnabled).toHaveBeenCalledWith(false);
     expect(runtimeHarness.instances.at(-1)?.setMusicEnabled).toHaveBeenCalledWith(false);
-    act(() => resume.click());
+    expect(resume).not.toBeNull();
+    act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
     expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
     view.unmount();
@@ -402,6 +400,17 @@ describe('T6 frontend mode binding', () => {
     }));
     expect(freshView.container.textContent).toBe('当前关纪录尚未通关');
     freshView.unmount();
+  });
+
+  it('keeps live Puzzle information practical instead of exposing authored level metadata', () => {
+    const state = createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01');
+    const view = render(createElement(RunStats, { state }));
+    expect(view.container.textContent).toContain('原有方块');
+    expect(view.container.textContent).toContain('已落子');
+    expect(view.container.textContent).toContain('清除全部原有方块');
+    expect(view.container.textContent).not.toContain('起步');
+    expect(view.container.textContent).not.toMatch(/\d+\/20/);
+    view.unmount();
   });
 
   it('labels Puzzle Next as two ordered canonical inputs while live modes retain one', async () => {
@@ -430,7 +439,7 @@ describe('T6 frontend mode binding', () => {
     classic.unmount();
   });
 
-  it('opens a Z-confirmed Puzzle undo control only after a pre-lock checkpoint exists', async () => {
+  it('directly restores the prior Puzzle piece from its top spawn after a lock', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -442,37 +451,29 @@ describe('T6 frontend mode binding', () => {
     const undo = puzzle.container.querySelector<HTMLButtonElement>('[data-testid="touch-undo"]')!;
     expect(undo).not.toBeNull();
     expect(undo.disabled).toBe(true);
-    expect(undo.getAttribute('aria-label')).toBe('撤回上一次落子（Z）');
+    expect(undo.getAttribute('aria-label')).toBe('撤回 (Z)');
     expect(undo.getAttribute('aria-keyshortcuts')).toBe('Z');
     expect(puzzle.container.querySelector('[data-testid="touch-rail"]')?.className).toContain('touch-deck--puzzle');
     expect(puzzle.container.querySelector('[data-testid="touch-rail"]')?.querySelectorAll('button')).toHaveLength(6);
-    expect(puzzle.container.querySelector('.keyboard-map')?.textContent).toContain('Z 撤回');
+    expect(puzzle.container.querySelector('.keyboard-map')).toBeNull();
 
     await act(async () => vi.advanceTimersByTimeAsync(3000));
     expect(undo.disabled).toBe(true);
     const instance = runtimeHarness.instances.at(-1)!;
     const current = instance.getState();
-    const { puzzleUndoHistory: _history, ...checkpoint } = current;
-    act(() => instance.setState({ ...current, puzzleUndoHistory: [checkpoint] }));
+    const locked = dispatch(current, { type: 'hard-drop' }).state;
+    act(() => instance.setState(locked));
     expect(undo.disabled).toBe(false);
     act(() => undo.click());
-    expect(puzzle.container.textContent).toContain('撤回上一步？');
-    expect(instance.undoPuzzle).not.toHaveBeenCalled();
-    const confirmUndo = puzzle.container.querySelector<HTMLButtonElement>('[data-testid="confirm-puzzle-undo"]')!;
-    const cancelUndo = [...puzzle.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')]
-      .find((button) => button.textContent === '取消')!;
-    expect(confirmUndo.dataset.actionSelected).toBe('true');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
-    expect(cancelUndo.dataset.actionSelected).toBe('true');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
-    expect(instance.undoPuzzle).not.toHaveBeenCalled();
+    expect(instance.undoPuzzle).toHaveBeenCalledTimes(1);
+    expect(instance.getState().active).toEqual(current.active);
+    expect(instance.getState().puzzleUndoHistory).toEqual([]);
     expect(puzzle.container.querySelector('[data-testid="confirm-puzzle-undo"]')).toBeNull();
 
+    act(() => instance.setState(locked));
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyZ', key: 'z', bubbles: true })));
-    expect(puzzle.container.querySelector('[data-testid="confirm-puzzle-undo"]')).not.toBeNull();
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
-    expect(instance.undoPuzzle).toHaveBeenCalledTimes(1);
-    expect(puzzle.container.querySelector('[data-testid="confirm-puzzle-undo"]')).toBeNull();
+    expect(instance.undoPuzzle).toHaveBeenCalledTimes(2);
+    expect(instance.getState().active).toEqual(current.active);
     puzzle.unmount();
 
     const classic = render(createElement(GameSession, {
@@ -480,7 +481,7 @@ describe('T6 frontend mode binding', () => {
     }));
     await act(async () => Promise.resolve());
     expect(classic.container.querySelector('[data-testid="touch-undo"]')).toBeNull();
-    expect(classic.container.querySelector('.keyboard-map')?.textContent).not.toContain('Z 撤回');
+    expect(classic.container.querySelector('.keyboard-map')).toBeNull();
     classic.unmount();
   });
 
@@ -603,6 +604,33 @@ describe('T6 frontend mode binding', () => {
 
     act(() => classic?.click());
     expect(onEnter).toHaveBeenCalledWith('marathon');
+    view.unmount();
+  });
+
+  it('persists an English settings choice across the active game surface without Chinese fallback copy', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    localStorage.setItem('tetramorph:language:v1', 'zh-CN');
+    localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
+    const view = render(createElement(App));
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
+    await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
+    expect(english).not.toBeNull();
+    act(() => english.click());
+
+    const sheet = view.container.querySelector<HTMLElement>('[data-testid="settings-sheet"]')!;
+    expect(document.documentElement.lang).toBe('en');
+    expect(localStorage.getItem('tetramorph:language:v1')).toBe('en');
+    expect(sheet.textContent).toContain('Settings');
+    expect(sheet.textContent).toMatch(/Keyboard.*Move.*Hard drop/s);
+    expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
+    expect(view.container.querySelector('.keyboard-map')).toBeNull();
+    expect(view.container.querySelector('canvas')?.getAttribute('aria-label')).toBe('TetraMorph 10 by 20 game board');
     view.unmount();
   });
 
@@ -762,10 +790,11 @@ describe('T6 frontend mode binding', () => {
     view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id, fullyUnlocked)));
     const selectedBest = view.container.querySelector<HTMLElement>('[data-testid="selected-puzzle-start-best"]');
     const startSelected = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
-    expect(selectedBest?.textContent).toBe('最少 7 步');
-    expect(selectedBest?.nextElementSibling).toBe(startSelected);
+    expect(selectedBest?.textContent).toBe('当前最优步数：7步');
+    expect(selectedBest?.closest('.console-focus__heading')?.querySelector('.console-focus__title')?.nextElementSibling).toBe(selectedBest);
+    expect(startSelected?.closest('.console-focus__action')?.contains(selectedBest ?? null)).toBe(false);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
-    expect(view.container.querySelectorAll('.console-focus__heading > span, .console-focus__heading > i, .console-node i')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.console-focus__heading > span, .console-focus__heading > i, .console-node i')).toHaveLength(1);
     expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
     for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {
       const level = CAMPAIGN_LEVELS[index]!;

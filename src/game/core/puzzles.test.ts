@@ -58,8 +58,8 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
-      '开槽', '回转', '错层', '双湾', '侧槽', '折角', '长槽', '搭桥', '交错', '双仓',
-      '竖脊', '弧底', '双折', '盆地', '缺口', '双坡', '阶梯', '基石', '交口', '深槽',
+      '起步', '转角', '错位', '补缝', '边路', '折线', '长桥', '连桥', '交织', '双门',
+      '高脊', '弧线', '折返', '低谷', '留白', '高台', '台阶', '收束', '路口', '深井',
     ]);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(20);

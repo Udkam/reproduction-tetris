@@ -6,6 +6,7 @@ interface ActionSheetProps {
   title: string;
   description: string;
   tone?: 'default' | 'success' | 'danger';
+  dismissOnBackdropClick?: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
   children: ReactNode;
@@ -28,6 +29,7 @@ export function ActionSheet({
   title,
   description,
   tone = 'default',
+  dismissOnBackdropClick = false,
   onCancel,
   onConfirm,
   children,
@@ -165,7 +167,13 @@ export function ActionSheet({
   if (!open) return null;
 
   return (
-    <div className="sheet-backdrop" data-testid="action-sheet-backdrop">
+    <div
+      className="sheet-backdrop"
+      data-testid="action-sheet-backdrop"
+      onClick={(event) => {
+        if (dismissOnBackdropClick && event.target === event.currentTarget) onCancel?.();
+      }}
+    >
       <section
         ref={panelRef}
         className={`action-sheet action-sheet--${tone}`}

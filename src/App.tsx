@@ -37,6 +37,20 @@ import {
 import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
 import { ActionSheet } from './ui/ActionSheet';
 import {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_STORAGE_KEY,
+  appCopy,
+  formatDate,
+  formatNumber,
+  initialLanguage,
+  itemLabel,
+  modeCopy,
+  modeRules,
+  parseLanguage,
+  puzzleDisplayName,
+  type AppLanguage,
+} from './ui/localization';
+import {
   LEADERBOARD_KEY,
   LEGACY_LEADERBOARD_KEYS,
   emptyLeaderboard,
@@ -57,57 +71,6 @@ const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
 const MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 
-const MODE_COPY: Record<GameMode, {
-  label: string;
-  detail: string;
-  action: string;
-}> = {
-  marathon: {
-    label: '经典',
-    detail: '补全横行获得分数；每消 10 行下落加快。',
-    action: '开始',
-  },
-  race: {
-    label: '生存',
-    detail: '在上升基岩上坚持；每消 3 行移除一层。',
-    action: '开始',
-  },
-  sprint: {
-    label: '异变',
-    detail: '核心方块触发道具；每消 6 行下落加快。',
-    action: '开始',
-  },
-  puzzle: {
-    label: '解谜',
-    detail: '清除全部原有方块；固定序列，可确认撤回。',
-    action: '选关',
-  },
-};
-
-const MODE_RULES: Record<GameMode, readonly string[]> = {
-  marathon: [
-    '补满任意横行即可消除并得分。',
-    '每累计消除 10 行，下落速度提升一级。',
-    '方块堆到顶端时，本局结束。',
-  ],
-  race: [
-    '开局有 3 层基岩，基岩会持续向上推进。',
-    '压力从 13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。',
-    '方块被基岩顶到顶端时，本局结束。',
-  ],
-  sprint: [
-    '像经典模式一样补满横行；每累计消除 6 行，下落速度提升一级。',
-    '带核心标记的方块携带道具，消除其任一格即可触发一次效果。',
-    '冻结停止自动下落；坍缩让各列独立下沉；炸弹清除底部 3 行；倍增在 10 秒内使消行得分翻倍。',
-    '方块堆到顶端时，本局结束。',
-  ],
-  puzzle: [
-    '使用固定出现顺序的方块，清除全部原有方块即可通关。',
-    '没有落子数量限制；按 Z 后确认，可撤回到上一个方块刚出现时。',
-    '清除完成后记录本关最少落子数。',
-  ],
-};
-
 const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'sprint', 'puzzle'];
 
 export function cloneQaState(state: GameState): GameState {
@@ -123,6 +86,24 @@ function readModeRuleIntros(): readonly GameMode[] {
     return Object.freeze(parsed.filter((value): value is GameMode => MODE_ORDER.includes(value as GameMode)));
   } catch {
     return Object.freeze([]);
+  }
+}
+
+function readLanguage(): AppLanguage {
+  try {
+    const saved = parseLanguage(browserPlatform.readStorage(LANGUAGE_STORAGE_KEY));
+    if (saved !== null) return saved;
+    return initialLanguage(browserPlatform.windowTarget()?.navigator.language);
+  } catch {
+    return DEFAULT_LANGUAGE;
+  }
+}
+
+function writeLanguage(language: AppLanguage): void {
+  try {
+    browserPlatform.writeStorage(LANGUAGE_STORAGE_KEY, language);
+  } catch {
+    // Storage is optional: the active session still switches language immediately.
   }
 }
 
@@ -166,13 +147,13 @@ function readLeaderboard(): Leaderboard {
   return emptyLeaderboard();
 }
 
-function formatScore(value: number): string {
-  return Math.max(0, value).toLocaleString('zh-CN');
+function formatScore(value: number, language: AppLanguage = DEFAULT_LANGUAGE): string {
+  return formatNumber(value, language);
 }
 
-export function elapsedTimeLabel(elapsedTicks: number): string {
+export function elapsedTimeLabel(elapsedTicks: number, language: AppLanguage = DEFAULT_LANGUAGE): string {
   const seconds = Math.floor(Math.max(0, elapsedTicks) / TICKS_PER_SECOND);
-  return `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`;
+  return appCopy(language).phrasing.elapsed(Math.floor(seconds / 60), seconds % 60);
 }
 
 export function countdownTimeLabel(remainingTicks: number): string {
@@ -180,10 +161,10 @@ export function countdownTimeLabel(remainingTicks: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
-export function fallCadenceLabel(state: GameState): string {
+export function fallCadenceLabel(state: GameState, language: AppLanguage = DEFAULT_LANGUAGE): string {
   const ticks = gravityForMode(state.mode, state.level, state.pieceCount, state.lines);
   const seconds = ticks / TICKS_PER_SECOND;
-  return `${seconds.toFixed(seconds < 0.1 ? 2 : 1).replace(/\.0$/, '')} 秒/格`;
+  return appCopy(language).phrasing.cadence(seconds.toFixed(seconds < 0.1 ? 2 : 1).replace(/\.0$/, ''));
 }
 
 export function survivalCountdownSeconds(state: GameState): number {
@@ -191,30 +172,31 @@ export function survivalCountdownSeconds(state: GameState): number {
   return Math.max(0, Math.ceil((survivalIntervalTicks(state.lines) - state.survivalPressureTicks) / TICKS_PER_SECOND));
 }
 
-export function survivalCountdownLabel(state: GameState): string {
-  return state.survivalRisePending ? '待上升' : `${survivalCountdownSeconds(state)} 秒`;
+export function survivalCountdownLabel(state: GameState, language: AppLanguage = DEFAULT_LANGUAGE): string {
+  const copy = appCopy(language);
+  return state.survivalRisePending ? copy.labels.pendingRise : copy.phrasing.seconds(survivalCountdownSeconds(state));
 }
 
 function campaignLevel(id: PuzzleId | null) {
   return CAMPAIGN_LEVELS.find((level) => level.id === id) ?? CAMPAIGN_LEVELS[0]!;
 }
 
-export function terminalCopy(state: GameState): { title: string; detail: string; success: boolean } | null {
+export function terminalCopy(state: GameState, language: AppLanguage = DEFAULT_LANGUAGE): { title: string; detail: string; success: boolean } | null {
+  const copy = appCopy(language);
   if (state.mode === 'puzzle') {
     if (state.puzzleCompletion === 'finished') {
-      return { title: '原有方块已清除', detail: `${state.pieceCount} 方块 · ${state.lines} 消行`, success: true };
+      return { ...copy.phrasing.terminalPuzzleSuccess(state.pieceCount, state.lines), success: true };
     }
     if (state.puzzleCompletion && state.puzzleCompletion !== 'active') {
       const remaining = state.puzzleTargetCells.length;
-      return { title: '堆叠到顶', detail: `剩余 ${remaining} 原有方块 · 已落 ${state.pieceCount} 块`, success: false };
+      return { ...copy.phrasing.terminalPuzzleFailure(remaining, state.pieceCount), success: false };
     }
     return null;
   }
   if (state.mode === 'sprint') {
     if (state.status === 'game-over') {
       return {
-        title: '异变到顶',
-        detail: `${state.lines} 消行 · ${formatScore(state.score)} 分`,
+        ...copy.phrasing.terminalMutation(state.lines, formatScore(state.score, language)),
         success: false,
       };
     }
@@ -223,12 +205,11 @@ export function terminalCopy(state: GameState): { title: string; detail: string;
   if (state.status !== 'game-over') return null;
   if (state.mode === 'race') {
     return {
-      title: '生存结束',
-      detail: `${state.lines} 消行 · ${state.pieceCount} 方块 · ${state.survivalBedrockRows} 层基岩`,
+      ...copy.phrasing.terminalSurvival(state.lines, state.pieceCount, state.survivalBedrockRows),
       success: false,
     };
   }
-  return { title: '堆叠到顶', detail: `${formatScore(state.score)} 分 · ${state.lines} 消行`, success: false };
+  return { ...copy.phrasing.terminalClassic(state.lines, formatScore(state.score, language)), success: false };
 }
 
 export function scoreRecordForState(state: GameState, completedAt: string): ScoreRecord | null {
@@ -272,41 +253,44 @@ function Brand({ compact = false }: { compact?: boolean }) {
 }
 
 function ModeGlyph({ mode }: { mode: GameMode }) {
-  const cell = { width: 8, height: 8, rx: 1 };
+  const cell = { width: 9, height: 9, rx: 1.15 };
   if (mode === 'marathon') {
-    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="16" {...cell} /><rect x="12" y="16" {...cell} /><rect x="20" y="16" {...cell} /><rect x="28" y="16" {...cell} /></svg>;
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="1.5" y="15.5" {...cell} /><rect x="11.3" y="15.5" {...cell} /><rect x="21.1" y="15.5" {...cell} /><rect x="30.9" y="15.5" {...cell} /></svg>;
   }
   if (mode === 'race') {
-    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="12" y="12" {...cell} /><rect x="20" y="12" {...cell} /><rect x="12" y="20" {...cell} /><rect x="20" y="20" {...cell} /></svg>;
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="10.7" y="10.7" {...cell} /><rect x="20.3" y="10.7" {...cell} /><rect x="10.7" y="20.3" {...cell} /><rect x="20.3" y="20.3" {...cell} /></svg>;
   }
   if (mode === 'sprint') {
-    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="12" y="8" {...cell} /><rect x="12" y="16" {...cell} /><rect x="12" y="24" {...cell} /><rect x="20" y="24" {...cell} /></svg>;
+    return <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="10.7" y="5.9" {...cell} /><rect x="10.7" y="15.5" {...cell} /><rect x="10.7" y="25.1" {...cell} /><rect x="20.3" y="25.1" {...cell} /></svg>;
   }
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true">
-      <rect x="16" y="8" {...cell} />
-      <rect x="8" y="16" {...cell} />
-      <rect x="16" y="16" {...cell} />
-      <rect x="24" y="16" {...cell} />
+      <rect x="15.5" y="5.9" {...cell} />
+      <rect x="5.9" y="15.5" {...cell} />
+      <rect x="15.5" y="15.5" {...cell} />
+      <rect x="25.1" y="15.5" {...cell} />
     </svg>
   );
 }
 
-function ModeRuleSummary({ mode, testId }: { mode: GameMode; testId?: string }) {
+function ModeRuleSummary({ mode, language, testId }: { mode: GameMode; language: AppLanguage; testId?: string }) {
+  const copy = appCopy(language);
+  const modeLabel = modeCopy(language, mode).label;
   return (
-    <section className="mode-rule-summary" data-testid={testId} aria-label={`${MODE_COPY[mode].label}规则`}>
-      <strong>规则</strong>
+    <section className="mode-rule-summary" data-testid={testId} aria-label={`${modeLabel} ${copy.labels.rules}`}>
+      <strong>{copy.labels.rules}</strong>
       <ul>
-        {MODE_RULES[mode].map((rule) => <li key={rule}>{rule}</li>)}
+        {modeRules(language, mode).map((rule) => <li key={rule}>{rule}</li>)}
       </ul>
     </section>
   );
 }
 
-export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
+export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (mode: GameMode) => void; language?: AppLanguage }) {
   const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
+  const copy = appCopy(language);
   return (
-    <main id="game" className="landing-shell landing-shell--workbench landing-shell--wordmark" data-testid="mode-home">
+    <main id="game" lang={language} className="landing-shell landing-shell--workbench landing-shell--wordmark" data-testid="mode-home">
       <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
@@ -315,11 +299,11 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
           <div
             className="mode-gates mode-gates--workbench"
             data-selection={previewMode}
-            aria-label="选择游戏模式"
+            aria-label={copy.labels.selectMode}
             data-testid="mode-list"
           >
             {MODE_ORDER.map((mode) => {
-              const item = MODE_COPY[mode];
+              const item = modeCopy(language, mode);
               const active = previewMode === mode;
               return (
                 <button
@@ -376,14 +360,14 @@ export function puzzleAnchorSilhouettePath(id: PuzzleId): string {
   ))).join('');
 }
 
-function PuzzleSilhouette({ id, name }: { id: PuzzleId; name: string }) {
+function PuzzleSilhouette({ id, label }: { id: PuzzleId; label: string }) {
   const anchorPath = puzzleAnchorSilhouettePath(id);
   return (
     <svg
       className="puzzle-silhouette"
       viewBox="0 0 40 48"
       role="img"
-      aria-label={`${name}棋盘轮廓`}
+      aria-label={label}
     >
       {[...puzzleSilhouettePaths(id)].map(([type, path]) => {
         const material = PIECE_MATERIALS[type];
@@ -416,63 +400,63 @@ export function PuzzleLibrary({
   onSelect,
   onStart,
   onBack,
+  language = DEFAULT_LANGUAGE,
 }: {
   progress: PuzzleProgress;
   selectedId: PuzzleId;
   onSelect: (id: PuzzleId) => void;
   onStart: () => void;
   onBack: () => void;
+  language?: AppLanguage;
 }) {
   const selected = campaignLevel(selectedId);
-  const selectedDefinition = getPuzzleDefinition(selected.id);
+  const selectedName = puzzleDisplayName(language, selected.id, selected.name);
+  const copy = appCopy(language);
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
-  const selectedAnchorCount = selectedDefinition.anchorCells.length;
   const selectedBest = puzzleBestPieceCount(progress, selected.id);
   return (
-    <main id="game" className="library-shell library-shell--console" data-testid="puzzle-library">
+    <main id="game" lang={language} className="library-shell library-shell--console" data-testid="puzzle-library">
       <header className="library-header console-header">
-        <button className="library-back" type="button" aria-label="返回模式首页" onClick={onBack}>
-          <b aria-hidden="true">←</b><span>返回模式</span>
+        <button className="library-back" type="button" aria-label={copy.labels.leaveRun} onClick={onBack}>
+          <b aria-hidden="true">←</b><span>{copy.labels.modeHome}</span>
         </button>
         <Brand compact />
       </header>
       <section className="console-workbench" aria-labelledby="library-title">
-        <aside className="console-focus" aria-live="polite" aria-label={`已选残局：${selected.name}`}>
+        <aside className="console-focus" aria-live="polite" aria-label={copy.phrasing.selectedPuzzle(selectedName)}>
           <div className="console-focus__well" key={selected.id}>
             <div className="console-focus__board">
-              <PuzzleSilhouette id={selected.id} name={selected.name} />
+              <PuzzleSilhouette id={selected.id} label={copy.phrasing.puzzleBoard(selectedName)} />
             </div>
           </div>
           <section className="console-focus__copy">
             <div className="console-focus__heading">
-              <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selected.name}</h2>
-            </div>
-            <div className="console-focus__facts" aria-label="残局特性">
-              {selectedAnchorCount > 0 && <span>固定锚点</span>}
+              <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selectedName}</h2>
+              {selectedBest !== null && <span className="console-focus__best" data-testid="selected-puzzle-start-best">{copy.phrasing.currentBest(selectedBest)}</span>}
             </div>
             <div className="console-focus__action">
-              {selectedBest !== null && <span data-testid="selected-puzzle-start-best">最少 {selectedBest} 步</span>}
-              <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={`开始 ${selected.name}`} onClick={onStart}>开始</button>
+              <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} onClick={onStart}>{copy.labels.start}</button>
             </div>
           </section>
         </aside>
-        <nav className="console-route" aria-label={`${CAMPAIGN_LEVELS.length} 个开放解谜残局`} data-testid="level-list">
+        <nav className="console-route" aria-label={copy.phrasing.puzzleList(CAMPAIGN_LEVELS.length)} data-testid="level-list">
           <div className="console-route__heading">
-            <h1 id="library-title">解谜</h1>
+            <h1 id="library-title">{copy.labels.puzzle}</h1>
           </div>
-          <ol className="console-bands" aria-label="残局行数分段">
+          <ol className="console-bands" aria-label={copy.labels.puzzleBands}>
             {PUZZLE_ROW_BANDS.map((band, bandIndex) => {
               const rows = bandIndex + 5;
                 const activeBand = band.some((level) => level.id === selected.id);
                 return (
-                  <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={rows} aria-label={`${rows} 行残局`} key={band[0]!.id}>
-                  <span className="console-band__label" aria-hidden="true"><small>{rows} 行</small></span>
+                  <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={rows} aria-label={copy.phrasing.rowBand(rows)} key={band[0]!.id}>
+                  <span className="console-band__label" aria-hidden="true"><small>{copy.phrasing.rowBand(rows)}</small></span>
                   <ol className="console-nodes">
                     {band.map((level) => {
                       const complete = progress.completedLevelIds.includes(level.id);
                       const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
                       const selectedLevel = selectedId === level.id;
                       const bestPieces = puzzleBestPieceCount(progress, level.id);
+                      const levelName = puzzleDisplayName(language, level.id, level.name);
                       return (
                         <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''}`} key={level.id}>
                           <button
@@ -483,11 +467,10 @@ export function PuzzleLibrary({
                             data-anchor={hasAnchor || undefined}
                             data-best-pieces={bestPieces ?? undefined}
                             aria-pressed={selectedLevel}
-                            aria-label={`${String(level.index).padStart(2, '0')} ${level.name}，${rows} 行残局${hasAnchor ? '，含固定锚点' : ''}${complete ? '，已完成' : '，可进入'}${bestPieces !== null ? `，最少 ${bestPieces} 步` : ''}`}
+                            aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, rows, complete, bestPieces)}
                             onClick={() => onSelect(level.id)}
                           >
                             <span>{String(level.index).padStart(2, '0')}</span>
-                            {bestPieces !== null && <small aria-label={`最少 ${bestPieces} 步`}>{bestPieces}</small>}
                           </button>
                         </li>
                       );
@@ -508,29 +491,34 @@ export function LeaderboardPanel({
   records,
   highlightRecord = null,
   variant = 'result',
+  language = DEFAULT_LANGUAGE,
 }: {
   mode: RunMode;
   records: readonly ScoreRecord[];
   highlightRecord?: ScoreRecord | null;
   variant?: 'result' | 'settings';
+  language?: AppLanguage;
 }) {
+  const copy = appCopy(language);
   const survival = mode === 'race';
   const sprint = mode === 'sprint';
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
-  const title = variant === 'settings' ? '本模式排行' : sprint ? '异变排行' : survival ? '生存排行' : '经典排行';
+  const title = variant === 'settings'
+    ? copy.labels.leaderboard
+    : copy.phrasing.modeLeaderboard(modeCopy(language, mode).label);
   return (
     <section className={`result-leaderboard result-leaderboard--${variant}`} data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined} aria-label={title}>
       <header>
         <strong>{title}</strong>
-        <span>{survival ? '生存时间 · 前 5' : '消行 · 前 5'}</span>
+        <span>{copy.phrasing.leaderboardCriterion(survival)}</span>
       </header>
-      {records.length === 0 ? <p>暂无记录</p> : (
+      {records.length === 0 ? <p>{copy.labels.noRecords}</p> : (
         <ol>
           {records.map((record, index) => (
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
-              <strong>{sprint ? `${record.lines} 行` : survival ? elapsedTimeLabel(record.elapsedTicks) : `${record.lines} 行`}</strong>
-              <small>{sprint ? `${formatScore(record.score)} 分 · ${record.pieces} 方块` : survival ? `${record.lines} 行 · ${record.pieces} 方块` : `${formatScore(record.score)} 分`} · {record.completedAt.slice(0, 10).replaceAll('-', '.')}</small>
+              <strong>{sprint ? copy.phrasing.lineCount(record.lines) : survival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}</strong>
+              <small>{copy.phrasing.leaderboardDetail(formatScore(record.score, language), record.pieces, record.lines, survival, sprint, formatDate(record.completedAt, language))}</small>
             </li>
           ))}
         </ol>
@@ -571,18 +559,19 @@ function TouchButton({ action, label, glyph, runtime, disabled = false }: TouchB
   );
 }
 
-function PuzzleUndoButton({ onRequestUndo, disabled = false }: { onRequestUndo: () => void; disabled?: boolean }) {
+function PuzzleUndoButton({ onRequestUndo, language, disabled = false }: { onRequestUndo: () => void; language: AppLanguage; disabled?: boolean }) {
+  const copy = appCopy(language);
   return (
     <button
       className="touch-key touch-key--undo"
       type="button"
       data-testid="touch-undo"
-      aria-label="撤回上一次落子（Z）"
+      aria-label={`${copy.labels.undo} (Z)`}
       aria-keyshortcuts="Z"
       disabled={disabled}
       onClick={onRequestUndo}
     >
-      <b aria-hidden="true">↶</b><small>撤回</small>
+      <b aria-hidden="true">↶</b><small>{copy.labels.undo}</small>
     </button>
   );
 }
@@ -594,6 +583,7 @@ function AudioControls({
   onEnabledChange,
   onMusicEnabledChange,
   onVolumeChange,
+  language,
 }: {
   enabled: boolean;
   musicEnabled: boolean;
@@ -601,32 +591,34 @@ function AudioControls({
   onEnabledChange: (enabled: boolean) => void;
   onMusicEnabledChange: (enabled: boolean) => void;
   onVolumeChange: (volume: number) => void;
+  language: AppLanguage;
 }) {
+  const copy = appCopy(language);
   const percent = Math.round(volume * 100);
   return (
-    <section className="audio-controls" aria-label="声音控制">
+    <section className="audio-controls" aria-label={copy.labels.soundControls}>
       <div className="audio-controls__switches">
         <button
           className="audio-toggle"
           type="button"
           data-testid="audio-toggle"
           data-arrow-nav
-          aria-label={enabled ? '关闭音效' : '开启音效'}
+          aria-label={enabled ? copy.labels.turnSoundOff : copy.labels.turnSoundOn}
           aria-pressed={enabled}
           onClick={() => onEnabledChange(!enabled)}
-        >{enabled ? '音效开' : '音效关'}</button>
+        >{enabled ? copy.labels.soundOn : copy.labels.soundOff}</button>
         <button
           className="audio-toggle"
           type="button"
           data-testid="music-toggle"
           data-arrow-nav
-          aria-label={musicEnabled ? '关闭音乐' : '开启音乐'}
+          aria-label={musicEnabled ? copy.labels.turnMusicOff : copy.labels.turnMusicOn}
           aria-pressed={musicEnabled}
           onClick={() => onMusicEnabledChange(!musicEnabled)}
-        >{musicEnabled ? '音乐开' : '音乐关'}</button>
+        >{musicEnabled ? copy.labels.musicOn : copy.labels.musicOff}</button>
       </div>
       <label className="audio-volume">
-        <span>音量</span>
+        <span>{copy.labels.volume}</span>
         <input
           type="range"
           data-testid="audio-volume"
@@ -634,7 +626,7 @@ function AudioControls({
           max="100"
           step="1"
           value={percent}
-          aria-label="音量"
+          aria-label={copy.labels.volume}
           onChange={(event) => onVolumeChange(Number(event.currentTarget.value) / 100)}
         />
         <output>{percent}%</output>
@@ -648,101 +640,116 @@ export function SettingsRecord({
   puzzleId,
   leaderboard,
   progress,
+  language = DEFAULT_LANGUAGE,
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
   leaderboard: Leaderboard;
   progress: PuzzleProgress;
+  language?: AppLanguage;
 }) {
+  const copy = appCopy(language);
   if (mode === 'puzzle') {
     const bestPieces = puzzleBestPieceCount(progress, puzzleId);
     return (
-      <section className="settings-record settings-record--puzzle" data-testid="settings-record" aria-label="当前关纪录">
-        <span>当前关纪录</span>
-        <strong>{bestPieces === null ? '尚未通关' : `最少 ${bestPieces} 步`}</strong>
+      <section className="settings-record settings-record--puzzle" data-testid="settings-record" aria-label={copy.labels.currentRecord}>
+        <span>{copy.labels.currentRecord}</span>
+        <strong>{bestPieces === null ? copy.labels.notCompleted : copy.phrasing.minimumMoves(bestPieces)}</strong>
       </section>
     );
   }
 
-  return <LeaderboardPanel mode={mode} records={recordsForMode(leaderboard, mode)} variant="settings" />;
+  return <LeaderboardPanel mode={mode} records={recordsForMode(leaderboard, mode)} variant="settings" language={language} />;
 }
 
-function SettingsShortcutGuide({ mode }: { mode: GameMode }) {
+function LanguageControl({ language, onChange }: { language: AppLanguage; onChange: (language: AppLanguage) => void }) {
+  const copy = appCopy(language);
   return (
-    <section className="settings-shortcuts" data-testid="settings-shortcuts" aria-label="键盘说明">
-      <strong>键盘</strong>
-      <span><kbd>S</kbd> 设置</span>
-      <span><kbd>P</kbd> 暂停</span>
-      <span><kbd>R</kbd> 重开</span>
-      <span><kbd>Esc</kbd> 返回</span>
-      <span><kbd>←→</kbd> 选择</span>
-      <span><kbd>↑↓</kbd> 切换</span>
-      <span><kbd>Enter</kbd> 执行</span>
-      {mode === 'puzzle' && <span><kbd>Z</kbd> 撤回</span>}
+    <section className="language-control" aria-label={copy.labels.language}>
+      <span>{copy.labels.language}</span>
+      <div role="group" aria-label={copy.labels.language}>
+        <button type="button" data-testid="language-zh" data-arrow-nav aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
+        <button type="button" data-testid="language-en" data-arrow-nav aria-pressed={language === 'en'} onClick={() => onChange('en')}>{copy.labels.english}</button>
+      </div>
     </section>
   );
 }
 
-export function RunStats({ state }: { state: GameState }) {
+function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: AppLanguage }) {
+  const copy = appCopy(language);
+  return (
+    <section className="settings-shortcuts" data-testid="settings-shortcuts" aria-label={copy.labels.keyboard}>
+      <strong>{copy.labels.keyboard}</strong>
+      <span><kbd>S</kbd> {copy.labels.settingsShortcut}</span>
+      <span><kbd>P</kbd> {copy.labels.pauseResume}</span>
+      <span><kbd>R</kbd> {copy.labels.restartConfirm}</span>
+      <span><kbd>Esc</kbd> {copy.labels.back}</span>
+      <span><kbd>← →</kbd> {copy.labels.select}</span>
+      <span><kbd>↑ ↓</kbd> {copy.labels.switch}</span>
+      <span><kbd>Enter</kbd> {copy.labels.activate}</span>
+      <span><kbd>← →</kbd> {copy.labels.move}</span>
+      <span><kbd>↑</kbd> {copy.labels.rotate}</span>
+      <span><kbd>↓</kbd> {copy.labels.softDrop}</span>
+      <span><kbd>Space</kbd> {copy.labels.hardDrop}</span>
+      {mode === 'puzzle' && <span><kbd>Z</kbd> {copy.labels.undo}</span>}
+    </section>
+  );
+}
+
+export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
+  const copy = appCopy(language);
+  const modeLabel = modeCopy(language, state.mode).label;
   if (state.mode === 'race') {
     const nextSeconds = survivalCountdownSeconds(state);
     return (
-      <section className="run-stats" data-testid="stats" aria-label="生存模式数据">
-        <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-        <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="survival-bedrock"><span>基岩</span><strong>{state.survivalBedrockRows}</strong></article>
+      <section className="run-stats" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
+        <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
+        <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="survival-bedrock"><span>{copy.labels.bedrock}</span><strong>{state.survivalBedrockRows}</strong></article>
         <article data-stat-role="survival-next" data-urgent={state.survivalRisePending || nextSeconds <= 5 || undefined}>
-          <span>下一层</span><strong>{survivalCountdownLabel(state)}</strong>
+          <span>{copy.labels.nextRise}</span><strong>{survivalCountdownLabel(state, language)}</strong>
         </article>
       </section>
     );
   }
   if (state.mode === 'puzzle') {
-    const level = campaignLevel(state.puzzleId);
     return (
-      <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label="解谜模式数据">
-        <article data-stat-role="puzzle-level"><span>关卡 {level.index}/{level.total}</span><strong>{level.name}</strong></article>
-        <article data-stat-role="puzzle-targets"><span>原有方块（剩余/总数）</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
-        <article data-stat-role="puzzle-placed"><span>已落子</span><strong>{state.pieceCount}</strong></article>
+      <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
+        <article data-stat-role="puzzle-targets"><span>{copy.labels.originalBlocks}</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
+        <article data-stat-role="puzzle-placed"><span>{copy.labels.placed}</span><strong>{state.pieceCount}</strong></article>
         <article data-stat-role="objective">
-          <span>通关目标</span><strong>清除全部原有方块</strong>
+          <span>{copy.labels.goal}</span><strong>{copy.labels.clearOriginalBlocks}</strong>
         </article>
       </section>
     );
   }
   if (state.mode === 'sprint') {
     return (
-      <section className="run-stats run-stats--mutation" data-testid="stats" aria-label="异变模式数据">
-        <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-        <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="mutation-speed"><span>下落</span><strong>{fallCadenceLabel(state)}</strong></article>
-        <article data-stat-role="mutation-carriers"><span>核心</span><strong>{state.mutationCarriers.length + (state.mutationActiveCarrier ? 1 : 0)}</strong></article>
+      <section className="run-stats run-stats--mutation" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
+        <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
+        <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="mutation-speed"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
+        <article data-stat-role="mutation-carriers"><span>{copy.labels.core}</span><strong>{state.mutationCarriers.length + (state.mutationActiveCarrier ? 1 : 0)}</strong></article>
       </section>
     );
   }
   return (
-    <section className="run-stats" data-testid="stats" aria-label="经典模式数据">
-      <article data-stat-role="score"><span>分数</span><strong>{formatScore(state.score)}</strong></article>
-      <article data-stat-role="lines"><span>消行</span><strong>{state.lines}</strong></article>
-      <article data-stat-role="classic-combo"><span>连消</span><strong>{state.combo}</strong></article>
-      <article data-stat-role="fall-cadence"><span>下落</span><strong>{fallCadenceLabel(state)}</strong></article>
+    <section className="run-stats" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
+      <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
+      <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
+      <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
+      <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
     </section>
   );
 }
 
-const MUTATION_ITEM_LABEL: Record<MutationItem, string> = {
-  freeze: '冻结',
-  collapse: '坍缩',
-  bomb: '炸弹',
-  multiplier: '倍增',
-};
-
-function mutationEffectLabel(item: MutationItem, ticks: number): string {
-  return `${MUTATION_ITEM_LABEL[item]} · ${Math.ceil(ticks / TICKS_PER_SECOND)} 秒`;
+function mutationEffectLabel(item: MutationItem, ticks: number, language: AppLanguage): string {
+  return appCopy(language).phrasing.mutationTimer(itemLabel(language, item), Math.ceil(ticks / TICKS_PER_SECOND));
 }
 
-export function MutationStatus({ state }: { state: GameState }) {
+export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
   if (state.mode !== 'sprint') return null;
+  const copy = appCopy(language);
   const candidates: Array<{ item: MutationItem; ticks: number }> = [
     { item: 'freeze', ticks: state.mutationFreezeTicks },
     { item: 'collapse', ticks: state.mutationCollapseTicks },
@@ -751,31 +758,32 @@ export function MutationStatus({ state }: { state: GameState }) {
   const active = candidates.filter((effect) => effect.ticks > 0);
   const showInstant = active.length === 0 && state.mutationLastItem === 'bomb' && state.mutationLastItemTicks > 0;
   return (
-    <section className="mutation-status" data-testid="mutation-status" aria-label="异变状态">
-      <strong>异变状态</strong>
+    <section className="mutation-status" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
+      <strong>{copy.labels.mutationStatus}</strong>
       <div>
-        {state.mutationActiveCarrier && <span data-mutation-state="carrier">核心：{MUTATION_ITEM_LABEL[state.mutationActiveCarrier.item]}</span>}
-        {active.map((effect) => <span key={effect.item} data-mutation-state={effect.item}>{mutationEffectLabel(effect.item, effect.ticks)}</span>)}
-        {showInstant && <span data-mutation-state="bomb">炸弹 · 底部 3 行已清除</span>}
-        {!state.mutationActiveCarrier && active.length === 0 && !showInstant && <span data-mutation-state="idle">等待核心方块</span>}
+        {state.mutationActiveCarrier && <span data-mutation-state="carrier">{copy.labels.carrierCore}: {itemLabel(language, state.mutationActiveCarrier.item)}</span>}
+        {active.map((effect) => <span key={effect.item} data-mutation-state={effect.item}>{mutationEffectLabel(effect.item, effect.ticks, language)}</span>)}
+        {showInstant && <span data-mutation-state="bomb">{copy.labels.bombResolved}</span>}
+        {!state.mutationActiveCarrier && active.length === 0 && !showInstant && <span data-mutation-state="idle">{copy.labels.waitingForCore}</span>}
       </div>
     </section>
   );
 }
 
-export function eventMessage(event: GameEvent): string {
-  if (event.type === 'lines-cleared') return `消除了 ${event.count} 行。`;
-  if (event.type === 'bedrock-raised') return `基岩升至 ${event.height} 层。`;
-  if (event.type === 'bedrock-lowered') return `基岩降至 ${event.height} 层。`;
-  if (event.type === 'paused') return '本局已暂停。';
-  if (event.type === 'resumed') return '继续本局。';
-  if (event.type === 'puzzle-undone') return '已撤回上一次落子。';
+export function eventMessage(event: GameEvent, language: AppLanguage = DEFAULT_LANGUAGE): string {
+  const copy = appCopy(language);
+  if (event.type === 'lines-cleared') return copy.phrasing.eventLinesCleared(event.count);
+  if (event.type === 'bedrock-raised') return copy.phrasing.eventBedrockRaised(event.height);
+  if (event.type === 'bedrock-lowered') return copy.phrasing.eventBedrockLowered(event.height);
+  if (event.type === 'paused') return copy.labels.pausedMessage;
+  if (event.type === 'resumed') return copy.labels.resumedMessage;
+  if (event.type === 'puzzle-undone') return copy.labels.undoMessage;
   if (event.type === 'mutation-activated') {
-    if (event.item === 'bomb') return '炸弹触发：底部 3 行已清除。';
-    return `${MUTATION_ITEM_LABEL[event.item]} 已触发，持续 10 秒。`;
+    if (event.item === 'bomb') return copy.labels.bombResolved;
+    return copy.phrasing.eventItemTriggered(itemLabel(language, event.item));
   }
-  if (event.type === 'finished') return '目标已达成。';
-  if (event.type === 'game-over') return '本局结束。';
+  if (event.type === 'finished') return copy.labels.targetReached;
+  if (event.type === 'game-over') return copy.labels.runEnded;
   return '';
 }
 
@@ -802,6 +810,8 @@ export function GameSession({
   leaderboard = emptyLeaderboard(),
   puzzleProgress = defaultPuzzleProgress(),
   onRunFinished,
+  language = DEFAULT_LANGUAGE,
+  onLanguageChange,
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
@@ -810,13 +820,16 @@ export function GameSession({
   leaderboard?: Leaderboard;
   puzzleProgress?: PuzzleProgress;
   onRunFinished?: (record: ScoreRecord) => void;
+  language?: AppLanguage;
+  onLanguageChange?: (language: AppLanguage) => void;
 }) {
+  const copy = appCopy(language);
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
   const settingsWasPlayingRef = useRef(false);
-  const undoWasPlayingRef = useRef(false);
+  const languageRef = useRef(language);
   const lastRecordedRunRef = useRef<string | null>(null);
   const [runSeed] = useState(() => mode === 'puzzle' ? APP_SEED : randomRunSeed());
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
@@ -824,7 +837,6 @@ export function GameSession({
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
-  const [undoConfirmOpen, setUndoConfirmOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -899,7 +911,7 @@ export function GameSession({
           || event.type === 'finished'
           || event.type === 'game-over'
         ));
-        if (notable) setLiveMessage(eventMessage(notable));
+        if (notable) setLiveMessage(eventMessage(notable, languageRef.current));
         if (nextState.mode === 'puzzle' && nextState.puzzleCompletion === 'finished') {
           onCanonicalCompletion(nextState);
         }
@@ -921,13 +933,14 @@ export function GameSession({
         nextRuntime.setInputEnabled(true);
         nextRuntime.start();
         setCountdownDigit(null);
-        setLiveMessage(`${PRODUCT_NAME} 已开始。`);
+        setLiveMessage(appCopy(languageRef.current).labels.runStarted);
         focusBoard();
       }, 3000),
     ];
     void nextRuntime.mount(host).then(() => {
       if (disposed) return;
       nextRuntime.setReducedMotion(motionQuery.matches);
+      host.querySelector('canvas')?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);
       if (countdownComplete) focusBoard();
     });
 
@@ -945,6 +958,14 @@ export function GameSession({
     runtime?.setMusicEnabled(musicEnabled);
     runtime?.setAudioVolume(audioVolume);
   }, [audioEnabled, audioVolume, musicEnabled, runtime]);
+
+  useEffect(() => {
+    languageRef.current = language;
+    const documentTarget = browserPlatform.documentTarget();
+    if (documentTarget?.documentElement) documentTarget.documentElement.lang = language;
+    const canvas = hostRef.current?.querySelector('canvas');
+    if (canvas) canvas.setAttribute('aria-label', appCopy(language).phrasing.boardLabel);
+  }, [language, runtime]);
 
   useEffect(() => {
     if (!import.meta.env.DEV || !runtime) return;
@@ -1025,14 +1046,14 @@ export function GameSession({
   }, [countdownDigit, runtime, state]);
 
   const openSettings = useCallback(() => {
-    if (!runtime || settingsOpen || restartConfirmOpen || undoConfirmOpen) return;
+    if (!runtime || settingsOpen || restartConfirmOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     settingsWasPlayingRef.current = runtimeState.status === 'playing';
     if (settingsWasPlayingRef.current) runtime.togglePause();
     runtime.setInputEnabled(false);
     setSettingsOpen(true);
-  }, [restartConfirmOpen, runtime, settingsOpen, undoConfirmOpen]);
+  }, [restartConfirmOpen, runtime, settingsOpen]);
 
   const closeSettings = useCallback(() => {
     setSettingsOpen(false);
@@ -1046,10 +1067,8 @@ export function GameSession({
     setExitOpen(false);
     setSettingsOpen(false);
     setRestartConfirmOpen(false);
-    setUndoConfirmOpen(false);
     settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
-    undoWasPlayingRef.current = false;
     runtime?.setInputEnabled(true);
     runtime?.restart();
     runtime?.start();
@@ -1057,7 +1076,7 @@ export function GameSession({
   }, [focusBoard, runtime]);
 
   const requestRestart = useCallback(() => {
-    if (!runtime || restartConfirmOpen || undoConfirmOpen) return;
+    if (!runtime || restartConfirmOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     restartWasPlayingRef.current = runtimeState.status === 'playing' || settingsWasPlayingRef.current;
@@ -1067,7 +1086,7 @@ export function GameSession({
     settingsWasPlayingRef.current = false;
     setSettingsOpen(false);
     setRestartConfirmOpen(true);
-  }, [restartConfirmOpen, runtime, undoConfirmOpen]);
+  }, [restartConfirmOpen, runtime]);
 
   const cancelRestart = useCallback(() => {
     setRestartConfirmOpen(false);
@@ -1077,31 +1096,12 @@ export function GameSession({
   }, [runtime]);
 
   const requestPuzzleUndo = useCallback(() => {
-    if (!runtime || countdownDigit !== null || state.mode !== 'puzzle' || undoConfirmOpen || exitOpen || restartConfirmOpen || settingsOpen) return;
+    if (!runtime || countdownDigit !== null || state.mode !== 'puzzle' || exitOpen || restartConfirmOpen || settingsOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'playing' || runtimeState.puzzleUndoHistory.length === 0) return;
-    undoWasPlayingRef.current = true;
-    runtime.togglePause();
-    runtime.setInputEnabled(false);
-    setUndoConfirmOpen(true);
-  }, [countdownDigit, exitOpen, restartConfirmOpen, runtime, settingsOpen, state.mode, undoConfirmOpen]);
-
-  const confirmPuzzleUndo = useCallback(() => {
-    setUndoConfirmOpen(false);
-    runtime?.setInputEnabled(true);
     runtime?.undoPuzzle();
-    if (undoWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
-    undoWasPlayingRef.current = false;
     focusBoard();
-  }, [focusBoard, runtime]);
-
-  const cancelPuzzleUndo = useCallback(() => {
-    setUndoConfirmOpen(false);
-    runtime?.setInputEnabled(true);
-    if (undoWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
-    undoWasPlayingRef.current = false;
-    focusBoard();
-  }, [focusBoard, runtime]);
+  }, [countdownDigit, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen, state.mode]);
 
   const resumeRun = useCallback(() => {
     if (runtime?.getState().status === 'paused') runtime.togglePause();
@@ -1112,33 +1112,33 @@ export function GameSession({
     const handleRestartShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyR' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestRestart();
     };
     return browserPlatform.listenWindow('keydown', handleRestartShortcut);
-  }, [countdownDigit, exitOpen, requestRestart, restartConfirmOpen, settingsOpen, state.status, undoConfirmOpen]);
+  }, [countdownDigit, exitOpen, requestRestart, restartConfirmOpen, settingsOpen, state.status]);
 
   useEffect(() => {
     const handleSettingsShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyS' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+      if (countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       openSettings();
     };
     return browserPlatform.listenWindow('keydown', handleSettingsShortcut);
-  }, [countdownDigit, exitOpen, openSettings, restartConfirmOpen, settingsOpen, undoConfirmOpen]);
+  }, [countdownDigit, exitOpen, openSettings, restartConfirmOpen, settingsOpen]);
 
   const requestExit = useCallback(() => {
-    if (!runtime || countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+    if (!runtime || countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     exitWasPlayingRef.current = runtimeState.status === 'playing';
     if (exitWasPlayingRef.current) runtime.togglePause();
     runtime.setInputEnabled(false);
     setExitOpen(true);
-  }, [countdownDigit, exitOpen, restartConfirmOpen, runtime, settingsOpen, undoConfirmOpen]);
+  }, [countdownDigit, exitOpen, restartConfirmOpen, runtime, settingsOpen]);
 
   const cancelExit = useCallback(() => {
     setExitOpen(false);
@@ -1151,29 +1151,29 @@ export function GameSession({
     const handlePuzzleUndoShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyZ' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.mode !== 'puzzle' || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+      if (countdownDigit !== null || state.mode !== 'puzzle' || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestPuzzleUndo();
     };
     return browserPlatform.listenWindow('keydown', handlePuzzleUndoShortcut);
-  }, [countdownDigit, exitOpen, requestPuzzleUndo, restartConfirmOpen, settingsOpen, state.mode, state.status, undoConfirmOpen]);
+  }, [countdownDigit, exitOpen, requestPuzzleUndo, restartConfirmOpen, settingsOpen, state.mode, state.status]);
 
   useEffect(() => {
     const handleExitShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'Escape' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen || undoConfirmOpen) return;
+      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestExit();
     };
     return browserPlatform.listenWindow('keydown', handleExitShortcut);
-  }, [countdownDigit, exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status, undoConfirmOpen]);
+  }, [countdownDigit, exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
 
-  const terminal = terminalCopy(state);
-  const level = state.mode === 'puzzle' ? campaignLevel(state.puzzleId) : null;
+  const terminal = terminalCopy(state, language);
+  const modeLabel = modeCopy(language, state.mode).label;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
-  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !undoConfirmOpen && !settingsOpen;
-  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !undoConfirmOpen && !settingsOpen;
+  const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !settingsOpen;
+  const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !settingsOpen;
   const storedRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
   const leaderboardRecords = resultRecord && scoreRecordRank(storedRecords, resultRecord) === null
     ? recordsForMode(insertScoreRecord(leaderboard, resultRecord), resultRecord.mode)
@@ -1182,7 +1182,7 @@ export function GameSession({
   const puzzleDoublePreview = state.mode === 'puzzle';
 
   return (
-    <main id="game" className="play-shell" data-testid="game-screen">
+    <main id="game" lang={language} className="play-shell" data-testid="game-screen">
       <header className="play-topbar" data-testid="cluster-header">
         <button
           className="topbar-action"
@@ -1191,35 +1191,34 @@ export function GameSession({
             event.currentTarget.focus({ preventScroll: true });
             requestExit();
           }}
-          aria-label={state.mode === 'puzzle' ? '返回解谜关卡' : '返回模式首页'}
+          aria-label={state.mode === 'puzzle' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
           aria-keyshortcuts="Escape"
-        >← 返回</button>
+        >← {copy.labels.back}</button>
         <div className="play-identity">
           <Brand compact />
-          <h1 data-testid="current-mode">{MODE_COPY[state.mode].label}</h1>
-          {level && <small>{level.index}/{level.total} · {level.name}</small>}
+          <h1 data-testid="current-mode">{modeLabel}</h1>
         </div>
         <div className="topbar-actions">
           <button
             className="topbar-action topbar-action--settings"
             type="button"
             data-testid="open-settings"
-            aria-label="设置（S）"
+            aria-label={`${copy.labels.settings} (S)`}
             aria-keyshortcuts="S"
             aria-expanded={settingsOpen}
             disabled={countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused')}
             onClick={openSettings}
-          >设置</button>
+          >{copy.labels.settings}</button>
         </div>
       </header>
 
-      <section className="play-surface" aria-label={`${MODE_COPY[state.mode].label}游戏面板`}>
-        <section className="game-arena" data-testid="game-cluster" aria-label={`${MODE_COPY[state.mode].label}游戏区`}>
+      <section className="play-surface" aria-label={`${modeLabel} ${copy.labels.gamePanel}`}>
+        <section className="game-arena" data-testid="game-cluster" aria-label={`${modeLabel} ${copy.labels.gameArea}`}>
           <div ref={hostRef} className="canvas-host" data-testid="canvas-host" />
           <section
             className={`board-frame ${countdownDigit !== null ? 'board-frame--countdown' : ''}`}
             data-testid="board-frame"
-            aria-label="10 × 20 游戏棋盘"
+            aria-label={copy.phrasing.boardLabel}
           >
             {countdownDigit !== null && (
               <div
@@ -1236,51 +1235,52 @@ export function GameSession({
           </section>
           <aside className={`game-side-panel game-side-panel--${state.mode}`} data-testid="side-rail">
             <div className="info-rail" data-testid="context-top">
-              <RunStats state={state} />
-              <MutationStatus state={state} />
+              <RunStats state={state} language={language} />
+              <MutationStatus state={state} language={language} />
             </div>
             <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
-              <p className="rail-label">{puzzleDoublePreview ? 'Next · 2' : 'Next'}</p>
+              <p className="rail-label">{puzzleDoublePreview ? `${copy.labels.next} · 2` : copy.labels.next}</p>
               <div
                 className="next-slot"
                 data-testid="next-slot"
                 data-preview-count={puzzleDoublePreview ? 2 : 1}
-                aria-label={puzzleDoublePreview ? '后续两个方块，按顺序显示' : '下一个方块'}
+                aria-label={puzzleDoublePreview ? copy.labels.twoUpcoming : copy.labels.nextPiece}
               />
             </div>
-            <p className="keyboard-map"><b>键盘</b><span>← → 移动</span><span>↑ 旋转</span><span>↓ 快速下落</span><span>空格 直接落底</span><span>S 设置</span><span>P 暂停 / 继续</span><span>R 重开确认</span><span>Esc 返回</span>{state.mode === 'puzzle' && <span>Z 撤回</span>}</p>
           </aside>
         </section>
 
-        <section className={`touch-deck ${state.mode === 'puzzle' ? 'touch-deck--puzzle' : ''}`} data-testid="touch-rail" aria-label={state.mode === 'puzzle' ? '解谜触控操作' : '触控操作'}>
-          <TouchButton action="left" label="左移" glyph="←" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="right" label="右移" glyph="→" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="rotate-cw" label="旋转" glyph="↻" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="soft-drop" label="快速下落" glyph="↓" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="hard-drop" label="直接落底" glyph="⇣" runtime={runtime} disabled={countdownDigit !== null} />
-          {state.mode === 'puzzle' && <PuzzleUndoButton onRequestUndo={requestPuzzleUndo} disabled={countdownDigit !== null || state.status !== 'playing' || state.puzzleUndoHistory.length === 0 || undoConfirmOpen} />}
+          <section className={`touch-deck ${state.mode === 'puzzle' ? 'touch-deck--puzzle' : ''}`} data-testid="touch-rail" aria-label={state.mode === 'puzzle' ? copy.labels.puzzleTouchControls : copy.labels.touchControls}>
+          <TouchButton action="left" label={copy.labels.moveLeft} glyph="←" runtime={runtime} disabled={countdownDigit !== null} />
+          <TouchButton action="right" label={copy.labels.moveRight} glyph="→" runtime={runtime} disabled={countdownDigit !== null} />
+          <TouchButton action="rotate-cw" label={copy.labels.rotate} glyph="↻" runtime={runtime} disabled={countdownDigit !== null} />
+          <TouchButton action="soft-drop" label={copy.labels.softDrop} glyph="↓" runtime={runtime} disabled={countdownDigit !== null} />
+          <TouchButton action="hard-drop" label={copy.labels.hardDrop} glyph="⇣" runtime={runtime} disabled={countdownDigit !== null} />
+          {state.mode === 'puzzle' && <PuzzleUndoButton language={language} onRequestUndo={requestPuzzleUndo} disabled={countdownDigit !== null || state.status !== 'playing' || state.puzzleUndoHistory.length === 0} />}
         </section>
       </section>
 
       <ActionSheet
         open={pauseOpen}
-        title="已暂停"
+        title={copy.labels.pauseTitle}
         description=""
         onCancel={resumeRun}
         onConfirm={resumeRun}
       >
-        <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>继续游戏</button>
+        <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>{copy.labels.continue}</button>
       </ActionSheet>
 
       <ActionSheet
         open={settingsOpen}
-        title="设置"
+        title={copy.labels.settings}
         description=""
+        dismissOnBackdropClick
         onCancel={closeSettings}
       >
-        <section className="settings-sheet" data-testid="settings-sheet" aria-label="本局设置">
-          <section className="settings-controls" data-testid="settings-controls" aria-label="控制">
-            <strong>控制</strong>
+        <section className="settings-sheet" data-testid="settings-sheet" aria-label={copy.labels.settings}>
+          <section className="settings-controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
+            <strong>{copy.labels.controls}</strong>
+            {onLanguageChange && <LanguageControl language={language} onChange={onLanguageChange} />}
             <AudioControls
               enabled={audioEnabled}
               musicEnabled={musicEnabled}
@@ -1288,74 +1288,65 @@ export function GameSession({
               onEnabledChange={changeAudioEnabled}
               onMusicEnabledChange={changeMusicEnabled}
               onVolumeChange={changeAudioVolume}
+              language={language}
             />
             <div className="settings-sheet__actions">
-              <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>重新开始</button>
+              <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>{copy.labels.restart}</button>
               <button className="primary-action" data-autofocus type="button" data-arrow-nav onClick={closeSettings}>
-                {settingsWasPlayingRef.current ? '继续游戏' : '返回暂停'}
+                {settingsWasPlayingRef.current ? copy.labels.continue : copy.labels.returnToPause}
               </button>
             </div>
           </section>
-          <SettingsShortcutGuide mode={state.mode} />
-          <ModeRuleSummary mode={state.mode} testId="settings-rules" />
+          <SettingsShortcutGuide mode={state.mode} language={language} />
+          <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
           <SettingsRecord
             mode={state.mode}
             puzzleId={state.puzzleId ?? puzzleId}
             leaderboard={leaderboard}
             progress={puzzleProgress}
+            language={language}
           />
         </section>
       </ActionSheet>
 
       <ActionSheet
         open={restartConfirmOpen}
-        title="重新开始？"
+        title={copy.labels.restartTitle}
         description=""
         tone="danger"
         onCancel={cancelRestart}
         onConfirm={restartRun}
       >
-        <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>确认</button>
-        <button className="secondary-action" type="button" onClick={cancelRestart}>取消</button>
-      </ActionSheet>
-
-      <ActionSheet
-        open={undoConfirmOpen}
-        title="撤回上一步？"
-        description=""
-        onCancel={cancelPuzzleUndo}
-        onConfirm={confirmPuzzleUndo}
-      >
-        <button className="primary-action" data-autofocus data-testid="confirm-puzzle-undo" type="button" onClick={confirmPuzzleUndo}>确认</button>
-        <button className="secondary-action" type="button" onClick={cancelPuzzleUndo}>取消</button>
+        <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>{copy.labels.confirm}</button>
+        <button className="secondary-action" type="button" onClick={cancelRestart}>{copy.labels.cancel}</button>
       </ActionSheet>
 
       <ActionSheet
         open={exitOpen}
-        title="离开本局？"
+        title={copy.labels.leaveTitle}
         description=""
         tone="danger"
         onCancel={cancelExit}
       >
-        <button className="primary-action" data-autofocus type="button" onClick={cancelExit}>留在本局</button>
+        <button className="primary-action" data-autofocus type="button" onClick={cancelExit}>{copy.labels.stay}</button>
         <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
-          {exitDestination === 'puzzle-library' ? '返回关卡库' : '返回模式首页'}
+          {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
         </button>
       </ActionSheet>
 
       <ActionSheet
         open={resultOpen}
-        title={terminal?.title ?? '本局结束'}
+        title={terminal?.title ?? copy.labels.resultTitle}
         description={terminal?.detail ?? ''}
         tone={terminal?.success ? 'success' : 'danger'}
       >
         {state.mode !== 'puzzle' && <>
           <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} />
-          {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">本局未进入排行榜</p>}
+          {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">{copy.labels.currentRunMissedLeaderboard}</p>}
         </>}
-        <button className="primary-action" data-autofocus type="button" onClick={restartRun}>{state.mode === 'puzzle' ? '重来' : '再来一局'}</button>
+        <button className="primary-action" data-autofocus type="button" onClick={restartRun}>{state.mode === 'puzzle' ? copy.labels.replay : copy.labels.playAgain}</button>
         <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
-          {exitDestination === 'puzzle-library' ? '返回关卡库' : '返回模式首页'}
+          {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
         </button>
       </ActionSheet>
 
@@ -1366,12 +1357,28 @@ export function GameSession({
 
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>('home');
+  const [language, setLanguage] = useState<AppLanguage>(readLanguage);
   const [mode, setMode] = useState<GameMode>('marathon');
   const [selectedPuzzleId, setSelectedPuzzleId] = useState<PuzzleId>(CAMPAIGN_LEVELS[0]!.id);
   const [progress, setProgress] = useState<PuzzleProgress>(readPuzzleProgress);
   const [leaderboard, setLeaderboard] = useState<Leaderboard>(readLeaderboard);
   const [introducedModes, setIntroducedModes] = useState<readonly GameMode[]>(readModeRuleIntros);
   const [ruleIntroMode, setRuleIntroMode] = useState<GameMode | null>(null);
+
+  useEffect(() => {
+    const documentTarget = browserPlatform.documentTarget();
+    const copy = appCopy(language);
+    if (documentTarget?.documentElement) documentTarget.documentElement.lang = language;
+    const skipLink = documentTarget?.querySelector<HTMLAnchorElement>('.skip-link');
+    if (skipLink) skipLink.textContent = copy.labels.skipToGame;
+    const bootScreen = documentTarget?.getElementById('boot-screen');
+    if (bootScreen) bootScreen.setAttribute('aria-label', copy.labels.loading);
+  }, [language]);
+
+  const changeLanguage = useCallback((nextLanguage: AppLanguage) => {
+    setLanguage(nextLanguage);
+    writeLanguage(nextLanguage);
+  }, []);
 
   const openMode = useCallback((nextMode: GameMode) => {
     setMode(nextMode);
@@ -1425,8 +1432,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app">
-      {screen === 'home' && <ModeHome onEnter={enterMode} />}
+    <div className="app" lang={language}>
+      {screen === 'home' && <ModeHome onEnter={enterMode} language={language} />}
       {screen === 'puzzle-library' && (
         <PuzzleLibrary
           progress={progress}
@@ -1434,6 +1441,7 @@ export default function App() {
           onSelect={setSelectedPuzzleId}
           onStart={startPuzzle}
           onBack={() => setScreen('home')}
+          language={language}
         />
       )}
       {screen === 'game' && (
@@ -1446,18 +1454,20 @@ export default function App() {
           leaderboard={leaderboard}
           puzzleProgress={progress}
           onRunFinished={recordRun}
+          language={language}
+          onLanguageChange={changeLanguage}
         />
       )}
       <ActionSheet
         open={ruleIntroMode !== null}
-        title={ruleIntroMode === null ? '规则' : `${MODE_COPY[ruleIntroMode].label}规则`}
-        description="首次进入说明"
+        title={ruleIntroMode === null ? appCopy(language).labels.rules : `${modeCopy(language, ruleIntroMode).label} ${appCopy(language).labels.rules}`}
+        description={appCopy(language).labels.firstEntry}
         onCancel={() => setRuleIntroMode(null)}
         onConfirm={beginIntroducedMode}
       >
-        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} testId="entry-mode-rules" />}
-        <button className="primary-action" data-autofocus type="button" onClick={beginIntroducedMode}>开始</button>
-        <button className="secondary-action" type="button" onClick={() => setRuleIntroMode(null)}>返回</button>
+        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} language={language} testId="entry-mode-rules" />}
+        <button className="primary-action" data-autofocus type="button" onClick={beginIntroducedMode}>{appCopy(language).labels.start}</button>
+        <button className="secondary-action" type="button" onClick={() => setRuleIntroMode(null)}>{appCopy(language).labels.back}</button>
       </ActionSheet>
     </div>
   );
