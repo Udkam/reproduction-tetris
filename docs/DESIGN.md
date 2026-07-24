@@ -22,11 +22,17 @@ identity.
   the four mode entrances remain the interaction surface and retain no rule or record
   prose. The effect may use only original CSS light/shadow and the existing mineral
   palette—no grid, scanline, diagonal ornament, or copied mark.
-- The display face is **Tektur**, sourced through its local `@fontsource-variable`
-  package rather than a network stylesheet. Its compact cut geometry gives the long
-  TetraMorph wordmark more tension without resorting to a copied logo. Chinese UI copy
-  keeps the existing readable system/Noto fallback chain. This keeps the visual result
-  available offline and suitable for a later application package.
+- The display face is bold **Playwrite New Zealand Basic**, sourced through its local
+  `@fontsource-variable` package rather than a network stylesheet. Its brisk,
+  characterful stroke gives the TetraMorph wordmark tension without resorting to a
+  copied logo. Chinese UI copy keeps the existing readable system/Noto fallback chain.
+  This keeps the visual result available offline and suitable for a later application
+  package.
+- The Settings sheet keeps its semantic title **设置** first, then presents a named
+  **控制** section (sound/music/volume and run actions), a two-column **键盘** reference,
+  the concise per-mode **规则**, and only then the current record or leaderboard as its
+  final content block. The order must stay readable at narrow widths and preserve the
+  existing arrow/Enter controls.
 - This is a frontend/metadata-only slice: it must not change game Core, mode rules,
   Puzzle definitions, persistence values, renderer geometry, or audio behavior.
   The visual proof must cover desktop and narrow responsive layouts, reduced motion,

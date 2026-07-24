@@ -146,13 +146,17 @@ the authoritative live scope.
     brand labels; the old `Tetra`/`Tetris` strings remain only in historical
     documentation. The homepage's left-field `选择模式` heading is replaced by this
     single page-level wordmark, with no duplicate top-left brand, while mode cards stay
-    navigation-only. The wordmark uses locally bundled Google Font **Tektur** with
-    original, restrained mineral-light CSS; no network font request, copied logo, extra
-    decorative grid/line, or Chinese subtitle is allowed.
+    navigation-only. The wordmark uses locally bundled, bold Google Font **Playwrite
+    New Zealand Basic** with original, restrained mineral-light CSS; no network font
+    request, copied logo, extra decorative grid/line, or Chinese subtitle is allowed.
     The source boundary is `index.html`, `package.json`, `package-lock.json`,
     `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; current
     design/task records precede source, and final proof includes desktop/narrow/reduced
     motion browser evidence with no overflow or console errors.
+    In Settings, the semantic `设置` title remains first; its visible content order is
+    **控制**, a two-column **键盘** guide, concise **规则**, then the mode record or
+    leaderboard last. Arrow/Enter behavior and the native focused-volume range stay
+    unchanged.
 
 ### T13.9 authorized implementation boundary
 
