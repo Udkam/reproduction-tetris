@@ -1,5 +1,26 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T13.14 final evidence checkpoint — 2026-07-25
+
+- Frozen candidate `225aa1c..e9db541` now contains the completed direct-clarity,
+  music-removal, Mutation, and Survival-stone source chain. Final coordinator gates
+  pass after the last source repair: `npm.cmd run typecheck`, `npm.cmd run test`
+  (22 files / 165 tests), and `npm.cmd run build` (746 modules).
+- Fresh ignored browser evidence is intentionally generated only from that candidate:
+  the settled Settings audit has 16 Chinese/English desktop plus Chinese
+  portrait/landscape captures with no console/page errors, no horizontal overflow, no
+  music surface, and a canvas that hides only while a modal is open then restores on
+  dismissal. The reduced-motion audit sees the visible `3` mask while the countdown
+  digit and both sheet layers have no animation.
+- Live audits separately prove Puzzle's in-panel 1/2 forecast and direct Z rollback,
+  all four Mutation carriers/effects, and a Survival stone at y=20 followed by y=21
+  under the exact 3:2 cadence. Each reports one canvas, zero DOM board cells, and no
+  viewport overflow. The prescribed web-game client also captured a live count-2 mask.
+- `rg` finds no live music output/control/copy in `src/`; only removal assertions
+  remain, while the existing effects toggle and volume control are preserved. The
+  inherited user-owned `package-lock.json` remains unstaged. Independent read-only QA
+  disposition is the only remaining acceptance step at this evidence checkpoint.
+
 ### T13.14 entry countdown overlay checkpoint — 2026-07-24
 
 - The user-confirmed centred Puzzle numeral/tick replacement remains untouched. The

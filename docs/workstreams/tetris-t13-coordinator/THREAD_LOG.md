@@ -1,5 +1,31 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-25 — TETRIS-T13.14 final evidence checkpoint
+
+- Task/base/candidate: `TETRIS-T13.14-DIRECT-CLARITY-AND-SURVIVAL-STONES`; contract
+  base `225aa1c`, source/evidence candidate `e9db541`. The source chain comprises the
+  entry and rail UI, music removal, Mutation refresh/material/feedback work, the
+  atomic typed Survival-stone bridge, and the two final modal/reduced-motion repairs.
+  The user-owned `package-lock.json` remains the sole inherited dirty path and was
+  neither modified nor staged.
+- Commands actually run after the last source edit: `npm.cmd run typecheck`,
+  `npm.cmd run test` (22 files / 165 tests), `npm.cmd run build` (746 modules),
+  `web_game_playwright_client.js` against the project listener, plus ignored real
+  Playwright audits for Settings/music, Mutation, Survival stones, Puzzle Next/Z undo,
+  Puzzle detail alignment, and reduced motion.
+- Evidence reviewed: the 16 settled Settings captures cover desktop Chinese/English
+  and portrait/landscape Chinese for all four modes, with zero errors/overflow and no
+  music controls; the modal canvas is hidden only during a sheet and returns after
+  dismissal. Mutation captures cover every carrier and Freeze/Collapse/Bomb/Multiplier
+  result. Survival captures show one chipped clearable stone spawning at y=20 then
+  falling to y=21 at the 3:2 cadence over three chipped bedrock rows. Puzzle confirms
+  visible 1/2 forecasts and one direct pre-spawn rollback. Reduced motion shows the
+  still-visible countdown and no sheet/countdown animation.
+- Blocker/next action: source is frozen. Obtain and read the independent QA log for
+  `225aa1c..e9db541`, then make a coordinator-only acceptance/changelog checkpoint,
+  release only the project Vite listener on 5176, verify that port is free, and perform
+  the user-authorized non-force `main` push.
+
 ## 2026-07-24 — TETRIS-T13.13-MULTIPASS-031 acceptance and release record
 
 - Base/contract: `fcd6fce`; accepted product candidate: `fcd6fce..3e2bcd9`. Exact
