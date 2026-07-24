@@ -1,4 +1,5 @@
 import {
+  BEDROCK_CELL,
   VISIBLE_START_ROW,
   createInitialState,
   dispatch,
@@ -38,10 +39,11 @@ function resolveLock(state: GameState): Route {
 function boardCost(state: GameState, cleared: number): number {
   const heights: number[] = [];
   let holes = 0;
+  let rowFillPotential = 0;
   for (let x = 0; x < state.board[0]!.length; x += 1) {
     let top = state.board.length;
     for (let y = VISIBLE_START_ROW; y < state.board.length; y += 1) {
-      if (state.board[y]?.[x]) {
+      if (state.board[y]?.[x] && state.board[y]?.[x] !== BEDROCK_CELL) {
         top = y;
         break;
       }
@@ -49,14 +51,24 @@ function boardCost(state: GameState, cleared: number): number {
     heights.push(state.board.length - top);
     let filled = false;
     for (let y = VISIBLE_START_ROW; y < state.board.length; y += 1) {
-      if (state.board[y]?.[x]) filled = true;
-      else if (filled) holes += 1;
+      const material = state.board[y]?.[x];
+      if (material && material !== BEDROCK_CELL) filled = true;
+      else if (material === null && filled) holes += 1;
     }
   }
   const aggregate = heights.reduce((total, height) => total + height, 0);
   const bumpiness = heights.slice(1).reduce((total, height, index) => total + Math.abs(height - heights[index]!), 0);
   const maximum = Math.max(...heights);
-  return cleared * 100_000 - holes * 180 - aggregate * 5 - bumpiness * 11 - maximum * 23;
+  for (let y = VISIBLE_START_ROW; y < state.board.length; y += 1) {
+    const row = state.board[y]!;
+    if (row.includes(BEDROCK_CELL)) continue;
+    const ordinaryCells = row.filter((cell) => cell !== null).length;
+    rowFillPotential += ordinaryCells * ordinaryCells;
+  }
+  // The replay is an evidence driver, not an in-game AI. It deliberately favours
+  // broad near-complete rows over tall clean columns, then sharply rejects holes
+  // and skyline cliffs so a pending stone stream cannot lure it into dead towers.
+  return cleared * 1_000_000 + rowFillPotential * 40 - holes * 450 - aggregate * 15 - bumpiness * 50 - maximum * 80;
 }
 
 function reachableLandings(state: GameState): Route[] {
