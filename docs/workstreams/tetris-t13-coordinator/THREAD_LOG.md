@@ -1221,3 +1221,35 @@
   cleanup. Next: release only the coordinator-owned audit listener after verifying its
   exact owner, confirm the inherited `package-lock.json` remains the sole local dirty
   path, then push the accepted `main` chain.
+
+## 2026-07-25 — T13.15 Puzzle ceremony / brown-bedrock candidate
+
+- Task: replace the generic Puzzle success sheet with a bounded outcome-aware ceremony,
+  then honour the player-directed restoration of Survival's established brown raised
+  bedrock. Base: `6f55982`; candidate chain:
+  `05c8564..87aeeb5` (`1a85e50`, `dc6e2c5`, `13ac197`, `87aeeb5`). The inherited
+  user-owned `package-lock.json` remains outside every checkpoint and is still dirty
+  but unstaged.
+- Exact changed paths: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `src/App.tsx`,
+  `src/App.test.ts`, `src/styles.css`, `src/ui/ActionSheet.tsx`,
+  `src/ui/localization.ts`, `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/theme.ts`, and `src/game/render/theme.test.ts`. Puzzle classifies
+  first/record/replay against the saved best before persistence, shows only its outcome
+  label plus saved best, and intentionally omits the generic `首次完成 · X 步 · Y 消行`
+  line. Empty action-sheet descriptions no longer reserve a blank paragraph. Bedrock
+  is back to the approved independent brown raised blocks; Core and clearable falling
+  stone behaviour were not changed.
+- Commands: `npm.cmd run test -- src/App.test.ts src/ui/ActionSheet.test.ts` (23/23),
+  `npm.cmd run typecheck`, `npm.cmd run test` (22 files / 166 tests), and
+  `npm.cmd run build` (746 modules) all passed. `git diff --check` passed before both
+  source/documentation checkpoints.
+- Evidence: a real in-app first Puzzle completion showed `恭喜你破解谜题`, `首次破解`,
+  and `当前最优：7步` with no generic stats line; the final web-game client run produced
+  `C:\\Users\\Alex Chen\\AppData\\Local\\Temp\\tetramorph-t13-15-final-client\\shot-0.png`
+  with no browser-error file. The final brown three-row Survival opening was visually
+  rechecked at `C:\\Users\\Alex Chen\\AppData\\Local\\Temp\\tetramorph-t13-15-browser\\survival-brown-restored\\shot-0.png`.
+- Blocker: no source blocker. The transient in-app test tab was reclaimed while
+  attempting an additional public-command route, so independent QA must recheck the
+  candidate's record/replay and reduced-motion presentation before acceptance.
+  Next: independent read-only QA of `6f55982..87aeeb5`; only the coordinator may
+  record acceptance, update the changelog, and push.
