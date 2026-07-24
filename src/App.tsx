@@ -1000,43 +1000,49 @@ export function GameSession({
 
   useEffect(() => {
     if (!import.meta.env.DEV || !runtime) return;
-    window.render_game_to_text = () => JSON.stringify({
-      coordinateSystem: 'board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows',
-      screen: 'game',
-      mode: state.mode,
-      status: state.status,
-      countdown: countdownDigit,
-      phase: state.phase,
-      puzzleId: state.puzzleId,
-      puzzleCompletion: state.puzzleCompletion,
-      puzzleTargetsRemaining: state.puzzleTargetCells.length,
-      puzzleTargetsInitial: state.puzzleInitialTargetCount,
-      puzzleUndoDepth: state.mode === 'puzzle' ? state.puzzleUndoHistory.length : 0,
-      mutation: state.mode === 'sprint' ? {
-        activeCarrier: state.mutationActiveCarrier?.item ?? null,
-        lockedCarriers: state.mutationCarriers.length,
-        freezeTicks: state.mutationFreezeTicks,
-        collapseTicks: state.mutationCollapseTicks,
-        multiplierTicks: state.mutationMultiplierTicks,
-        lastItem: state.mutationLastItem,
-      } : null,
-      score: state.score,
-      lines: state.lines,
-      combo: state.combo,
-      bedrockRows: state.survivalBedrockRows,
-      bedrockIntervalSeconds: state.mode === 'race' ? survivalIntervalSeconds(state.lines) : null,
-      bedrockNextSeconds: state.mode === 'race' ? survivalCountdownSeconds(state) : null,
-      bedrockPending: state.mode === 'race' ? state.survivalRisePending : false,
-      stoneIntervalSeconds: state.mode === 'race' ? state.survivalDebrisIntervalSeconds : null,
-      stoneNextSeconds: state.mode === 'race' ? survivalStoneCountdownSeconds(state) : null,
-      fallingStones: state.mode === 'race' ? state.survivalDebris.map((stone) => ({ x: stone.x, y: stone.y })) : [],
-      fallTicks: gravityForMode(state.mode, state.level, state.pieceCount, state.lines),
-      placedPieces: state.pieceCount,
-      active: state.active ? { type: state.active.type, x: state.active.x, y: state.active.y, rotation: state.active.rotation } : null,
-      next: state.queue[0] ?? null,
-      nextPreviews: state.mode === 'puzzle' ? state.queue.slice(0, 2) : state.queue.slice(0, 1),
-      visibleBoard: state.board.slice(-20).map((row) => row.map((cell) => cell ?? '.').join('')),
-    });
+    window.render_game_to_text = () => {
+      // The DEV text channel is read directly after deterministic QA ticks. React may
+      // not have committed the corresponding visual rail frame yet, so read Core's
+      // canonical current state rather than a captured render closure.
+      const current = runtime.getState();
+      return JSON.stringify({
+        coordinateSystem: 'board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows',
+        screen: 'game',
+        mode: current.mode,
+        status: current.status,
+        countdown: countdownDigit,
+        phase: current.phase,
+        puzzleId: current.puzzleId,
+        puzzleCompletion: current.puzzleCompletion,
+        puzzleTargetsRemaining: current.puzzleTargetCells.length,
+        puzzleTargetsInitial: current.puzzleInitialTargetCount,
+        puzzleUndoDepth: current.mode === 'puzzle' ? current.puzzleUndoHistory.length : 0,
+        mutation: current.mode === 'sprint' ? {
+          activeCarrier: current.mutationActiveCarrier?.item ?? null,
+          lockedCarriers: current.mutationCarriers.length,
+          freezeTicks: current.mutationFreezeTicks,
+          collapseTicks: current.mutationCollapseTicks,
+          multiplierTicks: current.mutationMultiplierTicks,
+          lastItem: current.mutationLastItem,
+        } : null,
+        score: current.score,
+        lines: current.lines,
+        combo: current.combo,
+        bedrockRows: current.survivalBedrockRows,
+        bedrockIntervalSeconds: current.mode === 'race' ? survivalIntervalSeconds(current.lines) : null,
+        bedrockNextSeconds: current.mode === 'race' ? survivalCountdownSeconds(current) : null,
+        bedrockPending: current.mode === 'race' ? current.survivalRisePending : false,
+        stoneIntervalSeconds: current.mode === 'race' ? current.survivalDebrisIntervalSeconds : null,
+        stoneNextSeconds: current.mode === 'race' ? survivalStoneCountdownSeconds(current) : null,
+        fallingStones: current.mode === 'race' ? current.survivalDebris.map((stone) => ({ x: stone.x, y: stone.y })) : [],
+        fallTicks: gravityForMode(current.mode, current.level, current.pieceCount, current.lines),
+        placedPieces: current.pieceCount,
+        active: current.active ? { type: current.active.type, x: current.active.x, y: current.active.y, rotation: current.active.rotation } : null,
+        next: current.queue[0] ?? null,
+        nextPreviews: current.mode === 'puzzle' ? current.queue.slice(0, 2) : current.queue.slice(0, 1),
+        visibleBoard: current.board.slice(-20).map((row) => row.map((cell) => cell ?? '.').join('')),
+      });
+    };
     window.advanceTime = (ms: number) => {
       const ticks = Math.max(1, Math.round(Math.max(0, ms) / (1000 / 60)));
       window.__SIGNAL_FOUNDRY_QA__?.advanceTicks(ticks);
@@ -1077,7 +1083,7 @@ export function GameSession({
       delete window.advanceTime;
       delete window.__TETRIS_D4_QA__;
     };
-  }, [countdownDigit, runtime, state]);
+  }, [countdownDigit, runtime]);
 
   const openSettings = useCallback(() => {
     if (!runtime || settingsOpen || restartConfirmOpen) return;

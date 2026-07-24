@@ -23,6 +23,7 @@ import App, {
   scoreRecordRank,
   scoreRecordForState,
   survivalCountdownLabel,
+  survivalStoneCountdownSeconds,
   terminalCopy,
 } from './App';
 import { CAMPAIGN_LEVELS, defaultPuzzleProgress, PUZZLE_ROW_BANDS } from './puzzleProgress';
@@ -149,6 +150,52 @@ describe('DEV QA state snapshot isolation', () => {
     snapshot.board[0]![0] = snapshot.board[0]![0] === 'O' ? 'Z' : 'O';
 
     expect(canonical).toEqual(original);
+  });
+});
+
+describe('Survival stone timing presentation', () => {
+  it('reports the independent stone clock from the canonical Core state', () => {
+    const initial = createInitialState(0x51a1f00d, 'race');
+    expect(survivalStoneCountdownSeconds(initial)).toBe(20);
+    expect(survivalStoneCountdownSeconds({
+      ...initial,
+      survivalDebrisIntervalSeconds: 10,
+      survivalDebrisIntervalTicks: 599,
+    })).toBe(1);
+    expect(survivalStoneCountdownSeconds(createInitialState(0x51a1f00d, 'marathon'))).toBe(0);
+  });
+
+  it('reads the live runtime snapshot immediately after a deterministic state change', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    const view = render(createElement(GameSession, {
+      mode: 'race',
+      puzzleId: CAMPAIGN_LEVELS[0]!.id,
+      onExit: vi.fn(),
+      onCanonicalCompletion: vi.fn(),
+      onRunFinished: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+
+    const runtime = runtimeHarness.instances[0]!;
+    const current = {
+      ...runtime.getState(),
+      status: 'playing' as const,
+      survivalDebrisIntervalSeconds: 19,
+      survivalDebrisIntervalTicks: 0,
+      survivalDebris: [{ id: 1, x: 4, y: 21 }],
+    };
+    // Deliberately bypass a React wait: the QA text path must still report the
+    // same Core frame that Pixi has just rendered.
+    runtime.setState(current);
+    const text = JSON.parse(window.render_game_to_text?.() ?? '{}') as Record<string, unknown>;
+    expect(text).toMatchObject({
+      mode: 'race',
+      stoneIntervalSeconds: 19,
+      stoneNextSeconds: 19,
+      fallingStones: [{ x: 4, y: 21 }],
+    });
+    view.unmount();
   });
 });
 
