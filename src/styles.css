@@ -4917,7 +4917,7 @@ kbd,
 
 .game-side-panel--sprint .mutation-status__ledger {
   display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 6px;
 }
 
@@ -4926,13 +4926,13 @@ kbd,
   --mutation-wash: #edf2f4;
   position: relative;
   display: grid !important;
-  grid-template-columns: 13px minmax(0, 1fr) auto;
-  grid-template-rows: minmax(15px, auto) 3px;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  grid-template-rows: minmax(16px, auto) 3px;
   align-items: center;
-  column-gap: 4px;
+  column-gap: 6px;
   row-gap: 4px;
   min-width: 0;
-  padding: 6px 5px 5px;
+  padding: 7px 8px 6px;
   color: #657b88;
   background: rgba(247, 250, 251, .7);
   border: 1px solid color-mix(in srgb, var(--mutation-base) 42%, #d8e3e7);
@@ -4976,7 +4976,7 @@ kbd,
   color: inherit;
   overflow: hidden;
   font-family: var(--font-ui);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 760;
   letter-spacing: -.02em;
   line-height: 1;
@@ -4989,7 +4989,7 @@ kbd,
   grid-row: 1;
   color: var(--mutation-base);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 10px;
   font-style: normal;
   font-weight: 800;
   line-height: 1;
@@ -5002,7 +5002,11 @@ kbd,
   grid-row: 2;
   width: 100%;
   height: 3px;
+  min-height: 3px !important;
+  min-width: 0 !important;
   padding: 0 !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
   overflow: hidden;
   background: color-mix(in srgb, var(--mutation-base) 16%, #dce7eb);
   border: 0 !important;
@@ -5013,6 +5017,7 @@ kbd,
 .game-side-panel--sprint .mutation-status__meter > i {
   display: block;
   height: 100%;
+  min-height: 0 !important;
   min-width: 0;
   padding: 0 !important;
   background: linear-gradient(90deg, var(--mutation-base), color-mix(in srgb, var(--mutation-base) 58%, white));
