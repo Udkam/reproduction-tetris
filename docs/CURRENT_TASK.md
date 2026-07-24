@@ -7,19 +7,22 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.10 TETRAMORPH BRAND IDENTITY — contract
-open.** T13.9 MUTATION MODE / SURVIVAL / SETTINGS FOLLOW-UP is accepted and pushed at
-product candidate `ca8c7f6`; the new slice is deliberately limited to live branding,
-homepage typography, and metadata, with no gameplay, Puzzle, renderer, or audio change.
-T13.9 completed the bounded Core, persistence, rail, audio, first-entry-rule, and
-renderer surface while leaving Puzzle authored content untouched. Independent QA first found a reduced-motion
-activation-flash P2 in `02b9ba9`; `ca8c7f6` repairs it with a static 240 ms
-item-coloured state and a real-frame regression, and the fresh independent recheck
-`d993e49` accepts the result. Final typecheck, 146-test suite, build, and
-desktop/portrait/landscape browser evidence pass. The coordinator-owned audit listener
-on port 5176 was released; the unrelated pre-existing 5173 listener remains untouched.
-The earlier T12/T13 narratives below are retained as provenance only; this section is
-the authoritative live scope.
+Current execution status (2026-07-24): **T13.10 TETRAMORPH INTERFACE AND PUZZLE
+REFINEMENT — accepted for coordinator release.** T13.9 MUTATION MODE / SURVIVAL /
+SETTINGS FOLLOW-UP is accepted and pushed at product candidate `ca8c7f6`. The accepted
+T13.10 review range is `a1d8b16..b005a14`, independently accepted in `fa95cae`:
+it extends the TetraMorph identity with local type hierarchy, full Chinese/English live
+UI, Settings backdrop continue, direct Puzzle undo, clearer selector colors, concise
+renamed levels, and a deliberately anonymous live Puzzle surface. A P1 390 × 844
+objective ellipsis was repaired in the final focused checkpoint `b005a14` and fresh
+portrait plus landscape reduced-motion evidence confirms the complete target text.
+Puzzle authored layouts, fixed queues, mode rules, renderer ownership, and audio behavior
+remain unchanged. Typecheck, the one-worker 146-test suite, build, and desktop/
+portrait/reduced-motion browser audits all pass. The next and final coordinator action is
+the exact-path release record, push, and release of only the temporary 5176 listener;
+the unrelated pre-existing 5173 listener remains untouched. The earlier T12/T13
+narratives below are retained as provenance only; this section is the authoritative live
+scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
@@ -151,9 +154,11 @@ the authoritative live scope.
     fallback—with original, restrained mineral-light CSS; no network font request,
     copied logo, extra decorative grid/line, or Chinese subtitle is allowed.
     The source boundary is `index.html`, `package.json`, `package-lock.json`,
-    `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; current
-    design/task records precede source, and final proof includes desktop/narrow/reduced
-    motion browser evidence with no overflow or console errors.
+     `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, `src/ui/ActionSheet.tsx`, `src/ui/localization.ts`,
+     `src/styles.css`, `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`, `src/game/core/types.ts`,
+     `src/game/core/engine.ts`, and `src/game/core/puzzleUndo.test.ts`; current
+     design/task records precede source, and final proof includes desktop/narrow/reduced
+     motion browser evidence with no overflow or console errors.
     In Settings, the semantic `设置` title remains first; its visible content order is
     **控制**, a two-column **键盘** guide, concise **规则**, then the mode record or
     leaderboard last. The Settings keyboard guide is the complete former live-rail
@@ -170,9 +175,17 @@ the authoritative live scope.
     locked piece, then respawns that same piece at its normal top entry so it falls
     anew. It is unavailable before a lock and never changes target ownership or the
     fixed queue. In the selector, remove visible `固定锚点`; place `当前最优步数：x步`
-    (or its English equivalent) beside a completed selected name rather than above
-    Start, and replace the present heavy navy/purple scheme with a restrained
-    light-mineral workbench, deep preview well, and clear selected/completed contrast.
+     (or its English equivalent) beside a completed selected name rather than above
+     Start, and replace the present heavy navy/purple scheme with a restrained
+     light-mineral workbench, deep preview well, and clear selected/completed contrast.
+     Clicking the empty dimmed Settings backdrop is equivalent to **继续**; the panel
+     itself remains inert to dismissal. Live Puzzle deliberately omits the selected
+     level name and all `1/20`-style ordinal/total copy from both the header and rail,
+     while retaining only the original-block objective and practical counters. The
+     selector owns renamed, concise, natural Chinese labels with full English display
+     equivalents. Beyond the single Playwrite wordmark, interface/body headings use
+     locally bundled Space Grotesk and compact data/keycaps use local JetBrains Mono;
+     both retain robust Chinese fallbacks and may not require a network request.
 
 ### T13.9 authorized implementation boundary
 

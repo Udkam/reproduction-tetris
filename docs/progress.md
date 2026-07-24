@@ -1,29 +1,41 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
-### T13.10 TetraMorph brand candidate — 2026-07-24
+### T13.10 TetraMorph interface and Puzzle refinement candidate — 2026-07-24
 
-- The live product name is now **TetraMorph**: `Tetra` keeps the four-cell vocabulary
-  recognizable and `Morph` covers the game's changing states without a copied brand.
-  It replaces the former `Tetris`/`Tetramorph` live strings in document metadata,
-  loading shell, accessibility labels, game/library header, and homepage wordmark.
-- The homepage removes the redundant top-left name entirely. Its only page-level `h1`
-  is the dark-field `TetraMorph` wordmark; it uses locally packaged Google Font
-  **Tektur** with a compact width, two mineral tones, and a static shadow. The four
-  mode entrances remain rule-free navigation surfaces.
-- Reviewable chain from accepted base `6a1fd92`: contract `e4f8066`; first local-font
-  source checkpoint `6900290`; focused-wordmark contract `67d34fa`; final source
-  checkpoint `f686dfc`. The final source boundary is only `index.html`, package
-  manifest/lock, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`.
-- Verification after the final source edit: `npm.cmd run typecheck`; `npm.cmd run test`
-  (22 files / 146 tests); and `npm.cmd run build` (745 modules) all pass. The ignored
-  `.local/audits/t13-10-brand/audit.mjs` passes desktop 1440×900, reduced-motion
-  portrait 390×844, and landscape 844×390: no duplicate home brand, local Tektur
-  loaded, no overflow or console/page errors, and Classic still has one canvas and zero
-  DOM cells. Screenshots were visually inspected. The generic web-game Playwright
-  client also captured the final home surface.
-- Next: obtain an independent read-only QA verdict for `6a1fd92..f686dfc`, then record
-  acceptance, release the coordinator-owned 5176 listener, and push only the accepted
-  `main` chain.
+- The live product name remains **TetraMorph**: `Tetra` keeps the four-cell vocabulary
+  recognizable and `Morph` names the game's changing board states. The homepage has one
+  page-level wordmark only—no duplicate header or Chinese companion title. Its requested
+  locally packaged bold Playwrite New Zealand Basic face is reserved for that wordmark;
+  local Space Grotesk carries bilingual interface/body headings and local JetBrains Mono
+  carries compact data and keycaps, all with Chinese fallbacks and no network request.
+- The review range `a1d8b16..8c76ee2` adds the persistent Chinese/English control and
+  translates live UI, aria labels, dialogs, rules, records, selector copy, dates, touch
+  controls, and the canvas label. Settings preserves its control → two-column keyboard
+  → rules → records order; clicking its empty dimmed backdrop resumes play exactly as
+  **继续** does without making the panel itself dismissible.
+- Puzzle `Z`/touch undo has one deterministic meaning: after a lock it restores the
+  matching pre-spawn checkpoint and respawns that same piece at normal top entry, with
+  no confirmation dialog. The live Puzzle run omits authored level names and ordinal/
+  total copy such as `1/20`; its selector owns twenty short natural Chinese names and
+  English display equivalents, the current-best label, a light-mineral workbench, and
+  a clearer selected preview.
+- Final verification after the last source edit: `npm.cmd run typecheck`; one-worker
+  `npm.cmd exec -- vitest run --pool=threads --maxWorkers=1` (22 files / 146 tests);
+  and `npm.cmd run build` (746 modules) all pass. The ignored
+  `.local/audits/t13-10-brand/delivery-audit.mjs` passes desktop, English Settings,
+  direct Puzzle undo, reduced-motion portrait, one-canvas/zero-DOM-grid, no overflow,
+  and no console/page errors. The required web-game Playwright client captured and the
+  coordinator visually inspected the final Puzzle library.
+- Independent QA initially held the candidate for one P1 mobile objective ellipsis.
+  Focused CSS checkpoint `b005a14` gives that objective the full mobile information
+  width and permits a complete wrapped value in both languages. The final range
+  `a1d8b16..b005a14` again passed typecheck, one-worker 22-file / 146-test Vitest, the
+  746-module build, and the browser audit.
+- Independent acceptance `fa95cae` rechecked direct undo, Settings, all three local
+  fonts, the single home brand, and 1440×900 / 390×844 / 844×390 layouts. It records
+  complete target copy, one canvas/zero DOM cells, no overflow, and zero browser
+  errors. Technical disposition: **PASS — ACCEPT**. Next: coordinator changelog,
+  exact-path release record, 5176 cleanup, and push of the accepted `main` chain.
 
 ### Active goal ledger — 2026-07-24
 

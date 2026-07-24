@@ -1,5 +1,60 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.10-TETRAMORPH-030 independent acceptance and release record
+
+- Candidate acceptance: independent QA read and recorded `a1d8b16..b005a14` in
+  `fa95cae` (`docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`). Its verdict
+  is **PASS — ACCEPT**, with no remaining P0–P2 issue. The coordinator read both the
+  task report and that durable record before this acceptance checkpoint.
+- The sole QA finding was a P1 at 390 × 844 reduced motion: the Puzzle clear objective
+  ellipsized. Focused source checkpoint `b005a14` makes it span the mobile information
+  width and preserve complete wrapped copy. Independent fresh 390 × 844 and 844 × 390
+  captures show the complete Chinese target, no overflow, one canvas, zero DOM cells,
+  and zero errors.
+- Verified candidate gates: `npm.cmd run typecheck`; final
+  `npm.cmd exec -- vitest run --pool=threads --maxWorkers=1` (22 files / 146 tests);
+  `npm.cmd run build` (746 modules); and ignored `delivery-audit.mjs`, all pass.
+  Independent QA repeated its own typecheck, full suite, build, desktop/portrait/
+  landscape checks, direct Undo, bilingual Settings, backdrop continue, and local-font
+  checks. Product behavior is accepted: live Puzzle names/ordinals remain absent,
+  selector names are concise, and Settings is keyboard- and pointer-complete.
+- Release scope: this coordinator checkpoint owns only current status, design/progress,
+  this log, and the root changelog. Next: push the accepted linear `main` chain, stop
+  only coordinator-owned Vite on port 5176, verify the listener release, and report the
+  result. Port 5173 and all unrelated processes remain outside scope.
+
+## 2026-07-24 — TETRIS-T13.10-TETRAMORPH-029 interface and Puzzle refinement candidate
+
+- Base: pushed T13.9 coordinator record `a1d8b16`; full pending candidate range
+  `a1d8b16..8c76ee2`. This supersedes the narrower brand-only review request: every
+  unpushed T13.10 checkpoint is in one independent-QA range, including identity,
+  local-font, bilingual, Settings, direct-undo, and selector work.
+- Exact changed product/test paths across that range: `index.html`, `package.json`,
+  `package-lock.json`, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`,
+  `src/ui/ActionSheet.tsx`, `src/ui/localization.ts`, `src/styles.css`,
+  `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+  `src/game/core/types.ts`, `src/game/core/engine.ts`, and
+  `src/game/core/puzzleUndo.test.ts`. Contract paths are `docs/DESIGN.md` and
+  `docs/CURRENT_TASK.md`; no authored Puzzle geometry/queue, other mode rule,
+  renderer, audio, or generated evidence path changed.
+- User-visible result: the home keeps one bold locally bundled Playwrite wordmark and
+  promotes local Space Grotesk/JetBrains Mono hierarchy elsewhere; full Chinese/English
+  Settings has a backdrop **继续** action; live Puzzle hides level name/ordinal; its
+  selector uses renamed concise levels; and direct `Z` undo restores the pre-spawn
+  checkpoint then refalls the same piece without confirmation.
+- Commands actually run after the final source edit: `npm.cmd run typecheck`; targeted
+  `npm.cmd exec -- vitest run src/App.test.ts src/game/core/puzzleUndo.test.ts
+  src/game/core/puzzles.test.ts --pool=threads --maxWorkers=1` (3 files / 27 tests);
+  final one-worker full Vitest (22 files / 146 tests); and `npm.cmd run build`
+  (746 modules), all pass. Ignored `delivery-audit.mjs` and the required web-game
+  client pass at desktop/English/reduced-motion portrait with zero browser errors,
+  no overflow, and one gameplay canvas/zero DOM cells; captures were visually checked.
+- Resource state: Vite on `127.0.0.1:5176` is coordinator-owned and held only while
+  independent QA completes. The unknown pre-existing 5173 listener remains untouched.
+  Blocker: independent read-only QA of `a1d8b16..8c76ee2` is in progress. Next: read
+  its verdict, make the coordinator acceptance/changelog checkpoint, release 5176, and
+  push only the accepted chain.
+
 ## 2026-07-24 — TETRIS-T13.10-TETRAMORPH-028 brand candidate
 
 - Base: accepted/pushed `6a1fd92`; candidate range `6a1fd92..f686dfc`. The chain keeps

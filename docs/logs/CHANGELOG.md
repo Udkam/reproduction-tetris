@@ -577,3 +577,22 @@
   observatory animations; starting a selected level produces exactly one canvas.
 - Status: **user-authorized recovery candidate; pending independent read-only Core and
   visual/browser QA, and not an acceptance claim.**
+
+## 2026-07-24 — T13.10 TetraMorph interface and Puzzle refinement accepted
+
+- Kept the single local **TetraMorph** wordmark while establishing an offline bilingual
+  typography hierarchy: bold Playwrite New Zealand Basic for the wordmark, Space Grotesk
+  for interface/body headings, and JetBrains Mono for data and keycaps. The live UI,
+  aria labels, dialogs, rules, dates, records, selector, touch copy, and canvas label
+  now switch persistently between Chinese and English without changing Core semantics.
+- Settings now resumes on an empty-backdrop click; the in-run Puzzle surface presents
+  only practical objective counters, not a selected level name or `1/20` ordinal.
+  Puzzle `Z`/touch undo has no confirmation: it restores the pre-spawn checkpoint and
+  refalls the same just-locked piece. The selector uses concise natural level names,
+  clear current-best copy, and a light-mineral selected-preview system.
+- Independent QA accepted the complete `a1d8b16..b005a14` candidate in `fa95cae` with
+  no P0–P2 findings. It held and then rechecked a 390×844 objective ellipsis; the final
+  responsive repair preserves the full target at both portrait and landscape reduced
+  motion. Typecheck, the one-worker 22-file / 146-test suite, the 746-module build,
+  and desktop/portrait/landscape browser audits pass with one gameplay canvas, zero DOM
+  board cells, no overflow, and zero console/page errors.

@@ -55,6 +55,17 @@ identity.
   the same piece at the top to fall again. It does not open a confirmation sheet, retain
   the old landing translation, alter targets, reseed the fixed queue, or permit undo
   before a lock. Repeated undo walks the same pre-spawn checkpoints backward.
+- Settings is pointer-complete: clicking the dimmed backdrop outside the panel has the
+  same effect as **继续**. A click inside the panel never dismisses it, preserving the
+  settings controls, keyboard navigation, and focused range behavior.
+- During a live Puzzle run, the product identifies the mode only. It does not show an
+  authored level name, a `1/20`-style ordinal, or equivalent visual telemetry in the
+  header or rail; remaining original blocks, placed pieces, and the clear-all objective
+  remain. The selector owns natural concise level names and the current-best label.
+- Typography has one deliberate hierarchy: bold Playwrite New Zealand Basic is reserved
+  for the single home wordmark, Space Grotesk carries body and interface headings, and
+  JetBrains Mono is limited to compact data, controls, and keycaps. The latter two ship
+  as local font files, keeping bilingual rendering stable offline.
 - A selected completed Puzzle shows only `当前最优步数：x步` (and its full English
   equivalent) immediately beside its name—not above Start. The selector shows no
   visible `固定锚点` label. Its color system is rebalanced away from the current
@@ -70,7 +81,7 @@ identity.
 
 Before the final documentation/archive records, only `index.html`, `package.json`,
 `package-lock.json`, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`,
-`src/ui/localization.ts`, `src/styles.css`, `src/game/core/types.ts`,
+`src/ui/ActionSheet.tsx`, `src/ui/localization.ts`, `src/styles.css`, `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`, `src/game/core/types.ts`,
 `src/game/core/engine.ts`, and `src/game/core/puzzleUndo.test.ts` may change.
 `docs/progress.md` and the coordinator workstream log may record verified evidence after
 the source checkpoint. No historical contract prose is rewritten solely to rename its
