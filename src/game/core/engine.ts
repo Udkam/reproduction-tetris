@@ -23,7 +23,12 @@ import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, 
 import { createRandomizer, drawPiece, drawRandom } from './random';
 import { kickTests } from './rotation';
 import { collapseSprintColumns } from './sprint';
-import { collapseMutationCarriers, mapMutationCarriersAfterClear, mutationCarriersClearedByRows } from './mutation';
+import {
+  collapseMutationCarriers,
+  mapMutationCarriersAfterClear,
+  mutationCarriersClearedByRows,
+  withoutMutationCarriers,
+} from './mutation';
 import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type MutationCarrier, type MutationItem, type PieceType, type PuzzleCompletion, type PuzzleId, type PuzzleUndoSnapshot } from './types';
 
 const MUTATION_ITEMS: readonly MutationItem[] = Object.freeze(['freeze', 'collapse', 'bomb', 'multiplier']);
@@ -157,6 +162,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     mutationFreezeTicks: 0,
     mutationCollapseTicks: 0,
     mutationMultiplierTicks: 0,
+    mutationMultiplierFactor: 1,
     mutationLastItem: null,
     mutationLastItemTicks: 0,
     status: 'ready',
@@ -327,7 +333,8 @@ function moveActive(state: GameState, dx: number, dy: number, cause: 'move' | 'g
 }
 
 function mutationScoreMultiplier(state: GameState): number {
-  return state.mode === 'sprint' && state.mutationMultiplierTicks > 0 ? 2 : 1;
+  if (state.mode !== 'sprint' || state.mutationMultiplierTicks <= 0) return 1;
+  return state.mutationMultiplierFactor === 4 ? 4 : 2;
 }
 
 function bottomBombRows(): number[] {
@@ -349,33 +356,36 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
 
   let next = state;
   const events: GameEvent[] = [];
-  const pending = triggered.map((carrier) => carrier.id);
-  const queued = new Set(pending);
+  const pending = [...triggered];
+  const queued = new Set(triggered.map((carrier) => carrier.id));
   const activated = new Set<number>();
 
   while (pending.length > 0) {
-    const id = pending.shift();
-    if (id === undefined || activated.has(id)) continue;
-    const carrier = next.mutationCarriers.find((candidate) => candidate.id === id);
-    if (!carrier) continue;
-    activated.add(id);
+    const carrier = pending.shift();
+    if (!carrier || activated.has(carrier.id)) continue;
+    activated.add(carrier.id);
     next = {
       ...next,
-      mutationCarriers: Object.freeze(next.mutationCarriers.filter((candidate) => candidate.id !== id)),
+      mutationCarriers: withoutMutationCarriers(next.mutationCarriers, [carrier]),
     };
 
     let durationTicks = 0;
     let score = 0;
     let rowsRemoved = 0;
     if (carrier.item === 'freeze') {
-      durationTicks = MUTATION_EFFECT_TICKS;
-      next = { ...next, mutationFreezeTicks: Math.max(next.mutationFreezeTicks, durationTicks) };
+      durationTicks = next.mutationFreezeTicks + MUTATION_EFFECT_TICKS;
+      next = { ...next, mutationFreezeTicks: durationTicks };
     } else if (carrier.item === 'collapse') {
-      durationTicks = MUTATION_EFFECT_TICKS;
-      next = { ...next, mutationCollapseTicks: Math.max(next.mutationCollapseTicks, durationTicks) };
+      durationTicks = next.mutationCollapseTicks + MUTATION_EFFECT_TICKS;
+      next = { ...next, mutationCollapseTicks: durationTicks };
     } else if (carrier.item === 'multiplier') {
-      durationTicks = MUTATION_EFFECT_TICKS;
-      next = { ...next, mutationMultiplierTicks: Math.max(next.mutationMultiplierTicks, durationTicks) };
+      const wasActive = next.mutationMultiplierTicks > 0;
+      durationTicks = next.mutationMultiplierTicks + MUTATION_EFFECT_TICKS;
+      next = {
+        ...next,
+        mutationMultiplierTicks: durationTicks,
+        mutationMultiplierFactor: wasActive ? 4 : 2,
+      };
     } else {
       const rows = bottomBombRows();
       const bombTriggered = mutationCarriersClearedByRows(next.mutationCarriers, rows);
@@ -384,7 +394,11 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       next = {
         ...next,
         board: clearRows(next.board, rows),
-        mutationCarriers: mapMutationCarriersAfterClear(next.board, rows, next.mutationCarriers),
+        mutationCarriers: mapMutationCarriersAfterClear(
+          next.board,
+          rows,
+          withoutMutationCarriers(next.mutationCarriers, bombTriggered),
+        ),
         score: next.score + score,
         lines: next.lines + rowsRemoved,
       };
@@ -392,7 +406,7 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       for (const candidate of bombTriggered) {
         if (!activated.has(candidate.id) && !queued.has(candidate.id)) {
           queued.add(candidate.id);
-          pending.push(candidate.id);
+          pending.push(candidate);
         }
       }
     }
@@ -402,18 +416,31 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       mutationLastItem: carrier.item,
       mutationLastItemTicks: durationTicks > 0 ? durationTicks : MUTATION_RESULT_TICKS,
     };
-    events.push({ type: 'mutation-activated', item: carrier.item, durationTicks, score, rowsRemoved });
+    const multiplierFactor = carrier.item === 'multiplier'
+      ? (next.mutationMultiplierFactor === 4 ? 4 : 2)
+      : undefined;
+    events.push({
+      type: 'mutation-activated',
+      item: carrier.item,
+      durationTicks,
+      score,
+      rowsRemoved,
+      triggerCells: carrier.cells,
+      ...(multiplierFactor === undefined ? {} : { multiplierFactor }),
+    });
   }
   return { state: next, events };
 }
 
 function advanceMutationEffects(state: GameState): GameState {
   if (state.mode !== 'sprint') return state;
+  const mutationMultiplierTicks = Math.max(0, state.mutationMultiplierTicks - 1);
   return {
     ...state,
     mutationFreezeTicks: Math.max(0, state.mutationFreezeTicks - 1),
     mutationCollapseTicks: Math.max(0, state.mutationCollapseTicks - 1),
-    mutationMultiplierTicks: Math.max(0, state.mutationMultiplierTicks - 1),
+    mutationMultiplierTicks,
+    mutationMultiplierFactor: mutationMultiplierTicks > 0 ? state.mutationMultiplierFactor : 1,
     mutationLastItemTicks: Math.max(0, state.mutationLastItemTicks - 1),
   };
 }
@@ -612,7 +639,11 @@ function finishLineClear(state: GameState): GameTransition {
     board: clearRows(state.board, rows),
     puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.board, rows, state.puzzleTargetCells) : state.puzzleTargetCells,
     mutationCarriers: state.mode === 'sprint'
-      ? mapMutationCarriersAfterClear(state.board, rows, state.mutationCarriers)
+      ? mapMutationCarriersAfterClear(
+        state.board,
+        rows,
+        withoutMutationCarriers(state.mutationCarriers, triggeredCarriers),
+      )
       : state.mutationCarriers,
     score: state.score + clearScore,
     lines,
@@ -777,6 +808,7 @@ export function stateHash(state: GameState): string {
         mutationFreezeTicks: _mutationFreezeTicks,
         mutationCollapseTicks: _mutationCollapseTicks,
         mutationMultiplierTicks: _mutationMultiplierTicks,
+        mutationMultiplierFactor: _mutationMultiplierFactor,
         mutationLastItem: _mutationLastItem,
         mutationLastItemTicks: _mutationLastItemTicks,
         puzzleUndoHistory: _puzzleUndoHistory,
@@ -812,6 +844,7 @@ export function stateHash(state: GameState): string {
           mutationFreezeTicks: _mutationFreezeTicks,
           mutationCollapseTicks: _mutationCollapseTicks,
           mutationMultiplierTicks: _mutationMultiplierTicks,
+          mutationMultiplierFactor: _mutationMultiplierFactor,
           mutationLastItem: _mutationLastItem,
           mutationLastItemTicks: _mutationLastItemTicks,
           ...classicState
@@ -836,6 +869,7 @@ export function stateHash(state: GameState): string {
         mutationFreezeTicks: _mutationFreezeTicks,
         mutationCollapseTicks: _mutationCollapseTicks,
         mutationMultiplierTicks: _mutationMultiplierTicks,
+        mutationMultiplierFactor: _mutationMultiplierFactor,
         mutationLastItem: _mutationLastItem,
         mutationLastItemTicks: _mutationLastItemTicks,
         ...survivalState

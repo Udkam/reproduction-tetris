@@ -7,8 +7,15 @@ import {
 } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch, stateHash } from './engine';
+import { cellsForPiece } from './pieces';
 import { collapseSprintColumns } from './sprint';
-import type { GameState, MutationItem } from './types';
+import type { GameEvent, GameState, MutationItem } from './types';
+
+type MutationActivationEvent = Extract<GameEvent, { type: 'mutation-activated' }>;
+
+function mutationActivations(transition: ReturnType<typeof dispatch>): MutationActivationEvent[] {
+  return transition.events.filter((event): event is MutationActivationEvent => event.type === 'mutation-activated');
+}
 
 function playingMutation(seed = 0x5a71): GameState {
   return dispatch(createInitialState(seed, 'sprint'), { type: 'start' }).state;
@@ -29,6 +36,19 @@ function lockAndSpawn(state: GameState): GameState {
 function carrierClearState(item: MutationItem): GameState {
   let board = createBoard();
   for (let x = 0; x < 8; x += 1) board = setCell(board, x, 39, 'J');
+  return {
+    ...playingMutation(),
+    board,
+    active: { type: 'O', rotation: 0, x: 8, y: 38 },
+    mutationActiveCarrier: { id: 9, item },
+    mutationNextCarrierId: 10,
+    score: 0,
+  };
+}
+
+function fullyClearedCarrierState(item: MutationItem): GameState {
+  let board = createBoard();
+  for (const y of [38, 39]) for (let x = 0; x < 8; x += 1) board = setCell(board, x, y, 'J');
   return {
     ...playingMutation(),
     board,
@@ -80,15 +100,61 @@ describe('异变 mode', () => {
 
   it('activates a marked carrier exactly once when any of its cells clears', () => {
     const transition = resolveLineClear(carrierClearState('freeze'));
+    const [activation] = mutationActivations(transition);
     expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
     expect(transition.state.mutationCarriers).toEqual([]);
-    expect(transition.events).toContainEqual({
+    expect(activation).toMatchObject({
       type: 'mutation-activated',
       item: 'freeze',
       durationTicks: MUTATION_EFFECT_TICKS,
       score: 0,
       rowsRemoved: 0,
     });
+  });
+
+  it('retains a pre-clear carrier snapshot when every marked cell disappears', () => {
+    const state = fullyClearedCarrierState('freeze');
+    const expectedTriggerCells = cellsForPiece(state.active!);
+    const transition = resolveLineClear(state);
+    const [activation] = mutationActivations(transition);
+
+    expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCarriers).toEqual([]);
+    expect(mutationActivations(transition)).toHaveLength(1);
+    expect(activation).toMatchObject({
+      type: 'mutation-activated',
+      item: 'freeze',
+      durationTicks: MUTATION_EFFECT_TICKS,
+      score: 0,
+      rowsRemoved: 0,
+    });
+    expect(activation?.triggerCells).toEqual(expectedTriggerCells);
+    expect(Object.isFrozen(activation?.triggerCells)).toBe(true);
+    expect(activation?.triggerCells?.every((cell) => Object.isFrozen(cell))).toBe(true);
+  });
+
+  it('queues nested Bomb clears from pre-clear snapshots and removes sibling metadata', () => {
+    let state = fullyClearedCarrierState('bomb');
+    let board = state.board;
+    board = setCell(board, 0, 37, 'L');
+    board = setCell(board, 1, 37, 'L');
+    state = {
+      ...state,
+      board,
+      mutationCarriers: [{
+        id: 4,
+        item: 'freeze',
+        cells: [{ x: 0, y: 37 }, { x: 1, y: 37 }],
+      }],
+    };
+
+    const transition = resolveLineClear(state);
+    const activations = mutationActivations(transition);
+
+    expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCarriers).toEqual([]);
+    expect(activations.filter((event) => event.item === 'bomb')).toHaveLength(1);
+    expect(activations.filter((event) => event.item === 'freeze')).toHaveLength(1);
   });
 
   it('freezes automatic gravity but leaves manual soft drop available', () => {
@@ -104,6 +170,17 @@ describe('异变 mode', () => {
     expect(dispatch(frozen, { type: 'soft-drop' }).state.active?.y).toBe((state.active?.y ?? 0) + 1);
   });
 
+  it('adds ten seconds to an already active Freeze or Collapse effect', () => {
+    for (const item of ['freeze', 'collapse'] as const) {
+      const timer = item === 'freeze' ? 'mutationFreezeTicks' : 'mutationCollapseTicks';
+      const transition = resolveLineClear({
+        ...carrierClearState(item),
+        [timer]: MUTATION_EFFECT_TICKS,
+      });
+      expect(transition.state[timer]).toBe(MUTATION_EFFECT_TICKS * 2 - LINE_CLEAR_DELAY_TICKS);
+    }
+  });
+
   it('uses a bomb to remove the bottom three rows, award points, and advance speed progress', () => {
     let state = carrierClearState('bomb');
     let board = state.board;
@@ -116,13 +193,74 @@ describe('异变 mode', () => {
     expect(transition.state.score).toBe(40 + MUTATION_BOMB_SCORE);
     expect(transition.state.board.flat().every((cell) => cell === null)).toBe(true);
     expect(transition.events).toContainEqual({ type: 'lines-cleared', rows: [37, 38, 39], count: 3, score: MUTATION_BOMB_SCORE });
-    expect(transition.events).toContainEqual({ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: MUTATION_BOMB_SCORE, rowsRemoved: 3 });
+    expect(mutationActivations(transition).find((event) => event.item === 'bomb')).toMatchObject({
+      type: 'mutation-activated',
+      item: 'bomb',
+      durationTicks: 0,
+      score: MUTATION_BOMB_SCORE,
+      rowsRemoved: 3,
+    });
   });
 
-  it('doubles ordinary line-clear score while multiplier is active and includes item state in its hash', () => {
-    const transition = resolveLineClear({ ...carrierClearState('freeze'), mutationMultiplierTicks: MUTATION_EFFECT_TICKS });
+  it('promotes multiplier from Double to Super Double, extends it, and restores normal scoring on expiry', () => {
+    const first = resolveLineClear(carrierClearState('multiplier'));
+    expect(first.state.mutationMultiplierFactor).toBe(2);
+    expect(first.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(mutationActivations(first)[0]?.multiplierFactor).toBe(2);
+
+    const promoted = resolveLineClear({
+      ...carrierClearState('multiplier'),
+      mutationMultiplierTicks: MUTATION_EFFECT_TICKS,
+      mutationMultiplierFactor: 2,
+    });
+    expect(promoted.state.score).toBe(80);
+    expect(promoted.state.mutationMultiplierFactor).toBe(4);
+    expect(promoted.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS * 2 - LINE_CLEAR_DELAY_TICKS);
+    expect(mutationActivations(promoted)[0]?.multiplierFactor).toBe(4);
+
+    const extended = resolveLineClear({
+      ...carrierClearState('multiplier'),
+      mutationMultiplierTicks: MUTATION_EFFECT_TICKS,
+      mutationMultiplierFactor: 4,
+    });
+    expect(extended.state.score).toBe(160);
+    expect(extended.state.mutationMultiplierFactor).toBe(4);
+    expect(extended.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS * 2 - LINE_CLEAR_DELAY_TICKS);
+    expect(mutationActivations(extended)[0]?.multiplierFactor).toBe(4);
+
+    const expired = dispatch({
+      ...playingMutation(),
+      mutationMultiplierTicks: 1,
+      mutationMultiplierFactor: 4,
+    }, { type: 'tick' }).state;
+    expect(expired.mutationMultiplierTicks).toBe(0);
+    expect(expired.mutationMultiplierFactor).toBe(1);
+  });
+
+  it('applies Super Double to ordinary and Bomb item-clear points and includes the factor in the hash', () => {
+    const transition = resolveLineClear({
+      ...carrierClearState('freeze'),
+      mutationMultiplierTicks: MUTATION_EFFECT_TICKS,
+      mutationMultiplierFactor: 2,
+    });
     expect(transition.state.score).toBe(80);
-    expect(stateHash(transition.state)).not.toBe(stateHash({ ...transition.state, mutationMultiplierTicks: 0 }));
+    expect(stateHash(transition.state)).not.toBe(stateHash({
+      ...transition.state,
+      mutationMultiplierFactor: 4,
+    }));
+
+    let bombState = carrierClearState('bomb');
+    let board = bombState.board;
+    board = setCell(board, 0, 37, 'L');
+    board = setCell(board, 1, 38, 'S');
+    bombState = {
+      ...bombState,
+      board,
+      mutationMultiplierTicks: MUTATION_EFFECT_TICKS,
+      mutationMultiplierFactor: 4,
+    };
+    const bomb = resolveLineClear(bombState);
+    expect(bomb.state.score).toBe((40 + MUTATION_BOMB_SCORE) * 4);
   });
 
   it('keeps the reusable independent-column resolver deterministic for the timed effect', () => {

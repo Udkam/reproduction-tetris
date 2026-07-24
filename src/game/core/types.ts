@@ -135,6 +135,8 @@ export interface GameState {
   mutationFreezeTicks: number;
   mutationCollapseTicks: number;
   mutationMultiplierTicks: number;
+  /** Current score factor for an active Multiplier item; returns to one at expiry. */
+  mutationMultiplierFactor: 1 | 2 | 4;
   /** Brief UI-facing report of the most recently activated item. */
   mutationLastItem: MutationItem | null;
   mutationLastItemTicks: number;
@@ -177,7 +179,17 @@ export type GameEvent =
   | { type: 'puzzle-undone' }
   | { type: 'clear-started'; rows: number[] }
   | { type: 'lines-cleared'; rows: number[]; count: number; score: number }
-  | { type: 'mutation-activated'; item: MutationItem; durationTicks: number; score: number; rowsRemoved: number }
+  | {
+    type: 'mutation-activated';
+    item: MutationItem;
+    durationTicks: number;
+    score: number;
+    rowsRemoved: number;
+    /** Immutable pre-clear carrier geometry for bounded renderer/audio anchoring. */
+    triggerCells?: readonly Cell[];
+    /** Present for a Multiplier trigger: 2 for Double, 4 for Super Double. */
+    multiplierFactor?: 2 | 4;
+  }
   | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'bedrock-lowered'; count: number; height: number }
   | { type: 'level-up'; level: number }
