@@ -48,6 +48,7 @@ import {
   parseLanguage,
   puzzleDisplayName,
   type AppLanguage,
+  type PuzzleCelebrationOutcome,
 } from './ui/localization';
 import {
   LEADERBOARD_KEY,
@@ -65,6 +66,12 @@ import {
 type AppScreen = 'home' | 'puzzle-library' | 'game';
 type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
+export type PuzzleCelebration = {
+  outcome: PuzzleCelebrationOutcome;
+  pieces: number;
+  lines: number;
+  previousBest: number | null;
+};
 
 const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
@@ -218,6 +225,28 @@ export function terminalCopy(state: GameState, language: AppLanguage = DEFAULT_L
   return { ...copy.phrasing.terminalClassic(state.lines, formatScore(state.score, language)), success: false };
 }
 
+/**
+ * Completion copy is classified before persistence updates the puzzle record.
+ * That keeps a first clear from being mislabelled as a replay on the same frame.
+ */
+export function puzzleCelebrationOutcome(previousBest: number | null, pieces: number): PuzzleCelebrationOutcome {
+  if (previousBest === null) return 'first';
+  return pieces < previousBest ? 'record' : 'replay';
+}
+
+export function puzzleCelebrationCopy(
+  celebration: PuzzleCelebration,
+  language: AppLanguage = DEFAULT_LANGUAGE,
+) {
+  const best = celebration.previousBest === null
+    ? celebration.pieces
+    : Math.min(celebration.previousBest, celebration.pieces);
+  return appCopy(language).phrasing.puzzleCelebration(
+    celebration.outcome,
+    best,
+  );
+}
+
 export function scoreRecordForState(state: GameState, completedAt: string): ScoreRecord | null {
   const isTopOutRun = (state.mode === 'marathon' || state.mode === 'race' || state.mode === 'sprint') && state.status === 'game-over';
   if (!isTopOutRun) return null;
@@ -255,6 +284,26 @@ function Brand({ compact = false }: { compact?: boolean }) {
     >
       {wordmark}
     </div>
+  );
+}
+
+function PuzzleCelebrationPanel({ celebration, language }: { celebration: PuzzleCelebration; language: AppLanguage }) {
+  const presentation = puzzleCelebrationCopy(celebration, language);
+  return (
+    <section
+      className={`puzzle-celebration puzzle-celebration--${celebration.outcome}`}
+      data-testid="puzzle-celebration"
+      data-outcome={celebration.outcome}
+      aria-label={presentation.eyebrow}
+    >
+      <div className="puzzle-celebration__constellation" aria-hidden="true">
+        <i /><i /><i /><i />
+      </div>
+      <div className="puzzle-celebration__summary">
+        <strong>{presentation.eyebrow}</strong>
+        <span>{presentation.best}</span>
+      </div>
+    </section>
   );
 }
 
@@ -838,6 +887,8 @@ export function GameSession({
   const settingsWasPlayingRef = useRef(false);
   const languageRef = useRef(language);
   const lastRecordedRunRef = useRef<string | null>(null);
+  const puzzleCompletionKeyRef = useRef<string | null>(null);
+  const puzzleProgressRef = useRef(puzzleProgress);
   const [runSeed] = useState(() => mode === 'puzzle' ? APP_SEED : randomRunSeed());
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
   const [state, setState] = useState<GameState>(() => createInitialState(runSeed, mode, mode === 'puzzle' ? puzzleId : undefined));
@@ -849,6 +900,8 @@ export function GameSession({
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
   const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
+  const [puzzleCelebration, setPuzzleCelebration] = useState<PuzzleCelebration | null>(null);
+  puzzleProgressRef.current = puzzleProgress;
 
   const changeAudioEnabled = useCallback((enabled: boolean) => {
     runtime?.setAudioEnabled(enabled);
@@ -922,7 +975,9 @@ export function GameSession({
         setState(nextState);
         if (nextState.status === 'ready') {
           lastRecordedRunRef.current = null;
+          puzzleCompletionKeyRef.current = null;
           setResultRecord(null);
+          setPuzzleCelebration(null);
         }
         const recordableRun = (nextState.mode === 'marathon' || nextState.mode === 'race' || nextState.mode === 'sprint')
           && nextState.status === 'game-over';
@@ -950,6 +1005,18 @@ export function GameSession({
         ));
         if (notable) setLiveMessage(eventMessage(notable, languageRef.current));
         if (nextState.mode === 'puzzle' && nextState.puzzleCompletion === 'finished') {
+          const completedId = nextState.completedLevelId ?? nextState.puzzleId ?? puzzleId;
+          const completionKey = `${nextState.seed}:${completedId}:${nextState.pieceCount}:${nextState.lines}`;
+          if (puzzleCompletionKeyRef.current !== completionKey) {
+            const previousBest = puzzleBestPieceCount(puzzleProgressRef.current, completedId);
+            puzzleCompletionKeyRef.current = completionKey;
+            setPuzzleCelebration({
+              outcome: puzzleCelebrationOutcome(previousBest, nextState.pieceCount),
+              pieces: nextState.pieceCount,
+              lines: nextState.lines,
+              previousBest,
+            });
+          }
           onCanonicalCompletion(nextState);
         }
       },
@@ -1217,6 +1284,10 @@ export function GameSession({
   }, [exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
 
   const terminal = terminalCopy(state, language);
+  const activePuzzleCelebration = state.mode === 'puzzle' && terminal?.success ? puzzleCelebration : null;
+  const celebrationPresentation = activePuzzleCelebration
+    ? puzzleCelebrationCopy(activePuzzleCelebration, language)
+    : null;
   const modeLabel = modeCopy(language, state.mode).label;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
   const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !settingsOpen;
@@ -1391,10 +1462,12 @@ export function GameSession({
 
       <ActionSheet
         open={resultOpen}
-        title={terminal?.title ?? copy.labels.resultTitle}
-        description={terminal?.detail ?? ''}
+        title={celebrationPresentation?.title ?? terminal?.title ?? copy.labels.resultTitle}
+        description={celebrationPresentation?.detail ?? terminal?.detail ?? ''}
         tone={terminal?.success ? 'success' : 'danger'}
+        className={activePuzzleCelebration ? 'action-sheet--puzzle-celebration' : undefined}
       >
+        {activePuzzleCelebration && <PuzzleCelebrationPanel celebration={activePuzzleCelebration} language={language} />}
         {state.mode !== 'puzzle' && <>
           <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} />
           {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">{copy.labels.currentRunMissedLeaderboard}</p>}

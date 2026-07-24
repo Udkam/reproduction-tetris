@@ -1,6 +1,7 @@
 import type { GameMode, MutationItem, PuzzleId } from '../game/core';
 
 export type AppLanguage = 'zh-CN' | 'en';
+export type PuzzleCelebrationOutcome = 'first' | 'record' | 'replay';
 
 export const DEFAULT_LANGUAGE: AppLanguage = 'zh-CN';
 export const LANGUAGE_STORAGE_KEY = 'tetramorph:language:v1';
@@ -126,6 +127,12 @@ type Translation = {
     leaderboardCriterion: (survival: boolean) => string;
     leaderboardSummary: (score: string, pieces: number, lines: number, survival: boolean, mutation: boolean) => string;
     terminalPuzzleSuccess: (pieces: number, lines: number) => { title: string; detail: string };
+    puzzleCelebration: (outcome: PuzzleCelebrationOutcome, best: number) => {
+      title: string;
+      detail: string;
+      eyebrow: string;
+      best: string;
+    };
     terminalPuzzleFailure: (remaining: number, pieces: number) => { title: string; detail: string };
     terminalMutation: (lines: number, score: string) => { title: string; detail: string };
     terminalSurvival: (lines: number, pieces: number, bedrock: number) => { title: string; detail: string };
@@ -200,6 +207,30 @@ const COPY: Record<AppLanguage, Translation> = {
       leaderboardCriterion: () => '前 5',
       leaderboardSummary: (score, pieces, lines, survival, mutation) => mutation ? `${score} 分  ${pieces} 方块` : survival ? `${lines} 行` : `${score} 分`,
       terminalPuzzleSuccess: (pieces, lines) => ({ title: '原有方块已清除', detail: `${pieces} 方块 · ${lines} 消行` }),
+      puzzleCelebration: (outcome, best) => {
+        if (outcome === 'first') {
+          return {
+            title: '恭喜你破解谜题',
+            detail: '',
+            eyebrow: '首次破解',
+            best: `当前最优：${best}步`,
+          };
+        }
+        if (outcome === 'record') {
+          return {
+            title: '新的个人纪录',
+            detail: '',
+            eyebrow: '个人最佳',
+            best: `当前最优：${best}步`,
+          };
+        }
+        return {
+          title: '谜题再次破解',
+          detail: '',
+          eyebrow: '再次完成',
+          best: `当前最优：${best}步`,
+        };
+      },
       terminalPuzzleFailure: (remaining, pieces) => ({ title: '堆叠到顶', detail: `剩余 ${remaining} 原有方块 · 已落 ${pieces} 块` }),
       terminalMutation: (lines, score) => ({ title: '异变到顶', detail: `${lines} 消行 · ${score} 分` }),
       terminalSurvival: (lines, pieces, bedrock) => ({ title: '生存结束', detail: `${lines} 消行 · ${pieces} 方块 · ${bedrock} 层基岩` }),
@@ -249,6 +280,30 @@ const COPY: Record<AppLanguage, Translation> = {
       leaderboardCriterion: () => 'Top 5',
       leaderboardSummary: (score, pieces, lines, survival, mutation) => mutation ? `${score} pts  ${pieces} pieces` : survival ? `${lines} lines` : `${score} pts`,
       terminalPuzzleSuccess: (pieces, lines) => ({ title: 'Original blocks cleared', detail: `${pieces} pieces · ${lines} lines` }),
+      puzzleCelebration: (outcome, best) => {
+        if (outcome === 'first') {
+          return {
+            title: 'Puzzle solved',
+            detail: '',
+            eyebrow: 'First clear',
+            best: `Current best: ${best} moves`,
+          };
+        }
+        if (outcome === 'record') {
+          return {
+            title: 'New personal best',
+            detail: '',
+            eyebrow: 'Personal best',
+            best: `Current best: ${best} moves`,
+          };
+        }
+        return {
+          title: 'Puzzle solved again',
+          detail: '',
+          eyebrow: 'Clear complete',
+          best: `Current best: ${best} moves`,
+        };
+      },
       terminalPuzzleFailure: (remaining, pieces) => ({ title: 'Stacked out', detail: `${remaining} original blocks left · ${pieces} pieces placed` }),
       terminalMutation: (lines, score) => ({ title: 'Mutation stacked out', detail: `${lines} lines · ${score} pts` }),
       terminalSurvival: (lines, pieces, bedrock) => ({ title: 'Survival ended', detail: `${lines} lines · ${pieces} pieces · ${bedrock} bedrock rows` }),

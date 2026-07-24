@@ -17,6 +17,8 @@ import App, {
   ModeHome,
   PuzzleLibrary,
   puzzleAnchorSilhouettePath,
+  puzzleCelebrationCopy,
+  puzzleCelebrationOutcome,
   puzzleSilhouettePaths,
   RunStats,
   SettingsRecord,
@@ -196,6 +198,58 @@ describe('Survival stone timing presentation', () => {
       fallingStones: [{ x: 4, y: 21 }],
     });
     view.unmount();
+  });
+});
+
+describe('Puzzle completion ceremony', () => {
+  it('renders distinct first-clear, record, and replay results from the best that existed before persistence', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const puzzleId = CAMPAIGN_LEVELS[0]!.id;
+
+    const renderCompletion = async (puzzleProgress = defaultPuzzleProgress(), pieces = 9) => {
+      const onCanonicalCompletion = vi.fn();
+      const view = render(createElement(GameSession, {
+        mode: 'puzzle', puzzleId, onExit: vi.fn(), onCanonicalCompletion, puzzleProgress,
+      }));
+      await act(async () => Promise.resolve());
+      await act(async () => vi.advanceTimersByTimeAsync(3000));
+      const runtime = runtimeHarness.instances.at(-1)!;
+      const finished = {
+        ...runtime.getState(),
+        status: 'finished' as const,
+        puzzleCompletion: 'finished' as const,
+        completedLevelId: puzzleId,
+        puzzleTargetCells: [],
+        pieceCount: pieces,
+        lines: 5,
+      };
+      act(() => runtime.setState(finished));
+      return { view, onCanonicalCompletion };
+    };
+
+    const first = await renderCompletion();
+    expect(first.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('first');
+    expect(first.view.container.textContent).toContain('恭喜你破解谜题');
+    expect(first.view.container.textContent).not.toContain('首次完成 · 9 步 · 5 消行');
+    expect(first.view.container.textContent).toContain('当前最优：9步');
+    expect(first.onCanonicalCompletion).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ completedLevelId: puzzleId, pieceCount: 9 }));
+    first.view.unmount();
+
+    const priorBest = { version: 4 as const, completedLevelIds: [puzzleId], bestPieceCounts: { [puzzleId]: 12 } };
+    const record = await renderCompletion(priorBest, 9);
+    expect(record.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('record');
+    expect(record.view.container.textContent).toContain('新的个人纪录');
+    expect(record.view.container.textContent).not.toContain('从 12 步精炼至 9 步 · 5 消行');
+    record.view.unmount();
+
+    const replayBest = { version: 4 as const, completedLevelIds: [puzzleId], bestPieceCounts: { [puzzleId]: 9 } };
+    const replay = await renderCompletion(replayBest, 9);
+    expect(replay.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('replay');
+    expect(replay.view.container.textContent).toContain('谜题再次破解');
+    expect(replay.view.container.textContent).not.toContain('新的个人纪录');
+    replay.view.unmount();
   });
 });
 
@@ -819,6 +873,21 @@ describe('T6 frontend mode binding', () => {
       title: '原有方块已清除',
       detail: '4 方块 · 3 消行',
       success: true,
+    });
+    expect(puzzleCelebrationOutcome(null, 9)).toBe('first');
+    expect(puzzleCelebrationOutcome(12, 9)).toBe('record');
+    expect(puzzleCelebrationOutcome(9, 9)).toBe('replay');
+    expect(puzzleCelebrationOutcome(8, 9)).toBe('replay');
+    expect(puzzleCelebrationCopy({ outcome: 'first', pieces: 9, lines: 5, previousBest: null })).toEqual({
+      title: '恭喜你破解谜题',
+      detail: '',
+      eyebrow: '首次破解',
+      best: '当前最优：9步',
+    });
+    expect(puzzleCelebrationCopy({ outcome: 'record', pieces: 9, lines: 5, previousBest: 12 })).toMatchObject({
+      title: '新的个人纪录',
+      detail: '',
+      best: '当前最优：9步',
     });
 
     const endedSprint: GameState = {

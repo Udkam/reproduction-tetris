@@ -6,6 +6,7 @@ interface ActionSheetProps {
   title: string;
   description: string;
   tone?: 'default' | 'success' | 'danger';
+  className?: string;
   dismissOnBackdropClick?: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -29,6 +30,7 @@ export function ActionSheet({
   title,
   description,
   tone = 'default',
+  className,
   dismissOnBackdropClick = false,
   onCancel,
   onConfirm,
@@ -176,11 +178,11 @@ export function ActionSheet({
     >
       <section
         ref={panelRef}
-        className={`action-sheet action-sheet--${tone}`}
+        className={`action-sheet action-sheet--${tone}${className ? ` ${className}` : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        aria-describedby={descriptionId}
+        aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
         onFocusCapture={(event) => {
           syncSelectedAction(event.target);
@@ -188,7 +190,7 @@ export function ActionSheet({
         }}
       >
         <h2 id={titleId}>{title}</h2>
-        <p id={descriptionId}>{description}</p>
+        {description && <p id={descriptionId}>{description}</p>}
         <div className="action-sheet__actions">{children}</div>
       </section>
     </div>
