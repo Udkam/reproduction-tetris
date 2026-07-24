@@ -91,8 +91,10 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
 
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
-    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 150, triggerCells: [] });
-    internals.advanceEffects(150);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 440, triggerCells: [] });
+    internals.advanceEffects(439);
+    expect(internals.mutationFlash).not.toBeNull();
+    internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -130,15 +132,15 @@ describe('Puzzle undo presentation reset', () => {
     }]);
     internals.advanceEffects(16);
 
-    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 150 });
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 300 });
     internals.drawEffects(
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.fillStart, alpha: 0.66 * 0.68 });
+    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.fillStart, alpha: 0.16 * 0.68 });
     expect(strokes).toContainEqual(expect.objectContaining({ color: MUTATION_MATERIALS.freeze.fillStart }));
 
-    internals.advanceEffects(134);
+    internals.advanceEffects(284);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -161,11 +163,11 @@ describe('Puzzle undo presentation reset', () => {
       item: 'multiplier',
       triggerCells,
       multiplierFactor: 4,
-      duration: 150,
+      duration: 300,
     });
   });
 
-  it('uses one saturated material core per connected carrier without white cell glyphs', () => {
+  it('uses one crystalline material core per connected freeze carrier without white glyphs', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const fills: Array<{ color?: number }> = [];
@@ -192,9 +194,43 @@ describe('Puzzle undo presentation reset', () => {
     );
 
     expect(fills).toHaveLength(2);
-    expect(fills.map((entry) => entry.color)).toEqual([MUTATION_MATERIALS.freeze.edge, MUTATION_MATERIALS.freeze.fillStart]);
+    expect(fills.map((entry) => entry.color)).toEqual([MUTATION_MATERIALS.freeze.edge, MUTATION_MATERIALS.freeze.innerEdge]);
     expect(strokes.every((entry) => entry.color !== 0xffffff)).toBe(true);
     expect(fills.every((entry) => entry.color !== 0xffffff)).toBe(true);
+  });
+
+  it('keeps every timed mutation state visibly present while the timer is active', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const fills: Array<{ color?: number }> = [];
+    const graphics = {
+      clear: () => graphics,
+      roundRect: () => graphics,
+      circle: () => graphics,
+      rect: () => graphics,
+      moveTo: () => graphics,
+      lineTo: () => graphics,
+      fill: (options: { color?: number }) => {
+        fills.push(options);
+        return graphics;
+      },
+      stroke: () => graphics,
+    };
+    (internals as unknown as { effectGraphics: typeof graphics }).effectGraphics = graphics;
+    renderer.setOptions({ reducedMotion: true });
+
+    const base = { mode: 'sprint', elapsedTicks: 0, phase: 'active', pendingClearRows: [] } as unknown as GameState;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    internals.drawEffects({ ...base, mutationFreezeTicks: 1 }, layout);
+    expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.freeze.innerEdge)).toBe(true);
+
+    fills.length = 0;
+    internals.drawEffects({ ...base, mutationCollapseTicks: 1 }, layout);
+    expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.collapse.edge)).toBe(true);
+
+    fills.length = 0;
+    internals.drawEffects({ ...base, mutationMultiplierTicks: 1 }, layout);
+    expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.multiplier.fillStart)).toBe(true);
   });
 
   it('shows collapse trails only when an independently settling lock actually moves', () => {

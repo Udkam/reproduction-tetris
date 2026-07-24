@@ -552,14 +552,92 @@ export class TetrisRenderer {
       const maxY = Math.max(...component.map((cell) => cell.y));
       const centerX = layout.x + ((minX + maxX + 1) * layout.cell) / 2 + offsetX;
       const centerY = layout.y + ((minY + maxY + 1) * layout.cell) / 2 + offsetY;
-      const radius = Math.max(2, layout.cell * 0.16);
-      graphics
-        .roundRect(centerX - radius, centerY - radius, radius * 2, radius * 2, Math.max(1, radius * 0.44))
-        .fill({ color: material.edge, alpha: 0.84 })
-        .roundRect(centerX - radius * 0.54, centerY - radius * 0.54, radius * 1.08, radius * 1.08, Math.max(1, radius * 0.28))
-        .fill({ color: material.fillStart, alpha: 0.92 });
+      const radius = Math.max(3, layout.cell * 0.19);
+      if (item === 'freeze') {
+        this.drawMutationDiamond(graphics, centerX, centerY, radius * 1.18, radius * 1.54, material.edge, 0.92);
+        this.drawMutationDiamond(graphics, centerX, centerY, radius * 0.7, radius, material.innerEdge, 0.94);
+        this.strokeSegments(graphics, [
+          [centerX - radius * 1.48, centerY, centerX + radius * 1.48, centerY],
+          [centerX, centerY - radius * 1.36, centerX, centerY + radius * 1.36],
+        ], material.fillStart, 0.9, Math.max(1, radius * 0.28));
+      } else if (item === 'collapse') {
+        const weightWidth = radius * 2.65;
+        const weightHeight = radius * 0.62;
+        graphics
+          .roundRect(centerX - weightWidth / 2, centerY - radius * 1.2, weightWidth, weightHeight, radius * 0.22)
+          .fill({ color: material.edge, alpha: 0.94 })
+          .roundRect(centerX - weightWidth * 0.38, centerY - radius * 0.5, weightWidth * 0.76, weightHeight, radius * 0.22)
+          .fill({ color: material.fillStart, alpha: 0.92 })
+          .circle(centerX, centerY + radius * 0.7, radius * 0.54)
+          .fill({ color: material.edge, alpha: 0.96 })
+          .circle(centerX, centerY + radius * 0.7, radius * 0.26)
+          .fill({ color: material.innerEdge, alpha: 0.9 });
+        this.strokeSegments(graphics, [
+          [centerX - radius * 1.3, centerY + radius * 1.36, centerX - radius * 0.78, centerY + radius * 2.02],
+          [centerX, centerY + radius * 1.36, centerX, centerY + radius * 2.25],
+          [centerX + radius * 1.3, centerY + radius * 1.36, centerX + radius * 0.78, centerY + radius * 2.02],
+        ], material.innerEdge, 0.82, Math.max(1, radius * 0.2));
+      } else if (item === 'bomb') {
+        graphics
+          .circle(centerX, centerY, radius * 1.28)
+          .fill({ color: material.edge, alpha: 0.96 })
+          .circle(centerX, centerY, radius * 0.89)
+          .fill({ color: material.fillEnd, alpha: 0.98 })
+          .circle(centerX, centerY, radius * 0.48)
+          .fill({ color: material.fillStart, alpha: 0.96 })
+          .circle(centerX - radius * 0.18, centerY - radius * 0.24, radius * 0.16)
+          .fill({ color: material.innerEdge, alpha: 0.94 });
+        this.strokeSegments(graphics, [
+          [centerX, centerY - radius * 1.78, centerX + radius * 0.56, centerY - radius * 1.24],
+          [centerX + radius * 1.46, centerY - radius * 0.4, centerX + radius * 1.92, centerY - radius * 0.66],
+          [centerX - radius * 1.48, centerY + radius * 0.78, centerX - radius * 1.92, centerY + radius * 1.16],
+        ], material.innerEdge, 0.92, Math.max(1, radius * 0.22));
+      } else {
+        graphics.circle(centerX, centerY, radius * 1.35).fill({ color: material.edge, alpha: 0.76 });
+        this.drawMutationStar(graphics, centerX, centerY, radius * 1.25, radius * 0.52, material.innerEdge, 0.97);
+        this.drawMutationStar(graphics, centerX, centerY, radius * 0.66, radius * 0.25, material.fillStart, 0.98);
+      }
       this.drawMutationCarrierRim(graphics, component, item, layout, offsetX, offsetY, 0.64);
     }
+  }
+
+  private drawMutationDiamond(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    radiusX: number,
+    radiusY: number,
+    color: number,
+    alpha: number,
+  ): void {
+    graphics
+      .moveTo(centerX, centerY - radiusY)
+      .lineTo(centerX + radiusX, centerY)
+      .lineTo(centerX, centerY + radiusY)
+      .lineTo(centerX - radiusX, centerY)
+      .lineTo(centerX, centerY - radiusY)
+      .fill({ color, alpha });
+  }
+
+  private drawMutationStar(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    outerRadius: number,
+    innerRadius: number,
+    color: number,
+    alpha: number,
+  ): void {
+    const points = 8;
+    for (let index = 0; index <= points; index += 1) {
+      const angle = -Math.PI / 2 + index * Math.PI / 4;
+      const radius = index % 2 === 0 ? outerRadius : innerRadius;
+      const x = centerX + Math.cos(angle) * radius;
+      const y = centerY + Math.sin(angle) * radius;
+      if (index === 0) graphics.moveTo(x, y);
+      else graphics.lineTo(x, y);
+    }
+    graphics.fill({ color, alpha });
   }
 
   private drawMutationCarrierRim(
@@ -875,6 +953,7 @@ export class TetrisRenderer {
   private drawEffects(state: GameState, layout: BoardLayout): void {
     const graphics = this.effectGraphics;
     graphics.clear();
+    this.drawActiveMutationAtmosphere(graphics, state, layout);
     if (this.mutationFlash) {
       const progress = Math.min(1, this.mutationFlash.elapsed / this.mutationFlash.duration);
       this.drawMutationActivationEffect(graphics, this.mutationFlash, progress, layout);
@@ -1015,6 +1094,76 @@ export class TetrisRenderer {
     }
   }
 
+  /** Persistent, low-obstruction board treatment makes every ten-second state legible. */
+  private drawActiveMutationAtmosphere(graphics: Graphics, state: GameState, layout: BoardLayout): void {
+    if (state.mode !== 'sprint') return;
+    const phase = this.options.reducedMotion ? 0 : (state.elapsedTicks % 72) / 72;
+    if (state.mutationFreezeTicks > 0) this.drawFreezeAtmosphere(graphics, layout, phase);
+    if (state.mutationCollapseTicks > 0) this.drawCollapseAtmosphere(graphics, layout, phase);
+    if (state.mutationMultiplierTicks > 0) this.drawMultiplierAtmosphere(graphics, layout, phase);
+  }
+
+  private drawFreezeAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number): void {
+    const material = this.mutationMaterial('freeze');
+    const inset = Math.max(2, layout.cell * 0.13);
+    const pulse = this.options.reducedMotion ? 1 : 0.74 + Math.sin(phase * Math.PI * 2) * 0.16;
+    graphics
+      .roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, Math.max(5, layout.cell * 0.22))
+      .stroke({ color: material.innerEdge, alpha: 0.42 * pulse, width: Math.max(1, layout.cell * 0.055) });
+    const shardSize = Math.max(3, layout.cell * 0.19);
+    for (const [xFactor, yFactor] of [[.08, .05], [.27, .04], [.72, .05], [.92, .08], [.04, .29], [.96, .67]] as const) {
+      this.drawMutationDiamond(
+        graphics,
+        layout.x + layout.width * xFactor,
+        layout.y + layout.height * yFactor,
+        shardSize * .45,
+        shardSize,
+        material.innerEdge,
+        0.58 * pulse,
+      );
+    }
+  }
+
+  private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number): void {
+    const material = this.mutationMaterial('collapse');
+    const bandHeight = Math.max(layout.cell * 1.05, 20);
+    graphics
+      .roundRect(layout.x + layout.cell * .12, layout.y + layout.cell * .1, layout.width - layout.cell * .24, bandHeight, Math.max(4, layout.cell * .16))
+      .fill({ color: material.edge, alpha: 0.2 })
+      .stroke({ color: material.innerEdge, alpha: 0.5, width: Math.max(1, layout.cell * .045) });
+    const laneCount = 5;
+    const laneWidth = Math.max(2, layout.cell * .085);
+    for (let lane = 0; lane < laneCount; lane += 1) {
+      const x = layout.x + layout.width * ((lane + 1) / (laneCount + 1)) - laneWidth / 2;
+      const drift = this.options.reducedMotion ? 0 : (phase + lane * .17) % 1;
+      const y = layout.y + bandHeight + drift * layout.cell * 1.1;
+      const height = Math.max(layout.cell * 1.8, layout.height * .43);
+      graphics.roundRect(x, y, laneWidth, height, laneWidth / 2).fill({ color: material.fillStart, alpha: 0.11 });
+      graphics.circle(x + laneWidth / 2, y + height, laneWidth * 1.45).fill({ color: material.innerEdge, alpha: 0.22 });
+    }
+  }
+
+  private drawMultiplierAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number): void {
+    const material = this.mutationMaterial('multiplier');
+    const centerX = layout.x + layout.width / 2;
+    const centerY = layout.y + layout.height * .43;
+    const pulse = this.options.reducedMotion ? 1 : 0.65 + Math.sin(phase * Math.PI * 2) * 0.2;
+    graphics.circle(centerX, centerY, Math.max(layout.cell * 1.8, layout.width * .13)).fill({ color: material.fillStart, alpha: 0.045 * pulse });
+    this.drawMutationStar(
+      graphics,
+      centerX,
+      centerY,
+      Math.max(layout.cell * .68, layout.width * .045),
+      Math.max(layout.cell * .21, layout.width * .014),
+      material.innerEdge,
+      0.24 * pulse,
+    );
+    this.strokeSegments(graphics, [
+      [layout.x + layout.cell * .34, layout.y + layout.cell * .34, layout.x + layout.width - layout.cell * .34, layout.y + layout.height - layout.cell * .34],
+      [layout.x + layout.width - layout.cell * .34, layout.y + layout.cell * .34, layout.x + layout.cell * .34, layout.y + layout.height - layout.cell * .34],
+    ], material.fillStart, 0.13 * pulse, Math.max(1, layout.cell * .035));
+  }
+
   private drawPreviewPiece(graphics: Graphics, type: PieceType, centerX: number, centerY: number, unit: number): void {
     const shape = PIECE_SHAPES[type][0];
     const minX = Math.min(...shape.map((cell) => cell.x));
@@ -1086,24 +1235,38 @@ export class TetrisRenderer {
     if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, 0.9 * alpha, strokeWidth);
 
     if (flash.item === 'freeze') {
-      const shard = Math.max(2, layout.cell * 0.11);
-      const distance = Math.max(layout.cell * 0.55, (maxX - minX + maxY - minY + 2) * layout.cell * 0.16);
-      for (const [xFactor, yFactor] of [[-1, -.45], [.82, -.72], [.5, .82]] as const) {
-        graphics
-          .rect(anchorX + xFactor * distance - shard / 2, anchorY + yFactor * distance - shard / 2, shard, shard)
-          .fill({ color: material.fillStart, alpha: 0.66 * alpha });
+      const shard = Math.max(3, layout.cell * 0.16);
+      const distance = Math.max(layout.cell * 0.68, (maxX - minX + maxY - minY + 2) * layout.cell * 0.22);
+      graphics.circle(anchorX, anchorY, distance * .76).fill({ color: material.fillStart, alpha: 0.16 * alpha });
+      for (const [xFactor, yFactor, scale] of [[-1, -.46, .85], [.82, -.72, 1], [.5, .82, .68], [-.68, .66, .58]] as const) {
+        this.drawMutationDiamond(
+          graphics,
+          anchorX + xFactor * distance,
+          anchorY + yFactor * distance,
+          shard * scale * .45,
+          shard * scale,
+          material.innerEdge,
+          0.78 * alpha,
+        );
       }
       return;
     }
 
     if (flash.item === 'collapse') {
-      // The actual column trails are deferred until a later lock really settles
-      // independently; activation itself is only a compact violet readiness rim.
-      const barHeight = Math.max(4, layout.cell * 0.52);
-      for (const offset of [-1, 0, 1]) {
+      const bandY = Math.max(layout.y, anchorY - layout.cell * 2.5);
+      const bandHeight = Math.max(layout.cell * .78, 13);
+      graphics
+        .roundRect(layout.x + layout.cell * .25, bandY, layout.width - layout.cell * .5, bandHeight, bandHeight * .24)
+        .fill({ color: material.edge, alpha: 0.42 * alpha })
+        .stroke({ color: material.innerEdge, alpha: 0.82 * alpha, width: strokeWidth });
+      for (const factor of [.18, .38, .62, .82] as const) {
+        const x = layout.x + layout.width * factor;
+        const dropHeight = Math.max(layout.cell * 1.65, (layout.height - (anchorY - layout.y)) * .28);
         graphics
-          .roundRect(anchorX + offset * layout.cell * 0.26 - strokeWidth / 2, anchorY - barHeight / 2, strokeWidth, barHeight, strokeWidth / 2)
-          .fill({ color: material.fillStart, alpha: 0.68 * alpha });
+          .roundRect(x - strokeWidth, bandY + bandHeight, strokeWidth * 2, dropHeight, strokeWidth)
+          .fill({ color: material.fillStart, alpha: 0.42 * alpha })
+          .circle(x, bandY + bandHeight + dropHeight, strokeWidth * 2.2)
+          .fill({ color: material.innerEdge, alpha: 0.66 * alpha });
       }
       return;
     }
@@ -1113,6 +1276,25 @@ export class TetrisRenderer {
       const y = layout.y + layout.height - layout.cell * rows;
       const sweepProgress = this.options.reducedMotion ? 1 : Math.min(1, progress * 2.4);
       const sweepWidth = layout.width * (0.34 + sweepProgress * 0.66);
+      const blastRadius = Math.max(layout.cell * 1.25, layout.width * (.07 + sweepProgress * .14));
+      graphics
+        .circle(anchorX, anchorY, blastRadius)
+        .fill({ color: material.fillStart, alpha: 0.2 * alpha })
+        .circle(anchorX, anchorY, blastRadius * .58)
+        .fill({ color: material.innerEdge, alpha: 0.25 * alpha })
+        .circle(anchorX, anchorY, blastRadius * (1.02 + sweepProgress * .34))
+        .stroke({ color: material.innerEdge, alpha: 0.92 * alpha, width: strokeWidth });
+      for (const [xFactor, yFactor] of [[-1, -.55], [.92, -.7], [1.05, .48], [-.78, .8], [.18, 1.1]] as const) {
+        this.drawMutationDiamond(
+          graphics,
+          anchorX + xFactor * blastRadius,
+          anchorY + yFactor * blastRadius,
+          Math.max(2, layout.cell * .09),
+          Math.max(3, layout.cell * .17),
+          material.innerEdge,
+          0.86 * alpha,
+        );
+      }
       graphics
         .roundRect(
           layout.x + (layout.width - sweepWidth) / 2,
@@ -1126,21 +1308,15 @@ export class TetrisRenderer {
       return;
     }
 
-    const count = flash.multiplierFactor === 4 ? 4 : 2;
-    const markerWidth = Math.max(3, layout.cell * 0.16);
-    const markerGap = Math.max(2, layout.cell * 0.08);
-    const totalWidth = count * markerWidth + (count - 1) * markerGap;
-    for (let index = 0; index < count; index += 1) {
-      graphics
-        .roundRect(
-          anchorX - totalWidth / 2 + index * (markerWidth + markerGap),
-          anchorY - markerWidth / 2,
-          markerWidth,
-          markerWidth,
-          Math.max(1, markerWidth * 0.3),
-        )
-        .fill({ color: material.fillStart, alpha: 0.92 * alpha });
-    }
+    const intensity = flash.multiplierFactor === 4 ? 1.24 : 1;
+    const starRadius = Math.max(layout.cell * .74, layout.width * .048) * intensity;
+    graphics.circle(anchorX, anchorY, starRadius * 2.1).fill({ color: material.fillStart, alpha: 0.11 * alpha });
+    this.drawMutationStar(graphics, anchorX, anchorY, starRadius * 1.72, starRadius * .46, material.innerEdge, 0.96 * alpha);
+    this.drawMutationStar(graphics, anchorX, anchorY, starRadius, starRadius * .28, material.fillStart, alpha);
+    this.strokeSegments(graphics, [
+      [anchorX - starRadius * 2.55, anchorY, anchorX + starRadius * 2.55, anchorY],
+      [anchorX, anchorY - starRadius * 2.55, anchorX, anchorY + starRadius * 2.55],
+    ], material.innerEdge, 0.72 * alpha, Math.max(1, layout.cell * .055));
   }
 
   private drawCollapseSettlementTrail(
@@ -1234,11 +1410,13 @@ export class TetrisRenderer {
         this.mutationFlash = {
           item: event.item,
           elapsed: 0,
-          duration: 150,
+          // Reduced motion uses the same readable endpoint frame rather than
+          // clearing the effect before the renderer can present it.
+          duration: event.item === 'bomb' ? 440 : 300,
           triggerCells: event.triggerCells ?? [],
           multiplierFactor: event.multiplierFactor ?? 2,
         };
-        this.impact = this.options.reducedMotion ? 0.2 : 0.48;
+        this.impact = this.options.reducedMotion ? 0.24 : event.item === 'bomb' ? 1.05 : 0.72;
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
       } else if (event.type === 'bedrock-raised' || event.type === 'bedrock-lowered') {

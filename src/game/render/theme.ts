@@ -82,12 +82,12 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
 
 /** Full-piece carrier materials are deliberately separate from the ordinary seven hues. */
 export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
-  // Keep mutation signalling saturated rather than white: the renderer uses these
-  // values for one material core and a short edge pulse, never per-cell glyphs.
-  freeze: { fillStart: 0x76d8e8, fillEnd: 0x3194b0, edge: 0x174f68, innerEdge: 0x47b7cb },
-  collapse: { fillStart: 0xad9be2, fillEnd: 0x6953a4, edge: 0x3d2f6b, innerEdge: 0x8673c8 },
-  bomb: { fillStart: 0xdf6b4f, fillEnd: 0xba4642, edge: 0x4a202a, innerEdge: 0xe89962 },
-  multiplier: { fillStart: 0xf1c44d, fillEnd: 0xaf7220, edge: 0x65400d, innerEdge: 0xdca236 },
+  // Each carrier is a physical material, not a recoloured ordinary tetromino.
+  // The renderer layers a distinct core over these readable edge/base values.
+  freeze: { fillStart: 0x9cecf8, fillEnd: 0x3d9ec2, edge: 0x15536b, innerEdge: 0xd7fcff },
+  collapse: { fillStart: 0x897cae, fillEnd: 0x3d365f, edge: 0x1d1931, innerEdge: 0xc0afe7 },
+  bomb: { fillStart: 0xf07857, fillEnd: 0x8b3038, edge: 0x35171d, innerEdge: 0xffd08a },
+  multiplier: { fillStart: 0xffd96b, fillEnd: 0xbd711d, edge: 0x6b3909, innerEdge: 0xfff0ab },
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
