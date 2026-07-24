@@ -252,7 +252,7 @@ describe('T6 frontend mode binding', () => {
     act(() => mutation.click());
     const rules = view.container.querySelector<HTMLElement>('[data-testid="entry-mode-rules"]')!;
     expect(rules.textContent).toContain('特殊整块任一格被清除时，立即释放一次道具。');
-    expect(rules.textContent).toContain('相同效果再次触发会额外增加 10 秒');
+    expect(rules.textContent).toContain('重复触发会把对应状态刷新为 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
@@ -713,7 +713,7 @@ describe('T6 frontend mode binding', () => {
     expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
   });
 
-  it('labels an active 4× multiplier as Super Double without renaming the base item', () => {
+  it('labels an active 4× multiplier with a visible ten-second meter and no Bomb rail copy', () => {
     const active = {
       ...createInitialState(0x51a1f00d, 'sprint'),
       mutationMultiplierTicks: 600,
@@ -721,9 +721,14 @@ describe('T6 frontend mode binding', () => {
     };
     const view = render(createElement(MutationStatus, { state: active }));
     const multiplier = view.container.querySelector<HTMLElement>('[data-mutation-state="multiplier"]');
-    expect(multiplier?.textContent).toBe('超级加倍 ×4：10 秒');
+    expect(multiplier?.textContent).toBe('超级加倍 ×410 秒');
     expect(multiplier?.dataset.mutationTier).toBe('4');
+    expect(multiplier?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     expect(view.container.textContent).not.toContain('倍增');
+    const bombState = { ...active, mutationLastItem: 'bomb' as const, mutationLastItemTicks: 120 };
+    const bomb = render(createElement(MutationStatus, { state: bombState }));
+    expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
+    bomb.unmount();
     view.unmount();
   });
 

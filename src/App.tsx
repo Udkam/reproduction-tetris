@@ -715,6 +715,11 @@ function inactiveMutationEffectLabel(item: MutationItem, language: AppLanguage):
   return `${itemLabel(language, item)}${language === 'en' ? ':' : '：'}—`;
 }
 
+function mutationEffectName(item: MutationItem, language: AppLanguage, multiplierFactor: 1 | 2 | 4 = 1): string {
+  const copy = appCopy(language);
+  return item === 'multiplier' && multiplierFactor === 4 ? copy.labels.superMultiplier : itemLabel(language, item);
+}
+
 export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
   if (state.mode !== 'sprint') return null;
   const copy = appCopy(language);
@@ -727,18 +732,30 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     <section className="mutation-status" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
       <strong>{copy.labels.mutationStatus}</strong>
       <div className="mutation-status__ledger">
-        {candidates.map((effect) => (
-          <span
-            key={effect.item}
-            data-mutation-state={effect.item}
-            data-mutation-tier={effect.item === 'multiplier' && effect.ticks > 0 ? effect.multiplierFactor : undefined}
-            data-active={effect.ticks > 0 || undefined}
-          >
-            {effect.ticks > 0 ? mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor) : inactiveMutationEffectLabel(effect.item, language)}
-          </span>
-        ))}
+        {candidates.map((effect) => {
+          const active = effect.ticks > 0;
+          const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
+          const seconds = Math.ceil(effect.ticks / TICKS_PER_SECOND);
+          const label = active
+            ? mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor)
+            : inactiveMutationEffectLabel(effect.item, language);
+          return (
+            <div
+              key={effect.item}
+              className="mutation-status__effect"
+              data-mutation-state={effect.item}
+              data-mutation-tier={effect.item === 'multiplier' && active ? effect.multiplierFactor : undefined}
+              data-active={active || undefined}
+              aria-label={label}
+            >
+              <i className="mutation-status__signal" aria-hidden="true" />
+              <b>{name}</b>
+              <em>{active ? (language === 'en' ? `${seconds}s` : `${seconds} 秒`) : '—'}</em>
+              <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / (10 * TICKS_PER_SECOND) * 100)}%` }} /></span>
+            </div>
+          );
+        })}
       </div>
-      {state.mutationLastItem === 'bomb' && state.mutationLastItemTicks > 0 && <small data-mutation-state="bomb">{copy.labels.bombResolved}</small>}
     </section>
   );
 }
@@ -752,7 +769,8 @@ export function eventMessage(event: GameEvent, language: AppLanguage = DEFAULT_L
   if (event.type === 'resumed') return copy.labels.resumedMessage;
   if (event.type === 'puzzle-undone') return copy.labels.undoMessage;
   if (event.type === 'mutation-activated') {
-    if (event.item === 'bomb') return copy.labels.bombResolved;
+    // The board explosion is the primary Bomb explanation; the live region stays terse.
+    if (event.item === 'bomb') return itemLabel(language, 'bomb');
     const label = event.item === 'multiplier' && event.multiplierFactor === 4
       ? copy.labels.superMultiplier
       : itemLabel(language, event.item);

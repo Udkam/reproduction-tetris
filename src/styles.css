@@ -4894,6 +4894,142 @@ kbd,
   .console-node--selected button { animation: none !important; transition: none !important; }
 }
 
+/* T13.14 Mutation status: three compact instruments make state, material, and timer
+   legible at a glance without reintroducing a textual Bomb explanation. */
+.game-side-panel--sprint .mutation-status {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  background: linear-gradient(145deg, #eef5f7, #e5eef2);
+  border: 1px solid #aac1cb;
+  border-radius: 9px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72), 0 6px 16px rgba(25, 59, 76, .1);
+}
+
+.game-side-panel--sprint .mutation-status > strong {
+  color: #294e62;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.game-side-panel--sprint .mutation-status__ledger {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.game-side-panel--sprint .mutation-status__effect {
+  --mutation-base: #9cabb3;
+  --mutation-wash: #edf2f4;
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 13px minmax(0, 1fr) auto;
+  grid-template-rows: minmax(15px, auto) 3px;
+  align-items: center;
+  column-gap: 4px;
+  row-gap: 4px;
+  min-width: 0;
+  padding: 6px 5px 5px;
+  color: #657b88;
+  background: rgba(247, 250, 251, .7);
+  border: 1px solid color-mix(in srgb, var(--mutation-base) 42%, #d8e3e7);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .68);
+}
+
+.game-side-panel--sprint .mutation-status__effect[data-mutation-state="freeze"] { --mutation-base: #328da8; --mutation-wash: #ddf5fa; }
+.game-side-panel--sprint .mutation-status__effect[data-mutation-state="collapse"] { --mutation-base: #675587; --mutation-wash: #eee9f8; }
+.game-side-panel--sprint .mutation-status__effect[data-mutation-state="multiplier"] { --mutation-base: #b77818; --mutation-wash: #fff2cf; }
+
+.game-side-panel--sprint .mutation-status__effect[data-active="true"] {
+  color: #173649;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--mutation-wash) 88%, white), var(--mutation-wash));
+  border-color: color-mix(in srgb, var(--mutation-base) 76%, white);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .88), 0 3px 8px color-mix(in srgb, var(--mutation-base) 18%, transparent);
+  animation: mutation-status-charge 1.55s ease-in-out infinite;
+}
+
+.game-side-panel--sprint .mutation-status__signal {
+  display: block !important;
+  grid-column: 1;
+  grid-row: 1;
+  width: 10px;
+  height: 10px;
+  padding: 0 !important;
+  background: var(--mutation-base);
+  border: 1px solid color-mix(in srgb, var(--mutation-base) 72%, #173244);
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mutation-base) 16%, transparent);
+}
+
+.game-side-panel--sprint .mutation-status__effect[data-mutation-state="freeze"] .mutation-status__signal { transform: rotate(45deg); border-radius: 2px; }
+.game-side-panel--sprint .mutation-status__effect[data-mutation-state="collapse"] .mutation-status__signal { border-radius: 2px 2px 5px 5px; box-shadow: 0 3px 0 color-mix(in srgb, var(--mutation-base) 58%, transparent); }
+.game-side-panel--sprint .mutation-status__effect[data-mutation-state="multiplier"] .mutation-status__signal { border: 0; border-radius: 0; clip-path: polygon(50% 0, 64% 36%, 100% 50%, 64% 64%, 50% 100%, 36% 64%, 0 50%, 36% 36%); }
+
+.game-side-panel--sprint .mutation-status__effect b {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  color: inherit;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: -.02em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-side-panel--sprint .mutation-status__effect em {
+  grid-column: 3;
+  grid-row: 1;
+  color: var(--mutation-base);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.game-side-panel--sprint .mutation-status__meter {
+  display: block !important;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: 100%;
+  height: 3px;
+  padding: 0 !important;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--mutation-base) 16%, #dce7eb);
+  border: 0 !important;
+  border-radius: 999px;
+  box-shadow: none !important;
+}
+
+.game-side-panel--sprint .mutation-status__meter > i {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  padding: 0 !important;
+  background: linear-gradient(90deg, var(--mutation-base), color-mix(in srgb, var(--mutation-base) 58%, white));
+  border: 0 !important;
+  border-radius: inherit;
+  box-shadow: none !important;
+}
+
+@keyframes mutation-status-charge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-side-panel--sprint .mutation-status__effect[data-active="true"] { animation: none; }
+}
+
 /* A best-result chip is optional, but the selected Puzzle specimen must never make
    the preview/copy boundary jump. Reserve the exact status slot in both states. */
 .console-focus__copy {
