@@ -23,16 +23,33 @@ identity.
   prose. The effect may use only original CSS light/shadow and the existing mineral
   palette—no grid, scanline, diagonal ornament, or copied mark.
 - The display face is bold **Playwrite New Zealand Basic**, sourced through its local
-  `@fontsource-variable` package rather than a network stylesheet. Its brisk,
+  `@fontsource` package rather than a network stylesheet. The static face must be the
+  actual Google Font file—not a generated fallback—and is strengthened only through
+  its requested bold treatment. Its brisk,
   characterful stroke gives the TetraMorph wordmark tension without resorting to a
   copied logo. Chinese UI copy keeps the existing readable system/Noto fallback chain.
   This keeps the visual result available offline and suitable for a later application
   package.
 - The Settings sheet keeps its semantic title **设置** first, then presents a named
-  **控制** section (sound/music/volume and run actions), a two-column **键盘** reference,
-  the concise per-mode **规则**, and only then the current record or leaderboard as its
-  final content block. The order must stay readable at narrow widths and preserve the
-  existing arrow/Enter controls.
+  **控制** section (language, sound/music/volume, and run actions), a two-column
+  **键盘** reference, the concise per-mode **规则**, and only then the current record or
+  leaderboard as its final content block. The keyboard reference is the complete live
+  map—move, rotate, soft/hard drop, Settings, pause, restart, Escape, and Puzzle-only
+  undo—moved here from the right rail. The right rail therefore keeps only metrics,
+  active item state, and Next. The order must stay readable at narrow widths and
+  preserve the existing arrow/Enter controls.
+- The UI is fully bilingual rather than partly translated: a persistent Settings
+  language choice switches between `中文` and `English`; first launch follows the
+  browser language safely. English must cover all visible text, aria/live messages,
+  screen/dialog titles, buttons, mode rules, leaderboard/date/time labels, puzzle
+  library labels, level display names, touch actions, and the canvas label. The document
+  language updates with the choice. Translation is UI-only: canonical mode IDs, puzzle
+  IDs/names, deterministic Core state, storage record values, and gameplay rules do not
+  change. No Chinese copy may remain in an English active route.
+- On the homepage the four original mode glyphs are intentionally more legible than
+  before: their tetromino cells are visibly enlarged within their fixed button frame,
+  while the separators between mode entrances use a clear but restrained structural
+  line. They remain original geometric marks, not copied sprites or decorative grids.
 - This is a frontend/metadata-only slice: it must not change game Core, mode rules,
   Puzzle definitions, persistence values, renderer geometry, or audio behavior.
   The visual proof must cover desktop and narrow responsive layouts, reduced motion,
@@ -41,10 +58,10 @@ identity.
 ### T13.10 authorized implementation boundary
 
 Before the final documentation/archive records, only `index.html`, `package.json`,
-`package-lock.json`, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and
-`src/styles.css` may change. `docs/progress.md` and the coordinator workstream log may
-record verified evidence after the source checkpoint. No historical contract prose is
-rewritten solely to rename its past state.
+`package-lock.json`, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`,
+`src/ui/localization.ts`, and `src/styles.css` may change. `docs/progress.md` and the
+coordinator workstream log may record verified evidence after the source checkpoint.
+No historical contract prose is rewritten solely to rename its past state.
 
 ## T13.9 replaces Collapse with 异变
 

@@ -146,17 +146,26 @@ the authoritative live scope.
     brand labels; the old `Tetra`/`Tetris` strings remain only in historical
     documentation. The homepage's left-field `选择模式` heading is replaced by this
     single page-level wordmark, with no duplicate top-left brand, while mode cards stay
-    navigation-only. The wordmark uses locally bundled, bold Google Font **Playwrite
-    New Zealand Basic** with original, restrained mineral-light CSS; no network font
-    request, copied logo, extra decorative grid/line, or Chinese subtitle is allowed.
+    navigation-only. The wordmark uses the actual locally bundled Google Font
+    **Playwrite New Zealand Basic** in its requested bold treatment—not a variable-package
+    fallback—with original, restrained mineral-light CSS; no network font request,
+    copied logo, extra decorative grid/line, or Chinese subtitle is allowed.
     The source boundary is `index.html`, `package.json`, `package-lock.json`,
     `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; current
     design/task records precede source, and final proof includes desktop/narrow/reduced
     motion browser evidence with no overflow or console errors.
     In Settings, the semantic `设置` title remains first; its visible content order is
     **控制**, a two-column **键盘** guide, concise **规则**, then the mode record or
-    leaderboard last. Arrow/Enter behavior and the native focused-volume range stay
-    unchanged.
+    leaderboard last. The Settings keyboard guide is the complete former live-rail
+    map (movement, rotate, soft/hard drop, Settings, pause, restart, Escape, and
+    Puzzle-only undo); the right rail no longer duplicates it. Arrow/Enter behavior
+    and the native focused-volume range stay unchanged. A persistent `中文`/`English`
+    choice in that control section fully translates every live UI/aria/dialog/rule/
+    leaderboard/library/touch string, English level display name, and canvas label;
+    it updates the document language without changing any Core/puzzle/storage
+    semantics. Homepage mode glyph cells are visibly enlarged and their inter-card
+    separators are clearly legible structural lines, while the one home TetraMorph
+    wordmark remains the only game title.
 
 ### T13.9 authorized implementation boundary
 
