@@ -272,14 +272,14 @@ describe('T6 frontend mode binding', () => {
     const sprintBase = createInitialState(0x51a1f00d, 'sprint');
     const sprint = { ...sprintBase, lines: 9, pieceCount: 19, elapsedTicks: 540, mutationCarriers: [{ id: 1, item: 'freeze' as const, cells: [] }] };
     const cases = [
-      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒'] },
+      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '下落速度/格', '0.8 秒'] },
       { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '3', '13 秒'] },
-      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落'] },
+      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度/格'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
-        roles: ['puzzle-targets', 'puzzle-placed', 'objective'],
+        roles: ['puzzle-targets', 'puzzle-placed'],
         label: '解谜模式数据',
-        copy: ['原有方块', '已落子', '通关目标'],
+        copy: ['原有方块', '操作数'],
       },
     ];
 
@@ -306,10 +306,9 @@ describe('T6 frontend mode binding', () => {
     const view = render(createElement(RunStats, { state }));
     const targets = view.container.querySelector<HTMLElement>('[data-stat-role="puzzle-targets"]');
     const placed = view.container.querySelector<HTMLElement>('[data-stat-role="puzzle-placed"]');
-    const objective = view.container.querySelector<HTMLElement>('[data-stat-role="objective"]');
     expect(targets?.textContent).toContain(`${state.puzzleTargetCells.length}/${state.puzzleInitialTargetCount}`);
-    expect(placed?.textContent).toBe('已落子0');
-    expect(objective?.textContent).toContain('清除全部原有方块');
+    expect(placed?.textContent).toBe('操作数0');
+    expect(view.container.querySelector('[data-stat-role="objective"]')).toBeNull();
     expect(view.container.textContent).not.toMatch(/剩余可用|已用方块|上限|限时|落定后/);
     view.unmount();
   });
@@ -421,8 +420,8 @@ describe('T6 frontend mode binding', () => {
     const state = createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01');
     const view = render(createElement(RunStats, { state }));
     expect(view.container.textContent).toContain('原有方块');
-    expect(view.container.textContent).toContain('已落子');
-    expect(view.container.textContent).toContain('清除全部原有方块');
+    expect(view.container.textContent).toContain('操作数');
+    expect(view.container.textContent).not.toContain('通关目标');
     expect(view.container.textContent).not.toContain('起步');
     expect(view.container.textContent).not.toMatch(/\d+\/20/);
     view.unmount();
@@ -437,9 +436,11 @@ describe('T6 frontend mode binding', () => {
     }));
     await act(async () => Promise.resolve());
     const puzzleSlot = puzzle.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
-    expect(puzzle.container.querySelector('.preview-rail')?.textContent).toContain('Next2');
+    const sequence = puzzle.container.querySelector<HTMLElement>('[data-testid="puzzle-preview-sequence"]')!;
+    expect(puzzle.container.querySelector('.preview-rail')?.textContent).toContain('Next1下一个方块2后一个方块');
     expect(puzzleSlot.dataset.previewCount).toBe('2');
-    expect(puzzleSlot.getAttribute('aria-label')).toBe('后续两个方块，按顺序显示');
+    expect(sequence.getAttribute('aria-label')).toBe('后续两个方块：1 为下一个，2 为后一个');
+    expect(sequence.textContent).toBe('1下一个方块2后一个方块');
     puzzle.unmount();
 
     const classic = render(createElement(GameSession, {

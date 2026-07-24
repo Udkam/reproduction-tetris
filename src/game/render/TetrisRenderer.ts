@@ -930,7 +930,7 @@ export class TetrisRenderer {
       // The slot is a DOM geometry anchor above the canvas. Its old opaque CSS
       // background hid the canvas-drawn Next tetromino, so the renderer owns both
       // the well and the piece on the same canvas layer.
-      this.drawPreviewBackdrop(x, y, slot.width, slot.height);
+      this.drawPreviewBackdrop(x, y, slot.width, slot.height, state.mode === 'puzzle' ? 2 : 1);
       if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
         this.previewClearBounds = null;
         this.previewClearPiece = null;
@@ -997,12 +997,22 @@ export class TetrisRenderer {
     }
   }
 
-  private drawPreviewBackdrop(x: number, y: number, width: number, height: number): void {
+  private drawPreviewBackdrop(x: number, y: number, width: number, height: number, segments = 1): void {
     const radius = Math.max(6, Math.min(8, Math.min(width, height) * 0.075));
     this.boardGraphics
       .roundRect(x, y, width, height, radius)
       .fill({ color: COLORS.well, alpha: 1 })
       .stroke({ color: COLORS.edge, alpha: 0.86, width: 1 });
+
+    if (segments < 2) return;
+    const inset = Math.max(8, Math.min(14, width * 0.08));
+    for (let index = 1; index < segments; index += 1) {
+      const dividerY = y + height * index / segments;
+      this.boardGraphics
+        .moveTo(x + inset, dividerY)
+        .lineTo(x + width - inset, dividerY)
+        .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
+    }
   }
 
   private drawPreviewPiece(graphics: Graphics, type: PieceType, centerX: number, centerY: number, unit: number): void {

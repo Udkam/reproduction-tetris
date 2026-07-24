@@ -695,9 +695,6 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
         <article data-stat-role="puzzle-targets"><span>{copy.labels.originalBlocks}</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
         <article data-stat-role="puzzle-placed"><span>{copy.labels.placed}</span><strong>{state.pieceCount}</strong></article>
-        <article data-stat-role="objective">
-          <span>{copy.labels.goal}</span><strong>{copy.labels.clearOriginalBlocks}</strong>
-        </article>
       </section>
     );
   }
@@ -1278,8 +1275,13 @@ export function GameSession({
             <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
               <p className="rail-label">
                 <span>{copy.labels.next}</span>
-                {puzzleDoublePreview && <small aria-label={copy.labels.twoUpcoming}>2</small>}
               </p>
+              {puzzleDoublePreview && (
+                <div className="preview-sequence" data-testid="puzzle-preview-sequence" aria-label={copy.labels.twoUpcoming}>
+                  <span><b>1</b><small>{copy.labels.nextPiece}</small></span>
+                  <span><b>2</b><small>{copy.labels.followingPiece}</small></span>
+                </div>
+              )}
               <div
                 className="next-slot"
                 data-testid="next-slot"

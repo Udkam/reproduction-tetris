@@ -2,6 +2,7 @@
   color: #14243a;
   background: #dce7f2;
   --font-body: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  --font-ui: var(--font-body);
   --font-display: "Playwrite NZ Basic", "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Noto Sans Mono CJK SC", "Cascadia Mono", "Microsoft YaHei UI", monospace;
   font-family: var(--font-body);
@@ -4891,6 +4892,88 @@ kbd,
   .mode-gates--workbench .mode-gate,
   .console-node button,
   .console-node--selected button { animation: none !important; transition: none !important; }
+}
+
+/* T13.14 rail language: instrument labels stay calm while live values carry the
+   rhythm. Puzzle exposes its fixed queue as two named, divided forecast lanes. */
+.run-stats [data-stat-role] > span {
+  color: #46657a;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 680;
+  letter-spacing: .025em;
+}
+
+.run-stats [data-stat-role] > strong {
+  color: #18334a;
+  font-family: var(--font-mono);
+  font-size: 21px;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -.055em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .75);
+}
+
+.run-stats--puzzle [data-stat-role] {
+  min-height: 70px;
+}
+
+.preview-rail--puzzle {
+  gap: 7px;
+}
+
+.preview-sequence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.preview-sequence > span {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 28px;
+  padding: 4px 6px;
+  color: #456477;
+  background: #edf5f6;
+  border: 1px solid #b5ced4;
+  border-radius: 6px;
+}
+
+.preview-sequence b {
+  display: grid;
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin-right: 5px;
+  place-items: center;
+  color: #f8fcfd;
+  background: #34788d;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.preview-sequence > span:nth-child(2) b {
+  color: #faf8fd;
+  background: #80639d;
+}
+
+.preview-sequence small {
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: .01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-rail--puzzle .next-slot {
+  height: 112px;
 }
 
 /* T13.13 terminal cascade — one final ownership layer for the selector, settings, and rails.
