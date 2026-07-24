@@ -84,7 +84,7 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
 export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
   freeze: { fillStart: 0x87dff0, fillEnd: 0x3b9fba, edge: 0x1c6278, innerEdge: 0xe0fbff },
   collapse: { fillStart: 0xb7a8e8, fillEnd: 0x705caa, edge: 0x43356f, innerEdge: 0xf0eaff },
-  bomb: { fillStart: 0xd9644b, fillEnd: 0x7e3133, edge: 0x391d28, innerEdge: 0xffc16b },
+  bomb: { fillStart: 0xd9644b, fillEnd: 0xc24c48, edge: 0x391d28, innerEdge: 0xffc16b },
   multiplier: { fillStart: 0xf4c653, fillEnd: 0xb77a22, edge: 0x68400d, innerEdge: 0xfff2b0 },
 };
 

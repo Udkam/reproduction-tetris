@@ -48,10 +48,10 @@ describe('T5 bright mineral matte material', () => {
 
   it('assigns four high-contrast full-piece materials to the four 异变 items', () => {
     expect(MUTATION_MATERIALS).toEqual({
-      freeze: { fillStart: 0x84d4ff, fillEnd: 0x458fc7, edge: 0x1e5278, innerEdge: 0xd4f2ff },
-      collapse: { fillStart: 0xc798ff, fillEnd: 0x8b5cd0, edge: 0x4c2b79, innerEdge: 0xe8d6ff },
-      bomb: { fillStart: 0xff8c70, fillEnd: 0xc84f46, edge: 0x742d2a, innerEdge: 0xffc1ad },
-      multiplier: { fillStart: 0xffd166, fillEnd: 0xc78a28, edge: 0x744710, innerEdge: 0xffedb7 },
+      freeze: { fillStart: 0x87dff0, fillEnd: 0x3b9fba, edge: 0x1c6278, innerEdge: 0xe0fbff },
+      collapse: { fillStart: 0xb7a8e8, fillEnd: 0x705caa, edge: 0x43356f, innerEdge: 0xf0eaff },
+      bomb: { fillStart: 0xd9644b, fillEnd: 0xc24c48, edge: 0x391d28, innerEdge: 0xffc16b },
+      multiplier: { fillStart: 0xf4c653, fillEnd: 0xb77a22, edge: 0x68400d, innerEdge: 0xfff2b0 },
     });
     const starts = Object.values(MUTATION_MATERIALS).map((material) => material.fillStart);
     expect(new Set(starts).size).toBe(4);
