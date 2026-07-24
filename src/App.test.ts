@@ -13,6 +13,7 @@ import App, {
   fallCadenceLabel,
   GameSession,
   LeaderboardPanel,
+  MutationStatus,
   ModeHome,
   PuzzleLibrary,
   puzzleAnchorSilhouettePath,
@@ -236,7 +237,7 @@ describe('entry countdown', () => {
       runtime.options.onState?.(terminalState, []);
     });
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ mode: 'marathon', score: 4321, lines: 12 }));
-    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行消行 · 前 50112 行4,321 分 ·');
+    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行前 50112 行4,321 分');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
     view.unmount();
   });
@@ -253,7 +254,7 @@ describe('T6 frontend mode binding', () => {
     act(() => mutation.click());
     const rules = view.container.querySelector<HTMLElement>('[data-testid="entry-mode-rules"]')!;
     expect(rules.textContent).toContain('特殊整块任一格被清除时，立即释放一次道具。');
-    expect(rules.textContent).toContain('冻结停落 10 秒');
+    expect(rules.textContent).toContain('相同效果再次触发会额外增加 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
@@ -368,7 +369,7 @@ describe('T6 frontend mode binding', () => {
       'settings-leaderboard',
     ]);
     expect(controls.textContent).toContain('控制');
-    expect(settingsLeaderboard.textContent).toContain('本模式排行消行 · 前 50112 行3,210 分 · 2026.07.24');
+    expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行3,210 分2026.07.24');
     expect(rules.textContent).toContain('补满横行，消除并得分。');
     expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
@@ -436,7 +437,7 @@ describe('T6 frontend mode binding', () => {
     }));
     await act(async () => Promise.resolve());
     const puzzleSlot = puzzle.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
-    expect(puzzle.container.querySelector('.preview-rail')?.textContent).toContain('Next · 2');
+    expect(puzzle.container.querySelector('.preview-rail')?.textContent).toContain('Next2');
     expect(puzzleSlot.dataset.previewCount).toBe('2');
     expect(puzzleSlot.getAttribute('aria-label')).toBe('后续两个方块，按顺序显示');
     puzzle.unmount();
@@ -540,6 +541,33 @@ describe('T6 frontend mode binding', () => {
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
     expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
     expect(view.container.querySelector('[data-testid="confirm-restart"]')).toBeNull();
+    view.unmount();
+  });
+
+  it('treats Settings opened from an existing pause as an overlay and continues directly to play', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    const runtime = runtimeHarness.instances.at(-1)!;
+    runtime.togglePause.mockClear();
+    act(() => runtime.togglePause());
+    expect(view.container.textContent).toContain('已暂停');
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    expect(runtime.togglePause).toHaveBeenCalledTimes(1);
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).toContain('继续游戏');
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).not.toContain('返回暂停');
+
+    act(() => [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="settings-sheet"] button')]
+      .find((button) => button.textContent === '继续游戏')?.click());
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
+    expect(view.container.textContent).not.toContain('已暂停');
+    expect(runtime.togglePause).toHaveBeenCalledTimes(2);
     view.unmount();
   });
 
@@ -655,8 +683,10 @@ describe('T6 frontend mode binding', () => {
     };
     const classic = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [base], highlightRecord: base }));
     expect(classic.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('经典排行');
-    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('经典排行消行 · 前 5');
-    expect(classic.container.querySelector('.result-leaderboard li')?.textContent).toBe('0118 行3,200 分 · 2026.07.18');
+    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('经典排行前 5');
+    expect(classic.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('18 行3,200 分');
+    expect(classic.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
+    expect(classic.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('·');
     expect(classic.container.querySelector('[data-current-record="true"]')).not.toBeNull();
     expect(scoreRecordRank([base], base)).toBe(1);
     expect(scoreRecordRank([base], { ...base, completedAt: '2026-07-19T12:00:00.000Z' })).toBeNull();
@@ -665,15 +695,17 @@ describe('T6 frontend mode binding', () => {
     const survivalRecord = { ...base, mode: 'race' as const, score: 900, lines: 27 };
     const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
     expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('生存排行');
-    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行生存时间 · 前 5');
-    expect(survival.container.querySelector('.result-leaderboard li')?.textContent).toBe('011 分 10 秒27 行 · 62 方块 · 2026.07.18');
+    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行前 5');
+    expect(survival.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('1 分 10 秒27 行  62 方块');
+    expect(survival.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     survival.unmount();
 
     const sprintRecord = { ...base, mode: 'sprint' as const, score: 1800, lines: 40, pieces: 48, elapsedTicks: 5400, chain: 0 };
     const sprint = render(createElement(LeaderboardPanel, { mode: 'sprint', records: [sprintRecord] }));
     expect(sprint.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('异变排行');
-    expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('异变排行消行 · 前 5');
-    expect(sprint.container.querySelector('.result-leaderboard li')?.textContent).toBe('0140 行1,800 分 · 48 方块 · 2026.07.18');
+    expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('异变排行前 5');
+    expect(sprint.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('40 行1,800 分  48 方块');
+    expect(sprint.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     sprint.unmount();
 
     expect(elapsedTimeLabel(65 * 60)).toBe('1 分 5 秒');
@@ -684,6 +716,20 @@ describe('T6 frontend mode binding', () => {
     const endedSprint = { ...createInitialState(1, 'sprint'), status: 'game-over' as const, score: 1800, lines: 40, pieceCount: 48, elapsedTicks: 5400 };
     expect(scoreRecordForState(endedSprint, base.completedAt)).toMatchObject({ mode: 'sprint', score: 1800, lines: 40, chain: 0, outcome: 'top-out' });
     expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
+  });
+
+  it('labels an active 4× multiplier as Super Double without renaming the base item', () => {
+    const active = {
+      ...createInitialState(0x51a1f00d, 'sprint'),
+      mutationMultiplierTicks: 600,
+      mutationMultiplierFactor: 4 as const,
+    };
+    const view = render(createElement(MutationStatus, { state: active }));
+    const multiplier = view.container.querySelector<HTMLElement>('[data-mutation-state="multiplier"]');
+    expect(multiplier?.textContent).toBe('超级加倍 ×4：10 秒');
+    expect(multiplier?.dataset.mutationTier).toBe('4');
+    expect(view.container.textContent).not.toContain('倍增');
+    view.unmount();
   });
 
   it('reports Survival terminal data and bedrock rise announcements', () => {
@@ -797,11 +843,14 @@ describe('T6 frontend mode binding', () => {
     view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id, fullyUnlocked)));
     const selectedBest = view.container.querySelector<HTMLElement>('[data-testid="selected-puzzle-start-best"]');
     const startSelected = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
-    expect(selectedBest?.textContent).toBe('历史最优：7 步');
-    expect(selectedBest?.previousElementSibling?.querySelector('.console-focus__title')).not.toBeNull();
+    expect(selectedBest?.textContent).toBe('当前最优步数：7步');
+    expect(selectedBest?.closest('.console-focus__title-row')?.querySelector('.console-focus__title')).not.toBeNull();
     expect(startSelected?.closest('.console-focus__action')?.contains(selectedBest ?? null)).toBe(false);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
-    expect(view.container.querySelectorAll('.console-focus__heading > span, .console-focus__heading > i, .console-node i')).toHaveLength(1);
+    expect(view.container.querySelectorAll('.console-focus__title-row > span, .console-focus__heading > i, .console-node i')).toHaveLength(1);
+    expect(view.container.querySelectorAll('.console-node__completion-seal')).toHaveLength(CAMPAIGN_LEVELS.length);
+    expect(view.container.querySelector('.console-focus__complete-mark, .console-node__complete-mark')).toBeNull();
+    expect(view.container.textContent).not.toContain('√');
     expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
     for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {
       const level = CAMPAIGN_LEVELS[index]!;

@@ -397,6 +397,18 @@ function PuzzleSilhouette({ id, label }: { id: PuzzleId; label: string }) {
   );
 }
 
+/** A compact graphic state marker; never expose a literal check glyph in the puzzle route. */
+function CompletionSeal() {
+  return (
+    <span className="console-node__completion-seal" aria-hidden="true">
+      <svg viewBox="0 0 16 16" focusable="false">
+        <circle cx="8" cy="8" r="6.25" />
+        <path d="m4.7 8.15 2.05 2.05 4.45-4.6" />
+      </svg>
+    </span>
+  );
+}
+
 export function PuzzleLibrary({
   progress,
   selectedId,
@@ -436,9 +448,8 @@ export function PuzzleLibrary({
             <div className="console-focus__heading">
               <div className="console-focus__title-row">
                 <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selectedName}</h2>
-                {selectedComplete && <span className="console-focus__complete-mark" aria-hidden="true">√</span>}
+                {selectedBest !== null && <span className="console-focus__best" data-testid="selected-puzzle-start-best">{copy.phrasing.currentBest(selectedBest)}</span>}
               </div>
-              <span className="console-focus__best" data-testid="selected-puzzle-start-best">{selectedBest === null ? '' : copy.phrasing.currentBest(selectedBest)}</span>
             </div>
             <div className="console-focus__action">
               <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} onClick={onStart}>{copy.labels.start}</button>
@@ -477,7 +488,7 @@ export function PuzzleLibrary({
                             onClick={() => onSelect(level.id)}
                           >
                             <span className="console-node__index">{String(level.index).padStart(2, '0')}</span>
-                            {complete && <b className="console-node__complete-mark" aria-hidden="true">√</b>}
+                            {complete && <CompletionSeal />}
                           </button>
                         </li>
                       );
@@ -524,8 +535,11 @@ export function LeaderboardPanel({
           {records.map((record, index) => (
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
               <b>{String(index + 1).padStart(2, '0')}</b>
-              <strong>{sprint ? copy.phrasing.lineCount(record.lines) : survival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}</strong>
-              <small>{copy.phrasing.leaderboardDetail(formatScore(record.score, language), record.pieces, record.lines, survival, sprint, formatDate(record.completedAt, language))}</small>
+              <div className="result-leaderboard__run">
+                <strong>{sprint ? copy.phrasing.lineCount(record.lines) : survival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}</strong>
+                <small>{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, survival, sprint)}</small>
+              </div>
+              <time dateTime={record.completedAt}>{formatDate(record.completedAt, language)}</time>
             </li>
           ))}
         </ol>
@@ -707,8 +721,10 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
   );
 }
 
-function mutationEffectLabel(item: MutationItem, ticks: number, language: AppLanguage): string {
-  return appCopy(language).phrasing.mutationTimer(itemLabel(language, item), Math.ceil(ticks / TICKS_PER_SECOND));
+function mutationEffectLabel(item: MutationItem, ticks: number, language: AppLanguage, multiplierFactor: 1 | 2 | 4 = 1): string {
+  const copy = appCopy(language);
+  const label = item === 'multiplier' && multiplierFactor === 4 ? copy.labels.superMultiplier : itemLabel(language, item);
+  return copy.phrasing.mutationTimer(label, Math.ceil(ticks / TICKS_PER_SECOND));
 }
 
 function inactiveMutationEffectLabel(item: MutationItem, language: AppLanguage): string {
@@ -718,18 +734,23 @@ function inactiveMutationEffectLabel(item: MutationItem, language: AppLanguage):
 export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
   if (state.mode !== 'sprint') return null;
   const copy = appCopy(language);
-  const candidates: Array<{ item: MutationItem; ticks: number }> = [
+  const candidates: Array<{ item: MutationItem; ticks: number; multiplierFactor?: 1 | 2 | 4 }> = [
     { item: 'freeze', ticks: state.mutationFreezeTicks },
     { item: 'collapse', ticks: state.mutationCollapseTicks },
-    { item: 'multiplier', ticks: state.mutationMultiplierTicks },
+    { item: 'multiplier', ticks: state.mutationMultiplierTicks, multiplierFactor: state.mutationMultiplierFactor },
   ];
   return (
     <section className="mutation-status" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
       <strong>{copy.labels.mutationStatus}</strong>
       <div className="mutation-status__ledger">
         {candidates.map((effect) => (
-          <span key={effect.item} data-mutation-state={effect.item} data-active={effect.ticks > 0 || undefined}>
-            {effect.ticks > 0 ? mutationEffectLabel(effect.item, effect.ticks, language) : inactiveMutationEffectLabel(effect.item, language)}
+          <span
+            key={effect.item}
+            data-mutation-state={effect.item}
+            data-mutation-tier={effect.item === 'multiplier' && effect.ticks > 0 ? effect.multiplierFactor : undefined}
+            data-active={effect.ticks > 0 || undefined}
+          >
+            {effect.ticks > 0 ? mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor) : inactiveMutationEffectLabel(effect.item, language)}
           </span>
         ))}
       </div>
@@ -748,7 +769,10 @@ export function eventMessage(event: GameEvent, language: AppLanguage = DEFAULT_L
   if (event.type === 'puzzle-undone') return copy.labels.undoMessage;
   if (event.type === 'mutation-activated') {
     if (event.item === 'bomb') return copy.labels.bombResolved;
-    return copy.phrasing.eventItemTriggered(itemLabel(language, event.item));
+    const label = event.item === 'multiplier' && event.multiplierFactor === 4
+      ? copy.labels.superMultiplier
+      : itemLabel(language, event.item);
+    return copy.phrasing.eventItemTriggered(label);
   }
   if (event.type === 'finished') return copy.labels.targetReached;
   if (event.type === 'game-over') return copy.labels.runEnded;
@@ -1064,7 +1088,9 @@ export function GameSession({
   const closeSettings = useCallback(() => {
     setSettingsOpen(false);
     if (countdownDigit === null) runtime?.setInputEnabled(true);
-    if (settingsWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
+    // Opening settings is a temporary overlay even when the player paused before it.
+    // Closing it always returns directly to the live board, never to a second pause sheet.
+    if (runtime?.getState().status === 'paused') runtime.togglePause();
     settingsWasPlayingRef.current = false;
     focusBoard();
   }, [countdownDigit, focusBoard, runtime]);
@@ -1250,7 +1276,10 @@ export function GameSession({
               <MutationStatus state={state} language={language} />
             </div>
             <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
-              <p className="rail-label">{puzzleDoublePreview ? `${copy.labels.next} · 2` : copy.labels.next}</p>
+              <p className="rail-label">
+                <span>{copy.labels.next}</span>
+                {puzzleDoublePreview && <small aria-label={copy.labels.twoUpcoming}>2</small>}
+              </p>
               <div
                 className="next-slot"
                 data-testid="next-slot"
@@ -1296,7 +1325,7 @@ export function GameSession({
             <div className="settings-sheet__actions">
               <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>{copy.labels.restart}</button>
               <button className="primary-action" data-autofocus type="button" data-arrow-nav onClick={closeSettings}>
-                {settingsWasPlayingRef.current ? copy.labels.continue : copy.labels.returnToPause}
+                {copy.labels.continue}
               </button>
             </div>
           </section>

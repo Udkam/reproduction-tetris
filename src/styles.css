@@ -4891,6 +4891,341 @@ kbd,
   .console-node--selected button { animation: none !important; transition: none !important; }
 }
 
+/* T13.13 terminal cascade — one final ownership layer for the selector, settings, and rails.
+   It deliberately overrides the earlier experimental selector rules instead of layering a
+   second visual language on top of them. */
+.console-focus__board .puzzle-silhouette {
+  overflow: hidden !important;
+  isolation: isolate;
+}
+
+.console-focus__board .puzzle-silhouette path {
+  filter: none !important;
+  vector-effect: non-scaling-stroke;
+}
+
+.console-focus__heading {
+  display: block;
+  min-width: 0;
+}
+
+.console-focus__title-row {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: baseline;
+  min-height: 0 !important;
+  gap: 6px 10px;
+}
+
+.console-focus__title-row .console-focus__title {
+  margin: 0;
+  min-width: 0;
+}
+
+.console-focus__best {
+  display: inline-flex !important;
+  align-items: center;
+  min-height: 0 !important;
+  margin: 0;
+  padding: 3px 7px !important;
+  color: #226b75 !important;
+  background: #e3f2f1 !important;
+  border: 1px solid #9fc6c4 !important;
+  border-radius: 999px !important;
+  font-family: var(--font-ui) !important;
+  font-size: 11px !important;
+  font-weight: 720;
+  letter-spacing: 0 !important;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.console-route .console-node > button {
+  position: relative;
+  min-height: 48px;
+  padding: 8px 10px 8px 26px;
+  color: #254b63;
+  background: #f8fbfc;
+  border-color: #9cb7c6;
+  box-shadow: 0 3px 8px rgba(27, 64, 83, .06);
+}
+
+.console-route .console-node > button:hover,
+.console-route .console-node > button:focus-visible {
+  color: #163a50;
+  background: #e9f4f4;
+  border-color: #4f8993;
+}
+
+.console-route .console-node--selected > button,
+.console-route .console-node--selected > button:hover,
+.console-route .console-node--selected > button:focus-visible {
+  color: #f8feff !important;
+  background: #2d7884 !important;
+  border-color: #195c69 !important;
+  box-shadow: inset 3px 0 0 #a6dfd8, 0 7px 14px rgba(20, 80, 92, .2);
+}
+
+.console-route .console-node--complete > button {
+  color: #28745f;
+  border-color: #8cc7ae;
+}
+
+.console-route .console-node--complete.console-node--selected > button {
+  color: #f8feff !important;
+}
+
+.console-node__index {
+  position: relative;
+  z-index: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.console-node__completion-seal {
+  position: absolute;
+  z-index: 2;
+  bottom: 6px;
+  left: 7px;
+  display: grid;
+  width: 13px;
+  height: 13px;
+  place-items: center;
+  color: #e9fff5;
+  background: #318566;
+  border: 1px solid #b9e9d5;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(22, 89, 64, .18);
+}
+
+.console-node--selected .console-node__completion-seal {
+  color: #e6fff7;
+  background: #1b5d4d;
+  border-color: #9dd9c3;
+}
+
+.console-node__completion-seal svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.console-node__completion-seal circle {
+  fill: currentColor;
+  fill-opacity: .16;
+  stroke: currentColor;
+  stroke-width: 1.25;
+}
+
+.console-node__completion-seal path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.console-focus__complete-mark,
+.console-node__complete-mark { display: none !important; }
+
+.action-sheet:has(.settings-sheet) {
+  width: min(920px, calc(100vw - 24px));
+  padding: clamp(19px, 2.8vw, 30px);
+  background: #f7fafb;
+  border-color: #9db7c5;
+  box-shadow: 0 20px 56px rgba(11, 36, 53, .24);
+}
+
+.settings-sheet {
+  grid-template-columns: minmax(260px, .9fr) minmax(330px, 1.1fr);
+  grid-template-areas:
+    "controls reference"
+    "record record";
+  gap: 16px;
+  align-items: stretch;
+}
+
+.settings-controls,
+.settings-sheet__reference,
+.settings-record,
+.settings-sheet .result-leaderboard {
+  min-width: 0;
+  background: #eff5f7;
+  border: 1px solid #b8cad4;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(26, 64, 82, .05);
+}
+
+.settings-controls {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px;
+}
+
+.settings-sheet__reference {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.settings-shortcuts,
+.settings-sheet .mode-rule-summary {
+  margin: 0;
+  padding: 15px;
+  background: #eff5f7;
+  border-color: #b8cad4;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(26, 64, 82, .05);
+}
+
+.settings-sheet .result-leaderboard,
+.settings-record {
+  grid-area: record !important;
+  grid-column: 1 / -1 !important;
+}
+
+.settings-record {
+  min-height: 70px;
+  padding: 15px 17px;
+}
+
+.settings-sheet .result-leaderboard { overflow: hidden; }
+
+.result-leaderboard li,
+.result-leaderboard--settings li {
+  grid-template-columns: 30px minmax(0, 1fr) auto !important;
+  grid-template-rows: auto !important;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+}
+
+.result-leaderboard--settings li > b { grid-row: auto; }
+
+.result-leaderboard__run {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.result-leaderboard__run strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-leaderboard__run small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-leaderboard li > time {
+  justify-self: end;
+  color: #587285;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.game-side-panel,
+.game-side-panel--sprint {
+  gap: 18px;
+  padding-left: 16px;
+  border-left: 0 !important;
+}
+
+.info-rail {
+  display: grid;
+  gap: 18px;
+}
+
+.preview-rail,
+.game-side-panel--sprint .preview-rail {
+  display: grid;
+  gap: 8px;
+  padding: 13px;
+  background: color-mix(in srgb, var(--raised) 88%, #e9f3f6);
+  border: 1px solid color-mix(in srgb, var(--line) 86%, #a8c0cb) !important;
+  border-radius: 10px;
+}
+
+.preview-rail .rail-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  color: #47657a;
+  font-size: 11px;
+}
+
+.preview-rail .rail-label small {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+  color: #2c6677;
+  background: #dbeeee;
+  border: 1px solid #9bc9c8;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.next-slot {
+  height: 126px;
+  overflow: hidden;
+  background: #0d2032;
+  border-color: #7898a9;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(163, 209, 222, .16);
+}
+
+.mutation-status {
+  margin-top: 0;
+  background: #f1f6f7;
+  border-color: #adc4cd;
+  box-shadow: 0 6px 14px rgba(22, 62, 80, .08);
+}
+
+.mutation-status span[data-mutation-state="multiplier"][data-mutation-tier="4"] {
+  color: #62480d;
+  background: #fff0b5;
+  border-color: #d6aa35;
+  border-left-color: #a87907;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .42);
+}
+
+@media (max-width: 700px) {
+  .console-focus__best { font-size: 9px !important; }
+
+  .action-sheet:has(.settings-sheet) { padding: 17px; }
+
+  .settings-sheet {
+    grid-template-columns: 1fr;
+    grid-template-areas: "controls" "reference" "record";
+    gap: 11px;
+  }
+
+  .settings-sheet .result-leaderboard,
+  .settings-record { grid-column: auto !important; }
+
+  .result-leaderboard li,
+  .result-leaderboard--settings li { gap: 7px; padding-inline: 9px; }
+
+  .result-leaderboard li > time { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .console-route .console-node > button { transition: none !important; }
+}
+
 /* T13.12 keeps one compact information grammar across the selector, settings, and play rails. */
 .console-focus__board .puzzle-silhouette {
   overflow: hidden;
