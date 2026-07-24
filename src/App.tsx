@@ -397,13 +397,12 @@ function PuzzleSilhouette({ id, label }: { id: PuzzleId; label: string }) {
   );
 }
 
-/** A compact graphic state marker; never expose a literal check glyph in the puzzle route. */
-function CompletionSeal() {
+/** A centered graphic replacement for the completed level numeral; never expose literal check text. */
+function CompletionTick() {
   return (
-    <span className="console-node__completion-seal" aria-hidden="true">
-      <svg viewBox="0 0 16 16" focusable="false">
-        <circle cx="8" cy="8" r="6.25" />
-        <path d="m4.7 8.15 2.05 2.05 4.45-4.6" />
+    <span className="console-node__completion-tick" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="m4.8 12.35 4.35 4.3L19.4 7.2" />
       </svg>
     </span>
   );
@@ -484,11 +483,12 @@ export function PuzzleLibrary({
                             data-anchor={hasAnchor || undefined}
                             data-best-pieces={bestPieces ?? undefined}
                             aria-pressed={selectedLevel}
-                            aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, rows, complete, bestPieces)}
-                            onClick={() => onSelect(level.id)}
-                          >
-                            <span className="console-node__index">{String(level.index).padStart(2, '0')}</span>
-                            {complete && <CompletionSeal />}
+                          aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, rows, complete, bestPieces)}
+                          onClick={() => onSelect(level.id)}
+                        >
+                            {complete
+                              ? <CompletionTick />
+                              : <span className="console-node__index">{String(level.index).padStart(2, '0')}</span>}
                           </button>
                         </li>
                       );

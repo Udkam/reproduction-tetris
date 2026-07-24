@@ -848,7 +848,9 @@ describe('T6 frontend mode binding', () => {
     expect(startSelected?.closest('.console-focus__action')?.contains(selectedBest ?? null)).toBe(false);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
     expect(view.container.querySelectorAll('.console-focus__title-row > span, .console-focus__heading > i, .console-node i')).toHaveLength(1);
-    expect(view.container.querySelectorAll('.console-node__completion-seal')).toHaveLength(CAMPAIGN_LEVELS.length);
+    expect(view.container.querySelectorAll('.console-node__completion-tick')).toHaveLength(CAMPAIGN_LEVELS.length);
+    expect(view.container.querySelectorAll('.console-node--complete .console-node__index')).toHaveLength(0);
+    expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.textContent).toBe('');
     expect(view.container.querySelector('.console-focus__complete-mark, .console-node__complete-mark')).toBeNull();
     expect(view.container.textContent).not.toContain('√');
     expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
