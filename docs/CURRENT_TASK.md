@@ -165,7 +165,14 @@ the authoritative live scope.
     it updates the document language without changing any Core/puzzle/storage
     semantics. Homepage mode glyph cells are visibly enlarged and their inter-card
     separators are clearly legible structural lines, while the one home TetraMorph
-    wordmark remains the only game title.
+    wordmark remains the only game title. Puzzle `Z`/touch undo is direct with no
+    confirmation: it restores the deterministic pre-spawn checkpoint for the latest
+    locked piece, then respawns that same piece at its normal top entry so it falls
+    anew. It is unavailable before a lock and never changes target ownership or the
+    fixed queue. In the selector, remove visible `固定锚点`; place `当前最优步数：x步`
+    (or its English equivalent) beside a completed selected name rather than above
+    Start, and replace the present heavy navy/purple scheme with a restrained
+    light-mineral workbench, deep preview well, and clear selected/completed contrast.
 
 ### T13.9 authorized implementation boundary
 

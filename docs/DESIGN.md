@@ -50,8 +50,19 @@ identity.
   before: their tetromino cells are visibly enlarged within their fixed button frame,
   while the separators between mode entrances use a clear but restrained structural
   line. They remain original geometric marks, not copied sprites or decorative grids.
-- This is a frontend/metadata-only slice: it must not change game Core, mode rules,
-  Puzzle definitions, persistence values, renderer geometry, or audio behavior.
+- Puzzle undo is direct: after any locked Puzzle piece, `Z` or its touch control
+  immediately restores the pre-spawn board/queue checkpoint for that piece and respawns
+  the same piece at the top to fall again. It does not open a confirmation sheet, retain
+  the old landing translation, alter targets, reseed the fixed queue, or permit undo
+  before a lock. Repeated undo walks the same pre-spawn checkpoints backward.
+- A selected completed Puzzle shows only `当前最优步数：x步` (and its full English
+  equivalent) immediately beside its name—not above Start. The selector shows no
+  visible `固定锚点` label. Its color system is rebalanced away from the current
+  navy/purple heaviness toward a restrained light mineral workspace with a single
+  deep-preview well and clear selected/completed contrast.
+- This slice changes only presentation/localization and the deterministic Puzzle undo
+  checkpoint semantics. It must not alter other mode rules, Puzzle definitions,
+  persistence values, renderer geometry, or audio behavior.
   The visual proof must cover desktop and narrow responsive layouts, reduced motion,
   zero overflow, and zero browser errors.
 
@@ -59,9 +70,11 @@ identity.
 
 Before the final documentation/archive records, only `index.html`, `package.json`,
 `package-lock.json`, `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`,
-`src/ui/localization.ts`, and `src/styles.css` may change. `docs/progress.md` and the
-coordinator workstream log may record verified evidence after the source checkpoint.
-No historical contract prose is rewritten solely to rename its past state.
+`src/ui/localization.ts`, `src/styles.css`, `src/game/core/types.ts`,
+`src/game/core/engine.ts`, and `src/game/core/puzzleUndo.test.ts` may change.
+`docs/progress.md` and the coordinator workstream log may record verified evidence after
+the source checkpoint. No historical contract prose is rewritten solely to rename its
+past state.
 
 ## T13.9 replaces Collapse with 异变
 
