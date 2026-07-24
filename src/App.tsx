@@ -1279,28 +1279,31 @@ export function GameSession({
         onCancel={closeSettings}
       >
         <section className="settings-sheet" data-testid="settings-sheet" aria-label="本局设置">
+          <section className="settings-controls" data-testid="settings-controls" aria-label="控制">
+            <strong>控制</strong>
+            <AudioControls
+              enabled={audioEnabled}
+              musicEnabled={musicEnabled}
+              volume={audioVolume}
+              onEnabledChange={changeAudioEnabled}
+              onMusicEnabledChange={changeMusicEnabled}
+              onVolumeChange={changeAudioVolume}
+            />
+            <div className="settings-sheet__actions">
+              <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>重新开始</button>
+              <button className="primary-action" data-autofocus type="button" data-arrow-nav onClick={closeSettings}>
+                {settingsWasPlayingRef.current ? '继续游戏' : '返回暂停'}
+              </button>
+            </div>
+          </section>
+          <SettingsShortcutGuide mode={state.mode} />
+          <ModeRuleSummary mode={state.mode} testId="settings-rules" />
           <SettingsRecord
             mode={state.mode}
             puzzleId={state.puzzleId ?? puzzleId}
             leaderboard={leaderboard}
             progress={puzzleProgress}
           />
-          <ModeRuleSummary mode={state.mode} testId="settings-rules" />
-          <AudioControls
-            enabled={audioEnabled}
-            musicEnabled={musicEnabled}
-            volume={audioVolume}
-            onEnabledChange={changeAudioEnabled}
-            onMusicEnabledChange={changeMusicEnabled}
-            onVolumeChange={changeAudioVolume}
-          />
-          <SettingsShortcutGuide mode={state.mode} />
-          <div className="settings-sheet__actions">
-            <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>重新开始</button>
-            <button className="primary-action" data-autofocus type="button" data-arrow-nav onClick={closeSettings}>
-              {settingsWasPlayingRef.current ? '继续游戏' : '返回暂停'}
-            </button>
-          </div>
         </section>
       </ActionSheet>
 

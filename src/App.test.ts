@@ -345,12 +345,20 @@ describe('T6 frontend mode binding', () => {
     const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
     const music = view.container.querySelector<HTMLButtonElement>('[data-testid="music-toggle"]')!;
     const volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
+    const controls = view.container.querySelector<HTMLElement>('[data-testid="settings-controls"]')!;
     const settingsLeaderboard = view.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')!;
     const shortcuts = view.container.querySelector<HTMLElement>('[data-testid="settings-shortcuts"]')!;
     const rules = view.container.querySelector<HTMLElement>('[data-testid="settings-rules"]')!;
     expect(toggle.textContent).toBe('音效开');
     expect(music.textContent).toBe('音乐开');
     expect(volume.value).toBe('100');
+    expect([...sheet.children].map((child) => child.getAttribute('data-testid') ?? child.className)).toEqual([
+      'settings-controls',
+      'settings-shortcuts',
+      'settings-rules',
+      'settings-leaderboard',
+    ]);
+    expect(controls.textContent).toContain('控制');
     expect(settingsLeaderboard.textContent).toContain('本模式排行消行 · 前 50112 行3,210 分 · 2026.07.24');
     expect(rules.textContent).toContain('补满任意横行即可消除并得分。');
     expect(shortcuts.textContent).toContain('键盘S 设置P 暂停R 重开Esc 返回←→ 选择↑↓ 切换Enter 执行');
