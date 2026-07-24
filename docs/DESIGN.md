@@ -22,20 +22,16 @@ currently flat visual outcomes a stronger original finish.
   order and retain arrow/Enter/focus behavior. Motion lasts under 700 ms, is bounded
   inside the sheet, and resolves to a fully informative static frame under reduced
   motion.
-- **Survival geology.** Permanent bedrock must read as a pressure shelf, not a stack of
-  equal UI tiles. Adjacent canonical cells join into a continuous stratified basalt
-  mass: an uneven exposed crest, dark coarse outer contour, two restrained mineral
-  planes, offset vertical cleavage, and deterministic hairline fractures. The visual
-  remains aligned to canonical cells for play readability, but the outside silhouette
-  and stratum seams deliberately break the checkerboard impression. Clearable falling
-  stones stay separate, smaller-looking, and lighter/slate-coloured so their danger /
-  opportunity role is legible at a glance. No texture asset, external art, filter, or
-  gameplay-state exception is introduced.
+- **Survival bedrock.** Permanent bedrock retains the approved brown raised-block
+  material. It is intentionally a stable game-board unit rather than a simulated rock
+  texture, fractured silhouette, or continuous shelf. Clearable falling stones stay
+  separate, smaller-looking, and lighter/slate-coloured so their danger / opportunity
+  role is legible at a glance. No texture asset, external art, filter, or gameplay-state
+  exception is introduced.
 - **Verification direction.** Browser evidence must visibly prove all three Puzzle
-  completion states, reduced-motion stillness, and the new three-row bedrock shelf at
-  desktop and compact size. Renderer tests freeze the deterministic geological
-  material/geometry route; App tests freeze the outcome classification before progress
-  persistence writes.
+  completion states, reduced-motion stillness, and the established three-row brown
+  bedrock at desktop and compact size. App tests freeze the outcome classification
+  before progress persistence writes.
 
 ## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
 

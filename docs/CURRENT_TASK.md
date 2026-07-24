@@ -29,24 +29,22 @@ checkpoint and must remain untouched.
    tetromino-fragment/constellation animation must remain local, brief, and decorative
    only; reduced motion shows the same semantic end frame with no drifting or looping.
    It must not obscure the dimmed live board or steal focus from the first action.
-2. **Permanent bedrock is a continuous geological shelf.** It retains its exact typed
-   board-cell semantics, collision, unbreakability, rise/removal timing, score path,
-   and deterministic replay. The Pixi renderer must make adjacent permanent bedrock
-   cells read as a connected, irregular basalt shelf: a broken outer crest, layered
-   face planes, restrained seams, and deterministic fracture variation rather than a
-   row of identical square tiles. Its warm-grey/charcoal geology must remain clearly
-   distinct from playable minos and from the lighter, clearable independent falling
-   stones. Rendering is presentation-only: no hitbox, board coordinate, debris, or
-   line-clear behavior may change.
+2. **Survival bedrock remains the established brown block treatment.** It retains its
+   exact typed board-cell semantics, collision, unbreakability, rise/removal timing,
+   score path, and deterministic replay. Do not add a stone texture, fractured
+   silhouette, shelf, or other geology treatment in this slice. Rendering remains
+   presentation-only: no hitbox, board coordinate, debris, or line-clear behavior may
+   change.
 3. **Bounded implementation.** The celebration/UI checkpoint may change only
    `src/App.tsx`, `src/App.test.ts`, `src/ui/ActionSheet.tsx`,
-   `src/ui/localization.ts`, and `src/styles.css`. The bedrock renderer checkpoint may
-   change only `src/game/render/TetrisRenderer.ts`,
+   `src/ui/localization.ts`, and `src/styles.css`. The narrow bedrock-restoration
+   checkpoint may change only `src/game/render/TetrisRenderer.ts`,
    `src/game/render/TetrisRenderer.test.ts`, `src/game/render/theme.ts`, and
-   `src/game/render/theme.test.ts`. Neither checkpoint may change Core state,
+   `src/game/render/theme.test.ts`; it restores the established brown raised block
+   material and removes the rejected stone treatment. Neither checkpoint may change Core state,
    deterministic queues, persistence format, scoring, or dependencies.
-4. **Acceptance.** Add direct first/best/replay-result tests and bedrock/material
-   renderer tests. After the last source change run typecheck, the complete suite,
+4. **Acceptance.** Add direct first/best/replay-result tests and a brown-bedrock
+   material regression test. After the last source change run typecheck, the complete suite,
    production build, and one real browser pass covering a first Puzzle completion, a
    record Puzzle completion, reduced motion, and a live three-row Survival opening at
    desktop plus compact viewport. Verify one canvas, no DOM cell grid, no overflow,
