@@ -2086,6 +2086,20 @@ kbd,
     grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 
+  /* The goal is a complete instruction, not a compact metric: give it the full
+     mobile information width so neither language turns into an ellipsis. */
+  .run-stats--puzzle [data-stat-role="objective"] {
+    grid-column: 1 / -1 !important;
+  }
+
+  .run-stats--puzzle [data-stat-role="objective"] strong {
+    overflow: visible;
+    font-size: 14px;
+    line-height: 1.15;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
   .run-stats--puzzle [data-stat-role="puzzle-level"],
   .run-stats--puzzle [data-stat-role="puzzle-placed"] {
     border-right: 1px solid var(--line) !important;
