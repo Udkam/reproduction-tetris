@@ -183,3 +183,54 @@
 - **Next action:** coordinator restores a controllable browser while preserving the
   candidate and user-owned lockfile, then issues a fresh bounded browser-QA request;
   inspect the required desktop/390px and Mutation paths before any acceptance/push.
+
+## 2026-07-24 — T13.12 recovered local-Playwright visual recheck
+
+- **Review boundary:** fresh independent recheck of the unchanged candidate
+  `9b6188f..ec36924` at `ec36924f310c7f2d7ba2537cb9c7d9648170c01e`. The coordinator
+  explicitly authorized the repository-selected `develop-web-game` skill's local
+  Playwright runtime after its Browser connector had no bindable page. This reviewer
+  used only an isolated local Chromium process against the coordinator-owned
+  `127.0.0.1:5176` server; no user Chrome, Core/dev injection, mocked state, product
+  file, contract file, staging state, or user-owned `package-lock.json` was touched.
+- **Independent gates:** `npm.cmd run typecheck`, `npm.cmd run test`, and
+  `npm.cmd run build` all pass (22 files / 146 tests and 746 transformed modules).
+  `git diff --check 9b6188f..ec36924` is clean. The required web-game client was also
+  run with a real entry click/input burst; it wrote its actual home capture, which was
+  visually inspected. Its shutdown exceeded the local 64-second command guard after
+  capture, so it supplies no completion claim. A bounded local Playwright audit then
+  completed all observations and wrote the summary before its own Chromium close hit
+  the same harness guard; these are local runner-cleanup observations, not product
+  console/page failures.
+- **Live desktop evidence:** ignored artifacts under
+  `.local/audits/t13-12-independent-qa/browser/` contain visual captures and raw
+  `render_game_to_text` observations. The home shows four readable entries; the Puzzle
+  selector has one clear dark selected board, no white-fill/overflow, and an orderly
+  20-stop matrix. On a fresh real Classic entry the game remains `ready` with
+  countdown `3`, exactly one canvas, zero DOM board cells, and no touch rail. Pressing
+  `S` opens the two-column Settings sheet while the same countdown remains `3`;
+  Escape closes Settings with the countdown still at `3`. A separate real Survival
+  entry confirms Escape opens the leave confirmation while countdown `3` remains
+  visible, rather than enabling play early.
+- **Live Mutation evidence:** after the real three-second entry and four ordinary hard
+  drops, the actual text state reports `mode: sprint`, `status: playing`,
+  `activeCarrier: freeze`, `lockedCarriers: 1`, and no active timed item. The visually
+  inspected carrier capture shows four complete faceted ice-blue carrier cells with
+  emblems—not a normal piece plus a dot—alongside the aligned score/lines/combo/fall
+  rail and the Freeze/Collapse/Double ledger. The full test suite includes the direct
+  real renderer-event coverage for all four special materials, bounded bomb flash, and
+  the reduced-motion freeze edge drawing after a 16 ms frame; that path therefore has
+  focused non-browser coverage without fabricating a board clear in this live run.
+- **390 px evidence:** Home and Puzzle selector both report `clientWidth == scrollWidth
+  == 390` and `clientHeight == scrollHeight == 844`. Their inspected captures show no
+  horizontal clipping, retain all four entries/the selected preview/20 numeric stops,
+  and preserve the removed touch-rail state. The local audit recorded no console errors
+  or page errors in any desktop or narrow viewport observation.
+- **Disposition:** **PASS — ACCEPT.** The prior Browser-connector-only blocker is
+  superseded by this authorized local-Playwright recheck. No P0–P2 finding remains in
+  `9b6188f..ec36924`.
+- **Exact changed path:** this independent QA recheck record only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator may read this recheck, complete acceptance/changelog
+  integration, release any coordinator-owned local audit processes, and push the
+  accepted chain without staging `package-lock.json`.
