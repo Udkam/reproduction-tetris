@@ -91,12 +91,12 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  // Survival bedrock is deliberately dense and mineral-like, rather than a
-  // regular piece recolour. Renderer facets add chipped faces on top.
-  fillStart: 0x7d7b77,
-  fillEnd: 0x656966,
-  edge: 0x292f31,
-  innerEdge: 0xb7bab2,
+  // The established Survival material: a clear brown raised block, distinct
+  // from the playable palette and intentionally not a simulated stone texture.
+  fillStart: 0x9c8b73,
+  fillEnd: 0x76664f,
+  edge: 0x40372d,
+  innerEdge: 0xcdbeaa,
 };
 
 /** Clearable one-cell stones that fall independently in Survival. */

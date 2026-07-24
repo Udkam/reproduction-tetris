@@ -41,12 +41,12 @@ describe('T5 bright mineral matte material', () => {
     });
   });
 
-  it('uses a chipped mineral material for permanent Survival bedrock and distinct falling stones', () => {
+  it('keeps the established brown bedrock material distinct from falling stones', () => {
     expect(BEDROCK_MATERIAL).toEqual({
-      fillStart: 0x7d7b77,
-      fillEnd: 0x656966,
-      edge: 0x292f31,
-      innerEdge: 0xb7bab2,
+      fillStart: 0x9c8b73,
+      fillEnd: 0x76664f,
+      edge: 0x40372d,
+      innerEdge: 0xcdbeaa,
     });
     expect(SURVIVAL_STONE_MATERIAL).toEqual({
       fillStart: 0x95a4ab,

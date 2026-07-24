@@ -868,7 +868,7 @@ export class TetrisRenderer {
         Math.min(CELL_STYLE.faceDarkAlpha, alpha),
         faceBevelWidth,
       );
-      if (type === BEDROCK_CELL || type === SURVIVAL_STONE_CELL) {
+      if (type === SURVIVAL_STONE_CELL) {
         this.drawStoneFacets(graphics, geometry, size, faceInset, material, alpha);
       }
     }
@@ -973,11 +973,7 @@ export class TetrisRenderer {
     }
   }
 
-  /**
-   * Stone silhouettes retain the board grid for readable collision space, but
-   * their split planes and small chips make both permanent bedrock and falling
-   * debris read as mineral material rather than another clean tetromino cell.
-   */
+  /** Clearable falling debris stays simpler and lighter than permanent bedrock. */
   private drawStoneFacets(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
