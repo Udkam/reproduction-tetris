@@ -110,10 +110,12 @@ export interface GameState {
   puzzleGoal: PuzzleGoal | null;
   puzzleCompletion: PuzzleCompletion | null;
   /**
-   * Puzzle-only, run-local pre-lock checkpoints. Snapshots intentionally omit this
-   * field so a history cannot recursively retain earlier histories.
+   * Puzzle-only, run-local pre-spawn checkpoints for pieces that have already locked.
+   * Snapshots intentionally omit both undo fields so history cannot recurse.
    */
   puzzleUndoHistory: readonly PuzzleUndoSnapshot[];
+  /** Pre-spawn checkpoint for the active Puzzle piece; promoted into history on lock. */
+  puzzleActiveSpawnCheckpoint: PuzzleUndoSnapshot | null;
   completedLevelId: PuzzleId | null;
   /** @deprecated Navigation/progress bridge only; T5 level availability is always unrestricted. */
   nextUnlockedLevelId: PuzzleId | null;
@@ -148,8 +150,8 @@ export interface GameState {
   seed: number;
 }
 
-/** A nonrecursive Puzzle checkpoint containing all canonical state except its own history. */
-export type PuzzleUndoSnapshot = Omit<GameState, 'puzzleUndoHistory'>;
+/** A nonrecursive Puzzle checkpoint containing all canonical state except its own undo state. */
+export type PuzzleUndoSnapshot = Omit<GameState, 'puzzleUndoHistory' | 'puzzleActiveSpawnCheckpoint'>;
 
 export type GameCommand =
   | { type: 'start' }
