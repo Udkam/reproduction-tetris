@@ -4427,6 +4427,7 @@ kbd,
 @media (prefers-reduced-motion: reduce) {
   .entry-countdown__digit,
   .mode-gate,
+  .sheet-backdrop,
   .action-sheet,
   .observatory-stage,
   .observatory-sector,
