@@ -8,19 +8,22 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-25): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
-AND SURVIVAL DEBRIS — reopened for a second Settings macro-layout and live-overlay
+AND SURVIVAL DEBRIS — reopened for a third Settings composition and live-overlay
 correction.** The previous candidate `e9db541` passed its final gates and independent
 QA `abc0f25`, but the subsequent player review correctly rejected its structural
 blanks. The first replacement attempt `fe6db5f..7ab0886` and its local evidence
 `e87b62f` are now historical diagnostic evidence only: the player correctly identified
 that the unequal controls/keyboard two-column row still creates a structural empty
-quadrant. The same review also found that sheets hide the live board and that Puzzle's
-two Next labels do not identify their respective previews. QA, acceptance, and push
-remain stopped until this bounded second correction has passed a fresh visual matrix
-and a new independent disposition. The previous T13.13 repair remains historical
-evidence only; the new player-directed changes below supersede its additive timer and
-music decisions where they conflict. The user-owned uncommitted `package-lock.json`
-remains outside every checkpoint and must remain untouched.
+quadrant. The second replacement source `18fe992` correctly restores the live board
+and attaches Puzzle forecasts to their two wells, but its full-width Settings stack and
+its nested two-card forecast treatment were also rejected in player review: the former
+reads as a cramped development table, while the latter reads as stacked form fields.
+QA, acceptance, and push remain stopped until the renewed composition passes a fresh
+visual matrix and a new independent disposition. The
+previous T13.13 repair remains historical evidence only; the new player-directed
+changes below supersede its additive timer and music decisions where they conflict. The
+user-owned uncommitted `package-lock.json` remains outside every checkpoint and must
+remain untouched.
 
 ### T13.14 active delivery contract
 
@@ -34,19 +37,25 @@ remains outside every checkpoint and must remain untouched.
    upcoming pieces are visibly labelled in the rail, with no floating `②`. Classic and
    异变 display a gravity unit as `下落速度/格`. All non-wordmark UI typography receives
    stable, intentional hierarchy without unstable weight flashes.
-   **Settings-density correction:** no desktop or compact-mode sheet may retain an
-   oversized content card, an empty grid quadrant, or a row stretched solely to match
-   unrelated content. Replace the unequal top-card grid with full-width,
-   content-driven bands: the controls themselves distribute language, sound, and
-   actions across their real horizontal tracks; keyboard, concise rules, and records
-   each occupy an intrinsic full-width band below it. Every mode and locale must use
-   the same dense structural grammar; a record footer may reserve only its useful
-   header/row height, never a visual placeholder. Every Settings, pause, restart, and
-   exit sheet must keep the single mounted Pixi board visibly dimmed beneath it; a
-   modal may block input but may never make the underlying game field disappear.
+   **Settings-composition correction:** no desktop or compact-mode sheet may retain an
+   oversized content card, a vacant grid quadrant, a microscopic type treatment, or a
+   row stretched solely to match unrelated content. Desktop and short landscape use
+   one connected upper console: Controls and Keyboard share one aligned row as two
+   equal-height sections of the same surface, with a deliberate seam rather than two
+   detached cards. Controls use their own vertical rhythm for language, sound, and
+   actions; Keyboard uses its complete two-column guide. Concise Rules and the useful
+   Record strip follow below as independent content-sized bands. Portrait keeps the
+   same semantic order vertically with readable type rather than forcing the desktop
+   grid. Every mode and locale must use this single dense grammar; a record footer may
+   reserve only its useful header/row height, never a visual placeholder. Every
+   Settings, pause, restart, and exit sheet must keep the single mounted Pixi board
+   visibly dimmed beneath it; a modal may block input but may never make the underlying
+   game field disappear.
    Puzzle's two forecast pieces must use two physically distinct, numbered in-well
-   segments, each caption attached to the piece it describes (`① 下一个` / `② 后一个`,
-   with matching English), not a detached legend above one ambiguous well.
+   segments inside one continuous dark forecast rack. `① 下一个` / `② 后一个` (with
+   matching English) attach directly to their respective halves through restrained
+   type and a short accent rule; no detached legend, circular number badge, pale label
+   strip, nested card, or doubled preview border may reappear.
 3. **Remove only music.** Delete the current music output, toggle, copy, and lifecycle
    while preserving adjustable original sound effects and their safe teardown. Do not
    fetch or bundle replacement music in this delivery.

@@ -9,9 +9,11 @@
 `fe6db5f..7ab0886`: despite compact internal content, its unequal controls/keyboard
 two-column row still leaves a structural empty quadrant. Its evidence `e87b62f` is
 therefore diagnostic only, and renewed QA is stopped. The second UI-only correction
-must use a full-width, content-led sheet composition, preserve a dimmed live board
-behind every action sheet, and give both Puzzle forecasts their own labelled visual
-segment. No release or push may be inferred from earlier local evidence. The prior
+correctly restores the dimmed live board, but the full-width Settings stack and the
+nested two-card Puzzle forecast remain rejected: they read as a cramped development
+table and stacked form fields rather than a game instrument. The renewed correction
+uses a connected upper Settings console and one continuous two-part dark forecast
+rack. No release or push may be inferred from earlier local evidence. The prior
 product candidate `e9db541` has historical source/browser evidence (`b603d6d`) and
 QA acceptance (`abc0f25`) only for its pre-correction source. T13.13 remains accepted
 historical evidence, but its additive item-timer and music decisions are superseded
@@ -32,18 +34,21 @@ wherever they conflict with this section.
   all other visible typography must be deliberately readable, stable, bilingual, and
   more expressive through original weight, spacing, hierarchy, and data treatment—not
   through transient synthetic bolding.
-  Settings uses content-sized structural bands rather than a visually balanced but
-  empty two-column poster: one full-width control band actively distributes language,
-  sound, and actions; full-width keyboard, concise-rule, and record bands follow at
-  their intrinsic heights. There is no unequal side-by-side card row, expanded spacer,
-  or stretched grid track. An empty leaderboard uses a short useful state row instead
-  of an enlarged blank card. Desktop, Chinese/English, and compact portrait/landscape
-  preserve the same no-structural-whitespace principle. A modal is an interruption,
+  Settings uses a connected upper console rather than a visually balanced but empty
+  two-column poster or a full-width stack of microtype: controls and keyboard share an
+  aligned first row as sections of the same surface, while concise rules and the useful
+  record strip follow as content-sized bands. There is no detached unequal card,
+  expanded spacer, stretched grid track, or forced microscopic copy. An empty
+  leaderboard uses a short useful state row instead of an enlarged blank card. Desktop,
+  Chinese/English, and compact portrait/landscape preserve the same
+  no-structural-whitespace principle. A modal is an interruption,
   not a scene replacement: it dims the already-rendered board while retaining its
   current field, active piece, and forecast behind Settings, pause, restart, and exit.
-  Puzzle Next uses two individually bounded in-well compartments, respectively marked
-  `① 下一个` / `② 后一个` (and English equivalents), so its labels cannot detach from
-  their actual pieces.
+  Puzzle Next uses two physical, labelled halves inside one continuous dark forecast
+  rack. Each half is marked `① 下一个` / `② 后一个` (and English equivalents) through
+  restrained type and a short accent rule, so its label cannot detach from its actual
+  piece; circular number badges, pale label strips, nested cards, and doubled borders
+  are prohibited.
 - **Music removal.** Remove the current procedural music, its controls, and its
   lifecycle from the live product. Original effects remain enabled and independently
   controllable. This pass does not download, embed, or substitute external music.
