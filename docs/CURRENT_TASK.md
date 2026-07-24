@@ -24,7 +24,7 @@ the authoritative live scope.
 ### Authoritative active delivery goals (2026-07-24)
 
 1. **Product boundary and future packaging readiness.** Work only in this standalone
-   clean-room repository. Keep the page-facing plain-text `Tetramorph` title without a
+   clean-room repository. Keep the page-facing plain-text `TetraMorph` title without a
    Chinese companion title, copied trade dress, or affiliation claim. Do not package
    yet, but keep browser
    lifecycle, storage, keyboard/touch, focus, audio teardown, responsive layout, and
@@ -140,14 +140,15 @@ the authoritative live scope.
    supports pointer/touch plus arrow/Enter operation, does not alter Core state, and
    never changes Puzzle authored content.
 
-10. **Tetramorph branding.** `Tetramorph` is the live product name: `Tetra` preserves
-    the four-cell vocabulary and `morph` names the game's changing board states. It
-    replaces all current browser, loading, visible header, and accessible brand labels;
-    the old `Tetra`/`Tetris` strings remain only in historical documentation. The
-    homepage's left-field `选择模式` heading is replaced by this single wordmark, while
-    mode cards stay navigation-only. The wordmark uses locally bundled Google Font
-    **Bricolage Grotesque** with original, restrained mineral-light CSS; no network font
-    request, copied logo, extra decorative grid/line, or Chinese subtitle is allowed.
+10. **TetraMorph branding.** `TetraMorph` is the live product name: `Tetra` preserves
+    the four-cell vocabulary and `Morph` names the game's changing board states. It
+    replaces all current browser, loading, gameplay/library-header, and accessible
+    brand labels; the old `Tetra`/`Tetris` strings remain only in historical
+    documentation. The homepage's left-field `选择模式` heading is replaced by this
+    single page-level wordmark, with no duplicate top-left brand, while mode cards stay
+    navigation-only. The wordmark uses locally bundled Google Font **Tektur** with
+    original, restrained mineral-light CSS; no network font request, copied logo, extra
+    decorative grid/line, or Chinese subtitle is allowed.
     The source boundary is `index.html`, `package.json`, `package-lock.json`,
     `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; current
     design/task records precede source, and final proof includes desktop/narrow/reduced

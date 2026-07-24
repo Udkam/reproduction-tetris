@@ -1,28 +1,30 @@
-# Tetramorph — T13.10 Brand Identity Contract
+# TetraMorph — T13.10 Brand Identity Contract
 
-> The current page-facing identity is the plain-text `Tetramorph`. Older `Tetra` and
+> The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
-## T13.10 restores an independent Tetramorph identity
+## T13.10 restores an independent TetraMorph identity
 
 The earlier `Tetra` identity was replaced by `Tetris` while reconciling an older visual
 contract. That now conflicts with the requested independent game name, so the live
-product returns to a distinct name as **Tetramorph**: `Tetra` keeps the four-cell
-falling-block vocabulary legible, while `morph` describes the changing board states,
+product returns to a distinct name as **TetraMorph**: `Tetra` keeps the four-cell
+falling-block vocabulary legible, while `Morph` describes the changing board states,
 Survival pressure, Puzzle routes, and 异变 items without claiming a copied product
 identity.
 
-- Every live product mark—the browser document title, loading shell, home header,
-  gameplay/library header, and accessible brand label—uses the editable plain text
-  `Tetramorph`. There is no Chinese companion name, commercial logo treatment, or
-  claim of affiliation with another game.
+- Every live product mark—the browser document title, loading shell, gameplay/library
+  header, and accessible brand label—uses the editable plain text `TetraMorph`. The
+  homepage deliberately has no duplicate top-left brand: its sole page-level `h1` is
+  the dark-field wordmark. There is no Chinese companion name, commercial logo
+  treatment, or claim of affiliation with another game.
 - The homepage's dark left field replaces the generic `选择模式` heading with the
-  Tetramorph wordmark. It is a single calm, high-contrast typographic focal point;
+  TetraMorph wordmark. It is a single calm, high-contrast typographic focal point;
   the four mode entrances remain the interaction surface and retain no rule or record
   prose. The effect may use only original CSS light/shadow and the existing mineral
   palette—no grid, scanline, diagonal ornament, or copied mark.
-- The display face is **Bricolage Grotesque**, sourced through its local
-  `@fontsource-variable` package rather than a network stylesheet. Chinese UI copy
+- The display face is **Tektur**, sourced through its local `@fontsource-variable`
+  package rather than a network stylesheet. Its compact cut geometry gives the long
+  TetraMorph wordmark more tension without resorting to a copied logo. Chinese UI copy
   keeps the existing readable system/Noto fallback chain. This keeps the visual result
   available offline and suitable for a later application package.
 - This is a frontend/metadata-only slice: it must not change game Core, mode rules,
