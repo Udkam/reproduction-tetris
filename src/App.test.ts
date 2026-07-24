@@ -345,6 +345,8 @@ describe('T6 frontend mode binding', () => {
     const controls = view.container.querySelector<HTMLElement>('[data-testid="settings-controls"]')!;
     const settingsLeaderboard = view.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')!;
     const shortcuts = view.container.querySelector<HTMLElement>('[data-testid="settings-shortcuts"]')!;
+    const gameplay = view.container.querySelector<HTMLElement>('[data-testid="keyboard-gameplay"]')!;
+    const shortcutKeys = view.container.querySelector<HTMLElement>('[data-testid="keyboard-shortcuts"]')!;
     const rules = view.container.querySelector<HTMLElement>('[data-testid="settings-rules"]')!;
     expect(toggle.textContent).toBe('音效开');
     expect(music.textContent).toBe('音乐开');
@@ -358,7 +360,9 @@ describe('T6 frontend mode binding', () => {
     expect(controls.textContent).toContain('控制');
     expect(settingsLeaderboard.textContent).toContain('本模式排行消行 · 前 50112 行3,210 分 · 2026.07.24');
     expect(rules.textContent).toContain('补满任意横行即可消除并得分。');
-    expect(shortcuts.textContent).toContain('键盘S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行← → 移动↑ 旋转↓ 快速下落Space 直接落底');
+    expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
+    expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
+    expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     expect(resume.dataset.arrowSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));

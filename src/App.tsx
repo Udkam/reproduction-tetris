@@ -680,18 +680,24 @@ function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: A
   return (
     <section className="settings-shortcuts" data-testid="settings-shortcuts" aria-label={copy.labels.keyboard}>
       <strong>{copy.labels.keyboard}</strong>
-      <span><kbd>S</kbd> {copy.labels.settingsShortcut}</span>
-      <span><kbd>P</kbd> {copy.labels.pauseResume}</span>
-      <span><kbd>R</kbd> {copy.labels.restartConfirm}</span>
-      <span><kbd>Esc</kbd> {copy.labels.back}</span>
-      <span><kbd>← →</kbd> {copy.labels.select}</span>
-      <span><kbd>↑ ↓</kbd> {copy.labels.switch}</span>
-      <span><kbd>Enter</kbd> {copy.labels.activate}</span>
-      <span><kbd>← →</kbd> {copy.labels.move}</span>
-      <span><kbd>↑</kbd> {copy.labels.rotate}</span>
-      <span><kbd>↓</kbd> {copy.labels.softDrop}</span>
-      <span><kbd>Space</kbd> {copy.labels.hardDrop}</span>
-      {mode === 'puzzle' && <span><kbd>Z</kbd> {copy.labels.undo}</span>}
+      <div className="settings-shortcuts__group" data-testid="keyboard-gameplay">
+        <span className="settings-shortcuts__group-label">{copy.labels.gameplayControls}</span>
+        <span><kbd>← →</kbd> {copy.labels.move}</span>
+        <span><kbd>↑</kbd> {copy.labels.rotate}</span>
+        <span><kbd>↓</kbd> {copy.labels.softDrop}</span>
+        <span><kbd>Space</kbd> {copy.labels.hardDrop}</span>
+        {mode === 'puzzle' && <span><kbd>Z</kbd> {copy.labels.undo}</span>}
+      </div>
+      <div className="settings-shortcuts__group" data-testid="keyboard-shortcuts">
+        <span className="settings-shortcuts__group-label">{copy.labels.shortcuts}</span>
+        <span><kbd>S</kbd> {copy.labels.settingsShortcut}</span>
+        <span><kbd>P</kbd> {copy.labels.pauseResume}</span>
+        <span><kbd>R</kbd> {copy.labels.restartConfirm}</span>
+        <span><kbd>Esc</kbd> {copy.labels.back}</span>
+        <span><kbd>← →</kbd> {copy.labels.select}</span>
+        <span><kbd>↑ ↓</kbd> {copy.labels.switch}</span>
+        <span><kbd>Enter</kbd> {copy.labels.activate}</span>
+      </div>
     </section>
   );
 }
