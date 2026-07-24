@@ -5411,14 +5411,14 @@ kbd,
     "controls reference"
     "record record";
   gap: 12px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .settings-controls {
   grid-area: controls;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
-  min-height: 330px;
-  gap: 11px;
+  grid-template-rows: auto auto auto auto;
+  min-height: 0;
+  gap: 10px;
   padding: 16px;
   border-color: #b8cbd3;
   box-shadow: 0 6px 16px rgba(20, 51, 72, .06);
@@ -5438,7 +5438,7 @@ kbd,
   grid-area: reference;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  min-height: 330px;
+  min-height: 0;
   gap: 10px;
 }
 
@@ -5449,8 +5449,19 @@ kbd,
 
 .settings-controls .audio-controls {
   min-height: 0;
-  align-content: center;
-  padding-block: 12px;
+  align-content: start;
+  gap: 8px;
+  padding-block: 10px;
+}
+
+.settings-controls .audio-controls__switches,
+.settings-controls .settings-sheet__actions {
+  gap: 6px;
+}
+
+.settings-controls .audio-toggle,
+.settings-controls .settings-sheet__actions > button {
+  min-height: 40px;
 }
 
 .settings-shortcuts {
