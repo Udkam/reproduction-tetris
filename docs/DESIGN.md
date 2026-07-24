@@ -5,14 +5,17 @@
 
 ## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
 
-**Status:** the reopened UI-only source candidate `fe6db5f..7ab0886` has replaced the
-rejected oversized Settings regions with content-sized bands and passed its fresh local
-browser/typecheck/test/build evidence. It remains **pending renewed independent QA**;
-no release or push may be inferred from local evidence. The prior product candidate
-`e9db541` has historical source/browser evidence (`b603d6d`) and QA acceptance
-(`abc0f25`) only for its pre-correction source. T13.13 remains accepted historical
-evidence, but its additive item-timer and music decisions are superseded wherever they
-conflict with this section.
+**Status:** player review rejects the first reopened Settings attempt
+`fe6db5f..7ab0886`: despite compact internal content, its unequal controls/keyboard
+two-column row still leaves a structural empty quadrant. Its evidence `e87b62f` is
+therefore diagnostic only, and renewed QA is stopped. The second UI-only correction
+must use a full-width, content-led sheet composition, preserve a dimmed live board
+behind every action sheet, and give both Puzzle forecasts their own labelled visual
+segment. No release or push may be inferred from earlier local evidence. The prior
+product candidate `e9db541` has historical source/browser evidence (`b603d6d`) and
+QA acceptance (`abc0f25`) only for its pre-correction source. T13.13 remains accepted
+historical evidence, but its additive item-timer and music decisions are superseded
+wherever they conflict with this section.
 
 - **Puzzle selector completion token.** The centred numeral/tick replacement is an
   already accepted baseline and is outside this pass. It remains frozen: a level card
@@ -30,10 +33,17 @@ conflict with this section.
   more expressive through original weight, spacing, hierarchy, and data treatment—not
   through transient synthetic bolding.
   Settings uses content-sized structural bands rather than a visually balanced but
-  empty two-column poster: controls and keyboard compress to their real content height;
-  concise rules pack into a deliberate compact grid; and an empty leaderboard uses a
-  short useful state row instead of an enlarged blank card. Desktop, Chinese/English,
-  and compact portrait/landscape preserve the same no-structural-whitespace principle.
+  empty two-column poster: one full-width control band actively distributes language,
+  sound, and actions; full-width keyboard, concise-rule, and record bands follow at
+  their intrinsic heights. There is no unequal side-by-side card row, expanded spacer,
+  or stretched grid track. An empty leaderboard uses a short useful state row instead
+  of an enlarged blank card. Desktop, Chinese/English, and compact portrait/landscape
+  preserve the same no-structural-whitespace principle. A modal is an interruption,
+  not a scene replacement: it dims the already-rendered board while retaining its
+  current field, active piece, and forecast behind Settings, pause, restart, and exit.
+  Puzzle Next uses two individually bounded in-well compartments, respectively marked
+  `① 下一个` / `② 后一个` (and English equivalents), so its labels cannot detach from
+  their actual pieces.
 - **Music removal.** Remove the current procedural music, its controls, and its
   lifecycle from the live product. Original effects remain enabled and independently
   controllable. This pass does not download, embed, or substitute external music.
@@ -70,9 +80,11 @@ conflict with this section.
 
 1. **Contract checkpoint (coordinator):** this record and `docs/CURRENT_TASK.md` only.
 2. **Entry/selector/UI checkpoint:** `src/App.tsx`, `src/App.test.ts`,
-   `src/styles.css`, `src/ui/localization.ts`, `src/leaderboard.ts`, and direct tests
-   may change together for countdown, node replacement, Settings, records, rail text,
-   two-piece forecast layout, and typography. It may not change Core rules.
+   `src/styles.css`, `src/ui/localization.ts`, `src/leaderboard.ts`,
+   `src/game/render/TetrisRenderer.ts`, and direct renderer/UI tests may change
+   together for countdown, node replacement, Settings, records, rail text, two-piece
+   forecast geometry, modal backdrop preservation, and typography. It may not change
+   Core rules.
 3. **Music removal checkpoint:** `src/game/audio/AudioEngine.ts`, its direct tests, and
    the directly dependent App/localization paths may change only to remove music while
    preserving original effect audio and teardown.

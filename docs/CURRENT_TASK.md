@@ -8,16 +8,19 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-25): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
-AND SURVIVAL DEBRIS — Settings-density source candidate frozen for renewed QA.** The
-previous candidate `e9db541` passed its final gates and independent QA `abc0f25`, but
-the subsequent player review correctly rejected its structural blanks. The bounded
-replacement source checkpoints `fe6db5f` and `7ab0886` now pass final typecheck, full
-test/build, and fresh desktop Chinese/English, portrait, and landscape browser review.
-It is still **not accepted or pushable** until a new read-only QA disposition reviews
-the reopened range. The previous T13.13 repair remains historical evidence only; the
-new player-directed changes below supersede its additive timer and music decisions
-where they conflict. The user-owned uncommitted `package-lock.json` remains outside
-every checkpoint and must remain untouched.
+AND SURVIVAL DEBRIS — reopened for a second Settings macro-layout and live-overlay
+correction.** The previous candidate `e9db541` passed its final gates and independent
+QA `abc0f25`, but the subsequent player review correctly rejected its structural
+blanks. The first replacement attempt `fe6db5f..7ab0886` and its local evidence
+`e87b62f` are now historical diagnostic evidence only: the player correctly identified
+that the unequal controls/keyboard two-column row still creates a structural empty
+quadrant. The same review also found that sheets hide the live board and that Puzzle's
+two Next labels do not identify their respective previews. QA, acceptance, and push
+remain stopped until this bounded second correction has passed a fresh visual matrix
+and a new independent disposition. The previous T13.13 repair remains historical
+evidence only; the new player-directed changes below supersede its additive timer and
+music decisions where they conflict. The user-owned uncommitted `package-lock.json`
+remains outside every checkpoint and must remain untouched.
 
 ### T13.14 active delivery contract
 
@@ -33,10 +36,17 @@ every checkpoint and must remain untouched.
    stable, intentional hierarchy without unstable weight flashes.
    **Settings-density correction:** no desktop or compact-mode sheet may retain an
    oversized content card, an empty grid quadrant, or a row stretched solely to match
-   unrelated content. Recompose its actual controls, keyboard groups, concise rules,
-   and empty/non-empty record state into content-sized bands with deliberate shared
-   edges. Every mode and locale must use the same dense structural grammar; a record
-   footer may reserve only its useful header/row height, never a visual placeholder.
+   unrelated content. Replace the unequal top-card grid with full-width,
+   content-driven bands: the controls themselves distribute language, sound, and
+   actions across their real horizontal tracks; keyboard, concise rules, and records
+   each occupy an intrinsic full-width band below it. Every mode and locale must use
+   the same dense structural grammar; a record footer may reserve only its useful
+   header/row height, never a visual placeholder. Every Settings, pause, restart, and
+   exit sheet must keep the single mounted Pixi board visibly dimmed beneath it; a
+   modal may block input but may never make the underlying game field disappear.
+   Puzzle's two forecast pieces must use two physically distinct, numbered in-well
+   segments, each caption attached to the piece it describes (`① 下一个` / `② 后一个`,
+   with matching English), not a detached legend above one ambiguous well.
 3. **Remove only music.** Delete the current music output, toggle, copy, and lifecycle
    while preserving adjustable original sound effects and their safe teardown. Do not
    fetch or bundle replacement music in this delivery.
@@ -63,11 +73,15 @@ every checkpoint and must remain untouched.
    fall rate, legal spawn/collision, locking, and clear participation.
 6. **Execution and acceptance discipline.** Commit the contract before source. Keep
    entry/UI, music, Mutation, and Survival changes as separately reviewable source
-   checkpoints with their direct tests. After the last source change run one typecheck,
-   full suite, build, and real browser batch across desktop/portrait/landscape/reduced
-   motion. Recheck each requirement in more than one pass; do not label the task or any
-   visible mechanism complete based only on static inspection. Independent QA remains
-   read-only until a candidate range exists.
+   checkpoints with their direct tests. The second UI correction may jointly change
+   `src/App.tsx`, `src/App.test.ts`, `src/styles.css`, `src/game/render/TetrisRenderer.ts`,
+   and its direct renderer test only to preserve the sheet backdrop and give the two
+   Puzzle forecasts their own geometry; it may not change Core state, queues, or rules.
+   After the last source change run one typecheck, full suite, build, and real browser
+   batch across desktop/portrait/landscape/reduced motion. Recheck each requirement in
+   more than one pass; do not label the task or any visible mechanism complete based
+   only on static inspection. Independent QA remains read-only until a candidate range
+   exists.
 
 ### T13.14 Survival atomic source-checkpoint exception
 

@@ -1,5 +1,19 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T13.14 Settings macro-layout, modal-background, and Next re-open — 2026-07-25
+
+- Player review rejects the first density candidate even after its local audit: the
+  unequal controls/keyboard top row retains a structural empty quadrant. The sheet
+  must be recomposed as full-width, intrinsic-height bands rather than adjusted with
+  smaller text or forced matching heights.
+- The same review finds that opening Settings, pause, restart, or exit hides the live
+  Pixi board behind the dimmer, and that Puzzle's detached 1/2 legend does not identify
+  its two actual previews. This UI-only re-open restores a visibly dimmed board under
+  every sheet and turns the two forecast areas into distinct labelled in-well segments.
+- `e87b62f` and its pending QA are superseded diagnostic evidence. Release/push remain
+  paused; all source gates and an independent review must be repeated after the new
+  candidate. The inherited `package-lock.json` remains excluded.
+
 ### T13.14 Settings-density correction reopened — 2026-07-25
 
 - Independent QA `abc0f25` accepted the frozen pre-correction candidate

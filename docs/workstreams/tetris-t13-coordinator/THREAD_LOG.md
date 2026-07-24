@@ -1,5 +1,24 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-25 — TETRIS-T13.14 second Settings macro-layout and live-overlay correction opened
+
+- State change: player review rejects `fe6db5f..7ab0886` and its local evidence
+  `e87b62f`. The top controls/keyboard grid still leaves a structural empty quadrant;
+  local compactness measurements did not test this macro-layout failure. The interrupted
+  renewed QA must not be used for acceptance.
+- Added scope: Settings, pause, restart, and exit sheets must retain a visibly dimmed
+  live Pixi board rather than hiding the canvas. Puzzle's detached `1/2` legend must
+  become two individually bounded in-well labelled forecast segments, without changing
+  queue order or Core simulation.
+- Exact new product/test boundary: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/game/render/TetrisRenderer.ts`, and only a directly necessary renderer test.
+  The macro layout becomes full-width intrinsic bands (control, keyboard, rules,
+  record), not equal-height columns or a spacer. `package-lock.json` remains inherited,
+  unstaged, and untouched.
+- Next: commit this contract, make the focused UI/renderer checkpoint and targeted
+  tests, then repeat the full visual matrix with explicit assertions for visible modal
+  board pixels and one label per preview segment before requesting a fresh read-only QA.
+
 ## 2026-07-25 — TETRIS-T13.14 post-QA Settings-density correction opened
 
 - State change: coordinator read the independent **PASS — ACCEPT** task report and
