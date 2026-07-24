@@ -3,6 +3,40 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## T13.15 Puzzle completion ceremony and Survival geology
+
+**Status:** active player-directed presentation pass. T13.14's mechanics and accepted
+visual evidence remain the baseline. This pass does not change Core simulation,
+campaign content, puzzle best-record semantics, or Survival debris; it gives two
+currently flat visual outcomes a stronger original finish.
+
+- **Puzzle completion ceremony.** A successful Puzzle result is an earned resolution,
+  not the generic `原有方块已清除` termination sheet. It holds one compact deep-mineral
+  field with four small rising tetromino fragments and a short radial trace—an original
+  “assembled signal” gesture, not confetti or a commercial victory screen. The first
+  finish says **恭喜你破解谜题** and makes the first-clear state unmistakable. A strict
+  lower piece count says **新的个人纪录** and compares the old and new counts. A later
+  non-record finish says **谜题再次破解**, states the run facts, and retains the saved
+  best without claiming a record. The level name, ordinal, route, anchor, and solution
+  remain absent. The familiar **重来** and **返回关卡库** actions stay in their existing
+  order and retain arrow/Enter/focus behavior. Motion lasts under 700 ms, is bounded
+  inside the sheet, and resolves to a fully informative static frame under reduced
+  motion.
+- **Survival geology.** Permanent bedrock must read as a pressure shelf, not a stack of
+  equal UI tiles. Adjacent canonical cells join into a continuous stratified basalt
+  mass: an uneven exposed crest, dark coarse outer contour, two restrained mineral
+  planes, offset vertical cleavage, and deterministic hairline fractures. The visual
+  remains aligned to canonical cells for play readability, but the outside silhouette
+  and stratum seams deliberately break the checkerboard impression. Clearable falling
+  stones stay separate, smaller-looking, and lighter/slate-coloured so their danger /
+  opportunity role is legible at a glance. No texture asset, external art, filter, or
+  gameplay-state exception is introduced.
+- **Verification direction.** Browser evidence must visibly prove all three Puzzle
+  completion states, reduced-motion stillness, and the new three-row bedrock shelf at
+  desktop and compact size. Renderer tests freeze the deterministic geological
+  material/geometry route; App tests freeze the outcome classification before progress
+  persistence writes.
+
 ## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
 
 **Status:** accepted. Player review correctly rejected the first reopened Settings

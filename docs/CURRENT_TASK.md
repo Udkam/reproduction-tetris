@@ -7,8 +7,55 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-25): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
-AND SURVIVAL DEBRIS — accepted after the third Settings/forecast correction.** The
+Current execution status (2026-07-25): **T13.15 PUZZLE COMPLETION CEREMONY AND
+SURVIVAL GEOLOGY — active.** T13.14 remains accepted after its third Settings/forecast
+correction. The new player-directed pass changes only the Puzzle success presentation
+and the Pixi treatment of permanent Survival bedrock; it must not alter Puzzle routes,
+completion semantics, records, Survival pressure, clearable falling stones, or Core
+simulation. The inherited user-owned `package-lock.json` remains outside every
+checkpoint and must remain untouched.
+
+### T13.15 active delivery contract
+
+1. **Puzzle completion is a small ceremony, not a generic game-over sheet.** On a
+   Puzzle success, preserve the existing modal focus trap, keyboard/touch actions,
+   replay action, and return-to-library action, but present a dedicated celebratory
+   surface. Determine the outcome exactly once from the persisted best **before** the
+   completion write: a first completion must visibly contain `恭喜你破解谜题`; a strictly
+   lower piece count is a personal-record result with distinct copy; an equal or higher
+   count is a successful replay without a false record claim. The surface may show
+   only useful completion facts (placed pieces, cleared lines, and the saved best),
+   never reintroduce a level name/ordinal, route hint, or solution. Its original
+   tetromino-fragment/constellation animation must remain local, brief, and decorative
+   only; reduced motion shows the same semantic end frame with no drifting or looping.
+   It must not obscure the dimmed live board or steal focus from the first action.
+2. **Permanent bedrock is a continuous geological shelf.** It retains its exact typed
+   board-cell semantics, collision, unbreakability, rise/removal timing, score path,
+   and deterministic replay. The Pixi renderer must make adjacent permanent bedrock
+   cells read as a connected, irregular basalt shelf: a broken outer crest, layered
+   face planes, restrained seams, and deterministic fracture variation rather than a
+   row of identical square tiles. Its warm-grey/charcoal geology must remain clearly
+   distinct from playable minos and from the lighter, clearable independent falling
+   stones. Rendering is presentation-only: no hitbox, board coordinate, debris, or
+   line-clear behavior may change.
+3. **Bounded implementation.** The celebration/UI checkpoint may change only
+   `src/App.tsx`, `src/App.test.ts`, `src/ui/ActionSheet.tsx`,
+   `src/ui/localization.ts`, and `src/styles.css`. The bedrock renderer checkpoint may
+   change only `src/game/render/TetrisRenderer.ts`,
+   `src/game/render/TetrisRenderer.test.ts`, `src/game/render/theme.ts`, and
+   `src/game/render/theme.test.ts`. Neither checkpoint may change Core state,
+   deterministic queues, persistence format, scoring, or dependencies.
+4. **Acceptance.** Add direct first/best/replay-result tests and bedrock/material
+   renderer tests. After the last source change run typecheck, the complete suite,
+   production build, and one real browser pass covering a first Puzzle completion, a
+   record Puzzle completion, reduced motion, and a live three-row Survival opening at
+   desktop plus compact viewport. Verify one canvas, no DOM cell grid, no overflow,
+   no console/page errors, and no listener/ticker/audio/canvas leak. Independent QA
+   remains read-only until a candidate range exists.
+
+### T13.14 accepted historical record
+
+**T13.14 DIRECT GAMEPLAY CLARITY, MUTATION, AND SURVIVAL DEBRIS — accepted.** The
 first replacement attempt `fe6db5f..7ab0886` remains historical diagnostic evidence:
 the player correctly identified its structural empty quadrant. The second replacement
 source `18fe992` restored the live board but its full-width Settings stack and nested
