@@ -1002,3 +1002,23 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   P0–P2 finding; their disposition is recorded in
   `docs/workstreams/tetris-t12-coordinator/QA_T12_5.md`. `Solutions/Solution-1.md`
   remains local-only and is confirmed ignored by the existing `Solutions/` rule.
+
+## 2026-07-24 — TETRIS-T13.13 multi-pass repair (in progress)
+
+- Contract checkpoint: `fcd6fce`. This slice is intentionally split into Core, visible
+  interface, renderer/audio, real-browser, and independent-QA passes; none of the
+  remaining work is treated as accepted merely because a source checkpoint exists.
+- Core checkpoint: `740ac70`. It freezes pre-clear carrier snapshots so an entirely
+  erased carrier still triggers exactly once, preserves Bomb chains, makes each timed
+  repeat add 600 ticks, and implements multiplier `1 → 2 → 4` with deterministic
+  expiry. Targeted Core tests (73) and typecheck were passed by the Core owner.
+- Interface checkpoint: `0de3ac8`. It replaces literal completion glyphs with a
+  lower-rail SVG seal, removes preview white filtering, repairs selected-node contrast,
+  moves the best-step label inline, right-aligns leaderboard dates without middle dots,
+  lets Settings opened from an existing pause continue directly to play, and gives the
+  right rail a separate Mutation status/Next hierarchy. Focused `src/App.test.ts`
+  passed (20 tests) after this checkpoint.
+- Pending verification: renderer and AudioEngine checkpoints, targeted merged tests,
+  final typecheck/full test/build, real desktop and narrow browser evidence, a
+  read-only independent QA pass, final changelog disposition, and the already
+  user-authorized non-force push. `package-lock.json` remains inherited and unstaged.
