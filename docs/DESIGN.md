@@ -12,8 +12,8 @@ therefore diagnostic only, and renewed QA is stopped. The second UI-only correct
 correctly restores the dimmed live board, but the full-width Settings stack and the
 nested two-card Puzzle forecast remain rejected: they read as a cramped development
 table and stacked form fields rather than a game instrument. The renewed correction
-uses a connected upper Settings console and one continuous two-part dark forecast
-rack. No release or push may be inferred from earlier local evidence. The prior
+uses a connected upper Settings console and one ordinary dark Next well with two
+plain numbered rows. No release or push may be inferred from earlier local evidence. The prior
 product candidate `e9db541` has historical source/browser evidence (`b603d6d`) and
 QA acceptance (`abc0f25`) only for its pre-correction source. T13.13 remains accepted
 historical evidence, but its additive item-timer and music decisions are superseded
@@ -27,9 +27,9 @@ wherever they conflict with this section.
   countdown and its board overlay. Recompose Settings into a compact, intentionally
   filled sheet in its established order: controls, keyboard, rules, then records.
   Survival record rows show only survival duration and cleared lines. Puzzle removes
-  the redundant `通关目标` label and names its counter `操作数`; its forecast uses two
-  clearly labelled in-panel wells for the immediate and following pieces, rather than
-  a floating `②`. Classic and 异变 call their gravity metric `下落速度/格` (and use the
+  the redundant `通关目标` label and names its counter `操作数`; its forecast uses one
+  ordinary two-row Next well with a plain `1` / `2` marker on the left of each upcoming
+  piece, rather than a floating `②`. Classic and 异变 call their gravity metric `下落速度/格` (and use the
   matching English unit). The page wordmark remains the only decorative display face;
   all other visible typography must be deliberately readable, stable, bilingual, and
   more expressive through original weight, spacing, hierarchy, and data treatment—not
@@ -44,11 +44,11 @@ wherever they conflict with this section.
   no-structural-whitespace principle. A modal is an interruption,
   not a scene replacement: it dims the already-rendered board while retaining its
   current field, active piece, and forecast behind Settings, pause, restart, and exit.
-  Puzzle Next uses two physical, labelled halves inside one continuous dark forecast
-  rack. Each half is marked `① 下一个` / `② 后一个` (and English equivalents) through
-  restrained type and a short accent rule, so its label cannot detach from its actual
-  piece; circular number badges, pale label strips, nested cards, and doubled borders
-  are prohibited.
+  Puzzle Next reuses the ordinary single dark forecast well as two stacked physical
+  rows. Each is marked only with a plain left-side `1` or `2` (and accessible Chinese/
+  English descriptions), so the order cannot detach from its actual piece; circular
+  number badges, pale label strips, split cards, nested cards, and doubled borders are
+  prohibited.
 - **Music removal.** Remove the current procedural music, its controls, and its
   lifecycle from the live product. Original effects remain enabled and independently
   controllable. This pass does not download, embed, or substitute external music.

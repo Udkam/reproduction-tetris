@@ -51,11 +51,11 @@ remain untouched.
    Settings, pause, restart, and exit sheet must keep the single mounted Pixi board
    visibly dimmed beneath it; a modal may block input but may never make the underlying
    game field disappear.
-   Puzzle's two forecast pieces must use two physically distinct, numbered in-well
-   segments inside one continuous dark forecast rack. `① 下一个` / `② 后一个` (with
-   matching English) attach directly to their respective halves through restrained
-   type and a short accent rule; no detached legend, circular number badge, pale label
-   strip, nested card, or doubled preview border may reappear.
+   Puzzle's two forecast pieces must reuse the ordinary single dark **Next** well as
+   two simple stacked rows. Each row carries only a plain left-side `1` or `2` (with
+   matching accessible Chinese/English descriptions) and its canonical piece; no
+   split card, accent rule, detached legend, circular badge, pale label strip, nested
+   card, or doubled preview border may reappear.
 3. **Remove only music.** Delete the current music output, toggle, copy, and lifecycle
    while preserving adjustable original sound effects and their safe teardown. Do not
    fetch or bundle replacement music in this delivery.
