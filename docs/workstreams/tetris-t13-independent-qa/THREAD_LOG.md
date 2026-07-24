@@ -110,3 +110,43 @@
   `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
 - **Next action:** coordinator may add its acceptance/changelog record and push after
   its own exact-path documentation checkpoint.
+
+## 2026-07-24 — T13.11 brighter mode glyphs and keyboard-order QA
+
+- **Task / review boundary:** `TETRIS-T13.11-INDEPENDENT-QA-001`, read-only review of
+  `25fa232..fc9cc3c` at candidate `fc9cc3ca2a00956dd1cc66d35fecfa3a53aa8d2b`.
+  Reviewed only the authorized contract, `App`/localization/styles/direct test diff,
+  and the live coordinator-owned server at `http://127.0.0.1:5176`. Product source,
+  contracts, staging, branch state, server ownership, and the pre-existing user-owned
+  `package-lock.json` edit were not altered.
+- **Commands / checks actually run:** `git status --short`; `git log --oneline -5`;
+  `git diff --name-status 25fa232..fc9cc3c`; `git diff --check 25fa232..fc9cc3c`;
+  focused inspection of `git show fc9cc3c -- src/App.tsx src/App.test.ts
+  src/ui/localization.ts src/styles.css`; and an isolated Chrome QA pass on the live
+  port. The source range is exactly the two contract paths plus the four authorized
+  source/test paths; `git diff --check` is clean. The unrelated lockfile remains the
+  sole dirty path and was excluded.
+- **Homepage evidence:** the full desktop capture visibly retains four distinct,
+  brighter teal, blue, amber, and violet glyph/action accents on the mineral-white
+  chooser. Their four-cell shapes and structural dividers remain clear; no dark panel,
+  layout, or action-treatment regression was observed.
+- **Settings evidence:** Chinese and English Settings both present the two-column
+  **玩法操作 / Gameplay** group before **快捷键 / Shortcuts**. The first group contains
+  left/right move, up rotate, down soft drop, and Space hard drop; the Puzzle run adds
+  `Z Undo` in that same first group. The following group contains `S`, `P`, `R`,
+  `Esc`, selector arrows, and Enter. The live Classic/Puzzle right rail contains only
+  mode data and Next previews; it has no duplicate keyboard guide. The Puzzle audit
+  also verified one canvas, zero DOM board cells, and the existing `Undo (Z)` touch
+  control.
+- **Narrow-screen / browser evidence:** at 390 x 844, the English Puzzle Settings
+  guide is fully readable in two columns; document width is exactly 390 px with no
+  horizontal overflow, and the guide bounds stay within 28.8–361.6 px. The QA browser
+  collected zero warning/error console messages. Its temporary viewport override was
+  reset and the QA tab was finalized; the coordinator-owned `127.0.0.1:5176` server
+  was not stopped.
+- **Disposition:** **PASS — ACCEPT.** No P0–P2 finding in
+  `25fa232..fc9cc3c`; coordinator may record acceptance and push the candidate.
+- **Exact changed path:** this independent QA verdict only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator records acceptance/changelog, performs the bounded
+  documentation checkpoint, pushes `main`, then releases its own local review server.
