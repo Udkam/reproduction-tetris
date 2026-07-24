@@ -1169,3 +1169,38 @@
   Survival stone/debris stream, then run the final T13.14 full quality gates and a
   cross-mode desktop/portrait/landscape/reduced-motion browser batch before asking for
   independent read-only QA.
+
+## 2026-07-25 — T13.14 readable Puzzle Next numeral correction
+
+- Task: correct the player-reported malformed left `1` in Puzzle's shared two-row
+  Next well without reopening Puzzle queue semantics, Settings composition, or Core.
+  Accepted-source base: `e9db541`; corrective UI/contract sequence:
+  `a58b98b..866ef0a`, with current source checkpoint `866ef0a`. Exact product/test
+  paths for the final correction are `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/TetrisRenderer.test.ts`, and `src/styles.css`; the separate
+  contract checkpoint `e09cd21` updates `docs/CURRENT_TASK.md` and `docs/DESIGN.md`.
+  The user-owned `package-lock.json` remains explicitly excluded.
+- Delivery: Pixi no longer draws a custom, partial-stroke numeral. The same ordinary
+  dark Next well retains its two physical rows and canonical previews, while each row
+  now overlays a readable, loaded JetBrains Mono `1` or `2` at the left edge. The
+  DOM marker stays transparent to input, uses tabular digits, and rises above only the
+  canvas-owned well instead of creating a second card or label strip. Responsive Puzzle
+  rail stacking preserves the markers at desktop, short landscape, and portrait widths.
+- Focused commands: `npm.cmd run typecheck`; `npm.cmd run test --
+  src/App.test.ts src/game/render/TetrisRenderer.test.ts` (**2 files / 31 tests**);
+  and the required `web_game_playwright_client.js` Puzzle-entry run all passed.
+  Inspected captures include `.local/audits/t13.14/modal-background-next/puzzle-live.png`,
+  `puzzle-short-landscape.png`, and `puzzle-portrait.png`; the portrait report confirms
+  two 44 px forecast rows and no overflow.
+- Final gates after the last source edit: `npm.cmd run typecheck`; `npm.cmd run test`
+  (**22 files / 165 tests**); and `npm.cmd run build` (**746 modules**) all passed.
+  Fresh local browser audits passed: `modal-background-next-audit.mjs` (two labelled
+  rows, desktop/landscape/portrait, live board behind four modals),
+  `settings-music-removal-audit.mjs` (16 captures, zero errors),
+  `reduced-motion-audit.mjs` (single visible canvas and no animation/overflow),
+  `mutation-live-audit.mjs` (four carrier/effect states), and
+  `survival-stone-audit.mjs` (visible y=20 to y=21 stone fall, one canvas, zero DOM
+  cells, no overflow). Representative final frames were visually inspected.
+- Blocker: none in the implementation. Next: independent read-only QA reviews the
+  exact `e9db541..866ef0a` corrective range and its fresh evidence before any
+  T13.14 acceptance/changelog/push claim.
