@@ -3,6 +3,77 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
+
+**Status:** active, unverified. This is a direct execution pass for the current player
+feedback. T13.13 remains accepted historical evidence, but its additive item-timer and
+music decisions are superseded wherever they conflict with this section. No claim in
+this record is complete until the stated source, browser, and independent-QA checks
+exist on the final candidate.
+
+- **Puzzle selector completion token.** A level card has exactly one centered state
+  token. An unfinished card shows its two-digit numeral at the geometric centre. A
+  completed card replaces that numeral with one centred accessible SVG tick of the
+  same visual footprint. It must never retain the numeral, move it to accommodate a
+  tick, or add a lower-left/corner badge, medallion, or decorative completion mark.
+- **Entry, Settings, rail, and language.** Restore the visible 3 → 2 → 1 entry
+  countdown and its board overlay. Recompose Settings into a compact, intentionally
+  filled sheet in its established order: controls, keyboard, rules, then records.
+  Survival record rows show only survival duration and cleared lines. Puzzle removes
+  the redundant `通关目标` label and names its counter `操作数`; its forecast uses two
+  clearly labelled in-panel wells for the immediate and following pieces, rather than
+  a floating `②`. Classic and 异变 call their gravity metric `下落速度/格` (and use the
+  matching English unit). The page wordmark remains the only decorative display face;
+  all other visible typography must be deliberately readable, stable, bilingual, and
+  more expressive through original weight, spacing, hierarchy, and data treatment—not
+  through transient synthetic bolding.
+- **Music removal.** Remove the current procedural music, its controls, and its
+  lifecycle from the live product. Original effects remain enabled and independently
+  controllable. This pass does not download, embed, or substitute external music.
+- **Mutation.** Rebuild the four carrier materials and activation language around
+  recognisable original semantics: frosted ice for Freeze, a dense gravity material
+  for Collapse, an ember-core Bomb, and a bright star/mineral glow for Multiplier.
+  Freeze leaves a bounded frost treatment while active; Collapse communicates heavy
+  downward pressure; Bomb produces a local clear explosion; and Multiplier carries a
+  clear score-light response. Effects are local, bounded, and reduced-motion safe.
+  Recollecting a timed item refreshes its remaining deterministic game time to
+  **exactly ten seconds** instead of adding duration. Multiplier retains its existing
+  deterministic strength progression but also refreshes to ten seconds. The active
+  rail state must make item identity and remaining time immediately legible; Bomb is
+  self-evident through its visual result and has no explanatory rail sentence.
+- **Survival.** Preserve the three-row opening bedrock and 13 → 6 second rise pressure,
+  but render bedrock as varied stone rather than plain squares. Add a deterministic
+  independent falling-stone stream: every 20 seconds initially, one or two stones
+  spawn over valid columns, descend at 1.5× normal tetromino fall speed, settle as
+  ordinary clearable board cells, and then reduce the next interval by one second down
+  to a 10-second floor. The stream must not reuse browser timing, must be replay-safe,
+  and must interact correctly with ordinary locking and line clears.
+
+### T13.14 execution checkpoints
+
+1. **Contract checkpoint (coordinator):** this record and `docs/CURRENT_TASK.md` only.
+2. **Entry/selector/UI checkpoint:** `src/App.tsx`, `src/App.test.ts`,
+   `src/styles.css`, `src/ui/localization.ts`, `src/leaderboard.ts`, and direct tests
+   may change together for countdown, node replacement, Settings, records, rail text,
+   two-piece forecast layout, and typography. It may not change Core rules.
+3. **Music removal checkpoint:** `src/game/audio/AudioEngine.ts`, its direct tests, and
+   the directly dependent App/localization paths may change only to remove music while
+   preserving original effect audio and teardown.
+4. **Mutation Core/render checkpoint:** `src/game/core/constants.ts`,
+   `src/game/core/types.ts`, `src/game/core/mutation.ts`, `src/game/core/engine.ts`,
+   direct Core tests, `src/game/render/theme.ts`, `src/game/render/TetrisRenderer.ts`,
+   and direct renderer tests form an authorised coupled boundary for timer reset,
+   material, and visual-event semantics. No Puzzle content may change.
+5. **Survival Core/render checkpoint:** the same typed Core boundary plus direct race
+   tests and the renderer/theme paths may change together only for deterministic
+   falling stones and stone materials. It must preserve fresh-seed replayability.
+6. **Verification:** each source checkpoint receives focused tests. The final candidate
+   requires typecheck, the full test suite, production build, and real desktop,
+   portrait, landscape, and reduced-motion browser evidence. Evidence must show the
+   3/2/1 overlay, centred number/tick replacement, compact Settings, two Next previews,
+   no music UI/runtime, a timer refresh, all four Mutation states, a visible stonefall,
+   one canvas/zero DOM cells, no overflow, and zero console/page errors.
+
 ## T13.13 selector legibility, settings hierarchy, and Mutation reliability pass
 
 **Status:** accepted bounded repair `fcd6fce..3e2bcd9` after separate Core,

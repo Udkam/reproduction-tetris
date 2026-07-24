@@ -7,14 +7,49 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.13 SELECTOR, SETTINGS, AND MUTATION
-RELIABILITY — accepted and ready for coordinator release.** The bounded repair closes
-the reported selector contrast/completion, preview/title, paused Settings, record
-date, Next visibility, and Mutation carrier-trigger defects. Acceptance applies only
-to this slice; later user-directed product work must open a new bounded task. T13.12
-remains historical evidence, not acceptance proof for this repair. The user-owned
-uncommitted `package-lock.json` remains outside every checkpoint and must remain
-untouched.
+Current execution status (2026-07-24): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
+AND SURVIVAL DEBRIS — active and unverified.** The previous T13.13 repair is accepted
+historical evidence only. The new player-directed changes below supersede its additive
+timer and music decisions where they conflict. The user-owned uncommitted
+`package-lock.json` remains outside every checkpoint and must remain untouched.
+
+### T13.14 active delivery contract
+
+1. **Execute the visible selector correction exactly.** Every unfinished Puzzle card
+   keeps its two-digit number geometrically centred. Completion replaces that one
+   token with a centred SVG tick; it must not show both, place a tick in a lower corner,
+   or shift the number. This is a visible replacement, not an added badge.
+2. **Restore and clarify live surfaces.** The board visibly counts 3, 2, then 1 before
+   input starts. Settings becomes compact and fully composed in the existing semantic
+   order (controls, keyboard, rules, records). Survival rankings show duration and
+   lines only. Puzzle removes the `通关目标` label and calls `已落子` `操作数`; its two
+   upcoming pieces are visibly labelled in the rail, with no floating `②`. Classic and
+   异变 display a gravity unit as `下落速度/格`. All non-wordmark UI typography receives
+   stable, intentional hierarchy without unstable weight flashes.
+3. **Remove only music.** Delete the current music output, toggle, copy, and lifecycle
+   while preserving adjustable original sound effects and their safe teardown. Do not
+   fetch or bundle replacement music in this delivery.
+4. **Mutation timer and visual contract.** Repeated Freeze, Collapse, or Multiplier
+   collection sets the respective remaining timer to exactly 600 game ticks (10 s),
+   never adds time. Multiplier may preserve the current deterministic 2×→4× progression
+   but its time still refreshes. Carrier and activation presentation must distinctly
+   show frost, heavy gravity, explosion, and score-light semantics; reduced motion
+   shows their final semantic state. The live status makes active item and countdown
+   obvious, while Bomb relies on its result rather than a rail explanation sentence.
+5. **Survival debris contract.** Survival keeps its three opening bedrock rows and
+   existing 13→6-second pressure. Bedrock becomes visually irregular stone. A seeded,
+   renderer-independent falling-stone stream begins at a 20-second interval, creates
+   one or two stones over legal columns, falls independently at 1.5× normal gravity,
+   locks as ordinary clearable cells, then shortens the next interval by one second to
+   a 10-second minimum. Core tests must prove replay determinism, interval floor,
+   fall rate, locking, and clear participation.
+6. **Execution and acceptance discipline.** Commit the contract before source. Keep
+   entry/UI, music, Mutation, and Survival changes as separately reviewable source
+   checkpoints with their direct tests. After the last source change run one typecheck,
+   full suite, build, and real browser batch across desktop/portrait/landscape/reduced
+   motion. Recheck each requirement in more than one pass; do not label the task or any
+   visible mechanism complete based only on static inspection. Independent QA remains
+   read-only until a candidate range exists.
 
 ### T13.13 active acceptance contract
 
