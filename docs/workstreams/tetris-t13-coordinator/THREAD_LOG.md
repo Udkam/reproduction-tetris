@@ -922,8 +922,8 @@
   one canvas/zero DOM cells, no touch rail, real Freeze carrier evidence, and zero
   console/page errors. QA evidence remains ignored under
   `.local/audits/t13-12-independent-qa/browser/`.
-- Resource cleanup: the coordinator's Browser connector page and local Chromium
-  shutdowns exceeded their harness close guards after evidence output. Before push,
-  release only their exact audit child processes; leave the user-owned lockfile and all
-  unrelated listeners untouched. Next: complete this docs checkpoint, verify process/
-  listener ownership, push accepted `main`, and report the retained user lockfile.
+- Resource cleanup complete: the coordinator's exact Vite process `32312` was verified
+  as `reproduction-tetris` port 5176, then force-stopped after evidence; process and
+  listener are both absent. No `chrome`/`chromium` audit process remains. Existing Edge
+  and unrelated Codex MCP processes were not targeted, and the user-owned lockfile
+  remains untouched. Next: push accepted `main` and report the retained lockfile.
