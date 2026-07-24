@@ -317,3 +317,47 @@
   DOM geometry/screenshots; deterministic Core behavior remains covered by the full
   test suite and final coordinator reports. Coordinator may now perform the separate
   acceptance/changelog/push steps without staging `package-lock.json`.
+
+## 2026-07-25 — T13.15 Puzzle ceremony / brown-bedrock independent QA
+
+- **Review boundary:** independent review of `6f55982..0295b39`; product source tip
+  `87aeeb5`, with `0295b39` as the coordinator candidate record. Product source,
+  Core, persistence, task/design contract, coordinator record, process state, and the
+  inherited `package-lock.json` were not edited by this reviewer.
+- **Static/result checks that pass:** `GameSession` snapshots
+  `puzzleBestPieceCount(puzzleProgressRef.current, completedId)` before invoking the
+  parent completion persistence callback, then classifies `null` as first, a strictly
+  lower count as record, and equal/higher counts as replay. The direct App test covers
+  all three states. The new `ActionSheet` only renders a description paragraph and
+  `aria-describedby` when the description is nonempty, so the Puzzle celebration does
+  not retain a blank paragraph or description relationship. Chinese and English both
+  provide first/record/replay outcome labels plus saved-best copy; existing autofocus,
+  two-action arrow selection, and Enter behavior are unchanged. The renderer-only
+  bedrock checkpoint restores the independent brown raised material and stops applying
+  stone facets to `BEDROCK_CELL`; falling clearable stones retain their separate slate
+  material/facets. No Core, runtime, queue, persistence, scoring, dependency, or
+  clearable-stone source path appears in the candidate range.
+- **Commands actually run:** `git diff --name-status 6f55982..0295b39`; `git diff
+  --check 6f55982..0295b39`; `git diff --cached --name-only`; focused source/test and
+  localization inspection; `npm.cmd run typecheck` (PASS); `npm.cmd run test -- --run
+  src/App.test.ts src/game/render/theme.test.ts` (2 files / 30 tests PASS);
+  `npm.cmd run test` (22 files / 166 tests PASS); and `npm.cmd run build` (746 modules
+  PASS). The only observed worktree entries remain the unstaged user-owned
+  `package-lock.json` and unrelated untracked `progress.md`; neither was touched.
+- **Finding — P1, evidence provenance / coverage gap:** the coordinator record names
+  `C:\Users\Alex Chen\AppData\Local\Temp\tetramorph-t13-15-final-client\shot-0.png`
+  as a real first-Puzzle-completion capture. Visual inspection shows a Puzzle library
+  screen, not a completion ceremony. The supplied brown-bedrock capture does visibly
+  show the three raised brown rows and its accompanying state records `bedrockRows: 3`,
+  but no supplied artifact proves record completion, replay completion, or the
+  reduced-motion static ceremony. No scoped candidate listener was available on the
+  recorded `127.0.0.1:5176` port; the unrelated existing `::1:5173` listener was not
+  used to fabricate or mutate completion state.
+- **Disposition:** **BLOCKED — do not accept or push T13.15 yet.** No P0–P2 product
+  defect was found in the reviewed source, but the active contract requires real
+  browser proof of first/record/replay and reduced-motion completion before acceptance.
+- **Exact changed path:** this independent QA verdict only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator supplies a fresh candidate-bound browser evidence set
+  (first, record, replay, and reduced-motion completion) with the rendered sheet,
+  one-canvas/no-error observations, and then requests a narrow read-only recheck.
