@@ -3,6 +3,32 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## T13.11 brightens mode glyphs and orders the keyboard guide by use
+
+The two requested adjustments are intentionally narrow UI refinements, made after the
+accepted T13.10 delivery. They do not alter rules, controls, persistence, renderer
+ownership, authored Puzzle content, or the established type system.
+
+- The four homepage mode glyph accents retain their distinct teal, blue, amber, and
+  violet identities, but move to brighter mid-tone values with clearer cell fills and
+  borders against the mineral-white panel. The workbench separator remains structural
+  and calm; there is no darkening of the page surface, new decorative treatment, or
+  change to the mode action treatment.
+- The Settings **键盘** guide presents game controls first: left/right movement, up
+  rotation, down soft drop, Space hard drop, and Puzzle-only Z undo. A distinct
+  **快捷键** group follows it for Settings, pause, restart confirmation, Escape
+  return, and sheet navigation/activation. Both groups preserve the two-column layout,
+  English equivalents, arrow/Enter accessibility, and narrow-screen readability.
+
+### T13.11 authorized implementation boundary
+
+Starting from accepted/pushed `25fa232`, only `src/App.tsx`, `src/App.test.ts`,
+`src/ui/localization.ts`, and `src/styles.css` may change before the source checkpoint.
+`docs/DESIGN.md`, `docs/CURRENT_TASK.md`, `docs/progress.md`, the T13 coordinator log,
+and the root changelog may record the contract, evidence, and acceptance later. The
+pre-existing user-owned `package-lock.json` change is explicitly outside this slice and
+must not be staged, changed, or described as a delivery file.
+
 ## T13.10 restores an independent TetraMorph identity
 
 The earlier `Tetra` identity was replaced by `Tetris` while reconciling an older visual

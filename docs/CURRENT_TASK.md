@@ -7,22 +7,16 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.10 TETRAMORPH INTERFACE AND PUZZLE
-REFINEMENT — accepted for coordinator release.** T13.9 MUTATION MODE / SURVIVAL /
-SETTINGS FOLLOW-UP is accepted and pushed at product candidate `ca8c7f6`. The accepted
-T13.10 review range is `a1d8b16..b005a14`, independently accepted in `fa95cae`:
-it extends the TetraMorph identity with local type hierarchy, full Chinese/English live
-UI, Settings backdrop continue, direct Puzzle undo, clearer selector colors, concise
-renamed levels, and a deliberately anonymous live Puzzle surface. A P1 390 × 844
-objective ellipsis was repaired in the final focused checkpoint `b005a14` and fresh
-portrait plus landscape reduced-motion evidence confirms the complete target text.
-Puzzle authored layouts, fixed queues, mode rules, renderer ownership, and audio behavior
-remain unchanged. Typecheck, the one-worker 146-test suite, build, and desktop/
-portrait/reduced-motion browser audits all pass. The next and final coordinator action is
-the exact-path release record, push, and release of only the temporary 5176 listener;
-the unrelated pre-existing 5173 listener remains untouched. The earlier T12/T13
-narratives below are retained as provenance only; this section is the authoritative live
-scope.
+Current execution status (2026-07-24): **T13.11 HOME PALETTE AND KEYBOARD GUIDE —
+contract open.** T13.10 TETRAMORPH INTERFACE AND PUZZLE REFINEMENT was accepted and
+pushed at `25fa232`; its direct undo, bilingual interface, local typography, and
+responsive evidence remain the accepted baseline. The new bounded slice starts from
+that tip and changes only homepage mode-glyph brightness plus the Settings keyboard
+guide ordering: game controls (arrow keys and Space, with Puzzle Z when relevant)
+precede shortcut/navigation controls. It preserves every underlying shortcut and
+mode/game rule. Only the user-owned uncommitted `package-lock.json` exists outside this
+slice and must remain untouched. The earlier T12/T13 narratives below are retained as
+provenance only; this section is the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
