@@ -956,3 +956,21 @@
   listener are both absent. No `chrome`/`chromium` audit process remains. Existing Edge
   and unrelated Codex MCP processes were not targeted, and the user-owned lockfile
   remains untouched. Next: push accepted `main` and report the retained lockfile.
+
+## 2026-07-24 — T13.14 entry overlay source checkpoint
+
+- Task: restore the player-visible 3 → 2 → 1 entry overlay before progressing to the
+  compact Settings pass. Base: `689bbf7`; source checkpoint: `6a0fb8a`.
+- Exact changed product path: `src/styles.css`. A late generic `.board-frame` cascade
+  had overwritten the countdown frame's z-index, leaving the live Pixi canvas above
+  its digit and mask. The dedicated countdown frame now owns the temporary top layer;
+  its masked field stays input-transparent and is removed after the existing three
+  second timer.
+- Commands/evidence: `npm.cmd run test -- src/App.test.ts` (1 file / 20 tests), the
+  required web-game Playwright client, and a direct local Playwright run against the
+  project-owned Vite listener. The browser reports `3`, `2`, `1`, then no overlay with
+  `status: playing`; inspected local captures show the full board mask and centred
+  digits. The current user-confirmed selector numeral/tick replacement was left alone.
+- Blocker: none for the entry overlay itself. Next: T13.14 Settings composition, rail
+  terminology/forecast, and Survival leaderboard display; `package-lock.json` remains
+  inherited and unstaged.

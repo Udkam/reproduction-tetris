@@ -1,5 +1,16 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T13.14 entry countdown overlay checkpoint — 2026-07-24
+
+- The user-confirmed centred Puzzle numeral/tick replacement remains untouched. The
+  first active repair restores the missing 3 → 2 → 1 board mask: a late generic frame
+  cascade had placed the Pixi canvas above the countdown layer. `6a0fb8a` gives the
+  temporary frame the top stacking layer without changing the timer or input rules.
+- Targeted `src/App.test.ts` passes 20/20. The required web-game client and a direct
+  browser capture both ran against the active project Vite listener; the latter records
+  the visible 3, 2, and 1 sequence, overlay removal after three seconds, and a playing
+  runtime. Remaining work is the eight-item T13.14 contract, starting with Settings.
+
 ### T13.12 selector, settings, and Mutation expression accepted — 2026-07-24
 
 - Accepted source range: `9b6188f..ec36924`. The Puzzle selector now holds a stable
