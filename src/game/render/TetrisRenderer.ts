@@ -1118,7 +1118,8 @@ export class TetrisRenderer {
         : [];
       const previewSlots = segmentSlots.length ? segmentSlots : [fallbackSlot];
       // Puzzle has one ordinary Next well, divided into two numbered rows. The DOM
-      // establishes those row bounds and labels; Pixi owns the shared well and pieces.
+      // establishes those row bounds and uses the loaded JetBrains Mono numerals;
+      // Pixi owns the shared well and pieces.
       const segmentedQueue = segmentSlots.length > 1;
       const segmentInset = segmentedQueue ? 0 : 1;
       if (segmentedQueue) {
@@ -1129,15 +1130,6 @@ export class TetrisRenderer {
           Math.max(8, fallbackSlot.height - 2),
           segmentSlots.length,
         );
-        for (const [index, previewSlot] of segmentSlots.entries()) {
-          this.drawPreviewQueueMarker(
-            this.boardGraphics,
-            index + 1,
-            previewSlot.x + Math.max(10, previewSlot.width * .065),
-            previewSlot.y + previewSlot.height / 2,
-            Math.min(13, Math.max(8, previewSlot.height * .34)),
-          );
-        }
       } else {
         for (const previewSlot of previewSlots) {
           this.drawPreviewBackdrop(
@@ -1251,26 +1243,6 @@ export class TetrisRenderer {
         .lineTo(x + width - dividerInset, dividerY)
         .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
     }
-  }
-
-  /** Small vector numerals keep the two Puzzle rows legible inside the same
-   * canvas-owned well without layering a second DOM card over it. */
-  private drawPreviewQueueMarker(graphics: Graphics, value: number, centerX: number, centerY: number, height: number): void {
-    const width = height * .58;
-    const left = centerX - width / 2;
-    const right = centerX + width / 2;
-    const top = centerY - height / 2;
-    const middle = centerY;
-    const bottom = centerY + height / 2;
-    const points = value === 1
-      // Keep the diagonal head, upright stem, and baseline in one path.  The former
-      // corner-shaped stroke read like an incomplete glyph at small preview sizes.
-      ? [[left + width * .18, top + height * .28], [left + width * .61, top + height * .06], [left + width * .61, bottom - height * .08], [left + width * .24, bottom - height * .08]]
-      : [[left, top], [right, top], [right, middle], [left, middle], [left, bottom], [right, bottom]];
-    const [startX, startY] = points[0]!;
-    graphics.moveTo(startX, startY);
-    for (const [toX, toY] of points.slice(1)) graphics.lineTo(toX, toY);
-    graphics.stroke({ color: COLORS.edge, alpha: .92, width: Math.max(1, height * .13) });
   }
 
   /** Persistent, low-obstruction board treatment makes every ten-second state legible. */
