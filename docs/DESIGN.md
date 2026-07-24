@@ -11,11 +11,10 @@ music decisions are superseded wherever they conflict with this section. No clai
 this record is complete until the stated source, browser, and independent-QA checks
 exist on the final candidate.
 
-- **Puzzle selector completion token.** A level card has exactly one centered state
-  token. An unfinished card shows its two-digit numeral at the geometric centre. A
-  completed card replaces that numeral with one centred accessible SVG tick of the
-  same visual footprint. It must never retain the numeral, move it to accommodate a
-  tick, or add a lower-left/corner badge, medallion, or decorative completion mark.
+- **Puzzle selector completion token.** The centred numeral/tick replacement is an
+  already accepted baseline and is outside this pass. It remains frozen: a level card
+  has exactly one centred state token, with a completed card replacing (not supplementing)
+  its two-digit numeral using one centred accessible SVG tick.
 - **Entry, Settings, rail, and language.** Restore the visible 3 → 2 → 1 entry
   countdown and its board overlay. Recompose Settings into a compact, intentionally
   filled sheet in its established order: controls, keyboard, rules, then records.
@@ -70,7 +69,7 @@ exist on the final candidate.
 6. **Verification:** each source checkpoint receives focused tests. The final candidate
    requires typecheck, the full test suite, production build, and real desktop,
    portrait, landscape, and reduced-motion browser evidence. Evidence must show the
-   3/2/1 overlay, centred number/tick replacement, compact Settings, two Next previews,
+   3/2/1 overlay, compact Settings, two Next previews,
    no music UI/runtime, a timer refresh, all four Mutation states, a visible stonefall,
    one canvas/zero DOM cells, no overflow, and zero console/page errors.
 

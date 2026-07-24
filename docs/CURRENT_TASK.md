@@ -15,10 +15,9 @@ timer and music decisions where they conflict. The user-owned uncommitted
 
 ### T13.14 active delivery contract
 
-1. **Execute the visible selector correction exactly.** Every unfinished Puzzle card
-   keeps its two-digit number geometrically centred. Completion replaces that one
-   token with a centred SVG tick; it must not show both, place a tick in a lower corner,
-   or shift the number. This is a visible replacement, not an added badge.
+1. **Preserve the completed selector baseline.** The centred numeral/tick replacement
+   is already complete and is not reopened in this task: a completed card replaces its
+   one centred number with one centred SVG tick, with no added badge or positional shift.
 2. **Restore and clarify live surfaces.** The board visibly counts 3, 2, then 1 before
    input starts. Settings becomes compact and fully composed in the existing semantic
    order (controls, keyboard, rules, records). Survival rankings show duration and
