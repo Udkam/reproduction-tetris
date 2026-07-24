@@ -16,6 +16,37 @@
   repeat the final visual matrix and gates proportionate to the repair, then request a
   fresh independent read-only acceptance before any push.
 
+## 2026-07-25 — TETRIS-T13.14 Settings-density candidate verified, QA pending
+
+- Task/base/candidate: `TETRIS-T13.14-DIRECT-CLARITY-AND-SURVIVAL-STONES`; accepted
+  pre-correction source `e9db541`, reopened contract `70c080d`, and focused source
+  candidate `fe6db5f..7ab0886`. The reviewable source paths are exactly
+  `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; the inherited user-owned
+  `package-lock.json` remains modified but never staged or read as product evidence.
+- Delivery: the first source checkpoint marks an empty Settings leaderboard explicitly,
+  compresses controls/keyboard/rules to their real content, fixes Survival's former
+  3 + 1 rule grid to 2 × 2, and preserves a normal populated table. The second catches
+  and fixes a real 844 × 390 defect: the previous compact sheet placed its record edge
+  at viewport y=389. Its short-landscape scale now keeps every Settings band visible.
+- Commands actually run after the last source repair: focused `npm.cmd run test --
+  src/App.test.ts` (22/22), `npm.cmd run typecheck`, full `npm.cmd run test` (22 files /
+  165 tests), `npm.cmd run build` (746 modules), the prescribed
+  `web_game_playwright_client.js`, and ignored local
+  `.local/audits/t13.14/settings-density-audit.mjs`.
+- Browser evidence reviewed: the final audit covers 21 Settings states—desktop
+  Chinese/English across all four modes, one populated Classic record, reduced-motion
+  Chinese across all four modes, and Chinese portrait/landscape across all four modes.
+  It asserts zero console/page errors and horizontal overflow, content-bottom slack at
+  most 3 px, correct rule grid dimensions, compact empty-record rows, modal canvas
+  hide/restore, motionless reduced-motion sheets, and a bottom margin in short
+  landscape. Representative Chinese Survival, English Mutation, portrait Puzzle,
+  reduced-motion Survival, and short-landscape Survival captures were visually
+  inspected. The skill-client screen also shows the restored count-2 overlay on the
+  real Survival board.
+- Blocker/next action: source and first-party evidence are frozen, but no renewed
+  independent disposition exists. Request a read-only QA review of `70c080d..7ab0886`;
+  do not update the acceptance changelog or push until that verdict is read.
+
 ## 2026-07-25 — TETRIS-T13.14 final evidence checkpoint
 
 - Task/base/candidate: `TETRIS-T13.14-DIRECT-CLARITY-AND-SURVIVAL-STONES`; contract

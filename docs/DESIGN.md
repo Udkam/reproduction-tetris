@@ -5,13 +5,14 @@
 
 ## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
 
-**Status:** reopened for one bounded Settings-density correction. The prior product
-candidate `e9db541` has final source/browser evidence (`b603d6d`) and QA acceptance
-(`abc0f25`), but the next player review correctly rejected its oversized Settings
-regions and structural blank space. A new UI-only candidate must replace that layout,
-then receive fresh browser and independent-QA evidence before release. T13.13 remains
-accepted historical evidence, but its additive item-timer and music decisions are
-superseded wherever they conflict with this section.
+**Status:** the reopened UI-only source candidate `fe6db5f..7ab0886` has replaced the
+rejected oversized Settings regions with content-sized bands and passed its fresh local
+browser/typecheck/test/build evidence. It remains **pending renewed independent QA**;
+no release or push may be inferred from local evidence. The prior product candidate
+`e9db541` has historical source/browser evidence (`b603d6d`) and QA acceptance
+(`abc0f25`) only for its pre-correction source. T13.13 remains accepted historical
+evidence, but its additive item-timer and music decisions are superseded wherever they
+conflict with this section.
 
 - **Puzzle selector completion token.** The centred numeral/tick replacement is an
   already accepted baseline and is outside this pass. It remains frozen: a level card

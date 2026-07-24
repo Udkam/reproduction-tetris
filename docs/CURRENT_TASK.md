@@ -8,14 +8,16 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-25): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
-AND SURVIVAL DEBRIS — reopened for a Settings-density correction.** Candidate `e9db541`
-passed its final gates and independent QA `abc0f25`, but the subsequent player review
-shows large structural blanks in the Settings panel. Do not push the accepted chain:
-this bounded frontend repair needs a new source checkpoint, fresh multi-viewport
-browser evidence, and a renewed read-only QA disposition. The previous T13.13 repair
-remains historical evidence only; the new player-directed changes below supersede its
-additive timer and music decisions where they conflict. The user-owned uncommitted
-`package-lock.json` remains outside every checkpoint and must remain untouched.
+AND SURVIVAL DEBRIS — Settings-density source candidate frozen for renewed QA.** The
+previous candidate `e9db541` passed its final gates and independent QA `abc0f25`, but
+the subsequent player review correctly rejected its structural blanks. The bounded
+replacement source checkpoints `fe6db5f` and `7ab0886` now pass final typecheck, full
+test/build, and fresh desktop Chinese/English, portrait, and landscape browser review.
+It is still **not accepted or pushable** until a new read-only QA disposition reviews
+the reopened range. The previous T13.13 repair remains historical evidence only; the
+new player-directed changes below supersede its additive timer and music decisions
+where they conflict. The user-owned uncommitted `package-lock.json` remains outside
+every checkpoint and must remain untouched.
 
 ### T13.14 active delivery contract
 

@@ -12,6 +12,31 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   portrait, landscape, reduced-motion, and all-mode Settings review before requesting
   a fresh independent disposition. `package-lock.json` remains inherited and unstaged.
 
+### T13.14 Settings-density candidate evidence — 2026-07-25
+
+- Reopened contract `70c080d` is implemented by two deliberate UI checkpoints:
+  `fe6db5f` compresses the content bands and gives the empty Settings leaderboard an
+  explicit compact state, while `7ab0886` adds the short-landscape scale that keeps
+  the entire record row visible at 844 × 390. Exact product/test paths are
+  `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`; Core, queues, rules, audio,
+  and the user-owned `package-lock.json` are unchanged.
+- The compact layout preserves controls → keyboard → rules → records while stopping
+  every panel at its content. Classic rules remain one 3-fact row; Survival, Mutation,
+  and Puzzle use two balanced rows of two. Empty live-mode records are a 41 px useful
+  state strip rather than a blank table; populated rows retain their normal table form.
+- Checks now pass from the final source: focused `src/App.test.ts` (22 tests),
+  `npm.cmd run typecheck`, full `npm.cmd run test` (22 files / 165 tests), and
+  `npm.cmd run build` (746 transformed modules). The required action client again
+  captures Survival's visible count-2 board state.
+- Ignored `.local/audits/t13.14/settings-density/` evidence has 21 final Settings
+  captures: Chinese/English desktop across all modes, one populated Classic record,
+  reduced-motion Chinese across all modes, and Chinese portrait/landscape across all
+  modes. Its assertions pass with zero page or console errors, no horizontal overflow,
+  no internal content slack beyond 3 px, correct 3/2/1 rule packing, compact empty
+  rows, modal canvas conceal/restore, motionless reduced-motion sheets, and a visible
+  landscape bottom margin. This is a verified candidate, **not acceptance**; renewed
+  independent QA remains the next action.
+
 ### T13.14 final evidence checkpoint — 2026-07-25
 
 - Frozen candidate `225aa1c..e9db541` now contains the completed direct-clarity,
