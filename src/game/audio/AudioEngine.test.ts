@@ -215,13 +215,11 @@ describe('AudioEngine original feedback', () => {
     superDouble.destroy();
   });
 
-  it('gives a same-frame mutation precedence over a clear chord and ducks music only briefly', async () => {
+  it('gives a same-frame mutation precedence over a clear chord without creating background voices', async () => {
     const { audio, timers } = createTimedAudio();
     await audio.prime();
     audio.play([{ type: 'started' }]);
     const foregroundBefore = oscillators.length;
-    const musicBus = gains[2]?.gain;
-    expect(musicBus?.value).toBeCloseTo(0.28, 5);
 
     audio.play([
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
@@ -230,19 +228,8 @@ describe('AudioEngine original feedback', () => {
 
     // Freeze's two ceramic notes remain; the three-note normal clear chord is absent.
     expect(oscillators).toHaveLength(foregroundBefore + 2);
-    expect(musicBus?.value).toBeCloseTo(0.28 * 0.562341325, 5);
-    const duckEntry = [...timers.entries()].find(([, timer]) => timer.delay === 350);
-    expect(duckEntry).toBeDefined();
-    if (duckEntry) {
-      timers.delete(duckEntry[0]);
-      duckEntry[1].callback();
-    }
-    expect(musicBus?.value).toBeCloseTo(0.28, 5);
-
-    audio.play([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3, triggerCells: carrierCells }]);
-    expect([...timers.values()].some((timer) => timer.delay === 350)).toBe(true);
-    audio.destroy();
     expect(timers.size).toBe(0);
+    audio.destroy();
   });
 
   it('uses a short physical landing thump instead of an electrical low-sine hum', async () => {
@@ -287,40 +274,19 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
-  it('starts an audible original piano-like phrase only after play begins and silences its bus on pause', async () => {
-    vi.stubGlobal('AudioContext', FakeAudioContext);
-    const audio = new AudioEngine();
+  it('keeps start and resume feedback foreground-only with no ambient music bus', async () => {
+    const { audio, timers } = createTimedAudio();
     await audio.prime();
     expect(oscillators).toHaveLength(0);
 
     audio.play([{ type: 'started' }]);
-    const music = oscillators.slice(0, 34);
-    expect(music).toHaveLength(34);
-    expect(music.slice(0, 4).map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine', 'triangle', 'sine']);
-    const firstFrequencies = music.slice(0, 4).map((oscillator) => oscillator.frequency.setValues[0] ?? 0);
-    expect(firstFrequencies[0]).toBeCloseTo(146.83, 5);
-    expect(firstFrequencies[1]).toBeCloseTo(146.83 * 2.01, 5);
-    expect(firstFrequencies[2]).toBeCloseTo(293.66, 5);
-    expect(firstFrequencies[3]).toBeCloseTo(293.66 * 2.01, 5);
-    expect(music.every((oscillator) => oscillator.stops.length === 1)).toBe(true);
-    expect(oscillators).toHaveLength(35);
-    expect(gains[2]?.gain.value).toBeGreaterThan(0.1);
+    expect(oscillators).toHaveLength(1);
+    expect(oscillators[0]?.frequency.setValues[0]).toBe(440);
+    expect(timers.size).toBe(0);
 
-    audio.play([{ type: 'paused' }]);
-    expect(gains[2]?.gain.value).toBe(0);
-    audio.destroy();
-  });
-
-  it('starts deferred music after a later user-gesture audio prime', async () => {
-    vi.stubGlobal('AudioContext', FakeAudioContext);
-    const audio = new AudioEngine();
-    audio.play([{ type: 'started' }]);
-    expect(oscillators).toHaveLength(0);
-
-    await audio.prime();
-
-    expect(oscillators.slice(0, 4).map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine', 'triangle', 'sine']);
-    expect(oscillators).toHaveLength(34);
+    audio.play([{ type: 'resumed' }]);
+    expect(oscillators).toHaveLength(2);
+    expect(timers.size).toBe(0);
     audio.destroy();
   });
 
