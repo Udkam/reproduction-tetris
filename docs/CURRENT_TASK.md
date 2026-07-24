@@ -55,7 +55,9 @@ remain untouched.
    two simple stacked rows. Each row carries only a plain left-side `1` or `2` (with
    matching accessible Chinese/English descriptions) and its canonical piece; no
    split card, accent rule, detached legend, circular badge, pale label strip, nested
-   card, or doubled preview border may reappear.
+   card, or doubled preview border may reappear. Those order numerals use the loaded
+   JetBrains Mono digit glyphs at a readable contrast and size; they are never
+   hand-drawn strokes, a partial-corner glyph, or an icon substitute.
 3. **Remove only music.** Delete the current music output, toggle, copy, and lifecycle
    while preserving adjustable original sound effects and their safe teardown. Do not
    fetch or bundle replacement music in this delivery.

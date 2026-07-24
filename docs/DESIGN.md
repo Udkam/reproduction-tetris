@@ -45,8 +45,9 @@ wherever they conflict with this section.
   not a scene replacement: it dims the already-rendered board while retaining its
   current field, active piece, and forecast behind Settings, pause, restart, and exit.
   Puzzle Next reuses the ordinary single dark forecast well as two stacked physical
-  rows. Each is marked only with a plain left-side `1` or `2` (and accessible Chinese/
-  English descriptions), so the order cannot detach from its actual piece; circular
+  rows. Each is marked only with a plain left-side `1` or `2`, rendered as a readable
+  loaded JetBrains Mono numeral (and accessible Chinese/English descriptions), so the
+  order cannot detach from its actual piece; circular
   number badges, pale label strips, split cards, nested cards, and doubled borders are
   prohibited.
 - **Music removal.** Remove the current procedural music, its controls, and its
