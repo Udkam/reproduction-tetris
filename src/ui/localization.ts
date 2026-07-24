@@ -97,6 +97,7 @@ type Translation = {
     nextPiece: string;
     touchControls: string;
     puzzleTouchControls: string;
+    touchGestureHint: string;
     mutationStatus: string;
     waitingForCore: string;
     carrierCore: string;
@@ -181,24 +182,24 @@ const COPY: Record<AppLanguage, Translation> = {
       puzzle: { label: '解谜', detail: '清除全部原有方块；固定序列，可直接撤回。', action: '选关' },
     },
     rules: {
-      marathon: ['补满任意横行即可消除并得分。', '每累计消除 10 行，下落速度提升一级。', '方块堆到顶端时，本局结束。'],
-      race: ['开局有 3 层基岩，基岩会持续向上推进。', '压力从 13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。', '方块被基岩顶到顶端时，本局结束。'],
-      sprint: ['像经典模式一样补满横行；每累计消除 6 行，下落速度提升一级。', '带核心标记的方块携带道具，消除其任一格即可触发一次效果。', '冻结停止自动下落；坍缩让各列独立下沉；炸弹清除底部 3 行；倍增在 10 秒内使消行得分翻倍。', '方块堆到顶端时，本局结束。'],
-      puzzle: ['使用固定出现顺序的方块，清除全部原有方块即可通关。', '没有落子数量限制；按 Z 可直接回到上一个方块刚出现时。', '清除完成后记录本关最少落子数。'],
+      marathon: ['目标｜补满横行，消除并得分。', '节奏｜每累计 10 行，下落提速一级。', '结束｜方块堆到顶端。'],
+      race: ['开局｜带 3 层上升基岩。', '压力｜13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。', '结束｜基岩把堆叠顶到顶端。'],
+      sprint: ['目标｜像经典一样清行；每累计 6 行，下落提速一级。', '载具｜特殊整块任一格被清除时，立即释放一次道具。', '效果｜冻结停落 10 秒；坍缩列内下沉 10 秒；炸弹清空底部 3 行；倍增让消行得分 ×2，持续 10 秒。', '结束｜方块堆到顶端。'],
+      puzzle: ['目标｜清除全部原有方块。', '序列｜方块按固定顺序出现，没有落子上限。', '撤回｜按 Z 回到上一个方块刚出现的时刻。', '纪录｜通关后保存历史最优步数。'],
     },
     items: { freeze: '冻结', collapse: '坍缩', bomb: '炸弹', multiplier: '倍增' },
     labels: {
-      language: '语言', chinese: '中文', english: 'English', settings: '设置', controls: '控制', rules: '规则', keyboard: '键盘', gameplayControls: '玩法操作', shortcuts: '快捷键', selectMode: '选择游戏模式', skipToGame: '跳到游戏', loading: 'TetraMorph 正在加载', back: '返回', start: '开始', continue: '继续游戏', returnToPause: '返回暂停', restart: '重新开始', confirm: '确认', cancel: '取消', playAgain: '再来一局', replay: '重来', settingsShortcut: '设置', pauseResume: '暂停 / 继续', restartConfirm: '重开确认', undo: '撤回', move: '移动', rotate: '旋转', softDrop: '快速下落', hardDrop: '直接落底', volume: '音量', soundOn: '音效开', soundOff: '音效关', musicOn: '音乐开', musicOff: '音乐关', soundControls: '声音控制', turnSoundOn: '开启音效', turnSoundOff: '关闭音效', turnMusicOn: '开启音乐', turnMusicOff: '关闭音乐', score: '分数', lines: '消行', bedrock: '基岩', nextRise: '下一层', level: '关卡', originalBlocks: '原有方块', placed: '已落子', goal: '通关目标', clearOriginalBlocks: '清除全部原有方块', fall: '下落', core: '核心', combo: '连消', next: 'Next', puzzle: '解谜', selectedPuzzle: '已选残局', puzzleTraits: '残局特性', fixedAnchors: '固定锚点', puzzleRoute: '开放解谜残局', puzzleBands: '残局行数分段', modeHome: '返回模式', currentRecord: '当前关纪录', notCompleted: '尚未通关', best: '最少', leaderboard: '本模式排行', noRecords: '暂无记录', currentRunMissedLeaderboard: '本局未进入排行榜', pauseTitle: '已暂停', restartTitle: '重新开始？', undoTitle: '撤回上一步？', leaveTitle: '离开本局？', leaveRun: '返回模式首页', leavePuzzle: '返回关卡库', resultTitle: '本局结束', rulesIntro: '规则', firstEntry: '首次进入说明', gamePanel: '游戏面板', gameArea: '游戏区', board: '游戏棋盘', twoUpcoming: '后续两个方块，按顺序显示', nextPiece: '下一个方块', touchControls: '触控操作', puzzleTouchControls: '解谜触控操作', mutationStatus: '异变状态', waitingForCore: '等待核心方块', carrierCore: '核心', bombResolved: '炸弹 · 底部 3 行已清除', pendingRise: '待上升', pausedMessage: '本局已暂停。', resumedMessage: '继续本局。', undoMessage: '已撤回上一次落子。', targetReached: '目标已达成。', runEnded: '本局结束。', runStarted: 'TetraMorph 已开始。', modeData: '模式数据', moveLeft: '左移', moveRight: '右移', stay: '留在本局', select: '选择', switch: '切换', activate: '执行',
+      language: '语言', chinese: '中文', english: 'English', settings: '设置', controls: '控制', rules: '规则', keyboard: '键盘', gameplayControls: '玩法操作', shortcuts: '快捷键', selectMode: '选择游戏模式', skipToGame: '跳到游戏', loading: 'TetraMorph 正在加载', back: '返回', start: '开始', continue: '继续游戏', returnToPause: '返回暂停', restart: '重新开始', confirm: '确认', cancel: '取消', playAgain: '再来一局', replay: '重来', settingsShortcut: '设置', pauseResume: '暂停 / 继续', restartConfirm: '重开确认', undo: '撤回', move: '移动', rotate: '旋转', softDrop: '快速下落', hardDrop: '直接落底', volume: '音量', soundOn: '音效开', soundOff: '音效关', musicOn: '音乐开', musicOff: '音乐关', soundControls: '声音控制', turnSoundOn: '开启音效', turnSoundOff: '关闭音效', turnMusicOn: '开启音乐', turnMusicOff: '关闭音乐', score: '分数', lines: '消行', bedrock: '基岩', nextRise: '下一层', level: '关卡', originalBlocks: '原有方块', placed: '已落子', goal: '通关目标', clearOriginalBlocks: '清除全部原有方块', fall: '下落', core: '核心', combo: '连消', next: 'Next', puzzle: '解谜', selectedPuzzle: '已选残局', puzzleTraits: '残局特性', fixedAnchors: '固定锚点', puzzleRoute: '开放解谜残局', puzzleBands: '残局行数分段', modeHome: '返回模式', currentRecord: '当前关纪录', notCompleted: '尚未通关', best: '最少', leaderboard: '本模式排行', noRecords: '暂无记录', currentRunMissedLeaderboard: '本局未进入排行榜', pauseTitle: '已暂停', restartTitle: '重新开始？', undoTitle: '撤回上一步？', leaveTitle: '离开本局？', leaveRun: '返回模式首页', leavePuzzle: '返回关卡库', resultTitle: '本局结束', rulesIntro: '规则', firstEntry: '首次进入说明', gamePanel: '游戏面板', gameArea: '游戏区', board: '游戏棋盘', twoUpcoming: '后续两个方块，按顺序显示', nextPiece: '下一个方块', touchControls: '触控操作', puzzleTouchControls: '解谜触控操作', touchGestureHint: '触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。', mutationStatus: '异变状态', waitingForCore: '等待核心方块', carrierCore: '核心', bombResolved: '炸弹 · 底部 3 行已清除', pendingRise: '待上升', pausedMessage: '本局已暂停。', resumedMessage: '继续本局。', undoMessage: '已撤回上一次落子。', targetReached: '目标已达成。', runEnded: '本局结束。', runStarted: 'TetraMorph 已开始。', modeData: '模式数据', moveLeft: '左移', moveRight: '右移', stay: '留在本局', select: '选择', switch: '切换', activate: '执行',
     },
     phrasing: {
       elapsed: (minutes, seconds) => `${minutes} 分 ${seconds} 秒`,
-      cadence: (seconds) => `${seconds} 秒/格`,
+      cadence: (seconds) => `${seconds} 秒`,
       seconds: (seconds) => `${seconds} 秒`,
       lineCount: (lines) => `${lines} 行`,
       pieceCount: (pieces) => `${pieces} 方块`,
       bedrockCount: (rows) => `${rows} 层基岩`,
       minimumMoves: (moves) => `最少 ${moves} 步`,
-      currentBest: (moves) => `当前最优步数：${moves}步`,
+      currentBest: (moves) => `历史最优：${moves} 步`,
       originalBlocks: (remaining, total) => `原有方块（${remaining}/${total}）`,
       modeLeaderboard: (mode) => `${mode}排行`,
       leaderboardCriterion: (survival) => survival ? '生存时间 · 前 5' : '消行 · 前 5',
@@ -219,7 +220,7 @@ const COPY: Record<AppLanguage, Translation> = {
       eventBedrockRaised: (height) => `基岩升至 ${height} 层。`,
       eventBedrockLowered: (height) => `基岩降至 ${height} 层。`,
       eventItemTriggered: (item) => `${item} 已触发，持续 10 秒。`,
-      mutationTimer: (item, seconds) => `${item} · ${seconds} 秒`,
+      mutationTimer: (item, seconds) => `${item}：${seconds} 秒`,
     },
   },
   en: {
@@ -230,24 +231,24 @@ const COPY: Record<AppLanguage, Translation> = {
       puzzle: { label: 'Puzzle', detail: 'Clear every original block with a fixed queue and direct undo.', action: 'Levels' },
     },
     rules: {
-      marathon: ['Complete any horizontal row to clear it and score.', 'Gravity speeds up one tier every 10 cleared lines.', 'The run ends when the stack reaches the top.'],
-      race: ['Start above 3 bedrock rows that keep rising.', 'Pressure drops from 13 to 6 seconds; every 3 cleared lines removes one bedrock row.', 'The run ends when bedrock pushes the stack to the top.'],
-      sprint: ['Complete rows as in Classic; gravity speeds up one tier every 6 cleared lines.', 'A core-marked piece carries an item. Clear any one of its cells to trigger it once.', 'Freeze stops auto-fall; Collapse settles columns; Bomb clears the bottom 3 rows; Multiplier doubles line-clear score for 10 seconds.', 'The run ends when the stack reaches the top.'],
-      puzzle: ['Use the fixed piece order to clear every original block.', 'There is no piece limit. Press Z to return directly to the moment the previous piece appeared.', 'Completion records the fewest placed pieces for this level.'],
+      marathon: ['Goal|Complete rows to clear and score.', 'Pace|Gravity rises one tier every 10 cleared lines.', 'End|The stack reaches the top.'],
+      race: ['Start|Begin above 3 rising bedrock rows.', 'Pressure|The timer drops from 13 to 6 seconds; every 3 lines removes one bedrock row.', 'End|Bedrock pushes the stack to the top.'],
+      sprint: ['Goal|Clear rows as in Classic; gravity rises one tier every 6 lines.', 'Carriers|Clear any cell in a special whole piece to release its item once.', 'Items|Freeze stops auto-fall for 10s; Collapse settles columns for 10s; Bomb clears the bottom 3 rows; Double scores line clears ×2 for 10s.', 'End|The stack reaches the top.'],
+      puzzle: ['Goal|Clear every original block.', 'Queue|Pieces arrive in a fixed order with no placement limit.', 'Undo|Press Z to return to the instant the prior piece appeared.', 'Record|Completion saves this level’s best piece count.'],
     },
     items: { freeze: 'Freeze', collapse: 'Collapse', bomb: 'Bomb', multiplier: 'Multiplier' },
     labels: {
-      language: 'Language', chinese: 'Chinese', english: 'English', settings: 'Settings', controls: 'Controls', rules: 'Rules', keyboard: 'Keyboard', gameplayControls: 'Gameplay', shortcuts: 'Shortcuts', selectMode: 'Choose a game mode', skipToGame: 'Skip to game', loading: 'TetraMorph is loading', back: 'Back', start: 'Start', continue: 'Continue', returnToPause: 'Return to pause', restart: 'Restart', confirm: 'Confirm', cancel: 'Cancel', playAgain: 'Play again', replay: 'Replay', settingsShortcut: 'Settings', pauseResume: 'Pause / resume', restartConfirm: 'Restart confirmation', undo: 'Undo', move: 'Move', rotate: 'Rotate', softDrop: 'Soft drop', hardDrop: 'Hard drop', volume: 'Volume', soundOn: 'SFX on', soundOff: 'SFX off', musicOn: 'Music on', musicOff: 'Music off', soundControls: 'Sound controls', turnSoundOn: 'Turn sound effects on', turnSoundOff: 'Turn sound effects off', turnMusicOn: 'Turn music on', turnMusicOff: 'Turn music off', score: 'Score', lines: 'Lines', bedrock: 'Bedrock', nextRise: 'Next rise', level: 'Level', originalBlocks: 'Original blocks', placed: 'Placed', goal: 'Goal', clearOriginalBlocks: 'Clear all original blocks', fall: 'Fall', core: 'Core', combo: 'Combo', next: 'Next', puzzle: 'Puzzle', selectedPuzzle: 'Selected puzzle', puzzleTraits: 'Puzzle traits', fixedAnchors: 'Fixed anchors', puzzleRoute: 'Open puzzle routes', puzzleBands: 'Puzzle row bands', modeHome: 'Back to modes', currentRecord: 'Current record', notCompleted: 'Not completed', best: 'Best', leaderboard: 'This mode', noRecords: 'No records yet', currentRunMissedLeaderboard: 'This run did not enter the leaderboard', pauseTitle: 'Paused', restartTitle: 'Restart?', undoTitle: 'Undo last move?', leaveTitle: 'Leave this run?', leaveRun: 'Back to modes', leavePuzzle: 'Back to puzzle library', resultTitle: 'Run complete', rulesIntro: 'Rules', firstEntry: 'First-time overview', gamePanel: 'game panel', gameArea: 'game area', board: 'game board', twoUpcoming: 'Two upcoming pieces, in order', nextPiece: 'Next piece', touchControls: 'Touch controls', puzzleTouchControls: 'Puzzle touch controls', mutationStatus: 'Mutation status', waitingForCore: 'Waiting for a core piece', carrierCore: 'Core', bombResolved: 'Bomb · bottom 3 rows cleared', pendingRise: 'Rising next', pausedMessage: 'Run paused.', resumedMessage: 'Run resumed.', undoMessage: 'Last placement undone.', targetReached: 'Goal reached.', runEnded: 'Run ended.', runStarted: 'TetraMorph started.', modeData: 'mode data', moveLeft: 'Move left', moveRight: 'Move right', stay: 'Stay in this run', select: 'Select', switch: 'Move between controls', activate: 'Activate',
+      language: 'Language', chinese: 'Chinese', english: 'English', settings: 'Settings', controls: 'Controls', rules: 'Rules', keyboard: 'Keyboard', gameplayControls: 'Gameplay', shortcuts: 'Shortcuts', selectMode: 'Choose a game mode', skipToGame: 'Skip to game', loading: 'TetraMorph is loading', back: 'Back', start: 'Start', continue: 'Continue', returnToPause: 'Return to pause', restart: 'Restart', confirm: 'Confirm', cancel: 'Cancel', playAgain: 'Play again', replay: 'Replay', settingsShortcut: 'Settings', pauseResume: 'Pause / resume', restartConfirm: 'Restart confirmation', undo: 'Undo', move: 'Move', rotate: 'Rotate', softDrop: 'Soft drop', hardDrop: 'Hard drop', volume: 'Volume', soundOn: 'SFX on', soundOff: 'SFX off', musicOn: 'Music on', musicOff: 'Music off', soundControls: 'Sound controls', turnSoundOn: 'Turn sound effects on', turnSoundOff: 'Turn sound effects off', turnMusicOn: 'Turn music on', turnMusicOff: 'Turn music off', score: 'Score', lines: 'Lines', bedrock: 'Bedrock', nextRise: 'Next rise', level: 'Level', originalBlocks: 'Original blocks', placed: 'Placed', goal: 'Goal', clearOriginalBlocks: 'Clear all original blocks', fall: 'Fall', core: 'Core', combo: 'Combo', next: 'Next', puzzle: 'Puzzle', selectedPuzzle: 'Selected puzzle', puzzleTraits: 'Puzzle traits', fixedAnchors: 'Fixed anchors', puzzleRoute: 'Open puzzle routes', puzzleBands: 'Puzzle row bands', modeHome: 'Back to modes', currentRecord: 'Current record', notCompleted: 'Not completed', best: 'Best', leaderboard: 'This mode', noRecords: 'No records yet', currentRunMissedLeaderboard: 'This run did not enter the leaderboard', pauseTitle: 'Paused', restartTitle: 'Restart?', undoTitle: 'Undo last move?', leaveTitle: 'Leave this run?', leaveRun: 'Back to modes', leavePuzzle: 'Back to puzzle library', resultTitle: 'Run complete', rulesIntro: 'Rules', firstEntry: 'First-time overview', gamePanel: 'game panel', gameArea: 'game area', board: 'game board', twoUpcoming: 'Two upcoming pieces, in order', nextPiece: 'Next piece', touchControls: 'Touch controls', puzzleTouchControls: 'Puzzle touch controls', touchGestureHint: 'Touch: tap to rotate; swipe sideways to move; swipe down to soft-drop or hard-drop.', mutationStatus: 'Mutation status', waitingForCore: 'Waiting for a core piece', carrierCore: 'Core', bombResolved: 'Bomb · bottom 3 rows cleared', pendingRise: 'Rising next', pausedMessage: 'Run paused.', resumedMessage: 'Run resumed.', undoMessage: 'Last placement undone.', targetReached: 'Goal reached.', runEnded: 'Run ended.', runStarted: 'TetraMorph started.', modeData: 'mode data', moveLeft: 'Move left', moveRight: 'Move right', stay: 'Stay in this run', select: 'Select', switch: 'Move between controls', activate: 'Activate',
     },
     phrasing: {
       elapsed: (minutes, seconds) => `${minutes}m ${seconds}s`,
-      cadence: (seconds) => `${seconds}s / cell`,
+      cadence: (seconds) => `${seconds}s`,
       seconds: (seconds) => `${seconds}s`,
       lineCount: (lines) => `${lines} lines`,
       pieceCount: (pieces) => `${pieces} pieces`,
       bedrockCount: (rows) => `${rows} bedrock rows`,
       minimumMoves: (moves) => `Best ${moves} moves`,
-      currentBest: (moves) => `Current best: ${moves} moves`,
+      currentBest: (moves) => `Best so far: ${moves} pieces`,
       originalBlocks: (remaining, total) => `Original blocks (${remaining}/${total})`,
       modeLeaderboard: (mode) => `${mode} leaderboard`,
       leaderboardCriterion: (survival) => survival ? 'Survival time · Top 5' : 'Lines · Top 5',
@@ -268,7 +269,7 @@ const COPY: Record<AppLanguage, Translation> = {
       eventBedrockRaised: (height) => `Bedrock rose to ${height} rows.`,
       eventBedrockLowered: (height) => `Bedrock fell to ${height} rows.`,
       eventItemTriggered: (item) => `${item} activated for 10 seconds.`,
-      mutationTimer: (item, seconds) => `${item} · ${seconds}s`,
+      mutationTimer: (item, seconds) => `${item}: ${seconds}s`,
     },
   },
 };

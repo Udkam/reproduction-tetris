@@ -4891,6 +4891,329 @@ kbd,
   .console-node--selected button { animation: none !important; transition: none !important; }
 }
 
+/* T13.12 keeps one compact information grammar across the selector, settings, and play rails. */
+.console-focus__board .puzzle-silhouette {
+  overflow: hidden;
+}
+
+.console-focus__board .puzzle-silhouette path {
+  filter: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.console-focus__title-row {
+  display: inline-flex;
+  align-items: baseline;
+  min-height: 46px;
+  gap: 8px;
+}
+
+.console-focus__complete-mark,
+.console-node__complete-mark {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  color: #f7fffb;
+  background: #3e9676;
+  border: 1px solid #b3e4ce;
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(31, 108, 80, .2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.console-focus__best {
+  display: block !important;
+  min-height: 20px;
+  padding: 0 !important;
+  color: #4d7180 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-family: var(--font-ui) !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 0 !important;
+  line-height: 20px;
+}
+
+.console-node {
+  position: relative;
+}
+
+.console-node__complete-mark {
+  position: absolute;
+  z-index: 2;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+}
+
+.console-node--complete button {
+  color: #227257;
+  border-color: #8fcbb6;
+}
+
+.console-node--complete.console-node--selected button {
+  color: #f8fffc;
+  background: #287a60;
+  border-color: #1c624c;
+}
+
+.play-surface {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.board-frame {
+  z-index: 5;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.game-side-panel,
+.game-side-panel--sprint {
+  gap: 13px;
+}
+
+.game-side-panel--sprint .preview-rail,
+.game-side-panel--sprint .keyboard-map {
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.run-stats [data-stat-role="fall-cadence"] strong {
+  font-size: clamp(15px, 1.55vw, 19px);
+}
+
+.mutation-status {
+  gap: 8px;
+  padding: 11px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--raised) 94%, #eff7f8), color-mix(in srgb, var(--raised) 92%, #fff));
+  border-color: color-mix(in srgb, var(--line) 84%, #a5bdc8);
+  box-shadow: 0 5px 13px rgba(20, 51, 72, .07);
+}
+
+.mutation-status > strong {
+  color: #385a6d;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.mutation-status__ledger {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 5px !important;
+}
+
+.mutation-status span {
+  display: flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 4px 8px;
+  color: #8396a0;
+  background: #edf2f4;
+  border-color: #d1dde2;
+  border-left: 3px solid #b7c4ca;
+  border-radius: 5px;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mutation-status span[data-active="true"] { color: #17334a; }
+.mutation-status span[data-mutation-state="freeze"][data-active="true"] { background: #e2f7fc; border-color: #95dced; border-left-color: #3ca8c9; }
+.mutation-status span[data-mutation-state="collapse"][data-active="true"] { background: #eee9fa; border-color: #c7b9eb; border-left-color: #8066b7; }
+.mutation-status span[data-mutation-state="multiplier"][data-active="true"] { background: #fff5d7; border-color: #edcf78; border-left-color: #ca9722; }
+
+.mutation-status small[data-mutation-state="bomb"] {
+  display: block;
+  padding: 5px 8px;
+  color: #9a3f2e;
+  background: #fff0ea;
+  border-left: 3px solid #e26a4c;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.sheet-backdrop {
+  padding: clamp(10px, 2vh, 24px);
+}
+
+.action-sheet:has(.settings-sheet) {
+  width: min(980px, 100%);
+  max-height: calc(100dvh - 20px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.settings-sheet {
+  grid-template-columns: minmax(278px, .78fr) minmax(360px, 1.22fr);
+  grid-template-areas:
+    "controls reference"
+    "record record";
+  gap: 14px;
+  align-items: start;
+}
+
+.settings-controls {
+  grid-area: controls;
+  gap: 10px;
+  padding: 15px;
+  border-color: #b8cbd3;
+  box-shadow: 0 6px 16px rgba(20, 51, 72, .06);
+}
+
+.settings-controls > strong,
+.settings-shortcuts > strong,
+.mode-rule-summary > strong {
+  color: #2e5d72;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 780;
+  letter-spacing: .09em;
+}
+
+.settings-sheet__reference {
+  grid-area: reference;
+  display: grid;
+  gap: 12px;
+}
+
+.settings-sheet .result-leaderboard,
+.settings-record {
+  grid-area: record;
+}
+
+.settings-shortcuts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+  padding: 14px 15px;
+  border-color: #b8cbd3;
+}
+
+.settings-shortcuts__group {
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.settings-shortcuts__group > span {
+  color: #49687a;
+}
+
+.settings-shortcuts__group-label {
+  color: #317487;
+}
+
+.settings-shortcuts kbd {
+  min-width: 27px;
+  color: #1e526b;
+  background: #f6fbfc;
+  border-color: #b8ced8;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-align: center;
+}
+
+.settings-sheet .mode-rule-summary {
+  padding: 14px 15px;
+  border-color: color-mix(in srgb, var(--accent) 42%, #b5c8d1);
+}
+
+.mode-rule-summary ul {
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.mode-rule-summary li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  color: #4e6b7a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mode-rule-summary li b {
+  color: #1f586f;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 780;
+  white-space: nowrap;
+}
+
+.mode-rule-summary--sprint li b { color: #a45f1f; }
+.mode-rule-summary--puzzle li b { color: #7654a3; }
+
+.settings-record,
+.result-leaderboard--settings {
+  border-color: #b8cbd3;
+  box-shadow: 0 6px 16px rgba(20, 51, 72, .06);
+}
+
+.settings-sheet__actions .primary-action {
+  background: #2e7188;
+  border-color: #2e7188;
+}
+
+.settings-sheet__actions .secondary-action {
+  color: #8c591b;
+  background: #fff6e8;
+  border-color: #e4bd7d;
+}
+
+.topbar-action,
+.text-action {
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.topbar-action--settings { color: #1f6078; background: #e5f3f7; border-color: #91bdcc; }
+.topbar-action--back { color: #405b6c; background: #f7fafb; border-color: #b9cbd3; }
+.topbar-action--settings:hover,
+.topbar-action--settings:focus-visible { color: #174e63; background: #d5edf3; border-color: #6199ad; }
+.topbar-action--back:hover,
+.topbar-action--back:focus-visible { color: #273f4d; background: #edf4f6; border-color: #91abb7; }
+
+@media (max-width: 700px) {
+  .console-focus__title-row { min-height: 30px; }
+  .console-focus__best { min-height: 18px; font-size: 10px !important; line-height: 18px; }
+  .console-focus__complete-mark { width: 15px; height: 15px; font-size: 9px; }
+  .settings-sheet { grid-template-columns: 1fr; grid-template-areas: "controls" "reference" "record"; }
+  .settings-shortcuts { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 599px) {
+  .play-surface { width: min(100%, calc(100% - 8px)); margin: 4px auto; border-radius: 12px; }
+  .game-arena { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 4px; }
+  .board-frame { max-width: calc(100vw - 16px); }
+  .game-side-panel { display: none; }
+  .settings-sheet { gap: 10px; }
+  .settings-controls,
+  .settings-shortcuts,
+  .settings-sheet .mode-rule-summary { padding: 11px; }
+  .mutation-status { padding: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar-action,
+  .text-action { transition: none; }
+}
+
 /* T13.10 final delivery cascade — intentionally after the historical workbench layers. */
 .mode-gates--workbench .mode-gate,
 .mode-gates--workbench .mode-gate--marathon,

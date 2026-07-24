@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import {
   ANCHOR_CELL,
   PIECE_TYPES,
@@ -15,7 +15,6 @@ import {
   survivalIntervalSeconds,
   survivalIntervalTicks,
 } from './game/core';
-import { type InputAction } from './game/input/InputController';
 import { GameRuntime, randomRunSeed } from './game/runtime/GameRuntime';
 import { browserPlatform, type PlatformTimeout } from './platform/browserPlatform';
 import {
@@ -276,11 +275,15 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
 function ModeRuleSummary({ mode, language, testId }: { mode: GameMode; language: AppLanguage; testId?: string }) {
   const copy = appCopy(language);
   const modeLabel = modeCopy(language, mode).label;
+  const divider = language === 'en' ? '|' : '｜';
   return (
-    <section className="mode-rule-summary" data-testid={testId} aria-label={`${modeLabel} ${copy.labels.rules}`}>
+    <section className={`mode-rule-summary mode-rule-summary--${mode}`} data-testid={testId} aria-label={`${modeLabel} ${copy.labels.rules}`}>
       <strong>{copy.labels.rules}</strong>
       <ul>
-        {modeRules(language, mode).map((rule) => <li key={rule}>{rule}</li>)}
+        {modeRules(language, mode).map((rule) => {
+          const [label, ...detail] = rule.split(divider);
+          return <li key={rule}><b>{label}</b><span>{detail.join(divider)}</span></li>;
+        })}
       </ul>
     </section>
   );
@@ -431,8 +434,11 @@ export function PuzzleLibrary({
           </div>
           <section className="console-focus__copy">
             <div className="console-focus__heading">
-              <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selectedName}</h2>
-              {selectedBest !== null && <span className="console-focus__best" data-testid="selected-puzzle-start-best">{copy.phrasing.currentBest(selectedBest)}</span>}
+              <div className="console-focus__title-row">
+                <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selectedName}</h2>
+                {selectedComplete && <span className="console-focus__complete-mark" aria-hidden="true">√</span>}
+              </div>
+              <span className="console-focus__best" data-testid="selected-puzzle-start-best">{selectedBest === null ? '' : copy.phrasing.currentBest(selectedBest)}</span>
             </div>
             <div className="console-focus__action">
               <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} onClick={onStart}>{copy.labels.start}</button>
@@ -458,7 +464,7 @@ export function PuzzleLibrary({
                       const bestPieces = puzzleBestPieceCount(progress, level.id);
                       const levelName = puzzleDisplayName(language, level.id, level.name);
                       return (
-                        <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''}`} key={level.id}>
+                        <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''}${complete ? ' console-node--complete' : ''}`} key={level.id}>
                           <button
                             type="button"
                             data-testid="level-row"
@@ -470,7 +476,8 @@ export function PuzzleLibrary({
                             aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, rows, complete, bestPieces)}
                             onClick={() => onSelect(level.id)}
                           >
-                            <span>{String(level.index).padStart(2, '0')}</span>
+                            <span className="console-node__index">{String(level.index).padStart(2, '0')}</span>
+                            {complete && <b className="console-node__complete-mark" aria-hidden="true">√</b>}
                           </button>
                         </li>
                       );
@@ -524,55 +531,6 @@ export function LeaderboardPanel({
         </ol>
       )}
     </section>
-  );
-}
-
-interface TouchButtonProps {
-  action: InputAction;
-  label: string;
-  glyph: string;
-  runtime: GameRuntime | null;
-  disabled?: boolean;
-}
-
-function TouchButton({ action, label, glyph, runtime, disabled = false }: TouchButtonProps) {
-  const release = useCallback(() => runtime?.release(action), [action, runtime]);
-  return (
-    <button
-      className="touch-key"
-      type="button"
-      data-testid={`touch-${action}`}
-      aria-label={label}
-      disabled={disabled}
-      onPointerDown={(event) => {
-        event.preventDefault();
-        event.currentTarget.setPointerCapture(event.pointerId);
-        runtime?.press(action);
-      }}
-      onPointerUp={release}
-      onPointerCancel={release}
-      onLostPointerCapture={release}
-      onContextMenu={(event) => event.preventDefault()}
-    >
-      <b aria-hidden="true">{glyph}</b><small>{label}</small>
-    </button>
-  );
-}
-
-function PuzzleUndoButton({ onRequestUndo, language, disabled = false }: { onRequestUndo: () => void; language: AppLanguage; disabled?: boolean }) {
-  const copy = appCopy(language);
-  return (
-    <button
-      className="touch-key touch-key--undo"
-      type="button"
-      data-testid="touch-undo"
-      aria-label={`${copy.labels.undo} (Z)`}
-      aria-keyshortcuts="Z"
-      disabled={disabled}
-      onClick={onRequestUndo}
-    >
-      <b aria-hidden="true">↶</b><small>{copy.labels.undo}</small>
-    </button>
   );
 }
 
@@ -734,8 +692,8 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
       <section className="run-stats run-stats--mutation" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
         <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="mutation-speed"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
-        <article data-stat-role="mutation-carriers"><span>{copy.labels.core}</span><strong>{state.mutationCarriers.length + (state.mutationActiveCarrier ? 1 : 0)}</strong></article>
+        <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
+        <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
       </section>
     );
   }
@@ -753,6 +711,10 @@ function mutationEffectLabel(item: MutationItem, ticks: number, language: AppLan
   return appCopy(language).phrasing.mutationTimer(itemLabel(language, item), Math.ceil(ticks / TICKS_PER_SECOND));
 }
 
+function inactiveMutationEffectLabel(item: MutationItem, language: AppLanguage): string {
+  return `${itemLabel(language, item)}${language === 'en' ? ':' : '：'}—`;
+}
+
 export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
   if (state.mode !== 'sprint') return null;
   const copy = appCopy(language);
@@ -761,17 +723,17 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     { item: 'collapse', ticks: state.mutationCollapseTicks },
     { item: 'multiplier', ticks: state.mutationMultiplierTicks },
   ];
-  const active = candidates.filter((effect) => effect.ticks > 0);
-  const showInstant = active.length === 0 && state.mutationLastItem === 'bomb' && state.mutationLastItemTicks > 0;
   return (
     <section className="mutation-status" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
       <strong>{copy.labels.mutationStatus}</strong>
-      <div>
-        {state.mutationActiveCarrier && <span data-mutation-state="carrier">{copy.labels.carrierCore}: {itemLabel(language, state.mutationActiveCarrier.item)}</span>}
-        {active.map((effect) => <span key={effect.item} data-mutation-state={effect.item}>{mutationEffectLabel(effect.item, effect.ticks, language)}</span>)}
-        {showInstant && <span data-mutation-state="bomb">{copy.labels.bombResolved}</span>}
-        {!state.mutationActiveCarrier && active.length === 0 && !showInstant && <span data-mutation-state="idle">{copy.labels.waitingForCore}</span>}
+      <div className="mutation-status__ledger">
+        {candidates.map((effect) => (
+          <span key={effect.item} data-mutation-state={effect.item} data-active={effect.ticks > 0 || undefined}>
+            {effect.ticks > 0 ? mutationEffectLabel(effect.item, effect.ticks, language) : inactiveMutationEffectLabel(effect.item, language)}
+          </span>
+        ))}
       </div>
+      {state.mutationLastItem === 'bomb' && state.mutationLastItemTicks > 0 && <small data-mutation-state="bomb">{copy.labels.bombResolved}</small>}
     </section>
   );
 }
@@ -831,6 +793,7 @@ export function GameSession({
 }) {
   const copy = appCopy(language);
   const hostRef = useRef<HTMLDivElement>(null);
+  const boardGestureRef = useRef<{ id: number; x: number; y: number; at: number } | null>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
@@ -869,6 +832,43 @@ export function GameSession({
     browserPlatform.defer(() => {
       browserPlatform.deferFocus(hostRef.current?.querySelector('canvas') ?? null);
     });
+  }, []);
+
+  const beginBoardGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === 'mouse' || countdownDigit !== null || state.status !== 'playing') return;
+    boardGestureRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY, at: event.timeStamp };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }, [countdownDigit, state.status]);
+
+  const finishBoardGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    const start = boardGestureRef.current;
+    if (!start || start.id !== event.pointerId) return;
+    boardGestureRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (!runtime || countdownDigit !== null || state.status !== 'playing') return;
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    const horizontal = Math.abs(deltaX) > Math.abs(deltaY);
+    if (horizontal && Math.abs(deltaX) >= 22) {
+      const action = deltaX < 0 ? 'left' : 'right';
+      runtime.press(action);
+      runtime.release(action);
+      return;
+    }
+    if (!horizontal && deltaY >= 64) {
+      runtime.press('hard-drop');
+      return;
+    }
+    if (!horizontal && deltaY >= 22) {
+      runtime.press('soft-drop');
+      runtime.release('soft-drop');
+      return;
+    }
+    if (Math.abs(deltaX) < 12 && Math.abs(deltaY) < 12 && event.timeStamp - start.at < 420) runtime.press('rotate-cw');
+  }, [countdownDigit, runtime, state.status]);
+
+  const cancelBoardGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    if (boardGestureRef.current?.id === event.pointerId) boardGestureRef.current = null;
   }, []);
 
   useEffect(() => {
@@ -1054,7 +1054,7 @@ export function GameSession({
   const openSettings = useCallback(() => {
     if (!runtime || settingsOpen || restartConfirmOpen) return;
     const runtimeState = runtime.getState();
-    if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
+    if (runtimeState.status !== 'ready' && runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     settingsWasPlayingRef.current = runtimeState.status === 'playing';
     if (settingsWasPlayingRef.current) runtime.togglePause();
     runtime.setInputEnabled(false);
@@ -1063,11 +1063,11 @@ export function GameSession({
 
   const closeSettings = useCallback(() => {
     setSettingsOpen(false);
-    runtime?.setInputEnabled(true);
+    if (countdownDigit === null) runtime?.setInputEnabled(true);
     if (settingsWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     settingsWasPlayingRef.current = false;
     focusBoard();
-  }, [focusBoard, runtime]);
+  }, [countdownDigit, focusBoard, runtime]);
 
   const restartRun = useCallback(() => {
     setExitOpen(false);
@@ -1129,29 +1129,29 @@ export function GameSession({
     const handleSettingsShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyS' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen) return;
+      if (exitOpen || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       openSettings();
     };
     return browserPlatform.listenWindow('keydown', handleSettingsShortcut);
-  }, [countdownDigit, exitOpen, openSettings, restartConfirmOpen, settingsOpen]);
+  }, [exitOpen, openSettings, restartConfirmOpen, settingsOpen]);
 
   const requestExit = useCallback(() => {
-    if (!runtime || countdownDigit !== null || exitOpen || restartConfirmOpen || settingsOpen) return;
+    if (!runtime || exitOpen || restartConfirmOpen || settingsOpen) return;
     const runtimeState = runtime.getState();
-    if (runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
+    if (runtimeState.status !== 'ready' && runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
     exitWasPlayingRef.current = runtimeState.status === 'playing';
     if (exitWasPlayingRef.current) runtime.togglePause();
     runtime.setInputEnabled(false);
     setExitOpen(true);
-  }, [countdownDigit, exitOpen, restartConfirmOpen, runtime, settingsOpen]);
+  }, [exitOpen, restartConfirmOpen, runtime, settingsOpen]);
 
   const cancelExit = useCallback(() => {
     setExitOpen(false);
-    runtime?.setInputEnabled(true);
+    if (countdownDigit === null) runtime?.setInputEnabled(true);
     if (exitWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     exitWasPlayingRef.current = false;
-  }, [runtime]);
+  }, [countdownDigit, runtime]);
 
   useEffect(() => {
     const handlePuzzleUndoShortcut = (event: Event) => {
@@ -1168,12 +1168,12 @@ export function GameSession({
     const handleExitShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'Escape' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen) return;
+      if ((state.status !== 'ready' && state.status !== 'playing') || exitOpen || restartConfirmOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestExit();
     };
     return browserPlatform.listenWindow('keydown', handleExitShortcut);
-  }, [countdownDigit, exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
+  }, [exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
 
   const terminal = terminalCopy(state, language);
   const modeLabel = modeCopy(language, state.mode).label;
@@ -1191,8 +1191,9 @@ export function GameSession({
     <main id="game" lang={language} className="play-shell" data-testid="game-screen">
       <header className="play-topbar" data-testid="cluster-header">
         <button
-          className="topbar-action"
+          className="topbar-action topbar-action--back"
           type="button"
+          data-testid="exit-game"
           onClick={(event) => {
             event.currentTarget.focus({ preventScroll: true });
             requestExit();
@@ -1212,7 +1213,7 @@ export function GameSession({
             aria-label={`${copy.labels.settings} (S)`}
             aria-keyshortcuts="S"
             aria-expanded={settingsOpen}
-            disabled={countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused')}
+            disabled={state.status !== 'ready' && state.status !== 'playing' && state.status !== 'paused'}
             onClick={openSettings}
           >{copy.labels.settings}</button>
         </div>
@@ -1225,6 +1226,10 @@ export function GameSession({
             className={`board-frame ${countdownDigit !== null ? 'board-frame--countdown' : ''}`}
             data-testid="board-frame"
             aria-label={copy.phrasing.boardLabel}
+            aria-description={copy.labels.touchGestureHint}
+            onPointerDown={beginBoardGesture}
+            onPointerUp={finishBoardGesture}
+            onPointerCancel={cancelBoardGesture}
           >
             {countdownDigit !== null && (
               <div
@@ -1256,14 +1261,6 @@ export function GameSession({
           </aside>
         </section>
 
-          <section className={`touch-deck ${state.mode === 'puzzle' ? 'touch-deck--puzzle' : ''}`} data-testid="touch-rail" aria-label={state.mode === 'puzzle' ? copy.labels.puzzleTouchControls : copy.labels.touchControls}>
-          <TouchButton action="left" label={copy.labels.moveLeft} glyph="←" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="right" label={copy.labels.moveRight} glyph="→" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="rotate-cw" label={copy.labels.rotate} glyph="↻" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="soft-drop" label={copy.labels.softDrop} glyph="↓" runtime={runtime} disabled={countdownDigit !== null} />
-          <TouchButton action="hard-drop" label={copy.labels.hardDrop} glyph="⇣" runtime={runtime} disabled={countdownDigit !== null} />
-          {state.mode === 'puzzle' && <PuzzleUndoButton language={language} onRequestUndo={requestPuzzleUndo} disabled={countdownDigit !== null || state.status !== 'playing' || state.puzzleUndoHistory.length === 0} />}
-        </section>
       </section>
 
       <ActionSheet
@@ -1303,8 +1300,10 @@ export function GameSession({
               </button>
             </div>
           </section>
-          <SettingsShortcutGuide mode={state.mode} language={language} />
-          <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
+          <div className="settings-sheet__reference">
+            <SettingsShortcutGuide mode={state.mode} language={language} />
+            <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
+          </div>
           <SettingsRecord
             mode={state.mode}
             puzzleId={state.puzzleId ?? puzzleId}

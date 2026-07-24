@@ -177,18 +177,28 @@ describe('entry countdown', () => {
 
     const runtime = runtimeHarness.instances[0]!;
     const countdown = () => view.container.querySelector<HTMLElement>('[data-testid="entry-countdown"]');
-    const pause = [...view.container.querySelectorAll<HTMLButtonElement>('.topbar-action')].at(-1)!;
-    const touchButtons = [...view.container.querySelectorAll<HTMLButtonElement>('.touch-key')];
+    const settings = view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')!;
+    const back = view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')!;
     const textState = JSON.parse(window.render_game_to_text?.() ?? '{}') as Record<string, unknown>;
 
     expect(runtime.options.inputEnabled).toBe(false);
     expect(textState).not.toHaveProperty('level');
     expect(textState).toMatchObject({ combo: 0, bedrockRows: 0, fallTicks: 48 });
     expect(countdown()?.dataset.countdown).toBe('3');
-    expect(pause.disabled).toBe(true);
-    expect(touchButtons).toHaveLength(5);
-    expect(touchButtons.every((button) => button.disabled)).toBe(true);
+    expect(settings.disabled).toBe(false);
+    expect(back.disabled).toBe(false);
+    expect(view.container.querySelector('[data-testid="touch-rail"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="board-frame"]')?.getAttribute('aria-description')).toContain('触控');
     expect(runtime.start).not.toHaveBeenCalled();
+
+    act(() => settings.click());
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
+    act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
+    expect(runtime.options.inputEnabled).toBe(false);
+    act(() => back.click());
+    expect(view.container.querySelector('.action-sheet')?.textContent).toContain('离开本局？');
+    act(() => view.container.querySelector<HTMLButtonElement>('.action-sheet__actions > button')?.click());
+    expect(runtime.options.inputEnabled).toBe(false);
 
     await act(async () => vi.advanceTimersByTimeAsync(999));
     expect(countdown()?.dataset.countdown).toBe('3');
@@ -205,11 +215,12 @@ describe('entry countdown', () => {
     await act(async () => vi.advanceTimersByTimeAsync(1));
 
     expect(countdown()).toBeNull();
-    expect(runtime.setInputEnabled).toHaveBeenCalledExactlyOnceWith(true);
+    expect(runtime.setInputEnabled).toHaveBeenLastCalledWith(true);
+    expect(runtime.setInputEnabled).toHaveBeenCalledWith(false);
     expect(runtime.start).toHaveBeenCalledTimes(1);
     expect(runtime.setInputEnabled.mock.invocationCallOrder[0]).toBeLessThan(runtime.start.mock.invocationCallOrder[0]!);
-    expect(pause.disabled).toBe(false);
-    expect(touchButtons.every((button) => !button.disabled)).toBe(true);
+    expect(settings.disabled).toBe(false);
+    expect(back.disabled).toBe(false);
     expect(document.activeElement).toBe(view.container.querySelector('canvas'));
 
     const terminalState = {
@@ -241,8 +252,8 @@ describe('T6 frontend mode binding', () => {
 
     act(() => mutation.click());
     const rules = view.container.querySelector<HTMLElement>('[data-testid="entry-mode-rules"]')!;
-    expect(rules.textContent).toContain('带核心标记的方块携带道具，消除其任一格即可触发一次效果。');
-    expect(rules.textContent).toContain('冻结停止自动下落');
+    expect(rules.textContent).toContain('特殊整块任一格被清除时，立即释放一次道具。');
+    expect(rules.textContent).toContain('冻结停落 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
@@ -260,9 +271,9 @@ describe('T6 frontend mode binding', () => {
     const sprintBase = createInitialState(0x51a1f00d, 'sprint');
     const sprint = { ...sprintBase, lines: 9, pieceCount: 19, elapsedTicks: 540, mutationCarriers: [{ id: 1, item: 'freeze' as const, cells: [] }] };
     const cases = [
-      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒/格'] },
+      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '0.8 秒'] },
       { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '3', '13 秒'] },
-      { state: sprint, roles: ['score', 'lines', 'mutation-speed', 'mutation-carriers'], label: '异变模式数据', copy: ['消行', '9', '下落', '核心', '1'] },
+      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-targets', 'puzzle-placed', 'objective'],
@@ -353,13 +364,12 @@ describe('T6 frontend mode binding', () => {
     expect(volume.value).toBe('100');
     expect([...sheet.children].map((child) => child.getAttribute('data-testid') ?? child.className)).toEqual([
       'settings-controls',
-      'settings-shortcuts',
-      'settings-rules',
+      'settings-sheet__reference',
       'settings-leaderboard',
     ]);
     expect(controls.textContent).toContain('控制');
     expect(settingsLeaderboard.textContent).toContain('本模式排行消行 · 前 50112 行3,210 分 · 2026.07.24');
-    expect(rules.textContent).toContain('补满任意横行即可消除并得分。');
+    expect(rules.textContent).toContain('补满横行，消除并得分。');
     expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
@@ -452,23 +462,16 @@ describe('T6 frontend mode binding', () => {
     }));
     await act(async () => Promise.resolve());
 
-    const undo = puzzle.container.querySelector<HTMLButtonElement>('[data-testid="touch-undo"]')!;
-    expect(undo).not.toBeNull();
-    expect(undo.disabled).toBe(true);
-    expect(undo.getAttribute('aria-label')).toBe('撤回 (Z)');
-    expect(undo.getAttribute('aria-keyshortcuts')).toBe('Z');
-    expect(puzzle.container.querySelector('[data-testid="touch-rail"]')?.className).toContain('touch-deck--puzzle');
-    expect(puzzle.container.querySelector('[data-testid="touch-rail"]')?.querySelectorAll('button')).toHaveLength(6);
+    expect(puzzle.container.querySelector('[data-testid="touch-rail"]')).toBeNull();
+    expect(puzzle.container.querySelector('[data-testid="board-frame"]')?.getAttribute('aria-description')).toContain('触控');
     expect(puzzle.container.querySelector('.keyboard-map')).toBeNull();
 
     await act(async () => vi.advanceTimersByTimeAsync(3000));
-    expect(undo.disabled).toBe(true);
     const instance = runtimeHarness.instances.at(-1)!;
     const current = instance.getState();
     const locked = dispatch(current, { type: 'hard-drop' }).state;
     act(() => instance.setState(locked));
-    expect(undo.disabled).toBe(false);
-    act(() => undo.click());
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyZ', key: 'z', bubbles: true })));
     expect(instance.undoPuzzle).toHaveBeenCalledTimes(1);
     expect(instance.getState().active).toEqual(current.active);
     expect(instance.getState().puzzleUndoHistory).toEqual([]);
@@ -576,8 +579,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toContain('选择模式');
     expect(view.container.textContent).not.toContain('补满任意横行即可消除并得分。');
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
-    expect(view.container.querySelector('#home-title')?.tagName).toBe('H1');
-    expect(view.container.querySelector('#home-title')?.textContent).toBe('TetraMorph');
+    expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
+    expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
     expect(view.container.textContent).not.toContain('基岩会持续向上推进。');
     expect(view.container.textContent).not.toContain('带核心标记的方块携带道具。');
     expect(view.container.textContent).not.toContain('使用固定出现顺序的方块。');
@@ -737,9 +740,9 @@ describe('T6 frontend mode binding', () => {
       lines: 5,
       survivalRisePending: true,
     };
-    expect(fallCadenceLabel(classic)).toBe('0.7 秒/格');
-    expect(fallCadenceLabel(survival)).toBe('0.7 秒/格');
-    expect(fallCadenceLabel(sprint)).toBe('0.8 秒/格');
+    expect(fallCadenceLabel(classic)).toBe('0.7 秒');
+    expect(fallCadenceLabel(survival)).toBe('0.7 秒');
+    expect(fallCadenceLabel(sprint)).toBe('0.8 秒');
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 
@@ -774,7 +777,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelectorAll('.console-route .puzzle-silhouette')).toHaveLength(0);
     expect(view.container.querySelectorAll('.console-focus .puzzle-silhouette')).toHaveLength(1);
     expect(view.container.querySelector('.console-focus__index, .console-focus__pulse')).toBeNull();
-    expect(view.container.querySelector('.console-focus__heading > span, .console-focus__heading > i')).toBeNull();
+    expect(view.container.querySelector('.console-focus__heading > i')).toBeNull();
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
       expect(view.container.textContent).not.toContain(banned);
@@ -794,8 +797,8 @@ describe('T6 frontend mode binding', () => {
     view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id, fullyUnlocked)));
     const selectedBest = view.container.querySelector<HTMLElement>('[data-testid="selected-puzzle-start-best"]');
     const startSelected = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
-    expect(selectedBest?.textContent).toBe('当前最优步数：7步');
-    expect(selectedBest?.closest('.console-focus__heading')?.querySelector('.console-focus__title')?.nextElementSibling).toBe(selectedBest);
+    expect(selectedBest?.textContent).toBe('历史最优：7 步');
+    expect(selectedBest?.previousElementSibling?.querySelector('.console-focus__title')).not.toBeNull();
     expect(startSelected?.closest('.console-focus__action')?.contains(selectedBest ?? null)).toBe(false);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
     expect(view.container.querySelectorAll('.console-focus__heading > span, .console-focus__heading > i, .console-node i')).toHaveLength(1);
