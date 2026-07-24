@@ -6,6 +6,7 @@ class FakeAudioParam {
   value = 0;
   readonly setValues: number[] = [];
   readonly ramps: number[] = [];
+  readonly targets: Array<{ value: number; time: number; constant: number }> = [];
 
   setValueAtTime(value: number): void {
     this.value = value;
@@ -17,8 +18,9 @@ class FakeAudioParam {
     this.ramps.push(value);
   }
 
-  setTargetAtTime(value: number): void {
+  setTargetAtTime(value: number, time: number, constant: number): void {
     this.value = value;
+    this.targets.push({ value, time, constant });
   }
 }
 
@@ -40,6 +42,29 @@ class FakeOscillator {
   stop(time = 0): void { this.stops.push(time); this.onended?.(); }
 }
 
+class FakeAudioBuffer {
+  readonly channel: Float32Array;
+
+  constructor(frames: number) {
+    this.channel = new Float32Array(frames);
+  }
+
+  getChannelData(): Float32Array {
+    return this.channel;
+  }
+}
+
+class FakeBufferSource {
+  buffer: AudioBuffer | null = null;
+  onended: (() => void) | null = null;
+  readonly stops: number[] = [];
+
+  connect(): void {}
+  disconnect(): void {}
+  start(): void {}
+  stop(time = 0): void { this.stops.push(time); this.onended?.(); }
+}
+
 class FakeCompressor {
   readonly threshold = new FakeAudioParam();
   readonly knee = new FakeAudioParam();
@@ -52,10 +77,12 @@ class FakeCompressor {
 
 const oscillators: FakeOscillator[] = [];
 const gains: FakeGain[] = [];
+const noiseSources: FakeBufferSource[] = [];
 
 class FakeAudioContext {
   currentTime = 0;
   state: AudioContextState = 'running';
+  readonly sampleRate = 48_000;
   readonly destination = {} as AudioDestinationNode;
 
   createGain(): GainNode {
@@ -74,18 +101,150 @@ class FakeAudioContext {
     return oscillator as unknown as OscillatorNode;
   }
 
+  createBuffer(_channels: number, frames: number): AudioBuffer {
+    return new FakeAudioBuffer(frames) as unknown as AudioBuffer;
+  }
+
+  createBufferSource(): AudioBufferSourceNode {
+    const source = new FakeBufferSource();
+    noiseSources.push(source);
+    return source as unknown as AudioBufferSourceNode;
+  }
+
   async resume(): Promise<void> {}
   async suspend(): Promise<void> {}
   async close(): Promise<void> {}
 }
 
+interface ScheduledTimer {
+  callback: () => void;
+  delay: number;
+}
+
+function createTimedAudio(): { audio: AudioEngine; timers: Map<number, ScheduledTimer> } {
+  const timers = new Map<number, ScheduledTimer>();
+  let nextTimer = 1;
+  const timerWindow = {
+    setTimeout(callback: () => void, delay: number): number {
+      const id = nextTimer;
+      nextTimer += 1;
+      timers.set(id, { callback, delay });
+      return id;
+    },
+    clearTimeout(id: number): void {
+      timers.delete(id);
+    },
+  };
+  const platform = createBrowserPlatform({
+    window: timerWindow as unknown as Window,
+    document: null,
+    audioContextFactory: () => new FakeAudioContext() as unknown as AudioContext,
+  });
+  return { audio: new AudioEngine(platform), timers };
+}
+
+const carrierCells = [
+  { x: 3, y: 18 },
+  { x: 4, y: 18 },
+  { x: 3, y: 19 },
+  { x: 4, y: 19 },
+] as const;
+
 afterEach(() => {
   oscillators.length = 0;
   gains.length = 0;
+  noiseSources.length = 0;
+  vi.clearAllTimers();
+  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
 describe('AudioEngine original feedback', () => {
+  it('gives every mutation material a concise, unbent original signature', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+
+    const freeze = new AudioEngine();
+    await freeze.prime();
+    freeze.play([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells }]);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([659.25, 783.99]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine']);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    freeze.destroy();
+
+    oscillators.length = 0;
+    const collapse = new AudioEngine();
+    await collapse.prime();
+    collapse.play([{ type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells }]);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([148, 93]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'triangle']);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    collapse.destroy();
+
+    oscillators.length = 0;
+    const bomb = new AudioEngine();
+    await bomb.prime();
+    bomb.play([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3, triggerCells: carrierCells }]);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([74]);
+    expect(noiseSources).toHaveLength(1);
+    expect((noiseSources[0]?.buffer as unknown as FakeAudioBuffer).channel.some((sample) => sample !== 0)).toBe(true);
+    bomb.destroy();
+  });
+
+  it('keeps Double compact and adds only a clean octave for Super Double', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const double = new AudioEngine();
+    await double.prime();
+    double.play([{ type: 'mutation-activated', item: 'multiplier', durationTicks: 600, score: 0, rowsRemoved: 0, multiplierFactor: 2, triggerCells: carrierCells }]);
+    expect(oscillators).toHaveLength(4);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([
+      523.25,
+      523.25 * 2.01,
+      659.25,
+      659.25 * 2.01,
+    ]);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    double.destroy();
+
+    oscillators.length = 0;
+    const superDouble = new AudioEngine();
+    await superDouble.prime();
+    superDouble.play([{ type: 'mutation-activated', item: 'multiplier', durationTicks: 600, score: 0, rowsRemoved: 0, multiplierFactor: 4, triggerCells: carrierCells }]);
+    expect(oscillators).toHaveLength(6);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(1046.5);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(1046.5 * 2.01);
+    superDouble.destroy();
+  });
+
+  it('gives a same-frame mutation precedence over a clear chord and ducks music only briefly', async () => {
+    const { audio, timers } = createTimedAudio();
+    await audio.prime();
+    audio.play([{ type: 'started' }]);
+    const foregroundBefore = oscillators.length;
+    const musicBus = gains[2]?.gain;
+    expect(musicBus?.value).toBeCloseTo(0.28, 5);
+
+    audio.play([
+      { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
+    ]);
+
+    // Freeze's two ceramic notes remain; the three-note normal clear chord is absent.
+    expect(oscillators).toHaveLength(foregroundBefore + 2);
+    expect(musicBus?.value).toBeCloseTo(0.28 * 0.562341325, 5);
+    const duckEntry = [...timers.entries()].find(([, timer]) => timer.delay === 350);
+    expect(duckEntry).toBeDefined();
+    if (duckEntry) {
+      timers.delete(duckEntry[0]);
+      duckEntry[1].callback();
+    }
+    expect(musicBus?.value).toBeCloseTo(0.28, 5);
+
+    audio.play([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3, triggerCells: carrierCells }]);
+    expect([...timers.values()].some((timer) => timer.delay === 350)).toBe(true);
+    audio.destroy();
+    expect(timers.size).toBe(0);
+  });
+
   it('uses a short physical landing thump instead of an electrical low-sine hum', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
