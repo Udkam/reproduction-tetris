@@ -26,6 +26,18 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   continues with the Puzzle rail/typography, music removal, Mutation redesign, and
   Survival debris stream.
 
+### T13.14 Puzzle rail clarity checkpoint — 2026-07-24
+
+- `c381b9e` removes the redundant Puzzle objective card and renames the live placement
+  counter to `操作数` / `Moves`. Its fixed two-piece forecast now has explicit in-panel
+  `1` and `2` lanes with text labels, plus a matching divider between the two canvas
+  previews; it no longer relies on a detached floating numeral. Classic and Mutation
+  gravity use `下落速度/格` / `Fall speed / cell`.
+- Focused App/renderer coverage passes 27/27 and typecheck passes. An inspected local
+  browser capture confirms the renamed metrics and both real preview pieces. The next
+  intentional change is procedural-music removal; Settings needs another all-mode,
+  bilingual density audit afterward.
+
 ### T13.12 selector, settings, and Mutation expression accepted — 2026-07-24
 
 - Accepted source range: `9b6188f..ec36924`. The Puzzle selector now holds a stable

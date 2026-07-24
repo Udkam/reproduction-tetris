@@ -998,3 +998,23 @@
   current control. Next: Puzzle terminology and dual in-panel forecast, then music
   removal and the remaining T13.14 mechanics. `package-lock.json` remains inherited
   and unstaged.
+
+## 2026-07-24 — T13.14 Puzzle rail clarity checkpoint
+
+- Base: `659fb18`; source checkpoint: `c381b9e`. Exact product paths are
+  `src/App.tsx`, `src/App.test.ts`, `src/ui/localization.ts`,
+  `src/game/render/TetrisRenderer.ts`, and `src/styles.css`.
+- Delivered: Puzzle now shows only original-block and operation counters; the redundant
+  objective card is absent. Its forecast introduces two compact named lanes inside the
+  Next instrument—`1 / 下一个方块` and `2 / 后一个方块`—and the canvas well has a matching
+  divider between the actual two queued pieces. Classic and Mutation gravity use
+  `下落速度/格` / `Fall speed / cell`. Live values use restrained tabular mono treatment
+  while labels retain the readable bilingual UI face; the wordmark remains untouched.
+- Commands/evidence: `npm.cmd run test -- src/App.test.ts
+  src/game/render/TetrisRenderer.test.ts` passed 27/27; `npm.cmd run typecheck` passed.
+  An inspected local browser capture at
+  `.local/audits/t13.14/rail/puzzle-rail.png` shows the two labelled forecast lanes,
+  both real previews, the divider, and the renamed Puzzle counter. No Core/Puzzle route
+  data changed.
+- Blocker: none for this bounded rail checkpoint. Next: remove the current music and
+  rerun the all-mode Settings density audit because its controls will change.
