@@ -91,10 +91,20 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  fillStart: 0x9c8b73,
-  fillEnd: 0x76664f,
-  edge: 0x40372d,
-  innerEdge: 0xcdbeaa,
+  // Survival bedrock is deliberately dense and mineral-like, rather than a
+  // regular piece recolour. Renderer facets add chipped faces on top.
+  fillStart: 0x7d7b77,
+  fillEnd: 0x656966,
+  edge: 0x292f31,
+  innerEdge: 0xb7bab2,
+};
+
+/** Clearable one-cell stones that fall independently in Survival. */
+export const SURVIVAL_STONE_MATERIAL: PieceMaterial = {
+  fillStart: 0x95a4ab,
+  fillEnd: 0x5f6c73,
+  edge: 0x303c42,
+  innerEdge: 0xd2dadd,
 };
 
 /** Puzzle-only immutable cells use a pale mineral core rather than a playable hue. */

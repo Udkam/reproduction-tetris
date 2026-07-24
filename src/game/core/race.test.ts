@@ -7,6 +7,8 @@ import {
   PROGRESSIVE_GRAVITY_TICKS,
   STANDARD_GRAVITY_TICKS,
   SURVIVAL_GRAVITY_TICKS,
+  SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
+  SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
   SURVIVAL_LINES_PER_BEDROCK,
   TICKS_PER_SECOND,
   gravityForMode,
@@ -14,8 +16,8 @@ import {
   survivalIntervalTicks,
 } from './constants';
 import { canPlace, clearRows, createBoard, fullRows, lowerBedrock, setCell } from './board';
-import { createInitialState, dispatch, replay, stateHash } from './engine';
-import { BEDROCK_CELL, type Board, type GameCommand, type GameState } from './types';
+import { createInitialState, dispatch, dropDistance, replay, stateHash } from './engine';
+import { BEDROCK_CELL, SURVIVAL_STONE_CELL, type Board, type GameCommand, type GameState } from './types';
 
 function start(seed: number, mode: 'marathon' | 'race' | 'puzzle' = 'marathon'): GameState {
   return dispatch(createInitialState(seed, mode), { type: 'start' }).state;
@@ -68,7 +70,7 @@ describe('progressive gravity and Survival intervals', () => {
 });
 
 describe('timed Survival pressure and three-line reward', () => {
-  it('opens and restarts with the configured seven unbreakable bedrock rows', () => {
+  it('opens and restarts with the configured three unbreakable bedrock rows', () => {
     const opened = createInitialState(0x5000, 'race');
     expect(opened.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
     expect(opened.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
@@ -190,7 +192,7 @@ describe('timed Survival pressure and three-line reward', () => {
     expect(transition.events).toContainEqual({ type: 'game-over', reason: 'bedrock-overflow' });
   });
 
-  it('keeps replay deterministic, hashes pressure state, and restart restores the configured seven-row opening', () => {
+  it('keeps replay deterministic, hashes pressure state, and restart restores the configured three-row opening', () => {
     const commands: GameCommand[] = [
       { type: 'start' },
       ...Array.from({ length: 30 }, () => ({ type: 'tick' } as const)),
@@ -218,6 +220,123 @@ describe('timed Survival pressure and three-line reward', () => {
     expect(restarted.survivalPressureTicks).toBe(0);
     expect(restarted.survivalRisePending).toBe(false);
     expect(restarted.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
+  });
+});
+
+describe('independent Survival stone stream', () => {
+  function isolatedStoneState(seed = 0x5a0e): GameState {
+    return {
+      ...start(seed, 'race'),
+      // Keep the player piece stationary while this suite isolates the
+      // independent stone clock; it must not change the normal seven-bag.
+      active: { type: 'O', rotation: 0, x: 4, y: 24 },
+      gravityTicks: -10_000,
+      survivalRisePending: true,
+    };
+  }
+
+  it('uses a separate seeded stream, emits after twenty seconds, and floors the next interval at ten', () => {
+    const initial = isolatedStoneState();
+    const initialBag = initial.randomizer;
+    const justBefore = advance(initial, SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND - 1);
+    expect(justBefore.survivalDebris).toEqual([]);
+    expect(justBefore.survivalDebrisIntervalTicks).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND - 1);
+
+    const first = dispatch(justBefore, { type: 'tick' });
+    expect(first.events).toContainEqual(expect.objectContaining({
+      type: 'survival-stones-spawned',
+      intervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
+      nextIntervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - 1,
+    }));
+    expect(first.state.survivalDebris.length).toBeGreaterThanOrEqual(1);
+    expect(first.state.survivalDebris.length).toBeLessThanOrEqual(2);
+    expect(first.state.survivalDebris[0]).toMatchObject({ x: expect.any(Number), y: 20 });
+    expect(first.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - 1);
+    expect(first.state.randomizer).toEqual(initialBag);
+
+    const nearFloor = {
+      ...first.state,
+      survivalDebris: [],
+      survivalDebrisIntervalSeconds: SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS + 1,
+      survivalDebrisIntervalTicks: (SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS + 1) * TICKS_PER_SECOND - 1,
+      survivalDebrisFallProgress: 0,
+    };
+    const floor = dispatch(nearFloor, { type: 'tick' });
+    expect(floor.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS);
+    const staysAtFloor = dispatch({
+      ...floor.state,
+      survivalDebris: [],
+      survivalDebrisIntervalTicks: SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS * TICKS_PER_SECOND - 1,
+      survivalDebrisFallProgress: 0,
+    }, { type: 'tick' });
+    expect(staysAtFloor.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS);
+
+    const replayed = advance(isolatedStoneState(), SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND);
+    expect(stateHash(first.state)).toBe(stateHash(replayed));
+    expect(stateHash(first.state)).not.toBe(stateHash({
+      ...first.state,
+      survivalDebrisIntervalTicks: first.state.survivalDebrisIntervalTicks + 1,
+    }));
+    expect(stateHash(first.state)).not.toBe(stateHash({
+      ...first.state,
+      survivalDebris: [],
+    }));
+  });
+
+  it('falls at exactly one and a half times the fixed Survival cadence', () => {
+    const state: GameState = {
+      ...start(0x5a0f, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: 24 },
+      survivalDebris: [{ id: 1, x: 0, y: 20 }],
+      survivalDebrisFallProgress: 0,
+    };
+    const advanced = advance(state, SURVIVAL_GRAVITY_TICKS * 2);
+    // The player falls two normal Survival cells in 80 ticks; the stone moves three.
+    expect(advanced.active).toMatchObject({ y: 26 });
+    expect(advanced.survivalDebris).toEqual([{ id: 1, x: 0, y: 23 }]);
+  });
+
+  it('treats a falling stone as a real collision while it is still in the air', () => {
+    const state: GameState = {
+      ...start(0x5a10, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: 28 },
+      survivalDebris: [{ id: 1, x: 4, y: 30 }],
+      survivalRisePending: true,
+    };
+    const attempted = dispatch(state, { type: 'soft-drop' });
+    expect(attempted.state.active).toEqual(state.active);
+    expect(attempted.events).toEqual([]);
+    expect(dropDistance(state)).toBe(0);
+  });
+
+  it('locks a stone as a clearable cell and preserves an active player piece through its clear', () => {
+    let board = createBoard();
+    for (let x = 0; x < 9; x += 1) board = setCell(board, x, BOARD_HEIGHT - 1, 'J');
+    let transition = dispatch({
+      ...start(0x5a11, 'race'),
+      board,
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 3, y: 30 },
+      survivalDebris: [{ id: 1, x: 9, y: BOARD_HEIGHT - 1 }],
+      survivalDebrisFallProgress: 77,
+      pieceCount: 0,
+    }, { type: 'tick' });
+
+    expect(transition.state.phase).toBe('line-clear');
+    expect(transition.state.board[BOARD_HEIGHT - 1]![9]).toBe(SURVIVAL_STONE_CELL);
+    expect(transition.events).toContainEqual({ type: 'survival-stones-landed', cells: [{ x: 9, y: BOARD_HEIGHT - 1 }] });
+    expect(transition.events).toContainEqual({ type: 'clear-started', rows: [BOARD_HEIGHT - 1] });
+
+    for (let index = 0; index < LINE_CLEAR_DELAY_TICKS; index += 1) transition = dispatch(transition.state, { type: 'tick' });
+    expect(transition.state.phase).toBe('active');
+    expect(transition.state.lines).toBe(1);
+    expect(transition.state.pieceCount).toBe(0);
+    expect(transition.state.active).toMatchObject({ type: 'O', x: 3, y: 31 });
+    expect(transition.state.board[BOARD_HEIGHT - 1]).toEqual(Array(10).fill(null));
   });
 });
 

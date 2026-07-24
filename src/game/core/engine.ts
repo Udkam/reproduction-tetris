@@ -12,12 +12,19 @@ import {
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
+  SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK,
+  SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD,
+  SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
+  SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS,
+  SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
+  SURVIVAL_DEBRIS_RANDOM_SALT,
   SURVIVAL_LINES_PER_BEDROCK,
+  TICKS_PER_SECOND,
   VISIBLE_START_ROW,
   gravityForMode,
   survivalIntervalTicks,
 } from './constants';
-import { canPlace, clearRows, createBoard, fullRows, isGrounded, lowerBedrock, mapCellsAfterClear, mergePiece, raiseBedrock } from './board';
+import { canPlace, clearRows, createBoard, fullRows, lowerBedrock, mapCellsAfterClear, mergePiece, raiseBedrock, setCell } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
 import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
 import { createRandomizer, drawPiece, drawRandom } from './random';
@@ -29,9 +36,29 @@ import {
   mutationCarriersClearedByRows,
   withoutMutationCarriers,
 } from './mutation';
-import { type ActivePiece, type GameCommand, type GameEvent, type GameMode, type GameState, type GameTransition, type MutationCarrier, type MutationItem, type PieceType, type PuzzleCompletion, type PuzzleId, type PuzzleUndoSnapshot } from './types';
+import {
+  SURVIVAL_STONE_CELL,
+  type ActivePiece,
+  type Cell,
+  type GameCommand,
+  type GameEvent,
+  type GameMode,
+  type GameState,
+  type GameTransition,
+  type MutationCarrier,
+  type MutationItem,
+  type PieceType,
+  type PuzzleCompletion,
+  type PuzzleId,
+  type PuzzleUndoSnapshot,
+  type SurvivalDebris,
+} from './types';
 
 const MUTATION_ITEMS: readonly MutationItem[] = Object.freeze(['freeze', 'collapse', 'bomb', 'multiplier']);
+
+function survivalDebrisSeed(seed: number): number {
+  return (seed ^ SURVIVAL_DEBRIS_RANDOM_SALT) >>> 0;
+}
 
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
@@ -97,7 +124,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   next = refillQueue({ ...next, queue }, NEXT_QUEUE_SIZE);
   const active = createSpawnPiece(pieceType);
   next = assignMutationCarrier(next);
-  if (!canPlace(next.board, active)) {
+  if (!canPlaceInState(next, active)) {
     if (next.mode === 'puzzle') return puzzleFailure(next, 'failed-top-out', 'block-out');
     return {
       state: { ...next, active: null, status: 'game-over', phase: 'active' },
@@ -156,6 +183,12 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalBedrockRows: openingBedrock?.added ?? 0,
     survivalPressureTicks: 0,
     survivalRisePending: false,
+    survivalDebris: Object.freeze([]),
+    survivalDebrisNextId: 1,
+    survivalDebrisIntervalTicks: 0,
+    survivalDebrisIntervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
+    survivalDebrisFallProgress: 0,
+    survivalDebrisRandomizer: createRandomizer(survivalDebrisSeed(effectiveSeed)),
     mutationActiveCarrier: null,
     mutationCarriers: Object.freeze([]),
     mutationNextCarrierId: 1,
@@ -233,6 +266,21 @@ function withActive(state: GameState): state is GameState & { active: ActivePiec
   return state.active !== null;
 }
 
+function cellKey(cell: Cell): string {
+  return `${cell.x},${cell.y}`;
+}
+
+function canPlaceInState(state: GameState, piece: ActivePiece): boolean {
+  if (!canPlace(state.board, piece)) return false;
+  if (state.mode !== 'race' || state.survivalDebris.length === 0) return true;
+  const debris = new Set(state.survivalDebris.map(cellKey));
+  return cellsForPiece(piece).every((cell) => !debris.has(cellKey(cell)));
+}
+
+function isGroundedInState(state: GameState, piece: ActivePiece): boolean {
+  return !canPlaceInState(state, { ...piece, y: piece.y + 1 });
+}
+
 function advanceSurvivalPressure(state: GameState): GameState {
   if (state.mode !== 'race' || state.survivalRisePending) return state;
   const intervalTicks = survivalIntervalTicks(state.lines);
@@ -241,6 +289,204 @@ function advanceSurvivalPressure(state: GameState): GameState {
     ...state,
     survivalPressureTicks,
     survivalRisePending: survivalPressureTicks >= intervalTicks,
+  };
+}
+
+function spawnSurvivalDebris(state: GameState): { state: GameState; cells: readonly Cell[] } {
+  let randomizer = state.survivalDebrisRandomizer;
+  const countRoll = drawRandom(randomizer);
+  randomizer = countRoll.randomizer;
+  const requested = countRoll.value < 0.5 ? 1 : 2;
+  const occupied = new Set<string>([
+    ...state.survivalDebris.map(cellKey),
+    ...(state.active ? cellsForPiece(state.active).map(cellKey) : []),
+  ]);
+  const legalColumns = Array.from({ length: 10 }, (_, x) => x).filter((x) => (
+    state.board[VISIBLE_START_ROW]?.[x] === null
+    && !occupied.has(`${x},${VISIBLE_START_ROW}`)
+  ));
+  const survivalDebris = [...state.survivalDebris];
+  const cells: Cell[] = [];
+  let survivalDebrisNextId = state.survivalDebrisNextId;
+
+  // Consume one selection roll per requested stone even when the top edge is blocked.
+  // That keeps the stream's random sequence independent from a particular board shape.
+  for (let index = 0; index < requested; index += 1) {
+    const columnRoll = drawRandom(randomizer);
+    randomizer = columnRoll.randomizer;
+    if (legalColumns.length === 0) continue;
+    const selected = Math.min(legalColumns.length - 1, Math.floor(columnRoll.value * legalColumns.length));
+    const [x] = legalColumns.splice(selected, 1);
+    if (x === undefined) continue;
+    const cell = { x, y: VISIBLE_START_ROW };
+    survivalDebris.push({ id: survivalDebrisNextId, ...cell });
+    survivalDebrisNextId += 1;
+    cells.push(cell);
+  }
+
+  return {
+    state: {
+      ...state,
+      survivalDebris: Object.freeze(survivalDebris),
+      survivalDebrisNextId,
+      survivalDebrisRandomizer: randomizer,
+    },
+    cells: Object.freeze(cells),
+  };
+}
+
+function settleSurvivalDebris(state: GameState): { state: GameState; landed: readonly Cell[] } {
+  if (state.mode !== 'race' || state.survivalDebris.length === 0) return { state, landed: Object.freeze([]) };
+  const occupied = new Set(state.survivalDebris.map(cellKey));
+  const activeCells = new Set(state.active ? cellsForPiece(state.active).map(cellKey) : []);
+  const falling = [...state.survivalDebris].sort((left, right) => (
+    right.y - left.y || left.x - right.x || left.id - right.id
+  ));
+  const survivalDebris: SurvivalDebris[] = [];
+  const landed: Cell[] = [];
+  let board = state.board;
+
+  for (const stone of falling) {
+    occupied.delete(cellKey(stone));
+    const nextCell = { x: stone.x, y: stone.y + 1 };
+    const canFall = nextCell.y < BOARD_HEIGHT
+      && board[nextCell.y]?.[nextCell.x] === null
+      && !activeCells.has(cellKey(nextCell))
+      && !occupied.has(cellKey(nextCell));
+    if (canFall) {
+      survivalDebris.push({ ...stone, y: nextCell.y });
+      occupied.add(cellKey(nextCell));
+      continue;
+    }
+    board = setCell(board, stone.x, stone.y, SURVIVAL_STONE_CELL);
+    landed.push({ x: stone.x, y: stone.y });
+  }
+
+  return {
+    state: {
+      ...state,
+      board,
+      survivalDebris: Object.freeze(survivalDebris.sort((left, right) => left.id - right.id)),
+    },
+    landed: Object.freeze(landed),
+  };
+}
+
+interface SurvivalDebrisAdvance extends GameTransition {
+  startedLineClear: boolean;
+}
+
+/** Advances the independent debris clock and its 3:2 fixed-tick fall accumulator. */
+function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
+  if (state.mode !== 'race') return { state, events: [], startedLineClear: false };
+  let next = state;
+  const events: GameEvent[] = [];
+  const progress = state.survivalDebrisFallProgress + SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK;
+  if (progress >= SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD) {
+    const settled = settleSurvivalDebris(state);
+    next = {
+      ...settled.state,
+      survivalDebrisFallProgress: progress - SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD,
+    };
+    if (settled.landed.length > 0) events.push({ type: 'survival-stones-landed', cells: settled.landed });
+  } else {
+    next = { ...state, survivalDebrisFallProgress: progress };
+  }
+
+  // Resolve in-flight stones before adding a new source stone. A fresh stone
+  // therefore always appears on the top visible row for one complete tick,
+  // rather than sometimes skipping a cell when the 3:2 accumulator wraps.
+  const intervalTicks = next.survivalDebrisIntervalSeconds * TICKS_PER_SECOND;
+  const survivalDebrisIntervalTicks = Math.min(intervalTicks, next.survivalDebrisIntervalTicks + 1);
+  if (survivalDebrisIntervalTicks >= intervalTicks) {
+    const emitted = spawnSurvivalDebris(next);
+    const nextIntervalSeconds = Math.max(
+      SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
+      next.survivalDebrisIntervalSeconds - SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS,
+    );
+    next = {
+      ...emitted.state,
+      survivalDebrisIntervalTicks: 0,
+      survivalDebrisIntervalSeconds: nextIntervalSeconds,
+    };
+    if (emitted.cells.length > 0) {
+      events.push({
+        type: 'survival-stones-spawned',
+        cells: emitted.cells,
+        intervalSeconds: state.survivalDebrisIntervalSeconds,
+        nextIntervalSeconds,
+      });
+    }
+  } else {
+    next = { ...next, survivalDebrisIntervalTicks };
+  }
+
+  const full = fullRows(next.board);
+  const pending = new Set(next.pendingClearRows);
+  const newlyFull = full.filter((row) => !pending.has(row));
+  if (newlyFull.length === 0) return { state: next, events, startedLineClear: false };
+
+  const pendingClearRows = [...pending, ...newlyFull].sort((left, right) => left - right);
+  return {
+    state: {
+      ...next,
+      phase: 'line-clear',
+      phaseTicks: 0,
+      pendingClearRows,
+      gravityTicks: 0,
+      lockTicks: 0,
+    },
+    events: [...events, { type: 'clear-started', rows: newlyFull }],
+    startedLineClear: state.phase !== 'line-clear',
+  };
+}
+
+function mapSurvivalDebrisAfterClear(board: GameState['board'], rows: readonly number[], debris: readonly SurvivalDebris[]): readonly SurvivalDebris[] {
+  return Object.freeze(debris.flatMap((stone) => {
+    const [mapped] = mapCellsAfterClear(board, rows, [{ x: stone.x, y: stone.y }]);
+    return mapped ? [{ ...stone, ...mapped }] : [];
+  }));
+}
+
+function mapActiveAfterClear(board: GameState['board'], rows: readonly number[], active: ActivePiece | null): ActivePiece | null {
+  if (!active) return null;
+  const before = cellsForPiece(active);
+  const after = mapCellsAfterClear(board, rows, before);
+  if (after.length !== before.length) return active;
+  const dx = after[0]!.x - before[0]!.x;
+  const dy = after[0]!.y - before[0]!.y;
+  return after.every((cell, index) => (
+    cell.x - before[index]!.x === dx && cell.y - before[index]!.y === dy
+  ))
+    ? { ...active, x: active.x + dx, y: active.y + dy }
+    : active;
+}
+
+function shiftSurvivalMovers(state: GameState, deltaY: number): {
+  active: ActivePiece | null;
+  survivalDebris: readonly SurvivalDebris[];
+  overflow: boolean;
+} {
+  const active = state.active ? { ...state.active, y: state.active.y + deltaY } : null;
+  const survivalDebris = Object.freeze(state.survivalDebris.map((stone) => ({ ...stone, y: stone.y + deltaY })));
+  const activeOverflow = active !== null && cellsForPiece(active).some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT);
+  const debrisOverflow = survivalDebris.some((stone) => stone.y < 0 || stone.y >= BOARD_HEIGHT);
+  return { active, survivalDebris, overflow: activeOverflow || debrisOverflow };
+}
+
+function lowerSurvivalBedrock(state: GameState, count: number): { state: GameState; removed: number } {
+  const lowered = lowerBedrock(state.board, count);
+  if (lowered.removed === 0) return { state, removed: 0 };
+  const movers = shiftSurvivalMovers(state, lowered.removed);
+  return {
+    state: {
+      ...state,
+      board: lowered.board,
+      active: movers.active,
+      survivalDebris: movers.survivalDebris,
+      survivalBedrockRows: Math.max(0, state.survivalBedrockRows - lowered.removed),
+    },
+    removed: lowered.removed,
   };
 }
 
@@ -292,9 +538,12 @@ interface SurvivalRiseResolution extends GameTransition {
 function resolvePendingSurvivalRise(state: GameState, deferOverflow = false): SurvivalRiseResolution {
   if (state.mode !== 'race' || !state.survivalRisePending) return { state, events: [], overflow: false };
   const raised = raiseBedrock(state.board, 1);
+  const movers = shiftSurvivalMovers(state, -raised.added);
   const next: GameState = {
     ...state,
     board: raised.board,
+    active: movers.active,
+    survivalDebris: movers.survivalDebris,
     survivalBedrockRows: state.survivalBedrockRows + raised.added,
     survivalPressureTicks: 0,
     survivalRisePending: false,
@@ -302,7 +551,8 @@ function resolvePendingSurvivalRise(state: GameState, deferOverflow = false): Su
   const events: GameEvent[] = raised.added > 0
     ? [{ type: 'bedrock-raised', count: raised.added, height: next.survivalBedrockRows }]
     : [];
-  if (!raised.overflow || deferOverflow) return { state: next, events, overflow: raised.overflow };
+  const overflow = raised.overflow || movers.overflow;
+  if (!overflow || deferOverflow) return { state: next, events, overflow };
   return {
     state: { ...next, active: null, status: 'game-over', phase: 'active' },
     events: [...events, { type: 'game-over', reason: 'bedrock-overflow' }],
@@ -313,10 +563,10 @@ function resolvePendingSurvivalRise(state: GameState, deferOverflow = false): Su
 function moveActive(state: GameState, dx: number, dy: number, cause: 'move' | 'gravity' | 'soft-drop'): GameTransition {
   if (!withActive(state)) return { state, events: [] };
   const candidate = { ...state.active, x: state.active.x + dx, y: state.active.y + dy };
-  if (!canPlace(state.board, candidate)) return { state, events: [] };
+  if (!canPlaceInState(state, candidate)) return { state, events: [] };
 
-  const wasGrounded = isGrounded(state.board, state.active);
-  const remainsGrounded = isGrounded(state.board, candidate);
+  const wasGrounded = isGroundedInState(state, state.active);
+  const remainsGrounded = isGroundedInState(state, candidate);
   const canReset = cause === 'move' && wasGrounded && state.lockResets < MAX_LOCK_RESETS;
 
   return {
@@ -585,7 +835,7 @@ function hardDrop(state: GameState): GameTransition {
   if (!withActive(state)) return { state, events: [] };
   let distance = 0;
   let candidate = state.active;
-  while (canPlace(state.board, { ...candidate, y: candidate.y + 1 })) {
+  while (canPlaceInState(state, { ...candidate, y: candidate.y + 1 })) {
     candidate = { ...candidate, y: candidate.y + 1 };
     distance += 1;
   }
@@ -596,7 +846,7 @@ function hardDrop(state: GameState): GameTransition {
 function rotate(state: GameState, direction: -1 | 1): GameTransition {
   if (!withActive(state)) return { state, events: [] };
   const target = nextRotation(state.active.rotation, direction);
-  const wasGrounded = isGrounded(state.board, state.active);
+  const wasGrounded = isGroundedInState(state, state.active);
   for (const kick of kickTests(state.active, target)) {
     const candidate: ActivePiece = {
       ...state.active,
@@ -604,8 +854,8 @@ function rotate(state: GameState, direction: -1 | 1): GameTransition {
       x: state.active.x + kick.x,
       y: state.active.y + kick.y,
     };
-    if (!canPlace(state.board, candidate)) continue;
-    const remainsGrounded = isGrounded(state.board, candidate);
+    if (!canPlaceInState(state, candidate)) continue;
+    const remainsGrounded = isGroundedInState(state, candidate);
     const canReset = wasGrounded && state.lockResets < MAX_LOCK_RESETS;
     return {
       state: {
@@ -636,9 +886,17 @@ function finishLineClear(state: GameState): GameTransition {
   const triggeredCarriers = state.mode === 'sprint'
     ? mutationCarriersClearedByRows(state.mutationCarriers, rows)
     : Object.freeze([]);
+  const activeAfterClear = state.mode === 'race'
+    ? mapActiveAfterClear(state.board, rows, state.active)
+    : state.active;
+  const debrisAfterClear = state.mode === 'race'
+    ? mapSurvivalDebrisAfterClear(state.board, rows, state.survivalDebris)
+    : state.survivalDebris;
   let cleared: GameState = {
     ...state,
     board: clearRows(state.board, rows),
+    active: activeAfterClear,
+    survivalDebris: debrisAfterClear,
     puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.board, rows, state.puzzleTargetCells) : state.puzzleTargetCells,
     mutationCarriers: state.mode === 'sprint'
       ? mapMutationCarriersAfterClear(
@@ -673,11 +931,9 @@ function finishLineClear(state: GameState): GameTransition {
     const crossedRewardThresholds = Math.floor(lines / SURVIVAL_LINES_PER_BEDROCK)
       - Math.floor(state.lines / SURVIVAL_LINES_PER_BEDROCK);
     if (crossedRewardThresholds > 0) {
-      const lowered = lowerBedrock(cleared.board, crossedRewardThresholds);
+      const lowered = lowerSurvivalBedrock(cleared, crossedRewardThresholds);
       cleared = {
-        ...cleared,
-        board: lowered.board,
-        survivalBedrockRows: Math.max(0, cleared.survivalBedrockRows - lowered.removed),
+        ...lowered.state,
         survivalPressureTicks: 0,
         survivalRisePending: false,
       };
@@ -691,6 +947,19 @@ function finishLineClear(state: GameState): GameTransition {
         events: [...events, { type: 'game-over', reason: 'bedrock-overflow' }],
       };
     }
+    if (cleared.active !== null) {
+      return {
+        state: {
+          ...cleared,
+          phase: 'active',
+          phaseTicks: 0,
+          gravityTicks: 0,
+          lockTicks: 0,
+          lockResets: 0,
+        },
+        events,
+      };
+    }
   }
   const spawned = spawnPiece(cleared);
   return { state: spawned.state, events: [...events, ...spawned.events] };
@@ -698,8 +967,15 @@ function finishLineClear(state: GameState): GameTransition {
 
 function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
-  let next: GameState = advanceMutationEffects(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 }));
-  const timedEvents: GameEvent[] = [];
+  const debris = advanceSurvivalDebris(
+    advanceMutationEffects(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 })),
+  );
+  let next: GameState = debris.state;
+  const timedEvents: GameEvent[] = [...debris.events];
+
+  // A stone-created row receives a full visible clear interval before its first
+  // countdown tick, matching a player-created clear rather than skipping the cue.
+  if (debris.startedLineClear) return { state: next, events: timedEvents };
 
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
@@ -726,7 +1002,7 @@ function tick(state: GameState): GameTransition {
     return { state: invalid.state, events: [...timedEvents, ...invalid.events] };
   }
 
-  if (isGrounded(next.board, next.active)) {
+  if (isGroundedInState(next, next.active)) {
     next = { ...next, lockTicks: next.lockTicks + 1 };
     if (next.lockTicks >= LOCK_DELAY_TICKS) {
       const locked = lockActive(next);
@@ -785,7 +1061,7 @@ export function dispatch(state: GameState, command: GameCommand): GameTransition
 export function dropDistance(state: GameState): number {
   if (!withActive(state)) return 0;
   let distance = 0;
-  while (canPlace(state.board, { ...state.active, y: state.active.y + distance + 1 })) distance += 1;
+  while (canPlaceInState(state, { ...state.active, y: state.active.y + distance + 1 })) distance += 1;
   return distance;
 }
 
@@ -804,6 +1080,12 @@ export function stateHash(state: GameState): string {
         survivalBedrockRows: _survivalBedrockRows,
         survivalPressureTicks: _survivalPressureTicks,
         survivalRisePending: _survivalRisePending,
+        survivalDebris: _survivalDebris,
+        survivalDebrisNextId: _survivalDebrisNextId,
+        survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
+        survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
+        survivalDebrisFallProgress: _survivalDebrisFallProgress,
+        survivalDebrisRandomizer: _survivalDebrisRandomizer,
         mutationActiveCarrier: _mutationActiveCarrier,
         mutationCarriers: _mutationCarriers,
         mutationNextCarrierId: _mutationNextCarrierId,
@@ -840,6 +1122,12 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
+          survivalDebris: _survivalDebris,
+          survivalDebrisNextId: _survivalDebrisNextId,
+          survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
+          survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
+          survivalDebrisFallProgress: _survivalDebrisFallProgress,
+          survivalDebrisRandomizer: _survivalDebrisRandomizer,
           mutationActiveCarrier: _mutationActiveCarrier,
           mutationCarriers: _mutationCarriers,
           mutationNextCarrierId: _mutationNextCarrierId,
@@ -859,6 +1147,12 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
+          survivalDebris: _survivalDebris,
+          survivalDebrisNextId: _survivalDebrisNextId,
+          survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
+          survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
+          survivalDebrisFallProgress: _survivalDebrisFallProgress,
+          survivalDebrisRandomizer: _survivalDebrisRandomizer,
           ...sprintState
         } = legacyState;
         return sprintState;

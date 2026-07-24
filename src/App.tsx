@@ -176,6 +176,13 @@ export function survivalCountdownLabel(state: GameState, language: AppLanguage =
   return state.survivalRisePending ? copy.labels.pendingRise : copy.phrasing.seconds(survivalCountdownSeconds(state));
 }
 
+/** DEV-visible timer for the independent Survival stone stream. */
+export function survivalStoneCountdownSeconds(state: GameState): number {
+  if (state.mode !== 'race') return 0;
+  const remaining = state.survivalDebrisIntervalSeconds * TICKS_PER_SECOND - state.survivalDebrisIntervalTicks;
+  return Math.max(0, Math.ceil(remaining / TICKS_PER_SECOND));
+}
+
 function campaignLevel(id: PuzzleId | null) {
   return CAMPAIGN_LEVELS.find((level) => level.id === id) ?? CAMPAIGN_LEVELS[0]!;
 }
@@ -1020,6 +1027,9 @@ export function GameSession({
       bedrockIntervalSeconds: state.mode === 'race' ? survivalIntervalSeconds(state.lines) : null,
       bedrockNextSeconds: state.mode === 'race' ? survivalCountdownSeconds(state) : null,
       bedrockPending: state.mode === 'race' ? state.survivalRisePending : false,
+      stoneIntervalSeconds: state.mode === 'race' ? state.survivalDebrisIntervalSeconds : null,
+      stoneNextSeconds: state.mode === 'race' ? survivalStoneCountdownSeconds(state) : null,
+      fallingStones: state.mode === 'race' ? state.survivalDebris.map((stone) => ({ x: stone.x, y: stone.y })) : [],
       fallTicks: gravityForMode(state.mode, state.level, state.pieceCount, state.lines),
       placedPieces: state.pieceCount,
       active: state.active ? { type: state.active.type, x: state.active.x, y: state.active.y, rotation: state.active.rotation } : null,

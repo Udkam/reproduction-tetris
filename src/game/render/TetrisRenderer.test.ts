@@ -1,8 +1,18 @@
 // @vitest-environment jsdom
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, createBoard, type Cell, type GameEvent, type GameState, type MutationItem, VISIBLE_START_ROW } from '../core';
-import { MUTATION_MATERIALS, type PieceMaterial } from './theme';
+import {
+  BEDROCK_CELL,
+  BOARD_HEIGHT,
+  SURVIVAL_STONE_CELL,
+  createBoard,
+  type Cell,
+  type GameEvent,
+  type GameState,
+  type MutationItem,
+  VISIBLE_START_ROW,
+} from '../core';
+import { BEDROCK_MATERIAL, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
 let originalCanvasContext: PropertyDescriptor | undefined;
@@ -28,6 +38,7 @@ type RendererInternals = {
   advanceEffects: (deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   mutationMaterial: (item: MutationItem) => PieceMaterial;
+  materialFor: (material: typeof BEDROCK_CELL | typeof SURVIVAL_STONE_CELL) => PieceMaterial;
   drawMutationCarrierCore: (
     graphics: unknown,
     cells: readonly Cell[],
@@ -96,6 +107,19 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
+  });
+
+  it('routes Survival debris through a distinct stone material and gives its events a bounded impact cue', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    expect(internals.materialFor(BEDROCK_CELL)).toBe(BEDROCK_MATERIAL);
+    expect(internals.materialFor(SURVIVAL_STONE_CELL)).toBe(SURVIVAL_STONE_MATERIAL);
+
+    internals.consumeEvents([{ type: 'survival-stones-spawned', cells: [{ x: 2, y: 20 }], intervalSeconds: 20, nextIntervalSeconds: 19 }]);
+    expect(internals.impact).toBeGreaterThan(0);
+    internals.impact = 0;
+    internals.consumeEvents([{ type: 'survival-stones-landed', cells: [{ x: 2, y: 39 }] }]);
+    expect(internals.impact).toBeGreaterThan(0.4);
   });
 
   it('renders one static item-coloured activation frame for reduced motion', () => {

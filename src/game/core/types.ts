@@ -3,9 +3,12 @@ export const PIECE_TYPES = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
 export type PieceType = (typeof PIECE_TYPES)[number];
 export const BEDROCK_CELL = 'B' as const;
 export type BedrockCell = typeof BEDROCK_CELL;
+/** A clearable Survival stone settled by the independent falling-stone stream. */
+export const SURVIVAL_STONE_CELL = 'R' as const;
+export type SurvivalStoneCell = typeof SURVIVAL_STONE_CELL;
 export const ANCHOR_CELL = 'A' as const;
 export type AnchorCell = typeof ANCHOR_CELL;
-export type BoardMaterial = PieceType | BedrockCell | AnchorCell;
+export type BoardMaterial = PieceType | BedrockCell | SurvivalStoneCell | AnchorCell;
 export type Rotation = 0 | 1 | 2 | 3;
 
 export interface Cell {
@@ -76,6 +79,13 @@ export interface MutationActiveCarrier {
   item: MutationItem;
 }
 
+/** One independently falling, one-cell Survival stone before it settles into the board. */
+export interface SurvivalDebris {
+  id: number;
+  x: number;
+  y: number;
+}
+
 export interface GameState {
   board: Board;
   active: ActivePiece | null;
@@ -125,6 +135,18 @@ export interface GameState {
   survivalPressureTicks: number;
   /** A due pressure row waiting for the next safe lock/clear resolution. */
   survivalRisePending: boolean;
+  /** Independently falling, clearable stones that have not reached the board yet. */
+  survivalDebris: readonly SurvivalDebris[];
+  /** Stable identity for a new falling stone; useful for deterministic presentation. */
+  survivalDebrisNextId: number;
+  /** Playing ticks consumed in the current stone-stream interval. */
+  survivalDebrisIntervalTicks: number;
+  /** Seconds used by the next stone-stream emission; starts at 20 and floors at 10. */
+  survivalDebrisIntervalSeconds: number;
+  /** Exact integer accumulator that advances debris at 1.5× Survival gravity. */
+  survivalDebrisFallProgress: number;
+  /** Separate deterministic stream so debris timing never changes the seven-bag. */
+  survivalDebrisRandomizer: RandomizerState;
   /** A random, deterministic item identity attached to the active fourth-mode piece. */
   mutationActiveCarrier: MutationActiveCarrier | null;
   /** Locked carrier metadata follows line clears and temporary column settling. */
@@ -192,6 +214,13 @@ export type GameEvent =
   }
   | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'bedrock-lowered'; count: number; height: number }
+  | {
+    type: 'survival-stones-spawned';
+    cells: readonly Cell[];
+    intervalSeconds: number;
+    nextIntervalSeconds: number;
+  }
+  | { type: 'survival-stones-landed'; cells: readonly Cell[] }
   | { type: 'level-up'; level: number }
   | { type: 'finished'; completionTicks: number }
   | { type: 'game-over'; reason: 'block-out' | 'lock-out' | 'bedrock-overflow' | 'puzzle-invalid-spawn' | 'invalid-state' };

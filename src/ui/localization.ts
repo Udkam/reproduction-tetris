@@ -178,7 +178,7 @@ const COPY: Record<AppLanguage, Translation> = {
     },
     rules: {
       marathon: ['目标｜补满横行，消除并得分。', '节奏｜每累计 10 行，下落提速一级。', '结束｜方块堆到顶端。'],
-      race: ['开局｜带 3 层上升基岩。', '压力｜13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。', '结束｜基岩把堆叠顶到顶端。'],
+      race: ['开局｜带 3 层上升基岩。', '压力｜13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。', '落石｜20 秒开始，每次缩短 1 秒至 10 秒；1–2 枚可消除石块独立坠落。', '结束｜基岩把堆叠顶到顶端。'],
       sprint: ['目标｜像经典一样清行；每累计 6 行，下落提速一级。', '载具｜特殊整块任一格被清除时，立即释放一次道具。', '效果｜冻结停落；坍缩列内下沉；炸弹清空底部 3 行；加倍让消行得分 ×2。重复触发会把对应状态刷新为 10 秒；加倍再次触发升级为超级加倍 ×4。', '结束｜方块堆到顶端。'],
       puzzle: ['目标｜清除全部原有方块。', '序列｜方块按固定顺序出现，没有落子上限。', '撤回｜按 Z 回到上一个方块刚出现的时刻。', '纪录｜通关后保存历史最优步数。'],
     },
@@ -227,7 +227,7 @@ const COPY: Record<AppLanguage, Translation> = {
     },
     rules: {
       marathon: ['Goal|Complete rows to clear and score.', 'Pace|Gravity rises one tier every 10 cleared lines.', 'End|The stack reaches the top.'],
-      race: ['Start|Begin above 3 rising bedrock rows.', 'Pressure|The timer drops from 13 to 6 seconds; every 3 lines removes one bedrock row.', 'End|Bedrock pushes the stack to the top.'],
+      race: ['Start|Begin above 3 rising bedrock rows.', 'Pressure|The timer drops from 13 to 6 seconds; every 3 lines removes one bedrock row.', 'Stonefall|Starts at 20 seconds, then shortens by 1 to 10; 1–2 clearable stones fall independently.', 'End|Bedrock pushes the stack to the top.'],
       sprint: ['Goal|Clear rows as in Classic; gravity rises one tier every 6 lines.', 'Carriers|Clear any cell in a special whole piece to release its item once.', 'Items|Freeze stops auto-fall; Collapse settles columns independently; Bomb clears the bottom 3 rows; Double scores line clears ×2. Repeating an item refreshes its state to 10 seconds; a repeated Double becomes Super Double ×4.', 'End|The stack reaches the top.'],
       puzzle: ['Goal|Clear every original block.', 'Queue|Pieces arrive in a fixed order with no placement limit.', 'Undo|Press Z to return to the instant the prior piece appeared.', 'Record|Completion saves this level’s best piece count.'],
     },

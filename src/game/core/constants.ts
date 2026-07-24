@@ -22,6 +22,15 @@ export const SURVIVAL_INTERVAL_STEP_SECONDS = 1;
 export const SURVIVAL_MIN_INTERVAL_SECONDS = 6;
 /** Survival stays brisk but never accelerates as lines increase. */
 export const SURVIVAL_GRAVITY_TICKS = 40;
+/** The independent Survival stone stream starts slowly, then settles at ten seconds. */
+export const SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS = 20;
+export const SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS = 10;
+export const SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS = 1;
+/** 3 / 2 of normal Survival gravity, represented without fractional core ticks. */
+export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 3;
+export const SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD = SURVIVAL_GRAVITY_TICKS * 2;
+/** Keeps the debris stream independent from the ordinary seven-bag randomizer. */
+export const SURVIVAL_DEBRIS_RANDOM_SALT = 0xa3c5_9ac3;
 /** 异变 accelerates on a more frequent, six-line cadence than Classic. */
 export const MUTATION_LINES_PER_SPEED = 6;
 export const MUTATION_EFFECT_TICKS = 10 * TICKS_PER_SECOND;

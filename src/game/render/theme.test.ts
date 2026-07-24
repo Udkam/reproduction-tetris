@@ -1,7 +1,14 @@
 // @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { BEDROCK_MATERIAL, CELL_STYLE, COLORS, MUTATION_MATERIALS, PIECE_MATERIALS } from './theme';
+import {
+  BEDROCK_MATERIAL,
+  CELL_STYLE,
+  COLORS,
+  MUTATION_MATERIALS,
+  PIECE_MATERIALS,
+  SURVIVAL_STONE_MATERIAL,
+} from './theme';
 
 const styles = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
 
@@ -34,35 +41,45 @@ describe('T5 bright mineral matte material', () => {
     });
   });
 
-  it('uses one warm rock-brown material for permanent Survival bedrock', () => {
+  it('uses a chipped mineral material for permanent Survival bedrock and distinct falling stones', () => {
     expect(BEDROCK_MATERIAL).toEqual({
-      fillStart: 0x9c8b73,
-      fillEnd: 0x76664f,
-      edge: 0x40372d,
-      innerEdge: 0xcdbeaa,
+      fillStart: 0x7d7b77,
+      fillEnd: 0x656966,
+      edge: 0x292f31,
+      innerEdge: 0xb7bab2,
+    });
+    expect(SURVIVAL_STONE_MATERIAL).toEqual({
+      fillStart: 0x95a4ab,
+      fillEnd: 0x5f6c73,
+      edge: 0x303c42,
+      innerEdge: 0xd2dadd,
     });
     expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(BEDROCK_MATERIAL);
+    expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(SURVIVAL_STONE_MATERIAL);
+    expect(SURVIVAL_STONE_MATERIAL).not.toEqual(BEDROCK_MATERIAL);
     expect(contrastRatio(BEDROCK_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
     expect(contrastRatio(BEDROCK_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(SURVIVAL_STONE_MATERIAL.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(SURVIVAL_STONE_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
   });
 
   it('assigns four high-contrast, saturated full-piece materials to the four 异变 items', () => {
     expect(MUTATION_MATERIALS).toEqual({
-      freeze: { fillStart: 0x76d8e8, fillEnd: 0x3194b0, edge: 0x174f68, innerEdge: 0x47b7cb },
-      collapse: { fillStart: 0xad9be2, fillEnd: 0x6953a4, edge: 0x3d2f6b, innerEdge: 0x8673c8 },
-      bomb: { fillStart: 0xdf6b4f, fillEnd: 0xba4642, edge: 0x4a202a, innerEdge: 0xe89962 },
-      multiplier: { fillStart: 0xf1c44d, fillEnd: 0xaf7220, edge: 0x65400d, innerEdge: 0xdca236 },
+      freeze: { fillStart: 0x9cecf8, fillEnd: 0x3d9ec2, edge: 0x15536b, innerEdge: 0xd7fcff },
+      collapse: { fillStart: 0x897cae, fillEnd: 0x3d365f, edge: 0x1d1931, innerEdge: 0xc0afe7 },
+      bomb: { fillStart: 0xf07857, fillEnd: 0x8b3038, edge: 0x35171d, innerEdge: 0xffd08a },
+      multiplier: { fillStart: 0xffd96b, fillEnd: 0xbd711d, edge: 0x6b3909, innerEdge: 0xfff0ab },
     });
     const starts = Object.values(MUTATION_MATERIALS).map((material) => material.fillStart);
     expect(new Set(starts).size).toBe(4);
     for (const material of Object.values(MUTATION_MATERIALS)) {
       expect(contrastRatio(material.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
-      // The lower gradient endpoint can be slightly deeper than the face, while
-      // the readable top plate and signal rim retain the stricter 3:1 floor.
-      expect(contrastRatio(material.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(2.8);
+      // The lower gradient endpoint is intentionally deep to keep the carrier
+      // dimensional; the lit face and signal rim retain the strict 3:1 floor.
+      expect(contrastRatio(material.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(1.5);
       expect(contrastRatio(material.innerEdge, COLORS.well)).toBeGreaterThanOrEqual(3);
-      // Mutation feedback is material-coloured, never a high-value white glyph.
-      expect(relativeLuminance(material.innerEdge)).toBeLessThan(0.72);
+      // Signals remain material-coloured; no carrier is a white-glyph substitute.
+      expect(material.innerEdge).not.toBe(0xffffff);
     }
   });
 

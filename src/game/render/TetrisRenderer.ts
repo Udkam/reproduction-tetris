@@ -4,6 +4,7 @@ import {
   BOARD_WIDTH,
   ANCHOR_CELL,
   BEDROCK_CELL,
+  SURVIVAL_STONE_CELL,
   PIECE_SHAPES,
   VISIBLE_HEIGHT,
   VISIBLE_START_ROW,
@@ -16,7 +17,16 @@ import {
   type BoardMaterial,
   type PieceType,
 } from '../core';
-import { ANCHOR_MATERIAL, BEDROCK_MATERIAL, CELL_STYLE, COLORS, MUTATION_MATERIALS, PIECE_MATERIALS, type PieceMaterial } from './theme';
+import {
+  ANCHOR_MATERIAL,
+  BEDROCK_MATERIAL,
+  CELL_STYLE,
+  COLORS,
+  MUTATION_MATERIALS,
+  PIECE_MATERIALS,
+  SURVIVAL_STONE_MATERIAL,
+  type PieceMaterial,
+} from './theme';
 import {
   activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
@@ -365,6 +375,19 @@ export class TetrisRenderer {
         offsetY: boardShiftOffsetY,
       });
     }
+    const visibleSurvivalDebris = state.mode === 'race'
+      ? state.survivalDebris
+        .filter((stone) => stone.y >= VISIBLE_START_ROW && stone.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
+        .map((stone) => ({ x: stone.x, y: stone.y - VISIBLE_START_ROW }))
+      : [];
+    if (visibleSurvivalDebris.length > 0) {
+      this.drawCellGroups(graphics, visibleSurvivalDebris, SURVIVAL_STONE_CELL, 1, {
+        originX: layout.x,
+        originY: layout.y,
+        unit: layout.cell,
+        offsetY: boardShiftOffsetY,
+      });
+    }
     this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
     this.drawMutationCarrierMaterials(graphics, state, layout, boardShiftOffsetY);
 
@@ -703,7 +726,9 @@ export class TetrisRenderer {
 
   private materialFor(type: BoardMaterial) {
     if (type === ANCHOR_CELL) return ANCHOR_MATERIAL;
-    return type === BEDROCK_CELL ? BEDROCK_MATERIAL : PIECE_MATERIALS[type];
+    if (type === BEDROCK_CELL) return BEDROCK_MATERIAL;
+    if (type === SURVIVAL_STONE_CELL) return SURVIVAL_STONE_MATERIAL;
+    return PIECE_MATERIALS[type];
   }
 
   private gradientFor(type: BoardMaterial, materialOverride?: PieceMaterial): FillGradient {
@@ -834,6 +859,9 @@ export class TetrisRenderer {
         Math.min(CELL_STYLE.faceDarkAlpha, alpha),
         faceBevelWidth,
       );
+      if (type === BEDROCK_CELL || type === SURVIVAL_STONE_CELL) {
+        this.drawStoneFacets(graphics, geometry, size, faceInset, material, alpha);
+      }
     }
 
     const componentX = (x: number): number => (
@@ -933,6 +961,58 @@ export class TetrisRenderer {
         Math.min(CELL_STYLE.reliefSignalAlpha, alpha), borderWidth);
       this.strokeSegments(graphics, [...segments.get('bottom')!, ...segments.get('right')!], material.edge,
         Math.min(CELL_STYLE.reliefDarkAlpha, alpha), borderWidth);
+    }
+  }
+
+  /**
+   * Stone silhouettes retain the board grid for readable collision space, but
+   * their split planes and small chips make both permanent bedrock and falling
+   * debris read as mineral material rather than another clean tetromino cell.
+   */
+  private drawStoneFacets(
+    graphics: Graphics,
+    cells: readonly { cell: Cell; x: number; y: number }[],
+    size: number,
+    inset: number,
+    material: PieceMaterial,
+    alpha: number,
+  ): void {
+    const crackWidth = Math.max(0.65, size * 0.042);
+    const chip = Math.max(1.4, size * 0.16);
+    for (const entry of cells) {
+      const left = entry.x + inset * 1.5;
+      const top = entry.y + inset * 1.5;
+      const right = entry.x + size - inset * 1.5;
+      const bottom = entry.y + size - inset * 1.5;
+      const variant = Math.abs(entry.cell.x * 17 + entry.cell.y * 31) % 3;
+      const middleX = left + (right - left) * (variant === 0 ? 0.44 : variant === 1 ? 0.58 : 0.5);
+      const middleY = top + (bottom - top) * (variant === 0 ? 0.52 : variant === 1 ? 0.42 : 0.6);
+
+      graphics
+        .poly([
+          right - chip, top,
+          right, top,
+          right, top + chip,
+        ])
+        .fill({ color: material.edge, alpha: Math.min(0.5, alpha * 0.64) });
+      graphics
+        .poly([
+          left, bottom - chip,
+          left + chip, bottom,
+          left, bottom,
+        ])
+        .fill({ color: material.innerEdge, alpha: Math.min(0.22, alpha * 0.28) });
+      this.strokeSegments(
+        graphics,
+        [
+          [left, middleY, middleX, middleY + chip * 0.28],
+          [middleX, middleY + chip * 0.28, right - chip * 0.48, bottom - chip * 0.56],
+          [middleX, middleY + chip * 0.28, middleX - chip * 0.44, bottom - chip * 0.18],
+        ],
+        material.edge,
+        Math.min(0.58, alpha * 0.7),
+        crackWidth,
+      );
     }
   }
 
@@ -1406,6 +1486,10 @@ export class TetrisRenderer {
         }
       } else if (event.type === 'lines-cleared') {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
+      } else if (event.type === 'survival-stones-spawned') {
+        this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.1 : 0.24);
+      } else if (event.type === 'survival-stones-landed') {
+        this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.18 : 0.46);
       } else if (event.type === 'mutation-activated') {
         this.mutationFlash = {
           item: event.item,
