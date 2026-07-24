@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-07-25 — T13.14 direct clarity, Mutation, Survival debris, and readable Puzzle Next accepted
+
+- Restored the visible 3 → 2 → 1 board-entry overlay and rebuilt Settings as a compact
+  connected control/keyboard console with content-sized rules and record bands. The
+  live Pixi board remains visibly dimmed behind Settings, pause, restart, and exit;
+  Survival rankings retain duration and cleared lines only.
+- Puzzle now shows original blocks and **操作数**, while its two fixed upcoming pieces
+  remain together in one ordinary dark Next well. The final correction replaces the
+  unreadable hand-drawn marker with loaded JetBrains Mono `1` / `2` digits at the left
+  of each physical row—no split cards, badges, label strips, or doubled borders.
+  Classic and 异变 use the `下落速度/格` metric; the current procedural music and its UI
+  are removed while original adjustable sound effects remain.
+- 异变 now uses distinct ice, gravity, ember-bomb, and star-mineral carriers with
+  bounded frost, pressure, explosion, and score-light feedback. Recollecting a timed
+  item resets its deterministic state to exactly ten seconds. Survival begins with
+  three chipped bedrock rows and runs a separate seeded 20 → 10-second clearable
+  falling-stone stream at an exact 1.5× gravity accumulator.
+- The accepted corrective range is `e9db541..0bb2ba9`, with final product source
+  `866ef0a`. Coordinator gates passed typecheck, 22 files / 165 tests, and the
+  746-module production build. Fresh browser audits cover desktop, 1056×480, 390×844,
+  Settings/no-music, reduced motion, all four Mutation states, and Survival stonefall
+  with one canvas, zero DOM board cells, no overflow, and zero reported page errors.
+  Independent QA `b60511e` accepted with no P0–P2 finding. The inherited user-owned
+  `package-lock.json` was not changed or staged.
+
 ## 2026-07-24 — T13.13 multi-pass selector, Mutation, and Next repair accepted
 
 - Puzzle level options now keep every incomplete numeral centered, while a completed

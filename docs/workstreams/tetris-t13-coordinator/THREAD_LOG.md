@@ -1204,3 +1204,20 @@
 - Blocker: none in the implementation. Next: independent read-only QA reviews the
   exact `e9db541..866ef0a` corrective range and its fresh evidence before any
   T13.14 acceptance/changelog/push claim.
+
+## 2026-07-25 — T13.14 final coordinator acceptance
+
+- Read the independent report and its committed record `b60511e`. It accepts the full
+  corrective candidate `e9db541..0bb2ba9` (final product source `866ef0a`) with no
+  P0–P2 finding. Its independent typecheck, 22-file / 165-test suite, and 746-module
+  build passed.
+- QA independently checked the shared Puzzle well at 2040 × 986, 1056 × 480, and
+  390 × 844. Each surface has one canvas, one dark two-row well, standard readable
+  JetBrains Mono `1` / `2` glyphs, no overflow, and no page error. It also rechecked
+  the final compact Settings/no-music, reduced-motion, Mutation, and Survival-stone
+  evidence. This resolves the only player-reported malformed numeral issue without
+  reopening gameplay state.
+- Coordinator disposition: accept T13.14 after documentation integration and resource
+  cleanup. Next: release only the coordinator-owned audit listener after verifying its
+  exact owner, confirm the inherited `package-lock.json` remains the sole local dirty
+  path, then push the accepted `main` chain.

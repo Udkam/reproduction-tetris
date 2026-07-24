@@ -8,20 +8,18 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-25): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
-AND SURVIVAL DEBRIS — reopened for a third Settings composition and live-overlay
-correction.** The previous candidate `e9db541` passed its final gates and independent
-QA `abc0f25`, but the subsequent player review correctly rejected its structural
-blanks. The first replacement attempt `fe6db5f..7ab0886` and its local evidence
-`e87b62f` are now historical diagnostic evidence only: the player correctly identified
-that the unequal controls/keyboard two-column row still creates a structural empty
-quadrant. The second replacement source `18fe992` correctly restores the live board
-and attaches Puzzle forecasts to their two wells, but its full-width Settings stack and
-its nested two-card forecast treatment were also rejected in player review: the former
-reads as a cramped development table, while the latter reads as stacked form fields.
-QA, acceptance, and push remain stopped until the renewed composition passes a fresh
-visual matrix and a new independent disposition. The
-previous T13.13 repair remains historical evidence only; the new player-directed
-changes below supersede its additive timer and music decisions where they conflict. The
+AND SURVIVAL DEBRIS — accepted after the third Settings/forecast correction.** The
+first replacement attempt `fe6db5f..7ab0886` remains historical diagnostic evidence:
+the player correctly identified its structural empty quadrant. The second replacement
+source `18fe992` restored the live board but its full-width Settings stack and nested
+two-card forecast treatment were also correctly rejected. The final correction range
+`e9db541..0bb2ba9` uses a connected Settings console and one ordinary dark two-row
+Puzzle Next well; source `866ef0a` replaces the malformed hand-drawn queue marker with
+readable loaded JetBrains Mono `1` / `2` digits. Coordinator gates passed typecheck,
+22 files / 165 tests, and the 746-module production build; fresh desktop, short
+landscape, portrait, and reduced-motion browser evidence passed. Independent QA
+`b60511e` accepts the exact range with no P0–P2 finding. The previous T13.13 repair
+remains historical evidence only where it conflicts with this accepted pass. The
 user-owned uncommitted `package-lock.json` remains outside every checkpoint and must
 remain untouched.
 

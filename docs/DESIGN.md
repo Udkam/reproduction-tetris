@@ -5,19 +5,17 @@
 
 ## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
 
-**Status:** player review rejects the first reopened Settings attempt
-`fe6db5f..7ab0886`: despite compact internal content, its unequal controls/keyboard
-two-column row still leaves a structural empty quadrant. Its evidence `e87b62f` is
-therefore diagnostic only, and renewed QA is stopped. The second UI-only correction
-correctly restores the dimmed live board, but the full-width Settings stack and the
-nested two-card Puzzle forecast remain rejected: they read as a cramped development
-table and stacked form fields rather than a game instrument. The renewed correction
-uses a connected upper Settings console and one ordinary dark Next well with two
-plain numbered rows. No release or push may be inferred from earlier local evidence. The prior
-product candidate `e9db541` has historical source/browser evidence (`b603d6d`) and
-QA acceptance (`abc0f25`) only for its pre-correction source. T13.13 remains accepted
-historical evidence, but its additive item-timer and music decisions are superseded
-wherever they conflict with this section.
+**Status:** accepted. Player review correctly rejected the first reopened Settings
+attempt `fe6db5f..7ab0886` for its structural empty quadrant, and the second correction
+for its cramped full-width stack and nested forecast cards. Those attempts remain
+diagnostic history only. The final range `e9db541..0bb2ba9` establishes a connected
+upper Settings console and one ordinary dark Next well with two plain numbered rows;
+source `866ef0a` uses readable loaded JetBrains Mono digits in place of the malformed
+hand-drawn marker. Final coordinator gates passed typecheck, 22 files / 165 tests, and
+the 746-module build; fresh desktop, short-landscape, portrait, and reduced-motion
+evidence passed. Independent QA `b60511e` accepts the full corrective range with no
+P0–P2 finding. T13.13 remains accepted historical evidence, but its additive item-
+timer and music decisions are superseded wherever they conflict with this section.
 
 - **Puzzle selector completion token.** The centred numeral/tick replacement is an
   already accepted baseline and is outside this pass. It remains frozen: a level card
