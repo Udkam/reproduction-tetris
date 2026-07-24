@@ -37,11 +37,18 @@ timer and music decisions where they conflict. The user-owned uncommitted
    obvious, while Bomb relies on its result rather than a rail explanation sentence.
 5. **Survival debris contract.** Survival keeps its three opening bedrock rows and
    existing 13→6-second pressure. Bedrock becomes visually irregular stone. A seeded,
-   renderer-independent falling-stone stream begins at a 20-second interval, creates
-   one or two stones over legal columns, falls independently at 1.5× normal gravity,
-   locks as ordinary clearable cells, then shortens the next interval by one second to
-   a 10-second minimum. Core tests must prove replay determinism, interval floor,
-   fall rate, locking, and clear participation.
+   renderer-independent falling-stone stream owns a random source separate from the
+   ordinary seven-bag. It begins at a 20-second interval, then every due emission
+   chooses one or two distinct legal visible-top columns, resets the elapsed clock, and
+   shortens the following interval by one second to a 10-second minimum. Active stones
+   use a deterministic integer 3:2 accumulator against the fixed Survival gravity, so
+   their exact average speed is 1.5× without browser-time drift. They block the active
+   tetromino and one another while falling; on contact they lock as a separate ordinary
+   **clearable** stone cell. Any row they complete resolves through the normal score,
+   line, and bedrock-reward path; an active tetromino and remaining stones map with that
+   board resolution rather than overlapping, disappearing, or causing an extra spawn.
+   Core tests must prove replay determinism, seven-bag isolation, interval floor,
+   fall rate, legal spawn/collision, locking, and clear participation.
 6. **Execution and acceptance discipline.** Commit the contract before source. Keep
    entry/UI, music, Mutation, and Survival changes as separately reviewable source
    checkpoints with their direct tests. After the last source change run one typecheck,

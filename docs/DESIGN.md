@@ -41,12 +41,22 @@ exist on the final candidate.
   rail state must make item identity and remaining time immediately legible; Bomb is
   self-evident through its visual result and has no explanatory rail sentence.
 - **Survival.** Preserve the three-row opening bedrock and 13 → 6 second rise pressure,
-  but render bedrock as varied stone rather than plain squares. Add a deterministic
-  independent falling-stone stream: every 20 seconds initially, one or two stones
-  spawn over valid columns, descend at 1.5× normal tetromino fall speed, settle as
-  ordinary clearable board cells, and then reduce the next interval by one second down
-  to a 10-second floor. The stream must not reuse browser timing, must be replay-safe,
-  and must interact correctly with ordinary locking and line clears.
+  but render bedrock as varied, chipped stone rather than plain squares. Add a
+  deterministic independent falling-stone stream. Its separate seeded stream clock
+  starts at 20 seconds; each due emission chooses one or two distinct legal columns at
+  the visible top edge, resets that clock, and shortens only the *next* interval by one
+  second to a 10-second floor. The stream owns a seed independent of the ordinary
+  seven-bag, so debris timing never silently changes the incoming-piece sequence.
+  Active stones use an exact integer 3:2 fall accumulator (therefore 1.5× Survival's
+  fixed tetromino gravity), block a currently falling tetromino exactly like a temporary
+  obstacle, and never overlap the board, the active piece, or another falling stone.
+  On contact they become a distinct ordinary **clearable** stone board material; unlike
+  bedrock, a row completed by stone enters the normal line-clear resolution and awards
+  the normal Survival score/line effects. If that independent clear occurs while a
+  player piece is active, the brief resolution carries the active piece and remaining
+  stones through the same board shift rather than spawning or losing a second piece.
+  The stream must not reuse browser timing, must be replay-safe, and must interact
+  correctly with ordinary locking, bedrock shifts, and line clears.
 
 ### T13.14 execution checkpoints
 
