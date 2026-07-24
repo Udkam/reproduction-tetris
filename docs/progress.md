@@ -38,6 +38,30 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   intentional change is procedural-music removal; Settings needs another all-mode,
   bilingual density audit afterward.
 
+### T13.14 detail alignment, Settings, and music-removal checkpoints — 2026-07-25
+
+- `c8e4546` reserves the selected Puzzle detail status slot, so the preview/copy
+  divider no longer changes height when `当前最优步数` is present. At 1538 × 1092 both
+  states now begin the copy panel at y=917; at 390 × 844 both begin at y=376. The
+  same UI checkpoint replaces the stale Settings reference-wrapper grid with the four
+  actual direct children: controls and keyboard share the desktop top band, followed
+  by concise rules and a full-width record footer; narrow viewports stack those bands
+  without collapsed columns.
+- `076417c` removes the procedural music control, AudioEngine music bus/phrase/timers,
+  and runtime preference. Sound effects and their volume control remain. Targeted App
+  coverage passes 20/20; AudioEngine and GameRuntime coverage passes 18/18; typecheck
+  passes after each source checkpoint. A source search finds no live music API, timer,
+  UI, or localization reference (the single remaining `music-toggle` occurrence is a
+  regression assertion that it is absent).
+- Fresh inspected local browser evidence is retained under
+  `.local/audits/t13.14/puzzle-alignment/` and
+  `.local/audits/t13.14/settings-music-removal/`: two Puzzle best-result states at
+  desktop/portrait plus all four Settings modes in Chinese/English desktop and Chinese
+  portrait. The 12 Settings captures report no music control/copy, no horizontal
+  overflow, and zero console/page errors after the real entry countdown completes.
+  The next source slice is the deterministic Mutation item refresh and visual-effects
+  redesign; `package-lock.json` remains user-owned and unstaged.
+
 ### T13.12 selector, settings, and Mutation expression accepted — 2026-07-24
 
 - Accepted source range: `9b6188f..ec36924`. The Puzzle selector now holds a stable

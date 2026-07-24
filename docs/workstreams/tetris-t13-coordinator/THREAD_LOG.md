@@ -1018,3 +1018,34 @@
   data changed.
 - Blocker: none for this bounded rail checkpoint. Next: remove the current music and
   rerun the all-mode Settings density audit because its controls will change.
+
+## 2026-07-25 — T13.14 detail stability and music-free Settings checkpoints
+
+- Base: `49e445d`; source checkpoints: `c8e4546` and `076417c`. The first owns
+  `src/App.tsx`, `src/App.test.ts`, `src/ui/localization.ts`, and `src/styles.css`.
+  The second owns `src/game/audio/AudioEngine.ts`,
+  `src/game/audio/AudioEngine.test.ts`, `src/game/runtime/GameRuntime.ts`, and
+  `src/game/runtime/GameRuntime.test.ts`. No Core, Puzzle definition, or renderer path
+  changed; inherited `package-lock.json` remains unstaged.
+- Scope/delivery: selected Puzzle details reserve their optional best-result slot, so
+  the preview/copy boundary is invariant whether a level has history or not. Settings
+  now targets its four actual direct children rather than the retired reference wrapper:
+  desktop is controls + keyboard, then rules, then records; portrait stacks those same
+  bands. The visible music control and all procedural music lifecycle, bus, phrase, and
+  timeout code are removed while original SFX and volume remain.
+- Commands passed: `npm.cmd run test -- src/App.test.ts` (20/20),
+  `npm.cmd run test -- src/game/audio/AudioEngine.test.ts
+  src/game/runtime/GameRuntime.test.ts` (18/18), and `npm.cmd run typecheck` after
+  both checkpoints. `git diff --check` passed before each commit. The required
+  web-game Playwright client ran successfully with the Puzzle-entry action.
+- Browser evidence: `.local/audits/t13.14/puzzle-alignment/audit.mjs` captures both
+  history states at 1538 × 1092 and 390 × 844: desktop divider y=917 in both states;
+  portrait divider y=376 in both states; zero page/console errors. The all-mode,
+  bilingual `.local/audits/t13.14/settings-music-removal/audit.mjs` waits through the
+  real countdown, then captures 12 Settings surfaces; each has no music UI/copy, no
+  horizontal overflow, and zero page/console errors. Representative desktop Classic,
+  English Survival/Mutation, Puzzle, and portrait captures were visually inspected.
+- Blocker: none for these two source claims. Next: implement the deterministic Mutation
+  refresh/visual-effects source checkpoint, then audit its real material and active
+  state. Do not mark the overall T13.14 goal complete before the required Survival
+  debris stream, final full gates, and independent QA.
