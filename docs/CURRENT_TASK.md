@@ -57,6 +57,23 @@ timer and music decisions where they conflict. The user-owned uncommitted
    visible mechanism complete based only on static inspection. Independent QA remains
    read-only until a candidate range exists.
 
+### T13.14 Survival atomic source-checkpoint exception
+
+The Survival debris source claim is permitted to exceed the normal 500 handwritten-line
+checkpoint budget, but not the ten-path cap. Its exact authorized paths are
+`src/game/core/types.ts`, `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+`src/game/core/race.test.ts`, `src/game/render/theme.ts`,
+`src/game/render/theme.test.ts`, `src/game/render/TetrisRenderer.ts`,
+`src/game/render/TetrisRenderer.test.ts`, `src/App.tsx`, and
+`src/ui/localization.ts`. A stone sentinel necessarily crosses typed `BoardMaterial`,
+`GameState`, replay/hash, collision, Pixi material lookup, and DEV/browser evidence;
+committing an intermediate Core-only or renderer-only half would either fail typecheck
+or create a visible undefined material path. The UI paths are limited to concise rule
+disclosure and a DEV state snapshot; they do not alter layout, leaderboard behavior,
+or Puzzle content. Focused Core/render/App tests and typecheck are mandatory before the
+source checkpoint; the final suite, build, browser evidence, and independent QA remain
+separate later checkpoints.
+
 ### T13.13 active acceptance contract
 
 1. **Selector clarity.** Incomplete level numerals remain centered and readable in

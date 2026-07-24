@@ -76,6 +76,17 @@ exist on the final candidate.
 5. **Survival Core/render checkpoint:** the same typed Core boundary plus direct race
    tests and the renderer/theme paths may change together only for deterministic
    falling stones and stone materials. It must preserve fresh-seed replayability.
+   This is an atomic typed bridge: introducing the stone board material expands both
+   `BoardMaterial` and `GameState`, so Core collision/state fields, the Pixi material
+   route, direct regression tests, and the DEV-visible state/rule copy must land in
+   one typechecking checkpoint. The exact permitted paths are `src/game/core/types.ts`,
+   `src/game/core/constants.ts`, `src/game/core/engine.ts`,
+   `src/game/core/race.test.ts`, `src/game/render/theme.ts`,
+   `src/game/render/theme.test.ts`, `src/game/render/TetrisRenderer.ts`,
+   `src/game/render/TetrisRenderer.test.ts`, `src/App.tsx`, and
+   `src/ui/localization.ts`. This one checkpoint may exceed the normal 500 handwritten
+   line budget only because a partially landed sentinel/material/event would either
+   fail the typed renderer or let the board show an undefined material.
 6. **Verification:** each source checkpoint receives focused tests. The final candidate
    requires typecheck, the full test suite, production build, and real desktop,
    portrait, landscape, and reduced-motion browser evidence. Evidence must show the
