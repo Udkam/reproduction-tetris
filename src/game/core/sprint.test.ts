@@ -170,14 +170,14 @@ describe('异变 mode', () => {
     expect(dispatch(frozen, { type: 'soft-drop' }).state.active?.y).toBe((state.active?.y ?? 0) + 1);
   });
 
-  it('adds ten seconds to an already active Freeze or Collapse effect', () => {
+  it('refreshes an already active Freeze or Collapse effect to exactly ten seconds', () => {
     for (const item of ['freeze', 'collapse'] as const) {
       const timer = item === 'freeze' ? 'mutationFreezeTicks' : 'mutationCollapseTicks';
       const transition = resolveLineClear({
         ...carrierClearState(item),
         [timer]: MUTATION_EFFECT_TICKS,
       });
-      expect(transition.state[timer]).toBe(MUTATION_EFFECT_TICKS * 2 - LINE_CLEAR_DELAY_TICKS);
+      expect(transition.state[timer]).toBe(MUTATION_EFFECT_TICKS);
     }
   });
 
@@ -202,7 +202,7 @@ describe('异变 mode', () => {
     });
   });
 
-  it('promotes multiplier from Double to Super Double, extends it, and restores normal scoring on expiry', () => {
+  it('promotes multiplier from Double to Super Double, refreshes it, and restores normal scoring on expiry', () => {
     const first = resolveLineClear(carrierClearState('multiplier'));
     expect(first.state.mutationMultiplierFactor).toBe(2);
     expect(first.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
@@ -215,7 +215,7 @@ describe('异变 mode', () => {
     });
     expect(promoted.state.score).toBe(80);
     expect(promoted.state.mutationMultiplierFactor).toBe(4);
-    expect(promoted.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS * 2 - LINE_CLEAR_DELAY_TICKS);
+    expect(promoted.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
     expect(mutationActivations(promoted)[0]?.multiplierFactor).toBe(4);
 
     const extended = resolveLineClear({
@@ -225,7 +225,7 @@ describe('异变 mode', () => {
     });
     expect(extended.state.score).toBe(160);
     expect(extended.state.mutationMultiplierFactor).toBe(4);
-    expect(extended.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS * 2 - LINE_CLEAR_DELAY_TICKS);
+    expect(extended.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
     expect(mutationActivations(extended)[0]?.multiplierFactor).toBe(4);
 
     const expired = dispatch({

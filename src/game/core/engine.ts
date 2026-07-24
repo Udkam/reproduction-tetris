@@ -373,14 +373,16 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
     let score = 0;
     let rowsRemoved = 0;
     if (carrier.item === 'freeze') {
-      durationTicks = next.mutationFreezeTicks + MUTATION_EFFECT_TICKS;
+      // A fresh carrier never stacks latent play time. The player gets a clear,
+      // repeatable ten-second window from the instant this effect resolves.
+      durationTicks = MUTATION_EFFECT_TICKS;
       next = { ...next, mutationFreezeTicks: durationTicks };
     } else if (carrier.item === 'collapse') {
-      durationTicks = next.mutationCollapseTicks + MUTATION_EFFECT_TICKS;
+      durationTicks = MUTATION_EFFECT_TICKS;
       next = { ...next, mutationCollapseTicks: durationTicks };
     } else if (carrier.item === 'multiplier') {
       const wasActive = next.mutationMultiplierTicks > 0;
-      durationTicks = next.mutationMultiplierTicks + MUTATION_EFFECT_TICKS;
+      durationTicks = MUTATION_EFFECT_TICKS;
       next = {
         ...next,
         mutationMultiplierTicks: durationTicks,
