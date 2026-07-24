@@ -532,7 +532,12 @@ export function LeaderboardPanel({
     ? copy.labels.leaderboard
     : copy.phrasing.modeLeaderboard(modeCopy(language, mode).label);
   return (
-    <section className={`result-leaderboard result-leaderboard--${variant}`} data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined} aria-label={title}>
+    <section
+      className={`result-leaderboard result-leaderboard--${variant}`}
+      data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined}
+      data-empty={records.length === 0 || undefined}
+      aria-label={title}
+    >
       <header>
         <strong>{title}</strong>
         <span>{copy.phrasing.leaderboardCriterion(survival)}</span>

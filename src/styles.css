@@ -8274,8 +8274,8 @@ kbd,
 /* T13.14 final Settings composition. The sheet has four real direct children, so
    its grid names must address those children rather than the retired reference wrapper. */
 .action-sheet:has(.settings-sheet) {
-  width: min(910px, calc(100vw - 24px));
-  padding: clamp(18px, 2vw, 22px);
+  width: min(856px, calc(100vw - 24px));
+  padding: clamp(16px, 1.65vw, 20px);
   max-height: calc(100dvh - 20px);
   overflow: auto;
   overscroll-behavior: contain;
@@ -8285,12 +8285,12 @@ kbd,
   display: grid;
   width: 100%;
   min-width: 0;
-  grid-template-columns: minmax(286px, .84fr) minmax(0, 1.16fr);
+  grid-template-columns: minmax(304px, .92fr) minmax(0, 1.08fr);
   grid-template-areas:
     "controls keyboard"
     "rules rules"
     "record record";
-  gap: 10px;
+  gap: 8px 10px;
   align-items: start;
 }
 
@@ -8310,23 +8310,44 @@ kbd,
   grid-template-rows: none;
   align-content: start;
   align-self: start;
-  gap: 9px;
-  padding: 14px;
+  gap: 7px;
+  padding: 12px 13px;
+}
+
+.settings-sheet > .settings-controls > strong,
+.settings-sheet > .settings-shortcuts > strong,
+.settings-sheet > .mode-rule-summary > strong {
+  font-size: 10px;
+  letter-spacing: .07em;
+}
+
+.settings-controls .language-control {
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 7px;
+  font-size: 11px;
+}
+
+.settings-controls .language-control > div { gap: 5px; }
+
+.settings-controls .language-control button {
+  min-height: 32px;
+  padding: 4px 7px;
+  border-radius: 6px;
 }
 
 .settings-controls .audio-controls {
   display: grid;
-  grid-template-columns: minmax(96px, .48fr) minmax(0, 1fr);
+  grid-template-columns: minmax(88px, .42fr) minmax(0, 1fr);
   align-items: center;
-  gap: 9px;
-  padding-block: 8px;
+  gap: 8px;
+  padding-block: 6px;
 }
 
 .settings-controls .audio-controls__switches { display: block; }
-.settings-controls .audio-toggle { width: 100%; }
+.settings-controls .audio-toggle { width: 100%; min-height: 36px; }
 .settings-controls .audio-volume { grid-template-columns: auto minmax(56px, 1fr) auto; }
-.settings-controls .settings-sheet__actions { gap: 9px; }
-.settings-controls .settings-sheet__actions > button { min-height: 42px; }
+.settings-controls .settings-sheet__actions { gap: 8px; }
+.settings-controls .settings-sheet__actions > button { min-height: 38px; }
 
 .settings-sheet > .settings-shortcuts {
   grid-area: keyboard !important;
@@ -8334,8 +8355,8 @@ kbd,
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: start;
   align-self: start;
-  gap: 7px 12px;
-  padding: 12px 14px;
+  gap: 6px 10px;
+  padding: 11px 13px;
 }
 
 .settings-shortcuts > strong { grid-column: 1 / -1; }
@@ -8343,13 +8364,18 @@ kbd,
 .settings-shortcuts [data-testid="keyboard-shortcuts"],
 .settings-shortcuts:lang(en) [data-testid="keyboard-shortcuts"] {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px 9px;
+  gap: 3px 8px;
 }
 
 .settings-shortcuts__group > span {
-  min-height: 19px;
+  min-height: 18px;
   font-size: 10px;
   line-height: 1.25;
+}
+
+.settings-shortcuts kbd {
+  padding: 1px 4px;
+  margin-right: 2px;
 }
 
 .settings-shortcuts--puzzle [data-testid="keyboard-gameplay"] > span:last-child,
@@ -8360,34 +8386,35 @@ kbd,
 .settings-sheet > .mode-rule-summary {
   grid-area: rules !important;
   display: grid;
-  gap: 7px;
+  gap: 6px;
   min-height: 0 !important;
-  padding: 11px 14px;
+  padding: 10px 13px;
 }
 
 .settings-sheet > .mode-rule-summary ul {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 14px;
+  gap: 5px 13px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.settings-sheet > .mode-rule-summary--marathon ul,
-.settings-sheet > .mode-rule-summary--race ul {
+.settings-sheet > .mode-rule-summary--marathon ul {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+
+.settings-sheet > .mode-rule-summary--race ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .settings-sheet > .mode-rule-summary li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 4px;
+  gap: 3px;
   align-items: start;
   min-width: 0;
   color: #49687a;
   font-size: 10px;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 .settings-sheet > .mode-rule-summary li b {
@@ -8405,10 +8432,39 @@ kbd,
   align-self: start;
 }
 
+/* An empty table is a useful state strip, not a blank visual placeholder. */
+.settings-sheet > .result-leaderboard[data-empty="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 0;
+}
+
+.settings-sheet > .result-leaderboard[data-empty="true"] > header {
+  min-height: 0;
+  padding: 10px 13px;
+  border-bottom: 0;
+}
+
+.settings-sheet > .result-leaderboard[data-empty="true"] > p {
+  min-height: 0;
+  margin: 0;
+  padding: 10px 13px;
+  border-left: 1px solid var(--line);
+  color: var(--muted-ink);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.settings-sheet > .settings-record {
+  min-height: 0;
+  padding: 10px 13px;
+}
+
 @media (max-width: 700px) {
   .action-sheet:has(.settings-sheet) {
     width: min(520px, calc(100vw - 18px));
-    padding: 16px;
+    padding: 14px;
   }
 
   .settings-sheet {
@@ -8418,13 +8474,13 @@ kbd,
       "keyboard"
       "rules"
       "record";
-    gap: 9px;
+    gap: 8px;
   }
 
   .settings-sheet > .settings-shortcuts {
     grid-template-columns: 1fr;
-    gap: 7px;
-    padding: 11px 12px;
+    gap: 6px;
+    padding: 10px 11px;
   }
 
   .settings-shortcuts__group,
@@ -8441,8 +8497,11 @@ kbd,
   }
 
   .settings-sheet > .mode-rule-summary {
-    padding: 11px 12px;
+    padding: 10px 11px;
   }
+
+  .settings-sheet > .result-leaderboard[data-empty="true"] > header,
+  .settings-sheet > .result-leaderboard[data-empty="true"] > p { padding: 9px 10px; }
 }
 
 /* T13.11: retain the four mode identities while giving their compact glyphs a clearer,

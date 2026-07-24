@@ -729,9 +729,15 @@ describe('T6 frontend mode binding', () => {
     expect(classic.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     expect(classic.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('·');
     expect(classic.container.querySelector('[data-current-record="true"]')).not.toBeNull();
+    expect(classic.container.querySelector<HTMLElement>('.result-leaderboard')?.dataset.empty).toBeUndefined();
     expect(scoreRecordRank([base], base)).toBe(1);
     expect(scoreRecordRank([base], { ...base, completedAt: '2026-07-19T12:00:00.000Z' })).toBeNull();
     classic.unmount();
+
+    const emptySettings = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [], variant: 'settings' }));
+    expect(emptySettings.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')?.dataset.empty).toBe('true');
+    expect(emptySettings.container.querySelector('.result-leaderboard > p')?.textContent).toBe('暂无记录');
+    emptySettings.unmount();
 
     const survivalRecord = { ...base, mode: 'race' as const, score: 900, lines: 27 };
     const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
