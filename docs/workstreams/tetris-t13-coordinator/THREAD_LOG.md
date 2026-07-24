@@ -1,5 +1,35 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.10-TETRAMORPH-028 brand candidate
+
+- Base: accepted/pushed `6a1fd92`; candidate range `6a1fd92..f686dfc`. The chain keeps
+  contracts separate from source: `e4f8066` defines an independent name and offline
+  display-font boundary, `6900290` adds the initial identity surface, `67d34fa`
+  responds to the no-duplicate-header / stronger-display feedback, and `f686dfc`
+  implements the final **TetraMorph** wordmark with middle-capital `M`.
+- Exact product/test paths: `index.html`, `package.json`, `package-lock.json`,
+  `src/main.tsx`, `src/App.tsx`, `src/App.test.ts`, and `src/styles.css`. Exact contract
+  paths are `docs/DESIGN.md` and `docs/CURRENT_TASK.md`. No Core, renderer, Puzzle,
+  mode rule, persistence, or audio file changed.
+- Result: live metadata, loader, accessible labels, and gameplay/library marks use
+  `TetraMorph`. The homepage has no top-left duplicate name; its sole `h1` is a
+  compact, two-tone, local-Google-Font Tektur wordmark in the dark field. It remains
+  readable at 1440×900, reduced-motion 390×844, and 844×390, while cards retain only
+  mode name, glyph, accent, and entry action.
+- Commands actually run after the final source edit: `npm.cmd run typecheck`; targeted
+  `npm.cmd run test -- src/App.test.ts` (1 file / 16 tests); default `npm.cmd run test`
+  (22 files / 146 tests); and `npm.cmd run build` (745 transformed modules), all pass.
+  The prescribed `web_game_playwright_client.js` captured the final home. Ignored
+  `.local/audits/t13-10-brand/audit.mjs` then passed at desktop, reduced-motion
+  portrait, and landscape: Tektur loads locally, the required title/casing is present,
+  no duplicate brand or overflow exists, Classic still has one canvas/zero DOM cells,
+  and no console/page error occurred. All final screenshots were visually inspected.
+- Resource state: coordinator-owned Vite listener `73248` remains on 127.0.0.1:5176
+  solely for the pending QA/review; the pre-existing unknown-owner 5173 listener is
+  untouched. Blocker: independent read-only QA has not yet reviewed
+  `6a1fd92..f686dfc`. Next: obtain that verdict, then update acceptance/changelog and
+  release only 5176 before the user-authorized push.
+
 ## 2026-07-24 — TETRIS-T13.9-MUTATION-MODE-027 closure audit
 
 - Base/state: pushed `a1d8b16` on `main`, with product candidate `ca8c7f6` unchanged.
