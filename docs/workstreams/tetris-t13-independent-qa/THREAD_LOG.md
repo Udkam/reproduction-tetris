@@ -234,3 +234,39 @@
 - **Next action:** coordinator may read this recheck, complete acceptance/changelog
   integration, release any coordinator-owned local audit processes, and push the
   accepted chain without staging `package-lock.json`.
+
+## 2026-07-25 — T13.14 direct gameplay clarity, Mutation, and Survival debris QA
+
+- **Task / review boundary:** `TETRIS-T13.14-INDEPENDENT-QA-001`, independent
+  review of frozen candidate `225aa1c..e9db541` at `e9db541`. This QA pass inspected
+  only the declared contract, candidate diff, focused Core/UI/renderer/audio paths,
+  direct test coverage, and the coordinator's ignored final evidence under
+  `.local/audits/t13.14/`. No source, product documentation, staging state, server,
+  port, process, or user-owned lockfile was changed by this reviewer.
+- **Checks actually run:** `git diff --check 225aa1c..e9db541` passed;
+  `npm.cmd run typecheck` passed; targeted Vitest
+  `src/App.test.ts`, `src/game/core/race.test.ts`,
+  `src/game/render/TetrisRenderer.test.ts`, `src/game/render/theme.test.ts`,
+  `src/game/audio/AudioEngine.test.ts`, `src/leaderboard.test.ts`, and
+  `src/game/runtime/GameRuntime.test.ts` passed **7 files / 78 tests**; targeted
+  `src/game/core/sprint.test.ts` passed **1 file / 11 tests**.
+- **Contract evidence:** source/tests and captures confirm the 3 → 2 → 1 board
+  mask, compact four-area Settings order, Survival duration/line-only rankings,
+  Puzzle `操作数` and labelled two-piece Next panel, and Classic/Mutation
+  `下落速度/格`. A live-source search found no music runtime/toggle/copy outside
+  removal assertions; adjustable SFX remain. Mutation tests confirm exact 600-tick
+  refresh behavior and 2× → 4× escalation, while the reviewed four carrier/effect
+  captures show distinct frost, heavy gravity, explosion, and score-light semantics.
+  The reduced-motion audit confirms static semantic presentation. Survival Core tests
+  cover isolated seeded RNG, 20 → 10-second interval floor, 3:2 fall accumulator,
+  legal collision/locking, and clear participation; the reviewed live report records
+  a stone at visible `y=20` followed by `y=21`, one canvas, zero DOM cells, and zero
+  errors. Settings, Puzzle Next/undo, Mutation, Survival-stone, and reduced-motion
+  evidence reports contain no console/page errors.
+- **Disposition:** **PASS — ACCEPT.** No P0, P1, or P2 finding remains in
+  `225aa1c..e9db541`.
+- **Worktree / exact changed path:** only the inherited user-owned
+  `package-lock.json` remains dirty. This independent QA disposition changes only
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator may add the acceptance/changelog checkpoint and push
+  the accepted candidate without staging `package-lock.json`.
