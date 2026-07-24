@@ -1226,7 +1226,9 @@ kbd,
 
 .canvas-host {
   position: absolute;
-  z-index: 4;
+  /* Keep the single Pixi surface above the rail's opaque cards: it draws the
+     board and the canvas-owned Next well in the same coordinate system. */
+  z-index: 6;
   inset: 0;
   min-width: 0;
   min-height: 0;
@@ -1246,7 +1248,7 @@ kbd,
 }
 
 .game-arena:has(.canvas-host canvas:focus-visible) .board-frame {
-  z-index: 5;
+  z-index: 7;
   outline: 3px solid var(--focus);
   outline-offset: 4px;
   border-radius: 12px;
@@ -1263,7 +1265,7 @@ kbd,
 
 .board-frame--countdown {
   position: relative;
-  z-index: 5;
+  z-index: 7;
 }
 
 .entry-countdown {
@@ -5181,7 +5183,8 @@ kbd,
 .next-slot {
   height: 126px;
   overflow: hidden;
-  background: #0d2032;
+  /* The renderer owns the well and preview; an opaque DOM fill would hide it. */
+  background: transparent;
   border-color: #7898a9;
   border-radius: 8px;
   box-shadow: inset 0 0 0 1px rgba(163, 209, 222, .16);
