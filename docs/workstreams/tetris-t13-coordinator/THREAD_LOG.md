@@ -1,5 +1,21 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-25 — TETRIS-T13.14 post-QA Settings-density correction opened
+
+- State change: coordinator read the independent **PASS — ACCEPT** task report and
+  durable `abc0f25` log for frozen candidate `225aa1c..e9db541`. The following player
+  screenshot then exposed a real visual acceptance defect: oversized Settings cards
+  and structural whitespace in the controls/keyboard/rules/empty-record layout.
+- Scope: pause release/push and reopen only `src/styles.css` plus directly necessary
+  Settings markup/tests and the current task/design/progress/coordinator records. The
+  repair must use content-sized shared bands, not merely shrink text or hide content;
+  it must cover every mode, Chinese/English, desktop, portrait, landscape, and reduced
+  motion. The accepted non-Settings mechanics and user-owned `package-lock.json`
+  remain untouched.
+- Next: commit this amended contract before source, make one focused UI checkpoint,
+  repeat the final visual matrix and gates proportionate to the repair, then request a
+  fresh independent read-only acceptance before any push.
+
 ## 2026-07-25 — TETRIS-T13.14 final evidence checkpoint
 
 - Task/base/candidate: `TETRIS-T13.14-DIRECT-CLARITY-AND-SURVIVAL-STONES`; contract

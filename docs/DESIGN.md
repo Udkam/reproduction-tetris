@@ -5,11 +5,13 @@
 
 ## T13.14 direct gameplay clarity, Mutation feedback, and Survival debris pass
 
-**Status:** active, unverified. This is a direct execution pass for the current player
-feedback. T13.13 remains accepted historical evidence, but its additive item-timer and
-music decisions are superseded wherever they conflict with this section. No claim in
-this record is complete until the stated source, browser, and independent-QA checks
-exist on the final candidate.
+**Status:** reopened for one bounded Settings-density correction. The prior product
+candidate `e9db541` has final source/browser evidence (`b603d6d`) and QA acceptance
+(`abc0f25`), but the next player review correctly rejected its oversized Settings
+regions and structural blank space. A new UI-only candidate must replace that layout,
+then receive fresh browser and independent-QA evidence before release. T13.13 remains
+accepted historical evidence, but its additive item-timer and music decisions are
+superseded wherever they conflict with this section.
 
 - **Puzzle selector completion token.** The centred numeral/tick replacement is an
   already accepted baseline and is outside this pass. It remains frozen: a level card
@@ -26,6 +28,11 @@ exist on the final candidate.
   all other visible typography must be deliberately readable, stable, bilingual, and
   more expressive through original weight, spacing, hierarchy, and data treatment—not
   through transient synthetic bolding.
+  Settings uses content-sized structural bands rather than a visually balanced but
+  empty two-column poster: controls and keyboard compress to their real content height;
+  concise rules pack into a deliberate compact grid; and an empty leaderboard uses a
+  short useful state row instead of an enlarged blank card. Desktop, Chinese/English,
+  and compact portrait/landscape preserve the same no-structural-whitespace principle.
 - **Music removal.** Remove the current procedural music, its controls, and its
   lifecycle from the live product. Original effects remain enabled and independently
   controllable. This pass does not download, embed, or substitute external music.

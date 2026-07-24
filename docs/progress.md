@@ -1,5 +1,17 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T13.14 Settings-density correction reopened — 2026-07-25
+
+- Independent QA `abc0f25` accepted the frozen pre-correction candidate
+  `225aa1c..e9db541`; that acceptance remains accurate for its reviewed source and
+  evidence. A subsequent player screenshot, however, correctly identifies oversized
+  Settings cards and structural whitespace in its controls, keyboard, rules, and
+  empty-record composition.
+- Release and push are paused. The next bounded UI-only slice will replace the loose
+  poster layout with content-sized shared bands, then repeat desktop Chinese/English,
+  portrait, landscape, reduced-motion, and all-mode Settings review before requesting
+  a fresh independent disposition. `package-lock.json` remains inherited and unstaged.
+
 ### T13.14 final evidence checkpoint — 2026-07-25
 
 - Frozen candidate `225aa1c..e9db541` now contains the completed direct-clarity,

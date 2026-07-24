@@ -7,10 +7,14 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
-AND SURVIVAL DEBRIS — active and unverified.** The previous T13.13 repair is accepted
-historical evidence only. The new player-directed changes below supersede its additive
-timer and music decisions where they conflict. The user-owned uncommitted
+Current execution status (2026-07-25): **T13.14 DIRECT GAMEPLAY CLARITY, MUTATION,
+AND SURVIVAL DEBRIS — reopened for a Settings-density correction.** Candidate `e9db541`
+passed its final gates and independent QA `abc0f25`, but the subsequent player review
+shows large structural blanks in the Settings panel. Do not push the accepted chain:
+this bounded frontend repair needs a new source checkpoint, fresh multi-viewport
+browser evidence, and a renewed read-only QA disposition. The previous T13.13 repair
+remains historical evidence only; the new player-directed changes below supersede its
+additive timer and music decisions where they conflict. The user-owned uncommitted
 `package-lock.json` remains outside every checkpoint and must remain untouched.
 
 ### T13.14 active delivery contract
@@ -25,6 +29,12 @@ timer and music decisions where they conflict. The user-owned uncommitted
    upcoming pieces are visibly labelled in the rail, with no floating `②`. Classic and
    异变 display a gravity unit as `下落速度/格`. All non-wordmark UI typography receives
    stable, intentional hierarchy without unstable weight flashes.
+   **Settings-density correction:** no desktop or compact-mode sheet may retain an
+   oversized content card, an empty grid quadrant, or a row stretched solely to match
+   unrelated content. Recompose its actual controls, keyboard groups, concise rules,
+   and empty/non-empty record state into content-sized bands with deliberate shared
+   edges. Every mode and locale must use the same dense structural grammar; a record
+   footer may reserve only its useful header/row height, never a visual placeholder.
 3. **Remove only music.** Delete the current music output, toggle, copy, and lifecycle
    while preserving adjustable original sound effects and their safe teardown. Do not
    fetch or bundle replacement music in this delivery.
