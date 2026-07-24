@@ -75,9 +75,7 @@ function compareRecordRank(mode: RunMode, left: ScoreRecord, right: ScoreRecord)
   }
   if (mode === 'race') {
     return right.elapsedTicks - left.elapsedTicks
-      || right.lines - left.lines
-      || right.score - left.score
-      || right.pieces - left.pieces;
+      || right.lines - left.lines;
   }
   return right.lines - left.lines
     || right.score - left.score

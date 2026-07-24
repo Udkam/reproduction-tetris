@@ -696,7 +696,8 @@ describe('T6 frontend mode binding', () => {
     const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
     expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('生存排行');
     expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行前 5');
-    expect(survival.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('1 分 10 秒27 行  62 方块');
+    expect(survival.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('1 分 10 秒27 行');
+    expect(survival.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('方块');
     expect(survival.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     survival.unmount();
 

@@ -162,6 +162,13 @@ describe('local leaderboard boundary', () => {
     leaderboard = insertScoreRecord(leaderboard, raceWinner);
     expect(recordsForMode(leaderboard, 'race')).toEqual([raceWinner, raceTieWinner, raceTieFewerLines, raceMostLinesShorter]);
 
+    const raceSameResultLater = raceRecord({ lines: 20, elapsedTicks: 600, score: 9999, pieces: 1, completedAt: '2026-07-14T02:00:00.000Z' });
+    const raceSameResultEarlier = raceRecord({ lines: 20, elapsedTicks: 600, score: 1, pieces: 99, completedAt: '2026-07-13T01:00:00.000Z' });
+    leaderboard = insertScoreRecord(leaderboard, raceSameResultLater);
+    leaderboard = insertScoreRecord(leaderboard, raceSameResultEarlier);
+    const sameResultRows = recordsForMode(leaderboard, 'race').filter((record) => record.elapsedTicks === 600 && record.lines === 20);
+    expect(sameResultRows).toEqual([raceSameResultEarlier, raceTieWinner, raceSameResultLater]);
+
     const sprintLowerLinesHigherScore = sprintRecord({ score: 9999, lines: 29, pieces: 30 });
     const sprintTieMorePieces = sprintRecord({ score: 2400, lines: 30, pieces: 41 });
     const sprintTieFewerPieces = sprintRecord({ score: 2400, lines: 30, pieces: 20 });
