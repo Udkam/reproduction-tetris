@@ -82,10 +82,12 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
 
 /** Full-piece carrier materials are deliberately separate from the ordinary seven hues. */
 export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
-  freeze: { fillStart: 0x87dff0, fillEnd: 0x3b9fba, edge: 0x1c6278, innerEdge: 0xe0fbff },
-  collapse: { fillStart: 0xb7a8e8, fillEnd: 0x705caa, edge: 0x43356f, innerEdge: 0xf0eaff },
-  bomb: { fillStart: 0xd9644b, fillEnd: 0xc24c48, edge: 0x391d28, innerEdge: 0xffc16b },
-  multiplier: { fillStart: 0xf4c653, fillEnd: 0xb77a22, edge: 0x68400d, innerEdge: 0xfff2b0 },
+  // Keep mutation signalling saturated rather than white: the renderer uses these
+  // values for one material core and a short edge pulse, never per-cell glyphs.
+  freeze: { fillStart: 0x76d8e8, fillEnd: 0x3194b0, edge: 0x174f68, innerEdge: 0x47b7cb },
+  collapse: { fillStart: 0xad9be2, fillEnd: 0x6953a4, edge: 0x3d2f6b, innerEdge: 0x8673c8 },
+  bomb: { fillStart: 0xdf6b4f, fillEnd: 0xba4642, edge: 0x4a202a, innerEdge: 0xe89962 },
+  multiplier: { fillStart: 0xf1c44d, fillEnd: 0xaf7220, edge: 0x65400d, innerEdge: 0xdca236 },
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import type { GameEvent, GameState, MutationItem } from '../core';
+import { BOARD_HEIGHT, createBoard, type Cell, type GameEvent, type GameState, type MutationItem, VISIBLE_START_ROW } from '../core';
 import { MUTATION_MATERIALS, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -14,13 +14,38 @@ type RendererInternals = {
   impact: number;
   rotationPulse: number;
   boardShift: unknown;
-  mutationFlash: unknown;
+  mutationFlash: {
+    item: MutationItem;
+    elapsed: number;
+    duration: number;
+    triggerCells: readonly Cell[];
+    multiplierFactor: 2 | 4;
+  } | null;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
+  collapseTrail: { paths: readonly { x: number; fromY: number; toY: number }[]; elapsed: number; duration: number } | null;
   consumeEvents: (events: readonly GameEvent[]) => void;
   advanceEffects: (deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   mutationMaterial: (item: MutationItem) => PieceMaterial;
+  drawMutationCarrierCore: (
+    graphics: unknown,
+    cells: readonly Cell[],
+    item: MutationItem,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetX?: number,
+    offsetY?: number,
+  ) => void;
+  drawMutationCarrierEdgePulse: (
+    graphics: unknown,
+    cells: readonly Cell[],
+    item: MutationItem | null,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetX: number,
+    offsetY: number,
+  ) => void;
+  queueCollapseSettlementTrail: (previousBoard: GameState['board'], cells: readonly Cell[]) => void;
+  drawPreviewPieces: (graphics: unknown, pieces: readonly ('I' | 'O')[], x: number, y: number, width: number, height: number) => void;
 };
 
 describe('Puzzle undo presentation reset', () => {
@@ -66,8 +91,8 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
 
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
-    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 460 });
-    internals.advanceEffects(460);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 150, triggerCells: [] });
+    internals.advanceEffects(150);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -80,6 +105,7 @@ describe('Puzzle undo presentation reset', () => {
       clear: () => graphics,
       roundRect: () => graphics,
       circle: () => graphics,
+      rect: () => graphics,
       moveTo: () => graphics,
       lineTo: () => graphics,
       fill: (options: unknown) => {
@@ -94,18 +120,117 @@ describe('Puzzle undo presentation reset', () => {
     (internals as unknown as { effectGraphics: typeof graphics }).effectGraphics = graphics;
 
     renderer.setOptions({ reducedMotion: true });
-    internals.consumeEvents([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 }]);
+    internals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'freeze',
+      durationTicks: 600,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells: [{ x: 4, y: VISIBLE_START_ROW + 4 }],
+    }]);
     internals.advanceEffects(16);
 
-    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 240 });
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 150 });
     internals.drawEffects(
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.innerEdge, alpha: 0.82 * 0.72 });
-    expect(strokes).toContainEqual(expect.objectContaining({ color: MUTATION_MATERIALS.freeze.innerEdge }));
+    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.fillStart, alpha: 0.66 * 0.68 });
+    expect(strokes).toContainEqual(expect.objectContaining({ color: MUTATION_MATERIALS.freeze.fillStart }));
 
-    internals.advanceEffects(224);
+    internals.advanceEffects(134);
     expect(internals.mutationFlash).toBeNull();
+  });
+
+  it('anchors multiplier feedback to Core trigger cells and preserves the 4× escalation cue', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const triggerCells = Object.freeze([{ x: 3, y: VISIBLE_START_ROW + 6 }]);
+
+    internals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'multiplier',
+      durationTicks: 1_200,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells,
+      multiplierFactor: 4,
+    }]);
+
+    expect(internals.mutationFlash).toMatchObject({
+      item: 'multiplier',
+      triggerCells,
+      multiplierFactor: 4,
+      duration: 150,
+    });
+  });
+
+  it('uses one saturated material core per connected carrier without white cell glyphs', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const fills: Array<{ color?: number }> = [];
+    const strokes: Array<{ color?: number }> = [];
+    const graphics = {
+      roundRect: () => graphics,
+      moveTo: () => graphics,
+      lineTo: () => graphics,
+      fill: (options: { color?: number }) => {
+        fills.push(options);
+        return graphics;
+      },
+      stroke: (options: { color?: number }) => {
+        strokes.push(options);
+        return graphics;
+      },
+    };
+
+    internals.drawMutationCarrierCore(
+      graphics,
+      [{ x: 3, y: 5 }, { x: 4, y: 5 }, { x: 4, y: 6 }, { x: 5, y: 6 }],
+      'freeze',
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+
+    expect(fills).toHaveLength(2);
+    expect(fills.map((entry) => entry.color)).toEqual([MUTATION_MATERIALS.freeze.edge, MUTATION_MATERIALS.freeze.fillStart]);
+    expect(strokes.every((entry) => entry.color !== 0xffffff)).toBe(true);
+    expect(fills.every((entry) => entry.color !== 0xffffff)).toBe(true);
+  });
+
+  it('shows collapse trails only when an independently settling lock actually moves', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const withGap = createBoard();
+    withGap[BOARD_HEIGHT - 1]![0] = 'T';
+
+    internals.queueCollapseSettlementTrail(withGap, [{ x: 0, y: BOARD_HEIGHT - 4 }]);
+    expect(internals.collapseTrail).toMatchObject({
+      duration: 150,
+      paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
+    });
+
+    const alreadySettled = createBoard();
+    alreadySettled[BOARD_HEIGHT - 1]![0] = 'T';
+    internals.queueCollapseSettlementTrail(alreadySettled, [{ x: 0, y: BOARD_HEIGHT - 2 }]);
+    expect(internals.collapseTrail).toBeNull();
+  });
+
+  it('scales Next geometry to the slot instead of capping it at a tiny fixed unit', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const calls: Array<{ centerX: number; centerY: number; unit: number }> = [];
+    (internals as unknown as {
+      drawPreviewPiece: (_graphics: unknown, _piece: 'I' | 'O', centerX: number, centerY: number, unit: number) => void;
+    }).drawPreviewPiece = (_graphics, _piece, centerX, centerY, unit) => calls.push({ centerX, centerY, unit });
+
+    internals.drawPreviewPieces({}, ['I'], 0, 0, 220, 96);
+    expect(calls).toEqual([{ centerX: 110, centerY: 48, unit: 28 }]);
+
+    calls.length = 0;
+    internals.drawPreviewPieces({}, ['I', 'O'], 0, 0, 220, 180);
+    expect(calls).toEqual([
+      { centerX: 110, centerY: 45, unit: 24 },
+      { centerX: 110, centerY: 135, unit: 24 },
+    ]);
   });
 });
