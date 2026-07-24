@@ -62,6 +62,25 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   The next source slice is the deterministic Mutation item refresh and visual-effects
   redesign; `package-lock.json` remains user-owned and unstaged.
 
+### T13.14 Mutation refresh and semantic-feedback checkpoints — 2026-07-25
+
+- `51c08aa` changes every repeated timed carrier collection from an additive extension
+  to a deterministic reset of exactly 600 game ticks (10 seconds). The preserved
+  Multiplier 2×→4× escalation still receives that exact ten-second refresh. Direct
+  Sprint Core coverage passes 11/11 and typecheck passes.
+- `d5597c3`, `663f261`, and `8d67af3` rebuild the visible language: ice crystal,
+  gravity-weight, ember bomb, and star-mineral cores have separate materials and
+  activation effects; active Freeze, Collapse, and Multiplier states retain bounded
+  board atmosphere plus a readable vertical timer instrument. Bomb no longer inserts
+  a rail explanation sentence—the board blast is its presentation. Focused
+  App/renderer coverage passes 28/28 and typecheck passes.
+- Real local Playwright evidence in `.local/audits/t13.14/mutation-live-audit.mjs`
+  uses only live seeded input/QA actions to capture all four carriers and all four
+  effects. The fresh captures prove one canvas, zero DOM cells, no viewport overflow,
+  and no console/page errors. This is still a source/evidence checkpoint, not final
+  T13.14 acceptance: Survival debris, full gates, responsive/reduced-motion review,
+  and independent QA remain. `package-lock.json` remains user-owned and unstaged.
+
 ### T13.12 selector, settings, and Mutation expression accepted — 2026-07-24
 
 - Accepted source range: `9b6188f..ec36924`. The Puzzle selector now holds a stable

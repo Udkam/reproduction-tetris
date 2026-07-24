@@ -1049,3 +1049,31 @@
   refresh/visual-effects source checkpoint, then audit its real material and active
   state. Do not mark the overall T13.14 goal complete before the required Survival
   debris stream, final full gates, and independent QA.
+
+## 2026-07-25 — T13.14 Mutation refresh and semantic-feedback checkpoints
+
+- Base: `9e36965`; source checkpoints `51c08aa`, `d5597c3`, `663f261`, and
+  `8d67af3`. Exact product/test paths are `src/game/core/engine.ts`,
+  `src/game/core/sprint.test.ts`, `src/game/render/theme.ts`,
+  `src/game/render/TetrisRenderer.ts`, `src/game/render/TetrisRenderer.test.ts`,
+  `src/App.tsx`, `src/App.test.ts`, `src/ui/localization.ts`, and `src/styles.css`.
+  The inherited `package-lock.json` is explicitly excluded and remains unstaged.
+- Delivered: every timed carrier recollection resets to exactly 600 deterministic
+  ticks; Multiplier retains 2×→4× only as its strength progression. Carriers now use
+  distinct ice-crystal, dense-gravity, ember-core, and star-mineral construction;
+  Freeze frosts the frame, Collapse applies bounded pressure lanes, Bomb has a local
+  blast, and Multiplier has score-light. The status rail uses three labelled timer
+  instruments and removes the visual Bomb-clear explanation.
+- Commands/evidence: `npm.cmd run test -- src/game/core/sprint.test.ts` passed 11/11;
+  `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts` passed 8/8;
+  `npm.cmd run test -- src/App.test.ts src/game/render/TetrisRenderer.test.ts` passed
+  28/28; all listed checkpoints passed `npm.cmd run typecheck` and `git diff --check`.
+  The mandatory web-game client ran before and after the status fix. Ignored local
+  `.local/audits/t13.14/mutation-live-audit.mjs` exercised real seeded drops, captured
+  all four carrier and activation states, and reported one canvas, zero DOM cells, no
+  overflow, and no console/page errors; the coordinator visually inspected the final
+  carrier, Bomb, and Multiplier frames.
+- Blocker: none for Mutation source behavior. Next: implement the deterministic
+  Survival stone/debris stream, then run the final T13.14 full quality gates and a
+  cross-mode desktop/portrait/landscape/reduced-motion browser batch before asking for
+  independent read-only QA.
