@@ -54,7 +54,7 @@ type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
 
 const APP_SEED = 0x51a1f00d;
-const PRODUCT_NAME = 'Tetris';
+const PRODUCT_NAME = 'Tetramorph';
 const MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 
 const MODE_COPY: Record<GameMode, {
@@ -313,7 +313,9 @@ export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
       <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
-            <h2 id="home-title">选择模式</h2>
+            <h2 id="home-title" className="mode-home-wordmark">
+              <span>Tetra</span><span>morph</span>
+            </h2>
           </div>
           <div
             className="mode-gates mode-gates--workbench"

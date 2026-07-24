@@ -560,10 +560,11 @@ describe('T6 frontend mode binding', () => {
     expect(classic).not.toBeNull();
     expect(classic?.textContent).toContain('经典');
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
-    expect(view.container.textContent?.match(/选择模式/g)).toHaveLength(1);
+    expect(view.container.textContent).not.toContain('选择模式');
     expect(view.container.textContent).not.toContain('补满任意横行即可消除并得分。');
-    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetris');
-    expect(view.container.querySelector('[data-testid="brand"]')?.getAttribute('aria-label')).toBe('Tetris');
+    expect(view.container.querySelector('[data-testid="brand"] h1')?.textContent).toBe('Tetramorph');
+    expect(view.container.querySelector('[data-testid="brand"]')?.getAttribute('aria-label')).toBe('Tetramorph');
+    expect(view.container.querySelector('#home-title')?.textContent).toBe('Tetramorph');
     expect(view.container.textContent).not.toContain('基岩会持续向上推进。');
     expect(view.container.textContent).not.toContain('带核心标记的方块携带道具。');
     expect(view.container.textContent).not.toContain('使用固定出现顺序的方块。');

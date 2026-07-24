@@ -1,7 +1,9 @@
 :root {
   color: #14243a;
   background: #dce7f2;
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  --font-body: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  font-family: var(--font-body);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   --page: #dce7f2;
@@ -110,7 +112,7 @@ p {
 .brand strong,
 .brand h1 {
   margin: 0;
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(28px, 3vw, 34px);
   font-weight: 700;
   letter-spacing: -.065em;
@@ -6859,6 +6861,32 @@ p {
 .landing-intro__mark,
 .landing-header__signal { display: none !important; }
 .mode-chooser--workbench .landing-intro h2 { color: #f2f7fa; font-size: clamp(36px, 4.4vw, 58px); font-weight: 740; letter-spacing: -.11em; line-height: .93; }
+
+/* The product name replaces the generic home heading: type is the only focal effect. */
+.mode-chooser--workbench .mode-home-wordmark {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  max-width: 100%;
+  margin: 0;
+  color: #eff8fa;
+  font-family: var(--font-display);
+  font-size: clamp(29px, 4vw, 54px);
+  font-weight: 720;
+  font-variation-settings: "opsz" 48, "wdth" 94, "wght" 720;
+  letter-spacing: -.085em;
+  line-height: .91;
+  text-wrap: nowrap;
+  text-shadow: 0 2px 0 rgba(6, 17, 29, .28), 0 12px 28px rgba(104, 172, 180, .14);
+}
+
+.mode-chooser--workbench .mode-home-wordmark span:first-child {
+  color: #f5fbfc;
+}
+
+.mode-chooser--workbench .mode-home-wordmark span:last-child {
+  color: #91c9c6;
+}
 
 .mode-gates--workbench { gap: 0; padding: clamp(8px, 1.2vw, 14px); background: #f7fafb; }
 .mode-gates--workbench .mode-gate,
