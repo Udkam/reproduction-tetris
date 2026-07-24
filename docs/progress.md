@@ -1,5 +1,25 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T13.12 selector, settings, and Mutation expression accepted — 2026-07-24
+
+- Accepted source range: `9b6188f..ec36924`. The Puzzle selector now holds a stable
+  `历史最优` / `Best so far` line, visible completion `√`, and a clean single selected
+  preview; Settings is a responsive control/keyboard/rules/record sheet; and topbar
+  Settings/Back remain usable without starting input during the entry countdown. The
+  bottom touch-key deck is removed in favour of direct board gestures.
+- Mutation now uses complete, distinguishable ice, gravity, bomb, and score-material
+  tetrominoes with per-cell emblems; a Classic-shaped score/lines/combo/fall rail;
+  grey-or-active Freeze/Collapse/Double ledger; bounded local activation effects; and
+  newest-item-owned audio cues. Bomb keeps its direct one-shot result rather than a
+  timer row.
+- Coordinator gates pass: `npm.cmd run typecheck`, `npm.cmd run test` (22 files / 146
+  tests), and `npm.cmd run build` (746 transformed modules). First-party and recovered
+  independent browser evidence confirm desktop and 390px layouts, countdown `S`/`Esc`,
+  one canvas/zero DOM cells/no touch rail, a real Freeze carrier, no overflow, and zero
+  console/page errors. Independent QA `d7fc929` accepts the unchanged candidate after
+  recording its Browser-connector blocker and its local-Playwright recovery recheck.
+- The pre-existing user-owned `package-lock.json` remains unmodified and unstaged.
+
 ### T13.11 brighter home glyphs and keyboard guide accepted — 2026-07-24
 
 - The narrow candidate `25fa232..fc9cc3c` preserves all mode rules and key bindings.

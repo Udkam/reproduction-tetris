@@ -900,3 +900,30 @@
 - Blocker: no independent Core or visual/browser QA disposition exists. Next:
   coordinator record commit and the already user-authorized `main` recovery push; do
   not claim acceptance.
+
+## 2026-07-24 — TETRIS-T13.12-EXPRESSION-026 acceptance record
+
+- Base: pushed T13.11 `9b6188f`; contract checkpoint `369c8fa`; UI/interaction source
+  checkpoint `a6d0baa`; Mutation materials/effects/audio checkpoint `165f91b`; and
+  final contrast assertion checkpoint `ec36924`. Exact source paths are the contract's
+  authorized App/localization/styles, renderer/theme/audio, and direct test paths.
+  The QA-only blocker record `d3c4302` remains historical; recovered independent QA
+  `d7fc929` accepts the unchanged product candidate `9b6188f..ec36924`.
+- Delivered: stable Puzzle best text and selected preview; completed `√` states;
+  responsive Settings with compact itemised rules; Back/Settings usable through entry
+  countdown; direct board gestures with no touch-key deck; and role-coloured action
+  controls. Mutation now has full-cell special materials/emblems, Classic-like live
+  metrics, a timed effect ledger, bounded local renderer cues, and newest-item-owned
+  audio; no Core rule, seed, queue, storage, or Puzzle definition was changed.
+- Coordinator commands passed after the last source repair: `npm.cmd run typecheck`,
+  `npm.cmd run test` (22 files / 146 tests), and `npm.cmd run build` (746 modules).
+  First-party real browser review and independent local-Playwright evidence verify
+  desktop/390px no-overflow, visible selector/settings surfaces, countdown `S`/`Esc`,
+  one canvas/zero DOM cells, no touch rail, real Freeze carrier evidence, and zero
+  console/page errors. QA evidence remains ignored under
+  `.local/audits/t13-12-independent-qa/browser/`.
+- Resource cleanup: the coordinator's Browser connector page and local Chromium
+  shutdowns exceeded their harness close guards after evidence output. Before push,
+  release only their exact audit child processes; leave the user-owned lockfile and all
+  unrelated listeners untouched. Next: complete this docs checkpoint, verify process/
+  listener ownership, push accepted `main`, and report the retained user lockfile.

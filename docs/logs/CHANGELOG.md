@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-24 — T13.12 selector, settings, and Mutation expression accepted
+
+- Puzzle now presents a fixed-height natural best-result line, a compact completed
+  `√`, and a single dark selected-board preview without the former white SVG artifact.
+  Settings becomes a responsive two-column control, keyboard, rules, and record sheet;
+  `S` and `Esc` remain available during the entry countdown without enabling gameplay;
+  and the bottom individual touch-key strip is removed for direct board gestures.
+- Mutation's four carriers are full faceted ice, gravity, burning bomb, and score
+  materials with per-cell emblems. Its rail shares Classic's score/lines/combo/fall
+  grammar and adds a grey-or-active Freeze/Collapse/Double ledger; each activation has
+  a bounded local visual cue and item-owned sound, with Bomb remaining a direct result.
+- The accepted product range is `9b6188f..ec36924`: typecheck, 22 files / 146 tests,
+  and the 746-module build pass. Independent QA `d7fc929` accepts after a recovered
+  real local-Playwright audit of desktop/390px layouts, countdown controls, one canvas,
+  no DOM cells/touch rail, a real special carrier, no overflow, and zero console/page
+  errors. The pre-existing user-owned `package-lock.json` is excluded.
+
 ## 2026-07-24 — T13.11 brighter mode glyphs and keyboard guide accepted
 
 - Brightened the homepage's teal, blue, amber, and violet mode-glyph accents while

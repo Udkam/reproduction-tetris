@@ -5,6 +5,11 @@
 
 ## T13.12 selector, settings, and Mutation expression pass
 
+**Accepted implementation:** `9b6188f..ec36924`, independently accepted in `d7fc929`
+after real local-Playwright desktop and 390px evidence. The browser connector's earlier
+unavailable-page blocker remains historical provenance only; it is superseded by the
+documented recovery recheck in the independent QA log.
+
 This pass uses one coherent **mineral instrument panel** direction: a warm-white
 information surface, deep-blue board field, and the four mode hues only where they
 communicate a real state. Space Grotesk remains the readable bilingual UI face,

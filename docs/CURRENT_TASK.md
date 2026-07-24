@@ -8,19 +8,21 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-24): **T13.12 SELECTOR, SETTINGS, AND MUTATION
-EXPRESSION — contract open.** Starting from pushed T13.11 `9b6188f`, this full visual
-and interaction pass repairs the Puzzle selector's best-result alignment, completed
-mark, and preview artifact; restructures Settings, its typography, controls, palette,
-and rule presentation; permits topbar Back/Settings while the three-second entry
-countdown is visible; removes the bottom single-purpose touch-key strip in favour of a
-clean game surface; and replaces Mutation's core-dot carriers, mixed rail, full-board
-flash, and generic cue treatment with item-owned whole-piece materials, a persistent
-effect ledger, local renderer effects, and item-specific sound/musical feedback. It
-preserves deterministic Core rules, scores, queues, storage, keyboard bindings, and
-Puzzle content unless a focused source test proves a necessary presentation bridge.
-Only the user-owned uncommitted `package-lock.json` exists outside this slice and must
-remain untouched. The earlier T12/T13 narratives below are retained as provenance only;
-this section is the authoritative live scope.
+EXPRESSION — accepted.** The candidate `9b6188f..ec36924` repairs the Puzzle selector's
+best-result alignment, completed `√` treatment, and preview artifact; restructures
+Settings, its typography, controls, palette, and rule presentation; permits topbar
+Back/Settings while the three-second entry countdown is visible; removes the bottom
+single-purpose touch-key strip in favour of a clean game surface; and replaces
+Mutation's core-dot carriers, mixed rail, full-board flash, and generic cue treatment
+with item-owned whole-piece materials, a persistent effect ledger, local renderer
+effects, and item-specific sound/musical feedback. It preserves deterministic Core
+rules, scores, queues, storage, keyboard bindings, and Puzzle content. Coordinator
+gates pass (`typecheck`, 22 files / 146 tests, and a 746-module build); independent QA
+accepts the unchanged source range in `d7fc929` after its browser-recovery recheck
+records desktop/390px, real countdown, carrier, canvas, and console evidence. Only the
+user-owned uncommitted `package-lock.json` remains outside this slice and must remain
+untouched. The earlier T12/T13 narratives below are retained as provenance only; this
+section is the authoritative current record.
 
 ### Authoritative active delivery goals (2026-07-24)
 
