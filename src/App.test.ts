@@ -46,7 +46,6 @@ interface RuntimeTestInstance {
   undoPuzzle: ReturnType<typeof vi.fn>;
   togglePause: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
-  setMusicEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
   getState: () => GameState;
   setState: (state: GameState) => void;
@@ -64,7 +63,6 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     readonly setInputEnabled = vi.fn();
     readonly setReducedMotion = vi.fn();
     readonly setAudioEnabled = vi.fn();
-    readonly setMusicEnabled = vi.fn();
     readonly setAudioVolume = vi.fn();
     readonly start = vi.fn(() => {
       const transition = core.dispatch(this.state, { type: 'start' });
@@ -351,7 +349,6 @@ describe('T6 frontend mode binding', () => {
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalled();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
     const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
-    const music = view.container.querySelector<HTMLButtonElement>('[data-testid="music-toggle"]')!;
     const volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
     const controls = view.container.querySelector<HTMLElement>('[data-testid="settings-controls"]')!;
     const settingsLeaderboard = view.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')!;
@@ -360,11 +357,12 @@ describe('T6 frontend mode binding', () => {
     const shortcutKeys = view.container.querySelector<HTMLElement>('[data-testid="keyboard-shortcuts"]')!;
     const rules = view.container.querySelector<HTMLElement>('[data-testid="settings-rules"]')!;
     expect(toggle.textContent).toBe('音效开');
-    expect(music.textContent).toBe('音乐开');
+    expect(view.container.querySelector('[data-testid="music-toggle"]')).toBeNull();
     expect(volume.value).toBe('100');
     expect([...sheet.children].map((child) => child.getAttribute('data-testid') ?? child.className)).toEqual([
       'settings-controls',
-      'settings-sheet__reference',
+      'settings-shortcuts',
+      'settings-rules',
       'settings-leaderboard',
     ]);
     expect(controls.textContent).toContain('控制');
@@ -376,10 +374,6 @@ describe('T6 frontend mode binding', () => {
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     expect(resume.dataset.arrowSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));
-    expect(music.dataset.arrowSelected).toBe('true');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
-    expect(music.textContent).toBe('音乐关');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })));
     expect(toggle.dataset.arrowSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(toggle.textContent).toBe('音效关');
@@ -387,7 +381,6 @@ describe('T6 frontend mode binding', () => {
     act(() => volume.dispatchEvent(new Event('input', { bubbles: true })));
     expect(view.container.textContent).toContain('56%');
     expect(runtimeHarness.instances.at(-1)?.setAudioEnabled).toHaveBeenCalledWith(false);
-    expect(runtimeHarness.instances.at(-1)?.setMusicEnabled).toHaveBeenCalledWith(false);
     expect(resume).not.toBeNull();
     act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
     expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();

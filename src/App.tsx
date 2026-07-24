@@ -550,18 +550,14 @@ export function LeaderboardPanel({
 
 function AudioControls({
   enabled,
-  musicEnabled,
   volume,
   onEnabledChange,
-  onMusicEnabledChange,
   onVolumeChange,
   language,
 }: {
   enabled: boolean;
-  musicEnabled: boolean;
   volume: number;
   onEnabledChange: (enabled: boolean) => void;
-  onMusicEnabledChange: (enabled: boolean) => void;
   onVolumeChange: (volume: number) => void;
   language: AppLanguage;
 }) {
@@ -579,15 +575,6 @@ function AudioControls({
           aria-pressed={enabled}
           onClick={() => onEnabledChange(!enabled)}
         >{enabled ? copy.labels.soundOn : copy.labels.soundOff}</button>
-        <button
-          className="audio-toggle"
-          type="button"
-          data-testid="music-toggle"
-          data-arrow-nav
-          aria-label={musicEnabled ? copy.labels.turnMusicOff : copy.labels.turnMusicOn}
-          aria-pressed={musicEnabled}
-          onClick={() => onMusicEnabledChange(!musicEnabled)}
-        >{musicEnabled ? copy.labels.musicOn : copy.labels.musicOff}</button>
       </div>
       <label className="audio-volume">
         <span>{copy.labels.volume}</span>
@@ -650,7 +637,7 @@ function LanguageControl({ language, onChange }: { language: AppLanguage; onChan
 function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: AppLanguage }) {
   const copy = appCopy(language);
   return (
-    <section className="settings-shortcuts" data-testid="settings-shortcuts" aria-label={copy.labels.keyboard}>
+    <section className={`settings-shortcuts settings-shortcuts--${mode}`} data-testid="settings-shortcuts" aria-label={copy.labels.keyboard}>
       <strong>{copy.labels.keyboard}</strong>
       <div className="settings-shortcuts__group" data-testid="keyboard-gameplay">
         <span className="settings-shortcuts__group-label">{copy.labels.gameplayControls}</span>
@@ -830,18 +817,12 @@ export function GameSession({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
-  const [musicEnabled, setMusicEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
   const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
 
   const changeAudioEnabled = useCallback((enabled: boolean) => {
     runtime?.setAudioEnabled(enabled);
     setAudioEnabled(enabled);
-  }, [runtime]);
-
-  const changeMusicEnabled = useCallback((enabled: boolean) => {
-    runtime?.setMusicEnabled(enabled);
-    setMusicEnabled(enabled);
   }, [runtime]);
 
   const changeAudioVolume = useCallback((volume: number) => {
@@ -905,7 +886,6 @@ export function GameSession({
       inputEnabled: false,
       reducedMotion: motionQuery.matches,
       audioEnabled,
-      musicEnabled,
       audioVolume,
       onState: (nextState, events) => {
         if (disposed) return;
@@ -982,9 +962,8 @@ export function GameSession({
 
   useEffect(() => {
     runtime?.setAudioEnabled(audioEnabled);
-    runtime?.setMusicEnabled(musicEnabled);
     runtime?.setAudioVolume(audioVolume);
-  }, [audioEnabled, audioVolume, musicEnabled, runtime]);
+  }, [audioEnabled, audioVolume, runtime]);
 
   useEffect(() => {
     languageRef.current = language;
@@ -1317,10 +1296,8 @@ export function GameSession({
             {onLanguageChange && <LanguageControl language={language} onChange={onLanguageChange} />}
             <AudioControls
               enabled={audioEnabled}
-              musicEnabled={musicEnabled}
               volume={audioVolume}
               onEnabledChange={changeAudioEnabled}
-              onMusicEnabledChange={changeMusicEnabled}
               onVolumeChange={changeAudioVolume}
               language={language}
             />
@@ -1331,10 +1308,8 @@ export function GameSession({
               </button>
             </div>
           </section>
-          <div className="settings-sheet__reference">
-            <SettingsShortcutGuide mode={state.mode} language={language} />
-            <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
-          </div>
+          <SettingsShortcutGuide mode={state.mode} language={language} />
+          <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
           <SettingsRecord
             mode={state.mode}
             puzzleId={state.puzzleId ?? puzzleId}

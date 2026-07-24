@@ -4894,6 +4894,18 @@ kbd,
   .console-node--selected button { animation: none !important; transition: none !important; }
 }
 
+/* A best-result chip is optional, but the selected Puzzle specimen must never make
+   the preview/copy boundary jump. Reserve the exact status slot in both states. */
+.console-focus__copy {
+  min-block-size: 148px;
+}
+
+@media (max-width: 700px) {
+  .console-focus__copy {
+    min-block-size: 103px;
+  }
+}
+
 /* T13.14 rail language: instrument labels stay calm while live values carry the
    rhythm. Puzzle exposes its fixed queue as two named, divided forecast lanes. */
 .run-stats [data-stat-role] > span {
@@ -8107,6 +8119,180 @@ kbd,
   background: var(--gate-accent);
   border-color: var(--gate-accent);
   transform: none;
+}
+
+/* T13.14 final Settings composition. The sheet has four real direct children, so
+   its grid names must address those children rather than the retired reference wrapper. */
+.action-sheet:has(.settings-sheet) {
+  width: min(910px, calc(100vw - 24px));
+  padding: clamp(18px, 2vw, 22px);
+  max-height: calc(100dvh - 20px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.settings-sheet {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(286px, .84fr) minmax(0, 1.16fr);
+  grid-template-areas:
+    "controls keyboard"
+    "rules rules"
+    "record record";
+  gap: 10px;
+  align-items: start;
+}
+
+.settings-sheet > .settings-controls,
+.settings-sheet > .settings-shortcuts,
+.settings-sheet > .mode-rule-summary,
+.settings-sheet > .settings-record,
+.settings-sheet > .result-leaderboard {
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+.settings-sheet > .settings-controls {
+  grid-area: controls !important;
+  display: grid;
+  grid-template-rows: none;
+  align-content: start;
+  align-self: start;
+  gap: 9px;
+  padding: 14px;
+}
+
+.settings-controls .audio-controls {
+  display: grid;
+  grid-template-columns: minmax(96px, .48fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding-block: 8px;
+}
+
+.settings-controls .audio-controls__switches { display: block; }
+.settings-controls .audio-toggle { width: 100%; }
+.settings-controls .audio-volume { grid-template-columns: auto minmax(56px, 1fr) auto; }
+.settings-controls .settings-sheet__actions { gap: 9px; }
+.settings-controls .settings-sheet__actions > button { min-height: 42px; }
+
+.settings-sheet > .settings-shortcuts {
+  grid-area: keyboard !important;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  align-self: start;
+  gap: 7px 12px;
+  padding: 12px 14px;
+}
+
+.settings-shortcuts > strong { grid-column: 1 / -1; }
+.settings-shortcuts__group,
+.settings-shortcuts [data-testid="keyboard-shortcuts"],
+.settings-shortcuts:lang(en) [data-testid="keyboard-shortcuts"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 9px;
+}
+
+.settings-shortcuts__group > span {
+  min-height: 19px;
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.settings-shortcuts--puzzle [data-testid="keyboard-gameplay"] > span:last-child,
+.settings-shortcuts [data-testid="keyboard-shortcuts"] > span:last-child {
+  grid-column: 1 / -1;
+}
+
+.settings-sheet > .mode-rule-summary {
+  grid-area: rules !important;
+  display: grid;
+  gap: 7px;
+  min-height: 0 !important;
+  padding: 11px 14px;
+}
+
+.settings-sheet > .mode-rule-summary ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-sheet > .mode-rule-summary--marathon ul,
+.settings-sheet > .mode-rule-summary--race ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.settings-sheet > .mode-rule-summary li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px;
+  align-items: start;
+  min-width: 0;
+  color: #49687a;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.settings-sheet > .mode-rule-summary li b {
+  color: #2e6a80;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.settings-sheet > .settings-record,
+.settings-sheet > .result-leaderboard {
+  grid-area: record !important;
+  align-self: start;
+}
+
+@media (max-width: 700px) {
+  .action-sheet:has(.settings-sheet) {
+    width: min(520px, calc(100vw - 18px));
+    padding: 16px;
+  }
+
+  .settings-sheet {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "controls"
+      "keyboard"
+      "rules"
+      "record";
+    gap: 9px;
+  }
+
+  .settings-sheet > .settings-shortcuts {
+    grid-template-columns: 1fr;
+    gap: 7px;
+    padding: 11px 12px;
+  }
+
+  .settings-shortcuts__group,
+  .settings-shortcuts [data-testid="keyboard-shortcuts"],
+  .settings-shortcuts:lang(en) [data-testid="keyboard-shortcuts"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-sheet > .mode-rule-summary,
+  .settings-sheet > .mode-rule-summary ul,
+  .settings-sheet > .mode-rule-summary--marathon ul,
+  .settings-sheet > .mode-rule-summary--race ul {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-sheet > .mode-rule-summary {
+    padding: 11px 12px;
+  }
 }
 
 /* T13.11: retain the four mode identities while giving their compact glyphs a clearer,
