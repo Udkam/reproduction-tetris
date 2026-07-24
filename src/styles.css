@@ -5397,7 +5397,8 @@ kbd,
 }
 
 .action-sheet:has(.settings-sheet) {
-  width: min(980px, 100%);
+  width: min(880px, 100%);
+  padding: clamp(18px, 2.1vw, 24px);
   max-height: calc(100dvh - 20px);
   overflow: auto;
   overscroll-behavior: contain;
@@ -5405,18 +5406,20 @@ kbd,
 }
 
 .settings-sheet {
-  grid-template-columns: minmax(278px, .78fr) minmax(360px, 1.22fr);
+  grid-template-columns: minmax(292px, .94fr) minmax(378px, 1.06fr);
   grid-template-areas:
     "controls reference"
     "record record";
-  gap: 14px;
-  align-items: start;
+  gap: 12px;
+  align-items: stretch;
 }
 
 .settings-controls {
   grid-area: controls;
-  gap: 10px;
-  padding: 15px;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-height: 330px;
+  gap: 11px;
+  padding: 16px;
   border-color: #b8cbd3;
   box-shadow: 0 6px 16px rgba(20, 51, 72, .06);
 }
@@ -5434,7 +5437,9 @@ kbd,
 .settings-sheet__reference {
   grid-area: reference;
   display: grid;
-  gap: 12px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 330px;
+  gap: 10px;
 }
 
 .settings-sheet .result-leaderboard,
@@ -5442,10 +5447,16 @@ kbd,
   grid-area: record;
 }
 
+.settings-controls .audio-controls {
+  min-height: 0;
+  align-content: center;
+  padding-block: 12px;
+}
+
 .settings-shortcuts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 14px;
-  padding: 14px 15px;
+  gap: 9px 12px;
+  padding: 13px 14px;
   border-color: #b8cbd3;
 }
 
@@ -5474,7 +5485,7 @@ kbd,
 }
 
 .settings-sheet .mode-rule-summary {
-  padding: 14px 15px;
+  padding: 12px 14px;
   border-color: color-mix(in srgb, var(--accent) 42%, #b5c8d1);
 }
 
@@ -5507,6 +5518,7 @@ kbd,
 
 .settings-record,
 .result-leaderboard--settings {
+  min-height: 0;
   border-color: #b8cbd3;
   box-shadow: 0 6px 16px rgba(20, 51, 72, .06);
 }
@@ -5539,6 +5551,8 @@ kbd,
   .console-focus__best { min-height: 18px; font-size: 10px !important; line-height: 18px; }
   .console-focus__complete-mark { width: 15px; height: 15px; font-size: 9px; }
   .settings-sheet { grid-template-columns: 1fr; grid-template-areas: "controls" "reference" "record"; }
+  .settings-controls { grid-template-rows: auto auto auto auto; min-height: 0; }
+  .settings-sheet__reference { min-height: 0; }
   .settings-shortcuts { grid-template-columns: 1fr; }
 }
 
