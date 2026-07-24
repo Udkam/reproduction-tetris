@@ -62,6 +62,7 @@ export class AudioEngine {
   private musicEnabled = true;
   private musicPlaybackActive = false;
   private musicVoices: MusicVoice[] = [];
+  private mutationVoices: MusicVoice[] = [];
   private musicTimer: PlatformTimeout = null;
   private volume = 1;
   private lastMoveAt = 0;
@@ -200,6 +201,7 @@ export class AudioEngine {
   destroy(): void {
     this.musicPlaybackActive = false;
     this.stopMusic();
+    this.stopMutationCue();
     this.effects?.disconnect();
     this.effects = null;
     this.musicBus?.disconnect();
@@ -234,26 +236,35 @@ export class AudioEngine {
   }
 
   private mutationCue(item: Extract<GameEvent, { type: 'mutation-activated' }>['item']): void {
+    // An effect belongs to the material that just fired. Do not leave an earlier cue
+    // ringing beneath it: the visual rail also shows only the newest transient state.
+    this.stopMutationCue();
     if (item === 'freeze') {
-      this.tone({ frequency: 523, duration: 0.11, gain: 0.19, endFrequency: 392, type: 'sine' });
-      this.tone({ frequency: 659, duration: 0.13, gain: 0.14, delay: 0.035, endFrequency: 523, type: 'triangle' });
+      this.tone({ frequency: 493, duration: 0.16, gain: 0.18, endFrequency: 587, type: 'sine' }, true);
+      this.tone({ frequency: 659, duration: 0.22, gain: 0.13, delay: 0.045, endFrequency: 740, type: 'sine' }, true);
       return;
     }
     if (item === 'collapse') {
-      this.tone({ frequency: 246, duration: 0.1, gain: 0.2, endFrequency: 164, type: 'triangle' });
-      this.tone({ frequency: 329, duration: 0.08, gain: 0.13, delay: 0.03, endFrequency: 220, type: 'triangle' });
+      this.tone({ frequency: 294, duration: 0.16, gain: 0.2, endFrequency: 154, type: 'triangle' }, true);
+      this.tone({ frequency: 220, duration: 0.2, gain: 0.14, delay: 0.035, endFrequency: 110, type: 'sine' }, true);
       return;
     }
     if (item === 'bomb') {
-      this.tone({ frequency: 116, duration: 0.085, gain: 0.28, endFrequency: 74, type: 'triangle' });
-      this.tone({ frequency: 174, duration: 0.04, gain: 0.13, delay: 0.01, endFrequency: 110, type: 'triangle' });
+      this.tone({ frequency: 132, duration: 0.13, gain: 0.3, endFrequency: 68, type: 'triangle' }, true);
+      this.tone({ frequency: 198, duration: 0.075, gain: 0.12, delay: 0.012, endFrequency: 104, type: 'triangle' }, true);
       return;
     }
-    this.tone({ frequency: 392, duration: 0.1, gain: 0.18, endFrequency: 587, type: 'sine' });
-    this.tone({ frequency: 494, duration: 0.12, gain: 0.16, delay: 0.03, endFrequency: 740, type: 'triangle' });
+    [392, 494, 587, 784].forEach((frequency, index) => this.tone({
+      frequency,
+      duration: 0.16,
+      gain: 0.14,
+      delay: index * 0.042,
+      endFrequency: frequency * 1.02,
+      type: 'sine',
+    }, true));
   }
 
-  private tone(options: ToneOptions): void {
+  private tone(options: ToneOptions, belongsToMutationCue = false): void {
     const context = this.context;
     const effects = this.effects;
     if (!context || !effects || this.voices >= 16) return;
@@ -273,13 +284,25 @@ export class AudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
     oscillator.connect(gain);
     gain.connect(effects);
+    const voice = { oscillator, gain };
+    if (belongsToMutationCue) this.mutationVoices.push(voice);
     oscillator.start(start);
     oscillator.stop(end + 0.01);
     oscillator.onended = () => {
       oscillator.disconnect();
       gain.disconnect();
       this.voices = Math.max(0, this.voices - 1);
+      if (belongsToMutationCue) this.mutationVoices = this.mutationVoices.filter((candidate) => candidate !== voice);
     };
+  }
+
+  private stopMutationCue(): void {
+    for (const voice of [...this.mutationVoices]) {
+      voice.oscillator.stop();
+      voice.oscillator.disconnect();
+      voice.gain.disconnect();
+    }
+    this.mutationVoices = [];
   }
 
   private applyMasterGain(): void {

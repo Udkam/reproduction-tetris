@@ -345,7 +345,6 @@ export class TetrisRenderer {
     }
     this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
     this.drawMutationCarrierMaterials(graphics, state, layout, boardShiftOffsetY);
-    this.drawMutationCarrierMarks(graphics, state, layout, boardShiftOffsetY);
 
     if (this.trail && !this.options.reducedMotion) {
       const progress = Math.min(1, this.trail.elapsed / this.trail.duration);
@@ -438,7 +437,7 @@ export class TetrisRenderer {
           material: activeMutationMaterial,
         },
       );
-      this.drawActiveMutationCarrierMark(graphics, state, layout, offsetX, offsetY);
+      this.drawActiveMutationCarrierMaterial(graphics, state, visibleActiveCells, layout, offsetX, offsetY);
     }
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
@@ -514,40 +513,6 @@ export class TetrisRenderer {
     });
   }
 
-  private drawMutationCore(
-    graphics: Graphics,
-    cell: Cell,
-    item: MutationItem,
-    layout: BoardLayout,
-    offsetX = 0,
-    offsetY = 0,
-  ): void {
-    if (cell.y < 0 || cell.y >= VISIBLE_HEIGHT) return;
-    const centerX = layout.x + (cell.x + 0.5) * layout.cell + offsetX;
-    const centerY = layout.y + (cell.y + 0.5) * layout.cell + offsetY;
-    const outer = Math.max(2, layout.cell * 0.23);
-    const inner = Math.max(1.2, layout.cell * 0.09);
-    const color = this.mutationColor(item);
-    graphics.circle(centerX, centerY, outer).fill({ color, alpha: 0.22 }).stroke({ color, alpha: 0.92, width: Math.max(1, layout.cell * 0.045) });
-    graphics.circle(centerX, centerY, inner).fill({ color: 0xf8fbff, alpha: 0.94 });
-  }
-
-  private drawMutationCarrierMarks(graphics: Graphics, state: GameState, layout: BoardLayout, offsetY: number): void {
-    if (state.mode !== 'sprint') return;
-    for (const carrier of state.mutationCarriers) {
-      const firstVisible = carrier.cells.find((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT);
-      if (!firstVisible) continue;
-      this.drawMutationCore(
-        graphics,
-        { x: firstVisible.x, y: firstVisible.y - VISIBLE_START_ROW },
-        carrier.item,
-        layout,
-        0,
-        offsetY,
-      );
-    }
-  }
-
   private drawMutationCarrierMaterials(graphics: Graphics, state: GameState, layout: BoardLayout, offsetY: number): void {
     if (state.mode !== 'sprint') return;
     for (const carrier of state.mutationCarriers) {
@@ -562,27 +527,71 @@ export class TetrisRenderer {
         offsetY,
         material: this.mutationMaterial(carrier.item),
       });
+      this.drawMutationMaterialEmblems(graphics, cells, carrier.item, layout, 0, offsetY);
     }
   }
 
-  private drawActiveMutationCarrierMark(
+  private drawActiveMutationCarrierMaterial(
     graphics: Graphics,
     state: GameState,
+    cells: readonly Cell[],
     layout: BoardLayout,
     offsetX: number,
     offsetY: number,
   ): void {
     if (state.mode !== 'sprint' || !state.active || !state.mutationActiveCarrier) return;
-    const firstVisible = cellsForPiece(state.active).find((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT);
-    if (!firstVisible) return;
-    this.drawMutationCore(
-      graphics,
-      { x: firstVisible.x, y: firstVisible.y - VISIBLE_START_ROW },
-      state.mutationActiveCarrier.item,
-      layout,
-      offsetX,
-      offsetY,
-    );
+    this.drawMutationMaterialEmblems(graphics, cells, state.mutationActiveCarrier.item, layout, offsetX, offsetY);
+  }
+
+  private drawMutationMaterialEmblems(
+    graphics: Graphics,
+    cells: readonly Cell[],
+    item: MutationItem,
+    layout: BoardLayout,
+    offsetX = 0,
+    offsetY = 0,
+  ): void {
+    const material = this.mutationMaterial(item);
+    const strokeWidth = Math.max(1, layout.cell * 0.052);
+    for (const cell of cells) {
+      if (cell.y < 0 || cell.y >= VISIBLE_HEIGHT) continue;
+      const x = layout.x + cell.x * layout.cell + offsetX;
+      const y = layout.y + cell.y * layout.cell + offsetY;
+      const centerX = x + layout.cell * 0.5;
+      const centerY = y + layout.cell * 0.5;
+      const inset = layout.cell * 0.23;
+      if (item === 'freeze') {
+        graphics.roundRect(x + inset, y + inset, layout.cell - inset * 2, layout.cell - inset * 2, Math.max(1, layout.cell * 0.1))
+          .fill({ color: material.innerEdge, alpha: 0.18 });
+        this.strokeSegments(graphics, [
+          [centerX, y + inset * .72, centerX, y + layout.cell - inset * .72],
+          [x + inset * .72, centerY, x + layout.cell - inset * .72, centerY],
+          [x + inset * 1.1, y + inset * 1.1, x + layout.cell - inset * 1.1, y + layout.cell - inset * 1.1],
+        ], material.innerEdge, 0.78, strokeWidth);
+      } else if (item === 'collapse') {
+        this.strokeSegments(graphics, [
+          [centerX, y + inset * .7, centerX, y + layout.cell - inset * 1.05],
+          [centerX, y + layout.cell - inset * 1.05, centerX - layout.cell * .16, y + layout.cell - inset * 1.6],
+          [centerX, y + layout.cell - inset * 1.05, centerX + layout.cell * .16, y + layout.cell - inset * 1.6],
+          [x + inset, y + inset * .85, x + layout.cell - inset, y + inset * .85],
+        ], material.innerEdge, 0.88, strokeWidth);
+      } else if (item === 'bomb') {
+        graphics.circle(centerX, centerY + layout.cell * .04, Math.max(2, layout.cell * .17)).fill({ color: 0x301d22, alpha: 0.9 });
+        graphics.circle(centerX, centerY - layout.cell * .1, Math.max(1.5, layout.cell * .09)).fill({ color: material.innerEdge, alpha: 0.96 });
+        this.strokeSegments(graphics, [
+          [centerX, y + inset * .45, centerX + layout.cell * .1, y + inset * .05],
+          [centerX + layout.cell * .1, y + inset * .05, centerX + layout.cell * .2, y + inset * .32],
+        ], 0xffd18d, 0.95, strokeWidth);
+      } else {
+        graphics.circle(centerX, centerY, Math.max(2, layout.cell * .13)).fill({ color: material.innerEdge, alpha: 0.42 });
+        this.strokeSegments(graphics, [
+          [centerX, y + inset * .55, centerX, y + layout.cell - inset * .55],
+          [x + inset * .55, centerY, x + layout.cell - inset * .55, centerY],
+          [x + inset * 1.05, y + inset * 1.05, x + layout.cell - inset * 1.05, y + layout.cell - inset * 1.05],
+          [x + layout.cell - inset * 1.05, y + inset * 1.05, x + inset * 1.05, y + layout.cell - inset * 1.05],
+        ], material.innerEdge, 0.92, strokeWidth);
+      }
+    }
   }
 
   private drawCellGroups(
@@ -851,10 +860,7 @@ export class TetrisRenderer {
     graphics.clear();
     if (this.mutationFlash) {
       const progress = Math.min(1, this.mutationFlash.elapsed / this.mutationFlash.duration);
-      const alpha = this.options.reducedMotion ? 0.16 : Math.max(0, 0.28 * (1 - progress));
-      graphics
-        .roundRect(layout.x, layout.y, layout.width, layout.height, Math.max(8, layout.cell * 0.38))
-        .fill({ color: this.mutationColor(this.mutationFlash.item), alpha });
+      this.drawMutationActivationEffect(graphics, this.mutationFlash.item, progress, layout);
     }
     if (state.phase === 'line-clear' && !this.options.reducedMotion) {
       const progress = lineClearPresentationProgress(state.phaseTicks, false);
@@ -1012,6 +1018,53 @@ export class TetrisRenderer {
     }
   }
 
+  private drawMutationActivationEffect(graphics: Graphics, item: MutationItem, progress: number, layout: BoardLayout): void {
+    const staticAlpha = this.options.reducedMotion ? 0.72 : Math.max(0, 1 - progress);
+    const material = this.mutationMaterial(item);
+    const strokeWidth = Math.max(1, layout.cell * 0.062);
+    if (item === 'freeze') {
+      const inset = Math.max(3, layout.cell * .22);
+      graphics.roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, Math.max(8, layout.cell * .34))
+        .stroke({ color: material.innerEdge, alpha: 0.42 * staticAlpha, width: strokeWidth });
+      for (const offset of [0.2, 0.5, 0.8]) {
+        const x = layout.x + layout.width * offset;
+        graphics.circle(x, layout.y + inset, Math.max(1.5, layout.cell * .06)).fill({ color: material.innerEdge, alpha: 0.82 * staticAlpha });
+      }
+      return;
+    }
+    if (item === 'collapse') {
+      const y = layout.y + layout.height * .34;
+      const length = layout.cell * 1.25;
+      const segments: Array<readonly [number, number, number, number]> = [];
+      for (const offset of [0.24, 0.5, 0.76]) {
+        const x = layout.x + layout.width * offset;
+        segments.push([x, y, x, y + length], [x, y + length, x - layout.cell * .18, y + length - layout.cell * .25], [x, y + length, x + layout.cell * .18, y + length - layout.cell * .25]);
+      }
+      this.strokeSegments(graphics, segments, material.innerEdge, 0.64 * staticAlpha, strokeWidth);
+      return;
+    }
+    if (item === 'bomb') {
+      const rows = Math.min(3, VISIBLE_HEIGHT);
+      const y = layout.y + layout.height - layout.cell * rows;
+      graphics.roundRect(layout.x + layout.cell * .13, y + layout.cell * .13, layout.width - layout.cell * .26, layout.cell * rows - layout.cell * .26, Math.max(5, layout.cell * .24))
+        .fill({ color: material.fillStart, alpha: 0.21 * staticAlpha })
+        .stroke({ color: material.innerEdge, alpha: 0.72 * staticAlpha, width: strokeWidth });
+      const centerX = layout.x + layout.width * .5;
+      const centerY = y + layout.cell * 1.45;
+      graphics.circle(centerX, centerY, Math.max(5, layout.cell * .42)).fill({ color: 0xffd08c, alpha: 0.56 * staticAlpha });
+      return;
+    }
+    const centerX = layout.x + layout.width * .5;
+    const centerY = layout.y + layout.height * .42;
+    const radius = Math.max(4, layout.cell * .34);
+    const segments: Array<readonly [number, number, number, number]> = [];
+    for (const [xFactor, yFactor] of [[0, -1], [1, 0], [0, 1], [-1, 0]] as const) {
+      segments.push([centerX + xFactor * radius * .45, centerY + yFactor * radius * .45, centerX + xFactor * radius, centerY + yFactor * radius]);
+    }
+    graphics.circle(centerX, centerY, radius * .38).fill({ color: material.innerEdge, alpha: 0.52 * staticAlpha });
+    this.strokeSegments(graphics, segments, material.innerEdge, 0.82 * staticAlpha, strokeWidth);
+  }
+
   private consumeEvents(events: readonly GameEvent[]): void {
     for (const event of events) {
       if (event.type === 'piece-moved') {
@@ -1065,10 +1118,7 @@ export class TetrisRenderer {
         this.mutationFlash = {
           item: event.item,
           elapsed: 0,
-          // Reduced-motion feedback is deliberately static, not instantaneous. The
-          // renderer advances effects before drawing, so a one-millisecond lifetime
-          // would disappear on an ordinary frame before its first visible paint.
-          duration: this.options.reducedMotion ? 240 : 380,
+          duration: this.options.reducedMotion ? 240 : event.item === 'bomb' ? 460 : 400,
         };
         this.impact = this.options.reducedMotion ? 0.3 : 1.05;
       } else if (event.type === 'level-up') {

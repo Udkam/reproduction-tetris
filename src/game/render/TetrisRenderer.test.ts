@@ -66,8 +66,8 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
 
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
-    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 380 });
-    internals.advanceEffects(380);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 460 });
+    internals.advanceEffects(460);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -75,11 +75,19 @@ describe('Puzzle undo presentation reset', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const fills: unknown[] = [];
+    const strokes: unknown[] = [];
     const graphics = {
       clear: () => graphics,
       roundRect: () => graphics,
+      circle: () => graphics,
+      moveTo: () => graphics,
+      lineTo: () => graphics,
       fill: (options: unknown) => {
         fills.push(options);
+        return graphics;
+      },
+      stroke: (options: unknown) => {
+        strokes.push(options);
         return graphics;
       },
     };
@@ -94,7 +102,8 @@ describe('Puzzle undo presentation reset', () => {
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.fillStart, alpha: 0.16 });
+    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.innerEdge, alpha: 0.82 * 0.72 });
+    expect(strokes).toContainEqual(expect.objectContaining({ color: MUTATION_MATERIALS.freeze.innerEdge }));
 
     internals.advanceEffects(224);
     expect(internals.mutationFlash).toBeNull();
