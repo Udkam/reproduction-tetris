@@ -8,14 +8,13 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-24): **T13.13 SELECTOR, SETTINGS, AND MUTATION
-RELIABILITY — active.** User-supplied live frames reopen the T13.12 surface: the
-selector hides some level numbers, uses corner `√` marks that are both visually noisy
-and incomplete, and still has a preview/title alignment defect; Settings has loose
-layout balance and a wrong paused-flow label; record rows use punctuation instead of
-an aligned date; and Mutation can visibly clear a carrier without producing its item
-effect. T13.12 remains historical evidence, not acceptance proof for this repair.
-The user-owned uncommitted `package-lock.json` remains outside every checkpoint and
-must remain untouched.
+RELIABILITY — accepted and ready for coordinator release.** The bounded repair closes
+the reported selector contrast/completion, preview/title, paused Settings, record
+date, Next visibility, and Mutation carrier-trigger defects. Acceptance applies only
+to this slice; later user-directed product work must open a new bounded task. T13.12
+remains historical evidence, not acceptance proof for this repair. The user-owned
+uncommitted `package-lock.json` remains outside every checkpoint and must remain
+untouched.
 
 ### T13.13 active acceptance contract
 

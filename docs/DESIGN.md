@@ -5,10 +5,12 @@
 
 ## T13.13 selector legibility, settings hierarchy, and Mutation reliability pass
 
-**Status:** active replacement for the accepted T13.12 presentation claim. The new
-screenshots demonstrate that its current visual completion state is not acceptable;
-T13.12 remains historical evidence only and must not be cited as proof for the
-requirements below.
+**Status:** accepted bounded repair `fcd6fce..3e2bcd9` after separate Core,
+interface, renderer/audio, browser, and independent-QA passes. The first independent
+review correctly held acceptance for final-candidate evidence provenance; the closure
+review accepted fresh desktop, portrait, landscape, and reduced-motion artifacts with
+no P0–P2 finding. T13.12 remains historical evidence only and must not be cited as
+proof for the requirements below.
 
 This pass keeps the existing deterministic mode identities, Puzzle definitions,
 fixed queues, locale persistence, one-canvas boundary, and original asset boundary. It

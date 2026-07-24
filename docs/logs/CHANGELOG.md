@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-07-24 — T13.13 multi-pass selector, Mutation, and Next repair accepted
+
+- Puzzle level options now keep every incomplete numeral centered, while a completed
+  option replaces its numeral with one centered accessible SVG tick. There is no
+  literal `√`, corner badge, or secondary completion ornament; the selected name and
+  inline current-best text remain stable beside the real, clean preview.
+- Settings opened from pause resumes directly through **继续游戏 / Continue**; records
+  use a far-right date without a middle dot. The shared right rail removes its visual
+  divider, separates Mutation status from metrics/Next, and renders the single Pixi
+  Next well above the opaque rail cards so its forecast remains visible.
+- Mutation now snapshots a cleared carrier before line removal, so full clears and
+  nested Bomb chains trigger exactly once. Repeated Freeze/Collapse and Multiplier
+  add ten seconds; Multiplier deterministically progresses from 2× to 4×. Four local
+  material/effect/audio treatments replace the prior noisy marks and generic cues.
+- Candidate `fcd6fce..3e2bcd9` passed typecheck, 22 files / 159 tests, and the
+  746-module production build. Multi-round browser evidence covers desktop, portrait,
+  landscape, and reduced motion with one canvas/zero DOM cells, a visible live Next
+  preview, a carrier, no overflow, and zero console/page errors. Independent QA first
+  held final evidence provenance, then closed the P1 with fresh artifacts and found no
+  P0–P2 issue. The inherited `package-lock.json` remains excluded.
+
 ## 2026-07-24 — T13.12 selector, settings, and Mutation expression accepted
 
 - Puzzle now presents a fixed-height natural best-result line, a compact completed

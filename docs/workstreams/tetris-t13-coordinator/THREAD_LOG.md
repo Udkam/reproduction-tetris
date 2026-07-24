@@ -1,5 +1,34 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.13-MULTIPASS-031 acceptance and release record
+
+- Base/contract: `fcd6fce`; accepted product candidate: `fcd6fce..3e2bcd9`. Exact
+  product paths are `src/App.tsx`, `src/App.test.ts`, `src/styles.css`, Core mutation
+  source/tests, and the bounded renderer/theme/audio source/tests declared by the
+  contract. Coordinator-only documentation paths are `docs/DESIGN.md`,
+  `docs/CURRENT_TASK.md`, `docs/progress.md`, this log, and the changelog. The
+  inherited `package-lock.json` was neither changed nor staged.
+- Result: completed Puzzle nodes replace their centered numeral with one centered SVG
+  tick; all incomplete numerals retain their center. The selector preview/best row,
+  paused Settings continuation, far-right record dates, rail gap/Next layering,
+  carrier snapshotting, 2×→4× additive Multiplier, and four bounded Mutation
+  visual/audio treatments are all repaired without changing Puzzle definitions,
+  ordinary physics, dependencies, or packaging targets.
+- Commands actually run after the final source repair: focused `src/App.test.ts` and
+  typecheck; then `npm.cmd run typecheck`, `npm.cmd run test` (22 files / 159 tests),
+  `npm.cmd run build` (746 modules), the prescribed web-game Playwright client, and
+  the ignored local Playwright audit `.local/audits/t13.13/browser_audit.py`.
+- Evidence: the final-candidate report and captures verify desktop, 390 × 844 portrait,
+  844 × 390 landscape, and reduced-motion states; the tick and numeral centers,
+  clean preview, direct Settings continue, one canvas/zero DOM cells, carrier evidence,
+  no-dialog visible Next, no overflow, and zero console/page errors all hold. The first
+  independent read-only review raised a valid final-artifact provenance P1; after a
+  fresh final-candidate re-audit, the closure QA reported no P0–P2 and accepted the
+  slice.
+- Resource hygiene: exact project Vite listeners on port 5176 were verified and
+  stopped after each evidence pass; final port check is empty. Blocker: none. Next:
+  commit this coordinator record and make the user-authorized non-force `main` push.
+
 ## 2026-07-24 — TETRIS-T13.11-PALETTE-AND-KEYBOARD acceptance and release record
 
 - Candidate: bounded product source `fc9cc3c`, reviewed as `25fa232..fc9cc3c`.

@@ -1027,3 +1027,12 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   option instead shows one centered graphical SVG tick, with no literal `√` or extra
   corner/rail badge. This supersedes the earlier lower-rail-seal proposal and reopens
   the final visual/browser and independent-QA evidence pass.
+- Outcome: final candidate `fcd6fce..3e2bcd9` passed `npm.cmd run typecheck`, the
+  22-file / 159-test full suite, and the 746-module production build. Final local
+  browser evidence covers desktop, 390 × 844 portrait, 844 × 390 landscape, and
+  reduced motion: the centered tick and uncompleted numerals measure centered, the
+  selected preview is clean, paused Settings resumes directly, one canvas/zero DOM
+  cells remain, `Next` is visible in a no-dialog live frame, and there are zero
+  console/page errors. Independent QA first held a provenance P1, then accepted the
+  fresh final-candidate evidence with no P0–P2. The verified Vite listener was stopped
+  after review; `package-lock.json` is still inherited and unstaged.
