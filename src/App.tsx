@@ -54,7 +54,7 @@ type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
 
 const APP_SEED = 0x51a1f00d;
-const PRODUCT_NAME = 'Tetramorph';
+const PRODUCT_NAME = 'TetraMorph';
 const MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 
 const MODE_COPY: Record<GameMode, {
@@ -258,8 +258,8 @@ export function scoreRecordRank(records: readonly ScoreRecord[], record: ScoreRe
   return index >= 0 ? index + 1 : null;
 }
 
-function Brand({ compact = false, primary = false }: { compact?: boolean; primary?: boolean }) {
-  const wordmark = primary ? <h1>{PRODUCT_NAME}</h1> : <strong>{PRODUCT_NAME}</strong>;
+function Brand({ compact = false }: { compact?: boolean }) {
+  const wordmark = <strong>{PRODUCT_NAME}</strong>;
   return (
     <div
       className={`brand ${compact ? 'brand--compact' : ''}`}
@@ -306,16 +306,11 @@ function ModeRuleSummary({ mode, testId }: { mode: GameMode; testId?: string }) 
 export function ModeHome({ onEnter }: { onEnter: (mode: GameMode) => void }) {
   const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
   return (
-    <main id="game" className="landing-shell landing-shell--workbench" data-testid="mode-home">
-      <header className="landing-header">
-        <Brand primary />
-      </header>
+    <main id="game" className="landing-shell landing-shell--workbench landing-shell--wordmark" data-testid="mode-home">
       <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
-            <h2 id="home-title" className="mode-home-wordmark">
-              <span>Tetra</span><span>morph</span>
-            </h2>
+            <h1 id="home-title" className="mode-home-wordmark"><span>Tetra</span><span>Morph</span></h1>
           </div>
           <div
             className="mode-gates mode-gates--workbench"

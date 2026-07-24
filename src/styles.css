@@ -2,7 +2,7 @@
   color: #14243a;
   background: #dce7f2;
   --font-body: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
-  --font-display: "Bricolage Grotesque", "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  --font-display: "Tektur Variable", "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
   font-family: var(--font-body);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -6837,6 +6837,7 @@ p {
 .library-shell--console::before { display: none !important; }
 
 .landing-shell--workbench { grid-template-rows: 60px minmax(0, 1fr); padding: clamp(14px, 2.5vw, 32px); }
+.landing-shell--workbench.landing-shell--wordmark { grid-template-rows: minmax(0, 1fr); }
 .landing-shell--workbench .landing-header { display: flex; align-items: center; padding: 0 4px; }
 .landing-shell--workbench .landing-header .brand h1 { font-size: clamp(36px, 4vw, 52px); letter-spacing: -.1em; }
 .landing-stage--workbench { width: min(1080px, 100%); height: min(620px, 100%); animation: none; }
@@ -6871,11 +6872,12 @@ p {
   margin: 0;
   color: #eff8fa;
   font-family: var(--font-display);
-  font-size: clamp(29px, 4vw, 54px);
-  font-weight: 720;
-  font-variation-settings: "opsz" 48, "wdth" 94, "wght" 720;
-  letter-spacing: -.085em;
-  line-height: .91;
+  font-size: clamp(27px, 3.8vw, 52px);
+  font-weight: 790;
+  font-stretch: 88%;
+  font-variation-settings: "wdth" 88, "wght" 790;
+  letter-spacing: -.062em;
+  line-height: .88;
   text-wrap: nowrap;
   text-shadow: 0 2px 0 rgba(6, 17, 29, .28), 0 12px 28px rgba(104, 172, 180, .14);
 }

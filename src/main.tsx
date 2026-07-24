@@ -1,13 +1,13 @@
 import '@fontsource-variable/space-grotesk/index.css';
 import '@fontsource-variable/jetbrains-mono/index.css';
-import '@fontsource-variable/bricolage-grotesque/wght.css';
+import '@fontsource-variable/tektur/wdth.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './styles.css';
 
 const root = document.getElementById('root');
-if (!root) throw new Error('Tetramorph root element is missing.');
+if (!root) throw new Error('TetraMorph root element is missing.');
 
 createRoot(root).render(
   <StrictMode>
