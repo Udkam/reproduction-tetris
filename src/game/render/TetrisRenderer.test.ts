@@ -56,7 +56,7 @@ type RendererInternals = {
     offsetY: number,
   ) => void;
   queueCollapseSettlementTrail: (previousBoard: GameState['board'], cells: readonly Cell[]) => void;
-  drawPreviewPieces: (graphics: unknown, pieces: readonly ('I' | 'O')[], x: number, y: number, width: number, height: number) => void;
+  drawPreviewPieces: (graphics: unknown, pieces: readonly ('I' | 'O')[], x: number, y: number, width: number, height: number, labelInset?: number) => void;
 };
 
 describe('Puzzle undo presentation reset', () => {
@@ -292,5 +292,9 @@ describe('Puzzle undo presentation reset', () => {
       { centerX: 110, centerY: 45, unit: 24 },
       { centerX: 110, centerY: 135, unit: 24 },
     ]);
+
+    calls.length = 0;
+    internals.drawPreviewPieces({}, ['O'], 0, 0, 120, 64, 18);
+    expect(calls[0]?.centerY).toBe(41);
   });
 });

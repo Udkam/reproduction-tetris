@@ -1294,18 +1294,23 @@ export function GameSession({
               <p className="rail-label">
                 <span>{copy.labels.next}</span>
               </p>
-              {puzzleDoublePreview && (
-                <div className="preview-sequence" data-testid="puzzle-preview-sequence" aria-label={copy.labels.twoUpcoming}>
-                  <span><b>1</b><small>{copy.labels.nextPiece}</small></span>
-                  <span><b>2</b><small>{copy.labels.followingPiece}</small></span>
-                </div>
-              )}
               <div
-                className="next-slot"
+                className={`next-slot ${puzzleDoublePreview ? 'next-slot--dual' : ''}`}
                 data-testid="next-slot"
                 data-preview-count={puzzleDoublePreview ? 2 : 1}
                 aria-label={puzzleDoublePreview ? copy.labels.twoUpcoming : copy.labels.nextPiece}
-              />
+              >
+                {puzzleDoublePreview && (
+                  <>
+                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="1" role="img" aria-label={`① ${copy.labels.nextPiece}`}>
+                      <span className="next-slot__segment-label" aria-hidden="true"><b>①</b><small>{copy.labels.nextPiece}</small></span>
+                    </div>
+                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="2" role="img" aria-label={`② ${copy.labels.followingPiece}`}>
+                      <span className="next-slot__segment-label" aria-hidden="true"><b>②</b><small>{copy.labels.followingPiece}</small></span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </aside>
         </section>

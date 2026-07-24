@@ -476,11 +476,16 @@ describe('T6 frontend mode binding', () => {
     }));
     await act(async () => Promise.resolve());
     const puzzleSlot = puzzle.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
-    const sequence = puzzle.container.querySelector<HTMLElement>('[data-testid="puzzle-preview-sequence"]')!;
-    expect(puzzle.container.querySelector('.preview-rail')?.textContent).toContain('Next1下一个方块2后一个方块');
+    const segments = puzzle.container.querySelectorAll<HTMLElement>('[data-testid="puzzle-next-segment"]');
+    expect(puzzle.container.querySelector('.preview-sequence')).toBeNull();
     expect(puzzleSlot.dataset.previewCount).toBe('2');
-    expect(sequence.getAttribute('aria-label')).toBe('后续两个方块：1 为下一个，2 为后一个');
-    expect(sequence.textContent).toBe('1下一个方块2后一个方块');
+    expect(segments).toHaveLength(2);
+    expect(segments[0]?.dataset.previewSegment).toBe('1');
+    expect(segments[0]?.getAttribute('aria-label')).toBe('① 下一个方块');
+    expect(segments[0]?.textContent).toBe('①下一个方块');
+    expect(segments[1]?.dataset.previewSegment).toBe('2');
+    expect(segments[1]?.getAttribute('aria-label')).toBe('② 后一个方块');
+    expect(segments[1]?.textContent).toBe('②后一个方块');
     puzzle.unmount();
 
     const classic = render(createElement(GameSession, {

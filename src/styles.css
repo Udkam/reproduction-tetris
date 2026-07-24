@@ -965,6 +965,7 @@ kbd,
   width: 100%;
   height: 100dvh;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .play-topbar {
@@ -1233,6 +1234,8 @@ kbd,
   inset: 0;
   min-width: 0;
   min-height: 0;
+  contain: paint;
+  transform: translateZ(0);
   pointer-events: none;
 }
 
@@ -1521,16 +1524,17 @@ kbd,
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(11, 23, 38, .72);
+  background: rgba(11, 23, 38, .68);
+  isolation: isolate;
+  transform: translateZ(0);
   animation: sheet-backdrop-in 160ms ease both;
 }
 
-/* Chromium can composite a live WebGL canvas above a translucent fixed dialog even
-   when its ordinary stacking order is lower. A sheet is deliberately a focused
-   interruption, so keep the single canvas mounted but invisible for its lifetime.
-   This also makes the backdrop's dimming and the dialog surface deterministic. */
+/* A sheet interrupts input, not the scene. Keep the one live Pixi canvas visible
+   beneath the dimmer; isolated compositing keeps its WebGL layer below the dialog. */
 .play-shell:has(.sheet-backdrop) .canvas-host {
-  visibility: hidden;
+  visibility: visible;
+  filter: saturate(.86) brightness(.92);
 }
 
 .action-sheet {
@@ -8540,6 +8544,198 @@ kbd,
   .settings-sheet > .result-leaderboard[data-empty="true"] > header,
   .settings-sheet > .result-leaderboard[data-empty="true"] > p { padding: 7px 10px; }
   .settings-sheet > .settings-record { padding: 8px 10px; }
+}
+
+/* T13.14 second Settings correction: use a single content-led sequence instead of
+   balancing two unrelated top cards. Each band owns a complete purpose and stops at
+   its intrinsic height, so no empty quadrant has to be disguised as symmetry. */
+.action-sheet:has(.settings-sheet) {
+  width: min(856px, calc(100vw - 24px));
+  padding: clamp(16px, 1.65vw, 20px);
+}
+
+.settings-sheet {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "controls"
+    "keyboard"
+    "rules"
+    "record";
+  gap: 8px;
+  align-items: start;
+}
+
+.settings-sheet > .settings-controls {
+  grid-area: controls !important;
+  grid-template-columns: auto minmax(192px, .9fr) minmax(220px, 1.25fr);
+  grid-template-areas:
+    "heading language sound"
+    "actions actions actions";
+  align-items: center;
+  align-content: start;
+  gap: 7px 12px;
+  padding: 11px 13px;
+}
+
+.settings-sheet > .settings-controls > strong { grid-area: heading; }
+
+.settings-controls .language-control {
+  grid-area: language;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 7px;
+}
+
+.settings-controls .audio-controls {
+  grid-area: sound;
+  grid-template-columns: minmax(76px, .4fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 0;
+  border: 0;
+}
+
+.settings-controls .settings-sheet__actions {
+  grid-area: actions;
+  gap: 8px;
+}
+
+.settings-controls .audio-toggle,
+.settings-controls .settings-sheet__actions > button { min-height: 36px; }
+
+.settings-sheet > .settings-shortcuts {
+  grid-area: keyboard !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 6px 12px;
+  padding: 10px 13px;
+}
+
+.settings-sheet > .mode-rule-summary {
+  grid-area: rules !important;
+  gap: 6px;
+  min-height: 0 !important;
+  padding: 10px 13px;
+}
+
+.settings-sheet > .settings-record,
+.settings-sheet > .result-leaderboard { grid-area: record !important; }
+
+/* The forecast labels live inside the exact Pixi geometry they name. Pixi leaves
+   their shallow caption strips transparent, so the labels stay visible while the
+   single canvas continues to own each dark well and tetromino. */
+
+.preview-rail--puzzle .next-slot--dual {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  height: 134px;
+  padding: 4px;
+}
+
+.next-slot__segment {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.next-slot__segment-label {
+  position: absolute;
+  z-index: 1;
+  top: 4px;
+  left: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #3f6276;
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: .01em;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.next-slot__segment-label b {
+  display: grid;
+  width: 15px;
+  height: 15px;
+  place-items: center;
+  color: #eefafb;
+  background: #34788d;
+  border: 1px solid #4b8fa1;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  line-height: 1;
+}
+
+.next-slot__segment:nth-child(2) .next-slot__segment-label b {
+  background: #80639d;
+  border-color: #997cb7;
+}
+
+.next-slot__segment-label small {
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .settings-sheet { gap: 8px; }
+
+  .settings-sheet > .settings-controls {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "heading"
+      "language"
+      "sound"
+      "actions";
+    gap: 7px;
+    padding: 11px;
+  }
+
+  .settings-sheet > .settings-shortcuts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 10px 11px;
+  }
+
+  .settings-sheet > .mode-rule-summary,
+  .settings-sheet > .mode-rule-summary ul,
+  .settings-sheet > .mode-rule-summary--marathon ul,
+  .settings-sheet > .mode-rule-summary--race ul { grid-template-columns: minmax(0, 1fr); }
+
+  .settings-sheet > .mode-rule-summary { padding: 10px 11px; }
+
+  .preview-rail--puzzle .next-slot--dual { height: 100%; min-height: 0; padding: 2px; gap: 2px; }
+  .next-slot__segment-label { top: 3px; left: 3px; }
+  .next-slot__segment-label small { display: none; }
+}
+
+@media (min-width: 701px) and (max-height: 520px) {
+  .action-sheet:has(.settings-sheet) { width: min(820px, calc(100vw - 20px)); padding: 10px 14px; }
+  .action-sheet:has(.settings-sheet) h2 { margin-bottom: 4px; font-size: 23px; }
+  .settings-sheet { gap: 6px; }
+  .settings-sheet > .settings-controls {
+    grid-template-columns: auto minmax(172px, .9fr) minmax(196px, 1.25fr);
+    gap: 5px 9px;
+    padding: 8px 10px;
+  }
+  .settings-controls .language-control { gap: 6px; font-size: 10px; }
+  .settings-controls .language-control button { min-height: 28px; padding: 3px 6px; }
+  .settings-controls .audio-controls { gap: 6px; }
+  .settings-controls .audio-toggle,
+  .settings-controls .settings-sheet__actions > button { min-height: 32px; }
+  .settings-sheet > .settings-shortcuts { gap: 4px 9px; padding: 8px 10px; }
+  .settings-sheet > .mode-rule-summary { gap: 4px; padding: 8px 10px; }
+  .settings-sheet > .mode-rule-summary ul { gap: 4px 10px; }
+  .settings-sheet > .mode-rule-summary li { font-size: 9px; line-height: 1.2; }
+  .preview-rail--puzzle .next-slot--dual { height: 72px; padding: 2px; gap: 2px; }
+  .next-slot__segment-label { top: 2px; left: 3px; }
+  .next-slot__segment-label small { display: none; }
 }
 
 /* T13.11: retain the four mode identities while giving their compact glyphs a clearer,

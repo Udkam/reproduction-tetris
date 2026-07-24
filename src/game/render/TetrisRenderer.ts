@@ -77,6 +77,15 @@ interface LockPulse {
   piece: PieceType;
 }
 
+interface PreviewSlot {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** In-well human labels reserve a calm strip above their matching tetromino. */
+  labelInset: number;
+}
+
 interface BoardShift {
   direction: BoardShiftDirection;
   elapsed: number;
@@ -1082,14 +1091,45 @@ export class TetrisRenderer {
     this.previewPiece = null;
     this.previewPieces = [];
     const hostBounds = this.host?.getBoundingClientRect();
-    const slot = document.querySelector<HTMLElement>('[data-testid="next-slot"]')?.getBoundingClientRect();
+    const slotElement = document.querySelector<HTMLElement>('[data-testid="next-slot"]');
+    const slot = slotElement?.getBoundingClientRect();
     if (hostBounds && slot && slot.width > 0 && slot.height > 0) {
-      const x = slot.left - hostBounds.left;
-      const y = slot.top - hostBounds.top;
-      // The slot is a DOM geometry anchor above the canvas. Its old opaque CSS
-      // background hid the canvas-drawn Next tetromino, so the renderer owns both
-      // the well and the piece on the same canvas layer.
-      this.drawPreviewBackdrop(x, y, slot.width, slot.height, state.mode === 'puzzle' ? 2 : 1);
+      const fallbackSlot: PreviewSlot = {
+        x: slot.left - hostBounds.left,
+        y: slot.top - hostBounds.top,
+        width: slot.width,
+        height: slot.height,
+        labelInset: 0,
+      };
+      const segmentSlots = slotElement
+        ? [...slotElement.querySelectorAll<HTMLElement>('[data-preview-segment]')]
+          .map((segment): PreviewSlot | null => {
+            const bounds = segment.getBoundingClientRect();
+            if (bounds.width <= 0 || bounds.height <= 0) return null;
+            return {
+              x: bounds.left - hostBounds.left,
+              y: bounds.top - hostBounds.top,
+              width: bounds.width,
+              height: bounds.height,
+              labelInset: Math.min(18, Math.max(9, bounds.height * .28)),
+            };
+          })
+          .filter((segment): segment is PreviewSlot => segment !== null)
+        : [];
+      const previewSlots = segmentSlots.length ? segmentSlots : [fallbackSlot];
+      // The DOM slots establish the exact visual relationship between each Puzzle
+      // caption and its piece. Pixi still owns each dark well and tetromino, so the
+      // game keeps one canvas and no DOM cell grid.
+      for (const previewSlot of previewSlots) {
+        this.drawPreviewBackdrop(
+          previewSlot.x,
+          previewSlot.y,
+          previewSlot.width,
+          previewSlot.height,
+          1,
+          previewSlot.labelInset,
+        );
+      }
       if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
         this.previewClearBounds = null;
         this.previewClearPiece = null;
@@ -1106,8 +1146,24 @@ export class TetrisRenderer {
       this.previewClearBounds = null;
       this.previewClearPiece = null;
       const previews = nextPreviewPieces(state);
-      this.drawPreviewPieces(graphics, previews, x, y, slot.width, slot.height);
-      this.previewBounds = { x, y, width: slot.width, height: slot.height };
+      if (segmentSlots.length >= previews.length) {
+        for (const [index, piece] of previews.entries()) {
+          const previewSlot = segmentSlots[index];
+          if (!previewSlot) continue;
+          this.drawPreviewPieces(
+            graphics,
+            [piece],
+            previewSlot.x,
+            previewSlot.y,
+            previewSlot.width,
+            previewSlot.height,
+            previewSlot.labelInset,
+          );
+        }
+      } else {
+        this.drawPreviewPieces(graphics, previews, fallbackSlot.x, fallbackSlot.y, fallbackSlot.width, fallbackSlot.height);
+      }
+      this.previewBounds = { x: fallbackSlot.x, y: fallbackSlot.y, width: fallbackSlot.width, height: fallbackSlot.height };
       this.previewLayerVisible = previews.length > 0;
       this.previewPieces = [...previews];
       this.previewPiece = previews[0] ?? null;
@@ -1156,20 +1212,23 @@ export class TetrisRenderer {
     }
   }
 
-  private drawPreviewBackdrop(x: number, y: number, width: number, height: number, segments = 1): void {
-    const radius = Math.max(6, Math.min(8, Math.min(width, height) * 0.075));
+  private drawPreviewBackdrop(x: number, y: number, width: number, height: number, segments = 1, labelInset = 0): void {
+    const captionInset = Math.min(labelInset, Math.max(0, height - 8));
+    const contentY = y + captionInset;
+    const contentHeight = Math.max(8, height - captionInset);
+    const radius = Math.max(6, Math.min(8, Math.min(width, contentHeight) * 0.075));
     this.boardGraphics
-      .roundRect(x, y, width, height, radius)
+      .roundRect(x, contentY, width, contentHeight, radius)
       .fill({ color: COLORS.well, alpha: 1 })
       .stroke({ color: COLORS.edge, alpha: 0.86, width: 1 });
 
     if (segments < 2) return;
-    const inset = Math.max(8, Math.min(14, width * 0.08));
+    const dividerInset = Math.max(8, Math.min(14, width * 0.08));
     for (let index = 1; index < segments; index += 1) {
-      const dividerY = y + height * index / segments;
+      const dividerY = contentY + contentHeight * index / segments;
       this.boardGraphics
-        .moveTo(x + inset, dividerY)
-        .lineTo(x + width - inset, dividerY)
+        .moveTo(x + dividerInset, dividerY)
+        .lineTo(x + width - dividerInset, dividerY)
         .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
     }
   }
@@ -1266,13 +1325,16 @@ export class TetrisRenderer {
     y: number,
     width: number,
     height: number,
+    labelInset = 0,
   ): void {
     if (!pieces.length) return;
     const dualPreview = pieces.length > 1;
-    const slotHeight = height / pieces.length;
+    const contentY = y + Math.min(labelInset, Math.max(0, height - 8));
+    const contentHeight = Math.max(8, height - (contentY - y));
+    const slotHeight = contentHeight / pieces.length;
     for (const [index, piece] of pieces.entries()) {
       const unit = this.previewUnitFor(piece, width, slotHeight, dualPreview);
-      const centerY = y + slotHeight * (index + 0.5);
+      const centerY = contentY + slotHeight * (index + 0.5);
       this.drawPreviewPiece(graphics, piece, x + width / 2, centerY, unit);
     }
   }
