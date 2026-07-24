@@ -1,5 +1,26 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T13.11 brighter home glyphs and keyboard guide accepted — 2026-07-24
+
+- The narrow candidate `25fa232..fc9cc3c` preserves all mode rules and key bindings.
+  It raises the homepage's four workbench accent variables to brighter, still-distinct
+  teal, blue, amber, and violet values, and divides Settings **键盘** into **玩法操作 /
+  Gameplay** first and **快捷键 / Shortcuts** second. The first group carries arrows,
+  Space, and Puzzle-only Z; the following group carries Settings, pause, restart,
+  Escape, sheet navigation, and Enter. The live right rail remains free of a duplicate
+  keyboard guide.
+- Final coordinator gates after the source checkpoint all pass: `npm.cmd run
+  typecheck`; `npm.cmd run test` (22 files / 146 tests); and `npm.cmd run build`
+  (746 transformed modules). The required web-game client and direct desktop,
+  Chinese/English, Puzzle-Z, and 390 × 844 browser inspection show the intended
+  grouping, a single gameplay canvas, zero DOM board cells, no horizontal overflow,
+  and zero console errors. Temporary captures were removed after review.
+- Independent QA accepted the exact source candidate in `4457667` with no P0–P2
+  findings. It independently rechecked the brighter four-glyph surface, bilingual
+  order, Puzzle Z, right-rail absence, narrow layout, and zero warning/error console.
+  The only remaining worktree modification is the pre-existing user-owned
+  `package-lock.json`, intentionally excluded from every T13.11 checkpoint.
+
 ### T13.10 TetraMorph interface and Puzzle refinement candidate — 2026-07-24
 
 - The live product name remains **TetraMorph**: `Tetra` keeps the four-cell vocabulary

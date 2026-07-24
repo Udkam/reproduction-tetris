@@ -1,5 +1,26 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-24 — TETRIS-T13.11-PALETTE-AND-KEYBOARD acceptance and release record
+
+- Candidate: bounded product source `fc9cc3c`, reviewed as `25fa232..fc9cc3c`.
+  Exact source paths are `src/App.tsx`, `src/App.test.ts`,
+  `src/ui/localization.ts`, and `src/styles.css`; contract and coordinator record
+  paths are limited to the declared T13.11 documentation set. No game rule, binding,
+  Core, renderer, persistence, Puzzle definition, or package-lockfile behavior changed.
+- Coordinator final gates passed after the last source edit: `npm.cmd run typecheck`,
+  `npm.cmd run test` (22 files / 146 tests), and `npm.cmd run build` (746 modules).
+  Browser evidence visually checked brighter teal/blue/amber/violet glyphs, Chinese
+  and English group order, Puzzle-only Z within the first group, 390 × 844 width
+  equality/no overflow, one canvas/zero DOM board cells, and zero console errors.
+- Independent QA report and durable log `4457667` were read before acceptance. Its
+  verdict is **PASS — ACCEPT**, no P0–P2 findings: it independently confirms the
+  bright four-glyph surface, gameplay-before-shortcuts order, right-rail keyboard-guide
+  removal, Puzzle Z, bilingual copy, narrow layout, and zero warnings/errors.
+- Release hygiene: root temporary browser captures were explicitly removed after
+  review. The user-owned `package-lock.json` remains the only out-of-slice worktree
+  modification and is neither changed nor staged. Next: push accepted `main`, then
+  release only the coordinator-owned port-5176 Vite listener and verify its release.
+
 ## 2026-07-24 — TETRIS-T13.10-TETRAMORPH-030 independent acceptance and release record
 
 - Candidate acceptance: independent QA read and recorded `a1d8b16..b005a14` in

@@ -29,6 +29,13 @@ and the root changelog may record the contract, evidence, and acceptance later. 
 pre-existing user-owned `package-lock.json` change is explicitly outside this slice and
 must not be staged, changed, or described as a delivery file.
 
+### T13.11 acceptance
+
+The source candidate `fc9cc3c` was accepted by independent QA in `4457667` after
+desktop and 390 × 844 live checks confirm distinct brighter mode accents, Chinese and
+English gameplay-before-shortcuts ordering, Puzzle-only Z in the gameplay group, no
+duplicate right-rail guide, no horizontal overflow, and zero browser warnings/errors.
+
 ## T13.10 restores an independent TetraMorph identity
 
 The earlier `Tetra` identity was replaced by `Tetris` while reconciling an older visual

@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-24 — T13.11 brighter mode glyphs and keyboard guide accepted
+
+- Brightened the homepage's teal, blue, amber, and violet mode-glyph accents while
+  retaining their distinct shapes, mineral-white workbench, structural dividers, and
+  mode-specific action treatments.
+- Reordered the Settings keyboard reference into **玩法操作 / Gameplay** first—arrows,
+  Space, and Puzzle-only Z—followed by **快捷键 / Shortcuts** for Settings, pause,
+  restart, Escape, option navigation, and Enter. The live game right rail remains free
+  of duplicated keyboard instructions.
+- The `25fa232..fc9cc3c` candidate passed TypeScript, 146 complete tests, a
+  746-module production build, Chinese/English/Puzzle/mobile browser checks, and
+  independent QA `4457667`. The pre-existing user-owned `package-lock.json` is not part
+  of this delivery.
+
 ## 2026-07-24 — T13.9 异变 item mode and carrier presentation accepted
 
 - Replaced the retired fourth-mode Collapse run with **异变**: a fresh seeded

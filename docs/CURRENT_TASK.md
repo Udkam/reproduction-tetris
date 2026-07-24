@@ -8,15 +8,15 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-24): **T13.11 HOME PALETTE AND KEYBOARD GUIDE —
-contract open.** T13.10 TETRAMORPH INTERFACE AND PUZZLE REFINEMENT was accepted and
-pushed at `25fa232`; its direct undo, bilingual interface, local typography, and
-responsive evidence remain the accepted baseline. The new bounded slice starts from
-that tip and changes only homepage mode-glyph brightness plus the Settings keyboard
-guide ordering: game controls (arrow keys and Space, with Puzzle Z when relevant)
-precede shortcut/navigation controls. It preserves every underlying shortcut and
-mode/game rule. Only the user-owned uncommitted `package-lock.json` exists outside this
-slice and must remain untouched. The earlier T12/T13 narratives below are retained as
-provenance only; this section is the authoritative live scope.
+accepted.** Starting from pushed `25fa232`, the bounded `fc9cc3c` refinement brightens
+the four homepage mode glyph accents and orders the Settings guide by use: game
+controls (arrow keys and Space, with Puzzle Z when relevant) precede shortcut and
+navigation controls. It preserves every underlying shortcut and mode/game rule.
+Independent QA accepted `25fa232..fc9cc3c` in `4457667` after Chinese/English,
+Puzzle-Z, 390 × 844 no-overflow, and zero-console-error checks. Only the user-owned
+uncommitted `package-lock.json` exists outside this slice and remains untouched. The
+earlier T12/T13 narratives below are retained as provenance only; this section is the
+authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 
