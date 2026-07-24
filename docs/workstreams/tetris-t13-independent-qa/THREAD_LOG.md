@@ -150,3 +150,36 @@
   `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
 - **Next action:** coordinator records acceptance/changelog, performs the bounded
   documentation checkpoint, pushes `main`, then releases its own local review server.
+
+## 2026-07-24 — T13.12 selector, settings, and Mutation expression QA
+
+- **Task / review boundary:** `TETRIS-T13.12-INDEPENDENT-QA-002`, independent
+  read-only review of `9b6188f..ec36924` at candidate
+  `ec36924f310c7f2d7ba2537cb9c7d9648170c01e`. The supplied range is limited to the
+  T13.12 contract/document paths, `App`/localization/styles, Mutation renderer/audio,
+  and direct tests. The pre-existing user-owned `package-lock.json` remains the only
+  dirty path and was neither altered nor staged.
+- **Commands actually run:** `git status --short`; `git log --oneline -12`;
+  `git diff --name-status 9b6188f..ec36924`; `git diff --check 9b6188f..ec36924`;
+  focused source/test commit inspection; `npm.cmd run typecheck`; `npm.cmd run test`;
+  and `npm.cmd run build`. All three gates pass: TypeScript succeeds, Vitest reports
+  22 files / 146 tests passed, and the production build completes with 746 transformed
+  modules. A read-only listener check confirms the coordinator-owned local server is
+  listening at `127.0.0.1:5176` (PID 32312); this QA task did not stop or otherwise
+  control it.
+- **BLOCKER — browser evidence unavailable:** the prior Chrome binding reported that
+  it was unavailable. Following the browser recovery guidance, the QA runtime was
+  freshly initialized, the required bootstrap troubleshooting instructions were read,
+  and one availability query returned an empty browser list. No controllable browser
+  surface remained for the required desktop/390px selection page, settings, countdown
+  `S`/`Esc`, touch-removal, one-canvas, Mutation carrier, effect, or console checks.
+  In accordance with the task's browser-control policy and the project `BLOCKED` rule,
+  this reviewer did not switch to another automation backend, create a substitute
+  browser batch, or retry the unavailable browser session.
+- **Disposition:** **BLOCKED — no acceptance or P0–P2 verdict.** Source gates are
+  green, but they cannot substitute for the required live visual/interactive evidence.
+- **Exact changed path:** this QA status record only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Next action:** coordinator restores a controllable browser while preserving the
+  candidate and user-owned lockfile, then issues a fresh bounded browser-QA request;
+  inspect the required desktop/390px and Mutation paths before any acceptance/push.
