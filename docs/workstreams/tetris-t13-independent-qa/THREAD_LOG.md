@@ -270,3 +270,50 @@
   `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
 - **Next action:** coordinator may add the acceptance/changelog checkpoint and push
   the accepted candidate without staging `package-lock.json`.
+
+## 2026-07-25 — T13.14 readable Puzzle Next correction independent QA
+
+- **Task / review boundary:** `TETRIS-T13.14-INDEPENDENT-QA-002`, an independent
+  read-only review of the full corrective candidate `e9db541..0bb2ba9`. The final
+  product source checkpoint is `866ef0a`; `0bb2ba9` is the coordinator candidate
+  record. The review covered the reopened Settings/forecast composition rather than
+  relying on the historical acceptance for `e9db541`.
+- **Static and gate checks actually run:** `git diff --check e9db541..0bb2ba9`,
+  `npm.cmd run typecheck`, `npm.cmd run test` (**22 files / 165 tests**), and
+  `npm.cmd run build` (**746 modules**) all passed. The final correction deletes
+  Pixi's hand-drawn queue-stroke helper and renders the two order markers as the
+  existing DOM text in the loaded `--font-mono` family. The shared Pixi well and
+  canonical two-piece placement remain intact; no split preview card, badge, label
+  strip, nested container, or second dark well was reintroduced.
+- **Independent live visual check:** connected read-only to the already-running
+  candidate listener and inspected in-memory screenshots at desktop **2040 × 986**,
+  short landscape **1056 × 480**, and portrait **390 × 844**. In all three, there is
+  exactly one gameplay canvas, one dark two-row Next well, and clear ordinary `1` /
+  `2` glyphs with transparent backgrounds and no border. Computed styles report the
+  loaded JetBrains Mono family first, at 17 px desktop and 14 px compact; the two
+  rows remain 55 px / 38 px / 44 px high respectively. No horizontal or vertical
+  overflow appeared. The QA tab was closed and its temporary viewport was reset after
+  the check.
+- **Regression evidence rechecked:** inspected the final compact Settings desktop,
+  short-landscape, and portrait captures plus `modal-background-next/report.json`:
+  controls/keyboard form one connected equal-height upper console, rules/record bands
+  span below it, and the single live Pixi board stays visible behind Settings, pause,
+  restart, and exit. `settings-music-removal/report.json` reports no music toggle/copy
+  and no viewport errors across all four modes; an independent product-source search
+  found no active music runtime/toggle. `reduced-motion/report.json` retains a static
+  countdown/modal with one canvas. Reviewed Mutation captures show distinct frost,
+  gravity-pressure, bomb, and multiplier light states, while its final report records
+  the expected 10-second refresh values. The Survival captures/report show three
+  chipped bedrock rows and one clearable stone advancing from visible y=20 to y=21,
+  with no DOM board cells or reported page/console errors.
+- **Disposition:** **PASS — ACCEPT.** No P0, P1, or P2 finding remains in
+  `e9db541..0bb2ba9`. The readable Next correction meets the desktop, short-landscape,
+  and portrait contract without regressing the accepted T13.14 behavior.
+- **Worktree / exact changed path:** the inherited user-owned `package-lock.json`
+  remains untouched. This QA disposition changes only
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Remaining risk / next action:** no blocking risk found. The independent browser
+  connection did not expose the DEV text-state hook, so the live check uses rendered
+  DOM geometry/screenshots; deterministic Core behavior remains covered by the full
+  test suite and final coordinator reports. Coordinator may now perform the separate
+  acceptance/changelog/push steps without staging `package-lock.json`.
