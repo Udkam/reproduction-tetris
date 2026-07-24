@@ -7,22 +7,58 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.12 SELECTOR, SETTINGS, AND MUTATION
-EXPRESSION — accepted.** The candidate `9b6188f..ec36924` repairs the Puzzle selector's
-best-result alignment, completed `√` treatment, and preview artifact; restructures
-Settings, its typography, controls, palette, and rule presentation; permits topbar
-Back/Settings while the three-second entry countdown is visible; removes the bottom
-single-purpose touch-key strip in favour of a clean game surface; and replaces
-Mutation's core-dot carriers, mixed rail, full-board flash, and generic cue treatment
-with item-owned whole-piece materials, a persistent effect ledger, local renderer
-effects, and item-specific sound/musical feedback. It preserves deterministic Core
-rules, scores, queues, storage, keyboard bindings, and Puzzle content. Coordinator
-gates pass (`typecheck`, 22 files / 146 tests, and a 746-module build); independent QA
-accepts the unchanged source range in `d7fc929` after its browser-recovery recheck
-records desktop/390px, real countdown, carrier, canvas, and console evidence. Only the
-user-owned uncommitted `package-lock.json` remains outside this slice and must remain
-untouched. The earlier T12/T13 narratives below are retained as provenance only; this
-section is the authoritative current record.
+Current execution status (2026-07-24): **T13.13 SELECTOR, SETTINGS, AND MUTATION
+RELIABILITY — active.** User-supplied live frames reopen the T13.12 surface: the
+selector hides some level numbers, uses corner `√` marks that are both visually noisy
+and incomplete, and still has a preview/title alignment defect; Settings has loose
+layout balance and a wrong paused-flow label; record rows use punctuation instead of
+an aligned date; and Mutation can visibly clear a carrier without producing its item
+effect. T13.12 remains historical evidence, not acceptance proof for this repair.
+The user-owned uncommitted `package-lock.json` remains outside every checkpoint and
+must remain untouched.
+
+### T13.13 active acceptance contract
+
+1. **Selector clarity.** Level numerals remain readable in every normal, selected,
+   focused, completed, reduced-motion, and English state. Completion is one obvious
+   SVG tick medallion embedded in the option's lower status region—never text `√`,
+   never a top-right corner ornament, and never beside the selected Puzzle name. The
+   selected completed name uses its completion colour; `当前最优步数：x步` / `Current
+   best: x pieces` remains on the same stable heading line. The single selected real
+   silhouette has no white artifact, stray fill, accidental emblem, or overflow.
+2. **Settings and records.** Settings is rebuilt into a balanced compact control,
+   keyboard/rules, and records composition with no unfinished empty visual column.
+   If opened while paused, it overlays the pause state and its primary close action is
+   directly **继续游戏 / Continue**; backdrop dismissal does the same. Settings leaderboards
+   preserve five ranked rows but position their date at the row's far end without `·`
+   separators.
+3. **Rail and Next.** Remove the visual vertical divider between board and right rail;
+   rebuild hierarchy through gap/surfaces. Next becomes an immediately legible
+   forecast instrument. The Mutation status panel gains a clear vertical interval from
+   both metrics and Next, and its Chinese multiplier copy changes from `倍增` to
+   `加倍`, with `超级加倍` while promoted.
+4. **Deterministic Mutation repair.** Any cleared cell belonging to a carrier must
+   trigger its item exactly once, including nested row clears. Surviving siblings lose
+   their carrier identity. Freeze/Collapse repeats add ten seconds to remaining time.
+   Multiplier begins as 2× **加倍**, becomes 4× **超级加倍** when another multiplier is
+   collected before expiry, and all later collections retain 4× while adding ten
+   seconds. Bomb stays immediate. Core state/hash/events, scoring, replays, and direct
+   tests must prove the behavior.
+5. **Mutation visual/audio rebuild.** Replace the current visually noisy symbols,
+   vague motion, and weak/generic item cues with four original, local, bounded
+   material/activation/audio treatments. White-looking glyph debris is prohibited.
+   Freeze, Collapse, Bomb, Double, and Super Double must be visually and audibly
+   distinguishable without full-board flashes or continuous motion; reduced motion
+   keeps the final semantic state.
+6. **Verification.** Commit contract, Core, renderer/audio, and interface claims as
+   separately reviewable checkpoints. Each source checkpoint runs focused tests. The
+   final candidate must pass `npm.cmd run typecheck`, `npm.cmd run test`, and
+   `npm.cmd run build`, plus real browser evidence at desktop, portrait, landscape,
+   and reduced motion covering selector legibility/completion, preview cleanliness,
+   paused Settings continuation, right-aligned dates, clear Next, one canvas/no DOM
+   board cells, zero console errors, carrier activation, additive timing, and
+   Double→Super Double scoring. Independent QA remains required before changelog
+   acceptance and coordinator push.
 
 ### Authoritative active delivery goals (2026-07-24)
 

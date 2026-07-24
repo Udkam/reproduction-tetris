@@ -3,6 +3,89 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## T13.13 selector legibility, settings hierarchy, and Mutation reliability pass
+
+**Status:** active replacement for the accepted T13.12 presentation claim. The new
+screenshots demonstrate that its current visual completion state is not acceptable;
+T13.12 remains historical evidence only and must not be cited as proof for the
+requirements below.
+
+This pass keeps the existing deterministic mode identities, Puzzle definitions,
+fixed queues, locale persistence, one-canvas boundary, and original asset boundary. It
+repairs the product where a player can currently lose information or an item effect.
+
+- **Puzzle selector.** Every level number must hold an AA-readable ink colour against
+  both ordinary and selected surfaces; state may not rely on a pale selected number.
+  Completion is represented by one clearly drawn, accessible SVG tick medallion *inside
+  the option's lower status rail*, never a literal `√`, never a top-right corner badge,
+  and never duplicated beside the selected title. A completed selected title receives
+  the completion colour; its compact `当前最优步数：x步` / `Current best: x pieces`
+  shares a stable inline heading band rather than changing the panel height. The
+  selected preview remains one real, unclipped, dark-well board silhouette with no
+  white fills, light seams, accidental glyph residue, or overpaint at any zoom.
+- **Settings and records.** Recompose Settings as a deliberate compact sheet rather
+  than two loosely filled columns: controls form a stable control group, keyboard and
+  rule reference form a balanced information group, and the record/leaderboard spans a
+  clear final band. Its action area has equal visual weight and no empty panel that
+  looks unfinished. Opening Settings from an already paused game overlays that pause
+  state and exposes **继续游戏 / Continue** directly; it must not offer a detour named
+  “返回暂停”. Backdrop click retains exactly the same resume result. Leaderboard rows
+  place the date at the far logical end of each row, use structural layout rather than
+  `·` punctuation, and retain the top-five/ranking semantics.
+- **Shared game rail.** The board and information rail are separated by proportion and
+  whitespace rather than a vertical dividing rule. Every mode keeps the same readable
+  metric → optional Mutation state → Next rhythm. Next is a clearly bounded forecast
+  instrument with sufficient cell scale and a labelled sequence, not an ambiguous empty
+  dark rectangle. The Mutation status module is visibly separated from metrics and
+  Next with intentional vertical spacing.
+- **Mutation reliability.** A carrier activates exactly once when *any* one of its
+  locked cells is removed, including when that removal is caused by a nested Bomb or
+  Collapse clear. Its identity is then removed from every surviving sibling cell.
+  Trigger discovery must happen from the pre-resolution carrier set so ordinary row
+  mapping cannot erase the event. Freeze and Collapse begin at ten seconds; another
+  activation while already active adds ten deterministic game-time seconds rather than
+  resetting its timer. Multiplier follows the same additive duration rule: its first
+  active trigger grants **加倍 / Double** (2× normal and item-clear points); a second
+  trigger while it is active promotes it to **超级加倍 / Super Double** (4×); any later
+  trigger keeps Super Double and adds another ten seconds. Expiry returns the multiplier
+  to normal scoring. Bomb remains instant and supplies its direct row/score result.
+- **Mutation expression.** Rebuild, rather than merely recolour, the carrier and
+  activation language. A special tetromino stays a four-cell, item-owned material, but
+  its per-cell identifier uses low-contrast material engraving rather than white
+  symbols that can look like rendering debris. Freeze uses a bounded cold hold cue;
+  Collapse uses a brief downward structural settle; Bomb uses a local three-row blast;
+  Double/Super Double uses a contained score lift that visibly distinguishes 2× from
+  4×. None may flash the entire board or leave a continuous animation. Reduced motion
+  presents the final coloured/labelled state without moving particles. Each event gets
+  a short original, non-electrical audio contour whose attack, register, and decay make
+  the four effects distinguishable; a newer effect stops an older effect tail.
+
+### T13.13 implementation boundary and checkpoints
+
+1. **Contract checkpoint (coordinator):** this design record and `docs/CURRENT_TASK.md`
+   define the fixes and acceptance tests before source edits.
+2. **Mutation Core checkpoint:** `src/game/core/constants.ts`, `src/game/core/types.ts`,
+   `src/game/core/mutation.ts`, `src/game/core/engine.ts`, and direct existing Core
+   tests may change together to make carrier triggering, additive timing, and
+   Super Double deterministic. This is an authorized atomic Core exception because the
+   typed state, score calculation, event contract, and clear mapping cannot typecheck
+   independently.
+3. **Renderer/audio checkpoint:** `src/game/render/theme.ts`,
+   `src/game/render/TetrisRenderer.ts`, `src/game/audio/AudioEngine.ts`, and their
+   direct tests may change together only to bind the revised item states to original
+   bounded visual/audio feedback. It may not change ordinary piece geometry, Puzzle
+   rendering, or bring in assets/media.
+4. **Interface checkpoint:** `src/App.tsx`, `src/App.test.ts`, `src/styles.css`, and
+   `src/ui/localization.ts` may change together for selector, Settings, leaderboard,
+   rail, status, Next, and bilingual copy. This is a presentation exception only; it
+   may not redefine Puzzle content or generic game physics.
+5. **Evidence/QA:** each source checkpoint receives targeted tests. The complete
+   candidate then requires typecheck, full current-source tests, production build, and
+   live desktop/portrait/landscape/reduced-motion browser evidence that exercises a
+   real carrier clear, Double→Super Double extension, paused-Settings continue,
+   selector completion, records, and Next. Independent QA remains read-only until a
+   candidate range exists.
+
 ## T13.12 selector, settings, and Mutation expression pass
 
 **Accepted implementation:** `9b6188f..ec36924`, independently accepted in `d7fc929`
