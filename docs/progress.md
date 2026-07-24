@@ -1013,12 +1013,17 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   repeat add 600 ticks, and implements multiplier `1 → 2 → 4` with deterministic
   expiry. Targeted Core tests (73) and typecheck were passed by the Core owner.
 - Interface checkpoint: `0de3ac8`. It replaces literal completion glyphs with a
-  lower-rail SVG seal, removes preview white filtering, repairs selected-node contrast,
-  moves the best-step label inline, right-aligns leaderboard dates without middle dots,
-  lets Settings opened from an existing pause continue directly to play, and gives the
-  right rail a separate Mutation status/Next hierarchy. Focused `src/App.test.ts`
-  passed (20 tests) after this checkpoint.
+  graphical completion treatment, removes preview white filtering, repairs selected-node
+  contrast, moves the best-step label inline, right-aligns leaderboard dates without
+  middle dots, lets Settings opened from an existing pause continue directly to play,
+  and gives the right rail a separate Mutation status/Next hierarchy. Focused
+  `src/App.test.ts` passed (20 tests) after this checkpoint.
 - Pending verification: renderer and AudioEngine checkpoints, targeted merged tests,
   final typecheck/full test/build, real desktop and narrow browser evidence, a
   read-only independent QA pass, final changelog disposition, and the already
   user-authorized non-force push. `package-lock.json` remains inherited and unstaged.
+- User correction after the first visual review: do not move a level numeral into a
+  lower status area. An incomplete option keeps its numeral centered; a completed
+  option instead shows one centered graphical SVG tick, with no literal `√` or extra
+  corner/rail badge. This supersedes the earlier lower-rail-seal proposal and reopens
+  the final visual/browser and independent-QA evidence pass.

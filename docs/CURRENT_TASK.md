@@ -19,13 +19,14 @@ must remain untouched.
 
 ### T13.13 active acceptance contract
 
-1. **Selector clarity.** Level numerals remain readable in every normal, selected,
-   focused, completed, reduced-motion, and English state. Completion is one obvious
-   SVG tick medallion embedded in the option's lower status region—never text `√`,
-   never a top-right corner ornament, and never beside the selected Puzzle name. The
-   selected completed name uses its completion colour; `当前最优步数：x步` / `Current
-   best: x pieces` remains on the same stable heading line. The single selected real
-   silhouette has no white artifact, stray fill, accidental emblem, or overflow.
+1. **Selector clarity.** Incomplete level numerals remain centered and readable in
+   every normal, selected, focused, reduced-motion, and English state. A completed
+   level replaces that centered numeral with one obvious accessible SVG tick; it does
+   not add a lower-status medallion, top-right ornament, title-side glyph, or text
+   `√`. The selected completed name uses its completion colour; `当前最优步数：x步` /
+   `Current best: x pieces` remains on the same stable heading line. The single
+   selected real silhouette has no white artifact, stray fill, accidental emblem, or
+   overflow.
 2. **Settings and records.** Settings is rebuilt into a balanced compact control,
    keyboard/rules, and records composition with no unfinished empty visual column.
    If opened while paused, it overlays the pause state and its primary close action is

@@ -14,14 +14,14 @@ This pass keeps the existing deterministic mode identities, Puzzle definitions,
 fixed queues, locale persistence, one-canvas boundary, and original asset boundary. It
 repairs the product where a player can currently lose information or an item effect.
 
-- **Puzzle selector.** Every level number must hold an AA-readable ink colour against
-  both ordinary and selected surfaces; state may not rely on a pale selected number.
-  Completion is represented by one clearly drawn, accessible SVG tick medallion *inside
-  the option's lower status rail*, never a literal `√`, never a top-right corner badge,
-  and never duplicated beside the selected title. A completed selected title receives
-  the completion colour; its compact `当前最优步数：x步` / `Current best: x pieces`
-  shares a stable inline heading band rather than changing the panel height. The
-  selected preview remains one real, unclipped, dark-well board silhouette with no
+- **Puzzle selector.** Every incomplete level numeral must remain centered and hold an
+  AA-readable ink colour against both ordinary and selected surfaces; state may not
+  rely on a pale selected number. A completed option replaces—not supplements—its
+  centered numeral with one clearly drawn, accessible SVG tick. There is no lower-rail
+  medallion, top-right badge, title-side glyph, or literal `√`. A completed selected
+  title receives the completion colour; its compact `当前最优步数：x步` / `Current best:
+  x pieces` shares a stable inline heading band rather than changing the panel height.
+  The selected preview remains one real, unclipped, dark-well board silhouette with no
   white fills, light seams, accidental glyph residue, or overpaint at any zoom.
 - **Settings and records.** Recompose Settings as a deliberate compact sheet rather
   than two loosely filled columns: controls form a stable control group, keyboard and
