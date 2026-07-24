@@ -6898,12 +6898,12 @@ p {
   color: #eff8fa;
   font-family: var(--font-display);
   font-size: clamp(27px, 3.7vw, 50px);
-  font-weight: 400;
-  font-synthesis: none;
+  font-weight: 700;
+  font-synthesis: weight;
   font-variation-settings: "wght" 400;
   letter-spacing: -.045em;
   line-height: .92;
-  -webkit-text-stroke: .68px currentColor;
+  -webkit-text-stroke: .35px currentColor;
   paint-order: stroke fill;
   text-wrap: nowrap;
   text-shadow: 0 2px 0 rgba(6, 17, 29, .28), 0 12px 28px rgba(104, 172, 180, .14);
