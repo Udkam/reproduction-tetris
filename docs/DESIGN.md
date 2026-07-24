@@ -16,9 +16,10 @@ currently flat visual outcomes a stronger original finish.
   “assembled signal” gesture, not confetti or a commercial victory screen. The first
   finish says **恭喜你破解谜题** and makes the first-clear state unmistakable. A strict
   lower piece count says **新的个人纪录** and compares the old and new counts. A later
-  non-record finish says **谜题再次破解**, states the run facts, and retains the saved
-  best without claiming a record. The level name, ordinal, route, anchor, and solution
-  remain absent. The familiar **重来** and **返回关卡库** actions stay in their existing
+  non-record finish says **谜题再次破解** and retains the saved best without claiming a
+  record. The ceremony omits the generic `首次完成 · X 步 · Y 消行` run-stat line; the
+  level name, ordinal, route, anchor, and solution remain absent. The familiar **重来**
+  and **返回关卡库** actions stay in their existing
   order and retain arrow/Enter/focus behavior. Motion lasts under 700 ms, is bounded
   inside the sheet, and resolves to a fully informative static frame under reduced
   motion.

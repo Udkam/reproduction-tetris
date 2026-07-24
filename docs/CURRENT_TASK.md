@@ -24,8 +24,9 @@ checkpoint and must remain untouched.
    completion write: a first completion must visibly contain `恭喜你破解谜题`; a strictly
    lower piece count is a personal-record result with distinct copy; an equal or higher
    count is a successful replay without a false record claim. The surface may show
-   only useful completion facts (placed pieces, cleared lines, and the saved best),
-   never reintroduce a level name/ordinal, route hint, or solution. Its original
+   only the outcome label and saved best; it must not show a generic completion-stat
+   line such as `首次完成 · X 步 · Y 消行`, nor reintroduce a level name/ordinal, route
+   hint, or solution. Its original
    tetromino-fragment/constellation animation must remain local, brief, and decorative
    only; reduced motion shows the same semantic end frame with no drifting or looping.
    It must not obscure the dimmed live board or steal focus from the first action.
