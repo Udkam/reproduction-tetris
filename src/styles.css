@@ -5397,8 +5397,9 @@ kbd,
 }
 
 .action-sheet:has(.settings-sheet) {
-  width: min(880px, 100%);
-  padding: clamp(18px, 2.1vw, 24px);
+  /* Settings is a dense reference sheet, not a loose collection of floating cards. */
+  width: min(910px, calc(100vw - 24px));
+  padding: clamp(18px, 2vw, 22px);
   max-height: calc(100dvh - 20px);
   overflow: auto;
   overscroll-behavior: contain;
@@ -5406,20 +5407,22 @@ kbd,
 }
 
 .settings-sheet {
-  grid-template-columns: minmax(292px, .94fr) minmax(378px, 1.06fr);
+  grid-template-columns: minmax(316px, .9fr) minmax(444px, 1.1fr);
   grid-template-areas:
     "controls reference"
     "record record";
-  gap: 12px;
-  align-items: start;
+  gap: 10px;
+  /* The paired top-level columns share one deliberate baseline. */
+  align-items: stretch;
 }
 
 .settings-controls {
   grid-area: controls;
   grid-template-rows: auto auto auto auto;
   min-height: 0;
-  gap: 10px;
-  padding: 16px;
+  align-content: space-between;
+  gap: 8px;
+  padding: 14px;
   border-color: #b8cbd3;
   box-shadow: 0 6px 16px rgba(20, 51, 72, .06);
 }
@@ -5437,9 +5440,12 @@ kbd,
 .settings-sheet__reference {
   grid-area: reference;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  /* Both sections size to their content. A fractional row here was stretching the
+     keyboard guide solely to match its neighbour, which made the whole sheet feel slack. */
+  grid-template-rows: auto auto;
+  align-content: start;
   min-height: 0;
-  gap: 10px;
+  gap: 8px;
 }
 
 .settings-sheet .result-leaderboard,
@@ -5450,8 +5456,8 @@ kbd,
 .settings-controls .audio-controls {
   min-height: 0;
   align-content: start;
-  gap: 8px;
-  padding-block: 10px;
+  gap: 6px;
+  padding-block: 8px;
 }
 
 .settings-controls .audio-controls__switches,
@@ -5466,18 +5472,33 @@ kbd,
 
 .settings-shortcuts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px 12px;
-  padding: 13px 14px;
+  gap: 6px 8px;
+  padding: 10px 12px;
   border-color: #b8cbd3;
 }
 
 .settings-shortcuts__group {
-  grid-template-columns: 1fr;
-  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px 6px;
+  align-content: start;
+}
+
+/* In Chinese, the compact shortcut vocabulary can occupy three short columns.
+   English deliberately keeps two columns so its labels remain fully legible. */
+.settings-shortcuts [data-testid="keyboard-shortcuts"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.settings-shortcuts:lang(en) [data-testid="keyboard-shortcuts"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .settings-shortcuts__group > span {
+  min-height: 18px;
+  align-items: flex-start;
   color: #49687a;
+  font-size: 10px;
+  line-height: 1.2;
 }
 
 .settings-shortcuts__group-label {
@@ -5485,23 +5506,24 @@ kbd,
 }
 
 .settings-shortcuts kbd {
-  min-width: 27px;
+  min-width: 24px;
   color: #1e526b;
   background: #f6fbfc;
   border-color: #b8ced8;
   border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   text-align: center;
 }
 
 .settings-sheet .mode-rule-summary {
-  padding: 12px 14px;
+  min-height: 102px;
+  padding: 10px 12px;
   border-color: color-mix(in srgb, var(--accent) 42%, #b5c8d1);
 }
 
 .mode-rule-summary ul {
-  gap: 6px;
+  gap: 4px;
   padding: 0;
   list-style: none;
 }
@@ -5509,11 +5531,11 @@ kbd,
 .mode-rule-summary li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 8px;
+  gap: 7px;
   align-items: baseline;
   color: #4e6b7a;
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 11px;
+  line-height: 1.35;
 }
 
 .mode-rule-summary li b {
