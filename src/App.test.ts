@@ -555,11 +555,11 @@ describe('T6 frontend mode binding', () => {
     await act(async () => vi.advanceTimersByTimeAsync(3000));
     const runtime = runtimeHarness.instances.at(-1)!;
     runtime.togglePause.mockClear();
-    act(() => runtime.togglePause());
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
     expect(view.container.textContent).toContain('已暂停');
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
-    expect(runtime.togglePause).toHaveBeenCalledTimes(1);
+    expect(runtime.togglePause).not.toHaveBeenCalled();
     expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).toContain('继续游戏');
     expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).not.toContain('返回暂停');
 
@@ -567,7 +567,7 @@ describe('T6 frontend mode binding', () => {
       .find((button) => button.textContent === '继续游戏')?.click());
     expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
     expect(view.container.textContent).not.toContain('已暂停');
-    expect(runtime.togglePause).toHaveBeenCalledTimes(2);
+    expect(runtime.togglePause).toHaveBeenCalledTimes(1);
     view.unmount();
   });
 
