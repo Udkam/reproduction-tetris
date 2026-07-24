@@ -7,16 +7,20 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-24): **T13.11 HOME PALETTE AND KEYBOARD GUIDE —
-accepted.** Starting from pushed `25fa232`, the bounded `fc9cc3c` refinement brightens
-the four homepage mode glyph accents and orders the Settings guide by use: game
-controls (arrow keys and Space, with Puzzle Z when relevant) precede shortcut and
-navigation controls. It preserves every underlying shortcut and mode/game rule.
-Independent QA accepted `25fa232..fc9cc3c` in `4457667` after Chinese/English,
-Puzzle-Z, 390 × 844 no-overflow, and zero-console-error checks. Only the user-owned
-uncommitted `package-lock.json` exists outside this slice and remains untouched. The
-earlier T12/T13 narratives below are retained as provenance only; this section is the
-authoritative live scope.
+Current execution status (2026-07-24): **T13.12 SELECTOR, SETTINGS, AND MUTATION
+EXPRESSION — contract open.** Starting from pushed T13.11 `9b6188f`, this full visual
+and interaction pass repairs the Puzzle selector's best-result alignment, completed
+mark, and preview artifact; restructures Settings, its typography, controls, palette,
+and rule presentation; permits topbar Back/Settings while the three-second entry
+countdown is visible; removes the bottom single-purpose touch-key strip in favour of a
+clean game surface; and replaces Mutation's core-dot carriers, mixed rail, full-board
+flash, and generic cue treatment with item-owned whole-piece materials, a persistent
+effect ledger, local renderer effects, and item-specific sound/musical feedback. It
+preserves deterministic Core rules, scores, queues, storage, keyboard bindings, and
+Puzzle content unless a focused source test proves a necessary presentation bridge.
+Only the user-owned uncommitted `package-lock.json` exists outside this slice and must
+remain untouched. The earlier T12/T13 narratives below are retained as provenance only;
+this section is the authoritative live scope.
 
 ### Authoritative active delivery goals (2026-07-24)
 

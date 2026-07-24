@@ -3,6 +3,59 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## T13.12 selector, settings, and Mutation expression pass
+
+This pass uses one coherent **mineral instrument panel** direction: a warm-white
+information surface, deep-blue board field, and the four mode hues only where they
+communicate a real state. Space Grotesk remains the readable bilingual UI face,
+JetBrains Mono is reserved for values/keycaps, and the bold Playwrite wordmark remains
+the sole decorative display face. Labels, button captions, and puzzle progress must
+not inherit the display face or artificial tracking; headings may use a restrained
+weight/size contrast instead of synthetic bold flashes.
+
+- **Puzzle selector.** The selected detail has a fixed-height heading band whether or
+  not a best exists. Its completed title receives the completion colour and a compact
+  checkmark; the natural result copy is `历史最优：X 步` / `Best so far: X pieces` in a
+  quiet body-style inline note, never a pill that changes the panel height. Nodes that
+  are complete receive a visible checkmark in addition to their accessible completion
+  state. The selected silhouette remains the only board preview and must have no white
+  fill, stray highlight, or overflow from its SVG paths.
+- **Settings and controls.** Settings becomes a scroll-contained, two-column desktop
+  sheet with one compact control column and one reference column; narrow screens stack
+  it without clipping. Its visual order remains controls, keyboard, rules, and record,
+  but the rules become a four-line, itemised rule card with mode colour, clear lead
+  fact, and no paragraph-like wall of text. Back/Escape and Settings/S remain usable
+  during entry countdown; opening either cannot enable gameplay early, lose a timer, or
+  leave the run paused after cancellation. The bottom row of individual touch buttons
+  is removed; keyboard remains complete and the board gains unobtrusive direct touch
+  gestures rather than another visible button deck.
+- **Mutation.** Its rail uses Classic's score/lines/combo/fall rhythm. A fixed ledger
+  between statistics and Next shows Freeze, Collapse, and Double as grey inactive rows
+  or their own blue/violet/gold active colour with remaining seconds; Bomb is a direct
+  one-shot result. Carrier tetrominoes are four whole-cell special materials rather
+  than an ordinary piece plus a dot: faceted ice, weighted gravity blocks, burning
+  bomb blocks, and star-lit score blocks. Activation never flashes the whole board:
+  Freeze paints a bounded frost edge, Collapse applies a downward-weight cue, Bomb
+  draws a local blast/cleared-row effect, and Double emits a contained gold sparkle.
+  Reduced-motion variants are static, legible, and bounded. The last activated item
+  owns the cue: any previous item music/effect tail is stopped before the new cue.
+- **Palette and interaction.** Every button family has a role-specific, high-contrast
+  colour treatment—neutral Back, mode-aware primary action, cool Settings/continue,
+  amber restart, and danger confirmation—without hover turning controls into unrelated
+  blue. All motion respects `prefers-reduced-motion`; no rule, record, or visual state
+  relies on colour alone.
+
+### T13.12 authorized implementation boundary
+
+Source may change only in `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+`src/ui/localization.ts`, `src/game/render/TetrisRenderer.ts`,
+`src/game/render/TetrisRenderer.test.ts`, `src/game/render/theme.ts`,
+`src/game/audio/AudioEngine.ts`, `src/game/audio/AudioEngine.test.ts`,
+`src/game/runtime/GameRuntime.test.ts`, and any narrowly necessary existing focused
+test file. Coordinator documentation may later change only in this design file,
+`docs/CURRENT_TASK.md`, `docs/progress.md`, the T13 coordinator/QA logs, and the root
+changelog. The user-owned `package-lock.json` must not be modified, staged, or bundled.
+
 ## T13.11 brightens mode glyphs and orders the keyboard guide by use
 
 The two requested adjustments are intentionally narrow UI refinements, made after the
