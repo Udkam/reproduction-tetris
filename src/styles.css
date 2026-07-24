@@ -1525,6 +1525,14 @@ kbd,
   animation: sheet-backdrop-in 160ms ease both;
 }
 
+/* Chromium can composite a live WebGL canvas above a translucent fixed dialog even
+   when its ordinary stacking order is lower. A sheet is deliberately a focused
+   interruption, so keep the single canvas mounted but invisible for its lifetime.
+   This also makes the backdrop's dimming and the dialog surface deterministic. */
+.play-shell:has(.sheet-backdrop) .canvas-host {
+  visibility: hidden;
+}
+
 .action-sheet {
   position: relative;
   width: min(500px, 100%);
