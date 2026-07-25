@@ -1,4 +1,5 @@
 import type { MutationItem, PieceType } from '../core';
+import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
 
 export interface PieceMaterial {
   fillStart: number;
@@ -82,12 +83,32 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
 
 /** Full-piece carrier materials are deliberately separate from the ordinary seven hues. */
 export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
-  // Each carrier is a physical material, not a recoloured ordinary tetromino.
-  // The renderer layers a distinct core over these readable edge/base values.
-  freeze: { fillStart: 0x9cecf8, fillEnd: 0x3d9ec2, edge: 0x15536b, innerEdge: 0xd7fcff },
-  collapse: { fillStart: 0x897cae, fillEnd: 0x3d365f, edge: 0x1d1931, innerEdge: 0xc0afe7 },
-  bomb: { fillStart: 0xf07857, fillEnd: 0x8b3038, edge: 0x35171d, innerEdge: 0xffd08a },
-  multiplier: { fillStart: 0xffd96b, fillEnd: 0xbd711d, edge: 0x6b3909, innerEdge: 0xfff0ab },
+  // Every carrier derives from the T14 VFX palette, while retaining the same
+  // raised-cell material grammar as ordinary tetrominoes.
+  freeze: {
+    fillStart: MUTATION_VFX_TOKENS.freeze.palette.primary,
+    fillEnd: MUTATION_VFX_TOKENS.freeze.palette.deep,
+    edge: MUTATION_VFX_TOKENS.freeze.palette.deep,
+    innerEdge: MUTATION_VFX_TOKENS.freeze.palette.highlight,
+  },
+  collapse: {
+    fillStart: MUTATION_VFX_TOKENS.collapse.palette.primary,
+    fillEnd: MUTATION_VFX_TOKENS.collapse.palette.deep,
+    edge: MUTATION_VFX_TOKENS.collapse.palette.deep,
+    innerEdge: MUTATION_VFX_TOKENS.collapse.palette.highlight,
+  },
+  bomb: {
+    fillStart: MUTATION_VFX_TOKENS.bomb.palette.primary,
+    fillEnd: MUTATION_VFX_TOKENS.bomb.palette.deep,
+    edge: MUTATION_VFX_TOKENS.bomb.palette.deep,
+    innerEdge: MUTATION_VFX_TOKENS.bomb.palette.highlight,
+  },
+  multiplier: {
+    fillStart: MUTATION_VFX_TOKENS.multiplier.palette.primary,
+    fillEnd: MUTATION_VFX_TOKENS.multiplier.palette.deep,
+    edge: MUTATION_VFX_TOKENS.multiplier.palette.deep,
+    innerEdge: MUTATION_VFX_TOKENS.multiplier.palette.highlight,
+  },
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {

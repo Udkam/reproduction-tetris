@@ -91,9 +91,7 @@ export class MutationTimeline {
   }
 
   advance(deltaMs: number): void {
-    this.elapsedMs = clamp01(deltaMs) === 0 && deltaMs <= 0
-      ? this.elapsedMs
-      : Math.min(this.node.durationMs, this.elapsedMs + Math.max(0, deltaMs));
+    this.elapsedMs = Math.min(this.node.durationMs, this.elapsedMs + Math.max(0, deltaMs));
   }
 
   sample(id: string): TimelineSample {

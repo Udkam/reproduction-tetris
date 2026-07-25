@@ -28,6 +28,16 @@ import {
   type PieceMaterial,
 } from './theme';
 import {
+  MUTATION_PARTICLE_LIMIT,
+  MUTATION_VFX_BACKGROUND,
+  MUTATION_VFX_TOKENS,
+} from '../../design/mutationTokens';
+import {
+  createMutationActivationTimeline,
+  mutationEase,
+  type MutationTimeline,
+} from '../../animation/mutationTimeline';
+import {
   activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
   boardShiftPresentationOffset,
@@ -96,6 +106,7 @@ interface MutationFlash {
   item: MutationItem;
   elapsed: number;
   duration: number;
+  timeline: MutationTimeline;
   /** Immutable Core geometry, before a line clear remaps the carrier. */
   triggerCells: readonly Cell[];
   /** The activation event is the source of truth for the 2× / 4× cue. */
@@ -112,6 +123,28 @@ interface CollapseTrail {
   paths: readonly { x: number; fromY: number; toY: number }[];
   elapsed: number;
   duration: number;
+}
+
+type MutationFieldStage = 'enter' | 'active' | 'exit';
+
+interface MutationField {
+  item: Exclude<MutationItem, 'bomb'>;
+  stage: MutationFieldStage;
+  elapsed: number;
+}
+
+/** One renderer-owned slot in the fixed VFX pool; never a Pixi display object. */
+interface MutationParticle {
+  active: boolean;
+  item: MutationItem;
+  u: number;
+  v: number;
+  velocityU: number;
+  velocityV: number;
+  elapsed: number;
+  lifeMs: number;
+  size: number;
+  color: number;
 }
 
 interface GroupDrawOptions {
@@ -153,6 +186,8 @@ export class TetrisRenderer {
   private readonly boardGraphics = new Graphics();
   private readonly pieceGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
+  /** Second and final visual-only effect plane, reserved for Mutation VFX. */
+  private readonly mutationGraphics = new Graphics();
   private readonly cellGradients = new Map<BoardMaterial, FillGradient>();
   private readonly overrideGradients = new Map<PieceMaterial, FillGradient>();
 
@@ -167,6 +202,25 @@ export class TetrisRenderer {
   private mutationArrival: MutationArrival | null = null;
   private activeMutationCarrierId: number | null = null;
   private collapseTrail: CollapseTrail | null = null;
+  private readonly mutationFields = new Map<Exclude<MutationItem, 'bomb'>, MutationField>();
+  private readonly mutationParticles: MutationParticle[] = Array.from(
+    { length: MUTATION_PARTICLE_LIMIT },
+    () => ({
+      active: false,
+      item: 'freeze',
+      u: 0,
+      v: 0,
+      velocityU: 0,
+      velocityV: 0,
+      elapsed: 0,
+      lifeMs: 1,
+      size: 0,
+      color: 0xffffff,
+    }),
+  );
+  private particleCursor = 0;
+  private particleSeed = 0x4d555441;
+  private mutationClockMs = 0;
   private previousBoard: GameState['board'] | null = null;
   private collapseWasActive = false;
   private options: RenderOptions = { reducedMotion: false, modeSwitch: false };
@@ -212,7 +266,7 @@ export class TetrisRenderer {
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
-    this.world.addChild(this.boardGraphics, this.pieceGraphics, this.effectGraphics);
+    this.world.addChild(this.boardGraphics, this.pieceGraphics, this.effectGraphics, this.mutationGraphics);
     app.stage.addChild(this.world);
     app.ticker.add(this.onTick);
     this.app = app;
@@ -235,6 +289,7 @@ export class TetrisRenderer {
       this.mutationArrival = null;
       this.activeMutationCarrierId = null;
       this.collapseTrail = null;
+      this.clearMutationVisualState();
       this.previousBoard = null;
       this.collapseWasActive = false;
     }
@@ -244,9 +299,11 @@ export class TetrisRenderer {
     const app = this.app;
     if (!app) return;
     this.consumeEvents(events, state, this.previousBoard, this.collapseWasActive);
+    this.syncMutationFields(state);
     this.advanceEffects(deltaMs);
     this.advancePresentation(state, deltaMs);
     const layout = this.calculateLayout(app.screen.width, app.screen.height, state.status === 'ready');
+    this.applyMutationCameraShake(layout);
     this.drawBoard(state, layout);
     this.drawPieces(state, layout);
     this.drawEffects(state, layout);
@@ -294,6 +351,7 @@ export class TetrisRenderer {
     this.mutationArrival = null;
     this.activeMutationCarrierId = null;
     this.collapseTrail = null;
+    this.clearMutationVisualState();
     this.previousBoard = null;
     this.collapseWasActive = false;
   }
@@ -339,10 +397,27 @@ export class TetrisRenderer {
     const graphics = this.boardGraphics;
     graphics.clear();
     const radius = Math.max(8, Math.min(12, layout.cell * 0.38));
+    const mutationWell = state.mode === 'sprint';
     graphics
       .roundRect(layout.x, layout.y, layout.width, layout.height, radius)
-      .fill({ color: COLORS.well, alpha: 1 })
-      .stroke({ color: COLORS.edge, alpha: .86, width: Math.max(1, layout.cell * 0.035) });
+      .fill({ color: mutationWell ? MUTATION_VFX_BACKGROUND.well : COLORS.well, alpha: 1 })
+      .stroke({
+        color: mutationWell ? MUTATION_VFX_BACKGROUND.support : COLORS.edge,
+        alpha: .9,
+        width: Math.max(1, layout.cell * 0.035),
+      });
+    if (mutationWell) {
+      const inset = Math.max(3, layout.cell * 0.18);
+      graphics
+        .roundRect(
+          layout.x + inset,
+          layout.y + inset,
+          layout.width - inset * 2,
+          layout.height - inset * 2,
+          Math.max(5, layout.cell * 0.2),
+        )
+        .stroke({ color: MUTATION_VFX_BACKGROUND.support, alpha: 0.28, width: Math.max(1, layout.cell * 0.026) });
+    }
     this.scrimBounds = null;
     if (state.status === 'paused' || state.status === 'game-over' || state.status === 'finished' || this.options.modeSwitch) {
       const alpha = state.status === 'paused' ? 0.22 : this.options.modeSwitch ? 0.38 : 0.16;
@@ -497,6 +572,7 @@ export class TetrisRenderer {
     this.snapshot.boardShiftOffsetY = boardShiftOffsetY;
     this.pieceGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
     this.effectGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
+    this.mutationGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
   }
 
   private drawPuzzleTargetMarkers(graphics: Graphics, state: GameState, layout: BoardLayout, offsetY: number): void {
@@ -546,6 +622,7 @@ export class TetrisRenderer {
         offsetY,
         material: this.mutationMaterial(carrier.item),
       });
+      this.drawMutationCarrierSurface(graphics, cells, carrier.item, layout, 0, offsetY);
       this.drawMutationCarrierCore(graphics, cells, carrier.item, layout, 0, offsetY);
     }
   }
@@ -559,7 +636,60 @@ export class TetrisRenderer {
     offsetY: number,
   ): void {
     if (state.mode !== 'sprint' || !state.active || !state.mutationActiveCarrier) return;
+    this.drawMutationCarrierSurface(graphics, cells, state.mutationActiveCarrier.item, layout, offsetX, offsetY);
     this.drawMutationCarrierCore(graphics, cells, state.mutationActiveCarrier.item, layout, offsetX, offsetY);
+  }
+
+  /** Fine material detail differentiates an item carrier even before it clears. */
+  private drawMutationCarrierSurface(
+    graphics: Graphics,
+    cells: readonly Cell[],
+    item: MutationItem,
+    layout: BoardLayout,
+    offsetX = 0,
+    offsetY = 0,
+  ): void {
+    const token = MUTATION_VFX_TOKENS[item];
+    const pulse = this.options.reducedMotion ? 1 : .72 + Math.sin(this.mutationClockMs / token.animation.pulseMs * Math.PI * 2) * .16;
+    const inset = Math.max(1, layout.cell * .22);
+    const mark = Math.max(1.5, layout.cell * .11);
+    for (const cell of cells) {
+      const x = layout.x + cell.x * layout.cell + offsetX;
+      const y = layout.y + cell.y * layout.cell + offsetY;
+      const centerX = x + layout.cell / 2;
+      const centerY = y + layout.cell / 2;
+      if (item === 'freeze') {
+        graphics
+          .moveTo(x + inset, y + inset)
+          .lineTo(x + layout.cell - inset, y + inset)
+          .lineTo(x + layout.cell - inset * 1.7, y + layout.cell - inset * 1.5)
+          .lineTo(x + inset * 1.5, y + layout.cell - inset * .8)
+          .lineTo(x + inset, y + inset)
+          .fill({ color: token.palette.highlight, alpha: .16 * pulse });
+        this.strokeSegments(graphics, [
+          [x + inset, y + inset, x + layout.cell - inset * 1.35, y + layout.cell - inset * 1.35],
+          [x + layout.cell - inset, y + inset * 1.4, x + inset * 1.4, y + layout.cell - inset],
+        ], token.palette.highlight, .36 * pulse, Math.max(1, mark * .36));
+      } else if (item === 'collapse') {
+        graphics
+          .roundRect(centerX - mark * .36, y + inset, mark * .72, layout.cell - inset * 2, mark * .32)
+          .fill({ color: token.palette.deep, alpha: .38 })
+          .roundRect(centerX - mark * .16, y + inset * 1.45, mark * .32, layout.cell - inset * 3, mark * .16)
+          .fill({ color: token.palette.highlight, alpha: .46 * pulse });
+      } else if (item === 'bomb') {
+        graphics
+          .circle(centerX, centerY, mark * .78)
+          .fill({ color: token.palette.deep, alpha: .5 })
+          .circle(centerX - mark * .18, centerY - mark * .18, mark * .26)
+          .fill({ color: token.palette.highlight, alpha: .78 * pulse });
+      } else {
+        this.drawMutationDiamond(graphics, centerX, centerY, mark * .8, mark * .8, token.palette.highlight, .5 * pulse);
+        this.strokeSegments(graphics, [
+          [centerX - mark * 1.15, centerY, centerX + mark * 1.15, centerY],
+          [centerX, centerY - mark * 1.15, centerX, centerY + mark * 1.15],
+        ], token.palette.primary, .46 * pulse, Math.max(1, mark * .32));
+      }
+    }
   }
 
   /**
@@ -1037,12 +1167,14 @@ export class TetrisRenderer {
 
   private drawEffects(state: GameState, layout: BoardLayout): void {
     const graphics = this.effectGraphics;
+    const mutationGraphics = this.mutationGraphics;
     graphics.clear();
-    this.drawActiveMutationAtmosphere(graphics, state, layout);
+    mutationGraphics.clear();
+    this.drawActiveMutationAtmosphere(mutationGraphics, state, layout);
     if (this.mutationFlash) {
-      const progress = Math.min(1, this.mutationFlash.elapsed / this.mutationFlash.duration);
-      this.drawMutationActivationEffect(graphics, this.mutationFlash, progress, layout);
+      this.drawMutationActivationEffect(mutationGraphics, this.mutationFlash, layout);
     }
+    this.drawMutationParticles(mutationGraphics, layout);
     if (this.collapseTrail && !this.options.reducedMotion) {
       const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
       this.drawCollapseSettlementTrail(graphics, this.collapseTrail, progress, layout);
@@ -1244,71 +1376,105 @@ export class TetrisRenderer {
   /** Persistent, low-obstruction board treatment makes every ten-second state legible. */
   private drawActiveMutationAtmosphere(graphics: Graphics, state: GameState, layout: BoardLayout): void {
     if (state.mode !== 'sprint') return;
-    const phase = this.options.reducedMotion ? 0 : (state.elapsedTicks % 72) / 72;
-    if (state.mutationFreezeTicks > 0) this.drawFreezeAtmosphere(graphics, layout, phase);
-    if (state.mutationCollapseTicks > 0) this.drawCollapseAtmosphere(graphics, layout, phase);
-    if (state.mutationMultiplierTicks > 0) this.drawMultiplierAtmosphere(graphics, layout, phase);
+    const fallback: Array<Exclude<MutationItem, 'bomb'>> = [];
+    if (state.mutationFreezeTicks > 0) fallback.push('freeze');
+    if (state.mutationCollapseTicks > 0) fallback.push('collapse');
+    if (state.mutationMultiplierTicks > 0) fallback.push('multiplier');
+
+    const fields = this.mutationFields.size
+      ? [...this.mutationFields.values()]
+      : fallback.map((item) => ({ item, stage: 'active' as const, elapsed: 0 }));
+    for (const field of fields) {
+      const token = MUTATION_VFX_TOKENS[field.item];
+      const alpha = this.mutationFieldOpacity(field);
+      if (alpha <= 0) continue;
+      const phase = this.options.reducedMotion ? 0 : (this.mutationClockMs % token.animation.pulseMs) / token.animation.pulseMs;
+      if (field.item === 'freeze') this.drawFreezeAtmosphere(graphics, layout, phase, alpha);
+      else if (field.item === 'collapse') this.drawCollapseAtmosphere(graphics, layout, phase, alpha);
+      else this.drawMultiplierAtmosphere(graphics, layout, phase, alpha);
+    }
   }
 
-  private drawFreezeAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number): void {
-    const material = this.mutationMaterial('freeze');
+  private mutationFieldOpacity(field: MutationField): number {
+    const timing = MUTATION_VFX_TOKENS[field.item].animation;
+    if (this.options.reducedMotion || field.stage === 'active') return 1;
+    if (field.stage === 'enter') return mutationEase('cubicOut', field.elapsed / timing.enterMs);
+    return 1 - mutationEase('cubicIn', field.elapsed / timing.exitMs);
+  }
+
+  private drawFreezeAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
+    const token = MUTATION_VFX_TOKENS.freeze;
     const inset = Math.max(2, layout.cell * 0.13);
-    const pulse = this.options.reducedMotion ? 1 : 0.74 + Math.sin(phase * Math.PI * 2) * 0.16;
+    const pulse = this.options.reducedMotion ? 1 : 0.76 + Math.sin(phase * Math.PI * 2) * 0.18;
+    const radius = Math.max(5, layout.cell * 0.22);
     graphics
-      .roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, Math.max(5, layout.cell * 0.22))
-      .stroke({ color: material.innerEdge, alpha: 0.42 * pulse, width: Math.max(1, layout.cell * 0.055) });
+      .roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, radius)
+      .fill({ color: token.palette.primary, alpha: token.shader.fieldAlpha * 0.17 * opacity })
+      .stroke({ color: token.palette.highlight, alpha: 0.54 * pulse * opacity, width: Math.max(1, layout.cell * 0.062) })
+      .roundRect(layout.x + inset * 2.5, layout.y + inset * 2.5, layout.width - inset * 5, layout.height - inset * 5, Math.max(3, radius * .6))
+      .stroke({ color: token.palette.primary, alpha: 0.26 * pulse * opacity, width: Math.max(1, layout.cell * 0.025) });
     const shardSize = Math.max(3, layout.cell * 0.19);
-    for (const [xFactor, yFactor] of [[.08, .05], [.27, .04], [.72, .05], [.92, .08], [.04, .29], [.96, .67]] as const) {
+    for (const [xFactor, yFactor, scale] of [
+      [.08, .05, .8], [.27, .04, .52], [.72, .05, .7], [.92, .08, .46], [.04, .29, .5], [.96, .67, .76], [.16, .87, .4], [.83, .9, .58],
+    ] as const) {
+      const drift = this.options.reducedMotion ? 0 : Math.sin((phase + xFactor) * Math.PI * 2) * layout.cell * .08;
       this.drawMutationDiamond(
         graphics,
         layout.x + layout.width * xFactor,
-        layout.y + layout.height * yFactor,
-        shardSize * .45,
-        shardSize,
-        material.innerEdge,
-        0.58 * pulse,
+        layout.y + layout.height * yFactor + drift,
+        shardSize * scale * .45,
+        shardSize * scale,
+        token.palette.highlight,
+        0.55 * pulse * opacity,
       );
     }
   }
 
-  private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number): void {
-    const material = this.mutationMaterial('collapse');
-    const bandHeight = Math.max(layout.cell * 1.05, 20);
+  private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
+    const token = MUTATION_VFX_TOKENS.collapse;
+    const bandHeight = Math.max(layout.cell * 1.12, 20);
+    const bandY = layout.y + layout.cell * .12;
     graphics
-      .roundRect(layout.x + layout.cell * .12, layout.y + layout.cell * .1, layout.width - layout.cell * .24, bandHeight, Math.max(4, layout.cell * .16))
-      .fill({ color: material.edge, alpha: 0.2 })
-      .stroke({ color: material.innerEdge, alpha: 0.5, width: Math.max(1, layout.cell * .045) });
-    const laneCount = 5;
-    const laneWidth = Math.max(2, layout.cell * .085);
+      .roundRect(layout.x + layout.cell * .12, bandY, layout.width - layout.cell * .24, bandHeight, Math.max(4, layout.cell * .16))
+      .fill({ color: token.palette.deep, alpha: 0.48 * opacity })
+      .stroke({ color: token.palette.highlight, alpha: 0.68 * opacity, width: Math.max(1, layout.cell * .052) });
+    const laneCount = 7;
+    const laneWidth = Math.max(2, layout.cell * .078);
     for (let lane = 0; lane < laneCount; lane += 1) {
       const x = layout.x + layout.width * ((lane + 1) / (laneCount + 1)) - laneWidth / 2;
-      const drift = this.options.reducedMotion ? 0 : (phase + lane * .17) % 1;
-      const y = layout.y + bandHeight + drift * layout.cell * 1.1;
-      const height = Math.max(layout.cell * 1.8, layout.height * .43);
-      graphics.roundRect(x, y, laneWidth, height, laneWidth / 2).fill({ color: material.fillStart, alpha: 0.11 });
-      graphics.circle(x + laneWidth / 2, y + height, laneWidth * 1.45).fill({ color: material.innerEdge, alpha: 0.22 });
+      const drift = this.options.reducedMotion ? 0 : (phase + lane * .137) % 1;
+      const y = bandY + bandHeight + drift * layout.cell * 1.6;
+      const height = Math.max(layout.cell * 2, layout.height * (.3 + lane % 2 * .07));
+      graphics.roundRect(x, y, laneWidth, height, laneWidth / 2).fill({ color: token.palette.primary, alpha: 0.18 * opacity });
+      graphics.circle(x + laneWidth / 2, y + height, laneWidth * 1.8).fill({ color: token.palette.highlight, alpha: 0.3 * opacity });
     }
+    graphics
+      .roundRect(layout.x + layout.cell * .2, layout.y + layout.height - layout.cell * .7, layout.width - layout.cell * .4, Math.max(2, layout.cell * .12), layout.cell * .06)
+      .fill({ color: token.palette.primary, alpha: 0.24 * opacity });
   }
 
-  private drawMultiplierAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number): void {
-    const material = this.mutationMaterial('multiplier');
+  private drawMultiplierAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
+    const token = MUTATION_VFX_TOKENS.multiplier;
     const centerX = layout.x + layout.width / 2;
     const centerY = layout.y + layout.height * .43;
-    const pulse = this.options.reducedMotion ? 1 : 0.65 + Math.sin(phase * Math.PI * 2) * 0.2;
-    graphics.circle(centerX, centerY, Math.max(layout.cell * 1.8, layout.width * .13)).fill({ color: material.fillStart, alpha: 0.045 * pulse });
+    const pulse = this.options.reducedMotion ? 1 : 0.7 + Math.sin(phase * Math.PI * 2) * 0.22;
+    const radius = Math.max(layout.cell * 1.8, layout.width * .13);
+    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.07 * pulse * opacity });
+    graphics.circle(centerX, centerY, radius * .58).fill({ color: token.palette.highlight, alpha: 0.045 * pulse * opacity });
     this.drawMutationStar(
       graphics,
       centerX,
       centerY,
-      Math.max(layout.cell * .68, layout.width * .045),
-      Math.max(layout.cell * .21, layout.width * .014),
-      material.innerEdge,
-      0.24 * pulse,
+      Math.max(layout.cell * .82, layout.width * .052),
+      Math.max(layout.cell * .22, layout.width * .014),
+      token.palette.highlight,
+      0.32 * pulse * opacity,
     );
     this.strokeSegments(graphics, [
-      [layout.x + layout.cell * .34, layout.y + layout.cell * .34, layout.x + layout.width - layout.cell * .34, layout.y + layout.height - layout.cell * .34],
-      [layout.x + layout.width - layout.cell * .34, layout.y + layout.cell * .34, layout.x + layout.cell * .34, layout.y + layout.height - layout.cell * .34],
-    ], material.fillStart, 0.13 * pulse, Math.max(1, layout.cell * .035));
+      [layout.x + layout.cell * .38, layout.y + layout.cell * .38, layout.x + layout.width - layout.cell * .38, layout.y + layout.height - layout.cell * .38],
+      [layout.x + layout.width - layout.cell * .38, layout.y + layout.cell * .38, layout.x + layout.cell * .38, layout.y + layout.height - layout.cell * .38],
+      [centerX - radius * 1.35, centerY, centerX + radius * 1.35, centerY],
+    ], token.palette.primary, 0.18 * pulse * opacity, Math.max(1, layout.cell * .042));
   }
 
   private drawPreviewPiece(graphics: Graphics, type: PieceType, centerX: number, centerY: number, unit: number): void {
@@ -1365,12 +1531,9 @@ export class TetrisRenderer {
   private drawMutationActivationEffect(
     graphics: Graphics,
     flash: MutationFlash,
-    progress: number,
     layout: BoardLayout,
   ): void {
-    const alpha = this.options.reducedMotion ? 0.68 : Math.max(0, 1 - easeOutCubic(progress));
-    if (alpha <= 0) return;
-    const material = this.mutationMaterial(flash.item);
+    const token = MUTATION_VFX_TOKENS[flash.item];
     const cells = flash.triggerCells
       .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
@@ -1382,91 +1545,272 @@ export class TetrisRenderer {
     const anchorY = layout.y + (minY + maxY + 1) * layout.cell / 2;
     const strokeWidth = Math.max(1, layout.cell * 0.06);
 
-    if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, 0.9 * alpha, strokeWidth);
+    if (this.options.reducedMotion) {
+      if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, 0.72, strokeWidth);
+      graphics.circle(anchorX, anchorY, Math.max(layout.cell * .8, layout.width * .045))
+        .fill({ color: token.palette.highlight, alpha: .34 });
+      return;
+    }
 
     if (flash.item === 'freeze') {
-      const shard = Math.max(3, layout.cell * 0.16);
+      const crystalise = flash.timeline.sample('crystalise');
+      const snowBurst = flash.timeline.sample('snow-burst');
+      if (!crystalise.active && !snowBurst.active) return;
+      const alpha = Math.max(crystalise.active ? 1 - crystalise.progress * .26 : 0, snowBurst.active ? 1 - snowBurst.progress : 0);
+      const shard = Math.max(3, layout.cell * 0.18);
       const distance = Math.max(layout.cell * 0.68, (maxX - minX + maxY - minY + 2) * layout.cell * 0.22);
-      graphics.circle(anchorX, anchorY, distance * .76).fill({ color: material.fillStart, alpha: 0.16 * alpha });
-      for (const [xFactor, yFactor, scale] of [[-1, -.46, .85], [.82, -.72, 1], [.5, .82, .68], [-.68, .66, .58]] as const) {
+      const ring = .42 + crystalise.value * .88;
+      if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .92 * alpha, strokeWidth);
+      graphics
+        .circle(anchorX, anchorY, distance * ring)
+        .fill({ color: token.palette.primary, alpha: 0.16 * alpha })
+        .circle(anchorX, anchorY, distance * (ring + .18))
+        .stroke({ color: token.palette.highlight, alpha: .88 * alpha, width: strokeWidth });
+      for (const [xFactor, yFactor, scale] of [[-1, -.46, .85], [.82, -.72, 1], [.5, .82, .68], [-.68, .66, .58], [.12, -1.05, .56]] as const) {
         this.drawMutationDiamond(
           graphics,
           anchorX + xFactor * distance,
           anchorY + yFactor * distance,
           shard * scale * .45,
           shard * scale,
-          material.innerEdge,
-          0.78 * alpha,
+          token.palette.highlight,
+          0.84 * alpha,
         );
       }
       return;
     }
 
     if (flash.item === 'collapse') {
+      const pull = flash.timeline.sample('pull');
+      const settle = flash.timeline.sample('settle');
+      if (!pull.active && !settle.active) return;
+      const alpha = pull.active ? 1 - pull.progress * .18 : 1 - settle.progress;
       const bandY = Math.max(layout.y, anchorY - layout.cell * 2.5);
       const bandHeight = Math.max(layout.cell * .78, 13);
+      const compression = pull.active ? pull.value : 1;
+      if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .9 * alpha, strokeWidth);
       graphics
         .roundRect(layout.x + layout.cell * .25, bandY, layout.width - layout.cell * .5, bandHeight, bandHeight * .24)
-        .fill({ color: material.edge, alpha: 0.42 * alpha })
-        .stroke({ color: material.innerEdge, alpha: 0.82 * alpha, width: strokeWidth });
-      for (const factor of [.18, .38, .62, .82] as const) {
+        .fill({ color: token.palette.deep, alpha: 0.56 * alpha })
+        .stroke({ color: token.palette.highlight, alpha: 0.88 * alpha, width: strokeWidth });
+      for (const factor of [.14, .3, .46, .62, .78, .92] as const) {
         const x = layout.x + layout.width * factor;
-        const dropHeight = Math.max(layout.cell * 1.65, (layout.height - (anchorY - layout.y)) * .28);
+        const dropHeight = Math.max(layout.cell * 1.65, (layout.height - (anchorY - layout.y)) * (.18 + compression * .18));
         graphics
           .roundRect(x - strokeWidth, bandY + bandHeight, strokeWidth * 2, dropHeight, strokeWidth)
-          .fill({ color: material.fillStart, alpha: 0.42 * alpha })
+          .fill({ color: token.palette.primary, alpha: 0.5 * alpha })
           .circle(x, bandY + bandHeight + dropHeight, strokeWidth * 2.2)
-          .fill({ color: material.innerEdge, alpha: 0.66 * alpha });
+          .fill({ color: token.palette.highlight, alpha: 0.72 * alpha });
       }
       return;
     }
 
     if (flash.item === 'bomb') {
+      const warning = flash.timeline.sample('warning');
+      const pulse = flash.timeline.sample('pulse');
+      const impact = flash.timeline.sample('impact');
+      const shockwave = flash.timeline.sample('shockwave');
       const rows = Math.min(3, VISIBLE_HEIGHT);
       const y = layout.y + layout.height - layout.cell * rows;
-      const sweepProgress = this.options.reducedMotion ? 1 : Math.min(1, progress * 2.4);
-      const sweepWidth = layout.width * (0.34 + sweepProgress * 0.66);
-      const blastRadius = Math.max(layout.cell * 1.25, layout.width * (.07 + sweepProgress * .14));
-      graphics
-        .circle(anchorX, anchorY, blastRadius)
-        .fill({ color: material.fillStart, alpha: 0.2 * alpha })
-        .circle(anchorX, anchorY, blastRadius * .58)
-        .fill({ color: material.innerEdge, alpha: 0.25 * alpha })
-        .circle(anchorX, anchorY, blastRadius * (1.02 + sweepProgress * .34))
-        .stroke({ color: material.innerEdge, alpha: 0.92 * alpha, width: strokeWidth });
-      for (const [xFactor, yFactor] of [[-1, -.55], [.92, -.7], [1.05, .48], [-.78, .8], [.18, 1.1]] as const) {
-        this.drawMutationDiamond(
-          graphics,
-          anchorX + xFactor * blastRadius,
-          anchorY + yFactor * blastRadius,
-          Math.max(2, layout.cell * .09),
-          Math.max(3, layout.cell * .17),
-          material.innerEdge,
-          0.86 * alpha,
-        );
+      if (warning.active) {
+        const alpha = .55 + Math.sin(warning.progress * Math.PI * 3) * .28;
+        graphics
+          .roundRect(layout.x + layout.cell * .12, y + layout.cell * .12, layout.width - layout.cell * .24, layout.cell * rows - layout.cell * .24, Math.max(4, layout.cell * .18))
+          .fill({ color: token.palette.deep, alpha: .46 * alpha })
+          .stroke({ color: token.palette.primary, alpha, width: strokeWidth });
       }
-      graphics
-        .roundRect(
-          layout.x + (layout.width - sweepWidth) / 2,
-          y + layout.cell * 0.1,
-          sweepWidth,
-          layout.cell * rows - layout.cell * 0.2,
-          Math.max(4, layout.cell * 0.2),
-        )
-        .fill({ color: material.fillStart, alpha: 0.24 * alpha })
-        .stroke({ color: material.innerEdge, alpha: 0.88 * alpha, width: strokeWidth });
+      if (pulse.active) {
+        const alpha = Math.sin(pulse.progress * Math.PI);
+        const radius = Math.max(layout.cell * 1.1, layout.width * (.06 + pulse.value * .12));
+        graphics
+          .circle(anchorX, anchorY, radius)
+          .fill({ color: token.palette.primary, alpha: .24 * alpha })
+          .circle(anchorX, anchorY, radius * 1.35)
+          .stroke({ color: token.palette.highlight, alpha: .9 * alpha, width: strokeWidth });
+      }
+      if (impact.active) {
+        const alpha = 1 - impact.progress;
+        graphics
+          .roundRect(layout.x, layout.y, layout.width, layout.height, Math.max(5, layout.cell * .2))
+          .fill({ color: token.palette.highlight, alpha: .32 * alpha })
+          .roundRect(layout.x + layout.cell * .08, y + layout.cell * .08, layout.width - layout.cell * .16, layout.cell * rows - layout.cell * .16, Math.max(4, layout.cell * .16))
+          .fill({ color: token.palette.primary, alpha: .46 * alpha });
+      }
+      if (shockwave.active) {
+        const alpha = 1 - shockwave.progress;
+        const radius = Math.max(layout.cell * 1.4, layout.width * (.12 + shockwave.value * .42));
+        graphics
+          .circle(anchorX, anchorY, radius)
+          .stroke({ color: token.palette.highlight, alpha: .96 * alpha, width: Math.max(strokeWidth, layout.cell * .09) })
+          .circle(anchorX, anchorY, radius * .68)
+          .stroke({ color: token.palette.primary, alpha: .5 * alpha, width: strokeWidth });
+      }
       return;
     }
 
-    const intensity = flash.multiplierFactor === 4 ? 1.24 : 1;
+    const scorePop = flash.timeline.sample('score-pop');
+    const sparkTail = flash.timeline.sample('spark-tail');
+    if (!scorePop.active && !sparkTail.active) return;
+    const alpha = Math.max(scorePop.active ? 1 - scorePop.progress * .2 : 0, sparkTail.active ? 1 - sparkTail.progress : 0);
+    const intensity = flash.multiplierFactor === 4 ? 1.32 : 1;
     const starRadius = Math.max(layout.cell * .74, layout.width * .048) * intensity;
-    graphics.circle(anchorX, anchorY, starRadius * 2.1).fill({ color: material.fillStart, alpha: 0.11 * alpha });
-    this.drawMutationStar(graphics, anchorX, anchorY, starRadius * 1.72, starRadius * .46, material.innerEdge, 0.96 * alpha);
-    this.drawMutationStar(graphics, anchorX, anchorY, starRadius, starRadius * .28, material.fillStart, alpha);
+    if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .92 * alpha, strokeWidth);
+    graphics.circle(anchorX, anchorY, starRadius * (2.1 + scorePop.value * .7)).fill({ color: token.palette.primary, alpha: 0.16 * alpha });
+    this.drawMutationStar(graphics, anchorX, anchorY, starRadius * 1.72, starRadius * .46, token.palette.highlight, 0.96 * alpha);
+    this.drawMutationStar(graphics, anchorX, anchorY, starRadius, starRadius * .28, token.palette.primary, alpha);
     this.strokeSegments(graphics, [
       [anchorX - starRadius * 2.55, anchorY, anchorX + starRadius * 2.55, anchorY],
       [anchorX, anchorY - starRadius * 2.55, anchorX, anchorY + starRadius * 2.55],
-    ], material.innerEdge, 0.72 * alpha, Math.max(1, layout.cell * .055));
+    ], token.palette.highlight, 0.76 * alpha, Math.max(1, layout.cell * .055));
+  }
+
+  /** Sync renderer-only field transitions from Core's authoritative timers. */
+  private syncMutationFields(state: GameState): void {
+    const timed: Array<{ item: Exclude<MutationItem, 'bomb'>; active: boolean }> = [
+      { item: 'freeze', active: state.mode === 'sprint' && state.mutationFreezeTicks > 0 },
+      { item: 'collapse', active: state.mode === 'sprint' && state.mutationCollapseTicks > 0 },
+      { item: 'multiplier', active: state.mode === 'sprint' && state.mutationMultiplierTicks > 0 },
+    ];
+    for (const { item, active } of timed) {
+      const field = this.mutationFields.get(item);
+      if (active) {
+        if (!field || field.stage === 'exit') this.mutationFields.set(item, { item, stage: 'enter', elapsed: 0 });
+      } else if (field && field.stage !== 'exit') {
+        field.stage = 'exit';
+        field.elapsed = 0;
+      }
+    }
+  }
+
+  private advanceMutationFields(deltaMs: number): void {
+    for (const [item, field] of this.mutationFields) {
+      if (field.stage === 'active') continue;
+      field.elapsed += Math.max(0, deltaMs);
+      const timing = MUTATION_VFX_TOKENS[item].animation;
+      if (field.stage === 'enter' && field.elapsed >= timing.enterMs) {
+        field.stage = 'active';
+        field.elapsed = 0;
+      } else if (field.stage === 'exit' && field.elapsed >= timing.exitMs) {
+        this.mutationFields.delete(item);
+      }
+    }
+  }
+
+  private clearMutationVisualState(): void {
+    this.mutationFields.clear();
+    for (const particle of this.mutationParticles) particle.active = false;
+    this.particleCursor = 0;
+    this.particleSeed = 0x4d555441;
+    this.mutationClockMs = 0;
+    this.setWorldOffset(0, 0);
+  }
+
+  /** Pixi nulls display-object points during unmount; cleanup must stay safe. */
+  private setWorldOffset(x: number, y: number): void {
+    const position = (this.world as unknown as { position?: { set: (nextX: number, nextY: number) => void } | null }).position;
+    position?.set(x, y);
+  }
+
+  /** Fixed-seed visual random sequence: cosmetic particles never affect Core. */
+  private nextMutationRandom(): number {
+    this.particleSeed = (Math.imul(this.particleSeed, 1664525) + 1013904223) >>> 0;
+    return this.particleSeed / 0x1_0000_0000;
+  }
+
+  private emitMutationParticles(
+    item: MutationItem,
+    triggerCells: readonly Cell[],
+    previousBoard: GameState['board'] | null,
+  ): void {
+    if (this.options.reducedMotion) return;
+    const token = MUTATION_VFX_TOKENS[item];
+    const sources: Cell[] = [];
+    if (item === 'bomb' && previousBoard) {
+      for (let y = Math.max(VISIBLE_START_ROW, BOARD_HEIGHT - 3); y < BOARD_HEIGHT; y += 1) {
+        for (let x = 0; x < BOARD_WIDTH; x += 1) {
+          if (previousBoard[y]?.[x]) sources.push({ x, y });
+        }
+      }
+    }
+    if (sources.length === 0) sources.push(...triggerCells);
+    if (sources.length === 0) sources.push({ x: Math.floor(BOARD_WIDTH / 2), y: VISIBLE_START_ROW + Math.floor(VISIBLE_HEIGHT * .43) });
+    const count = Math.min(MUTATION_PARTICLE_LIMIT, token.particles.burst);
+    for (let index = 0; index < count; index += 1) {
+      const source = sources[index % sources.length]!;
+      const particle = this.mutationParticles[this.particleCursor % this.mutationParticles.length]!;
+      this.particleCursor = (this.particleCursor + 1) % this.mutationParticles.length;
+      const angle = this.nextMutationRandom() * Math.PI * 2;
+      const variance = .58 + this.nextMutationRandom() * .72;
+      const speed = token.particles.speed * .006 * variance;
+      particle.active = true;
+      particle.item = item;
+      particle.u = (source.x + .5) / BOARD_WIDTH;
+      particle.v = (source.y - VISIBLE_START_ROW + .5) / VISIBLE_HEIGHT;
+      particle.velocityU = Math.cos(angle) * speed;
+      particle.velocityV = Math.sin(angle) * speed;
+      if (item === 'freeze') particle.velocityV = -Math.abs(particle.velocityV) * .72 - speed * .18;
+      if (item === 'collapse') particle.velocityV = Math.abs(particle.velocityV) * 1.26 + speed * .18;
+      if (item === 'bomb') particle.velocityV -= speed * .44;
+      if (item === 'multiplier') particle.velocityV -= speed * .36;
+      particle.elapsed = 0;
+      particle.lifeMs = token.particles.lifeMs * (.72 + this.nextMutationRandom() * .38);
+      particle.size = token.particles.size * (.72 + this.nextMutationRandom() * .62);
+      particle.color = this.nextMutationRandom() > .43 ? token.palette.highlight : token.palette.primary;
+    }
+  }
+
+  private advanceMutationParticles(deltaMs: number): void {
+    for (const particle of this.mutationParticles) {
+      if (!particle.active) continue;
+      particle.elapsed += Math.max(0, deltaMs);
+      if (particle.elapsed >= particle.lifeMs) particle.active = false;
+    }
+  }
+
+  private drawMutationParticles(graphics: Graphics, layout: BoardLayout): void {
+    if (this.options.reducedMotion) return;
+    for (const particle of this.mutationParticles) {
+      if (!particle.active) continue;
+      const progress = Math.min(1, particle.elapsed / particle.lifeMs);
+      const alpha = Math.pow(1 - progress, particle.item === 'bomb' ? .58 : 1.16);
+      if (alpha <= .01) continue;
+      const x = layout.x + (particle.u + particle.velocityU * particle.elapsed) * layout.width;
+      const gravity = particle.item === 'collapse' ? progress * progress * .13 : particle.item === 'bomb' ? progress * progress * .08 : 0;
+      const y = layout.y + (particle.v + particle.velocityV * particle.elapsed + gravity) * layout.height;
+      const size = Math.max(1.5, layout.cell * particle.size * (particle.item === 'bomb' ? 1 - progress * .32 : 1));
+      if (particle.item === 'freeze') {
+        this.drawMutationDiamond(graphics, x, y, size * .45, size, particle.color, .82 * alpha);
+      } else if (particle.item === 'collapse') {
+        graphics.roundRect(x - size * .18, y - size, size * .36, size * 2.1, size * .16).fill({ color: particle.color, alpha: .7 * alpha });
+      } else if (particle.item === 'bomb') {
+        graphics.roundRect(x - size * .72, y - size * .38, size * 1.44, size * .76, Math.max(1, size * .18)).fill({ color: particle.color, alpha: .86 * alpha });
+      } else {
+        this.drawMutationStar(graphics, x, y, size, size * .34, particle.color, .82 * alpha);
+      }
+    }
+  }
+
+  private applyMutationCameraShake(layout: BoardLayout): void {
+    const flash = this.mutationFlash;
+    if (this.options.reducedMotion || !flash || flash.item !== 'bomb') {
+      this.setWorldOffset(0, 0);
+      return;
+    }
+    const pulse = flash.timeline.sample('pulse');
+    const impact = flash.timeline.sample('impact');
+    const shockwave = flash.timeline.sample('shockwave');
+    const envelope = Math.max(
+      pulse.active ? Math.sin(pulse.progress * Math.PI) * .48 : 0,
+      impact.active ? 1 - impact.progress * .28 : 0,
+      shockwave.active ? (1 - shockwave.progress) * .38 : 0,
+    );
+    if (envelope <= 0) {
+      this.setWorldOffset(0, 0);
+      return;
+    }
+    const amplitude = Math.min(8, Math.max(2, layout.cell * .2)) * envelope;
+    const phase = this.mutationClockMs / 29;
+    this.setWorldOffset(Math.sin(phase * 1.7) * amplitude, Math.cos(phase * 2.3) * amplitude * .55);
   }
 
   private drawCollapseSettlementTrail(
@@ -1514,6 +1858,7 @@ export class TetrisRenderer {
         this.mutationArrival = null;
         this.activeMutationCarrierId = null;
         this.collapseTrail = null;
+        this.clearMutationVisualState();
         this.previousBoard = null;
         this.collapseWasActive = false;
       } else if (event.type === 'puzzle-undone') {
@@ -1530,6 +1875,7 @@ export class TetrisRenderer {
         this.mutationArrival = null;
         this.activeMutationCarrierId = null;
         this.collapseTrail = null;
+        this.clearMutationVisualState();
         this.previousBoard = null;
         this.collapseWasActive = false;
       } else if (event.type === 'piece-locked') {
@@ -1561,15 +1907,18 @@ export class TetrisRenderer {
       } else if (event.type === 'survival-stones-landed') {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.18 : 0.46);
       } else if (event.type === 'mutation-activated') {
+        const timeline = createMutationActivationTimeline(event.item);
         this.mutationFlash = {
           item: event.item,
           elapsed: 0,
-          // Reduced motion uses the same readable endpoint frame rather than
-          // clearing the effect before the renderer can present it.
-          duration: event.item === 'bomb' ? 440 : 300,
+          // The renderer owns this visual timeline only; Core retains item
+          // duration, scoring, clears, and the instant Bomb removal rule.
+          duration: timeline.duration,
+          timeline,
           triggerCells: event.triggerCells ?? [],
           multiplierFactor: event.multiplierFactor ?? 2,
         };
+        this.emitMutationParticles(event.item, event.triggerCells ?? [], previousBoard);
         this.impact = this.options.reducedMotion ? 0.24 : event.item === 'bomb' ? 1.05 : 0.72;
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
@@ -1620,6 +1969,9 @@ export class TetrisRenderer {
   }
 
   private advanceEffects(deltaMs: number): void {
+    this.mutationClockMs += Math.max(0, deltaMs);
+    this.advanceMutationFields(deltaMs);
+    this.advanceMutationParticles(deltaMs);
     if (this.trail) {
       this.trail.elapsed += deltaMs;
       if (this.trail.elapsed >= this.trail.duration) this.trail = null;
@@ -1633,8 +1985,9 @@ export class TetrisRenderer {
       if (this.boardShift.elapsed >= this.boardShift.duration) this.boardShift = null;
     }
     if (this.mutationFlash) {
-      this.mutationFlash.elapsed += deltaMs;
-      if (this.mutationFlash.elapsed >= this.mutationFlash.duration) this.mutationFlash = null;
+      this.mutationFlash.timeline.advance(deltaMs);
+      this.mutationFlash.elapsed = this.mutationFlash.timeline.elapsed;
+      if (this.mutationFlash.timeline.complete) this.mutationFlash = null;
     }
     if (this.mutationArrival) {
       this.mutationArrival.elapsed += deltaMs;

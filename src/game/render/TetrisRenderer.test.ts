@@ -31,6 +31,7 @@ type RendererInternals = {
     triggerCells: readonly Cell[];
     multiplierFactor: 2 | 4;
   } | null;
+  mutationParticles: Array<{ active: boolean; item: MutationItem }>;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
   collapseTrail: { paths: readonly { x: number; fromY: number; toY: number }[]; elapsed: number; duration: number } | null;
@@ -102,8 +103,10 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
 
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
-    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 440, triggerCells: [] });
-    internals.advanceEffects(439);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 900, triggerCells: [] });
+    expect(internals.mutationParticles).toHaveLength(120);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
+    internals.advanceEffects(899);
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
@@ -143,7 +146,8 @@ describe('Puzzle undo presentation reset', () => {
         return graphics;
       },
     };
-    (internals as unknown as { effectGraphics: typeof graphics }).effectGraphics = graphics;
+    (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).effectGraphics = graphics;
+    (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).mutationGraphics = graphics;
 
     renderer.setOptions({ reducedMotion: true });
     internals.consumeEvents([{
@@ -156,15 +160,14 @@ describe('Puzzle undo presentation reset', () => {
     }]);
     internals.advanceEffects(16);
 
-    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 300 });
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 500 });
     internals.drawEffects(
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.fillStart, alpha: 0.16 * 0.68 });
-    expect(strokes).toContainEqual(expect.objectContaining({ color: MUTATION_MATERIALS.freeze.fillStart }));
+    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.innerEdge, alpha: .34 });
 
-    internals.advanceEffects(284);
+    internals.advanceEffects(484);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -187,7 +190,7 @@ describe('Puzzle undo presentation reset', () => {
       item: 'multiplier',
       triggerCells,
       multiplierFactor: 4,
-      duration: 300,
+      duration: 520,
     });
   });
 
@@ -240,7 +243,8 @@ describe('Puzzle undo presentation reset', () => {
       },
       stroke: () => graphics,
     };
-    (internals as unknown as { effectGraphics: typeof graphics }).effectGraphics = graphics;
+    (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).effectGraphics = graphics;
+    (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).mutationGraphics = graphics;
     renderer.setOptions({ reducedMotion: true });
 
     const base = { mode: 'sprint', elapsedTicks: 0, phase: 'active', pendingClearRows: [] } as unknown as GameState;
