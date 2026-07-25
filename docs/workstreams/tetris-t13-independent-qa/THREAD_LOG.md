@@ -361,3 +361,43 @@
 - **Next action:** coordinator supplies a fresh candidate-bound browser evidence set
   (first, record, replay, and reduced-motion completion) with the rendered sheet,
   one-canvas/no-error observations, and then requests a narrow read-only recheck.
+
+## 2026-07-25 — T13.15 ceremony evidence narrow recheck
+
+- **Review boundary:** narrow independent recheck of the unchanged product source
+  `87aeeb58eea2f954ecbd1c933a5fa3056ef671f1` over the full candidate
+  `6f55982..7c8d110`. The new `7c8d110` checkpoint only corrects the coordinator's
+  evidence record; the prior P1 hold `d3d3ce1` remains in the reviewed chain. No
+  product source, task/design/changelog path, process, port, or user-owned
+  `package-lock.json` was edited by this reviewer.
+- **Evidence / route checks:** visually inspected
+  `.local/audits/t13.15/browser/first.png`, `record.png`, `replay.png`, and
+  `reduced-motion.png`, plus `report.json` and `ceremony-audit.mjs`. The rendered
+  first, record, and replay sheets respectively show `恭喜你破解谜题`,
+  `新的个人纪录`, and `谜题再次破解`, each with only its outcome marker,
+  `当前最优：7步`, **重来**, and **返回关卡库**. The 390 × 844 reduced-motion
+  capture renders the same first-clear semantics in a static compact frame.
+- **Report verification:** every one of the four report cases binds to the exact source
+  SHA above, records the expected outcome/title, zero result-description paragraphs,
+  no generic run-stat text, one canvas, zero DOM board cells, no overflow, and no
+  console/page errors. Desktop cases retain the bounded
+  `puzzle-celebration-piece` animation; the reduced-motion case records
+  `animationName: none`. The audit begins from the visible Puzzle entry and recorded
+  Level 01 command route. Its DEV QA calls use the public runtime `action` and
+  `advanceTicks` operations; `setFrozen` only freezes the frame clock between recorded
+  inputs. The exposed QA surface has no `setState`, `replaceState`, or replay-state
+  injection hook, as covered by the existing runtime regression.
+- **Resource / scope verification:** `git diff --name-status 6f55982..7c8d110` and
+  `git diff --check 6f55982..7c8d110` are clean within the declared chain. The new
+  evidence commit changes only the coordinator record, so the prior independently run
+  typecheck, focused 2-file / 30-test suite, complete 22-file / 166-test suite, and
+  746-module build remain the applicable product gates. A fresh listener check finds
+  no port `5177` listener and PID `14452` is absent. The inherited unstaged
+  `package-lock.json` and unrelated untracked `progress.md` remain untouched.
+- **Disposition:** **PASS — ACCEPT.** The earlier P1 evidence-provenance hold is
+  resolved. No P0–P2 finding remains in `6f55982..7c8d110`; the coordinator may
+  complete acceptance and push without staging unrelated paths.
+- **Exact changed path:** this independent QA acceptance only:
+  `docs/workstreams/tetris-t13-independent-qa/THREAD_LOG.md`.
+- **Remaining risk / next action:** no remaining product or evidence blocker found.
+  Coordinator may integrate the acceptance record and release/push the accepted chain.
