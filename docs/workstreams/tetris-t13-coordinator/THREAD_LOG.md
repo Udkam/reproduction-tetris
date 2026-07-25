@@ -1253,3 +1253,30 @@
   candidate's record/replay and reduced-motion presentation before acceptance.
   Next: independent read-only QA of `6f55982..87aeeb5`; only the coordinator may
   record acceptance, update the changelog, and push.
+
+## 2026-07-25 — T13.15 ceremony evidence correction
+
+- The earlier `C:\\Users\\Alex Chen\\AppData\\Local\\Temp\\tetramorph-t13-15-final-client\\shot-0.png`
+  is a Puzzle-library capture, not a completion window. It is withdrawn as ceremony
+  evidence rather than being reused to satisfy the active contract.
+- Fresh source-bound evidence was generated from product source
+  `87aeeb58eea2f954ecbd1c933a5fa3056ef671f1` on a coordinator-owned temporary
+  `127.0.0.1:5177` Vite listener. The ignored audit script
+  `.local/audits/t13.15/ceremony-audit.mjs` drove the authoritative recorded Level 01
+  public command routes through the existing DEV QA command surface—no state injection,
+  persistence rewrite, or fabricated board was used. The report is
+  `.local/audits/t13.15/browser/report.json`; inspected rendered frames are
+  `first.png`, `record.png`, `replay.png`, and `reduced-motion.png` in that same
+  directory.
+- The report records first / personal-record / replay outcomes respectively as
+  `恭喜你破解谜题`, `新的个人纪录`, and `谜题再次破解`; each dialog has only its outcome
+  marker, `当前最优：7步`, and the two existing actions. It records no generic completion
+  stats, zero description paragraphs, one canvas, zero DOM board cells, no overflow,
+  and zero console/page errors for every frame. The 390 × 844 reduced-motion case
+  reports `animationName: none`; desktop cases retain the bounded ceremony animation.
+  The brown three-row Survival inspection remains at
+  `C:\\Users\\Alex Chen\\AppData\\Local\\Temp\\tetramorph-t13-15-browser\\survival-brown-restored\\shot-0.png`.
+- Resource cleanup: the exact temporary listener PID `14452` was verified as the
+  project Vite command and released after capture; port `5177` has no remaining
+  listener. Next: request a narrow independent recheck of this evidence addendum;
+  do not accept or push before that review.
