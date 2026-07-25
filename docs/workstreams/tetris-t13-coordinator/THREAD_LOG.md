@@ -1280,3 +1280,18 @@
   project Vite command and released after capture; port `5177` has no remaining
   listener. Next: request a narrow independent recheck of this evidence addendum;
   do not accept or push before that review.
+
+## 2026-07-25 — T13.15 final coordinator acceptance
+
+- Read the independent hold `d3d3ce1` and the narrow recheck `4b0938d`. The first
+  correctly rejected a Puzzle-library image that had been misfiled as ceremony proof;
+  the corrected source-bound evidence checkpoint `7c8d110` closes that provenance gap.
+- Acceptance chain: `6f55982..7c8d110`, product source `87aeeb5`, independent QA
+  acceptance `4b0938d`. The frozen product has first / record / replay presentations,
+  no generic completion-stat line or blank description, static reduced-motion result,
+  and the restored brown three-row Survival bedrock. Full gates remain typecheck,
+  22 files / 166 tests, and the 746-module production build.
+- Cleanup/disposition: the dedicated candidate Vite listener PID `14452` / port `5177`
+  is gone; `package-lock.json` remains the sole inherited user-owned modified file.
+  The temporary skill progress file is removed before push. Coordinator may push the
+  accepted `main` chain without staging either unrelated file.

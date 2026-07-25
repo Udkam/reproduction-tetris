@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-25 — T13.15 Puzzle ceremony and brown bedrock accepted
+
+- Puzzle success now resolves through a compact original ceremony instead of the generic
+  result sheet. It classifies the saved best before persistence: **恭喜你破解谜题** for
+  a first clear, **新的个人纪录** for a strictly lower count, and **谜题再次破解** for a
+  later non-record clear. Each sheet keeps only its outcome identity, saved best, and
+  the existing **重来** / **返回关卡库** actions; the former `首次完成 · X 步 · Y 消行`
+  line and its empty description space are gone.
+- Restored permanent Survival bedrock to the approved independent brown raised-block
+  material. Clearable falling stones retain their separate slate material; no Core,
+  collision, replay, scoring, queue, or persistence behavior changed.
+- Source checkpoint `87aeeb5` passed typecheck, 22 files / 166 tests, and the
+  746-module production build. A fresh candidate-bound public-command audit renders
+  desktop first/record/replay and 390 × 844 reduced-motion ceremonies with one canvas,
+  zero DOM board cells, no overflow, no console/page errors, no generic run-stat text,
+  and no empty description paragraph. It also preserves the three-row brown Survival
+  opening. Independent QA first held the invalid library screenshot, then accepted the
+  corrected evidence in `4b0938d`; the temporary candidate listener was released.
+
 ## 2026-07-25 — T13.14 direct clarity, Mutation, Survival debris, and readable Puzzle Next accepted
 
 - Restored the visible 3 → 2 → 1 board-entry overlay and rebuilt Settings as a compact

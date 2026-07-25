@@ -5,7 +5,7 @@
 
 ## T13.15 Puzzle completion ceremony and Survival geology
 
-**Status:** active player-directed presentation pass. T13.14's mechanics and accepted
+**Status:** accepted after independent QA `4b0938d`. T13.14's mechanics and accepted
 visual evidence remain the baseline. This pass does not change Core simulation,
 campaign content, puzzle best-record semantics, or Survival debris; it gives two
 currently flat visual outcomes a stronger original finish.

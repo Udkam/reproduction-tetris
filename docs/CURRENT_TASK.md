@@ -8,14 +8,13 @@ its local walkthrough output remains historical ignored evidence and is not rege
 in this delivery.
 
 Current execution status (2026-07-25): **T13.15 PUZZLE COMPLETION CEREMONY AND
-SURVIVAL GEOLOGY — active.** T13.14 remains accepted after its third Settings/forecast
-correction. The new player-directed pass changes only the Puzzle success presentation
-and the Pixi treatment of permanent Survival bedrock; it must not alter Puzzle routes,
-completion semantics, records, Survival pressure, clearable falling stones, or Core
-simulation. The inherited user-owned `package-lock.json` remains outside every
-checkpoint and must remain untouched.
+SURVIVAL GEOLOGY — accepted.** T13.14 remains accepted after its third Settings/forecast
+correction. T13.15 changes only the Puzzle success presentation and the Pixi treatment
+of permanent Survival bedrock; it does not alter Puzzle routes, completion semantics,
+records, Survival pressure, clearable falling stones, or Core simulation. The inherited
+user-owned `package-lock.json` remains outside every checkpoint and was not touched.
 
-### T13.15 active delivery contract
+### T13.15 accepted delivery record and frozen contract
 
 1. **Puzzle completion is a small ceremony, not a generic game-over sheet.** On a
    Puzzle success, preserve the existing modal focus trap, keyboard/touch actions,
@@ -51,6 +50,17 @@ checkpoint and must remain untouched.
    desktop plus compact viewport. Verify one canvas, no DOM cell grid, no overflow,
    no console/page errors, and no listener/ticker/audio/canvas leak. Independent QA
    remains read-only until a candidate range exists.
+
+**Acceptance evidence.** Product source is `87aeeb5`; the reviewed chain is
+`6f55982..7c8d110`, followed by independent acceptance `4b0938d`. Typecheck, 22 test
+files / 166 tests, and the 746-module production build pass. The candidate-bound audit
+at `.local/audits/t13.15/browser/report.json` renders first, record, replay, and
+390 × 844 reduced-motion result sheets through the authoritative Level 01 public route.
+Every result reports one canvas, zero DOM board cells, no overflow or page/console
+error, no generic completion-stat line, and no empty description paragraph; reduced
+motion reports no ceremony animation. The separate desktop Survival capture verifies
+the restored three brown raised bedrock rows. QA verified that the audit only uses the
+existing public DEV action/tick hooks and does not inject state.
 
 ### T13.14 accepted historical record
 
