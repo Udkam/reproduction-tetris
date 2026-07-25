@@ -3,6 +3,35 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## T14 Mutation VFX polish — active
+
+The design authority is `docs/MUTATION_VFX_POLISH.md`, derived from the user-provided
+VFX brief. Mutation keeps its original mechanical contract and is presented as a
+contained **deep-space crystal instrument** inside the existing one-canvas board:
+deep navy field, high-separation cyan/violet/ember/gold material language, and short
+event-bound feedback. It must feel specific without imitating any commercial game's
+logo, UI, soundtrack, assets, or trade dress.
+
+The renderer owns all board effects through its existing Pixi layers and a bounded,
+reused logical particle pool. A small timeline primitive owns phase sequencing so
+visual time is not scattered through browser timers. The target states are: crystalline
+Freeze with edge frost/refraction/snow; gravitational Collapse with a vertical pull
+field and 120 ms settlement; staged Bomb warning/impact/shockwave/fragments; and
+golden Multiplier score-light/floating value. The rail remains DOM information only and
+uses a compact accessible Mutation Card. Existing Core timing, scoring, carrier
+semantics, and state are intentionally unchanged; reduced motion renders an informative
+static endpoint.
+
+## T13.16 Modal compositor integrity
+
+**Status:** active narrow visual correction. The live Pixi board remains visible and
+dimmed behind every sheet, but a compositor must never allow its WebGL layer to paint
+over the opaque Settings, pause, restart, exit, first-entry, or Puzzle-result surface.
+This corrects only stacking/compositing while a `.sheet-backdrop` exists: one canvas,
+the current DOM focus route, all copy, metrics, panel geometry, and Core state stay
+unchanged. Browser evidence must inspect actual pixels rather than relying only on
+correct DOM hit testing.
+
 ## T13.15 Puzzle completion ceremony and Survival geology
 
 **Status:** accepted after independent QA `4b0938d`. T13.14's mechanics and accepted

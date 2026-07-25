@@ -14,6 +14,74 @@ of permanent Survival bedrock; it does not alter Puzzle routes, completion seman
 records, Survival pressure, clearable falling stones, or Core simulation. The inherited
 user-owned `package-lock.json` remains outside every checkpoint and was not touched.
 
+### T14 active delivery contract — Mutation VFX polish
+
+**Authority:** `E:\Download\TetraMorph_Mutation_VFX_Polish_Prompt.md`; the implementation
+design is recorded in `docs/MUTATION_VFX_POLISH.md`. The goal is a premium, original
+deep-navy crystal-technology presentation for **异变 / Mutation**, not a rule or campaign
+change. The existing bright application shell, all four modes, one-canvas boundary, and
+product accessibility remain authoritative.
+
+1. **Frozen gameplay contract.** Do not change Core commands, deterministic seed/bag
+generation, the 32% carrier chance, first-two-piece delay, item selection, speed curve,
+scores, row removal, ten-second timed-item duration/reset, 2×/4× multiplier progression,
+or persistence. The visual system consumes existing `mutation-activated` events and
+current state only. Bomb's instant Core resolution remains intact, but the renderer must
+visually present an ordered warning/impact/fragment sequence rather than an unreadable
+direct deletion.
+2. **Design-system and rendering scope.** Add `src/design/mutationTokens.ts` for the
+authoritative palette, phase timings, logical particle limits, and original audio
+profiles; add `src/animation/mutationTimeline.ts` for reusable sequence/parallel/delay
+timelines with cubic-in, cubic-out, and back-out easing. Renderer work is confined to
+`src/game/render/TetrisRenderer.ts` and its direct tests/theme imports. It may use the
+existing Pixi containers/Graphics and a bounded logical pool; it may not create a DOM
+board, a second canvas, frame-by-frame Pixi objects, or a browser-timer visual loop.
+3. **Required visual language.** Every active/locked carrier must be identifiable within
+100 ms: crystalline cyan Freeze, compressed violet Collapse, ember-orange Bomb, and
+golden Multiplier. Freeze owns frosted edge, glassy refraction cue, bounded snow;
+Collapse owns a vertical gravity field, pull trails, and a 120 ms settle cue; Bomb owns
+the 0/200/400/600/900 ms warning → pulse → impact → shockwave → fragments timeline;
+Multiplier owns a contained score-light and floating value treatment. Timed states must
+remain legible throughout their existing ten game seconds and honor reduced motion with a
+static high-contrast endpoint rather than an absent effect.
+4. **Rail/audio.** Retain the current status location but make it a compact Mutation Card:
+item identity, readable timer, and progress are visible without a long explanation.
+No music or third-party media is added. Original WebAudio effects receive semantic
+activate/impact/end contours, with any active cue stopped when a newer one supersedes it.
+The UI uses the shipped Space Grotesk and JetBrains Mono families; the unavailable Inter
+family is not fetched or silently substituted.
+5. **Performance and acceptance.** Use at most 120 logical visual particles (below the
+300 hard ceiling) and at most two effect planes; re-use their records and the existing
+Pixi Graphics. Direct tests must cover token values, timeline phases, pooled limits,
+reduced-motion endpoint, and each item event. Final evidence requires typecheck, full
+tests, build, fresh live screenshots for four carriers plus Freeze, Collapse, Bomb, and
+Multiplier active/impact states, no console/page error, one canvas/zero DOM cells,
+desktop plus compact layout, and a renderer benchmark that supports the 60 FPS budget.
+The current uncommitted T13.16 modal-compositor correction is an inherited separate
+slice: do not stage or mutate its `src/styles.css` change in a T14 checkpoint.
+
+### T13.16 active delivery contract — modal compositor integrity
+
+1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
+   audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint
+   above part of the sheet in a compositor capture. While any `.sheet-backdrop` is
+   mounted, the one Pixi canvas must remain mounted and visibly dimmed *under* the
+   overlay, but it may not bleed through, obscure, or draw over Settings, Pause,
+   Restart, Exit, rule, or Puzzle-result sheet pixels. This is a presentation-stacking
+   correction only; it must not hide the live board, add another canvas, recreate the
+   runtime, or change focus/input routing.
+2. **Bounded source scope.** The implementation may change only `src/styles.css` and a
+   directly relevant `src/App.test.ts` assertion if one can verify the declarative
+   modal/canvas contract. No Core, renderer scene, GameRuntime, modal copy, panel
+   composition, leaderboard, audio, persistence, or game rule may change.
+3. **Acceptance.** Run the direct App test, typecheck, full current-source suite, and
+   production build after the final source change. Fresh browser evidence must cover
+   Settings plus at least one ordinary action sheet at desktop and compact portrait,
+   prove one mounted canvas, no overflow/page/console error, and visibly demonstrate
+   that the opaque sheet contents are never painted beneath the canvas. Release every
+   Tetris-owned temporary listener/browser after capture; independent QA remains
+   read-only until a candidate SHA exists.
+
 ### T13.15 accepted delivery record and frozen contract
 
 1. **Puzzle completion is a small ceremony, not a generic game-over sheet.** On a
