@@ -111,6 +111,25 @@ describe('异变 mode', () => {
     }
   });
 
+  it('lets every ordinary tetromino body carry every Mutation item independently', () => {
+    const bodies = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
+    const items = ['freeze', 'collapse', 'bomb', 'multiplier'] as const;
+    const expected = new Set(bodies.flatMap((body) => items.map((item) => `${body}:${item}`)));
+    const observed = new Set<string>();
+
+    // The deterministic sweep deliberately samples the real seven-bag and the
+    // separate carrier stream. It protects the product rule that an item is an
+    // attachment, never a substitute mapping from one tetromino shape.
+    for (let seed = 1; seed <= 4_096 && observed.size < expected.size; seed += 1) {
+      const state = lockAndSpawn(playingMutation(seed));
+      const body = state.queue[0];
+      const item = nextMutationPreviewItem(state);
+      if (body && item) observed.add(`${body}:${item}`);
+    }
+
+    expect(observed).toEqual(expected);
+  });
+
   it('caps Mutation gravity at 0.1 seconds per cell without slowing Classic', () => {
     expect(gravityForMode('sprint', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(TICKS_PER_SECOND / 10);
     expect(gravityForMode('marathon', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(3);
