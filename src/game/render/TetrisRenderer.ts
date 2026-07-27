@@ -1,4 +1,14 @@
-import { Application, Container, FillGradient, Graphics, type Ticker } from 'pixi.js';
+import {
+  Application,
+  Container,
+  DisplacementFilter,
+  FillGradient,
+  Graphics,
+  NoiseFilter,
+  Sprite,
+  Texture,
+  type Ticker,
+} from 'pixi.js';
 import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
@@ -112,6 +122,8 @@ interface MutationFlash {
   triggerCells: readonly Cell[];
   /** The activation event is the source of truth for the 2× / 4× cue. */
   multiplierFactor: 2 | 4;
+  /** Core-earned points are only displayed; the renderer never changes scoring. */
+  score: number;
 }
 
 /** Renderer-only request retained until every same-tick item receives its own burst. */
@@ -119,6 +131,7 @@ interface MutationFlashRequest {
   item: MutationItem;
   triggerCells: readonly Cell[];
   multiplierFactor: 2 | 4;
+  score: number;
   previousBoard: GameState['board'] | null;
 }
 
@@ -154,6 +167,8 @@ interface MutationParticle {
   lifeMs: number;
   size: number;
   color: number;
+  rotation: number;
+  rotationVelocity: number;
 }
 
 interface GroupDrawOptions {
@@ -185,9 +200,33 @@ export interface RendererSnapshot {
   visibleLockedCells: number;
   presentation: { x: number; y: number; offsetX: number; offsetY: number } | null;
   boardShiftOffsetY: number;
+  mutationFilters: { freeze: boolean; collapse: boolean; activeCount: number };
 }
 
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
+
+const SCORE_SEGMENT_COORDINATES = [
+  [.12, 0, .88, 0],
+  [.88, 0, .88, .5],
+  [.88, .5, .88, 1],
+  [.12, 1, .88, 1],
+  [.12, .5, .12, 1],
+  [.12, 0, .12, .5],
+  [.12, .5, .88, .5],
+] as const;
+
+const SCORE_DIGIT_SEGMENTS: Readonly<Record<string, readonly number[]>> = {
+  '0': [0, 1, 2, 3, 4, 5],
+  '1': [1, 2],
+  '2': [0, 1, 6, 4, 3],
+  '3': [0, 1, 6, 2, 3],
+  '4': [5, 6, 1, 2],
+  '5': [0, 5, 6, 2, 3],
+  '6': [0, 5, 6, 4, 2, 3],
+  '7': [0, 1, 2],
+  '8': [0, 1, 2, 3, 4, 5, 6],
+  '9': [0, 1, 2, 3, 5, 6],
+};
 
 export class TetrisRenderer {
   private app: Application | null = null;
@@ -198,6 +237,11 @@ export class TetrisRenderer {
   private readonly effectGraphics = new Graphics();
   /** Second and final visual-only effect plane, reserved for Mutation VFX. */
   private readonly mutationGraphics = new Graphics();
+  /** Two renderer-lifetime Pixi filters; they are disabled instead of reallocated. */
+  private frostFilter: NoiseFilter | null = null;
+  private collapseFilter: DisplacementFilter | null = null;
+  private collapseDisplacementMap: Sprite | null = null;
+  private readonly mutationFilterState = { freeze: false, collapse: false };
   private readonly cellGradients = new Map<BoardMaterial, FillGradient>();
   private readonly overrideGradients = new Map<PieceMaterial, FillGradient>();
 
@@ -234,6 +278,8 @@ export class TetrisRenderer {
       lifeMs: 1,
       size: 0,
       color: 0xffffff,
+      rotation: 0,
+      rotationVelocity: 0,
     }),
   );
   private particleCursor = 0;
@@ -274,6 +320,7 @@ export class TetrisRenderer {
     visibleLockedCells: 0,
     presentation: null,
     boardShiftOffsetY: 0,
+    mutationFilters: { freeze: false, collapse: false, activeCount: 0 },
   };
 
   async init(host: HTMLElement): Promise<void> {
@@ -293,6 +340,7 @@ export class TetrisRenderer {
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
     this.world.addChild(this.boardGraphics, this.pieceGraphics, this.effectGraphics, this.mutationGraphics);
+    this.initializeMutationFilters();
     app.stage.addChild(this.world);
     app.ticker.add(this.onTick);
     this.app = app;
@@ -329,6 +377,7 @@ export class TetrisRenderer {
     this.advanceEffects(deltaMs);
     this.advancePresentation(state, deltaMs);
     const layout = this.calculateLayout(app.screen.width, app.screen.height, state.status === 'ready');
+    this.syncMutationFilters(state, layout);
     this.applyMutationCameraShake(layout);
     this.drawBoard(state, layout);
     this.drawPieces(state, layout);
@@ -364,6 +413,7 @@ export class TetrisRenderer {
     if (!this.app) return;
     this.app.ticker.remove(this.onTick);
     this.frameCallback = null;
+    this.destroyMutationFilters();
     for (const gradient of this.cellGradients.values()) gradient.destroy();
     this.cellGradients.clear();
     for (const gradient of this.overrideGradients.values()) gradient.destroy();
@@ -728,7 +778,10 @@ export class TetrisRenderer {
       const maxY = Math.max(...component.map((cell) => cell.y));
       const centerX = layout.x + ((minX + maxX + 1) * layout.cell) / 2 + offsetX;
       const centerY = layout.y + ((minY + maxY + 1) * layout.cell) / 2 + offsetY;
-      const radius = Math.max(3, layout.cell * 0.19);
+      const freezeBreath = item === 'freeze' && !this.options.reducedMotion
+        ? 1 + .04 * (.5 - .5 * Math.cos(this.mutationClockMs / MUTATION_VFX_TOKENS.freeze.animation.pulseMs * Math.PI * 2))
+        : 1;
+      const radius = Math.max(3, layout.cell * 0.19) * freezeBreath;
       if (item === 'freeze') {
         this.drawMutationDiamond(graphics, centerX, centerY, radius * 1.18, radius * 1.54, material.edge, 0.92);
         this.drawMutationDiamond(graphics, centerX, centerY, radius * 0.7, radius, material.innerEdge, 0.94);
@@ -1463,13 +1516,18 @@ export class TetrisRenderer {
 
   private drawFreezeAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
     const token = MUTATION_VFX_TOKENS.freeze;
+    const frostProfile = token.shader.frost;
     const inset = Math.max(2, layout.cell * 0.13);
     const pulse = this.options.reducedMotion ? 1 : 0.76 + Math.sin(phase * Math.PI * 2) * 0.18;
     const radius = Math.max(5, layout.cell * 0.22);
     graphics
       .roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, radius)
       .fill({ color: token.palette.primary, alpha: token.shader.fieldAlpha * 0.55 * opacity })
-      .stroke({ color: token.palette.highlight, alpha: 0.82 * pulse * opacity, width: Math.max(1, layout.cell * 0.062) })
+      .stroke({
+        color: token.palette.highlight,
+        alpha: 0.82 * pulse * opacity,
+        width: Math.max(1, layout.cell * 0.062 * (frostProfile?.edgeStrength ?? 1)),
+      })
       .roundRect(layout.x + inset * 2.5, layout.y + inset * 2.5, layout.width - inset * 5, layout.height - inset * 5, Math.max(3, radius * .6))
       .stroke({ color: token.palette.primary, alpha: 0.42 * pulse * opacity, width: Math.max(1, layout.cell * 0.025) });
     const shardSize = Math.max(3, layout.cell * 0.19);
@@ -1756,6 +1814,15 @@ export class TetrisRenderer {
       token.palette.highlight,
       alpha,
     );
+    this.drawMutationScoreValue(
+      graphics,
+      anchorX,
+      anchorY - starRadius * (2.85 + scorePop.value * .88),
+      starRadius * .34,
+      flash.score,
+      token.palette.highlight,
+      alpha,
+    );
   }
 
   /**
@@ -1807,6 +1874,47 @@ export class TetrisRenderer {
     this.strokeSegments(graphics, segments, color, alpha, stroke);
   }
 
+  /** Vector score numerals remain legible without introducing a DOM overlay. */
+  private drawMutationScoreValue(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    unit: number,
+    score: number,
+    color: number,
+    alpha: number,
+  ): void {
+    const value = Math.max(0, Math.round(score));
+    if (value === 0 || alpha <= 0) return;
+    const glyphs = `+${value}`;
+    const glyphWidth = unit * .72;
+    const gap = unit * .22;
+    const totalWidth = glyphs.length * glyphWidth + (glyphs.length - 1) * gap;
+    const left = centerX - totalWidth / 2;
+    const top = centerY - unit / 2;
+    const stroke = Math.max(1, unit * .16);
+    for (let glyphIndex = 0; glyphIndex < glyphs.length; glyphIndex += 1) {
+      const glyph = glyphs[glyphIndex]!;
+      const glyphLeft = left + glyphIndex * (glyphWidth + gap);
+      if (glyph === '+') {
+        this.strokeSegments(graphics, [
+          [glyphLeft + glyphWidth * .16, centerY, glyphLeft + glyphWidth * .84, centerY],
+          [glyphLeft + glyphWidth * .5, centerY - unit * .34, glyphLeft + glyphWidth * .5, centerY + unit * .34],
+        ], color, alpha, stroke);
+        continue;
+      }
+      const activeSegments = SCORE_DIGIT_SEGMENTS[glyph];
+      if (!activeSegments) continue;
+      for (const segmentIndex of activeSegments) {
+        const segment = SCORE_SEGMENT_COORDINATES[segmentIndex]!;
+        graphics
+          .moveTo(glyphLeft + glyphWidth * segment[0], top + unit * segment[1])
+          .lineTo(glyphLeft + glyphWidth * segment[2], top + unit * segment[3])
+          .stroke({ color, alpha, width: stroke });
+      }
+    }
+  }
+
   /** Sync renderer-only field transitions from Core's authoritative timers. */
   private syncMutationFields(state: GameState): void {
     const timed: Array<{ item: Exclude<MutationItem, 'bomb'>; active: boolean }> = [
@@ -1843,6 +1951,7 @@ export class TetrisRenderer {
     this.mutationFields.clear();
     this.mutationFlashQueue.length = 0;
     this.clearMutationParticles();
+    this.resetMutationFilters();
     this.particleCursor = 0;
     this.particleSeed = 0x4d555441;
     this.mutationClockMs = 0;
@@ -1875,6 +1984,7 @@ export class TetrisRenderer {
       timeline,
       triggerCells: request.triggerCells,
       multiplierFactor: request.multiplierFactor,
+      score: request.score,
     };
     // A foreground flash gets a clean bounded burst. Earlier timed fields remain
     // visible in the atmosphere and status card; no activation event is discarded.
@@ -1886,6 +1996,125 @@ export class TetrisRenderer {
   private setWorldOffset(x: number, y: number): void {
     const position = (this.world as unknown as { position?: { set: (nextX: number, nextY: number) => void } | null }).position;
     position?.set(x, y);
+  }
+
+  /**
+   * The only two GPU field effects are renderer-lifetime objects. A generated
+   * displacement texture keeps the implementation original and avoids a second
+   * visible canvas or a downloaded asset.
+   */
+  private initializeMutationFilters(): void {
+    const frost = new NoiseFilter({ noise: 0, seed: 0 });
+    frost.enabled = false;
+    const map = this.createCollapseDisplacementMap();
+    const collapse = map
+      ? new DisplacementFilter({ sprite: map, scale: { x: 0, y: 0 } })
+      : null;
+    if (collapse) {
+      collapse.enabled = false;
+      // The displacement map participates in world transforms but never paints
+      // into the one visible gameplay canvas as a normal sprite.
+      map!.renderable = false;
+      this.world.addChild(map!);
+    }
+    this.frostFilter = frost;
+    this.collapseFilter = collapse;
+    this.collapseDisplacementMap = map;
+    this.world.filters = collapse ? [frost, collapse] : [frost];
+  }
+
+  private createCollapseDisplacementMap(): Sprite | null {
+    if (typeof document === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    const size = 64;
+    canvas.width = size;
+    canvas.height = size;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+    const pixels = context.createImageData(size, size);
+    for (let y = 0; y < size; y += 1) {
+      for (let x = 0; x < size; x += 1) {
+        const index = (y * size + x) * 4;
+        const diagonalWave = Math.sin((x * 0.43) + (y * 0.21));
+        const verticalWave = Math.cos((y * 0.51) - (x * 0.13));
+        pixels.data[index] = 128 + Math.round(diagonalWave * 62);
+        pixels.data[index + 1] = 128 + Math.round(verticalWave * 54);
+        pixels.data[index + 2] = 255;
+        pixels.data[index + 3] = 255;
+      }
+    }
+    context.putImageData(pixels, 0, 0);
+    return new Sprite(Texture.from(canvas, true));
+  }
+
+  private destroyMutationFilters(): void {
+    this.world.filters = undefined;
+    this.frostFilter?.destroy();
+    this.collapseFilter?.destroy();
+    const map = this.collapseDisplacementMap;
+    if (map) {
+      if (map.parent === this.world) this.world.removeChild(map);
+      map.destroy({ texture: true, textureSource: true });
+    }
+    this.frostFilter = null;
+    this.collapseFilter = null;
+    this.collapseDisplacementMap = null;
+    this.resetMutationFilters();
+  }
+
+  private resetMutationFilters(): void {
+    this.mutationFilterState.freeze = false;
+    this.mutationFilterState.collapse = false;
+    if (this.frostFilter) {
+      this.frostFilter.enabled = false;
+      this.frostFilter.noise = 0;
+    }
+    if (this.collapseFilter) {
+      this.collapseFilter.enabled = false;
+      this.collapseFilter.scale.x = 0;
+      this.collapseFilter.scale.y = 0;
+    }
+  }
+
+  private mutationFieldOpacityFor(item: Exclude<MutationItem, 'bomb'>): number {
+    const field = this.mutationFields.get(item);
+    return field ? this.mutationFieldOpacity(field) : 0;
+  }
+
+  /** Maps Core timers to two bounded field filters without affecting Core state. */
+  private syncMutationFilters(state: GameState, layout: BoardLayout): void {
+    if (this.options.reducedMotion || state.mode !== 'sprint') {
+      this.resetMutationFilters();
+      return;
+    }
+
+    const freezeOpacity = this.mutationFieldOpacityFor('freeze');
+    const collapseOpacity = this.mutationFieldOpacityFor('collapse');
+    const frostProfile = MUTATION_VFX_TOKENS.freeze.shader.frost;
+    const displacementProfile = MUTATION_VFX_TOKENS.collapse.shader.displacement;
+    this.mutationFilterState.freeze = freezeOpacity > .001 && Boolean(frostProfile);
+    this.mutationFilterState.collapse = collapseOpacity > .001 && Boolean(displacementProfile);
+
+    if (this.frostFilter && frostProfile) {
+      this.frostFilter.enabled = this.mutationFilterState.freeze;
+      this.frostFilter.noise = this.mutationFilterState.freeze
+        ? frostProfile.noise * (.42 + freezeOpacity * .58)
+        : 0;
+      // A deterministic clock gives the glass grain a living surface without a
+      // renderer random source or a per-frame allocation.
+      this.frostFilter.seed = ((this.mutationClockMs * .00037) % 1) * frostProfile.noiseScale;
+    }
+
+    if (this.collapseFilter && this.collapseDisplacementMap && displacementProfile) {
+      this.collapseFilter.enabled = this.mutationFilterState.collapse;
+      const travel = ((this.mutationClockMs / 1000) * displacementProfile.speed) % 1;
+      this.collapseDisplacementMap.position.set(layout.x, layout.y - travel * layout.cell * 1.5);
+      this.collapseDisplacementMap.width = layout.width;
+      this.collapseDisplacementMap.height = layout.height + layout.cell * 1.5;
+      const strength = layout.width * displacementProfile.strength * collapseOpacity;
+      this.collapseFilter.scale.x = strength;
+      this.collapseFilter.scale.y = strength * .58;
+    }
   }
 
   /** Fixed-seed visual random sequence: cosmetic particles never affect Core. */
@@ -1934,6 +2163,8 @@ export class TetrisRenderer {
       particle.lifeMs = token.particles.lifeMs * (.72 + this.nextMutationRandom() * .38);
       particle.size = token.particles.size * (.72 + this.nextMutationRandom() * .62);
       particle.color = this.nextMutationRandom() > .43 ? token.palette.highlight : token.palette.primary;
+      particle.rotation = this.nextMutationRandom() * Math.PI * 2;
+      particle.rotationVelocity = (this.nextMutationRandom() - .5) * .009;
     }
   }
 
@@ -1961,11 +2192,52 @@ export class TetrisRenderer {
       } else if (particle.item === 'collapse') {
         graphics.roundRect(x - size * .18, y - size, size * .36, size * 2.1, size * .16).fill({ color: particle.color, alpha: .7 * alpha });
       } else if (particle.item === 'bomb') {
-        graphics.roundRect(x - size * .72, y - size * .38, size * 1.44, size * .76, Math.max(1, size * .18)).fill({ color: particle.color, alpha: .86 * alpha });
+        this.drawMutationFragment(
+          graphics,
+          x,
+          y,
+          size * 1.44,
+          size * .76,
+          particle.rotation + particle.rotationVelocity * particle.elapsed,
+          particle.color,
+          .86 * alpha,
+        );
       } else {
         this.drawMutationStar(graphics, x, y, size, size * .34, particle.color, .82 * alpha);
       }
     }
+  }
+
+  /** A rotating Bomb fragment, drawn without allocating a Pixi display object. */
+  private drawMutationFragment(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    width: number,
+    height: number,
+    rotation: number,
+    color: number,
+    alpha: number,
+  ): void {
+    const halfWidth = width / 2;
+    const halfHeight = height / 2;
+    const cosine = Math.cos(rotation);
+    const sine = Math.sin(rotation);
+    const leftTopX = centerX - halfWidth * cosine + halfHeight * sine;
+    const leftTopY = centerY - halfWidth * sine - halfHeight * cosine;
+    const rightTopX = centerX + halfWidth * cosine + halfHeight * sine;
+    const rightTopY = centerY + halfWidth * sine - halfHeight * cosine;
+    const rightBottomX = centerX + halfWidth * cosine - halfHeight * sine;
+    const rightBottomY = centerY + halfWidth * sine + halfHeight * cosine;
+    const leftBottomX = centerX - halfWidth * cosine - halfHeight * sine;
+    const leftBottomY = centerY - halfWidth * sine + halfHeight * cosine;
+    graphics
+      .moveTo(leftTopX, leftTopY)
+      .lineTo(rightTopX, rightTopY)
+      .lineTo(rightBottomX, rightBottomY)
+      .lineTo(leftBottomX, leftBottomY)
+      .lineTo(leftTopX, leftTopY)
+      .fill({ color, alpha });
   }
 
   private applyMutationCameraShake(layout: BoardLayout): void {
@@ -2089,6 +2361,7 @@ export class TetrisRenderer {
           item: event.item,
           triggerCells: event.triggerCells ?? [],
           multiplierFactor: event.multiplierFactor ?? 2,
+          score: event.score,
           previousBoard,
         });
       } else if (event.type === 'level-up') {
@@ -2223,6 +2496,11 @@ export class TetrisRenderer {
           }
         : null,
       boardShiftOffsetY: this.snapshot.boardShiftOffsetY,
+      mutationFilters: {
+        freeze: this.mutationFilterState.freeze,
+        collapse: this.mutationFilterState.collapse,
+        activeCount: Number(this.mutationFilterState.freeze) + Number(this.mutationFilterState.collapse),
+      },
     };
   }
 }

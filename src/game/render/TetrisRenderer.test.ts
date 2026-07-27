@@ -30,9 +30,10 @@ type RendererInternals = {
     duration: number;
     triggerCells: readonly Cell[];
     multiplierFactor: 2 | 4;
+    score: number;
   } | null;
   mutationFlashQueue: Array<{ item: MutationItem }>;
-  mutationParticles: Array<{ active: boolean; item: MutationItem }>;
+  mutationParticles: Array<{ active: boolean; item: MutationItem; rotation: number; rotationVelocity: number }>;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
   collapseTrail: { paths: readonly { x: number; fromY: number; toY: number }[]; elapsed: number; duration: number } | null;
@@ -58,6 +59,7 @@ type RendererInternals = {
     offsetY: number,
   ) => void;
   queueCollapseSettlementTrail: (previousBoard: GameState['board'], cells: readonly Cell[]) => void;
+  syncMutationFilters: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   drawPreviewPieces: (graphics: unknown, pieces: readonly ('I' | 'O')[], x: number, y: number, width: number, height: number, labelInset?: number) => void;
 };
 
@@ -104,9 +106,10 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
 
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
-    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 900, triggerCells: [] });
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 900, triggerCells: [], score: 300 });
     expect(internals.mutationParticles).toHaveLength(120);
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
+    expect(internals.mutationParticles.some((particle) => particle.active && particle.item === 'bomb' && Math.abs(particle.rotationVelocity) > 0)).toBe(true);
     internals.consumeEvents([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 }]);
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
     expect(internals.mutationFlashQueue).toHaveLength(1);
@@ -203,6 +206,36 @@ describe('Puzzle undo presentation reset', () => {
       multiplierFactor: 4,
       duration: 520,
     });
+  });
+
+  it('keeps Freeze and Collapse as the only reusable active board filters', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const frost = { enabled: false, noise: 0, seed: 0 };
+    const collapse = { enabled: false, scale: { x: 0, y: 0 } };
+    const map = {
+      position: { set: () => undefined },
+      width: 0,
+      height: 0,
+    };
+    const fields = new Map([
+      ['freeze', { item: 'freeze' as const, stage: 'active' as const, elapsed: 0 }],
+      ['collapse', { item: 'collapse' as const, stage: 'active' as const, elapsed: 0 }],
+    ]);
+    (internals as unknown as { frostFilter: typeof frost; collapseFilter: typeof collapse; collapseDisplacementMap: typeof map; mutationFields: typeof fields }).frostFilter = frost;
+    (internals as unknown as { frostFilter: typeof frost; collapseFilter: typeof collapse; collapseDisplacementMap: typeof map; mutationFields: typeof fields }).collapseFilter = collapse;
+    (internals as unknown as { frostFilter: typeof frost; collapseFilter: typeof collapse; collapseDisplacementMap: typeof map; mutationFields: typeof fields }).collapseDisplacementMap = map;
+    (internals as unknown as { frostFilter: typeof frost; collapseFilter: typeof collapse; collapseDisplacementMap: typeof map; mutationFields: typeof fields }).mutationFields = fields;
+
+    internals.syncMutationFilters(
+      { mode: 'sprint' } as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+
+    expect(frost).toMatchObject({ enabled: true, noise: 0.035 });
+    expect(collapse.enabled).toBe(true);
+    expect(collapse.scale.x).toBe(3);
+    expect(collapse.scale.y).toBeCloseTo(1.74);
   });
 
   it('uses one crystalline material core per connected freeze carrier without white glyphs', () => {
