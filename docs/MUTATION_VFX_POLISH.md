@@ -1,6 +1,7 @@
 # T14 — Mutation VFX Polish Design Report
 
-**Status:** accepted rendering foundation; compact Mutation Card readability refinement active.
+**Status:** accepted rendering foundation and compact Mutation Card readability refinement
+(`f20f228`, independently accepted in `27a470a`).
 
 ## 1. Design review / baseline
 

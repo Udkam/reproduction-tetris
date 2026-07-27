@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-27 — T14 Mutation Card readability and compact-state acceptance
+
+- **异变 / Mutation** now presents its live Freeze, Collapse, and Multiplier timers
+  through one contained deep-space status card: the decorative `///` marker is gone,
+  normal state text is legible at a deliberate title/item/timer hierarchy, and active
+  material colour is confined to its own card row. This leaves the existing board,
+  event queue, WebAudio, score, duration, item odds, and Core state untouched.
+- The compact 390–599 px game no longer wastes its pre-reserved 124 px Mutation
+  information band. It reuses that exact band for a three-column status instrument;
+  the historically hidden metrics and Next remain hidden, so the board does not gain
+  a scrolling or structurally empty rail. Reduced motion keeps the same endpoint but
+  removes the card’s entrance animation.
+- The independent QA acceptance of `6b8a37c..f20f228` found no P0/P1. The clean
+  candidate passed typecheck, 24 files / 177 tests, and the 749-module build; desktop,
+  390 px, 599 px, and reduced-motion browser checks all report one canvas, zero DOM
+  board cells, no viewport overflow, and zero console/page errors. The pre-existing
+  `npm ci` lockfile mismatch remains a recorded P2 and was not modified.
+
 ## 2026-07-27 — T14 Mutation crystal-tech polish accepted
 
 - **异变 / Mutation** special effects are now visibly attached to ordinary tetromino
