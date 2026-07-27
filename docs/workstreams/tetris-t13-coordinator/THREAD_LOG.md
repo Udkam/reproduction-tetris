@@ -1,5 +1,29 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 attached-carrier direct-spawn candidate
+
+- Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; source base `f20ea8a`,
+  direct-spawn regression candidate `20fe99a`. The only product/test path is
+  `src/game/core/sprint.test.ts`; user-owned Phase 1 paths remain unstaged.
+- Delivery: the existing 7 × 4 carrier sweep now observes the actual spawned active
+  tetromino and its attached item, rather than inferring the body through the queue.
+  It proves all 28 I/O/T/S/Z/J/L × Freeze/Collapse/Bomb/Multiplier pairs occur in
+  the real deterministic spawn stream. No item probability, Core rule, renderer
+  material, queue, or stored state changed.
+- Commands/evidence: focused `npm.cmd run test -- src/game/core/sprint.test.ts`
+  passed 14/14 and `npm.cmd run typecheck` passed. Final gates ran from a clean
+  detached `20fe99a` worktree: typecheck, 24 files / 175 tests, and the 749-module
+  production build all passed. `npm ci` correctly exposed a pre-existing committed
+  lockfile/package mismatch, so the isolated dependency tree was installed with
+  `npm.cmd install --no-save --package-lock=false --no-audit --no-fund`; no lockfile
+  was changed. Fresh ignored browser evidence at
+  `.local/audits/t14/candidate-20fe99a/` shows real `L + Freeze` and `J + Multiplier`
+  Next composition, one canvas, zero DOM cells, no overflow, and zero console/page
+  errors. The screenshot was visually inspected and the exact temporary listener and
+  detached worktree were released.
+- Blocker/next action: candidate `20fe99a` still requires an independent read-only
+  review of `bd49be6..20fe99a` before any acceptance, changelog update, or push.
+
 ## 2026-07-27 — TETRIS-T14 exact-source final gates and browser evidence
 
 - Candidate/source isolation: the new source checkpoint is `f20ea8a` on top of the
