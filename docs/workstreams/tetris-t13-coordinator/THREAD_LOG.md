@@ -1,5 +1,28 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 compact Mutation Card independent QA acceptance
+
+- Review target/disposition: independent read-only QA reviewed
+  `6b8a37c..f20f228` after the coordinator read the candidate record above. Verdict:
+  **accept**; no P0 or P1 finding. This accepts only the compact state-card
+  presentation continuation and does not mark the wider game or the user-owned Phase
+  1 work complete.
+- QA evidence: the existing direct actual-spawn sweep at
+  `src/game/core/sprint.test.ts:114-134` still covers every standard body × item
+  pair (7 × 4); this range changes no Core, renderer, or App path. QA independently
+  passed typecheck, 24 files / 177 tests, and the 749-module build. Its desktop,
+  390 px, 599 px, and reduced-motion browser passes record one canvas, zero DOM board
+  cells, no viewport overflow, and zero console/page errors. The visible `///` marker
+  is `display:none`; desktop card data reads at 14 px title / 18 px timer, and compact
+  data at 12 px / 14 px. The compact rail is exactly 124 px, its historical stats and
+  Next remain hidden, and Classic has no Mutation card.
+- Known P2 (not introduced by the candidate): a clean `npm ci` still fails on the
+  committed `@emnapi/*` lockfile mismatch. QA used a no-lockfile temporary install
+  only for validation; no lockfile was modified.
+- Cleanup/next action: QA removed its isolated worktree and verified its exact 54127
+  listener released. The coordinator may now update accepted documentation and push
+  the exact accepted chain; user-owned Phase 1 paths remain unstaged.
+
 ## 2026-07-27 — TETRIS-T14 compact Mutation Card candidate
 
 - Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; accepted Mutation base
