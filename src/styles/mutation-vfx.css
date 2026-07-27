@@ -191,6 +191,87 @@
   .game-side-panel--sprint .mutation-status.mutation-status--vfx { padding: 9px !important; }
   .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect { min-height: 40px; padding: 6px 7px !important; }
   .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect > em { font-size: 16px !important; }
+
+  /* The base mobile grid already reserves this band. Mutation turns the previously
+     blank first row into a concise state instrument without reviving its hidden
+     metrics or forecast rail. */
+  .game-side-panel.game-side-panel--sprint {
+    position: relative;
+    z-index: 3;
+    display: grid !important;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0;
+    width: 100%;
+    height: 124px;
+    max-height: none;
+    padding: 4px 0 !important;
+    background: transparent;
+    border: 0;
+  }
+
+  .game-side-panel--sprint .info-rail {
+    display: block !important;
+    width: 100%;
+    height: 100%;
+  }
+
+  .game-side-panel--sprint .run-stats,
+  .game-side-panel--sprint .preview-rail,
+  .game-side-panel--sprint .keyboard-map {
+    display: none !important;
+  }
+
+  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+
+  .mutation-status--vfx .mutation-status__header {
+    min-height: 14px;
+  }
+
+  .mutation-status--vfx .mutation-status__header > strong {
+    font-size: 12px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
+    grid-template-columns: 12px minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) 2px;
+    column-gap: 4px;
+    row-gap: 3px;
+    min-height: 0;
+    height: 44px;
+    padding: 5px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__signal {
+    width: 12px;
+    height: 12px;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > b {
+    font-size: 10px !important;
+    letter-spacing: .02em;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect > em {
+    font-size: 14px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__meter {
+    height: 2px !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
