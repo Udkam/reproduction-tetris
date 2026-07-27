@@ -1189,3 +1189,23 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   console/page errors. Independent QA first held a provenance P1, then accepted the
   fresh final-candidate evidence with no P0–P2. The verified Vite listener was stopped
   after review; `package-lock.json` is still inherited and unstaged.
+
+## 2026-07-27 — T14 Mutation VFX candidate, attached-carrier completion
+
+- Completed the player-requested Mutation reliability pass without changing the
+  ordinary seven-bag or non-Mutation modes: 0.1-second minimum fall interval,
+  non-mutating Next-carrier prediction, queue-safe multi-item transient feedback,
+  array-indexed Collapse carrier settlement, stronger persistent fields, and bounded
+  attachment effects instead of item-coloured replacement pieces.
+- The ordinary I/O/T/S/Z/J/L body remains visible under every item. A deterministic
+  4,096-seed regression observes every one of the 28 body/item pairs, and live
+  browser evidence captures a predicted O+Bomb Next preview becoming the actual
+  O+Bomb active carrier.
+- Final source candidate `480a2be`: typecheck, 24 test files / 174 tests, and the
+  749-module build passed. Desktop, portrait, landscape, and reduced-motion audits
+  have one canvas, zero DOM cells, no overflow, and zero console/page errors. The
+  Collapse-active 180-frame render benchmark measured mean 1.07 ms / p95 3.90 ms /
+  max 5.70 ms. The coordinator-owned port 5176 listener was released after review.
+- TODO: obtain an independent read-only QA verdict for `bd49be6..480a2be`; until then
+  do not claim acceptance, update the acceptance changelog, or push. Preserve the
+  user-owned `package-lock.json`, `src/styles.css`, and `phase 1.md` unchanged.

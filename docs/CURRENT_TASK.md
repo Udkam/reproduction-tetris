@@ -7,12 +7,13 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-25): **T13.15 PUZZLE COMPLETION CEREMONY AND
-SURVIVAL GEOLOGY — accepted.** T13.14 remains accepted after its third Settings/forecast
-correction. T13.15 changes only the Puzzle success presentation and the Pixi treatment
-of permanent Survival bedrock; it does not alter Puzzle routes, completion semantics,
-records, Survival pressure, clearable falling stones, or Core simulation. The inherited
-user-owned `package-lock.json` remains outside every checkpoint and was not touched.
+Current execution status (2026-07-27): **T14 MUTATION VFX POLISH — first-party
+candidate verified, independent read-only QA pending.** T13.15's Puzzle ceremony and
+brown-bedrock outcome remain accepted; T13.14 remains accepted after its third
+Settings/forecast correction. T14 does not alter Puzzle routes, completion semantics,
+records, Survival pressure, clearable falling stones, or Classic/Survival/Puzzle
+cadence. The inherited user-owned `package-lock.json` and `src/styles.css` remain
+outside every T14 checkpoint and were not touched.
 
 ### T14 active delivery contract — Mutation VFX polish
 
@@ -22,6 +23,19 @@ user-owned `package-lock.json` remains outside every checkpoint and was not touc
 crystal-technology presentation for **异变 / Mutation**, with one explicitly authorized
 Mutation-only cadence cap. The existing bright application shell, all four modes,
 one-canvas boundary, and product accessibility remain authoritative.
+
+**Candidate checkpoint (2026-07-27):** product source `480a2be` completes the T14
+contract and awaits an independent read-only review before any acceptance, changelog,
+or push claim. The source chain adds a non-mutating immediate-carrier lookahead,
+the six-tick Mutation-only floor, array-indexed Collapse carrier settlement, attached
+carrier rendering, FIFO transient delivery, and direct regressions for all 28
+ordinary-body/item combinations. Final first-party gates are typecheck; 24 test files /
+174 tests; and the 749-module production build. Fresh live browser checks verify the
+four carriers/effects, coexistence of timed fields, a marked immediate Next preview
+that exactly becomes the spawned carrier, desktop/390 × 844/844 × 390/reduced-motion
+geometry, one canvas/zero DOM cells/no overflow/no console/page errors, and a
+Collapse-active 180-frame render benchmark (mean 1.07 ms, p95 3.90 ms, max 5.70 ms).
+The coordinator-owned port 5176 listener was verified released after capture.
 
 1. **Gameplay and deterministic-preview contract.** Do not change Core commands,
 deterministic seed/bag generation, the 32% carrier chance, first-two-piece delay, item

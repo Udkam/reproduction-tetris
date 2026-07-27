@@ -1,5 +1,41 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14-MUTATION-VFX-POLISH candidate verified, QA pending
+
+- Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; base `bd49be6`, contract
+  checkpoints `3f8abe7`, `34f9250`, and `f984c29`, with frozen product candidate
+  `480a2be`. The ordered implementation checkpoints are `8348caa`, `4e403e9`,
+  `d160f0c`, `935d80a`, `796f74f`, `07679bb`, `51c96e3`, and `480a2be`.
+- Exact product/test paths: `src/animation/mutationTimeline.ts` and direct test;
+  `src/design/mutationTokens.ts` and direct test; `src/game/core/constants.ts`,
+  `engine.ts`, `mutation.ts`, `rules.test.ts`, and `sprint.test.ts`;
+  `src/game/render/TetrisRenderer.ts`, `TetrisRenderer.test.ts`, `theme.ts`,
+  `theme.test.ts`; and `src/styles/mutation-vfx.css`. T14 does not stage or mutate
+  the user-owned `package-lock.json`, `src/styles.css`, or untracked `phase 1.md`.
+- Delivery: Mutation now caps only its own gravity at 6 ticks / 0.1 s; the immediate
+  Next carrier is predicted without consuming Core state and renders as the same
+  normal I/O/T/S/Z/J/L body plus a Freeze/Collapse/Bomb/Multiplier attachment. The
+  next spawn exactly matches that preview. Carrier identity is no longer a full-piece
+  recolor: each item adds an item-specific core, rim, surface mark, and energy cue to
+  the ordinary tetromino material. Flash events use a FIFO while timed field effects
+  coexist; Collapse metadata settlement no longer uses per-cell string-key maps.
+- Commands/evidence: targeted Core/render/token/timeline checks passed; final
+  `npm.cmd run typecheck`, `npm.cmd run test` (24 files / 174 tests), and
+  `npm.cmd run build` (749 modules) passed. The prescribed web-game client was run
+  and its countdown frame inspected. Fresh ignored Playwright audits under
+  `.local/audits/t14/` prove desktop O+Bomb forecast → identical O+Bomb spawn,
+  portrait/landscape/reduced-motion forecast visibility, one canvas/zero DOM cells,
+  no overflow, and zero console/page errors. The four-item live audit also proves
+  freeze/collapse/multiplier coexistence and reports Collapse-active render benchmark
+  mean 1.07 ms, p95 3.90 ms, max 5.70 ms across 180 frames. Representative desktop,
+  portrait, landscape, reduced-motion, carrier, and active-effect frames were
+  visually inspected. The exact temporary 5176 Vite process was stopped and a final
+  listener check is empty.
+- Blocker/next action: implementation and first-party evidence are frozen, but this
+  coordinator cannot self-certify an independent verdict. A read-only QA pass must
+  review `bd49be6..480a2be` before acceptance/changelog/push; do not stage the three
+  user-owned dirty paths.
+
 ## 2026-07-25 — TETRIS-T13.14 second Settings macro-layout and live-overlay correction opened
 
 - State change: player review rejects `fe6db5f..7ab0886` and its local evidence
