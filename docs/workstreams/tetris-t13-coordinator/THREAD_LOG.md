@@ -1,5 +1,29 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 collapse settlement renderer checkpoint
+
+- Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; source base `480a2be`,
+  current renderer checkpoint `f20ea8a`. This is a bounded correction to the
+  existing T14 contract, not a Core or item-semantic change.
+- Exact changed paths: `src/game/render/TetrisRenderer.ts` and its direct
+  `TetrisRenderer.test.ts`. Collapse settlement now marks the just-locked cells in
+  a reused 10 × 40 `Uint32Array` stamp grid, then performs one bottom-up column scan.
+  It does not allocate a `Map`, `Set`, sorted row list, or string-key structure on a
+  lock. The visible settlement trail now matches the specified 120 ms duration.
+- Commands actually run: `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts`
+  (10 passed); `npm.cmd run test -- src/game/core/sprint.test.ts
+  src/game/render/TetrisRenderer.test.ts` (24 passed); and `npm.cmd run typecheck`.
+  The direct regression covers a one-cell gap, an already settled lock, and two
+  adjacent newly locked cells in one compact column.
+- New player rule confirmation: the T14 carrier remains an attachment—never a
+  fixed shape/material mapping. Existing deterministic coverage sweeps all 28 normal
+  I/O/T/S/Z/J/L × Freeze/Collapse/Bomb/Multiplier combinations and verifies the
+  immediate Next prediction without consuming Core state.
+- Blocker/next action: run final product gates and fresh live browser evidence from
+  `f20ea8a`, then request an independent read-only review of the contiguous T14
+  source range before any acceptance, changelog, or push. Preserve the current
+  user-owned Phase 1 dirty paths outside this checkpoint.
+
 ## 2026-07-27 — TETRIS-T14-MUTATION-VFX-POLISH candidate verified, QA pending
 
 - Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; base `bd49be6`, contract
