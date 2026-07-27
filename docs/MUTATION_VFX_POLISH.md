@@ -1,6 +1,6 @@
 # T14 — Mutation VFX Polish Design Report
 
-**Status:** active design contract; implementation has not yet been accepted.
+**Status:** accepted rendering foundation; compact Mutation Card readability refinement active.
 
 ## 1. Design review / baseline
 
@@ -94,6 +94,29 @@ downloaded media: a glass crack/brief cold breath for Freeze, compressed low gra
 thud for Collapse, three warning ticks plus a rounded impact for Bomb, and a bright
 golden harmonic for Multiplier. Profiles are data in the Mutation token module. A new
 activation stops a prior Mutation voice, preserving the existing no-overlap rule.
+
+## 6.1 Compact Mutation Card refinement
+
+The accepted board treatment is mechanically complete. The remaining rail correction is
+strictly presentational and does not reopen item selection, duration, scoring, queue,
+or Core state.
+
+- Keep one compact, dark deep-space readout in the established rail position rather
+  than adding another panel or explanatory copy. Its glass surface is a contained
+  `#07111F`/`#10243A` console with a 12 px backdrop blur and a restrained white-glass
+  inner layer; it must not become a page-wide gradient or a second visual hierarchy.
+- Remove the decorative `///` marker from the visible UI. The title, item name,
+  timer, and progress line carry all necessary information. Inactive rows remain
+  legible but quiet; active rows receive only their item’s cyan, violet, or gold
+  material accent.
+- Use Space Grotesk SemiBold at 14 px for the card title and 12 px for item names;
+  JetBrains Mono Bold at 18 px for active time. The existing ARIA labels retain the
+  full state for assistive technology without requiring visible explanatory prose.
+- The card may make one brief UI-only 0.8 → 1 / opacity 0 → 1 entrance on mount.
+  This is not board animation, does not restart on timer updates, and is fully
+  disabled under `prefers-reduced-motion`.
+- This supplementary checkpoint is CSS-only (`src/styles/mutation-vfx.css`) so it
+  deliberately avoids the player’s currently uncommitted page-composition files.
 
 ## 7. Implementation slices and evidence
 
