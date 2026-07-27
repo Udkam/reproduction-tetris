@@ -10,6 +10,7 @@ import {
   VISIBLE_START_ROW,
   cellsForPiece,
   dropDistance,
+  nextMutationPreviewItem,
   type Cell,
   type GameEvent,
   type GameState,
@@ -113,6 +114,14 @@ interface MutationFlash {
   multiplierFactor: 2 | 4;
 }
 
+/** Renderer-only request retained until every same-tick item receives its own burst. */
+interface MutationFlashRequest {
+  item: MutationItem;
+  triggerCells: readonly Cell[];
+  multiplierFactor: 2 | 4;
+  previousBoard: GameState['board'] | null;
+}
+
 interface MutationArrival {
   carrierId: number;
   elapsed: number;
@@ -167,6 +176,7 @@ export interface RendererSnapshot {
   previewLayerVisible: boolean;
   previewPiece: PieceType | null;
   previewPieces: PieceType[];
+  previewMutationItem: MutationItem | null;
   previewClearBounds: { x: number; y: number; width: number; height: number } | null;
   previewClearPiece: PieceType | null;
   scrim: { x: number; y: number; width: number; height: number } | null;
@@ -199,6 +209,7 @@ export class TetrisRenderer {
   private rotationPulse = 0;
   private boardShift: BoardShift | null = null;
   private mutationFlash: MutationFlash | null = null;
+  private readonly mutationFlashQueue: MutationFlashRequest[] = [];
   private mutationArrival: MutationArrival | null = null;
   private activeMutationCarrierId: number | null = null;
   private collapseTrail: CollapseTrail | null = null;
@@ -228,6 +239,13 @@ export class TetrisRenderer {
   private previewLayerVisible = false;
   private previewPiece: PieceType | null = null;
   private previewPieces: PieceType[] = [];
+  private previewMutationItem: MutationItem | null = null;
+  /** Avoid replaying the pure Core preview lookahead on every rendered frame. */
+  private previewMutationQueueRef: GameState['queue'] | null = null;
+  private previewMutationRandomizerRef: GameState['randomizer'] | null = null;
+  private previewMutationPieceCount = -1;
+  private previewMutationMode: GameState['mode'] | null = null;
+  private previewMutationHasActive = false;
   private lastPreviewBounds: RendererSnapshot['preview'] = null;
   private lastPreviewPiece: PieceType | null = null;
   private previewClearBounds: RendererSnapshot['previewClearBounds'] = null;
@@ -240,6 +258,7 @@ export class TetrisRenderer {
     previewLayerVisible: false,
     previewPiece: null,
     previewPieces: [],
+    previewMutationItem: null,
     previewClearBounds: null,
     previewClearPiece: null,
     scrim: null,
@@ -506,9 +525,6 @@ export class TetrisRenderer {
     const ghostOffsetX = this.presentation && state.active
       ? (this.presentation.x - state.active.x) * layout.cell
       : 0;
-    const activeMutationMaterial = state.mode === 'sprint' && state.mutationActiveCarrier
-      ? this.mutationMaterial(state.mutationActiveCarrier.item)
-      : undefined;
     if (state.active) {
       this.drawCellGroups(graphics, visibleGhostCells, state.active.type, 0.82, {
         originX: layout.x,
@@ -516,7 +532,6 @@ export class TetrisRenderer {
         unit: layout.cell,
         offsetX: ghostOffsetX,
         ghost: true,
-        material: activeMutationMaterial,
       });
     }
 
@@ -554,7 +569,6 @@ export class TetrisRenderer {
           offsetY,
           active: true,
           scale: rotationScale,
-          material: activeMutationMaterial,
         },
       );
       this.drawActiveMutationCarrierMaterial(graphics, state, visibleActiveCells, layout, offsetX, offsetY);
@@ -615,13 +629,6 @@ export class TetrisRenderer {
         .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
         .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
       if (cells.length === 0) continue;
-      this.drawCellGroups(graphics, cells, 'O', 1, {
-        originX: layout.x,
-        originY: layout.y,
-        unit: layout.cell,
-        offsetY,
-        material: this.mutationMaterial(carrier.item),
-      });
       this.drawMutationCarrierSurface(graphics, cells, carrier.item, layout, 0, offsetY);
       this.drawMutationCarrierCore(graphics, cells, carrier.item, layout, 0, offsetY);
     }
@@ -1218,6 +1225,7 @@ export class TetrisRenderer {
     this.previewLayerVisible = false;
     this.previewPiece = null;
     this.previewPieces = [];
+    this.previewMutationItem = this.resolvePreviewMutationItem(state);
     const hostBounds = this.host?.getBoundingClientRect();
     const slotElement = document.querySelector<HTMLElement>('[data-testid="next-slot"]');
     const slot = slotElement?.getBoundingClientRect();
@@ -1298,10 +1306,20 @@ export class TetrisRenderer {
             Math.max(8, previewSlot.width - segmentInset * 2),
             Math.max(8, previewSlot.height - segmentInset * 2),
             previewSlot.labelInset,
+            index === 0 ? this.previewMutationItem : null,
           );
         }
       } else {
-        this.drawPreviewPieces(graphics, previews, fallbackSlot.x, fallbackSlot.y, fallbackSlot.width, fallbackSlot.height);
+        this.drawPreviewPieces(
+          graphics,
+          previews,
+          fallbackSlot.x,
+          fallbackSlot.y,
+          fallbackSlot.width,
+          fallbackSlot.height,
+          0,
+          this.previewMutationItem,
+        );
       }
       this.previewBounds = { x: fallbackSlot.x, y: fallbackSlot.y, width: fallbackSlot.width, height: fallbackSlot.height };
       this.previewLayerVisible = previews.length > 0;
@@ -1331,7 +1349,16 @@ export class TetrisRenderer {
       const topY = Math.max(7, layout.y - Math.min(92, layout.cell * 4.7));
       this.previewBounds = { x: layout.x, y: topY, width: layout.cell * 5, height: Math.max(42, layout.cell * 4) };
       const previews = nextPreviewPieces(state);
-      this.drawPreviewPieces(graphics, previews, this.previewBounds.x, this.previewBounds.y, this.previewBounds.width, this.previewBounds.height);
+      this.drawPreviewPieces(
+        graphics,
+        previews,
+        this.previewBounds.x,
+        this.previewBounds.y,
+        this.previewBounds.width,
+        this.previewBounds.height,
+        0,
+        this.previewMutationItem,
+      );
       this.previewLayerVisible = previews.length > 0;
       this.previewPieces = [...previews];
       this.previewPiece = previews[0] ?? null;
@@ -1343,7 +1370,16 @@ export class TetrisRenderer {
       const cardWidth = Math.max(78, sideWidth);
       this.previewBounds = { x: leftX, y: layout.y, width: cardWidth, height: Math.max(52, layout.cell * 4) };
       const previews = nextPreviewPieces(state);
-      this.drawPreviewPieces(graphics, previews, this.previewBounds.x, this.previewBounds.y, this.previewBounds.width, this.previewBounds.height);
+      this.drawPreviewPieces(
+        graphics,
+        previews,
+        this.previewBounds.x,
+        this.previewBounds.y,
+        this.previewBounds.width,
+        this.previewBounds.height,
+        0,
+        this.previewMutationItem,
+      );
       this.previewLayerVisible = previews.length > 0;
       this.previewPieces = [...previews];
       this.previewPiece = previews[0] ?? null;
@@ -1371,6 +1407,22 @@ export class TetrisRenderer {
         .lineTo(x + width - dividerInset, dividerY)
         .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
     }
+  }
+
+  private resolvePreviewMutationItem(state: GameState): MutationItem | null {
+    const hasActive = state.active !== null;
+    const unchanged = this.previewMutationQueueRef === state.queue
+      && this.previewMutationRandomizerRef === state.randomizer
+      && this.previewMutationPieceCount === state.pieceCount
+      && this.previewMutationMode === state.mode
+      && this.previewMutationHasActive === hasActive;
+    if (unchanged) return this.previewMutationItem;
+    this.previewMutationQueueRef = state.queue;
+    this.previewMutationRandomizerRef = state.randomizer;
+    this.previewMutationPieceCount = state.pieceCount;
+    this.previewMutationMode = state.mode;
+    this.previewMutationHasActive = hasActive;
+    return state.mode === 'sprint' ? nextMutationPreviewItem(state) : null;
   }
 
   /** Persistent, low-obstruction board treatment makes every ten-second state legible. */
@@ -1409,10 +1461,10 @@ export class TetrisRenderer {
     const radius = Math.max(5, layout.cell * 0.22);
     graphics
       .roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, radius)
-      .fill({ color: token.palette.primary, alpha: token.shader.fieldAlpha * 0.17 * opacity })
-      .stroke({ color: token.palette.highlight, alpha: 0.54 * pulse * opacity, width: Math.max(1, layout.cell * 0.062) })
+      .fill({ color: token.palette.primary, alpha: token.shader.fieldAlpha * 0.55 * opacity })
+      .stroke({ color: token.palette.highlight, alpha: 0.82 * pulse * opacity, width: Math.max(1, layout.cell * 0.062) })
       .roundRect(layout.x + inset * 2.5, layout.y + inset * 2.5, layout.width - inset * 5, layout.height - inset * 5, Math.max(3, radius * .6))
-      .stroke({ color: token.palette.primary, alpha: 0.26 * pulse * opacity, width: Math.max(1, layout.cell * 0.025) });
+      .stroke({ color: token.palette.primary, alpha: 0.42 * pulse * opacity, width: Math.max(1, layout.cell * 0.025) });
     const shardSize = Math.max(3, layout.cell * 0.19);
     for (const [xFactor, yFactor, scale] of [
       [.08, .05, .8], [.27, .04, .52], [.72, .05, .7], [.92, .08, .46], [.04, .29, .5], [.96, .67, .76], [.16, .87, .4], [.83, .9, .58],
@@ -1425,7 +1477,7 @@ export class TetrisRenderer {
         shardSize * scale * .45,
         shardSize * scale,
         token.palette.highlight,
-        0.55 * pulse * opacity,
+        0.82 * pulse * opacity,
       );
     }
   }
@@ -1436,8 +1488,12 @@ export class TetrisRenderer {
     const bandY = layout.y + layout.cell * .12;
     graphics
       .roundRect(layout.x + layout.cell * .12, bandY, layout.width - layout.cell * .24, bandHeight, Math.max(4, layout.cell * .16))
-      .fill({ color: token.palette.deep, alpha: 0.48 * opacity })
-      .stroke({ color: token.palette.highlight, alpha: 0.68 * opacity, width: Math.max(1, layout.cell * .052) });
+      .fill({ color: token.palette.deep, alpha: 0.62 * opacity })
+      .stroke({ color: token.palette.highlight, alpha: 0.88 * opacity, width: Math.max(1, layout.cell * .052) });
+    graphics
+      .roundRect(layout.x + layout.width * .42, bandY + bandHeight, layout.width * .16, layout.height - bandHeight - layout.cell * .5, layout.cell * .12)
+      .fill({ color: token.palette.deep, alpha: 0.18 * opacity })
+      .stroke({ color: token.palette.primary, alpha: 0.34 * opacity, width: Math.max(1, layout.cell * .032) });
     const laneCount = 7;
     const laneWidth = Math.max(2, layout.cell * .078);
     for (let lane = 0; lane < laneCount; lane += 1) {
@@ -1445,12 +1501,12 @@ export class TetrisRenderer {
       const drift = this.options.reducedMotion ? 0 : (phase + lane * .137) % 1;
       const y = bandY + bandHeight + drift * layout.cell * 1.6;
       const height = Math.max(layout.cell * 2, layout.height * (.3 + lane % 2 * .07));
-      graphics.roundRect(x, y, laneWidth, height, laneWidth / 2).fill({ color: token.palette.primary, alpha: 0.18 * opacity });
-      graphics.circle(x + laneWidth / 2, y + height, laneWidth * 1.8).fill({ color: token.palette.highlight, alpha: 0.3 * opacity });
+      graphics.roundRect(x, y, laneWidth, height, laneWidth / 2).fill({ color: token.palette.primary, alpha: 0.3 * opacity });
+      graphics.circle(x + laneWidth / 2, y + height, laneWidth * 1.8).fill({ color: token.palette.highlight, alpha: 0.52 * opacity });
     }
     graphics
       .roundRect(layout.x + layout.cell * .2, layout.y + layout.height - layout.cell * .7, layout.width - layout.cell * .4, Math.max(2, layout.cell * .12), layout.cell * .06)
-      .fill({ color: token.palette.primary, alpha: 0.24 * opacity });
+      .fill({ color: token.palette.primary, alpha: 0.36 * opacity });
   }
 
   private drawMultiplierAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
@@ -1459,8 +1515,8 @@ export class TetrisRenderer {
     const centerY = layout.y + layout.height * .43;
     const pulse = this.options.reducedMotion ? 1 : 0.7 + Math.sin(phase * Math.PI * 2) * 0.22;
     const radius = Math.max(layout.cell * 1.8, layout.width * .13);
-    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.07 * pulse * opacity });
-    graphics.circle(centerX, centerY, radius * .58).fill({ color: token.palette.highlight, alpha: 0.045 * pulse * opacity });
+    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.13 * pulse * opacity });
+    graphics.circle(centerX, centerY, radius * .58).fill({ color: token.palette.highlight, alpha: 0.09 * pulse * opacity });
     this.drawMutationStar(
       graphics,
       centerX,
@@ -1468,16 +1524,23 @@ export class TetrisRenderer {
       Math.max(layout.cell * .82, layout.width * .052),
       Math.max(layout.cell * .22, layout.width * .014),
       token.palette.highlight,
-      0.32 * pulse * opacity,
+      0.58 * pulse * opacity,
     );
     this.strokeSegments(graphics, [
       [layout.x + layout.cell * .38, layout.y + layout.cell * .38, layout.x + layout.width - layout.cell * .38, layout.y + layout.height - layout.cell * .38],
       [layout.x + layout.width - layout.cell * .38, layout.y + layout.cell * .38, layout.x + layout.cell * .38, layout.y + layout.height - layout.cell * .38],
       [centerX - radius * 1.35, centerY, centerX + radius * 1.35, centerY],
-    ], token.palette.primary, 0.18 * pulse * opacity, Math.max(1, layout.cell * .042));
+    ], token.palette.primary, 0.34 * pulse * opacity, Math.max(1, layout.cell * .042));
   }
 
-  private drawPreviewPiece(graphics: Graphics, type: PieceType, centerX: number, centerY: number, unit: number): void {
+  private drawPreviewPiece(
+    graphics: Graphics,
+    type: PieceType,
+    centerX: number,
+    centerY: number,
+    unit: number,
+    carrierItem: MutationItem | null,
+  ): void {
     const shape = PIECE_SHAPES[type][0];
     const minX = Math.min(...shape.map((cell) => cell.x));
     const maxX = Math.max(...shape.map((cell) => cell.x));
@@ -1485,11 +1548,25 @@ export class TetrisRenderer {
     const maxY = Math.max(...shape.map((cell) => cell.y));
     const width = (maxX - minX + 1) * unit;
     const height = (maxY - minY + 1) * unit;
+    const originX = centerX - width / 2 - minX * unit;
+    const originY = centerY - height / 2 - minY * unit;
     this.drawCellGroups(graphics, shape, type, 0.96, {
-      originX: centerX - width / 2 - minX * unit,
-      originY: centerY - height / 2 - minY * unit,
+      originX,
+      originY,
       unit,
     });
+    if (carrierItem) {
+      const previewLayout: BoardLayout = {
+        x: originX,
+        y: originY,
+        width,
+        height,
+        cell: unit,
+        compact: true,
+      };
+      this.drawMutationCarrierSurface(graphics, shape, carrierItem, previewLayout);
+      this.drawMutationCarrierCore(graphics, shape, carrierItem, previewLayout);
+    }
   }
 
   private drawPreviewPieces(
@@ -1500,6 +1577,7 @@ export class TetrisRenderer {
     width: number,
     height: number,
     labelInset = 0,
+    carrierItem: MutationItem | null = null,
   ): void {
     if (!pieces.length) return;
     const dualPreview = pieces.length > 1;
@@ -1509,7 +1587,7 @@ export class TetrisRenderer {
     for (const [index, piece] of pieces.entries()) {
       const unit = this.previewUnitFor(piece, width, slotHeight, dualPreview);
       const centerY = contentY + slotHeight * (index + 0.5);
-      this.drawPreviewPiece(graphics, piece, x + width / 2, centerY, unit);
+      this.drawPreviewPiece(graphics, piece, x + width / 2, centerY, unit, index === 0 ? carrierItem : null);
     }
   }
 
@@ -1756,6 +1834,7 @@ export class TetrisRenderer {
 
   private clearMutationVisualState(): void {
     this.mutationFields.clear();
+    this.mutationFlashQueue.length = 0;
     this.clearMutationParticles();
     this.particleCursor = 0;
     this.particleSeed = 0x4d555441;
@@ -1766,6 +1845,34 @@ export class TetrisRenderer {
   /** Foreground one new activation at a time; persistent timed fields still stack. */
   private clearMutationParticles(): void {
     for (const particle of this.mutationParticles) particle.active = false;
+  }
+
+  private enqueueMutationFlash(request: MutationFlashRequest): void {
+    this.mutationFlashQueue.push(request);
+    if (this.mutationFlash === null) this.startNextMutationFlash();
+  }
+
+  private startNextMutationFlash(): void {
+    const request = this.mutationFlashQueue.shift();
+    if (!request) {
+      this.mutationFlash = null;
+      return;
+    }
+    const timeline = createMutationActivationTimeline(request.item);
+    this.mutationFlash = {
+      item: request.item,
+      elapsed: 0,
+      // The renderer owns this visual timeline only; Core retains item
+      // duration, scoring, clears, and the instant Bomb removal rule.
+      duration: timeline.duration,
+      timeline,
+      triggerCells: request.triggerCells,
+      multiplierFactor: request.multiplierFactor,
+    };
+    // A foreground flash gets a clean bounded burst. Earlier timed fields remain
+    // visible in the atmosphere and status card; no activation event is discarded.
+    this.emitMutationParticles(request.item, request.triggerCells, request.previousBoard);
+    this.impact = this.options.reducedMotion ? 0.24 : request.item === 'bomb' ? 1.05 : 0.72;
   }
 
   /** Pixi nulls display-object points during unmount; cleanup must stay safe. */
@@ -1971,19 +2078,12 @@ export class TetrisRenderer {
       } else if (event.type === 'survival-stones-landed') {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.18 : 0.46);
       } else if (event.type === 'mutation-activated') {
-        const timeline = createMutationActivationTimeline(event.item);
-        this.mutationFlash = {
+        this.enqueueMutationFlash({
           item: event.item,
-          elapsed: 0,
-          // The renderer owns this visual timeline only; Core retains item
-          // duration, scoring, clears, and the instant Bomb removal rule.
-          duration: timeline.duration,
-          timeline,
           triggerCells: event.triggerCells ?? [],
           multiplierFactor: event.multiplierFactor ?? 2,
-        };
-        this.emitMutationParticles(event.item, event.triggerCells ?? [], previousBoard);
-        this.impact = this.options.reducedMotion ? 0.24 : event.item === 'bomb' ? 1.05 : 0.72;
+          previousBoard,
+        });
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
       } else if (event.type === 'bedrock-raised' || event.type === 'bedrock-lowered') {
@@ -2051,7 +2151,7 @@ export class TetrisRenderer {
     if (this.mutationFlash) {
       this.mutationFlash.timeline.advance(deltaMs);
       this.mutationFlash.elapsed = this.mutationFlash.timeline.elapsed;
-      if (this.mutationFlash.timeline.complete) this.mutationFlash = null;
+      if (this.mutationFlash.timeline.complete) this.startNextMutationFlash();
     }
     if (this.mutationArrival) {
       this.mutationArrival.elapsed += deltaMs;
@@ -2102,6 +2202,7 @@ export class TetrisRenderer {
       previewLayerVisible: this.previewLayerVisible,
       previewPiece: this.previewPiece,
       previewPieces: [...this.previewPieces],
+      previewMutationItem: this.previewMutationItem,
       previewClearBounds: this.previewClearBounds,
       previewClearPiece: this.previewClearPiece,
       scrim: this.scrimBounds,

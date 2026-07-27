@@ -9,6 +9,7 @@ import {
   PIECE_MATERIALS,
   SURVIVAL_STONE_MATERIAL,
 } from './theme';
+import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
 
 const styles = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
 
@@ -63,12 +64,32 @@ describe('T5 bright mineral matte material', () => {
     expect(contrastRatio(SURVIVAL_STONE_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
   });
 
-  it('assigns four high-contrast, saturated full-piece materials to the four 异变 items', () => {
+  it('derives four high-contrast attached-signal materials from the VFX palette', () => {
     expect(MUTATION_MATERIALS).toEqual({
-      freeze: { fillStart: 0x9cecf8, fillEnd: 0x3d9ec2, edge: 0x15536b, innerEdge: 0xd7fcff },
-      collapse: { fillStart: 0x897cae, fillEnd: 0x3d365f, edge: 0x1d1931, innerEdge: 0xc0afe7 },
-      bomb: { fillStart: 0xf07857, fillEnd: 0x8b3038, edge: 0x35171d, innerEdge: 0xffd08a },
-      multiplier: { fillStart: 0xffd96b, fillEnd: 0xbd711d, edge: 0x6b3909, innerEdge: 0xfff0ab },
+      freeze: {
+        fillStart: MUTATION_VFX_TOKENS.freeze.palette.primary,
+        fillEnd: MUTATION_VFX_TOKENS.freeze.palette.facet,
+        edge: MUTATION_VFX_TOKENS.freeze.palette.deep,
+        innerEdge: MUTATION_VFX_TOKENS.freeze.palette.highlight,
+      },
+      collapse: {
+        fillStart: MUTATION_VFX_TOKENS.collapse.palette.primary,
+        fillEnd: MUTATION_VFX_TOKENS.collapse.palette.facet,
+        edge: MUTATION_VFX_TOKENS.collapse.palette.deep,
+        innerEdge: MUTATION_VFX_TOKENS.collapse.palette.highlight,
+      },
+      bomb: {
+        fillStart: MUTATION_VFX_TOKENS.bomb.palette.primary,
+        fillEnd: MUTATION_VFX_TOKENS.bomb.palette.facet,
+        edge: MUTATION_VFX_TOKENS.bomb.palette.deep,
+        innerEdge: MUTATION_VFX_TOKENS.bomb.palette.highlight,
+      },
+      multiplier: {
+        fillStart: MUTATION_VFX_TOKENS.multiplier.palette.primary,
+        fillEnd: MUTATION_VFX_TOKENS.multiplier.palette.facet,
+        edge: MUTATION_VFX_TOKENS.multiplier.palette.deep,
+        innerEdge: MUTATION_VFX_TOKENS.multiplier.palette.highlight,
+      },
     });
     const starts = Object.values(MUTATION_MATERIALS).map((material) => material.fillStart);
     expect(new Set(starts).size).toBe(4);

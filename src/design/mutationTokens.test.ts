@@ -6,9 +6,13 @@ describe('mutation VFX token contract', () => {
     expect(MUTATION_PARTICLE_LIMIT).toBe(120);
     expect(MUTATION_MAX_EFFECT_PLANES).toBe(2);
     expect(MUTATION_VFX_TOKENS.freeze.palette.primary).toBe(0x8debff);
+    expect(MUTATION_VFX_TOKENS.freeze.palette.facet).toBe(0x65bed6);
     expect(MUTATION_VFX_TOKENS.collapse.palette.primary).toBe(0x9b6cff);
+    expect(MUTATION_VFX_TOKENS.collapse.palette.facet).toBe(0x7249bf);
     expect(MUTATION_VFX_TOKENS.bomb.palette.primary).toBe(0xff6b35);
+    expect(MUTATION_VFX_TOKENS.bomb.palette.facet).toBe(0xbd4b2d);
     expect(MUTATION_VFX_TOKENS.multiplier.palette.primary).toBe(0xffd166);
+    expect(MUTATION_VFX_TOKENS.multiplier.palette.facet).toBe(0xd1a244);
     expect(new Set(Object.values(MUTATION_VFX_TOKENS).map((token) => token.palette.primary)).size).toBe(4);
   });
 

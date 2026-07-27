@@ -13,6 +13,8 @@ export interface MutationVfxToken {
     primary: number;
     highlight: number;
     deep: number;
+    /** Raised-cell facet blended from primary/deep so carrier faces stay legible on navy. */
+    facet: number;
     glow: number;
   };
   particles: {
@@ -59,28 +61,28 @@ export const MUTATION_MAX_EFFECT_PLANES = 2;
 
 export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
   freeze: {
-    palette: { primary: 0x8debff, highlight: 0xd9f7ff, deep: 0x287b99, glow: 0xbaf2ff },
+    palette: { primary: 0x8debff, highlight: 0xd9f7ff, deep: 0x287b99, facet: 0x65bed6, glow: 0xbaf2ff },
     particles: { burst: 18, drift: 12, lifeMs: 920, speed: 0.058, size: 0.28 },
     shader: { fieldAlpha: 0.18, edgeGlow: 0.82, distortion: 0.06 },
     animation: { enterMs: 500, pulseMs: 800, exitMs: 1000, activationMs: 500 },
     audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.11, loopHz: 261.63, loopGain: 0.018, endHz: 523.25 },
   },
   collapse: {
-    palette: { primary: 0x9b6cff, highlight: 0xd8b4fe, deep: 0x35145f, glow: 0xc396ff },
+    palette: { primary: 0x9b6cff, highlight: 0xd8b4fe, deep: 0x35145f, facet: 0x7249bf, glow: 0xc396ff },
     particles: { burst: 16, drift: 18, lifeMs: 560, speed: 0.082, size: 0.24 },
     shader: { fieldAlpha: 0.16, edgeGlow: 0.76, distortion: 0.14 },
     animation: { enterMs: 180, pulseMs: 120, exitMs: 420, activationMs: 300 },
     audio: { activateHz: 148, accentHz: 93, waveform: 'triangle', gain: 0.13, loopHz: 73.42, loopGain: 0.022, endHz: 196 },
   },
   bomb: {
-    palette: { primary: 0xff6b35, highlight: 0xffe8a3, deep: 0x5a1a20, glow: 0xffb347 },
+    palette: { primary: 0xff6b35, highlight: 0xffe8a3, deep: 0x5a1a20, facet: 0xbd4b2d, glow: 0xffb347 },
     particles: { burst: 72, drift: 18, lifeMs: 900, speed: 0.16, size: 0.34 },
     shader: { fieldAlpha: 0.26, edgeGlow: 0.96, distortion: 0.22 },
     animation: { enterMs: 200, pulseMs: 200, exitMs: 500, activationMs: 900 },
     audio: { activateHz: 74, accentHz: 111, waveform: 'triangle', gain: 0.16, loopHz: null, loopGain: 0, endHz: null },
   },
   multiplier: {
-    palette: { primary: 0xffd166, highlight: 0xfff2b2, deep: 0x8d5b10, glow: 0xffe29a },
+    palette: { primary: 0xffd166, highlight: 0xfff2b2, deep: 0x8d5b10, facet: 0xd1a244, glow: 0xffe29a },
     particles: { burst: 28, drift: 18, lifeMs: 620, speed: 0.092, size: 0.3 },
     shader: { fieldAlpha: 0.2, edgeGlow: 0.9, distortion: 0.04 },
     animation: { enterMs: 260, pulseMs: 520, exitMs: 520, activationMs: 520 },

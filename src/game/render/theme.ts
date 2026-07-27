@@ -81,31 +81,35 @@ export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
   L: { fillStart: 0x4d91ad, fillEnd: 0x407d99, edge: 0x295567, innerEdge: 0x95c8d9 },
 };
 
-/** Full-piece carrier materials are deliberately separate from the ordinary seven hues. */
+/**
+ * Accent/core materials for a carrier attachment. The ordinary tetromino keeps its
+ * own seven-bag material beneath this compact signal treatment, so item identity
+ * never replaces shape identity.
+ */
 export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
-  // Every carrier derives from the T14 VFX palette, while retaining the same
-  // raised-cell material grammar as ordinary tetrominoes.
+  // Every attachment derives from the T14 VFX palette while retaining the
+  // raised-cell material grammar of the ordinary tetromino beneath it.
   freeze: {
     fillStart: MUTATION_VFX_TOKENS.freeze.palette.primary,
-    fillEnd: MUTATION_VFX_TOKENS.freeze.palette.deep,
+    fillEnd: MUTATION_VFX_TOKENS.freeze.palette.facet,
     edge: MUTATION_VFX_TOKENS.freeze.palette.deep,
     innerEdge: MUTATION_VFX_TOKENS.freeze.palette.highlight,
   },
   collapse: {
     fillStart: MUTATION_VFX_TOKENS.collapse.palette.primary,
-    fillEnd: MUTATION_VFX_TOKENS.collapse.palette.deep,
+    fillEnd: MUTATION_VFX_TOKENS.collapse.palette.facet,
     edge: MUTATION_VFX_TOKENS.collapse.palette.deep,
     innerEdge: MUTATION_VFX_TOKENS.collapse.palette.highlight,
   },
   bomb: {
     fillStart: MUTATION_VFX_TOKENS.bomb.palette.primary,
-    fillEnd: MUTATION_VFX_TOKENS.bomb.palette.deep,
+    fillEnd: MUTATION_VFX_TOKENS.bomb.palette.facet,
     edge: MUTATION_VFX_TOKENS.bomb.palette.deep,
     innerEdge: MUTATION_VFX_TOKENS.bomb.palette.highlight,
   },
   multiplier: {
     fillStart: MUTATION_VFX_TOKENS.multiplier.palette.primary,
-    fillEnd: MUTATION_VFX_TOKENS.multiplier.palette.deep,
+    fillEnd: MUTATION_VFX_TOKENS.multiplier.palette.facet,
     edge: MUTATION_VFX_TOKENS.multiplier.palette.deep,
     innerEdge: MUTATION_VFX_TOKENS.multiplier.palette.highlight,
   },

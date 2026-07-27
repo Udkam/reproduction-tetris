@@ -31,6 +31,7 @@ type RendererInternals = {
     triggerCells: readonly Cell[];
     multiplierFactor: 2 | 4;
   } | null;
+  mutationFlashQueue: Array<{ item: MutationItem }>;
   mutationParticles: Array<{ active: boolean; item: MutationItem }>;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
@@ -94,7 +95,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.boardShift).toBeNull();
   });
 
-  it('maps each item to a full special material and clears bounded mutation effects', () => {
+  it('maps each item to an attached material treatment and queues bounded mutation effects', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     expect(internals.mutationMaterial('freeze')).toBe(MUTATION_MATERIALS.freeze);
@@ -107,7 +108,14 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationParticles).toHaveLength(120);
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
     internals.consumeEvents([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 }]);
-    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(0);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
+    expect(internals.mutationFlashQueue).toHaveLength(1);
+    expect(internals.mutationFlashQueue[0]).toMatchObject({ item: 'freeze' });
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
+    internals.advanceEffects(899);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
+    internals.advanceEffects(1);
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0, duration: 500 });
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'freeze')).toHaveLength(18);
     internals.advanceEffects(499);
     expect(internals.mutationFlash).not.toBeNull();
