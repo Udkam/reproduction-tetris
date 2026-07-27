@@ -237,6 +237,8 @@ export class TetrisRenderer {
   private readonly effectGraphics = new Graphics();
   /** Second and final visual-only effect plane, reserved for Mutation VFX. */
   private readonly mutationGraphics = new Graphics();
+  /** Board-local clip: transient Mutation fragments must never obscure the HUD rail. */
+  private readonly mutationMaskGraphics = new Graphics();
   /** Two renderer-lifetime Pixi filters; they are disabled instead of reallocated. */
   private frostFilter: NoiseFilter | null = null;
   private collapseFilter: DisplacementFilter | null = null;
@@ -339,7 +341,14 @@ export class TetrisRenderer {
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
-    this.world.addChild(this.boardGraphics, this.pieceGraphics, this.effectGraphics, this.mutationGraphics);
+    this.mutationGraphics.mask = this.mutationMaskGraphics;
+    this.world.addChild(
+      this.boardGraphics,
+      this.pieceGraphics,
+      this.effectGraphics,
+      this.mutationGraphics,
+      this.mutationMaskGraphics,
+    );
     this.initializeMutationFilters();
     app.stage.addChild(this.world);
     app.ticker.add(this.onTick);
@@ -1235,6 +1244,10 @@ export class TetrisRenderer {
   private drawEffects(state: GameState, layout: BoardLayout): void {
     const graphics = this.effectGraphics;
     const mutationGraphics = this.mutationGraphics;
+    this.mutationMaskGraphics
+      .clear()
+      .rect(layout.x, layout.y, layout.width, layout.height)
+      .fill({ color: 0xffffff, alpha: 1 });
     graphics.clear();
     mutationGraphics.clear();
     this.drawActiveMutationAtmosphere(mutationGraphics, state, layout);
@@ -1775,9 +1788,9 @@ export class TetrisRenderer {
         const alpha = 1 - impact.progress;
         graphics
           .roundRect(layout.x, layout.y, layout.width, layout.height, Math.max(5, layout.cell * .2))
-          .fill({ color: token.palette.highlight, alpha: .32 * alpha })
+          .fill({ color: token.palette.highlight, alpha: .18 * alpha })
           .roundRect(layout.x + layout.cell * .08, y + layout.cell * .08, layout.width - layout.cell * .16, layout.cell * rows - layout.cell * .16, Math.max(4, layout.cell * .16))
-          .fill({ color: token.palette.primary, alpha: .46 * alpha });
+          .fill({ color: token.palette.primary, alpha: .36 * alpha });
       }
       if (shockwave.active) {
         const alpha = 1 - shockwave.progress;
