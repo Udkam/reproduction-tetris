@@ -1,5 +1,48 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 bounded Pixi-field / board-local Bomb candidate
+
+- Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; follow-on source range
+  `20fe99a..813f31b`, final product candidate `813f31b`. This records the player's
+  explicit attachment rule: every normal I/O/T/S/Z/J/L body may independently carry
+  Freeze, Collapse, Bomb, or Multiplier; no shape is assigned to one fixed item.
+- Exact changed paths: `docs/MUTATION_VFX_POLISH.md`,
+  `src/design/mutationTokens.ts`, `src/design/mutationTokens.test.ts`,
+  `src/game/core/sprint.test.ts`, `src/game/render/TetrisRenderer.ts`, and
+  `src/game/render/TetrisRenderer.test.ts`. The renderer now keeps exactly two
+  renderer-lifetime Pixi filters—Freeze frost/noise and Collapse displacement—then
+  disables rather than recreates them. Freeze has an actual 800 ms crystal-core
+  breath, Collapse uses the documented `.015` / `.8` bounded map motion, Bomb
+  fragments rotate from the reused particle pool, and Multiplier retains the real
+  score on its vector lift. The latest correction masks the Mutation effect plane to
+  the board so Bomb fragments and impact never obscure the right HUD/Next rail; its
+  white impact opacity was reduced without changing Core scoring, rows, timing, or
+  carrier probability.
+- Commands/evidence: direct `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts
+  src/design/mutationTokens.test.ts` passed 14/14 and `npm.cmd run typecheck` passed
+  before the final correction. The clean detached `813f31b` candidate then passed
+  `npm.cmd run typecheck`, the full 24-file / 177-test suite, and the 749-module
+  production build. `npm ci` correctly reports the existing committed
+  `@emnapi/wasi-threads` / lockfile mismatch; the clean candidate therefore used
+  `npm.cmd install --no-save --package-lock=false --no-audit --no-fund` without
+  modifying any lockfile. The required web-game Playwright action client completed
+  against the clean candidate.
+- Browser proof: ignored local
+  `.local/audits/t14/candidate-813f31b/bomb-board-local.{png,json}` is a real
+  deterministic public-command Mutation run (seed 2, six legal placements). A locked
+  Bomb carrier is cleared; the report records `lastItem: bomb`, one canvas, zero DOM
+  cells, no viewport overflow, and zero page/console errors. The PNG was visually
+  inspected: rotating amber/ember fragments, impact, and camera feedback remain
+  inside the deep-navy board while the right rail stays fully readable. Previous
+  direct-spawn coverage at `20fe99a` observes all 28 real body/item combinations;
+  the subsequent renderer work does not change that Core stream.
+- Resource/blocker/next action: exact temporary Vite listeners on 54122 and 54123
+  were verified released. The old `9e7577e` candidate worktree was unregistered; the
+  current isolated `813f31b` worktree is retained only until its local evidence
+  scripts are removed. Independent read-only QA must review the contiguous T14 range
+  `bd49be6..813f31b` before any acceptance, changelog update, or push. Keep all
+  user-owned Phase 1 dirty paths unstaged.
+
 ## 2026-07-27 — TETRIS-T14 attached-carrier direct-spawn candidate
 
 - Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; source base `f20ea8a`,
