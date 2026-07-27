@@ -71,9 +71,13 @@ time is still driven by Core tick state; the timeline only shapes rendering.
 - **Particles:** a fixed, reusable logical pool of 120 slots; no per-frame Pixi object
   creation, no allocations proportional to frame count, and no more than 300 visual
   particles even in a Bomb burst.
-- **Effects:** at most two effect planes are active at once (ambient + transient).
-  Vector frost/refraction and energy fields are preferred over added shader packages;
-  no downloaded asset or external texture is introduced.
+- **Effects:** at most two effect planes are active at once (ambient + transient),
+  and at most two reusable Pixi filters may be enabled on the board at a time. Freeze
+  owns a low-amplitude `NoiseFilter` frost grain plus vector frost edges; Collapse owns
+  a generated-map `DisplacementFilter` with its documented `.015` relative strength
+  and `.8` motion rate plus vector energy lines. The filters are renderer-local,
+  pooled for the renderer lifetime, and disabled rather than recreated between
+  activations. No downloaded asset, second canvas, or external texture is introduced.
 - **Reduced motion:** no moving particles, shake, or pulsing. The final material,
   border, and card state remain visible long enough to be understood.
 - **Collapse metadata:** column settlement uses indexed destination coordinates rather
