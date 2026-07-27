@@ -1,5 +1,37 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 candidate-bound closure acceptance
+
+- Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; documentation base
+  `9b4355c`, evidence checkpoint `1fac220`, corrected closure candidate `03c92db`.
+  The product source was intentionally unchanged in this final record: the player
+  requirement remains an independent standard-body × item attachment stream, not a
+  shape-to-item mapping.
+- Exact changed paths: `docs/MUTATION_VFX_POLISH.md`,
+  `docs/logs/CHANGELOG.md`, and this workstream log. User-owned Phase 1 paths,
+  including `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `package-lock.json`, and current
+  page/theme work, remained unstaged and untouched.
+- Candidate-bound commands/evidence: a clean detached `1fac220` worktree passed
+  `npm.cmd run typecheck`, `npm.cmd run test` (24 files / 177 tests), and
+  `npm.cmd run build` (749 modules). The public-command audit at
+  `C:\\Users\\Alex Chen\\AppData\\Local\\Temp\\tetramorph-t14-candidate-1fac220-clean`
+  recorded source SHA, clean worktree state, lock hash, and PNG hashes. It captured
+  all four activation states, four representative carriers, and 390 px reduced motion:
+  one canvas, zero DOM board cells, no overflow, zero errors, and collapse at
+  0.551 ms mean / 1.000 ms p95 / 2.900 ms max over 180 frames. Manual frame review
+  confirmed a visible ordinary body plus attached core in carrier and Next views, a
+  board-bounded Bomb burst, and active state/card readability.
+- Independent QA/disposition: the first read-only review correctly held `1fac220` on
+  inaccurate unbound gate counts. The corrected `03c92db` record was then independently
+  accepted with no P0/P1: its 28-combination test, candidate SHA, report/manifest
+  hashes, clean status, lock hash, and exact 24 / 177 / 749 figures agree. A committed
+  `npm ci` mismatch is retained as a separate P2; QA confirmed it is documented rather
+  than misrepresented as a T14 source failure or pass.
+- Resource/next action: verified audit listener families on 5176, 54133, and 54134
+  were released; no candidate-verification node/npm/Vite process remains. Push only
+  these coordinator-owned documentation records. The lockfile owner may later address
+  reproducible installation in a separate dependency slice.
+
 ## 2026-07-27 — TETRIS-T14 compact Mutation Card independent QA acceptance
 
 - Review target/disposition: independent read-only QA reviewed

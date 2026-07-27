@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-27 — T14 candidate-bound Mutation revalidation accepted
+
+- The **异变 / Mutation** attachment contract is revalidated as a genuine independent
+  cross-product: every ordinary I/O/T/S/Z/J/L body may carry each Freeze, Collapse,
+  Bomb, or Multiplier attachment, while Next preserves the same normal-body-plus-core
+  grammar without consuming future RNG. The direct Core sweep covers all 28 pairs;
+  representative live carrier frames remain Bomb/O, Freeze/T, Collapse/O, and
+  Multiplier/J.
+- A detached clean candidate worktree at `1fac220` reran typecheck, the full 24-file /
+  177-test suite, and the 749-module production build. Its candidate-bound browser
+  manifest records a clean Git state, package-lock hash, source SHA, and nine PNG
+  hashes for all four states, four carriers, and 390 px reduced motion. It reports one
+  canvas, zero DOM board cells, no viewport overflow, zero browser errors, and a
+  collapse benchmark of 0.551 ms mean / 1.000 ms p95 / 2.900 ms max across 180 frames.
+- Independent read-only QA accepted the corrected `1fac220..03c92db` documentation
+  closure with no P0/P1. The committed `package-lock.json` still cannot satisfy
+  `npm ci` because of an inherited `@emnapi` mismatch; this remains an explicit
+  dependency-lock P2, not a hidden T14 pass or a change to the player's dirty files.
+
 ## 2026-07-27 — T14 Mutation Card readability and compact-state acceptance
 
 - **异变 / Mutation** now presents its live Freeze, Collapse, and Multiplier timers

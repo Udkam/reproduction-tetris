@@ -1,7 +1,8 @@
 # T14 — Mutation VFX Polish Design Report
 
-**Status:** accepted rendering foundation and compact Mutation Card readability refinement
-(`f20f228`, independently accepted in `27a470a`).
+**Status:** T14 current-source closure accepted after a second independent read-only
+revalidation. The committed dependency lock's clean-install mismatch remains a separate
+repository P2 and is not represented as a rendering or gameplay acceptance.
 
 ## 1. Design review / baseline
 
@@ -139,9 +140,10 @@ or Core state.
 
 ## 8. Current-source closure revalidation — 2026-07-27
 
-This is an evidence-only revalidation checkpoint. It does not alter Core rules, item
-durations, selection rates, score rules, or page composition. Independent QA remains
-required before this checkpoint is accepted.
+This was an evidence-only revalidation checkpoint. It does not alter Core rules, item
+durations, selection rates, score rules, or page composition. The corrected
+candidate-bound record received a second independent read-only QA acceptance with no
+P0/P1 finding; the known dependency-lock P2 remains explicitly outside this slice.
 
 ### Delivered surface
 
@@ -215,7 +217,6 @@ tetromino, never a shape-to-item mapping.
 The current source satisfies the requested attachment grammar, four distinct
 environmental states, bounded renderer resources, original local sound path, and
 compact/reduced-motion readability. No product-source gap was found during this
-revalidation. The next action is a narrow independent read-only QA of this corrected
-candidate record, then coordinator acceptance, changelog integration, and push. The
-unrelated committed dependency-lock reproducibility issue must remain visible until its
-owner elects to repair and stage it.
+revalidation, and the corrected candidate record was accepted by independent read-only
+QA with no P0/P1. The unrelated committed dependency-lock reproducibility issue remains
+visible until its owner elects to repair and stage it.
