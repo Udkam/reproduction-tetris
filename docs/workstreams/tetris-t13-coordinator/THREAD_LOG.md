@@ -1,5 +1,34 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 exact-source final gates and browser evidence
+
+- Candidate/source isolation: the new source checkpoint is `f20ea8a` on top of the
+  original T14 product candidate `480a2be`. Because the primary working tree gained
+  unrelated uncommitted Phase 1 source while this pass was running, the final gates
+  were run from a clean detached `f20ea8a` worktree rather than treating a mixed
+  working tree result as T14 evidence.
+- Exact candidate checks: `npm.cmd run typecheck`; `npm.cmd run test` (24 files,
+  175 tests); and `npm.cmd run build` (749 modules) all passed in that clean source
+  checkout. The direct renderer/Core target suite remains 24/24 passing.
+- Fresh live evidence: ignored `.local/audits/t14/candidate-f20ea8a/` captures and
+  report show desktop and 390 × 844 attached Next: forecast `O + Bomb` spawned as the
+  identical `O + Bomb`, with one canvas, zero DOM cells, 44 px-or-greater controls,
+  no viewport overflow, and zero browser/page errors. A real seeded Collapse event
+  captured the active Collapse + Freeze state, then measured 180 renders at mean
+  0.625 ms, p95 1.10 ms, max 4.00 ms. The desktop attached-next and Collapse-active
+  frames were visually inspected. The required game Playwright client also completed
+  against the clean candidate service.
+- Resource hygiene: the exact temporary candidate Vite listeners on 54107 and 54110
+  were verified released. The temporary worktree was unregistered; Windows refused
+  automatic deletion of its node_modules junction, so its verified Temp-only directory
+  remains a local cleanup artifact rather than a product or Git worktree. Do not touch
+  it through a broad cleanup command.
+- Blocker/next action: candidate source is now `f20ea8a`; it still needs an
+  independent read-only review of `bd49be6..f20ea8a` before an acceptance claim,
+  changelog update, or push. `docs/CURRENT_TASK.md`, `docs/DESIGN.md`,
+  `docs/progress.md`, `package-lock.json`, the Phase 1 token paths, and `src/styles.css`
+  are currently user-owned dirty work and remain unstaged.
+
 ## 2026-07-27 — TETRIS-T14 collapse settlement renderer checkpoint
 
 - Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; source base `480a2be`,
