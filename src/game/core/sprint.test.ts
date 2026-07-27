@@ -117,14 +117,18 @@ describe('异变 mode', () => {
     const expected = new Set(bodies.flatMap((body) => items.map((item) => `${body}:${item}`)));
     const observed = new Set<string>();
 
-    // The deterministic sweep deliberately samples the real seven-bag and the
-    // separate carrier stream. It protects the product rule that an item is an
-    // attachment, never a substitute mapping from one tetromino shape.
+    // The deterministic sweep samples the real seven-bag and the separate
+    // carrier stream after each actual spawn. It protects the product rule
+    // that an item is an attachment, never a substitute mapping from one
+    // tetromino shape.
     for (let seed = 1; seed <= 4_096 && observed.size < expected.size; seed += 1) {
-      const state = lockAndSpawn(playingMutation(seed));
-      const body = state.queue[0];
-      const item = nextMutationPreviewItem(state);
-      if (body && item) observed.add(`${body}:${item}`);
+      let state = playingMutation(seed);
+      for (let spawn = 0; spawn < 4 && observed.size < expected.size; spawn += 1) {
+        state = lockAndSpawn(state);
+        const body = state.active?.type;
+        const item = state.mutationActiveCarrier?.item;
+        if (body && item) observed.add(`${body}:${item}`);
+      }
     }
 
     expect(observed).toEqual(expected);
