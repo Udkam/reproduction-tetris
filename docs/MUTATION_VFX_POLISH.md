@@ -117,6 +117,11 @@ or Core state.
   disabled under `prefers-reduced-motion`.
 - This supplementary checkpoint is CSS-only (`src/styles/mutation-vfx.css`) so it
   deliberately avoids the player’s currently uncommitted page-composition files.
+- At 599 px and below, Mutation alone reuses the already-reserved 124 px mobile
+  information band. The historical blanket rail hide left that band visibly empty.
+  The compact state card occupies it as one three-column readout; its ordinary
+  statistics and Next remain hidden exactly as before, preventing a vertical layout
+  expansion while ensuring an active ten-second state is never invisible.
 
 ## 7. Implementation slices and evidence
 
