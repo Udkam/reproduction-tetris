@@ -1662,6 +1662,64 @@ export class TetrisRenderer {
       [anchorX - starRadius * 2.55, anchorY, anchorX + starRadius * 2.55, anchorY],
       [anchorX, anchorY - starRadius * 2.55, anchorX, anchorY + starRadius * 2.55],
     ], token.palette.highlight, 0.76 * alpha, Math.max(1, layout.cell * .055));
+    this.drawMutationMultiplierValue(
+      graphics,
+      anchorX,
+      anchorY - starRadius * (1.58 + scorePop.value * .72),
+      starRadius * .58,
+      flash.multiplierFactor,
+      token.palette.highlight,
+      alpha,
+    );
+  }
+
+  /**
+   * A small Pixi vector value instead of a DOM overlay: the immediate reward reads as
+   * ×2 / ×4 beside the gold burst even when the Core event itself carries no direct score.
+   */
+  private drawMutationMultiplierValue(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    unit: number,
+    factor: 2 | 4,
+    color: number,
+    alpha: number,
+  ): void {
+    const width = unit * 2.48;
+    const height = unit * 1.3;
+    const left = centerX - width / 2;
+    const top = centerY - height / 2;
+    const stroke = Math.max(1, unit * .14);
+    graphics
+      .roundRect(left - unit * .3, top - unit * .24, width + unit * .6, height + unit * .48, Math.max(2, unit * .3))
+      .fill({ color: MUTATION_VFX_TOKENS.multiplier.palette.deep, alpha: .22 * alpha })
+      .stroke({ color, alpha: .62 * alpha, width: Math.max(1, stroke * .55) });
+    const crossX = left + unit * .52;
+    this.strokeSegments(graphics, [
+      [crossX - unit * .24, centerY - unit * .24, crossX + unit * .24, centerY + unit * .24],
+      [crossX + unit * .24, centerY - unit * .24, crossX - unit * .24, centerY + unit * .24],
+    ], color, alpha, stroke);
+
+    const digitLeft = left + unit * 1.12;
+    const digitRight = digitLeft + unit * .78;
+    const digitTop = top;
+    const digitMiddle = centerY;
+    const digitBottom = top + height;
+    const segments: Array<readonly [number, number, number, number]> = factor === 2
+      ? [
+        [digitLeft, digitTop, digitRight, digitTop],
+        [digitRight, digitTop, digitRight, digitMiddle],
+        [digitLeft, digitMiddle, digitRight, digitMiddle],
+        [digitLeft, digitMiddle, digitLeft, digitBottom],
+        [digitLeft, digitBottom, digitRight, digitBottom],
+      ]
+      : [
+        [digitLeft, digitTop, digitLeft, digitMiddle],
+        [digitRight, digitTop, digitRight, digitBottom],
+        [digitLeft, digitMiddle, digitRight, digitMiddle],
+      ];
+    this.strokeSegments(graphics, segments, color, alpha, stroke);
   }
 
   /** Sync renderer-only field transitions from Core's authoritative timers. */
@@ -1698,11 +1756,16 @@ export class TetrisRenderer {
 
   private clearMutationVisualState(): void {
     this.mutationFields.clear();
-    for (const particle of this.mutationParticles) particle.active = false;
+    this.clearMutationParticles();
     this.particleCursor = 0;
     this.particleSeed = 0x4d555441;
     this.mutationClockMs = 0;
     this.setWorldOffset(0, 0);
+  }
+
+  /** Foreground one new activation at a time; persistent timed fields still stack. */
+  private clearMutationParticles(): void {
+    for (const particle of this.mutationParticles) particle.active = false;
   }
 
   /** Pixi nulls display-object points during unmount; cleanup must stay safe. */
@@ -1723,6 +1786,7 @@ export class TetrisRenderer {
     previousBoard: GameState['board'] | null,
   ): void {
     if (this.options.reducedMotion) return;
+    this.clearMutationParticles();
     const token = MUTATION_VFX_TOKENS[item];
     const sources: Cell[] = [];
     if (item === 'bomb' && previousBoard) {

@@ -106,7 +106,10 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 900, triggerCells: [] });
     expect(internals.mutationParticles).toHaveLength(120);
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
-    internals.advanceEffects(899);
+    internals.consumeEvents([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 }]);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(0);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'freeze')).toHaveLength(18);
+    internals.advanceEffects(499);
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
