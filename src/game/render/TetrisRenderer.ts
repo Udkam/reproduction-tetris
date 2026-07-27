@@ -213,6 +213,13 @@ export class TetrisRenderer {
   private mutationArrival: MutationArrival | null = null;
   private activeMutationCarrierId: number | null = null;
   private collapseTrail: CollapseTrail | null = null;
+  /**
+   * Reused marker grid for Collapse settlement. A stamp avoids allocating Maps,
+   * Sets, arrays, and sort work on a lock while still distinguishing the just-
+   * locked cells from the immutable board snapshot.
+   */
+  private readonly collapseIncomingStamps = new Uint32Array(BOARD_WIDTH * BOARD_HEIGHT);
+  private collapseIncomingStamp = 0;
   private readonly mutationFields = new Map<Exclude<MutationItem, 'bomb'>, MutationField>();
   private readonly mutationParticles: MutationParticle[] = Array.from(
     { length: MUTATION_PARTICLE_LIMIT },
@@ -2105,30 +2112,28 @@ export class TetrisRenderer {
    */
   private queueCollapseSettlementTrail(previousBoard: GameState['board'] | null, cells: readonly Cell[]): void {
     if (!previousBoard || cells.length === 0) return;
-    const rowsByColumn = new Map<number, Set<number>>();
-    previousBoard.forEach((row, y) => {
-      row.forEach((material, x) => {
-        if (!material) return;
-        const rows = rowsByColumn.get(x) ?? new Set<number>();
-        rows.add(y);
-        rowsByColumn.set(x, rows);
-      });
-    });
-    for (const cell of cells) {
-      const rows = rowsByColumn.get(cell.x) ?? new Set<number>();
-      rows.add(cell.y);
-      rowsByColumn.set(cell.x, rows);
+    this.collapseIncomingStamp = (this.collapseIncomingStamp + 1) >>> 0;
+    if (this.collapseIncomingStamp === 0) {
+      this.collapseIncomingStamps.fill(0);
+      this.collapseIncomingStamp = 1;
     }
-    const paths: Array<{ x: number; fromY: number; toY: number }> = [];
     for (const cell of cells) {
-      const rows = [...(rowsByColumn.get(cell.x) ?? [])].sort((left, right) => right - left);
-      const rankFromBottom = rows.indexOf(cell.y);
-      if (rankFromBottom < 0) continue;
-      const destinationY = BOARD_HEIGHT - 1 - rankFromBottom;
-      if (destinationY > cell.y) paths.push({ x: cell.x, fromY: cell.y, toY: destinationY });
+      if (cell.x < 0 || cell.x >= BOARD_WIDTH || cell.y < 0 || cell.y >= BOARD_HEIGHT) continue;
+      this.collapseIncomingStamps[cell.y * BOARD_WIDTH + cell.x] = this.collapseIncomingStamp;
+    }
+
+    const paths: Array<{ x: number; fromY: number; toY: number }> = [];
+    for (let x = 0; x < BOARD_WIDTH; x += 1) {
+      let destinationY = BOARD_HEIGHT - 1;
+      for (let y = BOARD_HEIGHT - 1; y >= 0; y -= 1) {
+        const incoming = this.collapseIncomingStamps[y * BOARD_WIDTH + x] === this.collapseIncomingStamp;
+        if (!incoming && !previousBoard[y]?.[x]) continue;
+        if (incoming && destinationY > y) paths.push({ x, fromY: y, toY: destinationY });
+        destinationY -= 1;
+      }
     }
     this.collapseTrail = paths.length > 0
-      ? { paths, elapsed: 0, duration: 150 }
+      ? { paths, elapsed: 0, duration: 120 }
       : null;
   }
 

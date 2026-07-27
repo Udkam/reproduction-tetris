@@ -280,7 +280,7 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.queueCollapseSettlementTrail(withGap, [{ x: 0, y: BOARD_HEIGHT - 4 }]);
     expect(internals.collapseTrail).toMatchObject({
-      duration: 150,
+      duration: 120,
       paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
     });
 
@@ -288,6 +288,27 @@ describe('Puzzle undo presentation reset', () => {
     alreadySettled[BOARD_HEIGHT - 1]![0] = 'T';
     internals.queueCollapseSettlementTrail(alreadySettled, [{ x: 0, y: BOARD_HEIGHT - 2 }]);
     expect(internals.collapseTrail).toBeNull();
+  });
+
+  it('tracks every just-locked cell through a compact column settlement without a per-lock sort', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const board = createBoard();
+    board[BOARD_HEIGHT - 1]![0] = 'T';
+    board[BOARD_HEIGHT - 3]![0] = 'S';
+
+    internals.queueCollapseSettlementTrail(board, [
+      { x: 0, y: BOARD_HEIGHT - 5 },
+      { x: 0, y: BOARD_HEIGHT - 4 },
+    ]);
+
+    expect(internals.collapseTrail).toMatchObject({
+      duration: 120,
+      paths: [
+        { x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 3 },
+        { x: 0, fromY: BOARD_HEIGHT - 5, toY: BOARD_HEIGHT - 4 },
+      ],
+    });
   });
 
   it('scales Next geometry to the slot instead of capping it at a tiny fixed unit', () => {
