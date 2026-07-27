@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-27 — T14 Mutation crystal-tech polish accepted
+
+- **异变 / Mutation** special effects are now visibly attached to ordinary tetromino
+  bodies instead of replacing them: any I/O/T/S/Z/J/L shape can independently carry
+  Freeze, Collapse, Bomb, or Multiplier, and the immediate Next preview uses the same
+  base-piece-plus-attachment grammar without consuming game randomness.
+- The one-canvas Pixi renderer now reuses a bounded Frost `NoiseFilter` and Collapse
+  `DisplacementFilter`, adds crystal breathing, gravity pull, rotating Bomb fragments,
+  and a score-aware Multiplier lift. Bomb impact/fragments are clipped to the board,
+  so the right-side state rail and Next well remain readable during the strongest
+  effect. Core item timing, scoring, carrier odds, queues, and all other modes remain
+  unchanged apart from the already-authorized Mutation 0.1-second-per-cell floor.
+- Independent read-only QA accepted `bd49be6..813f31b` with no P0/P1 finding. The
+  clean source candidate passed typecheck, 24 files / 177 tests, and the 749-module
+  build; real public-command browser evidence confirms an actual Bomb activation,
+  one canvas, zero DOM cells, no overflow, and zero page/console errors. A pre-existing
+  `npm ci` lockfile mismatch remains a recorded P2: no lockfile was changed in this
+  acceptance, and the candidate used a no-lock dependency install solely for validation.
+
 ## 2026-07-25 — T13.15 Puzzle ceremony and brown bedrock accepted
 
 - Puzzle success now resolves through a compact original ceremony instead of the generic

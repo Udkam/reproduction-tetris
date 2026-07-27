@@ -1,5 +1,27 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 independent read-only QA acceptance
+
+- Review target/disposition: independent read-only QA reviewed the complete product
+  candidate `bd49be6..813f31b` after the coordinator read the candidate record above.
+  Verdict: **accept**; no P0 or P1 finding. This accepts the bounded T14 Mutation
+  product slice only and does not mark unrelated Phase 1 or other active work complete.
+- QA evidence: direct Core coverage observes all 28 actual normal-body/item pairs;
+  the 32-seed Next test keeps `stateHash` unchanged while matching the real next
+  carrier; filters are allocated only in renderer `init()` and destroyed with their
+  map texture; and the live `bomb-board-local.png` frame keeps the explosion inside
+  the board with a readable rail. QA independently rechecked the six-tick Mutation
+  cadence floor, canvas/DOM constraints, no Core renderer/browser/audio imports, and
+  the clean candidate gates (typecheck, 24 files / 177 tests, 749-module build).
+- Known P2 (not introduced by this range): the committed package lock cannot satisfy
+  `npm ci` because its `@emnapi/wasi-threads` / dependent records are stale. The QA
+  reproduced the documented no-lock fallback; it accepts the product source but does
+  not claim reproducible clean installation until that inherited lock mismatch is
+  resolved in a separate dependency slice.
+- Cleanup/next action: QA's exact temporary 54124/54125 listeners and worktree were
+  released. The coordinator may now add the formal changelog acceptance record and
+  push only exact committed paths; user-owned dirty Phase 1 paths remain unstaged.
+
 ## 2026-07-27 — TETRIS-T14 bounded Pixi-field / board-local Bomb candidate
 
 - Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; follow-on source range
