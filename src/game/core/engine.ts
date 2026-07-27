@@ -72,22 +72,42 @@ function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState
 }
 
 /** Schedules an optional marked carrier without weakening the normal seven-bag. */
+function drawMutationItem(randomizer: GameState['randomizer']): { item: MutationItem | null; randomizer: GameState['randomizer'] } {
+  const chance = drawRandom(randomizer);
+  if (chance.value >= MUTATION_CARRIER_CHANCE) return { item: null, randomizer: chance.randomizer };
+  const itemRoll = drawRandom(chance.randomizer);
+  return {
+    item: MUTATION_ITEMS[Math.floor(itemRoll.value * MUTATION_ITEMS.length)] ?? 'freeze',
+    randomizer: itemRoll.randomizer,
+  };
+}
+
 function assignMutationCarrier(state: GameState): GameState {
   if (state.mode !== 'sprint' || state.pieceCount < 2) {
     return state.mutationActiveCarrier === null ? state : { ...state, mutationActiveCarrier: null };
   }
-  const chance = drawRandom(state.randomizer);
-  if (chance.value >= MUTATION_CARRIER_CHANCE) {
-    return { ...state, randomizer: chance.randomizer, mutationActiveCarrier: null };
-  }
-  const itemRoll = drawRandom(chance.randomizer);
-  const item = MUTATION_ITEMS[Math.floor(itemRoll.value * MUTATION_ITEMS.length)] ?? 'freeze';
+  const draw = drawMutationItem(state.randomizer);
+  if (draw.item === null) return { ...state, randomizer: draw.randomizer, mutationActiveCarrier: null };
   return {
     ...state,
-    randomizer: itemRoll.randomizer,
-    mutationActiveCarrier: { id: state.mutationNextCarrierId, item },
+    randomizer: draw.randomizer,
+    mutationActiveCarrier: { id: state.mutationNextCarrierId, item: draw.item },
     mutationNextCarrierId: state.mutationNextCarrierId + 1,
   };
+}
+
+/**
+ * Predicts the carrier attached to the immediate upcoming Mutation piece without
+ * consuming state. It mirrors spawnPiece's queue refill and carrier draw exactly so the
+ * renderer can present the real item on Next while Core timing stays untouched.
+ */
+export function nextMutationPreviewItem(state: GameState): MutationItem | null {
+  if (state.mode !== 'sprint' || state.active === null || state.pieceCount < 1) return null;
+  let preview = refillQueue(state, NEXT_QUEUE_SIZE + 1);
+  const queue = [...preview.queue];
+  queue.shift();
+  preview = refillQueue({ ...preview, queue }, NEXT_QUEUE_SIZE);
+  return drawMutationItem(preview.randomizer).item;
 }
 
 function puzzleFailure(

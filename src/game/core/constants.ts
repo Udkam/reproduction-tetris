@@ -40,13 +40,15 @@ export const MUTATION_BOMB_SCORE = 300;
 export const MUTATION_BOMB_ROWS = 3;
 
 export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
+/** Mutation alone caps at 0.1 seconds per cell so late-game item play stays readable. */
+export const MUTATION_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6] as const;
 
 export function speedTierForLines(lines: number): number {
   return Math.min(PROGRESSIVE_GRAVITY_TICKS.length - 1, Math.max(0, Math.floor(lines / 10)));
 }
 
 export function mutationSpeedTierForLines(lines: number): number {
-  return Math.min(PROGRESSIVE_GRAVITY_TICKS.length - 1, Math.max(0, Math.floor(lines / MUTATION_LINES_PER_SPEED)));
+  return Math.min(MUTATION_GRAVITY_TICKS.length - 1, Math.max(0, Math.floor(lines / MUTATION_LINES_PER_SPEED)));
 }
 
 export function survivalIntervalSeconds(lines: number): number {
@@ -72,7 +74,7 @@ export function gravityForMode(mode: GameMode, level: number, pieceCount: number
   void pieceCount;
   if (mode === 'puzzle') return STANDARD_GRAVITY_TICKS;
   if (mode === 'race') return SURVIVAL_GRAVITY_TICKS;
-  if (mode === 'sprint') return PROGRESSIVE_GRAVITY_TICKS[mutationSpeedTierForLines(lines)]!;
+  if (mode === 'sprint') return MUTATION_GRAVITY_TICKS[mutationSpeedTierForLines(lines)]!;
   return PROGRESSIVE_GRAVITY_TICKS[speedTierForLines(lines)]!;
 }
 

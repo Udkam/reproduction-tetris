@@ -4,9 +4,11 @@ import {
   LINE_CLEAR_DELAY_TICKS,
   MUTATION_BOMB_SCORE,
   MUTATION_EFFECT_TICKS,
+  TICKS_PER_SECOND,
+  gravityForMode,
 } from './constants';
 import { createBoard, setCell } from './board';
-import { createInitialState, dispatch, stateHash } from './engine';
+import { createInitialState, dispatch, nextMutationPreviewItem, stateHash } from './engine';
 import { cellsForPiece } from './pieces';
 import { collapseSprintColumns } from './sprint';
 import type { GameEvent, GameState, MutationItem } from './types';
@@ -96,6 +98,22 @@ describe('异变 mode', () => {
     const replayed = lockAndSpawn(lockAndSpawn(playingMutation(carrierState.seed)));
     expect(replayed.mutationActiveCarrier).toEqual(carrierState.mutationActiveCarrier);
     expect(stateHash(replayed)).toBe(stateHash(carrierState));
+  });
+
+  it('predicts the immediate Next carrier without changing the deterministic state', () => {
+    for (let seed = 1; seed <= 32; seed += 1) {
+      const state = lockAndSpawn(playingMutation(seed));
+      const beforeHash = stateHash(state);
+      const predicted = nextMutationPreviewItem(state);
+      const actual = lockAndSpawn(state).mutationActiveCarrier?.item ?? null;
+      expect(predicted).toBe(actual);
+      expect(stateHash(state)).toBe(beforeHash);
+    }
+  });
+
+  it('caps Mutation gravity at 0.1 seconds per cell without slowing Classic', () => {
+    expect(gravityForMode('sprint', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(TICKS_PER_SECOND / 10);
+    expect(gravityForMode('marathon', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(3);
   });
 
   it('activates a marked carrier exactly once when any of its cells clears', () => {
