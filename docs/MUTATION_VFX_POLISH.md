@@ -29,10 +29,14 @@ changing the later spawn result.
 - There are no emoji, stock image, CSS-only board animation, random full-screen
   gradients, or copied trade dress. All particles, frost, energy rings, and score
   markers are original vector geometry drawn by the existing Pixi renderer.
+- A special item never replaces the ordinary tetromino's identity. The base piece keeps
+  its standard material; the item is a high-contrast attached crystal core, rim,
+  surface mark, and local energy treatment. That deliberately permits every I/O/T/S/Z/J/L
+  shape to carry every Freeze/Collapse/Bomb/Multiplier attachment, including in Next.
 
 ## 3. Token table
 
-| Item | Primary | Highlight / energy | Deep / shadow | Recognition cue |
+| Item | Primary | Highlight / energy | Deep / shadow | Attached recognition cue |
 | --- | --- | --- | --- | --- |
 | Freeze | `#8DEBFF` | `#D9F7FF` | `#287B99` | glass crystal + frost spokes |
 | Collapse | `#9B6CFF` | `#D8B4FE` | `#35145F` | compressed core + vertical pull |

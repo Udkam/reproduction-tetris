@@ -18,7 +18,10 @@ reused logical particle pool. A small timeline primitive owns phase sequencing s
 visual time is not scattered through browser timers. The target states are: crystalline
 Freeze with edge frost/refraction/snow; gravitational Collapse with a vertical pull
 field and 120 ms settlement; staged Bomb warning/impact/shockwave/fragments; and
-golden Multiplier score-light/floating value. The rail remains DOM information only and
+golden Multiplier score-light/floating value. Every item is an **attachment** to an
+ordinary I/O/T/S/Z/J/L body rather than a replacement piece colour, so any shape can
+carry any item and the immediate Next preview can communicate both identities. The rail
+remains DOM information only and
 uses a compact accessible Mutation Card. Existing Core timing, scoring, carrier
 semantics, and state are intentionally unchanged except for that explicit Mutation
 cadence floor. The visual layer gets a pure deterministic lookahead for the immediate

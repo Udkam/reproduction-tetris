@@ -42,9 +42,12 @@ existing Pixi containers/Graphics and a bounded logical pool; it may not create 
 board, a second canvas, frame-by-frame Pixi objects, or a browser-timer visual loop.
 3. **Required visual language and event reliability.** Every active, locked, **and
 Next-preview** carrier must be identifiable within 100 ms: crystalline cyan Freeze,
-compressed violet Collapse, ember-orange Bomb, and golden Multiplier. The Next preview
-uses the same whole-piece material/core grammar as the board rather than an ordinary
-tetromino recolour. Freeze owns frosted edge, glassy refraction cue, bounded snow;
+compressed violet Collapse, ember-orange Bomb, and golden Multiplier. A carrier is an
+**attached item treatment**, not a replacement piece family: the ordinary I/O/T/S/Z/J/L
+body retains its own shape/material while the item adds a visible crystal core, rim,
+surface mark, and local energy accent. Therefore every ordinary shape can visibly carry
+every item. The Next preview uses that same base-piece-plus-attachment grammar. Freeze
+owns frosted edge, glassy refraction cue, bounded snow;
 Collapse owns a vertical gravity field, pull trails, and a 120 ms settle cue; Bomb owns
 the 0/200/400/600/900 ms warning → pulse → impact → shockwave → fragments timeline;
 Multiplier owns a contained score-light and floating value treatment. When one Core
