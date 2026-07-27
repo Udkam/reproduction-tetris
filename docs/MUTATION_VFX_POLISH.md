@@ -171,31 +171,51 @@ tetromino, never a shape-to-item mapping.
 
 ### Fresh automated and browser evidence
 
-- Focused T14 suite: 5 files / 39 tests passed.
-- `npm.cmd run typecheck` passed; full suite: 25 files / 182 tests passed; production
-  build: 751 modules transformed successfully.
-- A legal in-app replay under `.local/audits/t14/current-spec-audit/` regenerated
-  `freeze.png`, `collapse.png`, `bomb.png`, `multiplier.png`, and the 390 px
-  reduced-motion frame `freeze-compact-reduced.png`. Every capture reported exactly
-  one canvas, zero DOM board cells, no horizontal/vertical overflow, and zero browser
-  console errors.
+- The candidate was rechecked from a clean detached worktree at
+  `1fac2208c906ae7132151ccc568d39daeb31210a`; `git status --porcelain` was empty and
+  its committed `package-lock.json` SHA-256 was
+  `0b46b8fc36f08348a1f383d00562e468d6f4f30cda32cd785bfff2c97b64b559`.
+- Focused T14 suite: 5 files / 39 tests passed. `npm.cmd run typecheck` passed; the
+  candidate's full suite passed at 24 files / 177 tests; its production build passed
+  at 749 transformed modules.
+- `npm.cmd ci` cannot currently reproduce the candidate because that committed lock
+  file is internally out of sync with `package.json` (the command reports the missing
+  `@emnapi` entries). The verification therefore used a temporary, clean-worktree
+  `npm.cmd install --package-lock=false --no-audit --no-fund`; it did not modify the
+  candidate or borrow the player's uncommitted lock-file changes. This proves the
+  source/runtime slice, but clean-install reproducibility remains a separate
+  repository dependency-lock repair rather than a T14 rendering claim.
+- The candidate-bound legal in-app replay is stored outside Git at
+  `C:\\Users\\Alex Chen\\AppData\\Local\\Temp\\tetramorph-t14-candidate-1fac220-clean`.
+  Its `report.json` SHA-256 is
+  `3360bc1b7bc46a9736219731741f5b9d81e0efec6cf1ca5395fdced57f805865`; its manifest
+  SHA-256 is `2de7c2d64853799c343c0b91e12300d4a5fa4c10a7d3792b65304169e4b6a640`.
+  The manifest records the candidate SHA, clean tree, package-lock hash, and every
+  PNG hash before the temporary audit server was released.
+- The replay regenerated wide `mutation-{freeze,collapse,bomb,multiplier}.png`,
+  `carrier-{bomb,freeze,collapse,multiplier}.png`, and the 390 px
+  `mutation-freeze-compact-reduced.png`. Every capture recorded one canvas, zero DOM
+  board cells, no horizontal/vertical overflow, and zero browser/page errors. The
+  isolated material samples are Bomb (O), Freeze (T), Collapse (O), and Multiplier
+  (J); the 28-combination Core test covers the complete cross-product beyond these
+  representative visual frames.
 - The compact reduced-motion capture keeps the visible state card in the reserved
-  mobile band (116 px tall) with `animation: none`; it reports Freeze, Collapse, and
-  Multiplier timers without adding board animation.
-- The existing deterministic legal-placement audit at
-  `.local/audits/t13.14/` provides isolated carrier material frames for Bomb (O),
-  Freeze (T), Collapse (O), and Multiplier (J), plus the independently readable Bomb
-  foreground frame. Visual review confirms that each retains its normal coloured body
-  and receives only the correct attached crystal/core, rim, and energy treatment.
-- The collapse stress replay measured renderer work at 0.518 ms mean, 1.100 ms p95,
-  and 4.800 ms maximum over 180 frames, below the 16.67 ms 60-FPS budget. No test
-  state is injected: all items appear through normal deterministic spawn, lock, and
-  line-clear routes.
+  mobile band at 116 px tall with `animation: none`; it exposes active Freeze and
+  Collapse time without introducing board animation.
+- Manual frame review confirms the ordinary body remains visible beneath the attached
+  crystal/core in carrier and Next views; the wide frames show frost, gravity lines,
+  a board-bounded Bomb fragment burst, and the gold Multiplier score field. The
+  candidate-bound collapse benchmark is 0.551 ms mean, 1.000 ms p95, and 2.900 ms
+  maximum across 180 frames, below the 16.67 ms 60-FPS budget. All replays use normal
+  deterministic spawn, legal movement, lock, and line-clear routes; no test state is
+  injected.
 
 ### Revalidation result
 
 The current source satisfies the requested attachment grammar, four distinct
 environmental states, bounded renderer resources, original local sound path, and
 compact/reduced-motion readability. No product-source gap was found during this
-revalidation. The next action is a narrow independent read-only QA of this checkpoint,
-then coordinator acceptance, changelog integration, and push.
+revalidation. The next action is a narrow independent read-only QA of this corrected
+candidate record, then coordinator acceptance, changelog integration, and push. The
+unrelated committed dependency-lock reproducibility issue must remain visible until its
+owner elects to repair and stage it.
