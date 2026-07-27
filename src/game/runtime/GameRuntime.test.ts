@@ -16,6 +16,7 @@ vi.mock('../audio/AudioEngine', () => ({
     setVolume(volume: number): void { audioSetVolume(volume); }
     async prime(): Promise<void> { audioPrime(); }
     play(): void {}
+    syncMutationState(): void {}
     suspend(): void {}
     destroy(): void {}
   },

@@ -790,8 +790,11 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     { item: 'multiplier', ticks: state.mutationMultiplierTicks, multiplierFactor: state.mutationMultiplierFactor },
   ];
   return (
-    <section className="mutation-status" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
-      <strong>{copy.labels.mutationStatus}</strong>
+    <section className="mutation-status mutation-status--vfx" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
+      <header className="mutation-status__header">
+        <strong>{copy.labels.mutationStatus}</strong>
+        <span aria-hidden="true">///</span>
+      </header>
       <div className="mutation-status__ledger">
         {candidates.map((effect) => {
           const active = effect.ticks > 0;
@@ -810,7 +813,10 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
               aria-label={label}
             >
               <i className="mutation-status__signal" aria-hidden="true" />
-              <b>{name}</b>
+              <span className="mutation-status__effect-copy">
+                <b>{name}</b>
+                <small>{active ? copy.labels.mutationActive : copy.labels.waitingForCore}</small>
+              </span>
               <em>{active ? (language === 'en' ? `${seconds}s` : `${seconds} 秒`) : '—'}</em>
               <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / (10 * TICKS_PER_SECOND) * 100)}%` }} /></span>
             </div>

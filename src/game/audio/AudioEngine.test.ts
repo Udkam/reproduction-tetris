@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AudioEngine } from './AudioEngine';
 import { createBrowserPlatform } from '../../platform/browserPlatform';
+import { createInitialState } from '../core';
 
 class FakeAudioParam {
   value = 0;
@@ -213,6 +214,23 @@ describe('AudioEngine original feedback', () => {
     expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(1046.5);
     expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(1046.5 * 2.01);
     superDouble.destroy();
+  });
+
+  it('uses Core timer state only to start and stop quiet original mutation ambience', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+    const active = { ...createInitialState(0x51a1f00d, 'sprint'), mutationFreezeTicks: 600 };
+
+    audio.syncMutationState(active);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(261.63);
+    const loop = oscillators.find((oscillator) => oscillator.frequency.setValues[0] === 261.63);
+    expect(loop?.stops).toHaveLength(0);
+
+    audio.syncMutationState({ ...active, mutationFreezeTicks: 0 });
+    expect(loop?.stops).toHaveLength(1);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(523.25);
+    audio.destroy();
   });
 
   it('gives a same-frame mutation precedence over a clear chord without creating background voices', async () => {

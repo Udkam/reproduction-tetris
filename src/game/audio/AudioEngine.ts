@@ -1,5 +1,6 @@
-import type { GameEvent } from '../core';
+import type { GameEvent, GameState, MutationItem } from '../core';
 import { browserPlatform, type BrowserPlatform } from '../../platform/browserPlatform';
+import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
 
 interface ToneOptions {
   frequency: number;
@@ -14,6 +15,10 @@ interface ToneOptions {
 interface EffectVoice {
   source: AudioScheduledSourceNode;
   gain: GainNode;
+}
+
+interface MutationLoopVoice extends EffectVoice {
+  source: OscillatorNode;
 }
 
 type MutationActivation = Extract<GameEvent, { type: 'mutation-activated' }>;
@@ -31,6 +36,7 @@ export class AudioEngine {
   private compressor: DynamicsCompressorNode | null = null;
   private enabled = true;
   private mutationVoices: EffectVoice[] = [];
+  private readonly mutationLoops = new Map<Exclude<MutationItem, 'bomb'>, MutationLoopVoice>();
   private volume = 1;
   private lastMoveAt = 0;
   private lastSoftDropAt = 0;
@@ -40,6 +46,10 @@ export class AudioEngine {
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
+    if (!enabled) {
+      this.stopMutationCue();
+      this.stopMutationLoops(false);
+    }
     this.applyEffectsGain();
   }
 
@@ -140,6 +150,7 @@ export class AudioEngine {
 
   destroy(): void {
     this.stopMutationCue();
+    this.stopMutationLoops(false);
     this.effects?.disconnect();
     this.effects = null;
     this.master?.disconnect();
@@ -195,31 +206,94 @@ export class AudioEngine {
     // Carrier geometry is immutable Core event data. It makes an unusually broad
     // activation slightly fuller without depending on renderer state or randomness.
     const carrierAccent = Math.min(1.1, 0.84 + Math.max(0, event.triggerCells?.length ?? 4) * 0.04);
+    const token = MUTATION_VFX_TOKENS[event.item].audio;
     if (event.item === 'freeze') {
       // Two unbent ceramic taps: bright enough to read as ice, short enough to avoid
       // the electronic sweep character of the old rising tones.
-      this.tone({ frequency: 659.25, duration: 0.11, gain: 0.17 * carrierAccent, type: 'triangle' }, true);
-      this.tone({ frequency: 783.99, duration: 0.15, gain: 0.14 * carrierAccent, delay: 0.058, type: 'sine' }, true);
+      this.tone({ frequency: token.activateHz, duration: 0.11, gain: 0.17 * carrierAccent, type: token.waveform }, true);
+      this.tone({ frequency: token.accentHz, duration: 0.15, gain: 0.14 * carrierAccent, delay: 0.058, type: 'sine' }, true);
       return;
     }
     if (event.item === 'collapse') {
       // A short, dry two-part thud with no moving pitch reads as a column settling.
-      this.tone({ frequency: 148, duration: 0.075, gain: 0.22 * carrierAccent, type: 'triangle' }, true);
-      this.tone({ frequency: 93, duration: 0.1, gain: 0.13 * carrierAccent, delay: 0.018, type: 'triangle' }, true);
+      this.tone({ frequency: token.activateHz, duration: 0.075, gain: 0.22 * carrierAccent, type: token.waveform }, true);
+      this.tone({ frequency: token.accentHz, duration: 0.1, gain: 0.13 * carrierAccent, delay: 0.018, type: token.waveform }, true);
       return;
     }
     if (event.item === 'bomb') {
       // A rounded bass bloom plus a tiny deterministic noise puff, not a harsh buzzy
       // sweep. The noise buffer is generated locally and contains no sampled asset.
-      this.tone({ frequency: 74, duration: 0.14, gain: 0.27 * carrierAccent, type: 'triangle' }, true);
+      this.tone({ frequency: token.activateHz, duration: 0.14, gain: 0.27 * carrierAccent, type: token.waveform }, true);
       this.noisePuff({ duration: 0.065, gain: 0.095 * carrierAccent, delay: 0.006 });
       return;
     }
     // Double is a compact marimba dyad. Super Double adds one clean octave above it;
     // subsequent carriers remain Super Double in Core and keep this signature.
-    this.mutationMarimbaStrike(523.25, 0.14 * carrierAccent, 0);
-    this.mutationMarimbaStrike(659.25, 0.125 * carrierAccent, 0.052);
-    if (event.multiplierFactor === 4) this.mutationMarimbaStrike(1046.5, 0.105 * carrierAccent, 0.104);
+    this.mutationMarimbaStrike(token.activateHz, 0.14 * carrierAccent, 0);
+    this.mutationMarimbaStrike(token.accentHz, 0.125 * carrierAccent, 0.052);
+    if (event.multiplierFactor === 4) this.mutationMarimbaStrike(token.activateHz * 2, 0.105 * carrierAccent, 0.104);
+  }
+
+  /**
+   * Runtime supplies only Core timer state. These low-level, original voices
+   * are not music: they are quiet material ambience while a timed mutation is
+   * active, and stop immediately at its deterministic expiry.
+   */
+  syncMutationState(state: GameState): void {
+    const desired: Array<{ item: Exclude<MutationItem, 'bomb'>; active: boolean }> = [
+      { item: 'freeze', active: state.mode === 'sprint' && state.mutationFreezeTicks > 0 },
+      { item: 'collapse', active: state.mode === 'sprint' && state.mutationCollapseTicks > 0 },
+      { item: 'multiplier', active: state.mode === 'sprint' && state.mutationMultiplierTicks > 0 },
+    ];
+    for (const { item, active } of desired) {
+      if (active && !this.mutationLoops.has(item)) this.startMutationLoop(item);
+      if (!active && this.mutationLoops.has(item)) this.stopMutationLoop(item, true);
+    }
+  }
+
+  private startMutationLoop(item: Exclude<MutationItem, 'bomb'>): void {
+    const context = this.context;
+    const effects = this.effects;
+    const profile = MUTATION_VFX_TOKENS[item].audio;
+    if (!this.enabled || !context || !effects || !profile.loopHz || this.voices >= 16) return;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    const start = context.currentTime;
+    oscillator.type = item === 'collapse' ? 'triangle' : 'sine';
+    oscillator.frequency.setValueAtTime(profile.loopHz, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.loopGain), start + .08);
+    oscillator.connect(gain);
+    gain.connect(effects);
+    const voice: MutationLoopVoice = { source: oscillator, gain };
+    this.mutationLoops.set(item, voice);
+    this.voices += 1;
+    oscillator.start(start);
+    oscillator.onended = () => {
+      oscillator.disconnect();
+      gain.disconnect();
+      this.voices = Math.max(0, this.voices - 1);
+      if (this.mutationLoops.get(item) === voice) this.mutationLoops.delete(item);
+    };
+  }
+
+  private stopMutationLoop(item: Exclude<MutationItem, 'bomb'>, playEnd: boolean): void {
+    const voice = this.mutationLoops.get(item);
+    if (!voice) return;
+    this.mutationLoops.delete(item);
+    try {
+      voice.source.stop();
+    } catch {
+      // A muted or closed context can already have stopped the oscillator.
+    }
+    const profile = MUTATION_VFX_TOKENS[item].audio;
+    if (playEnd && this.enabled && profile.endHz) {
+      this.tone({ frequency: profile.endHz, duration: .075, gain: profile.gain * .52, endFrequency: profile.endHz * .86, type: 'sine' });
+    }
+  }
+
+  private stopMutationLoops(playEnd: boolean): void {
+    for (const item of [...this.mutationLoops.keys()]) this.stopMutationLoop(item, playEnd);
   }
 
   private mutationMarimbaStrike(frequency: number, gain: number, delay: number): void {

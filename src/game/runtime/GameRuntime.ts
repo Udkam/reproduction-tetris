@@ -185,7 +185,7 @@ export class GameRuntime {
 
   setAudioEnabled(enabled: boolean): void {
     this.audio.setEnabled(enabled);
-    if (enabled) void this.audio.prime();
+    if (enabled) void this.audio.prime().then(() => this.audio.syncMutationState(this.state));
   }
 
   setAudioVolume(volume: number): void {
@@ -253,6 +253,7 @@ export class GameRuntime {
     this.pendingUiEvents.push(...transition.events);
     this.uiStateDirty = true;
     this.audio.play(transition.events);
+    this.audio.syncMutationState(this.state);
     if (transition.events.some(isImmediateUiEvent)) this.flushUiState();
   }
 

@@ -833,7 +833,7 @@ describe('T6 frontend mode binding', () => {
     };
     const view = render(createElement(MutationStatus, { state: active }));
     const multiplier = view.container.querySelector<HTMLElement>('[data-mutation-state="multiplier"]');
-    expect(multiplier?.textContent).toBe('超级加倍 ×410 秒');
+    expect(multiplier?.textContent).toBe('超级加倍 ×4生效中10 秒');
     expect(multiplier?.dataset.mutationTier).toBe('4');
     expect(multiplier?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     expect(view.container.textContent).not.toContain('倍增');
