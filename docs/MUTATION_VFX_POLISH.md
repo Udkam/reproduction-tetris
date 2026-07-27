@@ -13,7 +13,10 @@ subtle and too similar at a glance: thin lines, sparse points, and a short flash
 give Bomb an ordered explosion or Freeze/Collapse a sustained world-state identity.
 
 The correction is **not** a new gameplay system. Existing deterministic Core events and
-timers remain the only input to rendering and audio.
+timers remain the only input to rendering and audio, apart from the player-authorized
+Mutation-only floor of 6 ticks / 0.1 seconds per cell. A pure Core lookahead exposes the
+already-determined immediate carrier material to Next without consuming the RNG or
+changing the later spawn result.
 
 ## 2. Art direction
 
@@ -34,7 +37,7 @@ timers remain the only input to rendering and audio.
 | Freeze | `#8DEBFF` | `#D9F7FF` | `#287B99` | glass crystal + frost spokes |
 | Collapse | `#9B6CFF` | `#D8B4FE` | `#35145F` | compressed core + vertical pull |
 | Bomb | `#FF6B35` | `#FFB347`, `#FFE8A3` | `#5A1A20` | ember ring + three-beat warning |
-| Multiplier | `#FFD166` | `#FFF2B2` | `#8D5B10` | star-mineral + score rays |
+| Multiplier | `#FFD166` | `#FFF2B2` | `#8D5B10` | star-mineral + score rays / `×2` or `×4` lift |
 
 The shipped fonts remain authoritative: Space Grotesk SemiBold for the mutation title
 and labels, JetBrains Mono Bold for timer/numeric data. Inter is not installed, so the
@@ -47,7 +50,12 @@ status text uses the shipped Space Grotesk rather than a network fallback.
 | Freeze | 0–500 ms cubic-out crystallise | 800 ms gentle breath during Core's existing 10 s | 1000 ms cubic-in thaw |
 | Collapse | 0–180 ms back-out gravity lock | vertical field and pull trails during 10 s | each real column settle: 120 ms downward impulse |
 | Bomb | 0–200 ms warning, 200–400 red pulse | 400–600 white impact | 600–900 shockwave/fragments fade |
-| Multiplier | 0–260 ms score-light back-out | contained gold field during 10 s | 520 ms number/coin tail, 4× receives a larger but bounded lift |
+| Multiplier | 0–260 ms score-light back-out | contained gold field during 10 s | 520 ms vector `×2` / `×4` lift and coin-star tail |
+
+If one clear activates more than one carrier, each transient is enqueued in FIFO order
+and starts only after its predecessor reaches its final timeline frame. Timed Freeze,
+Collapse, and Multiplier atmospheres still coexist from authoritative Core state; only
+the short, attention-owning foreground burst is serialised.
 
 `src/animation/mutationTimeline.ts` is the sole owner of visual phase progress. It
 supports sequence, parallel, delay, cubic-out, cubic-in, and back-out tracks. Game
@@ -64,6 +72,9 @@ time is still driven by Core tick state; the timeline only shapes rendering.
   no downloaded asset or external texture is introduced.
 - **Reduced motion:** no moving particles, shake, or pulsing. The final material,
   border, and card state remain visible long enough to be understood.
+- **Collapse metadata:** column settlement uses indexed destination coordinates rather
+  than string-key maps, retaining its exact board/carrier placement while reducing
+  transient allocation pressure on a lock.
 - **Budget:** renderer benchmark target is mean frame work below 16.67 ms under the
   Mutation stress state. Browser validation also checks one canvas, no DOM cell grid,
   no overflow, and zero console/page errors.
@@ -80,7 +91,8 @@ activation stops a prior Mutation voice, preserving the existing no-overlap rule
 
 1. Tokens and timeline primitives with direct unit tests.
 2. Carrier materials, ambient fields, pooled particle renderer, and staged Bomb effect.
-3. Compact Mutation Card and semantic original audio profiles.
+3. Compact Mutation Card, semantic original audio profiles, a FIFO multi-item transient
+   queue, and an item-aware immediate Next preview.
 4. Desktop/compact/reduced-motion live evidence, 60-FPS benchmark, full quality gates,
    independent QA, changelog, then push.
 

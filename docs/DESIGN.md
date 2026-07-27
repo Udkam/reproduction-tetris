@@ -10,7 +10,8 @@ VFX brief. Mutation keeps its original mechanical contract and is presented as a
 contained **deep-space crystal instrument** inside the existing one-canvas board:
 deep navy field, high-separation cyan/violet/ember/gold material language, and short
 event-bound feedback. It must feel specific without imitating any commercial game's
-logo, UI, soundtrack, assets, or trade dress.
+logo, UI, soundtrack, assets, or trade dress. Player feedback authorizes a Mutation-only
+6-tick / 0.1-second-per-cell gravity floor; it does not reopen any other mode's cadence.
 
 The renderer owns all board effects through its existing Pixi layers and a bounded,
 reused logical particle pool. A small timeline primitive owns phase sequencing so
@@ -19,8 +20,11 @@ Freeze with edge frost/refraction/snow; gravitational Collapse with a vertical p
 field and 120 ms settlement; staged Bomb warning/impact/shockwave/fragments; and
 golden Multiplier score-light/floating value. The rail remains DOM information only and
 uses a compact accessible Mutation Card. Existing Core timing, scoring, carrier
-semantics, and state are intentionally unchanged; reduced motion renders an informative
-static endpoint.
+semantics, and state are intentionally unchanged except for that explicit Mutation
+cadence floor. The visual layer gets a pure deterministic lookahead for the immediate
+Next carrier, and its transient activation timeline is a FIFO so a single Core transition
+can never overwrite a prior item effect. Reduced motion renders an informative static
+endpoint.
 
 ## T13.16 Modal compositor integrity
 

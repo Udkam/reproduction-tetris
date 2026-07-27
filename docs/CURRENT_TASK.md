@@ -16,19 +16,23 @@ user-owned `package-lock.json` remains outside every checkpoint and was not touc
 
 ### T14 active delivery contract — Mutation VFX polish
 
-**Authority:** `E:\Download\TetraMorph_Mutation_VFX_Polish_Prompt.md`; the implementation
-design is recorded in `docs/MUTATION_VFX_POLISH.md`. The goal is a premium, original
-deep-navy crystal-technology presentation for **异变 / Mutation**, not a rule or campaign
-change. The existing bright application shell, all four modes, one-canvas boundary, and
-product accessibility remain authoritative.
+**Authority:** `E:\Download\TetraMorph_Mutation_VFX_Polish_Prompt.md`, plus the player's
+2026-07-27 live-feedback addendum; the implementation design is recorded in
+`docs/MUTATION_VFX_POLISH.md`. The goal is a premium, original deep-navy
+crystal-technology presentation for **异变 / Mutation**, with one explicitly authorized
+Mutation-only cadence cap. The existing bright application shell, all four modes,
+one-canvas boundary, and product accessibility remain authoritative.
 
-1. **Frozen gameplay contract.** Do not change Core commands, deterministic seed/bag
-generation, the 32% carrier chance, first-two-piece delay, item selection, speed curve,
-scores, row removal, ten-second timed-item duration/reset, 2×/4× multiplier progression,
-or persistence. The visual system consumes existing `mutation-activated` events and
-current state only. Bomb's instant Core resolution remains intact, but the renderer must
-visually present an ordered warning/impact/fragment sequence rather than an unreadable
-direct deletion.
+1. **Gameplay and deterministic-preview contract.** Do not change Core commands,
+deterministic seed/bag generation, the 32% carrier chance, first-two-piece delay, item
+selection, scores, row removal, ten-second timed-item duration/reset, 2×/4× multiplier
+progression, or persistence. The one authorized rule adjustment is Mutation's own
+minimum gravity interval: it may never become faster than **6 fixed ticks / 0.1 seconds
+per cell**; Classic, Survival, and Puzzle cadence remain untouched. A pure, non-mutating
+Core lookahead may predict the next Mutation carrier for the already-visible Next piece,
+but must consume no RNG/state and must match the carrier actually assigned on spawn.
+Bomb's instant Core resolution remains intact, but the renderer must visually present an
+ordered warning/impact/fragment sequence rather than an unreadable direct deletion.
 2. **Design-system and rendering scope.** Add `src/design/mutationTokens.ts` for the
 authoritative palette, phase timings, logical particle limits, and original audio
 profiles; add `src/animation/mutationTimeline.ts` for reusable sequence/parallel/delay
@@ -36,14 +40,19 @@ timelines with cubic-in, cubic-out, and back-out easing. Renderer work is confin
 `src/game/render/TetrisRenderer.ts` and its direct tests/theme imports. It may use the
 existing Pixi containers/Graphics and a bounded logical pool; it may not create a DOM
 board, a second canvas, frame-by-frame Pixi objects, or a browser-timer visual loop.
-3. **Required visual language.** Every active/locked carrier must be identifiable within
-100 ms: crystalline cyan Freeze, compressed violet Collapse, ember-orange Bomb, and
-golden Multiplier. Freeze owns frosted edge, glassy refraction cue, bounded snow;
+3. **Required visual language and event reliability.** Every active, locked, **and
+Next-preview** carrier must be identifiable within 100 ms: crystalline cyan Freeze,
+compressed violet Collapse, ember-orange Bomb, and golden Multiplier. The Next preview
+uses the same whole-piece material/core grammar as the board rather than an ordinary
+tetromino recolour. Freeze owns frosted edge, glassy refraction cue, bounded snow;
 Collapse owns a vertical gravity field, pull trails, and a 120 ms settle cue; Bomb owns
 the 0/200/400/600/900 ms warning → pulse → impact → shockwave → fragments timeline;
-Multiplier owns a contained score-light and floating value treatment. Timed states must
-remain legible throughout their existing ten game seconds and honor reduced motion with a
-static high-contrast endpoint rather than an absent effect.
+Multiplier owns a contained score-light and floating value treatment. When one Core
+transition activates several carriers, all short transient sequences must be retained in
+a renderer-owned FIFO queue: timed fields may coexist, while the foreground transient
+plays one complete readable item at a time instead of dropping or overwriting an event.
+Timed states must remain legible throughout their existing ten game seconds and honor
+reduced motion with a static high-contrast endpoint rather than an absent effect.
 4. **Rail/audio.** Retain the current status location but make it a compact Mutation Card:
 item identity, readable timer, and progress are visible without a long explanation.
 No music or third-party media is added. Original WebAudio effects receive semantic
@@ -52,11 +61,14 @@ The UI uses the shipped Space Grotesk and JetBrains Mono families; the unavailab
 family is not fetched or silently substituted.
 5. **Performance and acceptance.** Use at most 120 logical visual particles (below the
 300 hard ceiling) and at most two effect planes; re-use their records and the existing
-Pixi Graphics. Direct tests must cover token values, timeline phases, pooled limits,
-reduced-motion endpoint, and each item event. Final evidence requires typecheck, full
-tests, build, fresh live screenshots for four carriers plus Freeze, Collapse, Bomb, and
-Multiplier active/impact states, no console/page error, one canvas/zero DOM cells,
-desktop plus compact layout, and a renderer benchmark that supports the 60 FPS budget.
+Pixi Graphics. Collapse settlement must avoid per-cell string-key maps or repeated
+transient collection churn in the deterministic Core path. Direct tests must cover token
+values, timeline phases, pooled limits, queued multi-item delivery, non-mutating Next
+lookahead, the six-tick Mutation cap, reduced-motion endpoint, and each item event.
+Final evidence requires typecheck, full tests, build, fresh live screenshots for four
+carriers plus Freeze, Collapse, Bomb, and Multiplier active/impact states, an item-marked
+Next preview, no console/page error, one canvas/zero DOM cells, desktop plus compact
+layout, and a renderer benchmark that supports the 60 FPS budget.
 The current uncommitted T13.16 modal-compositor correction is an inherited separate
 slice: do not stage or mutate its `src/styles.css` change in a T14 checkpoint.
 
