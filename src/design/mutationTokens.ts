@@ -25,10 +25,21 @@ export interface MutationVfxToken {
     size: number;
   };
   shader: {
-    /** Local vector-grade settings; no browser filter or second canvas. */
+    /** Shared vector field values, resolved in board-cell units. */
     fieldAlpha: number;
     edgeGlow: number;
     distortion: number;
+    /** Freeze's reusable Pixi frost-grain filter and its vector ice-edge partner. */
+    frost?: {
+      noiseScale: number;
+      edgeStrength: number;
+      noise: number;
+    };
+    /** Collapse's reusable generated-map Pixi displacement field. */
+    displacement?: {
+      strength: number;
+      speed: number;
+    };
   };
   animation: {
     enterMs: number;
@@ -59,18 +70,31 @@ export const MUTATION_PARTICLE_LIMIT = 120;
 /** The board keeps one ordinary effects Graphics layer plus one mutation layer. */
 export const MUTATION_MAX_EFFECT_PLANES = 2;
 
+/** Freeze plus Collapse are the only concurrent board filters. */
+export const MUTATION_MAX_ACTIVE_FILTERS = 2;
+
 export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
   freeze: {
     palette: { primary: 0x8debff, highlight: 0xd9f7ff, deep: 0x287b99, facet: 0x65bed6, glow: 0xbaf2ff },
     particles: { burst: 18, drift: 12, lifeMs: 920, speed: 0.058, size: 0.28 },
-    shader: { fieldAlpha: 0.18, edgeGlow: 0.82, distortion: 0.06 },
+    shader: {
+      fieldAlpha: 0.18,
+      edgeGlow: 0.82,
+      distortion: 0.06,
+      frost: { noiseScale: 0.8, edgeStrength: 1.5, noise: 0.035 },
+    },
     animation: { enterMs: 500, pulseMs: 800, exitMs: 1000, activationMs: 500 },
     audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.11, loopHz: 261.63, loopGain: 0.018, endHz: 523.25 },
   },
   collapse: {
     palette: { primary: 0x9b6cff, highlight: 0xd8b4fe, deep: 0x35145f, facet: 0x7249bf, glow: 0xc396ff },
     particles: { burst: 16, drift: 18, lifeMs: 560, speed: 0.082, size: 0.24 },
-    shader: { fieldAlpha: 0.16, edgeGlow: 0.76, distortion: 0.14 },
+    shader: {
+      fieldAlpha: 0.16,
+      edgeGlow: 0.76,
+      distortion: 0.14,
+      displacement: { strength: 0.015, speed: 0.8 },
+    },
     animation: { enterMs: 180, pulseMs: 120, exitMs: 420, activationMs: 300 },
     audio: { activateHz: 148, accentHz: 93, waveform: 'triangle', gain: 0.13, loopHz: 73.42, loopGain: 0.022, endHz: 196 },
   },
