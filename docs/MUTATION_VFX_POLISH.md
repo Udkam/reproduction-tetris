@@ -136,3 +136,66 @@ or Core state.
 **Baseline evidence (ignored local audit):**
 `.local/audits/t13.14/mutation-{freeze,collapse,bomb,multiplier}.png` and the matching
 `carrier-*` captures, regenerated on the current source on 2026-07-25.
+
+## 8. Current-source closure revalidation — 2026-07-27
+
+This is an evidence-only revalidation checkpoint. It does not alter Core rules, item
+durations, selection rates, score rules, or page composition. Independent QA remains
+required before this checkpoint is accepted.
+
+### Delivered surface
+
+The T14 implementation is contained in the following committed product surface:
+
+- `src/design/mutationTokens.ts` and its direct test: crystal-tech palettes, material,
+  particle, filter, timing, and original-audio tokens.
+- `src/animation/mutationTimeline.ts` and its direct test: deterministic sequence,
+  parallel, delay, and easing phases used by all four visual treatments.
+- `src/game/core/constants.ts`, `engine.ts`, `mutation.ts`, `rules.test.ts`, and
+  `sprint.test.ts`: item attachment state, pure immediate-Next prediction, deterministic
+  replay, the 0.1 s Mutation gravity floor, and the independent shape/item contract.
+- `src/game/render/TetrisRenderer.ts`, `theme.ts`, and their direct tests: ordinary
+  tetromino body plus attached item material, the fixed particle pool, two reusable
+  board-local filter planes, FIFO foreground bursts, and item-aware Next rendering.
+- `src/game/audio/AudioEngine.ts` and its direct test: original local WebAudio voices
+  with the existing no-overlap lifecycle rule; no downloaded or streamed music.
+- `src/App.tsx`, `src/game/runtime/GameRuntime.ts`, `src/ui/localization.ts`, and
+  `src/styles/mutation-vfx.css`: the semantic Mutation state readout, localization,
+  lifecycle wiring, compact layout, and reduced-motion presentation.
+
+The shape and item streams are deliberately separate. The direct deterministic sweep
+in `sprint.test.ts` samples the real seven-bag plus carrier stream over seeds 1–4096
+and proves every one of the 28 combinations: I/O/T/S/Z/J/L ×
+Freeze/Collapse/Bomb/Multiplier. An item is always an attachment to an ordinary
+tetromino, never a shape-to-item mapping.
+
+### Fresh automated and browser evidence
+
+- Focused T14 suite: 5 files / 39 tests passed.
+- `npm.cmd run typecheck` passed; full suite: 25 files / 182 tests passed; production
+  build: 751 modules transformed successfully.
+- A legal in-app replay under `.local/audits/t14/current-spec-audit/` regenerated
+  `freeze.png`, `collapse.png`, `bomb.png`, `multiplier.png`, and the 390 px
+  reduced-motion frame `freeze-compact-reduced.png`. Every capture reported exactly
+  one canvas, zero DOM board cells, no horizontal/vertical overflow, and zero browser
+  console errors.
+- The compact reduced-motion capture keeps the visible state card in the reserved
+  mobile band (116 px tall) with `animation: none`; it reports Freeze, Collapse, and
+  Multiplier timers without adding board animation.
+- The existing deterministic legal-placement audit at
+  `.local/audits/t13.14/` provides isolated carrier material frames for Bomb (O),
+  Freeze (T), Collapse (O), and Multiplier (J), plus the independently readable Bomb
+  foreground frame. Visual review confirms that each retains its normal coloured body
+  and receives only the correct attached crystal/core, rim, and energy treatment.
+- The collapse stress replay measured renderer work at 0.518 ms mean, 1.100 ms p95,
+  and 4.800 ms maximum over 180 frames, below the 16.67 ms 60-FPS budget. No test
+  state is injected: all items appear through normal deterministic spawn, lock, and
+  line-clear routes.
+
+### Revalidation result
+
+The current source satisfies the requested attachment grammar, four distinct
+environmental states, bounded renderer resources, original local sound path, and
+compact/reduced-motion readability. No product-source gap was found during this
+revalidation. The next action is a narrow independent read-only QA of this checkpoint,
+then coordinator acceptance, changelog integration, and push.
