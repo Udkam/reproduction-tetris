@@ -1,5 +1,40 @@
 # T13 Coordinator Workstream Log
 
+## 2026-07-27 — TETRIS-T14 compact Mutation Card candidate
+
+- Task/base/candidate: `TETRIS-T14-MUTATION-VFX-POLISH`; accepted Mutation base
+  `6b8a37c`, ordered follow-up checkpoints `66411a9`, `52d55a1`, `2e939a5`, and
+  product candidate `f20f228`. This is a presentation-only continuation of the
+  player’s attachment rule: any standard I/O/T/S/Z/J/L body may independently carry
+  any of the four items; this range does not change that Core stream, item odds,
+  duration, scoring, queue, or gravity.
+- Exact changed paths: `docs/MUTATION_VFX_POLISH.md` and
+  `src/styles/mutation-vfx.css`. The status surface is now one contained dark
+  deep-space card with readable 14 px title / 12 px item / 18 px timer hierarchy,
+  no player-visible decorative `///`, and reduced-motion-safe mount treatment. At
+  599 px and below the pre-existing 124 px blank Mutation band is restored as a
+  three-column state card; its historically hidden stats and Next remain hidden so
+  the mobile board does not gain a scrollable information stack.
+- Commands/evidence: mixed-tree direct `npm.cmd run typecheck` and
+  `npm.cmd run test -- src/App.test.ts` passed (23 tests) before each narrow source
+  checkpoint. The detached clean `f20f228` candidate then passed `npm.cmd run
+  typecheck`, full `npm.cmd run test` (24 files / 177 tests), and `npm.cmd run
+  build` (749 modules). The required Web-game Playwright action client completed on
+  candidate port 54130. A second public-command-only browser replay on 54131 reached
+  a real Freeze activation (seed 11; 7 legal locks; 586 ticks remaining), rendering
+  the active card with one canvas, zero DOM board cells, no viewport overflow, and
+  zero console/page errors. The 390 × 844 reduced-motion pass reports the restored
+  rail as `grid`, no overflow/errors, a 12 px title / 14 px timer, no `///`, and no
+  card animation. Ignored local evidence is
+  `.local/audits/t14/rail-refinement/candidate-f20f228/` and its two PNGs were
+  visually inspected.
+- Resource/next action: the server helper left six child Vite processes despite its
+  completion message; their verified candidate command lines were the only processes
+  ended, and ports 54126–54131 are now released. The pre-existing `npm ci` lockfile
+  mismatch remains outside this range. Independent read-only QA must review
+  `6b8a37c..f20f228` before a changelog acceptance record or push; all user-owned
+  Phase 1 paths remain unstaged.
+
 ## 2026-07-27 — TETRIS-T14 independent read-only QA acceptance
 
 - Review target/disposition: independent read-only QA reviewed the complete product
