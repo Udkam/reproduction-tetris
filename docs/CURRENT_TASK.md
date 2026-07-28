@@ -26,7 +26,10 @@ return `GAP`: item assignment still shares the ordinary seven-bag RNG, Ice still
 stops gravity, Collapse still performs duplicate work and draws global horizontal
 bands, a runtime reduced-motion switch can discard queued feedback, and the status /
 Next semantics remain incomplete. Exact Core → renderer → UI writer paths are frozen
-in `docs/phases/phase 5.md`; no Phase-5 product source has changed yet.
+in `docs/phases/phase 5.md`. Core RNG/Ice checkpoint `f344f49` now isolates the item
+stream and implements 60-tick Ice gravity with manual controls; its targeted
+25-test/typecheck/action-client evidence is green but it is not Phase-5 acceptance.
+Core Collapse mapping/performance is the next product checkpoint.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

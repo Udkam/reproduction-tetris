@@ -1300,3 +1300,17 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   semantics, and responsive status layout remain separately revertible checkpoints.
 - Next: implement and directly test the Core RNG/Ice checkpoint before acquiring any
   renderer or UI path.
+
+## 2026-07-28 — T15 Phase 5 Core RNG/Ice checkpoint
+
+- Candidate `f344f49` (base `c5ef6e2`) changes only Core constants/types/engine and
+  direct Mutation tests.
+- Mutation item RNG is now deterministic but independent of the ordinary seven-bag;
+  Next prediction checks both the body and attachment without consuming state.
+- Ice advances automatically at exactly 60 ticks/cell, remains effective on its last
+  tick, restores the current Mutation cadence, and does not disable move, rotate,
+  soft drop, or hard drop.
+- Targeted Mutation/rules tests pass 25/25 and typecheck passes. The prescribed
+  action client entered a live Mutation run; screenshots and text state were
+  inspected before port 4178 and temporary browser resources were released.
+- Next: independent rules audit, then one-pass Collapse settlement/performance.

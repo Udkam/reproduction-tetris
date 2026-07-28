@@ -53,3 +53,35 @@
   browser, or source edit is claimed for this audit checkpoint.
 - Blocker: none.
 - Next action: create the Core RNG/Ice checkpoint and direct deterministic tests.
+
+## 2026-07-28 — Core RNG/Ice checkpoint
+
+- Task ID: `T15-PHASE5-MUTATION-CORE-1`.
+- Writer: `/root`; base `c5ef6e2`; candidate `f344f49`.
+- Exact changed paths:
+  - `src/game/core/constants.ts`
+  - `src/game/core/types.ts`
+  - `src/game/core/engine.ts`
+  - `src/game/core/sprint.test.ts`
+- Delivered behavior:
+  - a salted `mutationRandomizer` is canonical only for Mutation and never perturbs
+    the ordinary seven-bag;
+  - immediate Next predicts `{body,item}` without consuming either stream;
+  - Ice uses the effect active at tick start, advances one cell on tick 60, remains
+    active on its final tick, then resumes the current Mutation cadence;
+  - move, rotate, soft drop, and hard drop remain available;
+  - partial retriggers reset only their target timer to 600 while concurrent timers
+    continue normally.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/sprint.test.ts src/game/core/rules.test.ts`
+    — 2 files / 25 tests PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - prescribed `web_game_playwright_client.js` against temporary Vite port 4178 —
+    Mutation countdown/live play captured with state `mode=sprint`,
+    `status=playing`; both screenshots manually inspected.
+- Resource/lifecycle evidence: PID 20804 stopped; port 4178 free; no Chrome,
+  Chromium, Playwright, or headless process remained. Client artifacts are temporary
+  and outside the repository.
+- Blocker: none; checkpoint awaits independent rules review.
+- Next action: implement one-pass Collapse board/carrier settlement mapping and its
+  deterministic correctness/performance evidence.

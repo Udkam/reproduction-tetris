@@ -9,9 +9,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Phase 4 candidate `2af2adf`, evidence `993dfc7`, and acceptance/recovery
   `fd7ef8d` are pushed.
 - Phase 5 Mutation three-way baseline audits at documentation head `fae3c96` are
-  complete and all return `GAP`. Exact Core → renderer → UI paths are frozen; the
-  current coordinator task is the Core RNG/Ice checkpoint. No Phase-5 product source
-  has changed yet.
+  complete and all return `GAP`. Exact Core → renderer → UI paths are frozen.
+- Core RNG/Ice source `f344f49` is locally green: item RNG is isolated, body+item
+  preview stays pure, Ice advances at tick 60 and restores the current cadence, and
+  all manual controls remain available. Independent checkpoint audit and Core
+  Collapse mapping/performance are next; Phase 5 is not accepted.
 
 ## Non-negotiable boundaries
 
@@ -24,11 +26,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Add a deterministic Mutation-item RNG isolated from the ordinary seven-bag and
-  preserve pure body-plus-attachment Next prediction.
-- Change Ice to one automatic cell per 60 fixed ticks, retain every manual control,
-  and prove exact retrigger, expiry, coexistence, and normal 6-tick floor behavior.
-- Then share one Collapse compaction map before renderer/UI work. Keep Classic shared
+- Independently audit `f344f49` for state/hash/RNG and exact 59/60/final-tick
+  semantics.
+- Share one Collapse compaction map between board settlement and carrier metadata;
+  add randomized reference equivalence and bounded performance evidence.
+- Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.
 
@@ -122,3 +124,16 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - UI must use `冰冻`, content-size idle/active status rows, announce body plus
   attachment in Next, and preserve all same-transition live announcements.
 - Exact checkpoint paths and sequencing are frozen in `docs/phases/phase 5.md`.
+
+## 2026-07-28 Phase 5 Core RNG/Ice checkpoint
+
+- Source `f344f49` introduces a salted canonical attachment RNG independent from the
+  ordinary seven-bag and keeps immediate body-plus-item lookahead pure.
+- Ice no longer stops gravity: ticks 1–59 preserve the row, tick 60 moves one cell,
+  its final active tick still uses the Ice interval, then the current 6-tick floor or
+  slower Mutation cadence resumes. Move, rotate, soft drop, and hard drop remain live.
+- Partial retrigger tests prove exact reset to 600 ticks without erasing concurrent
+  timed effects.
+- Focused Core tests pass 25/25; typecheck passes. The prescribed action client
+  entered real Mutation play, screenshots/state were inspected, and port 4178 plus
+  its temporary browser processes were released.
