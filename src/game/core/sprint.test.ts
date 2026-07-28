@@ -4,12 +4,14 @@ import {
   LINE_CLEAR_DELAY_TICKS,
   MUTATION_BOMB_SCORE,
   MUTATION_EFFECT_TICKS,
+  MUTATION_FREEZE_GRAVITY_TICKS,
   TICKS_PER_SECOND,
   gravityForMode,
 } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch, nextMutationPreviewItem, stateHash } from './engine';
 import { cellsForPiece } from './pieces';
+import { createRandomizer } from './random';
 import { collapseSprintColumns } from './sprint';
 import type { GameEvent, GameState, MutationItem } from './types';
 
@@ -104,11 +106,35 @@ describe('异变 mode', () => {
     for (let seed = 1; seed <= 32; seed += 1) {
       const state = lockAndSpawn(playingMutation(seed));
       const beforeHash = stateHash(state);
-      const predicted = nextMutationPreviewItem(state);
-      const actual = lockAndSpawn(state).mutationActiveCarrier?.item ?? null;
-      expect(predicted).toBe(actual);
+      const predicted = {
+        body: state.queue[0],
+        item: nextMutationPreviewItem(state),
+      };
+      const spawned = lockAndSpawn(state);
+      expect(predicted).toEqual({
+        body: spawned.active?.type,
+        item: spawned.mutationActiveCarrier?.item ?? null,
+      });
       expect(stateHash(state)).toBe(beforeHash);
     }
+  });
+
+  it('keeps item draws isolated from the ordinary seven-bag stream', () => {
+    const beforeSpawn = lockAndSpawn(playingMutation(0x4217));
+    const withCarrierDraw = lockAndSpawn({
+      ...beforeSpawn,
+      mutationRandomizer: createRandomizer(1),
+    });
+    const withoutCarrierDraw = lockAndSpawn({
+      ...beforeSpawn,
+      mode: 'marathon',
+      mutationRandomizer: createRandomizer(0xfedc_ba98),
+    });
+
+    expect(withCarrierDraw.active?.type).toBe(withoutCarrierDraw.active?.type);
+    expect(withCarrierDraw.queue).toEqual(withoutCarrierDraw.queue);
+    expect(withCarrierDraw.randomizer).toEqual(withoutCarrierDraw.randomizer);
+    expect(withCarrierDraw.mutationRandomizer).not.toEqual(createRandomizer(1));
   });
 
   it('lets every ordinary tetromino body carry every Mutation item independently', () => {
@@ -198,27 +224,73 @@ describe('异变 mode', () => {
     expect(activations.filter((event) => event.item === 'freeze')).toHaveLength(1);
   });
 
-  it('freezes automatic gravity but leaves manual soft drop available', () => {
-    const state = {
+  it('slows Ice gravity to one cell per second and leaves every manual control available', () => {
+    const state: GameState = {
       ...playingMutation(),
-      mutationFreezeTicks: 4,
-      gravityTicks: 47,
+      mutationFreezeTicks: MUTATION_EFFECT_TICKS,
+      gravityTicks: 0,
     };
-    const frozen = dispatch(state, { type: 'tick' }).state;
-    expect(frozen.active?.y).toBe(state.active?.y);
-    expect(frozen.gravityTicks).toBe(0);
-    expect(frozen.mutationFreezeTicks).toBe(3);
-    expect(dispatch(frozen, { type: 'soft-drop' }).state.active?.y).toBe((state.active?.y ?? 0) + 1);
+    const initialY = state.active?.y;
+    let frozen = state;
+    for (let tick = 1; tick < MUTATION_FREEZE_GRAVITY_TICKS; tick += 1) {
+      frozen = dispatch(frozen, { type: 'tick' }).state;
+    }
+    expect(frozen.active?.y).toBe(initialY);
+    expect(frozen.gravityTicks).toBe(MUTATION_FREEZE_GRAVITY_TICKS - 1);
+
+    const gravityStep = dispatch(frozen, { type: 'tick' });
+    expect(gravityStep.state.active?.y).toBe((initialY ?? 0) + 1);
+    expect(gravityStep.state.gravityTicks).toBe(0);
+    expect(gravityStep.events).toContainEqual({
+      type: 'piece-moved',
+      piece: state.active?.type,
+      dx: 0,
+      dy: 1,
+      cause: 'gravity',
+    });
+
+    expect(dispatch(state, { type: 'move', dx: -1 }).state.active?.x).toBe((state.active?.x ?? 0) - 1);
+    expect(dispatch(state, { type: 'rotate', direction: 1 }).state.active?.rotation).not.toBe(state.active?.rotation);
+    expect(dispatch(state, { type: 'soft-drop' }).state.active?.y).toBe((initialY ?? 0) + 1);
+    expect(dispatch(state, { type: 'hard-drop' }).events.some((event) => event.type === 'hard-dropped')).toBe(true);
+  });
+
+  it('uses Ice on its final tick, then restores the current Mutation cadence', () => {
+    const start: GameState = {
+      ...playingMutation(),
+      lines: Number.MAX_SAFE_INTEGER,
+      mutationFreezeTicks: 1,
+      gravityTicks: MUTATION_FREEZE_GRAVITY_TICKS - 1,
+    };
+    const finalIceTick = dispatch(start, { type: 'tick' }).state;
+    expect(finalIceTick.active?.y).toBe((start.active?.y ?? 0) + 1);
+    expect(finalIceTick.mutationFreezeTicks).toBe(0);
+    expect(finalIceTick.gravityTicks).toBe(0);
+
+    let restored = finalIceTick;
+    for (let tick = 1; tick < TICKS_PER_SECOND / 10; tick += 1) {
+      restored = dispatch(restored, { type: 'tick' }).state;
+    }
+    expect(restored.active?.y).toBe(finalIceTick.active?.y);
+    restored = dispatch(restored, { type: 'tick' }).state;
+    expect(restored.active?.y).toBe((finalIceTick.active?.y ?? 0) + 1);
   });
 
   it('refreshes an already active Freeze or Collapse effect to exactly ten seconds', () => {
     for (const item of ['freeze', 'collapse'] as const) {
       const timer = item === 'freeze' ? 'mutationFreezeTicks' : 'mutationCollapseTicks';
+      const otherTimer = item === 'freeze' ? 'mutationCollapseTicks' : 'mutationFreezeTicks';
       const transition = resolveLineClear({
         ...carrierClearState(item),
-        [timer]: MUTATION_EFFECT_TICKS,
+        [timer]: 17,
+        [otherTimer]: 123,
+        mutationMultiplierTicks: 321,
+        mutationMultiplierFactor: 2,
       });
       expect(transition.state[timer]).toBe(MUTATION_EFFECT_TICKS);
+      expect(transition.state[otherTimer]).toBe(123 - LINE_CLEAR_DELAY_TICKS);
+      expect(transition.state.mutationMultiplierTicks).toBe(321 - LINE_CLEAR_DELAY_TICKS);
+      expect(transition.state.mutationMultiplierFactor).toBe(2);
     }
   });
 

@@ -40,6 +40,10 @@ export const MUTATION_RESULT_TICKS = 2 * TICKS_PER_SECOND;
 export const MUTATION_CARRIER_CHANCE = 0.32;
 export const MUTATION_BOMB_SCORE = 300;
 export const MUTATION_BOMB_ROWS = 3;
+/** Keeps item attachments deterministic without perturbing the ordinary seven-bag. */
+export const MUTATION_RANDOM_SALT = 0x4d55_5441;
+/** Ice slows automatic gravity to exactly one board cell per playing second. */
+export const MUTATION_FREEZE_GRAVITY_TICKS = TICKS_PER_SECOND;
 
 export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
 /** Mutation alone caps at 0.1 seconds per cell so late-game item play stays readable. */

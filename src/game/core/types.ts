@@ -151,6 +151,8 @@ export interface GameState {
   survivalDebrisRandomizer: RandomizerState;
   /** A random, deterministic item identity attached to the active fourth-mode piece. */
   mutationActiveCarrier: MutationActiveCarrier | null;
+  /** Separate deterministic stream so item attachments never perturb the seven-bag. */
+  mutationRandomizer: RandomizerState;
   /** Locked carrier metadata follows line clears and temporary column settling. */
   mutationCarriers: readonly MutationCarrier[];
   /** Monotonic local identity used to make every carrier activate once. */

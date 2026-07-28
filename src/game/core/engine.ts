@@ -8,6 +8,8 @@ import {
   MUTATION_BOMB_SCORE,
   MUTATION_CARRIER_CHANCE,
   MUTATION_EFFECT_TICKS,
+  MUTATION_FREEZE_GRAVITY_TICKS,
+  MUTATION_RANDOM_SALT,
   MUTATION_RESULT_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
@@ -61,6 +63,10 @@ function survivalDebrisSeed(seed: number): number {
   return (seed ^ SURVIVAL_DEBRIS_RANDOM_SALT) >>> 0;
 }
 
+function mutationItemSeed(seed: number): number {
+  return (seed ^ MUTATION_RANDOM_SALT) >>> 0;
+}
+
 function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState {
   const queue = [...state.queue];
   let randomizer = state.randomizer;
@@ -73,7 +79,9 @@ function refillQueue(state: GameState, minimum = NEXT_QUEUE_SIZE + 1): GameState
 }
 
 /** Schedules an optional marked carrier without weakening the normal seven-bag. */
-function drawMutationItem(randomizer: GameState['randomizer']): { item: MutationItem | null; randomizer: GameState['randomizer'] } {
+function drawMutationItem(
+  randomizer: GameState['mutationRandomizer'],
+): { item: MutationItem | null; randomizer: GameState['mutationRandomizer'] } {
   const chance = drawRandom(randomizer);
   if (chance.value >= MUTATION_CARRIER_CHANCE) return { item: null, randomizer: chance.randomizer };
   const itemRoll = drawRandom(chance.randomizer);
@@ -87,11 +95,13 @@ function assignMutationCarrier(state: GameState): GameState {
   if (state.mode !== 'sprint' || state.pieceCount < 2) {
     return state.mutationActiveCarrier === null ? state : { ...state, mutationActiveCarrier: null };
   }
-  const draw = drawMutationItem(state.randomizer);
-  if (draw.item === null) return { ...state, randomizer: draw.randomizer, mutationActiveCarrier: null };
+  const draw = drawMutationItem(state.mutationRandomizer);
+  if (draw.item === null) {
+    return { ...state, mutationRandomizer: draw.randomizer, mutationActiveCarrier: null };
+  }
   return {
     ...state,
-    randomizer: draw.randomizer,
+    mutationRandomizer: draw.randomizer,
     mutationActiveCarrier: { id: state.mutationNextCarrierId, item: draw.item },
     mutationNextCarrierId: state.mutationNextCarrierId + 1,
   };
@@ -104,11 +114,7 @@ function assignMutationCarrier(state: GameState): GameState {
  */
 export function nextMutationPreviewItem(state: GameState): MutationItem | null {
   if (state.mode !== 'sprint' || state.active === null || state.pieceCount < 1) return null;
-  let preview = refillQueue(state, NEXT_QUEUE_SIZE + 1);
-  const queue = [...preview.queue];
-  queue.shift();
-  preview = refillQueue({ ...preview, queue }, NEXT_QUEUE_SIZE);
-  return drawMutationItem(preview.randomizer).item;
+  return drawMutationItem(state.mutationRandomizer).item;
 }
 
 function puzzleFailure(
@@ -212,6 +218,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalDebrisFallProgress: 0,
     survivalDebrisRandomizer: createRandomizer(survivalDebrisSeed(effectiveSeed)),
     mutationActiveCarrier: null,
+    mutationRandomizer: createRandomizer(mutationItemSeed(effectiveSeed)),
     mutationCarriers: Object.freeze([]),
     mutationNextCarrierId: 1,
     mutationFreezeTicks: 0,
@@ -1032,6 +1039,7 @@ function finishLineClear(state: GameState): GameTransition {
 
 function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
+  const freezeGravityActive = state.mode === 'sprint' && state.mutationFreezeTicks > 0;
   const debris = advanceSurvivalDebris(
     advanceMutationEffects(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 })),
   );
@@ -1077,12 +1085,11 @@ function tick(state: GameState): GameTransition {
     next = { ...next, lockTicks: 0 };
   }
 
-  if (next.mode === 'sprint' && next.mutationFreezeTicks > 0) {
-    return { state: { ...next, gravityTicks: 0 }, events: timedEvents };
-  }
-
   const gravityTicks = next.gravityTicks + 1;
-  if (gravityTicks >= gravityForMode(next.mode, next.level, next.pieceCount, next.lines)) {
+  const gravityInterval = freezeGravityActive
+    ? MUTATION_FREEZE_GRAVITY_TICKS
+    : gravityForMode(next.mode, next.level, next.pieceCount, next.lines);
+  if (gravityTicks >= gravityInterval) {
     const moved = moveActive({ ...next, gravityTicks: 0 }, 0, 1, 'gravity');
     return { state: moved.state, events: [...timedEvents, ...moved.events] };
   }
@@ -1153,6 +1160,7 @@ export function stateHash(state: GameState): string {
         survivalDebrisFallProgress: _survivalDebrisFallProgress,
         survivalDebrisRandomizer: _survivalDebrisRandomizer,
         mutationActiveCarrier: _mutationActiveCarrier,
+        mutationRandomizer: _mutationRandomizer,
         mutationCarriers: _mutationCarriers,
         mutationNextCarrierId: _mutationNextCarrierId,
         mutationFreezeTicks: _mutationFreezeTicks,
@@ -1196,6 +1204,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           mutationActiveCarrier: _mutationActiveCarrier,
+          mutationRandomizer: _mutationRandomizer,
           mutationCarriers: _mutationCarriers,
           mutationNextCarrierId: _mutationNextCarrierId,
           mutationFreezeTicks: _mutationFreezeTicks,
@@ -1228,6 +1237,7 @@ export function stateHash(state: GameState): string {
       const {
         combo: _combo,
         mutationActiveCarrier: _mutationActiveCarrier,
+        mutationRandomizer: _mutationRandomizer,
         mutationCarriers: _mutationCarriers,
         mutationNextCarrierId: _mutationNextCarrierId,
         mutationFreezeTicks: _mutationFreezeTicks,
