@@ -39,6 +39,14 @@ acceptance. Two complete independent read-only audits now accept exact product h
 FIFO. The Core boundary is therefore accepted locally; only the frozen renderer /
 timeline paths open next. Phase 5 itself remains open and unpushed until Renderer,
 UI, production evidence, repeated QA, acceptance record, cleanup, and push complete.
+Renderer reliability checkpoint `2484b67` now fixes the pre-visual handoff: Bomb
+particles wait for the impact phase, consecutive item bursts coexist in the bounded
+pool, a runtime reduced-motion switch retains the current activation/FIFO/timed
+fields, Collapse no longer enables a whole-board displacement filter, and Mutation
+Next invalidates its cache from the independent attachment stream. Focused renderer /
+timeline tests pass 17/17 and typecheck passes. This is a rollback checkpoint, not
+Renderer or Phase-5 acceptance; actual-column Collapse imagery, four attachment
+materials, distinct reduced-motion endpoints, and explicit 2×/4× fields remain open.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

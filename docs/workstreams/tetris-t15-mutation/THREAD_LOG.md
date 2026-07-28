@@ -211,3 +211,38 @@
 - Next action: open only the frozen Renderer carrier/timeline/actual-column VFX
   paths; keep UI, Classic shared line clear, Puzzle, Settings, audio, dependencies,
   evidence, changelog, and push closed.
+
+## 2026-07-28 — Renderer FIFO/timeline reliability checkpoint
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-1`.
+- Writer: `/root`; base `0ef3b05`; candidate `2484b67`.
+- Exact changed product/test paths:
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+- Delivered behavior:
+  - Bomb fragments remain absent through warning/pulse and begin only when the
+    impact phase starts;
+  - a later item burst no longer clears active particles from an earlier activation,
+    while the existing 120-slot pool remains the hard allocation bound;
+  - changing reduced motion at runtime retains the current activation, FIFO, timed
+    fields, previous board, active carrier, and Collapse endpoint instead of silently
+    discarding Core feedback;
+  - Collapse cannot distort unaffected columns through the world-wide displacement
+    filter;
+  - Mutation preview caching follows `mutationRandomizer`, not the ordinary seven-bag.
+- Commands actually run:
+  - `npm.cmd run typecheck` — PASS.
+  - Initial focused Vitest attempt hit only the 10-second Pixi import hook timeout
+    while sampled CPU was 86.6%; no assertion ran or failed.
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts
+    src/animation/mutationTimeline.test.ts --hookTimeout=30000` — 2 files /
+    17 tests PASS.
+  - `git diff --check` — PASS before commit.
+- Resource/lifecycle evidence: work was serialized because CPU exceeded the project
+  60% admission threshold; no browser, Vite listener, build, or parallel auditor was
+  started for this nonvisual reliability checkpoint.
+- Blocker: none. This candidate is not Renderer acceptance.
+- Next action: implement and directly test actual-column Collapse cues, stronger
+  shape/edge/core carrier grammar, distinct four-family reduced-motion endpoints,
+  and explicit persistent 2×/4× feedback without changing the ordinary shared
+  line-clear effect owned by Phase 6.

@@ -16,6 +16,12 @@ item RNG / replay / hash 隔离。最新定向 40 测试和 typecheck 通过。
 修正后的 exact product head `f2d51ca` 已由完整规则审计与独立性能/FIFO
 审计分别接受，均为 P0–P3 = 0。Core 边界现本地接受，允许进入下列 Renderer /
 timeline 精确路径；Phase 5 整体仍需 VFX、UI、浏览器证据、复验、记录与 push。
+Renderer 已产生首个可靠性回退点 `2484b67`：炸弹延迟到 impact 才发射碎片，
+连续触发共享固定对象池而不清除前一批粒子，运行时 reduced-motion 切换保留
+当前触发、FIFO 与计时场，Collapse 禁用全棋盘位移滤镜，Next 缓存绑定独立附件
+随机流。定向 Renderer/timeline 测试 17/17 与 typecheck 通过；该提交尚未完成
+四类附件视觉、实际下沉列反馈、2×/4× 区分或 reduced-motion 静态终态，因此
+不构成 Renderer 验收。
 
 ## 目标
 
