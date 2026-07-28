@@ -45,7 +45,10 @@
 .game-side-panel--sprint,
 .game-side-panel:has(.preview-rail--puzzle) {
   position: relative;
-  z-index: 5;
+  /* Do not create a stacking context here. The Pixi Canvas stays above the
+     transparent rail geometry, while Puzzle's positioned 1/2 labels can escape
+     to their own z-layer above the Canvas-owned well. */
+  z-index: auto;
   display: grid;
   grid-column: 2;
   grid-row: 1;
@@ -61,6 +64,10 @@
   background: transparent;
   border: 0;
   pointer-events: none;
+}
+
+.game-side-panel.game-side-panel--sprint {
+  z-index: auto;
 }
 
 .info-rail,
@@ -104,7 +111,8 @@
   box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
 }
 
-.run-stats span {
+.run-stats span,
+.run-stats [data-stat-role] > span {
   margin-bottom: 3px;
   font-size: 12px;
   line-height: 1.15;
@@ -250,7 +258,7 @@
 
   .run-stats span {
     margin-bottom: 2px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .run-stats strong,
@@ -275,7 +283,7 @@
     display: block;
     align-self: center;
     margin: 0;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
   }
 
@@ -309,7 +317,7 @@
    * squeeze Next into the remaining pixels.
    */
   .game-side-panel.game-side-panel--sprint {
-    grid-template-columns: minmax(92px, .82fr) minmax(108px, 1fr) minmax(124px, 1.08fr);
+    grid-template-columns: 108px minmax(0, 1fr) 126px;
     grid-template-rows: minmax(0, 1fr);
     gap: 6px;
     height: 100%;
@@ -327,7 +335,7 @@
   }
 
   .game-side-panel--sprint .run-stats [data-stat-role="fall-cadence"] strong {
-    font-size: 10.5px;
+    font-size: 12px;
     letter-spacing: -.06em;
     white-space: nowrap;
   }
@@ -350,6 +358,10 @@
     height: auto;
     min-height: 0;
     padding: 4px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > b {
+    font-size: 12px !important;
   }
 
   .game-side-panel--sprint .preview-rail {
@@ -413,7 +425,7 @@
   }
 
   .run-stats span {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .run-stats strong,
@@ -437,7 +449,7 @@
   .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
     display: block;
     margin: 0;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .next-slot,

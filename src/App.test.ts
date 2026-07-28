@@ -754,6 +754,7 @@ describe('T6 frontend mode binding', () => {
     expect(classic.container.querySelector('.preview-rail')?.textContent).toContain('Next');
     expect(classic.container.querySelector('.preview-rail')?.textContent).not.toContain('Next · 2');
     expect(classicSlot.dataset.previewCount).toBe('1');
+    expect(classicSlot.getAttribute('role')).toBe('img');
     expect(classicSlot.getAttribute('aria-label')).toBe('下一个方块');
     classic.unmount();
   });

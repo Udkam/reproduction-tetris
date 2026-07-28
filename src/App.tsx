@@ -1418,6 +1418,7 @@ export function GameSession({
                 className={`next-slot ${puzzleDoublePreview ? 'next-slot--dual' : ''}`}
                 data-testid="next-slot"
                 data-preview-count={puzzleDoublePreview ? 2 : 1}
+                role={puzzleDoublePreview ? undefined : 'img'}
                 aria-label={puzzleDoublePreview
                   ? `${copy.labels.twoUpcoming}${previewPieces.length ? ` (${previewPieces.join(', ')})` : ''}`
                   : firstPreviewLabel}

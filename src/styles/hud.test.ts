@@ -20,6 +20,7 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.board-frame\s*\{[^}]*pointer-events:\s*auto;/s);
     expect(hudCss).toMatch(/\.board-frame\s*\{[^}]*touch-action:\s*none;/s);
     expect(hudCss).toMatch(/\.board-frame--countdown\s*\{[^}]*z-index:\s*8;/s);
+    expect(hudCss).toMatch(/\.game-side-panel,[\s\S]*z-index:\s*auto;/);
   });
 
   it('overrides every compact mode with one visible stats and Next topology', () => {
@@ -27,7 +28,7 @@ describe('Phase 3 HUD authority', () => {
     expect(compact).toContain('display: grid !important');
     expect(compact).toContain('.game-side-panel--sprint .run-stats');
     expect(compact).toContain('.game-side-panel--sprint .preview-rail');
-    expect(compact).toContain('grid-template-columns: minmax(92px, .82fr) minmax(108px, 1fr) minmax(124px, 1.08fr)');
+    expect(compact).toContain('grid-template-columns: 108px minmax(0, 1fr) 126px');
     expect(compact).toContain('.game-side-panel--sprint .info-rail');
     expect(compact).toContain('display: contents !important');
     expect(compact).toContain('.game-arena:has(.preview-rail--puzzle)');
@@ -39,5 +40,9 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot--dual[\s\S]*height:\s*124px;/);
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot__segment-label b\s*\{[^}]*font-family:\s*var\(--font-mono\);/s);
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot__segment-label b\s*\{[^}]*font-size:\s*16px;/s);
+  });
+
+  it('never solves the compact HUD by shrinking labels below twelve pixels', () => {
+    expect(hudCss).not.toMatch(/font-size:\s*(?:[0-9](?:\.[0-9]+)?|1[01](?:\.[0-9]+)?)px/);
   });
 });
