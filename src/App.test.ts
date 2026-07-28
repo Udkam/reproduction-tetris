@@ -800,10 +800,12 @@ describe('T6 frontend mode binding', () => {
       for (let tick = 0; tick < 120 && candidate.active === null; tick += 1) {
         candidate = dispatch(candidate, { type: 'tick' }).state;
       }
+      candidate = dispatch(candidate, { type: 'hard-drop' }).state;
       if (nextMutationPreviewItem(candidate) !== null) carrierPreviewState = candidate;
     }
     if (carrierPreviewState === null) throw new Error('Expected a deterministic Mutation carrier preview seed');
     const mutationState = carrierPreviewState;
+    expect(mutationState.active).toBeNull();
     act(() => mutationRuntime.setState(mutationState));
     const mutationItem = nextMutationPreviewItem(mutationState);
     expect(mutationItem).not.toBeNull();

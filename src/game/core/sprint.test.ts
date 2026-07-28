@@ -120,6 +120,40 @@ describe('异变 mode', () => {
     }
   });
 
+  it('keeps the body-and-item forecast exact through entry and line-clear delays', () => {
+    const active = lockAndSpawn(lockAndSpawn(playingMutation(0x7a15)));
+    const entry = dispatch(active, { type: 'hard-drop' }).state;
+    const lineClear = dispatch({
+      ...carrierClearState('freeze'),
+      pieceCount: 2,
+      mutationActiveCarrier: null,
+    }, { type: 'hard-drop' }).state;
+
+    expect(entry).toMatchObject({ phase: 'entry', active: null });
+    expect(lineClear).toMatchObject({ phase: 'line-clear', active: null });
+
+    for (const delayed of [entry, lineClear]) {
+      const beforeHash = stateHash(delayed);
+      const predicted = {
+        body: delayed.queue[0],
+        item: nextMutationPreviewItem(delayed),
+      };
+      let spawned = delayed;
+      for (
+        let tick = 0;
+        tick < LINE_CLEAR_DELAY_TICKS + ENTRY_DELAY_TICKS + 2 && spawned.active === null;
+        tick += 1
+      ) {
+        spawned = dispatch(spawned, { type: 'tick' }).state;
+      }
+      expect(predicted).toEqual({
+        body: spawned.active?.type,
+        item: spawned.mutationActiveCarrier?.item ?? null,
+      });
+      expect(stateHash(delayed)).toBe(beforeHash);
+    }
+  });
+
   it('keeps item draws isolated from the ordinary seven-bag stream', () => {
     const beforeSpawn = lockAndSpawn(playingMutation(0x4217));
     const withCarrierDraw = lockAndSpawn({

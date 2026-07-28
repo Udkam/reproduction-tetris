@@ -113,7 +113,9 @@ function assignMutationCarrier(state: GameState): GameState {
  * renderer can present the real item on Next while Core timing stays untouched.
  */
 export function nextMutationPreviewItem(state: GameState): MutationItem | null {
-  if (state.mode !== 'sprint' || state.active === null || state.pieceCount < 1) return null;
+  if (state.mode !== 'sprint' || state.status === 'game-over') return null;
+  const pieceCountAtUpcomingSpawn = state.pieceCount + (state.active === null ? 0 : 1);
+  if (pieceCountAtUpcomingSpawn < 2) return null;
   return drawMutationItem(state.mutationRandomizer).item;
 }
 
