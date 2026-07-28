@@ -17,6 +17,9 @@
   the candidate with no product P0/P1. Their comparison caught three distinct focus
   gaps across earlier narrow checkpoints and distinguished one final sampler
   false-positive from product state before coordinator acceptance.
+- The exact candidate preview and detached clean worktree were released, port `53973`
+  was confirmed free, and the linear Phase-1.5 range through acceptance `6b1b76f` was
+  pushed non-force to `origin/main` as the remote recovery point.
 
 ## 2026-07-28 — T15 Phase 1 design foundation accepted
 

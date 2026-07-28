@@ -255,8 +255,9 @@ Continue action. The direct App test, typecheck, 25-file / 185-test suite, main 
 clean 752-module builds, exact-SHA 20-case production matrix, 18-case pixel audit, and
 generic browser client all pass. Independent code/rules, target/visual, and evidence-
 integrity auditors accept the candidate with no product P0/P1. Coordinator acceptance
-is recorded; resource cleanup and the remote recovery push are the only remaining
-Phase-1.5 actions.
+is recorded at `6b1b76f`; the candidate preview and detached worktree were released,
+and `dfeb2c9..6b1b76f` was pushed non-force to `origin/main`. Phase 1.5 is closed and
+Settings may now acquire its declared shared paths from this remote recovery point.
 
 1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
    audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint

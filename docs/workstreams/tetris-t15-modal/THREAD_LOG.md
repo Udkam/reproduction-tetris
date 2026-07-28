@@ -229,3 +229,21 @@ production matrix/pixel audit, manifest verification, and both independent QA.
   non-force remote recovery push remain before Settings may acquire shared paths.
 
 Current state: `ACCEPTED / PUSH PENDING`.
+
+## Resource cleanup and recovery push
+
+- Verified PID `2300` as the exact clean-candidate Vite preview command listening on
+  `127.0.0.1:53973`, stopped only that process, and confirmed the port was released.
+- Verified
+  `C:\Users\Alex Chen\AppData\Local\Temp\tetramorph-modal-17ccc96` as a registered,
+  clean detached worktree at exact source `5ab9e7d`, then removed that exact Temp
+  worktree. The first removal attempt stopped before deletion because Git and Windows
+  path separators differed; the normalized retry repeated all path, HEAD, and status
+  checks before removing it.
+- Main retained only the user-owned untracked `phase 1.md`; no unrelated path was
+  staged. The linear range `dfeb2c9..6b1b76f` was pushed non-force to
+  `origin/main`.
+- Next action: open the Phase 2 Settings contract from remote recovery point
+  `6b1b76f`; do not reopen Phase 1.5 unless a new regression is reproduced.
+
+Current state: `PUSHED / CLOSED`.
