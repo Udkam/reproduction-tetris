@@ -32,6 +32,7 @@ import App, {
 } from './App';
 import { CAMPAIGN_LEVELS, defaultPuzzleProgress, PUZZLE_ROW_BANDS } from './puzzleProgress';
 import type { ScoreRecord } from './leaderboard';
+import { modeRules } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
@@ -137,6 +138,12 @@ function render(element: ReactNode): {
   };
 }
 
+async function advanceEntryCountdown(): Promise<void> {
+  for (let step = 0; step < 3; step += 1) {
+    await act(async () => vi.advanceTimersByTimeAsync(1000));
+  }
+}
+
 describe('DEV QA state snapshot isolation', () => {
   it('detaches scalar, active piece, queue, and nested board state', () => {
     const canonical = createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01');
@@ -217,7 +224,7 @@ describe('Puzzle completion ceremony', () => {
         mode: 'puzzle', puzzleId, onExit: vi.fn(), onCanonicalCompletion, puzzleProgress,
       }));
       await act(async () => Promise.resolve());
-      await act(async () => vi.advanceTimersByTimeAsync(3000));
+      await advanceEntryCountdown();
       const runtime = runtimeHarness.instances.at(-1)!;
       const finished = {
         ...runtime.getState(),
@@ -257,7 +264,7 @@ describe('Puzzle completion ceremony', () => {
 });
 
 describe('entry countdown', () => {
-  it('holds ready for three exact seconds, then enables input, starts once, and focuses the board', async () => {
+  it('freezes the current digit across Settings and Exit, then starts exactly once after three open-sheet-free seconds', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({
       matches: true,
@@ -294,19 +301,31 @@ describe('entry countdown', () => {
     expect(view.container.querySelector('[data-testid="board-frame"]')?.getAttribute('aria-description')).toContain('触控');
     expect(runtime.start).not.toHaveBeenCalled();
 
+    await act(async () => vi.advanceTimersByTimeAsync(400));
     act(() => settings.click());
     expect(view.container.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
-    act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
-    expect(runtime.options.inputEnabled).toBe(false);
-    act(() => back.click());
-    expect(view.container.querySelector('.action-sheet')?.textContent).toContain('离开本局？');
-    act(() => view.container.querySelector<HTMLButtonElement>('.action-sheet__actions > button')?.click());
-    expect(runtime.options.inputEnabled).toBe(false);
+    expect(view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.disabled).toBe(true);
+    await act(async () => vi.advanceTimersByTimeAsync(5000));
+    expect(countdown()?.dataset.countdown).toBe('3');
+    expect(runtime.start).not.toHaveBeenCalled();
+    expect(runtime.setInputEnabled.mock.calls.some(([enabled]) => enabled === true)).toBe(false);
+    expect(view.container.querySelector<HTMLElement>('[role="dialog"]')?.contains(document.activeElement)).toBe(true);
 
+    act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
     await act(async () => vi.advanceTimersByTimeAsync(999));
     expect(countdown()?.dataset.countdown).toBe('3');
     await act(async () => vi.advanceTimersByTimeAsync(1));
     expect(countdown()?.dataset.countdown).toBe('2');
+
+    act(() => back.click());
+    expect(view.container.querySelector('.action-sheet')?.textContent).toContain('离开本局？');
+    await act(async () => vi.advanceTimersByTimeAsync(5000));
+    expect(countdown()?.dataset.countdown).toBe('2');
+    expect(runtime.start).not.toHaveBeenCalled();
+    expect(runtime.setInputEnabled.mock.calls.some(([enabled]) => enabled === true)).toBe(false);
+    expect(view.container.querySelector<HTMLElement>('[role="dialog"]')?.contains(document.activeElement)).toBe(true);
+
+    act(() => view.container.querySelector<HTMLButtonElement>('.action-sheet__actions > button')?.click());
     await act(async () => vi.advanceTimersByTimeAsync(999));
     expect(countdown()?.dataset.countdown).toBe('2');
     await act(async () => vi.advanceTimersByTimeAsync(1));
@@ -325,6 +344,8 @@ describe('entry countdown', () => {
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);
     expect(document.activeElement).toBe(view.container.querySelector('canvas'));
+    await act(async () => vi.advanceTimersByTimeAsync(5000));
+    expect(runtime.start).toHaveBeenCalledTimes(1);
 
     const terminalState = {
       ...createInitialState(0x51a1f00d, 'marathon'),
@@ -342,6 +363,30 @@ describe('entry countdown', () => {
     expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行前 50112 行4,321 分');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
     view.unmount();
+  });
+
+  it('cancels the pending countdown step on unmount without enabling input or starting the runtime', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon',
+      puzzleId: CAMPAIGN_LEVELS[0]!.id,
+      onExit: vi.fn(),
+      onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    const runtime = runtimeHarness.instances.at(-1)!;
+
+    await act(async () => vi.advanceTimersByTimeAsync(400));
+    view.unmount();
+    await act(async () => vi.advanceTimersByTimeAsync(5000));
+
+    expect(runtime.start).not.toHaveBeenCalled();
+    expect(runtime.setInputEnabled.mock.calls.some(([enabled]) => enabled === true)).toBe(false);
   });
 });
 
@@ -368,7 +413,7 @@ describe('T6 frontend mode binding', () => {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
     }));
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
 
     const canvas = view.container.querySelector<HTMLCanvasElement>('canvas')!;
     expect(canvas).not.toBeNull();
@@ -410,6 +455,28 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
     view.unmount();
     view.unmount();
+  });
+
+  it('uses stable typed rule facts in both languages without delimiter parsing or placeholder entries', () => {
+    const expected: Readonly<Record<GameMode, readonly string[]>> = {
+      marathon: ['goal', 'pace', 'end'],
+      race: ['start', 'pressure', 'stonefall', 'end'],
+      sprint: ['goal', 'carriers', 'items', 'end'],
+      puzzle: ['goal', 'queue', 'undo', 'record'],
+    };
+
+    for (const language of ['zh-CN', 'en'] as const) {
+      for (const mode of ['marathon', 'race', 'sprint', 'puzzle'] as const) {
+        const facts = modeRules(language, mode);
+        expect(facts.map((fact) => fact.id)).toEqual(expected[mode]);
+        for (const fact of facts) {
+          expect(Object.keys(fact).sort()).toEqual(['id', 'label', 'value']);
+          expect(fact.label.trim()).not.toBe('');
+          expect(fact.value.trim()).not.toBe('');
+          expect(`${fact.label}${fact.value}`).not.toMatch(/[|｜]/);
+        }
+      }
+    }
   });
 
   it('binds every statistic to an explicit role without positional CSS inference', () => {
@@ -480,10 +547,15 @@ describe('T6 frontend mode binding', () => {
       sprint: [],
     };
     const view = render(createElement(GameSession, {
-      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(), leaderboard,
+      mode: 'marathon',
+      puzzleId: CAMPAIGN_LEVELS[0]!.id,
+      onExit: vi.fn(),
+      onCanonicalCompletion: vi.fn(),
+      onLanguageChange: vi.fn(),
+      leaderboard,
     }));
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     const header = view.container.querySelector<HTMLElement>('[data-testid="cluster-header"]')!;
     const settings = view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')!;
     expect(settings.textContent).toBe('设置');
@@ -516,13 +588,57 @@ describe('T6 frontend mode binding', () => {
     expect(controls.textContent).toContain('控制');
     expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行3,210 分2026.07.24');
     expect(rules.textContent).toContain('补满横行，消除并得分。');
+    expect([...rules.querySelectorAll<HTMLElement>('[data-rule-id]')].map((fact) => fact.dataset.ruleId)).toEqual([
+      'goal',
+      'pace',
+      'end',
+    ]);
     expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
+    const chinese = view.container.querySelector<HTMLButtonElement>('[data-testid="language-zh"]')!;
+    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
+    const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')!;
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     expect(resume.dataset.arrowSelected).toBe('true');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));
-    expect(toggle.dataset.arrowSelected).toBe('true');
+
+    const assertArrowRoute = (from: HTMLButtonElement, key: string, to: HTMLButtonElement) => {
+      act(() => from.focus());
+      act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true })));
+      expect(document.activeElement).toBe(to);
+      expect(to.dataset.arrowSelected).toBe('true');
+    };
+    const routes: readonly [HTMLButtonElement, string, HTMLButtonElement][] = [
+      [chinese, 'ArrowLeft', toggle],
+      [chinese, 'ArrowRight', english],
+      [chinese, 'ArrowUp', restart],
+      [chinese, 'ArrowDown', restart],
+      [english, 'ArrowLeft', chinese],
+      [english, 'ArrowRight', toggle],
+      [english, 'ArrowUp', restart],
+      [english, 'ArrowDown', restart],
+      [toggle, 'ArrowLeft', english],
+      [toggle, 'ArrowRight', chinese],
+      [toggle, 'ArrowUp', resume],
+      [toggle, 'ArrowDown', resume],
+      [restart, 'ArrowLeft', resume],
+      [restart, 'ArrowRight', resume],
+      [restart, 'ArrowUp', chinese],
+      [restart, 'ArrowDown', chinese],
+      [resume, 'ArrowLeft', restart],
+      [resume, 'ArrowRight', restart],
+      [resume, 'ArrowUp', toggle],
+      [resume, 'ArrowDown', toggle],
+    ];
+    for (const [from, key, to] of routes) assertArrowRoute(from, key, to);
+
+    act(() => volume.focus());
+    const nativeRangeArrow = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true });
+    act(() => volume.dispatchEvent(nativeRangeArrow));
+    expect(nativeRangeArrow.defaultPrevented).toBe(false);
+    expect(document.activeElement).toBe(volume);
+
+    act(() => toggle.focus());
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(toggle.textContent).toBe('音效关');
     Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(volume, '56');
@@ -614,7 +730,7 @@ describe('T6 frontend mode binding', () => {
     expect(puzzle.container.querySelector('[data-testid="board-frame"]')?.getAttribute('aria-description')).toContain('触控');
     expect(puzzle.container.querySelector('.keyboard-map')).toBeNull();
 
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     const instance = runtimeHarness.instances.at(-1)!;
     const current = instance.getState();
     const locked = dispatch(current, { type: 'hard-drop' }).state;
@@ -648,7 +764,7 @@ describe('T6 frontend mode binding', () => {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
     }));
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     runtimeHarness.instances.at(-1)?.restart.mockClear();
     runtimeHarness.instances.at(-1)?.start.mockClear();
     runtimeHarness.instances.at(-1)?.togglePause.mockClear();
@@ -699,7 +815,7 @@ describe('T6 frontend mode binding', () => {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
     }));
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     const runtime = runtimeHarness.instances.at(-1)!;
     runtime.togglePause.mockClear();
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
@@ -745,7 +861,7 @@ describe('T6 frontend mode binding', () => {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
     }));
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     const canvas = view.container.querySelector<HTMLCanvasElement>('canvas')!;
     const runtime = runtimeHarness.instances.at(-1)!;
     act(() => canvas.focus());
@@ -821,7 +937,7 @@ describe('T6 frontend mode binding', () => {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit, onCanonicalCompletion: vi.fn(),
     }));
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     const back = view.container.querySelector<HTMLButtonElement>('.topbar-action')!;
     expect(back.getAttribute('aria-keyshortcuts')).toBe('Escape');
 
@@ -893,7 +1009,7 @@ describe('T6 frontend mode binding', () => {
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
     await act(async () => Promise.resolve());
-    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    await advanceEntryCountdown();
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
     const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
     expect(english).not.toBeNull();
@@ -907,6 +1023,39 @@ describe('T6 frontend mode binding', () => {
     expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
     expect(view.container.querySelector('.keyboard-map')).toBeNull();
     expect(view.container.querySelector('canvas')?.getAttribute('aria-label')).toBe('TetraMorph 10 by 20 game board');
+    view.unmount();
+  });
+
+  it('keeps the active English language in the terminal leaderboard call site', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon',
+      puzzleId: CAMPAIGN_LEVELS[0]!.id,
+      onExit: vi.fn(),
+      onCanonicalCompletion: vi.fn(),
+      language: 'en',
+    }));
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+
+    const runtime = runtimeHarness.instances.at(-1)!;
+    act(() => runtime.setState({
+      ...runtime.getState(),
+      status: 'game-over',
+      score: 4321,
+      lines: 12,
+      pieceCount: 44,
+      elapsedTicks: 3600,
+    }));
+
+    const leaderboard = view.container.querySelector<HTMLElement>('.result-leaderboard');
+    expect(leaderboard?.getAttribute('aria-label')).toBe('Classic leaderboard');
+    expect(leaderboard?.querySelector('header')?.textContent).toBe('Classic leaderboardTop 5');
+    expect(leaderboard?.textContent).toContain('12 lines');
+    expect(leaderboard?.textContent).toContain('4,321 pts');
+    expect(leaderboard?.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
     view.unmount();
   });
 
@@ -964,6 +1113,45 @@ describe('T6 frontend mode binding', () => {
     const endedSprint = { ...createInitialState(1, 'sprint'), status: 'game-over' as const, score: 1800, lines: 40, pieceCount: 48, elapsedTicks: 5400 };
     expect(scoreRecordForState(endedSprint, base.completedAt)).toMatchObject({ mode: 'sprint', score: 1800, lines: 40, chain: 0, outcome: 'top-out' });
     expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
+  });
+
+  it('renders at most five real rows with the exact record field matrix for each scored mode', () => {
+    const expectedFields: Readonly<Record<'marathon' | 'race' | 'sprint', readonly string[]>> = {
+      marathon: ['rank', 'lines', 'score', 'date'],
+      race: ['rank', 'time', 'lines', 'date'],
+      sprint: ['rank', 'lines', 'score', 'pieces', 'date'],
+    };
+
+    for (const mode of ['marathon', 'race', 'sprint'] as const) {
+      const records: ScoreRecord[] = Array.from({ length: 7 }, (_, index) => ({
+        version: 7,
+        mode,
+        outcome: 'top-out',
+        score: 7000 - index * 100,
+        lines: 30 - index,
+        pieces: 50 + index,
+        elapsedTicks: 4200 - index * 30,
+        chain: 0,
+        completedAt: `2026-07-${String(index + 1).padStart(2, '0')}T12:00:00.000Z`,
+      }));
+      const view = render(createElement(LeaderboardPanel, { mode, records, variant: 'settings' }));
+      const rows = [...view.container.querySelectorAll<HTMLLIElement>('ol > li')];
+      expect(rows).toHaveLength(5);
+      expect(rows.map((row) => row.querySelector('[data-record-field="rank"]')?.textContent)).toEqual(['01', '02', '03', '04', '05']);
+      for (const row of rows) {
+        expect([...row.querySelectorAll<HTMLElement>('[data-record-field]')].map((field) => field.dataset.recordField))
+          .toEqual(expectedFields[mode]);
+      }
+      if (mode === 'race') {
+        expect(view.container.querySelector('[data-record-field="score"], [data-record-field="pieces"]')).toBeNull();
+      }
+      view.unmount();
+
+      const empty = render(createElement(LeaderboardPanel, { mode, records: [], variant: 'settings' }));
+      expect(empty.container.querySelectorAll('li')).toHaveLength(0);
+      expect(empty.container.querySelector('.result-leaderboard > p')?.textContent).toBe('暂无记录');
+      empty.unmount();
+    }
   });
 
   it('labels an active 4× multiplier with a visible ten-second meter and no Bomb rail copy', () => {

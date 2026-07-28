@@ -16,7 +16,7 @@ import {
   survivalIntervalTicks,
 } from './game/core';
 import { GameRuntime, randomRunSeed } from './game/runtime/GameRuntime';
-import { browserPlatform, type PlatformTimeout } from './platform/browserPlatform';
+import { browserPlatform } from './platform/browserPlatform';
 import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
@@ -331,15 +331,13 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
 function ModeRuleSummary({ mode, language, testId }: { mode: GameMode; language: AppLanguage; testId?: string }) {
   const copy = appCopy(language);
   const modeLabel = modeCopy(language, mode).label;
-  const divider = language === 'en' ? '|' : '｜';
   return (
     <section className={`mode-rule-summary mode-rule-summary--${mode}`} data-testid={testId} aria-label={`${modeLabel} ${copy.labels.rules}`}>
       <strong>{copy.labels.rules}</strong>
       <ul>
-        {modeRules(language, mode).map((rule) => {
-          const [label, ...detail] = rule.split(divider);
-          return <li key={rule}><b>{label}</b><span>{detail.join(divider)}</span></li>;
-        })}
+        {modeRules(language, mode).map((fact) => (
+          <li key={fact.id} data-rule-id={fact.id}><b>{fact.label}</b><span>{fact.value}</span></li>
+        ))}
       </ul>
     </section>
   );
@@ -577,6 +575,7 @@ export function LeaderboardPanel({
   const survival = mode === 'race';
   const sprint = mode === 'sprint';
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
+  const visibleRecords = records.slice(0, 5);
   const title = variant === 'settings'
     ? copy.labels.leaderboard
     : copy.phrasing.modeLeaderboard(modeCopy(language, mode).label);
@@ -584,23 +583,37 @@ export function LeaderboardPanel({
     <section
       className={`result-leaderboard result-leaderboard--${variant}`}
       data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined}
-      data-empty={records.length === 0 || undefined}
+      data-empty={visibleRecords.length === 0 || undefined}
       aria-label={title}
     >
       <header>
         <strong>{title}</strong>
         <span>{copy.phrasing.leaderboardCriterion(survival)}</span>
       </header>
-      {records.length === 0 ? <p>{copy.labels.noRecords}</p> : (
+      {visibleRecords.length === 0 ? <p>{copy.labels.noRecords}</p> : (
         <ol>
-          {records.map((record, index) => (
+          {visibleRecords.map((record, index) => (
             <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
-              <b>{String(index + 1).padStart(2, '0')}</b>
+              <b data-record-field="rank">{String(index + 1).padStart(2, '0')}</b>
               <div className="result-leaderboard__run">
-                <strong>{sprint ? copy.phrasing.lineCount(record.lines) : survival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}</strong>
-                <small>{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, survival, sprint)}</small>
+                <strong data-record-field={survival ? 'time' : 'lines'}>
+                  {survival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}
+                </strong>
+                <small>
+                  {sprint ? (
+                    <>
+                      <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
+                      {'  '}
+                      <span data-record-field="pieces">{copy.phrasing.pieceCount(record.pieces)}</span>
+                    </>
+                  ) : survival ? (
+                    <span data-record-field="lines">{copy.phrasing.lineCount(record.lines)}</span>
+                  ) : (
+                    <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
+                  )}
+                </small>
               </div>
-              <time dateTime={record.completedAt}>{formatDate(record.completedAt, language)}</time>
+              <time data-record-field="date" dateTime={record.completedAt}>{formatDate(record.completedAt, language)}</time>
             </li>
           ))}
         </ol>
@@ -632,6 +645,8 @@ function AudioControls({
           type="button"
           data-testid="audio-toggle"
           data-arrow-nav
+          data-arrow-row="0"
+          data-arrow-col="2"
           aria-label={enabled ? copy.labels.turnSoundOff : copy.labels.turnSoundOn}
           aria-pressed={enabled}
           onClick={() => onEnabledChange(!enabled)}
@@ -688,8 +703,8 @@ function LanguageControl({ language, onChange }: { language: AppLanguage; onChan
     <section className="language-control" aria-label={copy.labels.language}>
       <span>{copy.labels.language}</span>
       <div role="group" aria-label={copy.labels.language}>
-        <button type="button" data-testid="language-zh" data-arrow-nav aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
-        <button type="button" data-testid="language-en" data-arrow-nav aria-pressed={language === 'en'} onClick={() => onChange('en')}>{copy.labels.english}</button>
+        <button type="button" data-testid="language-zh" data-arrow-nav data-arrow-row="0" data-arrow-col="0" aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
+        <button type="button" data-testid="language-en" data-arrow-nav data-arrow-row="0" data-arrow-col="1" aria-pressed={language === 'en'} onClick={() => onChange('en')}>{copy.labels.english}</button>
       </div>
     </section>
   );
@@ -888,6 +903,7 @@ export function GameSession({
   const hostRef = useRef<HTMLDivElement>(null);
   const boardGestureRef = useRef<{ id: number; x: number; y: number; at: number } | null>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
+  const countdownCompleteRef = useRef(false);
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
   const settingsWasPlayingRef = useRef(false);
@@ -966,7 +982,7 @@ export function GameSession({
     const host = hostRef.current;
     if (!host) return;
     let disposed = false;
-    let countdownComplete = false;
+    countdownCompleteRef.current = false;
     const motionQuery = browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)');
     const nextRuntime = new GameRuntime({
       seed: runSeed,
@@ -1030,38 +1046,46 @@ export function GameSession({
     const removeMotionListener = motionQuery.subscribe((matches) => nextRuntime.setReducedMotion(matches));
     runtimeRef.current = nextRuntime;
     setRuntime(nextRuntime);
-    const countdownTimers: PlatformTimeout[] = [
-      browserPlatform.scheduleTimeout(() => {
-        if (!disposed) setCountdownDigit(2);
-      }, 1000),
-      browserPlatform.scheduleTimeout(() => {
-        if (!disposed) setCountdownDigit(1);
-      }, 2000),
-      browserPlatform.scheduleTimeout(() => {
-        if (disposed) return;
-        countdownComplete = true;
-        nextRuntime.setInputEnabled(true);
-        nextRuntime.start();
-        setCountdownDigit(null);
-        setLiveMessage(appCopy(languageRef.current).labels.runStarted);
-        focusBoard();
-      }, 3000),
-    ];
     void nextRuntime.mount(host).then(() => {
       if (disposed) return;
       nextRuntime.setReducedMotion(motionQuery.matches);
       host.querySelector('canvas')?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);
-      if (countdownComplete) focusBoard();
+      if (countdownCompleteRef.current) focusBoard();
     });
 
     return () => {
       disposed = true;
-      for (const timer of countdownTimers) browserPlatform.cancelTimeout(timer);
       removeMotionListener();
       nextRuntime.destroy();
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
   }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId, runSeed]);
+
+  useEffect(() => {
+    if (!runtime || countdownDigit === null || settingsOpen || restartConfirmOpen || exitOpen) return;
+    let cancelled = false;
+    const timer = browserPlatform.scheduleTimeout(() => {
+      if (cancelled) return;
+      if (countdownDigit === 3) {
+        setCountdownDigit(2);
+        return;
+      }
+      if (countdownDigit === 2) {
+        setCountdownDigit(1);
+        return;
+      }
+      countdownCompleteRef.current = true;
+      runtime.setInputEnabled(true);
+      runtime.start();
+      setCountdownDigit(null);
+      setLiveMessage(appCopy(languageRef.current).labels.runStarted);
+      focusBoard();
+    }, 1000);
+    return () => {
+      cancelled = true;
+      browserPlatform.cancelTimeout(timer);
+    };
+  }, [countdownDigit, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen]);
 
   useEffect(() => {
     runtime?.setAudioEnabled(audioEnabled);
@@ -1425,8 +1449,8 @@ export function GameSession({
               language={language}
             />
             <div className="settings-sheet__actions">
-              <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav onClick={requestRestart}>{copy.labels.restart}</button>
-              <button className="primary-action" data-autofocus type="button" data-arrow-nav onClick={closeSettings}>
+              <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="1" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
+              <button className="primary-action" data-autofocus type="button" data-arrow-nav data-arrow-row="1" data-arrow-col="2" onClick={closeSettings}>
                 {copy.labels.continue}
               </button>
             </div>
@@ -1477,7 +1501,7 @@ export function GameSession({
       >
         {activePuzzleCelebration && <PuzzleCelebrationPanel celebration={activePuzzleCelebration} language={language} />}
         {state.mode !== 'puzzle' && <>
-          <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} />
+          <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} language={language} />
           {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">{copy.labels.currentRunMissedLeaderboard}</p>}
         </>}
         <button className="primary-action" data-autofocus type="button" onClick={restartRun}>{state.mode === 'puzzle' ? copy.labels.replay : copy.labels.playAgain}</button>

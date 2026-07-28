@@ -109,11 +109,46 @@ export function ActionSheet({
         const selectedIndex = arrowControls.findIndex((control) => control.dataset.arrowSelected === 'true');
         const focusedIndex = arrowControls.indexOf(activeElement as HTMLButtonElement);
         const currentIndex = selectedIndex >= 0 ? selectedIndex : Math.max(focusedIndex, 0);
-        const offset = keyboardEvent.key === 'ArrowLeft' ? -1
-          : keyboardEvent.key === 'ArrowRight' ? 1
-            : keyboardEvent.key === 'ArrowUp' ? -2 : 2;
-        const nextIndex = (currentIndex + offset + arrowControls.length) % arrowControls.length;
-        const next = arrowControls[nextIndex]!;
+        const coordinates = arrowControls.map((control, index) => {
+          const rowValue = control.dataset.arrowRow;
+          const columnValue = control.dataset.arrowCol;
+          const row = rowValue === undefined ? Number.NaN : Number(rowValue);
+          const column = columnValue === undefined ? Number.NaN : Number(columnValue);
+          return { control, index, row, column };
+        });
+        const hasCoordinateLayout = coordinates.every(({ row, column }) => Number.isInteger(row) && Number.isInteger(column));
+        let next: HTMLButtonElement;
+
+        if (hasCoordinateLayout) {
+          const current = coordinates[currentIndex]!;
+          if (keyboardEvent.key === 'ArrowLeft' || keyboardEvent.key === 'ArrowRight') {
+            const sameRow = coordinates
+              .filter(({ row }) => row === current.row)
+              .sort((left, right) => left.column - right.column || left.index - right.index);
+            const rowIndex = sameRow.findIndex(({ control }) => control === current.control);
+            const direction = keyboardEvent.key === 'ArrowLeft' ? -1 : 1;
+            next = sameRow[(rowIndex + direction + sameRow.length) % sameRow.length]!.control;
+          } else {
+            const rows = [...new Set(coordinates.map(({ row }) => row))].sort((left, right) => left - right);
+            const rowIndex = rows.indexOf(current.row);
+            const direction = keyboardEvent.key === 'ArrowUp' ? -1 : 1;
+            const targetRow = rows[(rowIndex + direction + rows.length) % rows.length]!;
+            next = coordinates
+              .filter(({ row }) => row === targetRow)
+              .sort((left, right) => (
+                Math.abs(left.column - current.column) - Math.abs(right.column - current.column)
+                || left.column - right.column
+                || left.index - right.index
+              ))[0]!.control;
+          }
+        } else {
+          const offset = keyboardEvent.key === 'ArrowLeft' ? -1
+            : keyboardEvent.key === 'ArrowRight' ? 1
+              : keyboardEvent.key === 'ArrowUp' ? -2 : 2;
+          const nextIndex = (currentIndex + offset + arrowControls.length) % arrowControls.length;
+          next = arrowControls[nextIndex]!;
+        }
+
         next.focus({ preventScroll: true });
         syncArrowSelection(next);
         return;
