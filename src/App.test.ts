@@ -780,6 +780,14 @@ describe('T6 frontend mode binding', () => {
     flushTwoFrames();
     expect(restartDialog.contains(document.activeElement)).toBe(true);
     expect(document.activeElement).not.toBe(canvas);
+    const cancelRestart = [...restartDialog.querySelectorAll<HTMLButtonElement>('button')]
+      .find((button) => button.textContent === '取消')!;
+    act(() => cancelRestart.click());
+    flushTwoFrames();
+    expect(view.container.querySelector('[role="dialog"]')).toBeNull();
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
+    expect(view.container.querySelector('canvas')).toBe(canvas);
+    expect(document.activeElement).toBe(canvas);
     view.unmount();
   });
 

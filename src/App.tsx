@@ -1213,7 +1213,8 @@ export function GameSession({
     runtime?.setInputEnabled(true);
     if (restartWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     restartWasPlayingRef.current = false;
-  }, [runtime]);
+    focusBoard();
+  }, [focusBoard, runtime]);
 
   const requestPuzzleUndo = useCallback(() => {
     if (!runtime || countdownDigit !== null || state.mode !== 'puzzle' || exitOpen || restartConfirmOpen || settingsOpen) return;
