@@ -138,6 +138,46 @@ describe('异变 mode', () => {
     expect(withCarrierDraw.mutationRandomizer).not.toEqual(createRandomizer(1));
   });
 
+  it('keeps the item stream outside every non-Mutation replay and hash domain', () => {
+    const cases = [
+      { mode: 'marathon' as const, puzzleId: undefined },
+      { mode: 'race' as const, puzzleId: undefined },
+      { mode: 'puzzle' as const, puzzleId: 't3r-shaft-01' as const },
+    ];
+    const commands = [
+      { type: 'start' as const },
+      { type: 'move' as const, dx: -1 as const },
+      { type: 'hard-drop' as const },
+      ...Array.from({ length: ENTRY_DELAY_TICKS }, () => ({ type: 'tick' as const })),
+    ];
+
+    for (const fixture of cases) {
+      let baseline = createInitialState(0x6e71, fixture.mode, fixture.puzzleId);
+      let isolated = {
+        ...baseline,
+        mutationRandomizer: createRandomizer(0xdead_beef),
+      };
+
+      expect(isolated.mutationRandomizer).not.toEqual(baseline.mutationRandomizer);
+      expect(stateHash(isolated)).toBe(stateHash(baseline));
+
+      for (const command of commands) {
+        baseline = dispatch(baseline, command).state;
+        isolated = dispatch(isolated, command).state;
+      }
+      expect(isolated.active).toEqual(baseline.active);
+      expect(isolated.queue).toEqual(baseline.queue);
+      expect(isolated.randomizer).toEqual(baseline.randomizer);
+      expect(stateHash(isolated)).toBe(stateHash(baseline));
+    }
+
+    const mutation = createInitialState(0x6e71, 'sprint');
+    expect(stateHash({
+      ...mutation,
+      mutationRandomizer: createRandomizer(0xdead_beef),
+    })).not.toBe(stateHash(mutation));
+  });
+
   it('lets every ordinary tetromino body carry every Mutation item independently', () => {
     const bodies = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
     const items = ['freeze', 'collapse', 'bomb', 'multiplier'] as const;
