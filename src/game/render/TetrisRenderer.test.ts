@@ -533,34 +533,48 @@ describe('Puzzle undo presentation reset', () => {
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
     const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }];
-    const layers = [
-      internals.drawMutationCarrierSurface.bind(internals),
-      internals.drawMutationCarrierCore.bind(internals),
-      internals.drawMutationCarrierRim.bind(internals),
-    ];
-
-    for (const drawLayer of layers) {
+    const assertFourGeometries = (
+      drawLayer: (graphics: unknown, cells: readonly Cell[], item: MutationItem) => void,
+    ) => {
       const signatures = new Set<string>();
       for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
         const recorder = createGraphicsRecorder();
-        drawLayer(recorder.graphics, cells, item, layout);
+        drawLayer(recorder.graphics, cells, item);
         signatures.add(geometrySignature(recorder.operations));
       }
       expect(signatures.size).toBe(4);
-    }
+    };
+
+    assertFourGeometries((graphics, layerCells, item) => {
+      internals.drawMutationCarrierSurface(graphics, layerCells, item, layout);
+    });
+    const originalRim = internals.drawMutationCarrierRim;
+    internals.drawMutationCarrierRim = () => undefined;
+    assertFourGeometries((graphics, layerCells, item) => {
+      internals.drawMutationCarrierCore(graphics, layerCells, item, layout);
+    });
+    internals.drawMutationCarrierRim = originalRim;
+    assertFourGeometries((graphics, layerCells, item) => {
+      internals.drawMutationCarrierRim(graphics, layerCells, item, layout);
+    });
   });
 
   it('routes locked, active, and Next carriers through the same surface/core grammar', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
-    const calls: Array<{ layer: 'surface' | 'core'; item: MutationItem }> = [];
+    const calls: Array<{ layer: 'surface' | 'core' | 'rim'; item: MutationItem }> = [];
+    const originalCore = internals.drawMutationCarrierCore.bind(internals);
     internals.drawCellGroups = () => undefined;
     internals.drawMutationCarrierSurface = (_graphics, _cells, item) => {
       calls.push({ layer: 'surface', item });
     };
-    internals.drawMutationCarrierCore = (_graphics, _cells, item) => {
+    internals.drawMutationCarrierRim = (_graphics, _cells, item) => {
+      calls.push({ layer: 'rim', item });
+    };
+    internals.drawMutationCarrierCore = (graphics, cells, item, coreLayout, offsetX, offsetY) => {
       calls.push({ layer: 'core', item });
+      originalCore(graphics, cells, item, coreLayout, offsetX, offsetY);
     };
 
     for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
@@ -582,6 +596,7 @@ describe('Puzzle undo presentation reset', () => {
     for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
       expect(calls.filter((call) => call.item === item && call.layer === 'surface')).toHaveLength(3);
       expect(calls.filter((call) => call.item === item && call.layer === 'core')).toHaveLength(3);
+      expect(calls.filter((call) => call.item === item && call.layer === 'rim')).toHaveLength(3);
     }
   });
 
