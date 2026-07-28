@@ -16,7 +16,11 @@ not be replaced.
 test suite, production build, candidate-bound browser evidence, and independent
 rules/visual/evidence audits. Its acceptance/recovery record `092c91d` is pushed to
 `origin/main`; the repository-owned preview was stopped and port 5179 verified free.
-Phase 3 HUD is now the next contract boundary.
+Phase 3 HUD is now the active contract boundary at rollback base
+`6892f802c819015ed978cd24b714bbdf2d5a5caf`. Baseline browser measurement and
+read-only rules/CSS pre-audits confirm cross-mode rail drift, hidden compact stats/Next,
+short-landscape dead space, a clipped spawn presentation, and a real touch-hit failure.
+No Phase-3 product-source acceptance is claimed.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
@@ -41,15 +45,22 @@ as the current-state authority.
    scoring/line-clear participation, and the accepted brown bedrock material unless a
    later explicit player instruction changes it.
 5. **Mutation.** Collapse the idle rail to a concise no-effect state, then expand
-   only active timed effects. Strengthen Freeze and Collapse board feedback, retain
-   the staged Bomb impact and readable Multiplier field, and keep VFX bounded,
+   only active timed effects. The player-facing Chinese item name is **冰冻**, not
+   “冻结”; its existing internal `freeze` key and English `Freeze` may remain for
+   compatibility. Ice feedback and Collapse board feedback must become unmistakable,
+   while the staged Bomb impact and readable Multiplier field remain bounded,
    reduced-motion-safe, and performant. **Items are attachments, never piece
    families:** every ordinary I/O/T/S/Z/J/L shape can independently carry Freeze,
    Collapse, Bomb, or Multiplier. The ordinary body shape/material remains readable;
    the item contributes its own core, rim, surface language, and energy response.
    Next must use the same body-plus-attachment grammar and must predict the actual
    spawned carrier without consuming deterministic state. Direct coverage must retain
-   all 7 × 4 = 28 combinations.
+   all 7 × 4 = 28 combinations. During the ten-second Ice effect, automatic gravity is
+   fixed at **1 second per cell / 60 fixed ticks** rather than stopped; movement,
+   rotation, soft drop, and hard drop remain available. Re-triggering Ice resets its
+   remaining duration to ten seconds. Activity, locked cells, and Next must reveal both
+   carrier presence and item identity within 100 ms by shape/edge/core/motion as well
+   as colour.
 6. **Classic.** Refine terminology, hierarchy, micro-motion, and feedback only. Do
    not add a mechanic or blur its role as the clean baseline mode.
 7. **Puzzle curriculum.** Expand from twenty to fifty deterministic authored levels
@@ -68,6 +79,30 @@ levels, desktop/portrait/short-landscape/reduced-motion browser passes, one-canv
 zero-DOM-grid assertions, console/page-error checks, lifecycle/resource cleanup, and
 an independent read-only QA disposition. Never mark the goal complete merely because
 one phase or a static screenshot passes.
+
+## Phase 3 — stable live HUD and touch surface
+
+**Status (2026-07-28):** contract frozen at pushed rollback base
+`6892f802c819015ed978cd24b714bbdf2d5a5caf`; source work has not started.
+The exact target, paths, responsive matrix, exclusions, and rollback checkpoints are
+recorded in `docs/phases/phase 3.md`.
+
+1. **Shared topology.** Desktop, portrait, and short landscape use one final HUD
+   topology for all four modes. The board stays 1:2 and dominant; statistics, optional
+   mode status, and Next remain readable without mode-owned blank rows or hidden rails.
+2. **Stable semantics.** Keep `下落速度/格`, `操作数`, Survival pressure values, one
+   ordinary Next, and Puzzle's one-well/two-row `1`/`2` forecast. Actual piece types
+   are included in preview accessible names.
+3. **Spawn presentation.** Core coordinates remain unchanged; a presentation-only
+   correction must show the entire newly spawned silhouette inside the visible well.
+4. **Real input.** A transparent board-bounded interaction layer above the Canvas
+   receives mouse focus and true touch gestures while countdown input stays disabled.
+5. **Bounded paths.** DOM/input/accessibility, renderer presentation, and a final
+   `hud.css` authority layer are separate source commits. Core rules, mode materials,
+   Puzzle data and the Puzzle selector are excluded.
+6. **Acceptance.** Four modes × desktop/portrait/short-landscape/1056 × 480/reduced
+   motion, all three countdown digits, real touch gestures, one Canvas, zero DOM cells,
+   zero overflow, zero page/console errors, and independent rules/visual acceptance.
 
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 
@@ -663,7 +698,10 @@ separate later checkpoints.
    Tetris-owned processes, ports, and memory; release only clearly idle Tetris
    resources, never shared Codex tooling. Then update logs/changelog, commit exact
    paths, push `main`, and state any remaining independent-QA blocker explicitly.
-8. **异变 item contract.** An item carrier is at most one marked cell group per random
+8. **异变 item contract (historical T13 wording; superseded by the active T15
+   Phase-5 contract above).** The old `冻结`/no-gravity wording below is retained only
+   as provenance and must not be implemented. An item carrier is at most one marked
+   cell group per random
    input tetromino; a carrier appears only in 异变, never before the opening two pieces,
    never in Puzzle, and is generated deterministically from that run's fresh seed. Its
    four locked cells retain one carrier identity. Clearing any of those cells activates

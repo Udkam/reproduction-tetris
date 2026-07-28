@@ -24,7 +24,7 @@ Mutation items are an orthogonal attachment system:
 
 | Ordinary body | Allowed attachments |
 | --- | --- |
-| `I`, `O`, `T`, `S`, `Z`, `J`, `L` | Freeze, Collapse, Bomb, or Multiplier |
+| `I`, `O`, `T`, `S`, `Z`, `J`, `L` | Ice (`freeze`), Collapse, Bomb, or Multiplier |
 
 No piece shape, base colour, queue slot, or material may imply a fixed item. Rendering
 first preserves the ordinary body and then adds the item's core, exposed-edge rim,
@@ -32,15 +32,30 @@ surface treatment, and local energy response. Active, locked, and immediate-Next
 carriers share this grammar. The independent carrier RNG and ordinary seven-bag remain
 separate; preview is pure and must equal the next spawned carrier. Direct regression
 coverage retains every one of the twenty-eight body/attachment pairs throughout the
-later Freeze, Collapse, Bomb, and Multiplier redesign.
+later Ice, Collapse, Bomb, and Multiplier redesign. The player-facing Chinese name is
+`冰冻`; `冻结` is retired. The internal `freeze` key and English `Freeze` may remain so
+this presentation correction does not force a persistence/schema migration.
+
+Ice does not stop the active piece. During its ten game seconds, automatic gravity is
+fixed at one second per cell (60 fixed ticks at 60 Hz); direct movement, rotation, soft
+drop, and hard drop remain available. A repeated Ice carrier resets the remaining
+duration to exactly ten seconds. On expiry, Mutation returns to its current normal
+cadence, whose non-Ice floor remains 0.1 seconds per cell.
 
 Visible refinement targets remain mode-specific. Settings must become compact without
 structural blank space; the live board must dominate the HUD; Survival exposes one
 coherent, fair pressure model; Mutation expands its status surface only for active
-effects and gives Freeze/Collapse substantially stronger board atmosphere; Classic
+effects and gives Ice/Collapse substantially stronger board atmosphere; Classic
 keeps its rule purity. All phases keep one Pixi canvas, keyboard/touch accessibility,
 bilingual layout, reduced-motion endpoints, deterministic Core behavior, and bounded
 render/audio lifecycle.
+
+Attachment recognition may not depend on hue alone. Active, locked, and immediate-Next
+carriers preserve the ordinary tetromino body while four item families receive different
+core silhouettes, exposed-edge shapes, surface textures, static marks, and local motion.
+At least three non-colour cues differ between each family. A player must be able to
+judge both carrier presence and item identity within 100 ms in normal colour, grayscale,
+and reduced-motion endpoints.
 
 ## Phase 1 — TetraMorph Design System v1.0
 

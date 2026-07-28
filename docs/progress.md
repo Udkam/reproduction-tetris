@@ -1,5 +1,23 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T15 Phase 3 HUD contract and Phase 5 Ice addendum — 2026-07-28
+
+- All per-phase target briefs are now indexed beside `docs/phases/phase 1.md` under
+  `docs/phases/`. Phase 1, 1.5, and 2 retain their accepted/pushed status; Phase 3 is
+  the active contract at rollback base `6892f80`; later phases remain unopened.
+- Phase 3 now records the measured cross-mode rail drift, compact-view hidden stats/
+  Next, short-landscape dead space, clipped spawn presentation, and reproduced real
+  touch-hit failure. Its source ownership is split into DOM/input/accessibility,
+  presentation-only spawn containment, and a final authoritative HUD CSS layer.
+- Phase 5 now uses player-facing `冰冻` instead of `冻结`. Ice lasts ten seconds and
+  fixes automatic gravity at 1 second per cell while preserving player movement,
+  rotation, soft drop, and hard drop. The ordinary Mutation floor remains 0.1 seconds
+  per cell outside Ice.
+- The four item attachments must identify carrier presence and exact item in active,
+  locked, and immediate-Next states through distinct cores, edges, textures, marks,
+  and motion rather than colour alone. This checkpoint changes documentation only;
+  no source acceptance, test, build, browser evidence, or push is claimed.
+
 ### Phase 1 — TetraMorph Design System v1.0 candidate — 2026-07-28
 
 - Implemented the player-requested design-system foundation from `phase 1.md` without

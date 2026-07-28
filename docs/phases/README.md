@@ -19,9 +19,9 @@
 | 1 | [Design System](<phase 1.md>) | 已推送 | `t15_phase1_writer` | 规则 QA + 视觉 QA |
 | 1.5 | [Modal Compositor](<phase 1.5.md>) | 已推送 | `t15_modal_writer` | 规则 QA + 视觉 QA + 证据 QA |
 | 2 | [Settings](<phase 2.md>) | 已推送 | `t15_settings_writer` | 规则 QA + 视觉 QA + 证据 QA |
-| 3 | [HUD](<phase 3.md>) | 待执行 | `t15_hud_writer` | 规则 QA + 视觉 QA |
+| 3 | [HUD](<phase 3.md>) | 合同冻结 / 待实施 | `t15_hud_writer` | 规则 QA + 视觉 QA |
 | 4 | [Survival](<phase 4.md>) | 待执行 | Core → Render → UI 三个顺序 writer | 规则 QA + 视觉 QA |
-| 5 | [Mutation](<phase 5.md>) | 待执行 | Core/性能 → VFX → UI 三个顺序 writer | 规则 QA + 视觉 QA + 性能/证据 QA |
+| 5 | [Mutation](<phase 5.md>) | 待执行；冰冻规则已补充 | Core/性能 → VFX → UI 三个顺序 writer | 规则 QA + 视觉 QA + 性能/证据 QA |
 | 6 | [Classic](<phase 6.md>) | 待执行 | `t15_classic_writer` | 规则 QA + 视觉 QA |
 | 7 | [Puzzle 50](<phase 7.md>) | 待执行 | Schema → 五批关卡 → Progress/UI | 求解/规则 QA + 视觉 QA + 证据 QA |
 | 8 | [Integration](<phase 8.md>) | 待执行 | 协调者 | 总体规则 QA + 总体视觉 QA + 证据 QA |
@@ -39,3 +39,11 @@
 
 下一 Phase 只有在上一 Phase 已验收并推送后才能取得共享源码路径。整体目标
 只有在 Phase 8 的全局验收完成后才可标记完成。
+
+## 2026-07-28 规则补充
+
+- Mutation 面向玩家的中文道具名由“冻结”统一为“冰冻”。
+- 冰冻持续期间不是完全停落；自动重力固定为 1 秒/格，主动操作仍然可用。
+- 附件识别必须同时覆盖活动方块、锁定方块和 Next，并使用颜色以外的轮廓、
+  纹理、核心符号和局部动效区分四类道具。
+- 以上补充属于 Phase 5，不提前修改 Phase 3 HUD，也不重设 Puzzle 选关界面。

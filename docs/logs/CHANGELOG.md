@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-28 — T15 phase target contracts reconciled
+
+- Kept the complete Phase 1–8 target set together under `docs/phases/`, with one index
+  defining the contract → source → candidate → evidence → independent QA → correction
+  → acceptance → push state machine and explicit rollback boundaries.
+- Advanced Phase 3 from its stale “waiting for Phase 2” wording to the active HUD
+  contract at pushed rollback base `6892f80`. The contract records measured responsive
+  geometry defects, clipped spawn presentation, real touch interception, exact source
+  checkpoints, exclusions, and the final viewport/input acceptance matrix.
+- Added the later Mutation rule supplement without editing product source: the
+  player-facing Chinese name is `冰冻`; its ten-second effect uses fixed 1-second-per-cell
+  automatic gravity rather than stopping the piece. Manual controls remain available
+  and expiry restores the current Mutation cadence.
+- Strengthened the Phase-5 attachment target so active, locked, and immediate-Next
+  carriers communicate both “item present” and the exact item through non-colour
+  silhouette, edge, texture, mark, and local-motion cues. No test, build, browser
+  evidence, product acceptance, or push is claimed by this documentation checkpoint.
+
 ## 2026-07-28 — T15 Phase 2 compact Settings accepted
 
 - Rebuilt the active Settings surface as one compact connected console in the fixed
