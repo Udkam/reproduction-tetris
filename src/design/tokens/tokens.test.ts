@@ -85,7 +85,7 @@ describe('TetraMorph Design System v1.0', () => {
     }
     expect(tokenStyles).toContain('--font-body: "Space Grotesk", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;');
     expect(tokenStyles).toContain('--font-mono: "JetBrains Mono", "Noto Sans Mono CJK SC", "Cascadia Mono", monospace;');
-    expect(tokenStyles).toMatch(/\.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
+    expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).not.toMatch(/(^|\n)\s*(display|grid-template|flex|position|width|height):/);
   });
 });

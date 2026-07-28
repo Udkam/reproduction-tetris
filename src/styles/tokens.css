@@ -61,7 +61,7 @@
 /* Brand typography is part of the token bridge. Playwrite NZ Basic has no 700
    face; requesting one falls back to Space Grotesk in Chromium. Use its real
    maximum weight and a restrained outline for the requested bold presence. */
-.mode-home-wordmark,
+.mode-chooser--workbench .mode-home-wordmark,
 .brand strong,
 .brand h1 {
   font-family: var(--font-display);
@@ -69,7 +69,7 @@
   font-synthesis: none;
 }
 
-.mode-home-wordmark {
+.mode-chooser--workbench .mode-home-wordmark {
   -webkit-text-stroke: .45px currentColor;
   paint-order: stroke fill;
 }
