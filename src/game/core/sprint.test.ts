@@ -10,6 +10,7 @@ import {
 } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch, nextMutationPreviewItem, stateHash } from './engine';
+import { collapseMutationCarriers } from './mutation';
 import { cellsForPiece } from './pieces';
 import { createRandomizer } from './random';
 import { collapseSprintColumns } from './sprint';
@@ -383,10 +384,93 @@ describe('异变 mode', () => {
     board = setCell(board, 1, 36, 'L');
     board = setCell(board, 1, 39, 'O');
 
-    const collapsed = collapseSprintColumns(board);
+    const collapsed = collapseSprintColumns(board).board;
     expect(collapsed[39]?.[0]).toBe('I');
     expect(collapsed[38]?.[0]).toBe('T');
     expect(collapsed[39]?.[1]).toBe('O');
     expect(collapsed[38]?.[1]).toBe('L');
+  });
+
+  it('shares one board scan with carrier settlement metadata', () => {
+    let board = createBoard();
+    board = setCell(board, 0, 34, 'T');
+    board = setCell(board, 0, 38, 'I');
+    board = setCell(board, 1, 36, 'L');
+    board = setCell(board, 1, 39, 'O');
+
+    let cellReads = 0;
+    const countedBoard = board.map((row) => new Proxy(row, {
+      get(target, property, receiver) {
+        if (typeof property === 'string' && /^\d+$/.test(property)) cellReads += 1;
+        return Reflect.get(target, property, receiver);
+      },
+    }));
+    const collapsed = collapseSprintColumns(countedBoard);
+    expect(cellReads).toBe(400);
+
+    const carriers = collapseMutationCarriers(collapsed.settledRowBySource, [{
+      id: 1,
+      item: 'freeze',
+      cells: [{ x: 0, y: 34 }, { x: 0, y: 38 }],
+    }]);
+    expect(cellReads).toBe(400);
+    expect(carriers).toEqual([{
+      id: 1,
+      item: 'freeze',
+      cells: [{ x: 0, y: 38 }, { x: 0, y: 39 }],
+    }]);
+  });
+
+  it('matches a simple reference across sparse and dense deterministic boards', () => {
+    let random = 0x8bad_f00d;
+    const nextRandom = () => {
+      random = (Math.imul(random, 1_664_525) + 1_013_904_223) >>> 0;
+      return random;
+    };
+    const materials = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
+
+    for (let sample = 0; sample < 96; sample += 1) {
+      let board = createBoard();
+      const occupied: Array<{ x: number; y: number }> = [];
+      const density = sample % 3 === 0 ? 2 : sample % 3 === 1 ? 4 : 7;
+      for (let y = 0; y < board.length; y += 1) {
+        for (let x = 0; x < board[y]!.length; x += 1) {
+          const roll = nextRandom();
+          if (roll % 10 >= density) continue;
+          board = setCell(board, x, y, materials[roll % materials.length]!);
+          occupied.push({ x, y });
+        }
+      }
+
+      const actual = collapseSprintColumns(board);
+      const expected = createBoard();
+      for (let x = 0; x < 10; x += 1) {
+        const column = board
+          .map((row, y) => ({ material: row[x], y }))
+          .filter((cell) => cell.material !== null);
+        column.forEach((cell, index) => {
+          expected[expected.length - column.length + index]![x] = cell.material;
+          expect(actual.settledRowBySource[cell.y * 10 + x])
+            .toBe(expected.length - column.length + index);
+        });
+      }
+      expect(actual.board).toEqual(expected);
+
+      const carrierCells = occupied.filter((_, index) => index % 13 === sample % 13);
+      const mapped = collapseMutationCarriers(actual.settledRowBySource, [{
+        id: sample + 1,
+        item: 'collapse',
+        cells: carrierCells,
+      }]);
+      const expectedCells = carrierCells.map((cell) => ({
+        x: cell.x,
+        y: board.slice(cell.y + 1).filter((row) => row[cell.x] !== null).length,
+      })).map((cell) => ({ ...cell, y: board.length - 1 - cell.y }));
+      expect(mapped).toEqual(carrierCells.length === 0 ? [] : [{
+        id: sample + 1,
+        item: 'collapse',
+        cells: expectedCells,
+      }]);
+    }
   });
 });

@@ -793,8 +793,9 @@ function lockActive(
       ]);
     }
     if (state.mutationCollapseTicks > 0) {
-      mutationCarriers = collapseMutationCarriers(board, mutationCarriers);
-      board = collapseSprintColumns(board);
+      const collapsed = collapseSprintColumns(board);
+      mutationCarriers = collapseMutationCarriers(collapsed.settledRowBySource, mutationCarriers);
+      board = collapsed.board;
     }
   }
   const lockedState: GameState = {

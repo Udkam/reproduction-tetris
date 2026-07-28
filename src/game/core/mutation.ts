@@ -1,5 +1,5 @@
 import { mapCellsAfterClear } from './board';
-import { BOARD_HEIGHT, BOARD_WIDTH } from './constants';
+import { BOARD_WIDTH } from './constants';
 import type { Board, Cell, MutationCarrier } from './types';
 
 function sameCell(first: Cell, second: Cell): boolean {
@@ -53,23 +53,14 @@ export function mapMutationCarriersAfterClear(
 }
 
 /**
- * Replays the exact independent-column settlement order for carrier metadata. It
- * does not inspect material identity, so it remains valid for any ordinary piece.
+ * Applies the source-to-settled-row mapping produced by the board's single collapse
+ * pass. It never receives or scans the board itself.
  */
-export function collapseMutationCarriers(board: Board, carriers: readonly MutationCarrier[]): readonly MutationCarrier[] {
+export function collapseMutationCarriers(
+  settledRowBySource: ArrayLike<number>,
+  carriers: readonly MutationCarrier[],
+): readonly MutationCarrier[] {
   if (carriers.length === 0) return carriers;
-  // Source cell index → settled row. This avoids a string-key Map on every
-  // Collapse lock while retaining the exact bottom-up per-column placement order.
-  const settledRowBySource = new Int16Array(BOARD_WIDTH * BOARD_HEIGHT);
-  settledRowBySource.fill(-1);
-  for (let x = 0; x < BOARD_WIDTH; x += 1) {
-    let destinationY = BOARD_HEIGHT - 1;
-    for (let y = BOARD_HEIGHT - 1; y >= 0; y -= 1) {
-      if (board[y]![x] === null) continue;
-      settledRowBySource[y * BOARD_WIDTH + x] = destinationY;
-      destinationY -= 1;
-    }
-  }
   return Object.freeze(carriers.map((carrier) => {
     const cells: Cell[] = [];
     for (const cell of carrier.cells) {
