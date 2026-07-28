@@ -247,11 +247,12 @@ slice: do not stage or mutate its `src/styles.css` change in a T14 checkpoint.
 
 ### T13.16 active delivery contract — modal compositor integrity
 
-**T15 Phase 1.5 status (2026-07-28):** contract opened at rollback base `dfeb2c9`.
-The inherited five-line `src/styles.css` delta is isolated under
-`docs/workstreams/tetris-t15-modal/THREAD_LOG.md`; target/visual and code/rules
-pre-audits are active. Settings may not acquire this shared path until the modal slice
-has its own candidate, evidence, repeated dual QA where needed, acceptance, and push.
+**T15 Phase 1.5 status (2026-07-28):** source candidate `17ccc96` is isolated from
+rollback base `dfeb2c9`. Its exact `src/styles.css` plus `src/App.test.ts` claim passed
+the direct App test and typecheck. Full-suite/build and candidate-bound production
+browser evidence remain pending; no acceptance is claimed. Settings may not acquire
+this shared path until the modal slice has fresh evidence, repeated code/rules and
+target/visual QA where needed, coordinator acceptance, and push.
 
 1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
    audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint

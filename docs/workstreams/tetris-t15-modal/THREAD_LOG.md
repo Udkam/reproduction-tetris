@@ -60,4 +60,27 @@ keyboard/focus operation. Reduced motion must keep the same static layer order.
   overflow/errors, outside-sheet dimmed-board edge correlation, and three inside-sheet
   surface probes.
 
-Current state: `PREAUDIT PASS`; contract corrected; source candidate not yet created.
+## Source candidate
+
+- Candidate SHA: `17ccc96` (`fix(ui): demote canvas beneath modal sheets`).
+- Parent contract chain: `9995857` then corrected evidence contract `6cd2be8`.
+- Exact product/test paths:
+  - `src/styles.css`
+  - `src/App.test.ts`
+- Direct evidence after the last source change:
+  - `npm.cmd run test -- src/App.test.ts`: 1 file / 25 tests passed.
+  - `npm.cmd run typecheck`: passed.
+- The direct test freezes both halves of the claim: the modal selector keeps the live
+  canvas visible at `z-index: 0` with `transform: none`, and Settings preserves/refocuses
+  the same canvas node.
+- Full current-source suite, production build, clean-worktree dependency install, and
+  browser matrix are still pending. CPU samples remained above the project 60% heavy
+  workload threshold, so those jobs were deliberately not started in parallel.
+- Candidate-bound browser preparation lives only under ignored
+  `.local/audits/t15-modal-17ccc96/`. Primary screenshots precede two explicitly
+  labelled calibration captures: one temporarily hides the backdrop to recover the
+  exact live scene, and one temporarily hides the canvas to prove opaque sheet pixels
+  are unchanged. Calibration state is never presented as product evidence.
+
+Current state: `SOURCE CANDIDATE`; targeted gates pass; full gates, browser evidence,
+dual final QA, coordinator acceptance, cleanup, and push remain pending.
