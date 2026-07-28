@@ -77,6 +77,9 @@
 - Resource closure: Vite Preview listener 53972 was stopped and verified free. The
   clean candidate worktree remains only for the current independent visual/code
   review; it is not a running service.
-- Current status: both auditors must repeat against corrected candidate `99e5a0f`.
-  No coordinator acceptance or push claim exists until both final verdicts are
-  recorded.
+- Evidence SHA-256 values are frozen in `QA_PHASE1.md`.
+- Final code/rules verdict: accept `99e5a0f` plus coordination record `fb0545a`; no
+  P0/P1/P2.
+- Final target/visual verdict: accept `99e5a0f`; no P0/P1/P2.
+- Coordinator disposition: accepted. Recovery push is pending and will be recorded
+  only after the remote operation succeeds.

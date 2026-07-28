@@ -60,13 +60,14 @@ one phase or a static screenshot passes.
 
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 
-**Status (2026-07-28):** Phase 1A/1B corrected source candidate `99e5a0f` is green
-and awaiting its repeated independent dual-audit pass. The first target/visual audit
+**Status (2026-07-28):** Phase 1A/1B corrected source candidate `99e5a0f` is accepted
+by both independent auditors; coordinator acceptance is recorded and its recovery push
+is pending. The first target/visual audit
 correctly rejected `54fd260` because imported Variable font faces were requested by
 the wrong CSS family names; `99e5a0f` fixes the actual Space Grotesk Variable and
 JetBrains Mono Variable families and refreshes source-bound proof. Deterministic local
 fonts, dependency lock, clean install, full tests/build, and browser evidence are
-complete, but coordinator acceptance and push are still pending both final verdicts.
+complete.
 This narrow
 presentation foundation does not reopen accepted T14 mechanics or Mutation VFX. The
 inherited `src/styles.css` modal correction and `phase 1.md` remain outside every

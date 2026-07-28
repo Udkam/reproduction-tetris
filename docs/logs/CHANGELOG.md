@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-07-28 — T15 Phase 1 design foundation accepted
+
+- Established a typed/CSS/Pixi design vocabulary for the requested shell palette,
+  accessible supporting text, four mode accents, typography roles, spacing, radii,
+  component metrics, and motion timings without changing layout, Core rules, board
+  materials, or the 7 × 4 Mutation attachment cross-product.
+- Bundled exact local Playwrite 400, Space Grotesk Variable, JetBrains Mono Variable,
+  and Noto Sans SC Variable faces. Independent visual QA rejected the first font
+  candidate after detecting that two imported Variable faces were requested through
+  wrong aliases; correction `99e5a0f` binds their real family names and refreshed
+  browser proof shows all four intended faces loaded.
+- The corrected source passed typecheck, 25 files / 182 tests, and the 752-module
+  production build. A disposable detached worktree also completed a real `npm ci`.
+  Clean production-preview evidence reports one canvas, zero DOM board cells, no
+  horizontal overflow, zero browser errors, and exact source/screenshot hashes.
+- Code/rules QA accepts `99e5a0f` plus coordination record `fb0545a`; target/visual QA
+  accepts `99e5a0f`; neither has an open P0–P2. Component-level token consumption is
+  intentionally assigned to Settings and HUD rather than hidden inside this additive
+  foundation. The inherited T13.16 `src/styles.css` delta and untracked `phase 1.md`
+  remain excluded.
+
 ## 2026-07-27 — T14 candidate-bound Mutation revalidation accepted
 
 - The **异变 / Mutation** attachment contract is revalidated as a genuine independent

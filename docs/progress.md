@@ -34,9 +34,9 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   modes, one canvas, zero DOM board cells, no horizontal overflow, one completed
   entry countdown, and zero console/page errors. The temporary Vite listener on 53972
   and the disposable npm-ci worktree were released after capture.
-- Status: corrected candidate only. Both independent auditors must repeat their review
-  against `99e5a0f`; coordinator acceptance and the phase recovery push are not yet
-  claimed.
+- Final independent result: code/rules QA accepts `99e5a0f` plus post-candidate
+  record `fb0545a`; target/visual QA accepts `99e5a0f`; no P0–P2 remains. Coordinator
+  acceptance is recorded in `QA_PHASE1.md`; the phase recovery push is pending.
 
 ### T13.14 Settings macro-layout, modal-background, and Next re-open — 2026-07-25
 
