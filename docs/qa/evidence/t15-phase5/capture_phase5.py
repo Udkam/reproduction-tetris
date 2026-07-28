@@ -808,6 +808,60 @@ def finish_fifo_observer(page: Page) -> dict[str, Any]:
     return result
 
 
+def capture_fifo_witness(page: Page, snapshot: dict[str, Any]) -> dict[str, Any]:
+    activation = snapshot["renderer"]["mutationActivation"]
+    queued_items = snapshot["renderer"]["mutationActivationQueueItems"]
+    assert activation is not None
+    assert queued_items
+    expected = [activation["item"], *queued_items]
+    install_fifo_observer(page, expected)
+    capture_started = time.perf_counter()
+    fifo_capture = capture(page, "renderer-fifo-witness", settle_ms=0)
+    capture_elapsed_ms = (time.perf_counter() - capture_started) * 1000
+    captured_current = fifo_capture["renderer"]["mutationActivation"]
+    captured_queue = fifo_capture["renderer"]["mutationActivationQueueItems"]
+    assert captured_current is not None
+    assert captured_current["item"] == expected[0]
+    assert captured_queue == expected[1:]
+
+    post_capture = collect(page)
+    validate_common(post_capture)
+    post_current = post_capture["renderer"]["mutationActivation"]
+    post_queue = post_capture["renderer"]["mutationActivationQueueItems"]
+    observer_after_capture = page.evaluate(
+        "structuredClone(window.__T15_FIFO_OBSERVER__)"
+    )
+    assert post_current is not None
+    assert post_current["item"] == expected[0]
+    assert post_queue == expected[1:]
+    assert observer_after_capture["currentIndex"] == 0
+    assert observer_after_capture["error"] is None
+
+    fifo_trace = finish_fifo_observer(page)
+    refreshed = collect(page)
+    validate_common(refreshed)
+    return {
+        "expected": expected,
+        "observed": fifo_trace["observed"],
+        "capture": fifo_capture,
+        "snapshot": refreshed,
+        "witness": {
+            "pieceCount": snapshot["state"]["pieceCount"],
+            "current": expected[0],
+            "queued": expected[1:],
+            "file": fifo_capture["file"],
+            "captureElapsedMs": capture_elapsed_ms,
+            "postScreenshot": {
+                "current": post_current["item"],
+                "elapsedMs": post_current["elapsedMs"],
+                "queued": post_queue,
+                "observerIndex": observer_after_capture["currentIndex"],
+            },
+            "trace": fifo_trace,
+        },
+    }
+
+
 def run(context: BrowserContext) -> dict[str, Any]:
     page = context.new_page()
     errors = attach_error_capture(page)
@@ -839,11 +893,34 @@ def run(context: BrowserContext) -> dict[str, Any]:
         result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
         if result.get("stopped"):
             raise AssertionError(f"Autoplayer stopped at step {step}: {result}")
-        page.wait_for_timeout(18)
         snapshot = collect(page)
         validate_common(snapshot)
-        current_active, current_preview, current_locked = item_sets(snapshot)
 
+        activation = snapshot["renderer"]["mutationActivation"]
+        queued_items = snapshot["renderer"]["mutationActivationQueueItems"]
+        if fifo_expected is None and not (activation and queued_items):
+            page.wait_for_timeout(18)
+            snapshot = collect(page)
+            validate_common(snapshot)
+            activation = snapshot["renderer"]["mutationActivation"]
+            queued_items = snapshot["renderer"]["mutationActivationQueueItems"]
+        elif fifo_expected is not None:
+            page.wait_for_timeout(18)
+            snapshot = collect(page)
+            validate_common(snapshot)
+            activation = snapshot["renderer"]["mutationActivation"]
+            queued_items = snapshot["renderer"]["mutationActivationQueueItems"]
+
+        if fifo_expected is None and activation and queued_items:
+            fifo_result = capture_fifo_witness(page, snapshot)
+            fifo_expected = fifo_result["expected"]
+            fifo_observed = fifo_result["observed"]
+            fifo_witness = fifo_result["witness"]
+            captures.append(fifo_result["capture"])
+            snapshot = fifo_result["snapshot"]
+            activation = snapshot["renderer"]["mutationActivation"]
+
+        current_active, current_preview, current_locked = item_sets(snapshot)
         for item in sorted(current_active - active_seen):
             captures.append(capture(page, f"carrier-active-{item}", settle_ms=24))
             active_seen.add(item)
@@ -855,48 +932,11 @@ def run(context: BrowserContext) -> dict[str, Any]:
             captures.append(capture(page, f"carrier-locked-{item}", settle_ms=24))
             locked_seen.add(item)
 
+        # Carrier screenshots can advance renderer time. Refresh before deciding
+        # whether the next activation frame still belongs to the observed item.
+        snapshot = collect(page)
+        validate_common(snapshot)
         activation = snapshot["renderer"]["mutationActivation"]
-        queued_items = snapshot["renderer"]["mutationActivationQueueItems"]
-        if fifo_expected is None and activation and queued_items:
-            fifo_expected = [activation["item"], *queued_items]
-            install_fifo_observer(page, fifo_expected)
-            fifo_capture = capture(page, "renderer-fifo-witness", settle_ms=0)
-            captured_current = fifo_capture["renderer"]["mutationActivation"]
-            captured_queue = fifo_capture["renderer"]["mutationActivationQueueItems"]
-            assert captured_current is not None
-            assert captured_current["item"] == fifo_expected[0]
-            assert captured_queue == fifo_expected[1:]
-            post_capture = collect(page)
-            validate_common(post_capture)
-            post_current = post_capture["renderer"]["mutationActivation"]
-            post_queue = post_capture["renderer"]["mutationActivationQueueItems"]
-            observer_after_capture = page.evaluate(
-                "structuredClone(window.__T15_FIFO_OBSERVER__)"
-            )
-            assert post_current is not None
-            assert post_current["item"] == fifo_expected[0]
-            assert post_queue == fifo_expected[1:]
-            assert observer_after_capture["currentIndex"] == 0
-            assert observer_after_capture["error"] is None
-            captures.append(fifo_capture)
-            fifo_trace = finish_fifo_observer(page)
-            fifo_observed = fifo_trace["observed"]
-            fifo_witness = {
-                "pieceCount": snapshot["state"]["pieceCount"],
-                "current": fifo_expected[0],
-                "queued": fifo_expected[1:],
-                "file": fifo_capture["file"],
-                "postScreenshot": {
-                    "current": post_current["item"],
-                    "elapsedMs": post_current["elapsedMs"],
-                    "queued": post_queue,
-                    "observerIndex": observer_after_capture["currentIndex"],
-                },
-                "trace": fifo_trace,
-            }
-            snapshot = collect(page)
-            validate_common(snapshot)
-            activation = snapshot["renderer"]["mutationActivation"]
 
         if (
             activation
