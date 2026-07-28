@@ -85,3 +85,78 @@
 - Blocker: none; checkpoint awaits independent rules review.
 - Next action: implement one-pass Collapse board/carrier settlement mapping and its
   deterministic correctness/performance evidence.
+
+## 2026-07-28 — Core Collapse shared-mapping checkpoint
+
+- Task ID: `T15-PHASE5-MUTATION-CORE-2`.
+- Writer: `/root`; base `e110430`; candidate `2e10789`.
+- Exact changed paths:
+  - `src/game/core/sprint.ts`
+  - `src/game/core/mutation.ts`
+  - `src/game/core/engine.ts`
+  - `src/game/core/sprint.test.ts`
+- Delivered behavior:
+  - one fixed 40 × 10 bottom-up scan produces the collapsed board and an
+    `Int16Array` source-to-settled-row mapping;
+  - Engine hands that exact mapping to carrier settlement, which performs array
+    indexing only and never rescans the board;
+  - 96 deterministic sparse/medium/dense samples match an independent reference;
+    a Proxy proof observes exactly 400 source-cell reads before carrier settlement.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/sprint.test.ts` — 18/18 PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - prescribed action client against temporary Vite port 4178 — real Mutation
+    countdown, board, rail, and Next frame inspected.
+- Resource/lifecycle evidence: Vite PID 31512 stopped; the exact temporary
+  `playwright_chromiumdev_profile-9qMZlb` process tree was identified by parent,
+  command line, and creation time before its root was stopped; port 4178 and
+  Playwright Chrome count both returned zero.
+- Blocker: none.
+- Next action: add a direct Runtime same-transition FIFO handoff proof without
+  changing runtime production code.
+
+## 2026-07-28 — Runtime FIFO proof checkpoint
+
+- Task ID: `T15-PHASE5-MUTATION-RUNTIME-FIFO`.
+- Writer: `/root`; base `2e10789`; candidate `94c2d66`.
+- Exact changed path: `src/game/runtime/GameRuntime.test.ts`.
+- Delivered evidence: one legitimate nested Bomb → Ice line-clear transition reaches
+  Renderer in order, while the next render receives an empty event list and cannot
+  replay the activation.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/runtime/GameRuntime.test.ts` — 11/11 PASS.
+  - `npm.cmd run typecheck` — PASS.
+- Blocker: none.
+- Next action: independently audit the exact Core/performance/FIFO range before
+  opening Renderer paths.
+
+## 2026-07-28 — Core candidate audit correction
+
+- Task ID: `T15-PHASE5-MUTATION-CORE-QA-R1`.
+- Coordinator/writer: `/root`; audit head `94c2d66`; corrected candidate `3ceb6c2`.
+- Independent auditor `t15_core_perf_fifo_candidate_qa` returned `GAP` with no P0/P1
+  product defect. Its actionable evidence gaps were:
+  - no fixed multi-carrier / empty-source mapping fixture;
+  - runtime FIFO proof did not lock total Renderer call count;
+  - workstream evidence did not yet name `2e10789` and `94c2d66`.
+- Exact correction paths:
+  - `src/game/core/sprint.test.ts`
+  - `src/game/runtime/GameRuntime.test.ts`
+- Correction evidence:
+  - one fixed board now proves two full carriers, one partially surviving carrier,
+    one fully removed carrier, stable IDs/order, and `-1` for every empty source;
+  - runtime now proves zero delivery before flush, exactly one call at the first
+    flush, exactly two calls after the empty follow-up flush, and exactly one call
+    containing Mutation events;
+  - `npm.cmd run test -- src/game/core/sprint.test.ts
+    src/game/runtime/GameRuntime.test.ts` — 2 files / 30 tests PASS;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` — PASS.
+- Resource note: a second rules audit was interrupted and is not counted as evidence
+  after machine CPU remained above 95%; sampling identified Mineradio rendering/GPU
+  and the active Codex session rather than Chrome or a project browser.
+- Blocker: two fresh read-only dispositions against exact head `3ceb6c2` are still
+  required. This candidate is not Core acceptance and does not open Renderer paths.
+- Next action: when the resource budget allows, run independent rules and
+  performance/FIFO audits against exact `3ceb6c2`; only dual acceptance opens the
+  renderer/timeline checkpoint.

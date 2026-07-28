@@ -2,13 +2,18 @@
 
 ## 状态
 
-**Core RNG/Ice 检查点已完成，等待独立审计。** Phase 4 验收/恢复记录 `fd7ef8d`
+**Core 候选已完成，等待 exact-head 双重独立复验。** Phase 4 验收/恢复记录 `fd7ef8d`
 已推送至 `origin/main`；Phase 5 以该提交为回退基线，审计文档头为
 `fae3c96`。Core/性能、Renderer/VFX 和 UI/Next 三路只读审计一致判定当前
 T14 基线为 `GAP`，因此没有沿用历史验收。首个产品源码检查点 `f344f49`
 已隔离附件 RNG、实现冰冻 60 tick/格，并补 body+item Next、全部主动控制、
-最终冰冻 tick/恢复速度、重触发与并存直接测试。定向 25 测试、typecheck 和
-轻量动作客户端通过；下列精确路径与检查点顺序继续约束其余实现。
+最终冰冻 tick/恢复速度、重触发与并存直接测试。后续 `2e10789` 用同一个
+40 × 10 单遍压实结果同时更新棋盘和 carrier metadata，`94c2d66` 直接证明
+同一 transition 的 FIFO 进入 Renderer，`3ceb6c2` 补齐多 carrier、空源索引、
+空 carrier 移除与恰好一次交付回归。最新定向 30 测试和 typecheck 通过。
+第一份候选审计未发现 P0/P1 产品缺陷，但因直接证据和记录缺口判为 `GAP`；
+修正后 exact head 尚需两份新独立结论。下列精确路径与检查点顺序继续约束
+其余实现，Renderer 在 Core 双重接受前不开放。
 
 ## 目标
 

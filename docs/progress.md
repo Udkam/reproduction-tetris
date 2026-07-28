@@ -1314,3 +1314,20 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   action client entered a live Mutation run; screenshots and text state were
   inspected before port 4178 and temporary browser resources were released.
 - Next: independent rules audit, then one-pass Collapse settlement/performance.
+
+## 2026-07-28 — T15 Phase 5 Core candidate corrected after first audit
+
+- `2e10789` replaces duplicate Collapse board/carrier work with one 400-cell
+  bottom-up pass plus an `Int16Array` mapping. It matches an independent reference
+  across 96 deterministic sparse/medium/dense boards.
+- `94c2d66` adds direct Runtime proof that same-transition Bomb → Ice activations
+  reach Renderer in FIFO order without replay.
+- The first independent candidate audit found no P0/P1 product defect but returned
+  `GAP` for missing direct multi-carrier/empty-source, total render-call, and durable
+  workstream evidence.
+- Correction `3ceb6c2` proves multiple carrier IDs/order/cells, all empty mapping
+  entries, full/partial carrier removal, and exactly-once Renderer delivery. Focused
+  Core/runtime tests pass 30/30 and typecheck passes.
+- A second rules audit was interrupted during sustained machine CPU pressure and is
+  not counted. Exact-head dual independent QA remains required before Renderer work;
+  Phase 5 is still open and unaccepted.

@@ -26,10 +26,14 @@ return `GAP`: item assignment still shares the ordinary seven-bag RNG, Ice still
 stops gravity, Collapse still performs duplicate work and draws global horizontal
 bands, a runtime reduced-motion switch can discard queued feedback, and the status /
 Next semantics remain incomplete. Exact Core → renderer → UI writer paths are frozen
-in `docs/phases/phase 5.md`. Core RNG/Ice checkpoint `f344f49` now isolates the item
-stream and implements 60-tick Ice gravity with manual controls; its targeted
-25-test/typecheck/action-client evidence is green but it is not Phase-5 acceptance.
-Core Collapse mapping/performance is the next product checkpoint.
+in `docs/phases/phase 5.md`. The local Core candidate is now the bounded range
+`f344f49..3ceb6c2`: `f344f49` isolates the item stream and implements 60-tick Ice
+gravity, `2e10789` shares one Collapse settlement mapping between board and carrier
+metadata, `94c2d66` proves runtime FIFO handoff, and `3ceb6c2` closes the first
+candidate audit's direct multi-carrier / empty-source / exactly-once test gaps.
+Focused Core/runtime tests pass 30/30 and typecheck passes. This is still a candidate,
+not Phase-5 acceptance: two fresh independent read-only dispositions against exact
+head `3ceb6c2` are required before renderer ownership opens.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
