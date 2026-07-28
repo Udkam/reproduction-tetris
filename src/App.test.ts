@@ -6,13 +6,14 @@ import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import styles from './styles.css?raw';
-import { PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
+import { PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, nextMutationPreviewItem, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
 import App, {
   cloneQaState,
   countdownTimeLabel,
   elapsedClockLabel,
   elapsedTimeLabel,
   eventMessage,
+  eventMessages,
   fallCadenceLabel,
   GameSession,
   LeaderboardPanel,
@@ -33,7 +34,7 @@ import App, {
 } from './App';
 import { CAMPAIGN_LEVELS, defaultPuzzleProgress, PUZZLE_ROW_BANDS } from './puzzleProgress';
 import type { ScoreRecord } from './leaderboard';
-import { modeRules } from './ui/localization';
+import { itemLabel, modeRules } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
@@ -476,7 +477,7 @@ describe('T6 frontend mode binding', () => {
     act(() => mutation.click());
     const rules = view.container.querySelector<HTMLElement>('[data-testid="entry-mode-rules"]')!;
     expect(rules.textContent).toContain('特殊整块任一格被清除时，立即释放一次道具。');
-    expect(rules.textContent).toContain('重复触发会把对应状态刷新为 10 秒');
+    expect(rules.textContent).toContain('计时效果重复触发会刷新为 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
@@ -783,6 +784,33 @@ describe('T6 frontend mode binding', () => {
     expect(classicSlot.getAttribute('role')).toBe('img');
     expect(classicSlot.getAttribute('aria-label')).toBe('下一个方块');
     classic.unmount();
+
+    const mutation = render(createElement(GameSession, {
+      mode: 'sprint', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    const mutationSlot = mutation.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
+    expect(mutationSlot.getAttribute('aria-label')).toBe('下一个方块');
+    await advanceEntryCountdown();
+    const mutationRuntime = runtimeHarness.instances.at(-1)!;
+    let carrierPreviewState: GameState | null = null;
+    for (let seed = 1; seed <= 512 && carrierPreviewState === null; seed += 1) {
+      let candidate = dispatch(createInitialState(seed, 'sprint'), { type: 'start' }).state;
+      candidate = dispatch(candidate, { type: 'hard-drop' }).state;
+      for (let tick = 0; tick < 120 && candidate.active === null; tick += 1) {
+        candidate = dispatch(candidate, { type: 'tick' }).state;
+      }
+      if (nextMutationPreviewItem(candidate) !== null) carrierPreviewState = candidate;
+    }
+    if (carrierPreviewState === null) throw new Error('Expected a deterministic Mutation carrier preview seed');
+    const mutationState = carrierPreviewState;
+    act(() => mutationRuntime.setState(mutationState));
+    const mutationItem = nextMutationPreviewItem(mutationState);
+    expect(mutationItem).not.toBeNull();
+    expect(mutationSlot.getAttribute('aria-label')).toBe(
+      `下一个方块: ${mutationState.queue[0]} 方块，携带${itemLabel('zh-CN', mutationItem!)}道具`,
+    );
+    mutation.unmount();
   });
 
   it('routes the transparent board interaction surface to the same canvas and touch controls', async () => {
@@ -1294,6 +1322,12 @@ describe('T6 frontend mode binding', () => {
   });
 
   it('labels an active 4× multiplier with a visible ten-second meter and no Bomb rail copy', () => {
+    const idle = render(createElement(MutationStatus, {
+      state: createInitialState(0x51a1f00d, 'sprint'),
+    }));
+    expect(idle.container.querySelector('[data-testid="mutation-status"]')).toBeNull();
+    idle.unmount();
+
     const active = {
       ...createInitialState(0x51a1f00d, 'sprint'),
       mutationMultiplierTicks: 600,
@@ -1301,6 +1335,7 @@ describe('T6 frontend mode binding', () => {
     };
     const view = render(createElement(MutationStatus, { state: active }));
     const multiplier = view.container.querySelector<HTMLElement>('[data-mutation-state="multiplier"]');
+    expect(view.container.querySelectorAll('.mutation-status__effect')).toHaveLength(1);
     expect(multiplier?.textContent).toBe('超级加倍 ×4生效中10 秒');
     expect(multiplier?.dataset.mutationTier).toBe('4');
     expect(multiplier?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
@@ -1308,7 +1343,31 @@ describe('T6 frontend mode binding', () => {
     const bombState = { ...active, mutationLastItem: 'bomb' as const, mutationLastItemTicks: 120 };
     const bomb = render(createElement(MutationStatus, { state: bombState }));
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
+    const mutationRule = modeRules('zh-CN', 'sprint').find((fact) => fact.id === 'items')?.value ?? '';
+    expect(mutationRule).toContain('冰冻把自动下落固定为 1 秒/格');
+    expect(mutationRule).not.toContain('冻结');
     bomb.unmount();
+    view.unmount();
+  });
+
+  it('announces every notable event from one transition in source order', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'sprint', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    const runtime = runtimeHarness.instances.at(-1)!;
+    const events: GameEvent[] = [
+      { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
+    ];
+    act(() => runtime.options.onState?.(runtime.getState(), events));
+    expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe(
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 坍缩 已触发，持续 10 秒。',
+    );
     view.unmount();
   });
 
@@ -1329,6 +1388,17 @@ describe('T6 frontend mode binding', () => {
     expect(eventMessage({ type: 'bedrock-raised', count: 1, height: 4 })).toBe('基岩升至 4 层。');
     expect(eventMessage({ type: 'bedrock-lowered', count: 1, height: 3 })).toBe('基岩降至 3 层。');
     expect(eventMessage({ type: 'puzzle-undone' })).toBe('已撤回上一次落子。');
+    const mutationEvents: GameEvent[] = [
+      { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
+    ];
+    expect(eventMessages(mutationEvents)).toBe(
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 坍缩 已触发，持续 10 秒。',
+    );
+    expect(eventMessages(mutationEvents, 'en')).toBe(
+      '1 lines cleared. Freeze activated for 10 seconds. Collapse activated for 10 seconds.',
+    );
 
     const completedPuzzle: GameState = {
       ...createInitialState(0x51a1f00d, 'puzzle', CAMPAIGN_LEVELS[0]!.id),

@@ -12,6 +12,7 @@ import {
   createInitialState,
   getPuzzleDefinition,
   gravityForMode,
+  nextMutationPreviewItem,
   survivalIntervalSeconds,
   survivalIntervalTicks,
 } from './game/core';
@@ -819,10 +820,6 @@ function mutationEffectLabel(item: MutationItem, ticks: number, language: AppLan
   return copy.phrasing.mutationTimer(label, Math.ceil(ticks / TICKS_PER_SECOND));
 }
 
-function inactiveMutationEffectLabel(item: MutationItem, language: AppLanguage): string {
-  return `${itemLabel(language, item)}${language === 'en' ? ':' : '：'}—`;
-}
-
 function mutationEffectName(item: MutationItem, language: AppLanguage, multiplierFactor: 1 | 2 | 4 = 1): string {
   const copy = appCopy(language);
   return item === 'multiplier' && multiplierFactor === 4 ? copy.labels.superMultiplier : itemLabel(language, item);
@@ -836,6 +833,9 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     { item: 'collapse', ticks: state.mutationCollapseTicks },
     { item: 'multiplier', ticks: state.mutationMultiplierTicks, multiplierFactor: state.mutationMultiplierFactor },
   ];
+  const activeEffects = candidates.filter((effect) => effect.ticks > 0);
+  if (activeEffects.length === 0) return null;
+
   return (
     <section className="mutation-status mutation-status--vfx" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
       <header className="mutation-status__header">
@@ -843,28 +843,25 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
         <span aria-hidden="true">///</span>
       </header>
       <div className="mutation-status__ledger">
-        {candidates.map((effect) => {
-          const active = effect.ticks > 0;
+        {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
           const seconds = Math.ceil(effect.ticks / TICKS_PER_SECOND);
-          const label = active
-            ? mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor)
-            : inactiveMutationEffectLabel(effect.item, language);
+          const label = mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor);
           return (
             <div
               key={effect.item}
               className="mutation-status__effect"
               data-mutation-state={effect.item}
-              data-mutation-tier={effect.item === 'multiplier' && active ? effect.multiplierFactor : undefined}
-              data-active={active || undefined}
+              data-mutation-tier={effect.item === 'multiplier' ? effect.multiplierFactor : undefined}
+              data-active
               aria-label={label}
             >
               <i className="mutation-status__signal" aria-hidden="true" />
               <span className="mutation-status__effect-copy">
                 <b>{name}</b>
-                <small>{active ? copy.labels.mutationActive : copy.labels.waitingForCore}</small>
+                <small>{copy.labels.mutationActive}</small>
               </span>
-              <em>{active ? (language === 'en' ? `${seconds}s` : `${seconds} 秒`) : '—'}</em>
+              <em>{language === 'en' ? `${seconds}s` : `${seconds} 秒`}</em>
               <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / (10 * TICKS_PER_SECOND) * 100)}%` }} /></span>
             </div>
           );
@@ -893,6 +890,13 @@ export function eventMessage(event: GameEvent, language: AppLanguage = DEFAULT_L
   if (event.type === 'finished') return copy.labels.targetReached;
   if (event.type === 'game-over') return copy.labels.runEnded;
   return '';
+}
+
+export function eventMessages(events: readonly GameEvent[], language: AppLanguage = DEFAULT_LANGUAGE): string {
+  return events
+    .map((event) => eventMessage(event, language))
+    .filter((message) => message.length > 0)
+    .join(' ');
 }
 
 function serialiseRect(element: Element | null) {
@@ -1048,18 +1052,8 @@ export function GameSession({
             }
           }
         }
-        const notable = [...events].reverse().find((event) => (
-          event.type === 'lines-cleared'
-           || event.type === 'bedrock-raised'
-           || event.type === 'bedrock-lowered'
-           || event.type === 'paused'
-          || event.type === 'resumed'
-           || event.type === 'puzzle-undone'
-          || event.type === 'mutation-activated'
-          || event.type === 'finished'
-          || event.type === 'game-over'
-        ));
-        if (notable) setLiveMessage(eventMessage(notable, languageRef.current));
+        const announcement = eventMessages(events, languageRef.current);
+        if (announcement) setLiveMessage(announcement);
         if (nextState.mode === 'puzzle' && nextState.puzzleCompletion === 'finished') {
           const completedId = nextState.completedLevelId ?? nextState.puzzleId ?? puzzleId;
           const completionKey = `${nextState.seed}:${completedId}:${nextState.pieceCount}:${nextState.lines}`;
@@ -1370,8 +1364,14 @@ export function GameSession({
   const resultRank = state.mode === 'puzzle' ? null : scoreRecordRank(leaderboardRecords, resultRecord);
   const puzzleDoublePreview = state.mode === 'puzzle';
   const previewPieces = nextPreviewPieces(state);
-  const firstPreviewLabel = previewPieces[0]
-    ? `${copy.labels.nextPiece}: ${previewPieces[0]}`
+  const previewMutationItem = state.mode === 'sprint' && previewPieces[0]
+    ? nextMutationPreviewItem(state)
+    : null;
+  const firstPreviewDescription = previewPieces[0] && previewMutationItem
+    ? copy.phrasing.mutationPreview(previewPieces[0], itemLabel(language, previewMutationItem))
+    : previewPieces[0];
+  const firstPreviewLabel = firstPreviewDescription
+    ? `${copy.labels.nextPiece}: ${firstPreviewDescription}`
     : copy.labels.nextPiece;
   const secondPreviewLabel = previewPieces[1]
     ? `${copy.labels.followingPiece}: ${previewPieces[1]}`

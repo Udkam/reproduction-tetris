@@ -171,6 +171,7 @@ type Translation = {
     eventBedrockLowered: (height: number) => string;
     eventItemTriggered: (item: string) => string;
     mutationTimer: (item: string, seconds: number) => string;
+    mutationPreview: (piece: string, item: string) => string;
   };
 };
 
@@ -220,7 +221,7 @@ const COPY: Record<AppLanguage, Translation> = {
       sprint: [
         { id: 'goal', label: '目标', value: '像经典一样清行；每累计 6 行，下落提速一级。' },
         { id: 'carriers', label: '载具', value: '特殊整块任一格被清除时，立即释放一次道具。' },
-        { id: 'items', label: '效果', value: '冻结停落；坍缩列内下沉；炸弹清空底部 3 行；加倍让消行得分 ×2。重复触发会把对应状态刷新为 10 秒；加倍再次触发升级为超级加倍 ×4。' },
+        { id: 'items', label: '效果', value: '冰冻把自动下落固定为 1 秒/格；坍缩使各列独立下沉；炸弹清除底部 3 行；加倍让消行得分 ×2。计时效果重复触发会刷新为 10 秒；加倍再次触发升级为超级加倍 ×4。' },
         { id: 'end', label: '结束', value: '方块堆到顶端。' },
       ],
       puzzle: [
@@ -230,7 +231,7 @@ const COPY: Record<AppLanguage, Translation> = {
         { id: 'record', label: '纪录', value: '通关后保存历史最优步数。' },
       ],
     },
-    items: { freeze: '冻结', collapse: '坍缩', bomb: '炸弹', multiplier: '加倍' },
+    items: { freeze: '冰冻', collapse: '坍缩', bomb: '炸弹', multiplier: '加倍' },
     labels: {
       language: '语言', chinese: '中文', english: 'English', settings: '设置', controls: '控制', rules: '规则', keyboard: '键盘', gameplayControls: '玩法操作', shortcuts: '快捷键', selectMode: '选择游戏模式', skipToGame: '跳到游戏', loading: 'TetraMorph 正在加载', back: '返回', start: '开始', continue: '继续游戏', returnToPause: '返回暂停', restart: '重新开始', confirm: '确认', cancel: '取消', playAgain: '再来一局', replay: '重来', settingsShortcut: '设置', pauseResume: '暂停 / 继续', restartConfirm: '重开确认', undo: '撤回', move: '移动', rotate: '旋转', softDrop: '快速下落', hardDrop: '直接落底', volume: '音量', soundOn: '音效开', soundOff: '音效关', soundControls: '声音控制', turnSoundOn: '开启音效', turnSoundOff: '关闭音效', score: '分数', lines: '消行', bedrock: '基岩', nextRise: '下一层', survivalTime: '生存时间', stonefall: '落石', level: '关卡', originalBlocks: '原有方块', placed: '操作数', fall: '下落速度/格', core: '核心', combo: '连消', next: 'Next', puzzle: '解谜', selectedPuzzle: '已选残局', puzzleTraits: '残局特性', fixedAnchors: '固定锚点', puzzleRoute: '开放解谜残局', puzzleBands: '残局行数分段', modeHome: '返回模式', currentRecord: '当前关纪录', notCompleted: '尚未通关', best: '最少', leaderboard: '本模式排行', noRecords: '暂无记录', currentRunMissedLeaderboard: '本局未进入排行榜', pauseTitle: '已暂停', restartTitle: '重新开始？', undoTitle: '撤回上一步？', leaveTitle: '离开本局？', leaveRun: '返回模式首页', leavePuzzle: '返回关卡库', resultTitle: '本局结束', rulesIntro: '规则', firstEntry: '首次进入说明', gamePanel: '游戏面板', gameArea: '游戏区', board: '游戏棋盘', twoUpcoming: '后续两个方块：1 为下一个，2 为后一个', nextPiece: '下一个方块', followingPiece: '后一个方块', touchControls: '触控操作', puzzleTouchControls: '解谜触控操作', touchGestureHint: '触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。', mutationStatus: '异变状态', mutationActive: '生效中', superMultiplier: '超级加倍 ×4', waitingForCore: '等待核心方块', carrierCore: '核心', pendingRise: '待上升', pausedMessage: '本局已暂停。', resumedMessage: '继续本局。', undoMessage: '已撤回上一次落子。', targetReached: '目标已达成。', runEnded: '本局结束。', runStarted: 'TetraMorph 已开始。', modeData: '模式数据', moveLeft: '左移', moveRight: '右移', stay: '留在本局', select: '选择', switch: '切换', activate: '执行',
     },
@@ -289,6 +290,7 @@ const COPY: Record<AppLanguage, Translation> = {
       eventBedrockLowered: (height) => `基岩降至 ${height} 层。`,
       eventItemTriggered: (item) => `${item} 已触发，持续 10 秒。`,
       mutationTimer: (item, seconds) => `${item}：${seconds} 秒`,
+      mutationPreview: (piece, item) => `${piece} 方块，携带${item}道具`,
     },
   },
   en: {
@@ -313,7 +315,7 @@ const COPY: Record<AppLanguage, Translation> = {
       sprint: [
         { id: 'goal', label: 'Goal', value: 'Clear rows as in Classic; gravity rises one tier every 6 lines.' },
         { id: 'carriers', label: 'Carriers', value: 'Clear any cell in a special whole piece to release its item once.' },
-        { id: 'items', label: 'Items', value: 'Freeze stops auto-fall; Collapse settles columns independently; Bomb clears the bottom 3 rows; Double scores line clears ×2. Repeating an item refreshes its state to 10 seconds; a repeated Double becomes Super Double ×4.' },
+        { id: 'items', label: 'Items', value: 'Freeze fixes automatic gravity at 1 second per cell; Collapse settles columns independently; Bomb clears the bottom 3 rows; Double scores line clears ×2. Repeating a timed item refreshes it to 10 seconds; a repeated Double becomes Super Double ×4.' },
         { id: 'end', label: 'End', value: 'The stack reaches the top.' },
       ],
       puzzle: [
@@ -382,6 +384,7 @@ const COPY: Record<AppLanguage, Translation> = {
       eventBedrockLowered: (height) => `Bedrock fell to ${height} rows.`,
       eventItemTriggered: (item) => `${item} activated for 10 seconds.`,
       mutationTimer: (item, seconds) => `${item}: ${seconds}s`,
+      mutationPreview: (piece, item) => `${piece} piece carrying ${item}`,
     },
   },
 };
