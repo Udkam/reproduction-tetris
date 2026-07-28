@@ -43,6 +43,10 @@ trail 在 259 ms 存在且 260 ms 释放的断言；25/25 与 typecheck 通过�
 合同 PASS 一致。Renderer 静态边界已本地接受，允许打开冻结的 UI semantics /
 localization 路径；最终浏览器帧、60 FPS 和生命周期实机证据仍属于 Phase 5
 最终验收，不能由静态结论替代。
+UI semantics 候选 `7968bb1` 已完成 `冰冻` / 1 秒每格双语规则、仅活动状态行、
+body+item Next 无障碍描述和同 transition 多事件 source-order live region。
+`src/App.test.ts` 34/34 与 typecheck 通过。该检查点仍待独立静态审计，且没有
+打开 responsive CSS 之外的路径，也没有把本次开发诊断当作最终浏览器证据。
 
 ## 目标
 

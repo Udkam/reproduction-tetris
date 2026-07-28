@@ -398,3 +398,32 @@
   open and unpushed.
 - Next action: implement `冰冻` copy/rules, active-only status rows, attachment-aware
   Next accessibility, and source-order same-transition announcements.
+
+## 2026-07-29 — UI semantics and localization candidate
+
+- Task ID: `T15-PHASE5-MUTATION-UI-1`.
+- Writer: `/root`; base `2356615`; candidate `7968bb1`.
+- Exact changed product/test paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/ui/localization.ts`
+- Delivered behavior:
+  - Chinese player-facing item and rules now use `冰冻`; Chinese and English both
+    state that automatic gravity is fixed at 1 second per cell;
+  - an idle Mutation run renders no status surface or placeholder rows, while active
+    timed effects render only their identity, remaining time, and progress;
+  - immediate Mutation Next exposes the pure predicted body and optional attachment
+    through its accessible name without consuming state;
+  - every notable event from one Core transition is announced in source order through
+    the real `GameSession` `onState` path instead of discarding all but the last;
+  - Bomb remains a terse one-shot announcement with no persistent status row.
+- Commands actually run:
+  - `npm.cmd run test -- src/App.test.ts --maxWorkers=1` — 1 file / 34 tests PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check` — PASS before exact-path commit.
+- Resource boundary: the prescribed browser diagnostic was deferred after two samples
+  reported 90.0% and 76.9% CPU. No Vite, Chrome, or screenshot process was started,
+  and no dynamic evidence is claimed for this checkpoint.
+- Blocker: independent UI semantics/localization disposition remains required.
+- Next action: after static PASS, open only `src/styles/mutation-vfx.css`,
+  `src/styles/hud.css`, and `src/styles/hud.test.ts` for responsive active-state layout.

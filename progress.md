@@ -35,6 +35,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `69730a1` proves both; focused tests pass 25/25 and typecheck passes. Corrected
   performance/lifecycle re-audit passes with P0–P3 none. Renderer static boundary is
   accepted locally; the frozen UI semantics/localization path is now open.
+- UI semantics candidate `7968bb1` changes the player-facing item to `冰冻`, states
+  1 second/cell in both languages, omits idle status placeholders, adds pure
+  body-plus-item Next accessibility, and preserves every same-transition announcement
+  in source order. `src/App.test.ts` passes 34/34 and typecheck passes; independent
+  static review is in progress.
 
 ## Non-negotiable boundaries
 
@@ -47,9 +52,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Implement only the frozen UI semantics/localization checkpoint: `冰冻` copy and
-  1 second/cell rule, active-only compact status, body+item Next accessibility, and
-  source-order same-transition live announcements.
+- Resolve the independent static disposition for UI semantics candidate `7968bb1`;
+  after PASS, open only the frozen responsive status-layout paths and verify one,
+  two, and three simultaneous active states without structural blank space.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.

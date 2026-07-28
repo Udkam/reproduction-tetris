@@ -67,6 +67,13 @@ Collapse trail exists at 259 ms but releases at 260 ms; focused tests remain 25/
 typecheck passes. Corrected performance/lifecycle re-audit accepts exact candidate
 `69730a1` with P0–P3 = 0, matching the visual-contract PASS. Renderer static boundary
 is therefore accepted locally and the frozen UI semantics/localization paths may open.
+UI semantics candidate `7968bb1` now retires player-facing `冻结`, states Ice as
+1 second/cell in both languages, removes inactive status placeholders, exposes the
+pure body-plus-attachment forecast through Next accessibility, and sends every notable
+event from one Core transition to the live region in source order. Direct App coverage
+passes 34/34 and typecheck passes. It remains a candidate pending independent static
+review; responsive status CSS and final browser evidence remain closed until that
+disposition is recorded.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 
