@@ -327,23 +327,22 @@
   }
 
   /*
-   * Mutation has one extra always-on instrument. Give it an explicit third
-   * column instead of allowing the historical mobile rules to hide the HUD or
-   * squeeze Next into the remaining pixels.
+   * Mutation keeps the ordinary two-column HUD while idle. A third instrument
+   * column exists only while at least one timed state is visible.
    */
-  .game-side-panel.game-side-panel--sprint {
-    grid-template-columns: 108px minmax(0, 1fr) 126px;
+  .game-side-panel.game-side-panel--sprint:has(.mutation-status) {
+    grid-template-columns: minmax(92px, .84fr) minmax(80px, 1fr) minmax(110px, .94fr);
     grid-template-rows: minmax(0, 1fr);
-    gap: 6px;
+    gap: 4px;
     height: 100%;
     padding: 4px !important;
   }
 
-  .game-side-panel--sprint .info-rail {
+  .game-side-panel--sprint:has(.mutation-status) .info-rail {
     display: contents !important;
   }
 
-  .game-side-panel--sprint .run-stats {
+  .game-side-panel--sprint:has(.mutation-status) .run-stats {
     grid-column: 1;
     grid-row: 1;
     height: 100%;
@@ -365,7 +364,8 @@
 
   .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: repeat(3, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: minmax(0, 1fr);
     gap: 3px !important;
   }
 
@@ -379,7 +379,7 @@
     font-size: 12px !important;
   }
 
-  .game-side-panel--sprint .preview-rail {
+  .game-side-panel--sprint:has(.mutation-status) .preview-rail {
     grid-column: 3;
     grid-row: 1;
   }
@@ -489,7 +489,9 @@
   }
 
   .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+    grid-template-rows: none;
+    grid-auto-rows: minmax(0, 1fr);
     gap: 3px !important;
   }
 
