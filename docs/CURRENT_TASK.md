@@ -171,6 +171,76 @@ deterministic rules. The dependency lock is now intentionally owned by Phase 1B;
 the inherited `src/styles.css` compositor delta remains outside the Phase-1
 checkpoint.
 
+## Phase 2 — compact Settings console
+
+**Status (2026-07-28):** contract frozen at pushed base `fd26652`. Three independent
+read-only pre-audits agree that records, dates, bilingual copy, backdrop dismissal,
+sound-only controls, and most focus behavior already exist. The blocking gaps are the
+countdown continuing behind a sheet, DOM-index direction navigation that does not
+match the visible control geometry, one English result-page language leak, and a
+Settings layout that alternates between stretched empty quadrants and unreadable
+horizontal compression. No source acceptance is claimed.
+
+1. **Information order and content.** The visible and DOM order is always title,
+   **控制**, **键盘**, concise **规则**, then the current record surface last. Music
+   stays removed; Controls contains language, sound effects, 0–100% volume, Restart,
+   and Continue. Keyboard contains Gameplay before Shortcuts, with key entries in two
+   readable columns rather than four sparse micro-columns. Puzzle alone adds `Z`.
+2. **Natural-height connected console.** Use one connected mineral-light console whose
+   sections are separated by one structural rule. The sheet is at most 800 px wide on
+   desktop and grows only to its real content, with a scroll-contained maximum height.
+   No top-level section may use a fixed/minimum height, equal-height stretch,
+   `space-between`, ghost cell, or empty five-row record reserve. Body and key labels
+   remain at least 12 px; interactive hit areas remain at least 44 px. Short landscape
+   scrolls the content instead of shrinking it below the design-system floor.
+3. **Responsive geometry.** Desktop Controls uses a 52 px label rail plus language,
+   sound/volume, and compact run actions. It wraps to two rows before content collides
+   and becomes a natural single column on narrow screens. Keyboard uses the same label
+   rail, with Gameplay and Shortcuts arranged as real two-column item grids; the fifth
+   Puzzle action and seventh shortcut span their final row. Rules render only real
+   structured facts: three Classic facts fill three columns; four-fact modes use 2 × 2;
+   widths below 680 px use one column. Records always follow Rules.
+4. **Mode record matrix.** Classic rows show rank, lines, score, and date. Survival
+   rows show rank, survival time, lines, and date—never score or piece count. Mutation
+   rows show rank, lines, score, piece count, and date. Each ordinary mode renders only
+   its actual zero-to-five rows; an empty table is one compact status row. Puzzle never
+   creates a leaderboard: its final strip contains only the current level record and
+   `最少 N 步` / `尚未通关`.
+5. **Interaction correctness.** Opening Settings or Exit during 3 → 2 → 1 must freeze
+   the current digit, keep Core ready and input disabled, and resume the same countdown
+   after the final sheet closes; the run starts exactly once. Settings navigation uses
+   explicit row/column coordinates: Left/Right stays in a row, Up/Down moves to the
+   nearest control in the adjacent row, and Enter activates the selected control.
+   A focused range keeps native arrow adjustment. Esc, backdrop, paused-origin
+   Continue, successor sheets, and the Phase-1.5 same-Canvas focus contract remain.
+   The result leaderboard receives the active language so English routes never fall
+   back to Chinese.
+6. **Structured copy.** Replace delimiter-split rule strings with typed rule facts
+   carrying stable IDs, labels, and values. Keep the current mechanical facts and
+   rankings; this phase changes presentation, not Core rules or persistence. Do not
+   change date semantics unless a separate reproduced defect is accepted.
+7. **Bounded source and checkpoints.**
+   - behavior/content: `src/App.tsx`, `src/App.test.ts`,
+     `src/ui/localization.ts`, and only the coordinate-navigation branch in
+     `src/ui/ActionSheet.tsx`;
+   - layout/style: `src/styles.css` plus direct contract assertions in
+     `src/App.test.ts`;
+   - excluded: Core, renderer, audio engine/runtime, leaderboard schema/sorting,
+     dependencies, Puzzle definitions, and the Puzzle selector composition.
+   Behavior and layout are separate commits. A rejected candidate returns to the same
+   writer; no later shared-path phase starts before Phase 2 is accepted and pushed.
+8. **Acceptance matrix.** Direct tests cover countdown-sheet freeze/resume, complete
+   coordinate navigation, range behavior, playing/paused replacement chains, language
+   switching, English results, all four structured rule sets, ordinary empty/five-row
+   records, Survival field exclusion, and Puzzle completed/uncompleted strips. Final
+   gates are typecheck, full suite, build, and candidate-bound production evidence at
+   1440 × 900, 390 × 844, 844 × 390, and 1056 × 480, including Chinese/English,
+   reduced motion, empty/full records, and Puzzle record states. Every top-level
+   section has at most 16 px non-semantic trailing space; body text is at least 12 px,
+   hit areas at least 44 px, the page does not overflow, the same one Canvas stays
+   visible and dimmed, and console/page errors remain zero. Code/rules,
+   target/visual, and evidence-integrity QA must all accept the exact candidate.
+
 ### T14 accepted historical delivery contract — Mutation VFX polish
 
 **Authority:** `E:\Download\TetraMorph_Mutation_VFX_Polish_Prompt.md`, plus the player's

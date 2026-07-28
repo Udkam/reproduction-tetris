@@ -84,6 +84,46 @@ work begins. A corrected candidate always receives both audits again. Only a
 coordinator-accepted phase may be pushed, and every accepted push is retained as the
 remote recovery point for the next phase.
 
+## Phase 2 — Settings as one connected instrument
+
+**Status:** contract frozen at recovery base `fd26652`; source work has not started.
+The prior two-card layout left an empty quadrant when Controls and Keyboard had
+different heights. Its emergency horizontal replacement filled width by reducing
+type and controls below the product scale. Both outcomes are rejected. Phase 2 uses
+one 800 px maximum-width, natural-height, scroll-contained console with four ordered
+bands: Controls, Keyboard, Rules, Records.
+
+- **Controls.** A 52 px section rail identifies the band. Desktop places language,
+  sound/volume, and the compact two-button run action together without making Restart
+  and Continue span the sheet. It wraps before collision; 44 px targets and the
+  design-system type scale do not shrink. There is no music control.
+- **Keyboard.** Gameplay precedes Shortcuts. The two groups stack naturally, and each
+  group uses exactly two columns of key/meaning pairs. Ordinary Gameplay fills 2 × 2;
+  Puzzle's fifth `Z` pair spans the final row. Seven Shortcuts finish with Enter
+  spanning the final row. This is a readable reference, not four scattered columns.
+- **Rules.** Rules are typed facts rather than localized strings parsed by punctuation.
+  Only real facts render. Three Classic facts fill three columns; four-fact modes use
+  2 × 2; below 680 px they become one column. The layout may wrap text but may not
+  reduce body copy below 12 px or create a fourth placeholder for Classic.
+- **Records.** Records are always last. Ordinary modes render zero to five actual rows;
+  empty state is one compact row. Survival exposes only time, lines, and date. Puzzle
+  uses one current-level best strip and never mounts a hidden leaderboard.
+- **Geometry and motion.** Direct child bands share one surface, zero inter-band gap,
+  one-pixel dividers, 12 × 16 px section padding, 10 px outer radius, and no fixed
+  height, equal-height stretch, or `space-between`. A short viewport scrolls the
+  sheet's content. Reduced motion changes no geometry.
+- **Input and lifecycle.** Settings controls declare semantic row/column positions.
+  Horizontal arrows stay within a row; vertical arrows choose the nearest column in
+  the adjacent row; range arrows remain native. Opening any sheet during entry
+  countdown freezes the displayed digit and input-ready transition until the sheet
+  chain closes. Existing modal focus handoff and same-Canvas restoration remain
+  unchanged.
+
+This phase may edit only the bounded App, direct App test, localization, coordinate
+navigation branch, and Settings CSS paths named in `docs/CURRENT_TASK.md`. It may not
+redesign the Puzzle selector or change gameplay, records, audio, dependencies, or
+renderer ownership.
+
 ## T14 Mutation VFX polish — accepted historical contract
 
 The design authority is `docs/MUTATION_VFX_POLISH.md`, derived from the user-provided
