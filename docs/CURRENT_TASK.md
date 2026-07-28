@@ -58,10 +58,11 @@ one phase or a static screenshot passes.
 
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 
-**Status (2026-07-28):** implemented candidate under adoption review. This narrow
-presentation foundation does not reopen accepted T14 mechanics or Mutation VFX. The
-inherited user-owned `src/styles.css`, `package-lock.json`, and `phase 1.md` remain
-out of the Phase-1 source checkpoint.
+**Status (2026-07-28):** Phase 1A implemented and candidate-bound visual review in
+progress; Phase 1B is open for deterministic local fonts and dependency-lock closure.
+This narrow presentation foundation does not reopen accepted T14 mechanics or
+Mutation VFX. The inherited `src/styles.css` modal correction and `phase 1.md` remain
+outside every Phase-1 source checkpoint.
 
 **Boundary.** Create one authoritative, typed token family under
 `src/design/tokens/` for palette, typography, spacing, radii, and motion timing, then
@@ -103,6 +104,27 @@ zero DOM board cells, then run typecheck, the full suite, production build, and 
 single real-browser visual comparison. The browser pass must establish that the
 existing layouts are unchanged while typography, shell palette, and board colour
 resolve through the new system.
+
+### Phase 1A / 1B checkpoint split
+
+- **Phase 1A — token and palette bridge:** `5ac6437..378826b` is the current
+  reviewable source chain. It defines all requested token families, adopts the shell
+  palette in CSS/Pixi, restores AA supporting text, and loads the real Playwrite
+  wordmark. Spacing, radius, component, and motion tokens are deliberate primitives;
+  Settings consumes them in Phase 2 and the live HUD consumes them in Phase 3. Do not
+  claim that every historical literal in `src/styles.css` was mechanically replaced.
+- **Phase 1B — deterministic local fonts and lock closure:** add exact
+  `@fontsource-variable/noto-sans-sc@5.3.0`, import it locally, and use its actual
+  Fontsource family before platform fallbacks. `package.json` and `package-lock.json`
+  form one dependency-only checkpoint. The pre-existing optional `@emnapi` lock delta
+  may be adopted only if a regenerated lock passes `npm ci` from a detached clean
+  candidate; otherwise stop and report it separately. No layout or gameplay path is
+  authorized in Phase 1B.
+
+Every later phase uses one writer and two independent read-only QA roles: code/rules
+and target/visual. Each workstream records contract SHA, exact source paths, evidence
+hashes, both findings, correction SHA, accepted SHA, and one rollback base before the
+coordinator may push.
 
 Branch: `main`
 

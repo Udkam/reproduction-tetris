@@ -66,6 +66,20 @@ tetromino materials, Survival bedrock, stones, Puzzle anchors, and all Mutation 
 palettes remain their independently accepted materials. The visible board field stays
 the established deep navy `#071522`.
 
+Phase 1 is accepted in two bounded parts rather than by mechanically replacing every
+literal in the legacy stylesheet. Phase 1A establishes the typed/CSS vocabulary,
+adopts colour and role fonts, and fixes accessibility. Phase 1B bundles the exact
+Noto Sans SC variable face locally and closes the dependency lock. Component token
+consumption is then verified where it has semantic context: Settings in Phase 2 and
+the live HUD/cards/buttons in Phase 3. Those phases may not introduce a new arbitrary
+size, radius, colour, or duration when an established token expresses the intent.
+
+All implementation phases use one writer plus two independent read-only auditors.
+The code/rules auditor compares the exact base-to-candidate range and deterministic
+contracts; the target/visual auditor compares the candidate against this design
+contract at every required viewport. P0/P1 findings and user-request-relevant P2
+findings return to the original writer. QA never edits production paths.
+
 ## T14 Mutation VFX polish — accepted historical contract
 
 The design authority is `docs/MUTATION_VFX_POLISH.md`, derived from the user-provided

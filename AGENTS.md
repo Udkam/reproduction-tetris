@@ -60,7 +60,9 @@ collision instead of merging or overwriting the other worker's dirty state.
 
 - This repository contains clean-room studies of game mechanics.
 - Do not copy commercial logos, music, fonts, sprites, level layouts, text, or trade dress.
-- The page-facing title is the plain-text word `Tetris` by direct user instruction.
+- The page-facing title is the plain-text word `TetraMorph` by the player's later
+  direct instruction. Historical `Tetris` / `Tetra` references may remain only as
+  provenance in archived contracts and tests.
   Do not imitate a commercial logo, multicolor wordmark, proprietary font, interface,
   level layout, or trade dress; the surrounding visual system remains original.
 - Core simulation is deterministic and renderer-independent. PixiJS, React, DOM, audio, storage, and browser timing must not enter `src/game/core`.
