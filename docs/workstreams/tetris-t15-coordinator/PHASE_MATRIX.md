@@ -5,6 +5,10 @@ phase remains `OPEN` until its candidate has fresh evidence, two independent rea
 verdicts, correction/retest where required, a coordinator acceptance record, resource
 cleanup, and a successful non-force push.
 
+Human-readable goals, exclusions, team topology, checkpoint boundaries, and acceptance
+criteria for every phase are indexed in `docs/phases/README.md`. This matrix remains
+the authoritative live status/SHA register.
+
 ## Fixed team topology
 
 | Role | Responsibility | Write authority |

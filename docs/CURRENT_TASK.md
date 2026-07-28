@@ -11,6 +11,10 @@ existing Puzzle library layout is explicitly excluded from redesign; adapting it
 count/progression data for fifty levels is allowed, but its visual composition must
 not be replaced.
 
+The per-phase goal, team, checkpoint, and rollback briefs are indexed at
+`docs/phases/README.md`. They refine this execution order without replacing this file
+as the current-state authority.
+
 1. **Design-system foundation.** Adopt the existing Phase-1 token candidate after
    candidate-bound checks. Its deliberately subtle result centralises colour, type,
    spacing, radius, component metrics, and motion timing; visible page recomposition
@@ -70,8 +74,10 @@ fonts, dependency lock, clean install, full tests/build, and browser evidence ar
 complete.
 This narrow
 presentation foundation does not reopen accepted T14 mechanics or Mutation VFX. The
-inherited `src/styles.css` modal correction and `phase 1.md` remain outside every
-Phase-1 source checkpoint.
+inherited `src/styles.css` modal correction remained outside every Phase-1 source
+checkpoint. The original untracked `phase 1.md` brief was later normalized into
+`docs/phases/phase 1.md` with the other phase-goal documents; that documentation
+migration is not retroactively part of the accepted Phase-1 product-source range.
 
 **Boundary.** Create one authoritative, typed token family under
 `src/design/tokens/` for palette, typography, spacing, radii, and motion timing, then
