@@ -177,18 +177,30 @@ cleared lines removes one existing bedrock row. Ordinary pieces retain the accep
 fixed Survival cadence.
 
 An independent stone clock starts at 20 seconds and decreases by one second after each
-event to a 10-second floor. Each event selects one or two columns from a deterministic
-RNG stream that is isolated from the ordinary seven-bag. Stones descend independently
-at approximately 1.5× the ordinary piece speed, become clearable board cells, and may
-either obstruct play or complete a scored line. The player receives a clear, bounded
-pre-entry column warning and can read both threat clocks without opening Settings.
-Reduced motion replaces travelling warning motion with the same informative endpoint.
+event to a 10-second floor. Exactly two playing seconds before an event, Core selects
+one or two unique columns from a deterministic RNG stream that is isolated from the
+ordinary seven-bag. The selected columns become canonical state, enter the replay/hash
+domain, and drive both warning and spawn. If every warned entry cell is blocked at
+expiry, the event stays due with its warning intact until one of those columns can
+accept a stone; it is never silently skipped or redirected. Stones descend
+independently at approximately 1.5× the ordinary piece speed, become clearable board
+cells, and may either obstruct play or complete a scored line. Reduced motion replaces
+travelling warning motion with the same static column endpoint.
 
-Core timing/RNG, Pixi bedrock/stone presentation, and DOM pressure readout are three
-separate checkpoints. Acceptance must prove deterministic replay, pause/restart and
-top-out ordering, stone-assisted clears, 13→6 and 20→10 boundaries, one-to-two stone
-events, records containing only survival time/lines/date, responsive readability,
-one Canvas, zero DOM cells, no leaks, and independent rules plus visual review.
+The live Survival rail keeps the accepted four-card topology: elapsed time, cleared
+lines, current bedrock count plus rise clock, and the independent stone clock. This
+places the endurance metric and both threats above score without adding a fifth blank
+or wrapping card. The local leaderboard persists a mode-discriminated v8 Survival row
+containing only elapsed ticks, lines, completion date, and required schema metadata;
+v7 migration deliberately discards Survival score, piece count, and chain.
+
+Core timing/RNG, Pixi stone presentation, DOM pressure readout, and persistence schema
+are separate checkpoints. Existing brown bedrock and slate stone materials remain
+unchanged. Acceptance must prove deterministic replay, pause/restart and top-out
+ordering, stored warning/spawn agreement, blocked-entry deferral, stone-assisted
+clears, 13→6 and 20→10 boundaries, one-to-two stone events, records containing only
+survival time/lines/date, responsive readability, one Canvas, zero DOM cells, no
+leaks, and independent rules plus visual review.
 
 ## T14 Mutation VFX polish — accepted historical contract
 

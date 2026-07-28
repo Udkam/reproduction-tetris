@@ -121,13 +121,31 @@ authoritative in `docs/phases/phase 4.md`.
    stone event to a 10-second floor, drop one or two clearable stones at roughly
    1.5× the ordinary piece fall speed. Stones use an RNG stream isolated from the
    seven-bag and participate in line clears and scoring.
-3. **Readable fairness.** Expose both threat clocks and a fair pre-entry column warning.
-   Reduced motion keeps an informative endpoint without relying on sweeping movement.
+3. **Readable fairness.** Canonical Core state preselects one or two unique columns
+   exactly two playing seconds before each stone event. The same stored plan drives
+   the Canvas warning and actual spawn without rereading or predicting RNG. If every
+   warned entry cell is blocked when the timer expires, the event remains due and the
+   warning stays visible until at least one warned column can accept a stone; it may
+   not silently consume the event or move to an unannounced column. Reduced motion
+   keeps the same static column endpoint without relying on sweeping movement.
 4. **Records.** Survival records contain only survival time, cleared lines, and date;
    no placed-piece count is persisted or displayed.
-5. **Checkpoint boundary.** Core timing/RNG, Pixi material/motion, and DOM HUD are
-   separate reviewable commits. No Mutation, Classic, Puzzle, Settings, audio,
-   dependency, packaging, second-Canvas, or DOM-grid change belongs to this phase.
+5. **HUD topology.** Preserve the accepted four-cell rail: elapsed Survival time and
+   cleared lines occupy the first row; bedrock-rise and falling-stone clocks occupy
+   the second. The bedrock clock label includes the current row count. Score is not
+   promoted over the mode's endurance metric.
+6. **Checkpoint boundary.**
+   - Core warning plan: `src/game/core/constants.ts`, `types.ts`, `engine.ts`, and
+     `race.test.ts`.
+   - Renderer motion/cues: `src/game/render/TetrisRenderer.ts` and direct test plus
+     `presentation.ts` and direct test.
+   - HUD: `src/App.tsx`, direct App test, `src/ui/localization.ts`,
+     `src/styles/hud.css`, and direct HUD test.
+   - Persistence: `src/leaderboard.ts`, direct leaderboard test, `src/App.tsx`, and
+     direct App test; use a mode-discriminated v8 record and explicitly drop
+     Survival `score`, `pieces`, and `chain` during v7 migration.
+   No Mutation, Classic, Puzzle, Settings, audio, dependency, packaging,
+   second-Canvas, or DOM-grid change belongs to this phase.
 
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 
