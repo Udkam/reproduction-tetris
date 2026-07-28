@@ -89,6 +89,9 @@ The contract fixes the requested base palette (`#DCE7F1`, `#F8FAFC`, `#EDF3F7`,
 `#31978D`, Survival `#5878C4`, Mutation `#C77A35`, Puzzle `#8A63B3`), Playwrite NZ
 Basic for the `TetraMorph` wordmark only, Space Grotesk for UI, JetBrains Mono for
 values, and the Noto Sans SC → PingFang SC → Microsoft YaHei Chinese fallback chain.
+The shipped Playwrite face tops out at its authored 400 weight; request that real face
+and use a restrained local stroke for the required bold presence instead of asking
+for a nonexistent 700 face and silently falling back to Space Grotesk.
 Because `#627D98` does not reach 4.5:1 on either light content surface, normal-size
 supporting text uses the accessible `#52677F`; the softer requested value is retained
 only as a non-body accent. Token values also define the three card levels,
@@ -108,15 +111,14 @@ evidence only: its target-floor boards and tier gate are superseded by this task
 its local walkthrough output remains historical ignored evidence and is not regenerated
 in this delivery.
 
-Current execution status (2026-07-27): **T14 MUTATION VFX POLISH — first-party
-candidate verified, independent read-only QA pending.** T13.15's Puzzle ceremony and
-brown-bedrock outcome remain accepted; T13.14 remains accepted after its third
-Settings/forecast correction. T14 does not alter Puzzle routes, completion semantics,
-records, Survival pressure, clearable falling stones, or Classic/Survival/Puzzle
-cadence. The inherited user-owned `package-lock.json` and `src/styles.css` remain
-outside every T14 checkpoint and were not touched.
+Current execution status (2026-07-28): **T15 phased product refinement active.** T14
+Mutation VFX, T13.15's Puzzle ceremony/brown-bedrock outcome, and T13.14's final
+Settings/forecast correction are accepted historical baselines. T15 may refine their
+specified presentation in its named later phases, but does not silently reopen their
+deterministic rules. The inherited user-owned `package-lock.json` and `src/styles.css`
+remain outside the Phase-1 checkpoint.
 
-### T14 active delivery contract — Mutation VFX polish
+### T14 accepted historical delivery contract — Mutation VFX polish
 
 **Authority:** `E:\Download\TetraMorph_Mutation_VFX_Polish_Prompt.md`, plus the player's
 2026-07-27 live-feedback addendum; the implementation design is recorded in

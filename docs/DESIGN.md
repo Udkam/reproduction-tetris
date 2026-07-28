@@ -46,12 +46,12 @@ render/audio lifecycle.
 
 **Scope:** a foundation pass only. It centralises the existing interface language
 without redesigning any page, changing layout, rebuilding Settings, changing a board
-material, or adding new interaction or animation. It is intentionally separate from
-the pending T14 Mutation review.
+material, or adding new interaction or animation. It builds on the accepted T14
+Mutation baseline without reopening that mechanic.
 
 | System | Contract |
 | --- | --- |
-| Brand | `TetraMorph` alone uses Playwrite NZ Basic; no UI label may use the display face. |
+| Brand | `TetraMorph` alone uses Playwrite NZ Basic at its authored maximum 400 weight plus a restrained local stroke; no UI label may use the display face and no nonexistent 700 face may trigger fallback. |
 | Interface | Space Grotesk at 500/600/700 for English UI; Chinese resolves Noto Sans SC → PingFang SC → Microsoft YaHei. |
 | Data | JetBrains Mono carries scores, times, lines, countdowns, and compact key/value data. |
 | Type scale | Display 28/700; heading 24/700; card title 14/600; value 24/700; body 14/500; caption 12/500. |
@@ -66,7 +66,7 @@ tetromino materials, Survival bedrock, stones, Puzzle anchors, and all Mutation 
 palettes remain their independently accepted materials. The visible board field stays
 the established deep navy `#071522`.
 
-## T14 Mutation VFX polish — active
+## T14 Mutation VFX polish — accepted historical contract
 
 The design authority is `docs/MUTATION_VFX_POLISH.md`, derived from the user-provided
 VFX brief. Mutation keeps its original mechanical contract and is presented as a
