@@ -23,7 +23,7 @@ QA task.
 
 | Phase | Declared writer team | Independent QA team | Rollback granularity | Status |
 | --- | --- | --- | --- | --- |
-| 1. Design foundation | coordinator as `t15_phase1_writer` | `t14_readonly_qa` + `phase1_visual_delta` | contract, dependency, token/font source, evidence, QA, acceptance | `ACCEPTED SOURCE 99e5a0f`; recovery push pending |
+| 1. Design foundation | coordinator as `t15_phase1_writer` | `t14_readonly_qa` + `phase1_visual_delta` | contract, dependency, token/font source, evidence, QA, acceptance | `PUSHED`; source `99e5a0f`, acceptance/recovery `fcd612e` |
 | 1.5 Modal compositor closure | `t15_modal_writer` | `t15_modal_rules_qa` + `t15_modal_visual_qa` | one narrow CSS/test source checkpoint, then evidence/QA | `OPEN`; inherited five-line delta is isolated |
 | 2. Settings | `t15_settings_writer` | `t15_settings_rules_qa` + `t15_settings_visual_qa` | behavior/focus and layout/style are separate checkpoints | `OPEN` |
 | 3. HUD | `t15_hud_writer` | `t15_hud_rules_qa` + `t15_hud_visual_qa` | DOM composition and renderer geometry remain separately revertible | `OPEN` |

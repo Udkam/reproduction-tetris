@@ -61,8 +61,8 @@ one phase or a static screenshot passes.
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 
 **Status (2026-07-28):** Phase 1A/1B corrected source candidate `99e5a0f` is accepted
-by both independent auditors; coordinator acceptance is recorded and its recovery push
-is pending. The first target/visual audit
+by both independent auditors; coordinator acceptance checkpoint `fcd612e` was pushed
+to `origin/main` as the Phase-1 recovery point. The first target/visual audit
 correctly rejected `54fd260` because imported Variable font faces were requested by
 the wrong CSS family names; `99e5a0f` fixes the actual Space Grotesk Variable and
 JetBrains Mono Variable families and refreshes source-bound proof. Deterministic local

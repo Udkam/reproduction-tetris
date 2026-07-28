@@ -36,7 +36,8 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   and the disposable npm-ci worktree were released after capture.
 - Final independent result: code/rules QA accepts `99e5a0f` plus post-candidate
   record `fb0545a`; target/visual QA accepts `99e5a0f`; no P0–P2 remains. Coordinator
-  acceptance is recorded in `QA_PHASE1.md`; the phase recovery push is pending.
+  acceptance is recorded in `QA_PHASE1.md`; acceptance checkpoint `fcd612e` was
+  successfully pushed to `origin/main` as the Phase-1 recovery point.
 
 ### T13.14 Settings macro-layout, modal-background, and Next re-open — 2026-07-25
 

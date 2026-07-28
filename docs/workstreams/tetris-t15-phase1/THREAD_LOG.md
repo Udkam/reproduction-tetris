@@ -81,5 +81,6 @@
 - Final code/rules verdict: accept `99e5a0f` plus coordination record `fb0545a`; no
   P0/P1/P2.
 - Final target/visual verdict: accept `99e5a0f`; no P0/P1/P2.
-- Coordinator disposition: accepted. Recovery push is pending and will be recorded
-  only after the remote operation succeeds.
+- Coordinator disposition: accepted at `fcd612e`.
+- Recovery push: `fcd612e` successfully advanced `origin/main` from `ed36ab3`;
+  no force push or history rewrite was used.

@@ -19,7 +19,8 @@
   accepts `99e5a0f`; neither has an open P0–P2. Component-level token consumption is
   intentionally assigned to Settings and HUD rather than hidden inside this additive
   foundation. The inherited T13.16 `src/styles.css` delta and untracked `phase 1.md`
-  remain excluded.
+  remain excluded. Coordinator acceptance `fcd612e` was pushed to `origin/main` as
+  the Phase-1 recovery point.
 
 ## 2026-07-27 — T14 candidate-bound Mutation revalidation accepted
 

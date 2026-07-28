@@ -61,4 +61,5 @@ Accepted. Phase 1A/1B is an additive design foundation, not a claim that Setting
 HUD has already been recomposed. It changes no Core rule, piece material, Mutation
 attachment semantics, or Puzzle campaign. Port 53972 is released; the disposable
 npm-ci worktree is removed; the detached visual-review worktree contains no running
-service. Push is recorded separately after the remote operation succeeds.
+service. Coordinator acceptance checkpoint `fcd612e` was successfully pushed to
+`origin/main` without a force push or history rewrite.
