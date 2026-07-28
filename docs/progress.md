@@ -1,5 +1,43 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### Phase 1 — TetraMorph Design System v1.0 candidate — 2026-07-28
+
+- Implemented the player-requested design-system foundation from `phase 1.md` without
+  changing component structure, page geometry, gameplay, board-cell materials, or
+  animation behaviour. `src/design/tokens/` now owns semantic colour, typography,
+  spacing, radius/component-metric, and motion-timing contracts; `src/styles/tokens.css`
+  bridges existing CSS variables, and the Pixi shell palette reads the same colour
+  values.
+- The requested base palette and four mode accents now resolve as
+  `#DCE7F1 / #F8FAFC / #EDF3F7 / #C4D4DF / #102A43 / #627D98 / #071522` and
+  Classic/Survival/Mutation/Puzzle as `#31978D / #5878C4 / #C77A35 / #8A63B3`.
+  Playwrite remains brand-only at its real 400 weight; exact
+  `@fontsource-variable/noto-sans-sc@5.3.0`, Space Grotesk, and JetBrains Mono are
+  bundled locally. Existing 44 px interactive hit targets remain intact even though
+  the visual primary-button token is 40 px.
+- Candidate chain: rollback base `ed36ab3`; contract/foundation `5ac6437..378826b`;
+  exact dependency/lock checkpoint `7ff656c`; deterministic Noto source bridge
+  `54fd260`; audited variable-family correction `99e5a0f`. A fresh disposable
+  detached worktree completed a real
+  `npm.cmd ci --ignore-scripts`, typecheck, and the focused 2-file / 12-test contract.
+- The first target/visual audit rejected `54fd260`: imported Variable packages were
+  still requested as non-Variable Space Grotesk and JetBrains Mono families, so
+  English UI and data silently fell back to Noto. `99e5a0f` corrects both real family
+  names and extends the contract test. Refreshed evidence explicitly loads and records
+  all four intended faces instead of accepting fallback-positive `fonts.check` data.
+- Final candidate gates passed: focused token/render tests (2 files / 12 tests),
+  `npm.cmd run typecheck`, full `npm.cmd run test` (25 files / 182 tests), and
+  `npm.cmd run build` (752 modules). Source-bound browser evidence is retained under
+  ignored `.local/audits/phase1-99e5a0f-preview/candidate/`: 1440 × 960 Home and
+  Classic captures prove Playwrite 400, Space Grotesk Variable 500, JetBrains Mono
+  Variable 700, Chinese Noto 500/700, the specified computed variables, four home
+  modes, one canvas, zero DOM board cells, no horizontal overflow, one completed
+  entry countdown, and zero console/page errors. The temporary Vite listener on 53972
+  and the disposable npm-ci worktree were released after capture.
+- Status: corrected candidate only. Both independent auditors must repeat their review
+  against `99e5a0f`; coordinator acceptance and the phase recovery push are not yet
+  claimed.
+
 ### T13.14 Settings macro-layout, modal-background, and Next re-open — 2026-07-25
 
 - Player review rejects the first density candidate even after its local audit: the

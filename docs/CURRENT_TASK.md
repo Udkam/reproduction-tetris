@@ -3,11 +3,13 @@
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
 **Status (2026-07-28):** active. The linked product-review conversation is the
-authoritative visual workflow. Complete the phases in order, retain fresh visual
-evidence for each accepted boundary, and push only after the complete source chain,
-multi-round QA, documentation, and resource cleanup are finished. The existing Puzzle
-library layout is explicitly excluded from redesign; adapting its count/progression
-data for fifty levels is allowed, but its visual composition must not be replaced.
+authoritative visual workflow. Complete the phases in order and retain fresh visual
+evidence for each accepted boundary. After a phase passes both independent audits,
+the coordinator records its acceptance, verifies resource cleanup, and pushes that
+accepted checkpoint as a remote recovery point before the next phase begins. The
+existing Puzzle library layout is explicitly excluded from redesign; adapting its
+count/progression data for fifty levels is allowed, but its visual composition must
+not be replaced.
 
 1. **Design-system foundation.** Adopt the existing Phase-1 token candidate after
    candidate-bound checks. Its deliberately subtle result centralises colour, type,
@@ -58,11 +60,17 @@ one phase or a static screenshot passes.
 
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 
-**Status (2026-07-28):** Phase 1A implemented and candidate-bound visual review in
-progress; Phase 1B is open for deterministic local fonts and dependency-lock closure.
-This narrow presentation foundation does not reopen accepted T14 mechanics or
-Mutation VFX. The inherited `src/styles.css` modal correction and `phase 1.md` remain
-outside every Phase-1 source checkpoint.
+**Status (2026-07-28):** Phase 1A/1B corrected source candidate `99e5a0f` is green
+and awaiting its repeated independent dual-audit pass. The first target/visual audit
+correctly rejected `54fd260` because imported Variable font faces were requested by
+the wrong CSS family names; `99e5a0f` fixes the actual Space Grotesk Variable and
+JetBrains Mono Variable families and refreshes source-bound proof. Deterministic local
+fonts, dependency lock, clean install, full tests/build, and browser evidence are
+complete, but coordinator acceptance and push are still pending both final verdicts.
+This narrow
+presentation foundation does not reopen accepted T14 mechanics or Mutation VFX. The
+inherited `src/styles.css` modal correction and `phase 1.md` remain outside every
+Phase-1 source checkpoint.
 
 **Boundary.** Create one authoritative, typed token family under
 `src/design/tokens/` for palette, typography, spacing, radii, and motion timing, then
@@ -88,8 +96,9 @@ unchanged.
 The contract fixes the requested base palette (`#DCE7F1`, `#F8FAFC`, `#EDF3F7`,
 `#C4D4DF`, `#102A43`, and soft secondary `#627D98`), mode accents (Classic
 `#31978D`, Survival `#5878C4`, Mutation `#C77A35`, Puzzle `#8A63B3`), Playwrite NZ
-Basic for the `TetraMorph` wordmark only, Space Grotesk for UI, JetBrains Mono for
-values, and the Noto Sans SC → PingFang SC → Microsoft YaHei Chinese fallback chain.
+Basic for the `TetraMorph` wordmark only, the actual locally registered
+`Space Grotesk Variable` family for UI, `JetBrains Mono Variable` for values, and the
+`Noto Sans SC Variable` → PingFang SC → Microsoft YaHei Chinese fallback chain.
 The shipped Playwrite face tops out at its authored 400 weight; request that real face
 and use a restrained local stroke for the required bold presence instead of asking
 for a nonexistent 700 face and silently falling back to Space Grotesk.
@@ -107,24 +116,44 @@ resolve through the new system.
 
 ### Phase 1A / 1B checkpoint split
 
-- **Phase 1A — token and palette bridge:** `5ac6437..378826b` is the current
-  reviewable source chain. It defines all requested token families, adopts the shell
+- **Phase 1A — token and palette bridge:** `5ac6437..378826b` defines all requested
+  token families, adopts the shell
   palette in CSS/Pixi, restores AA supporting text, and loads the real Playwrite
   wordmark. Spacing, radius, component, and motion tokens are deliberate primitives;
   Settings consumes them in Phase 2 and the live HUD consumes them in Phase 3. Do not
   claim that every historical literal in `src/styles.css` was mechanically replaced.
-- **Phase 1B — deterministic local fonts and lock closure:** add exact
-  `@fontsource-variable/noto-sans-sc@5.3.0`, import it locally, and use its actual
-  Fontsource family before platform fallbacks. `package.json` and `package-lock.json`
-  form one dependency-only checkpoint. The pre-existing optional `@emnapi` lock delta
-  may be adopted only if a regenerated lock passes `npm ci` from a detached clean
-  candidate; otherwise stop and report it separately. No layout or gameplay path is
-  authorized in Phase 1B.
+- **Phase 1B — deterministic local fonts and lock closure:** `7ff656c` adds exact
+  `@fontsource-variable/noto-sans-sc@5.3.0` and its clean-installable lock;
+  `54fd260` imports it locally and uses the actual Fontsource family before platform
+  fallbacks. Correction `99e5a0f` binds the actual `Space Grotesk Variable` and
+  `JetBrains Mono Variable` family names after independent visual QA caught their
+  silent fallback. A disposable detached candidate passed a real `npm ci`, typecheck,
+  and focused contract tests. No layout or gameplay path changed in Phase 1B.
 
 Every later phase uses one writer and two independent read-only QA roles: code/rules
 and target/visual. Each workstream records contract SHA, exact source paths, evidence
 hashes, both findings, correction SHA, accepted SHA, and one rollback base before the
 coordinator may push.
+
+### T15 collaboration, audit, and rollback protocol
+
+`docs/workstreams/tetris-t15-coordinator/PHASE_MATRIX.md` is the execution register.
+Every phase follows the same non-skippable state machine:
+
+1. coordinator freezes the target delta and exact paths in a docs-only checkpoint;
+2. one writer produces small green source checkpoints and stops at a candidate SHA;
+3. a code/rules auditor and a target/visual auditor independently compare the exact
+   base-to-candidate range against the frozen target;
+4. any P0/P1 or user-request-relevant P2 returns to the same writer, then both audits
+   are repeated against the corrected SHA;
+5. only the coordinator records acceptance, runs the phase-end resource audit, and
+   pushes the accepted checkpoint.
+
+Auditors never edit production code. Conflicting verdicts are reproduced by the
+coordinator or sent to a third read-only tie-break auditor; they are never averaged
+away. Each phase log preserves base, contract, source, evidence, correction,
+acceptance, and pushed SHAs so `git revert` can roll back one claim without erasing
+later QA history.
 
 Branch: `main`
 
@@ -137,8 +166,9 @@ Current execution status (2026-07-28): **T15 phased product refinement active.**
 Mutation VFX, T13.15's Puzzle ceremony/brown-bedrock outcome, and T13.14's final
 Settings/forecast correction are accepted historical baselines. T15 may refine their
 specified presentation in its named later phases, but does not silently reopen their
-deterministic rules. The inherited user-owned `package-lock.json` and `src/styles.css`
-remain outside the Phase-1 checkpoint.
+deterministic rules. The dependency lock is now intentionally owned by Phase 1B;
+the inherited `src/styles.css` compositor delta remains outside the Phase-1
+checkpoint.
 
 ### T14 accepted historical delivery contract — Mutation VFX polish
 

@@ -19,6 +19,12 @@
 - `e266280` — request the real Playwrite 400 face and give the wordmark restrained
   stroke weight.
 - `378826b` — raise selector specificity so Chromium actually uses that face.
+- `7ff656c` — add exact local Noto Sans SC Variable dependency and adopt the
+  regenerated, clean-installable lock.
+- `54fd260` — import the local Chinese face and bind its actual Fontsource family in
+  typed/CSS role contracts.
+- `99e5a0f` — bind the actual Space Grotesk Variable and JetBrains Mono Variable
+  family names after target/visual QA exposed silent fallback.
 
 ## Verification and self-correction
 
@@ -42,11 +48,35 @@
   loaded at weight 400, requested/accessible palette roles, one canvas, zero DOM
   cells, no horizontal overflow, and zero browser errors.
 
-## Phase 1B next action
+## Phase 1B candidate, audit correction, and fresh evidence
 
-1. Add and lock exact local Noto Sans SC variable font in a dependency-only
-   checkpoint.
-2. Prove `npm ci`, focused tests, typecheck, full suite, build, and clean-candidate
-   browser font loading.
-3. Run code/rules and visual QA in parallel; record findings and correction SHA before
-   coordinator acceptance.
+- Corrected candidate: `99e5a0f`; rejected candidate: `54fd260`; rollback base:
+  `ed36ab3`.
+- A newly created detached worktree at exactly `54fd260` passed a real
+  `npm.cmd ci --ignore-scripts`, `npm.cmd run typecheck`, and the focused 2-file /
+  12-test token/theme contract; that disposable worktree was then removed.
+- Final source gates: typecheck passed; full suite passed 25 files / 182 tests;
+  production build transformed 752 modules.
+- First target/visual verdict: reject `54fd260` with one P1. Fontsource registered
+  `Space Grotesk Variable` and `JetBrains Mono Variable`, while token/CSS families
+  requested the non-Variable names. The evidence showed both intended faces unloaded
+  and an invisible fallback to Noto. The audit also identified the
+  `playwrite700Loaded` field as a fallback-positive P2.
+- Writer correction `99e5a0f`: use both actual variable family names, freeze them in
+  the token contract, remove the invalid Playwrite 700 proof, and explicitly load/
+  enumerate the intended Latin UI/data faces in browser evidence. Focused tests,
+  typecheck, full 25-file / 182-test suite, and 752-module build all pass after the
+  correction.
+- Required generic game client captured the live Classic entry state. A separate clean
+  production-preview audit is bound to `99e5a0f` at
+  `.local/audits/phase1-99e5a0f-preview/candidate/report.json`; Home and Classic
+  screenshots prove loaded Playwrite 400, Space Grotesk Variable 500, JetBrains Mono
+  Variable 700, Noto Sans SC Variable 500/700 Chinese coverage, four modes, one
+  canvas, zero DOM cells, no overflow, zero errors, and the completed countdown
+  transition.
+- Resource closure: Vite Preview listener 53972 was stopped and verified free. The
+  clean candidate worktree remains only for the current independent visual/code
+  review; it is not a running service.
+- Current status: both auditors must repeat against corrected candidate `99e5a0f`.
+  No coordinator acceptance or push claim exists until both final verdicts are
+  recorded.

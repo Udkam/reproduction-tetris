@@ -52,8 +52,8 @@ Mutation baseline without reopening that mechanic.
 | System | Contract |
 | --- | --- |
 | Brand | `TetraMorph` alone uses Playwrite NZ Basic at its authored maximum 400 weight plus a restrained local stroke; no UI label may use the display face and no nonexistent 700 face may trigger fallback. |
-| Interface | Space Grotesk at 500/600/700 for English UI; Chinese resolves Noto Sans SC → PingFang SC → Microsoft YaHei. |
-| Data | JetBrains Mono carries scores, times, lines, countdowns, and compact key/value data. |
+| Interface | Locally bundled Space Grotesk Variable at 500/600/700 for English UI; Chinese resolves locally bundled Noto Sans SC Variable → PingFang SC → Microsoft YaHei. |
+| Data | Locally bundled JetBrains Mono Variable carries scores, times, lines, countdowns, and compact key/value data. |
 | Type scale | Display 28/700; heading 24/700; card title 14/600; value 24/700; body 14/500; caption 12/500. |
 | Base palette | Background `#DCE7F1`; surface `#F8FAFC`; secondary surface `#EDF3F7`; border `#C4D4DF`; primary text `#102A43`; readable secondary text `#52677F`; soft non-body accent `#627D98`; board `#071522`. |
 | Mode accents | Classic `#31978D`; Survival `#5878C4`; Mutation `#C77A35`; Puzzle `#8A63B3`. |
@@ -79,6 +79,10 @@ The code/rules auditor compares the exact base-to-candidate range and determinis
 contracts; the target/visual auditor compares the candidate against this design
 contract at every required viewport. P0/P1 findings and user-request-relevant P2
 findings return to the original writer. QA never edits production paths.
+The coordinator-owned phase matrix assigns the writer and both auditors before source
+work begins. A corrected candidate always receives both audits again. Only a
+coordinator-accepted phase may be pushed, and every accepted push is retained as the
+remote recovery point for the next phase.
 
 ## T14 Mutation VFX polish — accepted historical contract
 
