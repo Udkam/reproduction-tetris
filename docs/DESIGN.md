@@ -115,10 +115,15 @@ endpoint.
 **Status:** active narrow visual correction. The live Pixi board remains visible and
 dimmed behind every sheet, but a compositor must never allow its WebGL layer to paint
 over the opaque Settings, pause, restart, exit, first-entry, or Puzzle-result surface.
-This corrects only stacking/compositing while a `.sheet-backdrop` exists: one canvas,
-the current DOM focus route, all copy, metrics, panel geometry, and Core state stay
-unchanged. Browser evidence must inspect actual pixels rather than relying only on
-correct DOM hit testing.
+This corrects stacking/compositing while a `.sheet-backdrop` exists: one canvas, all
+copy, metrics, panel geometry, and Core state stay unchanged. Browser evidence must
+inspect actual pixels rather than relying only on correct DOM hit testing.
+
+An ActionSheet-to-ActionSheet replacement is one modal ownership handoff. The outgoing
+sheet may restore its saved trigger only when no successor `aria-modal` dialog exists.
+If a successor is already mounted, its autofocus/focus trap owns the keyboard context;
+an older delayed cleanup must not steal focus back to the canvas or retired trigger.
+Only closing the final sheet restores the original focus route.
 
 ## T13.15 Puzzle completion ceremony and Survival geology
 

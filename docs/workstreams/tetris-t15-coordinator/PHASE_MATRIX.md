@@ -24,7 +24,7 @@ QA task.
 | Phase | Declared writer team | Independent QA team | Rollback granularity | Status |
 | --- | --- | --- | --- | --- |
 | 1. Design foundation | coordinator as `t15_phase1_writer` | `t14_readonly_qa` + `phase1_visual_delta` | contract, dependency, token/font source, evidence, QA, acceptance | `PUSHED`; source `99e5a0f`, acceptance/recovery `fcd612e` |
-| 1.5 Modal compositor closure | coordinator as `t15_modal_writer` | `t15_modal_rules_preaudit` + `t15_modal_target` | one narrow CSS/test source checkpoint, then evidence/QA | `SOURCE CANDIDATE 17ccc96`; direct App test/typecheck pass; full gates/evidence/dual QA pending |
+| 1.5 Modal compositor closure | coordinator as `t15_modal_writer` | `t15_modal_rules_preaudit` + `t15_modal_target` | CSS/test source checkpoint, then isolated focus-handoff correction, evidence/QA | `P1 CORRECTION`; `17ccc96` compositor retained, paused→Settings focus race rejected |
 | 2. Settings | `t15_settings_writer` | `t15_settings_rules_qa` + `t15_settings_visual_qa` | behavior/focus and layout/style are separate checkpoints | `OPEN` |
 | 3. HUD | `t15_hud_writer` | `t15_hud_rules_qa` + `t15_hud_visual_qa` | DOM composition and renderer geometry remain separately revertible | `OPEN` |
 | 4. Survival | sequential `t15_survival_core_writer`, `t15_survival_render_writer`, `t15_survival_ui_writer` | `t15_survival_rules_qa` + `t15_survival_visual_qa` | Core, renderer, and UI each receive their own candidate SHA | `OPEN` |

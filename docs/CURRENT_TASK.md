@@ -264,15 +264,20 @@ target/visual QA where needed, coordinator acceptance, and push.
    canvas; it verifies sheet stacking over the mode page rather than the live-scene
    invariant. This is a presentation-stacking correction only; it must not hide the
    live board, add another canvas, recreate the runtime, or change focus/input routing.
-2. **Bounded source scope.** The implementation may change only `src/styles.css` and a
-   directly relevant `src/App.test.ts` assertion if one can verify the declarative
-   modal/canvas contract. No Core, renderer scene, GameRuntime, modal copy, panel
-   composition, leaderboard, audio, persistence, or game rule may change.
+2. **Bounded source scope.** Candidate `17ccc96` changed only `src/styles.css` and its
+   direct `src/App.test.ts` assertions. Production-preview QA then rejected the wider
+   slice because Pause → Settings let the outgoing sheet's delayed cleanup steal focus
+   back to the canvas. The correction may additionally change only
+   `src/ui/ActionSheet.tsx` and direct `src/App.test.ts` coverage to arbitrate generic
+   sheet-to-sheet focus ownership. No App timing workaround, Core, renderer scene,
+   GameRuntime, modal copy, panel composition, leaderboard, audio, persistence, or game
+   rule may change.
 3. **Acceptance.** Run the direct App test, typecheck, full current-source suite, and
    production build after the final source change. Fresh browser evidence covers all
    live-game sheets in the phase log at desktop and compact portrait, plus first-entry
    rules with its expected zero canvas. It must prove one stable canvas for live-game
-   sheets, no overflow/page/console error, and visibly demonstrate through screenshot
+   sheets, no overflow/page/console error, stable focus inside every active dialog and
+   correct restoration after the final dialog closes, and visibly demonstrate through screenshot
    pixel probes plus human review that opaque sheet contents are never painted beneath
    the canvas. Release every
    Tetris-owned temporary listener/browser after capture; independent QA remains

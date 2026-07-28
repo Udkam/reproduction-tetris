@@ -84,3 +84,36 @@ keyboard/focus operation. Reduced motion must keep the same static layer order.
 
 Current state: `SOURCE CANDIDATE`; targeted gates pass; full gates, browser evidence,
 dual final QA, coordinator acceptance, cleanup, and push remain pending.
+
+## Browser rejection 1 — modal ownership focus race
+
+- Main-tree gates before capture:
+  - The first full suite attempt hit a one-time 10-second
+    `TetrisRenderer.test.ts` `beforeAll` timeout; isolated rerun passed 11/11 in 1.44 s.
+  - The single permitted diagnostic full rerun passed 25 files / 184 tests.
+  - Main and clean detached-candidate production builds each passed with 752 modules.
+  - The clean candidate completed a real `npm ci --ignore-scripts` (107 packages).
+- Production preview source: clean detached worktree at exact source SHA `17ccc96`;
+  DEV QA surfaces were explicitly forbidden by the browser audit.
+- The first Settings-from-playing case passed its primary one-canvas/layer/focus
+  assertions. An audit-only calibration initially lost focus by hiding its own backdrop;
+  that script defect was corrected without changing product code.
+- The repeated matrix then found a product P1 on
+  `Canvas → KeyP → Pause → KeyS → Settings`: after 220 ms the only Settings dialog was
+  visible and the canvas was correctly underneath it, but `activeElement` had returned
+  to the original canvas and `dialog.contains(activeElement)` was false.
+- Both independent auditors classify this as a Phase-1.5 acceptance blocker. Root cause:
+  Pause cleanup schedules a two-frame previous-focus restore while Settings schedules
+  one-frame autofocus, so the retired sheet steals ownership on the later frame.
+- Accepted correction boundary:
+  - retain `17ccc96` without amending history;
+  - add one generic `src/ui/ActionSheet.tsx` arbitration rule that skips outgoing focus
+    restoration whenever a successor `aria-modal` dialog is already mounted;
+  - add queued-RAF App coverage for Pause → Settings and Settings → Restart ownership;
+  - do not add App-specific delays, hide/disable the canvas, or relax focus assertions.
+- Preview PID `17728` was verified as the candidate Vite preview, stopped, and port
+  `53973` was confirmed released before correction work.
+
+Current state: `P1 CORRECTION`; original pixel compositor claim remains the candidate
+base, but no Phase-1.5 acceptance is possible until focus ownership is fixed and the
+full production matrix plus both independent QA passes from the new source SHA.
