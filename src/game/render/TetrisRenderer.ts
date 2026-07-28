@@ -49,6 +49,7 @@ import {
   type MutationTimeline,
 } from '../../animation/mutationTimeline';
 import {
+  activeCellsInsideVisibleRows,
   activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
   boardShiftPresentationOffset,
@@ -337,7 +338,7 @@ export class TetrisRenderer {
       preference: 'webgl',
     });
     app.canvas.dataset.testid = 'game-canvas';
-    app.canvas.setAttribute('aria-label', 'Tetris 10 × 20 游戏棋盘');
+    app.canvas.setAttribute('aria-label', 'TetraMorph 10 × 20 游戏棋盘');
     app.canvas.setAttribute('role', 'img');
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
@@ -607,8 +608,7 @@ export class TetrisRenderer {
     const rawOffsetY = this.presentation && state.active && !this.options.reducedMotion
       ? (this.presentation.y - state.active.y) * layout.cell
       : 0;
-    const visibleActiveCells = activeCells
-      .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
+    const visibleActiveCells = activeCellsInsideVisibleRows(activeCells, VISIBLE_START_ROW, VISIBLE_HEIGHT)
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
     const offsetY = clampActivePresentationOffsetY(rawOffsetY, visibleActiveCells, layout.cell, VISIBLE_HEIGHT);
     const requestedRotationScale = this.options.reducedMotion ? 1 : 1 + this.rotationPulse * 0.035;

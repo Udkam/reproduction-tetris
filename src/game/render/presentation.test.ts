@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  activeCellsInsideVisibleRows,
   activePresentationScaleFitsVisibleWell,
   approachPresentationPoint,
   boardShiftPresentationOffset,
@@ -81,6 +82,42 @@ describe('presentation interpolation', () => {
         expect((cell.y + 1) * unit + offsetY).toBeLessThanOrEqual(height * unit);
       }
     }
+  });
+
+  it('presents all four spawn cells inside the well without mutating Core coordinates', () => {
+    const hiddenSpawn: Cell[] = [
+      { x: 3, y: 0 },
+      { x: 4, y: 0 },
+      { x: 5, y: 0 },
+      { x: 6, y: 0 },
+    ];
+    const original = structuredClone(hiddenSpawn);
+    const presented = activeCellsInsideVisibleRows(hiddenSpawn, 2, 20);
+    expect(presented).toEqual([
+      { x: 3, y: 2 },
+      { x: 4, y: 2 },
+      { x: 5, y: 2 },
+      { x: 6, y: 2 },
+    ]);
+    expect(hiddenSpawn).toEqual(original);
+    expect(presented).toHaveLength(4);
+  });
+
+  it('removes the renderer-only spawn shift once every active cell is naturally visible', () => {
+    const entering: Cell[] = [
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 5, y: 2 },
+      { x: 6, y: 2 },
+    ];
+    expect(activeCellsInsideVisibleRows(entering, 2, 20)).toEqual([
+      { x: 4, y: 2 },
+      { x: 4, y: 3 },
+      { x: 5, y: 3 },
+      { x: 6, y: 3 },
+    ]);
+    const visible = entering.map((cell) => ({ ...cell, y: cell.y + 1 }));
+    expect(activeCellsInsideVisibleRows(visible, 2, 20)).toEqual(visible);
   });
 
   it('settles timed bedrock shifts in their canonical direction without overshoot', () => {

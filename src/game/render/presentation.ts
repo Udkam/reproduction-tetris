@@ -136,6 +136,24 @@ export function clampActivePresentationOffsetY(
   return clampedOffsetY === 0 ? 0 : clampedOffsetY;
 }
 
+/**
+ * Keeps a newly spawned active tetromino fully visible at the mouth of the well.
+ * This shifts renderer-only cells; Core coordinates and collision state are untouched.
+ */
+export function activeCellsInsideVisibleRows(
+  cells: readonly Cell[],
+  visibleStartRow: number,
+  visibleHeight: number,
+): Cell[] {
+  if (!cells.length || !Number.isInteger(visibleStartRow) || !Number.isInteger(visibleHeight) || visibleHeight <= 0) return [];
+  const visibleEndRow = visibleStartRow + visibleHeight;
+  const minimumY = Math.min(...cells.map((cell) => cell.y));
+  const spawnShiftY = Math.max(0, visibleStartRow - minimumY);
+  return cells
+    .map((cell) => ({ x: cell.x, y: cell.y + spawnShiftY }))
+    .filter((cell) => cell.y >= visibleStartRow && cell.y < visibleEndRow);
+}
+
 /** Verifies that a component-centered active-piece scale remains inside the visible well. */
 export function activePresentationScaleFitsVisibleWell(
   visibleCells: readonly Cell[],
