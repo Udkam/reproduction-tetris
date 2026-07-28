@@ -421,6 +421,64 @@ describe('异变 mode', () => {
     }]);
   });
 
+  it('preserves multiple carrier identities and leaves empty sources unmapped', () => {
+    let board = createBoard();
+    board = setCell(board, 0, 30, 'T');
+    board = setCell(board, 0, 39, 'I');
+    board = setCell(board, 1, 35, 'L');
+    board = setCell(board, 1, 36, 'O');
+    board = setCell(board, 1, 38, 'S');
+    board = setCell(board, 3, 20, 'Z');
+
+    const collapsed = collapseSprintColumns(board);
+    for (let y = 0; y < board.length; y += 1) {
+      for (let x = 0; x < board[y]!.length; x += 1) {
+        if (board[y]![x] === null) {
+          expect(collapsed.settledRowBySource[y * 10 + x]).toBe(-1);
+        }
+      }
+    }
+
+    expect(collapseMutationCarriers(collapsed.settledRowBySource, [
+      {
+        id: 11,
+        item: 'freeze',
+        cells: [{ x: 0, y: 30 }, { x: 1, y: 35 }],
+      },
+      {
+        id: 22,
+        item: 'bomb',
+        cells: [{ x: 1, y: 36 }, { x: 1, y: 38 }, { x: 3, y: 20 }],
+      },
+      {
+        id: 33,
+        item: 'multiplier',
+        cells: [{ x: 2, y: 12 }, { x: 9, y: 39 }],
+      },
+      {
+        id: 44,
+        item: 'collapse',
+        cells: [{ x: 2, y: 5 }, { x: 0, y: 39 }],
+      },
+    ])).toEqual([
+      {
+        id: 11,
+        item: 'freeze',
+        cells: [{ x: 0, y: 38 }, { x: 1, y: 37 }],
+      },
+      {
+        id: 22,
+        item: 'bomb',
+        cells: [{ x: 1, y: 38 }, { x: 1, y: 39 }, { x: 3, y: 39 }],
+      },
+      {
+        id: 44,
+        item: 'collapse',
+        cells: [{ x: 0, y: 39 }],
+      },
+    ]);
+  });
+
   it('matches a simple reference across sparse and dense deterministic boards', () => {
     let random = 0x8bad_f00d;
     const nextRandom = () => {

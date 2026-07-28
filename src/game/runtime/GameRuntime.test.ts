@@ -299,14 +299,22 @@ describe('GameRuntime public state boundary', () => {
     for (let tick = 0; tick < LINE_CLEAR_DELAY_TICKS; tick += 1) {
       internals.apply({ type: 'tick' });
     }
+    expect(rendererRender).not.toHaveBeenCalled();
     internals.flushRender(16);
 
+    expect(rendererRender).toHaveBeenCalledTimes(1);
     const renderedEvents = rendererRender.mock.calls.at(-1)?.[1] as readonly GameEvent[];
     expect(renderedEvents
       .filter((event) => event.type === 'mutation-activated')
       .map((event) => event.item)).toEqual(['bomb', 'freeze']);
 
     internals.flushRender(16);
+    expect(rendererRender).toHaveBeenCalledTimes(2);
     expect(rendererRender.mock.calls.at(-1)?.[1]).toEqual([]);
+    const deliveriesWithMutationEvents = rendererRender.mock.calls.filter((call) => (
+      (call[1] as readonly GameEvent[])
+        .some((event) => event.type === 'mutation-activated')
+    ));
+    expect(deliveriesWithMutationEvents).toHaveLength(1);
   });
 });
