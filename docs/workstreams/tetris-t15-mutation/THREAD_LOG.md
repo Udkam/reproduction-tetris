@@ -378,3 +378,23 @@
   - `git diff --check` — PASS before exact-path commit.
 - Blocker: corrected performance/lifecycle re-audit remains; UI paths stay closed.
 - Next action: re-audit exact candidate `69730a1`.
+
+## 2026-07-28 — Renderer dual static acceptance
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-QA-PERF-R2`.
+- Independent performance/lifecycle auditor:
+  `t15_core_perf_fifo_candidate_qa`; exact candidate `69730a1`, documentation head
+  `a36f9a8`.
+- Disposition: `PASS`; P0–P3 none.
+- Direct corrections accepted:
+  - a later Freeze burst must leave active Bomb particles in the fixed pool;
+  - Collapse trail must remain at 259 ms and release at 260 ms.
+- Prior static PASS boundaries did not change: impact-gated Bomb, retained
+  reduced-motion FIFO/fields, fixed 120-slot pool, bounded Collapse scan/draw, and
+  unchanged filter/ticker/listener/canvas lifecycle.
+- Renderer status: `ACCEPTED-LOCAL-STATIC`. This does not replace the final-source
+  browser frame, 60 FPS, console, reduced-motion, compact-layout, or lifecycle checks.
+- Blocker: none for opening the frozen UI semantics/localization paths. Phase 5 remains
+  open and unpushed.
+- Next action: implement `冰冻` copy/rules, active-only status rows, attachment-aware
+  Next accessibility, and source-order same-transition announcements.

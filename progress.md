@@ -33,7 +33,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Performance/lifecycle audit statically passed the implementation but found no direct
   guard for surviving earlier burst particles or Collapse trail release.
   `69730a1` proves both; focused tests pass 25/25 and typecheck passes. Corrected
-  performance/lifecycle re-audit remains required before UI opens.
+  performance/lifecycle re-audit passes with P0–P3 none. Renderer static boundary is
+  accepted locally; the frozen UI semantics/localization path is now open.
 
 ## Non-negotiable boundaries
 
@@ -46,8 +47,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Re-audit exact Renderer candidate `69730a1` for performance/lifecycle safety. Do
-  not open UI paths until it passes.
+- Implement only the frozen UI semantics/localization checkpoint: `冰冻` copy and
+  1 second/cell rule, active-only compact status, body+item Next accessibility, and
+  source-order same-transition live announcements.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.
@@ -79,7 +81,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   tests did not prove a later burst preserves old particles or that Collapse trail
   releases at its exact duration.
 - `69730a1` adds both lifecycle guards; focused tests remain 25/25 and typecheck
-  passes. Corrected performance/lifecycle re-audit is open.
+  passes. Corrected performance/lifecycle re-audit returns PASS / P0–P3 none.
+- Renderer static boundary is accepted locally. Dynamic frames, 60 FPS and lifecycle
+  cleanup stay open for the final-source browser batch; UI/localization opens next.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 

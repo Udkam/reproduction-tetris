@@ -64,9 +64,11 @@ implementation but rejected two missing regression assertions: a later burst cou
 clear surviving prior particles, and a completed Collapse trail could leak. Correction
 `69730a1` now proves old Bomb particles survive the following Freeze emission and
 Collapse trail exists at 259 ms but releases at 260 ms; focused tests remain 25/25 and
-typecheck passes. Exact candidate `69730a1` is not acceptance until the corrected
-performance/lifecycle re-audit passes; UI/localization, final-source browser evidence,
-full gates, repeated QA, recording, cleanup, and push also remain open.
+typecheck passes. Corrected performance/lifecycle re-audit accepts exact candidate
+`69730a1` with P0–P3 = 0, matching the visual-contract PASS. Renderer static boundary
+is therefore accepted locally and the frozen UI semantics/localization paths may open.
+Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
+browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
