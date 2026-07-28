@@ -315,6 +315,7 @@ describe('Puzzle undo presentation reset', () => {
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0, duration: 500 });
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'freeze')).toHaveLength(18);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb').length).toBeGreaterThan(0);
     internals.advanceEffects(499);
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
@@ -819,6 +820,10 @@ describe('Puzzle undo presentation reset', () => {
       maxDrop: 2,
       paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
     });
+    internals.advanceEffects(259);
+    expect(internals.collapseTrail).not.toBeNull();
+    internals.advanceEffects(1);
+    expect(internals.collapseTrail).toBeNull();
 
     const alreadySettled = createBoard();
     alreadySettled[BOARD_HEIGHT - 1]![0] = 'T';
