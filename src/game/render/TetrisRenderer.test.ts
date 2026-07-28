@@ -504,6 +504,87 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toBeNull();
   });
 
+  it('exposes immutable renderer-owned FIFO, impact, particle, and Collapse trail evidence', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const previousBoard = createBoard();
+    internals.consumeEvents([
+      {
+        type: 'mutation-activated',
+        item: 'bomb',
+        durationTicks: 0,
+        score: 120,
+        rowsRemoved: 3,
+        triggerCells: [
+          { x: 1, y: VISIBLE_START_ROW + 5 },
+          { x: 7, y: VISIBLE_START_ROW + 5 },
+        ],
+      },
+      {
+        type: 'mutation-activated',
+        item: 'freeze',
+        durationTicks: 600,
+        score: 0,
+        rowsRemoved: 0,
+        triggerCells: [{ x: 4, y: VISIBLE_START_ROW + 4 }],
+      },
+    ], undefined, previousBoard);
+
+    const queued = renderer.getSnapshot();
+    expect(queued.mutationActivation).toMatchObject({
+      item: 'bomb',
+      elapsedMs: 0,
+      durationMs: 900,
+      particlesEmitted: false,
+      triggerColumns: [1, 7],
+    });
+    expect(queued.mutationActivation?.phases.find((phase) => phase.id === 'warning')).toMatchObject({
+      active: true,
+      complete: false,
+    });
+    expect(queued.mutationActivationQueueItems).toEqual(['freeze']);
+    expect(queued.mutationActiveParticleCount).toBe(0);
+
+    internals.advanceEffects(400);
+    const impact = renderer.getSnapshot();
+    expect(impact.mutationActivation).toMatchObject({
+      item: 'bomb',
+      elapsedMs: 400,
+      particlesEmitted: true,
+      triggerColumns: [1, 7],
+    });
+    expect(impact.mutationActivation?.phases.find((phase) => phase.id === 'impact')).toMatchObject({
+      active: true,
+      complete: false,
+      progress: 0,
+    });
+    expect(impact.mutationActiveParticleCount).toBeGreaterThan(0);
+
+    impact.mutationActivation!.triggerColumns.push(9);
+    impact.mutationActivationQueueItems.push('bomb');
+    expect(renderer.getSnapshot().mutationActivation?.triggerColumns).toEqual([1, 7]);
+    expect(renderer.getSnapshot().mutationActivationQueueItems).toEqual(['freeze']);
+
+    const withGap = createBoard();
+    withGap[BOARD_HEIGHT - 1]![0] = 'T';
+    internals.queueCollapseSettlementTrail(withGap, [{ x: 0, y: BOARD_HEIGHT - 4 }]);
+    expect(renderer.getSnapshot().mutationCollapseTrail).toEqual({
+      columns: [0],
+      maxDrop: 2,
+      elapsedMs: 0,
+      durationMs: 260,
+    });
+
+    internals.advanceEffects(500);
+    expect(renderer.getSnapshot()).toMatchObject({
+      mutationActivation: {
+        item: 'freeze',
+        elapsedMs: 0,
+      },
+      mutationActivationQueueItems: [],
+    });
+  });
+
   it('gives all four reduced-motion activations distinct static silhouettes and preserves 2× / 4×', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;

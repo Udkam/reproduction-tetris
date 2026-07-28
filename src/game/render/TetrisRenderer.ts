@@ -47,6 +47,7 @@ import {
   createMutationActivationTimeline,
   mutationEase,
   type MutationTimeline,
+  type TimelineSample,
 } from '../../animation/mutationTimeline';
 import {
   activeCellsInsideVisibleRows,
@@ -223,6 +224,23 @@ export interface RendererSnapshot {
   presentation: { x: number; y: number; offsetX: number; offsetY: number } | null;
   boardShiftOffsetY: number;
   mutationFilters: { freeze: boolean; collapse: boolean; activeCount: number };
+  /** Read-only DEV-QA observability for source-bound FIFO/VFX evidence. */
+  mutationActivation: {
+    item: MutationItem;
+    elapsedMs: number;
+    durationMs: number;
+    phases: TimelineSample[];
+    particlesEmitted: boolean;
+    triggerColumns: number[];
+  } | null;
+  mutationActivationQueueItems: MutationItem[];
+  mutationActiveParticleCount: number;
+  mutationCollapseTrail: {
+    columns: number[];
+    maxDrop: number;
+    elapsedMs: number;
+    durationMs: number;
+  } | null;
   survivalDebris: Array<{ id: number; x: number; y: number; presentationY: number }>;
   survivalDebrisWarningColumns: number[];
   survivalStoneCueCount: number;
@@ -333,7 +351,13 @@ export class TetrisRenderer {
   private previewClearBounds: RendererSnapshot['previewClearBounds'] = null;
   private previewClearPiece: PieceType | null = null;
   private scrimBounds: RendererSnapshot['scrim'] = null;
-  private snapshot: RendererSnapshot = {
+  private snapshot: Omit<
+    RendererSnapshot,
+    'mutationActivation'
+    | 'mutationActivationQueueItems'
+    | 'mutationActiveParticleCount'
+    | 'mutationCollapseTrail'
+  > = {
     canvas: { width: 0, height: 0, resolution: 1 },
     board: { x: 0, y: 0, width: 0, height: 0, cell: 0 },
     preview: null,
@@ -429,7 +453,33 @@ export class TetrisRenderer {
   }
 
   getSnapshot(): RendererSnapshot {
-    return structuredClone(this.snapshot);
+    let activeParticleCount = 0;
+    for (const particle of this.mutationParticles) {
+      if (particle.active) activeParticleCount += 1;
+    }
+    return structuredClone({
+      ...this.snapshot,
+      mutationActivation: this.mutationFlash
+        ? {
+            item: this.mutationFlash.item,
+            elapsedMs: this.mutationFlash.elapsed,
+            durationMs: this.mutationFlash.duration,
+            phases: this.mutationFlash.timeline.samples(),
+            particlesEmitted: this.mutationFlash.particlesEmitted,
+            triggerColumns: [...this.mutationFlash.triggerColumns],
+          }
+        : null,
+      mutationActivationQueueItems: this.mutationFlashQueue.map((request) => request.item),
+      mutationActiveParticleCount: activeParticleCount,
+      mutationCollapseTrail: this.collapseTrail
+        ? {
+            columns: [...this.collapseTrail.columns],
+            maxDrop: this.collapseTrail.maxDrop,
+            elapsedMs: this.collapseTrail.elapsed,
+            durationMs: this.collapseTrail.duration,
+          }
+        : null,
+    });
   }
 
   benchmark(state: GameState, iterations = 120): { meanMs: number; p95Ms: number; maxMs: number } {
