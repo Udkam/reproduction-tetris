@@ -6,6 +6,8 @@ import {
   BOARD_HEIGHT,
   SURVIVAL_STONE_CELL,
   createBoard,
+  createInitialState,
+  createRandomizer,
   type Cell,
   type GameEvent,
   type GameState,
@@ -38,9 +40,11 @@ type RendererInternals = {
     triggerCells: readonly Cell[];
     multiplierFactor: 2 | 4;
     score: number;
+    particlesEmitted: boolean;
   } | null;
   mutationFlashQueue: Array<{ item: MutationItem }>;
   mutationParticles: Array<{ active: boolean; item: MutationItem; rotation: number; rotationVelocity: number }>;
+  mutationFields: Map<Exclude<MutationItem, 'bomb'>, { item: Exclude<MutationItem, 'bomb'>; stage: 'enter' | 'active' | 'exit'; elapsed: number }>;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
   collapseTrail: { paths: readonly { x: number; fromY: number; toY: number }[]; elapsed: number; duration: number } | null;
@@ -73,6 +77,8 @@ type RendererInternals = {
   ) => void;
   queueCollapseSettlementTrail: (previousBoard: GameState['board'], cells: readonly Cell[]) => void;
   syncMutationFilters: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
+  resolvePreviewMutationItem: (state: GameState) => MutationItem | null;
+  previewMutationRandomizerRef: GameState['mutationRandomizer'] | null;
   drawPreviewPieces: (graphics: unknown, pieces: readonly ('I' | 'O')[], x: number, y: number, width: number, height: number, labelInset?: number) => void;
 };
 
@@ -119,16 +125,27 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationMaterial('multiplier')).toBe(MUTATION_MATERIALS.multiplier);
 
     internals.consumeEvents([{ type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 }]);
-    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', elapsed: 0, duration: 900, triggerCells: [], score: 300 });
+    expect(internals.mutationFlash).toMatchObject({
+      item: 'bomb',
+      elapsed: 0,
+      duration: 900,
+      triggerCells: [],
+      score: 300,
+      particlesEmitted: false,
+    });
     expect(internals.mutationParticles).toHaveLength(120);
-    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
-    expect(internals.mutationParticles.some((particle) => particle.active && particle.item === 'bomb' && Math.abs(particle.rotationVelocity) > 0)).toBe(true);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(0);
     internals.consumeEvents([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 }]);
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
     expect(internals.mutationFlashQueue).toHaveLength(1);
     expect(internals.mutationFlashQueue[0]).toMatchObject({ item: 'freeze' });
+    internals.advanceEffects(399);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(0);
+    internals.advanceEffects(1);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', particlesEmitted: true });
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
-    internals.advanceEffects(899);
+    expect(internals.mutationParticles.some((particle) => particle.active && particle.item === 'bomb' && Math.abs(particle.rotationVelocity) > 0)).toBe(true);
+    internals.advanceEffects(499);
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0, duration: 500 });
@@ -137,6 +154,57 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
+  });
+
+  it('preserves the current Mutation flash, FIFO, and timed fields when reduced motion changes', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    internals.consumeEvents([
+      { type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
+    ]);
+    internals.mutationFields.set('collapse', { item: 'collapse', stage: 'active', elapsed: 0 });
+
+    renderer.setOptions({ reducedMotion: true });
+
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb', particlesEmitted: false });
+    expect(internals.mutationFlashQueue).toMatchObject([{ item: 'freeze' }]);
+    expect(internals.mutationFields.get('collapse')).toMatchObject({ stage: 'active' });
+    expect(internals.mutationParticles.every((particle) => !particle.active)).toBe(true);
+
+    internals.advanceEffects(900);
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0 });
+    internals.advanceEffects(500);
+    expect(internals.mutationFlash).toBeNull();
+  });
+
+  it('invalidates Mutation preview lookahead only when the item stream changes', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const initial = createInitialState(0x715, 'sprint');
+    const state = {
+      ...initial,
+      status: 'playing' as const,
+      active: { type: 'T' as const, rotation: 0 as const, x: 3, y: 20 },
+      pieceCount: 1,
+    };
+
+    internals.resolvePreviewMutationItem(state);
+    expect(internals.previewMutationRandomizerRef).toBe(state.mutationRandomizer);
+
+    const changedItemStream = {
+      ...state,
+      mutationRandomizer: createRandomizer(0xdead_beef),
+    };
+    internals.resolvePreviewMutationItem(changedItemStream);
+    expect(internals.previewMutationRandomizerRef).toBe(changedItemStream.mutationRandomizer);
+
+    const changedOrdinaryStream = {
+      ...changedItemStream,
+      randomizer: createRandomizer(0x1234_5678),
+    };
+    internals.resolvePreviewMutationItem(changedOrdinaryStream);
+    expect(internals.previewMutationRandomizerRef).toBe(changedItemStream.mutationRandomizer);
   });
 
   it('routes Survival debris through a distinct stone material without dropping simultaneous local cues', () => {
@@ -293,7 +361,7 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
-  it('keeps Freeze and Collapse as the only reusable active board filters', () => {
+  it('keeps Freeze reusable while Collapse stays vector-local instead of distorting the whole board', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const frost = { enabled: false, noise: 0, seed: 0 };
@@ -318,9 +386,9 @@ describe('Puzzle undo presentation reset', () => {
     );
 
     expect(frost).toMatchObject({ enabled: true, noise: 0.035 });
-    expect(collapse.enabled).toBe(true);
-    expect(collapse.scale.x).toBe(3);
-    expect(collapse.scale.y).toBeCloseTo(1.74);
+    expect(collapse.enabled).toBe(false);
+    expect(collapse.scale.x).toBe(0);
+    expect(collapse.scale.y).toBe(0);
   });
 
   it('uses one crystalline material core per connected freeze carrier without white glyphs', () => {

@@ -137,6 +137,10 @@ interface MutationFlash {
   multiplierFactor: 2 | 4;
   /** Core-earned points are only displayed; the renderer never changes scoring. */
   score: number;
+  /** Bomb fragments are armed at impact; every other family emits at activation. */
+  particlesEmitted: boolean;
+  /** Immutable board snapshot retained only until a deferred Bomb impact begins. */
+  particlePreviousBoard: GameState['board'] | null;
 }
 
 /** Renderer-only request retained until every same-tick item receives its own burst. */
@@ -315,7 +319,7 @@ export class TetrisRenderer {
   private previewMutationItem: MutationItem | null = null;
   /** Avoid replaying the pure Core preview lookahead on every rendered frame. */
   private previewMutationQueueRef: GameState['queue'] | null = null;
-  private previewMutationRandomizerRef: GameState['randomizer'] | null = null;
+  private previewMutationRandomizerRef: GameState['mutationRandomizer'] | null = null;
   private previewMutationPieceCount = -1;
   private previewMutationMode: GameState['mode'] | null = null;
   private previewMutationHasActive = false;
@@ -389,13 +393,13 @@ export class TetrisRenderer {
       this.impact = 0;
       this.rotationPulse = 0;
       this.boardShift = null;
-      this.mutationFlash = null;
       this.mutationArrival = null;
-      this.activeMutationCarrierId = null;
-      this.collapseTrail = null;
-      this.clearMutationVisualState();
-      this.previousBoard = null;
-      this.collapseWasActive = false;
+      // Keep the authoritative Mutation FIFO, timed fields, Collapse endpoint,
+      // previous board, and active carrier identity. A runtime preference switch
+      // simplifies motion but must never discard an activation that Core emitted.
+      this.clearMutationParticles();
+      this.resetMutationFilters();
+      this.setWorldOffset(0, 0);
     }
   }
 
@@ -1595,13 +1599,13 @@ export class TetrisRenderer {
   private resolvePreviewMutationItem(state: GameState): MutationItem | null {
     const hasActive = state.active !== null;
     const unchanged = this.previewMutationQueueRef === state.queue
-      && this.previewMutationRandomizerRef === state.randomizer
+      && this.previewMutationRandomizerRef === state.mutationRandomizer
       && this.previewMutationPieceCount === state.pieceCount
       && this.previewMutationMode === state.mode
       && this.previewMutationHasActive === hasActive;
     if (unchanged) return this.previewMutationItem;
     this.previewMutationQueueRef = state.queue;
-    this.previewMutationRandomizerRef = state.randomizer;
+    this.previewMutationRandomizerRef = state.mutationRandomizer;
     this.previewMutationPieceCount = state.pieceCount;
     this.previewMutationMode = state.mode;
     this.previewMutationHasActive = hasActive;
@@ -2108,11 +2112,25 @@ export class TetrisRenderer {
       triggerCells: request.triggerCells,
       multiplierFactor: request.multiplierFactor,
       score: request.score,
+      particlesEmitted: this.options.reducedMotion || request.item !== 'bomb',
+      particlePreviousBoard: request.previousBoard,
     };
-    // A foreground flash gets a clean bounded burst. Earlier timed fields remain
-    // visible in the atmosphere and status card; no activation event is discarded.
-    this.emitMutationParticles(request.item, request.triggerCells, request.previousBoard);
-    this.impact = this.options.reducedMotion ? 0.24 : request.item === 'bomb' ? 1.05 : 0.72;
+    // Bomb owns a warning and pulse before impact, so its fragments cannot exist
+    // until the impact phase begins. Other item families emit immediately.
+    if (request.item !== 'bomb' && !this.options.reducedMotion) {
+      this.emitMutationParticles(request.item, request.triggerCells, request.previousBoard);
+    }
+    this.impact = this.options.reducedMotion ? 0.24 : request.item === 'bomb' ? 0 : 0.72;
+  }
+
+  private emitDeferredBombImpact(flash: MutationFlash): void {
+    if (flash.item !== 'bomb' || flash.particlesEmitted) return;
+    const impact = flash.timeline.sample('impact');
+    if (!impact.active && !impact.complete) return;
+    flash.particlesEmitted = true;
+    if (this.options.reducedMotion) return;
+    this.emitMutationParticles('bomb', flash.triggerCells, flash.particlePreviousBoard);
+    this.impact = Math.max(this.impact, 1.05);
   }
 
   /** Pixi nulls display-object points during unmount; cleanup must stay safe. */
@@ -2204,19 +2222,19 @@ export class TetrisRenderer {
     return field ? this.mutationFieldOpacity(field) : 0;
   }
 
-  /** Maps Core timers to two bounded field filters without affecting Core state. */
-  private syncMutationFilters(state: GameState, layout: BoardLayout): void {
+  /** Maps Core timers to a bounded board filter without affecting Core state. */
+  private syncMutationFilters(state: GameState, _layout: BoardLayout): void {
     if (this.options.reducedMotion || state.mode !== 'sprint') {
       this.resetMutationFilters();
       return;
     }
 
     const freezeOpacity = this.mutationFieldOpacityFor('freeze');
-    const collapseOpacity = this.mutationFieldOpacityFor('collapse');
     const frostProfile = MUTATION_VFX_TOKENS.freeze.shader.frost;
-    const displacementProfile = MUTATION_VFX_TOKENS.collapse.shader.displacement;
     this.mutationFilterState.freeze = freezeOpacity > .001 && Boolean(frostProfile);
-    this.mutationFilterState.collapse = collapseOpacity > .001 && Boolean(displacementProfile);
+    // Collapse is intentionally vector-local. A world-wide displacement field
+    // implies unaffected columns are moving and violates the actual-column contract.
+    this.mutationFilterState.collapse = false;
 
     if (this.frostFilter && frostProfile) {
       this.frostFilter.enabled = this.mutationFilterState.freeze;
@@ -2228,15 +2246,10 @@ export class TetrisRenderer {
       this.frostFilter.seed = ((this.mutationClockMs * .00037) % 1) * frostProfile.noiseScale;
     }
 
-    if (this.collapseFilter && this.collapseDisplacementMap && displacementProfile) {
-      this.collapseFilter.enabled = this.mutationFilterState.collapse;
-      const travel = ((this.mutationClockMs / 1000) * displacementProfile.speed) % 1;
-      this.collapseDisplacementMap.position.set(layout.x, layout.y - travel * layout.cell * 1.5);
-      this.collapseDisplacementMap.width = layout.width;
-      this.collapseDisplacementMap.height = layout.height + layout.cell * 1.5;
-      const strength = layout.width * displacementProfile.strength * collapseOpacity;
-      this.collapseFilter.scale.x = strength;
-      this.collapseFilter.scale.y = strength * .58;
+    if (this.collapseFilter) {
+      this.collapseFilter.enabled = false;
+      this.collapseFilter.scale.x = 0;
+      this.collapseFilter.scale.y = 0;
     }
   }
 
@@ -2252,7 +2265,6 @@ export class TetrisRenderer {
     previousBoard: GameState['board'] | null,
   ): void {
     if (this.options.reducedMotion) return;
-    this.clearMutationParticles();
     const token = MUTATION_VFX_TOKENS[item];
     const sources: Cell[] = [];
     if (item === 'bomb' && previousBoard) {
@@ -2556,6 +2568,7 @@ export class TetrisRenderer {
     if (this.mutationFlash) {
       this.mutationFlash.timeline.advance(deltaMs);
       this.mutationFlash.elapsed = this.mutationFlash.timeline.elapsed;
+      this.emitDeferredBombImpact(this.mutationFlash);
       if (this.mutationFlash.timeline.complete) this.startNextMutationFlash();
     }
     if (this.mutationArrival) {
