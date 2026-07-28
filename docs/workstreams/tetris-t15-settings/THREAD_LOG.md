@@ -96,3 +96,49 @@ Current state: `CONTRACT`; product source has not started.
 - Next action: create the separate `layout-style` checkpoint; do not alter the accepted
   behavior paths except for direct layout semantics/tests required by the frozen
   Settings composition.
+
+## Layout/style checkpoint
+
+- Checkpoint task: `t15_settings_writer/layout-style`.
+- Implementation base: `99f5960`.
+- Source candidate: `2f94d16`.
+- Exact changed paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/styles.css`
+- Delivered claims:
+  - the active Settings tree has its own `settings-console` namespace and no longer
+    mounts the historical `.settings-sheet` class, so superseded layout generations
+    cannot alter the live console;
+  - one marked authoritative block owns an at-most-800 px, border-box sheet and four
+    connected natural-height bands in the frozen Controls → Keyboard → Rules →
+    Records order;
+  - the sheet uses 52 px label rails, at least 12 px interface text, 44 px button
+    targets, two-column Gameplay/Shortcut groups, content-driven rules/records, and
+    internal scrolling on short viewports;
+  - the portrait action row uses zero-minimum columns, preventing Restart/Continue
+    from crossing the sheet or viewport edge;
+  - the direct CSS contract rejects undersized text, undersized primary controls,
+    equal-height stretching, and duplicate authoritative markers.
+- Commands actually run after the last product source change:
+  - `npm.cmd run test -- --run src/App.test.ts` — PASS, 1 file / 31 tests.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check -- src/App.tsx src/App.test.ts src/styles.css` — PASS.
+  - `.local/audits/t15-phase2-live/settings-live-audit.mjs` — PASS, 11 captures /
+    zero browser errors.
+- Browser loop:
+  - desktop Chinese Classic/Survival/Mutation, English Classic/Puzzle;
+  - 390 × 844 Chinese Classic and English Puzzle;
+  - 844 × 390 Chinese Survival and 1056 × 480 English Mutation, including a
+    scrolled-bottom proof that the final record band is fully reachable;
+  - reduced-motion Chinese Puzzle;
+  - one visible Canvas, no mounted legacy Settings class, no horizontal overflow,
+    no clipped button, correct rule columns and record fields, and active-dialog
+    focus in every scenario.
+- Remaining review risk: historical `.settings-sheet` selectors still exist as
+  unreachable legacy CSS. They are intentionally isolated rather than broadly
+  deleted inside this layout checkpoint; independent QA must decide whether their
+  removal is required before acceptance.
+- Blocker: none.
+- Next action: freeze the complete Phase-2 candidate, run full candidate-bound gates
+  and production browser evidence, then request all three independent audits.

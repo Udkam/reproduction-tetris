@@ -24,3 +24,22 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Full suite, production build, and candidate-bound browser evidence only after the
   final Phase 2 source change.
 - Independent rules, visual, and evidence audits before Phase 2 acceptance and push.
+
+## 2026-07-28 Phase 2 layout iteration
+
+- Replaced the active Settings DOM namespace with `settings-console`, so historical
+  `.settings-sheet` generations can no longer affect the current console.
+- Added one T15 authoritative CSS block: 800 px maximum width, four connected bands,
+  52 px label rails, 12 px minimum interface text, 44 px controls, content scrolling
+  in short viewports, and no equal-height/space-between stretching.
+- Direct result: `src/App.test.ts` 31/31 PASS; `npm.cmd run typecheck` PASS.
+- Source checkpoint `2f94d16` freezes the isolated compact console after the visual
+  loop. A portrait-only content-box defect that clipped Continue was corrected with
+  an explicit border-box sheet and zero-minimum action columns.
+- The refreshed browser audit covers eleven Chinese/English, empty/full record,
+  Puzzle record, desktop, portrait, short-landscape, and reduced-motion scenarios
+  with zero errors. Buttons must be fully inside the viewport; short screens must
+  scroll to a completely reachable final record band.
+- The prescribed game client also captured the live one-Canvas countdown state.
+- Next: run the immutable Phase-2 candidate gates, collect production evidence, and
+  send the exact candidate to independent rules, visual, and evidence auditors.
