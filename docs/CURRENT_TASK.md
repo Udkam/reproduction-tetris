@@ -34,8 +34,11 @@ candidate audit's direct multi-carrier / empty-source / exactly-once test gaps.
 `f2d51ca` additionally freezes Classic, Survival, and Puzzle replay/hash isolation
 from item RNG while retaining that field in Mutation hashes. Focused Core/runtime
 tests pass 40/40 and typecheck passes. This is still a candidate, not Phase-5
-acceptance: two fresh independent read-only dispositions against exact product head
-`f2d51ca` are required before renderer ownership opens.
+acceptance. Two complete independent read-only audits now accept exact product head
+`f2d51ca` with no P0–P3: rules/RNG/Ice/cross-mode and Collapse-performance/Runtime
+FIFO. The Core boundary is therefore accepted locally; only the frozen renderer /
+timeline paths open next. Phase 5 itself remains open and unpushed until Renderer,
+UI, production evidence, repeated QA, acceptance record, cleanup, and push complete.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

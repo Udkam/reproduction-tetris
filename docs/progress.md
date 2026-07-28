@@ -1343,3 +1343,17 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - Focused Core/runtime verification now passes 3 files / 40 tests plus typecheck.
   This is candidate hardening, not Core acceptance; two complete exact-head read-only
   dispositions remain mandatory before Renderer work.
+
+## 2026-07-28 — T15 Phase 5 Core accepted locally
+
+- Independent rules audit and independent performance/FIFO audit both accept exact
+  product head `f2d51ca` with P0–P3 none after fully reading the required contracts,
+  implementation, and tests.
+- The rules audit covers RNG/hash isolation, body+item Next, exact Ice cadence and
+  controls, retriggers/coexistence, 6-tick floor, 28 combinations, cross-mode guards,
+  and multi-carrier/empty-source mapping.
+- The performance/FIFO audit covers the single 400-cell Collapse pass, shared mapping,
+  independent 96-board reference, bounded allocation, and exactly-once Bomb → Ice
+  Runtime handoff.
+- Core is now accepted locally and the frozen Renderer/timeline checkpoint opens.
+  Phase 5 remains open, unaccepted, and unpushed.

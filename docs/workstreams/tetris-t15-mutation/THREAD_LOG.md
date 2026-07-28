@@ -184,3 +184,30 @@
   `f2d51ca` remain required. The interrupted evidence-only rules audit is not counted.
 - Next action: run full static rules and performance/FIFO audits without prematurely
   interrupting them; only dual acceptance opens Renderer/timeline source.
+
+## 2026-07-28 — Core exact-head dual acceptance
+
+- Task ID: `T15-PHASE5-MUTATION-CORE-QA-R2`.
+- Product candidate: `f2d51ca`; documentation head reviewed: `3204022`.
+- Independent rules auditor `t15_core_rules_r3`: `PASS`, P0–P3 none.
+  - Fully read every required contract/log and the complete candidate product/test
+    range.
+  - Accepted isolated attachment RNG, three non-Mutation hash/replay domains,
+    pure body+item Next, exact Ice tick semantics/manual controls, per-state
+    retriggers/coexistence, 6-tick floor, 28 combinations, cross-mode guards, and
+    the fixed multi-carrier/empty-source fixture.
+- Independent performance/FIFO auditor `t15_core_perf_fifo_candidate_qa`: `PASS`,
+  P0–P3 none.
+  - Accepted one fixed 400-cell source scan, shared `Int16Array` mapping, no board
+    rescan/string key/temp Set in settlement, independent 96-board reference,
+    bounded allocations, full/partial carrier mapping, Runtime source-order FIFO,
+    and exactly one Bomb → Ice non-empty Renderer handoff.
+- Both audits were strictly read-only under the high-resource boundary and did not
+  rerun dynamic gates; writer evidence remains 3 files / 40 tests PASS plus
+  typecheck PASS.
+- Core status: `ACCEPTED-LOCAL`. This is not Phase-5 acceptance and is not a push
+  authorization.
+- Blocker: none.
+- Next action: open only the frozen Renderer carrier/timeline/actual-column VFX
+  paths; keep UI, Classic shared line clear, Puzzle, Settings, audio, dependencies,
+  evidence, changelog, and push closed.

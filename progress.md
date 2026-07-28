@@ -17,7 +17,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   pass 40/40 and typecheck passes.
 - The first candidate audit found no P0/P1 product defect but rejected incomplete
   direct multi-carrier/empty-source/exactly-once evidence; `3ceb6c2` corrects it.
-  Exact-head dual independent QA is still pending, so Phase 5 is not accepted.
+- Exact-head rules and performance/FIFO audits now both accept `f2d51ca` with no
+  P0–P3. Core is accepted locally and Renderer/VFX is open; Phase 5 is not accepted.
 
 ## Non-negotiable boundaries
 
@@ -30,10 +31,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Obtain two independent read-only dispositions against exact Core head `f2d51ca`,
-  covering RNG/hash, exact Ice timing/manual controls, one-pass Collapse mapping,
-  multi-carrier identity, empty sources and runtime FIFO.
-- Open only the frozen renderer/timeline paths after both Core dispositions accept.
+- Implement only the frozen renderer/timeline checkpoint: attachment identity,
+  real-item Next, impact-gated Bomb, explicit 2×/4×, actual-column Collapse, and
+  reduced-motion-safe FIFO.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.

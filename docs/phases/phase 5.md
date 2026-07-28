@@ -2,7 +2,7 @@
 
 ## 状态
 
-**Core 候选已完成，等待 exact-head 双重独立复验。** Phase 4 验收/恢复记录 `fd7ef8d`
+**Core 已本地接受，Renderer/VFX 检查点已开放。** Phase 4 验收/恢复记录 `fd7ef8d`
 已推送至 `origin/main`；Phase 5 以该提交为回退基线，审计文档头为
 `fae3c96`。Core/性能、Renderer/VFX 和 UI/Next 三路只读审计一致判定当前
 T14 基线为 `GAP`，因此没有沿用历史验收。首个产品源码检查点 `f344f49`
@@ -13,8 +13,9 @@ T14 基线为 `GAP`，因此没有沿用历史验收。首个产品源码检查�
 空 carrier 移除与恰好一次交付回归；`f2d51ca` 又直接固定三种非异变模式的
 item RNG / replay / hash 隔离。最新定向 40 测试和 typecheck 通过。
 第一份候选审计未发现 P0/P1 产品缺陷，但因直接证据和记录缺口判为 `GAP`；
-修正后 exact product head `f2d51ca` 尚需两份新独立结论。下列精确路径与
-检查点顺序继续约束其余实现，Renderer 在 Core 双重接受前不开放。
+修正后的 exact product head `f2d51ca` 已由完整规则审计与独立性能/FIFO
+审计分别接受，均为 P0–P3 = 0。Core 边界现本地接受，允许进入下列 Renderer /
+timeline 精确路径；Phase 5 整体仍需 VFX、UI、浏览器证据、复验、记录与 push。
 
 ## 目标
 
