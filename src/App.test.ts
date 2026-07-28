@@ -10,6 +10,7 @@ import { PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, type Ga
 import App, {
   cloneQaState,
   countdownTimeLabel,
+  elapsedClockLabel,
   elapsedTimeLabel,
   eventMessage,
   fallCadenceLabel,
@@ -520,7 +521,7 @@ describe('T6 frontend mode binding', () => {
         state: survival,
         roles: ['survival-time', 'lines', 'survival-bedrock', 'survival-stones'],
         label: '生存模式数据',
-        copy: ['生存时间', '0 分 0 秒', '基岩 3 层 · 上升', '13 秒', '落石', '20 秒'],
+        copy: ['生存时间', '0:00', '基岩 3 层 · 上升', '13 秒', '落石', '20 秒'],
       },
       { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度/格'] },
       {
@@ -1225,6 +1226,7 @@ describe('T6 frontend mode binding', () => {
     sprint.unmount();
 
     expect(elapsedTimeLabel(65 * 60)).toBe('1 分 5 秒');
+    expect(elapsedClockLabel(65 * 60)).toBe('1:05');
     expect(countdownTimeLabel(65 * 60)).toBe('1:05');
 
     const ended = { ...createInitialState(1, 'race'), status: 'game-over' as const, score: 900, lines: 27, pieceCount: 62, elapsedTicks: 4200 };

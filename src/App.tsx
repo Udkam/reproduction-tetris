@@ -163,6 +163,12 @@ export function elapsedTimeLabel(elapsedTicks: number, language: AppLanguage = D
   return appCopy(language).phrasing.elapsed(Math.floor(seconds / 60), seconds % 60);
 }
 
+/** Compact live clock; the surrounding stat label supplies the translated context. */
+export function elapsedClockLabel(elapsedTicks: number): string {
+  const seconds = Math.floor(Math.max(0, elapsedTicks) / TICKS_PER_SECOND);
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
 export function countdownTimeLabel(remainingTicks: number): string {
   const seconds = Math.ceil(Math.max(0, remainingTicks) / TICKS_PER_SECOND);
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
@@ -762,7 +768,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
     const stoneSeconds = survivalStoneCountdownSeconds(state);
     return (
       <section className="run-stats run-stats--survival" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
-        <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><strong>{elapsedTimeLabel(state.elapsedTicks, language)}</strong></article>
+        <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><strong>{elapsedClockLabel(state.elapsedTicks)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
         <article data-stat-role="survival-bedrock" data-urgent={state.survivalRisePending || riseSeconds <= 5 || undefined}>
           <span>{copy.phrasing.bedrockRise(state.survivalBedrockRows)}</span>
