@@ -49,9 +49,15 @@ endpoints, make the persistent 2× / 4× field explicit, replace Collapse's broa
 with one compact gravity core, bind activation wells to the carrier's real columns,
 and draw settlement only in columns whose existing or incoming cells actually move.
 Focused renderer/timeline tests pass 24/24 and typecheck passes. Exact product head
-`8488dd2` is now a Renderer candidate, not acceptance: two independent audits, the
-UI/localization checkpoints, final-source browser evidence, full gates, repeated QA,
-recording, cleanup, and push remain open.
+`8488dd2` passed the first independent static product inspection, but that audit
+correctly rejected palette-sensitive geometry assertions and an unrealistic same-lock
+event fixture. Test correction `e2858a2` now strips paint options from geometry
+signatures, proves Surface/Core reuse across locked/active/Next, exercises the real
+2× / 4× vector glyphs, scans rectangle and segment spans, and uses
+`piece-locked + clear-started`; focused tests pass 25/25 and typecheck passes. Exact
+candidate `e2858a2` is not acceptance: corrected visual re-audit plus an independent
+performance/lifecycle audit, UI/localization, final-source browser evidence, full
+gates, repeated QA, recording, cleanup, and push remain open.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

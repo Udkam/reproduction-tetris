@@ -22,8 +22,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Renderer rollback points `2484b67`, `e66cbf8`, and `8488dd2` now preserve FIFO /
   impact timing, give all four attachments distinct carrier and reduced-motion
   language, keep 2× / 4× explicit, and bind Collapse activation/settlement to real
-  columns without broad top/bottom bars. Focused tests pass 24/24 and typecheck passes.
-  Exact product head `8488dd2` still requires two independent audits before UI opens.
+  columns without broad top/bottom bars.
+- First visual-contract audit statically passed the product but rejected
+  palette-sensitive / stubbed tests. Correction `e2858a2` now proves paint-independent
+  geometry, three-state grammar reuse, real 2× / 4× glyphs, broad-span absence, and the
+  real same-lock event batch. Focused tests pass 25/25 and typecheck passes; corrected
+  re-audit plus a separate performance/lifecycle audit remain required before UI opens.
 
 ## Non-negotiable boundaries
 
@@ -36,8 +40,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Audit exact Renderer product head `8488dd2` for visual-contract fidelity and
-  performance/lifecycle safety. Do not open UI paths until both dispositions pass.
+- Re-audit exact Renderer candidate `e2858a2` for visual-contract fidelity, then run
+  a separate performance/lifecycle audit. Do not open UI paths until both pass.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.
@@ -55,6 +59,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - `npm.cmd run typecheck` — PASS; `git diff --check` — PASS before both commits.
 - Candidate `8488dd2` is not accepted. Final-source browser evidence, UI/localization,
   full gates, repeated QA, recovery recording, cleanup, and push remain open.
+- First independent visual audit: product source PASS, overall `GAP`; it found that
+  paint options could create false geometry differences, the 2× / 4× persistent test
+  stubbed the real glyph, and Collapse did not scan every broad-shape primitive or use
+  the real `clear-started` event batch.
+- `e2858a2` corrects only `TetrisRenderer.test.ts`; focused renderer/timeline tests now
+  pass 25/25 and typecheck passes. Corrected dual audit remains open.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 

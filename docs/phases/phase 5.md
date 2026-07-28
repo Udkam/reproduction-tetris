@@ -25,7 +25,11 @@ reduced-motion 静态终态和显式 2× / 4× 持续场；`8488dd2` 则移除 C
 扫描得出的真实移动列/最大落距绘制落定轨迹。定向 Renderer/timeline 测试
 24/24 与 typecheck 通过。精确产品头 `8488dd2` 已形成 Renderer 候选，但尚未
 经过两路独立审计、UI/localization、最终源码浏览器证据和全量门禁，因此不构成
-Renderer 或 Phase 5 验收。
+Renderer 或 Phase 5 验收。首轮独立视觉合同审计静态接受产品实现，但发现原
+测试把颜色/alpha 混入几何签名、stub 掉真实倍增字形且使用错误的同锁消行事件，
+因此整体判为 `GAP`。修正 `e2858a2` 改用纯几何签名，直接固定 Surface/Core 在
+locked/active/Next 的共用入口、真实 2× / 4× 字形、所有长矩形/长线段和
+`piece-locked + clear-started`，定向测试提升为 25/25。该候选仍待两路复验。
 
 ## 目标
 

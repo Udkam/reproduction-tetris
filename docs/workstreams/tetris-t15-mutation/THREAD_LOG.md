@@ -280,3 +280,35 @@
   `8488dd2` are required before opening UI/localization.
 - Next action: run one visual-contract audit and one performance/lifecycle audit;
   correct any finding before accepting the Renderer boundary.
+
+## 2026-07-28 — Renderer visual-contract audit correction
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-QA-R1`.
+- Independent visual auditor: `t15_core_rules_r3`; product head `8488dd2`,
+  documentation head `1bed679`.
+- Disposition: product source static `PASS`, overall `GAP`; P0/P1 none.
+- Actionable evidence findings:
+  - paint options were serialized into carrier/reduced endpoint signatures, so
+    palette-only regressions could produce false differences;
+  - the persistent 2× / 4× test replaced the real vector-value method with a stub;
+  - Collapse checked only `roundRect` widths and used `lines-cleared` instead of the
+    real same-lock `piece-locked + clear-started` event batch.
+- Exact correction path: `src/game/render/TetrisRenderer.test.ts`.
+- Correction candidate: `e2858a2`.
+- Corrected evidence:
+  - geometry signatures exclude fill/stroke paint options;
+  - Surface/Core/Rim geometry is distinct for all four families, while locked,
+    active, and Next directly share Surface/Core entry points;
+  - reduced endpoints and persistent 2× / 4× fields compare actual geometry and
+    actual vector multiplier glyphs;
+  - Collapse scans broad `rect`, `roundRect`, and segment spans and uses the real
+    same-lock event batch.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts
+    src/animation/mutationTimeline.test.ts --maxWorkers=1` — 2 files / 25 tests PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check` — PASS before exact-path commit.
+- Blocker: corrected visual re-audit and one separate performance/lifecycle audit
+  remain required; UI paths remain closed.
+- Next action: re-audit exact candidate `e2858a2`, then run the second independent
+  Renderer audit without dynamic work while the machine remains resource-constrained.
