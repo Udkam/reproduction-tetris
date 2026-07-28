@@ -34,6 +34,7 @@ import {
   type PuzzleProgress,
 } from './puzzleProgress';
 import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
+import { nextPreviewPieces } from './game/render/presentation';
 import { ActionSheet } from './ui/ActionSheet';
 import {
   DEFAULT_LANGUAGE,
@@ -942,10 +943,12 @@ export function GameSession({
   }, []);
 
   const beginBoardGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
-    if (event.pointerType === 'mouse' || countdownDigit !== null || state.status !== 'playing') return;
+    if (countdownDigit !== null || state.status !== 'playing') return;
+    focusBoard();
+    if (event.pointerType === 'mouse') return;
     boardGestureRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY, at: event.timeStamp };
     event.currentTarget.setPointerCapture(event.pointerId);
-  }, [countdownDigit, state.status]);
+  }, [countdownDigit, focusBoard, state.status]);
 
   const finishBoardGesture = useCallback((event: ReactPointerEvent<HTMLElement>) => {
     const start = boardGestureRef.current;
@@ -1049,7 +1052,9 @@ export function GameSession({
     void nextRuntime.mount(host).then(() => {
       if (disposed) return;
       nextRuntime.setReducedMotion(motionQuery.matches);
-      host.querySelector('canvas')?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);
+      const canvas = host.querySelector('canvas');
+      canvas?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);
+      canvas?.setAttribute('aria-description', appCopy(languageRef.current).labels.touchGestureHint);
       if (countdownCompleteRef.current) focusBoard();
     });
 
@@ -1097,7 +1102,10 @@ export function GameSession({
     const documentTarget = browserPlatform.documentTarget();
     if (documentTarget?.documentElement) documentTarget.documentElement.lang = language;
     const canvas = hostRef.current?.querySelector('canvas');
-    if (canvas) canvas.setAttribute('aria-label', appCopy(language).phrasing.boardLabel);
+    if (canvas) {
+      canvas.setAttribute('aria-label', appCopy(language).phrasing.boardLabel);
+      canvas.setAttribute('aria-description', appCopy(language).labels.touchGestureHint);
+    }
   }, [language, runtime]);
 
   useEffect(() => {
@@ -1330,6 +1338,13 @@ export function GameSession({
     : storedRecords;
   const resultRank = state.mode === 'puzzle' ? null : scoreRecordRank(leaderboardRecords, resultRecord);
   const puzzleDoublePreview = state.mode === 'puzzle';
+  const previewPieces = nextPreviewPieces(state);
+  const firstPreviewLabel = previewPieces[0]
+    ? `${copy.labels.nextPiece}: ${previewPieces[0]}`
+    : copy.labels.nextPiece;
+  const secondPreviewLabel = previewPieces[1]
+    ? `${copy.labels.followingPiece}: ${previewPieces[1]}`
+    : copy.labels.followingPiece;
 
   return (
     <main id="game" lang={language} className="play-shell" data-testid="game-screen">
@@ -1369,8 +1384,6 @@ export function GameSession({
           <section
             className={`board-frame ${countdownDigit !== null ? 'board-frame--countdown' : ''}`}
             data-testid="board-frame"
-            aria-label={copy.phrasing.boardLabel}
-            aria-description={copy.labels.touchGestureHint}
             onPointerDown={beginBoardGesture}
             onPointerUp={finishBoardGesture}
             onPointerCancel={cancelBoardGesture}
@@ -1388,7 +1401,11 @@ export function GameSession({
               </div>
             )}
           </section>
-          <aside className={`game-side-panel game-side-panel--${state.mode}`} data-testid="side-rail">
+          <aside
+            className={`game-side-panel game-side-panel--${state.mode}`}
+            data-testid="side-rail"
+            aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.gamePanel}`}
+          >
             <div className="info-rail" data-testid="context-top">
               <RunStats state={state} language={language} />
               <MutationStatus state={state} language={language} />
@@ -1401,14 +1418,16 @@ export function GameSession({
                 className={`next-slot ${puzzleDoublePreview ? 'next-slot--dual' : ''}`}
                 data-testid="next-slot"
                 data-preview-count={puzzleDoublePreview ? 2 : 1}
-                aria-label={puzzleDoublePreview ? copy.labels.twoUpcoming : copy.labels.nextPiece}
+                aria-label={puzzleDoublePreview
+                  ? `${copy.labels.twoUpcoming}${previewPieces.length ? ` (${previewPieces.join(', ')})` : ''}`
+                  : firstPreviewLabel}
               >
                 {puzzleDoublePreview && (
                   <>
-                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="1" role="img" aria-label={`1 ${copy.labels.nextPiece}`}>
+                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="1" role="img" aria-label={`1 ${firstPreviewLabel}`}>
                       <span className="next-slot__segment-label" aria-hidden="true"><b>1</b></span>
                     </div>
-                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="2" role="img" aria-label={`2 ${copy.labels.followingPiece}`}>
+                    <div className="next-slot__segment" data-testid="puzzle-next-segment" data-preview-segment="2" role="img" aria-label={`2 ${secondPreviewLabel}`}>
                       <span className="next-slot__segment-label" aria-hidden="true"><b>2</b></span>
                     </div>
                   </>

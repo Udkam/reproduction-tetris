@@ -54,6 +54,8 @@ interface RuntimeTestInstance {
   togglePause: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
+  press: ReturnType<typeof vi.fn>;
+  release: ReturnType<typeof vi.fn>;
   getState: () => GameState;
   setState: (state: GameState) => void;
 }
@@ -88,8 +90,8 @@ vi.mock('./game/runtime/GameRuntime', async () => {
       host.append(this.canvas);
     }
 
-    press(): void {}
-    release(): void {}
+    readonly press = vi.fn();
+    readonly release = vi.fn();
     readonly togglePause = vi.fn(() => {
       if (this.state.status === 'playing') this.state = { ...this.state, status: 'paused' };
       else if (this.state.status === 'paused') this.state = { ...this.state, status: 'playing' };
@@ -298,7 +300,8 @@ describe('entry countdown', () => {
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);
     expect(view.container.querySelector('[data-testid="touch-rail"]')).toBeNull();
-    expect(view.container.querySelector('[data-testid="board-frame"]')?.getAttribute('aria-description')).toContain('触控');
+    expect(view.container.querySelector('[data-testid="board-frame"]')?.hasAttribute('aria-label')).toBe(false);
+    expect(view.container.querySelector('canvas')?.getAttribute('aria-description')).toContain('触控');
     expect(runtime.start).not.toHaveBeenCalled();
 
     await act(async () => vi.advanceTimersByTimeAsync(400));
@@ -736,6 +739,11 @@ describe('T6 frontend mode binding', () => {
     expect(segments[1]?.dataset.previewSegment).toBe('2');
     expect(segments[1]?.getAttribute('aria-label')).toBe('2 后一个方块');
     expect(segments[1]?.textContent).toBe('2');
+    await advanceEntryCountdown();
+    const puzzlePreview = runtimeHarness.instances.at(-1)!.getState().queue.slice(0, 2);
+    expect(segments[0]?.getAttribute('aria-label')).toBe(`1 下一个方块: ${puzzlePreview[0]}`);
+    expect(segments[1]?.getAttribute('aria-label')).toBe(`2 后一个方块: ${puzzlePreview[1]}`);
+    expect(puzzleSlot.getAttribute('aria-label')).toContain(puzzlePreview.join(', '));
     puzzle.unmount();
 
     const classic = render(createElement(GameSession, {
@@ -750,6 +758,50 @@ describe('T6 frontend mode binding', () => {
     classic.unmount();
   });
 
+  it('routes the transparent board interaction surface to the same canvas and touch controls', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+
+    const board = view.container.querySelector<HTMLElement>('[data-testid="board-frame"]')!;
+    const canvas = view.container.querySelector<HTMLCanvasElement>('canvas')!;
+    const runtime = runtimeHarness.instances.at(-1)!;
+    Object.assign(board, {
+      setPointerCapture: vi.fn(),
+      hasPointerCapture: vi.fn(() => true),
+      releasePointerCapture: vi.fn(),
+    });
+    const pointer = (type: 'pointerdown' | 'pointerup', x: number, y: number, at: number) => {
+      const event = new MouseEvent(type, { bubbles: true, clientX: x, clientY: y });
+      Object.defineProperties(event, {
+        pointerId: { value: 7 },
+        pointerType: { value: 'touch' },
+        timeStamp: { value: at },
+      });
+      return event;
+    };
+
+    act(() => {
+      board.dispatchEvent(pointer('pointerdown', 100, 100, 100));
+      board.dispatchEvent(pointer('pointerup', 104, 104, 220));
+    });
+    expect(document.activeElement).toBe(canvas);
+    expect(runtime.press).toHaveBeenCalledWith('rotate-cw');
+
+    act(() => {
+      board.dispatchEvent(pointer('pointerdown', 100, 100, 300));
+      board.dispatchEvent(pointer('pointerup', 140, 101, 390));
+    });
+    expect(runtime.press).toHaveBeenCalledWith('right');
+    expect(runtime.release).toHaveBeenCalledWith('right');
+    view.unmount();
+  });
+
   it('directly restores the prior Puzzle piece from its top spawn after a lock', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
@@ -760,7 +812,8 @@ describe('T6 frontend mode binding', () => {
     await act(async () => Promise.resolve());
 
     expect(puzzle.container.querySelector('[data-testid="touch-rail"]')).toBeNull();
-    expect(puzzle.container.querySelector('[data-testid="board-frame"]')?.getAttribute('aria-description')).toContain('触控');
+    expect(puzzle.container.querySelector('[data-testid="board-frame"]')?.hasAttribute('aria-label')).toBe(false);
+    expect(puzzle.container.querySelector('canvas')?.getAttribute('aria-description')).toContain('触控');
     expect(puzzle.container.querySelector('.keyboard-map')).toBeNull();
 
     await advanceEntryCountdown();
