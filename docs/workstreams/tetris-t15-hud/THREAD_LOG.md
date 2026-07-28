@@ -42,3 +42,49 @@
 - Blocker: none.
 - Next action: commit this documentation-only contract, then implement the Phase 3
   DOM/input/accessibility checkpoint without entering Phase 4/5 product paths.
+
+## 2026-07-28 — responsive HUD candidate
+
+- Task ID: `T15-PHASE3-HUD-CANDIDATE`.
+- Coordinator/writer: `/root`.
+- Rollback base: `6892f802c819015ed978cd24b714bbdf2d5a5caf`.
+- Candidate: `f27bb71` with review range
+  `6892f802c819015ed978cd24b714bbdf2d5a5caf..f27bb71`.
+- Status: `CANDIDATE`; targeted checks and development-browser evidence are green,
+  while full gates, production-preview evidence and independent QA remain open.
+- Source checkpoints:
+  - `d8e83d2` — `src/App.tsx` and `src/App.test.ts`: transparent touch surface,
+    mouse/touch focus, Canvas-localised accessible description, semantic live Next
+    labels and direct pointer regression coverage;
+  - `249e4ce` — `src/game/render/presentation.ts`,
+    `src/game/render/presentation.test.ts`, and
+    `src/game/render/TetrisRenderer.ts`: renderer-only spawn containment and corrected
+    default Canvas label;
+  - `f27bb71` — `src/main.tsx`, `src/styles/hud.css`, and
+    `src/styles/hud.test.ts`: final live HUD authority layer, unified desktop/portrait/
+    short-landscape topology and Mutation/Puzzle forecast accommodation.
+- Targeted commands actually run:
+  - `npm.cmd run test -- --run src/App.test.ts` — 32/32 passed;
+  - `npm.cmd run test -- --run src/game/render/presentation.test.ts src/game/render/TetrisRenderer.test.ts`
+    — 21/21 passed;
+  - `npm.cmd run test -- --run src/styles/hud.test.ts src/App.test.ts src/game/render/presentation.test.ts src/game/render/TetrisRenderer.test.ts`
+    — 57/57 passed;
+  - `npm.cmd run test -- --run src/styles/hud.test.ts` — 4/4 passed after the final CSS edit;
+  - `npm.cmd run typecheck` — passed after every source checkpoint;
+  - `git diff --check` and staged-path inspection — passed.
+- Development-browser evidence:
+  - ignored captures live under `.local/audits/t15-phase3-iteration/`;
+  - measured all four modes at `1440×900`, `390×844`, `844×390` and `1056×480`;
+  - within each viewport all modes share identical board and side-rail bounds;
+  - every measured screen has one Canvas, zero DOM cells, no horizontal or vertical
+    overflow and no captured console/page errors;
+  - actual touch context verified tap rotation, horizontal swipe movement and downward
+    hard drop, with focus returning to the Canvas;
+  - reduced-motion context retains the visible `3–2–1` mask while disabling countdown
+    animation.
+- Boundary held: no Puzzle selector, Core rules, level data, material identity, Settings
+  composition, Mutation gameplay or line-clear VFX were changed.
+- Blocker: none.
+- Next action: run the single final full-gate/build/production-browser pass, freeze the
+  resulting evidence, then dispatch independent rules and visual QA against the exact
+  candidate range.
