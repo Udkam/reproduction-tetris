@@ -516,7 +516,12 @@ describe('T6 frontend mode binding', () => {
     const sprint = { ...sprintBase, lines: 9, pieceCount: 19, elapsedTicks: 540, mutationCarriers: [{ id: 1, item: 'freeze' as const, cells: [] }] };
     const cases = [
       { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '下落速度/格', '0.8 秒'] },
-      { state: survival, roles: ['score', 'lines', 'survival-bedrock', 'survival-next'], label: '生存模式数据', copy: ['基岩', '3', '13 秒'] },
+      {
+        state: survival,
+        roles: ['survival-time', 'lines', 'survival-bedrock', 'survival-stones'],
+        label: '生存模式数据',
+        copy: ['生存时间', '0 分 0 秒', '基岩 3 层 · 上升', '13 秒', '落石', '20 秒'],
+      },
       { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度/格'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
@@ -542,6 +547,26 @@ describe('T6 frontend mode binding', () => {
       .map((match) => match[1]!.trim())
       .join('\n');
     expect(statisticSelectors).not.toMatch(/nth-child|nth-of-type|\bodd\b|\beven\b/);
+  });
+
+  it('marks both imminent Survival clocks without hiding their distinct meanings', () => {
+    const state = {
+      ...createInitialState(0x51a1f00d, 'race'),
+      survivalRisePending: true,
+      survivalDebrisIntervalSeconds: 20,
+      survivalDebrisIntervalTicks: 19 * 60,
+      survivalDebrisWarningColumns: [2],
+    };
+    const view = render(createElement(RunStats, { state }));
+    const bedrock = view.container.querySelector<HTMLElement>('[data-stat-role="survival-bedrock"]');
+    const stones = view.container.querySelector<HTMLElement>('[data-stat-role="survival-stones"]');
+
+    expect(bedrock?.dataset.urgent).toBe('true');
+    expect(bedrock?.textContent).toBe('基岩 3 层 · 上升待上升');
+    expect(stones?.dataset.warning).toBe('true');
+    expect(stones?.dataset.urgent).toBe('true');
+    expect(stones?.textContent).toBe('落石1 秒');
+    view.unmount();
   });
 
   it('shows Puzzle target progress and a non-limiting placed-piece count', () => {

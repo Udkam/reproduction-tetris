@@ -742,14 +742,23 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
   const copy = appCopy(language);
   const modeLabel = modeCopy(language, state.mode).label;
   if (state.mode === 'race') {
-    const nextSeconds = survivalCountdownSeconds(state);
+    const riseSeconds = survivalCountdownSeconds(state);
+    const stoneSeconds = survivalStoneCountdownSeconds(state);
     return (
-      <section className="run-stats" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
-        <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
+      <section className="run-stats run-stats--survival" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
+        <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><strong>{elapsedTimeLabel(state.elapsedTicks, language)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="survival-bedrock"><span>{copy.labels.bedrock}</span><strong>{state.survivalBedrockRows}</strong></article>
-        <article data-stat-role="survival-next" data-urgent={state.survivalRisePending || nextSeconds <= 5 || undefined}>
-          <span>{copy.labels.nextRise}</span><strong>{survivalCountdownLabel(state, language)}</strong>
+        <article data-stat-role="survival-bedrock" data-urgent={state.survivalRisePending || riseSeconds <= 5 || undefined}>
+          <span>{copy.phrasing.bedrockRise(state.survivalBedrockRows)}</span>
+          <strong>{survivalCountdownLabel(state, language)}</strong>
+        </article>
+        <article
+          data-stat-role="survival-stones"
+          data-warning={state.survivalDebrisWarningColumns.length > 0 || undefined}
+          data-urgent={stoneSeconds <= 5 || undefined}
+        >
+          <span>{copy.labels.stonefall}</span>
+          <strong>{copy.phrasing.seconds(stoneSeconds)}</strong>
         </article>
       </section>
     );

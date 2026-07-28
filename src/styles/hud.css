@@ -129,6 +129,21 @@
   font-size: 16px;
 }
 
+.run-stats--survival [data-stat-role="survival-bedrock"] span {
+  color: color-mix(in srgb, var(--race) 72%, var(--ink));
+  font-weight: 700;
+}
+
+.run-stats--survival [data-stat-role="survival-stones"][data-warning="true"] {
+  border-color: color-mix(in srgb, #e5b86a 68%, var(--line)) !important;
+  background: color-mix(in srgb, #e5b86a 10%, var(--raised));
+  box-shadow: inset 3px 0 0 color-mix(in srgb, #e5b86a 82%, transparent);
+}
+
+.run-stats--survival [data-urgent="true"] strong {
+  color: var(--danger);
+}
+
 .preview-rail,
 .game-side-panel--sprint .preview-rail,
 .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
