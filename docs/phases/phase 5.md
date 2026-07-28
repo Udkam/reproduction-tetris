@@ -45,8 +45,12 @@ localization 路径；最终浏览器帧、60 FPS 和生命周期实机证据仍
 最终验收，不能由静态结论替代。
 UI semantics 候选 `7968bb1` 已完成 `冰冻` / 1 秒每格双语规则、仅活动状态行、
 body+item Next 无障碍描述和同 transition 多事件 source-order live region。
-`src/App.test.ts` 34/34 与 typecheck 通过。该检查点仍待独立静态审计，且没有
-打开 responsive CSS 之外的路径，也没有把本次开发诊断当作最终浏览器证据。
+`src/App.test.ts` 34/34 与 typecheck 通过。首轮独立静态审计发现 entry /
+line-clear 的 `active=null` 过渡帧仍会漏报 Next 附件。修正 `287c426` 以即将
+spawn 时的 piece count 判定资格，并直接固定两种延迟帧预测等于实际 carrier、
+state hash 不变及 ARIA 在 `active=null` 时仍包含附件；Core/App 定向 55/55
+与 typecheck 通过。该修正仍待独立复验，且没有打开 responsive CSS 之外的
+路径，也没有把本次开发诊断当作最终浏览器证据。
 
 ## 目标
 

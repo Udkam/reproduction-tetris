@@ -427,3 +427,33 @@
 - Blocker: independent UI semantics/localization disposition remains required.
 - Next action: after static PASS, open only `src/styles/mutation-vfx.css`,
   `src/styles/hud.css`, and `src/styles/hud.test.ts` for responsive active-state layout.
+
+## 2026-07-29 — UI semantics audit correction
+
+- Task ID: `T15-PHASE5-MUTATION-UI-QA-R1`.
+- Independent auditor: `t15_core_rules_r3`; candidate `7968bb1`, documentation head
+  `3c5d74d`.
+- Disposition: `GAP`; P0/P1/P3 none, one P2.
+- Finding: during entry or line-clear, `nextPreviewPieces()` still exposed the real
+  `queue[0]` body but `nextMutationPreviewItem()` returned `null` solely because
+  `active` was null. From the third spawn onward, Core would then attach a deterministic
+  item to that same body, so the temporary ARIA label contradicted the actual spawn.
+- Exact correction paths:
+  - `src/game/core/engine.ts`
+  - `src/game/core/sprint.test.ts`
+  - `src/App.test.ts`
+- Correction candidate: `287c426`.
+- Corrected evidence:
+  - preview eligibility now uses `pieceCount + (active ? 1 : 0)` at the upcoming
+    spawn, preserving the two unmarked opening pieces while covering later delays;
+  - entry and line-clear fixtures each prove predicted body/item equals actual spawn
+    and that prediction leaves `stateHash` unchanged;
+  - the GameSession Next ARIA test now binds an `active=null` delayed state carrying
+    a deterministic predicted item.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/sprint.test.ts src/App.test.ts
+    --maxWorkers=1` — 2 files / 55 tests PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check` — PASS before exact-path commit.
+- Blocker: corrected independent static re-audit remains required.
+- Next action: re-audit exact correction `287c426`; only PASS opens responsive CSS.

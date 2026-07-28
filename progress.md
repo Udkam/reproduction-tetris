@@ -38,8 +38,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - UI semantics candidate `7968bb1` changes the player-facing item to `冰冻`, states
   1 second/cell in both languages, omits idle status placeholders, adds pure
   body-plus-item Next accessibility, and preserves every same-transition announcement
-  in source order. `src/App.test.ts` passes 34/34 and typecheck passes; independent
-  static review is in progress.
+  in source order. Its first independent static review found one P2 in entry/line-clear
+  frames: body remained visible while `active=null` hid the attachment. Correction
+  `287c426` fixes upcoming-spawn eligibility and adds direct delay-frame Core plus ARIA
+  coverage; focused Core/App tests pass 55/55 and typecheck passes.
 
 ## Non-negotiable boundaries
 
@@ -52,7 +54,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Resolve the independent static disposition for UI semantics candidate `7968bb1`;
+- Resolve the corrected independent static disposition for UI semantics candidate
+  `7968bb1` plus correction `287c426`;
   after PASS, open only the frozen responsive status-layout paths and verify one,
   two, and three simultaneous active states without structural blank space.
 - Keep Classic shared
