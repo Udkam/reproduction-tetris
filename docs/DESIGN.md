@@ -125,6 +125,12 @@ If a successor is already mounted, its autofocus/focus trap owns the keyboard co
 an older delayed cleanup must not steal focus back to the canvas or retired trigger.
 Only closing the final sheet restores the original focus route.
 
+If a replacement sheet closes back to gameplay after its predecessor trigger has been
+detached, the owning UI transaction must restore the stable game-canvas focus target
+explicitly. It may not depend on a detached button, `body`, a fixed delay, or whichever
+sheet cleanup happens last. Direct and production-browser coverage must exercise both
+successor acquisition and the final cancel/close endpoint after queued animation frames.
+
 ## T13.15 Puzzle completion ceremony and Survival geology
 
 **Status:** accepted after independent QA `4b0938d`. T13.14's mechanics and accepted

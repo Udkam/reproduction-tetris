@@ -117,3 +117,39 @@ dual final QA, coordinator acceptance, cleanup, and push remain pending.
 Current state: `P1 CORRECTION`; original pixel compositor claim remains the candidate
 base, but no Phase-1.5 acceptance is possible until focus ownership is fixed and the
 full production matrix plus both independent QA passes from the new source SHA.
+
+## Browser rejection 2 — replacement chain final return
+
+- Correction candidate: `646a475`
+  (`fix(ui): hand modal focus to successor sheet`), preserving `17ccc96`.
+- Exact correction paths:
+  - `src/ui/ActionSheet.tsx`
+  - `src/App.test.ts`
+- Candidate gates after the last source change:
+  - direct App test: 1 file / 26 tests passed;
+  - typecheck: passed;
+  - full suite: 25 files / 185 tests passed;
+  - main and clean detached-candidate builds: 752 modules each.
+- The production matrix passed 16 desktop/compact/reduced-motion cases and the pixel
+  audit passed 14 live-sheet cases. During manifest generation the coordinator found
+  that the first report had been labelled with a mistyped full SHA. That evidence was
+  rejected rather than relabelled; the entire production matrix and pixel audit were
+  rerun with exact candidate SHA
+  `646a4750376a01d11c1b99a0fb0db0220d175183`.
+- Independent rules QA identified one untested chain endpoint. A separate production
+  Chromium probe then reproduced it exactly:
+  `Canvas → Settings → Restart → Cancel → two animation frames` leaves zero dialogs,
+  the same one Canvas restored at `z-index: 6` with its normal transform, and zero
+  console/page errors, but `activeElement` is `body` instead of the Canvas. `KeyP`
+  remains operational, so this is a focus-restoration P1 rather than a runtime failure.
+- Accepted correction boundary:
+  - add the existing semantic `focusBoard()` return to `cancelRestart` in `src/App.tsx`;
+  - extend `src/App.test.ts` queued-frame coverage through Restart cancel and same-Canvas
+    restoration;
+  - extend production evidence with the same replacement-chain endpoint;
+  - no fixed delay, ActionSheet special case, layout, copy, Core, renderer, or runtime
+    rule change.
+
+Current state: `P1 CORRECTION 2`; `646a475` is rejected as a Phase-1.5 acceptance
+candidate. The next candidate must repeat targeted/full gates, clean build, the
+production matrix and pixel audit, then both independent QA.

@@ -247,12 +247,14 @@ slice: do not stage or mutate its `src/styles.css` change in a T14 checkpoint.
 
 ### T13.16 active delivery contract — modal compositor integrity
 
-**T15 Phase 1.5 status (2026-07-28):** source candidate `17ccc96` is isolated from
-rollback base `dfeb2c9`. Its exact `src/styles.css` plus `src/App.test.ts` claim passed
-the direct App test and typecheck. Full-suite/build and candidate-bound production
-browser evidence remain pending; no acceptance is claimed. Settings may not acquire
-this shared path until the modal slice has fresh evidence, repeated code/rules and
-target/visual QA where needed, coordinator acceptance, and push.
+**T15 Phase 1.5 status (2026-07-28):** correction candidate `646a475` is isolated from
+rollback base `dfeb2c9`. Its compositor and outgoing-sheet ownership claims passed the
+direct/full gates plus an exact-SHA production matrix, but independent rules QA found a
+second P1 endpoint: Settings → Restart → Cancel removes both sheets and restores the
+one Canvas layer, yet leaves focus on `body`. No acceptance is claimed. Settings may
+not acquire this shared path until that final-return defect is corrected, fresh
+evidence and both independent QA pass, coordinator acceptance is recorded, and the
+phase is pushed.
 
 1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
    audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint
@@ -269,15 +271,18 @@ target/visual QA where needed, coordinator acceptance, and push.
    slice because Pause → Settings let the outgoing sheet's delayed cleanup steal focus
    back to the canvas. The correction may additionally change only
    `src/ui/ActionSheet.tsx` and direct `src/App.test.ts` coverage to arbitrate generic
-   sheet-to-sheet focus ownership. No App timing workaround, Core, renderer scene,
-   GameRuntime, modal copy, panel composition, leaderboard, audio, persistence, or game
-   rule may change.
+   sheet-to-sheet focus ownership. The verified Settings → Restart → Cancel endpoint may
+   additionally change only `src/App.tsx` to perform its existing semantic
+   `focusBoard()` return, plus the same direct test path. No arbitrary App delay, Core,
+   renderer scene, GameRuntime, modal copy, panel composition, leaderboard, audio,
+   persistence, or game rule may change.
 3. **Acceptance.** Run the direct App test, typecheck, full current-source suite, and
    production build after the final source change. Fresh browser evidence covers all
    live-game sheets in the phase log at desktop and compact portrait, plus first-entry
    rules with its expected zero canvas. It must prove one stable canvas for live-game
    sheets, no overflow/page/console error, stable focus inside every active dialog and
-   correct restoration after the final dialog closes, and visibly demonstrate through screenshot
+   correct restoration after the final dialog closes—including Settings → Restart →
+   Cancel after queued frames—and visibly demonstrate through screenshot
    pixel probes plus human review that opaque sheet contents are never painted beneath
    the canvas. Release every
    Tetris-owned temporary listener/browser after capture; independent QA remains
