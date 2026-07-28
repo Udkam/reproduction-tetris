@@ -256,20 +256,24 @@ has its own candidate, evidence, repeated dual QA where needed, acceptance, and 
 1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
    audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint
    above part of the sheet in a compositor capture. While any `.sheet-backdrop` is
-   mounted, the one Pixi canvas must remain mounted and visibly dimmed *under* the
-   overlay, but it may not bleed through, obscure, or draw over Settings, Pause,
-   Restart, Exit, rule, or Puzzle-result sheet pixels. This is a presentation-stacking
-   correction only; it must not hide the live board, add another canvas, recreate the
-   runtime, or change focus/input routing.
+   mounted over an existing `GameSession`, the one Pixi canvas must remain mounted and
+   visibly dimmed *under* the overlay, but it may not bleed through, obscure, or draw
+   over Settings, Pause, Restart, Exit, or Puzzle-result sheet pixels. The first-entry
+   rule sheet appears before `GameSession` exists and therefore correctly has zero
+   canvas; it verifies sheet stacking over the mode page rather than the live-scene
+   invariant. This is a presentation-stacking correction only; it must not hide the
+   live board, add another canvas, recreate the runtime, or change focus/input routing.
 2. **Bounded source scope.** The implementation may change only `src/styles.css` and a
    directly relevant `src/App.test.ts` assertion if one can verify the declarative
    modal/canvas contract. No Core, renderer scene, GameRuntime, modal copy, panel
    composition, leaderboard, audio, persistence, or game rule may change.
 3. **Acceptance.** Run the direct App test, typecheck, full current-source suite, and
-   production build after the final source change. Fresh browser evidence must cover
-   Settings plus at least one ordinary action sheet at desktop and compact portrait,
-   prove one mounted canvas, no overflow/page/console error, and visibly demonstrate
-   that the opaque sheet contents are never painted beneath the canvas. Release every
+   production build after the final source change. Fresh browser evidence covers all
+   live-game sheets in the phase log at desktop and compact portrait, plus first-entry
+   rules with its expected zero canvas. It must prove one stable canvas for live-game
+   sheets, no overflow/page/console error, and visibly demonstrate through screenshot
+   pixel probes plus human review that opaque sheet contents are never painted beneath
+   the canvas. Release every
    Tetris-owned temporary listener/browser after capture; independent QA remains
    read-only until a candidate SHA exists.
 

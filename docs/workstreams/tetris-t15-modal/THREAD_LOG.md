@@ -17,14 +17,17 @@
 ## Acceptance matrix
 
 The same one live Pixi canvas remains present and visible beneath the dimmer while
-each opaque sheet owns the complete foreground:
+each live-game opaque sheet owns the complete foreground:
 
 1. Settings opened from playing and paused state.
 2. Pause sheet.
 3. Restart confirmation.
 4. Exit confirmation.
-5. First-entry rules.
-6. Puzzle completion result.
+5. Puzzle completion result.
+
+The first-entry rules sheet is a separate pre-session state: zero canvas is correct.
+It must preserve the mode page beneath an opaque foreground sheet and retain the same
+focus/keyboard contract.
 
 For each relevant state, desktop and compact evidence must show no WebGL surface
 painting over the sheet, no empty background caused by hiding the canvas, correct
@@ -40,5 +43,21 @@ keyboard/focus operation. Reduced motion must keep the same static layer order.
 5. Correction/re-evidence/re-audit if any user-relevant finding remains.
 6. Coordinator acceptance, changelog, resource cleanup, and non-force push.
 
-Current state: `CONTRACT`; both read-only pre-audits are active. No source candidate
-or acceptance claim exists.
+## Pre-audit findings
+
+- Code/rules: retain the two declarations but add a direct `App.test.ts` contract for
+  the modal CSS block and stable canvas node/focus path. The original matrix
+  incorrectly required a canvas before `GameSession`; that P1 contract contradiction
+  is corrected above.
+- Target/visual: adopt the existing five-line delta unchanged as the first candidate.
+  Static CSS is not proof because `filter`/`contain: paint` may still promote a layer;
+  final production-preview screenshots must use pixel probes inside the sheet and
+  visual review outside it. Settings from playing/paused, Pause, Restart, Exit, Puzzle
+  result, and first-entry rules are required at 1440 × 900 and 390 × 844; reduced
+  motion repeats Settings and Puzzle result.
+- The final report records canvas identity/count, modal and restored canvas z-index/
+  transform, full viewport backdrop, opaque sheet background, focus restoration,
+  overflow/errors, outside-sheet dimmed-board edge correlation, and three inside-sheet
+  surface probes.
+
+Current state: `PREAUDIT PASS`; contract corrected; source candidate not yet created.
