@@ -1535,6 +1535,11 @@ kbd,
 /* A sheet interrupts input, not the scene. Keep the one live Pixi canvas visible
    beneath the dimmer; isolated compositing keeps its WebGL layer below the dialog. */
 .play-shell:has(.sheet-backdrop) .canvas-host {
+  /* WebGL may otherwise retain its promoted compositor surface above a fixed DOM
+     sheet in a capture. Keep the one live canvas, but demote its layer while a
+     modal owns the scene so opaque controls can never be painted underneath it. */
+  z-index: 0;
+  transform: none;
   visibility: visible;
   filter: saturate(.86) brightness(.92);
 }

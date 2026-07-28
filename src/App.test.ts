@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 
+// @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
+import { readFileSync } from 'node:fs';
 import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -32,6 +34,7 @@ import { CAMPAIGN_LEVELS, defaultPuzzleProgress, PUZZLE_ROW_BANDS } from './puzz
 import type { ScoreRecord } from './leaderboard';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+const sourceStyles = readFileSync('src/styles.css', 'utf8');
 
 interface RuntimeTestOptions {
   seed?: number;
@@ -343,6 +346,50 @@ describe('entry countdown', () => {
 });
 
 describe('T6 frontend mode binding', () => {
+  it('keeps the live canvas visible but demoted while a modal owns the compositor', () => {
+    const selector = '.play-shell:has(.sheet-backdrop) .canvas-host';
+    const start = sourceStyles.indexOf(selector);
+    const end = sourceStyles.indexOf('\n}', start);
+    expect(start).toBeGreaterThanOrEqual(0);
+    expect(end).toBeGreaterThan(start);
+    const block = sourceStyles.slice(start, end);
+
+    expect(block).toMatch(/z-index:\s*0\s*;/);
+    expect(block).toMatch(/transform:\s*none\s*;/);
+    expect(block).toMatch(/visibility:\s*visible\s*;/);
+    expect(block).not.toMatch(/display:\s*none|visibility:\s*hidden|opacity:\s*0(?:\D|$)/);
+  });
+
+  it('preserves and refocuses the same canvas node across the Settings compositor', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+
+    const canvas = view.container.querySelector<HTMLCanvasElement>('canvas')!;
+    expect(canvas).not.toBeNull();
+    act(() => canvas.focus());
+    expect(document.activeElement).toBe(canvas);
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
+    await act(async () => Promise.resolve());
+    const sheet = view.container.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
+    expect(view.container.querySelector('canvas')).toBe(canvas);
+    expect(sheet.contains(document.activeElement)).toBe(true);
+
+    act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
+    await act(async () => Promise.resolve());
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
+    expect(view.container.querySelector('canvas')).toBe(canvas);
+    expect(document.activeElement).toBe(canvas);
+    view.unmount();
+  });
+
   it('moves mode rules out of home, then shows and stores the first-entry introduction', () => {
     localStorage.setItem('tetramorph:language:v1', 'zh-CN');
     const view = render(createElement(App));
