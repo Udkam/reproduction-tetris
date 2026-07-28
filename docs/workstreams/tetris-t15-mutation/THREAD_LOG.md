@@ -555,3 +555,32 @@
   evidence-integrity checks still require an available browser/GPU slot.
 - Next action: when that slot is free, run the prescribed game action client and the
   bounded production evidence capture without overlapping another GPU-heavy workload.
+
+## 2026-07-29 — Final-evidence preflight GAP and observability repair boundary
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-PREFLIGHT`.
+- Coordinator: `/root`; product candidate entering preflight `d819d92`;
+  documentation head before this record `ae0e9bb`.
+- The first uncommitted capture harness was rejected before evidence acceptance:
+  - it trusted any service already listening on 4178 instead of owning the server bound
+    to the clean candidate tree;
+  - it named activation frames from Core's latest item without observing the renderer's
+    current FIFO flash;
+  - its Bomb wait could end before the actual impact/shockwave/fragment phase;
+  - its performance assertion covered only renderer submission, not real rAF cadence;
+  - its lifecycle proof exercised only one mount/unmount and lacked a home baseline.
+- Local harness corrections already prepared but not yet accepted add grayscale Next,
+  rAF mean/p95 bounds, a home lifecycle baseline, the correct `exit-game` selector, and
+  the exact `d819d92` SHA. These remain uncommitted evidence work, not proof.
+- Reopened writer paths are bounded to:
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`;
+  - `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- Required repair: add read-only renderer flash/queue/particle/Collapse-trail telemetry,
+  make the harness own/stop a strict-port Vite process, capture Bomb from the observed
+  impact interval, and repeat mount/unmount twice against the initial baseline.
+- Resource boundary: a GPU-heavy Playwright session belonging to
+  `E:\Proj\personal-web` is active and preserved. No TetraMorph browser is launched
+  until that slot is free; source-bound static work remains serialized.
+- Next action: checkpoint this contract, implement/test only the read-only snapshot,
+  then correct the harness and hand the exact evidence candidate to independent audit.

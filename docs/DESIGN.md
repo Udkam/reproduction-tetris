@@ -261,6 +261,16 @@ empty placeholder rows or columns. Chinese uses `冰冻`; Next accessibility nam
 the ordinary body and its attachment or absence. Same-transition announcements retain
 FIFO order rather than reporting only the last event.
 
+Final Phase-5 browser evidence owns its local Vite process and starts it only after the
+clean product tree is bound to the declared source SHA; attaching to an unknown process
+on a familiar port is not source attribution. The DEV renderer snapshot may expose
+read-only activation observability — current item, elapsed/duration, queued count,
+active-particle count, and Collapse settlement columns — but may not mutate or bypass
+Core or visual state. Evidence labels an activation frame from that renderer-owned FIFO,
+captures Bomb after its real impact boundary, and repeats mount/unmount twice against a
+home-screen listener/RAF/audio baseline. A renderer microbenchmark alone does not prove
+60 FPS; real `requestAnimationFrame` mean and p95 are separately bounded.
+
 ## T13.16 Modal compositor integrity
 
 **Status:** accepted at source `5ab9e7d` after independent code/rules, target/visual,

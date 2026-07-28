@@ -61,6 +61,15 @@ auto rows/auto-fit columns，并移除会以更高 specificity 隐藏 stats/Next
 一至三个真实轨道、短高 auto-fit、12 px 字号下限、reduced motion 和非异变
 模式隔离均通过。最终源码 typecheck、26 文件 / 223 测试和 753 modules 生产
 构建均通过；动态帧、60 FPS、生命周期、证据捕获和重复最终审计仍未完成。
+最终证据预审现于浏览器启动前判定首版 harness 为 `GAP`：只核对本地 Git 而连接
+既有 4178 服务不能证明页面来自 `d819d92`；Core 的 `mutationLastItem` 不能代表
+Renderer FIFO 当前播放项；Bomb 等待可能停在 impact 前；单次 mount/unmount
+也不足以证明生命周期回收。一个最终的有界观测性修正现只开放
+`TetrisRenderer` snapshot/test 与 Phase-5 capture harness：增加只读 current
+flash timing、queue depth、active particle count 和 Collapse trail columns，
+由 harness 自行启动/关闭 strict-port Vite，按 Renderer 当前时间线捕获 Bomb
+impact，约束真实 rAF mean/p95，并以 home baseline 连续验证两次
+mount/unmount。此修正不得注入状态、改变玩法或 VFX 几何。
 
 ## 目标
 
@@ -148,6 +157,10 @@ auto rows/auto-fit columns，并移除会以更高 specificity 隐藏 stats/Next
    - `src/styles/mutation-vfx.css`
    - `src/styles/hud.css`
    - `src/styles/hud.test.ts`
+7. **Final evidence observability**
+   - `src/game/render/TetrisRenderer.ts`
+   - `src/game/render/TetrisRenderer.test.ts`
+   - `docs/qa/evidence/t15-phase5/capture_phase5.py`
 
 同一 Core writer 串行完成前两个共享 `engine.ts` / `sprint.test.ts` 检查点；
 Renderer 等 Core 接口稳定后再开始；UI 等 Core 和 Renderer 的 Next/计时接口

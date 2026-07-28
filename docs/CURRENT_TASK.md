@@ -92,6 +92,15 @@ actual spawned carrier without changing the state hash; the ARIA test now exerci
   Final-source typecheck passes, the complete suite passes 26 files / 223 tests, and
   the production build completes with 753 transformed modules. Browser frames, 60 FPS,
   lifecycle, evidence capture, and repeated final audits remain.
+  Final-evidence preflight then rejected the first capture harness before browser launch:
+  it could attach to an unrelated service on port 4178, label a queued flash from Core's
+  latest item instead of the renderer's current FIFO item, miss Bomb's impact boundary,
+  and prove only one mount/unmount. The source candidate remains `d819d92`; a bounded
+  evidence-observability slice is now open only for `TetrisRenderer` snapshot/test plus
+  the evidence harness. It must add read-only current-flash/queue/particle/Collapse-trail
+  telemetry, own and stop its Vite process, assert real rAF mean/p95, capture grayscale,
+  and compare two mount/unmount cycles with the home baseline. No gameplay or visual
+  behavior is reopened by this slice.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 
