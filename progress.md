@@ -6,8 +6,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
   accepted and pushed. Ports 4178/5178 and headless Chrome are released.
-- Current coordinator task: publish locally accepted Phase 4 candidate `2af2adf`
-  with corrected evidence `993dfc7`; cleanup and non-force push remain open.
+- Phase 4 candidate `2af2adf`, evidence `993dfc7`, and acceptance/recovery
+  `fd7ef8d` are pushed. Current coordinator task: open Phase 5 Mutation at that
+  rollback and complete three read-only baseline audits before any source edit.
 
 ## Non-negotiable boundaries
 
@@ -94,3 +95,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   JSON-to-PNG hashes. No source or evidence drift exists after `2af2adf` / `993dfc7`.
 - Next: commit this acceptance record, release PID 11560 / port 4178 and the
   temporary browser tab, verify worktree/resources, then push before opening Phase 5.
+
+## 2026-07-28 Phase 4 recovery published
+
+- `origin/main` advanced non-force from `8cbd623` through acceptance `fd7ef8d`.
+- Verified Vite PID 11560 was stopped; ports 4178/5178/5179 are free.
+- The temporary in-app browser tab was finalized; no repository/Playwright/headless
+  browser process remains.
+- Phase 5 Mutation is open from `fd7ef8d`; its first action is read-only error mapping
+  for Core/performance, Renderer/VFX, and UI/Next, not immediate source editing.

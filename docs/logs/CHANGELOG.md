@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-07-28 — T15 Phase 4 Survival pressure accepted locally
+## 2026-07-28 — T15 Phase 4 Survival pressure accepted and pushed
 
 - Survival now begins with three rows of the approved brown bedrock and presents two
   independent, deterministic threats: a 13→6-second rise clock and a 20→10-second
@@ -26,7 +26,9 @@
   `3→3` over 1.2 seconds; neither changes product correctness or acceptance.
 - Scope remains bounded: no Mutation, Classic, Puzzle selector/data, music/audio
   design, dependency, packaging, second Canvas, or DOM-board change is included.
-  Resource cleanup and the non-force recovery push remain the next coordinator step.
+  Verified Vite PID 11560 was stopped; ports 4178/5178/5179, the temporary browser
+  tab, and project/headless browser processes were cleared. Acceptance `fd7ef8d`
+  was pushed non-force to `origin/main`; Phase 5 opens from that recovery point.
 
 ## 2026-07-28 — T15 Phase 3 unified live HUD accepted and pushed
 

@@ -224,3 +224,16 @@
 - Blocker: recovery push not yet performed.
 - Next action: commit acceptance docs, stop the verified project listener and close
   the temporary browser tab, verify cleanup/worktree, then push `main` non-force.
+
+## 2026-07-28 — recovery point published
+
+- Acceptance/recovery record: `fd7ef8d`.
+- `origin/main` advanced non-force from `8cbd623` through source/test `2af2adf`,
+  evidence `993dfc7`, handoff `1730227`, and acceptance `fd7ef8d`.
+- Verified Vite PID 11560 was stopped after command-line ownership inspection;
+  ports 4178/5178/5179 are free.
+- The temporary in-app browser tab was finalized; no repository, Playwright, or
+  headless browser process remains.
+- Status: `PUSHED`.
+- Next action: open Phase 5 from `fd7ef8d` and run its read-only three-way baseline
+  audit before assigning any shared source path.

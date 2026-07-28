@@ -168,14 +168,15 @@ targets, one Canvas, reduced-motion countdown endpoints, and zero layout overflo
 The Puzzle selector composition, mode rules, materials, and later Phase-4/5/6 effects
 remain outside this acceptance.
 
-## Phase 4 — Survival pressure accepted locally
+## Phase 4 — Survival pressure accepted and pushed
 
 **Status:** source/test candidate `2af2adf` and corrected evidence `993dfc7` are
 accepted by the repeated rules, visual, and UI/evidence audits with no P0–P2. The
 writer record, clock field, direct scoring assertion, candidate binding, raw gates,
 English surface, and full lifecycle proof all pass. The only P3s are a complete but
 awkward Chinese label wrap and a static Settings frame whose modal hides the frozen
-digit while the scripted/JSON `3→3` assertion proves it. Non-force push remains open.
+digit while the scripted/JSON `3→3` assertion proves it. Acceptance/recovery record
+`fd7ef8d` is pushed to `origin/main`; Phase 5 may build only from that boundary.
 Survival opens with three rows of the accepted brown square bedrock material. Its
 bedrock-rise clock decreases from 13 seconds to a 6-second floor, while every three
 cleared lines removes one existing bedrock row. Ordinary pieces retain the accepted

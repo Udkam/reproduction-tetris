@@ -20,8 +20,8 @@
 | 1.5 | [Modal Compositor](<phase 1.5.md>) | 已推送 | `t15_modal_writer` | 规则 QA + 视觉 QA + 证据 QA |
 | 2 | [Settings](<phase 2.md>) | 已推送 | `t15_settings_writer` | 规则 QA + 视觉 QA + 证据 QA |
 | 3 | [HUD](<phase 3.md>) | 已验收并推送 | `t15_hud_writer` | 规则 QA + 视觉 QA |
-| 4 | [Survival](<phase 4.md>) | 本地验收；待资源清理与 push | Core → Render → UI 三个顺序 writer | 三方复审均 ACCEPT |
-| 5 | [Mutation](<phase 5.md>) | 待执行；冰冻规则已补充 | Core/性能 → VFX → UI 三个顺序 writer | 规则 QA + 视觉 QA + 性能/证据 QA |
+| 4 | [Survival](<phase 4.md>) | 已验收并推送 `fd7ef8d` | Core → Render → UI 三个顺序 writer | 三方复审均 ACCEPT |
+| 5 | [Mutation](<phase 5.md>) | 已开放；待三路基线审计 | Core/性能 → VFX → UI 三个顺序 writer | 规则 QA + 视觉 QA + 性能/证据 QA |
 | 6 | [Classic](<phase 6.md>) | 待执行 | `t15_classic_writer` | 规则 QA + 视觉 QA |
 | 7 | [Puzzle 50](<phase 7.md>) | 待执行 | Schema → 五批关卡 → Progress/UI | 求解/规则 QA + 视觉 QA + 证据 QA |
 | 8 | [Integration](<phase 8.md>) | 待执行 | 协调者 | 总体规则 QA + 总体视觉 QA + 证据 QA |
