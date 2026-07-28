@@ -1,5 +1,22 @@
 {
-  "candidate": "cc8c71f",
+  "candidate": "2af2adfc1640b2d5be2197ec1bf92db8637f70ef",
+  "candidateBinding": {
+    "sourceCandidate": "2af2adfc1640b2d5be2197ec1bf92db8637f70ef",
+    "gitHead": "2af2adfc1640b2d5be2197ec1bf92db8637f70ef",
+    "headMatchesCandidate": true,
+    "productTreeMatchesCandidate": true,
+    "productStatus": [],
+    "productPaths": [
+      "src",
+      "index.html",
+      "package.json",
+      "package-lock.json",
+      "vite.config.ts",
+      "tsconfig.json",
+      "tsconfig.app.json",
+      "tsconfig.node.json"
+    ]
+  },
   "baseUrl": "http://127.0.0.1:4178/",
   "browserVersion": "149.0.7827.55",
   "desktop": {
@@ -12,7 +29,7 @@
         "lines": 0,
         "elapsedTicks": 0,
         "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockIntervalTicks": 0,
         "stoneIntervalSeconds": 20,
         "stoneIntervalTicks": 0,
         "warningColumns": [],
@@ -82,12 +99,12 @@
         "mode": "race",
         "lines": 0,
         "elapsedTicks": 1080,
-        "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 300,
         "stoneIntervalSeconds": 20,
         "stoneIntervalTicks": 1080,
         "warningColumns": [
-          8
+          4
         ],
         "debris": []
       },
@@ -100,7 +117,7 @@
           "cell": 30.1
         },
         "warningColumns": [
-          8
+          4
         ],
         "debris": [],
         "cueCount": 0
@@ -108,7 +125,7 @@
       "stats": [
         "生存时间0:18",
         "消行0",
-        "基岩 3 层 · 上升待上升",
+        "基岩 4 层 · 上升8 秒",
         "落石2 秒"
       ],
       "bounds": {
@@ -157,15 +174,15 @@
         "mode": "race",
         "lines": 0,
         "elapsedTicks": 1200,
-        "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 420,
         "stoneIntervalSeconds": 19,
         "stoneIntervalTicks": 0,
         "warningColumns": [],
         "debris": [
           {
             "id": 1,
-            "x": 8,
+            "x": 4,
             "y": 20
           }
         ]
@@ -182,7 +199,7 @@
         "debris": [
           {
             "id": 1,
-            "x": 8,
+            "x": 4,
             "y": 20,
             "presentationY": 20
           }
@@ -192,7 +209,7 @@
       "stats": [
         "生存时间0:20",
         "消行0",
-        "基岩 3 层 · 上升待上升",
+        "基岩 4 层 · 上升6 秒",
         "落石19 秒"
       ],
       "bounds": {
@@ -242,15 +259,15 @@
         "lines": 0,
         "elapsedTicks": 1240,
         "bedrockRows": 4,
-        "bedrockIntervalTicks": null,
+        "bedrockIntervalTicks": 460,
         "stoneIntervalSeconds": 19,
         "stoneIntervalTicks": 40,
         "warningColumns": [],
         "debris": [
           {
             "id": 1,
-            "x": 8,
-            "y": 20
+            "x": 4,
+            "y": 21
           }
         ]
       },
@@ -266,17 +283,17 @@
         "debris": [
           {
             "id": 1,
-            "x": 8,
-            "y": 20,
-            "presentationY": 20
+            "x": 4,
+            "y": 21,
+            "presentationY": 20.360661626375876
           }
         ],
-        "cueCount": 0
+        "cueCount": 1
       },
       "stats": [
         "生存时间0:20",
         "消行0",
-        "基岩 4 层 · 上升13 秒",
+        "基岩 4 层 · 上升6 秒",
         "落石19 秒"
       ],
       "bounds": {
@@ -324,11 +341,11 @@
         "status": "playing",
         "mode": "race",
         "lines": 0,
-        "elapsedTicks": 1654,
+        "elapsedTicks": 1494,
         "bedrockRows": 4,
-        "bedrockIntervalTicks": null,
+        "bedrockIntervalTicks": 714,
         "stoneIntervalSeconds": 19,
-        "stoneIntervalTicks": 454,
+        "stoneIntervalTicks": 294,
         "warningColumns": [],
         "debris": []
       },
@@ -345,10 +362,10 @@
         "cueCount": 1
       },
       "stats": [
-        "生存时间0:27",
+        "生存时间0:24",
         "消行0",
-        "基岩 4 层 · 上升7 秒",
-        "落石12 秒"
+        "基岩 4 层 · 上升2 秒",
+        "落石15 秒"
       ],
       "bounds": {
         "board": {
@@ -390,24 +407,24 @@
         "reducedMotion": false
       }
     },
-    "landedAfterTicks": 414,
+    "landedAfterTicks": 254,
     "captures": [
       {
         "name": "desktop-warning",
         "path": "docs/qa/evidence/t15-phase4/desktop-warning.png",
-        "sha256": "fd4f27398b2ba500beeea0e790badff7815db68131989bbab51183dbcc18279a",
+        "sha256": "3d152d1ea806532493023681e6b78ba2469ebd30365d31a65bb1fe1dbbe95e81",
         "snapshot": {
           "state": {
             "status": "playing",
             "mode": "race",
             "lines": 0,
             "elapsedTicks": 1080,
-            "bedrockRows": 3,
-            "bedrockIntervalTicks": null,
+            "bedrockRows": 4,
+            "bedrockIntervalTicks": 300,
             "stoneIntervalSeconds": 20,
             "stoneIntervalTicks": 1080,
             "warningColumns": [
-              8
+              4
             ],
             "debris": []
           },
@@ -420,7 +437,7 @@
               "cell": 30.1
             },
             "warningColumns": [
-              8
+              4
             ],
             "debris": [],
             "cueCount": 0
@@ -428,7 +445,7 @@
           "stats": [
             "生存时间0:18",
             "消行0",
-            "基岩 3 层 · 上升待上升",
+            "基岩 4 层 · 上升8 秒",
             "落石2 秒"
           ],
           "bounds": {
@@ -475,22 +492,22 @@
       {
         "name": "desktop-spawn",
         "path": "docs/qa/evidence/t15-phase4/desktop-spawn.png",
-        "sha256": "acdb2413ffdabec19566ec7327d6f97af0edaceaa6f908eb02d9b929df8a6f22",
+        "sha256": "677c4fb4071442eee10f20fc498ccdbab75a77e27eaf99a9a56de5b5c99cc32a",
         "snapshot": {
           "state": {
             "status": "playing",
             "mode": "race",
             "lines": 0,
             "elapsedTicks": 1200,
-            "bedrockRows": 3,
-            "bedrockIntervalTicks": null,
+            "bedrockRows": 4,
+            "bedrockIntervalTicks": 420,
             "stoneIntervalSeconds": 19,
             "stoneIntervalTicks": 0,
             "warningColumns": [],
             "debris": [
               {
                 "id": 1,
-                "x": 8,
+                "x": 4,
                 "y": 20
               }
             ]
@@ -507,17 +524,17 @@
             "debris": [
               {
                 "id": 1,
-                "x": 8,
+                "x": 4,
                 "y": 20,
                 "presentationY": 20
               }
             ],
-            "cueCount": 0
+            "cueCount": 1
           },
           "stats": [
             "生存时间0:20",
             "消行0",
-            "基岩 3 层 · 上升待上升",
+            "基岩 4 层 · 上升6 秒",
             "落石19 秒"
           ],
           "bounds": {
@@ -564,7 +581,7 @@
       {
         "name": "desktop-falling",
         "path": "docs/qa/evidence/t15-phase4/desktop-falling.png",
-        "sha256": "f3d6292e75fcdf9020027ed37e1adf6411504d1216a5ad2f5499a80251b6d035",
+        "sha256": "1fe791bd35338b2bde2c09687c285653db935015c1689ad1b1eab1787030ede3",
         "snapshot": {
           "state": {
             "status": "playing",
@@ -572,15 +589,15 @@
             "lines": 0,
             "elapsedTicks": 1240,
             "bedrockRows": 4,
-            "bedrockIntervalTicks": null,
+            "bedrockIntervalTicks": 460,
             "stoneIntervalSeconds": 19,
             "stoneIntervalTicks": 40,
             "warningColumns": [],
             "debris": [
               {
                 "id": 1,
-                "x": 8,
-                "y": 20
+                "x": 4,
+                "y": 21
               }
             ]
           },
@@ -596,9 +613,9 @@
             "debris": [
               {
                 "id": 1,
-                "x": 8,
-                "y": 20,
-                "presentationY": 20
+                "x": 4,
+                "y": 21,
+                "presentationY": 21
               }
             ],
             "cueCount": 0
@@ -606,7 +623,7 @@
           "stats": [
             "生存时间0:20",
             "消行0",
-            "基岩 4 层 · 上升13 秒",
+            "基岩 4 层 · 上升6 秒",
             "落石19 秒"
           ],
           "bounds": {
@@ -653,17 +670,17 @@
       {
         "name": "desktop-landed",
         "path": "docs/qa/evidence/t15-phase4/desktop-landed.png",
-        "sha256": "5d8b1cfc983a7674647df83408a21b1eff1b50aecbcd531c58dbeaabc4736fd4",
+        "sha256": "8cb5775f14ee410a733cbb9ec16bd4bf51e5365a17db6a78dbfac4cfaddaf9ad",
         "snapshot": {
           "state": {
             "status": "playing",
             "mode": "race",
             "lines": 0,
-            "elapsedTicks": 1654,
+            "elapsedTicks": 1494,
             "bedrockRows": 4,
-            "bedrockIntervalTicks": null,
+            "bedrockIntervalTicks": 714,
             "stoneIntervalSeconds": 19,
-            "stoneIntervalTicks": 454,
+            "stoneIntervalTicks": 294,
             "warningColumns": [],
             "debris": []
           },
@@ -680,10 +697,10 @@
             "cueCount": 1
           },
           "stats": [
-            "生存时间0:27",
+            "生存时间0:24",
             "消行0",
-            "基岩 4 层 · 上升7 秒",
-            "落石12 秒"
+            "基岩 4 层 · 上升2 秒",
+            "落石15 秒"
           ],
           "bounds": {
             "board": {
@@ -737,12 +754,12 @@
         "mode": "race",
         "lines": 0,
         "elapsedTicks": 1080,
-        "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 300,
         "stoneIntervalSeconds": 20,
         "stoneIntervalTicks": 1080,
         "warningColumns": [
-          5
+          4
         ],
         "debris": []
       },
@@ -755,7 +772,7 @@
           "cell": 29.1
         },
         "warningColumns": [
-          5
+          4
         ],
         "debris": [],
         "cueCount": 0
@@ -763,7 +780,7 @@
       "stats": [
         "生存时间0:18",
         "消行0",
-        "基岩 3 层 · 上升待上升",
+        "基岩 4 层 · 上升8 秒",
         "落石2 秒"
       ],
       "bounds": {
@@ -812,15 +829,15 @@
         "mode": "race",
         "lines": 0,
         "elapsedTicks": 1200,
-        "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 420,
         "stoneIntervalSeconds": 19,
         "stoneIntervalTicks": 0,
         "warningColumns": [],
         "debris": [
           {
             "id": 1,
-            "x": 5,
+            "x": 4,
             "y": 20
           }
         ]
@@ -837,7 +854,7 @@
         "debris": [
           {
             "id": 1,
-            "x": 5,
+            "x": 4,
             "y": 20,
             "presentationY": 20
           }
@@ -847,7 +864,7 @@
       "stats": [
         "生存时间0:20",
         "消行0",
-        "基岩 3 层 · 上升待上升",
+        "基岩 4 层 · 上升6 秒",
         "落石19 秒"
       ],
       "bounds": {
@@ -893,19 +910,19 @@
     "capture": {
       "name": "portrait-warning",
       "path": "docs/qa/evidence/t15-phase4/portrait-warning.png",
-      "sha256": "8a3053d5cceb119ea4ad47c77549eae795baeddbaaceb8206d873eaef28c5b3f",
+      "sha256": "7e7e9c3079418f072e1da10149bb97e84369679832c1f1590acbee9f3828745d",
       "snapshot": {
         "state": {
           "status": "playing",
           "mode": "race",
           "lines": 0,
           "elapsedTicks": 1080,
-          "bedrockRows": 3,
-          "bedrockIntervalTicks": null,
+          "bedrockRows": 4,
+          "bedrockIntervalTicks": 300,
           "stoneIntervalSeconds": 20,
           "stoneIntervalTicks": 1080,
           "warningColumns": [
-            5
+            4
           ],
           "debris": []
         },
@@ -918,7 +935,7 @@
             "cell": 29.1
           },
           "warningColumns": [
-            5
+            4
           ],
           "debris": [],
           "cueCount": 0
@@ -926,7 +943,7 @@
         "stats": [
           "生存时间0:18",
           "消行0",
-          "基岩 3 层 · 上升待上升",
+          "基岩 4 层 · 上升8 秒",
           "落石2 秒"
         ],
         "bounds": {
@@ -980,12 +997,12 @@
         "mode": "race",
         "lines": 0,
         "elapsedTicks": 1080,
-        "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 300,
         "stoneIntervalSeconds": 20,
         "stoneIntervalTicks": 1080,
         "warningColumns": [
-          7
+          4
         ],
         "debris": []
       },
@@ -998,7 +1015,7 @@
           "cell": 15.8
         },
         "warningColumns": [
-          7
+          4
         ],
         "debris": [],
         "cueCount": 0
@@ -1006,7 +1023,7 @@
       "stats": [
         "生存时间0:18",
         "消行0",
-        "基岩 3 层 · 上升待上升",
+        "基岩 4 层 · 上升8 秒",
         "落石2 秒"
       ],
       "bounds": {
@@ -1055,15 +1072,15 @@
         "mode": "race",
         "lines": 0,
         "elapsedTicks": 1200,
-        "bedrockRows": 3,
-        "bedrockIntervalTicks": null,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 420,
         "stoneIntervalSeconds": 19,
         "stoneIntervalTicks": 0,
         "warningColumns": [],
         "debris": [
           {
             "id": 1,
-            "x": 7,
+            "x": 4,
             "y": 20
           }
         ]
@@ -1080,7 +1097,7 @@
         "debris": [
           {
             "id": 1,
-            "x": 7,
+            "x": 4,
             "y": 20,
             "presentationY": 20
           }
@@ -1090,7 +1107,7 @@
       "stats": [
         "生存时间0:20",
         "消行0",
-        "基岩 3 层 · 上升待上升",
+        "基岩 4 层 · 上升6 秒",
         "落石19 秒"
       ],
       "bounds": {
@@ -1136,19 +1153,19 @@
     "capture": {
       "name": "landscape-reduced-warning",
       "path": "docs/qa/evidence/t15-phase4/landscape-reduced-warning.png",
-      "sha256": "c24f4f8b9c587977e7b8b1fc4227ec493019cb6f14539149dd8b801f8b9d2dc2",
+      "sha256": "01b525d6a67eb616c7f42d3763635be3bb75886b315abbce0b671773cc773380",
       "snapshot": {
         "state": {
           "status": "playing",
           "mode": "race",
           "lines": 0,
           "elapsedTicks": 1080,
-          "bedrockRows": 3,
-          "bedrockIntervalTicks": null,
+          "bedrockRows": 4,
+          "bedrockIntervalTicks": 300,
           "stoneIntervalSeconds": 20,
           "stoneIntervalTicks": 1080,
           "warningColumns": [
-            7
+            4
           ],
           "debris": []
         },
@@ -1161,7 +1178,7 @@
             "cell": 15.8
           },
           "warningColumns": [
-            7
+            4
           ],
           "debris": [],
           "cueCount": 0
@@ -1169,7 +1186,7 @@
         "stats": [
           "生存时间0:18",
           "消行0",
-          "基岩 3 层 · 上升待上升",
+          "基岩 4 层 · 上升8 秒",
           "落石2 秒"
         ],
         "bounds": {
@@ -1213,5 +1230,566 @@
         }
       }
     }
+  },
+  "english": {
+    "scenario": "english",
+    "errors": [],
+    "warningColumns": [
+      4
+    ],
+    "warning": {
+      "state": {
+        "status": "playing",
+        "mode": "race",
+        "lines": 0,
+        "elapsedTicks": 1080,
+        "bedrockRows": 4,
+        "bedrockIntervalTicks": 300,
+        "stoneIntervalSeconds": 20,
+        "stoneIntervalTicks": 1080,
+        "warningColumns": [
+          4
+        ],
+        "debris": []
+      },
+      "renderer": {
+        "board": {
+          "x": 106.5,
+          "y": 14,
+          "width": 301,
+          "height": 602,
+          "cell": 30.1
+        },
+        "warningColumns": [
+          4
+        ],
+        "debris": [],
+        "cueCount": 0
+      },
+      "stats": [
+        "Survival time0:18",
+        "Lines0",
+        "Bedrock 4 · Rise8s",
+        "Stonefall2s"
+      ],
+      "bounds": {
+        "board": {
+          "x": 367.5,
+          "y": 91,
+          "width": 301,
+          "height": 602,
+          "right": 668.5,
+          "bottom": 693
+        },
+        "stats": {
+          "x": 706.5,
+          "y": 109,
+          "width": 206,
+          "height": 152.53125,
+          "right": 912.5,
+          "bottom": 261.53125
+        },
+        "next": {
+          "x": 720.5,
+          "y": 321.53125,
+          "width": 178,
+          "height": 124,
+          "right": 898.5,
+          "bottom": 445.53125
+        }
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "scrollWidth": 1280,
+        "scrollHeight": 720
+      },
+      "assertions": {
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "noHorizontalOverflow": true,
+        "noVerticalOverflow": true,
+        "reducedMotion": false
+      }
+    },
+    "capture": {
+      "name": "english-warning",
+      "path": "docs/qa/evidence/t15-phase4/english-warning.png",
+      "sha256": "df1b31c680b5f239ca71ab491436ce7c3597b2f9b1389d7509a718cea36be22b",
+      "snapshot": {
+        "state": {
+          "status": "playing",
+          "mode": "race",
+          "lines": 0,
+          "elapsedTicks": 1080,
+          "bedrockRows": 4,
+          "bedrockIntervalTicks": 300,
+          "stoneIntervalSeconds": 20,
+          "stoneIntervalTicks": 1080,
+          "warningColumns": [
+            4
+          ],
+          "debris": []
+        },
+        "renderer": {
+          "board": {
+            "x": 106.5,
+            "y": 14,
+            "width": 301,
+            "height": 602,
+            "cell": 30.1
+          },
+          "warningColumns": [
+            4
+          ],
+          "debris": [],
+          "cueCount": 0
+        },
+        "stats": [
+          "Survival time0:18",
+          "Lines0",
+          "Bedrock 4 · Rise8s",
+          "Stonefall2s"
+        ],
+        "bounds": {
+          "board": {
+            "x": 367.5,
+            "y": 91,
+            "width": 301,
+            "height": 602,
+            "right": 668.5,
+            "bottom": 693
+          },
+          "stats": {
+            "x": 706.5,
+            "y": 109,
+            "width": 206,
+            "height": 152.53125,
+            "right": 912.5,
+            "bottom": 261.53125
+          },
+          "next": {
+            "x": 720.5,
+            "y": 321.53125,
+            "width": 178,
+            "height": 124,
+            "right": 898.5,
+            "bottom": 445.53125
+          }
+        },
+        "viewport": {
+          "width": 1280,
+          "height": 720,
+          "scrollWidth": 1280,
+          "scrollHeight": 720
+        },
+        "assertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true,
+          "reducedMotion": false
+        }
+      }
+    }
+  },
+  "lifecycle": {
+    "scenario": "lifecycle",
+    "errors": [],
+    "countdown": {
+      "beforeSettings": "3",
+      "after1200msInSettings": "3",
+      "frozen": true
+    },
+    "sameCanvasAfterRestart": true,
+    "baseline": {
+      "globalListenerCount": 17,
+      "globalListeners": {
+        "document:selectionchange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 0,
+      "audioContextsCreated": 0,
+      "audioContextsClosed": 0,
+      "openAudioContexts": 0,
+      "canvasCount": 0,
+      "qaMounted": false,
+      "gameScreenMounted": false,
+      "dialogTitle": null
+    },
+    "mounted": {
+      "globalListenerCount": 28,
+      "globalListeners": {
+        "document:pointermove": 1,
+        "document:selectionchange": 1,
+        "document:visibilitychange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:blur": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:keydown": 5,
+        "window:keyup": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 2,
+        "window:resize": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 3,
+      "audioContextsCreated": 1,
+      "audioContextsClosed": 0,
+      "openAudioContexts": 1,
+      "canvasCount": 1,
+      "qaMounted": true,
+      "gameScreenMounted": true,
+      "dialogTitle": null
+    },
+    "paused": {
+      "globalListenerCount": 29,
+      "globalListeners": {
+        "document:keydown": 1,
+        "document:pointermove": 1,
+        "document:selectionchange": 1,
+        "document:visibilitychange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:blur": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:keydown": 5,
+        "window:keyup": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 2,
+        "window:resize": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 2,
+      "audioContextsCreated": 1,
+      "audioContextsClosed": 0,
+      "openAudioContexts": 1,
+      "canvasCount": 1,
+      "qaMounted": true,
+      "gameScreenMounted": true,
+      "dialogTitle": "已暂停"
+    },
+    "afterRestart": {
+      "globalListenerCount": 28,
+      "globalListeners": {
+        "document:pointermove": 1,
+        "document:selectionchange": 1,
+        "document:visibilitychange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:blur": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:keydown": 5,
+        "window:keyup": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 2,
+        "window:resize": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 4,
+      "audioContextsCreated": 1,
+      "audioContextsClosed": 0,
+      "openAudioContexts": 1,
+      "canvasCount": 1,
+      "qaMounted": true,
+      "gameScreenMounted": true,
+      "dialogTitle": null
+    },
+    "afterUnmount": {
+      "globalListenerCount": 17,
+      "globalListeners": {
+        "document:selectionchange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 0,
+      "audioContextsCreated": 1,
+      "audioContextsClosed": 1,
+      "openAudioContexts": 0,
+      "canvasCount": 0,
+      "qaMounted": false,
+      "gameScreenMounted": false,
+      "dialogTitle": null
+    },
+    "remounted": {
+      "globalListenerCount": 28,
+      "globalListeners": {
+        "document:pointermove": 1,
+        "document:selectionchange": 1,
+        "document:visibilitychange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:blur": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:keydown": 5,
+        "window:keyup": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 2,
+        "window:resize": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 3,
+      "audioContextsCreated": 2,
+      "audioContextsClosed": 1,
+      "openAudioContexts": 1,
+      "canvasCount": 1,
+      "qaMounted": true,
+      "gameScreenMounted": true,
+      "dialogTitle": null
+    },
+    "afterSecondUnmount": {
+      "globalListenerCount": 17,
+      "globalListeners": {
+        "document:selectionchange": 1,
+        "window:__playwright_global_listeners_check__": 1,
+        "window:auxclick": 1,
+        "window:beforeunload": 1,
+        "window:click": 1,
+        "window:contextmenu": 1,
+        "window:dblclick": 1,
+        "window:error": 1,
+        "window:mousedown": 1,
+        "window:mousemove": 1,
+        "window:mouseup": 1,
+        "window:pointerdown": 1,
+        "window:pointerup": 1,
+        "window:touchcancel": 1,
+        "window:touchend": 1,
+        "window:touchstart": 1,
+        "window:unhandledrejection": 1
+      },
+      "pendingAnimationFrames": 0,
+      "audioContextsCreated": 2,
+      "audioContextsClosed": 2,
+      "openAudioContexts": 0,
+      "canvasCount": 0,
+      "qaMounted": false,
+      "gameScreenMounted": false,
+      "dialogTitle": null
+    },
+    "captures": [
+      {
+        "name": "lifecycle-countdown-settings",
+        "path": "docs/qa/evidence/t15-phase4/lifecycle-countdown-settings.png",
+        "sha256": "2ddf950aaf34c76f58978f455279c3bb8f445582adf04283e8595bfa53df6610",
+        "snapshot": {
+          "state": {
+            "status": "ready",
+            "mode": "race",
+            "lines": 0,
+            "elapsedTicks": 0,
+            "bedrockRows": 3,
+            "bedrockIntervalTicks": 0,
+            "stoneIntervalSeconds": 20,
+            "stoneIntervalTicks": 0,
+            "warningColumns": [],
+            "debris": []
+          },
+          "renderer": {
+            "board": {
+              "x": 106.5,
+              "y": 14,
+              "width": 301,
+              "height": 602,
+              "cell": 30.1
+            },
+            "warningColumns": [],
+            "debris": [],
+            "cueCount": 0
+          },
+          "stats": [
+            "生存时间0:00",
+            "消行0",
+            "基岩 3 层 · 上升13 秒",
+            "落石20 秒"
+          ],
+          "bounds": {
+            "board": {
+              "x": 367.5,
+              "y": 91,
+              "width": 301,
+              "height": 602,
+              "right": 668.5,
+              "bottom": 693
+            },
+            "stats": {
+              "x": 706.5,
+              "y": 109,
+              "width": 206,
+              "height": 139.265625,
+              "right": 912.5,
+              "bottom": 248.265625
+            },
+            "next": {
+              "x": 720.5,
+              "y": 308.265625,
+              "width": 178,
+              "height": 124,
+              "right": 898.5,
+              "bottom": 432.265625
+            }
+          },
+          "viewport": {
+            "width": 1280,
+            "height": 720,
+            "scrollWidth": 1280,
+            "scrollHeight": 720
+          },
+          "assertions": {
+            "canvasCount": 1,
+            "domCellCount": 0,
+            "noHorizontalOverflow": true,
+            "noVerticalOverflow": true,
+            "reducedMotion": false
+          }
+        }
+      },
+      {
+        "name": "lifecycle-paused",
+        "path": "docs/qa/evidence/t15-phase4/lifecycle-paused.png",
+        "sha256": "70fd4b4eb4d0a6f60a9ae957bc7e52a64215b0c8766597513227be25719bc05d",
+        "snapshot": {
+          "state": {
+            "status": "paused",
+            "mode": "race",
+            "lines": 0,
+            "elapsedTicks": 1,
+            "bedrockRows": 3,
+            "bedrockIntervalTicks": 1,
+            "stoneIntervalSeconds": 20,
+            "stoneIntervalTicks": 1,
+            "warningColumns": [],
+            "debris": []
+          },
+          "renderer": {
+            "board": {
+              "x": 106.5,
+              "y": 14,
+              "width": 301,
+              "height": 602,
+              "cell": 30.1
+            },
+            "warningColumns": [],
+            "debris": [],
+            "cueCount": 0
+          },
+          "stats": [
+            "生存时间0:00",
+            "消行0",
+            "基岩 3 层 · 上升13 秒",
+            "落石20 秒"
+          ],
+          "bounds": {
+            "board": {
+              "x": 367.5,
+              "y": 91,
+              "width": 301,
+              "height": 602,
+              "right": 668.5,
+              "bottom": 693
+            },
+            "stats": {
+              "x": 706.5,
+              "y": 109,
+              "width": 206,
+              "height": 139.265625,
+              "right": 912.5,
+              "bottom": 248.265625
+            },
+            "next": {
+              "x": 720.5,
+              "y": 308.265625,
+              "width": 178,
+              "height": 124,
+              "right": 898.5,
+              "bottom": 432.265625
+            }
+          },
+          "viewport": {
+            "width": 1280,
+            "height": 720,
+            "scrollWidth": 1280,
+            "scrollHeight": 720
+          },
+          "assertions": {
+            "canvasCount": 1,
+            "domCellCount": 0,
+            "noHorizontalOverflow": true,
+            "noVerticalOverflow": true,
+            "reducedMotion": false
+          }
+        }
+      }
+    ]
   }
 }
