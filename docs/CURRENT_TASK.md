@@ -11,6 +11,13 @@ existing Puzzle library layout is explicitly excluded from redesign; adapting it
 count/progression data for fifty levels is allowed, but its visual composition must
 not be replaced.
 
+**Current execution state:** Phase 2 Settings candidate
+`26e4db39dba1a0e43bd66d4bd4c48a0997bef40c` has passed the final typecheck, complete
+test suite, production build, candidate-bound browser evidence, and independent
+rules/visual/evidence audits. Phase 2 is accepted and awaiting its non-force remote
+recovery push. Phase 3 may not acquire shared source paths until that push and
+resource cleanup are verified.
+
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
 as the current-state authority.

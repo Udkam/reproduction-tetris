@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-07-28 — T15 Phase 2 compact Settings accepted
+
+- Rebuilt the active Settings surface as one compact connected console in the fixed
+  Controls → Keyboard → Rules → Records order. It retains bilingual language/SFX/
+  volume controls, explicit arrow/Enter geometry, exact per-mode rules, top-five
+  dated records, and natural-height responsive content without structural ghost
+  columns or undersized controls.
+- Settings, Restart, and Exit now freeze the current 3→2→1 entry digit, ready Core,
+  and input until the complete sheet chain closes; the same countdown then resumes
+  and the runtime starts exactly once. English terminal results receive the active
+  language, Survival records expose only time/lines/date, and Puzzle exposes only the
+  current-level best or not-completed state.
+- Corrected candidate `26e4db3` passed typecheck, 25 files / 190 tests, and the
+  752-module production build. The production matrix covers four modes, two
+  languages, empty/full/Puzzle record states, desktop, 390 px portrait, short
+  landscape, and reduced motion with one Canvas, zero DOM cells, reversible dimming,
+  reachable short-screen content, and zero browser errors.
+- The first audits correctly rejected a portrait width defect and insufficient
+  source binding. The refreshed manifest binds the exact candidate, distribution,
+  gate logs, official client state, and 14 browser frames; evidence QA independently
+  re-hashed 24/24 entries. Rules, visual, and evidence auditors all accept with no
+  P0–P2.
+- Unreachable historical `.settings-sheet` selectors and the earlier oversized
+  cohesive layout checkpoint remain recorded as non-blocking P3 maintenance/process
+  debt. Puzzle definitions and selector composition were not changed.
+
 ## 2026-07-28 — T15 Phase 1.5 modal compositor accepted
 
 - Live-game sheets now reliably composite above the same visible, dimmed Pixi canvas;

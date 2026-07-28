@@ -142,3 +142,69 @@ Current state: `CONTRACT`; product source has not started.
 - Blocker: none.
 - Next action: freeze the complete Phase-2 candidate, run full candidate-bound gates
   and production browser evidence, then request all three independent audits.
+
+## Candidate rejection and bounded correction
+
+- Initial layout/log tip: `2f8ee83`.
+- The first visual and evidence reviews rejected the candidate because the 390 px
+  portrait sheet used viewport-based width inside an already padded backdrop, clipping
+  its right outer edge. Evidence binding also depended too heavily on injected state,
+  and did not yet prove the same Canvas before/during/after the sheet.
+- Correction source: `26e4db39dba1a0e43bd66d4bd4c48a0997bef40c`.
+- Exact correction paths:
+  - `src/styles.css`
+  - `src/App.test.ts`
+- The correction constrains Settings width to the backdrop's actual `100%` content
+  box at desktop, portrait, and short-landscape breakpoints. The direct CSS contract
+  rejects a return to `100vw`.
+- No Settings behavior source or Puzzle source changed in the correction. Independent
+  rules QA confirmed the Puzzle library was byte-identical across the correction.
+
+## Final candidate gates and evidence
+
+- Candidate/product source:
+  `26e4db39dba1a0e43bd66d4bd4c48a0997bef40c`.
+- Commands run after the final source change:
+  - `npm.cmd run typecheck` — PASS.
+  - `npm.cmd run test` — PASS, 25 files / 190 tests.
+  - `npm.cmd run build` — PASS, 752 modules.
+- Production preview:
+  - URL: `http://127.0.0.1:5179`.
+  - Verified owner before acceptance cleanup: PID `21744`, repository-local Vite
+    `preview --host 127.0.0.1 --port 5179 --strictPort`.
+- Prescribed game client:
+  - `.local/audits/t15-phase2-live/web-game-client-candidate-final/shot-0.png`
+    shows the one-Canvas live countdown.
+  - `state-0.json` records `screen=game`, `mode=marathon`, `status=ready`,
+    `countdown=1`.
+- Production browser report:
+  - `.local/audits/t15-phase2-live/settings/report.json`
+  - `.local/audits/t15-phase2-live/settings/manifest.json`
+  - 11 primary scenarios plus 3 scrolled-bottom frames cover four modes, Chinese and
+    English, empty/full records, Puzzle fresh/complete, desktop, portrait,
+    short-landscape, and reduced motion.
+  - Every scenario has one Canvas, zero DOM cells, active-dialog focus, no page or
+    console error, and the same Canvas identity before/during/after Settings.
+  - The live app is visibly dimmed while Settings is open and restored on close.
+  - 390 × 844 geometry is fully inside the viewport: x 16.9, right 373.1, viewport
+    width 390. Short screens can reach the final content band.
+
+## Independent final disposition
+
+- Rules/code QA: ACCEPT; no P0–P2. It reran App 31/31, typecheck and diff check,
+  confirmed the correction is limited to CSS/test, and confirmed Puzzle is unchanged.
+- Target/visual QA: ACCEPT; no P0–P3. It inspected all 14 original-detail frames and
+  closed the portrait-crop finding.
+- Evidence-integrity QA: ACCEPT; no blocker. It independently recalculated all 24
+  manifest entries and matched every byte count and SHA-256, verified the candidate,
+  build outputs, production preview ownership, official client state, same Canvas,
+  reversible dimming, and final gates.
+- Non-blocking P3:
+  - 107 unreachable historical `.settings-sheet` selectors remain; the active DOM and
+    final report both show zero references.
+  - Historical layout checkpoint `2f94d16` exceeded the default 500-line checkpoint
+    budget. The cohesive namespace change remains accepted; shared history is not
+    rewritten.
+- Current state: `ACCEPTED / PUSH PENDING`.
+- Next action: commit this bounded acceptance record, release the exact preview owner,
+  verify port 5179 is free, and push `main` non-force.

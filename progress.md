@@ -3,11 +3,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 ## Current phase
 
 - Phase 1 and Phase 1.5 are accepted and pushed.
-- Phase 2 Settings contract and phase briefs are committed.
-- Phase 2 `behavior-content` source checkpoint is committed at `cc35738`.
-- Current implementation task: produce one authoritative compact Settings layout,
-  remove superseded Settings CSS generations, then run direct layout tests and the
-  required real-browser visual loop.
+- Phase 2 Settings is accepted at corrected product candidate `26e4db3`; its
+  behavior checkpoint is `cc35738` and layout checkpoint is `2f94d16`.
+- Rules, visual, and evidence-integrity re-audits all ACCEPT with no P0–P2.
+- Current coordinator task: record acceptance, release the exact production preview,
+  verify port cleanup, and push the Phase-2 recovery point before Phase 3 starts.
 
 ## Non-negotiable boundaries
 
@@ -20,10 +20,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Targeted App tests and typecheck for the Settings layout checkpoint.
-- Full suite, production build, and candidate-bound browser evidence only after the
-  final Phase 2 source change.
-- Independent rules, visual, and evidence audits before Phase 2 acceptance and push.
+- Stop only the verified repository-owned Vite preview on port 5179 and confirm the
+  port is free.
+- Commit the bounded Phase-2 acceptance record and push `main` non-force.
+- Verify `origin/main` equals the local accepted tip before opening the Phase-3 HUD
+  contract.
 
 ## 2026-07-28 Phase 2 layout iteration
 
@@ -41,5 +42,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   with zero errors. Buttons must be fully inside the viewport; short screens must
   scroll to a completely reachable final record band.
 - The prescribed game client also captured the live one-Canvas countdown state.
-- Next: run the immutable Phase-2 candidate gates, collect production evidence, and
-  send the exact candidate to independent rules, visual, and evidence auditors.
+- Final candidate `26e4db3` passed typecheck, 25 files / 190 tests, the 752-module
+  build, and the immutable production evidence matrix.
+- The first audit round correctly rejected portrait cropping and weak candidate
+  binding. The corrected evidence keeps the 390 px dialog fully inside the viewport,
+  proves same-Canvas identity and reversible dimming, binds the official client
+  state, and independently re-hashes 24/24 manifest files.
+- Final rules, visual, and evidence auditors all ACCEPT with no P0–P2. The remaining
+  unreachable `.settings-sheet` selectors and an earlier oversized checkpoint are
+  recorded as non-blocking P3 maintenance/process debt.
