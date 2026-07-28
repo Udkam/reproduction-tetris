@@ -921,18 +921,89 @@ export class TetrisRenderer {
   ): void {
     if (cells.length === 0 || alpha <= 0) return;
     const inset = Math.max(1, layout.cell * 0.12);
+    const material = this.mutationMaterial(item);
     const segments: Array<readonly [number, number, number, number]> = [];
+    const accents: Array<readonly [number, number, number, number]> = [];
+    const marks: Array<readonly [number, number]> = [];
+    const pushBroken = (x1: number, y1: number, x2: number, y2: number): void => {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      segments.push(
+        [x1, y1, x1 + dx * .38, y1 + dy * .38],
+        [x1 + dx * .62, y1 + dy * .62, x2, y2],
+      );
+    };
     for (const { cell, exposed } of exposedCellEdges(cells)) {
       const x = layout.x + cell.x * layout.cell + offsetX;
       const y = layout.y + cell.y * layout.cell + offsetY;
       const right = x + layout.cell;
       const bottom = y + layout.cell;
-      if (exposed.top) segments.push([x + inset, y + inset, right - inset, y + inset]);
-      if (exposed.right) segments.push([right - inset, y + inset, right - inset, bottom - inset]);
-      if (exposed.bottom) segments.push([right - inset, bottom - inset, x + inset, bottom - inset]);
-      if (exposed.left) segments.push([x + inset, bottom - inset, x + inset, y + inset]);
+      const top: readonly [number, number, number, number] = [x + inset, y + inset, right - inset, y + inset];
+      const rightEdge: readonly [number, number, number, number] = [right - inset, y + inset, right - inset, bottom - inset];
+      const bottomEdge: readonly [number, number, number, number] = [right - inset, bottom - inset, x + inset, bottom - inset];
+      const left: readonly [number, number, number, number] = [x + inset, bottom - inset, x + inset, y + inset];
+      if (item === 'freeze') {
+        if (exposed.top) pushBroken(...top);
+        if (exposed.right) pushBroken(...rightEdge);
+        if (exposed.bottom) pushBroken(...bottomEdge);
+        if (exposed.left) pushBroken(...left);
+        if (exposed.top && exposed.left) {
+          accents.push([x + inset, y + inset * 1.9, x + inset * 1.9, y + inset]);
+        }
+        if (exposed.bottom && exposed.right) {
+          accents.push([right - inset * 1.9, bottom - inset, right - inset, bottom - inset * 1.9]);
+        }
+      } else {
+        if (exposed.top) segments.push(top);
+        if (exposed.right) segments.push(rightEdge);
+        if (exposed.bottom) segments.push(bottomEdge);
+        if (exposed.left) segments.push(left);
+      }
+      if (item === 'collapse' && exposed.bottom) {
+        const centerX = x + layout.cell / 2;
+        const baseline = bottom - inset * .72;
+        accents.push(
+          [x + inset * 1.25, baseline, right - inset * 1.25, baseline],
+          [centerX - layout.cell * .18, baseline + inset * .22, centerX, baseline + inset * .72],
+          [centerX, baseline + inset * .72, centerX + layout.cell * .18, baseline + inset * .22],
+        );
+      } else if (item === 'bomb') {
+        if (exposed.top) marks.push([x + layout.cell / 2, y + inset]);
+        if (exposed.right) marks.push([right - inset, y + layout.cell / 2]);
+        if (exposed.bottom) marks.push([x + layout.cell / 2, bottom - inset]);
+        if (exposed.left) marks.push([x + inset, y + layout.cell / 2]);
+      } else if (item === 'multiplier') {
+        if (exposed.top) marks.push([x + layout.cell / 2, y + inset]);
+        if (exposed.bottom) marks.push([x + layout.cell / 2, bottom - inset]);
+        if (exposed.left && exposed.top) marks.push([x + inset, y + inset]);
+        if (exposed.right && exposed.bottom) marks.push([right - inset, bottom - inset]);
+      }
     }
-    this.strokeSegments(graphics, segments, this.mutationMaterial(item).fillStart, alpha, width);
+    this.strokeSegments(
+      graphics,
+      segments,
+      item === 'collapse' ? material.edge : material.fillStart,
+      alpha,
+      item === 'collapse' ? width * 1.18 : width,
+    );
+    if (accents.length > 0) {
+      this.strokeSegments(graphics, accents, material.innerEdge, Math.min(1, alpha * 1.08), Math.max(1, width * .78));
+    }
+    if (item === 'bomb') {
+      const radius = Math.max(1.1, layout.cell * .035);
+      for (const [x, y] of marks) {
+        graphics
+          .circle(x, y, radius * 1.55)
+          .fill({ color: material.edge, alpha: alpha * .82 })
+          .circle(x, y, radius)
+          .fill({ color: material.innerEdge, alpha });
+      }
+    } else if (item === 'multiplier') {
+      const radius = Math.max(1.8, layout.cell * .075);
+      for (const [x, y] of marks) {
+        this.drawMutationDiamond(graphics, x, y, radius, radius, material.innerEdge, alpha * .9);
+      }
+    }
   }
 
   private drawMutationCarrierEdgePulse(
@@ -1630,7 +1701,13 @@ export class TetrisRenderer {
       const phase = this.options.reducedMotion ? 0 : (this.mutationClockMs % token.animation.pulseMs) / token.animation.pulseMs;
       if (field.item === 'freeze') this.drawFreezeAtmosphere(graphics, layout, phase, alpha);
       else if (field.item === 'collapse') this.drawCollapseAtmosphere(graphics, layout, phase, alpha);
-      else this.drawMultiplierAtmosphere(graphics, layout, phase, alpha);
+      else this.drawMultiplierAtmosphere(
+        graphics,
+        layout,
+        phase,
+        alpha,
+        state.mutationMultiplierFactor === 4 ? 4 : 2,
+      );
     }
   }
 
@@ -1701,28 +1778,67 @@ export class TetrisRenderer {
       .fill({ color: token.palette.primary, alpha: 0.36 * opacity });
   }
 
-  private drawMultiplierAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
+  private drawMultiplierAtmosphere(
+    graphics: Graphics,
+    layout: BoardLayout,
+    phase: number,
+    opacity: number,
+    factor: 2 | 4,
+  ): void {
     const token = MUTATION_VFX_TOKENS.multiplier;
     const centerX = layout.x + layout.width / 2;
     const centerY = layout.y + layout.height * .43;
     const pulse = this.options.reducedMotion ? 1 : 0.7 + Math.sin(phase * Math.PI * 2) * 0.22;
-    const radius = Math.max(layout.cell * 1.8, layout.width * .13);
-    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.13 * pulse * opacity });
-    graphics.circle(centerX, centerY, radius * .58).fill({ color: token.palette.highlight, alpha: 0.09 * pulse * opacity });
+    const intensity = factor === 4 ? 1.24 : 1;
+    const radius = Math.max(layout.cell * 1.65, layout.width * .12) * intensity;
+    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.11 * pulse * opacity });
+    graphics.circle(centerX, centerY, radius * .62).fill({ color: token.palette.highlight, alpha: 0.1 * pulse * opacity });
+    graphics.circle(centerX, centerY, radius * (factor === 4 ? 1.18 : .94))
+      .stroke({
+        color: factor === 4 ? token.palette.highlight : token.palette.primary,
+        alpha: (factor === 4 ? .52 : .34) * pulse * opacity,
+        width: Math.max(1, layout.cell * .045),
+      });
     this.drawMutationStar(
       graphics,
       centerX,
       centerY,
-      Math.max(layout.cell * .82, layout.width * .052),
-      Math.max(layout.cell * .22, layout.width * .014),
+      Math.max(layout.cell * .82, layout.width * .052) * intensity,
+      Math.max(layout.cell * .22, layout.width * .014) * intensity,
       token.palette.highlight,
       0.58 * pulse * opacity,
     );
+    const ray = radius * 1.12;
     this.strokeSegments(graphics, [
-      [layout.x + layout.cell * .38, layout.y + layout.cell * .38, layout.x + layout.width - layout.cell * .38, layout.y + layout.height - layout.cell * .38],
-      [layout.x + layout.width - layout.cell * .38, layout.y + layout.cell * .38, layout.x + layout.cell * .38, layout.y + layout.height - layout.cell * .38],
-      [centerX - radius * 1.35, centerY, centerX + radius * 1.35, centerY],
-    ], token.palette.primary, 0.34 * pulse * opacity, Math.max(1, layout.cell * .042));
+      [centerX - ray, centerY, centerX - radius * .68, centerY],
+      [centerX + radius * .68, centerY, centerX + ray, centerY],
+      [centerX, centerY - ray, centerX, centerY - radius * .68],
+      [centerX, centerY + radius * .68, centerX, centerY + ray],
+    ], token.palette.primary, 0.42 * pulse * opacity, Math.max(1, layout.cell * .042));
+    if (factor === 4) {
+      for (const angle of [-Math.PI * .25, Math.PI * .25, Math.PI * .75, Math.PI * 1.25]) {
+        const x = centerX + Math.cos(angle) * radius * .92;
+        const y = centerY + Math.sin(angle) * radius * .92;
+        this.drawMutationStar(
+          graphics,
+          x,
+          y,
+          Math.max(2.5, layout.cell * .16),
+          Math.max(1, layout.cell * .055),
+          token.palette.highlight,
+          .64 * pulse * opacity,
+        );
+      }
+    }
+    this.drawMutationMultiplierValue(
+      graphics,
+      centerX,
+      centerY + radius * .54,
+      Math.max(4, layout.cell * .25),
+      factor,
+      token.palette.highlight,
+      .9 * pulse * opacity,
+    );
   }
 
   private drawPreviewPiece(
@@ -1798,6 +1914,86 @@ export class TetrisRenderer {
     return Math.max(5, Math.min(cap, horizontalAllowance / spanX, verticalAllowance / spanY));
   }
 
+  private drawReducedMutationEndpoint(
+    graphics: Graphics,
+    item: MutationItem,
+    centerX: number,
+    centerY: number,
+    size: number,
+    factor: 2 | 4,
+  ): void {
+    const token = MUTATION_VFX_TOKENS[item];
+    const stroke = Math.max(1, size * .1);
+    if (item === 'freeze') {
+      this.drawMutationDiamond(graphics, centerX, centerY, size * .58, size, token.palette.highlight, .44);
+      this.drawMutationDiamond(graphics, centerX, centerY, size * .28, size * .52, token.palette.primary, .88);
+      this.strokeSegments(graphics, [
+        [centerX - size * .9, centerY, centerX + size * .9, centerY],
+        [centerX, centerY - size * .9, centerX, centerY + size * .9],
+      ], token.palette.highlight, .82, stroke);
+      return;
+    }
+    if (item === 'collapse') {
+      graphics
+        .circle(centerX, centerY - size * .18, size * .66)
+        .fill({ color: token.palette.deep, alpha: .42 })
+        .circle(centerX, centerY - size * .18, size * .4)
+        .stroke({ color: token.palette.highlight, alpha: .86, width: stroke });
+      this.drawMutationDiamond(
+        graphics,
+        centerX,
+        centerY - size * .18,
+        size * .28,
+        size * .4,
+        token.palette.primary,
+        .86,
+      );
+      for (let index = 0; index < 2; index += 1) {
+        const y = centerY + size * (.68 + index * .48);
+        const spread = size * (.54 - index * .08);
+        this.strokeSegments(graphics, [
+          [centerX - spread, y - size * .16, centerX, y + size * .16],
+          [centerX, y + size * .16, centerX + spread, y - size * .16],
+        ], token.palette.highlight, .78 - index * .16, stroke);
+      }
+      return;
+    }
+    if (item === 'bomb') {
+      graphics
+        .circle(centerX, centerY, size * .34)
+        .fill({ color: token.palette.primary, alpha: .74 })
+        .circle(centerX, centerY, size * .72)
+        .stroke({ color: token.palette.highlight, alpha: .92, width: stroke * 1.22 })
+        .circle(centerX, centerY, size)
+        .stroke({ color: token.palette.primary, alpha: .56, width: stroke });
+      this.strokeSegments(graphics, [
+        [centerX - size * .94, centerY - size * .42, centerX - size * .58, centerY - size * .26],
+        [centerX + size * .58, centerY + size * .28, centerX + size * .96, centerY + size * .48],
+        [centerX + size * .18, centerY - size * .72, centerX + size * .42, centerY - size * 1.08],
+      ], token.palette.highlight, .84, stroke);
+      return;
+    }
+    graphics.circle(centerX, centerY, size * 1.08).fill({ color: token.palette.primary, alpha: factor === 4 ? .28 : .18 });
+    this.drawMutationStar(
+      graphics,
+      centerX,
+      centerY,
+      size * (factor === 4 ? .92 : .76),
+      size * .28,
+      token.palette.highlight,
+      .92,
+    );
+    this.drawMutationMultiplierValue(
+      graphics,
+      centerX,
+      centerY + size * .82,
+      size * .32,
+      factor,
+      token.palette.highlight,
+      1,
+    );
+  }
+
   private drawMutationActivationEffect(
     graphics: Graphics,
     flash: MutationFlash,
@@ -1817,8 +2013,14 @@ export class TetrisRenderer {
 
     if (this.options.reducedMotion) {
       if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, 0.72, strokeWidth);
-      graphics.circle(anchorX, anchorY, Math.max(layout.cell * .8, layout.width * .045))
-        .fill({ color: token.palette.highlight, alpha: .34 });
+      this.drawReducedMutationEndpoint(
+        graphics,
+        flash.item,
+        anchorX,
+        anchorY,
+        Math.max(layout.cell * .72, layout.width * .042),
+        flash.multiplierFactor,
+      );
       return;
     }
 
