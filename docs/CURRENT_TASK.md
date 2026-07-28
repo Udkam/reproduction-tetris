@@ -12,11 +12,11 @@ count/progression data for fifty levels is allowed, but its visual composition m
 not be replaced.
 
 **Current execution state:** Phase 2 Settings candidate
-`26e4db39dba1a0e43bd66d4bd4c48a0997bef40c` has passed the final typecheck, complete
+`26e4db39dba1a0e43bd66d4bd4c48a0997bef40c` passed the final typecheck, complete
 test suite, production build, candidate-bound browser evidence, and independent
-rules/visual/evidence audits. Phase 2 is accepted and awaiting its non-force remote
-recovery push. Phase 3 may not acquire shared source paths until that push and
-resource cleanup are verified.
+rules/visual/evidence audits. Its acceptance/recovery record `092c91d` is pushed to
+`origin/main`; the repository-owned preview was stopped and port 5179 verified free.
+Phase 3 HUD is now the next contract boundary.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

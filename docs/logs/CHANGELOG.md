@@ -25,6 +25,9 @@
 - Unreachable historical `.settings-sheet` selectors and the earlier oversized
   cohesive layout checkpoint remain recorded as non-blocking P3 maintenance/process
   debt. Puzzle definitions and selector composition were not changed.
+- The verified repository preview PID 21744 was stopped, port 5179 confirmed free,
+  and the linear Phase-2 range through acceptance `092c91d` pushed non-force to
+  `origin/main` as the remote recovery point.
 
 ## 2026-07-28 — T15 Phase 1.5 modal compositor accepted
 

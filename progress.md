@@ -3,11 +3,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 ## Current phase
 
 - Phase 1 and Phase 1.5 are accepted and pushed.
-- Phase 2 Settings is accepted at corrected product candidate `26e4db3`; its
-  behavior checkpoint is `cc35738` and layout checkpoint is `2f94d16`.
+- Phase 2 Settings is accepted and pushed through recovery record `092c91d`; its
+  corrected product candidate is `26e4db3`, behavior checkpoint `cc35738`, and layout
+  checkpoint `2f94d16`.
 - Rules, visual, and evidence-integrity re-audits all ACCEPT with no P0–P2.
-- Current coordinator task: record acceptance, release the exact production preview,
-  verify port cleanup, and push the Phase-2 recovery point before Phase 3 starts.
+- The exact production preview PID 21744 was stopped and port 5179 verified free.
+- Current coordinator task: open the Phase-3 HUD contract from pushed `092c91d`.
 
 ## Non-negotiable boundaries
 
@@ -20,11 +21,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Stop only the verified repository-owned Vite preview on port 5179 and confirm the
-  port is free.
-- Commit the bounded Phase-2 acceptance record and push `main` non-force.
-- Verify `origin/main` equals the local accepted tip before opening the Phase-3 HUD
-  contract.
+- Re-read the Phase-3 HUD brief against pushed `092c91d`.
+- Freeze the exact HUD DOM/renderer path ownership, evidence matrix, and rollback
+  checkpoints before changing product source.
+- Keep the Puzzle selector composition and accepted Settings surface outside the
+  Phase-3 write scope.
 
 ## 2026-07-28 Phase 2 layout iteration
 
