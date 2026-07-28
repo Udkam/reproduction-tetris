@@ -143,6 +143,8 @@ export interface GameState {
   survivalDebrisIntervalTicks: number;
   /** Seconds used by the next stone-stream emission; starts at 20 and floors at 10. */
   survivalDebrisIntervalSeconds: number;
+  /** Unique canonical columns announced before the next stone event. */
+  survivalDebrisWarningColumns: readonly number[];
   /** Exact integer accumulator that advances debris at 1.5× Survival gravity. */
   survivalDebrisFallProgress: number;
   /** Separate deterministic stream so debris timing never changes the seven-bag. */
@@ -214,6 +216,11 @@ export type GameEvent =
   }
   | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'bedrock-lowered'; count: number; height: number }
+  | {
+    type: 'survival-stones-warned';
+    columns: readonly number[];
+    leadSeconds: number;
+  }
   | {
     type: 'survival-stones-spawned';
     cells: readonly Cell[];

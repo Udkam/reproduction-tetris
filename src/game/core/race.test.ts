@@ -9,8 +9,10 @@ import {
   SURVIVAL_GRAVITY_TICKS,
   SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
   SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
+  SURVIVAL_DEBRIS_WARNING_SECONDS,
   SURVIVAL_LINES_PER_BEDROCK,
   TICKS_PER_SECOND,
+  VISIBLE_START_ROW,
   gravityForMode,
   survivalIntervalSeconds,
   survivalIntervalTicks,
@@ -238,7 +240,35 @@ describe('independent Survival stone stream', () => {
   it('uses a separate seeded stream, emits after twenty seconds, and floors the next interval at ten', () => {
     const initial = isolatedStoneState();
     const initialBag = initial.randomizer;
-    const justBefore = advance(initial, SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND - 1);
+    const warningStart = (
+      SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - SURVIVAL_DEBRIS_WARNING_SECONDS
+    ) * TICKS_PER_SECOND;
+    const beforeWarning = advance(initial, warningStart - 1);
+    expect(beforeWarning.survivalDebrisWarningColumns).toEqual([]);
+    expect(beforeWarning.survivalDebrisRandomizer).toEqual(initial.survivalDebrisRandomizer);
+
+    const warning = dispatch(beforeWarning, { type: 'tick' });
+    const warningEvent = warning.events.find((event) => event.type === 'survival-stones-warned');
+    expect(warningEvent).toEqual({
+      type: 'survival-stones-warned',
+      columns: warning.state.survivalDebrisWarningColumns,
+      leadSeconds: SURVIVAL_DEBRIS_WARNING_SECONDS,
+    });
+    expect(warning.state.survivalDebrisWarningColumns.length).toBeGreaterThanOrEqual(1);
+    expect(warning.state.survivalDebrisWarningColumns.length).toBeLessThanOrEqual(2);
+    expect(new Set(warning.state.survivalDebrisWarningColumns).size).toBe(
+      warning.state.survivalDebrisWarningColumns.length,
+    );
+    expect(warning.state.randomizer).toEqual(initialBag);
+
+    const paused = dispatch(warning.state, { type: 'pause' }).state;
+    expect(dispatch(paused, { type: 'tick' }).state).toEqual(paused);
+    expect(dispatch(paused, { type: 'restart' }).state.survivalDebrisWarningColumns).toEqual([]);
+
+    const justBefore = advance(
+      warning.state,
+      SURVIVAL_DEBRIS_WARNING_SECONDS * TICKS_PER_SECOND - 1,
+    );
     expect(justBefore.survivalDebris).toEqual([]);
     expect(justBefore.survivalDebrisIntervalTicks).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND - 1);
 
@@ -251,6 +281,10 @@ describe('independent Survival stone stream', () => {
     expect(first.state.survivalDebris.length).toBeGreaterThanOrEqual(1);
     expect(first.state.survivalDebris.length).toBeLessThanOrEqual(2);
     expect(first.state.survivalDebris[0]).toMatchObject({ x: expect.any(Number), y: 20 });
+    expect(first.state.survivalDebris.map((stone) => stone.x).sort((a, b) => a - b)).toEqual(
+      [...warning.state.survivalDebrisWarningColumns].sort((a, b) => a - b),
+    );
+    expect(first.state.survivalDebrisWarningColumns).toEqual([]);
     expect(first.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - 1);
     expect(first.state.randomizer).toEqual(initialBag);
 
@@ -281,6 +315,41 @@ describe('independent Survival stone stream', () => {
       ...first.state,
       survivalDebris: [],
     }));
+    expect(stateHash(warning.state)).not.toBe(stateHash({
+      ...warning.state,
+      survivalDebrisWarningColumns: [],
+    }));
+  });
+
+  it('keeps a blocked warned event due until one announced entry column opens', () => {
+    let board = createBoard();
+    board = setCell(board, 2, VISIBLE_START_ROW, 'J');
+    board = setCell(board, 7, VISIBLE_START_ROW, 'L');
+    const intervalTicks = SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND;
+    const due = dispatch({
+      ...isolatedStoneState(0x5a12),
+      board,
+      survivalBedrockRows: 0,
+      survivalDebrisWarningColumns: [2, 7],
+      survivalDebrisIntervalTicks: intervalTicks - 1,
+    }, { type: 'tick' });
+
+    expect(due.state.survivalDebris).toEqual([]);
+    expect(due.state.survivalDebrisWarningColumns).toEqual([2, 7]);
+    expect(due.state.survivalDebrisIntervalTicks).toBe(intervalTicks);
+    expect(due.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS);
+    expect(due.events.some((event) => event.type === 'survival-stones-spawned')).toBe(false);
+
+    const opened = dispatch({
+      ...due.state,
+      board: setCell(due.state.board, 2, VISIBLE_START_ROW, null),
+    }, { type: 'tick' });
+    expect(opened.state.survivalDebris).toEqual([{ id: 1, x: 2, y: VISIBLE_START_ROW }]);
+    expect(opened.state.survivalDebrisWarningColumns).toEqual([]);
+    expect(opened.state.survivalDebrisIntervalTicks).toBe(0);
+    expect(opened.state.survivalDebrisIntervalSeconds).toBe(
+      SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - 1,
+    );
   });
 
   it('falls at exactly one and a half times the fixed Survival cadence', () => {

@@ -26,6 +26,8 @@ export const SURVIVAL_GRAVITY_TICKS = 40;
 export const SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS = 20;
 export const SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS = 10;
 export const SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS = 1;
+/** Canonical warning lead before the independent stone event becomes due. */
+export const SURVIVAL_DEBRIS_WARNING_SECONDS = 2;
 /** 3 / 2 of normal Survival gravity, represented without fractional core ticks. */
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 3;
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD = SURVIVAL_GRAVITY_TICKS * 2;

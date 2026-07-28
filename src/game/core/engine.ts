@@ -18,6 +18,7 @@ import {
   SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS,
   SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
   SURVIVAL_DEBRIS_RANDOM_SALT,
+  SURVIVAL_DEBRIS_WARNING_SECONDS,
   SURVIVAL_LINES_PER_BEDROCK,
   TICKS_PER_SECOND,
   VISIBLE_START_ROW,
@@ -207,6 +208,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalDebrisNextId: 1,
     survivalDebrisIntervalTicks: 0,
     survivalDebrisIntervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
+    survivalDebrisWarningColumns: Object.freeze([]),
     survivalDebrisFallProgress: 0,
     survivalDebrisRandomizer: createRandomizer(survivalDebrisSeed(effectiveSeed)),
     mutationActiveCarrier: null,
@@ -312,33 +314,53 @@ function advanceSurvivalPressure(state: GameState): GameState {
   };
 }
 
-function spawnSurvivalDebris(state: GameState): { state: GameState; cells: readonly Cell[] } {
+function planSurvivalDebris(state: GameState): { state: GameState; columns: readonly number[] } {
+  if (state.survivalDebrisWarningColumns.length > 0) {
+    return { state, columns: state.survivalDebrisWarningColumns };
+  }
   let randomizer = state.survivalDebrisRandomizer;
   const countRoll = drawRandom(randomizer);
   randomizer = countRoll.randomizer;
   const requested = countRoll.value < 0.5 ? 1 : 2;
+  const availableColumns = Array.from({ length: 10 }, (_, x) => x);
+  const columns: number[] = [];
+
+  // The plan deliberately ignores the current stack. If a warned entry is blocked
+  // when due, the same announced plan waits instead of silently moving elsewhere.
+  for (let index = 0; index < requested; index += 1) {
+    const columnRoll = drawRandom(randomizer);
+    randomizer = columnRoll.randomizer;
+    const selected = Math.min(
+      availableColumns.length - 1,
+      Math.floor(columnRoll.value * availableColumns.length),
+    );
+    const [x] = availableColumns.splice(selected, 1);
+    if (x !== undefined) columns.push(x);
+  }
+
+  const frozenColumns = Object.freeze(columns);
+  return {
+    state: {
+      ...state,
+      survivalDebrisWarningColumns: frozenColumns,
+      survivalDebrisRandomizer: randomizer,
+    },
+    columns: frozenColumns,
+  };
+}
+
+function spawnSurvivalDebris(state: GameState): { state: GameState; cells: readonly Cell[] } {
   const occupied = new Set<string>([
     ...state.survivalDebris.map(cellKey),
     ...(state.active ? cellsForPiece(state.active).map(cellKey) : []),
   ]);
-  const legalColumns = Array.from({ length: 10 }, (_, x) => x).filter((x) => (
-    state.board[VISIBLE_START_ROW]?.[x] === null
-    && !occupied.has(`${x},${VISIBLE_START_ROW}`)
-  ));
   const survivalDebris = [...state.survivalDebris];
   const cells: Cell[] = [];
   let survivalDebrisNextId = state.survivalDebrisNextId;
 
-  // Consume one selection roll per requested stone even when the top edge is blocked.
-  // That keeps the stream's random sequence independent from a particular board shape.
-  for (let index = 0; index < requested; index += 1) {
-    const columnRoll = drawRandom(randomizer);
-    randomizer = columnRoll.randomizer;
-    if (legalColumns.length === 0) continue;
-    const selected = Math.min(legalColumns.length - 1, Math.floor(columnRoll.value * legalColumns.length));
-    const [x] = legalColumns.splice(selected, 1);
-    if (x === undefined) continue;
+  for (const x of state.survivalDebrisWarningColumns) {
     const cell = { x, y: VISIBLE_START_ROW };
+    if (state.board[cell.y]?.[cell.x] !== null || occupied.has(cellKey(cell))) continue;
     survivalDebris.push({ id: survivalDebrisNextId, ...cell });
     survivalDebrisNextId += 1;
     cells.push(cell);
@@ -349,7 +371,9 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
       ...state,
       survivalDebris: Object.freeze(survivalDebris),
       survivalDebrisNextId,
-      survivalDebrisRandomizer: randomizer,
+      survivalDebrisWarningColumns: cells.length > 0
+        ? Object.freeze([])
+        : state.survivalDebrisWarningColumns,
     },
     cells: Object.freeze(cells),
   };
@@ -418,24 +442,45 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
   // rather than sometimes skipping a cell when the 3:2 accumulator wraps.
   const intervalTicks = next.survivalDebrisIntervalSeconds * TICKS_PER_SECOND;
   const survivalDebrisIntervalTicks = Math.min(intervalTicks, next.survivalDebrisIntervalTicks + 1);
+  const warningTicks = SURVIVAL_DEBRIS_WARNING_SECONDS * TICKS_PER_SECOND;
+  const warningStartsAt = intervalTicks - warningTicks;
+  if (
+    next.survivalDebrisWarningColumns.length === 0
+    && survivalDebrisIntervalTicks >= warningStartsAt
+  ) {
+    const planned = planSurvivalDebris(next);
+    next = planned.state;
+    events.push({
+      type: 'survival-stones-warned',
+      columns: planned.columns,
+      leadSeconds: SURVIVAL_DEBRIS_WARNING_SECONDS,
+    });
+  }
   if (survivalDebrisIntervalTicks >= intervalTicks) {
     const emitted = spawnSurvivalDebris(next);
-    const nextIntervalSeconds = Math.max(
-      SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
-      next.survivalDebrisIntervalSeconds - SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS,
-    );
-    next = {
-      ...emitted.state,
-      survivalDebrisIntervalTicks: 0,
-      survivalDebrisIntervalSeconds: nextIntervalSeconds,
-    };
     if (emitted.cells.length > 0) {
+      const nextIntervalSeconds = Math.max(
+        SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS,
+        next.survivalDebrisIntervalSeconds - SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS,
+      );
+      next = {
+        ...emitted.state,
+        survivalDebrisIntervalTicks: 0,
+        survivalDebrisIntervalSeconds: nextIntervalSeconds,
+      };
       events.push({
         type: 'survival-stones-spawned',
         cells: emitted.cells,
         intervalSeconds: state.survivalDebrisIntervalSeconds,
         nextIntervalSeconds,
       });
+    } else {
+      // Keep the timer due and the exact warned columns visible until at least
+      // one entry cell opens; never skip or redirect a blocked event.
+      next = {
+        ...emitted.state,
+        survivalDebrisIntervalTicks: intervalTicks,
+      };
     }
   } else {
     next = { ...next, survivalDebrisIntervalTicks };
@@ -1104,6 +1149,7 @@ export function stateHash(state: GameState): string {
         survivalDebrisNextId: _survivalDebrisNextId,
         survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
         survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
+        survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
         survivalDebrisFallProgress: _survivalDebrisFallProgress,
         survivalDebrisRandomizer: _survivalDebrisRandomizer,
         mutationActiveCarrier: _mutationActiveCarrier,
@@ -1146,6 +1192,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisNextId: _survivalDebrisNextId,
           survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
           survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
+          survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           mutationActiveCarrier: _mutationActiveCarrier,
@@ -1171,6 +1218,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisNextId: _survivalDebrisNextId,
           survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
           survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
+          survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           ...sprintState
