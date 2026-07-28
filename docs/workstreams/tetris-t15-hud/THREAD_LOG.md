@@ -132,3 +132,13 @@
 - Blocker: none.
 - Next action: commit the coordinator acceptance record, stop preview/dev services,
   verify ports and browser children are released, then push `main` non-force.
+
+## 2026-07-28 — recovery point published
+
+- Acceptance/recovery record: `1383fca794cba150d373597a21d6686a02922b02`.
+- `origin/main` advanced non-force from `6892f80` through final source `741d8a6` and
+  the acceptance record.
+- Exact project listeners 4178 and 5178 were stopped after command-line ownership
+  verification; both ports now have zero listeners and headless Chrome count is zero.
+- Phase 3 is `PUSHED`; Phase 4 may open from `1383fca`.
+- Next action: freeze the Phase-4 Survival writer path map before product-source work.

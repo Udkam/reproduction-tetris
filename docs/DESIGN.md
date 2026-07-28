@@ -150,10 +150,10 @@ navigation branch, and Settings CSS paths named in `docs/CURRENT_TASK.md`. It ma
 redesign the Puzzle selector or change gameplay, records, audio, dependencies, or
 renderer ownership.
 
-## Phase 3 — stable live HUD accepted locally
+## Phase 3 — stable live HUD accepted and pushed
 
-**Status:** final candidate `741d8a6` is accepted from rollback base `6892f80`;
-recovery publication is pending. The shared board/HUD topology now holds across
+**Status:** final candidate `741d8a6` and acceptance/recovery record `1383fca` are
+pushed to `origin/main`. The shared board/HUD topology now holds across
 Classic, Survival, Mutation, and Puzzle at desktop, portrait, short landscape, and
 wide compact viewports. Statistics, optional Mutation status, and Next use one
 stable information hierarchy; Puzzle keeps one well with two complete `1` / `2`
@@ -167,6 +167,28 @@ candidate preserves bilingual accessible names, 12 px minimum HUD text, 44 px he
 targets, one Canvas, reduced-motion countdown endpoints, and zero layout overflow.
 The Puzzle selector composition, mode rules, materials, and later Phase-4/5/6 effects
 remain outside this acceptance.
+
+## Phase 4 — Survival pressure contract opened
+
+**Status:** active at pushed rollback base `1383fca`; implementation has not started.
+Survival opens with three rows of the accepted brown square bedrock material. Its
+bedrock-rise clock decreases from 13 seconds to a 6-second floor, while every three
+cleared lines removes one existing bedrock row. Ordinary pieces retain the accepted
+fixed Survival cadence.
+
+An independent stone clock starts at 20 seconds and decreases by one second after each
+event to a 10-second floor. Each event selects one or two columns from a deterministic
+RNG stream that is isolated from the ordinary seven-bag. Stones descend independently
+at approximately 1.5× the ordinary piece speed, become clearable board cells, and may
+either obstruct play or complete a scored line. The player receives a clear, bounded
+pre-entry column warning and can read both threat clocks without opening Settings.
+Reduced motion replaces travelling warning motion with the same informative endpoint.
+
+Core timing/RNG, Pixi bedrock/stone presentation, and DOM pressure readout are three
+separate checkpoints. Acceptance must prove deterministic replay, pause/restart and
+top-out ordering, stone-assisted clears, 13→6 and 20→10 boundaries, one-to-two stone
+events, records containing only survival time/lines/date, responsive readability,
+one Canvas, zero DOM cells, no leaks, and independent rules plus visual review.
 
 ## T14 Mutation VFX polish — accepted historical contract
 

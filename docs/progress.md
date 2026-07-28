@@ -1283,5 +1283,6 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   focus restoration and lifecycle cleanup. Independent rules and visual QA accept
   final `741d8a6` with no P0–P3.
 - The Puzzle selector, Core, mode rules, materials and later Survival/Mutation/
-  Classic/Puzzle work remain untouched. Phase 3 still awaits coordinator acceptance
-  commit, resource cleanup and non-force push before Phase 4 can open.
+  Classic/Puzzle work remain untouched. Acceptance/recovery record `1383fca` is now
+  pushed, 4178/5178 and headless Chrome are released, and Phase 4 is open at that
+  rollback boundary.

@@ -11,14 +11,13 @@ existing Puzzle library layout is explicitly excluded from redesign; adapting it
 count/progression data for fifty levels is allowed, but its visual composition must
 not be replaced.
 
-**Current execution state:** Phase 3 HUD final candidate
-`741d8a64ee1151894920163285769417663e6464` is locally accepted from pushed rollback
-base `6892f802c819015ed978cd24b714bbdf2d5a5caf`. The final typecheck, 26-file /
-198-test suite, 753-module production build, exact-candidate four-mode/four-viewport
-browser matrix, reduced-motion countdown, real-touch/input audit, and independent
-rules plus visual audits all pass with no open P0–P3 finding. The coordinator is
-recording this acceptance and preparing the non-force recovery push; Phase 4 may not
-take shared product paths until that push succeeds.
+**Current execution state:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
+and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
+are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
+audit, and independent rules/visual audits all pass with no open P0–P3 finding.
+Project listeners on 4178/5178 and headless Chrome were released after acceptance.
+Phase 4 Survival is now the active contract boundary at pushed recovery base
+`1383fca794cba150d373597a21d6686a02922b02`.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
@@ -86,12 +85,11 @@ one phase or a static screenshot passes.
 
 ## Phase 3 — stable live HUD and touch surface
 
-**Status (2026-07-28):** final candidate
-`741d8a64ee1151894920163285769417663e6464` is accepted locally at pushed rollback
-base `6892f802c819015ed978cd24b714bbdf2d5a5caf`; the non-force recovery push remains
-the only open Phase-3 transition. The exact source checkpoints, production evidence,
-independent verdicts, exclusions, and rollback boundary are recorded in
-`docs/phases/phase 3.md` and the Phase-3 workstream log.
+**Status (2026-07-28):** accepted and pushed. Final source
+`741d8a64ee1151894920163285769417663e6464` and recovery record
+`1383fca794cba150d373597a21d6686a02922b02` are on `origin/main`. The exact source
+checkpoints, production evidence, independent verdicts, exclusions, and rollback
+boundary are recorded in `docs/phases/phase 3.md` and the Phase-3 workstream log.
 
 1. **Shared topology.** Desktop, portrait, and short landscape use one final HUD
    topology for all four modes. The board stays 1:2 and dominant; statistics, optional
@@ -109,6 +107,27 @@ independent verdicts, exclusions, and rollback boundary are recorded in
 6. **Acceptance.** Four modes × desktop/portrait/short-landscape/1056 × 480/reduced
    motion, all three countdown digits, real touch gestures, one Canvas, zero DOM cells,
    zero overflow, zero page/console errors, and independent rules/visual acceptance.
+
+## Phase 4 — Survival pressure system
+
+**Status (2026-07-28):** active contract at pushed recovery base
+`1383fca794cba150d373597a21d6686a02922b02`; product-source work has not started.
+The ordered Core → renderer → UI checkpoints and complete acceptance matrix are
+authoritative in `docs/phases/phase 4.md`.
+
+1. **Pressure rules.** Start with three brown bedrock rows. The bedrock-rise interval
+   decreases from 13 seconds to 6 seconds; each three cleared lines removes one row.
+2. **Independent stones.** Every 20 seconds initially, decreasing by one second per
+   stone event to a 10-second floor, drop one or two clearable stones at roughly
+   1.5× the ordinary piece fall speed. Stones use an RNG stream isolated from the
+   seven-bag and participate in line clears and scoring.
+3. **Readable fairness.** Expose both threat clocks and a fair pre-entry column warning.
+   Reduced motion keeps an informative endpoint without relying on sweeping movement.
+4. **Records.** Survival records contain only survival time, cleared lines, and date;
+   no placed-piece count is persisted or displayed.
+5. **Checkpoint boundary.** Core timing/RNG, Pixi material/motion, and DOM HUD are
+   separate reviewable commits. No Mutation, Classic, Puzzle, Settings, audio,
+   dependency, packaging, second-Canvas, or DOM-grid change belongs to this phase.
 
 ## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
 

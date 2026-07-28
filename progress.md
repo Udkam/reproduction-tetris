@@ -4,11 +4,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
-- Phase 3 HUD final candidate `741d8a6` is locally accepted from rollback `6892f80`.
-  Its final typecheck, 26-file / 198-test suite, 753-module build, 18-scene production
-  matrix, input audit, rules audit, and visual audit all pass with no open P0–P3.
-- Current coordinator task: record Phase-3 acceptance, release 4178/5178 and browser
-  resources, then push the recovery point before opening Phase 4.
+- Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
+  accepted and pushed. Ports 4178/5178 and headless Chrome are released.
+- Current coordinator task: open Phase 4 Survival from pushed rollback `1383fca`;
+  product-source work has not started.
 
 ## Non-negotiable boundaries
 
@@ -21,10 +20,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Commit the Phase-3 acceptance record without product-source changes.
-- Stop the exact project preview/dev listeners and verify no headless Chrome remains.
-- Push `main` non-force, then open the Phase-4 Survival contract from the pushed
-  Phase-3 recovery point.
+- Audit the existing Survival Core, renderer, UI, persistence, and direct tests against
+  `docs/phases/phase 4.md`.
+- Freeze exact Core → renderer → UI writer paths before the first source checkpoint.
+- Keep Mutation, Classic, Puzzle selector/data, Settings, audio, dependencies, and
+  packaging outside the Phase-4 write scope.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 

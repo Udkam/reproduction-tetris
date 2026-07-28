@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-07-28 — T15 Phase 3 unified live HUD accepted locally
+## 2026-07-28 — T15 Phase 3 unified live HUD accepted and pushed
 
 - Rebuilt the four live modes around one final board-first topology: stable desktop,
   portrait, short-landscape and wide-compact geometry; always-visible statistics and
@@ -18,10 +18,12 @@
 - English `Freeze / Collapse / Double` remain complete at 12 px in `844×390`;
   Puzzle forecast names include both sequence and actual piece type. Independent
   input, rules/code, and visual QA all accept the final candidate with no P0–P3.
+- Acceptance/recovery record `1383fca` is pushed to `origin/main`; project listeners
+  on 4178/5178 and headless Chrome were released. Phase 4 Survival is open from that
+  rollback boundary.
 - The accepted range does not modify Core rules, Puzzle definitions/selector,
   Survival pressure, Mutation items/VFX, ordinary line-clear effects, Settings,
-  audio, dependencies, or packaging. Recovery publication remains the sole open
-  transition before Phase 4.
+  audio, dependencies, or packaging.
 
 ## 2026-07-28 — T15 phase target contracts reconciled
 
