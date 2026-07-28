@@ -403,7 +403,7 @@ describe('T15 Phase 2 Settings layout contract', () => {
     const block = sourceStyles.slice(start, end);
     const fontSizes = [...block.matchAll(/font-size:\s*([\d.]+)px/g)].map((match) => Number(match[1]));
     expect(Math.min(...fontSizes)).toBeGreaterThanOrEqual(12);
-    expect(block).toMatch(/\.action-sheet--settings\s*\{[\s\S]*?box-sizing:\s*border-box[\s\S]*?width:\s*min\(800px/);
+    expect(block).toMatch(/\.action-sheet--settings\s*\{[\s\S]*?box-sizing:\s*border-box[\s\S]*?width:\s*min\(800px,\s*100%\)/);
     expect(block).toMatch(/\.settings-console\s*\{[\s\S]*?gap:\s*0\s*;/);
     expect(block).toMatch(/padding:\s*12px 16px\s*;/);
     expect(block).toMatch(/\.settings-console__controls[\s\S]*?grid-template-columns:\s*52px/);
@@ -412,6 +412,7 @@ describe('T15 Phase 2 Settings layout contract', () => {
     expect(block).toMatch(/\.settings-console__controls \.audio-toggle\s*\{[\s\S]*?min-height:\s*44px/);
     expect(block).toMatch(/\.settings-console__actions\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
     expect(block).toMatch(/\.settings-console__actions > button\s*\{[\s\S]*?min-height:\s*44px/);
+    expect(block).not.toMatch(/\.action-sheet--settings\s*\{[^}]*width:[^;]*100vw/);
     expect(block).not.toMatch(/align-content:\s*space-between|grid-auto-rows:\s*1fr/);
   });
 });
