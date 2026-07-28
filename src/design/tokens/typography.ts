@@ -6,6 +6,8 @@ export const TYPOGRAPHY = {
     mono: '"JetBrains Mono", "Noto Sans Mono CJK SC", "Cascadia Mono", monospace',
   },
   weight: {
+    /** Playwrite NZ Basic ships 100–400; 400 is its real maximum weight. */
+    brand: 400,
     medium: 500,
     semibold: 600,
     bold: 700,
