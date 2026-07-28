@@ -71,6 +71,16 @@ flash timing、queue depth、active particle count 和 Collapse trail columns，
 impact，约束真实 rAF mean/p95，并以 home baseline 连续验证两次
 mount/unmount。此修正不得注入状态、改变玩法或 VFX 几何。
 
+**Temporary pause (2026-07-29):** product source remains `f6fa06e`. Final gates are
+source-bound at `96a3841` (typecheck, 26/224 tests, 753-module build). Dynamic capture
+published no artifacts: the first rejected run exposed stale FIFO sampling; committed
+correction `3d01e9f` passed two independent static re-audits, while its next run
+correctly rejected a screenshot that crossed the current activation under sustained
+80%–90% external CPU load. Phase 5 remains `OPEN`, unaccepted and unpushed. Chrome,
+ports 4178/5178/5179 and `.partial-*` directories are clear. Resume from `3d01e9f`,
+rerun the same managed harness in a trustworthy resource window, then finish visual /
+evidence QA, acceptance and non-force push before Phase 6.
+
 ## 目标
 
 把冰冻、坍缩、炸弹、倍增设计成附着在普通方块上的效果，而不是四类固定形状。

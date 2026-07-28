@@ -660,3 +660,45 @@
   browser manifest/checksum, each independent QA verdict, each correction/re-evidence,
   and coordinator acceptance/cleanup.
 - Phase 6 and Puzzle 50 remain unstarted after the Phase-5 push until explicit resume.
+
+## 2026-07-29 — Temporary Phase-5 evidence pause
+
+- Task ID: `T15-PHASE5-TEMPORARY-PAUSE`.
+- Player instruction: pause now and record the exact point. This supersedes continued
+  waiting in the current turn but does not accept Phase 5.
+- Exact rollback state:
+  - Phase-4 pushed recovery base: `fd7ef8d`;
+  - Phase-5 product source: `f6fa06ea1b123f54bffff1885741e3ffbd551569`;
+  - source-bound final gates: `96a3841`;
+  - current committed evidence harness: `3d01e9feeffa222e02c9492f3298439aa0d792be`;
+  - this pause record yields 43 linear commits after `fd7ef8d`, 42 local commits
+    ahead of `origin/main`.
+- Final gates actually run after the last product source change:
+  - `npm.cmd run typecheck` — PASS;
+  - `npm.cmd run test -- --maxWorkers=1` — 26 files / 224 tests PASS;
+  - `npm.cmd run build` — PASS, 753 transformed modules.
+  Raw UTF-8/LF logs, a source-bound manifest, and gate checksums are committed at
+  `96a3841`.
+- Dynamic evidence attempts:
+  1. the pre-correction run failed closed because carrier screenshots advanced the
+     Renderer before the old FIFO witness was installed;
+  2. the corrected run at `3d01e9f` immediately bound the FIFO but failed the exact
+     post-screenshot current-item gate while system CPU remained about 80%–90%.
+  Neither run published PNGs, browser JSON, or `SHA256SUMS.txt`.
+- Independent static re-audit of `3d01e9f`:
+  - performance/FIFO auditor — PASS, P0=P1=P2=P3=0;
+  - rules/evidence auditor — PASS, P0=P1=P2=P3=0.
+  Both confirm immediate/one-frame FIFO probing covers the 300 ms Collapse case,
+  fixed expected/suffix checking remains fail-closed, and post-drain snapshots are
+  refreshed.
+- Cleanup at pause:
+  - worktree clean before this record;
+  - Chrome count 0;
+  - ports 4178, 5178 and 5179 have no listener;
+  - no `docs/qa/evidence/t15-phase5/.partial-*` directory remains.
+- Disposition: **PAUSED / OPEN / UNPUSHED**. No browser visual, rAF, lifecycle, final
+  visual/evidence QA, coordinator acceptance, changelog, or push claim is made.
+- Resume action: wait for a trustworthy resource window, rerun the unchanged managed
+  harness, inspect every frame, commit raw browser output and the manifest/checksum
+  separately, complete rules/visual/evidence QA, then accept, clean and non-force push.
+  Phase 6 and Puzzle 50 must remain unopened until then.

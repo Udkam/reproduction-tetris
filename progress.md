@@ -50,9 +50,15 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   Focused App/HUD tests pass 40/40 and typecheck passes. Independent static layout
   review accepts exact candidate `d819d92` with P0–P3 none; final browser, lifecycle,
   performance, and evidence review remain open.
-- Final-source gates now pass serially: typecheck PASS, 26 files / 223 tests PASS, and
-  production build PASS with 753 transformed modules. Browser/GPU evidence remains
-  deferred while another project owns the active Playwright session.
+- Final source-bound gate evidence is committed at `96a3841`: typecheck PASS,
+  26 files / 224 tests PASS, and production build PASS with 753 transformed modules.
+- Phase 5 is temporarily paused at committed harness `3d01e9f`. Two managed browser
+  attempts failed closed and published no artifacts: the first exposed stale FIFO
+  sampling; the corrected run rejected a screenshot that crossed its activation while
+  external CPU remained about 80%–90%. Two independent static re-audits accept the
+  corrected harness with P0–P3 = 0. Worktree, Chrome, project ports and partial
+  evidence directories were clear before the pause record. Phase 5 remains open,
+  unaccepted and unpushed.
 
 ## Non-negotiable boundaries
 
@@ -65,9 +71,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- When the machine resource budget permits, capture final-source desktop/portrait/
-  landscape/reduced-motion Mutation states, including idle and one/two/three concurrent
-  timers, then run the final full gates and lifecycle/performance evidence.
+- On explicit resume and when the machine resource budget permits, rerun the committed
+  managed harness for final-source desktop/portrait/landscape/reduced-motion Mutation
+  states, including idle, one/two/three concurrent timers, FIFO, real rAF and repeated
+  lifecycle evidence. Inspect every PNG, commit raw output and index separately, then
+  obtain final rules/visual/evidence acceptance and non-force push Phase 5.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.

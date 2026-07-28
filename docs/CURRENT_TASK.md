@@ -9,9 +9,9 @@ the coordinator records its acceptance, verifies resource cleanup, and pushes th
 accepted checkpoint as a remote recovery point before the next phase begins. The
 existing Puzzle library layout is explicitly excluded from redesign; adapting its
 count/progression data for fifty levels is allowed, but its visual composition must
-not be replaced. By the player's latest sequencing instruction, complete and push
-Phase 5, then pause. Phase 6 and Puzzle 50 remain in the overall goal but must not
-start until a later explicit resume.
+not be replaced. By the player's latest sequencing instruction, pause Phase 5 at the
+recorded local evidence checkpoint before it is accepted or pushed. Phase 6 and
+Puzzle 50 remain in the overall goal but must not start until a later explicit resume.
 
 **Current execution state:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
@@ -120,9 +120,32 @@ The remaining Phase-5 chain is deliberately fine-grained and may not be squashed
 5. each required correction and refreshed evidence in its own checkpoint;
 6. coordinator acceptance/changelog, then verified cleanup and non-force push.
 
-There are currently 38 commits after Phase-4 recovery `fd7ef8d` (37 ahead of
+There are currently 43 commits after Phase-4 recovery `fd7ef8d` (42 ahead of
 `origin/main`). They remain linear rollback nodes; no squash or history rewrite is
 authorized.
+
+### 2026-07-29 Phase 5 temporary pause point
+
+- Status: **PAUSED / OPEN / UNPUSHED**. This is a recovery checkpoint, not Phase-5
+  acceptance.
+- Exact product source remains
+  `f6fa06ea1b123f54bffff1885741e3ffbd551569`. Final source-bound gates are committed
+  separately at `96a3841`: typecheck PASS, 26 files / 224 tests PASS, and production
+  build PASS with 753 transformed modules.
+- Managed browser capture correctly published no evidence from two rejected runs.
+  The first exposed a stale FIFO witness created after unrelated carrier screenshots.
+  Harness correction `3d01e9f` now probes FIFO before those screenshots and passed two
+  independent static re-audits with P0–P3 = 0. A second run then failed the exact
+  post-screenshot gate while sustained external CPU load remained roughly 80%–90%;
+  no PNG, browser manifest, or completion checksum escaped its partial directory.
+- At pause, the worktree is clean; Chrome count, listeners on 4178/5178/5179, and
+  Phase-5 `.partial-*` directories are all zero. Browser performance/lifecycle
+  evidence, visual inspection, three final QA verdicts, coordinator acceptance,
+  changelog integration, and non-force push remain incomplete.
+- Resume action: admit the same committed harness only after a trustworthy resource
+  window, regenerate the complete managed browser batch, inspect every PNG, commit
+  raw output and its index separately, obtain rules/visual/evidence acceptance, then
+  record acceptance, clean resources, and push. Do not open Phase 6 first.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
