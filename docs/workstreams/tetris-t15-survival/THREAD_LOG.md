@@ -199,3 +199,28 @@
 - Blocker: none.
 - Next action: repeat rules, visual, and evidence audits against
   `2af2adf` + `993dfc7`; no acceptance or push before all return `ACCEPT`.
+
+## 2026-07-28 — repeated QA accepted locally
+
+- Task ID: `T15-PHASE4-SURVIVAL-QA-R2`.
+- Bound chain: rollback `1383fca` → source/test candidate `2af2adf` → corrected
+  evidence `993dfc7` → handoff record `1730227`.
+- Rules/core/persistence QA: `ACCEPT`; P0–P3 none. It independently confirmed every
+  writer record, `survivalPressureTicks`, direct score/event `40`, canonical warning,
+  blocked deferral, 3:2 accumulator, RNG/replay, and strict v8 Survival fields.
+- Target/visual QA: `ACCEPT`; P0–P2 none. Its P3s are the complete but awkward
+  `上/升` label wrap and a Settings screenshot that naturally hides the underlying
+  digit; the interaction JSON and generator prove digit `3` remains `3` for 1.2 s.
+- UI/evidence QA: `ACCEPT`; P0–P2 none. It independently confirmed candidate ancestry
+  and tree equality, raw 26/203/753 gates, English four-card rendering, countdown,
+  pause, same-Canvas restart, two unmount/remount cycles, and full ownership cleanup.
+- Integrity: both evidence auditors recomputed 14/14 manifest hashes and 9/9
+  JSON-to-PNG bindings; worktree and product tree remained clean.
+- Coordinator disposition: P3s are recorded, readable, non-interactive, and do not
+  contradict the frozen contract. Reopening product source would invalidate the
+  accepted evidence for no user-relevant defect, so they remain later typography/
+  evidence-presentation polish rather than Phase-4 blockers.
+- Status: `ACCEPTED LOCAL`.
+- Blocker: recovery push not yet performed.
+- Next action: commit acceptance docs, stop the verified project listener and close
+  the temporary browser tab, verify cleanup/worktree, then push `main` non-force.

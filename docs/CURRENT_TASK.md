@@ -16,10 +16,11 @@ and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
 audit, and independent rules/visual audits all pass with no open P0–P3 finding.
 Project listeners on 4178/5178 and headless Chrome were released after acceptance.
-Phase 4 Survival remains the active boundary. Its local source/test candidate is
-`2af2adfc1640b2d5be2197ec1bf92db8637f70ef` and corrected browser evidence is
-`993dfc7`; final repeated independent audits are pending, so the pushed recovery base
-remains `1383fca794cba150d373597a21d6686a02922b02`.
+Phase 4 Survival is accepted locally. Its source/test candidate
+`2af2adfc1640b2d5be2197ec1bf92db8637f70ef` and corrected browser evidence
+`993dfc7` passed all repeated independent audits with no P0–P2. The pushed recovery
+base remains `1383fca794cba150d373597a21d6686a02922b02` until resource cleanup and the
+non-force push complete; Phase 5 may not start before then.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
@@ -112,12 +113,13 @@ boundary are recorded in `docs/phases/phase 3.md` and the Phase-3 workstream log
 
 ## Phase 4 — Survival pressure system
 
-**Status (2026-07-28):** corrected local candidate under repeated QA. Core
+**Status (2026-07-28):** accepted locally; recovery push pending. Core
 `514c459`, renderer `4d31994`, HUD `f89c040`, records `5c6a436`, clock correction
 `cc8c71f`, and direct scoring proof `2af2adf` remain separate checkpoints. Corrected
 evidence `993dfc7` binds the candidate, raw gates, English rendering, countdown,
 pause/restart, two mount/unmount cycles, Canvas/listener/RAF/audio cleanup, and the
-pressure sequence. Phase 4 is not accepted or pushed yet.
+pressure sequence. Repeated rules, visual, and UI/evidence QA all return `ACCEPT`;
+no P0–P2 remains.
 
 1. **Pressure rules.** Start with three brown bedrock rows. The bedrock-rise interval
    decreases from 13 seconds to 6 seconds; each three cleared lines removes one row.

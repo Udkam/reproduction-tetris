@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-07-28 — T15 Phase 4 Survival pressure accepted locally
+
+- Survival now begins with three rows of the approved brown bedrock and presents two
+  independent, deterministic threats: a 13→6-second rise clock and a 20→10-second
+  one-or-two-stone clock. Every stone plan is announced two playing seconds early,
+  uses the exact stored columns at spawn, waits on those columns if blocked, falls
+  through an RNG stream isolated from the seven-bag, and may obstruct or complete a
+  normally scored line.
+- The one-Canvas renderer retains the brown raised bedrock and adds distinct cracked
+  slate stones, a column-local warning, interpolated travel, and bounded spawn/landing
+  cues with a reduced-motion endpoint. The four-card rail shows Survival time, lines,
+  bedrock rows/rise, and stonefall without adding a fifth card.
+- Mode-discriminated v8 records persist and display only elapsed time, cleared lines,
+  date, and necessary schema metadata for Survival; v7 score/pieces/chain fields are
+  deliberately discarded.
+- Final source/test candidate `2af2adf` passes typecheck, 26 files / 203 tests, and
+  the 753-module build. Corrected evidence `993dfc7` covers warning/spawn/fall/land,
+  Chinese/English, portrait, reduced motion, countdown Settings freeze, pause,
+  same-Canvas restart, two mount/unmount cycles, and listener/RAF/audio cleanup;
+  14/14 manifest hashes and 9/9 JSON image hashes match.
+- Independent rules, visual, and UI/evidence auditors all accept with no P0–P2.
+  Rules QA has no P3. Visual QA records only a readable Chinese label wrap and a
+  static Settings screenshot that hides the digit while the interaction JSON proves
+  `3→3` over 1.2 seconds; neither changes product correctness or acceptance.
+- Scope remains bounded: no Mutation, Classic, Puzzle selector/data, music/audio
+  design, dependency, packaging, second Canvas, or DOM-board change is included.
+  Resource cleanup and the non-force recovery push remain the next coordinator step.
+
 ## 2026-07-28 — T15 Phase 3 unified live HUD accepted and pushed
 
 - Rebuilt the four live modes around one final board-first topology: stable desktop,

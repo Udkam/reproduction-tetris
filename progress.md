@@ -6,8 +6,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
   accepted and pushed. Ports 4178/5178 and headless Chrome are released.
-- Current coordinator task: finish repeated QA for Phase 4 candidate `2af2adf`
-  with corrected evidence `993dfc7`; it is not accepted or pushed yet.
+- Current coordinator task: publish locally accepted Phase 4 candidate `2af2adf`
+  with corrected evidence `993dfc7`; cleanup and non-force push remain open.
 
 ## Non-negotiable boundaries
 
@@ -83,3 +83,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   evidence.
 - Next: complete writer handoff records, rerun all three independent audits, resolve
   any new finding, then accept, clean the listener/browser resources, and push.
+
+## 2026-07-28 Phase 4 local acceptance
+
+- Repeated rules QA: ACCEPT, P0–P3 none.
+- Repeated visual QA: ACCEPT, P0–P2 none; P3 only for the readable split of `上升`
+  and the expected Settings modal covering the countdown digit in its static frame.
+- Repeated UI/evidence QA: ACCEPT, P0–P2 none; the same label wrap is P3 only.
+- Both evidence auditors independently recomputed 14/14 manifest hashes and 9/9
+  JSON-to-PNG hashes. No source or evidence drift exists after `2af2adf` / `993dfc7`.
+- Next: commit this acceptance record, release PID 11560 / port 4178 and the
+  temporary browser tab, verify worktree/resources, then push before opening Phase 5.
