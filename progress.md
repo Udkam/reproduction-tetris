@@ -220,3 +220,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Static audits are still running. Next: checkpoint the accepted harness, stop the
   exact old 4178 TetraMorph listener, then run and visually inspect the full evidence
   matrix before any Phase-5 acceptance.
+
+## 2026-07-29 Phase 5 harness static acceptance
+
+- Harness `8c321ca` plus FIFO correction `f8b31ed` passes two independent static
+  reviews with no P0–P3 finding.
+- FIFO evidence now freezes new input after a fixed non-empty queue witness, observes
+  Renderer state every rAF, distinguishes consecutive identical items by exact queue
+  length, and proves the screenshot stayed on the labelled current/queue.
+- Old project Vite PID 23856/parent 5664 was released; port 4178 and Chrome are free.
+- Dynamic capture remains intentionally unrun while system CPU is above 90%; default
+  user Edge processes were inspected and preserved.

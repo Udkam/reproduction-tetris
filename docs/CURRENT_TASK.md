@@ -102,7 +102,10 @@ actual spawned carrier without changing the state hash; the ARIA test now exerci
   `.gitattributes` rules scoped exactly to that evidence directory. The harness must
   own and stop its Vite process, assert real rAF mean/p95, capture grayscale, compare
   two mount/unmount cycles with the home baseline, isolate a fresh partial artifact
-  set, and publish its checksum only as the final completion marker.
+  set, and publish its checksum only as the final completion marker. Harness base
+  `8c321ca` and FIFO correction `f8b31ed` now pass two independent static reviews with
+  P0–P3 = 0. This proves the capture design only; actual browser frames, performance,
+  lifecycle evidence, final gates, evidence-integrity review, and acceptance remain.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 

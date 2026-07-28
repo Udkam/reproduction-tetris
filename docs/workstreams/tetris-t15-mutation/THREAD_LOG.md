@@ -610,3 +610,41 @@
   claim is made.
 - Next action: resolve any remaining static finding, checkpoint the harness, release
   the exact stale TetraMorph Vite process, then run the managed candidate-bound capture.
+
+## 2026-07-29 — Evidence harness static acceptance
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-HARNESS-QA`.
+- Ordered checkpoints:
+  - contract/status `f3b68d6`;
+  - managed source-bound harness `8c321ca`;
+  - page-side Renderer FIFO witness correction `f8b31ed`.
+- Exact harness correction path:
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- The first performance/FIFO review found that a non-empty Renderer queue was not
+  mandatory. The first correction added a witness but external-loop sampling could
+  confuse consecutive same-item requests; a second review also found stale
+  post-drain activation and screenshot-time races.
+- Final correction stops autoplay after a fixed witness, observes every Renderer frame,
+  derives instance identity from exact queue length, requires the live queue to equal
+  the witness suffix, and rejects append/reorder/drop/skip. The PNG is accepted only
+  when pre- and post-screenshot Renderer state plus observer index still identify the
+  initial current/queue. Drain completion then refreshes the snapshot before ordinary
+  activation capture resumes.
+- Commands actually run:
+  - Python source compile — PASS;
+  - candidate binding to product `f6fa06e` with clean runtime paths — PASS;
+  - extracted observer JavaScript syntax check — PASS;
+  - pure observer simulation for `collapse → collapse → freeze`, skipped instance,
+    and appended request — PASS / expected fail-closed cases;
+  - `git diff --check` — PASS.
+- Two independent final static reviews return `PASS`, P0=0, P1=0, P2=0, P3=0.
+  Neither auditor ran the browser, tests, build, or benchmark.
+- The exact stale TetraMorph Vite PID 23856 and parent command PID 5664 were stopped;
+  port 4178 and Chrome are free. Current machine CPU remained above 90%; the user's
+  default Edge profile was also active and was preserved.
+- Blocker: a trustworthy 60 Hz browser smoke cannot start while system CPU remains
+  above the documented resource threshold. No product or evidence acceptance is
+  claimed.
+- Next action: when the CPU budget permits, run final gates serially and execute the
+  managed harness, then inspect every generated frame and submit exact artifacts to
+  fresh visual/evidence QA.
