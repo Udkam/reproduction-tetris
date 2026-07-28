@@ -1,0 +1,1037 @@
+from __future__ import annotations
+
+from contextlib import contextmanager
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import statistics
+import subprocess
+import tempfile
+import time
+from typing import Any, Iterator
+from urllib.request import urlopen
+
+from playwright.sync_api import BrowserContext, Page, sync_playwright
+
+
+ROOT = Path(__file__).resolve().parents[4]
+OUT = Path(__file__).resolve().parent
+ARTIFACT_OUT = OUT
+BASE_URL = "http://127.0.0.1:4178/"
+SOURCE_CANDIDATE = "f6fa06ea1b123f54bffff1885741e3ffbd551569"
+FIXED_RUN_SEED = 0x7115
+PRODUCT_PATHS = (
+    "src",
+    "public",
+    ":(glob).env*",
+    "index.html",
+    "package.json",
+    "package-lock.json",
+    "vite.config.ts",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "tsconfig.node.json",
+)
+
+FIXED_SEED_INIT_SCRIPT = f"""
+Object.defineProperty(window.crypto, "getRandomValues", {{
+  configurable: true,
+  value: (values) => {{
+    for (let index = 0; index < values.length; index += 1) values[index] = {FIXED_RUN_SEED};
+    return values;
+  }},
+}});
+"""
+
+LIFECYCLE_INIT_SCRIPT = r"""
+(() => {
+  const originalAdd = EventTarget.prototype.addEventListener;
+  const originalRemove = EventTarget.prototype.removeEventListener;
+  const listenerIds = new WeakMap();
+  const activeGlobalListeners = new Set();
+  let nextListenerId = 1;
+
+  const listenerId = (listener) => {
+    if ((typeof listener !== "function" && typeof listener !== "object") || listener === null) return "null";
+    if (!listenerIds.has(listener)) listenerIds.set(listener, nextListenerId++);
+    return listenerIds.get(listener);
+  };
+  const captureValue = (options) => typeof options === "boolean" ? options : Boolean(options?.capture);
+  const targetName = (target) => target === window ? "window" : target === document ? "document" : null;
+  const listenerKey = (target, type, listener, options) => {
+    const name = targetName(target);
+    return name ? `${name}:${type}:${listenerId(listener)}:${captureValue(options) ? 1 : 0}` : null;
+  };
+
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    const key = listenerKey(this, type, listener, options);
+    if (key) activeGlobalListeners.add(key);
+    return originalAdd.call(this, type, listener, options);
+  };
+  EventTarget.prototype.removeEventListener = function(type, listener, options) {
+    const key = listenerKey(this, type, listener, options);
+    if (key) activeGlobalListeners.delete(key);
+    return originalRemove.call(this, type, listener, options);
+  };
+
+  const originalRequestAnimationFrame = window.requestAnimationFrame.bind(window);
+  const originalCancelAnimationFrame = window.cancelAnimationFrame.bind(window);
+  const pendingAnimationFrames = new Set();
+  window.requestAnimationFrame = (callback) => {
+    let handle = 0;
+    handle = originalRequestAnimationFrame((time) => {
+      pendingAnimationFrames.delete(handle);
+      callback(time);
+    });
+    pendingAnimationFrames.add(handle);
+    return handle;
+  };
+  window.cancelAnimationFrame = (handle) => {
+    pendingAnimationFrames.delete(handle);
+    return originalCancelAnimationFrame(handle);
+  };
+
+  let audioContextsCreated = 0;
+  let audioContextsClosed = 0;
+  const closedContexts = new WeakSet();
+  const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
+  if (OriginalAudioContext) {
+    class InstrumentedAudioContext extends OriginalAudioContext {
+      constructor(...args) {
+        super(...args);
+        audioContextsCreated += 1;
+      }
+      close() {
+        if (!closedContexts.has(this)) {
+          closedContexts.add(this);
+          audioContextsClosed += 1;
+        }
+        return super.close();
+      }
+    }
+    window.AudioContext = InstrumentedAudioContext;
+    if (window.webkitAudioContext) window.webkitAudioContext = InstrumentedAudioContext;
+  }
+
+  window.__T15_LIFECYCLE__ = {
+    snapshot() {
+      const listenerCounts = {};
+      for (const key of activeGlobalListeners) {
+        const [target, type] = key.split(":");
+        const label = `${target}:${type}`;
+        listenerCounts[label] = (listenerCounts[label] || 0) + 1;
+      }
+      return {
+        globalListenerCount: activeGlobalListeners.size,
+        globalListeners: Object.fromEntries(Object.entries(listenerCounts).sort()),
+        pendingAnimationFrames: pendingAnimationFrames.size,
+        audioContextsCreated,
+        audioContextsClosed,
+        openAudioContexts: audioContextsCreated - audioContextsClosed,
+      };
+    },
+  };
+})();
+"""
+
+AUTOPLAYER_SCRIPT = r"""
+(() => {
+  const shapes = {
+    I: [
+      [[0,1],[1,1],[2,1],[3,1]],
+      [[2,0],[2,1],[2,2],[2,3]],
+      [[0,2],[1,2],[2,2],[3,2]],
+      [[1,0],[1,1],[1,2],[1,3]],
+    ],
+    O: [
+      [[0,0],[1,0],[0,1],[1,1]],
+      [[0,0],[1,0],[0,1],[1,1]],
+      [[0,0],[1,0],[0,1],[1,1]],
+      [[0,0],[1,0],[0,1],[1,1]],
+    ],
+    T: [
+      [[1,0],[0,1],[1,1],[2,1]],
+      [[1,0],[1,1],[2,1],[1,2]],
+      [[0,1],[1,1],[2,1],[1,2]],
+      [[1,0],[0,1],[1,1],[1,2]],
+    ],
+    S: [
+      [[1,0],[2,0],[0,1],[1,1]],
+      [[1,0],[1,1],[2,1],[2,2]],
+      [[1,1],[2,1],[0,2],[1,2]],
+      [[0,0],[0,1],[1,1],[1,2]],
+    ],
+    Z: [
+      [[0,0],[1,0],[1,1],[2,1]],
+      [[2,0],[1,1],[2,1],[1,2]],
+      [[0,1],[1,1],[1,2],[2,2]],
+      [[1,0],[0,1],[1,1],[0,2]],
+    ],
+    J: [
+      [[0,0],[0,1],[1,1],[2,1]],
+      [[1,0],[2,0],[1,1],[1,2]],
+      [[0,1],[1,1],[2,1],[2,2]],
+      [[1,0],[1,1],[0,2],[1,2]],
+    ],
+    L: [
+      [[2,0],[0,1],[1,1],[2,1]],
+      [[1,0],[1,1],[1,2],[2,2]],
+      [[0,1],[1,1],[2,1],[0,2]],
+      [[0,0],[1,0],[1,1],[1,2]],
+    ],
+  };
+
+  const cloneBoard = (board) => board.map((row) => [...row]);
+  const canPlace = (board, cells, x, y) => cells.every(([dx, dy]) => {
+    const px = x + dx;
+    const py = y + dy;
+    return px >= 0 && px < board[0].length && py >= 0 && py < board.length && board[py][px] === null;
+  });
+  const evaluateBoard = (board, completedLines) => {
+    const width = board[0].length;
+    const height = board.length;
+    const heights = [];
+    let holes = 0;
+    for (let x = 0; x < width; x += 1) {
+      let top = height;
+      for (let y = 0; y < height; y += 1) {
+        if (board[y][x] !== null) {
+          top = y;
+          break;
+        }
+      }
+      heights.push(height - top);
+      for (let y = top; y < height; y += 1) {
+        if (board[y][x] === null) holes += 1;
+      }
+    }
+    const aggregate = heights.reduce((sum, value) => sum + value, 0);
+    const maximum = Math.max(...heights);
+    const bumpiness = heights.slice(1).reduce((sum, value, index) => sum + Math.abs(value - heights[index]), 0);
+    const wells = heights.reduce((sum, value, index) => {
+      const left = index === 0 ? height : heights[index - 1];
+      const right = index === width - 1 ? height : heights[index + 1];
+      return sum + Math.max(0, Math.min(left, right) - value);
+    }, 0);
+    const danger = Math.max(0, maximum - 16);
+    return aggregate * 0.55 + holes * 8 + bumpiness * 0.42 + wells * 0.12
+      + maximum * 0.9 + danger * danger * 6 - completedLines * 12;
+  };
+  const candidateFor = (state, rotation, x) => {
+    const board = cloneBoard(state.board);
+    const cells = shapes[state.active.type][rotation];
+    let y = state.active.y;
+    if (!canPlace(board, cells, x, y)) return null;
+    while (canPlace(board, cells, x, y + 1)) y += 1;
+    for (const [dx, dy] of cells) board[y + dy][x + dx] = state.active.type;
+    const kept = board.filter((row) => row.some((cell) => cell === null));
+    const cleared = board.length - kept.length;
+    while (kept.length < board.length) kept.unshift(Array(board[0].length).fill(null));
+    return { rotation, x, y, score: evaluateBoard(kept, cleared), cleared };
+  };
+
+  window.__T15_AUTOPLAY_STEP__ = () => {
+    const qa = window.__SIGNAL_FOUNDRY_QA__;
+    let state = qa.getState();
+    if (state.status !== "playing") return { stopped: state.status };
+    for (let tick = 0; tick < 20 && state.active === null; tick += 1) {
+      qa.advanceTicks(1);
+      state = qa.getState();
+    }
+    if (!state.active) return { stopped: state.status, phase: state.phase };
+
+    const options = [];
+    for (let rotation = 0; rotation < 4; rotation += 1) {
+      const cells = shapes[state.active.type][rotation];
+      const minX = Math.min(...cells.map(([x]) => x));
+      const maxX = Math.max(...cells.map(([x]) => x));
+      for (let x = -minX; x < state.board[0].length - maxX; x += 1) {
+        const option = candidateFor(state, rotation, x);
+        if (option) options.push(option);
+      }
+    }
+    options.sort((left, right) => left.score - right.score || right.cleared - left.cleared || left.x - right.x || left.rotation - right.rotation);
+    const best = options[0];
+    if (!best) return { stopped: "no-placement" };
+
+    for (let rotation = 0; rotation < best.rotation; rotation += 1) qa.action("rotate-cw");
+    state = qa.getState();
+    const direction = best.x < state.active.x ? "left" : "right";
+    for (let step = 0; step < Math.abs(best.x - state.active.x); step += 1) qa.action(direction);
+    qa.action("hard-drop");
+
+    state = qa.getState();
+    for (let tick = 0; tick < 20 && state.active === null && state.status === "playing"; tick += 1) {
+      qa.advanceTicks(1);
+      state = qa.getState();
+    }
+    return {
+      plan: best,
+      status: state.status,
+      phase: state.phase,
+      pieceCount: state.pieceCount,
+      lines: state.lines,
+      lastItem: state.mutationLastItem,
+      lastItemTicks: state.mutationLastItemTicks,
+      timers: [state.mutationFreezeTicks, state.mutationCollapseTicks, state.mutationMultiplierTicks],
+    };
+  };
+})();
+"""
+
+
+def git(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *args],
+        cwd=ROOT,
+        check=check,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def candidate_binding() -> dict[str, Any]:
+    resolved = git("rev-parse", f"{SOURCE_CANDIDATE}^{{commit}}").stdout.strip()
+    head = git("rev-parse", "HEAD").stdout.strip()
+    product_status = git("status", "--short", "--", *PRODUCT_PATHS).stdout.splitlines()
+    product_diff = git("diff", "--quiet", SOURCE_CANDIDATE, "--", *PRODUCT_PATHS, check=False)
+    assert resolved == SOURCE_CANDIDATE
+    assert product_status == []
+    assert product_diff.returncode == 0
+    return {
+        "sourceCandidate": SOURCE_CANDIDATE,
+        "gitHead": head,
+        "productTreeMatchesCandidate": True,
+        "productStatus": product_status,
+        "productPaths": list(PRODUCT_PATHS),
+    }
+
+
+def listener_pids(port: int) -> set[int]:
+    result = subprocess.run(
+        ["netstat", "-ano", "-p", "tcp"],
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    found: set[int] = set()
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) < 5 or parts[0].upper() != "TCP" or parts[-2].upper() != "LISTENING":
+            continue
+        try:
+            local_port = int(parts[1].rsplit(":", 1)[1])
+            pid = int(parts[-1])
+        except (IndexError, ValueError):
+            continue
+        if local_port == port:
+            found.add(pid)
+    return found
+
+
+@contextmanager
+def managed_vite_server() -> Iterator[dict[str, Any]]:
+    assert listener_pids(4178) == set(), "Port 4178 must be free before evidence starts."
+    node = shutil.which("node")
+    vite = ROOT / "node_modules" / "vite" / "bin" / "vite.js"
+    assert node is not None
+    assert vite.is_file()
+    command = [
+        node,
+        str(vite),
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "4178",
+        "--strictPort",
+    ]
+    stdout_path = ARTIFACT_OUT / "vite-stdout.log"
+    stderr_path = ARTIFACT_OUT / "vite-stderr.log"
+    stdout_handle = stdout_path.open("w", encoding="utf-8", newline="\n")
+    stderr_handle = stderr_path.open("w", encoding="utf-8", newline="\n")
+    creation_flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+    process = subprocess.Popen(
+        command,
+        cwd=ROOT,
+        stdout=stdout_handle,
+        stderr=stderr_handle,
+        text=True,
+        encoding="utf-8",
+        creationflags=creation_flags,
+    )
+    record: dict[str, Any] = {
+        "kind": "candidate-source DEV-QA",
+        "command": command,
+        "cwd": str(ROOT),
+        "pid": process.pid,
+        "listenerPid": None,
+        "ready": False,
+        "released": False,
+        "stdout": stdout_path.name,
+        "stderr": stderr_path.name,
+    }
+    try:
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            if process.poll() is not None:
+                raise RuntimeError(f"Managed Vite exited early with code {process.returncode}.")
+            pids = listener_pids(4178)
+            if pids == {process.pid}:
+                try:
+                    with urlopen(BASE_URL, timeout=1) as response:
+                        if response.status == 200:
+                            record["listenerPid"] = process.pid
+                            record["ready"] = True
+                            break
+                except OSError:
+                    pass
+            time.sleep(0.1)
+        assert record["ready"], "Managed Vite did not become ready on its own PID."
+        yield record
+    finally:
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=8)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=5)
+        record["exitCode"] = process.returncode
+        stdout_handle.close()
+        stderr_handle.close()
+        deadline = time.monotonic() + 8
+        while listener_pids(4178) and time.monotonic() < deadline:
+            time.sleep(0.1)
+        record["released"] = listener_pids(4178) == set()
+        assert record["released"], "Managed Vite listener leaked after shutdown."
+
+
+def attach_error_capture(page: Page) -> list[str]:
+    errors: list[str] = []
+    page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    return errors
+
+
+def start_mutation_from_home(page: Page) -> dict[str, Any]:
+    page.locator("[data-testid='enter-sprint']").click()
+    page.wait_for_timeout(100)
+    intro_start = page.locator("[role='dialog'] .primary-action")
+    if intro_start.count() == 1 and intro_start.is_visible():
+        intro_start.click()
+    page.wait_for_function("() => Boolean(window.__SIGNAL_FOUNDRY_QA__)")
+    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(true)")
+    page.wait_for_function(
+        "window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'",
+        timeout=6000,
+    )
+    mounted = page.evaluate(
+        """
+        () => ({
+          canvasCount: document.querySelectorAll("canvas").length,
+          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
+        })
+        """
+    )
+    assert mounted["canvasCount"] == 1
+    return mounted
+
+
+def exit_mutation_to_home(page: Page) -> dict[str, Any]:
+    page.locator("[data-testid='exit-game']").click()
+    page.locator("[role='dialog'] .secondary-action").click()
+    page.wait_for_selector("[data-testid='mode-home']")
+    page.wait_for_function(
+        "() => !window.__SIGNAL_FOUNDRY_QA__ && document.querySelectorAll('canvas').length === 0"
+    )
+    page.wait_for_timeout(100)
+    return page.evaluate(
+        """
+        () => ({
+          canvasCount: document.querySelectorAll("canvas").length,
+          qaPresent: Boolean(window.__SIGNAL_FOUNDRY_QA__),
+          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
+        })
+        """
+    )
+
+
+def assert_home_lifecycle(snapshot: dict[str, Any], baseline: dict[str, Any]) -> None:
+    assert snapshot["canvasCount"] == 0
+    assert not snapshot["qaPresent"]
+    lifecycle = snapshot["lifecycle"]
+    assert lifecycle["globalListenerCount"] == baseline["globalListenerCount"]
+    assert lifecycle["globalListeners"] == baseline["globalListeners"]
+    assert lifecycle["pendingAnimationFrames"] == baseline["pendingAnimationFrames"]
+    assert lifecycle["openAudioContexts"] == baseline["openAudioContexts"]
+
+
+def enter_mutation(page: Page) -> tuple[dict[str, Any], dict[str, Any]]:
+    page.goto(BASE_URL, wait_until="networkidle")
+    page.wait_for_timeout(100)
+    lifecycle_baseline = page.evaluate("window.__T15_LIFECYCLE__.snapshot()")
+    page.add_style_tag(
+        content="""
+          html[data-t15-grayscale="true"] #game {
+            filter: grayscale(1) !important;
+          }
+        """
+    )
+    mounted = start_mutation_from_home(page)
+    page.evaluate(AUTOPLAYER_SCRIPT)
+    return lifecycle_baseline, mounted
+
+
+def rect_script(selector: str) -> str:
+    return f"""
+      (() => {{
+        const node = document.querySelector({json.dumps(selector)});
+        if (!node) return null;
+        const box = node.getBoundingClientRect();
+        return {{left: box.left, top: box.top, right: box.right, bottom: box.bottom, width: box.width, height: box.height}};
+      }})()
+    """
+
+
+def collect(page: Page) -> dict[str, Any]:
+    return page.evaluate(
+        r"""
+        () => {
+          const qa = window.__SIGNAL_FOUNDRY_QA__;
+          const state = qa.getState();
+          const renderer = qa.getRendererSnapshot();
+          const rect = (selector) => {
+            const node = document.querySelector(selector);
+            if (!node) return null;
+            const box = node.getBoundingClientRect();
+            return {left: box.left, top: box.top, right: box.right, bottom: box.bottom, width: box.width, height: box.height};
+          };
+          const splitTracks = (value) => value === "none" ? [] : value.trim().split(/\s+/);
+          const statusRows = [...document.querySelectorAll(".mutation-status__effect")];
+          const buttons = [...document.querySelectorAll("button")].map((node) => node.getBoundingClientRect());
+          const timedItems = [
+            ["freeze", state.mutationFreezeTicks],
+            ["collapse", state.mutationCollapseTicks],
+            ["multiplier", state.mutationMultiplierTicks],
+          ].filter(([, ticks]) => ticks > 0).map(([item]) => item);
+          const rail = document.querySelector("[data-testid='side-rail']");
+          const ledger = document.querySelector(".mutation-status__ledger");
+          return {
+            viewport: {
+              width: innerWidth,
+              height: innerHeight,
+              scrollWidth: document.documentElement.scrollWidth,
+              scrollHeight: document.documentElement.scrollHeight,
+            },
+            state: {
+              mode: state.mode,
+              status: state.status,
+              phase: state.phase,
+              seed: state.seed,
+              pieceCount: state.pieceCount,
+              lines: state.lines,
+              active: state.active,
+              activeCarrier: state.mutationActiveCarrier,
+              lockedCarriers: state.mutationCarriers,
+              previewItem: renderer.previewMutationItem,
+              freezeTicks: state.mutationFreezeTicks,
+              collapseTicks: state.mutationCollapseTicks,
+              multiplierTicks: state.mutationMultiplierTicks,
+              multiplierFactor: state.mutationMultiplierFactor,
+              lastItem: state.mutationLastItem,
+              lastItemTicks: state.mutationLastItemTicks,
+              visibleBoard: state.board.slice(-20).map((row) => row.map((cell) => cell ?? ".").join("")),
+            },
+            renderer,
+            bounds: {
+              board: rect("[data-testid='board-frame']"),
+              stats: rect("[data-testid='stats']"),
+              status: rect("[data-testid='mutation-status']"),
+              next: rect("[data-testid='next-slot']"),
+              touch: rect("[data-testid='touch-rail']"),
+            },
+            layout: {
+              sideColumns: rail ? splitTracks(getComputedStyle(rail).gridTemplateColumns) : [],
+              ledgerColumns: ledger ? splitTracks(getComputedStyle(ledger).gridTemplateColumns) : [],
+              ledgerRows: ledger ? splitTracks(getComputedStyle(ledger).gridTemplateRows) : [],
+              statusRowCount: statusRows.length,
+              statusFontPixels: statusRows.map((row) => parseFloat(getComputedStyle(row.querySelector("b")).fontSize)),
+              timedItems,
+            },
+            assertions: {
+              canvasCount: document.querySelectorAll("canvas").length,
+              domCellCount: document.querySelectorAll("[data-game-cell]").length,
+              noHorizontalOverflow: document.documentElement.scrollWidth <= innerWidth,
+              noVerticalOverflow: document.documentElement.scrollHeight <= innerHeight,
+              minButtonWidth: buttons.length ? Math.min(...buttons.map((box) => box.width)) : null,
+              minButtonHeight: buttons.length ? Math.min(...buttons.map((box) => box.height)) : null,
+            },
+            lifecycle: window.__T15_LIFECYCLE__.snapshot(),
+          };
+        }
+        """
+    )
+
+
+def validate_common(snapshot: dict[str, Any]) -> None:
+    assertions = snapshot["assertions"]
+    assert assertions["canvasCount"] == 1
+    assert assertions["domCellCount"] == 0
+    assert assertions["noHorizontalOverflow"]
+    assert assertions["noVerticalOverflow"]
+    assert snapshot["renderer"]["previewLayerVisible"]
+    assert snapshot["renderer"]["previewPiece"] is not None
+    assert snapshot["state"]["mode"] == "sprint"
+    assert snapshot["state"]["status"] == "playing"
+    assert snapshot["layout"]["statusRowCount"] == len(snapshot["layout"]["timedItems"])
+    assert all(size >= 12 for size in snapshot["layout"]["statusFontPixels"])
+
+
+def capture(page: Page, name: str, *, settle_ms: int = 80, grayscale: bool = False) -> dict[str, Any]:
+    if grayscale:
+        page.evaluate("document.documentElement.dataset.t15Grayscale = 'true'")
+    try:
+        page.wait_for_timeout(settle_ms)
+        snapshot = collect(page)
+        validate_common(snapshot)
+        path = ARTIFACT_OUT / f"{name}.png"
+        page.screenshot(path=str(path), full_page=False)
+        snapshot["file"] = path.name
+        snapshot["sha256"] = sha256(path)
+        snapshot["grayscale"] = grayscale
+        return snapshot
+    finally:
+        if grayscale:
+            page.evaluate("delete document.documentElement.dataset.t15Grayscale")
+
+
+def item_sets(snapshot: dict[str, Any]) -> tuple[set[str], set[str], set[str]]:
+    state = snapshot["state"]
+    active = {state["activeCarrier"]["item"]} if state["activeCarrier"] else set()
+    preview = {state["previewItem"]} if state["previewItem"] else set()
+    locked = {carrier["item"] for carrier in state["lockedCarriers"]}
+    return active, preview, locked
+
+
+def timed_count(snapshot: dict[str, Any]) -> int:
+    return len(snapshot["layout"]["timedItems"])
+
+
+def change_language_to_english(page: Page) -> None:
+    page.locator("[data-testid='open-settings']").click()
+    page.locator("[data-testid='language-en']").click()
+    backdrop = page.locator("[data-testid='action-sheet-backdrop']")
+    box = backdrop.bounding_box()
+    assert box is not None
+    page.mouse.click(box["x"] + 4, box["y"] + 4)
+    page.wait_for_function("document.documentElement.lang === 'en'")
+    page.wait_for_selector("[data-testid='settings-sheet']", state="detached")
+    page.wait_for_function(
+        "window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'"
+    )
+
+
+def frame_budget(page: Page) -> dict[str, Any]:
+    render = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.benchmarkRender(180)")
+    frame_deltas = page.evaluate(
+        """
+        () => new Promise((resolve) => {
+          const deltas = [];
+          let previous = performance.now();
+          const sample = (now) => {
+            deltas.push(now - previous);
+            previous = now;
+            if (deltas.length >= 120) resolve(deltas.slice(1));
+            else requestAnimationFrame(sample);
+          };
+          requestAnimationFrame(sample);
+        })
+        """
+    )
+    ordered = sorted(frame_deltas)
+    p95 = ordered[min(len(ordered) - 1, int(len(ordered) * 0.95))]
+    dropped = sum(delta > 20 for delta in frame_deltas)
+    return {
+        "renderBenchmark": render,
+        "raf": {
+            "samples": len(frame_deltas),
+            "meanMs": statistics.fmean(frame_deltas),
+            "p95Ms": p95,
+            "maxMs": max(frame_deltas),
+            "over20MsCount": dropped,
+            "over20MsRatio": dropped / len(frame_deltas),
+        },
+    }
+
+
+def activation_capture_ready(snapshot: dict[str, Any]) -> bool:
+    renderer = snapshot["renderer"]
+    activation = renderer["mutationActivation"]
+    if activation is None:
+        return False
+    if activation["item"] == "bomb":
+        impact = next(
+            (phase for phase in activation["phases"] if phase["id"] == "impact"),
+            None,
+        )
+        return bool(
+            impact
+            and impact["active"]
+            and impact["progress"] <= 0.65
+            and activation["particlesEmitted"]
+            and renderer["mutationActiveParticleCount"] > 0
+        )
+    active_phases = [phase for phase in activation["phases"] if phase["active"]]
+    return bool(active_phases and min(phase["progress"] for phase in active_phases) <= 0.75)
+
+
+def run(context: BrowserContext) -> dict[str, Any]:
+    page = context.new_page()
+    errors = attach_error_capture(page)
+    lifecycle_baseline, first_mount = enter_mutation(page)
+
+    captures: list[dict[str, Any]] = []
+    page.set_viewport_size({"width": 1440, "height": 900})
+    idle = capture(page, "desktop-idle")
+    assert idle["layout"]["statusRowCount"] == 0
+    assert idle["bounds"]["status"] is None
+
+    page.set_viewport_size({"width": 390, "height": 844})
+    portrait_idle = capture(page, "portrait-idle")
+    assert len(portrait_idle["layout"]["sideColumns"]) == 2
+    page.set_viewport_size({"width": 1440, "height": 900})
+    captures.extend([idle, portrait_idle])
+
+    required_items = {"freeze", "collapse", "bomb", "multiplier"}
+    active_seen: set[str] = set()
+    preview_seen: set[str] = set()
+    locked_seen: set[str] = set()
+    activation_seen: set[str] = set()
+    timed_seen: set[int] = set()
+
+    for step in range(1, 501):
+        result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
+        if result.get("stopped"):
+            raise AssertionError(f"Autoplayer stopped at step {step}: {result}")
+        page.wait_for_timeout(18)
+        snapshot = collect(page)
+        validate_common(snapshot)
+        current_active, current_preview, current_locked = item_sets(snapshot)
+
+        for item in sorted(current_active - active_seen):
+            captures.append(capture(page, f"carrier-active-{item}", settle_ms=24))
+            active_seen.add(item)
+        for item in sorted(current_preview - preview_seen):
+            captures.append(capture(page, f"carrier-next-{item}", settle_ms=24))
+            captures.append(capture(page, f"carrier-next-{item}-grayscale", settle_ms=24, grayscale=True))
+            preview_seen.add(item)
+        for item in sorted(current_locked - locked_seen):
+            captures.append(capture(page, f"carrier-locked-{item}", settle_ms=24))
+            locked_seen.add(item)
+
+        activation = snapshot["renderer"]["mutationActivation"]
+        if (
+            activation
+            and activation["item"] not in activation_seen
+            and activation_capture_ready(snapshot)
+        ):
+            activation_capture = capture(
+                page,
+                f"activation-{activation['item']}",
+                settle_ms=0,
+            )
+            captured_activation = activation_capture["renderer"]["mutationActivation"]
+            assert captured_activation is not None
+            assert captured_activation["item"] == activation["item"]
+            if activation["item"] == "bomb":
+                captured_impact = next(
+                    phase
+                    for phase in captured_activation["phases"]
+                    if phase["id"] == "impact"
+                )
+                assert captured_impact["active"]
+                assert captured_activation["particlesEmitted"]
+                assert activation_capture["renderer"]["mutationActiveParticleCount"] > 0
+            captures.append(activation_capture)
+            activation_seen.add(activation["item"])
+
+        count = timed_count(snapshot)
+        if count in {1, 2, 3} and count not in timed_seen:
+            captures.append(capture(page, f"status-{count}"))
+            timed_seen.add(count)
+
+        if (
+            active_seen == required_items
+            and preview_seen == required_items
+            and locked_seen == required_items
+            and activation_seen == required_items
+            and timed_seen == {1, 2, 3}
+            and count == 3
+        ):
+            break
+    else:
+        raise AssertionError(
+            "Autoplayer exhausted: "
+            f"active={active_seen}, preview={preview_seen}, locked={locked_seen}, "
+            f"activations={activation_seen}, timed={timed_seen}"
+        )
+
+    page.set_viewport_size({"width": 390, "height": 844})
+    portrait = capture(page, "portrait-three-status")
+    assert timed_count(portrait) == 3
+    assert len(portrait["layout"]["sideColumns"]) == 3
+    assert len(portrait["layout"]["ledgerRows"]) == 3
+    captures.append(portrait)
+
+    page.set_viewport_size({"width": 844, "height": 390})
+    landscape = capture(page, "landscape-three-status")
+    assert timed_count(landscape) == 3
+    assert len(landscape["layout"]["ledgerColumns"]) == 3
+    captures.append(landscape)
+
+    page.emulate_media(reduced_motion="reduce")
+    reduced = capture(page, "landscape-three-status-reduced")
+    assert timed_count(reduced) == 3
+    captures.append(reduced)
+
+    page.emulate_media(reduced_motion="no-preference")
+    page.set_viewport_size({"width": 390, "height": 844})
+    change_language_to_english(page)
+    english = capture(page, "portrait-three-status-english")
+    assert timed_count(english) == 3
+    captures.append(english)
+
+    page.set_viewport_size({"width": 1440, "height": 900})
+    performance = frame_budget(page)
+    assert performance["renderBenchmark"]["p95Ms"] < 16.67
+    assert performance["raf"]["meanMs"] < 17.5
+    assert performance["raf"]["p95Ms"] < 20
+    assert performance["raf"]["over20MsRatio"] <= 0.05
+    assert performance["raf"]["maxMs"] < 50
+
+    page.evaluate("window.__t15Canvas = document.querySelector('canvas')")
+    before_restart = page.evaluate(
+        """
+        () => ({
+          canvasCount: document.querySelectorAll("canvas").length,
+          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
+        })
+        """
+    )
+    page.locator("[data-testid='open-settings']").click()
+    page.locator("[data-testid='settings-restart']").click()
+    page.locator("[data-testid='confirm-restart']").click()
+    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'", timeout=6000)
+    after_restart = page.evaluate(
+        """
+        () => ({
+          sameCanvas: window.__t15Canvas === document.querySelector("canvas"),
+          canvasCount: document.querySelectorAll("canvas").length,
+          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
+        })
+        """
+    )
+    same_canvas_restart = after_restart["sameCanvas"]
+    assert same_canvas_restart
+    assert before_restart["canvasCount"] == after_restart["canvasCount"] == 1
+    assert before_restart["lifecycle"]["globalListenerCount"] == after_restart["lifecycle"]["globalListenerCount"]
+    assert before_restart["lifecycle"]["globalListeners"] == after_restart["lifecycle"]["globalListeners"]
+    assert before_restart["lifecycle"]["pendingAnimationFrames"] == after_restart["lifecycle"]["pendingAnimationFrames"]
+    assert before_restart["lifecycle"]["openAudioContexts"] == after_restart["lifecycle"]["openAudioContexts"]
+
+    first_unmount = exit_mutation_to_home(page)
+    assert_home_lifecycle(first_unmount, lifecycle_baseline)
+
+    second_mount = start_mutation_from_home(page)
+    assert second_mount["canvasCount"] == first_mount["canvasCount"] == 1
+    assert second_mount["lifecycle"]["globalListenerCount"] == first_mount["lifecycle"]["globalListenerCount"]
+    assert second_mount["lifecycle"]["globalListeners"] == first_mount["lifecycle"]["globalListeners"]
+    assert second_mount["lifecycle"]["pendingAnimationFrames"] == first_mount["lifecycle"]["pendingAnimationFrames"]
+    second_unmount = exit_mutation_to_home(page)
+    assert_home_lifecycle(second_unmount, lifecycle_baseline)
+
+    return {
+        "fixedSeed": FIXED_RUN_SEED,
+        "autoplayPieces": max(capture["state"]["pieceCount"] for capture in captures),
+        "coverage": {
+            "active": sorted(active_seen),
+            "next": sorted(preview_seen),
+            "nextGrayscale": sorted(preview_seen),
+            "locked": sorted(locked_seen),
+            "activations": sorted(activation_seen),
+            "timedCounts": sorted(timed_seen),
+        },
+        "captures": captures,
+        "performance": performance,
+        "lifecycle": {
+            "baseline": lifecycle_baseline,
+            "firstMount": first_mount,
+            "beforeRestart": before_restart,
+            "afterRestart": after_restart,
+            "sameCanvasAfterRestart": same_canvas_restart,
+            "firstUnmount": first_unmount,
+            "secondMount": second_mount,
+            "secondUnmount": second_unmount,
+        },
+        "errors": errors,
+    }
+
+
+def assert_clean_publication_target(*, allowed_partial: Path | None = None) -> None:
+    allowed_resolved = allowed_partial.resolve() if allowed_partial is not None else None
+    stale_partials = [
+        path
+        for path in OUT.glob(".partial-*")
+        if allowed_resolved is None or path.resolve() != allowed_resolved
+    ]
+    generated = [
+        *OUT.glob("*.png"),
+        *stale_partials,
+        *(OUT / name for name in (
+            "phase5-browser-evidence.json",
+            "SHA256SUMS.txt",
+            "vite-stdout.log",
+            "vite-stderr.log",
+        ) if (OUT / name).exists()),
+    ]
+    assert generated == [], f"Refusing to mix prior evidence: {[path.name for path in generated]}"
+
+
+def write_and_publish_manifest(result: dict[str, Any]) -> None:
+    assert ARTIFACT_OUT != OUT
+    capture_names = [capture["file"] for capture in result["result"]["captures"]]
+    assert len(capture_names) == len(set(capture_names))
+    actual_png_names = {path.name for path in ARTIFACT_OUT.glob("*.png")}
+    assert actual_png_names == set(capture_names)
+    log_names = {"vite-stdout.log", "vite-stderr.log"}
+    assert all((ARTIFACT_OUT / name).is_file() for name in log_names)
+
+    result["captureScript"] = {
+        "file": Path(__file__).name,
+        "sha256": sha256(Path(__file__)),
+    }
+    result["artifactFiles"] = sorted({
+        Path(__file__).name,
+        *capture_names,
+        *log_names,
+        "phase5-browser-evidence.json",
+        "SHA256SUMS.txt",
+    })
+    manifest_path = ARTIFACT_OUT / "phase5-browser-evidence.json"
+    manifest_path.write_text(
+        json.dumps(result, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+        newline="\n",
+    )
+    checksum_files = sorted(
+        [
+            Path(__file__),
+            manifest_path,
+            *(ARTIFACT_OUT / name for name in capture_names),
+            *(ARTIFACT_OUT / name for name in log_names),
+        ],
+        key=lambda candidate: candidate.name,
+    )
+    sums = "\n".join(f"{sha256(path)}  {path.name}" for path in checksum_files) + "\n"
+    sums_path = ARTIFACT_OUT / "SHA256SUMS.txt"
+    sums_path.write_text(sums, encoding="utf-8", newline="\n")
+
+    expected_staged = {
+        *capture_names,
+        *log_names,
+        manifest_path.name,
+        sums_path.name,
+    }
+    actual_staged = {
+        path.name
+        for path in ARTIFACT_OUT.iterdir()
+        if path.is_file()
+    }
+    assert actual_staged == expected_staged
+    assert_clean_publication_target(allowed_partial=ARTIFACT_OUT)
+    publication_order = [
+        *sorted(capture_names),
+        *sorted(log_names),
+        manifest_path.name,
+        sums_path.name,
+    ]
+    assert publication_order[-1] == "SHA256SUMS.txt"
+    assert set(publication_order) == expected_staged
+    for name in publication_order:
+        (ARTIFACT_OUT / name).replace(OUT / name)
+
+
+def main() -> None:
+    global ARTIFACT_OUT
+    OUT.mkdir(parents=True, exist_ok=True)
+    assert_clean_publication_target()
+    ARTIFACT_OUT = Path(tempfile.mkdtemp(prefix=".partial-", dir=OUT))
+    try:
+        binding_before = candidate_binding()
+        with managed_vite_server() as server:
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch(
+                    headless=True,
+                    channel="chrome",
+                    args=["--use-gl=angle", "--use-angle=swiftshader", "--disable-extensions"],
+                )
+                try:
+                    context = browser.new_context(
+                        viewport={"width": 1440, "height": 900},
+                        device_scale_factor=1,
+                    )
+                    try:
+                        context.add_init_script(FIXED_SEED_INIT_SCRIPT)
+                        context.add_init_script(LIFECYCLE_INIT_SCRIPT)
+                        result = run(context)
+                    finally:
+                        context.close()
+                finally:
+                    browser.close()
+
+        assert result["errors"] == []
+        binding_after = candidate_binding()
+        assert binding_after["sourceCandidate"] == binding_before["sourceCandidate"]
+        assert server["ready"] and server["released"]
+        payload = {
+            "candidate": {
+                "before": binding_before,
+                "after": binding_after,
+            },
+            "server": server,
+            "result": result,
+        }
+        write_and_publish_manifest(payload)
+    finally:
+        shutil.rmtree(ARTIFACT_OUT, ignore_errors=True)
+        ARTIFACT_OUT = OUT
+
+    print(json.dumps(
+        {
+            "candidate": binding_before["sourceCandidate"],
+            "captures": len(result["captures"]),
+            "coverage": result["coverage"],
+            "performance": result["performance"],
+            "lifecycle": result["lifecycle"],
+            "errors": result["errors"],
+        },
+        ensure_ascii=False,
+        indent=2,
+    ))
+
+
+if __name__ == "__main__":
+    main()

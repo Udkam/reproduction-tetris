@@ -1,0 +1,5 @@
+docs/qa/evidence/t15-phase5/*.py text eol=lf
+docs/qa/evidence/t15-phase5/*.json text eol=lf
+docs/qa/evidence/t15-phase5/*.txt text eol=lf
+docs/qa/evidence/t15-phase5/*.log text eol=lf
+docs/qa/evidence/t15-phase5/*.png -text
