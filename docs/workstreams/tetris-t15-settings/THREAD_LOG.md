@@ -61,3 +61,38 @@ No pre-auditor modified, staged, committed, tested, built, or started a service.
 - No Puzzle selector redesign.
 
 Current state: `CONTRACT`; product source has not started.
+
+## Behavior/content checkpoint
+
+- Checkpoint task: `t15_settings_writer/behavior-content`.
+- Implementation base: pushed `c4465ef`.
+- Source candidate: `cc35738`.
+- Exact changed paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/ui/ActionSheet.tsx`
+  - `src/ui/localization.ts`
+- Delivered claims:
+  - the entry countdown uses one cancellable one-second step and freezes behind the
+    complete Settings/Restart/Exit sheet chain;
+  - ready-state Settings disables its no-op Restart action and resumes the same digit
+    without enabling input;
+  - Settings controls declare semantic row/column coordinates while range arrows and
+    legacy two-action sheets retain their existing behavior;
+  - rule copy is a typed `RuleFact` matrix with stable bilingual IDs;
+  - terminal leaderboards receive the active language;
+  - ordinary leaderboard rows expose exact semantic fields and defensively render at
+    most five real records.
+- Commands actually run after the last source change:
+  - `npm.cmd run test -- --run src/App.test.ts` — PASS, 1 file / 30 tests.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check` — PASS.
+- Direct evidence includes a five-second open-sheet countdown freeze at digits 3 and
+  2, one final runtime start, pending-timer unmount cancellation, all twenty Settings
+  coordinate routes, native range arrows, all four rule-ID matrices in both languages,
+  the English terminal call site, and exact five-row record fields for three scored
+  modes.
+- Blocker: none.
+- Next action: create the separate `layout-style` checkpoint; do not alter the accepted
+  behavior paths except for direct layout semantics/tests required by the frozen
+  Settings composition.
