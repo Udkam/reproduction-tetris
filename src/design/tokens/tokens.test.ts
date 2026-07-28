@@ -32,9 +32,9 @@ describe('TetraMorph Design System v1.0', () => {
 
   it('freezes role-specific typography', () => {
     expect(TYPOGRAPHY.fontFamily.brand).toContain('Playwrite NZ Basic');
-    expect(TYPOGRAPHY.fontFamily.ui).toContain('Space Grotesk');
+    expect(TYPOGRAPHY.fontFamily.ui).toContain('Space Grotesk Variable');
     expect(TYPOGRAPHY.fontFamily.ui).toContain('Noto Sans SC Variable');
-    expect(TYPOGRAPHY.fontFamily.mono).toContain('JetBrains Mono');
+    expect(TYPOGRAPHY.fontFamily.mono).toContain('JetBrains Mono Variable');
     expect(TYPOGRAPHY.weight.brand).toBe(400);
     expect(TYPOGRAPHY.scale).toEqual({
       display: { size: 28, weight: 700, lineHeight: 1.1 },
@@ -84,8 +84,10 @@ describe('TetraMorph Design System v1.0', () => {
     for (const [token, value] of Object.entries(cssTokens)) {
       expect(tokenStyles).toContain(`${token}: ${value};`);
     }
-    expect(tokenStyles).toContain('--font-body: "Space Grotesk", "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;');
-    expect(tokenStyles).toContain('--font-mono: "JetBrains Mono", "Noto Sans SC Variable", "Cascadia Mono", monospace;');
+    expect(tokenStyles).toContain('--font-body: "Space Grotesk Variable", "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;');
+    expect(tokenStyles).toContain('--font-mono: "JetBrains Mono Variable", "Noto Sans SC Variable", "Cascadia Mono", monospace;');
+    expect(mainSource).toContain("import '@fontsource-variable/space-grotesk/index.css';");
+    expect(mainSource).toContain("import '@fontsource-variable/jetbrains-mono/index.css';");
     expect(mainSource).toContain("import '@fontsource-variable/noto-sans-sc/index.css';");
     expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).not.toMatch(/(^|\n)\s*(display|grid-template|flex|position|width|height):/);
