@@ -1,0 +1,487 @@
+/*
+ * T15 Phase 3 — authoritative live HUD topology.
+ * This file loads after the historical page and Mutation layers. Keep it limited to
+ * the active game surface so Settings, modals and the Puzzle selector retain ownership.
+ */
+
+.play-surface {
+  grid-template-rows: minmax(0, 1fr);
+  width: min(760px, calc(100% - 24px));
+  margin: 12px auto;
+}
+
+.game-arena,
+.game-arena:has(.preview-rail--puzzle) {
+  grid-template-columns: auto 224px;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 22px;
+}
+
+.board-frame {
+  position: relative;
+  z-index: 7;
+  grid-column: 1;
+  grid-row: 1;
+  height: min(calc(100% - 8px), 920px);
+  max-width: calc(100vw - 300px);
+  aspect-ratio: 1 / 2;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.board-frame--countdown {
+  z-index: 8;
+}
+
+.entry-countdown {
+  inset: 0;
+}
+
+.game-side-panel,
+.game-side-panel--sprint,
+.game-side-panel:has(.preview-rail--puzzle) {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-self: center;
+  align-content: start;
+  gap: 14px;
+  width: 224px;
+  height: min(calc(100% - 8px), 920px);
+  max-height: none;
+  padding: 18px 0 18px 18px;
+  background: transparent;
+  border: 0;
+  pointer-events: none;
+}
+
+.info-rail,
+.game-side-panel--sprint .info-rail,
+.game-side-panel:has(.preview-rail--puzzle) .info-rail {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1;
+  align-content: start;
+  gap: 12px;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+}
+
+.run-stats,
+.run-stats--collapse,
+.run-stats--puzzle,
+.run-stats--mutation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto;
+  gap: 6px;
+  overflow: visible;
+  border: 0;
+}
+
+.run-stats [data-stat-role],
+.run-stats--collapse [data-stat-role],
+.run-stats--puzzle [data-stat-role],
+.run-stats--mutation [data-stat-role] {
+  display: grid;
+  grid-column: auto !important;
+  align-content: center;
+  min-width: 0;
+  min-height: 60px;
+  padding: 9px 10px;
+  background: color-mix(in srgb, var(--raised) 82%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface)) !important;
+  border-radius: 9px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.run-stats span {
+  margin-bottom: 3px;
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.run-stats strong {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.run-stats [data-stat-role="fall-cadence"] strong {
+  font-size: 16px;
+}
+
+.preview-rail,
+.game-side-panel--sprint .preview-rail,
+.game-side-panel:has(.preview-rail--puzzle) .preview-rail {
+  display: grid;
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-rows: auto 124px;
+  align-content: start;
+  min-width: 0;
+  min-height: 0;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.preview-rail .rail-label,
+.game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+.next-slot,
+.preview-rail--puzzle .next-slot--dual,
+.game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
+  width: 100%;
+  height: 124px;
+  min-height: 0;
+  padding: 0;
+}
+
+.preview-rail--puzzle .next-slot__segment-label b {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@media (max-width: 599px) {
+  .play-surface {
+    width: min(100%, calc(100% - 8px));
+    margin: 4px auto;
+    border-radius: 12px;
+  }
+
+  .game-arena,
+  .game-arena:has(.preview-rail--puzzle) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: clamp(156px, 23vh, 184px) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .board-frame {
+    grid-column: 1;
+    grid-row: 2;
+    height: min(100%, calc((100vw - 16px) * 2));
+    max-width: calc(100vw - 16px);
+  }
+
+  .game-side-panel,
+  .game-side-panel--sprint,
+  .game-side-panel:has(.preview-rail--puzzle) {
+    display: grid !important;
+    grid-column: 1;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1.18fr) minmax(124px, .82fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-self: stretch;
+    align-content: stretch;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    padding: 4px;
+    background: transparent;
+    border: 0;
+  }
+
+  .info-rail,
+  .game-side-panel--sprint .info-rail,
+  .game-side-panel:has(.preview-rail--puzzle) .info-rail {
+    display: grid !important;
+    grid-column: 1;
+    grid-row: 1;
+    grid-template-rows: auto auto;
+    align-content: start;
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .game-side-panel--sprint .run-stats,
+  .game-side-panel--sprint .preview-rail,
+  .run-stats,
+  .run-stats--collapse,
+  .run-stats--puzzle,
+  .run-stats--mutation {
+    display: grid !important;
+  }
+
+  .run-stats,
+  .run-stats--collapse,
+  .run-stats--puzzle,
+  .run-stats--mutation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    align-self: stretch;
+    gap: 4px;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .run-stats--puzzle {
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .run-stats [data-stat-role],
+  .run-stats--collapse [data-stat-role],
+  .run-stats--puzzle [data-stat-role],
+  .run-stats--mutation [data-stat-role] {
+    min-height: 0;
+    padding: 4px 6px;
+    border-radius: 7px;
+    box-shadow: none;
+  }
+
+  .run-stats span {
+    margin-bottom: 2px;
+    font-size: 10px;
+  }
+
+  .run-stats strong,
+  .run-stats [data-stat-role="fall-cadence"] strong {
+    font-size: 15px;
+  }
+
+  .preview-rail,
+  .game-side-panel--sprint .preview-rail,
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
+    grid-column: 2;
+    grid-row: 1;
+    grid-template-rows: 18px minmax(0, 1fr);
+    align-content: stretch;
+    height: 100%;
+    padding: 0;
+    border: 0;
+  }
+
+  .preview-rail .rail-label,
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
+    display: block;
+    align-self: center;
+    margin: 0;
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .next-slot,
+  .preview-rail--puzzle .next-slot--dual,
+  .game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .preview-rail--puzzle .next-slot__segment-label {
+    left: 9px;
+  }
+
+  .preview-rail--puzzle .next-slot__segment-label b {
+    font-size: 16px;
+  }
+
+  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    gap: 4px !important;
+    padding: 6px !important;
+  }
+
+  /*
+   * Mutation has one extra always-on instrument. Give it an explicit third
+   * column instead of allowing the historical mobile rules to hide the HUD or
+   * squeeze Next into the remaining pixels.
+   */
+  .game-side-panel.game-side-panel--sprint {
+    grid-template-columns: minmax(92px, .82fr) minmax(108px, 1fr) minmax(124px, 1.08fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 6px;
+    height: 100%;
+    padding: 4px !important;
+  }
+
+  .game-side-panel--sprint .info-rail {
+    display: contents !important;
+  }
+
+  .game-side-panel--sprint .run-stats {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+  }
+
+  .game-side-panel--sprint .run-stats [data-stat-role="fall-cadence"] strong {
+    font-size: 10.5px;
+    letter-spacing: -.06em;
+    white-space: nowrap;
+  }
+
+  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: stretch;
+    height: 100%;
+    padding: 5px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: 3px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
+    height: auto;
+    min-height: 0;
+    padding: 4px !important;
+  }
+
+  .game-side-panel--sprint .preview-rail {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+@media (min-width: 600px) and (max-height: 520px) {
+  .play-surface {
+    width: min(680px, calc(100% - 16px));
+    margin: 6px auto;
+    border-radius: 13px;
+  }
+
+  .game-arena,
+  .game-arena:has(.preview-rail--puzzle) {
+    grid-template-columns: auto 300px;
+    grid-template-rows: minmax(0, 1fr);
+    gap: 14px;
+    padding: 4px 14px;
+  }
+
+  .board-frame {
+    grid-column: 1;
+    grid-row: 1;
+    height: min(calc(100% - 4px), 920px);
+    max-width: calc(100vw - 340px);
+  }
+
+  .game-side-panel,
+  .game-side-panel--sprint,
+  .game-side-panel:has(.preview-rail--puzzle) {
+    grid-column: 2;
+    grid-row: 1;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    align-self: center;
+    align-content: stretch;
+    gap: 8px;
+    width: 300px;
+    height: min(calc(100% - 4px), 920px);
+    padding: 6px 0 6px 12px;
+  }
+
+  .info-rail,
+  .game-side-panel--sprint .info-rail,
+  .game-side-panel:has(.preview-rail--puzzle) .info-rail {
+    grid-column: 1;
+    grid-row: 1;
+    gap: 6px;
+  }
+
+  .run-stats [data-stat-role],
+  .run-stats--collapse [data-stat-role],
+  .run-stats--puzzle [data-stat-role],
+  .run-stats--mutation [data-stat-role] {
+    min-height: 52px;
+    padding: 5px 7px;
+    box-shadow: none;
+  }
+
+  .run-stats span {
+    font-size: 10px;
+  }
+
+  .run-stats strong,
+  .run-stats [data-stat-role="fall-cadence"] strong {
+    font-size: 15px;
+  }
+
+  .preview-rail,
+  .game-side-panel--sprint .preview-rail,
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-rows: 18px minmax(0, 1fr);
+    align-self: stretch;
+    height: 100%;
+    padding: 0;
+    border: 0;
+  }
+
+  .preview-rail .rail-label,
+  .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
+    display: block;
+    margin: 0;
+    font-size: 10px;
+  }
+
+  .next-slot,
+  .preview-rail--puzzle .next-slot--dual,
+  .game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .preview-rail--puzzle .next-slot__segment-label {
+    left: 7px;
+  }
+
+  .preview-rail--puzzle .next-slot__segment-label b {
+    font-size: 14px;
+  }
+
+  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
+    gap: 4px !important;
+    padding: 6px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
+    grid-template-columns: 12px minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) 2px;
+    min-height: 42px;
+    padding: 4px !important;
+  }
+
+  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > small {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry-countdown,
+  .entry-countdown__digit {
+    animation: none;
+    transition: none;
+  }
+}
