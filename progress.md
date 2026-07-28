@@ -47,8 +47,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Responsive candidate `d819d92` keeps the ordinary two-column Mutation HUD while idle,
   opens the third status column only while active, sizes one/two/three states without
   reserved empty tracks, and removes the obsolete mobile rule that hid stats/Next.
-  Focused App/HUD tests pass 40/40 and typecheck passes; static layout review and final
-  browser evidence remain open.
+  Focused App/HUD tests pass 40/40 and typecheck passes. Independent static layout
+  review accepts exact candidate `d819d92` with P0–P3 none; final browser, lifecycle,
+  performance, full-gate, and evidence review remain open.
 
 ## Non-negotiable boundaries
 
@@ -61,8 +62,6 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Resolve the independent responsive-layout disposition for `d819d92`; correct any
-  specificity, compact-English, or one/two/three-state finding before browser work.
 - When the machine resource budget permits, capture final-source desktop/portrait/
   landscape/reduced-motion Mutation states, including idle and one/two/three concurrent
   timers, then run the final full gates and lifecycle/performance evidence.

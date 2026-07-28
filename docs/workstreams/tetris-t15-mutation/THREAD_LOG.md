@@ -511,3 +511,25 @@
   evidence remain required.
 - Next action: audit exact candidate `d819d92`, then perform the browser matrix only
   when the resource budget permits.
+
+## 2026-07-29 — Responsive Mutation status static acceptance
+
+- Task ID: `T15-PHASE5-MUTATION-UI-RESPONSIVE-QA`.
+- Independent auditor: `t15_core_rules_r3`; exact product candidate `d819d92`,
+  documentation head `b2b8878`.
+- Disposition: `PASS`; P0–P3 none.
+- Accepted evidence:
+  - idle compact Mutation retains the ordinary two-column stats/Next layout because
+    no inactive status DOM exists;
+  - only `:has(.mutation-status)` opens the active three-column layout;
+  - the old higher-specificity one-column/124 px/hide-stats override is absent;
+  - compact one/two/three-state rows and short-height columns allocate from actual
+    children rather than a fixed three-track template;
+  - 12 px text floors, reduced-motion animation suppression, and Puzzle/other-mode
+    isolation remain intact.
+- Audit was read-only and did not claim browser, performance, lifecycle, test, or build
+  evidence.
+- Responsive status status: `ACCEPTED-LOCAL-STATIC`.
+- Next action: wait for the machine resource budget, then run the final-source
+  production browser matrix, dynamic frame/performance/lifecycle checks, full gates,
+  repeated final QA, acceptance record, cleanup, and push.

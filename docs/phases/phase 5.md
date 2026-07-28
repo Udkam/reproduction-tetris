@@ -55,8 +55,11 @@ state hash 不变及 ARIA 在 `active=null` 时仍包含附件；Core/App 定向
 响应式候选 `d819d92` 随后只修改冻结的三条 CSS/test 路径：空闲态沿用普通两列，
 活动态才以 `:has(.mutation-status)` 打开第三列，一至三个状态使用真实数量的
 auto rows/auto-fit columns，并移除会以更高 specificity 隐藏 stats/Next 的旧移动端
-覆盖。App/HUD 定向 40/40、typecheck 和 diff check 通过。该响应式候选仍待独立
-静态复核与最终浏览器证据，本次高 CPU 下没有启动 Vite 或 Chrome。
+覆盖。App/HUD 定向 40/40、typecheck 和 diff check 通过。本次高 CPU 下没有
+启动 Vite 或 Chrome，因此不声称动态证据。独立响应式审计接受精确候选
+`d819d92`，P0–P3 = 0：空闲/活动 specificity、
+一至三个真实轨道、短高 auto-fit、12 px 字号下限、reduced motion 和非异变
+模式隔离均通过。动态帧、60 FPS、生命周期和最终全量门禁仍未完成。
 
 ## 目标
 

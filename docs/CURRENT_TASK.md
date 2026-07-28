@@ -86,7 +86,10 @@ actual spawned carrier without changing the state hash; the ARIA test now exerci
   topology, only active timed state creates a third status column, and one/two/three
   effects allocate only real tracks. The obsolete high-specificity mobile override
   that hid stats/Next is removed. Focused App/HUD tests pass 40/40 and typecheck passes.
-  Independent responsive-layout review and final browser evidence are still required.
+  Independent responsive-layout review accepts exact candidate `d819d92` with
+  P0–P3 = 0, including idle/active specificity, one/two/three-state allocation,
+  short-height auto-fit, 12 px floors, reduced motion, and non-Mutation isolation.
+  Final-source browser, 60 FPS, lifecycle, full-gate, and evidence audits remain.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 
