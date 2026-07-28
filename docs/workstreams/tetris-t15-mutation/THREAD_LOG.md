@@ -584,3 +584,29 @@
   until that slot is free; source-bound static work remains serialized.
 - Next action: checkpoint this contract, implement/test only the read-only snapshot,
   then correct the harness and hand the exact evidence candidate to independent audit.
+
+## 2026-07-29 — Source-bound evidence harness candidate
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-HARNESS`.
+- Base SHA: contract `19264f8`; product candidate
+  `f6fa06ea1b123f54bffff1885741e3ffbd551569`.
+- Product checkpoint `f6fa06e` changes only `TetrisRenderer.ts` and its direct test:
+  the DEV snapshot exposes immutable current activation phases, queued items, active
+  particle count, and Collapse trail; focused renderer tests pass 24/24 and typecheck
+  passes.
+- Current uncommitted evidence paths are
+  `docs/qa/evidence/t15-phase5/capture_phase5.py` and root `.gitattributes`.
+  The latter applies LF/binary attributes only to this evidence directory.
+- Static harness proof completed:
+  - Python compile passes and candidate binding reports a clean product tree exactly
+    equal to `f6fa06e`;
+  - a deliberately occupied 4178 rejects the run, removes its fresh partial directory,
+    leaves the pre-existing PID 23856 untouched, and launches no browser;
+  - fresh artifact names equal the manifest list, prior or foreign partials fail
+    closed, and `SHA256SUMS.txt` publishes last as the completion marker;
+  - manifest/checksum text uses explicit LF, preventing `core.autocrlf=true` hash drift.
+- Browser evidence has not run. Two independent static auditors are rechecking the
+  corrected harness; no dynamic visual, FPS, lifecycle, evidence, or Phase-5 acceptance
+  claim is made.
+- Next action: resolve any remaining static finding, checkpoint the harness, release
+  the exact stale TetraMorph Vite process, then run the managed candidate-bound capture.

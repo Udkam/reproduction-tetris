@@ -95,12 +95,14 @@ actual spawned carrier without changing the state hash; the ARIA test now exerci
   Final-evidence preflight then rejected the first capture harness before browser launch:
   it could attach to an unrelated service on port 4178, label a queued flash from Core's
   latest item instead of the renderer's current FIFO item, miss Bomb's impact boundary,
-  and prove only one mount/unmount. The source candidate remains `d819d92`; a bounded
-  evidence-observability slice is now open only for `TetrisRenderer` snapshot/test plus
-  the evidence harness. It must add read-only current-flash/queue/particle/Collapse-trail
-  telemetry, own and stop its Vite process, assert real rAF mean/p95, capture grayscale,
-  and compare two mount/unmount cycles with the home baseline. No gameplay or visual
-  behavior is reopened by this slice.
+  and prove only one mount/unmount. Read-only observability candidate `f6fa06e` now
+  exposes current Renderer FIFO/timeline/particle/Collapse-trail state and directly
+  tests its immutability without reopening gameplay or visuals. The remaining bounded
+  evidence writer owns only `docs/qa/evidence/t15-phase5/capture_phase5.py` plus root
+  `.gitattributes` rules scoped exactly to that evidence directory. The harness must
+  own and stop its Vite process, assert real rAF mean/p95, capture grayscale, compare
+  two mount/unmount cycles with the home baseline, isolate a fresh partial artifact
+  set, and publish its checksum only as the final completion marker.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 

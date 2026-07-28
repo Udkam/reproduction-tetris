@@ -161,6 +161,8 @@ mount/unmount。此修正不得注入状态、改变玩法或 VFX 几何。
    - `src/game/render/TetrisRenderer.ts`
    - `src/game/render/TetrisRenderer.test.ts`
    - `docs/qa/evidence/t15-phase5/capture_phase5.py`
+   - root `.gitattributes`, limited to LF/binary rules for
+     `docs/qa/evidence/t15-phase5/*`
 
 同一 Core writer 串行完成前两个共享 `engine.ts` / `sprint.test.ts` 检查点；
 Renderer 等 Core 接口稳定后再开始；UI 等 Core 和 Renderer 的 Next/计时接口

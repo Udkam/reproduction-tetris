@@ -206,3 +206,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Focused Core tests pass 25/25; typecheck passes. The prescribed action client
   entered real Mutation play, screenshots/state were inspected, and port 4178 plus
   its temporary browser processes were released.
+
+## 2026-07-29 Phase 5 evidence repair
+
+- Read-only renderer observability candidate `f6fa06e` is committed and directly
+  tested; it does not change Core or visible behavior.
+- The evidence harness now owns a strict-port Vite process, reads the Renderer FIFO
+  for activation labels, waits for Bomb impact particles, captures grayscale Next,
+  samples real rAF cadence, and checks restart plus two mount/unmount cycles.
+- Fresh artifacts are isolated in one partial set. Phase-5 text evidence is LF-pinned
+  and the checksum is published last, so Windows line-ending conversion cannot create
+  a false durable hash.
+- Static audits are still running. Next: checkpoint the accepted harness, stop the
+  exact old 4178 TetraMorph listener, then run and visually inspect the full evidence
+  matrix before any Phase-5 acceptance.

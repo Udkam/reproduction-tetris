@@ -269,7 +269,11 @@ active-particle count, and Collapse settlement columns — but may not mutate or
 Core or visual state. Evidence labels an activation frame from that renderer-owned FIFO,
 captures Bomb after its real impact boundary, and repeats mount/unmount twice against a
 home-screen listener/RAF/audio baseline. A renderer microbenchmark alone does not prove
-60 FPS; real `requestAnimationFrame` mean and p95 are separately bounded.
+60 FPS; real `requestAnimationFrame` mean and p95 are separately bounded. The evidence
+run starts from a fresh partial set, verifies its exact manifest file set, and publishes
+`SHA256SUMS.txt` only after data and manifest are present. Text artifacts in this exact
+Phase-5 evidence directory are pinned to LF so Windows `core.autocrlf` cannot invalidate
+their committed hashes; this scoped attribute may not alter product-source EOL policy.
 
 ## T13.16 Modal compositor integrity
 
