@@ -68,6 +68,11 @@ a restrained debris/afterglow endpoint. One through four lines scale the same fa
 The effect never flashes the whole screen, blocks input, hides the next decision, or
 changes Core timing; reduced motion keeps a location-specific static confirmation.
 
+The current execution pauses after Phase 5 Mutation is independently accepted, pushed,
+and cleaned. Phase 6 and the fifty-level Puzzle contract remain frozen design targets,
+but no Phase-6/Puzzle source or evidence work starts until the player explicitly
+resumes after that pause.
+
 ## Phase 1 — TetraMorph Design System v1.0
 
 **Scope:** a foundation pass only. It centralises the existing interface language

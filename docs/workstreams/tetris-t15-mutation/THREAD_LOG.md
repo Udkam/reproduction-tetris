@@ -648,3 +648,15 @@
 - Next action: when the CPU budget permits, run final gates serially and execute the
   managed harness, then inspect every generated frame and submit exact artifacts to
   fresh visual/evidence QA.
+
+## 2026-07-29 — Rollback density and Phase-5 pause boundary
+
+- Player instruction: increase rollback density; after Phase 5 is accepted and pushed,
+  pause before Phase 6.
+- Current evidence: `git rev-list --count fd7ef8d..HEAD` reports 38 Phase-5 commits;
+  `origin/main..HEAD` reports 37 local commits not yet visible remotely.
+- No existing checkpoint will be squashed, amended, rebased away, or force-pushed.
+- Remaining commits are split into final gate logs/manifest, raw browser output,
+  browser manifest/checksum, each independent QA verdict, each correction/re-evidence,
+  and coordinator acceptance/cleanup.
+- Phase 6 and Puzzle 50 remain unstarted after the Phase-5 push until explicit resume.

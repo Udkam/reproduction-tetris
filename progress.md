@@ -231,3 +231,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Old project Vite PID 23856/parent 5664 was released; port 4178 and Chrome are free.
 - Dynamic capture remains intentionally unrun while system CPU is above 90%; default
   user Edge processes were inspected and preserved.
+
+## 2026-07-29 Rollback density adjustment
+
+- Phase 5 already contains 38 commits after the Phase-4 recovery point, with 37 still
+  local and therefore not visible on `origin/main`.
+- Remaining gates, raw browser files, browser index, each QA verdict, corrections, and
+  final acceptance will stay in separate commits; no squash or history rewrite.
+- After accepted Phase 5 is pushed and resources are clean, stop before Phase 6.

@@ -9,7 +9,9 @@ the coordinator records its acceptance, verifies resource cleanup, and pushes th
 accepted checkpoint as a remote recovery point before the next phase begins. The
 existing Puzzle library layout is explicitly excluded from redesign; adapting its
 count/progression data for fifty levels is allowed, but its visual composition must
-not be replaced.
+not be replaced. By the player's latest sequencing instruction, complete and push
+Phase 5, then pause. Phase 6 and Puzzle 50 remain in the overall goal but must not
+start until a later explicit resume.
 
 **Current execution state:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
@@ -108,6 +110,19 @@ actual spawned carrier without changing the state hash; the ARIA test now exerci
   lifecycle evidence, final gates, evidence-integrity review, and acceptance remain.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
+
+The remaining Phase-5 chain is deliberately fine-grained and may not be squashed:
+
+1. raw final typecheck/test/build logs plus their source-bound gate manifest;
+2. raw browser PNG/Vite output from the managed run;
+3. browser manifest and checksums as a separate completion checkpoint;
+4. independent rules, visual, and evidence verdict records as separate checkpoints;
+5. each required correction and refreshed evidence in its own checkpoint;
+6. coordinator acceptance/changelog, then verified cleanup and non-force push.
+
+There are currently 38 commits after Phase-4 recovery `fd7ef8d` (37 ahead of
+`origin/main`). They remain linear rollback nodes; no squash or history rewrite is
+authorized.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

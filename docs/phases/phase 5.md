@@ -181,6 +181,19 @@ Renderer 等 Core 接口稳定后再开始；UI 等 Core 和 Renderer 的 Next/�
 Core/性能、VFX、UI 必须分别提交和可回退；后一 writer 不覆盖前一 writer 未验收
 的共享路径。
 
+### 剩余动态证据检查点
+
+Phase 5 不以一个大 evidence commit 收口。最终动态阶段按以下顺序保留独立回退点：
+
+1. `gates`：最终 typecheck、完整测试、build 原始日志及 source-bound gate manifest；
+2. `browser-raw`：受管 Vite 日志与完整 PNG 批次，不含验收结论；
+3. `browser-index`：JSON manifest 与 SHA256SUMS 完成标记；
+4. `qa-rules`、`qa-visual`、`qa-evidence`：三份独立只读结论分别记录；
+5. 每一修正、重跑证据、复审各自提交；
+6. `acceptance`：协调者状态/changelog；随后清理资源并非强制 push。
+
+以上检查点不得 squash。Phase 5 push 后立即暂停，不获取 Phase 6 writer 路径。
+
 ## 验收
 
 直接测试覆盖 28 组合、Next 预测等于实际生成、多事件不丢、10 秒重置、2×→4×、
