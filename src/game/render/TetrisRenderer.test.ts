@@ -24,6 +24,13 @@ type RendererInternals = {
   impact: number;
   rotationPulse: number;
   boardShift: unknown;
+  survivalDebrisPresentation: Map<number, { x: number; y: number }>;
+  survivalStoneCues: Array<{
+    kind: 'spawn' | 'land';
+    cells: readonly Cell[];
+    elapsed: number;
+    duration: number;
+  }>;
   mutationFlash: {
     item: MutationItem;
     elapsed: number;
@@ -39,7 +46,13 @@ type RendererInternals = {
   collapseTrail: { paths: readonly { x: number; fromY: number; toY: number }[]; elapsed: number; duration: number } | null;
   consumeEvents: (events: readonly GameEvent[]) => void;
   advanceEffects: (deltaMs: number) => void;
+  advanceSurvivalDebrisPresentation: (state: GameState, deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
+  drawSurvivalPressureEffects: (
+    graphics: unknown,
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
   mutationMaterial: (item: MutationItem) => PieceMaterial;
   materialFor: (material: typeof BEDROCK_CELL | typeof SURVIVAL_STONE_CELL) => PieceMaterial;
   drawMutationCarrierCore: (
@@ -126,7 +139,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toBeNull();
   });
 
-  it('routes Survival debris through a distinct stone material and gives its events a bounded impact cue', () => {
+  it('routes Survival debris through a distinct stone material without dropping simultaneous local cues', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     expect(internals.materialFor(BEDROCK_CELL)).toBe(BEDROCK_MATERIAL);
@@ -134,9 +147,81 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.consumeEvents([{ type: 'survival-stones-spawned', cells: [{ x: 2, y: 20 }], intervalSeconds: 20, nextIntervalSeconds: 19 }]);
     expect(internals.impact).toBeGreaterThan(0);
-    internals.impact = 0;
     internals.consumeEvents([{ type: 'survival-stones-landed', cells: [{ x: 2, y: 39 }] }]);
     expect(internals.impact).toBeGreaterThan(0.4);
+    expect(internals.survivalStoneCues).toMatchObject([
+      { kind: 'spawn', cells: [{ x: 2, y: 20 }], elapsed: 0, duration: 340 },
+      { kind: 'land', cells: [{ x: 2, y: 39 }], elapsed: 0, duration: 420 },
+    ]);
+
+    internals.advanceEffects(340);
+    expect(internals.survivalStoneCues).toMatchObject([
+      { kind: 'land', elapsed: 340, duration: 420 },
+    ]);
+    internals.advanceEffects(80);
+    expect(internals.survivalStoneCues).toHaveLength(0);
+  });
+
+  it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const state = {
+      mode: 'race',
+      survivalDebris: [{ id: 7, x: 2, y: 20 }],
+    } as unknown as GameState;
+
+    internals.advanceSurvivalDebrisPresentation(state, 16);
+    expect(internals.survivalDebrisPresentation.get(7)).toEqual({ x: 2, y: 20 });
+
+    internals.advanceSurvivalDebrisPresentation({
+      ...state,
+      survivalDebris: [{ id: 7, x: 2, y: 21 }],
+    }, 16);
+    expect(internals.survivalDebrisPresentation.get(7)?.y).toBeGreaterThan(20);
+    expect(internals.survivalDebrisPresentation.get(7)?.y).toBeLessThan(21);
+
+    renderer.setOptions({ reducedMotion: true });
+    internals.advanceSurvivalDebrisPresentation({
+      ...state,
+      survivalDebris: [{ id: 7, x: 2, y: 21 }],
+    }, 16);
+    expect(internals.survivalDebrisPresentation.get(7)).toEqual({ x: 2, y: 21 });
+
+    internals.advanceSurvivalDebrisPresentation({ ...state, survivalDebris: [] }, 16);
+    expect(internals.survivalDebrisPresentation.size).toBe(0);
+  });
+
+  it('draws one precise entry marker per warned Survival column', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const starts: Array<[number, number]> = [];
+    const strokes: unknown[] = [];
+    const graphics = {
+      circle: () => graphics,
+      fill: () => graphics,
+      moveTo: (x: number, y: number) => {
+        starts.push([x, y]);
+        return graphics;
+      },
+      lineTo: () => graphics,
+      stroke: (options: unknown) => {
+        strokes.push(options);
+        return graphics;
+      },
+    };
+
+    internals.drawSurvivalPressureEffects(
+      graphics,
+      {
+        mode: 'race',
+        survivalDebrisWarningColumns: [2, 7],
+      } as unknown as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+
+    expect(starts).toContainEqual([50, 2]);
+    expect(starts).toContainEqual([150, 2]);
+    expect(strokes).toHaveLength(2);
   });
 
   it('renders one static item-coloured activation frame for reduced motion', () => {

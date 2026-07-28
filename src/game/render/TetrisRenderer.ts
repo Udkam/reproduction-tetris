@@ -114,6 +114,18 @@ interface BoardShift {
   duration: number;
 }
 
+interface SurvivalDebrisPresentation {
+  x: number;
+  y: number;
+}
+
+interface SurvivalStoneCue {
+  kind: 'spawn' | 'land';
+  cells: readonly Cell[];
+  elapsed: number;
+  duration: number;
+}
+
 interface MutationFlash {
   item: MutationItem;
   elapsed: number;
@@ -202,6 +214,9 @@ export interface RendererSnapshot {
   presentation: { x: number; y: number; offsetX: number; offsetY: number } | null;
   boardShiftOffsetY: number;
   mutationFilters: { freeze: boolean; collapse: boolean; activeCount: number };
+  survivalDebris: Array<{ id: number; x: number; y: number; presentationY: number }>;
+  survivalDebrisWarningColumns: number[];
+  survivalStoneCueCount: number;
 }
 
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
@@ -255,6 +270,8 @@ export class TetrisRenderer {
   private impact = 0;
   private rotationPulse = 0;
   private boardShift: BoardShift | null = null;
+  private readonly survivalDebrisPresentation = new Map<number, SurvivalDebrisPresentation>();
+  private readonly survivalStoneCues: SurvivalStoneCue[] = [];
   private mutationFlash: MutationFlash | null = null;
   private readonly mutationFlashQueue: MutationFlashRequest[] = [];
   private mutationArrival: MutationArrival | null = null;
@@ -324,6 +341,9 @@ export class TetrisRenderer {
     presentation: null,
     boardShiftOffsetY: 0,
     mutationFilters: { freeze: false, collapse: false, activeCount: 0 },
+    survivalDebris: [],
+    survivalDebrisWarningColumns: [],
+    survivalStoneCueCount: 0,
   };
 
   async init(host: HTMLElement): Promise<void> {
@@ -385,6 +405,7 @@ export class TetrisRenderer {
     this.consumeEvents(events, state, this.previousBoard, this.collapseWasActive);
     this.syncMutationFields(state);
     this.advanceEffects(deltaMs);
+    this.advanceSurvivalDebrisPresentation(state, deltaMs);
     this.advancePresentation(state, deltaMs);
     const layout = this.calculateLayout(app.screen.width, app.screen.height, state.status === 'ready');
     this.syncMutationFilters(state, layout);
@@ -437,6 +458,7 @@ export class TetrisRenderer {
     this.mutationArrival = null;
     this.activeMutationCarrierId = null;
     this.collapseTrail = null;
+    this.clearSurvivalVisualState();
     this.clearMutationVisualState();
     this.previousBoard = null;
     this.collapseWasActive = false;
@@ -545,18 +567,23 @@ export class TetrisRenderer {
         offsetY: boardShiftOffsetY,
       });
     }
-    const visibleSurvivalDebris = state.mode === 'race'
-      ? state.survivalDebris
-        .filter((stone) => stone.y >= VISIBLE_START_ROW && stone.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
-        .map((stone) => ({ x: stone.x, y: stone.y - VISIBLE_START_ROW }))
-      : [];
-    if (visibleSurvivalDebris.length > 0) {
-      this.drawCellGroups(graphics, visibleSurvivalDebris, SURVIVAL_STONE_CELL, 1, {
-        originX: layout.x,
-        originY: layout.y,
-        unit: layout.cell,
-        offsetY: boardShiftOffsetY,
-      });
+    if (state.mode === 'race') {
+      for (const stone of state.survivalDebris) {
+        const presented = this.survivalDebrisPresentation.get(stone.id) ?? stone;
+        if (presented.y < VISIBLE_START_ROW - 1 || presented.y >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+        this.drawCellGroups(
+          graphics,
+          [{ x: stone.x, y: stone.y - VISIBLE_START_ROW }],
+          SURVIVAL_STONE_CELL,
+          1,
+          {
+            originX: layout.x,
+            originY: layout.y,
+            unit: layout.cell,
+            offsetY: boardShiftOffsetY + (presented.y - stone.y) * layout.cell,
+          },
+        );
+      }
     }
     this.drawPuzzleTargetMarkers(graphics, state, layout, boardShiftOffsetY);
     this.drawMutationCarrierMaterials(graphics, state, layout, boardShiftOffsetY);
@@ -1241,6 +1268,88 @@ export class TetrisRenderer {
     graphics.stroke({ color, alpha, width });
   }
 
+  private drawSurvivalPressureEffects(
+    graphics: Graphics,
+    state: GameState,
+    layout: BoardLayout,
+  ): void {
+    if (state.mode !== 'race') return;
+
+    const warningPulse = this.options.reducedMotion
+      ? 1
+      : 0.72 + Math.sin(this.mutationClockMs / 115) * 0.18;
+    const warningColor = 0xe5b86a;
+    for (const column of state.survivalDebrisWarningColumns) {
+      const centerX = layout.x + (column + 0.5) * layout.cell;
+      const top = layout.y + Math.max(2, layout.cell * 0.08);
+      const markerWidth = layout.cell * 0.28;
+      const markerBottom = top + layout.cell * 0.58;
+      graphics
+        .circle(centerX, top + layout.cell * 0.08, Math.max(2, layout.cell * 0.09))
+        .fill({ color: warningColor, alpha: 0.18 * warningPulse });
+      graphics
+        .moveTo(centerX, top)
+        .lineTo(centerX, markerBottom)
+        .moveTo(centerX - markerWidth, markerBottom - markerWidth)
+        .lineTo(centerX, markerBottom)
+        .lineTo(centerX + markerWidth, markerBottom - markerWidth)
+        .stroke({
+          color: warningColor,
+          alpha: 0.7 * warningPulse,
+          width: Math.max(1.4, layout.cell * 0.065),
+        });
+    }
+
+    for (const cue of this.survivalStoneCues) {
+      const progress = Math.min(1, cue.elapsed / cue.duration);
+      const eased = easeOutCubic(progress);
+      const alpha = this.options.reducedMotion ? 0.58 : Math.max(0, 1 - eased);
+      for (const cell of cue.cells) {
+        const visibleY = cell.y - VISIBLE_START_ROW;
+        if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
+        const centerX = layout.x + (cell.x + 0.5) * layout.cell;
+        const centerY = layout.y + (visibleY + 0.5) * layout.cell;
+        if (cue.kind === 'spawn') {
+          const radius = layout.cell * (this.options.reducedMotion ? 0.42 : 0.26 + eased * 0.34);
+          graphics
+            .circle(centerX, centerY, radius)
+            .stroke({
+              color: SURVIVAL_STONE_MATERIAL.innerEdge,
+              alpha: alpha * 0.78,
+              width: Math.max(1, layout.cell * 0.055),
+            });
+          if (!this.options.reducedMotion) {
+            const streak = layout.cell * (0.28 + (1 - progress) * 0.28);
+            graphics
+              .moveTo(centerX - layout.cell * 0.2, centerY - streak)
+              .lineTo(centerX - layout.cell * 0.2, centerY - layout.cell * 0.08)
+              .moveTo(centerX + layout.cell * 0.2, centerY - streak * 0.82)
+              .lineTo(centerX + layout.cell * 0.2, centerY - layout.cell * 0.08)
+              .stroke({
+                color: warningColor,
+                alpha: alpha * 0.5,
+                width: Math.max(1, layout.cell * 0.04),
+              });
+          }
+        } else {
+          const radius = layout.cell * (this.options.reducedMotion ? 0.44 : 0.2 + eased * 0.52);
+          graphics
+            .circle(centerX, centerY + layout.cell * 0.3, radius)
+            .stroke({
+              color: SURVIVAL_STONE_MATERIAL.edge,
+              alpha: alpha * 0.72,
+              width: Math.max(1.2, layout.cell * 0.065),
+            });
+          const dustOffset = layout.cell * (0.22 + eased * 0.26);
+          graphics
+            .circle(centerX - dustOffset, centerY + layout.cell * 0.34, Math.max(1.2, layout.cell * 0.07))
+            .circle(centerX + dustOffset, centerY + layout.cell * 0.34, Math.max(1.2, layout.cell * 0.07))
+            .fill({ color: SURVIVAL_STONE_MATERIAL.innerEdge, alpha: alpha * 0.36 });
+        }
+      }
+    }
+  }
+
   private drawEffects(state: GameState, layout: BoardLayout): void {
     const graphics = this.effectGraphics;
     const mutationGraphics = this.mutationGraphics;
@@ -1250,6 +1359,7 @@ export class TetrisRenderer {
       .fill({ color: 0xffffff, alpha: 1 });
     graphics.clear();
     mutationGraphics.clear();
+    this.drawSurvivalPressureEffects(graphics, state, layout);
     this.drawActiveMutationAtmosphere(mutationGraphics, state, layout);
     if (this.mutationFlash) {
       this.drawMutationActivationEffect(mutationGraphics, this.mutationFlash, layout);
@@ -2317,6 +2427,7 @@ export class TetrisRenderer {
       } else if (event.type === 'restarted') {
         this.presentation = null;
         this.boardShift = null;
+        this.clearSurvivalVisualState();
         this.mutationFlash = null;
         this.mutationArrival = null;
         this.activeMutationCarrierId = null;
@@ -2334,6 +2445,7 @@ export class TetrisRenderer {
         this.impact = 0;
         this.rotationPulse = 0;
         this.boardShift = null;
+        this.clearSurvivalVisualState();
         this.mutationFlash = null;
         this.mutationArrival = null;
         this.activeMutationCarrierId = null;
@@ -2367,8 +2479,10 @@ export class TetrisRenderer {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
       } else if (event.type === 'survival-stones-spawned') {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.1 : 0.24);
+        this.enqueueSurvivalStoneCue('spawn', event.cells);
       } else if (event.type === 'survival-stones-landed') {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.18 : 0.46);
+        this.enqueueSurvivalStoneCue('land', event.cells);
       } else if (event.type === 'mutation-activated') {
         this.enqueueMutationFlash({
           item: event.item,
@@ -2452,8 +2566,58 @@ export class TetrisRenderer {
       this.collapseTrail.elapsed += deltaMs;
       if (this.collapseTrail.elapsed >= this.collapseTrail.duration) this.collapseTrail = null;
     }
+    for (let index = this.survivalStoneCues.length - 1; index >= 0; index -= 1) {
+      const cue = this.survivalStoneCues[index]!;
+      cue.elapsed += Math.max(0, deltaMs);
+      if (cue.elapsed >= cue.duration) this.survivalStoneCues.splice(index, 1);
+    }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);
+  }
+
+  private enqueueSurvivalStoneCue(kind: SurvivalStoneCue['kind'], cells: readonly Cell[]): void {
+    if (cells.length === 0) return;
+    this.survivalStoneCues.push({
+      kind,
+      cells: cells.map((cell) => ({ ...cell })),
+      elapsed: 0,
+      duration: this.options.reducedMotion ? 90 : kind === 'spawn' ? 340 : 420,
+    });
+    if (this.survivalStoneCues.length > 8) {
+      this.survivalStoneCues.splice(0, this.survivalStoneCues.length - 8);
+    }
+  }
+
+  private clearSurvivalVisualState(): void {
+    this.survivalDebrisPresentation.clear();
+    this.survivalStoneCues.length = 0;
+  }
+
+  private advanceSurvivalDebrisPresentation(state: GameState, deltaMs: number): void {
+    if (state.mode !== 'race') {
+      this.clearSurvivalVisualState();
+      return;
+    }
+
+    const visibleIds = new Set<number>();
+    for (const stone of state.survivalDebris) {
+      visibleIds.add(stone.id);
+      const current = this.survivalDebrisPresentation.get(stone.id);
+      if (
+        !current
+        || this.options.reducedMotion
+        || Math.abs(current.x - stone.x) + Math.abs(current.y - stone.y) > 2.5
+      ) {
+        this.survivalDebrisPresentation.set(stone.id, { x: stone.x, y: stone.y });
+        continue;
+      }
+      const next = approachPresentationPoint(current, stone, deltaMs, 112);
+      current.x = next.x;
+      current.y = next.y;
+    }
+    for (const id of this.survivalDebrisPresentation.keys()) {
+      if (!visibleIds.has(id)) this.survivalDebrisPresentation.delete(id);
+    }
   }
 
   private advancePresentation(state: GameState, deltaMs: number): void {
@@ -2514,6 +2678,14 @@ export class TetrisRenderer {
         collapse: this.mutationFilterState.collapse,
         activeCount: Number(this.mutationFilterState.freeze) + Number(this.mutationFilterState.collapse),
       },
+      survivalDebris: state.mode === 'race'
+        ? state.survivalDebris.map((stone) => ({
+            ...stone,
+            presentationY: this.survivalDebrisPresentation.get(stone.id)?.y ?? stone.y,
+          }))
+        : [],
+      survivalDebrisWarningColumns: state.mode === 'race' ? [...state.survivalDebrisWarningColumns] : [],
+      survivalStoneCueCount: this.survivalStoneCues.length,
     };
   }
 }
