@@ -382,7 +382,7 @@ describe('independent Survival stone stream', () => {
     expect(dropDistance(state)).toBe(0);
   });
 
-  it('locks a stone as a clearable cell and preserves an active player piece through its clear', () => {
+  it('locks a stone as a clearable cell, scores its clear, and preserves the active player piece', () => {
     let board = createBoard();
     for (let x = 0; x < 9; x += 1) board = setCell(board, x, BOARD_HEIGHT - 1, 'J');
     let transition = dispatch({
@@ -403,6 +403,13 @@ describe('independent Survival stone stream', () => {
     for (let index = 0; index < LINE_CLEAR_DELAY_TICKS; index += 1) transition = dispatch(transition.state, { type: 'tick' });
     expect(transition.state.phase).toBe('active');
     expect(transition.state.lines).toBe(1);
+    expect(transition.state.score).toBe(40);
+    expect(transition.events).toContainEqual({
+      type: 'lines-cleared',
+      rows: [BOARD_HEIGHT - 1],
+      count: 1,
+      score: 40,
+    });
     expect(transition.state.pieceCount).toBe(0);
     expect(transition.state.active).toMatchObject({ type: 'O', x: 3, y: 31 });
     expect(transition.state.board[BOARD_HEIGHT - 1]).toEqual(Array(10).fill(null));
