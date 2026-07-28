@@ -3,8 +3,17 @@
 import { describe, expect, it, vi } from 'vitest';
 import { GameRuntime } from './GameRuntime';
 import { createBrowserPlatform } from '../../platform/browserPlatform';
+import {
+  LINE_CLEAR_DELAY_TICKS,
+  createBoard,
+  setCell,
+  type GameCommand,
+  type GameEvent,
+  type GameState,
+} from '../core';
 
 const rendererSetOptions = vi.hoisted(() => vi.fn());
+const rendererRender = vi.hoisted(() => vi.fn());
 const inputClearHeld = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
 const audioPrime = vi.hoisted(() => vi.fn());
@@ -38,7 +47,7 @@ vi.mock('../render/TetrisRenderer', () => ({
     async init(): Promise<void> {}
     setOptions(options: unknown): void { rendererSetOptions(options); }
     setFrameCallback(): void {}
-    render(): void {}
+    render(state: unknown, events: unknown, deltaMs: number): void { rendererRender(state, events, deltaMs); }
     destroy(): void {}
     getSnapshot(): Record<string, never> { return {}; }
     benchmark(): { meanMs: number; p95Ms: number; maxMs: number } {
@@ -255,5 +264,49 @@ describe('GameRuntime public state boundary', () => {
 
     runtime.destroy();
     expect(window.__SIGNAL_FOUNDRY_QA__).toBeUndefined();
+  });
+
+  it('hands every same-transition Mutation activation to the renderer in FIFO order', () => {
+    const runtime = new GameRuntime({ seed: 0x7115, mode: 'sprint', audioEnabled: false });
+    let board = createBoard();
+    for (const y of [38, 39]) {
+      for (let x = 0; x < 8; x += 1) board = setCell(board, x, y, 'J');
+    }
+    board = setCell(board, 0, 37, 'L');
+    board = setCell(board, 1, 37, 'L');
+
+    const internals = runtime as unknown as {
+      state: GameState;
+      apply: (command: GameCommand) => void;
+      flushRender: (deltaMs: number) => void;
+    };
+    internals.state = {
+      ...runtime.getState(),
+      board,
+      status: 'playing',
+      active: { type: 'O', rotation: 0, x: 8, y: 38 },
+      mutationActiveCarrier: { id: 9, item: 'bomb' },
+      mutationNextCarrierId: 10,
+      mutationCarriers: [{
+        id: 4,
+        item: 'freeze',
+        cells: [{ x: 0, y: 37 }, { x: 1, y: 37 }],
+      }],
+    };
+    rendererRender.mockClear();
+
+    internals.apply({ type: 'hard-drop' });
+    for (let tick = 0; tick < LINE_CLEAR_DELAY_TICKS; tick += 1) {
+      internals.apply({ type: 'tick' });
+    }
+    internals.flushRender(16);
+
+    const renderedEvents = rendererRender.mock.calls.at(-1)?.[1] as readonly GameEvent[];
+    expect(renderedEvents
+      .filter((event) => event.type === 'mutation-activated')
+      .map((event) => event.item)).toEqual(['bomb', 'freeze']);
+
+    internals.flushRender(16);
+    expect(rendererRender.mock.calls.at(-1)?.[1]).toEqual([]);
   });
 });
