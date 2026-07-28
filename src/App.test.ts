@@ -586,9 +586,9 @@ describe('T6 frontend mode binding', () => {
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
     const leaderboard = {
-      version: 7 as const,
+      version: 8 as const,
       marathon: [{
-        version: 7 as const,
+        version: 8 as const,
         mode: 'marathon' as const,
         outcome: 'top-out' as const,
         score: 3_210,
@@ -721,14 +721,14 @@ describe('T6 frontend mode binding', () => {
       bestPieceCounts: { [level.id]: 7 },
     };
     const completedView = render(createElement(SettingsRecord, {
-      mode: 'puzzle', puzzleId: level.id, leaderboard: { version: 7, marathon: [], race: [], sprint: [] }, progress: completed,
+      mode: 'puzzle', puzzleId: level.id, leaderboard: { version: 8, marathon: [], race: [], sprint: [] }, progress: completed,
     }));
     expect(completedView.container.textContent).toBe('当前关纪录最少 7 步');
     expect(completedView.container.textContent).not.toMatch(/消行|分|连锁|最长/);
     completedView.unmount();
 
     const freshView = render(createElement(SettingsRecord, {
-      mode: 'puzzle', puzzleId: level.id, leaderboard: { version: 7, marathon: [], race: [], sprint: [] }, progress: defaultPuzzleProgress(),
+      mode: 'puzzle', puzzleId: level.id, leaderboard: { version: 8, marathon: [], race: [], sprint: [] }, progress: defaultPuzzleProgress(),
     }));
     expect(freshView.container.textContent).toBe('当前关纪录尚未通关');
     freshView.unmount();
@@ -1173,7 +1173,7 @@ describe('T6 frontend mode binding', () => {
 
   it('ranks and labels Classic by cleared lines, Survival by endurance, and 异变 by cleared lines', () => {
     const base: ScoreRecord = {
-      version: 7,
+      version: 8,
       score: 3200,
       lines: 18,
       pieces: 62,
@@ -1200,7 +1200,14 @@ describe('T6 frontend mode binding', () => {
     expect(emptySettings.container.querySelector('.result-leaderboard > p')?.textContent).toBe('暂无记录');
     emptySettings.unmount();
 
-    const survivalRecord = { ...base, mode: 'race' as const, score: 900, lines: 27 };
+    const survivalRecord: ScoreRecord = {
+      version: 8,
+      mode: 'race',
+      outcome: 'top-out',
+      lines: 27,
+      elapsedTicks: base.elapsedTicks,
+      completedAt: base.completedAt,
+    };
     const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
     expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('生存排行');
     expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行前 5');
@@ -1221,7 +1228,14 @@ describe('T6 frontend mode binding', () => {
     expect(countdownTimeLabel(65 * 60)).toBe('1:05');
 
     const ended = { ...createInitialState(1, 'race'), status: 'game-over' as const, score: 900, lines: 27, pieceCount: 62, elapsedTicks: 4200 };
-    expect(scoreRecordForState(ended, base.completedAt)).toMatchObject({ mode: 'race', score: 900, lines: 27, outcome: 'top-out' });
+    expect(scoreRecordForState(ended, base.completedAt)).toEqual({
+      version: 8,
+      mode: 'race',
+      outcome: 'top-out',
+      lines: 27,
+      elapsedTicks: 4200,
+      completedAt: base.completedAt,
+    });
     const endedSprint = { ...createInitialState(1, 'sprint'), status: 'game-over' as const, score: 1800, lines: 40, pieceCount: 48, elapsedTicks: 5400 };
     expect(scoreRecordForState(endedSprint, base.completedAt)).toMatchObject({ mode: 'sprint', score: 1800, lines: 40, chain: 0, outcome: 'top-out' });
     expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
@@ -1235,17 +1249,28 @@ describe('T6 frontend mode binding', () => {
     };
 
     for (const mode of ['marathon', 'race', 'sprint'] as const) {
-      const records: ScoreRecord[] = Array.from({ length: 7 }, (_, index) => ({
-        version: 7,
-        mode,
-        outcome: 'top-out',
-        score: 7000 - index * 100,
-        lines: 30 - index,
-        pieces: 50 + index,
-        elapsedTicks: 4200 - index * 30,
-        chain: 0,
-        completedAt: `2026-07-${String(index + 1).padStart(2, '0')}T12:00:00.000Z`,
-      }));
+      const records: ScoreRecord[] = Array.from({ length: 7 }, (_, index) => {
+        const completedAt = `2026-07-${String(index + 1).padStart(2, '0')}T12:00:00.000Z`;
+        if (mode === 'race') return {
+          version: 8 as const,
+          mode: 'race' as const,
+          outcome: 'top-out' as const,
+          lines: 30 - index,
+          elapsedTicks: 4200 - index * 30,
+          completedAt,
+        };
+        return {
+          version: 8 as const,
+          mode,
+          outcome: 'top-out' as const,
+          score: 7000 - index * 100,
+          lines: 30 - index,
+          pieces: 50 + index,
+          elapsedTicks: 4200 - index * 30,
+          chain: 0,
+          completedAt,
+        };
+      });
       const view = render(createElement(LeaderboardPanel, { mode, records, variant: 'settings' }));
       const rows = [...view.container.querySelectorAll<HTMLLIElement>('ol > li')];
       expect(rows).toHaveLength(5);

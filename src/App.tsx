@@ -252,8 +252,18 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
   const isTopOutRun = (state.mode === 'marathon' || state.mode === 'race' || state.mode === 'sprint') && state.status === 'game-over';
   if (!isTopOutRun) return null;
   const mode: RunMode = state.mode === 'sprint' ? 'sprint' : state.mode === 'race' ? 'race' : 'marathon';
+  if (mode === 'race') {
+    return {
+      version: 8,
+      lines: state.lines,
+      elapsedTicks: state.elapsedTicks,
+      mode,
+      outcome: 'top-out',
+      completedAt,
+    };
+  }
   return {
-    version: 7,
+    version: 8,
     score: state.score,
     lines: state.lines,
     pieces: state.pieceCount,
@@ -266,6 +276,9 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
 }
 
 export function scoreRecordKey(record: ScoreRecord): string {
+  if (record.mode === 'race') {
+    return [record.mode, record.completedAt, record.lines, record.elapsedTicks].join(':');
+  }
   return [record.mode, record.completedAt, record.score, record.lines, record.pieces, record.elapsedTicks, record.chain].join(':');
 }
 
@@ -574,7 +587,6 @@ export function LeaderboardPanel({
 }) {
   const copy = appCopy(language);
   const survival = mode === 'race';
-  const sprint = mode === 'sprint';
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
   const visibleRecords = records.slice(0, 5);
   const title = variant === 'settings'
@@ -593,30 +605,34 @@ export function LeaderboardPanel({
       </header>
       {visibleRecords.length === 0 ? <p>{copy.labels.noRecords}</p> : (
         <ol>
-          {visibleRecords.map((record, index) => (
-            <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
-              <b data-record-field="rank">{String(index + 1).padStart(2, '0')}</b>
-              <div className="result-leaderboard__run">
-                <strong data-record-field={survival ? 'time' : 'lines'}>
-                  {survival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}
-                </strong>
-                <small>
-                  {sprint ? (
-                    <>
+          {visibleRecords.map((record, index) => {
+            const recordIsSurvival = record.mode === 'race';
+            const recordIsMutation = record.mode === 'sprint';
+            return (
+              <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
+                <b data-record-field="rank">{String(index + 1).padStart(2, '0')}</b>
+                <div className="result-leaderboard__run">
+                  <strong data-record-field={recordIsSurvival ? 'time' : 'lines'}>
+                    {recordIsSurvival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}
+                  </strong>
+                  <small>
+                    {recordIsMutation ? (
+                      <>
+                        <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
+                        {'  '}
+                        <span data-record-field="pieces">{copy.phrasing.pieceCount(record.pieces)}</span>
+                      </>
+                    ) : recordIsSurvival ? (
+                      <span data-record-field="lines">{copy.phrasing.lineCount(record.lines)}</span>
+                    ) : (
                       <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
-                      {'  '}
-                      <span data-record-field="pieces">{copy.phrasing.pieceCount(record.pieces)}</span>
-                    </>
-                  ) : survival ? (
-                    <span data-record-field="lines">{copy.phrasing.lineCount(record.lines)}</span>
-                  ) : (
-                    <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
-                  )}
-                </small>
-              </div>
-              <time data-record-field="date" dateTime={record.completedAt}>{formatDate(record.completedAt, language)}</time>
-            </li>
-          ))}
+                    )}
+                  </small>
+                </div>
+                <time data-record-field="date" dateTime={record.completedAt}>{formatDate(record.completedAt, language)}</time>
+              </li>
+            );
+          })}
         </ol>
       )}
     </section>
