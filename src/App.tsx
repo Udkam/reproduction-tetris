@@ -1209,11 +1209,12 @@ export function GameSession({
   }, [restartConfirmOpen, runtime]);
 
   const cancelRestart = useCallback(() => {
+    const returnsToPlaying = restartWasPlayingRef.current;
     setRestartConfirmOpen(false);
     runtime?.setInputEnabled(true);
-    if (restartWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
+    if (returnsToPlaying && runtime?.getState().status === 'paused') runtime.togglePause();
     restartWasPlayingRef.current = false;
-    focusBoard();
+    if (returnsToPlaying) focusBoard();
   }, [focusBoard, runtime]);
 
   const requestPuzzleUndo = useCallback(() => {

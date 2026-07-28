@@ -788,6 +788,27 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
     expect(view.container.querySelector('canvas')).toBe(canvas);
     expect(document.activeElement).toBe(canvas);
+
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    flushTwoFrames();
+    expect(view.container.querySelector<HTMLElement>('[role="dialog"]')?.textContent).toContain('已暂停');
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
+    flushTwoFrames();
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    flushTwoFrames();
+    const pausedRestartDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
+    expect(pausedRestartDialog.textContent).toContain('重新开始？');
+    expect(pausedRestartDialog.contains(document.activeElement)).toBe(true);
+    act(() => [...pausedRestartDialog.querySelectorAll<HTMLButtonElement>('button')]
+      .find((button) => button.textContent === '取消')?.click());
+    flushTwoFrames();
+    const returnedPauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
+    expect(view.container.querySelectorAll('[role="dialog"][aria-modal="true"]')).toHaveLength(1);
+    expect(returnedPauseDialog.textContent).toContain('已暂停');
+    expect(returnedPauseDialog.contains(document.activeElement)).toBe(true);
+    expect(document.activeElement).not.toBe(canvas);
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
+    expect(view.container.querySelector('canvas')).toBe(canvas);
     view.unmount();
   });
 
