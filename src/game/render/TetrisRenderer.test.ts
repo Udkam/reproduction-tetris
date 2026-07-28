@@ -12,6 +12,7 @@ import {
   type GameEvent,
   type GameState,
   type MutationItem,
+  type PieceType,
   VISIBLE_START_ROW,
 } from '../core';
 import { BEDROCK_MATERIAL, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
@@ -76,6 +77,25 @@ function createGraphicsRecorder(): { graphics: RecorderGraphics; operations: Dra
   return { graphics, operations };
 }
 
+function geometrySignature(operations: readonly DrawOperation[]): string {
+  return JSON.stringify(operations
+    .filter((operation) => operation.kind !== 'fill' && operation.kind !== 'stroke')
+    .map(({ kind, values }) => ({ kind, values })));
+}
+
+function hasBroadHorizontalGeometry(operations: readonly DrawOperation[], boardWidth: number): boolean {
+  const threshold = boardWidth * .8;
+  return operations.some((operation) => {
+    if (operation.kind === 'roundRect' || operation.kind === 'rect') {
+      return (operation.values[2] ?? 0) >= threshold;
+    }
+    if (operation.kind === 'segment') {
+      return Math.abs((operation.values[2] ?? 0) - (operation.values[0] ?? 0)) >= threshold;
+    }
+    return false;
+  });
+}
+
 type RendererInternals = {
   presentation: unknown;
   trail: unknown;
@@ -136,6 +156,28 @@ type RendererInternals = {
     offsetX?: number,
     offsetY?: number,
   ) => void;
+  drawMutationCarrierSurface: (
+    graphics: unknown,
+    cells: readonly Cell[],
+    item: MutationItem,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetX?: number,
+    offsetY?: number,
+  ) => void;
+  drawMutationCarrierMaterials: (
+    graphics: unknown,
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetY: number,
+  ) => void;
+  drawActiveMutationCarrierMaterial: (
+    graphics: unknown,
+    state: GameState,
+    cells: readonly Cell[],
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetX: number,
+    offsetY: number,
+  ) => void;
   drawMutationCarrierEdgePulse: (
     graphics: unknown,
     cells: readonly Cell[],
@@ -166,6 +208,21 @@ type RendererInternals = {
     factor: 2 | 4,
     color: number,
     alpha: number,
+  ) => void;
+  drawPreviewPiece: (
+    graphics: unknown,
+    type: PieceType,
+    centerX: number,
+    centerY: number,
+    unit: number,
+    carrierItem: MutationItem | null,
+  ) => void;
+  drawCellGroups: (
+    graphics: unknown,
+    cells: readonly Cell[],
+    type: unknown,
+    alpha: number,
+    options: unknown,
   ) => void;
   drawMutationActivationEffect: (
     graphics: unknown,
@@ -460,7 +517,7 @@ describe('Puzzle undo presentation reset', () => {
         20,
         item === 'multiplier' ? 4 : 2,
       );
-      signatures.set(item, JSON.stringify(recorder.operations));
+      signatures.set(item, geometrySignature(recorder.operations));
     }
 
     expect(new Set(signatures.values()).size).toBe(4);
@@ -468,23 +525,64 @@ describe('Puzzle undo presentation reset', () => {
     const four = createGraphicsRecorder();
     internals.drawReducedMutationEndpoint(two.graphics, 'multiplier', 100, 120, 20, 2);
     internals.drawReducedMutationEndpoint(four.graphics, 'multiplier', 100, 120, 20, 4);
-    expect(two.operations).not.toEqual(four.operations);
+    expect(geometrySignature(two.operations)).not.toBe(geometrySignature(four.operations));
   });
 
-  it('uses item-specific carrier rims instead of recolouring one shared edge pattern', () => {
+  it('uses item-specific surface, core, and rim geometry instead of palette-only variants', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
     const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }];
-    const signatures = new Set<string>();
+    const layers = [
+      internals.drawMutationCarrierSurface.bind(internals),
+      internals.drawMutationCarrierCore.bind(internals),
+      internals.drawMutationCarrierRim.bind(internals),
+    ];
+
+    for (const drawLayer of layers) {
+      const signatures = new Set<string>();
+      for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+        const recorder = createGraphicsRecorder();
+        drawLayer(recorder.graphics, cells, item, layout);
+        signatures.add(geometrySignature(recorder.operations));
+      }
+      expect(signatures.size).toBe(4);
+    }
+  });
+
+  it('routes locked, active, and Next carriers through the same surface/core grammar', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    const calls: Array<{ layer: 'surface' | 'core'; item: MutationItem }> = [];
+    internals.drawCellGroups = () => undefined;
+    internals.drawMutationCarrierSurface = (_graphics, _cells, item) => {
+      calls.push({ layer: 'surface', item });
+    };
+    internals.drawMutationCarrierCore = (_graphics, _cells, item) => {
+      calls.push({ layer: 'core', item });
+    };
 
     for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
       const recorder = createGraphicsRecorder();
-      internals.drawMutationCarrierRim(recorder.graphics, cells, item, layout);
-      signatures.add(JSON.stringify(recorder.operations));
+      const locked = {
+        mode: 'sprint',
+        mutationCarriers: [{ id: 1, item, cells: [{ x: 2, y: VISIBLE_START_ROW + 3 }] }],
+      } as unknown as GameState;
+      const active = {
+        mode: 'sprint',
+        active: { type: 'T' },
+        mutationActiveCarrier: { id: 2, item, cells: [] },
+      } as unknown as GameState;
+      internals.drawMutationCarrierMaterials(recorder.graphics, locked, layout, 0);
+      internals.drawActiveMutationCarrierMaterial(recorder.graphics, active, [{ x: 2, y: 3 }], layout, 0, 0);
+      internals.drawPreviewPiece(recorder.graphics, 'T', 100, 100, 20, item);
     }
 
-    expect(signatures.size).toBe(4);
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+      expect(calls.filter((call) => call.item === item && call.layer === 'surface')).toHaveLength(3);
+      expect(calls.filter((call) => call.item === item && call.layer === 'core')).toHaveLength(3);
+    }
   });
 
   it('binds Collapse activation wells only to the trigger columns with no board-wide bar', () => {
@@ -513,6 +611,7 @@ describe('Puzzle undo presentation reset', () => {
     const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
     expect(rectangles.length).toBeGreaterThan(0);
     expect(rectangles.every((operation) => operation.values[2]! < layout.width * .2)).toBe(true);
+    expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
     expect(rectangles.every((operation) => {
       const center = operation.values[0]! + operation.values[2]! / 2;
       return [30, 150].some((expected) => Math.abs(expected - center) < layout.cell * .15);
@@ -537,6 +636,7 @@ describe('Puzzle undo presentation reset', () => {
 
     expect(recorder.operations.some((operation) => operation.kind === 'circle')).toBe(true);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
   });
 
   it('anchors multiplier feedback to Core trigger cells and preserves the 4× escalation cue', () => {
@@ -565,16 +665,6 @@ describe('Puzzle undo presentation reset', () => {
   it('keeps the persistent multiplier field explicit at both 2× and 4×', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const factors: Array<2 | 4> = [];
-    internals.drawMutationMultiplierValue = (
-      _graphics,
-      _centerX,
-      _centerY,
-      _unit,
-      factor,
-    ) => {
-      factors.push(factor);
-    };
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
     const base = {
       mode: 'sprint',
@@ -583,18 +673,25 @@ describe('Puzzle undo presentation reset', () => {
       mutationMultiplierTicks: 60,
     } as unknown as GameState;
 
+    const twoField = createGraphicsRecorder();
+    const fourField = createGraphicsRecorder();
     internals.drawActiveMutationAtmosphere(
-      createGraphicsRecorder().graphics,
+      twoField.graphics,
       { ...base, mutationMultiplierFactor: 2 },
       layout,
     );
     internals.drawActiveMutationAtmosphere(
-      createGraphicsRecorder().graphics,
+      fourField.graphics,
       { ...base, mutationMultiplierFactor: 4 },
       layout,
     );
+    expect(geometrySignature(twoField.operations)).not.toBe(geometrySignature(fourField.operations));
 
-    expect(factors).toEqual([2, 4]);
+    const twoGlyph = createGraphicsRecorder();
+    const fourGlyph = createGraphicsRecorder();
+    internals.drawMutationMultiplierValue(twoGlyph.graphics, 100, 120, 10, 2, 0xffffff, 1);
+    internals.drawMutationMultiplierValue(fourGlyph.graphics, 100, 120, 10, 4, 0xffffff, 1);
+    expect(geometrySignature(twoGlyph.operations)).not.toBe(geometrySignature(fourGlyph.operations));
   });
 
   it('keeps Freeze reusable while Collapse stays vector-local instead of distorting the whole board', () => {
@@ -772,6 +869,7 @@ describe('Puzzle undo presentation reset', () => {
     );
     const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
     expect(rectangles.every((operation) => operation.values[2]! < 160)).toBe(true);
+    expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
     expect(rectangles.every((operation) => {
       const center = operation.values[0]! + operation.values[2]! / 2;
       return [30, 150].some((expected) => Math.abs(expected - center) < 5);
@@ -786,7 +884,7 @@ describe('Puzzle undo presentation reset', () => {
     internals.consumeEvents(
       [
         { type: 'piece-locked', piece: 'I', cells: [{ x: 0, y: BOARD_HEIGHT - 4 }] },
-        { type: 'lines-cleared', rows: [BOARD_HEIGHT - 1], count: 1, score: 100 },
+        { type: 'clear-started', rows: [BOARD_HEIGHT - 1] },
       ],
       { mode: 'sprint' } as GameState,
       board,
