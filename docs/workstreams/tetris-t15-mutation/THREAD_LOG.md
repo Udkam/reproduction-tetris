@@ -533,3 +533,25 @@
 - Next action: wait for the machine resource budget, then run the final-source
   production browser matrix, dynamic frame/performance/lifecycle checks, full gates,
   repeated final QA, acceptance record, cleanup, and push.
+
+## 2026-07-29 — Phase 5 final-source gate checkpoint
+
+- Task ID: `T15-PHASE5-MUTATION-FINAL-GATES`.
+- Coordinator: `/root`; exact product head `d819d92`; documentation head before this
+  record `1c74565`.
+- Commands actually run after the final product source change:
+  - `npm.cmd run typecheck` — PASS;
+  - `npm.cmd run test -- --maxWorkers=1` — 26 files / 223 tests PASS;
+  - `npm.cmd run build` — PASS, 753 transformed modules.
+- The suite was deliberately serialized at one worker. No product source changed after
+  these gates.
+- Resource boundary:
+  - CPU samples remained above 80%, while approximately 14 GB RAM remained available;
+  - an active headless Playwright tree belonged to `E:\Proj\personal-web`, not this
+    repository, and was preserved;
+  - TetraMorph ports 4178/5178/5179 remained free;
+  - no TetraMorph Vite or browser process was started.
+- Blocker: final-source browser matrix, dynamic Mutation states, FPS, lifecycle, and
+  evidence-integrity checks still require an available browser/GPU slot.
+- Next action: when that slot is free, run the prescribed game action client and the
+  bounded production evidence capture without overlapping another GPU-heavy workload.

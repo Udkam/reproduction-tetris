@@ -89,7 +89,9 @@ actual spawned carrier without changing the state hash; the ARIA test now exerci
   Independent responsive-layout review accepts exact candidate `d819d92` with
   P0–P3 = 0, including idle/active specificity, one/two/three-state allocation,
   short-height auto-fit, 12 px floors, reduced motion, and non-Mutation isolation.
-  Final-source browser, 60 FPS, lifecycle, full-gate, and evidence audits remain.
+  Final-source typecheck passes, the complete suite passes 26 files / 223 tests, and
+  the production build completes with 753 transformed modules. Browser frames, 60 FPS,
+  lifecycle, evidence capture, and repeated final audits remain.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 

@@ -59,7 +59,8 @@ auto rows/auto-fit columns，并移除会以更高 specificity 隐藏 stats/Next
 启动 Vite 或 Chrome，因此不声称动态证据。独立响应式审计接受精确候选
 `d819d92`，P0–P3 = 0：空闲/活动 specificity、
 一至三个真实轨道、短高 auto-fit、12 px 字号下限、reduced motion 和非异变
-模式隔离均通过。动态帧、60 FPS、生命周期和最终全量门禁仍未完成。
+模式隔离均通过。最终源码 typecheck、26 文件 / 223 测试和 753 modules 生产
+构建均通过；动态帧、60 FPS、生命周期、证据捕获和重复最终审计仍未完成。
 
 ## 目标
 

@@ -49,7 +49,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   reserved empty tracks, and removes the obsolete mobile rule that hid stats/Next.
   Focused App/HUD tests pass 40/40 and typecheck passes. Independent static layout
   review accepts exact candidate `d819d92` with P0–P3 none; final browser, lifecycle,
-  performance, full-gate, and evidence review remain open.
+  performance, and evidence review remain open.
+- Final-source gates now pass serially: typecheck PASS, 26 files / 223 tests PASS, and
+  production build PASS with 753 transformed modules. Browser/GPU evidence remains
+  deferred while another project owns the active Playwright session.
 
 ## Non-negotiable boundaries
 
