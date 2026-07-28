@@ -190,7 +190,7 @@ Phase 5 不以一个大 evidence commit 收口。最终动态阶段按以下顺�
 3. `browser-index`：JSON manifest 与 SHA256SUMS 完成标记；
 4. `qa-rules`、`qa-visual`、`qa-evidence`：三份独立只读结论分别记录；
 5. 每一修正、重跑证据、复审各自提交；
-6. `acceptance`：协调者状态/changelog；随后清理资源并非强制 push。
+6. `acceptance`：协调者状态/changelog；随后清理资源并执行 non-force push。
 
 以上检查点不得 squash。Phase 5 push 后立即暂停，不获取 Phase 6 writer 路径。
 
