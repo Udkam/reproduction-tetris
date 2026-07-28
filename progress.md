@@ -26,7 +26,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - First visual-contract audit statically passed the product but rejected
   palette-sensitive / stubbed tests. Correction `e2858a2` now proves paint-independent
   geometry, three-state grammar reuse, real 2× / 4× glyphs, broad-span absence, and the
-  real same-lock event batch. Focused tests pass 25/25 and typecheck passes; corrected
+  real same-lock event batch.
+- Second visual review found that Core signatures still included Rim and could mask a
+  Core regression. `6599764` isolates those layers and proves the real Core reaches
+  Rim from locked/active/Next. Focused tests pass 25/25 and typecheck passes; corrected
   re-audit plus a separate performance/lifecycle audit remain required before UI opens.
 
 ## Non-negotiable boundaries
@@ -40,7 +43,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Re-audit exact Renderer candidate `e2858a2` for visual-contract fidelity, then run
+- Re-audit exact Renderer candidate `6599764` for visual-contract fidelity, then run
   a separate performance/lifecycle audit. Do not open UI paths until both pass.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
@@ -65,6 +68,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   the real `clear-started` event batch.
 - `e2858a2` corrects only `TetrisRenderer.test.ts`; focused renderer/timeline tests now
   pass 25/25 and typecheck passes. Corrected dual audit remains open.
+- Second re-audit: product source remains PASS but test evidence is still `GAP` because
+  Core capture included Rim and the three-state route stubbed real Core.
+- `6599764` separates Core/Rim capture and wraps the real Core during route proof;
+  25/25 and typecheck pass again. Final visual re-audit remains open.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 

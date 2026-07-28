@@ -55,9 +55,13 @@ event fixture. Test correction `e2858a2` now strips paint options from geometry
 signatures, proves Surface/Core reuse across locked/active/Next, exercises the real
 2× / 4× vector glyphs, scans rectangle and segment spans, and uses
 `piece-locked + clear-started`; focused tests pass 25/25 and typecheck passes. Exact
-candidate `e2858a2` is not acceptance: corrected visual re-audit plus an independent
-performance/lifecycle audit, UI/localization, final-source browser evidence, full
-gates, repeated QA, recording, cleanup, and push remain open.
+candidate `e2858a2` still allowed Rim geometry to mask a regressed Core. Second
+correction `6599764` isolates Core from Rim during signature capture and wraps the
+real Core path to prove locked/active/Next all reach Rim; focused tests remain 25/25
+and typecheck passes. Exact candidate `6599764` is not acceptance: corrected visual
+re-audit plus an independent performance/lifecycle audit, UI/localization,
+final-source browser evidence, full gates, repeated QA, recording, cleanup, and push
+remain open.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

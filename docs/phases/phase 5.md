@@ -30,6 +30,11 @@ Renderer 或 Phase 5 验收。首轮独立视觉合同审计静态接受产品�
 因此整体判为 `GAP`。修正 `e2858a2` 改用纯几何签名，直接固定 Surface/Core 在
 locked/active/Next 的共用入口、真实 2× / 4× 字形、所有长矩形/长线段和
 `piece-locked + clear-started`，定向测试提升为 25/25。该候选仍待两路复验。
+第二轮视觉复验又发现 Core 签名仍混入其内部 Rim，且三状态路由 stub 掉了
+真实 Core，删除 Core→Rim 调用仍会假通过。`6599764` 把 Core/Rim 分离采样并
+包装真实 Core，直接证明 locked/active/Next 三个入口都到达 Rim；25/25 与
+typecheck 再次通过。精确候选改为 `6599764`，仍待最终视觉复验与独立性能/
+生命周期审计。
 
 ## 目标
 

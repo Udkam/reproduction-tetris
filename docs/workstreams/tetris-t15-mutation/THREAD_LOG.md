@@ -312,3 +312,30 @@
   remain required; UI paths remain closed.
 - Next action: re-audit exact candidate `e2858a2`, then run the second independent
   Renderer audit without dynamic work while the machine remains resource-constrained.
+
+## 2026-07-28 — Renderer visual-contract audit correction R2
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-QA-R2`.
+- Independent visual auditor: `t15_core_rules_r3`; candidate `e2858a2`,
+  documentation head `161ff8b`.
+- Disposition: product source static `PASS`, overall `GAP`; P0/P1/P3 none, one P2
+  test-evidence finding.
+- Finding: Core signature capture still included the Core method's internal Rim call,
+  so Rim differences could hide a common Core regression. The route test also stubbed
+  Core entirely and therefore did not prove locked/active/Next reached Rim.
+- Exact correction path: `src/game/render/TetrisRenderer.test.ts`.
+- Correction candidate: `6599764`.
+- Corrected evidence:
+  - Core signature capture temporarily isolates Rim, then Rim is independently
+    captured, so all three layers must each retain four paint-independent geometries;
+  - the route proof wraps rather than replaces real Core and separately records Rim,
+    requiring Surface/Core/Rim exactly three times per item across
+    locked/active/Next.
+- Commands actually run:
+  - focused Renderer/timeline tests — 2 files / 25 tests PASS;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` — PASS before exact-path commit.
+- Blocker: final visual re-audit plus the separate performance/lifecycle audit remain;
+  UI paths remain closed.
+- Next action: re-audit exact candidate `6599764`; only a full PASS allows the second
+  independent Renderer audit.
