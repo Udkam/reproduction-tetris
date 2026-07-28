@@ -31,7 +31,10 @@
   - player-facing `冻结` becomes `冰冻`;
   - Ice auto-gravity is 1 second/cell for ten seconds, not a complete stop;
   - attachment recognition must work in active, locked, and Next states without
-    relying on colour alone.
+    relying on colour alone;
+  - Collapse removes the ten-column/top horizontal strip and uses affected-column
+    gravity feedback;
+  - shared ordinary line-clear refinement is deferred to Phase 6, outside HUD scope.
 - Commands actually run: read-only Git state/log inspection; UTF-8 reads of
   `AGENTS.md`, `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, phase briefs, commit policy,
   latest changelog, and relevant T15 logs; `rg` terminology search.

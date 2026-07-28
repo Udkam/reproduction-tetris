@@ -60,9 +60,15 @@ as the current-state authority.
    rotation, soft drop, and hard drop remain available. Re-triggering Ice resets its
    remaining duration to ten seconds. Activity, locked cells, and Next must reveal both
    carrier presence and item identity within 100 ms by shape/edge/core/motion as well
-   as colour.
-6. **Classic.** Refine terminology, hierarchy, micro-motion, and feedback only. Do
-   not add a mechanic or blur its role as the clean baseline mode.
+   as colour. Collapse may not use a ten-cell-wide horizontal bar at the top or inside
+   the board; its feedback is column-local gravity, compression, downward particles,
+   and a short settlement wave only where cells actually move.
+6. **Classic.** Refine terminology, hierarchy, micro-motion, and feedback only. The
+   shared ordinary line-clear effect must visibly identify the cleared row, contract
+   and dissolve its cells, then settle with a restrained afterglow; 1/2/3/4-line clears
+   scale one coherent effect family. No full-screen flash, input block, long occlusion,
+   or Core timing change. Revalidate the shared effect in all modes, but do not add a
+   mechanic or blur Classic's role as the clean baseline mode.
 7. **Puzzle curriculum.** Expand from twenty to fifty deterministic authored levels
    without redesigning the selector. Build progressive concepts rather than fifty
    cosmetic variants: teach a readable idea, combine previously learned ideas,

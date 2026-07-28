@@ -57,6 +57,17 @@ At least three non-colour cues differ between each family. A player must be able
 judge both carrier presence and item identity within 100 ms in normal colour, grayscale,
 and reduced-motion endpoints.
 
+Collapse never draws a ten-cell-wide horizontal band at the board top or through the
+well. Its active field is expressed by column-local lensing, compressed vertical guide
+lines, falling motes, and a short settlement pulse bound to the columns that actually
+move. A continuous horizontal effect wider than 80% of the well is a visual regression.
+
+The later Classic refinement owns the shared ordinary line-clear presentation. Cleared
+rows receive a narrow confirmation light, a short inward cell contraction/dissolve, and
+a restrained debris/afterglow endpoint. One through four lines scale the same family.
+The effect never flashes the whole screen, blocks input, hides the next decision, or
+changes Core timing; reduced motion keeps a location-specific static confirmation.
+
 ## Phase 1 — TetraMorph Design System v1.0
 
 **Scope:** a foundation pass only. It centralises the existing interface language

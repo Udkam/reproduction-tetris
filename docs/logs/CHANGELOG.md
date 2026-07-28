@@ -17,6 +17,10 @@
   carriers communicate both “item present” and the exact item through non-colour
   silhouette, edge, texture, mark, and local-motion cues. No test, build, browser
   evidence, product acceptance, or push is claimed by this documentation checkpoint.
+- Added two later visual boundaries: Collapse must remove the ten-column/top horizontal
+  strip and bind gravity feedback to affected columns; Phase 6 owns a shared ordinary
+  line-clear sequence that visibly confirms, contracts, dissolves, and settles the
+  cleared rows without a full-screen flash or input delay.
 
 ## 2026-07-28 — T15 Phase 2 compact Settings accepted
 
