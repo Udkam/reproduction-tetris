@@ -3,12 +3,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 ## Current phase
 
 - Phase 1 and Phase 1.5 are accepted and pushed.
-- Phase 2 Settings is accepted and pushed through recovery record `092c91d`; its
-  corrected product candidate is `26e4db3`, behavior checkpoint `cc35738`, and layout
-  checkpoint `2f94d16`.
-- Rules, visual, and evidence-integrity re-audits all ACCEPT with no P0–P2.
-- The exact production preview PID 21744 was stopped and port 5179 verified free.
-- Current coordinator task: open the Phase-3 HUD contract from pushed `092c91d`.
+- Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
+- Phase 3 HUD final candidate `741d8a6` is locally accepted from rollback `6892f80`.
+  Its final typecheck, 26-file / 198-test suite, 753-module build, 18-scene production
+  matrix, input audit, rules audit, and visual audit all pass with no open P0–P3.
+- Current coordinator task: record Phase-3 acceptance, release 4178/5178 and browser
+  resources, then push the recovery point before opening Phase 4.
 
 ## Non-negotiable boundaries
 
@@ -21,11 +21,23 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Re-read the Phase-3 HUD brief against pushed `092c91d`.
-- Freeze the exact HUD DOM/renderer path ownership, evidence matrix, and rollback
-  checkpoints before changing product source.
-- Keep the Puzzle selector composition and accepted Settings surface outside the
-  Phase-3 write scope.
+- Commit the Phase-3 acceptance record without product-source changes.
+- Stop the exact project preview/dev listeners and verify no headless Chrome remains.
+- Push `main` non-force, then open the Phase-4 Survival contract from the pushed
+  Phase-3 recovery point.
+
+## 2026-07-28 Phase 3 HUD acceptance
+
+- Checkpoints `d8e83d2`, `249e4ce`, `f27bb71`, `c817739`, and `741d8a6` keep
+  input/a11y, spawn presentation, unified HUD, semantic correction, and compact
+  English correction independently revertible.
+- Final production evidence covers Classic, Survival, Mutation, and Puzzle at four
+  required viewports plus English Mutation and reduced-motion countdown.
+- All cases retain one Canvas, zero DOM cells, visible stats/Next, no overflow and
+  zero browser errors. Puzzle shows complete `1` / `2` forecasts; English Mutation
+  shows complete `Freeze / Collapse / Double` labels.
+- Independent input, code/rules, and visual QA accept the candidate. The overall T15
+  goal remains active; Phase 4–8 and the fifty-level Puzzle curriculum are still open.
 
 ## 2026-07-28 Phase 2 layout iteration
 

@@ -11,16 +11,14 @@ existing Puzzle library layout is explicitly excluded from redesign; adapting it
 count/progression data for fifty levels is allowed, but its visual composition must
 not be replaced.
 
-**Current execution state:** Phase 2 Settings candidate
-`26e4db39dba1a0e43bd66d4bd4c48a0997bef40c` passed the final typecheck, complete
-test suite, production build, candidate-bound browser evidence, and independent
-rules/visual/evidence audits. Its acceptance/recovery record `092c91d` is pushed to
-`origin/main`; the repository-owned preview was stopped and port 5179 verified free.
-Phase 3 HUD is now the active contract boundary at rollback base
-`6892f802c819015ed978cd24b714bbdf2d5a5caf`. Baseline browser measurement and
-read-only rules/CSS pre-audits confirm cross-mode rail drift, hidden compact stats/Next,
-short-landscape dead space, a clipped spawn presentation, and a real touch-hit failure.
-No Phase-3 product-source acceptance is claimed.
+**Current execution state:** Phase 3 HUD final candidate
+`741d8a64ee1151894920163285769417663e6464` is locally accepted from pushed rollback
+base `6892f802c819015ed978cd24b714bbdf2d5a5caf`. The final typecheck, 26-file /
+198-test suite, 753-module production build, exact-candidate four-mode/four-viewport
+browser matrix, reduced-motion countdown, real-touch/input audit, and independent
+rules plus visual audits all pass with no open P0–P3 finding. The coordinator is
+recording this acceptance and preparing the non-force recovery push; Phase 4 may not
+take shared product paths until that push succeeds.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
@@ -88,10 +86,12 @@ one phase or a static screenshot passes.
 
 ## Phase 3 — stable live HUD and touch surface
 
-**Status (2026-07-28):** contract frozen at pushed rollback base
-`6892f802c819015ed978cd24b714bbdf2d5a5caf`; source work has not started.
-The exact target, paths, responsive matrix, exclusions, and rollback checkpoints are
-recorded in `docs/phases/phase 3.md`.
+**Status (2026-07-28):** final candidate
+`741d8a64ee1151894920163285769417663e6464` is accepted locally at pushed rollback
+base `6892f802c819015ed978cd24b714bbdf2d5a5caf`; the non-force recovery push remains
+the only open Phase-3 transition. The exact source checkpoints, production evidence,
+independent verdicts, exclusions, and rollback boundary are recorded in
+`docs/phases/phase 3.md` and the Phase-3 workstream log.
 
 1. **Shared topology.** Desktop, portrait, and short landscape use one final HUD
    topology for all four modes. The board stays 1:2 and dominant; statistics, optional

@@ -150,6 +150,24 @@ navigation branch, and Settings CSS paths named in `docs/CURRENT_TASK.md`. It ma
 redesign the Puzzle selector or change gameplay, records, audio, dependencies, or
 renderer ownership.
 
+## Phase 3 — stable live HUD accepted locally
+
+**Status:** final candidate `741d8a6` is accepted from rollback base `6892f80`;
+recovery publication is pending. The shared board/HUD topology now holds across
+Classic, Survival, Mutation, and Puzzle at desktop, portrait, short landscape, and
+wide compact viewports. Statistics, optional Mutation status, and Next use one
+stable information hierarchy; Puzzle keeps one well with two complete `1` / `2`
+forecast rows.
+
+The Canvas remains the sole board renderer and is also the authoritative keyboard,
+mouse-focus, and touch surface. A transparent board-bounded interaction layer receives
+tap, horizontal swipe, downward swipe, and cancellation without changing Core
+coordinates or creating a DOM grid. Spawn containment is presentation-only. The final
+candidate preserves bilingual accessible names, 12 px minimum HUD text, 44 px header
+targets, one Canvas, reduced-motion countdown endpoints, and zero layout overflow.
+The Puzzle selector composition, mode rules, materials, and later Phase-4/5/6 effects
+remain outside this acceptance.
+
 ## T14 Mutation VFX polish — accepted historical contract
 
 The design authority is `docs/MUTATION_VFX_POLISH.md`, derived from the user-provided

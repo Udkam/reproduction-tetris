@@ -1266,3 +1266,22 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - TODO: obtain an independent read-only QA verdict for `bd49be6..480a2be`; until then
   do not claim acceptance, update the acceptance changelog, or push. Preserve the
   user-owned `package-lock.json`, `src/styles.css`, and `phase 1.md` unchanged.
+
+## 2026-07-28 — T15 Phase 3 HUD accepted locally
+
+- Final source candidate `741d8a6` keeps DOM/input/a11y, presentation-only spawn
+  containment, the final HUD authority layer, preview semantics, and the compact
+  English Mutation correction in separate rollback checkpoints.
+- The last-source-change gates pass: typecheck; 26 files / 198 tests; 753-module
+  production build. The prescribed action client also enters a live Mutation
+  countdown without leaving a headless browser.
+- Candidate-bound production evidence contains 18 scenarios: four modes at
+  `1440×900`, `390×844`, `844×390`, and `1056×480`, plus English Mutation and
+  reduced-motion countdown. Every scenario has one Canvas, zero DOM cells, no
+  document overflow, no active dialog and zero console/page error.
+- Independent input/accessibility QA accepts countdown, keyboard, real touch,
+  focus restoration and lifecycle cleanup. Independent rules and visual QA accept
+  final `741d8a6` with no P0–P3.
+- The Puzzle selector, Core, mode rules, materials and later Survival/Mutation/
+  Classic/Puzzle work remain untouched. Phase 3 still awaits coordinator acceptance
+  commit, resource cleanup and non-force push before Phase 4 can open.

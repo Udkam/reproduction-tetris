@@ -88,3 +88,47 @@
 - Next action: run the single final full-gate/build/production-browser pass, freeze the
   resulting evidence, then dispatch independent rules and visual QA against the exact
   candidate range.
+
+## 2026-07-28 — final HUD candidate accepted locally
+
+- Task ID: `T15-PHASE3-HUD-ACCEPTANCE`.
+- Coordinator/writer: `/root`.
+- Rollback base: `6892f802c819015ed978cd24b714bbdf2d5a5caf`.
+- Final candidate: `741d8a64ee1151894920163285769417663e6464`.
+- Status: `ACCEPTED LOCAL`; non-force recovery push remains open.
+- Correction checkpoints after the initial candidate:
+  - `c817739` restores ordinary Next semantics, keeps all explicit HUD text at or
+    above 12 px, and lets Puzzle `1` / `2` labels escape the transparent Canvas rail
+    without hiding their two real previews;
+  - `741d8a6` removes the final English `844×390` Mutation truncation while retaining
+    12 px labels and the three-column compact status ledger.
+- Commands actually run after the last source change:
+  - `npm.cmd run test -- --run src/styles/hud.test.ts src/App.test.ts` —
+    2 files / 37 tests passed;
+  - `npm.cmd run typecheck` — passed;
+  - `npm.cmd run test` — 26 files / 198 tests passed;
+  - `npm.cmd run build` — 753 modules transformed and production build passed;
+  - the prescribed web-game action client entered a real Mutation countdown and
+    produced a one-Canvas state/screenshot with no remaining headless Chrome.
+- Final production evidence:
+  - exact candidate preview at `http://127.0.0.1:4178/`;
+  - ignored manifest `.local/audits/t15-phase3-final/741d8a6-browser-evidence.json`;
+  - four modes × `1440×900`, `390×844`, `844×390`, `1056×480`;
+  - additional English Mutation `844×390` and reduced-motion countdown cases;
+  - 18/18 scenarios report one Canvas, zero DOM cells, no horizontal or vertical
+    overflow, no active dialog, and no console/page error.
+- Independent QA:
+  - input/accessibility QA accepts countdown `3→2→1`, keyboard, real touch tap/
+    horizontal/downward/cancel paths, same-Canvas focus restoration and three
+    mount/unmount lifecycle cycles;
+  - rules/code QA accepts `6892f80..741d8a6` with no P0–P2 and confirms the final
+    English correction is CSS-only;
+  - visual QA accepts `741d8a6` with no P0–P3, including full English labels,
+    Puzzle `1` / `2`, reduced-motion mask geometry, and the screenshot-backend
+    one-pixel evidence boundary.
+- Boundary held: no Core, mode rules, Puzzle selector/data, Survival pressure,
+  Mutation attachment/VFX, ordinary line-clear effect, Settings composition, audio,
+  dependency, or packaging path changed.
+- Blocker: none.
+- Next action: commit the coordinator acceptance record, stop preview/dev services,
+  verify ports and browser children are released, then push `main` non-force.
