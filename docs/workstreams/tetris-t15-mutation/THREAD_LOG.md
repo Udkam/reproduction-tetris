@@ -339,3 +339,42 @@
   UI paths remain closed.
 - Next action: re-audit exact candidate `6599764`; only a full PASS allows the second
   independent Renderer audit.
+
+## 2026-07-28 — Renderer visual-contract acceptance
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-QA-R3`.
+- Independent visual auditor: `t15_core_rules_r3`; exact candidate `6599764`,
+  documentation head `fd3380d`.
+- Disposition: `PASS`; P0–P3 none.
+- Accepted static evidence: Core and Rim are independently sampled, real Core reaches
+  Rim from locked/active/Next, all earlier paint-free/reduced/2×-4×/Collapse span and
+  real event-batch guards remain intact.
+- Dynamic browser items remain explicitly open and are not claimed by this static
+  acceptance.
+- Blocker: independent performance/lifecycle disposition remains required.
+- Next action: run the second Renderer audit before opening UI/localization.
+
+## 2026-07-28 — Renderer performance/lifecycle audit correction
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-QA-PERF-R1`.
+- Independent auditor: `t15_core_perf_fifo_candidate_qa`; candidate `6599764`.
+- Disposition: implementation static `PASS`, overall `GAP`; P0/P1 none, one P2 and
+  one P3 evidence finding.
+- Findings:
+  - the fixed-pool test did not prove a later Freeze burst leaves active Bomb
+    particles alive;
+  - Collapse trail tests did not prove exact-duration release.
+- Accepted static boundaries: 120-slot ring pool, impact-gated Bomb, retained
+  reduced-motion FIFO/fields, fixed 40 × 10 trail scan, no hot-path string/Set/sort,
+  bounded 10 × 400 actual-column draw comparisons, and unchanged
+  filter/ticker/listener/canvas lifecycle.
+- Exact correction path: `src/game/render/TetrisRenderer.test.ts`.
+- Correction candidate: `69730a1`.
+- New assertions require active Bomb particles after Freeze emits and require the
+  Collapse trail at 259 ms followed by release at 260 ms.
+- Commands actually run:
+  - focused Renderer/timeline tests — 2 files / 25 tests PASS;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` — PASS before exact-path commit.
+- Blocker: corrected performance/lifecycle re-audit remains; UI paths stay closed.
+- Next action: re-audit exact candidate `69730a1`.

@@ -29,8 +29,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   real same-lock event batch.
 - Second visual review found that Core signatures still included Rim and could mask a
   Core regression. `6599764` isolates those layers and proves the real Core reaches
-  Rim from locked/active/Next. Focused tests pass 25/25 and typecheck passes; corrected
-  re-audit plus a separate performance/lifecycle audit remain required before UI opens.
+  Rim from locked/active/Next. Final visual re-audit passes with P0–P3 none.
+- Performance/lifecycle audit statically passed the implementation but found no direct
+  guard for surviving earlier burst particles or Collapse trail release.
+  `69730a1` proves both; focused tests pass 25/25 and typecheck passes. Corrected
+  performance/lifecycle re-audit remains required before UI opens.
 
 ## Non-negotiable boundaries
 
@@ -43,8 +46,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Re-audit exact Renderer candidate `6599764` for visual-contract fidelity, then run
-  a separate performance/lifecycle audit. Do not open UI paths until both pass.
+- Re-audit exact Renderer candidate `69730a1` for performance/lifecycle safety. Do
+  not open UI paths until it passes.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.
@@ -71,7 +74,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Second re-audit: product source remains PASS but test evidence is still `GAP` because
   Core capture included Rim and the three-state route stubbed real Core.
 - `6599764` separates Core/Rim capture and wraps the real Core during route proof;
-  25/25 and typecheck pass again. Final visual re-audit remains open.
+  25/25 and typecheck pass again. Final visual re-audit returns PASS / P0–P3 none.
+- Independent performance/lifecycle audit: source static PASS, overall `GAP`; direct
+  tests did not prove a later burst preserves old particles or that Collapse trail
+  releases at its exact duration.
+- `69730a1` adds both lifecycle guards; focused tests remain 25/25 and typecheck
+  passes. Corrected performance/lifecycle re-audit is open.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 

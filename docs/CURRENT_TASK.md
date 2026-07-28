@@ -58,10 +58,15 @@ signatures, proves Surface/Core reuse across locked/active/Next, exercises the r
 candidate `e2858a2` still allowed Rim geometry to mask a regressed Core. Second
 correction `6599764` isolates Core from Rim during signature capture and wraps the
 real Core path to prove locked/active/Next all reach Rim; focused tests remain 25/25
-and typecheck passes. Exact candidate `6599764` is not acceptance: corrected visual
-re-audit plus an independent performance/lifecycle audit, UI/localization,
-final-source browser evidence, full gates, repeated QA, recording, cleanup, and push
-remain open.
+and typecheck passes. The final visual-contract re-audit accepts `6599764` with
+P0–P3 = 0. The separate performance/lifecycle audit statically accepted the
+implementation but rejected two missing regression assertions: a later burst could
+clear surviving prior particles, and a completed Collapse trail could leak. Correction
+`69730a1` now proves old Bomb particles survive the following Freeze emission and
+Collapse trail exists at 259 ms but releases at 260 ms; focused tests remain 25/25 and
+typecheck passes. Exact candidate `69730a1` is not acceptance until the corrected
+performance/lifecycle re-audit passes; UI/localization, final-source browser evidence,
+full gates, repeated QA, recording, cleanup, and push also remain open.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
