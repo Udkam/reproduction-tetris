@@ -13,6 +13,7 @@ cleanup, and a successful non-force push.
 | Writer | Implement one bounded subsystem/checkpoint and run targeted gates. | Only the exact paths named in that phase contract. |
 | Code/rules QA | Compare `base..candidate`, deterministic behavior, tests, lifecycle, and scope. | None. |
 | Target/visual QA | Compare actual candidate frames and geometry against the frozen target at required viewports. | None. |
+| Evidence-integrity QA | Verify candidate SHA, clean build, report and screenshot hashes, state coverage, and stale-artifact exclusion. | None. |
 | Tie-break QA | Reproduce only a disputed finding when the two primary verdicts conflict. | None. |
 
 At most one writer owns a shared path at a time. QA begins only after the writer
@@ -24,7 +25,7 @@ QA task.
 | Phase | Declared writer team | Independent QA team | Rollback granularity | Status |
 | --- | --- | --- | --- | --- |
 | 1. Design foundation | coordinator as `t15_phase1_writer` | `t14_readonly_qa` + `phase1_visual_delta` | contract, dependency, token/font source, evidence, QA, acceptance | `PUSHED`; source `99e5a0f`, acceptance/recovery `fcd612e` |
-| 1.5 Modal compositor closure | coordinator as `t15_modal_writer` | `t15_modal_rules_preaudit` + `t15_modal_target` | CSS/test source checkpoint, then isolated focus-handoff corrections, evidence/QA | `P1 CORRECTION 3`; `8f3b72f` fixes playing return, paused Settings→Restart→Cancel steals Pause focus |
+| 1.5 Modal compositor closure | coordinator as `t15_modal_writer` | `t15_modal_rules_preaudit` + `t15_modal_target` + `t15_modal_evidence_integrity` | CSS/test source checkpoint, then isolated focus-handoff corrections, evidence/QA | `ACCEPTED`; source `5ab9e7d`, 20 browser / 18 pixel cases, cleanup and push pending |
 | 2. Settings | `t15_settings_writer` | `t15_settings_rules_qa` + `t15_settings_visual_qa` | behavior/focus and layout/style are separate checkpoints | `OPEN` |
 | 3. HUD | `t15_hud_writer` | `t15_hud_rules_qa` + `t15_hud_visual_qa` | DOM composition and renderer geometry remain separately revertible | `OPEN` |
 | 4. Survival | sequential `t15_survival_core_writer`, `t15_survival_render_writer`, `t15_survival_ui_writer` | `t15_survival_rules_qa` + `t15_survival_visual_qa` | Core, renderer, and UI each receive their own candidate SHA | `OPEN` |
@@ -44,7 +45,7 @@ correction SHA, accepted SHA, pushed SHA, and next action are recorded in that p
 2. `source-*` — one green reviewable claim per commit; exact-path staging only.
 3. `candidate` — immutable SHA handed to both auditors.
 4. `evidence` — source-bound screenshots/reports/hashes; no product edits.
-5. `qa-rules` and `qa-visual` — independent verdicts.
+5. `qa-rules`, `qa-visual`, and source-bound `qa-evidence` — independent verdicts.
 6. `correction-*` — only when findings require it, followed by fresh evidence and both
    audits again.
 7. `acceptance` — coordinator changelog/log disposition.

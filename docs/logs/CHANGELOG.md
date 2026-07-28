@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-28 — T15 Phase 1.5 modal compositor accepted
+
+- Live-game sheets now reliably composite above the same visible, dimmed Pixi canvas;
+  first-entry rules retain their correct pre-session zero-canvas state. Settings,
+  Pause, Restart, Exit, and Puzzle-result surfaces remain opaque without hiding or
+  recreating the live board.
+- The replacement-sheet focus contract now covers both state origins. Playing
+  Settings → Restart → Cancel returns to the original Canvas; paused
+  Pause → Settings → Restart → Cancel returns focus to the one remounted Pause sheet,
+  and closing that sheet then restores the same Canvas.
+- Candidate `5ab9e7d` passes 26 direct App tests, typecheck, 25 files / 185 tests, two
+  752-module builds, 20 exact-SHA production-browser cases, and 18 pixel-difference
+  cases. The manifest closes 5 source, 122 clean-build, and 77 evidence hashes.
+- Independent code/rules, target/visual, and evidence-integrity auditors all accept
+  the candidate with no product P0/P1. Their comparison caught three distinct focus
+  gaps across earlier narrow checkpoints and distinguished one final sampler
+  false-positive from product state before coordinator acceptance.
+
 ## 2026-07-28 — T15 Phase 1 design foundation accepted
 
 - Established a typed/CSS/Pixi design vocabulary for the requested shell palette,

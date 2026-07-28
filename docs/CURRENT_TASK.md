@@ -242,20 +242,21 @@ Final evidence requires typecheck, full tests, build, fresh live screenshots for
 carriers plus Freeze, Collapse, Bomb, and Multiplier active/impact states, an item-marked
 Next preview, no console/page error, one canvas/zero DOM cells, desktop plus compact
 layout, and a renderer benchmark that supports the 60 FPS budget.
-The current uncommitted T13.16 modal-compositor correction is an inherited separate
-slice: do not stage or mutate its `src/styles.css` change in a T14 checkpoint.
+The T13.16 modal-compositor correction is now isolated and accepted as T15 Phase 1.5.
+Its short correction history remains a separate rollback range and must not be bundled
+with the later Settings or HUD checkpoints.
 
-### T13.16 active delivery contract — modal compositor integrity
+### T13.16 accepted delivery contract — modal compositor integrity
 
-**T15 Phase 1.5 status (2026-07-28):** correction candidate `8f3b72f` is isolated from
-rollback base `dfeb2c9`. It corrected the playing-origin
-Settings → Restart → Cancel endpoint and passed the direct/full gates plus an exact-SHA
-18-case production matrix. Independent code/rules QA and a separate production probe
-then found a third P1: the same chain from an already-paused run correctly remounts
-Pause, but the unconditional board return steals focus outside that active dialog.
-No acceptance is claimed. Settings may not acquire this shared path until paused-origin
-ownership is corrected, fresh evidence and both independent QA pass, coordinator
-acceptance is recorded, and the phase is pushed.
+**T15 Phase 1.5 status (2026-07-28):** source candidate `5ab9e7d` is accepted from
+rollback base `dfeb2c9`. The final state-dependent return restores the board only from
+a playing origin; a paused origin remounts one Pause sheet and leaves focus with its
+Continue action. The direct App test, typecheck, 25-file / 185-test suite, main and
+clean 752-module builds, exact-SHA 20-case production matrix, 18-case pixel audit, and
+generic browser client all pass. Independent code/rules, target/visual, and evidence-
+integrity auditors accept the candidate with no product P0/P1. Coordinator acceptance
+is recorded; resource cleanup and the remote recovery push are the only remaining
+Phase-1.5 actions.
 
 1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
    audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint

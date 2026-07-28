@@ -192,3 +192,40 @@ production matrix and pixel audit, then both independent QA.
 Current state: `P1 CORRECTION 3`; `8f3b72f` is rejected as a Phase-1.5 acceptance
 candidate. The next candidate must repeat targeted/full gates, clean build, expanded
 production matrix/pixel audit, manifest verification, and both independent QA.
+
+## Accepted correction — state-dependent board return
+
+- Final source candidate: `5ab9e7d`
+  (`fix(ui): preserve paused modal focus`).
+- Exact correction paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+- The restart-cancel transaction now snapshots whether it returns to playing. Only
+  that branch resumes and calls the existing board-focus route. A paused origin leaves
+  the board paused and lets the remounted Pause ActionSheet own autofocus.
+- The queued-frame App test covers the complete paused-origin chain and asserts one
+  Pause dialog, focus inside it, and the same one Canvas. Direct App tests pass 26/26;
+  typecheck, the full 25-file / 185-test suite, and both 752-module builds pass.
+- The first expanded production matrix reported a final `body` focus after closing the
+  returned Pause sheet. Three fresh independent Chromium contexts could not reproduce
+  a product defect: after 250 ms plus two frames all three restored the exact original
+  Canvas with zero dialogs/errors. The evidence sampler was therefore corrected to
+  observe the documented two-frame restoration boundary instead of an 80 ms
+  intermediate state; no product assertion or timing rule was relaxed.
+- Final exact-SHA evidence:
+  - 20 browser cases, including desktop and 390 px
+    `restart-from-paused-settings`;
+  - 18 live-sheet pixel cases with zero failures;
+  - one generic final-candidate browser capture;
+  - one Canvas / zero DOM cells, zero console/page errors, no overflow;
+  - manifest hashes match 5 source files, 122 clean-build files, and 77 evidence files.
+- Independent comparison verdicts:
+  - `t15_modal_rules_preaudit`: ACCEPT, P0/P1 none;
+  - `t15_modal_target`: ACCEPT, P0/P1 none after fresh review of all 20 primary frames;
+  - `t15_modal_evidence_integrity`: ACCEPT, P0/P1/P2 none; SHA, timestamps, hashes,
+    report sets, clean worktree, and stale-evidence exclusion all close.
+- Coordinator disposition: ACCEPT `5ab9e7d`. The three earlier rejected candidates
+  remain preserved as narrow rollback checkpoints. Preview/worktree cleanup and the
+  non-force remote recovery push remain before Settings may acquire shared paths.
+
+Current state: `ACCEPTED / PUSH PENDING`.

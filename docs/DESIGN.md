@@ -112,13 +112,14 @@ endpoint.
 
 ## T13.16 Modal compositor integrity
 
-**Status:** active narrow visual correction. The live Pixi board remains visible and
-dimmed behind every live-game sheet, but a compositor must never allow its WebGL layer
-to paint over the opaque Settings, pause, restart, exit, or Puzzle-result surface. The
-pre-session first-entry sheet has no Canvas and instead layers over the mode page. This
-corrects stacking/compositing while a `.sheet-backdrop` exists: live sessions keep one
-canvas; copy, metrics, panel geometry, and Core state stay unchanged. Browser evidence
-must inspect actual pixels rather than relying only on correct DOM hit testing.
+**Status:** accepted at source `5ab9e7d` after independent code/rules, target/visual,
+and evidence-integrity review. The live Pixi board remains visible and dimmed behind
+every live-game sheet, but its WebGL layer never paints over the opaque Settings,
+pause, restart, exit, or Puzzle-result surface. The pre-session first-entry sheet has
+no Canvas and instead layers over the mode page. Live sessions retain the same one
+canvas; copy, metrics, panel geometry, and Core state remain unchanged. Acceptance is
+bound to the exact-SHA 20-case browser matrix and 18-case pixel audit rather than DOM
+hit testing alone.
 
 An ActionSheet-to-ActionSheet replacement is one modal ownership handoff. The outgoing
 sheet may restore its saved trigger only when no successor `aria-modal` dialog exists.
