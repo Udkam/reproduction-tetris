@@ -98,14 +98,26 @@ type RendererInternals = {
     multiplierFactor: 2 | 4;
     score: number;
     particlesEmitted: boolean;
+    triggerColumns: readonly number[];
   } | null;
   mutationFlashQueue: Array<{ item: MutationItem }>;
   mutationParticles: Array<{ active: boolean; item: MutationItem; rotation: number; rotationVelocity: number }>;
   mutationFields: Map<Exclude<MutationItem, 'bomb'>, { item: Exclude<MutationItem, 'bomb'>; stage: 'enter' | 'active' | 'exit'; elapsed: number }>;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
-  collapseTrail: { paths: readonly { x: number; fromY: number; toY: number }[]; elapsed: number; duration: number } | null;
-  consumeEvents: (events: readonly GameEvent[]) => void;
+  collapseTrail: {
+    paths: readonly { x: number; fromY: number; toY: number }[];
+    columns: readonly number[];
+    maxDrop: number;
+    elapsed: number;
+    duration: number;
+  } | null;
+  consumeEvents: (
+    events: readonly GameEvent[],
+    state?: GameState,
+    previousBoard?: GameState['board'] | null,
+    collapseWasActive?: boolean,
+  ) => void;
   advanceEffects: (deltaMs: number) => void;
   advanceSurvivalDebrisPresentation: (state: GameState, deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
@@ -475,6 +487,58 @@ describe('Puzzle undo presentation reset', () => {
     expect(signatures.size).toBe(4);
   });
 
+  it('binds Collapse activation wells only to the trigger columns with no board-wide bar', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    internals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'collapse',
+      durationTicks: 600,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells: [
+        { x: 1, y: VISIBLE_START_ROW + 4 },
+        { x: 7, y: VISIBLE_START_ROW + 7 },
+      ],
+    }]);
+
+    expect(internals.mutationFlash).toMatchObject({ triggerColumns: [1, 7] });
+    const recorder = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(
+      recorder.graphics,
+      internals.mutationFlash!,
+      layout,
+    );
+    const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
+    expect(rectangles.length).toBeGreaterThan(0);
+    expect(rectangles.every((operation) => operation.values[2]! < layout.width * .2)).toBe(true);
+    expect(rectangles.every((operation) => {
+      const center = operation.values[0]! + operation.values[2]! / 2;
+      return [30, 150].some((expected) => Math.abs(expected - center) < layout.cell * .15);
+    })).toBe(true);
+  });
+
+  it('uses a compact persistent Collapse gravity core without top or bottom bands', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const recorder = createGraphicsRecorder();
+    internals.drawActiveMutationAtmosphere(
+      recorder.graphics,
+      {
+        mode: 'sprint',
+        mutationFreezeTicks: 0,
+        mutationCollapseTicks: 60,
+        mutationMultiplierTicks: 0,
+        mutationMultiplierFactor: 2,
+      } as unknown as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+
+    expect(recorder.operations.some((operation) => operation.kind === 'circle')).toBe(true);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+  });
+
   it('anchors multiplier feedback to Core trigger cells and preserves the 4× escalation cue', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
@@ -638,7 +702,9 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.queueCollapseSettlementTrail(withGap, [{ x: 0, y: BOARD_HEIGHT - 4 }]);
     expect(internals.collapseTrail).toMatchObject({
-      duration: 120,
+      duration: 260,
+      columns: [0],
+      maxDrop: 2,
       paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
     });
 
@@ -661,12 +727,73 @@ describe('Puzzle undo presentation reset', () => {
     ]);
 
     expect(internals.collapseTrail).toMatchObject({
-      duration: 120,
+      duration: 260,
+      columns: [0],
+      maxDrop: 1,
       paths: [
+        { x: 0, fromY: BOARD_HEIGHT - 3, toY: BOARD_HEIGHT - 2 },
         { x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 3 },
         { x: 0, fromY: BOARD_HEIGHT - 5, toY: BOARD_HEIGHT - 4 },
       ],
     });
+  });
+
+  it('tracks existing and incoming movement in only the columns that actually settle', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const board = createBoard();
+    board[BOARD_HEIGHT - 1]![1] = 'T';
+    board[BOARD_HEIGHT - 5]![1] = 'S';
+    board[BOARD_HEIGHT - 1]![3] = 'J';
+    board[BOARD_HEIGHT - 1]![7] = 'L';
+    internals.queueCollapseSettlementTrail(board, [
+      { x: 1, y: BOARD_HEIGHT - 6 },
+      { x: 3, y: BOARD_HEIGHT - 2 },
+      { x: 7, y: BOARD_HEIGHT - 3 },
+    ]);
+
+    expect(internals.collapseTrail).toMatchObject({
+      columns: [1, 7],
+      maxDrop: 3,
+    });
+    expect(internals.collapseTrail?.paths).toContainEqual({
+      x: 1,
+      fromY: BOARD_HEIGHT - 5,
+      toY: BOARD_HEIGHT - 2,
+    });
+    expect(internals.collapseTrail?.paths.some((path) => path.x === 3)).toBe(false);
+
+    const recorder = createGraphicsRecorder();
+    internals.drawCollapseSettlementTrail(
+      recorder.graphics,
+      internals.collapseTrail!,
+      .82,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+    const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
+    expect(rectangles.every((operation) => operation.values[2]! < 160)).toBe(true);
+    expect(rectangles.every((operation) => {
+      const center = operation.values[0]! + operation.values[2]! / 2;
+      return [30, 150].some((expected) => Math.abs(expected - center) < 5);
+    })).toBe(true);
+  });
+
+  it('retains a Collapse settlement cue when the same lock also resolves a line', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const board = createBoard();
+    board[BOARD_HEIGHT - 1]![0] = 'T';
+    internals.consumeEvents(
+      [
+        { type: 'piece-locked', piece: 'I', cells: [{ x: 0, y: BOARD_HEIGHT - 4 }] },
+        { type: 'lines-cleared', rows: [BOARD_HEIGHT - 1], count: 1, score: 100 },
+      ],
+      { mode: 'sprint' } as GameState,
+      board,
+      true,
+    );
+
+    expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
   });
 
   it('scales Next geometry to the slot instead of capping it at a tiny fixed unit', () => {

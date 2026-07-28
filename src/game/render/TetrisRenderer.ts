@@ -141,6 +141,8 @@ interface MutationFlash {
   particlesEmitted: boolean;
   /** Immutable board snapshot retained only until a deferred Bomb impact begins. */
   particlePreviousBoard: GameState['board'] | null;
+  /** Stable board columns touched by the carrier that activated this item. */
+  triggerColumns: readonly number[];
 }
 
 /** Renderer-only request retained until every same-tick item receives its own burst. */
@@ -160,6 +162,9 @@ interface MutationArrival {
 
 interface CollapseTrail {
   paths: readonly { x: number; fromY: number; toY: number }[];
+  /** Sorted naturally by the fixed left-to-right compaction scan. */
+  columns: readonly number[];
+  maxDrop: number;
   elapsed: number;
   duration: number;
 }
@@ -1440,9 +1445,9 @@ export class TetrisRenderer {
       this.drawMutationActivationEffect(mutationGraphics, this.mutationFlash, layout);
     }
     this.drawMutationParticles(mutationGraphics, layout);
-    if (this.collapseTrail && !this.options.reducedMotion) {
+    if (this.collapseTrail) {
       const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
-      this.drawCollapseSettlementTrail(graphics, this.collapseTrail, progress, layout);
+      this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
     }
     if (state.phase === 'line-clear' && !this.options.reducedMotion) {
       const progress = lineClearPresentationProgress(state.phaseTicks, false);
@@ -1753,29 +1758,43 @@ export class TetrisRenderer {
 
   private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
     const token = MUTATION_VFX_TOKENS.collapse;
-    const bandHeight = Math.max(layout.cell * 1.12, 20);
-    const bandY = layout.y + layout.cell * .12;
+    const centerX = layout.x + layout.width / 2;
+    const centerY = layout.y + Math.min(layout.height * .28, layout.cell * 5.4);
+    const pulse = this.options.reducedMotion ? 1 : .78 + Math.sin(phase * Math.PI * 2) * .16;
+    const core = Math.max(5, layout.cell * .48);
+    const stroke = Math.max(1, layout.cell * .055);
+    // A compact gravity core communicates the timed global rule without inventing
+    // fake moving columns. Real column motion is drawn only by CollapseTrail.
     graphics
-      .roundRect(layout.x + layout.cell * .12, bandY, layout.width - layout.cell * .24, bandHeight, Math.max(4, layout.cell * .16))
-      .fill({ color: token.palette.deep, alpha: 0.62 * opacity })
-      .stroke({ color: token.palette.highlight, alpha: 0.88 * opacity, width: Math.max(1, layout.cell * .052) });
-    graphics
-      .roundRect(layout.x + layout.width * .42, bandY + bandHeight, layout.width * .16, layout.height - bandHeight - layout.cell * .5, layout.cell * .12)
-      .fill({ color: token.palette.deep, alpha: 0.18 * opacity })
-      .stroke({ color: token.palette.primary, alpha: 0.34 * opacity, width: Math.max(1, layout.cell * .032) });
-    const laneCount = 7;
-    const laneWidth = Math.max(2, layout.cell * .078);
-    for (let lane = 0; lane < laneCount; lane += 1) {
-      const x = layout.x + layout.width * ((lane + 1) / (laneCount + 1)) - laneWidth / 2;
-      const drift = this.options.reducedMotion ? 0 : (phase + lane * .137) % 1;
-      const y = bandY + bandHeight + drift * layout.cell * 1.6;
-      const height = Math.max(layout.cell * 2, layout.height * (.3 + lane % 2 * .07));
-      graphics.roundRect(x, y, laneWidth, height, laneWidth / 2).fill({ color: token.palette.primary, alpha: 0.3 * opacity });
-      graphics.circle(x + laneWidth / 2, y + height, laneWidth * 1.8).fill({ color: token.palette.highlight, alpha: 0.52 * opacity });
+      .circle(centerX, centerY, core * 1.8)
+      .fill({ color: token.palette.deep, alpha: .18 * pulse * opacity })
+      .circle(centerX, centerY, core)
+      .stroke({ color: token.palette.highlight, alpha: .72 * pulse * opacity, width: stroke });
+    this.drawMutationDiamond(
+      graphics,
+      centerX,
+      centerY,
+      core * .64,
+      core * .9,
+      token.palette.primary,
+      .76 * pulse * opacity,
+    );
+    for (let index = 0; index < 3; index += 1) {
+      const y = centerY + core * (1.55 + index * .72);
+      const spread = core * (.84 - index * .12);
+      this.strokeSegments(graphics, [
+        [centerX - spread, y - core * .24, centerX, y + core * .22],
+        [centerX, y + core * .22, centerX + spread, y - core * .24],
+      ], token.palette.highlight, (.66 - index * .1) * pulse * opacity, stroke);
     }
-    graphics
-      .roundRect(layout.x + layout.cell * .2, layout.y + layout.height - layout.cell * .7, layout.width - layout.cell * .4, Math.max(2, layout.cell * .12), layout.cell * .06)
-      .fill({ color: token.palette.primary, alpha: 0.36 * opacity });
+    for (const [xOffset, yOffset, scale] of [
+      [-1.55, -.82, .5], [1.48, -.48, .42], [-1.2, 1.36, .34], [1.28, 1.72, .3],
+    ] as const) {
+      const drift = this.options.reducedMotion ? 0 : ((phase + scale) % 1) * core * 1.6;
+      graphics
+        .circle(centerX + xOffset * core, centerY + yOffset * core + drift, Math.max(1, core * scale * .16))
+        .fill({ color: token.palette.primary, alpha: .52 * pulse * opacity });
+    }
   }
 
   private drawMultiplierAtmosphere(
@@ -2057,22 +2076,61 @@ export class TetrisRenderer {
       const settle = flash.timeline.sample('settle');
       if (!pull.active && !settle.active) return;
       const alpha = pull.active ? 1 - pull.progress * .18 : 1 - settle.progress;
-      const bandY = Math.max(layout.y, anchorY - layout.cell * 2.5);
-      const bandHeight = Math.max(layout.cell * .78, 13);
       const compression = pull.active ? pull.value : 1;
       if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .9 * alpha, strokeWidth);
+      const coreRadius = Math.max(layout.cell * .58, 6);
       graphics
-        .roundRect(layout.x + layout.cell * .25, bandY, layout.width - layout.cell * .5, bandHeight, bandHeight * .24)
-        .fill({ color: token.palette.deep, alpha: 0.56 * alpha })
-        .stroke({ color: token.palette.highlight, alpha: 0.88 * alpha, width: strokeWidth });
-      for (const factor of [.14, .3, .46, .62, .78, .92] as const) {
-        const x = layout.x + layout.width * factor;
-        const dropHeight = Math.max(layout.cell * 1.65, (layout.height - (anchorY - layout.y)) * (.18 + compression * .18));
+        .circle(anchorX, anchorY, coreRadius * (1.2 + compression * .42))
+        .fill({ color: token.palette.deep, alpha: .3 * alpha })
+        .circle(anchorX, anchorY, coreRadius * .72)
+        .stroke({ color: token.palette.highlight, alpha: .9 * alpha, width: strokeWidth });
+      this.drawMutationDiamond(
+        graphics,
+        anchorX,
+        anchorY,
+        coreRadius * .4,
+        coreRadius * .62,
+        token.palette.primary,
+        .86 * alpha,
+      );
+      for (const column of flash.triggerColumns) {
+        const x = layout.x + (column + .5) * layout.cell;
+        let sourceY = anchorY;
+        for (const cell of cells) {
+          if (cell.x !== column) continue;
+          sourceY = Math.min(sourceY, layout.y + (cell.y + .5) * layout.cell);
+        }
+        const available = Math.max(layout.cell * 1.4, layout.y + layout.height - sourceY - layout.cell * .4);
+        const dropHeight = Math.min(available, layout.cell * (2.2 + compression * 2.4));
+        const wellWidth = Math.max(2, layout.cell * .09);
         graphics
-          .roundRect(x - strokeWidth, bandY + bandHeight, strokeWidth * 2, dropHeight, strokeWidth)
-          .fill({ color: token.palette.primary, alpha: 0.5 * alpha })
-          .circle(x, bandY + bandHeight + dropHeight, strokeWidth * 2.2)
-          .fill({ color: token.palette.highlight, alpha: 0.72 * alpha });
+          .roundRect(x - wellWidth * 1.8, sourceY, wellWidth, dropHeight, wellWidth / 2)
+          .fill({ color: token.palette.primary, alpha: .44 * alpha })
+          .roundRect(x + wellWidth * .8, sourceY + layout.cell * .26, wellWidth, dropHeight * .82, wellWidth / 2)
+          .fill({ color: token.palette.highlight, alpha: .26 * alpha });
+        for (let mote = 0; mote < 3; mote += 1) {
+          const progress = (compression * .58 + mote * .31) % 1;
+          graphics
+            .circle(x + (mote - 1) * wellWidth * 1.25, sourceY + dropHeight * progress, Math.max(1, wellWidth * .72))
+            .fill({ color: token.palette.highlight, alpha: (.68 - mote * .1) * alpha });
+        }
+        const settleY = sourceY + dropHeight;
+        const spread = layout.cell * .28;
+        this.strokeSegments(graphics, [
+          [x - spread, settleY - layout.cell * .12, x, settleY + layout.cell * .14],
+          [x, settleY + layout.cell * .14, x + spread, settleY - layout.cell * .12],
+        ], token.palette.highlight, .86 * alpha, strokeWidth);
+        if (settle.active) {
+          graphics
+            .roundRect(
+              x - layout.cell * .36,
+              settleY + layout.cell * .22,
+              layout.cell * .72,
+              Math.max(2, layout.cell * .08),
+              Math.max(1, layout.cell * .04),
+            )
+            .fill({ color: token.palette.primary, alpha: .52 * alpha });
+        }
       }
       return;
     }
@@ -2297,6 +2355,18 @@ export class TetrisRenderer {
     if (this.mutationFlash === null) this.startNextMutationFlash();
   }
 
+  private mutationColumnsFor(cells: readonly Cell[]): readonly number[] {
+    const seen = new Uint8Array(BOARD_WIDTH);
+    const columns: number[] = [];
+    for (const cell of cells) {
+      if (cell.x < 0 || cell.x >= BOARD_WIDTH || seen[cell.x] !== 0) continue;
+      seen[cell.x] = 1;
+      columns.push(cell.x);
+    }
+    columns.sort((left, right) => left - right);
+    return columns;
+  }
+
   private startNextMutationFlash(): void {
     const request = this.mutationFlashQueue.shift();
     if (!request) {
@@ -2316,6 +2386,7 @@ export class TetrisRenderer {
       score: request.score,
       particlesEmitted: this.options.reducedMotion || request.item !== 'bomb',
       particlePreviousBoard: request.previousBoard,
+      triggerColumns: this.mutationColumnsFor(request.triggerCells),
     };
     // Bomb owns a warning and pulse before impact, so its fragments cannot exist
     // until the impact phase begins. Other item families emit immediately.
@@ -2606,20 +2677,72 @@ export class TetrisRenderer {
     progress: number,
     layout: BoardLayout,
   ): void {
-    const alpha = 0.32 * (1 - easeOutCubic(progress));
+    const eased = this.options.reducedMotion ? 1 : easeOutCubic(progress);
+    const depthWeight = .82 + Math.min(1, trail.maxDrop / 6) * .18;
+    const alpha = this.options.reducedMotion ? .76 : .58 * (1 - progress * .72) * depthWeight;
     if (alpha <= 0) return;
     const material = this.mutationMaterial('collapse');
-    const width = Math.max(2, layout.cell * 0.2);
-    for (const path of trail.paths) {
-      const startY = Math.max(VISIBLE_START_ROW, path.fromY);
-      const endY = Math.min(VISIBLE_START_ROW + VISIBLE_HEIGHT - 1, path.toY);
-      if (endY <= startY) continue;
-      const x = layout.x + path.x * layout.cell + (layout.cell - width) / 2;
-      const y = layout.y + (startY - VISIBLE_START_ROW) * layout.cell + layout.cell * 0.2;
-      const height = Math.max(width, (endY - startY) * layout.cell + layout.cell * 0.6);
+    const stroke = Math.max(1, layout.cell * .05);
+    const columnWidth = Math.max(2, layout.cell * .08);
+    for (const column of trail.columns) {
+      let minFrom = BOARD_HEIGHT;
+      let maxTo = 0;
+      for (const path of trail.paths) {
+        if (path.x !== column) continue;
+        minFrom = Math.min(minFrom, path.fromY);
+        maxTo = Math.max(maxTo, path.toY);
+      }
+      if (minFrom >= BOARD_HEIGHT || maxTo < VISIBLE_START_ROW) continue;
+      const visibleFrom = Math.max(VISIBLE_START_ROW, minFrom);
+      const visibleTo = Math.min(VISIBLE_START_ROW + VISIBLE_HEIGHT - 1, maxTo);
+      const centerX = layout.x + (column + .5) * layout.cell;
+      const top = layout.y + (visibleFrom - VISIBLE_START_ROW + .12) * layout.cell;
+      const bottom = layout.y + (visibleTo - VISIBLE_START_ROW + .88) * layout.cell;
+      const height = Math.max(layout.cell * .74, bottom - top);
       graphics
-        .roundRect(x, y, width, height, width / 2)
-        .fill({ color: material.fillStart, alpha });
+        .roundRect(centerX - columnWidth * 1.7, top, columnWidth, height, columnWidth / 2)
+        .fill({ color: material.edge, alpha: alpha * .46 })
+        .roundRect(centerX + columnWidth * .7, top + layout.cell * .18, columnWidth, height * .78, columnWidth / 2)
+        .fill({ color: material.innerEdge, alpha: alpha * .26 });
+      if (!this.options.reducedMotion) {
+        const moteY = top + height * ((progress * 1.24 + column * .17) % 1);
+        graphics
+          .circle(centerX, moteY, Math.max(1, columnWidth * .86))
+          .fill({ color: material.innerEdge, alpha: alpha * .82 });
+      }
+      const spread = layout.cell * .3;
+      this.strokeSegments(graphics, [
+        [centerX - spread, bottom - layout.cell * .12, centerX, bottom + layout.cell * .12],
+        [centerX, bottom + layout.cell * .12, centerX + spread, bottom - layout.cell * .12],
+      ], material.innerEdge, alpha, stroke);
+      if (eased > .68) {
+        graphics
+          .roundRect(
+            centerX - layout.cell * .37,
+            bottom + layout.cell * .2,
+            layout.cell * .74,
+            Math.max(2, layout.cell * .07),
+            Math.max(1, layout.cell * .035),
+          )
+          .fill({ color: material.fillStart, alpha: alpha * (eased - .68) / .32 });
+      }
+    }
+    for (const path of trail.paths) {
+      if (path.toY < VISIBLE_START_ROW || path.fromY >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+      const fromY = layout.y + (path.fromY - VISIBLE_START_ROW + .5) * layout.cell;
+      const toY = layout.y + (path.toY - VISIBLE_START_ROW + .5) * layout.cell;
+      const currentY = fromY + (toY - fromY) * eased;
+      const size = layout.cell * .56;
+      graphics
+        .roundRect(
+          layout.x + (path.x + .5) * layout.cell - size / 2,
+          currentY - size / 2,
+          size,
+          size,
+          Math.max(2, layout.cell * .1),
+        )
+        .fill({ color: material.edge, alpha: alpha * .22 })
+        .stroke({ color: material.innerEdge, alpha: alpha * .74, width: stroke });
     }
   }
 
@@ -2629,7 +2752,6 @@ export class TetrisRenderer {
     previousBoard: GameState['board'] | null = null,
     collapseWasActive = false,
   ): void {
-    const resolvedLineClear = events.some((event) => event.type === 'lines-cleared');
     for (const event of events) {
       if (event.type === 'piece-moved') {
         if (this.presentation) {
@@ -2674,7 +2796,7 @@ export class TetrisRenderer {
           duration: this.options.reducedMotion ? 1 : CELL_STYLE.lockFillDurationMs,
           piece: event.piece,
         };
-        if (!this.options.reducedMotion && state?.mode === 'sprint' && collapseWasActive && !resolvedLineClear) {
+        if (state?.mode === 'sprint' && collapseWasActive) {
           this.queueCollapseSettlementTrail(previousBoard, event.cells);
         }
       } else if (event.type === 'hard-dropped') {
@@ -2737,17 +2859,25 @@ export class TetrisRenderer {
     }
 
     const paths: Array<{ x: number; fromY: number; toY: number }> = [];
+    const columns: number[] = [];
+    let maxDrop = 0;
     for (let x = 0; x < BOARD_WIDTH; x += 1) {
       let destinationY = BOARD_HEIGHT - 1;
+      let columnMoved = false;
       for (let y = BOARD_HEIGHT - 1; y >= 0; y -= 1) {
         const incoming = this.collapseIncomingStamps[y * BOARD_WIDTH + x] === this.collapseIncomingStamp;
         if (!incoming && !previousBoard[y]?.[x]) continue;
-        if (incoming && destinationY > y) paths.push({ x, fromY: y, toY: destinationY });
+        if (destinationY > y) {
+          paths.push({ x, fromY: y, toY: destinationY });
+          columnMoved = true;
+          maxDrop = Math.max(maxDrop, destinationY - y);
+        }
         destinationY -= 1;
       }
+      if (columnMoved) columns.push(x);
     }
     this.collapseTrail = paths.length > 0
-      ? { paths, elapsed: 0, duration: 120 }
+      ? { paths, columns, maxDrop, elapsed: 0, duration: 260 }
       : null;
   }
 
