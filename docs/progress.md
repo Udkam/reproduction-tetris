@@ -1286,3 +1286,17 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   Classic/Puzzle work remain untouched. Acceptance/recovery record `1383fca` is now
   pushed, 4178/5178 and headless Chrome are released, and Phase 4 is open at that
   rollback boundary.
+
+## 2026-07-28 — T15 Phase 5 Mutation baseline audited
+
+- At documentation head `fae3c96`, independent Core/performance, Renderer/VFX, and
+  UI/Next audits all return `GAP`; no Phase-5 product source had changed.
+- The required corrections are now explicit: isolated deterministic item RNG;
+  60-tick Ice gravity with manual controls; shared Collapse compaction metadata;
+  moved-column-only Collapse VFX; impact-gated Bomb fragments; distinct persistent
+  2×/4× endpoints; reduced-motion-safe FIFO; compact status rows; `冰冻` copy; and
+  body-plus-attachment Next/live-region semantics.
+- Core RNG/Ice, Core Collapse/performance, runtime FIFO, renderer/timeline, UI
+  semantics, and responsive status layout remain separately revertible checkpoints.
+- Next: implement and directly test the Core RNG/Ice checkpoint before acquiring any
+  renderer or UI path.

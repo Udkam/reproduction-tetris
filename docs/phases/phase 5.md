@@ -2,10 +2,11 @@
 
 ## 状态
 
-**已开放。** Phase 4 验收/恢复记录 `fd7ef8d` 已推送至 `origin/main`；
-Phase 5 以该提交为回退基线。已有 T14 实现只是审计基线，不因“已有特效”而
-直接视为本阶段通过。产品源码尚未开始修改，需先完成 Core/性能、Renderer/VFX
-和 UI/Next 的三路只读误差审计及精确路径冻结。
+**三路基线审计已完成，等待 Core writer。** Phase 4 验收/恢复记录 `fd7ef8d`
+已推送至 `origin/main`；Phase 5 以该提交为回退基线，审计文档头为
+`fae3c96`。Core/性能、Renderer/VFX 和 UI/Next 三路只读审计一致判定当前
+T14 基线为 `GAP`，因此没有沿用历史验收。产品源码尚未开始修改；下列精确路径
+与检查点顺序是第一轮实现边界。
 
 ## 目标
 
@@ -42,6 +43,61 @@ Phase 5 以该提交为回退基线。已有 T14 实现只是审计基线，不�
    Bomb，去掉冗余炸弹说明。
 10. 特效在普通和 reduced-motion 下都有高对比终态，并遵守对象池/粒子/平面
     预算。色弱或灰阶状态仍能通过轮廓、纹理和符号分辨四类附件。
+
+## 基线误差审计（`fae3c96`）
+
+三路审计确认可保留的基础是 7 × 4 附件交叉、无副作用 immediate-Next 预测、
+三个独立计时字段、2×→4×、一次性 Bomb、Renderer FIFO、120 槽粒子池与两个
+复用 filter。下列误差必须由本阶段修复：
+
+1. 附件抽取错误地复用普通七袋 `randomizer`，未实现合同要求的独立确定性流。
+2. 冰冻仍把每 tick 的 `gravityTicks` 清零并完全停住自动重力；现有测试也固化
+   了旧规则。必须改成 59 tick 不落、第 60 tick 恰落一格，并在到期后恢复当时
+   的 Mutation cadence。
+3. Collapse Core 虽已使用数组索引，但棋盘与 carrier metadata 重复扫描，并
+   每次分配新的映射/集合；需要共享一次逐列压实结果并补专项性能证据。
+4. Collapse 的持续态仍有约 98% 棋盘宽的顶部条与约 96% 的底部条，触发态另有
+   约 95% 的横带和固定全局 lanes；filter、粒子和沉降也未绑定实际移动列。
+5. Bomb fragments 在 warning 阶段提前出现；Multiplier 十秒持续态和
+   reduced-motion 终态不能区分 2× / 4×。
+6. 运行中切换 reduced-motion 会清空尚未播放的 Mutation FIFO，造成反馈丢失。
+7. 中文仍显示“冻结”，规则仍写“停落”；空闲状态卡仍保留三条占位；
+   Mutation Next 的 ARIA 只报告主体形状、不报告附件；同一 transition 的多个
+   live-region 事件只播报最后一个。
+
+## 已冻结 writer 路径与检查点
+
+1. **Core RNG / Ice / direct semantics**
+   - `src/game/core/constants.ts`
+   - `src/game/core/types.ts`
+   - `src/game/core/engine.ts`
+   - `src/game/core/sprint.test.ts`
+2. **Core Collapse shared mapping / performance**
+   - `src/game/core/sprint.ts`
+   - `src/game/core/mutation.ts`
+   - `src/game/core/engine.ts`
+   - `src/game/core/sprint.test.ts`
+3. **Runtime FIFO handoff proof**
+   - `src/game/runtime/GameRuntime.test.ts`
+4. **Renderer carrier / timeline / actual-column VFX**
+   - `src/game/render/TetrisRenderer.ts`
+   - `src/game/render/TetrisRenderer.test.ts`
+   - `src/animation/mutationTimeline.ts`
+   - `src/animation/mutationTimeline.test.ts`
+   - 仅当现有 token 无法表达最终节奏时，才加入
+     `src/design/mutationTokens.ts` 与其直接测试。
+5. **UI semantics / localization**
+   - `src/App.tsx`
+   - `src/App.test.ts`
+   - `src/ui/localization.ts`
+6. **UI responsive status layout**
+   - `src/styles/mutation-vfx.css`
+   - `src/styles/hud.css`
+   - `src/styles/hud.test.ts`
+
+同一 Core writer 串行完成前两个共享 `engine.ts` / `sprint.test.ts` 检查点；
+Renderer 等 Core 接口稳定后再开始；UI 等 Core 和 Renderer 的 Next/计时接口
+稳定后再开始。任何后一 writer 遇到前一检查点未提交的共享路径都必须停止。
 
 ## 分段团队
 

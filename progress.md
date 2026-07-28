@@ -7,8 +7,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
   accepted and pushed. Ports 4178/5178 and headless Chrome are released.
 - Phase 4 candidate `2af2adf`, evidence `993dfc7`, and acceptance/recovery
-  `fd7ef8d` are pushed. Current coordinator task: open Phase 5 Mutation at that
-  rollback and complete three read-only baseline audits before any source edit.
+  `fd7ef8d` are pushed.
+- Phase 5 Mutation three-way baseline audits at documentation head `fae3c96` are
+  complete and all return `GAP`. Exact Core → renderer → UI paths are frozen; the
+  current coordinator task is the Core RNG/Ice checkpoint. No Phase-5 product source
+  has changed yet.
 
 ## Non-negotiable boundaries
 
@@ -21,11 +24,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Audit the existing Survival Core, renderer, UI, persistence, and direct tests against
-  `docs/phases/phase 4.md`.
-- Freeze exact Core → renderer → UI writer paths before the first source checkpoint.
-- Keep Mutation, Classic, Puzzle selector/data, Settings, audio, dependencies, and
-  packaging outside the Phase-4 write scope.
+- Add a deterministic Mutation-item RNG isolated from the ordinary seven-bag and
+  preserve pure body-plus-attachment Next prediction.
+- Change Ice to one automatic cell per 60 fixed ticks, retain every manual control,
+  and prove exact retrigger, expiry, coexistence, and normal 6-tick floor behavior.
+- Then share one Collapse compaction map before renderer/UI work. Keep Classic shared
+  line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
+  packaging outside Phase 5.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 
@@ -104,3 +109,16 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   browser process remains.
 - Phase 5 Mutation is open from `fd7ef8d`; its first action is read-only error mapping
   for Core/performance, Renderer/VFX, and UI/Next, not immediate source editing.
+
+## 2026-07-28 Phase 5 baseline audit
+
+- Three independent read-only audits of `fae3c96` all return `GAP`; historical T14
+  visuals were not treated as current acceptance.
+- Core must isolate item RNG, replace stopped Ice with a 60-tick cadence, share one
+  Collapse compaction mapping, and strengthen direct FIFO/retrigger/coexistence tests.
+- Renderer must remove global Collapse bands, bind response to moved columns, delay
+  Bomb fragments until impact, retain explicit 2×/4× fields, and preserve FIFO when
+  reduced motion changes.
+- UI must use `冰冻`, content-size idle/active status rows, announce body plus
+  attachment in Next, and preserve all same-transition live announcements.
+- Exact checkpoint paths and sequencing are frozen in `docs/phases/phase 5.md`.

@@ -234,6 +234,31 @@ Next carrier, and its transient activation timeline is a FIFO so a single Core t
 can never overwrite a prior item effect. Reduced motion renders an informative static
 endpoint.
 
+### T15 Phase 5 baseline correction
+
+The `fae3c96` three-way baseline audit found that the historical T14 presentation is
+not yet the active Phase-5 target. Mutation item assignment currently consumes the
+ordinary seven-bag stream; Ice stops gravity instead of imposing one-second cells;
+Collapse recomputes settlement metadata and still presents broad top/bottom bands;
+Bomb particles begin before impact; 2×/4× persistent fields collapse into the same
+visual endpoint; and changing reduced-motion preference clears queued feedback.
+
+Phase 5 therefore introduces a separate deterministic attachment RNG, keeps its pure
+Next prediction aligned with the eventual body-plus-attachment spawn, and gives Ice a
+60-tick gravity interval while preserving manual controls. Collapse Core shares one
+column-compaction mapping with carrier settlement, while the renderer binds wells,
+compression, refraction, motes, and final settling only to columns whose cells move.
+No continuous horizontal primitive may span 80% of the board width. Bomb warning,
+impact, shockwave, and fragments are temporally distinct; Multiplier retains explicit
+2×/4× intensity in full and reduced motion. A runtime accessibility change preserves
+the transient FIFO and converts the current effect to a readable bounded endpoint.
+
+The Mutation rail is content-sized: no active timer means one concise idle statement,
+while active timers create only their own rows with identity, remaining time, and a
+semantic progress value. Chinese uses `冰冻`; Next accessibility names both the
+ordinary body and its attachment or absence. Same-transition announcements retain
+FIFO order rather than reporting only the last event.
+
 ## T13.16 Modal compositor integrity
 
 **Status:** accepted at source `5ab9e7d` after independent code/rules, target/visual,

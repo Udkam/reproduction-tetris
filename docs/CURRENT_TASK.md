@@ -21,6 +21,12 @@ Phase 4 Survival is accepted and pushed. Its source/test candidate
 `993dfc7` passed all repeated independent audits with no P0–P2. Acceptance/recovery
 record `fd7ef8d` is on `origin/main`; project ports and temporary browser resources
 are released. Phase 5 Mutation is now the active contract boundary at `fd7ef8d`.
+Three independent read-only baseline audits against documentation head `fae3c96`
+return `GAP`: item assignment still shares the ordinary seven-bag RNG, Ice still
+stops gravity, Collapse still performs duplicate work and draws global horizontal
+bands, a runtime reduced-motion switch can discard queued feedback, and the status /
+Next semantics remain incomplete. Exact Core → renderer → UI writer paths are frozen
+in `docs/phases/phase 5.md`; no Phase-5 product source has changed yet.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
@@ -62,7 +68,12 @@ as the current-state authority.
    carrier presence and item identity within 100 ms by shape/edge/core/motion as well
    as colour. Collapse may not use a ten-cell-wide horizontal bar at the top or inside
    the board; its feedback is column-local gravity, compression, downward particles,
-   and a short settlement wave only where cells actually move.
+   and a short settlement wave only where cells actually move. Item attachment RNG
+   must be a deterministic stream isolated from the ordinary seven-bag. Switching
+   reduced motion at runtime may simplify current feedback but may not discard its
+   pending FIFO. Bomb fragments begin only at impact, never during warning.
+   Multiplier's ten-second field and reduced-motion endpoint must both distinguish
+   2× from 4×.
 6. **Classic.** Refine terminology, hierarchy, micro-motion, and feedback only. The
    shared ordinary line-clear effect must visibly identify the cleared row, contract
    and dissolve its cells, then settle with a restrained afterglow; 1/2/3/4-line clears
