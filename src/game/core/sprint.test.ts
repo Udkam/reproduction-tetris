@@ -121,12 +121,16 @@ describe('异变 mode', () => {
   });
 
   it('keeps the body-and-item forecast exact through entry and line-clear delays', () => {
-    const active = lockAndSpawn(lockAndSpawn(playingMutation(0x7a15)));
+    const active = {
+      ...lockAndSpawn(lockAndSpawn(playingMutation(0x7a15))),
+      mutationRandomizer: createRandomizer(1),
+    };
     const entry = dispatch(active, { type: 'hard-drop' }).state;
     const lineClear = dispatch({
       ...carrierClearState('freeze'),
       pieceCount: 2,
       mutationActiveCarrier: null,
+      mutationRandomizer: createRandomizer(1),
     }, { type: 'hard-drop' }).state;
 
     expect(entry).toMatchObject({ phase: 'entry', active: null });
@@ -138,6 +142,7 @@ describe('异变 mode', () => {
         body: delayed.queue[0],
         item: nextMutationPreviewItem(delayed),
       };
+      expect(predicted.item).not.toBeNull();
       let spawned = delayed;
       for (
         let tick = 0;
