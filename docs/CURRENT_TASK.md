@@ -27,13 +27,15 @@ stops gravity, Collapse still performs duplicate work and draws global horizonta
 bands, a runtime reduced-motion switch can discard queued feedback, and the status /
 Next semantics remain incomplete. Exact Core → renderer → UI writer paths are frozen
 in `docs/phases/phase 5.md`. The local Core candidate is now the bounded range
-`f344f49..3ceb6c2`: `f344f49` isolates the item stream and implements 60-tick Ice
+`f344f49..f2d51ca`: `f344f49` isolates the item stream and implements 60-tick Ice
 gravity, `2e10789` shares one Collapse settlement mapping between board and carrier
 metadata, `94c2d66` proves runtime FIFO handoff, and `3ceb6c2` closes the first
 candidate audit's direct multi-carrier / empty-source / exactly-once test gaps.
-Focused Core/runtime tests pass 30/30 and typecheck passes. This is still a candidate,
-not Phase-5 acceptance: two fresh independent read-only dispositions against exact
-head `3ceb6c2` are required before renderer ownership opens.
+`f2d51ca` additionally freezes Classic, Survival, and Puzzle replay/hash isolation
+from item RNG while retaining that field in Mutation hashes. Focused Core/runtime
+tests pass 40/40 and typecheck passes. This is still a candidate, not Phase-5
+acceptance: two fresh independent read-only dispositions against exact product head
+`f2d51ca` are required before renderer ownership opens.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

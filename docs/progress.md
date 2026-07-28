@@ -1331,3 +1331,15 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - A second rules audit was interrupted during sustained machine CPU pressure and is
   not counted. Exact-head dual independent QA remains required before Renderer work;
   Phase 5 is still open and unaccepted.
+
+## 2026-07-28 — T15 Phase 5 Core cross-mode isolation proof
+
+- Existing direct tests already covered the 28 body/item cross-product and the
+  non-Ice 6-tick Mutation gravity floor.
+- Product checkpoint `f2d51ca` adds the missing parameterized boundary: changing only
+  the item RNG cannot change Classic, Survival, or Puzzle hashes, ordinary queues,
+  ordinary seven-bag state, or post-command replay hashes, while the same field
+  remains canonical for Mutation.
+- Focused Core/runtime verification now passes 3 files / 40 tests plus typecheck.
+  This is candidate hardening, not Core acceptance; two complete exact-head read-only
+  dispositions remain mandatory before Renderer work.

@@ -10,10 +10,11 @@ T14 基线为 `GAP`，因此没有沿用历史验收。首个产品源码检查�
 最终冰冻 tick/恢复速度、重触发与并存直接测试。后续 `2e10789` 用同一个
 40 × 10 单遍压实结果同时更新棋盘和 carrier metadata，`94c2d66` 直接证明
 同一 transition 的 FIFO 进入 Renderer，`3ceb6c2` 补齐多 carrier、空源索引、
-空 carrier 移除与恰好一次交付回归。最新定向 30 测试和 typecheck 通过。
+空 carrier 移除与恰好一次交付回归；`f2d51ca` 又直接固定三种非异变模式的
+item RNG / replay / hash 隔离。最新定向 40 测试和 typecheck 通过。
 第一份候选审计未发现 P0/P1 产品缺陷，但因直接证据和记录缺口判为 `GAP`；
-修正后 exact head 尚需两份新独立结论。下列精确路径与检查点顺序继续约束
-其余实现，Renderer 在 Core 双重接受前不开放。
+修正后 exact product head `f2d51ca` 尚需两份新独立结论。下列精确路径与
+检查点顺序继续约束其余实现，Renderer 在 Core 双重接受前不开放。
 
 ## 目标
 

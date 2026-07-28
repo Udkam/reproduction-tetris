@@ -10,10 +10,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `fd7ef8d` are pushed.
 - Phase 5 Mutation three-way baseline audits at documentation head `fae3c96` are
   complete and all return `GAP`. Exact Core → renderer → UI paths are frozen.
-- Phase-5 Core candidate `f344f49..3ceb6c2` is locally green: item RNG is isolated,
+- Phase-5 Core candidate `f344f49..f2d51ca` is locally green: item RNG is isolated,
   body+item preview stays pure, Ice advances at tick 60, Collapse shares one board /
-  carrier mapping, and runtime FIFO has direct exactly-once proof. Focused Core/runtime
-  tests pass 30/30 and typecheck passes.
+  carrier mapping, runtime FIFO has direct exactly-once proof, and Classic/Survival/
+  Puzzle hashes and replays ignore the private item RNG. Focused Core/runtime tests
+  pass 40/40 and typecheck passes.
 - The first candidate audit found no P0/P1 product defect but rejected incomplete
   direct multi-carrier/empty-source/exactly-once evidence; `3ceb6c2` corrects it.
   Exact-head dual independent QA is still pending, so Phase 5 is not accepted.
@@ -29,7 +30,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Obtain two independent read-only dispositions against exact Core head `3ceb6c2`,
+- Obtain two independent read-only dispositions against exact Core head `f2d51ca`,
   covering RNG/hash, exact Ice timing/manual controls, one-pass Collapse mapping,
   multi-carrier identity, empty sources and runtime FIFO.
 - Open only the frozen renderer/timeline paths after both Core dispositions accept.

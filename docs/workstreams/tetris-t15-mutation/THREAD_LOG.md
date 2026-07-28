@@ -160,3 +160,27 @@
 - Next action: when the resource budget allows, run independent rules and
   performance/FIFO audits against exact `3ceb6c2`; only dual acceptance opens the
   renderer/timeline checkpoint.
+
+## 2026-07-28 — Core cross-mode hash/replay hardening
+
+- Task ID: `T15-PHASE5-MUTATION-CORE-QA-HARDENING`.
+- Coordinator/writer: `/root`; prior product candidate `3ceb6c2`; new product
+  candidate `f2d51ca`.
+- Exact changed path: `src/game/core/sprint.test.ts`.
+- Evidence review confirmed the candidate already directly covers all 28 body/item
+  pairs with a 4,096-seed sweep and the Mutation 6-tick gravity floor. The missing
+  direct boundary was non-Mutation hash/replay isolation.
+- New parameterized regression:
+  - perturbs only `mutationRandomizer` in Classic, Survival, and Puzzle;
+  - proves each non-Mutation initial hash and post-command replay hash remains equal;
+  - proves active piece, queue, and ordinary seven-bag randomizer remain identical;
+  - proves the same field still changes a Mutation hash.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/sprint.test.ts src/game/core/rules.test.ts
+    src/game/runtime/GameRuntime.test.ts` — 3 files / 40 tests PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check` — PASS.
+- Blocker: two complete independent read-only dispositions against exact product head
+  `f2d51ca` remain required. The interrupted evidence-only rules audit is not counted.
+- Next action: run full static rules and performance/FIFO audits without prematurely
+  interrupting them; only dual acceptance opens Renderer/timeline source.
