@@ -168,9 +168,13 @@ targets, one Canvas, reduced-motion countdown endpoints, and zero layout overflo
 The Puzzle selector composition, mode rules, materials, and later Phase-4/5/6 effects
 remain outside this acceptance.
 
-## Phase 4 — Survival pressure contract opened
+## Phase 4 — Survival pressure candidate under corrected QA
 
-**Status:** active at pushed rollback base `1383fca`; implementation has not started.
+**Status:** source/test candidate `2af2adf` and corrected evidence `993dfc7` are
+local and awaiting the repeated independent audits. The first audit found no product
+rule or visual P0–P2; it rejected incomplete writer records and lifecycle/candidate
+binding evidence. Those gaps are now corrected, but Phase 4 is not accepted or pushed
+until every repeated audit returns `ACCEPT`.
 Survival opens with three rows of the accepted brown square bedrock material. Its
 bedrock-rise clock decreases from 13 seconds to a 6-second floor, while every three
 cleared lines removes one existing bedrock row. Ordinary pieces retain the accepted

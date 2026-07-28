@@ -6,8 +6,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
   accepted and pushed. Ports 4178/5178 and headless Chrome are released.
-- Current coordinator task: open Phase 4 Survival from pushed rollback `1383fca`;
-  product-source work has not started.
+- Current coordinator task: finish repeated QA for Phase 4 candidate `2af2adf`
+  with corrected evidence `993dfc7`; it is not accepted or pushed yet.
 
 ## Non-negotiable boundaries
 
@@ -64,3 +64,22 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Final rules, visual, and evidence auditors all ACCEPT with no P0–P2. The remaining
   unreachable `.settings-sheet` selectors and an earlier oversized checkpoint are
   recorded as non-blocking P3 maintenance/process debt.
+
+## 2026-07-28 Phase 4 corrected candidate
+
+- Checkpoints preserve canonical warning Core (`514c459`), Pixi stone arrival
+  (`4d31994`), four-card pressure HUD (`f89c040`), strict Survival records
+  (`5c6a436`), compact live clock (`cc8c71f`), and direct stone-clear scoring proof
+  (`2af2adf`) as separate rollback claims.
+- The first rules audit rejected missing writer records and two evidence assertions;
+  the first UI/evidence audit rejected missing lifecycle, English, raw-gate, and
+  independently verified candidate proof. The visual audit accepted the product.
+- Corrected evidence `993dfc7` binds full SHA `2af2adf`, fixed-seed warning/spawn
+  column `[4]`, three-row opening, real 13-second rise, falling/landing states,
+  portrait, reduced motion, English, countdown/settings freeze, pause, same-Canvas
+  restart, two unmount/remount cycles, listener/RAF/audio cleanup, and 14/14 hashes.
+- Final gates after the last source change: typecheck PASS; 26 files / 203 tests
+  PASS; build PASS with 753 transformed modules. Raw stdout is committed with the
+  evidence.
+- Next: complete writer handoff records, rerun all three independent audits, resolve
+  any new finding, then accept, clean the listener/browser resources, and push.
