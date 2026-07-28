@@ -253,10 +253,12 @@ impact, shockwave, and fragments are temporally distinct; Multiplier retains exp
 2×/4× intensity in full and reduced motion. A runtime accessibility change preserves
 the transient FIFO and converts the current effect to a readable bounded endpoint.
 
-The Mutation rail is content-sized: no active timer means one concise idle statement,
-while active timers create only their own rows with identity, remaining time, and a
-semantic progress value. Chinese uses `冰冻`; Next accessibility names both the
-ordinary body and its attachment or absence. Same-transition announcements retain
+The Mutation rail is content-sized: no active timer means no status surface at all, so
+the compact HUD keeps the ordinary two-column statistics/Next topology. Active timers
+alone open one third status instrument and create only their own tracks with identity,
+remaining time, and a semantic progress value; one, two, or three states never reserve
+empty placeholder rows or columns. Chinese uses `冰冻`; Next accessibility names both
+the ordinary body and its attachment or absence. Same-transition announcements retain
 FIFO order rather than reporting only the last event.
 
 ## T13.16 Modal compositor integrity

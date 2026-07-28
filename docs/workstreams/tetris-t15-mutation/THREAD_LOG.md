@@ -457,3 +457,57 @@
   - `git diff --check` — PASS before exact-path commit.
 - Blocker: corrected independent static re-audit remains required.
 - Next action: re-audit exact correction `287c426`; only PASS opens responsive CSS.
+
+## 2026-07-29 — UI semantics direct-proof correction and acceptance
+
+- Task ID: `T15-PHASE5-MUTATION-UI-QA-R2`.
+- Writer/coordinator: `/root`; product correction `287c426`; proof correction
+  `65ffd19`; documentation head before this record `459a15e`.
+- The first corrected re-audit accepted the upcoming-spawn formula and App integration,
+  but returned one P3 direct-evidence gap: both Core entry/line-clear fixtures happened
+  to draw `null`, so the historical `active === null` guard could still pass that test.
+- Exact correction path: `src/game/core/sprint.test.ts`.
+- Correction:
+  - both delayed fixtures receive `createRandomizer(1)`, whose next chance draw
+    deterministically creates a carrier;
+  - each fixture asserts the prediction item is non-null before ticking through the
+    real delay and comparing body/item with the spawned active carrier;
+  - each fixture retains the independent pre-prediction `stateHash` assertion.
+- Writer evidence:
+  - `npm.cmd run test -- src/game/core/sprint.test.ts src/App.test.ts
+    src/styles/hud.test.ts --maxWorkers=1` — 3 files / 61 tests PASS;
+  - exact-path `git diff --check` — PASS before commit.
+- Final independent auditor `t15_core_rules_r3`: `PASS`, P0–P3 none. It confirmed the
+  old guard now fails immediately in both delayed states and that real spawn equality
+  plus hash purity remain directly covered.
+- UI semantics status: `ACCEPTED-LOCAL-STATIC`; responsive CSS may open. This is not
+  Phase-5 acceptance and does not replace browser evidence.
+- Next action: implement only the frozen responsive status paths.
+
+## 2026-07-29 — Responsive Mutation status candidate
+
+- Task ID: `T15-PHASE5-MUTATION-UI-RESPONSIVE`.
+- Writer: `/root`; base `65ffd19`; candidate `d819d92`.
+- Exact changed paths:
+  - `src/styles/mutation-vfx.css`;
+  - `src/styles/hud.css`;
+  - `src/styles/hud.test.ts`.
+- Delivered layout:
+  - idle Mutation uses the same compact two-column stats/Next topology as other modes;
+  - only a rendered timed status activates the three-column layout;
+  - one, two, or three active timers create only real grid tracks;
+  - the short-height horizontal ledger uses `auto-fit`;
+  - obsolete high-specificity Mutation mobile rules no longer hide stats/Next or
+    override the HUD authority layer.
+- Commands actually run after the final CSS change:
+  - `npm.cmd run test -- src/styles/hud.test.ts src/App.test.ts --maxWorkers=1` —
+    2 files / 40 tests PASS;
+  - `npm.cmd run typecheck` — PASS;
+  - exact-path `git diff --check` — PASS before commit.
+- Resource boundary: sampled CPU was 89.3% with 15 GB RAM available and 55.4% committed
+  memory. No Vite, Chrome, build, or screenshot task was started; no browser evidence
+  is claimed.
+- Blocker: independent static responsive-layout disposition plus final-source browser
+  evidence remain required.
+- Next action: audit exact candidate `d819d92`, then perform the browser matrix only
+  when the resource budget permits.

@@ -49,8 +49,14 @@ body+item Next 无障碍描述和同 transition 多事件 source-order live regi
 line-clear 的 `active=null` 过渡帧仍会漏报 Next 附件。修正 `287c426` 以即将
 spawn 时的 piece count 判定资格，并直接固定两种延迟帧预测等于实际 carrier、
 state hash 不变及 ARIA 在 `active=null` 时仍包含附件；Core/App 定向 55/55
-与 typecheck 通过。该修正仍待独立复验，且没有打开 responsive CSS 之外的
-路径，也没有把本次开发诊断当作最终浏览器证据。
+与 typecheck 通过。复验确认产品逻辑正确，但发现两个 Core fixture 恰好都抽到
+空附件，旧 guard 仍可能让直接证明假通过。`65ffd19` 将 entry 和 line-clear
+分别绑定到确定产生附件的独立流并显式断言非空；最终复验为 `PASS`、P0–P3 = 0。
+响应式候选 `d819d92` 随后只修改冻结的三条 CSS/test 路径：空闲态沿用普通两列，
+活动态才以 `:has(.mutation-status)` 打开第三列，一至三个状态使用真实数量的
+auto rows/auto-fit columns，并移除会以更高 specificity 隐藏 stats/Next 的旧移动端
+覆盖。App/HUD 定向 40/40、typecheck 和 diff check 通过。该响应式候选仍待独立
+静态复核与最终浏览器证据，本次高 CPU 下没有启动 Vite 或 Chrome。
 
 ## 目标
 

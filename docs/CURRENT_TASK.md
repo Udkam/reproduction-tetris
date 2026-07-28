@@ -2,7 +2,7 @@
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
-**Status (2026-07-28):** active. The linked product-review conversation is the
+**Status (2026-07-29):** active. The linked product-review conversation is the
 authoritative visual workflow. Complete the phases in order and retain fresh visual
 evidence for each accepted boundary. After a phase passes both independent audits,
 the coordinator records its acceptance, verifies resource cleanup, and pushes that
@@ -76,9 +76,17 @@ entry/line-clear frames kept the Next body visible while `active=null` suppresse
 attachment prediction. Correction `287c426` derives eligibility from the piece count
 at the upcoming spawn and directly proves entry/line-clear prediction equals the
 actual spawned carrier without changing the state hash; the ARIA test now exercises
-an `active=null` frame. Focused Core/App tests pass 55/55 and typecheck passes.
-Corrected independent disposition is still required; responsive status CSS and final
-browser evidence remain closed until that review passes.
+  an `active=null` frame. The first re-audit accepted the product fix but found that
+  both Core delay fixtures happened to predict `null`, so the direct test could pass
+  under the old guard. Proof correction `65ffd19` injects a deterministic non-null
+  item stream into both entry and line-clear fixtures and asserts it before comparing
+  the real spawn and preserved hash. Final independent re-audit accepts that exact
+  correction with P0–P3 = 0. Responsive candidate `d819d92` therefore opens the frozen
+  three CSS/test paths: idle Mutation reuses the ordinary two-column stats/Next
+  topology, only active timed state creates a third status column, and one/two/three
+  effects allocate only real tracks. The obsolete high-specificity mobile override
+  that hid stats/Next is removed. Focused App/HUD tests pass 40/40 and typecheck passes.
+  Independent responsive-layout review and final browser evidence are still required.
 Phase 5 itself remains unaccepted and unpushed until UI/status/Next, final-source
 browser evidence, full gates, repeated QA, recording, cleanup, and push complete.
 

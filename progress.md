@@ -41,7 +41,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   in source order. Its first independent static review found one P2 in entry/line-clear
   frames: body remained visible while `active=null` hid the attachment. Correction
   `287c426` fixes upcoming-spawn eligibility and adds direct delay-frame Core plus ARIA
-  coverage; focused Core/App tests pass 55/55 and typecheck passes.
+  coverage. Re-audit then found both Core fixtures accidentally drew no item; proof
+  correction `65ffd19` forces non-null entry and line-clear carriers. Final re-audit
+  passes with P0–P3 none.
+- Responsive candidate `d819d92` keeps the ordinary two-column Mutation HUD while idle,
+  opens the third status column only while active, sizes one/two/three states without
+  reserved empty tracks, and removes the obsolete mobile rule that hid stats/Next.
+  Focused App/HUD tests pass 40/40 and typecheck passes; static layout review and final
+  browser evidence remain open.
 
 ## Non-negotiable boundaries
 
@@ -54,10 +61,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Resolve the corrected independent static disposition for UI semantics candidate
-  `7968bb1` plus correction `287c426`;
-  after PASS, open only the frozen responsive status-layout paths and verify one,
-  two, and three simultaneous active states without structural blank space.
+- Resolve the independent responsive-layout disposition for `d819d92`; correct any
+  specificity, compact-English, or one/two/three-state finding before browser work.
+- When the machine resource budget permits, capture final-source desktop/portrait/
+  landscape/reduced-motion Mutation states, including idle and one/two/three concurrent
+  timers, then run the final full gates and lifecycle/performance evidence.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.
