@@ -1,0 +1,13 @@
+
+> signal-foundry@0.1.0 test
+> vitest run --maxWorkers=1
+
+
+ RUN  v4.1.10 E:/Proj/reproduction-tetris
+
+
+ Test Files  26 passed (26)
+      Tests  224 passed (224)
+   Start at  03:18:05
+   Duration  41.14s (transform 1.12s, setup 0ms, import 3.14s, tests 27.10s, environment 5.63s)
+
