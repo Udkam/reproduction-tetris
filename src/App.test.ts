@@ -718,6 +718,71 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
+  it('hands focus to a successor sheet before restoring the game canvas', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    let nextFrame = 0;
+    const frameQueue = new Map<number, FrameRequestCallback>();
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => {
+      nextFrame += 1;
+      frameQueue.set(nextFrame, callback);
+      return nextFrame;
+    }));
+    vi.stubGlobal('cancelAnimationFrame', vi.fn((handle: number) => {
+      frameQueue.delete(handle);
+    }));
+    const flushFrame = () => {
+      const callbacks = [...frameQueue.values()];
+      frameQueue.clear();
+      callbacks.forEach((callback) => callback(0));
+    };
+    const flushTwoFrames = () => {
+      act(flushFrame);
+      act(flushFrame);
+    };
+
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await act(async () => vi.advanceTimersByTimeAsync(3000));
+    const canvas = view.container.querySelector<HTMLCanvasElement>('canvas')!;
+    const runtime = runtimeHarness.instances.at(-1)!;
+    act(() => canvas.focus());
+
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    act(flushFrame);
+    const pauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
+    expect(pauseDialog.textContent).toContain('已暂停');
+    expect(pauseDialog.contains(document.activeElement)).toBe(true);
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
+    const settingsDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
+    expect(view.container.querySelectorAll('[role="dialog"][aria-modal="true"]')).toHaveLength(1);
+    expect(settingsDialog.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
+    flushTwoFrames();
+    expect(settingsDialog.contains(document.activeElement)).toBe(true);
+    expect(document.activeElement).not.toBe(canvas);
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
+    expect(view.container.querySelector('canvas')).toBe(canvas);
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
+
+    act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
+    flushTwoFrames();
+    expect(view.container.querySelector('[role="dialog"]')).toBeNull();
+    expect(document.activeElement).toBe(canvas);
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
+    act(flushFrame);
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    const restartDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
+    expect(restartDialog.textContent).toContain('重新开始？');
+    flushTwoFrames();
+    expect(restartDialog.contains(document.activeElement)).toBe(true);
+    expect(document.activeElement).not.toBe(canvas);
+    view.unmount();
+  });
+
   it('routes Escape through the visible return confirmation with arrow and Enter selection', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));

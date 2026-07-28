@@ -161,6 +161,9 @@ export function ActionSheet({
       browserPlatform.cancelFrame(frame);
       removeKeyDown();
       browserPlatform.defer(() => {
+        const successor = browserPlatform.documentTarget()
+          ?.querySelector('[role="dialog"][aria-modal="true"]');
+        if (successor) return;
         browserPlatform.deferFocus(previouslyFocused);
       });
     };
