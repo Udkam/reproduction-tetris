@@ -698,6 +698,116 @@ def activation_capture_ready(snapshot: dict[str, Any]) -> bool:
     return bool(active_phases and min(phase["progress"] for phase in active_phases) <= 0.75)
 
 
+def install_fifo_observer(page: Page, expected: list[str]) -> None:
+    assert len(expected) >= 2
+    page.evaluate(
+        """
+        (expectedItems) => {
+          if (window.__T15_FIFO_OBSERVER__) {
+            throw new Error("A FIFO observer is already installed.");
+          }
+          const expected = [...expectedItems];
+          const state = {
+            expected,
+            observed: [expected[0]],
+            transitions: [],
+            frameSamples: 0,
+            currentIndex: 0,
+            complete: false,
+            error: null,
+            startedAt: performance.now(),
+          };
+          window.__T15_FIFO_OBSERVER__ = state;
+          const fail = (message) => {
+            state.error = message;
+          };
+          const sameItems = (left, right) =>
+            left.length === right.length && left.every((item, index) => item === right[index]);
+          const observe = () => {
+            if (state.complete || state.error) return;
+            if (performance.now() - state.startedAt > 20000) {
+              fail(`FIFO drain timed out: ${JSON.stringify(state)}`);
+              return;
+            }
+            const renderer = window.__SIGNAL_FOUNDRY_QA__.getRendererSnapshot();
+            const activation = renderer.mutationActivation;
+            const queue = [...renderer.mutationActivationQueueItems];
+            state.frameSamples += 1;
+            if (!activation) {
+              fail(`FIFO current activation disappeared: ${JSON.stringify({expected, queue})}`);
+              return;
+            }
+            const index = expected.length - queue.length - 1;
+            if (index < state.currentIndex || index > state.currentIndex + 1) {
+              fail(`FIFO queue length skipped an instance: ${JSON.stringify({
+                expected,
+                queue,
+                currentIndex: state.currentIndex,
+                derivedIndex: index,
+              })}`);
+              return;
+            }
+            if (index < 0 || index >= expected.length || activation.item !== expected[index]) {
+              fail(`FIFO current item differs from the fixed witness: ${JSON.stringify({
+                expected,
+                queue,
+                current: activation.item,
+                derivedIndex: index,
+              })}`);
+              return;
+            }
+            const expectedQueue = expected.slice(index + 1);
+            if (!sameItems(queue, expectedQueue)) {
+              fail(`FIFO live queue differs from the fixed witness suffix: ${JSON.stringify({
+                expectedQueue,
+                queue,
+                derivedIndex: index,
+              })}`);
+              return;
+            }
+            if (index === state.currentIndex + 1) {
+              state.currentIndex = index;
+              state.observed.push(activation.item);
+              state.transitions.push({
+                index,
+                item: activation.item,
+                elapsedMs: activation.elapsedMs,
+                remainingQueue: queue,
+              });
+            }
+            if (state.observed.length === expected.length) {
+              state.complete = true;
+              return;
+            }
+            requestAnimationFrame(observe);
+          };
+          requestAnimationFrame(observe);
+        }
+        """,
+        expected,
+    )
+
+
+def finish_fifo_observer(page: Page) -> dict[str, Any]:
+    page.wait_for_function(
+        """
+        () => Boolean(
+          window.__T15_FIFO_OBSERVER__?.complete
+          || window.__T15_FIFO_OBSERVER__?.error
+        )
+        """,
+        timeout=22000,
+    )
+    result = page.evaluate("structuredClone(window.__T15_FIFO_OBSERVER__)")
+    page.evaluate("delete window.__T15_FIFO_OBSERVER__")
+    assert result["error"] is None, result["error"]
+    assert result["complete"]
+    assert result["observed"] == result["expected"]
+    assert result["currentIndex"] == len(result["expected"]) - 1
+    assert result["frameSamples"] > 0
+    return result
+
+
 def run(context: BrowserContext) -> dict[str, Any]:
     page = context.new_page()
     errors = attach_error_capture(page)
@@ -721,6 +831,9 @@ def run(context: BrowserContext) -> dict[str, Any]:
     locked_seen: set[str] = set()
     activation_seen: set[str] = set()
     timed_seen: set[int] = set()
+    fifo_expected: list[str] | None = None
+    fifo_observed: list[str] = []
+    fifo_witness: dict[str, Any] | None = None
 
     for step in range(1, 501):
         result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
@@ -743,6 +856,48 @@ def run(context: BrowserContext) -> dict[str, Any]:
             locked_seen.add(item)
 
         activation = snapshot["renderer"]["mutationActivation"]
+        queued_items = snapshot["renderer"]["mutationActivationQueueItems"]
+        if fifo_expected is None and activation and queued_items:
+            fifo_expected = [activation["item"], *queued_items]
+            install_fifo_observer(page, fifo_expected)
+            fifo_capture = capture(page, "renderer-fifo-witness", settle_ms=0)
+            captured_current = fifo_capture["renderer"]["mutationActivation"]
+            captured_queue = fifo_capture["renderer"]["mutationActivationQueueItems"]
+            assert captured_current is not None
+            assert captured_current["item"] == fifo_expected[0]
+            assert captured_queue == fifo_expected[1:]
+            post_capture = collect(page)
+            validate_common(post_capture)
+            post_current = post_capture["renderer"]["mutationActivation"]
+            post_queue = post_capture["renderer"]["mutationActivationQueueItems"]
+            observer_after_capture = page.evaluate(
+                "structuredClone(window.__T15_FIFO_OBSERVER__)"
+            )
+            assert post_current is not None
+            assert post_current["item"] == fifo_expected[0]
+            assert post_queue == fifo_expected[1:]
+            assert observer_after_capture["currentIndex"] == 0
+            assert observer_after_capture["error"] is None
+            captures.append(fifo_capture)
+            fifo_trace = finish_fifo_observer(page)
+            fifo_observed = fifo_trace["observed"]
+            fifo_witness = {
+                "pieceCount": snapshot["state"]["pieceCount"],
+                "current": fifo_expected[0],
+                "queued": fifo_expected[1:],
+                "file": fifo_capture["file"],
+                "postScreenshot": {
+                    "current": post_current["item"],
+                    "elapsedMs": post_current["elapsedMs"],
+                    "queued": post_queue,
+                    "observerIndex": observer_after_capture["currentIndex"],
+                },
+                "trace": fifo_trace,
+            }
+            snapshot = collect(page)
+            validate_common(snapshot)
+            activation = snapshot["renderer"]["mutationActivation"]
+
         if (
             activation
             and activation["item"] not in activation_seen
@@ -779,6 +934,8 @@ def run(context: BrowserContext) -> dict[str, Any]:
             and locked_seen == required_items
             and activation_seen == required_items
             and timed_seen == {1, 2, 3}
+            and fifo_expected is not None
+            and fifo_observed == fifo_expected
             and count == 3
         ):
             break
@@ -786,7 +943,8 @@ def run(context: BrowserContext) -> dict[str, Any]:
         raise AssertionError(
             "Autoplayer exhausted: "
             f"active={active_seen}, preview={preview_seen}, locked={locked_seen}, "
-            f"activations={activation_seen}, timed={timed_seen}"
+            f"activations={activation_seen}, timed={timed_seen}, "
+            f"fifoExpected={fifo_expected}, fifoObserved={fifo_observed}"
         )
 
     page.set_viewport_size({"width": 390, "height": 844})
@@ -873,6 +1031,11 @@ def run(context: BrowserContext) -> dict[str, Any]:
             "locked": sorted(locked_seen),
             "activations": sorted(activation_seen),
             "timedCounts": sorted(timed_seen),
+            "rendererFifo": {
+                "witness": fifo_witness,
+                "expected": fifo_expected,
+                "observed": fifo_observed,
+            },
         },
         "captures": captures,
         "performance": performance,
