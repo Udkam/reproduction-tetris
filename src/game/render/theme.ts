@@ -1,5 +1,6 @@
 import type { MutationItem, PieceType } from '../core';
 import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
+import { COLOR_NUMBERS } from '../../design/tokens/colors';
 
 export interface PieceMaterial {
   fillStart: number;
@@ -48,27 +49,27 @@ export const CELL_STYLE = {
 } as const;
 
 export const COLORS = {
-  page: 0xdce7f2,
-  surface: 0xf7fafd,
-  raised: 0xeaf1f7,
-  selected: 0xdce8f2,
-  well: 0x0b1726,
-  text: 0x14243a,
-  muted: 0x52677f,
-  line: 0xb5c5d5,
-  edge: 0x879db3,
-  classic: 0x357f78,
-  race: 0x526eb0,
-  puzzle: 0x80639d,
-  selection: 0xa75e71,
-  target: 0xd9c187,
-  action: 0x315f96,
-  hover: 0x3d70a8,
-  focus: 0x245e9c,
-  actionInk: 0xf7fafd,
-  success: 0x3f7f5d,
-  danger: 0xa64e61,
-  scrim: 0x0b1726,
+  page: COLOR_NUMBERS.background,
+  surface: COLOR_NUMBERS.surface,
+  raised: COLOR_NUMBERS.surfaceSecondary,
+  selected: COLOR_NUMBERS.surfaceSelected,
+  well: COLOR_NUMBERS.board,
+  text: COLOR_NUMBERS.textPrimary,
+  muted: COLOR_NUMBERS.textSecondary,
+  line: COLOR_NUMBERS.border,
+  edge: COLOR_NUMBERS.borderStrong,
+  classic: COLOR_NUMBERS.classic,
+  race: COLOR_NUMBERS.survival,
+  puzzle: COLOR_NUMBERS.puzzle,
+  selection: COLOR_NUMBERS.selection,
+  target: COLOR_NUMBERS.target,
+  action: COLOR_NUMBERS.action,
+  hover: COLOR_NUMBERS.actionHover,
+  focus: COLOR_NUMBERS.focus,
+  actionInk: COLOR_NUMBERS.actionInk,
+  success: COLOR_NUMBERS.success,
+  danger: COLOR_NUMBERS.danger,
+  scrim: COLOR_NUMBERS.board,
 } as const;
 
 export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {

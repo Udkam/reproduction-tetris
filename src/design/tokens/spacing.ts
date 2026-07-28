@@ -1,0 +1,15 @@
+/** TetraMorph Design System v1.0 — 4px spatial rhythm. */
+export const SPACING = {
+  0: 0,
+  1: 4,
+  2: 8,
+  3: 12,
+  4: 16,
+  5: 20,
+  6: 24,
+  8: 32,
+  10: 40,
+  12: 48,
+} as const;
+
+export const CARD_PADDING = SPACING[4];

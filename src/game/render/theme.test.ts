@@ -10,8 +10,10 @@ import {
   SURVIVAL_STONE_MATERIAL,
 } from './theme';
 import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
+import { COLOR_NUMBERS, COLOR_TOKENS } from '../../design/tokens/colors';
 
 const styles = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8');
+const tokenStyles = readFileSync(new URL('../../styles/tokens.css', import.meta.url), 'utf8');
 
 function relativeLuminance(color: number): number {
   const channels = [16, 8, 0].map((shift) => ((color >> shift) & 0xff) / 255);
@@ -104,61 +106,61 @@ describe('T5 bright mineral matte material', () => {
     }
   });
 
-  it('freezes the complete page and state palette', () => {
+  it('bridges the complete renderer shell palette from Design System tokens', () => {
     expect(COLORS).toEqual({
-      page: 0xdce7f2,
-      surface: 0xf7fafd,
-      raised: 0xeaf1f7,
-      selected: 0xdce8f2,
-      well: 0x0b1726,
-      text: 0x14243a,
-      muted: 0x52677f,
-      line: 0xb5c5d5,
-      edge: 0x879db3,
-      classic: 0x357f78,
-      race: 0x526eb0,
-      puzzle: 0x80639d,
-      selection: 0xa75e71,
-      target: 0xd9c187,
-      action: 0x315f96,
-      hover: 0x3d70a8,
-      focus: 0x245e9c,
-      actionInk: 0xf7fafd,
-      success: 0x3f7f5d,
-      danger: 0xa64e61,
-      scrim: 0x0b1726,
+      page: COLOR_NUMBERS.background,
+      surface: COLOR_NUMBERS.surface,
+      raised: COLOR_NUMBERS.surfaceSecondary,
+      selected: COLOR_NUMBERS.surfaceSelected,
+      well: COLOR_NUMBERS.board,
+      text: COLOR_NUMBERS.textPrimary,
+      muted: COLOR_NUMBERS.textSecondary,
+      line: COLOR_NUMBERS.border,
+      edge: COLOR_NUMBERS.borderStrong,
+      classic: COLOR_NUMBERS.classic,
+      race: COLOR_NUMBERS.survival,
+      puzzle: COLOR_NUMBERS.puzzle,
+      selection: COLOR_NUMBERS.selection,
+      target: COLOR_NUMBERS.target,
+      action: COLOR_NUMBERS.action,
+      hover: COLOR_NUMBERS.actionHover,
+      focus: COLOR_NUMBERS.focus,
+      actionInk: COLOR_NUMBERS.actionInk,
+      success: COLOR_NUMBERS.success,
+      danger: COLOR_NUMBERS.danger,
+      scrim: COLOR_NUMBERS.board,
     });
   });
 
-  it('freezes the exact light CSS palette and uses action ink on every blue action state', () => {
+  it('bridges the exact Design System CSS palette and retains action ink on blue action states', () => {
     const tokens = {
-      '--page': '#dce7f2',
-      '--surface': '#f7fafd',
-      '--raised': '#eaf1f7',
-      '--selected': '#dce8f2',
-      '--well': '#0b1726',
-      '--ink': '#14243a',
-      '--muted': '#52677f',
-      '--line': '#b5c5d5',
-      '--edge': '#879db3',
-      '--classic': '#357f78',
-      '--race': '#526eb0',
-      '--sprint': '#ad6c37',
-      '--puzzle': '#80639d',
-      '--selection': '#a75e71',
-      '--action': '#315f96',
-      '--hover': '#3d70a8',
-      '--focus': '#245e9c',
-      '--action-ink': '#f7fafd',
-      '--success': '#3f7f5d',
-      '--danger': '#a64e61',
+      '--page': COLOR_TOKENS.background,
+      '--surface': COLOR_TOKENS.surface,
+      '--raised': COLOR_TOKENS.surfaceSecondary,
+      '--selected': COLOR_TOKENS.surfaceSelected,
+      '--well': COLOR_TOKENS.board,
+      '--ink': COLOR_TOKENS.textPrimary,
+      '--muted': COLOR_TOKENS.textSecondary,
+      '--line': COLOR_TOKENS.border,
+      '--edge': COLOR_TOKENS.borderStrong,
+      '--classic': COLOR_TOKENS.classic,
+      '--race': COLOR_TOKENS.survival,
+      '--sprint': COLOR_TOKENS.mutation,
+      '--puzzle': COLOR_TOKENS.puzzle,
+      '--selection': COLOR_TOKENS.selection,
+      '--action': COLOR_TOKENS.action,
+      '--hover': COLOR_TOKENS.actionHover,
+      '--focus': COLOR_TOKENS.focus,
+      '--action-ink': COLOR_TOKENS.actionInk,
+      '--success': COLOR_TOKENS.success,
+      '--danger': COLOR_TOKENS.danger,
     } as const;
 
     for (const [token, value] of Object.entries(tokens)) {
-      expect(styles).toContain(`${token}: ${value};`);
+      expect(tokenStyles).toContain(`${token}: ${value};`);
     }
+    expect(tokenStyles).toContain('--phase: linear-gradient(90deg, #31978D, #5878C4, #C77A35, #8A63B3);');
     expect(styles).toContain('color-scheme: light;');
-    expect(styles).toContain('--phase: linear-gradient(90deg, #357f78, #526eb0, #ad6c37, #80639d);');
     expect(styles).toContain('--shadow: 0 18px 44px rgba(31, 59, 86, .14);');
     const actionTextRules = [
       /\.skip-link\s*\{[^}]*color: var\(--action-ink\);[^}]*background: var\(--action\);/s,
@@ -173,6 +175,7 @@ describe('T5 bright mineral matte material', () => {
   it('retains AA text and action contrast plus three-to-one material contrast', () => {
     expect(contrastRatio(COLORS.text, COLORS.surface)).toBeGreaterThanOrEqual(7);
     expect(contrastRatio(COLORS.muted, COLORS.surface)).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(COLORS.muted, COLORS.raised)).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(COLORS.actionInk, COLORS.action)).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(COLORS.actionInk, COLORS.hover)).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(COLORS.focus, COLORS.surface)).toBeGreaterThanOrEqual(3);
