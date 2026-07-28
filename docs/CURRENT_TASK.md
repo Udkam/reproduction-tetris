@@ -1,4 +1,105 @@
-# Current Task — T13 Endgame Workshop, Direct Controls, and Sprint
+# Current Task — T15 TetraMorph Phased Product Refinement
+
+## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
+
+**Status (2026-07-28):** active. The linked product-review conversation is the
+authoritative visual workflow. Complete the phases in order, retain fresh visual
+evidence for each accepted boundary, and push only after the complete source chain,
+multi-round QA, documentation, and resource cleanup are finished. The existing Puzzle
+library layout is explicitly excluded from redesign; adapting its count/progression
+data for fifty levels is allowed, but its visual composition must not be replaced.
+
+1. **Design-system foundation.** Adopt the existing Phase-1 token candidate after
+   candidate-bound checks. Its deliberately subtle result centralises colour, type,
+   spacing, radius, component metrics, and motion timing; visible page recomposition
+   belongs to later phases rather than being forced into this foundation.
+2. **Settings.** Recompose the existing Settings content into one compact, coherent,
+   responsive information system. Preserve controls → keyboard → rules → records,
+   bilingual copy, focus/arrow/Enter/Escape/backdrop operation, useful record rows,
+   and the visibly dimmed live board. No structural blank quadrants, tiny type,
+   unrelated equal-height stretching, or hidden canvas are acceptable.
+3. **Main HUD and layout.** Make the one Pixi board the dominant object, align the
+   information rail to it, strengthen numerical hierarchy, reduce redundant nested
+   cards, and preserve one canvas, touch/keyboard safety, compact layouts, and the
+   established board field.
+4. **Survival.** Unify bedrock rise and independent falling stones into one legible
+   pressure model with predictable progress and a fair visible warning before a
+   stone enters. Preserve deterministic seven-bag isolation, clearable falling stones,
+   scoring/line-clear participation, and the accepted brown bedrock material unless a
+   later explicit player instruction changes it.
+5. **Mutation.** Collapse the idle rail to a concise no-effect state, then expand
+   only active timed effects. Strengthen Freeze and Collapse board feedback, retain
+   the staged Bomb impact and readable Multiplier field, and keep VFX bounded,
+   reduced-motion-safe, and performant. **Items are attachments, never piece
+   families:** every ordinary I/O/T/S/Z/J/L shape can independently carry Freeze,
+   Collapse, Bomb, or Multiplier. The ordinary body shape/material remains readable;
+   the item contributes its own core, rim, surface language, and energy response.
+   Next must use the same body-plus-attachment grammar and must predict the actual
+   spawned carrier without consuming deterministic state. Direct coverage must retain
+   all 7 × 4 = 28 combinations.
+6. **Classic.** Refine terminology, hierarchy, micro-motion, and feedback only. Do
+   not add a mechanic or blur its role as the clean baseline mode.
+7. **Puzzle curriculum.** Expand from twenty to fifty deterministic authored levels
+   without redesigning the selector. Build progressive concepts rather than fifty
+   cosmetic variants: teach a readable idea, combine previously learned ideas,
+   provide more than one reasonable route where practical, keep immutable anchors
+   sparse and solvability-safe, and Core-replay every shipped route. Recalibrate names,
+   sequence, fixed queues, difficulty order, unlock tiers, localization, persistence
+   migration, and tests. Player victory remains clearing every original target with
+   no public piece cap or strategy hint.
+
+**Final acceptance.** Each phase receives focused tests and real screenshots before
+the next phase is accepted. After the final source change run typecheck, the complete
+suite, production build, deterministic replay/solver checks for all fifty Puzzle
+levels, desktop/portrait/short-landscape/reduced-motion browser passes, one-canvas and
+zero-DOM-grid assertions, console/page-error checks, lifecycle/resource cleanup, and
+an independent read-only QA disposition. Never mark the goal complete merely because
+one phase or a static screenshot passes.
+
+## Phase 1 — TetraMorph Design System v1.0 (additive foundation)
+
+**Status (2026-07-28):** implemented candidate under adoption review. This narrow
+presentation foundation does not reopen accepted T14 mechanics or Mutation VFX. The
+inherited user-owned `src/styles.css`, `package-lock.json`, and `phase 1.md` remain
+out of the Phase-1 source checkpoint.
+
+**Boundary.** Create one authoritative, typed token family under
+`src/design/tokens/` for palette, typography, spacing, radii, and motion timing, then
+bridge only existing CSS custom properties and renderer shell colours to those values.
+No component tree, page geometry, semantic copy, control, gameplay, board cell
+material, or new animation may be introduced in this phase. The board's established
+deep navy remains `#071522`; ordinary piece materials and all mode rules remain
+unchanged.
+
+**Phase-1 source scope.**
+
+- `src/design/tokens/colors.ts`
+- `src/design/tokens/typography.ts`
+- `src/design/tokens/spacing.ts`
+- `src/design/tokens/radius.ts`
+- `src/design/tokens/animation.ts`
+- `src/design/tokens/tokens.test.ts`
+- `src/styles/tokens.css`
+- `src/main.tsx`
+- `src/game/render/theme.ts`
+- `src/game/render/theme.test.ts`
+
+The contract fixes the requested base palette (`#DCE7F1`, `#F8FAFC`, `#EDF3F7`,
+`#C4D4DF`, `#102A43`, and soft secondary `#627D98`), mode accents (Classic
+`#31978D`, Survival `#5878C4`, Mutation `#C77A35`, Puzzle `#8A63B3`), Playwrite NZ
+Basic for the `TetraMorph` wordmark only, Space Grotesk for UI, JetBrains Mono for
+values, and the Noto Sans SC → PingFang SC → Microsoft YaHei Chinese fallback chain.
+Because `#627D98` does not reach 4.5:1 on either light content surface, normal-size
+supporting text uses the accessible `#52677F`; the softer requested value is retained
+only as a non-body accent. Token values also define the three card levels,
+primary/secondary/icon button metrics, and the hover/click/modal/page timing contract
+without applying new motion.
+
+**Verification.** Freeze the token contract in focused tests, retain one canvas and
+zero DOM board cells, then run typecheck, the full suite, production build, and a
+single real-browser visual comparison. The browser pass must establish that the
+existing layouts are unchanged while typography, shell palette, and board colour
+resolve through the new system.
 
 Branch: `main`
 

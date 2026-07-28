@@ -1,7 +1,70 @@
-# TetraMorph — T13.10 Brand Identity Contract
+# TetraMorph — Product Design Contract
 
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
+
+## T15 phased refinement and fifty-level Puzzle contract
+
+The current product pass follows one ordered sequence: design-system foundation,
+Settings, live HUD/layout, Survival pressure, Mutation expression, Classic
+micro-polish, then the fifty-level Puzzle curriculum. A later phase may consume the
+tokens and primitives established by an earlier phase, but may not retroactively
+change accepted game rules or hide a regression behind a broad visual rewrite.
+
+The Puzzle selector keeps its present visual composition. Expanding the campaign may
+adapt level count, selection data, unlock state, names, and records, but it may not
+replace the selector with a new page design. The curriculum itself grows to fifty
+deterministic authored levels and must progress from one clearly learnable construction
+idea to combinations of earlier ideas. Every shipped level has at least one
+Core-replayed solution, sensible fixed input, sparse solvability-safe anchors when
+used, and a difficulty position supported by measured route features. Multiple
+plausible routes are preferred; the player sees no route hint and no piece-count limit.
+
+Mutation items are an orthogonal attachment system:
+
+| Ordinary body | Allowed attachments |
+| --- | --- |
+| `I`, `O`, `T`, `S`, `Z`, `J`, `L` | Freeze, Collapse, Bomb, or Multiplier |
+
+No piece shape, base colour, queue slot, or material may imply a fixed item. Rendering
+first preserves the ordinary body and then adds the item's core, exposed-edge rim,
+surface treatment, and local energy response. Active, locked, and immediate-Next
+carriers share this grammar. The independent carrier RNG and ordinary seven-bag remain
+separate; preview is pure and must equal the next spawned carrier. Direct regression
+coverage retains every one of the twenty-eight body/attachment pairs throughout the
+later Freeze, Collapse, Bomb, and Multiplier redesign.
+
+Visible refinement targets remain mode-specific. Settings must become compact without
+structural blank space; the live board must dominate the HUD; Survival exposes one
+coherent, fair pressure model; Mutation expands its status surface only for active
+effects and gives Freeze/Collapse substantially stronger board atmosphere; Classic
+keeps its rule purity. All phases keep one Pixi canvas, keyboard/touch accessibility,
+bilingual layout, reduced-motion endpoints, deterministic Core behavior, and bounded
+render/audio lifecycle.
+
+## Phase 1 — TetraMorph Design System v1.0
+
+**Scope:** a foundation pass only. It centralises the existing interface language
+without redesigning any page, changing layout, rebuilding Settings, changing a board
+material, or adding new interaction or animation. It is intentionally separate from
+the pending T14 Mutation review.
+
+| System | Contract |
+| --- | --- |
+| Brand | `TetraMorph` alone uses Playwrite NZ Basic; no UI label may use the display face. |
+| Interface | Space Grotesk at 500/600/700 for English UI; Chinese resolves Noto Sans SC → PingFang SC → Microsoft YaHei. |
+| Data | JetBrains Mono carries scores, times, lines, countdowns, and compact key/value data. |
+| Type scale | Display 28/700; heading 24/700; card title 14/600; value 24/700; body 14/500; caption 12/500. |
+| Base palette | Background `#DCE7F1`; surface `#F8FAFC`; secondary surface `#EDF3F7`; border `#C4D4DF`; primary text `#102A43`; readable secondary text `#52677F`; soft non-body accent `#627D98`; board `#071522`. |
+| Mode accents | Classic `#31978D`; Survival `#5878C4`; Mutation `#C77A35`; Puzzle `#8A63B3`. |
+| Cards | Level 1: 16 px radius / 1 px border; level 2: 10 px radius / 16 px padding; level 3: 6 px radius. Four nested card levels are prohibited. |
+| Buttons | Primary: 40 px visual height, 8 px radius, 14/600; secondary: transparent with 1 px border; icon: 36 × 36 px / 8 px radius. Existing 44 px touch-safe hit targets remain authoritative. |
+| Motion | Hover 120 ms ease-out; press 80 ms; modal 220 ms; page 300 ms. These are tokens only in Phase 1, not a request to add animation. |
+
+The renderer's shell palette resolves through the same colour contract, but ordinary
+tetromino materials, Survival bedrock, stones, Puzzle anchors, and all Mutation VFX
+palettes remain their independently accepted materials. The visible board field stays
+the established deep navy `#071522`.
 
 ## T14 Mutation VFX polish — active
 
