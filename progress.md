@@ -19,6 +19,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   direct multi-carrier/empty-source/exactly-once evidence; `3ceb6c2` corrects it.
 - Exact-head rules and performance/FIFO audits now both accept `f2d51ca` with no
   P0–P3. Core is accepted locally and Renderer/VFX is open; Phase 5 is not accepted.
+- Renderer rollback points `2484b67`, `e66cbf8`, and `8488dd2` now preserve FIFO /
+  impact timing, give all four attachments distinct carrier and reduced-motion
+  language, keep 2× / 4× explicit, and bind Collapse activation/settlement to real
+  columns without broad top/bottom bars. Focused tests pass 24/24 and typecheck passes.
+  Exact product head `8488dd2` still requires two independent audits before UI opens.
 
 ## Non-negotiable boundaries
 
@@ -31,12 +36,25 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Implement only the frozen renderer/timeline checkpoint: attachment identity,
-  real-item Next, impact-gated Bomb, explicit 2×/4×, actual-column Collapse, and
-  reduced-motion-safe FIFO.
+- Audit exact Renderer product head `8488dd2` for visual-contract fidelity and
+  performance/lifecycle safety. Do not open UI paths until both dispositions pass.
 - Keep Classic shared
   line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
   packaging outside Phase 5.
+
+## 2026-07-28 Phase 5 Renderer visual candidate
+
+- `e66cbf8` gives Freeze, Collapse, Bomb, and Multiplier different carrier edge /
+  symbol treatments, four distinct reduced-motion endpoints, and explicit persistent
+  2× / 4× feedback.
+- `8488dd2` removes Collapse's board-wide activation and persistent bands, binds
+  activation wells to carrier columns, and renders settlement only for columns and
+  cells that actually move; maximum fall distance contributes only bounded intensity.
+- `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts
+  src/animation/mutationTimeline.test.ts --maxWorkers=1` — 2 files / 24 tests PASS.
+- `npm.cmd run typecheck` — PASS; `git diff --check` — PASS before both commits.
+- Candidate `8488dd2` is not accepted. Final-source browser evidence, UI/localization,
+  full gates, repeated QA, recovery recording, cleanup, and push remain open.
 
 ## 2026-07-28 Phase 3 HUD acceptance
 

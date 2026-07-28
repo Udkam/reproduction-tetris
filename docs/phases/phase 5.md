@@ -19,9 +19,13 @@ timeline 精确路径；Phase 5 整体仍需 VFX、UI、浏览器证据、复验
 Renderer 已产生首个可靠性回退点 `2484b67`：炸弹延迟到 impact 才发射碎片，
 连续触发共享固定对象池而不清除前一批粒子，运行时 reduced-motion 切换保留
 当前触发、FIFO 与计时场，Collapse 禁用全棋盘位移滤镜，Next 缓存绑定独立附件
-随机流。定向 Renderer/timeline 测试 17/17 与 typecheck 通过；该提交尚未完成
-四类附件视觉、实际下沉列反馈、2×/4× 区分或 reduced-motion 静态终态，因此
-不构成 Renderer 验收。
+随机流。后续 `e66cbf8` 为四类载体增加各自的边缘/符号语法、四种不同的
+reduced-motion 静态终态和显式 2× / 4× 持续场；`8488dd2` 则移除 Collapse
+触发态与持续态的全宽横带，把触发重力井绑定到 carrier 实际列，并用固定数组
+扫描得出的真实移动列/最大落距绘制落定轨迹。定向 Renderer/timeline 测试
+24/24 与 typecheck 通过。精确产品头 `8488dd2` 已形成 Renderer 候选，但尚未
+经过两路独立审计、UI/localization、最终源码浏览器证据和全量门禁，因此不构成
+Renderer 或 Phase 5 验收。
 
 ## 目标
 

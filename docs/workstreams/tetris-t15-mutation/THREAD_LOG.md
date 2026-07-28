@@ -246,3 +246,37 @@
   shape/edge/core carrier grammar, distinct four-family reduced-motion endpoints,
   and explicit persistent 2×/4× feedback without changing the ordinary shared
   line-clear effect owned by Phase 6.
+
+## 2026-07-28 — Renderer carrier-language and actual-column candidate
+
+- Task ID: `T15-PHASE5-MUTATION-RENDERER-2`.
+- Writer: `/root`; base `4e3186d`; checkpoints `e66cbf8` and `8488dd2`; exact product
+  candidate `8488dd2`.
+- Exact changed product/test paths:
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+- `e66cbf8` delivers:
+  - four item-specific carrier edge/surface grammars instead of one recoloured rim;
+  - four distinct reduced-motion activation endpoints;
+  - explicit persistent Multiplier 2× / 4× geometry and value feedback.
+- `8488dd2` delivers:
+  - no full-width top/bottom Collapse status bars or fixed fake column lanes;
+  - a compact persistent gravity core, with activation wells bound to sorted unique
+    carrier columns;
+  - one fixed-array settlement scan that records existing and incoming moved cells,
+    actual moved columns, and a bounded maximum-drop intensity;
+  - settlement feedback even when the same lock also resolves a line, plus a static
+    high-contrast reduced-motion endpoint.
+- Commands actually run after the last source change:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts
+    src/animation/mutationTimeline.test.ts --maxWorkers=1` — 2 files / 24 tests PASS.
+  - `npm.cmd run typecheck` — PASS.
+  - `git diff --check` — PASS before each exact-path commit.
+- Resource/lifecycle boundary: work and tests were serialized because sampled CPU
+  remained above 60%; no browser, Vite server, build, or audit agent was started in
+  parallel. The earlier working-tree browser diagnostic is not claimed as final
+  candidate evidence because the final source changed afterward.
+- Blocker: two independent read-only dispositions against exact product head
+  `8488dd2` are required before opening UI/localization.
+- Next action: run one visual-contract audit and one performance/lifecycle audit;
+  correct any finding before accepting the Renderer boundary.
