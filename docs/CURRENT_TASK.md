@@ -247,14 +247,15 @@ slice: do not stage or mutate its `src/styles.css` change in a T14 checkpoint.
 
 ### T13.16 active delivery contract — modal compositor integrity
 
-**T15 Phase 1.5 status (2026-07-28):** correction candidate `646a475` is isolated from
-rollback base `dfeb2c9`. Its compositor and outgoing-sheet ownership claims passed the
-direct/full gates plus an exact-SHA production matrix, but independent rules QA found a
-second P1 endpoint: Settings → Restart → Cancel removes both sheets and restores the
-one Canvas layer, yet leaves focus on `body`. No acceptance is claimed. Settings may
-not acquire this shared path until that final-return defect is corrected, fresh
-evidence and both independent QA pass, coordinator acceptance is recorded, and the
-phase is pushed.
+**T15 Phase 1.5 status (2026-07-28):** correction candidate `8f3b72f` is isolated from
+rollback base `dfeb2c9`. It corrected the playing-origin
+Settings → Restart → Cancel endpoint and passed the direct/full gates plus an exact-SHA
+18-case production matrix. Independent code/rules QA and a separate production probe
+then found a third P1: the same chain from an already-paused run correctly remounts
+Pause, but the unconditional board return steals focus outside that active dialog.
+No acceptance is claimed. Settings may not acquire this shared path until paused-origin
+ownership is corrected, fresh evidence and both independent QA pass, coordinator
+acceptance is recorded, and the phase is pushed.
 
 1. **A modal must visually sit above the complete live scene.** A fresh desktop browser
    audit found that Settings' DOM hit-testing is correct but its WebGL canvas can paint
@@ -282,7 +283,9 @@ phase is pushed.
    rules with its expected zero canvas. It must prove one stable canvas for live-game
    sheets, no overflow/page/console error, stable focus inside every active dialog and
    correct restoration after the final dialog closes—including Settings → Restart →
-   Cancel after queued frames—and visibly demonstrate through screenshot
+   Cancel after queued frames from both playing and paused origins. A playing origin
+   must restore the same Canvas; a paused origin must remount one Pause dialog and keep
+   focus inside it. Evidence must also visibly demonstrate through screenshot
    pixel probes plus human review that opaque sheet contents are never painted beneath
    the canvas. Release every
    Tetris-owned temporary listener/browser after capture; independent QA remains

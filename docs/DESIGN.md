@@ -113,11 +113,12 @@ endpoint.
 ## T13.16 Modal compositor integrity
 
 **Status:** active narrow visual correction. The live Pixi board remains visible and
-dimmed behind every sheet, but a compositor must never allow its WebGL layer to paint
-over the opaque Settings, pause, restart, exit, first-entry, or Puzzle-result surface.
-This corrects stacking/compositing while a `.sheet-backdrop` exists: one canvas, all
-copy, metrics, panel geometry, and Core state stay unchanged. Browser evidence must
-inspect actual pixels rather than relying only on correct DOM hit testing.
+dimmed behind every live-game sheet, but a compositor must never allow its WebGL layer
+to paint over the opaque Settings, pause, restart, exit, or Puzzle-result surface. The
+pre-session first-entry sheet has no Canvas and instead layers over the mode page. This
+corrects stacking/compositing while a `.sheet-backdrop` exists: live sessions keep one
+canvas; copy, metrics, panel geometry, and Core state stay unchanged. Browser evidence
+must inspect actual pixels rather than relying only on correct DOM hit testing.
 
 An ActionSheet-to-ActionSheet replacement is one modal ownership handoff. The outgoing
 sheet may restore its saved trigger only when no successor `aria-modal` dialog exists.
@@ -130,6 +131,9 @@ detached, the owning UI transaction must restore the stable game-canvas focus ta
 explicitly. It may not depend on a detached button, `body`, a fixed delay, or whichever
 sheet cleanup happens last. Direct and production-browser coverage must exercise both
 successor acquisition and the final cancel/close endpoint after queued animation frames.
+If that cancellation returns to a still-paused run, the remounted Pause sheet—not the
+Canvas—owns focus; board restoration is permitted only when the transaction actually
+returns to playing with no successor modal.
 
 ## T13.15 Puzzle completion ceremony and Survival geology
 

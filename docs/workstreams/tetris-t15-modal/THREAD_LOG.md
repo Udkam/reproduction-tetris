@@ -153,3 +153,42 @@ full production matrix plus both independent QA passes from the new source SHA.
 Current state: `P1 CORRECTION 2`; `646a475` is rejected as a Phase-1.5 acceptance
 candidate. The next candidate must repeat targeted/full gates, clean build, the
 production matrix and pixel audit, then both independent QA.
+
+## Browser rejection 3 — paused-origin successor ownership
+
+- Correction candidate: `8f3b72f`
+  (`fix(ui): restore board after restart cancel`), with contract checkpoint `aafb005`.
+- Exact correction paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+- Candidate gates and source-bound evidence:
+  - direct App test: 1 file / 26 tests passed;
+  - typecheck: passed;
+  - full suite: 25 files / 185 tests passed;
+  - main and clean detached-candidate builds: 752 modules each;
+  - exact-SHA production matrix: 18 cases passed;
+  - pixel audit: 16 live-sheet cases passed;
+  - generic final-candidate client capture completed without browser errors;
+  - manifest candidate/report/pixel SHAs and their SHA-256 hashes matched.
+- Target/visual QA accepted the candidate with no product P0/P1: all compositor,
+  desktop/390 px/reduced-motion, focus-return, opacity, overflow, and error evidence
+  passed for the matrix that existed.
+- Code/rules QA rejected it after identifying an omitted state origin. A separate
+  production probe reproduced:
+  `Canvas → Pause → Settings → Restart → Cancel → 250 ms + two frames`.
+  The run remains paused and one Pause dialog/backdrop correctly remounts over the same
+  Canvas at modal layer values, but unconditional `focusBoard()` moves
+  `activeElement` to the Canvas outside the active `aria-modal`. Console/page errors
+  remain zero and `KeyP` can recover, so this is a P1 focus-ownership defect.
+- Accepted correction boundary:
+  - in `src/App.tsx`, call the existing board-focus return only when
+    `restartWasPlayingRef` proves cancellation returns to playing;
+  - for a paused origin, do not focus the Canvas and let the remounted Pause
+    ActionSheet own autofocus;
+  - extend queued-frame `src/App.test.ts` coverage and production evidence through the
+    paused-origin chain;
+  - no timer, layout, copy, Core, renderer, or runtime-rule change.
+
+Current state: `P1 CORRECTION 3`; `8f3b72f` is rejected as a Phase-1.5 acceptance
+candidate. The next candidate must repeat targeted/full gates, clean build, expanded
+production matrix/pixel audit, manifest verification, and both independent QA.
