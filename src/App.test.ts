@@ -390,6 +390,32 @@ describe('entry countdown', () => {
   });
 });
 
+describe('T15 Phase 2 Settings layout contract', () => {
+  it('uses one authoritative connected console without undersized interface text', () => {
+    const startMarker = '/* T15 Phase 2 authoritative Settings console';
+    const endMarker = '/* End T15 Phase 2 authoritative Settings console */';
+    const start = sourceStyles.indexOf(startMarker);
+    const end = sourceStyles.indexOf(endMarker, start);
+    expect(start).toBeGreaterThanOrEqual(0);
+    expect(end).toBeGreaterThan(start);
+    expect(sourceStyles.indexOf(startMarker, start + startMarker.length)).toBe(-1);
+
+    const block = sourceStyles.slice(start, end);
+    const fontSizes = [...block.matchAll(/font-size:\s*([\d.]+)px/g)].map((match) => Number(match[1]));
+    expect(Math.min(...fontSizes)).toBeGreaterThanOrEqual(12);
+    expect(block).toMatch(/\.action-sheet--settings\s*\{[\s\S]*?box-sizing:\s*border-box[\s\S]*?width:\s*min\(800px/);
+    expect(block).toMatch(/\.settings-console\s*\{[\s\S]*?gap:\s*0\s*;/);
+    expect(block).toMatch(/padding:\s*12px 16px\s*;/);
+    expect(block).toMatch(/\.settings-console__controls[\s\S]*?grid-template-columns:\s*52px/);
+    expect(block).toMatch(/\.settings-console__keyboard[\s\S]*?grid-template-columns:\s*52px/);
+    expect(block).toMatch(/\.settings-console__controls \.language-control button\s*\{[\s\S]*?min-height:\s*44px/);
+    expect(block).toMatch(/\.settings-console__controls \.audio-toggle\s*\{[\s\S]*?min-height:\s*44px/);
+    expect(block).toMatch(/\.settings-console__actions\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(block).toMatch(/\.settings-console__actions > button\s*\{[\s\S]*?min-height:\s*44px/);
+    expect(block).not.toMatch(/align-content:\s*space-between|grid-auto-rows:\s*1fr/);
+  });
+});
+
 describe('T6 frontend mode binding', () => {
   it('keeps the live canvas visible but demoted while a modal owns the compositor', () => {
     const selector = '.play-shell:has(.sheet-backdrop) .canvas-host';
@@ -565,7 +591,11 @@ describe('T6 frontend mode binding', () => {
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
     const sheet = view.container.querySelector<HTMLElement>('[data-testid="settings-sheet"]')!;
+    const dialog = sheet.closest<HTMLElement>('[role="dialog"]')!;
     expect(sheet).not.toBeNull();
+    expect(dialog.classList.contains('action-sheet--settings')).toBe(true);
+    expect(sheet.className).toBe('settings-console');
+    expect(view.container.querySelector('.settings-sheet')).toBeNull();
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalled();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
     const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
@@ -596,6 +626,8 @@ describe('T6 frontend mode binding', () => {
     expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
+    expect(gameplay.classList.contains('settings-console__key-group--gameplay')).toBe(true);
+    expect(shortcutKeys.classList.contains('settings-console__key-group--shortcuts')).toBe(true);
     const chinese = view.container.querySelector<HTMLButtonElement>('[data-testid="language-zh"]')!;
     const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')!;

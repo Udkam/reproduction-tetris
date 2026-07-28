@@ -687,7 +687,7 @@ export function SettingsRecord({
   if (mode === 'puzzle') {
     const bestPieces = puzzleBestPieceCount(progress, puzzleId);
     return (
-      <section className="settings-record settings-record--puzzle" data-testid="settings-record" aria-label={copy.labels.currentRecord}>
+      <section className="settings-console__record settings-console__record--puzzle" data-testid="settings-record" aria-label={copy.labels.currentRecord}>
         <span>{copy.labels.currentRecord}</span>
         <strong>{bestPieces === null ? copy.labels.notCompleted : copy.phrasing.minimumMoves(bestPieces)}</strong>
       </section>
@@ -713,18 +713,18 @@ function LanguageControl({ language, onChange }: { language: AppLanguage; onChan
 function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: AppLanguage }) {
   const copy = appCopy(language);
   return (
-    <section className={`settings-shortcuts settings-shortcuts--${mode}`} data-testid="settings-shortcuts" aria-label={copy.labels.keyboard}>
+    <section className={`settings-console__keyboard settings-console__keyboard--${mode}`} data-testid="settings-shortcuts" aria-label={copy.labels.keyboard}>
       <strong>{copy.labels.keyboard}</strong>
-      <div className="settings-shortcuts__group" data-testid="keyboard-gameplay">
-        <span className="settings-shortcuts__group-label">{copy.labels.gameplayControls}</span>
+      <div className="settings-console__key-group settings-console__key-group--gameplay" data-testid="keyboard-gameplay">
+        <span className="settings-console__key-group-label">{copy.labels.gameplayControls}</span>
         <span><kbd>← →</kbd> {copy.labels.move}</span>
         <span><kbd>↑</kbd> {copy.labels.rotate}</span>
         <span><kbd>↓</kbd> {copy.labels.softDrop}</span>
         <span><kbd>Space</kbd> {copy.labels.hardDrop}</span>
         {mode === 'puzzle' && <span><kbd>Z</kbd> {copy.labels.undo}</span>}
       </div>
-      <div className="settings-shortcuts__group" data-testid="keyboard-shortcuts">
-        <span className="settings-shortcuts__group-label">{copy.labels.shortcuts}</span>
+      <div className="settings-console__key-group settings-console__key-group--shortcuts" data-testid="keyboard-shortcuts">
+        <span className="settings-console__key-group-label">{copy.labels.shortcuts}</span>
         <span><kbd>S</kbd> {copy.labels.settingsShortcut}</span>
         <span><kbd>P</kbd> {copy.labels.pauseResume}</span>
         <span><kbd>R</kbd> {copy.labels.restartConfirm}</span>
@@ -1434,11 +1434,12 @@ export function GameSession({
         open={settingsOpen}
         title={copy.labels.settings}
         description=""
+        className="action-sheet--settings"
         dismissOnBackdropClick
         onCancel={closeSettings}
       >
-        <section className="settings-sheet" data-testid="settings-sheet" aria-label={copy.labels.settings}>
-          <section className="settings-controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
+        <section className="settings-console" data-testid="settings-sheet" aria-label={copy.labels.settings}>
+          <section className="settings-console__controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
             <strong>{copy.labels.controls}</strong>
             {onLanguageChange && <LanguageControl language={language} onChange={onLanguageChange} />}
             <AudioControls
@@ -1448,7 +1449,7 @@ export function GameSession({
               onVolumeChange={changeAudioVolume}
               language={language}
             />
-            <div className="settings-sheet__actions">
+            <div className="settings-console__actions">
               <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="1" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
               <button className="primary-action" data-autofocus type="button" data-arrow-nav data-arrow-row="1" data-arrow-col="2" onClick={closeSettings}>
                 {copy.labels.continue}
