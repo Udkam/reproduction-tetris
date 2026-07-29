@@ -5,6 +5,7 @@ import {
   FillGradient,
   Graphics,
   NoiseFilter,
+  Rectangle,
   Sprite,
   Texture,
   type Ticker,
@@ -246,6 +247,18 @@ export interface RendererSnapshot {
   survivalStoneCueCount: number;
 }
 
+export interface RendererBoardCapture {
+  dataUrl: string;
+  frame: { x: number; y: number; width: number; height: number };
+  resolution: number;
+  outputPixels: { width: number; height: number };
+  pixelProbe: {
+    samples: number;
+    nonTransparentSamples: number;
+    distinctBuckets: number;
+  };
+}
+
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
 
 const SCORE_SEGMENT_COORDINATES = [
@@ -480,6 +493,65 @@ export class TetrisRenderer {
           }
         : null,
     });
+  }
+
+  /**
+   * DEV-QA evidence export. Pixi rerenders the current stage into an unmounted
+   * Canvas because the presented WebGL back buffer is intentionally not retained.
+   * No Core, ticker, timeline, display-tree, or DOM state is changed.
+   */
+  captureBoardPng(): RendererBoardCapture {
+    const app = this.app;
+    if (!app) throw new Error('Renderer board capture requires a mounted renderer.');
+    const frame = this.snapshot.board;
+    if (frame.width <= 0 || frame.height <= 0) {
+      throw new Error('Renderer board capture requires non-empty board geometry.');
+    }
+    const extracted = app.renderer.extract.canvas({
+      target: app.stage,
+      frame: new Rectangle(frame.x, frame.y, frame.width, frame.height),
+      resolution: app.renderer.resolution,
+      clearColor: COLORS.well,
+      antialias: true,
+    });
+    if (!('toDataURL' in extracted)) {
+      throw new Error('Renderer board capture requires an HTML Canvas export.');
+    }
+    const canvas = extracted as HTMLCanvasElement;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (!context) throw new Error('Renderer board capture cannot read extracted pixels.');
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const pixelCount = canvas.width * canvas.height;
+    const stride = Math.max(1, Math.floor(pixelCount / 8192));
+    const buckets = new Set<string>();
+    let samples = 0;
+    let nonTransparentSamples = 0;
+    for (let pixel = 0; pixel < pixelCount; pixel += stride) {
+      const offset = pixel * 4;
+      const alpha = pixels[offset + 3] ?? 0;
+      samples += 1;
+      if (alpha > 0) nonTransparentSamples += 1;
+      buckets.add(
+        `${(pixels[offset] ?? 0) >> 4}:${(pixels[offset + 1] ?? 0) >> 4}:`
+        + `${(pixels[offset + 2] ?? 0) >> 4}:${alpha >> 4}`,
+      );
+    }
+    return {
+      dataUrl: canvas.toDataURL('image/png'),
+      frame: {
+        x: frame.x,
+        y: frame.y,
+        width: frame.width,
+        height: frame.height,
+      },
+      resolution: app.renderer.resolution,
+      outputPixels: { width: canvas.width, height: canvas.height },
+      pixelProbe: {
+        samples,
+        nonTransparentSamples,
+        distinctBuckets: buckets.size,
+      },
+    };
   }
 
   benchmark(state: GameState, iterations = 120): { meanMs: number; p95Ms: number; maxMs: number } {

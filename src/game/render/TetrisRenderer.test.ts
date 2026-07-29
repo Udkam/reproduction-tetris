@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   BEDROCK_CELL,
   BOARD_HEIGHT,
@@ -97,6 +97,18 @@ function hasBroadHorizontalGeometry(operations: readonly DrawOperation[], boardW
 }
 
 type RendererInternals = {
+  app: {
+    stage: unknown;
+    renderer: {
+      resolution: number;
+      extract: {
+        canvas: (options: unknown) => HTMLCanvasElement;
+      };
+    };
+  } | null;
+  snapshot: {
+    board: { x: number; y: number; width: number; height: number; cell: number };
+  };
   presentation: unknown;
   trail: unknown;
   lockPulse: unknown;
@@ -993,6 +1005,66 @@ describe('Puzzle undo presentation reset', () => {
     );
 
     expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
+  });
+
+  it('extracts the current Pixi board without retaining or mounting a second Canvas', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const pixels = new Uint8ClampedArray([
+      8, 24, 42, 255,
+      200, 90, 114, 255,
+      71, 170, 161, 255,
+      154, 101, 177, 255,
+    ]);
+    const extracted = document.createElement('canvas');
+    extracted.width = 2;
+    extracted.height = 2;
+    const context = {
+      getImageData: () => ({ data: pixels }),
+    };
+    Object.defineProperty(extracted, 'getContext', {
+      configurable: true,
+      value: vi.fn(() => context),
+    });
+    Object.defineProperty(extracted, 'toDataURL', {
+      configurable: true,
+      value: vi.fn(() => 'data:image/png;base64,renderer-board'),
+    });
+    const extractCanvas = vi.fn<(options: unknown) => HTMLCanvasElement>(() => extracted);
+    const stage = {};
+    internals.app = {
+      stage,
+      renderer: {
+        resolution: 2,
+        extract: { canvas: extractCanvas },
+      },
+    };
+    internals.snapshot.board = { x: 11, y: 13, width: 101, height: 202, cell: 10 };
+    const beforeSnapshot = renderer.getSnapshot();
+    const canvasCountBefore = document.querySelectorAll('canvas').length;
+
+    const result = renderer.captureBoardPng();
+
+    expect(result).toEqual({
+      dataUrl: 'data:image/png;base64,renderer-board',
+      frame: { x: 11, y: 13, width: 101, height: 202 },
+      resolution: 2,
+      outputPixels: { width: 2, height: 2 },
+      pixelProbe: {
+        samples: 4,
+        nonTransparentSamples: 4,
+        distinctBuckets: 4,
+      },
+    });
+    expect(extractCanvas).toHaveBeenCalledOnce();
+    expect(extractCanvas.mock.calls[0]?.[0]).toMatchObject({
+      target: stage,
+      resolution: 2,
+      antialias: true,
+    });
+    expect(extractCanvas.mock.calls[0]?.[0]).toHaveProperty('frame');
+    expect(renderer.getSnapshot()).toEqual(beforeSnapshot);
+    expect(document.querySelectorAll('canvas')).toHaveLength(canvasCountBefore);
   });
 
   it('scales Next geometry to the slot instead of capping it at a tiny fixed unit', () => {
