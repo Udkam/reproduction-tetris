@@ -88,4 +88,3 @@ REVIEWED CANDIDATE: 9085976
 Every GAP or mismatch must name the file, expected value, actual value, and affected
 claim. The reviewer must not fix or regenerate evidence. Acceptance requires empty
 P0/P1/P2/P3/GAP and exact candidate/hash/artifact/lifecycle closure.
-

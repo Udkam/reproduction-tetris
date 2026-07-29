@@ -90,4 +90,3 @@ REVIEWED FRAMES: 15/15
 Every finding needs the frame name, exact visible region, target mismatch, and
 severity. A reviewer must not repair the candidate. Any P0/P1/P2/GAP returns the
 phase to its owning source or evidence checkpoint; accepted P3 remains explicit debt.
-
