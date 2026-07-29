@@ -2,9 +2,9 @@
 
 ## 状态
 
-**SOURCE FROZEN / GATES NEXT**。Phase 5 已验收并推送；Phase 6 从
+**GATES PASS / EVIDENCE WRITER OPEN**。Phase 5 已验收并推送；Phase 6 从
 `4f871ac3706f95c2a57679dd0162071c89363ecb` 开始。当前只开放共享普通消行
-Renderer 检查点后的 Classic 局部反馈检查点。
+Renderer 与 Classic 局部反馈的 source-bound 浏览器证据；产品源码已冻结。
 
 ## 目标
 
@@ -82,6 +82,13 @@ React、CSS、本地化、音频、Core、其他模式或 Puzzle。
 `eaed1ac` 根据真实 Pixi 帧将不清晰的底边落地线改成方块内部的接触光、亮芯和
 两侧支撑刻线。最终 source candidate 是 `eaed1ac`；直测 29/29 与 typecheck
 通过。后续只允许门禁、证据和只读 QA，除非 QA 形成可复现 finding。
+
+最终门禁已由 `55e5a7b` 记录、`fb9ccc2` 归一化并由 `50e3693` 建立校验索引：
+typecheck、26 文件 / 231 测试的一 worker 全量套件、753 模块 production build
+均通过。门禁不因证据脚本调整而重复运行；只有产品源码发生修正才重新执行。
+当前唯一 writer 为 `docs/qa/evidence/t15-phase6/capture_phase6.py`。正式批次使用
+公开命令重放现有 1/2/3 行残局路径，并将缺少公开四行路径的事实写入 manifest；
+四行仅由同一真实 Renderer 的隔离合同帧证明，不伪装成玩家运行时回放。
 
 ## 验收
 

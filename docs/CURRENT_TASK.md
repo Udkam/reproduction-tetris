@@ -71,6 +71,21 @@ typecheck, one full one-worker suite, one production build, managed browser evid
 serial independent rules/visual audits, corrections if required, acceptance, cleanup,
 and non-force push.
 
+**Phase-6 final gates and evidence boundary (2026-07-30):** the frozen product tree
+still matches `eaed1ac`. Final source-bound gates are committed and indexed through
+`50e3693`: typecheck PASS, full one-worker suite PASS (26 files / 231 tests), and
+production build PASS (753 modules, with only the existing non-fatal chunk-size
+warning). The LF-normalised raw logs and their SHA-256 index live only under
+`docs/qa/evidence/t15-phase6/`; no gate rerun is allowed unless product source changes.
+The next and only writer is the bounded evidence harness
+`docs/qa/evidence/t15-phase6/capture_phase6.py`, plus this phase's evidence records.
+It may run one managed strict-port Vite/Chrome tree, must publish from an isolated
+partial directory only after all assertions pass, and must release port 4178 and its
+owned browser tree. Existing public-command Puzzle routes provide real 1/2/3-row
+ordinary-clear witnesses; the absent four-row route is labelled and captured only as
+an isolated real-Renderer contract frame. Product source, Puzzle data/selector, and
+all gameplay rules remain closed.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

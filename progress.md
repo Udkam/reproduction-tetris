@@ -16,6 +16,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   typecheck passes. Disposable real Pixi frames verified confirmation, inward
   contraction, refined afterglow, endpoint, and reduced-motion geometry; the Vite,
   Chromium, listener, and temporary capture directory were released afterward.
+- Classic feedback contract `fee0627`, cue source `a1f3d1b`, and visually corrected
+  final product candidate `eaed1ac` are frozen. Final gates indexed through `50e3693`
+  pass typecheck, 26 files / 231 tests, and the 753-module production build. Only the
+  fail-closed Phase-6 browser-evidence writer is open; product paths remain closed.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -85,12 +89,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Run a read-only Phase-6 baseline audit for Classic terminology, landing, combo,
-  level-up, and top-out. Add another exact-path source checkpoint only for a proven
-  contract gap.
-- After final source freeze, run one final typecheck, full suite, build, managed
-  1/2/3/4-row browser matrix, safe-next-frame/reduced-motion/responsive inspection,
-  and serialized independent rules/visual QA before acceptance and non-force push.
+- Commit and run one managed Phase-6 evidence harness against source `eaed1ac`.
+  Capture real public-command 1/2/3-row clears, labelled isolated four-row Renderer
+  proof, safe-next/reduced-motion/responsive frames, Classic landing/combo+speed/
+  top-out cues, one Canvas/zero DOM cells, and restart/unmount lifecycle.
+- Inspect every original PNG and then run serialized independent rules/visual/evidence
+  QA before acceptance and non-force push. Do not overlap browser and QA workloads.
 - Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate

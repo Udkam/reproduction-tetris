@@ -138,3 +138,33 @@
 - Blocker: none.
 - Next action: run the one final source-bound typecheck/full suite/build sequence,
   then create source-bound browser evidence without reopening product code.
+
+## TETRIS-T15-PHASE6-FINAL-GATES-005
+
+- Status: `GATES PASS / EVIDENCE WRITER OPEN`.
+- Product candidate: `eaed1ac0962ba7256b44136f7bd4f0faef603970`.
+- Gate checkpoints:
+  - `55e5a7b` — raw final gate logs;
+  - `fb9ccc2` — explicit LF normalisation after the raw-log commit exposed trailing
+    Vite whitespace and terminal blank lines;
+  - `50e3693` — source binding, hashes, commands and results indexed.
+- Final results:
+  - `npm.cmd run typecheck` — PASS;
+  - `npm.cmd run test -- --maxWorkers=1` — PASS, 26 files / 231 tests;
+  - `npm.cmd run build` — PASS, 753 modules; the pre-existing chunk-size warning is
+    non-fatal.
+- Frozen log hashes:
+  - `typecheck.txt` — `4894d6e53b46d1be542291996cb9c1d7fbfd1ab037a1149204c0d80d4d502e86`;
+  - `test.txt` — `18757e5a30fb8ae7f0c209814c1c521b34db7e678b4b4de93b45df345cabff76`;
+  - `build.txt` — `13f12d3b56f1022db95bb96b6410454355dd7a8f91961c1e4229f42c315ed15f`.
+- Evidence route audit:
+  - real public-command witnesses exist for one, two and three simultaneous rows;
+  - no verified current route produces four simultaneous rows, so formal evidence
+    must label its four-row frame as isolated Renderer contract proof rather than a
+    runtime replay.
+- Exact writer path opened:
+  - `docs/qa/evidence/t15-phase6/capture_phase6.py`.
+- Resource boundary: one managed Vite/Chrome tree only; no concurrent test/build/QA
+  agent; no WMI/CIM; release listener 4178 and the owned browser tree before QA.
+- Next action: commit this evidence contract, commit the fail-closed harness, run one
+  managed batch, inspect every original PNG, then freeze the evidence candidate.
