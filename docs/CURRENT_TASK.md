@@ -252,6 +252,14 @@ or history rewrite is authorized.
   three-state frame budget first. The strict reviewer returned PASS with P0–P3 all
   zero. Product `ee2aac5`, gates `6d9fc6a`, source behavior and publication rules are
   unchanged; a corrected managed run is admitted after a new resource sample.
+- That run failed closed at the rAF mean gate and published nothing. Three repeated
+  diagnostics proved the forced SwiftShader backend schedules at roughly 25 ms
+  (about 40 FPS) despite a Renderer p95 of only 0.4–0.6 ms. The same frozen product
+  and three-state workload on the actual RTX 4070 SUPER D3D11 WebGL2 backend measured
+  mean 8.33 ms, p95 8.4 ms, max 8.6 ms and zero frames over 20 ms in all three
+  samples. Keep every performance threshold unchanged. The harness must stop forcing
+  SwiftShader, record the unmasked WebGL renderer/vendor, and fail closed on any
+  software backend before the formal batch can be admitted again.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

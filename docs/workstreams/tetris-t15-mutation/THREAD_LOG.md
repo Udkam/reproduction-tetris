@@ -1019,3 +1019,29 @@
 - Product `ee2aac5` and gates `6d9fc6a` have no drift.
 - Next action: take a fresh resource sample and run the corrected managed browser
   batch once; inspect every output frame before acceptance.
+
+## 2026-07-29 — Software-renderer performance rejection
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-PERF-R1`.
+- Run boundary: HEAD `c86520f`, harness `ad0be19`, product `ee2aac5`, gates
+  `6d9fc6a`.
+- The corrected batch passed all preceding evidence but failed the unchanged
+  three-state `raf.meanMs < 17.5` assertion. It published zero artifact and removed
+  partial, Python/Vite/Chrome, ports and external control logs.
+- Three controlled three-state SwiftShader samples:
+  - Renderer p95 0.4–0.6 ms;
+  - rAF mean 24.79–25.49 ms, p95 25.1–33.4 ms;
+  - 91.6%–97.5% of intervals exceeded 20 ms.
+- Three otherwise identical hardware diagnostics identified WebGL2
+  `ANGLE (NVIDIA GeForce RTX 4070 SUPER, D3D11)`:
+  - Renderer p95 0.2–0.5 ms;
+  - rAF mean 8.33 ms, p95 8.4 ms, max 8.5–8.6 ms;
+  - zero intervals exceeded 20 ms.
+- Disposition: do not relax a threshold or classify the software cadence as product
+  performance. Formal evidence must use and record hardware WebGL, reject
+  SwiftShader/llvmpipe/software backends, and keep all existing limits.
+- Both diagnostic directories, browser/Vite processes and listeners were released;
+  neither diagnostic published repository evidence.
+- Next action: commit this backend contract, remove only the forced SwiftShader launch
+  flags, add fail-closed GPU backend metadata, statically audit, then admit one
+  hardware-backed managed batch.

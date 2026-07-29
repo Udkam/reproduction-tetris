@@ -302,7 +302,11 @@ retain the extracted Canvas.
 Full-page Playwright screenshots remain authoritative for persistent HUD, responsive,
 language and status layouts. It repeats mount/unmount twice against a home-screen
 listener/RAF/audio baseline. A renderer microbenchmark alone does not prove 60 FPS; real
-`requestAnimationFrame` mean and p95 are separately bounded. The evidence run starts
+`requestAnimationFrame` mean and p95 are separately bounded. That acceptance sample
+must use the machine's production hardware WebGL backend, record its unmasked
+renderer/vendor, and fail if it resolves to SwiftShader, llvmpipe, or another software
+renderer. A separate SwiftShader diagnostic may test fail-closed capture behavior, but
+its compositor cadence is not a product 60 FPS measurement. The evidence run starts
 from a fresh partial set, verifies its exact manifest file set, and publishes
 `SHA256SUMS.txt` only after data and manifest are present. Text artifacts in this exact
 Phase-5 evidence directory are pinned to LF so Windows `core.autocrlf` cannot invalidate
