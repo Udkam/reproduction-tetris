@@ -1965,6 +1965,7 @@ export class TetrisRenderer {
       if (alpha <= 0) continue;
 
       if (cue.kind === 'landing') {
+        const landingAlpha = Math.max(0, 1 - progress);
         const spread = layout.cell * (
           this.options.reducedMotion ? 0.3 : 0.2 + eased * 0.22
         );
@@ -1974,13 +1975,31 @@ export class TetrisRenderer {
           const visibleY = cell.y - VISIBLE_START_ROW;
           if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
           const centerX = layout.x + (cell.x + 0.5) * layout.cell;
-          const rawY = layout.y + (visibleY + 1) * layout.cell - layout.cell * 0.055
-            + (this.options.reducedMotion ? 0 : eased * layout.cell * 0.035);
+          const rawY = layout.y + (visibleY + 1) * layout.cell - layout.cell * 0.14
+            + (this.options.reducedMotion ? 0 : eased * layout.cell * 0.025);
           const y = Math.min(layout.y + layout.height - stroke, Math.max(layout.y + stroke, rawY));
+          const kick = layout.cell * 0.11;
+          if (!this.options.reducedMotion) {
+            graphics
+              .roundRect(
+                centerX - spread,
+                y - layout.cell * 0.055,
+                spread * 2,
+                layout.cell * 0.11,
+                Math.max(1, layout.cell * 0.045),
+              )
+              .fill({ color: COLORS.actionInk, alpha: landingAlpha * 0.18 });
+          }
           this.strokeSegments(graphics, [
             [centerX - spread, y, centerX - gap, y],
             [centerX + gap, y, centerX + spread, y],
-          ], COLORS.classic, alpha * 0.72, stroke);
+            [centerX - spread, y, centerX - spread - kick * 0.46, y - kick],
+            [centerX + spread, y, centerX + spread + kick * 0.46, y - kick],
+          ], COLORS.classic, landingAlpha * 0.94, Math.max(1.4, stroke * 1.12));
+          this.strokeSegments(graphics, [
+            [centerX - spread * 0.72, y, centerX - gap, y],
+            [centerX + gap, y, centerX + spread * 0.72, y],
+          ], COLORS.actionInk, landingAlpha * 0.82, Math.max(1.3, stroke * 0.68));
         }
         continue;
       }

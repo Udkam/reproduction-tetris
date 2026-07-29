@@ -15,7 +15,7 @@ import {
   type PieceType,
   VISIBLE_START_ROW,
 } from '../core';
-import { BEDROCK_MATERIAL, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
+import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
 let originalCanvasContext: PropertyDescriptor | undefined;
@@ -1260,6 +1260,10 @@ describe('Puzzle undo presentation reset', () => {
     const initial = createGraphicsRecorder();
     internals.drawClassicFeedbackCues(initial.graphics, classic, layout);
     expect(initial.operations.some((operation) => operation.kind === 'segment')).toBe(true);
+    expect(initial.operations.some((operation) => (
+      operation.kind === 'stroke'
+      && (operation.options as { color?: number }).color === COLORS.actionInk
+    ))).toBe(true);
     expect(hasBroadHorizontalGeometry(initial.operations, layout.width)).toBe(false);
     expect(initial.operations
       .filter((operation) => operation.kind === 'segment')
