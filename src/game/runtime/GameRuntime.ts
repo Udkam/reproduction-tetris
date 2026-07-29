@@ -1,7 +1,11 @@
 import { AudioEngine } from '../audio/AudioEngine';
 import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
 import { InputController, type InputAction } from '../input/InputController';
-import { TetrisRenderer, type RendererSnapshot } from '../render/TetrisRenderer';
+import {
+  TetrisRenderer,
+  type RendererBoardCapture,
+  type RendererSnapshot,
+} from '../render/TetrisRenderer';
 import { browserPlatform, type BrowserPlatform, type PlatformUnsubscribe } from '../../platform/browserPlatform';
 
 const FIXED_STEP_MS = 1000 / 60;
@@ -36,6 +40,7 @@ export interface RuntimeOptions {
 export interface RuntimeQaSurface {
   getState: () => GameState;
   getRendererSnapshot: () => RendererSnapshot;
+  captureBoardPng: () => RendererBoardCapture;
   start: () => void;
   selectMode: (mode: GameMode) => void;
   selectPuzzle: (puzzleId: PuzzleId) => void;
@@ -100,6 +105,7 @@ export class GameRuntime {
       if (target) target.__SIGNAL_FOUNDRY_QA__ = {
         getState: () => structuredClone(this.state),
         getRendererSnapshot: () => this.renderer.getSnapshot(),
+        captureBoardPng: () => this.renderer.captureBoardPng(),
         start: () => this.start(),
         selectMode: (mode) => this.selectMode(mode),
         selectPuzzle: (puzzleId) => this.selectPuzzle(puzzleId),

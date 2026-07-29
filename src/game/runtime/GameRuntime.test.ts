@@ -14,6 +14,13 @@ import {
 
 const rendererSetOptions = vi.hoisted(() => vi.fn());
 const rendererRender = vi.hoisted(() => vi.fn());
+const rendererCaptureBoardPng = vi.hoisted(() => vi.fn(() => ({
+  dataUrl: 'data:image/png;base64,cGl4aS1leHRyYWN0',
+  frame: { x: 17, y: 23, width: 250, height: 500 },
+  resolution: 2,
+  outputPixels: { width: 500, height: 1000 },
+  pixelProbe: { samples: 32, nonTransparentSamples: 32, distinctBuckets: 4 },
+})));
 const inputClearHeld = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
 const audioPrime = vi.hoisted(() => vi.fn());
@@ -50,6 +57,9 @@ vi.mock('../render/TetrisRenderer', () => ({
     render(state: unknown, events: unknown, deltaMs: number): void { rendererRender(state, events, deltaMs); }
     destroy(): void {}
     getSnapshot(): Record<string, never> { return {}; }
+    captureBoardPng(): ReturnType<typeof rendererCaptureBoardPng> {
+      return rendererCaptureBoardPng();
+    }
     benchmark(): { meanMs: number; p95Ms: number; maxMs: number } {
       return { meanMs: 0, p95Ms: 0, maxMs: 0 };
     }
@@ -261,6 +271,14 @@ describe('GameRuntime public state boundary', () => {
     const exposedState = qaSurface!.getState();
     exposedState.status = 'finished';
     expect(runtime.getState().status).toBe('ready');
+    expect(qaSurface!.captureBoardPng()).toEqual({
+      dataUrl: 'data:image/png;base64,cGl4aS1leHRyYWN0',
+      frame: { x: 17, y: 23, width: 250, height: 500 },
+      resolution: 2,
+      outputPixels: { width: 500, height: 1000 },
+      pixelProbe: { samples: 32, nonTransparentSamples: 32, distinctBuckets: 4 },
+    });
+    expect(rendererCaptureBoardPng).toHaveBeenCalledTimes(1);
 
     runtime.destroy();
     expect(window.__SIGNAL_FOUNDRY_QA__).toBeUndefined();
