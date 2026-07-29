@@ -281,3 +281,46 @@
   localization, progress/unlock, App, CSS, renderer and every other mode.
 - Next action: implement and checkpoint the generalized authoring tool; only then
   open the 11–20 product/route slice.
+
+## 11–20 setup authoring checkpoint — 2026-07-30
+
+- Task: `t15_puzzle_11_20_authoring_writer`.
+- Base: `4d4b028`.
+- Tooling checkpoint: `306106a`.
+- Exact changed path:
+  - `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`
+- Claim: one required `--target-rows 3..7` argument and a `5..15` setup-count
+  subset now drive scoring, acceptance, validation and output metadata; the
+  first-batch hard-coded three-row constant is gone.
+- Static gate: `node --check` — PASS.
+- Deterministic four-row smoke:
+  - fixed inputs: target rows 4, seed start `1588444900`, four seeds, setup count
+    7, two candidates, beam 128, node budget 500,000;
+  - both runs completed with two candidates, 91,142 attempted landings and no
+    budget exhaustion;
+  - both files had SHA-256
+    `6D2B28645AEDAC5897F80AC325B2B9FECC02D00502F6A0BB72405CDB27FB104B`;
+  - direct assertions passed for schema, explicit row metadata, four occupied
+    rows, setup count, four cells per drop, legal encoding and no full row.
+- The exact temporary outputs were deleted. The first post-delete expression
+  used invalid repeated `Test-Path -LiteralPath` syntax and emitted a
+  nonterminating PowerShell error; a corrected standalone check then confirmed
+  both files absent. Both short Node processes exited; no listener or server ran.
+- Open writer: coordinator as `t15_puzzle_11_20_source_writer`.
+- Exact open paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleFlow.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-11-20.json`
+- Claim boundary: retain visible IDs/ordinals 11–20; replace only their board
+  setup, name, level seed and two authored one-anchor placements; set explicit
+  target rows to four; freeze two early-diverging public-Core completion routes.
+- Closed: 01–10, new 21–50 IDs, persistence, progress/unlock, App/selector, CSS,
+  renderer, dependencies and other modes.
+- Next action: generate a bounded four-row pool, select a readable progression,
+  register only 11–20, solve two routes each, freeze the source-bound artifact,
+  and run only focused Core proof plus typecheck.

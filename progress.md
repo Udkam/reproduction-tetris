@@ -484,3 +484,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   every explicit metadata ID, consumer, early range guard, frozen definition call
   and artifact blob. Levels 01–10 are closed. The next bounded checkpoint opens
   only `search-puzzles.mjs` to support explicit four-row candidate authoring.
+- Tooling `306106a` now requires target rows 3–7 and supports setup counts 5–15.
+  Two identical four-row smoke runs each completed two candidates in 91,142
+  attempted landings without exhaustion, with matching SHA-256
+  `6D2B28645AEDAC5897F80AC325B2B9FECC02D00502F6A0BB72405CDB27FB104B`.
+  Direct candidate assertions and cleanup verification pass. The 11–20 product
+  and route slice is now open while every other product area remains closed.

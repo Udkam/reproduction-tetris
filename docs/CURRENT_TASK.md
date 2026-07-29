@@ -155,6 +155,34 @@ byte-identical bounded 4-row smoke outputs with direct schema/row/cell/full-row
 assertions; all temporary files and processes must be released before opening
 the 11–20 source slice.
 
+**11–20 authoring-tool checkpoint (2026-07-30):** `306106a` changes only
+`search-puzzles.mjs`. The tool now requires `--target-rows 3..7`, accepts unique
+setup-count subsets from 5 through 15, and threads the explicit row count through
+scoring, acceptance, validation and output metadata. `node --check` passes. Two
+bounded 4-row runs with the same seed/range/budget each produced two candidates,
+91,142 attempted landings and no budget exhaustion; both files had SHA-256
+`6D2B28645AEDAC5897F80AC325B2B9FECC02D00502F6A0BB72405CDB27FB104B`.
+Direct assertions passed for schema, explicit row metadata, exactly four occupied
+rows, setup count, four cells per drop, encoding and no initially full row. The
+two exact temporary files were removed; a malformed cleanup-verification
+expression emitted a nonterminating PowerShell error after removal, then the
+corrected standalone check confirmed both paths absent. No Node process remains.
+
+**Open Phase-7 slice — levels 11–20:** exact paths are
+`src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+`src/game/core/puzzleCampaign.test.ts`, `src/game/core/puzzleFlow.test.ts`,
+`src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
+`docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`, and the new
+`docs/workstreams/tetris-t15-puzzle/puzzle-levels-11-20.json`. The existing
+visible IDs at ordinals 11–20 remain fixed but receive exactly four-row legal
+setup histories, explicit `targetRows: 4`, concise bilingual structural names,
+unique level seeds and exactly two one-anchor levels. Every level needs two
+public-Core completing routes that diverge by the shorter route's fourth lock;
+normal tests replay frozen evidence rather than search. Levels 01–10, new 21–50
+IDs, persistence, progress/unlock, App/selector, CSS, renderer, other modes and
+dependencies remain closed. Candidate generation and Core search run one process
+at a time; focused proof is the four direct Core files plus typecheck.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
