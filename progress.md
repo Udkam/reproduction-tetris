@@ -503,3 +503,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Focused Core proof passes 4 files / 21 tests with one worker; typecheck and
   diff checks pass. Candidate pools/logs and the solver process are released.
 - Product is frozen for two static audits. Levels 21–50 remain closed.
+
+## 2026-07-30 Phase 7 levels 11–20 audit disposition
+
+- Curriculum/artifact audit accepts with P0–P3/GAP zero.
+- Rules audit accepts all behavior and scope claims but rejects one evidence gap:
+  the route replay did not explicitly assert that emitted line-clear row indexes
+  exclude the canonical anchor rows.
+- Only `puzzleSolverResults.test.ts` is reopened to bind the existing
+  `lines-cleared.rows` evidence. Boards, routes and artifact remain frozen.

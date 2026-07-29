@@ -16,14 +16,14 @@ Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
 setup authoring tool `b6acd46` is deterministic and released. Levels 01–10 are
-frozen at source candidate `bf23126`. The rules audit accepts it, while the
-curriculum/artifact audit rejected two P2 contract gaps. Correction candidate
-`2ce309b` now makes target-row count explicit level metadata and rejects ranges
-crossing a canonical ten-level batch before the loader starts. Layouts, names,
-seeds and completing routes remained frozen; the rejecting reviewer now accepts
-the exact correction with P0–P3/GAP all zero. Levels 01–10 are closed. The next
-open checkpoint only generalizes the setup authoring tool for explicit 4-row
-candidate generation before any 11–20 product definition changes.
+accepted after correction `2ce309b`. Generalized authoring tool `306106a` and
+levels 11–20 source candidate `cdd5e43` are frozen. Its curriculum/artifact audit
+accepts with P0–P3/GAP zero; its rules audit reports only GAP=1 because the frozen
+route replay proves anchors remain in place but does not explicitly assert that
+no `lines-cleared.rows` entry equals an anchor row. Exactly
+`src/game/core/puzzleSolverResults.test.ts` is reopened to bind that existing Core
+event evidence. Layouts, names, seeds, routes, artifact and all other product paths
+remain frozen.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -198,6 +198,18 @@ Focused verification passes 4 files / 21 tests with one worker, typecheck passes
 PID exited. Product is frozen for two independent read-only static audits.
 Levels 21–50, progress/unlock, App/selector, CSS, renderer, dependencies and other
 modes remain closed until both 11–20 audits are resolved.
+
+**Levels 11–20 audit disposition and narrow correction (2026-07-30):** the
+curriculum/artifact audit accepts `d14e21e..cdd5e43` with P0–P3/GAP all zero.
+The independent rules audit reports P0–P3 all zero and GAP=1: route replay checks
+completion and final anchor position, but does not expose a static assertion that
+no line-clear event targets an anchor's canonical board row, as required by the
+Phase-7 contract. Only `src/game/core/puzzleSolverResults.test.ts` is reopened.
+The correction must inspect public `dispatch()` event rows during both frozen
+routes and reject an anchor-row clear. It may not change definitions, route
+streams, artifact bytes, names, seeds, Core behavior or any later batch. After
+the edit, rerun the four focused Core files plus typecheck and return to the same
+rejecting reviewer.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

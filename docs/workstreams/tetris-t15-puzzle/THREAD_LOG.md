@@ -365,3 +365,27 @@
 - Product is frozen. Next action: two independent read-only static audits compare
   `d14e21e..cdd5e43` against the Phase-7 contract. Levels 21–50 remain closed until
   both verdicts are resolved.
+
+## Levels 11–20 static audits and correction opening — 2026-07-30
+
+- Audited product range: `d14e21e..cdd5e43`; candidate record: `cbaf84e`.
+- Curriculum/artifact audit: `ACCEPT`; P0=0, P1=0, P2=0, P3=0, GAP=0.
+  It matched schema, campaign order, 20 source-bound routes, lock-1 divergence,
+  monotonic shorter-route progression, bilingual structural names, source seeds,
+  setups, anchors, hash and honest non-optimality claim.
+- Rules/scope audit: `REJECT`; P0=0, P1=0, P2=0, P3=0, GAP=1.
+  It accepts scope, setup legality, IDs/ordinals, explicit four-row metadata,
+  anchor coordinates/immutability and all route completion evidence. The sole gap
+  is that route replay does not explicitly assert that no emitted
+  `lines-cleared.rows` value equals an anchor's canonical board row.
+- Coordinator disposition: relevant, bounded evidence gap; no gameplay or
+  curriculum defect is claimed.
+- Reopened writer: coordinator as `t15_puzzle_11_20_anchor_row_proof_writer`.
+- Exact open path:
+  - `src/game/core/puzzleSolverResults.test.ts`
+- Required correction: during both frozen public-dispatch route replays, inspect
+  existing line-clear event row coordinates and assert no clear targets any
+  authored anchor row. Definitions, route streams, artifact bytes, names, seeds,
+  Core, UI, and levels 21–50 remain frozen.
+- Required proof: four focused Core files / one worker, typecheck, diff check,
+  artifact hash unchanged, then narrow static re-audit by the rejecting reviewer.
