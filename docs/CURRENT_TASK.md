@@ -175,6 +175,22 @@ until repeated rules QA accepts, and evidence-integrity QA remains closed until 
 rules and visual QA accept. Neither packet is a verdict or permission to rerun gates,
 browser capture, or product code.
 
+**Dynamic resource admission and repeated rules QA (2026-07-30):** the player's newer
+machine-wide resource memory supersedes the earlier temporary zero-helper hold. In the
+green state (sustained CPU below 70%, at least 12 GB available RAM, and disk queue below
+1.0), this project may use up to four concurrent sub-agents, with no more than two
+editing or running heavy commands; amber reduces this to two and serializes new heavy
+work; red starts no new heavy work. Every helper remains on-demand and project-owned.
+Admission measured 10–14% CPU, about 17.6 GB available RAM, and zero disk queue. One
+existing reviewer then performed static-only repeated rules QA; its temporary Node
+cohort returned from six processes to the two primary processes on completion, with
+zero `node_repl` and zero Serena. The reviewer independently accepts
+`4f871ac3706f95c2a57679dd0162071c89363ecb..90859760bc9b2163219a31eb9053fcd4e92869ce`
+with P0–P3/GAP all zero. The prior landing-support P2 is closed by the corrected
+floor/old-board support filter and its single-support overhang regression. Product,
+gate, and browser artifacts remain frozen. Visual QA is now open; evidence-integrity
+QA remains closed until visual QA accepts.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

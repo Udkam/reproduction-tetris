@@ -384,3 +384,36 @@
   only rules plus visual ACCEPT open evidence-integrity QA.
 - Next action: obtain the missing genuinely independent repeated rules verdict under
   the zero-resident-helper contract.
+
+## TETRIS-T15-PHASE6-REPEATED-RULES-QA-013
+
+- Status: `INDEPENDENT RULES QA ACCEPT / VISUAL QA OPEN`.
+- Task: existing independent reviewer `t15_phase6_rules_qa_repeat`.
+- Base and reviewed range:
+  `4f871ac3706f95c2a57679dd0162071c89363ecb..90859760bc9b2163219a31eb9053fcd4e92869ce`.
+- Changed paths: none. The reviewer was read-only and did not modify, stage, commit,
+  build, test, serve, capture, or push.
+- Commands actually used by the coordinator before admission: clean Git/base checks,
+  targeted UTF-8 contract inspection, three short CPU/RAM/disk samples, and support
+  process counts. The reviewer used static source/diff/manifest/hash inspection only.
+- Resource admission: the newer global dynamic budget supersedes the temporary
+  zero-helper hold. Entry was green at 10–14% CPU, about 17.6 GB available RAM, and
+  zero disk queue. During review the bounded Node cohort rose from two to six while
+  `node_repl` and Serena stayed at zero; after the final verdict it returned to two,
+  zero, and zero respectively.
+- Evidence and verdict: `VERDICT=ACCEPT`; P0, P1, P2, P3, and GAP are all `none`.
+  The old landing P2 is closed: the cue now freezes only real floor or old-board
+  support cells, and the direct test covers a horizontal I overhang with exactly one
+  old-board support plus post-event board mutation.
+- The reviewer also confirmed the 12-tick Core / 11-tick Renderer boundary, bounded
+  one-to-four-row grammar, reduced-motion geometry, real cell materials, Classic-only
+  landing/combo/speed/top-out cues, bounded lifecycle, exact four-path product scope,
+  product/config equality from `9085976` to HEAD, gate/product binding, and all
+  manifest-listed working-tree hashes.
+- Retained disclosed limitation: the four-row, combo/speed, and top-out browser frames
+  are isolated real-Renderer contracts rather than public-runtime natural routes; the
+  manifest labels this honestly and rules QA does not treat it as a GAP.
+- Blocker: final Phase-6 acceptance still requires independent visual QA followed by
+  evidence-integrity QA.
+- Next action: run the prepared fifteen-frame visual review. Only an ACCEPT may open
+  evidence-integrity QA.

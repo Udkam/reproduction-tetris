@@ -385,3 +385,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   zero Canvas/audio/rAF/server/browser state.
 - These are review inputs, not verdicts. Repeated rules QA remains first; visual and
   evidence-integrity QA remain closed behind it. Phase 6 and Puzzle 50 do not advance.
+
+## 2026-07-30 Phase 6 repeated rules QA accepted
+
+- The newer dynamic resource memory supersedes the temporary zero-helper hold. Green
+  admission allows bounded project concurrency; this pass used one existing static
+  reviewer and no heavy command.
+- Independent repeated rules QA accepts `4f871ac..9085976` with P0–P3/GAP all zero.
+  The corrected landing-support filter and single-support overhang regression close
+  the previous P2.
+- Product/config state, gates, and browser artifacts remain frozen. The temporary Node
+  cohort returned from six to the two primary processes; `node_repl` and Serena stayed
+  at zero.
+- Visual QA is now open. Evidence-integrity QA remains closed until visual QA accepts;
+  Puzzle 50 remains closed until complete Phase-6 acceptance and push.

@@ -96,9 +96,11 @@ state with bounded lifetimes and are cleared by restart/unmount. They apply only
 Classic in this checkpoint; Survival pressure, Mutation activation, Puzzle feedback,
 React copy, HUD structure, and audio remain frozen.
 
-Phase 5 is independently accepted, pushed, and cleaned through `4f871ac`. The player
-has resumed execution, so Phase 6 is open. The fifty-level Puzzle contract remains
-frozen until Phase 6 acceptance; its selector composition is not a Phase-6 target.
+Phase 5 is independently accepted, pushed, and cleaned through `4f871ac`. Phase 6
+rules QA independently accepts corrected product `9085976` with P0–P3/GAP all zero;
+visual and evidence-integrity QA still gate final acceptance. The fifty-level Puzzle
+contract remains frozen until Phase 6 acceptance; its selector composition is not a
+Phase-6 target.
 
 ## Phase 1 — TetraMorph Design System v1.0
 
