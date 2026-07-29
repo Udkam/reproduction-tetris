@@ -62,16 +62,26 @@ well. Its active field is expressed by column-local lensing, compressed vertical
 lines, falling motes, and a short settlement pulse bound to the columns that actually
 move. A continuous horizontal effect wider than 80% of the well is a visual regression.
 
-The later Classic refinement owns the shared ordinary line-clear presentation. Cleared
-rows receive a narrow confirmation light, a short inward cell contraction/dissolve, and
-a restrained debris/afterglow endpoint. One through four lines scale the same family.
-The effect never flashes the whole screen, blocks input, hides the next decision, or
-changes Core timing; reduced motion keeps a location-specific static confirmation.
+Phase 6 owns the shared ordinary line-clear presentation. Cleared rows receive one
+coherent three-part signature: first a vertically narrow row-local confirmation light,
+then the existing cells contract slightly toward the row centre while dissolving, and
+finally a small deterministic debris/afterglow endpoint remains at those exact rows.
+The complete presentation fits inside the existing 12-tick Core clear delay; it never
+adds renderer-owned waiting. One through four lines retain the same geometry and timing
+while only alpha, contraction distance, and debris count rise within bounded limits.
+No primitive may span the full screen or escape the Pixi well.
 
-The current execution pauses after Phase 5 Mutation is independently accepted, pushed,
-and cleaned. Phase 6 and the fifty-level Puzzle contract remain frozen design targets,
-but no Phase-6/Puzzle source or evidence work starts until the player explicitly
-resumes after that pause.
+At the first frame, the locked cells still read as their real materials. During the
+middle stage each cell remains recognisable and moves by less than one quarter-cell;
+at the endpoint it leaves a faint residual silhouette until Core performs the canonical
+row removal. The next decision, HUD, and input stay unobscured. Reduced motion disables
+cell translation, scaling, and debris and instead holds a stationary thin confirmation
+at each cleared row with a quick opacity fade. Mutation Bomb and Collapse keep their
+own Phase-5 presentation and do not reuse this ordinary-clear grammar.
+
+Phase 5 is independently accepted, pushed, and cleaned through `4f871ac`. The player
+has resumed execution, so Phase 6 is open. The fifty-level Puzzle contract remains
+frozen until Phase 6 acceptance; its selector composition is not a Phase-6 target.
 
 ## Phase 1 — TetraMorph Design System v1.0
 

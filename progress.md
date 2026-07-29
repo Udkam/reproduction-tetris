@@ -2,6 +2,15 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Current phase
 
+- Phase 5 Mutation is accepted and pushed: product `ee2aac5`, gates `6d9fc6a`,
+  browser raw/index `9fa98a2` / `013120a`, acceptance `321ebc6`, and remote recovery
+  tip `4f871ac`. Rules and evidence QA have no P0–P3/GAP; visual QA retains one P3
+  for narrow long-value/status ellipsis. Project browser/listener resources were
+  released and local `main` matched `origin/main`.
+- The player resumed on 2026-07-29. Phase 6 Classic is now open from clean base
+  `4f871ac`. Its first and only active writer slice is the four-file shared ordinary
+  line-clear Renderer boundary; Core, UI, Puzzle data/selector, and Mutation special
+  effects remain frozen.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -71,14 +80,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- On explicit resume and when the machine resource budget permits, rerun the committed
-  managed harness for final-source desktop/portrait/landscape/reduced-motion Mutation
-  states, including idle, one/two/three concurrent timers, FIFO, real rAF and repeated
-  lifecycle evidence. Inspect every PNG, commit raw output and index separately, then
-  obtain final rules/visual/evidence acceptance and non-force push Phase 5.
-- Keep Classic shared
-  line-clear polish, Puzzle selector/data, Settings, audio, dependencies, and
-  packaging outside Phase 5.
+- Freeze and commit the Phase-6 docs-only contract before source.
+- Replace the broad ordinary-clear sweep with the shared row-local three-stage
+  confirmation/contraction/afterglow presentation inside existing Core timing.
+- Run focused presentation/Renderer tests while editing. After source freeze, run one
+  final typecheck, full suite, build, managed browser matrix, visual inspection, and
+  serialized independent rules/visual QA before acceptance and non-force push.
+- Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate
 

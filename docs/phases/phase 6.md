@@ -2,7 +2,9 @@
 
 ## 状态
 
-待 Phase 5 验收并推送后开始。
+**OPEN / CONTRACT**。Phase 5 已验收并推送；Phase 6 从
+`4f871ac3706f95c2a57679dd0162071c89363ecb` 开始。当前只开放共享普通消行
+Renderer 检查点，其他微反馈需在该检查点冻结并审计后另开精确路径。
 
 ## 目标
 
@@ -41,9 +43,28 @@ Puzzle 的普通行清除；它不覆盖 Phase 5 炸弹/坍缩的专属结算，
 - 检查点：术语/数值层级 → 共享普通消行 Renderer → 其他反馈微调 → 候选截图
   与输入回放 → 双 QA → 修正 → 验收推送。
 
+当前共享 Renderer writer 仅可修改：
+
+- `src/game/render/presentation.ts`；
+- `src/game/render/presentation.test.ts`；
+- `src/game/render/TetrisRenderer.ts`；
+- `src/game/render/TetrisRenderer.test.ts`。
+
+该检查点必须保持 Core 的 12 tick 消行延迟不变，并在其内部完成以下三个阶段：
+
+1. 行内窄确认光立即标明真实待消行；
+2. 单元格向该行中心移动不足四分之一格，同时缩小、消解；
+3. 只在真实行位置留下少量确定性碎屑和余辉。
+
+1–4 行只提升受控强度，不引入另一套动画。reduced motion 不移动、不缩放、不
+生成碎屑，只绘制同位置静态细线并快速淡出。此提交不得同时修改术语、HUD、
+记录、Core、Mutation 专属炸弹/坍缩、Puzzle 数据或选关页。
+
 ## 验收
 
-随机局互不复用序列，seed replay 一致；10 行提速、得分和排行不变。真实浏览器
-帧必须覆盖 1/2/3/4 行普通消除、下一块已出现后的安全终态以及 reduced motion，
-并证明消除行位置可辨、没有全屏闪白或输入延迟。桌面、竖屏、短横屏下 HUD
-稳定；一个 Canvas、零 DOM 方格、无控制台错误和生命周期泄漏。
+随机局互不复用序列，seed replay 一致；10 行提速、得分和排行不变。定向测试
+必须冻结 1/2/3/4 行的同族几何、强度上限、行位置、reduced-motion 静态终态，
+并证明 Renderer 不改变 Core。真实浏览器帧必须覆盖 1/2/3/4 行普通消除、下一
+块已出现后的安全终态以及 reduced motion，并证明消除行位置可辨、没有全屏闪白
+或输入延迟。桌面、竖屏、短横屏下 HUD 稳定；一个 Canvas、零 DOM 方格、无
+控制台错误和生命周期泄漏。

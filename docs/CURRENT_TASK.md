@@ -9,11 +9,33 @@ the coordinator records its acceptance, verifies resource cleanup, and pushes th
 accepted checkpoint as a remote recovery point before the next phase begins. The
 existing Puzzle library layout is explicitly excluded from redesign; adapting its
 count/progression data for fifty levels is allowed, but its visual composition must
-not be replaced. The player has explicitly resumed the recorded Phase-5 evidence
-checkpoint. Phase 6 and Puzzle 50 remain in the overall goal but must not start before
-Phase 5 is independently accepted, pushed, cleaned, and paused again.
+not be replaced. Phase 5 has now been independently accepted, pushed, cleaned, and
+paused. The player explicitly resumed the project on 2026-07-29, so Phase 6 is the
+only open product writer boundary; Puzzle 50 remains closed until Phase 6 acceptance.
 
-**Current execution state:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
+**Authoritative current execution state (2026-07-29):** Phase 5 product
+`ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
+evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
+tip `4f871ac3706f95c2a57679dd0162071c89363ecb`; local and `origin/main` match and
+the worktree is clean. Phase 6 is **OPEN** from that exact base. Its first writer slice
+owns only the shared ordinary-clear presentation in:
+
+- `src/game/render/presentation.ts`;
+- `src/game/render/presentation.test.ts`;
+- `src/game/render/TetrisRenderer.ts`;
+- `src/game/render/TetrisRenderer.test.ts`.
+
+That slice may replace the old broad sweep with the frozen three-part visual grammar:
+a row-local narrow confirmation light, cell-local inward contraction/dissolve, and
+restrained deterministic debris/afterglow. One through four rows use the same grammar
+with bounded intensity. Reduced motion keeps a stationary row-local confirmation and
+quick opacity endpoint. Core timing, scoring, board state, input, mode UI, Mutation
+bomb/Collapse effects, Puzzle definitions, and the Puzzle selector remain frozen.
+After this source checkpoint is green, a separate baseline audit decides whether
+landing/combo/top-out or Classic terminology need another exact-path slice; they may
+not be silently bundled into the ordinary-clear commit.
+
+**Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
 audit, and independent rules/visual audits all pass with no open P0–P3 finding.
