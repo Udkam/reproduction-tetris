@@ -1144,3 +1144,38 @@
 - Next action: commit this contract checkpoint, verify the frozen product/gate/harness
   trees, register the single formal capture lease, and run the already-admitted
   hardware browser batch with no concurrent workload.
+
+## 2026-07-29 — Formal hardware capture lease registered
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-LEASE-R1`.
+- Base SHA: `f29c84c0f5e8bd2bde67724d51537372f1108c74`.
+- Owner: the primary Tetris coordinator only; no sub-agent, Serena, MCP, test, build,
+  or second browser workload may overlap this lease.
+- Purpose and command: execute the already-admitted
+  `python docs/qa/evidence/t15-phase5/capture_phase5.py` batch once against the frozen
+  product candidate `ee2aac542529c116c915c38e0603584a7099b5e8`.
+- Expected owned tree: one hidden Python runner, its one Vite/Node server tree, and its
+  hardware Chrome/Playwright tree. The runner PID returned by `Start-Process` is the
+  ownership root; descendants are attributable only through that recorded root and
+  known command/path/listener evidence, never by a process-name kill.
+- Reserved listener and temporary paths:
+  - TCP `127.0.0.1:4178` only; 5178 and 5179 remain unused;
+  - `%TEMP%\t15-phase5-browser-run.stdout.log`;
+  - `%TEMP%\t15-phase5-browser-run.stderr.log`;
+  - the harness-owned `.partial-*` publication directory below
+    `docs/qa/evidence/t15-phase5` while the run is active.
+- Admission evidence: clean `main` at the base SHA; product, gate, harness and static
+  admission commits all remain ancestors with zero product/gate/harness diff; no
+  listener on 4178/5178/5179; no prior browser artifact or partial; only three managed
+  9 MiB `node_repl` app-infrastructure processes remain. One current PDH snapshot read
+  3.06% CPU, 24,179 MiB available RAM, 19.4% committed memory and disk queue 0.
+- Completion condition: runner exit code zero, the exact harness-declared final
+  browser artifact set is published atomically, manifest/checksum validation passes,
+  and no repository path outside the declared evidence output changes.
+- Failure condition: stop acceptance immediately, retain only diagnostic stdout/stderr
+  long enough to record the cause, and require zero published partial evidence.
+- Cleanup verification at either outcome: the recorded Python/Vite/Chrome owned tree
+  has exited, ports 4178/5178/5179 are free, no `.partial-*` directory remains, and the
+  two external control logs are removed after their relevant evidence is recorded.
+- Next action: checkpoint this lease declaration, then start exactly this one owned
+  batch and monitor it serially by recorded PID.
