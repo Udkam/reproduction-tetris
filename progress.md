@@ -26,6 +26,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Phase 7's docs-only contract is frozen at `08c0491` from `d78e0e5`: fifty levels,
   3/4/5/6/7 target rows, two replayed routes per level, sparse anchors, v5 migration,
   staged unlock and data/scroll-only adaptation of the existing selector.
+- Persistence-v5 source `fbec049` freezes historic domains, revisioned current data,
+  completion-only v4 promotion and immediate v5 writeback. Focused tests pass 43/43
+  and typecheck passes; the current all-open 20-level runtime remains unchanged.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -96,9 +99,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 ## Next verification
 
 - Keep Phase-6 product/evidence frozen.
-- Implement the exact four-path persistence-v5 slice opened by contract `08c0491`.
-- Preserve the current twenty-level all-open runtime in this slice; staged unlocking
-  opens only after all fifty definitions exist.
+- Run one independent static audit of `455dea4..fbec049`; correct relevant findings
+  before opening levels 01–10.
+- Keep staged unlocking closed until all fifty definitions exist.
 - Do not redesign the Puzzle selector; only adapt its existing five-column route to
   ten internally scrolling five-level bands.
 - Use the updated dynamic resource budget: green permits static parallel review and

@@ -48,6 +48,14 @@ migration back to v5 while leaving old keys untouched. It must preserve the curr
 twenty-level runtime and all-open presentation until the later explicit unlock slice.
 Puzzle definitions, IDs, names, solver, renderer, CSS and other modes remain closed.
 
+**Persistence-v5 candidate (2026-07-30):** `fbec049` over base `455dea4` implements
+the exact four-path claim. Focused progress/App tests pass 43/43 with one worker and
+typecheck passes. v5 now has campaign revision 1; v4/v3/v2/v1 retain frozen historical
+domains; v4 completion migrates without promoting old-board bests; a migrated record
+writes back to v5 while old keys remain. The current twenty-level all-open runtime is
+unchanged. Product is frozen for one read-only static slice audit before the first
+ten-level curriculum batch opens.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

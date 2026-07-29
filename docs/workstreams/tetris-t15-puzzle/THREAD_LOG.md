@@ -63,3 +63,32 @@
   App persistence tests, then typecheck. No full suite/build/browser in this slice.
 - Next action: implement v5 and the frozen historic-domain migration without changing
   the current twenty-level all-open runtime.
+
+## Persistence-v5 source checkpoint — 2026-07-30
+
+- Task: `t15_puzzle_persistence_writer`.
+- Base: `455dea4`.
+- Source checkpoint: `fbec049`.
+- Exact changed paths:
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.tsx`
+  - `src/App.test.ts`
+- Claim:
+  - current storage is `qingliu:puzzle-completion:v5` with campaign revision 1;
+  - v4 visible order and v2 natural order are separate frozen 20-ID domains;
+  - v4 completion migrates but retired-board best values do not become current records;
+  - v5 is preferred, successful legacy reads write v5 immediately, and old keys stay;
+  - the current twenty-level all-open behavior is unchanged in this slice.
+- Commands:
+  - `git diff --check -- src/puzzleProgress.ts src/puzzleProgress.test.ts
+    src/App.tsx src/App.test.ts` — PASS.
+  - `npm.cmd run test -- src/puzzleProgress.test.ts src/App.test.ts
+    --maxWorkers=1` — PASS, 2 files / 43 tests.
+  - `npm.cmd run typecheck` — PASS after correcting test-only literal widening.
+  - final focused rerun of the same two test files — PASS, 2 files / 43 tests.
+- Cached paths exactly matched the four declared paths; cached diff check passed.
+- No full suite, build, browser, solver, server or persistent Node process was started.
+- Blocker: none.
+- Next action: run one independent read-only static audit of `455dea4..fbec049`;
+  correct any persistence/schema finding before opening the 01–10 level batch.
