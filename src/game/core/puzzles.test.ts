@@ -58,27 +58,27 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
-      '起步', '转角', '错位', '补缝', '边路', '折线', '长桥', '连桥', '交织', '双门',
+      '缺口', '侧井', '错层', '双槽', '转折', '回路', '长井', '交错', '绕柱', '双门',
       '高脊', '弧线', '折返', '低谷', '留白', '高台', '台阶', '收束', '路口', '深井',
     ]);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
-      't3r-shaft-01', 't5r-lattice-09',
+      't5r-drift-08',
     ] satisfies PuzzleId[]);
   });
 
-  it('derives every five-through-eight-row start from a legal zero-clear hard-drop history', () => {
+  it('derives the first three-row batch and retained legacy batches from legal zero-clear hard-drop histories', () => {
     expect(PUZZLE_DEFINITIONS.map((definition) => expectedPuzzleTargetRows(definition.difficulty))).toEqual([
-      5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8,
+      3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8,
     ]);
 
     for (const definition of PUZZLE_DEFINITIONS) {
       expect(() => validatePuzzleDefinition(definition), definition.id).not.toThrow();
       expect(definition.boardRows).toHaveLength(VISIBLE_HEIGHT);
       expect(definition.hiddenCells).toEqual([]);
-      expect(definition.setup.placements.length, definition.id).toBeGreaterThanOrEqual(8);
-      expect(definition.setup.placements.length, definition.id).toBeLessThanOrEqual(14);
+      expect(definition.setup.placements.length, definition.id).toBeGreaterThanOrEqual(5);
+      expect(definition.setup.placements.length, definition.id).toBeLessThanOrEqual(15);
       expect(occupiedCount(definition), definition.id).toBe(definition.setup.placements.length * 4);
       expect(createPuzzleBoard(definition, false), definition.id).toEqual(replayPuzzleSetup(definition.setup));
 
@@ -157,7 +157,7 @@ describe('T13 legal endgame workshop definitions', () => {
     }))).toThrow(/setup history/i);
     expect(() => validatePuzzleDefinition(invalid(first, { hiddenCells: [{ x: 0, y: 0, type: 'J' }] }))).toThrow(/hidden buffer/i);
     expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 0, y: 19 }] }))).toThrow(/anchor/i);
-    expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 3, y: 14 }, { x: 3, y: 14 }] }))).toThrow(/duplicate/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { anchorCells: [{ x: 3, y: 16 }, { x: 3, y: 16 }] }))).toThrow(/duplicate/i);
   });
 
   it('restarts a level with the exact same derived board, target ownership, queue, and hash', () => {

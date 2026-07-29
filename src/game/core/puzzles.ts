@@ -81,8 +81,8 @@ export function replayPuzzleSetup(history: PuzzleSetupHistory): Board {
   if (!Number.isSafeInteger(history.seed) || history.seed <= 0 || history.seed > 0xffff_ffff) {
     throw new Error('Puzzle setup history needs a nonzero uint32 seed.');
   }
-  if (!Array.isArray(history.placements) || history.placements.length < 8 || history.placements.length > 14) {
-    throw new Error('Puzzle setup history must contain eight through fourteen legal drops.');
+  if (!Array.isArray(history.placements) || history.placements.length < 5 || history.placements.length > 15) {
+    throw new Error('Puzzle setup history must contain five through fifteen legal drops.');
   }
 
   let board = createBoard();
@@ -152,10 +152,9 @@ function endgame(
   });
 }
 
-/** Visible original-target rows promised by the T13 endgame workshop. */
+/** Visible rows for the batches already re-authored into the Phase-7 curriculum. */
 export function expectedPuzzleTargetRows(difficulty: number): number {
-  if (difficulty <= 5) return 5;
-  if (difficulty <= 10) return 6;
+  if (difficulty <= 10) return 3;
   if (difficulty <= 15) return 7;
   return 8;
 }
@@ -166,19 +165,19 @@ export function expectedPuzzleTargetRows(difficulty: number): number {
  * continues normally after any non-winning lock.
  */
 const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
-  // 01–05: five rows — identify a usable channel, then choose a safe staging order.
-  endgame('t3r-shaft-01', '起步', 1, 994121443, setup(1588444911, [{ type: 'I', rotation: 0, x: 5 }, { type: 'O', rotation: 0, x: 1 }, { type: 'J', rotation: 1, x: -1 }, { type: 'S', rotation: 2, x: 3 }, { type: 'T', rotation: 1, x: 2 }, { type: 'Z', rotation: 2, x: 3 }, { type: 'L', rotation: 1, x: 5 }, { type: 'L', rotation: 0, x: 0 }]), [{ x: 3, y: 14 }]),
-  endgame('t3r-shaft-02', '转角', 2, 2718281828, setup(1431655765, [{ type: 'T', rotation: 0, x: 7 }, { type: 'Z', rotation: 3, x: 7 }, { type: 'I', rotation: 3, x: 8 }, { type: 'O', rotation: 1, x: 5 }, { type: 'J', rotation: 3, x: 3 }, { type: 'S', rotation: 0, x: 1 }, { type: 'L', rotation: 2, x: 5 }, { type: 'S', rotation: 0, x: 3 }])),
-  endgame('t3r-shaft-03', '错位', 3, 3141592653, setup(1717986918, [{ type: 'L', rotation: 1, x: 0 }, { type: 'J', rotation: 0, x: 4 }, { type: 'S', rotation: 3, x: 2 }, { type: 'I', rotation: 1, x: -2 }, { type: 'Z', rotation: 0, x: 0 }, { type: 'T', rotation: 3, x: 5 }, { type: 'O', rotation: 2, x: 7 }, { type: 'L', rotation: 2, x: 3 }])),
-  endgame('t3r-shaft-04', '边路', 5, 1618033988, setup(2004318071, [{ type: 'S', rotation: 2, x: 0 }, { type: 'L', rotation: 1, x: 2 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 1, x: -1 }, { type: 'T', rotation: 3, x: 4 }, { type: 'J', rotation: 2, x: 0 }, { type: 'O', rotation: 2, x: 6 }, { type: 'O', rotation: 2, x: 3 }])),
-  endgame('t3r-cascade-05', '补缝', 4, 1073741827, setup(305419896, [{ type: 'S', rotation: 3, x: 2 }, { type: 'T', rotation: 0, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 3, x: 3 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'L', rotation: 1, x: -1 }, { type: 'J', rotation: 0, x: 1 }, { type: 'J', rotation: 0, x: 5 }])),
+  // 01–05: three rows — read one clear structural gap before handling paired openings.
+  endgame('t3r-shaft-01', '缺口', 1, 1073741827, setup(1588444805, [{ type: 'I', rotation: 0, x: 2 }, { type: 'L', rotation: 3, x: 5 }, { type: 'O', rotation: 2, x: 3 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'J', rotation: 2, x: 7 }, { type: 'T', rotation: 2, x: 0 }])),
+  endgame('t3r-shaft-02', '侧井', 2, 1618033988, setup(1588444826, [{ type: 'Z', rotation: 2, x: 7 }, { type: 'O', rotation: 2, x: 0 }, { type: 'T', rotation: 0, x: 3 }, { type: 'S', rotation: 0, x: 2 }, { type: 'J', rotation: 2, x: 7 }, { type: 'L', rotation: 3, x: 5 }])),
+  endgame('t3r-shaft-03', '错层', 3, 994121443, setup(1588444824, [{ type: 'S', rotation: 0, x: 2 }, { type: 'J', rotation: 0, x: 5 }, { type: 'T', rotation: 2, x: 0 }, { type: 'O', rotation: 3, x: 8 }, { type: 'L', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }])),
+  endgame('t3r-shaft-04', '转折', 5, 2309737967, setup(2718281711, [{ type: 'I', rotation: 0, x: 6 }, { type: 'Z', rotation: 1, x: 0 }, { type: 'S', rotation: 0, x: 4 }, { type: 'O', rotation: 1, x: 3 }, { type: 'J', rotation: 1, x: -1 }])),
+  endgame('t3r-cascade-05', '双槽', 4, 3141592653, setup(1588444806, [{ type: 'Z', rotation: 0, x: 0 }, { type: 'I', rotation: 2, x: 3 }, { type: 'J', rotation: 2, x: 0 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 0, x: 5 }, { type: 'L', rotation: 2, x: 3 }])),
 
-  // 06–10: six rows — read overhangs before committing a bridge or a side release.
-  endgame('t3r-cascade-06', '折线', 6, 1717986918, setup(305419896, [{ type: 'S', rotation: 2, x: 0 }, { type: 'T', rotation: 1, x: -1 }, { type: 'O', rotation: 1, x: 3 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 1 }, { type: 'L', rotation: 3, x: 3 }, { type: 'J', rotation: 1, x: 4 }, { type: 'J', rotation: 0, x: 0 }])),
-  endgame('t5r-delta-07', '长桥', 7, 452198731, setup(1588444911, [{ type: 'I', rotation: 0, x: 2 }, { type: 'O', rotation: 1, x: 6 }, { type: 'J', rotation: 3, x: 8 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 3, x: 4 }, { type: 'Z', rotation: 1, x: 5 }, { type: 'L', rotation: 2, x: 5 }, { type: 'L', rotation: 2, x: 1 }])),
-  endgame('t5r-drift-08', '交织', 9, 2309737967, setup(878082202, [{ type: 'S', rotation: 0, x: 6 }, { type: 'T', rotation: 0, x: 3 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'I', rotation: 3, x: -1 }, { type: 'O', rotation: 1, x: 1 }, { type: 'J', rotation: 2, x: 1 }, { type: 'L', rotation: 0, x: 2 }, { type: 'Z', rotation: 0, x: 0 }])),
-  endgame('t5r-lattice-09', '连桥', 8, 2004318071, setup(591751049, [{ type: 'L', rotation: 0, x: 6 }, { type: 'J', rotation: 0, x: 3 }, { type: 'S', rotation: 0, x: 4 }, { type: 'T', rotation: 1, x: 6 }, { type: 'I', rotation: 1, x: 7 }, { type: 'Z', rotation: 1, x: 7 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 2, x: 3 }]), [{ x: 9, y: 13 }]),
-  endgame('t5r-rift-10', '双门', 10, 1311768467, setup(1588444911, [{ type: 'I', rotation: 2, x: 1 }, { type: 'O', rotation: 3, x: 5 }, { type: 'J', rotation: 0, x: 7 }, { type: 'S', rotation: 3, x: 8 }, { type: 'T', rotation: 1, x: 3 }, { type: 'Z', rotation: 0, x: 5 }, { type: 'L', rotation: 0, x: 7 }, { type: 'L', rotation: 0, x: 1 }])),
+  // 06–10: still three rows, with wider staging choices and one explicit headroom peg.
+  endgame('t3r-cascade-06', '回路', 6, 1717986918, setup(2718281725, [{ type: 'T', rotation: 0, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 2 }, { type: 'O', rotation: 2, x: 0 }, { type: 'L', rotation: 3, x: 4 }])),
+  endgame('t5r-delta-07', '长井', 7, 452198731, setup(2718281722, [{ type: 'O', rotation: 2, x: 3 }, { type: 'S', rotation: 3, x: 0 }, { type: 'T', rotation: 2, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'L', rotation: 3, x: 4 }])),
+  endgame('t5r-drift-08', '绕柱', 9, 2004318071, setup(2718281717, [{ type: 'O', rotation: 1, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'L', rotation: 3, x: 8 }, { type: 'S', rotation: 1, x: 3 }, { type: 'T', rotation: 2, x: 5 }]), [{ x: 9, y: 16 }]),
+  endgame('t5r-lattice-09', '交错', 8, 2718281828, setup(1588444814, [{ type: 'T', rotation: 0, x: 7 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'S', rotation: 2, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 0, x: 6 }, { type: 'J', rotation: 2, x: 3 }])),
+  endgame('t5r-rift-10', '双门', 10, 1311768467, setup(2718281718, [{ type: 'I', rotation: 0, x: 0 }, { type: 'Z', rotation: 3, x: 8 }, { type: 'O', rotation: 2, x: 5 }, { type: 'J', rotation: 1, x: 6 }, { type: 'L', rotation: 2, x: 4 }])),
 
   // 11–15: seven rows — preserve recovery room while resolving paired cavities.
   endgame('t5r-prism-11', '低谷', 14, 3177056438, setup(878082202, [{ type: 'S', rotation: 2, x: 4 }, { type: 'T', rotation: 0, x: 1 }, { type: 'Z', rotation: 1, x: 0 }, { type: 'I', rotation: 1, x: -2 }, { type: 'O', rotation: 0, x: 3 }, { type: 'J', rotation: 0, x: 7 }, { type: 'L', rotation: 3, x: 0 }, { type: 'Z', rotation: 2, x: 4 }, { type: 'J', rotation: 0, x: 2 }, { type: 'T', rotation: 0, x: 3 }])),

@@ -176,15 +176,15 @@ type Translation = {
 };
 
 const ENGLISH_LEVEL_NAMES: Readonly<Record<PuzzleId, string>> = {
-  't3r-shaft-01': 'First Step',
-  't3r-shaft-02': 'Corner',
+  't3r-shaft-01': 'Gap',
+  't3r-shaft-02': 'Side Well',
   't3r-shaft-03': 'Offset',
-  't3r-shaft-04': 'Side Path',
-  't3r-cascade-05': 'Patch',
-  't3r-cascade-06': 'Elbow',
-  't5r-delta-07': 'Long Bridge',
-  't5r-drift-08': 'Interlace',
-  't5r-lattice-09': 'Link',
+  't3r-shaft-04': 'Turn',
+  't3r-cascade-05': 'Twin Wells',
+  't3r-cascade-06': 'Switchback',
+  't5r-delta-07': 'Shaft',
+  't5r-drift-08': 'Pillar',
+  't5r-lattice-09': 'Interlock',
   't5r-rift-10': 'Twin Gate',
   't5r-prism-11': 'Basin',
   't5r-current-12': 'Return',
