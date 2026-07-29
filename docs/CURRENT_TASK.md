@@ -211,6 +211,16 @@ streams, artifact bytes, names, seeds, Core behavior or any later batch. After
 the edit, rerun the four focused Core files plus typecheck and return to the same
 rejecting reviewer.
 
+**Levels 11–20 anchor-row proof candidate (2026-07-30):** correction `bb0210f`
+changes only `puzzleSolverResults.test.ts`. Both frozen routes now inspect every
+public `dispatch()` transition and fail if any `lines-cleared.rows` coordinate
+equals an authored anchor's canonical board row. Focused proof remains 4 files /
+21 tests with one worker; typecheck and diff checks pass. The 11–20 artifact is
+unchanged at SHA-256
+`BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
+The same rejecting rules reviewer owns the narrow static re-audit; levels 21–50
+remain closed until it accepts.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

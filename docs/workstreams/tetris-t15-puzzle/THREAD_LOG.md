@@ -389,3 +389,22 @@
   Core, UI, and levels 21–50 remain frozen.
 - Required proof: four focused Core files / one worker, typecheck, diff check,
   artifact hash unchanged, then narrow static re-audit by the rejecting reviewer.
+
+## Levels 11–20 anchor-row proof candidate — 2026-07-30
+
+- Base: `4785615`.
+- Correction candidate: `bb0210f`.
+- Exact changed path:
+  - `src/game/core/puzzleSolverResults.test.ts`
+- Correction: both frozen route replays derive canonical anchor board rows, inspect
+  every public `dispatch()` transition, and reject any `lines-cleared.rows` value
+  that targets one of those rows.
+- Frozen: all definitions, setup histories, seeds, names, route streams, artifact
+  bytes, Core behavior, UI and later batches.
+- Verification:
+  - focused Core proof — PASS, 4 files / 21 tests, one worker;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` — PASS;
+  - 11–20 artifact SHA-256 remains
+    `BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
+- Next action: the same rules reviewer statically re-audits only the GAP closure.

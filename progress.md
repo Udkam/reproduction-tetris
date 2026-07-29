@@ -512,3 +512,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   exclude the canonical anchor rows.
 - Only `puzzleSolverResults.test.ts` is reopened to bind the existing
   `lines-cleared.rows` evidence. Boards, routes and artifact remain frozen.
+
+- Correction `bb0210f` now compares every route's emitted clear-row coordinate
+  against canonical anchor rows. Focused proof passes 21/21, typecheck passes,
+  and the artifact hash is unchanged. The rejecting reviewer owns re-audit.
