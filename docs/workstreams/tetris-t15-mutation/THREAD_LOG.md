@@ -1006,3 +1006,16 @@
   integrity remain unchanged.
 - Next action: commit this ordering finding, move only the fallback block, rerun
   syntax checks, checkpoint, and request the strict reviewer’s final confirmation.
+
+## 2026-07-29 — Corrected managed run admitted
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-STATIC-R8`.
+- `ad0be19` moves the already-reviewed one-state expiry fallback unchanged after
+  `frame_budget` and all performance assertions, before restart/lifecycle proof.
+- Python AST, `--help`, diff and exact-path commit checks passed.
+- Strict evidence reviewer returned PASS with P0/P1/P2/P3 all zero: three-state
+  performance, real one-state expiry, visual coverage, hash/publication integrity and
+  lifecycle boundaries all remain intact.
+- Product `ee2aac5` and gates `6d9fc6a` have no drift.
+- Next action: take a fresh resource sample and run the corrected managed browser
+  batch once; inspect every output frame before acceptance.

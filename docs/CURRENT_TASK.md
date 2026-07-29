@@ -248,6 +248,10 @@ or history rewrite is authorized.
   toward one state. Move only the expiry fallback after `frame_budget` and before
   restart/lifecycle checks; the one-state proof may not weaken the three-state
   performance claim.
+- Checkpoint `ad0be19` preserves the real one-state expiry proof but runs the complete
+  three-state frame budget first. The strict reviewer returned PASS with P0–P3 all
+  zero. Product `ee2aac5`, gates `6d9fc6a`, source behavior and publication rules are
+  unchanged; a corrected managed run is admitted after a new resource sample.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
