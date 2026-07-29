@@ -490,3 +490,16 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `6D2B28645AEDAC5897F80AC325B2B9FECC02D00502F6A0BB72405CDB27FB104B`.
   Direct candidate assertions and cleanup verification pass. The 11–20 product
   and route slice is now open while every other product area remains closed.
+
+## 2026-07-30 Phase 7 levels 11–20 candidate
+
+- Candidate `cdd5e43` replaces the legacy 11–20 boards with ten legal four-row
+  setups while preserving their public IDs and ordinal positions.
+- The frozen progression uses 7–14 locks, two early-diverging public-Core routes
+  per level, and exactly two safe headroom anchors.
+- Artifact `puzzle-levels-11-20.json` contains 10 levels / 20 routes and has
+  SHA-256
+  `BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
+- Focused Core proof passes 4 files / 21 tests with one worker; typecheck and
+  diff checks pass. Candidate pools/logs and the solver process are released.
+- Product is frozen for two static audits. Levels 21–50 remain closed.

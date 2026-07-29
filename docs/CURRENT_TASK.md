@@ -168,7 +168,7 @@ two exact temporary files were removed; a malformed cleanup-verification
 expression emitted a nonterminating PowerShell error after removal, then the
 corrected standalone check confirmed both paths absent. No Node process remains.
 
-**Open Phase-7 slice — levels 11–20:** exact paths are
+**Phase-7 levels 11–20 source slice:** exact paths are
 `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
 `src/game/core/puzzleCampaign.test.ts`, `src/game/core/puzzleFlow.test.ts`,
 `src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
@@ -182,6 +182,22 @@ normal tests replay frozen evidence rather than search. Levels 01–10, new 21�
 IDs, persistence, progress/unlock, App/selector, CSS, renderer, other modes and
 dependencies remain closed. Candidate generation and Core search run one process
 at a time; focused proof is the four direct Core files plus typecheck.
+
+**Levels 11–20 candidate checkpoint (2026-07-30):** source candidate `cdd5e43`
+retains the ten visible IDs while replacing their legacy deep boards with legal
+four-row setup histories, concise bilingual structural names, and a monotonic
+7–14-lock progression. Exactly levels 11 and 16 carry one immutable headroom
+anchor each; both anchors sit above the four target rows in a column already
+occupied throughout the target band, so they cannot turn a completed target row
+into an impossible row. The frozen schema-7 artifact contains 10 levels and 20
+public-Core completion routes; every route pair diverges at lock 1 and each
+definition uses explicit `targetRows: 4`. Its SHA-256 is
+`BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
+Focused verification passes 4 files / 21 tests with one worker, typecheck passes,
+`git diff --check` passes, all candidate pools/logs were removed, and the solver
+PID exited. Product is frozen for two independent read-only static audits.
+Levels 21–50, progress/unlock, App/selector, CSS, renderer, dependencies and other
+modes remain closed until both 11–20 audits are resolved.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

@@ -324,3 +324,44 @@
 - Next action: generate a bounded four-row pool, select a readable progression,
   register only 11–20, solve two routes each, freeze the source-bound artifact,
   and run only focused Core proof plus typecheck.
+
+## Levels 11–20 source candidate — 2026-07-30
+
+- Task: `t15_puzzle_11_20_source_writer`.
+- Base: `d14e21e`.
+- Candidate: `cdd5e43`.
+- Exact changed paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-11-20.json`
+- Source claim:
+  - visible IDs and ordinals 11–20 are retained;
+  - all ten definitions replay legal zero-clear four-row setup histories;
+  - explicit target-row metadata is four for every definition;
+  - concise structural names replace the legacy names in both languages;
+  - exactly levels 11 and 16 carry one immutable headroom anchor each;
+  - shorter public-Core route length progresses
+    `7, 9, 10, 10, 11, 11, 12, 12, 13, 14`;
+  - every route pair first diverges at lock 1.
+- Anchor safety: both anchors sit above the four target rows and in columns whose
+  four target cells are already occupied, preventing the anchor from filling the
+  last missing cell of a target row.
+- Frozen artifact:
+  - schema 7, batch 11–20, 10 levels, 20 routes, two anchor cells;
+  - search bounds: max locks 18, primary beam 600, alternate beam 480;
+  - SHA-256
+    `BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
+- Verification:
+  - focused Core proof — PASS, 4 files / 21 tests, one worker;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` — PASS before exact-path staging.
+- Resource disposition:
+  - the controlled solver exited normally; PID 22596 is absent;
+  - both candidate pools and both solver logs were deleted from `.local`;
+  - no development server, browser, listener or full build was started.
+- Product is frozen. Next action: two independent read-only static audits compare
+  `d14e21e..cdd5e43` against the Phase-7 contract. Levels 21–50 remain closed until
+  both verdicts are resolved.
