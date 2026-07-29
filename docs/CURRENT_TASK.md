@@ -284,6 +284,17 @@ each to pass an individual public-Core route probe before the full batch resumes
 No committed source exists yet; all product paths remain within the already-open
 21–30 slice.
 
+**21–30 sparse anchor follow-up (2026-07-30):** the bounded nine-drop pool
+completed 30 unique candidates across 9 setup seeds in 2,167,578 attempted
+landings without exhaustion; SHA-256 is
+`1CEDE040361A2B8CE9AE30A9AF5570C21EB68A2680EFE61A05ABE947AEA5F073`.
+Direct legality assertions pass. However, the first selected nine-drop edge
+anchor still has no route at the frozen bound, while removing only its anchor
+completes the exact board/seed in 19/22 locks with lock-4 divergence. This again
+isolates density plus anchor as the failure. Open one final bounded eight-drop,
+five-row anchor pool. The three anchor levels may use 32 original cells; the
+remaining seven levels retain ten-drop boards. Do not increase route bounds.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

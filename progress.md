@@ -537,3 +537,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   repeatedly fail the fixed route bound while the same board without its anchor
   completes. A bounded nine-drop anchor-specific pool is reopened; search bounds
   will not be inflated to hide the design mismatch.
+
+- The nine-drop pool is legal and complete, but its first edge-anchor package
+  also fails while the anchor-free board completes in 19/22 locks. One final
+  eight-drop anchor pool is opened; route bounds remain frozen.

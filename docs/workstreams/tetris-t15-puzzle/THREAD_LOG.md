@@ -500,3 +500,19 @@
   an individual public-Core route probe before a full 21–30 solver run.
 - No source checkpoint has been staged or committed; the exact 21–30 source paths
   and every earlier accepted batch remain frozen from external writers.
+
+## 21–30 sparse anchor follow-up — 2026-07-30
+
+- Nine-drop pool: 30 unique boards, 9 setup seeds, 2,167,578 attempted landings,
+  no budget exhaustion, SHA-256
+  `1CEDE040361A2B8CE9AE30A9AF5570C21EB68A2680EFE61A05ABE947AEA5F073`.
+- Direct assertions pass for nine placements, 36 original cells, exactly five
+  occupied floor rows, empty headroom and no initially full row.
+- The first selected edge-anchor package still has no primary route at the fixed
+  24-lock, 600/480-beam bound. Removing only the anchor completes that exact
+  board/seed in 19/22 locks with first divergence at lock 4.
+- Disposition: retain the pool as diagnostic evidence, but do not use its
+  candidates as final anchor carriers. Run one final bounded eight-drop pool so
+  the fixed obstacle, not excess source density, supplies the challenge.
+- Final intended batch mix: seven ten-drop ordinary levels plus three eight-drop
+  one-anchor levels. Search bounds remain unchanged.
