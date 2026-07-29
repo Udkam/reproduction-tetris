@@ -356,6 +356,32 @@ or history rewrite is authorized.
   partials, browser artifacts and external control logs are absent. One PDH snapshot
   reports 11.86% CPU, 23,665 MiB available memory, 22.99% committed memory and disk
   queue 0. Only the single managed hardware capture tree may run next.
+- Formal capture R4 completed successfully from capture head
+  `bdf4e20a2cb563d5f1b8389b2a11748f531b4282`. The atomic batch binds product
+  `ee2aac5`, final gates `6d9fc6a` and harness `45e7cfc`, records hardware WebGL2 on
+  an NVIDIA GeForce RTX 4070 SUPER, and publishes exactly 34 unique PNGs, two Vite
+  logs, one JSON manifest and one checksum completion marker. Browser-raw checkpoint
+  `9fa98a2` and browser-index checkpoint `013120a` keep those concerns independently
+  reversible.
+- Coordinator validation recomputed every declared hash and exact artifact set. It
+  confirmed the four attachments in ordinary and grayscale Next, active and locked
+  pieces, all ordinary/reduced activation endpoints, real Collapse columns `[5, 9]`
+  with maximum drop one, one/two/three concurrent statuses, and desktop/portrait/
+  landscape/English layouts. Every frame has one gameplay Canvas, no DOM cell grid,
+  no overflow, at least 44 px controls, and a nonblank Pixi extraction. Collapse has
+  no 80%-width horizontal state bar or top pseudo-piece band.
+- Runtime evidence reports renderer p95 `0.3 ms`; rAF mean `8.332 ms`, p95 `8.4 ms`,
+  maximum `8.5 ms`, and zero frames over 20 ms. FIFO order is exactly
+  `collapse → multiplier`. The listener lifecycle is the exact instrumented sequence
+  `17 → 28 → 17 → 28 → 17`; both unmounts also return rAF/audio/Canvas/QA to zero,
+  with two audio contexts created and two closed by final unmount. No runner, Vite,
+  Chrome, partial directory or listener remains on 4178/5178/5179.
+- Manual original-resolution review found the carrier identity legible by symbol,
+  contour and material in color and grayscale; Bomb, Ice, Collapse and Multiplier
+  activation locations are visually distinct and coexist without dropped effects.
+  Narrow three-status frames intentionally ellipsize long metrics/status labels rather
+  than overflow. That observation remains open for independent visual QA to classify;
+  this coordinator record is evidence readiness, not Phase-5 acceptance.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

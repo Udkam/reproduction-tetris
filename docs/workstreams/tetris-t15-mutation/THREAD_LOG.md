@@ -1583,3 +1583,55 @@
   Python/Vite/Chrome tree gone, 4178/5178/5179 free, no partial, and external control
   logs retained only until their result is recorded, then removed.
 - Next action: checkpoint this R4 lease and run only the managed batch.
+
+## 2026-07-29 — Listener-aligned formal hardware capture R4 published
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-R4`.
+- Capture head:
+  `bdf4e20a2cb563d5f1b8389b2a11748f531b4282`.
+- Frozen bindings:
+  - product `ee2aac542529c116c915c38e0603584a7099b5e8`;
+  - final-source gates `6d9fc6ae00099e3a1eb27240bd3c369216f3b007`;
+  - evidence harness `45e7cfcca48f438be1a9ff24619137ff19dffd3e`;
+  - accepted static release `304509d01beb3c3dee39990794475c28ca3c7e13`.
+- Checkpoints:
+  - browser-raw `9fa98a2d51c77514ebe9f8893ef244c7c7959c10` contains exactly
+    34 PNGs plus `vite-stdout.log` and the empty `vite-stderr.log`;
+  - browser-index `013120a399c25fc076ed2eab58209e5bbaf036d4`
+    contains only `phase5-browser-evidence.json` and `SHA256SUMS.txt`.
+- Commands actually run: one hidden
+  `python docs/qa/evidence/t15-phase5/capture_phase5.py` lease; exact artifact/count/
+  hash/coverage validation; four generated contact sheets plus original-resolution
+  inspection of activation, reduced-motion, Collapse settlement, 1/2/3-status,
+  desktop/portrait/landscape/English and ordinary/grayscale Next frames; exact-path
+  Git staging and two bounded commits. No source gate was rerun because `src`,
+  dependency and config paths did not change.
+- Structural and performance evidence: hardware WebGL2 reports ANGLE on NVIDIA
+  GeForce RTX 4070 SUPER D3D11; 34 captures have 34 unique hashes; all 38 checksum
+  entries and 39 manifest artifact entries recompute exactly. Renderer p95 is
+  0.3 ms. rAF mean/p95/max are 8.332/8.4/8.5 ms with zero frames over 20 ms.
+  FIFO expected/observed is `collapse, multiplier`; the trace is complete.
+- Gameplay/VFX evidence: all four attachments appear in active, locked, ordinary
+  Next and grayscale Next; all four ordinary and reduced activation endpoints are
+  present. Collapse moves real columns `[5, 9]`, maximum drop one, and shows no
+  80%-width horizontal state bar or top pseudo-piece band. One/two/three-state
+  tracks are allocated by actual count, and Bomb/Ice/Collapse/Multiplier remain
+  visually distinct while coexisting.
+- Lifecycle and layout evidence: home/mount/unmount/remount/unmount listeners are
+  exactly `17/28/17/28/17`; both unmount maps equal baseline. Final rAF is zero,
+  audio created/closed/open is `2/2/0`, Canvas count is zero and the QA bridge is
+  absent. Every screenshot has exactly one gameplay Canvas, zero DOM cells, no
+  horizontal or vertical overflow, controls at least 44 px high and a nonblank
+  state-preserving Pixi extraction.
+- Manual visual observation: symbols, contours and material identify all carriers
+  in color and grayscale; activation locations are distinct and simultaneous
+  effects are retained. Narrow three-status views ellipsize long metric values and
+  long status labels instead of overflowing. Independent visual QA must explicitly
+  classify that presentation; this record does not self-accept Phase 5.
+- Resource disposition: the single Python/Vite/hardware-Chrome tree exited normally;
+  ports 4178/5178/5179 have no listener and no `.partial-*` remains. External control
+  logs are retained only until this result checkpoint is committed, then will be
+  removed. No WMI/CIM, source edit, test, build, Phase-6 or Puzzle-50 work occurred.
+- Next action: commit this evidence-readiness record, remove only the exact external
+  control/contact-sheet files, then run rules, visual and evidence-integrity QA
+  serially against the frozen candidate.

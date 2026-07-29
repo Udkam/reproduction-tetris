@@ -163,13 +163,23 @@ the exact diff.
 | 正式 evidence harness | `45e7cfcca48f438be1a9ff24619137ff19dffd3e` | 保留真实单状态 fallback 与双 rAF 超时；首页 selector readiness 后建立完整 listener baseline |
 | 浏览器静态放行记录 | `304509d01beb3c3dee39990794475c28ca3c7e13` | 最新 listener readiness 审计 P0–P3/GAP = 0；只放行一次 R4 正式批次 |
 | 资源合同基线 | `57f3662506cb014dff73fbca81bac3b9ff54e1fc` | 串行执行、禁用 WMI/CIM、加强浏览器准入 |
-| 正式浏览器产物 | **不存在** | 先前失败均 fail-closed；不得称为已有证据 |
+| 正式浏览器产物 | `9fa98a2` raw；`013120a` index | R4 从 `bdf4e20` 原子发布 34 张唯一 PNG、两份 Vite 日志、JSON manifest 与 checksum；尚待三路独立 QA |
 | Phase 5 | **OPEN / UNACCEPTED / UNPUSHED** | Phase 6 与 Puzzle 50 仍关闭 |
 
 重启不会授权重新设计、重跑源码门禁或修改产品。除非新的正式浏览器证据直接
 证明产品缺陷，否则 `src/**`、依赖、配置、规则、VFX 和 UI 均不得编辑。若必须
 重开产品源码，先停止、更新合同、创建独立 source checkpoint，并在最后一次
 源码改动后重新运行完整门禁和正式浏览器批次；不得沿用当前 gate/browser 结论。
+
+R4 已通过协调者的结构、哈希和逐帧原图检查：硬件 WebGL2 为 NVIDIA GeForce
+RTX 4070 SUPER；Renderer p95 为 0.3 ms，rAF mean/p95/max 为
+8.332/8.4/8.5 ms，20 ms 以上占比为 0；FIFO 为
+`collapse → multiplier`；生命周期完整序列为
+`17 → 28 → 17 → 28 → 17`，最终 rAF/audio/Canvas/QA 全部归零。四种附件在
+普通/灰阶 Next、active、locked 中可辨，四种普通/reduced activation、真实
+Collapse 列 `[5, 9]`、一至三状态、桌面/竖屏/横屏/英文均有终态证据，无 80%
+棋盘宽度的坍缩横条、顶部伪方块带、裁切或布局溢出。窄屏长数值/状态名使用
+ellipsis 的表现由后续独立视觉 QA 判级；当前仍不得称为 Phase 5 验收。
 
 ### 2. 允许范围
 

@@ -349,6 +349,18 @@ original home baseline, then requires exact map equality after both unmounts. It
 not warm the baseline with a game mount, filter listeners, subtract a fixed count, or
 introduce tolerance.
 
+The listener-aligned Phase-5 hardware batch was captured atomically from documentation
+head `bdf4e20` while product `ee2aac5`, final gates `6d9fc6a`, and harness `45e7cfc`
+remained frozen. Browser-raw `9fa98a2` contains 34 unique final PNGs plus the two
+managed Vite logs; browser-index `013120a` contains the source-bound manifest and
+checksum completion marker. Hardware WebGL2, exact four-item carrier coverage,
+ordinary/reduced activation endpoints, real Collapse columns, FIFO ordering,
+responsive one/two/three-status layouts, sub-frame timing, and the complete
+`17 → 28 → 17 → 28 → 17` listener lifecycle are present. Coordinator inspection also
+records that narrow three-status layouts use ellipsis for long values and labels
+without clipping or structural overflow; independent visual QA, not the capture
+coordinator, decides whether that presentation is acceptable.
+
 Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
 and the managed browser are never concurrent: review turns are serialized, and no
 browser, Vite, test, build, or diagnostic tree overlaps another heavy tree. Optional
