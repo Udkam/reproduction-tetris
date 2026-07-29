@@ -446,6 +446,25 @@ def attach_error_capture(page: Page) -> list[str]:
     return errors
 
 
+def settled_active_lifecycle_snapshot(page: Page) -> dict[str, Any]:
+    return page.evaluate(
+        """
+        async () => {
+          await new Promise((resolve) => {
+            requestAnimationFrame(() => requestAnimationFrame(resolve));
+          });
+          return {
+            sameCanvas: window.__t15Canvas
+              ? window.__t15Canvas === document.querySelector("canvas")
+              : null,
+            canvasCount: document.querySelectorAll("canvas").length,
+            lifecycle: window.__T15_LIFECYCLE__.snapshot(),
+          };
+        }
+        """
+    )
+
+
 def start_mutation_from_home(page: Page) -> dict[str, Any]:
     page.locator("[data-testid='enter-sprint']").click()
     page.wait_for_timeout(100)
@@ -458,14 +477,7 @@ def start_mutation_from_home(page: Page) -> dict[str, Any]:
         "window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'",
         timeout=6000,
     )
-    mounted = page.evaluate(
-        """
-        () => ({
-          canvasCount: document.querySelectorAll("canvas").length,
-          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
-        })
-        """
-    )
+    mounted = settled_active_lifecycle_snapshot(page)
     assert mounted["canvasCount"] == 1
     return mounted
 
@@ -1549,33 +1561,24 @@ def run(context: BrowserContext) -> dict[str, Any]:
     assert single_status_source is not None
 
     page.evaluate("window.__t15Canvas = document.querySelector('canvas')")
-    before_restart = page.evaluate(
-        """
-        () => ({
-          canvasCount: document.querySelectorAll("canvas").length,
-          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
-        })
-        """
-    )
+    before_restart = settled_active_lifecycle_snapshot(page)
     page.locator("[data-testid='open-settings']").click()
     page.locator("[data-testid='settings-restart']").click()
     page.locator("[data-testid='confirm-restart']").click()
     page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'", timeout=6000)
-    after_restart = page.evaluate(
-        """
-        () => ({
-          sameCanvas: window.__t15Canvas === document.querySelector("canvas"),
-          canvasCount: document.querySelectorAll("canvas").length,
-          lifecycle: window.__T15_LIFECYCLE__.snapshot(),
-        })
-        """
-    )
+    after_restart = settled_active_lifecycle_snapshot(page)
     same_canvas_restart = after_restart["sameCanvas"]
     assert same_canvas_restart
     assert before_restart["canvasCount"] == after_restart["canvasCount"] == 1
     assert before_restart["lifecycle"]["globalListenerCount"] == after_restart["lifecycle"]["globalListenerCount"]
     assert before_restart["lifecycle"]["globalListeners"] == after_restart["lifecycle"]["globalListeners"]
-    assert before_restart["lifecycle"]["pendingAnimationFrames"] == after_restart["lifecycle"]["pendingAnimationFrames"]
+    assert (
+        before_restart["lifecycle"]["pendingAnimationFrames"]
+        == after_restart["lifecycle"]["pendingAnimationFrames"]
+    ), {
+        "before": before_restart["lifecycle"]["pendingAnimationFrames"],
+        "after": after_restart["lifecycle"]["pendingAnimationFrames"],
+    }
     assert before_restart["lifecycle"]["openAudioContexts"] == after_restart["lifecycle"]["openAudioContexts"]
 
     first_unmount = exit_mutation_to_home(page)
@@ -1585,7 +1588,13 @@ def run(context: BrowserContext) -> dict[str, Any]:
     assert second_mount["canvasCount"] == first_mount["canvasCount"] == 1
     assert second_mount["lifecycle"]["globalListenerCount"] == first_mount["lifecycle"]["globalListenerCount"]
     assert second_mount["lifecycle"]["globalListeners"] == first_mount["lifecycle"]["globalListeners"]
-    assert second_mount["lifecycle"]["pendingAnimationFrames"] == first_mount["lifecycle"]["pendingAnimationFrames"]
+    assert (
+        second_mount["lifecycle"]["pendingAnimationFrames"]
+        == first_mount["lifecycle"]["pendingAnimationFrames"]
+    ), {
+        "firstMount": first_mount["lifecycle"]["pendingAnimationFrames"],
+        "secondMount": second_mount["lifecycle"]["pendingAnimationFrames"],
+    }
     second_unmount = exit_mutation_to_home(page)
     assert_home_lifecycle(second_unmount, lifecycle_baseline)
 
