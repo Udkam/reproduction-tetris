@@ -516,3 +516,21 @@
   the fixed obstacle, not excess source density, supplies the challenge.
 - Final intended batch mix: seven ten-drop ordinary levels plus three eight-drop
   one-anchor levels. Search bounds remain unchanged.
+
+## 21–30 final anchor-density correction — 2026-07-30
+
+- Eight-drop pool: 30 unique boards, 24 processed seeds, 1,845,658 attempted
+  landings, no budget exhaustion, SHA-256
+  `D1DE0E076538B67A4F3DEDE928035B06F2ACB2698D8CDCF8249A548AF785931B`.
+- Direct assertions pass for eight placements, 32 original cells, exactly five
+  occupied floor rows, empty headroom and no initially full row.
+- Three distinct candidates with different setup seeds and already-full target
+  columns were installed only as uncommitted probes. All three have no primary
+  route at the fixed 24-lock, 600/480-beam bound.
+- Disposition: do not ship the eight-drop carriers, enlarge search bounds or
+  reduce the three-anchor quota. Reopen the unchanged authoring tool once for a
+  bounded seven-drop/five-row pool, then require each selected carrier to pass
+  its own two-route probe before the full batch run.
+- Intended batch mix is now seven ten-drop ordinary levels plus three seven-drop
+  one-anchor levels. All product edits remain uncommitted inside the existing
+  `t15_puzzle_21_30_source_writer` path boundary.

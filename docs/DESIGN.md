@@ -65,6 +65,14 @@ more than two heavy tasks overlap. Amber serializes new heavy work; red starts n
 Every solver, Node helper, browser and server is on-demand and released at its phase
 boundary by verified ownership; WMI/CIM and name-only process termination are forbidden.
 
+For the `21–30` five-row batch, route evidence fixes the authoring mix at seven
+ten-drop ordinary boards plus three seven-drop one-anchor boards. Dense ten-, nine-,
+and eight-drop anchor carriers all failed the same 24-lock, 600/480-beam public-Core
+probe even when their anchor column was already full throughout the target band.
+The sparser carrier is a solvability correction, not a reduced anchor quota or a
+larger search allowance: every selected anchor package still needs two early-diverging
+replayed routes at the unchanged bound before it can ship.
+
 Mutation items are an orthogonal attachment system:
 
 | Ordinary body | Allowed attachments |

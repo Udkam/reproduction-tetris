@@ -295,6 +295,20 @@ isolates density plus anchor as the failure. Open one final bounded eight-drop,
 five-row anchor pool. The three anchor levels may use 32 original cells; the
 remaining seven levels retain ten-drop boards. Do not increase route bounds.
 
+**21–30 final anchor-density correction (2026-07-30):** the bounded eight-drop
+pool completed 30 unique candidates across the configured seed range in
+1,845,658 attempted landings without exhaustion; SHA-256 is
+`D1DE0E076538B67A4F3DEDE928035B06F2ACB2698D8CDCF8249A548AF785931B`.
+All candidates pass direct eight-placement, 32-cell, five-floor-row, empty-headroom
+and no-full-row assertions. Three distinct packages with an already-full target
+column were probed individually, but each still has no primary route at the
+unchanged 24-lock, 600/480-beam bound. Do not accept them, increase the route
+budget, or reduce the three-anchor quota. Reopen the unchanged authoring tool for
+one bounded seven-drop/five-row carrier pool. The intended batch mix becomes
+seven ten-drop ordinary levels plus three seven-drop one-anchor levels; each
+selected carrier must pass its individual two-route probe before the batch solver
+resumes.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
