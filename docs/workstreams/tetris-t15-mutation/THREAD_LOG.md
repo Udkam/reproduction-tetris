@@ -1378,3 +1378,16 @@
   unmount or atomic-publication behavior changed.
 - Next action: checkpoint this record and ask the same serialized read-only reviewer
   to close only its P2 against `a59856d`.
+
+## 2026-07-29 — Lifecycle timeout QA accepted
+
+- Task ID: `T15-PHASE5-EVIDENCE-LIFECYCLE-QA-R2`.
+- Exact candidate: `a59856d056951865e8a5c0b6dc93f75ac97461be`.
+- The same serialized read-only reviewer inspected only the eight-line timeout diff.
+- Verdict: `PASS`; P0=0, P1=0, P2=0, P3=0.
+- The reviewer confirmed that the 2,000 ms timer rejects on stalled rAF, the second
+  rAF clears it before resolve, rejection propagates through `page.evaluate`, and no
+  partial snapshot or successful timer residue path exists.
+- No review child or heavy process remains.
+- Next action: checkpoint this verdict, take one clean resource snapshot, register one
+  new formal capture lease, and run no overlapping workload.
