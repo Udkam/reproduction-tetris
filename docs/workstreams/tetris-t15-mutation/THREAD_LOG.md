@@ -1635,3 +1635,42 @@
 - Next action: commit this evidence-readiness record, remove only the exact external
   control/contact-sheet files, then run rules, visual and evidence-integrity QA
   serially against the frozen candidate.
+
+## 2026-07-29 — Final Phase-5 rules QA accepted
+
+- Task ID: `T15-PHASE5-RULES-QA-FINAL`.
+- Reviewed boundary: frozen product
+  `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates
+  `6d9fc6ae00099e3a1eb27240bd3c369216f3b007`, browser index
+  `013120a399c25fc076ed2eab58209e5bbaf036d4`, and coordinator candidate
+  `2aaf31e`.
+- Independent verdict: `PASS`; P0=0, P1=0, P2=0, P3=0, GAP=0.
+- Accepted static evidence:
+  - `src/game/core/engine.ts:60-155` and
+    `src/game/core/sprint.test.ts:106-241` prove separate body/attachment streams,
+    side-effect-free Next prediction and the complete 7 × 4 cross-product;
+  - `src/game/core/constants.ts:38-50`,
+    `src/game/core/engine.ts:637-714,909-945,1043-1099` and
+    `src/game/core/sprint.test.ts:307-375` prove Ice at 60 ticks per cell,
+    unaffected manual controls, the Mutation-only six-tick lower bound, independent
+    600-tick timers and refresh-on-retrigger;
+  - `src/game/core/engine.ts:678-800`,
+    `src/game/core/sprint.ts:11-31`,
+    `src/game/core/mutation.ts:55-71` and
+    `src/game/core/sprint.test.ts:248-305,377-396,463-612` prove one-shot Bomb,
+    unique carrier activation and one-pass Collapse mapping;
+  - `src/game/runtime/GameRuntime.ts:248-272` and
+    `src/game/render/TetrisRenderer.ts:2475-2518,2871-2963,3022-3027` preserve
+    same-transition source-order FIFO;
+  - `src/game/core/engine.ts:182-240,1147-1255`,
+    `src/game/runtime/GameRuntime.ts:151-223` and
+    `src/game/render/TetrisRenderer.ts:574-596,2885-2895` preserve cross-mode,
+    restart and destroy isolation.
+- This QA was static only and did not rerun test/typecheck/build/browser/Vite.
+  The agent runtime nevertheless auto-started one Serena/TypeScript tree after the
+  clean preflight despite the explicit prohibition. The coordinator attributed the
+  exact eight-process tree by native parent/command-line/start-time data and stopped
+  only those PIDs. Shared Codex infrastructure remained; no Serena/TS helper or
+  listener on 4178/5178/5179 remains. No WMI/CIM was used.
+- Next action: checkpoint this rules verdict, then open one read-only visual QA turn
+  only after confirming the process baseline remains clean.
