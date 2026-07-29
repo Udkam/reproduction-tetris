@@ -115,6 +115,15 @@ type RendererInternals = {
   impact: number;
   rotationPulse: number;
   boardShift: unknown;
+  classicFeedbackCues: Array<{
+    kind: 'landing' | 'combo' | 'speed-up' | 'top-out';
+    elapsed: number;
+    duration: number;
+    cells: readonly Cell[];
+    rows: readonly number[];
+    combo: number;
+    tier: number;
+  }>;
   survivalDebrisPresentation: Map<number, { x: number; y: number }>;
   survivalStoneCues: Array<{
     kind: 'spawn' | 'land';
@@ -248,6 +257,11 @@ type RendererInternals = {
     state: GameState,
     layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
   ) => void;
+  drawClassicFeedbackCues: (
+    graphics: unknown,
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
   drawMutationActivationEffect: (
     graphics: unknown,
     flash: NonNullable<RendererInternals['mutationFlash']>,
@@ -291,6 +305,15 @@ describe('Puzzle undo presentation reset', () => {
     internals.presentation = { type: 'I', x: 4, y: 10, settleMs: 26 };
     internals.trail = { cells: [{ x: 4, y: 10 }], distance: 18, elapsed: 12, duration: 125, piece: 'I' };
     internals.lockPulse = { cells: [{ x: 4, y: 10 }], elapsed: 12, duration: 140, piece: 'I' };
+    internals.classicFeedbackCues.push({
+      kind: 'landing',
+      elapsed: 12,
+      duration: 220,
+      cells: [{ x: 4, y: 10 }],
+      rows: [],
+      combo: 0,
+      tier: 0,
+    });
     internals.impact = 1.2;
     internals.rotationPulse = 1;
     internals.boardShift = { direction: 'up', elapsed: 12, duration: 180 };
@@ -300,6 +323,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.presentation).toBeNull();
     expect(internals.trail).toBeNull();
     expect(internals.lockPulse).toBeNull();
+    expect(internals.classicFeedbackCues).toHaveLength(0);
     expect(internals.impact).toBe(0);
     expect(internals.rotationPulse).toBe(0);
     expect(internals.boardShift).toBeNull();
@@ -1141,6 +1165,143 @@ describe('Puzzle undo presentation reset', () => {
     expect(reducedRecorder.operations.some((operation) => operation.kind === 'rect')).toBe(true);
     expect(reducedRecorder.operations.some((operation) => operation.kind === 'circle')).toBe(false);
     expect(reducedRecorder.operations.some((operation) => operation.kind === 'segment')).toBe(false);
+  });
+
+  it('queues bounded coexisting Classic landing, combo, speed, and top-out cues only', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const classic = {
+      mode: 'marathon',
+      lines: 10,
+      combo: 2,
+    } as unknown as GameState;
+
+    internals.consumeEvents(
+      [{ type: 'piece-locked', piece: 'O', cells: [{ x: 4, y: 38 }, { x: 5, y: 38 }, { x: 4, y: 39 }, { x: 5, y: 39 }] }],
+      classic,
+    );
+    internals.consumeEvents(
+      [{ type: 'lines-cleared', rows: [BOARD_HEIGHT - 1], count: 2, score: 150 }],
+      classic,
+    );
+    internals.consumeEvents([{ type: 'game-over', reason: 'lock-out' }], classic);
+
+    expect(internals.classicFeedbackCues.map((cue) => cue.kind)).toEqual([
+      'landing',
+      'combo',
+      'speed-up',
+      'top-out',
+    ]);
+    expect(internals.classicFeedbackCues[0]?.cells).toEqual([
+      { x: 4, y: 38 },
+      { x: 5, y: 38 },
+      { x: 4, y: 39 },
+      { x: 5, y: 39 },
+    ]);
+    expect(internals.classicFeedbackCues[1]).toMatchObject({
+      rows: [BOARD_HEIGHT - 1],
+      combo: 2,
+    });
+    expect(internals.classicFeedbackCues[2]).toMatchObject({ tier: 1 });
+
+    const snapshot = renderer.getSnapshot();
+    expect(snapshot.classicFeedback.map((cue) => cue.kind)).toEqual([
+      'landing',
+      'combo',
+      'speed-up',
+      'top-out',
+    ]);
+    snapshot.classicFeedback[0]!.cells.push({ x: 9, y: 39 });
+    expect(internals.classicFeedbackCues[0]?.cells).toHaveLength(4);
+
+    const otherMode = new TetrisRendererClass() as unknown as RendererInternals;
+    otherMode.consumeEvents(
+      [
+        { type: 'piece-locked', piece: 'I', cells: [{ x: 3, y: 39 }] },
+        { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
+        { type: 'game-over', reason: 'lock-out' },
+      ],
+      { mode: 'sprint', lines: 10, combo: 2 } as unknown as GameState,
+    );
+    expect(otherMode.classicFeedbackCues).toHaveLength(0);
+
+    const clearingLock = new TetrisRendererClass() as unknown as RendererInternals;
+    clearingLock.consumeEvents(
+      [
+        { type: 'piece-locked', piece: 'I', cells: [{ x: 3, y: 39 }] },
+        { type: 'clear-started', rows: [39] },
+      ],
+      classic,
+    );
+    expect(clearingLock.classicFeedbackCues).toHaveLength(0);
+
+    for (let index = 0; index < 10; index += 1) {
+      internals.consumeEvents([{ type: 'game-over', reason: 'lock-out' }], classic);
+    }
+    expect(internals.classicFeedbackCues).toHaveLength(6);
+    expect(internals.classicFeedbackCues.every((cue) => cue.kind === 'top-out')).toBe(true);
+  });
+
+  it('keeps Classic feedback inside the well and uses stationary reduced-motion geometry', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const classic = { mode: 'marathon', lines: 10, combo: 4 } as unknown as GameState;
+    internals.consumeEvents(
+      [{ type: 'piece-locked', piece: 'O', cells: [{ x: 4, y: 38 }, { x: 5, y: 38 }, { x: 4, y: 39 }, { x: 5, y: 39 }] }],
+      classic,
+    );
+    internals.consumeEvents(
+      [{ type: 'lines-cleared', rows: [38, 39], count: 2, score: 150 }],
+      classic,
+    );
+    internals.consumeEvents([{ type: 'game-over', reason: 'lock-out' }], classic);
+
+    const initial = createGraphicsRecorder();
+    internals.drawClassicFeedbackCues(initial.graphics, classic, layout);
+    expect(initial.operations.some((operation) => operation.kind === 'segment')).toBe(true);
+    expect(hasBroadHorizontalGeometry(initial.operations, layout.width)).toBe(false);
+    expect(initial.operations
+      .filter((operation) => operation.kind === 'segment')
+      .every((operation) => {
+        const [startX, startY, endX, endY] = operation.values;
+        return startX! >= layout.x
+          && startX! <= layout.x + layout.width
+          && endX! >= layout.x
+          && endX! <= layout.x + layout.width
+          && startY! >= layout.y
+          && startY! <= layout.y + layout.height
+          && endY! >= layout.y
+          && endY! <= layout.y + layout.height;
+      })).toBe(true);
+    const movingSignature = geometrySignature(initial.operations);
+    internals.advanceEffects(60);
+    const moved = createGraphicsRecorder();
+    internals.drawClassicFeedbackCues(moved.graphics, classic, layout);
+    expect(geometrySignature(moved.operations)).not.toBe(movingSignature);
+
+    internals.consumeEvents([{ type: 'restarted' }], classic);
+    renderer.setOptions({ reducedMotion: true });
+    internals.consumeEvents(
+      [{ type: 'piece-locked', piece: 'O', cells: [{ x: 4, y: 39 }, { x: 5, y: 39 }] }],
+      classic,
+    );
+    internals.consumeEvents(
+      [{ type: 'lines-cleared', rows: [39], count: 1, score: 90 }],
+      classic,
+    );
+    internals.consumeEvents([{ type: 'game-over', reason: 'lock-out' }], classic);
+    const reducedStart = createGraphicsRecorder();
+    internals.drawClassicFeedbackCues(reducedStart.graphics, classic, layout);
+    expect(reducedStart.operations.some((operation) => operation.kind === 'circle')).toBe(false);
+    expect(reducedStart.operations.some((operation) => operation.kind === 'rect')).toBe(false);
+    internals.advanceEffects(40);
+    const reducedLater = createGraphicsRecorder();
+    internals.drawClassicFeedbackCues(reducedLater.graphics, classic, layout);
+    expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
+
+    internals.advanceEffects(200);
+    expect(internals.classicFeedbackCues).toHaveLength(0);
   });
 
   it('extracts the current Pixi board without retaining or mounting a second Canvas', () => {

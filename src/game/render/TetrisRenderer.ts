@@ -134,6 +134,18 @@ interface OrdinaryClearCell extends Cell {
   material: BoardMaterial;
 }
 
+type ClassicFeedbackKind = 'landing' | 'combo' | 'speed-up' | 'top-out';
+
+interface ClassicFeedbackCue {
+  kind: ClassicFeedbackKind;
+  elapsed: number;
+  duration: number;
+  cells: readonly Cell[];
+  rows: readonly number[];
+  combo: number;
+  tier: number;
+}
+
 interface MutationFlash {
   item: MutationItem;
   elapsed: number;
@@ -251,6 +263,15 @@ export interface RendererSnapshot {
   survivalDebris: Array<{ id: number; x: number; y: number; presentationY: number }>;
   survivalDebrisWarningColumns: number[];
   survivalStoneCueCount: number;
+  classicFeedback: Array<{
+    kind: ClassicFeedbackKind;
+    elapsedMs: number;
+    durationMs: number;
+    cells: Cell[];
+    rows: number[];
+    combo: number;
+    tier: number;
+  }>;
 }
 
 export interface RendererBoardCapture {
@@ -266,6 +287,7 @@ export interface RendererBoardCapture {
 }
 
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
+const CLASSIC_FEEDBACK_LIMIT = 6;
 
 const SCORE_SEGMENT_COORDINATES = [
   [.12, 0, .88, 0],
@@ -316,6 +338,7 @@ export class TetrisRenderer {
   private impact = 0;
   private rotationPulse = 0;
   private boardShift: BoardShift | null = null;
+  private readonly classicFeedbackCues: ClassicFeedbackCue[] = [];
   private readonly survivalDebrisPresentation = new Map<number, SurvivalDebrisPresentation>();
   private readonly survivalStoneCues: SurvivalStoneCue[] = [];
   private mutationFlash: MutationFlash | null = null;
@@ -372,7 +395,8 @@ export class TetrisRenderer {
   private scrimBounds: RendererSnapshot['scrim'] = null;
   private snapshot: Omit<
     RendererSnapshot,
-    'mutationActivation'
+    'classicFeedback'
+    | 'mutationActivation'
     | 'mutationActivationQueueItems'
     | 'mutationActiveParticleCount'
     | 'mutationCollapseTrail'
@@ -478,6 +502,15 @@ export class TetrisRenderer {
     }
     return structuredClone({
       ...this.snapshot,
+      classicFeedback: this.classicFeedbackCues.map((cue) => ({
+        kind: cue.kind,
+        elapsedMs: cue.elapsed,
+        durationMs: cue.duration,
+        cells: cue.cells.map((cell) => ({ ...cell })),
+        rows: [...cue.rows],
+        combo: cue.combo,
+        tier: cue.tier,
+      })),
       mutationActivation: this.mutationFlash
         ? {
             item: this.mutationFlash.item,
@@ -591,6 +624,7 @@ export class TetrisRenderer {
     this.host = null;
     this.presentation = null;
     this.lockPulse = null;
+    this.classicFeedbackCues.length = 0;
     this.mutationFlash = null;
     this.mutationArrival = null;
     this.activeMutationCarrierId = null;
@@ -1628,6 +1662,7 @@ export class TetrisRenderer {
       this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
     }
     this.drawOrdinaryLineClearEffects(graphics, state, layout);
+    this.drawClassicFeedbackCues(graphics, state, layout);
 
     if (this.lockPulse && !this.options.reducedMotion) {
       const progress = Math.min(1, this.lockPulse.elapsed / this.lockPulse.duration);
@@ -1912,6 +1947,109 @@ export class TetrisRenderer {
             });
         }
       }
+    }
+  }
+
+  private drawClassicFeedbackCues(
+    graphics: Graphics,
+    state: GameState,
+    layout: BoardLayout,
+  ): void {
+    if (state.mode !== 'marathon' || this.classicFeedbackCues.length === 0) return;
+    const stroke = Math.max(1.2, layout.cell * 0.055);
+
+    for (const cue of this.classicFeedbackCues) {
+      const progress = Math.min(1, Math.max(0, cue.elapsed / cue.duration));
+      const eased = easeOutCubic(progress);
+      const alpha = Math.max(0, 1 - eased);
+      if (alpha <= 0) continue;
+
+      if (cue.kind === 'landing') {
+        const spread = layout.cell * (
+          this.options.reducedMotion ? 0.3 : 0.2 + eased * 0.22
+        );
+        const gap = layout.cell * 0.08;
+        for (const cell of cue.cells) {
+          if (cue.cells.some((candidate) => candidate.x === cell.x && candidate.y === cell.y + 1)) continue;
+          const visibleY = cell.y - VISIBLE_START_ROW;
+          if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
+          const centerX = layout.x + (cell.x + 0.5) * layout.cell;
+          const rawY = layout.y + (visibleY + 1) * layout.cell - layout.cell * 0.055
+            + (this.options.reducedMotion ? 0 : eased * layout.cell * 0.035);
+          const y = Math.min(layout.y + layout.height - stroke, Math.max(layout.y + stroke, rawY));
+          this.strokeSegments(graphics, [
+            [centerX - spread, y, centerX - gap, y],
+            [centerX + gap, y, centerX + spread, y],
+          ], COLORS.classic, alpha * 0.72, stroke);
+        }
+        continue;
+      }
+
+      if (cue.kind === 'combo') {
+        const marks = Math.min(3, Math.max(1, cue.combo - 1));
+        for (const row of cue.rows) {
+          if (row < VISIBLE_START_ROW || row >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+          const centerY = layout.y + (row - VISIBLE_START_ROW + 0.5) * layout.cell;
+          for (let mark = 0; mark < marks; mark += 1) {
+            const inset = layout.cell * (
+              0.24 + mark * 0.16 + (this.options.reducedMotion ? 0 : (1 - eased) * 0.16)
+            );
+            const arm = layout.cell * 0.16;
+            const halfHeight = layout.cell * (0.17 + mark * 0.035);
+            const leftX = layout.x + inset;
+            const rightX = layout.x + layout.width - inset;
+            this.strokeSegments(graphics, [
+              [leftX + arm, centerY - halfHeight, leftX, centerY - halfHeight],
+              [leftX, centerY - halfHeight, leftX, centerY + halfHeight],
+              [leftX, centerY + halfHeight, leftX + arm, centerY + halfHeight],
+              [rightX - arm, centerY - halfHeight, rightX, centerY - halfHeight],
+              [rightX, centerY - halfHeight, rightX, centerY + halfHeight],
+              [rightX, centerY + halfHeight, rightX - arm, centerY + halfHeight],
+            ], COLORS.classic, alpha * (0.82 - mark * 0.14), Math.max(1, stroke * 0.82));
+          }
+        }
+        continue;
+      }
+
+      if (cue.kind === 'speed-up') {
+        const travel = this.options.reducedMotion ? 0 : eased * layout.cell * 2.8;
+        const baseY = layout.y + layout.cell * 1.25 + travel;
+        const leftX = layout.x + layout.cell * 0.42;
+        const rightX = layout.x + layout.width - layout.cell * 0.42;
+        const tickWidth = layout.cell * 0.16;
+        const tickHeight = layout.cell * 0.22;
+        const repetitions = this.options.reducedMotion ? 1 : 3;
+        for (let tick = 0; tick < repetitions; tick += 1) {
+          const y = Math.min(
+            layout.y + layout.height - tickHeight - stroke,
+            baseY + tick * layout.cell * 0.58,
+          );
+          this.strokeSegments(graphics, [
+            [leftX - tickWidth, y - tickHeight, leftX, y],
+            [leftX, y, leftX + tickWidth, y - tickHeight],
+            [rightX - tickWidth, y - tickHeight, rightX, y],
+            [rightX, y, rightX + tickWidth, y - tickHeight],
+          ], COLORS.classic, alpha * (0.84 - tick * 0.14), stroke);
+        }
+        continue;
+      }
+
+      const travel = this.options.reducedMotion ? 0 : (1 - eased) * layout.cell * 0.5;
+      const left = layout.x + layout.cell * 3 - travel;
+      const right = layout.x + layout.cell * 7 + travel;
+      const top = layout.y + layout.cell * 0.45;
+      const bottom = layout.y + layout.cell * 3.15 + travel * 0.45;
+      const arm = layout.cell * 0.46;
+      this.strokeSegments(graphics, [
+        [left, top + arm, left, top],
+        [left, top, left + arm, top],
+        [right - arm, top, right, top],
+        [right, top, right, top + arm],
+        [left, bottom - arm, left, bottom],
+        [left, bottom, left + arm, bottom],
+        [right - arm, bottom, right, bottom],
+        [right, bottom, right, bottom - arm],
+      ], COLORS.danger, alpha * 0.9, Math.max(1.4, stroke * 1.08));
     }
   }
 
@@ -2989,12 +3127,50 @@ export class TetrisRenderer {
     }
   }
 
+  private enqueueClassicFeedback(
+    kind: ClassicFeedbackKind,
+    details: Partial<Pick<ClassicFeedbackCue, 'cells' | 'rows' | 'combo' | 'tier'>> = {},
+  ): void {
+    const fullDuration = kind === 'landing'
+      ? 220
+      : kind === 'combo'
+        ? 300
+        : kind === 'speed-up'
+          ? 360
+          : 440;
+    const reducedDuration = kind === 'landing'
+      ? 120
+      : kind === 'combo'
+        ? 150
+        : kind === 'speed-up'
+          ? 170
+          : 200;
+    this.classicFeedbackCues.push({
+      kind,
+      elapsed: 0,
+      duration: this.options.reducedMotion ? reducedDuration : fullDuration,
+      cells: (details.cells ?? []).map((cell) => ({ ...cell })),
+      rows: [...(details.rows ?? [])],
+      combo: details.combo ?? 0,
+      tier: details.tier ?? 0,
+    });
+    if (this.classicFeedbackCues.length > CLASSIC_FEEDBACK_LIMIT) {
+      this.classicFeedbackCues.splice(
+        0,
+        this.classicFeedbackCues.length - CLASSIC_FEEDBACK_LIMIT,
+      );
+    }
+  }
+
   private consumeEvents(
     events: readonly GameEvent[],
     state?: GameState,
     previousBoard: GameState['board'] | null = null,
     collapseWasActive = false,
   ): void {
+    const classic = state?.mode === 'marathon';
+    const clearsOnLock = events.some((event) => event.type === 'clear-started');
+    const endsOnLock = events.some((event) => event.type === 'game-over');
     for (const event of events) {
       if (event.type === 'piece-moved') {
         if (this.presentation) {
@@ -3006,6 +3182,7 @@ export class TetrisRenderer {
       } else if (event.type === 'restarted') {
         this.presentation = null;
         this.boardShift = null;
+        this.classicFeedbackCues.length = 0;
         this.clearSurvivalVisualState();
         this.mutationFlash = null;
         this.mutationArrival = null;
@@ -3021,6 +3198,7 @@ export class TetrisRenderer {
         this.presentation = null;
         this.trail = null;
         this.lockPulse = null;
+        this.classicFeedbackCues.length = 0;
         this.impact = 0;
         this.rotationPulse = 0;
         this.boardShift = null;
@@ -3039,6 +3217,9 @@ export class TetrisRenderer {
           duration: this.options.reducedMotion ? 1 : CELL_STYLE.lockFillDurationMs,
           piece: event.piece,
         };
+        if (classic && !clearsOnLock && !endsOnLock) {
+          this.enqueueClassicFeedback('landing', { cells: event.cells });
+        }
         if (state?.mode === 'sprint' && collapseWasActive) {
           this.queueCollapseSettlementTrail(previousBoard, event.cells);
         }
@@ -3056,6 +3237,20 @@ export class TetrisRenderer {
         }
       } else if (event.type === 'lines-cleared') {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
+        if (classic) {
+          if ((state?.combo ?? 0) > 1) {
+            this.enqueueClassicFeedback('combo', {
+              rows: event.rows,
+              combo: state?.combo ?? 0,
+            });
+          }
+          const previousLines = Math.max(0, (state?.lines ?? event.count) - event.count);
+          const previousTier = Math.floor(previousLines / 10);
+          const currentTier = Math.floor((state?.lines ?? previousLines) / 10);
+          if (currentTier > previousTier) {
+            this.enqueueClassicFeedback('speed-up', { tier: currentTier });
+          }
+        }
       } else if (event.type === 'survival-stones-spawned') {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.1 : 0.24);
         this.enqueueSurvivalStoneCue('spawn', event.cells);
@@ -3072,6 +3267,8 @@ export class TetrisRenderer {
         });
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
+      } else if (event.type === 'game-over' && classic) {
+        this.enqueueClassicFeedback('top-out');
       } else if (event.type === 'bedrock-raised' || event.type === 'bedrock-lowered') {
         this.boardShift = this.options.reducedMotion
           ? null
@@ -3135,6 +3332,11 @@ export class TetrisRenderer {
     if (this.lockPulse) {
       this.lockPulse.elapsed += deltaMs;
       if (this.lockPulse.elapsed >= this.lockPulse.duration) this.lockPulse = null;
+    }
+    for (let index = this.classicFeedbackCues.length - 1; index >= 0; index -= 1) {
+      const cue = this.classicFeedbackCues[index]!;
+      cue.elapsed += Math.max(0, deltaMs);
+      if (cue.elapsed >= cue.duration) this.classicFeedbackCues.splice(index, 1);
     }
     if (this.boardShift) {
       this.boardShift.elapsed += deltaMs;
