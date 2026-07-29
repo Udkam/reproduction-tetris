@@ -1,0 +1,41 @@
+{
+  "schema": "t15-phase6-gates/v1",
+  "status": "PASS",
+  "sourceCandidate": "eaed1ac0962ba7256b44136f7bd4f0faef603970",
+  "sourceFreezeRecord": "e2cdc3c5e6b28c95779b309aaf381c9f76c3f792",
+  "rawEvidenceCommit": "55e5a7baf476e6dc8f04d24a36890877948c6dcd",
+  "normalizationCommit": "fb9ccc201835cc499ab0285ce1721be9126556e4",
+  "productSourceUnchangedThrough": "fb9ccc201835cc499ab0285ce1721be9126556e4",
+  "gates": [
+    {
+      "id": "typecheck",
+      "command": "npm.cmd run typecheck",
+      "exitCode": 0,
+      "result": "PASS",
+      "artifact": "typecheck.txt",
+      "sha256": "4894d6e53b46d1be542291996cb9c1d7fbfd1ab037a1149204c0d80d4d502e86"
+    },
+    {
+      "id": "test",
+      "command": "npm.cmd run test -- --maxWorkers=1",
+      "exitCode": 0,
+      "result": "PASS",
+      "testFiles": 26,
+      "tests": 231,
+      "artifact": "test.txt",
+      "sha256": "18757e5a30fb8ae7f0c209814c1c521b34db7e678b4b4de93b45df345cabff76"
+    },
+    {
+      "id": "build",
+      "command": "npm.cmd run build",
+      "exitCode": 0,
+      "result": "PASS",
+      "transformedModules": 753,
+      "nonFatalWarnings": [
+        "Vite reported the existing main chunk above 500 kB after minification."
+      ],
+      "artifact": "build.txt",
+      "sha256": "13f12d3b56f1022db95bb96b6410454355dd7a8f91961c1e4229f42c315ed15f"
+    }
+  ]
+}
