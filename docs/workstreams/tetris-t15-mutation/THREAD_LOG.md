@@ -1514,3 +1514,34 @@
 - Next action: checkpoint this record, obtain one serialized read-only evidence audit
   on exact candidate `45e7cfc`, and open a new single formal hardware capture lease
   only if that audit has no blocking finding.
+
+## 2026-07-29 — Listener baseline harness static QA accepted
+
+- Task ID: `T15-PHASE5-EVIDENCE-LISTENER-BASELINE-QA-R1`.
+- Exact candidate:
+  `45e7cfcca48f438be1a9ff24619137ff19dffd3e`.
+- One fresh, serialized read-only agent reviewed only the one-line harness diff,
+  accepted Phase-4 lifecycle source/evidence, and the unchanged Phase-5 lifecycle
+  assertions. It did not edit, commit, spawn a child, or run browser, Vite, tests,
+  build, WMI/CIM or a product tool.
+- Verdict: `PASS`; P0=0, P1=0, P2=0, P3=0, GAP=0.
+- Accepted evidence:
+  - `capture_phase5.py:521-524` waits for the Mutation selector before the original
+    100 ms settle and baseline snapshot, matching
+    `capture_phase4.py:173-178,457-459`;
+  - `capture_phase5.py:510-517,1591-1606` retains exact first/second-unmount listener
+    count/map, pending-rAF, open-audio, Canvas-zero and QA-absent assertions;
+  - `capture_phase5.py:1570-1589,1594-1604` retains exact restart/remount Canvas,
+    listener-map, rAF and audio equality;
+  - accepted Phase-4 evidence lines 1405-1431, 1544-1570 and 1610-1636 record the
+    instrumented home map and exact restoration across both unmounts.
+- No filtering, subtraction, tolerance, game-mount warm-up, assertion weakening,
+  fail-open path or publication change was found.
+- Resource disposition: Codex automatically started one Serena/TypeScript tree and
+  two MCP bridge processes for the audit despite the prohibition. PowerShell native
+  `Parent` and `CommandLine` properties attributed the exact ten-process set to the
+  audit start time; the coordinator stopped only those exact PIDs. Shared Codex
+  app-server and its managed `node_repl` pool were preserved. No project browser,
+  Python runner or listener remains on 4178/5178/5179.
+- Next action: checkpoint this verdict, register one formal hardware capture lease
+  bound to harness `45e7cfc`, take one admission snapshot, and run only that batch.
