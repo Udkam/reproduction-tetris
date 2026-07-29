@@ -269,3 +269,41 @@
   started for this correction.
 - Next action: run the fresh final gate sequence once, rebind and regenerate all
   Phase-6 browser evidence, then repeat independent rules QA before other audits.
+
+## TETRIS-T15-PHASE6-CORRECTED-EVIDENCE-009
+
+- Status: `PRODUCT + EVIDENCE FROZEN / REPEAT RULES QA NEXT`.
+- Corrected product: `90859760bc9b2163219a31eb9053fcd4e92869ce`.
+- Final gates, run serially with no browser or QA overlap:
+  - `npm.cmd run typecheck` -> PASS;
+  - `npm.cmd run test -- --maxWorkers=1` -> PASS, 26 files / 232 tests;
+  - `npm.cmd run build` -> PASS, 753 modules; existing >500 kB warning only.
+- Gate evidence:
+  - raw `2c9fd50`;
+  - normalization `0239231`;
+  - index `bee956a`;
+  - all three normalized raw hashes reproduced.
+- Browser evidence:
+  - source-bound fail-closed harness `4a7f95f`;
+  - changed raw frames/log `9f90ced`;
+  - manifest/checksums `ca80416`;
+  - 15 captures and 19 reproduced hashes;
+  - public runtime/Core 1/2/3-row clears, honest isolated Renderer 4-row contract,
+    one-row three-stage timing, safe next, reduced motion, Classic landing,
+    combo+speed, top-out, desktop/portrait/short-landscape and lifecycle.
+- Browser result: zero console/page errors, one Canvas, zero DOM board cells, no
+  overflow, restart retains one canvas/listener set, two Classic and one Puzzle
+  unmount return to baseline, and open AudioContexts return to zero.
+- Visual review: all fifteen PNGs inspected at original detail and accepted for the
+  declared contract. The floor landing frame remains visually identical; the rejected
+  overhang case is locked by direct Renderer regression because it is not a natural
+  deterministic browser route.
+- Fail-closed trail: the first capture attempt stopped before server/browser startup
+  because old generated evidence was present. Exactly nineteen old files were moved
+  to a task backup, the complete batch regenerated, and the backup deleted only after
+  raw/index commits.
+- Resource release: controlled Chrome closed; Vite released; port 4178 has zero
+  listener; no partial directory, test/build process, agent, MCP, Serena, WMI, or CIM
+  remains.
+- Next action: run one independent rules QA against corrected product/evidence. Only
+  its ACCEPT may open serial visual QA.

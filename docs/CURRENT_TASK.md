@@ -123,6 +123,19 @@ Product source is frozen again. The next permitted work is a fresh final typeche
 one-worker full suite, build, and complete source-bound browser evidence regeneration;
 rules QA must then be repeated before visual or evidence-integrity QA opens.
 
+**Phase-6 corrected evidence freeze (2026-07-30):** final typecheck, the 26-file /
+232-test one-worker suite, and the 753-module build pass for `9085976`; gate raw,
+normalization, and index commits are `2c9fd50`, `0239231`, and `bee956a`. Browser
+harness `4a7f95f` regenerated all fifteen frames and nineteen hashes; changed raw
+artifacts are `9f90ced` and manifest/checksums are `ca80416`. Original-detail review
+passes 1/2/3-row runtime clears, the honestly isolated 4-row Renderer contract,
+one-row confirmation/contraction/afterglow, safe next frame, reduced motion, Classic
+landing/combo+speed/top-out, desktop/portrait/short-landscape, and lifecycle. The run
+reports zero browser errors, one Canvas, zero DOM cells, restored listeners, zero open
+AudioContexts, closed Chrome, and released port 4178. Product and evidence are frozen.
+Only repeated independent rules QA may run next; visual and evidence-integrity QA
+remain closed until it accepts.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

@@ -1,9 +1,7 @@
 # T15 Phase 6 source-bound evidence
 
-The refreshed final gate set in this directory is bound to corrected product candidate
-`90859760bc9b2163219a31eb9053fcd4e92869ce`. The browser files still describe the
-rejected first candidate until the complete source-bound browser batch is regenerated;
-they are historical evidence, not acceptance evidence for `9085976`.
+This directory binds the refreshed final gate and browser sequences to corrected
+product candidate `90859760bc9b2163219a31eb9053fcd4e92869ce`.
 
 - `typecheck.txt` records the final TypeScript project check.
 - `test.txt` records the complete one-worker Vitest run: 26 files and 232 tests.
@@ -20,9 +18,10 @@ they are historical evidence, not acceptance evidence for `9085976`.
 The corrected-candidate raw gate logs were committed at `2c9fd50`. Evidence-only
 normalization `0239231` removed one Vite-emitted trailing space and final blank lines
 after `git diff --check` exposed them. No product source changed and the gate commands
-were not repeated. The prior browser harness is `1b9c85f`; its raw frames and managed
-Vite logs are `a231fda`; its manifest/checksums are `d7fb4fa`. Those browser artifacts
-must be replaced before Phase 6 can return to QA.
+were not repeated. The corrected-candidate browser harness is `4a7f95f`; changed raw
+frames and managed Vite logs are `9f90ced`; the browser manifest/checksums are
+`ca80416`. Content-identical frames reuse their earlier Git blobs but were regenerated
+and rehashed by this batch.
 
 The browser run replays every current verified Puzzle route through public Core
 commands before selecting the shortest real 1/2/3-row witnesses. No current verified
@@ -37,5 +36,9 @@ The first mechanically passing batch was rejected during original-detail inspect
 because the isolated Renderer queue allowed a Next piece to enter the board crop.
 `db3423b` removes that unrelated preview. Two later runs failed closed before
 publication until landing action, zero-tick Renderer event flush, snapshot and Pixi
-extraction became one deterministic transaction in `8ff34d5` / `1b9c85f`. Rejected
-generated files were removed and are not evidence.
+extraction became one deterministic transaction in `8ff34d5` / `1b9c85f`.
+
+Rejected first-candidate artifacts remain available only through Git history. The
+corrected batch first refused to mix with those files, then replaced exactly the
+nineteen generated browser artifacts from an external task backup. The backup was
+deleted only after the new raw and index commits; no rejected file is current evidence.

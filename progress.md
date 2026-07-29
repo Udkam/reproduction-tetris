@@ -33,7 +33,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Correction source `9085976` freezes only true floor/old-board support cells when
   the lock event is consumed. Its direct Renderer suite passes 30/30, including the
   one-support overhang regression, and typecheck passes. Product source is frozen;
-  old source-bound gate/browser evidence is historical and must be regenerated.
+  old source-bound gate/browser evidence is historical.
+- Corrected evidence is frozen: final typecheck, 26 files / 232 tests, 753-module
+  build, 15 browser captures and 19 hashes pass against `9085976`. Original-detail
+  inspection and lifecycle checks pass with zero errors/leaks; Chrome and port 4178
+  are released. Gate index is `bee956a`; browser index is `ca80416`.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -103,9 +107,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Regenerate the final typecheck/full suite/build and all source-bound browser
-  evidence for corrected product `9085976`.
-- Repeat rules QA first; only an ACCEPT opens serial visual and evidence-integrity QA.
+- Repeat independent rules QA against corrected product `9085976` and evidence
+  `bee956a` / `ca80416`; only an ACCEPT opens serial visual and evidence-integrity QA.
   If all three accept, record Phase-6 acceptance, clean resources and non-force push
   before opening Puzzle 50.
 - Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.
