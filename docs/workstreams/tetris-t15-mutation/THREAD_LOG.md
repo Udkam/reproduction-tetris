@@ -1359,3 +1359,22 @@
   timeout as success.
 - Next action: checkpoint the GAP, apply only that timeout, rerun Python/embedded-JS
   static checks, commit, and return the exact diff to the same serialized reviewer.
+
+## 2026-07-29 — Lifecycle settling timeout checkpoint
+
+- Task ID: `T15-PHASE5-EVIDENCE-LIFECYCLE-R2`.
+- Base SHA: `bdb432d1e70bdd5d856825639db8b211efe1b28d`.
+- Candidate SHA: `a59856d056951865e8a5c0b6dc93f75ac97461be`.
+- Exact changed path:
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- The same two-rAF Promise now owns one 2,000 ms browser timer. The second rAF clears
+  it before resolving; timeout rejects with an explicit error and never returns a
+  lifecycle snapshot.
+- Commands actually run: Python AST parse, extracted helper JavaScript through
+  `node --check -`, CLI `--help` early-exit check, diff check/inspection and exact-path
+  commit. All passed. No browser/Vite, product source, test, build, sub-agent, MCP,
+  Serena or WMI/CIM ran.
+- No equality, counter, source binding, one-state, GPU/performance, capture, lifecycle
+  unmount or atomic-publication behavior changed.
+- Next action: checkpoint this record and ask the same serialized read-only reviewer
+  to close only its P2 against `a59856d`.

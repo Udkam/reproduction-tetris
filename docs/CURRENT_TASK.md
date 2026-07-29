@@ -313,6 +313,11 @@ or history rewrite is authorized.
   correction is a 2,000 ms browser-timer bound around the same two rAF callbacks,
   clearing that timer on success and throwing on expiry. The bound may not replace a
   frame, return a partial snapshot, catch the error as success, or relax any equality.
+- Checkpoint `a59856d056951865e8a5c0b6dc93f75ac97461be` adds only that
+  timer/rejection path. Python AST, extracted embedded-JavaScript syntax, CLI `--help`
+  and diff checks pass. Product/gates and all lifecycle equality checks remain
+  unchanged. The same serialized reviewer must close its P2 on this exact diff before
+  another capture lease is registered.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

@@ -141,7 +141,7 @@ unbounded `page.evaluate()` is not fail-closed evidence.
 | --- | --- | --- |
 | 产品源码 | `ee2aac542529c116c915c38e0603584a7099b5e8` | Core、Runtime、Renderer、UI、CSS、localization 均冻结 |
 | 最终源码门禁 | `6d9fc6ae00099e3a1eb27240bd3c369216f3b007` | typecheck PASS；26 文件 / 225 测试 PASS；753 modules build PASS |
-| 正式 evidence harness | `e30a8d72aa5fa934fdea79db4223cab9ef0a0386` | 保留真实单状态 fallback；主动生命周期检查统一到两个真实 rAF 后的稳定边界 |
+| 正式 evidence harness | `a59856d056951865e8a5c0b6dc93f75ac97461be` | 保留真实单状态 fallback；生命周期双 rAF 稳定边界具有 2 秒 fail-closed 超时 |
 | 浏览器静态放行记录 | `0adb29631960ac9d128ec6498ff9a4ca9dd7a8d2` | 两路独立审计 P0–P3 = 0，只放行一次正式批次 |
 | 资源合同基线 | `57f3662506cb014dff73fbca81bac3b9ff54e1fc` | 串行执行、禁用 WMI/CIM、加强浏览器准入 |
 | 正式浏览器产物 | **不存在** | 先前失败均 fail-closed；不得称为已有证据 |
