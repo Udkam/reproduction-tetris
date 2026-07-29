@@ -519,6 +519,7 @@ def assert_home_lifecycle(snapshot: dict[str, Any], baseline: dict[str, Any]) ->
 
 def enter_mutation(page: Page) -> tuple[dict[str, Any], dict[str, Any]]:
     page.goto(BASE_URL, wait_until="networkidle")
+    page.wait_for_selector("[data-testid='enter-sprint']")
     page.wait_for_timeout(100)
     lifecycle_baseline = page.evaluate("window.__T15_LIFECYCLE__.snapshot()")
     page.add_style_tag(
