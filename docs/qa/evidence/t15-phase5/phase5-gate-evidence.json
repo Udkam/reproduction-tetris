@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "phase": 5,
   "task": "T15 Mutation final source gates",
-  "generatedUtc": "2026-07-28T19:20:21.7619737Z",
+  "generatedUtc": "2026-07-29T07:41:57.7370157Z",
   "repository": "E:/Proj/reproduction-tetris",
-  "sourceCandidate": "f6fa06ea1b123f54bffff1885741e3ffbd551569",
-  "gateRunHead": "1c462d82accea328a03474738d2c95d83111e4ac",
+  "sourceCandidate": "ee2aac542529c116c915c38e0603584a7099b5e8",
+  "gateRunHead": "1326da12e2e1c16e939474e122a41461b7a7c485",
   "sourcePaths": [
     "src/App.test.ts",
     "src/App.tsx",
@@ -18,6 +18,7 @@
     "src/game/render/TetrisRenderer.test.ts",
     "src/game/render/TetrisRenderer.ts",
     "src/game/runtime/GameRuntime.test.ts",
+    "src/game/runtime/GameRuntime.ts",
     "src/styles/hud.css",
     "src/styles/hud.test.ts",
     "src/styles/mutation-vfx.css",
@@ -45,7 +46,7 @@
       "exitCode": 0,
       "result": "PASS",
       "testFiles": 26,
-      "tests": 224,
+      "tests": 225,
       "log": "test.txt"
     },
     {
@@ -62,19 +63,19 @@
       "name": "typecheck.txt",
       "bytes": 59,
       "sha256": "3c6159ba393c641ed19a30d4a40e792d1f0850feda2b613bb682088fa61f8d95",
-      "lastWriteUtc": "2026-07-28T19:20:21.5876066Z"
+      "lastWriteUtc": "2026-07-29T07:40:33.9353134Z"
     },
     {
       "name": "test.txt",
       "bytes": 280,
-      "sha256": "ca154abc38c9b1361a40e755771a9a65bd63abe1ce55ad090053896429984317",
-      "lastWriteUtc": "2026-07-28T19:20:21.5886145Z"
+      "sha256": "965238231b80ef10234c47a7b8e46d1b5406c705c10b5f00fbab65c786ccfc0a",
+      "lastWriteUtc": "2026-07-29T07:40:58.4404494Z"
     },
     {
       "name": "build.txt",
       "bytes": 9806,
-      "sha256": "9eb1323669183cdcccaa731bfa0df3519346c3c208fe97d3b33271b03ac9a830",
-      "lastWriteUtc": "2026-07-28T19:20:21.5896201Z"
+      "sha256": "d9f7e6a8b28da67d5c5d6a2c2bb30b7f3f46249b4c51937863ff1acaf03b4650",
+      "lastWriteUtc": "2026-07-29T07:41:00.0657369Z"
     }
   ]
 }
