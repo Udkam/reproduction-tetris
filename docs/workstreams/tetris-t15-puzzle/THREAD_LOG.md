@@ -639,3 +639,33 @@
   rows under the legal setup contract. Do not weaken target-row or anchor rules.
   Reopen only one anchor pool at 9/10 setup drops; ordinary pool and fixed
   30/600/480 route bounds remain unchanged.
+
+## Levels 31–40 source opening — 2026-07-30
+
+- Anchor retry: 50 unique boards across 16 setup seeds, all using 10 legal
+  zero-clear drops; 9,413,436 attempted landings, no exhaustion, SHA-256
+  `B70A8204D320FB671A575EA6B640D37D4F2D619AA183651DFC4E872A692CCACC`.
+- Direct assertions pass for six contiguous occupied floor rows, 40 original
+  cells, empty headroom, no initially full row and unique boards.
+- 37 candidates expose at least one target column occupied in all six rows.
+- Open writer: coordinator as `t15_puzzle_31_40_source_writer`.
+- Exact open paths:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json`
+- Provisional source selection: ordinary pool positions 1, 2, 3, 4, 8, 9 and
+  11 from seven setup seeds; anchor pool positions 1, 12 and 31, using safe
+  full columns at right, left and center-right.
+- Every anchor package needs an individual two-route probe at 30/600/480 before
+  the full batch. Failed packages are replaced; bounds and quota do not change.
+- Closed: definitions/artifacts 01–30, unlock/v5, App source, selector/CSS,
+  renderer, dependencies, levels 41–50 and other modes.
+- Next action: register the provisional ten packages, run focused structural
+  tests, then probe only the three anchors.

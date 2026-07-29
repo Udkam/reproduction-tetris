@@ -368,6 +368,22 @@ structural lessons; do not sort by lock count alone. Definitions/artifacts 01–
 gradual unlock/v5 migration, App source, selector/CSS, renderer, dependencies,
 later levels and other modes remain closed.
 
+**Levels 31–40 pool completion and source opening (2026-07-30):** the 9/10-drop
+anchor retry completed 50 unique six-row boards across 16 setup seeds in
+9,413,436 attempted landings without exhaustion; every selected-pool candidate
+uses 10 drops, and 37 candidates contain at least one column occupied in all six
+target rows. Pool SHA-256 is
+`B70A8204D320FB671A575EA6B640D37D4F2D619AA183651DFC4E872A692CCACC`.
+Direct setup/headroom/full-row/board-key assertions pass. The already-recorded
+ordinary pool remains valid at SHA-256
+`95352981F972D305D9435E1B1B2089B9DF37B687DEFBD1DFF0FAF99862211CEF`.
+Open the ten exact source/test/artifact paths listed above. Provisional selection
+uses seven ordinary candidates from seven setup seeds and anchor candidates 1,
+12 and 31, whose safe full columns cover right, left and center-right positions.
+Each anchor package must pass an individual route probe before any full-batch
+solver run; replace a failing package instead of enlarging 30/600/480. App source,
+styles, unlock/v5 and levels 41–50 remain closed.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
