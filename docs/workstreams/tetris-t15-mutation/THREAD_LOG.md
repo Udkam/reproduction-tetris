@@ -1674,3 +1674,39 @@
   listener on 4178/5178/5179 remains. No WMI/CIM was used.
 - Next action: checkpoint this rules verdict, then open one read-only visual QA turn
   only after confirming the process baseline remains clean.
+
+## 2026-07-29 — Final Phase-5 visual QA accepted with one P3
+
+- Task ID: `T15-PHASE5-VISUAL-QA-FINAL`.
+- Reviewed boundary: coordinator candidate `c5b7be8`, frozen product
+  `ee2aac542529c116c915c38e0603584a7099b5e8`, browser-raw
+  `9fa98a2d51c77514ebe9f8893ef244c7c7959c10`, and browser-index
+  `013120a399c25fc076ed2eab58209e5bbaf036d4`.
+- Independent verdict: `PASS`; P0=0, P1=0, P2=0, P3=1, GAP=0.
+- Accepted visual evidence:
+  - all `carrier-next-*`, grayscale Next, active and locked frames retain the body
+    shape while distinguishing Ice, Collapse, Bomb and Multiplier through separate
+    cores, edges/textures and static symbols;
+  - all ordinary/reduced `activation-*` frames preserve distinct local identity:
+    ice-crystal ring, purple vertical compression, orange impact and gold star/
+    multiplier; simultaneous central state marks remain visible;
+  - `collapse-settlement-columns.png` affects only the two real local columns and
+    contains neither an 80%-width horizontal strip nor a top pseudo-piece band;
+  - `status-1.png`, `status-2.png` and `status-3.png` allocate exactly one, two and
+    three tracks; desktop, portrait, landscape, English and reduced frames retain
+    one Canvas, Next and navigation with no clipping, overflow or structural blank.
+- One shared-root P3 is recorded, not hidden:
+  - `portrait-three-status.png` shows `16...` and `超级加...`;
+  - `portrait-three-status-english.png` shows `42...` and `Super Do...`;
+  - both landscape three-status frames shorten the third Chinese label to `超...`.
+  This is minor text polish, not loss of mandatory Mutation information: the gold
+  star symbol, unique status color/material, progress bar and remaining seconds still
+  identify Multiplier and its duration. Score truncation is not attachment identity.
+- Resource disposition: the first review turn was interrupted when its environment
+  automatically started a Serena/TypeScript tree. The coordinator attributed and
+  released only that exact eight-process tree, then requested a no-tool verdict from
+  the same reviewer using already inspected frames. No Serena/TS helper, browser,
+  Vite or 4178/5178/5179 listener remains; shared Codex infrastructure was preserved
+  and no WMI/CIM was used.
+- Next action: checkpoint this visual verdict with its explicit P3, then open one
+  final read-only evidence-integrity QA turn from a clean process baseline.
