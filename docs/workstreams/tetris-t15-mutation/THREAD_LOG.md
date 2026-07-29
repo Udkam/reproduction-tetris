@@ -1317,3 +1317,26 @@
 - Next action: checkpoint this clarified sampling contract, edit only the lifecycle
   snapshot timing, run static checks, commit, perform one serialized read-only audit,
   then open a new single capture lease.
+
+## 2026-07-29 — Stable active-lifecycle harness checkpoint
+
+- Task ID: `T15-PHASE5-EVIDENCE-LIFECYCLE-R1`.
+- Base SHA: `801cd21552bfb4e083bbb9a42fb1aecd3c5aad93`.
+- Candidate SHA: `e30a8d72aa5fa934fdea79db4223cab9ef0a0386`.
+- Exact changed path:
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- A single helper now awaits two actual rAF boundaries before returning the unchanged
+  Canvas identity/count and lifecycle snapshot. First mount, pre-restart,
+  post-restart, and second mount all use that same boundary.
+- Exact pending-frame, listener and audio-context equality remains; home/unmount still
+  must equal the original baseline. No counter is adjusted, filtered, capped or
+  tolerated.
+- Commands actually run: Python AST parse, extracted helper JavaScript through
+  `node --check -`, CLI `--help` early-exit check, diff check/inspection and exact-path
+  commit. All passed. No browser, Vite, product source, test, build, sub-agent, MCP,
+  Serena or WMI/CIM ran for the edit.
+- Frozen product `ee2aac5`, gate batch `6d9fc6a`, one-state recovery, GPU/performance,
+  visual capture, lifecycle-unmount and atomic-publication contracts remain unchanged.
+- Next action: checkpoint this candidate record, obtain one serialized read-only
+  evidence verdict on `e30a8d7`, then open a new single formal capture lease only if
+  the verdict has no blocking finding.

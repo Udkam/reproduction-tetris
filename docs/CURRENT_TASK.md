@@ -298,6 +298,15 @@ or history rewrite is authorized.
   equality for pending frames, listeners and audio contexts. It may not ignore,
   subtract, cap, or waive a remaining frame; unmount must still return exactly to the
   home baseline.
+- Harness checkpoint `e30a8d72aa5fa934fdea79db4223cab9ef0a0386`
+  centralizes that stabilized active-game snapshot and uses it at first mount, before
+  restart, after restart, and second mount. The helper awaits exactly two real rAF
+  boundaries, then returns the unmodified lifecycle counters; all exact equalities and
+  unmount baseline checks remain. Python AST, the embedded JavaScript syntax check,
+  CLI `--help` early exit and diff checks pass. Product `ee2aac5`, gates `6d9fc6a`,
+  the accepted one-state recovery and every visual/performance/publication rule remain
+  unchanged. One serialized read-only audit must accept this exact harness before the
+  next capture lease.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 
