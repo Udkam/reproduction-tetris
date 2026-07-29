@@ -989,3 +989,20 @@
   Fail if the run reaches zero/finishes first. No state replacement or product edit.
 - Next action: commit this failure/contract checkpoint, implement and statically test
   the harness-only real-expiry fallback, then re-audit before a corrected managed run.
+
+## 2026-07-29 — One-state fallback ordering review
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-STATIC-R7`.
+- Harness checkpoint `802cb08` implements a real one-tick-at-a-time Core expiry
+  fallback and preserves all visual coverage and fail-closed conditions.
+- Two independent reviews disagreed: target/visual returned PASS; the stricter
+  evidence review found one accepted P2 because the fallback ran before
+  `frame_budget`, reducing the performance sample from three simultaneous states to
+  one.
+- Coordinator disposition: retain the real expiry logic, but move it unchanged after
+  every `frame_budget` assertion and before restart/lifecycle proof. This preserves
+  the three-state stress benchmark and the one-state UI capture.
+- Product source `ee2aac5`, gates `6d9fc6a`, capture requirements and publication
+  integrity remain unchanged.
+- Next action: commit this ordering finding, move only the fallback block, rerun
+  syntax checks, checkpoint, and request the strict reviewer’s final confirmation.

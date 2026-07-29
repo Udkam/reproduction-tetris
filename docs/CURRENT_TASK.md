@@ -243,6 +243,11 @@ or history rewrite is authorized.
   deterministic Core clock one tick at a time after those frames until exactly one
   timed state remains and capture that actual UI. It may not inject state, change the
   product seed/source, fabricate a screenshot, or waive the one-state requirement.
+  Independent comparison found one further ordering constraint: the existing
+  three-state rAF/render benchmark must finish and pass before the clock is advanced
+  toward one state. Move only the expiry fallback after `frame_budget` and before
+  restart/lifecycle checks; the one-state proof may not weaken the three-state
+  performance claim.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
