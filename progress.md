@@ -520,3 +520,15 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The same reviewer accepts the correction with P0–P3/GAP zero. Levels 11–20
   are closed. The next action is an execution-only five-row candidate-authoring
   slice; product paths and new IDs remain closed until its pool is inspected.
+
+## 2026-07-30 Phase 7 levels 21–30 authoring
+
+- Repeated five-row smoke output was byte-identical and passed direct legality
+  checks. The one full process completed 60 unique candidate boards across 23
+  seeds without budget exhaustion.
+- Pool SHA-256 is
+  `5C4E61ADF2117FD1B2E47924B8DC713AE0EA44812E86577919FA66993D46768C`;
+  only the ignored pool remains, with all process logs and PID released.
+- The bounded 21–30 source slice is now open for ten definitions, 30-roster
+  compatibility, route evidence and tests; unlock and selector visuals remain
+  closed.

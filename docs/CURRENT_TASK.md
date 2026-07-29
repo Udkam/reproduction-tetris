@@ -238,6 +238,38 @@ localization, progress, App/selector, CSS, renderer, routes and artifact remain
 closed until the candidate pool is inspected and a separate source contract is
 recorded.
 
+**21–30 candidate-authoring checkpoint (2026-07-30):** two identical five-row
+smoke runs each produced four candidates in 1,110,822 attempted landings without
+budget exhaustion and matched SHA-256
+`1D6444FF989A7817A224B0146BBE4AC1634842B28FA40DC5CDFD4052558DFE10`.
+The single full pool run used 48 seeds, setup counts 9/10, 384 beam and a
+20,000,000-node ceiling; it completed 60 unique boards across 23 setup seeds in
+9,357,752 attempted landings without exhaustion. All selected-pool candidates
+use ten complete drops, exactly five occupied floor rows, 40 original cells,
+empty headroom and no initially full row. Pool SHA-256 is
+`5C4E61ADF2117FD1B2E47924B8DC713AE0EA44812E86577919FA66993D46768C`.
+Both smoke files and both process logs were removed; PID 2664 exited. The pool
+remains only at `.local/puzzle-5row-candidate-pool.json` for source selection.
+
+**Open Phase-7 slice — levels 21–30:** exact paths are
+`src/game/core/types.ts`, `src/game/core/puzzles.ts`,
+`src/game/core/puzzles.test.ts`, `src/game/core/puzzleCampaign.test.ts`,
+`src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
+`src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.test.ts`, and
+the new `docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json`.
+Add stable IDs `tm-puzzle-21` through `tm-puzzle-30`, ten selected five-row
+setups, concise bilingual structural names, unique gameplay seeds and exactly
+three one-anchor levels. Every anchor remains at visible row 14 above the
+five-row target band and over a column already occupied in all five target rows.
+The current roster grouping may become data-length-driven in five-level bands
+so the App remains runnable with 30 definitions, but access remains all-open;
+the later progress/unlock and selector-adaptation slices remain closed.
+Every new level needs two early-diverging public-Core completion routes and one
+source-bound schema-7 artifact. Existing 01–20 definitions/artifacts, App source,
+CSS, renderer, other modes and dependencies remain frozen. Focused proof covers
+definition/campaign/route replay, progress roster and selector count tests plus
+typecheck; candidate generation and route search remain single-process.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

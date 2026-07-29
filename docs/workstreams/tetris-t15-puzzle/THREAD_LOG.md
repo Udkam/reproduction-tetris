@@ -434,3 +434,47 @@
   App/selector, CSS, renderer, route artifact, dependencies and other modes.
 - Next action: generate and inspect a five-row pool without overlapping tests,
   builds, browser automation or another solver.
+
+## 21–30 candidate authoring checkpoint and source opening — 2026-07-30
+
+- Task: `t15_puzzle_21_30_candidate_authoring`.
+- Tool: unchanged `search-puzzles.mjs`.
+- Repeated smoke:
+  - target rows 5, six seeds, setup counts 8/9/10, four candidates, beam 256,
+    node budget 2,000,000;
+  - both runs completed four candidates in 1,110,822 attempted landings without
+    exhaustion;
+  - both outputs had SHA-256
+    `1D6444FF989A7817A224B0146BBE4AC1634842B28FA40DC5CDFD4052558DFE10`.
+- Full pool:
+  - target rows 5, 48 seeds from 1618033988, setup counts 9/10, 60 candidates,
+    beam 384, node budget 20,000,000;
+  - completed 60 unique board keys across 23 setup seeds in 9,357,752 attempted
+    landings without exhaustion;
+  - all candidates use ten complete hard drops, 40 original cells, five occupied
+    floor rows, empty headroom and no initially full row;
+  - SHA-256
+    `5C4E61ADF2117FD1B2E47924B8DC713AE0EA44812E86577919FA66993D46768C`.
+- Resource disposition: both smoke files and both process logs were deleted;
+  generator PID 2664 exited; only the ignored candidate pool remains.
+- Open writer: coordinator as `t15_puzzle_21_30_source_writer`.
+- Exact open paths:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json`
+- Claim boundary: add IDs 21–30, ten five-row definitions, exactly three safe
+  one-anchor levels, bilingual names, 30-definition five-level roster grouping
+  that remains all-open, two public-Core routes per new level and the batch
+  artifact. App source and visual composition do not change.
+- Closed: 01–20 definitions/artifacts, gradual unlock, App source, selector/CSS,
+  renderer, dependencies, later batches and other modes.
+- Next action: select ten diverse pool entries, register the source, solve and
+  reorder complete packages by route evidence, then run only the focused
+  definition/campaign/route/progress/App tests plus typecheck.
