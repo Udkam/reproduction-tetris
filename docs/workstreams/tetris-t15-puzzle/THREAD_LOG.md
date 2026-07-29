@@ -162,3 +162,41 @@
 - Next action: generate a bounded candidate pool, register only ten selected
   definitions, replay two early-diverging routes per level through public Core
   dispatch, then freeze their source-bound artifact and focused tests.
+
+## Levels 01–10 source candidate — 2026-07-30
+
+- Task: `t15_puzzle_01_10_source_writer`.
+- Base: `1075400`.
+- Source candidate: `bf23126`.
+- Exact paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleFlow.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`
+- Product claim:
+  - visible IDs and ordinals 01–10 stay fixed while their boards become ten unique
+    legal three-row setup histories;
+  - concise bilingual structural names replace the retired names;
+  - setup counts use six drops for 01–04/08 and five for 05–07/09–10;
+  - 01–05 have no anchor and 09 is the single anchored board in this batch;
+  - shortest verified locks are `4,4,5,5,5,5,6,6,6,6`;
+  - 20/20 routes finish through public Core `dispatch()` and first diverge at lock 1.
+- Source-bound artifact schema 7 records each setup, both compact command streams,
+  clear distribution, maximum height, peak holes, per-lock branch widths, route
+  input metrics, first divergence and anchor count. It explicitly rejects an
+  optimality claim.
+- Search bounds: maximum 18 locks, primary beam 900, alternate beam 700. One
+  in-process Vite SSR loader ran without a listener and closed in `finally`.
+- Final focused commands after the last source edit:
+  - four Core files — PASS, 4 files / 21 tests, one worker;
+  - `npm.cmd run typecheck` — PASS.
+- Candidate-pool and one-level probe JSON files were deleted. No full suite, build,
+  browser, server or persistent solver was run.
+- Product is frozen. Two existing read-only tasks may now audit in parallel:
+  one for setup/Core/anchor/scope rules and one for route artifact/difficulty/name
+  evidence. Neither may edit or run tests/build/browser/solver.
+- Next action: resolve both verdicts before opening levels 11–20.

@@ -458,3 +458,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The 01–10 product slice is now open for ten registered definitions, concise
   bilingual names, one later-batch anchor, a Core-aware batch runner, two
   early-diverging routes per level, and one source-bound replay artifact.
+
+## 2026-07-30 Phase 7 levels 01–10 candidate
+
+- Candidate `bf23126` keeps the first ten visible IDs but replaces their boards
+  with ten legal three-row setups and concise bilingual structural names.
+- Twenty source-bound routes finish through public Core dispatch and diverge at
+  lock 1; shortest route length rises from four to six locks across the batch.
+- One anchor appears only at level 09. Normal tests replay the frozen routes instead
+  of rerunning search.
+- Focused verification passes 4 files / 21 tests plus typecheck. Product is frozen
+  for independent rule and curriculum/artifact audits before levels 11–20 open.

@@ -15,8 +15,9 @@ pushed with exact local/tracking/remote equality and recorded at remote tip `d78
 Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
-setup authoring tool `b6acd46` is deterministic and released. The only open writer
-is now the 01–10 source-bound curriculum checkpoint described below.
+setup authoring tool `b6acd46` is deterministic and released. Levels 01–10 are
+frozen at source candidate `bf23126`; product writing is closed while two bounded
+independent static audits review the exact batch range.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -87,6 +88,18 @@ by the shorter route's fourth lock. The remaining ten definitions, IDs, progress
 unlock, App/selector, CSS, renderer, other modes and dependencies remain closed.
 Focused proof is the four direct Core test files plus typecheck; live search runs
 one batch process at a time and never overlaps a full suite, build or browser.
+
+**Levels 01–10 source candidate (2026-07-30):** `bf23126` re-authors the first ten
+stable visible IDs into exactly three target rows. The shortest completing route
+locks are nondecreasing `4,4,5,5,5,5,6,6,6,6`; every level has two public-Core
+routes that finish and diverge at lock 1. The first five have no anchor, level 09
+is the batch's only one-anchor board, and setup histories use 5–6 complete
+zero-clear hard drops. The source-bound schema-7 artifact records setup, route,
+clear, height, hole, branch-width, divergence and anchor metrics without claiming
+optimality. Focused Core replay/definition/flow tests pass 4 files / 21 tests and
+typecheck passes. Temporary candidate and probe outputs are removed; no solver,
+Vite loader or listener remains. Product is frozen for one independent rules audit
+and one independent curriculum/artifact audit of `1075400..bf23126`.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
