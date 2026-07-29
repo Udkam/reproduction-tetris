@@ -417,3 +417,27 @@
   evidence-integrity QA.
 - Next action: run the prepared fifteen-frame visual review. Only an ACCEPT may open
   evidence-integrity QA.
+
+## TETRIS-T15-PHASE6-VISUAL-QA-014
+
+- Status: `INDEPENDENT VISUAL QA REJECT / DOCUMENTATION GAP`.
+- Task: independent reviewer `phase6_baseline_audit`.
+- Reviewed candidate: `90859760bc9b2163219a31eb9053fcd4e92869ce`.
+- Reviewed frames: `15/15` at original dimensions.
+- Changed paths and commands: none. The reviewer read only the frozen contracts,
+  manifest, and PNGs; it did not edit, stage, commit, test, build, serve, capture,
+  browse, or push.
+- Verdict: `REJECT`; P0, P1, P2, and P3 are `none`; GAP has one item.
+- Passed visual scope: all three responsive product views; one-row confirmation,
+  contraction, and afterglow; two- and three-row matrices; reduced-motion clear;
+  safe next decision; landing; coexisting combo/speed; top-out; and reduced Classic
+  feedback. These preserve board geometry, readable HUD/Next, local materials,
+  board-local cues, and deliberate reduced-motion endpoints.
+- Gap: `phase6-clear-4-renderer-contract.png` is correctly bound by the manifest to
+  isolated Renderer scenario `clear-four` at `phaseTicks: 5`, and its pixels visibly
+  show four-row contraction. `PHASE6_VISUAL_REVIEW.md` alone incorrectly described it
+  as “Four-row endpoint only”. The route provenance remains honest; no image,
+  product, manifest, or checksum needs regeneration.
+- Next action: record this QA checkpoint, correct only the review-packet description
+  to “four-row contraction”, then request a read-only visual re-review. Evidence QA
+  remains closed until that reviewer accepts.

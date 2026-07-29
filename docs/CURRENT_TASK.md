@@ -191,6 +191,16 @@ floor/old-board support filter and its single-support overhang regression. Produ
 gate, and browser artifacts remain frozen. Visual QA is now open; evidence-integrity
 QA remains closed until visual QA accepts.
 
+**Independent visual QA evidence gap (2026-07-30):** a second independent reviewer
+inspected all 15 committed PNGs at original dimensions. Fourteen frames pass and the
+four-row image visibly proves the intended same-family contraction, but
+`PHASE6_VISUAL_REVIEW.md` incorrectly called that `phaseTicks: 5` image an “endpoint”.
+The browser evidence and manifest already identify the actual `clear-four` mid-stage
+state; no product, image, hash, or runtime claim is wrong. Visual QA therefore returns
+`REJECT` with P0–P3 all zero and one documentation GAP. Correct only the review-packet
+label, commit that evidence-description checkpoint, and rerun the independent visual
+review. Evidence-integrity QA remains closed.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

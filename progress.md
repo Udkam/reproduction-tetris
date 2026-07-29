@@ -399,3 +399,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   at zero.
 - Visual QA is now open. Evidence-integrity QA remains closed until visual QA accepts;
   Puzzle 50 remains closed until complete Phase-6 acceptance and push.
+
+## 2026-07-30 Phase 6 visual QA documentation gap
+
+- Independent visual QA inspected all 15 original PNGs. Fourteen pass; the four-row
+  image also visibly proves same-family contraction.
+- The review packet mistakenly called the four-row `phaseTicks: 5` contraction frame
+  an endpoint. Manifest state, image bytes, provenance, and hashes are correct.
+- Verdict is REJECT with P0–P3 zero and one documentation GAP. Record this checkpoint,
+  correct only the packet label, and rerun visual QA before opening evidence QA.
