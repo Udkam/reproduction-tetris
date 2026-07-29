@@ -468,10 +468,11 @@ def save_runtime_board_capture(
     name: str,
     *,
     purpose: str,
+    trigger_action: str | None = None,
 ) -> dict[str, Any]:
     payload = page.evaluate(
         """
-        () => {
+        (triggerAction) => {
           const qa = window.__SIGNAL_FOUNDRY_QA__;
           if (!qa) throw new Error("Runtime QA surface is unavailable.");
           const snap = () => {
@@ -496,12 +497,14 @@ def save_runtime_board_capture(
               domCellCount: document.querySelectorAll("[data-game-cell]").length,
             };
           };
+          if (triggerAction) qa.action(triggerAction);
           const before = snap();
           const extracted = qa.captureBoardPng();
           const after = snap();
           return {before, after, extracted};
         }
-        """
+        """,
+        trigger_action,
     )
     extracted = payload.pop("extracted")
     data_url = extracted.pop("dataUrl")
@@ -855,12 +858,12 @@ def run(context: BrowserContext) -> dict[str, Any]:
     )
     page.set_viewport_size({"width": 1440, "height": 900})
 
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
     landing = save_runtime_board_capture(
         page,
         captures,
         "phase6-classic-landing.png",
         purpose="public-runtime ordinary landing cue",
+        trigger_action="hard-drop",
     )
     landing_cues = landing["binding"]["before"]["renderer"]["classicFeedback"]
     assert [cue["kind"] for cue in landing_cues] == ["landing"]
