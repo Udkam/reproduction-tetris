@@ -1230,6 +1230,8 @@ def run(context: BrowserContext) -> dict[str, Any]:
     activation_seen: set[str] = set()
     timed_seen: set[int] = set()
     single_status_advance_ticks: int | None = None
+    single_status_autoplay_steps: int | None = None
+    single_status_source: str | None = None
     fifo_expected: list[str] | None = None
     fifo_observed: list[str] = []
     fifo_witness: dict[str, Any] | None = None
@@ -1363,6 +1365,8 @@ def run(context: BrowserContext) -> dict[str, Any]:
             timed_seen.add(count)
             if count == 1:
                 single_status_advance_ticks = 0
+                single_status_autoplay_steps = 0
+                single_status_source = "initial-autoplay"
 
         if (
             active_seen == required_items
@@ -1488,18 +1492,61 @@ def run(context: BrowserContext) -> dict[str, Any]:
             snapshot = collect(page)
             validate_common(snapshot)
             count = timed_count(snapshot)
-            assert count > 0, "Timed Mutation statuses expired without a real one-status state."
             if count == 1:
                 single_status = capture(page, "status-1")
                 assert timed_count(single_status) == 1
                 captures.append(single_status)
                 timed_seen.add(1)
                 single_status_advance_ticks = advanced_ticks
+                single_status_autoplay_steps = 0
+                single_status_source = "current-stack-expiry"
+                break
+            if count == 0:
+                single_status_advance_ticks = advanced_ticks
                 break
         else:
-            raise AssertionError("Timed Mutation statuses never reached exactly one after 1200 ticks.")
+            raise AssertionError(
+                "Timed Mutation statuses neither reached one nor expired after 1200 ticks."
+            )
+    if 1 not in timed_seen:
+        for autoplay_step in range(1, 1201):
+            result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
+            if result.get("stopped"):
+                raise AssertionError(
+                    "One-status recovery autoplay stopped at "
+                    f"step {autoplay_step}: {result}"
+                )
+            snapshot = collect(page)
+            validate_common(snapshot)
+            count = timed_count(snapshot)
+            if count == 1:
+                single_status = capture(page, "status-1")
+                assert timed_count(single_status) == 1
+                captures.append(single_status)
+                timed_seen.add(1)
+                single_status_autoplay_steps = autoplay_step
+                single_status_source = "post-expiry-autoplay"
+                break
+            page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(1)")
+            ticked_snapshot = collect(page)
+            validate_common(ticked_snapshot)
+            if timed_count(ticked_snapshot) == 1:
+                single_status = capture(page, "status-1")
+                assert timed_count(single_status) == 1
+                captures.append(single_status)
+                timed_seen.add(1)
+                single_status_autoplay_steps = autoplay_step
+                single_status_source = "post-expiry-autoplay-tick"
+                break
+        else:
+            raise AssertionError(
+                "Timed Mutation statuses never reached exactly one after "
+                "the current stack expired and 1200 ordinary autoplay steps."
+            )
     assert timed_seen == {1, 2, 3}
     assert single_status_advance_ticks is not None
+    assert single_status_autoplay_steps is not None
+    assert single_status_source is not None
 
     page.evaluate("window.__t15Canvas = document.querySelector('canvas')")
     before_restart = page.evaluate(
@@ -1556,6 +1603,8 @@ def run(context: BrowserContext) -> dict[str, Any]:
             "activationReducedCaptures": reduced_activation_files,
             "timedCounts": sorted(timed_seen),
             "singleStatusAdvanceTicks": single_status_advance_ticks,
+            "singleStatusAutoplaySteps": single_status_autoplay_steps,
+            "singleStatusSource": single_status_source,
             "collapseSettlement": collapse_trail_witness,
             "rendererFifo": {
                 "witness": fifo_witness,
