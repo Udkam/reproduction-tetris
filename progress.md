@@ -408,3 +408,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   an endpoint. Manifest state, image bytes, provenance, and hashes are correct.
 - Verdict is REJECT with P0–P3 zero and one documentation GAP. Record this checkpoint,
   correct only the packet label, and rerun visual QA before opening evidence QA.
+
+## 2026-07-30 Phase 6 visual QA accepted
+
+- Evidence-description checkpoint `e247dd9` corrects the four-row label to isolated
+  Renderer contraction at `phaseTicks: 5`; no product, image, manifest, or hash changed.
+- The same independent reviewer confirms the label now matches both manifest and its
+  completed 15/15 original-image inspection.
+- Final visual verdict is ACCEPT with P0–P3/GAP all zero. Evidence-integrity QA is now
+  open; Phase 6 and Puzzle 50 remain gated on its verdict and coordinator acceptance.

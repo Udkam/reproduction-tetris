@@ -441,3 +441,21 @@
 - Next action: record this QA checkpoint, correct only the review-packet description
   to “four-row contraction”, then request a read-only visual re-review. Evidence QA
   remains closed until that reviewer accepts.
+
+## TETRIS-T15-PHASE6-VISUAL-QA-REVIEW-015
+
+- Status: `INDEPENDENT VISUAL QA ACCEPT / EVIDENCE QA OPEN`.
+- Corrected evidence-description checkpoint: `e247dd9`.
+- Re-review owner: `phase6_baseline_audit`.
+- Changed paths and runtime: none in the independent re-review. It compared the two
+  documentation lines against the existing manifest and its completed 15/15
+  original-image inspection; no product command or temporary resource was started.
+- Verdict: `ACCEPT`; P0, P1, P2, P3, and GAP are all `none`.
+- Closed gap: the packet now accurately calls
+  `phase6-clear-4-renderer-contract.png` an isolated real-Renderer four-row
+  contraction at `phaseTicks: 5`, matching both manifest and pixels. It explicitly
+  does not call the frame an endpoint or public-runtime route.
+- Product/config `9085976`, all PNG bytes, browser/gate manifests, hashes, and prior
+  rule verdict remain unchanged.
+- Next action: run independent evidence-integrity QA against
+  `PHASE6_EVIDENCE_REVIEW.md`. Only its ACCEPT may open coordinator acceptance.

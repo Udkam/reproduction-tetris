@@ -1,6 +1,6 @@
 # T15 Phase 6 visual-review packet
 
-Status: `CORRECTED AFTER VISUAL QA GAP / RE-REVIEW REQUIRED`.
+Status: `INDEPENDENT VISUAL QA ACCEPT / EVIDENCE QA OPEN`.
 
 This is a zero-runtime review map for the already frozen Phase-6 images. It does not
 reopen visual QA before rules QA, does not replace original-detail inspection, and is

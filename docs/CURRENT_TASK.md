@@ -201,6 +201,15 @@ state; no product, image, hash, or runtime claim is wrong. Visual QA therefore r
 label, commit that evidence-description checkpoint, and rerun the independent visual
 review. Evidence-integrity QA remains closed.
 
+**Independent visual QA accepted (2026-07-30):** evidence-description checkpoint
+`e247dd9` changes only the visual-review packet status and the four-row label to
+“isolated real Renderer contraction at `phaseTicks: 5`”. The same reviewer confirms
+that this now matches the manifest and the previously inspected pixels. Final visual
+verdict is `ACCEPT`, P0–P3/GAP all zero, with 15/15 original-size frames reviewed.
+The correction started no runtime and changed no image, hash, product, or config.
+Evidence-integrity QA is now open; Phase 6 remains unaccepted until that final
+independent verdict and coordinator disposition.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
