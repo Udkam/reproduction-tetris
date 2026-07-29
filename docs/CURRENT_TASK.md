@@ -318,6 +318,16 @@ or history rewrite is authorized.
   and diff checks pass. Product/gates and all lifecycle equality checks remain
   unchanged. The same serialized reviewer must close its P2 on this exact diff before
   another capture lease is registered.
+- That reviewer closed P2 with P0–P3 all zero. R3 then passed the stable restart
+  lifecycle boundary and failed closed at the later first-unmount global-listener
+  baseline equality, again publishing nothing. The current assertion records only a
+  count, so product leak versus probe/accounting mismatch is not yet established.
+  Before any product or harness correction, one bounded nonpublishing diagnostic may
+  reproduce only mount → settings restart → unmount with the committed lifecycle
+  probe and print the complete baseline/current listener maps. It owns one Vite/Chrome
+  tree and temporary files outside the repository, runs no gameplay capture or source
+  gate, and must clean all outputs. Product source remains frozen unless that direct
+  map proves a real game-owned listener survives.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

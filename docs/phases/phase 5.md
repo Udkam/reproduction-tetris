@@ -129,6 +129,10 @@ This changes only evidence sampling time; product source and lifecycle behavior 
 frozen unless the stabilized exact checks prove a real leak.
 The two-rAF wait must also reject within 2,000 ms if frame callbacks stall; an
 unbounded `page.evaluate()` is not fail-closed evidence.
+The first stabilized run reached the next exact gate and stopped because the
+post-restart first unmount had a different global-listener count than the initial home
+baseline. No artifact survived. A single nonpublishing mount/restart/unmount diagnostic
+must print the listener maps before classifying this as a product leak or probe debt.
 
 ## 重启恢复边界（2026-07-29）
 

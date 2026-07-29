@@ -1415,3 +1415,41 @@
   zero published output. Either outcome requires the entire owned tree, listeners,
   partial and external logs released after recording.
 - Next action: checkpoint this lease, then execute and monitor only this batch.
+
+## 2026-07-29 — Stabilized formal batch reached listener baseline gap
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-R3`.
+- Lease checkpoint and run boundary:
+  `6c07bc4ba1e68a0e4e99fbcc0bf6ec77b52b821b`; accepted harness `a59856d`,
+  frozen product `ee2aac5`, gates `6d9fc6a`.
+- The one-state recovery, stabilized pre/post restart pending-frame equality and all
+  preceding checks passed. First unmount then failed exact global-listener-count
+  equality against the initial home baseline.
+- Fail-closed proof: stderr contains only that assertion traceback; stdout is empty;
+  zero PNG, browser manifest, checksum, Vite log, partial or dirty repository path
+  survived. Python/Vite/Chrome exited and all three listeners are free.
+- The assertion did not include baseline/current listener maps. It is not yet evidence
+  of a product leak because the probe can also retain a browser/framework listener
+  whose registration semantics it does not model.
+- No product source, gate, test, build, sub-agent, MCP, Serena or WMI/CIM ran during
+  the R3 lease.
+
+## 2026-07-29 — Listener-map diagnostic lease registered
+
+- Task ID: `T15-PHASE5-LIFECYCLE-LISTENER-DIAGNOSTIC-R1`.
+- Owner: primary coordinator only; no overlapping worker or heavy process.
+- Purpose: reproduce only home baseline → Mutation mount → Settings restart → first
+  unmount using the committed lifecycle init script, then print complete lifecycle
+  snapshots without asserting or publishing browser evidence.
+- Command: one temporary Python diagnostic importing the committed harness; expected
+  tree is one Python root, one Vite/Node tree and one hardware Chrome tree.
+- Reserved boundary: TCP 4178 and
+  `%TEMP%\t15-phase5-listener-diagnostic.{py,stdout.log,stderr.log}` plus one
+  temporary artifact directory outside the repository.
+- Completion: one JSON diagnostic with baseline/mount/pre-restart/post-restart/unmount
+  listener maps. Failure publishes nothing. Either outcome removes the owned tree,
+  listener, temporary artifact directory, script and logs after recording.
+- Forbidden: product/harness edits, screenshots, acceptance artifact, tests, build,
+  WMI/CIM, MCP, Serena or a sub-agent.
+- Next action: checkpoint this failure and diagnostic lease, clear R3 control logs,
+  run the one bounded diagnostic, classify exact listener ownership, then stop.
