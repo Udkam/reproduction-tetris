@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-07-30 — T15 Phase 6 Classic accepted
+## 2026-07-30 — T15 Phase 6 Classic accepted and pushed
 
 - Replaced the shared ordinary-clear sweep with one board-local three-stage family:
   narrow row confirmation, recognisable cell contraction/dissolve, and restrained
@@ -23,9 +23,10 @@
   documentation-only correction `e247dd9`. Evidence QA accepts with 3/3 gate,
   19/19 browser, and 15/15 capture hashes plus P0–P3/GAP zero.
 - The coordinator accepts Phase 6. Product/config is unchanged after `9085976`;
-  ports 4178/5178/5179 and project browser/Serena/repl resources are clear. This
-  acceptance checkpoint is the next non-force remote recovery push; Puzzle 50 remains
-  closed until exact local/remote equality is verified.
+  ports 4178/5178/5179 and project browser/Serena/repl resources are clear.
+  Acceptance/recovery `d0b7406` was pushed non-force; local HEAD, `origin/main`, and
+  the remote branch reference match exactly. Phase 6 is closed and the separate
+  Phase-7 contract may now open.
 
 ## 2026-07-29 — T15 Phase 5 Mutation accepted and pushed
 

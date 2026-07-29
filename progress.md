@@ -21,8 +21,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Dynamic resource admission supersedes the temporary zero-helper hold. Final
   acceptance preflight has clean Git, no 4178/5178/5179 listener, zero Chrome/repl/
   Serena, and only the current control task's two Node helpers.
-- The Phase-6 coordinator acceptance commit and remote equality check are next.
-  Puzzle 50 remains closed until that non-force push succeeds.
+- Phase-6 acceptance/recovery `d0b7406` is pushed non-force. Local HEAD,
+  `origin/main`, and the remote branch reference match exactly. Phase 6 is closed;
+  the bounded Phase-7 contract checkpoint is next.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -92,9 +93,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Keep Phase-6 product/evidence frozen. Commit the coordinator acceptance, push
-  `main` non-force, and verify exact local/remote equality.
-- Record the pushed Phase-6 recovery point before opening the Phase-7 contract.
+- Keep Phase-6 product/evidence frozen.
+- Open Phase 7 through a bounded Puzzle contract checkpoint based on pushed recovery
+  `d0b7406`.
 - Do not redesign the Puzzle selector.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate
@@ -418,3 +419,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   the current control task's two Node helpers remain.
 - Next: commit this acceptance/changelog checkpoint, push non-force, verify remote
   equality, then record the recovery point before opening Puzzle 50.
+
+## 2026-07-30 Phase 6 recovery pushed
+
+- Acceptance/recovery `d0b7406` was pushed non-force.
+- Local HEAD, `origin/main`, and remote `refs/heads/main` all equal
+  `d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`; Git is clean.
+- Ports 4178/5178/5179 remain closed; Chrome, repl, and Serena remain zero.
+- Phase 6 is closed. Next: open the Phase-7 Puzzle contract without redesigning the
+  existing selector composition.

@@ -10,16 +10,17 @@ accepted checkpoint as a remote recovery point before the next phase begins. The
 existing Puzzle library layout is explicitly excluded from redesign; adapting its
 count/progression data for fifty levels is allowed, but its visual composition must
 not be replaced. Phase 6 corrected product `9085976`, final gates, browser evidence,
-and all three independent reviews now pass; the coordinator accepts Phase 6. Puzzle
-50 remains closed until the Phase-6 acceptance checkpoint is pushed and remote
-equality is verified.
+and all three independent reviews pass; coordinator acceptance/recovery `d0b7406` is
+pushed with exact local/tracking/remote equality. Phase 7 may now open through its
+own contract checkpoint; no product path is implied open by this recovery record.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
 tip `4f871ac3706f95c2a57679dd0162071c89363ecb`. Phase 6 is
-**COORDINATOR ACCEPTED / RECOVERY PUSH NEXT** from that base. Its accepted product
-scope is the shared ordinary-clear presentation and Classic feedback in:
+**ACCEPTED / PUSHED / CLOSED** at recovery point
+`d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`. Its accepted product scope is the
+shared ordinary-clear presentation and Classic feedback in:
 
 - `src/game/render/presentation.ts`;
 - `src/game/render/presentation.test.ts`;
@@ -235,6 +236,15 @@ ports 4178/5178/5179, Chrome, `node_repl`, and Serena are absent. The current co
 task retains only its two Node helpers. This coordinator checkpoint is the Phase-6
 acceptance claim; push and exact local/remote equality verification are next. Do not
 open Puzzle 50 before they succeed.
+
+**Phase-6 pushed recovery point (2026-07-30):** `git push origin main` advanced
+`origin/main` non-force from `4f871ac` through coordinator acceptance
+`d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`. `git rev-parse HEAD`,
+`git rev-parse origin/main`, and `git ls-remote origin refs/heads/main` all returned
+that exact SHA; the worktree is clean. Ports 4178/5178/5179 remain closed, Chrome,
+`node_repl`, and Serena remain zero, and the active control task retains only two Node
+helpers. Phase 6 is closed. Phase 7 may open only through its next bounded contract
+checkpoint.
 
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`

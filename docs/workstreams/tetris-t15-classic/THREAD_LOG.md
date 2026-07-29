@@ -520,3 +520,22 @@
 - Next action: commit this coordinator/changelog checkpoint, push `main` non-force,
   verify exact local/remote equality, then write a pushed recovery record before
   opening Phase 7.
+
+## TETRIS-T15-PHASE6-PUSHED-RECOVERY-018
+
+- Status: `ACCEPTED / PUSHED / CLOSED`.
+- Coordinator acceptance/recovery:
+  `d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`.
+- Push: `git push origin main` succeeded non-force and advanced
+  `4f871ac..d0b7406`.
+- Equality proof:
+  - local HEAD `d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`;
+  - local tracking `origin/main` same SHA;
+  - remote `refs/heads/main` from `git ls-remote` same SHA;
+  - `ALL_EQUAL=True`, clean `main...origin/main`.
+- Resource proof: no listener on 4178/5178/5179; zero Chrome, `node_repl`, and
+  Serena; two Node helpers retained by the active control task.
+- Product/config and evidence remain frozen. No test, build, browser, or product
+  command ran after the final source-bound evidence.
+- Next action: open Phase 7 only through a bounded Puzzle contract checkpoint based
+  on this pushed recovery point.
