@@ -144,6 +144,10 @@ harness checkpoint may only wait for the existing Mutation home selector before
 sampling its baseline, exactly mirroring Phase 4. Both unmounts must still equal that
 complete map with no filtering, subtraction or tolerance; product source and gates
 remain frozen.
+Harness candidate `45e7cfcca48f438be1a9ff24619137ff19dffd3e`
+adds only that selector wait. Its Python AST and side-effect-free CLI help path pass;
+the full formal batch remains blocked until one serialized read-only audit accepts
+the exact diff.
 
 ## 重启恢复边界（2026-07-29）
 

@@ -1490,3 +1490,27 @@
 - Next action: commit this diagnostic record, remove its temporary script/logs, edit
   only `docs/qa/evidence/t15-phase5/capture_phase5.py`, run static checks, checkpoint
   the harness, and obtain one serialized read-only audit before another formal lease.
+
+## 2026-07-29 — Listener baseline readiness harness candidate
+
+- Task ID: `T15-PHASE5-EVIDENCE-LISTENER-BASELINE-R1`.
+- Base SHA: `25d63f1`.
+- Candidate SHA: `45e7cfcca48f438be1a9ff24619137ff19dffd3e`.
+- Exact changed path:
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- The harness now waits for the existing Mutation entry selector immediately after
+  navigation and before taking the unchanged home lifecycle snapshot. This matches
+  the accepted Phase-4 `open_home` ordering and ensures Playwright's own locator
+  instrumentation is present on both sides of the exact unmount comparison.
+- No listener key/count is filtered, subtracted or tolerated. Both unmounts must
+  still match the complete original baseline; restart and remount keep exact map,
+  rAF, audio and Canvas equality.
+- Commands actually run: UTF-8 Python AST parse, side-effect-free CLI `--help`,
+  `git diff --check`, exact diff inspection, temporary diagnostic cleanup check and
+  exact-path commit. All passed.
+- No product source, test, build, browser, Vite, formal artifact, MCP, Serena,
+  WMI/CIM or sub-agent ran. Frozen product `ee2aac5` and gate batch `6d9fc6a`
+  remain unchanged.
+- Next action: checkpoint this record, obtain one serialized read-only evidence audit
+  on exact candidate `45e7cfc`, and open a new single formal hardware capture lease
+  only if that audit has no blocking finding.

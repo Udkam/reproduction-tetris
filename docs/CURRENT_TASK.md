@@ -341,6 +341,13 @@ or history rewrite is authorized.
   before taking the original lifecycle baseline, matching the accepted Phase-4
   `open_home` order. It must retain exact first-unmount and second-unmount equality;
   no listener may be filtered, subtracted, tolerated, or reclassified as success.
+- Harness candidate `45e7cfcca48f438be1a9ff24619137ff19dffd3e`
+  implements only that readiness boundary by waiting for
+  `[data-testid='enter-sprint']` before the existing baseline snapshot. Python AST,
+  side-effect-free CLI `--help`, diff and temporary-file cleanup checks pass. The
+  exact unmount assertions and every product/gate/performance/publication condition
+  remain unchanged. One serialized read-only evidence audit must accept this exact
+  one-line diff before a new formal browser lease is registered.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 
