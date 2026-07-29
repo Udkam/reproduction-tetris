@@ -1781,3 +1781,22 @@
 - Next action: commit only the acceptance documents/changelog, push `main`
   non-force, verify local HEAD equals `origin/main`, record the pushed recovery point,
   push that record, clean once more and pause.
+
+## 2026-07-29 — Phase 5 acceptance pushed; pause boundary closed
+
+- Task ID: `T15-PHASE5-ACCEPTANCE-PUSHED`.
+- Acceptance commit:
+  `321ebc65bb295dbb536db20ad63f6b659c8e4ed9`.
+- Command actually run: `git push origin main` without force or history rewrite.
+  The remote advanced linearly from `fae3c96` to `321ebc6`; local HEAD and
+  `origin/main` both resolved to the full acceptance SHA immediately after push.
+- The pushed range includes the listener-baseline diagnosis/correction, separate
+  browser-raw and browser-index checkpoints, the evidence-readiness record, three
+  independent final QA checkpoints, and acceptance/changelog. No checkpoint was
+  squashed.
+- Product `ee2aac5`, gates `6d9fc6a` and harness `45e7cfc` remain unchanged.
+  The known narrow-text P3 remains explicit; no Phase-6 or Puzzle-50 path was opened.
+- Status: `ACCEPTED / PUSHED / PAUSED`.
+- Next action: push this final recovery/pause record, verify local/remote equality,
+  confirm a clean worktree and zero project helper/listener residue, then stop work
+  until the player explicitly resumes the next phase.

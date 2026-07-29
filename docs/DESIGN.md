@@ -361,13 +361,13 @@ records that narrow three-status layouts use ellipsis for long values and labels
 without clipping or structural overflow; independent visual QA, not the capture
 coordinator, decides whether that presentation is acceptable.
 
-Phase 5 is locally accepted on that frozen boundary. Independent rules and evidence
-reviews report P0–P3/GAP zero; visual review reports P0–P2/GAP zero and one retained
-P3 for narrow ellipsis of long score/status text. The P3 does not remove the item
-symbol, material, progress or seconds and therefore does not obscure required
-Mutation identity or duration. Phase 6 and the fifty-level Puzzle target remain
-closed until the acceptance commit is pushed non-force and local/remote equality is
-recorded; execution then pauses rather than opening a new writer path.
+Phase 5 is accepted on that frozen boundary. Independent rules and evidence reviews
+report P0–P3/GAP zero; visual review reports P0–P2/GAP zero and one retained P3 for
+narrow ellipsis of long score/status text. The P3 does not remove the item symbol,
+material, progress or seconds and therefore does not obscure required Mutation
+identity or duration. Acceptance `321ebc6` is pushed non-force to `origin/main` with
+verified local/remote equality. Phase 6 and the fifty-level Puzzle target remain
+closed, and execution pauses rather than opening a new writer path.
 
 Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
 and the managed browser are never concurrent: review turns are serialized, and no

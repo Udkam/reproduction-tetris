@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026-07-29 — T15 Phase 5 Mutation accepted locally
+## 2026-07-29 — T15 Phase 5 Mutation accepted and pushed
 
 - Mutation keeps all seven tetromino bodies independent from four attachable item
   identities. The attachment stream is deterministic but isolated from the ordinary
@@ -29,9 +29,10 @@
   status label, while the unique symbol/material, progress and seconds keep mandatory
   identity and duration readable.
 - Product/config/gate/harness diffs are empty; no helper, partial, external control
-  log or listener on 4178/5178/5179 remains. This entry is the local acceptance
-  checkpoint; Phase 6 and Puzzle 50 stay closed until the non-force push is verified,
-  after which execution pauses.
+  log or listener on 4178/5178/5179 remains. Acceptance `321ebc6` was pushed
+  non-force to `origin/main` and immediately matched local HEAD. Phase 5 is closed;
+  Phase 6 and Puzzle 50 remain unopened while execution pauses for the player's next
+  explicit instruction.
 
 ## 2026-07-28 — T15 Phase 4 Survival pressure accepted and pushed
 
