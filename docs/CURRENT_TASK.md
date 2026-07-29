@@ -259,8 +259,9 @@ remains only at `.local/puzzle-5row-candidate-pool.json` for source selection.
 the new `docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json`.
 Add stable IDs `tm-puzzle-21` through `tm-puzzle-30`, ten selected five-row
 setups, concise bilingual structural names, unique gameplay seeds and exactly
-three one-anchor levels. Every anchor remains at visible row 14 above the
-five-row target band and over a column already occupied in all five target rows.
+three one-anchor levels. Every anchor remains in visible headroom row 13 or 14
+above the five-row target band and over a column already occupied in all five
+target rows.
 The current roster grouping may become data-length-driven in five-level bands
 so the App remains runnable with 30 definitions, but access remains all-open;
 the later progress/unlock and selector-adaptation slices remain closed.
@@ -269,6 +270,19 @@ source-bound schema-7 artifact. Existing 01–20 definitions/artifacts, App sour
 CSS, renderer, other modes and dependencies remain frozen. Focused proof covers
 definition/campaign/route replay, progress roster and selector count tests plus
 typecheck; candidate generation and route search remain single-process.
+
+**21–30 anchor-carrier correction (2026-07-30):** the initial ten-drop source
+selection passes 5 definition/progress/App files and 62 tests, but route probes
+reject every attempted dense anchor carrier at the frozen 24-lock, 600/480-beam
+bound. An unanchored copy of the same level completes in 11/15 locks, proving the
+failure belongs to the anchor/40-cell combination rather than the base board.
+Do not increase search bounds or weaken the three-anchor contract. Reopen only
+the unchanged authoring tool for one bounded nine-drop, five-row anchor-specific
+pool under `.local`; retain the ten-drop pool for ordinary levels. Replace the
+three provisional anchor packages with sparse edge-column candidates and require
+each to pass an individual public-Core route probe before the full batch resumes.
+No committed source exists yet; all product paths remain within the already-open
+21–30 slice.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

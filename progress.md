@@ -532,3 +532,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The bounded 21–30 source slice is now open for ten definitions, 30-roster
   compatibility, route evidence and tests; unlock and selector visuals remain
   closed.
+
+- Initial 30-roster source tests pass 62/62, but dense ten-drop anchor carriers
+  repeatedly fail the fixed route bound while the same board without its anchor
+  completes. A bounded nine-drop anchor-specific pool is reopened; search bounds
+  will not be inflated to hide the design mismatch.

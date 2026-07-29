@@ -478,3 +478,25 @@
 - Next action: select ten diverse pool entries, register the source, solve and
   reorder complete packages by route evidence, then run only the focused
   definition/campaign/route/progress/App tests plus typecheck.
+
+## 21–30 anchor-carrier correction — 2026-07-30
+
+- The first uncommitted 30-roster source selection passes 5 files / 62 focused
+  definition, campaign, flow, progress and App tests.
+- Route diagnostics at max locks 24, primary beam 600 and alternate beam 480:
+  - unanchored level 21 completes in 11/11 locks;
+  - level 22 completes in 17/18 locks;
+  - the provisional central anchor package has no primary route;
+  - moving that anchor one headroom row higher still has no primary route;
+  - removing it completes the same board/seed in 11/15 locks;
+  - moving the anchor quota to full-height center or edge columns on other
+    ten-drop boards still yields no primary route.
+- Disposition: the failure is the dense 40-cell anchor-carrier selection. Do not
+  enlarge the solver budget or relax the three-anchor requirement.
+- Reopened execution-only task: use unchanged `search-puzzles.mjs` once to create
+  a bounded nine-drop/five-row anchor-specific candidate pool under `.local`.
+- Ordinary ten-drop candidates remain available. Replace only three provisional
+  anchor packages, prefer edge full columns, and require each replacement to pass
+  an individual public-Core route probe before a full 21–30 solver run.
+- No source checkpoint has been staged or committed; the exact 21–30 source paths
+  and every earlier accepted batch remain frozen from external writers.
