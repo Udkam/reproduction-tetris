@@ -469,3 +469,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   of rerunning search.
 - Focused verification passes 4 files / 21 tests plus typecheck. Product is frozen
   for independent rule and curriculum/artifact audits before levels 11–20 open.
+- The rules audit accepts `1075400..bf23126` with P0–P3/GAP zero. The
+  curriculum/artifact audit rejects two P2 gaps: target-row count is derived
+  rather than explicit metadata, and the runner permits a request to cross a
+  canonical ten-level batch. Six exact correction paths are reopened; authored
+  layouts, names, seeds, anchors and routes remain frozen.

@@ -16,8 +16,11 @@ Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
 setup authoring tool `b6acd46` is deterministic and released. Levels 01–10 are
-frozen at source candidate `bf23126`; product writing is closed while two bounded
-independent static audits review the exact batch range.
+frozen at source candidate `bf23126`. The rules audit accepts it, while the
+curriculum/artifact audit rejects two P2 contract gaps: target-row count is still
+derived instead of explicit level metadata, and the authoring runner permits a
+requested range to cross a canonical ten-level batch. Only the exact correction
+paths below are reopened; layouts, names, seeds and completing routes remain frozen.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -100,6 +103,21 @@ optimality. Focused Core replay/definition/flow tests pass 4 files / 21 tests an
 typecheck passes. Temporary candidate and probe outputs are removed; no solver,
 Vite loader or listener remains. Product is frozen for one independent rules audit
 and one independent curriculum/artifact audit of `1075400..bf23126`.
+
+**Levels 01–10 audit correction (2026-07-30):** the independent rules audit accepts
+`1075400..bf23126` with P0–P3/GAP all zero. The independent curriculum/artifact
+audit reports P0/P1/P3/GAP zero and two relevant P2 findings: `targetRows` is not
+stored explicitly on each registered `PuzzleDefinition`, and
+`solve-puzzle-batch.mjs` accepts a range such as `05–14` even though authoring
+checkpoints are fixed ten-level curricula. Reopened paths are
+`src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+`src/game/core/puzzleFlow.test.ts`, `src/game/core/puzzleSolverResults.test.ts`,
+`docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`, and
+`docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`. The correction must
+make target-row count explicit for every currently registered definition, consume
+that metadata in validation/tests/artifacts, reject cross-batch ranges before
+starting the loader, regenerate the same 01–10 route evidence, rerun only the four
+focused Core files plus typecheck, and return to the same rejecting reviewer.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

@@ -200,3 +200,27 @@
   one for setup/Core/anchor/scope rules and one for route artifact/difficulty/name
   evidence. Neither may edit or run tests/build/browser/solver.
 - Next action: resolve both verdicts before opening levels 11–20.
+
+## Levels 01–10 audit disposition and correction handoff — 2026-07-30
+
+- Candidate: `bf23126`; audit range `1075400..bf23126`.
+- The setup/Core/anchor/scope reviewer returns `ACCEPT` with P0–P3/GAP all zero.
+- The curriculum/artifact reviewer returns `REJECT` with P0/P1/P3/GAP zero and
+  two P2 findings:
+  1. target-row count remains derived from difficulty instead of explicit
+     per-level metadata;
+  2. the runner limits a request to ten entries but does not reject a request
+     that crosses canonical ten-level groups.
+- Reopened exact paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleFlow.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`
+- Frozen throughout correction: IDs, ordinals, names, seeds, setup histories,
+  anchors and both completing routes.
+- Next action: add and validate explicit target-row metadata for every registered
+  definition; make the runner reject cross-group ranges before opening its Vite
+  loader; regenerate the 01–10 artifact; rerun the four focused Core files plus
+  typecheck; return the exact correction range to the rejecting reviewer.
