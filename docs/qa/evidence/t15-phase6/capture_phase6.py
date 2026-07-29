@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[4]
 OUT = Path(__file__).resolve().parent
 ARTIFACT_OUT = OUT
 BASE_URL = "http://127.0.0.1:4178/"
-SOURCE_CANDIDATE = "eaed1ac0962ba7256b44136f7bd4f0faef603970"
+SOURCE_CANDIDATE = "90859760bc9b2163219a31eb9053fcd4e92869ce"
 ROUTE_ARTIFACT = ROOT / "docs/workstreams/tetris-t13-core/puzzle-endgame-results.json"
 PRODUCT_PATHS = (
     "src",
