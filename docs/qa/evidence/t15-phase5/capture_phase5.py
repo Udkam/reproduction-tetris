@@ -601,18 +601,37 @@ def validate_common(snapshot: dict[str, Any]) -> None:
     assert all(size >= 12 for size in snapshot["layout"]["statusFontPixels"])
 
 
-def capture(page: Page, name: str, *, settle_ms: int = 80, grayscale: bool = False) -> dict[str, Any]:
+def capture(
+    page: Page,
+    name: str,
+    *,
+    settle_ms: int = 80,
+    grayscale: bool = False,
+    crop_selector: str | None = None,
+    observed_snapshot: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     if grayscale:
         page.evaluate("document.documentElement.dataset.t15Grayscale = 'true'")
     try:
-        page.wait_for_timeout(settle_ms)
-        snapshot = collect(page)
+        if observed_snapshot is None:
+            page.wait_for_timeout(settle_ms)
+            snapshot = collect(page)
+        else:
+            assert settle_ms == 0
+            snapshot = observed_snapshot
         validate_common(snapshot)
         path = ARTIFACT_OUT / f"{name}.png"
-        page.screenshot(path=str(path), full_page=False)
+        if crop_selector is None:
+            page.screenshot(path=str(path), full_page=False)
+        else:
+            crop = page.locator(crop_selector).bounding_box()
+            assert crop is not None
+            assert crop["width"] > 0 and crop["height"] > 0
+            page.screenshot(path=str(path), clip=crop)
         snapshot["file"] = path.name
         snapshot["sha256"] = sha256(path)
         snapshot["grayscale"] = grayscale
+        snapshot["cropSelector"] = crop_selector
         return snapshot
     finally:
         if grayscale:
@@ -678,7 +697,11 @@ def frame_budget(page: Page) -> dict[str, Any]:
     }
 
 
-def activation_capture_ready(snapshot: dict[str, Any]) -> bool:
+def activation_capture_ready(
+    snapshot: dict[str, Any],
+    *,
+    reduced_motion: bool = False,
+) -> bool:
     renderer = snapshot["renderer"]
     activation = renderer["mutationActivation"]
     if activation is None:
@@ -693,7 +716,10 @@ def activation_capture_ready(snapshot: dict[str, Any]) -> bool:
             and impact["active"]
             and impact["progress"] <= 0.65
             and activation["particlesEmitted"]
-            and renderer["mutationActiveParticleCount"] > 0
+            and (
+                reduced_motion
+                or renderer["mutationActiveParticleCount"] > 0
+            )
         )
     active_phases = [phase for phase in activation["phases"] if phase["active"]]
     return bool(active_phases and min(phase["progress"] for phase in active_phases) <= 0.75)
@@ -924,6 +950,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
     fifo_expected: list[str] | None = None
     fifo_observed: list[str] = []
     fifo_witness: dict[str, Any] | None = None
+    collapse_trail_witness: dict[str, Any] | None = None
 
     for step in range(1, 501):
         result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
@@ -972,6 +999,27 @@ def run(context: BrowserContext) -> dict[str, Any]:
         snapshot = collect(page)
         validate_common(snapshot)
         activation = snapshot["renderer"]["mutationActivation"]
+        collapse_trail = snapshot["renderer"]["mutationCollapseTrail"]
+
+        if (
+            collapse_trail_witness is None
+            and collapse_trail is not None
+            and collapse_trail["columns"]
+            and collapse_trail["maxDrop"] > 0
+        ):
+            trail_capture = capture(
+                page,
+                "collapse-settlement-columns",
+                settle_ms=0,
+                crop_selector="[data-testid='board-frame']",
+                observed_snapshot=snapshot,
+            )
+            captured_trail = trail_capture["renderer"]["mutationCollapseTrail"]
+            assert captured_trail is not None
+            assert captured_trail["columns"]
+            assert captured_trail["maxDrop"] > 0
+            captures.append(trail_capture)
+            collapse_trail_witness = captured_trail
 
         if (
             activation
@@ -1011,6 +1059,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
             and timed_seen == {1, 2, 3}
             and fifo_expected is not None
             and fifo_observed == fifo_expected
+            and collapse_trail_witness is not None
             and count == 3
         ):
             break
@@ -1019,7 +1068,8 @@ def run(context: BrowserContext) -> dict[str, Any]:
             "Autoplayer exhausted: "
             f"active={active_seen}, preview={preview_seen}, locked={locked_seen}, "
             f"activations={activation_seen}, timed={timed_seen}, "
-            f"fifoExpected={fifo_expected}, fifoObserved={fifo_observed}"
+            f"fifoExpected={fifo_expected}, fifoObserved={fifo_observed}, "
+            f"collapseTrail={collapse_trail_witness}"
         )
 
     page.set_viewport_size({"width": 390, "height": 844})
@@ -1039,6 +1089,53 @@ def run(context: BrowserContext) -> dict[str, Any]:
     reduced = capture(page, "landscape-three-status-reduced")
     assert timed_count(reduced) == 3
     captures.append(reduced)
+
+    reduced_activation_seen: set[str] = set()
+    for step in range(1, 501):
+        result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
+        if result.get("stopped"):
+            raise AssertionError(
+                f"Reduced-motion autoplayer stopped at step {step}: {result}"
+            )
+        snapshot = collect(page)
+        validate_common(snapshot)
+        activation = snapshot["renderer"]["mutationActivation"]
+        if (
+            activation
+            and activation["item"] not in reduced_activation_seen
+            and activation_capture_ready(snapshot, reduced_motion=True)
+        ):
+            activation_capture = capture(
+                page,
+                f"activation-{activation['item']}-reduced",
+                settle_ms=0,
+                crop_selector="[data-testid='board-frame']",
+                observed_snapshot=snapshot,
+            )
+            captured_activation = activation_capture["renderer"]["mutationActivation"]
+            assert captured_activation is not None
+            assert captured_activation["item"] == activation["item"]
+            if activation["item"] == "bomb":
+                captured_impact = next(
+                    phase
+                    for phase in captured_activation["phases"]
+                    if phase["id"] == "impact"
+                )
+                assert captured_impact["active"]
+                assert captured_activation["particlesEmitted"]
+                assert (
+                    activation_capture["renderer"]["mutationActiveParticleCount"]
+                    == 0
+                )
+            captures.append(activation_capture)
+            reduced_activation_seen.add(activation["item"])
+        if reduced_activation_seen == required_items:
+            break
+    else:
+        raise AssertionError(
+            "Reduced-motion autoplayer exhausted: "
+            f"activations={reduced_activation_seen}"
+        )
 
     page.emulate_media(reduced_motion="no-preference")
     page.set_viewport_size({"width": 390, "height": 844})
@@ -1105,7 +1202,9 @@ def run(context: BrowserContext) -> dict[str, Any]:
             "nextGrayscale": sorted(preview_seen),
             "locked": sorted(locked_seen),
             "activations": sorted(activation_seen),
+            "activationsReduced": sorted(reduced_activation_seen),
             "timedCounts": sorted(timed_seen),
+            "collapseSettlement": collapse_trail_witness,
             "rendererFifo": {
                 "witness": fifo_witness,
                 "expected": fifo_expected,
