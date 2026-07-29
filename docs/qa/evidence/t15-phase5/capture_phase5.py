@@ -621,17 +621,57 @@ def capture(
             snapshot = observed_snapshot
         validate_common(snapshot)
         path = ARTIFACT_OUT / f"{name}.png"
+        clip: dict[str, float] | None = None
         if crop_selector is None:
             page.screenshot(path=str(path), full_page=False)
         else:
             crop = page.locator(crop_selector).bounding_box()
             assert crop is not None
             assert crop["width"] > 0 and crop["height"] > 0
+            board_bounds = snapshot["bounds"]["board"]
+            assert board_bounds is not None
+            assert abs(crop["x"] - board_bounds["left"]) <= 1
+            assert abs(crop["y"] - board_bounds["top"]) <= 1
+            assert abs(crop["width"] - board_bounds["width"]) <= 1
+            assert abs(crop["height"] - board_bounds["height"]) <= 1
+            clip = {
+                "x": crop["x"],
+                "y": crop["y"],
+                "width": crop["width"],
+                "height": crop["height"],
+            }
             page.screenshot(path=str(path), clip=crop)
+        if observed_snapshot is not None:
+            snapshot = collect(page)
+            validate_common(snapshot)
+            board_bounds = snapshot["bounds"]["board"]
+            assert board_bounds is not None
+            assert clip is not None
+            assert abs(clip["x"] - board_bounds["left"]) <= 1
+            assert abs(clip["y"] - board_bounds["top"]) <= 1
+            assert abs(clip["width"] - board_bounds["width"]) <= 1
+            assert abs(clip["height"] - board_bounds["height"]) <= 1
+            capture_before = {
+                "pieceCountBefore": observed_snapshot["state"]["pieceCount"],
+                "pieceCountAfter": snapshot["state"]["pieceCount"],
+                "mutationActivationBefore": observed_snapshot["renderer"]["mutationActivation"],
+                "mutationActivationQueueBefore": observed_snapshot["renderer"][
+                    "mutationActivationQueueItems"
+                ],
+                "mutationCollapseTrailBefore": observed_snapshot["renderer"]["mutationCollapseTrail"],
+            }
         snapshot["file"] = path.name
         snapshot["sha256"] = sha256(path)
         snapshot["grayscale"] = grayscale
         snapshot["cropSelector"] = crop_selector
+        snapshot["clip"] = clip
+        if observed_snapshot is not None:
+            snapshot["captureBinding"] = {
+                **capture_before,
+                "clip": clip,
+                "file": snapshot["file"],
+                "sha256": snapshot["sha256"],
+            }
         return snapshot
     finally:
         if grayscale:
@@ -701,6 +741,7 @@ def activation_capture_ready(
     snapshot: dict[str, Any],
     *,
     reduced_motion: bool = False,
+    phase_progress_limit: float = 0.75,
 ) -> bool:
     renderer = snapshot["renderer"]
     activation = renderer["mutationActivation"]
@@ -714,7 +755,7 @@ def activation_capture_ready(
         return bool(
             impact
             and impact["active"]
-            and impact["progress"] <= 0.65
+            and impact["progress"] <= min(phase_progress_limit, 0.65)
             and activation["particlesEmitted"]
             and (
                 reduced_motion
@@ -722,7 +763,48 @@ def activation_capture_ready(
             )
         )
     active_phases = [phase for phase in activation["phases"] if phase["active"]]
-    return bool(active_phases and min(phase["progress"] for phase in active_phases) <= 0.75)
+    return bool(
+        active_phases
+        and min(phase["progress"] for phase in active_phases) <= phase_progress_limit
+    )
+
+
+def assert_activation_capture_window(
+    before: dict[str, Any],
+    after: dict[str, Any],
+    *,
+    reduced_motion: bool,
+) -> None:
+    before_activation = before["renderer"]["mutationActivation"]
+    after_activation = after["renderer"]["mutationActivation"]
+    assert before_activation is not None
+    assert after_activation is not None
+    assert before["state"]["pieceCount"] == after["state"]["pieceCount"]
+    assert after_activation["item"] == before_activation["item"]
+    assert after_activation["durationMs"] == before_activation["durationMs"]
+    assert after_activation["elapsedMs"] + 0.5 >= before_activation["elapsedMs"]
+    assert after_activation["elapsedMs"] < after_activation["durationMs"]
+    assert (
+        after["renderer"]["mutationActivationQueueItems"]
+        == before["renderer"]["mutationActivationQueueItems"]
+    )
+    assert activation_capture_ready(after, reduced_motion=reduced_motion)
+
+
+def assert_collapse_trail_capture_window(
+    before: dict[str, Any],
+    after: dict[str, Any],
+) -> None:
+    before_trail = before["renderer"]["mutationCollapseTrail"]
+    after_trail = after["renderer"]["mutationCollapseTrail"]
+    assert before_trail is not None
+    assert after_trail is not None
+    assert before["state"]["pieceCount"] == after["state"]["pieceCount"]
+    assert after_trail["columns"] == before_trail["columns"]
+    assert after_trail["maxDrop"] == before_trail["maxDrop"]
+    assert after_trail["durationMs"] == before_trail["durationMs"]
+    assert after_trail["elapsedMs"] + 0.5 >= before_trail["elapsedMs"]
+    assert after_trail["elapsedMs"] < after_trail["durationMs"]
 
 
 def install_fifo_observer(
@@ -951,6 +1033,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
     fifo_observed: list[str] = []
     fifo_witness: dict[str, Any] | None = None
     collapse_trail_witness: dict[str, Any] | None = None
+    reduced_activation_files: dict[str, dict[str, Any]] = {}
 
     for step in range(1, 501):
         result = page.evaluate("window.__T15_AUTOPLAY_STEP__()")
@@ -1014,22 +1097,35 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 crop_selector="[data-testid='board-frame']",
                 observed_snapshot=snapshot,
             )
+            assert_collapse_trail_capture_window(snapshot, trail_capture)
             captured_trail = trail_capture["renderer"]["mutationCollapseTrail"]
             assert captured_trail is not None
             assert captured_trail["columns"]
             assert captured_trail["maxDrop"] > 0
             captures.append(trail_capture)
-            collapse_trail_witness = captured_trail
+            collapse_trail_witness = {
+                "file": trail_capture["file"],
+                "sha256": trail_capture["sha256"],
+                "trail": captured_trail,
+                "captureBinding": trail_capture["captureBinding"],
+            }
 
         if (
             activation
             and activation["item"] not in activation_seen
-            and activation_capture_ready(snapshot)
+            and activation_capture_ready(snapshot, phase_progress_limit=0.45)
         ):
             activation_capture = capture(
                 page,
                 f"activation-{activation['item']}",
                 settle_ms=0,
+                crop_selector="[data-testid='board-frame']",
+                observed_snapshot=snapshot,
+            )
+            assert_activation_capture_window(
+                snapshot,
+                activation_capture,
+                reduced_motion=False,
             )
             captured_activation = activation_capture["renderer"]["mutationActivation"]
             assert captured_activation is not None
@@ -1097,13 +1193,18 @@ def run(context: BrowserContext) -> dict[str, Any]:
             raise AssertionError(
                 f"Reduced-motion autoplayer stopped at step {step}: {result}"
             )
+        page.wait_for_timeout(18)
         snapshot = collect(page)
         validate_common(snapshot)
         activation = snapshot["renderer"]["mutationActivation"]
         if (
             activation
             and activation["item"] not in reduced_activation_seen
-            and activation_capture_ready(snapshot, reduced_motion=True)
+            and activation_capture_ready(
+                snapshot,
+                reduced_motion=True,
+                phase_progress_limit=0.45,
+            )
         ):
             activation_capture = capture(
                 page,
@@ -1111,6 +1212,11 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 settle_ms=0,
                 crop_selector="[data-testid='board-frame']",
                 observed_snapshot=snapshot,
+            )
+            assert_activation_capture_window(
+                snapshot,
+                activation_capture,
+                reduced_motion=True,
             )
             captured_activation = activation_capture["renderer"]["mutationActivation"]
             assert captured_activation is not None
@@ -1129,6 +1235,11 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 )
             captures.append(activation_capture)
             reduced_activation_seen.add(activation["item"])
+            reduced_activation_files[activation["item"]] = {
+                "file": activation_capture["file"],
+                "sha256": activation_capture["sha256"],
+                "captureBinding": activation_capture["captureBinding"],
+            }
         if reduced_activation_seen == required_items:
             break
     else:
@@ -1203,6 +1314,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
             "locked": sorted(locked_seen),
             "activations": sorted(activation_seen),
             "activationsReduced": sorted(reduced_activation_seen),
+            "activationReducedCaptures": reduced_activation_files,
             "timedCounts": sorted(timed_seen),
             "collapseSettlement": collapse_trail_witness,
             "rendererFifo": {
