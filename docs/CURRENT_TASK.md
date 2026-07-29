@@ -328,6 +328,19 @@ or history rewrite is authorized.
   tree and temporary files outside the repository, runs no gameplay capture or source
   gate, and must clean all outputs. Product source remains frozen unless that direct
   map proves a real game-owned listener survives.
+- The bounded diagnostic now proves a probe-order mismatch rather than a product
+  leak. The raw page baseline was sampled before any Playwright locator readiness
+  action and contained 4 listeners. Mount/restart remained exactly stable at 28;
+  unmount removed the game-owned `document:pointermove`, the additional
+  `window:pointerup`, input, visibility and resize listeners, closed the only audio
+  context, removed the Canvas/QA bridge and returned rAF to zero. The remaining
+  17-listener map exactly matches the already accepted Phase-4 Playwright-instrumented
+  home baseline, whose first and second unmounts both remained 17 and whose remount
+  remained 28. Therefore product source and final gates stay frozen. The only allowed
+  harness correction is to await the stable Mutation home selector through Playwright
+  before taking the original lifecycle baseline, matching the accepted Phase-4
+  `open_home` order. It must retain exact first-unmount and second-unmount equality;
+  no listener may be filtered, subtracted, tolerated, or reclassified as success.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

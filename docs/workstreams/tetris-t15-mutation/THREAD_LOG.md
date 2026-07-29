@@ -1453,3 +1453,40 @@
   WMI/CIM, MCP, Serena or a sub-agent.
 - Next action: checkpoint this failure and diagnostic lease, clear R3 control logs,
   run the one bounded diagnostic, classify exact listener ownership, then stop.
+
+## 2026-07-29 — Listener-map diagnostic classified the baseline mismatch
+
+- Task ID: `T15-PHASE5-LIFECYCLE-LISTENER-DIAGNOSTIC-R1`.
+- Base / diagnostic contract checkpoint:
+  `03906e2af398e7ba20c5c084f044dda2ba350463`.
+- Command actually run: one temporary Python diagnostic importing the committed
+  Phase-5 lifecycle probe, with one owned Vite process on 4178 and one hardware
+  Playwright Chrome tree. It reproduced only home → Mutation → Settings restart →
+  first unmount and emitted JSON outside the repository.
+- Hardware proof: WebGL2 used
+  `ANGLE (NVIDIA GeForce RTX 4070 SUPER, Direct3D11)`; the server and browser tree
+  exited and 4178/5178/5179 were free after the run.
+- Exact listener result:
+  - raw post-navigation baseline: 4;
+  - first mount / pre-restart / post-restart: 28 / 28 / 28 with identical maps;
+  - first unmount: 17, pending rAF 0, Canvas 0, QA absent, one audio context created
+    and one closed, open audio contexts 0.
+- Ownership classification: unmount removed Mutation input/visibility/resize
+  listeners plus Pixi's `document:pointermove` and the additional
+  `window:pointerup`. The 13 entries absent from the raw baseline are Playwright's
+  `__playwright_global_listeners_check__` actionability instrumentation and its
+  mouse/touch/pointer listener set. Accepted
+  `docs/qa/evidence/t15-phase4/phase4-browser-evidence.json` independently records
+  that exact 17-listener map as its home baseline, 28 while mounted, 17 after first
+  unmount, 28 after remount and 17 after second unmount.
+- Verdict: probe-order mismatch, not product leak. No product source, gate, test,
+  build, formal evidence, MCP, Serena, WMI/CIM or sub-agent ran. No repository path
+  changed during the diagnostic.
+- Bounded harness correction: after navigation, first await
+  `[data-testid='enter-sprint']` through Playwright, then sample the original home
+  lifecycle baseline. This matches accepted Phase-4 `open_home` ordering while
+  preserving exact first/second unmount map, rAF, audio and Canvas checks. Filtering,
+  subtraction, fixed tolerances or a game-mount warm-up are forbidden.
+- Next action: commit this diagnostic record, remove its temporary script/logs, edit
+  only `docs/qa/evidence/t15-phase5/capture_phase5.py`, run static checks, checkpoint
+  the harness, and obtain one serialized read-only audit before another formal lease.

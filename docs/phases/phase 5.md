@@ -134,6 +134,17 @@ post-restart first unmount had a different global-listener count than the initia
 baseline. No artifact survived. A single nonpublishing mount/restart/unmount diagnostic
 must print the listener maps before classifying this as a product leak or probe debt.
 
+The diagnostic completed on hardware Chrome and proved probe ordering, not a product
+leak. The initial post-navigation snapshot had 4 listeners because it preceded
+Playwright's first locator readiness action. The active Mutation map was stable at 28
+through restart. Unmount removed every game-owned listener, Canvas, QA bridge, pending
+rAF and open audio context, leaving the same 17-listener Playwright-instrumented home
+map recorded by accepted Phase-4 evidence before and after two mount cycles. The next
+harness checkpoint may only wait for the existing Mutation home selector before
+sampling its baseline, exactly mirroring Phase 4. Both unmounts must still equal that
+complete map with no filtering, subtraction or tolerance; product source and gates
+remain frozen.
+
 ## 重启恢复边界（2026-07-29）
 
 本节是电脑重启后继续 Phase 5 的直接执行合同。若历史描述与本节冲突，以

@@ -336,6 +336,19 @@ The two-boundary wait is itself fail-closed: a 2,000 ms browser timer rejects if
 rAF callbacks do not complete, and is cleared only after the second callback runs.
 Timeout never produces a lifecycle snapshot or permits publication.
 
+The home listener baseline is sampled only after Playwright has completed one stable
+home-selector readiness probe. A raw post-navigation evaluation contains four
+page-owned listeners before Playwright installs its actionability instrumentation;
+comparing that pre-probe map to a post-interaction unmount is a probe-order error.
+Hardware diagnosis and the already accepted Phase-4 evidence both show the stable
+instrumented sequence `17 → 28 → 17 → 28 → 17`: Mutation contributes input,
+visibility, resize, Pixi pointer-move and a second pointer-up listener, and unmount
+removes all of them while closing audio and clearing rAF/Canvas/QA. Phase 5 mirrors
+Phase 4 by waiting for the existing Mutation entry selector before sampling the
+original home baseline, then requires exact map equality after both unmounts. It does
+not warm the baseline with a game mount, filter listeners, subtract a fixed count, or
+introduce tolerance.
+
 Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
 and the managed browser are never concurrent: review turns are serialized, and no
 browser, Vite, test, build, or diagnostic tree overlaps another heavy tree. Optional
