@@ -44,3 +44,22 @@
 - Blocker: none for the contract checkpoint.
 - Next action: commit this exact docs-only contract, record its SHA, then implement
   v5 persistence against the still-frozen twenty-level source baseline.
+
+## Contract checkpoint recorded — 2026-07-30
+
+- Contract checkpoint: `08c0491014c00ff5972ad7471d5bb0126eebae52`.
+- Cached paths exactly matched the seven declared docs paths; `git diff --cached
+  --check` passed.
+- No product, test, dependency, evidence or generated path was included.
+- Open writer: coordinator as `t15_puzzle_persistence_writer`.
+- Exact open paths:
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.tsx`
+  - `src/App.test.ts`
+- Closed paths: Puzzle definitions/IDs/names, route search/artifact, renderer, CSS,
+  other modes, final evidence and changelog.
+- Focused gate after the last change in this slice: Puzzle progress tests, affected
+  App persistence tests, then typecheck. No full suite/build/browser in this slice.
+- Next action: implement v5 and the frozen historic-domain migration without changing
+  the current twenty-level all-open runtime.

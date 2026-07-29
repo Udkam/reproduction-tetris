@@ -12,8 +12,9 @@ count/progression data for fifty levels is allowed, but its visual composition m
 not be replaced. Phase 6 corrected product `9085976`, final gates, browser evidence,
 and all three independent reviews pass; coordinator acceptance/recovery `d0b7406` is
 pushed with exact local/tracking/remote equality and recorded at remote tip `d78e0e5`.
-Phase 7's documentation contract is now open from that exact rollback base; product
-paths remain closed until the contract checkpoint is committed.
+Phase 7's documentation contract is frozen at
+`08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
+Only the first persistence-v5 slice is now open.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -38,6 +39,14 @@ writer for each shared slice. Under the updated dynamic resource memory, green p
 parallel static audits and at most two heavy tasks; amber serializes new heavy work;
 red starts none. Helpers are on-demand and ownership-cleaned, with no WMI/CIM. Exact
 paths, tests and evidence are frozen in `docs/phases/phase 7.md`.
+
+**Open Phase-7 slice — persistence-v5:** exact product/test paths are
+`src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`, and
+`src/App.test.ts`. This slice may add the v5 key/revision, freeze v4/v3/v2/v1 domains,
+preserve legal completion history, reject malformed data, and write a successful
+migration back to v5 while leaving old keys untouched. It must preserve the current
+twenty-level runtime and all-open presentation until the later explicit unlock slice.
+Puzzle definitions, IDs, names, solver, renderer, CSS and other modes remain closed.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

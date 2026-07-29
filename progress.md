@@ -23,7 +23,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   Serena, and only the current control task's two Node helpers.
 - Phase-6 acceptance/recovery `d0b7406` is pushed non-force and recorded at clean
   remote tip `d78e0e5`. Phase 6 is closed.
-- Phase 7's docs-only contract is being frozen from `d78e0e5`: fifty levels,
+- Phase 7's docs-only contract is frozen at `08c0491` from `d78e0e5`: fifty levels,
   3/4/5/6/7 target rows, two replayed routes per level, sparse anchors, v5 migration,
   staged unlock and data/scroll-only adaptation of the existing selector.
 - Phase 1 and Phase 1.5 are accepted and pushed.
@@ -96,8 +96,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 ## Next verification
 
 - Keep Phase-6 product/evidence frozen.
-- Commit the Phase-7 docs-only contract from pushed recovery `d78e0e5`, then record
-  its SHA before opening v5 persistence.
+- Implement the exact four-path persistence-v5 slice opened by contract `08c0491`.
+- Preserve the current twenty-level all-open runtime in this slice; staged unlocking
+  opens only after all fifty definitions exist.
 - Do not redesign the Puzzle selector; only adapt its existing five-column route to
   ten internally scrolling five-level bands.
 - Use the updated dynamic resource budget: green permits static parallel review and
