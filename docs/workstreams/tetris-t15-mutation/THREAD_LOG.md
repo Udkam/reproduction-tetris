@@ -1232,3 +1232,28 @@
 - Next action: commit this candidate record, obtain one serialized read-only static
   evidence verdict on `e2d18da`, then open a new single formal capture lease only if
   that verdict has no blocking finding.
+
+## 2026-07-29 — One-state harness static QA accepted
+
+- Task ID: `T15-PHASE5-EVIDENCE-ONE-STATE-QA-R1`.
+- Exact candidate: `e2d18dab7317ebb5cf039af40e170481974d16e2`.
+- One serialized read-only agent reviewed only the contract and exact harness diff.
+  It did not edit, spawn a child, or start browser, Vite, tests, build, MCP, Serena,
+  language server or WMI/CIM.
+- Verdict: `PASS`; P0=0, P1=0, P2=0, P3=0, GAP=0.
+- Accepted evidence:
+  - English three-state frames and the unchanged performance thresholds finish before
+    the fallback begins;
+  - the current stack and later recovery use only real Core ticks and the existing
+    fixed-seed ordinary autoplay;
+  - both loops are finite and fail closed on exhaustion or stopped play;
+  - a screenshot is accepted only while its collected state still has exactly one
+    timed row;
+  - manifest source/tick/placement fields distinguish how that genuine state arose;
+  - no state/timer injection, performance/lifecycle/publication weakening, dead loop,
+    leak-success path or evidence pollution was found.
+- The first broad review turn was stopped by the coordinator after it exceeded the
+  bounded reading window; the same agent was reused for the focused diff verdict, so
+  no second concurrent reviewer or accumulated task remained.
+- Next action: checkpoint this verdict, verify the reviewer is finished and the
+  resource/process baseline is clean, then register one new formal capture lease.
