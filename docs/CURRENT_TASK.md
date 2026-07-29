@@ -219,6 +219,14 @@ or history rewrite is authorized.
   or Phase-5 acceptance. Three independent read-only audits now review source
   isolation, evidence integrity, and target/visual coverage before the one managed
   browser batch is admitted.
+- Static comparison returned two PASS verdicts and one stricter evidence-integrity
+  GAP. The stricter result controls: before the browser batch, the harness must bind
+  the CSS board rectangle to the Renderer board rectangle in all four dimensions
+  through the Canvas CSS/Renderer logical-size transform, not only by aspect ratio.
+  Publication must also recompute every PNG hash, require it to equal both capture
+  metadata and transient binding metadata where present, and reject duplicate PNG
+  hashes across distinct capture labels. This is another harness-only checkpoint;
+  `ee2aac5` and the final gates at `6d9fc6a` remain frozen and valid.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

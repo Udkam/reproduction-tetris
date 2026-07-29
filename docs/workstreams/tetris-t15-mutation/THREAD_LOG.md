@@ -921,3 +921,24 @@
   by this checkpoint.
 - Next action: resolve the three independent static audit verdicts, then admit the
   single managed browser evidence batch only if no P0–P2 finding remains.
+
+## 2026-07-29 — Static comparison blocks browser admission
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-STATIC-R5`.
+- Exact audit candidate: product `ee2aac5`, harness `a5fa896`, gates `6d9fc6a`.
+- Source-isolation audit: PASS, P0/P1/P2 zero; one non-blocking P3 requests stronger
+  direct `Rectangle`/clear-color argument assertions in a future related source
+  slice.
+- Target/visual coverage audit: PASS, P0/P1/P2 zero; manual review must emphasize
+  grayscale carrier recognizability and Chinese “冰冻” wording.
+- Evidence-integrity audit: GAP with two accepted P2 findings:
+  - CSS board evidence currently checks only aspect ratio instead of the complete
+    Canvas CSS ↔ Renderer logical x/y/width/height mapping;
+  - publication does not yet recompute each PNG against capture/binding hashes or
+    reject duplicate image hashes across distinct capture names.
+- Coordinator disposition: the strict verdict controls. Do not start the formal
+  browser batch until both findings are addressed in the evidence harness and
+  independently re-reviewed. Product source and final gates remain unchanged.
+- Next action: commit this finding checkpoint, implement the two harness-only guards,
+  run static syntax/pure checks, commit the correction, and request a bounded
+  evidence-integrity re-audit.
