@@ -720,7 +720,7 @@ def save_isolated_renderer_capture(
             phaseTicks: 0,
             pendingClearRows: [],
             active: null,
-            queue: ["T", "O", "I"],
+            queue: [],
             combo: 0,
             lines: 0,
           };
@@ -793,6 +793,8 @@ def save_isolated_renderer_capture(
     assert dimensions == extracted["outputPixels"]
     assert payload["canvasCountDuring"] == 1
     assert payload["canvasCountAfter"] == 0
+    assert payload["before"]["previewPiece"] is None
+    assert payload["before"]["previewPieces"] == []
     assert extracted["pixelProbe"]["nonTransparentSamples"] >= 16
     assert extracted["pixelProbe"]["distinctBuckets"] >= 4
     path = ARTIFACT_OUT / name
