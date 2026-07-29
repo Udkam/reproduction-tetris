@@ -76,7 +76,7 @@ passed; both temporary outputs and both Node processes were released.
 `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
 `src/game/core/puzzleCampaign.test.ts`,
 `src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
-`docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.ts`, and
+`docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`, and
 `docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`. The first ten
 existing visible IDs may receive re-authored 3-row setup histories, concise
 structural Chinese/English names, unique gameplay seeds, and exactly one authored

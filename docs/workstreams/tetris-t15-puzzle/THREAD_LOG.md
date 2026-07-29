@@ -151,10 +151,13 @@
   - `src/game/core/puzzleCampaign.test.ts`
   - `src/game/core/puzzleSolverResults.test.ts`
   - `src/ui/localization.ts`
-  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.ts`
+  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`
   - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`
 - Closed: levels 11–20, new 21–50 IDs, progress/unlock, App/selector, CSS,
   renderer, other modes, dependencies and final evidence.
+- Runner form: `.mjs` uses Vite's existing in-process SSR loader only to import the
+  TypeScript Core, never listens on a port, closes the loader in `finally`, and
+  avoids adding a dependency or a skipped authoring test to the normal suite.
 - Next action: generate a bounded candidate pool, register only ten selected
   definitions, replay two early-diverging routes per level through public Core
   dispatch, then freeze their source-bound artifact and focused tests.
