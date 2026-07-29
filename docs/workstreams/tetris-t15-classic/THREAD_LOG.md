@@ -459,3 +459,35 @@
   rule verdict remain unchanged.
 - Next action: run independent evidence-integrity QA against
   `PHASE6_EVIDENCE_REVIEW.md`. Only its ACCEPT may open coordinator acceptance.
+
+## TETRIS-T15-PHASE6-EVIDENCE-QA-016
+
+- Status: `INDEPENDENT EVIDENCE QA ACCEPT / COORDINATOR REVIEW OPEN`.
+- Task: independent reviewer `t15_phase6_rules_qa`.
+- Reviewed candidate: `90859760bc9b2163219a31eb9053fcd4e92869ce`.
+- Changed paths and commands: none. The reviewer performed UTF-8 static reads, exact
+  Git comparisons, and one-shot SHA-256 recomputation only; it did not edit, stage,
+  commit, push, serve, browse, test, build, or start persistent tooling.
+- Verdict: `ACCEPT`; P0, P1, P2, P3, and GAP are all `none`.
+- Exact integrity:
+  - gate hashes `3/3`;
+  - browser hashes `19/19`;
+  - manifest capture hashes `15/15`;
+  - capture files `15/15`, unique and set-equal to the manifest;
+  - product/config diff `9085976..HEAD` empty.
+- Chain confirmed: accepted base `4f871ac`, corrected product `9085976`, gate
+  `2c9fd50 / 0239231 / bee956a`, and browser
+  `4a7f95f / 9f90ced / ca80416` are all ancestors and mutually bound.
+- Provenance confirms public runtime/Core 1/2/3-row routes, absent public four-row
+  route, isolated four-row contraction at `phaseTicks: 5`, and honestly isolated
+  combo/speed/top-out/reduced frames.
+- Runtime evidence confirms required viewports and reduced motion, one Canvas, zero
+  DOM board cells/overflow/errors, listener lifecycle `17→28→17`, repeat/Puzzle
+  unmount at 17, and final zero Canvas/open AudioContexts/pending rAF. Browser is
+  closed and server released.
+- Retained disclosure: managed Vite termination records `exitCode=1` together with
+  `released=true`, empty stderr, established listener ownership, and a closed final
+  listener. The reviewer finds no evidence contradiction.
+- Next action: coordinator reads all three verdicts and workstream records, records
+  formal Phase-6 acceptance in changelog, verifies cleanup, and pushes. Puzzle 50
+  remains closed until the remote recovery point is verified.

@@ -210,6 +210,19 @@ The correction started no runtime and changed no image, hash, product, or config
 Evidence-integrity QA is now open; Phase 6 remains unaccepted until that final
 independent verdict and coordinator disposition.
 
+**Independent evidence-integrity QA accepted (2026-07-30):** the final reviewer
+accepts corrected product `9085976` with P0–P3/GAP all zero. It independently
+recomputed 3/3 gate hashes, 19/19 browser hashes, and 15/15 embedded capture hashes;
+confirmed the exact accepted-base/product/gate/harness/raw/index chain; found no
+product/config drift from `9085976` to HEAD; and reconciled every capture's purpose,
+dimensions, provenance, state binding, responsive/reduced-motion coverage,
+one-Canvas/zero-DOM assertions, `17→28→17` listener lifecycle, final zero
+Canvas/audio/rAF state, empty errors, closed browser, and released server. The Vite
+`exitCode=1` is retained as a disclosed managed-termination record alongside
+`released=true`, empty stderr, and closed listener; it is not a contradiction.
+Phase 6 is now eligible for coordinator acceptance, changelog integration, cleanup,
+and push. Puzzle 50 remains closed until that pushed recovery point exists.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

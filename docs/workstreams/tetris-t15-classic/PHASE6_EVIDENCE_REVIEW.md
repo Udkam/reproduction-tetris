@@ -1,6 +1,6 @@
 # T15 Phase 6 evidence-integrity review packet
 
-Status: `PREPARED / CLOSED UNTIL RULES AND VISUAL QA ACCEPT`.
+Status: `INDEPENDENT EVIDENCE-INTEGRITY QA ACCEPT / COORDINATOR REVIEW OPEN`.
 
 This packet defines a zero-runtime integrity audit of the corrected Phase-6 evidence.
 It is not a verdict. The reviewer must use committed files only and must not start

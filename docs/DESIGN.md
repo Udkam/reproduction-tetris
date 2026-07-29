@@ -97,9 +97,9 @@ Classic in this checkpoint; Survival pressure, Mutation activation, Puzzle feedb
 React copy, HUD structure, and audio remain frozen.
 
 Phase 5 is independently accepted, pushed, and cleaned through `4f871ac`. Phase 6
-rules and visual QA independently accept corrected product `9085976` with P0–P3/GAP
-all zero; evidence-integrity QA still gates final acceptance. The fifty-level Puzzle
-contract remains frozen until Phase 6 acceptance; its selector composition is not a
+rules, visual, and evidence-integrity QA independently accept corrected product
+`9085976` with P0–P3/GAP all zero. Coordinator acceptance and the pushed recovery
+point still gate the fifty-level Puzzle contract; its selector composition is not a
 Phase-6 target.
 
 ## Phase 1 — TetraMorph Design System v1.0
