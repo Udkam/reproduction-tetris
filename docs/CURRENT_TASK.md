@@ -324,6 +324,20 @@ candidate pools, probes, solver logs and owned solver PIDs were released after
 artifact generation. Independent QA is now open read-only against candidate
 `0faf9e7`; levels 31–40 remain closed until that disposition is recorded.
 
+**Levels 21–30 accepted (2026-07-30):** two independent read-only reviews accept
+candidate `0faf9e7` at record tip `49fc642` with P0–P3 all zero and GAP=0.
+The route review independently confirms the 10-level/20-route schema, frozen
+24/600/480 search bound, seven-ten/three-seven setup mix, legal five-row boards,
+unique seeds/boards, lock-1–3 divergence, source binding, public-Core terminal
+replay, fixed anchors and explicit rejection of anchor-row clears. The curriculum
+review independently confirms the first twenty definitions/artifacts are unchanged,
+the measured within-batch order is nondecreasing, three anchors are distributed
+across left/right headroom, v4 remains a frozen twenty-ID domain, all 30 current
+levels remain open during transition, five-level bands are data-driven, and neither
+`src/App.tsx` nor `src/styles.css` changed. Levels 21–30 are **ACCEPTED / CLOSED**.
+After this acceptance checkpoint is pushed, the coordinator may open only the
+bounded levels 31–40 authoring contract.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

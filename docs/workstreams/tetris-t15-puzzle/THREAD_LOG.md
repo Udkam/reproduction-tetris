@@ -575,3 +575,23 @@
 - Blocker: none. Independent QA is read-only against `0faf9e7`.
 - Next action: record independent definition/route/curriculum disposition before
   opening levels 31–40.
+
+## Levels 21–30 independent acceptance — 2026-07-30
+
+- Candidate: `0faf9e7`; record tip: `49fc642`.
+- Route/schema QA: ACCEPT, P0=0, P1=0, P2=0, P3=0, GAP=0.
+  - independently confirms 10 five-row definitions, 7 ordinary ten-drop and
+    3 anchored seven-drop setups, 20 early-diverging routes at 24/600/480;
+  - confirms source/artifact binding, real public-Core terminal replay, target
+    exhaustion, anchor-row clear rejection and fixed anchor coordinates.
+- Curriculum/boundary QA: ACCEPT, P0=0, P1=0, P2=0, P3=0, GAP=0.
+  - independently confirms 01–20 source/artifacts are unchanged;
+  - confirms measured within-batch order, three spatially distributed anchors,
+    v4 frozen-domain compatibility, all-open 30-level transition and six
+    five-level presentation bands;
+  - confirms `src/App.tsx` and `src/styles.css` have zero candidate delta.
+- Both reviews were read-only and ran no npm command, test, build, browser,
+  solver, Node helper or WMI/CIM query.
+- Disposition: levels 21–30 are ACCEPTED / CLOSED.
+- Next action: push the acceptance point, then open a separate 31–40 candidate
+  authoring contract.
