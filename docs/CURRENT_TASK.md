@@ -164,6 +164,17 @@ candidate, mandatory rule questions, hashes, verdict schema, and zero-helper bou
 Coordinator static/hash preflight is explicitly not independent QA; Phase 6 remains
 frozen and unaccepted.
 
+**Zero-runtime follow-up review packets (2026-07-30):** visual and evidence-integrity
+checklists are prepared at
+`docs/workstreams/tetris-t15-classic/PHASE6_VISUAL_REVIEW.md` and
+`docs/workstreams/tetris-t15-classic/PHASE6_EVIDENCE_REVIEW.md`. They bind all fifteen
+frames, required original-detail questions, candidate/hash/provenance checks,
+responsive and reduced-motion coverage, lifecycle closure, severity schemas, and
+strict review ordering. Preparation is documentation only: visual QA remains closed
+until repeated rules QA accepts, and evidence-integrity QA remains closed until both
+rules and visual QA accept. Neither packet is a verdict or permission to rerun gates,
+browser capture, or product code.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

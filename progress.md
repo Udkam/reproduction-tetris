@@ -373,3 +373,15 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   frozen range, mandatory rule checks, verdict schema, and zero-helper boundary for a
   future independent pass. This coordinator packet is not a QA verdict, so Phase 6
   remains frozen, unaccepted, unpushed, and Puzzle 50 remains closed.
+
+## 2026-07-30 Phase 6 zero-runtime follow-up packets
+
+- Prepared visual and evidence-integrity review packets without running project code.
+  The visual packet maps all 15 original-detail frames to exact viewport, provenance,
+  ordinary-clear, Classic-feedback, reduced-motion, and severity questions.
+- The integrity packet freezes candidate/gate/harness/raw/index provenance, 3/3 gate
+  and 19/19 browser checksums, 15 captures, public-versus-isolated route labels,
+  one-Canvas/zero-DOM-cell assertions, `17→28→17` lifecycle restoration, and final
+  zero Canvas/audio/rAF/server/browser state.
+- These are review inputs, not verdicts. Repeated rules QA remains first; visual and
+  evidence-integrity QA remain closed behind it. Phase 6 and Puzzle 50 do not advance.

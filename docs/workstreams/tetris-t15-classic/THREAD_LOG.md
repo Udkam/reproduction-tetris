@@ -362,3 +362,25 @@
 - Next action: obtain one genuinely independent read-only verdict without starting a
   helper process. If that boundary cannot be met, leave the phase open rather than
   manufacturing acceptance.
+
+## TETRIS-T15-PHASE6-FOLLOW-UP-REVIEW-PACKETS-012
+
+- Status: `PACKETS READY / REVIEW ORDER STILL CLOSED`.
+- Added documentation-only packets:
+  - `PHASE6_VISUAL_REVIEW.md`;
+  - `PHASE6_EVIDENCE_REVIEW.md`.
+- Visual matrix: all 15 committed PNGs, their exact dimensions and provenance,
+  public product/runtime versus isolated real-Renderer labels, three responsive
+  viewports, one-to-four-row grammar, safe next decision, Classic event cues, and
+  reduced-motion endpoints.
+- Evidence matrix: exact corrected candidate/gate/harness/raw/index chain; 3 gate
+  hashes, 19 browser hashes, 15 captures, before/after product equality, honest route
+  limitations, one-Canvas/zero-DOM-cell assertions, `17→28→17` lifecycle, final zero
+  Canvas/audio/rAF, browser/server cleanup, and zero errors.
+- No product, test, config, evidence byte, or acceptance status changed. No gate,
+  test, build, browser, Vite, Serena, language server, or sub-agent was started for
+  packet preparation.
+- Ordering remains fail-closed: repeated rules QA first; only ACCEPT opens visual QA;
+  only rules plus visual ACCEPT open evidence-integrity QA.
+- Next action: obtain the missing genuinely independent repeated rules verdict under
+  the zero-resident-helper contract.
