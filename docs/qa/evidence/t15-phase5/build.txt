@@ -128,6 +128,6 @@ dist/assets/browserAll-RoIKMfNL.js                                 42.59 kB │ 
 dist/assets/RenderTargetSystem--xq1p1PW.js                         71.05 kB │ gzip:  20.15 kB
 dist/assets/CanvasRenderer-B4DHNJbT.js                             87.40 kB │ gzip:  27.38 kB
 dist/assets/Geometry-BsbbJ0Yo.js                                  101.79 kB │ gzip:  31.18 kB
-dist/assets/index-FwE2jtQI.js                                     493.27 kB │ gzip: 144.58 kB
+dist/assets/index-DPwnBx4H.js                                     494.36 kB │ gzip: 144.98 kB
 
-[32m✓ built in 695ms[39m
+[32m✓ built in 751ms[39m
