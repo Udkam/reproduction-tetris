@@ -1095,3 +1095,21 @@
 - Next action: let WMI/Defender settle without polling through WMI, take one bounded
   PDH admission sample, and start the already-committed browser harness only if every
   strengthened gate passes.
+
+## 2026-07-29 — Reboot recovery boundary frozen
+
+- Task ID: `T15-PHASE5-REBOOT-HANDOFF-R1`.
+- Base SHA: `57f3662506cb014dff73fbca81bac3b9ff54e1fc`.
+- Exact project paths:
+  - `docs/phases/phase 5.md`;
+  - `docs/workstreams/tetris-t15-mutation/THREAD_LOG.md`.
+- `docs/phases/phase 5.md` now records the exact frozen product, gate, harness,
+  static-admission and resource-contract commits; the open/unaccepted/unpushed state;
+  allowed and forbidden write scopes; serialized-agent/resource budgets; the complete
+  reboot resume sequence; artifact/visual checks; and fail-closed stop conditions.
+- No product source, evidence artifact, browser, test, build, server, MCP, Serena,
+  sub-agent, or WMI/CIM query was opened for this checkpoint.
+- Next action after reboot: read the six authoritative documents, verify a clean
+  `main` and the five frozen commits, then take one non-WMI eight-sample resource
+  admission check. Do not start the formal browser harness unless every sample and
+  clean-baseline gate passes.

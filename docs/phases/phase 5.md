@@ -108,6 +108,123 @@ direct Renderer/runtime tests and a refreshed final gate batch. It may not retai
 mount the extracted Canvas, enable `preserveDrawingBuffer`, alter VFX duration, pause
 gameplay, or replace full-page layout screenshots.
 
+## 重启恢复边界（2026-07-29）
+
+本节是电脑重启后继续 Phase 5 的直接执行合同。若历史描述与本节冲突，以
+`AGENTS.md`、`docs/CURRENT_TASK.md` 和本节中更严格的约束为准。
+
+### 1. 精确状态与已冻结基线
+
+| 边界 | 精确提交 / 状态 | 含义 |
+| --- | --- | --- |
+| 产品源码 | `ee2aac542529c116c915c38e0603584a7099b5e8` | Core、Runtime、Renderer、UI、CSS、localization 均冻结 |
+| 最终源码门禁 | `6d9fc6ae00099e3a1eb27240bd3c369216f3b007` | typecheck PASS；26 文件 / 225 测试 PASS；753 modules build PASS |
+| 正式 evidence harness | `07e7a55e5d03bcd62e4b9c9fd022f99fa5bb52b4` | 使用硬件 WebGL，记录 GPU，并拒绝软件渲染器 |
+| 浏览器静态放行记录 | `0adb29631960ac9d128ec6498ff9a4ca9dd7a8d2` | 两路独立审计 P0–P3 = 0，只放行一次正式批次 |
+| 资源合同基线 | `57f3662506cb014dff73fbca81bac3b9ff54e1fc` | 串行执行、禁用 WMI/CIM、加强浏览器准入 |
+| 正式浏览器产物 | **不存在** | 先前失败均 fail-closed；不得称为已有证据 |
+| Phase 5 | **OPEN / UNACCEPTED / UNPUSHED** | Phase 6 与 Puzzle 50 仍关闭 |
+
+重启不会授权重新设计、重跑源码门禁或修改产品。除非新的正式浏览器证据直接
+证明产品缺陷，否则 `src/**`、依赖、配置、规则、VFX 和 UI 均不得编辑。若必须
+重开产品源码，先停止、更新合同、创建独立 source checkpoint，并在最后一次
+源码改动后重新运行完整门禁和正式浏览器批次；不得沿用当前 gate/browser 结论。
+
+### 2. 允许范围
+
+重启后的首个执行片只允许：
+
+1. 只读核对 Git、上述五个提交、证据目录和资源基线；
+2. 在全部资源准入条件通过后，运行一次已提交的
+   `docs/qa/evidence/t15-phase5/capture_phase5.py`；
+3. 校验并人工检查该批次生成的 PNG、Vite 日志、browser manifest 和校验和；
+4. 按 `browser-raw`、`browser-index` 两个独立 checkpoint 精确提交；
+5. 依次进行 rules、visual、evidence 三个只读 QA，并分别记录 verdict；
+6. 写 acceptance / changelog，清理资源，non-force push `main`，然后暂停。
+
+允许写入的路径仅限正式 evidence 输出、对应 QA verdict、Phase-5
+workstream/contract/changelog 和最终 acceptance 文档。临时 contact sheet、
+浏览器 profile、控制日志和诊断输出只能放在 `%TEMP%`，不得提交。
+
+### 3. 明确禁止
+
+- 不开始 Phase 6，不实现 Puzzle 50，不修改解谜选关页面。
+- 不修改冻结的产品源码、测试、依赖或 lockfile。
+- 不重跑 typecheck、完整测试或 build；当前源码未变时，
+  `6d9fc6a` 仍是唯一最终门禁。只有产品源码改变才整体重跑。
+- 不并行启动 sub-agent、浏览器、Vite、测试、build、诊断或截图流程。
+- 不启动 Serena、MCP、language server 或额外浏览器 helper，除非当前唯一动作
+  明确需要；动作结束立即释放。
+- 不调用 WMI/CIM、`wmic`、`Get-WmiObject` 或 `Get-CimInstance` 做进程或资源
+  轮询。不得结束 Defender、WMI/Windows 服务、Codex app-server、用户控制窗口
+  或仅凭进程名猜测归属的进程。
+- 不使用 `git add .`、`git add -A`、wildcard staging、squash、rebase、
+  force-push、history rewrite 或跨 checkpoint 混合提交。
+- 不把 `.partial-*`、失败批次、临时截图或缺少最终校验和的目录发布为证据。
+
+### 4. 资源与协作准则
+
+- 协调者始终是唯一执行者。正式 capture 与 PNG 人工检查期间不使用 sub-agent。
+- 最终独立 QA 必须串行：同时最多一个 agent；禁止 agent 再派生子 agent；该
+  agent 只读，不得启动浏览器、server、测试、build、MCP、Serena 或 WMI。
+  一个 verdict 完成且资源复核为零后，才允许开始下一个。
+- 重型树数量恒为 0 或 1。正式 capture 自行拥有且只拥有一个 Python runner、
+  一个 Vite/Node 树和一个 Chrome 树；不得附着既有端口服务。
+- 每次准入使用 PDH：八个连续样本、间隔 2 秒，**每个样本都低于 60% CPU**；
+  同时可用物理内存至少 6 GiB、committed memory 不高于 75%、disk queue
+  不高于 1.0。
+- 准入前还必须为：4178/5178/5179 无 listener、无 `capture_phase5.py`
+  runner、无 Phase-5 Chrome/Vite、无外部控制日志、无 `.partial-*`、无已发布
+  browser artifact。
+- 若总 CPU 持续达到 90%，停止准入，仅清理命令行、父子关系、启动时间和端口
+  都能证明属于本项目的进程。安全/系统服务与共享 Codex 进程不属于清理目标。
+- 已释放的历史浪费包括 Serena/TypeScript server、8 个 MCP bridge 和 22 个
+  重复 `personal-web` preview Node。Codex 固定 `node_repl` 池会自动补位，
+  不得反复终止制造重启抖动。
+
+### 5. 重启后的唯一恢复顺序
+
+1. 完整读取 `AGENTS.md`、`docs/DESIGN.md`、`docs/CURRENT_TASK.md`、本文件、
+   `docs/COMMIT_POLICY.md` 和最新 `docs/logs/CHANGELOG.md`。
+2. 只读核对 `main`、HEAD、`origin/main`、`git status --short`；工作树必须
+   干净。确认当前产品路径相对 `ee2aac5` 无差异、gate 文件相对 `6d9fc6a`
+   无差异、harness 相对 `07e7a55` 无差异。
+3. 用 `Get-Process`、native process API、`netstat` 和 PDH 检查资源；禁止 WMI。
+   任一准入条件不满足就等待，不启动 capture。
+4. 条件全部满足后，只运行一次正式 harness。runner 必须隐藏启动、重定向
+   stdout/stderr 到 `%TEMP%`，并由协调者串行轮询；不得同时跑其他命令。
+5. 成功后先验证：正式 JSON `errors=[]`、硬件 GPU 非软件 backend、性能阈值、
+   FIFO、Collapse、生命周期、34 个唯一 PNG/hash、artifact set 和
+   `SHA256SUMS.txt` 全部一致；失败则不得发布任何 partial 内容。
+6. 在 `%TEMP%` 生成带标签 contact sheet，并逐张检查全部 34 个 PNG。重点单独
+   查看四种灰阶 Next、四种普通/四种 reduced activation、Collapse settlement、
+   1/2/3 状态、桌面/竖屏/横屏/英文。检查 `冰冻` 文案、无全宽坍缩条、附件可辨、
+   无裁切/溢出、始终只有一个 gameplay Canvas。
+7. 先精确提交 34 PNG 与两份 Vite raw log；再单独提交 browser manifest 与
+   checksum。两个 checkpoint 均不得包含产品或验收文档。
+8. 串行完成三份独立 QA。只修复确证的 P0–P2；若修复触及产品源码，当前
+   gate/browser 证据作废并回到第 2 步重新建立。
+9. 三份 QA 全部接受后，再更新 `docs/CURRENT_TASK.md`、`docs/DESIGN.md`、
+   `docs/logs/CHANGELOG.md`、本文件和 workstream log，提交 acceptance。
+10. 非强制 push `main`，验证本地 HEAD 等于 `origin/main`；清理控制日志、
+    contact sheet、Chrome/Vite/Python、已知端口和 partial 目录；确认工作树干净。
+    Phase 5 完整接受并推送后立即暂停。
+
+### 6. Fail-closed 停止条件
+
+遇到以下任一情况必须停止当前批次、清理本项目资源、记录事实，不得通过降阈值
+或伪造状态继续：
+
+- Git/source/gate/harness 漂移或工作树不干净；
+- 资源准入不通过或运行中出现持续 90% CPU；
+- GPU 为 SwiftShader、llvmpipe、lavapipe、softpipe、WARP、Basic Render 或
+  其他软件 backend；
+- rAF / Renderer 阈值、FIFO、Collapse、生命周期或 one-canvas 断言失败；
+- PNG 数量、名称、hash、capture binding、manifest、checksum 或文件集合不一致；
+- 34 张图任一未人工检查，或观察到不可辨识附件、全宽坍缩条、裁切、溢出、
+  错误文案、空白画面、第二 Canvas、console/page error；
+- 独立 QA 尚有 P0–P2，或任何结论只基于旧候选。
+
 ## 目标
 
 把冰冻、坍缩、炸弹、倍增设计成附着在普通方块上的效果，而不是四类固定形状。
