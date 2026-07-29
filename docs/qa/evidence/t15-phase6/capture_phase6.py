@@ -498,6 +498,9 @@ def save_runtime_board_capture(
             };
           };
           if (triggerAction) qa.action(triggerAction);
+          // Public actions enqueue Renderer events. A zero-tick QA flush consumes
+          // that queue without advancing canonical Core time.
+          qa.advanceTicks(0);
           const before = snap();
           const extracted = qa.captureBoardPng();
           const after = snap();
