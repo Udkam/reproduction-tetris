@@ -122,3 +122,39 @@
   output is disposable until a separate evidence checkpoint.
 - Next action: implement and checkpoint the authoring tool, release its Node process,
   then freeze the exact 01–10 product/solver paths before importing any candidate.
+
+## 01–10 setup authoring checkpoint — 2026-07-30
+
+- Task: `t15_puzzle_01_10_authoring_writer`.
+- Base: `32d07b0`.
+- Tooling checkpoint: `b6acd46`.
+- Exact changed path:
+  - `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`
+- Claim: one dependency-free, deterministic, node-budgeted generator for legal
+  5–7-drop candidates whose occupied target band is exactly three visible rows.
+- Static gate: `node --check` — PASS.
+- Deterministic smoke:
+  - fixed inputs: seed start `1588444900`, four seeds, setup counts `5,6`, four
+    candidates, beam 128, node budget 300,000;
+  - both runs completed with four candidates, 129,292 attempted landings and no
+    budget exhaustion;
+  - both UTF-8 JSON files had SHA-256
+    `18530A8C19C9DDF489178B9E87146F0883C9A4BD24D430856314F7A66C22790E`;
+  - direct assertions proved schema 1, exactly 3 occupied rows, complete setup
+    counts, four cells per placement, legal board encoding and no full row.
+- Both explicit temporary outputs were deleted after inspection. The two short
+  script processes exited; no server, browser or persistent solver was started.
+- Open writer: coordinator as `t15_puzzle_01_10_source_writer`.
+- Exact open paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`
+- Closed: levels 11–20, new 21–50 IDs, progress/unlock, App/selector, CSS,
+  renderer, other modes, dependencies and final evidence.
+- Next action: generate a bounded candidate pool, register only ten selected
+  definitions, replay two early-diverging routes per level through public Core
+  dispatch, then freeze their source-bound artifact and focused tests.

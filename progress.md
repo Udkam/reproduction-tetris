@@ -448,3 +448,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The next isolated checkpoint owns only a terminating 01–10 setup-authoring tool;
   product Puzzle definitions and the Core route artifact remain closed until its
   deterministic smoke proof is recorded.
+
+## 2026-07-30 Phase 7 setup authoring frozen
+
+- Tooling `b6acd46` generates only legal three-row setup candidates under explicit
+  seed/range/node budgets and an explicit output path.
+- Repeated smoke output was byte-identical; candidate schema and setup constraints
+  passed, and all temporary process/file resources were released.
+- The 01–10 product slice is now open for ten registered definitions, concise
+  bilingual names, one later-batch anchor, a Core-aware batch runner, two
+  early-diverging routes per level, and one source-bound replay artifact.

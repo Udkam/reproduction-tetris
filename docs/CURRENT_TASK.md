@@ -14,8 +14,9 @@ and all three independent reviews pass; coordinator acceptance/recovery `d0b7406
 pushed with exact local/tracking/remote equality and recorded at remote tip `d78e0e5`.
 Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
-The persistence-v5 slice is independently accepted at product `fbec049`; the only
-open writer is now the bounded 01–10 authoring-tool checkpoint described below.
+The persistence-v5 slice is independently accepted at product `fbec049`; bounded
+setup authoring tool `b6acd46` is deterministic and released. The only open writer
+is now the 01–10 source-bound curriculum checkpoint described below.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -65,18 +66,27 @@ to v5, preserves every old key, and does not change the twenty-level all-open
 baseline. The fixed four-band builder is explicitly deferred to the later
 unlock/expansion slice.
 
-**Open Phase-7 slice — 01–10 authoring tool:** only
-`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs` may be created. It is a
-deterministic, bounded, one-process authoring utility for legal zero-clear 3-row
-setups and must emit machine-readable candidate histories without importing a
-renderer, browser, storage, React, or audio. It may use 5–7 complete setup drops and
-must reject hidden cells, a setup clear, merged same-type source owners, or a target
-height other than exactly three visible rows. It is tooling only: no generated
-candidate becomes product truth and no solver result is claimed until a later
-checkpoint replays the selected 01–10 definitions through public Core `dispatch()`.
-The script receives a fixed seed/range/budget on the command line, terminates by
-itself, and writes only an explicitly named output path. No server or resident Node
-process may remain.
+**01–10 authoring-tool checkpoint (2026-07-30):** `b6acd46` adds only
+`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`. Two identical fixed-budget
+smoke runs produced the same SHA-256 JSON, four legal three-row candidates, 129,292
+attempted landings and no budget exhaustion. Schema/row/cell/full-row assertions
+passed; both temporary outputs and both Node processes were released.
+
+**Open Phase-7 slice — levels 01–10:** exact paths are
+`src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
+`src/game/core/puzzleCampaign.test.ts`,
+`src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
+`docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.ts`, and
+`docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`. The first ten
+existing visible IDs may receive re-authored 3-row setup histories, concise
+structural Chinese/English names, unique gameplay seeds, and exactly one authored
+anchor among 06–10. The Core-aware authoring runner may evaluate only those ten
+registered definitions and emit the source-bound artifact. Every retained level
+must replay two finishing public-dispatch routes with canonical landing divergence
+by the shorter route's fourth lock. The remaining ten definitions, IDs, progress,
+unlock, App/selector, CSS, renderer, other modes and dependencies remain closed.
+Focused proof is the three direct Core test files plus typecheck; live search runs
+one batch process at a time and never overlaps a full suite, build or browser.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
