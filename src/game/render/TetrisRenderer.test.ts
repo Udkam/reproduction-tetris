@@ -1193,8 +1193,6 @@ describe('Puzzle undo presentation reset', () => {
       'top-out',
     ]);
     expect(internals.classicFeedbackCues[0]?.cells).toEqual([
-      { x: 4, y: 38 },
-      { x: 5, y: 38 },
       { x: 4, y: 39 },
       { x: 5, y: 39 },
     ]);
@@ -1212,7 +1210,7 @@ describe('Puzzle undo presentation reset', () => {
       'top-out',
     ]);
     snapshot.classicFeedback[0]!.cells.push({ x: 9, y: 39 });
-    expect(internals.classicFeedbackCues[0]?.cells).toHaveLength(4);
+    expect(internals.classicFeedbackCues[0]?.cells).toHaveLength(2);
 
     const otherMode = new TetrisRendererClass() as unknown as RendererInternals;
     otherMode.consumeEvents(
@@ -1240,6 +1238,35 @@ describe('Puzzle undo presentation reset', () => {
     }
     expect(internals.classicFeedbackCues).toHaveLength(6);
     expect(internals.classicFeedbackCues.every((cue) => cue.kind === 'top-out')).toBe(true);
+  });
+
+  it('freezes Classic landing cues to true support cells under a one-point overhang', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const board = createBoard();
+    const cells = [
+      { x: 3, y: BOARD_HEIGHT - 2 },
+      { x: 4, y: BOARD_HEIGHT - 2 },
+      { x: 5, y: BOARD_HEIGHT - 2 },
+      { x: 6, y: BOARD_HEIGHT - 2 },
+    ];
+    for (const cell of cells) board[cell.y]![cell.x] = 'I';
+    board[BOARD_HEIGHT - 1]![4] = 'T';
+
+    internals.consumeEvents(
+      [{ type: 'piece-locked', piece: 'I', cells }],
+      { mode: 'marathon', board } as unknown as GameState,
+    );
+
+    expect(internals.classicFeedbackCues).toHaveLength(1);
+    expect(internals.classicFeedbackCues[0]?.cells).toEqual([
+      { x: 4, y: BOARD_HEIGHT - 2 },
+    ]);
+
+    board[BOARD_HEIGHT - 1]![3] = 'T';
+    expect(internals.classicFeedbackCues[0]?.cells).toEqual([
+      { x: 4, y: BOARD_HEIGHT - 2 },
+    ]);
   });
 
   it('keeps Classic feedback inside the well and uses stationary reduced-motion geometry', () => {

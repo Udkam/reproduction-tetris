@@ -3181,6 +3181,19 @@ export class TetrisRenderer {
     }
   }
 
+  private classicLandingSupportCells(
+    cells: readonly Cell[],
+    board: GameState['board'] | undefined,
+  ): Cell[] {
+    const pieceCells = new Set(cells.map((cell) => cell.y * BOARD_WIDTH + cell.x));
+    return cells.filter((cell) => {
+      const belowY = cell.y + 1;
+      if (pieceCells.has(belowY * BOARD_WIDTH + cell.x)) return false;
+      if (belowY >= BOARD_HEIGHT) return true;
+      return board?.[belowY]?.[cell.x] != null;
+    });
+  }
+
   private consumeEvents(
     events: readonly GameEvent[],
     state?: GameState,
@@ -3237,7 +3250,9 @@ export class TetrisRenderer {
           piece: event.piece,
         };
         if (classic && !clearsOnLock && !endsOnLock) {
-          this.enqueueClassicFeedback('landing', { cells: event.cells });
+          this.enqueueClassicFeedback('landing', {
+            cells: this.classicLandingSupportCells(event.cells, state?.board),
+          });
         }
         if (state?.mode === 'sprint' && collapseWasActive) {
           this.queueCollapseSettlementTrail(previousBoard, event.cells);
