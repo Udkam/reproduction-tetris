@@ -699,11 +699,15 @@ def activation_capture_ready(snapshot: dict[str, Any]) -> bool:
     return bool(active_phases and min(phase["progress"] for phase in active_phases) <= 0.75)
 
 
-def install_fifo_observer(page: Page, expected: list[str]) -> None:
+def install_fifo_observer(
+    page: Page,
+    expected: list[str],
+    initial_activation: dict[str, Any],
+) -> None:
     assert len(expected) >= 2
     page.evaluate(
         """
-        (expectedItems) => {
+        ({ expectedItems, initialActivation }) => {
           if (window.__T15_FIFO_OBSERVER__) {
             throw new Error("A FIFO observer is already installed.");
           }
@@ -717,6 +721,8 @@ def install_fifo_observer(page: Page, expected: list[str]) -> None:
             complete: false,
             error: null,
             startedAt: performance.now(),
+            lastElapsedMs: initialActivation.elapsedMs,
+            lastDurationMs: initialActivation.durationMs,
           };
           window.__T15_FIFO_OBSERVER__ = state;
           const fail = (message) => {
@@ -766,16 +772,68 @@ def install_fifo_observer(page: Page, expected: list[str]) -> None:
               })}`);
               return;
             }
+            if (
+              !Number.isFinite(activation.elapsedMs)
+              || !Number.isFinite(activation.durationMs)
+              || activation.durationMs <= 0
+            ) {
+              fail(`FIFO activation timing is invalid: ${JSON.stringify({
+                item: activation.item,
+                elapsedMs: activation.elapsedMs,
+                durationMs: activation.durationMs,
+              })}`);
+              return;
+            }
+            if (index === state.currentIndex) {
+              if (activation.durationMs !== state.lastDurationMs) {
+                fail(`FIFO current activation duration changed in place: ${JSON.stringify({
+                  item: activation.item,
+                  previousDurationMs: state.lastDurationMs,
+                  durationMs: activation.durationMs,
+                })}`);
+                return;
+              }
+              if (activation.elapsedMs + 0.5 < state.lastElapsedMs) {
+                fail(`FIFO current activation elapsed time rewound in place: ${JSON.stringify({
+                  item: activation.item,
+                  previousElapsedMs: state.lastElapsedMs,
+                  elapsedMs: activation.elapsedMs,
+                })}`);
+                return;
+              }
+            }
             if (index === state.currentIndex + 1) {
+              const previousItem = expected[state.currentIndex];
+              if (
+                activation.item === previousItem
+                && !(
+                  activation.durationMs === state.lastDurationMs
+                  && activation.elapsedMs + 0.5 < state.lastElapsedMs
+                )
+              ) {
+                fail(`FIFO equal-item instance did not reset its timeline: ${JSON.stringify({
+                  item: activation.item,
+                  previousElapsedMs: state.lastElapsedMs,
+                  elapsedMs: activation.elapsedMs,
+                  previousDurationMs: state.lastDurationMs,
+                  durationMs: activation.durationMs,
+                })}`);
+                return;
+              }
               state.currentIndex = index;
               state.observed.push(activation.item);
               state.transitions.push({
                 index,
                 item: activation.item,
+                previousItem,
+                previousElapsedMs: state.lastElapsedMs,
                 elapsedMs: activation.elapsedMs,
+                durationMs: activation.durationMs,
                 remainingQueue: queue,
               });
             }
+            state.lastElapsedMs = activation.elapsedMs;
+            state.lastDurationMs = activation.durationMs;
             if (state.observed.length === expected.length) {
               state.complete = true;
               return;
@@ -785,7 +843,13 @@ def install_fifo_observer(page: Page, expected: list[str]) -> None:
           requestAnimationFrame(observe);
         }
         """,
-        expected,
+        {
+            "expectedItems": expected,
+            "initialActivation": {
+                "elapsedMs": initial_activation["elapsedMs"],
+                "durationMs": initial_activation["durationMs"],
+            },
+        },
     )
 
 
@@ -815,7 +879,7 @@ def capture_fifo_witness(page: Page, snapshot: dict[str, Any]) -> dict[str, Any]
     assert activation is not None
     assert queued_items
     expected = [activation["item"], *queued_items]
-    install_fifo_observer(page, expected)
+    install_fifo_observer(page, expected, activation)
     fifo_trace = finish_fifo_observer(page)
     refreshed = collect(page)
     validate_common(refreshed)
