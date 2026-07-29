@@ -1,20 +1,24 @@
 import { PUZZLE_DEFINITIONS, type GameState, type PuzzleId } from './game/core';
 
-/** Current persisted format. Keep v3/v2/v1 keys for one-way local migration only. */
-export const PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v4';
+/** Current persisted format. Keep every former key for one-way local migration and rollback. */
+export const PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v5';
+export const V4_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v4';
 export const V3_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v3';
 export const V2_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v2';
 export const LEGACY_PUZZLE_PROGRESS_KEY = 'tetris:puzzle-progress:v1';
-const PROGRESS_VERSION = 4;
+const PROGRESS_VERSION = 5;
+const V4_PROGRESS_VERSION = 4;
 const V3_PROGRESS_VERSION = 3;
 const V2_PROGRESS_VERSION = 2;
 const LEGACY_PROGRESS_VERSION = 1;
+export const PUZZLE_CAMPAIGN_REVISION = 1;
 
 /** T13 treats the set as an open workshop: every specimen is selectable immediately. */
 export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = PUZZLE_DEFINITIONS.length;
 
 export interface PuzzleProgress {
   version: typeof PROGRESS_VERSION;
+  campaignRevision: typeof PUZZLE_CAMPAIGN_REVISION;
   /** Canonical IDs only; completion is history, never an access gate. */
   completedLevelIds: PuzzleId[];
   /** Lowest number of locked pieces from a real completed attempt, by canonical level. */
@@ -38,6 +42,35 @@ export const CAMPAIGN_LEVELS: readonly CampaignLevel[] = Object.freeze(
     difficulty: level.difficulty,
   })),
 );
+
+/**
+ * The v4 workshop used this difficulty-sorted visible order. Keep it literal: Phase 7
+ * re-authors these boards but retains each ID at the same ordinal so completion history
+ * remains meaningful. Its personal-best values belong to the retired boards and are
+ * validated during migration but deliberately not promoted into campaign revision 1.
+ */
+export const V4_CAMPAIGN_ORDER: readonly PuzzleId[] = Object.freeze([
+  't3r-shaft-01',
+  't3r-shaft-02',
+  't3r-shaft-03',
+  't3r-cascade-05',
+  't3r-shaft-04',
+  't3r-cascade-06',
+  't5r-delta-07',
+  't5r-lattice-09',
+  't5r-drift-08',
+  't5r-rift-10',
+  't5r-pulse-14',
+  't5r-arc-13',
+  't5r-current-12',
+  't5r-prism-11',
+  't5r-horizon-15',
+  't6r-cairn-17',
+  't6r-terrace-18',
+  't6r-keystone-20',
+  't6r-bastion-19',
+  't6r-veil-16',
+]);
 
 /**
  * The v2 save format predates T12.4's temporary solver ordering. Keep its literal
@@ -97,15 +130,32 @@ export interface PuzzleTierGate {
 }
 
 const LEVEL_IDS = new Set<PuzzleId>(CAMPAIGN_LEVELS.map((level) => level.id));
+const V4_LEVEL_IDS = new Set<PuzzleId>(V4_CAMPAIGN_ORDER);
 const V2_LEVEL_IDS = new Set<PuzzleId>(V2_CAMPAIGN_ORDER);
 
-if (V2_CAMPAIGN_ORDER.length !== LEVEL_IDS.size || V2_LEVEL_IDS.size !== LEVEL_IDS.size
-  || [...V2_LEVEL_IDS].some((id) => !LEVEL_IDS.has(id))) {
-  throw new Error('Frozen v2 Puzzle campaign order must contain every current Puzzle ID exactly once.');
+if (
+  V4_CAMPAIGN_ORDER.length !== 20
+  || V4_LEVEL_IDS.size !== V4_CAMPAIGN_ORDER.length
+  || V4_CAMPAIGN_ORDER.some((id, index) => !LEVEL_IDS.has(id) || CAMPAIGN_LEVELS[index]?.id !== id)
+) {
+  throw new Error('Frozen v4 Puzzle campaign order must retain its twenty current ordinals exactly once.');
+}
+
+if (
+  V2_CAMPAIGN_ORDER.length !== 20
+  || V2_LEVEL_IDS.size !== V2_CAMPAIGN_ORDER.length
+  || [...V2_LEVEL_IDS].some((id) => !V4_LEVEL_IDS.has(id))
+) {
+  throw new Error('Frozen v2 Puzzle campaign order must contain every historic v4 Puzzle ID exactly once.');
 }
 
 export function defaultPuzzleProgress(): PuzzleProgress {
-  return { version: PROGRESS_VERSION, completedLevelIds: [], bestPieceCounts: {} };
+  return {
+    version: PROGRESS_VERSION,
+    campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+    completedLevelIds: [],
+    bestPieceCounts: {},
+  };
 }
 
 function isPuzzleId(value: unknown): value is PuzzleId {
@@ -114,6 +164,10 @@ function isPuzzleId(value: unknown): value is PuzzleId {
 
 function isV2PuzzleId(value: unknown): value is PuzzleId {
   return typeof value === 'string' && V2_LEVEL_IDS.has(value as PuzzleId);
+}
+
+function isV4PuzzleId(value: unknown): value is PuzzleId {
+  return typeof value === 'string' && V4_LEVEL_IDS.has(value as PuzzleId);
 }
 
 /** Normalizes persisted IDs to the *current* campaign order after migration. */
@@ -126,6 +180,11 @@ function orderedUnique(ids: readonly PuzzleId[]): PuzzleId[] {
 function orderedV2Unique(ids: readonly PuzzleId[]): PuzzleId[] {
   const completed = new Set(ids);
   return V2_CAMPAIGN_ORDER.filter((id) => completed.has(id));
+}
+
+function orderedV4Unique(ids: readonly PuzzleId[]): PuzzleId[] {
+  const completed = new Set(ids);
+  return V4_CAMPAIGN_ORDER.filter((id) => completed.has(id));
 }
 
 function isBestPieceCount(value: unknown): value is number {
@@ -151,10 +210,22 @@ function orderedBestPieceCounts(
   return ordered;
 }
 
+function validHistoricBestPieceCounts(
+  value: unknown,
+  completedIds: readonly PuzzleId[],
+): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const completed = new Set(completedIds);
+  return Object.entries(value as Record<string, unknown>).every(
+    ([levelId, count]) => isV4PuzzleId(levelId) && completed.has(levelId) && isBestPieceCount(count),
+  );
+}
+
 function completedIdsFrom(progress: PuzzleProgress | null | undefined): PuzzleId[] | null {
   if (
     !progress
     || progress.version !== PROGRESS_VERSION
+    || progress.campaignRevision !== PUZZLE_CAMPAIGN_REVISION
     || !Array.isArray(progress.completedLevelIds)
     || !progress.completedLevelIds.every(isPuzzleId)
   ) return null;
@@ -179,21 +250,64 @@ export function parsePuzzleProgress(raw: string | null): PuzzleProgress {
   try {
     const value: unknown = JSON.parse(raw);
     if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultPuzzleProgress();
-    const candidate = value as { version?: unknown; completedLevelIds?: unknown; bestPieceCounts?: unknown };
-    if (candidate.version !== PROGRESS_VERSION || !Array.isArray(candidate.completedLevelIds)) {
+    const candidate = value as {
+      version?: unknown;
+      campaignRevision?: unknown;
+      completedLevelIds?: unknown;
+      bestPieceCounts?: unknown;
+    };
+    if (
+      candidate.version !== PROGRESS_VERSION
+      || candidate.campaignRevision !== PUZZLE_CAMPAIGN_REVISION
+      || !Array.isArray(candidate.completedLevelIds)
+    ) {
       return defaultPuzzleProgress();
     }
     if (!candidate.completedLevelIds.every(isPuzzleId)) return defaultPuzzleProgress();
     const completedLevelIds = orderedUnique(candidate.completedLevelIds);
     const bestPieceCounts = orderedBestPieceCounts(candidate.bestPieceCounts, completedLevelIds);
     if (bestPieceCounts === null) return defaultPuzzleProgress();
-    return { version: PROGRESS_VERSION, completedLevelIds, bestPieceCounts };
+    return {
+      version: PROGRESS_VERSION,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds,
+      bestPieceCounts,
+    };
   } catch {
     return defaultPuzzleProgress();
   }
 }
 
-/** Migrates the former completion-only v3 record into v4's personal-best format. */
+/**
+ * Migrates the retired all-open v4 workshop. Completion survives at the same canonical
+ * ordinals; best counts are only validated because their boards are being re-authored.
+ */
+export function migrateV4PuzzleProgress(raw: string | null): PuzzleProgress {
+  if (raw === null) return defaultPuzzleProgress();
+  try {
+    const value: unknown = JSON.parse(raw);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return defaultPuzzleProgress();
+    const candidate = value as { version?: unknown; completedLevelIds?: unknown; bestPieceCounts?: unknown };
+    if (candidate.version !== V4_PROGRESS_VERSION || !Array.isArray(candidate.completedLevelIds)) {
+      return defaultPuzzleProgress();
+    }
+    if (!candidate.completedLevelIds.every(isV4PuzzleId)) return defaultPuzzleProgress();
+    const completedLevelIds = orderedV4Unique(candidate.completedLevelIds);
+    if (!validHistoricBestPieceCounts(candidate.bestPieceCounts, completedLevelIds)) {
+      return defaultPuzzleProgress();
+    }
+    return {
+      version: PROGRESS_VERSION,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: orderedUnique(completedLevelIds),
+      bestPieceCounts: {},
+    };
+  } catch {
+    return defaultPuzzleProgress();
+  }
+}
+
+/** Migrates the former completion-only v3 record into v5's revisioned format. */
 export function migrateV3PuzzleProgress(raw: string | null): PuzzleProgress {
   if (raw === null) return defaultPuzzleProgress();
   try {
@@ -203,10 +317,11 @@ export function migrateV3PuzzleProgress(raw: string | null): PuzzleProgress {
     if (candidate.version !== V3_PROGRESS_VERSION || !Array.isArray(candidate.completedLevelIds)) {
       return defaultPuzzleProgress();
     }
-    if (!candidate.completedLevelIds.every(isPuzzleId)) return defaultPuzzleProgress();
+    if (!candidate.completedLevelIds.every(isV4PuzzleId)) return defaultPuzzleProgress();
     return {
       version: PROGRESS_VERSION,
-      completedLevelIds: orderedUnique(candidate.completedLevelIds),
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: orderedUnique(orderedV4Unique(candidate.completedLevelIds)),
       bestPieceCounts: {},
     };
   } catch {
@@ -227,6 +342,7 @@ export function migrateV2PuzzleProgress(raw: string | null): PuzzleProgress {
     if (!candidate.completedLevelIds.every(isV2PuzzleId)) return defaultPuzzleProgress();
     return {
       version: PROGRESS_VERSION,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
       completedLevelIds: orderedUnique(orderedV2Unique(candidate.completedLevelIds)),
       bestPieceCounts: {},
     };
@@ -251,6 +367,7 @@ export function migrateLegacyPuzzleProgress(raw: string | null): PuzzleProgress 
     const nextIndex = V2_CAMPAIGN_ORDER.indexOf(candidate.nextUnlockedLevelId);
     return {
       version: PROGRESS_VERSION,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
       completedLevelIds: orderedUnique(V2_CAMPAIGN_ORDER.slice(0, Math.max(0, nextIndex))),
       bestPieceCounts: {},
     };
@@ -305,6 +422,7 @@ export function recordCanonicalPuzzleCompletion(progress: PuzzleProgress, state:
 
   return {
     version: PROGRESS_VERSION,
+    campaignRevision: PUZZLE_CAMPAIGN_REVISION,
     completedLevelIds: orderedUnique([...completedIds, levelId]),
     bestPieceCounts: {
       ...bestPieceCounts,

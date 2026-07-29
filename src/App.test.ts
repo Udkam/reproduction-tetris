@@ -32,7 +32,15 @@ import App, {
   survivalStoneCountdownSeconds,
   terminalCopy,
 } from './App';
-import { CAMPAIGN_LEVELS, defaultPuzzleProgress, PUZZLE_ROW_BANDS } from './puzzleProgress';
+import {
+  CAMPAIGN_LEVELS,
+  defaultPuzzleProgress,
+  PUZZLE_CAMPAIGN_REVISION,
+  PUZZLE_PROGRESS_KEY,
+  PUZZLE_ROW_BANDS,
+  V4_PUZZLE_PROGRESS_KEY,
+  type PuzzleProgress,
+} from './puzzleProgress';
 import type { ScoreRecord } from './leaderboard';
 import { itemLabel, modeRules } from './ui/localization';
 
@@ -169,6 +177,51 @@ describe('DEV QA state snapshot isolation', () => {
   });
 });
 
+describe('Puzzle progress boot migration', () => {
+  it('writes a frozen v4 completion into v5 without deleting the rollback key or promoting its retired-board best', () => {
+    const levelId = CAMPAIGN_LEVELS[0]!.id;
+    const v4 = JSON.stringify({
+      version: 4,
+      completedLevelIds: [levelId],
+      bestPieceCounts: { [levelId]: 6 },
+    });
+    localStorage.setItem(V4_PUZZLE_PROGRESS_KEY, v4);
+
+    const view = render(createElement(App));
+    expect(JSON.parse(localStorage.getItem(PUZZLE_PROGRESS_KEY) ?? 'null')).toEqual({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: [levelId],
+      bestPieceCounts: {},
+    });
+    expect(localStorage.getItem(V4_PUZZLE_PROGRESS_KEY)).toBe(v4);
+    view.unmount();
+  });
+
+  it('prefers an existing valid v5 record and leaves the older key untouched', () => {
+    const currentId = CAMPAIGN_LEVELS[1]!.id;
+    const staleId = CAMPAIGN_LEVELS[0]!.id;
+    const current = JSON.stringify({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: [currentId],
+      bestPieceCounts: { [currentId]: 7 },
+    });
+    const stale = JSON.stringify({
+      version: 4,
+      completedLevelIds: [staleId],
+      bestPieceCounts: { [staleId]: 5 },
+    });
+    localStorage.setItem(PUZZLE_PROGRESS_KEY, current);
+    localStorage.setItem(V4_PUZZLE_PROGRESS_KEY, stale);
+
+    const view = render(createElement(App));
+    expect(localStorage.getItem(PUZZLE_PROGRESS_KEY)).toBe(current);
+    expect(localStorage.getItem(V4_PUZZLE_PROGRESS_KEY)).toBe(stale);
+    view.unmount();
+  });
+});
+
 describe('Survival stone timing presentation', () => {
   it('reports the independent stone clock from the canonical Core state', () => {
     const initial = createInitialState(0x51a1f00d, 'race');
@@ -251,14 +304,24 @@ describe('Puzzle completion ceremony', () => {
     expect(first.onCanonicalCompletion).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ completedLevelId: puzzleId, pieceCount: 9 }));
     first.view.unmount();
 
-    const priorBest = { version: 4 as const, completedLevelIds: [puzzleId], bestPieceCounts: { [puzzleId]: 12 } };
+    const priorBest: PuzzleProgress = {
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: [puzzleId],
+      bestPieceCounts: { [puzzleId]: 12 },
+    };
     const record = await renderCompletion(priorBest, 9);
     expect(record.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('record');
     expect(record.view.container.textContent).toContain('新的个人纪录');
     expect(record.view.container.textContent).not.toContain('从 12 步精炼至 9 步 · 5 消行');
     record.view.unmount();
 
-    const replayBest = { version: 4 as const, completedLevelIds: [puzzleId], bestPieceCounts: { [puzzleId]: 9 } };
+    const replayBest: PuzzleProgress = {
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: [puzzleId],
+      bestPieceCounts: { [puzzleId]: 9 },
+    };
     const replay = await renderCompletion(replayBest, 9);
     expect(replay.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('replay');
     expect(replay.view.container.textContent).toContain('谜题再次破解');
@@ -1502,8 +1565,9 @@ describe('T6 frontend mode binding', () => {
     act(() => view.container.querySelector<HTMLButtonElement>('.library-back')?.click());
     expect(onBack).toHaveBeenCalledTimes(1);
 
-    const fullyUnlocked = {
-      version: 4 as const,
+    const fullyUnlocked: PuzzleProgress = {
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
       completedLevelIds: CAMPAIGN_LEVELS.map((level) => level.id),
       bestPieceCounts: { [CAMPAIGN_LEVELS[0]!.id]: 7 },
     };

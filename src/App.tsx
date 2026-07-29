@@ -23,10 +23,12 @@ import {
   LEGACY_PUZZLE_PROGRESS_KEY,
   PUZZLE_ROW_BANDS,
   PUZZLE_PROGRESS_KEY,
+  V4_PUZZLE_PROGRESS_KEY,
   V3_PUZZLE_PROGRESS_KEY,
   V2_PUZZLE_PROGRESS_KEY,
   defaultPuzzleProgress,
   migrateLegacyPuzzleProgress,
+  migrateV4PuzzleProgress,
   migrateV3PuzzleProgress,
   migrateV2PuzzleProgress,
   parsePuzzleProgress,
@@ -123,15 +125,43 @@ function writeModeRuleIntros(modes: readonly GameMode[]): void {
   }
 }
 
+function writePuzzleProgress(progress: PuzzleProgress): void {
+  try {
+    browserPlatform.writeStorage(PUZZLE_PROGRESS_KEY, JSON.stringify(progress));
+  } catch {
+    // Puzzle progress remains valid for this session when persistent storage is blocked.
+  }
+}
+
 function readPuzzleProgress(): PuzzleProgress {
   try {
     const current = browserPlatform.readStorage(PUZZLE_PROGRESS_KEY);
     if (current !== null) return parsePuzzleProgress(current);
+    const v4 = browserPlatform.readStorage(V4_PUZZLE_PROGRESS_KEY);
+    if (v4 !== null) {
+      const migrated = migrateV4PuzzleProgress(v4);
+      writePuzzleProgress(migrated);
+      return migrated;
+    }
     const v3 = browserPlatform.readStorage(V3_PUZZLE_PROGRESS_KEY);
-    if (v3 !== null) return migrateV3PuzzleProgress(v3);
+    if (v3 !== null) {
+      const migrated = migrateV3PuzzleProgress(v3);
+      writePuzzleProgress(migrated);
+      return migrated;
+    }
     const v2 = browserPlatform.readStorage(V2_PUZZLE_PROGRESS_KEY);
-    if (v2 !== null) return migrateV2PuzzleProgress(v2);
-    return migrateLegacyPuzzleProgress(browserPlatform.readStorage(LEGACY_PUZZLE_PROGRESS_KEY));
+    if (v2 !== null) {
+      const migrated = migrateV2PuzzleProgress(v2);
+      writePuzzleProgress(migrated);
+      return migrated;
+    }
+    const legacy = browserPlatform.readStorage(LEGACY_PUZZLE_PROGRESS_KEY);
+    if (legacy !== null) {
+      const migrated = migrateLegacyPuzzleProgress(legacy);
+      writePuzzleProgress(migrated);
+      return migrated;
+    }
+    return defaultPuzzleProgress();
   } catch {
     return defaultPuzzleProgress();
   }
@@ -1625,7 +1655,7 @@ export default function App() {
     setProgress((current) => {
       const updated = recordCanonicalPuzzleCompletion(current, state);
       if (updated !== current) {
-        browserPlatform.writeStorage(PUZZLE_PROGRESS_KEY, JSON.stringify(updated));
+        writePuzzleProgress(updated);
       }
       return updated;
     });

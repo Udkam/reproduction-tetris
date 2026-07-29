@@ -4,12 +4,15 @@ import {
   CAMPAIGN_LEVELS,
   CAMPAIGN_TIERS,
   INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT,
+  PUZZLE_CAMPAIGN_REVISION,
   PUZZLE_ROW_BANDS,
+  V4_CAMPAIGN_ORDER,
   V2_CAMPAIGN_ORDER,
   defaultPuzzleProgress,
   isPuzzleComplete,
   isPuzzleUnlocked,
   migrateLegacyPuzzleProgress,
+  migrateV4PuzzleProgress,
   migrateV3PuzzleProgress,
   migrateV2PuzzleProgress,
   nextLockedPuzzleLevel,
@@ -31,14 +34,19 @@ function finishedPuzzleState(levelId: PuzzleId, pieceCount: number): GameState {
 }
 
 function progressWith(...completedLevelIds: PuzzleId[]) {
-  return parsePuzzleProgress(JSON.stringify({ version: 4, completedLevelIds, bestPieceCounts: {} }));
+  return parsePuzzleProgress(JSON.stringify({
+    version: 5,
+    campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+    completedLevelIds,
+    bestPieceCounts: {},
+  }));
 }
 
 function unlockedIds(progress = defaultPuzzleProgress()): PuzzleId[] {
   return CAMPAIGN_LEVELS.filter((level) => isPuzzleUnlocked(progress, level.id)).map((level) => level.id);
 }
 
-describe('all-open Puzzle workshop persistence', () => {
+describe('revisioned all-open Puzzle workshop persistence baseline', () => {
   it('binds every authored level to ordered difficulty and four presentation-only row bands', () => {
     expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name])).toEqual(
       PUZZLE_DEFINITIONS.map((level) => [level.id, level.name]),
@@ -91,34 +99,58 @@ describe('all-open Puzzle workshop persistence', () => {
     expect(unlockedPuzzleLevelCount(progress)).toBe(CAMPAIGN_LEVELS.length);
   });
 
-  it('parses v4 bests and migrates completion-only v3, frozen-order v2, and v1 records', () => {
+  it('parses v5 bests and migrates frozen v4/v3/v2/v1 completion domains', () => {
     const first = V2_CAMPAIGN_ORDER[0]!;
     const third = V2_CAMPAIGN_ORDER[2]!;
     const fourth = V2_CAMPAIGN_ORDER[3]!;
     const late = V2_CAMPAIGN_ORDER.at(-1)!;
 
     const current = parsePuzzleProgress(JSON.stringify({
-      version: 4,
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
       completedLevelIds: [third, first, third],
       bestPieceCounts: { [first]: 5, [third]: 8 },
     }));
     expect(current).toEqual({
-      version: 4,
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
       completedLevelIds: orderedCampaignIds(first, third),
       bestPieceCounts: { [first]: 5, [third]: 8 },
+    });
+
+    const v4 = migrateV4PuzzleProgress(JSON.stringify({
+      version: 4,
+      completedLevelIds: [third, first, third],
+      bestPieceCounts: { [first]: 5, [third]: 8 },
+    }));
+    expect(v4).toEqual({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: orderedCampaignIds(first, third),
+      bestPieceCounts: {},
     });
 
     const v3 = migrateV3PuzzleProgress(JSON.stringify({
       version: 3,
       completedLevelIds: [third, first, third],
     }));
-    expect(v3).toEqual({ version: 4, completedLevelIds: orderedCampaignIds(first, third), bestPieceCounts: {} });
+    expect(v3).toEqual({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: orderedCampaignIds(first, third),
+      bestPieceCounts: {},
+    });
 
     const v2 = migrateV2PuzzleProgress(JSON.stringify({
       version: 2,
       completedLevelIds: [late, third, first, third],
     }));
-    expect(v2).toEqual({ version: 4, completedLevelIds: orderedCampaignIds(first, third, late), bestPieceCounts: {} });
+    expect(v2).toEqual({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: orderedCampaignIds(first, third, late),
+      bestPieceCounts: {},
+    });
     expect(isPuzzleComplete(v2, late)).toBe(true);
 
     const legacy = migrateLegacyPuzzleProgress(JSON.stringify({
@@ -126,8 +158,29 @@ describe('all-open Puzzle workshop persistence', () => {
       nextUnlockedLevelId: fourth,
     }));
     expect(new Set(legacy.completedLevelIds)).toEqual(new Set(V2_CAMPAIGN_ORDER.slice(0, 3)));
-    expect(legacy.version).toBe(4);
+    expect(legacy.version).toBe(5);
+    expect(legacy.campaignRevision).toBe(PUZZLE_CAMPAIGN_REVISION);
     expect(legacy.bestPieceCounts).toEqual({});
+  });
+
+  it('freezes the v4 visible order separately from v2 and never promotes retired-board bests', () => {
+    expect(V4_CAMPAIGN_ORDER).toHaveLength(20);
+    expect(new Set(V4_CAMPAIGN_ORDER)).toEqual(new Set(V2_CAMPAIGN_ORDER));
+    expect(V4_CAMPAIGN_ORDER).not.toEqual(V2_CAMPAIGN_ORDER);
+    expect(V4_CAMPAIGN_ORDER).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
+
+    const completed = V4_CAMPAIGN_ORDER.filter((_, index) => index % 2 === 0);
+    const bestPieceCounts = Object.fromEntries(completed.map((id, index) => [id, index + 1]));
+    expect(migrateV4PuzzleProgress(JSON.stringify({
+      version: 4,
+      completedLevelIds: [...completed].reverse(),
+      bestPieceCounts,
+    }))).toEqual({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: completed,
+      bestPieceCounts: {},
+    });
   });
 
   it('fails closed on malformed persisted values while preserving the all-open workshop', () => {
@@ -140,9 +193,11 @@ describe('all-open Puzzle workshop persistence', () => {
       '{"version":2,"completedLevelIds":"t3r-shaft-01"}',
       '{"version":3,"completedLevelIds":["offset-01"]}',
       '{"version":3,"completedLevelIds":["t3r-shaft-01",42]}',
-      '{"version":4,"completedLevelIds":[]}',
-      '{"version":4,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"offset-01":4}}',
-      '{"version":4,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"t3r-shaft-01":0}}',
+      '{"version":4,"completedLevelIds":[],"bestPieceCounts":{}}',
+      '{"version":5,"completedLevelIds":[],"bestPieceCounts":{}}',
+      '{"version":5,"campaignRevision":0,"completedLevelIds":[],"bestPieceCounts":{}}',
+      '{"version":5,"campaignRevision":1,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"offset-01":4}}',
+      '{"version":5,"campaignRevision":1,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"t3r-shaft-01":0}}',
     ];
 
     for (const raw of malformed) {
@@ -151,6 +206,9 @@ describe('all-open Puzzle workshop persistence', () => {
       expect(unlockedPuzzleLevelCount(parsed)).toBe(CAMPAIGN_LEVELS.length);
     }
 
+    expect(migrateV4PuzzleProgress('{"version":4,"completedLevelIds":["offset-01"],"bestPieceCounts":{}}')).toEqual(baseline);
+    expect(migrateV4PuzzleProgress('{"version":4,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"t3r-shaft-01":0}}')).toEqual(baseline);
+    expect(migrateV4PuzzleProgress('{"version":4,"completedLevelIds":["t3r-shaft-01"],"bestPieceCounts":{"offset-01":4}}')).toEqual(baseline);
     expect(migrateV3PuzzleProgress('{"version":3,"completedLevelIds":["offset-01"]}')).toEqual(baseline);
     expect(migrateV2PuzzleProgress('{"version":2,"completedLevelIds":["offset-01"]}')).toEqual(baseline);
     expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":"offset-01"}')).toEqual(baseline);
