@@ -354,3 +354,22 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   are released. One accidental CIM parent lookup was recorded and not repeated.
 - Phase-6 source is frozen at `eaed1ac`. Next: one final gate sequence, production
   evidence, serial independent QA, acceptance cleanup, and push.
+
+## 2026-07-30 Phase 6 post-restart resource containment
+
+- A continuation preflight found one newly auto-started `node_repl` plus a duplicate
+  MCP Node pair. After exact-PID cleanup, the tool host auto-backfilled another pair,
+  another `node_repl`, and a Serena/TypeScript tree that pointed at stale
+  `personal-web` paths. No file there was read.
+- Exact native command-line/parent checks identify the complete tool cohort for one
+  final tree cleanup, including the older idle MCP pair. The required end state is
+  zero resident Node, `node_repl`, Serena, TypeScript-language-server, and listener
+  on 4178; Codex, Windows, security, editor, and terminal processes remain untouched.
+  No test, build, browser, Vite, WMI, or CIM command ran.
+- Corrected product remains `9085976`; product/config diff from it to HEAD is empty.
+  Static integrity reproduces 3/3 gate hashes and 19/19 browser hashes, with 15
+  captures and zero recorded browser errors.
+- `docs/workstreams/tetris-t15-classic/PHASE6_REPEAT_RULES_REVIEW.md` now packages the
+  frozen range, mandatory rule checks, verdict schema, and zero-helper boundary for a
+  future independent pass. This coordinator packet is not a QA verdict, so Phase 6
+  remains frozen, unaccepted, unpushed, and Puzzle 50 remains closed.

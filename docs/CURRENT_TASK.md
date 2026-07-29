@@ -148,6 +148,22 @@ no verdict and cannot advance Phase 6. Do not spawn another sub-agent in this ta
 Product, gates, and browser evidence remain frozen; resume only through a deliberately
 low-overhead independent-review mechanism after an explicit resource admission check.
 
+**Post-restart resource drift and static packet (2026-07-30):** a lightweight
+continuation preflight found that the Codex tool session had automatically added a
+second MCP server/stdin Node pair plus one `node_repl` to the retained primary pair.
+Native process command-line and parent inspection proved all five processes were
+direct children of the same Codex host. After that first exact-PID cleanup, the tool
+host auto-backfilled another MCP pair, `node_repl`, and a Serena tree whose TypeScript
+children incorrectly targeted stale `personal-web` paths. No file in that repository
+was read. The complete auto-started tool cohort and the older idle MCP pair were then
+scheduled for one final tree cleanup, leaving zero resident Node, `node_repl`, Serena,
+or TypeScript-language-server process and zero listener on 4178. No WMI/CIM, test,
+build, browser, server, or product command ran. The read-only packet at
+`docs/workstreams/tetris-t15-classic/PHASE6_REPEAT_RULES_REVIEW.md` binds the corrected
+candidate, mandatory rule questions, hashes, verdict schema, and zero-helper boundary.
+Coordinator static/hash preflight is explicitly not independent QA; Phase 6 remains
+frozen and unaccepted.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

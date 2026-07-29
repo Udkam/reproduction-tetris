@@ -333,3 +333,32 @@
   `9085976`, gate index `bee956a`, and browser index `ca80416` remain frozen. Phase 6
   still requires an independent repeated rules verdict through a future explicitly
   admitted low-overhead review path.
+
+## TETRIS-T15-PHASE6-STATIC-REVIEW-PACKET-011
+
+- Status: `STATIC PACKET READY / INDEPENDENT VERDICT STILL MISSING`.
+- Post-restart drift: the resumed Codex tool session added one newer
+  `node_repl`/MCP cohort to the retained primary MCP pair. Native command-line,
+  parent, and start-time checks identified exact PIDs. After those three processes
+  were stopped, the tool host auto-backfilled another MCP/repl cohort plus a Serena
+  and TypeScript-language-server tree that pointed at stale `personal-web` paths.
+  No file there was read. One final exact-root cleanup removes that complete
+  auto-started tree and the older idle MCP pair, leaving zero resident Node,
+  `node_repl`, Serena, TypeScript-language-server, and 4178 listener.
+- No WMI/CIM, test, build, browser, server, or project runtime was used.
+- Product/config equality: no path under the declared product/config set differs
+  between corrected candidate `9085976` and current HEAD.
+- Frozen integrity preflight:
+  - 3/3 gate hashes reproduce;
+  - 19/19 browser/script/manifest/log hashes reproduce;
+  - browser manifest retains 15 captures, zero errors, released Vite, closed browser,
+    final zero Canvas, and final zero open AudioContexts.
+- Review packet:
+  `docs/workstreams/tetris-t15-classic/PHASE6_REPEAT_RULES_REVIEW.md`.
+  It freezes the exact range, eight mandatory rules questions, P0–P3/GAP schema, and
+  a static zero-helper execution boundary.
+- Disposition: this coordinator preflight is not independent QA and does not accept
+  Phase 6. Product, gates, and browser evidence remain frozen.
+- Next action: obtain one genuinely independent read-only verdict without starting a
+  helper process. If that boundary cannot be met, leave the phase open rather than
+  manufacturing acceptance.
