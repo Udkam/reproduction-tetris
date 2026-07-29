@@ -11,6 +11,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `4f871ac`. Its first and only active writer slice is the four-file shared ordinary
   line-clear Renderer boundary; Core, UI, Puzzle data/selector, and Mutation special
   effects remain frozen.
+- Phase-6 contract `7aed5ef` and ordinary-clear source checkpoint `1a163ff` are
+  committed. Focused presentation/Renderer coverage passes 2 files / 39 tests and
+  typecheck passes. Disposable real Pixi frames verified confirmation, inward
+  contraction, refined afterglow, endpoint, and reduced-motion geometry; the Vite,
+  Chromium, listener, and temporary capture directory were released afterward.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -80,12 +85,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Freeze and commit the Phase-6 docs-only contract before source.
-- Replace the broad ordinary-clear sweep with the shared row-local three-stage
-  confirmation/contraction/afterglow presentation inside existing Core timing.
-- Run focused presentation/Renderer tests while editing. After source freeze, run one
-  final typecheck, full suite, build, managed browser matrix, visual inspection, and
-  serialized independent rules/visual QA before acceptance and non-force push.
+- Run a read-only Phase-6 baseline audit for Classic terminology, landing, combo,
+  level-up, and top-out. Add another exact-path source checkpoint only for a proven
+  contract gap.
+- After final source freeze, run one final typecheck, full suite, build, managed
+  1/2/3/4-row browser matrix, safe-next-frame/reduced-motion/responsive inspection,
+  and serialized independent rules/visual QA before acceptance and non-force push.
 - Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate
