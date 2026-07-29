@@ -728,3 +728,31 @@
 - Next action: commit this contract checkpoint with exact paths, implement the two
   harness corrections as separate rollback commits, obtain fresh static audits, then
   rerun the managed capture only inside the resource budget.
+
+## 2026-07-29 — Dynamic correction static audit findings
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-DYNAMIC-QA-R1`.
+- Ordered checkpoints:
+  - contract `da1eaa7`;
+  - resource-safe argparse entry `74a67fe`;
+  - FIFO/PNG decoupling `bfc3198`.
+- Three auditors remained strictly read-only and ran no browser, product tests, or
+  build. Product source tree remains exactly `f6fa06e`.
+- FIFO/performance auditor: `GAP`, P2×1. It supplied a same-kind counterexample where
+  queue shrink advances the derived index although the old `collapse` activation
+  continues and the queued `collapse` was dropped. Adjacent equal labels therefore
+  require a strict elapsed-time reset; unchanged instances require monotonic elapsed
+  time and stable duration.
+- Target/visual auditor: product/scope PASS, evidence `GAP`, P2×2 and P3×1. Mandatory
+  missing proofs are one non-empty actual-column Collapse settlement PNG and four
+  item-specific reduced-motion activation PNGs. It also noted the now-corrected stale
+  paused status.
+- Evidence-integrity auditor: harness `PASS`, P0–P2 none, P3 stale commit counts. Its
+  file-set/publication/lifecycle checks remain useful, but its permissive same-kind
+  simulation and 29-PNG expectation do not override the two reproducible stricter
+  findings.
+- Coordinator disposition: do not average conflicting verdicts. Accept all stricter
+  user-relevant P2 findings and reopen only
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- Next action: commit this finding/status checkpoint, add same-label FIFO identity
+  proof and visual coverage as separate harness commits, then obtain fresh audits.

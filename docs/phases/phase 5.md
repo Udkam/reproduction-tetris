@@ -91,6 +91,11 @@ retaining the complete observer trace; the four separately labelled activation P
 remain mandatory visual evidence. `--help` and unsupported arguments must also exit
 before a partial directory, Vite process or browser is created. Product source,
 visible VFX geometry and the committed gate evidence remain unchanged.
+Fresh independent review adds three blocking evidence requirements. Consecutive equal
+labels advance only when their activation elapsed time resets; queue shrink alone is
+insufficient. The browser batch must also publish one non-empty actual-column Collapse
+settlement PNG and one reduced-motion activation PNG for each of Freeze, Collapse,
+Bomb and Multiplier. These are harness-only proof corrections, not product changes.
 
 ## 目标
 

@@ -275,12 +275,17 @@ Core or visual state. FIFO order and visual identity are two complementary proof
 an observer installed before unrelated captures records every renderer-owned current /
 queue transition through the complete fixed witness, including the 300 ms Collapse
 case, while the four item-specific activation PNGs prove their visible endpoints.
+For adjacent equal item labels, a shorter queue alone is not an instance boundary:
+the observer must also see that activation elapsed time resets while duration remains
+valid, so silently dropping one equal-labelled request cannot masquerade as delivery.
 The evidence must not require one full-viewport PNG to begin and finish inside the
 shortest activation window; that couples screenshot encoding latency to a correctness
 claim and can reject a valid FIFO after the PNG has already captured. Evidence still
 labels every activation frame from renderer state, captures Bomb after its real impact
-boundary, and repeats mount/unmount twice against a home-screen listener/RAF/audio
-baseline. A renderer microbenchmark alone does not prove 60 FPS; real
+boundary, captures each of the four activation endpoints again under reduced motion,
+and binds one visible Collapse settlement frame to non-empty actual moved columns and
+its maximum drop. It repeats mount/unmount twice against a home-screen
+listener/RAF/audio baseline. A renderer microbenchmark alone does not prove 60 FPS; real
 `requestAnimationFrame` mean and p95 are separately bounded. The evidence run starts
 from a fresh partial set, verifies its exact manifest file set, and publishes
 `SHA256SUMS.txt` only after data and manifest are present. Text artifacts in this exact

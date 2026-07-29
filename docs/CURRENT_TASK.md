@@ -9,9 +9,9 @@ the coordinator records its acceptance, verifies resource cleanup, and pushes th
 accepted checkpoint as a remote recovery point before the next phase begins. The
 existing Puzzle library layout is explicitly excluded from redesign; adapting its
 count/progression data for fifty levels is allowed, but its visual composition must
-not be replaced. By the player's latest sequencing instruction, pause Phase 5 at the
-recorded local evidence checkpoint before it is accepted or pushed. Phase 6 and
-Puzzle 50 remain in the overall goal but must not start until a later explicit resume.
+not be replaced. The player has explicitly resumed the recorded Phase-5 evidence
+checkpoint. Phase 6 and Puzzle 50 remain in the overall goal but must not start before
+Phase 5 is independently accepted, pushed, cleaned, and paused again.
 
 **Current execution state:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
@@ -120,9 +120,9 @@ The remaining Phase-5 chain is deliberately fine-grained and may not be squashed
 5. each required correction and refreshed evidence in its own checkpoint;
 6. coordinator acceptance/changelog, then verified cleanup and non-force push.
 
-There are currently 43 commits after Phase-4 recovery `fd7ef8d` (42 ahead of
-`origin/main`). They remain linear rollback nodes; no squash or history rewrite is
-authorized.
+At the recorded pause there were 43 commits after Phase-4 recovery `fd7ef8d` (42 ahead
+of `origin/main`). Resume corrections continue as new linear rollback nodes; no squash
+or history rewrite is authorized.
 
 ### 2026-07-29 Phase 5 temporary pause point
 
@@ -164,6 +164,15 @@ authorized.
   ambiguously timed PNG. The existing four item-specific activation captures remain
   the visual proof. The script must also parse `--help` and reject unknown arguments
   before creating a partial directory, Vite process, or browser.
+- Three independent static audits disagreed. The strict FIFO audit supplied a
+  reproducible same-item counterexample: queue shrink can falsely advance the derived
+  index while the original same-labelled activation continues. The correction must
+  require an elapsed-time reset for adjacent equal labels.
+- The target/visual audit also found two missing mandatory browser proofs: one
+  non-empty `mutationCollapseTrail` capture bound to its actual columns/max drop, and
+  four item-specific reduced-motion activation captures. Both become explicit exit
+  conditions. The more permissive evidence audit's PASS is retained as a conflicting
+  record, not used to waive the stricter findings.
 - This is a harness-only correction. Core, renderer behavior/geometry, UI, CSS,
   localization, the committed gate logs, Phase 6, and Puzzle 50 remain closed.
 
