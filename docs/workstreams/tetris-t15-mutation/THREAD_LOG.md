@@ -1391,3 +1391,27 @@
 - No review child or heavy process remains.
 - Next action: checkpoint this verdict, take one clean resource snapshot, register one
   new formal capture lease, and run no overlapping workload.
+
+## 2026-07-29 — Stabilized formal hardware capture lease registered
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-LEASE-R3`.
+- Base SHA: `06332a1c116e06626beb5510ea0d46e1556cca53`.
+- Accepted harness: `a59856d056951865e8a5c0b6dc93f75ac97461be`;
+  frozen product `ee2aac5`; frozen final gates `6d9fc6a`.
+- Owner: the primary Tetris coordinator only. No sub-agent, MCP, Serena, language
+  server, test, build, diagnostic or second browser workload may overlap.
+- Clean admission: worktree and all three frozen trees match; zero Python/Node/Chrome/
+  Serena process, zero 4178/5178/5179 listener, zero partial, zero browser artifact and
+  zero external control log. One PDH snapshot read 9.16% CPU, 23,564 MiB available
+  RAM, 22.95% committed memory and disk queue 0.
+- Command and owned tree:
+  `python docs/qa/evidence/t15-phase5/capture_phase5.py`; one hidden Python root, one
+  Vite/Node server tree, one hardware Chrome/Playwright tree.
+- Reserved boundary: TCP 4178, two
+  `%TEMP%\t15-phase5-browser-run.{stdout,stderr}.log` files and one harness-owned
+  `.partial-*` directory.
+- Success requires exit zero and exact atomic output with stable bindings, hardware
+  GPU, all screenshots/performance/lifecycle checks and checksums. Failure requires
+  zero published output. Either outcome requires the entire owned tree, listeners,
+  partial and external logs released after recording.
+- Next action: checkpoint this lease, then execute and monitor only this batch.
