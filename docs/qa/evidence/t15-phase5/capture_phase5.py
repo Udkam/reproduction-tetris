@@ -1435,6 +1435,13 @@ def run(context: BrowserContext) -> dict[str, Any]:
     captures.append(english)
 
     page.set_viewport_size({"width": 1440, "height": 900})
+    performance = frame_budget(page)
+    assert performance["renderBenchmark"]["p95Ms"] < 16.67
+    assert performance["raf"]["meanMs"] < 17.5
+    assert performance["raf"]["p95Ms"] < 20
+    assert performance["raf"]["over20MsRatio"] <= 0.05
+    assert performance["raf"]["maxMs"] < 50
+
     if 1 not in timed_seen:
         for advanced_ticks in range(1, 1201):
             page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(1)")
@@ -1453,13 +1460,6 @@ def run(context: BrowserContext) -> dict[str, Any]:
             raise AssertionError("Timed Mutation statuses never reached exactly one after 1200 ticks.")
     assert timed_seen == {1, 2, 3}
     assert single_status_advance_ticks is not None
-
-    performance = frame_budget(page)
-    assert performance["renderBenchmark"]["p95Ms"] < 16.67
-    assert performance["raf"]["meanMs"] < 17.5
-    assert performance["raf"]["p95Ms"] < 20
-    assert performance["raf"]["over20MsRatio"] <= 0.05
-    assert performance["raf"]["maxMs"] < 50
 
     page.evaluate("window.__t15Canvas = document.querySelector('canvas')")
     before_restart = page.evaluate(
