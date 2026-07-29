@@ -1,10 +1,12 @@
 # T15 Phase 6 source-bound evidence
 
-This directory binds the final gate and browser sequences to product candidate
-`eaed1ac0962ba7256b44136f7bd4f0faef603970`.
+The refreshed final gate set in this directory is bound to corrected product candidate
+`90859760bc9b2163219a31eb9053fcd4e92869ce`. The browser files still describe the
+rejected first candidate until the complete source-bound browser batch is regenerated;
+they are historical evidence, not acceptance evidence for `9085976`.
 
 - `typecheck.txt` records the final TypeScript project check.
-- `test.txt` records the complete one-worker Vitest run: 26 files and 231 tests.
+- `test.txt` records the complete one-worker Vitest run: 26 files and 232 tests.
 - `build.txt` records the production build: 753 transformed modules.
 - `phase6-gate-evidence.json` binds commands, results, commits, and file hashes.
 - `SHA256SUMS-gates.txt` contains hashes of the normalized raw logs.
@@ -15,11 +17,12 @@ This directory binds the final gate and browser sequences to product candidate
   real Renderer state before and after capture.
 - `SHA256SUMS-browser.txt` contains nineteen browser/script/manifest/log hashes.
 
-The raw logs were first committed at `55e5a7b`. A follow-up evidence-only correction
-`fb9ccc2` removed one Vite-emitted trailing space and two final blank lines after
-`git diff --check` exposed them. No product source changed and the gate commands were
-not repeated. The final browser harness is `1b9c85f`; raw frames and managed Vite
-logs are `a231fda`; browser manifest/checksums are `d7fb4fa`.
+The corrected-candidate raw gate logs were committed at `2c9fd50`. Evidence-only
+normalization `0239231` removed one Vite-emitted trailing space and final blank lines
+after `git diff --check` exposed them. No product source changed and the gate commands
+were not repeated. The prior browser harness is `1b9c85f`; its raw frames and managed
+Vite logs are `a231fda`; its manifest/checksums are `d7fb4fa`. Those browser artifacts
+must be replaced before Phase 6 can return to QA.
 
 The browser run replays every current verified Puzzle route through public Core
 commands before selecting the shortest real 1/2/3-row witnesses. No current verified
