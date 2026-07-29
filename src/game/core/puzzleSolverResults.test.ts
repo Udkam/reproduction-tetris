@@ -171,12 +171,22 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
   it('replays both documented choices through public Core commands, with no post-win inputs and a genuine early landing branch', () => {
     for (const level of activeLevels) {
       const definition = getPuzzleDefinition(level.id);
+      const anchorRows = new Set(
+        definition.anchorCells.map(({ y }) => VISIBLE_START_ROW + y),
+      );
       const routeReplays = level.routes.map((route) => {
         const commands = decode(route.commandStream);
         let state = createInitialState(0x51a1f00d, 'puzzle', level.id);
         let terminalIndex = -1;
         for (const [index, command] of commands.entries()) {
-          state = dispatch(state, command).state;
+          const transition = dispatch(state, command);
+          for (const event of transition.events) {
+            if (event.type !== 'lines-cleared') continue;
+            for (const row of event.rows) {
+              expect(anchorRows.has(row), `${level.id}/${route.id} cleared anchor row ${row}`).toBe(false);
+            }
+          }
+          state = transition.state;
           if (state.status !== 'playing' && terminalIndex === -1) terminalIndex = index;
         }
 
