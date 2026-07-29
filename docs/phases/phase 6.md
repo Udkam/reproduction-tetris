@@ -2,7 +2,7 @@
 
 ## 状态
 
-**OPEN / FEEDBACK CONTRACT**。Phase 5 已验收并推送；Phase 6 从
+**SOURCE FROZEN / GATES NEXT**。Phase 5 已验收并推送；Phase 6 从
 `4f871ac3706f95c2a57679dd0162071c89363ecb` 开始。当前只开放共享普通消行
 Renderer 检查点后的 Classic 局部反馈检查点。
 
@@ -77,6 +77,11 @@ Puzzle 的普通行清除；它不覆盖 Phase 5 炸弹/坍缩的专属结算，
 移动或缩放整张棋盘。reduced motion 保留原位短线并快速淡出，不扩张、不位移、
 不生成粒子。该检查点不得启用旧的全局 `impact` 相机效果，不得修改普通消行、
 React、CSS、本地化、音频、Core、其他模式或 Puzzle。
+
+该检查点已冻结为两个可回退节点：`a1f3d1b` 增加有界 cue、快照和直测，
+`eaed1ac` 根据真实 Pixi 帧将不清晰的底边落地线改成方块内部的接触光、亮芯和
+两侧支撑刻线。最终 source candidate 是 `eaed1ac`；直测 29/29 与 typecheck
+通过。后续只允许门禁、证据和只读 QA，除非 QA 形成可复现 finding。
 
 ## 验收
 

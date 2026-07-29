@@ -315,3 +315,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   stationary strokes under reduced motion, and leave every other mode unchanged.
 - Next: commit this contract, implement the two-file renderer slice, then freeze source
   for the single final gate/evidence sequence.
+
+## 2026-07-30 Phase 6 source freeze
+
+- Contract `fee0627` opened only `TetrisRenderer.ts` and its direct test.
+- Source `a1f3d1b` adds bounded, coexisting Classic landing/combo/speed/top-out cues;
+  `eaed1ac` corrects a disposable-browser finding where floor contact was too close
+  to the well edge to read.
+- Final direct gates pass 29/29 Renderer tests and typecheck. Pixi smoke frames show
+  the four intended states and stationary reduced-motion geometry with zero browser
+  errors; the disposable capture set was released.
+- The Vite tree, port 4178, temporary Chrome, Node REPL bindings, and temporary files
+  are released. One accidental CIM parent lookup was recorded and not repeated.
+- Phase-6 source is frozen at `eaed1ac`. Next: one final gate sequence, production
+  evidence, serial independent QA, acceptance cleanup, and push.

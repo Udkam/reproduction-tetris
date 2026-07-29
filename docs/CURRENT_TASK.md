@@ -58,6 +58,19 @@ input. Reduced motion retains stationary local strokes with quick fade. After th
 two-file checkpoint is green, Phase-6 source freezes and the final gates/evidence
 chain begins.
 
+**Phase-6 source freeze (2026-07-30):** the Classic feedback contract is
+`fee0627`; primary source is `a1f3d1b` and the visually driven landing correction is
+`eaed1ac`. The exact product candidate is therefore `eaed1ac` over Phase-6 base
+`4f871ac`. Direct Renderer tests pass 29/29 and typecheck passes after the final source
+edit. Disposable Pixi captures show distinct landing, coexisting combo plus ten-line
+speed feedback, top-out, and reduced-motion frames; the first landing frame was
+rejected as too close to the floor edge, then corrected with an in-cell contact glow,
+bright core, and outward support marks before source freeze. No product path may now
+reopen without a documented QA finding. The next chain is one final source-bound
+typecheck, one full one-worker suite, one production build, managed browser evidence,
+serial independent rules/visual audits, corrections if required, acceptance, cleanup,
+and non-force push.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

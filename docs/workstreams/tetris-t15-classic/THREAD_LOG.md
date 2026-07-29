@@ -96,3 +96,45 @@
   retained; no WMI/CIM query used.
 - Next action: commit this contract, implement and focus-test the two-file slice,
   then freeze all Phase-6 source before final gates.
+
+## TETRIS-T15-PHASE6-CLASSIC-FEEDBACK-004
+
+- Status: `SOURCE FROZEN / GREEN`.
+- Contract SHA: `fee0627`.
+- Ordered source checkpoints:
+  - `a1f3d1b` — bounded Classic-only landing/combo/speed/top-out cue list,
+    board-local drawing, immutable Renderer snapshot, lifecycle and geometry tests;
+  - `eaed1ac` — visual-smoke correction that moves the floor landing echo into the
+    supported cell, adds a restrained light core/contact glow, and leaves the other
+    three cue families unchanged.
+- Exact changed product paths:
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`.
+- Delivered behavior:
+  - normal non-clearing Classic locks receive support-edge contact feedback;
+  - a Classic combo above one and a crossed ten-line speed boundary queue and draw
+    together instead of overwriting one another;
+  - Classic top-out marks only the spawn zone over the existing terminal scrim;
+  - the cue list is capped at six, cloned in Renderer QA snapshots, released by
+    lifetime/restart/destroy, and never populated by another mode;
+  - reduced motion uses stationary strokes and shorter lifetimes.
+- Commands actually run after the final source edit:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts --maxWorkers=1` —
+    PASS, 1 file / 29 tests;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` — PASS before each source checkpoint.
+- Disposable visual smoke:
+  - real Pixi extracts covered landing, combo + speed, top-out, and reduced motion;
+  - the first landing frame was rejected as visually merged with the floor edge;
+  - the corrected floor frame visibly retains the light contact core inside the
+    landed cells; all browser console/page errors remained zero;
+  - no disposable PNG was retained as formal evidence.
+- Resource disposition:
+  - the exact Vite tree `15708 → 8508 → 2740`, listener 4178, temporary Chromium,
+    Node REPL bindings, and verified temp directory were released;
+  - one accidental `Get-CimInstance` parent lookup occurred during Vite tracing,
+    contrary to the resource contract; it was stopped immediately and every later
+    process check used only known PID, `Get-Process`, and listener ownership.
+- Blocker: none.
+- Next action: run the one final source-bound typecheck/full suite/build sequence,
+  then create source-bound browser evidence without reopening product code.
