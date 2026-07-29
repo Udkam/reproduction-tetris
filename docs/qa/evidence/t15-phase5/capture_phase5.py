@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 from contextlib import contextmanager
 import hashlib
 import json
@@ -1236,5 +1237,16 @@ def main() -> None:
     ))
 
 
+def parse_args() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Capture the source-bound T15 Phase-5 Mutation browser evidence. "
+            "The run owns its Vite and Chrome lifecycle and accepts no runtime options."
+        )
+    )
+    parser.parse_args()
+
+
 if __name__ == "__main__":
+    parse_args()
     main()
