@@ -175,6 +175,17 @@ or history rewrite is authorized.
   record, not used to waive the stricter findings.
 - This is a harness-only correction. Core, renderer behavior/geometry, UI, CSS,
   localization, the committed gate logs, Phase 6, and Puzzle 50 remain closed.
+- Two subsequent managed runs proved that even an early cropped DevTools screenshot
+  can exceed the complete 260 ms Collapse settlement lifetime under SwiftShader. Both
+  runs failed the unchanged post-screenshot continuity gate, published no artifact,
+  and released Vite, Chrome, known ports, and partial directories.
+- Do not extend the product effect or loosen its witness. The next bounded harness
+  correction replaces only transient Playwright screenshots with an unmounted,
+  in-page 2D copy of the visible gameplay Canvas board region. Pre-state, pixel copy,
+  PNG encoding, and post-state occur synchronously in one JavaScript turn; the
+  manifest must bind real CSS/source-pixel bounds, nonblank pixel statistics,
+  dimensions, file hash, and same-instance Renderer state. Persistent layout frames
+  continue to use ordinary Playwright screenshots.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

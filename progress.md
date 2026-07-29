@@ -269,3 +269,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - `d5b6af8` preserves the strict pre/post gate but moves 260 ms Collapse settlement
   and ordinary activation frames ahead of longer-lived carrier evidence.
 - Next: resource preflight, one corrected managed rerun, then full frame inspection.
+
+## 2026-07-29 Phase 5 atomic transient evidence boundary
+
+- A second fail-closed run proved a cropped SwiftShader screenshot can still exceed
+  the complete 260 ms Collapse trail; no artifact or resource leaked.
+- Transient board PNGs will now copy the visible single Pixi Canvas board region to an
+  unmounted 2D surface and encode it synchronously between Renderer pre/post samples.
+  Persistent responsive/HUD frames remain Playwright screenshots.
+- Product source, VFX duration and strict instance gates remain unchanged.

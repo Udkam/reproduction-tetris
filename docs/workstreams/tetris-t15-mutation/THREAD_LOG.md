@@ -811,3 +811,22 @@
   and exact-path staged review — PASS.
 - Next action: re-enter only after a fresh resource sample, rerun the managed batch,
   and preserve fail-closed publication behavior.
+
+## 2026-07-29 — Second resumed batch and atomic-capture contract
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-DYNAMIC-R4`.
+- Candidate at run start: `3ea9884`; ordering correction: `d5b6af8`.
+- Two independent static reviews accepted `d5b6af8` with P0=P1=P2=P3=0. Resource
+  preflight reported CPU maximum 37%, 14.53 GiB available RAM, 60.1% committed memory,
+  disk queue 0, no known-port listener and no Chrome.
+- The corrected run again failed only because the post-capture Collapse trail was
+  null. Starting in the first 25% of a 260 ms trail was still insufficient for a
+  SwiftShader DevTools screenshot. It published zero artifact and released every
+  owned partial, listener and Chrome process.
+- Conclusion: another timing-window retry would be unjustified. The product duration
+  and strict same-instance proof remain frozen. Only transient board PNG generation
+  changes to a synchronous in-page Canvas copy/PNG encode with atomic pre/post
+  Renderer state and pixel nonblank checks.
+- Next action: implement and statically validate the atomic evidence helper, run a
+  bounded diagnostic that proves its PNG is nonblank, then rerun the full managed
+  batch once.

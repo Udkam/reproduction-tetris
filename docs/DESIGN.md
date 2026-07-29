@@ -284,7 +284,17 @@ claim and can reject a valid FIFO after the PNG has already captured. Evidence s
 labels every activation frame from renderer state, captures Bomb after its real impact
 boundary, captures each of the four activation endpoints again under reduced motion,
 and binds one visible Collapse settlement frame to non-empty actual moved columns and
-its maximum drop. It repeats mount/unmount twice against a home-screen
+its maximum drop. SwiftShader can spend longer than the complete 260 ms Collapse
+settlement lifetime in a DevTools screenshot even when capture starts in the first
+quarter. Transient board evidence therefore copies the visible one-Canvas board region
+into a temporary in-memory 2D surface and encodes it synchronously in the page main
+thread. Renderer state is sampled immediately before and after that copy inside the
+same JavaScript turn, so rAF cannot advance between the state witness and pixels.
+The result must include the CSS board bounds, source-pixel crop, PNG dimensions, a
+nonblank pixel probe, file hash, and same-instance activation/trail witness. The
+temporary 2D surface is never mounted and does not create a second gameplay canvas.
+Full-page Playwright screenshots remain authoritative for persistent HUD, responsive,
+language and status layouts. It repeats mount/unmount twice against a home-screen
 listener/RAF/audio baseline. A renderer microbenchmark alone does not prove 60 FPS; real
 `requestAnimationFrame` mean and p95 are separately bounded. The evidence run starts
 from a fresh partial set, verifies its exact manifest file set, and publishes

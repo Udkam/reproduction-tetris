@@ -96,6 +96,14 @@ labels advance only when their activation elapsed time resets; queue shrink alon
 insufficient. The browser batch must also publish one non-empty actual-column Collapse
 settlement PNG and one reduced-motion activation PNG for each of Freeze, Collapse,
 Bomb and Multiplier. These are harness-only proof corrections, not product changes.
+Two fail-closed managed runs then demonstrated that SwiftShader can take longer than
+the full 260 ms Collapse trail to complete even a cropped DevTools screenshot.
+Transient activation/trail PNGs must therefore be exported atomically from the visible
+single Pixi Canvas: copy the exact CSS board region to an unmounted in-memory 2D
+surface, sample Renderer pre/post state and encode PNG synchronously in one JavaScript
+turn, and reject blank pixels, mismatched CSS/source bounds, dimensions, instance
+identity or hashes. This mechanism is evidence-only; it may not add a visible canvas,
+alter VFX duration, pause gameplay, or replace full-page layout screenshots.
 
 ## 目标
 
