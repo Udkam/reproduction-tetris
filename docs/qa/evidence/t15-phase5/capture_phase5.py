@@ -1189,6 +1189,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
     locked_seen: set[str] = set()
     activation_seen: set[str] = set()
     timed_seen: set[int] = set()
+    single_status_advance_ticks: int | None = None
     fifo_expected: list[str] | None = None
     fifo_observed: list[str] = []
     fifo_witness: dict[str, Any] | None = None
@@ -1320,13 +1321,15 @@ def run(context: BrowserContext) -> dict[str, Any]:
         if count in {1, 2, 3} and count not in timed_seen:
             captures.append(capture(page, f"status-{count}"))
             timed_seen.add(count)
+            if count == 1:
+                single_status_advance_ticks = 0
 
         if (
             active_seen == required_items
             and preview_seen == required_items
             and locked_seen == required_items
             and activation_seen == required_items
-            and timed_seen == {1, 2, 3}
+            and {2, 3}.issubset(timed_seen)
             and fifo_expected is not None
             and fifo_observed == fifo_expected
             and collapse_trail_witness is not None
@@ -1432,6 +1435,25 @@ def run(context: BrowserContext) -> dict[str, Any]:
     captures.append(english)
 
     page.set_viewport_size({"width": 1440, "height": 900})
+    if 1 not in timed_seen:
+        for advanced_ticks in range(1, 1201):
+            page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(1)")
+            snapshot = collect(page)
+            validate_common(snapshot)
+            count = timed_count(snapshot)
+            assert count > 0, "Timed Mutation statuses expired without a real one-status state."
+            if count == 1:
+                single_status = capture(page, "status-1")
+                assert timed_count(single_status) == 1
+                captures.append(single_status)
+                timed_seen.add(1)
+                single_status_advance_ticks = advanced_ticks
+                break
+        else:
+            raise AssertionError("Timed Mutation statuses never reached exactly one after 1200 ticks.")
+    assert timed_seen == {1, 2, 3}
+    assert single_status_advance_ticks is not None
+
     performance = frame_budget(page)
     assert performance["renderBenchmark"]["p95Ms"] < 16.67
     assert performance["raf"]["meanMs"] < 17.5
@@ -1492,6 +1514,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
             "activationsReduced": sorted(reduced_activation_seen),
             "activationReducedCaptures": reduced_activation_files,
             "timedCounts": sorted(timed_seen),
+            "singleStatusAdvanceTicks": single_status_advance_ticks,
             "collapseSettlement": collapse_trail_witness,
             "rendererFifo": {
                 "witness": fifo_witness,
