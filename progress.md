@@ -437,3 +437,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Ports 4178/5178/5179 remain closed; Chrome, repl, and Serena remain zero.
 - Phase 6 is closed. Next: open the Phase-7 Puzzle contract without redesigning the
   existing selector composition.
+
+## 2026-07-30 Phase 7 persistence accepted
+
+- Contract `08c0491` froze the 50-level curriculum and v5 migration semantics.
+- Source `fbec049` migrates legacy completion into revisioned v5 without presenting
+  old-board best counts as records for re-authored boards; focused tests pass 43/43
+  and typecheck passes.
+- Independent static audit of `455dea4..fbec049` accepts with P0–P3/GAP all zero.
+- The next isolated checkpoint owns only a terminating 01–10 setup-authoring tool;
+  product Puzzle definitions and the Core route artifact remain closed until its
+  deterministic smoke proof is recorded.

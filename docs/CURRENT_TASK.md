@@ -14,7 +14,8 @@ and all three independent reviews pass; coordinator acceptance/recovery `d0b7406
 pushed with exact local/tracking/remote equality and recorded at remote tip `d78e0e5`.
 Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
-Only the first persistence-v5 slice is now open.
+The persistence-v5 slice is independently accepted at product `fbec049`; the only
+open writer is now the bounded 01–10 authoring-tool checkpoint described below.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -55,6 +56,27 @@ domains; v4 completion migrates without promoting old-board bests; a migrated re
 writes back to v5 while old keys remain. The current twenty-level all-open runtime is
 unchanged. Product is frozen for one read-only static slice audit before the first
 ten-level curriculum batch opens.
+
+**Persistence-v5 audit disposition (2026-07-30):** the independent static reviewer
+accepts `455dea4..fbec049` with P0–P3/GAP all zero after correcting an initial
+contract misread. The accepted behavior intentionally keeps v4 completion while
+leaving retired-board best counts in the old key; it writes the migrated completion
+to v5, preserves every old key, and does not change the twenty-level all-open
+baseline. The fixed four-band builder is explicitly deferred to the later
+unlock/expansion slice.
+
+**Open Phase-7 slice — 01–10 authoring tool:** only
+`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs` may be created. It is a
+deterministic, bounded, one-process authoring utility for legal zero-clear 3-row
+setups and must emit machine-readable candidate histories without importing a
+renderer, browser, storage, React, or audio. It may use 5–7 complete setup drops and
+must reject hidden cells, a setup clear, merged same-type source owners, or a target
+height other than exactly three visible rows. It is tooling only: no generated
+candidate becomes product truth and no solver result is claimed until a later
+checkpoint replays the selected 01–10 definitions through public Core `dispatch()`.
+The script receives a fixed seed/range/budget on the command line, terminates by
+itself, and writes only an explicitly named output path. No server or resident Node
+process may remain.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

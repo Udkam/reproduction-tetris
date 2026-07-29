@@ -92,3 +92,33 @@
 - Blocker: none.
 - Next action: run one independent read-only static audit of `455dea4..fbec049`;
   correct any persistence/schema finding before opening the 01–10 level batch.
+
+## Persistence-v5 independent audit and 01–10 tooling handoff — 2026-07-30
+
+- Reviewed range: `455dea4..fbec049`.
+- Independent reviewer: existing read-only task
+  `/root/phase6_baseline_audit`; no test, build, browser, server or solver command.
+- Final verdict: **ACCEPT**, P0–P3/GAP all zero.
+- The reviewer initially treated clearing v4 best counts as data loss. On rereading
+  the frozen Phase-7 rule—old-board bests remain historical and cannot become
+  current-board records—it withdrew that finding.
+- Verified behavior:
+  - frozen v4 completion migrates in its visible order;
+  - retired-board best counts do not become Phase-7 records;
+  - successful legacy migration writes v5 and leaves every old key intact;
+  - v5-to-v1 read priority and fail-closed current parsing are preserved;
+  - the current twenty-level presentation remains all-open.
+- The existing four-band builder is intentionally deferred to the later
+  unlock/expansion checkpoint, so it is not a persistence-slice gap.
+- Open writer: coordinator as `t15_puzzle_01_10_authoring_writer`.
+- Exact open path:
+  - `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`
+- Claim boundary: one deterministic, bounded, terminating setup-candidate generator
+  for exactly three visible target rows and 5–7 legal zero-clear setup drops. It may
+  emit only to an explicit output path. Product definitions, Core solver, route
+  artifact, IDs, localization, progress/unlock, App, CSS and renderer remain closed.
+- Required focused proof: a small deterministic smoke generation with explicit
+  output path, schema/constraint assertions, and verified process exit. Generated
+  output is disposable until a separate evidence checkpoint.
+- Next action: implement and checkpoint the authoring tool, release its Node process,
+  then freeze the exact 01–10 product/solver paths before importing any candidate.
