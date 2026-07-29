@@ -1,8 +1,8 @@
 {
   "candidate": {
     "before": {
-      "sourceCandidate": "eaed1ac0962ba7256b44136f7bd4f0faef603970",
-      "gitHead": "1b9c85feefbbd8e7fdfa446785f65e6639c63858",
+      "sourceCandidate": "90859760bc9b2163219a31eb9053fcd4e92869ce",
+      "gitHead": "4a7f95f39690309a895df8db62b5210c186dbf5b",
       "productTreeMatchesCandidate": true,
       "productPaths": [
         "src",
@@ -23,14 +23,14 @@
       },
       "captureScript": {
         "relativePath": "docs/qa/evidence/t15-phase6/capture_phase6.py",
-        "sha256": "21aa87f27af2cb3764022cdab5b5be87fac0abfb39a1712dbd7af9b9a9a05858",
-        "gitBlob": "4822a9ff02b305d37f443f2a2bb4e2d0ad4ac296",
+        "sha256": "3fdd247f3dfd2fd9b9a05957f96ba78990856675582cf6f4b11b7e7961b134cf",
+        "gitBlob": "5361f39fcb2a21df2cf1042b908ec8d7edef0085",
         "status": []
       }
     },
     "after": {
-      "sourceCandidate": "eaed1ac0962ba7256b44136f7bd4f0faef603970",
-      "gitHead": "1b9c85feefbbd8e7fdfa446785f65e6639c63858",
+      "sourceCandidate": "90859760bc9b2163219a31eb9053fcd4e92869ce",
+      "gitHead": "4a7f95f39690309a895df8db62b5210c186dbf5b",
       "productTreeMatchesCandidate": true,
       "productPaths": [
         "src",
@@ -51,8 +51,8 @@
       },
       "captureScript": {
         "relativePath": "docs/qa/evidence/t15-phase6/capture_phase6.py",
-        "sha256": "21aa87f27af2cb3764022cdab5b5be87fac0abfb39a1712dbd7af9b9a9a05858",
-        "gitBlob": "4822a9ff02b305d37f443f2a2bb4e2d0ad4ac296",
+        "sha256": "3fdd247f3dfd2fd9b9a05957f96ba78990856675582cf6f4b11b7e7961b134cf",
+        "gitBlob": "5361f39fcb2a21df2cf1042b908ec8d7edef0085",
         "status": []
       }
     }
@@ -68,8 +68,8 @@
       "--strictPort"
     ],
     "cwd": "E:\\Proj\\reproduction-tetris",
-    "pid": 3704,
-    "listenerPid": 3704,
+    "pid": 19684,
+    "listenerPid": 19684,
     "ready": true,
     "released": true,
     "exitCode": 1
@@ -1176,8 +1176,8 @@
             },
             "renderer": {
               "canvas": {
-                "width": 678,
-                "height": 328,
+                "width": 758,
+                "height": 810,
                 "resolution": 1
               },
               "board": {
@@ -1221,14 +1221,6 @@
                   "elapsedMs": 0,
                   "durationMs": 220,
                   "cells": [
-                    {
-                      "x": 4,
-                      "y": 38
-                    },
-                    {
-                      "x": 5,
-                      "y": 38
-                    },
                     {
                       "x": 4,
                       "y": 39
@@ -1269,8 +1261,8 @@
             },
             "renderer": {
               "canvas": {
-                "width": 678,
-                "height": 328,
+                "width": 758,
+                "height": 810,
                 "resolution": 1
               },
               "board": {
@@ -1314,14 +1306,6 @@
                   "elapsedMs": 0,
                   "durationMs": 220,
                   "cells": [
-                    {
-                      "x": 4,
-                      "y": 38
-                    },
-                    {
-                      "x": 5,
-                      "y": 38
-                    },
                     {
                       "x": 4,
                       "y": 39
@@ -1366,7 +1350,7 @@
       },
       {
         "file": "phase6-clear-1-confirmation.png",
-        "sha256": "ee6ad3569a1c6c54e40f85cddc30ee4777a098437656094513c8784b0f38aef7",
+        "sha256": "d35a627afd87b377a716eb10816b09263e04e6ff4af423f52c02cdf1ca55215b",
         "dimensions": {
           "width": 391,
           "height": 782
@@ -1706,7 +1690,7 @@
       },
       {
         "file": "phase6-clear-1-afterglow.png",
-        "sha256": "42681b805213eb42b42cdb11b6fe3d13fa149233e63b5408a03528b31208afee",
+        "sha256": "847db6c2b4405c9ab7a434f5883a15efb18edf7301bfb00c4dc816912d2a655d",
         "dimensions": {
           "width": 391,
           "height": 782
@@ -2228,7 +2212,7 @@
       },
       {
         "file": "phase6-clear-2-matrix.png",
-        "sha256": "36d791917e13eef869d2e9d11b51ca347fee01e600a32578a166d1cefe140841",
+        "sha256": "444d4c0af14e85feb59d8a6434da7000e88e1981fd8dc065168482e72176e122",
         "dimensions": {
           "width": 391,
           "height": 782
@@ -2394,7 +2378,7 @@
           "pixelProbe": {
             "samples": 8264,
             "nonTransparentSamples": 8264,
-            "distinctBuckets": 184
+            "distinctBuckets": 185
           }
         }
       },
