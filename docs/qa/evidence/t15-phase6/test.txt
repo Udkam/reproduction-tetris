@@ -14,4 +14,3 @@ exit_code=0
       Tests  231 passed (231)
    Start at  00:19:12
    Duration  24.10s (transform 651ms, setup 0ms, import 2.01s, tests 16.74s, environment 2.46s)
-
