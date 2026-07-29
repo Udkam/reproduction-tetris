@@ -58,18 +58,18 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
       '缺口', '侧井', '错层', '双槽', '转折', '回路', '长井', '交错', '绕柱', '双门',
-      '高脊', '弧线', '折返', '低谷', '留白', '高台', '台阶', '收束', '路口', '深井',
+      '平台', '井口', '悬边', '阶梯', '双井', '回填', '侧台', '横桥', '窄门', '交汇',
     ]);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(20);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(20);
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
-      't5r-drift-08',
+      't5r-drift-08', 't5r-pulse-14', 't6r-cairn-17',
     ] satisfies PuzzleId[]);
   });
 
-  it('derives the first three-row batch and retained legacy batches from legal zero-clear hard-drop histories', () => {
+  it('derives the first three-row and second four-row batches from legal zero-clear hard-drop histories', () => {
     expect(PUZZLE_DEFINITIONS.map(({ targetRows }) => targetRows)).toEqual([
-      3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8,
+      3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     ]);
 
     for (const definition of PUZZLE_DEFINITIONS) {

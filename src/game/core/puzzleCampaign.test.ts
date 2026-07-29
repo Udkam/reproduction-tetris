@@ -12,7 +12,7 @@ function settle(state: GameState): GameState {
 }
 
 describe('Phase-7 transitional all-open Puzzle campaign behavior', () => {
-  it('keeps the stable 01–20 order while the first ten definitions adopt the new authored curriculum', () => {
+  it('keeps the stable 01–20 order while both ten-level batches adopt the new authored curriculum', () => {
     expect(PUZZLE_DEFINITIONS.map((definition) => definition.id)).toEqual([
       't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-05', 't3r-shaft-04',
       't3r-cascade-06', 't5r-delta-07', 't5r-lattice-09', 't5r-drift-08', 't5r-rift-10',

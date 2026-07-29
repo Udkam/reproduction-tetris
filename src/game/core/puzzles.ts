@@ -65,16 +65,16 @@ const PUZZLE_TARGET_ROWS: Readonly<Record<PuzzleId, number>> = Object.freeze({
   't5r-drift-08': 3,
   't5r-lattice-09': 3,
   't5r-rift-10': 3,
-  't5r-prism-11': 7,
-  't5r-current-12': 7,
-  't5r-arc-13': 7,
-  't5r-pulse-14': 7,
-  't5r-horizon-15': 7,
-  't6r-veil-16': 8,
-  't6r-cairn-17': 8,
-  't6r-terrace-18': 8,
-  't6r-bastion-19': 8,
-  't6r-keystone-20': 8,
+  't5r-prism-11': 4,
+  't5r-current-12': 4,
+  't5r-arc-13': 4,
+  't5r-pulse-14': 4,
+  't5r-horizon-15': 4,
+  't6r-veil-16': 4,
+  't6r-cairn-17': 4,
+  't6r-terrace-18': 4,
+  't6r-bastion-19': 4,
+  't6r-keystone-20': 4,
 });
 
 function setup(seed: number, placements: readonly PuzzleSetupPlacement[]): PuzzleSetupHistory {
@@ -197,19 +197,19 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
   endgame('t5r-lattice-09', '交错', 8, 2718281828, setup(1588444814, [{ type: 'T', rotation: 0, x: 7 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'S', rotation: 2, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 0, x: 6 }, { type: 'J', rotation: 2, x: 3 }])),
   endgame('t5r-rift-10', '双门', 10, 1311768467, setup(2718281718, [{ type: 'I', rotation: 0, x: 0 }, { type: 'Z', rotation: 3, x: 8 }, { type: 'O', rotation: 2, x: 5 }, { type: 'J', rotation: 1, x: 6 }, { type: 'L', rotation: 2, x: 4 }])),
 
-  // 11–15: seven rows — preserve recovery room while resolving paired cavities.
-  endgame('t5r-prism-11', '低谷', 14, 3177056438, setup(878082202, [{ type: 'S', rotation: 2, x: 4 }, { type: 'T', rotation: 0, x: 1 }, { type: 'Z', rotation: 1, x: 0 }, { type: 'I', rotation: 1, x: -2 }, { type: 'O', rotation: 0, x: 3 }, { type: 'J', rotation: 0, x: 7 }, { type: 'L', rotation: 3, x: 0 }, { type: 'Z', rotation: 2, x: 4 }, { type: 'J', rotation: 0, x: 2 }, { type: 'T', rotation: 0, x: 3 }])),
-  endgame('t5r-current-12', '折返', 13, 1832906719, setup(287454031, [{ type: 'L', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 4 }, { type: 'T', rotation: 1, x: 2 }, { type: 'I', rotation: 1, x: 4 }, { type: 'S', rotation: 1, x: 6 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'O', rotation: 1, x: 1 }, { type: 'S', rotation: 0, x: 5 }, { type: 'L', rotation: 2, x: 2 }, { type: 'T', rotation: 3, x: 8 }])),
-  endgame('t5r-arc-13', '弧线', 12, 2882400001, setup(591751049, [{ type: 'L', rotation: 1, x: 7 }, { type: 'J', rotation: 0, x: 5 }, { type: 'S', rotation: 0, x: 6 }, { type: 'T', rotation: 0, x: 2 }, { type: 'I', rotation: 3, x: 8 }, { type: 'Z', rotation: 3, x: 1 }, { type: 'O', rotation: 2, x: 3 }, { type: 'I', rotation: 3, x: 4 }, { type: 'Z', rotation: 3, x: 6 }, { type: 'J', rotation: 1, x: 7 }])),
-  endgame('t5r-pulse-14', '高脊', 11, 3471557507, setup(1164413355, [{ type: 'J', rotation: 0, x: 3 }, { type: 'Z', rotation: 0, x: 3 }, { type: 'L', rotation: 0, x: 0 }, { type: 'T', rotation: 0, x: 6 }, { type: 'S', rotation: 2, x: 5 }, { type: 'I', rotation: 1, x: -2 }, { type: 'O', rotation: 2, x: 1 }, { type: 'L', rotation: 0, x: 3 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'S', rotation: 3, x: 0 }])),
-  endgame('t5r-horizon-15', '留白', 15, 2596069104, setup(305419896, [{ type: 'S', rotation: 0, x: 1 }, { type: 'T', rotation: 1, x: 0 }, { type: 'O', rotation: 1, x: 4 }, { type: 'I', rotation: 3, x: -1 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'L', rotation: 3, x: 4 }, { type: 'J', rotation: 0, x: 7 }, { type: 'J', rotation: 2, x: 0 }, { type: 'I', rotation: 1, x: 4 }, { type: 'T', rotation: 1, x: 2 }])),
+  // 11–15: four rows — introduce platforms, wells, overhangs, stairs, and paired lanes.
+  endgame('t5r-prism-11', '阶梯', 14, 2882400001, setup(3141593004, [{ type: 'S', rotation: 1, x: 1 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'J', rotation: 0, x: 7 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 0, x: 4 }, { type: 'L', rotation: 2, x: 3 }, { type: 'T', rotation: 2, x: 0 }])),
+  endgame('t5r-current-12', '悬边', 13, 3471557507, setup(3141593005, [{ type: 'S', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'T', rotation: 2, x: 5 }, { type: 'O', rotation: 1, x: 2 }, { type: 'L', rotation: 2, x: 4 }, { type: 'J', rotation: 2, x: 7 }])),
+  endgame('t5r-arc-13', '井口', 12, 3177056438, setup(3141593022, [{ type: 'Z', rotation: 0, x: 0 }, { type: 'S', rotation: 3, x: 3 }, { type: 'I', rotation: 0, x: 5 }, { type: 'J', rotation: 2, x: 7 }, { type: 'T', rotation: 2, x: 4 }, { type: 'O', rotation: 0, x: 0 }, { type: 'L', rotation: 2, x: 2 }])),
+  endgame('t5r-pulse-14', '平台', 11, 3735928559, setup(3141593013, [{ type: 'O', rotation: 2, x: 5 }, { type: 'L', rotation: 3, x: 6 }, { type: 'Z', rotation: 1, x: 7 }, { type: 'J', rotation: 0, x: 0 }, { type: 'S', rotation: 0, x: 3 }, { type: 'T', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }]), [{ x: 5, y: 15 }]),
+  endgame('t5r-horizon-15', '双井', 15, 324508639, setup(2718282021, [{ type: 'Z', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'O', rotation: 2, x: 5 }, { type: 'S', rotation: 1, x: 2 }, { type: 'T', rotation: 2, x: 0 }, { type: 'J', rotation: 2, x: 2 }, { type: 'L', rotation: 2, x: 5 }, { type: 'S', rotation: 1, x: 7 }])),
 
-  // 16–20: eight rows — plan release lanes across a true deep endgame.
-  endgame('t6r-veil-16', '深井', 20, 324508639, setup(1588444911, [{ type: 'I', rotation: 1, x: 0 }, { type: 'O', rotation: 0, x: 0 }, { type: 'J', rotation: 0, x: 3 }, { type: 'S', rotation: 3, x: 3 }, { type: 'T', rotation: 3, x: 0 }, { type: 'Z', rotation: 2, x: 5 }, { type: 'L', rotation: 3, x: 7 }, { type: 'L', rotation: 2, x: 0 }, { type: 'O', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 3 }, { type: 'T', rotation: 3, x: 4 }, { type: 'S', rotation: 2, x: 3 }])),
-  endgame('t6r-cairn-17', '高台', 16, 3735928559, setup(270544960, [{ type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 1, x: 4 }, { type: 'S', rotation: 1, x: 2 }, { type: 'J', rotation: 1, x: 0 }, { type: 'Z', rotation: 0, x: 6 }, { type: 'I', rotation: 3, x: -1 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 0, x: 4 }, { type: 'Z', rotation: 3, x: 0 }, { type: 'S', rotation: 1, x: 4 }, { type: 'J', rotation: 0, x: 2 }, { type: 'O', rotation: 0, x: 3 }])),
-  endgame('t6r-terrace-18', '台阶', 17, 5783321, setup(1164413355, [{ type: 'J', rotation: 0, x: 0 }, { type: 'Z', rotation: 2, x: 0 }, { type: 'L', rotation: 0, x: 3 }, { type: 'T', rotation: 3, x: 2 }, { type: 'S', rotation: 0, x: 0 }, { type: 'I', rotation: 1, x: 4 }, { type: 'O', rotation: 1, x: 4 }, { type: 'L', rotation: 1, x: 6 }, { type: 'Z', rotation: 0, x: 5 }, { type: 'S', rotation: 1, x: 2 }, { type: 'O', rotation: 1, x: 1 }, { type: 'J', rotation: 1, x: -1 }])),
-  endgame('t6r-bastion-19', '路口', 19, 521288629, setup(591751049, [{ type: 'L', rotation: 0, x: 7 }, { type: 'J', rotation: 3, x: 5 }, { type: 'S', rotation: 1, x: 6 }, { type: 'T', rotation: 3, x: 8 }, { type: 'I', rotation: 2, x: 1 }, { type: 'Z', rotation: 1, x: 3 }, { type: 'O', rotation: 2, x: 2 }, { type: 'I', rotation: 2, x: 4 }, { type: 'Z', rotation: 3, x: 2 }, { type: 'J', rotation: 0, x: 7 }, { type: 'L', rotation: 0, x: 4 }, { type: 'O', rotation: 1, x: 8 }])),
-  endgame('t6r-keystone-20', '收束', 18, 19088743, setup(305419896, [{ type: 'S', rotation: 2, x: 1 }, { type: 'T', rotation: 1, x: -1 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 1, x: 4 }, { type: 'L', rotation: 3, x: 3 }, { type: 'J', rotation: 1, x: -1 }, { type: 'J', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }, { type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 2 }, { type: 'O', rotation: 0, x: 0 }, { type: 'S', rotation: 0, x: 7 }])),
+  // 16–20: four rows — add recovery, shelves, bridges, and two sparse headroom pegs.
+  endgame('t6r-veil-16', '交汇', 20, 5783321, setup(3141593028, [{ type: 'I', rotation: 0, x: 1 }, { type: 'L', rotation: 2, x: 0 }, { type: 'S', rotation: 2, x: 5 }, { type: 'T', rotation: 3, x: 8 }, { type: 'O', rotation: 1, x: 3 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'J', rotation: 2, x: 6 }])),
+  endgame('t6r-cairn-17', '回填', 16, 1832906719, setup(3141593017, [{ type: 'S', rotation: 3, x: 5 }, { type: 'T', rotation: 0, x: 1 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'J', rotation: 0, x: 7 }, { type: 'O', rotation: 0, x: 0 }, { type: 'I', rotation: 0, x: 0 }, { type: 'L', rotation: 2, x: 4 }]), [{ x: 1, y: 15 }]),
+  endgame('t6r-terrace-18', '侧台', 17, 2596069104, setup(3141593031, [{ type: 'L', rotation: 0, x: 4 }, { type: 'Z', rotation: 2, x: 0 }, { type: 'T', rotation: 2, x: 2 }, { type: 'S', rotation: 0, x: 7 }, { type: 'I', rotation: 0, x: 3 }, { type: 'O', rotation: 0, x: 8 }, { type: 'J', rotation: 2, x: 5 }])),
+  endgame('t6r-bastion-19', '窄门', 19, 521288629, setup(2718282009, [{ type: 'O', rotation: 3, x: 8 }, { type: 'J', rotation: 0, x: 0 }, { type: 'Z', rotation: 1, x: 5 }, { type: 'S', rotation: 0, x: 3 }, { type: 'L', rotation: 2, x: 3 }, { type: 'T', rotation: 2, x: 7 }, { type: 'I', rotation: 0, x: 3 }, { type: 'Z', rotation: 1, x: 0 }])),
+  endgame('t6r-keystone-20', '横桥', 18, 19088743, setup(2718282013, [{ type: 'I', rotation: 0, x: 0 }, { type: 'J', rotation: 0, x: 4 }, { type: 'L', rotation: 2, x: 3 }, { type: 'S', rotation: 1, x: 5 }, { type: 'Z', rotation: 1, x: 7 }, { type: 'T', rotation: 2, x: 7 }, { type: 'O', rotation: 3, x: 1 }, { type: 'I', rotation: 0, x: 0 }])),
 ]);
 
 /** The visible workshop order is authored from replayed complexity, not legacy ID order. */
