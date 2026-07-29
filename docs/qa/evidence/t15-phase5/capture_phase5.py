@@ -885,6 +885,45 @@ def frame_budget(page: Page) -> dict[str, Any]:
     }
 
 
+def gpu_backend(page: Page) -> dict[str, Any]:
+    backend = page.evaluate(
+        """
+        () => {
+          const canvas = document.querySelector("canvas[data-testid='game-canvas']");
+          const context = canvas?.getContext("webgl2") || canvas?.getContext("webgl");
+          if (!context) return null;
+          const debug = context.getExtension("WEBGL_debug_renderer_info");
+          return {
+            context: context instanceof WebGL2RenderingContext ? "webgl2" : "webgl",
+            debugExtension: Boolean(debug),
+            renderer: debug
+              ? context.getParameter(debug.UNMASKED_RENDERER_WEBGL)
+              : context.getParameter(context.RENDERER),
+            vendor: debug
+              ? context.getParameter(debug.UNMASKED_VENDOR_WEBGL)
+              : context.getParameter(context.VENDOR),
+          };
+        }
+        """
+    )
+    assert backend is not None
+    assert backend["debugExtension"]
+    descriptor = f"{backend['vendor']} {backend['renderer']}".lower()
+    assert all(
+        marker not in descriptor
+        for marker in (
+            "swiftshader",
+            "llvmpipe",
+            "lavapipe",
+            "softpipe",
+            "software rasterizer",
+            "microsoft basic render",
+            "warp",
+        )
+    )
+    return {**backend, "hardwareAccelerated": True}
+
+
 def activation_capture_ready(
     snapshot: dict[str, Any],
     *,
@@ -1170,6 +1209,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
     page = context.new_page()
     errors = attach_error_capture(page)
     lifecycle_baseline, first_mount = enter_mutation(page)
+    gpu = gpu_backend(page)
 
     captures: list[dict[str, Any]] = []
     page.set_viewport_size({"width": 1440, "height": 900})
@@ -1504,6 +1544,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
 
     return {
         "fixedSeed": FIXED_RUN_SEED,
+        "gpu": gpu,
         "autoplayPieces": max(capture["state"]["pieceCount"] for capture in captures),
         "coverage": {
             "active": sorted(active_seen),
@@ -1658,7 +1699,7 @@ def main() -> None:
                 browser = playwright.chromium.launch(
                     headless=True,
                     channel="chrome",
-                    args=["--use-gl=angle", "--use-angle=swiftshader", "--disable-extensions"],
+                    args=["--disable-extensions"],
                 )
                 try:
                     context = browser.new_context(
