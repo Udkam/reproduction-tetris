@@ -847,3 +847,33 @@
   rerun and re-bound before browser evidence.
 - Next action: implement Renderer extract/test first; do not edit runtime or harness
   until that checkpoint is green and committed.
+
+## 2026-07-29 — Pixi extraction chain ready for bounded diagnostic
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-EXTRACT-R2`.
+- Base SHA: `259a51d`.
+- Exact checkpoints and changed paths:
+  - `019268b` — `src/game/render/TetrisRenderer.ts` and its direct test expose a
+    temporary, unmounted Pixi `ExtractSystem` board PNG with geometry and pixel probe;
+  - `ee2aac5` — `src/game/runtime/GameRuntime.ts` and its direct test expose that
+    state-preserving export only on the DEV QA surface;
+  - `a5fa896` — `docs/qa/evidence/t15-phase5/capture_phase5.py` consumes the typed
+    export, binds CSS/Pixi geometry, copies observed snapshot metadata instead of
+    aliasing it, locks HEAD/script content across the run, and rolls back a partial
+    publication prefix on error.
+- Commands actually run:
+  - Renderer typecheck and direct test: PASS, 25 tests;
+  - Runtime typecheck and direct test: PASS, 11 tests;
+  - harness Python AST, embedded atomic JavaScript syntax and `--help`: PASS;
+  - source-candidate/product-tree and committed harness-blob binding: PASS at
+    `a5fa896`.
+- Independent evidence audit found the prior transparent WebGL copy, snapshot alias,
+  unlocked long-run harness, and interrupted-prefix cleanup gaps. All four findings
+  are accepted and addressed in the checkpoints above; no prior permissive audit is
+  used to waive them.
+- Product source is now frozen at `ee2aac5`. Gate evidence from `96a3841` is stale;
+  no final typecheck, full test, build, browser batch, visual acceptance, or Phase-5
+  completion is claimed here.
+- Next action: run one temporary live Collapse diagnostic from the committed harness,
+  require a nonblank Pixi extract and exact same-instance pre/post state, clean it,
+  then regenerate the final source-bound gates.

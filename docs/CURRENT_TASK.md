@@ -195,6 +195,14 @@ or history rewrite is authorized.
   Renderer export, runtime bridge, and harness consumption are separate rollback
   commits. The final typecheck, complete suite and build must be regenerated after
   the last source commit before browser evidence is accepted.
+- The reopened source chain is now frozen at `ee2aac5`: Renderer extraction is
+  checkpoint `019268b`, and the DEV-only runtime bridge is checkpoint `ee2aac5`.
+  Harness checkpoint `a5fa896` consumes only that typed bridge, copies each observed
+  snapshot before attaching file metadata, locks the complete HEAD and committed
+  harness blob/hash across the run, and rolls back an interrupted prefix publication.
+  The prior gate batch at `96a3841` is now stale. Before regenerating gates, run one
+  bounded live diagnostic that proves a real transient board extract is a nonblank
+  PNG bound to unchanged pre/post Renderer state; do not publish that diagnostic.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
