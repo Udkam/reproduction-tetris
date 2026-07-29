@@ -338,6 +338,32 @@ levels remain open during transition, five-level bands are data-driven, and neit
 After this acceptance checkpoint is pushed, the coordinator may open only the
 bounded levels 31–40 authoring contract.
 
+**Open Phase-7 slice — levels 31–40 candidate authoring (2026-07-30):**
+accepted/pushed base is `fc23cfb`. Use the unchanged
+`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs` in explicit, short-lived
+processes to build separate six-row ordinary and sparse-anchor pools under
+`.local`. Run one small deterministic smoke before either full pool. Ordinary
+candidates may use 11/12 legal zero-clear drops; anchor candidates may use 7/8.
+Directly reject hidden cells, initial clears/full rows, noncontiguous target bands,
+duplicate boards/seeds and any anchor column whose six target cells are not already
+occupied. Candidate pools are execution evidence only and must be removed after
+selection.
+
+After the pools are inspected, a separate source checkpoint may open only
+`src/game/core/types.ts`, `src/game/core/puzzles.ts`,
+`src/game/core/puzzles.test.ts`, `src/game/core/puzzleCampaign.test.ts`,
+`src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
+`src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.test.ts`, and
+`docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json`. It must append
+IDs `tm-puzzle-31` through `tm-puzzle-40`, ten unique six-row boards, concise
+bilingual structural names and exactly three one-anchor levels. Each final level
+requires two public-Core routes at max 30 locks / 600 primary beam / 480 alternate
+beam, with first divergence no later than lock four. Order complete
+board/setup/seed/anchor/name packages from replay evidence and human-readable
+structural lessons; do not sort by lock count alone. Definitions/artifacts 01–30,
+gradual unlock/v5 migration, App source, selector/CSS, renderer, dependencies,
+later levels and other modes remain closed.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

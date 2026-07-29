@@ -595,3 +595,28 @@
 - Disposition: levels 21–30 are ACCEPTED / CLOSED.
 - Next action: push the acceptance point, then open a separate 31–40 candidate
   authoring contract.
+
+## Levels 31–40 candidate-authoring contract — 2026-07-30
+
+- Task: `t15_puzzle_31_40_candidate_authoring`.
+- Accepted/pushed base SHA: `fc23cfb`.
+- Execution-only tool:
+  `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`.
+- Claim boundary:
+  - create separate ignored six-row ordinary (11/12 setup drops) and sparse
+    anchor (7/8 setup drops) pools;
+  - select readable wells, shelves, channels, bridges and overhangs;
+  - require exactly three one-anchor packages with every target cell in the
+    anchor column already occupied;
+  - later verify two early-diverging routes at max locks 30, primary beam 600,
+    alternate beam 480.
+- Candidate generation sequence: one deterministic smoke, direct assertions and
+  cleanup; then at most one ordinary and one anchor full-pool process, never
+  overlapping tests, builds, browser automation or another solver.
+- Closed until pool inspection: all product/tests/artifact paths, IDs 31–40,
+  localization, progress/App count adaptation, unlock/v5, selector/CSS, renderer,
+  dependencies, levels 41–50 and other modes.
+- Resource boundary: one Node generator at a time, no listener, explicit output,
+  owned PID/log cleanup, no WMI/CIM.
+- Next action: run and repeat the bounded smoke, compare hashes, then generate
+  the two full pools only if the smoke is healthy.

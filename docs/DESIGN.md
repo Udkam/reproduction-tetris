@@ -73,6 +73,18 @@ The sparser carrier is a solvability correction, not a reduced anchor quota or a
 larger search allowance: every selected anchor package still needs two early-diverging
 replayed routes at the unchanged bound before it can ship.
 
+The `31–40` batch raises the target band to six rows and must turn earlier isolated
+ideas into readable combinations: wells with staging shelves, offset channels,
+bridges with recovery lanes, and controlled overhangs. Candidate generation therefore
+uses separate ordinary and sparse-anchor pools rather than adding pegs to dense boards
+after selection. Ordinary candidates may use 11–12 legal setup drops; anchor candidates
+start from 7–8. Exactly three selected levels retain one consequential headroom anchor,
+and every selected board still needs two public-Core routes diverging by lock four.
+The six-row batch uses a fixed 30-lock, 600/480-beam verification ceiling; that larger
+lock allowance reflects the extra target row and is not raised again for an individual
+failure. Final ordering is based on replayed route features within the six-row band,
+then reviewed for a clear structural lesson rather than sorted by a single scalar.
+
 Mutation items are an orthogonal attachment system:
 
 | Ordinary body | Allowed attachments |
