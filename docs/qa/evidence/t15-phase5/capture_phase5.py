@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 from contextlib import contextmanager
 import hashlib
 import json
@@ -601,6 +602,156 @@ def validate_common(snapshot: dict[str, Any]) -> None:
     assert all(size >= 12 for size in snapshot["layout"]["statusFontPixels"])
 
 
+def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any]:
+    payload = page.evaluate(
+        """
+        (selector) => {
+          const qa = window.__SIGNAL_FOUNDRY_QA__;
+          const board = document.querySelector(selector);
+          const canvas = document.querySelector("canvas[data-testid='game-canvas']");
+          if (!qa || !(board instanceof HTMLElement) || !(canvas instanceof HTMLCanvasElement)) {
+            throw new Error("Atomic board capture prerequisites are missing.");
+          }
+          const snapshot = () => {
+            const state = qa.getState();
+            const renderer = qa.getRendererSnapshot();
+            return {
+              state: {
+                mode: state.mode,
+                status: state.status,
+                pieceCount: state.pieceCount,
+              },
+              renderer: {
+                mutationActivation: renderer.mutationActivation,
+                mutationActivationQueueItems: [...renderer.mutationActivationQueueItems],
+                mutationActiveParticleCount: renderer.mutationActiveParticleCount,
+                mutationCollapseTrail: renderer.mutationCollapseTrail,
+              },
+            };
+          };
+          const boardRect = board.getBoundingClientRect();
+          const canvasRect = canvas.getBoundingClientRect();
+          if (
+            boardRect.width <= 0
+            || boardRect.height <= 0
+            || canvasRect.width <= 0
+            || canvasRect.height <= 0
+          ) {
+            throw new Error("Atomic board capture has empty CSS bounds.");
+          }
+          const scaleX = canvas.width / canvasRect.width;
+          const scaleY = canvas.height / canvasRect.height;
+          const source = {
+            x: (boardRect.left - canvasRect.left) * scaleX,
+            y: (boardRect.top - canvasRect.top) * scaleY,
+            width: boardRect.width * scaleX,
+            height: boardRect.height * scaleY,
+          };
+          if (
+            source.x < -1
+            || source.y < -1
+            || source.x + source.width > canvas.width + 1
+            || source.y + source.height > canvas.height + 1
+          ) {
+            throw new Error(`Board crop escapes the gameplay Canvas: ${JSON.stringify({
+              source,
+              canvas: { width: canvas.width, height: canvas.height },
+            })}`);
+          }
+          const output = document.createElement("canvas");
+          output.width = Math.max(1, Math.round(source.width));
+          output.height = Math.max(1, Math.round(source.height));
+          const context = output.getContext("2d", {
+            alpha: true,
+            willReadFrequently: true,
+          });
+          if (!context) throw new Error("Atomic 2D capture context is unavailable.");
+
+          const before = snapshot();
+          const startedAt = performance.now();
+          context.drawImage(
+            canvas,
+            source.x,
+            source.y,
+            source.width,
+            source.height,
+            0,
+            0,
+            output.width,
+            output.height,
+          );
+          const pixels = context.getImageData(0, 0, output.width, output.height).data;
+          const pixelCount = output.width * output.height;
+          const stride = Math.max(1, Math.floor(pixelCount / 8192));
+          const buckets = new Set();
+          let samples = 0;
+          let nonTransparentSamples = 0;
+          for (let pixel = 0; pixel < pixelCount; pixel += stride) {
+            const offset = pixel * 4;
+            const alpha = pixels[offset + 3];
+            samples += 1;
+            if (alpha > 0) nonTransparentSamples += 1;
+            buckets.add(
+              `${pixels[offset] >> 4}:${pixels[offset + 1] >> 4}:`
+              + `${pixels[offset + 2] >> 4}:${alpha >> 4}`,
+            );
+          }
+          const dataUrl = output.toDataURL("image/png");
+          const after = snapshot();
+          return {
+            before,
+            after,
+            dataUrl,
+            captureMs: performance.now() - startedAt,
+            cssClip: {
+              x: boardRect.left,
+              y: boardRect.top,
+              width: boardRect.width,
+              height: boardRect.height,
+            },
+            canvasCssBounds: {
+              x: canvasRect.left,
+              y: canvasRect.top,
+              width: canvasRect.width,
+              height: canvasRect.height,
+            },
+            sourcePixelClip: source,
+            canvasPixels: {
+              width: canvas.width,
+              height: canvas.height,
+            },
+            outputPixels: {
+              width: output.width,
+              height: output.height,
+            },
+            pixelProbe: {
+              samples,
+              nonTransparentSamples,
+              distinctBuckets: buckets.size,
+            },
+          };
+        }
+        """,
+        crop_selector,
+    )
+    data_url = payload.pop("dataUrl")
+    assert data_url.startswith("data:image/png;base64,")
+    png = base64.b64decode(data_url.split(",", 1)[1], validate=True)
+    assert png.startswith(b"\x89PNG\r\n\x1a\n")
+    assert len(png) > 1024
+    width = int.from_bytes(png[16:20], "big")
+    height = int.from_bytes(png[20:24], "big")
+    assert width == payload["outputPixels"]["width"]
+    assert height == payload["outputPixels"]["height"]
+    probe = payload["pixelProbe"]
+    assert probe["samples"] >= 256
+    assert probe["nonTransparentSamples"] >= max(16, probe["samples"] // 10)
+    assert probe["distinctBuckets"] >= 4
+    payload["pngBytes"] = png
+    payload["pngDimensions"] = {"width": width, "height": height}
+    return payload
+
+
 def capture(
     page: Page,
     name: str,
@@ -622,7 +773,13 @@ def capture(
         validate_common(snapshot)
         path = ARTIFACT_OUT / f"{name}.png"
         clip: dict[str, float] | None = None
-        if crop_selector is None:
+        atomic: dict[str, Any] | None = None
+        if observed_snapshot is not None:
+            assert crop_selector is not None
+            atomic = capture_atomic_board_pixels(page, crop_selector)
+            path.write_bytes(atomic.pop("pngBytes"))
+            clip = atomic["cssClip"]
+        elif crop_selector is None:
             page.screenshot(path=str(path), full_page=False)
         else:
             crop = page.locator(crop_selector).bounding_box()
@@ -642,9 +799,7 @@ def capture(
             }
             page.screenshot(path=str(path), clip=crop)
         if observed_snapshot is not None:
-            snapshot = collect(page)
-            validate_common(snapshot)
-            board_bounds = snapshot["bounds"]["board"]
+            board_bounds = observed_snapshot["bounds"]["board"]
             assert board_bounds is not None
             assert clip is not None
             assert abs(clip["x"] - board_bounds["left"]) <= 1
@@ -653,18 +808,31 @@ def capture(
             assert abs(clip["height"] - board_bounds["height"]) <= 1
             capture_before = {
                 "pieceCountBefore": observed_snapshot["state"]["pieceCount"],
-                "pieceCountAfter": snapshot["state"]["pieceCount"],
                 "mutationActivationBefore": observed_snapshot["renderer"]["mutationActivation"],
                 "mutationActivationQueueBefore": observed_snapshot["renderer"][
                     "mutationActivationQueueItems"
                 ],
                 "mutationCollapseTrailBefore": observed_snapshot["renderer"]["mutationCollapseTrail"],
+                "atomicBefore": atomic["before"],
+                "atomicAfter": atomic["after"],
+                "canvasCssBounds": atomic["canvasCssBounds"],
+                "sourcePixelClip": atomic["sourcePixelClip"],
+                "canvasPixels": atomic["canvasPixels"],
+                "outputPixels": atomic["outputPixels"],
+                "pngDimensions": atomic["pngDimensions"],
+                "pixelProbe": atomic["pixelProbe"],
+                "captureMs": atomic["captureMs"],
             }
         snapshot["file"] = path.name
         snapshot["sha256"] = sha256(path)
         snapshot["grayscale"] = grayscale
         snapshot["cropSelector"] = crop_selector
         snapshot["clip"] = clip
+        snapshot["captureMethod"] = (
+            "atomic-canvas-copy"
+            if observed_snapshot is not None
+            else "playwright-screenshot"
+        )
         if observed_snapshot is not None:
             snapshot["captureBinding"] = {
                 **capture_before,
@@ -771,40 +939,52 @@ def activation_capture_ready(
 
 def assert_activation_capture_window(
     before: dict[str, Any],
-    after: dict[str, Any],
+    capture_snapshot: dict[str, Any],
     *,
     reduced_motion: bool,
 ) -> None:
     before_activation = before["renderer"]["mutationActivation"]
-    after_activation = after["renderer"]["mutationActivation"]
+    binding = capture_snapshot["captureBinding"]
+    atomic_before = binding["atomicBefore"]
+    atomic_after = binding["atomicAfter"]
+    captured_before = atomic_before["renderer"]["mutationActivation"]
+    captured_after = atomic_after["renderer"]["mutationActivation"]
     assert before_activation is not None
-    assert after_activation is not None
-    assert before["state"]["pieceCount"] == after["state"]["pieceCount"]
-    assert after_activation["item"] == before_activation["item"]
-    assert after_activation["durationMs"] == before_activation["durationMs"]
-    assert after_activation["elapsedMs"] + 0.5 >= before_activation["elapsedMs"]
-    assert after_activation["elapsedMs"] < after_activation["durationMs"]
+    assert captured_before is not None
+    assert captured_after is not None
+    assert atomic_before == atomic_after
+    assert before["state"]["pieceCount"] == atomic_before["state"]["pieceCount"]
+    assert captured_before["item"] == before_activation["item"]
+    assert captured_before["durationMs"] == before_activation["durationMs"]
+    assert captured_before["elapsedMs"] + 0.5 >= before_activation["elapsedMs"]
+    assert captured_after["elapsedMs"] < captured_after["durationMs"]
     assert (
-        after["renderer"]["mutationActivationQueueItems"]
+        atomic_before["renderer"]["mutationActivationQueueItems"]
         == before["renderer"]["mutationActivationQueueItems"]
     )
-    assert activation_capture_ready(after, reduced_motion=reduced_motion)
+    assert activation_capture_ready(atomic_after, reduced_motion=reduced_motion)
 
 
 def assert_collapse_trail_capture_window(
     before: dict[str, Any],
-    after: dict[str, Any],
+    capture_snapshot: dict[str, Any],
 ) -> None:
     before_trail = before["renderer"]["mutationCollapseTrail"]
-    after_trail = after["renderer"]["mutationCollapseTrail"]
+    binding = capture_snapshot["captureBinding"]
+    atomic_before = binding["atomicBefore"]
+    atomic_after = binding["atomicAfter"]
+    captured_before = atomic_before["renderer"]["mutationCollapseTrail"]
+    captured_after = atomic_after["renderer"]["mutationCollapseTrail"]
     assert before_trail is not None
-    assert after_trail is not None
-    assert before["state"]["pieceCount"] == after["state"]["pieceCount"]
-    assert after_trail["columns"] == before_trail["columns"]
-    assert after_trail["maxDrop"] == before_trail["maxDrop"]
-    assert after_trail["durationMs"] == before_trail["durationMs"]
-    assert after_trail["elapsedMs"] + 0.5 >= before_trail["elapsedMs"]
-    assert after_trail["elapsedMs"] < after_trail["durationMs"]
+    assert captured_before is not None
+    assert captured_after is not None
+    assert atomic_before == atomic_after
+    assert before["state"]["pieceCount"] == atomic_before["state"]["pieceCount"]
+    assert captured_before["columns"] == before_trail["columns"]
+    assert captured_before["maxDrop"] == before_trail["maxDrop"]
+    assert captured_before["durationMs"] == before_trail["durationMs"]
+    assert captured_before["elapsedMs"] + 0.5 >= before_trail["elapsedMs"]
+    assert captured_after["elapsedMs"] < captured_after["durationMs"]
 
 
 def install_fifo_observer(
@@ -1084,7 +1264,9 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 observed_snapshot=snapshot,
             )
             assert_collapse_trail_capture_window(snapshot, trail_capture)
-            captured_trail = trail_capture["renderer"]["mutationCollapseTrail"]
+            captured_trail = trail_capture["captureBinding"]["atomicAfter"][
+                "renderer"
+            ]["mutationCollapseTrail"]
             assert captured_trail is not None
             assert captured_trail["columns"]
             assert captured_trail["maxDrop"] > 0
@@ -1118,7 +1300,10 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 activation_capture,
                 reduced_motion=False,
             )
-            captured_activation = activation_capture["renderer"]["mutationActivation"]
+            captured_renderer = activation_capture["captureBinding"]["atomicAfter"][
+                "renderer"
+            ]
+            captured_activation = captured_renderer["mutationActivation"]
             assert captured_activation is not None
             assert captured_activation["item"] == activation["item"]
             if activation["item"] == "bomb":
@@ -1129,7 +1314,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 )
                 assert captured_impact["active"]
                 assert captured_activation["particlesEmitted"]
-                assert activation_capture["renderer"]["mutationActiveParticleCount"] > 0
+                assert captured_renderer["mutationActiveParticleCount"] > 0
             captures.append(activation_capture)
             activation_seen.add(activation["item"])
             snapshot = activation_capture
@@ -1227,7 +1412,10 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 activation_capture,
                 reduced_motion=True,
             )
-            captured_activation = activation_capture["renderer"]["mutationActivation"]
+            captured_renderer = activation_capture["captureBinding"]["atomicAfter"][
+                "renderer"
+            ]
+            captured_activation = captured_renderer["mutationActivation"]
             assert captured_activation is not None
             assert captured_activation["item"] == activation["item"]
             if activation["item"] == "bomb":
@@ -1239,8 +1427,7 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 assert captured_impact["active"]
                 assert captured_activation["particlesEmitted"]
                 assert (
-                    activation_capture["renderer"]["mutationActiveParticleCount"]
-                    == 0
+                    captured_renderer["mutationActiveParticleCount"] == 0
                 )
             captures.append(activation_capture)
             reduced_activation_seen.add(activation["item"])
