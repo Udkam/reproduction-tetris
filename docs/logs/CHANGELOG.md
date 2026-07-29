@@ -1,5 +1,38 @@
 # Changelog
 
+## 2026-07-29 — T15 Phase 5 Mutation accepted locally
+
+- Mutation keeps all seven tetromino bodies independent from four attachable item
+  identities. The attachment stream is deterministic but isolated from the ordinary
+  seven-bag; Next predicts the eventual body-plus-item without consuming either
+  stream, and direct regression coverage spans all 28 combinations.
+- Ice refreshes a ten-second 1-second-per-cell gravity override while preserving
+  manual controls; Collapse refreshes ten seconds of independent column settlement;
+  Multiplier refreshes ten seconds and advances 2×→4×; Bomb is a one-shot bottom
+  three-row impact. Timed states coexist, same-transition activations remain FIFO,
+  non-Ice Mutation gravity stops at 0.1 seconds per cell, and the optimized Collapse
+  path reuses one indexed mapping.
+- The one-Canvas renderer gives each attachment a body-preserving core, rim, texture,
+  symbol and local motion language across active, locked and Next states. Ice,
+  Collapse, Bomb and Multiplier have distinct ordinary/reduced endpoints; effects
+  coexist without overwriting, Collapse follows only real moved columns, and the old
+  full-width/top strip is absent.
+- Frozen product `ee2aac5` retains the source-bound gate record at `6d9fc6a`:
+  typecheck PASS, 26 files / 225 tests PASS, and a 753-module production build.
+  Browser-raw `9fa98a2` and browser-index `013120a` add 34 unique hardware-WebGL2
+  frames, exact hashes, renderer p95 0.3 ms, rAF mean/p95/max
+  8.332/8.4/8.5 ms, FIFO/Collapse proof and the exact
+  `17→28→17→28→17` listener lifecycle with final rAF/audio/Canvas/QA cleanup.
+- Independent rules QA `c5b7be8` and evidence QA `eaf78aa` accept with P0–P3/GAP
+  all zero. Visual QA `7373948` accepts with P0–P2/GAP zero and preserves one
+  non-blocking P3: narrow three-status frames ellipsize long scores and the third
+  status label, while the unique symbol/material, progress and seconds keep mandatory
+  identity and duration readable.
+- Product/config/gate/harness diffs are empty; no helper, partial, external control
+  log or listener on 4178/5178/5179 remains. This entry is the local acceptance
+  checkpoint; Phase 6 and Puzzle 50 stay closed until the non-force push is verified,
+  after which execution pauses.
+
 ## 2026-07-28 — T15 Phase 4 Survival pressure accepted and pushed
 
 - Survival now begins with three rows of the approved brown bedrock and presents two

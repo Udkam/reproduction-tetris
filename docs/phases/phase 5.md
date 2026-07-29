@@ -2,6 +2,12 @@
 
 ## 状态
 
+**ACCEPTED-LOCAL / PUSH PENDING（2026-07-29）。** 冻结产品 `ee2aac5`、最终门禁
+`6d9fc6a`、browser-raw `9fa98a2` 和 browser-index `013120a` 已通过规则、
+视觉和证据完整性三路独立 QA。规则与证据 P0–P3/GAP 全为 0；视觉
+P0–P2/GAP 为 0，保留一个窄屏长文本 ellipsis 的非阻断 P3。Phase 6 与
+Puzzle 50 继续关闭；non-force push 与远端一致性确认后立即暂停。
+
 **Core 已本地接受，Renderer/VFX 检查点已开放。** Phase 4 验收/恢复记录 `fd7ef8d`
 已推送至 `origin/main`；Phase 5 以该提交为回退基线，审计文档头为
 `fae3c96`。Core/性能、Renderer/VFX 和 UI/Next 三路只读审计一致判定当前
@@ -163,8 +169,8 @@ the exact diff.
 | 正式 evidence harness | `45e7cfcca48f438be1a9ff24619137ff19dffd3e` | 保留真实单状态 fallback 与双 rAF 超时；首页 selector readiness 后建立完整 listener baseline |
 | 浏览器静态放行记录 | `304509d01beb3c3dee39990794475c28ca3c7e13` | 最新 listener readiness 审计 P0–P3/GAP = 0；只放行一次 R4 正式批次 |
 | 资源合同基线 | `57f3662506cb014dff73fbca81bac3b9ff54e1fc` | 串行执行、禁用 WMI/CIM、加强浏览器准入 |
-| 正式浏览器产物 | `9fa98a2` raw；`013120a` index | R4 从 `bdf4e20` 原子发布 34 张唯一 PNG、两份 Vite 日志、JSON manifest 与 checksum；尚待三路独立 QA |
-| Phase 5 | **OPEN / UNACCEPTED / UNPUSHED** | Phase 6 与 Puzzle 50 仍关闭 |
+| 正式浏览器产物 | `9fa98a2` raw；`013120a` index | R4 从 `bdf4e20` 原子发布 34 张唯一 PNG、两份 Vite 日志、JSON manifest 与 checksum；三路独立 QA 已完成 |
+| Phase 5 | **ACCEPTED-LOCAL / PUSH PENDING** | 三路 QA 已完成；Phase 6 与 Puzzle 50 仍关闭 |
 
 重启不会授权重新设计、重跑源码门禁或修改产品。除非新的正式浏览器证据直接
 证明产品缺陷，否则 `src/**`、依赖、配置、规则、VFX 和 UI 均不得编辑。若必须

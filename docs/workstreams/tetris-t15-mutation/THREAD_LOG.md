@@ -1751,3 +1751,33 @@
 - Next action: checkpoint this evidence verdict, then let the coordinator record
   Phase-5 acceptance, the known visual P3, final resource/Git proof and non-force push
   before pausing ahead of Phase 6.
+
+## 2026-07-29 — Phase 5 locally accepted
+
+- Task ID: `T15-PHASE5-ACCEPTANCE-LOCAL`.
+- Accepted product/evidence boundary:
+  - product `ee2aac542529c116c915c38e0603584a7099b5e8`;
+  - final-source gates `6d9fc6ae00099e3a1eb27240bd3c369216f3b007`;
+  - accepted harness `45e7cfcca48f438be1a9ff24619137ff19dffd3e`;
+  - browser-raw `9fa98a2d51c77514ebe9f8893ef244c7c7959c10`;
+  - browser-index `013120a399c25fc076ed2eab58209e5bbaf036d4`.
+- Independent final QA:
+  - rules `c5b7be8f1eb4063aee7974fd1d7e6b86191800e2`: PASS,
+    P0=P1=P2=P3=GAP=0;
+  - visual `737394845400df33cc56bdc4b7dadd98d006d66f`: PASS,
+    P0=P1=P2=GAP=0, P3=1;
+  - evidence `eaf78aa9acc1085faf1a02ea89378d3e4a8497eb`: final PASS,
+    P0=P1=P2=P3=GAP=0 after the first fail-closed hash GAP was closed by a focused
+    38/38 independent SHA-256 pass.
+- Known P3: narrow three-status layouts ellipsize long score values and the third
+  status label. The independent visual reviewer found the item identity and duration
+  still explicit through the gold star/non-colour mark, unique material, progress
+  bar and seconds. The P3 is recorded as polish debt and does not block Phase 5.
+- Final pre-acceptance checks: worktree clean; product/config diff from `ee2aac5`
+  zero; gate diff from `6d9fc6a` zero; harness diff from `45e7cfc` zero; no Serena,
+  TypeScript, MCP, browser, Vite, Python runner, partial directory, external control
+  file or 4178/5178/5179 listener remains. No WMI/CIM was used.
+- Status: `ACCEPTED-LOCAL / PUSH PENDING`. Phase 6 and Puzzle 50 remain closed.
+- Next action: commit only the acceptance documents/changelog, push `main`
+  non-force, verify local HEAD equals `origin/main`, record the pushed recovery point,
+  push that record, clean once more and pause.

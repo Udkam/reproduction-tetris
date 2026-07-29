@@ -383,6 +383,30 @@ or history rewrite is authorized.
   than overflow. That observation remains open for independent visual QA to classify;
   this coordinator record is evidence readiness, not Phase-5 acceptance.
 
+### 2026-07-29 Phase 5 local acceptance
+
+- Status: **ACCEPTED-LOCAL / PUSH PENDING**. Phase 5 is accepted against frozen
+  product `ee2aac5`, gate checkpoint `6d9fc6a`, raw browser evidence `9fa98a2` and
+  browser index `013120a`.
+- Final independent QA is deliberately split and reviewable:
+  - rules `c5b7be8f1eb4063aee7974fd1d7e6b86191800e2`: PASS,
+    P0=P1=P2=P3=GAP=0;
+  - visual `737394845400df33cc56bdc4b7dadd98d006d66f`: PASS,
+    P0=P1=P2=GAP=0, P3=1 for narrow long-value/status-label ellipsis;
+  - evidence `eaf78aa9acc1085faf1a02ea89378d3e4a8497eb`: final PASS,
+    P0=P1=P2=P3=GAP=0 after an initial fail-closed hash GAP was closed by an
+    independent 38/38 SHA-256 retry.
+- The visual P3 is retained as explicit polish debt. It does not hide item identity
+  or duration because the unique symbol/material, progress track and seconds remain
+  visible; it is not silently relabeled as zero.
+- Acceptance preflight reports a clean worktree, zero product/config diff from
+  `ee2aac5`, zero gate diff from `6d9fc6a`, zero harness diff from `45e7cfc`, no
+  helper/partial/control-log residue, and no 4178/5178/5179 listener. No source gate
+  was rerun after the frozen source because no source, dependency or config changed.
+- Next action is only the acceptance checkpoint and non-force `main` push. After
+  local/remote HEAD equality and a final cleanup check are recorded, pause immediately;
+  do not open Phase 6 or Puzzle 50.
+
 ### 2026-07-29 Phase 5 resource-containment contract
 
 - Phase 5 now executes **strictly serially**. The coordinator is the only active
