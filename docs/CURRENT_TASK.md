@@ -264,6 +264,20 @@ or history rewrite is authorized.
   threshold. Two independent read-only reviewers returned PASS with P0–P3 all zero;
   product and gate trees are unchanged. The hardware-backed managed batch is now
   admitted after a fresh resource sample.
+- The first hardware-backed formal batch at lease checkpoint `ccfd046` again failed
+  closed and published no artifact. It passed the hardware/backend and three-state
+  portions but reached the real-clock one-state fallback with all three timed effects
+  carrying the same remaining tick count; Core therefore transitioned from three
+  visible states directly to zero. This is a valid consequence of same-tick item
+  refresh, not proof of a product defect. The evidence requirement remains one real
+  one-state UI frame, but it is not required to be the suffix of the current
+  three-state stack. After the already-passed three-state performance sample, the
+  bounded harness correction may first advance the current deterministic clocks
+  tick-by-tick; if they expire together, it must continue the same seeded, QA-frozen
+  autoplay until the next genuine single timed effect exists, capture that actual UI,
+  and fail closed on a finite bound. It may not inject or rewrite Core state, alter
+  timers, change the seed/product, fabricate pixels, or weaken any three-state,
+  performance, lifecycle, hash, uniqueness, or publication gate.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

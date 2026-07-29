@@ -108,6 +108,17 @@ direct Renderer/runtime tests and a refreshed final gate batch. It may not retai
 mount the extracted Canvas, enable `preserveDrawingBuffer`, alter VFX duration, pause
 gameplay, or replace full-page layout screenshots.
 
+**Hardware-run correction (2026-07-29):** the first hardware-backed formal batch was
+correctly fail-closed after all three current timed effects expired on the same Core
+tick, producing a valid `3 → 0` transition rather than the harness-assumed `3 → 1`.
+No product or partial evidence changed. The one-state layout is still mandatory, but
+need not come from the current stack's expiry. After the full three-state performance
+sample passes, the bounded harness correction may advance the current clocks one tick
+at a time and, if they reach zero together, resume the same fixed-seed QA-frozen
+autoplay until a genuine single timed effect is visible. Capture that real UI within a
+finite bound or fail closed. State injection, timer rewriting, seed/product changes,
+synthetic pixels, threshold relaxation, and reuse of the failed run are forbidden.
+
 ## 重启恢复边界（2026-07-29）
 
 本节是电脑重启后继续 Phase 5 的直接执行合同。若历史描述与本节冲突，以
@@ -119,7 +130,7 @@ gameplay, or replace full-page layout screenshots.
 | --- | --- | --- |
 | 产品源码 | `ee2aac542529c116c915c38e0603584a7099b5e8` | Core、Runtime、Renderer、UI、CSS、localization 均冻结 |
 | 最终源码门禁 | `6d9fc6ae00099e3a1eb27240bd3c369216f3b007` | typecheck PASS；26 文件 / 225 测试 PASS；753 modules build PASS |
-| 正式 evidence harness | `07e7a55e5d03bcd62e4b9c9fd022f99fa5bb52b4` | 使用硬件 WebGL，记录 GPU，并拒绝软件渲染器 |
+| 正式 evidence harness | `07e7a55e5d03bcd62e4b9c9fd022f99fa5bb52b4` | 当前冻结版；待上述单状态 fallback 产生独立 harness checkpoint 后替换 |
 | 浏览器静态放行记录 | `0adb29631960ac9d128ec6498ff9a4ca9dd7a8d2` | 两路独立审计 P0–P3 = 0，只放行一次正式批次 |
 | 资源合同基线 | `57f3662506cb014dff73fbca81bac3b9ff54e1fc` | 串行执行、禁用 WMI/CIM、加强浏览器准入 |
 | 正式浏览器产物 | **不存在** | 先前失败均 fail-closed；不得称为已有证据 |
@@ -135,8 +146,8 @@ gameplay, or replace full-page layout screenshots.
 重启后的首个执行片只允许：
 
 1. 只读核对 Git、上述五个提交、证据目录和资源基线；
-2. 在全部资源准入条件通过后，运行一次已提交的
-   `docs/qa/evidence/t15-phase5/capture_phase5.py`；
+2. 先按上述边界修正并静态审计 evidence harness；在全部资源准入条件通过后，
+   运行一次新提交的 `docs/qa/evidence/t15-phase5/capture_phase5.py`；
 3. 校验并人工检查该批次生成的 PNG、Vite 日志、browser manifest 和校验和；
 4. 按 `browser-raw`、`browser-index` 两个独立 checkpoint 精确提交；
 5. 依次进行 rules、visual、evidence 三个只读 QA，并分别记录 verdict；

@@ -1179,3 +1179,32 @@
   two external control logs are removed after their relevant evidence is recorded.
 - Next action: checkpoint this lease declaration, then start exactly this one owned
   batch and monitor it serially by recorded PID.
+
+## 2026-07-29 — First hardware formal batch failed closed
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-R1`.
+- Lease checkpoint and run boundary: `ccfd046682dd05598b21d6b56f8c172ab6886cd1`;
+  frozen product `ee2aac542529c116c915c38e0603584a7099b5e8`, gates `6d9fc6a`,
+  harness `07e7a55`.
+- Command actually run: one hidden
+  `python docs/qa/evidence/t15-phase5/capture_phase5.py` runner with stdout/stderr
+  redirected to the two lease-declared `%TEMP%` logs. No concurrent worker or heavy
+  workload ran.
+- Result: `BLOCKED` for evidence only. The script reached its real-clock fallback with
+  three equal remaining timed-effect counters and asserted when they expired together
+  (`Timed Mutation statuses expired without a real one-status state.`). This is a
+  harness assumption failure: same-tick refresh legitimately permits `3 → 0`.
+- Fail-closed proof: stdout was empty; stderr contains only the assertion traceback;
+  no browser PNG, manifest, checksum, Vite log, partial directory, or repository dirty
+  path survived. Python, Vite/Node and Chrome exited; 4178/5178/5179 have no listener.
+  Remaining 4178 entries were TCP `TIME_WAIT` only.
+- Product, test/build gates, item timing, performance thresholds and visual geometry
+  remain frozen. No product source, test, build, QA agent, MCP, Serena or WMI/CIM ran.
+- Bounded correction: after preserving the complete three-state performance workload,
+  allow the current real timers to expire tick-by-tick. If they reach zero together,
+  continue fixed-seed QA-frozen ordinary autoplay until a genuine one-state HUD exists,
+  capture it within a finite bound, and otherwise fail closed. Never inject state,
+  rewrite timers, change the seed/product or fabricate the frame.
+- Next action: checkpoint this clarified contract, edit only the harness fallback,
+  run Python/embedded-JavaScript static checks, checkpoint the harness, obtain one
+  serialized read-only evidence review, then request a new single capture lease.

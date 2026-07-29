@@ -312,6 +312,17 @@ from a fresh partial set, verifies its exact manifest file set, and publishes
 Phase-5 evidence directory are pinned to LF so Windows `core.autocrlf` cannot invalidate
 their committed hashes; this scoped attribute may not alter product-source EOL policy.
 
+The one-state HUD proof is state-based, not tied to one particular stack's expiry
+shape. Recollecting effects can refresh multiple deterministic ten-second timers in the
+same Core transition, so a legitimate three-state stack may later move directly from
+three rows to zero. The evidence harness first preserves and passes the complete
+three-state responsive, English, reduced-motion and performance workload. It then
+advances the real frozen Core clock tick-by-tick. If that stack expires without a
+one-state suffix, the harness continues the same fixed-seed ordinary autoplay until a
+real single timed effect is awarded and captures the actual rendered HUD. This fallback
+has a finite fail-closed bound and may not inject state, alter a timer, change the seed,
+or replace the already-completed three-state performance claim.
+
 Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
 and the managed browser are never concurrent: review turns are serialized, and no
 browser, Vite, test, build, or diagnostic tree overlaps another heavy tree. Optional
