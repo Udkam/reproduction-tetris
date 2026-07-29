@@ -135,7 +135,7 @@ dist/assets/Geometry-BsbbJ0Yo.js                                  101.79 kB │ 
 dist/assets/index-CG1GV5C1.js                                     500.56 kB │ gzip: 146.91 kB
 
 [32m✓ built in 362ms[39m
-[plugin builtin:vite-reporter] 
+[plugin builtin:vite-reporter]
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
