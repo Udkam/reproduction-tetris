@@ -168,3 +168,52 @@
   agent; no WMI/CIM; release listener 4178 and the owned browser tree before QA.
 - Next action: commit this evidence contract, commit the fail-closed harness, run one
   managed batch, inspect every original PNG, then freeze the evidence candidate.
+
+## TETRIS-T15-PHASE6-BROWSER-EVIDENCE-006
+
+- Status: `EVIDENCE FROZEN / SERIAL QA NEXT`.
+- Product candidate: `eaed1ac0962ba7256b44136f7bd4f0faef603970`.
+- Evidence checkpoints:
+  - `21da461` — initial fail-closed harness;
+  - `db3423b` — isolated Renderer uses no unrelated Next queue;
+  - `8ff34d5` — landing action and extraction share one browser transaction;
+  - `1b9c85f` — zero-tick public QA flush deterministically hands queued events to
+    Renderer before transient snapshots;
+  - `a231fda` — fifteen original PNGs and managed Vite logs;
+  - `d7fb4fa` — browser manifest and nineteen SHA-256 entries.
+- Rejected attempts:
+  - the first mechanically passing batch was rejected during original-detail review
+    because an isolated queue allowed its Next preview to enter the board crop; all
+    nineteen uncommitted generated files were explicitly removed;
+  - two subsequent runs failed closed at the landing-cue binding until the public
+    action, zero-tick Renderer flush and Pixi extraction became atomic;
+  - no rejected batch published a partial directory or remained in the repository.
+- Final coverage:
+  - exhaustive public Core replay locates real one-, two- and three-row witnesses and
+    proves the verified route set has no four-row witness;
+  - real product/runtime frames cover one-row confirmation, contraction, afterglow,
+    safe next active piece and two-piece Puzzle Next;
+  - the four-row frame is labelled isolated real-Renderer proof;
+  - Classic covers public-runtime landing plus isolated coexisting combo/speed,
+    top-out and stationary reduced-motion endpoints;
+  - desktop 1440×900, portrait 390×844 and short landscape 844×390 preserve visible
+    board, HUD and Next with no document overflow.
+- Runtime/lifecycle:
+  - exactly one Canvas and zero DOM cells while mounted;
+  - same Canvas/listener/audio counts across restart;
+  - two Classic unmounts and Puzzle unmount return to the exact home listener set,
+    zero Canvas and zero open AudioContexts;
+  - browser console/page errors: zero.
+- Integrity:
+  - all fifteen PNGs inspected at original detail;
+  - nineteen manifest/script/PNG/log hashes independently recomputed: PASS;
+  - product tree before/after matches `eaed1ac`.
+- Resource disposition:
+  - managed Vite PID 3704 is released;
+  - port 4178 is free;
+  - controlled Chrome reports closed;
+  - no partial evidence directory remains and no test/build/QA overlapped the run.
+- Blocker: none.
+- Next action: hand `eaed1ac` plus `d7fb4fa` to one rules QA, then one visual QA,
+  then one evidence-integrity QA, strictly serially. Any finding returns to its owning
+  source or harness checkpoint before fresh evidence.

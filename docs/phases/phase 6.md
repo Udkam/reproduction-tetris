@@ -2,9 +2,9 @@
 
 ## 状态
 
-**GATES PASS / EVIDENCE WRITER OPEN**。Phase 5 已验收并推送；Phase 6 从
+**EVIDENCE FROZEN / SERIAL QA NEXT**。Phase 5 已验收并推送；Phase 6 从
 `4f871ac3706f95c2a57679dd0162071c89363ecb` 开始。当前只开放共享普通消行
-Renderer 与 Classic 局部反馈的 source-bound 浏览器证据；产品源码已冻结。
+Renderer 与 Classic 局部反馈的只读独立 QA；产品源码与证据均已冻结。
 
 ## 目标
 
@@ -89,6 +89,13 @@ typecheck、26 文件 / 231 测试的一 worker 全量套件、753 模块 produc
 当前唯一 writer 为 `docs/qa/evidence/t15-phase6/capture_phase6.py`。正式批次使用
 公开命令重放现有 1/2/3 行残局路径，并将缺少公开四行路径的事实写入 manifest；
 四行仅由同一真实 Renderer 的隔离合同帧证明，不伪装成玩家运行时回放。
+
+最终 harness `1b9c85f`、原始帧/日志 `a231fda` 与 manifest/index `d7fb4fa`
+已冻结。十五张原图全部经人工逐张检查；十九项 SHA-256 重新计算一致。正式批次
+覆盖 1/2/3 行公开回放、4 行明确标注的 Renderer 合同帧、单行三阶段、safe-next、
+reduced motion、Classic 落地/连消+提速/顶出、三种 viewport，以及 restart/
+remount/unmount。一个 Canvas、零 DOM 方格、零 browser error；4178 和受管
+Chrome 已释放。下一步仅允许规则、视觉、证据完整性 QA 串行运行。
 
 ## 验收
 

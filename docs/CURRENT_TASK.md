@@ -86,6 +86,22 @@ ordinary-clear witnesses; the absent four-row route is labelled and captured onl
 an isolated real-Renderer contract frame. Product source, Puzzle data/selector, and
 all gameplay rules remain closed.
 
+**Phase-6 evidence freeze (2026-07-30):** the corrected fail-closed harness is
+`1b9c85f`; original PNG/Vite logs are `a231fda`; the source-bound manifest and nineteen
+recomputed SHA-256 entries are `d7fb4fa`. The final run publishes fifteen inspected
+frames with zero console/page errors. Public runtime/Core evidence covers real
+1/2/3-row ordinary clears, one-row confirmation/contraction/afterglow, safe next
+active piece, the two-piece Puzzle Next rail, Classic landing, and desktop/portrait/
+short-landscape layouts. An exhaustive replay confirms no current verified route
+clears four rows at once, so four-row and non-reachable combo+speed/top-out states are
+explicitly isolated real-Renderer contract frames; reduced-motion endpoints use the
+same renderer path. Restart preserves the single Canvas and listener/audio counts;
+two mount/unmount cycles and Puzzle exit restore the exact home listener set, zero
+Canvas, and zero open AudioContexts. The managed Vite PID and listener 4178 are
+released and the controlled Chrome is closed. Product and evidence are now frozen;
+only serial independent rules, visual, and evidence-integrity QA may run before an
+acceptance or correction decision.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
