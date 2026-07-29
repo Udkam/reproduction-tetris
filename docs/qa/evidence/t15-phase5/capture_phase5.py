@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[4]
 OUT = Path(__file__).resolve().parent
 ARTIFACT_OUT = OUT
 BASE_URL = "http://127.0.0.1:4178/"
-SOURCE_CANDIDATE = "f6fa06ea1b123f54bffff1885741e3ffbd551569"
+SOURCE_CANDIDATE = "ee2aac542529c116c915c38e0603584a7099b5e8"
 FIXED_RUN_SEED = 0x7115
 PRODUCT_PATHS = (
     "src",
@@ -306,17 +306,35 @@ def sha256(path: Path) -> str:
 def candidate_binding() -> dict[str, Any]:
     resolved = git("rev-parse", f"{SOURCE_CANDIDATE}^{{commit}}").stdout.strip()
     head = git("rev-parse", "HEAD").stdout.strip()
+    script_path = Path(__file__).resolve()
+    script_relative = script_path.relative_to(ROOT).as_posix()
     product_status = git("status", "--short", "--", *PRODUCT_PATHS).stdout.splitlines()
+    script_status = git("status", "--short", "--", script_relative).stdout.splitlines()
     product_diff = git("diff", "--quiet", SOURCE_CANDIDATE, "--", *PRODUCT_PATHS, check=False)
+    script_head_blob = git("rev-parse", f"HEAD:{script_relative}").stdout.strip()
+    script_worktree_blob = git(
+        "hash-object",
+        "--no-filters",
+        script_relative,
+    ).stdout.strip()
     assert resolved == SOURCE_CANDIDATE
     assert product_status == []
+    assert script_status == []
     assert product_diff.returncode == 0
+    assert script_worktree_blob == script_head_blob
     return {
         "sourceCandidate": SOURCE_CANDIDATE,
         "gitHead": head,
         "productTreeMatchesCandidate": True,
         "productStatus": product_status,
         "productPaths": list(PRODUCT_PATHS),
+        "captureScript": {
+            "file": script_path.name,
+            "relativePath": script_relative,
+            "sha256": sha256(script_path),
+            "gitBlob": script_head_blob,
+            "status": script_status,
+        },
     }
 
 
@@ -622,6 +640,7 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
                 pieceCount: state.pieceCount,
               },
               renderer: {
+                board: renderer.board,
                 mutationActivation: renderer.mutationActivation,
                 mutationActivationQueueItems: [...renderer.mutationActivationQueueItems],
                 mutationActiveParticleCount: renderer.mutationActiveParticleCount,
@@ -639,69 +658,14 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
           ) {
             throw new Error("Atomic board capture has empty CSS bounds.");
           }
-          const scaleX = canvas.width / canvasRect.width;
-          const scaleY = canvas.height / canvasRect.height;
-          const source = {
-            x: (boardRect.left - canvasRect.left) * scaleX,
-            y: (boardRect.top - canvasRect.top) * scaleY,
-            width: boardRect.width * scaleX,
-            height: boardRect.height * scaleY,
-          };
-          if (
-            source.x < -1
-            || source.y < -1
-            || source.x + source.width > canvas.width + 1
-            || source.y + source.height > canvas.height + 1
-          ) {
-            throw new Error(`Board crop escapes the gameplay Canvas: ${JSON.stringify({
-              source,
-              canvas: { width: canvas.width, height: canvas.height },
-            })}`);
-          }
-          const output = document.createElement("canvas");
-          output.width = Math.max(1, Math.round(source.width));
-          output.height = Math.max(1, Math.round(source.height));
-          const context = output.getContext("2d", {
-            alpha: true,
-            willReadFrequently: true,
-          });
-          if (!context) throw new Error("Atomic 2D capture context is unavailable.");
-
           const before = snapshot();
           const startedAt = performance.now();
-          context.drawImage(
-            canvas,
-            source.x,
-            source.y,
-            source.width,
-            source.height,
-            0,
-            0,
-            output.width,
-            output.height,
-          );
-          const pixels = context.getImageData(0, 0, output.width, output.height).data;
-          const pixelCount = output.width * output.height;
-          const stride = Math.max(1, Math.floor(pixelCount / 8192));
-          const buckets = new Set();
-          let samples = 0;
-          let nonTransparentSamples = 0;
-          for (let pixel = 0; pixel < pixelCount; pixel += stride) {
-            const offset = pixel * 4;
-            const alpha = pixels[offset + 3];
-            samples += 1;
-            if (alpha > 0) nonTransparentSamples += 1;
-            buckets.add(
-              `${pixels[offset] >> 4}:${pixels[offset + 1] >> 4}:`
-              + `${pixels[offset + 2] >> 4}:${alpha >> 4}`,
-            );
-          }
-          const dataUrl = output.toDataURL("image/png");
+          const extracted = qa.captureBoardPng();
           const after = snapshot();
           return {
             before,
             after,
-            dataUrl,
+            dataUrl: extracted.dataUrl,
             captureMs: performance.now() - startedAt,
             cssClip: {
               x: boardRect.left,
@@ -715,20 +679,10 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
               width: canvasRect.width,
               height: canvasRect.height,
             },
-            sourcePixelClip: source,
-            canvasPixels: {
-              width: canvas.width,
-              height: canvas.height,
-            },
-            outputPixels: {
-              width: output.width,
-              height: output.height,
-            },
-            pixelProbe: {
-              samples,
-              nonTransparentSamples,
-              distinctBuckets: buckets.size,
-            },
+            pixiFrame: extracted.frame,
+            resolution: extracted.resolution,
+            outputPixels: extracted.outputPixels,
+            pixelProbe: extracted.pixelProbe,
           };
         }
         """,
@@ -747,6 +701,16 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
     assert probe["samples"] >= 256
     assert probe["nonTransparentSamples"] >= max(16, probe["samples"] // 10)
     assert probe["distinctBuckets"] >= 4
+    pixi_frame = payload["pixiFrame"]
+    renderer_board = payload["before"]["renderer"]["board"]
+    for key in ("x", "y", "width", "height"):
+        assert abs(pixi_frame[key] - renderer_board[key]) <= 0.01
+    assert payload["resolution"] > 0
+    assert abs(width - pixi_frame["width"] * payload["resolution"]) <= 1
+    assert abs(height - pixi_frame["height"] * payload["resolution"]) <= 1
+    css_aspect = payload["cssClip"]["width"] / payload["cssClip"]["height"]
+    pixi_aspect = pixi_frame["width"] / pixi_frame["height"]
+    assert abs(css_aspect - pixi_aspect) <= 0.01
     payload["pngBytes"] = png
     payload["pngDimensions"] = {"width": width, "height": height}
     return payload
@@ -769,7 +733,7 @@ def capture(
             snapshot = collect(page)
         else:
             assert settle_ms == 0
-            snapshot = observed_snapshot
+            snapshot = dict(observed_snapshot)
         validate_common(snapshot)
         path = ARTIFACT_OUT / f"{name}.png"
         clip: dict[str, float] | None = None
@@ -816,8 +780,8 @@ def capture(
                 "atomicBefore": atomic["before"],
                 "atomicAfter": atomic["after"],
                 "canvasCssBounds": atomic["canvasCssBounds"],
-                "sourcePixelClip": atomic["sourcePixelClip"],
-                "canvasPixels": atomic["canvasPixels"],
+                "pixiFrame": atomic["pixiFrame"],
+                "resolution": atomic["resolution"],
                 "outputPixels": atomic["outputPixels"],
                 "pngDimensions": atomic["pngDimensions"],
                 "pixelProbe": atomic["pixelProbe"],
@@ -829,7 +793,7 @@ def capture(
         snapshot["cropSelector"] = crop_selector
         snapshot["clip"] = clip
         snapshot["captureMethod"] = (
-            "atomic-canvas-copy"
+            "pixi-extract"
             if observed_snapshot is not None
             else "playwright-screenshot"
         )
@@ -1564,10 +1528,8 @@ def write_and_publish_manifest(result: dict[str, Any]) -> None:
     log_names = {"vite-stdout.log", "vite-stderr.log"}
     assert all((ARTIFACT_OUT / name).is_file() for name in log_names)
 
-    result["captureScript"] = {
-        "file": Path(__file__).name,
-        "sha256": sha256(Path(__file__)),
-    }
+    result["captureScript"] = result["candidate"]["before"]["captureScript"]
+    assert result["captureScript"] == result["candidate"]["after"]["captureScript"]
     result["artifactFiles"] = sorted({
         Path(__file__).name,
         *capture_names,
@@ -1615,8 +1577,17 @@ def write_and_publish_manifest(result: dict[str, Any]) -> None:
     ]
     assert publication_order[-1] == "SHA256SUMS.txt"
     assert set(publication_order) == expected_staged
-    for name in publication_order:
-        (ARTIFACT_OUT / name).replace(OUT / name)
+    published: list[Path] = []
+    try:
+        for name in publication_order:
+            destination = OUT / name
+            (ARTIFACT_OUT / name).replace(destination)
+            published.append(destination)
+    except BaseException:
+        for destination in reversed(published):
+            if destination.exists():
+                destination.replace(ARTIFACT_OUT / destination.name)
+        raise
 
 
 def main() -> None:
@@ -1649,7 +1620,7 @@ def main() -> None:
 
         assert result["errors"] == []
         binding_after = candidate_binding()
-        assert binding_after["sourceCandidate"] == binding_before["sourceCandidate"]
+        assert binding_after == binding_before
         assert server["ready"] and server["released"]
         payload = {
             "candidate": {
