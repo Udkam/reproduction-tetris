@@ -36,6 +36,8 @@ export interface PuzzleDefinition {
   name: string;
   /** Stable curriculum order; the player can select every entry immediately. */
   difficulty: number;
+  /** Explicit authored height of the contiguous original-target band at the floor. */
+  targetRows: number;
   /** Stable level-owned seed for the normal deterministic gameplay seven-bag. */
   seed: number;
   /** Legal zero-clear setup replay that owns every ordinary original target. */
@@ -52,6 +54,28 @@ const EMPTY_ROW = '.'.repeat(BOARD_WIDTH);
 const EMPTY_HIDDEN_CELLS: readonly PuzzleCell[] = Object.freeze([]);
 const EMPTY_ANCHOR_CELLS: readonly PuzzleAnchorCell[] = Object.freeze([]);
 const PIECE_TYPE_SET = new Set<string>(PIECE_TYPES);
+const PUZZLE_TARGET_ROWS: Readonly<Record<PuzzleId, number>> = Object.freeze({
+  't3r-shaft-01': 3,
+  't3r-shaft-02': 3,
+  't3r-shaft-03': 3,
+  't3r-shaft-04': 3,
+  't3r-cascade-05': 3,
+  't3r-cascade-06': 3,
+  't5r-delta-07': 3,
+  't5r-drift-08': 3,
+  't5r-lattice-09': 3,
+  't5r-rift-10': 3,
+  't5r-prism-11': 7,
+  't5r-current-12': 7,
+  't5r-arc-13': 7,
+  't5r-pulse-14': 7,
+  't5r-horizon-15': 7,
+  't6r-veil-16': 8,
+  't6r-cairn-17': 8,
+  't6r-terrace-18': 8,
+  't6r-bastion-19': 8,
+  't6r-keystone-20': 8,
+});
 
 function setup(seed: number, placements: readonly PuzzleSetupPlacement[]): PuzzleSetupHistory {
   return Object.freeze({
@@ -144,19 +168,13 @@ function endgame(
     id,
     name,
     difficulty,
+    targetRows: PUZZLE_TARGET_ROWS[id],
     seed,
     setup: history,
     boardRows: rowsForSetup(history),
     hiddenCells: EMPTY_HIDDEN_CELLS,
     anchorCells: anchors(anchorCells),
   });
-}
-
-/** Visible rows for the batches already re-authored into the Phase-7 curriculum. */
-export function expectedPuzzleTargetRows(difficulty: number): number {
-  if (difficulty <= 10) return 3;
-  if (difficulty <= 15) return 7;
-  return 8;
 }
 
 /**
@@ -232,6 +250,10 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
     || definition.difficulty > PUZZLE_LIBRARY.length || definition.difficulty !== canonical.difficulty) {
     throw new Error(`Puzzle ${definition.id} must retain its authored campaign difficulty.`);
   }
+  if (!Number.isSafeInteger(definition.targetRows) || definition.targetRows < 3 || definition.targetRows > 8
+    || definition.targetRows !== canonical.targetRows) {
+    throw new Error(`Puzzle ${definition.id} must retain its explicit authored target-row count.`);
+  }
   if (definition.name !== canonical.name) throw new Error(`Puzzle ${definition.id} must retain its authored name.`);
   if (!sameJson(definition.setup, canonical.setup)) throw new Error(`Puzzle ${definition.id} must retain its legal setup history.`);
   if (!Array.isArray(definition.hiddenCells) || definition.hiddenCells.length !== 0) {
@@ -261,7 +283,7 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
   if (occupied !== definition.setup.placements.length * 4) {
     throw new Error(`Puzzle ${definition.id} must preserve every source tetromino as four ordinary targets.`);
   }
-  const expectedRows = expectedPuzzleTargetRows(definition.difficulty);
+  const expectedRows = definition.targetRows;
   if (nonEmptyRows.length !== expectedRows) {
     throw new Error(`Puzzle ${definition.id} requires exactly ${expectedRows} visible endgame rows for its campaign band.`);
   }

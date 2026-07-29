@@ -4,7 +4,6 @@ import { createInitialState, dispatch, stateHash } from './engine';
 import {
   PUZZLE_DEFINITIONS,
   createPuzzleBoard,
-  expectedPuzzleTargetRows,
   getPuzzleDefinition,
   originalTargetCells,
   replayPuzzleSetup,
@@ -69,7 +68,7 @@ describe('T13 legal endgame workshop definitions', () => {
   });
 
   it('derives the first three-row batch and retained legacy batches from legal zero-clear hard-drop histories', () => {
-    expect(PUZZLE_DEFINITIONS.map((definition) => expectedPuzzleTargetRows(definition.difficulty))).toEqual([
+    expect(PUZZLE_DEFINITIONS.map(({ targetRows }) => targetRows)).toEqual([
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8,
     ]);
 
@@ -85,7 +84,7 @@ describe('T13 legal endgame workshop definitions', () => {
       const occupiedRows = definition.boardRows
         .map((row, y) => row === '.'.repeat(10) ? null : y)
         .filter((y): y is number => y !== null);
-      expect(occupiedRows, definition.id).toHaveLength(expectedPuzzleTargetRows(definition.difficulty));
+      expect(occupiedRows, definition.id).toHaveLength(definition.targetRows);
       expect(occupiedRows, definition.id).toEqual(
         Array.from({ length: occupiedRows.length }, (_, index) => VISIBLE_HEIGHT - occupiedRows.length + index),
       );
@@ -95,7 +94,7 @@ describe('T13 legal endgame workshop definitions', () => {
         if (row !== '..........') expect([...row]).toContain('.');
       }
       for (const anchor of definition.anchorCells) {
-        const targetStart = VISIBLE_HEIGHT - expectedPuzzleTargetRows(definition.difficulty);
+        const targetStart = VISIBLE_HEIGHT - definition.targetRows;
         expect(anchor.y, definition.id).toBeGreaterThanOrEqual(Math.max(0, targetStart - 2));
         expect(anchor.y, definition.id).toBeLessThan(targetStart);
         expect(definition.boardRows[anchor.y]?.[anchor.x], definition.id).toBe('.');
@@ -147,6 +146,7 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(() => validatePuzzleDefinition(invalid(first, { seed: 0 }))).toThrow(/seed/i);
     expect(() => validatePuzzleDefinition(invalid(first, { seed: getPuzzleDefinition('t3r-shaft-02').seed }))).toThrow(/stable level seed/i);
     expect(() => validatePuzzleDefinition(invalid(first, { difficulty: 20 }))).toThrow(/difficulty/i);
+    expect(() => validatePuzzleDefinition(invalid(first, { targetRows: 4 }))).toThrow(/target-row/i);
     expect(() => validatePuzzleDefinition(invalid(first, { name: 'other' }))).toThrow(/name/i);
     expect(() => validatePuzzleDefinition(invalid(first, { boardRows: first.boardRows.slice(1) }))).toThrow(/exactly/i);
     expect(() => validatePuzzleDefinition(invalid(first, {

@@ -6,7 +6,6 @@ import { createInitialState, dispatch } from './engine';
 import {
   PUZZLE_DEFINITIONS,
   createPuzzleBoard,
-  expectedPuzzleTargetRows,
   getPuzzleDefinition,
   replayPuzzleSetup,
   type PuzzleAnchorCell,
@@ -131,7 +130,7 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       const definition = getPuzzleDefinition(level.id);
       expect(level.curriculumPosition, level.id).toBe(index + 1);
       expect(definition.difficulty, level.id).toBe(index + 1);
-      expect(level.targetRowCount, level.id).toBe(expectedPuzzleTargetRows(definition.difficulty));
+      expect(level.targetRowCount, level.id).toBe(definition.targetRows);
       expect(level.setup, level.id).toEqual({
         seed: definition.setup.seed,
         placementCount: definition.setup.placements.length,

@@ -36,6 +36,9 @@ function parseArguments(argv) {
   const from = integer('--from', 1, 50);
   const to = integer('--to', from, 50);
   if (to - from + 1 > 10) throw new Error('One solver run may cover at most one ten-level batch.');
+  if (Math.floor((from - 1) / 10) !== Math.floor((to - 1) / 10)) {
+    throw new Error('One solver run may not cross a canonical ten-level batch boundary.');
+  }
   return Object.freeze({
     from,
     to,
@@ -158,7 +161,7 @@ try {
     levels.push(Object.freeze({
       id: level.id,
       curriculumPosition: position,
-      targetRowCount: core.expectedPuzzleTargetRows(level.difficulty),
+      targetRowCount: level.targetRows,
       setup: Object.freeze({
         seed: level.setup.seed,
         placementCount: level.setup.placements.length,

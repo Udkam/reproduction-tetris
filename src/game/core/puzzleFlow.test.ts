@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ENTRY_DELAY_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, VISIBLE_HEIGHT, VISIBLE_START_ROW } from './constants';
 import { createBoard, setCell } from './board';
 import { createInitialState, dispatch } from './engine';
-import { expectedPuzzleTargetRows, getPuzzleDefinition } from './puzzles';
+import { getPuzzleDefinition } from './puzzles';
 import { ANCHOR_CELL, type GameState, type PieceType } from './types';
 
 function advance(state: GameState, ticks: number): GameState {
@@ -82,7 +82,7 @@ describe('T13 Puzzle ordinary consecutive-piece flow', () => {
     const state = createInitialState(1, 'puzzle', id);
     const occupiedRows = definition.boardRows.filter((row) => row !== '..........');
 
-    expect(occupiedRows).toHaveLength(expectedPuzzleTargetRows(definition.difficulty));
+    expect(occupiedRows).toHaveLength(definition.targetRows);
     expect(definition.boardRows.slice(0, VISIBLE_HEIGHT - occupiedRows.length)).toEqual(
       Array.from({ length: VISIBLE_HEIGHT - occupiedRows.length }, () => '..........'),
     );
