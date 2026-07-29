@@ -877,3 +877,24 @@
 - Next action: run one temporary live Collapse diagnostic from the committed harness,
   require a nonblank Pixi extract and exact same-instance pre/post state, clean it,
   then regenerate the final source-bound gates.
+
+## 2026-07-29 — Pixi extraction dynamic diagnostic passed
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-EXTRACT-R3`.
+- Candidate: product source `ee2aac5`, harness `a5fa896`, run HEAD `70164b4`.
+- A managed temporary DEV-QA run observed a real Collapse settlement at autoplay
+  step 11 and synchronously extracted the exact board through Pixi:
+  - PNG 391 × 782, 61,838 bytes;
+  - 8,264 sampled pixels, all nontransparent, 189 quantized color buckets;
+  - Pixi frame `(61.5, 14, 391, 782)` at resolution 1;
+  - same Renderer state before/after the 317.6 ms synchronous extract;
+  - real trail columns `[5, 9]`, maximum drop 1, elapsed 58.3/260 ms.
+- Manual inspection confirmed a real, nonblank board with Mutation carrier,
+  settlement trail, active/ghost/locked pieces and state VFX. The diagnostic did not
+  publish into `docs/qa/evidence/t15-phase5`.
+- Cleanup proof: diagnostic directory absent, zero listener on 4178/5178/5179, zero
+  Chrome process, zero Phase-5 partial directory, and the import-created
+  `__pycache__` removed. Worktree returned clean.
+- Next action: regenerate exactly one final typecheck, complete test suite and build
+  batch for source `ee2aac5`, then obtain current static audit before the managed
+  browser acceptance batch.

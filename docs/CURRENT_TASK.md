@@ -203,6 +203,14 @@ or history rewrite is authorized.
   The prior gate batch at `96a3841` is now stale. Before regenerating gates, run one
   bounded live diagnostic that proves a real transient board extract is a nonblank
   PNG bound to unchanged pre/post Renderer state; do not publish that diagnostic.
+- That bounded diagnostic now passes on the committed chain: a real Collapse
+  settlement was observed at autoplay step 11 and extracted as a 391 × 782,
+  61,838-byte PNG with 8,264/8,264 nontransparent samples and 189 quantized color
+  buckets. Its Renderer pre/post witness was identical while the same actual trail
+  remained at columns 5 and 9 with maximum drop 1. The temporary PNG/log directory,
+  Vite listener, Chrome processes, and accidental Python bytecode cache were all
+  removed. The next action is the one final source-bound typecheck/full-suite/build
+  gate regeneration; this diagnostic is not browser acceptance evidence.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
