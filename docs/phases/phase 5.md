@@ -119,6 +119,15 @@ autoplay until a genuine single timed effect is visible. Capture that real UI wi
 finite bound or fail closed. State injection, timer rewriting, seed/product changes,
 synthetic pixels, threshold relaxation, and reuse of the failed run are forbidden.
 
+**Lifecycle-sampling correction (2026-07-29):** the corrected one-state proof passed
+in the next formal run, which then failed closed because restart was sampled before its
+two intentional nested focus rAF callbacks had drained. The harness may not waive
+pending-frame equality. Instead it must sample every active-game lifecycle checkpoint
+after the same two real rAF boundaries, then compare exact pending-frame, listener,
+Canvas and audio-context values. Home/unmount must still equal the original baseline.
+This changes only evidence sampling time; product source and lifecycle behavior remain
+frozen unless the stabilized exact checks prove a real leak.
+
 ## 重启恢复边界（2026-07-29）
 
 本节是电脑重启后继续 Phase 5 的直接执行合同。若历史描述与本节冲突，以

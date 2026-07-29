@@ -323,6 +323,16 @@ real single timed effect is awarded and captures the actual rendered HUD. This f
 has a finite fail-closed bound and may not inject state, alter a timer, change the seed,
 or replace the already-completed three-state performance claim.
 
+Lifecycle equality is sampled at equivalent stable active-game frame boundaries.
+Restart intentionally schedules two nested rAF callbacks to restore Canvas focus. A
+snapshot taken immediately when Core reports `playing` can therefore include one or
+both finite focus frames even though neither is leaked. Before comparing first mount,
+pre-restart, post-restart, or second mount, the harness awaits the same two real rAF
+boundaries and then requires exact equality of all still-pending frames, global
+listeners, Canvas count/identity, and open audio contexts. It never subtracts expected
+focus frames or permits a tolerance. Unmount still returns exactly to the pre-game home
+baseline, so a surviving frame remains a failure.
+
 Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
 and the managed browser are never concurrent: review turns are serialized, and no
 browser, Vite, test, build, or diagnostic tree overlaps another heavy tree. Optional

@@ -1289,3 +1289,31 @@
 - Cleanup at either outcome requires the recorded Python/Vite/Chrome tree gone, no
   4178/5178/5179 listener, no partial, and removal of external logs after recording.
 - Next action: checkpoint this R2 lease, then run and monitor only this batch.
+
+## 2026-07-29 — Corrected formal batch reached lifecycle sampling gap
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-R2`.
+- Lease checkpoint and run boundary:
+  `7cca32769c4fab7f0297632689944af4bf894ddc`; accepted harness `e2d18da`,
+  frozen product `ee2aac5`, gates `6d9fc6a`.
+- One hidden Python runner and only its Vite/hardware-Chrome tree ran. The one-state
+  recovery passed; execution later stopped at exact restart
+  `pendingAnimationFrames` equality.
+- Fail-closed proof: stderr contains the single assertion traceback; stdout is empty;
+  zero PNG, browser manifest, checksum, Vite log, partial or dirty repository path
+  survived. The complete Python/Vite/Chrome tree exited and all three listeners are
+  free.
+- Read-only root cause: `restartRun` calls `focusBoard`; `focusBoard` calls
+  `browserPlatform.defer`, then `deferFocus`, producing two intentional nested rAF
+  callbacks. The harness waited only for Core `playing` and synchronously sampled an
+  arbitrary point inside that finite focus chain, while its pre-restart sample used a
+  different frame boundary.
+- This does not authorize a tolerance or ignored-frame count. The correction must
+  await the same two real rAF boundaries before every active-game lifecycle snapshot,
+  then keep exact pending-frame/listener/audio/Canvas equality and the exact unmount
+  home baseline.
+- No product source, gate, test, build, visual threshold or evidence publication rule
+  changed; no sub-agent, MCP, Serena or WMI/CIM ran during the R2 lease.
+- Next action: checkpoint this clarified sampling contract, edit only the lifecycle
+  snapshot timing, run static checks, commit, perform one serialized read-only audit,
+  then open a new single capture lease.

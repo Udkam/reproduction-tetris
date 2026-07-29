@@ -286,6 +286,18 @@ or history rewrite is authorized.
   AST, CLI `--help` early exit and diff checks pass. Product `ee2aac5` and gates
   `6d9fc6a` remain frozen. A serialized read-only evidence audit must accept this exact
   harness before a new capture lease is opened.
+- The accepted fallback then passed in the R2 formal batch, which failed closed later
+  at the restart lifecycle comparison and again published nothing. Source inspection
+  proves restart calls `focusBoard`, whose platform implementation schedules two
+  nested rAF callbacks; the harness sampled `after_restart` as soon as Core returned
+  to `playing`, before those intentionally finite focus callbacks necessarily drained,
+  while `before_restart` was taken at an arbitrary frame boundary. Exact instantaneous
+  pending-rAF equality is therefore not a stable leak proof. The bounded harness-only
+  correction must sample active-game lifecycle after the same two real rAF boundaries
+  for first mount, before restart, after restart, and second mount, then retain exact
+  equality for pending frames, listeners and audio contexts. It may not ignore,
+  subtract, cap, or waive a remaining frame; unmount must still return exactly to the
+  home baseline.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 
