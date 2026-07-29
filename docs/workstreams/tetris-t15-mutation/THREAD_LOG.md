@@ -898,3 +898,26 @@
 - Next action: regenerate exactly one final typecheck, complete test suite and build
   batch for source `ee2aac5`, then obtain current static audit before the managed
   browser acceptance batch.
+
+## 2026-07-29 — Final source gates regenerated
+
+- Task ID: `T15-PHASE5-MUTATION-FINAL-GATES-R2`.
+- Product candidate: `ee2aac542529c116c915c38e0603584a7099b5e8`.
+- Resource admission immediately before the batch: CPU
+  `11.8/10.3/9.3/16.0/8.9%` (average 11.3%, maximum 16.0%),
+  15.84 GiB available RAM, 58.5% committed memory, disk queue 0, zero known listener
+  and zero Chrome process.
+- Exactly one final gate batch ran after the last source edit:
+  - `npm.cmd run typecheck` — PASS;
+  - `npm.cmd run test -- --maxWorkers=1` — PASS, 26 files / 225 tests;
+  - `npm.cmd run build` — PASS, 753 transformed modules.
+- Raw changed test/build logs are checkpoint `5ec0f1b`; manifest and checksum binding
+  are checkpoint `6d9fc6a`. The unchanged typecheck log hash remains valid because
+  the regenerated successful output is byte-identical.
+- `phase5-gate-evidence.json` binds the source tree to `ee2aac5`, gate-run HEAD
+  `1326da1`, UTF-8/LF logs, environment versions and exact SHA-256 values; all
+  checksums were independently recomputed before commit.
+- No browser, visual, performance, lifecycle or final Phase-5 acceptance is claimed
+  by this checkpoint.
+- Next action: resolve the three independent static audit verdicts, then admit the
+  single managed browser evidence batch only if no P0–P2 finding remains.

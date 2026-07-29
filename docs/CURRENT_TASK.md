@@ -211,6 +211,14 @@ or history rewrite is authorized.
   Vite listener, Chrome processes, and accidental Python bytecode cache were all
   removed. The next action is the one final source-bound typecheck/full-suite/build
   gate regeneration; this diagnostic is not browser acceptance evidence.
+- The final source-bound gate batch is now committed at `6d9fc6a`: typecheck passed,
+  all 26 test files / 225 tests passed with one worker, and the production build
+  transformed 753 modules successfully. Raw test/build output is isolated in
+  `5ec0f1b`; manifest/checksum binding is isolated in `6d9fc6a` and names
+  `ee2aac5` as the product source candidate. This is gate acceptance only, not visual
+  or Phase-5 acceptance. Three independent read-only audits now review source
+  isolation, evidence integrity, and target/visual coverage before the one managed
+  browser batch is admitted.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
