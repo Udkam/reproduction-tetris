@@ -47,7 +47,7 @@ function unlockedIds(progress = defaultPuzzleProgress()): PuzzleId[] {
 }
 
 describe('revisioned all-open Puzzle workshop persistence baseline', () => {
-  it('binds every authored level to ordered difficulty and four presentation-only row bands', () => {
+  it('binds every authored level to ordered difficulty and five-level presentation bands', () => {
     expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name])).toEqual(
       PUZZLE_DEFINITIONS.map((level) => [level.id, level.name]),
     );
@@ -58,7 +58,7 @@ describe('revisioned all-open Puzzle workshop persistence baseline', () => {
       PUZZLE_DEFINITIONS.map((level) => level.difficulty),
     );
     expect(CAMPAIGN_LEVELS.every((level) => level.total === CAMPAIGN_LEVELS.length)).toBe(true);
-    expect(PUZZLE_ROW_BANDS.map((band) => band.length)).toEqual([5, 5, 5, 5]);
+    expect(PUZZLE_ROW_BANDS.map((band) => band.length)).toEqual([5, 5, 5, 5, 5, 5]);
     expect(PUZZLE_ROW_BANDS.flat().map((level) => level.id)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
     expect(CAMPAIGN_TIERS).toBe(PUZZLE_ROW_BANDS);
   });
@@ -167,7 +167,7 @@ describe('revisioned all-open Puzzle workshop persistence baseline', () => {
     expect(V4_CAMPAIGN_ORDER).toHaveLength(20);
     expect(new Set(V4_CAMPAIGN_ORDER)).toEqual(new Set(V2_CAMPAIGN_ORDER));
     expect(V4_CAMPAIGN_ORDER).not.toEqual(V2_CAMPAIGN_ORDER);
-    expect(V4_CAMPAIGN_ORDER).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
+    expect(V4_CAMPAIGN_ORDER).toEqual(CAMPAIGN_LEVELS.slice(0, 20).map((level) => level.id));
 
     const completed = V4_CAMPAIGN_ORDER.filter((_, index) => index % 2 === 0);
     const bestPieceCounts = Object.fromEntries(completed.map((id, index) => [id, index + 1]));

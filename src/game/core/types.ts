@@ -54,7 +54,17 @@ export type PuzzleId =
   | 't6r-cairn-17'
   | 't6r-terrace-18'
   | 't6r-bastion-19'
-  | 't6r-keystone-20';
+  | 't6r-keystone-20'
+  | 'tm-puzzle-21'
+  | 'tm-puzzle-22'
+  | 'tm-puzzle-23'
+  | 'tm-puzzle-24'
+  | 'tm-puzzle-25'
+  | 'tm-puzzle-26'
+  | 'tm-puzzle-27'
+  | 'tm-puzzle-28'
+  | 'tm-puzzle-29'
+  | 'tm-puzzle-30';
 
 export type PuzzleGoal = 'original-targets-cleared';
 export type PuzzleCompletion =

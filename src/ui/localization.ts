@@ -196,6 +196,16 @@ const ENGLISH_LEVEL_NAMES: Readonly<Record<PuzzleId, string>> = {
   't6r-terrace-18': 'Side Shelf',
   't6r-bastion-19': 'Narrow Gate',
   't6r-keystone-20': 'Bridge',
+  'tm-puzzle-21': 'Gatepost',
+  'tm-puzzle-22': 'Corridor',
+  'tm-puzzle-23': 'Center Post',
+  'tm-puzzle-24': 'Slope',
+  'tm-puzzle-25': 'Pinched Well',
+  'tm-puzzle-26': 'Offset Shelf',
+  'tm-puzzle-27': 'Ramp',
+  'tm-puzzle-28': 'Side Bridge',
+  'tm-puzzle-29': 'Double Layer',
+  'tm-puzzle-30': 'Split Shelf',
 };
 
 const COPY: Record<AppLanguage, Translation> = {

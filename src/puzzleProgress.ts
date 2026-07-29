@@ -100,22 +100,22 @@ export const V2_CAMPAIGN_ORDER: readonly PuzzleId[] = Object.freeze([
   't6r-keystone-20',
 ]);
 
-const ROW_BAND_LENGTHS = [5, 5, 5, 5] as const;
+const ROW_BAND_LENGTH = 5;
 
 function buildRowBands(levels: readonly CampaignLevel[]): readonly (readonly CampaignLevel[])[] {
-  const tiers: (readonly CampaignLevel[])[] = [];
-  let cursor = 0;
-  for (const length of ROW_BAND_LENGTHS) {
-    const tier = levels.slice(cursor, cursor + length);
-    if (tier.length !== length) throw new Error('Puzzle row bands require exactly twenty levels.');
-    tiers.push(Object.freeze(tier));
-    cursor += length;
+  if (levels.length === 0 || levels.length % ROW_BAND_LENGTH !== 0) {
+    throw new Error('Puzzle row bands require a non-empty campaign divisible into five-level groups.');
   }
-  if (cursor !== levels.length) throw new Error('Puzzle row bands contain an unassigned level.');
+  const tiers: (readonly CampaignLevel[])[] = [];
+  for (let cursor = 0; cursor < levels.length; cursor += ROW_BAND_LENGTH) {
+    const tier = levels.slice(cursor, cursor + ROW_BAND_LENGTH);
+    if (tier.length !== ROW_BAND_LENGTH) throw new Error('Puzzle row band is incomplete.');
+    tiers.push(Object.freeze(tier));
+  }
   return Object.freeze(tiers);
 }
 
-/** Four visible 5/6/7/8-row workshop bands; these are presentation grouping only. */
+/** Current five-level workshop bands; these remain presentation grouping only. */
 export const PUZZLE_ROW_BANDS = buildRowBands(CAMPAIGN_LEVELS);
 /** @deprecated Compatibility export; no access gate is derived from these groups. */
 export const CAMPAIGN_TIERS = PUZZLE_ROW_BANDS;
