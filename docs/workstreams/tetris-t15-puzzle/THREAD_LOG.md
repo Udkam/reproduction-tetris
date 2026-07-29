@@ -534,3 +534,44 @@
 - Intended batch mix is now seven ten-drop ordinary levels plus three seven-drop
   one-anchor levels. All product edits remain uncommitted inside the existing
   `t15_puzzle_21_30_source_writer` path boundary.
+
+## Levels 21–30 source candidate — 2026-07-30
+
+- Task: `t15_puzzle_21_30_source_writer`.
+- Base SHA: `01a2953`; contract corrections during authoring:
+  `cf1b1f4`.
+- Candidate SHA: `0faf9e7`.
+- Exact changed paths:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json`
+- Candidate claim:
+  - 10 deterministic five-row levels, seven ordinary / three one-anchor;
+  - anchored carriers use seven legal zero-clear setup drops, ordinary carriers
+    use ten;
+  - 20 public-Core routes, with shorter-route locks
+    `9,10,11,11,11,12,13,13,14,17` and divergence at lock 1–3;
+  - existing selector composition and all-open transitional access are retained.
+- Artifact SHA-256:
+  `FF5849E87C2B1EB18F77F24A8D36C958350C2E950A02000E51C74992B1D01360`.
+- Commands actually run after the final source change:
+  - `npm.cmd run test -- src/game/core/puzzles.test.ts src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFlow.test.ts src/game/core/puzzleSolverResults.test.ts src/puzzleProgress.test.ts src/App.test.ts --maxWorkers=1`
+    — PASS, 6 files / 64 tests;
+  - `npm.cmd run typecheck` — PASS.
+- Evidence:
+  - all 20 frozen streams replay through public Core commands;
+  - every route finishes with zero original targets;
+  - all three anchors remain at their fixed coordinates;
+  - no real `lines-cleared.rows` value equals an anchor's canonical row.
+- Resource disposition: all ignored pools, probes and solver logs were removed;
+  every owned generator/solver PID exited. No server or browser was opened.
+- Blocker: none. Independent QA is read-only against `0faf9e7`.
+- Next action: record independent definition/route/curriculum disposition before
+  opening levels 31–40.

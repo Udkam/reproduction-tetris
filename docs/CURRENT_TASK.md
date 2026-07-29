@@ -309,6 +309,21 @@ seven ten-drop ordinary levels plus three seven-drop one-anchor levels; each
 selected carrier must pass its individual two-route probe before the batch solver
 resumes.
 
+**Levels 21–30 source candidate (2026-07-30):** candidate `0faf9e7` appends
+IDs `tm-puzzle-21` through `tm-puzzle-30` without changing the first twenty
+definitions or selector composition. The final source uses seven ten-drop ordinary
+boards and three seven-drop one-anchor boards. Its ten shorter-route lock counts are
+`9,10,11,11,11,12,13,13,14,17`; every alternate route diverges at lock 1–3.
+The source-bound schema-7 artifact contains 10 levels / 20 public-Core routes and
+has SHA-256
+`FF5849E87C2B1EB18F77F24A8D36C958350C2E950A02000E51C74992B1D01360`.
+Focused proof is 6 files / 64 tests plus typecheck. Every artifact route finishes
+through public `dispatch()`, exhausts the original targets, retains its authored
+anchor, and rejects any line-clear event on an anchor's canonical row. All
+candidate pools, probes, solver logs and owned solver PIDs were released after
+artifact generation. Independent QA is now open read-only against candidate
+`0faf9e7`; levels 31–40 remain closed until that disposition is recorded.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
