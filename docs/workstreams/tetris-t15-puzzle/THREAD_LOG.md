@@ -604,7 +604,7 @@
   `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`.
 - Claim boundary:
   - create separate ignored six-row ordinary (11/12 setup drops) and sparse
-    anchor (7/8 setup drops) pools;
+    anchor pools;
   - select readable wells, shelves, channels, bridges and overhangs;
   - require exactly three one-anchor packages with every target cell in the
     anchor column already occupied;
@@ -620,3 +620,22 @@
   owned PID/log cleanup, no WMI/CIM.
 - Next action: run and repeat the bounded smoke, compare hashes, then generate
   the two full pools only if the smoke is healthy.
+
+## Levels 31–40 candidate-pool checkpoint — 2026-07-30
+
+- Repeated smoke: both runs completed 4 unique six-row candidates in 1,306,060
+  attempted landings without exhaustion and matched SHA-256
+  `90A65312136B4D3EFA2F7343967F694ABBF0007459B51BFCC3712C50ED3ECE63`.
+- Ordinary pool: 60 unique six-row boards across 18 setup seeds, all using 12
+  legal zero-clear drops; 11,872,752 attempted landings, no exhaustion, SHA-256
+  `95352981F972D305D9435E1B1B2089B9DF37B687DEFBD1DFF0FAF99862211CEF`.
+- Direct ordinary assertions pass for contiguous six-row target bands, 48
+  original cells, empty headroom, no initially full row and unique board keys.
+- The first sparse-anchor pool used 40 seeds and setup counts 7/8. It completed
+  5,731,628 attempted landings without exhaustion but produced zero legal
+  six-row candidates; diagnostic SHA-256
+  `EF5109E0140F8951C77CF2F25118A0E7983A25CDB6716D2DA75A4EBE96B8666D`.
+- Disposition: 7/8 is structurally too sparse to form the required six occupied
+  rows under the legal setup contract. Do not weaken target-row or anchor rules.
+  Reopen only one anchor pool at 9/10 setup drops; ordinary pool and fixed
+  30/600/480 route bounds remain unchanged.

@@ -343,7 +343,11 @@ accepted/pushed base is `fc23cfb`. Use the unchanged
 `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs` in explicit, short-lived
 processes to build separate six-row ordinary and sparse-anchor pools under
 `.local`. Run one small deterministic smoke before either full pool. Ordinary
-candidates may use 11/12 legal zero-clear drops; anchor candidates may use 7/8.
+candidates may use 11/12 legal zero-clear drops. The completed 7/8-drop anchor
+search processed 40 seeds and 5,731,628 landings without budget exhaustion but
+found no legal six-row board; its diagnostic SHA-256 is
+`EF5109E0140F8951C77CF2F25118A0E7983A25CDB6716D2DA75A4EBE96B8666D`.
+Reopen only the anchor pool once at 9/10 setup drops.
 Directly reject hidden cells, initial clears/full rows, noncontiguous target bands,
 duplicate boards/seeds and any anchor column whose six target cells are not already
 occupied. Candidate pools are execution evidence only and must be removed after
