@@ -6,8 +6,9 @@
  *
  * Usage:
  *   node search-puzzles.mjs
+ *     --target-rows <3..7>
  *     --seed-start <uint32> --seed-count <1..256>
- *     --setup-counts <5,6> --candidate-count <1..100>
+ *     --setup-counts <5..15 subset> --candidate-count <1..100>
  *     --beam-width <16..5000> --node-budget <positive-int>
  *     --output <explicit-json-path>
  */
@@ -18,7 +19,6 @@ import { dirname, resolve } from 'node:path';
 const WIDTH = 10;
 const HEIGHT = 40;
 const VISIBLE_START = 20;
-const TARGET_ROWS = 3;
 const FULL_ROW = (1 << WIDTH) - 1;
 const TYPES = Object.freeze(['I', 'O', 'T', 'S', 'Z', 'J', 'L']);
 const SHAPES = Object.freeze({
@@ -86,15 +86,16 @@ function parseArguments(argv) {
     .map(Number);
   if (
     setupCounts.length === 0
-    || setupCounts.some((value) => !Number.isInteger(value) || value < 5 || value > 7)
+    || setupCounts.some((value) => !Number.isInteger(value) || value < 5 || value > 15)
     || new Set(setupCounts).size !== setupCounts.length
   ) {
-    throw new Error('--setup-counts must be a unique comma-separated subset of 5,6,7.');
+    throw new Error('--setup-counts must be a unique comma-separated subset of 5 through 15.');
   }
   const output = values.get('--output');
   if (!output) throw new Error('--output is required; this tool never chooses an implicit output path.');
 
   return Object.freeze({
+    targetRows: integer('--target-rows', 3, 7),
     seedStart: integer('--seed-start', 1, 0xffff_ffff),
     seedCount: integer('--seed-count', 1, 256),
     setupCounts: Object.freeze(setupCounts),
@@ -220,9 +221,9 @@ function topology(rows) {
   });
 }
 
-function scoreState(rows, depth, pathHash) {
+function scoreState(rows, depth, pathHash, targetRows) {
   const value = topology(rows);
-  const expectedRows = Math.min(TARGET_ROWS, Math.max(1, Math.ceil((depth * 4) / 9)));
+  const expectedRows = Math.min(targetRows, Math.max(1, Math.ceil((depth * 4) / 9)));
   const deterministicTieBreak = (pathHash % 101) / 101;
   return Math.abs(value.targetRows - expectedRows) * 20_000
     + Math.abs(value.holes - Math.max(1, depth - 3)) * 160
@@ -248,7 +249,7 @@ function visibleRows(typeRows) {
   });
 }
 
-function searchSeed(setupSeed, setupCount, beamWidth, budget) {
+function searchSeed(setupSeed, setupCount, targetRows, beamWidth, budget) {
   const sequence = sequenceForSeed(setupSeed, setupCount);
   const emptyTypeRows = Object.fromEntries(
     TYPES.map((type) => [type, Array.from({ length: HEIGHT }, () => 0)]),
@@ -284,7 +285,7 @@ function searchSeed(setupSeed, setupCount, beamWidth, budget) {
             parent: node,
             placement: Object.freeze({ type, rotation, x }),
             pathHash,
-            score: scoreState(placed.rows, depth + 1, pathHash),
+            score: scoreState(placed.rows, depth + 1, pathHash, targetRows),
           };
           const colorKey = TYPES.map((piece) => boardKey(next.typeRows[piece])).join('/');
           const key = `${boardKey(next.rows)}|${colorKey}`;
@@ -302,7 +303,7 @@ function searchSeed(setupSeed, setupCount, beamWidth, budget) {
   const accepted = beam
     .filter((node) => {
       const value = topology(node.rows);
-      return value.targetRows === TARGET_ROWS
+      return value.targetRows === targetRows
         && value.occupied === setupCount * 4
         && value.coveredColumns >= 7
         && value.rowDensities >= 2;
@@ -321,12 +322,12 @@ function searchSeed(setupSeed, setupCount, beamWidth, budget) {
   return Object.freeze({ candidates: accepted, exhausted: false });
 }
 
-function validateCandidate(candidate) {
+function validateCandidate(candidate, targetRows) {
   if (candidate.placements.length !== candidate.setupCount) throw new Error('Candidate placement count drifted.');
   if (candidate.boardRows.length !== 20 || candidate.boardRows.some((row) => row.length !== WIDTH)) {
     throw new Error('Candidate board must contain twenty ten-cell visible rows.');
   }
-  if (candidate.metrics.targetRows !== TARGET_ROWS) throw new Error('Candidate target height drifted.');
+  if (candidate.metrics.targetRows !== targetRows) throw new Error('Candidate target height drifted.');
   if (candidate.metrics.occupied !== candidate.setupCount * 4) throw new Error('Candidate lost setup cells.');
   if (candidate.boardRows.some((row) => !/^[.IOTSZJL]{10}$/.test(row))) {
     throw new Error('Candidate board contains an unknown material.');
@@ -343,7 +344,7 @@ for (let offset = 0; offset < options.seedCount && !exhausted; offset += 1) {
   const setupSeed = (options.seedStart + offset) >>> 0 || 1;
   processedSeeds += 1;
   for (const setupCount of options.setupCounts) {
-    const result = searchSeed(setupSeed, setupCount, options.beamWidth, budget);
+    const result = searchSeed(setupSeed, setupCount, options.targetRows, options.beamWidth, budget);
     exhausted ||= result.exhausted;
     for (const candidate of result.candidates) {
       const previous = byBoard.get(candidate.boardKey);
@@ -359,7 +360,7 @@ const candidates = [...byBoard.values()]
     || left.setupSeed - right.setupSeed
     || left.boardKey.localeCompare(right.boardKey))
   .slice(0, options.candidateCount);
-for (const candidate of candidates) validateCandidate(candidate);
+for (const candidate of candidates) validateCandidate(candidate, options.targetRows);
 
 const complete = !exhausted && candidates.length === options.candidateCount;
 const output = Object.freeze({
@@ -367,13 +368,14 @@ const output = Object.freeze({
   claim: 'Phase-7 setup candidates only; public Core route replay remains mandatory.',
   status: complete ? 'complete' : 'incomplete',
   constraints: Object.freeze({
-    targetRows: TARGET_ROWS,
+    targetRows: options.targetRows,
     legalHardDrops: true,
     zeroSetupClears: true,
     hiddenCells: 0,
     mergedSameTypeOwners: false,
   }),
   options: Object.freeze({
+    targetRows: options.targetRows,
     seedStart: options.seedStart,
     seedCount: options.seedCount,
     setupCounts: options.setupCounts,
