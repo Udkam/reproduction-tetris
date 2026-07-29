@@ -233,6 +233,16 @@ or history rewrite is authorized.
   state. The original evidence reviewer then returned PASS with P0–P3 all zero and
   confirmed no product or gate drift. The single managed Phase-5 browser batch is now
   admitted, subject to a fresh resource check and fail-closed publication.
+- The admitted run failed closed after proving every item/carrier/activation/FIFO and
+  Collapse endpoint because the deterministic first reward granted two timed states
+  in one transition. The harness therefore observed status counts 0 → 2 → 3 and could
+  never satisfy its separate one-state layout frame while Core remained QA-frozen.
+  It published nothing and released all owned resources. The bounded correction may
+  relax only the main-loop exit from `{1,2,3}` to stable `{2,3}` coverage, retain the
+  required three-state responsive/English/reduced captures, then advance the real
+  deterministic Core clock one tick at a time after those frames until exactly one
+  timed state remains and capture that actual UI. It may not inject state, change the
+  product seed/source, fabricate a screenshot, or waive the one-state requirement.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

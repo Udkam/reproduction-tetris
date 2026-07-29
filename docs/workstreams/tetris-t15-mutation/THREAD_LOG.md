@@ -964,3 +964,28 @@
   P0/P1/P2/P3 all zero. Product `ee2aac5` and gates `6d9fc6a` are unchanged.
 - Next action: take a fresh resource sample, execute the only managed Phase-5 browser
   batch, then inspect every PNG before any acceptance claim.
+
+## 2026-07-29 — Managed batch rejected missing one-state layout
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-DYNAMIC-R5`.
+- Run boundary: HEAD `a6dfdae`, harness `bc555ee`, product `ee2aac5`, gates
+  `6d9fc6a`.
+- Resource admission: CPU `18.1/14.8/19.8/15.6/21.4%` (average 17.9%, maximum
+  21.4%), 16.6 GiB available RAM, 55.2% committed memory, disk queue 0, zero known
+  listener/Chrome/partial/prior browser artifact.
+- The run proved active/Next/locked/activation for all four items, same-instance FIFO,
+  a real Collapse trail, and status counts 2 and 3. It failed because the fixed
+  sequence granted two timed statuses together, so count 1 never existed while the
+  QA-frozen clock prevented expiry.
+- Fail-closed proof: 25 PNGs existed only inside the partial directory; zero PNG,
+  browser manifest, checksum or Vite log was published. The partial directory,
+  Python/Vite/Chrome processes, known ports and external control logs were all
+  released/removed.
+- Correction contract: break the primary autoplay only after all non-layout coverage,
+  status 2 and status 3 are present and current status remains 3; retain all
+  three-state responsive/reduced/English captures; then, only if status 1 was not
+  naturally observed, call the existing deterministic `advanceTicks(1)` repeatedly
+  until the real state reaches exactly one timed effect and capture `status-1`.
+  Fail if the run reaches zero/finishes first. No state replacement or product edit.
+- Next action: commit this failure/contract checkpoint, implement and statically test
+  the harness-only real-expiry fallback, then re-audit before a corrected managed run.
