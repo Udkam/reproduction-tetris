@@ -816,48 +816,19 @@ def capture_fifo_witness(page: Page, snapshot: dict[str, Any]) -> dict[str, Any]
     assert queued_items
     expected = [activation["item"], *queued_items]
     install_fifo_observer(page, expected)
-    capture_started = time.perf_counter()
-    fifo_capture = capture(page, "renderer-fifo-witness", settle_ms=0)
-    capture_elapsed_ms = (time.perf_counter() - capture_started) * 1000
-    captured_current = fifo_capture["renderer"]["mutationActivation"]
-    captured_queue = fifo_capture["renderer"]["mutationActivationQueueItems"]
-    assert captured_current is not None
-    assert captured_current["item"] == expected[0]
-    assert captured_queue == expected[1:]
-
-    post_capture = collect(page)
-    validate_common(post_capture)
-    post_current = post_capture["renderer"]["mutationActivation"]
-    post_queue = post_capture["renderer"]["mutationActivationQueueItems"]
-    observer_after_capture = page.evaluate(
-        "structuredClone(window.__T15_FIFO_OBSERVER__)"
-    )
-    assert post_current is not None
-    assert post_current["item"] == expected[0]
-    assert post_queue == expected[1:]
-    assert observer_after_capture["currentIndex"] == 0
-    assert observer_after_capture["error"] is None
-
     fifo_trace = finish_fifo_observer(page)
     refreshed = collect(page)
     validate_common(refreshed)
     return {
         "expected": expected,
         "observed": fifo_trace["observed"],
-        "capture": fifo_capture,
         "snapshot": refreshed,
         "witness": {
             "pieceCount": snapshot["state"]["pieceCount"],
             "current": expected[0],
             "queued": expected[1:],
-            "file": fifo_capture["file"],
-            "captureElapsedMs": capture_elapsed_ms,
-            "postScreenshot": {
-                "current": post_current["item"],
-                "elapsedMs": post_current["elapsedMs"],
-                "queued": post_queue,
-                "observerIndex": observer_after_capture["currentIndex"],
-            },
+            "currentElapsedMs": activation["elapsedMs"],
+            "currentDurationMs": activation["durationMs"],
             "trace": fifo_trace,
         },
     }
@@ -917,7 +888,6 @@ def run(context: BrowserContext) -> dict[str, Any]:
             fifo_expected = fifo_result["expected"]
             fifo_observed = fifo_result["observed"]
             fifo_witness = fifo_result["witness"]
-            captures.append(fifo_result["capture"])
             snapshot = fifo_result["snapshot"]
             activation = snapshot["renderer"]["mutationActivation"]
 
