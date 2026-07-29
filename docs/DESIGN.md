@@ -98,9 +98,10 @@ React copy, HUD structure, and audio remain frozen.
 
 Phase 5 is independently accepted, pushed, and cleaned through `4f871ac`. Phase 6
 rules, visual, and evidence-integrity QA independently accept corrected product
-`9085976` with P0–P3/GAP all zero. Coordinator acceptance and the pushed recovery
-point still gate the fifty-level Puzzle contract; its selector composition is not a
-Phase-6 target.
+`9085976` with P0–P3/GAP all zero, and the coordinator accepts the complete Phase-6
+claim. The recovery push is the next operation. The fifty-level Puzzle contract stays
+closed until remote equality is verified; its selector composition is not a Phase-6
+target.
 
 ## Phase 1 — TetraMorph Design System v1.0
 

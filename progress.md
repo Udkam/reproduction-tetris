@@ -7,41 +7,22 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   tip `4f871ac`. Rules and evidence QA have no P0–P3/GAP; visual QA retains one P3
   for narrow long-value/status ellipsis. Project browser/listener resources were
   released and local `main` matched `origin/main`.
-- The player resumed on 2026-07-29. Phase 6 Classic is now open from clean base
-  `4f871ac`. Its first and only active writer slice is the four-file shared ordinary
-  line-clear Renderer boundary; Core, UI, Puzzle data/selector, and Mutation special
-  effects remain frozen.
-- Phase-6 contract `7aed5ef` and ordinary-clear source checkpoint `1a163ff` are
-  committed. Focused presentation/Renderer coverage passes 2 files / 39 tests and
-  typecheck passes. Disposable real Pixi frames verified confirmation, inward
-  contraction, refined afterglow, endpoint, and reduced-motion geometry; the Vite,
-  Chromium, listener, and temporary capture directory were released afterward.
-- Classic feedback contract `fee0627`, cue source `a1f3d1b`, and visually corrected
-  final product candidate `eaed1ac` are frozen. Final gates indexed through `50e3693`
-  pass typecheck, 26 files / 231 tests, and the 753-module production build. Only the
-  fail-closed Phase-6 browser-evidence writer was open; product paths remain closed.
-- Final harness `1b9c85f`, raw browser frames/logs `a231fda`, and manifest/index
-  `d7fb4fa` are frozen. Fifteen original frames and nineteen hashes cover real public
-  1/2/3-row clears, labelled isolated four-row proof, one-row stages, safe Next,
-  reduced motion, Classic feedback, three viewports and lifecycle with zero errors or
-  leaks. The first visual batch was rejected for isolated Next bleed; two later runs
-  failed closed until transient event flush was atomic. No rejected artifact remains.
-- First independent rules QA rejects `eaed1ac` with one P2: landing cues paint every
-  piece-bottom edge, including airborne overhang cells, instead of only floor/locked-
-  board contact points. Visual/evidence QA are paused. Only Renderer and its direct
-  test reopen for true-support filtering plus a one-support overhang regression.
-- Correction source `9085976` freezes only true floor/old-board support cells when
-  the lock event is consumed. Its direct Renderer suite passes 30/30, including the
-  one-support overhang regression, and typecheck passes. Product source is frozen;
-  old source-bound gate/browser evidence is historical.
-- Corrected evidence is frozen: final typecheck, 26 files / 232 tests, 753-module
-  build, 15 browser captures and 19 hashes pass against `9085976`. Original-detail
-  inspection and lifecycle checks pass with zero errors/leaks; Chrome and port 4178
-  are released. Gate index is `bee956a`; browser index is `ca80416`.
-- Repeated rules QA was interrupted before a verdict when accumulated helper cohorts
-  violated the resource contract (42 Node / 7 node_repl / 5 Serena). Verified cleanup
-  leaves only the primary two-process MCP pair, zero repl/Serena/Astro dev and no 4178
-  listener. Product/evidence remain frozen; this task may not spawn another sub-agent.
+- Phase 6 Classic is coordinator-accepted from base `4f871ac`. Corrected product
+  `9085976` limits landing echoes to true floor/old-board supports and retains the
+  shared three-stage ordinary-clear family plus Classic landing/combo/speed/top-out
+  cues without changing Core, UI, audio, or other modes.
+- Final gate index `bee956a` passes typecheck, 26 files / 232 tests, and the
+  753-module build. Browser index `ca80416` binds 15 captures and 19 hashes with
+  responsive/reduced-motion/lifecycle proof, zero errors, one Canvas, and zero DOM
+  board cells.
+- Repeated rules QA, corrected final visual QA, and evidence-integrity QA all ACCEPT
+  with P0–P3/GAP zero. The only visual rejection was a documentation-only four-row
+  stage mislabel, corrected by `e247dd9` without changing product or evidence bytes.
+- Dynamic resource admission supersedes the temporary zero-helper hold. Final
+  acceptance preflight has clean Git, no 4178/5178/5179 listener, zero Chrome/repl/
+  Serena, and only the current control task's two Node helpers.
+- The Phase-6 coordinator acceptance commit and remote equality check are next.
+  Puzzle 50 remains closed until that non-force push succeeds.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -111,12 +92,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Keep product/evidence frozen. Admit a future low-overhead independent rules review
-  only after a resource check; the current task must not spawn it. Only an ACCEPT
-  opens serial visual and evidence-integrity QA.
-  If all three accept, record Phase-6 acceptance, clean resources and non-force push
-  before opening Puzzle 50.
-- Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.
+- Keep Phase-6 product/evidence frozen. Commit the coordinator acceptance, push
+  `main` non-force, and verify exact local/remote equality.
+- Record the pushed Phase-6 recovery point before opening the Phase-7 contract.
+- Do not redesign the Puzzle selector.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate
 
@@ -428,3 +407,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   browser/server state all reconcile.
 - Phase 6 is eligible for coordinator acceptance and push. Puzzle 50 remains closed
   until that remote recovery point is verified.
+
+## 2026-07-30 Phase 6 coordinator accepted
+
+- The coordinator read all three final verdicts and workstream records, inspected the
+  original four-row contraction frame, and confirms the documentation GAP is closed.
+- Accepted product is `9085976`; gate/browser indexes are `bee956a` / `ca80416`.
+  Product/config has no later drift.
+- Final resource preflight is clean: no project ports, Chrome, repl, or Serena; only
+  the current control task's two Node helpers remain.
+- Next: commit this acceptance/changelog checkpoint, push non-force, verify remote
+  equality, then record the recovery point before opening Puzzle 50.

@@ -2,23 +2,24 @@
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
-**Status (2026-07-29):** active. The linked product-review conversation is the
+**Status (2026-07-30):** active. The linked product-review conversation is the
 authoritative visual workflow. Complete the phases in order and retain fresh visual
 evidence for each accepted boundary. After a phase passes both independent audits,
 the coordinator records its acceptance, verifies resource cleanup, and pushes that
 accepted checkpoint as a remote recovery point before the next phase begins. The
 existing Puzzle library layout is explicitly excluded from redesign; adapting its
 count/progression data for fifty levels is allowed, but its visual composition must
-not be replaced. Phase 5 has now been independently accepted, pushed, cleaned, and
-paused. The player explicitly resumed the project on 2026-07-29, so Phase 6 is the
-only open product writer boundary; Puzzle 50 remains closed until Phase 6 acceptance.
+not be replaced. Phase 6 corrected product `9085976`, final gates, browser evidence,
+and all three independent reviews now pass; the coordinator accepts Phase 6. Puzzle
+50 remains closed until the Phase-6 acceptance checkpoint is pushed and remote
+equality is verified.
 
-**Authoritative current execution state (2026-07-29):** Phase 5 product
+**Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
-tip `4f871ac3706f95c2a57679dd0162071c89363ecb`; local and `origin/main` match and
-the worktree is clean. Phase 6 is **OPEN** from that exact base. Its first writer slice
-owns only the shared ordinary-clear presentation in:
+tip `4f871ac3706f95c2a57679dd0162071c89363ecb`. Phase 6 is
+**COORDINATOR ACCEPTED / RECOVERY PUSH NEXT** from that base. Its accepted product
+scope is the shared ordinary-clear presentation and Classic feedback in:
 
 - `src/game/render/presentation.ts`;
 - `src/game/render/presentation.test.ts`;
@@ -222,6 +223,18 @@ Canvas/audio/rAF state, empty errors, closed browser, and released server. The V
 `released=true`, empty stderr, and closed listener; it is not a contradiction.
 Phase 6 is now eligible for coordinator acceptance, changelog integration, cleanup,
 and push. Puzzle 50 remains closed until that pushed recovery point exists.
+
+**Coordinator Phase-6 acceptance (2026-07-30):** the coordinator has read the three
+independent verdicts and the complete Classic workstream log, inspected the original
+four-row contraction frame implicated by the only visual GAP, and confirms the GAP
+was documentation-only and closed by `e247dd9`. Accepted product remains
+`90859760bc9b2163219a31eb9053fcd4e92869ce`; gate index is `bee956a`; browser index is
+`ca80416`. Repeated rules, final visual, and evidence-integrity verdicts all report
+P0–P3/GAP zero. Product/config diff from `9085976` to HEAD is empty; Git is clean;
+ports 4178/5178/5179, Chrome, `node_repl`, and Serena are absent. The current control
+task retains only its two Node helpers. This coordinator checkpoint is the Phase-6
+acceptance claim; push and exact local/remote equality verification are next. Do not
+open Puzzle 50 before they succeed.
 
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`

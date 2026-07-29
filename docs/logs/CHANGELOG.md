@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-07-30 — T15 Phase 6 Classic accepted
+
+- Replaced the shared ordinary-clear sweep with one board-local three-stage family:
+  narrow row confirmation, recognisable cell contraction/dissolve, and restrained
+  deterministic afterglow. One through four rows share timing and geometry with
+  bounded intensity; reduced motion keeps a stationary local confirmation.
+- Classic now adds short, coexisting Renderer-only cues for true-support landing,
+  consecutive clears, each ten-line speed boundary, and top-out. They remain clipped
+  inside the well, contain no text or camera movement, and clear on lifecycle reset.
+- First rules QA correctly rejected airborne overhang landing echoes. Corrected product
+  `9085976` freezes only floor or old-board support cells and adds a one-support
+  horizontal-I regression. Final source-bound gates pass typecheck, 26 files /
+  232 tests, and a 753-module production build through gate index `bee956a`.
+- Browser index `ca80416` binds 15 captures and 19 hashes to the corrected product:
+  public runtime/Core 1/2/3-row clears, honestly isolated four-row contraction,
+  one-row confirmation/contraction/afterglow, safe Next, Classic event cues,
+  reduced-motion endpoints, three responsive viewports, zero errors, one Canvas,
+  zero DOM board cells, `17→28→17` listeners, and final zero Canvas/audio/rAF.
+- Repeated rules QA accepts with P0–P3/GAP zero. Visual QA inspected 15/15 originals,
+  rejected one review-packet stage mislabel, then accepted with P0–P3/GAP zero after
+  documentation-only correction `e247dd9`. Evidence QA accepts with 3/3 gate,
+  19/19 browser, and 15/15 capture hashes plus P0–P3/GAP zero.
+- The coordinator accepts Phase 6. Product/config is unchanged after `9085976`;
+  ports 4178/5178/5179 and project browser/Serena/repl resources are clear. This
+  acceptance checkpoint is the next non-force remote recovery push; Puzzle 50 remains
+  closed until exact local/remote equality is verified.
+
 ## 2026-07-29 — T15 Phase 5 Mutation accepted and pushed
 
 - Mutation keeps all seven tetromino bodies independent from four attachable item

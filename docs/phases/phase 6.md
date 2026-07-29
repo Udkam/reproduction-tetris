@@ -2,9 +2,11 @@
 
 ## 状态
 
-**EVIDENCE FROZEN / SERIAL QA NEXT**。Phase 5 已验收并推送；Phase 6 从
-`4f871ac3706f95c2a57679dd0162071c89363ecb` 开始。当前只开放共享普通消行
-Renderer 与 Classic 局部反馈的只读独立 QA；产品源码与证据均已冻结。
+**协调者验收 / 恢复点待推送**。Phase 6 从
+`4f871ac3706f95c2a57679dd0162071c89363ecb` 开始，修正产品冻结于
+`90859760bc9b2163219a31eb9053fcd4e92869ce`。规则、视觉、证据完整性 QA
+最终均为 ACCEPT，P0–P3/GAP 全零；产品源码与证据继续冻结，下一步只做
+验收恢复点的非强制推送与远端一致性核对。
 
 ## 目标
 
@@ -113,6 +115,15 @@ build 全部通过；15 张浏览器图和 19 项哈希绑定 `9085976`。逐图
 三阶段、1–4 行强度、Reduced Motion、Classic 落地/连消+提速/顶出、三种 viewport
 与生命周期；零 browser error、一个 Canvas、零 DOM 方格、监听器和 AudioContext
 均恢复，Chrome 与 4178 均释放。下一步只能重复规则 QA。
+
+重复规则 QA 确认旧的悬挑 P2 已关闭并以 P0–P3/GAP 全零 ACCEPT。视觉 QA
+逐张检查 15/15 原图；它先拒绝审查包把四行 `phaseTicks: 5` contraction
+误写成 endpoint 的证据说明，文档检查点 `e247dd9` 修正后复核 ACCEPT。
+证据完整性 QA 随后独立复算 3/3 gate、19/19 browser 与 15/15 capture 哈希，
+核对候选链、来源、响应式、reduced motion、一个 Canvas、零 DOM 方格、
+`17→28→17` 生命周期、最终零 Canvas/audio/rAF、空错误、浏览器关闭和服务
+释放，最终同样 P0–P3/GAP 全零。协调者据此接受 Phase 6；Puzzle 50 仍需等待
+本验收检查点推送并验证远端一致。
 
 ## 验收
 

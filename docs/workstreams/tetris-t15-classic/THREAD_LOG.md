@@ -491,3 +491,32 @@
 - Next action: coordinator reads all three verdicts and workstream records, records
   formal Phase-6 acceptance in changelog, verifies cleanup, and pushes. Puzzle 50
   remains closed until the remote recovery point is verified.
+
+## TETRIS-T15-PHASE6-COORDINATOR-ACCEPTANCE-017
+
+- Status: `COORDINATOR ACCEPTED / RECOVERY PUSH NEXT`.
+- Accepted base: `4f871ac3706f95c2a57679dd0162071c89363ecb`.
+- Accepted corrected product:
+  `90859760bc9b2163219a31eb9053fcd4e92869ce`.
+- Accepted gate/browser indexes: `bee956a` / `ca80416`.
+- Independent dispositions:
+  - repeated rules QA: ACCEPT, P0–P3/GAP none;
+  - visual QA: initial documentation GAP, corrected by `e247dd9`, final ACCEPT,
+    P0–P3/GAP none, 15/15 original frames;
+  - evidence-integrity QA: ACCEPT, P0–P3/GAP none, 3/3 gate hashes, 19/19 browser
+    hashes, and 15/15 captures.
+- Coordinator inspection: read all verdicts and this log; inspected the four-row
+  original PNG at original detail; confirmed it is the manifest-bound isolated
+  contraction at `phaseTicks: 5`; confirmed the corrected packet no longer calls it
+  an endpoint or public route.
+- Final frozen claims: product/config diff `9085976..HEAD` empty; the final source
+  gates remain typecheck PASS, 26 files / 232 tests PASS, and 753-module build PASS;
+  browser evidence retains zero errors, one gameplay Canvas, zero DOM board cells,
+  required responsive/reduced-motion coverage, and closed lifecycle.
+- Resource proof before acceptance: clean Git; no 4178/5178/5179 listener; zero
+  Chrome, `node_repl`, and Serena; two Node helpers owned by the current control task.
+- Disposition: Phase 6 is accepted. No gate or browser rerun is needed because product
+  source has not changed after `9085976`.
+- Next action: commit this coordinator/changelog checkpoint, push `main` non-force,
+  verify exact local/remote equality, then write a pushed recovery record before
+  opening Phase 7.
