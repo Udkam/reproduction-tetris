@@ -756,3 +756,34 @@
   `docs/qa/evidence/t15-phase5/capture_phase5.py`.
 - Next action: commit this finding/status checkpoint, add same-label FIFO identity
   proof and visual coverage as separate harness commits, then obtain fresh audits.
+
+## 2026-07-29 — Dynamic evidence writer checkpoint before browser
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-DYNAMIC-R2`.
+- Base SHA: `588488b`.
+- Ordered harness checkpoints:
+  - `40b5c03` — distinguish consecutive equal FIFO instances by stable duration,
+    monotonic elapsed time and a required elapsed reset;
+  - `19679fb` — require one actual-column Collapse settlement frame and four
+    item-specific reduced-motion activation frames;
+  - `db0141d` — bind every transient board crop to pre/post live Renderer state,
+    actual board bounds, file hash and a non-reset activation/trail timeline.
+- Exact changed path for all three harness checkpoints:
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- Commands actually run:
+  - Python AST parse and `--help` early-exit check — PASS;
+  - extracted same-label FIFO simulations, including the prior dropped-equal-item
+    counterexample — expected PASS/fail-closed results;
+  - direct activation/trail capture-window guard simulations — expected
+    PASS/fail-closed results;
+  - `git diff --check` and exact-path cached-path review before each commit — PASS.
+- Product source remains exactly `f6fa06e`; no `src`, package, Phase-6 or Puzzle-50
+  path changed. Existing source-bound gates remain `96a3841`.
+- Resource admission sample before the browser batch: CPU
+  `43/20/16/45/37%` (average 32.2%, maximum 45%), 11.31 GiB available RAM,
+  72% committed memory, disk queue 0, no known-port listener and no Chrome process.
+- Static re-audit of `db0141d` is still running. No browser PNG, performance,
+  lifecycle or Phase-5 acceptance claim is made by this checkpoint.
+- Next action: accept only a clean final static verdict, execute the one managed
+  browser batch, inspect every generated frame, then commit raw output and its
+  manifest/checksum separately.

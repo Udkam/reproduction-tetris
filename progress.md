@@ -247,3 +247,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Remaining gates, raw browser files, browser index, each QA verdict, corrections, and
   final acceptance will stay in separate commits; no squash or history rewrite.
 - After accepted Phase 5 is pushed and resources are clean, stop before Phase 6.
+
+## 2026-07-29 Phase 5 transient-evidence checkpoint
+
+- Equal-label FIFO identity is now elapsed-reset-bound at `40b5c03`.
+- `19679fb` adds mandatory actual-column Collapse settlement and four per-item
+  reduced-motion activation frames.
+- Independent review found that a pre-screenshot state alone could outlive a short
+  effect. `db0141d` therefore requires the same activation/trail to remain live after
+  the cropped board screenshot, checks the real clip against board bounds, and binds
+  the file/hash to that capture window.
+- Product source remains `f6fa06e`; final source gates remain `96a3841`.
+- Current resources satisfy the browser admission budget. Next: finish static
+  re-audit, run one managed evidence batch, visually inspect all frames, then split
+  raw output, index, QA and acceptance into independent rollback commits.
