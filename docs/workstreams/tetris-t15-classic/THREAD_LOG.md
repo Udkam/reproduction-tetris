@@ -244,3 +244,28 @@
   has exited.
 - Next action: commit this correction contract, implement and focus-test the two-file
   slice, then regenerate final gates and all source-bound browser evidence.
+
+## TETRIS-T15-PHASE6-LANDING-SUPPORT-008
+
+- Status: `SOURCE FROZEN / FRESH GATES NEXT`.
+- Base: correction contract `308e49c`.
+- Source candidate: `9085976`.
+- Exact source paths:
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`.
+- Behavior: Classic landing cues now freeze only floor- or locked-board-supported
+  external lower edges at `piece-locked` event time. Piece-internal lower edges and
+  airborne overhang cells never enter the cue queue.
+- Direct regression: a horizontal I piece resting on one old board cell stores exactly
+  that supported cell, while later mutation of the source board cannot alter the
+  frozen cue.
+- Commands actually run, serially:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts --maxWorkers=1`
+    -> PASS, 1 file / 30 tests;
+  - `npm.cmd run typecheck` -> PASS.
+- Scope: no Core, runtime, UI, audio, mode rule, Puzzle, dependency, harness, or
+  evidence path changed.
+- Resource state: no browser, server, agent, MCP, Serena, WMI, or CIM process was
+  started for this correction.
+- Next action: run the fresh final gate sequence once, rebind and regenerate all
+  Phase-6 browser evidence, then repeat independent rules QA before other audits.

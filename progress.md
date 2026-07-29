@@ -30,6 +30,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   piece-bottom edge, including airborne overhang cells, instead of only floor/locked-
   board contact points. Visual/evidence QA are paused. Only Renderer and its direct
   test reopen for true-support filtering plus a one-support overhang regression.
+- Correction source `9085976` freezes only true floor/old-board support cells when
+  the lock event is consumed. Its direct Renderer suite passes 30/30, including the
+  one-support overhang regression, and typecheck passes. Product source is frozen;
+  old source-bound gate/browser evidence is historical and must be regenerated.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -99,9 +103,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Commit and focus-test the bounded landing-support correction. Then regenerate the
-  final typecheck/full suite/build and all source-bound browser evidence because the
-  product SHA changes.
+- Regenerate the final typecheck/full suite/build and all source-bound browser
+  evidence for corrected product `9085976`.
 - Repeat rules QA first; only an ACCEPT opens serial visual and evidence-integrity QA.
   If all three accept, record Phase-6 acceptance, clean resources and non-force push
   before opening Puzzle 50.

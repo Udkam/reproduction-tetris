@@ -114,6 +114,15 @@ overhang/single-support regression. No other cue, ordinary-clear path, Core/UI/a
 mode, Puzzle, or evidence behavior may change. After focused green checks, the product
 candidate, final gates, and all source-bound browser evidence must be regenerated.
 
+**Phase-6 correction source (2026-07-30):** `9085976` filters the Classic landing
+snapshot at `piece-locked` time against the canonical post-lock board. Only a cell
+whose lower external edge touches the floor or an already locked board cell enters
+the bounded cue queue. The direct Renderer suite passes 30/30, including a horizontal
+I piece with one true support and three airborne overhang cells, and typecheck passes.
+Product source is frozen again. The next permitted work is a fresh final typecheck,
+one-worker full suite, build, and complete source-bound browser evidence regeneration;
+rules QA must then be repeated before visual or evidence-integrity QA opens.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
