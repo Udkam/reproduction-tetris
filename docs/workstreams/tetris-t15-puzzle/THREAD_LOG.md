@@ -224,3 +224,34 @@
   definition; make the runner reject cross-group ranges before opening its Vite
   loader; regenerate the 01–10 artifact; rerun the four focused Core files plus
   typecheck; return the exact correction range to the rejecting reviewer.
+
+## Levels 01–10 audit correction candidate — 2026-07-30
+
+- Task: `t15_puzzle_01_10_source_writer`.
+- Base: audit-disposition checkpoint `df6e593`.
+- Product correction: `2ce309b`.
+- Exact changed paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleFlow.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`
+- `puzzle-levels-01-10.json` was regenerated at the documented bounds and remained
+  byte-identical, so it has no Git delta. SHA-256:
+  `BA6DBABA314D34165F47DAC33E47CB721EA40E5B30E4EB152E5A0D83D2F597BF`.
+- Correction claim:
+  - every registered definition exposes and validates explicit `targetRows`;
+  - validation, flow tests, source-bound artifact tests and the runner consume
+    that metadata directly;
+  - a requested range cannot cross a canonical ten-level boundary.
+- Evidence:
+  - `05–14` probe — expected exit 1 before loader creation; no output file;
+  - permitted `01–10` solver — 10 levels / 20 routes verified; artifact hash
+    unchanged;
+  - four focused Core files — PASS, 4 files / 21 tests, one worker;
+  - `npm.cmd run typecheck` — PASS.
+- No full suite, build, browser, listener or persistent solver ran.
+- Frozen throughout: layouts, names, seeds, setup histories, anchors and both
+  completing routes.
+- Next action: same curriculum/artifact reviewer statically re-audits
+  `bf23126..2ce309b`; no product writer resumes until that verdict.

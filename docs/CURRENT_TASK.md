@@ -17,10 +17,11 @@ Phase 7's documentation contract is frozen at
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
 setup authoring tool `b6acd46` is deterministic and released. Levels 01–10 are
 frozen at source candidate `bf23126`. The rules audit accepts it, while the
-curriculum/artifact audit rejects two P2 contract gaps: target-row count is still
-derived instead of explicit level metadata, and the authoring runner permits a
-requested range to cross a canonical ten-level batch. Only the exact correction
-paths below are reopened; layouts, names, seeds and completing routes remain frozen.
+curriculum/artifact audit rejected two P2 contract gaps. Correction candidate
+`2ce309b` now makes target-row count explicit level metadata and rejects ranges
+crossing a canonical ten-level batch before the loader starts. Layouts, names,
+seeds and completing routes remain frozen while the rejecting reviewer re-audits
+the exact correction.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -118,6 +119,19 @@ make target-row count explicit for every currently registered definition, consum
 that metadata in validation/tests/artifacts, reject cross-batch ranges before
 starting the loader, regenerate the same 01–10 route evidence, rerun only the four
 focused Core files plus typecheck, and return to the same rejecting reviewer.
+
+**Levels 01–10 correction candidate (2026-07-30):** `2ce309b` adds explicit
+`targetRows` to every registered `PuzzleDefinition`, validates the frozen
+per-ID values, and makes validation, flow proof, replay proof and artifact
+generation consume the field rather than a difficulty formula. A `05–14` probe
+exits 1 before constructing the loader and writes no file. The one permitted
+`01–10` solver run verifies all ten levels and twenty routes; the regenerated
+artifact remains byte-identical at SHA-256
+`BA6DBABA314D34165F47DAC33E47CB721EA40E5B30E4EB152E5A0D83D2F597BF`.
+After the last source edit, the four focused Core files pass 21/21 with one worker
+and typecheck passes. No full suite, build, browser or persistent server ran.
+The source is frozen for a narrow static re-audit by the reviewer who rejected
+`bf23126`.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

@@ -474,3 +474,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   rather than explicit metadata, and the runner permits a request to cross a
   canonical ten-level batch. Six exact correction paths are reopened; authored
   layouts, names, seeds, anchors and routes remain frozen.
+- Correction `2ce309b` exposes and validates explicit per-level target rows and
+  rejects cross-batch solver ranges before loader creation. A `05–14` probe fails
+  without output, the permitted `01–10` replay verifies all 20 routes, and its
+  artifact stays byte-identical at SHA-256 `BA6DBABA314D34165F47DAC33E47CB721EA40E5B30E4EB152E5A0D83D2F597BF`.
+  Final focused proof passes 4 files / 21 tests plus typecheck; the same rejecting
+  reviewer now owns the narrow static re-audit.
