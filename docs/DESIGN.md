@@ -332,6 +332,9 @@ boundaries and then requires exact equality of all still-pending frames, global
 listeners, Canvas count/identity, and open audio contexts. It never subtracts expected
 focus frames or permits a tolerance. Unmount still returns exactly to the pre-game home
 baseline, so a surviving frame remains a failure.
+The two-boundary wait is itself fail-closed: a 2,000 ms browser timer rejects if both
+rAF callbacks do not complete, and is cleared only after the second callback runs.
+Timeout never produces a lifecycle snapshot or permits publication.
 
 Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
 and the managed browser are never concurrent: review turns are serialized, and no

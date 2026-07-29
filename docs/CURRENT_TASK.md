@@ -307,6 +307,12 @@ or history rewrite is authorized.
   the accepted one-state recovery and every visual/performance/publication rule remain
   unchanged. One serialized read-only audit must accept this exact harness before the
   next capture lease.
+- The serialized audit correctly returned `GAP`, P0=0/P1=0/P2=1/P3=0: the two-rAF
+  Promise has no rejection path if rAF itself stalls, so one of the four lifecycle
+  samples could wait forever instead of reaching harness cleanup. The only permitted
+  correction is a 2,000 ms browser-timer bound around the same two rAF callbacks,
+  clearing that timer on success and throwing on expiry. The bound may not replace a
+  frame, return a partial snapshot, catch the error as success, or relax any equality.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

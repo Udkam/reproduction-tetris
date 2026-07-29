@@ -127,6 +127,8 @@ after the same two real rAF boundaries, then compare exact pending-frame, listen
 Canvas and audio-context values. Home/unmount must still equal the original baseline.
 This changes only evidence sampling time; product source and lifecycle behavior remain
 frozen unless the stabilized exact checks prove a real leak.
+The two-rAF wait must also reject within 2,000 ms if frame callbacks stall; an
+unbounded `page.evaluate()` is not fail-closed evidence.
 
 ## 重启恢复边界（2026-07-29）
 

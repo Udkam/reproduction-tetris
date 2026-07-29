@@ -1340,3 +1340,22 @@
 - Next action: checkpoint this candidate record, obtain one serialized read-only
   evidence verdict on `e30a8d7`, then open a new single formal capture lease only if
   the verdict has no blocking finding.
+
+## 2026-07-29 — Stable lifecycle candidate held for bounded wait
+
+- Task ID: `T15-PHASE5-EVIDENCE-LIFECYCLE-QA-R1`.
+- Exact candidate: `e30a8d72aa5fa934fdea79db4223cab9ef0a0386`.
+- One serialized read-only agent reviewed only the lifecycle harness diff. It left no
+  child, browser, Vite, MCP, Serena, language-server or WMI/CIM process.
+- Verdict: `GAP`; P0=0, P1=0, P2=1, P3=0.
+- Accepted portions: helper-created rAF handles leave the tracked set before the
+  snapshot; all four active-game samples use the same boundary; exact Canvas,
+  listener, pending-rAF and audio comparisons remain; both unmount checks still equal
+  the original home baseline.
+- P2: the Promise waiting for two rAF callbacks has no timeout/rejection path, so a
+  stalled frame scheduler could trap `page.evaluate()` and prevent fail-closed cleanup.
+- Bounded correction: add one 2,000 ms browser timer, clear it only after the second
+  rAF callback, and reject on expiry. Do not return a partial snapshot or catch the
+  timeout as success.
+- Next action: checkpoint the GAP, apply only that timeout, rerun Python/embedded-JS
+  static checks, commit, and return the exact diff to the same serialized reviewer.
