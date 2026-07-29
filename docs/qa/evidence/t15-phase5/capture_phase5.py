@@ -640,6 +640,7 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
                 pieceCount: state.pieceCount,
               },
               renderer: {
+                canvas: renderer.canvas,
                 board: renderer.board,
                 mutationActivation: renderer.mutationActivation,
                 mutationActivationQueueItems: [...renderer.mutationActivationQueueItems],
@@ -702,6 +703,7 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
     assert probe["nonTransparentSamples"] >= max(16, probe["samples"] // 10)
     assert probe["distinctBuckets"] >= 4
     pixi_frame = payload["pixiFrame"]
+    renderer_canvas = payload["before"]["renderer"]["canvas"]
     renderer_board = payload["before"]["renderer"]["board"]
     for key in ("x", "y", "width", "height"):
         assert abs(pixi_frame[key] - renderer_board[key]) <= 0.01
@@ -711,6 +713,19 @@ def capture_atomic_board_pixels(page: Page, crop_selector: str) -> dict[str, Any
     css_aspect = payload["cssClip"]["width"] / payload["cssClip"]["height"]
     pixi_aspect = pixi_frame["width"] / pixi_frame["height"]
     assert abs(css_aspect - pixi_aspect) <= 0.01
+    assert renderer_canvas["width"] > 0
+    assert renderer_canvas["height"] > 0
+    assert abs(renderer_canvas["resolution"] - payload["resolution"]) <= 0.01
+    canvas_css = payload["canvasCssBounds"]
+    expected_css_clip = {
+        "x": canvas_css["x"] + pixi_frame["x"] * canvas_css["width"] / renderer_canvas["width"],
+        "y": canvas_css["y"] + pixi_frame["y"] * canvas_css["height"] / renderer_canvas["height"],
+        "width": pixi_frame["width"] * canvas_css["width"] / renderer_canvas["width"],
+        "height": pixi_frame["height"] * canvas_css["height"] / renderer_canvas["height"],
+    }
+    for key in ("x", "y", "width", "height"):
+        assert abs(payload["cssClip"][key] - expected_css_clip[key]) <= 1
+    payload["expectedCssClip"] = expected_css_clip
     payload["pngBytes"] = png
     payload["pngDimensions"] = {"width": width, "height": height}
     return payload
@@ -780,6 +795,7 @@ def capture(
                 "atomicBefore": atomic["before"],
                 "atomicAfter": atomic["after"],
                 "canvasCssBounds": atomic["canvasCssBounds"],
+                "expectedCssClip": atomic["expectedCssClip"],
                 "pixiFrame": atomic["pixiFrame"],
                 "resolution": atomic["resolution"],
                 "outputPixels": atomic["outputPixels"],
@@ -1525,6 +1541,22 @@ def write_and_publish_manifest(result: dict[str, Any]) -> None:
     assert len(capture_names) == len(set(capture_names))
     actual_png_names = {path.name for path in ARTIFACT_OUT.glob("*.png")}
     assert actual_png_names == set(capture_names)
+
+    def validate_capture_files() -> dict[str, str]:
+        hashes: dict[str, str] = {}
+        for capture in result["result"]["captures"]:
+            name = capture["file"]
+            current_hash = sha256(ARTIFACT_OUT / name)
+            assert current_hash == capture["sha256"]
+            binding = capture.get("captureBinding")
+            if binding is not None:
+                assert binding["file"] == name
+                assert binding["sha256"] == current_hash
+            hashes[name] = current_hash
+        assert len(hashes.values()) == len(set(hashes.values()))
+        return hashes
+
+    capture_hashes = validate_capture_files()
     log_names = {"vite-stdout.log", "vite-stderr.log"}
     assert all((ARTIFACT_OUT / name).is_file() for name in log_names)
 
@@ -1568,6 +1600,7 @@ def write_and_publish_manifest(result: dict[str, Any]) -> None:
         if path.is_file()
     }
     assert actual_staged == expected_staged
+    assert validate_capture_files() == capture_hashes
     assert_clean_publication_target(allowed_partial=ARTIFACT_OUT)
     publication_order = [
         *sorted(capture_names),
