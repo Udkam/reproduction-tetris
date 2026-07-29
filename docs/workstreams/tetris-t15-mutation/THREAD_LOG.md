@@ -1710,3 +1710,44 @@
   and no WMI/CIM was used.
 - Next action: checkpoint this visual verdict with its explicit P3, then open one
   final read-only evidence-integrity QA turn from a clean process baseline.
+
+## 2026-07-29 — Final Phase-5 evidence-integrity QA accepted after fail-closed retry
+
+- Task ID: `T15-PHASE5-EVIDENCE-QA-FINAL`.
+- Reviewed boundary: coordinator candidate `7373948`, frozen product
+  `ee2aac542529c116c915c38e0603584a7099b5e8`, gate record
+  `6d9fc6ae00099e3a1eb27240bd3c369216f3b007`, harness
+  `45e7cfcca48f438be1a9ff24619137ff19dffd3e`, capture head
+  `bdf4e20a2cb563d5f1b8389b2a11748f531b4282`, browser-raw
+  `9fa98a2d51c77514ebe9f8893ef244c7c7959c10`, and browser-index
+  `013120a399c25fc076ed2eab58209e5bbaf036d4`.
+- First independent verdict: `FAIL`; P0=0, P1=0, P2=0, P3=0, GAP=1. The reviewer
+  correctly refused acceptance because its environment-triggered Serena/TypeScript
+  tree caused a resource interruption before the independent 38-entry SHA-256 pass
+  completed. Candidate bindings, raw/index path isolation, hardware, fallback,
+  Collapse/FIFO, performance, lifecycle and zero-error manifest fields had already
+  been confirmed, but were insufficient to waive the missing hash pass.
+- The coordinator released only the attributed eight-process Serena/TypeScript tree,
+  preserved shared Codex infrastructure, and opened one narrow no-helper retry:
+  parse the committed checksum, recompute every declared file with SHA-256, and
+  compare only the exact artifact sets. No source, gate, browser or other audit path
+  reopened.
+- Final independent verdict: `PASS`; P0=0, P1=0, P2=0, P3=0, GAP=0.
+- Closing evidence:
+  - all 38/38 checksum entries recompute exactly, with no missing or duplicate entry;
+  - all 34 PNG names and hashes are unique, and exactly match the manifest capture
+    collection;
+  - the managed publication is exactly 34 PNGs, two Vite logs, browser JSON and
+    checksum; the manifest also binds `capture_phase5.py`, giving 39 manifest
+    artifacts, while the checksum correctly does not self-hash;
+  - `9fa98a2` contains only the 34 PNGs and two Vite logs; `013120a` contains only
+    the browser manifest and checksum completion marker;
+  - candidate/source/gate/harness bindings, hardware WebGL2, real one-state fallback,
+    coverage, performance, FIFO/Collapse and complete lifecycle evidence remain the
+    already confirmed committed browser/gate facts; neither batch was rerun.
+- Resource disposition: the focused retry started no Serena, MCP, language server,
+  browser, Vite, test or build process. No project helper or listener remains; no
+  WMI/CIM was used.
+- Next action: checkpoint this evidence verdict, then let the coordinator record
+  Phase-5 acceptance, the known visual P3, final resource/Git proof and non-force push
+  before pausing ahead of Phase 6.
