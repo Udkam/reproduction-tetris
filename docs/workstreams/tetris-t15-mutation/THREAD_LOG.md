@@ -1257,3 +1257,35 @@
   no second concurrent reviewer or accumulated task remained.
 - Next action: checkpoint this verdict, verify the reviewer is finished and the
   resource/process baseline is clean, then register one new formal capture lease.
+
+## 2026-07-29 — Corrected formal hardware capture lease registered
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-LEASE-R2`.
+- Base SHA: `872c29fc2b8e6e1230d24b877873db380fdb612f`.
+- The serialized QA agent is complete. Its host automatically started one Serena /
+  TypeScript tree and one direct MCP bridge pair despite the task prohibition. Native
+  `Get-Process` parent and command-line data attributed the exact ten-process set;
+  the coordinator stopped those exact PIDs and preserved the Codex host plus managed
+  `node_repl` app infrastructure. No process-name-wide kill or WMI/CIM was used.
+- Clean admission after release: worktree clean; zero Python/Node/Chrome/Serena process,
+  zero listener on 4178/5178/5179, zero partial, and zero browser artifact. One PDH
+  snapshot read 3.72% CPU, 23,961 MiB available RAM, 20.18% committed memory and disk
+  queue 0.
+- Owner: the primary Tetris coordinator only. No sub-agent, MCP, Serena, language
+  server, test, build, diagnostic or second browser workload may overlap this lease.
+- Purpose and command: execute once
+  `python docs/qa/evidence/t15-phase5/capture_phase5.py` at accepted harness
+  `e2d18dab7317ebb5cf039af40e170481974d16e2` against frozen product `ee2aac5`.
+- Expected owned tree: one hidden Python runner, its Vite/Node server tree, and its
+  hardware Chrome/Playwright tree. Record and monitor the returned Python root PID.
+- Reserved listener and temporary paths:
+  - TCP `127.0.0.1:4178` only;
+  - `%TEMP%\t15-phase5-browser-run.stdout.log`;
+  - `%TEMP%\t15-phase5-browser-run.stderr.log`;
+  - one harness-owned `.partial-*` directory below the Phase-5 evidence directory.
+- Success requires runner exit zero, exact atomic artifact publication, stable source
+  and harness bindings, hardware GPU metadata, all visual/performance/lifecycle checks,
+  and no undeclared repository path. Failure requires zero published artifact.
+- Cleanup at either outcome requires the recorded Python/Vite/Chrome tree gone, no
+  4178/5178/5179 listener, no partial, and removal of external logs after recording.
+- Next action: checkpoint this R2 lease, then run and monitor only this batch.
