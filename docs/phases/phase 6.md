@@ -97,6 +97,12 @@ reduced motion、Classic 落地/连消+提速/顶出、三种 viewport，以及 
 remount/unmount。一个 Canvas、零 DOM 方格、零 browser error；4178 和受管
 Chrome 已释放。下一步仅允许规则、视觉、证据完整性 QA 串行运行。
 
+第一轮规则 QA 在 `eaed1ac` 发现一个 P2：落地事件把所有“方块内部下方没有另一
+格”的单元当成接触点，却没有验证其下方是否真有地面或旧堆叠，因而悬挑部分也会
+出现支撑刻线。视觉/证据 QA 暂不启动。只重开 `TetrisRenderer.ts` 与其测试，
+在事件发生时按 canonical post-lock board 冻结真实接触单元，并加入单点支撑/
+悬挑回归；修正后重新执行受影响证据和全部最终门禁。
+
 ## 验收
 
 随机局互不复用序列，seed replay 一致；10 行提速、得分和排行不变。定向测试

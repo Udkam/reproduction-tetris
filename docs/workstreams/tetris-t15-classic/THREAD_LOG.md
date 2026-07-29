@@ -217,3 +217,30 @@
 - Next action: hand `eaed1ac` plus `d7fb4fa` to one rules QA, then one visual QA,
   then one evidence-integrity QA, strictly serially. Any finding returns to its owning
   source or harness checkpoint before fresh evidence.
+
+## TETRIS-T15-PHASE6-RULES-QA-007
+
+- Status: `REJECT / P2 / CORRECTION WRITER OPEN`.
+- Audited product/evidence: `eaed1ac` / `d7fb4fa`.
+- P0/P1/P3/GAP: none.
+- P2: landing drawing treats every piece-bottom cell as supported. It excludes a cell
+  only when another cell of the just-locked piece is immediately below, but never
+  checks for the floor or a pre-existing canonical board cell. A horizontal piece
+  locked on one support therefore paints contact under airborne overhang cells.
+- Accepted unaffected findings:
+  - product diff remains within declared Renderer/presentation paths;
+  - 11-tick Renderer clear stays inside the 12-tick Core delay;
+  - 1–4 row strength, Classic-only bounded cue queue, combo/speed coexistence,
+    top-out, reduced motion and lifecycle are otherwise correct;
+  - all gate and browser hashes reproduce, and runtime/isolated evidence labelling is
+    honest.
+- Exact correction paths:
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`.
+- Required correction: freeze only floor- or locked-board-supported cells when the
+  `piece-locked` event is consumed; directly test a one-support overhang. Do not alter
+  any other product or evidence path in the source checkpoint.
+- Resource state: rules QA ran alone without browser/test/build/MCP/Serena/WMI/CIM and
+  has exited.
+- Next action: commit this correction contract, implement and focus-test the two-file
+  slice, then regenerate final gates and all source-bound browser evidence.

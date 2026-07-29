@@ -26,6 +26,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   reduced motion, Classic feedback, three viewports and lifecycle with zero errors or
   leaks. The first visual batch was rejected for isolated Next bleed; two later runs
   failed closed until transient event flush was atomic. No rejected artifact remains.
+- First independent rules QA rejects `eaed1ac` with one P2: landing cues paint every
+  piece-bottom edge, including airborne overhang cells, instead of only floor/locked-
+  board contact points. Visual/evidence QA are paused. Only Renderer and its direct
+  test reopen for true-support filtering plus a one-support overhang regression.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -95,12 +99,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Run serialized independent rules, visual, and evidence-integrity QA against exact
-  product `eaed1ac` and evidence `d7fb4fa`. Do not overlap QA tasks or start any
-  browser/test/build helper during those reviews.
-- If all three accept, record Phase-6 acceptance, verify resource cleanup, and
-  non-force push before opening Puzzle 50. A reproducible finding reopens only its
-  owning checkpoint and requires fresh affected evidence.
+- Commit and focus-test the bounded landing-support correction. Then regenerate the
+  final typecheck/full suite/build and all source-bound browser evidence because the
+  product SHA changes.
+- Repeat rules QA first; only an ACCEPT opens serial visual and evidence-integrity QA.
+  If all three accept, record Phase-6 acceptance, clean resources and non-force push
+  before opening Puzzle 50.
 - Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate

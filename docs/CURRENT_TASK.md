@@ -102,6 +102,18 @@ released and the controlled Chrome is closed. Product and evidence are now froze
 only serial independent rules, visual, and evidence-integrity QA may run before an
 acceptance or correction decision.
 
+**Phase-6 first rules-QA disposition (2026-07-30):** independent rules QA rejects
+`eaed1ac` with one P2 and no other P0/P1/P3/GAP. The landing cue currently removes
+piece-internal lower cells but does not require each remaining bottom edge to touch
+the floor or an already locked board cell. A supported overhang can therefore paint
+contact marks beneath its airborne cells. Visual and evidence QA remain closed. Only
+`src/game/render/TetrisRenderer.ts` and
+`src/game/render/TetrisRenderer.test.ts` reopen: filter and freeze landing cue cells
+against the canonical post-lock board at the `piece-locked` event, and add an
+overhang/single-support regression. No other cue, ordinary-clear path, Core/UI/audio,
+mode, Puzzle, or evidence behavior may change. After focused green checks, the product
+candidate, final gates, and all source-bound browser evidence must be regenerated.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input
