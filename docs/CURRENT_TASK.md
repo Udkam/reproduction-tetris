@@ -282,17 +282,26 @@ or history rewrite is authorized.
 - Resource sampling may not call WMI, CIM, `wmic`, or `Get-WmiObject`. Use PDH for
   CPU/commit/disk samples, `Get-Process` plus the native process API for ownership, and
   `netstat` for listeners. This prevents resource governance from creating WMI load.
-- A hardware browser batch is admitted only when eight consecutive two-second PDH
-  samples are all below 60% total CPU, committed memory is at most 75%, disk queue is
-  at most 1.0, at least 6 GiB physical RAM is available, and no prior Phase-5 process,
-  listener, control log, or partial directory exists. At sustained 90% CPU, stop
-  launching work, release only verified project-owned children, and never terminate
-  Defender, WMI/Windows services, the user control window, or the Codex app-server.
+- Fixed multi-sample CPU admission is retired. Before any heavy action, the coordinator
+  takes one lightweight current PDH snapshot and opens one explicit resource lease
+  naming the owner, purpose, command, expected process tree, listeners, temporary
+  paths, completion condition, and cleanup check. A lease starts only when there is no
+  earlier heavy lease, current CPU has practical headroom (normally below 60%),
+  committed memory is at most 75%, disk queue is at most 1.0, at least 6 GiB physical
+  RAM is available, and no prior Phase-5 process, listener, control log, or partial
+  directory exists. Do not poll repeatedly to manufacture a passing window: release
+  unused resources, wait when the machine is pressured, then take a new single
+  snapshot. At sustained 90% CPU, stop launching work, release only verified
+  project-owned children, and never terminate Defender, WMI/Windows services, the user
+  control window, or the Codex app-server.
 - The 2026-07-29 cleanup removed the complete Serena/TypeScript-server tree, eight
   idle MCP bridge processes, and twenty-two stale duplicated `personal-web` preview
   Node processes (about 661 MiB working set). Phase-5 ports 4178/5178/5179, port 4322,
   and Phase-5 partial directories then all verified empty. No formal browser run may
-  start until the strengthened admission window passes.
+  start until the strengthened lease preflight passes. After reboot, two automatically
+  started Serena/TypeScript trees and three MCP bridge pairs were also released as one
+  bounded cleanup (24 processes, about 1.2 GiB working set); only the managed Codex
+  `node_repl` baseline remains.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file

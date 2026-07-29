@@ -170,9 +170,12 @@ workstream/contract/changelog 和最终 acceptance 文档。临时 contact sheet
   一个 verdict 完成且资源复核为零后，才允许开始下一个。
 - 重型树数量恒为 0 或 1。正式 capture 自行拥有且只拥有一个 Python runner、
   一个 Vite/Node 树和一个 Chrome 树；不得附着既有端口服务。
-- 每次准入使用 PDH：八个连续样本、间隔 2 秒，**每个样本都低于 60% CPU**；
-  同时可用物理内存至少 6 GiB、committed memory 不高于 75%、disk queue
-  不高于 1.0。
+- 不再使用固定八次 CPU 样本。每个重型动作启动前只取一次轻量 PDH 当前快照，
+  并建立一个资源租约，写清 owner、用途、命令、预期 PID/子树、端口、临时路径、
+  完成条件和回收检查。只有前一个租约完全释放后才能创建下一个。正常准入仍要求
+  当前 CPU 有充足余量（通常低于 60%）、可用物理内存至少 6 GiB、committed
+  memory 不高于 75%、disk queue 不高于 1.0；不得通过连续轮询等待一个偶然
+  低值。资源紧张时先释放闲置项并等待，再做一次新的单点快照。
 - 准入前还必须为：4178/5178/5179 无 listener、无 `capture_phase5.py`
   runner、无 Phase-5 Chrome/Vite、无外部控制日志、无 `.partial-*`、无已发布
   browser artifact。
@@ -180,7 +183,9 @@ workstream/contract/changelog 和最终 acceptance 文档。临时 contact sheet
   都能证明属于本项目的进程。安全/系统服务与共享 Codex 进程不属于清理目标。
 - 已释放的历史浪费包括 Serena/TypeScript server、8 个 MCP bridge 和 22 个
   重复 `personal-web` preview Node。Codex 固定 `node_repl` 池会自动补位，
-  不得反复终止制造重启抖动。
+  不得反复终止制造重启抖动。2026-07-29 重启后又释放了两套自动启动的
+  Serena/TypeScript 树和三组 MCP bridge，共 24 个进程、约 1.2 GiB 工作集；
+  它们未获得 Phase-5 租约，因此不得常驻。
 
 ### 5. 重启后的唯一恢复顺序
 

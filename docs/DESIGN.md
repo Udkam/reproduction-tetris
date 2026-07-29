@@ -316,14 +316,18 @@ Phase-5 evidence is also resource-bound. Its coordinator, any independent review
 and the managed browser are never concurrent: review turns are serialized, and no
 browser, Vite, test, build, or diagnostic tree overlaps another heavy tree. Optional
 MCP, Serena, language-server, and browser helpers are lifecycle-scoped and released
-between checkpoints. Admission uses eight consecutive two-second PDH samples, all
-below 60% total CPU, with at least 6 GiB available physical memory, committed memory
-at most 75%, disk queue at most 1.0, and a clean process/listener/partial baseline.
-Resource inspection must not invoke WMI/CIM because the inspection itself can create
-sustained provider load; use PDH, native process ownership, `Get-Process`, and
-`netstat`. At 90% sustained CPU, stop admission and release only verified
-project-owned children. System/security services and the shared Codex app runtime are
-never cleanup targets.
+between checkpoints. Admission is lease-based rather than count-based: one lightweight
+PDH snapshot establishes current headroom, then one declared owner controls one heavy
+process tree with named command, children, listeners, temporary paths, completion
+condition, and cleanup proof. A new lease cannot coexist with or start before release
+of the previous lease. Normal admission still expects CPU below 60%, at least 6 GiB
+available physical memory, committed memory at most 75%, disk queue at most 1.0, and a
+clean process/listener/partial baseline, but must not loop over a fixed number of
+samples to wait for a favourable reading. Resource inspection must not invoke WMI/CIM
+because the inspection itself can create sustained provider load; use PDH, native
+process ownership, `Get-Process`, and `netstat`. At 90% sustained CPU, stop admission
+and release only verified project-owned children. System/security services and the
+shared Codex app runtime are never cleanup targets.
 
 ## T13.16 Modal compositor integrity
 

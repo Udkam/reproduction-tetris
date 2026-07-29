@@ -1113,3 +1113,34 @@
   `main` and the five frozen commits, then take one non-WMI eight-sample resource
   admission check. Do not start the formal browser harness unless every sample and
   clean-baseline gate passes.
+
+## 2026-07-29 — Resource admission changed to explicit leases
+
+- Task ID: `T15-PHASE5-RESOURCE-LEASE-R1`.
+- Base SHA: `f7f06940d912803237c3b9c60f72b92a9a74dd8b`.
+- Exact documentation paths:
+  - `docs/CURRENT_TASK.md`;
+  - `docs/DESIGN.md`;
+  - `docs/phases/phase 5.md`;
+  - `docs/workstreams/tetris-t15-mutation/THREAD_LOG.md`.
+- Player correction: remove the fixed eight-sample CPU gate. Resource safety now comes
+  from coordinator ownership and lifecycle control, not repeated sampling.
+- Reboot preflight was clean: `main` at `f7f0694`, worktree clean, 76 commits ahead of
+  `origin/main`, no known listener/control log/partial, and two lightweight PDH
+  snapshots at 14.4% then 0.6% CPU with about 22.9 GiB available RAM, 22.1% committed
+  memory, and disk queue 0.
+- Native command-line attribution found two automatically started Serena/TypeScript
+  trees and three direct MCP bridge pairs. The coordinator released their complete
+  descendant set: 24 processes and about 1,233 MiB working set. Three managed
+  `node_repl` processes remain as the non-project Codex baseline.
+- New rule: each heavy action obtains one resource lease declaring owner, purpose,
+  command, expected process tree, ports, temporary paths, completion condition, and
+  cleanup verification. At most one lease exists. One current PDH snapshot informs
+  admission; no fixed sample count or polling loop is allowed.
+- Commands used: Git read-only checks, `Get-Process`, native
+  `NtQueryInformationProcess`, `netstat`, two-sample `typeperf`, explicit UTF-8 document
+  reads, and exact-PID `Stop-Process`. No WMI/CIM, browser, test, build, product edit,
+  or sub-agent ran.
+- Next action: commit this contract checkpoint, verify the frozen product/gate/harness
+  trees, register the single formal capture lease, and run the already-admitted
+  hardware browser batch with no concurrent workload.
