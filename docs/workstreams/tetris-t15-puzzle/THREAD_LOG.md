@@ -255,3 +255,29 @@
   completing routes.
 - Next action: same curriculum/artifact reviewer statically re-audits
   `bf23126..2ce309b`; no product writer resumes until that verdict.
+
+## Levels 01–10 correction acceptance and 11–20 tooling handoff — 2026-07-30
+
+- Reviewed range: `bf23126..2ce309b`.
+- Same rejecting curriculum/artifact reviewer returns `ACCEPT`;
+  P0=0, P1=0, P2=0, P3=0, GAP=0.
+- Static evidence:
+  - 20 explicit target-row map IDs match all 20 registered definitions;
+  - validation, tests and runner directly consume `definition.targetRows`;
+  - `05–14` rejection occurs before loader creation and before any output write;
+  - all 20 frozen `endgame(...)` calls are identical across the range;
+  - schema-7 artifact remains the same Git blob and SHA-256.
+- Levels 01–10 are accepted and closed.
+- Open writer: coordinator as `t15_puzzle_11_20_authoring_writer`.
+- Exact open path:
+  - `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`
+- Claim boundary: require an explicit target-row argument in the contract range
+  3–7, accept explicit setup-count subsets from 5–15, and use the selected row
+  count in scoring, candidate acceptance, validation and output metadata.
+- Required proof: `node --check`; two identical bounded four-row smoke runs;
+  direct schema, row-count, placement-count, four-cells-per-drop, encoding and
+  no-full-row assertions; exact temporary-file and Node-process cleanup.
+- Closed: product definitions, IDs, names, seeds, anchors, routes, Core,
+  localization, progress/unlock, App, CSS, renderer and every other mode.
+- Next action: implement and checkpoint the generalized authoring tool; only then
+  open the 11–20 product/route slice.

@@ -480,3 +480,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   artifact stays byte-identical at SHA-256 `BA6DBABA314D34165F47DAC33E47CB721EA40E5B30E4EB152E5A0D83D2F597BF`.
   Final focused proof passes 4 files / 21 tests plus typecheck; the same rejecting
   reviewer now owns the narrow static re-audit.
+- That reviewer now accepts `bf23126..2ce309b` with P0–P3/GAP zero after matching
+  every explicit metadata ID, consumer, early range guard, frozen definition call
+  and artifact blob. Levels 01–10 are closed. The next bounded checkpoint opens
+  only `search-puzzles.mjs` to support explicit four-row candidate authoring.

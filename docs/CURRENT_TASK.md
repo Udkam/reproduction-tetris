@@ -20,8 +20,10 @@ frozen at source candidate `bf23126`. The rules audit accepts it, while the
 curriculum/artifact audit rejected two P2 contract gaps. Correction candidate
 `2ce309b` now makes target-row count explicit level metadata and rejects ranges
 crossing a canonical ten-level batch before the loader starts. Layouts, names,
-seeds and completing routes remain frozen while the rejecting reviewer re-audits
-the exact correction.
+seeds and completing routes remained frozen; the rejecting reviewer now accepts
+the exact correction with P0–P3/GAP all zero. Levels 01–10 are closed. The next
+open checkpoint only generalizes the setup authoring tool for explicit 4-row
+candidate generation before any 11–20 product definition changes.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -132,6 +134,26 @@ After the last source edit, the four focused Core files pass 21/21 with one work
 and typecheck passes. No full suite, build, browser or persistent server ran.
 The source is frozen for a narrow static re-audit by the reviewer who rejected
 `bf23126`.
+
+**Levels 01–10 correction audit disposition (2026-07-30):** the same
+curriculum/artifact reviewer accepts `bf23126..2ce309b` with P0–P3/GAP all zero.
+It statically matched 20 target-row metadata IDs to 20 registered definitions,
+confirmed all consumers use the explicit field, proved cross-batch rejection
+precedes loader construction and writes, found every frozen `endgame(...)` call
+identical, and matched the unchanged schema-7 Git blob and SHA-256. Levels 01–10
+are accepted and closed.
+
+**Open Phase-7 slice — 11–20 authoring-tool generalization:** exact open path is
+`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`. It may replace the
+hard-coded three-row constant with a required explicit `--target-rows 3..7`
+argument, widen `--setup-counts` validation from the first-batch-only `5..7` to
+the contract's `5..15`, and thread the selected row count through scoring,
+acceptance, validation and output metadata. Product definitions, Puzzle IDs,
+names, seeds, anchors, routes, Core, localization, progress/unlock, App, CSS,
+renderer and other modes remain closed. Proof is `node --check` plus two
+byte-identical bounded 4-row smoke outputs with direct schema/row/cell/full-row
+assertions; all temporary files and processes must be released before opening
+the 11–20 source slice.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
