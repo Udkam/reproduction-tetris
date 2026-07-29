@@ -11,6 +11,8 @@ import {
   lineClearPresentationProgress,
   nextPreviewPieces,
   nextPreviewPiece,
+  ordinaryLineClearFrame,
+  ordinaryLineClearStrength,
   orthogonalCellComponents,
 } from './presentation';
 import { createInitialState, dispatch, PIECE_SHAPES, PIECE_TYPES, type Cell } from '../core';
@@ -36,9 +38,10 @@ describe('presentation interpolation', () => {
     expect(point.y).toBe(point.x);
   });
 
-  it('caps the ordinary clear sweep at nine ticks and removes it for reduced motion', () => {
+  it('keeps the ordinary clear timeline inside the Core delay and removes scalar motion when requested', () => {
     expect(lineClearPresentationProgress(0, false)).toBe(0);
-    expect(lineClearPresentationProgress(9, false)).toBe(1);
+    expect(lineClearPresentationProgress(9, false)).toBeLessThan(1);
+    expect(lineClearPresentationProgress(11, false)).toBe(1);
     expect(lineClearPresentationProgress(12, false)).toBe(1);
     expect(lineClearPresentationProgress(6, true)).toBe(0);
 
@@ -47,6 +50,52 @@ describe('presentation interpolation', () => {
     expect(center).toBeGreaterThan(edge);
     expect(lineClearCellProgress(1, 0, 10)).toBe(1);
     expect(lineClearCellProgress(1, 9, 10)).toBe(1);
+  });
+
+  it('sequences confirmation, contraction, dissolve, and a restrained endpoint without moving reduced motion', () => {
+    const start = ordinaryLineClearFrame(0, false);
+    const confirmation = ordinaryLineClearFrame(2, false);
+    const contraction = ordinaryLineClearFrame(5, false);
+    const endpoint = ordinaryLineClearFrame(11, false);
+    const reducedStart = ordinaryLineClearFrame(0, true);
+    const reducedEnd = ordinaryLineClearFrame(11, true);
+
+    expect(start).toMatchObject({
+      progress: 0,
+      confirmationSpan: 0.18,
+      contraction: 0,
+      dissolve: 0,
+      afterglow: 0,
+      reducedMotion: false,
+    });
+    expect(confirmation.confirmationSpan).toBeGreaterThan(start.confirmationSpan);
+    expect(confirmation.confirmationAlpha).toBeGreaterThan(contraction.confirmationAlpha);
+    expect(contraction.contraction).toBeGreaterThan(0);
+    expect(contraction.dissolve).toBeGreaterThan(0);
+    expect(endpoint.contraction).toBe(1);
+    expect(endpoint.dissolve).toBe(1);
+    expect(endpoint.afterglow).toBeGreaterThan(0);
+    expect(endpoint.confirmationAlpha).toBe(0);
+
+    expect(reducedStart).toMatchObject({
+      confirmationSpan: 0.9,
+      contraction: 0,
+      dissolve: 0,
+      afterglow: 0,
+      reducedMotion: true,
+    });
+    expect(reducedStart.confirmationAlpha).toBeGreaterThan(reducedEnd.confirmationAlpha);
+    expect(reducedEnd.confirmationAlpha).toBe(0);
+  });
+
+  it('scales one-to-four rows without changing the family or exceeding a quarter-cell contraction', () => {
+    const strengths = [1, 2, 3, 4].map(ordinaryLineClearStrength);
+    expect(strengths.map((strength) => strength.debrisPerRow)).toEqual([4, 6, 8, 10]);
+    expect(strengths.every((strength, index) => (
+      index === 0 || strength.alphaMultiplier > strengths[index - 1]!.alphaMultiplier
+    ))).toBe(true);
+    expect(strengths.every((strength) => strength.contractionCells < 0.25)).toBe(true);
+    expect(ordinaryLineClearStrength(99)).toEqual(strengths[3]);
   });
 
   it('keeps interpolated active cells within the visible well at both edges', () => {

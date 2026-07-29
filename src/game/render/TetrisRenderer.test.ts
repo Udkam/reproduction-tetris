@@ -236,6 +236,18 @@ type RendererInternals = {
     alpha: number,
     options: unknown,
   ) => void;
+  drawOrdinaryLineClearCells: (
+    graphics: unknown,
+    cells: readonly (Cell & { material: PieceType })[],
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetY: number,
+  ) => void;
+  drawOrdinaryLineClearEffects: (
+    graphics: unknown,
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
   drawMutationActivationEffect: (
     graphics: unknown,
     flash: NonNullable<RendererInternals['mutationFlash']>,
@@ -1005,6 +1017,130 @@ describe('Puzzle undo presentation reset', () => {
     );
 
     expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
+  });
+
+  it('contracts ordinary clear cells inward without exceeding the quarter-cell motion contract', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 20, y: 30, width: 200, height: 400, cell: 20, compact: false };
+    const cells = Array.from({ length: 10 }, (_, x) => ({ x, y: 19, material: 'T' as const }));
+    const state = {
+      mode: 'classic',
+      phase: 'line-clear',
+      phaseTicks: 7,
+      pendingClearRows: [BOARD_HEIGHT - 4, BOARD_HEIGHT - 3, BOARD_HEIGHT - 2, BOARD_HEIGHT - 1],
+    } as unknown as GameState;
+    const drawCellGroups = vi.spyOn(internals, 'drawCellGroups').mockImplementation(() => undefined);
+
+    internals.drawOrdinaryLineClearCells({}, cells, state, layout, 0);
+
+    expect(drawCellGroups).toHaveBeenCalledTimes(10);
+    const options = drawCellGroups.mock.calls.map((call) => call[4] as {
+      offsetX: number;
+      offsetY: number;
+      scale: number;
+    });
+    expect(options[0]!.offsetX).toBeGreaterThan(0);
+    expect(options[9]!.offsetX).toBeLessThan(0);
+    expect(options.every((option) => Math.abs(option.offsetX) < layout.cell * 0.25)).toBe(true);
+    expect(options.every((option) => option.scale >= 0.69 && option.scale <= 1)).toBe(true);
+    expect(drawCellGroups.mock.calls.every((call) => (
+      (call[3] as number) >= 0.12 && (call[3] as number) <= 1
+    ))).toBe(true);
+
+    drawCellGroups.mockClear();
+    renderer.setOptions({ reducedMotion: true });
+    internals.drawOrdinaryLineClearCells({}, cells, state, layout, 0);
+    expect(drawCellGroups.mock.calls.every((call) => {
+      const option = call[4] as { offsetX: number; scale: number };
+      return option.offsetX === 0 && option.scale === 1 && call[3] === 1;
+    })).toBe(true);
+  });
+
+  it('draws row-local ordinary confirmation and deterministic one-to-four-row afterglow', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const bottomRows = [
+      BOARD_HEIGHT - 4,
+      BOARD_HEIGHT - 3,
+      BOARD_HEIGHT - 2,
+      BOARD_HEIGHT - 1,
+    ];
+    const confirmationRecorder = createGraphicsRecorder();
+    internals.drawOrdinaryLineClearEffects(
+      confirmationRecorder.graphics,
+      {
+        mode: 'classic',
+        phase: 'line-clear',
+        phaseTicks: 2,
+        pendingClearRows: [bottomRows[3]],
+      } as unknown as GameState,
+      layout,
+    );
+    const confirmationRects = confirmationRecorder.operations.filter((operation) => operation.kind === 'rect');
+    expect(confirmationRects).toHaveLength(2);
+    expect(confirmationRects.every((operation) => {
+      const [x, y, width, height] = operation.values;
+      const centerY = layout.y + (bottomRows[3]! - VISIBLE_START_ROW + 0.5) * layout.cell;
+      return x! >= layout.x
+        && x! + width! <= layout.x + layout.width
+        && Math.abs((y! + height! / 2) - centerY) < layout.cell * 0.12
+        && height! <= layout.cell * 0.22;
+    })).toBe(true);
+
+    const singleRecorder = createGraphicsRecorder();
+    internals.drawOrdinaryLineClearEffects(
+      singleRecorder.graphics,
+      {
+        mode: 'classic',
+        phase: 'line-clear',
+        phaseTicks: 8,
+        pendingClearRows: [bottomRows[3]],
+      } as unknown as GameState,
+      layout,
+    );
+    const fourRecorder = createGraphicsRecorder();
+    internals.drawOrdinaryLineClearEffects(
+      fourRecorder.graphics,
+      {
+        mode: 'classic',
+        phase: 'line-clear',
+        phaseTicks: 8,
+        pendingClearRows: bottomRows,
+      } as unknown as GameState,
+      layout,
+    );
+    expect(singleRecorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(4);
+    expect(fourRecorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(40);
+    expect(singleRecorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(2);
+    expect(fourRecorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(20);
+    expect(fourRecorder.operations
+      .filter((operation) => operation.kind === 'circle')
+      .every((operation) => {
+        const [x, y] = operation.values;
+        return x! >= layout.x
+          && x! <= layout.x + layout.width
+          && bottomRows.some((row) => (
+            Math.abs(y! - (layout.y + (row - VISIBLE_START_ROW + 0.5) * layout.cell)) < layout.cell * 0.2
+          ));
+      })).toBe(true);
+
+    renderer.setOptions({ reducedMotion: true });
+    const reducedRecorder = createGraphicsRecorder();
+    internals.drawOrdinaryLineClearEffects(
+      reducedRecorder.graphics,
+      {
+        mode: 'classic',
+        phase: 'line-clear',
+        phaseTicks: 5,
+        pendingClearRows: bottomRows.slice(-2),
+      } as unknown as GameState,
+      layout,
+    );
+    expect(reducedRecorder.operations.some((operation) => operation.kind === 'rect')).toBe(true);
+    expect(reducedRecorder.operations.some((operation) => operation.kind === 'circle')).toBe(false);
+    expect(reducedRecorder.operations.some((operation) => operation.kind === 'segment')).toBe(false);
   });
 
   it('extracts the current Pixi board without retaining or mounting a second Canvas', () => {
