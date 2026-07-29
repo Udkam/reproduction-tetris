@@ -136,6 +136,18 @@ AudioContexts, closed Chrome, and released port 4178. Product and evidence are f
 Only repeated independent rules QA may run next; visual and evidence-integrity QA
 remain closed until it accepts.
 
+**Resource-containment hold (2026-07-30):** the attempted repeated rules-QA agent was
+interrupted before a verdict after accumulated task support reached 42 Node processes,
+7 `node_repl` processes, and 5 Serena servers plus language-server descendants. This
+violated the serialized resource contract even though only one QA agent was active.
+Command-line and parent-tree inspection, without WMI/CIM, identified stale Codex MCP,
+`node_repl`, Serena/TypeScript, and an old `personal-web` Astro dev tree. Cleanup leaves
+only the primary task's two MCP Node processes, zero `node_repl`, zero Serena/Serena
+Python processes, zero Astro dev process, and zero listener on 4178. The aborted QA has
+no verdict and cannot advance Phase 6. Do not spawn another sub-agent in this task.
+Product, gates, and browser evidence remain frozen; resume only through a deliberately
+low-overhead independent-review mechanism after an explicit resource admission check.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

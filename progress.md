@@ -38,6 +38,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   build, 15 browser captures and 19 hashes pass against `9085976`. Original-detail
   inspection and lifecycle checks pass with zero errors/leaks; Chrome and port 4178
   are released. Gate index is `bee956a`; browser index is `ca80416`.
+- Repeated rules QA was interrupted before a verdict when accumulated helper cohorts
+  violated the resource contract (42 Node / 7 node_repl / 5 Serena). Verified cleanup
+  leaves only the primary two-process MCP pair, zero repl/Serena/Astro dev and no 4178
+  listener. Product/evidence remain frozen; this task may not spawn another sub-agent.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -107,8 +111,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 
 ## Next verification
 
-- Repeat independent rules QA against corrected product `9085976` and evidence
-  `bee956a` / `ca80416`; only an ACCEPT opens serial visual and evidence-integrity QA.
+- Keep product/evidence frozen. Admit a future low-overhead independent rules review
+  only after a resource check; the current task must not spawn it. Only an ACCEPT
+  opens serial visual and evidence-integrity QA.
   If all three accept, record Phase-6 acceptance, clean resources and non-force push
   before opening Puzzle 50.
 - Do not open Puzzle 50 or redesign its selector before Phase 6 is accepted and pushed.

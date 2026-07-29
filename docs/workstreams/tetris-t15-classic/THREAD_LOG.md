@@ -307,3 +307,29 @@
   remains.
 - Next action: run one independent rules QA against corrected product/evidence. Only
   its ACCEPT may open serial visual QA.
+
+## TETRIS-T15-PHASE6-RESOURCE-CONTAINMENT-010
+
+- Status: `RESOURCE HOLD / REPEAT RULES QA ABORTED`.
+- Trigger: while one repeated rules-QA agent was active, accumulated support helpers
+  reached 42 `node`, 7 `node_repl`, and 5 Serena processes, with Serena Python and
+  TypeScript language-server descendants. The user reported total CPU at 100%.
+- Disposition:
+  - interrupted the only active QA before a verdict;
+  - its partial work is not a QA result and changes no acceptance status;
+  - no product, test, gate, browser artifact, or evidence index changed.
+- Ownership proof used only lightweight `.NET Get-Process` command-line/parent data
+  and `netstat`; no WMI/CIM, browser, server, test, build, or system-service action.
+- Verified cleanup:
+  - `node`: 42 -> 2, retaining only the primary task's oldest MCP server/stdin pair;
+  - `node_repl`: 7 -> 0;
+  - Serena: 5 -> 0, including Python/TypeScript descendants;
+  - stale `E:\Proj\personal-web` Astro dev tree: 3 -> 0 without reading that repo;
+  - port 4178 listeners: 0;
+  - the hidden one-shot cleanup PowerShell exited.
+- Preserved: Codex PID, VS Code and its PowerShell terminal, Windows/security services,
+  Git state, and all repository files.
+- Hard boundary: do not call `spawn_agent` again in this task. Corrected product
+  `9085976`, gate index `bee956a`, and browser index `ca80416` remain frozen. Phase 6
+  still requires an independent repeated rules verdict through a future explicitly
+  admitted low-overhead review path.
