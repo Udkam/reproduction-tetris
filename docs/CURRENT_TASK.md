@@ -278,6 +278,14 @@ or history rewrite is authorized.
   and fail closed on a finite bound. It may not inject or rewrite Core state, alter
   timers, change the seed/product, fabricate pixels, or weaken any three-state,
   performance, lifecycle, hash, uniqueness, or publication gate.
+- Harness checkpoint `e2d18dab7317ebb5cf039af40e170481974d16e2`
+  implements exactly that fallback. It records whether the one-state proof came from
+  initial autoplay, the current stack's expiry, post-expiry autoplay, or the following
+  real tick; preserves a 1,200-tick / 1,200-placement finite bound; and leaves all
+  capture, GPU, performance, lifecycle and atomic-publication code unchanged. Python
+  AST, CLI `--help` early exit and diff checks pass. Product `ee2aac5` and gates
+  `6d9fc6a` remain frozen. A serialized read-only evidence audit must accept this exact
+  harness before a new capture lease is opened.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 

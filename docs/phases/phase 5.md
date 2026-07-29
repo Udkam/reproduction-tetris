@@ -130,7 +130,7 @@ synthetic pixels, threshold relaxation, and reuse of the failed run are forbidde
 | --- | --- | --- |
 | 产品源码 | `ee2aac542529c116c915c38e0603584a7099b5e8` | Core、Runtime、Renderer、UI、CSS、localization 均冻结 |
 | 最终源码门禁 | `6d9fc6ae00099e3a1eb27240bd3c369216f3b007` | typecheck PASS；26 文件 / 225 测试 PASS；753 modules build PASS |
-| 正式 evidence harness | `07e7a55e5d03bcd62e4b9c9fd022f99fa5bb52b4` | 当前冻结版；待上述单状态 fallback 产生独立 harness checkpoint 后替换 |
+| 正式 evidence harness | `e2d18dab7317ebb5cf039af40e170481974d16e2` | 硬件 WebGL 边界不变；单状态 fallback 改为有限的真实 Core / 普通 autoplay 见证 |
 | 浏览器静态放行记录 | `0adb29631960ac9d128ec6498ff9a4ca9dd7a8d2` | 两路独立审计 P0–P3 = 0，只放行一次正式批次 |
 | 资源合同基线 | `57f3662506cb014dff73fbca81bac3b9ff54e1fc` | 串行执行、禁用 WMI/CIM、加强浏览器准入 |
 | 正式浏览器产物 | **不存在** | 先前失败均 fail-closed；不得称为已有证据 |

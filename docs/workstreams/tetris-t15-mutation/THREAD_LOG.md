@@ -1208,3 +1208,27 @@
 - Next action: checkpoint this clarified contract, edit only the harness fallback,
   run Python/embedded-JavaScript static checks, checkpoint the harness, obtain one
   serialized read-only evidence review, then request a new single capture lease.
+
+## 2026-07-29 — Real one-state recovery harness checkpoint
+
+- Task ID: `T15-PHASE5-EVIDENCE-ONE-STATE-R1`.
+- Base SHA: `a6ce384c5929cd11cceb1e88cf732a51f8f16b75`.
+- Candidate SHA: `e2d18dab7317ebb5cf039af40e170481974d16e2`.
+- Exact changed path:
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`.
+- The existing tick-by-tick expiry pass now accepts a legitimate zero-state endpoint
+  instead of treating it as a product failure. Only when no one-state frame was found,
+  the same seeded QA-frozen ordinary autoplay continues for at most 1,200 placements,
+  with one real Core tick after each placement, until an actual one-state HUD can be
+  captured. It fails closed if play stops or the finite bound is exhausted.
+- The manifest records the expiry tick count, recovery placement count and precise
+  source (`initial-autoplay`, `current-stack-expiry`, `post-expiry-autoplay`, or
+  `post-expiry-autoplay-tick`). No Core state or timer is injected or rewritten.
+- Commands actually run: Python AST parse, CLI `--help` early-exit check,
+  `git diff --check`, exact diff inspection and exact-path commit. All passed; no
+  partial directory, browser, Vite, test, build, product edit, MCP, Serena, WMI/CIM or
+  concurrent worker ran.
+- Frozen product `ee2aac5` and gate batch `6d9fc6a` remain unchanged.
+- Next action: commit this candidate record, obtain one serialized read-only static
+  evidence verdict on `e2d18da`, then open a new single formal capture lease only if
+  that verdict has no blocking finding.
