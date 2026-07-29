@@ -11,15 +11,41 @@ existing Puzzle library layout is explicitly excluded from redesign; adapting it
 count/progression data for fifty levels is allowed, but its visual composition must
 not be replaced. Phase 6 corrected product `9085976`, final gates, browser evidence,
 and all three independent reviews pass; coordinator acceptance/recovery `d0b7406` is
-pushed with exact local/tracking/remote equality. Phase 7 may now open through its
-own contract checkpoint; no product path is implied open by this recovery record.
+pushed with exact local/tracking/remote equality and recorded at remote tip `d78e0e5`.
+Phase 7's documentation contract is now open from that exact rollback base; product
+paths remain closed until the contract checkpoint is committed.
+
+**Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
+is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
+in five ten-level curricula with exactly 3/4/5/6/7 original target rows. Every level
+requires two completing routes with a different canonical landing no later than the
+shorter route's fourth lock. Setup histories remain legal zero-clear hard drops; fixed
+anchors are sparse, never share an initial target row, never move, never count toward
+victory, and never replace the removed timed-piece mechanic.
+
+Fresh progress opens `01–03`; any two open `04–05`; any three of `01–05` open
+`06–10`; then any three completions in each open five-level band open the next band.
+Completed legacy entries remain individually replayable without leapfrogging a closed
+frontier. Locked entries cannot be selected, started or recorded. v5 freezes the old
+twenty-ID migration domains, keeps old keys for rollback, migrates legal completion
+history and writes it back, but does not promote old-board best counts into re-authored
+boards. Current best continues to count locked tetrominoes.
+
+The bounded source chain is: v5 persistence on the current twenty-level baseline; five
+independent ten-level data/solver checkpoints; unlock/progress; existing-selector
+adaptation; one final source candidate and gate/evidence/QA chain. Main is the only
+writer for each shared slice. Under the updated dynamic resource memory, green permits
+parallel static audits and at most two heavy tasks; amber serializes new heavy work;
+red starts none. Helpers are on-demand and ownership-cleaned, with no WMI/CIM. Exact
+paths, tests and evidence are frozen in `docs/phases/phase 7.md`.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
 tip `4f871ac3706f95c2a57679dd0162071c89363ecb`. Phase 6 is
-**ACCEPTED / PUSHED / CLOSED** at recovery point
-`d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`. Its accepted product scope is the
+**ACCEPTED / PUSHED / CLOSED** at acceptance point
+`d0b7406a771c3c4e19f7f9d24b5f04806e1ed518`, with pushed documentation tip
+`d78e0e580ceb9375afb57fc8c4230624e4a54a77`. Its accepted product scope is the
 shared ordinary-clear presentation and Classic feedback in:
 
 - `src/game/render/presentation.ts`;

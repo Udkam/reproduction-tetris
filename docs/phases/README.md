@@ -22,8 +22,8 @@
 | 3 | [HUD](<phase 3.md>) | 已验收并推送 | `t15_hud_writer` | 规则 QA + 视觉 QA |
 | 4 | [Survival](<phase 4.md>) | 已验收并推送 `fd7ef8d` | Core → Render → UI 三个顺序 writer | 三方复审均 ACCEPT |
 | 5 | [Mutation](<phase 5.md>) | 已验收并推送 `4f871ac` | Core/性能 → VFX → UI 三个顺序 writer | 三路最终 QA 均 PASS；保留窄屏省略 P3 |
-| 6 | [Classic](<phase 6.md>) | 已验收并推送 `d0b7406` | `t15_classic_writer` | 规则/视觉/证据 QA 均 ACCEPT |
-| 7 | [Puzzle 50](<phase 7.md>) | 合同检查点待打开 | Schema → 五批关卡 → Progress/UI | 求解/规则 QA + 视觉 QA + 证据 QA |
+| 6 | [Classic](<phase 6.md>) | 已验收并推送；记录 tip `d78e0e5` | `t15_classic_writer` | 规则/视觉/证据 QA 均 ACCEPT |
+| 7 | [Puzzle 50](<phase 7.md>) | 合同编写中；base `d78e0e5` | Schema → 五批关卡 → Progress/UI | 求解/规则 QA + 视觉 QA + 证据 QA |
 | 8 | [Integration](<phase 8.md>) | 待执行 | 协调者 | 总体规则 QA + 总体视觉 QA + 证据 QA |
 
 ## 每阶段不可跳过的状态机

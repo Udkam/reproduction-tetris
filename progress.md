@@ -21,9 +21,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Dynamic resource admission supersedes the temporary zero-helper hold. Final
   acceptance preflight has clean Git, no 4178/5178/5179 listener, zero Chrome/repl/
   Serena, and only the current control task's two Node helpers.
-- Phase-6 acceptance/recovery `d0b7406` is pushed non-force. Local HEAD,
-  `origin/main`, and the remote branch reference match exactly. Phase 6 is closed;
-  the bounded Phase-7 contract checkpoint is next.
+- Phase-6 acceptance/recovery `d0b7406` is pushed non-force and recorded at clean
+  remote tip `d78e0e5`. Phase 6 is closed.
+- Phase 7's docs-only contract is being frozen from `d78e0e5`: fifty levels,
+  3/4/5/6/7 target rows, two replayed routes per level, sparse anchors, v5 migration,
+  staged unlock and data/scroll-only adaptation of the existing selector.
 - Phase 1 and Phase 1.5 are accepted and pushed.
 - Phase 2 Settings is accepted and pushed through recovery record `092c91d`.
 - Phase 3 HUD final source `741d8a6` and acceptance/recovery record `1383fca` are
@@ -94,9 +96,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 ## Next verification
 
 - Keep Phase-6 product/evidence frozen.
-- Open Phase 7 through a bounded Puzzle contract checkpoint based on pushed recovery
-  `d0b7406`.
-- Do not redesign the Puzzle selector.
+- Commit the Phase-7 docs-only contract from pushed recovery `d78e0e5`, then record
+  its SHA before opening v5 persistence.
+- Do not redesign the Puzzle selector; only adapt its existing five-column route to
+  ten internally scrolling five-level bands.
+- Use the updated dynamic resource budget: green permits static parallel review and
+  at most two heavy tasks; amber serializes new heavy work; red starts none.
 
 ## 2026-07-28 Phase 5 Renderer visual candidate
 

@@ -20,6 +20,51 @@ Core-replayed solution, sensible fixed input, sparse solvability-safe anchors wh
 used, and a difficulty position supported by measured route features. Multiple
 plausible routes are preferred; the player sees no route hint and no piece-count limit.
 
+### T15 Phase 7 Puzzle-50 contract
+
+Phase 7 opens from pushed recovery record
+`d78e0e580ceb9375afb57fc8c4230624e4a54a77`. It replaces the current four
+five-level presentation bands with fifty deterministic authored levels while preserving
+the selector's one-preview/five-column composition. The right route becomes ten
+five-level bands inside the same internally scrolling panel; target rows, unlock state,
+names, completion and best-lock records are data-driven. The selector may not gain
+level thumbnails, descriptive cards, decorative dots, per-level badges, a second preview
+or a new page composition.
+
+The curriculum uses exactly 3, 4, 5, 6 and 7 contiguous floor target rows for levels
+`01–10`, `11–20`, `21–30`, `31–40` and `41–50`. Initial targets come only from a
+legal five-to-fifteen-piece zero-clear setup replay. The first five levels contain no
+anchor. Across the five ten-level batches, exactly 1, 2, 3, 3 and 4 levels respectively
+carry sparse authored anchors; anchors remain outside every initial target row and
+cannot move, clear or count toward victory. Timed disappearing pieces remain removed.
+
+Every level ships with two public-command Core routes that clear all original targets.
+The routes must diverge by a canonical landing no later than the fourth lock of the
+shorter route. Solver output records locks, rotations, lateral work, line distribution,
+height, holes, branching, divergence and anchor burden, but is never exposed as a hint
+or claimed as mathematical optimality. Normal tests replay frozen routes instead of
+rerunning fifty searches.
+
+A fresh save opens `01–03`; any two open `04–05`; any three of `01–05` open
+`06–10`; thereafter any three completions in a five-level band open the next band.
+Progression advances only through an already-open frontier. A migrated out-of-order
+completion remains replayable but cannot leapfrog unopened prerequisite bands. Locked
+levels remain visible, disabled and unable to record completion.
+
+Puzzle progress advances to v5 with a campaign revision. The old v4/v3/v2/v1 twenty-ID
+domains remain frozen for parsing. Legal historical completion IDs migrate and write
+back immediately; old keys remain untouched for rollback. Because the first twenty
+boards are re-authored, old best-lock values remain historical in the old key and are
+not misrepresented as current-board records. A v5 best is created only by actually
+finishing the corresponding Phase-7 definition. Player-facing “操作数 / 当前最优步数”
+continues to mean successfully locked tetrominoes, not input commands.
+
+Phase 7 uses the updated dynamic resource budget. Static read-only comparisons may run
+in parallel in the green state, while one writer owns each shared source slice and no
+more than two heavy tasks overlap. Amber serializes new heavy work; red starts none.
+Every solver, Node helper, browser and server is on-demand and released at its phase
+boundary by verified ownership; WMI/CIM and name-only process termination are forbidden.
+
 Mutation items are an orthogonal attachment system:
 
 | Ordinary body | Allowed attachments |
