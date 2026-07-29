@@ -1045,3 +1045,16 @@
 - Next action: commit this backend contract, remove only the forced SwiftShader launch
   flags, add fail-closed GPU backend metadata, statically audit, then admit one
   hardware-backed managed batch.
+
+## 2026-07-29 — Hardware-backed browser batch admitted
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-PERF-R2`.
+- Harness `07e7a55` removes forced SwiftShader, records the actual Pixi WebGL
+  context/vendor/renderer, requires `WEBGL_debug_renderer_info`, rejects known
+  software backends, and retains every original frame threshold.
+- Python/embedded-JavaScript syntax, `--help`, committed script/source binding and
+  exact-path checkpoint checks passed.
+- Independent evidence-integrity and source/performance reviewers both returned PASS
+  with P0/P1/P2/P3 all zero. Product `ee2aac5` and gates `6d9fc6a` have no diff.
+- Next action: take a fresh resource sample, execute the hardware-backed managed
+  browser batch, and inspect all generated PNGs before acceptance.

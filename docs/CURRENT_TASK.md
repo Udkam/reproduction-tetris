@@ -260,6 +260,10 @@ or history rewrite is authorized.
   samples. Keep every performance threshold unchanged. The harness must stop forcing
   SwiftShader, record the unmasked WebGL renderer/vendor, and fail closed on any
   software backend before the formal batch can be admitted again.
+- Harness checkpoint `07e7a55` implements that backend boundary without changing any
+  threshold. Two independent read-only reviewers returned PASS with P0–P3 all zero;
+  product and gate trees are unchanged. The hardware-backed managed batch is now
+  admitted after a fresh resource sample.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
