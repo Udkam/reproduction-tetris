@@ -450,8 +450,14 @@ def settled_active_lifecycle_snapshot(page: Page) -> dict[str, Any]:
     return page.evaluate(
         """
         async () => {
-          await new Promise((resolve) => {
-            requestAnimationFrame(() => requestAnimationFrame(resolve));
+          await new Promise((resolve, reject) => {
+            const timeout = window.setTimeout(() => {
+              reject(new Error("Two lifecycle animation frames did not settle within 2000 ms."));
+            }, 2000);
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+              window.clearTimeout(timeout);
+              resolve();
+            }));
           });
           return {
             sameCanvas: window.__t15Canvas
