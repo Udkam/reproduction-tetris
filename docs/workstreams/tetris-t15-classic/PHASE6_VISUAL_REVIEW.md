@@ -1,6 +1,6 @@
 # T15 Phase 6 visual-review packet
 
-Status: `PREPARED / CLOSED UNTIL REPEATED RULES QA ACCEPTS`.
+Status: `CORRECTED AFTER VISUAL QA GAP / RE-REVIEW REQUIRED`.
 
 This is a zero-runtime review map for the already frozen Phase-6 images. It does not
 reopen visual QA before rules QA, does not replace original-detail inspection, and is
@@ -39,7 +39,7 @@ fonts, layouts, sound, sprites, or trade dress are not comparison references.
 | [One-row afterglow](../../qa/evidence/t15-phase6/phase6-clear-1-afterglow.png) | public runtime/Core | Restrained debris/residual silhouette at the cleared row only. |
 | [Two-row matrix](../../qa/evidence/t15-phase6/phase6-clear-2-matrix.png) | public runtime/Core | Same family and timing, bounded increase in intensity. |
 | [Three-row matrix](../../qa/evidence/t15-phase6/phase6-clear-3-matrix.png) | public runtime/Core | Same family and timing, no screen-wide wash or HUD obstruction. |
-| [Four-row contract](../../qa/evidence/t15-phase6/phase6-clear-4-renderer-contract.png) | isolated real Renderer | Four-row endpoint only; never mislabel this as a public runtime route. |
+| [Four-row contraction contract](../../qa/evidence/t15-phase6/phase6-clear-4-renderer-contract.png) | isolated real Renderer | Four-row contraction at `phaseTicks: 5`; never mislabel this as an endpoint or public runtime route. |
 | [Reduced motion](../../qa/evidence/t15-phase6/phase6-clear-reduced-motion.png) | isolated real Renderer | Stationary thin confirmation/fade; no translation, scaling, or debris. |
 | [Safe next decision](../../qa/evidence/t15-phase6/phase6-clear-safe-next.png) | public product viewport | New active piece, board and Next are unobscured after resolution. |
 
