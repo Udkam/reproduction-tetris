@@ -79,6 +79,23 @@ cell translation, scaling, and debris and instead holds a stationary thin confir
 at each cleared row with a quick opacity fade. Mutation Bomb and Collapse keep their
 own Phase-5 presentation and do not reuse this ordinary-clear grammar.
 
+The Phase-6 baseline feedback is board-local and event-specific. A normal Classic
+lock leaves a short contact echo directly beneath the cells that reached support;
+it does not shake, translate, or scale the board. A consecutive Classic clear adds
+paired short side brackets at the resolved row positions, with repetition capped at
+three marks so the signal strengthens without becoming a banner. Crossing a ten-line
+speed boundary adds a brief pair of descending rail ticks inside the well edges. A
+Classic top-out closes the spawn zone with four short corner marks over the existing
+terminal scrim. These cues may coexist, remain clipped to the well, contain no text,
+and never change Core timing, input, score, or the next-piece presentation.
+
+Reduced motion keeps the same event locations but removes travel, expansion, particles,
+and repeated oscillation: contact echoes, combo brackets, speed ticks, and top-out
+corners become stationary strokes with a short opacity fade. The cues are renderer
+state with bounded lifetimes and are cleared by restart/unmount. They apply only to
+Classic in this checkpoint; Survival pressure, Mutation activation, Puzzle feedback,
+React copy, HUD structure, and audio remain frozen.
+
 Phase 5 is independently accepted, pushed, and cleaned through `4f871ac`. The player
 has resumed execution, so Phase 6 is open. The fifty-level Puzzle contract remains
 frozen until Phase 6 acceptance; its selector composition is not a Phase-6 target.

@@ -35,6 +35,29 @@ After this source checkpoint is green, a separate baseline audit decides whether
 landing/combo/top-out or Classic terminology need another exact-path slice; they may
 not be silently bundled into the ordinary-clear commit.
 
+**Phase-6 baseline audit disposition (2026-07-29):** the ordinary-clear source is
+frozen at `1a163ff3fed7cdf1cb6af6c12f92f291e0593006` and its documentation record at
+`1ba6c26fc48ec691dd9ea4902654763074cd2fdb`. Classic terminology and metric roles
+already satisfy the contract (`分数 / 消行 / 连消 / 下落速度/格` with explicit
+`data-stat-role` coverage), so React, localization, and CSS remain closed. The
+Renderer audit found one real feedback gap: `impact` is written for hard drop,
+line-clear, Survival stone, Mutation, and level events but is only decayed and never
+used by drawing or geometry. Phase 6 therefore opens a second, independent source
+checkpoint in exactly:
+
+- `src/game/render/TetrisRenderer.ts`;
+- `src/game/render/TetrisRenderer.test.ts`.
+
+That checkpoint adds Classic-only board-local cues for ordinary landing, consecutive
+clear, each crossed ten-line speed boundary, and top-out. It may use a bounded
+renderer-owned cue list so simultaneous combo and speed feedback cannot overwrite one
+another. It may not wire the dormant global `impact` value into camera movement,
+change the accepted ordinary-clear sequence, add text or DOM, or modify Core, UI/CSS,
+audio, Survival, Mutation, Puzzle, random generation, scoring, timing, records, or
+input. Reduced motion retains stationary local strokes with quick fade. After this
+two-file checkpoint is green, Phase-6 source freezes and the final gates/evidence
+chain begins.
+
 **Archived execution trail:** Phase 3 HUD source `741d8a64ee1151894920163285769417663e6464`
 and acceptance/recovery record `1383fca794cba150d373597a21d6686a02922b02`
 are pushed to `origin/main`. The final gates, exact-candidate browser matrix, input

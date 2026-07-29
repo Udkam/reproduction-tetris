@@ -69,3 +69,30 @@
 - Next action: freeze a baseline audit for Classic terminology, landing, combo,
   level-up, and top-out. Open another source path only for a proven Phase-6 gap;
   otherwise proceed directly to final source gates and production browser evidence.
+
+## TETRIS-T15-PHASE6-BASELINE-AUDIT-003
+
+- Status: `AUDIT / GAP / SECOND SOURCE CONTRACT OPEN`.
+- Audited source: `1a163ff3fed7cdf1cb6af6c12f92f291e0593006`.
+- Documentation tip before this contract: `1ba6c26fc48ec691dd9ea4902654763074cd2fdb`.
+- Read-only findings:
+  - `RunStats` already exposes explicit Classic roles and the accepted
+    `分数 / 消行 / 连消 / 下落速度/格` copy, with direct App coverage; no UI,
+    localization, or CSS writer is justified;
+  - landing already has a cell-local lock fill and hard-drop trail, but the separate
+    `impact` value assigned to hard drop, line resolution, Survival stones, Mutation,
+    and level events is never consumed by drawing or geometry;
+  - Classic has no renderer cue for a consecutive clear, crossing a ten-line speed
+    boundary, or top-out beyond the generic terminal scrim.
+- Disposition: do not wire dormant `impact` into global movement because that would
+  alter frozen modes. Open a two-file Classic-only Renderer cue checkpoint.
+- Exact source paths opened:
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`.
+- Acceptance: bounded coexisting landing/combo/speed/top-out cues, board-local
+  geometry, stationary reduced-motion endpoint, release on lifetime/restart, no cues
+  in other modes, and no Core/UI/audio change.
+- Resource state: no Vite, browser, test, build, Serena, MCP, or subagent helper
+  retained; no WMI/CIM query used.
+- Next action: commit this contract, implement and focus-test the two-file slice,
+  then freeze all Phase-6 source before final gates.

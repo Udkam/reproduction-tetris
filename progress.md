@@ -301,3 +301,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   bridge/test → harness consumer, each as a separate rollback point.
 - The extracted Canvas remains unmounted and unretained. Product rules and visuals
   stay unchanged, but all final source gates must be regenerated after this change.
+
+## 2026-07-29 Phase 6 baseline-feedback gap
+
+- Shared ordinary-clear source is frozen at `1a163ff`; its focused Renderer tests and
+  typecheck pass, and disposable visual smoke has been released.
+- Classic metric roles and terminology already satisfy the contract, so App,
+  localization, HUD CSS, Core, audio, and records remain closed.
+- Directed Renderer inspection found that `impact` is assigned for several events but
+  never affects drawing or geometry. A separate two-file checkpoint now owns only
+  Classic landing, combo, ten-line speed-boundary, and top-out cues.
+- The cues must coexist without overwrite, remain inside the board, degrade to
+  stationary strokes under reduced motion, and leave every other mode unchanged.
+- Next: commit this contract, implement the two-file renderer slice, then freeze source
+  for the single final gate/evidence sequence.
