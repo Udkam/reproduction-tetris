@@ -1065,30 +1065,16 @@ def run(context: BrowserContext) -> dict[str, Any]:
             snapshot = fifo_result["snapshot"]
             activation = snapshot["renderer"]["mutationActivation"]
 
-        current_active, current_preview, current_locked = item_sets(snapshot)
-        for item in sorted(current_active - active_seen):
-            captures.append(capture(page, f"carrier-active-{item}", settle_ms=24))
-            active_seen.add(item)
-        for item in sorted(current_preview - preview_seen):
-            captures.append(capture(page, f"carrier-next-{item}", settle_ms=24))
-            captures.append(capture(page, f"carrier-next-{item}-grayscale", settle_ms=24, grayscale=True))
-            preview_seen.add(item)
-        for item in sorted(current_locked - locked_seen):
-            captures.append(capture(page, f"carrier-locked-{item}", settle_ms=24))
-            locked_seen.add(item)
-
-        # Carrier screenshots can advance renderer time. Refresh before deciding
-        # whether the next activation frame still belongs to the observed item.
-        snapshot = collect(page)
-        validate_common(snapshot)
-        activation = snapshot["renderer"]["mutationActivation"]
+        # The Collapse settlement endpoint lives for only 260 ms. Capture it
+        # before any carrier or status screenshot, and only during its first
+        # quarter so the post-screenshot continuity gate has a real margin.
         collapse_trail = snapshot["renderer"]["mutationCollapseTrail"]
-
         if (
             collapse_trail_witness is None
             and collapse_trail is not None
             and collapse_trail["columns"]
             and collapse_trail["maxDrop"] > 0
+            and collapse_trail["elapsedMs"] <= collapse_trail["durationMs"] * 0.25
         ):
             trail_capture = capture(
                 page,
@@ -1109,7 +1095,12 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 "trail": captured_trail,
                 "captureBinding": trail_capture["captureBinding"],
             }
+            snapshot = trail_capture
+            activation = snapshot["renderer"]["mutationActivation"]
 
+        # Activation endpoints are also transient. Prioritise them before the
+        # longer-lived carrier/Next/locked evidence, then keep only a frame
+        # whose post-screenshot snapshot is still the same visible instance.
         if (
             activation
             and activation["item"] not in activation_seen
@@ -1141,6 +1132,24 @@ def run(context: BrowserContext) -> dict[str, Any]:
                 assert activation_capture["renderer"]["mutationActiveParticleCount"] > 0
             captures.append(activation_capture)
             activation_seen.add(activation["item"])
+            snapshot = activation_capture
+
+        current_active, current_preview, current_locked = item_sets(snapshot)
+        for item in sorted(current_active - active_seen):
+            captures.append(capture(page, f"carrier-active-{item}", settle_ms=24))
+            active_seen.add(item)
+        for item in sorted(current_preview - preview_seen):
+            captures.append(capture(page, f"carrier-next-{item}", settle_ms=24))
+            captures.append(capture(page, f"carrier-next-{item}-grayscale", settle_ms=24, grayscale=True))
+            preview_seen.add(item)
+        for item in sorted(current_locked - locked_seen):
+            captures.append(capture(page, f"carrier-locked-{item}", settle_ms=24))
+            locked_seen.add(item)
+
+        # Carrier screenshots can advance Core and Renderer time. Refresh before
+        # counting current status rows and checking the loop exit condition.
+        snapshot = collect(page)
+        validate_common(snapshot)
 
         count = timed_count(snapshot)
         if count in {1, 2, 3} and count not in timed_seen:
