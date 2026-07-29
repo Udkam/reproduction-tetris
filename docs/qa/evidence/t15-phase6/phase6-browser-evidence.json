@@ -1,0 +1,3763 @@
+{
+  "candidate": {
+    "before": {
+      "sourceCandidate": "eaed1ac0962ba7256b44136f7bd4f0faef603970",
+      "gitHead": "1b9c85feefbbd8e7fdfa446785f65e6639c63858",
+      "productTreeMatchesCandidate": true,
+      "productPaths": [
+        "src",
+        "public",
+        ":(glob).env*",
+        "index.html",
+        "package.json",
+        "package-lock.json",
+        "vite.config.ts",
+        "tsconfig.json",
+        "tsconfig.app.json",
+        "tsconfig.node.json"
+      ],
+      "productStatus": [],
+      "routeArtifact": {
+        "relativePath": "docs/workstreams/tetris-t13-core/puzzle-endgame-results.json",
+        "sha256": "ecd47b1072ad38af1ce8e2ccf27afbb53d0536f0087b4269e93557fcd091aee0"
+      },
+      "captureScript": {
+        "relativePath": "docs/qa/evidence/t15-phase6/capture_phase6.py",
+        "sha256": "21aa87f27af2cb3764022cdab5b5be87fac0abfb39a1712dbd7af9b9a9a05858",
+        "gitBlob": "4822a9ff02b305d37f443f2a2bb4e2d0ad4ac296",
+        "status": []
+      }
+    },
+    "after": {
+      "sourceCandidate": "eaed1ac0962ba7256b44136f7bd4f0faef603970",
+      "gitHead": "1b9c85feefbbd8e7fdfa446785f65e6639c63858",
+      "productTreeMatchesCandidate": true,
+      "productPaths": [
+        "src",
+        "public",
+        ":(glob).env*",
+        "index.html",
+        "package.json",
+        "package-lock.json",
+        "vite.config.ts",
+        "tsconfig.json",
+        "tsconfig.app.json",
+        "tsconfig.node.json"
+      ],
+      "productStatus": [],
+      "routeArtifact": {
+        "relativePath": "docs/workstreams/tetris-t13-core/puzzle-endgame-results.json",
+        "sha256": "ecd47b1072ad38af1ce8e2ccf27afbb53d0536f0087b4269e93557fcd091aee0"
+      },
+      "captureScript": {
+        "relativePath": "docs/qa/evidence/t15-phase6/capture_phase6.py",
+        "sha256": "21aa87f27af2cb3764022cdab5b5be87fac0abfb39a1712dbd7af9b9a9a05858",
+        "gitBlob": "4822a9ff02b305d37f443f2a2bb4e2d0ad4ac296",
+        "status": []
+      }
+    }
+  },
+  "server": {
+    "command": [
+      "E:\\Nodejs\\node.EXE",
+      "E:\\Proj\\reproduction-tetris\\node_modules\\vite\\bin\\vite.js",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "4178",
+      "--strictPort"
+    ],
+    "cwd": "E:\\Proj\\reproduction-tetris",
+    "pid": 3704,
+    "listenerPid": 3704,
+    "ready": true,
+    "released": true,
+    "exitCode": 1
+  },
+  "browserClosed": true,
+  "result": {
+    "routeMatrix": [
+      {
+        "level": "t6r-terrace-18",
+        "route": "primary",
+        "count": 1,
+        "commandIndex": 5,
+        "prefix": "SRRRRH"
+      },
+      {
+        "level": "t5r-arc-13",
+        "route": "primary",
+        "count": 2,
+        "commandIndex": 6,
+        "prefix": "SCLLLLH"
+      },
+      {
+        "level": "t5r-delta-07",
+        "route": "alternate",
+        "count": 3,
+        "commandIndex": 26,
+        "prefix": "SRRHTTTLHTTTCLLLHTTTCLLLLLH"
+      },
+      {
+        "count": 4,
+        "missing": true
+      }
+    ],
+    "captures": [
+      {
+        "file": "phase6-classic-desktop.png",
+        "sha256": "24a9899dc392589d55d3e3b7e07962de6af8e5410e187669b8f90c939ae9928f",
+        "dimensions": {
+          "width": 1440,
+          "height": 900
+        },
+        "kind": "product-viewport",
+        "purpose": "desktop HUD, board and Next",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 0,
+              "puzzleId": null,
+              "active": {
+                "type": "O",
+                "rotation": 0,
+                "x": 4,
+                "y": 19
+              },
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 218,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                },
+                {
+                  "x": 5,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 38
+                },
+                {
+                  "x": 5,
+                  "y": 38
+                },
+                {
+                  "x": 4,
+                  "y": 39
+                },
+                {
+                  "x": 5,
+                  "y": 39
+                }
+              ],
+              "visibleLockedCells": 0,
+              "presentation": {
+                "x": 4,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 900
+            },
+            "bounds": {
+              "board": {
+                "x": 402.5,
+                "y": 91,
+                "width": 391,
+                "height": 782
+              },
+              "next": {
+                "x": 845.5,
+                "y": 295,
+                "width": 178,
+                "height": 124
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 0
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 1,
+              "audioContextsClosed": 0,
+              "openAudioContexts": 1
+            }
+          },
+          "after": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 0,
+              "puzzleId": null,
+              "active": {
+                "type": "O",
+                "rotation": 0,
+                "x": 4,
+                "y": 19
+              },
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 218,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                },
+                {
+                  "x": 5,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 38
+                },
+                {
+                  "x": 5,
+                  "y": 38
+                },
+                {
+                  "x": 4,
+                  "y": 39
+                },
+                {
+                  "x": 5,
+                  "y": 39
+                }
+              ],
+              "visibleLockedCells": 0,
+              "presentation": {
+                "x": 4,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 900
+            },
+            "bounds": {
+              "board": {
+                "x": 402.5,
+                "y": 91,
+                "width": 391,
+                "height": 782
+              },
+              "next": {
+                "x": 845.5,
+                "y": 295,
+                "width": 178,
+                "height": 124
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 0
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 1,
+              "audioContextsClosed": 0,
+              "openAudioContexts": 1
+            }
+          }
+        }
+      },
+      {
+        "file": "phase6-classic-portrait.png",
+        "sha256": "89c3bc8eb8e69802a29d77bc3aa6cf023c6449e4acaaf64bb6f6d94c83398266",
+        "dimensions": {
+          "width": 390,
+          "height": 844
+        },
+        "kind": "product-viewport",
+        "purpose": "portrait responsive layout",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 0,
+              "puzzleId": null,
+              "active": {
+                "type": "O",
+                "rotation": 0,
+                "x": 4,
+                "y": 19
+              },
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 380,
+                "height": 778,
+                "resolution": 1
+              },
+              "board": {
+                "x": 44.5,
+                "y": 192,
+                "width": 291,
+                "height": 582,
+                "cell": 29.1
+              },
+              "preview": {
+                "x": 227.03125,
+                "y": 35,
+                "width": 143.953125,
+                "height": 148
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                },
+                {
+                  "x": 5,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 38
+                },
+                {
+                  "x": 5,
+                  "y": 38
+                },
+                {
+                  "x": 4,
+                  "y": 39
+                },
+                {
+                  "x": 5,
+                  "y": 39
+                }
+              ],
+              "visibleLockedCells": 0,
+              "presentation": {
+                "x": 4,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 390,
+              "height": 844,
+              "scrollWidth": 390,
+              "scrollHeight": 844
+            },
+            "bounds": {
+              "board": {
+                "x": 49.5,
+                "y": 253,
+                "width": 291,
+                "height": 582
+              },
+              "next": {
+                "x": 232.03125,
+                "y": 96,
+                "width": 143.953125,
+                "height": 148
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 0
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 1,
+              "audioContextsClosed": 0,
+              "openAudioContexts": 1
+            }
+          },
+          "after": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 0,
+              "puzzleId": null,
+              "active": {
+                "type": "O",
+                "rotation": 0,
+                "x": 4,
+                "y": 19
+              },
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 380,
+                "height": 778,
+                "resolution": 1
+              },
+              "board": {
+                "x": 44.5,
+                "y": 192,
+                "width": 291,
+                "height": 582,
+                "cell": 29.1
+              },
+              "preview": {
+                "x": 227.03125,
+                "y": 35,
+                "width": 143.953125,
+                "height": 148
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                },
+                {
+                  "x": 5,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 38
+                },
+                {
+                  "x": 5,
+                  "y": 38
+                },
+                {
+                  "x": 4,
+                  "y": 39
+                },
+                {
+                  "x": 5,
+                  "y": 39
+                }
+              ],
+              "visibleLockedCells": 0,
+              "presentation": {
+                "x": 4,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 390,
+              "height": 844,
+              "scrollWidth": 390,
+              "scrollHeight": 844
+            },
+            "bounds": {
+              "board": {
+                "x": 49.5,
+                "y": 253,
+                "width": 291,
+                "height": 582
+              },
+              "next": {
+                "x": 232.03125,
+                "y": 96,
+                "width": 143.953125,
+                "height": 148
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 0
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 1,
+              "audioContextsClosed": 0,
+              "openAudioContexts": 1
+            }
+          }
+        }
+      },
+      {
+        "file": "phase6-classic-landscape.png",
+        "sha256": "33c69012fd786fead504512508b1fc28cc28dafdc774b96ac68d3000d9b775e0",
+        "dimensions": {
+          "width": 844,
+          "height": 390
+        },
+        "kind": "product-viewport",
+        "purpose": "short landscape responsive layout",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 0,
+              "puzzleId": null,
+              "active": {
+                "type": "O",
+                "rotation": 0,
+                "x": 4,
+                "y": 19
+              },
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 678,
+                "height": 328,
+                "resolution": 1
+              },
+              "board": {
+                "x": 103,
+                "y": 6,
+                "width": 158,
+                "height": 316,
+                "cell": 15.8
+              },
+              "preview": {
+                "x": 288,
+                "y": 157,
+                "width": 286,
+                "height": 158
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                },
+                {
+                  "x": 5,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 38
+                },
+                {
+                  "x": 5,
+                  "y": 38
+                },
+                {
+                  "x": 4,
+                  "y": 39
+                },
+                {
+                  "x": 5,
+                  "y": 39
+                }
+              ],
+              "visibleLockedCells": 0,
+              "presentation": {
+                "x": 4,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 844,
+              "height": 390,
+              "scrollWidth": 844,
+              "scrollHeight": 390
+            },
+            "bounds": {
+              "board": {
+                "x": 186,
+                "y": 61,
+                "width": 158,
+                "height": 316
+              },
+              "next": {
+                "x": 371,
+                "y": 212,
+                "width": 286,
+                "height": 158
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 0
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 1,
+              "audioContextsClosed": 0,
+              "openAudioContexts": 1
+            }
+          },
+          "after": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 0,
+              "puzzleId": null,
+              "active": {
+                "type": "O",
+                "rotation": 0,
+                "x": 4,
+                "y": 19
+              },
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 678,
+                "height": 328,
+                "resolution": 1
+              },
+              "board": {
+                "x": 103,
+                "y": 6,
+                "width": 158,
+                "height": 316,
+                "cell": 15.8
+              },
+              "preview": {
+                "x": 288,
+                "y": 157,
+                "width": 286,
+                "height": 158
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                },
+                {
+                  "x": 5,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 38
+                },
+                {
+                  "x": 5,
+                  "y": 38
+                },
+                {
+                  "x": 4,
+                  "y": 39
+                },
+                {
+                  "x": 5,
+                  "y": 39
+                }
+              ],
+              "visibleLockedCells": 0,
+              "presentation": {
+                "x": 4,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 844,
+              "height": 390,
+              "scrollWidth": 844,
+              "scrollHeight": 390
+            },
+            "bounds": {
+              "board": {
+                "x": 186,
+                "y": 61,
+                "width": 158,
+                "height": 316
+              },
+              "next": {
+                "x": 371,
+                "y": 212,
+                "width": 286,
+                "height": 158
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 0
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 1,
+              "audioContextsClosed": 0,
+              "openAudioContexts": 1
+            }
+          }
+        }
+      },
+      {
+        "file": "phase6-classic-landing.png",
+        "sha256": "635d3d07854f770f18e4ec441c56c6ecf51fe9fee47a0685d12a935c547f8fd5",
+        "dimensions": {
+          "width": 391,
+          "height": 782
+        },
+        "kind": "runtime-pixi-extract",
+        "purpose": "public-runtime ordinary landing cue",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "entry",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": null,
+              "active": null,
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 678,
+                "height": 328,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 218,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 4,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [
+                {
+                  "kind": "landing",
+                  "elapsedMs": 0,
+                  "durationMs": 220,
+                  "cells": [
+                    {
+                      "x": 4,
+                      "y": 38
+                    },
+                    {
+                      "x": 5,
+                      "y": 38
+                    },
+                    {
+                      "x": 4,
+                      "y": 39
+                    },
+                    {
+                      "x": 5,
+                      "y": 39
+                    }
+                  ],
+                  "rows": [],
+                  "combo": 0,
+                  "tier": 0
+                }
+              ],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          },
+          "after": {
+            "state": {
+              "mode": "marathon",
+              "status": "playing",
+              "phase": "entry",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": null,
+              "active": null,
+              "next": [
+                "Z"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 678,
+                "height": 328,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 218,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 4,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [
+                {
+                  "kind": "landing",
+                  "elapsedMs": 0,
+                  "durationMs": 220,
+                  "cells": [
+                    {
+                      "x": 4,
+                      "y": 38
+                    },
+                    {
+                      "x": 5,
+                      "y": 38
+                    },
+                    {
+                      "x": 4,
+                      "y": 39
+                    },
+                    {
+                      "x": 5,
+                      "y": 39
+                    }
+                  ],
+                  "rows": [],
+                  "combo": 0,
+                  "tier": 0
+                }
+              ],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          }
+        },
+        "extract": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 33
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-1-confirmation.png",
+        "sha256": "ee6ad3569a1c6c54e40f85cddc30ee4777a098437656094513c8784b0f38aef7",
+        "dimensions": {
+          "width": 391,
+          "height": 782
+        },
+        "kind": "runtime-pixi-extract",
+        "purpose": "one-row public-route confirmation frame",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 0,
+              "pendingClearRows": [
+                34
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": null,
+              "next": [
+                "S",
+                "T"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "S",
+              "previewPieces": [
+                "S",
+                "T"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 52,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          },
+          "after": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 0,
+              "pendingClearRows": [
+                34
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": null,
+              "next": [
+                "S",
+                "T"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "S",
+              "previewPieces": [
+                "S",
+                "T"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 52,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          }
+        },
+        "extract": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 182
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-1-contraction.png",
+        "sha256": "48175553e22c56dd556f0fd3e9b99a82a7c6f74c0d1da133dadc7791354960ab",
+        "dimensions": {
+          "width": 391,
+          "height": 782
+        },
+        "kind": "runtime-pixi-extract",
+        "purpose": "one-row public-route contraction frame",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 5,
+              "pendingClearRows": [
+                34
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": null,
+              "next": [
+                "S",
+                "T"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "S",
+              "previewPieces": [
+                "S",
+                "T"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 52,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          },
+          "after": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 5,
+              "pendingClearRows": [
+                34
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": null,
+              "next": [
+                "S",
+                "T"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "S",
+              "previewPieces": [
+                "S",
+                "T"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 52,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          }
+        },
+        "extract": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 182
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-1-afterglow.png",
+        "sha256": "42681b805213eb42b42cdb11b6fe3d13fa149233e63b5408a03528b31208afee",
+        "dimensions": {
+          "width": 391,
+          "height": 782
+        },
+        "kind": "runtime-pixi-extract",
+        "purpose": "one-row public-route afterglow frame",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 9,
+              "pendingClearRows": [
+                34
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": null,
+              "next": [
+                "S",
+                "T"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "S",
+              "previewPieces": [
+                "S",
+                "T"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 52,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          },
+          "after": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 9,
+              "pendingClearRows": [
+                34
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": null,
+              "next": [
+                "S",
+                "T"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "S",
+              "previewPieces": [
+                "S",
+                "T"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 52,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          }
+        },
+        "extract": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 173
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-safe-next.png",
+        "sha256": "30877baf8f9ae53a3422a9428090d1c3d5d2c2a5fd90a91ddc6d847c2adb8c53",
+        "dimensions": {
+          "width": 1440,
+          "height": 900
+        },
+        "kind": "product-viewport",
+        "purpose": "next active piece after ordinary-clear resolution",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 1,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": {
+                "type": "S",
+                "rotation": 0,
+                "x": 3,
+                "y": 19
+              },
+              "next": [
+                "T",
+                "L"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "T",
+              "previewPieces": [
+                "T",
+                "L"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 3,
+                  "y": 20
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 32
+                },
+                {
+                  "x": 5,
+                  "y": 32
+                },
+                {
+                  "x": 3,
+                  "y": 33
+                },
+                {
+                  "x": 4,
+                  "y": 33
+                }
+              ],
+              "visibleLockedCells": 42,
+              "presentation": {
+                "x": 3,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 900
+            },
+            "bounds": {
+              "board": {
+                "x": 402.5,
+                "y": 91,
+                "width": 391,
+                "height": 782
+              },
+              "next": {
+                "x": 845.5,
+                "y": 229,
+                "width": 178,
+                "height": 124
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 2
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 3,
+              "audioContextsClosed": 2,
+              "openAudioContexts": 1
+            }
+          },
+          "after": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "active",
+              "phaseTicks": 0,
+              "pendingClearRows": [],
+              "lines": 1,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t6r-terrace-18",
+              "active": {
+                "type": "S",
+                "rotation": 0,
+                "x": 3,
+                "y": 19
+              },
+              "next": [
+                "T",
+                "L"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "T",
+              "previewPieces": [
+                "T",
+                "L"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [
+                {
+                  "x": 4,
+                  "y": 19
+                },
+                {
+                  "x": 5,
+                  "y": 19
+                },
+                {
+                  "x": 3,
+                  "y": 20
+                },
+                {
+                  "x": 4,
+                  "y": 20
+                }
+              ],
+              "ghostCells": [
+                {
+                  "x": 4,
+                  "y": 32
+                },
+                {
+                  "x": 5,
+                  "y": 32
+                },
+                {
+                  "x": 3,
+                  "y": 33
+                },
+                {
+                  "x": 4,
+                  "y": 33
+                }
+              ],
+              "visibleLockedCells": 42,
+              "presentation": {
+                "x": 3,
+                "y": 19,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900,
+              "scrollWidth": 1440,
+              "scrollHeight": 900
+            },
+            "bounds": {
+              "board": {
+                "x": 402.5,
+                "y": 91,
+                "width": 391,
+                "height": 782
+              },
+              "next": {
+                "x": 845.5,
+                "y": 229,
+                "width": 178,
+                "height": 124
+              }
+            },
+            "assertions": {
+              "canvasCount": 1,
+              "domCellCount": 0,
+              "noHorizontalOverflow": true,
+              "noVerticalOverflow": true,
+              "nextVisible": true,
+              "puzzleNextSegments": 2
+            },
+            "lifecycle": {
+              "globalListenerCount": 28,
+              "globalListeners": {
+                "document:pointermove": 1,
+                "document:selectionchange": 1,
+                "document:visibilitychange": 1,
+                "window:__playwright_global_listeners_check__": 1,
+                "window:auxclick": 1,
+                "window:beforeunload": 1,
+                "window:blur": 1,
+                "window:click": 1,
+                "window:contextmenu": 1,
+                "window:dblclick": 1,
+                "window:error": 1,
+                "window:keydown": 5,
+                "window:keyup": 1,
+                "window:mousedown": 1,
+                "window:mousemove": 1,
+                "window:mouseup": 1,
+                "window:pointerdown": 1,
+                "window:pointerup": 2,
+                "window:resize": 1,
+                "window:touchcancel": 1,
+                "window:touchend": 1,
+                "window:touchstart": 1,
+                "window:unhandledrejection": 1
+              },
+              "pendingAnimationFrames": 2,
+              "audioContextsCreated": 3,
+              "audioContextsClosed": 2,
+              "openAudioContexts": 1
+            }
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-2-matrix.png",
+        "sha256": "36d791917e13eef869d2e9d11b51ca347fee01e600a32578a166d1cefe140841",
+        "dimensions": {
+          "width": 391,
+          "height": 782
+        },
+        "kind": "runtime-pixi-extract",
+        "purpose": "2-row public-route contraction matrix",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 5,
+              "pendingClearRows": [
+                37,
+                39
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t5r-arc-13",
+              "active": null,
+              "next": [
+                "Z",
+                "O"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z",
+                "O"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 44,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          },
+          "after": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 5,
+              "pendingClearRows": [
+                37,
+                39
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 1,
+              "puzzleId": "t5r-arc-13",
+              "active": null,
+              "next": [
+                "Z",
+                "O"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z",
+                "O"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 44,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          }
+        },
+        "extract": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 184
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-3-matrix.png",
+        "sha256": "c994572240203c1c804b4c1f022cd7b3b9d49444178164ea07cc76b1846d4921",
+        "dimensions": {
+          "width": 391,
+          "height": 782
+        },
+        "kind": "runtime-pixi-extract",
+        "purpose": "3-row public-route contraction matrix",
+        "binding": {
+          "before": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 5,
+              "pendingClearRows": [
+                36,
+                37,
+                39
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 4,
+              "puzzleId": "t5r-delta-07",
+              "active": null,
+              "next": [
+                "Z",
+                "J"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z",
+                "J"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 48,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          },
+          "after": {
+            "state": {
+              "mode": "puzzle",
+              "status": "playing",
+              "phase": "line-clear",
+              "phaseTicks": 5,
+              "pendingClearRows": [
+                36,
+                37,
+                39
+              ],
+              "lines": 0,
+              "combo": 0,
+              "pieceCount": 4,
+              "puzzleId": "t5r-delta-07",
+              "active": null,
+              "next": [
+                "Z",
+                "J"
+              ]
+            },
+            "renderer": {
+              "canvas": {
+                "width": 758,
+                "height": 810,
+                "resolution": 1
+              },
+              "board": {
+                "x": 61.5,
+                "y": 14,
+                "width": 391,
+                "height": 782,
+                "cell": 39.1
+              },
+              "preview": {
+                "x": 504.5,
+                "y": 152,
+                "width": 178,
+                "height": 124
+              },
+              "previewLayerVisible": true,
+              "previewPiece": "Z",
+              "previewPieces": [
+                "Z",
+                "J"
+              ],
+              "previewMutationItem": null,
+              "previewClearBounds": null,
+              "previewClearPiece": null,
+              "scrim": null,
+              "activeCells": [],
+              "ghostCells": [],
+              "visibleLockedCells": 48,
+              "presentation": null,
+              "boardShiftOffsetY": 0,
+              "mutationFilters": {
+                "freeze": false,
+                "collapse": false,
+                "activeCount": 0
+              },
+              "survivalDebris": [],
+              "survivalDebrisWarningColumns": [],
+              "survivalStoneCueCount": 0,
+              "classicFeedback": [],
+              "mutationActivation": null,
+              "mutationActivationQueueItems": [],
+              "mutationActiveParticleCount": 0,
+              "mutationCollapseTrail": null
+            },
+            "canvasCount": 1,
+            "domCellCount": 0
+          }
+        },
+        "extract": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 181
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-4-renderer-contract.png",
+        "sha256": "5ee5059a0f4fa7cfeee2958d4a0a091b8535d80e48527ea9c7104ebbff461437",
+        "dimensions": {
+          "width": 438,
+          "height": 876
+        },
+        "kind": "isolated-real-renderer-contract",
+        "purpose": "clear-four",
+        "binding": {
+          "scenario": "clear-four",
+          "reducedMotion": false,
+          "state": {
+            "status": "playing",
+            "phase": "line-clear",
+            "phaseTicks": 5,
+            "pendingClearRows": [
+              39,
+              38,
+              37,
+              36
+            ],
+            "lines": 0,
+            "combo": 0
+          },
+          "events": [
+            {
+              "type": "clear-started",
+              "rows": [
+                39,
+                38,
+                37,
+                36
+              ]
+            }
+          ],
+          "before": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 40,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "after": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 40,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "canvasCountDuring": 1,
+          "canvasCountAfter": 0
+        },
+        "extract": {
+          "frame": {
+            "x": 104.99999999999999,
+            "y": 12,
+            "width": 438,
+            "height": 876
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 438,
+            "height": 876
+          },
+          "pixelProbe": {
+            "samples": 8342,
+            "nonTransparentSamples": 8342,
+            "distinctBuckets": 158
+          }
+        }
+      },
+      {
+        "file": "phase6-clear-reduced-motion.png",
+        "sha256": "b39b617ac97b32b38f710883a81b42143b597164400d995d571a023b2ffd94c5",
+        "dimensions": {
+          "width": 438,
+          "height": 876
+        },
+        "kind": "isolated-real-renderer-contract",
+        "purpose": "clear-reduced",
+        "binding": {
+          "scenario": "clear-reduced",
+          "reducedMotion": true,
+          "state": {
+            "status": "playing",
+            "phase": "line-clear",
+            "phaseTicks": 5,
+            "pendingClearRows": [
+              39
+            ],
+            "lines": 0,
+            "combo": 0
+          },
+          "events": [
+            {
+              "type": "clear-started",
+              "rows": [
+                39
+              ]
+            }
+          ],
+          "before": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 10,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "after": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 10,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "canvasCountDuring": 1,
+          "canvasCountAfter": 0
+        },
+        "extract": {
+          "frame": {
+            "x": 104.99999999999999,
+            "y": 12,
+            "width": 438,
+            "height": 876
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 438,
+            "height": 876
+          },
+          "pixelProbe": {
+            "samples": 8342,
+            "nonTransparentSamples": 8342,
+            "distinctBuckets": 100
+          }
+        }
+      },
+      {
+        "file": "phase6-classic-combo-speed.png",
+        "sha256": "4f5eba0ab734104c423a19db9ebd786880617855453a152d889fb2208bcec9fa",
+        "dimensions": {
+          "width": 438,
+          "height": 876
+        },
+        "kind": "isolated-real-renderer-contract",
+        "purpose": "combo-speed",
+        "binding": {
+          "scenario": "combo-speed",
+          "reducedMotion": false,
+          "state": {
+            "status": "playing",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "lines": 10,
+            "combo": 3
+          },
+          "events": [
+            {
+              "type": "lines-cleared",
+              "rows": [
+                39
+              ],
+              "count": 1,
+              "score": 300
+            }
+          ],
+          "before": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 8,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [
+              {
+                "kind": "combo",
+                "elapsedMs": 56,
+                "durationMs": 300,
+                "cells": [],
+                "rows": [
+                  39
+                ],
+                "combo": 3,
+                "tier": 0
+              },
+              {
+                "kind": "speed-up",
+                "elapsedMs": 56,
+                "durationMs": 360,
+                "cells": [],
+                "rows": [],
+                "combo": 0,
+                "tier": 1
+              }
+            ],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "after": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 8,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [
+              {
+                "kind": "combo",
+                "elapsedMs": 56,
+                "durationMs": 300,
+                "cells": [],
+                "rows": [
+                  39
+                ],
+                "combo": 3,
+                "tier": 0
+              },
+              {
+                "kind": "speed-up",
+                "elapsedMs": 56,
+                "durationMs": 360,
+                "cells": [],
+                "rows": [],
+                "combo": 0,
+                "tier": 1
+              }
+            ],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "canvasCountDuring": 1,
+          "canvasCountAfter": 0
+        },
+        "extract": {
+          "frame": {
+            "x": 104.99999999999999,
+            "y": 12,
+            "width": 438,
+            "height": 876
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 438,
+            "height": 876
+          },
+          "pixelProbe": {
+            "samples": 8342,
+            "nonTransparentSamples": 8342,
+            "distinctBuckets": 47
+          }
+        }
+      },
+      {
+        "file": "phase6-classic-top-out.png",
+        "sha256": "3833612d17ff14a4df2592fac0c0abdc04b6f049201e97268d4b228f9a8cd46f",
+        "dimensions": {
+          "width": 438,
+          "height": 876
+        },
+        "kind": "isolated-real-renderer-contract",
+        "purpose": "top-out",
+        "binding": {
+          "scenario": "top-out",
+          "reducedMotion": false,
+          "state": {
+            "status": "game-over",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "lines": 0,
+            "combo": 0
+          },
+          "events": [
+            {
+              "type": "game-over",
+              "reason": "block-out"
+            }
+          ],
+          "before": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": null,
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876
+            },
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 4,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [
+              {
+                "kind": "top-out",
+                "elapsedMs": 42,
+                "durationMs": 440,
+                "cells": [],
+                "rows": [],
+                "combo": 0,
+                "tier": 0
+              }
+            ],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "after": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": null,
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876
+            },
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 4,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [
+              {
+                "kind": "top-out",
+                "elapsedMs": 42,
+                "durationMs": 440,
+                "cells": [],
+                "rows": [],
+                "combo": 0,
+                "tier": 0
+              }
+            ],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "canvasCountDuring": 1,
+          "canvasCountAfter": 0
+        },
+        "extract": {
+          "frame": {
+            "x": 104.99999999999999,
+            "y": 12,
+            "width": 438,
+            "height": 876
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 438,
+            "height": 876
+          },
+          "pixelProbe": {
+            "samples": 8342,
+            "nonTransparentSamples": 8342,
+            "distinctBuckets": 21
+          }
+        }
+      },
+      {
+        "file": "phase6-classic-feedback-reduced.png",
+        "sha256": "91fa933c0d9f02ff220257584dff2869c98ac48e102acafe6dcf87952df8de44",
+        "dimensions": {
+          "width": 438,
+          "height": 876
+        },
+        "kind": "isolated-real-renderer-contract",
+        "purpose": "combo-speed-reduced",
+        "binding": {
+          "scenario": "combo-speed-reduced",
+          "reducedMotion": true,
+          "state": {
+            "status": "playing",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "lines": 10,
+            "combo": 3
+          },
+          "events": [
+            {
+              "type": "lines-cleared",
+              "rows": [
+                39
+              ],
+              "count": 1,
+              "score": 300
+            }
+          ],
+          "before": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 8,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [
+              {
+                "kind": "combo",
+                "elapsedMs": 20,
+                "durationMs": 150,
+                "cells": [],
+                "rows": [
+                  39
+                ],
+                "combo": 3,
+                "tier": 0
+              },
+              {
+                "kind": "speed-up",
+                "elapsedMs": 20,
+                "durationMs": 170,
+                "cells": [],
+                "rows": [],
+                "combo": 0,
+                "tier": 1
+              }
+            ],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "after": {
+            "canvas": {
+              "width": 900,
+              "height": 900,
+              "resolution": 1
+            },
+            "board": {
+              "x": 104.99999999999999,
+              "y": 12,
+              "width": 438,
+              "height": 876,
+              "cell": 43.8
+            },
+            "preview": {
+              "x": 12,
+              "y": 12,
+              "width": 209,
+              "height": 175.2
+            },
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 8,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalStoneCueCount": 0,
+            "classicFeedback": [
+              {
+                "kind": "combo",
+                "elapsedMs": 20,
+                "durationMs": 150,
+                "cells": [],
+                "rows": [
+                  39
+                ],
+                "combo": 3,
+                "tier": 0
+              },
+              {
+                "kind": "speed-up",
+                "elapsedMs": 20,
+                "durationMs": 170,
+                "cells": [],
+                "rows": [],
+                "combo": 0,
+                "tier": 1
+              }
+            ],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "canvasCountDuring": 1,
+          "canvasCountAfter": 0
+        },
+        "extract": {
+          "frame": {
+            "x": 104.99999999999999,
+            "y": 12,
+            "width": 438,
+            "height": 876
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 438,
+            "height": 876
+          },
+          "pixelProbe": {
+            "samples": 8342,
+            "nonTransparentSamples": 8342,
+            "distinctBuckets": 47
+          }
+        }
+      }
+    ],
+    "coverage": {
+      "ordinaryClear": {
+        "runtimeRows": [
+          1,
+          2,
+          3
+        ],
+        "isolatedRendererRows": [
+          4
+        ],
+        "fourRowRuntimeRouteAbsent": true,
+        "oneRowStages": [
+          "confirmation",
+          "contraction",
+          "afterglow"
+        ],
+        "safeNextFrame": true,
+        "reducedMotion": true
+      },
+      "classicFeedback": {
+        "runtime": [
+          "landing"
+        ],
+        "isolatedRenderer": [
+          "combo",
+          "speed-up",
+          "top-out"
+        ],
+        "reducedMotion": [
+          "combo",
+          "speed-up"
+        ]
+      },
+      "responsiveViewports": [
+        {
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "width": 390,
+          "height": 844
+        },
+        {
+          "width": 844,
+          "height": 390
+        }
+      ]
+    },
+    "lifecycle": {
+      "baseline": {
+        "globalListenerCount": 17,
+        "globalListeners": {
+          "document:selectionchange": 1,
+          "window:__playwright_global_listeners_check__": 1,
+          "window:auxclick": 1,
+          "window:beforeunload": 1,
+          "window:click": 1,
+          "window:contextmenu": 1,
+          "window:dblclick": 1,
+          "window:error": 1,
+          "window:mousedown": 1,
+          "window:mousemove": 1,
+          "window:mouseup": 1,
+          "window:pointerdown": 1,
+          "window:pointerup": 1,
+          "window:touchcancel": 1,
+          "window:touchend": 1,
+          "window:touchstart": 1,
+          "window:unhandledrejection": 1
+        },
+        "pendingAnimationFrames": 0,
+        "audioContextsCreated": 0,
+        "audioContextsClosed": 0,
+        "openAudioContexts": 0
+      },
+      "firstMount": {
+        "sameCanvas": null,
+        "canvasCount": 1,
+        "qaPresent": true,
+        "lifecycle": {
+          "globalListenerCount": 28,
+          "globalListeners": {
+            "document:pointermove": 1,
+            "document:selectionchange": 1,
+            "document:visibilitychange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:blur": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:keydown": 5,
+            "window:keyup": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 2,
+            "window:resize": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 2,
+          "audioContextsCreated": 1,
+          "audioContextsClosed": 0,
+          "openAudioContexts": 1
+        }
+      },
+      "beforeRestart": {
+        "sameCanvas": true,
+        "canvasCount": 1,
+        "qaPresent": true,
+        "lifecycle": {
+          "globalListenerCount": 28,
+          "globalListeners": {
+            "document:pointermove": 1,
+            "document:selectionchange": 1,
+            "document:visibilitychange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:blur": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:keydown": 5,
+            "window:keyup": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 2,
+            "window:resize": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 2,
+          "audioContextsCreated": 1,
+          "audioContextsClosed": 0,
+          "openAudioContexts": 1
+        }
+      },
+      "afterRestart": {
+        "sameCanvas": true,
+        "canvasCount": 1,
+        "qaPresent": true,
+        "lifecycle": {
+          "globalListenerCount": 28,
+          "globalListeners": {
+            "document:pointermove": 1,
+            "document:selectionchange": 1,
+            "document:visibilitychange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:blur": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:keydown": 5,
+            "window:keyup": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 2,
+            "window:resize": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 2,
+          "audioContextsCreated": 1,
+          "audioContextsClosed": 0,
+          "openAudioContexts": 1
+        }
+      },
+      "firstUnmount": {
+        "sameCanvas": false,
+        "canvasCount": 0,
+        "qaPresent": false,
+        "lifecycle": {
+          "globalListenerCount": 17,
+          "globalListeners": {
+            "document:selectionchange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 0,
+          "audioContextsCreated": 1,
+          "audioContextsClosed": 1,
+          "openAudioContexts": 0
+        }
+      },
+      "secondMount": {
+        "sameCanvas": false,
+        "canvasCount": 1,
+        "qaPresent": true,
+        "lifecycle": {
+          "globalListenerCount": 28,
+          "globalListeners": {
+            "document:pointermove": 1,
+            "document:selectionchange": 1,
+            "document:visibilitychange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:blur": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:keydown": 5,
+            "window:keyup": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 2,
+            "window:resize": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 2,
+          "audioContextsCreated": 2,
+          "audioContextsClosed": 1,
+          "openAudioContexts": 1
+        }
+      },
+      "secondUnmount": {
+        "sameCanvas": false,
+        "canvasCount": 0,
+        "qaPresent": false,
+        "lifecycle": {
+          "globalListenerCount": 17,
+          "globalListeners": {
+            "document:selectionchange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 0,
+          "audioContextsCreated": 2,
+          "audioContextsClosed": 2,
+          "openAudioContexts": 0
+        }
+      },
+      "puzzleUnmount": {
+        "sameCanvas": false,
+        "canvasCount": 0,
+        "qaPresent": false,
+        "lifecycle": {
+          "globalListenerCount": 17,
+          "globalListeners": {
+            "document:selectionchange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 0,
+          "audioContextsCreated": 3,
+          "audioContextsClosed": 3,
+          "openAudioContexts": 0
+        }
+      },
+      "homeAfterPuzzle": {
+        "canvasCount": 0,
+        "qaPresent": false,
+        "lifecycle": {
+          "globalListenerCount": 17,
+          "globalListeners": {
+            "document:selectionchange": 1,
+            "window:__playwright_global_listeners_check__": 1,
+            "window:auxclick": 1,
+            "window:beforeunload": 1,
+            "window:click": 1,
+            "window:contextmenu": 1,
+            "window:dblclick": 1,
+            "window:error": 1,
+            "window:mousedown": 1,
+            "window:mousemove": 1,
+            "window:mouseup": 1,
+            "window:pointerdown": 1,
+            "window:pointerup": 1,
+            "window:touchcancel": 1,
+            "window:touchend": 1,
+            "window:touchstart": 1,
+            "window:unhandledrejection": 1
+          },
+          "pendingAnimationFrames": 0,
+          "audioContextsCreated": 3,
+          "audioContextsClosed": 3,
+          "openAudioContexts": 0
+        }
+      }
+    },
+    "errors": []
+  },
+  "artifactFiles": [
+    "SHA256SUMS-browser.txt",
+    "capture_phase6.py",
+    "phase6-browser-evidence.json",
+    "phase6-classic-combo-speed.png",
+    "phase6-classic-desktop.png",
+    "phase6-classic-feedback-reduced.png",
+    "phase6-classic-landing.png",
+    "phase6-classic-landscape.png",
+    "phase6-classic-portrait.png",
+    "phase6-classic-top-out.png",
+    "phase6-clear-1-afterglow.png",
+    "phase6-clear-1-confirmation.png",
+    "phase6-clear-1-contraction.png",
+    "phase6-clear-2-matrix.png",
+    "phase6-clear-3-matrix.png",
+    "phase6-clear-4-renderer-contract.png",
+    "phase6-clear-reduced-motion.png",
+    "phase6-clear-safe-next.png",
+    "phase6-vite-stderr.log",
+    "phase6-vite-stdout.log"
+  ]
+}
