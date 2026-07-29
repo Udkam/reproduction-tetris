@@ -1,0 +1,17 @@
+source_sha=eaed1ac0962ba7256b44136f7bd4f0faef603970
+command=npm.cmd run test -- --maxWorkers=1
+exit_code=0
+
+
+> signal-foundry@0.1.0 test
+> vitest run --maxWorkers=1
+
+
+ RUN  v4.1.10 E:/Proj/reproduction-tetris
+
+
+ Test Files  26 passed (26)
+      Tests  231 passed (231)
+   Start at  00:19:12
+   Duration  24.10s (transform 651ms, setup 0ms, import 2.01s, tests 16.74s, environment 2.46s)
+

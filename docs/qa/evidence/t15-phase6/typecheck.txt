@@ -1,0 +1,8 @@
+source_sha=eaed1ac0962ba7256b44136f7bd4f0faef603970
+command=npm.cmd run typecheck
+exit_code=0
+
+
+> signal-foundry@0.1.0 typecheck
+> tsc -b --pretty false
+
