@@ -408,3 +408,29 @@
   - 11–20 artifact SHA-256 remains
     `BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
 - Next action: the same rules reviewer statically re-audits only the GAP closure.
+
+## Levels 11–20 correction acceptance and 21–30 handoff — 2026-07-30
+
+- Re-audited range: `cdd5e43..bb0210f`; candidate record: `4e72f9d`.
+- Same rejecting rules reviewer returns `ACCEPT`;
+  P0=0, P1=0, P2=0, P3=0, GAP=0.
+- Static closure:
+  - canonical anchor rows are derived from registered definitions;
+  - both frozen routes still execute each command through public `dispatch()`;
+  - every real `lines-cleared.rows` coordinate is rejected if it equals an
+    authored anchor row;
+  - final completion, target exhaustion, anchor count and position proof remains;
+  - definitions, setups, names, seeds, routes and artifact bytes are unchanged.
+- Levels 11–20 are accepted and closed.
+- Open task: `t15_puzzle_21_30_candidate_authoring`.
+- Execution-only tool:
+  - `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`
+- Claim boundary: use the unchanged generalized authoring tool to generate
+  deterministic five-row candidates under explicit seed, setup-count, beam and
+  node budgets. Output stays under `.local` and is not product.
+- Sequence: one small smoke process, direct assertions and cleanup; then at most
+  one full candidate-pool process if the smoke is healthy.
+- Closed: all product source/tests, new IDs, localization, progress/unlock,
+  App/selector, CSS, renderer, route artifact, dependencies and other modes.
+- Next action: generate and inspect a five-row pool without overlapping tests,
+  builds, browser automation or another solver.

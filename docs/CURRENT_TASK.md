@@ -17,13 +17,11 @@ Phase 7's documentation contract is frozen at
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
 setup authoring tool `b6acd46` is deterministic and released. Levels 01–10 are
 accepted after correction `2ce309b`. Generalized authoring tool `306106a` and
-levels 11–20 source candidate `cdd5e43` are frozen. Its curriculum/artifact audit
-accepts with P0–P3/GAP zero; its rules audit reports only GAP=1 because the frozen
-route replay proves anchors remain in place but does not explicitly assert that
-no `lines-cleared.rows` entry equals an anchor row. Exactly
-`src/game/core/puzzleSolverResults.test.ts` is reopened to bind that existing Core
-event evidence. Layouts, names, seeds, routes, artifact and all other product paths
-remain frozen.
+levels 11–20 source candidate `cdd5e43` are accepted after anchor-row proof
+`bb0210f`: curriculum/artifact and repeated rules audits now report P0–P3/GAP all
+zero. Levels 01–20 are closed. The next bounded action executes the unchanged
+authoring tool once at a time to produce temporary five-row candidates for
+levels 21–30; no new ID or product path is open yet.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -220,6 +218,25 @@ unchanged at SHA-256
 `BCA55D167E9609D06CF642A373A9AB268E71AD2E7B78486DB48A87CB67F8480E`.
 The same rejecting rules reviewer owns the narrow static re-audit; levels 21–50
 remain closed until it accepts.
+
+**Levels 11–20 correction acceptance (2026-07-30):** the same rules reviewer
+accepts `cdd5e43..bb0210f` with P0–P3/GAP all zero. The correction derives each
+canonical anchor row, executes every frozen command through public `dispatch()`,
+and rejects any real line-clear event targeting that row while retaining the
+existing completion, target-clear, anchor-count and fixed-position assertions.
+Definitions, routes and artifact did not change. Levels 11–20 are accepted and
+closed.
+
+**Open Phase-7 slice — 21–30 candidate authoring:** execute the existing
+`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs` without modifying it,
+using explicit `targetRows: 5`, a bounded seed range, setup counts within 5–15,
+an explicit node budget and an explicit `.local` output. Run a small smoke first,
+then at most one full candidate-pool process. Directly verify schema, five
+contiguous occupied rows, complete four-cell placements, no hidden cells or full
+initial row, determinism and resource cleanup. Product definitions, `PuzzleId`,
+localization, progress, App/selector, CSS, renderer, routes and artifact remain
+closed until the candidate pool is inspected and a separate source contract is
+recorded.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

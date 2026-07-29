@@ -516,3 +516,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Correction `bb0210f` now compares every route's emitted clear-row coordinate
   against canonical anchor rows. Focused proof passes 21/21, typecheck passes,
   and the artifact hash is unchanged. The rejecting reviewer owns re-audit.
+
+- The same reviewer accepts the correction with P0–P3/GAP zero. Levels 11–20
+  are closed. The next action is an execution-only five-row candidate-authoring
+  slice; product paths and new IDs remain closed until its pool is inspected.
