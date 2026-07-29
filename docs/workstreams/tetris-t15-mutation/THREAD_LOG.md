@@ -1545,3 +1545,41 @@
   Python runner or listener remains on 4178/5178/5179.
 - Next action: checkpoint this verdict, register one formal hardware capture lease
   bound to harness `45e7cfc`, take one admission snapshot, and run only that batch.
+
+## 2026-07-29 — Listener-aligned formal hardware capture lease registered
+
+- Task ID: `T15-PHASE5-BROWSER-CAPTURE-LEASE-R4`.
+- Base / accepted static QA:
+  `304509d01beb3c3dee39990794475c28ca3c7e13`.
+- Frozen bindings:
+  - product `ee2aac542529c116c915c38e0603584a7099b5e8`;
+  - final gates `6d9fc6ae00099e3a1eb27240bd3c369216f3b007`;
+  - accepted harness `45e7cfcca48f438be1a9ff24619137ff19dffd3e`.
+- Owner: the primary Tetris coordinator only. No sub-agent, MCP, Serena,
+  language server, test, build, diagnostic, screenshot inspector or second browser
+  workload may overlap this lease.
+- Purpose and command: execute once
+  `python docs/qa/evidence/t15-phase5/capture_phase5.py` and allow the committed
+  harness to own its strict-port Vite server and hardware Playwright Chrome.
+- Expected owned tree: one hidden Python runner root, one Vite/Node server tree and
+  one hardware Chrome tree. The returned Python PID is the ownership root and is
+  monitored serially; no process-name-wide cleanup is authorized.
+- Reserved boundary:
+  - TCP `127.0.0.1:4178` only; 5178 and 5179 remain unused;
+  - `%TEMP%\t15-phase5-browser-run.stdout.log`;
+  - `%TEMP%\t15-phase5-browser-run.stderr.log`;
+  - one harness-owned `.partial-*` directory below
+    `docs/qa/evidence/t15-phase5`.
+- Admission proof: clean `main` at the QA base; product/config, final-gate and
+  accepted-harness diffs are empty; no 4178/5178/5179 listener, Phase-5 runner,
+  Vite/Chrome/Serena helper, control log, partial or browser artifact exists. One
+  PDH snapshot read 11.86% CPU, 23,665 MiB available RAM, 22.99% committed memory
+  and disk queue 0.
+- Success requires runner exit 0, hardware GPU metadata, every visual/performance/
+  lifecycle/FIFO/Collapse check, exactly the harness-declared unique PNG set, matching
+  manifest hashes and final `SHA256SUMS.txt`, with atomic publication and no
+  undeclared repository path.
+- Failure requires zero published artifact. Either outcome requires the recorded
+  Python/Vite/Chrome tree gone, 4178/5178/5179 free, no partial, and external control
+  logs retained only until their result is recorded, then removed.
+- Next action: checkpoint this R4 lease and run only the managed batch.

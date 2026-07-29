@@ -348,6 +348,14 @@ or history rewrite is authorized.
   exact unmount assertions and every product/gate/performance/publication condition
   remain unchanged. One serialized read-only evidence audit must accept this exact
   one-line diff before a new formal browser lease is registered.
+- That audit accepted exact harness `45e7cfc` with P0–P3 and GAP all zero. Its
+  automatically started Serena/TypeScript and MCP children were attributed by native
+  parent/command-line data and released by exact PID; shared Codex infrastructure was
+  preserved. Formal capture R4 is now admitted from clean documentation head
+  `304509d`: product/config, gate and harness diffs are all empty; 4178/5178/5179,
+  partials, browser artifacts and external control logs are absent. One PDH snapshot
+  reports 11.86% CPU, 23,665 MiB available memory, 22.99% committed memory and disk
+  queue 0. Only the single managed hardware capture tree may run next.
 
 ### 2026-07-29 Phase 5 resource-containment contract
 
