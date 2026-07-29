@@ -147,6 +147,26 @@ authorized.
   raw output and its index separately, obtain rules/visual/evidence acceptance, then
   record acceptance, clean resources, and push. Do not open Phase 6 first.
 
+### 2026-07-29 Phase 5 resumed dynamic correction boundary
+
+- Explicit resume reopened only the committed Phase-5 evidence harness. Product source
+  remains `f6fa06e`; the gate evidence at `96a3841` remains authoritative.
+- A mistaken `--help` invocation exposed that the script had no argument parser and
+  therefore launched the capture. It failed closed at the same post-screenshot FIFO
+  assertion and published no PNG, browser manifest, or completion checksum. Its Vite,
+  Chrome, known ports, and partial directory were all verified as released.
+- This third dynamic failure occurred with CPU samples below the 60% admission limit,
+  so screenshot latency may no longer be classified only as external overload. The
+  current harness incorrectly couples the frame-observed FIFO proof to a full-viewport
+  PNG that must remain inside the shortest 300 ms activation.
+- The bounded correction keeps the immediate rAF observer and exact fixed-suffix /
+  instance-index checks, but records FIFO as renderer-state evidence rather than an
+  ambiguously timed PNG. The existing four item-specific activation captures remain
+  the visual proof. The script must also parse `--help` and reject unknown arguments
+  before creating a partial directory, Vite process, or browser.
+- This is a harness-only correction. Core, renderer behavior/geometry, UI, CSS,
+  localization, the committed gate logs, Phase 6, and Puzzle 50 remain closed.
+
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
 as the current-state authority.

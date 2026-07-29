@@ -702,3 +702,29 @@
   harness, inspect every frame, commit raw browser output and the manifest/checksum
   separately, complete rules/visual/evidence QA, then accept, clean and non-force push.
   Phase 6 and Puzzle 50 must remain unopened until then.
+
+## 2026-07-29 — Resume and dynamic FIFO-evidence correction boundary
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-DYNAMIC-R1`.
+- Player explicitly resumed Phase 5. Product source remains `f6fa06e`; no product,
+  renderer-geometry, UI, CSS, localization, Phase-6, or Puzzle-50 path reopened.
+- Resource preflight sampled CPU `38/51/51/48/54%`, 14.67 GiB available RAM, 75.3%
+  committed memory and disk queue 0. Browser admission was deferred because committed
+  memory was marginally above the 75% limit.
+- During a read-only CLI inspection, `capture_phase5.py --help` unexpectedly ran the
+  entire script because no argument parser existed. The run failed closed at the same
+  post-screenshot current-item assertion. It published no browser PNG, JSON manifest,
+  or `SHA256SUMS.txt`; post-run verification found zero project process, known-port
+  listener, Chrome process, or `.partial-*` directory.
+- Dynamic conclusion: a full-viewport PNG does not belong in the 300 ms FIFO
+  correctness gate. The already accepted rAF observer remains the authoritative FIFO
+  proof through fixed expected items, exact queue suffix, derived instance index and
+  complete observed sequence. Four item-specific activation PNGs remain the visual
+  proof.
+- Opened writer path: only
+  `docs/qa/evidence/t15-phase5/capture_phase5.py`. First add argument parsing that
+  exits before resource creation; then remove only the ambiguous FIFO PNG while
+  retaining the observer trace and all other coverage.
+- Next action: commit this contract checkpoint with exact paths, implement the two
+  harness corrections as separate rollback commits, obtain fresh static audits, then
+  rerun the managed capture only inside the resource budget.

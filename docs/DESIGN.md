@@ -271,11 +271,18 @@ clean product tree is bound to the declared source SHA; attaching to an unknown 
 on a familiar port is not source attribution. The DEV renderer snapshot may expose
 read-only activation observability — current item, elapsed/duration, queued count,
 active-particle count, and Collapse settlement columns — but may not mutate or bypass
-Core or visual state. Evidence labels an activation frame from that renderer-owned FIFO,
-captures Bomb after its real impact boundary, and repeats mount/unmount twice against a
-home-screen listener/RAF/audio baseline. A renderer microbenchmark alone does not prove
-60 FPS; real `requestAnimationFrame` mean and p95 are separately bounded. The evidence
-run starts from a fresh partial set, verifies its exact manifest file set, and publishes
+Core or visual state. FIFO order and visual identity are two complementary proofs:
+an observer installed before unrelated captures records every renderer-owned current /
+queue transition through the complete fixed witness, including the 300 ms Collapse
+case, while the four item-specific activation PNGs prove their visible endpoints.
+The evidence must not require one full-viewport PNG to begin and finish inside the
+shortest activation window; that couples screenshot encoding latency to a correctness
+claim and can reject a valid FIFO after the PNG has already captured. Evidence still
+labels every activation frame from renderer state, captures Bomb after its real impact
+boundary, and repeats mount/unmount twice against a home-screen listener/RAF/audio
+baseline. A renderer microbenchmark alone does not prove 60 FPS; real
+`requestAnimationFrame` mean and p95 are separately bounded. The evidence run starts
+from a fresh partial set, verifies its exact manifest file set, and publishes
 `SHA256SUMS.txt` only after data and manifest are present. Text artifacts in this exact
 Phase-5 evidence directory are pinned to LF so Windows `core.autocrlf` cannot invalidate
 their committed hashes; this scoped attribute may not alter product-source EOL policy.

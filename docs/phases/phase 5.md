@@ -81,6 +81,17 @@ ports 4178/5178/5179 and `.partial-*` directories are clear. Resume from `3d01e9
 rerun the same managed harness in a trustworthy resource window, then finish visual /
 evidence QA, acceptance and non-force push before Phase 6.
 
+**Resume correction (2026-07-29):** a third fail-closed run reproduced the
+post-screenshot FIFO assertion even with sampled CPU below the 60% admission limit.
+The harness had coupled the rAF FIFO proof to one full-viewport PNG that must remain
+inside the shortest 300 ms activation. That PNG is not the FIFO proof: the fixed
+expected sequence, queue suffix, instance index and frame-by-frame observer are.
+The bounded correction removes only the ambiguous FIFO witness screenshot while
+retaining the complete observer trace; the four separately labelled activation PNGs
+remain mandatory visual evidence. `--help` and unsupported arguments must also exit
+before a partial directory, Vite process or browser is created. Product source,
+visible VFX geometry and the committed gate evidence remain unchanged.
+
 ## 目标
 
 把冰冻、坍缩、炸弹、倍增设计成附着在普通方块上的效果，而不是四类固定形状。
