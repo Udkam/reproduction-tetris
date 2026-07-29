@@ -942,3 +942,25 @@
 - Next action: commit this finding checkpoint, implement the two harness-only guards,
   run static syntax/pure checks, commit the correction, and request a bounded
   evidence-integrity re-audit.
+
+## 2026-07-29 — Evidence-integrity re-audit passed
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-STATIC-R6`.
+- Harness correction `bc555ee`:
+  - maps the Pixi board frame through Renderer logical Canvas size into the Canvas CSS
+    rectangle and requires x/y/width/height to match the DOM board within 1 px;
+  - recomputes every PNG before manifest creation and again immediately before
+    publication, binds capture and transient-binding file/hash metadata, and rejects
+    duplicate image hashes across distinct labels.
+- Static checks: Python AST, embedded JavaScript syntax, `--help`, diff check and
+  committed source/script binding all PASS.
+- Bounded dynamic mapping diagnostic at step 11:
+  - measured CSS board `(402.5, 91, 391, 782)`;
+  - expected CSS board `(402.5, 91, 391, 782)`;
+  - nonblank 391 × 782 PNG with 8,264/8,264 nontransparent samples and 197 buckets;
+  - Renderer state identical before/after; no page/console error.
+- Diagnostic cleanup: zero temporary directory, known listener and Chrome process.
+- Original evidence reviewer re-audited exact `bc555ee` and returned PASS with
+  P0/P1/P2/P3 all zero. Product `ee2aac5` and gates `6d9fc6a` are unchanged.
+- Next action: take a fresh resource sample, execute the only managed Phase-5 browser
+  batch, then inspect every PNG before any acceptance claim.

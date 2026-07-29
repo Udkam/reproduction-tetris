@@ -227,6 +227,12 @@ or history rewrite is authorized.
   metadata and transient binding metadata where present, and reject duplicate PNG
   hashes across distinct capture labels. This is another harness-only checkpoint;
   `ee2aac5` and the final gates at `6d9fc6a` remain frozen and valid.
+- Harness checkpoint `bc555ee` closes both findings. A bounded dynamic diagnostic
+  proved the complete mapping at desktop: measured and computed CSS board rectangles
+  were both `(402.5, 91, 391, 782)`, with a nonblank Pixi PNG and unchanged pre/post
+  state. The original evidence reviewer then returned PASS with P0–P3 all zero and
+  confirmed no product or gate drift. The single managed Phase-5 browser batch is now
+  admitted, subject to a fresh resource check and fail-closed publication.
 
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
