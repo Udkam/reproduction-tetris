@@ -261,3 +261,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Current resources satisfy the browser admission budget. Next: finish static
   re-audit, run one managed evidence batch, visually inspect all frames, then split
   raw output, index, QA and acceptance into independent rollback commits.
+
+## 2026-07-29 Phase 5 first resumed capture result
+
+- The managed batch rejected a Collapse PNG whose trail expired during capture and
+  published nothing; all owned Vite/Chrome/partial resources were released.
+- `d5b6af8` preserves the strict pre/post gate but moves 260 ms Collapse settlement
+  and ordinary activation frames ahead of longer-lived carrier evidence.
+- Next: resource preflight, one corrected managed rerun, then full frame inspection.

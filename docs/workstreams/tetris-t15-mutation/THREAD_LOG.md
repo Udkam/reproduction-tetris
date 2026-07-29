@@ -787,3 +787,27 @@
 - Next action: accept only a clean final static verdict, execute the one managed
   browser batch, inspect every generated frame, then commit raw output and its
   manifest/checksum separately.
+
+## 2026-07-29 — First resumed browser batch failed closed
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-DYNAMIC-R3`.
+- Candidate at run start: `32ec87c`; evidence harness: `db0141d`; product source:
+  `f6fa06e`.
+- Three independent static reviewers accepted the FIFO and transient pre/post binding
+  with P0=P1=P2=P3=0 after the writer checkpoint removed the earlier record debt.
+- The managed browser run reached real Collapse settlement capture, then rejected the
+  PNG because the 260 ms trail had expired before the post-screenshot snapshot.
+  No PNG, browser manifest, checksum or Vite log was published.
+- Cleanup proof after failure: zero `.partial-*` directory, zero generated browser
+  artifact, zero listener on 4178/5178/5179 and zero Chrome process.
+- Root cause: the loop collected longer-lived carrier/Next/locked screenshots before
+  attempting the short Collapse endpoint. The strict continuity assertion was
+  correct and remains unchanged.
+- Correction checkpoint `d5b6af8` moves Collapse and ordinary activation captures
+  ahead of carrier/status screenshots and accepts a Collapse attempt only in the
+  first quarter of its 260 ms lifetime. It does not extend product VFX duration,
+  bypass the post-screenshot snapshot or alter product source.
+- Static commands after correction: Python AST parse, `--help`, `git diff --check`
+  and exact-path staged review — PASS.
+- Next action: re-enter only after a fresh resource sample, rerun the managed batch,
+  and preserve fail-closed publication behavior.
