@@ -312,6 +312,19 @@ from a fresh partial set, verifies its exact manifest file set, and publishes
 Phase-5 evidence directory are pinned to LF so Windows `core.autocrlf` cannot invalidate
 their committed hashes; this scoped attribute may not alter product-source EOL policy.
 
+Phase-5 evidence is also resource-bound. Its coordinator, any independent reviewer,
+and the managed browser are never concurrent: review turns are serialized, and no
+browser, Vite, test, build, or diagnostic tree overlaps another heavy tree. Optional
+MCP, Serena, language-server, and browser helpers are lifecycle-scoped and released
+between checkpoints. Admission uses eight consecutive two-second PDH samples, all
+below 60% total CPU, with at least 6 GiB available physical memory, committed memory
+at most 75%, disk queue at most 1.0, and a clean process/listener/partial baseline.
+Resource inspection must not invoke WMI/CIM because the inspection itself can create
+sustained provider load; use PDH, native process ownership, `Get-Process`, and
+`netstat`. At 90% sustained CPU, stop admission and release only verified
+project-owned children. System/security services and the shared Codex app runtime are
+never cleanup targets.
+
 ## T13.16 Modal compositor integrity
 
 **Status:** accepted at source `5ab9e7d` after independent code/rules, target/visual,

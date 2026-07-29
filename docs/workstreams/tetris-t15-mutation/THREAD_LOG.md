@@ -1058,3 +1058,40 @@
   with P0/P1/P2/P3 all zero. Product `ee2aac5` and gates `6d9fc6a` have no diff.
 - Next action: take a fresh resource sample, execute the hardware-backed managed
   browser batch, and inspect all generated PNGs before acceptance.
+
+## 2026-07-29 — Resource containment strengthened before browser admission
+
+- Task ID: `T15-PHASE5-RESOURCE-CONTAINMENT-R1`.
+- Base SHA: `0adb29631960ac9d128ec6498ff9a4ca9dd7a8d2`.
+- Exact documentation paths:
+  - `docs/CURRENT_TASK.md`;
+  - `docs/DESIGN.md`;
+  - `docs/workstreams/tetris-t15-mutation/THREAD_LOG.md`.
+- Read-only ownership checks first proved zero Tetris/Vite/Playwright process, zero
+  listeners on 4178/5178/5179, zero Phase-5 partial directory, and zero browser
+  control log. The coordinator then stopped using WMI/CIM after observing that those
+  queries themselves sustained WMI Provider load.
+- Verified release:
+  - complete Serena MCP/Python/TypeScript-language-server tree;
+  - eight idle `./mcp/server.mjs` bridge processes;
+  - twenty-two duplicated stale `personal-web` Astro preview Node processes on port
+    4322, releasing approximately 661 MiB working set;
+  - port 4322, Phase-5 ports, and all corresponding support-process matches verified
+    empty.
+- A managed `node_repl` process immediately respawned after one bounded stop. Further
+  termination was abandoned because the four-slot pool is Codex app infrastructure,
+  not a project-owned worker. The command-safety PowerShell process is also retained.
+- Commands actually used after the WMI stop: `Get-Process`, native
+  `NtQueryInformationProcess` command-line attribution, `netstat`, `typeperf`, Git,
+  `rg`, and explicit filesystem inspection. No browser, test, build, product source,
+  or evidence capture ran.
+- Durable constraint: one coordinator worker, at most one serialized independent QA
+  turn, and exactly one heavy process tree. Browser admission requires eight
+  consecutive two-second PDH CPU samples below 60% plus the existing RAM/commit/disk
+  and clean-baseline gates. WMI/CIM sampling is prohibited.
+- Current blocker: the post-cleanup PDH sample still averaged 78.7% CPU because
+  Defender and the earlier WMI tail remained active; the formal hardware browser run
+  remains unstarted.
+- Next action: let WMI/Defender settle without polling through WMI, take one bounded
+  PDH admission sample, and start the already-committed browser harness only if every
+  strengthened gate passes.

@@ -265,6 +265,35 @@ or history rewrite is authorized.
   product and gate trees are unchanged. The hardware-backed managed batch is now
   admitted after a fresh resource sample.
 
+### 2026-07-29 Phase 5 resource-containment contract
+
+- Phase 5 now executes **strictly serially**. The coordinator is the only active
+  implementation/evidence worker. Independent QA may use at most one sub-agent at a
+  time, only after the candidate is frozen; that agent must finish before another QA
+  turn or any browser/test/build process begins.
+- Browser capture, Vite, test, build, and diagnostic workloads are mutually exclusive.
+  Exactly one heavy process tree may exist, and its owned children, listener, partial
+  directory, and control logs must be released before the next workload starts.
+- MCP, Serena, language servers, and browser helpers are off by default and may start
+  only for a concrete current action. Do not retain them between checkpoints. The
+  fixed Codex command-safety process and managed `node_repl` pool are app infrastructure,
+  not project workers; do not repeatedly terminate a managed process that immediately
+  respawns.
+- Resource sampling may not call WMI, CIM, `wmic`, or `Get-WmiObject`. Use PDH for
+  CPU/commit/disk samples, `Get-Process` plus the native process API for ownership, and
+  `netstat` for listeners. This prevents resource governance from creating WMI load.
+- A hardware browser batch is admitted only when eight consecutive two-second PDH
+  samples are all below 60% total CPU, committed memory is at most 75%, disk queue is
+  at most 1.0, at least 6 GiB physical RAM is available, and no prior Phase-5 process,
+  listener, control log, or partial directory exists. At sustained 90% CPU, stop
+  launching work, release only verified project-owned children, and never terminate
+  Defender, WMI/Windows services, the user control window, or the Codex app-server.
+- The 2026-07-29 cleanup removed the complete Serena/TypeScript-server tree, eight
+  idle MCP bridge processes, and twenty-two stale duplicated `personal-web` preview
+  Node processes (about 661 MiB working set). Phase-5 ports 4178/5178/5179, port 4322,
+  and Phase-5 partial directories then all verified empty. No formal browser run may
+  start until the strengthened admission window passes.
+
 The per-phase goal, team, checkpoint, and rollback briefs are indexed at
 `docs/phases/README.md`. They refine this execution order without replacing this file
 as the current-state authority.
