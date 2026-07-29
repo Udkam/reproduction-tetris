@@ -74,7 +74,7 @@ passed; both temporary outputs and both Node processes were released.
 
 **Open Phase-7 slice — levels 01–10:** exact paths are
 `src/game/core/puzzles.ts`, `src/game/core/puzzles.test.ts`,
-`src/game/core/puzzleCampaign.test.ts`,
+`src/game/core/puzzleCampaign.test.ts`, `src/game/core/puzzleFlow.test.ts`,
 `src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
 `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`, and
 `docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json`. The first ten
@@ -85,7 +85,7 @@ registered definitions and emit the source-bound artifact. Every retained level
 must replay two finishing public-dispatch routes with canonical landing divergence
 by the shorter route's fourth lock. The remaining ten definitions, IDs, progress,
 unlock, App/selector, CSS, renderer, other modes and dependencies remain closed.
-Focused proof is the three direct Core test files plus typecheck; live search runs
+Focused proof is the four direct Core test files plus typecheck; live search runs
 one batch process at a time and never overlaps a full suite, build or browser.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product

@@ -149,6 +149,7 @@
   - `src/game/core/puzzles.ts`
   - `src/game/core/puzzles.test.ts`
   - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleFlow.test.ts`
   - `src/game/core/puzzleSolverResults.test.ts`
   - `src/ui/localization.ts`
   - `docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs`
