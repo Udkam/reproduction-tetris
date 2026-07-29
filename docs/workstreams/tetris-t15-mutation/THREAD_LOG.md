@@ -830,3 +830,20 @@
 - Next action: implement and statically validate the atomic evidence helper, run a
   bounded diagnostic that proves its PNG is nonblank, then rerun the full managed
   batch once.
+
+## 2026-07-29 — WebGL copy diagnostic rejected
+
+- Task ID: `T15-PHASE5-MUTATION-EVIDENCE-EXTRACT-R1`.
+- Harness-only candidate `9f424b4` passed JavaScript/Python syntax, pure continuity
+  simulations and three read-only static audits, but the prescribed live diagnostic
+  failed its nonblank pixel gate: `drawImage` from the presented Pixi WebGL Canvas
+  produced zero nontransparent samples.
+- The dynamic result overrides the static assumption. No diagnostic file was
+  published; temporary Vite, Chrome and log resources were released.
+- Exact reopened source paths are Renderer export + direct test and Runtime DEV QA
+  bridge + direct test. The export uses Pixi `ExtractSystem`, returns no retained
+  Canvas, and remains state-preserving. Harness consumption follows in its own commit.
+- Because source reopens after `96a3841`, final typecheck, full tests and build must be
+  rerun and re-bound before browser evidence.
+- Next action: implement Renderer extract/test first; do not edit runtime or harness
+  until that checkpoint is green and committed.

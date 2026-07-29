@@ -97,13 +97,16 @@ insufficient. The browser batch must also publish one non-empty actual-column Co
 settlement PNG and one reduced-motion activation PNG for each of Freeze, Collapse,
 Bomb and Multiplier. These are harness-only proof corrections, not product changes.
 Two fail-closed managed runs then demonstrated that SwiftShader can take longer than
-the full 260 ms Collapse trail to complete even a cropped DevTools screenshot.
-Transient activation/trail PNGs must therefore be exported atomically from the visible
-single Pixi Canvas: copy the exact CSS board region to an unmounted in-memory 2D
-surface, sample Renderer pre/post state and encode PNG synchronously in one JavaScript
-turn, and reject blank pixels, mismatched CSS/source bounds, dimensions, instance
-identity or hashes. This mechanism is evidence-only; it may not add a visible canvas,
-alter VFX duration, pause gameplay, or replace full-page layout screenshots.
+the full 260 ms Collapse trail to complete even a cropped DevTools screenshot. A
+bounded live diagnostic further proved that copying the presented WebGL Canvas returns
+transparent pixels without `preserveDrawingBuffer`. Transient activation/trail PNGs
+must therefore use Pixi `ExtractSystem` to synchronously rerender the current stage's
+exact board frame into an unmounted 2D Canvas. Sample Renderer pre/post state and
+encode PNG in the same JavaScript turn; reject blank pixels, mismatched CSS/Pixi
+bounds, dimensions, instance identity or hashes. This read-only DEV QA path requires
+direct Renderer/runtime tests and a refreshed final gate batch. It may not retain or
+mount the extracted Canvas, enable `preserveDrawingBuffer`, alter VFX duration, pause
+gameplay, or replace full-page layout screenshots.
 
 ## 目标
 
@@ -194,6 +197,8 @@ alter VFX duration, pause gameplay, or replace full-page layout screenshots.
 7. **Final evidence observability**
    - `src/game/render/TetrisRenderer.ts`
    - `src/game/render/TetrisRenderer.test.ts`
+   - `src/game/runtime/GameRuntime.ts`
+   - `src/game/runtime/GameRuntime.test.ts`
    - `docs/qa/evidence/t15-phase5/capture_phase5.py`
    - root `.gitattributes`, limited to LF/binary rules for
      `docs/qa/evidence/t15-phase5/*`

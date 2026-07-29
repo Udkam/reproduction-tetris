@@ -286,13 +286,19 @@ boundary, captures each of the four activation endpoints again under reduced mot
 and binds one visible Collapse settlement frame to non-empty actual moved columns and
 its maximum drop. SwiftShader can spend longer than the complete 260 ms Collapse
 settlement lifetime in a DevTools screenshot even when capture starts in the first
-quarter. Transient board evidence therefore copies the visible one-Canvas board region
-into a temporary in-memory 2D surface and encodes it synchronously in the page main
-thread. Renderer state is sampled immediately before and after that copy inside the
-same JavaScript turn, so rAF cannot advance between the state witness and pixels.
+quarter. A live diagnostic also proves that `drawImage` from the presented WebGL
+Canvas is transparent because production correctly does not retain its drawing
+buffer. Transient evidence therefore uses Pixi's read-only `ExtractSystem` to render
+the current stage's exact board frame into a temporary in-memory 2D surface and encode
+it synchronously in the page main thread. Renderer state is sampled immediately before
+and after that extract inside the same JavaScript turn, so rAF cannot advance between
+the state witness and pixels.
 The result must include the CSS board bounds, source-pixel crop, PNG dimensions, a
 nonblank pixel probe, file hash, and same-instance activation/trail witness. The
 temporary 2D surface is never mounted and does not create a second gameplay canvas.
+The export is exposed only through the DEV QA surface, is directly tested as
+state-preserving, and may not enable `preserveDrawingBuffer`, pause the renderer or
+retain the extracted Canvas.
 Full-page Playwright screenshots remain authoritative for persistent HUD, responsive,
 language and status layouts. It repeats mount/unmount twice against a home-screen
 listener/RAF/audio baseline. A renderer microbenchmark alone does not prove 60 FPS; real

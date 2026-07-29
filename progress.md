@@ -278,3 +278,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   unmounted 2D surface and encode it synchronously between Renderer pre/post samples.
   Persistent responsive/HUD frames remain Playwright screenshots.
 - Product source, VFX duration and strict instance gates remain unchanged.
+
+## 2026-07-29 Phase 5 Pixi extraction correction
+
+- A live SwiftShader diagnostic proved direct WebGL Canvas copy is transparent, so
+  the harness-only atomic implementation is not eligible for evidence despite static
+  acceptance.
+- The corrected chain is Renderer `ExtractSystem` export/test → Runtime DEV QA
+  bridge/test → harness consumer, each as a separate rollback point.
+- The extracted Canvas remains unmounted and unretained. Product rules and visuals
+  stay unchanged, but all final source gates must be regenerated after this change.
