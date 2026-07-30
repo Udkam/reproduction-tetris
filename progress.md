@@ -565,3 +565,18 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   The original rejecting reviewer accepts with P0–P3/GAP all zero.
 - Progress-unlock is accepted; push its coordinator record before opening the
   separate selector data/scroll slice.
+
+## 2026-07-31 Phase 9 goal adoption
+
+- New direct goal reopens four presentation areas after Phase 8: Survival rigid
+  double rocks at exact 2× cadence, a readable shared cavern material for bedrock
+  and falling rocks, short ordinary landing/line-clear feedback, a no-scroll
+  fifty-level selector, and the previously missed mode-home composition pass.
+- Three read-only design agents independently compared Survival geology, shared
+  micro-feedback, and selector/home alternatives. The accepted synthesis is layered
+  cavern + mineral imprint/seam release + compact preview and `10×5`/`5×10` matrix
+  + two-by-two mode home.
+- Base `main@87121af42330ab9aea9456e28dfa42e5edc62536` is clean and synchronized.
+  Adoption resources are green and ports 4178/5178/5179 are free.
+- Product source remains untouched until the Phase-9 contract checkpoint is reviewed
+  and committed. Survival Core is the first bounded source slice.

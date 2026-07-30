@@ -24,7 +24,8 @@
 | 5 | [Mutation](<phase 5.md>) | 已验收并推送 `4f871ac` | Core/性能 → VFX → UI 三个顺序 writer | 三路最终 QA 均 PASS；保留窄屏省略 P3 |
 | 6 | [Classic](<phase 6.md>) | 已验收并推送；记录 tip `d78e0e5` | `t15_classic_writer` | 规则/视觉/证据 QA 均 ACCEPT |
 | 7 | [Puzzle 50](<phase 7.md>) | 合同 `08c0491`；v5 持久化进行中 | Schema → 五批关卡 → Progress/UI | 求解/规则 QA + 视觉 QA + 证据 QA |
-| 8 | [Integration](<phase 8.md>) | 待执行 | 协调者 | 总体规则 QA + 总体视觉 QA + 证据 QA |
+| 8 | [Integration](<phase 8.md>) | 已验收并推送 `87121af` | 协调者 | 总体规则 QA + 总体视觉 QA + 证据 QA |
+| 9 | [Cave & Navigation](<phase 9.md>) | 合同已冻结，源码未开始 | 协调者单 writer | 规则 QA + 视觉 QA + 证据 QA |
 
 ## 每阶段不可跳过的状态机
 
@@ -37,8 +38,9 @@
 7. `acceptance`：协调者逐项处置发现、更新日志和 changelog；不得以“测试绿”代替视觉验收。
 8. `push`：清理本阶段服务、端口、临时浏览器和工作树后，非强制推送恢复点。
 
-下一 Phase 只有在上一 Phase 已验收并推送后才能取得共享源码路径。整体目标
-只有在 Phase 8 的全局验收完成后才可标记完成。
+下一 Phase 只有在上一 Phase 已验收并推送后才能取得共享源码路径。Phase 9 是
+玩家在 Phase 8 关闭后的新直接目标；只有 Phase 9 的全部纠正、证据和三路审计
+完成后，当前目标才可标记完成。
 
 ## 2026-07-28 规则补充
 

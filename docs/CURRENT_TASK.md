@@ -1,5 +1,94 @@
 # Current Task — T15 TetraMorph Phased Product Refinement
 
+## Phase 9 active goal — cave pressure and navigation correction
+
+**Status (2026-07-31): CONTRACT FROZEN / DESIGN BRAINSTORM COMPLETE /
+SOURCE NOT STARTED.**
+
+The direct goal is to keep correcting this slice until all six requested outcomes are
+implemented and visually accepted:
+
+1. Survival emits one rigid pair of vertically stacked rocks in one deterministic
+   random column. It falls at exactly two times the fixed Survival tetromino speed.
+2. Survival bedrock and falling rocks share a readable, realistic layered-cavern
+   treatment that communicates both rising ground and falling-rock pressure.
+3. Ordinary landing and line clear become short, natural, material-aware feedback
+   without scaling cells, board shake, page flash, particles, or gameplay changes.
+4. The complete fifty-level Puzzle selector fits without vertical scrolling through
+   a compact preview bench and `10×5` desktop/landscape or `5×10` portrait matrix.
+5. The mode home receives the previously missed composition pass: one wordmark,
+   two-by-two mode matrix, stable type, real keyboard navigation, and correctly
+   ordered component styles.
+6. Design choices are frozen only after independent Survival, shared-feedback, and
+   selector/home read-only brainstorms. Those comparisons are complete; the accepted
+   synthesis is recorded in `docs/DESIGN.md` and `docs/phases/phase 9.md`.
+
+The pushed base is `main@87121af42330ab9aea9456e28dfa42e5edc62536`.
+Only the primary coordinator writes shared files. The three brainstorm agents were
+read-only and are finished. Later independent QA agents remain read-only and begin
+only after an immutable candidate exists.
+
+### Ordered checkpoints
+
+1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,
+   browser frames, resource ownership, and rollback base.
+2. `source-survival-core`: rigid-pair state, one-column RNG, `20 ticks/cell`, clear
+   and bedrock mapping, hashing, localization contract, and focused deterministic
+   tests.
+3. `source-survival-render`: common rock family, pair perimeter/fracture, fissure
+   warning, local dust/contact, bedrock boundary response, reduced motion, and
+   Renderer tests.
+4. `source-ordinary-feedback`: support imprint, bounded hard-drop trace, per-cell
+   seam release, reduced motion, reset/unmount cleanup, and direct Renderer tests.
+5. `source-navigation`: compact Puzzle preview and full no-scroll matrix, correct
+   `3–7` tier labels, roving focus, two-by-two mode home, style import order,
+   localization and App tests.
+6. `candidate/evidence`: final typecheck, one full suite, one production build, one
+   managed Vite/Chrome lease, official web-game client, source-bound screenshots,
+   geometry/overflow/input/lifecycle assertions, then complete resource release.
+7. `qa/correction/acceptance`: independent rules, visual, and evidence reviews;
+   relevant findings return to the same writer, receive fresh gates/evidence, and
+   remain open until accepted. Then changelog, scoped gitleaks scan, exact staging,
+   commits, non-force push, and local/tracking/remote equality.
+
+### Exact source boundary
+
+- Core: `src/game/core/constants.ts`, `src/game/core/types.ts`,
+  `src/game/core/engine.ts`, `src/game/core/race.test.ts`, and direct hash/export
+  tests only when required by the rigid pair.
+- Renderer: `src/game/render/presentation.ts`,
+  `src/game/render/presentation.test.ts`, `src/game/render/theme.ts`,
+  `src/game/render/theme.test.ts`, `src/game/render/TetrisRenderer.ts`, and
+  `src/game/render/TetrisRenderer.test.ts`.
+- UI: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
+  `src/styles/tokens.css`, `src/main.tsx`, and `src/ui/localization.ts`.
+- Evidence/docs: Phase-9 files under `docs/qa/evidence/t16-phase9/`,
+  `docs/workstreams/tetris-t16-coordinator/`, `progress.md`, current contracts,
+  and the final changelog entry.
+
+Puzzle level definitions, solver artifacts/routes, unlock/persistence semantics,
+leaderboards, Mutation gameplay/VFX, audio synthesis, dependencies, package metadata,
+desktop packaging, and Steam SDK work remain out of scope.
+
+### Acceptance gates
+
+- Core: exactly one warned column; exactly one vertical two-cell pair; blocked entry
+  produces no partial pair or reroll; pair moves one cell per twenty playing ticks;
+  normal piece moves one cell per forty; seed/replay and seven-bag remain stable;
+  pause/restart/clear/bedrock shift/top-out/hash are deterministic.
+- Renderer: pair remains adjacent in every captured frame; permanent/clearable rocks
+  are visibly related but distinct; all geology and feedback remains clipped to the
+  one Pixi well; no DOM board cells or second Canvas; reduced motion remains clear.
+- Feedback: landing `≤100 ms`, clear `≤150 ms`; stationary cells; zero particles;
+  no full-width sweep rectangle; Mutation carrier/status graphics and Puzzle marks
+  survive ordinary clears.
+- Navigation: all fifty controls visible without scrolling at every required
+  viewport; 44px targets; correct number/tick/best states; responsive arrow steps;
+  Enter and pointer work; all four home entries visible with exactly one wordmark.
+- Final: zero console/page errors and horizontal overflow; deterministic browser
+  state; restart/undo/screen exit/unmount clear transients and return
+  listener/rAF/audio/Canvas counts to baseline.
+
 ## Immediate clean-line correction — restore the ordinary clear baseline
 
 **Status (2026-07-30): ACCEPTED / PUSHED / CLOSED.**

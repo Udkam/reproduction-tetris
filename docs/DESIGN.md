@@ -3,6 +3,127 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
+
+The player's latest direct review opens four previously frozen presentation areas:
+Survival falling stones and geology, the shared ordinary landing/line-clear response,
+the fifty-level Puzzle selector, and the mode home. This Phase supersedes the
+Phase-6R ordinary-clear visual rollback and the Phase-7/8 selector-composition freeze
+only for the exact behaviors below. Puzzle definitions, routes, progression, records,
+Mutation rules, score rules, audio, and the single-Canvas rendering boundary remain
+frozen.
+
+Three independent read-only design comparisons considered each area before source
+work. The accepted direction is one coherent mineral-workbench language:
+
+- Survival uses a **layered cavern** treatment. Permanent bedrock and clearable
+  falling stones share a warm mineral family, deterministic strata, chips, and
+  cracks while preserving exact cell silhouettes and seams. Bedrock is darker and
+  older; falling stones are lighter fresh fractures. It must read as cave pressure,
+  never as a continuous decorative wall or a photo texture.
+- Ordinary piece landing uses a **mineral imprint**: a short support-contact response
+  under the cells that actually land. Ordinary line clearing uses **seam release**:
+  a centre-out sequence of short material-colored marks inside each real cleared
+  cell. Neither response may scale or displace cells, shake the well, flash the page,
+  emit particles, or hide board state.
+- Puzzle selection uses a **two-layer level bench**: a compact selected-level preview
+  above one complete functional matrix. Desktop and short landscape use ten columns
+  by five rows; portrait uses five columns by ten rows. All fifty levels must be
+  visible without page or panel scrolling at the required viewports.
+- The home uses one `TetraMorph` wordmark and a two-by-two mode matrix. The four
+  entries form a functional O-tetromino-like composition through layout, not through
+  copied trade dress or decorative grid lines. Selection strengthens the current
+  mode color without changing CTA hue or animating font weight.
+
+### Survival rigid-pair contract
+
+- Survival's normal piece cadence remains fixed at `40 ticks/cell`. Falling rock
+  cadence becomes exactly `20 ticks/cell`, represented by integer Core state and
+  therefore exactly two times normal Survival speed.
+- One independent deterministic RNG draw selects exactly one column per event. The
+  column is frozen and warned two playing seconds before emission; a blocked event
+  remains due in that column and is never redirected.
+- One event is one rigid vertical pair. Its two cells share one identity, remain
+  vertically adjacent during every move, and settle in the same tick. If either
+  entry cell is blocked, neither cell spawns. Partial pairs are invalid.
+- Both settled cells become clearable Survival stone cells and may complete one or
+  two ordinary rows. They do not become bedrock and do not alter the seven-bag.
+- Pause advances nothing; restart clears pair, warning, timers, and accumulator.
+  Clear mapping and bedrock movement must preserve the pair's single translation;
+  a nonuniform mapping fails closed instead of separating it.
+- Warning, entry, flight, landing, clear, bedrock rise/lower, top-out, and state hash
+  remain deterministic for a seed and command stream.
+
+### Survival cavern presentation
+
+- Board collision geometry remains a ten-column cell field. Coordinate-hashed
+  variants may choose a small fixed set of strata, cracks, and chips; no per-frame
+  random noise or external texture asset is allowed.
+- Bedrock keeps visible seams and a darker compacted face. A subtle shared horizontal
+  stratum may cross adjacent bedrock cells, but each cell boundary remains legible.
+- The airborne pair is drawn as one vertical rock component with a shared perimeter
+  and one internal fracture. It may not resemble two unrelated grey UI tiles.
+- The warning is a top-edge fissure plus a two-cell silhouette in the selected
+  column, not a generic arrow. Flight uses only a short dust tail. Landing uses a
+  local `120–160 ms` dust/contact response. Bedrock rise/lower uses only its newly
+  exposed boundary; no full-board shake.
+- Reduced motion keeps a static warning and final materials, removes interpolation
+  and dust, and uses one instantaneous boundary emphasis.
+
+### Shared ordinary feedback contract
+
+- Landing lasts at most six 60 Hz ticks (`100 ms`). It highlights actual support
+  contacts and a restrained face response of at most twelve percent. A new landing
+  replaces the previous landing response rather than queuing.
+- Hard drop may add at most one short axial trace per occupied column, no more than
+  four traces, for at most three ticks. Full-piece multi-layer ghost trails are
+  rejected.
+- A landing that starts a clear uses only fifty-five percent imprint strength and
+  no hard-drop trace so the row response remains primary.
+- Ordinary clearing completes its visible response in nine ticks (`150 ms`) inside
+  the unchanged twelve-tick Core delay. Centre columns lead; every cell renders one
+  short horizontal seam using that cell material. Cells remain stationary, full
+  size, and recognizable; particle count is zero.
+- Survival falling-rock landing remains its own geology response. Mutation Bomb and
+  Collapse remain their own effects. Puzzle anchors do not participate in the seam,
+  and target ownership marks remain readable.
+- Reduced motion shows a fixed contact imprint fading for four ticks and all ten
+  clear seams fading together for six ticks. It does not remove feedback entirely.
+- Undo, restart, screen exit, and renderer destruction clear every transient.
+
+### Puzzle level-bench contract
+
+- The selected preview becomes a compact horizontal bench containing the real board
+  silhouette, level name/current best, and Start action. It may not consume half the
+  viewport as an empty decorative well.
+- The matrix groups levels `01–10`, `11–20`, `21–30`, `31–40`, and `41–50` as the
+  real `3/4/5/6/7` target-row curriculum. Desktop/landscape use `10 × 5`; portrait
+  uses `5 × 10`. A slightly larger gap between columns five and six may preserve the
+  existing five-level unlock rhythm.
+- Each level control is at least `44 × 44 px`. Ordinary nodes use mineral white and
+  blue-grey edges; selected uses a solid Puzzle accent and visible outer focus;
+  completed replaces its number with the existing centered tick. The best count
+  appears only in the selected preview.
+- Keyboard selection uses roving focus. On the ten-column matrix, Left/Right move
+  one and Up/Down move ten; on the five-column matrix Up/Down move five. Enter
+  selects, and the separate Start action launches the selected level.
+- Selection uses only a `160–200 ms` preview crossfade/one-pixel settle. Reduced
+  motion switches directly. No vertical or horizontal overflow is accepted at
+  `1440×900`, `1280×720`, `2048×1152`, `844×390`, `390×844`, or `360×800`.
+
+### Home correction contract
+
+- The page contains exactly one visible `TetraMorph` wordmark. The right side is a
+  balanced two-by-two mode matrix with the existing four valid tetromino glyphs and
+  mode colors; rules remain in first-entry/Settings rather than home cards.
+- Pointer, focus, and arrow-key selection change only the selected card's surface,
+  edge, and focus treatment. Text metrics and weight remain stable between cards.
+- The real component styles load after semantic tokens so token bridge rules cannot
+  silently override the accepted wordmark or mode composition.
+- Desktop, portrait, and short landscape must keep all four entrances visible with
+  `44 px` targets, visible keyboard focus, Enter activation, reduced-motion support,
+  no duplicate name, and no meaningless copy.
+
 ## 2026-07-30 direct correction — ordinary line-clear rollback
 
 The player's direct review rejects the Phase-6 three-stage ordinary line-clear
