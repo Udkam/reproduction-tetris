@@ -103,15 +103,19 @@ shelves, channels, delayed clears and recovery space into boards that remain rea
 as constructions rather than random rubble. Candidate authoring uses separate ordinary
 and sparse-anchor pools. Six retained packages are ordinary 14/15-drop boards; four
 retained packages each carry one authored headroom anchor. The first general pool
-produced only 12/13-drop supported carriers, but six fixed-bound probes found no
-primary route; a dedicated 11-drop authoring pass is therefore required before the
-anchor setup count is frozen. An anchored candidate is eligible only when the anchor sits immediately above
-the target band on an outer or near-outer column that is already occupied through all
-seven target rows. This support rule avoids both a meaningless floating peg and an
-initially sealed row. The batch does not exercise the optional two-anchor allowance.
-Every package still needs two public-Core routes diverging by lock four at a fixed
-36-lock, 720-primary and 560-alternate beam ceiling. No individual failure may expand
-that domain. Final order and concise bilingual names are assigned only after route
+produced only 12/13-drop carriers, but six fixed-bound probes found no primary route; a
+dedicated 11-drop authoring pass therefore fixes the sparse carrier size.
+
+The initial full-column-support rule is rejected as an overconstraint. The player's
+actual invariant is that an anchor never occupies an initial target row. For this batch
+the anchor remains on visible row 12, immediately above the seven-row target band, on
+an outer or near-outer column, and may not overlap a setup cell, create an initially
+full row, or become a hidden spawn blocker. It does not need a column occupied through
+all seven target rows. Instead, a retained anchor must be proven consequential by
+current-Core comparison and must survive two public-Core routes diverging by lock four
+at the fixed 36-lock, 720-primary and 560-alternate beam ceiling. The batch does not
+exercise the optional two-anchor allowance, and no individual failure may expand that
+search domain. Final order and concise bilingual names are assigned only after route
 metrics and human-readable structural lessons are inspected together; raw setup score
 or route length alone does not define the curriculum.
 

@@ -568,6 +568,36 @@ paths. It registers all ten provisional packages and passes five focused files,
 yet. Keep this green WIP isolated while the 11-drop pool is evaluated; replace
 failed packages atomically before a source checkpoint.
 
+**Levels 41–50 anchor-topology correction (2026-07-30):** the dedicated
+11-drop pass produced 34 valid unique seven-row boards in 9,940,012 attempted
+landings without node-budget exhaustion. Its SHA-256 is
+`B28DEF0F2A88C07CEAD22B28B316F5D50B50BFAEF0974FD5B9BA9BFCA98D0024`;
+15 candidates contain an outer or near-outer column occupied through the full
+target band. Candidate 6 without an anchor completes through the public Core in
+14/14 locks with divergence at lock 2. Adding the full-support `x=1,y=12`
+anchor under gameplay seed `746220617` retains one 14-lock primary route but no
+route diverging by lock four. Two further fixed-width gameplay seeds find no
+primary route, while a serial 300/240 prefix check across all 15 full-support
+carriers finds no complete route pair. All probes ran one at a time at Idle
+priority on one processor affinity and exited before the next began.
+
+The full-seven-row support requirement is therefore withdrawn as a self-imposed
+constraint that is stricter than the player's requested rule. Preserve the four
+one-anchor quota, dedicated 11-drop carriers, anchor row 12, outer/near-outer
+columns and fixed 36/720/560 route ceiling, but permit an otherwise empty
+headroom column. The anchor must remain outside all initial target rows, overlap
+no setup cell, avoid an initially full row and hidden spawn blocking, survive
+both route replays, and measurably alter at least one legal landing or
+post-clear state relative to the same carrier without the anchor.
+
+Open one bounded, serial topology screen over at most 12
+candidate/anchor/gameplay-seed triples. Use a 300/240 beam prefix only to find
+strong candidates, then revalidate every hit at the fixed 720/560 ceiling.
+Exactly one controlled Node process may run at a time; no agent, listener,
+server or second pool may overlap. If four complete packages are not found,
+stop and record the evidence instead of widening the batch silently. Product
+source remains unchanged until all four replacements have replay evidence.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
