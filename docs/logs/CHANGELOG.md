@@ -22,6 +22,10 @@
   artifacts with `26/26` valid manifest hashes, one Canvas, zero DOM board cells,
   zero overflow, and zero console/page errors. Two independent read-only reviews
   accept with no P0/P1/P2 finding.
+- Coordinator checkpoint `5b5dcb1` passed a scoped redacted gitleaks 8.30.1
+  scan across 33 Phase-9 commits, was pushed non-force, and matched local,
+  tracking, and remote `main`. The owned Vite listener and managed Chrome batch
+  were released; this final closeout record is documentation-only.
 
 ## 2026-07-30 — Phase 8 integrated release-readiness evidence accepted
 

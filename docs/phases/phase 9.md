@@ -2,7 +2,7 @@
 
 ## 状态
 
-**ACCEPTED LOCALLY / PUBLICATION PENDING（2026-07-31）。**
+**ACCEPTED / PUSHED / CLOSED（2026-07-31）。**
 
 恢复基线为已推送的 `main@87121af42330ab9aea9456e28dfa42e5edc62536`。
 本阶段由主协调任务作为唯一 writer。三个前置设计智能体只读比较了生存洞穴、

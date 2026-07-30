@@ -472,3 +472,16 @@
   documentation checkpoint, scoped redacted gitleaks scan, non-force push,
   equality verification, and project-service release.
 - Next action: publish the accepted linear range and release the owned Vite lease.
+
+## 2026-07-31 — Phase 9 publication and resource closeout
+
+- Coordinator acceptance checkpoint: `5b5dcb1`.
+- The scoped redacted gitleaks 8.30.1 scan covered `4fc15b8..5b5dcb1`
+  (`33` commits, about `156.26 KB`) and reported no leaks.
+- Non-force push completed; local HEAD, tracking `origin/main`, and remote
+  `refs/heads/main` matched `5b5dcb1d41a4afde9aa02119b64486c5673340d8`.
+- The exact registered project Node listener on `127.0.0.1:5178` was released.
+  Ports `4178`, `5178`, and `5179` have no listeners; managed Chrome count is zero.
+- Blocker: none.
+- Next action: none; Phase 9 is accepted, pushed, closed, and ready for recovery
+  from `main`.

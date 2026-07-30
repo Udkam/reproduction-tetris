@@ -2,8 +2,7 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): PHASE 9 SOURCE-GREEN / BROWSER-GREEN /
-INDEPENDENTLY ACCEPTED / PUBLICATION PENDING.**
+**Status (2026-07-31): PHASE 9 ACCEPTED / PUSHED / CLOSED.**
 
 The direct goal is to keep correcting this slice until all eight requested outcomes are
 implemented and visually accepted:
@@ -198,9 +197,11 @@ gallery viewports, Chinese/English and reduced motion, the staged Survival
 countdown, ranked/unranked non-Puzzle results, pointer leave, tab and level-grid
 keyboard paths, one Canvas, zero DOM board cells, zero overflow, and zero
 console/page errors. Two independent read-only final reviews report
-P0/P1/P2 = 0. Phase 9 is accepted locally and awaits only the final scoped
-gitleaks scan, documentation checkpoint, non-force push, equality check, and
-resource release.
+P0/P1/P2 = 0. Coordinator checkpoint `5b5dcb1` passed a scoped redacted
+gitleaks 8.30.1 scan across the 33-commit Phase-9 range, was pushed non-force,
+and matched local/tracking/remote exactly. The owned Vite listener and managed
+Chrome batch are released. This closing documentation delta changes no product,
+test, build, or evidence artifact.
 
 ### Ordered checkpoints
 
