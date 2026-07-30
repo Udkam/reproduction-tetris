@@ -634,3 +634,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   typecheck. It contains cold-slate materials, polygon/diagonal bedrock detail and
   a fill-only ordinary clear with zero segments. This remains subject to real-frame
   review after countdown staging; it is not yet visual acceptance.
+- Countdown source `76ad7bf` is green on `46/46` Renderer/Runtime tests, one focused
+  React countdown test, and typecheck. It stages the unchanged Core board as
+  `10 / 20 / 30` visible bedrock cells with a masked `420 ms` row rise and an
+  instantaneous reduced-motion path. Real-frame review is the next gate.

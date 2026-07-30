@@ -140,3 +140,29 @@
   capture. Countdown bedrock reveal/rise is not in this checkpoint.
 - Next action: implement Renderer/Runtime/App countdown staging while preserving
   the separate uncommitted selector/home hunks in `src/App.tsx`.
+
+## 2026-07-31 — Survival entry bedrock staging checkpoint
+
+- Task: make the three-second Survival entry visually raise one bedrock row per
+  second without changing Core.
+- Base: slate-feedback recovery `5c28ee6`.
+- Product commit: `76ad7bf`.
+- Changed paths: `src/game/render/TetrisRenderer.ts`,
+  `TetrisRenderer.test.ts`, `src/game/runtime/GameRuntime.ts`,
+  `GameRuntime.test.ts`, and countdown-only hunks in `src/App.tsx` plus
+  `src/App.test.ts`.
+- Implementation: a dedicated masked Pixi layer renders only the newly exposed
+  row; App maps countdown `3 / 2 / 1` to visible row count `1 / 2 / 3`; Runtime
+  forwards presentation state while Core retains the same board reference.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts src/game/runtime/GameRuntime.test.ts --maxWorkers=1`
+  - `npm.cmd run test -- src/App.test.ts --maxWorkers=1 -t "reveals one, two, and three bedrock rows"`
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: Renderer/Runtime `46/46`, focused React `1/1`, and typecheck pass.
+  Direct Renderer proof observes `10 / 20 / 30` visible cells, one-cell initial
+  offset, eased halfway offset, board mask, and instantaneous reduced-motion row.
+- Boundary: the pre-existing selector/home hunks in `src/App.tsx` remain
+  unstaged and uncommitted.
+- Next action: source-bound browser frames for digits `3 / 2 / 1`, settled slate
+  bedrock, falling stone, and a real ordinary clear; then release the lease.

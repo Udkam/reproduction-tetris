@@ -56,7 +56,12 @@ falling stones now use a high-contrast cold-slate family; permanent bedrock repl
 horizontal strata with deterministic polygon facets, two short diagonal fractures,
 and a small pit. Ordinary clear now draws exactly one fill-only inset face per real
 cell and zero line segments. Renderer/theme proof passes `40/40` tests and typecheck.
-This is source-green, not yet browser-accepted; countdown bedrock staging is next.
+Countdown checkpoint `76ad7bf` adds a masked Pixi entry layer plus Runtime/App
+presentation control. Digits `3 / 2 / 1` expose `10 / 20 / 30` canonical bedrock
+cells, and each newly exposed row rises over `420 ms`; reduced motion reveals it
+directly. Renderer/Runtime proof passes `46/46`, the focused React countdown proof
+passes `1/1`, and typecheck passes. Both corrections remain source-green, not yet
+browser-accepted.
 
 ### Ordered checkpoints
 
