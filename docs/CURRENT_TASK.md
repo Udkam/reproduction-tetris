@@ -146,10 +146,12 @@ recovery points, but Phase 9 is not accepted. The open source slices are:
 - one dedicated result ledger for non-Puzzle modes, with structured metrics and
   mode-specific current-run highlighting; checkpoint `8b08361` closes this
   source slice with `43/43` focused App/style tests and typecheck;
-- a dedicated two-page, `25 + 25` Puzzle gallery with a connected hero preview and
-  no scrolling at `1440×900`, `844×390`, `390×844`, or `360×800`;
-- removal of persistent pointer-driven home selection while preserving keyboard
-  roving focus.
+- source checkpoint `2c1a13d` closes the dedicated `25 + 25` Puzzle gallery and
+  persistent-home-selection slices. Each page renders one `5×5` functional matrix
+  around a connected board/name/best/Start hero, with semantic tabs and cross-page
+  roving focus. Home retains only CSS hover and real keyboard focus; it emits no
+  active/pressed selection state. Focused App/navigation/gallery proof passes
+  `48/48` and typecheck passes. The four target viewport frames remain pending.
 
 ### Ordered checkpoints
 

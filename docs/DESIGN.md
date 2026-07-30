@@ -75,6 +75,16 @@ timing, randomisation, or any mode rule.
   Enter/click behavior, the two-by-two matrix, one wordmark, and stable font metrics
   remain unchanged.
 
+### Source checkpoint
+
+Checkpoint `2c1a13d` implements this gallery/home contract without changing any
+Puzzle definition or progress data. The library now exposes two semantic tabs,
+exactly twenty-five functional nodes per page, one canonical silhouette, one
+localized name/best/Start hero, and page-aware `±1 / ±5 / Home / End` focus. Home
+keeps roving keyboard focus but has no pointer-owned state, active class, pressed
+attribute, or persistent selection data. Focused component/style proof is `48/48`
+and typecheck is green; visual acceptance remains open until the final viewport set.
+
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 
 The player's latest direct review opens four previously frozen presentation areas:

@@ -1395,3 +1395,17 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   Runtime handoff.
 - Core is now accepted locally and the frozen Renderer/timeline checkpoint opens.
   Phase 5 remains open, unaccepted, and unpushed.
+
+## 2026-07-31 — two-page Puzzle gallery and transient home checkpoint
+
+- Product checkpoint `2c1a13d` replaces the fifty-node single-page selector with
+  two semantic `5×5` pages, `01–25` and `26–50`, beside/under one connected
+  board/name/best/Start hero.
+- Page-aware roving focus uses left/right `±1`, up/down `±5`, page Home/End, and
+  automatic crossing between levels 25 and 26. Each render mounts only the current
+  twenty-five functional level buttons and one canonical board silhouette.
+- Home retains one keyboard tab stop and directional navigation but emits no
+  persistent active class, pressed state, selection data, or pointer-owned React
+  state; pointer emphasis is now real CSS hover only.
+- Focused App/navigation/gallery tests pass `48/48` and typecheck passes. Formal
+  target-viewport screenshots and independent visual/input QA remain open.

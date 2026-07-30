@@ -179,6 +179,16 @@ evidence.
   首页 pointerleave、键盘焦点和 reduced-motion。每帧均核对单 Canvas、
   零 DOM 棋盘格、零 console/page error 和纵横零 overflow。
 
+### 源码检查点
+
+- `2c1a13d`：双页 `5×5` 图库和首页瞬时 hover 已实现。组件每次只挂载
+  二十五个功能节点；两个范围键为 tablist，方向键可跨 `25/26` 换页并保留
+  焦点；预览、名字、当前最优和 Start 共用一个连接舞台。
+- 首页不再生成 `mode-gate--active`、`data-selected`、`aria-pressed` 或
+  pointer-enter 状态。键盘仍使用单一 roving tab stop 和 `:focus-visible`。
+- 聚焦 App/navigation/gallery 验证通过 `48/48`，typecheck 通过。四个正式
+  视口、两页、中英文、键盘/reduced-motion 仍须由最终候选浏览器证据验收。
+
 ## 最终门禁与 QA
 
 最后一次源码修改后只运行一次最终：

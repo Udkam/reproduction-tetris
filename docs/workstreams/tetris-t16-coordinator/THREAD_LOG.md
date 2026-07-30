@@ -407,3 +407,23 @@
 - Blocker: mode-by-mode desktop, compact landscape, portrait, and English real-frame
   review remains pending until the gallery/home source checkpoint is complete.
 - Next action: open only Puzzle gallery/home pointer presentation paths.
+
+## 2026-07-31 — Puzzle gallery/home source checkpoint
+
+- Task ID: T16 Phase 9 source-gallery-home.
+- Base SHA: `16435bc`.
+- Product SHA: `2c1a13d`.
+- Exact changed paths: `src/App.tsx`, `src/App.test.ts`, `src/main.tsx`,
+  `src/ui/localization.ts`, `src/styles/navigation.css`,
+  `src/styles/navigation.test.ts`, `src/styles/puzzle-library.css`,
+  `src/styles/puzzle-library.test.ts`.
+- Result: the selector is now a two-page `25 + 25` gallery with one canonical
+  preview/name/best/Start hero and one `5×5` matrix per page. Page tabs and
+  page-aware roving focus are semantic and cross `25/26`. Home pointer hover is
+  pure CSS and never persists as an active/pressed selection.
+- Commands actually run: focused three-file Vitest `48/48`, typecheck, diff check,
+  exact-path cached-path inspection, and product commit.
+- Evidence: source tests only. Formal browser frames remain superseded until the
+  immutable candidate is built.
+- Blocker: final gates, source-bound target-view captures, and independent QA.
+- Next action: commit this docs record, then run the one final gate batch.
