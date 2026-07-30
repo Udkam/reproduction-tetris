@@ -117,19 +117,19 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  // Dense cold slate: permanent and clearly distinct from warm playable pieces.
-  fillStart: 0x737d82,
-  fillEnd: 0x5b666b,
-  edge: 0x2f373c,
-  innerEdge: 0xaab3b7,
+  // Compacted cave shelf: dark, permanent, and visually heavier than clearable stone.
+  fillStart: 0x56636a,
+  fillEnd: 0x36434a,
+  edge: 0x1c282e,
+  innerEdge: 0x8da0a7,
 };
 
 /** Fresh, clearable fracture from the same cold-slate family as bedrock. */
 export const SURVIVAL_STONE_MATERIAL: PieceMaterial = {
-  fillStart: 0x9aa4a9,
-  fillEnd: 0x747f85,
-  edge: 0x434c51,
-  innerEdge: 0xd0d7da,
+  fillStart: 0x8999a2,
+  fillEnd: 0x61727c,
+  edge: 0x2d3c44,
+  innerEdge: 0xc2d1d6,
 };
 
 /** Puzzle-only immutable cells use a pale mineral core rather than a playable hue. */

@@ -322,6 +322,67 @@ export interface RendererBoardCapture {
 
 const easeOutCubic = (value: number): number => 1 - Math.pow(1 - value, 3);
 const CLASSIC_FEEDBACK_LIMIT = 6;
+const SURVIVAL_ENTRY_RISE_MS = 680;
+const SURVIVAL_ENTRY_SETTLE_MS = 140;
+const SURVIVAL_ENTRY_DURATION_MS = SURVIVAL_ENTRY_RISE_MS + SURVIVAL_ENTRY_SETTLE_MS;
+
+function cubicBezierCoordinate(value: number, first: number, second: number): number {
+  const inverse = 1 - value;
+  return 3 * inverse * inverse * value * first
+    + 3 * inverse * value * value * second
+    + value * value * value;
+}
+
+/** Fixed `cubic-bezier(.22,.72,.28,1)` without allocating an easing object per frame. */
+function survivalEntryCurve(value: number): number {
+  const target = Math.max(0, Math.min(1, value));
+  let lower = 0;
+  let upper = 1;
+  for (let step = 0; step < 7; step += 1) {
+    const sample = (lower + upper) / 2;
+    const x = cubicBezierCoordinate(sample, 0.22, 0.28);
+    if (x < target) lower = sample;
+    else upper = sample;
+  }
+  return cubicBezierCoordinate((lower + upper) / 2, 0.72, 1);
+}
+
+function survivalEntryRiseProgress(elapsedMs: number): number {
+  if (elapsedMs <= 0) return 0;
+  if (elapsedMs < SURVIVAL_ENTRY_RISE_MS) {
+    return survivalEntryCurve(elapsedMs / SURVIVAL_ENTRY_RISE_MS) * 0.94;
+  }
+  const settleProgress = Math.min(
+    1,
+    (elapsedMs - SURVIVAL_ENTRY_RISE_MS) / SURVIVAL_ENTRY_SETTLE_MS,
+  );
+  return 0.94 + easeOutCubic(settleProgress) * 0.06;
+}
+
+const GEOLOGY_OUTLINE_CUTS = [
+  [0.11, 0.06, 0.12, 0.05],
+  [0.05, 0.12, 0.06, 0.11],
+  [0.08, 0.05, 0.1, 0.13],
+  [0.13, 0.09, 0.05, 0.08],
+] as const;
+
+const BEDROCK_PLANE_ORIGINS = [
+  [0.08, 0.12],
+  [0.5, 0.48],
+  [0.14, 0.52],
+  [0.48, 0.1],
+] as const;
+
+const BEDROCK_CRACK_TEMPLATES = [
+  [0.62, 0.3, 0.5, 0.45, 0.58, 0.56],
+  [0.34, 0.28, 0.46, 0.42, 0.38, 0.56],
+  [0.64, 0.58, 0.52, 0.46, 0.44, 0.56],
+  [0.3, 0.62, 0.42, 0.48, 0.36, 0.36],
+] as const;
+
+function geologyVariant(cell: Cell, salt: number, count: number): number {
+  return Math.abs(cell.x * (29 + salt) + cell.y * (13 + salt * 2) + salt * 17) % count;
+}
 
 const SCORE_SEGMENT_COORDINATES = [
   [.12, 0, .88, 0],
@@ -525,7 +586,7 @@ export class TetrisRenderer {
         : {
             rows: nextEntryRows,
             elapsed: 0,
-            duration: 420,
+            duration: SURVIVAL_ENTRY_DURATION_MS,
           };
     }
     if (this.options.reducedMotion) {
@@ -799,13 +860,10 @@ export class TetrisRenderer {
       && !this.options.reducedMotion
       && this.survivalEntryBedrockRise?.rows === stagedBedrockRows;
     const entryRiseProgress = entryRiseActive
-      ? Math.max(0, Math.min(
-          1,
-          this.survivalEntryBedrockRise!.elapsed / this.survivalEntryBedrockRise!.duration,
-        ))
+      ? survivalEntryRiseProgress(this.survivalEntryBedrockRise!.elapsed)
       : 1;
     const entryRiseOffsetY = entryRiseActive
-      ? layout.cell * (1 - easeOutCubic(entryRiseProgress))
+      ? layout.cell * (1 - entryRiseProgress)
       : 0;
     const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
       ? boardShiftPresentationOffset(
@@ -827,11 +885,7 @@ export class TetrisRenderer {
           && visibleY < firstVisibleBedrockY
         ) return;
         visibleLockedCells += 1;
-        if (
-          cell === BEDROCK_CELL
-          && entryRiseActive
-          && visibleY === firstVisibleBedrockY
-        ) {
+        if (cell === BEDROCK_CELL && entryRiseActive) {
           risingBedrockCells.push({ x, y: visibleY });
           return;
         }
@@ -1411,6 +1465,7 @@ export class TetrisRenderer {
       CELL_STYLE.seamLipWidthMin,
       Math.min(CELL_STYLE.seamLipWidthMax, size * CELL_STYLE.seamLipWidthRatio),
     );
+    const geology = type === BEDROCK_CELL || type === SURVIVAL_STONE_CELL;
     const occupied = new Set(cells.map((cell) => `${cell.x},${cell.y}`));
     const geometry = exposedCellEdges(cells).map(({ cell, exposed }) => {
       const baseX = options.originX + cell.x * options.unit;
@@ -1424,7 +1479,28 @@ export class TetrisRenderer {
     });
 
     if (!options.ghost) {
-      for (const entry of geometry) graphics.roundRect(entry.x, entry.y, size, size, radius);
+      for (const entry of geometry) {
+        if (!geology) {
+          graphics.roundRect(entry.x, entry.y, size, size, radius);
+          continue;
+        }
+        const cuts = GEOLOGY_OUTLINE_CUTS[geologyVariant(
+          entry.cell,
+          type === BEDROCK_CELL ? 0 : 3,
+          GEOLOGY_OUTLINE_CUTS.length,
+        )] ?? GEOLOGY_OUTLINE_CUTS[0];
+        const [topLeft, topRight, bottomRight, bottomLeft] = cuts;
+        graphics.poly([
+          entry.x + size * topLeft, entry.y,
+          entry.x + size * (1 - topRight), entry.y,
+          entry.x + size, entry.y + size * topRight,
+          entry.x + size, entry.y + size * (1 - bottomRight),
+          entry.x + size * (1 - bottomRight), entry.y + size,
+          entry.x + size * bottomLeft, entry.y + size,
+          entry.x, entry.y + size * (1 - bottomLeft),
+          entry.x, entry.y + size * topLeft,
+        ]);
+      }
       for (const entry of geometry) {
         if (!entry.exposed.right) graphics.rect(entry.x + size, entry.y, gap * 2, size);
         if (!entry.exposed.bottom) graphics.rect(entry.x, entry.y + size, size, gap * 2);
@@ -1440,30 +1516,32 @@ export class TetrisRenderer {
       else graphics.fill({ color: options.faceColor, alpha });
       if (options.faceColor !== undefined) return;
 
-      const faceSignalSegments: Array<[number, number, number, number]> = [];
-      const faceDarkSegments: Array<[number, number, number, number]> = [];
-      for (const entry of geometry) {
-        const left = entry.x + faceInset;
-        const top = entry.y + faceInset;
-        const right = entry.x + size - faceInset;
-        const bottom = entry.y + size - faceInset;
-        faceSignalSegments.push([left, top, right, top], [left, bottom, left, top]);
-        faceDarkSegments.push([right, top, right, bottom], [right, bottom, left, bottom]);
+      if (!geology) {
+        const faceSignalSegments: Array<[number, number, number, number]> = [];
+        const faceDarkSegments: Array<[number, number, number, number]> = [];
+        for (const entry of geometry) {
+          const left = entry.x + faceInset;
+          const top = entry.y + faceInset;
+          const right = entry.x + size - faceInset;
+          const bottom = entry.y + size - faceInset;
+          faceSignalSegments.push([left, top, right, top], [left, bottom, left, top]);
+          faceDarkSegments.push([right, top, right, bottom], [right, bottom, left, bottom]);
+        }
+        this.strokeSegments(
+          graphics,
+          faceSignalSegments,
+          material.innerEdge,
+          Math.min(CELL_STYLE.faceSignalAlpha, alpha),
+          faceBevelWidth,
+        );
+        this.strokeSegments(
+          graphics,
+          faceDarkSegments,
+          material.edge,
+          Math.min(CELL_STYLE.faceDarkAlpha, alpha),
+          faceBevelWidth,
+        );
       }
-      this.strokeSegments(
-        graphics,
-        faceSignalSegments,
-        material.innerEdge,
-        Math.min(CELL_STYLE.faceSignalAlpha, alpha),
-        faceBevelWidth,
-      );
-      this.strokeSegments(
-        graphics,
-        faceDarkSegments,
-        material.edge,
-        Math.min(CELL_STYLE.faceDarkAlpha, alpha),
-        faceBevelWidth,
-      );
       if (type === BEDROCK_CELL) {
         this.drawBedrockFacets(graphics, geometry, size, faceInset, material, alpha);
       } else if (type === SURVIVAL_STONE_CELL) {
@@ -1524,6 +1602,28 @@ export class TetrisRenderer {
         material.innerEdge,
         Math.min(CELL_STYLE.ghostSeamAlpha, alpha),
         CELL_STYLE.ghostSeamWidth,
+      );
+    } else if (geology) {
+      this.strokeSegments(
+        graphics,
+        seamSegments,
+        material.edge,
+        Math.min(0.3, alpha * 0.32),
+        Math.max(0.7, seamGrooveWidth * 0.72),
+      );
+      this.strokeSegments(
+        graphics,
+        [...segments.get('top')!, ...segments.get('left')!],
+        material.innerEdge,
+        Math.min(0.58, alpha * 0.62),
+        borderWidth,
+      );
+      this.strokeSegments(
+        graphics,
+        [...segments.get('bottom')!, ...segments.get('right')!],
+        material.edge,
+        Math.min(0.78, alpha * 0.82),
+        borderWidth,
       );
     } else if (options.active) {
       this.strokeSegments(
@@ -1592,27 +1692,22 @@ export class TetrisRenderer {
       const right = entry.x + size - inset * 1.55;
       const top = entry.y + inset * 1.55;
       const bottom = entry.y + size - inset * 1.55;
-      const variant = Math.abs(entry.cell.x * 29 + entry.cell.y * 13) % 4;
+      const variant = geologyVariant(entry.cell, 0, BEDROCK_PLANE_ORIGINS.length);
       const width = right - left;
       const height = bottom - top;
-      const patchOrigins = [
-        [0.12, 0.16],
-        [0.56, 0.54],
-        [0.18, 0.58],
-        [0.54, 0.14],
-      ] as const;
-      const [patchX, patchY] = patchOrigins[variant] ?? patchOrigins[0];
+      const [patchX, patchY] = BEDROCK_PLANE_ORIGINS[variant] ?? BEDROCK_PLANE_ORIGINS[0];
       const patchLeft = left + width * patchX;
       const patchTop = top + height * patchY;
 
       graphics
         .poly([
-          patchLeft, patchTop + height * 0.08,
+          patchLeft, patchTop + height * 0.1,
           patchLeft + width * 0.2, patchTop,
-          patchLeft + width * 0.31, patchTop + height * 0.15,
-          patchLeft + width * 0.12, patchTop + height * 0.26,
+          patchLeft + width * 0.36, patchTop + height * 0.13,
+          patchLeft + width * 0.29, patchTop + height * 0.32,
+          patchLeft + width * 0.09, patchTop + height * 0.29,
         ])
-        .fill({ color: material.edge, alpha: Math.min(0.2, alpha * 0.24) });
+        .fill({ color: material.edge, alpha: Math.min(0.23, alpha * 0.27) });
       const chipOnLeft = variant === 0 || variant === 2;
       graphics
         .poly([
@@ -1625,13 +1720,7 @@ export class TetrisRenderer {
         ])
         .fill({ color: material.innerEdge, alpha: Math.min(0.13, alpha * 0.15) });
 
-      const crackTemplates = [
-        [0.62, 0.3, 0.5, 0.45, 0.58, 0.56],
-        [0.34, 0.28, 0.46, 0.42, 0.38, 0.56],
-        [0.64, 0.58, 0.52, 0.46, 0.44, 0.56],
-        [0.3, 0.62, 0.42, 0.48, 0.36, 0.36],
-      ] as const;
-      const crack = crackTemplates[variant] ?? crackTemplates[0];
+      const crack = BEDROCK_CRACK_TEMPLATES[variant] ?? BEDROCK_CRACK_TEMPLATES[0];
       this.strokeSegments(
         graphics,
         [
@@ -1673,7 +1762,7 @@ export class TetrisRenderer {
       const top = entry.y + inset * 1.5;
       const right = entry.x + size - inset * 1.5;
       const bottom = entry.y + size - inset * 1.5;
-      const variant = Math.abs(entry.cell.x * 17 + entry.cell.y * 31) % 3;
+      const variant = geologyVariant(entry.cell, 3, 3);
       const width = right - left;
       const height = bottom - top;
       const middleX = left + width * (variant === 0 ? 0.44 : variant === 1 ? 0.58 : 0.5);
@@ -1681,12 +1770,13 @@ export class TetrisRenderer {
 
       graphics
         .poly([
-          left + width * 0.56, top + height * 0.12,
-          left + width * 0.82, top + height * 0.08,
-          left + width * 0.9, top + height * 0.3,
-          left + width * 0.68, top + height * 0.36,
+          left + width * 0.5, top + height * 0.09,
+          left + width * 0.84, top + height * 0.07,
+          left + width * 0.92, top + height * 0.3,
+          left + width * 0.74, top + height * 0.43,
+          left + width * 0.55, top + height * 0.34,
         ])
-        .fill({ color: material.edge, alpha: Math.min(0.24, alpha * 0.3) });
+        .fill({ color: material.innerEdge, alpha: Math.min(0.18, alpha * 0.2) });
       graphics
         .poly([
           left, bottom - chip,
@@ -1705,6 +1795,13 @@ export class TetrisRenderer {
         Math.min(0.5, alpha * 0.58),
         crackWidth,
       );
+      graphics
+        .circle(
+          variant === 1 ? left + width * 0.22 : right - width * 0.18,
+          variant === 2 ? top + height * 0.22 : bottom - height * 0.2,
+          Math.max(0.65, size * 0.025),
+        )
+        .fill({ color: material.edge, alpha: Math.min(0.32, alpha * 0.36) });
     }
   }
 

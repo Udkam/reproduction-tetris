@@ -251,3 +251,33 @@
   motion remain in the immutable browser batch.
 - Next action: commit this green checkpoint, then open P10.8 Survival entry/cavern and
   local typography.
+
+## 2026-07-31 — Phase 10 Survival continuous cave-shelf checkpoint
+
+- Task ID: `T17-P10.8A`
+- Base SHA: `90745a22f5c0978368c901201a724a12da4763f2`
+- Owner: primary coordinator
+- Exact paths:
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - `src/game/render/theme.ts`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts --maxWorkers=1 --fileParallelism=false`:
+    `38/38` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: every one-second Survival countdown beat now translates the complete
+  visible cave shelf by one row rather than revealing a detached top strip. The
+  movement uses the frozen `680 ms` continuous rise plus `140 ms` settle contract;
+  reduced motion still snaps to the completed row. Permanent bedrock and clearable
+  falling stone now use deterministic irregular silhouettes and cached fracture
+  variants from one cold-slate family: bedrock is darker and compacted, while falling
+  stone is lighter with a complete outline and fresh fracture plane. Ordinary
+  tetromino materials and their rounded relief remain unchanged.
+- Resource note: one Vitest worker, no file parallelism, no server, watcher, browser,
+  Serena, WMI/CIM, or new sub-agent.
+- Blocker: none for P10.8A. Real-frame motion, material readability, and reduced-motion
+  acceptance remain in the single final browser batch.
+- Next action: commit this green renderer checkpoint, then complete P10.8B local
+  typography and Back-to-home copy.

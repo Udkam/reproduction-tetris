@@ -578,6 +578,7 @@ describe('Puzzle undo presentation reset', () => {
       survivalEntryGraphics: rising.graphics,
       survivalEntryMaskGraphics: mask.graphics,
     });
+    const drawGroups = vi.spyOn(internals, 'drawCellGroups');
 
     renderer.setOptions({ survivalEntryBedrockRows: 1 });
     internals.drawPieces(state, layout);
@@ -586,15 +587,19 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot().survivalEntryBedrockRise).toMatchObject({
       rows: 1,
       elapsedMs: 0,
-      durationMs: 420,
+      durationMs: 820,
       offsetY: 20,
     });
-    const firstRowFaces = rising.operations.filter((operation) => operation.kind === 'roundRect');
-    expect(firstRowFaces).toHaveLength(10);
-    expect(Math.min(...firstRowFaces.map((operation) => operation.values[1]!)))
-      .toBeGreaterThanOrEqual(layout.y + layout.height);
+    const firstRiseCall = drawGroups.mock.calls.find((call) => (
+      call[0] === rising.graphics && call[2] === BEDROCK_CELL
+    ));
+    expect(firstRiseCall?.[1]).toHaveLength(10);
+    expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
+    expect(rising.operations.filter((operation) => operation.kind === 'poly').length)
+      .toBeGreaterThanOrEqual(20);
+    expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
-    internals.advanceEffects(210);
+    internals.advanceEffects(340);
     const halfway = createGraphicsRecorder();
     Object.assign(internals as unknown as Record<string, unknown>, {
       survivalEntryGraphics: halfway.graphics,
@@ -604,6 +609,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(halfwayOffset).toBeGreaterThan(0);
     expect(halfwayOffset).toBeLessThan(layout.cell);
 
+    drawGroups.mockClear();
     renderer.setOptions({ survivalEntryBedrockRows: 2 });
     const secondRow = createGraphicsRecorder();
     Object.assign(internals as unknown as Record<string, unknown>, {
@@ -612,6 +618,14 @@ describe('Puzzle undo presentation reset', () => {
     internals.drawPieces(state, layout);
     expect(renderer.getSnapshot().visibleLockedCells).toBe(20);
     expect(renderer.getSnapshot().survivalEntryBedrockRise).toMatchObject({ rows: 2, offsetY: 20 });
+    const secondRiseCall = drawGroups.mock.calls.find((call) => (
+      call[0] === secondRow.graphics && call[2] === BEDROCK_CELL
+    ));
+    expect(secondRiseCall?.[1]).toHaveLength(20);
+    expect(secondRiseCall?.[4]).toMatchObject({ offsetY: 20 });
+    expect(drawGroups.mock.calls.some((call) => (
+      call[0] === pieces.graphics && call[2] === BEDROCK_CELL
+    ))).toBe(false);
 
     renderer.setOptions({ reducedMotion: true, survivalEntryBedrockRows: 3 });
     const reduced = createGraphicsRecorder();
