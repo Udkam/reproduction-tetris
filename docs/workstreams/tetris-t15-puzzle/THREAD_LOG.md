@@ -1079,3 +1079,27 @@
   candidate is frozen.
 - Next action: commit this opening checkpoint, implement the pure frontier and
   direct matrix, then stop before React integration.
+
+## Progress-unlock frozen candidate — 2026-07-30
+
+- Task: `t15_puzzle_progress_unlock`.
+- Accepted/pushed base SHA: `e8bc42b`.
+- Contract checkpoint: `692bc0c`.
+- Product candidate: `3d21df8`.
+- Exact changed paths:
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+- Commands actually run:
+  - direct progress test: 1 file / 8 tests, pass;
+  - `npm.cmd run typecheck`, pass;
+  - bounded progress + App matrix: 2 files / 44 tests, pass.
+- Evidence: fresh 01–03, 2-of-3 opening 04–05, 3-of-5 opening 06–10,
+  repeated three-completion five-level gates through 46–50, historical
+  out-of-order replay without leapfrog, locked-write rejection, malformed
+  fallback and final null frontier all have direct assertions.
+- Scope: migration domains, v5 schema/key/revision, definitions/artifacts,
+  App/App tests, selector/CSS, localization, renderer, other modes and
+  dependencies are unchanged.
+- Blocker: none in the frozen candidate. This is not acceptance.
+- Next action: one bounded read-only rules/migration audit of exact candidate
+  `3d21df8`, then coordinator disposition before selector adaptation opens.

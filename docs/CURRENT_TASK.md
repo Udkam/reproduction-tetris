@@ -63,6 +63,21 @@ selector/CSS, localization, renderer, other modes or dependencies. Run the
 focused progress test and typecheck, then freeze a source candidate for one
 read-only rules/migration audit before opening selector adaptation.
 
+**Progress-unlock candidate (2026-07-30):** product `3d21df8` over accepted
+base `e8bc42b` implements the exact two-path claim. Fresh progress opens three
+levels; the 2-of-3 and 3-of-5 opening gates feed the repeated five-level
+frontier; completed out-of-order IDs remain individually replayable without
+opening a later band; a locked level cannot create a completion or best record.
+All frontier query functions derive the same ordered set and malformed
+in-memory progress falls back to the fresh frontier.
+
+The direct progress matrix passes 1 file / 8 tests; the bounded progress + App
+integration matrix passes 2 files / 44 tests with one worker; typecheck passes.
+No App/App-test, migration-domain, v5-key/revision, definition/artifact,
+selector/CSS, localization, renderer, other-mode or dependency path changed.
+Freeze `3d21df8` for one read-only rules/migration audit; selector adaptation
+remains closed.
+
 **Open Phase-7 slice — persistence-v5:** exact product/test paths are
 `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`, and
 `src/App.test.ts`. This slice may add the v5 key/revision, freeze v4/v3/v2/v1 domains,
