@@ -1056,3 +1056,26 @@
   and typecheck and is not an open GAP.
 - Disposition: accepted. Next action: commit and push this acceptance point,
   then open unlock/v5 and selector data/scroll adaptation as a separate slice.
+
+## Progress-unlock source opening — 2026-07-30
+
+- Task: `t15_puzzle_progress_unlock`.
+- Accepted/pushed base SHA: `e8bc42b`.
+- Writer: coordinator.
+- Exact open paths:
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+- Claim: replace the transitional all-open workshop with the frozen canonical
+  3 / 2-of-3 / 3-of-5 / repeating-3-of-5 frontier; preserve migrated
+  out-of-order completions as individually replayable without allowing them
+  to leapfrog a closed prerequisite band; reject completion writes to locked
+  levels.
+- Closed: migration domains and v5 schema/key, definitions/artifacts, App and
+  App tests, selector/CSS, localization, renderer, other modes and dependencies.
+- Required focused proof: direct progress test plus typecheck, followed by one
+  read-only rules/migration audit of the frozen candidate.
+- Resource boundary: no solver, browser, server, listener, MCP, Serena or
+  WMI/CIM. Use one transient single-worker test process; no subagent until the
+  candidate is frozen.
+- Next action: commit this opening checkpoint, implement the pure frontier and
+  direct matrix, then stop before React integration.

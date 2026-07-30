@@ -16,11 +16,11 @@ Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
 setup authoring tool `b6acd46` and its generalization `306106a` are deterministic
-and released. Levels 01–40 are independently accepted and pushed through recovery
-point `d8573e33693dcfe79e91cf015fd58b8e2f3d9cb1`, with both 31–40 audits reporting
-P0–P3/GAP all zero. The next bounded action executes the unchanged authoring tool
-once at a time to produce temporary seven-row candidate pools for levels 41–50;
-no new ID or product path is open yet.
+and released. All five ten-level definition/artifact batches are independently
+accepted and pushed through recovery point `e8bc42b9413dc096f503f122746cffb05b185f74`,
+with both 41–50 audits reporting P0–P3/GAP all zero. The next bounded slice
+implements the already-frozen progressive unlock rules in progress source and
+direct tests only; React selector adaptation remains closed.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -45,6 +45,23 @@ writer for each shared slice. Under the updated dynamic resource memory, green p
 parallel static audits and at most two heavy tasks; amber serializes new heavy work;
 red starts none. Helpers are on-demand and ownership-cleaned, with no WMI/CIM. Exact
 paths, tests and evidence are frozen in `docs/phases/phase 7.md`.
+
+**Open Phase-7 slice — progress unlock (2026-07-30):** accepted/pushed base
+`e8bc42b`. Exact product/test paths are `src/puzzleProgress.ts` and
+`src/puzzleProgress.test.ts`. Implement the frozen frontier only: fresh progress
+opens 01–03; two completions there open 04–05; three completions across 01–05
+open 06–10; then three completions in each already-open five-level band open the
+next. Canonical completed IDs outside the current frontier remain individually
+replayable but do not leapfrog closed prerequisite bands. Locked levels reject
+new completion records. `nextPuzzleTierGate`, `nextLockedPuzzleLevel`,
+`unlockedPuzzleLevelCount` and `isPuzzleUnlocked` must expose the same canonical
+frontier and fail closed for malformed in-memory data.
+
+This slice may update comments and direct tests but may not modify migration
+domains, v5 revision/key semantics, Puzzle definitions/artifacts, App/App tests,
+selector/CSS, localization, renderer, other modes or dependencies. Run the
+focused progress test and typecheck, then freeze a source candidate for one
+read-only rules/migration audit before opening selector adaptation.
 
 **Open Phase-7 slice — persistence-v5:** exact product/test paths are
 `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`, and
