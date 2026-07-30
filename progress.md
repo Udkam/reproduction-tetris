@@ -682,3 +682,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   232 px but its rows, gaps, and top inset require 234 px, so the final row is clipped.
   The same narrow correction must close that exact two-pixel budget without changing
   Puzzle content, progress, routes, preview semantics, or any gameplay system.
+- Live measurement of the first correction finds a second inherited selector in the
+  same cascade: a higher-specificity 48 px button minimum still produces
+  `237 > 233` matrix scroll/client height. Short landscape must explicitly restore
+  the 44 px button contract before gates or evidence can be considered final.

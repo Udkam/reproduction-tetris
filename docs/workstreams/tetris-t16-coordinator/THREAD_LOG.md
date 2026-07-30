@@ -318,6 +318,11 @@
 - Second P1: at 844×390 the short-landscape route leaves 232 px for a matrix that
   needs 234 px (`5×44` rows + `4×3` gaps + a 2 px top inset). Because the bands own
   `overflow:hidden`, the fifth row is clipped.
+- First correction browser measurement: removing the 2 px inset is insufficient
+  because legacy `.console-route .console-node > button` has higher specificity than
+  the new `.console-node button` rule and retains `min-height: 48px`. The real
+  844×390 matrix reports `scrollHeight 237` and `clientHeight 233`, with a 48 px
+  final button extending below its 44.16 px band.
 - Correction boundary: only `src/styles/navigation.css` and its direct cross-layer
   and budget regression test may change. Product rules, Puzzle content/progress,
   Survival, renderer, Core, records, localization, dependencies, and other visual

@@ -119,6 +119,12 @@ budget allocates 232 px to a five-row matrix whose five 44 px rows, four 3 px ga
 and 2 px top inset require 234 px, so `overflow:hidden` clips the last row. The
 correction is limited to authoritative home grid-item placement resets, an exact
 short-landscape matrix budget repair, and direct cross-layer/budget regressions.
+The first corrected browser measurement exposed one further rule in the same
+cascade family: legacy `.console-route .console-node > button` specificity keeps
+the actual short-landscape button at 48 px, producing
+`scrollHeight 237 > clientHeight 233` even after the 2 px inset is removed. The
+short-landscape authority must therefore reset that exact selector to the contracted
+44 px target before the candidate can be reconsidered.
 Survival, rules, Core, Renderer, records, audio, dependencies, Puzzle content and
 progress semantics remain frozen. All final gates and affected browser frames must
 be regenerated from the corrected candidate before acceptance.
