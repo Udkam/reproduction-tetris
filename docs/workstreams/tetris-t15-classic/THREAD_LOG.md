@@ -1,8 +1,26 @@
 # T15 Phase 6 Classic Workstream Log
 
+## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-GATES-014
+
+- Status: `SOURCE CANDIDATE / CLEAN-LINE GATES GREEN / QA PENDING`.
+- Candidate range: `62ba8e9..70cff6e`; documentation adoption `bc10882`.
+- Final clean-line gates:
+  - Renderer/presentation: PASS, 2 files / 39 tests;
+  - current Puzzle route/QA: PASS, 2 files / 5 tests;
+  - typecheck: PASS;
+  - full one-worker suite: PASS, 26 files / 235 tests;
+  - production build: PASS, 753 modules.
+- The 235-test clean baseline intentionally excludes one App assertion that
+  belonged only to the preserved rejected-selector WIP. No Renderer, Core,
+  Puzzle, runtime, or accepted selector-baseline coverage was removed.
+- Resource proof: commands ran sequentially with one worker; no browser, server,
+  watcher, WMI/CIM, Serena, MCP, resident reader, or new child agent.
+- Next action: return the exact clean-line range and selector-path exclusion to
+  the same independent rules reviewer. No acceptance or push before ACCEPT.
+
 ## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-LINE-013
 
-- Status: `SOURCE CANDIDATE / GATES PENDING`.
+- Status: `SOURCE CANDIDATE / SUPERSEDED BY GREEN GATE RECORD`.
 - Accepted remote base: `62ba8e9`.
 - Preserved rejected-selector history:
   `codex/t15-selector-wip-20260730` at `dce331b`.

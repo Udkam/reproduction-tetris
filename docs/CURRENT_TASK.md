@@ -2,7 +2,7 @@
 
 ## Immediate clean-line correction — restore the ordinary clear baseline
 
-**Status (2026-07-30): SOURCE CANDIDATE / CLEAN-LINE GATES PENDING.**
+**Status (2026-07-30): SOURCE CANDIDATE / CLEAN-LINE GATES GREEN / INDEPENDENT QA PENDING.**
 
 The rejected Phase-7 selector candidate and all of its later local records are preserved
 without loss at `codex/t15-selector-wip-20260730`. `main` continues from accepted remote
@@ -22,6 +22,13 @@ captures may be reused only if a static source comparison proves that their Rend
 inputs are byte-equivalent to `760437d`; otherwise capture fresh final-candidate
 evidence. Return the clean-line range to the same independent rules reviewer before
 coordinator acceptance or push.
+
+Clean-line gates are green: Renderer/presentation passes 2 files / 39 tests; current
+route/QA evidence passes 2 files / 5 tests; typecheck passes; the full one-worker suite
+passes 26 files / 235 tests; and the production build passes with 753 modules. The
+single-test reduction from the preserved WIP line is the excluded selector-candidate
+test, not lost coverage in the clean product range. No browser, server, watcher, or
+resident helper ran for these gates.
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
