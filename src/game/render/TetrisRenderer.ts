@@ -1095,6 +1095,7 @@ export class TetrisRenderer {
     layout: BoardLayout,
     offsetX = 0,
     offsetY = 0,
+    detailScale = 1,
   ): void {
     if (cells.length === 0) return;
     const material = this.mutationMaterial(item);
@@ -1108,7 +1109,7 @@ export class TetrisRenderer {
       const freezeBreath = item === 'freeze' && !this.options.reducedMotion
         ? 1 + .04 * (.5 - .5 * Math.cos(this.mutationClockMs / MUTATION_VFX_TOKENS.freeze.animation.pulseMs * Math.PI * 2))
         : 1;
-      const radius = Math.max(3, layout.cell * 0.19) * freezeBreath;
+      const radius = Math.max(2, layout.cell * 0.19 * detailScale) * freezeBreath;
       if (item === 'freeze') {
         this.drawMutationDiamond(graphics, centerX, centerY, radius * 1.18, radius * 1.54, material.edge, 0.92);
         this.drawMutationDiamond(graphics, centerX, centerY, radius * 0.7, radius, material.innerEdge, 0.94);
@@ -2343,33 +2344,45 @@ export class TetrisRenderer {
 
   private drawFreezeAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
     const token = MUTATION_VFX_TOKENS.freeze;
-    const frostProfile = token.shader.frost;
-    const inset = Math.max(2, layout.cell * 0.13);
-    const pulse = this.options.reducedMotion ? 1 : 0.76 + Math.sin(phase * Math.PI * 2) * 0.18;
-    const radius = Math.max(5, layout.cell * 0.22);
-    graphics
-      .roundRect(layout.x + inset, layout.y + inset, layout.width - inset * 2, layout.height - inset * 2, radius)
-      .fill({ color: token.palette.primary, alpha: token.shader.fieldAlpha * 0.55 * opacity })
-      .stroke({
-        color: token.palette.highlight,
-        alpha: 0.82 * pulse * opacity,
-        width: Math.max(1, layout.cell * 0.062 * (frostProfile?.edgeStrength ?? 1)),
-      })
-      .roundRect(layout.x + inset * 2.5, layout.y + inset * 2.5, layout.width - inset * 5, layout.height - inset * 5, Math.max(3, radius * .6))
-      .stroke({ color: token.palette.primary, alpha: 0.42 * pulse * opacity, width: Math.max(1, layout.cell * 0.025) });
-    const shardSize = Math.max(3, layout.cell * 0.19);
+    const inset = Math.max(1.5, layout.cell * 0.08);
+    const pulse = this.options.reducedMotion ? 1 : 0.88 + Math.sin(phase * Math.PI * 2) * 0.1;
+    const fieldDepth = Math.min(layout.height * 0.31, layout.cell * 6.2);
+    const bands = 7;
+    const bandHeight = fieldDepth / bands;
+    for (let band = 0; band < bands; band += 1) {
+      const normalized = band / Math.max(1, bands - 1);
+      graphics
+        .rect(
+          layout.x + inset,
+          layout.y + inset + band * bandHeight,
+          layout.width - inset * 2,
+          bandHeight + 0.5,
+        )
+        .fill({
+          color: band < 2 ? token.palette.highlight : token.palette.primary,
+          alpha: token.shader.fieldAlpha * (0.56 * Math.pow(1 - normalized, 1.7)) * pulse * opacity,
+        });
+    }
+    const glintY = layout.y + inset + fieldDepth * 0.92;
+    const glintInset = layout.cell * 0.56;
+    this.strokeSegments(graphics, [
+      [layout.x + glintInset, glintY, layout.x + layout.width * 0.34, glintY],
+      [layout.x + layout.width * 0.47, glintY, layout.x + layout.width * 0.66, glintY],
+      [layout.x + layout.width * 0.78, glintY, layout.x + layout.width - glintInset, glintY],
+    ], token.palette.highlight, 0.22 * pulse * opacity, Math.max(1, layout.cell * 0.025));
+    const shardSize = Math.max(3, layout.cell * 0.17);
     for (const [xFactor, yFactor, scale] of [
-      [.08, .05, .8], [.27, .04, .52], [.72, .05, .7], [.92, .08, .46], [.04, .29, .5], [.96, .67, .76], [.16, .87, .4], [.83, .9, .58],
+      [.08, .035, .72], [.27, .07, .48], [.53, .045, .56], [.72, .1, .66], [.92, .055, .42], [.16, .18, .38], [.83, .23, .5],
     ] as const) {
-      const drift = this.options.reducedMotion ? 0 : Math.sin((phase + xFactor) * Math.PI * 2) * layout.cell * .08;
+      const drift = this.options.reducedMotion ? 0 : ((phase + xFactor) % 1) * layout.cell * .36;
       this.drawMutationDiamond(
         graphics,
         layout.x + layout.width * xFactor,
-        layout.y + layout.height * yFactor + drift,
+        layout.y + fieldDepth * yFactor / 0.31 + drift,
         shardSize * scale * .45,
         shardSize * scale,
         token.palette.highlight,
-        0.82 * pulse * opacity,
+        0.54 * pulse * opacity,
       );
     }
   }
@@ -2510,7 +2523,9 @@ export class TetrisRenderer {
         compact: true,
       };
       this.drawMutationCarrierSurface(graphics, shape, carrierItem, previewLayout);
-      this.drawMutationCarrierCore(graphics, shape, carrierItem, previewLayout);
+      // Preview decoration is deliberately compact: the canonical tetromino body
+      // remains complete and no item core can be mistaken for a fifth cell.
+      this.drawMutationCarrierCore(graphics, shape, carrierItem, previewLayout, 0, 0, 0.62);
     }
   }
 
@@ -3120,21 +3135,16 @@ export class TetrisRenderer {
       return;
     }
 
-    const freezeOpacity = this.mutationFieldOpacityFor('freeze');
-    const frostProfile = MUTATION_VFX_TOKENS.freeze.shader.frost;
-    this.mutationFilterState.freeze = freezeOpacity > .001 && Boolean(frostProfile);
+    this.mutationFilterState.freeze = false;
     // Collapse is intentionally vector-local. A world-wide displacement field
     // implies unaffected columns are moving and violates the actual-column contract.
     this.mutationFilterState.collapse = false;
 
-    if (this.frostFilter && frostProfile) {
-      this.frostFilter.enabled = this.mutationFilterState.freeze;
-      this.frostFilter.noise = this.mutationFilterState.freeze
-        ? frostProfile.noise * (.42 + freezeOpacity * .58)
-        : 0;
-      // A deterministic clock gives the glass grain a living surface without a
-      // renderer random source or a per-frame allocation.
-      this.frostFilter.seed = ((this.mutationClockMs * .00037) % 1) * frostProfile.noiseScale;
+    if (this.frostFilter) {
+      // Ice is expressed by the board-local upper gradient. Leaving the reusable
+      // filter disabled prevents a full-world blue/grain wash over pieces and HUD.
+      this.frostFilter.enabled = false;
+      this.frostFilter.noise = 0;
     }
 
     if (this.collapseFilter) {
@@ -3297,70 +3307,41 @@ export class TetrisRenderer {
   ): void {
     const eased = this.options.reducedMotion ? 1 : easeOutCubic(progress);
     const depthWeight = .82 + Math.min(1, trail.maxDrop / 6) * .18;
-    const alpha = this.options.reducedMotion ? .76 : .58 * (1 - progress * .72) * depthWeight;
+    const alpha = this.options.reducedMotion ? .76 : .72 * (1 - progress * .68) * depthWeight;
     if (alpha <= 0) return;
     const material = this.mutationMaterial('collapse');
-    const stroke = Math.max(1, layout.cell * .05);
-    const columnWidth = Math.max(2, layout.cell * .08);
+    const stroke = Math.max(1, layout.cell * .055);
     for (const column of trail.columns) {
-      let minFrom = BOARD_HEIGHT;
       let maxTo = 0;
       for (const path of trail.paths) {
         if (path.x !== column) continue;
-        minFrom = Math.min(minFrom, path.fromY);
         maxTo = Math.max(maxTo, path.toY);
       }
-      if (minFrom >= BOARD_HEIGHT || maxTo < VISIBLE_START_ROW) continue;
-      const visibleFrom = Math.max(VISIBLE_START_ROW, minFrom);
+      if (maxTo < VISIBLE_START_ROW) continue;
       const visibleTo = Math.min(VISIBLE_START_ROW + VISIBLE_HEIGHT - 1, maxTo);
       const centerX = layout.x + (column + .5) * layout.cell;
-      const top = layout.y + (visibleFrom - VISIBLE_START_ROW + .12) * layout.cell;
-      const bottom = layout.y + (visibleTo - VISIBLE_START_ROW + .88) * layout.cell;
-      const height = Math.max(layout.cell * .74, bottom - top);
-      graphics
-        .roundRect(centerX - columnWidth * 1.7, top, columnWidth, height, columnWidth / 2)
-        .fill({ color: material.edge, alpha: alpha * .46 })
-        .roundRect(centerX + columnWidth * .7, top + layout.cell * .18, columnWidth, height * .78, columnWidth / 2)
-        .fill({ color: material.innerEdge, alpha: alpha * .26 });
-      if (!this.options.reducedMotion) {
-        const moteY = top + height * ((progress * 1.24 + column * .17) % 1);
-        graphics
-          .circle(centerX, moteY, Math.max(1, columnWidth * .86))
-          .fill({ color: material.innerEdge, alpha: alpha * .82 });
+      const supportY = layout.y + (visibleTo - VISIBLE_START_ROW + 1) * layout.cell;
+      const travel = this.options.reducedMotion ? 0 : (1 - eased) * layout.cell * .38;
+      const chevronY = supportY - layout.cell * .58 - travel;
+      const spread = layout.cell * .24;
+      for (let mark = 0; mark < 2; mark += 1) {
+        const y = chevronY - mark * layout.cell * .27;
+        this.strokeSegments(graphics, [
+          [centerX - spread, y - layout.cell * .08, centerX, y + layout.cell * .12],
+          [centerX, y + layout.cell * .12, centerX + spread, y - layout.cell * .08],
+        ], mark === 0 ? material.innerEdge : material.edge, alpha * (1 - mark * .18), stroke);
       }
-      const spread = layout.cell * .3;
-      this.strokeSegments(graphics, [
-        [centerX - spread, bottom - layout.cell * .12, centerX, bottom + layout.cell * .12],
-        [centerX, bottom + layout.cell * .12, centerX + spread, bottom - layout.cell * .12],
-      ], material.innerEdge, alpha, stroke);
-      if (eased > .68) {
-        graphics
-          .roundRect(
-            centerX - layout.cell * .37,
-            bottom + layout.cell * .2,
-            layout.cell * .74,
-            Math.max(2, layout.cell * .07),
-            Math.max(1, layout.cell * .035),
-          )
-          .fill({ color: material.fillStart, alpha: alpha * (eased - .68) / .32 });
-      }
-    }
-    for (const path of trail.paths) {
-      if (path.toY < VISIBLE_START_ROW || path.fromY >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
-      const fromY = layout.y + (path.fromY - VISIBLE_START_ROW + .5) * layout.cell;
-      const toY = layout.y + (path.toY - VISIBLE_START_ROW + .5) * layout.cell;
-      const currentY = fromY + (toY - fromY) * eased;
-      const size = layout.cell * .56;
+      const imprintAlpha = this.options.reducedMotion ? alpha : alpha * Math.max(0.25, eased);
       graphics
         .roundRect(
-          layout.x + (path.x + .5) * layout.cell - size / 2,
-          currentY - size / 2,
-          size,
-          size,
-          Math.max(2, layout.cell * .1),
+          centerX - layout.cell * .39,
+          supportY + layout.cell * .055,
+          layout.cell * .78,
+          Math.max(2, layout.cell * .085),
+          Math.max(1, layout.cell * .04),
         )
-        .fill({ color: material.edge, alpha: alpha * .22 })
-        .stroke({ color: material.innerEdge, alpha: alpha * .74, width: stroke });
+        .fill({ color: material.fillStart, alpha: imprintAlpha * .68 })
+        .stroke({ color: material.innerEdge, alpha: imprintAlpha * .82, width: Math.max(1, stroke * .72) });
     }
   }
 
@@ -3408,6 +3389,7 @@ export class TetrisRenderer {
   ): void {
     const classic = state?.mode === 'marathon';
     const clearsOnLock = events.some((event) => event.type === 'clear-started');
+    const seenMutationItems = new Set<MutationItem>();
     for (const event of events) {
       if (event.type === 'piece-moved') {
         if (this.presentation) {
@@ -3493,6 +3475,8 @@ export class TetrisRenderer {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.18 : 0.46);
         this.enqueueSurvivalStoneCue('land', event.cells);
       } else if (event.type === 'mutation-activated') {
+        if (seenMutationItems.has(event.item)) continue;
+        seenMutationItems.add(event.item);
         this.enqueueMutationFlash({
           item: event.item,
           triggerCells: event.triggerCells ?? [],

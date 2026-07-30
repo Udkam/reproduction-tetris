@@ -216,6 +216,7 @@ type RendererInternals = {
     layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
     offsetX?: number,
     offsetY?: number,
+    detailScale?: number,
   ) => void;
   drawMutationCarrierSurface: (
     graphics: unknown,
@@ -431,6 +432,19 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
+  });
+
+  it('queues one renderer activation per distinct item in a simultaneous batch', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    internals.consumeEvents([
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
+    ]);
+
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze' });
+    expect(internals.mutationFlashQueue).toMatchObject([{ item: 'collapse' }]);
   });
 
   it('preserves the current Mutation flash, FIFO, and timed fields when reduced motion changes', () => {
@@ -946,9 +960,9 @@ describe('Puzzle undo presentation reset', () => {
     internals.drawMutationCarrierRim = (_graphics, _cells, item) => {
       calls.push({ layer: 'rim', item });
     };
-    internals.drawMutationCarrierCore = (graphics, cells, item, coreLayout, offsetX, offsetY) => {
+    internals.drawMutationCarrierCore = (graphics, cells, item, coreLayout, offsetX, offsetY, detailScale) => {
       calls.push({ layer: 'core', item });
-      originalCore(graphics, cells, item, coreLayout, offsetX, offsetY);
+      originalCore(graphics, cells, item, coreLayout, offsetX, offsetY, detailScale);
     };
 
     for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
@@ -972,6 +986,35 @@ describe('Puzzle undo presentation reset', () => {
       expect(calls.filter((call) => call.item === item && call.layer === 'core')).toHaveLength(3);
       expect(calls.filter((call) => call.item === item && call.layer === 'rim')).toHaveLength(3);
     }
+  });
+
+  it('keeps the full Next tetromino body and scales only its item attachment', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const drawnBodies: Cell[][] = [];
+    const detailScales: number[] = [];
+    internals.drawCellGroups = (_graphics, cells) => {
+      drawnBodies.push(cells.map((cell) => ({ ...cell })));
+    };
+    internals.drawMutationCarrierSurface = () => undefined;
+    internals.drawMutationCarrierCore = (
+      _graphics,
+      _cells,
+      _item,
+      _layout,
+      _offsetX,
+      _offsetY,
+      detailScale,
+    ) => {
+      detailScales.push(detailScale ?? 1);
+    };
+
+    internals.drawPreviewPiece(createGraphicsRecorder().graphics, 'L', 100, 100, 20, 'collapse');
+
+    expect(drawnBodies).toHaveLength(1);
+    expect(drawnBodies[0]).toHaveLength(4);
+    expect(new Set(drawnBodies[0]!.map((cell) => `${cell.x}:${cell.y}`)).size).toBe(4);
+    expect(detailScales).toEqual([0.62]);
   });
 
   it('binds Collapse activation wells only to the trigger columns with no board-wide bar', () => {
@@ -1083,7 +1126,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(geometrySignature(twoGlyph.operations)).not.toBe(geometrySignature(fourGlyph.operations));
   });
 
-  it('keeps Freeze reusable while Collapse stays vector-local instead of distorting the whole board', () => {
+  it('keeps Ice and Supergravity vector-local instead of filtering the whole board', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const frost = { enabled: false, noise: 0, seed: 0 };
@@ -1107,10 +1150,39 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(frost).toMatchObject({ enabled: true, noise: 0.035 });
+    expect(frost).toMatchObject({ enabled: false, noise: 0 });
     expect(collapse.enabled).toBe(false);
     expect(collapse.scale.x).toBe(0);
     expect(collapse.scale.y).toBe(0);
+  });
+
+  it('confines the Ice cold front to an upper gradient before the main stack', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 10, y: 20, width: 200, height: 400, cell: 20, compact: false };
+    const recorder = createGraphicsRecorder();
+    internals.drawActiveMutationAtmosphere(
+      recorder.graphics,
+      {
+        mode: 'sprint',
+        mutationFreezeTicks: 600,
+        mutationCollapseTicks: 0,
+        mutationMultiplierTicks: 0,
+        mutationMultiplierFactor: 1,
+      } as unknown as GameState,
+      layout,
+    );
+
+    const bands = recorder.operations.filter((operation) => operation.kind === 'rect');
+    expect(bands).toHaveLength(7);
+    expect(bands.every((operation) => (
+      operation.values[1]! >= layout.y
+      && operation.values[1]! + operation.values[3]! <= layout.y + layout.height * 0.33
+    ))).toBe(true);
+    expect(recorder.operations.some((operation) => (
+      operation.kind === 'roundRect'
+      && operation.values[3]! >= layout.height * 0.5
+    ))).toBe(false);
   });
 
   it('uses one crystalline material core per connected freeze carrier without white glyphs', () => {
@@ -1262,6 +1334,7 @@ describe('Puzzle undo presentation reset', () => {
     );
     const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
     expect(rectangles.every((operation) => operation.values[2]! < 160)).toBe(true);
+    expect(rectangles.every((operation) => operation.values[3]! <= 2)).toBe(true);
     expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
     expect(rectangles.every((operation) => {
       const center = operation.values[0]! + operation.values[2]! / 2;

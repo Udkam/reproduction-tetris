@@ -111,3 +111,37 @@
   in P10.4 and final real-frame evidence.
 - Next action: commit this green checkpoint, then open P10.4 Mutation preview,
   Supergravity landing, upper-Ice treatment, and restrained audio.
+
+## 2026-07-31 — Phase 10 Mutation presentation checkpoint
+
+- Task ID: `T17-P10.4`
+- Base SHA: `891cf670ba6ba923a54cf3936376896f4bddff6f`
+- Owner: primary coordinator
+- Exact paths:
+  - `src/design/mutationTokens.ts`
+  - `src/game/audio/AudioEngine.ts`
+  - `src/game/audio/AudioEngine.test.ts`
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `npm.cmd run test -- src/game/audio/AudioEngine.test.ts src/game/render/TetrisRenderer.test.ts --maxWorkers=1 --fileParallelism=false`
+    (first run: `47/48`; one new test referenced an unnamed local layout variable)
+  - the same focused command after correcting that test: `48/48` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: every distinct same-frame Mutation item now receives one deterministic
+  presentation/audio cue while duplicate events of the same item are ignored at the
+  consumer boundary. Ice uses one low-gain glass tap and never starts a sustained
+  oscillator. Its persistent field is seven upper-edge alpha bands with sparse
+  descending flecks; the reusable whole-world frost filter remains disabled. Next
+  retains all four canonical tetromino cells while only its item attachment is scaled
+  to fit. Supergravity settlement no longer draws long column rails or moving
+  pseudo-cells: each affected column receives two short downward weight marks and one
+  dense support imprint.
+- Resource note: one Vitest worker, no file parallelism, no server/watcher/browser.
+  Process inspection used direct `Get-Process`, not WMI/CIM; no unrelated process was
+  stopped.
+- Blocker: none for P10.4. Real frame color/opacity and reduced-motion acceptance remain
+  in the single final browser batch.
+- Next action: commit this green checkpoint, then open P10.5 mode-first result ledger.

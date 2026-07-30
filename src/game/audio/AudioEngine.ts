@@ -22,6 +22,7 @@ interface MutationLoopVoice extends EffectVoice {
 }
 
 type MutationActivation = Extract<GameEvent, { type: 'mutation-activated' }>;
+type MutationLoopItem = Exclude<MutationItem, 'bomb' | 'freeze'>;
 
 /** Full-volume mix gain is deliberately above unity, then safely contained by the compressor. */
 const FULL_VOLUME_MASTER_GAIN = 1.7;
@@ -36,7 +37,7 @@ export class AudioEngine {
   private compressor: DynamicsCompressorNode | null = null;
   private enabled = true;
   private mutationVoices: EffectVoice[] = [];
-  private readonly mutationLoops = new Map<Exclude<MutationItem, 'bomb'>, MutationLoopVoice>();
+  private readonly mutationLoops = new Map<MutationLoopItem, MutationLoopVoice>();
   private volume = 1;
   private lastMoveAt = 0;
   private lastSoftDropAt = 0;
@@ -100,7 +101,8 @@ export class AudioEngine {
     if (!this.context || !this.master) return;
     if (!this.enabled) return;
     const includesHardDrop = events.some((event) => event.type === 'hard-dropped');
-    const primaryMutation = this.primaryMutationEvent(events);
+    const mutationActivations = this.uniqueMutationActivations(events);
+    const hasMutationActivation = mutationActivations.length > 0;
     for (const event of events) {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = this.platform.now();
@@ -124,9 +126,7 @@ export class AudioEngine {
       } else if (event.type === 'lines-cleared') {
         // A material trigger is the player-facing resolution of this clear. Let it
         // speak on its own rather than stacking a clear chord into the same transient.
-        if (!primaryMutation) this.clearChord(event.count);
-      } else if (event.type === 'mutation-activated') {
-        if (event === primaryMutation) this.mutationCue(event);
+        if (!hasMutationActivation) this.clearChord(event.count);
       } else if (event.type === 'bedrock-raised') {
         this.tone({ frequency: 92, duration: 0.17, gain: 0.23, endFrequency: 78, type: 'sine' });
       } else if (event.type === 'bedrock-lowered') {
@@ -146,6 +146,7 @@ export class AudioEngine {
         this.tone({ frequency: 440, duration: 0.08, gain: 0.14, delay: 0.045, endFrequency: 494, type: 'sine' });
       }
     }
+    this.playMutationActivations(mutationActivations);
   }
 
   destroy(): void {
@@ -182,56 +183,70 @@ export class AudioEngine {
     this.tone({ frequency: 286, duration: 0.024, gain: 0.11, delay: 0.006, endFrequency: 218, type: 'triangle' });
   }
 
-  private primaryMutationEvent(events: readonly GameEvent[]): MutationActivation | null {
-    const activations = events.filter((event): event is MutationActivation => event.type === 'mutation-activated');
-    if (!activations.length) return null;
-    // Several carrier cells may resolve in one clear. Keep the feedback readable by
-    // choosing one deterministic foreground signature, with direct board-changing
-    // items taking priority over a passive multiplier.
-    const priority: Record<MutationActivation['item'], number> = {
-      multiplier: 1,
-      freeze: 2,
-      collapse: 3,
-      bomb: 4,
-    };
-    return activations.reduce((primary, activation) => (
-      priority[activation.item] >= priority[primary.item] ? activation : primary
-    ));
+  private uniqueMutationActivations(events: readonly GameEvent[]): MutationActivation[] {
+    const unique = new Map<MutationItem, MutationActivation>();
+    for (const event of events) {
+      if (event.type !== 'mutation-activated') continue;
+      const previous = unique.get(event.item);
+      if (!previous) {
+        unique.set(event.item, event);
+        continue;
+      }
+      if (
+        event.item === 'multiplier'
+        && (event.multiplierFactor ?? 2) > (previous.multiplierFactor ?? 2)
+      ) {
+        unique.set(event.item, event);
+      }
+    }
+    return [...unique.values()];
   }
 
-  private mutationCue(event: MutationActivation): void {
-    // An effect belongs to the material that just fired. Do not leave an earlier cue
-    // ringing beneath it: the visual rail also shows only the newest transient state.
+  private playMutationActivations(activations: readonly MutationActivation[]): void {
+    if (!activations.length) return;
     this.stopMutationCue();
+    activations.forEach((activation, index) => {
+      this.mutationCue(activation, index * 0.045);
+    });
+  }
+
+  private mutationCue(event: MutationActivation, delayOffset = 0): void {
     // Carrier geometry is immutable Core event data. It makes an unusually broad
     // activation slightly fuller without depending on renderer state or randomness.
     const carrierAccent = Math.min(1.1, 0.84 + Math.max(0, event.triggerCells?.length ?? 4) * 0.04);
     const token = MUTATION_VFX_TOKENS[event.item].audio;
     if (event.item === 'freeze') {
-      // Two unbent ceramic taps: bright enough to read as ice, short enough to avoid
-      // the electronic sweep character of the old rising tones.
-      this.tone({ frequency: token.activateHz, duration: 0.11, gain: 0.17 * carrierAccent, type: token.waveform }, true);
-      this.tone({ frequency: token.accentHz, duration: 0.15, gain: 0.14 * carrierAccent, delay: 0.058, type: 'sine' }, true);
+      // One quiet glass tap marks the cold front. Ice has no sustained oscillator
+      // and no second note that could turn simultaneous activations into a chime.
+      this.tone({
+        frequency: token.accentHz,
+        duration: 0.062,
+        gain: 0.072 * carrierAccent,
+        delay: delayOffset,
+        type: 'sine',
+      }, true);
       return;
     }
     if (event.item === 'collapse') {
       // A short, dry two-part thud with no moving pitch reads as a column settling.
-      this.tone({ frequency: token.activateHz, duration: 0.075, gain: 0.22 * carrierAccent, type: token.waveform }, true);
-      this.tone({ frequency: token.accentHz, duration: 0.1, gain: 0.13 * carrierAccent, delay: 0.018, type: token.waveform }, true);
+      this.tone({ frequency: token.activateHz, duration: 0.075, gain: 0.22 * carrierAccent, delay: delayOffset, type: token.waveform }, true);
+      this.tone({ frequency: token.accentHz, duration: 0.1, gain: 0.13 * carrierAccent, delay: delayOffset + 0.018, type: token.waveform }, true);
       return;
     }
     if (event.item === 'bomb') {
       // A rounded bass bloom plus a tiny deterministic noise puff, not a harsh buzzy
       // sweep. The noise buffer is generated locally and contains no sampled asset.
-      this.tone({ frequency: token.activateHz, duration: 0.14, gain: 0.27 * carrierAccent, type: token.waveform }, true);
-      this.noisePuff({ duration: 0.065, gain: 0.095 * carrierAccent, delay: 0.006 });
+      this.tone({ frequency: token.activateHz, duration: 0.14, gain: 0.27 * carrierAccent, delay: delayOffset, type: token.waveform }, true);
+      this.noisePuff({ duration: 0.065, gain: 0.095 * carrierAccent, delay: delayOffset + 0.006 });
       return;
     }
     // Double is a compact marimba dyad. Super Double adds one clean octave above it;
     // subsequent carriers remain Super Double in Core and keep this signature.
-    this.mutationMarimbaStrike(token.activateHz, 0.14 * carrierAccent, 0);
-    this.mutationMarimbaStrike(token.accentHz, 0.125 * carrierAccent, 0.052);
-    if (event.multiplierFactor === 4) this.mutationMarimbaStrike(token.activateHz * 2, 0.105 * carrierAccent, 0.104);
+    this.mutationMarimbaStrike(token.activateHz, 0.14 * carrierAccent, delayOffset);
+    this.mutationMarimbaStrike(token.accentHz, 0.125 * carrierAccent, delayOffset + 0.052);
+    if (event.multiplierFactor === 4) {
+      this.mutationMarimbaStrike(token.activateHz * 2, 0.105 * carrierAccent, delayOffset + 0.104);
+    }
   }
 
   /**
@@ -240,8 +255,7 @@ export class AudioEngine {
    * active, and stop immediately at its deterministic expiry.
    */
   syncMutationState(state: GameState): void {
-    const desired: Array<{ item: Exclude<MutationItem, 'bomb'>; active: boolean }> = [
-      { item: 'freeze', active: state.mode === 'sprint' && state.mutationFreezeTicks > 0 },
+    const desired: Array<{ item: MutationLoopItem; active: boolean }> = [
       { item: 'collapse', active: state.mode === 'sprint' && state.mutationCollapseTicks > 0 },
       { item: 'multiplier', active: state.mode === 'sprint' && state.mutationMultiplierTicks > 0 },
     ];
@@ -251,7 +265,7 @@ export class AudioEngine {
     }
   }
 
-  private startMutationLoop(item: Exclude<MutationItem, 'bomb'>): void {
+  private startMutationLoop(item: MutationLoopItem): void {
     const context = this.context;
     const effects = this.effects;
     const profile = MUTATION_VFX_TOKENS[item].audio;
@@ -277,7 +291,7 @@ export class AudioEngine {
     };
   }
 
-  private stopMutationLoop(item: Exclude<MutationItem, 'bomb'>, playEnd: boolean): void {
+  private stopMutationLoop(item: MutationLoopItem, playEnd: boolean): void {
     const voice = this.mutationLoops.get(item);
     if (!voice) return;
     this.mutationLoops.delete(item);

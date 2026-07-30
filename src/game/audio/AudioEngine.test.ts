@@ -167,8 +167,8 @@ describe('AudioEngine original feedback', () => {
     const freeze = new AudioEngine();
     await freeze.prime();
     freeze.play([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells }]);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([659.25, 783.99]);
-    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine']);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([783.99]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['sine']);
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
     freeze.destroy();
 
@@ -216,20 +216,44 @@ describe('AudioEngine original feedback', () => {
     superDouble.destroy();
   });
 
-  it('uses Core timer state only to start and stop quiet original mutation ambience', async () => {
+  it('keeps Ice silent after activation while other timed items retain bounded ambience', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
-    const active = { ...createInitialState(0x51a1f00d, 'sprint'), mutationFreezeTicks: 600 };
+    const active = {
+      ...createInitialState(0x51a1f00d, 'sprint'),
+      mutationFreezeTicks: 600,
+      mutationCollapseTicks: 600,
+    };
 
     audio.syncMutationState(active);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(261.63);
-    const loop = oscillators.find((oscillator) => oscillator.frequency.setValues[0] === 261.63);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).not.toContain(261.63);
+    const loop = oscillators.find((oscillator) => oscillator.frequency.setValues[0] === 73.42);
     expect(loop?.stops).toHaveLength(0);
 
-    audio.syncMutationState({ ...active, mutationFreezeTicks: 0 });
+    audio.syncMutationState({ ...active, mutationFreezeTicks: 0, mutationCollapseTicks: 0 });
     expect(loop?.stops).toHaveLength(1);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(523.25);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(196);
+    audio.destroy();
+  });
+
+  it('plays every distinct same-frame mutation once and ignores duplicate item events', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.play([
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
+      { type: 'mutation-activated', item: 'multiplier', durationTicks: 600, score: 0, rowsRemoved: 0, multiplierFactor: 2, triggerCells: carrierCells },
+    ]);
+
+    const frequencies = oscillators.map((oscillator) => oscillator.frequency.setValues[0]);
+    expect(frequencies.filter((frequency) => frequency === 783.99)).toHaveLength(1);
+    expect(frequencies.filter((frequency) => frequency === 148)).toHaveLength(1);
+    expect(frequencies.filter((frequency) => frequency === 93)).toHaveLength(1);
+    expect(frequencies).toHaveLength(7);
     audio.destroy();
   });
 
@@ -244,8 +268,8 @@ describe('AudioEngine original feedback', () => {
       { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
     ]);
 
-    // Freeze's two ceramic notes remain; the three-note normal clear chord is absent.
-    expect(oscillators).toHaveLength(foregroundBefore + 2);
+    // Ice's single glass tap remains; the three-note normal clear chord is absent.
+    expect(oscillators).toHaveLength(foregroundBefore + 1);
     expect(timers.size).toBe(0);
     audio.destroy();
   });

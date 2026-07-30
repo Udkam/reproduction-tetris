@@ -29,7 +29,7 @@ export interface MutationVfxToken {
     fieldAlpha: number;
     edgeGlow: number;
     distortion: number;
-    /** Freeze's reusable Pixi frost-grain filter and its vector ice-edge partner. */
+    /** Ice's upper-edge vector gradient profile; it never recolors the full board. */
     frost?: {
       noiseScale: number;
       edgeStrength: number;
@@ -70,7 +70,7 @@ export const MUTATION_PARTICLE_LIMIT = 120;
 /** The board keeps one ordinary effects Graphics layer plus one mutation layer. */
 export const MUTATION_MAX_EFFECT_PLANES = 2;
 
-/** Freeze plus Supergravity are the only concurrent board filters. */
+/** Retained as a hard ceiling for renderer diagnostics; Phase 10 uses vector-local fields. */
 export const MUTATION_MAX_ACTIVE_FILTERS = 2;
 
 export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
@@ -84,7 +84,7 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
       frost: { noiseScale: 0.8, edgeStrength: 1.5, noise: 0.035 },
     },
     animation: { enterMs: 500, pulseMs: 800, exitMs: 1000, activationMs: 500 },
-    audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.11, loopHz: 261.63, loopGain: 0.018, endHz: 523.25 },
+    audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.08, loopHz: null, loopGain: 0, endHz: null },
   },
   collapse: {
     palette: { primary: 0x9b6cff, highlight: 0xd8b4fe, deep: 0x35145f, facet: 0x7249bf, glow: 0xc396ff },
