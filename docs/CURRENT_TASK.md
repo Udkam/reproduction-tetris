@@ -2,7 +2,7 @@
 
 ## Immediate clean-line correction — restore the ordinary clear baseline
 
-**Status (2026-07-30): LOCAL ACCEPTED / RECOVERY PUSH PENDING.**
+**Status (2026-07-30): ACCEPTED / PUSHED / CLOSED.**
 
 The rejected Phase-7 selector candidate and all of its later local records are preserved
 without loss at `codex/t15-selector-wip-20260730`. `main` continues from accepted remote
@@ -37,6 +37,13 @@ nine-tick sweep, later mode effects remain intact, and the schema-7 fixture comm
 change no product Puzzle behavior. The coordinator accepts the clean local result.
 Run one scoped redacted secret scan, push `main` non-force, and verify local/tracking/
 remote equality before resuming Phase 8.
+
+Recovery `47ee3e5` was pushed non-force. Local `HEAD`, local tracking
+`origin/main`, and remote `refs/heads/main` all resolved exactly to
+`47ee3e5060b80d5c82c35672ad2fc8e178941207`. Scoped redacted gitleaks 8.30.1
+scanned the six clean-line commits and found no leaks. The rejected selector WIP
+remains local-only on its explicitly named preservation branch and is not part of
+`main`.
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 

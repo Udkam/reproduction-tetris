@@ -21,6 +21,9 @@
   Renderer/presentation files are byte-identical to the previously inspected
   rollback source and retain one Canvas while mounted, zero after destroy,
   and zero console/page errors.
+- Acceptance/recovery `47ee3e5` was pushed non-force. Local `HEAD`,
+  `origin/main`, and remote `main` matched exactly; a scoped redacted gitleaks
+  scan covered all six clean-line commits and found no leaks.
 
 ## 2026-07-30 — Puzzle progressive unlock accepted
 

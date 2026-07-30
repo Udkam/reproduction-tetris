@@ -1,5 +1,22 @@
 # T15 Phase 6 Classic Workstream Log
 
+## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-RECOVERY-016
+
+- Status: `ACCEPTED / PUSHED / CLOSED`.
+- Accepted recovery: `47ee3e5060b80d5c82c35672ad2fc8e178941207`.
+- Push: `git push origin main` succeeded non-force and advanced
+  `62ba8e9..47ee3e5`.
+- Equality proof immediately after push:
+  - local `HEAD`: `47ee3e5060b80d5c82c35672ad2fc8e178941207`;
+  - local `origin/main`: same SHA;
+  - remote `refs/heads/main`: same SHA.
+- Scoped gitleaks 8.30.1 scanned `origin/main..HEAD` before push: six commits,
+  approximately 15.15 KB, no leaks found; output was redacted.
+- Rejected selector WIP remains isolated at local branch
+  `codex/t15-selector-wip-20260730@dce331b` and was not pushed to `main`.
+- Next action: close the direct rollback slice and resume Phase-8 completion
+  audit from this clean pushed recovery point.
+
 ## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-ACCEPTANCE-015
 
 - Status: `LOCAL ACCEPTED / RECOVERY PUSH PENDING`.
