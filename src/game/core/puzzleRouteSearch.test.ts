@@ -28,7 +28,7 @@ const phase7Batch2 = phase7Batch2File as unknown as { levels: readonly RecordedL
 const phase7Batch5 = phase7Batch5File as unknown as { levels: readonly RecordedLevel[] };
 
 describe('Phase-7 Puzzle route search', () => {
-  it('finds a legal Core path for an anchored deep endgame without introducing a product-side lock budget', () => {
+  it('finds a legal Core path for a deep current endgame without introducing a product-side lock budget', () => {
     const level = phase7Batch2.levels.find(({ id }) => id === 't6r-keystone-20')!;
     const result = findPuzzleRoute(level.id, { maxLocks: 30, beamWidth: 900 });
 
