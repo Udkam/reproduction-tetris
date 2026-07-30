@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-07-30 — Ordinary line-clear rollback accepted on a clean delivery line
+
+- Restored the pre-`1a163ff` ordinary line-clear presentation at clean product
+  `760437d`: locked cells remain stationary while the prior nine-tick
+  centre-out sweep identifies the real cleared rows. Reduced motion has no
+  moving sweep.
+- Removed the rejected contraction, dissolve, debris, and afterglow family
+  without changing Core clear timing/scoring, Puzzle, Survival, Mutation, or
+  later Classic landing/combo/speed/top-out feedback.
+- Current schema-7 QA fixtures are aligned by `9730d99` and title-only
+  correction `70cff6e`. Renderer/presentation passes 39 tests, route/QA passes
+  5 tests, typecheck passes, the clean full suite passes 26 files / 235 tests,
+  and the production build passes with 753 modules.
+- Independent rules QA accepts `e2b990e` with P0–P3 and GAP all zero. It
+  confirms selector product paths are unchanged from accepted recovery
+  `62ba8e9`, and the rejected selector WIP remains recoverable at
+  `codex/t15-selector-wip-20260730@dce331b`.
+- Existing normal/reduced Pixi captures remain source-exact: the clean
+  Renderer/presentation files are byte-identical to the previously inspected
+  rollback source and retain one Canvas while mounted, zero after destroy,
+  and zero console/page errors.
+
 ## 2026-07-30 — Puzzle progressive unlock accepted
 
 - Replaced the transitional all-open workshop with the Phase-7 frontier:

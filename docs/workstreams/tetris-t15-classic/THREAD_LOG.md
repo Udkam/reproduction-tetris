@@ -1,5 +1,27 @@
 # T15 Phase 6 Classic Workstream Log
 
+## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-ACCEPTANCE-015
+
+- Status: `LOCAL ACCEPTED / RECOVERY PUSH PENDING`.
+- Reviewed head: `e2b990e`.
+- Independent rules QA: `ACCEPT`; P0 none, P1 none, P2 none, P3 none,
+  GAP none.
+- Reviewer-confirmed boundaries:
+  - selector product/test paths have zero diff from `62ba8e9`;
+  - rejected WIP is recoverable at
+    `codex/t15-selector-wip-20260730@dce331b`;
+  - ordinary locked cells are stationary with a nine-tick centre-out sweep;
+  - reduced motion has no moving sweep;
+  - rejected contraction/dissolve/debris/afterglow symbols are absent;
+  - later Classic, Survival, Mutation, and Puzzle behavior is preserved;
+  - `9730d99` / `70cff6e` are schema-7 QA/test bindings only.
+- Coordinator disposition: clean local candidate accepted. No fresh browser
+  capture is required because the four Renderer/presentation files at
+  `760437d` are byte-identical to previously inspected rollback product
+  `94f37ed`; the normal/reduced Pixi evidence remains source-exact.
+- Next action: run one scoped redacted secret scan, push `main` non-force,
+  verify exact local/tracking/remote equality, and record the recovery SHA.
+
 ## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-GATES-014
 
 - Status: `SOURCE CANDIDATE / CLEAN-LINE GATES GREEN / QA PENDING`.

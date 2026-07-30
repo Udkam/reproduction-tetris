@@ -2,7 +2,7 @@
 
 ## Immediate clean-line correction — restore the ordinary clear baseline
 
-**Status (2026-07-30): SOURCE CANDIDATE / CLEAN-LINE GATES GREEN / INDEPENDENT QA PENDING.**
+**Status (2026-07-30): LOCAL ACCEPTED / RECOVERY PUSH PENDING.**
 
 The rejected Phase-7 selector candidate and all of its later local records are preserved
 without loss at `codex/t15-selector-wip-20260730`. `main` continues from accepted remote
@@ -29,6 +29,14 @@ passes 26 files / 235 tests; and the production build passes with 753 modules. T
 single-test reduction from the preserved WIP line is the excluded selector-candidate
 test, not lost coverage in the clean product range. No browser, server, watcher, or
 resident helper ran for these gates.
+
+The same independent rules reviewer accepts `main@e2b990e` with P0, P1, P2, P3, and
+GAP all zero. It confirms the four selector product/test paths are byte-identical to
+`62ba8e9`, WIP is recoverable at `dce331b`, the rollback has the required stationary
+nine-tick sweep, later mode effects remain intact, and the schema-7 fixture commits
+change no product Puzzle behavior. The coordinator accepts the clean local result.
+Run one scoped redacted secret scan, push `main` non-force, and verify local/tracking/
+remote equality before resuming Phase 8.
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
