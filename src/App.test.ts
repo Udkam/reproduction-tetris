@@ -24,6 +24,8 @@ import App, {
   puzzleCelebrationCopy,
   puzzleCelebrationOutcome,
   puzzleSilhouettePaths,
+  runResultMetrics,
+  RunResultSummary,
   RunStats,
   SettingsRecord,
   scoreRecordRank,
@@ -370,10 +372,11 @@ describe('entry countdown', () => {
       return 1;
     }));
     const onRunFinished = vi.fn();
+    const onExit = vi.fn();
     const view = render(createElement(GameSession, {
       mode: 'marathon',
       puzzleId: CAMPAIGN_LEVELS[0]!.id,
-      onExit: vi.fn(),
+      onExit,
       onCanonicalCompletion: vi.fn(),
       onRunFinished,
     }));
@@ -455,8 +458,12 @@ describe('entry countdown', () => {
       runtime.options.onState?.(terminalState, []);
     });
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ mode: 'marathon', score: 4321, lines: 12 }));
-    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('经典排行前 50112 行4,321 分');
+    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('排行榜前 50112 行4,321 分');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
+    expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('12消行');
+    expect(view.container.querySelector('[data-metric="score"]')?.textContent).toBe('4,321分数');
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(onExit).toHaveBeenCalledExactlyOnceWith('home');
     view.unmount();
   });
 
@@ -1340,8 +1347,8 @@ describe('T6 frontend mode binding', () => {
     }));
 
     const leaderboard = view.container.querySelector<HTMLElement>('.result-leaderboard');
-    expect(leaderboard?.getAttribute('aria-label')).toBe('Classic leaderboard');
-    expect(leaderboard?.querySelector('header')?.textContent).toBe('Classic leaderboardTop 5');
+    expect(leaderboard?.getAttribute('aria-label')).toBe('Leaderboard');
+    expect(leaderboard?.querySelector('header')?.textContent).toBe('LeaderboardTop 5');
     expect(leaderboard?.textContent).toContain('12 lines');
     expect(leaderboard?.textContent).toContain('4,321 pts');
     expect(leaderboard?.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
@@ -1361,9 +1368,10 @@ describe('T6 frontend mode binding', () => {
       completedAt: '2026-07-18T12:00:00.000Z',
     };
     const classic = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [base], highlightRecord: base }));
-    expect(classic.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('经典排行');
-    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('经典排行前 5');
-    expect(classic.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('18 行3,200 分');
+    expect(classic.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('排行榜');
+    expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('排行榜前 5');
+    expect(classic.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('18 行3,200 分本局');
+    expect(classic.container.querySelector('.result-leaderboard__current')?.textContent).toBe('本局');
     expect(classic.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     expect(classic.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('·');
     expect(classic.container.querySelector('[data-current-record="true"]')).not.toBeNull();
@@ -1386,8 +1394,8 @@ describe('T6 frontend mode binding', () => {
       completedAt: base.completedAt,
     };
     const survival = render(createElement(LeaderboardPanel, { mode: 'race', records: [survivalRecord] }));
-    expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('生存排行');
-    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('生存排行前 5');
+    expect(survival.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('排行榜');
+    expect(survival.container.querySelector('.result-leaderboard header')?.textContent).toBe('排行榜前 5');
     expect(survival.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('1 分 10 秒27 行');
     expect(survival.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('方块');
     expect(survival.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
@@ -1395,8 +1403,8 @@ describe('T6 frontend mode binding', () => {
 
     const sprintRecord = { ...base, mode: 'sprint' as const, score: 1800, lines: 40, pieces: 48, elapsedTicks: 5400, chain: 0 };
     const sprint = render(createElement(LeaderboardPanel, { mode: 'sprint', records: [sprintRecord] }));
-    expect(sprint.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('异变排行');
-    expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('异变排行前 5');
+    expect(sprint.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('排行榜');
+    expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('排行榜前 5');
     expect(sprint.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('40 行1,800 分  48 方块');
     expect(sprint.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     sprint.unmount();
@@ -1530,9 +1538,21 @@ describe('T6 frontend mode binding', () => {
 
     expect(terminalCopy(terminalState)).toEqual({
       title: '生存结束',
-      detail: '24 消行 · 72 方块 · 4 层基岩',
+      detail: '',
       success: false,
     });
+    expect(runResultMetrics({ ...terminalState, elapsedTicks: 125 * 60 })).toEqual([
+      { id: 'survival-time', label: '生存时间', value: '2:05', primary: true },
+      { id: 'lines', label: '消行', value: '24', primary: false },
+    ]);
+    const resultSummary = render(createElement(RunResultSummary, {
+      state: { ...terminalState, elapsedTicks: 125 * 60 },
+      rank: 2,
+      hasRecord: true,
+    }));
+    expect(resultSummary.container.querySelector('.run-result__rank')?.textContent).toBe('本局第 2 名');
+    expect(resultSummary.container.textContent).not.toMatch(/方块|基岩/);
+    resultSummary.unmount();
     expect(eventMessage({ type: 'bedrock-raised', count: 1, height: 4 })).toBe('基岩升至 4 层。');
     expect(eventMessage({ type: 'bedrock-lowered', count: 1, height: 3 })).toBe('基岩降至 3 层。');
     expect(eventMessage({ type: 'puzzle-undone' })).toBe('已撤回上一次落子。');
@@ -1584,8 +1604,8 @@ describe('T6 frontend mode binding', () => {
       score: 1800,
     };
     expect(terminalCopy(endedSprint)).toEqual({
-      title: '异变到顶',
-      detail: '22 消行 · 1,800 分',
+      title: '异变结束',
+      detail: '',
       success: false,
     });
   });

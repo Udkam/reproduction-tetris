@@ -10,6 +10,7 @@ import './styles/tokens.css';
 import './styles/mutation-vfx.css';
 import './styles/hud.css';
 import './styles/navigation.css';
+import './styles/result.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('TetraMorph root element is missing.');

@@ -254,7 +254,7 @@ export function terminalCopy(state: GameState, language: AppLanguage = DEFAULT_L
   if (state.mode === 'sprint') {
     if (state.status === 'game-over') {
       return {
-        ...copy.phrasing.terminalMutation(state.lines, formatScore(state.score, language)),
+        ...copy.phrasing.terminalMutation(),
         success: false,
       };
     }
@@ -263,11 +263,35 @@ export function terminalCopy(state: GameState, language: AppLanguage = DEFAULT_L
   if (state.status !== 'game-over') return null;
   if (state.mode === 'race') {
     return {
-      ...copy.phrasing.terminalSurvival(state.lines, state.pieceCount, state.survivalBedrockRows),
+      ...copy.phrasing.terminalSurvival(),
       success: false,
     };
   }
-  return { ...copy.phrasing.terminalClassic(state.lines, formatScore(state.score, language)), success: false };
+  return { ...copy.phrasing.terminalClassic(), success: false };
+}
+
+export type RunResultMetric = Readonly<{
+  id: 'lines' | 'score' | 'survival-time';
+  label: string;
+  value: string;
+  primary: boolean;
+}>;
+
+export function runResultMetrics(
+  state: GameState,
+  language: AppLanguage = DEFAULT_LANGUAGE,
+): readonly RunResultMetric[] {
+  const copy = appCopy(language);
+  if (state.mode === 'race') {
+    return [
+      { id: 'survival-time', label: copy.labels.survivalTime, value: elapsedClockLabel(state.elapsedTicks), primary: true },
+      { id: 'lines', label: copy.labels.lines, value: formatNumber(state.lines, language), primary: false },
+    ];
+  }
+  return [
+    { id: 'lines', label: copy.labels.lines, value: formatNumber(state.lines, language), primary: true },
+    { id: 'score', label: copy.labels.score, value: formatScore(state.score, language), primary: false },
+  ];
 }
 
 /**
@@ -699,10 +723,11 @@ export function LeaderboardPanel({
   const visibleRecords = records.slice(0, 5);
   const title = variant === 'settings'
     ? copy.labels.leaderboard
-    : copy.phrasing.modeLeaderboard(modeCopy(language, mode).label);
+    : copy.labels.resultLeaderboard;
   return (
     <section
       className={`result-leaderboard result-leaderboard--${variant}`}
+      data-mode={mode}
       data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined}
       data-empty={visibleRecords.length === 0 || undefined}
       aria-label={title}
@@ -716,8 +741,9 @@ export function LeaderboardPanel({
           {visibleRecords.map((record, index) => {
             const recordIsSurvival = record.mode === 'race';
             const recordIsMutation = record.mode === 'sprint';
+            const isCurrentRecord = scoreRecordKey(record) === highlightKey;
             return (
-              <li key={`${record.completedAt}:${index}`} data-current-record={scoreRecordKey(record) === highlightKey || undefined}>
+              <li key={`${record.completedAt}:${index}`} data-current-record={isCurrentRecord || undefined}>
                 <b data-record-field="rank">{String(index + 1).padStart(2, '0')}</b>
                 <div className="result-leaderboard__run">
                   <strong data-record-field={recordIsSurvival ? 'time' : 'lines'}>
@@ -735,6 +761,7 @@ export function LeaderboardPanel({
                     ) : (
                       <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
                     )}
+                    {isCurrentRecord && <em className="result-leaderboard__current">{copy.labels.currentRun}</em>}
                   </small>
                 </div>
                 <time data-record-field="date" dateTime={record.completedAt}>{formatDate(record.completedAt, language)}</time>
@@ -743,6 +770,46 @@ export function LeaderboardPanel({
           })}
         </ol>
       )}
+    </section>
+  );
+}
+
+export function RunResultSummary({
+  state,
+  rank,
+  hasRecord,
+  language = DEFAULT_LANGUAGE,
+}: {
+  state: GameState;
+  rank: number | null;
+  hasRecord: boolean;
+  language?: AppLanguage;
+}) {
+  const copy = appCopy(language);
+  const rankLabel = hasRecord
+    ? rank === null
+      ? copy.labels.currentRunMissedLeaderboard
+      : copy.phrasing.currentRunRank(rank)
+    : null;
+  return (
+    <section className="run-result" aria-label={copy.labels.resultSummary}>
+      {rankLabel && (
+        <p className="run-result__rank" data-ranked={rank !== null || undefined}>
+          {rankLabel}
+        </p>
+      )}
+      <div className="run-result__metrics">
+        {runResultMetrics(state, language).map((metric) => (
+          <article
+            className={`run-result__metric${metric.primary ? ' run-result__metric--primary' : ''}`}
+            data-metric={metric.id}
+            key={metric.id}
+          >
+            <strong>{metric.value}</strong>
+            <span>{metric.label}</span>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }
@@ -1469,6 +1536,7 @@ export function GameSession({
     : null;
   const modeLabel = modeCopy(language, state.mode).label;
   const exitDestination: ExitDestination = state.mode === 'puzzle' ? 'puzzle-library' : 'home';
+  const leaveResult = useCallback(() => onExit(exitDestination), [exitDestination, onExit]);
   const pauseOpen = state.status === 'paused' && !exitOpen && !restartConfirmOpen && !settingsOpen;
   const resultOpen = terminal !== null && !exitOpen && !restartConfirmOpen && !settingsOpen;
   const storedRecords = state.mode === 'puzzle' ? [] : recordsForMode(leaderboard, state.mode);
@@ -1662,17 +1730,22 @@ export function GameSession({
         open={resultOpen}
         title={celebrationPresentation?.title ?? terminal?.title ?? copy.labels.resultTitle}
         description={celebrationPresentation?.detail ?? terminal?.detail ?? ''}
-        tone={terminal?.success ? 'success' : 'danger'}
-        className={activePuzzleCelebration ? 'action-sheet--puzzle-celebration' : undefined}
+        tone={terminal?.success ? 'success' : 'default'}
+        className={activePuzzleCelebration
+          ? 'action-sheet--puzzle-celebration'
+          : state.mode !== 'puzzle'
+            ? `action-sheet--run-result action-sheet--run-result-${state.mode}`
+            : undefined}
+        onCancel={leaveResult}
       >
         {activePuzzleCelebration && <PuzzleCelebrationPanel celebration={activePuzzleCelebration} language={language} />}
         {state.mode !== 'puzzle' && <>
+          <RunResultSummary state={state} rank={resultRank} hasRecord={resultRecord !== null} language={language} />
           <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} language={language} />
-          {resultRecord && resultRank === null && <p className="result-rank-notice" data-testid="result-rank-notice">{copy.labels.currentRunMissedLeaderboard}</p>}
         </>}
         <button className="primary-action" data-autofocus type="button" onClick={restartRun}>{state.mode === 'puzzle' ? copy.labels.replay : copy.labels.playAgain}</button>
-        <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
-          {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
+        <button className="secondary-action" type="button" onClick={leaveResult}>
+          {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.modeHome}
         </button>
       </ActionSheet>
 
