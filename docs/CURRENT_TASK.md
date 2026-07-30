@@ -2,8 +2,8 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): CONTRACT FROZEN / SURVIVAL CORE + CAVERN GREEN /
-ORDINARY FEEDBACK NEXT.**
+**Status (2026-07-31): SURVIVAL + ORDINARY FEEDBACK GREEN /
+PUZZLE SELECTOR + MODE HOME NEXT.**
 
 The direct goal is to keep correcting this slice until all six requested outcomes are
 implemented and visually accepted:
@@ -42,6 +42,14 @@ bedrock-boundary feedback to short local cues. Reduced motion keeps a static
 boundary/contact signal without board shift. The public debug snapshot exposes
 both rock cells and the active boundary cue. Focused proof passes `85/85` tests
 and typecheck.
+
+Ordinary feedback checkpoint `daa0a13` replaces full-piece hard-drop echoes and
+the broad row flash with three bounded signals: a `100 ms` material-aware support
+imprint, at most four `50 ms` short vertical drop traces, and one stationary-cell
+seam per cleared cell over nine ticks (`150 ms`). A line-clear lock suppresses the
+drop trace and lowers the support imprint to `55%`, so the clear owns the visual
+hierarchy. Reduced motion uses a fixed support mark plus simultaneous six-tick
+seams. Focused proof passes `51/51` tests and typecheck.
 
 ### Ordered checkpoints
 

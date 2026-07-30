@@ -604,3 +604,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   retaining a bounded contact/boundary signal.
 - Focused Renderer/presentation/theme/App proof passes 85/85 and typecheck passes.
   One contrast failure was found and corrected before the checkpoint.
+
+## 2026-07-31 Phase 9 ordinary feedback
+
+- Product checkpoint `daa0a13` replaces the previous broad/long feedback with a
+  100 ms support imprint, at most four 50 ms hard-drop traces, and a nine-tick
+  per-cell material seam for ordinary clears.
+- Clearing locks suppress hard-drop traces and reduce the support imprint to
+  `55%`; no cell scaling, board shake, page flash, or particles were introduced.
+- Reduced motion retains stationary support and six-tick simultaneous clear
+  seams. Focused proof passes 51/51 and typecheck passes.

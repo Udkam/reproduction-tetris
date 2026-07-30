@@ -74,3 +74,30 @@
   for the combined Phase-9 candidate.
 - Next action: reopen only the shared Renderer/direct tests for ordinary landing
   imprint, bounded hard-drop trace, and per-cell seam release.
+
+## 2026-07-31 — ordinary feedback checkpoint
+
+- Task: short, natural support, hard-drop, and ordinary clear feedback.
+- Base: cavern recovery `9fda3d9`.
+- Product commit: `daa0a13`.
+- Changed paths: `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/TetrisRenderer.test.ts`,
+  `src/game/render/presentation.ts`,
+  `src/game/render/presentation.test.ts`, `src/game/render/theme.ts`, and
+  `src/game/render/theme.test.ts`.
+- Implementation: all modes use true support cells for a six-tick imprint; hard
+  drops render no more than four short column traces for three ticks; a clearing
+  lock suppresses that trail and lowers the imprint to `55%`; ordinary clear
+  renders two short material strokes per cell centre-out for nine ticks.
+  Reduced motion keeps fixed support geometry and simultaneous six-tick seams.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/presentation.test.ts src/game/render/theme.test.ts src/game/render/TetrisRenderer.test.ts --maxWorkers=1`
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: `51/51` focused tests pass and typecheck passes. One stale assertion
+  for the removed Classic-only landing colour failed, was corrected to the
+  remaining Classic cue contract, and the focused matrix was rerun green.
+- Blocker: none. Final feel and timing remain subject to source-bound browser
+  capture and independent visual QA at the combined candidate.
+- Next action: reopen App/styles/style-order/localization/direct tests for the
+  no-scroll fifty-level selector and two-by-two mode home.
