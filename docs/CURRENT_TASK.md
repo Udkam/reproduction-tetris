@@ -91,6 +91,16 @@ clearable stones in one random column at two times normal-piece speed. Focused R
 and localization proof passes `2/2`, and typecheck passes. Browser acceptance and the
 separate Puzzle/home navigation checkpoint remain open.
 
+The first real-browser correction batch accepts the English and Chinese rule text,
+title structure, and acknowledgement with zero console/page errors, but rejects the
+Survival countdown frame. The authoritative late `.entry-countdown` rule paints an
+opaque well-coloured layer above the Pixi canvas, so digits `3 / 2 / 1` are visible
+while the intended one / two / three staged bedrock rows are completely hidden. This
+is a presentation defect, not a Core or Renderer-state failure. The narrow repair must
+make the existing countdown veil translucent while retaining the centered digit,
+board-local dimming, focus/input gate, and reduced-motion behavior; it must not alter
+countdown timing, Core state, renderer geometry, or other modal backgrounds.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,

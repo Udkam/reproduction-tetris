@@ -257,3 +257,24 @@
   Survival countdown/cavern material.
 - Next action: run one managed source-bound browser batch, release it, then resume the
   separate no-scroll selector/home checkpoint.
+
+## 2026-07-31 — first real-browser batch rejects countdown compositing
+
+- Candidate: rules record `c6d908f` over product `e4d19ad`.
+- Managed resource: one Vite listener on `127.0.0.1:5178` and one in-app browser tab;
+  the tab was finalized, listener PID `33348` was stopped, and the port listener was
+  confirmed released before diagnosis continued.
+- Accepted observation: `Survival Rules` has no first-entry subtitle or repeated inner
+  heading, uses `Got it`, and states `1–2` clearable stones in one random column at
+  `2×` normal speed. The live Chinese Settings rule uses the corresponding exact
+  random-one-or-two same-column wording.
+- Rejected observation: all three real countdown frames show the centered `3 / 2 / 1`
+  but no staged bedrock. Source inspection identifies the late authoritative
+  `.entry-countdown` background as fully opaque above the Pixi canvas, hiding the
+  renderer-owned rows even though direct renderer/runtime state tests are green.
+- Browser diagnostics: zero warning/error console entries; one canvas; no server or
+  page crash.
+- Blocker: Survival cavern remains browser-rejected until the veil is translucent and
+  real frames visibly prove one / two / three rows.
+- Next action: add one direct CSS contract and a narrow late-rule correction, rerun
+  focused tests/typecheck, then repeat a single managed browser batch.
