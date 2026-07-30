@@ -12,10 +12,18 @@ import {
   nextPreviewPieces,
   nextPreviewPiece,
   orthogonalCellComponents,
+  survivalDebrisCells,
 } from './presentation';
 import { createInitialState, dispatch, PIECE_SHAPES, PIECE_TYPES, type Cell } from '../core';
 
 describe('presentation interpolation', () => {
+  it('derives one vertically adjacent pair from each Survival rock identity', () => {
+    expect(survivalDebrisCells({ x: 6, y: 19 })).toEqual([
+      { x: 6, y: 19 },
+      { x: 6, y: 20 },
+    ]);
+  });
+
   it('approaches repeated soft-drop targets continuously without overshooting them', () => {
     let point = { x: 4, y: 0 };
     const samples: number[] = [];

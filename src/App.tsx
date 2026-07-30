@@ -37,7 +37,7 @@ import {
   type PuzzleProgress,
 } from './puzzleProgress';
 import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
-import { nextPreviewPieces } from './game/render/presentation';
+import { nextPreviewPieces, survivalDebrisCells } from './game/render/presentation';
 import { ActionSheet } from './ui/ActionSheet';
 import {
   DEFAULT_LANGUAGE,
@@ -1199,7 +1199,9 @@ export function GameSession({
         bedrockPending: current.mode === 'race' ? current.survivalRisePending : false,
         stoneIntervalSeconds: current.mode === 'race' ? current.survivalDebrisIntervalSeconds : null,
         stoneNextSeconds: current.mode === 'race' ? survivalStoneCountdownSeconds(current) : null,
-        fallingStones: current.mode === 'race' ? current.survivalDebris.map((stone) => ({ x: stone.x, y: stone.y })) : [],
+        fallingStones: current.mode === 'race'
+          ? current.survivalDebris.flatMap((pair) => survivalDebrisCells(pair).map((cell) => ({ ...cell })))
+          : [],
         fallTicks: gravityForMode(current.mode, current.level, current.pieceCount, current.lines),
         placedPieces: current.pieceCount,
         active: current.active ? { type: current.active.type, x: current.active.x, y: current.active.y, rotation: current.active.rotation } : null,

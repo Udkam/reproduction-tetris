@@ -262,7 +262,7 @@ describe('Survival stone timing presentation', () => {
       mode: 'race',
       stoneIntervalSeconds: 19,
       stoneNextSeconds: 19,
-      fallingStones: [{ x: 4, y: 21 }],
+      fallingStones: [{ x: 4, y: 21 }, { x: 4, y: 22 }],
     });
     view.unmount();
   });

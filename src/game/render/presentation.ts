@@ -1,4 +1,4 @@
-import type { Cell, GameState, PieceType } from '../core';
+import type { Cell, GameState, PieceType, SurvivalDebris } from '../core';
 
 export interface PresentationPoint {
   x: number;
@@ -30,6 +30,16 @@ const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = 
 ];
 
 const cellKey = (cell: Cell): string => `${cell.x},${cell.y}`;
+
+/** Derives the immutable two-cell geometry of one rigid Survival rock entity. */
+export function survivalDebrisCells(
+  debris: Pick<SurvivalDebris, 'x' | 'y'>,
+): readonly [Cell, Cell] {
+  return [
+    { x: debris.x, y: debris.y },
+    { x: debris.x, y: debris.y + 1 },
+  ];
+}
 
 const orderedCells = (cells: readonly Cell[]): Cell[] => (
   [...new Map(cells.map((cell) => [cellKey(cell), cell])).values()]

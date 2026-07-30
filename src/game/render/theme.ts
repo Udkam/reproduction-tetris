@@ -117,20 +117,19 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  // The established Survival material: a clear brown raised block, distinct
-  // from the playable palette and intentionally not a simulated stone texture.
-  fillStart: 0x9c8b73,
-  fillEnd: 0x76664f,
-  edge: 0x40372d,
-  innerEdge: 0xcdbeaa,
+  // Dark, compacted strata: permanent, but still legible as a ten-column grid.
+  fillStart: 0x8f7455,
+  fillEnd: 0x786048,
+  edge: 0x30251d,
+  innerEdge: 0xc5a47b,
 };
 
-/** Clearable one-cell stones that fall independently in Survival. */
+/** Fresh, clearable fracture from the same warm mineral family as bedrock. */
 export const SURVIVAL_STONE_MATERIAL: PieceMaterial = {
-  fillStart: 0x95a4ab,
-  fillEnd: 0x5f6c73,
-  edge: 0x303c42,
-  innerEdge: 0xd2dadd,
+  fillStart: 0xb68a59,
+  fillEnd: 0x7e5b39,
+  edge: 0x432f20,
+  innerEdge: 0xe0bd88,
 };
 
 /** Puzzle-only immutable cells use a pale mineral core rather than a playable hue. */

@@ -61,6 +61,7 @@ import {
   lineClearPresentationProgress,
   nextPreviewPieces,
   orthogonalCellComponents,
+  survivalDebrisCells,
   type CellEdge,
   type BoardShiftDirection,
 } from './presentation';
@@ -124,6 +125,13 @@ interface SurvivalDebrisPresentation {
 interface SurvivalStoneCue {
   kind: 'spawn' | 'land';
   cells: readonly Cell[];
+  elapsed: number;
+  duration: number;
+}
+
+interface SurvivalBedrockCue {
+  direction: BoardShiftDirection;
+  height: number;
   elapsed: number;
   duration: number;
 }
@@ -254,9 +262,15 @@ export interface RendererSnapshot {
     elapsedMs: number;
     durationMs: number;
   } | null;
-  survivalDebris: Array<{ id: number; x: number; y: number; presentationY: number }>;
+  survivalDebris: Array<{ id: number; x: number; y: number; presentationY: number; cells: Cell[] }>;
   survivalDebrisWarningColumns: number[];
   survivalStoneCueCount: number;
+  survivalBedrockCue: {
+    direction: BoardShiftDirection;
+    height: number;
+    elapsedMs: number;
+    durationMs: number;
+  } | null;
   classicFeedback: Array<{
     kind: ClassicFeedbackKind;
     elapsedMs: number;
@@ -335,6 +349,7 @@ export class TetrisRenderer {
   private readonly classicFeedbackCues: ClassicFeedbackCue[] = [];
   private readonly survivalDebrisPresentation = new Map<number, SurvivalDebrisPresentation>();
   private readonly survivalStoneCues: SurvivalStoneCue[] = [];
+  private survivalBedrockCue: SurvivalBedrockCue | null = null;
   private mutationFlash: MutationFlash | null = null;
   private readonly mutationFlashQueue: MutationFlashRequest[] = [];
   private mutationArrival: MutationArrival | null = null;
@@ -414,6 +429,7 @@ export class TetrisRenderer {
     survivalDebris: [],
     survivalDebrisWarningColumns: [],
     survivalStoneCueCount: 0,
+    survivalBedrockCue: null,
   };
 
   async init(host: HTMLElement): Promise<void> {
@@ -733,19 +749,25 @@ export class TetrisRenderer {
       });
     }
     if (state.mode === 'race') {
-      for (const stone of state.survivalDebris) {
-        const presented = this.survivalDebrisPresentation.get(stone.id) ?? stone;
-        if (presented.y < VISIBLE_START_ROW - 1 || presented.y >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+      for (const pair of state.survivalDebris) {
+        const presented = this.survivalDebrisPresentation.get(pair.id) ?? pair;
+        const visiblePairCells = survivalDebrisCells(pair)
+          .filter((cell) => (
+            cell.y >= VISIBLE_START_ROW
+            && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT
+          ))
+          .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
+        if (visiblePairCells.length === 0) continue;
         this.drawCellGroups(
           graphics,
-          [{ x: stone.x, y: stone.y - VISIBLE_START_ROW }],
+          visiblePairCells,
           SURVIVAL_STONE_CELL,
           1,
           {
             originX: layout.x,
             originY: layout.y,
             unit: layout.cell,
-            offsetY: boardShiftOffsetY + (presented.y - stone.y) * layout.cell,
+            offsetY: boardShiftOffsetY + (presented.y - pair.y) * layout.cell,
           },
         );
       }
@@ -1337,7 +1359,9 @@ export class TetrisRenderer {
         Math.min(CELL_STYLE.faceDarkAlpha, alpha),
         faceBevelWidth,
       );
-      if (type === SURVIVAL_STONE_CELL) {
+      if (type === BEDROCK_CELL) {
+        this.drawBedrockStrata(graphics, geometry, size, faceInset, material, alpha);
+      } else if (type === SURVIVAL_STONE_CELL) {
         this.drawStoneFacets(graphics, geometry, size, faceInset, material, alpha);
       }
     }
@@ -1442,7 +1466,70 @@ export class TetrisRenderer {
     }
   }
 
-  /** Clearable falling debris stays simpler and lighter than permanent bedrock. */
+  /** Deterministic compacted layers keep bedrock geological without hiding its grid. */
+  private drawBedrockStrata(
+    graphics: Graphics,
+    cells: readonly { cell: Cell; x: number; y: number }[],
+    size: number,
+    inset: number,
+    material: PieceMaterial,
+    alpha: number,
+  ): void {
+    const layerWidth = Math.max(0.65, size * 0.035);
+    const crackWidth = Math.max(0.6, size * 0.03);
+    const layerSegments: Array<[number, number, number, number]> = [];
+    const signalSegments: Array<[number, number, number, number]> = [];
+    const crackSegments: Array<[number, number, number, number]> = [];
+
+    for (const entry of cells) {
+      const left = entry.x + inset * 1.7;
+      const right = entry.x + size - inset * 1.7;
+      const top = entry.y + inset * 1.7;
+      const bottom = entry.y + size - inset * 1.7;
+      const variant = Math.abs(entry.cell.x * 29 + entry.cell.y * 13) % 4;
+      const drift = (variant - 1.5) * size * 0.018;
+      const upper = top + (bottom - top) * 0.36 + drift;
+      const lower = top + (bottom - top) * 0.7 - drift * 0.6;
+      layerSegments.push(
+        [left, upper, right, upper + drift * 0.45],
+        [left + size * 0.08, lower, right - size * 0.06, lower - drift * 0.3],
+      );
+      signalSegments.push([left, upper - layerWidth * 0.9, right, upper - layerWidth * 0.45]);
+
+      if (variant === 0 || variant === 3) {
+        const originX = left + (right - left) * (variant === 0 ? 0.32 : 0.68);
+        const originY = top + (bottom - top) * 0.18;
+        crackSegments.push(
+          [originX, originY, originX + size * 0.08, upper],
+          [originX + size * 0.08, upper, originX - size * 0.01, lower - size * 0.03],
+        );
+      }
+    }
+
+    this.strokeSegments(
+      graphics,
+      layerSegments,
+      material.edge,
+      Math.min(0.48, alpha * 0.54),
+      layerWidth,
+    );
+    this.strokeSegments(
+      graphics,
+      signalSegments,
+      material.innerEdge,
+      Math.min(0.22, alpha * 0.25),
+      Math.max(0.55, layerWidth * 0.7),
+    );
+    this.strokeSegments(
+      graphics,
+      crackSegments,
+      material.edge,
+      Math.min(0.42, alpha * 0.48),
+      crackWidth,
+    );
+  }
+
+  /** Clearable fresh fractures stay lighter than permanent compacted bedrock. */
   private drawStoneFacets(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1513,74 +1600,105 @@ export class TetrisRenderer {
 
     const warningPulse = this.options.reducedMotion
       ? 1
-      : 0.72 + Math.sin(this.mutationClockMs / 115) * 0.18;
-    const warningColor = 0xe5b86a;
+      : 0.78 + Math.sin(this.mutationClockMs / 140) * 0.12;
+    const warningColor = SURVIVAL_STONE_MATERIAL.innerEdge;
     for (const column of state.survivalDebrisWarningColumns) {
       const centerX = layout.x + (column + 0.5) * layout.cell;
       const top = layout.y + Math.max(2, layout.cell * 0.08);
-      const markerWidth = layout.cell * 0.28;
-      const markerBottom = top + layout.cell * 0.58;
-      graphics
-        .circle(centerX, top + layout.cell * 0.08, Math.max(2, layout.cell * 0.09))
-        .fill({ color: warningColor, alpha: 0.18 * warningPulse });
-      graphics
-        .moveTo(centerX, top)
-        .lineTo(centerX, markerBottom)
-        .moveTo(centerX - markerWidth, markerBottom - markerWidth)
-        .lineTo(centerX, markerBottom)
-        .lineTo(centerX + markerWidth, markerBottom - markerWidth)
-        .stroke({
-          color: warningColor,
-          alpha: 0.7 * warningPulse,
-          width: Math.max(1.4, layout.cell * 0.065),
-        });
+      const half = layout.cell * 0.31;
+      const silhouetteTop = top + layout.cell * 0.19;
+      const silhouetteBottom = top + layout.cell * 0.82;
+      const seamY = top + layout.cell * 0.49;
+      this.strokeSegments(graphics, [
+        [centerX - half, top + layout.cell * 0.04, centerX - layout.cell * 0.13, top + layout.cell * 0.16],
+        [centerX - layout.cell * 0.13, top + layout.cell * 0.16, centerX + layout.cell * 0.02, top + layout.cell * 0.07],
+        [centerX + layout.cell * 0.02, top + layout.cell * 0.07, centerX + layout.cell * 0.16, top + layout.cell * 0.18],
+        [centerX + layout.cell * 0.16, top + layout.cell * 0.18, centerX + half, top + layout.cell * 0.1],
+      ], warningColor, 0.78 * warningPulse, Math.max(1.2, layout.cell * 0.052));
+      this.strokeSegments(graphics, [
+        [centerX - half * 0.76, silhouetteTop, centerX - half * 0.76, silhouetteBottom],
+        [centerX + half * 0.76, silhouetteTop, centerX + half * 0.76, silhouetteBottom],
+        [centerX - half * 0.76, seamY, centerX + half * 0.76, seamY],
+      ], SURVIVAL_STONE_MATERIAL.edge, 0.48 * warningPulse, Math.max(1, layout.cell * 0.038));
     }
 
     for (const cue of this.survivalStoneCues) {
       const progress = Math.min(1, cue.elapsed / cue.duration);
       const eased = easeOutCubic(progress);
-      const alpha = this.options.reducedMotion ? 0.58 : Math.max(0, 1 - eased);
-      for (const cell of cue.cells) {
+      const alpha = this.options.reducedMotion ? Math.max(0, 0.5 * (1 - progress)) : Math.max(0, 1 - eased);
+      if (cue.kind === 'spawn') {
+        if (this.options.reducedMotion) continue;
+        const columns = [...new Set(cue.cells.map((cell) => cell.x))];
+        for (const column of columns) {
+          const centerX = layout.x + (column + 0.5) * layout.cell;
+          const tail = layout.cell * (0.24 + (1 - progress) * 0.25);
+          this.strokeSegments(graphics, [
+            [centerX - layout.cell * 0.19, layout.y + layout.cell * 0.04, centerX - layout.cell * 0.19, layout.y + tail],
+            [centerX, layout.y + layout.cell * 0.02, centerX, layout.y + tail * 0.72],
+            [centerX + layout.cell * 0.19, layout.y + layout.cell * 0.08, centerX + layout.cell * 0.19, layout.y + tail * 0.88],
+          ], SURVIVAL_STONE_MATERIAL.innerEdge, alpha * 0.36, Math.max(0.9, layout.cell * 0.032));
+        }
+        continue;
+      }
+
+      const bottomCells = cue.cells.filter((cell) => (
+        !cue.cells.some((candidate) => candidate.x === cell.x && candidate.y === cell.y + 1)
+      ));
+      for (const cell of bottomCells) {
         const visibleY = cell.y - VISIBLE_START_ROW;
         if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
         const centerX = layout.x + (cell.x + 0.5) * layout.cell;
-        const centerY = layout.y + (visibleY + 0.5) * layout.cell;
-        if (cue.kind === 'spawn') {
-          const radius = layout.cell * (this.options.reducedMotion ? 0.42 : 0.26 + eased * 0.34);
+        const contactY = Math.min(
+          layout.y + layout.height - Math.max(1, layout.cell * 0.04),
+          layout.y + (visibleY + 1) * layout.cell,
+        );
+        const spread = layout.cell * (this.options.reducedMotion ? 0.26 : 0.22 + eased * 0.18);
+        this.strokeSegments(graphics, [
+          [centerX - spread, contactY, centerX - layout.cell * 0.06, contactY],
+          [centerX + layout.cell * 0.06, contactY, centerX + spread, contactY],
+        ], SURVIVAL_STONE_MATERIAL.innerEdge, alpha * 0.74, Math.max(1.1, layout.cell * 0.055));
+        if (!this.options.reducedMotion) {
+          const dustOffset = layout.cell * (0.22 + eased * 0.18);
           graphics
-            .circle(centerX, centerY, radius)
-            .stroke({
-              color: SURVIVAL_STONE_MATERIAL.innerEdge,
-              alpha: alpha * 0.78,
-              width: Math.max(1, layout.cell * 0.055),
-            });
-          if (!this.options.reducedMotion) {
-            const streak = layout.cell * (0.28 + (1 - progress) * 0.28);
-            graphics
-              .moveTo(centerX - layout.cell * 0.2, centerY - streak)
-              .lineTo(centerX - layout.cell * 0.2, centerY - layout.cell * 0.08)
-              .moveTo(centerX + layout.cell * 0.2, centerY - streak * 0.82)
-              .lineTo(centerX + layout.cell * 0.2, centerY - layout.cell * 0.08)
-              .stroke({
-                color: warningColor,
-                alpha: alpha * 0.5,
-                width: Math.max(1, layout.cell * 0.04),
-              });
-          }
-        } else {
-          const radius = layout.cell * (this.options.reducedMotion ? 0.44 : 0.2 + eased * 0.52);
+            .circle(centerX - dustOffset, contactY - layout.cell * 0.04, Math.max(1, layout.cell * 0.05))
+            .circle(centerX + dustOffset, contactY - layout.cell * 0.04, Math.max(1, layout.cell * 0.05))
+            .fill({ color: SURVIVAL_STONE_MATERIAL.innerEdge, alpha: alpha * 0.24 });
+        }
+      }
+    }
+
+    if (this.survivalBedrockCue) {
+      const cue = this.survivalBedrockCue;
+      const progress = Math.min(1, cue.elapsed / cue.duration);
+      const bedrockEased = easeOutCubic(progress);
+      const alpha = this.options.reducedMotion ? Math.max(0, 0.46 * (1 - progress)) : Math.max(0, 1 - bedrockEased);
+      const boundaryY = Math.max(
+        layout.y + Math.max(1, layout.cell * 0.04),
+        Math.min(
+          layout.y + layout.height - Math.max(1, layout.cell * 0.04),
+          layout.y + (VISIBLE_HEIGHT - cue.height) * layout.cell,
+        ),
+      );
+      const segments: Array<[number, number, number, number]> = [];
+      for (let column = 0; column < BOARD_WIDTH; column += 1) {
+        const left = layout.x + column * layout.cell + layout.cell * 0.12;
+        const right = layout.x + (column + 1) * layout.cell - layout.cell * 0.12;
+        const drift = ((column * 7 + cue.height * 3) % 3 - 1) * layout.cell * 0.025;
+        segments.push([left, boundaryY + drift, right, boundaryY - drift]);
+      }
+      this.strokeSegments(
+        graphics,
+        segments,
+        cue.direction === 'up' ? BEDROCK_MATERIAL.innerEdge : BEDROCK_MATERIAL.edge,
+        alpha * 0.72,
+        Math.max(1.1, layout.cell * 0.05),
+      );
+      if (!this.options.reducedMotion) {
+        for (let column = 1; column < BOARD_WIDTH; column += 3) {
+          const centerX = layout.x + (column + 0.5) * layout.cell;
           graphics
-            .circle(centerX, centerY + layout.cell * 0.3, radius)
-            .stroke({
-              color: SURVIVAL_STONE_MATERIAL.edge,
-              alpha: alpha * 0.72,
-              width: Math.max(1.2, layout.cell * 0.065),
-            });
-          const dustOffset = layout.cell * (0.22 + eased * 0.26);
-          graphics
-            .circle(centerX - dustOffset, centerY + layout.cell * 0.34, Math.max(1.2, layout.cell * 0.07))
-            .circle(centerX + dustOffset, centerY + layout.cell * 0.34, Math.max(1.2, layout.cell * 0.07))
-            .fill({ color: SURVIVAL_STONE_MATERIAL.innerEdge, alpha: alpha * 0.36 });
+            .circle(centerX, boundaryY - layout.cell * (0.08 + bedrockEased * 0.08), Math.max(1, layout.cell * 0.045))
+            .fill({ color: BEDROCK_MATERIAL.innerEdge, alpha: alpha * 0.18 });
         }
       }
     }
@@ -3183,13 +3301,16 @@ export class TetrisRenderer {
       } else if (event.type === 'game-over' && classic) {
         this.enqueueClassicFeedback('top-out');
       } else if (event.type === 'bedrock-raised' || event.type === 'bedrock-lowered') {
+        const direction = event.type === 'bedrock-raised' ? 'up' : 'down';
+        this.survivalBedrockCue = {
+          direction,
+          height: event.height,
+          elapsed: 0,
+          duration: this.options.reducedMotion ? 80 : 180,
+        };
         this.boardShift = this.options.reducedMotion
           ? null
-          : {
-              direction: event.type === 'bedrock-raised' ? 'up' : 'down',
-              elapsed: 0,
-              duration: 180,
-            };
+          : { direction, elapsed: 0, duration: 180 };
       }
     }
   }
@@ -3274,6 +3395,12 @@ export class TetrisRenderer {
       cue.elapsed += Math.max(0, deltaMs);
       if (cue.elapsed >= cue.duration) this.survivalStoneCues.splice(index, 1);
     }
+    if (this.survivalBedrockCue) {
+      this.survivalBedrockCue.elapsed += Math.max(0, deltaMs);
+      if (this.survivalBedrockCue.elapsed >= this.survivalBedrockCue.duration) {
+        this.survivalBedrockCue = null;
+      }
+    }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);
   }
@@ -3284,7 +3411,7 @@ export class TetrisRenderer {
       kind,
       cells: cells.map((cell) => ({ ...cell })),
       elapsed: 0,
-      duration: this.options.reducedMotion ? 90 : kind === 'spawn' ? 340 : 420,
+      duration: this.options.reducedMotion ? 80 : kind === 'spawn' ? 140 : 150,
     });
     if (this.survivalStoneCues.length > 8) {
       this.survivalStoneCues.splice(0, this.survivalStoneCues.length - 8);
@@ -3294,6 +3421,7 @@ export class TetrisRenderer {
   private clearSurvivalVisualState(): void {
     this.survivalDebrisPresentation.clear();
     this.survivalStoneCues.length = 0;
+    this.survivalBedrockCue = null;
   }
 
   private advanceSurvivalDebrisPresentation(state: GameState, deltaMs: number): void {
@@ -3382,13 +3510,22 @@ export class TetrisRenderer {
         activeCount: Number(this.mutationFilterState.freeze) + Number(this.mutationFilterState.collapse),
       },
       survivalDebris: state.mode === 'race'
-        ? state.survivalDebris.map((stone) => ({
-            ...stone,
-            presentationY: this.survivalDebrisPresentation.get(stone.id)?.y ?? stone.y,
+        ? state.survivalDebris.map((pair) => ({
+            ...pair,
+            presentationY: this.survivalDebrisPresentation.get(pair.id)?.y ?? pair.y,
+            cells: survivalDebrisCells(pair).map((cell) => ({ ...cell })),
           }))
         : [],
       survivalDebrisWarningColumns: state.mode === 'race' ? [...state.survivalDebrisWarningColumns] : [],
       survivalStoneCueCount: this.survivalStoneCues.length,
+      survivalBedrockCue: this.survivalBedrockCue
+        ? {
+            direction: this.survivalBedrockCue.direction,
+            height: this.survivalBedrockCue.height,
+            elapsedMs: this.survivalBedrockCue.elapsed,
+            durationMs: this.survivalBedrockCue.duration,
+          }
+        : null,
     };
   }
 }

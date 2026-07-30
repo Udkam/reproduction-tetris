@@ -21,7 +21,7 @@ let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
 let originalCanvasContext: PropertyDescriptor | undefined;
 
 type DrawOperation = {
-  kind: 'roundRect' | 'rect' | 'circle' | 'segment' | 'fill' | 'stroke';
+  kind: 'roundRect' | 'rect' | 'circle' | 'poly' | 'segment' | 'fill' | 'stroke';
   values: readonly number[];
   options?: unknown;
 };
@@ -31,6 +31,7 @@ type RecorderGraphics = {
   roundRect: (...values: number[]) => RecorderGraphics;
   rect: (...values: number[]) => RecorderGraphics;
   circle: (...values: number[]) => RecorderGraphics;
+  poly: (values: number[]) => RecorderGraphics;
   moveTo: (x: number, y: number) => RecorderGraphics;
   lineTo: (x: number, y: number) => RecorderGraphics;
   fill: (options: unknown) => RecorderGraphics;
@@ -53,6 +54,10 @@ function createGraphicsRecorder(): { graphics: RecorderGraphics; operations: Dra
   };
   graphics.circle = (...values) => {
     operations.push({ kind: 'circle', values });
+    return graphics;
+  };
+  graphics.poly = (values) => {
+    operations.push({ kind: 'poly', values });
     return graphics;
   };
   graphics.moveTo = (x, y) => {
@@ -131,6 +136,12 @@ type RendererInternals = {
     elapsed: number;
     duration: number;
   }>;
+  survivalBedrockCue: {
+    direction: 'up' | 'down';
+    height: number;
+    elapsed: number;
+    duration: number;
+  } | null;
   mutationFlash: {
     item: MutationItem;
     elapsed: number;
@@ -244,6 +255,22 @@ type RendererInternals = {
     type: unknown,
     alpha: number,
     options: unknown,
+  ) => void;
+  drawBedrockStrata: (
+    graphics: unknown,
+    cells: readonly { cell: Cell; x: number; y: number }[],
+    size: number,
+    inset: number,
+    material: PieceMaterial,
+    alpha: number,
+  ) => void;
+  drawStoneFacets: (
+    graphics: unknown,
+    cells: readonly { cell: Cell; x: number; y: number }[],
+    size: number,
+    inset: number,
+    material: PieceMaterial,
+    alpha: number,
   ) => void;
   drawClassicFeedbackCues: (
     graphics: unknown,
@@ -415,21 +442,58 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.materialFor(BEDROCK_CELL)).toBe(BEDROCK_MATERIAL);
     expect(internals.materialFor(SURVIVAL_STONE_CELL)).toBe(SURVIVAL_STONE_MATERIAL);
 
-    internals.consumeEvents([{ type: 'survival-stones-spawned', cells: [{ x: 2, y: 20 }], intervalSeconds: 20, nextIntervalSeconds: 19 }]);
+    internals.consumeEvents([{
+      type: 'survival-stones-spawned',
+      cells: [{ x: 2, y: 19 }, { x: 2, y: 20 }],
+      intervalSeconds: 20,
+      nextIntervalSeconds: 19,
+    }]);
     expect(internals.impact).toBeGreaterThan(0);
-    internals.consumeEvents([{ type: 'survival-stones-landed', cells: [{ x: 2, y: 39 }] }]);
+    internals.consumeEvents([{
+      type: 'survival-stones-landed',
+      cells: [{ x: 2, y: 38 }, { x: 2, y: 39 }],
+    }]);
     expect(internals.impact).toBeGreaterThan(0.4);
     expect(internals.survivalStoneCues).toMatchObject([
-      { kind: 'spawn', cells: [{ x: 2, y: 20 }], elapsed: 0, duration: 340 },
-      { kind: 'land', cells: [{ x: 2, y: 39 }], elapsed: 0, duration: 420 },
+      { kind: 'spawn', cells: [{ x: 2, y: 19 }, { x: 2, y: 20 }], elapsed: 0, duration: 140 },
+      { kind: 'land', cells: [{ x: 2, y: 38 }, { x: 2, y: 39 }], elapsed: 0, duration: 150 },
     ]);
 
-    internals.advanceEffects(340);
+    internals.advanceEffects(140);
     expect(internals.survivalStoneCues).toMatchObject([
-      { kind: 'land', elapsed: 340, duration: 420 },
+      { kind: 'land', elapsed: 140, duration: 150 },
     ]);
-    internals.advanceEffects(80);
+    internals.advanceEffects(10);
     expect(internals.survivalStoneCues).toHaveLength(0);
+  });
+
+  it('uses deterministic strata for bedrock and a distinct fresh fracture for the pair', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const cell = [{ cell: { x: 3, y: 17 }, x: 10, y: 20 }];
+    const bedrock = createGraphicsRecorder();
+    const falling = createGraphicsRecorder();
+
+    internals.drawBedrockStrata(
+      bedrock.graphics,
+      cell,
+      24,
+      1,
+      BEDROCK_MATERIAL,
+      1,
+    );
+    internals.drawStoneFacets(
+      falling.graphics,
+      cell,
+      24,
+      1,
+      SURVIVAL_STONE_MATERIAL,
+      1,
+    );
+
+    expect(bedrock.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(4);
+    expect(falling.operations.some((operation) => operation.kind === 'poly')).toBe(true);
+    expect(geometrySignature(bedrock.operations)).not.toBe(geometrySignature(falling.operations));
   });
 
   it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {
@@ -461,7 +525,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalDebrisPresentation.size).toBe(0);
   });
 
-  it('draws one precise entry marker per warned Survival column', () => {
+  it('draws one top fissure and rigid-pair silhouette for the warned Survival column', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const starts: Array<[number, number]> = [];
@@ -484,14 +548,40 @@ describe('Puzzle undo presentation reset', () => {
       graphics,
       {
         mode: 'race',
-        survivalDebrisWarningColumns: [2, 7],
+        survivalDebrisWarningColumns: [2],
       } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(starts).toContainEqual([50, 2]);
-    expect(starts).toContainEqual([150, 2]);
+    expect(starts.some(([x]) => x > 43 && x < 57)).toBe(true);
+    expect(starts.some(([x]) => x > 140)).toBe(false);
     expect(strokes).toHaveLength(2);
+  });
+
+  it('keeps a local bedrock boundary cue even when reduced motion removes the shift', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+
+    internals.consumeEvents([{ type: 'bedrock-raised', count: 1, height: 4 }]);
+    expect(internals.boardShift).toMatchObject({ direction: 'up', elapsed: 0, duration: 180 });
+    expect(internals.survivalBedrockCue).toEqual({
+      direction: 'up',
+      height: 4,
+      elapsed: 0,
+      duration: 180,
+    });
+    internals.advanceEffects(180);
+    expect(internals.survivalBedrockCue).toBeNull();
+
+    renderer.setOptions({ reducedMotion: true });
+    internals.consumeEvents([{ type: 'bedrock-lowered', count: 1, height: 3 }]);
+    expect(internals.boardShift).toBeNull();
+    expect(internals.survivalBedrockCue).toEqual({
+      direction: 'down',
+      height: 3,
+      elapsed: 0,
+      duration: 80,
+    });
   });
 
   it('renders one static item-coloured activation frame for reduced motion', () => {
