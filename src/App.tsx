@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import {
   ANCHOR_CELL,
   PIECE_TYPES,
@@ -21,7 +28,6 @@ import { browserPlatform } from './platform/browserPlatform';
 import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
-  PUZZLE_ROW_BANDS,
   PUZZLE_PROGRESS_KEY,
   V4_PUZZLE_PROGRESS_KEY,
   V3_PUZZLE_PROGRESS_KEY,
@@ -406,7 +412,24 @@ function ModeRuleSummary({
 
 export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (mode: GameMode) => void; language?: AppLanguage }) {
   const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
+  const modeButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const copy = appCopy(language);
+  const moveModeFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const keyOffset: Partial<Record<string, number>> = {
+      ArrowLeft: index % 2 === 0 ? 0 : -1,
+      ArrowRight: index % 2 === 1 ? 0 : 1,
+      ArrowUp: index < 2 ? 0 : -2,
+      ArrowDown: index >= 2 ? 0 : 2,
+    };
+    const offset = keyOffset[event.key];
+    if (offset === undefined) return;
+    event.preventDefault();
+    const nextIndex = Math.max(0, Math.min(MODE_ORDER.length - 1, index + offset));
+    if (nextIndex === index) return;
+    const nextMode = MODE_ORDER[nextIndex]!;
+    setPreviewMode(nextMode);
+    modeButtonRefs.current[nextIndex]?.focus();
+  };
   return (
     <main id="game" lang={language} className="landing-shell landing-shell--workbench landing-shell--wordmark" data-testid="mode-home">
       <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
@@ -420,7 +443,7 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
             aria-label={copy.labels.selectMode}
             data-testid="mode-list"
           >
-            {MODE_ORDER.map((mode) => {
+            {MODE_ORDER.map((mode, index) => {
               const item = modeCopy(language, mode);
               const active = previewMode === mode;
               return (
@@ -431,8 +454,11 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
                   data-testid={`enter-${mode}`}
                   data-selected={active || undefined}
                   aria-pressed={active}
+                  tabIndex={active ? 0 : -1}
+                  ref={(node) => { modeButtonRefs.current[index] = node; }}
                   onPointerEnter={() => setPreviewMode(mode)}
                   onFocus={() => setPreviewMode(mode)}
+                  onKeyDown={(event) => moveModeFocus(event, index)}
                   onClick={() => onEnter(mode)}
                 >
                   <span className="mode-gate__glyph"><ModeGlyph mode={mode} /></span>
@@ -523,6 +549,19 @@ function CompletionTick() {
   );
 }
 
+const PUZZLE_TARGET_ROW_TIERS = Object.freeze([3, 4, 5, 6, 7].map((rows) => {
+  const levels = CAMPAIGN_LEVELS.filter((level) => getPuzzleDefinition(level.id).targetRows === rows);
+  if (levels.length !== 10) {
+    throw new Error(`Puzzle display tier ${rows} requires exactly ten levels.`);
+  }
+  return Object.freeze({ rows, levels: Object.freeze(levels) });
+}));
+
+function puzzleMatrixColumnCount(): 5 | 10 {
+  if (typeof window === 'undefined') return 10;
+  return window.innerWidth < 720 || window.innerHeight > window.innerWidth ? 5 : 10;
+}
+
 export function PuzzleLibrary({
   progress,
   selectedId,
@@ -543,6 +582,23 @@ export function PuzzleLibrary({
   const copy = appCopy(language);
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedBest = puzzleBestPieceCount(progress, selected.id);
+  const levelButtonRefs = useRef(new Map<PuzzleId, HTMLButtonElement>());
+  const moveLevelFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const columns = puzzleMatrixColumnCount();
+    let nextIndex = index;
+    if (event.key === 'ArrowLeft') nextIndex = Math.max(0, index - 1);
+    else if (event.key === 'ArrowRight') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + 1);
+    else if (event.key === 'ArrowUp') nextIndex = Math.max(0, index - columns);
+    else if (event.key === 'ArrowDown') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + columns);
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = CAMPAIGN_LEVELS.length - 1;
+    else return;
+    event.preventDefault();
+    if (nextIndex === index) return;
+    const next = CAMPAIGN_LEVELS[nextIndex]!;
+    levelButtonRefs.current.get(next.id)?.focus();
+    onSelect(next.id);
+  };
   return (
     <main id="game" lang={language} className="library-shell library-shell--console" data-testid="puzzle-library">
       <header className="library-header console-header">
@@ -575,14 +631,13 @@ export function PuzzleLibrary({
             <h1 id="library-title">{copy.labels.puzzle}</h1>
           </div>
           <ol className="console-bands" aria-label={copy.labels.puzzleBands}>
-            {PUZZLE_ROW_BANDS.map((band, bandIndex) => {
-              const rows = bandIndex + 5;
-                const activeBand = band.some((level) => level.id === selected.id);
-                return (
-                  <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={rows} aria-label={copy.phrasing.rowBand(rows)} key={band[0]!.id}>
-                  <span className="console-band__label" aria-hidden="true"><small>{copy.phrasing.rowBand(rows)}</small></span>
+            {PUZZLE_TARGET_ROW_TIERS.map((tier) => {
+              const activeBand = tier.levels.some((level) => level.id === selected.id);
+              return (
+                <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={tier.rows} aria-label={copy.phrasing.rowBand(tier.rows)} key={tier.rows}>
+                  <span className="console-band__label" aria-hidden="true"><b>{tier.rows}</b></span>
                   <ol className="console-nodes">
-                    {band.map((level) => {
+                    {tier.levels.map((level) => {
                       const complete = progress.completedLevelIds.includes(level.id);
                       const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
                       const selectedLevel = selectedId === level.id;
@@ -598,9 +653,15 @@ export function PuzzleLibrary({
                             data-anchor={hasAnchor || undefined}
                             data-best-pieces={bestPieces ?? undefined}
                             aria-pressed={selectedLevel}
-                          aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, rows, complete, bestPieces)}
-                          onClick={() => onSelect(level.id)}
-                        >
+                            tabIndex={selectedLevel ? 0 : -1}
+                            ref={(node) => {
+                              if (node) levelButtonRefs.current.set(level.id, node);
+                              else levelButtonRefs.current.delete(level.id);
+                            }}
+                            aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, tier.rows, complete, bestPieces)}
+                            onKeyDown={(event) => moveLevelFocus(event, level.index - 1)}
+                            onClick={() => onSelect(level.id)}
+                          >
                             {complete
                               ? <CompletionTick />
                               : <span className="console-node__index">{String(level.index).padStart(2, '0')}</span>}
