@@ -84,3 +84,30 @@
   candidate rather than this Core checkpoint.
 - Next action: commit this green checkpoint, then open P10.3 Mutation same-item event
   aggregation.
+
+## 2026-07-31 — Phase 10 Mutation activation aggregation checkpoint
+
+- Task ID: `T17-P10.3`
+- Base SHA: `a9f920537b2519b92396c758664b722277c0d618`
+- Owner: primary coordinator
+- Exact paths:
+  - `src/game/core/engine.ts`
+  - `src/game/core/sprint.test.ts`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/sprint.test.ts --maxWorkers=1 --fileParallelism=false`:
+    `23/23` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: carrier mechanics still execute for every deterministic activation,
+  including each repeated Bomb clear and each Multiplier promotion. Presentation
+  summaries are grouped by item in first-seen order, deduplicate trigger geometry,
+  accumulate Bomb score/removed rows, expose the final multiplier factor, and freeze
+  the combined trigger-cell snapshot. Two repeated Bombs therefore perform two
+  mechanical clears but emit one Bomb activation cue; repeated Freeze and Multiplier
+  carriers likewise emit one cue each while their final timers/factor remain canonical.
+- Resource note: one Vitest worker, no file parallelism, no watcher/server/browser.
+- Blocker: none for P10.3. Renderer/audio must consume the aggregated event correctly
+  in P10.4 and final real-frame evidence.
+- Next action: commit this green checkpoint, then open P10.4 Mutation preview,
+  Supergravity landing, upper-Ice treatment, and restrained audio.

@@ -811,6 +811,16 @@ interface MutationActivation {
   events: GameEvent[];
 }
 
+interface MutationActivationSummary {
+  item: MutationItem;
+  durationTicks: number;
+  score: number;
+  rowsRemoved: number;
+  triggerCells: Cell[];
+  triggerKeys: Set<string>;
+  multiplierFactor?: 2 | 4;
+}
+
 /**
  * Applies every carrier triggered by one resolved clear. Bombs may remove another
  * carrier, so the deterministic queue handles that finite chain without a second
@@ -824,6 +834,8 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
   const pending = [...triggered];
   const queued = new Set(triggered.map((carrier) => carrier.id));
   const activated = new Set<number>();
+  const activationOrder: MutationItem[] = [];
+  const summaries = new Map<MutationItem, MutationActivationSummary>();
 
   while (pending.length > 0) {
     const carrier = pending.shift();
@@ -886,14 +898,43 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
     const multiplierFactor = carrier.item === 'multiplier'
       ? (next.mutationMultiplierFactor === 4 ? 4 : 2)
       : undefined;
+    let summary = summaries.get(carrier.item);
+    if (!summary) {
+      summary = {
+        item: carrier.item,
+        durationTicks: 0,
+        score: 0,
+        rowsRemoved: 0,
+        triggerCells: [],
+        triggerKeys: new Set(),
+      };
+      summaries.set(carrier.item, summary);
+      activationOrder.push(carrier.item);
+    }
+    summary.durationTicks = Math.max(summary.durationTicks, durationTicks);
+    summary.score += score;
+    summary.rowsRemoved += rowsRemoved;
+    if (multiplierFactor !== undefined) summary.multiplierFactor = multiplierFactor;
+    for (const cell of carrier.cells) {
+      const key = cellKey(cell);
+      if (summary.triggerKeys.has(key)) continue;
+      summary.triggerKeys.add(key);
+      summary.triggerCells.push(Object.freeze({ ...cell }));
+    }
+  }
+
+  for (const item of activationOrder) {
+    const summary = summaries.get(item)!;
     events.push({
       type: 'mutation-activated',
-      item: carrier.item,
-      durationTicks,
-      score,
-      rowsRemoved,
-      triggerCells: carrier.cells,
-      ...(multiplierFactor === undefined ? {} : { multiplierFactor }),
+      item,
+      durationTicks: summary.durationTicks,
+      score: summary.score,
+      rowsRemoved: summary.rowsRemoved,
+      triggerCells: Object.freeze(summary.triggerCells),
+      ...(summary.multiplierFactor === undefined
+        ? {}
+        : { multiplierFactor: summary.multiplierFactor }),
     });
   }
   return { state: next, events };

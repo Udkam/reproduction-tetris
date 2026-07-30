@@ -259,6 +259,61 @@ describe('异变 mode', () => {
     });
   });
 
+  it('aggregates repeated item cues in first-seen order while applying every timer and multiplier carrier', () => {
+    const transition = resolveLineClear({
+      ...carrierClearState('collapse'),
+      mutationCarriers: [
+        { id: 1, item: 'freeze', cells: [{ x: 0, y: 39 }] },
+        { id: 2, item: 'freeze', cells: [{ x: 1, y: 39 }] },
+        { id: 3, item: 'multiplier', cells: [{ x: 2, y: 39 }] },
+        { id: 4, item: 'multiplier', cells: [{ x: 3, y: 39 }] },
+      ],
+    });
+    const activations = mutationActivations(transition);
+
+    expect(activations.map((event) => event.item)).toEqual(['freeze', 'multiplier', 'collapse']);
+    expect(activations.filter((event) => event.item === 'freeze')).toHaveLength(1);
+    expect(activations.filter((event) => event.item === 'multiplier')).toHaveLength(1);
+    expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationMultiplierFactor).toBe(4);
+
+    const freeze = activations[0]!;
+    expect(freeze.triggerCells).toEqual([{ x: 0, y: 39 }, { x: 1, y: 39 }]);
+    expect(Object.isFrozen(freeze.triggerCells)).toBe(true);
+    expect(freeze.triggerCells?.every((cell) => Object.isFrozen(cell))).toBe(true);
+    expect(activations[1]?.multiplierFactor).toBe(4);
+  });
+
+  it('executes every repeated Bomb mechanically but emits one combined Bomb presentation cue', () => {
+    const transition = resolveLineClear({
+      ...carrierClearState('freeze'),
+      mutationCarriers: [
+        { id: 1, item: 'bomb', cells: [{ x: 0, y: 39 }] },
+        { id: 2, item: 'bomb', cells: [{ x: 1, y: 39 }] },
+      ],
+    });
+    const activations = mutationActivations(transition);
+    const bomb = activations.find((event) => event.item === 'bomb');
+    const bombClears = transition.events.filter((event) => (
+      event.type === 'lines-cleared'
+      && event.rows.length === 3
+      && event.rows[0] === 37
+    ));
+
+    expect(bombClears).toHaveLength(2);
+    expect(transition.state.lines).toBe(7);
+    expect(transition.state.score).toBe(40 + MUTATION_BOMB_SCORE * 2);
+    expect(activations.filter((event) => event.item === 'bomb')).toHaveLength(1);
+    expect(bomb).toMatchObject({
+      durationTicks: 0,
+      score: MUTATION_BOMB_SCORE * 2,
+      rowsRemoved: 6,
+      triggerCells: [{ x: 0, y: 39 }, { x: 1, y: 39 }],
+    });
+  });
+
   it('retains a pre-clear carrier snapshot when every marked cell disappears', () => {
     const state = fullyClearedCarrierState('freeze');
     const expectedTriggerCells = cellsForPiece(state.active!);
