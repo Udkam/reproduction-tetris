@@ -216,6 +216,16 @@ const ENGLISH_LEVEL_NAMES: Readonly<Record<PuzzleId, string>> = {
   'tm-puzzle-38': 'Loop Well',
   'tm-puzzle-39': 'Edge Tower',
   'tm-puzzle-40': 'Bent Bridge',
+  'tm-puzzle-41': 'Cross Trench',
+  'tm-puzzle-42': 'Center Steps',
+  'tm-puzzle-43': 'Split Gallery',
+  'tm-puzzle-44': 'Twin Towers',
+  'tm-puzzle-45': 'Sloped Gallery',
+  'tm-puzzle-46': 'Edge Well',
+  'tm-puzzle-47': 'Deep Channel',
+  'tm-puzzle-48': 'Broken Channel',
+  'tm-puzzle-49': 'Layered Well',
+  'tm-puzzle-50': 'Forked Passage',
 };
 
 const COPY: Record<AppLanguage, Translation> = {

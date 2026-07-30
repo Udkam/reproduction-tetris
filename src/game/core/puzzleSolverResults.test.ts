@@ -3,6 +3,7 @@ import phase7Batch1File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle
 import phase7Batch2File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-11-20.json';
 import phase7Batch3File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json';
 import phase7Batch4File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json';
+import phase7Batch5File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json';
 import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
 import {
@@ -67,12 +68,20 @@ const phase7Batch1 = phase7Batch1File as unknown as Phase7Artifact;
 const phase7Batch2 = phase7Batch2File as unknown as Phase7Artifact;
 const phase7Batch3 = phase7Batch3File as unknown as Phase7Artifact;
 const phase7Batch4 = phase7Batch4File as unknown as Phase7Artifact;
-const phase7Artifacts = Object.freeze([phase7Batch1, phase7Batch2, phase7Batch3, phase7Batch4]);
+const phase7Batch5 = phase7Batch5File as unknown as Phase7Artifact;
+const phase7Artifacts = Object.freeze([
+  phase7Batch1,
+  phase7Batch2,
+  phase7Batch3,
+  phase7Batch4,
+  phase7Batch5,
+]);
 const activeLevels: readonly Phase7VerifiedLevel[] = Object.freeze([
   ...phase7Batch1.levels,
   ...phase7Batch2.levels,
   ...phase7Batch3.levels,
   ...phase7Batch4.levels,
+  ...phase7Batch5.levels,
 ]);
 
 function commandFor(token: CommandToken): GameCommand {
@@ -94,7 +103,7 @@ function decode(stream: string): GameCommand[] {
 }
 
 describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
-  it('binds all four re-authored ten-level batches to real Core route families', () => {
+  it('binds all five re-authored ten-level batches to real Core route families', () => {
     for (const [index, artifact] of phase7Artifacts.entries()) {
       const from = index * 10 + 1;
       const to = from + 9;
@@ -107,6 +116,7 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
         { maxLocks: 18, primaryBeam: 600, alternateBeam: 480 },
         { maxLocks: 24, primaryBeam: 600, alternateBeam: 480 },
         { maxLocks: 30, primaryBeam: 600, alternateBeam: 480 },
+        { maxLocks: 36, primaryBeam: 720, alternateBeam: 560 },
       ][index]);
       expect(Object.keys(artifact.commandEncoding).sort()).toEqual(['C', 'H', 'L', 'R', 'S', 'T']);
       expect(artifact.difficultyTuple).toEqual([
@@ -138,8 +148,16 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       .every(({ setup }) => setup.placementCount === 12)).toBe(true);
     expect(phase7Batch4.levels.filter(({ anchorCells }) => anchorCells.length === 0)
       .map(({ shorterRouteLocks }) => shorterRouteLocks)).toEqual([11, 15, 16, 18, 19, 19, 21]);
-    expect(activeLevels).toHaveLength(40);
-    expect(new Set(activeLevels.map(({ id }) => id)).size).toBe(40);
+    expect(phase7Batch5.levels.reduce((count, { anchorCells }) => count + anchorCells.length, 0)).toBe(0);
+    expect(phase7Batch5.levels.map(({ setup }) => setup.placementCount))
+      .toEqual([14, 14, 14, 14, 14, 14, 15, 14, 14, 14]);
+    expect(phase7Batch5.levels.map(({ routes }) => routes.map(({ locks }) => locks)))
+      .toEqual([
+        [16, 16], [17, 20], [17, 20], [19, 21], [22, 26],
+        [23, 24], [27, 23], [24, 24], [25, 25], [25, 29],
+      ]);
+    expect(activeLevels).toHaveLength(50);
+    expect(new Set(activeLevels.map(({ id }) => id)).size).toBe(50);
     expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual(activeLevels.map(({ id }) => id));
 
     for (const [index, level] of activeLevels.entries()) {
@@ -176,13 +194,15 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       expect(level.targetRowCount, level.id).toBe(
         definition.difficulty <= 10 ? 3
           : definition.difficulty <= 20 ? 4
-            : definition.difficulty <= 30 ? 5 : 6,
+            : definition.difficulty <= 30 ? 5
+              : definition.difficulty <= 40 ? 6 : 7,
       );
       expect(level.setup.placementCount, level.id).toBeGreaterThanOrEqual(5);
       expect(level.setup.placementCount, level.id).toBeLessThanOrEqual(
         definition.difficulty <= 10 ? 6
           : definition.difficulty <= 20 ? 8
-            : definition.difficulty <= 30 ? 10 : 12,
+            : definition.difficulty <= 30 ? 10
+              : definition.difficulty <= 40 ? 12 : 15,
       );
       expect(level.shorterRouteLocks, level.id).toBe(
         Math.min(level.routes[0].locks, level.routes[1].locks),

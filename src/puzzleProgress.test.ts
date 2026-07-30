@@ -58,7 +58,7 @@ describe('revisioned all-open Puzzle workshop persistence baseline', () => {
       PUZZLE_DEFINITIONS.map((level) => level.difficulty),
     );
     expect(CAMPAIGN_LEVELS.every((level) => level.total === CAMPAIGN_LEVELS.length)).toBe(true);
-    expect(PUZZLE_ROW_BANDS.map((band) => band.length)).toEqual([5, 5, 5, 5, 5, 5, 5, 5]);
+    expect(PUZZLE_ROW_BANDS.map((band) => band.length)).toEqual([5, 5, 5, 5, 5, 5, 5, 5, 5, 5]);
     expect(PUZZLE_ROW_BANDS.flat().map((level) => level.id)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
     expect(CAMPAIGN_TIERS).toBe(PUZZLE_ROW_BANDS);
   });
