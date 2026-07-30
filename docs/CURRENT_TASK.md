@@ -101,6 +101,14 @@ make the existing countdown veil translucent while retaining the centered digit,
 board-local dimming, focus/input gate, and reduced-motion behavior; it must not alter
 countdown timing, Core state, renderer geometry, or other modal backgrounds.
 
+Countdown compositing repair `e041a1c` replaces only that opaque late background with
+a translucent well-coloured veil and adds a direct CSS contract. The repeat real-frame
+batch visibly proves one / two / three staged rows beneath digits `3 / 2 / 1`.
+The final frame has one Canvas, zero DOM cells, no horizontal or vertical overflow,
+and zero console warnings/errors. The repair changes no timer, Core, Renderer geometry,
+or modal behavior. Survival cavern and the first-entry rule sheet are browser-green;
+the separate selector/home navigation checkpoint remains open.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,

@@ -278,3 +278,29 @@
   real frames visibly prove one / two / three rows.
 - Next action: add one direct CSS contract and a narrow late-rule correction, rerun
   focused tests/typecheck, then repeat a single managed browser batch.
+
+## 2026-07-31 — countdown compositing repair passes real frames
+
+- Base: rejection record `770d078`.
+- Product commit: `e041a1c`.
+- Changed paths: `src/styles.css` and one direct source-style assertion in
+  `src/App.test.ts`.
+- Implementation: the authoritative board-local countdown veil keeps its centered
+  digit, radial emphasis, inset edge, and input ownership, but its solid colour layer
+  is now translucent so Pixi's staged bedrock remains visible underneath.
+- Commands actually run:
+  - focused `src/App.test.ts` CSS contract by exact test title
+  - `npm.cmd run typecheck`
+  - `git diff --cached --check`
+- Real-browser evidence: the repeat managed batch shows one, two, and three bottom
+  bedrock rows under digits `3`, `2`, and `1` respectively. The accepted page has one
+  Canvas, zero DOM cells, no horizontal or vertical overflow, and zero warning/error
+  console entries.
+- Resource release: the single browser tab was finalized and its session reset;
+  listener PID `11816` was stopped and port `5178` has no remaining listener.
+- Boundary: Core, Renderer geometry, Runtime timing, other sheets, and the preserved
+  selector/home App hunks are unchanged.
+- Blocker: none for rule sheets or countdown compositing. Final independent Phase-9
+  QA remains deferred until the navigation checkpoint is source-frozen.
+- Next action: push this recovery chain, then resume the separate no-scroll Puzzle
+  selector and mode-home checkpoint.

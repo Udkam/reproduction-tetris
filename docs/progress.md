@@ -7,9 +7,13 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   inner Rules heading, and `好的 / Got it` as the primary acknowledgement.
 - Survival copy now matches Core: every event deterministically chooses one or two
   clearable stones, all in one random column, falling at twice normal-piece speed.
-- Focused React/localization tests pass `2/2` and typecheck passes. This is a bounded
-  source checkpoint, not Phase-9 acceptance: real browser review and the separate
-  no-scroll Puzzle selector/home checkpoint remain open.
+- Focused React/localization tests pass `2/2` and typecheck passes. The first browser
+  batch accepted those rules but exposed an opaque countdown veil that hid the staged
+  bedrock. Narrow repair `e041a1c` makes only that veil translucent; a repeat real-frame
+  batch proves one / two / three rows under `3 / 2 / 1`, one Canvas, zero DOM cells,
+  no overflow, zero console warnings/errors, and complete browser/server release.
+- This remains a bounded source checkpoint, not Phase-9 acceptance: the separate
+  no-scroll Puzzle selector/home checkpoint and final independent QA are still open.
 
 ### T15 Phase 3 HUD contract and Phase 5 Ice addendum — 2026-07-28
 

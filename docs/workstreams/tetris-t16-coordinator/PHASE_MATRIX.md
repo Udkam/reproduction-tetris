@@ -6,7 +6,7 @@ Base: `main@87121af42330ab9aea9456e28dfa42e5edc62536`
 | --- | --- | --- | --- | --- |
 | Contract | coordinator | three read-only design brainstorms | current/design/phase/matrix/log/progress docs | FROZEN |
 | Survival Core | coordinator | later rules QA | Core constants/types/engine/race tests and direct state consumers | GREEN `b99bbed`; final rules QA pending |
-| Survival cavern | coordinator | later visual + rules QA | Survival theme/Renderer/presentation/runtime/App and direct tests/copy | BROWSER REJECTED: opaque countdown veil hides staged rows; narrow CSS repair open |
+| Survival cavern | coordinator | later visual + rules QA | Survival theme/Renderer/presentation/runtime/App and direct tests/copy | BROWSER GREEN `e041a1c`; final independent QA pending |
 | Ordinary feedback | coordinator | later visual + rules QA | shared Renderer/presentation/theme and direct tests | SOURCE CORRECTED `d8e97e7`; browser feel QA pending |
 | Rules + Puzzle + home | coordinator | later visual + input QA | App/styles/style order/localization/direct tests | RULE SHEET BROWSER-ACCEPTED `e4d19ad`; navigation pending |
 | Candidate evidence | coordinator | evidence QA | final gates plus source-bound browser artifacts only | PENDING |
