@@ -994,3 +994,42 @@
   `src/App.test.ts`. Batch-5 artifact and route-test binding remain absent.
 - Next action: commit this docs-only measured correction, run the one dedicated
   11-drop pool, and inspect supported candidates before another route probe.
+
+## Levels 41–50 frozen candidate — 2026-07-30
+
+- Task: `t15_puzzle_41_50_source_writer`.
+- Accepted/pushed base SHA: `d8573e3`.
+- Candidate SHA: `7cd4a1d`.
+- Exact product/evidence paths:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json`
+- Commands actually run after the last source reorder:
+  - focused structural tests: 5 files / 62 tests, one worker, pass;
+  - `npm.cmd run typecheck`, pass;
+  - one formal
+    `solve-puzzle-batch.mjs --from 41 --to 50 --max-locks 36
+    --primary-beam 720 --alternate-beam 560`, pass;
+  - source-bound route matrix: 6 files / 64 tests, one worker, pass;
+  - final `npm.cmd run typecheck`, pass.
+- Evidence:
+  - all ten registered packages have seven target rows, zero anchors and two
+    public-Core routes diverging by lock four;
+  - route pairs are `16/16`, `17/20`, `17/20`, `19/21`, `22/26`, `23/24`,
+    `27/23`, `24/24`, `25/25`, `25/29`;
+  - setup counts are `14,14,14,14,14,14,15,14,14,14`;
+  - artifact SHA-256 is
+    `3EC1720BCD9101CD7392CAB1303F89F5857840476C000E030E3169E29E646AB3`;
+  - accepted artifacts 01–40 retain identical Git blob IDs.
+- Resource evidence: formal solver PID `17764` used Idle priority and
+  one-processor affinity, had no listener and exited before tests. No second
+  solver, subagent, browser, server, MCP, Serena or WMI/CIM task overlapped.
+- Blocker: none in the frozen candidate. This is not acceptance.
+- Next action: two bounded read-only independent audits of exact candidate
+  `7cd4a1d`: route/artifact integrity and curriculum/boundary integrity.

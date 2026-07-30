@@ -695,6 +695,24 @@ retain the fixed 36/720/560 bounds and must exit before the normal replay test
 is bound to the artifact; no second solver, agent, listener, server or browser
 may overlap.
 
+**Levels 41–50 frozen candidate (2026-07-30):** the single formal solver PID
+`17764` ran at Idle priority with one-processor affinity, verified all twenty
+routes in registered order, wrote the batch-5 artifact and exited. No other
+solver, agent, browser, server or listener overlapped. The artifact SHA-256 is
+`3EC1720BCD9101CD7392CAB1303F89F5857840476C000E030E3169E29E646AB3`.
+Normal source-bound tests now bind its exact campaign order, 36/720/560
+bounds, zero anchors, setup counts
+`14,14,14,14,14,14,15,14,14,14`, measured route pairs and all public-Core
+replays. The final focused gate passes 6 files / 64 tests with one worker,
+followed by typecheck. Historic artifacts 01–40 retain their accepted blob
+IDs, and the source diff only appends the 41–50 definitions, IDs, names and
+test expectations.
+
+Candidate `7cd4a1d` is frozen from accepted base `d8573e3`; unlock/v5 source,
+App source, selector/CSS, renderer, dependencies and other modes remain
+unchanged. Independent route/artifact QA and curriculum/boundary QA must both
+accept this exact candidate before the record is integrated or pushed.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

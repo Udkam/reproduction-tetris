@@ -541,3 +541,15 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The nine-drop pool is legal and complete, but its first edge-anchor package
   also fails while the anchor-free board completes in 19/22 locks. One final
   eight-drop anchor pool is opened; route bounds remain frozen.
+
+## 2026-07-30 Phase 7 levels 31–50
+
+- Levels 31–40 are accepted and pushed through `d8573e3`.
+- Levels 41–50 are frozen at candidate `7cd4a1d`: ten deterministic seven-row
+  boards, two public-Core routes per board, no final-tier anchors, and one
+  15-drop setup among nine 14-drop setups.
+- The formal batch-5 artifact has SHA-256
+  `3EC1720BCD9101CD7392CAB1303F89F5857840476C000E030E3169E29E646AB3`.
+  Focused source-bound replay passes 6 files / 64 tests and typecheck passes.
+- TODO: obtain two read-only independent audits before acceptance/push, then
+  open the separate unlock/v5/selector data-scroll adaptation slice.
