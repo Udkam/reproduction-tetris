@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import phase7Batch1File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json';
 import { BEDROCK_CELL, BOARD_WIDTH, INITIAL_SURVIVAL_BEDROCK_ROWS, TICKS_PER_SECOND, stateHash, survivalIntervalSeconds } from '../core';
+import { encodePuzzleRoute } from '../core/puzzleRouteSearch';
 import { replayPuzzleChallenge, replaySurvivalBedrock } from './qaScenario';
+
+const phase7PuzzleQaRoute = phase7Batch1File.levels
+  .find(({ id }) => id === 't5r-drift-08')!
+  .routes.find(({ id }) => id === 'primary')!
+  .commandStream;
 
 describe('Survival bedrock browser QA replay', () => {
   it('reaches the first deterministic timed rise through ordinary gravity and public commands only', () => {
@@ -42,6 +49,7 @@ describe('T5 puzzle browser QA replay', () => {
     expect(first.state.completedLevelId).toBe('t5r-drift-08');
     expect(first.state.nextUnlockedLevelId).toBe('t5r-rift-10');
     expect(first.state.puzzleTargetCells).toEqual([]);
+    expect(encodePuzzleRoute(first.commands)).toBe(phase7PuzzleQaRoute);
     expect(first.hash).toBe(second.hash);
     expect(first.commands).toEqual(second.commands);
   });
