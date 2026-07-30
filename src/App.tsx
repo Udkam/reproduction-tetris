@@ -435,7 +435,7 @@ function ModeRuleSummary({
 }
 
 export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (mode: GameMode) => void; language?: AppLanguage }) {
-  const [previewMode, setPreviewMode] = useState<GameMode>('marathon');
+  const [focusMode, setFocusMode] = useState<GameMode>('marathon');
   const modeButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const copy = appCopy(language);
   const moveModeFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -451,7 +451,7 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
     const nextIndex = Math.max(0, Math.min(MODE_ORDER.length - 1, index + offset));
     if (nextIndex === index) return;
     const nextMode = MODE_ORDER[nextIndex]!;
-    setPreviewMode(nextMode);
+    setFocusMode(nextMode);
     modeButtonRefs.current[nextIndex]?.focus();
   };
   return (
@@ -463,25 +463,20 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
           </div>
           <div
             className="mode-gates mode-gates--workbench"
-            data-selection={previewMode}
             aria-label={copy.labels.selectMode}
             data-testid="mode-list"
           >
             {MODE_ORDER.map((mode, index) => {
               const item = modeCopy(language, mode);
-              const active = previewMode === mode;
               return (
                 <button
                   key={mode}
-                  className={`mode-gate mode-gate--${mode} ${active ? 'mode-gate--active' : ''}`}
+                  className={`mode-gate mode-gate--${mode}`}
                   type="button"
                   data-testid={`enter-${mode}`}
-                  data-selected={active || undefined}
-                  aria-pressed={active}
-                  tabIndex={active ? 0 : -1}
+                  tabIndex={focusMode === mode ? 0 : -1}
                   ref={(node) => { modeButtonRefs.current[index] = node; }}
-                  onPointerEnter={() => setPreviewMode(mode)}
-                  onFocus={() => setPreviewMode(mode)}
+                  onFocus={() => setFocusMode(mode)}
                   onKeyDown={(event) => moveModeFocus(event, index)}
                   onClick={() => onEnter(mode)}
                 >
@@ -565,7 +560,7 @@ function PuzzleSilhouette({ id, label }: { id: PuzzleId; label: string }) {
 /** A centered graphic replacement for the completed level numeral; never expose literal check text. */
 function CompletionTick() {
   return (
-    <span className="console-node__completion-tick" aria-hidden="true">
+    <span className="puzzle-gallery__completion-tick" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
         <path d="m4.8 12.35 4.35 4.3L19.4 7.2" />
       </svg>
@@ -573,17 +568,11 @@ function CompletionTick() {
   );
 }
 
-const PUZZLE_TARGET_ROW_TIERS = Object.freeze([3, 4, 5, 6, 7].map((rows) => {
-  const levels = CAMPAIGN_LEVELS.filter((level) => getPuzzleDefinition(level.id).targetRows === rows);
-  if (levels.length !== 10) {
-    throw new Error(`Puzzle display tier ${rows} requires exactly ten levels.`);
-  }
-  return Object.freeze({ rows, levels: Object.freeze(levels) });
-}));
+const PUZZLE_PAGE_SIZE = 25;
+type PuzzlePageIndex = 0 | 1;
 
-function puzzleMatrixColumnCount(): 5 | 10 {
-  if (typeof window === 'undefined') return 10;
-  return window.innerWidth < 720 || window.innerHeight > window.innerWidth ? 5 : 10;
+function puzzlePageForIndex(index: number): PuzzlePageIndex {
+  return index >= PUZZLE_PAGE_SIZE ? 1 : 0;
 }
 
 export function PuzzleLibrary({
@@ -606,94 +595,165 @@ export function PuzzleLibrary({
   const copy = appCopy(language);
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedBest = puzzleBestPieceCount(progress, selected.id);
+  const selectedIndex = CAMPAIGN_LEVELS.findIndex((level) => level.id === selected.id);
+  const selectedPage = puzzlePageForIndex(Math.max(0, selectedIndex));
+  const [pageIndex, setPageIndex] = useState<PuzzlePageIndex>(selectedPage);
   const levelButtonRefs = useRef(new Map<PuzzleId, HTMLButtonElement>());
+  const pendingFocusRef = useRef<PuzzleId | null>(null);
+  const pageLastSelectedRef = useRef<[PuzzleId, PuzzleId]>([
+    CAMPAIGN_LEVELS[0]!.id,
+    CAMPAIGN_LEVELS[PUZZLE_PAGE_SIZE]!.id,
+  ]);
+  pageLastSelectedRef.current[selectedPage] = selected.id;
+  const pageStart = pageIndex * PUZZLE_PAGE_SIZE;
+  const pageLevels = CAMPAIGN_LEVELS.slice(pageStart, pageStart + PUZZLE_PAGE_SIZE);
+  const pageEnd = pageStart + pageLevels.length;
+  const rovingLevelId = pageLevels.some((level) => level.id === selected.id)
+    ? selected.id
+    : pageLastSelectedRef.current[pageIndex];
+
+  useEffect(() => {
+    setPageIndex(selectedPage);
+  }, [selectedPage]);
+
+  useEffect(() => {
+    const pending = pendingFocusRef.current;
+    if (!pending) return;
+    const target = levelButtonRefs.current.get(pending);
+    if (!target) return;
+    pendingFocusRef.current = null;
+    try {
+      target.focus({ preventScroll: true });
+    } catch {
+      target.focus();
+    }
+  }, [pageIndex, selectedId]);
+
+  const selectLevelAtIndex = (index: number, focus = false) => {
+    const next = CAMPAIGN_LEVELS[index];
+    if (!next) return;
+    const nextPage = puzzlePageForIndex(index);
+    pageLastSelectedRef.current[nextPage] = next.id;
+    if (focus && nextPage !== pageIndex) pendingFocusRef.current = next.id;
+    setPageIndex(nextPage);
+    onSelect(next.id);
+    if (focus && nextPage === pageIndex) {
+      const target = levelButtonRefs.current.get(next.id);
+      try {
+        target?.focus({ preventScroll: true });
+      } catch {
+        target?.focus();
+      }
+    }
+  };
+
+  const switchPage = (nextPage: PuzzlePageIndex) => {
+    const targetId = pageLastSelectedRef.current[nextPage];
+    const targetIndex = CAMPAIGN_LEVELS.findIndex((level) => level.id === targetId);
+    pendingFocusRef.current = targetId;
+    setPageIndex(nextPage);
+    if (targetIndex >= 0) onSelect(targetId);
+  };
+
   const moveLevelFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
-    const columns = puzzleMatrixColumnCount();
     let nextIndex = index;
     if (event.key === 'ArrowLeft') nextIndex = Math.max(0, index - 1);
     else if (event.key === 'ArrowRight') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + 1);
-    else if (event.key === 'ArrowUp') nextIndex = Math.max(0, index - columns);
-    else if (event.key === 'ArrowDown') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + columns);
-    else if (event.key === 'Home') nextIndex = 0;
-    else if (event.key === 'End') nextIndex = CAMPAIGN_LEVELS.length - 1;
+    else if (event.key === 'ArrowUp') nextIndex = Math.max(0, index - 5);
+    else if (event.key === 'ArrowDown') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + 5);
+    else if (event.key === 'Home') nextIndex = pageStart;
+    else if (event.key === 'End') nextIndex = pageEnd - 1;
     else return;
     event.preventDefault();
     if (nextIndex === index) return;
-    const next = CAMPAIGN_LEVELS[nextIndex]!;
-    levelButtonRefs.current.get(next.id)?.focus();
-    onSelect(next.id);
+    selectLevelAtIndex(nextIndex, true);
   };
   return (
-    <main id="game" lang={language} className="library-shell library-shell--console" data-testid="puzzle-library">
-      <header className="library-header console-header">
+    <main id="game" lang={language} className="library-shell library-shell--gallery" data-testid="puzzle-library">
+      <header className="library-header puzzle-gallery__header">
         <button className="library-back" type="button" aria-label={copy.labels.leaveRun} onClick={onBack}>
           <b aria-hidden="true">←</b><span>{copy.labels.modeHome}</span>
         </button>
         <Brand compact />
       </header>
-      <section className="console-workbench" aria-labelledby="library-title">
-        <aside className="console-focus" aria-live="polite" aria-label={copy.phrasing.selectedPuzzle(selectedName)}>
-          <div className="console-focus__well" key={selected.id}>
-            <div className="console-focus__board">
+      <section className="puzzle-gallery" aria-labelledby="library-title">
+        <aside className="puzzle-gallery__hero" aria-live="polite" aria-label={copy.phrasing.selectedPuzzle(selectedName)}>
+          <div className="puzzle-gallery__stage" key={selected.id}>
+            <div className="puzzle-gallery__board">
               <PuzzleSilhouette id={selected.id} label={copy.phrasing.puzzleBoard(selectedName)} />
             </div>
           </div>
-          <section className="console-focus__copy">
-            <div className="console-focus__heading">
-              <div className="console-focus__title-row">
-                <h2 className={`console-focus__title${selectedComplete ? ' console-focus__title--complete' : ''}`}>{selectedName}</h2>
-                {selectedBest !== null && <span className="console-focus__best" data-testid="selected-puzzle-start-best">{copy.phrasing.currentBest(selectedBest)}</span>}
-              </div>
+          <section className="puzzle-gallery__meta">
+            <div className="puzzle-gallery__title-row">
+              <h2 className={`puzzle-gallery__title${selectedComplete ? ' puzzle-gallery__title--complete' : ''}`}>{selectedName}</h2>
+              {selectedBest !== null && <span className="puzzle-gallery__best" data-testid="selected-puzzle-start-best">{copy.phrasing.currentBest(selectedBest)}</span>}
             </div>
-            <div className="console-focus__action">
-              <button className="primary-action console-focus__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} onClick={onStart}>{copy.labels.start}</button>
-            </div>
+            <button className="primary-action puzzle-gallery__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} onClick={onStart}>{copy.labels.start}</button>
           </section>
         </aside>
-        <nav className="console-route" aria-label={copy.phrasing.puzzleList(CAMPAIGN_LEVELS.length)} data-testid="level-list">
-          <div className="console-route__heading">
+        <nav className="puzzle-gallery__catalog" aria-label={copy.phrasing.puzzleList(CAMPAIGN_LEVELS.length)} data-testid="level-list">
+          <header className="puzzle-gallery__catalog-header">
             <h1 id="library-title">{copy.labels.puzzle}</h1>
-          </div>
-          <ol className="console-bands" aria-label={copy.labels.puzzleBands}>
-            {PUZZLE_TARGET_ROW_TIERS.map((tier) => {
-              const activeBand = tier.levels.some((level) => level.id === selected.id);
+            <div className="puzzle-gallery__pages" role="tablist" aria-label={copy.labels.puzzlePages}>
+              {([0, 1] as const).map((index) => {
+                const start = index * PUZZLE_PAGE_SIZE + 1;
+                const end = start + PUZZLE_PAGE_SIZE - 1;
+                const active = pageIndex === index;
+                return (
+                  <button
+                    id={`puzzle-page-tab-${index + 1}`}
+                    className={`puzzle-gallery__page${active ? ' puzzle-gallery__page--active' : ''}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    aria-controls={`puzzle-page-panel-${index + 1}`}
+                    tabIndex={active ? 0 : -1}
+                    key={index}
+                    onClick={() => switchPage(index)}
+                  >
+                    {String(start).padStart(2, '0')}–{String(end).padStart(2, '0')}
+                  </button>
+                );
+              })}
+            </div>
+          </header>
+          <ol
+            id={`puzzle-page-panel-${pageIndex + 1}`}
+            className="puzzle-gallery__grid"
+            role="tabpanel"
+            aria-labelledby={`puzzle-page-tab-${pageIndex + 1}`}
+            aria-label={copy.phrasing.puzzlePage(pageStart + 1, pageEnd)}
+            key={pageIndex}
+          >
+            {pageLevels.map((level) => {
+              const complete = progress.completedLevelIds.includes(level.id);
+              const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
+              const selectedLevel = rovingLevelId === level.id;
+              const bestPieces = puzzleBestPieceCount(progress, level.id);
+              const levelName = puzzleDisplayName(language, level.id, level.name);
               return (
-                <li className={`console-band ${activeBand ? 'console-band--active' : ''}`} data-rows={tier.rows} aria-label={copy.phrasing.rowBand(tier.rows)} key={tier.rows}>
-                  <span className="console-band__label" aria-hidden="true"><b>{tier.rows}</b></span>
-                  <ol className="console-nodes">
-                    {tier.levels.map((level) => {
-                      const complete = progress.completedLevelIds.includes(level.id);
-                      const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
-                      const selectedLevel = selectedId === level.id;
-                      const bestPieces = puzzleBestPieceCount(progress, level.id);
-                      const levelName = puzzleDisplayName(language, level.id, level.name);
-                      return (
-                        <li className={`console-node ${selectedLevel ? 'console-node--selected' : ''}${complete ? ' console-node--complete' : ''}`} key={level.id}>
-                          <button
-                            type="button"
-                            data-testid="level-row"
-                            data-level-id={level.id}
-                            data-unlocked="true"
-                            data-anchor={hasAnchor || undefined}
-                            data-best-pieces={bestPieces ?? undefined}
-                            aria-pressed={selectedLevel}
-                            tabIndex={selectedLevel ? 0 : -1}
-                            ref={(node) => {
-                              if (node) levelButtonRefs.current.set(level.id, node);
-                              else levelButtonRefs.current.delete(level.id);
-                            }}
-                            aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, tier.rows, complete, bestPieces)}
-                            onKeyDown={(event) => moveLevelFocus(event, level.index - 1)}
-                            onClick={() => onSelect(level.id)}
-                          >
-                            {complete
-                              ? <CompletionTick />
-                              : <span className="console-node__index">{String(level.index).padStart(2, '0')}</span>}
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ol>
+                <li className={`puzzle-gallery__node${selectedLevel ? ' puzzle-gallery__node--selected' : ''}${complete ? ' puzzle-gallery__node--complete' : ''}`} key={level.id}>
+                  <button
+                    type="button"
+                    data-testid="level-row"
+                    data-level-id={level.id}
+                    data-unlocked="true"
+                    data-anchor={hasAnchor || undefined}
+                    data-best-pieces={bestPieces ?? undefined}
+                    aria-pressed={selectedLevel}
+                    tabIndex={selectedLevel ? 0 : -1}
+                    ref={(node) => {
+                      if (node) levelButtonRefs.current.set(level.id, node);
+                      else levelButtonRefs.current.delete(level.id);
+                    }}
+                    aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, getPuzzleDefinition(level.id).targetRows, complete, bestPieces)}
+                    onKeyDown={(event) => moveLevelFocus(event, level.index - 1)}
+                    onClick={() => onSelect(level.id)}
+                  >
+                    {complete
+                      ? <CompletionTick />
+                      : <span className="puzzle-gallery__index">{String(level.index).padStart(2, '0')}</span>}
+                  </button>
                 </li>
               );
             })}

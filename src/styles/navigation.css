@@ -150,8 +150,7 @@
 }
 
 .mode-gates--workbench .mode-gate:hover,
-.mode-gates--workbench .mode-gate:focus-visible,
-.mode-gates--workbench .mode-gate--active {
+.mode-gates--workbench .mode-gate:focus-visible {
   color: #102a42;
   background: color-mix(in srgb, var(--gate-accent) 11%, #fff);
   border-color: color-mix(in srgb, var(--gate-accent) 72%, #9fb4c4);
@@ -160,8 +159,7 @@
 }
 
 .mode-gates--workbench .mode-gate:hover::before,
-.mode-gates--workbench .mode-gate:focus-visible::before,
-.mode-gates--workbench .mode-gate--active::before {
+.mode-gates--workbench .mode-gate:focus-visible::before {
   opacity: 1;
   transform: none;
 }
@@ -234,8 +232,7 @@
 
 .mode-gates--workbench .mode-gate__action b,
 .mode-gates--workbench .mode-gate:hover .mode-gate__action b,
-.mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b,
-.mode-gates--workbench .mode-gate--active .mode-gate__action b {
+.mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b {
   display: grid;
   width: 38px;
   height: 38px;
@@ -672,8 +669,7 @@
 
   .mode-gates--workbench .mode-gate__action b,
   .mode-gates--workbench .mode-gate:hover .mode-gate__action b,
-  .mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b,
-  .mode-gates--workbench .mode-gate--active .mode-gate__action b {
+  .mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b {
     width: 32px;
     height: 32px;
   }
@@ -853,8 +849,7 @@
 
   .mode-gates--workbench .mode-gate__action b,
   .mode-gates--workbench .mode-gate:hover .mode-gate__action b,
-  .mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b,
-  .mode-gates--workbench .mode-gate--active .mode-gate__action b {
+  .mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b {
     width: 32px;
     height: 32px;
   }

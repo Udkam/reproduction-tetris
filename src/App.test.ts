@@ -1240,6 +1240,11 @@ describe('T6 frontend mode binding', () => {
 
     expect(classic).not.toBeNull();
     expect([classic, survival, mutation, puzzle].map((button) => button?.tabIndex)).toEqual([0, -1, -1, -1]);
+    expect(view.container.querySelectorAll('.mode-gate--active')).toHaveLength(0);
+    expect(view.container.querySelector('[data-testid="mode-list"]')?.hasAttribute('data-selection')).toBe(false);
+    expect([classic, survival, mutation, puzzle].every((button) => (
+      !button?.hasAttribute('data-selected') && !button?.hasAttribute('aria-pressed')
+    ))).toBe(true);
     expect(classic?.textContent).toContain('经典');
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent).not.toContain('选择模式');
@@ -1269,25 +1274,21 @@ describe('T6 frontend mode binding', () => {
       expect(view.container.textContent).not.toContain(banned);
     }
 
-    for (const selector of ['enter-marathon', 'enter-race', 'enter-sprint', 'enter-puzzle']) {
-      const entry = view.container.querySelector<HTMLButtonElement>(`[data-testid="${selector}"]`);
-      act(() => entry?.focus());
-      expect(entry?.getAttribute('aria-pressed')).toBe('true');
-    }
-
     act(() => classic?.focus());
     act(() => classic?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })));
     expect(document.activeElement).toBe(survival);
-    expect(survival?.getAttribute('aria-pressed')).toBe('true');
+    expect([classic, survival, mutation, puzzle].map((button) => button?.tabIndex)).toEqual([-1, 0, -1, -1]);
     act(() => survival?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true })));
     expect(document.activeElement).toBe(puzzle);
-    expect(puzzle?.getAttribute('aria-pressed')).toBe('true');
     act(() => puzzle?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true })));
     expect(document.activeElement).toBe(mutation);
-    expect(mutation?.getAttribute('aria-pressed')).toBe('true');
     act(() => mutation?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true })));
     expect(document.activeElement).toBe(classic);
-    expect(classic?.getAttribute('aria-pressed')).toBe('true');
+    expect(view.container.querySelectorAll('.mode-gate--active')).toHaveLength(0);
+
+    act(() => survival?.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true })));
+    act(() => survival?.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true })));
+    expect(view.container.querySelectorAll('.mode-gate--active, [data-selected="true"]')).toHaveLength(0);
 
     act(() => survival?.click());
     expect(onEnter).toHaveBeenCalledWith('race');
@@ -1625,7 +1626,7 @@ describe('T6 frontend mode binding', () => {
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 
-  it('uses an all-open compact endgame console while keeping one canonical selected-board focus', () => {
+  it('uses a two-page Puzzle gallery with one canonical selected-board focus', () => {
     expect(CAMPAIGN_LEVELS).toHaveLength(50);
     const onSelect = vi.fn();
     const onStart = vi.fn();
@@ -1639,33 +1640,24 @@ describe('T6 frontend mode binding', () => {
     });
     const view = render(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id)));
 
-    const rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    expect(rows).toHaveLength(50);
-    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
+    let rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
+    expect(rows).toHaveLength(25);
+    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(0, 25).map((level) => level.id));
     expect(rows.every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('50 个开放解谜残局');
     expect(view.container.querySelector('[data-testid="campaign-availability"], [data-testid="campaign-rules"]')).toBeNull();
-    expect(view.container.querySelectorAll('.console-band')).toHaveLength(5);
-    for (const targetRows of [3, 4, 5, 6, 7]) {
-      const tier = [...view.container.querySelectorAll<HTMLButtonElement>(
-        `.console-band[data-rows="${targetRows}"] [data-testid="level-row"]`,
-      )];
-      expect(tier).toHaveLength(10);
-      expect(tier.every((button) => getPuzzleDefinition(button.dataset.levelId as PuzzleId).targetRows === targetRows)).toBe(true);
-    }
-    expect(view.container.querySelectorAll('[data-testid="sector-row"]')).toHaveLength(0);
-    expect(view.container.querySelectorAll('.observatory-sector, .observatory-stop')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.console-band, .console-bands, .console-nodes')).toHaveLength(0);
+    const pageTabs = [...view.container.querySelectorAll<HTMLButtonElement>('.puzzle-gallery__pages [role="tab"]')];
+    expect(pageTabs).toHaveLength(2);
+    expect(pageTabs.map((tab) => tab.textContent)).toEqual(['01–25', '26–50']);
+    expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['true', 'false']);
+    expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('第 1 至 25 关');
     expect(rows[0]?.textContent).toContain('01');
     expect(rows[0]?.getAttribute('aria-label')).toContain(CAMPAIGN_LEVELS[0]!.name);
-    expect(view.container.querySelectorAll('.console-route .puzzle-silhouette')).toHaveLength(0);
-    expect(view.container.querySelectorAll('.console-focus .puzzle-silhouette')).toHaveLength(1);
-    expect(view.container.querySelector('.console-focus__index, .console-focus__pulse')).toBeNull();
-    expect(view.container.querySelector('.console-focus__heading > i')).toBeNull();
+    expect(view.container.querySelectorAll('.puzzle-gallery__catalog .puzzle-silhouette')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.puzzle-gallery__hero .puzzle-silhouette')).toHaveLength(1);
     expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
-      expect(view.container.textContent).not.toContain(banned);
-    }
-    for (const banned of ['SECTOR', 'OPEN', '解锁下一段']) {
       expect(view.container.textContent).not.toContain(banned);
     }
 
@@ -1682,16 +1674,24 @@ describe('T6 frontend mode binding', () => {
     const selectedBest = view.container.querySelector<HTMLElement>('[data-testid="selected-puzzle-start-best"]');
     const startSelected = view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]');
     expect(selectedBest?.textContent).toBe('当前最优步数：7步');
-    expect(selectedBest?.closest('.console-focus__title-row')?.querySelector('.console-focus__title')).not.toBeNull();
-    expect(startSelected?.closest('.console-focus__action')?.contains(selectedBest ?? null)).toBe(false);
+    expect(selectedBest?.closest('.puzzle-gallery__title-row')?.querySelector('.puzzle-gallery__title')).not.toBeNull();
+    expect(startSelected?.closest('.puzzle-gallery__meta')?.contains(selectedBest ?? null)).toBe(true);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
-    expect(view.container.querySelectorAll('.console-focus__title-row > span, .console-focus__heading > i, .console-node i')).toHaveLength(1);
-    expect(view.container.querySelectorAll('.console-node__completion-tick')).toHaveLength(CAMPAIGN_LEVELS.length);
-    expect(view.container.querySelectorAll('.console-node--complete .console-node__index')).toHaveLength(0);
+    expect(view.container.querySelectorAll('.puzzle-gallery__completion-tick')).toHaveLength(25);
+    expect(view.container.querySelectorAll('.puzzle-gallery__node--complete .puzzle-gallery__index')).toHaveLength(0);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.textContent).toBe('');
-    expect(view.container.querySelector('.console-focus__complete-mark, .console-node__complete-mark')).toBeNull();
     expect(view.container.textContent).not.toContain('√');
-    expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
+    expect(view.container.querySelector('.puzzle-gallery__title')?.classList.contains('puzzle-gallery__title--complete')).toBe(true);
+
+    act(() => pageTabs[1]!.click());
+    rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
+    expect(rows).toHaveLength(25);
+    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(25).map((level) => level.id));
+    expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('第 26 至 50 关');
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[25]!.id);
+    expect(rows.filter((row) => row.tabIndex === 0).map((row) => row.dataset.levelId)).toEqual([CAMPAIGN_LEVELS[25]!.id]);
+    view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[25]!.id, fullyUnlocked)));
+
     for (const index of [0, 7, CAMPAIGN_LEVELS.length - 1]) {
       const level = CAMPAIGN_LEVELS[index]!;
       view.rerender(createElement(PuzzleLibrary, props(level.id, fullyUnlocked)));
@@ -1701,8 +1701,8 @@ describe('T6 frontend mode binding', () => {
       const definition = getPuzzleDefinition(level.id);
 
       expect(pressed?.dataset.levelId).toBe(level.id);
-      expect(view.container.querySelector('.console-focus h2')?.textContent).toBe(level.name);
-      expect(view.container.querySelector('.console-focus__title')?.classList.contains('console-focus__title--complete')).toBe(true);
+      expect(view.container.querySelector('.puzzle-gallery__hero h2')?.textContent).toBe(level.name);
+      expect(view.container.querySelector('.puzzle-gallery__title')?.classList.contains('puzzle-gallery__title--complete')).toBe(true);
       expect(canonical.puzzleId).toBe(level.id);
       expect(canonical.active?.type).toBeTruthy();
       expect(canonical.queue[0]).toBeTruthy();
@@ -1710,11 +1710,13 @@ describe('T6 frontend mode binding', () => {
       expect(puzzleSilhouettePaths(level.id).size).toBe(visibleMaterials.size);
       expect([...puzzleSilhouettePaths(level.id).values()].every((path) => path.includes('h3.8v3.8'))).toBe(true);
       expect(Boolean(puzzleAnchorSilhouettePath(level.id))).toBe(definition.anchorCells.length > 0);
-      expect(view.container.querySelectorAll('.console-focus .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
+      expect(view.container.querySelectorAll('.puzzle-gallery__hero .puzzle-silhouette [data-piece-type="anchor"]')).toHaveLength(
         definition.anchorCells.length > 0 ? 1 : 0,
       );
     }
 
+    view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id, fullyUnlocked)));
+    rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
     act(() => rows[6]!.click());
     expect(onSelect).toHaveBeenCalledWith(CAMPAIGN_LEVELS[6]!.id);
 
@@ -1727,9 +1729,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('uses one roving Puzzle focus with ten-column landscape and five-column portrait steps', () => {
-    vi.stubGlobal('innerWidth', 1280);
-    vi.stubGlobal('innerHeight', 720);
+  it('uses one roving Puzzle focus with five-column movement and cross-page navigation', () => {
     const onSelect = vi.fn();
     const view = render(createElement(PuzzleLibrary, {
       progress: defaultPuzzleProgress(),
@@ -1746,22 +1746,29 @@ describe('T6 frontend mode binding', () => {
     expect(levels.filter((button) => button.tabIndex === 0)).toEqual([levels[0]]);
     act(() => levels[0]!.focus());
     press(levels[0]!, 'ArrowDown');
-    expect(document.activeElement).toBe(levels[10]);
-    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[10]!.id);
-    press(levels[10]!, 'ArrowRight');
-    expect(document.activeElement).toBe(levels[11]);
-    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[11]!.id);
-    press(levels[11]!, 'Home');
-    expect(document.activeElement).toBe(levels[0]);
-    press(levels[0]!, 'End');
-    expect(document.activeElement).toBe(levels[49]);
-
-    vi.stubGlobal('innerWidth', 390);
-    vi.stubGlobal('innerHeight', 844);
-    act(() => levels[0]!.focus());
-    press(levels[0]!, 'ArrowDown');
     expect(document.activeElement).toBe(levels[5]);
     expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[5]!.id);
+    press(levels[5]!, 'ArrowRight');
+    expect(document.activeElement).toBe(levels[6]);
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[6]!.id);
+    press(levels[6]!, 'Home');
+    expect(document.activeElement).toBe(levels[0]);
+    press(levels[0]!, 'End');
+    expect(document.activeElement).toBe(levels[24]);
+
+    press(levels[24]!, 'ArrowRight');
+    let visible = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
+    expect(visible).toHaveLength(25);
+    expect(visible[0]?.dataset.levelId).toBe(CAMPAIGN_LEVELS[25]!.id);
+    expect(document.activeElement).toBe(visible[0]);
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[25]!.id);
+
+    press(visible[0]!, 'End');
+    expect(document.activeElement).toBe(visible[24]);
+    press(visible[0]!, 'ArrowLeft');
+    visible = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
+    expect(visible[24]?.dataset.levelId).toBe(CAMPAIGN_LEVELS[24]!.id);
+    expect(document.activeElement).toBe(visible[24]);
     view.unmount();
   });
 
