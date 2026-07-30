@@ -118,8 +118,8 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
   // Compacted cave shelf: dark, permanent, and visually heavier than clearable stone.
-  fillStart: 0x56636a,
-  fillEnd: 0x36434a,
+  fillStart: 0x64727a,
+  fillEnd: 0x57646b,
   edge: 0x1c282e,
   innerEdge: 0x8da0a7,
 };

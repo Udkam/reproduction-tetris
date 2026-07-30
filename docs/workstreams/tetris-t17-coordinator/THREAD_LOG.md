@@ -339,3 +339,29 @@
   final browser batch.
 - Next action: commit this green typography checkpoint, then freeze and run P10.9
   exactly-once final gates.
+
+## Phase 10 final-gate contrast correction
+
+- Task ID: `T17-P10.9A`
+- Base SHA: `a4edf5d`
+- Exact changed paths:
+  - `src/game/render/theme.ts`
+  - `src/game/render/theme.test.ts`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - first final `npm.cmd run typecheck`: passed
+  - first final single-worker full test: failed only the cold-slate material
+    contract (`272/273` passed); production build was therefore not started
+  - focused `src/game/render/theme.test.ts`: exposed both the stale exact-value
+    fixture and a real `2.974:1` / `1.807:1` bedrock-to-well contrast regression
+  - focused test after the bounded palette correction: `7/7` passed
+  - `git diff --check`: passed
+- Evidence: the gate was not weakened. The permanent bedrock endpoints were moved to
+  the nearest readable cold-slate range (`0x64727a` to `0x57646b`) while remaining
+  visually older and darker than the clearable falling-stone material. Both endpoint
+  assertions retain the frozen `>= 3:1` board-well contrast threshold.
+- Resource note: all commands were one-shot and single-worker; no browser, server,
+  watcher, Serena, WMI/CIM, or sub-agent was started.
+- Blocker: the first final candidate is invalidated by this correction.
+- Next action: commit the correction, then run one replacement final typecheck,
+  full test, and production build against the new source tip.
