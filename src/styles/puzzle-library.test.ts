@@ -28,9 +28,11 @@ describe('Phase 9 Puzzle gallery authority', () => {
     expect(app).not.toContain('puzzleMatrixColumnCount');
   });
 
-  it('keeps every page in a five-by-five non-scrolling matrix with 44px controls', () => {
+  it('keeps every page in a centered five-by-five square matrix with 44px controls', () => {
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\)/);
-    expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\)/);
+    expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*auto\)/);
+    expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*align-content:\s*center;[\s\S]*justify-self:\s*center;[\s\S]*width:\s*min\(100%,\s*560px\)/);
+    expect(gallery).toMatch(/\.puzzle-gallery__node\s*\{[\s\S]*aspect-ratio:\s*1;/);
     expect(gallery).toMatch(/\.puzzle-gallery__node > button\s*\{[\s\S]*min-width:\s*44px;[\s\S]*min-height:\s*44px;/);
     expect(gallery).not.toMatch(/overflow-(?:x|y):\s*(?:auto|scroll)/);
   });
