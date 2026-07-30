@@ -2,8 +2,8 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): SURVIVAL CAVERN + ORDINARY CLEAR BROWSER-GREEN /
-NAVIGATION CASCADE CORRECTED / LATEST FOUR-SURFACE DIRECT REVIEW OPEN.**
+**Status (2026-07-31): PHASE 9 SOURCE-GREEN / BROWSER-GREEN /
+INDEPENDENTLY ACCEPTED / PUBLICATION PENDING.**
 
 The direct goal is to keep correcting this slice until all eight requested outcomes are
 implemented and visually accepted:
@@ -183,8 +183,24 @@ gallery and pointer-leave behavior. Two bounded corrections are open:
   the clipped matrix boundary on hover. The two tiny selected-node corner squares
   have no semantic meaning and are removed rather than explained.
 
-Both findings require focused regressions, a fresh final gate, and replacement
-evidence before Phase 9 may be accepted.
+Final correction range `51dd2fa..ba6bbb6` closes those findings. The `844×390`
+unranked ledger now fits five rows and both actions with equal client/scroll
+geometry; the separate “本局第 N 名 / This run · #N” copy is absent while the
+current leaderboard row remains marked. Range tabs implement Left/Right/Home/End.
+The gallery outer frame is capped at `740 px` and centered in its available row;
+first-row hover has zero vertical displacement and keeps its `1 px` top border;
+the meaningless selected-node corner squares are gone.
+
+Final source `ba6bbb6` passes typecheck, the full `29`-file / `261`-test suite,
+and the `756`-module production build. Evidence checkpoint `25cfebf` binds
+twenty-six artifacts with `26/26` manifest matches. Browser proof covers the four
+gallery viewports, Chinese/English and reduced motion, the staged Survival
+countdown, ranked/unranked non-Puzzle results, pointer leave, tab and level-grid
+keyboard paths, one Canvas, zero DOM board cells, zero overflow, and zero
+console/page errors. Two independent read-only final reviews report
+P0/P1/P2 = 0. Phase 9 is accepted locally and awaits only the final scoped
+gitleaks scan, documentation checkpoint, non-force push, equality check, and
+resource release.
 
 ### Ordered checkpoints
 

@@ -2,7 +2,7 @@
 
 ## 状态
 
-**CAVERN / CLEAR CORRECTION OPEN（2026-07-31）。**
+**ACCEPTED LOCALLY / PUBLICATION PENDING（2026-07-31）。**
 
 恢复基线为已推送的 `main@87121af42330ab9aea9456e28dfa42e5edc62536`。
 本阶段由主协调任务作为唯一 writer。三个前置设计智能体只读比较了生存洞穴、
@@ -205,6 +205,21 @@ evidence.
   尺寸和间距不回退。
 - 第一行关卡悬停时不得向裁切边界外位移，上边框必须完整；选中节点左上角
   两个无功能含义的装饰方块删除。
+
+### 最终验收
+
+- 最终产品源码为 `ba6bbb6`，证据检查点为 `25cfebf`。短横屏成绩单完整
+  显示五行榜单和两个操作；入榜只通过榜单内“本局 / This run”行表达，
+  不再重复“本局第 N 名 / This run · #N”。
+- 高屏图库外框最大高度为 `740 px` 并在内容行内垂直居中；四个目标视口的
+  节点均为正方形，最小边长 `46 px`，网格与文档均无滚动。第一行 hover
+  纵向位移为 `0 px`、上边框保持 `1 px`；无意义双角标已删除。
+- tablist 的 Left/Right/Home/End 与关卡矩阵的页内/跨页键盘路径均通过；
+  首页 pointer leave 后 hover 和持久选择状态均为零。
+- 最终 typecheck、`29` 文件 / `261` 测试、`756` 模块生产构建通过。
+  二十六项证据清单复算 `26/26`；倒计时、结算、中英文、reduced-motion、
+  单 Canvas、零 DOM 棋盘格、零 overflow、零 console/page error 均已核对。
+- 两次独立只读终审均给出 ACCEPT，P0/P1/P2 = 0。
 
 ## 最终门禁与 QA
 

@@ -103,8 +103,8 @@ Checkpoint `348209f` applies that presentation-only correction: every node owns 
 gaps are `12 px` desktop, `8 px` portrait, and `6 px` short landscape. Direct frame
 measurement reports exact square controls at `95.02`, `46`, `64.8`, and `58.8 px`
 for `1440×900`, `844×390`, `390×844`, and `360×800` respectively, with equal grid
-client/scroll geometry and no page overflow. Formal acceptance still waits for the
-regenerated final-candidate evidence.
+client/scroll geometry and no page overflow. That recovery point was carried into
+the final-candidate evidence below.
 
 Independent review of evidence checkpoint `eae9a1f` accepts the square gallery and
 home pointer behavior but rejects two adjacent presentation contracts. At
@@ -116,6 +116,18 @@ corresponding page; level-grid navigation remains separate.
 The player's direct frame review additionally rejects the tall-screen outer frame:
 the gallery must cap its height and fit its existing content rather than stretching
 both columns to the full viewport.
+
+Final correction range `51dd2fa..ba6bbb6` is the accepted implementation of this
+contract. It fits the short-landscape ledger without internal scrolling, removes
+the redundant result-rank sentence, supplies complete tablist keyboard behavior,
+caps and vertically centers the gallery frame at `740 px`, preserves the complete
+first-row hover border without node translation, and removes the selected-node
+corner ornament. Final evidence `25cfebf` records square nodes and zero overflow at
+all required viewports, staged countdown visibility, ranked/unranked ledgers,
+pointer-leave and keyboard behavior, reduced motion, one Canvas, zero DOM board
+cells, and zero console/page errors. Typecheck, `29 / 261` tests, and the
+`756`-module production build pass; two independent read-only reviews accept with
+no P0/P1/P2 finding.
 
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 

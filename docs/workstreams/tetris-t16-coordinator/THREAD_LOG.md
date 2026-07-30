@@ -447,3 +447,28 @@
   selections and zero console/page errors.
 - Blocker: formal final gates, immutable evidence capture, and independent QA.
 - Next action: record this correction, then run the one final gate batch.
+
+## 2026-07-31 — Phase 9 final correction acceptance
+
+- Task ID: T16 Phase 9 final correction and acceptance.
+- Base SHA: `f2ef111`; final product SHA: `ba6bbb6`; evidence SHA: `25cfebf`.
+- Exact final product concerns: short-landscape result fit, duplicate current-rank
+  copy, range-tab keyboard semantics, tall-gallery frame fit/placement, first-row
+  hover border, and removal of the meaningless selected-node corner ornament.
+- Commands actually run after the last source change:
+  - `npm.cmd run typecheck`
+  - `npm.cmd run test -- --maxWorkers=1`
+  - `npm.cmd run build`
+  - one bounded official web-game client iteration
+  - one managed final Chrome evidence batch against the existing project Vite lease
+- Evidence: typecheck passes; full suite passes `29` files / `261` tests; build
+  passes with `756` modules. The 26-entry evidence manifest recomputes `26/26`.
+  Required desktop, short-landscape, portrait, narrow, Chinese, English and
+  reduced-motion states have one Canvas, zero DOM board cells, zero overflow,
+  and zero console/page errors.
+- Independent QA: two read-only final reviewers accept `ba6bbb6` plus `25cfebf`
+  with P0/P1/P2 = 0.
+- Blocker: none in product or evidence. Publication still requires the bounded
+  documentation checkpoint, scoped redacted gitleaks scan, non-force push,
+  equality verification, and project-service release.
+- Next action: publish the accepted linear range and release the owned Vite lease.

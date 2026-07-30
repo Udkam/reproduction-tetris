@@ -686,3 +686,19 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   same cascade: a higher-specificity 48 px button minimum still produces
   `237 > 233` matrix scroll/client height. Short landscape must explicitly restore
   the 44 px button contract before gates or evidence can be considered final.
+
+## 2026-07-31 Phase 9 final acceptance
+
+- Final product `ba6bbb6` and evidence `25cfebf` close the result-ledger,
+  tablist-keyboard, gallery-height, first-row-hover, and selected-node ornament
+  corrections without changing Puzzle data or mode rules.
+- The gallery outer frame is capped at `740 px` and vertically centered on tall
+  screens; all required viewports keep square controls and zero document/grid
+  overflow. First-row hover no longer translates the node and keeps its complete
+  top border.
+- Result ledgers no longer repeat “本局第 N 名 / This run · #N”; the highlighted
+  current leaderboard row remains the sole ranked-run indicator. The `844×390`
+  unranked result shows five rows and both actions without internal scrolling.
+- Final typecheck, `29 / 261` full tests, and the `756`-module build pass.
+  Twenty-six evidence hashes recompute exactly, and two independent read-only
+  reviews accept with no P0/P1/P2 finding.

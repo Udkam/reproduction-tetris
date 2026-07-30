@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-07-31 — Phase 9 cavern pressure and compact navigation accepted
+
+- Accepted deterministic same-column one-or-two Survival rock events at exactly
+  two times normal-piece speed, cold-slate bedrock/falling-rock materials, staged
+  one/two/three-row countdown rise, and short stationary landing/clear feedback
+  with no horizontal clear line.
+- Replaced the fifty-level Puzzle wall with a two-page `5×5` gallery. Every target
+  viewport keeps square controls and zero overflow; the tall frame is capped at
+  `740 px` and vertically centered, first-row hover preserves its full border, and
+  the meaningless selected-node corner ornament is removed.
+- Preserved the transient home hover contract and complete keyboard paths. Puzzle
+  range tabs support Left/Right/Home/End; pointer leave produces no persistent
+  mode highlight.
+- Unified non-Puzzle result ledgers around meaningful mode metrics and a top-five
+  table. Ranked runs are identified only by the highlighted current row; the
+  duplicate “本局第 N 名 / This run · #N” text is removed. The `844×390`
+  unranked ledger shows all five rows and both actions without internal scrolling.
+- Final source `ba6bbb6` passes typecheck, `29` files / `261` tests, and a
+  `756`-module production build. Evidence `25cfebf` contains 26 source-bound
+  artifacts with `26/26` valid manifest hashes, one Canvas, zero DOM board cells,
+  zero overflow, and zero console/page errors. Two independent read-only reviews
+  accept with no P0/P1/P2 finding.
+
 ## 2026-07-30 — Phase 8 integrated release-readiness evidence accepted
 
 - Kept frozen product `4e4cca1` unchanged while adding a fail-closed integration
