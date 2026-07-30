@@ -710,8 +710,14 @@ test expectations.
 
 Candidate `7cd4a1d` is frozen from accepted base `d8573e3`; unlock/v5 source,
 App source, selector/CSS, renderer, dependencies and other modes remain
-unchanged. Independent route/artifact QA and curriculum/boundary QA must both
-accept this exact candidate before the record is integrated or pushed.
+unchanged. Independent route/artifact QA and curriculum/boundary QA both
+accept this exact candidate with `P0=0, P1=0, P2=0, P3=0, GAP=0`. They
+independently confirm all twenty command streams are distinct, current
+definitions and artifact packages are bound through normal public-Core replay,
+01–40 definitions/artifacts are frozen, and the seven-row lesson order is not
+a blind lock-count sort. Levels 41–50 are accepted; after this acceptance
+record is pushed, open unlock/v5 and selector data/scroll adaptation as a new
+bounded slice.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

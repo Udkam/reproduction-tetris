@@ -1033,3 +1033,26 @@
 - Blocker: none in the frozen candidate. This is not acceptance.
 - Next action: two bounded read-only independent audits of exact candidate
   `7cd4a1d`: route/artifact integrity and curriculum/boundary integrity.
+
+## Levels 41–50 independent acceptance — 2026-07-30
+
+- Route/artifact QA: `ACCEPT`, with
+  `P0=0, P1=0, P2=0, P3=0, GAP=0`.
+  - Independently confirms ten seven-row definitions, exact setup counts,
+    zero anchors, schema 7, 36/720/560 bounds, twenty distinct command
+    streams, early landing divergence and source-bound public-Core replay.
+  - Confirms artifacts and definitions 01–40 are frozen and the current
+    batch-5 blob is exactly the committed candidate blob.
+- Curriculum/boundary QA: `ACCEPT`, with
+  `P0=0, P1=0, P2=0, P3=0, GAP=0`.
+  - Independently confirms package-level name/setup/gameplay-seed binding,
+    bilingual order, the measured but structurally authored seven-row curve,
+    the nine-14/one-15 setup mix and revised zero-anchor quota.
+  - Confirms unlock/v5 source, App source, selector/CSS, renderer, other modes,
+    dependencies and existing artifacts are outside the candidate.
+- Both reviewers were read-only and started no Node, npm, solver, browser,
+  server, listener, MCP, Serena, WMI/CIM or descendant agent. Their static
+  uncertainty is covered by the candidate's 64-test public-Core replay gate
+  and typecheck and is not an open GAP.
+- Disposition: accepted. Next action: commit and push this acceptance point,
+  then open unlock/v5 and selector data/scroll adaptation as a separate slice.

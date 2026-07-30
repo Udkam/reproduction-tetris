@@ -551,5 +551,6 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The formal batch-5 artifact has SHA-256
   `3EC1720BCD9101CD7392CAB1303F89F5857840476C000E030E3169E29E646AB3`.
   Focused source-bound replay passes 6 files / 64 tests and typecheck passes.
-- TODO: obtain two read-only independent audits before acceptance/push, then
-  open the separate unlock/v5/selector data-scroll adaptation slice.
+- Two read-only independent audits accept `7cd4a1d` with P0–P3/GAP all zero.
+  After the acceptance record is pushed, open the separate unlock/v5/selector
+  data-scroll adaptation slice.

@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-07-30 — Puzzle levels 41–50 accepted
+
+- Added the final ten deterministic seven-row boards, `横沟` through `岔口`,
+  with concise bilingual names and complete setup/gameplay packages. Nine
+  setups use 14 drops and `深槽` uses 15; all ten prioritize readable
+  multi-route synthesis and add no final-tier anchor.
+- The tracked schema-7 artifact binds the registered order to twenty distinct
+  public-Core routes at fixed 36-lock, 720-primary and 560-alternate search
+  bounds. Its SHA-256 is
+  `3EC1720BCD9101CD7392CAB1303F89F5857840476C000E030E3169E29E646AB3`.
+- Source candidate `7cd4a1d` passes the six focused files with 64/64 tests,
+  typecheck and diff checks. No full suite, build or browser pass was repeated
+  at this staged data checkpoint; those broad gates remain reserved for the
+  final 50-level Phase-7 integration.
+- Independent route/artifact and curriculum/boundary auditors both accept with
+  P0–P3 and GAP all zero. They independently confirm twenty distinct command
+  streams, exact Core replay binding, unchanged levels/artifacts 01–40, coherent
+  seven-row curriculum order and no change to unlock/v5 source, selector
+  implementation, other modes or dependencies.
+
 ## 2026-07-30 — Puzzle levels 31–40 accepted
 
 - Added ten unique six-row endgame boards, `曲井` through `折桥`, with complete
