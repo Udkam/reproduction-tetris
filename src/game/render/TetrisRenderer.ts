@@ -888,22 +888,20 @@ export class TetrisRenderer {
       this.drawHardDropTraces(graphics, this.trail, progress, layout, boardShiftOffsetY);
     }
 
-    const activeCells = state.status === 'ready' || !state.active ? [] : cellsForPiece(state.active);
-    const ghostCells = state.active
+    const drawableActive = state.status === 'ready' ? null : state.active;
+    const activeCells = drawableActive ? cellsForPiece(drawableActive) : [];
+    const ghostCells = drawableActive
       ? activeCells.map((cell) => ({ x: cell.x, y: cell.y + dropDistance(state) }))
       : [];
-    if (state.status === 'ready' && state.active) {
-      ghostCells.splice(0, ghostCells.length, ...cellsForPiece(state.active).map((cell) => ({ x: cell.x, y: cell.y + dropDistance(state) })));
-    }
 
     const visibleGhostCells = ghostCells
       .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
-    const ghostOffsetX = this.presentation && state.active
-      ? (this.presentation.x - state.active.x) * layout.cell
+    const ghostOffsetX = this.presentation && drawableActive
+      ? (this.presentation.x - drawableActive.x) * layout.cell
       : 0;
-    if (state.active) {
-      this.drawCellGroups(graphics, visibleGhostCells, state.active.type, 0.82, {
+    if (drawableActive) {
+      this.drawCellGroups(graphics, visibleGhostCells, drawableActive.type, 0.82, {
         originX: layout.x,
         originY: layout.y,
         unit: layout.cell,
@@ -912,11 +910,11 @@ export class TetrisRenderer {
       });
     }
 
-    const offsetX = this.presentation && state.active && !this.options.reducedMotion
-      ? (this.presentation.x - state.active.x) * layout.cell
+    const offsetX = this.presentation && drawableActive && !this.options.reducedMotion
+      ? (this.presentation.x - drawableActive.x) * layout.cell
       : 0;
-    const rawOffsetY = this.presentation && state.active && !this.options.reducedMotion
-      ? (this.presentation.y - state.active.y) * layout.cell
+    const rawOffsetY = this.presentation && drawableActive && !this.options.reducedMotion
+      ? (this.presentation.y - drawableActive.y) * layout.cell
       : 0;
     const visibleActiveCells = activeCellsInsideVisibleRows(activeCells, VISIBLE_START_ROW, VISIBLE_HEIGHT)
       .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
@@ -931,11 +929,11 @@ export class TetrisRenderer {
     )
       ? requestedRotationScale
       : 1;
-    if (state.active) {
+    if (drawableActive) {
       this.drawCellGroups(
         graphics,
         visibleActiveCells,
-        state.active.type,
+        drawableActive.type,
         1,
         {
           originX: layout.x,
@@ -3690,9 +3688,10 @@ export class TetrisRenderer {
   }
 
   private updateSnapshot(state: GameState, layout: BoardLayout, app: Application): void {
-    const activeCells = state.active ? cellsForPiece(state.active) : [];
+    const drawableActive = state.status === 'ready' ? null : state.active;
+    const activeCells = drawableActive ? cellsForPiece(drawableActive) : [];
     const distance = dropDistance(state);
-    const ghostCells = state.active ? activeCells.map((cell) => ({ x: cell.x, y: cell.y + distance })) : [];
+    const ghostCells = drawableActive ? activeCells.map((cell) => ({ x: cell.x, y: cell.y + distance })) : [];
     this.snapshot = {
       canvas: { width: app.screen.width, height: app.screen.height, resolution: app.renderer.resolution },
       board: { x: layout.x, y: layout.y, width: layout.width, height: layout.height, cell: layout.cell },
@@ -3707,12 +3706,12 @@ export class TetrisRenderer {
       activeCells,
       ghostCells,
       visibleLockedCells: this.snapshot.visibleLockedCells,
-      presentation: state.active && this.presentation
+      presentation: drawableActive && this.presentation
         ? {
             x: this.presentation.x,
             y: this.presentation.y,
-            offsetX: this.presentation.x - state.active.x,
-            offsetY: this.presentation.y - state.active.y,
+            offsetX: this.presentation.x - drawableActive.x,
+            offsetY: this.presentation.y - drawableActive.y,
           }
         : null,
       boardShiftOffsetY: this.snapshot.boardShiftOffsetY,

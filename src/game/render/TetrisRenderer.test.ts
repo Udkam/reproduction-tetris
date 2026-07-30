@@ -8,6 +8,7 @@ import {
   createBoard,
   createInitialState,
   createRandomizer,
+  dispatch,
   type Cell,
   type GameEvent,
   type GameState,
@@ -113,6 +114,8 @@ type RendererInternals = {
   } | null;
   snapshot: {
     board: { x: number; y: number; width: number; height: number; cell: number };
+    activeCells: Cell[];
+    ghostCells: Cell[];
   };
   presentation: unknown;
   trail: {
@@ -162,6 +165,11 @@ type RendererInternals = {
   drawPieces: (
     state: GameState,
     layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
+  updateSnapshot: (
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    app: { screen: { width: number; height: number }; renderer: { resolution: number } },
   ) => void;
   mutationFlash: {
     item: MutationItem;
@@ -601,6 +609,42 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot().visibleLockedCells).toBe(30);
     expect(renderer.getSnapshot().survivalEntryBedrockRows).toBe(3);
     expect(renderer.getSnapshot().survivalEntryBedrockRise).toBeNull();
+  });
+
+  it('keeps ready active and ghost cells hidden until the first playing frame', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const ready = createInitialState(0x51a1f00d, 'race');
+    const pieces = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      pieceGraphics: pieces.graphics,
+      survivalEntryGraphics: createGraphicsRecorder().graphics,
+      survivalEntryMaskGraphics: createGraphicsRecorder().graphics,
+    });
+    const drawGroups = vi.spyOn(internals, 'drawCellGroups');
+    const app = { screen: { width: 280, height: 480 }, renderer: { resolution: 1 } };
+
+    renderer.setOptions({ survivalEntryBedrockRows: 1 });
+    internals.drawPieces(ready, layout);
+    internals.updateSnapshot(ready, layout, app);
+
+    expect(renderer.getSnapshot()).toMatchObject({
+      activeCells: [],
+      ghostCells: [],
+      visibleLockedCells: 10,
+    });
+    expect(drawGroups.mock.calls.filter((call) => call[2] === ready.active?.type)).toHaveLength(0);
+
+    const playing = dispatch(ready, { type: 'start' }).state;
+    drawGroups.mockClear();
+    renderer.setOptions({ survivalEntryBedrockRows: null });
+    internals.drawPieces(playing, layout);
+    internals.updateSnapshot(playing, layout, app);
+
+    expect(renderer.getSnapshot().activeCells).toHaveLength(4);
+    expect(renderer.getSnapshot().ghostCells).toHaveLength(4);
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(2);
   });
 
   it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {
