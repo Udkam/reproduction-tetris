@@ -1413,3 +1413,21 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   canonical preview and keeps the 360 px return label on one line. The pre-final
   `1440×900 / 844×390 / 390×844 / 360×800` browser measurements have no document
   or gallery-grid overflow and keep the smallest level target above 50 px.
+
+## 2026-07-31 — Phase 10 pressure-without-ambiguity contract
+
+- The new active goal initially froze ten direct corrections: canonical gravity/Supergravity/
+  Rise terminology; one cue per Mutation item; fair Survival spawn and moving support;
+  readable Ice; complete Mutation Next and weighted Supergravity settlement; mode-first
+  result metrics/ranking; persistent paused Next; restart/play-again countdown; Rules
+  first in Settings; and risk-ordered leave actions.
+- Two later supplements expand the same goal: actual Puzzle success must atomically
+  mark completion, preserve/update the minimum operation count, and propagate unlocks;
+  Puzzle success receives a concise first/new-best/repeat celebration with reduced-
+  motion support rather than the shared loss/result treatment.
+- The work is split into independent recovery checkpoints for shared UI, Survival Core,
+  Mutation Core, Mutation audio/Renderer, results/persistence, final evidence, QA, and
+  coordinator acceptance. Phase 10 is active and no product source is yet accepted.
+- The machine was above the red CPU threshold during orientation, so only targeted
+  no-daemon reading and documentation were admitted. No test, build, server, browser,
+  Serena process, indexer, or listener was started.

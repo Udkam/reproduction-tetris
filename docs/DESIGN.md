@@ -3,6 +3,136 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-07-31 Phase 10 — pressure without ambiguity
+
+Phase 10 unifies a set of related defects around one design principle: **the player
+must be able to read what will happen next, why it happened, and what mattered in the
+finished run.** The accepted Phase-9 mineral/cavern language remains the foundation;
+this phase changes state communication, collision semantics, and result hierarchy
+without adding ornamental text or another visual system.
+
+### Canonical language
+
+- The gravity tile is `下落速度 / Fall speed`. The numeric value always includes
+  `秒/格 / s/cell`; Chinese Ice deliberately shows `1.0 秒/格`.
+- The independent-column Mutation effect is `超重 / Supergravity`. Its internal
+  serialized identifier may remain `collapse` so existing deterministic state and
+  storage do not migrate, but no current player-facing rule, live region, status row,
+  Next description, result, or accessibility label says `坍缩 / Collapse`.
+- Survival pressure uses the compact tile `上升 / Rise`; the row count remains a
+  deterministic game-state fact and may appear in rules or renderer diagnostics, but
+  not in the tile heading.
+
+### One cue per Mutation item
+
+Carrier resolution still consumes every carrier and applies every mechanical effect.
+For presentation, activations are grouped by item in deterministic first-seen order.
+Each item produces one event containing the combined trigger cells and final canonical
+duration/factor. A repeated Bomb may still apply its mechanical row clears; a repeated
+Double may still promote to ×4; neither produces stacked duplicate flashes or audio
+cues. Different item types remain visibly concurrent.
+
+Ice is a local cold front, not a color filter. Its persistent field is a translucent
+upper-edge gradient that fades before the main stack, with sparse descending flecks
+and a restrained boundary glint. Board, ghost, carrier, and material hues remain
+recognizable. Reduced motion uses the same static gradient without drifting particles.
+There is no sustained Ice oscillator; activation receives one short, low-gain glass
+tap or silence. The HUD reads `1.0 秒/格` for the full active interval and restores
+the underlying six-line Mutation cadence when the timer reaches zero.
+
+Supergravity keeps the canonical Next silhouette. On settlement, the affected columns
+receive short downward weight marks and a denser support imprint; no row-wide strip,
+top banner, displaced preview, screen shake, or geometry mutation is allowed.
+
+### Survival one-way moving support
+
+Falling stones are faster environmental actors, not spawn blockers. Ordinary spawn is
+validated against settled board cells only. If a stone already overlaps the spawn
+footprint, that overlap is grandfathered only while it resolves downward; the active
+piece cannot move farther into a new stone cell.
+
+When an active piece's next downward cells are supported by one falling event and the
+event advances, Core attempts one atomic coupled step:
+
+1. move the supporting stone event down one cell;
+2. move the active piece down one cell;
+3. accept both only when the active candidate does not collide with settled board or
+   another non-supporting stone.
+
+If the coupled step is blocked, the falling event waits rather than settling into the
+active piece. Once the stone lands on settled support, it becomes ordinary clearable
+board material and normal lock delay resumes. The rule is deterministic, integer-step,
+hash-visible, and covered for one- and two-stone events, spawn overlap, lateral escape,
+coupled descent, blocked descent, clear, and restart.
+
+### Trustworthy preview and entry lifecycle
+
+Next is derived from Core queue plus Mutation item RNG without consuming either. It is
+visible during pause and leave/restart confirmation, and hidden only in the canonical
+`ready`, `finished`, or `game-over` states. Mutation atmosphere and Supergravity
+settlement never crop, recolor away, or replace the preview body.
+
+Restart and Play again both reset into `ready`, disable gameplay input, and run the
+same `3 / 2 / 1` presentation gate used for first entry. A restart must not call
+`start()` early. On the first `playing` frame, active, ghost, carrier, and Next return
+together.
+
+### Mode-first settlement ledger
+
+The result surface answers one question per mode:
+
+- **Classic:** how many lines? Principal value is lines; secondary value is pieces.
+  Ranking remains lines-first.
+- **Survival:** how long? Principal value is survival time; secondary value is lines.
+  Ranking remains elapsed-time-first.
+- **Mutation:** how much score? Principal value is score; secondary value is lines.
+  Ranking changes to score-first and never shows piece count.
+
+The header uses the mode name plus neutral `结果 / Result` semantics; it never restates
+the loss cause. One accent edge, the primary metric, the current leaderboard row, and
+the primary action carry the mode color. Date and top-five history remain meaningful.
+Unranked copy remains compact. No dot-separated summary sentence or decorative subtitle
+is added.
+
+Settings begins with Rules because it explains the current context before controls.
+The leave confirmation places Return on the left and Stay on the right; Stay receives
+initial focus. This makes visual position match risk while preserving arrow-key and
+Enter operation.
+
+### Puzzle completion as one transaction
+
+Puzzle success is not inferred later from a dismissed modal. The finished Core snapshot
+is converted immediately into one canonical progress update:
+
+- add the level ID to the completed set;
+- compare the operation count with the stored best and retain the lower value;
+- persist one versioned snapshot;
+- derive unlocks, gallery ticks/name color, hero best, and Settings record from that
+  snapshot.
+
+The update is idempotent, so React Strict Mode, duplicate terminal renders, or returning
+before the next paint cannot erase or double-apply it. A completion with no previous
+best is `first`; a lower move count is `record`; all other successes are `repeat`.
+Storage reload and language change may re-render presentation but never recompute or
+discard the achievement.
+
+### Puzzle celebration
+
+Puzzle success keeps a dedicated **violet prism celebration** rather than sharing the
+mode-loss ledger. The modal uses mineral white, a narrow violet-to-teal light edge, one
+large success title, and the single meaningful figure `当前最优步数 / Current best`.
+First completion says `恭喜你破解谜题 / Puzzle solved`; a new best says
+`刷新个人纪录 / New personal best`; a repeat says `谜题已破解 / Puzzle solved`.
+No eyebrow, line count, score, generic “run complete,” or duplicate “首次完成” detail
+appears.
+
+Motion is short and bounded: eight to twelve Canvas/DOM-independent decorative prism
+fragments travel at most `24 px` for `360 ms`, while the edge glow settles in `180 ms`.
+They are non-semantic, never cover copy or controls, and use existing piece colors at
+reduced saturation. `prefers-reduced-motion` renders the final edge and static fragments
+without translation. Focus opens on Replay; Left/Right selects Replay or Back, Enter
+executes, Escape returns to the library.
+
 ## 2026-07-31 Phase 9 direct re-open — clean entry, result ledger, and Puzzle gallery
 
 The latest real-frame review reopens four presentation-only surfaces after the

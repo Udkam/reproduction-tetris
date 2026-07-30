@@ -1,5 +1,95 @@
 # Current Task — T15 TetraMorph Phased Product Refinement
 
+## Phase 10 active goal — readable state, fair pressure, and mode-first results
+
+**Status (2026-07-31): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
+
+Phase 10 keeps correcting the current product until all twelve direct outcomes below are
+implemented, verified in real play, independently reviewed, committed as bounded
+recovery points, and pushed:
+
+1. **Player-facing terminology is consistent in Chinese and English.**
+   `下落速度/格` becomes `下落速度`, and its value owns the explicit unit `秒/格`;
+   Mutation `坍缩 / Collapse` becomes `超重 / Supergravity`; Survival
+   `基岩 x 层 · 上升` becomes the compact status name `上升`. Historical prose may
+   remain only as provenance. Stable internal discriminants such as
+   `MutationItem = "collapse"` remain compatibility details and must never leak to
+   the interface.
+2. **Mutation activation is legible and bounded.** A single transition may apply
+   every triggered carrier, including repeated carriers of the same type, but emits
+   and presents at most one activation cue per item type. Different item types retain
+   independent cues and timers.
+3. **Survival falling stones are fair to the ordinary piece.** A warned stone column
+   cannot cause block-out merely by intersecting the ordinary spawn footprint.
+   Existing overlap can resolve as the faster stone descends. If a valid ordinary
+   piece is supported by a still-falling stone event, the piece descends with that
+   event until the stone settles; board collision, event order, hashing, line clears,
+   restart, and deterministic seeded replay remain authoritative.
+4. **Ice communicates a local atmospheric condition.** While active, automatic
+   gravity is exactly `1.0 秒/格` and the HUD shows that canonical value; after expiry
+   it restores the underlying Mutation cadence. The noisy sustained ice tone is
+   removed and activation uses at most one restrained cue. The board remains readable:
+   frost is an upper-edge gradient with bounded particles/highlights, not a full-frame
+   blue/crystal wash.
+5. **Mutation preview and Supergravity landing are trustworthy.** The Next body and
+   attachment remain complete through queue changes, pause/leave confirmation, and
+   simultaneous effects. Supergravity changes the settlement response, not the
+   tetromino silhouette or preview geometry.
+6. **Results are mode-first rather than cause-first.** No result title says
+   `异变到顶`, `异变结束`, `生存结束`, `堆叠到顶`, or equivalent English cause copy.
+   Mutation emphasizes score and ranks by score, showing lines as context and no
+   piece count. Survival emphasizes survival time and ranks by time, with lines as
+   context. Classic emphasizes lines and ranks by lines, with piece count—not score—
+   as the small secondary metric. The top five, date, current-run row treatment,
+   keyboard behavior, and Puzzle celebration contract remain intact.
+7. Opening the leave/back confirmation after play starts must not blank the Next
+   panel. Pause/overlay state is presentation-only and preserves the current preview.
+8. `重新开始 / Restart` and `再来一局 / Play again` always re-enter the canonical
+   `3 / 2 / 1` input-gated countdown before play. No piece, ghost, carrier, or Next
+   content leaks during `ready`.
+9. The current mode's concise Rules block is the first content section in Settings,
+   followed by Controls, Keyboard, and the mode record/leaderboard.
+10. The leave/back confirmation swaps its horizontal choices: the destructive return
+    action is on the left, while the safe stay/continue action is on the right and
+    remains the initial keyboard focus. Left/Right and Enter retain deterministic
+    operation.
+11. **Puzzle completion is durable and truthful.** Every actual success transition
+    persists the level as completed and updates its minimum-move record before any
+    restart, return, language change, result dismissal, or unmount can intervene.
+    The library tick, completed-name color, selected-level record, Settings record,
+    unlock calculation, and stored progress all derive from the same canonical
+    snapshot. Replays with more moves retain the earlier best; a better replay updates
+    it; malformed or older storage is migrated without losing valid completion data.
+12. **Puzzle success earns a polished celebration.** First completion, new personal
+    best, and repeat completion use one compact Puzzle-specific result surface with
+    distinct concise copy, the current best move count, restrained board-colored
+    confetti/mineral sparks, and clear `重来 / Replay` plus `返回关卡库 / Back to
+    puzzle library` actions. It does not show lines, score, a generic run-loss title,
+    redundant completion prose, or an unsupported rank. Reduced motion preserves the
+    hierarchy without moving particles.
+
+### Execution and acceptance
+
+- Base is accepted and pushed `main@1f4847225c562163ad748fd2a76e4f4023778442`.
+- Only the coordinator writes shared paths. Existing Phase-9 review agents are
+  finished and read-only; no new persistent helper, listener, indexer, Serena process,
+  or browser is admitted merely for inspection.
+- Checkpoints are split into: contract; shared UI/localization; Survival Core;
+  Mutation Core/audio/Renderer; result/persistence UI; final evidence; independent
+  QA; coordinator acceptance. Each source checkpoint owns focused tests and is green
+  before the next subsystem opens.
+- After the final source change, run exactly one final typecheck, full test suite,
+  production build, and browser-evidence pass. Browser proof covers all four modes,
+  Chinese and English, restart/play-again countdown, paused/back preview, simultaneous
+  Mutation triggers, Ice activation/expiry, Supergravity settlement, Survival
+  spawn-overlap/carry, ranked/unranked results, reduced motion, one Canvas, zero DOM
+  cells, zero overflow, and zero console/page errors. Puzzle proof additionally covers
+  first completion, slower replay, new best, direct return, restart, storage reload,
+  unlock propagation, and reduced-motion celebration.
+- Release every project-owned browser, server, port, and temporary profile after
+  evidence. Run one repository-scoped `gitleaks` scan before push. Phase 10 remains
+  `ACTIVE` until independent read-only QA accepts the immutable candidate.
+
 ## Phase 9 active goal — cave pressure and navigation correction
 
 **Status (2026-07-31): PHASE 9 ACCEPTED / PUSHED / CLOSED.**
