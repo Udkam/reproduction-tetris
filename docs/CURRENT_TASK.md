@@ -101,6 +101,15 @@ closed, then do count immediately after that frontier opens. The corrected
 bounded matrix passes 2 files / 46 tests with one worker and typecheck passes.
 Return `80da444` to the original reviewer; selector adaptation remains closed.
 
+**Progress-unlock acceptance (2026-07-30):** the original rejecting reviewer
+accepts correction `80da444` with `P0=0, P1=0, P2=0, P3=0, GAP=0`. It confirms
+all frontier queries now fail closed on the complete in-memory record, all
+three malformed best cases and the before/after out-of-order scenario have
+direct regression coverage, legal gate behavior is unchanged, migration
+domains are untouched and the correction remains within the same two paths.
+The progress-unlock slice is accepted. Commit and push this coordinator record
+before opening selector adaptation.
+
 **Open Phase-7 slice — persistence-v5:** exact product/test paths are
 `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`, and
 `src/App.test.ts`. This slice may add the v5 key/revision, freeze v4/v3/v2/v1 domains,

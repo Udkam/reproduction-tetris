@@ -2,7 +2,7 @@
 
 ## 状态与回退基线
 
-**合同已冻结，progress-unlock 已打开。** Phase 6 已验收并推送；Phase 7 从干净、
+**合同已冻结，progress-unlock 已验收。** Phase 6 已验收并推送；Phase 7 从干净、
 远端一致的恢复记录 `d78e0e580ceb9375afb57fc8c4230624e4a54a77` 开始。
 合同 checkpoint 是 `08c0491014c00ff5972ad7471d5bb0126eebae52`；五个十关
 定义/工件 checkpoint 已验收并推送至 `e8bc42b`。

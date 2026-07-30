@@ -1136,3 +1136,14 @@
   passes.
 - Next action: original rejecting reviewer re-audits exact correction
   `80da444`; no React/UI source opens before disposition.
+
+## Progress-unlock acceptance — 2026-07-30
+
+- Original reviewer re-audit: `ACCEPT`, with
+  `P0=0, P1=0, P2=0, P3=0, GAP=0`.
+- Confirms complete in-memory fail-closed validation, all three malformed-best
+  regressions, out-of-order before/after frontier coverage, unchanged legal
+  gates, unchanged migration domains and exact two-path correction scope.
+- Disposition: progress-unlock accepted.
+- Next action: commit and push this coordinator acceptance as a recovery point,
+  then open selector data/scroll adaptation separately.

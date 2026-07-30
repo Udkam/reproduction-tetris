@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-30 — Puzzle progressive unlock accepted
+
+- Replaced the transitional all-open workshop with the Phase-7 frontier:
+  fresh progress opens 01–03; two completions open 04–05; three completions
+  across 01–05 open 06–10; then each already-open five-level band advances at
+  three completions.
+- Migrated out-of-order completions remain individually replayable without
+  leapfrogging a closed prerequisite band. Locked levels cannot create a
+  completion or current best; malformed in-memory progress falls back to the
+  fresh frontier.
+- Product `3d21df8` plus fail-closed correction `80da444` pass the corrected
+  2-file / 46-test matrix and typecheck. No migration domain, v5 key/revision,
+  definition/artifact, App, selector/CSS, localization, renderer, other mode
+  or dependency changed.
+- The first independent audit rejected one malformed-memory P1 and two missing
+  regressions. The same reviewer accepts the exact correction with P0–P3/GAP
+  all zero after confirming all three cases and the unchanged legal frontier.
+
 ## 2026-07-30 — Puzzle levels 41–50 accepted
 
 - Added the final ten deterministic seven-row boards, `横沟` through `岔口`,
