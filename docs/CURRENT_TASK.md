@@ -74,6 +74,15 @@ directly. Renderer/Runtime proof passes `46/46`, the focused React countdown pro
 passes `1/1`, and typecheck passes. Both corrections remain source-green, not yet
 browser-accepted.
 
+Renderer correction `cb9356d` replaces the visually rejected large diamond-like
+facets with smaller irregular patches, chips, pits, and localized cracks in a darker
+cold-grey family. It also makes the fissure warning and public snapshot reflect the
+frozen one- or two-stone event height. Runtime now retains the latest staged-bedrock
+row count across async mount, while App starts the entry countdown only after Pixi
+mount succeeds, closing the observed “digit 2 with no bedrock” race. Theme/Renderer/
+Runtime proof passes `53/53`, focused React countdown proof passes `1/1`, and
+typecheck passes. Real-frame browser acceptance remains open.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,

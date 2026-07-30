@@ -663,3 +663,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   clears, bedrock translation, restart, and hash participation. Core/presentation
   pass `30/30`; Renderer direct and focused App text-bridge regressions pass;
   typecheck passes.
+- Renderer recovery `cb9356d` makes warning geometry and snapshot observability
+  height-aware, replaces the large metal-like facet treatment with smaller localized
+  cold-stone damage, and closes the async mount/countdown race that previously showed
+  digit `2` before any bedrock row. Renderer/theme/runtime pass `53/53`; the focused
+  React countdown proof and typecheck pass. Real-frame review remains required.

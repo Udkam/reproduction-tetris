@@ -208,3 +208,26 @@
   the next Renderer correction.
 - Next action: adapt warning/snapshot geometry to the frozen event height, then
   implement the unified first-entry rules sheet.
+
+## 2026-07-31 — cavern material, warning, and mount-race correction
+
+- Base: variable-event record `ac074ce`.
+- Product commit: `cb9356d`.
+- Changed paths: `src/game/render/TetrisRenderer.ts`,
+  `TetrisRenderer.test.ts`, `theme.ts`, `theme.test.ts`,
+  `src/game/runtime/GameRuntime.ts`, `GameRuntime.test.ts`, and only the async-mount
+  sequencing hunk in `src/App.tsx`.
+- Implementation: smaller localized slate facets/cracks replace the rejected
+  diamond-plate reading; one- and two-stone plans produce different exact warning
+  silhouettes and snapshot height; Runtime preserves pre-mount staged rows; React
+  begins its countdown only after the real Pixi mount resolves.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/theme.test.ts src/game/render/TetrisRenderer.test.ts src/game/runtime/GameRuntime.test.ts --maxWorkers=1`
+  - focused React countdown test by exact title
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: Renderer/theme/runtime `53/53`, focused React `1/1`, and typecheck pass.
+- Boundary: all selector/home hunks remain unstaged in `src/App.tsx`.
+- Blocker: final visual acceptance requires one managed real-browser batch.
+- Next action: implement and test the unified first-entry rules sheets before opening
+  that batch.
