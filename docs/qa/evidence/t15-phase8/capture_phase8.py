@@ -789,6 +789,18 @@ def ensure_mutation_preview(page: Page) -> dict[str, Any]:
     raise AssertionError("No Mutation carrier appeared in the bounded deterministic preview search.")
 
 
+def ensure_active_non_o(page: Page) -> dict[str, Any]:
+    for _ in range(48):
+        state = runtime_state(page)
+        active = state["active"]
+        if state["status"] == "playing" and active is not None and active["type"] != "O":
+            return state
+        if active is not None and active["type"] == "O":
+            page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
+        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(1)")
+    raise AssertionError("No touch-rotatable active piece appeared in the bounded wait.")
+
+
 def run_browser(context: BrowserContext) -> dict[str, Any]:
     page = context.new_page()
     errors = attach_error_capture(page)
@@ -833,13 +845,7 @@ def run_browser(context: BrowserContext) -> dict[str, Any]:
     after_hard_drop = runtime_state(page)
     assert after_hard_drop["pieceCount"] == before_keyboard["pieceCount"] + 1
 
-    for _ in range(4):
-        state = runtime_state(page)
-        if state["active"]["type"] != "O":
-            break
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
-    before_touch = runtime_state(page)
-    assert before_touch["active"]["type"] != "O"
+    before_touch = ensure_active_non_o(page)
     board = page.locator("[data-testid='board-frame']").bounding_box()
     assert board is not None
     page.touchscreen.tap(board["x"] + board["width"] / 2, board["y"] + board["height"] / 2)
