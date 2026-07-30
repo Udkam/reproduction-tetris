@@ -547,6 +547,27 @@ four anchors individually at 36/720/560 before any full batch. Definitions and
 artifacts 01–40, unlock/v5 source, App source, selector/CSS, renderer,
 dependencies and other modes remain closed.
 
+**Levels 41–50 sparse-anchor correction (2026-07-30):** all four registered
+provisional anchor packages fail to produce a primary route at the fixed
+36/720/560 bound: pool positions 39/23/45/77 at IDs 42/45/47/49. Two further
+read-only injected probes of 12-drop positions 46 and 57, using explicit
+deterministic gameplay seeds, also fail at the same bound. These are candidate
+rejections, not evidence for expanding the route domain.
+
+Reopen only one dedicated 11-drop authoring pool with target rows 7, at most
+64 seeds, beam 512, 60 retained candidates and a 30,000,000 landing budget.
+It runs once, alone, with an explicit ignored output and the same direct setup
+invariants. If it produces candidates, filter outer/near-outer seven-row
+support columns before any route probe. Ordinary packages, four-anchor quota,
+anchor `y=12`, route bounds and every accepted 01–40 definition remain fixed.
+Do not run another 12/13 pool.
+
+Current source WIP is intentionally uncommitted on the seven open product/test
+paths. It registers all ten provisional packages and passes five focused files,
+62/62 tests, plus typecheck. No batch-5 artifact or route-test binding exists
+yet. Keep this green WIP isolated while the 11-drop pool is evaluated; replace
+failed packages atomically before a source checkpoint.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

@@ -968,3 +968,29 @@
   selector/CSS, renderer, dependencies and other modes.
 - Next action: commit this source-opening checkpoint, register all ten packages,
   run focused structural proof, then probe only the four anchors at 36/720/560.
+
+## Levels 41–50 sparse-anchor rejection and bounded retry — 2026-07-30
+
+- Green source WIP registers all ten provisional packages on the seven opened
+  source/test paths. Focused structural proof passes 5 files / 62 tests with
+  one worker; typecheck passes.
+- Registered route failures at unchanged 36/720/560:
+  - ID 42 / pool position 39 / 12 drops / `x=1`: no primary;
+  - ID 45 / pool position 23 / 13 drops / `x=8`: no primary;
+  - ID 47 / pool position 45 / 13 drops / `x=0`: no primary;
+  - ID 49 / pool position 77 / 12 drops / `x=9`: no primary.
+- Read-only injected probes also reject 12-drop position 46 at `x=1` and
+  position 57 at `x=8`; both find no primary at the same bound.
+- Every controlled test/solver PID exited before the next began. No project
+  browser, build, server, listener, subagent, MCP or second heavy Node
+  overlapped.
+- Disposition: do not enlarge search bounds and do not keep any failed anchor
+  package. Reopen one dedicated target-7, 11-drop candidate pool only:
+  64 seeds, beam 512, candidate count 60, landing budget 30,000,000.
+- WIP status: uncommitted but structurally green on
+  `src/game/core/types.ts`, `src/game/core/puzzles.ts`,
+  `src/game/core/puzzles.test.ts`, `src/game/core/puzzleCampaign.test.ts`,
+  `src/ui/localization.ts`, `src/puzzleProgress.test.ts` and
+  `src/App.test.ts`. Batch-5 artifact and route-test binding remain absent.
+- Next action: commit this docs-only measured correction, run the one dedicated
+  11-drop pool, and inspect supported candidates before another route probe.
