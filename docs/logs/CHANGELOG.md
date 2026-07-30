@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-07-30 — Phase 8 integrated release-readiness evidence accepted
+
+- Kept frozen product `4e4cca1` unchanged while adding a fail-closed integration
+  harness and source-bound evidence for Classic, Survival, Mutation, and Puzzle.
+  The rejected selector redesign remains outside `main` at
+  `codex/t15-selector-wip-20260730@dce331b`.
+- Published 13 Phase 8 target frames plus two official web-game client frames
+  covering desktop, 390x844 portrait, 844x390 landscape, Chinese, English,
+  reduced motion, keyboard, touch, modal focus paths and clean unmount.
+  All 23 package hashes and all 18 manifest hashes recompute exactly.
+- Revalidated Phase 5 Mutation evidence at 38/38 browser and 4/4 gate hashes,
+  and five schema-7 Puzzle artifacts containing 50 levels, 100 distinct
+  public-Core routes and ten levels in each 3/4/5/6/7-row tier.
+- Final typecheck, 26/26 test files with 235/235 tests, and the 753-module
+  production build pass. Every gameplay capture has one Canvas, zero DOM board
+  cells, zero browser/page errors, and returns listener/rAF/audio/Canvas state
+  to baseline after unmount.
+- Rules and visual QA accept with only the existing 390px three-status text
+  ellipsis P3; status icons, materials, order, timers and progress remain
+  legible. Evidence-integrity QA accepts with P0–P3/GAP all zero.
+- The ordinary line-clear rollback remains the stationary nine-tick centre-out
+  sweep and is not changed by this documentation/evidence-only phase.
+
 ## 2026-07-30 — Ordinary line-clear rollback accepted on a clean delivery line
 
 - Restored the pre-`1a163ff` ordinary line-clear presentation at clean product

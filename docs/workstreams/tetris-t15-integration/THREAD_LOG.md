@@ -94,3 +94,40 @@
   dependency or product source changed.
 - Next action: freeze this index checkpoint, then run rules, visual, and
   evidence-integrity QA serially against one exact documentation tip.
+
+## TETRIS-T15-PHASE8-QA-005
+
+- Status: `THREE-WAY ACCEPT`.
+- Rules QA record `e7fc800`:
+  `P0=0 / P1=0 / P2=0 / P3=1 / GAP=0`.
+  It confirmed zero product drift, the restored stationary nine-tick ordinary
+  sweep, complete Mutation rules, 50 schema-7 Puzzle levels with two routes,
+  progressive unlock/migration and direct `Z` undo.
+- Visual QA record `78c0664`:
+  `P0=0 / P1=0 / P2=0 / P3=1 / GAP=0`.
+  All 15 Phase 8 frames and the Phase 5 Mutation cross-check passed. The only
+  retained P3 is narrow three-status text ellipsis; iconography, material,
+  order, timer and progress remain legible.
+- Evidence-integrity QA record `7f45db5`:
+  `P0=0 / P1=0 / P2=0 / P3=0 / GAP=0`.
+  It recomputed Phase 8 23/23 and manifest 18/18 hashes, Phase 5 38/38 browser
+  and 4/4 gate hashes, all five Puzzle artifact hashes, lifecycle equivalence,
+  candidate ancestry and recorded gate totals.
+- All reviews were read-only. They started no npm command, browser, server,
+  solver, resident Node, WMI/CIM, Serena, MCP or LSP.
+
+## TETRIS-T15-PHASE8-ACCEPTANCE-006
+
+- Status: `ACCEPTED / READY FOR NON-FORCE PUSH`.
+- Frozen product: `4e4cca1`; successful harness `aa1afe6`; raw evidence
+  `94463de`; browser index `a599f4c`; three QA records through `7f45db5`.
+- The rejected selector experiment remains only at
+  `codex/t15-selector-wip-20260730@dce331b` and is not an ancestor of the
+  accepted line.
+- Product, public assets, dependencies, configuration, Puzzle definitions and
+  selector composition are unchanged throughout Phase 8.
+- Ports 4178/5178/5179 are free and every Phase 8-owned browser/server/runner
+  resource has been released.
+- Next action: commit this coordinator acceptance, run one scoped redacted
+  gitleaks scan, push `main` non-force, and verify exact local/tracking/remote
+  equality.

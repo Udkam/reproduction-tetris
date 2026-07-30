@@ -2,14 +2,15 @@
 
 ## 状态
 
-**OPEN / CONTRACT（2026-07-30）。** Phase 1–6、五十关课程/持久化/进度和
-普通消行直接回退均已独立验收、清理并推送；当前恢复点为 `4e4cca1`。被拒绝的
-Puzzle selector 候选完整保存在本地
+**ACCEPTED / READY FOR NON-FORCE PUSH（2026-07-30）。** Phase 1–6、五十关
+课程/持久化/进度和普通消行直接回退均已独立验收、清理并推送；冻结产品恢复点为
+`4e4cca1`。Phase 8 没有修改产品源码、依赖或配置。被拒绝的 Puzzle selector 候选
+完整保存在本地
 `codex/t15-selector-wip-20260730@dce331b`，不属于 `main`，且本阶段明确不修改
 或重新设计选关界面。
 
-本阶段不新增玩法。除非最终证据直接证明跨阶段产品缺陷，`src/**`、依赖、配置、
-关卡定义/路线和产品视觉均冻结；先建立当前候选的集成证据，再进行三路只读 QA。
+本阶段不新增玩法。`src/**`、依赖、配置、关卡定义/路线和产品视觉均保持冻结；
+当前头只包含合同、一次性采集脚本、源绑定证据、门禁记录和三路只读 QA。
 
 ## 目标
 
@@ -60,8 +61,28 @@ Puzzle selector 候选完整保存在本地
 产品缺陷必须返回其原 Phase 的 writer 和可回退检查点修正，再重新进入集成；
 Phase 8 不把多个子系统修补压成一个巨型提交。
 
+## 验收结果
+
+- 源绑定浏览器批次包含 13 张 Phase 8 目标帧和两张官方 web-game client 帧，
+  覆盖四模式、桌面/竖屏/短横屏、中英文、reduced motion、键盘、触控和完整
+  modal 输入链。
+- `SHA256SUMS.txt` 的 23/23 项与 manifest 内嵌 18/18 项均重新计算一致；每个
+  gameplay 状态恰好一个 Canvas、零 DOM board cell、零 console/page error，
+  每次卸载都回到 listener/rAF/audio/Canvas 基线。
+- 最终 typecheck、26/26 文件与 235/235 测试、753-module production build
+  均通过；511.26 kB chunk 提示是既有 informational warning。
+- rules QA：ACCEPT，`P0=0 / P1=0 / P2=0 / P3=1 / GAP=0`。
+- visual QA：ACCEPT，`P0=0 / P1=0 / P2=0 / P3=1 / GAP=0`。
+- evidence-integrity QA：ACCEPT，
+  `P0=0 / P1=0 / P2=0 / P3=0 / GAP=0`。
+- 唯一保留的 P3 是 390 px 三状态 Mutation HUD 的最长文本省略；道具图标、
+  色系、顺序、剩余秒数和进度仍可辨识，不影响玩法或生命周期。
+- 4178/5178/5179 已释放；没有 watcher、resident reader、Serena、MCP、LSP
+  或常驻 Node 被留在本项目。
+
 ## 完成条件
 
 三方独立接受同一最终候选，无未处置 P0/P1 或用户相关 P2；所有资源释放；工作树
 仅保留明确归属的用户文件；验收文档和 changelog 已提交；`main` 非强制推送成功。
-只有此时才可将总体目标标记完成。
+前三项已满足；剩余发布动作只有范围受限的脱敏密钥扫描、非强制 push 和
+local/tracking/remote 精确相等验证。只有这些动作完成后才将总体目标标记完成。

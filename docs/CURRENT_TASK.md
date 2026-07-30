@@ -45,10 +45,10 @@ scanned the six clean-line commits and found no leaks. The rejected selector WIP
 remains local-only on its explicitly named preservation branch and is not part of
 `main`.
 
-## Open Phase 8 — final integration and release-readiness evidence
+## Phase 8 — final integration and release-readiness evidence
 
-**Status (2026-07-30): CONTRACT / PRODUCT FROZEN.** Current pushed recovery
-`4e4cca1` is the integration source candidate. Phase-5 Mutation has been re-audited
+**Status (2026-07-30): ACCEPTED / READY FOR NON-FORCE PUSH.** Pushed recovery
+`4e4cca1` is the frozen product source. Phase-5 Mutation has been re-audited
 against its ten mandatory requirements and current source: PASS, P0–P2/GAP zero,
 with only the already accepted narrow three-status ellipsis P3. No Mutation semantic
 path changed after `ee2aac5`; 34 captures, 38 browser hashes, 4 gate hashes, FIFO,
@@ -61,16 +61,23 @@ routes, exactly ten levels / twenty routes for each 3/4/5/6/7-row tier. The curr
 progress gates and v5/v4/v3/v2/v1 migration. Selector visual work remains explicitly
 excluded and its rejected candidate is not in `main`.
 
-Open only the Phase-8 contract, evidence harness/output and integration records. Start
-from the frozen product; use one managed Vite/Chrome lease and the official web-game
-client, capture current-head cross-mode/responsive/language/reduced-motion/input and
-lifecycle evidence, inspect every published frame, then run rules/visual/evidence QA
-serially. Any confirmed product finding returns to its owning phase as a separate
-source checkpoint and invalidates the affected evidence.
+Phase 8 added only its contract, fail-closed evidence harness/output, integration
+records and QA dispositions. The single managed Vite/Chrome lease plus official
+web-game client produced 13 integration frames and two official-client frames.
+All 23 published hashes and 18 manifest hashes recompute; the batch covers four modes,
+desktop/portrait/short-landscape, Chinese/English, reduced motion, keyboard/touch,
+modal focus paths and lifecycle return to baseline. Final typecheck, 26 files /
+235 tests and the 753-module build pass.
+
+Rules and visual QA both accept with only the already documented narrow three-status
+ellipsis P3; evidence-integrity QA accepts with no finding or gap. Selector redesign
+remains excluded, `dce331b` remains outside `main`, and product paths remain identical
+to `4e4cca1`. Only a scoped redacted secret scan, non-force push and exact
+local/tracking/remote equality check remain before closing the overall goal.
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
-**Status (2026-07-30):** active. The linked product-review conversation is the
+**Status (2026-07-30):** locally accepted; release checkpoint pending push. The linked product-review conversation is the
 authoritative visual workflow. Complete the phases in order and retain fresh visual
 evidence for each accepted boundary. After a phase passes both independent audits,
 the coordinator records its acceptance, verifies resource cleanup, and pushes that
@@ -88,7 +95,9 @@ and released. All five ten-level definition/artifact batches are independently
 accepted and pushed through recovery point `e8bc42b9413dc096f503f122746cffb05b185f74`,
 with both 41–50 audits reporting P0–P3/GAP all zero. The next bounded slice
 implements the already-frozen progressive unlock rules in progress source and
-direct tests only; React selector adaptation remains closed.
+direct tests only; React selector adaptation remains closed. Those data/progress
+requirements are now accepted, and Phase 8 has accepted the integrated product without
+reopening the selector visual boundary.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
