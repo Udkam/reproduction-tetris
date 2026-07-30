@@ -427,3 +427,23 @@
   immutable candidate is built.
 - Blocker: final gates, source-bound target-view captures, and independent QA.
 - Next action: commit this docs record, then run the one final gate batch.
+
+## 2026-07-31 — Puzzle gallery compact-frame correction
+
+- Task ID: T16 Phase 9 source-gallery-home compact correction.
+- Base SHA: `3315788`.
+- Product SHA: `724e152`.
+- Exact changed paths: `src/App.tsx`, `src/App.test.ts`,
+  `src/styles/puzzle-library.css`.
+- Result: the canonical preview now crop-fits the occupied Puzzle rows without
+  changing the board data, and the 360 px return label stays on one line.
+- Commands actually run: focused App/navigation/gallery Vitest `48/48`, typecheck,
+  exact-path commit, and one managed pre-final Chrome pass against the existing Vite
+  lease.
+- Evidence: `1440×900`, `844×390`, `390×844`, and `360×800` report equal document
+  client/scroll geometry; each page has 25 nodes, grid client/scroll geometry is
+  equal, and the smallest measured target is greater than 50 px. Pointer hover
+  changes from one hovered card to zero after leaving, with zero active/pressed
+  selections and zero console/page errors.
+- Blocker: formal final gates, immutable evidence capture, and independent QA.
+- Next action: record this correction, then run the one final gate batch.

@@ -1409,3 +1409,7 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   state; pointer emphasis is now real CSS hover only.
 - Focused App/navigation/gallery tests pass `48/48` and typecheck passes. Formal
   target-viewport screenshots and independent visual/input QA remain open.
+- Compact correction `724e152` crop-fits the real occupied Puzzle rows inside the
+  canonical preview and keeps the 360 px return label on one line. The pre-final
+  `1440×900 / 844×390 / 390×844 / 360×800` browser measurements have no document
+  or gallery-grid overflow and keep the smallest level target above 50 px.

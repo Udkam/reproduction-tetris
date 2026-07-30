@@ -181,13 +181,14 @@ evidence.
 
 ### 源码检查点
 
-- `2c1a13d`：双页 `5×5` 图库和首页瞬时 hover 已实现。组件每次只挂载
+- `2c1a13d..724e152`：双页 `5×5` 图库和首页瞬时 hover 已实现。组件每次只挂载
   二十五个功能节点；两个范围键为 tablist，方向键可跨 `25/26` 换页并保留
   焦点；预览、名字、当前最优和 Start 共用一个连接舞台。
 - 首页不再生成 `mode-gate--active`、`data-selected`、`aria-pressed` 或
   pointer-enter 状态。键盘仍使用单一 roving tab stop 和 `:focus-visible`。
-- 聚焦 App/navigation/gallery 验证通过 `48/48`，typecheck 通过。四个正式
-  视口、两页、中英文、键盘/reduced-motion 仍须由最终候选浏览器证据验收。
+- 聚焦 App/navigation/gallery 验证通过 `48/48`，typecheck 通过。预验收
+  四视口均无溢出，紧凑预览裁切和 360 px 返回标签换行已修复；两页、
+  中英文、键盘/reduced-motion 仍须由最终候选浏览器证据验收。
 
 ## 最终门禁与 QA
 

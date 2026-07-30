@@ -11,7 +11,7 @@ Base: `main@87121af42330ab9aea9456e28dfa42e5edc62536`
 | Rules + Puzzle + home | coordinator | visual + input QA | App/styles/style order/localization/direct tests | RULE SHEET BROWSER-ACCEPTED; cascade corrected at `693f3d4`; visual superseded |
 | Ready visibility | coordinator | countdown visibility audit + final visual QA | Renderer/snapshot/direct tests only | SOURCE GREEN `6a47926`; browser proof pending |
 | Result ledger | coordinator | result hierarchy audit + final visual/input QA | App/localization/result.css/direct tests | SOURCE GREEN `8b08361`; browser proof pending |
-| Puzzle gallery + home hover | coordinator | selector/home comparison + final visual/input QA | App/navigation/puzzle-library.css/direct tests | SOURCE GREEN `2c1a13d`; browser proof pending |
+| Puzzle gallery + home hover | coordinator | selector/home comparison + final visual/input QA | App/navigation/puzzle-library.css/direct tests | SOURCE GREEN `2c1a13d..724e152`; browser proof pending |
 | Candidate evidence | coordinator | evidence QA | final gates plus source-bound browser artifacts only | `a67fb00` superseded by navigation rejection |
 | Superseded correction | same coordinator | repeat relevant QA | navigation CSS/tests only | GREEN `2c199d2..693f3d4`; retained recovery |
 | Acceptance/push | coordinator | three final verdicts | changelog/log/acceptance evidence | PENDING |

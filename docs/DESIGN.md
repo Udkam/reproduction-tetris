@@ -77,13 +77,15 @@ timing, randomisation, or any mode rule.
 
 ### Source checkpoint
 
-Checkpoint `2c1a13d` implements this gallery/home contract without changing any
+Checkpoints `2c1a13d..724e152` implement this gallery/home contract without changing any
 Puzzle definition or progress data. The library now exposes two semantic tabs,
 exactly twenty-five functional nodes per page, one canonical silhouette, one
 localized name/best/Start hero, and page-aware `±1 / ±5 / Home / End` focus. Home
 keeps roving keyboard focus but has no pointer-owned state, active class, pressed
 attribute, or persistent selection data. Focused component/style proof is `48/48`
-and typecheck is green; visual acceptance remains open until the final viewport set.
+and typecheck is green. The bounded pre-final frame pass finds no target-viewport
+overflow, then tight-crops the canonical silhouette and prevents the 360 px return
+label from wrapping; formal acceptance still waits for final-candidate evidence.
 
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 
