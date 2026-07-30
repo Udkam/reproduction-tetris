@@ -598,6 +598,29 @@ server or second pool may overlap. If four complete packages are not found,
 stop and record the evidence instead of widening the batch silently. Product
 source remains unchanged until all four replacements have replay evidence.
 
+**Levels 41–50 bounded topology-screen result (2026-07-30):** the complete
+12-triple screen produced no route pair. Candidate 6 with anchor positions
+`x=0` and `x=8` under seed `746220617` has no primary route. Candidates
+8/9/30/31 at the opposite outer or near-outer position also have no primary
+route under that seed. Keeping candidate 6 at `x=1,y=12` and varying the first
+two bags through seeds `1786354125`, `3438853325`, `197830471` and
+`3709961825` produces no primary route; seed `2076461737` produces a primary
+route but no alternate diverging by lock four. Moving that sequence to
+candidate 8 again produces no primary route. Together with the earlier
+`746220617` result, candidate 6 has two valid primary sequences but no accepted
+early-diverging pair. Every probe ran serially at Idle priority with affinity
+to one processor and exited; no solver, agent or server remains open.
+
+Do not open another carrier or seed screen. Before changing the four-anchor
+quota, carrier size, row, or fixed beam ceiling, run one diagnostic only:
+retain candidate 6, `x=1,y=12`, seed `746220617`, the 36-lock limit and a
+300/240 beam prefix, but inspect canonical exclusions through lock 8 rather
+than stopping at lock 4. This is not acceptance evidence; it determines
+whether the current failure is an impossible second route or a deliberately
+forced opening followed by a later meaningful branch. If no alternate exists
+by lock 8, stop for a new curriculum decision. If one exists, record its
+measured divergence before considering a final-tier-only divergence rule.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
