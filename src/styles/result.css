@@ -185,6 +185,7 @@
     width: min(720px, calc(100vw - 20px));
     max-height: calc(100dvh - 16px);
     padding: 16px 20px;
+    overflow: hidden;
   }
 
   .action-sheet--run-result > h2 {
@@ -192,23 +193,59 @@
     font-size: 23px;
   }
 
+  .action-sheet--run-result > .action-sheet__actions {
+    grid-template-areas:
+      "summary leaderboard"
+      "primary secondary";
+    grid-template-columns: minmax(180px, .72fr) minmax(0, 1.28fr);
+    grid-template-rows: auto 44px;
+    align-items: stretch;
+    gap: 8px 10px;
+  }
+
+  .action-sheet--run-result .run-result {
+    grid-area: summary;
+  }
+
   .run-result__rank {
     top: 18px;
     right: 20px;
   }
 
+  .run-result__metrics {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
   .run-result__metric {
-    min-height: 56px;
-    padding-block: 8px;
+    min-height: 50px;
+    padding: 7px 11px;
   }
 
   .run-result__metric strong {
     font-size: 23px;
   }
 
+  .action-sheet--run-result .result-leaderboard--result {
+    grid-area: leaderboard;
+  }
+
+  .action-sheet--run-result .result-leaderboard--result header {
+    min-height: 30px;
+    padding-block: 4px;
+  }
+
   .action-sheet--run-result .result-leaderboard--result li {
-    min-height: 26px;
-    padding-block: 3px;
+    min-height: 22px;
+    padding-block: 2px;
+  }
+
+  .action-sheet--run-result > .action-sheet__actions > .primary-action {
+    grid-area: primary;
+  }
+
+  .action-sheet--run-result > .action-sheet__actions > .secondary-action {
+    grid-area: secondary;
   }
 }
 
