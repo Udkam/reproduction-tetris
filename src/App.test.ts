@@ -514,6 +514,17 @@ describe('T15 Phase 2 Settings layout contract', () => {
 });
 
 describe('T6 frontend mode binding', () => {
+  it('keeps the authoritative countdown veil translucent above staged Survival bedrock', () => {
+    const start = sourceStyles.lastIndexOf('.entry-countdown {');
+    const end = sourceStyles.indexOf('\n}', start);
+    expect(start).toBeGreaterThanOrEqual(0);
+    expect(end).toBeGreaterThan(start);
+
+    const block = sourceStyles.slice(start, end);
+    expect(block).toMatch(/color-mix\(in srgb,\s*var\(--well\)\s*68%,\s*transparent\)/);
+    expect(block).not.toContain('#071427');
+  });
+
   it('keeps the live canvas visible but demoted while a modal owns the compositor', () => {
     const selector = '.play-shell:has(.sheet-backdrop) .canvas-host';
     const start = sourceStyles.indexOf(selector);
