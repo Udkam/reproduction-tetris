@@ -58,10 +58,8 @@ import {
   clampActivePresentationOffsetY,
   exposedCellEdges,
   internalCellSeams,
-  lineClearCellProgress,
+  lineClearPresentationProgress,
   nextPreviewPieces,
-  ordinaryLineClearFrame,
-  ordinaryLineClearStrength,
   orthogonalCellComponents,
   type CellEdge,
   type BoardShiftDirection,
@@ -128,10 +126,6 @@ interface SurvivalStoneCue {
   cells: readonly Cell[];
   elapsed: number;
   duration: number;
-}
-
-interface OrdinaryClearCell extends Cell {
-  material: BoardMaterial;
 }
 
 type ClassicFeedbackKind = 'landing' | 'combo' | 'speed-up' | 'top-out';
@@ -711,10 +705,6 @@ export class TetrisRenderer {
     this.syncMutationArrival(state);
     let visibleLockedCells = 0;
     const lockedByMaterial = new Map<BoardMaterial, Cell[]>();
-    const ordinaryClearCells: OrdinaryClearCell[] = [];
-    const ordinaryClearRows = state.phase === 'line-clear'
-      ? new Set(state.pendingClearRows)
-      : null;
     const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
       ? boardShiftPresentationOffset(
           this.boardShift.direction,
@@ -729,10 +719,6 @@ export class TetrisRenderer {
       row.forEach((cell, x) => {
         if (!cell) return;
         visibleLockedCells += 1;
-        if (ordinaryClearRows?.has(boardY)) {
-          ordinaryClearCells.push({ x, y: boardY - VISIBLE_START_ROW, material: cell });
-          return;
-        }
         const cells = lockedByMaterial.get(cell) ?? [];
         cells.push({ x, y: boardY - VISIBLE_START_ROW });
         lockedByMaterial.set(cell, cells);
@@ -746,13 +732,6 @@ export class TetrisRenderer {
         offsetY: boardShiftOffsetY,
       });
     }
-    this.drawOrdinaryLineClearCells(
-      graphics,
-      ordinaryClearCells,
-      state,
-      layout,
-      boardShiftOffsetY,
-    );
     if (state.mode === 'race') {
       for (const stone of state.survivalDebris) {
         const presented = this.survivalDebrisPresentation.get(stone.id) ?? stone;
@@ -875,7 +854,6 @@ export class TetrisRenderer {
     const stroke = Math.max(1, layout.cell * 0.038);
     for (const cell of state.puzzleTargetCells) {
       if (cell.y < VISIBLE_START_ROW || cell.y >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
-      if (state.phase === 'line-clear' && state.pendingClearRows.includes(cell.y)) continue;
       const material = state.board[cell.y]?.[cell.x];
       if (!material || material === ANCHOR_CELL || material === BEDROCK_CELL) continue;
       const x = layout.x + cell.x * layout.cell + inset;
@@ -906,45 +884,11 @@ export class TetrisRenderer {
     if (state.mode !== 'sprint') return;
     for (const carrier of state.mutationCarriers) {
       const cells = carrier.cells
-        .filter((cell) => (
-          cell.y >= VISIBLE_START_ROW
-          && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT
-          && !(state.phase === 'line-clear' && state.pendingClearRows.includes(cell.y))
-        ))
+        .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
         .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
       if (cells.length === 0) continue;
       this.drawMutationCarrierSurface(graphics, cells, carrier.item, layout, 0, offsetY);
       this.drawMutationCarrierCore(graphics, cells, carrier.item, layout, 0, offsetY);
-    }
-  }
-
-  private drawOrdinaryLineClearCells(
-    graphics: Graphics,
-    cells: readonly OrdinaryClearCell[],
-    state: GameState,
-    layout: BoardLayout,
-    offsetY: number,
-  ): void {
-    if (state.phase !== 'line-clear' || cells.length === 0) return;
-    const frame = ordinaryLineClearFrame(state.phaseTicks, this.options.reducedMotion);
-    const strength = ordinaryLineClearStrength(state.pendingClearRows.length);
-    const rowCenter = BOARD_WIDTH / 2;
-
-    for (const cell of cells) {
-      const contraction = lineClearCellProgress(frame.contraction, cell.x, BOARD_WIDTH);
-      const dissolve = lineClearCellProgress(frame.dissolve, cell.x, BOARD_WIDTH);
-      const direction = Math.sign(rowCenter - (cell.x + 0.5));
-      const offsetX = direction * strength.contractionCells * layout.cell * contraction;
-      const scale = 1 - contraction * 0.31;
-      const alpha = Math.max(0.12, 1 - dissolve * 0.88);
-      this.drawCellGroups(graphics, [cell], cell.material, alpha, {
-        originX: layout.x,
-        originY: layout.y,
-        unit: layout.cell,
-        offsetX,
-        offsetY,
-        scale,
-      });
     }
   }
 
@@ -1661,7 +1605,17 @@ export class TetrisRenderer {
       const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
       this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
     }
-    this.drawOrdinaryLineClearEffects(graphics, state, layout);
+    if (state.phase === 'line-clear' && !this.options.reducedMotion) {
+      const progress = lineClearPresentationProgress(state.phaseTicks, false);
+      const width = layout.width * Math.sin(progress * Math.PI);
+      for (const row of state.pendingClearRows) {
+        if (row < VISIBLE_START_ROW) continue;
+        const y = layout.y + (row - VISIBLE_START_ROW) * layout.cell;
+        graphics
+          .rect(layout.x + (layout.width - width) / 2, y + layout.cell * 0.12, width, layout.cell * 0.76)
+          .fill({ color: COLORS.classic, alpha: 0.18 + progress * 0.4 });
+      }
+    }
     this.drawClassicFeedbackCues(graphics, state, layout);
 
     if (this.lockPulse && !this.options.reducedMotion) {
@@ -1872,81 +1826,6 @@ export class TetrisRenderer {
         .moveTo(x + dividerInset, dividerY)
         .lineTo(x + width - dividerInset, dividerY)
         .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
-    }
-  }
-
-  private drawOrdinaryLineClearEffects(
-    graphics: Graphics,
-    state: GameState,
-    layout: BoardLayout,
-  ): void {
-    if (state.phase !== 'line-clear' || state.pendingClearRows.length === 0) return;
-    const frame = ordinaryLineClearFrame(state.phaseTicks, this.options.reducedMotion);
-    const strength = ordinaryLineClearStrength(state.pendingClearRows.length);
-    const color = state.mode === 'race'
-      ? COLORS.race
-      : state.mode === 'puzzle'
-        ? COLORS.puzzle
-        : state.mode === 'sprint'
-          ? COLORS.selection
-          : COLORS.classic;
-
-    for (const row of state.pendingClearRows) {
-      if (row < VISIBLE_START_ROW || row >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
-      const centerY = layout.y + (row - VISIBLE_START_ROW + 0.5) * layout.cell;
-      const lightWidth = layout.width * frame.confirmationSpan;
-      const lightAlpha = Math.min(0.92, frame.confirmationAlpha * strength.alphaMultiplier);
-      if (lightAlpha > 0) {
-        graphics
-          .rect(
-            layout.x + (layout.width - lightWidth) / 2,
-            centerY - layout.cell * 0.11,
-            lightWidth,
-            Math.max(1.5, layout.cell * 0.22),
-          )
-          .fill({ color, alpha: lightAlpha * 0.22 })
-          .rect(
-            layout.x + (layout.width - lightWidth) / 2,
-            centerY - Math.max(0.75, layout.cell * 0.025),
-            lightWidth,
-            Math.max(1.5, layout.cell * 0.05),
-          )
-          .fill({ color, alpha: lightAlpha });
-      }
-
-      if (frame.afterglow <= 0 || this.options.reducedMotion) continue;
-      const afterglowAlpha = Math.min(0.42, frame.afterglow * 0.34 * strength.alphaMultiplier);
-      graphics
-        .rect(
-          layout.x + layout.width * 0.16,
-          centerY - Math.max(0.5, layout.cell * 0.012),
-          layout.width * 0.68,
-          Math.max(1, layout.cell * 0.024),
-        )
-        .fill({ color, alpha: afterglowAlpha * 0.5 });
-
-      for (let index = 0; index < strength.debrisPerRow; index += 1) {
-        const lane = (index + 0.5) / strength.debrisPerRow;
-        const x = layout.x + layout.width * (0.08 + lane * 0.84);
-        const direction = index % 2 === 0 ? -1 : 1;
-        const lift = layout.cell * (0.11 + (index % 3) * 0.035) * frame.afterglow;
-        const size = Math.max(1.2, layout.cell * (0.027 + (index % 2) * 0.012));
-        const y = centerY + direction * lift;
-        graphics
-          .circle(x, y, size)
-          .fill({ color, alpha: afterglowAlpha * (index % 3 === 0 ? 0.92 : 0.66) });
-        if (index % 2 === 0) {
-          const shard = layout.cell * (0.07 + (index % 3) * 0.018);
-          graphics
-            .moveTo(x - shard, y + direction * shard * 0.28)
-            .lineTo(x + shard, y - direction * shard * 0.28)
-            .stroke({
-              color,
-              alpha: afterglowAlpha * 0.78,
-              width: Math.max(1, layout.cell * 0.024),
-            });
-        }
-      }
     }
   }
 

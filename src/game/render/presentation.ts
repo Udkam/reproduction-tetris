@@ -20,26 +20,7 @@ export interface InternalCellSeam {
 
 export type BoardShiftDirection = 'up' | 'down';
 
-export const LINE_CLEAR_PRESENTATION_TICKS = 11;
-
-/** Compatibility name retained for consumers that only need the normalized duration. */
-export const LINE_CLEAR_SWEEP_TICKS = LINE_CLEAR_PRESENTATION_TICKS;
-
-export interface OrdinaryLineClearFrame {
-  progress: number;
-  confirmationSpan: number;
-  confirmationAlpha: number;
-  contraction: number;
-  dissolve: number;
-  afterglow: number;
-  reducedMotion: boolean;
-}
-
-export interface OrdinaryLineClearStrength {
-  alphaMultiplier: number;
-  contractionCells: number;
-  debrisPerRow: number;
-}
+export const LINE_CLEAR_SWEEP_TICKS = 9;
 
 const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = [
   { edge: 'top', dx: 0, dy: -1 },
@@ -49,13 +30,6 @@ const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = 
 ];
 
 const cellKey = (cell: Cell): string => `${cell.x},${cell.y}`;
-
-const clamp01 = (value: number): number => Math.max(0, Math.min(1, value));
-
-const smoothstep = (value: number): number => {
-  const bounded = clamp01(value);
-  return bounded * bounded * (3 - 2 * bounded);
-};
 
 const orderedCells = (cells: readonly Cell[]): Cell[] => (
   [...new Map(cells.map((cell) => [cellKey(cell), cell])).values()]
@@ -198,66 +172,15 @@ export function activePresentationScaleFitsVisibleWell(
 }
 
 export function lineClearCellProgress(phaseProgress: number, column: number, width: number): number {
-  if (width <= 1) return clamp01(phaseProgress);
+  if (width <= 1) return Math.max(0, Math.min(1, phaseProgress));
   const centerDistance = Math.abs(column - (width - 1) / 2) / ((width - 1) / 2);
-  return clamp01(phaseProgress * 1.5 - centerDistance * 0.5);
+  return Math.max(0, Math.min(1, phaseProgress * 1.5 - centerDistance * 0.5));
 }
 
-/**
- * Defines the complete row-local ordinary-clear signature inside Core's existing
- * 12-tick delay. It is pure renderer timing and never owns gameplay progression.
- */
-export function ordinaryLineClearFrame(
-  phaseTicks: number,
-  reducedMotion: boolean,
-): OrdinaryLineClearFrame {
-  const progress = clamp01(
-    Math.max(0, Number.isFinite(phaseTicks) ? phaseTicks : 0) / LINE_CLEAR_PRESENTATION_TICKS,
-  );
-  if (reducedMotion) {
-    return {
-      progress,
-      confirmationSpan: 0.9,
-      confirmationAlpha: 0.62 * (1 - smoothstep(progress)),
-      contraction: 0,
-      dissolve: 0,
-      afterglow: 0,
-      reducedMotion: true,
-    };
-  }
-
-  const confirmationSpan = 0.18 + 0.72 * smoothstep(progress / 0.24);
-  const confirmationAlpha = 0.78 * (1 - smoothstep((progress - 0.12) / 0.42));
-  const contraction = smoothstep((progress - 0.16) / 0.56);
-  const dissolve = smoothstep((progress - 0.34) / 0.52);
-  const afterglow = smoothstep((progress - 0.5) / 0.2)
-    * (1 - 0.55 * smoothstep((progress - 0.78) / 0.22));
-
-  return {
-    progress,
-    confirmationSpan,
-    confirmationAlpha,
-    contraction,
-    dissolve,
-    afterglow,
-    reducedMotion: false,
-  };
-}
-
-/** Keeps one-to-four-row clears in one visual family with bounded intensity. */
-export function ordinaryLineClearStrength(rowCount: number): OrdinaryLineClearStrength {
-  const count = Math.max(1, Math.min(4, Math.floor(Number.isFinite(rowCount) ? rowCount : 1)));
-  return {
-    alphaMultiplier: 1 + (count - 1) * 0.08,
-    contractionCells: 0.14 + (count - 1) * 0.018,
-    debrisPerRow: 4 + (count - 1) * 2,
-  };
-}
-
-/** Compatibility progress for tests and integrations that only need a scalar. */
+/** Caps the visual sweep at nine 60 Hz ticks (150 ms) without changing Core timing. */
 export function lineClearPresentationProgress(phaseTicks: number, reducedMotion: boolean): number {
   if (reducedMotion) return 0;
-  return ordinaryLineClearFrame(phaseTicks, false).progress;
+  return Math.max(0, Math.min(1, phaseTicks / LINE_CLEAR_SWEEP_TICKS));
 }
 
 /** Briefly preserves the stack's previous visual position while Core applies a bedrock shift. */
