@@ -1309,6 +1309,7 @@ describe('T6 frontend mode binding', () => {
     expect(sheet.textContent).toContain('Settings');
     expect(sheet.textContent).toMatch(/Keyboard.*Move.*Hard drop/s);
     expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
+    expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe('');
     expect(view.container.querySelector('.keyboard-map')).toBeNull();
     expect(view.container.querySelector('canvas')?.getAttribute('aria-label')).toBe('TetraMorph 10 by 20 game board');
     view.unmount();

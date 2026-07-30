@@ -1232,6 +1232,10 @@ export function GameSession({
 
   useEffect(() => {
     languageRef.current = language;
+    // A live-region sentence is already spoken when it is written. Keeping that
+    // sentence after a language switch exposes stale Chinese on an English surface
+    // (and vice versa), so discard it instead of presenting mixed-language status.
+    setLiveMessage('');
     const documentTarget = browserPlatform.documentTarget();
     if (documentTarget?.documentElement) documentTarget.documentElement.lang = language;
     const canvas = hostRef.current?.querySelector('canvas');
