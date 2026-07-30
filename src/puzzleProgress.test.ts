@@ -20,6 +20,7 @@ import {
   parsePuzzleProgress,
   puzzleBestPieceCount,
   recordCanonicalPuzzleCompletion,
+  type PuzzleProgress,
   unlockedPuzzleLevelCount,
 } from './puzzleProgress';
 
@@ -131,6 +132,37 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     expect(isPuzzleUnlocked(historic, CAMPAIGN_LEVELS[16]!.id)).toBe(true);
     expect(nextLockedPuzzleLevel(historic)).toBe(CAMPAIGN_LEVELS[3]);
     expect(nextPuzzleTierGate(historic)?.unlocksTier).toEqual(CAMPAIGN_LEVELS.slice(3, 5));
+  });
+
+  it('counts out-of-order completions only after their prerequisite frontier opens', () => {
+    const waiting = progressWith(
+      CAMPAIGN_LEVELS[0]!.id,
+      CAMPAIGN_LEVELS[1]!.id,
+      CAMPAIGN_LEVELS[5]!.id,
+      CAMPAIGN_LEVELS[6]!.id,
+      CAMPAIGN_LEVELS[7]!.id,
+    );
+    expect(isPuzzleUnlocked(waiting, CAMPAIGN_LEVELS[5]!.id)).toBe(true);
+    expect(isPuzzleUnlocked(waiting, CAMPAIGN_LEVELS[8]!.id)).toBe(false);
+    expect(isPuzzleUnlocked(waiting, CAMPAIGN_LEVELS[10]!.id)).toBe(false);
+    expect(nextPuzzleTierGate(waiting)).toEqual({
+      prerequisiteTier: CAMPAIGN_LEVELS.slice(0, 5),
+      unlocksTier: CAMPAIGN_LEVELS.slice(5, 10),
+      completedCount: 2,
+      requiredCount: 3,
+    });
+
+    const reached = progressWith(
+      ...waiting.completedLevelIds,
+      CAMPAIGN_LEVELS[4]!.id,
+    );
+    expect(unlockedIds(reached)).toEqual(CAMPAIGN_LEVELS.slice(0, 15).map((level) => level.id));
+    expect(nextPuzzleTierGate(reached)).toEqual({
+      prerequisiteTier: CAMPAIGN_LEVELS.slice(10, 15),
+      unlocksTier: CAMPAIGN_LEVELS.slice(15, 20),
+      completedCount: 0,
+      requiredCount: 3,
+    });
   });
 
   it('rejects a locked-level win and retains the lowest successful count for canonical wins', () => {
@@ -270,6 +302,32 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     expect(migrateV2PuzzleProgress('{"version":2,"completedLevelIds":["offset-01"]}')).toEqual(baseline);
     expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":"offset-01"}')).toEqual(baseline);
     expect(migrateLegacyPuzzleProgress('{"version":1,"nextUnlockedLevelId":null}')).toEqual(baseline);
+  });
+
+  it('fails frontier queries closed for malformed in-memory best records', () => {
+    const completed = progressWith(
+      CAMPAIGN_LEVELS[0]!.id,
+      CAMPAIGN_LEVELS[1]!.id,
+      CAMPAIGN_LEVELS[2]!.id,
+    );
+    const malformedBests: unknown[] = [
+      null,
+      { [CAMPAIGN_LEVELS[0]!.id]: 0 },
+      { 'offset-01': 4 },
+    ];
+
+    for (const bestPieceCounts of malformedBests) {
+      const malformed = { ...completed, bestPieceCounts } as unknown as PuzzleProgress;
+      expect(unlockedIds(malformed)).toEqual(CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id));
+      expect(unlockedPuzzleLevelCount(malformed)).toBe(3);
+      expect(nextLockedPuzzleLevel(malformed)).toBe(CAMPAIGN_LEVELS[3]);
+      expect(nextPuzzleTierGate(malformed)).toEqual({
+        prerequisiteTier: CAMPAIGN_LEVELS.slice(0, 3),
+        unlocksTier: CAMPAIGN_LEVELS.slice(3, 5),
+        completedCount: 0,
+        requiredCount: 2,
+      });
+    }
   });
 });
 

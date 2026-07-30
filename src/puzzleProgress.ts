@@ -261,7 +261,11 @@ function bestPieceCountsFrom(progress: PuzzleProgress, completedIds: readonly Pu
 }
 
 function completedIdSetFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
-  return new Set(completedIdsFrom(progress) ?? []);
+  const completedIds = completedIdsFrom(progress);
+  if (completedIds === null || bestPieceCountsFrom(progress, completedIds) === null) {
+    return new Set();
+  }
+  return new Set(completedIds);
 }
 
 function unlockedLevelIdsFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
