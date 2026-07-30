@@ -53,6 +53,9 @@ timing, randomisation, or any mode rule.
   instead of stretching its five rows to consume every available pixel; deliberate
   inter-node gaps keep the twenty-five controls readable rather than compressed into
   a worksheet.
+- The connected gallery frame uses the full available row on compact viewports but
+  caps at `740 px` on taller screens. The outer frame, not the square controls,
+  contracts to remove structural empty space around the preview and matrix.
 - Desktop and short landscape place a large deep-indigo live board preview on the
   left and the page controls plus matrix on the right. Portrait stacks the same two
   surfaces. The preview, localized level name, current best, and Start action form
@@ -97,6 +100,17 @@ measurement reports exact square controls at `95.02`, `46`, `64.8`, and `58.8 px
 for `1440×900`, `844×390`, `390×844`, and `360×800` respectively, with equal grid
 client/scroll geometry and no page overflow. Formal acceptance still waits for the
 regenerated final-candidate evidence.
+
+Independent review of evidence checkpoint `eae9a1f` accepts the square gallery and
+home pointer behavior but rejects two adjacent presentation contracts. At
+`844×390`, an unranked five-row result ledger clips its fifth row and both actions;
+the short-landscape result must place summary and leaderboard side by side with the
+two actions always visible and no internal scroll. The Puzzle range control is a
+tablist, so Left/Right and Home/End on either tab must move focus and activate the
+corresponding page; level-grid navigation remains separate.
+The player's direct frame review additionally rejects the tall-screen outer frame:
+the gallery must cap its height and fit its existing content rather than stretching
+both columns to the full viewport.
 
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 

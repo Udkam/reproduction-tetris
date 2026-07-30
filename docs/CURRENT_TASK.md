@@ -163,6 +163,21 @@ recovery points, but Phase 9 is not accepted. The open source slices are:
   overflow, and zero console errors; final source gates and committed evidence remain
   pending.
 
+Independent QA rejects evidence checkpoint `eae9a1f` despite accepting the corrected
+gallery and pointer-leave behavior. Two bounded corrections are open:
+
+- the `844×390` unranked five-row result ledger must show every row and both actions
+  in its first frame, with equal panel client/scroll geometry rather than relying on
+  an internal scrollbar;
+- the `01–25 / 26–50` tablist must implement Left/Right and Home/End focus plus
+  activation on the tabs themselves. Level-grid `±1 / ±5` navigation is unchanged.
+- tall screens must contract the connected Puzzle outer frame to a content-fit
+  `740 px` maximum while compact viewports continue using their full available row;
+  square-node sizes and spacing remain unchanged.
+
+Both findings require focused regressions, a fresh final gate, and replacement
+evidence before Phase 9 may be accepted.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,
