@@ -78,13 +78,25 @@ ideas into readable combinations: wells with staging shelves, offset channels,
 bridges with recovery lanes, and controlled overhangs. Candidate generation therefore
 uses separate ordinary and sparse-anchor pools rather than adding pegs to dense boards
 after selection. Ordinary candidates may use 11–12 legal setup drops. A bounded 7/8-drop
-anchor search produced no legal six-row board, so anchor authoring alone uses 9–10
-legal setup drops. Exactly three selected levels retain one consequential headroom anchor,
-and every selected board still needs two public-Core routes diverging by lock four.
+anchor search produced no legal six-row board, while sampled ten-drop carriers could not
+retain a route inside the fixed search domain after a headroom anchor was added. The
+selected anchor carriers therefore use nine legal setup drops and place one consequential
+anchor on an outer column already occupied throughout the six-row target band. Exactly
+three selected levels retain one headroom anchor, and every selected board still needs
+two public-Core routes diverging by lock four.
 The six-row batch uses a fixed 30-lock, 600/480-beam verification ceiling; that larger
 lock allowance reflects the extra target row and is not raised again for an individual
 failure. Final ordering is based on replayed route features within the six-row band,
 then reviewed for a clear structural lesson rather than sorted by a single scalar.
+The retained lesson order is `曲井 / 左闸 / 错桥 / 阶井 / 悬台 / 右闸 / 双廊 /
+回井 / 边塔 / 折桥` (`Bent Well / Left Gate / Offset Bridge / Stepped Well /
+Hanging Shelf / Right Gate / Twin Channel / Loop Well / Edge Tower / Bent Bridge`).
+The seven ordinary packages rise by shorter-route locks `11, 15, 16, 18, 19, 19,
+21`. Three nine-drop anchor checkpoints remain deliberately distributed at positions
+32, 36 and 39 rather than clustered by their shorter 8–9-lock solutions: their lower
+cell count is not evidence that an immutable edge constraint is an easier lesson.
+Every setup history, gameplay seed and anchor travels as one complete package when
+ordered; no route is rebound to a different random sequence.
 
 Mutation items are an orthogonal attachment system:
 

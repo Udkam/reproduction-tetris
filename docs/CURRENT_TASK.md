@@ -384,6 +384,82 @@ Each anchor package must pass an individual route probe before any full-batch
 solver run; replace a failing package instead of enlarging 30/600/480. App source,
 styles, unlock/v5 and levels 41–50 remain closed.
 
+**Levels 31–40 sparse-anchor route correction (2026-07-30):** all three
+provisional ten-drop anchor packages fail the fixed 30-lock / 600-beam primary
+probe. Removing only the anchor from candidate 1 completes in 16/17 locks, and a
+twenty-position headroom scan finds no anchored route for that carrier; reject the
+ten-drop anchor shortlist rather than enlarging the search bound. Two bounded
+nine-drop-only pools retain 16 and 20 legal six-row candidates without node-budget
+exhaustion. Their SHA-256 values are
+`17874E9DB3CCDD5A387C85B1098EA1C957610D80E6B4C497577C25B3E08316CE`
+and
+`94E671E23F1465771436457C07B5849D0609699900A82D22F85AF7C2C2D6A676`.
+
+The replacement shortlist contains three unique board/setup/gameplay-seed
+packages and keeps the full anchor quota: pool A candidate 5 uses setup seed
+`2236068021`, the duplicate-free level seed `358294691`, and `{x:0,y:13}` with
+provisional 8/10-lock routes diverging at lock 1; pool A candidate 7 uses equivalent legal
+setup seed `213511`, level seed `197830471`, and `{x:9,y:13}` with 9/9-lock
+routes diverging at lock 3; pool B candidate 13 uses setup seed `3236068023`,
+level seed `41326521`, and `{x:9,y:13}` with 9/12-lock routes diverging at
+lock 1. Seeds `213511` and `2236068021` produce the same required first-nine
+seven-bag sequence `JILOTZSIO`, so the second history retains the exact legal
+board while keeping setup provenance numerically distinct. The initially probed
+candidate-5 gameplay seed `3141592653` was rejected because level 04 already owns
+it; the bounded replacement-seed sweep found `358294691` on its second serial
+attempt without changing the carrier. These injected-state probes only authorize
+replacing the three source packages. Each package still requires the official
+registered-definition batch solver, alternate-route replay, anchor-row rejection,
+and final artifact before acceptance.
+
+Registered ordinary level 33 is also rejected: the official runner finds a
+completing pair only after its first canonical landing divergence at lock 10,
+outside the unchanged lock-four contract. Replace its complete setup package
+with ordinary-pool candidate 5 (`setupSeed: 1732050833`) while retaining the
+level's unique gameplay seed. The replacement passes the registered
+30/600/480 proof with 21/24-lock routes diverging at lock 1. It may enter the
+ten-level batch artifact; do not restore the rejected carrier or expand the
+search domain.
+
+**Levels 31–40 measured curriculum order (2026-07-30):** all ten retained
+complete packages now pass individual registered-definition proof. Their
+primary/alternate locks in source-selection order are `11/13`, `8/10`,
+`21/24`, `19/23`, `18/18`, `9/9`, `19/21`, `15/18`, `9/12` and `16/17`;
+first divergence is lock 1–3 for every pair. Reorder packages, never individual
+fields, into `曲井 / 左闸 / 错桥 / 阶井 / 悬台 / 右闸 / 双廊 / 回井 / 边塔 /
+折桥`. This yields ordinary shorter-route progression `11,15,16,18,19,19,21`
+and leaves the three lower-cell-count anchor lessons at 32, 36 and 39. The
+batch deliberately does not sort anchors ahead of all ordinary boards merely
+because nine setup drops produce shorter routes. The final full-batch artifact
+must prove the reordered registered IDs without reusing the individual
+selection artifacts.
+
+**Levels 31–40 full-batch route artifact (2026-07-30):** the one permitted
+registered solver run verifies all ten reordered IDs and twenty routes at the
+fixed 30/600/480 bounds. Route locks are
+`11/13, 8/10, 15/18, 16/17, 18/18, 9/9, 19/23, 19/21, 9/12, 21/24`;
+first divergences are `2,1,1,1,1,3,3,1,1,1`. Setup counts are
+`12,9,12,12,12,9,12,12,9,12`, with the three anchors exactly at 32, 36 and
+39. Artifact SHA-256 is
+`BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+The solver exited and wrote no partial helper into tracked paths. Normal tests
+must now import this fourth batch, replay all forty route pairs, assert the
+batch-specific setup mix and preserve the documented anchor-checkpoint ordering
+instead of imposing a false all-level lock-count sort.
+
+**Levels 31–40 source candidate (2026-07-30):** product checkpoint `23970c6`
+over bounded source-opening base `4f864af` appends IDs 31–40, ten six-row
+definitions, bilingual structural names and the source-bound batch-4 artifact.
+The final package order is `曲井 / 左闸 / 错桥 / 阶井 / 悬台 / 右闸 / 双廊 /
+回井 / 边塔 / 折桥`; anchors remain only at 32, 36 and 39. The six focused
+files pass 64/64 with one worker, typecheck passes, diff checks pass, and the
+artifact retains SHA-256
+`BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+No full suite, build or browser ran because this ten-level data checkpoint is
+still inside the Phase-7 staged source chain. Product is frozen for one
+independent route/artifact audit and one independent curriculum/boundary audit;
+levels 41–50 and unlock/selector adaptation remain closed.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

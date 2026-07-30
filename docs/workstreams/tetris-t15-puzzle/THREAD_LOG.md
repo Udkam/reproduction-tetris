@@ -669,3 +669,198 @@
   renderer, dependencies, levels 41–50 and other modes.
 - Next action: register the provisional ten packages, run focused structural
   tests, then probe only the three anchors.
+
+## Levels 31–40 source WIP resource pause — 2026-07-30
+
+- Task: `t15_puzzle_31_40_source_writer`; base SHA: `4f864af`.
+- Status: `WIP_UNCOMMITTED`; no candidate or green checkpoint is claimed.
+- Provisional packages are registered in:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+- The source currently contains seven 12-drop ordinary boards and three
+  10-drop one-anchor boards. Anchors are distributed at left, center-right and
+  right headroom; names and gameplay seeds remain provisional until route
+  metrics order complete packages.
+- Commands actually run after registration:
+  - `git diff --check` — PASS;
+  - no npm, test, typecheck, build, solver, browser or background Node process
+    was started.
+- Resource blocker: the latest PDH snapshot showed CPU 48.76%, 5,712 MiB
+  available RAM and disk queue 0. The available-memory red threshold is caused
+  by an external user-owned game process, not a TetraMorph helper; it was
+  inspected and left untouched.
+- Last green evidence: both source pools retain their recorded SHA-256 values,
+  and the selected setup histories were extracted exactly from those pools.
+- Next action: when available RAM is at least 8 GiB and CPU is below the red
+  threshold, run the focused structural tests once, then probe only anchored
+  IDs 32, 36 and 39 at the fixed 30/600/480 route bounds.
+
+## Levels 31–40 sparse-anchor package correction — 2026-07-30
+
+- Resource admission resumed in green at CPU 44.19%, 15,530 MiB available RAM
+  and disk queue 0; no resident project helper was started.
+- Re-read both nine-drop pools and matched their recorded SHA-256 values.
+- Pool A candidate 5's first provisional gameplay seed `3141592653` duplicates
+  accepted level 04 and is rejected. One foreground serial seed sweep retained
+  the exact board, setup and `{x:0,y:13}` anchor, rejected its first seed, then
+  found unique seed `358294691` on attempt 2 with provisional 8/10-lock routes
+  diverging at lock 1. The process and its serial children exited normally.
+- The three source replacements are now fixed as complete packages:
+  - pool A candidate 5: setup `2236068021`, game `358294691`, anchor
+    `{x:0,y:13}`;
+  - pool A candidate 7: equivalent legal setup `213511`, game `197830471`,
+    anchor `{x:9,y:13}`;
+  - pool B candidate 13: setup `3236068023`, game `41326521`, anchor
+    `{x:9,y:13}`.
+- Next action: replace the three rejected ten-drop definitions, run focused
+  structural proof, and then solve the registered definitions at 30/600/480.
+
+## Levels 31–40 ordinary package correction — 2026-07-30
+
+- The pre-existing official level-33 run proves that ordinary-pool candidate 2
+  completes only with first canonical landing divergence at lock 10. A later
+  repeat was stopped after the foreground command exceeded two minutes; its
+  exact residual tree `32916 -> 30428 -> 21652` was released and verified gone.
+- Current collaboration state contains one running coordinator and three
+  completed historical QA agents; no new agent was created for this slice.
+- Post-cleanup resource admission is Amber at CPU 74.10%, 20,742 MiB available
+  RAM and disk queue 0. The initial local response was intentionally stricter
+  than the repository-wide dynamic budget and paused all heavy work.
+- A direct non-WMI process inspection then identified 18 idle Codex-child Node
+  processes whose exact command lines were only `./mcp/server.mjs` or
+  `./mcp/server.mjs --stdio`. All 18 exact PIDs were released and verified
+  absent; no name-wide termination was used. Two unrelated pre-existing Vite
+  preview processes on port 4398 were preserved because this task does not own
+  them. The current task tree still has one running coordinator and three
+  completed historical QA records.
+- Ordinary-pool candidate 5 (`setupSeed: 1732050833`) is the provisional
+  complete-package replacement for level 33. Its route status remains
+  unverified; the old package is not retried and the fixed bounds do not change.
+- Next action: register candidate 5 with the existing unique gameplay seed,
+  perform only light static checks while Amber, then wait for Green before one
+  official registered-definition probe.
+
+## Levels 31–40 bounded Amber execution correction — 2026-07-30
+
+- The repository/global dynamic budget remains authoritative: Amber serializes
+  new heavy work; only Red prohibits it. The earlier “wait for Green” note is
+  therefore superseded rather than allowed to stall the phase indefinitely.
+- Current task ownership remains one coordinator, zero running subagents, zero
+  MCP Node helpers, no project browser and no overlapping test/build process.
+- One registered level-33 solver may run alone with Idle priority, affinity
+  restricted to one logical processor, an exact PID, explicit ignored output
+  and bounded polling. If it times out or the machine enters Red, release that
+  exact process tree before any other action.
+- No second solver, test, build, browser or agent may overlap this probe.
+
+## Levels 31–40 candidate-5 resource containment — 2026-07-30
+
+- Registered level 33 ran as exact Node PID `28940`, Idle priority and affinity
+  `1`. It completed the primary search and entered alternate search, but total
+  machine CPU reached 95.06%; no result artifact had been written.
+- Red containment stopped only its verified tree (`conhost 9604`, then Node
+  `28940`) and confirmed both absent. The probe is neither a route pass nor a
+  route failure; candidate 5 remains unresolved.
+- The immediate follow-up returned to Green at CPU 53.57%, 17,163 MiB available
+  RAM and disk queue 0. MCP Node count remains zero.
+- Four Node processes that appeared during the probe were inspected by their
+  full command lines and belong to the separate `E:\Proj\personal-web` Astro
+  preview/dev tasks. They were preserved and are not TetraMorph resources.
+- Next action: do not overlap that external workload. Resume at most one
+  bounded level-33 probe only after a fresh admissible sample, or replace the
+  package if its registered alternate search cannot complete within the fixed
+  route domain without repeated Red containment.
+
+## Levels 31–40 level-33 route acceptance — 2026-07-30
+
+- A second and final controlled run used new ignored outputs, exact Node PID
+  `33692`, Idle priority and affinity `1`; no other TetraMorph heavy task or
+  subagent overlapped it.
+- The process exited normally after verifying registered `tm-puzzle-33` at the
+  unchanged 30-lock / 600-primary / 480-alternate bounds. Routes use 21 and 24
+  locks and first diverge at lock 1.
+- The one-level schema-7 artifact is 3,693 bytes. Post-exit admission is Green:
+  CPU 17.91%, 18,137 MiB available RAM and disk queue 0.
+- Candidate 5 is retained as the complete level-33 package. The original
+  candidate-2 carrier remains rejected for lock-10 divergence.
+- Next action: verify unresolved ordinary IDs 37, 38 and 40 one at a time before
+  considering package order or a full 31–40 batch run.
+
+## Levels 31–40 individual route completion and ordering — 2026-07-30
+
+- Remaining registered ordinary packages pass one at a time with no overlap:
+  - selection ID 37: 19/21 locks, divergence 1;
+  - selection ID 38: 15/18 locks, divergence 1;
+  - selection ID 40: 16/17 locks, divergence 1.
+- Each solver used Idle priority, affinity `1`, an exact PID and a unique ignored
+  artifact; all exited normally. Post-run CPU remained 21.34–27.33%, available
+  RAM 17,612–18,049 MiB and disk queue 0.
+- Combined selection metrics are:
+  - ordinary: 31 `11/13`, replacement 33 `21/24`, 34 `19/23`,
+    35 `18/18`, 37 `19/21`, 38 `15/18`, 40 `16/17`;
+  - anchors: 32 `8/10`, 36 `9/9`, 39 `9/12`;
+  - all first divergences are lock 1–3.
+- Curriculum order is fixed as complete packages:
+  `曲井`, `左闸`, `错桥`, `阶井`, `悬台`, `右闸`, `双廊`, `回井`,
+  `边塔`, `折桥`. Ordinary shorter-route counts rise
+  `11,15,16,18,19,19,21`; anchor checkpoints stay distributed at 32, 36
+  and 39 because their 36-cell starts naturally require fewer locks.
+- Next action: move each setup/gameplay-seed/anchor/name package atomically,
+  update bilingual name expectations, then run structural proof before the one
+  full registered 31–40 solver.
+
+## Levels 31–40 registered full-batch artifact — 2026-07-30
+
+- Complete-package reorder and bilingual names pass the five structural files,
+  62/62 tests, with one worker.
+- The only full-batch solver ran as exact Node PID `21804`, Idle priority and
+  affinity `1`, with no overlapping TetraMorph test, build, browser, server or
+  subagent. It exited normally.
+- Tracked schema-7 artifact:
+  `docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json`.
+- SHA-256:
+  `BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+- Evidence summary:
+  - 10 registered levels / 20 public-Core routes;
+  - fixed search bounds `30 / 600 / 480`;
+  - locks `11/13, 8/10, 15/18, 16/17, 18/18, 9/9, 19/23,
+    19/21, 9/12, 21/24`;
+  - divergence `2,1,1,1,1,3,3,1,1,1`;
+  - anchors only at 32, 36 and 39;
+  - ordinary setup count 12 and anchor setup count 9.
+- Next action: bind batch 4 into frozen route replay tests, then run the six
+  focused files and typecheck before any source checkpoint.
+
+## Levels 31–40 source candidate — 2026-07-30
+
+- Task: `t15_puzzle_31_40_source_writer`.
+- Bounded source-opening base: `4f864af`.
+- Product checkpoint: `23970c6`.
+- Exact committed paths:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json`
+- Commands after the last source edit:
+  - six focused files, 64/64 tests, one worker — PASS;
+  - `npm.cmd run typecheck` — PASS;
+  - `git diff --check` and cached diff check — PASS.
+- Artifact SHA-256:
+  `BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+- All registered solver PIDs exited. MCP count remained zero; the separate
+  `personal-web` and port-4398 processes were preserved.
+- Product is frozen. Independent QA is read-only against
+  `4f864af..23970c6`; no reviewer may modify source, run a solver, npm, build,
+  browser, server or WMI/CIM.
+- Next action: collect route/artifact and curriculum/boundary verdicts, resolve
+  any finding, then record the candidate disposition before push.
