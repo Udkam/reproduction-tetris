@@ -29,13 +29,15 @@ describe('Phase 9 Puzzle gallery authority', () => {
   });
 
   it('keeps every page in a centered five-by-five square matrix with 44px controls', () => {
-    expect(gallery).toMatch(/\.puzzle-gallery\s*\{[\s\S]*align-self:\s*start;[\s\S]*height:\s*100%;[\s\S]*max-height:\s*740px;/);
+    expect(gallery).toMatch(/\.puzzle-gallery\s*\{[\s\S]*align-self:\s*center;[\s\S]*height:\s*100%;[\s\S]*max-height:\s*740px;/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*auto\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*align-content:\s*center;[\s\S]*justify-self:\s*center;[\s\S]*width:\s*min\(100%,\s*560px\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__node\s*\{[\s\S]*aspect-ratio:\s*1;/);
     expect(gallery).toMatch(/\.puzzle-gallery__node > button\s*\{[\s\S]*min-width:\s*44px;[\s\S]*min-height:\s*44px;/);
     expect(gallery).not.toMatch(/overflow-(?:x|y):\s*(?:auto|scroll)/);
+    expect(gallery).toMatch(/\.puzzle-gallery__node > button:hover\s*\{[\s\S]*transform:\s*none;/);
+    expect(gallery).not.toContain('.puzzle-gallery__node--selected > button::before');
   });
 
   it('preserves the portrait and short-landscape budgets and honors reduced motion', () => {
