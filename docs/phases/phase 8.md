@@ -2,7 +2,7 @@
 
 ## 状态
 
-**ACCEPTED / READY FOR NON-FORCE PUSH（2026-07-30）。** Phase 1–6、五十关
+**ACCEPTED / PUSHED / CLOSED（2026-07-30）。** Phase 1–6、五十关
 课程/持久化/进度和普通消行直接回退均已独立验收、清理并推送；冻结产品恢复点为
 `4e4cca1`。Phase 8 没有修改产品源码、依赖或配置。被拒绝的 Puzzle selector 候选
 完整保存在本地
@@ -84,5 +84,6 @@ Phase 8 不把多个子系统修补压成一个巨型提交。
 
 三方独立接受同一最终候选，无未处置 P0/P1 或用户相关 P2；所有资源释放；工作树
 仅保留明确归属的用户文件；验收文档和 changelog 已提交；`main` 非强制推送成功。
-前三项已满足；剩余发布动作只有范围受限的脱敏密钥扫描、非强制 push 和
-local/tracking/remote 精确相等验证。只有这些动作完成后才将总体目标标记完成。
+全部条件均已满足。协调者验收 checkpoint `c77790b` 已在范围受限、脱敏的
+gitleaks 扫描无发现后非强制推送；本恢复记录推送后再次核对
+local/tracking/remote 精确相等。

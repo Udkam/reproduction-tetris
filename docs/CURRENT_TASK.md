@@ -47,7 +47,7 @@ remains local-only on its explicitly named preservation branch and is not part o
 
 ## Phase 8 — final integration and release-readiness evidence
 
-**Status (2026-07-30): ACCEPTED / READY FOR NON-FORCE PUSH.** Pushed recovery
+**Status (2026-07-30): ACCEPTED / PUSHED / CLOSED.** Pushed recovery
 `4e4cca1` is the frozen product source. Phase-5 Mutation has been re-audited
 against its ten mandatory requirements and current source: PASS, P0–P2/GAP zero,
 with only the already accepted narrow three-status ellipsis P3. No Mutation semantic
@@ -72,12 +72,13 @@ modal focus paths and lifecycle return to baseline. Final typecheck, 26 files /
 Rules and visual QA both accept with only the already documented narrow three-status
 ellipsis P3; evidence-integrity QA accepts with no finding or gap. Selector redesign
 remains excluded, `dce331b` remains outside `main`, and product paths remain identical
-to `4e4cca1`. Only a scoped redacted secret scan, non-force push and exact
-local/tracking/remote equality check remain before closing the overall goal.
+to `4e4cca1`. Coordinator acceptance `c77790b` passed a scoped redacted
+gitleaks scan and was pushed non-force. The final docs-only recovery record is
+scanned and pushed separately, followed by exact local/tracking/remote equality.
 
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
-**Status (2026-07-30):** locally accepted; release checkpoint pending push. The linked product-review conversation is the
+**Status (2026-07-30):** accepted, pushed and closed. The linked product-review conversation is the
 authoritative visual workflow. Complete the phases in order and retain fresh visual
 evidence for each accepted boundary. After a phase passes both independent audits,
 the coordinator records its acceptance, verifies resource cleanup, and pushes that

@@ -22,6 +22,10 @@
   legible. Evidence-integrity QA accepts with P0–P3/GAP all zero.
 - The ordinary line-clear rollback remains the stationary nine-tick centre-out
   sweep and is not changed by this documentation/evidence-only phase.
+- Coordinator acceptance `c77790b` passed a scoped redacted gitleaks 8.30.1
+  scan over all ten Phase 8 commits with no leaks and was pushed to `main`
+  non-force. The final docs-only recovery record is scanned and pushed
+  separately before exact local/tracking/remote equality is reported.
 
 ## 2026-07-30 — Ordinary line-clear rollback accepted on a clean delivery line
 
