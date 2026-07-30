@@ -55,3 +55,32 @@
   deferred until the final source candidate.
 - Next action: commit this green checkpoint, then open P10.2 Survival Core moving
   support with deterministic focused tests.
+
+## 2026-07-31 — Phase 10 Survival moving-support checkpoint
+
+- Task ID: `T17-P10.2`
+- Base SHA: `8e483569dae53aabde98ae887cb49774e1e0e491`
+- Owner: primary coordinator
+- Exact paths:
+  - `src/game/core/engine.ts`
+  - `src/game/core/race.test.ts`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/race.test.ts --maxWorkers=1 --fileParallelism=false`:
+    `22/22` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: Survival spawn validates against settled board rather than in-flight
+  stones, so a due stone and the next ordinary piece may briefly share the entry
+  footprint without block-out. Existing overlap can only shrink as the faster stone
+  leaves; hard drop cannot lock an overlapping piece, and a lateral collision-free
+  escape remains available. When an ordinary piece is supported by a moving event,
+  the environmental step is simulated first and both actors advance atomically only
+  if every support moves and the candidate piece is clear. A stone that would create
+  a new active-piece overlap waits in flight instead of moving or materialising into
+  the piece. Focused coverage also freezes repeated-step determinism and hash equality.
+- Resource note: one Vitest worker, no file parallelism, no watcher/server/browser.
+- Blocker: none for P10.2. Browser animation proof remains part of the immutable final
+  candidate rather than this Core checkpoint.
+- Next action: commit this green checkpoint, then open P10.3 Mutation same-item event
+  aggregation.

@@ -451,6 +451,92 @@ describe('independent Survival stone stream', () => {
     }]);
   });
 
+  it('admits a due stone and the next ordinary piece in the same entry footprint without false block-out', () => {
+    const base = start(0x5a1a, 'race');
+    const intervalTicks = SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND;
+    const entered = dispatch({
+      ...base,
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: null,
+      phase: 'entry',
+      phaseTicks: ENTRY_DELAY_TICKS - 1,
+      queue: ['O', ...base.queue],
+      survivalDebrisWarningColumns: [4],
+      survivalDebrisWarningHeight: 2,
+      survivalDebrisIntervalTicks: intervalTicks - 1,
+      survivalDebrisFallProgress: 0,
+    }, { type: 'tick' });
+
+    expect(entered.state.status).toBe('playing');
+    expect(entered.state.active).toMatchObject({ type: 'O', x: 4, y: VISIBLE_START_ROW - 1 });
+    expect(entered.state.survivalDebris).toEqual([{
+      id: 1,
+      x: 4,
+      y: VISIBLE_START_ROW - 1,
+      height: 2,
+    }]);
+    expect(entered.events.some((event) => event.type === 'game-over')).toBe(false);
+    expect(dropDistance(entered.state)).toBe(0);
+
+    const blockedDrop = dispatch(entered.state, { type: 'hard-drop' });
+    expect(blockedDrop.state).toEqual(entered.state);
+    expect(blockedDrop.events).toEqual([]);
+
+    const escaped = dispatch(entered.state, { type: 'move', dx: 1 });
+    expect(escaped.state.active).toMatchObject({ type: 'O', x: 5, y: VISIBLE_START_ROW - 1 });
+    expect(escaped.events).toContainEqual(expect.objectContaining({
+      type: 'piece-moved',
+      dx: 1,
+      dy: 0,
+    }));
+  });
+
+  it('carries a supported ordinary piece down atomically with the faster falling stone', () => {
+    const state: GameState = {
+      ...start(0x5a1b, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: 28 },
+      survivalDebris: [{ id: 7, x: 4, y: 30, height: 1 }],
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      gravityTicks: 17,
+      lockTicks: 12,
+    };
+
+    const first = dispatch(state, { type: 'tick' }).state;
+    const repeated = dispatch(state, { type: 'tick' }).state;
+    expect(first.active).toMatchObject({ type: 'O', x: 4, y: 29 });
+    expect(first.survivalDebris).toEqual([{ id: 7, x: 4, y: 31, height: 1 }]);
+    expect(first.gravityTicks).toBe(1);
+    expect(first.lockTicks).toBe(1);
+    expect(stateHash(first)).toBe(stateHash(repeated));
+
+    const second = dispatch({
+      ...first,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+    }, { type: 'tick' }).state;
+    expect(second.active).toMatchObject({ type: 'O', x: 4, y: 30 });
+    expect(second.survivalDebris).toEqual([{ id: 7, x: 4, y: 32, height: 1 }]);
+  });
+
+  it('waits instead of moving or settling when a falling stone would create a new active-piece overlap', () => {
+    const state: GameState = {
+      ...start(0x5a1c, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: 30 },
+      survivalDebris: [{ id: 3, x: 4, y: 29, height: 1 }],
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+    };
+
+    const waited = dispatch(state, { type: 'tick' }).state;
+    expect(waited.active).toEqual(state.active);
+    expect(waited.survivalDebris).toEqual(state.survivalDebris);
+    expect(waited.board[29]![4]).toBe(null);
+    expect(waited.status).toBe('playing');
+  });
+
   it('treats a falling stone as a real collision while it is still in the air', () => {
     const state: GameState = {
       ...start(0x5a10, 'race'),

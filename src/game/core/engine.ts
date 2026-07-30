@@ -154,7 +154,13 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
   next = refillQueue({ ...next, queue }, NEXT_QUEUE_SIZE);
   const active = createSpawnPiece(pieceType);
   next = assignMutationCarrier(next);
-  if (!canPlaceInState(next, active)) {
+  // A Survival stone is a moving environmental actor. It may share the entry
+  // footprint for the brief interval in which it descends away, but settled board
+  // material remains authoritative for block-out.
+  const canSpawn = next.mode === 'race'
+    ? canPlace(next.board, active)
+    : canPlaceInState(next, active);
+  if (!canSpawn) {
     if (next.mode === 'puzzle') return puzzleFailure(next, 'failed-top-out', 'block-out');
     return {
       state: { ...next, active: null, status: 'game-over', phase: 'active' },
@@ -310,11 +316,27 @@ function cellsForSurvivalDebris(debris: SurvivalDebris): readonly Cell[] {
   ));
 }
 
+function canPlaceWithSurvivalDebris(
+  board: GameState['board'],
+  debris: readonly SurvivalDebris[],
+  piece: ActivePiece,
+): boolean {
+  if (!canPlace(board, piece)) return false;
+  if (debris.length === 0) return true;
+  const occupied = new Set(debris.flatMap(cellsForSurvivalDebris).map(cellKey));
+  return cellsForPiece(piece).every((cell) => !occupied.has(cellKey(cell)));
+}
+
 function canPlaceInState(state: GameState, piece: ActivePiece): boolean {
-  if (!canPlace(state.board, piece)) return false;
-  if (state.mode !== 'race' || state.survivalDebris.length === 0) return true;
-  const debris = new Set(state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey));
-  return cellsForPiece(piece).every((cell) => !debris.has(cellKey(cell)));
+  return state.mode === 'race'
+    ? canPlaceWithSurvivalDebris(state.board, state.survivalDebris, piece)
+    : canPlace(state.board, piece);
+}
+
+function activeOverlapsSurvivalDebris(state: GameState, piece = state.active): boolean {
+  if (state.mode !== 'race' || piece === null || state.survivalDebris.length === 0) return false;
+  const occupied = new Set(state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey));
+  return cellsForPiece(piece).some((cell) => occupied.has(cellKey(cell)));
 }
 
 function isGroundedInState(state: GameState, piece: ActivePiece): boolean {
@@ -369,10 +391,11 @@ function planSurvivalDebris(state: GameState): {
 }
 
 function spawnSurvivalDebris(state: GameState): { state: GameState; cells: readonly Cell[] } {
-  const occupied = new Set<string>([
-    ...state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey),
-    ...(state.active ? cellsForPiece(state.active).map(cellKey) : []),
-  ]);
+  // Entry overlap is legal and resolves as the faster stone leaves the spawn
+  // footprint. Only settled material and another falling event can defer emission.
+  const occupied = new Set<string>(
+    state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey),
+  );
   const survivalDebris = [...state.survivalDebris];
   const cells: Cell[] = [];
   let survivalDebrisNextId = state.survivalDebrisNextId;
@@ -416,45 +439,116 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
   };
 }
 
-function settleSurvivalDebris(state: GameState): { state: GameState; landed: readonly Cell[] } {
-  if (state.mode !== 'race' || state.survivalDebris.length === 0) return { state, landed: Object.freeze([]) };
+interface SurvivalDebrisStep {
+  board: GameState['board'];
+  survivalDebris: readonly SurvivalDebris[];
+  landed: readonly Cell[];
+  movedIds: ReadonlySet<number>;
+}
+
+/**
+ * Resolves one stone step bottom-up. `active` acts as a one-way barrier: an overlap
+ * that already exists may shrink as the stone moves away, but a stone never creates
+ * a new overlap or settles into the ordinary piece.
+ */
+function resolveSurvivalDebrisStep(state: GameState, active: ActivePiece | null): SurvivalDebrisStep {
   const occupied = new Set(state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey));
-  const activeCells = new Set(state.active ? cellsForPiece(state.active).map(cellKey) : []);
+  const activeCells = new Set(active ? cellsForPiece(active).map(cellKey) : []);
   const falling = [...state.survivalDebris].sort((left, right) => (
     right.y - left.y || left.x - right.x || left.id - right.id
   ));
   const survivalDebris: SurvivalDebris[] = [];
   const landed: Cell[] = [];
+  const movedIds = new Set<number>();
   let board = state.board;
 
   for (const event of falling) {
-    for (const cell of cellsForSurvivalDebris(event)) occupied.delete(cellKey(cell));
+    const currentCells = cellsForSurvivalDebris(event);
+    const currentOverlap = new Set(
+      currentCells.map(cellKey).filter((key) => activeCells.has(key)),
+    );
+    for (const cell of currentCells) occupied.delete(cellKey(cell));
+
     const movedEvent = { ...event, y: event.y + 1 };
     const movedCells = cellsForSurvivalDebris(movedEvent);
-    const canFall = movedCells.every((cell) => (
+    const environmentAllowsFall = movedCells.every((cell) => (
       cell.y >= 0
       && cell.y < BOARD_HEIGHT
       && board[cell.y]?.[cell.x] === null
-      && !activeCells.has(cellKey(cell))
       && !occupied.has(cellKey(cell))
     ));
-    if (canFall) {
+    const movedOverlap = movedCells.map(cellKey).filter((key) => activeCells.has(key));
+    const activeAllowsFall = movedOverlap.every((key) => currentOverlap.has(key));
+
+    if (environmentAllowsFall && activeAllowsFall) {
       survivalDebris.push(movedEvent);
+      movedIds.add(event.id);
       for (const cell of movedCells) occupied.add(cellKey(cell));
       continue;
     }
-    const settledCells = cellsForSurvivalDebris(event);
-    for (const cell of settledCells) board = setCell(board, cell.x, cell.y, SURVIVAL_STONE_CELL);
-    landed.push(...settledCells);
+
+    if (!environmentAllowsFall && currentOverlap.size === 0) {
+      for (const cell of currentCells) board = setCell(board, cell.x, cell.y, SURVIVAL_STONE_CELL);
+      landed.push(...currentCells);
+      continue;
+    }
+
+    // The active piece is the only blocker. Keep the event airborne at its exact
+    // canonical coordinate so replay/hash order and the next attempted step agree.
+    survivalDebris.push(event);
+    for (const cell of currentCells) occupied.add(cellKey(cell));
   }
+
+  return {
+    board,
+    survivalDebris: Object.freeze(survivalDebris.sort((left, right) => left.id - right.id)),
+    landed: Object.freeze(landed),
+    movedIds,
+  };
+}
+
+function settleSurvivalDebris(state: GameState): {
+  state: GameState;
+  landed: readonly Cell[];
+  carried: boolean;
+} {
+  if (state.mode !== 'race' || state.survivalDebris.length === 0) {
+    return { state, landed: Object.freeze([]), carried: false };
+  }
+  const environmental = resolveSurvivalDebrisStep(state, null);
+  const active = state.active;
+  let carried = false;
+  let resolved = environmental;
+  let nextActive = active;
+
+  if (active !== null && !activeOverlapsSurvivalDebris(state, active)) {
+    const candidate = { ...active, y: active.y + 1 };
+    const candidateKeys = new Set(cellsForPiece(candidate).map(cellKey));
+    const supportingIds = state.survivalDebris
+      .filter((event) => cellsForSurvivalDebris(event).some((cell) => candidateKeys.has(cellKey(cell))))
+      .map((event) => event.id);
+    if (
+      supportingIds.length > 0
+      && supportingIds.every((id) => environmental.movedIds.has(id))
+      && canPlaceWithSurvivalDebris(environmental.board, environmental.survivalDebris, candidate)
+    ) {
+      carried = true;
+      nextActive = candidate;
+    }
+  }
+
+  if (!carried) resolved = resolveSurvivalDebrisStep(state, active);
 
   return {
     state: {
       ...state,
-      board,
-      survivalDebris: Object.freeze(survivalDebris.sort((left, right) => left.id - right.id)),
+      board: resolved.board,
+      active: nextActive,
+      survivalDebris: resolved.survivalDebris,
+      ...(carried ? { gravityTicks: 0, lockTicks: 0 } : {}),
     },
-    landed: Object.freeze(landed),
+    landed: resolved.landed,
+    carried,
   };
 }
 
@@ -823,6 +917,9 @@ function lockActive(
   extraEvents: GameEvent[] = [],
 ): GameTransition {
   if (!withActive(state)) return { state, events: extraEvents };
+  if (activeOverlapsSurvivalDebris(state, state.active)) {
+    return { state: { ...state, lockTicks: 0 }, events: [] };
+  }
   const undoCheckpoint = state.mode === 'puzzle' ? state.puzzleActiveSpawnCheckpoint : null;
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
@@ -955,6 +1052,7 @@ function lockActive(
 
 function hardDrop(state: GameState): GameTransition {
   if (!withActive(state)) return { state, events: [] };
+  if (activeOverlapsSurvivalDebris(state, state.active)) return { state, events: [] };
   let distance = 0;
   let candidate = state.active;
   while (canPlaceInState(state, { ...candidate, y: candidate.y + 1 })) {
