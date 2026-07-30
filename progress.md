@@ -630,3 +630,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   position.
 - The separate uncommitted selector/home work in `src/App.tsx` is preserved and
   excluded from the correction checkpoints.
+- Source correction `d8e97e7` is green on `40/40` focused Renderer/theme tests and
+  typecheck. It contains cold-slate materials, polygon/diagonal bedrock detail and
+  a fill-only ordinary clear with zero segments. This remains subject to real-frame
+  review after countdown staging; it is not yet visual acceptance.

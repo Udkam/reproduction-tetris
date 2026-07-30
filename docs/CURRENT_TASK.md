@@ -51,6 +51,13 @@ stationary inset face bloom per real cleared cell, with no `lineTo`/stroke geome
 no row-spanning band, and no particles. Normal motion may retain centre-out timing;
 reduced motion shows the same fixed faces simultaneously and only fades alpha.
 
+Correction checkpoint `d8e97e7` implements the bounded source response: bedrock and
+falling stones now use a high-contrast cold-slate family; permanent bedrock replaces
+horizontal strata with deterministic polygon facets, two short diagonal fractures,
+and a small pit. Ordinary clear now draws exactly one fill-only inset face per real
+cell and zero line segments. Renderer/theme proof passes `40/40` tests and typecheck.
+This is source-green, not yet browser-accepted; countdown bedrock staging is next.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,

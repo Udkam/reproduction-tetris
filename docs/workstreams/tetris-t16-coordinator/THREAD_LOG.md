@@ -118,3 +118,25 @@
 - Resource state: no subagent, test runner, build, watcher, or project browser is
   started for the contract correction. The next action is one exact-path docs
   checkpoint, followed by the bounded Renderer/Runtime/App correction.
+
+## 2026-07-31 — cold slate and stroke-free clear source correction
+
+- Task: correct the two rejected Renderer surfaces without touching navigation.
+- Base: correction-contract recovery `b9e336f`.
+- Product commit: `d8e97e7`.
+- Changed paths: `src/game/render/theme.ts`, `theme.test.ts`,
+  `TetrisRenderer.ts`, and `TetrisRenderer.test.ts`.
+- Implementation: replaces warm brown with cold slate; replaces long bedrock
+  strata with coordinate-stable polygon facets, short diagonal fractures and a
+  pit; replaces ordinary clear strokes with one fixed fill-only inset face per
+  real cleared cell.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/theme.test.ts src/game/render/TetrisRenderer.test.ts --maxWorkers=1`
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: `40/40` focused tests and typecheck pass. Direct draw-recording proves
+  ten clear faces, zero clear segments, and no broad horizontal geometry.
+- Blocker: browser appearance remains unaccepted until the combined source-bound
+  capture. Countdown bedrock reveal/rise is not in this checkpoint.
+- Next action: implement Renderer/Runtime/App countdown staging while preserving
+  the separate uncommitted selector/home hunks in `src/App.tsx`.
