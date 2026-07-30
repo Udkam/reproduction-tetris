@@ -78,7 +78,7 @@
 
 .run-result__metrics {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr);
   gap: 8px;
 }
 
@@ -113,8 +113,10 @@
 }
 
 .run-result__metric--primary {
+  min-height: 82px;
   background: color-mix(in srgb, var(--result-accent) 10%, var(--surface));
   border-color: color-mix(in srgb, var(--result-accent) 42%, var(--line));
+  box-shadow: inset 4px 0 0 var(--result-accent);
 }
 
 .run-result__metric--primary strong {

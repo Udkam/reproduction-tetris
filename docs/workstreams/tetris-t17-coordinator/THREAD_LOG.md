@@ -145,3 +145,36 @@
 - Blocker: none for P10.4. Real frame color/opacity and reduced-motion acceptance remain
   in the single final browser batch.
 - Next action: commit this green checkpoint, then open P10.5 mode-first result ledger.
+
+## 2026-07-31 — Phase 10 mode-first result ledger checkpoint
+
+- Task ID: `T17-P10.5`
+- Base SHA: `7411c06e9c11572435b73b7b9bbfe16e65e27b92`
+- Owner: primary coordinator
+- Exact paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/leaderboard.ts`
+  - `src/leaderboard.test.ts`
+  - `src/ui/localization.ts`
+  - `src/styles/result.css`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `npm.cmd run test -- --run src/App.test.ts src/leaderboard.test.ts --maxWorkers=1 --fileParallelism=false`
+    (first run: `42/47`; two stale Classic expectations failed and caused three
+    downstream focus tests to inherit an unmounted sheet)
+  - the same focused command after updating the direct expectations: `47/47` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: Mutation now ranks and leads with score while retaining cleared lines as
+  its only secondary result datum. Survival leads with elapsed time and retains only
+  cleared lines. Classic leads and ranks by cleared lines, with used pieces instead
+  of score as its secondary datum. Result titles are neutral mode-owned labels rather
+  than top-out causes; current-row highlighting, date, top-five truncation, and the
+  compact unranked notice remain intact. The two-metric ledger gives the mode-owned
+  primary metric greater weight without changing Puzzle completion.
+- Resource note: one Vitest worker, no file parallelism, no watcher/server/browser.
+- Blocker: none for P10.5. Final real-frame hierarchy and compact-layout acceptance
+  remain in the single immutable browser batch.
+- Next action: commit this green checkpoint, then open P10.6 Puzzle completion
+  persistence and celebration.

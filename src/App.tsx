@@ -274,7 +274,7 @@ export function terminalCopy(state: GameState, language: AppLanguage = DEFAULT_L
 }
 
 export type RunResultMetric = Readonly<{
-  id: 'lines' | 'score' | 'survival-time';
+  id: 'lines' | 'score' | 'pieces' | 'survival-time';
   label: string;
   value: string;
   primary: boolean;
@@ -291,9 +291,15 @@ export function runResultMetrics(
       { id: 'lines', label: copy.labels.lines, value: formatNumber(state.lines, language), primary: false },
     ];
   }
+  if (state.mode === 'sprint') {
+    return [
+      { id: 'score', label: copy.labels.score, value: formatScore(state.score, language), primary: true },
+      { id: 'lines', label: copy.labels.lines, value: formatNumber(state.lines, language), primary: false },
+    ];
+  }
   return [
     { id: 'lines', label: copy.labels.lines, value: formatNumber(state.lines, language), primary: true },
-    { id: 'score', label: copy.labels.score, value: formatScore(state.score, language), primary: false },
+    { id: 'pieces', label: copy.labels.piecesUsed, value: formatNumber(state.pieceCount, language), primary: false },
   ];
 }
 
@@ -836,24 +842,22 @@ export function LeaderboardPanel({
             const recordIsSurvival = record.mode === 'race';
             const recordIsMutation = record.mode === 'sprint';
             const isCurrentRecord = scoreRecordKey(record) === highlightKey;
+            const primaryField = recordIsSurvival ? 'time' : recordIsMutation ? 'score' : 'lines';
+            const primaryValue = recordIsSurvival
+              ? elapsedTimeLabel(record.elapsedTicks, language)
+              : recordIsMutation
+                ? formatScore(record.score, language)
+                : copy.phrasing.lineCount(record.lines);
             return (
               <li key={`${record.completedAt}:${index}`} data-current-record={isCurrentRecord || undefined}>
                 <b data-record-field="rank">{String(index + 1).padStart(2, '0')}</b>
                 <div className="result-leaderboard__run">
-                  <strong data-record-field={recordIsSurvival ? 'time' : 'lines'}>
-                    {recordIsSurvival ? elapsedTimeLabel(record.elapsedTicks, language) : copy.phrasing.lineCount(record.lines)}
-                  </strong>
+                  <strong data-record-field={primaryField}>{primaryValue}</strong>
                   <small>
-                    {recordIsMutation ? (
-                      <>
-                        <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
-                        {'  '}
-                        <span data-record-field="pieces">{copy.phrasing.pieceCount(record.pieces)}</span>
-                      </>
-                    ) : recordIsSurvival ? (
+                    {recordIsMutation || recordIsSurvival ? (
                       <span data-record-field="lines">{copy.phrasing.lineCount(record.lines)}</span>
                     ) : (
-                      <span data-record-field="score">{copy.phrasing.leaderboardSummary(formatScore(record.score, language), record.pieces, record.lines, false, false)}</span>
+                      <span data-record-field="pieces">{copy.phrasing.pieceCount(record.pieces)}</span>
                     )}
                     {isCurrentRecord && <em className="result-leaderboard__current">{copy.labels.currentRun}</em>}
                   </small>
@@ -884,7 +888,7 @@ export function RunResultSummary({
     ? copy.labels.currentRunMissedLeaderboard
     : null;
   return (
-    <section className="run-result" aria-label={copy.labels.resultSummary}>
+    <section className="run-result" data-mode={state.mode} aria-label={copy.labels.resultSummary}>
       {rankLabel && (
         <p className="run-result__rank" data-ranked={rank !== null || undefined}>
           {rankLabel}

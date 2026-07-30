@@ -106,8 +106,8 @@ function compareRecordRank(mode: RunMode, left: ScoreRecord, right: ScoreRecord)
       || standardRight.score - standardLeft.score
       || standardRight.pieces - standardLeft.pieces
       || left.elapsedTicks - right.elapsedTicks
-    : right.lines - left.lines
-      || standardRight.score - standardLeft.score
+    : standardRight.score - standardLeft.score
+      || right.lines - left.lines
       || standardLeft.pieces - standardRight.pieces
       || left.elapsedTicks - right.elapsedTicks;
 }

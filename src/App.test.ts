@@ -463,10 +463,10 @@ describe('entry countdown', () => {
       runtime.options.onState?.(terminalState, []);
     });
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ mode: 'marathon', score: 4321, lines: 12 }));
-    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('排行榜前 50112 行4,321 分');
+    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('排行榜前 50112 行44 方块');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
     expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('12消行');
-    expect(view.container.querySelector('[data-metric="score"]')?.textContent).toBe('4,321分数');
+    expect(view.container.querySelector('[data-metric="pieces"]')?.textContent).toBe('44使用方块');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
     expect(onExit).toHaveBeenCalledExactlyOnceWith('home');
     view.unmount();
@@ -793,7 +793,7 @@ describe('T6 frontend mode binding', () => {
       'settings-leaderboard',
     ]);
     expect(controls.textContent).toContain('控制');
-    expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行3,210 分2026.07.24');
+    expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行44 方块2026.07.24');
     expect(rules.textContent).toContain('补满横行，消除并得分。');
     expect([...rules.querySelectorAll<HTMLElement>('[data-rule-id]')].map((fact) => fact.dataset.ruleId)).toEqual([
       'goal',
@@ -1372,12 +1372,13 @@ describe('T6 frontend mode binding', () => {
     expect(leaderboard?.getAttribute('aria-label')).toBe('Leaderboard');
     expect(leaderboard?.querySelector('header')?.textContent).toBe('LeaderboardTop 5');
     expect(leaderboard?.textContent).toContain('12 lines');
-    expect(leaderboard?.textContent).toContain('4,321 pts');
+    expect(leaderboard?.textContent).toContain('44 pieces');
+    expect(leaderboard?.textContent).not.toContain('4,321 pts');
     expect(leaderboard?.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
     view.unmount();
   });
 
-  it('ranks and labels Classic by cleared lines, Survival by endurance, and 异变 by cleared lines', () => {
+  it('labels Classic by lines and pieces, Survival by time and lines, and 异变 by score and lines', () => {
     const base: ScoreRecord = {
       version: 8,
       score: 3200,
@@ -1392,7 +1393,9 @@ describe('T6 frontend mode binding', () => {
     const classic = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [base], highlightRecord: base }));
     expect(classic.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('排行榜');
     expect(classic.container.querySelector('.result-leaderboard header')?.textContent).toBe('排行榜前 5');
-    expect(classic.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('18 行3,200 分本局');
+    expect(classic.container.querySelector('[data-record-field="lines"]')?.textContent).toBe('18 行');
+    expect(classic.container.querySelector('[data-record-field="pieces"]')?.textContent).toBe('62 方块');
+    expect(classic.container.querySelector('[data-record-field="score"]')).toBeNull();
     expect(classic.container.querySelector('.result-leaderboard__current')?.textContent).toBe('本局');
     expect(classic.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     expect(classic.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('·');
@@ -1427,7 +1430,9 @@ describe('T6 frontend mode binding', () => {
     const sprint = render(createElement(LeaderboardPanel, { mode: 'sprint', records: [sprintRecord] }));
     expect(sprint.container.querySelector('.result-leaderboard')?.getAttribute('aria-label')).toBe('排行榜');
     expect(sprint.container.querySelector('.result-leaderboard header')?.textContent).toBe('排行榜前 5');
-    expect(sprint.container.querySelector('.result-leaderboard li .result-leaderboard__run')?.textContent).toBe('40 行1,800 分  48 方块');
+    expect(sprint.container.querySelector('[data-record-field="score"]')?.textContent).toBe('1,800');
+    expect(sprint.container.querySelector('[data-record-field="lines"]')?.textContent).toBe('40 行');
+    expect(sprint.container.querySelector('[data-record-field="pieces"]')).toBeNull();
     expect(sprint.container.querySelector('.result-leaderboard li time')?.textContent).toBe('2026.07.18');
     sprint.unmount();
 
@@ -1451,9 +1456,9 @@ describe('T6 frontend mode binding', () => {
 
   it('renders at most five real rows with the exact record field matrix for each scored mode', () => {
     const expectedFields: Readonly<Record<'marathon' | 'race' | 'sprint', readonly string[]>> = {
-      marathon: ['rank', 'lines', 'score', 'date'],
+      marathon: ['rank', 'lines', 'pieces', 'date'],
       race: ['rank', 'time', 'lines', 'date'],
-      sprint: ['rank', 'lines', 'score', 'pieces', 'date'],
+      sprint: ['rank', 'score', 'lines', 'date'],
     };
 
     for (const mode of ['marathon', 'race', 'sprint'] as const) {
@@ -1560,7 +1565,7 @@ describe('T6 frontend mode binding', () => {
     };
 
     expect(terminalCopy(terminalState)).toEqual({
-      title: '生存结束',
+      title: '生存结果',
       detail: '',
       success: false,
     });
@@ -1635,10 +1640,30 @@ describe('T6 frontend mode binding', () => {
       score: 1800,
     };
     expect(terminalCopy(endedSprint)).toEqual({
-      title: '异变结束',
+      title: '异变结果',
       detail: '',
       success: false,
     });
+    expect(runResultMetrics(endedSprint)).toEqual([
+      { id: 'score', label: '分数', value: '1,800', primary: true },
+      { id: 'lines', label: '消行', value: '22', primary: false },
+    ]);
+    const endedClassic: GameState = {
+      ...createInitialState(0x51a1f00d, 'marathon'),
+      status: 'game-over',
+      lines: 18,
+      pieceCount: 62,
+      score: 3200,
+    };
+    expect(terminalCopy(endedClassic)).toEqual({
+      title: '经典结果',
+      detail: '',
+      success: false,
+    });
+    expect(runResultMetrics(endedClassic)).toEqual([
+      { id: 'lines', label: '消行', value: '18', primary: true },
+      { id: 'pieces', label: '使用方块', value: '62', primary: false },
+    ]);
   });
 
   it('shows direct progressive cadence and pending pressure instead of a level label', () => {

@@ -179,7 +179,7 @@ describe('local leaderboard boundary', () => {
     expect(parseLeaderboard(JSON.stringify(leaderboard))).toEqual(leaderboard);
   });
 
-  it('ranks Classic by lines, Survival by endurance, and 异变 by lines before score', () => {
+  it('ranks Classic by lines, Survival by endurance, and 异变 by score', () => {
     let leaderboard = emptyLeaderboard();
     const marathonLowerLines = marathonRecord({ lines: 8, score: 9000, elapsedTicks: 100 });
     const marathonHigherScore = marathonRecord({ lines: 9, score: 1300, elapsedTicks: 900 });
@@ -214,6 +214,6 @@ describe('local leaderboard boundary', () => {
     leaderboard = insertScoreRecord(leaderboard, sprintTieMorePieces);
     leaderboard = insertScoreRecord(leaderboard, sprintTieFewerPieces);
     leaderboard = insertScoreRecord(leaderboard, sprintWinner);
-    expect(recordsForMode(leaderboard, 'sprint')).toEqual([sprintWinner, sprintTieFewerPieces, sprintTieMorePieces, sprintLowerLinesHigherScore]);
+    expect(recordsForMode(leaderboard, 'sprint')).toEqual([sprintLowerLinesHigherScore, sprintTieFewerPieces, sprintTieMorePieces, sprintWinner]);
   });
 });
