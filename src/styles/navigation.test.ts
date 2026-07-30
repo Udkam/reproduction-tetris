@@ -32,4 +32,10 @@ describe('Phase 9 navigation authority', () => {
     expect(navigation).toMatch(/\.console-node button\s*\{[\s\S]*min-width:\s*44px;[\s\S]*min-height:\s*44px;/);
     expect(navigation).not.toMatch(/overflow-(?:x|y):\s*(?:auto|scroll)/);
   });
+
+  it('switches to five columns in portrait, preserves the short-landscape budget, and reduces motion', () => {
+    expect(navigation).toMatch(/@media \(max-width:\s*719px\),\s*\(orientation:\s*portrait\)[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,/);
+    expect(navigation).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*grid-template-rows:\s*76px\s+minmax\(0,\s*1fr\)/);
+    expect(navigation).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*transition:\s*none !important/);
+  });
 });
