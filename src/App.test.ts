@@ -1551,9 +1551,17 @@ describe('T6 frontend mode binding', () => {
       rank: 2,
       hasRecord: true,
     }));
-    expect(resultSummary.container.querySelector('.run-result__rank')?.textContent).toBe('本局第 2 名');
+    expect(resultSummary.container.querySelector('.run-result__rank')).toBeNull();
+    expect(resultSummary.container.textContent).not.toContain('本局第');
     expect(resultSummary.container.textContent).not.toMatch(/方块|基岩/);
     resultSummary.unmount();
+    const unrankedSummary = render(createElement(RunResultSummary, {
+      state: { ...terminalState, elapsedTicks: 125 * 60 },
+      rank: null,
+      hasRecord: true,
+    }));
+    expect(unrankedSummary.container.querySelector('.run-result__rank')?.textContent).toBe('未进入前 5');
+    unrankedSummary.unmount();
     expect(eventMessage({ type: 'bedrock-raised', count: 1, height: 4 })).toBe('基岩升至 4 层。');
     expect(eventMessage({ type: 'bedrock-lowered', count: 1, height: 3 })).toBe('基岩降至 3 层。');
     expect(eventMessage({ type: 'puzzle-undone' })).toBe('已撤回上一次落子。');
@@ -1650,6 +1658,18 @@ describe('T6 frontend mode binding', () => {
     const pageTabs = [...view.container.querySelectorAll<HTMLButtonElement>('.puzzle-gallery__pages [role="tab"]')];
     expect(pageTabs).toHaveLength(2);
     expect(pageTabs.map((tab) => tab.textContent)).toEqual(['01–25', '26–50']);
+    expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['true', 'false']);
+    act(() => {
+      pageTabs[0]!.focus();
+      pageTabs[0]!.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    });
+    expect(document.activeElement).toBe(pageTabs[1]);
+    expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['false', 'true']);
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[25]!.id);
+    act(() => {
+      pageTabs[1]!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+    });
+    expect(document.activeElement).toBe(pageTabs[0]);
     expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['true', 'false']);
     expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('第 1 至 25 关');
     expect(rows[0]?.textContent).toContain('01');

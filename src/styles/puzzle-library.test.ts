@@ -29,6 +29,7 @@ describe('Phase 9 Puzzle gallery authority', () => {
   });
 
   it('keeps every page in a centered five-by-five square matrix with 44px controls', () => {
+    expect(gallery).toMatch(/\.puzzle-gallery\s*\{[\s\S]*align-self:\s*start;[\s\S]*height:\s*100%;[\s\S]*max-height:\s*740px;/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*auto\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*align-content:\s*center;[\s\S]*justify-self:\s*center;[\s\S]*width:\s*min\(100%,\s*560px\)/);
@@ -41,5 +42,14 @@ describe('Phase 9 Puzzle gallery authority', () => {
     expect(gallery).toMatch(/@media \(max-width:\s*719px\),\s*\(orientation:\s*portrait\)[\s\S]*\.puzzle-gallery\s*\{[\s\S]*grid-template-rows:/);
     expect(gallery).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,/);
     expect(gallery).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*animation:\s*none !important/);
+  });
+
+  it('implements standard keyboard activation on the two page tabs', () => {
+    expect(app).toContain('const movePageFocus');
+    expect(app).toContain("event.key === 'ArrowLeft'");
+    expect(app).toContain("event.key === 'ArrowRight'");
+    expect(app).toContain("event.key === 'Home'");
+    expect(app).toContain("event.key === 'End'");
+    expect(app).toContain('onKeyDown={(event) => movePageFocus(event, index)}');
   });
 });

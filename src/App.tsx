@@ -607,6 +607,7 @@ export function PuzzleLibrary({
   const selectedPage = puzzlePageForIndex(Math.max(0, selectedIndex));
   const [pageIndex, setPageIndex] = useState<PuzzlePageIndex>(selectedPage);
   const levelButtonRefs = useRef(new Map<PuzzleId, HTMLButtonElement>());
+  const pageTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const pendingFocusRef = useRef<PuzzleId | null>(null);
   const pageLastSelectedRef = useRef<[PuzzleId, PuzzleId]>([
     CAMPAIGN_LEVELS[0]!.id,
@@ -655,12 +656,30 @@ export function PuzzleLibrary({
     }
   };
 
-  const switchPage = (nextPage: PuzzlePageIndex) => {
+  const switchPage = (nextPage: PuzzlePageIndex, focusTab = false) => {
     const targetId = pageLastSelectedRef.current[nextPage];
     const targetIndex = CAMPAIGN_LEVELS.findIndex((level) => level.id === targetId);
-    pendingFocusRef.current = targetId;
     setPageIndex(nextPage);
     if (targetIndex >= 0) onSelect(targetId);
+    if (focusTab) {
+      const target = pageTabRefs.current[nextPage];
+      try {
+        target?.focus({ preventScroll: true });
+      } catch {
+        target?.focus();
+      }
+    }
+  };
+
+  const movePageFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: PuzzlePageIndex) => {
+    let nextPage: PuzzlePageIndex;
+    if (event.key === 'ArrowLeft') nextPage = index === 0 ? 1 : 0;
+    else if (event.key === 'ArrowRight') nextPage = index === 1 ? 0 : 1;
+    else if (event.key === 'Home') nextPage = 0;
+    else if (event.key === 'End') nextPage = 1;
+    else return;
+    event.preventDefault();
+    switchPage(nextPage, true);
   };
 
   const moveLevelFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -717,7 +736,11 @@ export function PuzzleLibrary({
                     aria-controls={`puzzle-page-panel-${index + 1}`}
                     tabIndex={active ? 0 : -1}
                     key={index}
+                    ref={(node) => {
+                      pageTabRefs.current[index] = node;
+                    }}
                     onClick={() => switchPage(index)}
+                    onKeyDown={(event) => movePageFocus(event, index)}
                   >
                     {String(start).padStart(2, '0')}–{String(end).padStart(2, '0')}
                   </button>
@@ -854,10 +877,8 @@ export function RunResultSummary({
   language?: AppLanguage;
 }) {
   const copy = appCopy(language);
-  const rankLabel = hasRecord
-    ? rank === null
-      ? copy.labels.currentRunMissedLeaderboard
-      : copy.phrasing.currentRunRank(rank)
+  const rankLabel = hasRecord && rank === null
+    ? copy.labels.currentRunMissedLeaderboard
     : null;
   return (
     <section className="run-result" aria-label={copy.labels.resultSummary}>
