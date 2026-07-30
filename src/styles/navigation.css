@@ -945,7 +945,8 @@
     gap: 4px;
   }
 
-  .console-node button {
+  .console-route .console-node > button {
+    min-height: 44px;
     font-size: 9px;
   }
 }

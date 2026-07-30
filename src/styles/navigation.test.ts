@@ -29,6 +29,7 @@ describe('Phase 9 navigation authority', () => {
   it('resets inherited card and action placement at every responsive breakpoint', () => {
     expect(legacy).toMatch(/\.mode-gate--marathon\s*\{[^}]*grid-column:\s*1;[^}]*grid-row:\s*1;/);
     expect(legacy).toMatch(/\.mode-gate__action\s*\{[^}]*grid-column:\s*1\s*\/\s*-1;/);
+    expect(legacy).toMatch(/\.console-route \.console-node > button\s*\{[^}]*min-height:\s*48px;/);
     expect(navigation).toMatch(
       /\.mode-gates--workbench \.mode-gate,[\s\S]*?\.mode-gates--workbench \.mode-gate--puzzle\s*\{[^}]*grid-column:\s*auto;[^}]*grid-row:\s*auto;[^}]*justify-self:\s*stretch;/,
     );
@@ -49,6 +50,7 @@ describe('Phase 9 navigation authority', () => {
     expect(navigation).toMatch(/@media \(max-width:\s*719px\),\s*\(orientation:\s*portrait\)[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,/);
     expect(navigation).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*grid-template-rows:\s*76px\s+minmax\(0,\s*1fr\)/);
     expect(navigation).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*\.console-bands\s*\{[^}]*grid-template-rows:\s*repeat\(5,\s*minmax\(44px,[^}]*gap:\s*3px;[^}]*padding-top:\s*0;/);
+    expect(navigation).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*\.console-route \.console-node > button\s*\{[^}]*min-height:\s*44px;/);
     expect(navigation).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*transition:\s*none !important/);
   });
 });
