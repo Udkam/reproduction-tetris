@@ -673,6 +673,28 @@ packages by route metrics and structural lesson. Definitions/artifacts 01–40,
 unlock/v5 source, App source, selector/CSS, renderer, dependencies and other
 modes remain closed.
 
+**Levels 41–50 registered-definition proof (2026-07-30):** all ten retained
+ordinary packages complete twice through public Core commands at the unchanged
+36-lock / 720-primary / 560-alternate bounds. In final curriculum order they are
+`横沟 / Cross Trench` (`16/16`, divergence lock 3), `中阶 / Center Steps`
+(`17/20`, 1), `分廊 / Split Gallery` (`17/20`, 1), `双塔 / Twin Towers`
+(`19/21`, 1), `斜廊 / Sloped Gallery` (`22/26`, 2), `边井 / Edge Well`
+(`23/24`, 2), `深槽 / Deep Channel` (`27/23`, 1), `断槽 / Broken Channel`
+(`24/24`, 1), `叠井 / Layered Well` (`25/25`, 1), and `岔口 / Forked
+Passage` (`25/29`, 1). Complete setup history, gameplay seed and bilingual
+name move together; no route is rebound to another package. `深槽` uses the
+single retained 15-drop setup and all other packages use 14 drops. All ten
+definitions have seven target rows and no anchor.
+
+The final reordered source passes the focused structural matrix
+(`puzzles`, `puzzleCampaign`, `puzzleFlow`, `puzzleProgress`, and `App`:
+5 files / 62 tests) with one worker, followed by typecheck. Authorize exactly
+one formal batch-5 solver run against the registered order and write only
+`docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json`. The run must
+retain the fixed 36/720/560 bounds and must exit before the normal replay test
+is bound to the artifact; no second solver, agent, listener, server or browser
+may overlap.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

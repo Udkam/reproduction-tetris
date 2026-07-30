@@ -114,7 +114,14 @@ Every package still needs two public-Core routes diverging by lock four at the f
 36-lock, 720-primary and 560-alternate beam ceiling. No individual failure may expand
 that search domain. Final order and concise bilingual names are assigned only after route
 metrics and human-readable structural lessons are inspected together; raw setup score
-or route length alone does not define the curriculum.
+or route length alone does not define the curriculum. The measured order is `横沟 /
+Cross Trench`, `中阶 / Center Steps`, `分廊 / Split Gallery`, `双塔 / Twin Towers`,
+`斜廊 / Sloped Gallery`, `边井 / Edge Well`, `深槽 / Deep Channel`, `断槽 / Broken
+Channel`, `叠井 / Layered Well`, and `岔口 / Forked Passage`. Their primary/alternate
+route lengths are respectively `16/16`, `17/20`, `17/20`, `19/21`, `22/26`, `23/24`,
+`27/23`, `24/24`, `25/25`, and `25/29` locks, with first canonical divergence at locks
+`3, 1, 1, 1, 2, 2, 1, 1, 1, 1`. `深槽` alone uses a 15-drop setup; the other nine
+packages use 14 drops.
 
 Mutation items are an orthogonal attachment system:
 
