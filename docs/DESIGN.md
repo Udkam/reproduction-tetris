@@ -3,6 +3,78 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-07-31 Phase 9 direct re-open — clean entry, result ledger, and Puzzle gallery
+
+The latest real-frame review reopens four presentation-only surfaces after the
+navigation cascade repair. Two bounded read-only comparisons were completed before
+source work: one traced countdown visibility and compared result-sheet hierarchies;
+the other compared two-page Puzzle gallery layouts and transient home selection.
+The accepted synthesis below supersedes the earlier Phase-9 `10×5 / 5×10` selector
+composition, but does not change Puzzle definitions, order, progress, records, Core
+timing, randomisation, or any mode rule.
+
+### Countdown visibility
+
+- `ready` is a pre-play presentation state. Core may retain its deterministic active
+  piece and queue, but Renderer must draw and report no active cells, ghost cells,
+  carrier overlay, or Next piece until `playing` begins.
+- Survival digits `3 / 2 / 1` show only the digit plus exactly `1 / 2 / 3` canonical
+  bedrock rows rising into place. The stable empty Next well may remain so the HUD
+  does not reflow.
+- The first `playing` frame restores active, ghost, carrier, and Next together. The
+  gate is `state.status`, never a React timing flag, so no cross-frame leak is
+  possible.
+
+### Run-result ledger
+
+- Classic, Survival, and Mutation use one compact **mineral result ledger** rather
+  than the generic danger sheet. Mineral white remains the base; the current mode
+  color appears only on a narrow top edge, principal values, current-run row, and
+  primary action.
+- The hierarchy is title and rank, two meaningful metrics, top-five leaderboard,
+  then two actions. Dot-separated prose and ornamental subtitles are prohibited.
+- Classic shows lines and score. Survival shows survival time and lines; pieces and
+  bedrock rows are removed. Mutation shows lines and score. A ranked run says
+  `本局第 N 名 / This run · #N`; otherwise it says
+  `未进入前 5 / Outside the top 5`.
+- Result leaderboard rows retain rank, meaningful mode metrics, date, and an explicit
+  current-run mark. Puzzle success keeps its earned celebration surface and is not
+  absorbed into the run ledger.
+- `src/styles/result.css` is the only new result authority and loads after shared
+  HUD/navigation layers. It must preserve two-button Left/Right + Enter behavior,
+  Escape return, `44 px` targets, reduced motion, and compact landscape.
+
+### Two-page Puzzle gallery
+
+- The library is a **two-page Puzzle gallery**, not a fifty-cell dashboard. Page one
+  contains `01–25`, page two `26–50`; each page is one functional `5×5` matrix with
+  no page or panel scrolling.
+- Desktop and short landscape place a large deep-indigo live board preview on the
+  left and the page controls plus matrix on the right. Portrait stacks the same two
+  surfaces. The preview, localized level name, current best, and Start action form
+  one connected hero surface.
+- Puzzle keeps a distinct deep-indigo / restrained violet / warm-anchor language
+  while reusing TetraMorph typography, mineral white, focus rings, and radii. Nodes
+  show only centered number or completion tick; best count appears only in the hero.
+- The two range controls are a real tablist. Each page uses roving focus with
+  Left/Right `±1`, Up/Down `±5`, Home/End, and Enter selection. Crossing `25/26`
+  changes page without losing focus. Page change and preview settle within `180 ms`;
+  reduced motion switches instantly.
+- `src/styles/puzzle-library.css` is the final Puzzle-library authority, imported
+  after `navigation.css`. Required frames are `1440×900`, `844×390`, `390×844`,
+  and `360×800`, both pages, Chinese/English, selected/completed, longest-best copy,
+  keyboard focus, and reduced motion.
+
+### Transient home emphasis
+
+- The initial home frame has zero active cards. Pointer emphasis is expressed only
+  by real hover and disappears within one frame of leaving the mode region.
+- Roving keyboard position remains independent of pointer hover. Tab/arrow focus
+  keeps `:focus-visible`; pointer leave must not erase real keyboard focus.
+- The permanent `mode-gate--active` / pressed-selection presentation is removed.
+  Enter/click behavior, the two-by-two matrix, one wordmark, and stable font metrics
+  remain unchanged.
+
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 
 The player's latest direct review opens four previously frozen presentation areas:

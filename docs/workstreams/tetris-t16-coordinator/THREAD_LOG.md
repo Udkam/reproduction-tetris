@@ -330,3 +330,34 @@
 - Next action: commit this rejection record, add authoritative placement resets,
   rerun final gates, replace affected browser evidence, and return the corrected
   candidate to independent QA.
+
+## 2026-07-31 — latest four-surface direct review
+
+- Base: corrected navigation recovery `693f3d4`.
+- Inherited paths: regenerated Phase-9 PNGs under
+  `docs/qa/evidence/t16-phase9/`; they remain unstaged and are superseded until a new
+  final source candidate exists.
+- Direct requirements:
+  - hide ready active/ghost/Next content while Survival raises one bedrock row per
+    countdown second;
+  - replace non-Puzzle generic result sheets with meaningful mode-colored ledgers;
+  - replace the fifty-cell one-page Puzzle dashboard with a two-page `25 + 25`
+    gallery centered on preview/name/best/Start;
+  - clear pointer emphasis when the pointer leaves the home mode region.
+- Read-only comparisons:
+  - countdown audit traced the leak to Renderer’s explicit ready-state ghost branch
+    and requires the public snapshot to match the empty rendered state;
+  - result audit selected a mineral-white ledger with mode accents, two real metrics,
+    current-run rank, and top-five history;
+  - selector/home comparison selected a two-page `5×5` gallery and pure hover plus
+    independent keyboard focus.
+- Exact design boundaries are frozen in `docs/DESIGN.md`,
+  `docs/CURRENT_TASK.md`, and `docs/phases/phase 9.md`.
+- Commands actually run: read-only Git status/log, targeted UTF-8 source/docs reads,
+  and bounded agent coordination. No product test, build, browser restart, new
+  listener, or product edit was run before this contract.
+- Resource boundary: one existing Vite lease remains solely for later final evidence;
+  no new server, watcher, persistent reader, Serena, WMI/CIM, or extra agent was
+  started.
+- Next action: commit this docs-only contract with exact staging, then open only the
+  Renderer ready-visibility slice.

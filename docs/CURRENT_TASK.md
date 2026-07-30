@@ -3,9 +3,9 @@
 ## Phase 9 active goal — cave pressure and navigation correction
 
 **Status (2026-07-31): SURVIVAL CAVERN + ORDINARY CLEAR BROWSER-GREEN /
-FINAL NAVIGATION CANDIDATE REJECTED / NARROW CASCADE CORRECTION OPEN.**
+NAVIGATION CASCADE CORRECTED / LATEST FOUR-SURFACE DIRECT REVIEW OPEN.**
 
-The direct goal is to keep correcting this slice until all six requested outcomes are
+The direct goal is to keep correcting this slice until all eight requested outcomes are
 implemented and visually accepted:
 
 1. Survival emits a deterministic random event containing one or two rocks in one
@@ -17,14 +17,21 @@ implemented and visually accepted:
 3. Ordinary landing and line clear become short, natural, material-aware feedback
    without scaling cells, board shake, page flash, particles, gameplay changes, or
    any horizontal line drawn across or inside a cleared row.
-4. The complete fifty-level Puzzle selector fits without vertical scrolling through
-   a compact preview bench and `10×5` desktop/landscape or `5×10` portrait matrix.
+4. The complete fifty-level Puzzle selector becomes a distinct two-page gallery:
+   one connected preview/name/best/Start hero plus a `5×5` matrix for `01–25` or
+   `26–50`, with no page or panel scrolling at any target viewport.
 5. The mode home receives the previously missed composition pass: one wordmark,
-   two-by-two mode matrix, stable type, real keyboard navigation, and correctly
-   ordered component styles.
-6. Design choices are frozen only after independent Survival, shared-feedback, and
-   selector/home read-only brainstorms. Those comparisons are complete; the accepted
-   synthesis is recorded in `docs/DESIGN.md` and `docs/phases/phase 9.md`.
+   two-by-two mode matrix, stable type, real keyboard navigation, and no pointer
+   highlight after the pointer leaves the mode region.
+6. Countdown `ready` frames reveal no active piece, ghost, carrier, or Next piece;
+   Survival shows only the digit and the progressively rising one/two/three bedrock
+   rows until play actually starts.
+7. Classic, Survival, and Mutation settlement becomes a mode-colored mineral ledger
+   with only meaningful metrics, a top-five leaderboard, current-run rank, and
+   actions. Survival shows only survival time and lines.
+8. Design choices are frozen only after bounded read-only comparisons. The accepted
+   countdown/result and selector/home syntheses are recorded in `docs/DESIGN.md` and
+   `docs/phases/phase 9.md`.
 
 The pushed base is `main@87121af42330ab9aea9456e28dfa42e5edc62536`.
 Only the primary coordinator writes shared files. The three brainstorm agents were
@@ -129,6 +136,19 @@ Survival, rules, Core, Renderer, records, audio, dependencies, Puzzle content an
 progress semantics remain frozen. All final gates and affected browser frames must
 be regenerated from the corrected candidate before acceptance.
 
+Latest direct review supersedes the now-corrected one-page selector presentation.
+The home cascade fix `2c199d2` and short-landscape budget fix `693f3d4` remain valid
+recovery points, but Phase 9 is not accepted. The open source slices are:
+
+- Renderer-only `ready` visibility: preserve deterministic Core state while drawing
+  and reporting no active/ghost/Next content until `playing`;
+- one dedicated result ledger for non-Puzzle modes, with structured metrics and
+  mode-specific current-run highlighting;
+- a dedicated two-page, `25 + 25` Puzzle gallery with a connected hero preview and
+  no scrolling at `1440×900`, `844×390`, `390×844`, or `360×800`;
+- removal of persistent pointer-driven home selection while preserving keyboard
+  roving focus.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,
@@ -142,13 +162,16 @@ be regenerated from the corrected candidate before acceptance.
 4. `source-ordinary-feedback-correction`: support imprint, bounded hard-drop trace,
    stroke-free per-cell face bloom, reduced motion, reset/unmount cleanup, and
    direct Renderer tests.
-5. `source-navigation`: compact Puzzle preview and full no-scroll matrix, correct
-   `3–7` tier labels, roving focus, two-by-two mode home, style import order,
-   localization and App tests.
-6. `candidate/evidence`: final typecheck, one full suite, one production build, one
+5. `source-ready-visibility`: Renderer/snapshot only; no ready active/ghost/Next
+   piece, exact Survival `10/20/30` staged bedrock, direct Renderer proof.
+6. `source-result-ledger`: structured non-Puzzle metrics, rank state, result-only
+   component CSS, localization and ActionSheet interaction proof.
+7. `source-gallery-home`: two-page `5×5` Puzzle gallery, connected hero preview,
+   page/roving focus, transient pointer hover, dedicated CSS and App/style tests.
+8. `candidate/evidence`: final typecheck, one full suite, one production build, one
    managed Vite/Chrome lease, official web-game client, source-bound screenshots,
    geometry/overflow/input/lifecycle assertions, then complete resource release.
-7. `qa/correction/acceptance`: independent rules, visual, and evidence reviews;
+9. `qa/correction/acceptance`: independent rules, visual, and evidence reviews;
    relevant findings return to the same writer, receive fresh gates/evidence, and
    remain open until accepted. Then changelog, scoped gitleaks scan, exact staging,
    commits, non-force push, and local/tracking/remote equality.

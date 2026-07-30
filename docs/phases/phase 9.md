@@ -125,6 +125,60 @@ normal/reduced-motion；Classic/Survival/Mutation/Puzzle 共存帧。
 `390×844`、`360×800`，并覆盖未通关/通关/选中/第 50 关、键盘焦点和
 reduced-motion。每帧断言 document 与 matrix 的纵横 overflow 均为零。
 
+## Checkpoint E — clean entry, result ledger, and two-page gallery
+
+Latest direct review supersedes the accepted one-page selector composition while
+retaining the repaired home grid and short-landscape height budget as recovery
+evidence.
+
+### 倒计时
+
+- Core 保留确定性的 active/queue；Renderer 以 `state.status === 'ready'` 为
+  唯一显示门。`ready` 的 active、ghost、carrier、Next 图形和公开 snapshot
+  均为空。
+- 生存 `3 / 2 / 1` 只显示数字和正在升起的 `1 / 2 / 3` 层基岩。进入
+  `playing` 的第一帧才同时恢复 active、ghost 和 Next。
+
+### 普通模式结算
+
+- 经典、生存、异变使用矿物白成绩单，模式色仅用于窄顶缘、主数据、当局
+  排行和主按钮；不得使用统一危险色或点分隔摘要。
+- 数据固定为：经典“消行 / 分数”，生存“生存时间 / 消行”，异变“消行 /
+  分数”。生存不显示方块数或基岩层数。
+- 入榜显示“本局第 N 名”，未入榜显示“未进入前 5”；排行榜保留前五、
+  日期与当局明确标识。解谜成功继续使用独立庆祝窗口。
+- 左右键切换两个操作、Enter 执行、Esc 返回；窄屏/短横屏无裁切，
+  reduced-motion 无结果入场位移。
+
+### 双页残局画廊
+
+- 页面一为 `01–25`，页面二为 `26–50`；每页一个 `5×5` 功能矩阵，节点
+  不强制正方形但必须至少 `44×44 px`。
+- 桌面与短横屏左侧为深靛真实残局预览，右侧为分页和矩阵；竖屏上下堆叠。
+  关卡名、当前最优步数、开始键与预览连接成一个主视觉。
+- 两个范围键使用 tablist。页内方向键 `±1 / ±5`，Home/End 到页首/页尾，
+  跨 `25/26` 自动换页并保留焦点。完成关替换为对勾，选中同时使用实底、
+  外轮廓和 `aria-selected/pressed`，不得只靠颜色。
+- 最佳步数只在预览出现；页面没有行数标签、节点缩略图、滚动条或装饰性
+  说明。切页/预览最长 `180 ms`，reduced-motion 立即切换。
+
+### 首页瞬时高亮
+
+- 初始帧没有 active 卡片。鼠标高亮只由真实 `:hover` 表达，离开模式区域
+  一帧内清除；不保留 `mode-gate--active` 或伪 pressed 状态。
+- 键盘 roving tab index 与 pointer 独立，`:focus-visible` 不因 pointerleave
+  丢失，方向键和 Enter 行为不变。
+
+### 新权威路径与证据
+
+- `src/styles/result.css` 只拥有结算成绩单。
+- `src/styles/puzzle-library.css` 只拥有双页图库，并在
+  `navigation.css` 后加载；不得向历史 `styles.css` 追加本次覆盖。
+- 新证据至少包含中英结果窗口、入榜/未入榜、生存倒计时三帧及启动首帧，
+  以及 `1440×900`、`844×390`、`390×844`、`360×800` 两个图库页面、
+  首页 pointerleave、键盘焦点和 reduced-motion。每帧均核对单 Canvas、
+  零 DOM 棋盘格、零 console/page error 和纵横零 overflow。
+
 ## 最终门禁与 QA
 
 最后一次源码修改后只运行一次最终：

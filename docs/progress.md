@@ -1,5 +1,20 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T16 Phase 9 four-surface re-open — 2026-07-31
+
+- The corrected navigation cascade at `693f3d4` remains a recovery point, but Phase 9
+  is reopened by direct frame review. The open surfaces are ready-state preview
+  leakage, non-Puzzle results, the Puzzle selector composition, and persistent home
+  pointer highlighting.
+- Bounded read-only comparisons select: Renderer status-gated empty countdown
+  previews; a mode-colored mineral result ledger; a two-page `01–25 / 26–50`,
+  `5×5` Puzzle gallery with one connected preview/name/best/Start hero; and pure
+  pointer hover independent of keyboard roving focus.
+- The source boundary is split into three recoverable checkpoints before any final
+  gate: ready visibility, result ledger, and Puzzle gallery/home hover. Regenerated
+  Phase-9 PNGs remain superseded and unstaged until all three source checkpoints are
+  green and recaptured from one immutable candidate.
+
 ### T16 Phase 9 first-entry rules checkpoint — 2026-07-31
 
 - Product checkpoint `e4d19ad` unifies all first-entry rule sheets: compact localized
