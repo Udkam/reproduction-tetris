@@ -1,5 +1,6 @@
 import {
   BOARD_HEIGHT,
+  BOARD_WIDTH,
   ENTRY_DELAY_TICKS,
   LINE_CLEAR_BASE_SCORE,
   LINE_CLEAR_DELAY_TICKS,
@@ -301,10 +302,17 @@ function cellKey(cell: Cell): string {
   return `${cell.x},${cell.y}`;
 }
 
+function cellsForSurvivalDebris(debris: SurvivalDebris): readonly [Cell, Cell] {
+  return [
+    { x: debris.x, y: debris.y },
+    { x: debris.x, y: debris.y + 1 },
+  ];
+}
+
 function canPlaceInState(state: GameState, piece: ActivePiece): boolean {
   if (!canPlace(state.board, piece)) return false;
   if (state.mode !== 'race' || state.survivalDebris.length === 0) return true;
-  const debris = new Set(state.survivalDebris.map(cellKey));
+  const debris = new Set(state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey));
   return cellsForPiece(piece).every((cell) => !debris.has(cellKey(cell)));
 }
 
@@ -327,32 +335,18 @@ function planSurvivalDebris(state: GameState): { state: GameState; columns: read
   if (state.survivalDebrisWarningColumns.length > 0) {
     return { state, columns: state.survivalDebrisWarningColumns };
   }
-  let randomizer = state.survivalDebrisRandomizer;
-  const countRoll = drawRandom(randomizer);
-  randomizer = countRoll.randomizer;
-  const requested = countRoll.value < 0.5 ? 1 : 2;
-  const availableColumns = Array.from({ length: 10 }, (_, x) => x);
-  const columns: number[] = [];
+  const columnRoll = drawRandom(state.survivalDebrisRandomizer);
+  const frozenColumns = Object.freeze([
+    Math.min(BOARD_WIDTH - 1, Math.floor(columnRoll.value * BOARD_WIDTH)),
+  ]);
 
-  // The plan deliberately ignores the current stack. If a warned entry is blocked
-  // when due, the same announced plan waits instead of silently moving elsewhere.
-  for (let index = 0; index < requested; index += 1) {
-    const columnRoll = drawRandom(randomizer);
-    randomizer = columnRoll.randomizer;
-    const selected = Math.min(
-      availableColumns.length - 1,
-      Math.floor(columnRoll.value * availableColumns.length),
-    );
-    const [x] = availableColumns.splice(selected, 1);
-    if (x !== undefined) columns.push(x);
-  }
-
-  const frozenColumns = Object.freeze(columns);
+  // The plan deliberately ignores the current stack. If either cell of the
+  // warned pair is blocked when due, the same announced column waits.
   return {
     state: {
       ...state,
       survivalDebrisWarningColumns: frozenColumns,
-      survivalDebrisRandomizer: randomizer,
+      survivalDebrisRandomizer: columnRoll.randomizer,
     },
     columns: frozenColumns,
   };
@@ -360,19 +354,28 @@ function planSurvivalDebris(state: GameState): { state: GameState; columns: read
 
 function spawnSurvivalDebris(state: GameState): { state: GameState; cells: readonly Cell[] } {
   const occupied = new Set<string>([
-    ...state.survivalDebris.map(cellKey),
+    ...state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey),
     ...(state.active ? cellsForPiece(state.active).map(cellKey) : []),
   ]);
   const survivalDebris = [...state.survivalDebris];
   const cells: Cell[] = [];
   let survivalDebrisNextId = state.survivalDebrisNextId;
 
-  for (const x of state.survivalDebrisWarningColumns) {
-    const cell = { x, y: VISIBLE_START_ROW };
-    if (state.board[cell.y]?.[cell.x] !== null || occupied.has(cellKey(cell))) continue;
-    survivalDebris.push({ id: survivalDebrisNextId, ...cell });
-    survivalDebrisNextId += 1;
-    cells.push(cell);
+  const x = state.survivalDebrisWarningColumns[0];
+  if (x !== undefined) {
+    const pair: SurvivalDebris = { id: survivalDebrisNextId, x, y: VISIBLE_START_ROW - 1 };
+    const pairCells = cellsForSurvivalDebris(pair);
+    const blocked = pairCells.some((cell) => (
+      cell.y < 0
+      || cell.y >= BOARD_HEIGHT
+      || state.board[cell.y]?.[cell.x] !== null
+      || occupied.has(cellKey(cell))
+    ));
+    if (!blocked) {
+      survivalDebris.push(pair);
+      survivalDebrisNextId += 1;
+      cells.push(...pairCells);
+    }
   }
 
   return {
@@ -390,7 +393,7 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
 
 function settleSurvivalDebris(state: GameState): { state: GameState; landed: readonly Cell[] } {
   if (state.mode !== 'race' || state.survivalDebris.length === 0) return { state, landed: Object.freeze([]) };
-  const occupied = new Set(state.survivalDebris.map(cellKey));
+  const occupied = new Set(state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey));
   const activeCells = new Set(state.active ? cellsForPiece(state.active).map(cellKey) : []);
   const falling = [...state.survivalDebris].sort((left, right) => (
     right.y - left.y || left.x - right.x || left.id - right.id
@@ -399,20 +402,25 @@ function settleSurvivalDebris(state: GameState): { state: GameState; landed: rea
   const landed: Cell[] = [];
   let board = state.board;
 
-  for (const stone of falling) {
-    occupied.delete(cellKey(stone));
-    const nextCell = { x: stone.x, y: stone.y + 1 };
-    const canFall = nextCell.y < BOARD_HEIGHT
-      && board[nextCell.y]?.[nextCell.x] === null
-      && !activeCells.has(cellKey(nextCell))
-      && !occupied.has(cellKey(nextCell));
+  for (const pair of falling) {
+    for (const cell of cellsForSurvivalDebris(pair)) occupied.delete(cellKey(cell));
+    const movedPair = { ...pair, y: pair.y + 1 };
+    const movedCells = cellsForSurvivalDebris(movedPair);
+    const canFall = movedCells.every((cell) => (
+      cell.y >= 0
+      && cell.y < BOARD_HEIGHT
+      && board[cell.y]?.[cell.x] === null
+      && !activeCells.has(cellKey(cell))
+      && !occupied.has(cellKey(cell))
+    ));
     if (canFall) {
-      survivalDebris.push({ ...stone, y: nextCell.y });
-      occupied.add(cellKey(nextCell));
+      survivalDebris.push(movedPair);
+      for (const cell of movedCells) occupied.add(cellKey(cell));
       continue;
     }
-    board = setCell(board, stone.x, stone.y, SURVIVAL_STONE_CELL);
-    landed.push({ x: stone.x, y: stone.y });
+    const settledCells = cellsForSurvivalDebris(pair);
+    for (const cell of settledCells) board = setCell(board, cell.x, cell.y, SURVIVAL_STONE_CELL);
+    landed.push(...settledCells);
   }
 
   return {
@@ -429,7 +437,7 @@ interface SurvivalDebrisAdvance extends GameTransition {
   startedLineClear: boolean;
 }
 
-/** Advances the independent debris clock and its 3:2 fixed-tick fall accumulator. */
+/** Advances the independent debris clock and its exact 2× fixed-tick fall accumulator. */
 function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
   if (state.mode !== 'race') return { state, events: [], startedLineClear: false };
   let next = state;
@@ -516,9 +524,17 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
 }
 
 function mapSurvivalDebrisAfterClear(board: GameState['board'], rows: readonly number[], debris: readonly SurvivalDebris[]): readonly SurvivalDebris[] {
-  return Object.freeze(debris.flatMap((stone) => {
-    const [mapped] = mapCellsAfterClear(board, rows, [{ x: stone.x, y: stone.y }]);
-    return mapped ? [{ ...stone, ...mapped }] : [];
+  return Object.freeze(debris.map((pair) => {
+    const before = cellsForSurvivalDebris(pair);
+    const after = mapCellsAfterClear(board, rows, before);
+    if (after.length !== before.length) return pair;
+    const dx = after[0]!.x - before[0]!.x;
+    const dy = after[0]!.y - before[0]!.y;
+    const rigid = after.every((cell, index) => (
+      cell.x - before[index]!.x === dx
+      && cell.y - before[index]!.y === dy
+    ));
+    return rigid ? { ...pair, x: pair.x + dx, y: pair.y + dy } : pair;
   }));
 }
 
@@ -542,9 +558,9 @@ function shiftSurvivalMovers(state: GameState, deltaY: number): {
   overflow: boolean;
 } {
   const active = state.active ? { ...state.active, y: state.active.y + deltaY } : null;
-  const survivalDebris = Object.freeze(state.survivalDebris.map((stone) => ({ ...stone, y: stone.y + deltaY })));
+  const survivalDebris = Object.freeze(state.survivalDebris.map((pair) => ({ ...pair, y: pair.y + deltaY })));
   const activeOverflow = active !== null && cellsForPiece(active).some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT);
-  const debrisOverflow = survivalDebris.some((stone) => stone.y < 0 || stone.y >= BOARD_HEIGHT);
+  const debrisOverflow = survivalDebris.some((pair) => pair.y < 0 || pair.y + 1 >= BOARD_HEIGHT);
   return { active, survivalDebris, overflow: activeOverflow || debrisOverflow };
 }
 

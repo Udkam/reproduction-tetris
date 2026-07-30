@@ -254,11 +254,7 @@ describe('independent Survival stone stream', () => {
       columns: warning.state.survivalDebrisWarningColumns,
       leadSeconds: SURVIVAL_DEBRIS_WARNING_SECONDS,
     });
-    expect(warning.state.survivalDebrisWarningColumns.length).toBeGreaterThanOrEqual(1);
-    expect(warning.state.survivalDebrisWarningColumns.length).toBeLessThanOrEqual(2);
-    expect(new Set(warning.state.survivalDebrisWarningColumns).size).toBe(
-      warning.state.survivalDebrisWarningColumns.length,
-    );
+    expect(warning.state.survivalDebrisWarningColumns).toHaveLength(1);
     expect(warning.state.randomizer).toEqual(initialBag);
 
     const paused = dispatch(warning.state, { type: 'pause' }).state;
@@ -278,12 +274,18 @@ describe('independent Survival stone stream', () => {
       intervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
       nextIntervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - 1,
     }));
-    expect(first.state.survivalDebris.length).toBeGreaterThanOrEqual(1);
-    expect(first.state.survivalDebris.length).toBeLessThanOrEqual(2);
-    expect(first.state.survivalDebris[0]).toMatchObject({ x: expect.any(Number), y: 20 });
-    expect(first.state.survivalDebris.map((stone) => stone.x).sort((a, b) => a - b)).toEqual(
-      [...warning.state.survivalDebrisWarningColumns].sort((a, b) => a - b),
-    );
+    expect(first.state.survivalDebris).toEqual([{
+      id: 1,
+      x: warning.state.survivalDebrisWarningColumns[0],
+      y: VISIBLE_START_ROW - 1,
+    }]);
+    expect(first.events).toContainEqual(expect.objectContaining({
+      type: 'survival-stones-spawned',
+      cells: [
+        { x: warning.state.survivalDebrisWarningColumns[0], y: VISIBLE_START_ROW - 1 },
+        { x: warning.state.survivalDebrisWarningColumns[0], y: VISIBLE_START_ROW },
+      ],
+    }));
     expect(first.state.survivalDebrisWarningColumns).toEqual([]);
     expect(first.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS - 1);
     expect(first.state.randomizer).toEqual(initialBag);
@@ -324,27 +326,34 @@ describe('independent Survival stone stream', () => {
   it('keeps a blocked warned event due until one announced entry column opens', () => {
     let board = createBoard();
     board = setCell(board, 2, VISIBLE_START_ROW, 'J');
-    board = setCell(board, 7, VISIBLE_START_ROW, 'L');
+    board = setCell(board, 2, VISIBLE_START_ROW - 1, 'L');
     const intervalTicks = SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS * TICKS_PER_SECOND;
     const due = dispatch({
       ...isolatedStoneState(0x5a12),
       board,
       survivalBedrockRows: 0,
-      survivalDebrisWarningColumns: [2, 7],
+      survivalDebrisWarningColumns: [2],
       survivalDebrisIntervalTicks: intervalTicks - 1,
     }, { type: 'tick' });
 
     expect(due.state.survivalDebris).toEqual([]);
-    expect(due.state.survivalDebrisWarningColumns).toEqual([2, 7]);
+    expect(due.state.survivalDebrisWarningColumns).toEqual([2]);
     expect(due.state.survivalDebrisIntervalTicks).toBe(intervalTicks);
     expect(due.state.survivalDebrisIntervalSeconds).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS);
     expect(due.events.some((event) => event.type === 'survival-stones-spawned')).toBe(false);
 
-    const opened = dispatch({
+    const stillBlocked = dispatch({
       ...due.state,
       board: setCell(due.state.board, 2, VISIBLE_START_ROW, null),
     }, { type: 'tick' });
-    expect(opened.state.survivalDebris).toEqual([{ id: 1, x: 2, y: VISIBLE_START_ROW }]);
+    expect(stillBlocked.state.survivalDebris).toEqual([]);
+    expect(stillBlocked.state.survivalDebrisWarningColumns).toEqual([2]);
+
+    const opened = dispatch({
+      ...stillBlocked.state,
+      board: setCell(stillBlocked.state.board, 2, VISIBLE_START_ROW - 1, null),
+    }, { type: 'tick' });
+    expect(opened.state.survivalDebris).toEqual([{ id: 1, x: 2, y: VISIBLE_START_ROW - 1 }]);
     expect(opened.state.survivalDebrisWarningColumns).toEqual([]);
     expect(opened.state.survivalDebrisIntervalTicks).toBe(0);
     expect(opened.state.survivalDebrisIntervalSeconds).toBe(
@@ -352,19 +361,22 @@ describe('independent Survival stone stream', () => {
     );
   });
 
-  it('falls at exactly one and a half times the fixed Survival cadence', () => {
+  it('falls at exactly twice the fixed Survival cadence while preserving the rigid pair', () => {
     const state: GameState = {
       ...start(0x5a0f, 'race'),
       board: createBoard(),
       survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 4, y: 24 },
-      survivalDebris: [{ id: 1, x: 0, y: 20 }],
+      survivalDebris: [{ id: 1, x: 0, y: VISIBLE_START_ROW - 1 }],
       survivalDebrisFallProgress: 0,
     };
-    const advanced = advance(state, SURVIVAL_GRAVITY_TICKS * 2);
-    // The player falls two normal Survival cells in 80 ticks; the stone moves three.
-    expect(advanced.active).toMatchObject({ y: 26 });
-    expect(advanced.survivalDebris).toEqual([{ id: 1, x: 0, y: 23 }]);
+    const halfway = advance(state, SURVIVAL_GRAVITY_TICKS / 2);
+    expect(halfway.active).toMatchObject({ y: 24 });
+    expect(halfway.survivalDebris).toEqual([{ id: 1, x: 0, y: VISIBLE_START_ROW }]);
+
+    const advanced = advance(state, SURVIVAL_GRAVITY_TICKS);
+    expect(advanced.active).toMatchObject({ y: 25 });
+    expect(advanced.survivalDebris).toEqual([{ id: 1, x: 0, y: VISIBLE_START_ROW + 1 }]);
   });
 
   it('treats a falling stone as a real collision while it is still in the air', () => {
@@ -390,14 +402,20 @@ describe('independent Survival stone stream', () => {
       board,
       survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 3, y: 30 },
-      survivalDebris: [{ id: 1, x: 9, y: BOARD_HEIGHT - 1 }],
-      survivalDebrisFallProgress: 77,
+      survivalDebris: [{ id: 1, x: 9, y: BOARD_HEIGHT - 2 }],
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
       pieceCount: 0,
     }, { type: 'tick' });
 
     expect(transition.state.phase).toBe('line-clear');
     expect(transition.state.board[BOARD_HEIGHT - 1]![9]).toBe(SURVIVAL_STONE_CELL);
-    expect(transition.events).toContainEqual({ type: 'survival-stones-landed', cells: [{ x: 9, y: BOARD_HEIGHT - 1 }] });
+    expect(transition.events).toContainEqual({
+      type: 'survival-stones-landed',
+      cells: [
+        { x: 9, y: BOARD_HEIGHT - 2 },
+        { x: 9, y: BOARD_HEIGHT - 1 },
+      ],
+    });
     expect(transition.events).toContainEqual({ type: 'clear-started', rows: [BOARD_HEIGHT - 1] });
 
     for (let index = 0; index < LINE_CLEAR_DELAY_TICKS; index += 1) transition = dispatch(transition.state, { type: 'tick' });
@@ -412,7 +430,47 @@ describe('independent Survival stone stream', () => {
     });
     expect(transition.state.pieceCount).toBe(0);
     expect(transition.state.active).toMatchObject({ type: 'O', x: 3, y: 31 });
-    expect(transition.state.board[BOARD_HEIGHT - 1]).toEqual(Array(10).fill(null));
+    expect(transition.state.board[BOARD_HEIGHT - 1]![9]).toBe(SURVIVAL_STONE_CELL);
+    expect(transition.state.board[BOARD_HEIGHT - 2]![9]).toBe(null);
+  });
+
+  it('settles both cells together and can complete two ordinary rows in one impact', () => {
+    let board = createBoard();
+    for (let y = BOARD_HEIGHT - 2; y < BOARD_HEIGHT; y += 1) {
+      for (let x = 0; x < 9; x += 1) board = setCell(board, x, y, 'S');
+    }
+    let transition = dispatch({
+      ...start(0x5a13, 'race'),
+      board,
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 3, y: 30 },
+      survivalDebris: [{ id: 1, x: 9, y: BOARD_HEIGHT - 2 }],
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      pieceCount: 0,
+    }, { type: 'tick' });
+
+    expect(transition.state.pendingClearRows).toEqual([BOARD_HEIGHT - 2, BOARD_HEIGHT - 1]);
+    expect(transition.events).toContainEqual({
+      type: 'survival-stones-landed',
+      cells: [
+        { x: 9, y: BOARD_HEIGHT - 2 },
+        { x: 9, y: BOARD_HEIGHT - 1 },
+      ],
+    });
+    expect(transition.events).toContainEqual({
+      type: 'clear-started',
+      rows: [BOARD_HEIGHT - 2, BOARD_HEIGHT - 1],
+    });
+
+    for (let index = 0; index < LINE_CLEAR_DELAY_TICKS; index += 1) {
+      transition = dispatch(transition.state, { type: 'tick' });
+    }
+    expect(transition.state.lines).toBe(2);
+    expect(transition.state.score).toBe(100);
+    expect(transition.state.board.slice(-2)).toEqual([
+      Array(10).fill(null),
+      Array(10).fill(null),
+    ]);
   });
 });
 

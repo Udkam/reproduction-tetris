@@ -109,7 +109,10 @@ export interface MutationActiveCarrier {
   item: MutationItem;
 }
 
-/** One independently falling, one-cell Survival stone before it settles into the board. */
+/**
+ * One rigid, vertically stacked Survival rock pair before it settles into the board.
+ * `y` is the upper cell; the lower cell is always exactly `y + 1`.
+ */
 export interface SurvivalDebris {
   id: number;
   x: number;
@@ -173,9 +176,9 @@ export interface GameState {
   survivalDebrisIntervalTicks: number;
   /** Seconds used by the next stone-stream emission; starts at 20 and floors at 10. */
   survivalDebrisIntervalSeconds: number;
-  /** Unique canonical columns announced before the next stone event. */
+  /** The single canonical column announced before the next rigid rock pair. */
   survivalDebrisWarningColumns: readonly number[];
-  /** Exact integer accumulator that advances debris at 1.5× Survival gravity. */
+  /** Exact integer accumulator that advances the rigid pair at 2× Survival gravity. */
   survivalDebrisFallProgress: number;
   /** Separate deterministic stream so debris timing never changes the seven-bag. */
   survivalDebrisRandomizer: RandomizerState;
