@@ -42,7 +42,7 @@ import {
   type PuzzleProgress,
 } from './puzzleProgress';
 import type { ScoreRecord } from './leaderboard';
-import { itemLabel, modeRules } from './ui/localization';
+import { itemLabel, modeRules, modeRulesTitle } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
@@ -566,18 +566,44 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.textContent).not.toContain('带核心标记的方块携带道具。');
 
     act(() => mutation.click());
+    const sheet = view.container.querySelector<HTMLElement>('.action-sheet')!;
     const rules = view.container.querySelector<HTMLElement>('[data-testid="entry-mode-rules"]')!;
+    expect(sheet.querySelector('h2')?.textContent).toBe('异变规则');
+    expect(sheet.textContent).not.toContain('首次进入说明');
+    expect(rules.querySelector('strong')).toBeNull();
     expect(rules.textContent).toContain('特殊整块任一格被清除时，立即释放一次道具。');
     expect(rules.textContent).toContain('计时效果重复触发会刷新为 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
-      .find((button) => button.textContent === '开始')!;
+      .find((button) => button.textContent === '好的')!;
     act(() => start.click());
     expect(JSON.parse(localStorage.getItem('tetris:mode-rule-intros:v1') ?? '[]')).toContain('sprint');
     expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
     view.unmount();
     view.unmount();
+  });
+
+  it('uses localized compact rule titles and describes random same-column Survival stones', () => {
+    expect((['marathon', 'race', 'sprint', 'puzzle'] as const).map((mode) => modeRulesTitle('zh-CN', mode))).toEqual([
+      '经典规则',
+      '生存规则',
+      '异变规则',
+      '解谜规则',
+    ]);
+    expect((['marathon', 'race', 'sprint', 'puzzle'] as const).map((mode) => modeRulesTitle('en', mode))).toEqual([
+      'Classic Rules',
+      'Survival Rules',
+      'Mutation Rules',
+      'Puzzle Rules',
+    ]);
+    const chineseStonefall = modeRules('zh-CN', 'race').find((fact) => fact.id === 'stonefall')?.value ?? '';
+    const englishStonefall = modeRules('en', 'race').find((fact) => fact.id === 'stonefall')?.value ?? '';
+    expect(chineseStonefall).toContain('随机 1–2 块');
+    expect(chineseStonefall).toContain('同一随机列');
+    expect(chineseStonefall).not.toContain('同列双石');
+    expect(englishStonefall).toContain('1–2 clearable rocks');
+    expect(englishStonefall).toContain('one random column');
   });
 
   it('uses stable typed rule facts in both languages without delimiter parsing or placeholder entries', () => {

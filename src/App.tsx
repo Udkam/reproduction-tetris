@@ -49,6 +49,7 @@ import {
   itemLabel,
   modeCopy,
   modeRules,
+  modeRulesTitle,
   parseLanguage,
   puzzleDisplayName,
   type AppLanguage,
@@ -379,12 +380,21 @@ function ModeGlyph({ mode }: { mode: GameMode }) {
   );
 }
 
-function ModeRuleSummary({ mode, language, testId }: { mode: GameMode; language: AppLanguage; testId?: string }) {
+function ModeRuleSummary({
+  mode,
+  language,
+  testId,
+  showHeading = true,
+}: {
+  mode: GameMode;
+  language: AppLanguage;
+  testId?: string;
+  showHeading?: boolean;
+}) {
   const copy = appCopy(language);
-  const modeLabel = modeCopy(language, mode).label;
   return (
-    <section className={`mode-rule-summary mode-rule-summary--${mode}`} data-testid={testId} aria-label={`${modeLabel} ${copy.labels.rules}`}>
-      <strong>{copy.labels.rules}</strong>
+    <section className={`mode-rule-summary mode-rule-summary--${mode}`} data-testid={testId} aria-label={modeRulesTitle(language, mode)}>
+      {showHeading && <strong>{copy.labels.rules}</strong>}
       <ul>
         {modeRules(language, mode).map((fact) => (
           <li key={fact.id} data-rule-id={fact.id}><b>{fact.label}</b><span>{fact.value}</span></li>
@@ -1711,13 +1721,13 @@ export default function App() {
       )}
       <ActionSheet
         open={ruleIntroMode !== null}
-        title={ruleIntroMode === null ? appCopy(language).labels.rules : `${modeCopy(language, ruleIntroMode).label} ${appCopy(language).labels.rules}`}
-        description={appCopy(language).labels.firstEntry}
+        title={ruleIntroMode === null ? appCopy(language).labels.rules : modeRulesTitle(language, ruleIntroMode)}
+        description=""
         onCancel={() => setRuleIntroMode(null)}
         onConfirm={beginIntroducedMode}
       >
-        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} language={language} testId="entry-mode-rules" />}
-        <button className="primary-action" data-autofocus type="button" onClick={beginIntroducedMode}>{appCopy(language).labels.start}</button>
+        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} language={language} testId="entry-mode-rules" showHeading={false} />}
+        <button className="primary-action" data-autofocus type="button" onClick={beginIntroducedMode}>{appCopy(language).labels.okay}</button>
         <button className="secondary-action" type="button" onClick={() => setRuleIntroMode(null)}>{appCopy(language).labels.back}</button>
       </ActionSheet>
     </div>
