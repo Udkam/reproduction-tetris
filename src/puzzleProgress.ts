@@ -13,13 +13,13 @@ const V2_PROGRESS_VERSION = 2;
 const LEGACY_PROGRESS_VERSION = 1;
 export const PUZZLE_CAMPAIGN_REVISION = 1;
 
-/** T13 treats the set as an open workshop: every specimen is selectable immediately. */
-export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = PUZZLE_DEFINITIONS.length;
+/** Fresh Phase-7 progress begins with the first three authored lessons. */
+export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = 3;
 
 export interface PuzzleProgress {
   version: typeof PROGRESS_VERSION;
   campaignRevision: typeof PUZZLE_CAMPAIGN_REVISION;
-  /** Canonical IDs only; completion is history, never an access gate. */
+  /** Canonical IDs only; completion history derives the current access frontier. */
   completedLevelIds: PuzzleId[];
   /** Lowest number of locked pieces from a real completed attempt, by canonical level. */
   bestPieceCounts: Partial<Record<PuzzleId, number>>;
@@ -115,9 +115,9 @@ function buildRowBands(levels: readonly CampaignLevel[]): readonly (readonly Cam
   return Object.freeze(tiers);
 }
 
-/** Current five-level workshop bands; these remain presentation grouping only. */
+/** Current five-level workshop bands; bands 06–10 onward also define frontier gates. */
 export const PUZZLE_ROW_BANDS = buildRowBands(CAMPAIGN_LEVELS);
-/** @deprecated Compatibility export; no access gate is derived from these groups. */
+/** @deprecated Compatibility export for the same canonical five-level bands. */
 export const CAMPAIGN_TIERS = PUZZLE_ROW_BANDS;
 
 export interface PuzzleTierGate {
@@ -128,6 +128,30 @@ export interface PuzzleTierGate {
   completedCount: number;
   requiredCount: number;
 }
+
+interface PuzzleTierGateDefinition {
+  prerequisiteTier: readonly CampaignLevel[];
+  unlocksTier: readonly CampaignLevel[];
+  requiredCount: number;
+}
+
+const PUZZLE_TIER_GATES: readonly PuzzleTierGateDefinition[] = Object.freeze([
+  Object.freeze({
+    prerequisiteTier: Object.freeze(CAMPAIGN_LEVELS.slice(0, 3)),
+    unlocksTier: Object.freeze(CAMPAIGN_LEVELS.slice(3, 5)),
+    requiredCount: 2,
+  }),
+  Object.freeze({
+    prerequisiteTier: Object.freeze(CAMPAIGN_LEVELS.slice(0, 5)),
+    unlocksTier: PUZZLE_ROW_BANDS[1]!,
+    requiredCount: 3,
+  }),
+  ...PUZZLE_ROW_BANDS.slice(1, -1).map((prerequisiteTier, index) => Object.freeze({
+    prerequisiteTier,
+    unlocksTier: PUZZLE_ROW_BANDS[index + 2]!,
+    requiredCount: 3,
+  })),
+]);
 
 const LEVEL_IDS = new Set<PuzzleId>(CAMPAIGN_LEVELS.map((level) => level.id));
 const V4_LEVEL_IDS = new Set<PuzzleId>(V4_CAMPAIGN_ORDER);
@@ -236,12 +260,45 @@ function bestPieceCountsFrom(progress: PuzzleProgress, completedIds: readonly Pu
   return orderedBestPieceCounts(progress.bestPieceCounts, completedIds);
 }
 
-function unlockedLevelIdsFrom(_progress: PuzzleProgress): ReadonlySet<PuzzleId> {
-  return new Set<PuzzleId>(CAMPAIGN_LEVELS.map((level) => level.id));
+function completedIdSetFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
+  return new Set(completedIdsFrom(progress) ?? []);
 }
 
-/** T13 has no locked progression frontier; retained for callers that render a nullable notice. */
-export function nextPuzzleTierGate(_progress: PuzzleProgress): PuzzleTierGate | null {
+function unlockedLevelIdsFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
+  const completed = completedIdSetFrom(progress);
+  const unlocked = new Set<PuzzleId>(completed);
+  for (const level of CAMPAIGN_LEVELS.slice(0, INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT)) {
+    unlocked.add(level.id);
+  }
+
+  for (const gate of PUZZLE_TIER_GATES) {
+    const completedCount = gate.prerequisiteTier.reduce(
+      (count, level) => count + Number(completed.has(level.id)),
+      0,
+    );
+    if (completedCount < gate.requiredCount) break;
+    for (const level of gate.unlocksTier) unlocked.add(level.id);
+  }
+  return unlocked;
+}
+
+/** Returns the first unsatisfied gate on the canonical, already-open frontier. */
+export function nextPuzzleTierGate(progress: PuzzleProgress): PuzzleTierGate | null {
+  const completed = completedIdSetFrom(progress);
+  for (const gate of PUZZLE_TIER_GATES) {
+    const completedCount = gate.prerequisiteTier.reduce(
+      (count, level) => count + Number(completed.has(level.id)),
+      0,
+    );
+    if (completedCount < gate.requiredCount) {
+      return {
+        prerequisiteTier: gate.prerequisiteTier,
+        unlocksTier: gate.unlocksTier,
+        completedCount,
+        requiredCount: gate.requiredCount,
+      };
+    }
+  }
   return null;
 }
 
@@ -387,7 +444,7 @@ export function puzzleBestPieceCount(progress: PuzzleProgress, levelId: PuzzleId
   return bestPieceCountsFrom(progress, completedIds)?.[levelId] ?? null;
 }
 
-/** Completion history never changes the workshop's available specimen count. */
+/** Counts the canonical frontier plus individually replayable historical completions. */
 export function unlockedPuzzleLevelCount(progress: PuzzleProgress): number {
   return unlockedLevelIdsFrom(progress).size;
 }
@@ -397,11 +454,11 @@ export function isPuzzleUnlocked(progress: PuzzleProgress, levelId: PuzzleId): b
 }
 
 export function nextLockedPuzzleLevel(progress: PuzzleProgress): CampaignLevel | null {
-  void progress;
-  return null;
+  const unlocked = unlockedLevelIdsFrom(progress);
+  return CAMPAIGN_LEVELS.find((level) => !unlocked.has(level.id)) ?? null;
 }
 
-/** Records only a core-reported completion; every current level is selectable. */
+/** Records only a core-reported completion for a level on the canonical frontier. */
 export function recordCanonicalPuzzleCompletion(progress: PuzzleProgress, state: GameState): PuzzleProgress {
   const completedIds = completedIdsFrom(progress);
   const bestPieceCounts = completedIds === null ? null : bestPieceCountsFrom(progress, completedIds);

@@ -46,7 +46,7 @@ function unlockedIds(progress = defaultPuzzleProgress()): PuzzleId[] {
   return CAMPAIGN_LEVELS.filter((level) => isPuzzleUnlocked(progress, level.id)).map((level) => level.id);
 }
 
-describe('revisioned all-open Puzzle workshop persistence baseline', () => {
+describe('revisioned progressive Puzzle campaign persistence', () => {
   it('binds every authored level to ordered difficulty and five-level presentation bands', () => {
     expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name])).toEqual(
       PUZZLE_DEFINITIONS.map((level) => [level.id, level.name]),
@@ -63,40 +63,97 @@ describe('revisioned all-open Puzzle workshop persistence baseline', () => {
     expect(CAMPAIGN_TIERS).toBe(PUZZLE_ROW_BANDS);
   });
 
-  it('makes every level available on a fresh save and exposes no artificial gate or frontier', () => {
+  it('opens only 01–03 on a fresh save and exposes the first two-of-three gate', () => {
     const progress = defaultPuzzleProgress();
-    expect(INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT).toBe(CAMPAIGN_LEVELS.length);
-    expect(unlockedPuzzleLevelCount(progress)).toBe(CAMPAIGN_LEVELS.length);
-    expect(unlockedIds(progress)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
-    expect(nextLockedPuzzleLevel(progress)).toBeNull();
-    expect(nextPuzzleTierGate(progress)).toBeNull();
+    expect(INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT).toBe(3);
+    expect(unlockedPuzzleLevelCount(progress)).toBe(3);
+    expect(unlockedIds(progress)).toEqual(CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id));
+    expect(nextLockedPuzzleLevel(progress)).toBe(CAMPAIGN_LEVELS[3]);
+    expect(nextPuzzleTierGate(progress)).toEqual({
+      prerequisiteTier: CAMPAIGN_LEVELS.slice(0, 3),
+      unlocksTier: CAMPAIGN_LEVELS.slice(3, 5),
+      completedCount: 0,
+      requiredCount: 2,
+    });
   });
 
-  it('keeps every selected endgame open regardless of historical completion order', () => {
+  it('opens 04–05, then 06–10, and advances each later five-level frontier at three completions', () => {
+    const firstGate = progressWith(CAMPAIGN_LEVELS[0]!.id, CAMPAIGN_LEVELS[2]!.id);
+    expect(unlockedIds(firstGate)).toEqual(CAMPAIGN_LEVELS.slice(0, 5).map((level) => level.id));
+    expect(nextPuzzleTierGate(firstGate)).toEqual({
+      prerequisiteTier: CAMPAIGN_LEVELS.slice(0, 5),
+      unlocksTier: CAMPAIGN_LEVELS.slice(5, 10),
+      completedCount: 2,
+      requiredCount: 3,
+    });
+
+    const secondGate = progressWith(
+      CAMPAIGN_LEVELS[0]!.id,
+      CAMPAIGN_LEVELS[2]!.id,
+      CAMPAIGN_LEVELS[4]!.id,
+    );
+    expect(unlockedIds(secondGate)).toEqual(CAMPAIGN_LEVELS.slice(0, 10).map((level) => level.id));
+    expect(nextPuzzleTierGate(secondGate)).toEqual({
+      prerequisiteTier: CAMPAIGN_LEVELS.slice(5, 10),
+      unlocksTier: CAMPAIGN_LEVELS.slice(10, 15),
+      completedCount: 0,
+      requiredCount: 3,
+    });
+
+    const completed: PuzzleId[] = [
+      CAMPAIGN_LEVELS[0]!.id,
+      CAMPAIGN_LEVELS[2]!.id,
+      CAMPAIGN_LEVELS[4]!.id,
+    ];
+    for (let bandStart = 5; bandStart < 45; bandStart += 5) {
+      completed.push(
+        CAMPAIGN_LEVELS[bandStart]!.id,
+        CAMPAIGN_LEVELS[bandStart + 1]!.id,
+        CAMPAIGN_LEVELS[bandStart + 2]!.id,
+      );
+    }
+    const finalTierOpen = progressWith(...completed);
+    expect(unlockedPuzzleLevelCount(finalTierOpen)).toBe(50);
+    expect(unlockedIds(finalTierOpen)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
+    expect(nextLockedPuzzleLevel(finalTierOpen)).toBeNull();
+    expect(nextPuzzleTierGate(finalTierOpen)).toBeNull();
+  });
+
+  it('keeps migrated out-of-order completions replayable without leapfrogging the frontier', () => {
     const historic = progressWith(CAMPAIGN_LEVELS[16]!.id, CAMPAIGN_LEVELS[17]!.id);
-    expect(unlockedPuzzleLevelCount(historic)).toBe(CAMPAIGN_LEVELS.length);
-    expect(unlockedIds(historic)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
+    expect(unlockedPuzzleLevelCount(historic)).toBe(5);
+    expect(unlockedIds(historic)).toEqual([
+      ...CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id),
+      CAMPAIGN_LEVELS[16]!.id,
+      CAMPAIGN_LEVELS[17]!.id,
+    ]);
     expect(isPuzzleComplete(historic, CAMPAIGN_LEVELS[16]!.id)).toBe(true);
-    expect(nextLockedPuzzleLevel(historic)).toBeNull();
-    expect(nextPuzzleTierGate(historic)).toBeNull();
+    expect(isPuzzleUnlocked(historic, CAMPAIGN_LEVELS[16]!.id)).toBe(true);
+    expect(nextLockedPuzzleLevel(historic)).toBe(CAMPAIGN_LEVELS[3]);
+    expect(nextPuzzleTierGate(historic)?.unlocksTier).toEqual(CAMPAIGN_LEVELS.slice(3, 5));
   });
 
-  it('records only a real canonical win and retains the lowest successful locked-piece count', () => {
+  it('rejects a locked-level win and retains the lowest successful count for canonical wins', () => {
     const late = CAMPAIGN_LEVELS.at(-1)!;
     const first = CAMPAIGN_LEVELS[0]!;
     let progress = defaultPuzzleProgress();
 
-    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(late.id, 12));
-    expect(progress.completedLevelIds).toEqual([late.id]);
-    expect(puzzleBestPieceCount(progress, late.id)).toBe(12);
+    expect(recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(late.id, 12))).toBe(progress);
+    expect(puzzleBestPieceCount(progress, late.id)).toBeNull();
     progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 7));
-    expect(progress.completedLevelIds).toEqual([first.id, late.id]);
+    expect(progress.completedLevelIds).toEqual([first.id]);
     expect(puzzleBestPieceCount(progress, first.id)).toBe(7);
     expect(recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 8))).toBe(progress);
     progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 5));
     expect(puzzleBestPieceCount(progress, first.id)).toBe(5);
     expect(puzzleBestPieceCount(progress, CAMPAIGN_LEVELS[1]!.id)).toBeNull();
-    expect(unlockedPuzzleLevelCount(progress)).toBe(CAMPAIGN_LEVELS.length);
+    expect(unlockedPuzzleLevelCount(progress)).toBe(3);
+
+    const migratedLate = progressWith(late.id);
+    const replayedLate = recordCanonicalPuzzleCompletion(migratedLate, finishedPuzzleState(late.id, 11));
+    expect(replayedLate.completedLevelIds).toContain(late.id);
+    expect(puzzleBestPieceCount(replayedLate, late.id)).toBe(11);
+    expect(unlockedPuzzleLevelCount(replayedLate)).toBe(4);
   });
 
   it('parses v5 bests and migrates frozen v4/v3/v2/v1 completion domains', () => {
@@ -183,7 +240,7 @@ describe('revisioned all-open Puzzle workshop persistence baseline', () => {
     });
   });
 
-  it('fails closed on malformed persisted values while preserving the all-open workshop', () => {
+  it('fails closed on malformed persisted values while preserving only the fresh frontier', () => {
     const baseline = defaultPuzzleProgress();
     const malformed = [
       null,
@@ -203,7 +260,7 @@ describe('revisioned all-open Puzzle workshop persistence baseline', () => {
     for (const raw of malformed) {
       const parsed = parsePuzzleProgress(raw);
       expect(parsed).toEqual(baseline);
-      expect(unlockedPuzzleLevelCount(parsed)).toBe(CAMPAIGN_LEVELS.length);
+      expect(unlockedPuzzleLevelCount(parsed)).toBe(INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT);
     }
 
     expect(migrateV4PuzzleProgress('{"version":4,"completedLevelIds":["offset-01"],"bestPieceCounts":{}}')).toEqual(baseline);
