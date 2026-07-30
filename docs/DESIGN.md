@@ -103,8 +103,10 @@ shelves, channels, delayed clears and recovery space into boards that remain rea
 as constructions rather than random rubble. Candidate authoring uses separate ordinary
 and sparse-anchor pools. Six retained packages are ordinary 14/15-drop boards; four
 retained packages each carry one authored headroom anchor. The first general pool
-produced only 12/13-drop carriers, but six fixed-bound probes found no primary route; a
-dedicated 11-drop authoring pass therefore fixes the sparse carrier size.
+produced only 12/13-drop carriers, but six fixed-bound probes found no primary route.
+A dedicated 11-drop pass produced valid boards, yet bounded route and topology checks
+found no two-route anchor package. The sparse authoring correction therefore permits
+one final 10-drop pass before the four-anchor quota is reconsidered.
 
 The initial full-column-support rule is rejected as an overconstraint. The player's
 actual invariant is that an anchor never occupies an initial target row. For this batch

@@ -621,6 +621,29 @@ forced opening followed by a later meaningful branch. If no alternate exists
 by lock 8, stop for a new curriculum decision. If one exists, record its
 measured divergence before considering a final-tier-only divergence rule.
 
+**Levels 41–50 delayed-branch diagnosis and carrier decision (2026-07-30):**
+candidate 6 under seed `746220617` still has no alternate route when canonical
+exclusions are extended through lock 8 at the unchanged 36-lock and 300/240
+prefix bounds. The single diagnostic exited normally and left no controlled
+Node process. The 11-drop carrier is therefore rejected; do not weaken the
+two-route requirement, divergence-by-lock-four rule, four-anchor quota, anchor
+row or 720/560 acceptance ceiling.
+
+Open one final sparse-carrier authoring correction at exactly 10 legal,
+zero-clear setup drops and seven contiguous floor target rows. Use the existing
+tracked generator only. First run two identical two-candidate, four-seed smoke
+checks and require byte-identical normalized output plus the existing direct
+schema/row/cell/full-row assertions. Only then run one serial pool with at most
+64 setup seeds, beam 512, 40 retained candidates and a 20,000,000 attempted
+landing budget. Every run uses an explicit ignored output path, Idle priority,
+one processor affinity, no listener and no overlapping Node or agent.
+
+If the pool yields legal boards, inspect outer/near-outer row-12 placements and
+open a separately documented bounded route screen; do not silently reuse the
+exhausted 11-drop probes. If it yields no legal candidates, stop and reconsider
+the final-batch anchor quota rather than opening a ninth generator/search
+variant. Ordinary packages and the current green source WIP remain unchanged.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
