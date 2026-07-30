@@ -56,7 +56,9 @@ timing, randomisation, or any mode rule.
   a worksheet.
 - The connected gallery frame uses the full available row on compact viewports but
   caps at `740 px` on taller screens. The outer frame, not the square controls,
-  contracts to remove structural empty space around the preview and matrix.
+  contracts to remove structural empty space around the preview and matrix. Once
+  contracted, it is vertically centered in the available content row so the whole
+  selector does not cling to the top edge.
 - Desktop and short landscape place a large deep-indigo live board preview on the
   left and the page controls plus matrix on the right. Portrait stacks the same two
   surfaces. The preview, localized level name, current best, and Start action form
@@ -64,6 +66,8 @@ timing, randomisation, or any mode rule.
 - Puzzle keeps a distinct deep-indigo / restrained violet / warm-anchor language
   while reusing TetraMorph typography, mineral white, focus rings, and radii. Nodes
   show only centered number or completion tick; best count appears only in the hero.
+  Hover never translates a first-row control beyond the clipped matrix, and selected
+  nodes carry no ornamental corner squares without product meaning.
 - The two range controls are a real tablist. Each page uses roving focus with
   Left/Right `±1`, Up/Down `±5`, Home/End, and Enter selection. Crossing `25/26`
   changes page without losing focus. Page change and preview settle within `180 ms`;

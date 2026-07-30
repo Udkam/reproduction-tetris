@@ -177,7 +177,11 @@ gallery and pointer-leave behavior. Two bounded corrections are open:
   activation on the tabs themselves. Level-grid `±1 / ±5` navigation is unchanged.
 - tall screens must contract the connected Puzzle outer frame to a content-fit
   `740 px` maximum while compact viewports continue using their full available row;
-  square-node sizes and spacing remain unchanged.
+  the contracted frame is vertically centered in that available row rather than
+  pinned to its top. Square-node sizes and spacing remain unchanged;
+- first-row hover must retain its complete border: level controls do not move beyond
+  the clipped matrix boundary on hover. The two tiny selected-node corner squares
+  have no semantic meaning and are removed rather than explained.
 
 Both findings require focused regressions, a fresh final gate, and replacement
 evidence before Phase 9 may be accepted.
