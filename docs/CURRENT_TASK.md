@@ -2,8 +2,8 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): CONTRACT FROZEN / DESIGN BRAINSTORM COMPLETE /
-SOURCE NOT STARTED.**
+**Status (2026-07-31): CONTRACT FROZEN / SURVIVAL CORE GREEN /
+SURVIVAL RENDERER NEXT.**
 
 The direct goal is to keep correcting this slice until all six requested outcomes are
 implemented and visually accepted:
@@ -27,6 +27,12 @@ The pushed base is `main@87121af42330ab9aea9456e28dfa42e5edc62536`.
 Only the primary coordinator writes shared files. The three brainstorm agents were
 read-only and are finished. Later independent QA agents remain read-only and begin
 only after an immutable candidate exists.
+
+Survival Core checkpoint `2a1fb3b` now represents one event as one rigid vertical
+pair, selects exactly one warned column, defers the complete pair when either entry
+cell is blocked, advances it at exactly `20 ticks/cell`, settles both cells together,
+and preserves deterministic collision, clear, bedrock-shift, hash, restart, and
+seven-bag boundaries. Focused proof passes `18/18` race tests and typecheck.
 
 ### Ordered checkpoints
 

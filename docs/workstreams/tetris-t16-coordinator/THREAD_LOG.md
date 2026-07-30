@@ -27,3 +27,23 @@
 - Blocker: none.
 - Next action: inspect this docs-only diff, commit the contract with exact staging,
   then open Survival Core paths only.
+
+## 2026-07-31 — Survival Core checkpoint
+
+- Task: one warned column, one rigid two-cell entity, exact `20 ticks/cell`.
+- Base: contract recovery `7fc8c514118bee369295d80f325aa50eb419c413`.
+- Product commit: `2a1fb3b`.
+- Changed paths: `src/game/core/constants.ts`, `src/game/core/types.ts`,
+  `src/game/core/engine.ts`, `src/game/core/race.test.ts`.
+- Implementation: one RNG column draw; all-or-nothing two-cell entry; pair-derived
+  collision; rigid motion/settlement; uniform clear mapping; bedrock-shift overflow;
+  two-cell spawn/land events; exact integer 2× cadence.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/race.test.ts --maxWorkers=1`
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: `18/18` focused tests pass; typecheck passes; one initial focused failure
+  exposed a missing `BOARD_WIDTH` import and was corrected before the checkpoint.
+- Blocker: none. Renderer still presents the new entity as the old single grey cell
+  until the next bounded checkpoint; it is not yet a visual candidate.
+- Next action: open only Survival theme/presentation/Renderer/direct UI copy and tests.

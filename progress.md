@@ -580,3 +580,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   Adoption resources are green and ports 4178/5178/5179 are free.
 - Product source remains untouched until the Phase-9 contract checkpoint is reviewed
   and committed. Survival Core is the first bounded source slice.
+
+## 2026-07-31 Phase 9 Survival Core
+
+- Contract recovery `7fc8c51` was scoped-scanned with no leaks and pushed.
+- Product checkpoint `2a1fb3b` changes the Survival stream from 1–2 unrelated
+  1.5× cells to one deterministic rigid pair in one warned column at exact 2× speed.
+- Entry is all-or-nothing; the pair remains adjacent through collision, clear mapping,
+  bedrock shifts and settlement. A two-cell impact can complete and score two rows.
+- Focused race proof passes 18/18 and typecheck passes. Visual presentation is
+  deliberately still open for the next isolated Renderer checkpoint.
