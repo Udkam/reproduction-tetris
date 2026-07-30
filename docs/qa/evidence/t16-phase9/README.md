@@ -3,12 +3,12 @@
 ## Candidate
 
 - Phase base: `4fc15b8`
-- Final product-source candidate: `348209f`
-- Evidence-contract tip before capture: `dc9abbf`
+- Final product-source candidate: `ba6bbb6`
+- Evidence-contract tip before final correction: `3f79b14`
 - Browser URL: `http://127.0.0.1:5178/`
 - Captured: 2026-07-31
-- Scope: home pointer-leave behavior, square two-page Puzzle gallery, ready-state
-  visibility, and mode-aware result ledgers
+- Scope: home pointer-leave behavior, square two-page Puzzle gallery with a
+  content-fit centered frame, ready-state visibility, and mode-aware result ledgers
 
 The navigation, countdown, and result frames in this directory were regenerated from
 the final product-source candidate. One managed Chrome process was used for the full
@@ -23,7 +23,7 @@ navigation, ready-state, or result-ledger corrections recorded here.
 ## Final gates
 
 - `npm.cmd run typecheck`: PASS
-- `npm.cmd run test -- --maxWorkers=1`: PASS — 29 files, 260 tests
+- `npm.cmd run test -- --maxWorkers=1`: PASS — 29 files, 261 tests
 - `npm.cmd run build`: PASS — 756 modules
 - Build note: Vite retained its existing non-blocking chunk-size advisory.
 
@@ -49,6 +49,13 @@ navigation, ready-state, or result-ledger corrections recorded here.
   `390×844`, and `58.8 px` at `360×800`.
 - Desktop gaps are `12 px`; short-landscape gaps are `6 px`; portrait gaps are
   `8 px`. Grid width/height equal scroll width/height in every frame.
+- At `1440×900`, the connected frame is capped at exactly `740 px`, centered at
+  `y=106 px`, and has equal client/scroll height. It no longer stretches to the
+  bottom of a tall viewport or clings to the top of the available content row.
+- First-row hover has a `0 px` vertical delta and retains its complete `1 px` top
+  border. The two meaningless selected-corner squares have been removed.
+- The page tablist moves and activates with Left/Right/Home/End; live ArrowRight
+  moved focus and selection to `26–50`, and Home returned both to `01–25`.
 - Chinese and English page-two frames retain the connected preview, localized name,
   current best, and Start action without clipping.
 
@@ -66,10 +73,12 @@ navigation, ready-state, or result-ledger corrections recorded here.
 
 - Classic presents `消行 / 分数`; Survival presents only
   `生存时间 / 消行`; Mutation presents `Lines / Score`.
-- Ranked Classic, Survival, and Mutation runs show an explicit current-run rank and
-  current leaderboard row.
+- Ranked Classic, Survival, and Mutation runs show one explicit current-run row.
+  The redundant separate `本局第 N 名 / This run · #N` label is absent.
 - The seeded Classic comparison shows `未进入前 5` and no current-run row, proving
   the unranked branch.
+- At `844×390`, the unranked Classic panel has equal client/scroll height; all five
+  leaderboard rows and both actions are visible in the first frame.
 - Result frames at `1440×900`, `844×390`, and `390×844` have equal document
   client/scroll geometry.
 

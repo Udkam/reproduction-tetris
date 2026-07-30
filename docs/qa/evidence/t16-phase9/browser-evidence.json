@@ -1,7 +1,8 @@
 {
-  "candidate": "348209f",
+  "candidate": "ba6bbb6",
   "capturedAt": "2026-07-31",
   "consoleErrors": 0,
+  "consoleWarnings": 0,
   "pageErrors": 0,
   "home": {
     "viewports": ["1440x900", "844x390", "390x844", "360x800"],
@@ -18,6 +19,18 @@
     "pages": ["01-25", "26-50"],
     "mountedLevelControls": 25,
     "squareDeltaPx": 0,
+    "desktopFrameHeightPx": 740,
+    "desktopFrameTopPx": 106,
+    "desktopFrameClientEqualsScroll": true,
+    "firstRowHoverYDeltaPx": 0,
+    "firstRowHoverTopBorderPx": 1,
+    "selectedCornerOrnaments": 0,
+    "tabKeyboard": {
+      "arrowRightFocus": "26-50",
+      "arrowRightActivatedPage": "26-50",
+      "homeFocus": "01-25",
+      "homeActivatedPage": "01-25"
+    },
     "minimumSidePx": {
       "1440x900": 95.015625,
       "1280x720": 91.5,
@@ -78,6 +91,14 @@
     "mutation": ["lines", "score"],
     "rankedBranch": true,
     "unrankedBranch": true,
+    "separateCurrentRunRankLabel": false,
+    "rankedCurrentRunRow": true,
+    "shortLandscapeUnranked": {
+      "leaderboardRows": 5,
+      "allRowsVisible": true,
+      "bothActionsVisible": true,
+      "panelClientEqualsScroll": true
+    },
     "documentOverflow": false
   },
   "officialClient": {
