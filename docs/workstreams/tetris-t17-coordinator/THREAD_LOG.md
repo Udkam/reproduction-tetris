@@ -430,3 +430,28 @@
 - Blocker: none.
 - Next action: commit coordinator acceptance docs, push `main` non-force, verify exact
   local/tracking/remote equality, then write the final closeout checkpoint.
+
+## 2026-07-31 — Phase 10 coordinator publication and closeout
+
+- Task ID: `T17-P10.12`
+- Base SHA: `6b4bfd7d46e609f23e0641eb907b7502e4012080`
+- Owner: primary coordinator
+- Exact paths:
+  - `docs/CURRENT_TASK.md`
+  - `docs/phases/phase 10.md`
+  - `docs/logs/CHANGELOG.md`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `git push origin main`: non-force push from accepted base through coordinator
+    acceptance succeeded
+  - `git rev-parse HEAD`, `git rev-parse origin/main`, and
+    `git ls-remote origin refs/heads/main`: all resolved
+    `6b4bfd7d46e609f23e0641eb907b7502e4012080`
+  - direct `Get-Process` and `netstat` lifecycle checks: zero managed Chrome process
+    and no listener on `4178`, `5178`, or `5179`
+- Evidence: product source `7f45c55`, browser evidence `87d7586`, independent
+  `ACCEPT`, final gates, manifest, local fonts, gitleaks, and the first publication
+  are all complete. This checkpoint changes only the durable closure record.
+- Blocker: none.
+- Next action: commit and push this documentation-only closeout, verify final
+  local/tracking/remote equality once, and release the completed goal.

@@ -1,6 +1,6 @@
 # Phase 10 — Pressure Without Ambiguity
 
-Status: `ACCEPTED / READY FOR COORDINATOR PUSH`
+Status: `ACCEPTED / PUSHED / CLOSED`
 
 Base: `main@1f4847225c562163ad748fd2a76e4f4023778442`
 
@@ -72,6 +72,8 @@ vocabulary. This phase implements the fifteen direct requirements frozen in
 - Independent read-only QA returns `ACCEPT` with no P0/P1/P2 finding.
 - The repository-scoped redacted gitleaks scan reports no leak across the complete
   Phase 10 range. The single owned server/browser batch is released.
+- Coordinator acceptance `6b4bfd7` was pushed non-force and matched local,
+  tracking, and remote `main`; this closeout record changes documentation only.
 
 ## Frozen areas
 

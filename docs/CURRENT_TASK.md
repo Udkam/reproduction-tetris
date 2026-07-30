@@ -2,7 +2,7 @@
 
 ## Phase 10 active goal — readable state, fair pressure, and mode-first results
 
-**Status (2026-07-31): ACCEPTED / READY FOR COORDINATOR PUSH.**
+**Status (2026-07-31): ACCEPTED / PUSHED / CLOSED.**
 
 Phase 10 keeps correcting the current product until all fifteen direct outcomes below are
 implemented, verified in real play, independently reviewed, committed as bounded
@@ -137,8 +137,10 @@ recovery points, and pushed:
 - Redacted repository-scoped gitleaks `8.30.1` scanning
   `1f4847225c562163ad748fd2a76e4f4023778442..87d7586` reports no leaks across
   `13` commits.
-- The owned Chrome batch is closed and ports `4178`, `5178`, and `5179` are free.
-  Only the coordinator documentation checkpoint and non-force `main` push remain.
+- Coordinator acceptance `6b4bfd7d46e609f23e0641eb907b7502e4012080` was
+  pushed non-force and matched local, tracking, and remote `main`. The owned Chrome
+  batch is closed and ports `4178`, `5178`, and `5179` are free. No Phase 10
+  implementation or publication action remains open.
 
 ## Phase 9 active goal — cave pressure and navigation correction
 

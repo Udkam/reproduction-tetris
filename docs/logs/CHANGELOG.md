@@ -24,10 +24,10 @@
   `758`-module build. Evidence `87d7586` contains `26` captures and `28/28` valid
   hashes with one gameplay Canvas, zero DOM cells, overflow, console errors, and page
   errors. Independent read-only QA accepts `ad0e31b..87d7586` with no P0/P1/P2 gap.
-- A redacted gitleaks `8.30.1` scan covers all `13` Phase 10 commits from the accepted
-  base through evidence and reports no leak. The owned Chrome batch is closed and
-  ports `4178`, `5178`, and `5179` are released; coordinator publication is the only
-  remaining action.
+- A redacted gitleaks `8.30.1` scan covers the complete Phase 10 range and reports no
+  leak. Coordinator acceptance `6b4bfd7` was pushed non-force and matched local,
+  tracking, and remote `main`. The owned Chrome batch is closed and ports `4178`,
+  `5178`, and `5179` are released; this final closeout record is documentation-only.
 
 ## 2026-07-31 — Phase 9 cavern pressure and compact navigation accepted
 
