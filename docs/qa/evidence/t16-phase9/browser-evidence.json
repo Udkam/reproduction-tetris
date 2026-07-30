@@ -1,0 +1,88 @@
+{
+  "candidate": "348209f",
+  "capturedAt": "2026-07-31",
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "home": {
+    "viewports": ["1440x900", "844x390", "390x844", "360x800"],
+    "modeControls": 4,
+    "hoveredAfterPointerLeave": 0,
+    "persistentSelectionStates": 0,
+    "canvasCount": 0,
+    "domCellCount": 0,
+    "documentOverflow": false,
+    "englishLang": "en",
+    "reducedMotionTransitionDuration": "0s"
+  },
+  "puzzleGallery": {
+    "pages": ["01-25", "26-50"],
+    "mountedLevelControls": 25,
+    "squareDeltaPx": 0,
+    "minimumSidePx": {
+      "1440x900": 95.015625,
+      "1280x720": 91.5,
+      "844x390": 46,
+      "390x844": 64.796875,
+      "360x800": 58.796875
+    },
+    "gapPx": {
+      "1440x900": 12,
+      "1280x720": 12,
+      "844x390": 6,
+      "390x844": 8,
+      "360x800": 8
+    },
+    "gridOverflow": false,
+    "documentOverflow": false
+  },
+  "survivalCountdown": {
+    "digit3": {
+      "status": "ready",
+      "visibleLockedCells": 10,
+      "entryBedrockRows": 1,
+      "previewVisible": false,
+      "activeCells": 0,
+      "ghostCells": 0
+    },
+    "digit2": {
+      "status": "ready",
+      "visibleLockedCells": 20,
+      "entryBedrockRows": 2,
+      "previewVisible": false,
+      "activeCells": 0,
+      "ghostCells": 0
+    },
+    "digit1": {
+      "status": "ready",
+      "visibleLockedCells": 30,
+      "entryBedrockRows": 3,
+      "previewVisible": false,
+      "activeCells": 0,
+      "ghostCells": 0
+    },
+    "playing": {
+      "status": "playing",
+      "visibleLockedCells": 30,
+      "previewVisible": true,
+      "previewCount": 1,
+      "activeCells": 4,
+      "ghostCells": 4
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "documentOverflow": false
+  },
+  "resultLedgers": {
+    "classic": ["lines", "score"],
+    "survival": ["survivalTime", "lines"],
+    "mutation": ["lines", "score"],
+    "rankedBranch": true,
+    "unrankedBranch": true,
+    "documentOverflow": false
+  },
+  "officialClient": {
+    "iterations": 1,
+    "consoleErrorArtifact": false,
+    "processExited": true
+  }
+}
