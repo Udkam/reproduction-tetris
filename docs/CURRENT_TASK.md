@@ -1,8 +1,8 @@
-# Current Task — T15 TetraMorph Phased Product Refinement
+# Current Task — T17 TetraMorph Phase 10 Acceptance
 
 ## Phase 10 active goal — readable state, fair pressure, and mode-first results
 
-**Status (2026-07-31): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
+**Status (2026-07-31): ACCEPTED / READY FOR COORDINATOR PUSH.**
 
 Phase 10 keeps correcting the current product until all fifteen direct outcomes below are
 implemented, verified in real play, independently reviewed, committed as bounded
@@ -119,6 +119,26 @@ recovery points, and pushed:
 - Release every project-owned browser, server, port, and temporary profile after
   evidence. Run one repository-scoped `gitleaks` scan before push. Phase 10 remains
   `ACTIVE` until independent read-only QA accepts the immutable candidate.
+
+### Phase 10 acceptance
+
+- Frozen product source: `7f45c55ccfea1cdf50a785bf249d1cec831473ac`.
+- Source gates: typecheck passed; the full single-worker suite passed `29` files /
+  `273` tests; the production build passed with `758` modules and only the existing
+  non-blocking bundle-size advisory.
+- Source-bound browser evidence: `87d7586fabc2dc5819d8d36965f123132654b58f`
+  contains `26` captures plus README/JSON metadata. Its `28/28` manifest entries
+  recompute exactly. The pass records one gameplay Canvas, zero DOM board cells,
+  zero overflow, zero console/page errors, local-only font loading, and the required
+  Classic, Survival, Mutation, Puzzle, bilingual, reduced-motion, persistence,
+  restart, result, and responsive states.
+- Independent read-only QA accepts `ad0e31b..87d7586` with P0/P1/P2 all zero and no
+  evidence-integrity or repository-boundary gap.
+- Redacted repository-scoped gitleaks `8.30.1` scanning
+  `1f4847225c562163ad748fd2a76e4f4023778442..87d7586` reports no leaks across
+  `13` commits.
+- The owned Chrome batch is closed and ports `4178`, `5178`, and `5179` are free.
+  Only the coordinator documentation checkpoint and non-force `main` push remain.
 
 ## Phase 9 active goal — cave pressure and navigation correction
 

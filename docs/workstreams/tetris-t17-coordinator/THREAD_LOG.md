@@ -365,3 +365,68 @@
 - Blocker: the first final candidate is invalidated by this correction.
 - Next action: commit the correction, then run one replacement final typecheck,
   full test, and production build against the new source tip.
+
+## 2026-07-31 — Phase 10 replacement final gates and browser evidence
+
+- Task ID: `T17-P10.9-10`
+- Base SHA: `7f45c55ccfea1cdf50a785bf249d1cec831473ac`
+- Owner: primary coordinator
+- Exact paths:
+  - `docs/qa/evidence/t17-phase10/*`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - replacement `npm.cmd run typecheck`: passed
+  - replacement full
+    `npm.cmd run test -- --maxWorkers=1 --fileParallelism=false`: `29` files /
+    `273` tests passed
+  - replacement `npm.cmd run build`: passed with `758` modules and only the existing
+    non-blocking bundle-size advisory
+  - one bounded Vite `127.0.0.1:5178` plus headless Chrome browser-evidence batch
+  - JSON parse and `28/28` SHA-256 manifest recomputation: passed
+- Evidence: the final batch covers Home, Classic, Survival, Mutation, and Puzzle in
+  Chinese/English and desktop/portrait/short-landscape. It proves restart countdown,
+  visible Next under leave confirmation, ranked/unranked mode-first results,
+  continuous one/two/three-row Survival entry, natural one- and two-stone events,
+  item-bearing Mutation Next, simultaneous Ice/Supergravity/multiplier states,
+  effect expiry, first Puzzle clear, a six-move new best over ten, a slower six-move
+  replay retaining five, persisted library completion, keyboard range tabs, reduced
+  motion, local-only fonts, stable post-font geometry, one gameplay Canvas, zero DOM
+  cells, zero overflow, and zero console/page errors.
+- Candidate: evidence commit
+  `87d7586fabc2dc5819d8d36965f123132654b58f`, whose parent is the exact frozen
+  product source.
+- Resource note: the managed browser was closed, the owned Node/Vite PID was stopped
+  by exact PID after its parent shell ended, Chrome count returned to zero, and ports
+  `4178`, `5178`, and `5179` are free. No WMI/CIM, watcher, Serena, or extra server
+  was used.
+- Blocker: none.
+- Next action: independent read-only QA and scoped secret scan.
+
+## 2026-07-31 — Phase 10 independent QA and security acceptance
+
+- Task ID: `T17-P10.11`
+- Base SHA: `87d7586fabc2dc5819d8d36965f123132654b58f`
+- Owner: primary coordinator; independent reviewer:
+  `/root/phase9_independent_qa`
+- Exact paths:
+  - read-only `ad0e31b..87d7586`
+  - read-only `docs/qa/evidence/t17-phase10`
+  - `docs/CURRENT_TASK.md`
+  - `docs/phases/phase 10.md`
+  - `docs/logs/CHANGELOG.md`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - independent source/test/evidence/manifest review only; no test, build, browser,
+    service, or edit
+  - `gitleaks git --redact --no-banner --no-color --log-opts
+    "1f4847225c562163ad748fd2a76e4f4023778442..HEAD" .`: `13` commits,
+    approximately `158.37 KB`, no leaks
+  - targeted Git status/log/range checks
+- Independent disposition: `ACCEPT`; P0/P1/P2 all zero. The reviewer confirms the
+  evidence commit parent equals the frozen source, all `28/28` registered files exist
+  and hash exactly, no extra evidence file exists, all `58` changed paths remain in
+  Phase 10 scope, and the source/test assertions cover the direct Puzzle, Survival,
+  Mutation, result, navigation, restart, Settings, and typography requirements.
+- Blocker: none.
+- Next action: commit coordinator acceptance docs, push `main` non-force, verify exact
+  local/tracking/remote equality, then write the final closeout checkpoint.

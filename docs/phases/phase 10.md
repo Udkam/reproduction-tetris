@@ -1,6 +1,6 @@
 # Phase 10 — Pressure Without Ambiguity
 
-Status: `ACTIVE`
+Status: `ACCEPTED / READY FOR COORDINATOR PUSH`
 
 Base: `main@1f4847225c562163ad748fd2a76e4f4023778442`
 
@@ -56,6 +56,22 @@ vocabulary. This phase implements the fifteen direct requirements frozen in
 - Heavy gates begin only when the machine is below the red resource threshold.
 - Focused tests run per source checkpoint; the full suite/build/browser batch run once
   after the last source change.
+
+## Acceptance
+
+- Frozen source: `7f45c55ccfea1cdf50a785bf249d1cec831473ac`.
+- Final gates: typecheck passed; `29` test files / `273` tests passed with one worker
+  and no file parallelism; the `758`-module production build passed.
+- Evidence: `87d7586fabc2dc5819d8d36965f123132654b58f`, with `26` real browser captures
+  and `28/28` matching SHA-256 manifest entries.
+- Browser result: all four modes, Chinese/English, desktop/portrait/short-landscape,
+  reduced motion, Puzzle first/record/replay persistence, continuous Survival entry,
+  natural one/two-stone events, simultaneous Mutation states, restart/leave/result
+  paths, local typography, one gameplay Canvas, zero DOM cells, zero overflow, and
+  zero console/page errors are accepted.
+- Independent read-only QA returns `ACCEPT` with no P0/P1/P2 finding.
+- The repository-scoped redacted gitleaks scan reports no leak across the complete
+  Phase 10 range. The single owned server/browser batch is released.
 
 ## Frozen areas
 

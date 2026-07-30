@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-07-31 — Phase 10 readable-state and cave-pressure refinement accepted
+
+- Standardized live terminology, restart/leave lifecycle, Rules-first Settings,
+  complete Mutation item previews, deduplicated same-type activation cues, Ice at
+  `1.0 秒/格`, Supergravity settlement, and mode-first result ledgers. Classic ranks
+  by lines, Survival by time, and Mutation by score; each result keeps only its
+  meaningful secondary metric.
+- Made Survival falling stones spawn as deterministic one/two-cell same-column
+  events, avoid false spawn block-out, carry supported ordinary pieces, and read as
+  brighter moving members of the same cold-cave geology as the permanent shelf.
+  The three-count entry now raises the complete visible shelf continuously by one
+  row per beat while hiding active, ghost, carrier, and Next content until play.
+- Made every real Puzzle clear persist atomically across all fifty open gallery
+  entries. First clear, new best, and repeat clear now use one compact celebration
+  surface; slower replays retain the earlier best and the library completion/check
+  state survives immediate return and reload.
+- Replaced player-facing Back-to-modes copy with `返回首页 / Back to home`. The sole
+  TetraMorph wordmark keeps Playwrite NZ Basic; locally packaged WenYuan-derived UI
+  text, Smiley Sans display headings, Sora English UI, and IBM Plex Mono data roles
+  include their notices and make no runtime font request.
+- Frozen product `7f45c55` passes typecheck, `29` files / `273` tests, and the
+  `758`-module build. Evidence `87d7586` contains `26` captures and `28/28` valid
+  hashes with one gameplay Canvas, zero DOM cells, overflow, console errors, and page
+  errors. Independent read-only QA accepts `ad0e31b..87d7586` with no P0/P1/P2 gap.
+- A redacted gitleaks `8.30.1` scan covers all `13` Phase 10 commits from the accepted
+  base through evidence and reports no leak. The owned Chrome batch is closed and
+  ports `4178`, `5178`, and `5179` are released; coordinator publication is the only
+  remaining action.
+
 ## 2026-07-31 — Phase 9 cavern pressure and compact navigation accepted
 
 - Accepted deterministic same-column one-or-two Survival rock events at exactly
