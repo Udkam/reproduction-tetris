@@ -460,6 +460,21 @@ still inside the Phase-7 staged source chain. Product is frozen for one
 independent route/artifact audit and one independent curriculum/boundary audit;
 levels 41–50 and unlock/selector adaptation remain closed.
 
+**Levels 31–40 acceptance (2026-07-30):** independent route/artifact QA and
+independent curriculum/boundary QA both accept `23970c6` with
+`P0=0, P1=0, P2=0, P3=0, GAP=0`. The audits independently confirm the ten
+registered six-row definitions, twenty distinct public-Core routes, fixed
+30/600/480 bounds, anchors only at 32/36/39, unchanged 01–30 definitions and
+artifacts, exact bilingual package order, transitional all-open behavior and
+artifact SHA-256
+`BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+Both reviews were deliberately static and executed no product command; this is
+not a verification gap because the frozen source checkpoint already passed its
+focused 64-test replay gate and typecheck. Checkpoint `23970c6` and record tip
+`4674061` are accepted. After this disposition is committed and pushed,
+levels 41–50 may open as a separate bounded slice; unlock/v5/selector
+data-scroll adaptation remains closed until all fifty definitions are accepted.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery

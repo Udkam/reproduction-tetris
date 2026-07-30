@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-30 — Puzzle levels 31–40 accepted
+
+- Added ten unique six-row endgame boards, `曲井` through `折桥`, with complete
+  bilingual names, deterministic setup histories and fixed gameplay seeds.
+  Seven ordinary lessons progress from 11 to 21 locks; three immutable edge
+  anchor lessons remain distributed at levels 32, 36 and 39.
+- The tracked schema-7 artifact binds all ten registered definitions to twenty
+  distinct public-Core routes at fixed 30-lock, 600-primary and 480-alternate
+  search bounds. Its SHA-256 is
+  `BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+- Source candidate `23970c6` passes the six focused files with 64/64 tests,
+  typecheck and diff checks. No full suite, build or browser pass was repeated
+  at this staged data checkpoint; those broad gates remain reserved for the
+  final 50-level Phase-7 integration.
+- Independent route/artifact and curriculum/boundary auditors both accept with
+  P0–P3 and GAP all zero. They also confirm that levels 01–30 and their tracked
+  artifacts are frozen, the selector implementation is unchanged, and other
+  modes and dependencies remain outside the candidate.
+
 ## 2026-07-30 — T15 Phase 6 Classic accepted and pushed
 
 - Replaced the shared ordinary-clear sweep with one board-local three-stage family:

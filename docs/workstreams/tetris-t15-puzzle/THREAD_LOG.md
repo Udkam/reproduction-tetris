@@ -864,3 +864,29 @@
   browser, server or WMI/CIM.
 - Next action: collect route/artifact and curriculum/boundary verdicts, resolve
   any finding, then record the candidate disposition before push.
+
+## Levels 31–40 independent acceptance — 2026-07-30
+
+- Candidate product: `23970c6`; documentation record tip: `4674061`.
+- Independent route/artifact QA: `ACCEPT`, with
+  `P0=0, P1=0, P2=0, P3=0, GAP=0`.
+  - Confirmed exact IDs 31–40, six-row setup legality, twenty distinct
+    public-Core routes at 30/600/480, anchors only at 32/36/39 and unchanged
+    anchor coordinates throughout both routes.
+  - Independently matched artifact SHA-256
+    `BBA6FB898DD49F59AB3B26F21011C4A73647B67120F9A6BE0ED8E0CF76EFCB3D`.
+  - Confirmed the first thirty definitions and their three tracked artifacts
+    are unchanged.
+- Independent curriculum/boundary QA: `ACCEPT`, with
+  `P0=0, P1=0, P2=0, P3=0, GAP=0`.
+  - Confirmed exact Chinese/English package order, ordinary route progression,
+    distributed anchor lessons, unique IDs/names/seeds/derived boards and
+    definition-length-driven eight-band compatibility.
+  - Confirmed the selector implementation, other modes, dependencies and
+    progress-v5 source remain outside this candidate.
+- Both reviewers were read-only and deliberately ran no npm, Node, solver,
+  build, browser, server, MCP, Serena or WMI/CIM task. Their static uncertainty
+  is covered by the candidate's source-bound 64-test replay gate and typecheck
+  and is not an open GAP.
+- Disposition: accepted. Next action: commit and push this acceptance point,
+  then open levels 41–50 as a separate bounded slice.
