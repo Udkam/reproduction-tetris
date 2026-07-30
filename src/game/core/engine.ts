@@ -218,6 +218,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalDebrisIntervalTicks: 0,
     survivalDebrisIntervalSeconds: SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS,
     survivalDebrisWarningColumns: Object.freeze([]),
+    survivalDebrisWarningHeight: null,
     survivalDebrisFallProgress: 0,
     survivalDebrisRandomizer: createRandomizer(survivalDebrisSeed(effectiveSeed)),
     mutationActiveCarrier: null,
@@ -302,11 +303,11 @@ function cellKey(cell: Cell): string {
   return `${cell.x},${cell.y}`;
 }
 
-function cellsForSurvivalDebris(debris: SurvivalDebris): readonly [Cell, Cell] {
-  return [
-    { x: debris.x, y: debris.y },
-    { x: debris.x, y: debris.y + 1 },
-  ];
+function cellsForSurvivalDebris(debris: SurvivalDebris): readonly Cell[] {
+  return Object.freeze(Array.from(
+    { length: debris.height },
+    (_, offset) => ({ x: debris.x, y: debris.y + offset }),
+  ));
 }
 
 function canPlaceInState(state: GameState, piece: ActivePiece): boolean {
@@ -331,24 +332,39 @@ function advanceSurvivalPressure(state: GameState): GameState {
   };
 }
 
-function planSurvivalDebris(state: GameState): { state: GameState; columns: readonly number[] } {
-  if (state.survivalDebrisWarningColumns.length > 0) {
-    return { state, columns: state.survivalDebrisWarningColumns };
+function planSurvivalDebris(state: GameState): {
+  state: GameState;
+  columns: readonly number[];
+  height: 1 | 2;
+} {
+  if (
+    state.survivalDebrisWarningColumns.length > 0
+    && state.survivalDebrisWarningHeight !== null
+  ) {
+    return {
+      state,
+      columns: state.survivalDebrisWarningColumns,
+      height: state.survivalDebrisWarningHeight,
+    };
   }
   const columnRoll = drawRandom(state.survivalDebrisRandomizer);
+  const heightRoll = drawRandom(columnRoll.randomizer);
   const frozenColumns = Object.freeze([
     Math.min(BOARD_WIDTH - 1, Math.floor(columnRoll.value * BOARD_WIDTH)),
   ]);
+  const frozenHeight = heightRoll.value < 0.5 ? 1 : 2;
 
-  // The plan deliberately ignores the current stack. If either cell of the
-  // warned pair is blocked when due, the same announced column waits.
+  // The plan deliberately ignores the current stack. If any required entry
+  // cell is blocked when due, the same announced column and height wait.
   return {
     state: {
       ...state,
       survivalDebrisWarningColumns: frozenColumns,
-      survivalDebrisRandomizer: columnRoll.randomizer,
+      survivalDebrisWarningHeight: frozenHeight,
+      survivalDebrisRandomizer: heightRoll.randomizer,
     },
     columns: frozenColumns,
+    height: frozenHeight,
   };
 }
 
@@ -362,19 +378,25 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
   let survivalDebrisNextId = state.survivalDebrisNextId;
 
   const x = state.survivalDebrisWarningColumns[0];
-  if (x !== undefined) {
-    const pair: SurvivalDebris = { id: survivalDebrisNextId, x, y: VISIBLE_START_ROW - 1 };
-    const pairCells = cellsForSurvivalDebris(pair);
-    const blocked = pairCells.some((cell) => (
+  const height = state.survivalDebrisWarningHeight;
+  if (x !== undefined && height !== null) {
+    const event: SurvivalDebris = {
+      id: survivalDebrisNextId,
+      x,
+      y: VISIBLE_START_ROW - (height - 1),
+      height,
+    };
+    const eventCells = cellsForSurvivalDebris(event);
+    const blocked = eventCells.some((cell) => (
       cell.y < 0
       || cell.y >= BOARD_HEIGHT
       || state.board[cell.y]?.[cell.x] !== null
       || occupied.has(cellKey(cell))
     ));
     if (!blocked) {
-      survivalDebris.push(pair);
+      survivalDebris.push(event);
       survivalDebrisNextId += 1;
-      cells.push(...pairCells);
+      cells.push(...eventCells);
     }
   }
 
@@ -386,6 +408,9 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
       survivalDebrisWarningColumns: cells.length > 0
         ? Object.freeze([])
         : state.survivalDebrisWarningColumns,
+      survivalDebrisWarningHeight: cells.length > 0
+        ? null
+        : state.survivalDebrisWarningHeight,
     },
     cells: Object.freeze(cells),
   };
@@ -402,10 +427,10 @@ function settleSurvivalDebris(state: GameState): { state: GameState; landed: rea
   const landed: Cell[] = [];
   let board = state.board;
 
-  for (const pair of falling) {
-    for (const cell of cellsForSurvivalDebris(pair)) occupied.delete(cellKey(cell));
-    const movedPair = { ...pair, y: pair.y + 1 };
-    const movedCells = cellsForSurvivalDebris(movedPair);
+  for (const event of falling) {
+    for (const cell of cellsForSurvivalDebris(event)) occupied.delete(cellKey(cell));
+    const movedEvent = { ...event, y: event.y + 1 };
+    const movedCells = cellsForSurvivalDebris(movedEvent);
     const canFall = movedCells.every((cell) => (
       cell.y >= 0
       && cell.y < BOARD_HEIGHT
@@ -414,11 +439,11 @@ function settleSurvivalDebris(state: GameState): { state: GameState; landed: rea
       && !occupied.has(cellKey(cell))
     ));
     if (canFall) {
-      survivalDebris.push(movedPair);
+      survivalDebris.push(movedEvent);
       for (const cell of movedCells) occupied.add(cellKey(cell));
       continue;
     }
-    const settledCells = cellsForSurvivalDebris(pair);
+    const settledCells = cellsForSurvivalDebris(event);
     for (const cell of settledCells) board = setCell(board, cell.x, cell.y, SURVIVAL_STONE_CELL);
     landed.push(...settledCells);
   }
@@ -462,7 +487,10 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
   const warningTicks = SURVIVAL_DEBRIS_WARNING_SECONDS * TICKS_PER_SECOND;
   const warningStartsAt = intervalTicks - warningTicks;
   if (
-    next.survivalDebrisWarningColumns.length === 0
+    (
+      next.survivalDebrisWarningColumns.length === 0
+      || next.survivalDebrisWarningHeight === null
+    )
     && survivalDebrisIntervalTicks >= warningStartsAt
   ) {
     const planned = planSurvivalDebris(next);
@@ -470,6 +498,7 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
     events.push({
       type: 'survival-stones-warned',
       columns: planned.columns,
+      height: planned.height,
       leadSeconds: SURVIVAL_DEBRIS_WARNING_SECONDS,
     });
   }
@@ -492,8 +521,8 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
         nextIntervalSeconds,
       });
     } else {
-      // Keep the timer due and the exact warned columns visible until at least
-      // one entry cell opens; never skip or redirect a blocked event.
+      // Keep the timer due and the exact warned plan visible until every
+      // required entry cell opens; never skip, resize, or redirect the event.
       next = {
         ...emitted.state,
         survivalDebrisIntervalTicks: intervalTicks,
@@ -524,17 +553,17 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
 }
 
 function mapSurvivalDebrisAfterClear(board: GameState['board'], rows: readonly number[], debris: readonly SurvivalDebris[]): readonly SurvivalDebris[] {
-  return Object.freeze(debris.map((pair) => {
-    const before = cellsForSurvivalDebris(pair);
+  return Object.freeze(debris.map((event) => {
+    const before = cellsForSurvivalDebris(event);
     const after = mapCellsAfterClear(board, rows, before);
-    if (after.length !== before.length) return pair;
+    if (after.length !== before.length) return event;
     const dx = after[0]!.x - before[0]!.x;
     const dy = after[0]!.y - before[0]!.y;
     const rigid = after.every((cell, index) => (
       cell.x - before[index]!.x === dx
       && cell.y - before[index]!.y === dy
     ));
-    return rigid ? { ...pair, x: pair.x + dx, y: pair.y + dy } : pair;
+    return rigid ? { ...event, x: event.x + dx, y: event.y + dy } : event;
   }));
 }
 
@@ -558,9 +587,11 @@ function shiftSurvivalMovers(state: GameState, deltaY: number): {
   overflow: boolean;
 } {
   const active = state.active ? { ...state.active, y: state.active.y + deltaY } : null;
-  const survivalDebris = Object.freeze(state.survivalDebris.map((pair) => ({ ...pair, y: pair.y + deltaY })));
+  const survivalDebris = Object.freeze(state.survivalDebris.map((event) => ({ ...event, y: event.y + deltaY })));
   const activeOverflow = active !== null && cellsForPiece(active).some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT);
-  const debrisOverflow = survivalDebris.some((pair) => pair.y < 0 || pair.y + 1 >= BOARD_HEIGHT);
+  const debrisOverflow = survivalDebris.some((event) => (
+    event.y < 0 || event.y + event.height - 1 >= BOARD_HEIGHT
+  ));
   return { active, survivalDebris, overflow: activeOverflow || debrisOverflow };
 }
 
@@ -1176,6 +1207,7 @@ export function stateHash(state: GameState): string {
         survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
         survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
         survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
+        survivalDebrisWarningHeight: _survivalDebrisWarningHeight,
         survivalDebrisFallProgress: _survivalDebrisFallProgress,
         survivalDebrisRandomizer: _survivalDebrisRandomizer,
         mutationActiveCarrier: _mutationActiveCarrier,
@@ -1220,6 +1252,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
           survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
           survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
+          survivalDebrisWarningHeight: _survivalDebrisWarningHeight,
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           mutationActiveCarrier: _mutationActiveCarrier,
@@ -1247,6 +1280,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisIntervalTicks: _survivalDebrisIntervalTicks,
           survivalDebrisIntervalSeconds: _survivalDebrisIntervalSeconds,
           survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
+          survivalDebrisWarningHeight: _survivalDebrisWarningHeight,
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           ...sprintState

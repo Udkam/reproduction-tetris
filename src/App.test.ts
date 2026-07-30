@@ -280,7 +280,7 @@ describe('Survival stone timing presentation', () => {
       status: 'playing' as const,
       survivalDebrisIntervalSeconds: 19,
       survivalDebrisIntervalTicks: 0,
-      survivalDebris: [{ id: 1, x: 4, y: 21 }],
+      survivalDebris: [{ id: 1, x: 4, y: 21, height: 2 as const }],
     };
     // Deliberately bypass a React wait: the QA text path must still report the
     // same Core frame that Pixi has just rendered.

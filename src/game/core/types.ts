@@ -109,14 +109,17 @@ export interface MutationActiveCarrier {
   item: MutationItem;
 }
 
+export type SurvivalDebrisHeight = 1 | 2;
+
 /**
- * One rigid, vertically stacked Survival rock pair before it settles into the board.
- * `y` is the upper cell; the lower cell is always exactly `y + 1`.
+ * One independently falling Survival rock event before it settles into the board.
+ * `y` is the upper cell. Height-two events add one cell at exactly `y + 1`.
  */
 export interface SurvivalDebris {
   id: number;
   x: number;
   y: number;
+  height: SurvivalDebrisHeight;
 }
 
 export interface GameState {
@@ -176,9 +179,11 @@ export interface GameState {
   survivalDebrisIntervalTicks: number;
   /** Seconds used by the next stone-stream emission; starts at 20 and floors at 10. */
   survivalDebrisIntervalSeconds: number;
-  /** The single canonical column announced before the next rigid rock pair. */
+  /** The single canonical column announced before the next one-or-two-stone event. */
   survivalDebrisWarningColumns: readonly number[];
-  /** Exact integer accumulator that advances the rigid pair at 2× Survival gravity. */
+  /** Frozen height announced with the warning column; null when no event is planned. */
+  survivalDebrisWarningHeight: SurvivalDebrisHeight | null;
+  /** Exact integer accumulator that advances the event at 2× Survival gravity. */
   survivalDebrisFallProgress: number;
   /** Separate deterministic stream so debris timing never changes the seven-bag. */
   survivalDebrisRandomizer: RandomizerState;
@@ -254,6 +259,7 @@ export type GameEvent =
   | {
     type: 'survival-stones-warned';
     columns: readonly number[];
+    height: SurvivalDebrisHeight;
     leadSeconds: number;
   }
   | {

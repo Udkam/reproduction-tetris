@@ -32,14 +32,14 @@ const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = 
 
 const cellKey = (cell: Cell): string => `${cell.x},${cell.y}`;
 
-/** Derives the immutable two-cell geometry of one rigid Survival rock entity. */
+/** Derives the immutable one- or two-cell geometry of one Survival rock event. */
 export function survivalDebrisCells(
-  debris: Pick<SurvivalDebris, 'x' | 'y'>,
-): readonly [Cell, Cell] {
-  return [
-    { x: debris.x, y: debris.y },
-    { x: debris.x, y: debris.y + 1 },
-  ];
+  debris: Pick<SurvivalDebris, 'x' | 'y' | 'height'>,
+): readonly Cell[] {
+  return Object.freeze(Array.from(
+    { length: debris.height },
+    (_, offset) => ({ x: debris.x, y: debris.y + offset }),
+  ));
 }
 
 const orderedCells = (cells: readonly Cell[]): Cell[] => (

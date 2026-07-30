@@ -608,7 +608,7 @@ describe('Puzzle undo presentation reset', () => {
     const internals = renderer as unknown as RendererInternals;
     const state = {
       mode: 'race',
-      survivalDebris: [{ id: 7, x: 2, y: 20 }],
+      survivalDebris: [{ id: 7, x: 2, y: 20, height: 2 }],
     } as unknown as GameState;
 
     internals.advanceSurvivalDebrisPresentation(state, 16);
@@ -616,7 +616,7 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.advanceSurvivalDebrisPresentation({
       ...state,
-      survivalDebris: [{ id: 7, x: 2, y: 21 }],
+      survivalDebris: [{ id: 7, x: 2, y: 21, height: 2 }],
     }, 16);
     expect(internals.survivalDebrisPresentation.get(7)?.y).toBeGreaterThan(20);
     expect(internals.survivalDebrisPresentation.get(7)?.y).toBeLessThan(21);
@@ -624,7 +624,7 @@ describe('Puzzle undo presentation reset', () => {
     renderer.setOptions({ reducedMotion: true });
     internals.advanceSurvivalDebrisPresentation({
       ...state,
-      survivalDebris: [{ id: 7, x: 2, y: 21 }],
+      survivalDebris: [{ id: 7, x: 2, y: 21, height: 2 }],
     }, 16);
     expect(internals.survivalDebrisPresentation.get(7)).toEqual({ x: 2, y: 21 });
 
@@ -656,6 +656,7 @@ describe('Puzzle undo presentation reset', () => {
       {
         mode: 'race',
         survivalDebrisWarningColumns: [2],
+        survivalDebrisWarningHeight: 2,
       } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );

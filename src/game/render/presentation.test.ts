@@ -17,8 +17,11 @@ import {
 import { createInitialState, dispatch, PIECE_SHAPES, PIECE_TYPES, type Cell } from '../core';
 
 describe('presentation interpolation', () => {
-  it('derives one vertically adjacent pair from each Survival rock identity', () => {
-    expect(survivalDebrisCells({ x: 6, y: 19 })).toEqual([
+  it('derives the frozen one- or two-cell geometry from each Survival rock event', () => {
+    expect(survivalDebrisCells({ x: 6, y: 20, height: 1 })).toEqual([
+      { x: 6, y: 20 },
+    ]);
+    expect(survivalDebrisCells({ x: 6, y: 19, height: 2 })).toEqual([
       { x: 6, y: 19 },
       { x: 6, y: 20 },
     ]);
