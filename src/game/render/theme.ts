@@ -117,19 +117,19 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  // Dark, compacted strata: permanent, but still legible as a ten-column grid.
-  fillStart: 0x8f7455,
-  fillEnd: 0x786048,
-  edge: 0x30251d,
-  innerEdge: 0xc5a47b,
+  // Dense cold slate: permanent and clearly distinct from warm playable pieces.
+  fillStart: 0x8696a3,
+  fillEnd: 0x657580,
+  edge: 0x2d3942,
+  innerEdge: 0xcdd6dd,
 };
 
-/** Fresh, clearable fracture from the same warm mineral family as bedrock. */
+/** Fresh, clearable fracture from the same cold-slate family as bedrock. */
 export const SURVIVAL_STONE_MATERIAL: PieceMaterial = {
-  fillStart: 0xb68a59,
-  fillEnd: 0x7e5b39,
-  edge: 0x432f20,
-  innerEdge: 0xe0bd88,
+  fillStart: 0xa7b4be,
+  fillEnd: 0x7d909e,
+  edge: 0x3e4d58,
+  innerEdge: 0xe3ebf0,
 };
 
 /** Puzzle-only immutable cells use a pale mineral core rather than a playable hue. */

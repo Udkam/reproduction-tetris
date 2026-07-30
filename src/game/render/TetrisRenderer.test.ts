@@ -268,7 +268,7 @@ type RendererInternals = {
     alpha: number,
     options: unknown,
   ) => void;
-  drawBedrockStrata: (
+  drawBedrockFacets: (
     graphics: unknown,
     cells: readonly { cell: Cell; x: number; y: number }[],
     size: number,
@@ -498,14 +498,14 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('uses deterministic strata for bedrock and a distinct fresh fracture for the pair', () => {
+  it('uses diagonal slate facets for bedrock and a distinct fresh fracture for the pair', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const cell = [{ cell: { x: 3, y: 17 }, x: 10, y: 20 }];
     const bedrock = createGraphicsRecorder();
     const falling = createGraphicsRecorder();
 
-    internals.drawBedrockStrata(
+    internals.drawBedrockFacets(
       bedrock.graphics,
       cell,
       24,
@@ -522,7 +522,14 @@ describe('Puzzle undo presentation reset', () => {
       1,
     );
 
-    expect(bedrock.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(4);
+    const bedrockSegments = bedrock.operations.filter((operation) => operation.kind === 'segment');
+    expect(bedrock.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(1);
+    expect(bedrockSegments).toHaveLength(2);
+    expect(bedrockSegments.every((operation) => {
+      const [startX, startY, endX, endY] = operation.values;
+      return Math.abs(endY! - startY!) > Math.abs(endX! - startX!) * 0.5;
+    })).toBe(true);
     expect(falling.operations.some((operation) => operation.kind === 'poly')).toBe(true);
     expect(geometrySignature(bedrock.operations)).not.toBe(geometrySignature(falling.operations));
   });
@@ -1152,7 +1159,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
   });
 
-  it('renders short per-cell material seams and a stationary reduced-motion clear', () => {
+  it('renders fill-only per-cell face blooms and a stationary reduced-motion clear', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
@@ -1174,25 +1181,29 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.drawEffects(state, layout);
 
-    const seams = recorder.operations.filter((operation) => operation.kind === 'segment');
-    expect(seams).toHaveLength(20);
-    expect(seams.every((operation) => {
-      const [startX, startY, endX, endY] = operation.values;
-      return startY === endY
-        && endX! - startX! < layout.cell * 0.7
-        && startX! >= layout.x
-        && endX! <= layout.x + layout.width;
+    const faces = recorder.operations.filter((operation) => operation.kind === 'roundRect');
+    expect(faces).toHaveLength(10);
+    expect(faces.every((operation) => {
+      const [x, y, width, height] = operation.values;
+      return width === height
+        && width! < layout.cell
+        && x! >= layout.x
+        && x! + width! <= layout.x + layout.width
+        && y! >= layout.y
+        && y! + height! <= layout.y + layout.height;
     })).toBe(true);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
+    expect(recorder.operations.some((operation) => operation.kind === 'segment')).toBe(false);
+    expect(recorder.operations.filter((operation) => operation.kind === 'fill')).toHaveLength(10);
     expect(recorder.operations.some((operation) => operation.kind === 'rect')).toBe(false);
-    expect(recorder.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
     expect(recorder.operations.some((operation) => operation.kind === 'circle')).toBe(false);
 
     renderer.setOptions({ reducedMotion: true });
     const reducedStart = createGraphicsRecorder();
     (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedStart.graphics;
     internals.drawEffects({ ...state, phaseTicks: 1 }, layout);
-    expect(reducedStart.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(20);
+    expect(reducedStart.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(10);
+    expect(reducedStart.operations.some((operation) => operation.kind === 'segment')).toBe(false);
     const reducedLater = createGraphicsRecorder();
     (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedLater.graphics;
     internals.drawEffects({ ...state, phaseTicks: 4 }, layout);

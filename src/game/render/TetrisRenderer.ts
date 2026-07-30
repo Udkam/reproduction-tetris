@@ -1351,7 +1351,7 @@ export class TetrisRenderer {
         faceBevelWidth,
       );
       if (type === BEDROCK_CELL) {
-        this.drawBedrockStrata(graphics, geometry, size, faceInset, material, alpha);
+        this.drawBedrockFacets(graphics, geometry, size, faceInset, material, alpha);
       } else if (type === SURVIVAL_STONE_CELL) {
         this.drawStoneFacets(graphics, geometry, size, faceInset, material, alpha);
       }
@@ -1457,8 +1457,12 @@ export class TetrisRenderer {
     }
   }
 
-  /** Deterministic compacted layers keep bedrock geological without hiding its grid. */
-  private drawBedrockStrata(
+  /**
+   * Deterministic slate facets keep bedrock geological without wood-like grain.
+   * Every internal stroke is short and diagonal; the ordinary cell relief owns
+   * the only horizontal edges.
+   */
+  private drawBedrockFacets(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
     size: number,
@@ -1466,58 +1470,59 @@ export class TetrisRenderer {
     material: PieceMaterial,
     alpha: number,
   ): void {
-    const layerWidth = Math.max(0.65, size * 0.035);
     const crackWidth = Math.max(0.6, size * 0.03);
-    const layerSegments: Array<[number, number, number, number]> = [];
-    const signalSegments: Array<[number, number, number, number]> = [];
-    const crackSegments: Array<[number, number, number, number]> = [];
+    const chip = Math.max(1.6, size * 0.14);
 
     for (const entry of cells) {
-      const left = entry.x + inset * 1.7;
-      const right = entry.x + size - inset * 1.7;
-      const top = entry.y + inset * 1.7;
-      const bottom = entry.y + size - inset * 1.7;
+      const left = entry.x + inset * 1.55;
+      const right = entry.x + size - inset * 1.55;
+      const top = entry.y + inset * 1.55;
+      const bottom = entry.y + size - inset * 1.55;
       const variant = Math.abs(entry.cell.x * 29 + entry.cell.y * 13) % 4;
-      const drift = (variant - 1.5) * size * 0.018;
-      const upper = top + (bottom - top) * 0.36 + drift;
-      const lower = top + (bottom - top) * 0.7 - drift * 0.6;
-      layerSegments.push(
-        [left, upper, right, upper + drift * 0.45],
-        [left + size * 0.08, lower, right - size * 0.06, lower - drift * 0.3],
+      const pivotX = left + (right - left) * ([0.43, 0.57, 0.48, 0.62][variant] ?? 0.5);
+      const pivotY = top + (bottom - top) * ([0.46, 0.58, 0.63, 0.4][variant] ?? 0.5);
+      const mirror = variant % 2 === 0 ? 1 : -1;
+
+      graphics
+        .poly([
+          left, top + chip * 0.7,
+          pivotX, pivotY,
+          left + chip * 0.4, bottom,
+          left, bottom,
+        ])
+        .fill({ color: material.innerEdge, alpha: Math.min(0.12, alpha * 0.14) });
+      graphics
+        .poly([
+          pivotX, pivotY,
+          right, top + chip * 0.35,
+          right, bottom,
+          right - chip * 0.8, bottom,
+        ])
+        .fill({ color: material.edge, alpha: Math.min(0.3, alpha * 0.36) });
+
+      const crackStartX = pivotX - mirror * chip * 0.42;
+      const crackStartY = top + chip * 0.28;
+      const crackMidX = pivotX + mirror * chip * 0.18;
+      const crackMidY = pivotY;
+      const crackEndX = pivotX - mirror * chip * 0.52;
+      const crackEndY = bottom - chip * 0.24;
+      this.strokeSegments(
+        graphics,
+        [
+          [crackStartX, crackStartY, crackMidX, crackMidY],
+          [crackMidX, crackMidY, crackEndX, crackEndY],
+        ],
+        material.edge,
+        Math.min(0.46, alpha * 0.52),
+        crackWidth,
       );
-      signalSegments.push([left, upper - layerWidth * 0.9, right, upper - layerWidth * 0.45]);
 
-      if (variant === 0 || variant === 3) {
-        const originX = left + (right - left) * (variant === 0 ? 0.32 : 0.68);
-        const originY = top + (bottom - top) * 0.18;
-        crackSegments.push(
-          [originX, originY, originX + size * 0.08, upper],
-          [originX + size * 0.08, upper, originX - size * 0.01, lower - size * 0.03],
-        );
-      }
+      const pitX = variant < 2 ? left + chip * 0.92 : right - chip * 0.92;
+      const pitY = variant === 0 || variant === 3 ? bottom - chip * 0.78 : top + chip * 0.9;
+      graphics
+        .circle(pitX, pitY, Math.max(0.65, size * 0.026))
+        .fill({ color: material.edge, alpha: Math.min(0.34, alpha * 0.4) });
     }
-
-    this.strokeSegments(
-      graphics,
-      layerSegments,
-      material.edge,
-      Math.min(0.48, alpha * 0.54),
-      layerWidth,
-    );
-    this.strokeSegments(
-      graphics,
-      signalSegments,
-      material.innerEdge,
-      Math.min(0.22, alpha * 0.25),
-      Math.max(0.55, layerWidth * 0.7),
-    );
-    this.strokeSegments(
-      graphics,
-      crackSegments,
-      material.edge,
-      Math.min(0.42, alpha * 0.48),
-      crackWidth,
-    );
   }
 
   /** Clearable fresh fractures stay lighter than permanent compacted bedrock. */
@@ -1714,7 +1719,7 @@ export class TetrisRenderer {
       const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
       this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
     }
-    if (state.phase === 'line-clear') this.drawOrdinaryLineClearSeams(graphics, state, layout);
+    if (state.phase === 'line-clear') this.drawOrdinaryLineClearFaces(graphics, state, layout);
     this.drawClassicFeedbackCues(graphics, state, layout);
 
     if (this.lockPulse) {
@@ -1962,10 +1967,10 @@ export class TetrisRenderer {
   }
 
   /**
-   * Ordinary clears release one material seam per cell. The normal path travels
-   * centre-out; reduced motion keeps all seams stationary and only fades them.
+   * Ordinary clears briefly brighten each real cell face. The geometry is fixed
+   * and fill-only: no stroke, sweep line, row band, scaling, or displacement.
    */
-  private drawOrdinaryLineClearSeams(
+  private drawOrdinaryLineClearFaces(
     graphics: Graphics,
     state: GameState,
     layout: BoardLayout,
@@ -1990,25 +1995,14 @@ export class TetrisRenderer {
           : Math.sin(cellProgress * Math.PI);
         if (pulse <= 0) continue;
         const material = this.materialFor(type);
-        const centerX = layout.x + (column + 0.5) * layout.cell;
-        const centerY = layout.y + (row - VISIBLE_START_ROW + 0.5) * layout.cell;
-        const halfSpan = layout.cell * (
-          this.options.reducedMotion ? 0.28 : 0.11 + eased * 0.2
-        );
-        this.strokeSegments(
-          graphics,
-          [[centerX - halfSpan, centerY, centerX + halfSpan, centerY]],
-          material.edge,
-          pulse * 0.62,
-          Math.max(1.2, layout.cell * 0.065),
-        );
-        this.strokeSegments(
-          graphics,
-          [[centerX - halfSpan * 0.82, centerY - layout.cell * 0.025, centerX + halfSpan * 0.82, centerY - layout.cell * 0.025]],
-          material.innerEdge,
-          pulse * 0.78,
-          Math.max(0.75, layout.cell * 0.03),
-        );
+        const inset = layout.cell * 0.13;
+        const x = layout.x + column * layout.cell + inset;
+        const y = layout.y + (row - VISIBLE_START_ROW) * layout.cell + inset;
+        const size = layout.cell - inset * 2;
+        const alpha = Math.min(0.18, pulse * (0.12 + eased * 0.06));
+        graphics
+          .roundRect(x, y, size, size, Math.max(1, layout.cell * 0.08))
+          .fill({ color: material.innerEdge, alpha });
       }
     }
   }
