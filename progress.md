@@ -678,3 +678,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Evidence checkpoint `a67fb00` is superseded until the dedicated navigation layer
   explicitly resets card and action placement, both style layers are covered by a
   regression contract, final gates pass again, and affected real frames are replaced.
+- The same QA pass finds a second P1 at 844×390: the five-row Puzzle matrix receives
+  232 px but its rows, gaps, and top inset require 234 px, so the final row is clipped.
+  The same narrow correction must close that exact two-pixel budget without changing
+  Puzzle content, progress, routes, preview semantics, or any gameplay system.

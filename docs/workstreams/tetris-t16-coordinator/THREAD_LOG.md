@@ -315,9 +315,13 @@
 - Reproduction boundary: at 360×800 the four cards retain single-column rows 1–4;
   at 844×390 they can retain columns 1–4 and the legacy action span, producing
   implicit tracks instead of the contracted two-by-two matrix.
+- Second P1: at 844×390 the short-landscape route leaves 232 px for a matrix that
+  needs 234 px (`5×44` rows + `4×3` gaps + a 2 px top inset). Because the bands own
+  `overflow:hidden`, the fifth row is clipped.
 - Correction boundary: only `src/styles/navigation.css` and its direct cross-layer
-  regression test may change. Product rules, selector, Survival, renderer, Core,
-  records, localization, dependencies, and other visual systems remain frozen.
+  and budget regression test may change. Product rules, Puzzle content/progress,
+  Survival, renderer, Core, records, localization, dependencies, and other visual
+  systems remain frozen.
 - Next action: commit this rejection record, add authoritative placement resets,
   rerun final gates, replace affected browser evidence, and return the corrected
   candidate to independent QA.

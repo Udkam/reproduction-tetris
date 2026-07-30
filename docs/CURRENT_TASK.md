@@ -114,10 +114,14 @@ Navigation candidate `9c515f6` is **independently rejected**. Its dedicated
 the explicit `grid-column`, `grid-row`, and `justify-self` values in older responsive
 rules. Consequently 360×800 still places the four mode cards in one column, while
 844×390 can create implicit third/fourth columns and a displaced action row. The
-correction is limited to authoritative grid-item placement resets plus a regression
-contract that reads both style layers. The selector, Survival, rules, Core, Renderer,
-records, audio, and dependencies remain frozen. All final gates and affected browser
-frames must be regenerated from the corrected candidate before acceptance.
+same independent pass finds a second P1 at 844×390: the short-landscape Puzzle
+budget allocates 232 px to a five-row matrix whose five 44 px rows, four 3 px gaps,
+and 2 px top inset require 234 px, so `overflow:hidden` clips the last row. The
+correction is limited to authoritative home grid-item placement resets, an exact
+short-landscape matrix budget repair, and direct cross-layer/budget regressions.
+Survival, rules, Core, Renderer, records, audio, dependencies, Puzzle content and
+progress semantics remain frozen. All final gates and affected browser frames must
+be regenerated from the corrected candidate before acceptance.
 
 ### Ordered checkpoints
 
