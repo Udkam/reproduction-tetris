@@ -133,6 +133,81 @@ reduced saturation. `prefers-reduced-motion` renders the final edge and static f
 without translation. Focus opens on Replay; Left/Right selects Replay or Back, Enter
 executes, Escape returns to the library.
 
+### Survival cave motion and geology
+
+Survival's three countdown beats remain authoritative, but the presentation between
+beats is continuous. At digit `3`, the first row translates upward from one row below
+the well and eases into its canonical bottom position; digits `2` and `1` repeat the
+same bounded motion while the already revealed shelf rises by the same one-cell
+distance and the new row enters beneath it. Each beat spends `680 ms` on the rise and
+`140 ms` on a restrained settle using `cubic-bezier(.22,.72,.28,1)`, then holds until
+the next one-second beat. It never restarts within the same digit, bounces, or shakes
+the camera. The digit remains visually stable. Reduced motion reveals each completed
+row at its final position with no translation. Core still begins with the same
+deterministic three bedrock rows; this is a Renderer mask/offset contract only.
+
+Bedrock and falling stones share one **cold cave geology**:
+
+- base faces are graphite/slate rather than brown, beige, or warm timber;
+- every cell has two or three deterministic irregular planes rather than horizontal
+  grain or a repeated brick seam;
+- cracks are short and oblique, never row-spanning;
+- permanent bedrock is darker and visually interlocked into one rising shelf;
+- falling stones are one value step brighter, retain a complete readable outline,
+  carry one sparse lower-edge dust trail while moving, and show the frozen one/two
+  cell event height;
+- rock planes, chips, pits, and fractures are derived deterministically and cached;
+  they never use per-frame random geometry or enter the hot animation path;
+- neither material changes collision geometry, board occupancy, line-clear behavior,
+  warning timing, or the single-Canvas boundary.
+
+The final visual proof must include one intermediate row-rise frame, all three completed
+countdown beats, a one-stone fall, a two-stone fall, settled rock, and reduced motion.
+
+### Local typography system
+
+The wordmark remains the only use of **Playwrite NZ Basic**. All other text moves to a
+language-aware four-role system selected from sources with explicit commercial
+embedding permission:
+
+- **Chinese body/UI — 文渊黑体 / WenYuan Sans Variable.** Use variable weights
+  `420–720` for rules, controls, buttons, labels, and compact prose. Its mainland
+  Chinese forms and broad coverage carry readability.
+- **Chinese display — 得意黑 / Smiley Sans.** Use only for short Chinese display
+  headings at `28 px` or larger, such as mode and key result titles. Its slanted
+  construction must not appear in body copy, buttons, compact Settings headings,
+  keyboard maps, numbers, or dense leaderboard rows.
+- **English UI — Sora Variable.** Use `420–760`; its large x-height and open counters
+  support compact application UI while remaining visually distinct from the wordmark.
+- **Numbers — IBM Plex Mono.** Use for countdown digits, HUD values, ranks, timers,
+  level numbers, dates, and scores with tabular numerals.
+
+All four families are self-hosted. The build contains their original license notice;
+no CDN or runtime request is permitted. CSS selects Chinese roles under
+`:lang(zh-CN)` and English roles under `:lang(en)` rather than relying on incidental
+fallback order. A missing display glyph falls back to 文渊黑体; a missing English glyph
+falls back to Sora/WenYuan in that order. Loading must not change control sizes,
+Puzzle-square geometry, result fit, or board alignment after `document.fonts.ready`.
+
+Selection provenance is explicit rather than inferred from a font download:
+
+- 文渊黑体 is the variable OFL family documented by
+  [猫啃网](https://www.maoken.com/freefonts/28291.html) and its
+  [upstream repository](https://github.com/takushun-wu/WenYuanFonts);
+- 得意黑 is the OFL display face documented by
+  [猫啃网](https://www.maoken.com/freefonts/17247.html) and
+  [atelierAnchor](https://github.com/atelier-anchor/smiley-sans);
+- Sora's UI purpose and OFL distribution are documented by its
+  [upstream repository](https://github.com/sora-xor/sora-font), while
+  [Fontsource](https://fontsource.org/fonts/sora/install) supplies the self-hosted
+  variable package;
+- IBM Plex Mono is distributed under OFL by
+  [IBM](https://github.com/IBM/plex/blob/master/LICENSE.txt).
+
+Every player-facing `返回模式 / Back to modes` label is replaced by
+`返回首页 / Back to home`; historical documentation may retain old copy only as
+provenance.
+
 ## 2026-07-31 Phase 9 direct re-open — clean entry, result ledger, and Puzzle gallery
 
 The latest real-frame review reopens four presentation-only surfaces after the

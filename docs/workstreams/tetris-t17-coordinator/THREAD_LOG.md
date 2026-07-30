@@ -178,3 +178,35 @@
   remain in the single immutable browser batch.
 - Next action: commit this green checkpoint, then open P10.6 Puzzle completion
   persistence and celebration.
+
+## 2026-07-31 — Phase 10 cave, navigation, and typography contract extension
+
+- Task ID: `T17-P10.6`
+- Base SHA: `929afe341ec750c1fa1337088cd531de2424593c`
+- Owner: primary coordinator
+- Exact paths:
+  - `docs/CURRENT_TASK.md`
+  - `docs/DESIGN.md`
+  - `docs/phases/phase 10.md`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - read-only targeted `rg`, `Get-Content -Encoding UTF8`, Git status/log/diff checks
+  - read-only comparison of two Survival entry concepts and two typography systems
+  - scoped official/upstream font-license and self-hosting research
+  - `git diff --check`: passed before this log-only delta
+- Evidence: the active contract now includes three direct additions: Survival's
+  canonical one/two/three-row countdown is presented as a continuous shared-shelf
+  rise (`680 ms` translation plus `140 ms` settle per beat); permanent bedrock and
+  falling stones share one deterministic cached cold-geology family while remaining
+  legible by silhouette and movement; every player-facing Back-to-modes action becomes
+  Back to home. The local typography roles are frozen as WenYuan Sans for Chinese UI,
+  Smiley Sans only for Chinese display headings at least `28 px`, Sora for English UI,
+  IBM Plex Mono for numeric data, and Playwrite NZ Basic only for the wordmark. Final
+  evidence must prove local loading, stable metrics, reduced motion, and no runtime
+  font request.
+- Resource note: no test, build, install, server, watcher, browser, Serena, WMI/CIM,
+  or new sub-agent was started. Existing read-only comparison results were consumed
+  after completion.
+- Blocker: none for P10.6.
+- Next action: commit this contract checkpoint, then open P10.7 Puzzle completion
+  persistence and celebration.

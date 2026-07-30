@@ -4,7 +4,7 @@
 
 **Status (2026-07-31): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
 
-Phase 10 keeps correcting the current product until all twelve direct outcomes below are
+Phase 10 keeps correcting the current product until all fifteen direct outcomes below are
 implemented, verified in real play, independently reviewed, committed as bounded
 recovery points, and pushed:
 
@@ -67,6 +67,29 @@ recovery points, and pushed:
     puzzle library` actions. It does not show lines, score, a generic run-loss title,
     redundant completion prose, or an unsupported rank. Reduced motion preserves the
     hierarchy without moving particles.
+13. **Survival's cave enters as continuous pressure, not stepped teleportation.**
+    Countdown still reveals exactly one, two, then three canonical bedrock rows on the
+    three one-second beats, but every newly revealed row rises continuously from below
+    the well while the already revealed shelf moves upward by the same distance. Each
+    beat uses one short eased translation and settle; the rows never jump between
+    integer presentation positions, expose an active/ghost/Next piece, or alter
+    deterministic Core state. Reduced motion presents each completed row without
+    translation.
+14. **Bedrock and falling stones read as one cave geology.** Both use a cool mineral
+    rock family with irregular planes, inset chips, small pits, and short fractures;
+    neither resembles wood grain, bricks, planks, or polished square tiles. Permanent
+    bedrock reads as a compact rising shelf. Falling stones retain a clearer outer
+    silhouette, slightly brighter moving face, and sparse downward dust so their
+    position and one/two-cell event height remain immediately legible. Geometry stays
+    Canvas-only and cannot obscure ordinary pieces or warnings.
+15. **Navigation copy and typography are deliberate and locally packaged.**
+    Every current `返回模式 / Back to modes` action becomes `返回首页 / Back to home`.
+    `TetraMorph` alone retains Playwrite NZ Basic. Chinese body/UI copy uses the
+    variable 文渊黑体; concise Chinese display headings may use 得意黑. English UI
+    uses Sora Variable, and gameplay numbers use IBM Plex Mono. Fonts are self-hosted,
+    license-noticed, subset or packaged without runtime network access, and verified
+    for Chinese/English fallback, stable metrics, keyboard labels, compact layouts,
+    and Steam distribution. No proprietary or ambiguous-license font is admitted.
 
 ### Execution and acceptance
 
@@ -75,9 +98,10 @@ recovery points, and pushed:
   finished and read-only; no new persistent helper, listener, indexer, Serena process,
   or browser is admitted merely for inspection.
 - Checkpoints are split into: contract; shared UI/localization; Survival Core;
-  Mutation Core/audio/Renderer; result/persistence UI; final evidence; independent
-  QA; coordinator acceptance. Each source checkpoint owns focused tests and is green
-  before the next subsystem opens.
+  Mutation Core/audio/Renderer; result UI; Puzzle persistence/celebration; Survival
+  entry/cavern presentation; typography; final evidence; independent QA; coordinator
+  acceptance. Each source checkpoint owns focused tests and is green before the next
+  subsystem opens.
 - After the final source change, run exactly one final typecheck, full test suite,
   production build, and browser-evidence pass. Browser proof covers all four modes,
   Chinese and English, restart/play-again countdown, paused/back preview, simultaneous
@@ -85,7 +109,11 @@ recovery points, and pushed:
   spawn-overlap/carry, ranked/unranked results, reduced motion, one Canvas, zero DOM
   cells, zero overflow, and zero console/page errors. Puzzle proof additionally covers
   first completion, slower replay, new best, direct return, restart, storage reload,
-  unlock propagation, and reduced-motion celebration.
+  unlock propagation, and reduced-motion celebration. Survival proof captures every
+  countdown beat plus an intermediate rising-row frame, falling one/two-stone events,
+  and reduced motion. Typography proof covers local font loading, Chinese/English
+  headings and body copy, numeric alignment, fallback stability, and zero layout shift
+  after `document.fonts.ready`.
 - Release every project-owned browser, server, port, and temporary profile after
   evidence. Run one repository-scoped `gitleaks` scan before push. Phase 10 remains
   `ACTIVE` until independent read-only QA accepts the immutable candidate.
