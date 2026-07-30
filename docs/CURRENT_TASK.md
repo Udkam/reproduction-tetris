@@ -2,18 +2,20 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): SURVIVAL + ORDINARY FEEDBACK GREEN /
-PUZZLE SELECTOR + MODE HOME NEXT.**
+**Status (2026-07-31): SURVIVAL CAVERN + ORDINARY CLEAR REOPENED /
+COUNTDOWN BEDROCK STAGING ADDED / NAVIGATION WORK PRESERVED.**
 
 The direct goal is to keep correcting this slice until all six requested outcomes are
 implemented and visually accepted:
 
 1. Survival emits one rigid pair of vertically stacked rocks in one deterministic
    random column. It falls at exactly two times the fixed Survival tetromino speed.
-2. Survival bedrock and falling rocks share a readable, realistic layered-cavern
-   treatment that communicates both rising ground and falling-rock pressure.
+2. Survival bedrock and falling rocks share a readable cold-slate cavern treatment
+   that communicates both rising ground and falling-rock pressure without resembling
+   wood, planks, bricks, or a warm decorative wall.
 3. Ordinary landing and line clear become short, natural, material-aware feedback
-   without scaling cells, board shake, page flash, particles, or gameplay changes.
+   without scaling cells, board shake, page flash, particles, gameplay changes, or
+   any horizontal line drawn across or inside a cleared row.
 4. The complete fifty-level Puzzle selector fits without vertical scrolling through
    a compact preview bench and `10×5` desktop/landscape or `5×10` portrait matrix.
 5. The mode home receives the previously missed composition pass: one wordmark,
@@ -34,22 +36,20 @@ cell is blocked, advances it at exactly `20 ticks/cell`, settles both cells toge
 and preserves deterministic collision, clear, bedrock-shift, hash, restart, and
 seven-bag boundaries. Focused proof passes `18/18` race tests and typecheck.
 
-Survival cavern checkpoint `5215769` now renders both cells of the rigid pair,
-uses one warm mineral family with darker deterministic strata for permanent
-bedrock and lighter fresh fractures for clearable rocks, replaces the old arrow
-with a one-column fissure/pair warning, and bounds spawn dust, impact contact, and
-bedrock-boundary feedback to short local cues. Reduced motion keeps a static
-boundary/contact signal without board shift. The public debug snapshot exposes
-both rock cells and the active boundary cue. Focused proof passes `85/85` tests
-and typecheck.
+Survival cavern checkpoint `5215769` is retained as a rollback point but its
+warm-brown horizontal strata are **visually rejected** because they read as wooden
+boards. The correction must use cold slate faces, irregular facets/chips, short
+diagonal fractures, and clear cell silhouettes with no long horizontal grain.
+During Survival's `3 / 2 / 1` entry countdown, the Renderer reveals and raises the
+bottom one / two / three canonical bedrock rows respectively. Core still owns the
+same deterministic three-row ready board; the staged reveal is presentation only.
 
-Ordinary feedback checkpoint `daa0a13` replaces full-piece hard-drop echoes and
-the broad row flash with three bounded signals: a `100 ms` material-aware support
-imprint, at most four `50 ms` short vertical drop traces, and one stationary-cell
-seam per cleared cell over nine ticks (`150 ms`). A line-clear lock suppresses the
-drop trace and lowers the support imprint to `55%`, so the clear owns the visual
-hierarchy. Reduced motion uses a fixed support mark plus simultaneous six-tick
-seams. Focused proof passes `51/51` tests and typecheck.
+Ordinary feedback checkpoint `daa0a13` is retained as a rollback point, but its
+horizontal per-cell clear seams are **visually rejected**. Landing support and
+bounded hard-drop traces remain eligible; ordinary clear must instead use one
+stationary inset face bloom per real cleared cell, with no `lineTo`/stroke geometry,
+no row-spanning band, and no particles. Normal motion may retain centre-out timing;
+reduced motion shows the same fixed faces simultaneously and only fades alpha.
 
 ### Ordered checkpoints
 
@@ -58,11 +58,12 @@ seams. Focused proof passes `51/51` tests and typecheck.
 2. `source-survival-core`: rigid-pair state, one-column RNG, `20 ticks/cell`, clear
    and bedrock mapping, hashing, localization contract, and focused deterministic
    tests.
-3. `source-survival-render`: common rock family, pair perimeter/fracture, fissure
-   warning, local dust/contact, bedrock boundary response, reduced motion, and
-   Renderer tests.
-4. `source-ordinary-feedback`: support imprint, bounded hard-drop trace, per-cell
-   seam release, reduced motion, reset/unmount cleanup, and direct Renderer tests.
+3. `source-survival-render-correction`: cold slate family, irregular facets, pair
+   perimeter/fracture, fissure warning, local dust/contact, countdown one-row-at-a-
+   time rise, reduced motion, and Renderer/Runtime/App tests.
+4. `source-ordinary-feedback-correction`: support imprint, bounded hard-drop trace,
+   stroke-free per-cell face bloom, reduced motion, reset/unmount cleanup, and
+   direct Renderer tests.
 5. `source-navigation`: compact Puzzle preview and full no-scroll matrix, correct
    `3–7` tier labels, roving focus, two-by-two mode home, style import order,
    localization and App tests.
@@ -103,8 +104,12 @@ desktop packaging, and Steam SDK work remain out of scope.
   are visibly related but distinct; all geology and feedback remains clipped to the
   one Pixi well; no DOM board cells or second Canvas; reduced motion remains clear.
 - Feedback: landing `≤100 ms`, clear `≤150 ms`; stationary cells; zero particles;
-  no full-width sweep rectangle; Mutation carrier/status graphics and Puzzle marks
-  survive ordinary clears.
+  zero horizontal clear strokes or full-width sweep rectangles; Mutation carrier/
+  status graphics and Puzzle marks survive ordinary clears.
+- Survival entry: at countdown `3`, `2`, and `1`, exactly one, two, and three bottom
+  bedrock rows are visible; each newly revealed row rises from below into its
+  canonical cell row, while reduced motion reveals it directly. When the countdown
+  ends, the Renderer returns to the full canonical board with no Core-state delta.
 - Navigation: all fifty controls visible without scrolling at every required
   viewport; 44px targets; correct number/tick/best states; responsive arrow steps;
   Enter and pointer work; all four home entries visible with exactly one wordmark.

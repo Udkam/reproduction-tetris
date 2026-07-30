@@ -14,18 +14,20 @@ Mutation rules, score rules, audio, and the single-Canvas rendering boundary rem
 frozen.
 
 Three independent read-only design comparisons considered each area before source
-work. The accepted direction is one coherent mineral-workbench language:
+work. Direct player review later rejected the warm/horizontal interpretation of the
+first implementation. The corrected direction is one coherent slate-workbench
+language:
 
-- Survival uses a **layered cavern** treatment. Permanent bedrock and clearable
-  falling stones share a warm mineral family, deterministic strata, chips, and
-  cracks while preserving exact cell silhouettes and seams. Bedrock is darker and
-  older; falling stones are lighter fresh fractures. It must read as cave pressure,
-  never as a continuous decorative wall or a photo texture.
+- Survival uses a **cold slate cavern** treatment. Permanent bedrock and clearable
+  falling stones share deterministic facets, chips, and short diagonal fractures
+  while preserving exact cell silhouettes and seams. Bedrock is darker, denser, and
+  older; falling stones are lighter fresh fracture. Long horizontal strata, warm
+  brown wood tones, plank grain, and brick-wall repetition are explicitly rejected.
 - Ordinary piece landing uses a **mineral imprint**: a short support-contact response
-  under the cells that actually land. Ordinary line clearing uses **seam release**:
-  a centre-out sequence of short material-colored marks inside each real cleared
-  cell. Neither response may scale or displace cells, shake the well, flash the page,
-  emit particles, or hide board state.
+  under the cells that actually land. Ordinary line clearing uses **face release**:
+  a centre-out sequence of restrained inset face blooms inside each real cleared
+  cell. It draws no horizontal stroke or row band. Neither response may scale or
+  displace cells, shake the well, flash the page, emit particles, or hide board state.
 - Puzzle selection uses a **two-layer level bench**: a compact selected-level preview
   above one complete functional matrix. Desktop and short landscape use ten columns
   by five rows; portrait uses five columns by ten rows. All fifty levels must be
@@ -57,10 +59,10 @@ work. The accepted direction is one coherent mineral-workbench language:
 ### Survival cavern presentation
 
 - Board collision geometry remains a ten-column cell field. Coordinate-hashed
-  variants may choose a small fixed set of strata, cracks, and chips; no per-frame
-  random noise or external texture asset is allowed.
-- Bedrock keeps visible seams and a darker compacted face. A subtle shared horizontal
-  stratum may cross adjacent bedrock cells, but each cell boundary remains legible.
+  variants may choose a small fixed set of facets, short diagonal cracks, chips, and
+  pits; no per-frame random noise or external texture asset is allowed.
+- Bedrock keeps visible seams and a darker compacted face. No horizontal layer line
+  may cross a cell or continue into an adjacent cell.
 - The airborne pair is drawn as one vertical rock component with a shared perimeter
   and one internal fracture. It may not resemble two unrelated grey UI tiles.
 - The warning is a top-edge fissure plus a two-cell silhouette in the selected
@@ -69,6 +71,11 @@ work. The accepted direction is one coherent mineral-workbench language:
   exposed boundary; no full-board shake.
 - Reduced motion keeps a static warning and final materials, removes interpolation
   and dust, and uses one instantaneous boundary emphasis.
+- The deterministic three-row initial bedrock remains present in Core throughout the
+  ready state. Renderer presentation masks it during the Survival entry countdown:
+  digit `3` reveals the bottom row, digit `2` reveals the second, and digit `1`
+  reveals the third. Each newly exposed row rises one cell into place over a short
+  eased transition; reduced motion reveals the final row position immediately.
 
 ### Shared ordinary feedback contract
 
@@ -82,13 +89,14 @@ work. The accepted direction is one coherent mineral-workbench language:
   no hard-drop trace so the row response remains primary.
 - Ordinary clearing completes its visible response in nine ticks (`150 ms`) inside
   the unchanged twelve-tick Core delay. Centre columns lead; every cell renders one
-  short horizontal seam using that cell material. Cells remain stationary, full
-  size, and recognizable; particle count is zero.
+  fixed inset face bloom using that cell material. It uses fill-only rounded faces,
+  no horizontal stroke or row band. Cells remain stationary, full size, and
+  recognizable; particle count is zero.
 - Survival falling-rock landing remains its own geology response. Mutation Bomb and
   Collapse remain their own effects. Puzzle anchors do not participate in the seam,
   and target ownership marks remain readable.
 - Reduced motion shows a fixed contact imprint fading for four ticks and all ten
-  clear seams fading together for six ticks. It does not remove feedback entirely.
+  clear faces fading together for six ticks. It does not remove feedback entirely.
 - Undo, restart, screen exit, and renderer destruction clear every transient.
 
 ### Puzzle level-bench contract

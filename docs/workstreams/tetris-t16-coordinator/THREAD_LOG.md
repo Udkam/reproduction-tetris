@@ -101,3 +101,20 @@
   capture and independent visual QA at the combined candidate.
 - Next action: reopen App/styles/style-order/localization/direct tests for the
   no-scroll fifty-level selector and two-by-two mode home.
+
+## 2026-07-31 — direct visual rejection reopens cavern and ordinary clear
+
+- Task: remove horizontal ordinary-clear marks, replace wood-like geology, and
+  stage the canonical three-row Survival bedrock during the entry countdown.
+- Base: pushed ordinary-feedback recovery `a1146b8`.
+- Inherited dirty path: `src/App.tsx` contains the separate, uncommitted selector/
+  home slice and must remain unstaged while these corrections are committed.
+- Finding: the warm-brown palette plus long horizontal strata reads as wooden
+  boards; the per-cell seam reads as an added line rather than a natural clear.
+- Corrected contract: cold slate facets/chips and short diagonal fractures only;
+  ordinary clear is fill-only inset face bloom with zero horizontal strokes;
+  countdown `3 / 2 / 1` reveals and raises exactly `1 / 2 / 3` canonical bedrock
+  rows in Renderer presentation without changing Core state.
+- Resource state: no subagent, test runner, build, watcher, or project browser is
+  started for the contract correction. The next action is one exact-path docs
+  checkpoint, followed by the bounded Renderer/Runtime/App correction.

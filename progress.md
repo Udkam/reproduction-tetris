@@ -614,3 +614,19 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `55%`; no cell scaling, board shake, page flash, or particles were introduced.
 - Reduced motion retains stationary support and six-tick simultaneous clear
   seams. Focused proof passes 51/51 and typecheck passes.
+
+## 2026-07-31 Phase 9 direct visual correction
+
+- Player review rejects the warm-brown bedrock strata as wood-like and rejects the
+  ordinary per-cell horizontal seam outright. Checkpoints `5215769` and `daa0a13`
+  remain rollback points but are no longer visual acceptance candidates.
+- The corrected geology is cold slate with deterministic irregular facets, chips,
+  pits, and short diagonal fractures. Long horizontal grain is forbidden.
+- Ordinary clear becomes a stationary fill-only inset face bloom; it uses no line
+  strokes, row band, particles, scaling, or board displacement.
+- Survival entry now stages the unchanged canonical three-row Core board in
+  presentation: countdown `3`, `2`, and `1` show and raise one, two, and three
+  bottom bedrock rows respectively. Reduced motion reveals each row at its final
+  position.
+- The separate uncommitted selector/home work in `src/App.tsx` is preserved and
+  excluded from the correction checkpoints.
