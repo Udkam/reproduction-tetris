@@ -24,4 +24,12 @@ describe('Phase 9 navigation authority', () => {
     expect(navigation).toMatch(/\.mode-gates--workbench \.mode-gate__action b,[\s\S]*background:\s*var\(--gate-accent\)/);
     expect(navigation).not.toContain('font-weight 170ms');
   });
+
+  it('defines the complete ten-column, five-tier Puzzle bench without scroll ownership', () => {
+    expect(navigation).toMatch(/\.console-workbench\s*\{[\s\S]*grid-template-rows:\s*clamp\(116px,\s*18vh,\s*160px\)\s+minmax\(0,\s*1fr\)/);
+    expect(navigation).toMatch(/\.console-bands\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*minmax\(44px,/);
+    expect(navigation).toMatch(/\.console-nodes\s*\{[\s\S]*grid-template-columns:\s*repeat\(10,\s*minmax\(44px,/);
+    expect(navigation).toMatch(/\.console-node button\s*\{[\s\S]*min-width:\s*44px;[\s\S]*min-height:\s*44px;/);
+    expect(navigation).not.toMatch(/overflow-(?:x|y):\s*(?:auto|scroll)/);
+  });
 });
