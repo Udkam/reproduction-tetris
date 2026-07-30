@@ -890,3 +890,33 @@
   and is not an open GAP.
 - Disposition: accepted. Next action: commit and push this acceptance point,
   then open levels 41–50 as a separate bounded slice.
+
+## Levels 41–50 candidate-authoring contract — 2026-07-30
+
+- Task: `t15_puzzle_41_50_candidate_authoring`.
+- Accepted/pushed base SHA: `d8573e3`.
+- Execution-only tool:
+  `docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`.
+- Claim boundary:
+  - author seven-row synthesis candidates in separate ordinary and
+    sparse-anchor pools;
+  - retain six ordinary 14/15-drop packages and four 11–13-drop packages with
+    exactly one supported headroom anchor each;
+  - require every anchor at visible `y=12` on an outer or near-outer column
+    occupied through all seven target rows;
+  - later verify two early-diverging routes at max locks 36, primary beam 720,
+    alternate beam 560.
+- Candidate generation sequence:
+  - two identical 13-drop smoke runs, direct assertions and hash comparison;
+  - at most one ordinary pool and one sparse-anchor pool, sequentially;
+  - no pool exceeds 24 seeds, 100 retained candidates or 50,000,000 attempted
+    landings.
+- Closed until pool inspection: all product/tests/artifact paths, IDs 41–50,
+  localization, progress/unlock/v5, App source, selector/CSS, renderer,
+  dependencies and other modes.
+- Resource boundary: no subagent, test, build, browser or second Node-heavy task
+  overlaps candidate generation. Each process uses an explicit ignored output,
+  is registered by exact PID/command/purpose and is released at completion.
+  No listener, MCP, Serena, WMI/CIM or name-only termination.
+- Next action: run and repeat the bounded smoke, compare hashes and direct
+  invariants, then decide whether the two full pools can open unchanged.

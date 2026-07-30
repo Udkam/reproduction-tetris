@@ -98,6 +98,21 @@ cell count is not evidence that an immutable edge constraint is an easier lesson
 Every setup history, gameplay seed and anchor travels as one complete package when
 ordered; no route is rebound to a different random sequence.
 
+The `41–50` batch is the seven-row synthesis tier. It must combine earlier wells,
+shelves, channels, delayed clears and recovery space into boards that remain readable
+as constructions rather than random rubble. Candidate authoring uses separate ordinary
+and sparse-anchor pools. Six retained packages are ordinary 14/15-drop boards; four
+retained packages each carry one authored headroom anchor and may come from 11–13-drop
+boards. An anchored candidate is eligible only when the anchor sits immediately above
+the target band on an outer or near-outer column that is already occupied through all
+seven target rows. This support rule avoids both a meaningless floating peg and an
+initially sealed row. The batch does not exercise the optional two-anchor allowance.
+Every package still needs two public-Core routes diverging by lock four at a fixed
+36-lock, 720-primary and 560-alternate beam ceiling. No individual failure may expand
+that domain. Final order and concise bilingual names are assigned only after route
+metrics and human-readable structural lessons are inspected together; raw setup score
+or route length alone does not define the curriculum.
+
 Mutation items are an orthogonal attachment system:
 
 | Ordinary body | Allowed attachments |

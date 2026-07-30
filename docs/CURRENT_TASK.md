@@ -15,13 +15,12 @@ pushed with exact local/tracking/remote equality and recorded at remote tip `d78
 Phase 7's documentation contract is frozen at
 `08c0491014c00ff5972ad7471d5bb0126eebae52` from that exact rollback base.
 The persistence-v5 slice is independently accepted at product `fbec049`; bounded
-setup authoring tool `b6acd46` is deterministic and released. Levels 01–10 are
-accepted after correction `2ce309b`. Generalized authoring tool `306106a` and
-levels 11–20 source candidate `cdd5e43` are accepted after anchor-row proof
-`bb0210f`: curriculum/artifact and repeated rules audits now report P0–P3/GAP all
-zero. Levels 01–20 are closed. The next bounded action executes the unchanged
-authoring tool once at a time to produce temporary five-row candidates for
-levels 21–30; no new ID or product path is open yet.
+setup authoring tool `b6acd46` and its generalization `306106a` are deterministic
+and released. Levels 01–40 are independently accepted and pushed through recovery
+point `d8573e33693dcfe79e91cf015fd58b8e2f3d9cb1`, with both 31–40 audits reporting
+P0–P3/GAP all zero. The next bounded action executes the unchanged authoring tool
+once at a time to produce temporary seven-row candidate pools for levels 41–50;
+no new ID or product path is open yet.
 
 **Phase-7 Puzzle-50 contract (2026-07-30):** the existing Puzzle selector composition
 is frozen. The active scope is fifty deterministic, solver-replayed levels arranged
@@ -474,6 +473,38 @@ focused 64-test replay gate and typecheck. Checkpoint `23970c6` and record tip
 `4674061` are accepted. After this disposition is committed and pushed,
 levels 41–50 may open as a separate bounded slice; unlock/v5/selector
 data-scroll adaptation remains closed until all fifty definitions are accepted.
+
+**Open Phase-7 slice — levels 41–50 candidate authoring (2026-07-30):**
+accepted and pushed base `d8573e3`. The only execution tool opened by this
+checkpoint is
+`docs/workstreams/tetris-t15-puzzle/search-puzzles.mjs`; candidate JSON, stdout
+and stderr remain ignored temporary files. Generate seven contiguous target rows
+through legal zero-clear setup histories in two independent pools:
+
+- ordinary pool: setup counts 14/15, from which six complete packages are
+  retained;
+- sparse-anchor pool: setup counts 11/12/13, from which four complete
+  one-anchor packages are retained.
+
+Each retained anchor must occupy visible row 12, immediately above the seven-row
+target band, on an outer or near-outer column that is occupied in all seven
+target rows. Do not use two anchors, add an anchor after solving an ordinary
+board, accept an initially full row, or relax the fixed target band. Every
+retained definition later needs two public-Core routes with canonical landing
+divergence by lock four at max 36 locks / 720 primary beam / 560 alternate beam.
+These are fixed batch ceilings, not an invitation to raise one failed level's
+budget.
+
+Execution begins with two identical small 13-drop smoke runs and direct
+schema/row/cell/full-row/hash comparison. Only after matching output may one
+bounded ordinary pool and one bounded sparse-anchor pool run, sequentially,
+with an explicit output path and no listener. A pool may use no more than 24
+setup seeds, 100 retained candidates or 50,000,000 attempted landings. Inspect
+candidate topology and support columns before opening source. Product
+definitions/tests/artifact, IDs 41–50, localization, progress/unlock/v5, App,
+selector/CSS, renderer, dependencies and other modes remain closed until a
+candidate-pool checkpoint records exact hashes and a bounded source-opening
+path list.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
