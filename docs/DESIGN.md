@@ -102,7 +102,7 @@ The `41–50` batch is the seven-row synthesis tier. It must combine earlier wel
 shelves, channels, delayed clears and recovery space into boards that remain readable
 as constructions rather than random rubble. Candidate authoring uses separate ordinary
 and sparse-anchor pools. Six retained packages are ordinary 14/15-drop boards; four
-retained packages each carry one authored headroom anchor and may come from 11–13-drop
+retained packages each carry one authored headroom anchor and come from 12/13-drop
 boards. An anchored candidate is eligible only when the anchor sits immediately above
 the target band on an outer or near-outer column that is already occupied through all
 seven target rows. This support rule avoids both a meaningless floating peg and an

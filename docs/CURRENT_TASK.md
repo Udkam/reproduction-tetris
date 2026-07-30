@@ -483,7 +483,7 @@ through legal zero-clear setup histories in two independent pools:
 
 - ordinary pool: setup counts 14/15, from which six complete packages are
   retained;
-- sparse-anchor pool: setup counts 11/12/13, from which four complete
+- sparse-anchor pool: authoring probes setup counts 11/12/13, from which four
   one-anchor packages are retained.
 
 Each retained anchor must occupy visible row 12, immediately above the seven-row
@@ -505,6 +505,47 @@ definitions/tests/artifact, IDs 41–50, localization, progress/unlock/v5, App,
 selector/CSS, renderer, dependencies and other modes remain closed until a
 candidate-pool checkpoint records exact hashes and a bounded source-opening
 path list.
+
+**Levels 41–50 candidate-pool checkpoint and source opening (2026-07-30):**
+both identical 13-drop smoke runs completed four candidates in 98,570 attempted
+landings and matched SHA-256
+`33C481CE9299B4D0DBC1704A01A660D0B0FCB0DADA93970AA228DE465CFAB5B0`.
+Direct assertions pass schema, legal-hard-drop/zero-clear claims, exact seven
+contiguous floor rows, 52 cells, empty headroom, no full row and unique boards.
+
+The ordinary pool completed 80 unique candidates across 24 seeds in 7,871,052
+attempted landings without exhaustion; 78 use 14 drops and two use 15. Its
+SHA-256 is
+`932B849801F2DBFDAB6CB381023D24AB78D253B543F165EB4AE4CF88D37D0BC9`.
+The sparse-anchor pool completed 80 unique candidates across 24 seeds in
+9,454,272 attempted landings without exhaustion; no 11-drop history could form
+seven legal rows, while 18 candidates use 12 drops and 62 use 13. Forty-two
+candidates have at least one outer or near-outer column occupied throughout all
+seven target rows. Its SHA-256 is
+`EABC3BA7858C07517668EDDE9266F9A20FB8A020EE972CFDAB6C3555B112D67E`.
+Retained anchor carriers are therefore tightened to 12/13 drops; target height,
+four-anchor quota and route bounds do not change.
+
+Provisional complete-package mapping distributes anchors and topology before
+route measurement:
+
+- 41 ordinary position 71; 42 anchor position 39 at `x=1`;
+- 43 ordinary position 55; 44 ordinary position 59;
+- 45 anchor position 23 at `x=8`; 46 ordinary position 22;
+- 47 anchor position 45 at `x=0`; 48 ordinary position 38;
+- 49 anchor position 77 at `x=9`; 50 ordinary position 74.
+
+The coordinator is the single source writer. Open only
+`src/game/core/types.ts`, `src/game/core/puzzles.ts`,
+`src/game/core/puzzles.test.ts`, `src/game/core/puzzleCampaign.test.ts`,
+`src/game/core/puzzleSolverResults.test.ts`, `src/ui/localization.ts`,
+`src/puzzleProgress.test.ts`, `src/App.test.ts`, and
+`docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json`.
+Register the ten packages with unique deterministic gameplay seeds and
+provisional structural names, pass focused structural proof, then probe the
+four anchors individually at 36/720/560 before any full batch. Definitions and
+artifacts 01–40, unlock/v5 source, App source, selector/CSS, renderer,
+dependencies and other modes remain closed.
 
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser

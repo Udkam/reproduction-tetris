@@ -920,3 +920,51 @@
   No listener, MCP, Serena, WMI/CIM or name-only termination.
 - Next action: run and repeat the bounded smoke, compare hashes and direct
   invariants, then decide whether the two full pools can open unchanged.
+
+## Levels 41–50 candidate-pool checkpoint and source opening — 2026-07-30
+
+- Smoke A/B used the same target/seeds/count/beam/budget and both exited:
+  - 4 candidates, 98,570 attempted landings, no exhaustion;
+  - matching SHA-256
+    `33C481CE9299B4D0DBC1704A01A660D0B0FCB0DADA93970AA228DE465CFAB5B0`;
+  - direct schema, seven-row, 52-cell, no-full-row, headroom and uniqueness
+    assertions pass.
+- Ordinary pool:
+  - target 7, setup counts 14/15, 24 seeds, beam 384, budget 50,000,000;
+  - 80 unique candidates, 7,871,052 attempted landings, no exhaustion;
+  - setup mix 78×14 and 2×15;
+  - SHA-256
+    `932B849801F2DBFDAB6CB381023D24AB78D253B543F165EB4AE4CF88D37D0BC9`.
+- Sparse-anchor pool:
+  - target 7, setup counts 11/12/13, 24 seeds, beam 384, budget 50,000,000;
+  - 80 unique candidates, 9,454,272 attempted landings, no exhaustion;
+  - setup mix 0×11, 18×12 and 62×13;
+  - 42 expose a fully occupied seven-row support column at `x=0/1/8/9`;
+  - SHA-256
+    `EABC3BA7858C07517668EDDE9266F9A20FB8A020EE972CFDAB6C3555B112D67E`.
+- Measured correction: retain anchors only from 12/13-drop carriers. Do not
+  reopen 11 drops or weaken target/support/route requirements.
+- Provisional complete-package mapping:
+  - 41 ordinary 71; 42 anchor 39 / `x=1`;
+  - 43 ordinary 55; 44 ordinary 59;
+  - 45 anchor 23 / `x=8`; 46 ordinary 22;
+  - 47 anchor 45 / `x=0`; 48 ordinary 38;
+  - 49 anchor 77 / `x=9`; 50 ordinary 74.
+- Controlled PIDs `8972`, `29672`, `2264` and `4412` all exited. No project
+  listener, browser, server, test, build, solver, MCP or subagent overlapped.
+  Other unowned Node processes were preserved.
+- Open writer: coordinator as `t15_puzzle_41_50_source_writer`.
+- Exact open paths:
+  - `src/game/core/types.ts`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleCampaign.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/ui/localization.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.test.ts`
+  - `docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json`
+- Closed: definitions/artifacts 01–40, unlock/v5 source, App source,
+  selector/CSS, renderer, dependencies and other modes.
+- Next action: commit this source-opening checkpoint, register all ten packages,
+  run focused structural proof, then probe only the four anchors at 36/720/560.
