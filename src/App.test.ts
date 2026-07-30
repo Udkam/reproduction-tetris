@@ -52,12 +52,14 @@ interface RuntimeTestOptions {
   mode?: GameMode;
   puzzleId?: PuzzleId;
   inputEnabled?: boolean;
+  survivalEntryBedrockRows?: number | null;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
 }
 
 interface RuntimeTestInstance {
   options: RuntimeTestOptions;
   setInputEnabled: ReturnType<typeof vi.fn>;
+  setSurvivalEntryBedrockRows: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
   restart: ReturnType<typeof vi.fn>;
   undoPuzzle: ReturnType<typeof vi.fn>;
@@ -80,6 +82,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     private state: GameState;
     private canvas: HTMLCanvasElement | null = null;
     readonly setInputEnabled = vi.fn();
+    readonly setSurvivalEntryBedrockRows = vi.fn();
     readonly setReducedMotion = vi.fn();
     readonly setAudioEnabled = vi.fn();
     readonly setAudioVolume = vi.fn();
@@ -223,6 +226,31 @@ describe('Puzzle progress boot migration', () => {
 });
 
 describe('Survival stone timing presentation', () => {
+  it('reveals one, two, and three bedrock rows across the 3-2-1 entry countdown', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    const view = render(createElement(GameSession, {
+      mode: 'race',
+      puzzleId: CAMPAIGN_LEVELS[0]!.id,
+      onExit: vi.fn(),
+      onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+
+    const runtime = runtimeHarness.instances.at(-1)!;
+    expect(runtime.options.survivalEntryBedrockRows).toBe(1);
+    expect(runtime.setSurvivalEntryBedrockRows).toHaveBeenLastCalledWith(1);
+
+    await act(async () => vi.advanceTimersByTimeAsync(1000));
+    expect(runtime.setSurvivalEntryBedrockRows).toHaveBeenLastCalledWith(2);
+    await act(async () => vi.advanceTimersByTimeAsync(1000));
+    expect(runtime.setSurvivalEntryBedrockRows).toHaveBeenLastCalledWith(3);
+    await act(async () => vi.advanceTimersByTimeAsync(1000));
+    expect(runtime.setSurvivalEntryBedrockRows).toHaveBeenLastCalledWith(null);
+    expect(runtime.start).toHaveBeenCalledTimes(1);
+    view.unmount();
+  });
+
   it('reports the independent stone clock from the canonical Core state', () => {
     const initial = createInitialState(0x51a1f00d, 'race');
     expect(survivalStoneCountdownSeconds(initial)).toBe(20);

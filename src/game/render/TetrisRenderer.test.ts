@@ -154,6 +154,15 @@ type RendererInternals = {
     elapsed: number;
     duration: number;
   } | null;
+  survivalEntryBedrockRise: {
+    rows: number;
+    elapsed: number;
+    duration: number;
+  } | null;
+  drawPieces: (
+    state: GameState,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
   mutationFlash: {
     item: MutationItem;
     elapsed: number;
@@ -532,6 +541,66 @@ describe('Puzzle undo presentation reset', () => {
     })).toBe(true);
     expect(falling.operations.some((operation) => operation.kind === 'poly')).toBe(true);
     expect(geometrySignature(bedrock.operations)).not.toBe(geometrySignature(falling.operations));
+  });
+
+  it('reveals and raises exactly one canonical bedrock row per Survival countdown digit', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const state = createInitialState(0x51a1f00d, 'race');
+    const pieces = createGraphicsRecorder();
+    const rising = createGraphicsRecorder();
+    const mask = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      pieceGraphics: pieces.graphics,
+      survivalEntryGraphics: rising.graphics,
+      survivalEntryMaskGraphics: mask.graphics,
+    });
+
+    renderer.setOptions({ survivalEntryBedrockRows: 1 });
+    internals.drawPieces(state, layout);
+    expect(renderer.getSnapshot().visibleLockedCells).toBe(10);
+    expect(renderer.getSnapshot().survivalEntryBedrockRows).toBe(1);
+    expect(renderer.getSnapshot().survivalEntryBedrockRise).toMatchObject({
+      rows: 1,
+      elapsedMs: 0,
+      durationMs: 420,
+      offsetY: 20,
+    });
+    const firstRowFaces = rising.operations.filter((operation) => operation.kind === 'roundRect');
+    expect(firstRowFaces).toHaveLength(10);
+    expect(Math.min(...firstRowFaces.map((operation) => operation.values[1]!)))
+      .toBeGreaterThanOrEqual(layout.y + layout.height);
+
+    internals.advanceEffects(210);
+    const halfway = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      survivalEntryGraphics: halfway.graphics,
+    });
+    internals.drawPieces(state, layout);
+    const halfwayOffset = renderer.getSnapshot().survivalEntryBedrockRise?.offsetY ?? 0;
+    expect(halfwayOffset).toBeGreaterThan(0);
+    expect(halfwayOffset).toBeLessThan(layout.cell);
+
+    renderer.setOptions({ survivalEntryBedrockRows: 2 });
+    const secondRow = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      survivalEntryGraphics: secondRow.graphics,
+    });
+    internals.drawPieces(state, layout);
+    expect(renderer.getSnapshot().visibleLockedCells).toBe(20);
+    expect(renderer.getSnapshot().survivalEntryBedrockRise).toMatchObject({ rows: 2, offsetY: 20 });
+
+    renderer.setOptions({ reducedMotion: true, survivalEntryBedrockRows: 3 });
+    const reduced = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      pieceGraphics: reduced.graphics,
+      survivalEntryGraphics: createGraphicsRecorder().graphics,
+    });
+    internals.drawPieces(state, layout);
+    expect(renderer.getSnapshot().visibleLockedCells).toBe(30);
+    expect(renderer.getSnapshot().survivalEntryBedrockRows).toBe(3);
+    expect(renderer.getSnapshot().survivalEntryBedrockRise).toBeNull();
   });
 
   it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {

@@ -70,6 +70,8 @@ import {
 interface RenderOptions {
   reducedMotion: boolean;
   modeSwitch: boolean;
+  /** Renderer-only staged reveal of the canonical three ready-state bedrock rows. */
+  survivalEntryBedrockRows: number | null;
 }
 
 interface BoardLayout {
@@ -135,6 +137,12 @@ interface SurvivalStoneCue {
 interface SurvivalBedrockCue {
   direction: BoardShiftDirection;
   height: number;
+  elapsed: number;
+  duration: number;
+}
+
+interface SurvivalEntryBedrockRise {
+  rows: number;
   elapsed: number;
   duration: number;
 }
@@ -274,6 +282,13 @@ export interface RendererSnapshot {
     elapsedMs: number;
     durationMs: number;
   } | null;
+  survivalEntryBedrockRows: number | null;
+  survivalEntryBedrockRise: {
+    rows: number;
+    elapsedMs: number;
+    durationMs: number;
+    offsetY: number;
+  } | null;
   classicFeedback: Array<{
     kind: ClassicFeedbackKind;
     elapsedMs: number;
@@ -329,6 +344,8 @@ export class TetrisRenderer {
   private readonly world = new Container();
   private readonly boardGraphics = new Graphics();
   private readonly pieceGraphics = new Graphics();
+  private readonly survivalEntryGraphics = new Graphics();
+  private readonly survivalEntryMaskGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
   /** Second and final visual-only effect plane, reserved for Mutation VFX. */
   private readonly mutationGraphics = new Graphics();
@@ -353,6 +370,7 @@ export class TetrisRenderer {
   private readonly survivalDebrisPresentation = new Map<number, SurvivalDebrisPresentation>();
   private readonly survivalStoneCues: SurvivalStoneCue[] = [];
   private survivalBedrockCue: SurvivalBedrockCue | null = null;
+  private survivalEntryBedrockRise: SurvivalEntryBedrockRise | null = null;
   private mutationFlash: MutationFlash | null = null;
   private readonly mutationFlashQueue: MutationFlashRequest[] = [];
   private mutationArrival: MutationArrival | null = null;
@@ -388,7 +406,11 @@ export class TetrisRenderer {
   private mutationClockMs = 0;
   private previousBoard: GameState['board'] | null = null;
   private collapseWasActive = false;
-  private options: RenderOptions = { reducedMotion: false, modeSwitch: false };
+  private options: RenderOptions = {
+    reducedMotion: false,
+    modeSwitch: false,
+    survivalEntryBedrockRows: null,
+  };
   private previewBounds: RendererSnapshot['preview'] = null;
   private previewLayerVisible = false;
   private previewPiece: PieceType | null = null;
@@ -433,6 +455,8 @@ export class TetrisRenderer {
     survivalDebrisWarningColumns: [],
     survivalStoneCueCount: 0,
     survivalBedrockCue: null,
+    survivalEntryBedrockRows: null,
+    survivalEntryBedrockRise: null,
   };
 
   async init(host: HTMLElement): Promise<void> {
@@ -452,12 +476,15 @@ export class TetrisRenderer {
     app.canvas.tabIndex = 0;
     host.appendChild(app.canvas);
     this.mutationGraphics.mask = this.mutationMaskGraphics;
+    this.survivalEntryGraphics.mask = this.survivalEntryMaskGraphics;
     this.world.addChild(
       this.boardGraphics,
       this.pieceGraphics,
+      this.survivalEntryGraphics,
       this.effectGraphics,
       this.mutationGraphics,
       this.mutationMaskGraphics,
+      this.survivalEntryMaskGraphics,
     );
     this.initializeMutationFilters();
     app.stage.addChild(this.world);
@@ -470,7 +497,28 @@ export class TetrisRenderer {
   }
 
   setOptions(options: Partial<RenderOptions>): void {
-    this.options = { ...this.options, ...options };
+    const previousEntryRows = this.options.survivalEntryBedrockRows;
+    const hasEntryRows = Object.prototype.hasOwnProperty.call(options, 'survivalEntryBedrockRows');
+    const requestedEntryRows = hasEntryRows
+      ? options.survivalEntryBedrockRows
+      : previousEntryRows;
+    const nextEntryRows = requestedEntryRows === null || requestedEntryRows === undefined
+      ? null
+      : Math.max(1, Math.min(3, Math.floor(requestedEntryRows)));
+    this.options = {
+      ...this.options,
+      ...options,
+      survivalEntryBedrockRows: nextEntryRows,
+    };
+    if (hasEntryRows && nextEntryRows !== previousEntryRows) {
+      this.survivalEntryBedrockRise = nextEntryRows === null || this.options.reducedMotion
+        ? null
+        : {
+            rows: nextEntryRows,
+            elapsed: 0,
+            duration: 420,
+          };
+    }
     if (this.options.reducedMotion) {
       this.presentation = null;
       this.trail = null;
@@ -478,6 +526,7 @@ export class TetrisRenderer {
       this.impact = 0;
       this.rotationPulse = 0;
       this.boardShift = null;
+      this.survivalEntryBedrockRise = null;
       this.mutationArrival = null;
       // Keep the authoritative Mutation FIFO, timed fields, Collapse endpoint,
       // previous board, and active carrier identity. A runtime preference switch
@@ -721,9 +770,34 @@ export class TetrisRenderer {
   private drawPieces(state: GameState, layout: BoardLayout): void {
     const graphics = this.pieceGraphics;
     graphics.clear();
+    const entryGraphics = this.survivalEntryGraphics;
+    entryGraphics.clear();
+    this.survivalEntryMaskGraphics
+      .clear()
+      .rect(layout.x, layout.y, layout.width, layout.height)
+      .fill({ color: 0xffffff, alpha: 1 });
     this.syncMutationArrival(state);
     let visibleLockedCells = 0;
     const lockedByMaterial = new Map<BoardMaterial, Cell[]>();
+    const risingBedrockCells: Cell[] = [];
+    const stagedBedrockRows = state.mode === 'race' && state.status === 'ready'
+      ? this.options.survivalEntryBedrockRows
+      : null;
+    const firstVisibleBedrockY = stagedBedrockRows === null
+      ? 0
+      : VISIBLE_HEIGHT - stagedBedrockRows;
+    const entryRiseActive = stagedBedrockRows !== null
+      && !this.options.reducedMotion
+      && this.survivalEntryBedrockRise?.rows === stagedBedrockRows;
+    const entryRiseProgress = entryRiseActive
+      ? Math.max(0, Math.min(
+          1,
+          this.survivalEntryBedrockRise!.elapsed / this.survivalEntryBedrockRise!.duration,
+        ))
+      : 1;
+    const entryRiseOffsetY = entryRiseActive
+      ? layout.cell * (1 - easeOutCubic(entryRiseProgress))
+      : 0;
     const boardShiftOffsetY = this.boardShift && !this.options.reducedMotion
       ? boardShiftPresentationOffset(
           this.boardShift.direction,
@@ -737,9 +811,23 @@ export class TetrisRenderer {
       if (boardY < VISIBLE_START_ROW) return;
       row.forEach((cell, x) => {
         if (!cell) return;
+        const visibleY = boardY - VISIBLE_START_ROW;
+        if (
+          cell === BEDROCK_CELL
+          && stagedBedrockRows !== null
+          && visibleY < firstVisibleBedrockY
+        ) return;
         visibleLockedCells += 1;
+        if (
+          cell === BEDROCK_CELL
+          && entryRiseActive
+          && visibleY === firstVisibleBedrockY
+        ) {
+          risingBedrockCells.push({ x, y: visibleY });
+          return;
+        }
         const cells = lockedByMaterial.get(cell) ?? [];
-        cells.push({ x, y: boardY - VISIBLE_START_ROW });
+        cells.push({ x, y: visibleY });
         lockedByMaterial.set(cell, cells);
       });
     });
@@ -749,6 +837,14 @@ export class TetrisRenderer {
         originY: layout.y,
         unit: layout.cell,
         offsetY: boardShiftOffsetY,
+      });
+    }
+    if (risingBedrockCells.length > 0) {
+      this.drawCellGroups(entryGraphics, risingBedrockCells, BEDROCK_CELL, 1, {
+        originX: layout.x,
+        originY: layout.y,
+        unit: layout.cell,
+        offsetY: entryRiseOffsetY,
       });
     }
     if (state.mode === 'race') {
@@ -855,7 +951,17 @@ export class TetrisRenderer {
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
     this.snapshot.boardShiftOffsetY = boardShiftOffsetY;
+    this.snapshot.survivalEntryBedrockRows = stagedBedrockRows;
+    this.snapshot.survivalEntryBedrockRise = entryRiseActive
+      ? {
+          rows: stagedBedrockRows!,
+          elapsedMs: this.survivalEntryBedrockRise!.elapsed,
+          durationMs: this.survivalEntryBedrockRise!.duration,
+          offsetY: entryRiseOffsetY,
+        }
+      : null;
     this.pieceGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
+    this.survivalEntryGraphics.alpha = this.options.modeSwitch ? 0.34 : 1;
     this.effectGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
     this.mutationGraphics.alpha = this.options.modeSwitch ? 0.2 : 1;
   }
@@ -3454,6 +3560,12 @@ export class TetrisRenderer {
         this.survivalBedrockCue = null;
       }
     }
+    if (this.survivalEntryBedrockRise) {
+      this.survivalEntryBedrockRise.elapsed += Math.max(0, deltaMs);
+      if (this.survivalEntryBedrockRise.elapsed >= this.survivalEntryBedrockRise.duration) {
+        this.survivalEntryBedrockRise = null;
+      }
+    }
     this.impact = Math.max(0, this.impact - deltaMs / 260);
     this.rotationPulse = Math.max(0, this.rotationPulse - deltaMs / 110);
   }
@@ -3579,6 +3691,8 @@ export class TetrisRenderer {
             durationMs: this.survivalBedrockCue.duration,
           }
         : null,
+      survivalEntryBedrockRows: this.snapshot.survivalEntryBedrockRows,
+      survivalEntryBedrockRise: this.snapshot.survivalEntryBedrockRise,
     };
   }
 }

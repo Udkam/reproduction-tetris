@@ -31,6 +31,7 @@ export interface RuntimeOptions {
   puzzleId?: PuzzleId;
   inputEnabled?: boolean;
   reducedMotion?: boolean;
+  survivalEntryBedrockRows?: number | null;
   audioEnabled?: boolean;
   audioVolume?: number;
   platform?: BrowserPlatform;
@@ -93,6 +94,7 @@ export class GameRuntime {
     }
     this.renderer.setOptions({
       reducedMotion: this.options.reducedMotion ?? false,
+      survivalEntryBedrockRows: this.options.survivalEntryBedrockRows ?? null,
     });
     this.renderer.setFrameCallback(this.frame);
     this.input = new InputController((action) => this.handleAction(action, true), this.platform.windowTarget(), this.onWindowBlur);
@@ -177,6 +179,11 @@ export class GameRuntime {
 
   setReducedMotion(reducedMotion: boolean): void {
     this.renderer.setOptions({ reducedMotion });
+  }
+
+  setSurvivalEntryBedrockRows(rows: number | null): void {
+    this.renderer.setOptions({ survivalEntryBedrockRows: rows });
+    this.flushRender(0);
   }
 
   setInputEnabled(enabled: boolean): void {

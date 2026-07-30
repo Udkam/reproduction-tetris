@@ -1058,6 +1058,7 @@ export function GameSession({
       puzzleId: mode === 'puzzle' ? puzzleId : undefined,
       inputEnabled: false,
       reducedMotion: motionQuery.matches,
+      survivalEntryBedrockRows: mode === 'race' ? 1 : null,
       audioEnabled,
       audioVolume,
       onState: (nextState, events) => {
@@ -1146,6 +1147,12 @@ export function GameSession({
       browserPlatform.cancelTimeout(timer);
     };
   }, [countdownDigit, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen]);
+
+  useEffect(() => {
+    runtime?.setSurvivalEntryBedrockRows(
+      mode === 'race' && countdownDigit !== null ? 4 - countdownDigit : null,
+    );
+  }, [countdownDigit, mode, runtime]);
 
   useEffect(() => {
     runtime?.setAudioEnabled(audioEnabled);

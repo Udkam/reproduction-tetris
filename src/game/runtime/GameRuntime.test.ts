@@ -87,6 +87,37 @@ describe('GameRuntime public state boundary', () => {
     expect(() => runtime.destroy()).not.toThrow();
   });
 
+  it('forwards Survival entry bedrock staging without changing canonical Core state', async () => {
+    rendererSetOptions.mockClear();
+    rendererRender.mockClear();
+    const runtime = new GameRuntime({
+      seed: 123,
+      mode: 'race',
+      audioEnabled: false,
+      survivalEntryBedrockRows: 1,
+    });
+    const canonicalBoard = runtime.getState().board;
+
+    await runtime.mount(document.createElement('div'));
+    expect(rendererSetOptions).toHaveBeenCalledWith({
+      reducedMotion: false,
+      survivalEntryBedrockRows: 1,
+    });
+
+    runtime.setSurvivalEntryBedrockRows(2);
+    runtime.setSurvivalEntryBedrockRows(3);
+    runtime.setSurvivalEntryBedrockRows(null);
+
+    expect(rendererSetOptions.mock.calls.slice(-3).map(([options]) => options)).toEqual([
+      { survivalEntryBedrockRows: 2 },
+      { survivalEntryBedrockRows: 3 },
+      { survivalEntryBedrockRows: null },
+    ]);
+    expect(runtime.getState().board).toBe(canonicalBoard);
+    expect(rendererRender).toHaveBeenCalled();
+    runtime.destroy();
+  });
+
   it('gates every public and QA gameplay entry until input is enabled', async () => {
     const onState = vi.fn();
     const runtime = new GameRuntime({ seed: 123, onState, audioEnabled: false, inputEnabled: false });
