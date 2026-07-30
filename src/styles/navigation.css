@@ -63,10 +63,10 @@
   max-width: 100%;
   margin: 0;
   color: #f5fbfc;
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: clamp(31px, 4.15vw, 56px);
-  font-weight: 700;
-  font-synthesis: weight;
+  font-weight: 400;
+  font-synthesis: none;
   letter-spacing: -.048em;
   line-height: .94;
   text-wrap: nowrap;

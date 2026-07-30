@@ -2012,7 +2012,7 @@ export class TetrisRenderer {
         : [];
       const previewSlots = segmentSlots.length ? segmentSlots : [fallbackSlot];
       // Puzzle has one ordinary Next well, divided into two numbered rows. The DOM
-      // establishes those row bounds and uses the loaded JetBrains Mono numerals;
+      // establishes those row bounds and uses the loaded IBM Plex Mono numerals;
       // Pixi owns the shared well and pieces.
       const segmentedQueue = segmentSlots.length > 1;
       const segmentInset = segmentedQueue ? 0 : 1;

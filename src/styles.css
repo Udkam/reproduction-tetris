@@ -1,10 +1,10 @@
 :root {
   color: #14243a;
   background: #dce7f2;
-  --font-body: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  --font-body: var(--font-ui-zh);
   --font-ui: var(--font-body);
-  --font-display: "Playwrite NZ Basic", "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Noto Sans Mono CJK SC", "Cascadia Mono", "Microsoft YaHei UI", monospace;
+  --font-display: var(--font-display-zh);
+  --font-mono: var(--font-data);
   font-family: var(--font-body);
   font-synthesis: none;
   font-kerning: normal;
@@ -141,7 +141,7 @@ kbd,
 .brand strong,
 .brand h1 {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: clamp(28px, 3vw, 34px);
   font-weight: 700;
   letter-spacing: -.065em;
@@ -784,7 +784,7 @@ kbd,
 .level-entry__number,
 .level-detail__count {
   color: var(--puzzle);
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
@@ -1284,7 +1284,7 @@ kbd,
 }
 
 .entry-countdown__digit {
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: clamp(56px, 12vmin, 92px);
   font-weight: 620;
   font-variant-numeric: tabular-nums;
@@ -1399,7 +1399,7 @@ kbd,
 .run-stats strong {
   display: block;
   overflow: hidden;
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 20px;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
@@ -3739,7 +3739,7 @@ kbd,
   justify-self: end;
   gap: 3px;
   color: var(--ink);
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
   font-size: 17px;
   font-weight: 760;
   font-variant-numeric: tabular-nums;
@@ -3853,7 +3853,7 @@ kbd,
 }
 
 .observatory-sector button > span {
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
   font-size: 12px;
   font-weight: 780;
   font-variant-numeric: tabular-nums;
@@ -3945,7 +3945,7 @@ kbd,
 
 .observatory-stop button > span {
   padding-left: 2px;
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
   font-size: 13px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -4062,7 +4062,7 @@ kbd,
 .observatory-focus__index {
   position: absolute;
   z-index: 1;
-  font-family: "Space Grotesk", "Noto Sans SC", "Segoe UI", sans-serif;
+  font-family: var(--font-ui);
   font-variant-numeric: tabular-nums;
 }
 
@@ -6424,7 +6424,7 @@ kbd,
 
 .console-focus__action > span {
   color: #f3e4ce;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 750;
   text-align: center;
@@ -6585,7 +6585,7 @@ kbd,
   background: color-mix(in srgb, #8d6bb0 12%, var(--surface));
   border: 1px solid color-mix(in srgb, #8d6bb0 36%, var(--line));
   border-radius: 5px;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 11px;
   font-weight: 720;
   white-space: nowrap;
@@ -6689,7 +6689,7 @@ kbd,
   justify-self: end;
   gap: 4px;
   color: var(--ink);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 17px;
   font-weight: 760;
   font-variant-numeric: tabular-nums;
@@ -6759,7 +6759,7 @@ kbd,
   order: 2;
   margin-bottom: 4px;
   color: var(--puzzle);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .14em;
@@ -6800,7 +6800,7 @@ kbd,
   gap: 1px;
   min-width: 0;
   color: color-mix(in srgb, var(--ink) 57%, var(--muted));
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 14px;
   font-weight: 760;
   font-variant-numeric: tabular-nums;
@@ -6875,7 +6875,7 @@ kbd,
   justify-self: center;
   padding: 0;
   color: color-mix(in srgb, var(--ink) 72%, var(--muted));
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 12px;
   font-weight: 780;
   font-variant-numeric: tabular-nums;
@@ -7001,7 +7001,7 @@ kbd,
   top: 15px;
   right: 18px;
   color: rgba(228, 239, 248, .66);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: clamp(25px, 3.2vw, 44px);
   font-weight: 750;
   font-variant-numeric: tabular-nums;
@@ -7049,7 +7049,7 @@ kbd,
   display: block;
   margin-bottom: 7px;
   color: #b8a8cd;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .09em;
@@ -7097,7 +7097,7 @@ kbd,
 .relay-focus__facts span {
   padding: 5px 7px;
   color: #cedde8;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 9px;
   font-weight: 760;
   letter-spacing: .05em;
@@ -7151,7 +7151,7 @@ kbd,
 
 .relay-footer span {
   color: var(--puzzle);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 750;
   letter-spacing: .02em;
@@ -7354,7 +7354,7 @@ kbd,
   align-items: center;
   gap: 4px;
   color: #36516f;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   letter-spacing: -.06em;
@@ -7436,7 +7436,7 @@ kbd,
 .landing-intro__eyebrow {
   position: relative;
   color: #a7bed2;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .16em;
@@ -7583,7 +7583,7 @@ kbd,
   z-index: 1;
   flex: 0 0 32px;
   color: color-mix(in srgb, var(--gate-accent) 74%, #566e85);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 11px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -7772,7 +7772,7 @@ kbd,
   justify-self: end;
   gap: 4px;
   color: #19334e;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 16px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -7854,7 +7854,7 @@ kbd,
   top: clamp(10px, 2.1vw, 19px);
   right: clamp(12px, 2.6vw, 25px);
   color: rgba(220, 235, 247, .6);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: clamp(28px, 4vw, 54px);
   font-weight: 750;
   font-variant-numeric: tabular-nums;
@@ -7903,7 +7903,7 @@ kbd,
   display: block;
   margin-bottom: 6px;
   color: #bca9d3;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .07em;
@@ -7954,7 +7954,7 @@ kbd,
 .console-focus__facts span {
   padding: 4px 6px;
   color: #d8e5ed;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 8px;
   font-weight: 800;
   letter-spacing: .04em;
@@ -8024,7 +8024,7 @@ kbd,
 
 .console-route__heading span {
   color: #c5b4d8;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -8055,7 +8055,7 @@ kbd,
   gap: 2px;
   min-width: 0;
   color: rgba(202, 221, 236, .55);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 14px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -8105,7 +8105,7 @@ kbd,
   place-items: center;
   padding: 0;
   color: #c7d7e4;
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 12px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -8213,7 +8213,7 @@ kbd,
 
 .console-footer span {
   color: var(--puzzle);
-  font-family: "JetBrains Mono", "Space Grotesk", monospace;
+  font-family: var(--font-data);
   font-size: 10px;
   font-weight: 760;
   letter-spacing: .02em;
@@ -8443,13 +8443,13 @@ kbd,
   max-width: 100%;
   margin: 0;
   color: #eff8fa;
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: clamp(27px, 3.7vw, 50px);
-  font-weight: 700;
-  font-synthesis: weight;
+  font-weight: 400;
+  font-synthesis: none;
   letter-spacing: -.045em;
   line-height: .92;
-  /* The source face ships through 400; preserve its glyphs and synthesize the requested bold. */
+  /* The source face ships through 400; the restrained outline supplies visual weight. */
   -webkit-text-stroke: .95px currentColor;
   paint-order: stroke fill;
   text-wrap: nowrap;

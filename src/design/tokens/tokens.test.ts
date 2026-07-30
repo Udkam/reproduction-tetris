@@ -1,5 +1,5 @@
 // @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ANIMATION } from './animation';
 import { COLOR_NUMBERS, COLOR_TOKENS, hexToColorNumber } from './colors';
@@ -9,6 +9,7 @@ import { TYPOGRAPHY } from './typography';
 
 const tokenStyles = readFileSync(new URL('../../styles/tokens.css', import.meta.url), 'utf8');
 const mainSource = readFileSync(new URL('../../main.tsx', import.meta.url), 'utf8');
+const fontNotices = readFileSync(new URL('../../../THIRD_PARTY_NOTICES.md', import.meta.url), 'utf8');
 
 describe('TetraMorph Design System v1.0', () => {
   it('freezes the requested palette and renderer bridge', () => {
@@ -32,9 +33,10 @@ describe('TetraMorph Design System v1.0', () => {
 
   it('freezes role-specific typography', () => {
     expect(TYPOGRAPHY.fontFamily.brand).toContain('Playwrite NZ Basic');
-    expect(TYPOGRAPHY.fontFamily.ui).toContain('Space Grotesk Variable');
-    expect(TYPOGRAPHY.fontFamily.ui).toContain('Noto Sans SC Variable');
-    expect(TYPOGRAPHY.fontFamily.mono).toContain('JetBrains Mono Variable');
+    expect(TYPOGRAPHY.fontFamily.chineseUi).toContain('TetraMorph UI Sans');
+    expect(TYPOGRAPHY.fontFamily.chineseDisplay).toContain('Smiley Sans');
+    expect(TYPOGRAPHY.fontFamily.englishUi).toContain('Sora Variable');
+    expect(TYPOGRAPHY.fontFamily.data).toContain('IBM Plex Mono');
     expect(TYPOGRAPHY.weight.brand).toBe(400);
     expect(TYPOGRAPHY.scale).toEqual({
       display: { size: 28, weight: 700, lineHeight: 1.1 },
@@ -84,12 +86,28 @@ describe('TetraMorph Design System v1.0', () => {
     for (const [token, value] of Object.entries(cssTokens)) {
       expect(tokenStyles).toContain(`${token}: ${value};`);
     }
-    expect(tokenStyles).toContain('--font-body: "Space Grotesk Variable", "Noto Sans SC Variable", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;');
-    expect(tokenStyles).toContain('--font-mono: "JetBrains Mono Variable", "Noto Sans SC Variable", "Cascadia Mono", monospace;');
-    expect(mainSource).toContain("import '@fontsource-variable/space-grotesk/index.css';");
-    expect(mainSource).toContain("import '@fontsource-variable/jetbrains-mono/index.css';");
-    expect(mainSource).toContain("import '@fontsource-variable/noto-sans-sc/index.css';");
+    expect(tokenStyles).toContain('--font-ui-zh: "TetraMorph UI Sans"');
+    expect(tokenStyles).toContain('--font-display-zh: "Smiley Sans"');
+    expect(tokenStyles).toContain('--font-ui-en: "Sora Variable"');
+    expect(tokenStyles).toContain('--font-data: "IBM Plex Mono"');
+    expect(tokenStyles).toContain('url("../assets/fonts/TetraMorphUISans-subset.otf")');
+    expect(tokenStyles).toContain('url("../assets/fonts/SmileySans-Oblique.woff2")');
+    expect(tokenStyles).not.toMatch(/url\(["']?https?:/);
+    expect(mainSource).toContain("import '@fontsource-variable/sora/index.css';");
+    expect(mainSource).toContain("import '@fontsource/ibm-plex-mono/latin-400.css';");
     expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).not.toMatch(/(^|\n)\s*(display|grid-template|flex|position|width|height):/);
+  });
+
+  it('packages the selected Chinese families locally with redistribution notices', () => {
+    expect(statSync(new URL('../../assets/fonts/TetraMorphUISans-subset.otf', import.meta.url)).size)
+      .toBeGreaterThan(400_000);
+    expect(statSync(new URL('../../assets/fonts/SmileySans-Oblique.woff2', import.meta.url)).size)
+      .toBeGreaterThan(1_000_000);
+    expect(fontNotices).toContain('TetraMorph UI Sans');
+    expect(fontNotices).toContain('Smiley Sans');
+    expect(fontNotices).toContain('Sora Variable');
+    expect(fontNotices).toContain('IBM Plex Mono');
+    expect(fontNotices).toContain('reserves the WenYuan family names');
   });
 });

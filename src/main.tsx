@@ -1,6 +1,8 @@
-import '@fontsource-variable/space-grotesk/index.css';
-import '@fontsource-variable/jetbrains-mono/index.css';
-import '@fontsource-variable/noto-sans-sc/index.css';
+import '@fontsource-variable/sora/index.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+import '@fontsource/ibm-plex-mono/latin-600.css';
+import '@fontsource/ibm-plex-mono/latin-700.css';
 import '@fontsource/playwrite-nz-basic/400.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

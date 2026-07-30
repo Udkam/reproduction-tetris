@@ -281,3 +281,61 @@
   acceptance remain in the single final browser batch.
 - Next action: commit this green renderer checkpoint, then complete P10.8B local
   typography and Back-to-home copy.
+
+## 2026-07-31 — Phase 10 local typography and Back-to-home checkpoint
+
+- Task ID: `T17-P10.8B`
+- Base SHA: `4070ee96243e898e98a861084217983664651a75`
+- Owner: primary coordinator
+- Exact paths:
+  - `index.html`
+  - `package.json`
+  - `package-lock.json`
+  - `THIRD_PARTY_NOTICES.md`
+  - `licenses/fonts/*`
+  - `src/assets/fonts/TetraMorphUISans-subset.otf`
+  - `src/assets/fonts/SmileySans-Oblique.woff2`
+  - `src/main.tsx`
+  - `src/design/tokens/typography.ts`
+  - `src/design/tokens/tokens.test.ts`
+  - `src/styles.css`
+  - `src/styles/tokens.css`
+  - `src/styles/navigation.css`
+  - `src/ui/localization.ts`
+  - `src/App.test.ts`
+  - `src/game/render/TetrisRenderer.ts`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - scoped official GitHub release/API inspection for WenYuan Fonts `v1.000` and
+    Smiley Sans `v2.0.1`
+  - one-shot `pyftsubset` generation and FontTools name-table inspection/renaming
+  - `npm.cmd install @fontsource-variable/sora@5.3.0 @fontsource/ibm-plex-mono@5.3.0`
+    and removal of the superseded Space Grotesk, Noto Sans SC, and JetBrains Mono
+    packages
+  - focused six-file test: first run `64/65`; a notice assertion expected
+    `reserved` while the notice correctly used `reserves`
+  - the same six-file test after correcting that assertion: `65/65` passed
+  - focused token/navigation recheck after the final wordmark correction: `10/10`
+    passed
+  - `npm.cmd run typecheck`: passed
+  - source-to-cmap coverage check: all `326` CJK characters currently used by
+    application source are present in the packaged UI subset
+  - `git diff --check`: passed
+- Evidence: Playwrite NZ Basic is now isolated to the sole TetraMorph wordmark at its
+  real `400` weight. Chinese UI/body uses the locally packaged WenYuan-derived
+  `TetraMorph UI Sans`; the subset and every variable-instance name were renamed
+  because upstream reserves its original family names. Chinese display headings at
+  least `28 px` use unmodified Smiley Sans, English UI uses Sora Variable, and HUD,
+  countdown, ranking, date, level, keycap, and score numerals use IBM Plex Mono.
+  Every family and its OFL notice is packaged locally; CSS contains no remote font
+  URL. The old font packages and hard-coded family declarations are absent.
+  Player-facing `返回模式 / Back to modes` and `返回模式首页` copy is globally replaced
+  by `返回首页 / Back to home`.
+- Resource note: all downloads, subsetting, installs, and tests were bounded one-shot
+  processes. Tests used one worker with no file parallelism; no server, watcher,
+  browser, Serena, WMI/CIM, or new sub-agent was started.
+- Blocker: none for P10.8B. Real glyph shape, heading restraint, geometry stability
+  after `document.fonts.ready`, and zero runtime font request remain in the single
+  final browser batch.
+- Next action: commit this green typography checkpoint, then freeze and run P10.9
+  exactly-once final gates.

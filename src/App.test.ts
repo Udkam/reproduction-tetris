@@ -1289,9 +1289,9 @@ describe('T6 frontend mode binding', () => {
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
     const actions = [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')];
     const leave = actions
-      .find((button) => button.textContent === '返回模式首页')!;
+      .find((button) => button.textContent === '返回首页')!;
     const stay = actions.find((button) => button.textContent === '留在本局')!;
-    expect(actions.map((button) => button.textContent)).toEqual(['返回模式首页', '留在本局']);
+    expect(actions.map((button) => button.textContent)).toEqual(['返回首页', '留在本局']);
     expect(stay.dataset.actionSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
     expect(leave.dataset.actionSelected).toBe('true');
@@ -1772,7 +1772,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelectorAll('.puzzle-gallery__catalog .puzzle-silhouette')).toHaveLength(0);
     expect(view.container.querySelectorAll('.puzzle-gallery__hero .puzzle-silhouette')).toHaveLength(1);
     expect(view.container.querySelector('.puzzle-gallery__hero .puzzle-silhouette')?.getAttribute('viewBox')).not.toBe('0 0 40 48');
-    expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回模式');
+    expect(view.container.querySelector<HTMLButtonElement>('.library-back')?.textContent).toBe('←返回首页');
     for (const banned of ['目标：清空棋盘', '目标清空棋盘', '清空完整棋盘', '当前选择', '起始棋盘', '连续七袋方块', '不限定唯一解法']) {
       expect(view.container.textContent).not.toContain(banned);
     }
