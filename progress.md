@@ -638,3 +638,19 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   React countdown test, and typecheck. It stages the unchanged Core board as
   `10 / 20 / 30` visible bedrock cells with a masked `420 ms` row rise and an
   instantaneous reduced-motion path. Real-frame review is the next gate.
+
+## 2026-07-31 Phase 9 same-column variable stone correction
+
+- Latest direct review supersedes the fixed-pair portion of `2a1fb3b`: each stone
+  event randomly contains one or two clearable stones, but every stone in the event
+  shares one frozen random column. Two-stone events remain vertically adjacent and
+  all-or-nothing; one-stone events have no second presentation cell.
+- The exact two-times cadence, separate deterministic stream, two-second warning,
+  blocked-event retention, `20→10` interval, clearability, and seven-bag isolation
+  stay unchanged.
+- All first-entry rule sheets now require a single localized title (`生存规则` /
+  `Survival Rules`), no overview subtitle, no repeated inner rules heading, and a
+  `好的 / Got it` primary acknowledgement. Survival copy must state random one-or-two
+  same-column stones rather than a fixed pair.
+- No product source, test, build, server, browser, or helper was started for this
+  contract correction.

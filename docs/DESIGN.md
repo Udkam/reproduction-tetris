@@ -37,22 +37,23 @@ language:
   copied trade dress or decorative grid lines. Selection strengthens the current
   mode color without changing CTA hue or animating font weight.
 
-### Survival rigid-pair contract
+### Survival same-column stone-event contract
 
 - Survival's normal piece cadence remains fixed at `40 ticks/cell`. Falling rock
   cadence becomes exactly `20 ticks/cell`, represented by integer Core state and
   therefore exactly two times normal Survival speed.
-- One independent deterministic RNG draw selects exactly one column per event. The
-  column is frozen and warned two playing seconds before emission; a blocked event
-  remains due in that column and is never redirected.
-- One event is one rigid vertical pair. Its two cells share one identity, remain
-  vertically adjacent during every move, and settle in the same tick. If either
-  entry cell is blocked, neither cell spawns. Partial pairs are invalid.
-- Both settled cells become clearable Survival stone cells and may complete one or
-  two ordinary rows. They do not become bedrock and do not alter the seven-bag.
-- Pause advances nothing; restart clears pair, warning, timers, and accumulator.
-  Clear mapping and bedrock movement must preserve the pair's single translation;
-  a nonuniform mapping fails closed instead of separating it.
+- Each event deterministically selects a height of one or two stones and exactly one
+  column. Both choices are frozen when the two-second warning begins; a blocked event
+  remains due with the same height and column and is never rerolled or redirected.
+- One event has one identity. A one-stone event is one cell. A two-stone event is one
+  vertically adjacent component: both cells share the selected column, move together,
+  and settle in the same tick. If any required entry cell is blocked, no cell from
+  that event spawns; partial entry is invalid.
+- Every settled event cell becomes a clearable Survival stone cell and may complete
+  an ordinary row. It does not become bedrock and does not alter the seven-bag.
+- Pause advances nothing; restart clears active events, the frozen warning plan,
+  timers, and accumulator. Clear mapping and bedrock movement must preserve one
+  translation across every cell in an event; a nonuniform mapping fails closed.
 - Warning, entry, flight, landing, clear, bedrock rise/lower, top-out, and state hash
   remain deterministic for a seed and command stream.
 
@@ -63,10 +64,11 @@ language:
   pits; no per-frame random noise or external texture asset is allowed.
 - Bedrock keeps visible seams and a darker compacted face. No horizontal layer line
   may cross a cell or continue into an adjacent cell.
-- The airborne pair is drawn as one vertical rock component with a shared perimeter
-  and one internal fracture. It may not resemble two unrelated grey UI tiles.
-- The warning is a top-edge fissure plus a two-cell silhouette in the selected
-  column, not a generic arrow. Flight uses only a short dust tail. Landing uses a
+- An airborne event is drawn as one rock component. A two-cell event has a shared
+  perimeter and one internal fracture; a one-cell event keeps the same material
+  grammar without a phantom second cell. Neither may resemble generic grey UI tiles.
+- The warning is a top-edge fissure plus an exact one- or two-cell silhouette in the
+  selected column, not a generic arrow. Flight uses only a short dust tail. Landing uses a
   local `120–160 ms` dust/contact response. Bedrock rise/lower uses only its newly
   exposed boundary; no full-board shake.
 - Reduced motion keeps a static warning and final materials, removes interpolation
@@ -131,6 +133,14 @@ language:
 - Desktop, portrait, and short landscape must keep all four entrances visible with
   `44 px` targets, visible keyboard focus, Enter activation, reduced-motion support,
   no duplicate name, and no meaningless copy.
+- Every first-entry rules sheet uses a single localized title. Chinese joins the mode
+  and `规则` without an inserted space (`生存规则`); English remains naturally spaced
+  (`Survival Rules`). The redundant `首次进入说明 / First-time overview` subtitle and
+  the repeated inner `规则 / Rules` heading are absent. The primary acknowledgement
+  is `好的 / Got it`; the secondary action remains `返回 / Back`.
+- Survival's concise rules state that every stone event randomly contains one or two
+  clearable stones, all in the same random column, falling at two times normal
+  Survival speed. No first-entry or Settings copy may claim a fixed pair.
 
 ## 2026-07-30 direct correction — ordinary line-clear rollback
 

@@ -8,8 +8,9 @@ COUNTDOWN BEDROCK STAGING ADDED / NAVIGATION WORK PRESERVED.**
 The direct goal is to keep correcting this slice until all six requested outcomes are
 implemented and visually accepted:
 
-1. Survival emits one rigid pair of vertically stacked rocks in one deterministic
-   random column. It falls at exactly two times the fixed Survival tetromino speed.
+1. Survival emits a deterministic random event containing one or two rocks in one
+   random column. A two-rock event is vertically stacked; every event falls at
+   exactly two times the fixed Survival tetromino speed.
 2. Survival bedrock and falling rocks share a readable cold-slate cavern treatment
    that communicates both rising ground and falling-rock pressure without resembling
    wood, planks, bricks, or a warm decorative wall.
@@ -30,11 +31,12 @@ Only the primary coordinator writes shared files. The three brainstorm agents we
 read-only and are finished. Later independent QA agents remain read-only and begin
 only after an immutable candidate exists.
 
-Survival Core checkpoint `2a1fb3b` now represents one event as one rigid vertical
-pair, selects exactly one warned column, defers the complete pair when either entry
-cell is blocked, advances it at exactly `20 ticks/cell`, settles both cells together,
-and preserves deterministic collision, clear, bedrock-shift, hash, restart, and
-seven-bag boundaries. Focused proof passes `18/18` race tests and typecheck.
+Survival Core checkpoint `2a1fb3b` is a valid recovery point for exact
+`20 ticks/cell` cadence and one warned column, but its fixed two-cell event has been
+superseded by the player's latest correction. The open Core correction must freeze a
+deterministic one-or-two count together with the warned column, retain all-or-nothing
+entry for the chosen height, and preserve deterministic collision, clear,
+bedrock-shift, hash, restart, and seven-bag boundaries.
 
 Survival cavern checkpoint `5215769` is retained as a rollback point but its
 warm-brown horizontal strata are **visually rejected** because they read as wooden
@@ -67,9 +69,9 @@ browser-accepted.
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,
    browser frames, resource ownership, and rollback base.
-2. `source-survival-core`: rigid-pair state, one-column RNG, `20 ticks/cell`, clear
-   and bedrock mapping, hashing, localization contract, and focused deterministic
-   tests.
+2. `source-survival-core`: one-or-two same-column event state, frozen count/column
+   RNG plan, `20 ticks/cell`, clear and bedrock mapping, hashing, localization
+   contract, and focused deterministic tests.
 3. `source-survival-render-correction`: cold slate family, irregular facets, pair
    perimeter/fracture, fissure warning, local dust/contact, countdown one-row-at-a-
    time rise, reduced motion, and Renderer/Runtime/App tests.
@@ -91,7 +93,7 @@ browser-accepted.
 
 - Core: `src/game/core/constants.ts`, `src/game/core/types.ts`,
   `src/game/core/engine.ts`, `src/game/core/race.test.ts`, and direct hash/export
-  tests only when required by the rigid pair.
+  tests only when required by the same-column one-or-two event.
 - Renderer: `src/game/render/presentation.ts`,
   `src/game/render/presentation.test.ts`, `src/game/render/theme.ts`,
   `src/game/render/theme.test.ts`, `src/game/render/TetrisRenderer.ts`, and
@@ -108,11 +110,13 @@ desktop packaging, and Steam SDK work remain out of scope.
 
 ### Acceptance gates
 
-- Core: exactly one warned column; exactly one vertical two-cell pair; blocked entry
-  produces no partial pair or reroll; pair moves one cell per twenty playing ticks;
-  normal piece moves one cell per forty; seed/replay and seven-bag remain stable;
-  pause/restart/clear/bedrock shift/top-out/hash are deterministic.
-- Renderer: pair remains adjacent in every captured frame; permanent/clearable rocks
+- Core: exactly one warned column and one frozen event count in `{1, 2}`; blocked
+  entry produces no partial event or reroll; all cells in a two-stone event stay
+  adjacent and move one cell per twenty playing ticks; normal pieces move one cell
+  per forty; seed/replay and seven-bag remain stable; pause/restart/clear/bedrock
+  shift/top-out/hash are deterministic.
+- Renderer: a two-stone event remains adjacent in every captured frame while a
+  one-stone event draws no phantom cell; permanent/clearable rocks
   are visibly related but distinct; all geology and feedback remains clipped to the
   one Pixi well; no DOM board cells or second Canvas; reduced motion remains clear.
 - Feedback: landing `≤100 ms`, clear `≤150 ms`; stationary cells; zero particles;
@@ -125,6 +129,10 @@ desktop packaging, and Steam SDK work remain out of scope.
 - Navigation: all fifty controls visible without scrolling at every required
   viewport; 44px targets; correct number/tick/best states; responsive arrow steps;
   Enter and pointer work; all four home entries visible with exactly one wordmark.
+- First-entry rules: all four modes remove the overview subtitle and repeated inner
+  rules heading; Chinese titles contain no inserted mode/rules space; the primary
+  button is `好的` (`Got it` in English). Survival copy says random one-or-two stones
+  in one shared random column at two times normal speed.
 - Final: zero console/page errors and horizontal overflow; deterministic browser
   state; restart/undo/screen exit/unmount clear transients and return
   listener/rAF/audio/Canvas counts to baseline.

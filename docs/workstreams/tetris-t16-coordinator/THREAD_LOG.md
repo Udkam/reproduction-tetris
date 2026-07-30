@@ -166,3 +166,19 @@
   unstaged and uncommitted.
 - Next action: source-bound browser frames for digits `3 / 2 / 1`, settled slate
   bedrock, falling stone, and a real ordinary clear; then release the lease.
+
+## 2026-07-31 — same-column variable stone and rule-sheet correction
+
+- Direct correction: the prior fixed two-stone interpretation is superseded. Each
+  event still contains a deterministic random one or two stones; all event cells use
+  one random column, and a two-stone event remains vertically stacked.
+- Rule-sheet correction: Chinese mode/rules titles have no inserted space; the
+  first-entry subtitle and repeated inner heading are removed; the primary action is
+  `好的 / Got it`.
+- Recovery boundary: `2a1fb3b` remains a cadence/column rollback point but is not the
+  accepted count contract. `d8e97e7` and `76ad7bf` remain source recovery points;
+  the uncommitted selector/home App hunks remain preserved.
+- Resources: no subagent, server, browser, watcher, build, or persistent Node helper
+  is running for this correction.
+- Next action: commit this exact docs contract, then update Core state/tests before
+  adapting warning/flight presentation and localized first-entry sheets.
