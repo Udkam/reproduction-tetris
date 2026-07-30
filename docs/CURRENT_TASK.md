@@ -157,6 +157,11 @@ recovery points, but Phase 9 is not accepted. The open source slices are:
   back-label wrap, but its stretched rectangular grid is visually rejected. The
   open presentation correction must make every node square, center the matrix with
   visible breathing room, and regenerate all selector evidence before acceptance.
+  Checkpoint `348209f` implements the correction. Live measurements at the four
+  required viewports prove equal width/height controls (`95.02 / 46 / 64.8 /
+  58.8 px`), `12 / 6 / 8 / 8 px` gaps, equal grid client/scroll geometry, zero page
+  overflow, and zero console errors; final source gates and committed evidence remain
+  pending.
 
 ### Ordered checkpoints
 

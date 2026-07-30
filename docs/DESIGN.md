@@ -90,9 +90,13 @@ keeps roving keyboard focus but has no pointer-owned state, active class, presse
 attribute, or persistent selection data. Focused component/style proof is `48/48`
 and typecheck is green. The first two-page frame pass is visually rejected because
 its grid tracks stretch the nodes into tall rectangles and pack them too tightly.
-The open correction is presentation-only: square nodes, centered matrix, larger
-breathing gaps, and fresh target-viewport evidence. Formal acceptance still waits
-for that corrected final candidate.
+Checkpoint `348209f` applies that presentation-only correction: every node owns a
+`1 / 1` ratio, the five-row matrix centers instead of stretching, and the responsive
+gaps are `12 px` desktop, `8 px` portrait, and `6 px` short landscape. Direct frame
+measurement reports exact square controls at `95.02`, `46`, `64.8`, and `58.8 px`
+for `1440×900`, `844×390`, `390×844`, and `360×800` respectively, with equal grid
+client/scroll geometry and no page overflow. Formal acceptance still waits for the
+regenerated final-candidate evidence.
 
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 
