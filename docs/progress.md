@@ -1,5 +1,16 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T16 Phase 9 first-entry rules checkpoint — 2026-07-31
+
+- Product checkpoint `e4d19ad` unifies all first-entry rule sheets: compact localized
+  titles such as `生存规则` / `Survival Rules`, no redundant first-entry subtitle or
+  inner Rules heading, and `好的 / Got it` as the primary acknowledgement.
+- Survival copy now matches Core: every event deterministically chooses one or two
+  clearable stones, all in one random column, falling at twice normal-piece speed.
+- Focused React/localization tests pass `2/2` and typecheck passes. This is a bounded
+  source checkpoint, not Phase-9 acceptance: real browser review and the separate
+  no-scroll Puzzle selector/home checkpoint remain open.
+
 ### T15 Phase 3 HUD contract and Phase 5 Ice addendum — 2026-07-28
 
 - All per-phase target briefs are now indexed beside `docs/phases/phase 1.md` under

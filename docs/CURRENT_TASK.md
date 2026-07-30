@@ -83,6 +83,14 @@ mount succeeds, closing the observed “digit 2 with no bedrock” race. Theme/R
 Runtime proof passes `53/53`, focused React countdown proof passes `1/1`, and
 typecheck passes. Real-frame browser acceptance remains open.
 
+First-entry rules checkpoint `e4d19ad` now uses compact localized titles
+(`生存规则` / `Survival Rules`), removes the redundant first-entry subtitle and
+inner Rules heading, and changes the acknowledgement to `好的 / Got it`. Survival's
+localized rule states that each event contains a deterministic random one or two
+clearable stones in one random column at two times normal-piece speed. Focused React
+and localization proof passes `2/2`, and typecheck passes. Browser acceptance and the
+separate Puzzle/home navigation checkpoint remain open.
+
 ### Ordered checkpoints
 
 1. `contract`: documentation only; freeze exact rules, presentation, paths, gates,

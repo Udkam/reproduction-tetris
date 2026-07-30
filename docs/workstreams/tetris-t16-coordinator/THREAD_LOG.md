@@ -231,3 +231,29 @@
 - Blocker: final visual acceptance requires one managed real-browser batch.
 - Next action: implement and test the unified first-entry rules sheets before opening
   that batch.
+
+## 2026-07-31 — unified first-entry rule-sheet checkpoint
+
+- Base: cavern correction record `9dd9fab`.
+- Product commit: `e4d19ad`.
+- Changed paths: rule-sheet-only hunks in `src/App.tsx`, direct assertions in
+  `src/App.test.ts`, and `src/ui/localization.ts`.
+- Implementation: Chinese titles directly join the mode label and `规则`; English
+  titles retain natural spacing. The first-entry subtitle and repeated inner heading
+  are absent, and the primary acknowledgement is `好的 / Got it`. Survival copy now
+  describes a deterministic random one-or-two-stone event in one random column at
+  twice normal-piece speed; it no longer implies a fixed double-stone event.
+- Commands actually run:
+  - focused `src/App.test.ts` run by the two exact rule-sheet/localization titles
+  - `npm.cmd run typecheck`
+  - `git diff --cached --check`
+- Evidence: focused React/localization tests pass `2/2` with `36` unrelated tests
+  skipped; typecheck passes. Exact staged-path inspection proves that selector/home
+  work was not included in the checkpoint.
+- Boundary: the preserved selector/home `src/App.tsx` hunks remain unstaged and
+  uncommitted. No server, browser, subagent, watcher, or persistent Node helper was
+  started.
+- Blocker: real-frame browser acceptance is still required for the rule sheet and
+  Survival countdown/cavern material.
+- Next action: run one managed source-bound browser batch, release it, then resume the
+  separate no-scroll selector/home checkpoint.
