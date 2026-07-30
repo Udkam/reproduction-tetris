@@ -45,6 +45,29 @@ scanned the six clean-line commits and found no leaks. The rejected selector WIP
 remains local-only on its explicitly named preservation branch and is not part of
 `main`.
 
+## Open Phase 8 — final integration and release-readiness evidence
+
+**Status (2026-07-30): CONTRACT / PRODUCT FROZEN.** Current pushed recovery
+`4e4cca1` is the integration source candidate. Phase-5 Mutation has been re-audited
+against its ten mandatory requirements and current source: PASS, P0–P2/GAP zero,
+with only the already accepted narrow three-status ellipsis P3. No Mutation semantic
+path changed after `ee2aac5`; 34 captures, 38 browser hashes, 4 gate hashes, FIFO,
+actual Collapse columns, 0.3 ms Renderer p95, 8.4 ms rAF p95 and zeroed lifecycle
+remain source-bound evidence.
+
+The five schema-7 Puzzle artifacts contain 50 unique IDs and 100 unique public-Core
+routes, exactly ten levels / twenty routes for each 3/4/5/6/7-row tier. The current
+26-file / 235-test suite replays definitions, anchors, both routes, early divergence,
+progress gates and v5/v4/v3/v2/v1 migration. Selector visual work remains explicitly
+excluded and its rejected candidate is not in `main`.
+
+Open only the Phase-8 contract, evidence harness/output and integration records. Start
+from the frozen product; use one managed Vite/Chrome lease and the official web-game
+client, capture current-head cross-mode/responsive/language/reduced-motion/input and
+lifecycle evidence, inspect every published frame, then run rules/visual/evidence QA
+serially. Any confirmed product finding returns to its owning phase as a separate
+source checkpoint and invalidates the affected evidence.
+
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
 **Status (2026-07-30):** active. The linked product-review conversation is the

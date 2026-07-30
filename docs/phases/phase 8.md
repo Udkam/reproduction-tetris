@@ -2,7 +2,14 @@
 
 ## 状态
 
-仅在 Phase 1–7 均已独立验收、清理并推送后开始。本阶段不新增玩法或重设计页面。
+**OPEN / CONTRACT（2026-07-30）。** Phase 1–6、五十关课程/持久化/进度和
+普通消行直接回退均已独立验收、清理并推送；当前恢复点为 `4e4cca1`。被拒绝的
+Puzzle selector 候选完整保存在本地
+`codex/t15-selector-wip-20260730@dce331b`，不属于 `main`，且本阶段明确不修改
+或重新设计选关界面。
+
+本阶段不新增玩法。除非最终证据直接证明跨阶段产品缺陷，`src/**`、依赖、配置、
+关卡定义/路线和产品视觉均冻结；先建立当前候选的集成证据，再进行三路只读 QA。
 
 ## 目标
 
@@ -20,6 +27,27 @@
 6. 验证 listener、ticker、audio、Canvas、对象池和 preview 服务在卸载后释放。
 7. 检查依赖、许可证、字体本地化、生产路径和未来桌面壳适配，不引入在线必需项。
 8. 更新 `CURRENT_TASK`、`DESIGN`、changelog、各 workstream log、证据清单与哈希。
+
+## 当前证据批次
+
+- 候选：`main@4e4cca1`；运行前后都必须证明产品树和工作树不漂移。
+- 目录：`docs/qa/evidence/t15-phase8/`；失败批次必须保留在临时目录且不得发布。
+- 新鲜浏览器覆盖：
+  - 中文桌面首页与四模式真实进入；
+  - Classic、Survival、Mutation、Puzzle 各一个真实 gameplay Canvas；
+  - 390×844 竖屏、844×390 短横屏、英文与 reduced motion；
+  - Settings、Pause、Restart、Esc/Enter/方向键、Puzzle Z undo 的完整状态链；
+  - 每一游戏态恰好一个 Canvas、零 DOM board cell、零 console/page error、
+    零横向 overflow；
+  - 两次 mount/restart/unmount 后 listener、rAF、audio 和 Canvas 回到首页基线。
+- Phase-5 已验收的 34 图/manifest/38 哈希继续作为异变高瞬态证据；新批次只需
+  证明其产品路径自 `ee2aac5` 后无语义漂移并在当前集成候选中正常进入，不重复
+  制造同一瞬态截图。
+- Phase-6 普通消行 normal/reduced Pixi 图继续作为 `760437d` 的源码精确证据；
+  新批次验证当前应用壳、输入和卸载共存。
+- 使用官方 `develop-web-game` client 完成至少一个真实动作 burst；更完整的断言
+  由同一受管 Chrome/Vite 租约内的 source-bound harness 完成。只允许一个 server、
+  一个 browser tree 和一个 runner，结束后必须释放 4178/5178/5179。
 
 ## 协作团队
 
