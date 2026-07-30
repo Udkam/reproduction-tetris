@@ -36,3 +36,61 @@
 - Next action: author a fail-closed current-head integration harness, run the
   official web-game client and the managed batch, inspect all frames, then freeze
   raw evidence before manifest/index and serial independent QA.
+
+## TETRIS-T15-PHASE8-HARNESS-002
+
+- Status: `SOURCE-BOUND HARNESS / FROZEN`.
+- Checkpoints:
+  - initial harness `8044068`;
+  - countdown-hidden-Next assertion repair `667cb54`;
+  - legal active-piece handoff repair `aa1afe6`.
+- Exact path:
+  `docs/qa/evidence/t15-phase8/capture_phase8.py`.
+- Both repairs changed evidence assertions only. They published no partial output,
+  changed no product path, and released the managed 4178 lease.
+- The successful run bound the committed harness blob at `aa1afe6` and frozen
+  product `4e4cca1` before and after capture.
+
+## TETRIS-T15-PHASE8-BROWSER-003
+
+- Status: `RAW EVIDENCE / FROZEN`.
+- Raw checkpoint: `94463de`.
+- Published evidence:
+  - 13 source-bound integration PNGs;
+  - two official `develop-web-game` client PNGs plus two canonical state JSONs;
+  - one 181,028-byte manifest;
+  - 23-entry `SHA256SUMS.txt`;
+  - empty browser/client stderr and source-bound Vite logs.
+- Browser assertions:
+  - Classic, Survival, Mutation, and Puzzle entered through visible UI;
+  - Chinese desktop, 390x844 portrait, 844x390 short landscape, English, and
+    reduced motion covered;
+  - Settings/backdrop resume, pause/Enter, restart/arrow/Enter,
+    Escape/arrow/Enter, gameplay arrows/Space, touch tap rotation, and direct
+    Puzzle Z undo accepted;
+  - every gameplay frame had one Canvas, zero DOM board cells, visible board/
+    side/Next, no overflow, and zero console/page errors;
+  - Puzzle showed semantic `1`/`2` previews; Mutation Next exposed a carrier item;
+    Survival showed three accepted brown bedrock rows;
+  - every unmount returned listener/rAF/open-audio/Canvas/QA state to baseline.
+- Existing evidence revalidated:
+  - Phase 5: 34 PNGs, browser/gate checksum files, zero manifest errors;
+  - Puzzle: five schema-7 artifacts, 50 IDs, 100 unique routes, ten entries per
+    3/4/5/6/7-row tier.
+- Manual review opened all 15 PNGs individually and found no blank, clipping,
+  structural-gap, overlay, label, carrier-legibility, or responsive-overflow
+  defect.
+- Resource release: 4178/5178/5179 free; managed server released; official-client
+  browser and Chrome browser closed; no watcher or resident reader started.
+
+## TETRIS-T15-PHASE8-GATES-004
+
+- Status: `PASS`.
+- Commands actually run serially after raw evidence:
+  - `npm.cmd run typecheck` — PASS;
+  - `npm.cmd run test` — PASS, 26 files / 235 tests;
+  - `npm.cmd run build` — PASS, 753 modules.
+- Build retained the existing informational 511.26 kB main-chunk warning; no
+  dependency or product source changed.
+- Next action: freeze this index checkpoint, then run rules, visual, and
+  evidence-integrity QA serially against one exact documentation tip.
