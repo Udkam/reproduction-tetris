@@ -668,3 +668,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   cold-stone damage, and closes the async mount/countdown race that previously showed
   digit `2` before any bedrock row. Renderer/theme/runtime pass `53/53`; the focused
   React countdown proof and typecheck pass. Real-frame review remains required.
+
+## 2026-07-31 Phase 9 navigation QA correction
+
+- Independent review rejects source candidate `9c515f6` with one P1: older
+  responsive rules still assign individual mode cards to explicit rows/columns.
+  The later two-by-two container declaration alone cannot clear those grid-item
+  placements, so 360×800 and 844×390 violate the home matrix contract.
+- Evidence checkpoint `a67fb00` is superseded until the dedicated navigation layer
+  explicitly resets card and action placement, both style layers are covered by a
+  regression contract, final gates pass again, and affected real frames are replaced.

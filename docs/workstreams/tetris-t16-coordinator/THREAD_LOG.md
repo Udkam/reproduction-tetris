@@ -304,3 +304,20 @@
   QA remains deferred until the navigation checkpoint is source-frozen.
 - Next action: push this recovery chain, then resume the separate no-scroll Puzzle
   selector and mode-home checkpoint.
+
+## 2026-07-31 — final navigation candidate rejected by independent QA
+
+- Reviewed source candidate: `9c515f6`; evidence checkpoint `a67fb00` is now
+  superseded pending correction.
+- Finding: P1. `src/styles/navigation.css` owns the intended two-by-two matrix but
+  does not reset legacy responsive `grid-column`, `grid-row`, and `justify-self`
+  placement from `src/styles.css`.
+- Reproduction boundary: at 360×800 the four cards retain single-column rows 1–4;
+  at 844×390 they can retain columns 1–4 and the legacy action span, producing
+  implicit tracks instead of the contracted two-by-two matrix.
+- Correction boundary: only `src/styles/navigation.css` and its direct cross-layer
+  regression test may change. Product rules, selector, Survival, renderer, Core,
+  records, localization, dependencies, and other visual systems remain frozen.
+- Next action: commit this rejection record, add authoritative placement resets,
+  rerun final gates, replace affected browser evidence, and return the corrected
+  candidate to independent QA.

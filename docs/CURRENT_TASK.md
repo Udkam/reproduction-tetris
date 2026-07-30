@@ -2,8 +2,8 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): SURVIVAL CAVERN + ORDINARY CLEAR REOPENED /
-COUNTDOWN BEDROCK STAGING ADDED / NAVIGATION WORK PRESERVED.**
+**Status (2026-07-31): SURVIVAL CAVERN + ORDINARY CLEAR BROWSER-GREEN /
+FINAL NAVIGATION CANDIDATE REJECTED / NARROW CASCADE CORRECTION OPEN.**
 
 The direct goal is to keep correcting this slice until all six requested outcomes are
 implemented and visually accepted:
@@ -108,6 +108,16 @@ The final frame has one Canvas, zero DOM cells, no horizontal or vertical overfl
 and zero console warnings/errors. The repair changes no timer, Core, Renderer geometry,
 or modal behavior. Survival cavern and the first-entry rule sheet are browser-green;
 the separate selector/home navigation checkpoint remains open.
+
+Navigation candidate `9c515f6` is **independently rejected**. Its dedicated
+`navigation.css` correctly declares a two-by-two mode matrix, but it does not reset
+the explicit `grid-column`, `grid-row`, and `justify-self` values in older responsive
+rules. Consequently 360×800 still places the four mode cards in one column, while
+844×390 can create implicit third/fourth columns and a displaced action row. The
+correction is limited to authoritative grid-item placement resets plus a regression
+contract that reads both style layers. The selector, Survival, rules, Core, Renderer,
+records, audio, and dependencies remain frozen. All final gates and affected browser
+frames must be regenerated from the corrected candidate before acceptance.
 
 ### Ordered checkpoints
 
