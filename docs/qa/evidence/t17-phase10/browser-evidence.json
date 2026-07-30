@@ -1,0 +1,201 @@
+{
+  "taskId": "TETRIS-T17-PHASE10",
+  "sourceSha": "7f45c55ccfea1cdf50a785bf249d1cec831473ac",
+  "baseUrl": "http://127.0.0.1:5178/",
+  "capturedAt": "2026-07-31",
+  "method": "One bounded Playwright/Chrome pass against the frozen source SHA. All gameplay outcomes use visible controls or the public runtime QA actions; no state replacement or fabricated terminal state is used. Screenshots are first-viewport captures except where fullPage is explicitly required for the 390x844 puzzle sheets.",
+  "qualityGates": {
+    "typecheck": "passed",
+    "tests": {
+      "status": "passed",
+      "files": 29,
+      "tests": 273,
+      "workers": 1,
+      "fileParallelism": false
+    },
+    "build": {
+      "status": "passed",
+      "modules": 758,
+      "note": "Only the existing non-blocking bundle-size advisory remained."
+    }
+  },
+  "globalAssertions": {
+    "browserConsoleErrors": 0,
+    "pageErrors": 0,
+    "gameplayCanvasCount": 1,
+    "homeCanvasCount": 0,
+    "puzzleLibraryCanvasCount": 0,
+    "domCellCount": 0,
+    "homeHoverClearsAfterPointerLeave": true,
+    "reducedMotionPuzzleOutcomeVerified": true,
+    "localFontResourcesOnly": true,
+    "fontLayoutStableAfterReady": true,
+    "projectBrowserProcessesAfterCapture": 0,
+    "projectPortsReleasedAfterCapture": [4178, 5178, 5179]
+  },
+  "fontEvidence": {
+    "documentFontsStatus": "loaded",
+    "loadedFamilies": [
+      "Playwrite NZ Basic",
+      "Sora Variable",
+      "TetraMorph UI Sans",
+      "Smiley Sans",
+      "IBM Plex Mono"
+    ],
+    "remoteFontResources": [],
+    "resourceOrigins": ["http://127.0.0.1:5178/"],
+    "geometryStableAfter150ms": true
+  },
+  "responsiveEvidence": {
+    "home1440x900": {
+      "clientEqualsScroll": true,
+      "modeControls": 4
+    },
+    "home844x390": {
+      "clientEqualsScroll": true,
+      "modeControls": 4
+    },
+    "puzzle390x844": {
+      "clientEqualsScroll": true,
+      "mountedLevelCards": 25,
+      "maximumSquareDeltaPx": 0
+    },
+    "puzzle844x390": {
+      "clientEqualsScroll": true,
+      "mountedLevelCards": 25,
+      "maximumSquareDeltaPx": 0
+    }
+  },
+  "classic": {
+    "playing": {
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "documentOverflow": false
+    },
+    "leaveDialog": {
+      "title": "离开本局？",
+      "buttons": ["返回首页", "留在本局"],
+      "nextRemainsVisible": true
+    },
+    "restart": {
+      "shortcut": "R",
+      "confirmationButtons": ["确认", "取消"],
+      "countdownRestartsAt": 3
+    },
+    "result": {
+      "title": "经典结果",
+      "primaryMetric": "消行",
+      "secondaryMetric": "使用方块",
+      "rankingMarkerRemoved": true,
+      "rankedAndUnrankedVariantsVerified": true
+    }
+  },
+  "survival": {
+    "entry": {
+      "continuousRiseIntermediateFrame": true,
+      "completedRowsByCountdown": {
+        "3": 1,
+        "2": 2,
+        "1": 3
+      },
+      "previewHiddenDuringCountdown": true,
+      "activePieceCellsDuringCountdown": 0,
+      "ghostCellsDuringCountdown": 0,
+      "previewVisibleAfterCountdown": true
+    },
+    "stones": {
+      "oneStoneNaturalEvent": {
+        "height": 1,
+        "column": 3
+      },
+      "twoStoneNaturalEvent": {
+        "height": 2,
+        "column": 8,
+        "sameColumn": true
+      },
+      "materialDistinctFromBedrockAndTetrominoes": true
+    },
+    "result": {
+      "title": "生存结果",
+      "primaryMetric": "生存时间",
+      "secondaryMetric": "消行",
+      "pieceCountHidden": true
+    }
+  },
+  "mutation": {
+    "itemBearingNextPieceVerified": true,
+    "simultaneousStatesVerified": ["冰冻", "超重", "超级加倍 ×4"],
+    "iceSpeedSecondsPerCell": 1.0,
+    "speedRestoredAfterExpiry": true,
+    "supergravitySettlementTrailVerified": true,
+    "repeatedItemCueAggregationVerified": true,
+    "result": {
+      "title": "Mutation result",
+      "primaryMetric": "Score",
+      "secondaryMetric": "Lines",
+      "pieceCountHidden": true
+    }
+  },
+  "puzzle": {
+    "levelId": "t5r-drift-08",
+    "deterministicRoute": {
+      "pieces": 6,
+      "remainingOriginalCells": 0,
+      "completion": "finished"
+    },
+    "outcomes": {
+      "first": {
+        "heading": "Puzzle solved",
+        "persistedBest": 6
+      },
+      "record": {
+        "heading": "刷新个人纪录",
+        "previousBest": 10,
+        "persistedBest": 6
+      },
+      "replay": {
+        "heading": "谜题已破解",
+        "previousBest": 5,
+        "runPieces": 6,
+        "persistedBest": 5
+      }
+    },
+    "libraryCompletion": {
+      "ariaLabel": "09 绕柱，3 行残局，已完成，最少 5 步",
+      "selectedBestText": "当前最优步数：5步",
+      "persistsAcrossReload": true
+    },
+    "keyboardPagination": {
+      "arrowRightSelects": "26–50",
+      "arrowLeftRestores": "01–25"
+    }
+  },
+  "captures": [
+    "home-1440x900-zh.png",
+    "home-1440x900-en.png",
+    "home-844x390-zh.png",
+    "classic-playing-1440x900-zh.png",
+    "classic-leave-next-visible.png",
+    "classic-restart-countdown.png",
+    "result-classic-ranked-zh.png",
+    "result-classic-unranked-844x390-zh.png",
+    "survival-entry-continuous-rise.png",
+    "survival-countdown-row1.png",
+    "survival-countdown-row2.png",
+    "survival-countdown-row3.png",
+    "survival-playing.png",
+    "survival-first-stone-event.png",
+    "survival-one-stone-event.png",
+    "result-survival-time-first-844x390-zh.png",
+    "mutation-item-next.png",
+    "mutation-multi-status-ice-supergravity.png",
+    "mutation-supergravity-settlement.png",
+    "mutation-effects-expired.png",
+    "result-mutation-score-first-390x844-en.png",
+    "puzzle-first-clear-390x844-en.png",
+    "puzzle-new-best-390x844-zh-reduced.png",
+    "puzzle-replay-slower-390x844-zh.png",
+    "puzzle-library-completed-390x844-zh.png",
+    "puzzle-library-844x390-zh.png"
+  ]
+}
