@@ -1523,7 +1523,7 @@ describe('T6 frontend mode binding', () => {
   });
 
   it('uses an all-open compact endgame console while keeping one canonical selected-board focus', () => {
-    expect(CAMPAIGN_LEVELS).toHaveLength(30);
+    expect(CAMPAIGN_LEVELS).toHaveLength(40);
     const onSelect = vi.fn();
     const onStart = vi.fn();
     const onBack = vi.fn();
@@ -1537,12 +1537,12 @@ describe('T6 frontend mode binding', () => {
     const view = render(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id)));
 
     const rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    expect(rows).toHaveLength(30);
+    expect(rows).toHaveLength(40);
     expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
     expect(rows.every((row) => !row.disabled && row.dataset.unlocked === 'true')).toBe(true);
-    expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('30 个开放解谜残局');
+    expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('40 个开放解谜残局');
     expect(view.container.querySelector('[data-testid="campaign-availability"], [data-testid="campaign-rules"]')).toBeNull();
-    expect(view.container.querySelectorAll('.console-band')).toHaveLength(6);
+    expect(view.container.querySelectorAll('.console-band')).toHaveLength(8);
     expect(PUZZLE_ROW_BANDS.every((band, index) => (
       view.container.querySelectorAll(`.console-band[data-rows="${index + 5}"] .console-node`).length === band.length
     ))).toBe(true);

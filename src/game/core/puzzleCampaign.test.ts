@@ -12,7 +12,7 @@ function settle(state: GameState): GameState {
 }
 
 describe('Phase-7 transitional all-open Puzzle campaign behavior', () => {
-  it('keeps the stable 01–20 order while appending the authored five-row batch', () => {
+  it('keeps the stable 01–20 order while appending the authored five- and six-row batches', () => {
     expect(PUZZLE_DEFINITIONS.map((definition) => definition.id)).toEqual([
       't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-05', 't3r-shaft-04',
       't3r-cascade-06', 't5r-delta-07', 't5r-lattice-09', 't5r-drift-08', 't5r-rift-10',
@@ -20,9 +20,11 @@ describe('Phase-7 transitional all-open Puzzle campaign behavior', () => {
       't6r-cairn-17', 't6r-terrace-18', 't6r-keystone-20', 't6r-bastion-19', 't6r-veil-16',
       'tm-puzzle-21', 'tm-puzzle-22', 'tm-puzzle-23', 'tm-puzzle-24', 'tm-puzzle-25',
       'tm-puzzle-26', 'tm-puzzle-27', 'tm-puzzle-28', 'tm-puzzle-29', 'tm-puzzle-30',
+      'tm-puzzle-31', 'tm-puzzle-32', 'tm-puzzle-33', 'tm-puzzle-34', 'tm-puzzle-35',
+      'tm-puzzle-36', 'tm-puzzle-37', 'tm-puzzle-38', 'tm-puzzle-39', 'tm-puzzle-40',
     ] satisfies PuzzleId[]);
     expect(PUZZLE_DEFINITIONS.every((definition) => !('solverPieceBudget' in definition))).toBe(true);
-    expect(PUZZLE_DEFINITIONS.map((definition) => definition.difficulty)).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
+    expect(PUZZLE_DEFINITIONS.map((definition) => definition.difficulty)).toEqual(Array.from({ length: 40 }, (_, index) => index + 1));
     expect(PUZZLE_DEFINITIONS.some((definition) => definition.anchorCells.length > 0)).toBe(true);
     expect(PUZZLE_DEFINITIONS.every((definition) => definition.anchorCells.length <= 2)).toBe(true);
   });

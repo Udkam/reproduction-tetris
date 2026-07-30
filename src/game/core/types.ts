@@ -64,7 +64,17 @@ export type PuzzleId =
   | 'tm-puzzle-27'
   | 'tm-puzzle-28'
   | 'tm-puzzle-29'
-  | 'tm-puzzle-30';
+  | 'tm-puzzle-30'
+  | 'tm-puzzle-31'
+  | 'tm-puzzle-32'
+  | 'tm-puzzle-33'
+  | 'tm-puzzle-34'
+  | 'tm-puzzle-35'
+  | 'tm-puzzle-36'
+  | 'tm-puzzle-37'
+  | 'tm-puzzle-38'
+  | 'tm-puzzle-39'
+  | 'tm-puzzle-40';
 
 export type PuzzleGoal = 'original-targets-cleared';
 export type PuzzleCompletion =

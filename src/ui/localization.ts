@@ -206,6 +206,16 @@ const ENGLISH_LEVEL_NAMES: Readonly<Record<PuzzleId, string>> = {
   'tm-puzzle-28': 'Side Bridge',
   'tm-puzzle-29': 'Double Layer',
   'tm-puzzle-30': 'Split Shelf',
+  'tm-puzzle-31': 'Bent Well',
+  'tm-puzzle-32': 'Left Gate',
+  'tm-puzzle-33': 'Offset Bridge',
+  'tm-puzzle-34': 'Stepped Well',
+  'tm-puzzle-35': 'Hanging Shelf',
+  'tm-puzzle-36': 'Right Gate',
+  'tm-puzzle-37': 'Twin Channel',
+  'tm-puzzle-38': 'Loop Well',
+  'tm-puzzle-39': 'Edge Tower',
+  'tm-puzzle-40': 'Bent Bridge',
 };
 
 const COPY: Record<AppLanguage, Translation> = {

@@ -85,6 +85,16 @@ const PUZZLE_TARGET_ROWS: Readonly<Record<PuzzleId, number>> = Object.freeze({
   'tm-puzzle-28': 5,
   'tm-puzzle-29': 5,
   'tm-puzzle-30': 5,
+  'tm-puzzle-31': 6,
+  'tm-puzzle-32': 6,
+  'tm-puzzle-33': 6,
+  'tm-puzzle-34': 6,
+  'tm-puzzle-35': 6,
+  'tm-puzzle-36': 6,
+  'tm-puzzle-37': 6,
+  'tm-puzzle-38': 6,
+  'tm-puzzle-39': 6,
+  'tm-puzzle-40': 6,
 });
 
 function setup(seed: number, placements: readonly PuzzleSetupPlacement[]): PuzzleSetupHistory {
@@ -232,6 +242,18 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
   endgame('tm-puzzle-28', '侧桥', 28, 3335763460, setup(1618034014, [{ type: 'J', rotation: 0, x: 4 }, { type: 'L', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'O', rotation: 2, x: 2 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'T', rotation: 2, x: 5 }, { type: 'S', rotation: 2, x: 0 }, { type: 'O', rotation: 3, x: 8 }, { type: 'I', rotation: 2, x: 3 }, { type: 'L', rotation: 2, x: 0 }])),
   endgame('tm-puzzle-29', '双层', 29, 3941154800, setup(1618034019, [{ type: 'J', rotation: 0, x: 7 }, { type: 'S', rotation: 0, x: 2 }, { type: 'Z', rotation: 1, x: 4 }, { type: 'T', rotation: 2, x: 7 }, { type: 'O', rotation: 1, x: 0 }, { type: 'I', rotation: 0, x: 6 }, { type: 'L', rotation: 3, x: 1 }, { type: 'O', rotation: 1, x: 3 }, { type: 'I', rotation: 0, x: 0 }, { type: 'T', rotation: 2, x: 4 }])),
   endgame('tm-puzzle-30', '断台', 30, 4117941110, setup(1618034013, [{ type: 'T', rotation: 0, x: 6 }, { type: 'S', rotation: 3, x: 4 }, { type: 'Z', rotation: 0, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'L', rotation: 0, x: 1 }, { type: 'O', rotation: 2, x: 5 }, { type: 'J', rotation: 2, x: 7 }, { type: 'S', rotation: 0, x: 0 }, { type: 'I', rotation: 2, x: 0 }, { type: 'L', rotation: 2, x: 4 }])),
+
+  // 31–40: six rows — combine wells, bridges, recovery lanes, and sparse headroom gates.
+  endgame('tm-puzzle-31', '曲井', 31, 2654435761, setup(1732050808, [{ type: 'I', rotation: 2, x: 5 }, { type: 'Z', rotation: 3, x: 1 }, { type: 'T', rotation: 2, x: 3 }, { type: 'J', rotation: 1, x: -1 }, { type: 'O', rotation: 0, x: 6 }, { type: 'L', rotation: 3, x: 8 }, { type: 'S', rotation: 2, x: 7 }, { type: 'S', rotation: 3, x: 4 }, { type: 'L', rotation: 0, x: 1 }, { type: 'T', rotation: 2, x: 5 }, { type: 'J', rotation: 2, x: 0 }, { type: 'I', rotation: 0, x: 3 }])),
+  endgame('tm-puzzle-32', '左闸', 32, 358294691, setup(2236068021, [{ type: 'J', rotation: 0, x: 6 }, { type: 'I', rotation: 0, x: 0 }, { type: 'L', rotation: 0, x: 7 }, { type: 'O', rotation: 1, x: 0 }, { type: 'T', rotation: 2, x: 3 }, { type: 'Z', rotation: 0, x: 6 }, { type: 'S', rotation: 2, x: 3 }, { type: 'I', rotation: 0, x: 0 }, { type: 'O', rotation: 3, x: 0 }]), [{ x: 0, y: 13 }]),
+  endgame('tm-puzzle-33', '错桥', 33, 3428279691, setup(1732050845, [{ type: 'O', rotation: 3, x: 8 }, { type: 'T', rotation: 0, x: 0 }, { type: 'J', rotation: 2, x: 2 }, { type: 'S', rotation: 2, x: 5 }, { type: 'L', rotation: 2, x: 0 }, { type: 'I', rotation: 2, x: 4 }, { type: 'Z', rotation: 1, x: 7 }, { type: 'Z', rotation: 0, x: 0 }, { type: 'L', rotation: 2, x: 6 }, { type: 'O', rotation: 0, x: 3 }, { type: 'T', rotation: 2, x: 4 }, { type: 'I', rotation: 0, x: 0 }])),
+  endgame('tm-puzzle-34', '阶井', 34, 1831565813, setup(1732050849, [{ type: 'L', rotation: 0, x: 0 }, { type: 'T', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }, { type: 'S', rotation: 0, x: 5 }, { type: 'J', rotation: 2, x: 2 }, { type: 'O', rotation: 2, x: 8 }, { type: 'Z', rotation: 3, x: 0 }, { type: 'L', rotation: 2, x: 0 }, { type: 'T', rotation: 2, x: 6 }, { type: 'Z', rotation: 0, x: 3 }, { type: 'J', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }])),
+  endgame('tm-puzzle-35', '悬台', 35, 374761393, setup(1732050832, [{ type: 'I', rotation: 2, x: 5 }, { type: 'S', rotation: 0, x: 2 }, { type: 'L', rotation: 1, x: -1 }, { type: 'T', rotation: 2, x: 1 }, { type: 'O', rotation: 3, x: 5 }, { type: 'J', rotation: 2, x: 7 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'S', rotation: 0, x: 4 }, { type: 'J', rotation: 2, x: 7 }, { type: 'L', rotation: 0, x: 1 }, { type: 'T', rotation: 2, x: 0 }, { type: 'I', rotation: 0, x: 3 }])),
+  endgame('tm-puzzle-36', '右闸', 36, 197830471, setup(213511, [{ type: 'J', rotation: 3, x: 8 }, { type: 'I', rotation: 2, x: 4 }, { type: 'L', rotation: 3, x: 0 }, { type: 'O', rotation: 3, x: 2 }, { type: 'T', rotation: 0, x: 4 }, { type: 'Z', rotation: 2, x: 2 }, { type: 'S', rotation: 2, x: 7 }, { type: 'I', rotation: 0, x: 4 }, { type: 'O', rotation: 1, x: 8 }]), [{ x: 9, y: 13 }]),
+  endgame('tm-puzzle-37', '双廊', 37, 668265263, setup(1732050830, [{ type: 'S', rotation: 3, x: 7 }, { type: 'T', rotation: 0, x: 0 }, { type: 'O', rotation: 3, x: 5 }, { type: 'L', rotation: 3, x: 8 }, { type: 'J', rotation: 2, x: 2 }, { type: 'I', rotation: 0, x: 0 }, { type: 'Z', rotation: 0, x: 0 }, { type: 'T', rotation: 2, x: 3 }, { type: 'J', rotation: 0, x: 6 }, { type: 'S', rotation: 2, x: 2 }, { type: 'L', rotation: 0, x: 7 }, { type: 'I', rotation: 2, x: 5 }])),
+  endgame('tm-puzzle-38', '回井', 38, 1431374977, setup(1732050842, [{ type: 'J', rotation: 3, x: 8 }, { type: 'I', rotation: 2, x: 4 }, { type: 'S', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 0 }, { type: 'T', rotation: 2, x: 4 }, { type: 'O', rotation: 1, x: 7 }, { type: 'Z', rotation: 0, x: 0 }, { type: 'S', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 7 }, { type: 'O', rotation: 0, x: 5 }, { type: 'J', rotation: 2, x: 0 }, { type: 'I', rotation: 2, x: 3 }])),
+  endgame('tm-puzzle-39', '边塔', 39, 41326521, setup(3236068023, [{ type: 'J', rotation: 0, x: 0 }, { type: 'O', rotation: 3, x: 8 }, { type: 'L', rotation: 0, x: 5 }, { type: 'T', rotation: 2, x: 0 }, { type: 'S', rotation: 1, x: 2 }, { type: 'Z', rotation: 1, x: 4 }, { type: 'I', rotation: 2, x: 2 }, { type: 'J', rotation: 2, x: 7 }, { type: 'O', rotation: 2, x: 8 }]), [{ x: 9, y: 13 }]),
+  endgame('tm-puzzle-40', '折桥', 40, 3266489917, setup(1732050833, [{ type: 'J', rotation: 0, x: 3 }, { type: 'L', rotation: 2, x: 0 }, { type: 'I', rotation: 2, x: 6 }, { type: 'O', rotation: 3, x: 8 }, { type: 'S', rotation: 0, x: 5 }, { type: 'T', rotation: 2, x: 3 }, { type: 'Z', rotation: 0, x: 5 }, { type: 'J', rotation: 2, x: 7 }, { type: 'Z', rotation: 2, x: 0 }, { type: 'S', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 0 }, { type: 'I', rotation: 2, x: 3 }])),
 ]);
 
 /** The visible workshop order is authored from replayed complexity, not legacy ID order. */

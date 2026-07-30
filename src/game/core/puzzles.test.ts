@@ -46,7 +46,7 @@ function initialLandingSignatures(definition: PuzzleDefinition, includeAnchors: 
 }
 
 describe('T13 legal endgame workshop definitions', () => {
-  it('keeps the first twenty stable IDs and appends the third authored batch', () => {
+  it('keeps the first twenty stable IDs and appends the third and fourth authored batches', () => {
     expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual([
       't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-05', 't3r-shaft-04',
       't3r-cascade-06', 't5r-delta-07', 't5r-lattice-09', 't5r-drift-08', 't5r-rift-10',
@@ -54,27 +54,32 @@ describe('T13 legal endgame workshop definitions', () => {
       't6r-cairn-17', 't6r-terrace-18', 't6r-keystone-20', 't6r-bastion-19', 't6r-veil-16',
       'tm-puzzle-21', 'tm-puzzle-22', 'tm-puzzle-23', 'tm-puzzle-24', 'tm-puzzle-25',
       'tm-puzzle-26', 'tm-puzzle-27', 'tm-puzzle-28', 'tm-puzzle-29', 'tm-puzzle-30',
+      'tm-puzzle-31', 'tm-puzzle-32', 'tm-puzzle-33', 'tm-puzzle-34', 'tm-puzzle-35',
+      'tm-puzzle-36', 'tm-puzzle-37', 'tm-puzzle-38', 'tm-puzzle-39', 'tm-puzzle-40',
     ] satisfies PuzzleId[]);
-    expect(PUZZLE_DEFINITIONS.map(({ difficulty }) => difficulty)).toEqual(Array.from({ length: 30 }, (_, index) => index + 1));
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(30);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(30);
+    expect(PUZZLE_DEFINITIONS.map(({ difficulty }) => difficulty)).toEqual(Array.from({ length: 40 }, (_, index) => index + 1));
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(40);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(40);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
       '缺口', '侧井', '错层', '双槽', '转折', '回路', '长井', '交错', '绕柱', '双门',
       '平台', '井口', '悬边', '阶梯', '双井', '回填', '侧台', '横桥', '窄门', '交汇',
       '门柱', '回廊', '中柱', '斜坡', '夹井', '错台', '缓坡', '侧桥', '双层', '断台',
+      '曲井', '左闸', '错桥', '阶井', '悬台', '右闸', '双廊', '回井', '边塔', '折桥',
     ]);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(30);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(30);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(40);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(40);
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
       't5r-drift-08', 't5r-pulse-14', 't6r-cairn-17',
       'tm-puzzle-22', 'tm-puzzle-26', 'tm-puzzle-27',
+      'tm-puzzle-32', 'tm-puzzle-36', 'tm-puzzle-39',
     ] satisfies PuzzleId[]);
   });
 
-  it('derives the three-, four-, and five-row batches from legal zero-clear hard-drop histories', () => {
+  it('derives the three-, four-, five-, and six-row batches from legal zero-clear hard-drop histories', () => {
     expect(PUZZLE_DEFINITIONS.map(({ targetRows }) => targetRows)).toEqual([
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
       5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+      6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
     ]);
 
     for (const definition of PUZZLE_DEFINITIONS) {

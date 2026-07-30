@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import phase7Batch1File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json';
 import phase7Batch2File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-11-20.json';
 import phase7Batch3File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json';
+import phase7Batch4File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json';
 import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
 import {
@@ -65,11 +66,13 @@ type Phase7Artifact = {
 const phase7Batch1 = phase7Batch1File as unknown as Phase7Artifact;
 const phase7Batch2 = phase7Batch2File as unknown as Phase7Artifact;
 const phase7Batch3 = phase7Batch3File as unknown as Phase7Artifact;
-const phase7Artifacts = Object.freeze([phase7Batch1, phase7Batch2, phase7Batch3]);
+const phase7Batch4 = phase7Batch4File as unknown as Phase7Artifact;
+const phase7Artifacts = Object.freeze([phase7Batch1, phase7Batch2, phase7Batch3, phase7Batch4]);
 const activeLevels: readonly Phase7VerifiedLevel[] = Object.freeze([
   ...phase7Batch1.levels,
   ...phase7Batch2.levels,
   ...phase7Batch3.levels,
+  ...phase7Batch4.levels,
 ]);
 
 function commandFor(token: CommandToken): GameCommand {
@@ -91,7 +94,7 @@ function decode(stream: string): GameCommand[] {
 }
 
 describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
-  it('binds all three re-authored ten-level batches to real Core route families', () => {
+  it('binds all four re-authored ten-level batches to real Core route families', () => {
     for (const [index, artifact] of phase7Artifacts.entries()) {
       const from = index * 10 + 1;
       const to = from + 9;
@@ -99,15 +102,12 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       expect(artifact.claim).toContain('non-unique');
       expect(artifact.claim).toContain('not an optimality proof');
       expect(artifact.batch).toEqual({ from, to });
-      expect(artifact.searchBounds).toEqual(
-        index === 0
-          ? { maxLocks: 18, primaryBeam: 900, alternateBeam: 700 }
-          : {
-            maxLocks: index === 1 ? 18 : 24,
-            primaryBeam: 600,
-            alternateBeam: 480,
-          },
-      );
+      expect(artifact.searchBounds).toEqual([
+        { maxLocks: 18, primaryBeam: 900, alternateBeam: 700 },
+        { maxLocks: 18, primaryBeam: 600, alternateBeam: 480 },
+        { maxLocks: 24, primaryBeam: 600, alternateBeam: 480 },
+        { maxLocks: 30, primaryBeam: 600, alternateBeam: 480 },
+      ][index]);
       expect(Object.keys(artifact.commandEncoding).sort()).toEqual(['C', 'H', 'L', 'R', 'S', 'T']);
       expect(artifact.difficultyTuple).toEqual([
         'targetRowCount', 'lockedPieces', 'rotationPlanning', 'horizontalPlanning', 'clearDistribution',
@@ -116,7 +116,7 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       expect(artifact.levels).toHaveLength(10);
       expect(artifact.campaignOrder).toEqual(PUZZLE_DEFINITIONS.slice(from - 1, to).map(({ id }) => id));
     }
-    for (const artifact of phase7Artifacts) {
+    for (const artifact of phase7Artifacts.slice(0, 3)) {
       expect(artifact.levels.map(({ shorterRouteLocks }) => shorterRouteLocks)).toEqual(
         [...artifact.levels.map(({ shorterRouteLocks }) => shorterRouteLocks)].sort((left, right) => left - right),
       );
@@ -129,8 +129,17 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       .every(({ setup }) => setup.placementCount === 7)).toBe(true);
     expect(phase7Batch3.levels.filter(({ anchorCells }) => anchorCells.length === 0)
       .every(({ setup }) => setup.placementCount === 10)).toBe(true);
-    expect(activeLevels).toHaveLength(30);
-    expect(new Set(activeLevels.map(({ id }) => id)).size).toBe(30);
+    expect(phase7Batch4.levels.reduce((count, { anchorCells }) => count + anchorCells.length, 0)).toBe(3);
+    expect(phase7Batch4.levels.filter(({ anchorCells }) => anchorCells.length > 0)
+      .map(({ curriculumPosition }) => curriculumPosition)).toEqual([32, 36, 39]);
+    expect(phase7Batch4.levels.filter(({ anchorCells }) => anchorCells.length > 0)
+      .every(({ setup }) => setup.placementCount === 9)).toBe(true);
+    expect(phase7Batch4.levels.filter(({ anchorCells }) => anchorCells.length === 0)
+      .every(({ setup }) => setup.placementCount === 12)).toBe(true);
+    expect(phase7Batch4.levels.filter(({ anchorCells }) => anchorCells.length === 0)
+      .map(({ shorterRouteLocks }) => shorterRouteLocks)).toEqual([11, 15, 16, 18, 19, 19, 21]);
+    expect(activeLevels).toHaveLength(40);
+    expect(new Set(activeLevels.map(({ id }) => id)).size).toBe(40);
     expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual(activeLevels.map(({ id }) => id));
 
     for (const [index, level] of activeLevels.entries()) {
@@ -165,11 +174,15 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
     for (const level of activeLevels) {
       const definition = getPuzzleDefinition(level.id);
       expect(level.targetRowCount, level.id).toBe(
-        definition.difficulty <= 10 ? 3 : definition.difficulty <= 20 ? 4 : 5,
+        definition.difficulty <= 10 ? 3
+          : definition.difficulty <= 20 ? 4
+            : definition.difficulty <= 30 ? 5 : 6,
       );
       expect(level.setup.placementCount, level.id).toBeGreaterThanOrEqual(5);
       expect(level.setup.placementCount, level.id).toBeLessThanOrEqual(
-        definition.difficulty <= 10 ? 6 : definition.difficulty <= 20 ? 8 : 10,
+        definition.difficulty <= 10 ? 6
+          : definition.difficulty <= 20 ? 8
+            : definition.difficulty <= 30 ? 10 : 12,
       );
       expect(level.shorterRouteLocks, level.id).toBe(
         Math.min(level.routes[0].locks, level.routes[1].locks),
