@@ -1103,3 +1103,21 @@
 - Blocker: none in the frozen candidate. This is not acceptance.
 - Next action: one bounded read-only rules/migration audit of exact candidate
   `3d21df8`, then coordinator disposition before selector adaptation opens.
+
+## Progress-unlock audit rejection — 2026-07-30
+
+- Reviewer verdict: `REJECT`, with
+  `P0=0, P1=1, P2=0, P3=0, GAP=2`.
+- P1: frontier queries accept valid completed IDs even when the in-memory
+  `bestPieceCounts` field is malformed, instead of returning the fresh
+  fail-closed frontier.
+- GAP 1: persisted malformed strings are covered, but a directly malformed
+  `PuzzleProgress` object is not.
+- GAP 2: out-of-order completion replay is covered, but the same history is
+  not asserted both before and after its prerequisite frontier opens.
+- Static audit otherwise accepts every canonical gate, out-of-order no-leapfrog
+  implementation, locked-write rejection, migration-domain isolation and
+  two-path scope.
+- Reopen only the same source/test paths. Next action: share full in-memory
+  validation across frontier queries, add both regressions, rerun the bounded
+  gates and request re-audit from the same reviewer.

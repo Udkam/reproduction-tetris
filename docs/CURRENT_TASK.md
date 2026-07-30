@@ -78,6 +78,20 @@ selector/CSS, localization, renderer, other-mode or dependency path changed.
 Freeze `3d21df8` for one read-only rules/migration audit; selector adaptation
 remains closed.
 
+**Progress-unlock audit rejection (2026-07-30):** read-only QA rejects
+`3d21df8` with `P1=1, GAP=2`. Frontier queries validate version, revision and
+completed IDs but do not validate the in-memory `bestPieceCounts` object, so a
+manually malformed runtime value can still unlock later tiers even though
+persisted parsing correctly fails closed. Direct tests also need the missing
+in-memory malformed case and an explicit two-stage assertion that out-of-order
+completions do not advance before their band opens but do count after the
+frontier reaches it.
+
+Reopen only `src/puzzleProgress.ts` and `src/puzzleProgress.test.ts`. Make every
+frontier query require the same complete progress validation used by record
+updates, add both regression cases, rerun the direct and bounded App matrices
+plus typecheck, then return the exact correction to the rejecting reviewer.
+
 **Open Phase-7 slice — persistence-v5:** exact product/test paths are
 `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`, and
 `src/App.test.ts`. This slice may add the v5 key/revision, freeze v4/v3/v2/v1 domains,

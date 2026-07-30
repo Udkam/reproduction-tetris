@@ -558,3 +558,6 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Progress-unlock candidate `3d21df8` passes the direct 8-test matrix, bounded
   progress + App 44-test matrix and typecheck. It is frozen for one read-only
   rules/migration audit before React integration opens.
+- QA rejects `3d21df8`: malformed in-memory best data can still advance the
+  frontier, and two direct regressions are missing. Only the same progress
+  source/test paths reopen; selector work remains closed.
