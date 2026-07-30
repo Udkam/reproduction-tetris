@@ -110,6 +110,13 @@ is converted immediately into one canonical progress update:
 - derive unlocks, gallery ticks/name color, hero best, and Settings record from that
   snapshot.
 
+The canonical level ID is resolved from the finished snapshot and the currently mounted
+Puzzle only when those identities agree. All fifty gallery entries are selectable in
+the current product, so the retired progressive-frontier guard is not a completion
+eligibility check: if Core successfully finishes the selected canonical level, that
+achievement must be recorded. Invalid, mismatched, or non-Puzzle snapshots still fail
+closed.
+
 The update is idempotent, so React Strict Mode, duplicate terminal renders, or returning
 before the next paint cannot erase or double-apply it. A completion with no previous
 best is `first`; a lower move count is `record`; all other successes are `repeat`.

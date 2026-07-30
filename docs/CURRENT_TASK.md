@@ -56,6 +56,8 @@ recovery points, and pushed:
 11. **Puzzle completion is durable and truthful.** Every actual success transition
     persists the level as completed and updates its minimum-move record before any
     restart, return, language change, result dismissal, or unmount can intervene.
+    All fifty gallery entries are currently selectable, so an obsolete progressive-
+    unlock guard may not reject a canonical success for the level being played.
     The library tick, completed-name color, selected-level record, Settings record,
     unlock calculation, and stored progress all derive from the same canonical
     snapshot. Replays with more moves retain the earlier best; a better replay updates
