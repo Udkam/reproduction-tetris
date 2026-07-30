@@ -208,6 +208,8 @@ describe('presentation interpolation', () => {
     const survival = dispatch(createInitialState(9, 'race'), { type: 'start' }).state;
     expect(nextPreviewPieces(classic)).toEqual(classic.queue.slice(0, 1));
     expect(nextPreviewPieces(survival)).toEqual(survival.queue.slice(0, 1));
+    expect(nextPreviewPieces({ ...classic, status: 'paused' })).toEqual(classic.queue.slice(0, 1));
+    expect(nextPreviewPieces({ ...survival, status: 'paused' })).toEqual(survival.queue.slice(0, 1));
 
     // Level 01's intended opening hard-drop now legitimately finishes the board.
     // Use the deterministic rotation-teaching level here so the post-lock Puzzle

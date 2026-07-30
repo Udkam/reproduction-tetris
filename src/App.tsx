@@ -8,6 +8,7 @@ import {
 } from 'react';
 import {
   ANCHOR_CELL,
+  MUTATION_FREEZE_GRAVITY_TICKS,
   PIECE_TYPES,
   TICKS_PER_SECOND,
   type GameEvent,
@@ -213,9 +214,11 @@ export function countdownTimeLabel(remainingTicks: number): string {
 }
 
 export function fallCadenceLabel(state: GameState, language: AppLanguage = DEFAULT_LANGUAGE): string {
-  const ticks = gravityForMode(state.mode, state.level, state.pieceCount, state.lines);
+  const ticks = state.mode === 'sprint' && state.mutationFreezeTicks > 0
+    ? MUTATION_FREEZE_GRAVITY_TICKS
+    : gravityForMode(state.mode, state.level, state.pieceCount, state.lines);
   const seconds = ticks / TICKS_PER_SECOND;
-  return appCopy(language).phrasing.cadence(seconds.toFixed(seconds < 0.1 ? 2 : 1).replace(/\.0$/, ''));
+  return appCopy(language).phrasing.cadence(seconds.toFixed(seconds < 0.1 ? 2 : 1));
 }
 
 export function survivalCountdownSeconds(state: GameState): number {
@@ -1516,11 +1519,12 @@ export function GameSession({
     setRestartConfirmOpen(false);
     settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
+    countdownCompleteRef.current = false;
     runtime?.setInputEnabled(true);
     runtime?.restart();
-    runtime?.start();
-    focusBoard();
-  }, [focusBoard, runtime]);
+    runtime?.setInputEnabled(false);
+    setCountdownDigit(3);
+  }, [runtime]);
 
   const requestRestart = useCallback(() => {
     if (!runtime || restartConfirmOpen) return;
@@ -1761,6 +1765,7 @@ export function GameSession({
         onCancel={closeSettings}
       >
         <section className="settings-console" data-testid="settings-sheet" aria-label={copy.labels.settings}>
+          <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
           <section className="settings-console__controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
             <strong>{copy.labels.controls}</strong>
             {onLanguageChange && <LanguageControl language={language} onChange={onLanguageChange} />}
@@ -1779,7 +1784,6 @@ export function GameSession({
             </div>
           </section>
           <SettingsShortcutGuide mode={state.mode} language={language} />
-          <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
           <SettingsRecord
             mode={state.mode}
             puzzleId={state.puzzleId ?? puzzleId}
@@ -1809,10 +1813,10 @@ export function GameSession({
         tone="danger"
         onCancel={cancelExit}
       >
-        <button className="primary-action" data-autofocus type="button" onClick={cancelExit}>{copy.labels.stay}</button>
         <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
           {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
         </button>
+        <button className="primary-action" data-autofocus type="button" onClick={cancelExit}>{copy.labels.stay}</button>
       </ActionSheet>
 
       <ActionSheet

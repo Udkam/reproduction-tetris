@@ -35,7 +35,7 @@ export interface MutationVfxToken {
       edgeStrength: number;
       noise: number;
     };
-    /** Collapse's reusable generated-map Pixi displacement field. */
+    /** Supergravity's reusable generated-map Pixi displacement field. */
     displacement?: {
       strength: number;
       speed: number;
@@ -70,7 +70,7 @@ export const MUTATION_PARTICLE_LIMIT = 120;
 /** The board keeps one ordinary effects Graphics layer plus one mutation layer. */
 export const MUTATION_MAX_EFFECT_PLANES = 2;
 
-/** Freeze plus Collapse are the only concurrent board filters. */
+/** Freeze plus Supergravity are the only concurrent board filters. */
 export const MUTATION_MAX_ACTIVE_FILTERS = 2;
 
 export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {

@@ -111,7 +111,11 @@ vi.mock('./game/runtime/GameRuntime', async () => {
       else if (this.state.status === 'paused') this.state = { ...this.state, status: 'playing' };
       this.options.onState?.(this.state, []);
     });
-    readonly restart = vi.fn();
+    readonly restart = vi.fn(() => {
+      const transition = core.dispatch(this.state, { type: 'restart' });
+      this.state = transition.state;
+      this.options.onState?.(this.state, transition.events);
+    });
     readonly undoPuzzle = vi.fn(() => {
       const transition = core.dispatch(this.state, { type: 'undo' });
       this.state = transition.state;
@@ -423,7 +427,8 @@ describe('entry countdown', () => {
     expect(runtime.setInputEnabled.mock.calls.some(([enabled]) => enabled === true)).toBe(false);
     expect(view.container.querySelector<HTMLElement>('[role="dialog"]')?.contains(document.activeElement)).toBe(true);
 
-    act(() => view.container.querySelector<HTMLButtonElement>('.action-sheet__actions > button')?.click());
+    act(() => [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')]
+      .find((button) => button.textContent === '留在本局')?.click());
     await act(async () => vi.advanceTimersByTimeAsync(999));
     expect(countdown()?.dataset.countdown).toBe('2');
     await act(async () => vi.advanceTimersByTimeAsync(1));
@@ -649,16 +654,23 @@ describe('T6 frontend mode binding', () => {
     const classic = { ...createInitialState(0x51a1f00d, 'marathon'), combo: 3 };
     const survival = createInitialState(0x51a1f00d, 'race');
     const sprintBase = createInitialState(0x51a1f00d, 'sprint');
-    const sprint = { ...sprintBase, lines: 9, pieceCount: 19, elapsedTicks: 540, mutationCarriers: [{ id: 1, item: 'freeze' as const, cells: [] }] };
+    const sprint = {
+      ...sprintBase,
+      lines: 9,
+      pieceCount: 19,
+      elapsedTicks: 540,
+      mutationFreezeTicks: 10 * 60,
+      mutationCarriers: [{ id: 1, item: 'freeze' as const, cells: [] }],
+    };
     const cases = [
-      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '下落速度/格', '0.8 秒'] },
+      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '下落速度', '0.8 秒/格'] },
       {
         state: survival,
         roles: ['survival-time', 'lines', 'survival-bedrock', 'survival-stones'],
         label: '生存模式数据',
-        copy: ['生存时间', '0:00', '基岩 3 层 · 上升', '13 秒', '落石', '20 秒'],
+        copy: ['生存时间', '0:00', '上升', '13 秒', '落石', '20 秒'],
       },
-      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度/格'] },
+      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度', '1.0 秒/格'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-targets', 'puzzle-placed'],
@@ -698,7 +710,7 @@ describe('T6 frontend mode binding', () => {
     const stones = view.container.querySelector<HTMLElement>('[data-stat-role="survival-stones"]');
 
     expect(bedrock?.dataset.urgent).toBe('true');
-    expect(bedrock?.textContent).toBe('基岩 3 层 · 上升待上升');
+    expect(bedrock?.textContent).toBe('上升待上升');
     expect(stones?.dataset.warning).toBe('true');
     expect(stones?.dataset.urgent).toBe('true');
     expect(stones?.textContent).toBe('落石1 秒');
@@ -775,9 +787,9 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="music-toggle"]')).toBeNull();
     expect(volume.value).toBe('100');
     expect([...sheet.children].map((child) => child.getAttribute('data-testid') ?? child.className)).toEqual([
+      'settings-rules',
       'settings-controls',
       'settings-shortcuts',
-      'settings-rules',
       'settings-leaderboard',
     ]);
     expect(controls.textContent).toContain('控制');
@@ -1079,8 +1091,13 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="confirm-restart"]')?.getAttribute('data-action-selected')).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
-    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
+    expect(runtimeHarness.instances.at(-1)?.start).not.toHaveBeenCalled();
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
     expect(view.container.querySelector('[data-testid="confirm-restart"]')).toBeNull();
+    await advanceEntryCountdown();
+    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')).toBeNull();
     view.unmount();
   });
 
@@ -1221,8 +1238,12 @@ describe('T6 frontend mode binding', () => {
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', key: 'Escape', bubbles: true })));
     expect(view.container.textContent).toContain('离开本局？');
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
-    const leave = [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')]
+    const actions = [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')];
+    const leave = actions
       .find((button) => button.textContent === '返回模式首页')!;
+    const stay = actions.find((button) => button.textContent === '留在本局')!;
+    expect(actions.map((button) => button.textContent)).toEqual(['返回模式首页', '留在本局']);
+    expect(stay.dataset.actionSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
     expect(leave.dataset.actionSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
@@ -1501,7 +1522,8 @@ describe('T6 frontend mode binding', () => {
     const bomb = render(createElement(MutationStatus, { state: bombState }));
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
     const mutationRule = modeRules('zh-CN', 'sprint').find((fact) => fact.id === 'items')?.value ?? '';
-    expect(mutationRule).toContain('冰冻把自动下落固定为 1 秒/格');
+    expect(mutationRule).toContain('冰冻把自动下落固定为 1.0 秒/格');
+    expect(mutationRule).toContain('超重使各列独立下沉');
     expect(mutationRule).not.toContain('冻结');
     bomb.unmount();
     view.unmount();
@@ -1523,7 +1545,7 @@ describe('T6 frontend mode binding', () => {
     ];
     act(() => runtime.options.onState?.(runtime.getState(), events));
     expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe(
-      '消除了 1 行。 冰冻 已触发，持续 10 秒。 坍缩 已触发，持续 10 秒。',
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 10 秒。',
     );
     view.unmount();
   });
@@ -1571,10 +1593,10 @@ describe('T6 frontend mode binding', () => {
       { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
     ];
     expect(eventMessages(mutationEvents)).toBe(
-      '消除了 1 行。 冰冻 已触发，持续 10 秒。 坍缩 已触发，持续 10 秒。',
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 10 秒。',
     );
     expect(eventMessages(mutationEvents, 'en')).toBe(
-      '1 lines cleared. Freeze activated for 10 seconds. Collapse activated for 10 seconds.',
+      '1 lines cleared. Freeze activated for 10 seconds. Supergravity activated for 10 seconds.',
     );
 
     const completedPuzzle: GameState = {
@@ -1628,9 +1650,9 @@ describe('T6 frontend mode binding', () => {
       lines: 5,
       survivalRisePending: true,
     };
-    expect(fallCadenceLabel(classic)).toBe('0.7 秒');
-    expect(fallCadenceLabel(survival)).toBe('0.7 秒');
-    expect(fallCadenceLabel(sprint)).toBe('0.8 秒');
+    expect(fallCadenceLabel(classic)).toBe('0.7 秒/格');
+    expect(fallCadenceLabel(survival)).toBe('0.7 秒/格');
+    expect(fallCadenceLabel(sprint)).toBe('0.8 秒/格');
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
 

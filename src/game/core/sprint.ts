@@ -9,7 +9,7 @@ export interface SprintColumnCollapse {
 }
 
 /**
- * The temporary 异变坍缩 item keeps material identities while letting each occupied
+ * The temporary 异变超重 item keeps material identities while letting each occupied
  * column settle on its own. One bottom-up pass produces both the immutable next board
  * and the source-row mapping consumed by carrier metadata, so Core never rescans the
  * same 40 × 10 board for one lock.
