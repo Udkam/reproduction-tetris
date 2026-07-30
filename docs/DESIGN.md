@@ -34,9 +34,10 @@ timing, randomisation, or any mode rule.
 - The hierarchy is title and rank, two meaningful metrics, top-five leaderboard,
   then two actions. Dot-separated prose and ornamental subtitles are prohibited.
 - Classic shows lines and score. Survival shows survival time and lines; pieces and
-  bedrock rows are removed. Mutation shows lines and score. A ranked run says
-  `本局第 N 名 / This run · #N`; otherwise it says
-  `未进入前 5 / Outside the top 5`.
+  bedrock rows are removed. Mutation shows lines and score. A ranked run does not
+  repeat a separate `本局第 N 名 / This run · #N` label: its explicitly marked,
+  mode-colored row in the leaderboard is the sole rank treatment. An unranked run
+  still says `未进入前 5 / Outside the top 5`.
 - Result leaderboard rows retain rank, meaningful mode metrics, date, and an explicit
   current-run mark. Puzzle success keeps its earned celebration surface and is not
   absorbed into the run ledger.

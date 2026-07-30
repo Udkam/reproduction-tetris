@@ -28,8 +28,9 @@ implemented and visually accepted:
    Survival shows only the digit and the progressively rising one/two/three bedrock
    rows until play actually starts.
 7. Classic, Survival, and Mutation settlement becomes a mode-colored mineral ledger
-   with only meaningful metrics, a top-five leaderboard, current-run rank, and
-   actions. Survival shows only survival time and lines.
+   with only meaningful metrics, a top-five leaderboard, a highlighted current-run
+   row when ranked, and actions. It does not repeat a separate “本局第 N 名 /
+   This run · #N” label. Survival shows only survival time and lines.
 8. Design choices are frozen only after bounded read-only comparisons. The accepted
    countdown/result and selector/home syntheses are recorded in `docs/DESIGN.md` and
    `docs/phases/phase 9.md`.
@@ -169,6 +170,9 @@ gallery and pointer-leave behavior. Two bounded corrections are open:
 - the `844×390` unranked five-row result ledger must show every row and both actions
   in its first frame, with equal panel client/scroll geometry rather than relying on
   an internal scrollbar;
+- result ledgers must remove the separate “本局第 N 名 / This run · #N” rank copy;
+  a ranked run remains identifiable through the explicitly marked and mode-colored
+  current-run leaderboard row;
 - the `01–25 / 26–50` tablist must implement Left/Right and Home/End focus plus
   activation on the tabs themselves. Level-grid `±1 / ±5` navigation is unchanged.
 - tall screens must contract the connected Puzzle outer frame to a content-fit
