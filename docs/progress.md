@@ -18,6 +18,10 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   snapshot hide deterministic Core active/ghost data while status is `ready`, then
   restore both on the first `playing` state. Focused Renderer proof passes `35/35`
   and typecheck passes; browser countdown evidence remains pending.
+- Result-ledger checkpoint `8b08361` is source-green: meaningful two-card metrics,
+  mode accents, top-five history, current-run rank, and Escape return replace the
+  generic danger sheet. Survival exposes only clock and lines. Focused App/style
+  proof passes `43/43` and typecheck passes; visual evidence remains pending.
 
 ### T16 Phase 9 first-entry rules checkpoint — 2026-07-31
 

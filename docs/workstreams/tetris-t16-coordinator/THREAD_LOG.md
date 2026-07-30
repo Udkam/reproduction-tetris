@@ -383,3 +383,27 @@
 - Blocker: final real-frame `3 / 2 / 1` and first-playing-frame proof remains pending
   until all source slices are complete.
 - Next action: open only the structured result-ledger slice.
+
+## 2026-07-31 — mode-aware result-ledger checkpoint
+
+- Task: replace meaningless non-Puzzle terminal prose and generic danger styling.
+- Base: ready-visibility record `d44d663`.
+- Product commit: `8b08361`.
+- Changed paths: `src/App.tsx`, `src/App.test.ts`,
+  `src/ui/localization.ts`, `src/main.tsx`, and dedicated
+  `src/styles/result.css` plus its source-contract test.
+- Implementation: Classic and Mutation show lines/score; Survival shows clock/lines
+  and contains no piece or bedrock summary. The title-level rank reports either
+  `本局第 N 名` or `未进入前 5`; the top-five table explicitly marks the current run
+  and inherits the current mode accent. Puzzle success remains on its separate
+  celebration surface. Result Escape now returns to the mode screen without an
+  unstable inline callback.
+- Commands actually run:
+  - `npm.cmd run test -- src/App.test.ts src/styles/result.test.ts --maxWorkers=1`
+  - `npm.cmd run typecheck`
+  - exact-path diff/cached checks and commit.
+- Evidence: focused App/style matrix passes `43/43`; typecheck passes; direct DOM
+  proof rejects Survival piece/bedrock text and confirms Escape exits once.
+- Blocker: mode-by-mode desktop, compact landscape, portrait, and English real-frame
+  review remains pending until the gallery/home source checkpoint is complete.
+- Next action: open only Puzzle gallery/home pointer presentation paths.
