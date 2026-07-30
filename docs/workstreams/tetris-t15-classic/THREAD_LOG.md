@@ -1,5 +1,33 @@
 # T15 Phase 6 Classic Workstream Log
 
+## TETRIS-T15-PHASE6-ORDINARY-CLEAR-CLEAN-LINE-013
+
+- Status: `SOURCE CANDIDATE / GATES PENDING`.
+- Accepted remote base: `62ba8e9`.
+- Preserved rejected-selector history:
+  `codex/t15-selector-wip-20260730` at `dce331b`.
+- Clean-line source:
+  - ordinary-clear rollback `760437d`;
+  - current-schema QA fixture `9730d99`;
+  - title-only correction `70cff6e`.
+- Exact product/test delta from `origin/main`:
+  - `src/game/render/presentation.ts`;
+  - `src/game/render/presentation.test.ts`;
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`;
+  - `src/game/core/puzzleRouteSearch.test.ts`;
+  - `src/game/runtime/qaScenario.ts`;
+  - `src/game/runtime/qaScenario.test.ts`.
+- `App.tsx`, `App.test.ts`, `styles.css`, and localization are byte-identical to
+  accepted remote recovery; the rejected selector candidate is not in `main`.
+- Required result: stationary ordinary cells, nine-tick centre-out sweep, no
+  contraction/dissolve/debris/afterglow, and no regression to later Classic,
+  Survival, Mutation, Puzzle, or current-schema QA behavior.
+- Resource boundary: one heavy command at a time; no WMI/CIM, Serena, MCP,
+  watcher, resident reader, or new child agent.
+- Next action: run the clean-line focused and broad gates, then return the exact
+  candidate range to the same independent rules reviewer.
+
 ## TETRIS-T15-PHASE6-CONTRACT-001
 
 - Status: `CONTRACT / OPEN`.

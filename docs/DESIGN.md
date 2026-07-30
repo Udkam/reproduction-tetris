@@ -3,6 +3,37 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-07-30 direct correction — ordinary line-clear rollback
+
+The player's direct review rejects the Phase-6 three-stage ordinary line-clear
+presentation. The shared ordinary clear returns to the pre-`1a163ff` visual baseline:
+locked cells remain stationary and readable while a restrained, board-local centre-out
+row sweep identifies the real cleared rows. The sweep completes within the existing
+Core delay and is omitted for reduced motion.
+
+This correction changes presentation only. It does not alter Core timing, row removal,
+score, input, randomisation, Puzzle target ownership, or any mode rule. It also does not
+roll back the later Classic landing/combo/speed/top-out cues, Survival pressure
+feedback, or Mutation Bomb/Collapse/item effects. The rejected contraction, per-cell
+dissolve, deterministic debris, and afterglow helpers/tests are removed instead of
+being left as dormant alternate behavior.
+
+### Final-gate fixture alignment
+
+The ordinary-clear rollback does not absorb a Puzzle gameplay change. Its full suite
+exposed test-only bindings that still replayed retired schema-6 routes after the
+Phase-7 fifty-level boards replaced those layouts. The correction is limited to
+current source-bound evidence:
+
+- `puzzleRouteSearch.test.ts` exercises the current `01–10`, `11–20`, and `41–50`
+  schema-7 artifacts;
+- the browser QA specimen for `t5r-drift-08` replays that current level's frozen
+  schema-7 primary route, and its direct test binds the fixture back to the artifact.
+
+No level definition, queue, seed, solver rule, unlock rule, selector, target ownership,
+or production Puzzle mechanic changes. Normal tests replay frozen routes; they do not
+rerun the fifty-level solver.
+
 ## T15 phased refinement and fifty-level Puzzle contract
 
 The current product pass follows one ordered sequence: design-system foundation,

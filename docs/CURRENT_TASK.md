@@ -1,5 +1,28 @@
 # Current Task — T15 TetraMorph Phased Product Refinement
 
+## Immediate clean-line correction — restore the ordinary clear baseline
+
+**Status (2026-07-30): SOURCE CANDIDATE / CLEAN-LINE GATES PENDING.**
+
+The rejected Phase-7 selector candidate and all of its later local records are preserved
+without loss at `codex/t15-selector-wip-20260730`. `main` continues from accepted remote
+recovery `62ba8e9`; `App.tsx`, `App.test.ts`, `styles.css`, and localization have no
+delta from that recovery point. The current goal continues to exclude Puzzle-selector
+visual work.
+
+Clean-line product `760437d` restores only the stationary-cell, nine-tick centre-out
+ordinary row sweep and removes the rejected contraction/dissolve/debris/afterglow
+family. Current-schema QA fixture `9730d99` and title-only correction `70cff6e` align
+the frozen Puzzle route evidence without changing a level, solver, progression rule,
+selector, renderer behavior, or runtime game rule.
+
+Run the focused Renderer/presentation tests, the focused route/QA tests, typecheck, one
+full one-worker suite, and one production build. The existing normal/reduced Pixi
+captures may be reused only if a static source comparison proves that their Renderer
+inputs are byte-equivalent to `760437d`; otherwise capture fresh final-candidate
+evidence. Return the clean-line range to the same independent rules reviewer before
+coordinator acceptance or push.
+
 ## Active T15 delivery goal — six visual phases plus a 50-level Puzzle curriculum
 
 **Status (2026-07-30):** active. The linked product-review conversation is the
