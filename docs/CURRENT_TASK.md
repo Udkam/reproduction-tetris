@@ -143,7 +143,9 @@ the separate selector/home navigation checkpoint remains open.
   `src/game/render/theme.test.ts`, `src/game/render/TetrisRenderer.ts`, and
   `src/game/render/TetrisRenderer.test.ts`.
 - UI: `src/App.tsx`, `src/App.test.ts`, `src/styles.css`,
-  `src/styles/tokens.css`, `src/main.tsx`, and `src/ui/localization.ts`.
+  `src/styles/tokens.css`, the final component authority
+  `src/styles/navigation.css` plus its direct test, `src/main.tsx`, and
+  `src/ui/localization.ts`.
 - Evidence/docs: Phase-9 files under `docs/qa/evidence/t16-phase9/`,
   `docs/workstreams/tetris-t16-coordinator/`, `progress.md`, current contracts,
   and the final changelog entry.

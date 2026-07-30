@@ -120,6 +120,10 @@ language:
 - Selection uses only a `160–200 ms` preview crossfade/one-pixel settle. Reduced
   motion switches directly. No vertical or horizontal overflow is accepted at
   `1440×900`, `1280×720`, `2048×1152`, `844×390`, `390×844`, or `360×800`.
+- The final home/selector component authority lives in
+  `src/styles/navigation.css`, imported after semantic tokens and the existing
+  mode/HUD layers. Historical rules in `styles.css` remain recovery context only;
+  this slice must not add another late override block there.
 
 ### Home correction contract
 

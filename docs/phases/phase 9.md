@@ -114,8 +114,10 @@ normal/reduced-motion；Classic/Survival/Mutation/Puzzle 共存帧。
 
 ### 路径
 
-`src/App.tsx`、`App.test.ts`、`styles.css`、`styles/tokens.css`、`main.tsx`、
-`ui/localization.ts`。不得修改关卡定义、路线、解锁/存储或记录语义。
+`src/App.tsx`、`App.test.ts`、`styles.css`、`styles/tokens.css`、最终组件权威层
+`styles/navigation.css` 及其直接测试、`main.tsx`、`ui/localization.ts`。
+`navigation.css` 必须在语义 tokens 与现有模式/HUD 层之后加载；不得再向历史
+`styles.css` 追加导航覆盖。不得修改关卡定义、路线、解锁/存储或记录语义。
 
 ### 目标帧
 
