@@ -34,9 +34,12 @@ or a new page composition.
 The curriculum uses exactly 3, 4, 5, 6 and 7 contiguous floor target rows for levels
 `01–10`, `11–20`, `21–30`, `31–40` and `41–50`. Initial targets come only from a
 legal five-to-fifteen-piece zero-clear setup replay. The first five levels contain no
-anchor. Across the five ten-level batches, exactly 1, 2, 3, 3 and 4 levels respectively
+anchor. Across the five ten-level batches, exactly 1, 2, 3, 3 and 0 levels respectively
 carry sparse authored anchors; anchors remain outside every initial target row and
-cannot move, clear or count toward victory. Timed disappearing pieces remain removed.
+cannot move, clear or count toward victory. The first forty levels therefore distribute
+nine immutable-anchor lessons instead of concentrating them at the end, while the
+seven-row synthesis tier prioritizes multiple readable routes over another obstacle.
+Timed disappearing pieces remain removed.
 
 Every level ships with two public-command Core routes that clear all original targets.
 The routes must diverge by a canonical landing no later than the fourth lock of the
@@ -100,24 +103,16 @@ ordered; no route is rebound to a different random sequence.
 
 The `41–50` batch is the seven-row synthesis tier. It must combine earlier wells,
 shelves, channels, delayed clears and recovery space into boards that remain readable
-as constructions rather than random rubble. Candidate authoring uses separate ordinary
-and sparse-anchor pools. Six retained packages are ordinary 14/15-drop boards; four
-retained packages each carry one authored headroom anchor. The first general pool
-produced only 12/13-drop carriers, but six fixed-bound probes found no primary route.
-A dedicated 11-drop pass produced valid boards, yet bounded route and topology checks
-found no two-route anchor package. The sparse authoring correction therefore permits
-one final 10-drop pass before the four-anchor quota is reconsidered.
+as constructions rather than random rubble. The final retained set contains ten
+ordinary 14/15-drop packages. A 12/13-drop anchor pool, a dedicated 11-drop pass,
+bounded topology/seed probes and two deterministic 10-drop smoke pairs produced no
+two-route anchor package suitable for this tier. The measured correction removes
+anchors from `41–50` rather than weakening the two-route rule or hiding a solver-only
+opening in the hardest levels.
 
-The initial full-column-support rule is rejected as an overconstraint. The player's
-actual invariant is that an anchor never occupies an initial target row. For this batch
-the anchor remains on visible row 12, immediately above the seven-row target band, on
-an outer or near-outer column, and may not overlap a setup cell, create an initially
-full row, or become a hidden spawn blocker. It does not need a column occupied through
-all seven target rows. Instead, a retained anchor must be proven consequential by
-current-Core comparison and must survive two public-Core routes diverging by lock four
-at the fixed 36-lock, 720-primary and 560-alternate beam ceiling. The batch does not
-exercise the optional two-anchor allowance, and no individual failure may expand that
-search domain. Final order and concise bilingual names are assigned only after route
+Every package still needs two public-Core routes diverging by lock four at the fixed
+36-lock, 720-primary and 560-alternate beam ceiling. No individual failure may expand
+that search domain. Final order and concise bilingual names are assigned only after route
 metrics and human-readable structural lessons are inspected together; raw setup score
 or route length alone does not define the curriculum.
 

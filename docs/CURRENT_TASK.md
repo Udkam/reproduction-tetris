@@ -644,6 +644,35 @@ exhausted 11-drop probes. If it yields no legal candidates, stop and reconsider
 the final-batch anchor quota rather than opening a ninth generator/search
 variant. Ordinary packages and the current green source WIP remain unchanged.
 
+**Levels 41–50 final anchor disposition (2026-07-30):** two identical 10-drop
+smokes from seed start `4400001` each processed four seeds, attempted 143,604
+landings, exhausted no budget and produced zero candidate. Their byte-identical
+SHA-256 is
+`0DF6E4F9BD74579D692793B750D48447008D97028622EBC6198E07495A2F6F35`.
+A second identical pair from the evidence-led seed start `4301034` each
+attempted 143,482 landings with the same zero-candidate/no-exhaustion result;
+its byte-identical SHA-256 is
+`85D2FCDB8990A233CD22B79084A52C06F1F49A2D8D3FAB355BCA2CCD9898D3DA`.
+No formal 10-drop pool is authorized or run. All four smoke processes executed
+serially at Idle priority with one-processor affinity and exited.
+
+Close final-tier anchor authoring. Levels 01–40 already distribute nine sparse
+immutable-anchor lessons across four different difficulty bands, so the user's
+requirement is preserved without concentrating anchors in the last levels.
+Levels 41–50 now retain ten ordinary 14/15-drop packages from the accepted
+ordinary pool and prioritize two readable routes per level. This is a measured
+curriculum correction: do not loosen route divergence, fixed search bounds,
+Core replay, deterministic sequences or target depth to keep four additional
+anchors.
+
+Open only the already authorized seven product/test paths plus the batch-5
+artifact. Replace provisional anchor packages 42/45/47/49 atomically with four
+additional ordinary-pool packages; retain ten unique setup boards and gameplay
+seeds. Probe each registered definition at 36/720/560, then order complete
+packages by route metrics and structural lesson. Definitions/artifacts 01–40,
+unlock/v5 source, App source, selector/CSS, renderer, dependencies and other
+modes remain closed.
+
 **Authoritative current execution state (2026-07-30):** Phase 5 product
 `ee2aac542529c116c915c38e0603584a7099b5e8`, final gates `6d9fc6a`, browser
 evidence `9fa98a2` / `013120a`, and acceptance `321ebc6` are pushed through recovery
