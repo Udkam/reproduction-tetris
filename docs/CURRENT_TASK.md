@@ -2,8 +2,8 @@
 
 ## Phase 9 active goal — cave pressure and navigation correction
 
-**Status (2026-07-31): CONTRACT FROZEN / SURVIVAL CORE GREEN /
-SURVIVAL RENDERER NEXT.**
+**Status (2026-07-31): CONTRACT FROZEN / SURVIVAL CORE + CAVERN GREEN /
+ORDINARY FEEDBACK NEXT.**
 
 The direct goal is to keep correcting this slice until all six requested outcomes are
 implemented and visually accepted:
@@ -33,6 +33,15 @@ pair, selects exactly one warned column, defers the complete pair when either en
 cell is blocked, advances it at exactly `20 ticks/cell`, settles both cells together,
 and preserves deterministic collision, clear, bedrock-shift, hash, restart, and
 seven-bag boundaries. Focused proof passes `18/18` race tests and typecheck.
+
+Survival cavern checkpoint `5215769` now renders both cells of the rigid pair,
+uses one warm mineral family with darker deterministic strata for permanent
+bedrock and lighter fresh fractures for clearable rocks, replaces the old arrow
+with a one-column fissure/pair warning, and bounds spawn dust, impact contact, and
+bedrock-boundary feedback to short local cues. Reduced motion keeps a static
+boundary/contact signal without board shift. The public debug snapshot exposes
+both rock cells and the active boundary cue. Focused proof passes `85/85` tests
+and typecheck.
 
 ### Ordered checkpoints
 

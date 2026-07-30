@@ -590,3 +590,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   bedrock shifts and settlement. A two-cell impact can complete and score two rows.
 - Focused race proof passes 18/18 and typecheck passes. Visual presentation is
   deliberately still open for the next isolated Renderer checkpoint.
+
+## 2026-07-31 Phase 9 Survival cavern
+
+- Product checkpoint `5215769` presents each Survival event as one interpolated
+  vertical rock pair and exposes both cells in the public debug snapshot.
+- Bedrock and falling rocks now share a warm mineral family while remaining
+  semantically distinct: compacted deterministic strata for permanent bedrock,
+  lighter fresh fracture facets for clearable rocks.
+- The old broad/arrow signals are replaced by a single-column top fissure and pair
+  silhouette, three short entry-dust marks, one bottom-contact cue, and a local
+  bedrock boundary response. Reduced motion removes shift and moving dust while
+  retaining a bounded contact/boundary signal.
+- Focused Renderer/presentation/theme/App proof passes 85/85 and typecheck passes.
+  One contrast failure was found and corrected before the checkpoint.

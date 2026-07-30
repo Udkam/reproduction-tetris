@@ -47,3 +47,30 @@
 - Blocker: none. Renderer still presents the new entity as the old single grey cell
   until the next bounded checkpoint; it is not yet a visual candidate.
 - Next action: open only Survival theme/presentation/Renderer/direct UI copy and tests.
+
+## 2026-07-31 — Survival cavern checkpoint
+
+- Task: one readable cave family for rising bedrock and the rigid falling pair.
+- Base: Survival Core recovery `731f178`.
+- Product commit: `5215769`.
+- Changed paths: `src/game/render/theme.ts`,
+  `src/game/render/theme.test.ts`, `src/game/render/presentation.ts`,
+  `src/game/render/presentation.test.ts`,
+  `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/TetrisRenderer.test.ts`, `src/App.tsx`,
+  `src/App.test.ts`, and `src/ui/localization.ts`.
+- Implementation: both cells render as one interpolated pair; compacted bedrock
+  gains deterministic strata while fresh rocks retain lighter fracture facets;
+  the single warned column uses a fissure and pair silhouette; spawn, landing,
+  and bedrock movement use short local cues with explicit reduced-motion behavior.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/theme.test.ts src/game/render/presentation.test.ts src/game/render/TetrisRenderer.test.ts src/App.test.ts --maxWorkers=1`
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: `85/85` focused tests pass and typecheck passes. The first focused
+  run found insufficient contrast in the dark bedrock face; the material was
+  corrected to exceed the frozen `3:1` board contrast before checkpointing.
+- Blocker: none. Final source-bound browser frames and independent visual QA wait
+  for the combined Phase-9 candidate.
+- Next action: reopen only the shared Renderer/direct tests for ordinary landing
+  imprint, bounded hard-drop trace, and per-cell seam release.
