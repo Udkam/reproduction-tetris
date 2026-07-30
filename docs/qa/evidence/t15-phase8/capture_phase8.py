@@ -641,10 +641,14 @@ def validate_snapshot(snapshot: dict[str, Any], mode: str | None) -> None:
     assert snapshot["screen"] == "game"
     assert assertions["canvasCount"] == 1
     assert snapshot["state"]["mode"] == mode
-    assert snapshot["renderer"]["previewLayerVisible"]
     assert snapshot["bounds"]["board"]["visible"]
     assert snapshot["bounds"]["side"]["visible"]
     assert snapshot["bounds"]["next"]["visible"]
+    if snapshot["ui"]["countdown"] is not None:
+        assert snapshot["state"]["status"] == "ready"
+        assert not snapshot["renderer"]["previewLayerVisible"]
+        return
+    assert snapshot["renderer"]["previewLayerVisible"]
     if mode == "puzzle":
         assert [entry["label"] for entry in snapshot["ui"]["nextSegments"]] == ["1", "2"]
         assert [entry["segment"] for entry in snapshot["ui"]["nextSegments"]] == ["1", "2"]
