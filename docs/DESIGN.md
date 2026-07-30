@@ -49,6 +49,10 @@ timing, randomisation, or any mode rule.
 - The library is a **two-page Puzzle gallery**, not a fifty-cell dashboard. Page one
   contains `01–25`, page two `26–50`; each page is one functional `5×5` matrix with
   no page or panel scrolling.
+- Every level node is a true square. The matrix is centered inside the catalogue
+  instead of stretching its five rows to consume every available pixel; deliberate
+  inter-node gaps keep the twenty-five controls readable rather than compressed into
+  a worksheet.
 - Desktop and short landscape place a large deep-indigo live board preview on the
   left and the page controls plus matrix on the right. Portrait stacks the same two
   surfaces. The preview, localized level name, current best, and Start action form
@@ -77,15 +81,18 @@ timing, randomisation, or any mode rule.
 
 ### Source checkpoint
 
-Checkpoints `2c1a13d..724e152` implement this gallery/home contract without changing any
+Checkpoints `2c1a13d..724e152` implement the gallery/home interaction contract without
+changing any
 Puzzle definition or progress data. The library now exposes two semantic tabs,
 exactly twenty-five functional nodes per page, one canonical silhouette, one
 localized name/best/Start hero, and page-aware `±1 / ±5 / Home / End` focus. Home
 keeps roving keyboard focus but has no pointer-owned state, active class, pressed
 attribute, or persistent selection data. Focused component/style proof is `48/48`
-and typecheck is green. The bounded pre-final frame pass finds no target-viewport
-overflow, then tight-crops the canonical silhouette and prevents the 360 px return
-label from wrapping; formal acceptance still waits for final-candidate evidence.
+and typecheck is green. The first two-page frame pass is visually rejected because
+its grid tracks stretch the nodes into tall rectangles and pack them too tightly.
+The open correction is presentation-only: square nodes, centered matrix, larger
+breathing gaps, and fresh target-viewport evidence. Formal acceptance still waits
+for that corrected final candidate.
 
 ## 2026-07-31 Phase 9 — cave pressure, quiet feedback, and compact navigation
 

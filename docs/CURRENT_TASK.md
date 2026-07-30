@@ -19,7 +19,8 @@ implemented and visually accepted:
    any horizontal line drawn across or inside a cleared row.
 4. The complete fifty-level Puzzle selector becomes a distinct two-page gallery:
    one connected preview/name/best/Start hero plus a `5×5` matrix for `01–25` or
-   `26–50`, with no page or panel scrolling at any target viewport.
+   `26–50`, with true square level nodes, deliberate inter-node spacing, and no page
+   or panel scrolling at any target viewport.
 5. The mode home receives the previously missed composition pass: one wordmark,
    two-by-two mode matrix, stable type, real keyboard navigation, and no pointer
    highlight after the pointer leaves the mode region.
@@ -153,7 +154,9 @@ recovery points, but Phase 9 is not accepted. The open source slices are:
   active/pressed selection state. Focused App/navigation/gallery proof passes
   `48/48` and typecheck passes. The pre-final real-frame pass measures zero overflow
   at all four target viewports and repairs compact preview scale plus the 360 px
-  back-label wrap; final immutable-candidate evidence remains pending.
+  back-label wrap, but its stretched rectangular grid is visually rejected. The
+  open presentation correction must make every node square, center the matrix with
+  visible breathing room, and regenerate all selector evidence before acceptance.
 
 ### Ordered checkpoints
 
