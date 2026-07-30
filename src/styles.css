@@ -9086,135 +9086,146 @@ kbd,
 
 .preview-rail--puzzle .next-slot__segment-label small { display: none; }
 
-/* Puzzle completion is an earned result, not the generic end-of-run sheet. The
-   four fragments resolve once into a compact constellation, then remain still. */
+/* Puzzle completion is an earned result, not the generic end-of-run sheet. */
 .action-sheet--puzzle-celebration {
+  position: relative;
   width: min(510px, calc(100vw - 28px));
   overflow: hidden;
-  border-color: #7ba59f;
+  border-color: rgba(126, 91, 174, .5);
   background:
-    linear-gradient(135deg, rgba(213, 239, 233, .82), transparent 48%),
-    #f7fbfa;
-  box-shadow: 0 24px 62px rgba(10, 45, 50, .28);
+    radial-gradient(circle at 10% -8%, rgba(154, 112, 205, .19), transparent 42%),
+    radial-gradient(circle at 96% 4%, rgba(63, 163, 153, .13), transparent 38%),
+    #fbfafc;
+  box-shadow: 0 26px 66px rgba(35, 24, 54, .3);
+}
+
+.action-sheet--puzzle-celebration::before {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 4px;
+  content: '';
+  background: linear-gradient(90deg, #8a63b3, #9a70c9 48%, #42a49a);
+  animation: puzzle-celebration-edge 180ms ease-out both;
 }
 
 .action-sheet--puzzle-celebration h2 {
-  color: #173d44;
+  color: #322442;
+  letter-spacing: -.035em;
 }
 
 .action-sheet--puzzle-celebration > p {
-  color: #426875;
+  display: none;
 }
 
 .puzzle-celebration {
   display: grid;
   grid-column: 1 / -1;
-  grid-template-columns: 106px minmax(0, 1fr);
-  min-height: 84px;
+  grid-template-columns: 126px minmax(0, 1fr);
+  min-height: 104px;
   overflow: hidden;
-  border: 1px solid #b9d8d1;
-  border-radius: 12px;
-  background: linear-gradient(112deg, #123542, #0c2632);
-  box-shadow: inset 0 1px 0 rgba(226, 253, 247, .2);
+  border: 1px solid rgba(140, 106, 181, .28);
+  border-radius: 14px;
+  background:
+    linear-gradient(112deg, rgba(239, 232, 249, .92), rgba(242, 249, 248, .72)),
+    #f6f3f9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .92);
 }
 
 .puzzle-celebration__constellation {
   position: relative;
-  min-height: 84px;
-  border-right: 1px solid rgba(181, 221, 210, .2);
+  min-height: 104px;
+  overflow: hidden;
+  border-right: 1px solid rgba(130, 99, 169, .2);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(143, 99, 190, .18), transparent 38%),
+    linear-gradient(145deg, rgba(113, 75, 157, .08), transparent 68%);
 }
 
-.puzzle-celebration__constellation::before,
-.puzzle-celebration__constellation::after {
+.puzzle-celebration__prism {
   position: absolute;
+  z-index: 2;
+  top: 34px;
+  left: 44px;
+  width: 34px;
+  height: 34px;
   content: '';
-  border-radius: 999px;
-  background: rgba(173, 233, 215, .24);
-}
-
-.puzzle-celebration__constellation::before {
-  width: 78px;
-  height: 1px;
-  top: 42px;
-  left: 14px;
-}
-
-.puzzle-celebration__constellation::after {
-  width: 1px;
-  height: 54px;
-  top: 15px;
-  left: 53px;
+  transform: rotate(45deg);
+  border: 1px solid rgba(255, 255, 255, .88);
+  border-radius: 7px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .5), transparent 42%),
+    linear-gradient(145deg, #956bc0, #70509b 58%, #429c94);
+  box-shadow:
+    0 9px 22px rgba(81, 54, 116, .26),
+    inset 0 0 0 3px rgba(255, 255, 255, .14);
 }
 
 .puzzle-celebration__constellation i {
   position: absolute;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #a6e5d5;
-  border-radius: 3px;
-  background: linear-gradient(135deg, #65c8b2, #2e7f79);
-  box-shadow: 0 3px 9px rgba(0, 9, 15, .3), inset 0 1px 0 rgba(235, 255, 250, .34);
-  animation: puzzle-celebration-piece 520ms cubic-bezier(.2, .75, .22, 1) both;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--fragment-color, #9b78c2);
+  box-shadow: 0 3px 8px rgba(57, 36, 83, .2);
+  animation: puzzle-celebration-fragment 360ms cubic-bezier(.2, .75, .22, 1) both;
 }
 
-.puzzle-celebration__constellation i:nth-child(1) { top: 18px; left: 45px; animation-delay: 25ms; }
-.puzzle-celebration__constellation i:nth-child(2) { top: 34px; left: 29px; animation-delay: 75ms; }
-.puzzle-celebration__constellation i:nth-child(3) { top: 34px; left: 45px; animation-delay: 125ms; }
-.puzzle-celebration__constellation i:nth-child(4) { top: 34px; left: 61px; animation-delay: 175ms; }
+.puzzle-celebration__constellation i:nth-of-type(1) { top: 18px; left: 58px; --fragment-x: 0; --fragment-y: 18px; --fragment-color: #c99d57; }
+.puzzle-celebration__constellation i:nth-of-type(2) { top: 26px; left: 26px; --fragment-x: 18px; --fragment-y: 12px; --fragment-color: #7e9bd3; }
+.puzzle-celebration__constellation i:nth-of-type(3) { top: 24px; left: 92px; --fragment-x: -20px; --fragment-y: 10px; --fragment-color: #5daea3; }
+.puzzle-celebration__constellation i:nth-of-type(4) { top: 50px; left: 18px; --fragment-x: 22px; --fragment-y: 0; --fragment-color: #b76882; }
+.puzzle-celebration__constellation i:nth-of-type(5) { top: 52px; left: 101px; --fragment-x: -22px; --fragment-y: 0; --fragment-color: #9068b8; }
+.puzzle-celebration__constellation i:nth-of-type(6) { top: 77px; left: 30px; --fragment-x: 18px; --fragment-y: -15px; --fragment-color: #62a89e; }
+.puzzle-celebration__constellation i:nth-of-type(7) { top: 82px; left: 59px; --fragment-x: 0; --fragment-y: -20px; --fragment-color: #d0944a; }
+.puzzle-celebration__constellation i:nth-of-type(8) { top: 75px; left: 91px; --fragment-x: -18px; --fragment-y: -14px; --fragment-color: #6f8bc6; }
+.puzzle-celebration__constellation i:nth-of-type(9) { top: 39px; left: 37px; --fragment-x: 10px; --fragment-y: 8px; --fragment-color: #b46f9f; }
+.puzzle-celebration__constellation i:nth-of-type(10) { top: 65px; left: 80px; --fragment-x: -10px; --fragment-y: -8px; --fragment-color: #4e9d94; }
 
 .puzzle-celebration--record .puzzle-celebration__constellation i {
-  border-color: #ffe4a2;
-  background: linear-gradient(135deg, #f4c35e, #b86f2a);
-}
-
-.puzzle-celebration--replay .puzzle-celebration__constellation i {
-  border-color: #b6cbef;
-  background: linear-gradient(135deg, #83a8db, #496f9c);
+  filter: saturate(1.18) brightness(1.06);
 }
 
 .puzzle-celebration__summary {
   display: grid;
   align-content: center;
-  gap: 5px;
   min-width: 0;
-  padding: 15px 17px;
+  padding: 18px 20px;
 }
 
 .puzzle-celebration__summary strong {
-  color: #c2f0e5;
+  color: #654684;
   font-family: var(--font-ui);
-  font-size: 11px;
-  font-weight: 780;
-  letter-spacing: .09em;
+  font-size: clamp(16px, 2.6vw, 20px);
+  font-weight: 760;
+  letter-spacing: -.035em;
+  line-height: 1.35;
 }
 
-.puzzle-celebration__summary span {
-  color: #f1fbf8;
-  font-size: 15px;
-  font-weight: 720;
-  letter-spacing: -.025em;
+@keyframes puzzle-celebration-edge {
+  from { opacity: .2; transform: scaleX(.25); }
+  to { opacity: 1; transform: scaleX(1); }
 }
 
-@keyframes puzzle-celebration-piece {
-  from { opacity: 0; transform: translateY(-12px) scale(.72) rotate(-5deg); }
-  72% { opacity: 1; transform: translateY(2px) scale(1.05) rotate(1deg); }
-  to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+@keyframes puzzle-celebration-fragment {
+  from {
+    opacity: 0;
+    transform: translate(var(--fragment-x), var(--fragment-y)) scale(.6) rotate(18deg);
+  }
+  to { opacity: 1; transform: translate(0, 0) scale(1) rotate(0); }
 }
 
 @media (max-width: 560px) {
-  .puzzle-celebration { grid-template-columns: 86px minmax(0, 1fr); min-height: 76px; }
-  .puzzle-celebration__constellation { min-height: 76px; }
-  .puzzle-celebration__constellation::before { width: 62px; left: 11px; }
-  .puzzle-celebration__constellation::after { height: 46px; top: 15px; left: 42px; }
-  .puzzle-celebration__constellation i { width: 14px; height: 14px; }
-  .puzzle-celebration__constellation i:nth-child(1) { top: 16px; left: 35px; }
-  .puzzle-celebration__constellation i:nth-child(2) { top: 30px; left: 21px; }
-  .puzzle-celebration__constellation i:nth-child(3) { top: 30px; left: 35px; }
-  .puzzle-celebration__constellation i:nth-child(4) { top: 30px; left: 49px; }
-  .puzzle-celebration__summary { padding: 12px 14px; }
+  .puzzle-celebration { grid-template-columns: 104px minmax(0, 1fr); min-height: 92px; }
+  .puzzle-celebration__constellation { min-height: 92px; transform: scale(.88); transform-origin: center; }
+  .puzzle-celebration__summary { padding: 14px 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .action-sheet--puzzle-celebration::before,
   .puzzle-celebration__constellation i { animation: none !important; }
 }
 

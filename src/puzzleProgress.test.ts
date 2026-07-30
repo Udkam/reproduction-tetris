@@ -165,27 +165,47 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     });
   });
 
-  it('rejects a locked-level win and retains the lowest successful count for canonical wins', () => {
+  it('records every selectable canonical win and retains the lowest successful count', () => {
     const late = CAMPAIGN_LEVELS.at(-1)!;
     const first = CAMPAIGN_LEVELS[0]!;
     let progress = defaultPuzzleProgress();
 
-    expect(recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(late.id, 12))).toBe(progress);
-    expect(puzzleBestPieceCount(progress, late.id)).toBeNull();
+    progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(late.id, 12), late.id);
+    expect(progress.completedLevelIds).toEqual([late.id]);
+    expect(puzzleBestPieceCount(progress, late.id)).toBe(12);
     progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 7));
-    expect(progress.completedLevelIds).toEqual([first.id]);
+    expect(progress.completedLevelIds).toEqual([first.id, late.id]);
     expect(puzzleBestPieceCount(progress, first.id)).toBe(7);
     expect(recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 8))).toBe(progress);
     progress = recordCanonicalPuzzleCompletion(progress, finishedPuzzleState(first.id, 5));
     expect(puzzleBestPieceCount(progress, first.id)).toBe(5);
     expect(puzzleBestPieceCount(progress, CAMPAIGN_LEVELS[1]!.id)).toBeNull();
-    expect(unlockedPuzzleLevelCount(progress)).toBe(3);
+    expect(unlockedPuzzleLevelCount(progress)).toBe(4);
 
     const migratedLate = progressWith(late.id);
     const replayedLate = recordCanonicalPuzzleCompletion(migratedLate, finishedPuzzleState(late.id, 11));
     expect(replayedLate.completedLevelIds).toContain(late.id);
     expect(puzzleBestPieceCount(replayedLate, late.id)).toBe(11);
     expect(unlockedPuzzleLevelCount(replayedLate)).toBe(4);
+  });
+
+  it('accepts the canonical Puzzle identity fallback but rejects mismatched snapshots', () => {
+    const first = CAMPAIGN_LEVELS[0]!;
+    const second = CAMPAIGN_LEVELS[1]!;
+    const missingCompletionId = {
+      ...finishedPuzzleState(first.id, 6),
+      completedLevelId: null,
+    };
+    const recorded = recordCanonicalPuzzleCompletion(defaultPuzzleProgress(), missingCompletionId, first.id);
+    expect(recorded.completedLevelIds).toEqual([first.id]);
+    expect(puzzleBestPieceCount(recorded, first.id)).toBe(6);
+
+    const mismatchedSnapshot = {
+      ...finishedPuzzleState(first.id, 5),
+      completedLevelId: second.id,
+    };
+    expect(recordCanonicalPuzzleCompletion(recorded, mismatchedSnapshot, first.id)).toBe(recorded);
+    expect(recordCanonicalPuzzleCompletion(recorded, finishedPuzzleState(first.id, 5), second.id)).toBe(recorded);
   });
 
   it('parses v5 bests and migrates frozen v4/v3/v2/v1 completion domains', () => {

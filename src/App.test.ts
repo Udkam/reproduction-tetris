@@ -333,7 +333,9 @@ describe('Puzzle completion ceremony', () => {
     expect(first.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('first');
     expect(first.view.container.textContent).toContain('恭喜你破解谜题');
     expect(first.view.container.textContent).not.toContain('首次完成 · 9 步 · 5 消行');
-    expect(first.view.container.textContent).toContain('当前最优：9步');
+    expect(first.view.container.textContent).toContain('当前最优步数：9步');
+    expect(first.view.container.textContent).not.toContain('首次破解');
+    expect(first.view.container.querySelectorAll('.puzzle-celebration__constellation i')).toHaveLength(10);
     expect(first.onCanonicalCompletion).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ completedLevelId: puzzleId, pieceCount: 9 }));
     first.view.unmount();
 
@@ -345,8 +347,9 @@ describe('Puzzle completion ceremony', () => {
     };
     const record = await renderCompletion(priorBest, 9);
     expect(record.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('record');
-    expect(record.view.container.textContent).toContain('新的个人纪录');
+    expect(record.view.container.textContent).toContain('刷新个人纪录');
     expect(record.view.container.textContent).not.toContain('从 12 步精炼至 9 步 · 5 消行');
+    expect(record.view.container.textContent).not.toContain('个人最佳');
     record.view.unmount();
 
     const replayBest: PuzzleProgress = {
@@ -357,9 +360,55 @@ describe('Puzzle completion ceremony', () => {
     };
     const replay = await renderCompletion(replayBest, 9);
     expect(replay.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('replay');
-    expect(replay.view.container.textContent).toContain('谜题再次破解');
-    expect(replay.view.container.textContent).not.toContain('新的个人纪录');
+    expect(replay.view.container.textContent).toContain('谜题已破解');
+    expect(replay.view.container.textContent).not.toContain('刷新个人纪录');
+    expect(replay.view.container.textContent).not.toContain('再次完成');
     replay.view.unmount();
+  });
+
+  it('persists and marks a success from any open gallery entry before result dismissal', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    localStorage.setItem('tetramorph:language:v1', 'zh-CN');
+    localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon', 'race', 'sprint', 'puzzle']));
+    const level = CAMPAIGN_LEVELS.at(-1)!;
+    const view = render(createElement(App));
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-puzzle"]')!.click());
+    act(() => view.container.querySelectorAll<HTMLButtonElement>('.puzzle-gallery__page')[1]!.click());
+    const levelButton = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')]
+      .find((button) => button.dataset.levelId === level.id)!;
+    act(() => levelButton.click());
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]')!.click());
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+
+    const runtime = runtimeHarness.instances.at(-1)!;
+    act(() => runtime.setState({
+      ...runtime.getState(),
+      status: 'finished',
+      puzzleCompletion: 'finished',
+      completedLevelId: null,
+      puzzleTargetCells: [],
+      pieceCount: 13,
+      lines: 4,
+    }));
+    await act(async () => Promise.resolve());
+
+    expect(JSON.parse(localStorage.getItem(PUZZLE_PROGRESS_KEY) ?? 'null')).toMatchObject({
+      completedLevelIds: [level.id],
+      bestPieceCounts: { [level.id]: 13 },
+    });
+    const resultButtons = [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet button')];
+    expect(resultButtons.map((button) => button.textContent)).toContain('返回关卡库');
+    const backToLibrary = resultButtons.find((button) => button.textContent === '返回关卡库')!;
+    act(() => backToLibrary.click());
+    const completedButton = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')]
+      .find((button) => button.dataset.levelId === level.id)!;
+    expect(completedButton.querySelector('.puzzle-gallery__completion-tick')).not.toBeNull();
+    expect(view.container.textContent).toContain('当前最优步数：13步');
+    view.unmount();
   });
 });
 
@@ -1623,13 +1672,12 @@ describe('T6 frontend mode binding', () => {
     expect(puzzleCelebrationCopy({ outcome: 'first', pieces: 9, lines: 5, previousBest: null })).toEqual({
       title: '恭喜你破解谜题',
       detail: '',
-      eyebrow: '首次破解',
-      best: '当前最优：9步',
+      best: '当前最优步数：9步',
     });
     expect(puzzleCelebrationCopy({ outcome: 'record', pieces: 9, lines: 5, previousBest: 12 })).toMatchObject({
-      title: '新的个人纪录',
+      title: '刷新个人纪录',
       detail: '',
-      best: '当前最优：9步',
+      best: '当前最优步数：9步',
     });
 
     const endedSprint: GameState = {

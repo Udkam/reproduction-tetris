@@ -462,22 +462,35 @@ export function nextLockedPuzzleLevel(progress: PuzzleProgress): CampaignLevel |
   return CAMPAIGN_LEVELS.find((level) => !unlocked.has(level.id)) ?? null;
 }
 
-/** Records only a core-reported completion for a level on the canonical frontier. */
-export function recordCanonicalPuzzleCompletion(progress: PuzzleProgress, state: GameState): PuzzleProgress {
+/**
+ * Records one canonical Puzzle completion. The gallery is currently all-open, so the
+ * retired progressive frontier is not an eligibility guard; identity agreement is.
+ */
+export function recordCanonicalPuzzleCompletion(
+  progress: PuzzleProgress,
+  state: GameState,
+  expectedLevelId?: PuzzleId,
+): PuzzleProgress {
   const completedIds = completedIdsFrom(progress);
   const bestPieceCounts = completedIds === null ? null : bestPieceCountsFrom(progress, completedIds);
+  const levelId = state.completedLevelId ?? state.puzzleId ?? expectedLevelId ?? null;
+  const snapshotIdentityMismatch = (
+    state.completedLevelId !== null
+    && state.puzzleId !== null
+    && state.completedLevelId !== state.puzzleId
+  );
   if (
     completedIds === null
     || bestPieceCounts === null
     || state.mode !== 'puzzle'
     || state.puzzleCompletion !== 'finished'
-    || state.completedLevelId === null
-    || !LEVEL_IDS.has(state.completedLevelId)
-    || !isPuzzleUnlocked(progress, state.completedLevelId)
+    || levelId === null
+    || !LEVEL_IDS.has(levelId)
+    || snapshotIdentityMismatch
+    || (expectedLevelId !== undefined && levelId !== expectedLevelId)
     || !isBestPieceCount(state.pieceCount)
   ) return progress;
 
-  const levelId = state.completedLevelId;
   const existingBest = bestPieceCounts[levelId];
   if (completedIds.includes(levelId) && existingBest !== undefined && state.pieceCount >= existingBest) return progress;
 

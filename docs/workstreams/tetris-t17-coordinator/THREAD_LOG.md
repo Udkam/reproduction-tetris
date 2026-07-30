@@ -210,3 +210,44 @@
 - Blocker: none for P10.6.
 - Next action: commit this contract checkpoint, then open P10.7 Puzzle completion
   persistence and celebration.
+
+## 2026-07-31 — Phase 10 Puzzle completion transaction and prism celebration
+
+- Task ID: `T17-P10.7`
+- Base SHA: `a05cd846073ede94c6a59b3524a9e64c8555e40e`
+- Owner: primary coordinator
+- Exact paths:
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/ui/localization.ts`
+  - `src/styles.css`
+  - `docs/workstreams/tetris-t17-coordinator/THREAD_LOG.md`
+- Commands actually run:
+  - `npm.cmd run test -- --run src/puzzleProgress.test.ts src/App.test.ts --maxWorkers=1 --fileParallelism=false`
+    (first run: `51/52`; the new integration test assumed Chinese while jsdom
+    correctly selected its English navigator language)
+  - one filtered re-run after pinning the test language: `1/1` passed
+  - the same full focused command: `52/52` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: the all-open fifty-level gallery and persistence layer now share one
+  eligibility contract. A canonical finished Puzzle records even when the retired
+  progressive frontier would have called it locked; Core/current-selection identity
+  mismatches still fail closed. The parent synchronously writes the versioned snapshot
+  before scheduling React presentation, so immediate return or unmount cannot discard
+  a clear. A direct integration test enters level 50, finishes with the optional
+  `completedLevelId` absent, verifies storage before result dismissal, returns to the
+  library, and sees both its completion tick and `13`-move best.
+- Presentation evidence: first, record, and repeat clears now use exactly
+  `恭喜你破解谜题`, `刷新个人纪录`, and `谜题已破解`; the only body statistic is
+  `当前最优步数`. The former eyebrow is absent. The compact mineral-white result uses
+  one violet/teal prism, ten bounded fragments, a four-pixel earned edge, and a static
+  reduced-motion state.
+- Resource note: one Vitest worker, no file parallelism, no server, watcher, browser,
+  Serena, WMI/CIM, or new sub-agent.
+- Blocker: none for P10.7. Final visual fit, keyboard focus, bilingual copy, and reduced
+  motion remain in the immutable browser batch.
+- Next action: commit this green checkpoint, then open P10.8 Survival entry/cavern and
+  local typography.

@@ -385,14 +385,14 @@ function PuzzleCelebrationPanel({ celebration, language }: { celebration: Puzzle
       className={`puzzle-celebration puzzle-celebration--${celebration.outcome}`}
       data-testid="puzzle-celebration"
       data-outcome={celebration.outcome}
-      aria-label={presentation.eyebrow}
+      aria-label={presentation.best}
     >
       <div className="puzzle-celebration__constellation" aria-hidden="true">
-        <i /><i /><i /><i />
+        <span className="puzzle-celebration__prism" />
+        <i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
       </div>
       <div className="puzzle-celebration__summary">
-        <strong>{presentation.eyebrow}</strong>
-        <span>{presentation.best}</span>
+        <strong>{presentation.best}</strong>
       </div>
     </section>
   );
@@ -1857,9 +1857,11 @@ export default function App() {
   const [mode, setMode] = useState<GameMode>('marathon');
   const [selectedPuzzleId, setSelectedPuzzleId] = useState<PuzzleId>(CAMPAIGN_LEVELS[0]!.id);
   const [progress, setProgress] = useState<PuzzleProgress>(readPuzzleProgress);
+  const progressRef = useRef(progress);
   const [leaderboard, setLeaderboard] = useState<Leaderboard>(readLeaderboard);
   const [introducedModes, setIntroducedModes] = useState<readonly GameMode[]>(readModeRuleIntros);
   const [ruleIntroMode, setRuleIntroMode] = useState<GameMode | null>(null);
+  progressRef.current = progress;
 
   useEffect(() => {
     const documentTarget = browserPlatform.documentTarget();
@@ -1906,14 +1908,15 @@ export default function App() {
   }, []);
 
   const recordCompletion = useCallback((state: GameState) => {
-    setProgress((current) => {
-      const updated = recordCanonicalPuzzleCompletion(current, state);
-      if (updated !== current) {
-        writePuzzleProgress(updated);
-      }
-      return updated;
-    });
-  }, []);
+    const current = progressRef.current;
+    const updated = recordCanonicalPuzzleCompletion(current, state, selectedPuzzleId);
+    if (updated === current) return;
+    // Storage is the first side effect so an immediate modal dismissal or unmount
+    // cannot discard a success before React commits the visual update.
+    writePuzzleProgress(updated);
+    progressRef.current = updated;
+    setProgress(updated);
+  }, [selectedPuzzleId]);
 
   const recordRun = useCallback((record: ScoreRecord) => {
     setLeaderboard((current) => {

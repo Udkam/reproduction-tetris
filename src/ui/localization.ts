@@ -156,7 +156,6 @@ type Translation = {
     puzzleCelebration: (outcome: PuzzleCelebrationOutcome, best: number) => {
       title: string;
       detail: string;
-      eyebrow: string;
       best: string;
     };
     terminalPuzzleFailure: (remaining: number, pieces: number) => { title: string; detail: string };
@@ -290,23 +289,20 @@ const COPY: Record<AppLanguage, Translation> = {
           return {
             title: '恭喜你破解谜题',
             detail: '',
-            eyebrow: '首次破解',
-            best: `当前最优：${best}步`,
+            best: `当前最优步数：${best}步`,
           };
         }
         if (outcome === 'record') {
           return {
-            title: '新的个人纪录',
+            title: '刷新个人纪录',
             detail: '',
-            eyebrow: '个人最佳',
-            best: `当前最优：${best}步`,
+            best: `当前最优步数：${best}步`,
           };
         }
         return {
-          title: '谜题再次破解',
+          title: '谜题已破解',
           detail: '',
-          eyebrow: '再次完成',
-          best: `当前最优：${best}步`,
+          best: `当前最优步数：${best}步`,
         };
       },
       terminalPuzzleFailure: (remaining, pieces) => ({ title: '堆叠到顶', detail: `剩余 ${remaining} 原有方块 · 已落 ${pieces} 块` }),
@@ -385,7 +381,6 @@ const COPY: Record<AppLanguage, Translation> = {
           return {
             title: 'Puzzle solved',
             detail: '',
-            eyebrow: 'First clear',
             best: `Current best: ${best} moves`,
           };
         }
@@ -393,14 +388,12 @@ const COPY: Record<AppLanguage, Translation> = {
           return {
             title: 'New personal best',
             detail: '',
-            eyebrow: 'Personal best',
             best: `Current best: ${best} moves`,
           };
         }
         return {
-          title: 'Puzzle solved again',
+          title: 'Puzzle solved',
           detail: '',
-          eyebrow: 'Clear complete',
           best: `Current best: ${best} moves`,
         };
       },
