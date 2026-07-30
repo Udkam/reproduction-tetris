@@ -370,6 +370,16 @@
     min-height: 40px;
   }
 
+  .puzzle-gallery__header .library-back {
+    gap: 6px;
+    padding-right: 6px;
+  }
+
+  .puzzle-gallery__header .library-back span {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
   .puzzle-gallery {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(250px, .82fr) minmax(310px, 1.18fr);
@@ -389,7 +399,7 @@
   }
 
   .puzzle-gallery__board {
-    width: min(38%, 170px);
+    width: min(46%, 180px);
     min-width: 112px;
     max-height: 94%;
   }

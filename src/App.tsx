@@ -523,12 +523,20 @@ export function puzzleAnchorSilhouettePath(id: PuzzleId): string {
   ))).join('');
 }
 
+function puzzleSilhouetteViewBox(id: PuzzleId): string {
+  const board = createInitialState(APP_SEED, 'puzzle', id).board.slice(-12);
+  const firstOccupiedRow = board.findIndex((row) => row.some((cell) => cell !== null));
+  const startRow = Math.max(0, (firstOccupiedRow < 0 ? 0 : firstOccupiedRow) - 2);
+  return `0 ${startRow * 4} 40 ${(12 - startRow) * 4}`;
+}
+
 function PuzzleSilhouette({ id, label }: { id: PuzzleId; label: string }) {
   const anchorPath = puzzleAnchorSilhouettePath(id);
   return (
     <svg
       className="puzzle-silhouette"
-      viewBox="0 0 40 48"
+      viewBox={puzzleSilhouetteViewBox(id)}
+      preserveAspectRatio="xMidYMid meet"
       role="img"
       aria-label={label}
     >
