@@ -38,6 +38,15 @@ deterministic one-or-two count together with the warned column, retain all-or-no
 entry for the chosen height, and preserve deterministic collision, clear,
 bedrock-shift, hash, restart, and seven-bag boundaries.
 
+Same-column variable-event checkpoint `b99bbed` closes that Core correction. The
+separate deterministic stream now freezes one column plus height `1 | 2` when warning
+begins. A one-stone event enters as one cell; a two-stone event remains one rigid
+vertical component; blocked entry retains both choices without partial spawn or
+reroll. Focused Core/presentation proof passes `30/30`, the Renderer direct suite
+passes, the source-bound App text bridge passes, and typecheck passes. The only
+failure in the broader App file is the preserved, separate selector/home WIP still
+meeting an old ten-band assertion; it is not attributed to this Core checkpoint.
+
 Survival cavern checkpoint `5215769` is retained as a rollback point but its
 warm-brown horizontal strata are **visually rejected** because they read as wooden
 boards. The correction must use cold slate faces, irregular facets/chips, short

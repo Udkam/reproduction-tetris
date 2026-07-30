@@ -5,7 +5,7 @@ Base: `main@87121af42330ab9aea9456e28dfa42e5edc62536`
 | Checkpoint | Writer | Independent comparison | Exact product boundary | Status |
 | --- | --- | --- | --- | --- |
 | Contract | coordinator | three read-only design brainstorms | current/design/phase/matrix/log/progress docs | FROZEN |
-| Survival Core | coordinator | later rules QA | Core constants/types/engine/race tests and direct state consumers | REOPENED: replace fixed pair with frozen same-column 1–2 event |
+| Survival Core | coordinator | later rules QA | Core constants/types/engine/race tests and direct state consumers | GREEN `b99bbed`; final rules QA pending |
 | Survival cavern | coordinator | later visual + rules QA | Survival theme/Renderer/presentation/runtime/App and direct tests/copy | REOPENED: 1–2 silhouette + browser QA |
 | Ordinary feedback | coordinator | later visual + rules QA | shared Renderer/presentation/theme and direct tests | SOURCE CORRECTED `d8e97e7`; browser feel QA pending |
 | Rules + Puzzle + home | coordinator | later visual + input QA | App/styles/style order/localization/direct tests | RULE-SHEET CORRECTION OPEN; navigation pending |

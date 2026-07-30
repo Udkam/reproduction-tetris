@@ -654,3 +654,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   same-column stones rather than a fixed pair.
 - No product source, test, build, server, browser, or helper was started for this
   contract correction.
+
+- Core recovery `b99bbed` implements the corrected event contract. Count and column
+  are frozen together at warning time; height-one emits one cell, height-two emits
+  one rigid vertical component, and blocked entry retains the complete plan.
+- Direct proof covers both seeded heights, single-cell entry without a phantom upper
+  stone, all-or-nothing two-cell blocking, 2× cadence, collision, one- and two-row
+  clears, bedrock translation, restart, and hash participation. Core/presentation
+  pass `30/30`; Renderer direct and focused App text-bridge regressions pass;
+  typecheck passes.

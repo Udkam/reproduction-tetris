@@ -182,3 +182,29 @@
   is running for this correction.
 - Next action: commit this exact docs contract, then update Core state/tests before
   adapting warning/flight presentation and localized first-entry sheets.
+
+## 2026-07-31 — same-column variable stone Core checkpoint
+
+- Base: correction contract `1f48c35`.
+- Product commit: `b99bbed`.
+- Changed paths: `src/game/core/types.ts`, `engine.ts`, `race.test.ts`,
+  `src/game/render/presentation.ts`, `presentation.test.ts`,
+  `TetrisRenderer.test.ts`, and the direct state fixture in `src/App.test.ts`.
+- Implementation: warning-time column and `1 | 2` height draws from the isolated
+  deterministic stream; one identity and one shared column; height-aware entry,
+  collision, motion, settlement, clear mapping, bedrock shifting, overflow, events,
+  state hash, and public presentation geometry.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/race.test.ts src/game/render/presentation.test.ts --maxWorkers=1`
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts src/App.test.ts --maxWorkers=1`
+  - focused App text-bridge rerun by exact test title
+  - `npm.cmd run typecheck`
+  - `git diff --check`
+- Evidence: Core/presentation `30/30`, Renderer direct tests green, focused App bridge
+  `1/1`, and typecheck pass. The broader App file has one known selector-WIP mismatch
+  (`5` real target-row tiers versus its old `10` band expectation); no stone test
+  failed.
+- Blocker: none for Core. Warning art still draws a fixed two-cell silhouette until
+  the next Renderer correction.
+- Next action: adapt warning/snapshot geometry to the frozen event height, then
+  implement the unified first-entry rules sheet.
