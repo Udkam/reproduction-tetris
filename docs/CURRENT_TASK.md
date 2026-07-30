@@ -141,7 +141,8 @@ The home cascade fix `2c199d2` and short-landscape budget fix `693f3d4` remain v
 recovery points, but Phase 9 is not accepted. The open source slices are:
 
 - Renderer-only `ready` visibility: preserve deterministic Core state while drawing
-  and reporting no active/ghost/Next content until `playing`;
+  and reporting no active/ghost/Next content until `playing`; checkpoint `6a47926`
+  closes this slice with `35/35` focused Renderer tests and typecheck;
 - one dedicated result ledger for non-Puzzle modes, with structured metrics and
   mode-specific current-run highlighting;
 - a dedicated two-page, `25 + 25` Puzzle gallery with a connected hero preview and

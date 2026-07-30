@@ -361,3 +361,25 @@
   started.
 - Next action: commit this docs-only contract with exact staging, then open only the
   Renderer ready-visibility slice.
+
+## 2026-07-31 — ready-state preview checkpoint
+
+- Task: hide all pre-play tetromino information while retaining staged Survival
+  bedrock.
+- Base: four-surface contract `27777c7`.
+- Product commit: `6a47926`.
+- Changed paths: `src/game/render/TetrisRenderer.ts` and its direct test only.
+- Implementation: derives one `drawableActive` from authoritative `state.status`;
+  `ready` draws neither active nor ghost/carrier material and its public snapshot
+  reports empty active/ghost arrays. Core active/queue and Runtime start timing are
+  unchanged. The first `playing` state restores four active and four ghost cells.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts --maxWorkers=1`
+  - `npm.cmd run typecheck`
+  - exact-path diff/cached checks and commit.
+- Evidence: focused Renderer suite passes `35/35`; typecheck passes; the direct
+  regression keeps exactly ten staged locked cells during the first Survival digit
+  and proves zero active-piece draw calls before start.
+- Blocker: final real-frame `3 / 2 / 1` and first-playing-frame proof remains pending
+  until all source slices are complete.
+- Next action: open only the structured result-ledger slice.

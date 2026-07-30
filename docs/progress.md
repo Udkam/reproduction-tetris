@@ -14,6 +14,10 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   gate: ready visibility, result ledger, and Puzzle gallery/home hover. Regenerated
   Phase-9 PNGs remain superseded and unstaged until all three source checkpoints are
   green and recaptured from one immutable candidate.
+- Ready visibility checkpoint `6a47926` is source-green: Renderer and its public
+  snapshot hide deterministic Core active/ghost data while status is `ready`, then
+  restore both on the first `playing` state. Focused Renderer proof passes `35/35`
+  and typecheck passes; browser countdown evidence remains pending.
 
 ### T16 Phase 9 first-entry rules checkpoint — 2026-07-31
 
