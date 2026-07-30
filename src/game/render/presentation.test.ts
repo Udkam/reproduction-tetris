@@ -44,11 +44,12 @@ describe('presentation interpolation', () => {
     expect(point.y).toBe(point.x);
   });
 
-  it('caps the ordinary clear sweep at nine ticks and removes it for reduced motion', () => {
+  it('caps the ordinary clear seam at nine ticks and keeps a six-tick reduced signal', () => {
     expect(lineClearPresentationProgress(0, false)).toBe(0);
     expect(lineClearPresentationProgress(9, false)).toBe(1);
     expect(lineClearPresentationProgress(12, false)).toBe(1);
-    expect(lineClearPresentationProgress(6, true)).toBe(0);
+    expect(lineClearPresentationProgress(3, true)).toBe(0.5);
+    expect(lineClearPresentationProgress(6, true)).toBe(1);
 
     const center = lineClearCellProgress(0.4, 4, 10);
     const edge = lineClearCellProgress(0.4, 0, 10);

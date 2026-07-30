@@ -222,15 +222,15 @@ describe('T5 bright mineral matte material', () => {
       ghostStrokeAlpha: 0.45,
       ghostSeamWidth: 0.75,
       ghostSeamAlpha: 0.28,
-      lockFillAlpha: 0.12,
-      lockFillDurationMs: 90,
+      landingImprintFillAlpha: 0.12,
+      landingImprintDurationMs: 100,
     });
     expect(CELL_STYLE.radiusMax).toBeLessThanOrEqual(1.75);
     expect(CELL_STYLE.edgeWidthMax).toBeLessThanOrEqual(1.6);
     expect((CELL_STYLE.gapFloor * 2) / CELL_STYLE.seamGrooveWidthMin).toBeGreaterThanOrEqual(1.6);
     expect((CELL_STYLE.gapMin * 2) / CELL_STYLE.seamGrooveWidthMax).toBeGreaterThanOrEqual(1.6);
     expect(CELL_STYLE.ghostStrokeWidth).toBe(1);
-    expect(CELL_STYLE.lockFillDurationMs).toBeGreaterThanOrEqual(80);
-    expect(CELL_STYLE.lockFillDurationMs).toBeLessThanOrEqual(100);
+    expect(CELL_STYLE.landingImprintFillAlpha).toBeLessThanOrEqual(0.12);
+    expect(CELL_STYLE.landingImprintDurationMs).toBe(100);
   });
 });

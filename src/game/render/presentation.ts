@@ -21,6 +21,7 @@ export interface InternalCellSeam {
 export type BoardShiftDirection = 'up' | 'down';
 
 export const LINE_CLEAR_SWEEP_TICKS = 9;
+export const REDUCED_LINE_CLEAR_TICKS = 6;
 
 const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = [
   { edge: 'top', dx: 0, dy: -1 },
@@ -187,10 +188,13 @@ export function lineClearCellProgress(phaseProgress: number, column: number, wid
   return Math.max(0, Math.min(1, phaseProgress * 1.5 - centerDistance * 0.5));
 }
 
-/** Caps the visual sweep at nine 60 Hz ticks (150 ms) without changing Core timing. */
+/**
+ * Caps the visual seam at nine 60 Hz ticks (150 ms). Reduced motion retains a
+ * simultaneous stationary seam for six ticks instead of deleting clear feedback.
+ */
 export function lineClearPresentationProgress(phaseTicks: number, reducedMotion: boolean): number {
-  if (reducedMotion) return 0;
-  return Math.max(0, Math.min(1, phaseTicks / LINE_CLEAR_SWEEP_TICKS));
+  const duration = reducedMotion ? REDUCED_LINE_CLEAR_TICKS : LINE_CLEAR_SWEEP_TICKS;
+  return Math.max(0, Math.min(1, phaseTicks / duration));
 }
 
 /** Briefly preserves the stack's previous visual position while Core applies a bedrock shift. */

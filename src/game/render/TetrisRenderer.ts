@@ -58,6 +58,7 @@ import {
   clampActivePresentationOffsetY,
   exposedCellEdges,
   internalCellSeams,
+  lineClearCellProgress,
   lineClearPresentationProgress,
   nextPreviewPieces,
   orthogonalCellComponents,
@@ -100,6 +101,8 @@ interface LockPulse {
   elapsed: number;
   duration: number;
   piece: PieceType;
+  /** A simultaneous clear owns the visual hierarchy, so its contact is quieter. */
+  strength: number;
 }
 
 interface PreviewSlot {
@@ -136,7 +139,7 @@ interface SurvivalBedrockCue {
   duration: number;
 }
 
-type ClassicFeedbackKind = 'landing' | 'combo' | 'speed-up' | 'top-out';
+type ClassicFeedbackKind = 'combo' | 'speed-up' | 'top-out';
 
 interface ClassicFeedbackCue {
   kind: ClassicFeedbackKind;
@@ -777,19 +780,7 @@ export class TetrisRenderer {
 
     if (this.trail && !this.options.reducedMotion) {
       const progress = Math.min(1, this.trail.elapsed / this.trail.duration);
-      const echoCount = Math.min(6, Math.max(1, this.trail.distance));
-      for (let echo = 1; echo <= echoCount; echo += 1) {
-        const alpha = (1 - progress) * (0.16 / echo);
-        const cells = this.trail.cells
-          .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }))
-          .filter((cell) => cell.y >= 0);
-        this.drawCellGroups(graphics, cells, this.trail.piece, alpha, {
-          originX: layout.x,
-          originY: layout.y,
-          unit: layout.cell,
-          offsetY: -echo * Math.max(1, Math.floor(this.trail.distance / echoCount)) * layout.cell,
-        });
-      }
+      this.drawHardDropTraces(graphics, this.trail, progress, layout, boardShiftOffsetY);
     }
 
     const activeCells = state.status === 'ready' || !state.active ? [] : cellsForPiece(state.active);
@@ -1723,37 +1714,12 @@ export class TetrisRenderer {
       const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
       this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
     }
-    if (state.phase === 'line-clear' && !this.options.reducedMotion) {
-      const progress = lineClearPresentationProgress(state.phaseTicks, false);
-      const width = layout.width * Math.sin(progress * Math.PI);
-      for (const row of state.pendingClearRows) {
-        if (row < VISIBLE_START_ROW) continue;
-        const y = layout.y + (row - VISIBLE_START_ROW) * layout.cell;
-        graphics
-          .rect(layout.x + (layout.width - width) / 2, y + layout.cell * 0.12, width, layout.cell * 0.76)
-          .fill({ color: COLORS.classic, alpha: 0.18 + progress * 0.4 });
-      }
-    }
+    if (state.phase === 'line-clear') this.drawOrdinaryLineClearSeams(graphics, state, layout);
     this.drawClassicFeedbackCues(graphics, state, layout);
 
-    if (this.lockPulse && !this.options.reducedMotion) {
+    if (this.lockPulse) {
       const progress = Math.min(1, this.lockPulse.elapsed / this.lockPulse.duration);
-      const material = PIECE_MATERIALS[this.lockPulse.piece];
-      const alpha = (1 - easeOutCubic(progress)) * CELL_STYLE.lockFillAlpha;
-      this.drawCellGroups(
-        graphics,
-        this.lockPulse.cells
-          .filter((cell) => cell.y >= VISIBLE_START_ROW)
-          .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW })),
-        this.lockPulse.piece,
-        alpha,
-        {
-          originX: layout.x,
-          originY: layout.y,
-          unit: layout.cell,
-          faceColor: material.innerEdge,
-        },
-      );
+      this.drawLandingImprint(graphics, this.lockPulse, progress, layout);
     }
   }
 
@@ -1947,6 +1913,156 @@ export class TetrisRenderer {
     }
   }
 
+  /**
+   * A hard drop leaves at most one short trace per occupied column. This reads as
+   * speed without replaying translucent copies of the complete tetromino.
+   */
+  private drawHardDropTraces(
+    graphics: Graphics,
+    trail: TrailState,
+    progress: number,
+    layout: BoardLayout,
+    boardShiftOffsetY = 0,
+  ): void {
+    const material = PIECE_MATERIALS[trail.piece];
+    const alpha = Math.max(0, 1 - easeOutCubic(progress));
+    const topCellByColumn = new Map<number, Cell>();
+    for (const cell of trail.cells) {
+      const current = topCellByColumn.get(cell.x);
+      if (!current || cell.y < current.y) topCellByColumn.set(cell.x, cell);
+    }
+    const columns = [...topCellByColumn.entries()]
+      .sort(([left], [right]) => left - right)
+      .slice(0, 4);
+    const length = layout.cell * (0.48 + (1 - progress) * 0.16);
+    const lowerGap = layout.cell * 0.12;
+
+    for (const [column, cell] of columns) {
+      const visibleY = cell.y - VISIBLE_START_ROW;
+      if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
+      const x = layout.x + (column + 0.5) * layout.cell;
+      const bottom = layout.y + visibleY * layout.cell + boardShiftOffsetY - lowerGap;
+      const top = Math.max(layout.y + layout.cell * 0.06, bottom - length);
+      if (bottom <= top) continue;
+      this.strokeSegments(
+        graphics,
+        [[x, top, x, bottom]],
+        material.edge,
+        alpha * 0.42,
+        Math.max(1.1, layout.cell * 0.052),
+      );
+      this.strokeSegments(
+        graphics,
+        [[x, top + layout.cell * 0.08, x, bottom]],
+        material.innerEdge,
+        alpha * 0.62,
+        Math.max(0.75, layout.cell * 0.026),
+      );
+    }
+  }
+
+  /**
+   * Ordinary clears release one material seam per cell. The normal path travels
+   * centre-out; reduced motion keeps all seams stationary and only fades them.
+   */
+  private drawOrdinaryLineClearSeams(
+    graphics: Graphics,
+    state: GameState,
+    layout: BoardLayout,
+  ): void {
+    const phaseProgress = lineClearPresentationProgress(
+      state.phaseTicks,
+      this.options.reducedMotion,
+    );
+    for (const row of state.pendingClearRows) {
+      if (row < VISIBLE_START_ROW || row >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+      const boardRow = state.board[row];
+      for (let column = 0; column < BOARD_WIDTH; column += 1) {
+        const type = boardRow?.[column];
+        if (!type) continue;
+        const cellProgress = this.options.reducedMotion
+          ? phaseProgress
+          : lineClearCellProgress(phaseProgress, column, BOARD_WIDTH);
+        if (!this.options.reducedMotion && cellProgress <= 0) continue;
+        const eased = easeOutCubic(cellProgress);
+        const pulse = this.options.reducedMotion
+          ? Math.max(0, 1 - phaseProgress)
+          : Math.sin(cellProgress * Math.PI);
+        if (pulse <= 0) continue;
+        const material = this.materialFor(type);
+        const centerX = layout.x + (column + 0.5) * layout.cell;
+        const centerY = layout.y + (row - VISIBLE_START_ROW + 0.5) * layout.cell;
+        const halfSpan = layout.cell * (
+          this.options.reducedMotion ? 0.28 : 0.11 + eased * 0.2
+        );
+        this.strokeSegments(
+          graphics,
+          [[centerX - halfSpan, centerY, centerX + halfSpan, centerY]],
+          material.edge,
+          pulse * 0.62,
+          Math.max(1.2, layout.cell * 0.065),
+        );
+        this.strokeSegments(
+          graphics,
+          [[centerX - halfSpan * 0.82, centerY - layout.cell * 0.025, centerX + halfSpan * 0.82, centerY - layout.cell * 0.025]],
+          material.innerEdge,
+          pulse * 0.78,
+          Math.max(0.75, layout.cell * 0.03),
+        );
+      }
+    }
+  }
+
+  /** A six-tick support imprint replaces the old broad landing bracket. */
+  private drawLandingImprint(
+    graphics: Graphics,
+    imprint: LockPulse,
+    progress: number,
+    layout: BoardLayout,
+  ): void {
+    const material = PIECE_MATERIALS[imprint.piece];
+    const eased = easeOutCubic(progress);
+    const alpha = Math.max(0, 1 - progress) * imprint.strength;
+    const halfSpan = layout.cell * (
+      this.options.reducedMotion ? 0.24 : 0.16 + eased * 0.08
+    );
+    for (const cell of imprint.cells) {
+      const visibleY = cell.y - VISIBLE_START_ROW;
+      if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
+      const centerX = layout.x + (cell.x + 0.5) * layout.cell;
+      const y = Math.min(
+        layout.y + layout.height - Math.max(1, layout.cell * 0.05),
+        layout.y + (visibleY + 1) * layout.cell - layout.cell * 0.1,
+      );
+      graphics
+        .roundRect(
+          centerX - halfSpan,
+          y - layout.cell * 0.045,
+          halfSpan * 2,
+          layout.cell * 0.09,
+          Math.max(1, layout.cell * 0.035),
+        )
+        .fill({
+          color: material.innerEdge,
+          alpha: Math.min(CELL_STYLE.landingImprintFillAlpha, alpha * CELL_STYLE.landingImprintFillAlpha),
+        });
+      this.strokeSegments(
+        graphics,
+        [[centerX - halfSpan, y, centerX + halfSpan, y]],
+        material.edge,
+        alpha * 0.58,
+        Math.max(1.15, layout.cell * 0.06),
+      );
+      this.strokeSegments(
+        graphics,
+        [[centerX - halfSpan * 0.72, y - layout.cell * 0.025, centerX + halfSpan * 0.72, y - layout.cell * 0.025]],
+        material.innerEdge,
+        alpha * 0.76,
+        Math.max(0.75, layout.cell * 0.028),
+      );
+    }
+  }
+
   private drawClassicFeedbackCues(
     graphics: Graphics,
     state: GameState,
@@ -1960,46 +2076,6 @@ export class TetrisRenderer {
       const eased = easeOutCubic(progress);
       const alpha = Math.max(0, 1 - eased);
       if (alpha <= 0) continue;
-
-      if (cue.kind === 'landing') {
-        const landingAlpha = Math.max(0, 1 - progress);
-        const spread = layout.cell * (
-          this.options.reducedMotion ? 0.3 : 0.2 + eased * 0.22
-        );
-        const gap = layout.cell * 0.08;
-        for (const cell of cue.cells) {
-          if (cue.cells.some((candidate) => candidate.x === cell.x && candidate.y === cell.y + 1)) continue;
-          const visibleY = cell.y - VISIBLE_START_ROW;
-          if (visibleY < 0 || visibleY >= VISIBLE_HEIGHT) continue;
-          const centerX = layout.x + (cell.x + 0.5) * layout.cell;
-          const rawY = layout.y + (visibleY + 1) * layout.cell - layout.cell * 0.14
-            + (this.options.reducedMotion ? 0 : eased * layout.cell * 0.025);
-          const y = Math.min(layout.y + layout.height - stroke, Math.max(layout.y + stroke, rawY));
-          const kick = layout.cell * 0.11;
-          if (!this.options.reducedMotion) {
-            graphics
-              .roundRect(
-                centerX - spread,
-                y - layout.cell * 0.055,
-                spread * 2,
-                layout.cell * 0.11,
-                Math.max(1, layout.cell * 0.045),
-              )
-              .fill({ color: COLORS.actionInk, alpha: landingAlpha * 0.18 });
-          }
-          this.strokeSegments(graphics, [
-            [centerX - spread, y, centerX - gap, y],
-            [centerX + gap, y, centerX + spread, y],
-            [centerX - spread, y, centerX - spread - kick * 0.46, y - kick],
-            [centerX + spread, y, centerX + spread + kick * 0.46, y - kick],
-          ], COLORS.classic, landingAlpha * 0.94, Math.max(1.4, stroke * 1.12));
-          this.strokeSegments(graphics, [
-            [centerX - spread * 0.72, y, centerX - gap, y],
-            [centerX + gap, y, centerX + spread * 0.72, y],
-          ], COLORS.actionInk, landingAlpha * 0.82, Math.max(1.3, stroke * 0.68));
-        }
-        continue;
-      }
 
       if (cue.kind === 'combo') {
         const marks = Math.min(3, Math.max(1, cue.combo - 1));
@@ -3147,20 +3223,8 @@ export class TetrisRenderer {
     kind: ClassicFeedbackKind,
     details: Partial<Pick<ClassicFeedbackCue, 'cells' | 'rows' | 'combo' | 'tier'>> = {},
   ): void {
-    const fullDuration = kind === 'landing'
-      ? 220
-      : kind === 'combo'
-        ? 300
-        : kind === 'speed-up'
-          ? 360
-          : 440;
-    const reducedDuration = kind === 'landing'
-      ? 120
-      : kind === 'combo'
-        ? 150
-        : kind === 'speed-up'
-          ? 170
-          : 200;
+    const fullDuration = kind === 'combo' ? 300 : kind === 'speed-up' ? 360 : 440;
+    const reducedDuration = kind === 'combo' ? 150 : kind === 'speed-up' ? 170 : 200;
     this.classicFeedbackCues.push({
       kind,
       elapsed: 0,
@@ -3178,7 +3242,7 @@ export class TetrisRenderer {
     }
   }
 
-  private classicLandingSupportCells(
+  private landingSupportCells(
     cells: readonly Cell[],
     board: GameState['board'] | undefined,
   ): Cell[] {
@@ -3199,7 +3263,6 @@ export class TetrisRenderer {
   ): void {
     const classic = state?.mode === 'marathon';
     const clearsOnLock = events.some((event) => event.type === 'clear-started');
-    const endsOnLock = events.some((event) => event.type === 'game-over');
     for (const event of events) {
       if (event.type === 'piece-moved') {
         if (this.presentation) {
@@ -3241,28 +3304,24 @@ export class TetrisRenderer {
         this.collapseWasActive = false;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
-          cells: event.cells,
+          cells: this.landingSupportCells(event.cells, state?.board),
           elapsed: 0,
-          duration: this.options.reducedMotion ? 1 : CELL_STYLE.lockFillDurationMs,
+          duration: this.options.reducedMotion ? 80 : CELL_STYLE.landingImprintDurationMs,
           piece: event.piece,
+          strength: clearsOnLock ? 0.55 : 1,
         };
-        if (classic && !clearsOnLock && !endsOnLock) {
-          this.enqueueClassicFeedback('landing', {
-            cells: this.classicLandingSupportCells(event.cells, state?.board),
-          });
-        }
         if (state?.mode === 'sprint' && collapseWasActive) {
           this.queueCollapseSettlementTrail(previousBoard, event.cells);
         }
       } else if (event.type === 'hard-dropped') {
         this.impact = this.options.reducedMotion ? 0.25 : 1;
         const lock = events.find((candidate) => candidate.type === 'piece-locked');
-        if (lock?.type === 'piece-locked') {
+        if (lock?.type === 'piece-locked' && !clearsOnLock && event.distance > 0) {
           this.trail = {
             cells: lock.cells,
             distance: event.distance,
             elapsed: 0,
-            duration: this.options.reducedMotion ? 1 : 125,
+            duration: this.options.reducedMotion ? 1 : 50,
             piece: event.piece,
           };
         }

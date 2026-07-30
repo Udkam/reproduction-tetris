@@ -44,8 +44,8 @@ export const CELL_STYLE = {
   ghostStrokeAlpha: 0.45,
   ghostSeamWidth: 0.75,
   ghostSeamAlpha: 0.28,
-  lockFillAlpha: 0.12,
-  lockFillDurationMs: 90,
+  landingImprintFillAlpha: 0.12,
+  landingImprintDurationMs: 100,
 } as const;
 
 export const COLORS = {

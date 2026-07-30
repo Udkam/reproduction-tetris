@@ -115,13 +115,25 @@ type RendererInternals = {
     board: { x: number; y: number; width: number; height: number; cell: number };
   };
   presentation: unknown;
-  trail: unknown;
-  lockPulse: unknown;
+  trail: {
+    cells: Cell[];
+    distance: number;
+    elapsed: number;
+    duration: number;
+    piece: PieceType;
+  } | null;
+  lockPulse: {
+    cells: Cell[];
+    elapsed: number;
+    duration: number;
+    piece: PieceType;
+    strength: number;
+  } | null;
   impact: number;
   rotationPulse: number;
   boardShift: unknown;
   classicFeedbackCues: Array<{
-    kind: 'landing' | 'combo' | 'speed-up' | 'top-out';
+    kind: 'combo' | 'speed-up' | 'top-out';
     elapsed: number;
     duration: number;
     cells: readonly Cell[];
@@ -272,6 +284,19 @@ type RendererInternals = {
     material: PieceMaterial,
     alpha: number,
   ) => void;
+  drawHardDropTraces: (
+    graphics: unknown,
+    trail: NonNullable<RendererInternals['trail']>,
+    progress: number,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    boardShiftOffsetY?: number,
+  ) => void;
+  drawLandingImprint: (
+    graphics: unknown,
+    imprint: NonNullable<RendererInternals['lockPulse']>,
+    progress: number,
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
   drawClassicFeedbackCues: (
     graphics: unknown,
     state: GameState,
@@ -318,15 +343,21 @@ describe('Puzzle undo presentation reset', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     internals.presentation = { type: 'I', x: 4, y: 10, settleMs: 26 };
-    internals.trail = { cells: [{ x: 4, y: 10 }], distance: 18, elapsed: 12, duration: 125, piece: 'I' };
-    internals.lockPulse = { cells: [{ x: 4, y: 10 }], elapsed: 12, duration: 140, piece: 'I' };
-    internals.classicFeedbackCues.push({
-      kind: 'landing',
-      elapsed: 12,
-      duration: 220,
+    internals.trail = { cells: [{ x: 4, y: 10 }], distance: 18, elapsed: 12, duration: 50, piece: 'I' };
+    internals.lockPulse = {
       cells: [{ x: 4, y: 10 }],
-      rows: [],
-      combo: 0,
+      elapsed: 12,
+      duration: 100,
+      piece: 'I',
+      strength: 1,
+    };
+    internals.classicFeedbackCues.push({
+      kind: 'combo',
+      elapsed: 12,
+      duration: 300,
+      cells: [],
+      rows: [39],
+      combo: 2,
       tier: 0,
     });
     internals.impact = 1.2;
@@ -1121,12 +1152,18 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
   });
 
-  it('restores the board-local centre-out ordinary sweep and removes it for reduced motion', () => {
+  it('renders short per-cell material seams and a stationary reduced-motion clear', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const board = createBoard();
+    const pieces: PieceType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L', 'I', 'O', 'T'];
+    for (let column = 0; column < pieces.length; column += 1) {
+      board[BOARD_HEIGHT - 1]![column] = pieces[column]!;
+    }
     const state = {
       ...createInitialState(0x1a16_3ff, 'marathon'),
+      board,
       status: 'playing',
       phase: 'line-clear',
       phaseTicks: 4,
@@ -1137,25 +1174,32 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.drawEffects(state, layout);
 
-    const sweeps = recorder.operations.filter((operation) => operation.kind === 'rect');
-    expect(sweeps).toHaveLength(1);
-    const [x, y, width, height] = sweeps[0]!.values;
-    expect(x).toBeGreaterThanOrEqual(layout.x);
-    expect(x! + width!).toBeLessThanOrEqual(layout.x + layout.width);
-    expect(width).toBeGreaterThan(layout.width * 0.9);
-    expect(y).toBe(layout.y + (BOARD_HEIGHT - 1 - VISIBLE_START_ROW) * layout.cell + layout.cell * 0.12);
-    expect(height).toBe(layout.cell * 0.76);
+    const seams = recorder.operations.filter((operation) => operation.kind === 'segment');
+    expect(seams).toHaveLength(20);
+    expect(seams.every((operation) => {
+      const [startX, startY, endX, endY] = operation.values;
+      return startY === endY
+        && endX! - startX! < layout.cell * 0.7
+        && startX! >= layout.x
+        && endX! <= layout.x + layout.width;
+    })).toBe(true);
+    expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
+    expect(recorder.operations.some((operation) => operation.kind === 'rect')).toBe(false);
+    expect(recorder.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
     expect(recorder.operations.some((operation) => operation.kind === 'circle')).toBe(false);
-    expect(recorder.operations.some((operation) => operation.kind === 'segment')).toBe(false);
 
     renderer.setOptions({ reducedMotion: true });
-    const reducedRecorder = createGraphicsRecorder();
-    (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedRecorder.graphics;
-    internals.drawEffects(state, layout);
-    expect(reducedRecorder.operations).toEqual([]);
+    const reducedStart = createGraphicsRecorder();
+    (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedStart.graphics;
+    internals.drawEffects({ ...state, phaseTicks: 1 }, layout);
+    expect(reducedStart.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(20);
+    const reducedLater = createGraphicsRecorder();
+    (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedLater.graphics;
+    internals.drawEffects({ ...state, phaseTicks: 4 }, layout);
+    expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
   });
 
-  it('queues bounded coexisting Classic landing, combo, speed, and top-out cues only', () => {
+  it('queues bounded coexisting Classic combo, speed, and top-out cues only', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const classic = {
@@ -1175,30 +1219,29 @@ describe('Puzzle undo presentation reset', () => {
     internals.consumeEvents([{ type: 'game-over', reason: 'lock-out' }], classic);
 
     expect(internals.classicFeedbackCues.map((cue) => cue.kind)).toEqual([
-      'landing',
       'combo',
       'speed-up',
       'top-out',
     ]);
-    expect(internals.classicFeedbackCues[0]?.cells).toEqual([
-      { x: 4, y: 39 },
-      { x: 5, y: 39 },
-    ]);
-    expect(internals.classicFeedbackCues[1]).toMatchObject({
+    expect(internals.lockPulse).toMatchObject({
+      cells: [{ x: 4, y: 39 }, { x: 5, y: 39 }],
+      duration: 100,
+      strength: 1,
+    });
+    expect(internals.classicFeedbackCues[0]).toMatchObject({
       rows: [BOARD_HEIGHT - 1],
       combo: 2,
     });
-    expect(internals.classicFeedbackCues[2]).toMatchObject({ tier: 1 });
+    expect(internals.classicFeedbackCues[1]).toMatchObject({ tier: 1 });
 
     const snapshot = renderer.getSnapshot();
     expect(snapshot.classicFeedback.map((cue) => cue.kind)).toEqual([
-      'landing',
       'combo',
       'speed-up',
       'top-out',
     ]);
-    snapshot.classicFeedback[0]!.cells.push({ x: 9, y: 39 });
-    expect(internals.classicFeedbackCues[0]?.cells).toHaveLength(2);
+    snapshot.classicFeedback[0]!.rows.push(38);
+    expect(internals.classicFeedbackCues[0]?.rows).toEqual([BOARD_HEIGHT - 1]);
 
     const otherMode = new TetrisRendererClass() as unknown as RendererInternals;
     otherMode.consumeEvents(
@@ -1228,7 +1271,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.classicFeedbackCues.every((cue) => cue.kind === 'top-out')).toBe(true);
   });
 
-  it('freezes Classic landing cues to true support cells under a one-point overhang', () => {
+  it('freezes the shared landing imprint to true support cells under a one-point overhang', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const board = createBoard();
@@ -1243,18 +1286,84 @@ describe('Puzzle undo presentation reset', () => {
 
     internals.consumeEvents(
       [{ type: 'piece-locked', piece: 'I', cells }],
-      { mode: 'marathon', board } as unknown as GameState,
+      { mode: 'race', board } as unknown as GameState,
     );
 
-    expect(internals.classicFeedbackCues).toHaveLength(1);
-    expect(internals.classicFeedbackCues[0]?.cells).toEqual([
+    expect(internals.classicFeedbackCues).toHaveLength(0);
+    expect(internals.lockPulse?.cells).toEqual([
       { x: 4, y: BOARD_HEIGHT - 2 },
     ]);
 
     board[BOARD_HEIGHT - 1]![3] = 'T';
-    expect(internals.classicFeedbackCues[0]?.cells).toEqual([
+    expect(internals.lockPulse?.cells).toEqual([
       { x: 4, y: BOARD_HEIGHT - 2 },
     ]);
+  });
+
+  it('limits a hard drop to four short column traces and suppresses it under a clear', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const trail: NonNullable<RendererInternals['trail']> = {
+      cells: [
+        { x: 3, y: 39 },
+        { x: 4, y: 39 },
+        { x: 5, y: 39 },
+        { x: 6, y: 39 },
+      ],
+      distance: 18,
+      elapsed: 0,
+      duration: 50,
+      piece: 'I',
+    };
+    const recorder = createGraphicsRecorder();
+    internals.drawHardDropTraces(recorder.graphics, trail, 0, layout);
+    const segments = recorder.operations.filter((operation) => operation.kind === 'segment');
+    expect(segments).toHaveLength(8);
+    expect(new Set(segments.map((operation) => operation.values[0])).size).toBe(4);
+    expect(segments.every((operation) => {
+      const [startX, startY, endX, endY] = operation.values;
+      return startX === endX && endY! - startY! <= layout.cell * 0.65;
+    })).toBe(true);
+    expect(recorder.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
+
+    internals.consumeEvents(
+      [
+        { type: 'hard-dropped', piece: 'I', distance: 18 },
+        { type: 'piece-locked', piece: 'I', cells: trail.cells },
+        { type: 'clear-started', rows: [BOARD_HEIGHT - 1] },
+      ],
+      { mode: 'marathon', board: createBoard() } as unknown as GameState,
+    );
+    expect(internals.trail).toBeNull();
+    expect(internals.lockPulse).toMatchObject({ strength: 0.55, duration: 100 });
+  });
+
+  it('keeps landing feedback as a bounded six-tick support imprint', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const imprint: NonNullable<RendererInternals['lockPulse']> = {
+      cells: [{ x: 4, y: BOARD_HEIGHT - 1 }],
+      elapsed: 0,
+      duration: 100,
+      piece: 'O',
+      strength: 1,
+    };
+    const normal = createGraphicsRecorder();
+    internals.drawLandingImprint(normal.graphics, imprint, 0, layout);
+    expect(normal.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(1);
+    expect(normal.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(2);
+    const fill = normal.operations.find((operation) => operation.kind === 'fill');
+    expect((fill?.options as { alpha?: number }).alpha).toBeLessThanOrEqual(0.12);
+    expect(hasBroadHorizontalGeometry(normal.operations, layout.width)).toBe(false);
+
+    renderer.setOptions({ reducedMotion: true });
+    const reducedStart = createGraphicsRecorder();
+    const reducedLater = createGraphicsRecorder();
+    internals.drawLandingImprint(reducedStart.graphics, imprint, 0, layout);
+    internals.drawLandingImprint(reducedLater.graphics, imprint, 0.5, layout);
+    expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
   });
 
   it('keeps Classic feedback inside the well and uses stationary reduced-motion geometry', () => {
@@ -1277,7 +1386,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(initial.operations.some((operation) => operation.kind === 'segment')).toBe(true);
     expect(initial.operations.some((operation) => (
       operation.kind === 'stroke'
-      && (operation.options as { color?: number }).color === COLORS.actionInk
+      && (operation.options as { color?: number }).color === COLORS.classic
     ))).toBe(true);
     expect(hasBroadHorizontalGeometry(initial.operations, layout.width)).toBe(false);
     expect(initial.operations
