@@ -46,16 +46,16 @@ describe('T5 bright mineral matte material', () => {
 
   it('keeps bedrock and falling stones in one cold-slate family with distinct age', () => {
     expect(BEDROCK_MATERIAL).toEqual({
-      fillStart: 0x8696a3,
-      fillEnd: 0x657580,
-      edge: 0x2d3942,
-      innerEdge: 0xcdd6dd,
+      fillStart: 0x737d82,
+      fillEnd: 0x5b666b,
+      edge: 0x2f373c,
+      innerEdge: 0xaab3b7,
     });
     expect(SURVIVAL_STONE_MATERIAL).toEqual({
-      fillStart: 0xa7b4be,
-      fillEnd: 0x7d909e,
-      edge: 0x3e4d58,
-      innerEdge: 0xe3ebf0,
+      fillStart: 0x9aa4a9,
+      fillEnd: 0x747f85,
+      edge: 0x434c51,
+      innerEdge: 0xd0d7da,
     });
     expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(BEDROCK_MATERIAL);
     expect(Object.values(PIECE_MATERIALS)).not.toContainEqual(SURVIVAL_STONE_MATERIAL);

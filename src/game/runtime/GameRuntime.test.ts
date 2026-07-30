@@ -98,18 +98,17 @@ describe('GameRuntime public state boundary', () => {
     });
     const canonicalBoard = runtime.getState().board;
 
+    runtime.setSurvivalEntryBedrockRows(2);
     await runtime.mount(document.createElement('div'));
     expect(rendererSetOptions).toHaveBeenCalledWith({
       reducedMotion: false,
-      survivalEntryBedrockRows: 1,
+      survivalEntryBedrockRows: 2,
     });
 
-    runtime.setSurvivalEntryBedrockRows(2);
     runtime.setSurvivalEntryBedrockRows(3);
     runtime.setSurvivalEntryBedrockRows(null);
 
-    expect(rendererSetOptions.mock.calls.slice(-3).map(([options]) => options)).toEqual([
-      { survivalEntryBedrockRows: 2 },
+    expect(rendererSetOptions.mock.calls.slice(-2).map(([options]) => options)).toEqual([
       { survivalEntryBedrockRows: 3 },
       { survivalEntryBedrockRows: null },
     ]);

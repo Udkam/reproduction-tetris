@@ -632,38 +632,52 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalDebrisPresentation.size).toBe(0);
   });
 
-  it('draws one top fissure and rigid-pair silhouette for the warned Survival column', () => {
+  it('draws one top fissure and the frozen one- or two-stone warning silhouette', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const starts: Array<[number, number]> = [];
-    const strokes: unknown[] = [];
-    const graphics = {
-      circle: () => graphics,
-      fill: () => graphics,
-      moveTo: (x: number, y: number) => {
-        starts.push([x, y]);
-        return graphics;
-      },
-      lineTo: () => graphics,
-      stroke: (options: unknown) => {
-        strokes.push(options);
-        return graphics;
-      },
+    const drawWarning = (height: 1 | 2) => {
+      const segments: Array<readonly [number, number, number, number]> = [];
+      const strokes: unknown[] = [];
+      let start: readonly [number, number] = [0, 0];
+      const graphics = {
+        circle: () => graphics,
+        fill: () => graphics,
+        moveTo: (x: number, y: number) => {
+          start = [x, y];
+          return graphics;
+        },
+        lineTo: (x: number, y: number) => {
+          segments.push([start[0], start[1], x, y]);
+          return graphics;
+        },
+        stroke: (options: unknown) => {
+          strokes.push(options);
+          return graphics;
+        },
+      };
+
+      internals.drawSurvivalPressureEffects(
+        graphics,
+        {
+          mode: 'race',
+          survivalDebrisWarningColumns: [2],
+          survivalDebrisWarningHeight: height,
+        } as unknown as GameState,
+        { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+      );
+      return { segments, strokes };
     };
 
-    internals.drawSurvivalPressureEffects(
-      graphics,
-      {
-        mode: 'race',
-        survivalDebrisWarningColumns: [2],
-        survivalDebrisWarningHeight: 2,
-      } as unknown as GameState,
-      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
-    );
-
-    expect(starts.some(([x]) => x > 43 && x < 57)).toBe(true);
-    expect(starts.some(([x]) => x > 140)).toBe(false);
-    expect(strokes).toHaveLength(2);
+    const single = drawWarning(1);
+    const double = drawWarning(2);
+    expect(single.segments.some(([x]) => x > 43 && x < 57)).toBe(true);
+    expect(single.segments.some(([x]) => x > 140)).toBe(false);
+    expect(single.strokes).toHaveLength(2);
+    expect(double.strokes).toHaveLength(2);
+    expect(double.segments).toHaveLength(single.segments.length + 1);
+    const singleBottom = Math.max(...single.segments.flatMap((segment) => [segment[1], segment[3]]));
+    const doubleBottom = Math.max(...double.segments.flatMap((segment) => [segment[1], segment[3]]));
+    expect(doubleBottom).toBeGreaterThan(singleBottom);
   });
 
   it('keeps a local bedrock boundary cue even when reduced motion removes the shift', () => {

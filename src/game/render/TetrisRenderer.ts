@@ -273,8 +273,16 @@ export interface RendererSnapshot {
     elapsedMs: number;
     durationMs: number;
   } | null;
-  survivalDebris: Array<{ id: number; x: number; y: number; presentationY: number; cells: Cell[] }>;
+  survivalDebris: Array<{
+    id: number;
+    x: number;
+    y: number;
+    height: 1 | 2;
+    presentationY: number;
+    cells: Cell[];
+  }>;
   survivalDebrisWarningColumns: number[];
+  survivalDebrisWarningHeight: GameState['survivalDebrisWarningHeight'];
   survivalStoneCueCount: number;
   survivalBedrockCue: {
     direction: BoardShiftDirection;
@@ -453,6 +461,7 @@ export class TetrisRenderer {
     mutationFilters: { freeze: false, collapse: false, activeCount: 0 },
     survivalDebris: [],
     survivalDebrisWarningColumns: [],
+    survivalDebrisWarningHeight: null,
     survivalStoneCueCount: 0,
     survivalBedrockCue: null,
     survivalEntryBedrockRows: null,
@@ -1585,41 +1594,59 @@ export class TetrisRenderer {
       const top = entry.y + inset * 1.55;
       const bottom = entry.y + size - inset * 1.55;
       const variant = Math.abs(entry.cell.x * 29 + entry.cell.y * 13) % 4;
-      const pivotX = left + (right - left) * ([0.43, 0.57, 0.48, 0.62][variant] ?? 0.5);
-      const pivotY = top + (bottom - top) * ([0.46, 0.58, 0.63, 0.4][variant] ?? 0.5);
-      const mirror = variant % 2 === 0 ? 1 : -1;
+      const width = right - left;
+      const height = bottom - top;
+      const patchOrigins = [
+        [0.12, 0.16],
+        [0.56, 0.54],
+        [0.18, 0.58],
+        [0.54, 0.14],
+      ] as const;
+      const [patchX, patchY] = patchOrigins[variant] ?? patchOrigins[0];
+      const patchLeft = left + width * patchX;
+      const patchTop = top + height * patchY;
 
       graphics
         .poly([
-          left, top + chip * 0.7,
-          pivotX, pivotY,
-          left + chip * 0.4, bottom,
-          left, bottom,
+          patchLeft, patchTop + height * 0.08,
+          patchLeft + width * 0.2, patchTop,
+          patchLeft + width * 0.31, patchTop + height * 0.15,
+          patchLeft + width * 0.12, patchTop + height * 0.26,
         ])
-        .fill({ color: material.innerEdge, alpha: Math.min(0.12, alpha * 0.14) });
+        .fill({ color: material.edge, alpha: Math.min(0.2, alpha * 0.24) });
+      const chipOnLeft = variant === 0 || variant === 2;
       graphics
         .poly([
-          pivotX, pivotY,
-          right, top + chip * 0.35,
-          right, bottom,
-          right - chip * 0.8, bottom,
+          chipOnLeft ? left : right - chip,
+          top,
+          chipOnLeft ? left + chip : right,
+          top,
+          chipOnLeft ? left : right,
+          top + chip * 0.72,
         ])
-        .fill({ color: material.edge, alpha: Math.min(0.3, alpha * 0.36) });
+        .fill({ color: material.innerEdge, alpha: Math.min(0.13, alpha * 0.15) });
 
-      const crackStartX = pivotX - mirror * chip * 0.42;
-      const crackStartY = top + chip * 0.28;
-      const crackMidX = pivotX + mirror * chip * 0.18;
-      const crackMidY = pivotY;
-      const crackEndX = pivotX - mirror * chip * 0.52;
-      const crackEndY = bottom - chip * 0.24;
+      const crackTemplates = [
+        [0.62, 0.3, 0.5, 0.45, 0.58, 0.56],
+        [0.34, 0.28, 0.46, 0.42, 0.38, 0.56],
+        [0.64, 0.58, 0.52, 0.46, 0.44, 0.56],
+        [0.3, 0.62, 0.42, 0.48, 0.36, 0.36],
+      ] as const;
+      const crack = crackTemplates[variant] ?? crackTemplates[0];
       this.strokeSegments(
         graphics,
         [
-          [crackStartX, crackStartY, crackMidX, crackMidY],
-          [crackMidX, crackMidY, crackEndX, crackEndY],
+          [
+            left + width * crack[0], top + height * crack[1],
+            left + width * crack[2], top + height * crack[3],
+          ],
+          [
+            left + width * crack[2], top + height * crack[3],
+            left + width * crack[4], top + height * crack[5],
+          ],
         ],
         material.edge,
-        Math.min(0.46, alpha * 0.52),
+        Math.min(0.4, alpha * 0.46),
         crackWidth,
       );
 
@@ -1641,39 +1668,42 @@ export class TetrisRenderer {
     alpha: number,
   ): void {
     const crackWidth = Math.max(0.65, size * 0.042);
-    const chip = Math.max(1.4, size * 0.16);
+    const chip = Math.max(1.4, size * 0.14);
     for (const entry of cells) {
       const left = entry.x + inset * 1.5;
       const top = entry.y + inset * 1.5;
       const right = entry.x + size - inset * 1.5;
       const bottom = entry.y + size - inset * 1.5;
       const variant = Math.abs(entry.cell.x * 17 + entry.cell.y * 31) % 3;
-      const middleX = left + (right - left) * (variant === 0 ? 0.44 : variant === 1 ? 0.58 : 0.5);
-      const middleY = top + (bottom - top) * (variant === 0 ? 0.52 : variant === 1 ? 0.42 : 0.6);
+      const width = right - left;
+      const height = bottom - top;
+      const middleX = left + width * (variant === 0 ? 0.44 : variant === 1 ? 0.58 : 0.5);
+      const middleY = top + height * (variant === 0 ? 0.5 : variant === 1 ? 0.42 : 0.58);
 
       graphics
         .poly([
-          right - chip, top,
-          right, top,
-          right, top + chip,
+          left + width * 0.56, top + height * 0.12,
+          left + width * 0.82, top + height * 0.08,
+          left + width * 0.9, top + height * 0.3,
+          left + width * 0.68, top + height * 0.36,
         ])
-        .fill({ color: material.edge, alpha: Math.min(0.5, alpha * 0.64) });
+        .fill({ color: material.edge, alpha: Math.min(0.24, alpha * 0.3) });
       graphics
         .poly([
           left, bottom - chip,
-          left + chip, bottom,
+          left + chip * 0.9, bottom,
           left, bottom,
         ])
-        .fill({ color: material.innerEdge, alpha: Math.min(0.22, alpha * 0.28) });
+        .fill({ color: material.innerEdge, alpha: Math.min(0.14, alpha * 0.17) });
       this.strokeSegments(
         graphics,
         [
-          [left, middleY, middleX, middleY + chip * 0.28],
-          [middleX, middleY + chip * 0.28, right - chip * 0.48, bottom - chip * 0.56],
-          [middleX, middleY + chip * 0.28, middleX - chip * 0.44, bottom - chip * 0.18],
+          [middleX - width * 0.15, middleY - height * 0.12, middleX, middleY],
+          [middleX, middleY, middleX + width * 0.13, middleY + height * 0.16],
+          [middleX, middleY, middleX - width * 0.1, middleY + height * 0.18],
         ],
         material.edge,
-        Math.min(0.58, alpha * 0.7),
+        Math.min(0.5, alpha * 0.58),
         crackWidth,
       );
     }
@@ -1708,20 +1738,37 @@ export class TetrisRenderer {
       const centerX = layout.x + (column + 0.5) * layout.cell;
       const top = layout.y + Math.max(2, layout.cell * 0.08);
       const half = layout.cell * 0.31;
-      const silhouetteTop = top + layout.cell * 0.19;
-      const silhouetteBottom = top + layout.cell * 0.82;
-      const seamY = top + layout.cell * 0.49;
+      const warningHeight = state.survivalDebrisWarningHeight ?? 1;
+      const silhouetteTop = top + layout.cell * 0.21;
+      const silhouetteCellHeight = layout.cell * 0.29;
+      const silhouetteBottom = silhouetteTop + silhouetteCellHeight * warningHeight;
+      const silhouetteSegments: Array<readonly [number, number, number, number]> = [
+        [centerX - half * 0.76, silhouetteTop, centerX - half * 0.76, silhouetteBottom],
+        [centerX + half * 0.76, silhouetteTop, centerX + half * 0.76, silhouetteBottom],
+        [centerX - half * 0.76, silhouetteBottom, centerX + half * 0.76, silhouetteBottom],
+      ];
+      if (warningHeight === 2) {
+        const seamY = silhouetteTop + silhouetteCellHeight;
+        silhouetteSegments.push([
+          centerX - half * 0.76,
+          seamY,
+          centerX + half * 0.76,
+          seamY,
+        ]);
+      }
       this.strokeSegments(graphics, [
         [centerX - half, top + layout.cell * 0.04, centerX - layout.cell * 0.13, top + layout.cell * 0.16],
         [centerX - layout.cell * 0.13, top + layout.cell * 0.16, centerX + layout.cell * 0.02, top + layout.cell * 0.07],
         [centerX + layout.cell * 0.02, top + layout.cell * 0.07, centerX + layout.cell * 0.16, top + layout.cell * 0.18],
         [centerX + layout.cell * 0.16, top + layout.cell * 0.18, centerX + half, top + layout.cell * 0.1],
       ], warningColor, 0.78 * warningPulse, Math.max(1.2, layout.cell * 0.052));
-      this.strokeSegments(graphics, [
-        [centerX - half * 0.76, silhouetteTop, centerX - half * 0.76, silhouetteBottom],
-        [centerX + half * 0.76, silhouetteTop, centerX + half * 0.76, silhouetteBottom],
-        [centerX - half * 0.76, seamY, centerX + half * 0.76, seamY],
-      ], SURVIVAL_STONE_MATERIAL.edge, 0.48 * warningPulse, Math.max(1, layout.cell * 0.038));
+      this.strokeSegments(
+        graphics,
+        silhouetteSegments,
+        SURVIVAL_STONE_MATERIAL.edge,
+        0.48 * warningPulse,
+        Math.max(1, layout.cell * 0.038),
+      );
     }
 
     for (const cue of this.survivalStoneCues) {
@@ -3682,6 +3729,7 @@ export class TetrisRenderer {
           }))
         : [],
       survivalDebrisWarningColumns: state.mode === 'race' ? [...state.survivalDebrisWarningColumns] : [],
+      survivalDebrisWarningHeight: state.mode === 'race' ? state.survivalDebrisWarningHeight : null,
       survivalStoneCueCount: this.survivalStoneCues.length,
       survivalBedrockCue: this.survivalBedrockCue
         ? {

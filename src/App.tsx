@@ -1104,9 +1104,9 @@ export function GameSession({
     });
     const removeMotionListener = motionQuery.subscribe((matches) => nextRuntime.setReducedMotion(matches));
     runtimeRef.current = nextRuntime;
-    setRuntime(nextRuntime);
     void nextRuntime.mount(host).then(() => {
       if (disposed) return;
+      setRuntime(nextRuntime);
       nextRuntime.setReducedMotion(motionQuery.matches);
       const canvas = host.querySelector('canvas');
       canvas?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);

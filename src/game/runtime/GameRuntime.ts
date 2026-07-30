@@ -74,6 +74,7 @@ export class GameRuntime {
   private destroyed = false;
   private qaFrozen = false;
   private inputEnabled: boolean;
+  private survivalEntryBedrockRows: number | null;
   private readonly onState?: RuntimeOptions['onState'];
 
   constructor(private readonly options: RuntimeOptions = {}) {
@@ -81,6 +82,7 @@ export class GameRuntime {
     this.audio = new AudioEngine(this.platform);
     this.state = createInitialState(options.seed, options.mode, options.puzzleId);
     this.inputEnabled = options.inputEnabled ?? true;
+    this.survivalEntryBedrockRows = options.survivalEntryBedrockRows ?? null;
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
     this.audio.setVolume(options.audioVolume ?? 1);
@@ -94,7 +96,7 @@ export class GameRuntime {
     }
     this.renderer.setOptions({
       reducedMotion: this.options.reducedMotion ?? false,
-      survivalEntryBedrockRows: this.options.survivalEntryBedrockRows ?? null,
+      survivalEntryBedrockRows: this.survivalEntryBedrockRows,
     });
     this.renderer.setFrameCallback(this.frame);
     this.input = new InputController((action) => this.handleAction(action, true), this.platform.windowTarget(), this.onWindowBlur);
@@ -182,6 +184,7 @@ export class GameRuntime {
   }
 
   setSurvivalEntryBedrockRows(rows: number | null): void {
+    this.survivalEntryBedrockRows = rows;
     this.renderer.setOptions({ survivalEntryBedrockRows: rows });
     this.flushRender(0);
   }
