@@ -561,3 +561,5 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - QA rejects `3d21df8`: malformed in-memory best data can still advance the
   frontier, and two direct regressions are missing. Only the same progress
   source/test paths reopen; selector work remains closed.
+- Correction `80da444` closes both gaps; 2 files / 46 tests and typecheck pass.
+  The original rejecting reviewer owns re-audit.

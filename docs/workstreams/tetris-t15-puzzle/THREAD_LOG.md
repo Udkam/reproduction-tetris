@@ -1121,3 +1121,18 @@
 - Reopen only the same source/test paths. Next action: share full in-memory
   validation across frontier queries, add both regressions, rerun the bounded
   gates and request re-audit from the same reviewer.
+
+## Progress-unlock correction — 2026-07-30
+
+- Correction SHA: `80da444`.
+- Exact paths remain `src/puzzleProgress.ts` and
+  `src/puzzleProgress.test.ts`.
+- Frontier derivation now rejects a progress object unless both completed IDs
+  and best records pass the same canonical validation.
+- Direct regressions cover `null`, non-positive and unknown-ID in-memory best
+  data plus the out-of-order completion state before and after its prerequisite
+  frontier opens.
+- Corrected bounded matrix: 2 files / 46 tests, one worker, pass; typecheck
+  passes.
+- Next action: original rejecting reviewer re-audits exact correction
+  `80da444`; no React/UI source opens before disposition.

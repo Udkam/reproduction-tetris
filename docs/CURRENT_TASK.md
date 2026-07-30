@@ -92,6 +92,15 @@ frontier query require the same complete progress validation used by record
 updates, add both regression cases, rerun the direct and bounded App matrices
 plus typecheck, then return the exact correction to the rejecting reviewer.
 
+**Progress-unlock correction (2026-07-30):** `80da444` makes frontier
+derivation validate both canonical completions and the full best-record object;
+invalid `null`, non-positive count and unknown-ID in-memory best data now all
+fall back to fresh 01–03. A two-stage regression proves that three migrated
+completions in a later band do not advance while the prerequisite frontier is
+closed, then do count immediately after that frontier opens. The corrected
+bounded matrix passes 2 files / 46 tests with one worker and typecheck passes.
+Return `80da444` to the original reviewer; selector adaptation remains closed.
+
 **Open Phase-7 slice — persistence-v5:** exact product/test paths are
 `src/puzzleProgress.ts`, `src/puzzleProgress.test.ts`, `src/App.tsx`, and
 `src/App.test.ts`. This slice may add the v5 key/revision, freeze v4/v3/v2/v1 domains,
