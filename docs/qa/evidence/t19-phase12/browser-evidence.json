@@ -1,0 +1,1206 @@
+{
+  "taskId": "TETRIS-T19-PHASE12",
+  "sourceSha": "e56ab2575fe67f05003251429d259b6697ff6b4c",
+  "baseUrl": "http://127.0.0.1:5178/",
+  "capturedAt": "2026-07-31T22:09:53.689Z",
+  "method": "One bounded Vite server and one Playwright Chromium instance; ordinary UI controls and persisted stable-ID progress only.",
+  "screens": {
+    "homeDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "wordmarkCenterDelta": [
+        -7.92,
+        0
+      ],
+      "actionCenters": [
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        },
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        },
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        },
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        }
+      ],
+      "visibleStartLabels": [
+        "经典",
+        "生存",
+        "异变",
+        "解谜"
+      ]
+    },
+    "homePortraitEnReduced": {
+      "viewport": [
+        390,
+        844
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "wordmarkCenterDelta": [
+        -77.65,
+        0
+      ],
+      "actionCenters": [
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        },
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        },
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        },
+        {
+          "mode": null,
+          "arrowViewBox": "0 0 28 24",
+          "arrowPath": "M3 12h22m-6-6 6 6-6 6",
+          "arrowToBoxDelta": [
+            0,
+            0
+          ]
+        }
+      ],
+      "visibleStartLabels": [
+        "Classic",
+        "Survival",
+        "Mutation",
+        "Puzzle"
+      ]
+    },
+    "survivalWarningDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "state": {
+        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+        "screen": "game",
+        "mode": "race",
+        "status": "playing",
+        "countdown": null,
+        "phase": "active",
+        "puzzleId": null,
+        "puzzleCompletion": null,
+        "puzzleTargetsRemaining": 0,
+        "puzzleTargetsInitial": 0,
+        "puzzleUndoDepth": 0,
+        "mutation": null,
+        "score": 0,
+        "lines": 0,
+        "combo": 0,
+        "bedrockRows": 3,
+        "bedrockIntervalSeconds": 13,
+        "bedrockNextSeconds": 0,
+        "bedrockPending": true,
+        "stoneIntervalSeconds": 20,
+        "stoneNextSeconds": 2,
+        "fallingStones": [],
+        "fallTicks": 40,
+        "placedPieces": 1,
+        "active": {
+          "type": "J",
+          "x": 3,
+          "y": 29,
+          "rotation": 0
+        },
+        "next": "L",
+        "nextPreviews": [
+          "L"
+        ],
+        "visibleBoard": [
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "....T.....",
+          "...TTT....",
+          "BBBBBBBBBB",
+          "BBBBBBBBBB",
+          "BBBBBBBBBB"
+        ]
+      },
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 810,
+          "resolution": 1
+        },
+        "board": {
+          "x": 61.5,
+          "y": 14,
+          "width": 391,
+          "height": 782,
+          "cell": 39.1
+        },
+        "preview": {
+          "x": 504.5,
+          "y": 429.5,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 3,
+            "y": 29
+          },
+          {
+            "x": 3,
+            "y": 30
+          },
+          {
+            "x": 4,
+            "y": 30
+          },
+          {
+            "x": 5,
+            "y": 30
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 3,
+            "y": 33
+          },
+          {
+            "x": 3,
+            "y": 34
+          },
+          {
+            "x": 4,
+            "y": 34
+          },
+          {
+            "x": 5,
+            "y": 34
+          }
+        ],
+        "visibleLockedCells": 34,
+        "presentation": {
+          "x": 3,
+          "y": 29,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [
+          2
+        ],
+        "survivalDebrisWarningHeight": 1,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      }
+    },
+    "survivalStoneDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "state": {
+        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+        "screen": "game",
+        "mode": "race",
+        "status": "playing",
+        "countdown": null,
+        "phase": "active",
+        "puzzleId": null,
+        "puzzleCompletion": null,
+        "puzzleTargetsRemaining": 0,
+        "puzzleTargetsInitial": 0,
+        "puzzleUndoDepth": 0,
+        "mutation": null,
+        "score": 0,
+        "lines": 0,
+        "combo": 0,
+        "bedrockRows": 3,
+        "bedrockIntervalSeconds": 13,
+        "bedrockNextSeconds": 0,
+        "bedrockPending": true,
+        "stoneIntervalSeconds": 19,
+        "stoneNextSeconds": 19,
+        "fallingStones": [
+          {
+            "x": 2,
+            "y": 22
+          }
+        ],
+        "fallTicks": 40,
+        "placedPieces": 1,
+        "active": {
+          "type": "J",
+          "x": 3,
+          "y": 33,
+          "rotation": 0
+        },
+        "next": "L",
+        "nextPreviews": [
+          "L"
+        ],
+        "visibleBoard": [
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "....T.....",
+          "...TTT....",
+          "BBBBBBBBBB",
+          "BBBBBBBBBB",
+          "BBBBBBBBBB"
+        ]
+      },
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 810,
+          "resolution": 1
+        },
+        "board": {
+          "x": 61.5,
+          "y": 14,
+          "width": 391,
+          "height": 782,
+          "cell": 39.1
+        },
+        "preview": {
+          "x": 504.5,
+          "y": 429.5,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 3,
+            "y": 33
+          },
+          {
+            "x": 3,
+            "y": 34
+          },
+          {
+            "x": 4,
+            "y": 34
+          },
+          {
+            "x": 5,
+            "y": 34
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 3,
+            "y": 33
+          },
+          {
+            "x": 3,
+            "y": 34
+          },
+          {
+            "x": 4,
+            "y": 34
+          },
+          {
+            "x": 5,
+            "y": 34
+          }
+        ],
+        "visibleLockedCells": 34,
+        "presentation": {
+          "x": 3,
+          "y": 32.82370219479825,
+          "offsetX": 0,
+          "offsetY": -0.17629780520174876
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [
+          {
+            "id": 1,
+            "x": 2,
+            "y": 22,
+            "height": 1,
+            "presentationY": 21.66404612017593,
+            "cells": [
+              {
+                "x": 2,
+                "y": 22
+              }
+            ]
+          }
+        ],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 1,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      }
+    },
+    "settingsSurvivalDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    },
+    "mutationDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "state": {
+        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+        "screen": "game",
+        "mode": "sprint",
+        "status": "playing",
+        "countdown": null,
+        "phase": "active",
+        "puzzleId": null,
+        "puzzleCompletion": null,
+        "puzzleTargetsRemaining": 0,
+        "puzzleTargetsInitial": 0,
+        "puzzleUndoDepth": 0,
+        "mutation": {
+          "activeCarrier": null,
+          "lockedCarriers": 0,
+          "freezeTicks": 0,
+          "collapseTicks": 0,
+          "multiplierTicks": 0,
+          "lastItem": null
+        },
+        "score": 0,
+        "lines": 0,
+        "combo": 0,
+        "bedrockRows": 0,
+        "bedrockIntervalSeconds": null,
+        "bedrockNextSeconds": null,
+        "bedrockPending": false,
+        "stoneIntervalSeconds": null,
+        "stoneNextSeconds": null,
+        "fallingStones": [],
+        "fallTicks": 48,
+        "placedPieces": 0,
+        "active": {
+          "type": "O",
+          "x": 4,
+          "y": 19,
+          "rotation": 0
+        },
+        "next": "T",
+        "nextPreviews": [
+          "T"
+        ],
+        "visibleBoard": [
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          ".........."
+        ]
+      },
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 810,
+          "resolution": 1
+        },
+        "board": {
+          "x": 61.5,
+          "y": 14,
+          "width": 391,
+          "height": 782,
+          "cell": 39.1
+        },
+        "preview": {
+          "x": 504.5,
+          "y": 429.5,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "T",
+        "previewPieces": [
+          "T"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 19
+          },
+          {
+            "x": 5,
+            "y": 19
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 20
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 5,
+            "y": 38
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 4,
+          "y": 19,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      }
+    },
+    "introDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "category": "intro",
+      "tabs": [
+        {
+          "label": "入门",
+          "selected": true
+        },
+        {
+          "label": "简单",
+          "selected": false
+        },
+        {
+          "label": "困难",
+          "selected": false
+        }
+      ],
+      "activeTab": "入门",
+      "cardCount": 3,
+      "squareCards": true,
+      "cardSizes": [
+        [
+          105,
+          105
+        ],
+        [
+          105,
+          105
+        ],
+        [
+          105,
+          105
+        ]
+      ],
+      "unlockedCount": 3,
+      "selectedId": "t3r-shaft-01",
+      "lesson": "先完成一行先补最接近完整的目标行；消行腾出的空间会让后续更清楚。",
+      "liveGuidancePresent": false,
+      "startDisabled": false,
+      "requirement": null,
+      "masteryKeys": []
+    },
+    "hardLockedDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "category": "hard",
+      "tabs": [
+        {
+          "label": "入门",
+          "selected": false
+        },
+        {
+          "label": "简单",
+          "selected": false
+        },
+        {
+          "label": "困难",
+          "selected": true
+        }
+      ],
+      "activeTab": "困难",
+      "cardCount": 20,
+      "squareCards": true,
+      "cardSizes": [
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ]
+      ],
+      "unlockedCount": 0,
+      "selectedId": "tm-puzzle-31",
+      "lesson": null,
+      "liveGuidancePresent": false,
+      "startDisabled": true,
+      "requirement": "在“回路”中用 10 步内通关，掌握“不埋空格”后解锁。",
+      "masteryKeys": [
+        "不埋空格— / 10",
+        "两块一起看— / 10",
+        "压平但留口— / 10"
+      ]
+    },
+    "hardUnlockedDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "category": "hard",
+      "tabs": [
+        {
+          "label": "入门",
+          "selected": false
+        },
+        {
+          "label": "简单",
+          "selected": false
+        },
+        {
+          "label": "困难",
+          "selected": true
+        }
+      ],
+      "activeTab": "困难",
+      "cardCount": 20,
+      "squareCards": true,
+      "cardSizes": [
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ],
+        [
+          95,
+          95
+        ]
+      ],
+      "unlockedCount": 20,
+      "selectedId": "tm-puzzle-31",
+      "lesson": null,
+      "liveGuidancePresent": false,
+      "startDisabled": false,
+      "requirement": "已通过“回路”以 10 步掌握“不埋空格”。",
+      "masteryKeys": [
+        "不埋空格10 / 10",
+        "两块一起看10 / 10",
+        "压平但留口10 / 10"
+      ]
+    },
+    "easyPortraitEnReduced": {
+      "viewport": [
+        390,
+        844
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "category": "easy",
+      "tabs": [
+        {
+          "label": "Intro",
+          "selected": false
+        },
+        {
+          "label": "Easy",
+          "selected": true
+        },
+        {
+          "label": "Hard",
+          "selected": false
+        }
+      ],
+      "activeTab": "Easy",
+      "cardCount": 27,
+      "squareCards": true,
+      "cardSizes": [
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ],
+        [
+          53,
+          53
+        ]
+      ],
+      "unlockedCount": 0,
+      "selectedId": "t3r-cascade-06",
+      "lesson": "Do not bury spaceCheck below the piece before locking; a covered cell usually costs several later clears.",
+      "liveGuidancePresent": false,
+      "startDisabled": true,
+      "requirement": null,
+      "masteryKeys": []
+    },
+    "introShortEnReduced": {
+      "viewport": [
+        844,
+        390
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "category": "intro",
+      "tabs": [
+        {
+          "label": "Intro",
+          "selected": true
+        },
+        {
+          "label": "Easy",
+          "selected": false
+        },
+        {
+          "label": "Hard",
+          "selected": false
+        }
+      ],
+      "activeTab": "Intro",
+      "cardCount": 3,
+      "squareCards": true,
+      "cardSizes": [
+        [
+          83,
+          83
+        ],
+        [
+          83,
+          83
+        ],
+        [
+          83,
+          83
+        ]
+      ],
+      "unlockedCount": 3,
+      "selectedId": "t3r-shaft-01",
+      "lesson": "Finish one row firstClose the nearest prepared row; the clear creates room for every choice after it.",
+      "liveGuidancePresent": false,
+      "startDisabled": false,
+      "requirement": null,
+      "masteryKeys": []
+    },
+    "puzzleGameDesktopZh": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "nextSegments": 2,
+      "liveGuidancePresent": false,
+      "state": {
+        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+        "screen": "game",
+        "mode": "puzzle",
+        "status": "playing",
+        "countdown": null,
+        "phase": "active",
+        "puzzleId": "t3r-shaft-01",
+        "puzzleCompletion": "active",
+        "puzzleTargetsRemaining": 24,
+        "puzzleTargetsInitial": 24,
+        "puzzleUndoDepth": 0,
+        "mutation": null,
+        "score": 0,
+        "lines": 0,
+        "combo": 0,
+        "bedrockRows": 0,
+        "bedrockIntervalSeconds": null,
+        "bedrockNextSeconds": null,
+        "bedrockPending": false,
+        "stoneIntervalSeconds": null,
+        "stoneNextSeconds": null,
+        "fallingStones": [],
+        "fallTicks": 48,
+        "placedPieces": 0,
+        "active": {
+          "type": "L",
+          "x": 3,
+          "y": 19,
+          "rotation": 0
+        },
+        "next": "T",
+        "nextPreviews": [
+          "T",
+          "I"
+        ],
+        "visibleBoard": [
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "...OOLLJJJ",
+          "TTTOO.LZZJ",
+          ".TIIIIL.ZZ"
+        ]
+      }
+    }
+  },
+  "consoleErrors": []
+}
