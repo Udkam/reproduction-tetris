@@ -1,0 +1,36 @@
+{
+  "taskId": "TETRIS-T19-PHASE12-BEDROCK-WALL",
+  "sourceSha": "2e14ec364027f53dba72925dc36a5d89b61cce21",
+  "capturedAt": "2026-08-01T07:36:21.6473647+08:00",
+  "method": "Official develop-web-game Playwright client against one bounded Vite listener; listener released immediately after capture.",
+  "viewport": [1280, 720],
+  "locale": "zh-CN",
+  "screenshot": {
+    "path": "survival-bedrock-wall-1280x720-zh.png",
+    "sha256": "0412AD50D3E2CF1301F6CD554BDDCA14D7B3DF8D73639950E7F55DEDE9BF3CB2"
+  },
+  "state": {
+    "path": "survival-bedrock-wall-1280x720-zh.state.json",
+    "sha256": "65C6D59246CCDD43F62794501BE4A6CDEE72B04EE0050CAA6A627B9096E1CC29",
+    "screen": "game",
+    "mode": "race",
+    "status": "playing",
+    "bedrockRows": 3,
+    "visibleBedrockCells": 30
+  },
+  "clientErrorArtifactPresent": false,
+  "visualReview": {
+    "flatContactTop": true,
+    "continuousCrossGridRockFace": true,
+    "cellGridVisible": false,
+    "masonryOrPebbleRead": false,
+    "zigzagOrCamouflageRead": false,
+    "extraVisibleCanvasIntroduced": false
+  },
+  "resourceReview": {
+    "ownedPid": 3020,
+    "ownedPort": 5178,
+    "pidReleased": true,
+    "portReleased": true
+  }
+}
