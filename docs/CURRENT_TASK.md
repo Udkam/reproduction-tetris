@@ -66,9 +66,12 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    mastered only when its saved best operation count is at or below `optimal + 5`;
    completion alone is insufficient. `optimal` must be established by a deterministic,
    no-beam search over every unique Core decision state capable of finishing before the
-   candidate route. The only admitted pruning is the proved target-row deficit bound:
-   each still-empty required cell must be supplied before its target row can clear and
-   one future tetromino supplies at most four cells. No earlier frontier may contain a
+   candidate route. The only admitted pruning is a proved column-conservation bound:
+   every distinct surviving target row still consumes one cell from every column when
+   it clears; all ordinary cells already in that column are credited as reusable supply,
+   and only the summed column deficits are divided by four future cells per tetromino.
+   This cannot overestimate the remaining locks even when earlier clears pull existing
+   cells downward. No earlier frontier may contain a
    finished state, the candidate depth must have a public-command winning replay, and
    the certificate records the route plus per-depth frontier/exploration counts. Existing
    bounded beam routes prove playability and alternate solutions only and must never be

@@ -107,8 +107,11 @@ An optimum certificate is stronger than the existing paired route evidence. The
 authoring verifier traverses every unique Core decision state that can still finish
 before the candidate depth, without beam width, heuristic scoring, state-count cutoff,
 or route-length assumption. Its only pruning rule is a mechanically checked admissible
-bound: each empty cell in every surviving target row must be filled before that row can
-clear, while one future tetromino can contribute at most four such cells. It records
+column-conservation bound: every distinct surviving target row still consumes one cell
+from every column when it clears; all ordinary cells already in that column are credited
+as reusable supply, and only the summed column deficits are divided by four future cells
+per tetromino. This stays safe when earlier clears pull existing cells into later target
+rows. It records
 each exhausted depth, finds no success before depth `N`, then replays public commands
 that finish at depth `N`. The frozen
 certificate stores the level ID, `N`, replay, frontier widths, explored-state count,
