@@ -528,7 +528,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('draws a flat continuous shelf and complete square falling stones without decals', () => {
+  it('draws a flat-topped interlocked rock shelf and complete square falling stones without decals', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const shelf = Array.from({ length: 10 }, (_, x) => ({
@@ -564,7 +564,15 @@ describe('Puzzle undo presentation reset', () => {
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     expect(bedrockRects).toHaveLength(1);
     expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 24]);
-    expect(bedrockPolygons).toHaveLength(6);
+    expect(bedrockPolygons).toHaveLength(12);
+    const bedrockFaceFills = bedrock.operations
+      .map((operation) => (operation.options as { color?: unknown } | undefined)?.color)
+      .filter((color): color is number => typeof color === 'number');
+    expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(9);
+    for (const face of bedrockPolygons.slice(0, 10)) {
+      const xValues = face.values.filter((_, index) => index % 2 === 0);
+      expect(Math.max(...xValues) - Math.min(...xValues)).toBeLessThan(240 * 0.4);
+    }
     expect(bedrock.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
@@ -630,7 +638,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
     const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
-    expect(entryPolygons).toBe(6);
+    expect(entryPolygons).toBe(12);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);

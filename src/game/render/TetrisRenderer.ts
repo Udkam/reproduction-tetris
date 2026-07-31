@@ -326,6 +326,14 @@ const SURVIVAL_ENTRY_RISE_MS = 680;
 const SURVIVAL_ENTRY_SETTLE_MS = 140;
 const SURVIVAL_ENTRY_DURATION_MS = SURVIVAL_ENTRY_RISE_MS + SURVIVAL_ENTRY_SETTLE_MS;
 
+function mixHexColor(first: number, second: number, ratio: number): number {
+  const amount = Math.max(0, Math.min(1, ratio));
+  const mixChannel = (shift: number): number => Math.round(
+    ((first >> shift) & 0xff) * (1 - amount) + ((second >> shift) & 0xff) * amount,
+  );
+  return (mixChannel(16) << 16) | (mixChannel(8) << 8) | mixChannel(0);
+}
+
 function cubicBezierCoordinate(value: number, first: number, second: number): number {
   const inverse = 1 - value;
   return 3 * inverse * inverse * value * first
@@ -1614,7 +1622,7 @@ export class TetrisRenderer {
     }
   }
 
-  /** Draws one flat, continuous shelf with broad structural planes and no decals. */
+  /** Draws one flat-topped shelf from interlocked structural rock bodies, never decals. */
   private drawBedrockBody(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1643,70 +1651,95 @@ export class TetrisRenderer {
     const bottom = Math.max(...ordered.map(({ y }) => y + size));
     const width = right - left;
     const height = bottom - top;
-    const bevel = Math.max(1.5, Math.min(size * 0.14, height * 0.18));
+    const capDepth = Math.max(2, Math.min(size * 0.11, height * 0.16));
+    const baseDepth = Math.max(3, Math.min(size * 0.18, height * 0.22));
     const borderWidth = Math.max(1.1, size * 0.045);
+    const baseColor = mixHexColor(material.fillEnd, material.edge, 0.18);
     graphics
       .rect(left, top, width, height)
-      .fill({ fill: this.gradientFor(BEDROCK_CELL), alpha })
+      .fill({ color: baseColor, alpha })
       .stroke({ color: material.edge, alpha: Math.min(0.94, alpha), width: borderWidth });
 
-    const innerTop = top + bevel;
-    const innerBottom = bottom - bevel;
-    const innerLeft = left + bevel;
-    const innerRight = right - bevel;
-    const upperFirst = left + width * 0.31;
-    const lowerFirst = left + width * 0.23;
-    const upperSecond = left + width * 0.63;
-    const lowerSecond = left + width * 0.71;
-    graphics
-      .poly([
-        innerLeft, innerTop,
-        upperFirst, innerTop,
-        lowerFirst, innerBottom,
-        innerLeft, innerBottom,
-      ])
-      .fill({ color: material.fillStart, alpha: Math.min(0.17, alpha * 0.18) });
-    graphics
-      .poly([
-        upperFirst, innerTop,
-        upperSecond, innerTop,
-        lowerSecond, innerBottom,
-        lowerFirst, innerBottom,
-      ])
-      .fill({ color: material.edge, alpha: Math.min(0.11, alpha * 0.12) });
-    graphics
-      .poly([
-        upperSecond, innerTop,
-        innerRight, innerTop,
-        innerRight, innerBottom,
-        lowerSecond, innerBottom,
-      ])
-      .fill({ color: material.innerEdge, alpha: Math.min(0.08, alpha * 0.09) });
+    const faceTop = top + capDepth;
+    const faceBottom = bottom - baseDepth;
+    const faceHeight = Math.max(1, faceBottom - faceTop);
+    const topCuts = [0, 0.17, 0.38, 0.57, 0.79, 1] as const;
+    const middleCuts = [0, 0.22, 0.35, 0.62, 0.75, 1] as const;
+    const middleDepth = [0.49, 0.57, 0.43, 0.61, 0.47, 0.55] as const;
+    const baseCuts = [0, 0.13, 0.42, 0.54, 0.84, 1] as const;
+    const baseLift = [0.08, -0.12, 0.2, -0.04, 0.16, -0.08] as const;
+    const middlePoints = middleCuts.map((cut, index) => ({
+      x: left + width * cut,
+      y: faceTop + faceHeight * middleDepth[index]!,
+    }));
+    const basePoints = baseCuts.map((cut, index) => ({
+      x: left + width * cut,
+      y: faceBottom + baseDepth * baseLift[index]!,
+    }));
+    const upperColors = [
+      mixHexColor(material.fillStart, material.innerEdge, 0.16),
+      mixHexColor(material.fillStart, material.fillEnd, 0.36),
+      mixHexColor(material.fillEnd, material.edge, 0.28),
+      mixHexColor(material.fillStart, material.innerEdge, 0.08),
+      mixHexColor(material.fillStart, material.fillEnd, 0.58),
+    ] as const;
+    const lowerColors = [
+      mixHexColor(material.fillEnd, material.edge, 0.34),
+      mixHexColor(material.fillStart, material.fillEnd, 0.62),
+      mixHexColor(material.fillEnd, material.edge, 0.48),
+      mixHexColor(material.fillStart, material.fillEnd, 0.48),
+      mixHexColor(material.fillEnd, material.edge, 0.22),
+    ] as const;
+
+    for (let index = 0; index < upperColors.length; index += 1) {
+      const middleStart = middlePoints[index]!;
+      const middleEnd = middlePoints[index + 1]!;
+      graphics
+        .poly([
+          left + width * topCuts[index]!, faceTop,
+          left + width * topCuts[index + 1]!, faceTop,
+          middleEnd.x, middleEnd.y,
+          middleStart.x, middleStart.y,
+        ])
+        .fill({ color: upperColors[index], alpha: Math.min(0.94, alpha) });
+    }
+
+    for (let index = 0; index < lowerColors.length; index += 1) {
+      const middleStart = middlePoints[index]!;
+      const middleEnd = middlePoints[index + 1]!;
+      const baseStart = basePoints[index]!;
+      const baseEnd = basePoints[index + 1]!;
+      graphics
+        .poly([
+          middleStart.x, middleStart.y,
+          middleEnd.x, middleEnd.y,
+          baseEnd.x, baseEnd.y,
+          baseStart.x, baseStart.y,
+        ])
+        .fill({ color: lowerColors[index], alpha: Math.min(0.96, alpha) });
+    }
 
     graphics
       .poly([
         left, top,
         right, top,
-        right - bevel, top + bevel,
-        left + bevel, top + bevel,
+        right, faceTop,
+        left, faceTop,
       ])
-      .fill({ color: material.innerEdge, alpha: Math.min(0.24, alpha * 0.26) });
+      .fill({
+        color: mixHexColor(material.fillStart, material.innerEdge, 0.28),
+        alpha: Math.min(0.96, alpha),
+      });
     graphics
       .poly([
-        left, top,
-        left + bevel, top + bevel,
-        left + bevel, bottom - bevel,
-        left, bottom,
-      ])
-      .fill({ color: material.innerEdge, alpha: Math.min(0.13, alpha * 0.15) });
-    graphics
-      .poly([
-        left + bevel, bottom - bevel,
-        right - bevel, bottom - bevel,
+        ...basePoints.flatMap(({ x, y }) => [x, y]),
         right, bottom,
         left, bottom,
       ])
-      .fill({ color: material.edge, alpha: Math.min(0.24, alpha * 0.27) });
+      .fill({
+        color: mixHexColor(material.fillEnd, material.edge, 0.58),
+        alpha: Math.min(0.98, alpha),
+      });
   }
 
   /** Draws each falling rock at full cell size; adjacent event cells meet without a gap. */
