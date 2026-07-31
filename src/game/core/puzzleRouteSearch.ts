@@ -1,13 +1,19 @@
-import { createInitialState, dispatch } from './engine';
+import { createInitialState, dispatch, stateHash } from './engine';
+import { getPuzzleDefinition } from './puzzles';
 import type { Cell, GameCommand, GameState, PieceType, PuzzleId } from './types';
 
 /** Public controls available to the ordinary Puzzle player and recorded in route evidence. */
-export type PuzzleRouteToken = 'S' | 'T' | 'L' | 'R' | 'C' | 'H';
+export type PuzzleRouteToken = 'S' | 'T' | 'L' | 'R' | 'C' | 'D' | 'H';
 
 const PLANNER_COMMANDS: readonly GameCommand[] = Object.freeze([
   { type: 'rotate', direction: 1 },
   { type: 'move', dx: -1 },
   { type: 'move', dx: 1 },
+]);
+
+const EXHAUSTIVE_PLANNER_COMMANDS: readonly GameCommand[] = Object.freeze([
+  ...PLANNER_COMMANDS,
+  { type: 'soft-drop' },
 ]);
 
 const MAX_SETTLEMENT_TICKS = 32;
@@ -61,6 +67,23 @@ export interface PuzzleAlternativeSearchResult {
   firstDivergenceLock: number | null;
 }
 
+export interface PuzzleOptimalRouteCertificate {
+  levelId: PuzzleId;
+  /** Exact minimum number of locked pieces in the complete public-control domain. */
+  optimalLocks: number;
+  /** Width of every fully exhausted decision frontier at depths 0..optimalLocks - 1. */
+  exhaustedFrontierWidths: readonly number[];
+  /** Number of unique decision states whose complete landing domains were expanded. */
+  exploredStateCount: number;
+  /** Number of legal landing transitions considered before the first optimal win. */
+  transitionCount: number;
+  /** Branches proven unable to finish below the candidate by the target-deficit bound. */
+  deficitBoundPrunes: number;
+  /** Canonical hash of the started puzzle definition/state covered by this proof. */
+  initialStateHash: string;
+  replay: PuzzleRouteReplay;
+}
+
 function tokenCommand(token: PuzzleRouteToken): GameCommand {
   switch (token) {
     case 'S': return { type: 'start' };
@@ -68,6 +91,7 @@ function tokenCommand(token: PuzzleRouteToken): GameCommand {
     case 'L': return { type: 'move', dx: -1 };
     case 'R': return { type: 'move', dx: 1 };
     case 'C': return { type: 'rotate', direction: 1 };
+    case 'D': return { type: 'soft-drop' };
     case 'H': return { type: 'hard-drop' };
   }
 }
@@ -77,6 +101,7 @@ function commandToken(command: GameCommand): PuzzleRouteToken {
   if (command.type === 'tick') return 'T';
   if (command.type === 'hard-drop') return 'H';
   if (command.type === 'rotate' && command.direction === 1) return 'C';
+  if (command.type === 'soft-drop') return 'D';
   if (command.type === 'move' && command.dx === -1) return 'L';
   if (command.type === 'move' && command.dx === 1) return 'R';
   throw new Error(`Puzzle route cannot encode ${command.type}.`);
@@ -158,9 +183,64 @@ export function puzzleLandings(state: GameState): readonly PuzzleLanding[] {
   return Object.freeze(result);
 }
 
+/**
+ * Lists the complete finite landing domain exposed by the Puzzle controls. Unlike the
+ * compact authoring search above, this traversal includes every reachable vertical
+ * state before a hard drop. That captures timed side-slips below an anchor/overhang and
+ * is therefore the only landing domain valid for an optimality proof.
+ */
+export function exhaustivePuzzleLandings(state: GameState): readonly PuzzleLanding[] {
+  if (!isActive(state)) return [];
+  const queue: { state: GameState; commands: readonly GameCommand[] }[] = [{ state, commands: [] }];
+  const seenActive = new Set<string>();
+  const landed = new Map<string, PuzzleLanding>();
+
+  const activeKey = (candidate: GameState) => {
+    const active = candidate.active;
+    return active ? `${active.type}:${active.rotation}:${active.x}:${active.y}` : 'none';
+  };
+  seenActive.add(activeKey(state));
+
+  for (let index = 0; index < queue.length; index += 1) {
+    const route = queue[index]!;
+    const dropped = dispatch(route.state, { type: 'hard-drop' });
+    const locked = dropped.events.find((event): event is Extract<typeof event, { type: 'piece-locked' }> => event.type === 'piece-locked');
+    const settled = locked ? settleAfterLock(dropped.state) : null;
+    if (locked && settled) {
+      const landing: PuzzleLanding = {
+        state: withoutUndoHistory(settled.state),
+        commands: Object.freeze([...route.commands, { type: 'hard-drop' }, ...settled.commands]),
+        lock: lockPlacement(locked.piece, locked.cells),
+      };
+      const key = routeStateKey(landing.state);
+      const existing = landed.get(key);
+      if (!existing || landing.commands.length < existing.commands.length) landed.set(key, landing);
+    }
+
+    for (const command of EXHAUSTIVE_PLANNER_COMMANDS) {
+      const transition = dispatch(route.state, command);
+      if (transition.state === route.state || !isActive(transition.state)) continue;
+      const key = activeKey(transition.state);
+      if (seenActive.has(key)) continue;
+      seenActive.add(key);
+      queue.push({ state: transition.state, commands: [...route.commands, command] });
+    }
+  }
+
+  return Object.freeze([...landed.values()].sort((left, right) => (
+    left.lock.signature.localeCompare(right.lock.signature)
+    || left.commands.length - right.commands.length
+  )));
+}
+
 /** Solver exploration does not need recursive undo snapshots; final replays retain them. */
 function withoutUndoHistory(state: GameState): GameState {
-  return state.puzzleUndoHistory.length === 0 ? state : { ...state, puzzleUndoHistory: Object.freeze([]) };
+  if (state.puzzleUndoHistory.length === 0 && state.puzzleActiveSpawnCheckpoint === null) return state;
+  return {
+    ...state,
+    puzzleUndoHistory: Object.freeze([]),
+    puzzleActiveSpawnCheckpoint: null,
+  };
 }
 
 function targetKey(state: GameState): string {
@@ -185,6 +265,91 @@ function routeStateKey(state: GameState): string {
     state.phase,
     state.status,
   ].join('~');
+}
+
+/**
+ * Every distinct surviving target row still consumes one cell from every column when
+ * it clears. Credit every ordinary cell already in that column as reusable supply,
+ * including cells that can shift downward after an earlier clear. Only the summed
+ * column deficits must come from future tetrominoes, four cells at a time. This
+ * conservation bound therefore cannot overestimate the remaining locks.
+ */
+function targetDeficitLockLowerBound(state: GameState): number {
+  const requiredClearsPerColumn = new Set(state.puzzleTargetCells.map((cell) => cell.y)).size;
+  let deficit = 0;
+  for (let x = 0; x < state.board[0]!.length; x += 1) {
+    const available = state.board.reduce((count, row) => count + Number(row[x] !== null), 0);
+    deficit += Math.max(0, requiredClearsPerColumn - available);
+  }
+  return Math.ceil(deficit / 4);
+}
+
+/**
+ * Certifies a supplied winning route as optimal. All public-control landing states that
+ * could finish with fewer locks are traversed; the only pruning rule is the proved
+ * target-deficit lower bound above. There is no beam, heuristic score, state-count
+ * cutoff, or product-time execution.
+ */
+export function certifyOptimalPuzzleRoute(
+  levelId: PuzzleId,
+  candidateCommandStream: string,
+): PuzzleOptimalRouteCertificate | null {
+  const definition = getPuzzleDefinition(levelId);
+  if (definition.anchorCells.length > 0) {
+    throw new Error(`Optimal Puzzle deficit certificates require an unanchored prerequisite: ${levelId}.`);
+  }
+  const replay = replayPuzzleRoute(levelId, candidateCommandStream);
+  if (replay.state.status !== 'finished' || replay.state.puzzleCompletion !== 'finished' || replay.locks.length <= 0) {
+    throw new Error(`Optimal Puzzle candidate must be a completed public-command replay: ${levelId}.`);
+  }
+  const optimalLocks = replay.locks.length;
+  const canonicalStart = dispatch(createInitialState(0x51a1f00d, 'puzzle', levelId), { type: 'start' }).state;
+  if (!isActive(canonicalStart)) return null;
+  const initialStateHash = stateHash(canonicalStart);
+  const started = withoutUndoHistory(canonicalStart);
+  let frontier: GameState[] = [started];
+  const exhaustedFrontierWidths: number[] = [];
+  let exploredStateCount = 0;
+  let transitionCount = 0;
+  let deficitBoundPrunes = 0;
+
+  for (let depth = 0; depth < optimalLocks - 1 && frontier.length > 0; depth += 1) {
+    exhaustedFrontierWidths.push(frontier.length);
+    exploredStateCount += frontier.length;
+    const nextFrontier = new Map<string, GameState>();
+    for (const parent of frontier) {
+      if (depth + targetDeficitLockLowerBound(parent) >= optimalLocks) {
+        deficitBoundPrunes += 1;
+        continue;
+      }
+      for (const landing of exhaustivePuzzleLandings(parent)) {
+        transitionCount += 1;
+        if (landing.state.status === 'finished') {
+          throw new Error(`Puzzle ${levelId} has a shorter route than the ${optimalLocks}-lock candidate.`);
+        }
+        if (!isActive(landing.state)) continue;
+        const nextDepth = depth + 1;
+        if (nextDepth + targetDeficitLockLowerBound(landing.state) >= optimalLocks) {
+          deficitBoundPrunes += 1;
+          continue;
+        }
+        const key = routeStateKey(landing.state);
+        if (!nextFrontier.has(key)) nextFrontier.set(key, landing.state);
+      }
+    }
+    frontier = [...nextFrontier.values()];
+  }
+
+  return Object.freeze({
+    levelId,
+    optimalLocks,
+    exhaustedFrontierWidths: Object.freeze(exhaustedFrontierWidths),
+    exploredStateCount,
+    transitionCount,
+    deficitBoundPrunes,
+    initialStateHash,
+    replay,
+  });
 }
 
 function countHoles(state: GameState): number {
@@ -260,8 +425,10 @@ function searchRoute(
   maxLocks: number,
   beamWidth: number,
   banned?: { lock: PuzzleLockPlacement; index: number },
+  initialState?: GameState,
 ): PuzzleRouteReplay | null {
-  const started = dispatch(createInitialState(0x51a1f00d, 'puzzle', levelId), { type: 'start' }).state;
+  const started = initialState
+    ?? dispatch(createInitialState(0x51a1f00d, 'puzzle', levelId), { type: 'start' }).state;
   if (!isActive(started)) return null;
   let beam: SearchNode[] = [{ state: withoutUndoHistory(started), parent: null, segment: [], lock: null, depth: 0, cost: routeCost(started, 0) }];
 
