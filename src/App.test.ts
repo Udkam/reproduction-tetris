@@ -1358,7 +1358,7 @@ describe('T6 frontend mode binding', () => {
     const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
     expect(actionArrows).toHaveLength(4);
     expect(actionArrows.every((arrow) => arrow.getAttribute('viewBox') === '0 0 28 24')).toBe(true);
-    expect(actionArrows.every((arrow) => arrow.querySelector('path')?.getAttribute('d') === 'M2.5 12h22m-6-6 6 6-6 6')).toBe(true);
+    expect(actionArrows.every((arrow) => arrow.querySelector('path')?.getAttribute('d') === 'M3 12h22m-6-6 6 6-6 6')).toBe(true);
     expect(view.container.textContent).not.toMatch(/开始|选关/);
     expect(classic?.getAttribute('aria-label')).toBe('开始 经典');
     expect(puzzle?.getAttribute('aria-label')).toBe('选关 解谜');

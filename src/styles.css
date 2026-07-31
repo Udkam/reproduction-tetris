@@ -8527,7 +8527,6 @@ kbd,
   display: block;
   width: 28px;
   height: 24px;
-  transform: translateX(-1px);
   opacity: 1;
   fill: none;
   stroke: #ffffff;
