@@ -52,10 +52,11 @@ cross both row and column boundaries. Regions use close-valued slate tones and s
 edges without mortar-like outlines; broad vertical weight and gradual depth darkening
 make the surface read as an exposed cavern face rather than a platform or built wall.
 That relief must remain legible at the ordinary gameplay scale: broad overlapping
-vertical ridges establish the wall's weight, while smaller nested outcrops supply local
-depth and occlusion. A nearly uniform low-contrast slab and a sharp tessellated mosaic
-both fail this contract. The relief layers overlap without complete shared outlines, so
-the eye reads one eroded rock mass rather than assembled pieces.
+vertical ridges establish the wall's weight, while sparse cross-cut shear planes supply
+local depth and occlusion. Rounded nested blobs, pebble clusters, and cobblestone reads
+are forbidden alongside a nearly uniform low-contrast slab and a sharp tessellated
+mosaic. The relief layers overlap without complete shared outlines, so the eye reads
+one eroded rock mass rather than assembled pieces.
 No region may repeat at cell cadence, reveal a `10 × N` grid, form horizontal courses,
 or dominate the wall as one giant geometric facet. The contact plane keeps one narrow,
 restrained mineral lift while the exterior sides and bottom are clipped by the board,

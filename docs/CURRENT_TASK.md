@@ -150,8 +150,9 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     naturally varied rock face with a restrained lit lip—not wood, metal, concrete,
     paving stones, a built retaining wall, or a flat geometric platform. The relief
     must be plainly readable in the real gameplay frame through overlapping vertical
-    ridges and smaller nested outcrops; a nearly uniform low-contrast fill or a sharp
-    tessellated mosaic is still a failed candidate.
+    ridges and sparse cross-cut shear planes. Rounded nested blobs, pebble clusters,
+    a nearly uniform low-contrast fill, or a sharp tessellated mosaic are still failed
+    candidates.
 
 ## Phase 12 checkpoint order
 
