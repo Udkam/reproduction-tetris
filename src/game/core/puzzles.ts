@@ -34,7 +34,7 @@ export interface PuzzleSetupHistory {
 export interface PuzzleDefinition {
   id: PuzzleId;
   name: string;
-  /** Stable curriculum order; the player can select every entry immediately. */
+  /** Stable-ID-preserving teaching order used by the current gated curriculum. */
   difficulty: number;
   /** Explicit authored height of the contiguous original-target band at the floor. */
   targetRows: number;
@@ -213,19 +213,19 @@ function endgame(
  * continues normally after any non-winning lock.
  */
 const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
-  // 01–05: three rows — read one clear structural gap before handling paired openings.
+  // 01–06: three rows — isolate one transferable idea before combining them.
   endgame('t3r-shaft-01', '缺口', 1, 1073741827, setup(1588444805, [{ type: 'I', rotation: 0, x: 2 }, { type: 'L', rotation: 3, x: 5 }, { type: 'O', rotation: 2, x: 3 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'J', rotation: 2, x: 7 }, { type: 'T', rotation: 2, x: 0 }])),
   endgame('t3r-shaft-02', '侧井', 2, 1618033988, setup(1588444826, [{ type: 'Z', rotation: 2, x: 7 }, { type: 'O', rotation: 2, x: 0 }, { type: 'T', rotation: 0, x: 3 }, { type: 'S', rotation: 0, x: 2 }, { type: 'J', rotation: 2, x: 7 }, { type: 'L', rotation: 3, x: 5 }])),
   endgame('t3r-shaft-03', '错层', 3, 994121443, setup(1588444824, [{ type: 'S', rotation: 0, x: 2 }, { type: 'J', rotation: 0, x: 5 }, { type: 'T', rotation: 2, x: 0 }, { type: 'O', rotation: 3, x: 8 }, { type: 'L', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 3 }])),
   endgame('t3r-shaft-04', '转折', 5, 2309737967, setup(2718281711, [{ type: 'I', rotation: 0, x: 6 }, { type: 'Z', rotation: 1, x: 0 }, { type: 'S', rotation: 0, x: 4 }, { type: 'O', rotation: 1, x: 3 }, { type: 'J', rotation: 1, x: -1 }])),
-  endgame('t3r-cascade-05', '双槽', 4, 3141592653, setup(1588444806, [{ type: 'Z', rotation: 0, x: 0 }, { type: 'I', rotation: 2, x: 3 }, { type: 'J', rotation: 2, x: 0 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 0, x: 5 }, { type: 'L', rotation: 2, x: 3 }])),
+  endgame('t3r-cascade-05', '双槽', 6, 3141592653, setup(1588444806, [{ type: 'Z', rotation: 0, x: 0 }, { type: 'I', rotation: 2, x: 3 }, { type: 'J', rotation: 2, x: 0 }, { type: 'S', rotation: 2, x: 7 }, { type: 'T', rotation: 0, x: 5 }, { type: 'L', rotation: 2, x: 3 }])),
 
-  // 06–10: still three rows, with wider staging choices and one explicit headroom peg.
-  endgame('t3r-cascade-06', '回路', 6, 1717986918, setup(2718281725, [{ type: 'T', rotation: 0, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 2 }, { type: 'O', rotation: 2, x: 0 }, { type: 'L', rotation: 3, x: 4 }])),
+  // 07–10: combine the opening ideas, then introduce one immutable edge anchor.
+  endgame('t3r-cascade-06', '回路', 4, 1717986918, setup(2718281725, [{ type: 'T', rotation: 0, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'Z', rotation: 2, x: 2 }, { type: 'O', rotation: 2, x: 0 }, { type: 'L', rotation: 3, x: 4 }])),
   endgame('t5r-delta-07', '长井', 7, 452198731, setup(2718281722, [{ type: 'O', rotation: 2, x: 3 }, { type: 'S', rotation: 3, x: 0 }, { type: 'T', rotation: 2, x: 1 }, { type: 'I', rotation: 2, x: 6 }, { type: 'L', rotation: 3, x: 4 }])),
-  endgame('t5r-drift-08', '绕柱', 9, 2004318071, setup(2718281717, [{ type: 'O', rotation: 1, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'L', rotation: 3, x: 8 }, { type: 'S', rotation: 1, x: 3 }, { type: 'T', rotation: 2, x: 5 }]), [{ x: 9, y: 16 }]),
+  endgame('t5r-drift-08', '绕柱', 10, 2004318071, setup(2718281717, [{ type: 'O', rotation: 1, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'L', rotation: 3, x: 8 }, { type: 'S', rotation: 1, x: 3 }, { type: 'T', rotation: 2, x: 5 }]), [{ x: 9, y: 16 }]),
   endgame('t5r-lattice-09', '交错', 8, 2718281828, setup(1588444814, [{ type: 'T', rotation: 0, x: 7 }, { type: 'Z', rotation: 0, x: 2 }, { type: 'S', rotation: 2, x: 5 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 0, x: 6 }, { type: 'J', rotation: 2, x: 3 }])),
-  endgame('t5r-rift-10', '双门', 10, 1311768467, setup(2718281718, [{ type: 'I', rotation: 0, x: 0 }, { type: 'Z', rotation: 3, x: 8 }, { type: 'O', rotation: 2, x: 5 }, { type: 'J', rotation: 1, x: 6 }, { type: 'L', rotation: 2, x: 4 }])),
+  endgame('t5r-rift-10', '双门', 9, 1311768467, setup(2718281718, [{ type: 'I', rotation: 0, x: 0 }, { type: 'Z', rotation: 3, x: 8 }, { type: 'O', rotation: 2, x: 5 }, { type: 'J', rotation: 1, x: 6 }, { type: 'L', rotation: 2, x: 4 }])),
 
   // 11–15: four rows — introduce platforms, wells, overhangs, stairs, and paired lanes.
   endgame('t5r-prism-11', '阶梯', 14, 2882400001, setup(3141593004, [{ type: 'S', rotation: 1, x: 1 }, { type: 'Z', rotation: 0, x: 4 }, { type: 'J', rotation: 0, x: 7 }, { type: 'O', rotation: 3, x: 0 }, { type: 'I', rotation: 0, x: 4 }, { type: 'L', rotation: 2, x: 3 }, { type: 'T', rotation: 2, x: 0 }])),
@@ -278,7 +278,7 @@ const PUZZLE_LIBRARY: readonly PuzzleDefinition[] = Object.freeze([
   endgame('tm-puzzle-50', '岔口', 50, 3487329389, setup(4101002, [{ type: 'S', rotation: 0, x: 6 }, { type: 'Z', rotation: 1, x: 4 }, { type: 'J', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'T', rotation: 0, x: 2 }, { type: 'L', rotation: 2, x: 0 }, { type: 'O', rotation: 3, x: 0 }, { type: 'T', rotation: 2, x: 4 }, { type: 'Z', rotation: 2, x: 7 }, { type: 'S', rotation: 3, x: 2 }, { type: 'O', rotation: 1, x: 5 }, { type: 'J', rotation: 2, x: 7 }, { type: 'I', rotation: 2, x: 0 }, { type: 'L', rotation: 2, x: 4 }])),
 ]);
 
-/** The visible workshop order is authored from replayed complexity, not legacy ID order. */
+/** The visible order follows authored teaching progression, not either legacy save order. */
 export const PUZZLE_DEFINITIONS: readonly PuzzleDefinition[] = Object.freeze(
   [...PUZZLE_LIBRARY].sort((left, right) => left.difficulty - right.difficulty || left.id.localeCompare(right.id)),
 );

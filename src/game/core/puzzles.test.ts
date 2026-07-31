@@ -46,10 +46,10 @@ function initialLandingSignatures(definition: PuzzleDefinition, includeAnchors: 
 }
 
 describe('T13 legal endgame workshop definitions', () => {
-  it('keeps the first twenty stable IDs and appends all three later authored batches', () => {
+  it('keeps all stable IDs while applying the teaching-first visible order', () => {
     expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual([
-      't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-05', 't3r-shaft-04',
-      't3r-cascade-06', 't5r-delta-07', 't5r-lattice-09', 't5r-drift-08', 't5r-rift-10',
+      't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-06', 't3r-shaft-04',
+      't3r-cascade-05', 't5r-delta-07', 't5r-lattice-09', 't5r-rift-10', 't5r-drift-08',
       't5r-pulse-14', 't5r-arc-13', 't5r-current-12', 't5r-prism-11', 't5r-horizon-15',
       't6r-cairn-17', 't6r-terrace-18', 't6r-keystone-20', 't6r-bastion-19', 't6r-veil-16',
       'tm-puzzle-21', 'tm-puzzle-22', 'tm-puzzle-23', 'tm-puzzle-24', 'tm-puzzle-25',
@@ -63,7 +63,7 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(50);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(50);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
-      '缺口', '侧井', '错层', '双槽', '转折', '回路', '长井', '交错', '绕柱', '双门',
+      '缺口', '侧井', '错层', '回路', '转折', '双槽', '长井', '交错', '双门', '绕柱',
       '平台', '井口', '悬边', '阶梯', '双井', '回填', '侧台', '横桥', '窄门', '交汇',
       '门柱', '回廊', '中柱', '斜坡', '夹井', '错台', '缓坡', '侧桥', '双层', '断台',
       '曲井', '左闸', '错桥', '阶井', '悬台', '右闸', '双廊', '回井', '边塔', '折桥',

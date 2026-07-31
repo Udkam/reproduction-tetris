@@ -1,4 +1,10 @@
 import { PUZZLE_DEFINITIONS, type GameState, type PuzzleId } from './game/core';
+import {
+  PUZZLE_HARD_MASTERY_GROUPS,
+  puzzleHardMasteryGroup,
+  puzzleOptimalCertificate,
+  type PuzzleHardMasteryGroup,
+} from './puzzleMastery';
 
 /** Current persisted format. Keep every former key for one-way local migration and rollback. */
 export const PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v5';
@@ -33,6 +39,13 @@ export interface CampaignLevel {
   difficulty: number;
 }
 
+export type PuzzleCategoryId = 'intro' | 'easy' | 'hard';
+
+export interface PuzzleCategory {
+  id: PuzzleCategoryId;
+  levels: readonly CampaignLevel[];
+}
+
 export const CAMPAIGN_LEVELS: readonly CampaignLevel[] = Object.freeze(
   PUZZLE_DEFINITIONS.map((level, index) => Object.freeze({
     id: level.id,
@@ -42,6 +55,12 @@ export const CAMPAIGN_LEVELS: readonly CampaignLevel[] = Object.freeze(
     difficulty: level.difficulty,
   })),
 );
+
+export const PUZZLE_CATEGORIES: readonly PuzzleCategory[] = Object.freeze([
+  Object.freeze({ id: 'intro', levels: Object.freeze(CAMPAIGN_LEVELS.slice(0, 3)) }),
+  Object.freeze({ id: 'easy', levels: Object.freeze(CAMPAIGN_LEVELS.slice(3, 30)) }),
+  Object.freeze({ id: 'hard', levels: Object.freeze(CAMPAIGN_LEVELS.slice(30)) }),
+]);
 
 /**
  * The v4 workshop used this difficulty-sorted visible order. Keep it literal: Phase 7
@@ -115,7 +134,7 @@ function buildRowBands(levels: readonly CampaignLevel[]): readonly (readonly Cam
   return Object.freeze(tiers);
 }
 
-/** Current five-level workshop bands; bands 06–10 onward also define frontier gates. */
+/** Legacy five-level grouping; only bands through level 30 still define Easy frontier gates. */
 export const PUZZLE_ROW_BANDS = buildRowBands(CAMPAIGN_LEVELS);
 /** @deprecated Compatibility export for the same canonical five-level bands. */
 export const CAMPAIGN_TIERS = PUZZLE_ROW_BANDS;
@@ -146,7 +165,7 @@ const PUZZLE_TIER_GATES: readonly PuzzleTierGateDefinition[] = Object.freeze([
     unlocksTier: PUZZLE_ROW_BANDS[1]!,
     requiredCount: 3,
   }),
-  ...PUZZLE_ROW_BANDS.slice(1, -1).map((prerequisiteTier, index) => Object.freeze({
+  ...PUZZLE_ROW_BANDS.slice(1, 5).map((prerequisiteTier, index) => Object.freeze({
     prerequisiteTier,
     unlocksTier: PUZZLE_ROW_BANDS[index + 2]!,
     requiredCount: 3,
@@ -160,9 +179,9 @@ const V2_LEVEL_IDS = new Set<PuzzleId>(V2_CAMPAIGN_ORDER);
 if (
   V4_CAMPAIGN_ORDER.length !== 20
   || V4_LEVEL_IDS.size !== V4_CAMPAIGN_ORDER.length
-  || V4_CAMPAIGN_ORDER.some((id, index) => !LEVEL_IDS.has(id) || CAMPAIGN_LEVELS[index]?.id !== id)
+  || V4_CAMPAIGN_ORDER.some((id) => !LEVEL_IDS.has(id))
 ) {
-  throw new Error('Frozen v4 Puzzle campaign order must retain its twenty current ordinals exactly once.');
+  throw new Error('Frozen v4 Puzzle campaign order must retain its twenty historic IDs exactly once.');
 }
 
 if (
@@ -270,6 +289,8 @@ function completedIdSetFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
 
 function unlockedLevelIdsFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
   const completed = completedIdSetFrom(progress);
+  const completedIds = completedIdsFrom(progress) ?? [];
+  const bestPieceCounts = bestPieceCountsFrom(progress, completedIds) ?? {};
   const unlocked = new Set<PuzzleId>(completed);
   for (const level of CAMPAIGN_LEVELS.slice(0, INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT)) {
     unlocked.add(level.id);
@@ -283,7 +304,39 @@ function unlockedLevelIdsFrom(progress: PuzzleProgress): ReadonlySet<PuzzleId> {
     if (completedCount < gate.requiredCount) break;
     for (const level of gate.unlocksTier) unlocked.add(level.id);
   }
+  for (const group of PUZZLE_HARD_MASTERY_GROUPS) {
+    const certificate = puzzleOptimalCertificate(group.prerequisiteId)!;
+    const best = bestPieceCounts[group.prerequisiteId];
+    if (best === undefined || best > certificate.masteryOperations) continue;
+    for (const levelId of group.hardLevelIds) unlocked.add(levelId);
+  }
   return unlocked;
+}
+
+export interface PuzzleMasteryGateStatus {
+  group: PuzzleHardMasteryGroup;
+  optimalOperations: number;
+  requiredOperations: number;
+  bestOperations: number | null;
+  unlocked: boolean;
+}
+
+export function puzzleMasteryGateStatus(
+  progress: PuzzleProgress,
+  levelId: PuzzleId,
+): PuzzleMasteryGateStatus | null {
+  const group = puzzleHardMasteryGroup(levelId);
+  if (!group) return null;
+  const certificate = puzzleOptimalCertificate(group.prerequisiteId)!;
+  const bestOperations = puzzleBestPieceCount(progress, group.prerequisiteId);
+  return {
+    group,
+    optimalOperations: certificate.optimalOperations,
+    requiredOperations: certificate.masteryOperations,
+    bestOperations,
+    unlocked: isPuzzleComplete(progress, levelId)
+      || (bestOperations !== null && bestOperations <= certificate.masteryOperations),
+  };
 }
 
 /** Returns the first unsatisfied gate on the canonical, already-open frontier. */
@@ -463,8 +516,8 @@ export function nextLockedPuzzleLevel(progress: PuzzleProgress): CampaignLevel |
 }
 
 /**
- * Records one canonical Puzzle completion. The gallery is currently all-open, so the
- * retired progressive frontier is not an eligibility guard; identity agreement is.
+ * Records one canonical Puzzle completion. UI access is gated separately; this
+ * persistence boundary requires canonical identity and a genuine finished Core state.
  */
 export function recordCanonicalPuzzleCompletion(
   progress: PuzzleProgress,

@@ -12,10 +12,10 @@ function settle(state: GameState): GameState {
 }
 
 describe('Phase-7 transitional all-open Puzzle campaign behavior', () => {
-  it('keeps the stable 01–20 order while appending the authored five- through seven-row batches', () => {
+  it('orders the stable IDs as a teaching-first curriculum before the later authored batches', () => {
     expect(PUZZLE_DEFINITIONS.map((definition) => definition.id)).toEqual([
-      't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-05', 't3r-shaft-04',
-      't3r-cascade-06', 't5r-delta-07', 't5r-lattice-09', 't5r-drift-08', 't5r-rift-10',
+      't3r-shaft-01', 't3r-shaft-02', 't3r-shaft-03', 't3r-cascade-06', 't3r-shaft-04',
+      't3r-cascade-05', 't5r-delta-07', 't5r-lattice-09', 't5r-rift-10', 't5r-drift-08',
       't5r-pulse-14', 't5r-arc-13', 't5r-current-12', 't5r-prism-11', 't5r-horizon-15',
       't6r-cairn-17', 't6r-terrace-18', 't6r-keystone-20', 't6r-bastion-19', 't6r-veil-16',
       'tm-puzzle-21', 'tm-puzzle-22', 'tm-puzzle-23', 'tm-puzzle-24', 'tm-puzzle-25',

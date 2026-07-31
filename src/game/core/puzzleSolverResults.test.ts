@@ -124,7 +124,7 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
         'maximumHeight', 'peakHoles', 'branchWidth', 'firstDivergenceLock', 'anchorCount',
       ]);
       expect(artifact.levels).toHaveLength(10);
-      expect(artifact.campaignOrder).toEqual(PUZZLE_DEFINITIONS.slice(from - 1, to).map(({ id }) => id));
+      expect(artifact.campaignOrder).toEqual(artifact.levels.map(({ id }) => id));
     }
     for (const artifact of phase7Artifacts.slice(0, 3)) {
       expect(artifact.levels.map(({ shorterRouteLocks }) => shorterRouteLocks)).toEqual(
@@ -158,12 +158,13 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       ]);
     expect(activeLevels).toHaveLength(50);
     expect(new Set(activeLevels.map(({ id }) => id)).size).toBe(50);
-    expect(PUZZLE_DEFINITIONS.map(({ id }) => id)).toEqual(activeLevels.map(({ id }) => id));
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id))).toEqual(new Set(activeLevels.map(({ id }) => id)));
+    expect(PUZZLE_DEFINITIONS.map(({ difficulty }) => difficulty))
+      .toEqual(Array.from({ length: 50 }, (_, index) => index + 1));
 
     for (const [index, level] of activeLevels.entries()) {
       const definition = getPuzzleDefinition(level.id);
       expect(level.curriculumPosition, level.id).toBe(index + 1);
-      expect(definition.difficulty, level.id).toBe(index + 1);
       expect(level.targetRowCount, level.id).toBe(definition.targetRows);
       expect(level.setup, level.id).toEqual({
         seed: definition.setup.seed,

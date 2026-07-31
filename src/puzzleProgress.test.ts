@@ -4,6 +4,7 @@ import {
   CAMPAIGN_LEVELS,
   CAMPAIGN_TIERS,
   INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT,
+  PUZZLE_CATEGORIES,
   PUZZLE_CAMPAIGN_REVISION,
   PUZZLE_ROW_BANDS,
   V4_CAMPAIGN_ORDER,
@@ -19,10 +20,12 @@ import {
   nextPuzzleTierGate,
   parsePuzzleProgress,
   puzzleBestPieceCount,
+  puzzleMasteryGateStatus,
   recordCanonicalPuzzleCompletion,
   type PuzzleProgress,
   unlockedPuzzleLevelCount,
 } from './puzzleProgress';
+import { PUZZLE_HARD_MASTERY_GROUPS, PUZZLE_OPTIMAL_CERTIFICATES } from './puzzleMastery';
 
 function finishedPuzzleState(levelId: PuzzleId, pieceCount: number): GameState {
   return {
@@ -43,12 +46,24 @@ function progressWith(...completedLevelIds: PuzzleId[]) {
   }));
 }
 
+function progressWithBests(
+  completedLevelIds: readonly PuzzleId[],
+  bestPieceCounts: Partial<Record<PuzzleId, number>>,
+) {
+  return parsePuzzleProgress(JSON.stringify({
+    version: 5,
+    campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+    completedLevelIds,
+    bestPieceCounts,
+  }));
+}
+
 function unlockedIds(progress = defaultPuzzleProgress()): PuzzleId[] {
   return CAMPAIGN_LEVELS.filter((level) => isPuzzleUnlocked(progress, level.id)).map((level) => level.id);
 }
 
 describe('revisioned progressive Puzzle campaign persistence', () => {
-  it('binds every authored level to ordered difficulty and five-level presentation bands', () => {
+  it('binds every authored level to ordered difficulty, three named pages, and legacy five-level gates', () => {
     expect(CAMPAIGN_LEVELS.map((level) => [level.id, level.name])).toEqual(
       PUZZLE_DEFINITIONS.map((level) => [level.id, level.name]),
     );
@@ -62,6 +77,11 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     expect(PUZZLE_ROW_BANDS.map((band) => band.length)).toEqual([5, 5, 5, 5, 5, 5, 5, 5, 5, 5]);
     expect(PUZZLE_ROW_BANDS.flat().map((level) => level.id)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
     expect(CAMPAIGN_TIERS).toBe(PUZZLE_ROW_BANDS);
+    expect(PUZZLE_CATEGORIES.map(({ id, levels }) => [id, levels.length])).toEqual([
+      ['intro', 3], ['easy', 27], ['hard', 20],
+    ]);
+    expect(PUZZLE_CATEGORIES.flatMap(({ levels }) => levels.map(({ id }) => id)))
+      .toEqual(CAMPAIGN_LEVELS.map(({ id }) => id));
   });
 
   it('opens only 01–03 on a fresh save and exposes the first two-of-three gate', () => {
@@ -78,7 +98,7 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     });
   });
 
-  it('opens 04–05, then 06–10, and advances each later five-level frontier at three completions', () => {
+  it('opens 04–05, then 06–10, and advances the Easy frontier to level 30 at three completions', () => {
     const firstGate = progressWith(CAMPAIGN_LEVELS[0]!.id, CAMPAIGN_LEVELS[2]!.id);
     expect(unlockedIds(firstGate)).toEqual(CAMPAIGN_LEVELS.slice(0, 5).map((level) => level.id));
     expect(nextPuzzleTierGate(firstGate)).toEqual({
@@ -106,30 +126,58 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
       CAMPAIGN_LEVELS[2]!.id,
       CAMPAIGN_LEVELS[4]!.id,
     ];
-    for (let bandStart = 5; bandStart < 45; bandStart += 5) {
+    for (let bandStart = 5; bandStart < 25; bandStart += 5) {
       completed.push(
         CAMPAIGN_LEVELS[bandStart]!.id,
         CAMPAIGN_LEVELS[bandStart + 1]!.id,
         CAMPAIGN_LEVELS[bandStart + 2]!.id,
       );
     }
-    const finalTierOpen = progressWith(...completed);
-    expect(unlockedPuzzleLevelCount(finalTierOpen)).toBe(50);
-    expect(unlockedIds(finalTierOpen)).toEqual(CAMPAIGN_LEVELS.map((level) => level.id));
-    expect(nextLockedPuzzleLevel(finalTierOpen)).toBeNull();
-    expect(nextPuzzleTierGate(finalTierOpen)).toBeNull();
+    const easyFrontierOpen = progressWith(...completed);
+    expect(unlockedPuzzleLevelCount(easyFrontierOpen)).toBe(30);
+    expect(unlockedIds(easyFrontierOpen)).toEqual(CAMPAIGN_LEVELS.slice(0, 30).map((level) => level.id));
+    expect(nextLockedPuzzleLevel(easyFrontierOpen)).toBe(CAMPAIGN_LEVELS[30]);
+    expect(nextPuzzleTierGate(easyFrontierOpen)).toBeNull();
+  });
+
+  it('unlocks related Hard groups only at each strictly certified optimum-plus-five boundary', () => {
+    const completed = new Set<PuzzleId>(CAMPAIGN_LEVELS.slice(0, 30).map(({ id }) => id));
+    const atThreshold = Object.fromEntries(PUZZLE_OPTIMAL_CERTIFICATES.map((certificate) => (
+      [certificate.levelId, certificate.masteryOperations]
+    ))) as Partial<Record<PuzzleId, number>>;
+    const mastered = progressWithBests([...completed], atThreshold);
+    expect(unlockedIds(mastered)).toEqual(CAMPAIGN_LEVELS.map(({ id }) => id));
+    expect(unlockedPuzzleLevelCount(mastered)).toBe(50);
+    expect(nextLockedPuzzleLevel(mastered)).toBeNull();
+
+    for (const certificate of PUZZLE_OPTIMAL_CERTIFICATES) {
+      const aboveThreshold = progressWithBests([...completed], {
+        ...atThreshold,
+        [certificate.levelId]: certificate.masteryOperations + 1,
+      });
+      const group = PUZZLE_HARD_MASTERY_GROUPS.find(({ prerequisiteId }) => prerequisiteId === certificate.levelId)!;
+      for (const hardLevelId of group.hardLevelIds) {
+        expect(isPuzzleUnlocked(aboveThreshold, hardLevelId), `${certificate.levelId} -> ${hardLevelId}`).toBe(false);
+        expect(puzzleMasteryGateStatus(aboveThreshold, hardLevelId)).toMatchObject({
+          bestOperations: certificate.masteryOperations + 1,
+          requiredOperations: certificate.masteryOperations,
+          unlocked: false,
+        });
+      }
+      expect(unlockedPuzzleLevelCount(aboveThreshold)).toBe(50 - group.hardLevelIds.length);
+    }
   });
 
   it('keeps migrated out-of-order completions replayable without leapfrogging the frontier', () => {
-    const historic = progressWith(CAMPAIGN_LEVELS[16]!.id, CAMPAIGN_LEVELS[17]!.id);
+    const historic = progressWith(CAMPAIGN_LEVELS[31]!.id, CAMPAIGN_LEVELS[32]!.id);
     expect(unlockedPuzzleLevelCount(historic)).toBe(5);
     expect(unlockedIds(historic)).toEqual([
       ...CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id),
-      CAMPAIGN_LEVELS[16]!.id,
-      CAMPAIGN_LEVELS[17]!.id,
+      CAMPAIGN_LEVELS[31]!.id,
+      CAMPAIGN_LEVELS[32]!.id,
     ]);
-    expect(isPuzzleComplete(historic, CAMPAIGN_LEVELS[16]!.id)).toBe(true);
-    expect(isPuzzleUnlocked(historic, CAMPAIGN_LEVELS[16]!.id)).toBe(true);
+    expect(isPuzzleComplete(historic, CAMPAIGN_LEVELS[31]!.id)).toBe(true);
+    expect(isPuzzleUnlocked(historic, CAMPAIGN_LEVELS[31]!.id)).toBe(true);
     expect(nextLockedPuzzleLevel(historic)).toBe(CAMPAIGN_LEVELS[3]);
     expect(nextPuzzleTierGate(historic)?.unlocksTier).toEqual(CAMPAIGN_LEVELS.slice(3, 5));
   });
@@ -276,7 +324,8 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     expect(V4_CAMPAIGN_ORDER).toHaveLength(20);
     expect(new Set(V4_CAMPAIGN_ORDER)).toEqual(new Set(V2_CAMPAIGN_ORDER));
     expect(V4_CAMPAIGN_ORDER).not.toEqual(V2_CAMPAIGN_ORDER);
-    expect(V4_CAMPAIGN_ORDER).toEqual(CAMPAIGN_LEVELS.slice(0, 20).map((level) => level.id));
+    expect(new Set(V4_CAMPAIGN_ORDER)).toEqual(new Set(CAMPAIGN_LEVELS.slice(0, 20).map((level) => level.id)));
+    expect(V4_CAMPAIGN_ORDER).not.toEqual(CAMPAIGN_LEVELS.slice(0, 20).map((level) => level.id));
 
     const completed = V4_CAMPAIGN_ORDER.filter((_, index) => index % 2 === 0);
     const bestPieceCounts = Object.fromEntries(completed.map((id, index) => [id, index + 1]));
@@ -287,7 +336,7 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     }))).toEqual({
       version: 5,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
-      completedLevelIds: completed,
+      completedLevelIds: orderedCampaignIds(...completed),
       bestPieceCounts: {},
     });
   });
