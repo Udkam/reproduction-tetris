@@ -334,6 +334,85 @@ function mixHexColor(first: number, second: number, ratio: number): number {
   return (mixChannel(16) << 16) | (mixChannel(8) << 8) | mixChannel(0);
 }
 
+type ReliefPoint = readonly [x: number, y: number];
+
+function halton(index: number, base: number): number {
+  let result = 0;
+  let fraction = 1 / base;
+  let remaining = index;
+  while (remaining > 0) {
+    result += fraction * (remaining % base);
+    remaining = Math.floor(remaining / base);
+    fraction /= base;
+  }
+  return result;
+}
+
+function clipReliefRegion(
+  polygon: readonly ReliefPoint[],
+  site: ReliefPoint,
+  neighbour: ReliefPoint,
+): ReliefPoint[] {
+  if (!polygon.length) return [];
+  const middleX = (site[0] + neighbour[0]) * 0.5;
+  const middleY = (site[1] + neighbour[1]) * 0.5;
+  const normalX = neighbour[0] - site[0];
+  const normalY = neighbour[1] - site[1];
+  const signedDistance = ([x, y]: ReliefPoint): number => (
+    (x - middleX) * normalX + (y - middleY) * normalY
+  );
+  const clipped: ReliefPoint[] = [];
+  let previous = polygon[polygon.length - 1]!;
+  let previousDistance = signedDistance(previous);
+  for (const current of polygon) {
+    const currentDistance = signedDistance(current);
+    const previousInside = previousDistance <= 0.0001;
+    const currentInside = currentDistance <= 0.0001;
+    if (previousInside !== currentInside) {
+      const ratio = previousDistance / (previousDistance - currentDistance);
+      clipped.push([
+        previous[0] + (current[0] - previous[0]) * ratio,
+        previous[1] + (current[1] - previous[1]) * ratio,
+      ]);
+    }
+    if (currentInside) clipped.push(current);
+    previous = current;
+    previousDistance = currentDistance;
+  }
+  return clipped;
+}
+
+function buildReliefRegions(
+  left: number,
+  top: number,
+  width: number,
+  height: number,
+  count: number,
+  phase: number,
+): readonly { site: ReliefPoint; points: readonly ReliefPoint[] }[] {
+  const sites = Array.from({ length: count }, (_, index): ReliefPoint => {
+    const sequence = index + 1 + phase * 17;
+    const x = 0.025 + halton(sequence, 2) * 0.95;
+    const y = 0.025 + halton(sequence, 3) * 0.95;
+    return [left + width * x, top + height * y];
+  });
+  const bounds: readonly ReliefPoint[] = [
+    [left, top],
+    [left + width, top],
+    [left + width, top + height],
+    [left, top + height],
+  ];
+  return sites.map((site, siteIndex) => {
+    let points = [...bounds];
+    for (let neighbourIndex = 0; neighbourIndex < sites.length; neighbourIndex += 1) {
+      if (neighbourIndex === siteIndex) continue;
+      points = clipReliefRegion(points, site, sites[neighbourIndex]!);
+      if (!points.length) break;
+    }
+    return { site, points };
+  }).filter(({ points }) => points.length >= 3);
+}
+
 function cubicBezierCoordinate(value: number, first: number, second: number): number {
   const inverse = 1 - value;
   return 3 * inverse * inverse * value * first
@@ -1622,7 +1701,7 @@ export class TetrisRenderer {
     }
   }
 
-  /** Draws one flat-topped shelf from staggered stone courses, never decals or facet fans. */
+  /** Draws one flat-contact cavern wall with seamless cross-grid mineral relief. */
   private drawBedrockBody(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1651,121 +1730,44 @@ export class TetrisRenderer {
     const bottom = Math.max(...ordered.map(({ y }) => y + size));
     const width = right - left;
     const height = bottom - top;
-    const courseCount = Math.max(1, Math.round(height / size));
-    const jointWidth = Math.max(0.9, size * 0.045);
-    const baseColor = mixHexColor(material.fillEnd, material.edge, 0.48);
+    const cellArea = (width * height) / (size * size);
     graphics
       .rect(left, top, width, height)
-      .fill({ color: baseColor, alpha });
+      .fill({ fill: this.gradientFor(BEDROCK_CELL), alpha });
 
-    const boundaryNodes = [0, 0.12, 0.25, 0.39, 0.52, 0.66, 0.8, 0.91, 1] as const;
-    const boundaryProfiles = [
-      [0, 0.1, -0.13, 0.16, -0.08, 0.12, -0.14, 0.08, 0],
-      [0, -0.14, 0.11, -0.08, 0.15, -0.12, 0.09, -0.07, 0],
-      [0, 0.12, -0.07, 0.1, -0.15, 0.14, -0.09, 0.11, 0],
+    const layers = [
+      {
+        regions: buildReliefRegions(left, top, width, height, Math.max(6, Math.min(18, Math.round(cellArea / 3.1))), 0),
+        alpha: 0.2,
+        toneSpan: 0.18,
+      },
+      {
+        regions: buildReliefRegions(left, top, width, height, Math.max(10, Math.min(42, Math.round(cellArea / 1.18))), 1),
+        alpha: 0.42,
+        toneSpan: 0.12,
+      },
     ] as const;
-    const cutPatterns = [
-      [0, 0.14, 0.33, 0.52, 0.7, 0.86, 1],
-      [0, 0.11, 0.3, 0.5, 0.72, 1],
-      [0, 0.18, 0.35, 0.55, 0.71, 0.88, 1],
-    ] as const;
-    const tonePattern = [0.2, 0.38, 0.27, 0.46, 0.31, 0.42] as const;
-    const driftPattern = [-0.1, 0.075, -0.06, 0.11, -0.085, 0.055] as const;
-    const clampUnit = (value: number): number => Math.max(0, Math.min(1, value));
-    const boundaryY = (boundary: number, normalizedX: number): number => {
-      if (boundary <= 0) return top;
-      if (boundary >= courseCount) return bottom;
-      const profile = boundaryProfiles[(boundary - 1) % boundaryProfiles.length]!;
-      const x = clampUnit(normalizedX);
-      const scaled = x * (boundaryNodes.length - 1);
-      const index = Math.min(boundaryNodes.length - 2, Math.floor(scaled));
-      const local = scaled - index;
-      const offset = profile[index]! + (profile[index + 1]! - profile[index]!) * local;
-      return top + (height * boundary) / courseCount + offset * size;
-    };
-    const boundaryPath = (boundary: number, start: number, end: number): number[] => {
-      const ascending = end >= start;
-      const lower = Math.min(start, end);
-      const upper = Math.max(start, end);
-      const interior = boundaryNodes.filter((node) => node > lower && node < upper);
-      if (!ascending) interior.reverse();
-      return [start, ...interior, end].flatMap((normalizedX) => [
-        left + width * normalizedX,
-        boundaryY(boundary, normalizedX),
-      ]);
-    };
-    const jointSegments: Array<[number, number, number, number]> = [];
-    const courseSegments: Array<[number, number, number, number]> = [];
-
-    for (let course = 0; course < courseCount; course += 1) {
-      const cuts = cutPatterns[course % cutPatterns.length]!;
-      const joints = cuts.map((cut, index) => {
-        const exterior = index === 0 || index === cuts.length - 1;
-        const drift = exterior ? 0 : driftPattern[(index + course * 2) % driftPattern.length]! * size / width;
-        const kink = exterior ? 0 : driftPattern[(index + course * 2 + 3) % driftPattern.length]! * size / width;
-        const bottomX = clampUnit(cut + drift);
-        const middleX = clampUnit(cut + drift * 0.48 + kink);
-        const topY = boundaryY(course, cut);
-        const bottomY = boundaryY(course + 1, bottomX);
-        return {
-          topX: cut,
-          topY,
-          middleX,
-          middleY: topY + (bottomY - topY) * 0.52,
-          bottomX,
-          bottomY,
-        };
-      });
-
-      for (let stone = 0; stone < joints.length - 1; stone += 1) {
-        const start = joints[stone]!;
-        const end = joints[stone + 1]!;
-        const courseWeight = courseCount === 1 ? 0 : (course / Math.max(1, courseCount - 1)) * 0.16;
-        const tone = Math.min(0.72, tonePattern[(stone + course * 2) % tonePattern.length]! + courseWeight);
-        const faceColor = mixHexColor(material.fillStart, material.fillEnd, tone);
+    for (const [layerIndex, layer] of layers.entries()) {
+      for (const [regionIndex, region] of layer.regions.entries()) {
+        const depth = (region.site[1] - top) / Math.max(1, height);
+        const variation = halton(regionIndex + 1 + layerIndex * 13, 5) - 0.5;
+        const tone = Math.max(0.08, Math.min(0.78, 0.22 + depth * 0.38 + variation * layer.toneSpan));
+        let faceColor = mixHexColor(material.fillStart, material.fillEnd, tone);
+        if ((regionIndex + layerIndex * 3) % 11 === 0) {
+          faceColor = mixHexColor(faceColor, material.innerEdge, layerIndex === 0 ? 0.055 : 0.035);
+        }
         graphics
-          .poly([
-            ...boundaryPath(course, start.topX, end.topX),
-            left + width * end.middleX, end.middleY,
-            ...boundaryPath(course + 1, end.bottomX, start.bottomX),
-            left + width * start.middleX, start.middleY,
-          ])
-          .fill({ color: faceColor, alpha: Math.min(0.97, alpha) });
-      }
-
-      for (let joint = 1; joint < joints.length - 1; joint += 1) {
-        const point = joints[joint]!;
-        jointSegments.push(
-          [left + width * point.topX, point.topY, left + width * point.middleX, point.middleY],
-          [left + width * point.middleX, point.middleY, left + width * point.bottomX, point.bottomY],
-        );
+          .poly(region.points.flatMap(([x, y]) => [x, y]))
+          .fill({ color: faceColor, alpha: Math.min(alpha, alpha * layer.alpha) });
       }
     }
 
-    for (let boundary = 1; boundary < courseCount; boundary += 1) {
-      for (let index = 0; index < boundaryNodes.length - 1; index += 1) {
-        const start = boundaryNodes[index]!;
-        const end = boundaryNodes[index + 1]!;
-        courseSegments.push([
-          left + width * start, boundaryY(boundary, start),
-          left + width * end, boundaryY(boundary, end),
-        ]);
-      }
-    }
-
-    this.strokeSegments(
-      graphics,
-      [...jointSegments, ...courseSegments],
-      material.edge,
-      Math.min(0.58, alpha * 0.58),
-      jointWidth,
-    );
     this.strokeSegments(
       graphics,
       [[left, top, right, top]],
       material.innerEdge,
-      Math.min(0.48, alpha * 0.48),
-      Math.max(1, size * 0.05),
+      Math.min(0.38, alpha * 0.38),
+      Math.max(1, size * 0.04),
     );
   }
 

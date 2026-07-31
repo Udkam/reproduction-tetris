@@ -528,7 +528,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('draws flat-topped staggered stone courses and complete square falling stones without decals', () => {
+  it('draws a flat-contact cross-grid cavern wall and complete square falling stones without decals', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const shelf = Array.from({ length: 30 }, (_, index) => {
@@ -568,62 +568,43 @@ describe('Puzzle undo presentation reset', () => {
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     expect(bedrockRects).toHaveLength(1);
     expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 72]);
-    expect(bedrockPolygons).toHaveLength(17);
-    const courseFaces = [
-      bedrockPolygons.slice(0, 6),
-      bedrockPolygons.slice(6, 11),
-      bedrockPolygons.slice(11, 17),
-    ];
-    expect(courseFaces.map((course) => course.length)).toEqual([6, 5, 6]);
-    for (const [course, faces] of courseFaces.entries()) {
-      for (const face of faces) {
-        const vertices = Array.from({ length: face.values.length / 2 }, (_, vertex) => (
-          `${face.values[vertex * 2]?.toFixed(3)},${face.values[vertex * 2 + 1]?.toFixed(3)}`
-        ));
-        expect(new Set(vertices).size).toBeGreaterThanOrEqual(4);
-        const yValues = face.values.filter((_, index) => index % 2 === 1);
-        if (course === 0) {
-          expect(Math.min(...yValues)).toBe(20);
-        } else {
-          expect(Math.min(...yValues)).toBeGreaterThan(20);
-        }
-      }
+    expect(bedrockPolygons).toHaveLength(35);
+    for (const face of bedrockPolygons) {
+      const vertices = Array.from({ length: face.values.length / 2 }, (_, vertex) => (
+        `${face.values[vertex * 2]?.toFixed(3)},${face.values[vertex * 2 + 1]?.toFixed(3)}`
+      ));
+      expect(new Set(vertices).size).toBeGreaterThanOrEqual(3);
+      const xValues = face.values.filter((_, index) => index % 2 === 0);
+      const yValues = face.values.filter((_, index) => index % 2 === 1);
+      expect(Math.min(...xValues)).toBeGreaterThanOrEqual(10);
+      expect(Math.max(...xValues)).toBeLessThanOrEqual(250);
+      expect(Math.min(...yValues)).toBeGreaterThanOrEqual(20);
+      expect(Math.max(...yValues)).toBeLessThanOrEqual(92);
     }
     const bedrockFaceFills = bedrock.operations
       .map((operation) => (operation.options as { color?: unknown } | undefined)?.color)
       .filter((color): color is number => typeof color === 'number');
-    expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(9);
+    expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(12);
     const faceWidths = bedrockPolygons.map((face) => {
       const xValues = face.values.filter((_, index) => index % 2 === 0);
       return Math.max(...xValues) - Math.min(...xValues);
     });
-    expect(faceWidths.every((faceWidth) => faceWidth < 240 * 0.32)).toBe(true);
-    expect(new Set(faceWidths.map((faceWidth) => Math.round(faceWidth))).size).toBeGreaterThanOrEqual(5);
+    expect(faceWidths.every((faceWidth) => faceWidth < 240 * 0.45)).toBe(true);
+    expect(new Set(faceWidths.map((faceWidth) => Math.round(faceWidth))).size).toBeGreaterThanOrEqual(10);
+    const crossesFirstLogicalRow = bedrockPolygons.some((face) => {
+      const yValues = face.values.filter((_, index) => index % 2 === 1);
+      return Math.min(...yValues) < 44 && Math.max(...yValues) > 44;
+    });
+    const crossesSecondLogicalRow = bedrockPolygons.some((face) => {
+      const yValues = face.values.filter((_, index) => index % 2 === 1);
+      return Math.min(...yValues) < 68 && Math.max(...yValues) > 68;
+    });
+    expect(crossesFirstLogicalRow).toBe(true);
+    expect(crossesSecondLogicalRow).toBe(true);
     expect(bedrock.operations[2]?.kind).toBe('poly');
     const bedrockSegments = bedrock.operations.filter((operation) => operation.kind === 'segment');
-    expect(bedrockSegments).toHaveLength(45);
-    const courseJointCounts = [10, 8, 10] as const;
-    let jointOffset = 0;
-    const jointXSets = courseJointCounts.map((count) => {
-      const courseJoints = bedrockSegments
-        .slice(jointOffset, jointOffset + count)
-        .filter((_, index) => index % 2 === 0)
-        .map((segment) => Number(segment.values[0]?.toFixed(3)));
-      jointOffset += count;
-      return new Set(courseJoints);
-    });
-    for (let firstCourse = 0; firstCourse < jointXSets.length; firstCourse += 1) {
-      for (let secondCourse = firstCourse + 1; secondCourse < jointXSets.length; secondCourse += 1) {
-        expect([...jointXSets[firstCourse]!].some((jointX) => jointXSets[secondCourse]!.has(jointX))).toBe(false);
-      }
-    }
-    expect(bedrockSegments.some((segment) => (
-      segment.values[0] === 10
-      && segment.values[1] === 20
-      && segment.values[2] === 250
-      && segment.values[3] === 20
-    ))).toBe(true);
-    expect(bedrock.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(2);
+    expect(bedrockSegments).toEqual([{ kind: 'segment', values: [10, 20, 250, 20] }]);
+    expect(bedrock.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
     expect(bedrock.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(fallingRects).toHaveLength(2);
@@ -688,7 +669,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
     const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
-    expect(entryPolygons).toBe(6);
+    expect(entryPolygons).toBe(16);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);
