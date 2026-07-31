@@ -12,11 +12,36 @@ import {
   nextPreviewPieces,
   nextPreviewPiece,
   orthogonalCellComponents,
+  projectedLandingCells,
   survivalDebrisCells,
 } from './presentation';
-import { createInitialState, dispatch, PIECE_SHAPES, PIECE_TYPES, type Cell } from '../core';
+import { createBoard, createInitialState, dispatch, PIECE_SHAPES, PIECE_TYPES, type Cell, type GameState } from '../core';
 
 describe('presentation interpolation', () => {
+  it('projects the real independent-column Supergravity landing without mutating Core', () => {
+    const board = createBoard();
+    board[39]![3] = 'I';
+    board[38]![3] = 'T';
+    board[39]![4] = 'L';
+    const base = dispatch(createInitialState(0x11a, 'sprint'), { type: 'start' }).state;
+    const state = {
+      ...base,
+      board,
+      active: { type: 'O', rotation: 0, x: 3, y: 20 },
+      mutationCollapseTicks: 600,
+    } as GameState;
+    const before = board.map((row) => [...row]);
+
+    expect(projectedLandingCells({ ...state, mutationCollapseTicks: 0 })).toEqual([
+      { x: 3, y: 36 }, { x: 4, y: 36 }, { x: 3, y: 37 }, { x: 4, y: 37 },
+    ]);
+    expect(projectedLandingCells(state)).toEqual([
+      { x: 3, y: 36 }, { x: 4, y: 37 }, { x: 3, y: 37 }, { x: 4, y: 38 },
+    ]);
+    expect(projectedLandingCells(state)).toEqual(projectedLandingCells(state));
+    expect(board).toEqual(before);
+  });
+
   it('derives the frozen one- or two-cell geometry from each Survival rock event', () => {
     expect(survivalDebrisCells({ x: 6, y: 20, height: 1 })).toEqual([
       { x: 6, y: 20 },

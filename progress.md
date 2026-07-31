@@ -24,6 +24,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   jagged shelf and a live two-boulder event with no old square grid. Both browser
   batches and the owned `5178` listener were released. Integrated visual acceptance
   remains pending.
+- P11.2a is source-green: Supergravity ghost cells now pass through the same
+  independent-column mapping as Core after rigid descent, while the query remains
+  deterministic and non-mutating. Focused presentation/Renderer proof passes
+  `51/51`; typecheck passes.
 
 ## Current phase
 

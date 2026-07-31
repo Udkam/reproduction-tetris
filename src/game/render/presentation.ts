@@ -1,4 +1,14 @@
-import type { Cell, GameState, PieceType, SurvivalDebris } from '../core';
+import {
+  BOARD_HEIGHT,
+  BOARD_WIDTH,
+  cellsForPiece,
+  collapseSprintColumns,
+  dropDistance,
+  type Cell,
+  type GameState,
+  type PieceType,
+  type SurvivalDebris,
+} from '../core';
 
 export interface PresentationPoint {
   x: number;
@@ -31,6 +41,31 @@ const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = 
 ];
 
 const cellKey = (cell: Cell): string => `${cell.x},${cell.y}`;
+
+/**
+ * Projects the cells shown by the landing ghost. Supergravity first performs the
+ * ordinary rigid hard drop, then applies the same independent-column settlement as
+ * Core. The cloned board keeps this renderer-only query pure and RNG-neutral.
+ */
+export function projectedLandingCells(state: GameState): readonly Cell[] {
+  if (!state.active) return [];
+  const rigidLanding = cellsForPiece(state.active).map((cell) => ({
+    x: cell.x,
+    y: cell.y + dropDistance(state),
+  }));
+  if (state.mode !== 'sprint' || state.mutationCollapseTicks <= 0) return rigidLanding;
+  if (rigidLanding.some(({ x, y }) => x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT)) {
+    return rigidLanding;
+  }
+
+  const projectedBoard = state.board.map((row) => [...row]);
+  for (const cell of rigidLanding) projectedBoard[cell.y]![cell.x] = state.active.type;
+  const { settledRowBySource } = collapseSprintColumns(projectedBoard);
+  return rigidLanding.map((cell) => ({
+    x: cell.x,
+    y: settledRowBySource[cell.y * BOARD_WIDTH + cell.x] ?? cell.y,
+  }));
+}
 
 /** Derives the immutable one- or two-cell geometry of one Survival rock event. */
 export function survivalDebrisCells(

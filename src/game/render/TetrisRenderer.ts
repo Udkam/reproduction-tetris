@@ -20,7 +20,6 @@ import {
   VISIBLE_HEIGHT,
   VISIBLE_START_ROW,
   cellsForPiece,
-  dropDistance,
   nextMutationPreviewItem,
   type Cell,
   type GameEvent,
@@ -62,6 +61,7 @@ import {
   lineClearPresentationProgress,
   nextPreviewPieces,
   orthogonalCellComponents,
+  projectedLandingCells,
   survivalDebrisCells,
   type CellEdge,
   type BoardShiftDirection,
@@ -923,9 +923,7 @@ export class TetrisRenderer {
 
     const drawableActive = state.status === 'ready' ? null : state.active;
     const activeCells = drawableActive ? cellsForPiece(drawableActive) : [];
-    const ghostCells = drawableActive
-      ? activeCells.map((cell) => ({ x: cell.x, y: cell.y + dropDistance(state) }))
-      : [];
+    const ghostCells = drawableActive ? [...projectedLandingCells(state)] : [];
 
     const visibleGhostCells = ghostCells
       .filter((cell) => cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT)
@@ -3763,8 +3761,7 @@ export class TetrisRenderer {
   private updateSnapshot(state: GameState, layout: BoardLayout, app: Application): void {
     const drawableActive = state.status === 'ready' ? null : state.active;
     const activeCells = drawableActive ? cellsForPiece(drawableActive) : [];
-    const distance = dropDistance(state);
-    const ghostCells = drawableActive ? activeCells.map((cell) => ({ x: cell.x, y: cell.y + distance })) : [];
+    const ghostCells = drawableActive ? [...projectedLandingCells(state)] : [];
     this.snapshot = {
       canvas: { width: app.screen.width, height: app.screen.height, resolution: app.renderer.resolution },
       board: { x: layout.x, y: layout.y, width: layout.width, height: layout.height, cell: layout.cell },

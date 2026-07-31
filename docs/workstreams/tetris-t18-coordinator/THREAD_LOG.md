@@ -101,3 +101,28 @@
 - Blocker: final palette/geology acceptance still depends on the integrated browser
   comparison round; the temporary frames are diagnostic and remain outside Git.
 - Next action: commit this corrective source recovery point, then open P11.2.
+
+## 2026-08-01 — P11.2a truthful Supergravity projection checkpoint
+
+- Task ID: `T18-P11.2A`
+- Base SHA: `cb6051227c17e9c154fc3b27146ae6cb87b1072a`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `src/game/render/presentation.ts`
+  - `src/game/render/presentation.test.ts`
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `progress.md`
+- Commands actually run:
+  - focused presentation/Renderer test: `51/51` passed
+  - first typecheck exposed readonly snapshot and test-spy typing only; corrected
+  - repeated focused test: `51/51` passed
+  - repeated `npm.cmd run typecheck`: passed
+- Evidence: one pure renderer query clones the settled board, places the rigid hard-
+  drop body, applies Core's existing `collapseSprintColumns`, and maps every source
+  cell to its real independently settled row. Both drawn ghost and public renderer
+  snapshot use that result. Direct proof covers asymmetric support, the ordinary
+  rigid projection when inactive, repeated determinism, and zero board mutation.
+- Blocker: none for projection. Atmosphere and activation visuals remain open.
+- Next action: commit P11.2a, then implement the Ice/Supergravity/Bomb visual grammar.

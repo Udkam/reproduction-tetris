@@ -684,6 +684,46 @@ describe('Puzzle undo presentation reset', () => {
     expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(2);
   });
 
+  it('draws and snapshots the independently settled Supergravity ghost', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const board = createBoard();
+    board[39]![3] = 'I';
+    board[38]![3] = 'T';
+    board[39]![4] = 'L';
+    const base = dispatch(createInitialState(0x11a, 'sprint'), { type: 'start' }).state;
+    const state = {
+      ...base,
+      board,
+      active: { type: 'O', rotation: 0, x: 3, y: 20 },
+      mutationCollapseTicks: 600,
+    } as GameState;
+    const pieces = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      pieceGraphics: pieces.graphics,
+      survivalEntryGraphics: createGraphicsRecorder().graphics,
+      survivalEntryMaskGraphics: createGraphicsRecorder().graphics,
+    });
+    const drawGroups = vi.spyOn(internals, 'drawCellGroups');
+
+    internals.drawPieces(state, layout);
+    internals.updateSnapshot(state, layout, {
+      screen: { width: 280, height: 480 },
+      renderer: { resolution: 1 },
+    });
+
+    const ghostCall = drawGroups.mock.calls.find((call) => (
+      (call[4] as { ghost?: boolean } | undefined)?.ghost === true
+    ));
+    expect(ghostCall?.[1]).toEqual([
+      { x: 3, y: 16 }, { x: 4, y: 17 }, { x: 3, y: 17 }, { x: 4, y: 18 },
+    ]);
+    expect(renderer.getSnapshot().ghostCells).toEqual([
+      { x: 3, y: 36 }, { x: 4, y: 37 }, { x: 3, y: 37 }, { x: 4, y: 38 },
+    ]);
+  });
+
   it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
