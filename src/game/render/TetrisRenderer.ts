@@ -359,6 +359,8 @@ function buildRockRidge(
   height: number,
   index: number,
   count: number,
+  scale = 1,
+  offsetX = 0,
 ): readonly ReliefPoint[] {
   const right = left + width;
   const bottom = top + height;
@@ -371,46 +373,43 @@ function buildRockRidge(
   for (let step = 0; step < stepCount; step += 1) {
     const sequence = index * 23 + step + 1;
     const y = top + height * (step / (stepCount - 1));
-    const center = centerBase
+    const center = centerBase + offsetX
       + (halton(sequence, 3) - 0.5) * nominalWidth * 0.72
       + Math.sin((step + index * 0.83) * 1.17) * nominalWidth * 0.12;
-    const halfWidth = halfBase * (0.72 + halton(sequence, 5) * 0.52);
+    const halfWidth = halfBase * scale * (0.72 + halton(sequence, 5) * 0.52);
     leftEdge.push([clampRelief(center - halfWidth, left, right), clampRelief(y, top, bottom)]);
     rightEdge.push([clampRelief(center + halfWidth, left, right), clampRelief(y, top, bottom)]);
   }
   return [...leftEdge, ...rightEdge.reverse()];
 }
 
-function buildRockPatch(
+function buildRockLedge(
   left: number,
   top: number,
   width: number,
   height: number,
   index: number,
-  scale: number,
-  offsetX: number,
-  offsetY: number,
 ): readonly ReliefPoint[] {
-  const sequence = index * 31 + 7;
-  const radiusX = width * (0.055 + halton(sequence, 3) * 0.085);
-  const radiusY = height * (0.14 + halton(sequence, 5) * 0.16);
-  const centerX = left + radiusX + (width - radiusX * 2) * halton(sequence, 7);
-  const centerY = top + radiusY + (height - radiusY * 2) * halton(sequence, 11);
+  const sequence = index * 37 + 11;
+  const halfWidth = width * (0.07 + halton(sequence, 3) * 0.09);
+  const halfHeight = height * (0.055 + halton(sequence, 5) * 0.055);
+  const centerX = left + halfWidth + (width - halfWidth * 2) * halton(sequence, 7);
+  const centerY = top + halfHeight + (height - halfHeight * 2) * halton(sequence, 11);
+  const slope = (halton(sequence, 13) - 0.5) * height * 0.2;
   const right = left + width;
   const bottom = top + height;
-  const points: ReliefPoint[] = [];
-  const vertexCount = 10;
-  for (let vertex = 0; vertex < vertexCount; vertex += 1) {
-    const angle = -Math.PI / 2 + (Math.PI * 2 * vertex) / vertexCount;
-    const radial = 0.76 + halton(sequence + vertex * 13, 13) * 0.32;
-    const x = centerX + offsetX + Math.cos(angle) * radiusX * scale * radial;
-    const y = centerY + offsetY + Math.sin(angle) * radiusY * scale * radial;
-    points.push([
-      clampRelief(x, left, right),
-      clampRelief(y, top, bottom),
-    ]);
-  }
-  return points;
+  const point = (x: number, y: number): ReliefPoint => [
+    clampRelief(x, left, right),
+    clampRelief(y, top, bottom),
+  ];
+  return [
+    point(centerX - halfWidth, centerY - slope * 0.46),
+    point(centerX - halfWidth * 0.28, centerY - halfHeight - slope * 0.16),
+    point(centerX + halfWidth * 0.42, centerY - halfHeight * 0.72 + slope * 0.22),
+    point(centerX + halfWidth, centerY + slope * 0.5),
+    point(centerX + halfWidth * 0.24, centerY + halfHeight + slope * 0.12),
+    point(centerX - halfWidth * 0.68, centerY + halfHeight * 0.64 - slope * 0.32),
+  ];
 }
 
 function buildRockLip(
@@ -1754,51 +1753,51 @@ export class TetrisRenderer {
     const ridgeCount = Math.max(5, Math.min(8, Math.round(width / Math.max(1, size * 1.55))));
     for (let ridgeIndex = 0; ridgeIndex < ridgeCount; ridgeIndex += 1) {
       const ridgeTone = 0.18 + halton(ridgeIndex + 4, 5) * 0.62;
-      const ridgeColor = ridgeIndex % 2 === 0
-        ? mixHexColor(material.fillStart, material.innerEdge, 0.12 + ridgeTone * 0.08)
-        : mixHexColor(material.fillEnd, material.edge, 0.08 + ridgeTone * 0.1);
+      const ridgeColor = mixHexColor(material.fillStart, material.fillEnd, 0.16 + ridgeTone * 0.6);
       graphics
-        .poly(buildRockRidge(left, top, width, height, ridgeIndex, ridgeCount).flatMap(([x, y]) => [x, y]))
-        .fill({ color: ridgeColor, alpha: Math.min(alpha, alpha * (0.2 + ridgeTone * 0.12)) });
+        .poly(buildRockRidge(
+          left,
+          top,
+          width,
+          height,
+          ridgeIndex,
+          ridgeCount,
+          1.14,
+          size * 0.06,
+        ).flatMap(([x, y]) => [x, y]))
+        .fill({ color: material.edge, alpha: Math.min(alpha, alpha * 0.32) })
+        .poly(buildRockRidge(
+          left,
+          top,
+          width,
+          height,
+          ridgeIndex,
+          ridgeCount,
+          0.9,
+        ).flatMap(([x, y]) => [x, y]))
+        .fill({ color: ridgeColor, alpha: Math.min(alpha, alpha * (0.64 + ridgeTone * 0.12)) })
+        .poly(buildRockRidge(
+          left,
+          top,
+          width,
+          height,
+          ridgeIndex,
+          ridgeCount,
+          0.42,
+          -size * 0.055,
+        ).flatMap(([x, y]) => [x, y]))
+        .fill({ color: material.innerEdge, alpha: Math.min(alpha, alpha * (0.1 + ridgeTone * 0.08)) });
     }
 
-    const patchCount = Math.max(9, Math.min(18, Math.round(Math.sqrt(cellArea) * 3)));
-    for (let patchIndex = 0; patchIndex < patchCount; patchIndex += 1) {
-      const depth = halton(patchIndex * 31 + 7, 11);
-      const variation = halton(patchIndex + 2, 5);
-      const faceColor = mixHexColor(
-        material.fillStart,
-        material.fillEnd,
-        Math.max(0.08, Math.min(0.88, 0.14 + depth * 0.56 + variation * 0.18)),
-      );
-      const shadow = buildRockPatch(
-        left,
-        top,
-        width,
-        height,
-        patchIndex,
-        1.08,
-        size * 0.045,
-        size * 0.07,
-      );
-      const face = buildRockPatch(left, top, width, height, patchIndex, 1, 0, 0);
-      const lift = buildRockPatch(
-        left,
-        top,
-        width,
-        height,
-        patchIndex,
-        0.48,
-        -size * 0.045,
-        -size * 0.055,
-      );
+    const ledgeCount = Math.max(5, Math.min(8, Math.round(cellArea / 5)));
+    for (let ledgeIndex = 0; ledgeIndex < ledgeCount; ledgeIndex += 1) {
+      const variation = halton(ledgeIndex + 5, 5);
+      const ledgeColor = ledgeIndex % 3 === 0
+        ? mixHexColor(material.fillStart, material.innerEdge, 0.2)
+        : mixHexColor(material.fillEnd, material.edge, 0.18);
       graphics
-        .poly(shadow.flatMap(([x, y]) => [x, y]))
-        .fill({ color: material.edge, alpha: Math.min(alpha, alpha * 0.3) })
-        .poly(face.flatMap(([x, y]) => [x, y]))
-        .fill({ color: faceColor, alpha: Math.min(alpha, alpha * 0.74) })
-        .poly(lift.flatMap(([x, y]) => [x, y]))
-        .fill({ color: material.innerEdge, alpha: Math.min(alpha, alpha * (0.11 + variation * 0.08)) });
+        .poly(buildRockLedge(left, top, width, height, ledgeIndex).flatMap(([x, y]) => [x, y]))
+        .fill({ color: ledgeColor, alpha: Math.min(alpha, alpha * (0.16 + variation * 0.1)) });
     }
 
     graphics
