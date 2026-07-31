@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-08-01 — Phase 12 procedural bedrock wall correction accepted
+
+- Replaced the rejected flat slab, pebble relief, and repeated ridge candidates with
+  one deterministic procedural cavern height field. Multi-scale eroded masses,
+  restrained fine grain, and normal-derived upper-left lighting now read as a
+  continuous natural rock wall while preserving an exact flat gameplay contact top.
+- The accepted renderer owns one cached bedrock texture for its lifetime, releases it
+  during teardown, and retains a dedicated gradient fallback when browser canvas
+  texture creation is unavailable. Falling-stone geometry and material behavior are
+  unchanged by this correction.
+- Source candidate `2e14ec3` passes the focused Renderer `43/43` and Theme `7/7`
+  tests, final typecheck, the full `32 passed / 1 skipped` file suite with
+  `294 passed / 3 skipped` tests, and the `762`-module production build. The only
+  build note is the existing bundle-size warning.
+- Evidence `dcb1d79` archives the final Survival frame and state. Independent
+  read-only QA checkpoint `5619bce` reports no P0–P3 finding and confirms the wall
+  has no cell grid, masonry, pebble clusters, repeated zigzags, camouflage, or framed
+  slab read.
+- A scoped redacted gitleaks scan of `a4cafba^..dcb1d79` reports no finding. The
+  owned browser/server batch is closed and port `5178` is released. This entry
+  accepts the bedrock-wall correction only; it does not close the remaining Phase 12
+  product program.
+
 ## 2026-08-01 — Phase 11 luminous materials and legible intent accepted
 
 - Replaced Survival's rejected decal language with dedicated geology geometry. The

@@ -1,5 +1,37 @@
 # T19 Coordinator Workstream Log
 
+## 2026-08-01 — Phase 12 procedural bedrock-wall correction accepted
+
+- Task ID: `T19-P12.2-BEDROCK-WALL`
+- Base SHA: `5e3d096e8701105f173094ad5e7b78d99c3bcdc5`
+- Owner: primary coordinator; independent QA was read-only apart from its bounded
+  report checkpoint.
+- Exact product/test paths: `src/game/render/TetrisRenderer.ts`,
+  `src/game/render/TetrisRenderer.test.ts`, `src/game/render/theme.ts`, and
+  `src/game/render/theme.test.ts`.
+- Exact contract/evidence paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/qa/evidence/t19-phase12/bedrock-wall-evidence.json`,
+  `docs/qa/evidence/t19-phase12/survival-bedrock-wall-1280x720-zh.png`,
+  `docs/qa/evidence/t19-phase12/survival-bedrock-wall-1280x720-zh.state.json`, and
+  `docs/workstreams/tetris-t19-coordinator/QA_BEDROCK_WALL.md`.
+- Implementation: rejected slab, pebble, and repeated-ridge candidates were replaced
+  by one deterministic renderer-lifetime height field with multi-scale eroded mass,
+  restrained fine grain, normal-derived lighting, an exact flat contact top, cached
+  texture reuse, teardown destruction, and a canvas-unavailable gradient fallback.
+- Commands actually run: focused Renderer and Theme tests; final typecheck; one full
+  Vitest suite; one production build; one final browser-evidence pass; scoped
+  redacted gitleaks over `a4cafba^..dcb1d79`; exact-path Git staging and diff checks;
+  and narrow `netstat` verification after releasing the owned server.
+- Evidence: accepted source `2e14ec3`; evidence `dcb1d79`; QA `5619bce`; focused
+  tests `43/43` and `7/7`; final suite `32 passed / 1 skipped` files and
+  `294 passed / 3 skipped` tests; build `762` modules; one gameplay Canvas; state
+  reports Survival with three bedrock rows and thirty `B` cells; no QA P0–P3 finding.
+- Resource note: the owned Vite PID `3020` and port `5178` were released. The
+  unrelated listener on port `5173` remains untouched.
+- Blocker: none for this correction.
+- Next action: continue the remaining Phase 12 slices from this accepted rollback
+  point; do not reopen bedrock visuals without new player feedback.
+
 ## 2026-08-01 — Phase 12 Survival dynamic-support checkpoint
 
 - Task ID: `T19-P12.2`
