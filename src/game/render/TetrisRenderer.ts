@@ -1418,7 +1418,11 @@ export class TetrisRenderer {
     const ghostInset = options.ghost
       ? Math.max(CELL_STYLE.ghostInsetMin, options.unit * CELL_STYLE.ghostInsetRatio)
       : 0;
-    const gap = (baseGap + ghostInset) * scale;
+    // Falling stones own the complete logical cell footprint. This keeps one stone
+    // the same size as one board cell and makes a vertical pair meet edge-to-edge.
+    const gap = type === SURVIVAL_STONE_CELL && !options.ghost
+      ? 0
+      : (baseGap + ghostInset) * scale;
     const size = scaledUnit - gap * 2;
     const material = options.material ?? this.materialFor(type);
     const radius = Math.max(CELL_STYLE.radiusMin, Math.min(CELL_STYLE.radiusMax, size * CELL_STYLE.radiusRatio));
@@ -1671,7 +1675,7 @@ export class TetrisRenderer {
       .fill({ color: material.edge, alpha: Math.min(0.24, alpha * 0.27) });
   }
 
-  /** Draws each falling rock as a complete square solid with restrained face lighting. */
+  /** Draws each falling rock at full cell size; adjacent event cells meet without a gap. */
   private drawStoneBodies(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1684,10 +1688,9 @@ export class TetrisRenderer {
       first.cell.y - second.cell.y || first.cell.x - second.cell.x
     ));
     for (const entry of ordered) {
-      const gap = Math.max(0.7, size * 0.035);
-      const left = entry.x + gap;
-      const top = entry.y + gap;
-      const bodySize = Math.max(1, size - gap * 2);
+      const left = entry.x;
+      const top = entry.y;
+      const bodySize = size;
       const right = left + bodySize;
       const bottom = top + bodySize;
       const bevel = Math.max(1.25, bodySize * 0.13);

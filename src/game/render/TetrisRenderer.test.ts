@@ -570,16 +570,32 @@ describe('Puzzle undo presentation reset', () => {
     expect(fallingRects).toHaveLength(2);
     for (const body of fallingRects) {
       expect(body.values[2]).toBeCloseTo(body.values[3] ?? 0, 6);
-      expect(body.values[2]).toBeLessThan(24);
-      expect(body.values[2]).toBeGreaterThan(22);
+      expect(body.values[2]).toBe(24);
     }
     expect(fallingRects[0]?.values[0]).toBeCloseTo(fallingRects[1]?.values[0] ?? 0, 6);
-    expect((fallingRects[1]?.values[1] ?? 0) - (fallingRects[0]?.values[1] ?? 0)).toBeCloseTo(24, 6);
+    expect(fallingRects[0]?.values).toEqual([82, 20, 24, 24]);
+    expect(fallingRects[1]?.values).toEqual([82, 44, 24, 24]);
+    expect((fallingRects[0]?.values[1] ?? 0) + (fallingRects[0]?.values[3] ?? 0))
+      .toBe(fallingRects[1]?.values[1]);
     expect(fallingPolygons).toHaveLength(6);
     expect(falling.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(falling.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(falling.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(geometrySignature(bedrock.operations)).not.toBe(geometrySignature(falling.operations));
+
+    const cellSized = createGraphicsRecorder();
+    internals.drawCellGroups(
+      cellSized.graphics,
+      [{ x: 3, y: 16 }, { x: 3, y: 17 }],
+      SURVIVAL_STONE_CELL,
+      1,
+      { originX: 10, originY: 20, unit: 24 },
+    );
+    const cellBodies = cellSized.operations.filter((operation) => operation.kind === 'rect');
+    expect(cellBodies.slice(0, 2).map((operation) => operation.values)).toEqual([
+      [82, 404, 24, 24],
+      [82, 428, 24, 24],
+    ]);
   });
 
   it('reveals and raises exactly one canonical bedrock row per Survival countdown digit', () => {
