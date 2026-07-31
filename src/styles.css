@@ -8444,6 +8444,8 @@ kbd,
   width: 100%;
   max-width: 100%;
   margin: 0;
+  /* Playwrite's visible ink extends farther on the right than its advance box. */
+  transform: translateX(-.38em);
   color: #eff8fa;
   font-family: var(--font-brand);
   font-size: clamp(27px, 3.7vw, 50px);
@@ -8472,7 +8474,7 @@ kbd,
 .mode-gates--workbench .mode-gate--race,
 .mode-gates--workbench .mode-gate--sprint,
 .mode-gates--workbench .mode-gate--puzzle {
-  grid-template-columns: 56px minmax(0, 1fr) 34px;
+  grid-template-columns: 56px minmax(0, 1fr) 42px;
   gap: clamp(13px, 2vw, 22px);
   padding: clamp(12px, 1.65vw, 18px) clamp(14px, 2vw, 24px);
   border: 1px solid transparent;
@@ -8510,9 +8512,10 @@ kbd,
 .mode-gates--workbench .mode-gate__body span { color: #5c7187; font-size: clamp(11px, 1.05vw, 13px); font-synthesis: none; line-height: 1.45; }
 .mode-gates--workbench .mode-gate__action {
   display: grid;
-  width: 34px;
-  height: 34px;
-  min-height: 34px;
+  justify-self: end;
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
   padding: 0;
   place-items: center;
   color: #eff6fa;
@@ -8522,11 +8525,12 @@ kbd,
 }
 .mode-gates--workbench .mode-gate__action svg {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  opacity: 1;
   fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
+  stroke: #ffffff;
+  stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -9462,7 +9466,9 @@ kbd,
   .mode-gates--workbench .mode-gate--marathon,
   .mode-gates--workbench .mode-gate--race,
   .mode-gates--workbench .mode-gate--sprint,
-  .mode-gates--workbench .mode-gate--puzzle { grid-template-columns: 42px minmax(0, 1fr) 34px; gap: 12px; padding: 10px 12px; }
+  .mode-gates--workbench .mode-gate--puzzle { grid-template-columns: 42px minmax(0, 1fr) 38px; gap: 12px; padding: 10px 12px; }
+  .mode-gates--workbench .mode-gate__action { width: 38px; height: 38px; min-height: 38px; }
+  .mode-gates--workbench .mode-gate__action svg { width: 22px; height: 22px; }
   .mode-gates--workbench .mode-gate__glyph { flex-basis: 42px; width: 42px; height: 42px; }
   .mode-gates--workbench .mode-gate__glyph svg { width: 27px; height: 27px; }
   .mode-gates--workbench .mode-gate__body strong { font-size: 20px; }

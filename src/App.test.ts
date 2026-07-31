@@ -1375,8 +1375,10 @@ describe('T6 frontend mode binding', () => {
     expect(styles).not.toContain('.phase-seam');
     expect(styles).not.toContain('.action-sheet::before');
     expect(styles).not.toContain('rotate(3deg)');
-    expect(sourceStyles).toContain('grid-template-columns: 56px minmax(0, 1fr) 34px');
+    expect(sourceStyles).toContain('grid-template-columns: 56px minmax(0, 1fr) 42px');
     expect(sourceStyles).toContain('place-items: center');
+    expect(sourceStyles).toContain('transform: translateX(-.38em)');
+    expect(sourceStyles).toContain('stroke: #ffffff');
     expect(puzzleLibraryStyles).toMatch(/data-puzzle-category="easy"[^}]*repeat\(6,/s);
     for (const color of ['%233f9f96', '%236687d5', '%23c98243', '%239875be']) {
       expect(sourceIndex).toContain(color);
