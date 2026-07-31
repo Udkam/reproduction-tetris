@@ -43,20 +43,21 @@ accidental two-line button, or hide a translated label.
 
 ### Survival material system
 
-Bedrock is a continuous mineral shelf with a mathematically flat top contact at the
-cell boundary. Both rejected approaches are forbidden: one plain framed slab with a few
-oversized light planes, and the later low-poly fan of triangles/trapezoids. The visible
-body is built from deterministic courses of individually silhouetted stones. A course
-contains five to seven unequal bodies across the ten-column shelf; neighbouring stones
-share the same kinked joint, course seams undulate slightly, and vertical joints are
-offset between courses. No joint may repeat at cell cadence or reveal a `10 × N` grid.
-The upper vertices of every stone in the first course remain exactly on the flat contact
-plane. Each stone owns one close-valued mineral face rather than an internal triangular
-facet fan; a narrow dark geometric joint, restrained upper-edge lift, and progressively
-darker lower courses establish depth. The shelf has no full rectangular outline. The
-rock read comes from these real silhouettes, shared joints, and course weight—not from
-a crack, chip, pit, speckle, sticker, stroked vein, wood grain, or per-cell texture. The
-outer mass remains continuous and can rise during entry without changing Core rows.
+Bedrock is a continuous vertical cave wall with a mathematically flat top contact at the
+cell boundary. Three rejected readings are forbidden: a plain framed slab with a few
+oversized light planes, a low-poly fan of triangles/trapezoids, and a dry-stacked masonry
+wall made from visible courses and dark joints. The wall owns one uninterrupted body,
+then receives a deterministic multi-scale relief field whose irregular mineral regions
+cross both row and column boundaries. Regions use close-valued slate tones and shared
+edges without mortar-like outlines; broad vertical weight and gradual depth darkening
+make the surface read as an exposed cavern face rather than a platform or built wall.
+No region may repeat at cell cadence, reveal a `10 × N` grid, form horizontal courses,
+or dominate the wall as one giant geometric facet. The contact plane keeps one narrow,
+restrained mineral lift while the exterior sides and bottom are clipped by the board,
+not framed. The rock read comes from continuous surface relief, scale variation, and
+directional light—not from a crack, chip, pit, speckle, sticker, stroked vein, wood
+grain, brick joint, or per-cell texture. The mass can rise during entry without changing
+Core rows.
 
 A falling stone is an unmistakable square block whose rendered outer width and height
 equal one ordinary board cell. A narrow bevel and two solid tonal faces create volume

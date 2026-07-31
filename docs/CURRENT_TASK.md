@@ -26,17 +26,17 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    without ellipsis, overlap, accidental line breaks, disappearing text, or baseline
    drift after fonts load.
 4. **Survival stone reads through mass and light, never decals.** Bedrock becomes one
-   flat-topped continuous stone shelf whose contact plane aligns exactly with the board
-   grid. Both the single slab with three broad planes and the later regular low-poly fan
-   are rejected. The replacement is a non-repeating dry-stacked section of individually
-   silhouetted stones: five to seven unequal bodies per visible course, shared kinked
-   joints, subtly uneven course seams, and vertically offset joints. First-course upper
-   vertices remain exactly level; lower courses become progressively heavier and darker.
-   One stone is one close-valued mineral body, never a fan of internal triangles. Bodies
-   span non-cell widths and never form a `10 × N` tile grid or a framed rectangle. No
-   cracks, chips, dots, stickers, wood grain, stroked veins, or per-cell ornament may
-   imitate texture; the rocky read must come from silhouette, real shared boundaries,
-   restrained edge light, and course weight. Falling
+   flat-topped vertical cave wall whose contact plane aligns exactly with the board grid.
+   The single slab with a few broad planes, the regular low-poly fan, and the later
+   dry-stacked masonry courses are all rejected. The replacement uses one continuous
+   wall body plus deterministic irregular relief regions at several scales. Those regions
+   cross row and column boundaries, share edges without dark mortar outlines, stay close
+   in value, and gain weight through vertical shading. They cannot repeat at cell cadence,
+   form horizontal courses, expose a `10 × N` grid, dominate the wall as giant facets, or
+   add a framed exterior. A narrow top-edge lift preserves the flat collision plane. No
+   cracks, chips, dots, stickers, wood grain, stroked veins, brick joints, or per-cell
+   ornament may imitate texture; the rocky read must come from continuous relief,
+   varied scale, directional light, and depth. Falling
    stones remain square stone
    blocks with the same material family and a clear beveled solid face. Each falling
    stone owns exactly the same visual width and height as one ordinary board cell; it
@@ -142,13 +142,13 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     spare height is distributed above and below the complete stack instead of becoming
     either a large disconnect or a visually attached edge. Responsive layouts retain
     zero overflow and the same square-node geometry.
-17. **The Survival bedrock must not read as a panel or a low-poly wall.** Its contact
-    remains perfectly level for collision truth, but every visible body is an unequal
-    closed stone silhouette sharing real boundaries with its neighbours. Course seams
-    are slightly irregular, vertical joints are staggered, and no stone is internally
-    triangulated. At ordinary desktop play size the player must distinguish individual
-    load-bearing rocks and deeper lower courses without mistaking the shelf for wood,
-    metal, concrete, a framed rectangle, or a faceted polygon mosaic.
+17. **The Survival bedrock must read as an exposed cavern wall.** Its contact remains
+    perfectly level for collision truth, while the visible face is one continuous mass
+    with small and medium irregular relief regions crossing all logical cell boundaries.
+    No masonry course, mortar line, cell grid, giant fan facet, slab frame, or decorative
+    crack is visible. At ordinary desktop play size the player must read a dark, heavy,
+    naturally varied rock face with a restrained lit lip—not wood, metal, concrete,
+    paving stones, a built retaining wall, or a flat geometric platform.
 
 ## Phase 12 checkpoint order
 
@@ -173,8 +173,9 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   the end of that batch. Full suite/build run once after the final source edit.
 - Browser proof covers both leave actions and keyboard selection; all four Settings
   sections in one continuous surface; Chinese/English desktop, portrait, and short
-  landscape with complete values; Survival countdown, flat-topped staggered stone
-  courses with no faceted fan, a steady column arrow, one/two square stones, 4x cadence, and an atomic
+  landscape with complete values; Survival countdown, a flat-contact continuous cavern
+  wall with cross-grid relief and no slab/facet fan/masonry courses, a steady column arrow,
+  one/two square stones, 4x cadence, and an atomic
   debris/active-piece push that stays outside ordinary gravity and lock delay; Puzzle
   library lessons and a live HUD with no analysis card;
   reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
