@@ -1622,7 +1622,7 @@ export class TetrisRenderer {
     }
   }
 
-  /** Draws one flat-topped shelf from interlocked structural rock bodies, never decals. */
+  /** Draws one flat-topped shelf from staggered stone courses, never decals or facet fans. */
   private drawBedrockBody(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1651,99 +1651,122 @@ export class TetrisRenderer {
     const bottom = Math.max(...ordered.map(({ y }) => y + size));
     const width = right - left;
     const height = bottom - top;
-    const capDepth = Math.max(2, Math.min(size * 0.11, height * 0.16));
-    const baseDepth = Math.max(3, Math.min(size * 0.18, height * 0.22));
-    const borderWidth = Math.max(1.1, size * 0.045);
-    const baseColor = mixHexColor(material.fillEnd, material.edge, 0.18);
+    const courseCount = Math.max(1, Math.round(height / size));
+    const jointWidth = Math.max(0.9, size * 0.045);
+    const baseColor = mixHexColor(material.fillEnd, material.edge, 0.48);
     graphics
       .rect(left, top, width, height)
-      .fill({ color: baseColor, alpha })
-      .stroke({ color: material.edge, alpha: Math.min(0.94, alpha), width: borderWidth });
+      .fill({ color: baseColor, alpha });
 
-    const faceTop = top + capDepth;
-    const faceBottom = bottom - baseDepth;
-    const faceHeight = Math.max(1, faceBottom - faceTop);
-    const topCuts = [0, 0.17, 0.38, 0.57, 0.79, 1] as const;
-    const middleCuts = [0, 0.22, 0.35, 0.62, 0.75, 1] as const;
-    const middleDepth = [0.49, 0.57, 0.43, 0.61, 0.47, 0.55] as const;
-    const baseCuts = [0, 0.13, 0.42, 0.54, 0.84, 1] as const;
-    const baseLift = [0.08, -0.12, 0.2, -0.04, 0.16, -0.08] as const;
-    const middlePoints = middleCuts.map((cut, index) => ({
-      x: left + width * cut,
-      y: faceTop + faceHeight * middleDepth[index]!,
-    }));
-    const basePoints = baseCuts.map((cut, index) => ({
-      x: left + width * cut,
-      y: faceBottom + baseDepth * baseLift[index]!,
-    }));
-    const upperColors = [
-      mixHexColor(material.fillStart, material.innerEdge, 0.16),
-      mixHexColor(material.fillStart, material.fillEnd, 0.36),
-      mixHexColor(material.fillEnd, material.edge, 0.28),
-      mixHexColor(material.fillStart, material.innerEdge, 0.08),
-      mixHexColor(material.fillStart, material.fillEnd, 0.58),
+    const boundaryNodes = [0, 0.12, 0.25, 0.39, 0.52, 0.66, 0.8, 0.91, 1] as const;
+    const boundaryProfiles = [
+      [0, 0.1, -0.13, 0.16, -0.08, 0.12, -0.14, 0.08, 0],
+      [0, -0.14, 0.11, -0.08, 0.15, -0.12, 0.09, -0.07, 0],
+      [0, 0.12, -0.07, 0.1, -0.15, 0.14, -0.09, 0.11, 0],
     ] as const;
-    const lowerColors = [
-      mixHexColor(material.fillEnd, material.edge, 0.34),
-      mixHexColor(material.fillStart, material.fillEnd, 0.62),
-      mixHexColor(material.fillEnd, material.edge, 0.48),
-      mixHexColor(material.fillStart, material.fillEnd, 0.48),
-      mixHexColor(material.fillEnd, material.edge, 0.22),
+    const cutPatterns = [
+      [0, 0.14, 0.33, 0.52, 0.7, 0.86, 1],
+      [0, 0.11, 0.3, 0.5, 0.72, 1],
+      [0, 0.18, 0.35, 0.55, 0.71, 0.88, 1],
     ] as const;
+    const tonePattern = [0.2, 0.38, 0.27, 0.46, 0.31, 0.42] as const;
+    const driftPattern = [-0.1, 0.075, -0.06, 0.11, -0.085, 0.055] as const;
+    const clampUnit = (value: number): number => Math.max(0, Math.min(1, value));
+    const boundaryY = (boundary: number, normalizedX: number): number => {
+      if (boundary <= 0) return top;
+      if (boundary >= courseCount) return bottom;
+      const profile = boundaryProfiles[(boundary - 1) % boundaryProfiles.length]!;
+      const x = clampUnit(normalizedX);
+      const scaled = x * (boundaryNodes.length - 1);
+      const index = Math.min(boundaryNodes.length - 2, Math.floor(scaled));
+      const local = scaled - index;
+      const offset = profile[index]! + (profile[index + 1]! - profile[index]!) * local;
+      return top + (height * boundary) / courseCount + offset * size;
+    };
+    const boundaryPath = (boundary: number, start: number, end: number): number[] => {
+      const ascending = end >= start;
+      const lower = Math.min(start, end);
+      const upper = Math.max(start, end);
+      const interior = boundaryNodes.filter((node) => node > lower && node < upper);
+      if (!ascending) interior.reverse();
+      return [start, ...interior, end].flatMap((normalizedX) => [
+        left + width * normalizedX,
+        boundaryY(boundary, normalizedX),
+      ]);
+    };
+    const jointSegments: Array<[number, number, number, number]> = [];
+    const courseSegments: Array<[number, number, number, number]> = [];
 
-    for (let index = 0; index < upperColors.length; index += 1) {
-      const middleStart = middlePoints[index]!;
-      const middleEnd = middlePoints[index + 1]!;
-      graphics
-        .poly([
-          left + width * topCuts[index]!, faceTop,
-          left + width * topCuts[index + 1]!, faceTop,
-          middleEnd.x, middleEnd.y,
-          middleStart.x, middleStart.y,
-        ])
-        .fill({ color: upperColors[index], alpha: Math.min(0.94, alpha) });
+    for (let course = 0; course < courseCount; course += 1) {
+      const cuts = cutPatterns[course % cutPatterns.length]!;
+      const joints = cuts.map((cut, index) => {
+        const exterior = index === 0 || index === cuts.length - 1;
+        const drift = exterior ? 0 : driftPattern[(index + course * 2) % driftPattern.length]! * size / width;
+        const kink = exterior ? 0 : driftPattern[(index + course * 2 + 3) % driftPattern.length]! * size / width;
+        const bottomX = clampUnit(cut + drift);
+        const middleX = clampUnit(cut + drift * 0.48 + kink);
+        const topY = boundaryY(course, cut);
+        const bottomY = boundaryY(course + 1, bottomX);
+        return {
+          topX: cut,
+          topY,
+          middleX,
+          middleY: topY + (bottomY - topY) * 0.52,
+          bottomX,
+          bottomY,
+        };
+      });
+
+      for (let stone = 0; stone < joints.length - 1; stone += 1) {
+        const start = joints[stone]!;
+        const end = joints[stone + 1]!;
+        const courseWeight = courseCount === 1 ? 0 : (course / Math.max(1, courseCount - 1)) * 0.16;
+        const tone = Math.min(0.72, tonePattern[(stone + course * 2) % tonePattern.length]! + courseWeight);
+        const faceColor = mixHexColor(material.fillStart, material.fillEnd, tone);
+        graphics
+          .poly([
+            ...boundaryPath(course, start.topX, end.topX),
+            left + width * end.middleX, end.middleY,
+            ...boundaryPath(course + 1, end.bottomX, start.bottomX),
+            left + width * start.middleX, start.middleY,
+          ])
+          .fill({ color: faceColor, alpha: Math.min(0.97, alpha) });
+      }
+
+      for (let joint = 1; joint < joints.length - 1; joint += 1) {
+        const point = joints[joint]!;
+        jointSegments.push(
+          [left + width * point.topX, point.topY, left + width * point.middleX, point.middleY],
+          [left + width * point.middleX, point.middleY, left + width * point.bottomX, point.bottomY],
+        );
+      }
     }
 
-    for (let index = 0; index < lowerColors.length; index += 1) {
-      const middleStart = middlePoints[index]!;
-      const middleEnd = middlePoints[index + 1]!;
-      const baseStart = basePoints[index]!;
-      const baseEnd = basePoints[index + 1]!;
-      graphics
-        .poly([
-          middleStart.x, middleStart.y,
-          middleEnd.x, middleEnd.y,
-          baseEnd.x, baseEnd.y,
-          baseStart.x, baseStart.y,
-        ])
-        .fill({ color: lowerColors[index], alpha: Math.min(0.96, alpha) });
+    for (let boundary = 1; boundary < courseCount; boundary += 1) {
+      for (let index = 0; index < boundaryNodes.length - 1; index += 1) {
+        const start = boundaryNodes[index]!;
+        const end = boundaryNodes[index + 1]!;
+        courseSegments.push([
+          left + width * start, boundaryY(boundary, start),
+          left + width * end, boundaryY(boundary, end),
+        ]);
+      }
     }
 
-    graphics
-      .poly([
-        left, top,
-        right, top,
-        right, top + capDepth * 0.72,
-        left + width * 0.83, top + capDepth,
-        left + width * 0.64, top + capDepth * 0.62,
-        left + width * 0.46, top + capDepth * 0.92,
-        left + width * 0.24, top + capDepth * 0.68,
-        left, top + capDepth * 0.9,
-      ])
-      .fill({
-        color: mixHexColor(material.fillStart, material.innerEdge, 0.28),
-        alpha: Math.min(0.96, alpha),
-      });
-    graphics
-      .poly([
-        ...basePoints.flatMap(({ x, y }) => [x, y]),
-        right, bottom,
-        left, bottom,
-      ])
-      .fill({
-        color: mixHexColor(material.fillEnd, material.edge, 0.58),
-        alpha: Math.min(0.98, alpha),
-      });
+    this.strokeSegments(
+      graphics,
+      [...jointSegments, ...courseSegments],
+      material.edge,
+      Math.min(0.58, alpha * 0.58),
+      jointWidth,
+    );
+    this.strokeSegments(
+      graphics,
+      [[left, top, right, top]],
+      material.innerEdge,
+      Math.min(0.48, alpha * 0.48),
+      Math.max(1, size * 0.05),
+    );
   }
 
   /** Draws each falling rock at full cell size; adjacent event cells meet without a gap. */
