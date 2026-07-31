@@ -1,8 +1,8 @@
 {
   "taskId": "TETRIS-T19-PHASE12",
-  "sourceSha": "a8ed83b303213f8a23b01a5ec0ab9de28edc51ed",
+  "sourceSha": "ebaa43f8efb9bd3605a74a2c9493201e1ef3195f",
   "baseUrl": "http://127.0.0.1:5178/",
-  "capturedAt": "2026-07-31T22:15:36.071Z",
+  "capturedAt": "2026-07-31T22:29:16.117Z",
   "method": "One bounded Vite server and one Playwright Chromium instance; ordinary UI controls and persisted stable-ID progress only.",
   "screens": {
     "homeDesktopZh": {
@@ -164,9 +164,9 @@
           "y": 29,
           "rotation": 0
         },
-        "next": "J",
+        "next": "I",
         "nextPreviews": [
-          "J"
+          "I"
         ],
         "visibleBoard": [
           "..........",
@@ -184,8 +184,8 @@
           "..........",
           "..........",
           "..........",
-          "..........",
-          "...IIII...",
+          "...J......",
+          "...JJJ....",
           "BBBBBBBBBB",
           "BBBBBBBBBB",
           "BBBBBBBBBB"
@@ -211,9 +211,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "J",
+        "previewPiece": "I",
         "previewPieces": [
-          "J"
+          "I"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -270,9 +270,9 @@
         },
         "survivalDebris": [],
         "survivalDebrisWarningColumns": [
-          8
+          7
         ],
-        "survivalDebrisWarningHeight": 2,
+        "survivalDebrisWarningHeight": 1,
         "survivalStoneCueCount": 0,
         "survivalBedrockCue": null,
         "survivalEntryBedrockRows": null,
@@ -318,11 +318,7 @@
         "stoneNextSeconds": 19,
         "fallingStones": [
           {
-            "x": 8,
-            "y": 21
-          },
-          {
-            "x": 8,
+            "x": 7,
             "y": 22
           }
         ],
@@ -334,9 +330,9 @@
           "y": 33,
           "rotation": 0
         },
-        "next": "J",
+        "next": "I",
         "nextPreviews": [
-          "J"
+          "I"
         ],
         "visibleBoard": [
           "..........",
@@ -354,8 +350,8 @@
           "..........",
           "..........",
           "..........",
-          "..........",
-          "...IIII...",
+          "...J......",
+          "...JJJ....",
           "BBBBBBBBBB",
           "BBBBBBBBBB",
           "BBBBBBBBBB"
@@ -381,9 +377,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "J",
+        "previewPiece": "I",
         "previewPieces": [
-          "J"
+          "I"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -428,9 +424,9 @@
         "visibleLockedCells": 34,
         "presentation": {
           "x": 3,
-          "y": 32.91941100836433,
+          "y": 32.823702194798244,
           "offsetX": 0,
-          "offsetY": -0.0805889916356719
+          "offsetY": -0.17629780520175586
         },
         "boardShiftOffsetY": 0,
         "mutationFilters": {
@@ -441,17 +437,13 @@
         "survivalDebris": [
           {
             "id": 1,
-            "x": 8,
-            "y": 21,
-            "height": 2,
-            "presentationY": 20.78521179286056,
+            "x": 7,
+            "y": 22,
+            "height": 1,
+            "presentationY": 21.66404612017593,
             "cells": [
               {
-                "x": 8,
-                "y": 21
-              },
-              {
-                "x": 8,
+                "x": 7,
                 "y": 22
               }
             ]
@@ -524,14 +516,14 @@
         "fallTicks": 48,
         "placedPieces": 0,
         "active": {
-          "type": "O",
-          "x": 4,
+          "type": "J",
+          "x": 3,
           "y": 19,
           "rotation": 0
         },
-        "next": "L",
+        "next": "O",
         "nextPreviews": [
-          "L"
+          "O"
         ],
         "visibleBoard": [
           "..........",
@@ -576,9 +568,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "L",
+        "previewPiece": "O",
         "previewPieces": [
-          "L"
+          "O"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -586,12 +578,12 @@
         "scrim": null,
         "activeCells": [
           {
-            "x": 4,
+            "x": 3,
             "y": 19
           },
           {
-            "x": 5,
-            "y": 19
+            "x": 3,
+            "y": 20
           },
           {
             "x": 4,
@@ -604,12 +596,12 @@
         ],
         "ghostCells": [
           {
-            "x": 4,
+            "x": 3,
             "y": 38
           },
           {
-            "x": 5,
-            "y": 38
+            "x": 3,
+            "y": 39
           },
           {
             "x": 4,
@@ -622,7 +614,7 @@
         ],
         "visibleLockedCells": 0,
         "presentation": {
-          "x": 4,
+          "x": 3,
           "y": 19,
           "offsetX": 0,
           "offsetY": 0
