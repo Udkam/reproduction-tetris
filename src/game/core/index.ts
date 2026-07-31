@@ -4,7 +4,6 @@ export * from './engine';
 export * from './mutation';
 export * from './pieces';
 export * from './puzzles';
-export * from './puzzleGuidance';
 export * from './random';
 export * from './sprint';
 export * from './types';

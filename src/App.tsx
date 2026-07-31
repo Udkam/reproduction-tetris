@@ -12,13 +12,11 @@ import {
   MUTATION_FREEZE_GRAVITY_TICKS,
   PIECE_TYPES,
   TICKS_PER_SECOND,
-  analyzePuzzleGuidance,
   type GameEvent,
   type GameMode,
   type GameState,
   type MutationItem,
   type PieceType,
-  type PuzzleGuidance,
   type PuzzleId,
   createInitialState,
   getPuzzleDefinition,
@@ -32,6 +30,7 @@ import { browserPlatform } from './platform/browserPlatform';
 import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
+  PUZZLE_CATEGORIES,
   PUZZLE_PROGRESS_KEY,
   V4_PUZZLE_PROGRESS_KEY,
   V3_PUZZLE_PROGRESS_KEY,
@@ -42,10 +41,15 @@ import {
   migrateV3PuzzleProgress,
   migrateV2PuzzleProgress,
   parsePuzzleProgress,
+  isPuzzleUnlocked,
+  puzzleMasteryGateStatus,
   puzzleBestPieceCount,
   recordCanonicalPuzzleCompletion,
   type PuzzleProgress,
+  type PuzzleCategoryId,
 } from './puzzleProgress';
+import { puzzleLessonFor } from './puzzleLessons';
+import { PUZZLE_HARD_MASTERY_GROUPS, puzzleOptimalCertificate } from './puzzleMastery';
 import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
 import { nextPreviewPieces, survivalDebrisCells } from './game/render/presentation';
 import { ActionSheet } from './ui/ActionSheet';
@@ -592,11 +596,10 @@ function CompletionTick() {
   );
 }
 
-const PUZZLE_PAGE_SIZE = 25;
-type PuzzlePageIndex = 0 | 1;
+const PUZZLE_CATEGORY_IDS: readonly PuzzleCategoryId[] = Object.freeze(['intro', 'easy', 'hard']);
 
-function puzzlePageForIndex(index: number): PuzzlePageIndex {
-  return index >= PUZZLE_PAGE_SIZE ? 1 : 0;
+function puzzleCategoryForLevel(levelId: PuzzleId): PuzzleCategoryId {
+  return PUZZLE_CATEGORIES.find((category) => category.levels.some((level) => level.id === levelId))?.id ?? 'intro';
 }
 
 export function PuzzleLibrary({
@@ -617,29 +620,39 @@ export function PuzzleLibrary({
   const selected = campaignLevel(selectedId);
   const selectedName = puzzleDisplayName(language, selected.id, selected.name);
   const copy = appCopy(language);
+  const selectedLesson = puzzleLessonFor(selected.id);
+  const selectedLessonCopy = selectedLesson ? copy.phrasing.puzzleLesson(selectedLesson.technique) : null;
   const selectedComplete = progress.completedLevelIds.includes(selected.id);
   const selectedBest = puzzleBestPieceCount(progress, selected.id);
-  const selectedIndex = CAMPAIGN_LEVELS.findIndex((level) => level.id === selected.id);
-  const selectedPage = puzzlePageForIndex(Math.max(0, selectedIndex));
-  const [pageIndex, setPageIndex] = useState<PuzzlePageIndex>(selectedPage);
+  const selectedUnlocked = isPuzzleUnlocked(progress, selected.id);
+  const selectedGate = puzzleMasteryGateStatus(progress, selected.id);
+  const selectedGateLesson = selectedGate ? copy.phrasing.puzzleLesson(selectedGate.group.technique) : null;
+  const selectedGatePrerequisite = selectedGate
+    ? campaignLevel(selectedGate.group.prerequisiteId)
+    : null;
+  const selectedGatePrerequisiteName = selectedGatePrerequisite
+    ? puzzleDisplayName(language, selectedGatePrerequisite.id, selectedGatePrerequisite.name)
+    : null;
+  const selectedCategory = puzzleCategoryForLevel(selected.id);
+  const [categoryId, setCategoryId] = useState<PuzzleCategoryId>(selectedCategory);
   const levelButtonRefs = useRef(new Map<PuzzleId, HTMLButtonElement>());
   const pageTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const pendingFocusRef = useRef<PuzzleId | null>(null);
-  const pageLastSelectedRef = useRef<[PuzzleId, PuzzleId]>([
-    CAMPAIGN_LEVELS[0]!.id,
-    CAMPAIGN_LEVELS[PUZZLE_PAGE_SIZE]!.id,
-  ]);
-  pageLastSelectedRef.current[selectedPage] = selected.id;
-  const pageStart = pageIndex * PUZZLE_PAGE_SIZE;
-  const pageLevels = CAMPAIGN_LEVELS.slice(pageStart, pageStart + PUZZLE_PAGE_SIZE);
-  const pageEnd = pageStart + pageLevels.length;
+  const pageLastSelectedRef = useRef<Record<PuzzleCategoryId, PuzzleId>>({
+    intro: PUZZLE_CATEGORIES[0]!.levels[0]!.id,
+    easy: PUZZLE_CATEGORIES[1]!.levels[0]!.id,
+    hard: PUZZLE_CATEGORIES[2]!.levels[0]!.id,
+  });
+  pageLastSelectedRef.current[selectedCategory] = selected.id;
+  const activeCategory = PUZZLE_CATEGORIES.find((category) => category.id === categoryId)!;
+  const pageLevels = activeCategory.levels;
   const rovingLevelId = pageLevels.some((level) => level.id === selected.id)
     ? selected.id
-    : pageLastSelectedRef.current[pageIndex];
+    : pageLastSelectedRef.current[categoryId];
 
   useEffect(() => {
-    setPageIndex(selectedPage);
-  }, [selectedPage]);
+    setCategoryId(selectedCategory);
+  }, [selectedCategory]);
 
   useEffect(() => {
     const pending = pendingFocusRef.current;
@@ -652,17 +665,17 @@ export function PuzzleLibrary({
     } catch {
       target.focus();
     }
-  }, [pageIndex, selectedId]);
+  }, [categoryId, selectedId]);
 
   const selectLevelAtIndex = (index: number, focus = false) => {
     const next = CAMPAIGN_LEVELS[index];
     if (!next) return;
-    const nextPage = puzzlePageForIndex(index);
-    pageLastSelectedRef.current[nextPage] = next.id;
-    if (focus && nextPage !== pageIndex) pendingFocusRef.current = next.id;
-    setPageIndex(nextPage);
+    const nextCategory = puzzleCategoryForLevel(next.id);
+    pageLastSelectedRef.current[nextCategory] = next.id;
+    if (focus && nextCategory !== categoryId) pendingFocusRef.current = next.id;
+    setCategoryId(nextCategory);
     onSelect(next.id);
-    if (focus && nextPage === pageIndex) {
+    if (focus && nextCategory === categoryId) {
       const target = levelButtonRefs.current.get(next.id);
       try {
         target?.focus({ preventScroll: true });
@@ -672,13 +685,13 @@ export function PuzzleLibrary({
     }
   };
 
-  const switchPage = (nextPage: PuzzlePageIndex, focusTab = false) => {
-    const targetId = pageLastSelectedRef.current[nextPage];
+  const switchPage = (nextCategory: PuzzleCategoryId, focusTab = false) => {
+    const targetId = pageLastSelectedRef.current[nextCategory];
     const targetIndex = CAMPAIGN_LEVELS.findIndex((level) => level.id === targetId);
-    setPageIndex(nextPage);
+    setCategoryId(nextCategory);
     if (targetIndex >= 0) onSelect(targetId);
     if (focusTab) {
-      const target = pageTabRefs.current[nextPage];
+      const target = pageTabRefs.current[PUZZLE_CATEGORY_IDS.indexOf(nextCategory)];
       try {
         target?.focus({ preventScroll: true });
       } catch {
@@ -687,29 +700,35 @@ export function PuzzleLibrary({
     }
   };
 
-  const movePageFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: PuzzlePageIndex) => {
-    let nextPage: PuzzlePageIndex;
-    if (event.key === 'ArrowLeft') nextPage = index === 0 ? 1 : 0;
-    else if (event.key === 'ArrowRight') nextPage = index === 1 ? 0 : 1;
-    else if (event.key === 'Home') nextPage = 0;
-    else if (event.key === 'End') nextPage = 1;
+  const movePageFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number;
+    if (event.key === 'ArrowLeft') nextIndex = (index + PUZZLE_CATEGORY_IDS.length - 1) % PUZZLE_CATEGORY_IDS.length;
+    else if (event.key === 'ArrowRight') nextIndex = (index + 1) % PUZZLE_CATEGORY_IDS.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = PUZZLE_CATEGORY_IDS.length - 1;
     else return;
     event.preventDefault();
-    switchPage(nextPage, true);
+    switchPage(PUZZLE_CATEGORY_IDS[nextIndex]!, true);
   };
 
-  const moveLevelFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
-    let nextIndex = index;
-    if (event.key === 'ArrowLeft') nextIndex = Math.max(0, index - 1);
-    else if (event.key === 'ArrowRight') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + 1);
-    else if (event.key === 'ArrowUp') nextIndex = Math.max(0, index - 5);
-    else if (event.key === 'ArrowDown') nextIndex = Math.min(CAMPAIGN_LEVELS.length - 1, index + 5);
-    else if (event.key === 'Home') nextIndex = pageStart;
-    else if (event.key === 'End') nextIndex = pageEnd - 1;
+  const moveLevelFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, localIndex: number) => {
+    const grid = event.currentTarget.closest<HTMLOListElement>('.puzzle-gallery__grid');
+    const renderedColumns = grid
+      ? window.getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length
+      : 0;
+    const fallbackColumns = categoryId === 'intro' ? 3 : categoryId === 'easy' ? 6 : 5;
+    const columns = renderedColumns > 1 ? renderedColumns : fallbackColumns;
+    let nextLocalIndex = localIndex;
+    if (event.key === 'ArrowLeft') nextLocalIndex = Math.max(0, localIndex - 1);
+    else if (event.key === 'ArrowRight') nextLocalIndex = Math.min(pageLevels.length - 1, localIndex + 1);
+    else if (event.key === 'ArrowUp') nextLocalIndex = Math.max(0, localIndex - columns);
+    else if (event.key === 'ArrowDown') nextLocalIndex = Math.min(pageLevels.length - 1, localIndex + columns);
+    else if (event.key === 'Home') nextLocalIndex = 0;
+    else if (event.key === 'End') nextLocalIndex = pageLevels.length - 1;
     else return;
     event.preventDefault();
-    if (nextIndex === index) return;
-    selectLevelAtIndex(nextIndex, true);
+    if (nextLocalIndex === localIndex) return;
+    selectLevelAtIndex(pageLevels[nextLocalIndex]!.index - 1, true);
   };
   return (
     <main id="game" lang={language} className="library-shell library-shell--gallery" data-testid="puzzle-library">
@@ -731,70 +750,129 @@ export function PuzzleLibrary({
               <h2 className={`puzzle-gallery__title${selectedComplete ? ' puzzle-gallery__title--complete' : ''}`}>{selectedName}</h2>
               {selectedBest !== null && <span className="puzzle-gallery__best" data-testid="selected-puzzle-start-best">{copy.phrasing.currentBest(selectedBest)}</span>}
             </div>
-            <button className="primary-action puzzle-gallery__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} onClick={onStart}>{copy.labels.start}</button>
+            <button className="primary-action puzzle-gallery__start" type="button" data-testid="start-selected-puzzle" aria-label={copy.phrasing.startPuzzle(selectedName)} disabled={!selectedUnlocked} onClick={onStart}>{copy.labels.start}</button>
+            {selectedLesson && selectedLessonCopy && (
+              <section
+                className="puzzle-gallery__lesson"
+                data-testid="puzzle-lesson"
+                data-puzzle-technique={selectedLesson.technique}
+                aria-label={selectedLessonCopy.title}
+              >
+                <strong>{selectedLessonCopy.title}</strong>
+                <p>{selectedLessonCopy.body}</p>
+              </section>
+            )}
+            {selectedGate && selectedGateLesson && selectedGatePrerequisiteName && (
+              <p
+                className={`puzzle-gallery__requirement${selectedGate.unlocked ? ' puzzle-gallery__requirement--met' : ''}`}
+                data-testid="puzzle-mastery-requirement"
+              >
+                {copy.phrasing.masteryThreshold(
+                  selectedGateLesson.title,
+                  selectedGatePrerequisiteName,
+                  selectedGate.requiredOperations,
+                  selectedGate.bestOperations,
+                )}
+              </p>
+            )}
           </section>
         </aside>
         <nav className="puzzle-gallery__catalog" aria-label={copy.phrasing.puzzleList(CAMPAIGN_LEVELS.length)} data-testid="level-list">
           <header className="puzzle-gallery__catalog-header">
             <h1 id="library-title">{copy.labels.puzzle}</h1>
             <div className="puzzle-gallery__pages" role="tablist" aria-label={copy.labels.puzzlePages}>
-              {([0, 1] as const).map((index) => {
-                const start = index * PUZZLE_PAGE_SIZE + 1;
-                const end = start + PUZZLE_PAGE_SIZE - 1;
-                const active = pageIndex === index;
+              {PUZZLE_CATEGORIES.map((category, index) => {
+                const active = categoryId === category.id;
+                const label = category.id === 'intro'
+                  ? copy.labels.puzzleIntro
+                  : category.id === 'easy'
+                    ? copy.labels.puzzleEasy
+                    : copy.labels.puzzleHard;
                 return (
                   <button
-                    id={`puzzle-page-tab-${index + 1}`}
+                    id={`puzzle-page-tab-${category.id}`}
                     className={`puzzle-gallery__page${active ? ' puzzle-gallery__page--active' : ''}`}
                     type="button"
                     role="tab"
                     aria-selected={active}
-                    aria-controls={`puzzle-page-panel-${index + 1}`}
+                    aria-controls={`puzzle-page-panel-${category.id}`}
                     tabIndex={active ? 0 : -1}
-                    key={index}
+                    key={category.id}
                     ref={(node) => {
                       pageTabRefs.current[index] = node;
                     }}
-                    onClick={() => switchPage(index)}
+                    onClick={() => switchPage(category.id)}
                     onKeyDown={(event) => movePageFocus(event, index)}
                   >
-                    {String(start).padStart(2, '0')}–{String(end).padStart(2, '0')}
+                    {label}
                   </button>
                 );
               })}
             </div>
           </header>
+          {categoryId === 'hard' && (
+            <section className="puzzle-gallery__mastery" aria-label={copy.labels.mastery}>
+              <p>{copy.labels.hardUnlockHint}</p>
+              <div>
+                {PUZZLE_HARD_MASTERY_GROUPS.map((group) => {
+                  const certificate = puzzleOptimalCertificate(group.prerequisiteId)!;
+                  const prerequisite = campaignLevel(group.prerequisiteId);
+                  const prerequisiteName = puzzleDisplayName(language, prerequisite.id, prerequisite.name);
+                  const best = puzzleBestPieceCount(progress, group.prerequisiteId);
+                  const lesson = copy.phrasing.puzzleLesson(group.technique);
+                  const met = best !== null && best <= certificate.masteryOperations;
+                  return (
+                    <span
+                      className={met ? 'puzzle-gallery__mastery-key--met' : undefined}
+                      title={copy.phrasing.masteryThreshold(lesson.title, prerequisiteName, certificate.masteryOperations, best)}
+                      key={group.prerequisiteId}
+                    >
+                      <b>{lesson.title}</b>
+                      <i>{best ?? '—'} / {certificate.masteryOperations}</i>
+                    </span>
+                  );
+                })}
+              </div>
+            </section>
+          )}
           <ol
-            id={`puzzle-page-panel-${pageIndex + 1}`}
+            id={`puzzle-page-panel-${categoryId}`}
             className="puzzle-gallery__grid"
             role="tabpanel"
-            aria-labelledby={`puzzle-page-tab-${pageIndex + 1}`}
-            aria-label={copy.phrasing.puzzlePage(pageStart + 1, pageEnd)}
-            key={pageIndex}
+            aria-labelledby={`puzzle-page-tab-${categoryId}`}
+            aria-label={copy.phrasing.puzzleCategory(
+              categoryId === 'intro' ? copy.labels.puzzleIntro : categoryId === 'easy' ? copy.labels.puzzleEasy : copy.labels.puzzleHard,
+              pageLevels.length,
+            )}
+            data-puzzle-category={categoryId}
+            key={categoryId}
           >
-            {pageLevels.map((level) => {
+            {pageLevels.map((level, localIndex) => {
               const complete = progress.completedLevelIds.includes(level.id);
+              const unlocked = isPuzzleUnlocked(progress, level.id);
+              const gate = puzzleMasteryGateStatus(progress, level.id);
               const hasAnchor = getPuzzleDefinition(level.id).anchorCells.length > 0;
               const selectedLevel = rovingLevelId === level.id;
               const bestPieces = puzzleBestPieceCount(progress, level.id);
               const levelName = puzzleDisplayName(language, level.id, level.name);
               return (
-                <li className={`puzzle-gallery__node${selectedLevel ? ' puzzle-gallery__node--selected' : ''}${complete ? ' puzzle-gallery__node--complete' : ''}`} key={level.id}>
+                <li className={`puzzle-gallery__node${selectedLevel ? ' puzzle-gallery__node--selected' : ''}${complete ? ' puzzle-gallery__node--complete' : ''}${unlocked ? '' : ' puzzle-gallery__node--locked'}`} key={level.id}>
                   <button
                     type="button"
                     data-testid="level-row"
                     data-level-id={level.id}
-                    data-unlocked="true"
+                    data-unlocked={String(unlocked)}
                     data-anchor={hasAnchor || undefined}
                     data-best-pieces={bestPieces ?? undefined}
                     aria-pressed={selectedLevel}
+                    aria-disabled={!unlocked}
                     tabIndex={selectedLevel ? 0 : -1}
                     ref={(node) => {
                       if (node) levelButtonRefs.current.set(level.id, node);
                       else levelButtonRefs.current.delete(level.id);
                     }}
-                    aria-label={copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, getPuzzleDefinition(level.id).targetRows, complete, bestPieces)}
-                    onKeyDown={(event) => moveLevelFocus(event, level.index - 1)}
+                    aria-label={`${copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, getPuzzleDefinition(level.id).targetRows, complete, bestPieces)}${gate && !gate.unlocked ? ` — ${copy.phrasing.masteryThreshold(copy.phrasing.puzzleLesson(gate.group.technique).title, puzzleDisplayName(language, campaignLevel(gate.group.prerequisiteId).id, campaignLevel(gate.group.prerequisiteId).name), gate.requiredOperations, gate.bestOperations)}` : ''}`}
+                    onKeyDown={(event) => moveLevelFocus(event, localIndex)}
                     onClick={() => onSelect(level.id)}
                   >
                     {complete
@@ -1081,55 +1159,6 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
       <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
       <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
       <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
-    </section>
-  );
-}
-
-export function PuzzleGuidancePanel({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
-  const copy = appCopy(language);
-  const lastGuidance = useRef<PuzzleGuidance | null>(null);
-  const currentGuidance = useMemo(
-    () => analyzePuzzleGuidance(state),
-    [state.active, state.board, state.mode, state.phase, state.puzzleTargetCells, state.queue, state.status],
-  );
-  if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') lastGuidance.current = null;
-  else if (currentGuidance !== null) lastGuidance.current = currentGuidance;
-  const guidance = currentGuidance ?? lastGuidance.current;
-  if (guidance === null) return null;
-
-  const metrics = [
-    [copy.labels.directClearLandings, guidance.directClearLandings, 'direct-clears'],
-    [copy.labels.safeLandings, guidance.safeLandings, 'safe-landings'],
-    [copy.labels.buriedHoles, guidance.buriedHoles, 'buried-holes'],
-    [copy.labels.minimumBurden, guidance.minimumBurden, 'minimum-burden'],
-  ] as const;
-
-  return (
-    <section className="puzzle-guidance" data-testid="puzzle-guidance" aria-label={copy.labels.puzzleAnalysis}>
-      <header className="puzzle-guidance__header">
-        <strong>{copy.labels.puzzleAnalysis}</strong>
-        <span aria-hidden="true">{guidance.activePiece}</span>
-      </header>
-      <div className="puzzle-guidance__metrics">
-        {metrics.map(([label, value, id]) => (
-          <article key={id} data-guidance-metric={id}>
-            <span>{label}</span>
-            <b>{value}</b>
-          </article>
-        ))}
-      </div>
-      <p className="puzzle-guidance__strategy" data-guidance-strategy={guidance.strategy}>
-        {copy.phrasing.puzzleStrategy(guidance.strategy, guidance.directClearLandings)}
-      </p>
-      <div className="puzzle-guidance__roles" aria-label={copy.labels.queueRoles}>
-        {guidance.queueRoles.map(({ piece, role }, index) => (
-          <span key={`${index}-${piece}`} data-queue-role={role}>
-            <b>{index + 1}</b>
-            <i>{piece}</i>
-            {copy.phrasing.puzzlePieceRole(role)}
-          </span>
-        ))}
-      </div>
     </section>
   );
 }
@@ -1801,7 +1830,6 @@ export function GameSession({
                 )}
               </div>
             </div>
-            {puzzleDoublePreview && <PuzzleGuidancePanel state={state} language={language} />}
           </aside>
         </section>
 

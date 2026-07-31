@@ -1,6 +1,6 @@
-/* T16 Phase 9 Puzzle gallery authority.
-   One large canonical board and two 5 × 5 pages replace the dense 50-node
-   worksheet. The gallery owns no scroll container at any supported viewport. */
+/* Phase 12 Puzzle curriculum authority.
+   One large canonical board and three named square-card pages replace the dense
+   50-node worksheet. The gallery owns no scroll container at any supported viewport. */
 
 .library-shell--gallery {
   display: grid;
@@ -126,6 +126,43 @@
   border-top: 1px solid rgba(153, 183, 201, .24);
 }
 
+.puzzle-gallery__lesson,
+.puzzle-gallery__requirement {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: -4px 0 0;
+  padding-top: 10px;
+  color: #d8e4ec;
+  border-top: 1px solid rgba(157, 188, 206, .24);
+}
+
+.puzzle-gallery__lesson {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+}
+
+.puzzle-gallery__lesson strong {
+  color: #a8dfcf;
+  font-size: 13px;
+  letter-spacing: .02em;
+}
+
+.puzzle-gallery__lesson p,
+.puzzle-gallery__requirement {
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.puzzle-gallery__lesson p {
+  margin: 0;
+}
+
+.puzzle-gallery__requirement--met {
+  color: #9bd9bf;
+}
+
 .puzzle-gallery__title-row {
   display: flex;
   align-items: baseline;
@@ -176,6 +213,14 @@
   border-color: #c3a8de;
 }
 
+.puzzle-gallery__start:disabled {
+  color: #aebdca;
+  background: #40556a;
+  border-color: #51697e;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 .puzzle-gallery__catalog {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -185,6 +230,10 @@
   background:
     radial-gradient(circle at 92% 8%, rgba(138, 99, 179, .08), transparent 24%),
     #f8fbfc;
+}
+
+.puzzle-gallery__catalog:has(.puzzle-gallery__mastery) {
+  grid-template-rows: auto auto minmax(0, 1fr);
 }
 
 .puzzle-gallery__catalog-header {
@@ -206,7 +255,7 @@
 
 .puzzle-gallery__pages {
   display: grid;
-  grid-template-columns: repeat(2, minmax(78px, 1fr));
+  grid-template-columns: repeat(3, minmax(68px, 1fr));
   gap: 4px;
   padding: 4px;
   background: #e8eff4;
@@ -219,13 +268,61 @@
   min-height: 36px;
   padding: 6px 10px;
   color: #5b7085;
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: 12px;
   font-weight: 650;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 7px;
   box-shadow: none;
+}
+
+.puzzle-gallery__mastery {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 10px;
+  color: #5a6f82;
+  background: rgba(232, 239, 244, .72);
+  border-left: 3px solid #8a63b3;
+}
+
+.puzzle-gallery__mastery p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.puzzle-gallery__mastery > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.puzzle-gallery__mastery span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 5px;
+  color: #6b5685;
+  font-size: 10px;
+}
+
+.puzzle-gallery__mastery span b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.puzzle-gallery__mastery span i {
+  flex: none;
+  font-family: var(--font-mono);
+  font-style: normal;
+}
+
+.puzzle-gallery__mastery .puzzle-gallery__mastery-key--met {
+  color: #26785d;
 }
 
 .puzzle-gallery__page:hover,
@@ -244,7 +341,7 @@
 .puzzle-gallery__grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(44px, 1fr));
-  grid-template-rows: repeat(5, auto);
+  grid-auto-rows: auto;
   align-content: center;
   align-self: center;
   justify-self: center;
@@ -257,6 +354,15 @@
   overflow: hidden;
   list-style: none;
   animation: puzzle-gallery-page-in 180ms ease-out both;
+}
+
+.puzzle-gallery__grid[data-puzzle-category="intro"] {
+  grid-template-columns: repeat(3, minmax(64px, 1fr));
+  width: min(76%, 340px);
+}
+
+.puzzle-gallery__grid[data-puzzle-category="easy"] {
+  grid-template-columns: repeat(6, minmax(44px, 1fr));
 }
 
 .puzzle-gallery__node {
@@ -306,6 +412,18 @@
 .puzzle-gallery__node--complete > button {
   color: #27775d;
   border-color: #8cc7b2;
+}
+
+.puzzle-gallery__node--locked > button {
+  color: #8799a8;
+  background: #f1f5f7;
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.puzzle-gallery__node--locked > button:hover {
+  color: #6f5a87;
+  background: #f0edf4;
 }
 
 .puzzle-gallery__node--selected > button {
@@ -407,6 +525,15 @@
     padding: 10px 14px;
   }
 
+  .puzzle-gallery__lesson {
+    display: block;
+  }
+
+  .puzzle-gallery__lesson strong {
+    display: block;
+    margin-bottom: 2px;
+  }
+
   .puzzle-gallery__title-row {
     display: grid;
     gap: 3px;
@@ -434,7 +561,7 @@
   }
 
   .puzzle-gallery__pages {
-    grid-template-columns: repeat(2, minmax(70px, 1fr));
+    grid-template-columns: repeat(3, minmax(58px, 1fr));
     padding: 3px;
   }
 
@@ -446,6 +573,18 @@
 
   .puzzle-gallery__grid {
     gap: 8px;
+  }
+
+  .puzzle-gallery__grid[data-puzzle-category="easy"] {
+    grid-template-columns: repeat(5, minmax(44px, 1fr));
+  }
+
+  .puzzle-gallery__mastery {
+    padding: 6px 8px;
+  }
+
+  .puzzle-gallery__mastery p {
+    display: none;
   }
 }
 
@@ -524,6 +663,19 @@
     grid-template-columns: repeat(5, minmax(44px, 1fr));
     width: min(100%, 254px);
     gap: 6px;
+  }
+
+  .puzzle-gallery__grid[data-puzzle-category="easy"] {
+    grid-template-columns: repeat(5, minmax(38px, 1fr));
+  }
+
+  .puzzle-gallery__mastery {
+    gap: 3px;
+    padding: 4px 7px;
+  }
+
+  .puzzle-gallery__mastery p {
+    display: none;
   }
 }
 

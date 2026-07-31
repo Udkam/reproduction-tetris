@@ -1,10 +1,9 @@
 import type {
   GameMode,
   MutationItem,
-  PuzzleGuidanceStrategy,
   PuzzleId,
-  PuzzlePieceRole,
 } from '../game/core';
+import type { PuzzleTechnique } from '../puzzleLessons';
 
 export type AppLanguage = 'zh-CN' | 'en';
 export type PuzzleCelebrationOutcome = 'first' | 'record' | 'replay';
@@ -98,6 +97,11 @@ type Translation = {
     puzzleRoute: string;
     puzzleBands: string;
     puzzlePages: string;
+    puzzleIntro: string;
+    puzzleEasy: string;
+    puzzleHard: string;
+    mastery: string;
+    hardUnlockHint: string;
     modeHome: string;
     currentRecord: string;
     notCompleted: string;
@@ -121,12 +125,6 @@ type Translation = {
     twoUpcoming: string;
     nextPiece: string;
     followingPiece: string;
-    puzzleAnalysis: string;
-    directClearLandings: string;
-    safeLandings: string;
-    buriedHoles: string;
-    minimumBurden: string;
-    queueRoles: string;
     touchControls: string;
     puzzleTouchControls: string;
     touchGestureHint: string;
@@ -178,7 +176,8 @@ type Translation = {
     puzzleBoard: (name: string) => string;
     startPuzzle: (name: string) => string;
     puzzleList: (count: number) => string;
-    puzzlePage: (start: number, end: number) => string;
+    puzzleCategory: (category: string, count: number) => string;
+    masteryThreshold: (technique: string, prerequisite: string, required: number, best: number | null) => string;
     rowBand: (rows: number) => string;
     levelNode: (index: string, name: string, rows: number, complete: boolean, best: number | null) => string;
     boardLabel: string;
@@ -188,8 +187,7 @@ type Translation = {
     eventItemTriggered: (item: string) => string;
     mutationTimer: (item: string, seconds: number) => string;
     mutationPreview: (piece: string, item: string) => string;
-    puzzleStrategy: (strategy: PuzzleGuidanceStrategy, directClears: number) => string;
-    puzzlePieceRole: (role: PuzzlePieceRole) => string;
+    puzzleLesson: (technique: PuzzleTechnique) => { title: string; body: string };
   };
 };
 
@@ -281,7 +279,7 @@ const COPY: Record<AppLanguage, Translation> = {
     },
     items: { freeze: '冰冻', collapse: '超重', bomb: '炸弹', multiplier: '加倍' },
     labels: {
-      language: '语言', chinese: '中文', english: 'English', settings: '设置', controls: '控制', rules: '规则', keyboard: '键盘', gameplayControls: '玩法操作', shortcuts: '快捷键', selectMode: '选择游戏模式', skipToGame: '跳到游戏', loading: 'TetraMorph 正在加载', back: '返回', start: '开始', okay: '好的', continue: '继续游戏', returnToPause: '返回暂停', restart: '重新开始', confirm: '确认', cancel: '取消', playAgain: '再来一局', replay: '重来', settingsShortcut: '设置', pauseResume: '暂停 / 继续', restartConfirm: '重开确认', undo: '撤回', move: '移动', rotate: '旋转', softDrop: '快速下落', hardDrop: '直接落底', volume: '音量', soundOn: '音效开', soundOff: '音效关', soundControls: '声音控制', turnSoundOn: '开启音效', turnSoundOff: '关闭音效', score: '分数', piecesUsed: '使用方块', lines: '消行', bedrock: '基岩', nextRise: '下一层', survivalTime: '生存时间', stonefall: '落石', level: '关卡', originalBlocks: '原有方块', placed: '操作数', fall: '下落速度', core: '核心', combo: '连消', next: 'Next', puzzle: '解谜', selectedPuzzle: '已选残局', puzzleTraits: '残局特性', fixedAnchors: '固定锚点', puzzleRoute: '开放解谜残局', puzzleBands: '残局行数分段', puzzlePages: '关卡页', modeHome: '返回首页', currentRecord: '当前关纪录', notCompleted: '尚未通关', best: '最少', leaderboard: '本模式排行', resultLeaderboard: '排行榜', noRecords: '暂无记录', currentRun: '本局', currentRunMissedLeaderboard: '未进入前 5', resultSummary: '本局结果', pauseTitle: '已暂停', restartTitle: '重新开始？', undoTitle: '撤回上一步？', leaveTitle: '离开本局？', leaveRun: '返回首页', leavePuzzle: '返回关卡库', resultTitle: '本局结束', gamePanel: '游戏面板', gameArea: '游戏区', board: '游戏棋盘', twoUpcoming: '后续两个方块：1 为下一个，2 为后一个', nextPiece: '下一个方块', followingPiece: '后一个方块', puzzleAnalysis: '局面分析', directClearLandings: '直消落点', safeLandings: '安全落点', buriedHoles: '埋洞', minimumBurden: '最小负担', queueRoles: '队列作用', touchControls: '触控操作', puzzleTouchControls: '解谜触控操作', touchGestureHint: '触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。', mutationStatus: '异变状态', mutationActive: '生效中', superMultiplier: '超级加倍 ×4', waitingForCore: '等待核心方块', carrierCore: '核心', pendingRise: '待上升', pausedMessage: '本局已暂停。', resumedMessage: '继续本局。', undoMessage: '已撤回上一次落子。', targetReached: '目标已达成。', runEnded: '本局结束。', runStarted: 'TetraMorph 已开始。', modeData: '模式数据', moveLeft: '左移', moveRight: '右移', stay: '留在本局', select: '选择', switch: '切换', activate: '执行',
+      language: '语言', chinese: '中文', english: 'English', settings: '设置', controls: '控制', rules: '规则', keyboard: '键盘', gameplayControls: '玩法操作', shortcuts: '快捷键', selectMode: '选择游戏模式', skipToGame: '跳到游戏', loading: 'TetraMorph 正在加载', back: '返回', start: '开始', okay: '好的', continue: '继续游戏', returnToPause: '返回暂停', restart: '重新开始', confirm: '确认', cancel: '取消', playAgain: '再来一局', replay: '重来', settingsShortcut: '设置', pauseResume: '暂停 / 继续', restartConfirm: '重开确认', undo: '撤回', move: '移动', rotate: '旋转', softDrop: '快速下落', hardDrop: '直接落底', volume: '音量', soundOn: '音效开', soundOff: '音效关', soundControls: '声音控制', turnSoundOn: '开启音效', turnSoundOff: '关闭音效', score: '分数', piecesUsed: '使用方块', lines: '消行', bedrock: '基岩', nextRise: '下一层', survivalTime: '生存时间', stonefall: '落石', level: '关卡', originalBlocks: '原有方块', placed: '操作数', fall: '下落速度', core: '核心', combo: '连消', next: 'Next', puzzle: '解谜', selectedPuzzle: '已选残局', puzzleTraits: '残局特性', fixedAnchors: '固定锚点', puzzleRoute: '开放解谜残局', puzzleBands: '残局行数分段', puzzlePages: '关卡页', puzzleIntro: '入门', puzzleEasy: '简单', puzzleHard: '困难', mastery: '技巧精通', hardUnlockHint: '困难关由对应简单关的精通成绩解锁。', modeHome: '返回首页', currentRecord: '当前关纪录', notCompleted: '尚未通关', best: '最少', leaderboard: '本模式排行', resultLeaderboard: '排行榜', noRecords: '暂无记录', currentRun: '本局', currentRunMissedLeaderboard: '未进入前 5', resultSummary: '本局结果', pauseTitle: '已暂停', restartTitle: '重新开始？', undoTitle: '撤回上一步？', leaveTitle: '离开本局？', leaveRun: '返回首页', leavePuzzle: '返回关卡库', resultTitle: '本局结束', gamePanel: '游戏面板', gameArea: '游戏区', board: '游戏棋盘', twoUpcoming: '后续两个方块：1 为下一个，2 为后一个', nextPiece: '下一个方块', followingPiece: '后一个方块', touchControls: '触控操作', puzzleTouchControls: '解谜触控操作', touchGestureHint: '触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。', mutationStatus: '异变状态', mutationActive: '生效中', superMultiplier: '超级加倍 ×4', waitingForCore: '等待核心方块', carrierCore: '核心', pendingRise: '待上升', pausedMessage: '本局已暂停。', resumedMessage: '继续本局。', undoMessage: '已撤回上一次落子。', targetReached: '目标已达成。', runEnded: '本局结束。', runStarted: 'TetraMorph 已开始。', modeData: '模式数据', moveLeft: '左移', moveRight: '右移', stay: '留在本局', select: '选择', switch: '切换', activate: '执行',
     },
     phrasing: {
       elapsed: (minutes, seconds) => `${minutes} 分 ${seconds} 秒`,
@@ -327,7 +325,12 @@ const COPY: Record<AppLanguage, Translation> = {
       puzzleBoard: (name) => `${name}棋盘轮廓`,
       startPuzzle: (name) => `开始 ${name}`,
       puzzleList: (count) => `${count} 个开放解谜残局`,
-      puzzlePage: (start, end) => `第 ${start} 至 ${end} 关`,
+      puzzleCategory: (category, count) => `${category}，${count} 关`,
+      masteryThreshold: (technique, prerequisite, required, best) => best === null
+        ? `在“${prerequisite}”中用 ${required} 步内通关，掌握“${technique}”后解锁。`
+        : best <= required
+          ? `已通过“${prerequisite}”以 ${best} 步掌握“${technique}”。`
+          : `“${prerequisite}”当前 ${best} 步；达到 ${required} 步内即可掌握“${technique}”。`,
       rowBand: (rows) => `${rows} 行残局`,
       levelNode: (index, name, rows, complete, best) => `${index} ${name}，${rows} 行残局${complete ? '，已完成' : '，可进入'}${best !== null ? `，最少 ${best} 步` : ''}`,
       boardLabel: 'TetraMorph 10 × 20 游戏棋盘',
@@ -337,19 +340,16 @@ const COPY: Record<AppLanguage, Translation> = {
       eventItemTriggered: (item) => `${item} 已触发，持续 10 秒。`,
       mutationTimer: (item, seconds) => `${item}：${seconds} 秒`,
       mutationPreview: (piece, item) => `${piece} 方块，携带${item}道具`,
-      puzzleStrategy: (strategy, directClears) => {
-        if (strategy === 'direct-clear') return `有 ${directClears} 个落点能直接减少原有方块，先完成目标行。`;
-        if (strategy === 'repair-hole') return '先填补埋洞，避免后续方块被迫抬高。';
-        if (strategy === 'preserve-well') return '保留窄槽，等待更匹配的长边或转角。';
-        return '暂无直接消除；先压平轮廓，减少额外负担。';
-      },
-      puzzlePieceRole: (role) => ({
-        'long-well': '长槽',
-        'flat-cap': '平顶',
-        junction: '接口',
-        offset: '错位',
-        'edge-turn': '转角',
-      })[role],
+      puzzleLesson: (technique) => ({
+        'complete-row': { title: '先完成一行', body: '先补最接近完整的目标行；消行腾出的空间会让后续更清楚。' },
+        'preserve-well': { title: '保留竖井', body: '不要先封住窄槽，把直达底部的通道留给形状匹配的长边。' },
+        'build-support': { title: '先铺支撑', body: '先把承接面铺稳再盖上层；悬空封顶会把空格埋成洞。' },
+        'avoid-hole': { title: '不埋空格', body: '落下前看方块下方；被盖住的空格通常要多清几行才能救回。' },
+        'read-queue': { title: '两块一起看', body: '先判断第 2 块需要的槽口，再用第 1 块为它保留支撑和入口。' },
+        'retain-opening': { title: '压平但留口', body: '降低高差时别封死唯一入口；平整和可进入必须同时满足。' },
+        'anchor-geometry': { title: '锚点不会消失', body: '把锚点当作固定墙面规划路径；目标是清原有方块，不是清掉锚点。' },
+        'anchor-side-slip': { title: '贴锚侧滑', body: '先快速下落到锚点附近，再立即横移，滑进从顶部直落到不了的位置。' },
+      })[technique],
     },
   },
   en: {
@@ -386,7 +386,7 @@ const COPY: Record<AppLanguage, Translation> = {
     },
     items: { freeze: 'Freeze', collapse: 'Supergravity', bomb: 'Bomb', multiplier: 'Double' },
     labels: {
-      language: 'Language', chinese: 'Chinese', english: 'English', settings: 'Settings', controls: 'Controls', rules: 'Rules', keyboard: 'Keyboard', gameplayControls: 'Gameplay', shortcuts: 'Shortcuts', selectMode: 'Choose a game mode', skipToGame: 'Skip to game', loading: 'TetraMorph is loading', back: 'Back', start: 'Start', okay: 'Got it', continue: 'Continue', returnToPause: 'Return to pause', restart: 'Restart', confirm: 'Confirm', cancel: 'Cancel', playAgain: 'Play again', replay: 'Replay', settingsShortcut: 'Settings', pauseResume: 'Pause / resume', restartConfirm: 'Restart confirmation', undo: 'Undo', move: 'Move', rotate: 'Rotate', softDrop: 'Soft drop', hardDrop: 'Hard drop', volume: 'Volume', soundOn: 'SFX on', soundOff: 'SFX off', soundControls: 'Sound controls', turnSoundOn: 'Turn sound effects on', turnSoundOff: 'Turn sound effects off', score: 'Score', piecesUsed: 'Pieces used', lines: 'Lines', bedrock: 'Bedrock', nextRise: 'Next rise', survivalTime: 'Survival time', stonefall: 'Stonefall', level: 'Level', originalBlocks: 'Original blocks', placed: 'Moves', fall: 'Fall speed', core: 'Core', combo: 'Combo', next: 'Next', puzzle: 'Puzzle', selectedPuzzle: 'Selected puzzle', puzzleTraits: 'Puzzle traits', fixedAnchors: 'Fixed anchors', puzzleRoute: 'Open puzzle routes', puzzleBands: 'Puzzle row bands', puzzlePages: 'Level pages', modeHome: 'Back to home', currentRecord: 'Current record', notCompleted: 'Not completed', best: 'Best', leaderboard: 'This mode', resultLeaderboard: 'Leaderboard', noRecords: 'No records yet', currentRun: 'This run', currentRunMissedLeaderboard: 'Outside the top 5', resultSummary: 'Run result', pauseTitle: 'Paused', restartTitle: 'Restart?', undoTitle: 'Undo last move?', leaveTitle: 'Leave this run?', leaveRun: 'Back to home', leavePuzzle: 'Back to puzzle library', resultTitle: 'Run complete', gamePanel: 'game panel', gameArea: 'game area', board: 'game board', twoUpcoming: 'Two upcoming pieces: 1 is next; 2 follows it', nextPiece: 'Next piece', followingPiece: 'Following piece', puzzleAnalysis: 'Analysis', directClearLandings: 'Direct clears', safeLandings: 'Safe landings', buriedHoles: 'Buried holes', minimumBurden: 'Min burden', queueRoles: 'Queue roles', touchControls: 'Touch controls', puzzleTouchControls: 'Puzzle touch controls', touchGestureHint: 'Touch: tap to rotate; swipe sideways to move; swipe down to soft-drop or hard-drop.', mutationStatus: 'Mutation status', mutationActive: 'Active', superMultiplier: 'Super Double ×4', waitingForCore: 'Waiting for a core piece', carrierCore: 'Core', pendingRise: 'Rising next', pausedMessage: 'Run paused.', resumedMessage: 'Run resumed.', undoMessage: 'Last placement undone.', targetReached: 'Goal reached.', runEnded: 'Run ended.', runStarted: 'TetraMorph started.', modeData: 'mode data', moveLeft: 'Move left', moveRight: 'Move right', stay: 'Stay in this run', select: 'Select', switch: 'Move between controls', activate: 'Activate',
+      language: 'Language', chinese: 'Chinese', english: 'English', settings: 'Settings', controls: 'Controls', rules: 'Rules', keyboard: 'Keyboard', gameplayControls: 'Gameplay', shortcuts: 'Shortcuts', selectMode: 'Choose a game mode', skipToGame: 'Skip to game', loading: 'TetraMorph is loading', back: 'Back', start: 'Start', okay: 'Got it', continue: 'Continue', returnToPause: 'Return to pause', restart: 'Restart', confirm: 'Confirm', cancel: 'Cancel', playAgain: 'Play again', replay: 'Replay', settingsShortcut: 'Settings', pauseResume: 'Pause / resume', restartConfirm: 'Restart confirmation', undo: 'Undo', move: 'Move', rotate: 'Rotate', softDrop: 'Soft drop', hardDrop: 'Hard drop', volume: 'Volume', soundOn: 'SFX on', soundOff: 'SFX off', soundControls: 'Sound controls', turnSoundOn: 'Turn sound effects on', turnSoundOff: 'Turn sound effects off', score: 'Score', piecesUsed: 'Pieces used', lines: 'Lines', bedrock: 'Bedrock', nextRise: 'Next rise', survivalTime: 'Survival time', stonefall: 'Stonefall', level: 'Level', originalBlocks: 'Original blocks', placed: 'Moves', fall: 'Fall speed', core: 'Core', combo: 'Combo', next: 'Next', puzzle: 'Puzzle', selectedPuzzle: 'Selected puzzle', puzzleTraits: 'Puzzle traits', fixedAnchors: 'Fixed anchors', puzzleRoute: 'Open puzzle routes', puzzleBands: 'Puzzle row bands', puzzlePages: 'Level pages', puzzleIntro: 'Intro', puzzleEasy: 'Easy', puzzleHard: 'Hard', mastery: 'Technique mastery', hardUnlockHint: 'Hard puzzles unlock through mastery scores in related Easy puzzles.', modeHome: 'Back to home', currentRecord: 'Current record', notCompleted: 'Not completed', best: 'Best', leaderboard: 'This mode', resultLeaderboard: 'Leaderboard', noRecords: 'No records yet', currentRun: 'This run', currentRunMissedLeaderboard: 'Outside the top 5', resultSummary: 'Run result', pauseTitle: 'Paused', restartTitle: 'Restart?', undoTitle: 'Undo last move?', leaveTitle: 'Leave this run?', leaveRun: 'Back to home', leavePuzzle: 'Back to puzzle library', resultTitle: 'Run complete', gamePanel: 'game panel', gameArea: 'game area', board: 'game board', twoUpcoming: 'Two upcoming pieces: 1 is next; 2 follows it', nextPiece: 'Next piece', followingPiece: 'Following piece', touchControls: 'Touch controls', puzzleTouchControls: 'Puzzle touch controls', touchGestureHint: 'Touch: tap to rotate; swipe sideways to move; swipe down to soft-drop or hard-drop.', mutationStatus: 'Mutation status', mutationActive: 'Active', superMultiplier: 'Super Double ×4', waitingForCore: 'Waiting for a core piece', carrierCore: 'Core', pendingRise: 'Rising next', pausedMessage: 'Run paused.', resumedMessage: 'Run resumed.', undoMessage: 'Last placement undone.', targetReached: 'Goal reached.', runEnded: 'Run ended.', runStarted: 'TetraMorph started.', modeData: 'mode data', moveLeft: 'Move left', moveRight: 'Move right', stay: 'Stay in this run', select: 'Select', switch: 'Move between controls', activate: 'Activate',
     },
     phrasing: {
       elapsed: (minutes, seconds) => `${minutes}m ${seconds}s`,
@@ -432,7 +432,12 @@ const COPY: Record<AppLanguage, Translation> = {
       puzzleBoard: (name) => `${name} board outline`,
       startPuzzle: (name) => `Start ${name}`,
       puzzleList: (count) => `${count} open puzzle routes`,
-      puzzlePage: (start, end) => `Levels ${start} to ${end}`,
+      puzzleCategory: (category, count) => `${category}, ${count} levels`,
+      masteryThreshold: (technique, prerequisite, required, best) => best === null
+        ? `Finish “${prerequisite}” in ${required} moves or fewer to master “${technique}”.`
+        : best <= required
+          ? `“${technique}” mastered in “${prerequisite}” with ${best} moves.`
+          : `Current “${prerequisite}” best: ${best}; reach ${required} moves to master “${technique}”.`,
       rowBand: (rows) => `${rows}-row puzzle`,
       levelNode: (index, name, rows, complete, best) => `${index} ${name}, ${rows}-row puzzle${complete ? ', completed' : ', ready'}${best !== null ? `, best ${best} moves` : ''}`,
       boardLabel: 'TetraMorph 10 by 20 game board',
@@ -442,21 +447,16 @@ const COPY: Record<AppLanguage, Translation> = {
       eventItemTriggered: (item) => `${item} activated for 10 seconds.`,
       mutationTimer: (item, seconds) => `${item}: ${seconds}s`,
       mutationPreview: (piece, item) => `${piece} piece carrying ${item}`,
-      puzzleStrategy: (strategy, directClears) => {
-        if (strategy === 'direct-clear') return directClears === 1
-          ? '1 landing removes original blocks now; finish the target row first.'
-          : `${directClears} landings remove original blocks now; finish the target row first.`;
-        if (strategy === 'repair-hole') return 'Repair a buried hole before the stack forces later pieces upward.';
-        if (strategy === 'preserve-well') return 'Preserve the narrow well for a matching long edge or corner.';
-        return 'No direct clear yet; flatten the skyline to limit extra burden.';
-      },
-      puzzlePieceRole: (role) => ({
-        'long-well': 'Long well',
-        'flat-cap': 'Flat cap',
-        junction: 'Junction',
-        offset: 'Offset',
-        'edge-turn': 'Edge turn',
-      })[role],
+      puzzleLesson: (technique) => ({
+        'complete-row': { title: 'Finish one row first', body: 'Close the nearest prepared row; the clear creates room for every choice after it.' },
+        'preserve-well': { title: 'Keep the well open', body: 'Do not cap a narrow channel before the matching long or vertical body arrives.' },
+        'build-support': { title: 'Build support first', body: 'Level the support before capping it; an unsupported cap buries a hole.' },
+        'avoid-hole': { title: 'Do not bury space', body: 'Check below the piece before locking; a covered cell usually costs several later clears.' },
+        'read-queue': { title: 'Plan both pieces', body: 'Choose piece 2’s opening first, then use piece 1 to preserve its support and entry.' },
+        'retain-opening': { title: 'Flatten, keep an entry', body: 'Reduce height without sealing the only route into the remaining target space.' },
+        'anchor-geometry': { title: 'Anchors do not clear', body: 'Treat the anchor as a fixed wall; clear original blocks around it, not the anchor itself.' },
+        'anchor-side-slip': { title: 'Side-slip past the anchor', body: 'Soft-drop beside the anchor, then move immediately into a landing a straight drop cannot reach.' },
+      })[technique],
     },
   },
 };

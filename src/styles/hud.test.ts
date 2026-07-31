@@ -60,11 +60,12 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot__segment-label b\s*\{[^}]*font-size:\s*16px;/s);
   });
 
-  it('uses the reclaimed Puzzle rail for a bounded diagnostic instrument at every layout', () => {
-    expect(hudCss).toMatch(/\.game-side-panel:has\(\.puzzle-guidance\)\s*\{[^}]*grid-template-rows:\s*auto auto auto;/s);
-    expect(hudCss).toMatch(/\.puzzle-guidance__metrics\s*\{[^}]*grid-template-columns:\s*repeat\(2,/s);
-    expect(hudCss).toMatch(/@media \(max-width:\s*599px\)[\s\S]*\.game-side-panel\.game-side-panel--puzzle:has\(\.puzzle-guidance\)[\s\S]*grid-template-columns:\s*minmax\(82px,/);
-    expect(hudCss).toMatch(/@media \(min-width:\s*600px\) and \(max-height:\s*520px\)[\s\S]*\.puzzle-guidance__metrics[\s\S]*repeat\(2,/);
+  it('removes live Puzzle diagnostics and keeps the reclaimed rail structurally quiet', () => {
+    expect(hudCss).not.toContain('.puzzle-guidance');
+    expect(hudCss).not.toContain('.puzzle-guidance__metrics');
+    expect(hudCss).not.toContain('.puzzle-guidance__route');
+    expect(hudCss).toContain('.game-side-panel:has(.preview-rail--puzzle)');
+    expect(hudCss).toContain('.preview-rail--puzzle');
   });
 
   it('never solves the compact HUD by shrinking labels below twelve pixels', () => {

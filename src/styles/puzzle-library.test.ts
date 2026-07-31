@@ -8,7 +8,7 @@ const gallery = readFileSync('src/styles/puzzle-library.css', 'utf8');
 const app = readFileSync('src/App.tsx', 'utf8');
 const main = readFileSync('src/main.tsx', 'utf8');
 
-describe('Phase 9 Puzzle gallery authority', () => {
+describe('Phase 12 Puzzle curriculum authority', () => {
   it('loads one dedicated gallery layer after navigation and before result presentation', () => {
     const importPath = "./styles/puzzle-library.css";
     expect(main.match(new RegExp(importPath.replace('.', '\\.'), 'g'))).toHaveLength(1);
@@ -16,23 +16,29 @@ describe('Phase 9 Puzzle gallery authority', () => {
     expect(main.indexOf(importPath)).toBeLessThan(main.indexOf("./styles/result.css"));
   });
 
-  it('renders two semantic 25-level pages around one canonical preview', () => {
-    expect(app).toContain('const PUZZLE_PAGE_SIZE = 25');
+  it('renders three semantic curriculum categories around one canonical preview', () => {
+    expect(app).toContain("const PUZZLE_CATEGORY_IDS: readonly PuzzleCategoryId[] = Object.freeze(['intro', 'easy', 'hard'])");
+    expect(app).not.toContain('PUZZLE_PAGE_SIZE');
     expect(app).toContain('role="tablist"');
     expect(app).toContain('role="tabpanel"');
+    expect(app).toContain('data-puzzle-category={categoryId}');
     expect(app).toContain('puzzle-gallery__hero');
     expect(app).toContain('puzzle-gallery__board');
     expect(app).toContain('puzzle-gallery__title');
     expect(app).toContain('puzzle-gallery__start');
+    expect(app).toContain('puzzle-gallery__lesson');
+    expect(app).toContain('puzzle-gallery__mastery');
+    expect(app).toContain('puzzle-gallery__requirement');
     expect(app).not.toContain('PUZZLE_TARGET_ROW_TIERS');
     expect(app).not.toContain('puzzleMatrixColumnCount');
   });
 
-  it('keeps every page in a centered five-by-five square matrix with 44px controls', () => {
+  it('uses square cards with category-specific density and no gallery scrolling', () => {
     expect(gallery).toMatch(/\.puzzle-gallery\s*\{[\s\S]*align-self:\s*center;[\s\S]*height:\s*100%;[\s\S]*max-height:\s*740px;/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\)/);
-    expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*auto\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*align-content:\s*center;[\s\S]*justify-self:\s*center;[\s\S]*width:\s*min\(100%,\s*560px\)/);
+    expect(gallery).toMatch(/\.puzzle-gallery__grid\[data-puzzle-category="intro"\]\s*\{[^}]*repeat\(3,/s);
+    expect(gallery).toMatch(/\.puzzle-gallery__grid\[data-puzzle-category="easy"\]\s*\{[^}]*repeat\(6,/s);
     expect(gallery).toMatch(/\.puzzle-gallery__node\s*\{[\s\S]*aspect-ratio:\s*1;/);
     expect(gallery).toMatch(/\.puzzle-gallery__node > button\s*\{[\s\S]*min-width:\s*44px;[\s\S]*min-height:\s*44px;/);
     expect(gallery).not.toMatch(/overflow-(?:x|y):\s*(?:auto|scroll)/);
@@ -40,18 +46,26 @@ describe('Phase 9 Puzzle gallery authority', () => {
     expect(gallery).not.toContain('.puzzle-gallery__node--selected > button::before');
   });
 
-  it('preserves the portrait and short-landscape budgets and honors reduced motion', () => {
+  it('keeps lessons and mastery compact across portrait and short-landscape budgets', () => {
+    expect(gallery).toMatch(/\.puzzle-gallery__lesson\s*\{[^}]*grid-template-columns:\s*max-content minmax\(0,\s*1fr\)/s);
+    expect(gallery).toMatch(/\.puzzle-gallery__mastery > div\s*\{[^}]*repeat\(3,/s);
+    expect(gallery).toMatch(/\.puzzle-gallery__node--locked > button\s*\{[^}]*border-style:\s*dashed;/s);
     expect(gallery).toMatch(/@media \(max-width:\s*719px\),\s*\(orientation:\s*portrait\)[\s\S]*\.puzzle-gallery\s*\{[\s\S]*grid-template-rows:/);
     expect(gallery).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,/);
     expect(gallery).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*animation:\s*none !important/);
   });
 
-  it('implements standard keyboard activation on the two page tabs', () => {
+  it('implements independent keyboard navigation for category tabs and level grids', () => {
     expect(app).toContain('const movePageFocus');
+    expect(app).toContain('const moveLevelFocus');
+    expect(app).toContain('gridTemplateColumns');
     expect(app).toContain("event.key === 'ArrowLeft'");
     expect(app).toContain("event.key === 'ArrowRight'");
+    expect(app).toContain("event.key === 'ArrowUp'");
+    expect(app).toContain("event.key === 'ArrowDown'");
     expect(app).toContain("event.key === 'Home'");
     expect(app).toContain("event.key === 'End'");
     expect(app).toContain('onKeyDown={(event) => movePageFocus(event, index)}');
+    expect(app).toContain('onKeyDown={(event) => moveLevelFocus(event, localIndex)}');
   });
 });
