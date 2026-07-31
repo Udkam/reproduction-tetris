@@ -43,16 +43,20 @@ accidental two-line button, or hide a translated label.
 
 ### Survival material system
 
-Bedrock is a continuous mineral shelf with a mathematically flat top edge on the cell
-boundary. The rejected plain slab and three oversized triangular light planes are not
-valid geology. A narrow flat contact cap now sits over a deterministic dry-stacked
-section of large asymmetrical rock bodies. Their angular boundaries interlock, change
-width and depth across the shelf, and expose separate lit, neutral, shadow, and basal
-planes; no boundary repeats at cell cadence or draws a `10 × N` occupancy grid. The
-rock read comes from these filled structural volumes and the deep compacted lower edge,
-not from a crack, chip, pit, speckle, sticker, stroked vein, wood grain, or per-cell
-texture. The outer shelf remains continuous and can rise during entry without changing
-Core rows.
+Bedrock is a continuous mineral shelf with a mathematically flat top contact at the
+cell boundary. Both rejected approaches are forbidden: one plain framed slab with a few
+oversized light planes, and the later low-poly fan of triangles/trapezoids. The visible
+body is built from deterministic courses of individually silhouetted stones. A course
+contains five to seven unequal bodies across the ten-column shelf; neighbouring stones
+share the same kinked joint, course seams undulate slightly, and vertical joints are
+offset between courses. No joint may repeat at cell cadence or reveal a `10 × N` grid.
+The upper vertices of every stone in the first course remain exactly on the flat contact
+plane. Each stone owns one close-valued mineral face rather than an internal triangular
+facet fan; a narrow dark geometric joint, restrained upper-edge lift, and progressively
+darker lower courses establish depth. The shelf has no full rectangular outline. The
+rock read comes from these real silhouettes, shared joints, and course weight—not from
+a crack, chip, pit, speckle, sticker, stroked vein, wood grain, or per-cell texture. The
+outer mass remains continuous and can rise during entry without changing Core rows.
 
 A falling stone is an unmistakable square block whose rendered outer width and height
 equal one ordinary board cell. A narrow bevel and two solid tonal faces create volume
