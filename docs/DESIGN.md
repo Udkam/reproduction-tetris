@@ -67,9 +67,11 @@ change.
 The four mode tiles communicate their destination through the mode name and icon. Their
 actions therefore use one square arrow control without the redundant `开始 / Start` or
 `选关 / Levels` caption. The arrow glyph is centred by button geometry rather than a
-font-baseline nudge, while the complete localized mode action remains available to the
-accessible name. Hover, focus, and keyboard selection may strengthen the tile's own
-color but may not displace the arrow.
+font-baseline nudge, and its horizontal shaft is visibly longer than the rejected
+compact mark without widening the square target. All four arrows share the same shaft,
+head, stroke, and optical centre, while the complete localized mode action remains
+available to the accessible name. Hover, focus, and keyboard selection may strengthen
+the tile's own color but may not displace the arrow.
 
 ### Mutation duration audio
 

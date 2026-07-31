@@ -86,7 +86,9 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    removes the redundant `开始 / Start` and `选关 / Levels` action labels. The arrow is
    the sole action mark, centred in one consistent square hit target across Chinese,
    English, pointer, keyboard focus, and every responsive layout. Removing the label
-   must not weaken the mode-name accessible label or the 44 px minimum target.
+   must not weaken the mode-name accessible label or the 44 px minimum target. The
+   glyph uses a deliberately longer horizontal shaft than the rejected compact arrow;
+   all four keep the same shaft length, head proportions, stroke, and optical centre.
 9. **Multiplier has no sustained audio bed.** Mutation `加倍 / Multiplier` and
    `超级加倍 / Super multiplier` may keep one brief acquisition or activation cue, but
    their ten-second active windows emit no loop, drone, pulse, repeated retrigger, or
@@ -144,8 +146,8 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   settles; Puzzle library lessons and a live HUD with no analysis card;
   reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
   errors. Home evidence must prove a geometrically centred wordmark, label-free and
-  optically centred arrow actions on all four tiles without changing their accessible
-  names, plus the four-mode favicon. Mutation evidence must prove the smaller steady
+  optically centred long-shaft arrow actions on all four tiles without changing their
+  accessible names, plus the four-mode favicon. Mutation evidence must prove the smaller steady
   multiplier emblem, the steady weighted Supergravity field, no cleared-carrier frame,
   the airborne-piece expiry latch, and absence of sustained multiplier audio. Puzzle evidence must also prove
   that reordering preserves all fifty stable
