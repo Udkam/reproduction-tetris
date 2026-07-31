@@ -27,6 +27,11 @@ describe('mutation VFX token contract', () => {
     expect(MUTATION_VFX_TOKENS.freeze.animation.enterMs).toBe(500);
     expect(MUTATION_VFX_TOKENS.freeze.animation.pulseMs).toBe(800);
     expect(MUTATION_VFX_TOKENS.freeze.animation.exitMs).toBe(1000);
+    expect(MUTATION_VFX_TOKENS.multiplier.audio).toMatchObject({
+      loopHz: null,
+      loopGain: 0,
+      endHz: null,
+    });
   });
 
   it('keeps the two reusable board-filter profiles explicit and bounded', () => {

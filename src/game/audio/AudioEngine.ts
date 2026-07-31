@@ -22,7 +22,7 @@ interface MutationLoopVoice extends EffectVoice {
 }
 
 type MutationActivation = Extract<GameEvent, { type: 'mutation-activated' }>;
-type MutationLoopItem = Exclude<MutationItem, 'bomb' | 'freeze'>;
+type MutationLoopItem = Extract<MutationItem, 'collapse'>;
 
 /** Full-volume mix gain is deliberately above unity, then safely contained by the compressor. */
 const FULL_VOLUME_MASTER_GAIN = 1.7;
@@ -257,7 +257,6 @@ export class AudioEngine {
   syncMutationState(state: GameState): void {
     const desired: Array<{ item: MutationLoopItem; active: boolean }> = [
       { item: 'collapse', active: state.mode === 'sprint' && state.mutationCollapseTicks > 0 },
-      { item: 'multiplier', active: state.mode === 'sprint' && state.mutationMultiplierTicks > 0 },
     ];
     for (const { item, active } of desired) {
       if (active && !this.mutationLoops.has(item)) this.startMutationLoop(item);

@@ -216,7 +216,7 @@ describe('AudioEngine original feedback', () => {
     superDouble.destroy();
   });
 
-  it('keeps Ice silent after activation while other timed items retain bounded ambience', async () => {
+  it('keeps Ice and multiplier silent after activation while Supergravity retains bounded ambience', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -224,14 +224,22 @@ describe('AudioEngine original feedback', () => {
       ...createInitialState(0x51a1f00d, 'sprint'),
       mutationFreezeTicks: 600,
       mutationCollapseTicks: 600,
+      mutationMultiplierTicks: 600,
+      mutationMultiplierFactor: 4 as const,
     };
 
     audio.syncMutationState(active);
     expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).not.toContain(261.63);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).not.toContain(392);
     const loop = oscillators.find((oscillator) => oscillator.frequency.setValues[0] === 73.42);
     expect(loop?.stops).toHaveLength(0);
 
-    audio.syncMutationState({ ...active, mutationFreezeTicks: 0, mutationCollapseTicks: 0 });
+    audio.syncMutationState({
+      ...active,
+      mutationFreezeTicks: 0,
+      mutationCollapseTicks: 0,
+      mutationMultiplierTicks: 0,
+    });
     expect(loop?.stops).toHaveLength(1);
     expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(196);
     audio.destroy();

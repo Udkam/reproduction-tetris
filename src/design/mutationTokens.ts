@@ -110,7 +110,7 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
     particles: { burst: 28, drift: 18, lifeMs: 620, speed: 0.092, size: 0.3 },
     shader: { fieldAlpha: 0.2, edgeGlow: 0.9, distortion: 0.04 },
     animation: { enterMs: 260, pulseMs: 520, exitMs: 520, activationMs: 520 },
-    audio: { activateHz: 523.25, accentHz: 659.25, waveform: 'sine', gain: 0.13, loopHz: 392, loopGain: 0.016, endHz: 659.25 },
+    audio: { activateHz: 523.25, accentHz: 659.25, waveform: 'sine', gain: 0.13, loopHz: null, loopGain: 0, endHz: null },
   },
 };
 
