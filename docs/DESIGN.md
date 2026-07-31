@@ -81,6 +81,42 @@ imply a single script. The introductory sequence progresses through:
 6. treat an anchor as permanent collision geometry rather than a target;
 7. use a timed side-slip at anchor height to reach around an overhang.
 
+The visible campaign follows that teaching sequence rather than treating route length
+as the only definition of difficulty. Stable IDs, boards, seeds, and verified route
+families do not move with their old ordinal: the current `difficulty` field is the
+teaching position. The library uses three named tabs with deliberately unequal sizes:
+
+- `入门 / Intro` — three isolated three-row foundations;
+- `简单 / Easy` — twenty-seven three-row lessons/combinations and four-/five-row
+  applications; its first three levels are certified mastery checks, followed by the
+  first anchor geometry and timed side-slip lessons;
+- `困难 / Hard` — twenty high-load applications grouped by the earlier technique they
+  demand, not presented as one undifferentiated endgame wall.
+
+Each Hard group points back to one selected Easy mastery level that exercises the same
+idea in a cleaner board. A Hard level unlocks when the saved best for that prerequisite
+is no greater than its certified optimum plus five operations. The selector explains
+the relationship and remaining threshold in accessible text without turning the page
+into a statistics dashboard. Historic save formats keep their literal legacy order
+only for decoding; current completion and best-step records remain attached to stable
+level IDs when normalized into the revised campaign. A historically completed Hard
+level remains replayable even when its newly introduced mastery prerequisite has not
+yet been met.
+
+An optimum certificate is stronger than the existing paired route evidence. The
+authoring verifier traverses every unique Core decision state that can still finish
+before the candidate depth, without beam width, heuristic scoring, state-count cutoff,
+or route-length assumption. Its only pruning rule is a mechanically checked admissible
+bound: each empty cell in every surviving target row must be filled before that row can
+clear, while one future tetromino can contribute at most four such cells. It records
+each exhausted depth, finds no success before depth `N`, then replays public commands
+that finish at depth `N`. The frozen
+certificate stores the level ID, `N`, replay, frontier widths, explored-state count,
+and the current puzzle-definition fingerprint. Product code reads only this verified
+constant; verification tests recompute or validate it against the deterministic Core.
+The former `shorterRouteLocks` fields remain exactly what they were: shortest routes
+found by that bounded search, not mathematical optimality claims.
+
 The library may show a short lesson title and a two-sentence principle/control cue for
 the selected introduction level. It may not show landing counts, burden scores,
 coordinates, exact rotations, or a complete move stream. Levels without an authored
@@ -91,9 +127,11 @@ intro lesson keep the clean preview/name/best/start composition.
 No Phase-12 source is accepted yet. Acceptance requires focused checkpoint tests, one
 final typecheck/full suite/build after the last edit, real Chinese/English frames at
 desktop/portrait/short-landscape, reduced-motion proof, route replay evidence for every
-authored lesson, one Canvas and zero DOM board cells/errors/overflow, independent
-read-only QA on an immutable candidate, scoped dependency/secret scans where relevant,
-non-force push, and release of every owned server/browser/helper.
+ authored lesson, one Canvas and zero DOM board cells/errors/overflow, preservation
+ and replay of both verified routes for every stable ID after the curriculum reorder,
+ exhaustive optimum certificates and threshold-boundary tests for every mastery gate,
+ independent read-only QA on an immutable candidate, scoped dependency/secret scans
+ where relevant, non-force push, and release of every owned server/browser/helper.
 
 ## 2026-07-31 Phase 11 — luminous instruments and legible intent
 

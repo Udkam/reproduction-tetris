@@ -48,13 +48,41 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    fall to pass the obstruction and reach a cell unavailable to a straight hard drop.
    Lesson claims must be backed by public-command Core replays; they may reveal a
    principle and control timing, but never an exact full solution or live enumeration.
+6. **Puzzle order is a three-part curriculum, not a solver leaderboard.** Preserve
+   every stable level ID, board, seed, verified route, completion, and personal-best
+   key, but reorder the current campaign into named library pages rather than numeric
+   ranges. `入门 / Intro` contains positions 1–3 and isolates row completion, well
+   preservation, and support. `简单 / Easy` contains positions 4–30: positions 4–6
+   teach hole avoidance, two-piece planning, and opening retention and are the strictly
+   certified mastery prerequisites; positions 7–9 combine the introductory ideas,
+   position 10 introduces an anchor as permanent geometry, position 11 demonstrates a
+   genuine timed anchor side-slip, and the remainder deepens those ideas through the
+   four- and five-row bands. `困难 / Hard` contains positions 31–50 and groups the
+   highest-load applications by the same transferable techniques instead of merely by
+   row count. Historic v2/v4 orders remain migration-only literals and may no longer
+   be required to match current ordinals.
+7. **Hard unlocks are mastery proofs, not estimated budgets.** Selected Easy levels
+   act as named technique prerequisites for related Hard levels. A prerequisite is
+   mastered only when its saved best operation count is at or below `optimal + 5`;
+   completion alone is insufficient. `optimal` must be established by a deterministic,
+   no-beam search over every unique Core decision state capable of finishing before the
+   candidate route. The only admitted pruning is the proved target-row deficit bound:
+   each still-empty required cell must be supplied before its target row can clear and
+   one future tetromino supplies at most four cells. No earlier frontier may contain a
+   finished state, the candidate depth must have a public-command winning replay, and
+   the certificate records the route plus per-depth frontier/exploration counts. Existing
+   bounded beam routes prove playability and alternate solutions only and must never be
+   relabelled as optimal. The product consumes frozen verified certificates; it never
+   runs the proof search during play.
 
 ## Phase 12 checkpoint order
 
 1. P12.0: contract, font/license decision, route evidence inventory, proof matrix.
 2. P12.1: leave semantics, continuous Settings, and local typography/fit corrections.
 3. P12.2: four-times Survival debris cadence plus flat shelf and square stone bodies.
-4. P12.3: remove live Puzzle analysis and author route-backed introductory lessons.
+4. P12.3: remove live Puzzle analysis; establish strictly verified optimal certificates;
+   reorder the stable-ID campaign into Intro/Easy/Hard pages; implement technique-linked
+   mastery gates; and author route-backed introductory lessons.
 5. P12.4: exactly one final typecheck, full suite, and production build after the last
    source edit.
 6. P12.5: multi-round browser evidence in Chinese/English and all target viewports.
@@ -74,7 +102,13 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   stones, 4x cadence, and ordinary-piece contact that stays unlocked until the stone
   settles; Puzzle library lessons and a live HUD with no analysis card;
   reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
-  errors.
+  errors. Puzzle evidence must also prove that reordering preserves all fifty stable
+  IDs, both documented routes per level, saved completion/best values by ID, the
+  intended Intro/Easy/Hard membership, the teach-then-combine opening sequence, and the
+  first deeper anchor lesson. Every Hard mastery gate must name its related Easy
+  prerequisite, expose a threshold equal to its certified optimum plus five, stay
+  locked above that threshold, unlock at the threshold, and retain migrated completion
+  by stable ID.
 
 ---
 
