@@ -128,12 +128,13 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     still settles each occupied column independently when it eventually lands. The
     latch clears immediately after that lock; a piece spawned after expiry is ordinary.
 16. **The Puzzle header moves down to meet the gallery without lifting the gallery.**
-    The `返回首页 / Back to home` control, centred `TetraMorph` wordmark, shell gap, and
-    gallery form one content-height stack that is vertically centred as a unit. The
-    gallery keeps its established viewport position and dimensions; spare height is
-    distributed above and below the complete stack instead of between its header and
-    content. Portrait and short-landscape retain zero overflow and the same square-node
-    geometry.
+    The `返回首页 / Back to home` control, centred `TetraMorph` wordmark, breathing gap,
+    and gallery form one content-height stack that is vertically centred as a unit.
+    Desktop keeps 16 px between header and gallery; portrait and short-landscape keep
+    12 px. The gallery stays near its established viewport position and dimensions;
+    spare height is distributed above and below the complete stack instead of becoming
+    either a large disconnect or a visually attached edge. Responsive layouts retain
+    zero overflow and the same square-node geometry.
 
 ## Phase 12 checkpoint order
 

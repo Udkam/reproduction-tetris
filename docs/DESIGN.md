@@ -184,12 +184,13 @@ intro lesson keep the clean preview/name/best/start composition.
 
 The Puzzle library header and the connected gallery are one content-height vertical
 composition. The back action and centred wordmark occupy the compact header track; the
-gallery begins in the next track after the normal shell gap. The complete header-plus-
-gallery stack is vertically centred in the viewport so that spare height sits outside
-the composition, never between navigation and the content it controls. This deliberately
-moves the header down while preserving the gallery's established position and size. It
-does not resize the cards, preview, tabs, or responsive matrices and must preserve zero
-overflow at desktop, portrait, and short-landscape viewports.
+gallery follows after a visible but restrained breathing gap: 16 px on desktop and
+12 px on portrait or short-landscape layouts. The complete header-plus-gallery stack is
+vertically centred in the viewport so that spare height sits outside the composition,
+never as either a large disconnect or a visually attached edge between navigation and
+the content it controls. This deliberately moves the header down while keeping the
+gallery near its established position and size. It does not resize the cards, preview,
+tabs, or responsive matrices and must preserve zero overflow at every target viewport.
 
 ### Phase 12 acceptance
 
