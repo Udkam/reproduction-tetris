@@ -2,11 +2,12 @@
 
 ## Phase 11 active goal — luminous materials, compact information, explainable puzzles
 
-**Status (2026-07-31): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
+**Status (2026-08-01): ACCEPTED / PUSH PENDING.**
 
-Phase 11 remains open until every outcome below is implemented, verified in real play,
-independently reviewed, committed as bounded recovery points, and pushed. A passing
-unit test, a single screenshot, or an attractive isolated frame is not completion.
+Phase 11 is accepted from frozen product source `12fb0ae` and evidence candidate
+`d1656a1`. Publication remains open only until the acceptance record is committed and
+`main` is pushed. A passing unit test, a single screenshot, or an attractive isolated
+frame was not treated as completion.
 
 1. **Ordinary pieces read as bright enamel, not dim tiles.** The seven tetromino
    families keep distinct hues and dark edge contrast, while face and inner-edge
@@ -86,6 +87,27 @@ unit test, a single screenshot, or an attractive isolated frame is not completio
   two-stone events; all three Mutation effects; Puzzle metrics across at least three
   tactical board states; one Canvas; zero DOM cells, console errors, page errors,
   clipping, and unintended overflow.
+
+## Phase 11 acceptance — 2026-08-01
+
+- Final product source: `12fb0ae0b6e373ff856ca48d0187485232c4db99`.
+- Immutable evidence candidate: `d1656a1c1499cc1034e61e01316808339e4294a0`,
+  with 24 browser frames, structured assertions, and `26/26` independently verified
+  manifest entries under `docs/qa/evidence/t18-phase11/`.
+- Final post-source gates pass: typecheck; `31` files / `288` tests with one worker;
+  production build across `758` modules. The only build note is the existing chunk-size
+  advisory.
+- Browser review accepts the no-grid basalt shelf and irregular joined boulders,
+  smooth single-gradient Ice front, restrained Supergravity pressure with truthful
+  split landing projection, non-rectangular Bomb field, compact bilingual surfaces,
+  complete home-card edges, and deterministic Puzzle analysis across desktop,
+  portrait, and short landscape. The evidence reports one gameplay Canvas, zero DOM
+  board cells, and zero console/page errors.
+- Independent read-only QA accepts all nine outcomes with P0/P1/P2/P3 and evidence-gap
+  counts all zero. A redacted gitleaks `8.30.1` scan of
+  `a2d6670f6e1c6cfbf61eee232c3d4468c38dc65e..d1656a1` reports zero findings.
+- The final browser batch is closed and port `5178` is released. No development server,
+  managed browser, watcher, indexer, or active subagent remains owned by this phase.
 
 ---
 

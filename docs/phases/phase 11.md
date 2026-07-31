@@ -1,6 +1,6 @@
 # Phase 11 — Luminous Instruments and Legible Intent
 
-Status: `ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED`
+Status: `ACCEPTED / PUSH PENDING`
 
 Base: `main@a2d6670f6e1c6cfbf61eee232c3d4468c38dc65e`
 
@@ -53,5 +53,13 @@ Puzzle guidance that teaches the governing mechanism without revealing a script.
 
 ## Acceptance state
 
-- Contract frozen at base `a2d6670f6e1c6cfbf61eee232c3d4468c38dc65e`.
-- Product source, evidence, independent QA, acceptance record, and push are pending.
+- Contract base: `a2d6670f6e1c6cfbf61eee232c3d4468c38dc65e`.
+- Accepted product source: `12fb0ae0b6e373ff856ca48d0187485232c4db99`.
+- Accepted evidence candidate: `d1656a1c1499cc1034e61e01316808339e4294a0`.
+- Final gates: typecheck; `31` files / `288` tests; `758`-module build.
+- Evidence: 24 browser PNGs, zero console/page errors, and `26/26` matching manifest
+  entries under `docs/qa/evidence/t18-phase11/`.
+- Independent read-only QA: `ACCEPT`, P0/P1/P2/P3/GAP all zero.
+- Redacted gitleaks `8.30.1` range scan: zero findings.
+- Owned browser/server resources are released; publication to `main` is the sole
+  remaining coordinator action.

@@ -1,5 +1,18 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T18 Phase 11 accepted — 2026-08-01
+
+- Final source `12fb0ae` replaces Survival decals with continuous no-grid basalt and
+  irregular boulder geometry, completes the bright palette, physical Mutation fields,
+  compact information surfaces, local bilingual typography, complete Home edges, and
+  deterministic Puzzle guidance.
+- Final gates pass typecheck, `31` files / `288` tests, and a `758`-module build.
+  Evidence `d1656a1` contains 24 browser frames and a `26/26` verified manifest;
+  independent read-only QA reports P0–P3/GAP all zero and the scoped redacted secret
+  scan reports zero findings.
+- The browser/server batch is released. Phase 11 is accepted and awaiting only the
+  coordinator publication step.
+
 ### T18 Phase 11 contract — 2026-07-31
 
 - Phase 10 remains accepted at clean base `a2d6670`; Phase 11 is now the sole active

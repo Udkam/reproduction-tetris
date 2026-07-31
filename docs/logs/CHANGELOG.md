@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-08-01 — Phase 11 luminous materials and legible intent accepted
+
+- Replaced Survival's rejected decal language with dedicated geology geometry. The
+  permanent floor is one continuous irregular basalt shelf with connected planes and
+  fractures; falling one- and two-stone events are chipped, faceted boulder masses
+  rather than decorated ordinary cells.
+- Brightened all seven ordinary piece families while retaining dark edge contrast.
+  Reworked Ice into one smooth upper gradient, Supergravity into restrained pressure
+  and truthful independently settled ghost cells, and Bomb into a localized irregular
+  heat/ember field without a `3×10` target box.
+- Compacted the live information rail and sectional Settings surface, restored complete
+  Home-card edges and transient pointer hover, defaulted leave to Back to home, and
+  locally packaged Space Grotesk plus Geist Mono with bilingual responsive fit.
+- Added deterministic Puzzle diagnosis: direct clears, safe landings, buried holes,
+  minimum burden, one priority line, and two queue-role hints without mutating Core or
+  exposing a scripted solution.
+- Frozen product `12fb0ae` passes typecheck, `31` files / `288` tests, and the
+  `758`-module build. Evidence `d1656a1` contains 24 browser frames and `26/26` valid
+  manifest entries with one gameplay Canvas, zero DOM board cells, and zero
+  console/page errors. Independent read-only QA reports no P0–P3 or evidence gap.
+- A redacted gitleaks `8.30.1` scan of the complete Phase 11 range reports zero
+  findings. The final browser batch is closed and port `5178` is released.
+
 ## 2026-07-31 — Phase 10 readable-state and cave-pressure refinement accepted
 
 - Standardized live terminology, restart/leave lifecycle, Rules-first Settings,

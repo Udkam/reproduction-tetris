@@ -276,3 +276,40 @@
   and independent read-only QA remain open.
 - Next action: commit P11.5, then run the single final integrated gate sequence after
   the last source change.
+
+## 2026-08-01 — P11.6–P11.8 immutable acceptance candidate
+
+- Task ID: `T18-P11.6-P11.8`
+- Base SHA: `01ed3969c90362b74d850c8dac88d530af098cca`
+- Owner: primary coordinator; one production writer. Independent QA was read-only.
+- Final source correction:
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - Ice now uses one cached four-stop Pixi gradient over the upper `62%` of the well;
+    it no longer assembles visible horizontal bands.
+- Recovery points:
+  - source `12fb0ae0b6e373ff856ca48d0187485232c4db99`
+  - evidence `d1656a1c1499cc1034e61e01316808339e4294a0`
+- Commands actually run after the final source edit:
+  - `npm.cmd run typecheck`: passed
+  - `npm.cmd run test -- --maxWorkers=1 --no-file-parallelism --hookTimeout=30000`:
+    `31` files / `288` tests passed
+  - `npm.cmd run build`: passed across `758` modules; existing chunk-size advisory only
+  - redacted `gitleaks 8.30.1` Git range scan from the Phase 10 base through the
+    evidence candidate: zero findings
+- Evidence:
+  - `docs/qa/evidence/t18-phase11/` contains 24 final-candidate PNGs, structured
+    browser assertions, README, and `26/26` matching manifest entries
+  - browser assertions cover all nine outcomes, Chinese/English, desktop/portrait/
+    short landscape, reduced motion, one Canvas, zero DOM board cells, and zero
+    console/page errors
+  - manual comparison accepts the continuous faceted basalt shelf, irregular joined
+    one/two-boulder events, smooth Ice front, pressure-based Supergravity with split
+    ghost, non-box Bomb, compact surfaces, typography, Home interactions, and Puzzle
+    analysis
+- Independent QA: `ACCEPT`; P0/P1/P2/P3/GAP all zero. It recomputed all 26 evidence
+  hashes, verified evidence/source binding, and left the worktree/index unchanged.
+- Resources: the owned browser batch and Vite process are closed; port `5178` is
+  released. No watcher, indexer, development server, managed browser, or running
+  subagent remains.
+- Blocker: none. Next action: commit acceptance docs and publish `main` non-force.

@@ -80,6 +80,17 @@ The leave sheet initially selects Back to home. Home cards have no accent rail a
 retain a complete inset top edge through hover/focus/selection. Pointer leave removes
 pointer highlighting; keyboard focus remains independently visible.
 
+### Phase 11 acceptance
+
+The accepted implementation freezes product source at `12fb0ae` and browser evidence
+at `d1656a1`. The geology correction is structural rather than decorative: Survival
+bedrock is one continuous, jagged, faceted basalt shelf with no occupancy grid, while
+one- and two-stone events use irregular joined boulder geometry instead of textured
+square cells. The final Ice correction uses one smooth cached gradient rather than
+stacked translucent bands. Final typecheck, `31` files / `288` tests, the `758`-module
+build, 24-frame browser review, `26/26` evidence-integrity check, independent QA, and
+the scoped secret scan all pass with no product or evidence finding.
+
 ## 2026-07-31 Phase 10 — pressure without ambiguity
 
 Phase 10 unifies a set of related defects around one design principle: **the player
