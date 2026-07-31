@@ -91,6 +91,18 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    `超级加倍 / Super multiplier` may keep one brief acquisition or activation cue, but
    their ten-second active windows emit no loop, drone, pulse, repeated retrigger, or
    other sustained state sound. Visual state and the canonical timer carry duration.
+10. **Multiplier atmosphere is local and steady.** Its board-background emblem becomes
+    materially smaller and remains continuously legible without full-frame opacity
+    pulses, screen flashes, or alternating bright/dark fields. Super multiplier may
+    strengthen the same compact emblem, but cannot enlarge it into a board-dominating
+    seal. Reduced motion shows the same stable endpoint.
+11. **The home wordmark is geometrically centred.** `TetraMorph` is centred on both
+    axes of its dark brand panel at every supported viewport; letter overhang and font
+    metrics may not be mistaken for container centring.
+12. **The site icon belongs to the four modes.** The favicon is an original 2×2 mark
+    made from the home palette in reading order: Classic green, Survival blue,
+    Mutation orange, Puzzle purple. It contains no commercial logo or letterform and
+    remains crisp at browser-tab size.
 
 ## Phase 12 checkpoint order
 
@@ -119,8 +131,10 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   stones, 4x cadence, and ordinary-piece contact that stays unlocked until the stone
   settles; Puzzle library lessons and a live HUD with no analysis card;
   reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
-  errors. Home evidence must prove label-free, optically centred arrow actions on all
-  four tiles without changing their accessible names. Puzzle evidence must also prove
+  errors. Home evidence must prove a geometrically centred wordmark, label-free and
+  optically centred arrow actions on all four tiles without changing their accessible
+  names, plus the four-mode favicon. Mutation evidence must prove the smaller steady
+  multiplier emblem and absence of sustained multiplier audio. Puzzle evidence must also prove
   that reordering preserves all fifty stable
   IDs, both documented routes per level, saved completion/best values by ID, the
   intended Intro/Easy/Hard membership, the teach-then-combine opening sequence, and the

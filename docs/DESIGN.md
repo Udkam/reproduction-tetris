@@ -78,6 +78,21 @@ status rail, light treatment, and countdown. Audio is event-based only: one brie
 may acknowledge acquisition or activation, but no loop, drone, pulse, or repeated
 state sound continues while either multiplier remains active.
 
+The multiplier's ambient emblem is a compact local seal, not a full-board signal. Its
+geometry stays small enough to preserve stack readability and its active-state alpha is
+steady: no screen flash, alternating opacity, or bright/dark field pulse. Super
+multiplier strengthens detail and value inside the same bounded footprint. Reduced
+motion uses that same static endpoint.
+
+### Home identity alignment
+
+The `TetraMorph` wordmark is centred against the complete dark brand panel, not against
+an incidental text line box. The layout uses the panel's two-axis grid centre and gives
+the script face a symmetric containing box so glyph overhang cannot pull the visible
+mark off-centre. The browser icon is a clean 2×2 square of Classic green, Survival blue,
+Mutation orange, and Puzzle purple in reading order. It is an original mode-map mark
+with no letter, copied logo, or trade-dress silhouette.
+
 ### Puzzle curriculum
 
 The rejected live analysis panel is removed. It offered counts generated from the
