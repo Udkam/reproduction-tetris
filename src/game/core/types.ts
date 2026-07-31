@@ -198,6 +198,11 @@ export interface GameState {
   /** Remaining game-time ticks for the three timed fourth-mode effects. */
   mutationFreezeTicks: number;
   mutationCollapseTicks: number;
+  /**
+   * Supergravity settlement belongs to the piece that spawned while the effect was
+   * active. Timer expiry may hide the field, but cannot change that piece's lock.
+   */
+  mutationCollapseLandingLatched: boolean;
   mutationMultiplierTicks: number;
   /** Current score factor for an active Multiplier item; returns to one at expiry. */
   mutationMultiplierFactor: 1 | 2 | 4;

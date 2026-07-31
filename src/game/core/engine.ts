@@ -171,6 +171,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
     state: {
       ...next,
       active,
+      mutationCollapseLandingLatched: next.mode === 'sprint' && next.mutationCollapseTicks > 0,
       puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
       puzzleQueueIndex: 0,
       puzzleSpawnCount: next.mode === 'puzzle' ? next.puzzleSpawnCount + 1 : next.puzzleSpawnCount,
@@ -233,6 +234,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     mutationNextCarrierId: 1,
     mutationFreezeTicks: 0,
     mutationCollapseTicks: 0,
+    mutationCollapseLandingLatched: false,
     mutationMultiplierTicks: 0,
     mutationMultiplierFactor: 1,
     mutationLastItem: null,
@@ -354,8 +356,22 @@ function hasFallingSurvivalSupport(state: GameState, piece: ActivePiece): boolea
     && !canPlaceWithSurvivalDebris(state.board, state.survivalDebris, candidate);
 }
 
+/** A stone about to enter the active piece from above pauses ordinary locking. */
+function hasFallingSurvivalPressure(state: GameState, piece: ActivePiece): boolean {
+  if (state.mode !== 'race' || state.survivalDebris.length === 0) return false;
+  const activeCells = new Set(cellsForPiece(piece).map(cellKey));
+  return state.survivalDebris.some((event) => (
+    cellsForSurvivalDebris({ ...event, y: event.y + 1 })
+      .some((cell) => activeCells.has(cellKey(cell)))
+  ));
+}
+
+function hasFallingSurvivalContact(state: GameState, piece: ActivePiece): boolean {
+  return hasFallingSurvivalSupport(state, piece) || hasFallingSurvivalPressure(state, piece);
+}
+
 function isGroundedInState(state: GameState, piece: ActivePiece): boolean {
-  if (hasFallingSurvivalSupport(state, piece)) return false;
+  if (hasFallingSurvivalContact(state, piece)) return false;
   return !canPlaceInState(state, { ...piece, y: piece.y + 1 });
 }
 
@@ -457,25 +473,29 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
 
 interface SurvivalDebrisStep {
   board: GameState['board'];
+  active: ActivePiece | null;
   survivalDebris: readonly SurvivalDebris[];
   landed: readonly Cell[];
   movedIds: ReadonlySet<number>;
+  pushedActive: boolean;
 }
 
 /**
- * Resolves one stone step bottom-up. `active` acts as a one-way barrier: an overlap
- * that already exists may shrink as the stone moves away, but a stone never creates
- * a new overlap or settles into the ordinary piece.
+ * Resolves one stone step bottom-up. Existing entry overlap may shrink as the stone
+ * moves away. A stone immediately above the active piece may instead translate both
+ * bodies by one row as an atomic debris-cadence step.
  */
 function resolveSurvivalDebrisStep(state: GameState, active: ActivePiece | null): SurvivalDebrisStep {
   const occupied = new Set(state.survivalDebris.flatMap(cellsForSurvivalDebris).map(cellKey));
-  const activeCells = new Set(active ? cellsForPiece(active).map(cellKey) : []);
+  let resolvedActive = active;
+  let activeCells = new Set(active ? cellsForPiece(active).map(cellKey) : []);
   const falling = [...state.survivalDebris].sort((left, right) => (
     right.y - left.y || left.x - right.x || left.id - right.id
   ));
   const survivalDebris: SurvivalDebris[] = [];
   const landed: Cell[] = [];
   const movedIds = new Set<number>();
+  let pushedActive = false;
   let board = state.board;
 
   for (const event of falling) {
@@ -503,6 +523,32 @@ function resolveSurvivalDebrisStep(state: GameState, active: ActivePiece | null)
       continue;
     }
 
+    if (
+      environmentAllowsFall
+      && currentOverlap.size === 0
+      && movedOverlap.length > 0
+      && resolvedActive !== null
+      && !pushedActive
+    ) {
+      const pushed = { ...resolvedActive, y: resolvedActive.y + 1 };
+      const pushedCells = cellsForPiece(pushed);
+      const movedCellKeys = new Set(movedCells.map(cellKey));
+      const pushIsLegal = canPlace(board, pushed)
+        && pushedCells.every((cell) => (
+          !occupied.has(cellKey(cell))
+          && !movedCellKeys.has(cellKey(cell))
+        ));
+      if (pushIsLegal) {
+        resolvedActive = pushed;
+        activeCells = new Set(pushedCells.map(cellKey));
+        pushedActive = true;
+        survivalDebris.push(movedEvent);
+        movedIds.add(event.id);
+        for (const cell of movedCells) occupied.add(cellKey(cell));
+        continue;
+      }
+    }
+
     if (!environmentAllowsFall && currentOverlap.size === 0) {
       for (const cell of currentCells) board = setCell(board, cell.x, cell.y, SURVIVAL_STONE_CELL);
       landed.push(...currentCells);
@@ -517,42 +563,55 @@ function resolveSurvivalDebrisStep(state: GameState, active: ActivePiece | null)
 
   return {
     board,
+    active: resolvedActive,
     survivalDebris: Object.freeze(survivalDebris.sort((left, right) => left.id - right.id)),
     landed: Object.freeze(landed),
     movedIds,
+    pushedActive,
   };
 }
 
 function settleSurvivalDebris(state: GameState): {
   state: GameState;
   landed: readonly Cell[];
+  pushedActive: boolean;
 } {
   if (state.mode !== 'race' || state.survivalDebris.length === 0) {
-    return { state, landed: Object.freeze([]) };
+    return { state, landed: Object.freeze([]), pushedActive: false };
   }
-  // An in-flight stone is only a short-lived obstacle. It may move away from
-  // underneath the ordinary piece, but never carries that piece or advances its
-  // gravity clock. Ordinary descent resumes on its own cadence after the path opens.
+  // Support below falls away independently. Pressure above may move both bodies one
+  // row, but that debris-cadence push never advances ordinary gravity or lock delay.
   const resolved = resolveSurvivalDebrisStep(state, state.active);
 
   return {
     state: {
       ...state,
       board: resolved.board,
+      active: resolved.active,
       survivalDebris: resolved.survivalDebris,
+      gravityTicks: resolved.pushedActive ? 0 : state.gravityTicks,
+      lockTicks: resolved.pushedActive ? 0 : state.lockTicks,
     },
     landed: resolved.landed,
+    pushedActive: resolved.pushedActive,
   };
 }
 
 interface SurvivalDebrisAdvance extends GameTransition {
   startedLineClear: boolean;
+  pushedActive: boolean;
 }
 
 /** Advances the independent debris clock and its exact 4× fixed-tick fall accumulator. */
 function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
-  if (state.mode !== 'race') return { state, events: [], startedLineClear: false };
+  if (state.mode !== 'race') return {
+    state,
+    events: [],
+    startedLineClear: false,
+    pushedActive: false,
+  };
   let next = state;
+  let pushedActive = false;
   const events: GameEvent[] = [];
   const progress = state.survivalDebrisFallProgress + SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK;
   if (progress >= SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD) {
@@ -561,6 +620,7 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
       ...settled.state,
       survivalDebrisFallProgress: progress - SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD,
     };
+    pushedActive = settled.pushedActive;
     if (settled.landed.length > 0) events.push({ type: 'survival-stones-landed', cells: settled.landed });
   } else {
     next = { ...state, survivalDebrisFallProgress: progress };
@@ -622,7 +682,12 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
   const full = fullRows(next.board);
   const pending = new Set(next.pendingClearRows);
   const newlyFull = full.filter((row) => !pending.has(row));
-  if (newlyFull.length === 0) return { state: next, events, startedLineClear: false };
+  if (newlyFull.length === 0) return {
+    state: next,
+    events,
+    startedLineClear: false,
+    pushedActive,
+  };
 
   const pendingClearRows = [...pending, ...newlyFull].sort((left, right) => left - right);
   return {
@@ -636,6 +701,7 @@ function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
     },
     events: [...events, { type: 'clear-started', rows: newlyFull }],
     startedLineClear: state.phase !== 'line-clear',
+    pushedActive,
   };
 }
 
@@ -936,10 +1002,13 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
 function advanceMutationEffects(state: GameState): GameState {
   if (state.mode !== 'sprint') return state;
   const mutationMultiplierTicks = Math.max(0, state.mutationMultiplierTicks - 1);
+  const mutationCollapseLandingLatched = state.mutationCollapseLandingLatched
+    || (state.active !== null && state.mutationCollapseTicks > 0);
   return {
     ...state,
     mutationFreezeTicks: Math.max(0, state.mutationFreezeTicks - 1),
     mutationCollapseTicks: Math.max(0, state.mutationCollapseTicks - 1),
+    mutationCollapseLandingLatched,
     mutationMultiplierTicks,
     mutationMultiplierFactor: mutationMultiplierTicks > 0 ? state.mutationMultiplierFactor : 1,
     mutationLastItemTicks: Math.max(0, state.mutationLastItemTicks - 1),
@@ -954,7 +1023,7 @@ function lockActive(
   if (activeOverlapsSurvivalDebris(state, state.active)) {
     return { state: { ...state, lockTicks: 0 }, events: [] };
   }
-  if (hasFallingSurvivalSupport(state, state.active)) {
+  if (hasFallingSurvivalContact(state, state.active)) {
     return { state: { ...state, lockTicks: 0 }, events: extraEvents };
   }
   const undoCheckpoint = state.mode === 'puzzle' ? state.puzzleActiveSpawnCheckpoint : null;
@@ -975,7 +1044,7 @@ function lockActive(
         },
       ]);
     }
-    if (state.mutationCollapseTicks > 0) {
+    if (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched) {
       const collapsed = collapseSprintColumns(board);
       mutationCarriers = collapseMutationCarriers(collapsed.settledRowBySource, mutationCarriers);
       board = collapsed.board;
@@ -988,6 +1057,7 @@ function lockActive(
     pieceCount,
     mutationActiveCarrier: null,
     mutationCarriers,
+    mutationCollapseLandingLatched: false,
     puzzleActiveSpawnCheckpoint: null,
   };
   const rows = fullRows(board);
@@ -1097,7 +1167,7 @@ function hardDrop(state: GameState): GameTransition {
     distance += 1;
   }
   const next = { ...state, active: candidate, score: state.score + distance * 2 };
-  if (hasFallingSurvivalSupport(next, candidate)) {
+  if (hasFallingSurvivalContact(next, candidate)) {
     return {
       state: { ...next, gravityTicks: 0, lockTicks: 0 },
       events: [{ type: 'piece-moved', piece: candidate.type, dx: 0, dy: distance, cause: 'hard-drop' }],
@@ -1240,6 +1310,9 @@ function tick(state: GameState): GameTransition {
   // A stone-created row receives a full visible clear interval before its first
   // countdown tick, matching a player-created clear rather than skipping the cue.
   if (debris.startedLineClear) return { state: next, events: timedEvents };
+  if (debris.pushedActive && next.phase === 'active') {
+    return { state: next, events: timedEvents };
+  }
 
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
@@ -1357,6 +1430,7 @@ export function stateHash(state: GameState): string {
         mutationNextCarrierId: _mutationNextCarrierId,
         mutationFreezeTicks: _mutationFreezeTicks,
         mutationCollapseTicks: _mutationCollapseTicks,
+        mutationCollapseLandingLatched: _mutationCollapseLandingLatched,
         mutationMultiplierTicks: _mutationMultiplierTicks,
         mutationMultiplierFactor: _mutationMultiplierFactor,
         mutationLastItem: _mutationLastItem,
@@ -1402,6 +1476,7 @@ export function stateHash(state: GameState): string {
           mutationNextCarrierId: _mutationNextCarrierId,
           mutationFreezeTicks: _mutationFreezeTicks,
           mutationCollapseTicks: _mutationCollapseTicks,
+          mutationCollapseLandingLatched: _mutationCollapseLandingLatched,
           mutationMultiplierTicks: _mutationMultiplierTicks,
           mutationMultiplierFactor: _mutationMultiplierFactor,
           mutationLastItem: _mutationLastItem,
@@ -1436,6 +1511,7 @@ export function stateHash(state: GameState): string {
         mutationNextCarrierId: _mutationNextCarrierId,
         mutationFreezeTicks: _mutationFreezeTicks,
         mutationCollapseTicks: _mutationCollapseTicks,
+        mutationCollapseLandingLatched: _mutationCollapseLandingLatched,
         mutationMultiplierTicks: _mutationMultiplierTicks,
         mutationMultiplierFactor: _mutationMultiplierFactor,
         mutationLastItem: _mutationLastItem,

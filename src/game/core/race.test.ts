@@ -525,7 +525,7 @@ describe('independent Survival stone stream', () => {
     expect(second.survivalDebris).toEqual([{ id: 7, x: 4, y: 32, height: 1 }]);
   });
 
-  it('waits instead of moving or settling when a falling stone would create a new active-piece overlap', () => {
+  it('pushes the active piece one row at stone cadence when the stone is directly above it', () => {
     const state: GameState = {
       ...start(0x5a1c, 'race'),
       board: createBoard(),
@@ -535,10 +535,45 @@ describe('independent Survival stone stream', () => {
       survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
     };
 
+    const firstPush = dispatch(state, { type: 'tick' }).state;
+    expect(firstPush.active).toMatchObject({ type: 'O', x: 4, y: 31 });
+    expect(firstPush.survivalDebris).toEqual([{ id: 3, x: 4, y: 30, height: 1 }]);
+    expect(firstPush.gravityTicks).toBe(0);
+    expect(firstPush.lockTicks).toBe(0);
+    expect(firstPush.status).toBe('playing');
+
+    const secondPush = dispatch({
+      ...firstPush,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
+    }, { type: 'tick' }).state;
+    expect(secondPush.active).toMatchObject({ type: 'O', x: 4, y: 32 });
+    expect(secondPush.survivalDebris).toEqual([{ id: 3, x: 4, y: 31, height: 1 }]);
+
+    const escaped = dispatch(secondPush, { type: 'move', dx: 1 }).state;
+    const clearedRelation = dispatch({
+      ...escaped,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
+    }, { type: 'tick' }).state;
+    expect(clearedRelation.active).toMatchObject({ type: 'O', x: 5, y: 32 });
+    expect(clearedRelation.survivalDebris).toEqual([{ id: 3, x: 4, y: 32, height: 1 }]);
+  });
+
+  it('waits without locking when downward stone pressure cannot push the active piece', () => {
+    const state: GameState = {
+      ...start(0x5a1f, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: BOARD_HEIGHT - 2 },
+      survivalDebris: [{ id: 4, x: 4, y: BOARD_HEIGHT - 3, height: 1 }],
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
+      gravityTicks: 0,
+      lockTicks: 29,
+    };
+
     const waited = dispatch(state, { type: 'tick' }).state;
     expect(waited.active).toEqual(state.active);
     expect(waited.survivalDebris).toEqual(state.survivalDebris);
-    expect(waited.board[29]![4]).toBe(null);
+    expect(waited.lockTicks).toBe(0);
     expect(waited.status).toBe('playing');
   });
 

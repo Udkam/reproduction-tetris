@@ -86,6 +86,44 @@ describe('异变 mode', () => {
     expect(collapsed.mutationCarriers).toEqual([{ id: 4, item: 'freeze', cells: [{ x: 0, y: 39 }] }]);
   });
 
+  it('latches Supergravity settlement onto an airborne piece through timer expiry only', () => {
+    let board = createBoard();
+    board = setCell(board, 0, 34, 'T');
+    const active = {
+      ...playingMutation(),
+      board,
+      active: { type: 'O', rotation: 0, x: 8, y: 4 } as const,
+      mutationCollapseTicks: 1,
+      mutationCollapseLandingLatched: false,
+    };
+
+    const expired = dispatch(active, { type: 'tick' }).state;
+    expect(expired.mutationCollapseTicks).toBe(0);
+    expect(expired.mutationCollapseLandingLatched).toBe(true);
+    expect(stateHash(expired)).not.toBe(stateHash({
+      ...expired,
+      mutationCollapseLandingLatched: false,
+    }));
+
+    const latchedLock = dispatch({
+      ...expired,
+      active: { type: 'O', rotation: 0, x: 8, y: 38 },
+    }, { type: 'hard-drop' }).state;
+    expect(latchedLock.board[39]?.[0]).toBe('T');
+    expect(latchedLock.mutationCollapseLandingLatched).toBe(false);
+
+    let next = latchedLock;
+    for (let tick = 0; tick < ENTRY_DELAY_TICKS; tick += 1) next = dispatch(next, { type: 'tick' }).state;
+    const ordinaryBoard = setCell(next.board, 1, 34, 'L');
+    const ordinaryLock = dispatch({
+      ...next,
+      board: ordinaryBoard,
+      active: { type: 'O', rotation: 0, x: 8, y: 38 },
+    }, { type: 'hard-drop' }).state;
+    expect(ordinaryLock.board[34]?.[1]).toBe('L');
+    expect(ordinaryLock.mutationCollapseLandingLatched).toBe(false);
+  });
+
   it('starts with no carrier, schedules one only after two locks, and remains seeded', () => {
     const candidates = Array.from({ length: 128 }, (_, index) => index + 1).map((seed) => {
       let state = playingMutation(seed);
