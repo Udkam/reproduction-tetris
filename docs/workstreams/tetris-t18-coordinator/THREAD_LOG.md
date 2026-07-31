@@ -73,3 +73,31 @@
 - Blocker: P11.1 is reopened; `74e3720` is a recovery point, not an accepted visual.
 - Next action: commit this docs-only correction, replace geology geometry, run focused
   proof, then inspect one managed real frame and release the browser/server.
+
+## 2026-08-01 — P11.1R no-grid rock geometry checkpoint
+
+- Task ID: `T18-P11.1R-SOURCE`
+- Base SHA: `0abae4838424c6159b6bdf389514eca1d4d8b767`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `progress.md`
+- Commands actually run:
+  - focused Renderer/theme test: `45/45` passed
+  - `npm.cmd run typecheck`: passed
+  - official web-game client: two bounded Survival inspections, including a live
+    two-stone event; no console-error artifact emitted
+  - exact listener release for owned Node PIDs `31300` and `30340`; port `5178`
+    verified without a listener after each batch
+- Evidence: geology now exits the ordinary-cell path before rounded rectangles,
+  cell seams, or cell relief are painted. A rectangular bedrock component becomes
+  one jagged continuous silhouette with one lit ridge, three connected structural
+  planes, and four non-grid fracture branches. Falling one/two-stone components use
+  irregular octagonal bodies with integral light/shadow faces and an overlapping
+  vertical join. Real frames verified the absence of the old square bedrock grid and
+  showed the two descending bodies as boulders rather than textured tiles.
+- Blocker: final palette/geology acceptance still depends on the integrated browser
+  comparison round; the temporary frames are diagnostic and remain outside Git.
+- Next action: commit this corrective source recovery point, then open P11.2.

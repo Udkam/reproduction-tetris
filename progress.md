@@ -19,6 +19,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   decals on square cells. P11.1 is reopened. The correction must use dedicated
   continuous bedrock geometry and irregular multi-face boulder bodies with no visible
   occupancy grid, then prove the result in an early real Survival frame.
+- P11.1R now bypasses the ordinary-cell renderer for geology. Focused proof passes
+  `45/45` plus typecheck; two managed real Survival inspections show a continuous
+  jagged shelf and a live two-boulder event with no old square grid. Both browser
+  batches and the owned `5178` listener were released. Integrated visual acceptance
+  remains pending.
 
 ## Current phase
 
