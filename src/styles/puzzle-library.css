@@ -4,13 +4,13 @@
 
 .library-shell--gallery {
   display: grid;
-  grid-template-rows: 44px min(740px, calc(100dvh - 72px));
+  grid-template-rows: 44px min(740px, calc(100dvh - 80px));
   align-content: center;
   width: min(1320px, 100%);
   height: 100dvh;
   min-height: 0;
   margin: 0 auto;
-  gap: 8px;
+  gap: 16px;
   padding: 10px;
   overflow: hidden;
 }
@@ -475,8 +475,8 @@
 
 @media (max-width: 719px), (orientation: portrait) {
   .library-shell--gallery {
-    grid-template-rows: 40px min(740px, calc(100dvh - 60px));
-    gap: 6px;
+    grid-template-rows: 40px min(740px, calc(100dvh - 66px));
+    gap: 12px;
     padding: 7px;
   }
 
@@ -590,8 +590,8 @@
 
 @media (min-width: 720px) and (max-height: 520px) {
   .library-shell--gallery {
-    grid-template-rows: 38px min(740px, calc(100dvh - 56px));
-    gap: 6px;
+    grid-template-rows: 38px min(740px, calc(100dvh - 62px));
+    gap: 12px;
     padding: 6px 8px;
   }
 
