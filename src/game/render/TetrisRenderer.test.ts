@@ -551,7 +551,7 @@ describe('Puzzle undo presentation reset', () => {
     }
     expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(45);
     expect(new Set(luminance.map((value) => Math.round(value))).size).toBeGreaterThan(55);
-    expect(adjacentDelta / adjacentPairs).toBeLessThan(13);
+    expect(adjacentDelta / adjacentPairs).toBeLessThan(24);
   });
 
   it('draws a flat-contact continuous cavern wall and complete square falling stones without decals', () => {

@@ -382,11 +382,16 @@ export function buildBedrockTexturePixels(requestedWidth: number, requestedHeigh
     const v = y / (height - 1);
     for (let x = 0; x < width; x += 1) {
       const u = x / (width - 1);
-      const broad = rockFbm(u * 3.4 + 1.7, v * 2.35 + 4.2, 0x4d31, 5);
-      const weathered = rockFbm(u * 8.8 + 8.1, v * 5.2 + 1.3, 0x72a5, 4);
-      const ridgeSource = rockFbm(u * 5.6 + 3.9, v * 3.1 + 6.7, 0x218d, 4);
-      const ridge = 1 - Math.abs(ridgeSource * 2 - 1);
-      heights[y * width + x] = broad * 0.58 + weathered * 0.22 + ridge * 0.2;
+      const warpX = rockFbm(u * 2.15 + 7.3, v * 2.05 + 1.1, 0x4a39, 4) - 0.5;
+      const warpY = rockFbm(u * 2.35 + 2.8, v * 2.25 + 8.7, 0x6d27, 4) - 0.5;
+      const warpedU = u + warpX * 0.21;
+      const warpedV = v + warpY * 0.18;
+      const broad = rockFbm(warpedU * 4.6 + 1.7, warpedV * 3.85 + 4.2, 0x4d31, 5);
+      const weathered = rockFbm(warpedU * 18.4 + 8.1, warpedV * 13.6 + 1.3, 0x72a5, 4);
+      const ridgeSource = rockFbm(warpedU * 8.2 + 3.9, warpedV * 6.4 + 6.7, 0x218d, 4);
+      const ridge = Math.pow(1 - Math.abs(ridgeSource * 2 - 1), 1.72);
+      const rawHeight = broad * 0.5 + weathered * 0.17 + ridge * 0.33;
+      heights[y * width + x] = rawHeight * rawHeight * (3 - 2 * rawHeight);
     }
   }
 
@@ -403,19 +408,19 @@ export function buildBedrockTexturePixels(requestedWidth: number, requestedHeigh
       const rightHeight = heights[y * width + Math.min(width - 1, x + 1)]!;
       const upHeight = heights[Math.max(0, y - 1) * width + x]!;
       const downHeight = heights[Math.min(height - 1, y + 1) * width + x]!;
-      const normalX = (leftHeight - rightHeight) * 8.4;
-      const normalY = (upHeight - downHeight) * 7.1;
+      const normalX = (leftHeight - rightHeight) * 16.5;
+      const normalY = (upHeight - downHeight) * 13.2;
       const normalLength = Math.sqrt(normalX * normalX + normalY * normalY + 1);
       const light = Math.max(-0.35, Math.min(1, (
         normalX * lightX + normalY * lightY + lightZ
       ) / normalLength));
       const heightValue = heights[source]!;
       const mineral = rockNoise(u * 10.7 + 2.4, v * 7.3 + 5.1, 0x5b71) - 0.5;
-      const baseTone = Math.max(0, Math.min(1, 0.12 + heightValue * 0.92));
+      const baseTone = Math.max(0, Math.min(1, 0.06 + heightValue * 1.04));
       const depth = 1 - v * 0.14;
-      const illumination = Math.max(0.56, Math.min(1.18, 0.72 + light * 0.46)) * depth;
-      const deep = [42, 55, 61] as const;
-      const exposed = [126, 139, 143] as const;
+      const illumination = Math.max(0.48, Math.min(1.26, 0.62 + light * 0.62)) * depth;
+      const deep = [36, 48, 54] as const;
+      const exposed = [139, 150, 153] as const;
       const index = source * 4;
       pixels[index] = Math.round((deep[0] + (exposed[0] - deep[0]) * baseTone) * illumination + mineral * 5);
       pixels[index + 1] = Math.round((deep[1] + (exposed[1] - deep[1]) * baseTone) * illumination + mineral * 6);
