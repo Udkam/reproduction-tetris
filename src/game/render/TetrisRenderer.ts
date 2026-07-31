@@ -2451,52 +2451,53 @@ export class TetrisRenderer {
   private drawMultiplierAtmosphere(
     graphics: Graphics,
     layout: BoardLayout,
-    phase: number,
+    _phase: number,
     opacity: number,
     factor: 2 | 4,
   ): void {
     const token = MUTATION_VFX_TOKENS.multiplier;
     const centerX = layout.x + layout.width / 2;
     const centerY = layout.y + layout.height * .43;
-    const pulse = this.options.reducedMotion ? 1 : 0.7 + Math.sin(phase * Math.PI * 2) * 0.22;
-    const intensity = factor === 4 ? 1.24 : 1;
-    const radius = Math.max(layout.cell * 1.65, layout.width * .12) * intensity;
-    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.11 * pulse * opacity });
-    graphics.circle(centerX, centerY, radius * .62).fill({ color: token.palette.highlight, alpha: 0.1 * pulse * opacity });
-    graphics.circle(centerX, centerY, radius * (factor === 4 ? 1.18 : .94))
+    // The multiplier seal is a persistent status mark, not a flash. Keep its
+    // footprint and alpha identical across frames; 4x adds detail inside the
+    // same boundary instead of scaling into a board-wide signal.
+    const radius = Math.max(layout.cell * 1.08, layout.width * .075);
+    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.09 * opacity });
+    graphics.circle(centerX, centerY, radius * .58).fill({ color: token.palette.highlight, alpha: 0.09 * opacity });
+    graphics.circle(centerX, centerY, radius * .94)
       .stroke({
         color: factor === 4 ? token.palette.highlight : token.palette.primary,
-        alpha: (factor === 4 ? .52 : .34) * pulse * opacity,
+        alpha: (factor === 4 ? .5 : .34) * opacity,
         width: Math.max(1, layout.cell * .045),
       });
     this.drawMutationStar(
       graphics,
       centerX,
       centerY,
-      Math.max(layout.cell * .82, layout.width * .052) * intensity,
-      Math.max(layout.cell * .22, layout.width * .014) * intensity,
+      Math.max(layout.cell * .5, layout.width * .034),
+      Math.max(layout.cell * .15, layout.width * .01),
       token.palette.highlight,
-      0.58 * pulse * opacity,
+      0.56 * opacity,
     );
-    const ray = radius * 1.12;
+    const ray = radius * 1.06;
     this.strokeSegments(graphics, [
-      [centerX - ray, centerY, centerX - radius * .68, centerY],
-      [centerX + radius * .68, centerY, centerX + ray, centerY],
-      [centerX, centerY - ray, centerX, centerY - radius * .68],
-      [centerX, centerY + radius * .68, centerX, centerY + ray],
-    ], token.palette.primary, 0.42 * pulse * opacity, Math.max(1, layout.cell * .042));
+      [centerX - ray, centerY, centerX - radius * .72, centerY],
+      [centerX + radius * .72, centerY, centerX + ray, centerY],
+      [centerX, centerY - ray, centerX, centerY - radius * .72],
+      [centerX, centerY + radius * .72, centerX, centerY + ray],
+    ], token.palette.primary, 0.38 * opacity, Math.max(1, layout.cell * .042));
     if (factor === 4) {
       for (const angle of [-Math.PI * .25, Math.PI * .25, Math.PI * .75, Math.PI * 1.25]) {
-        const x = centerX + Math.cos(angle) * radius * .92;
-        const y = centerY + Math.sin(angle) * radius * .92;
+        const x = centerX + Math.cos(angle) * radius * .78;
+        const y = centerY + Math.sin(angle) * radius * .78;
         this.drawMutationStar(
           graphics,
           x,
           y,
-          Math.max(2.5, layout.cell * .16),
-          Math.max(1, layout.cell * .055),
+          Math.max(2.2, layout.cell * .13),
+          Math.max(1, layout.cell * .045),
           token.palette.highlight,
-          .64 * pulse * opacity,
+          .62 * opacity,
         );
       }
     }
@@ -2507,7 +2508,7 @@ export class TetrisRenderer {
       Math.max(4, layout.cell * .25),
       factor,
       token.palette.highlight,
-      .9 * pulse * opacity,
+      .88 * opacity,
     );
   }
 

@@ -184,6 +184,7 @@ type RendererInternals = {
   mutationFlashQueue: Array<{ item: MutationItem }>;
   mutationParticles: Array<{ active: boolean; item: MutationItem; rotation: number; rotationVelocity: number }>;
   mutationFields: Map<Exclude<MutationItem, 'bomb'>, { item: Exclude<MutationItem, 'bomb'>; stage: 'enter' | 'active' | 'exit'; elapsed: number }>;
+  mutationClockMs: number;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
   collapseTrail: {
@@ -1213,7 +1214,7 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
-  it('keeps the persistent multiplier field explicit at both 2× and 4×', () => {
+  it('keeps the persistent multiplier field compact, steady, and explicit at both 2× and 4×', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1237,6 +1238,19 @@ describe('Puzzle undo presentation reset', () => {
       layout,
     );
     expect(geometrySignature(twoField.operations)).not.toBe(geometrySignature(fourField.operations));
+    expect(twoField.operations.filter((operation) => operation.kind === 'rect')).toHaveLength(0);
+    expect(Math.max(...twoField.operations
+      .filter((operation) => operation.kind === 'circle')
+      .map((operation) => operation.values[2] ?? 0))).toBeLessThanOrEqual(layout.cell * 1.2);
+
+    internals.mutationClockMs = 437;
+    const laterField = createGraphicsRecorder();
+    internals.drawActiveMutationAtmosphere(
+      laterField.graphics,
+      { ...base, mutationMultiplierFactor: 2 },
+      layout,
+    );
+    expect(laterField.operations).toEqual(twoField.operations);
 
     const twoGlyph = createGraphicsRecorder();
     const fourGlyph = createGraphicsRecorder();
