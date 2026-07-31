@@ -526,45 +526,22 @@ function resolveSurvivalDebrisStep(state: GameState, active: ActivePiece | null)
 function settleSurvivalDebris(state: GameState): {
   state: GameState;
   landed: readonly Cell[];
-  carried: boolean;
 } {
   if (state.mode !== 'race' || state.survivalDebris.length === 0) {
-    return { state, landed: Object.freeze([]), carried: false };
+    return { state, landed: Object.freeze([]) };
   }
-  const environmental = resolveSurvivalDebrisStep(state, null);
-  const active = state.active;
-  let carried = false;
-  let resolved = environmental;
-  let nextActive = active;
-
-  if (active !== null && !activeOverlapsSurvivalDebris(state, active)) {
-    const candidate = { ...active, y: active.y + 1 };
-    const candidateKeys = new Set(cellsForPiece(candidate).map(cellKey));
-    const supportingIds = state.survivalDebris
-      .filter((event) => cellsForSurvivalDebris(event).some((cell) => candidateKeys.has(cellKey(cell))))
-      .map((event) => event.id);
-    if (
-      supportingIds.length > 0
-      && supportingIds.every((id) => environmental.movedIds.has(id))
-      && canPlaceWithSurvivalDebris(environmental.board, environmental.survivalDebris, candidate)
-    ) {
-      carried = true;
-      nextActive = candidate;
-    }
-  }
-
-  if (!carried) resolved = resolveSurvivalDebrisStep(state, active);
+  // An in-flight stone is only a short-lived obstacle. It may move away from
+  // underneath the ordinary piece, but never carries that piece or advances its
+  // gravity clock. Ordinary descent resumes on its own cadence after the path opens.
+  const resolved = resolveSurvivalDebrisStep(state, state.active);
 
   return {
     state: {
       ...state,
       board: resolved.board,
-      active: nextActive,
       survivalDebris: resolved.survivalDebris,
-      ...(carried ? { gravityTicks: 0, lockTicks: 0 } : {}),
     },
     landed: resolved.landed,
-    carried,
   };
 }
 

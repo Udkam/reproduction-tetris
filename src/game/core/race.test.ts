@@ -492,7 +492,7 @@ describe('independent Survival stone stream', () => {
     }));
   });
 
-  it('carries a supported ordinary piece down atomically with the faster falling stone', () => {
+  it('lets a faster falling stone leave a supported ordinary piece in place without locking it', () => {
     const state: GameState = {
       ...start(0x5a1b, 'race'),
       board: createBoard(),
@@ -506,9 +506,9 @@ describe('independent Survival stone stream', () => {
 
     const first = dispatch(state, { type: 'tick' }).state;
     const repeated = dispatch(state, { type: 'tick' }).state;
-    expect(first.active).toMatchObject({ type: 'O', x: 4, y: 29 });
+    expect(first.active).toMatchObject({ type: 'O', x: 4, y: 28 });
     expect(first.survivalDebris).toEqual([{ id: 7, x: 4, y: 31, height: 1 }]);
-    expect(first.gravityTicks).toBe(1);
+    expect(first.gravityTicks).toBe(18);
     expect(first.lockTicks).toBe(0);
     expect(stateHash(first)).toBe(stateHash(repeated));
 
@@ -521,7 +521,7 @@ describe('independent Survival stone stream', () => {
       ...first,
       survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
     }, { type: 'tick' }).state;
-    expect(second.active).toMatchObject({ type: 'O', x: 4, y: 30 });
+    expect(second.active).toMatchObject({ type: 'O', x: 4, y: 28 });
     expect(second.survivalDebris).toEqual([{ id: 7, x: 4, y: 32, height: 1 }]);
   });
 
@@ -583,7 +583,7 @@ describe('independent Survival stone stream', () => {
     expect(dropped.events.some((event) => event.type === 'hard-dropped')).toBe(false);
   });
 
-  it('starts ordinary lock delay only after dynamic stone support settles', () => {
+  it('starts ordinary lock delay only after the stone settles and normal gravity reaches it', () => {
     const base: GameState = {
       ...start(0x5a1e, 'race'),
       board: createBoard(),
@@ -594,19 +594,26 @@ describe('independent Survival stone stream', () => {
       lockTicks: 21,
     };
 
-    const carried = dispatch(base, { type: 'tick' }).state;
-    expect(carried.active).toMatchObject({ type: 'O', y: 37 });
-    expect(carried.survivalDebris).toEqual([{ id: 9, x: 4, y: 39, height: 1 }]);
-    expect(carried.lockTicks).toBe(0);
+    const clearedSupport = dispatch(base, { type: 'tick' }).state;
+    expect(clearedSupport.active).toMatchObject({ type: 'O', y: 36 });
+    expect(clearedSupport.survivalDebris).toEqual([{ id: 9, x: 4, y: 39, height: 1 }]);
+    expect(clearedSupport.lockTicks).toBe(0);
 
     const settled = dispatch({
-      ...carried,
+      ...clearedSupport,
       survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
     }, { type: 'tick' }).state;
     expect(settled.survivalDebris).toEqual([]);
     expect(settled.board[39]![4]).toBe(SURVIVAL_STONE_CELL);
-    expect(settled.active).toMatchObject({ type: 'O', y: 37 });
-    expect(settled.lockTicks).toBe(1);
+    expect(settled.active).toMatchObject({ type: 'O', y: 36 });
+    expect(settled.lockTicks).toBe(0);
+
+    const descended = dispatch(settled, { type: 'soft-drop' }).state;
+    expect(descended.active).toMatchObject({ type: 'O', y: 37 });
+    expect(descended.lockTicks).toBe(0);
+    const grounded = dispatch(descended, { type: 'tick' }).state;
+    expect(grounded.active).toMatchObject({ type: 'O', y: 37 });
+    expect(grounded.lockTicks).toBe(1);
   });
 
   it('locks a stone as a clearable cell, scores its clear, and preserves the active player piece', () => {
