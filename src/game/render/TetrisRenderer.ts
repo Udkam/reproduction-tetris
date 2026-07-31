@@ -406,6 +406,8 @@ export class TetrisRenderer {
   private readonly mutationFilterState = { freeze: false, collapse: false };
   private readonly cellGradients = new Map<BoardMaterial, FillGradient>();
   private readonly overrideGradients = new Map<PieceMaterial, FillGradient>();
+  /** One renderer-lifetime alpha gradient prevents Ice from resolving into visible scan bands. */
+  private freezeAtmosphereGradient: FillGradient | null = null;
 
   private frameCallback: ((deltaMs: number) => void) | null = null;
   private presentation: PiecePresentation | null = null;
@@ -730,6 +732,8 @@ export class TetrisRenderer {
     this.cellGradients.clear();
     for (const gradient of this.overrideGradients.values()) gradient.destroy();
     this.overrideGradients.clear();
+    this.freezeAtmosphereGradient?.destroy();
+    this.freezeAtmosphereGradient = null;
     this.app.destroy({ removeView: true }, { children: true });
     this.app = null;
     this.host = null;
@@ -2433,26 +2437,12 @@ export class TetrisRenderer {
     const token = MUTATION_VFX_TOKENS.freeze;
     const inset = Math.max(1.5, layout.cell * 0.08);
     const pulse = this.options.reducedMotion ? 1 : 0.88 + Math.sin(phase * Math.PI * 2) * 0.1;
-    const fieldDepth = Math.min(layout.height * 0.5, layout.cell * 10);
-    // Closely overlapped slices create one long, natural cold front. The former
-    // seven hard bands and their lower glint read as horizontal rules on the board.
-    const slices = 40;
-    const sliceHeight = fieldDepth / slices;
-    for (let slice = 0; slice < slices; slice += 1) {
-      const normalized = (slice + 0.5) / slices;
-      const envelope = Math.pow(1 - normalized, 2.25);
-      graphics
-        .rect(
-          layout.x + inset,
-          layout.y + inset + slice * sliceHeight,
-          layout.width - inset * 2,
-          sliceHeight + 1.1,
-        )
-        .fill({
-          color: token.palette.primary,
-          alpha: token.shader.fieldAlpha * 0.58 * envelope * pulse * opacity,
-        });
-    }
+    const fieldDepth = Math.min(layout.height * 0.62, layout.cell * 12.4);
+    // A single alpha gradient produces a continuous cold front. Discrete strips,
+    // even when overlapped, quantise into scan lines after canvas scaling.
+    graphics
+      .rect(layout.x + inset, layout.y + inset, layout.width - inset * 2, fieldDepth)
+      .fill({ fill: this.freezeAtmosphereFill(), alpha: pulse * opacity });
     const shardSize = Math.max(3, layout.cell * 0.17);
     for (const [xFactor, yFactor, scale] of [
       [.08, .08, .72], [.27, .14, .48], [.53, .1, .56], [.72, .2, .66], [.92, .12, .42], [.16, .35, .38], [.83, .44, .5],
@@ -2468,6 +2458,31 @@ export class TetrisRenderer {
         0.54 * pulse * opacity,
       );
     }
+  }
+
+  private freezeAtmosphereFill(): FillGradient {
+    if (this.freezeAtmosphereGradient) return this.freezeAtmosphereGradient;
+    const token = MUTATION_VFX_TOKENS.freeze;
+    const withAlpha = (color: number, alpha: number): string => {
+      const rgb = color.toString(16).padStart(6, '0');
+      const channel = Math.round(Math.max(0, Math.min(1, alpha)) * 255)
+        .toString(16)
+        .padStart(2, '0');
+      return `#${rgb}${channel}`;
+    };
+    this.freezeAtmosphereGradient = new FillGradient({
+      type: 'linear',
+      start: { x: 0, y: 0 },
+      end: { x: 0, y: 1 },
+      textureSpace: 'local',
+      colorStops: [
+        { offset: 0, color: withAlpha(token.palette.highlight, token.shader.fieldAlpha * .86) },
+        { offset: .22, color: withAlpha(token.palette.primary, token.shader.fieldAlpha * .68) },
+        { offset: .58, color: withAlpha(token.palette.primary, token.shader.fieldAlpha * .22) },
+        { offset: 1, color: withAlpha(token.palette.primary, 0) },
+      ],
+    });
+    return this.freezeAtmosphereGradient;
   }
 
   private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {

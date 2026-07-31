@@ -1268,12 +1268,18 @@ describe('Puzzle undo presentation reset', () => {
       layout,
     );
 
-    const slices = recorder.operations.filter((operation) => operation.kind === 'rect');
-    expect(slices).toHaveLength(40);
-    expect(slices.every((operation) => (
-      operation.values[1]! >= layout.y
-      && operation.values[1]! + operation.values[3]! <= layout.y + layout.height * 0.52
-    ))).toBe(true);
+    const field = recorder.operations.filter((operation) => operation.kind === 'rect');
+    expect(field).toHaveLength(1);
+    expect(field[0]!.values[1]).toBeGreaterThanOrEqual(layout.y);
+    expect(field[0]!.values[1]! + field[0]!.values[3]!).toBeLessThanOrEqual(layout.y + layout.height * .64);
+    const gradientFill = recorder.operations.find((operation) => (
+      operation.kind === 'fill'
+      && typeof operation.options === 'object'
+      && operation.options !== null
+      && 'fill' in operation.options
+    ))?.options as { fill?: { colorStops?: readonly unknown[] }; alpha?: number } | undefined;
+    expect(gradientFill?.fill?.colorStops).toHaveLength(4);
+    expect(gradientFill?.alpha).toBeGreaterThan(0);
     expect(recorder.operations.some((operation) => (
       operation.kind === 'segment'
       && Math.abs(operation.values[3]! - operation.values[1]!) < 0.001
