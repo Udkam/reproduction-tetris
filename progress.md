@@ -1,5 +1,15 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
+## T19 Phase 12 shared UI/type checkpoint — 2026-08-01
+
+- The left/default leave action is now the primary return action. Settings uses one
+  continuous compact surface, and rejected English/data fonts are replaced by local
+  Barlow Semi Condensed and Fira Code Variable assets with updated notices/licenses.
+- Focused tests pass `52/52`; typecheck and diff hygiene pass; a lockfile-only OSV scan
+  finds no issue. No server or browser was retained.
+- This remains an unaccepted recovery checkpoint pending Survival, Puzzle teaching,
+  final integrated gates, real frames, independent QA, and push.
+
 ## T19 Phase 12 active contract — 2026-08-01
 
 - Phase 11 remains accepted at clean base `ac11e016`; Phase 12 is active and no source

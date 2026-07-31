@@ -1,11 +1,11 @@
 /*
- * Phase 11 Settings authority.
- * One vertical reading order prevents unequal side-by-side cards from manufacturing
- * blank regions: rules, controls, keyboard, then the current-mode record.
+ * Phase 12 Settings authority.
+ * One enclosing console owns the surface. Rules, Controls, Keyboard, and Record are
+ * typographic sections in a continuous reading flow—not nested cards.
  */
 
 .action-sheet--settings {
-  width: min(860px, calc(100vw - 24px));
+  width: min(880px, calc(100vw - 24px));
   max-height: calc(100dvh - 24px);
   padding: clamp(16px, 2vw, 22px);
   overflow: hidden;
@@ -18,6 +18,10 @@
 }
 
 .settings-console {
+  --settings-rule-tone: color-mix(in srgb, var(--classic) 78%, var(--ink));
+  --settings-control-tone: color-mix(in srgb, var(--focus) 82%, var(--ink));
+  --settings-keyboard-tone: color-mix(in srgb, #28847d 82%, var(--ink));
+  --settings-record-tone: color-mix(in srgb, #9a5871 78%, var(--ink));
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
@@ -25,11 +29,17 @@
     "controls"
     "keyboard"
     "record";
-  gap: 9px;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 16px 15px;
   overflow: visible;
-  background: transparent;
-  border: 0;
-  border-radius: 0;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--surface) 86%, var(--raised)),
+      color-mix(in srgb, var(--raised) 76%, var(--surface)));
+  border: 1px solid color-mix(in srgb, var(--edge) 68%, var(--surface));
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 68%, transparent);
 }
 
 .settings-console > .mode-rule-summary,
@@ -41,27 +51,58 @@
   min-width: 0;
   min-height: 0;
   margin: 0;
-  padding: 12px 14px;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--raised) 84%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--section-accent, var(--focus)) 24%, var(--line));
-  border-radius: 10px;
-  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--section-accent, var(--focus)) 72%, transparent);
+  padding: 0;
+  overflow: visible;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
-.settings-console > * + * { border-top-width: 1px; }
+.settings-console > .mode-rule-summary > strong,
+.settings-console > .settings-console__controls > strong,
+.settings-console > .settings-console__keyboard > strong,
+.settings-console > .settings-console__record > span,
+.settings-console > .result-leaderboard > header > strong {
+  align-self: start;
+  color: var(--section-tone);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: .08em;
+}
+
+[lang="en"] .settings-console > .mode-rule-summary > strong,
+[lang="en"] .settings-console > .settings-console__controls > strong,
+[lang="en"] .settings-console > .settings-console__keyboard > strong,
+[lang="en"] .settings-console > .settings-console__record > span,
+[lang="en"] .settings-console > .result-leaderboard > header > strong {
+  font-size: 12.5px;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
 
 .settings-console > .mode-rule-summary {
-  --section-accent: var(--classic);
+  --section-tone: var(--settings-rule-tone);
   grid-area: rules;
   display: grid;
-  grid-template-columns: 68px minmax(0, 1fr);
+  grid-template-columns: 64px minmax(0, 1fr);
   gap: 12px;
+  align-items: start;
 }
 
-.settings-console > .mode-rule-summary--race { --section-accent: var(--race); }
-.settings-console > .mode-rule-summary--sprint { --section-accent: var(--sprint); }
-.settings-console > .mode-rule-summary--puzzle { --section-accent: var(--puzzle); }
+.settings-console > .mode-rule-summary--race {
+  --section-tone: color-mix(in srgb, var(--race) 82%, var(--ink));
+}
+
+.settings-console > .mode-rule-summary--sprint {
+  --section-tone: color-mix(in srgb, var(--sprint) 82%, var(--ink));
+}
+
+.settings-console > .mode-rule-summary--puzzle {
+  --section-tone: color-mix(in srgb, var(--puzzle) 82%, var(--ink));
+}
 
 .settings-console > .mode-rule-summary ul,
 .settings-console > .mode-rule-summary--marathon ul,
@@ -70,29 +111,32 @@
 .settings-console > .mode-rule-summary--puzzle ul {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 16px;
+  gap: 5px 16px;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .settings-console > .mode-rule-summary--marathon ul {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.settings-console > .mode-rule-summary li {
+  min-width: 0;
+}
+
+.settings-console > .mode-rule-summary li b {
+  color: var(--section-tone);
+}
+
 .settings-console > .settings-console__controls {
-  --section-accent: #4e82b6;
+  --section-tone: var(--settings-control-tone);
   grid-area: controls;
   display: grid;
-  grid-template-columns: 68px minmax(190px, .9fr) minmax(276px, 1.35fr) minmax(160px, .75fr);
+  grid-template-columns: 64px minmax(184px, .9fr) minmax(264px, 1.35fr) minmax(172px, .82fr);
   grid-template-areas: "heading language sound actions";
   gap: 10px;
   align-items: center;
-}
-
-.settings-console__controls .language-control,
-.settings-console__controls .audio-controls,
-.settings-console__actions {
-  min-width: 0;
 }
 
 .settings-console__controls > strong { grid-area: heading; }
@@ -100,60 +144,134 @@
 .settings-console__controls .audio-controls { grid-area: sound; }
 .settings-console__actions { grid-area: actions; }
 
+.settings-console__controls .language-control,
+.settings-console__controls .audio-controls,
 .settings-console__actions {
+  min-width: 0;
+}
+
+.settings-console__controls .audio-controls {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.settings-console__controls .language-control > span,
+.settings-console__controls .audio-volume > span {
+  color: color-mix(in srgb, var(--settings-control-tone) 74%, var(--muted));
+}
+
+.settings-console__controls .language-control button,
+.settings-console__controls .audio-toggle,
+.settings-console__actions > button {
+  min-height: 44px;
+}
+
+.settings-console__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
   justify-self: stretch;
   width: 100%;
 }
 
+.settings-console__actions > button {
+  min-width: 0;
+  padding-inline: 10px;
+  white-space: nowrap;
+}
+
 .settings-console > .settings-console__keyboard {
-  --section-accent: #3c948e;
+  --section-tone: var(--settings-keyboard-tone);
   grid-area: keyboard;
   display: grid;
-  grid-template-columns: 68px minmax(0, .78fr) minmax(0, 1.22fr);
+  grid-template-columns: 64px minmax(0, .8fr) minmax(0, 1.2fr);
   grid-template-areas: "heading gameplay shortcuts";
   gap: 12px;
   align-items: start;
 }
 
+.settings-console__keyboard > strong { grid-area: heading; }
 .settings-console__key-group--gameplay { grid-area: gameplay; }
 .settings-console__key-group--shortcuts { grid-area: shortcuts; }
 
 .settings-console__key-group {
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px 10px;
+  min-width: 0;
+}
+
+.settings-console__key-group > span {
+  min-width: 0;
+}
+
+.settings-console__key-group-label {
+  color: var(--settings-keyboard-tone);
+  font-weight: 800;
+  letter-spacing: .025em;
 }
 
 .settings-console > .settings-console__record,
 .settings-console > .result-leaderboard {
-  --section-accent: #a3697f;
+  --section-tone: var(--settings-record-tone);
   grid-area: record;
 }
 
-.settings-console > .result-leaderboard { padding: 0; }
+.settings-console > .settings-console__record {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+  padding-top: 2px;
+}
+
+.settings-console > .settings-console__record > strong {
+  color: var(--settings-record-tone);
+}
+
+.settings-console > .result-leaderboard {
+  padding-top: 1px;
+}
+
+.settings-console > .result-leaderboard > header {
+  min-height: 0;
+  padding: 0 0 6px;
+  background: transparent;
+  border: 0;
+}
+
+.settings-console > .result-leaderboard > header > span {
+  color: color-mix(in srgb, var(--settings-record-tone) 70%, var(--muted));
+}
+
+.settings-console > .result-leaderboard > ol {
+  border-top: 1px solid color-mix(in srgb, var(--settings-record-tone) 24%, var(--line));
+}
 
 .settings-console > .result-leaderboard[data-empty="true"] {
+  display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.settings-console > .result-leaderboard[data-empty="true"] > header,
+.settings-console > .result-leaderboard[data-empty="true"] > p {
+  padding: 0;
+  background: transparent;
+  border: 0;
 }
 
 @media (max-width: 760px) {
   .action-sheet--settings {
-    width: min(600px, calc(100vw - 16px));
+    width: min(620px, calc(100vw - 16px));
     padding: 13px;
   }
 
-  .settings-console > .settings-console__controls {
-    grid-template-columns: 68px minmax(0, 1fr);
-    grid-template-areas:
-      "heading language"
-      "heading sound"
-      "heading actions";
-  }
-
-  .settings-console > .settings-console__keyboard {
-    grid-template-columns: 68px minmax(0, 1fr);
-    grid-template-areas:
-      "heading gameplay"
-      "heading shortcuts";
+  .settings-console {
+    gap: 11px;
+    padding: 13px;
   }
 
   .settings-console > .mode-rule-summary,
@@ -161,7 +279,7 @@
   .settings-console > .mode-rule-summary--race,
   .settings-console > .mode-rule-summary--sprint,
   .settings-console > .mode-rule-summary--puzzle {
-    grid-template-columns: 68px minmax(0, 1fr);
+    grid-template-columns: 62px minmax(0, 1fr);
   }
 
   .settings-console > .mode-rule-summary ul,
@@ -171,21 +289,47 @@
   .settings-console > .mode-rule-summary--puzzle ul {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .settings-console > .settings-console__controls {
+    grid-template-columns: 62px minmax(0, 1fr);
+    grid-template-areas:
+      "heading language"
+      "heading sound"
+      "heading actions";
+    align-items: start;
+  }
+
+  .settings-console > .settings-console__keyboard {
+    grid-template-columns: 62px minmax(0, 1fr);
+    grid-template-areas:
+      "heading gameplay"
+      "heading shortcuts";
+  }
 }
 
 @media (max-width: 460px) {
-  .settings-console > .mode-rule-summary {
+  .settings-console {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .settings-console > .mode-rule-summary,
+  .settings-console > .settings-console__controls,
+  .settings-console > .settings-console__keyboard {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .settings-console > .mode-rule-summary {
+    gap: 7px;
+  }
+
   .settings-console > .settings-console__controls {
-    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "heading"
       "language"
       "sound"
       "actions";
-    gap: 9px;
+    gap: 8px;
   }
 
   .settings-console__controls .language-control {
@@ -193,15 +337,73 @@
   }
 
   .settings-console__controls .audio-controls {
-    grid-template-columns: minmax(96px, .42fr) minmax(0, 1fr);
+    grid-template-columns: minmax(100px, .44fr) minmax(0, 1fr);
   }
 
   .settings-console > .settings-console__keyboard {
-    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "heading"
       "gameplay"
       "shortcuts";
+    gap: 7px;
+  }
+
+  .settings-console__key-group {
+    gap-inline: 7px;
+  }
+
+  .settings-console > .settings-console__record {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+
+  .settings-console > .settings-console__record > strong {
+    text-align: left;
+  }
+
+  .settings-console > .result-leaderboard[data-empty="true"] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+}
+
+@media (max-height: 520px) and (min-width: 700px) {
+  .action-sheet--settings {
+    padding: 12px 14px;
+  }
+
+  .action-sheet--settings > h2 {
+    margin-bottom: 8px;
+    font-size: 22px;
+  }
+
+  .action-sheet--settings > .action-sheet__actions {
+    max-height: calc(100dvh - 76px);
+  }
+
+  .settings-console {
     gap: 8px;
+    padding: 10px 13px;
+  }
+
+  .settings-console > .mode-rule-summary {
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .settings-console > .settings-console__controls {
+    grid-template-columns: 58px minmax(176px, .9fr) minmax(238px, 1.3fr) minmax(166px, .8fr);
+    gap: 8px;
+  }
+
+  .settings-console > .settings-console__keyboard {
+    grid-template-columns: 58px minmax(0, .8fr) minmax(0, 1.2fr);
+    gap: 8px;
+  }
+
+  .settings-console > .mode-rule-summary ul,
+  .settings-console > .mode-rule-summary--race ul,
+  .settings-console > .mode-rule-summary--sprint ul,
+  .settings-console > .mode-rule-summary--puzzle ul {
+    gap-block: 3px;
   }
 }

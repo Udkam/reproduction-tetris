@@ -1,11 +1,11 @@
 /** TetraMorph Design System v1.0 — type faces, weights, and roles. */
 export const TYPOGRAPHY = {
   fontFamily: {
-    brand: '"Playwrite NZ Basic", "Space Grotesk Variable", "TetraMorph UI Sans", sans-serif',
+    brand: '"Playwrite NZ Basic", "Barlow Semi Condensed", "TetraMorph UI Sans", sans-serif',
     chineseUi: '"TetraMorph UI Sans", "Microsoft YaHei UI", "PingFang SC", sans-serif',
     chineseDisplay: '"Smiley Sans", "TetraMorph UI Sans", "Microsoft YaHei UI", sans-serif',
-    englishUi: '"Space Grotesk Variable", "TetraMorph UI Sans", system-ui, sans-serif',
-    data: '"Geist Mono Variable", "TetraMorph UI Sans", "Cascadia Mono", monospace',
+    englishUi: '"Barlow Semi Condensed", "TetraMorph UI Sans", system-ui, sans-serif',
+    data: '"Fira Code Variable", "TetraMorph UI Sans", "Cascadia Mono", monospace',
   },
   weight: {
     /** Playwrite NZ Basic ships 100–400; 400 is its real maximum weight. */

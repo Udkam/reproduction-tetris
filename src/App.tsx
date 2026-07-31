@@ -1874,10 +1874,10 @@ export function GameSession({
         tone="danger"
         onCancel={cancelExit}
       >
-        <button className="secondary-action" data-autofocus type="button" onClick={() => onExit(exitDestination)}>
+        <button className="primary-action" data-autofocus type="button" onClick={() => onExit(exitDestination)}>
           {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
         </button>
-        <button className="primary-action" type="button" onClick={cancelExit}>{copy.labels.stay}</button>
+        <button className="secondary-action" type="button" onClick={cancelExit}>{copy.labels.stay}</button>
       </ActionSheet>
 
       <ActionSheet

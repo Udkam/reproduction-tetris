@@ -1,5 +1,30 @@
 # T19 Coordinator Workstream Log
 
+## 2026-08-01 — Phase 12 shared UI/type checkpoint
+
+- Task ID: `T19-P12.1`
+- Base SHA: `6ccc77b`
+- Owner: primary coordinator; one production writer
+- Exact paths: `package.json`, `package-lock.json`, `index.html`, `src/main.tsx`,
+  `src/App.tsx`, `src/App.test.ts`, `src/design/tokens/{typography.ts,tokens.test.ts}`,
+  `src/styles/{tokens.css,hud.css,settings.css,settings.test.ts}`,
+  `src/game/render/TetrisRenderer.ts`, `THIRD_PARTY_NOTICES.md`, and the four exact
+  font-license add/remove paths under `licenses/fonts/`.
+- Implementation: the leave dialog keeps left/default keyboard focus but gives
+  `Back to home` the filled primary role; Settings is one compact outer console whose
+  Rules, Controls, Keyboard, and Record regions are separated by hierarchy rather than
+  nested cards; local Barlow Semi Condensed and Fira Code Variable replace the rejected
+  Space Grotesk/Geist pairing, including notices and exact license copies.
+- Commands actually run: exact npm install/uninstall, focused Vitest with one worker,
+  checkpoint typecheck, `git diff --check`, targeted legacy-font search, and
+  `osv-scanner scan --lockfile package-lock.json --format table`.
+- Evidence: focused `3 files / 52 tests` pass; typecheck passes; the scoped OSV scan
+  finds 158 packages and no issue; no obsolete product font import/config remains.
+- Acceptance boundary: source checkpoint is green but not visually accepted. No Vite
+  server, browser, watcher, indexer, or child agent was started.
+- Next action: commit the exact shared-UI/font paths, then open P12.2 Survival Core and
+  Renderer without overlapping this checkpoint.
+
 ## 2026-08-01 — Phase 12 contract checkpoint
 
 - Task ID: `T19-P12.0`

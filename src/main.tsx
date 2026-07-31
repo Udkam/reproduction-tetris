@@ -1,5 +1,9 @@
-import '@fontsource-variable/space-grotesk/index.css';
-import '@fontsource-variable/geist-mono/index.css';
+import '@fontsource/barlow-semi-condensed/latin-400.css';
+import '@fontsource/barlow-semi-condensed/latin-500.css';
+import '@fontsource/barlow-semi-condensed/latin-600.css';
+import '@fontsource/barlow-semi-condensed/latin-700.css';
+import '@fontsource/barlow-semi-condensed/latin-800.css';
+import '@fontsource-variable/fira-code/index.css';
 import '@fontsource/playwrite-nz-basic/400.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

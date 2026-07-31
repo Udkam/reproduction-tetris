@@ -1,5 +1,14 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T19 Phase 12 shared UI/type checkpoint — 2026-08-01
+
+- Leave-dialog action roles, the single-surface Settings layout, and the local
+  Barlow Semi Condensed/Fira Code Variable typography contract are implemented.
+- Focused coverage passes `52/52`, typecheck passes, and the exact package-lock OSV
+  scan reports no issue across 158 packages. Legacy product font imports are absent.
+- This is a rollback checkpoint, not visual acceptance. Survival and Puzzle slices,
+  final browser frames, full gates, independent QA, and push remain open.
+
 ### T19 Phase 12 contract — 2026-08-01
 
 - Phase 12 opens from clean accepted base `ac11e016` and is not accepted.

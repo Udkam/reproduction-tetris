@@ -123,10 +123,14 @@
   font-size: 19px;
   font-weight: 700;
   line-height: 1.08;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .run-stats [data-stat-role="fall-cadence"] strong {
-  font-size: 16px;
+  font-size: 14px;
+  letter-spacing: -.04em;
+  white-space: nowrap;
 }
 
 .run-stats--survival [data-stat-role="survival-bedrock"] span {

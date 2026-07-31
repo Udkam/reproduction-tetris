@@ -19,11 +19,11 @@
   color: var(--ink);
   background: var(--page);
 
-  --font-brand: "Playwrite NZ Basic", "Space Grotesk Variable", "TetraMorph UI Sans", sans-serif;
+  --font-brand: "Playwrite NZ Basic", "Barlow Semi Condensed", "TetraMorph UI Sans", sans-serif;
   --font-ui-zh: "TetraMorph UI Sans", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --font-display-zh: "Smiley Sans", "TetraMorph UI Sans", "Microsoft YaHei UI", sans-serif;
-  --font-ui-en: "Space Grotesk Variable", "TetraMorph UI Sans", system-ui, sans-serif;
-  --font-data: "Geist Mono Variable", "TetraMorph UI Sans", "Cascadia Mono", monospace;
+  --font-ui-en: "Barlow Semi Condensed", "TetraMorph UI Sans", system-ui, sans-serif;
+  --font-data: "Fira Code Variable", "TetraMorph UI Sans", "Cascadia Mono", monospace;
   --font-body: var(--font-ui-zh);
   --font-ui: var(--font-ui-zh);
   --font-display: var(--font-display-zh);

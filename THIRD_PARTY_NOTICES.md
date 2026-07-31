@@ -29,19 +29,20 @@ font CDN at runtime.
 - Packaged file SHA-256:
   `731F22973349404B15A88A99EF3B5DD4104C0965C23B7E485C1F11E84FEA99E2`.
 
-## Space Grotesk Variable
+## Barlow Semi Condensed
 
-- Package: `@fontsource-variable/space-grotesk` `5.3.0`.
-- Upstream: <https://github.com/floriankarsten/space-grotesk>.
+- Package: `@fontsource/barlow-semi-condensed` `5.3.0`.
+- Upstream: <https://github.com/jpt/barlow>.
+- Packaged subsets: Latin normal weights 400, 500, 600, 700, and 800.
 - License: SIL Open Font License 1.1; see
-  [`licenses/fonts/SpaceGrotesk-OFL.txt`](licenses/fonts/SpaceGrotesk-OFL.txt).
+  [`licenses/fonts/BarlowSemiCondensed-OFL.txt`](licenses/fonts/BarlowSemiCondensed-OFL.txt).
 
-## Geist Mono Variable
+## Fira Code Variable
 
-- Package: `@fontsource-variable/geist-mono` `5.3.0`.
-- Upstream: <https://github.com/vercel/geist-font>.
+- Package: `@fontsource-variable/fira-code` `5.3.0`.
+- Upstream: <https://github.com/tonsky/FiraCode>.
 - License: SIL Open Font License 1.1; see
-  [`licenses/fonts/GeistMono-OFL.txt`](licenses/fonts/GeistMono-OFL.txt).
+  [`licenses/fonts/FiraCode-OFL.txt`](licenses/fonts/FiraCode-OFL.txt).
 
 ## Playwrite New Zealand Basic
 

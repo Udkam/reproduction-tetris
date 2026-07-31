@@ -1319,6 +1319,8 @@ describe('T6 frontend mode binding', () => {
       .find((button) => button.textContent === '返回首页')!;
     const stay = actions.find((button) => button.textContent === '留在本局')!;
     expect(actions.map((button) => button.textContent)).toEqual(['返回首页', '留在本局']);
+    expect(leave.classList.contains('primary-action')).toBe(true);
+    expect(stay.classList.contains('secondary-action')).toBe(true);
     expect(leave.dataset.actionSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
     expect(stay.dataset.actionSelected).toBe('true');
