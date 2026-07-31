@@ -1,8 +1,8 @@
 {
   "taskId": "TETRIS-T19-PHASE12",
-  "sourceSha": "e56ab2575fe67f05003251429d259b6697ff6b4c",
+  "sourceSha": "a8ed83b303213f8a23b01a5ec0ab9de28edc51ed",
   "baseUrl": "http://127.0.0.1:5178/",
-  "capturedAt": "2026-07-31T22:09:53.689Z",
+  "capturedAt": "2026-07-31T22:15:36.071Z",
   "method": "One bounded Vite server and one Playwright Chromium instance; ordinary UI controls and persisted stable-ID progress only.",
   "screens": {
     "homeDesktopZh": {
@@ -159,14 +159,14 @@
         "fallTicks": 40,
         "placedPieces": 1,
         "active": {
-          "type": "J",
+          "type": "Z",
           "x": 3,
           "y": 29,
           "rotation": 0
         },
-        "next": "L",
+        "next": "J",
         "nextPreviews": [
-          "L"
+          "J"
         ],
         "visibleBoard": [
           "..........",
@@ -184,8 +184,8 @@
           "..........",
           "..........",
           "..........",
-          "....T.....",
-          "...TTT....",
+          "..........",
+          "...IIII...",
           "BBBBBBBBBB",
           "BBBBBBBBBB",
           "BBBBBBBBBB"
@@ -211,9 +211,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "L",
+        "previewPiece": "J",
         "previewPieces": [
-          "L"
+          "J"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -225,8 +225,8 @@
             "y": 29
           },
           {
-            "x": 3,
-            "y": 30
+            "x": 4,
+            "y": 29
           },
           {
             "x": 4,
@@ -240,10 +240,6 @@
         "ghostCells": [
           {
             "x": 3,
-            "y": 33
-          },
-          {
-            "x": 3,
             "y": 34
           },
           {
@@ -251,8 +247,12 @@
             "y": 34
           },
           {
+            "x": 4,
+            "y": 35
+          },
+          {
             "x": 5,
-            "y": 34
+            "y": 35
           }
         ],
         "visibleLockedCells": 34,
@@ -270,9 +270,9 @@
         },
         "survivalDebris": [],
         "survivalDebrisWarningColumns": [
-          2
+          8
         ],
-        "survivalDebrisWarningHeight": 1,
+        "survivalDebrisWarningHeight": 2,
         "survivalStoneCueCount": 0,
         "survivalBedrockCue": null,
         "survivalEntryBedrockRows": null,
@@ -318,21 +318,25 @@
         "stoneNextSeconds": 19,
         "fallingStones": [
           {
-            "x": 2,
+            "x": 8,
+            "y": 21
+          },
+          {
+            "x": 8,
             "y": 22
           }
         ],
         "fallTicks": 40,
         "placedPieces": 1,
         "active": {
-          "type": "J",
+          "type": "Z",
           "x": 3,
           "y": 33,
           "rotation": 0
         },
-        "next": "L",
+        "next": "J",
         "nextPreviews": [
-          "L"
+          "J"
         ],
         "visibleBoard": [
           "..........",
@@ -350,8 +354,8 @@
           "..........",
           "..........",
           "..........",
-          "....T.....",
-          "...TTT....",
+          "..........",
+          "...IIII...",
           "BBBBBBBBBB",
           "BBBBBBBBBB",
           "BBBBBBBBBB"
@@ -377,9 +381,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "L",
+        "previewPiece": "J",
         "previewPieces": [
-          "L"
+          "J"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -391,8 +395,8 @@
             "y": 33
           },
           {
-            "x": 3,
-            "y": 34
+            "x": 4,
+            "y": 33
           },
           {
             "x": 4,
@@ -406,10 +410,6 @@
         "ghostCells": [
           {
             "x": 3,
-            "y": 33
-          },
-          {
-            "x": 3,
             "y": 34
           },
           {
@@ -417,16 +417,20 @@
             "y": 34
           },
           {
+            "x": 4,
+            "y": 35
+          },
+          {
             "x": 5,
-            "y": 34
+            "y": 35
           }
         ],
         "visibleLockedCells": 34,
         "presentation": {
           "x": 3,
-          "y": 32.82370219479825,
+          "y": 32.91941100836433,
           "offsetX": 0,
-          "offsetY": -0.17629780520174876
+          "offsetY": -0.0805889916356719
         },
         "boardShiftOffsetY": 0,
         "mutationFilters": {
@@ -437,13 +441,17 @@
         "survivalDebris": [
           {
             "id": 1,
-            "x": 2,
-            "y": 22,
-            "height": 1,
-            "presentationY": 21.66404612017593,
+            "x": 8,
+            "y": 21,
+            "height": 2,
+            "presentationY": 20.78521179286056,
             "cells": [
               {
-                "x": 2,
+                "x": 8,
+                "y": 21
+              },
+              {
+                "x": 8,
                 "y": 22
               }
             ]
@@ -521,9 +529,9 @@
           "y": 19,
           "rotation": 0
         },
-        "next": "T",
+        "next": "L",
         "nextPreviews": [
-          "T"
+          "L"
         ],
         "visibleBoard": [
           "..........",
@@ -568,9 +576,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "T",
+        "previewPiece": "L",
         "previewPieces": [
-          "T"
+          "L"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -681,6 +689,7 @@
           105
         ]
       ],
+      "headerToGalleryGap": 8,
       "unlockedCount": 3,
       "selectedId": "t3r-shaft-01",
       "lesson": "先完成一行先补最接近完整的目标行；消行腾出的空间会让后续更清楚。",
@@ -799,6 +808,7 @@
           95
         ]
       ],
+      "headerToGalleryGap": 8,
       "unlockedCount": 0,
       "selectedId": "tm-puzzle-31",
       "lesson": null,
@@ -921,6 +931,7 @@
           95
         ]
       ],
+      "headerToGalleryGap": 8,
       "unlockedCount": 20,
       "selectedId": "tm-puzzle-31",
       "lesson": null,
@@ -1071,6 +1082,7 @@
           53
         ]
       ],
+      "headerToGalleryGap": 6,
       "unlockedCount": 0,
       "selectedId": "t3r-cascade-06",
       "lesson": "Do not bury spaceCheck below the piece before locking; a covered cell usually costs several later clears.",
@@ -1121,6 +1133,7 @@
           83
         ]
       ],
+      "headerToGalleryGap": 6,
       "unlockedCount": 3,
       "selectedId": "t3r-shaft-01",
       "lesson": "Finish one row firstClose the nearest prepared row; the clear creates room for every choice after it.",
