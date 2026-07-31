@@ -27,10 +27,14 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    drift after fonts load.
 4. **Survival stone reads through mass and light, never decals.** Bedrock becomes one
    flat-topped continuous stone shelf whose contact plane aligns exactly with the board
-   grid. It uses broad solid face lighting, low-contrast filled macro-facets, and edge
-   occlusion only: no cracks, chips, dots, stickers, wood grain, stroked veins, or
-   per-cell ornament. The macro-facets are large connected mineral planes across the
-   shelf rather than decorations repeated inside cells. Falling stones are square stone
+   grid. The rejected single slab with three broad triangular planes is replaced by a
+   non-repeating dry-stacked rock section: a narrow flat contact cap above several large,
+   interlocking angular mineral bodies with irregular vertical joints, staggered lower
+   faces, distinct lit/shadow planes, and a deep basal occlusion edge. The bodies span
+   multiple cells and never form a `10 × N` tile grid. No cracks, chips, dots, stickers,
+   wood grain, stroked veins, or per-cell ornament may imitate texture; the rocky read
+   must come from silhouette, mass boundaries, and filled structural planes. Falling
+   stones remain square stone
    blocks with the same material family and a clear beveled solid face. Each falling
    stone owns exactly the same visual width and height as one ordinary board cell; it
    may not shrink into a pebble or expand beyond its collision cell. A two-stone event
@@ -135,6 +139,12 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     spare height is distributed above and below the complete stack instead of becoming
     either a large disconnect or a visually attached edge. Responsive layouts retain
     zero overflow and the same square-node geometry.
+17. **The Survival bedrock must not read as a metal or concrete panel.** Its top remains
+    perfectly level for collision truth, but the visible body uses deterministic,
+    asymmetrical rock masses with no repeated cell seams and no decorative surface
+    decals. At ordinary desktop play size the player must be able to distinguish the
+    top ledge, interlocked middle bodies, and darker compacted base without mistaking the
+    shelf for wood, a flat rectangle, or one large three-plane polygon.
 
 ## Phase 12 checkpoint order
 

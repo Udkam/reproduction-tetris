@@ -44,12 +44,15 @@ accidental two-line button, or hide a translated label.
 ### Survival material system
 
 Bedrock is a continuous mineral shelf with a mathematically flat top edge on the cell
-boundary. Its body uses a restrained cool-stone base, one broad upper light plane, a
-small set of deterministic low-contrast filled macro-facets, one lower occlusion plane,
-and an outer edge. Those facets are connected mineral volumes spanning large portions
-of the shelf, never marks repeated per cell. No crack, chip, pit, speckle, tile seam,
-sticker, stroked vein, or per-cell texture is drawn. The body can rise continuously
-during entry without changing Core rows.
+boundary. The rejected plain slab and three oversized triangular light planes are not
+valid geology. A narrow flat contact cap now sits over a deterministic dry-stacked
+section of large asymmetrical rock bodies. Their angular boundaries interlock, change
+width and depth across the shelf, and expose separate lit, neutral, shadow, and basal
+planes; no boundary repeats at cell cadence or draws a `10 × N` occupancy grid. The
+rock read comes from these filled structural volumes and the deep compacted lower edge,
+not from a crack, chip, pit, speckle, sticker, stroked vein, wood grain, or per-cell
+texture. The outer shelf remains continuous and can rise during entry without changing
+Core rows.
 
 A falling stone is an unmistakable square block whose rendered outer width and height
 equal one ordinary board cell. A narrow bevel and two solid tonal faces create volume
