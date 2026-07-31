@@ -84,6 +84,17 @@ steady: no screen flash, alternating opacity, or bright/dark field pulse. Super
 multiplier strengthens detail and value inside the same bounded footprint. Reduced
 motion uses that same static endpoint.
 
+Supergravity uses the same no-flash discipline. Its field is made from constant-alpha
+downward acceleration traces and a restrained compression zone near the stack; motion
+may translate those traces but never oscillates the whole field's brightness. The
+effect is latched onto the already-airborne piece: timer expiry changes the HUD and
+future spawns, while that piece retains independent per-column settlement through its
+next lock. The latch is consumed by that lock and cannot leak to the following piece.
+
+Carrier material is owned only by extant cells. A consumed carrier can seed a bounded
+activation burst, but the renderer must not retain or reconstruct its former square
+rim, attachment frame, or empty-cell outline after the clear removes it.
+
 ### Home identity alignment
 
 The `TetraMorph` wordmark is centred against the complete dark brand panel, not against

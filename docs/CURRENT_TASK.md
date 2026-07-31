@@ -103,6 +103,18 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     made from the home palette in reading order: Classic green, Survival blue,
     Mutation orange, Puzzle purple. It contains no commercial logo or letterform and
     remains crisp at browser-tab size.
+13. **Consumed carriers leave no empty-cell frame.** Once any carrier cell is removed
+    by a line clear, its material rim, cell outline, and attachment frame disappear
+    with the cell. The one-shot activation may use local light or particles, but it may
+    not redraw the cleared cell footprint as a lingering square cage.
+14. **Supergravity communicates weight without flashing.** Its persistent field keeps
+    constant opacity and uses compact downward acceleration traces plus local lower-well
+    compression instead of a pulsing emblem, opacity oscillation, or screen flash.
+    Reduced motion preserves the same readable weight endpoint without drift.
+15. **An airborne Supergravity piece keeps its landing contract.** If the ten-second
+    timer expires after the current piece has spawned but before it locks, that piece
+    still settles each occupied column independently when it eventually lands. The
+    latch clears immediately after that lock; a piece spawned after expiry is ordinary.
 
 ## Phase 12 checkpoint order
 
@@ -134,7 +146,8 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   errors. Home evidence must prove a geometrically centred wordmark, label-free and
   optically centred arrow actions on all four tiles without changing their accessible
   names, plus the four-mode favicon. Mutation evidence must prove the smaller steady
-  multiplier emblem and absence of sustained multiplier audio. Puzzle evidence must also prove
+  multiplier emblem, the steady weighted Supergravity field, no cleared-carrier frame,
+  the airborne-piece expiry latch, and absence of sustained multiplier audio. Puzzle evidence must also prove
   that reordering preserves all fifty stable
   IDs, both documented routes per level, saved completion/best values by ID, the
   intended Intro/Easy/Hard membership, the teach-then-combine opening sequence, and the
