@@ -4532,7 +4532,7 @@ kbd,
 
 .mode-chooser--workbench .landing-intro {
   display: grid;
-  align-content: center;
+  place-items: center;
   min-height: 0;
   padding: clamp(30px, 4vw, 52px);
   color: #f1f6f8;
@@ -8440,6 +8440,8 @@ kbd,
   display: inline-flex;
   flex-wrap: nowrap;
   align-items: baseline;
+  justify-content: center;
+  width: 100%;
   max-width: 100%;
   margin: 0;
   color: #eff8fa;
@@ -8470,6 +8472,7 @@ kbd,
 .mode-gates--workbench .mode-gate--race,
 .mode-gates--workbench .mode-gate--sprint,
 .mode-gates--workbench .mode-gate--puzzle {
+  grid-template-columns: 56px minmax(0, 1fr) 34px;
   gap: clamp(13px, 2vw, 22px);
   padding: clamp(12px, 1.65vw, 18px) clamp(14px, 2vw, 24px);
   border: 1px solid transparent;
@@ -8505,12 +8508,32 @@ kbd,
 .mode-gates--workbench .mode-gate__body { gap: 4px; }
 .mode-gates--workbench .mode-gate__body strong { font-size: clamp(21px, 2.3vw, 30px); font-weight: 700; font-synthesis: none; letter-spacing: -.075em; }
 .mode-gates--workbench .mode-gate__body span { color: #5c7187; font-size: clamp(11px, 1.05vw, 13px); font-synthesis: none; line-height: 1.45; }
-.mode-gates--workbench .mode-gate__action { gap: 8px; font-size: 12px; }
-.mode-gates--workbench .mode-gate__action b { width: 34px; height: 34px; border-radius: 7px; transition: none; }
+.mode-gates--workbench .mode-gate__action {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+  place-items: center;
+  color: #eff6fa;
+  background: var(--gate-accent);
+  border: 1px solid var(--gate-accent);
+  border-radius: 7px;
+}
+.mode-gates--workbench .mode-gate__action svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 /* Keep the key in its mode hue; selection strengthens the card, not the CTA. */
-.mode-gates--workbench .mode-gate:hover .mode-gate__action b,
-.mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b,
-.mode-gates--workbench .mode-gate--active .mode-gate__action b {
+.mode-gates--workbench .mode-gate:hover .mode-gate__action,
+.mode-gates--workbench .mode-gate:focus-visible .mode-gate__action,
+.mode-gates--workbench .mode-gate--active .mode-gate__action {
   color: #eff6fa;
   background: var(--gate-accent);
   border-color: var(--gate-accent);
@@ -9439,7 +9462,7 @@ kbd,
   .mode-gates--workbench .mode-gate--marathon,
   .mode-gates--workbench .mode-gate--race,
   .mode-gates--workbench .mode-gate--sprint,
-  .mode-gates--workbench .mode-gate--puzzle { gap: 12px; padding: 10px 12px; }
+  .mode-gates--workbench .mode-gate--puzzle { grid-template-columns: 42px minmax(0, 1fr) 34px; gap: 12px; padding: 10px 12px; }
   .mode-gates--workbench .mode-gate__glyph { flex-basis: 42px; width: 42px; height: 42px; }
   .mode-gates--workbench .mode-gate__glyph svg { width: 27px; height: 27px; }
   .mode-gates--workbench .mode-gate__body strong { font-size: 20px; }

@@ -49,6 +49,8 @@ import { itemLabel, modeRules, modeRulesTitle } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
+const puzzleLibraryStyles = readFileSync('src/styles/puzzle-library.css', 'utf8');
+const sourceIndex = readFileSync('index.html', 'utf8');
 
 interface RuntimeTestOptions {
   seed?: number;
@@ -1353,6 +1355,10 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
+    expect(view.container.querySelectorAll('.mode-gate__action > svg')).toHaveLength(4);
+    expect(view.container.textContent).not.toMatch(/开始|选关/);
+    expect(classic?.getAttribute('aria-label')).toBe('开始 经典');
+    expect(puzzle?.getAttribute('aria-label')).toBe('选关 解谜');
     expect(view.container.textContent).not.toContain('基岩会持续向上推进。');
     expect(view.container.textContent).not.toContain('带核心标记的方块携带道具。');
     expect(view.container.textContent).not.toContain('使用固定出现顺序的方块。');
@@ -1369,6 +1375,12 @@ describe('T6 frontend mode binding', () => {
     expect(styles).not.toContain('.phase-seam');
     expect(styles).not.toContain('.action-sheet::before');
     expect(styles).not.toContain('rotate(3deg)');
+    expect(sourceStyles).toContain('grid-template-columns: 56px minmax(0, 1fr) 34px');
+    expect(sourceStyles).toContain('place-items: center');
+    expect(puzzleLibraryStyles).toMatch(/data-puzzle-category="easy"[^}]*repeat\(6,/s);
+    for (const color of ['%233f9f96', '%236687d5', '%23c98243', '%239875be']) {
+      expect(sourceIndex).toContain(color);
+    }
     expect(view.container.textContent).not.toMatch(/GRAVITY FIELD|选择一条重力轨迹/);
 
     for (const banned of ['当前选择', '三种玩法', '随时开始，也可随时退出。', '键盘与触控均可操作']) {

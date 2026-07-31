@@ -493,6 +493,7 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
                   key={mode}
                   className={`mode-gate mode-gate--${mode}`}
                   type="button"
+                  aria-label={`${item.action} ${item.label}`}
                   data-testid={`enter-${mode}`}
                   tabIndex={focusMode === mode ? 0 : -1}
                   ref={(node) => { modeButtonRefs.current[index] = node; }}
@@ -504,7 +505,11 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
                   <span className="mode-gate__body">
                     <strong>{item.label}</strong>
                   </span>
-                  <span className="mode-gate__action"><span>{item.action}</span><b aria-hidden="true">→</b></span>
+                  <span className="mode-gate__action" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path d="M5 12h13m-5-5 5 5-5 5" />
+                    </svg>
+                  </span>
                 </button>
               );
             })}
