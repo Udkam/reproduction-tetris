@@ -148,7 +148,10 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     No masonry course, mortar line, cell grid, giant fan facet, slab frame, or decorative
     crack is visible. At ordinary desktop play size the player must read a dark, heavy,
     naturally varied rock face with a restrained lit lip—not wood, metal, concrete,
-    paving stones, a built retaining wall, or a flat geometric platform.
+    paving stones, a built retaining wall, or a flat geometric platform. The relief
+    must be plainly readable in the real gameplay frame through overlapping vertical
+    ridges and smaller nested outcrops; a nearly uniform low-contrast fill or a sharp
+    tessellated mosaic is still a failed candidate.
 
 ## Phase 12 checkpoint order
 
