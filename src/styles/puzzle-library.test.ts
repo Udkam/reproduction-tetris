@@ -34,7 +34,8 @@ describe('Phase 12 Puzzle curriculum authority', () => {
   });
 
   it('uses square cards with category-specific density and no gallery scrolling', () => {
-    expect(gallery).toMatch(/\.puzzle-gallery\s*\{[\s\S]*align-self:\s*center;[\s\S]*height:\s*100%;[\s\S]*max-height:\s*740px;/);
+    expect(gallery).toMatch(/\.puzzle-gallery\s*\{[\s\S]*align-self:\s*start;[\s\S]*height:\s*100%;[\s\S]*max-height:\s*740px;/);
+    expect(gallery).toMatch(/\.library-shell--gallery\s*\{[^}]*grid-template-rows:\s*44px minmax\(0,\s*1fr\);[^}]*gap:\s*8px;/s);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,\s*minmax\(44px,\s*1fr\)\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\s*\{[\s\S]*align-content:\s*center;[\s\S]*justify-self:\s*center;[\s\S]*width:\s*min\(100%,\s*560px\)/);
     expect(gallery).toMatch(/\.puzzle-gallery__grid\[data-puzzle-category="intro"\]\s*\{[^}]*repeat\(3,/s);
