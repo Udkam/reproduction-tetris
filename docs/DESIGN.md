@@ -51,12 +51,14 @@ then receives a deterministic multi-scale relief field whose irregular mineral r
 cross both row and column boundaries. Regions use close-valued slate tones and shared
 edges without mortar-like outlines; broad vertical weight and gradual depth darkening
 make the surface read as an exposed cavern face rather than a platform or built wall.
-That relief must remain legible at the ordinary gameplay scale: broad overlapping
-vertical ridges establish the wall's weight, while sparse cross-cut shear planes supply
-local depth and occlusion. Rounded nested blobs, pebble clusters, and cobblestone reads
-are forbidden alongside a nearly uniform low-contrast slab and a sharp tessellated
-mosaic. The relief layers overlap without complete shared outlines, so the eye reads
-one eroded rock mass rather than assembled pieces.
+That relief must remain legible at the ordinary gameplay scale. A deterministic
+renderer-lifetime height field combines low-frequency eroded masses with restrained
+finer grain; a fixed upper-left light derives highlights and occlusion from that same
+surface instead of drawing symbols or seams. Rounded nested blobs, pebble clusters,
+cobblestone, repeated zigzags, camouflage, and folded-paper reads are forbidden
+alongside a nearly uniform low-contrast slab and a sharp tessellated mosaic. The texture
+is generated locally once, reused, and destroyed with the renderer; it does not add a
+visible canvas, network asset, per-frame random work, or Core state.
 No region may repeat at cell cadence, reveal a `10 × N` grid, form horizontal courses,
 or dominate the wall as one giant geometric facet. The contact plane keeps one narrow,
 restrained mineral lift while the exterior sides and bottom are clipped by the board,

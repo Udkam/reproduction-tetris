@@ -149,10 +149,12 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     crack is visible. At ordinary desktop play size the player must read a dark, heavy,
     naturally varied rock face with a restrained lit lip—not wood, metal, concrete,
     paving stones, a built retaining wall, or a flat geometric platform. The relief
-    must be plainly readable in the real gameplay frame through overlapping vertical
-    ridges and sparse cross-cut shear planes. Rounded nested blobs, pebble clusters,
+    must be plainly readable in the real gameplay frame through a deterministic
+    normal-lit height field with low-frequency eroded masses and restrained fine grain.
+    Rounded nested blobs, pebble clusters, repeated zigzags, camouflage, folded-paper,
     a nearly uniform low-contrast fill, or a sharp tessellated mosaic are still failed
-    candidates.
+    candidates. The generated texture is one renderer-lifetime resource and must be
+    released on teardown.
 
 ## Phase 12 checkpoint order
 
