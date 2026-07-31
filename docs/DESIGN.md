@@ -182,13 +182,14 @@ intro lesson keep the clean preview/name/best/start composition.
 
 ### Puzzle header rhythm
 
-The Puzzle library header and the connected gallery are one vertical composition. The
-back action and centred wordmark occupy the compact header track; the gallery begins in
-the next track after the normal shell gap. The gallery is top-aligned within that track,
-not vertically centred inside spare viewport height, because the resulting empty band
-disconnects navigation from the content it controls. This change does not resize the
-gallery, cards, preview, tabs, or responsive matrices and must preserve zero overflow at
-desktop, portrait, and short-landscape viewports.
+The Puzzle library header and the connected gallery are one content-height vertical
+composition. The back action and centred wordmark occupy the compact header track; the
+gallery begins in the next track after the normal shell gap. The complete header-plus-
+gallery stack is vertically centred in the viewport so that spare height sits outside
+the composition, never between navigation and the content it controls. This deliberately
+moves the header down while preserving the gallery's established position and size. It
+does not resize the cards, preview, tabs, or responsive matrices and must preserve zero
+overflow at desktop, portrait, and short-landscape viewports.
 
 ### Phase 12 acceptance
 
