@@ -16,7 +16,7 @@ Puzzle guidance that teaches the governing mechanism without revealing a script.
 | Checkpoint | Boundary | Acceptance before moving on |
 | --- | --- | --- |
 | P11.0 | Contract and workstream record | Nine outcomes, visual grammar, metrics, resources, and proof matrix are explicit |
-| P11.1 | Theme and Survival Renderer | Palette/material snapshots plus focused renderer tests |
+| P11.1 | Theme and Survival Renderer | Bright palette plus dedicated no-grid rock silhouettes, focused renderer tests, and an early real frame |
 | P11.2 | Mutation Renderer and projection | Smooth Ice, pressure-based Supergravity, non-box Bomb, true independent ghost |
 | P11.3 | App information architecture | Default return, content-sized HUD, Settings sections, complete home-card edges |
 | P11.4 | Typography and localization | Local Space Grotesk/Geist Mono, bilingual fit tests, scoped dependency scan |

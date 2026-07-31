@@ -51,3 +51,25 @@
 - Blocker: real-frame visual acceptance is deliberately deferred to the immutable
   candidate; this is a source-green recovery point, not final visual acceptance.
 - Next action: commit P11.1, then open P11.2 Mutation atmosphere and projection.
+
+## 2026-07-31 — P11.1 visual rejection and corrective boundary
+
+- Task ID: `T18-P11.1R`
+- Rejected checkpoint: `74e3720`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `docs/CURRENT_TASK.md`
+  - `docs/DESIGN.md`
+  - `docs/phases/phase 11.md`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `progress.md`
+- Evidence: direct player review correctly rejected component-scale decals as an
+  insufficient material change. Reducing decal repetition still leaves the ordinary
+  square body and therefore cannot make bedrock or falling events read as rock.
+- Corrective boundary: the next renderer slice must bypass the ordinary-cell body for
+  both geology roles. Bedrock owns a continuous no-grid rock shelf; falling events own
+  irregular vector boulders with real lit/shadow faces. An early real Survival frame
+  is required before P11.2 may open.
+- Blocker: P11.1 is reopened; `74e3720` is a recovery point, not an accepted visual.
+- Next action: commit this docs-only correction, replace geology geometry, run focused
+  proof, then inspect one managed real frame and release the browser/server.

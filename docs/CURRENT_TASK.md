@@ -13,12 +13,14 @@ unit test, a single screenshot, or an attractive isolated frame is not completio
    values rise enough to remain vivid against the midnight well in normal, ghost,
    Next, Puzzle, and Mutation-carrier states. Brightening must not become neon bloom
    or erase attachment identity.
-2. **Survival geology reads as rock at both scales.** Permanent bedrock becomes a
-   compact basalt shelf with an irregular connected silhouette, a few broad mineral
-   planes, sparse branching fractures, and subdued internal cell seams. Falling
-   stones use the same geology but retain a brighter leading plane, clearer moving
-   perimeter, and sparse downward grit. Neither role may resemble wood, bricks,
-   stickers, or a repeated per-cell texture.
+2. **Survival geology is built as rock geometry, not decorated cells.** Permanent
+   bedrock becomes one continuous procedural basalt shelf: an irregular rising
+   contour, connected lit/dark planes, and structural fractures replace the visible
+   square grid entirely. Falling stones become actual irregular vector boulders with
+   a broken perimeter, lit face, shadow face, and joined mass for a two-stone event;
+   they do not reuse the ordinary-cell body and cannot be square tiles with a texture
+   or decal painted on top. Sparse downward grit may support motion but cannot carry
+   the material illusion by itself.
 3. **Leaving defaults to the requested destination.** In the leave confirmation,
    `返回首页 / Back to home` is the initial keyboard action. Left/Right still changes
    selection, Enter executes it, Escape safely closes the sheet, and pointer actions

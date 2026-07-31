@@ -17,14 +17,15 @@ upper/inner edge, and a stable dark perimeter. The seven hues remain identifiabl
 peripheral vision and under Mutation attachments. Brightness rises without a white
 glow layer or a second palette.
 
-Survival geology is drawn at connected-component scale. Permanent bedrock is a broad
-basalt shelf: its outer silhouette carries the strongest irregularity; internal cell
-seams are quiet; two to four large planes cross cell boundaries; and only a few short
-fractures, chips, and pits appear across the whole component. Falling stones are
-members of that geology, not square reskins: their leading face is brighter, their
-moving boundary is clearer, and one or two vertically joined stones read as one
-falling mass with sparse grit below it. Deterministic geometry preserves replay and
-render tests.
+Survival geology uses dedicated procedural vector bodies rather than the ordinary
+cell renderer. Permanent bedrock is a broad continuous basalt shelf: its jagged outer
+contour is the geometry, no internal square grid is drawn, and connected lit/shadow
+planes plus a few structural fractures establish volume across the mass. Falling
+stones are irregular convex boulders with chipped perimeters and distinct lit and
+shadow faces. A two-stone event interlocks two bodies into one falling mass instead
+of stacking two textured squares. Dust supports motion only; it is never a substitute
+for silhouette and volume. Deterministic vertex variants preserve replay and render
+tests.
 
 ### Mutation atmosphere
 

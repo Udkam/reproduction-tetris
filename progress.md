@@ -15,6 +15,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   planes, sparse fractures, quiet seams, and a joined one/two-stone silhouette.
   Focused Renderer/theme proof passes `45/45`; typecheck passes. Browser review is
   still pending and this checkpoint is not final visual acceptance.
+- Direct review rejects the geology portion of `74e3720`: fewer decals are still
+  decals on square cells. P11.1 is reopened. The correction must use dedicated
+  continuous bedrock geometry and irregular multi-face boulder bodies with no visible
+  occupancy grid, then prove the result in an early real Survival frame.
 
 ## Current phase
 
