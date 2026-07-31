@@ -506,8 +506,8 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
                     <strong>{item.label}</strong>
                   </span>
                   <span className="mode-gate__action" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" focusable="false">
-                      <path d="M5 12h13m-5-5 5 5-5 5" />
+                    <svg viewBox="0 0 28 24" focusable="false">
+                      <path d="M2.5 12h22m-6-6 6 6-6 6" />
                     </svg>
                   </span>
                 </button>

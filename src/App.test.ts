@@ -1355,7 +1355,10 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
-    expect(view.container.querySelectorAll('.mode-gate__action > svg')).toHaveLength(4);
+    const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
+    expect(actionArrows).toHaveLength(4);
+    expect(actionArrows.every((arrow) => arrow.getAttribute('viewBox') === '0 0 28 24')).toBe(true);
+    expect(actionArrows.every((arrow) => arrow.querySelector('path')?.getAttribute('d') === 'M2.5 12h22m-6-6 6 6-6 6')).toBe(true);
     expect(view.container.textContent).not.toMatch(/开始|选关/);
     expect(classic?.getAttribute('aria-label')).toBe('开始 经典');
     expect(puzzle?.getAttribute('aria-label')).toBe('选关 解谜');
