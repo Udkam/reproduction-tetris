@@ -1,4 +1,84 @@
-# Current Task — T18 TetraMorph Phase 11 Readability and Puzzle Intent
+# Current Task — T19 TetraMorph Phase 12 Material Truth and Learnable Puzzles
+
+## Phase 12 active goal — continuous settings, solid geology, authored technique
+
+**Status (2026-08-01): ACTIVE / NOT ACCEPTED / NOT PUSHED.**
+
+Phase 12 supersedes only the rejected Phase-11 presentation and guidance outcomes below.
+Accepted deterministic game rules, save compatibility, rankings, undo, two-piece Next,
+single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
+
+1. **The leave decision is risk-ordered by both position and color.** `返回首页 /
+   Back to home` stays on the left, owns the initial keyboard focus, and becomes the
+   filled primary-blue action. `留在本局 / Stay in this run` stays on the right and
+   becomes the pale secondary action. Left/Right, Enter, Escape, and direct pointer
+   activation remain deterministic.
+2. **Settings is one continuous console, not four cards.** Rules, Controls, Keyboard,
+   and Record keep that reading order but lose individual backgrounds, borders, rounded
+   boxes, colored top rules, and card shadows. Section identity comes from heading
+   weight, case, color, and measured whitespace inside one enclosing surface. It must
+   remain compact, without structural void or fused English labels.
+3. **English and data typography are replaced, locally packaged, and measured.**
+   English UI moves from Space Grotesk to locally packaged Barlow Semi Condensed; data,
+   timers, ranks, dates, keycaps, and gameplay numbers move from Geist Mono to locally
+   packaged Fira Code. `TetraMorph` alone keeps Playwrite NZ Basic. Every supported
+   Chinese/English viewport must show complete labels and values, including `s/cell`,
+   without ellipsis, overlap, accidental line breaks, disappearing text, or baseline
+   drift after fonts load.
+4. **Survival stone reads through mass and light, never decals.** Bedrock becomes one
+   flat-topped continuous stone shelf whose contact plane aligns exactly with the board
+   grid. It uses broad solid face lighting and edge occlusion only: no cracks, chips,
+   dots, stickers, wood grain, or per-cell ornament. Falling stones are square stone
+   blocks with the same material family and a clear beveled solid face; a two-stone
+   event is two vertically adjacent squares in one frozen column. Core advances the
+   event at exactly four times ordinary Survival gravity. Contact with an unresolved
+   falling stone must never start or complete ordinary-piece lock: when that stone
+   advances, a valid piece supported by it descends with it; only settled board support
+   may resume the normal lock-delay decision. One/two-stone randomness, clearing,
+   hashing, spawn fairness, and replay remain canonical.
+5. **Puzzle teaches authored techniques instead of publishing solver statistics.**
+   Remove the live `局面分析 / Analysis` metrics, strategy sentence, and queue-role
+   card. Reuse replay-verified routes to select a short sequence of approachable
+   introduction levels, then attach one concise, authored lesson to each selected
+   level in the library detail surface. Lessons cover completing a prepared row,
+   preserving a well for a suitable body, flattening support before capping it,
+   avoiding buried holes, reading the fixed two-piece queue, and treating immutable
+   anchors as geometry. At least one early anchor lesson must teach a genuine timed
+   side-slip: let the active piece descend to anchor height, then move sideways during
+   fall to pass the obstruction and reach a cell unavailable to a straight hard drop.
+   Lesson claims must be backed by public-command Core replays; they may reveal a
+   principle and control timing, but never an exact full solution or live enumeration.
+
+## Phase 12 checkpoint order
+
+1. P12.0: contract, font/license decision, route evidence inventory, proof matrix.
+2. P12.1: leave semantics, continuous Settings, and local typography/fit corrections.
+3. P12.2: four-times Survival debris cadence plus flat shelf and square stone bodies.
+4. P12.3: remove live Puzzle analysis and author route-backed introductory lessons.
+5. P12.4: exactly one final typecheck, full suite, and production build after the last
+   source edit.
+6. P12.5: multi-round browser evidence in Chinese/English and all target viewports.
+7. P12.6: immutable candidate, independent read-only QA, scoped scans, acceptance docs,
+   non-force push, and owned-resource release.
+
+## Phase 12 evidence and resource boundary
+
+- One production writer owns shared source. No Serena, WMI/CIM, persistent indexer,
+  watcher, language server, or inspection-only browser is admitted.
+- Focused tests use one worker and no file parallelism. One project server and one
+  managed browser batch may run only for bounded visual review and must be released at
+  the end of that batch. Full suite/build run once after the final source edit.
+- Browser proof covers both leave actions and keyboard selection; all four Settings
+  sections in one continuous surface; Chinese/English desktop, portrait, and short
+  landscape with complete values; Survival countdown, flat bedrock, one/two square
+  stones, 4x cadence, and ordinary-piece contact that stays unlocked until the stone
+  settles; Puzzle library lessons and a live HUD with no analysis card;
+  reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
+  errors.
+
+---
+
+## Archived Phase 11 acceptance
 
 ## Phase 11 active goal — luminous materials, compact information, explainable puzzles
 

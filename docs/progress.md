@@ -1,5 +1,19 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T19 Phase 12 contract — 2026-08-01
+
+- Phase 12 opens from clean accepted base `ac11e016` and is not accepted.
+- The bounded work replaces contradictory leave colors, per-section Settings cards,
+  rejected English/data type, decorative/irregular Survival geology, and the live
+  Puzzle metrics card. Accepted gameplay, storage, rankings, undo, and Next remain.
+- Survival acceptance now explicitly rejects lock-on-contact with a still-falling
+  stone; coupled support remains dynamic until the environmental stone settles.
+- Puzzle teaching moves to concise selected-level lessons derived from replay-verified
+  solutions. A dedicated public-command proof must cover the timed anchor side-slip
+  because the existing hard-drop route search cannot validate it.
+- No project server, browser, watcher, indexer, or child agent is active. Full gates
+  and immutable browser evidence wait until after the final source change.
+
 ### T18 Phase 11 accepted — 2026-08-01
 
 - Final source `12fb0ae` replaces Survival decals with continuous no-grid basalt and

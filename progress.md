@@ -1,5 +1,22 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
+## T19 Phase 12 active contract — 2026-08-01
+
+- Phase 11 remains accepted at clean base `ac11e016`; Phase 12 is active and no source
+  or visual claim is accepted yet.
+- Five direct corrections are frozen: primary-colored default return, one continuous
+  Settings console, local Barlow Semi Condensed/Fira Code with complete bilingual fit,
+  flat/square no-decal Survival geology at 4x gravity, and authored route-backed
+  Puzzle technique lessons replacing the live analysis dashboard.
+- A later supplement makes falling stone support explicitly non-locking: contact alone
+  cannot land an ordinary piece; a valid supported piece descends with the stone and
+  normal lock delay resumes only after the stone settles into the board.
+- Existing canonical/alternate route artifacts are evidence inputs. The timed anchor
+  side-slip requires new public-command replay proof because the old landing enumerator
+  deliberately excludes timing tricks.
+- Work remains single-writer with no server/browser during implementation. Focused
+  tests precede one final full gate and multi-round browser evidence.
+
 ## T18 Phase 11 accepted — 2026-08-01
 
 - Accepted product source `12fb0ae` and immutable browser evidence `d1656a1` close the

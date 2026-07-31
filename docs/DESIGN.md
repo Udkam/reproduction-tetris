@@ -3,6 +3,98 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-01 Phase 12 — material truth and authored learning
+
+Phase 12 responds to direct visual rejection by making fewer claims and making each
+claim physically legible. A stone is defined by silhouette, face planes, contact, and
+motion—not a crack decal. A section is defined by typography and reading order—not a
+card around every paragraph. A Puzzle hint is defined by a reusable idea demonstrated
+by a real level—not a dashboard of solver counts.
+
+### Decision surfaces
+
+The leave sheet presents the requested destination as the clear default: the left
+`返回首页 / Back to home` action is filled primary blue and initially focused. The right
+`留在本局 / Stay in this run` action is a quiet pale secondary. Color, position, focus,
+and Enter therefore agree instead of sending contradictory signals.
+
+Settings is one bounded console. The enclosing sheet owns the background, border,
+radius, and shadow. Rules, Controls, Keyboard, and Record are ordinary flow sections
+inside it; none may paint its own card background, rounded container, top stripe, or
+shadow. Their headings establish hierarchy through Barlow/Chinese display weight,
+section-specific text color, and consistent label rhythm. Space separates ideas but
+does not reserve empty columns.
+
+### Typography
+
+- `TetraMorph`: Playwrite NZ Basic, unchanged and used nowhere else.
+- English interface: Barlow Semi Condensed at locally bundled static weights. Its
+  humanist industrial proportions give controls and mode names a distinct voice while
+  fitting narrow surfaces without artificial condensation.
+- Data and controls: Fira Code Variable for times, scores, ranks, dates, keycaps, and
+  board numerals. Tabular figures and stable punctuation replace Geist Mono.
+- Chinese families remain the accepted local UI/display files. Font fallback is
+  explicit; no runtime font request is allowed.
+
+Text containers are content-safe rather than ellipsis-driven. Values such as
+`0.5 s/cell` remain whole. Responsive changes may reflow a stat grid or reduce a
+heading size within its token range, but may not clip units, split an action into an
+accidental two-line button, or hide a translated label.
+
+### Survival material system
+
+Bedrock is a continuous mineral shelf with a mathematically flat top edge on the cell
+boundary. Its body uses a restrained cool-stone base, one broad upper light plane, one
+lower occlusion plane, and an outer edge. No crack, chip, pit, speckle, tile seam,
+sticker, or per-cell texture is drawn. The body can rise continuously during entry
+without changing Core rows.
+
+A falling stone is an unmistakable square block. A narrow bevel and two solid tonal
+faces create volume while keeping the silhouette and collision footprint exact. One
+event contains one or two vertically adjacent squares in one frozen column. The event
+advances with an integer accumulator at four times ordinary Survival gravity. It keeps
+the accepted moving-support and clearable-board behavior. A falling stone is dynamic
+support, not a floor: contact cannot enter or exhaust ordinary lock delay. When the
+stone advances and the coupled move is collision-safe, the supported ordinary piece
+advances one cell with it; when the stone cannot yet settle safely, both wait without
+locking the ordinary piece. Normal lock delay resumes only after the stone becomes a
+settled board cell. Only cadence, this explicit lock boundary, and material presentation
+change.
+
+### Puzzle curriculum
+
+The rejected live analysis panel is removed. It offered counts generated from the
+current decision but did not explain why a placement was useful and encouraged trial
+and enumeration. The replacement is authored curriculum at the level-selection
+boundary, where the player can read one idea before play and then test it without a
+live answer feed.
+
+Every lesson-bearing level must have at least one replay-verified public-command route
+that demonstrates its idea and one alternate verified route so the lesson does not
+imply a single script. The introductory sequence progresses through:
+
+1. close the prepared row before adding unrelated height;
+2. preserve a narrow well for the matching long or vertical body;
+3. build support before placing a cap that would bury a hole;
+4. read Next 1 and 2 as a two-move plan rather than two isolated pieces;
+5. flatten one landing surface while retaining a future opening;
+6. treat an anchor as permanent collision geometry rather than a target;
+7. use a timed side-slip at anchor height to reach around an overhang.
+
+The library may show a short lesson title and a two-sentence principle/control cue for
+the selected introduction level. It may not show landing counts, burden scores,
+coordinates, exact rotations, or a complete move stream. Levels without an authored
+intro lesson keep the clean preview/name/best/start composition.
+
+### Phase 12 acceptance
+
+No Phase-12 source is accepted yet. Acceptance requires focused checkpoint tests, one
+final typecheck/full suite/build after the last edit, real Chinese/English frames at
+desktop/portrait/short-landscape, reduced-motion proof, route replay evidence for every
+authored lesson, one Canvas and zero DOM board cells/errors/overflow, independent
+read-only QA on an immutable candidate, scoped dependency/secret scans where relevant,
+non-force push, and release of every owned server/browser/helper.
+
 ## 2026-07-31 Phase 11 — luminous instruments and legible intent
 
 Phase 11 preserves the accepted mineral/cavern foundation but tightens its signal:
