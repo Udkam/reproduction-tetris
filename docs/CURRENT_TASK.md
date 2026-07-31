@@ -27,20 +27,27 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    drift after fonts load.
 4. **Survival stone reads through mass and light, never decals.** Bedrock becomes one
    flat-topped continuous stone shelf whose contact plane aligns exactly with the board
-   grid. It uses broad solid face lighting and edge occlusion only: no cracks, chips,
-   dots, stickers, wood grain, or per-cell ornament. Falling stones are square stone
+   grid. It uses broad solid face lighting, low-contrast filled macro-facets, and edge
+   occlusion only: no cracks, chips, dots, stickers, wood grain, stroked veins, or
+   per-cell ornament. The macro-facets are large connected mineral planes across the
+   shelf rather than decorations repeated inside cells. Falling stones are square stone
    blocks with the same material family and a clear beveled solid face. Each falling
    stone owns exactly the same visual width and height as one ordinary board cell; it
    may not shrink into a pebble or expand beyond its collision cell. A two-stone event
    is two vertically adjacent squares in one frozen column with zero visual or logical
    gap, moving and settling as one rigid component. Core advances the event at exactly
-   four times ordinary Survival gravity. Contact with an unresolved falling stone is a
-   temporary obstruction, never settled support: it must not start or complete ordinary
-   lock delay or cause top-out. The stone continues to fall away when its next cell is
-   legal; the ordinary piece remains at its own coordinate, then resumes its normal
-   gravity once the faster stone has cleared the path. Only settled board support may
-   resume the normal lock-delay decision. One/two-stone randomness, clearing, hashing,
-   spawn fairness, and replay remain canonical.
+   four times ordinary Survival gravity. Before each event, one steady downward arrow
+   marks the frozen source column; it is the only warning symbol and never flashes.
+   Contact with an unresolved falling stone is a temporary obstruction, never settled
+   support: it must not start or complete ordinary lock delay or cause top-out. If the
+   stone's next row is occupied only by the active piece below it, Core attempts one
+   atomic coupled step at the stone cadence: the stone and active piece each move down
+   exactly one row, preserving collision separation. Repeated legal debris steps keep
+   pushing until lateral player movement or geometry ends the above/below obstruction.
+   A coupled step may not advance ordinary gravity or lock delay; if either moved body
+   would hit settled board or other debris, both wait without locking. Only settled
+   board support may resume the normal lock-delay decision. One/two-stone randomness,
+   clearing, hashing, spawn fairness, and replay remain canonical.
 5. **Puzzle teaches authored techniques instead of publishing solver statistics.**
    Remove the live `局面分析 / Analysis` metrics, strategy sentence, and queue-role
    card. Reuse replay-verified routes to select a short sequence of approachable
@@ -141,9 +148,10 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   the end of that batch. Full suite/build run once after the final source edit.
 - Browser proof covers both leave actions and keyboard selection; all four Settings
   sections in one continuous surface; Chinese/English desktop, portrait, and short
-  landscape with complete values; Survival countdown, flat bedrock, one/two square
-  stones, 4x cadence, and ordinary-piece contact that stays unlocked until the stone
-  settles; Puzzle library lessons and a live HUD with no analysis card;
+  landscape with complete values; Survival countdown, flat-topped macro-faceted
+  bedrock, a steady column arrow, one/two square stones, 4x cadence, and an atomic
+  debris/active-piece push that stays outside ordinary gravity and lock delay; Puzzle
+  library lessons and a live HUD with no analysis card;
   reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
   errors. Home evidence must prove a geometrically centred wordmark, label-free and
   optically centred long-shaft arrow actions on all four tiles without changing their

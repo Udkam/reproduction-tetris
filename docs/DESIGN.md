@@ -44,23 +44,31 @@ accidental two-line button, or hide a translated label.
 ### Survival material system
 
 Bedrock is a continuous mineral shelf with a mathematically flat top edge on the cell
-boundary. Its body uses a restrained cool-stone base, one broad upper light plane, one
-lower occlusion plane, and an outer edge. No crack, chip, pit, speckle, tile seam,
-sticker, or per-cell texture is drawn. The body can rise continuously during entry
-without changing Core rows.
+boundary. Its body uses a restrained cool-stone base, one broad upper light plane, a
+small set of deterministic low-contrast filled macro-facets, one lower occlusion plane,
+and an outer edge. Those facets are connected mineral volumes spanning large portions
+of the shelf, never marks repeated per cell. No crack, chip, pit, speckle, tile seam,
+sticker, stroked vein, or per-cell texture is drawn. The body can rise continuously
+during entry without changing Core rows.
 
 A falling stone is an unmistakable square block whose rendered outer width and height
 equal one ordinary board cell. A narrow bevel and two solid tonal faces create volume
 without changing that exact collision-sized silhouette. One event contains one or two
 vertically adjacent squares in one frozen column; a pair has no seam-sized gap and
 moves and settles as one rigid component. The event advances with an integer accumulator
-at four times ordinary Survival gravity. An in-flight stone is a temporary obstruction,
-not a floor: contact cannot enter or exhaust ordinary lock delay, trigger top-out, or
-carry the ordinary piece downward. When its next cell is legal the faster stone moves
-away while the ordinary piece retains its coordinate; ordinary gravity resumes after
-the obstruction clears. Normal lock delay resumes only after the stone becomes a
-settled board cell. Only cadence, this explicit lock boundary, and material presentation
-change.
+at four times ordinary Survival gravity. The warned column is identified by one fixed
+downward arrow before the event; there is no fissure, flashing beacon, or alternative
+warning emblem. An in-flight stone is a temporary obstruction, not a floor: contact
+cannot enter or exhaust ordinary lock delay or trigger top-out. When its attempted next
+row is occupied only by the active piece, Core treats the pair as one atomic debris
+step: both stone and active piece translate down exactly one row if both destinations
+are legal against settled board and every other debris event. This repeats at debris
+cadence while the stone remains above the piece. It does not consume ordinary gravity
+or lock delay, and illegal paired movement leaves both bodies waiting. Player lateral
+movement can clear the relation; normal gravity resumes once the stone is no longer
+above the piece. Normal lock delay resumes only after support is settled board. Only
+cadence, this explicit temporary-coupling boundary, warning language, and material
+presentation change.
 
 ### Home action geometry
 
