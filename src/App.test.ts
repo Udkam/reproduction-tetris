@@ -1379,7 +1379,8 @@ describe('T6 frontend mode binding', () => {
     expect(styles).not.toContain('.action-sheet::before');
     expect(styles).not.toContain('rotate(3deg)');
     expect(sourceStyles).toContain('grid-template-columns: 56px minmax(0, 1fr) 42px');
-    expect(sourceStyles).toContain('place-items: center');
+    expect(sourceStyles).toMatch(/\.mode-gates--workbench \.mode-gate__action \{[^}]*display: flex;[^}]*align-items: center;[^}]*justify-content: center;/s);
+    expect(sourceStyles).not.toMatch(/\.mode-gates--workbench \.mode-gate__action svg \{[^}]*transform:/s);
     expect(sourceStyles).toContain('transform: translateX(-.38em)');
     expect(sourceStyles).toContain('stroke: #ffffff');
     expect(puzzleLibraryStyles).toMatch(/data-puzzle-category="easy"[^}]*repeat\(6,/s);

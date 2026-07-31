@@ -8511,13 +8511,14 @@ kbd,
 .mode-gates--workbench .mode-gate__body strong { font-size: clamp(21px, 2.3vw, 30px); font-weight: 700; font-synthesis: none; letter-spacing: -.075em; }
 .mode-gates--workbench .mode-gate__body span { color: #5c7187; font-size: clamp(11px, 1.05vw, 13px); font-synthesis: none; line-height: 1.45; }
 .mode-gates--workbench .mode-gate__action {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   justify-self: end;
   width: 42px;
   height: 42px;
   min-height: 42px;
   padding: 0;
-  place-items: center;
   color: #eff6fa;
   background: var(--gate-accent);
   border: 1px solid var(--gate-accent);
