@@ -1809,6 +1809,8 @@ describe('T6 frontend mode binding', () => {
     expect(rows).toHaveLength(27);
     expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(3, 30).map((level) => level.id));
     expect(rows.every((row) => row.dataset.unlocked === 'false')).toBe(true);
+    expect(rows.every((row) => row.getAttribute('aria-disabled') === null)).toBe(true);
+    expect(rows[0]?.getAttribute('aria-label')).toContain('未解锁');
     expect(view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]')?.disabled).toBe(true);
     act(() => {
       pageTabs[1]!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));

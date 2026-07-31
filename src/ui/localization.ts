@@ -179,7 +179,7 @@ type Translation = {
     puzzleCategory: (category: string, count: number) => string;
     masteryThreshold: (technique: string, prerequisite: string, required: number, best: number | null) => string;
     rowBand: (rows: number) => string;
-    levelNode: (index: string, name: string, rows: number, complete: boolean, best: number | null) => string;
+    levelNode: (index: string, name: string, rows: number, complete: boolean, unlocked: boolean, best: number | null) => string;
     boardLabel: string;
     eventLinesCleared: (count: number) => string;
     eventBedrockRaised: (height: number) => string;
@@ -332,7 +332,7 @@ const COPY: Record<AppLanguage, Translation> = {
           ? `已通过“${prerequisite}”以 ${best} 步掌握“${technique}”。`
           : `“${prerequisite}”当前 ${best} 步；达到 ${required} 步内即可掌握“${technique}”。`,
       rowBand: (rows) => `${rows} 行残局`,
-      levelNode: (index, name, rows, complete, best) => `${index} ${name}，${rows} 行残局${complete ? '，已完成' : '，可进入'}${best !== null ? `，最少 ${best} 步` : ''}`,
+      levelNode: (index, name, rows, complete, unlocked, best) => `${index} ${name}，${rows} 行残局${complete ? '，已完成' : unlocked ? '，可进入' : '，未解锁'}${best !== null ? `，最少 ${best} 步` : ''}`,
       boardLabel: 'TetraMorph 10 × 20 游戏棋盘',
       eventLinesCleared: (count) => `消除了 ${count} 行。`,
       eventBedrockRaised: (height) => `基岩升至 ${height} 层。`,
@@ -439,7 +439,7 @@ const COPY: Record<AppLanguage, Translation> = {
           ? `“${technique}” mastered in “${prerequisite}” with ${best} moves.`
           : `Current “${prerequisite}” best: ${best}; reach ${required} moves to master “${technique}”.`,
       rowBand: (rows) => `${rows}-row puzzle`,
-      levelNode: (index, name, rows, complete, best) => `${index} ${name}, ${rows}-row puzzle${complete ? ', completed' : ', ready'}${best !== null ? `, best ${best} moves` : ''}`,
+      levelNode: (index, name, rows, complete, unlocked, best) => `${index} ${name}, ${rows}-row puzzle${complete ? ', completed' : unlocked ? ', ready' : ', locked'}${best !== null ? `, best ${best} moves` : ''}`,
       boardLabel: 'TetraMorph 10 by 20 game board',
       eventLinesCleared: (count) => `${count} lines cleared.`,
       eventBedrockRaised: (height) => `Bedrock rose to ${height} rows.`,

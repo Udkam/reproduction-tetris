@@ -865,13 +865,12 @@ export function PuzzleLibrary({
                     data-anchor={hasAnchor || undefined}
                     data-best-pieces={bestPieces ?? undefined}
                     aria-pressed={selectedLevel}
-                    aria-disabled={!unlocked}
                     tabIndex={selectedLevel ? 0 : -1}
                     ref={(node) => {
                       if (node) levelButtonRefs.current.set(level.id, node);
                       else levelButtonRefs.current.delete(level.id);
                     }}
-                    aria-label={`${copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, getPuzzleDefinition(level.id).targetRows, complete, bestPieces)}${gate && !gate.unlocked ? ` — ${copy.phrasing.masteryThreshold(copy.phrasing.puzzleLesson(gate.group.technique).title, puzzleDisplayName(language, campaignLevel(gate.group.prerequisiteId).id, campaignLevel(gate.group.prerequisiteId).name), gate.requiredOperations, gate.bestOperations)}` : ''}`}
+                    aria-label={`${copy.phrasing.levelNode(String(level.index).padStart(2, '0'), levelName, getPuzzleDefinition(level.id).targetRows, complete, unlocked, bestPieces)}${gate && !gate.unlocked ? ` — ${copy.phrasing.masteryThreshold(copy.phrasing.puzzleLesson(gate.group.technique).title, puzzleDisplayName(language, campaignLevel(gate.group.prerequisiteId).id, campaignLevel(gate.group.prerequisiteId).name), gate.requiredOperations, gate.bestOperations)}` : ''}`}
                     onKeyDown={(event) => moveLevelFocus(event, localIndex)}
                     onClick={() => onSelect(level.id)}
                   >
