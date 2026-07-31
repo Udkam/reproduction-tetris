@@ -15,6 +15,9 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   no-grid rock bodies, truthful Supergravity projection, physical Mutation fields,
   and compact Home/HUD/Settings structure. Each is source-green only; the integrated
   bilingual/responsive browser acceptance and independent review remain open.
+- P11.4 replaces the rejected Sora/IBM pair with locally packaged Space Grotesk and
+  Geist Mono, updates license provenance, and closes measured English overlap at the
+  desktop and narrow target viewports. It is source-green, not final acceptance.
 
 ### T16 Phase 9 four-surface re-open — 2026-07-31
 

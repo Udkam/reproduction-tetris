@@ -39,6 +39,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   Leave now defaults to `返回首页`. Focused proof passes `54/54`, typecheck passes,
   one real desktop Home/Settings review has zero console errors, and the owned
   browser/listener batch is released. Responsive/bilingual acceptance remains open.
+- P11.4 is source-green: Space Grotesk Variable replaces Sora for English UI and
+  Geist Mono Variable replaces IBM Plex Mono for numeric/tabular roles, all locally
+  packaged with matching notices/licenses and no remote stylesheet. Default desktop,
+  `844×390`, and `390×844` English frames are free of horizontal overlap after the
+  responsive Settings correction; focused proof/typecheck and the scoped 158-package
+  OSV lockfile scan pass. The owned browser/listener batch is released.
 
 ## Current phase
 

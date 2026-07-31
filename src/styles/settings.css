@@ -55,7 +55,7 @@
   --section-accent: var(--classic);
   grid-area: rules;
   display: grid;
-  grid-template-columns: 58px minmax(0, 1fr);
+  grid-template-columns: 68px minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -83,7 +83,7 @@
   --section-accent: #4e82b6;
   grid-area: controls;
   display: grid;
-  grid-template-columns: 58px minmax(180px, .9fr) minmax(230px, 1.2fr) minmax(190px, .82fr);
+  grid-template-columns: 68px minmax(190px, .9fr) minmax(276px, 1.35fr) minmax(160px, .75fr);
   grid-template-areas: "heading language sound actions";
   gap: 10px;
   align-items: center;
@@ -95,6 +95,11 @@
   min-width: 0;
 }
 
+.settings-console__controls > strong { grid-area: heading; }
+.settings-console__controls .language-control { grid-area: language; }
+.settings-console__controls .audio-controls { grid-area: sound; }
+.settings-console__actions { grid-area: actions; }
+
 .settings-console__actions {
   justify-self: stretch;
   width: 100%;
@@ -104,7 +109,7 @@
   --section-accent: #3c948e;
   grid-area: keyboard;
   display: grid;
-  grid-template-columns: 58px minmax(0, .78fr) minmax(0, 1.22fr);
+  grid-template-columns: 68px minmax(0, .78fr) minmax(0, 1.22fr);
   grid-template-areas: "heading gameplay shortcuts";
   gap: 12px;
   align-items: start;
@@ -137,7 +142,7 @@
   }
 
   .settings-console > .settings-console__controls {
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: 68px minmax(0, 1fr);
     grid-template-areas:
       "heading language"
       "heading sound"
@@ -145,7 +150,7 @@
   }
 
   .settings-console > .settings-console__keyboard {
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: 68px minmax(0, 1fr);
     grid-template-areas:
       "heading gameplay"
       "heading shortcuts";
@@ -156,7 +161,7 @@
   .settings-console > .mode-rule-summary--race,
   .settings-console > .mode-rule-summary--sprint,
   .settings-console > .mode-rule-summary--puzzle {
-    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-columns: 68px minmax(0, 1fr);
   }
 
   .settings-console > .mode-rule-summary ul,
@@ -169,15 +174,34 @@
 }
 
 @media (max-width: 460px) {
-  .settings-console > .mode-rule-summary,
-  .settings-console > .settings-console__controls,
-  .settings-console > .settings-console__keyboard {
+  .settings-console > .mode-rule-summary {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: none;
   }
 
-  .settings-console__controls > strong,
-  .settings-console__keyboard > strong {
-    grid-area: auto;
+  .settings-console > .settings-console__controls {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "heading"
+      "language"
+      "sound"
+      "actions";
+    gap: 9px;
+  }
+
+  .settings-console__controls .language-control {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .settings-console__controls .audio-controls {
+    grid-template-columns: minmax(96px, .42fr) minmax(0, 1fr);
+  }
+
+  .settings-console > .settings-console__keyboard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "heading"
+      "gameplay"
+      "shortcuts";
+    gap: 8px;
   }
 }

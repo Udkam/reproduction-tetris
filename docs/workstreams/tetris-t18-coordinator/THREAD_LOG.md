@@ -189,3 +189,47 @@
 - Blocker: final responsive and bilingual acceptance remains part of the integrated
   immutable-candidate browser rounds; this checkpoint is not Phase 11 acceptance.
 - Next action: commit P11.3, then open P11.4 local typography and bilingual fit.
+
+## 2026-08-01 — P11.4 local typography and bilingual-fit checkpoint
+
+- Task ID: `T18-P11.4`
+- Base SHA: `8b6e09ddfc701adb2cfff95e168b08f4b7464ebf`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `package.json`
+  - `package-lock.json`
+  - `src/main.tsx`
+  - `src/styles/tokens.css`
+  - `src/styles/settings.css`
+  - `src/design/tokens/typography.ts`
+  - `src/design/tokens/tokens.test.ts`
+  - `index.html`
+  - `src/game/render/TetrisRenderer.ts`
+  - `THIRD_PARTY_NOTICES.md`
+  - `licenses/fonts/SpaceGrotesk-OFL.txt`
+  - `licenses/fonts/GeistMono-OFL.txt`
+  - retired `licenses/fonts/Sora-OFL.txt`
+  - retired `licenses/fonts/IBMPlexMono-OFL.txt`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `docs/progress.md`
+  - `progress.md`
+- Commands actually run:
+  - installed pinned `@fontsource-variable/space-grotesk@5.3.0` and
+    `@fontsource-variable/geist-mono@5.3.0`; removed Sora and IBM Plex Mono
+  - focused token/App/Settings test: `50/50` passed; final token recheck: `6/6`
+  - checkpoint `npm.cmd run typecheck`: passed
+  - scoped `osv-scanner scan source --lockfile package-lock.json`: 158 packages,
+    no known issues
+  - one bounded browser batch at default desktop, `844×390`, and `390×844`;
+    zero console errors; owned Vite PID `11748` stopped and port `5178` released
+- Evidence: English UI resolves to locally packaged Space Grotesk Variable, numeric/
+  tabular roles resolve to Geist Mono Variable, the Playwrite wordmark remains
+  isolated, and no remote stylesheet is present after `document.fonts.ready`. Narrow
+  Settings track widths and the portrait stack were corrected until bounded DOM
+  inspection reported zero horizontal-overflow elements. Home and the game HUD retain
+  zero document overflow at the tested viewports. A scoped non-document scan reports
+  no remaining Sora/IBM font configuration outside excluded historical docs and build
+  dependencies; notices and repository license copies now match the installed pair.
+- Blocker: final evidence still requires the immutable integrated candidate and its
+  full bilingual/reduced-motion comparison matrix.
+- Next action: commit P11.4, then open P11.5 deterministic Puzzle guidance.

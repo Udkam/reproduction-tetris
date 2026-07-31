@@ -29,19 +29,19 @@ font CDN at runtime.
 - Packaged file SHA-256:
   `731F22973349404B15A88A99EF3B5DD4104C0965C23B7E485C1F11E84FEA99E2`.
 
-## Sora Variable
+## Space Grotesk Variable
 
-- Package: `@fontsource-variable/sora` `5.3.0`.
-- Upstream: <https://github.com/sora-xor/sora-font>.
+- Package: `@fontsource-variable/space-grotesk` `5.3.0`.
+- Upstream: <https://github.com/floriankarsten/space-grotesk>.
 - License: SIL Open Font License 1.1; see
-  [`licenses/fonts/Sora-OFL.txt`](licenses/fonts/Sora-OFL.txt).
+  [`licenses/fonts/SpaceGrotesk-OFL.txt`](licenses/fonts/SpaceGrotesk-OFL.txt).
 
-## IBM Plex Mono
+## Geist Mono Variable
 
-- Package: `@fontsource/ibm-plex-mono` `5.3.0`.
-- Upstream: <https://github.com/IBM/plex>.
+- Package: `@fontsource-variable/geist-mono` `5.3.0`.
+- Upstream: <https://github.com/vercel/geist-font>.
 - License: SIL Open Font License 1.1; see
-  [`licenses/fonts/IBMPlexMono-OFL.txt`](licenses/fonts/IBMPlexMono-OFL.txt).
+  [`licenses/fonts/GeistMono-OFL.txt`](licenses/fonts/GeistMono-OFL.txt).
 
 ## Playwrite New Zealand Basic
 
