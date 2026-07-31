@@ -71,6 +71,13 @@ font-baseline nudge, while the complete localized mode action remains available 
 accessible name. Hover, focus, and keyboard selection may strengthen the tile's own
 color but may not displace the arrow.
 
+### Mutation duration audio
+
+Multiplier and Super multiplier communicate their ten-second duration through the
+status rail, light treatment, and countdown. Audio is event-based only: one brief cue
+may acknowledge acquisition or activation, but no loop, drone, pulse, or repeated
+state sound continues while either multiplier remains active.
+
 ### Puzzle curriculum
 
 The rejected live analysis panel is removed. It offered counts generated from the

@@ -87,6 +87,10 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    the sole action mark, centred in one consistent square hit target across Chinese,
    English, pointer, keyboard focus, and every responsive layout. Removing the label
    must not weaken the mode-name accessible label or the 44 px minimum target.
+9. **Multiplier has no sustained audio bed.** Mutation `加倍 / Multiplier` and
+   `超级加倍 / Super multiplier` may keep one brief acquisition or activation cue, but
+   their ten-second active windows emit no loop, drone, pulse, repeated retrigger, or
+   other sustained state sound. Visual state and the canonical timer carry duration.
 
 ## Phase 12 checkpoint order
 
