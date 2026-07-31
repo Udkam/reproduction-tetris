@@ -445,6 +445,7 @@ function ModeRuleSummary({
 
 export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (mode: GameMode) => void; language?: AppLanguage }) {
   const [focusMode, setFocusMode] = useState<GameMode>('marathon');
+  const [inputModality, setInputModality] = useState<'keyboard' | 'pointer'>('keyboard');
   const modeButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const copy = appCopy(language);
   const moveModeFocus = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -474,6 +475,9 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
             className="mode-gates mode-gates--workbench"
             aria-label={copy.labels.selectMode}
             data-testid="mode-list"
+            data-input-modality={inputModality}
+            onPointerMove={() => setInputModality('pointer')}
+            onKeyDownCapture={() => setInputModality('keyboard')}
           >
             {MODE_ORDER.map((mode, index) => {
               const item = modeCopy(language, mode);
@@ -1817,10 +1821,10 @@ export function GameSession({
         tone="danger"
         onCancel={cancelExit}
       >
-        <button className="secondary-action" type="button" onClick={() => onExit(exitDestination)}>
+        <button className="secondary-action" data-autofocus type="button" onClick={() => onExit(exitDestination)}>
           {exitDestination === 'puzzle-library' ? copy.labels.leavePuzzle : copy.labels.leaveRun}
         </button>
-        <button className="primary-action" data-autofocus type="button" onClick={cancelExit}>{copy.labels.stay}</button>
+        <button className="primary-action" type="button" onClick={cancelExit}>{copy.labels.stay}</button>
       </ActionSheet>
 
       <ActionSheet

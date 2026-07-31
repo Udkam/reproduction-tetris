@@ -1292,8 +1292,10 @@ describe('T6 frontend mode binding', () => {
       .find((button) => button.textContent === '返回首页')!;
     const stay = actions.find((button) => button.textContent === '留在本局')!;
     expect(actions.map((button) => button.textContent)).toEqual(['返回首页', '留在本局']);
-    expect(stay.dataset.actionSelected).toBe('true');
+    expect(leave.dataset.actionSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+    expect(stay.dataset.actionSelected).toBe('true');
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })));
     expect(leave.dataset.actionSelected).toBe('true');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
     expect(onExit).toHaveBeenCalledExactlyOnceWith('home');
@@ -1359,6 +1361,12 @@ describe('T6 frontend mode binding', () => {
     act(() => survival?.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true })));
     act(() => survival?.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true })));
     expect(view.container.querySelectorAll('.mode-gate--active, [data-selected="true"]')).toHaveLength(0);
+
+    const modeList = view.container.querySelector<HTMLElement>('[data-testid="mode-list"]')!;
+    act(() => modeList.dispatchEvent(new PointerEvent('pointermove', { bubbles: true })));
+    expect(modeList.dataset.inputModality).toBe('pointer');
+    act(() => classic?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true })));
+    expect(modeList.dataset.inputModality).toBe('keyboard');
 
     act(() => survival?.click());
     expect(onEnter).toHaveBeenCalledWith('race');

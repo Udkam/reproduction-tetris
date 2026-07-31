@@ -33,6 +33,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   central symbol, wells, chevrons, or bars; Bomb uses an irregular heated floor and
   embers instead of a `3×10` frame or full-board rectangle. Focused geometry/state
   proof passes `52/52`; typecheck passes. Integrated browser acceptance is pending.
+- P11.3 is source-green: Settings follows one compact rules → controls → keyboard →
+  record reading order, the right HUD is content-height, Home has no accent rails or
+  pointer-owned persistent focus, and its complete first-card top edge is restored.
+  Leave now defaults to `返回首页`. Focused proof passes `54/54`, typecheck passes,
+  one real desktop Home/Settings review has zero console errors, and the owned
+  browser/listener batch is released. Responsive/bilingual acceptance remains open.
 
 ## Current phase
 

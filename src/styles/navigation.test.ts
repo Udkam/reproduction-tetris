@@ -31,8 +31,12 @@ describe('Phase 9 navigation authority', () => {
     expect(app).not.toContain('mode-gate--active');
     expect(app).not.toContain('data-selection={');
     expect(app).not.toContain('onPointerEnter={() => setFocusMode');
+    expect(app).toContain('data-input-modality={inputModality}');
     expect(navigation).not.toContain('.mode-gate--active');
-    expect(navigation).toMatch(/\.mode-gates--workbench \.mode-gate:hover,[\s\S]*\.mode-gates--workbench \.mode-gate:focus-visible/);
+    expect(navigation).toMatch(/\.mode-gates--workbench \.mode-gate:hover,[\s\S]*data-input-modality="keyboard"/);
+    expect(navigation).toContain('.mode-gate::before { display: none; }');
+    expect(navigation).toContain('data-input-modality="pointer"');
+    expect(navigation).toMatch(/\.mode-gates--workbench \.mode-gate:first-child[\s\S]*border-top:\s*1px solid/);
   });
 
   it('resets inherited card and action placement at every responsive breakpoint', () => {

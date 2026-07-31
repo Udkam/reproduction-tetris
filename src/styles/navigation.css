@@ -131,36 +131,25 @@
 .mode-gates--workbench .mode-gate--sprint { --gate-accent: var(--sprint); }
 .mode-gates--workbench .mode-gate--puzzle { --gate-accent: var(--puzzle); }
 
-.mode-gates--workbench .mode-gate::before {
-  position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 0;
-  display: block;
-  width: 3px;
-  content: "";
-  opacity: .44;
-  background: var(--gate-accent);
-  transform: none;
-  transition: opacity 170ms ease;
+/* The historical workbench layer removed the first card's top edge. Restore
+   the complete card outline with matching specificity so hover never appears
+   to erase or recreate that edge. */
+.mode-gates--workbench .mode-gate:first-child {
+  border-top: 1px solid color-mix(in srgb, var(--gate-accent) 30%, #b5c7d2);
 }
+
+.mode-gates--workbench .mode-gate::before { display: none; }
 
 .mode-gates--workbench .mode-gate::after {
   display: none;
 }
 
 .mode-gates--workbench .mode-gate:hover,
-.mode-gates--workbench .mode-gate:focus-visible {
+.mode-gates--workbench[data-input-modality="keyboard"] .mode-gate:focus-visible {
   color: #102a42;
   background: color-mix(in srgb, var(--gate-accent) 11%, #fff);
   border-color: color-mix(in srgb, var(--gate-accent) 72%, #9fb4c4);
   box-shadow: 0 10px 22px color-mix(in srgb, var(--gate-accent) 15%, transparent);
-  transform: none;
-}
-
-.mode-gates--workbench .mode-gate:hover::before,
-.mode-gates--workbench .mode-gate:focus-visible::before {
-  opacity: 1;
   transform: none;
 }
 
@@ -232,7 +221,7 @@
 
 .mode-gates--workbench .mode-gate__action b,
 .mode-gates--workbench .mode-gate:hover .mode-gate__action b,
-.mode-gates--workbench .mode-gate:focus-visible .mode-gate__action b {
+.mode-gates--workbench[data-input-modality="keyboard"] .mode-gate:focus-visible .mode-gate__action b {
   display: grid;
   width: 38px;
   height: 38px;
@@ -243,6 +232,19 @@
   border-radius: 8px;
   transform: none;
   transition: none;
+}
+
+/* Pointer focus must not masquerade as a persistent selection after the cursor
+   leaves. Keyboard focus remains explicit through the modality-scoped rule above. */
+.mode-gates--workbench[data-input-modality="pointer"] .mode-gate:focus-visible {
+  color: #173149;
+  background: color-mix(in srgb, var(--gate-accent) 3.5%, #fbfdfe);
+  border-color: color-mix(in srgb, var(--gate-accent) 30%, #b5c7d2);
+  box-shadow: 0 7px 18px rgba(35, 63, 84, .06);
+}
+
+.mode-gates--workbench[data-input-modality="pointer"] .mode-gate:focus-visible .mode-gate__glyph svg {
+  transform: none;
 }
 
 /* Puzzle library: compact specimen bench above one complete functional matrix. */

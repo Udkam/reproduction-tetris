@@ -1,0 +1,183 @@
+/*
+ * Phase 11 Settings authority.
+ * One vertical reading order prevents unequal side-by-side cards from manufacturing
+ * blank regions: rules, controls, keyboard, then the current-mode record.
+ */
+
+.action-sheet--settings {
+  width: min(860px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: clamp(16px, 2vw, 22px);
+  overflow: hidden;
+}
+
+.action-sheet--settings > .action-sheet__actions {
+  max-height: calc(100dvh - 104px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.settings-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "rules"
+    "controls"
+    "keyboard"
+    "record";
+  gap: 9px;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.settings-console > .mode-rule-summary,
+.settings-console > .settings-console__controls,
+.settings-console > .settings-console__keyboard,
+.settings-console > .settings-console__record,
+.settings-console > .result-leaderboard {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 12px 14px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--raised) 84%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--section-accent, var(--focus)) 24%, var(--line));
+  border-radius: 10px;
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--section-accent, var(--focus)) 72%, transparent);
+}
+
+.settings-console > * + * { border-top-width: 1px; }
+
+.settings-console > .mode-rule-summary {
+  --section-accent: var(--classic);
+  grid-area: rules;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.settings-console > .mode-rule-summary--race { --section-accent: var(--race); }
+.settings-console > .mode-rule-summary--sprint { --section-accent: var(--sprint); }
+.settings-console > .mode-rule-summary--puzzle { --section-accent: var(--puzzle); }
+
+.settings-console > .mode-rule-summary ul,
+.settings-console > .mode-rule-summary--marathon ul,
+.settings-console > .mode-rule-summary--race ul,
+.settings-console > .mode-rule-summary--sprint ul,
+.settings-console > .mode-rule-summary--puzzle ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.settings-console > .mode-rule-summary--marathon ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.settings-console > .settings-console__controls {
+  --section-accent: #4e82b6;
+  grid-area: controls;
+  display: grid;
+  grid-template-columns: 58px minmax(180px, .9fr) minmax(230px, 1.2fr) minmax(190px, .82fr);
+  grid-template-areas: "heading language sound actions";
+  gap: 10px;
+  align-items: center;
+}
+
+.settings-console__controls .language-control,
+.settings-console__controls .audio-controls,
+.settings-console__actions {
+  min-width: 0;
+}
+
+.settings-console__actions {
+  justify-self: stretch;
+  width: 100%;
+}
+
+.settings-console > .settings-console__keyboard {
+  --section-accent: #3c948e;
+  grid-area: keyboard;
+  display: grid;
+  grid-template-columns: 58px minmax(0, .78fr) minmax(0, 1.22fr);
+  grid-template-areas: "heading gameplay shortcuts";
+  gap: 12px;
+  align-items: start;
+}
+
+.settings-console__key-group--gameplay { grid-area: gameplay; }
+.settings-console__key-group--shortcuts { grid-area: shortcuts; }
+
+.settings-console__key-group {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 10px;
+}
+
+.settings-console > .settings-console__record,
+.settings-console > .result-leaderboard {
+  --section-accent: #a3697f;
+  grid-area: record;
+}
+
+.settings-console > .result-leaderboard { padding: 0; }
+
+.settings-console > .result-leaderboard[data-empty="true"] {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+@media (max-width: 760px) {
+  .action-sheet--settings {
+    width: min(600px, calc(100vw - 16px));
+    padding: 13px;
+  }
+
+  .settings-console > .settings-console__controls {
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-areas:
+      "heading language"
+      "heading sound"
+      "heading actions";
+  }
+
+  .settings-console > .settings-console__keyboard {
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-areas:
+      "heading gameplay"
+      "heading shortcuts";
+  }
+
+  .settings-console > .mode-rule-summary,
+  .settings-console > .mode-rule-summary--marathon,
+  .settings-console > .mode-rule-summary--race,
+  .settings-console > .mode-rule-summary--sprint,
+  .settings-console > .mode-rule-summary--puzzle {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+
+  .settings-console > .mode-rule-summary ul,
+  .settings-console > .mode-rule-summary--marathon ul,
+  .settings-console > .mode-rule-summary--race ul,
+  .settings-console > .mode-rule-summary--sprint ul,
+  .settings-console > .mode-rule-summary--puzzle ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 460px) {
+  .settings-console > .mode-rule-summary,
+  .settings-console > .settings-console__controls,
+  .settings-console > .settings-console__keyboard {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+
+  .settings-console__controls > strong,
+  .settings-console__keyboard > strong {
+    grid-area: auto;
+  }
+}

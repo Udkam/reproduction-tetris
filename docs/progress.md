@@ -11,6 +11,10 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   based on legal landings, holes, burden, skyline, and the visible queue.
 - Work is single-writer with no project listener/browser. Focused gates run per source
   checkpoint; full gates and real-frame evidence wait for the immutable candidate.
+- P11.1R, P11.2a, P11.2b, and P11.3 now provide separate recovery points for the
+  no-grid rock bodies, truthful Supergravity projection, physical Mutation fields,
+  and compact Home/HUD/Settings structure. Each is source-green only; the integrated
+  bilingual/responsive browser acceptance and independent review remain open.
 
 ### T16 Phase 9 four-surface re-open — 2026-07-31
 

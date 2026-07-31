@@ -154,3 +154,38 @@
 - Blocker: real-frame acceptance remains part of the immutable integrated browser
   comparison; this checkpoint proves source geometry and state ownership only.
 - Next action: commit P11.2b, then open P11.3 information architecture.
+
+## 2026-08-01 — P11.3 compact information architecture checkpoint
+
+- Task ID: `T18-P11.3`
+- Base SHA: `0807588e6ff654719ca330f9eb6d5989a5a6ae1a`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/main.tsx`
+  - `src/styles/hud.css`
+  - `src/styles/navigation.css`
+  - `src/styles/navigation.test.ts`
+  - `src/styles/settings.css`
+  - `src/styles/settings.test.ts`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `docs/progress.md`
+  - `progress.md`
+- Commands actually run:
+  - focused App/HUD/navigation/Settings test: `54/54` passed
+  - `npm.cmd run typecheck`: passed
+  - one bounded in-app-browser desktop review of Home and Classic Settings; zero
+    browser console errors
+  - exact owned Vite PID `25820` stopped; port `5178` verified released
+- Evidence: Settings now has one continuous rules → controls → keyboard → record
+  reading order, content-sized sections, independent section signals, and no unequal
+  side-by-side cards that manufacture blank regions. The live dialog measured four
+  adjacent content-height sections inside one `860 × 460.4` sheet. The right HUD is
+  content-height instead of stretching to board height. Home removes decorative left
+  rails, separates pointer hover from keyboard focus, and restores the Classic card's
+  complete top edge against a higher-specificity legacy first-child override. The
+  leave sheet defaults to `返回首页`; arrow navigation can still choose either action.
+- Blocker: final responsive and bilingual acceptance remains part of the integrated
+  immutable-candidate browser rounds; this checkpoint is not Phase 11 acceptance.
+- Next action: commit P11.3, then open P11.4 local typography and bilingual fit.
