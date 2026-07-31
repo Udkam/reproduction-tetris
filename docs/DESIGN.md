@@ -3,6 +3,82 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-07-31 Phase 11 — luminous instruments and legible intent
+
+Phase 11 preserves the accepted mineral/cavern foundation but tightens its signal:
+**every surface must reveal material, state, or tactical intent.** Ornament that looks
+like a rule, border that disappears under selection, and empty space reserved without
+information are all treated as defects.
+
+### Material grammar
+
+Ordinary tetrominoes are bright enamel-mineral bodies: a saturated face, a lighter
+upper/inner edge, and a stable dark perimeter. The seven hues remain identifiable in
+peripheral vision and under Mutation attachments. Brightness rises without a white
+glow layer or a second palette.
+
+Survival geology is drawn at connected-component scale. Permanent bedrock is a broad
+basalt shelf: its outer silhouette carries the strongest irregularity; internal cell
+seams are quiet; two to four large planes cross cell boundaries; and only a few short
+fractures, chips, and pits appear across the whole component. Falling stones are
+members of that geology, not square reskins: their leading face is brighter, their
+moving boundary is clearer, and one or two vertically joined stones read as one
+falling mass with sparse grit below it. Deterministic geometry preserves replay and
+render tests.
+
+### Mutation atmosphere
+
+- **Ice:** one continuous upper cold front extends through roughly the upper half of
+  the well. Opacity follows a smooth easing curve, never visible bands; sparse flecks
+  and a faint upper rim establish cold without recoloring the board.
+- **Supergravity:** no central icon, chevron badge, flash, top strip, or bottom strip.
+  A darkened upper pressure field, a few deterministic downward streaks, and a short
+  support-compression response make weight readable. The ghost is a projection of
+  the active cells after ordinary descent and the same independent-column settlement
+  used by the real lock.
+- **Bomb:** no rectangular three-row target frame. A graded lower heat field, an
+  irregular blast edge, and rising embers identify the bottom-three-row scope. The
+  effect is short, localized, and still understandable with reduced motion.
+
+### Information composition
+
+The right rail is an instrument stack, not a full-height column. It sizes to its
+stats/status/Next content; a mode-specific module appears only when it carries useful
+information. Settings uses four explicit surfaces in order: Rules, Controls,
+Keyboard, Record. Every surface owns its heading and grid so translation length
+cannot merge adjacent labels.
+
+English UI is locally packaged Space Grotesk Variable. Numeric and tabular data is
+locally packaged Geist Mono Variable. Chinese retains the accepted local UI/display
+families and the wordmark alone retains Playwrite NZ Basic. Layout is measured after
+`document.fonts.ready`; labels wrap deliberately and values never truncate their
+units.
+
+### Puzzle readout
+
+Puzzle guidance is diagnosis rather than instruction. At a decision boundary it
+enumerates the same finite legal hard-drop landings already used by route validation,
+then publishes four small quantities:
+
+1. **Direct clears:** landings that reduce remaining original cells immediately.
+2. **Safe landings:** landings that introduce no buried hole and do not raise the
+   non-target burden beyond the best available alternative.
+3. **Buried holes:** currently empty cells enclosed below occupied support.
+4. **Minimum burden:** the smallest number of extra non-target cells a legal landing
+   adds while preserving the puzzle objective.
+
+One prioritized sentence selects among direct clear, hole repair, narrow-gap
+preservation, or skyline flattening. The visible queue receives only role hints such
+as long-well, flat cap, junction, offset, or edge turn. The system never reveals an
+exact column/rotation path, mutates Core, consumes item or piece RNG, changes undo,
+or searches continuously with elapsed time.
+
+### Interaction edges
+
+The leave sheet initially selects Back to home. Home cards have no accent rail and
+retain a complete inset top edge through hover/focus/selection. Pointer leave removes
+pointer highlighting; keyboard focus remains independently visible.
+
 ## 2026-07-31 Phase 10 — pressure without ambiguity
 
 Phase 10 unifies a set of related defects around one design principle: **the player

@@ -1,5 +1,17 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T18 Phase 11 contract — 2026-07-31
+
+- Phase 10 remains accepted at clean base `a2d6670`; Phase 11 is now the sole active
+  contract and is not accepted.
+- Nine player findings are split into bounded checkpoints: bright enamel pieces and
+  connected cave geology; physical Ice/Supergravity/Bomb feedback and a truthful
+  independent-column ghost; compact HUD/Settings/home interactions; locally packaged
+  Space Grotesk and Geist Mono with bilingual fit; and deterministic Puzzle diagnosis
+  based on legal landings, holes, burden, skyline, and the visible queue.
+- Work is single-writer with no project listener/browser. Focused gates run per source
+  checkpoint; full gates and real-frame evidence wait for the immutable candidate.
+
 ### T16 Phase 9 four-surface re-open — 2026-07-31
 
 - The corrected navigation cascade at `693f3d4` remains a recovery point, but Phase 9

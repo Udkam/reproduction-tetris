@@ -1,4 +1,93 @@
-# Current Task — T17 TetraMorph Phase 10 Acceptance
+# Current Task — T18 TetraMorph Phase 11 Readability and Puzzle Intent
+
+## Phase 11 active goal — luminous materials, compact information, explainable puzzles
+
+**Status (2026-07-31): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
+
+Phase 11 remains open until every outcome below is implemented, verified in real play,
+independently reviewed, committed as bounded recovery points, and pushed. A passing
+unit test, a single screenshot, or an attractive isolated frame is not completion.
+
+1. **Ordinary pieces read as bright enamel, not dim tiles.** The seven tetromino
+   families keep distinct hues and dark edge contrast, while face and inner-edge
+   values rise enough to remain vivid against the midnight well in normal, ghost,
+   Next, Puzzle, and Mutation-carrier states. Brightening must not become neon bloom
+   or erase attachment identity.
+2. **Survival geology reads as rock at both scales.** Permanent bedrock becomes a
+   compact basalt shelf with an irregular connected silhouette, a few broad mineral
+   planes, sparse branching fractures, and subdued internal cell seams. Falling
+   stones use the same geology but retain a brighter leading plane, clearer moving
+   perimeter, and sparse downward grit. Neither role may resemble wood, bricks,
+   stickers, or a repeated per-cell texture.
+3. **Leaving defaults to the requested destination.** In the leave confirmation,
+   `返回首页 / Back to home` is the initial keyboard action. Left/Right still changes
+   selection, Enter executes it, Escape safely closes the sheet, and pointer actions
+   remain direct.
+4. **Mutation effects communicate physical behavior rather than symbols.** Ice uses
+   one long, smooth upper cold-front fade with no horizontal band or full-board wash.
+   Supergravity removes the central emblem and screen-flash language, replacing it
+   with restrained downward pressure, falling particulate, and local compression at
+   settlement. Its ghost shows the real independently settled final cells for every
+   active column. Bomb communicates the bottom-three-row blast through heat, embers,
+   and an irregular floor pulse without a `3×10` rectangle. Concurrent items remain
+   separately legible and reduced motion retains state without travelling animation.
+5. **The in-game instrument rail is content-sized.** Stats, active status, Next, and
+   mode-specific information form one compact hierarchy; the rail may not reserve a
+   tall empty column. Puzzle uses the reclaimed area for meaningful analysis rather
+   than decorative copy. Desktop, portrait, and short landscape keep one Canvas and
+   no clipping or overflow.
+6. **English and numeric typography are re-authored and locally packaged.** English
+   UI uses Space Grotesk Variable and data uses Geist Mono Variable; `TetraMorph`
+   alone keeps Playwrite NZ Basic. Font loading creates no runtime request. Chinese
+   and English at supported viewports must show complete labels and values with no
+   collision, disappearance, faux-weight jump, or ellipsis such as truncated
+   `s/cell`.
+7. **Settings is visibly sectional.** Rules, Controls, Keyboard, and Record each own
+   a distinct heading, boundary, density, and reading order. English labels cannot
+   concatenate into strings such as `Controls Language` or `KeyboardGameplay`.
+   Keyboard keeps Gameplay before Shortcuts and the panel has no structural void.
+8. **Home cards use complete edges, not decorative rails.** Remove every left accent
+   bar. Hover and keyboard focus preserve all four card borders, including the top
+   edge, without leaving pointer selection active after the cursor exits.
+9. **Puzzle exposes logic without giving away a scripted solution.** A deterministic,
+   non-mutating readout derives from the current board, immutable anchors, remaining
+   original cells, the current piece, and the visible two-piece queue. It reports:
+   direct-clear landing count, safe landing count, buried-hole count, and minimum
+   added burden. One concise strategy line explains the current priority, and the two
+   queued pieces receive compact role hints. The analysis must help players reason
+   about wells, row completion, skyline, holes, and future fit without consuming RNG,
+   altering undo/replay, leaking exact coordinates, or running an unbounded search
+   each frame.
+
+## Phase 11 checkpoint order
+
+1. P11.0: contract, visual grammar, ownership, and browser proof matrix.
+2. P11.1: brighter enamel palette and connected Survival geology.
+3. P11.2: Ice, Supergravity, Bomb, and true Supergravity ghost projection.
+4. P11.3: leave default, compact HUD, Settings sections, and home-card edges.
+5. P11.4: local English/data fonts and bilingual fit corrections.
+6. P11.5: deterministic Puzzle diagnosis and strategy readout.
+7. P11.6: exactly one final typecheck, full suite, and production build after the
+   final source edit.
+8. P11.7: multi-round browser evidence from the immutable candidate.
+9. P11.8: independent read-only QA, security scan, acceptance docs, push, and owned
+   resource release.
+
+## Phase 11 resource and evidence boundary
+
+- One writer owns source. No Serena, WMI/CIM, persistent indexer, watcher, or browser
+  is used for code reading. Focused tests use one worker and no file parallelism.
+- At most one project server and one managed browser batch may exist during visual
+  evidence; both need explicit ownership and must be released at the boundary.
+- Browser acceptance covers Chinese and English, desktop, portrait, and short
+  landscape; reduced motion; keyboard and pointer paths; Survival shelf plus one- and
+  two-stone events; all three Mutation effects; Puzzle metrics across at least three
+  tactical board states; one Canvas; zero DOM cells, console errors, page errors,
+  clipping, and unintended overflow.
+
+---
+
+## Archived Phase 10 acceptance
 
 ## Phase 10 active goal — readable state, fair pressure, and mode-first results
 
