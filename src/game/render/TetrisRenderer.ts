@@ -348,69 +348,85 @@ function halton(index: number, base: number): number {
   return result;
 }
 
-function clipReliefRegion(
-  polygon: readonly ReliefPoint[],
-  site: ReliefPoint,
-  neighbour: ReliefPoint,
-): ReliefPoint[] {
-  if (!polygon.length) return [];
-  const middleX = (site[0] + neighbour[0]) * 0.5;
-  const middleY = (site[1] + neighbour[1]) * 0.5;
-  const normalX = neighbour[0] - site[0];
-  const normalY = neighbour[1] - site[1];
-  const signedDistance = ([x, y]: ReliefPoint): number => (
-    (x - middleX) * normalX + (y - middleY) * normalY
-  );
-  const clipped: ReliefPoint[] = [];
-  let previous = polygon[polygon.length - 1]!;
-  let previousDistance = signedDistance(previous);
-  for (const current of polygon) {
-    const currentDistance = signedDistance(current);
-    const previousInside = previousDistance <= 0.0001;
-    const currentInside = currentDistance <= 0.0001;
-    if (previousInside !== currentInside) {
-      const ratio = previousDistance / (previousDistance - currentDistance);
-      clipped.push([
-        previous[0] + (current[0] - previous[0]) * ratio,
-        previous[1] + (current[1] - previous[1]) * ratio,
-      ]);
-    }
-    if (currentInside) clipped.push(current);
-    previous = current;
-    previousDistance = currentDistance;
-  }
-  return clipped;
+function clampRelief(value: number, minimum: number, maximum: number): number {
+  return Math.max(minimum, Math.min(maximum, value));
 }
 
-function buildReliefRegions(
+function buildRockRidge(
   left: number,
   top: number,
   width: number,
   height: number,
+  index: number,
   count: number,
-  phase: number,
-): readonly { site: ReliefPoint; points: readonly ReliefPoint[] }[] {
-  const sites = Array.from({ length: count }, (_, index): ReliefPoint => {
-    const sequence = index + 1 + phase * 17;
-    const x = 0.025 + halton(sequence, 2) * 0.95;
-    const y = 0.025 + halton(sequence, 3) * 0.95;
-    return [left + width * x, top + height * y];
-  });
-  const bounds: readonly ReliefPoint[] = [
-    [left, top],
-    [left + width, top],
-    [left + width, top + height],
-    [left, top + height],
-  ];
-  return sites.map((site, siteIndex) => {
-    let points = [...bounds];
-    for (let neighbourIndex = 0; neighbourIndex < sites.length; neighbourIndex += 1) {
-      if (neighbourIndex === siteIndex) continue;
-      points = clipReliefRegion(points, site, sites[neighbourIndex]!);
-      if (!points.length) break;
-    }
-    return { site, points };
-  }).filter(({ points }) => points.length >= 3);
+): readonly ReliefPoint[] {
+  const right = left + width;
+  const bottom = top + height;
+  const stepCount = 7;
+  const nominalWidth = width / count;
+  const centerBase = left + nominalWidth * (index + 0.5);
+  const halfBase = nominalWidth * (0.56 + halton(index + 3, 7) * 0.34);
+  const leftEdge: ReliefPoint[] = [];
+  const rightEdge: ReliefPoint[] = [];
+  for (let step = 0; step < stepCount; step += 1) {
+    const sequence = index * 23 + step + 1;
+    const y = top + height * (step / (stepCount - 1));
+    const center = centerBase
+      + (halton(sequence, 3) - 0.5) * nominalWidth * 0.72
+      + Math.sin((step + index * 0.83) * 1.17) * nominalWidth * 0.12;
+    const halfWidth = halfBase * (0.72 + halton(sequence, 5) * 0.52);
+    leftEdge.push([clampRelief(center - halfWidth, left, right), clampRelief(y, top, bottom)]);
+    rightEdge.push([clampRelief(center + halfWidth, left, right), clampRelief(y, top, bottom)]);
+  }
+  return [...leftEdge, ...rightEdge.reverse()];
+}
+
+function buildRockPatch(
+  left: number,
+  top: number,
+  width: number,
+  height: number,
+  index: number,
+  scale: number,
+  offsetX: number,
+  offsetY: number,
+): readonly ReliefPoint[] {
+  const sequence = index * 31 + 7;
+  const radiusX = width * (0.055 + halton(sequence, 3) * 0.085);
+  const radiusY = height * (0.14 + halton(sequence, 5) * 0.16);
+  const centerX = left + radiusX + (width - radiusX * 2) * halton(sequence, 7);
+  const centerY = top + radiusY + (height - radiusY * 2) * halton(sequence, 11);
+  const right = left + width;
+  const bottom = top + height;
+  const points: ReliefPoint[] = [];
+  const vertexCount = 10;
+  for (let vertex = 0; vertex < vertexCount; vertex += 1) {
+    const angle = -Math.PI / 2 + (Math.PI * 2 * vertex) / vertexCount;
+    const radial = 0.76 + halton(sequence + vertex * 13, 13) * 0.32;
+    const x = centerX + offsetX + Math.cos(angle) * radiusX * scale * radial;
+    const y = centerY + offsetY + Math.sin(angle) * radiusY * scale * radial;
+    points.push([
+      clampRelief(x, left, right),
+      clampRelief(y, top, bottom),
+    ]);
+  }
+  return points;
+}
+
+function buildRockLip(
+  left: number,
+  top: number,
+  width: number,
+  size: number,
+): readonly ReliefPoint[] {
+  const segments = Math.max(8, Math.round(width / Math.max(1, size * 0.7)));
+  const points: ReliefPoint[] = [[left, top], [left + width, top]];
+  for (let segment = segments; segment >= 0; segment -= 1) {
+    const ratio = segment / segments;
+    const depth = size * (0.1 + halton(segment + 5, 3) * 0.13);
+    points.push([left + width * ratio, top + depth]);
+  }
+  return points;
 }
 
 function cubicBezierCoordinate(value: number, first: number, second: number): number {
@@ -1735,32 +1751,59 @@ export class TetrisRenderer {
       .rect(left, top, width, height)
       .fill({ fill: this.gradientFor(BEDROCK_CELL), alpha });
 
-    const layers = [
-      {
-        regions: buildReliefRegions(left, top, width, height, Math.max(6, Math.min(18, Math.round(cellArea / 3.1))), 0),
-        alpha: 0.2,
-        toneSpan: 0.18,
-      },
-      {
-        regions: buildReliefRegions(left, top, width, height, Math.max(10, Math.min(42, Math.round(cellArea / 1.18))), 1),
-        alpha: 0.42,
-        toneSpan: 0.12,
-      },
-    ] as const;
-    for (const [layerIndex, layer] of layers.entries()) {
-      for (const [regionIndex, region] of layer.regions.entries()) {
-        const depth = (region.site[1] - top) / Math.max(1, height);
-        const variation = halton(regionIndex + 1 + layerIndex * 13, 5) - 0.5;
-        const tone = Math.max(0.08, Math.min(0.78, 0.22 + depth * 0.38 + variation * layer.toneSpan));
-        let faceColor = mixHexColor(material.fillStart, material.fillEnd, tone);
-        if ((regionIndex + layerIndex * 3) % 11 === 0) {
-          faceColor = mixHexColor(faceColor, material.innerEdge, layerIndex === 0 ? 0.055 : 0.035);
-        }
-        graphics
-          .poly(region.points.flatMap(([x, y]) => [x, y]))
-          .fill({ color: faceColor, alpha: Math.min(alpha, alpha * layer.alpha) });
-      }
+    const ridgeCount = Math.max(5, Math.min(8, Math.round(width / Math.max(1, size * 1.55))));
+    for (let ridgeIndex = 0; ridgeIndex < ridgeCount; ridgeIndex += 1) {
+      const ridgeTone = 0.18 + halton(ridgeIndex + 4, 5) * 0.62;
+      const ridgeColor = ridgeIndex % 2 === 0
+        ? mixHexColor(material.fillStart, material.innerEdge, 0.12 + ridgeTone * 0.08)
+        : mixHexColor(material.fillEnd, material.edge, 0.08 + ridgeTone * 0.1);
+      graphics
+        .poly(buildRockRidge(left, top, width, height, ridgeIndex, ridgeCount).flatMap(([x, y]) => [x, y]))
+        .fill({ color: ridgeColor, alpha: Math.min(alpha, alpha * (0.2 + ridgeTone * 0.12)) });
     }
+
+    const patchCount = Math.max(9, Math.min(18, Math.round(Math.sqrt(cellArea) * 3)));
+    for (let patchIndex = 0; patchIndex < patchCount; patchIndex += 1) {
+      const depth = halton(patchIndex * 31 + 7, 11);
+      const variation = halton(patchIndex + 2, 5);
+      const faceColor = mixHexColor(
+        material.fillStart,
+        material.fillEnd,
+        Math.max(0.08, Math.min(0.88, 0.14 + depth * 0.56 + variation * 0.18)),
+      );
+      const shadow = buildRockPatch(
+        left,
+        top,
+        width,
+        height,
+        patchIndex,
+        1.08,
+        size * 0.045,
+        size * 0.07,
+      );
+      const face = buildRockPatch(left, top, width, height, patchIndex, 1, 0, 0);
+      const lift = buildRockPatch(
+        left,
+        top,
+        width,
+        height,
+        patchIndex,
+        0.48,
+        -size * 0.045,
+        -size * 0.055,
+      );
+      graphics
+        .poly(shadow.flatMap(([x, y]) => [x, y]))
+        .fill({ color: material.edge, alpha: Math.min(alpha, alpha * 0.3) })
+        .poly(face.flatMap(([x, y]) => [x, y]))
+        .fill({ color: faceColor, alpha: Math.min(alpha, alpha * 0.74) })
+        .poly(lift.flatMap(([x, y]) => [x, y]))
+        .fill({ color: material.innerEdge, alpha: Math.min(alpha, alpha * (0.11 + variation * 0.08)) });
+    }
+
+    graphics
+      .poly(buildRockLip(left, top, width, size).flatMap(([x, y]) => [x, y]))
+      .fill({ color: material.innerEdge, alpha: Math.min(alpha, alpha * 0.28) });
 
     this.strokeSegments(
       graphics,

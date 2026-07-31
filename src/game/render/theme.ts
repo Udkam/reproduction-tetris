@@ -118,10 +118,10 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
   // Compacted basalt shelf: a cool, heavy mass with restrained mineral lift.
-  fillStart: 0x6d7f89,
-  fillEnd: 0x556a75,
-  edge: 0x162630,
-  innerEdge: 0xa2b1b8,
+  fillStart: 0x78868b,
+  fillEnd: 0x3e5058,
+  edge: 0x18272e,
+  innerEdge: 0xb8c2c4,
 };
 
 /** Fresh, clearable falling rock from the same basalt family as bedrock. */

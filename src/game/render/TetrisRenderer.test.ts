@@ -568,7 +568,7 @@ describe('Puzzle undo presentation reset', () => {
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     expect(bedrockRects).toHaveLength(1);
     expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 72]);
-    expect(bedrockPolygons).toHaveLength(35);
+    expect(bedrockPolygons).toHaveLength(55);
     for (const face of bedrockPolygons) {
       const vertices = Array.from({ length: face.values.length / 2 }, (_, vertex) => (
         `${face.values[vertex * 2]?.toFixed(3)},${face.values[vertex * 2 + 1]?.toFixed(3)}`
@@ -585,12 +585,19 @@ describe('Puzzle undo presentation reset', () => {
       .map((operation) => (operation.options as { color?: unknown } | undefined)?.color)
       .filter((color): color is number => typeof color === 'number');
     expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(12);
-    const faceWidths = bedrockPolygons.map((face) => {
+    const reliefWidths = bedrockPolygons.slice(0, -1).map((face) => {
       const xValues = face.values.filter((_, index) => index % 2 === 0);
       return Math.max(...xValues) - Math.min(...xValues);
     });
-    expect(faceWidths.every((faceWidth) => faceWidth < 240 * 0.45)).toBe(true);
-    expect(new Set(faceWidths.map((faceWidth) => Math.round(faceWidth))).size).toBeGreaterThanOrEqual(10);
+    expect(reliefWidths.every((faceWidth) => faceWidth < 240 * 0.55)).toBe(true);
+    expect(new Set(reliefWidths.map((faceWidth) => Math.round(faceWidth))).size).toBeGreaterThanOrEqual(12);
+    const lip = bedrockPolygons.at(-1)!;
+    const lipXValues = lip.values.filter((_, index) => index % 2 === 0);
+    const lipYValues = lip.values.filter((_, index) => index % 2 === 1);
+    expect(Math.min(...lipXValues)).toBe(10);
+    expect(Math.max(...lipXValues)).toBe(250);
+    expect(Math.min(...lipYValues)).toBe(20);
+    expect(Math.max(...lipYValues)).toBeLessThan(26);
     const crossesFirstLogicalRow = bedrockPolygons.some((face) => {
       const yValues = face.values.filter((_, index) => index % 2 === 1);
       return Math.min(...yValues) < 44 && Math.max(...yValues) > 44;
@@ -669,7 +676,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
     const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
-    expect(entryPolygons).toBe(16);
+    expect(entryPolygons).toBe(38);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);
