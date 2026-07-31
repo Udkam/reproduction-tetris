@@ -19,6 +19,7 @@ import {
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
+let buildBedrockTexturePixels: (width: number, height: number) => Uint8ClampedArray;
 let originalCanvasContext: PropertyDescriptor | undefined;
 
 type DrawOperation = {
@@ -349,7 +350,7 @@ describe('Puzzle undo presentation reset', () => {
       configurable: true,
       value: () => null,
     });
-    ({ TetrisRenderer: TetrisRendererClass } = await import('./TetrisRenderer'));
+    ({ TetrisRenderer: TetrisRendererClass, buildBedrockTexturePixels } = await import('./TetrisRenderer'));
   });
 
   afterAll(() => {
@@ -528,7 +529,32 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('draws a flat-contact cross-grid cavern wall and complete square falling stones without decals', () => {
+  it('builds a deterministic, continuous, and visibly varied cavern height field', () => {
+    const first = buildBedrockTexturePixels(64, 32);
+    const second = buildBedrockTexturePixels(64, 32);
+    expect(first).toEqual(second);
+    expect(first).toHaveLength(64 * 32 * 4);
+    const luminance: number[] = [];
+    let adjacentDelta = 0;
+    let adjacentPairs = 0;
+    for (let y = 0; y < 32; y += 1) {
+      for (let x = 0; x < 64; x += 1) {
+        const index = (y * 64 + x) * 4;
+        const value = (first[index]! * 0.2126) + (first[index + 1]! * 0.7152) + (first[index + 2]! * 0.0722);
+        luminance.push(value);
+        expect(first[index + 3]).toBe(255);
+        if (x > 0) {
+          adjacentDelta += Math.abs(value - luminance[luminance.length - 2]!);
+          adjacentPairs += 1;
+        }
+      }
+    }
+    expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(45);
+    expect(new Set(luminance.map((value) => Math.round(value))).size).toBeGreaterThan(55);
+    expect(adjacentDelta / adjacentPairs).toBeLessThan(13);
+  });
+
+  it('draws a flat-contact continuous cavern wall and complete square falling stones without decals', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const shelf = Array.from({ length: 30 }, (_, index) => {
@@ -568,7 +594,7 @@ describe('Puzzle undo presentation reset', () => {
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     expect(bedrockRects).toHaveLength(1);
     expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 72]);
-    expect(bedrockPolygons).toHaveLength(25);
+    expect(bedrockPolygons).toHaveLength(1);
     for (const face of bedrockPolygons) {
       const vertices = Array.from({ length: face.values.length / 2 }, (_, vertex) => (
         `${face.values[vertex * 2]?.toFixed(3)},${face.values[vertex * 2 + 1]?.toFixed(3)}`
@@ -581,33 +607,13 @@ describe('Puzzle undo presentation reset', () => {
       expect(Math.min(...yValues)).toBeGreaterThanOrEqual(20);
       expect(Math.max(...yValues)).toBeLessThanOrEqual(92);
     }
-    const bedrockFaceFills = bedrock.operations
-      .map((operation) => (operation.options as { color?: unknown } | undefined)?.color)
-      .filter((color): color is number => typeof color === 'number');
-    expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(8);
-    const reliefWidths = bedrockPolygons.slice(0, -1).map((face) => {
-      const xValues = face.values.filter((_, index) => index % 2 === 0);
-      return Math.max(...xValues) - Math.min(...xValues);
-    });
-    expect(reliefWidths.every((faceWidth) => faceWidth < 240 * 0.55)).toBe(true);
-    expect(new Set(reliefWidths.map((faceWidth) => Math.round(faceWidth))).size).toBeGreaterThanOrEqual(10);
-    const lip = bedrockPolygons.at(-1)!;
+    const lip = bedrockPolygons[0]!;
     const lipXValues = lip.values.filter((_, index) => index % 2 === 0);
     const lipYValues = lip.values.filter((_, index) => index % 2 === 1);
     expect(Math.min(...lipXValues)).toBe(10);
     expect(Math.max(...lipXValues)).toBe(250);
     expect(Math.min(...lipYValues)).toBe(20);
     expect(Math.max(...lipYValues)).toBeLessThan(26);
-    const crossesFirstLogicalRow = bedrockPolygons.some((face) => {
-      const yValues = face.values.filter((_, index) => index % 2 === 1);
-      return Math.min(...yValues) < 44 && Math.max(...yValues) > 44;
-    });
-    const crossesSecondLogicalRow = bedrockPolygons.some((face) => {
-      const yValues = face.values.filter((_, index) => index % 2 === 1);
-      return Math.min(...yValues) < 68 && Math.max(...yValues) > 68;
-    });
-    expect(crossesFirstLogicalRow).toBe(true);
-    expect(crossesSecondLogicalRow).toBe(true);
     expect(bedrock.operations[2]?.kind).toBe('poly');
     const bedrockSegments = bedrock.operations.filter((operation) => operation.kind === 'segment');
     expect(bedrockSegments).toEqual([{ kind: 'segment', values: [10, 20, 250, 20] }]);
@@ -676,7 +682,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
     const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
-    expect(entryPolygons).toBe(27);
+    expect(entryPolygons).toBe(1);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);

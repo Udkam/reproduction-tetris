@@ -326,14 +326,6 @@ const SURVIVAL_ENTRY_RISE_MS = 680;
 const SURVIVAL_ENTRY_SETTLE_MS = 140;
 const SURVIVAL_ENTRY_DURATION_MS = SURVIVAL_ENTRY_RISE_MS + SURVIVAL_ENTRY_SETTLE_MS;
 
-function mixHexColor(first: number, second: number, ratio: number): number {
-  const amount = Math.max(0, Math.min(1, ratio));
-  const mixChannel = (shift: number): number => Math.round(
-    ((first >> shift) & 0xff) * (1 - amount) + ((second >> shift) & 0xff) * amount,
-  );
-  return (mixChannel(16) << 16) | (mixChannel(8) << 8) | mixChannel(0);
-}
-
 type ReliefPoint = readonly [x: number, y: number];
 
 function halton(index: number, base: number): number {
@@ -348,68 +340,90 @@ function halton(index: number, base: number): number {
   return result;
 }
 
-function clampRelief(value: number, minimum: number, maximum: number): number {
-  return Math.max(minimum, Math.min(maximum, value));
+function rockHash(x: number, y: number, seed: number): number {
+  let value = Math.imul(x, 0x1f123bb5) ^ Math.imul(y, 0x5f356495) ^ seed;
+  value = Math.imul(value ^ (value >>> 15), 0x2c1b3c6d);
+  value = Math.imul(value ^ (value >>> 12), 0x297a2d39);
+  return ((value ^ (value >>> 15)) >>> 0) / 0xffffffff;
 }
 
-function buildRockRidge(
-  left: number,
-  top: number,
-  width: number,
-  height: number,
-  index: number,
-  count: number,
-  scale = 1,
-  offsetX = 0,
-): readonly ReliefPoint[] {
-  const right = left + width;
-  const bottom = top + height;
-  const stepCount = 7;
-  const nominalWidth = width / count;
-  const centerBase = left + nominalWidth * (index + 0.5);
-  const halfBase = nominalWidth * (0.56 + halton(index + 3, 7) * 0.34);
-  const leftEdge: ReliefPoint[] = [];
-  const rightEdge: ReliefPoint[] = [];
-  for (let step = 0; step < stepCount; step += 1) {
-    const sequence = index * 23 + step + 1;
-    const y = top + height * (step / (stepCount - 1));
-    const center = centerBase + offsetX
-      + (halton(sequence, 3) - 0.5) * nominalWidth * 0.72
-      + Math.sin((step + index * 0.83) * 1.17) * nominalWidth * 0.12;
-    const halfWidth = halfBase * scale * (0.72 + halton(sequence, 5) * 0.52);
-    leftEdge.push([clampRelief(center - halfWidth, left, right), clampRelief(y, top, bottom)]);
-    rightEdge.push([clampRelief(center + halfWidth, left, right), clampRelief(y, top, bottom)]);
+function rockNoise(x: number, y: number, seed: number): number {
+  const x0 = Math.floor(x);
+  const y0 = Math.floor(y);
+  const tx = x - x0;
+  const ty = y - y0;
+  const fadeX = tx * tx * (3 - 2 * tx);
+  const fadeY = ty * ty * (3 - 2 * ty);
+  const top = rockHash(x0, y0, seed) * (1 - fadeX) + rockHash(x0 + 1, y0, seed) * fadeX;
+  const bottom = rockHash(x0, y0 + 1, seed) * (1 - fadeX) + rockHash(x0 + 1, y0 + 1, seed) * fadeX;
+  return top * (1 - fadeY) + bottom * fadeY;
+}
+
+function rockFbm(x: number, y: number, seed: number, octaves: number): number {
+  let amplitude = 0.56;
+  let frequency = 1;
+  let sum = 0;
+  let weight = 0;
+  for (let octave = 0; octave < octaves; octave += 1) {
+    sum += rockNoise(x * frequency, y * frequency, seed + octave * 0x9e37) * amplitude;
+    weight += amplitude;
+    amplitude *= 0.52;
+    frequency *= 2.03;
   }
-  return [...leftEdge, ...rightEdge.reverse()];
+  return weight > 0 ? sum / weight : 0;
 }
 
-function buildRockLedge(
-  left: number,
-  top: number,
-  width: number,
-  height: number,
-  index: number,
-): readonly ReliefPoint[] {
-  const sequence = index * 37 + 11;
-  const halfWidth = width * (0.07 + halton(sequence, 3) * 0.09);
-  const halfHeight = height * (0.055 + halton(sequence, 5) * 0.055);
-  const centerX = left + halfWidth + (width - halfWidth * 2) * halton(sequence, 7);
-  const centerY = top + halfHeight + (height - halfHeight * 2) * halton(sequence, 11);
-  const slope = (halton(sequence, 13) - 0.5) * height * 0.2;
-  const right = left + width;
-  const bottom = top + height;
-  const point = (x: number, y: number): ReliefPoint => [
-    clampRelief(x, left, right),
-    clampRelief(y, top, bottom),
-  ];
-  return [
-    point(centerX - halfWidth, centerY - slope * 0.46),
-    point(centerX - halfWidth * 0.28, centerY - halfHeight - slope * 0.16),
-    point(centerX + halfWidth * 0.42, centerY - halfHeight * 0.72 + slope * 0.22),
-    point(centerX + halfWidth, centerY + slope * 0.5),
-    point(centerX + halfWidth * 0.24, centerY + halfHeight + slope * 0.12),
-    point(centerX - halfWidth * 0.68, centerY + halfHeight * 0.64 - slope * 0.32),
-  ];
+/** Deterministic local height-field texture; exported only for renderer contract tests. */
+export function buildBedrockTexturePixels(requestedWidth: number, requestedHeight: number): Uint8ClampedArray {
+  const width = Math.max(2, Math.floor(requestedWidth));
+  const height = Math.max(2, Math.floor(requestedHeight));
+  const heights = new Float32Array(width * height);
+  for (let y = 0; y < height; y += 1) {
+    const v = y / (height - 1);
+    for (let x = 0; x < width; x += 1) {
+      const u = x / (width - 1);
+      const broad = rockFbm(u * 3.4 + 1.7, v * 2.35 + 4.2, 0x4d31, 5);
+      const weathered = rockFbm(u * 8.8 + 8.1, v * 5.2 + 1.3, 0x72a5, 4);
+      const ridgeSource = rockFbm(u * 5.6 + 3.9, v * 3.1 + 6.7, 0x218d, 4);
+      const ridge = 1 - Math.abs(ridgeSource * 2 - 1);
+      heights[y * width + x] = broad * 0.58 + weathered * 0.22 + ridge * 0.2;
+    }
+  }
+
+  const pixels = new Uint8ClampedArray(width * height * 4);
+  const lightX = -0.435;
+  const lightY = -0.553;
+  const lightZ = 0.711;
+  for (let y = 0; y < height; y += 1) {
+    const v = y / (height - 1);
+    for (let x = 0; x < width; x += 1) {
+      const u = x / (width - 1);
+      const source = y * width + x;
+      const leftHeight = heights[y * width + Math.max(0, x - 1)]!;
+      const rightHeight = heights[y * width + Math.min(width - 1, x + 1)]!;
+      const upHeight = heights[Math.max(0, y - 1) * width + x]!;
+      const downHeight = heights[Math.min(height - 1, y + 1) * width + x]!;
+      const normalX = (leftHeight - rightHeight) * 8.4;
+      const normalY = (upHeight - downHeight) * 7.1;
+      const normalLength = Math.sqrt(normalX * normalX + normalY * normalY + 1);
+      const light = Math.max(-0.35, Math.min(1, (
+        normalX * lightX + normalY * lightY + lightZ
+      ) / normalLength));
+      const heightValue = heights[source]!;
+      const mineral = rockNoise(u * 10.7 + 2.4, v * 7.3 + 5.1, 0x5b71) - 0.5;
+      const baseTone = Math.max(0, Math.min(1, 0.12 + heightValue * 0.92));
+      const depth = 1 - v * 0.14;
+      const illumination = Math.max(0.56, Math.min(1.18, 0.72 + light * 0.46)) * depth;
+      const deep = [42, 55, 61] as const;
+      const exposed = [126, 139, 143] as const;
+      const index = source * 4;
+      pixels[index] = Math.round((deep[0] + (exposed[0] - deep[0]) * baseTone) * illumination + mineral * 5);
+      pixels[index + 1] = Math.round((deep[1] + (exposed[1] - deep[1]) * baseTone) * illumination + mineral * 6);
+      pixels[index + 2] = Math.round((deep[2] + (exposed[2] - deep[2]) * baseTone) * illumination + mineral * 7);
+      pixels[index + 3] = 255;
+    }
+  }
+  return pixels;
 }
 
 function buildRockLip(
@@ -504,6 +518,9 @@ export class TetrisRenderer {
   private readonly mutationFilterState = { freeze: false, collapse: false };
   private readonly cellGradients = new Map<BoardMaterial, FillGradient>();
   private readonly overrideGradients = new Map<PieceMaterial, FillGradient>();
+  /** One deterministic procedural rock face, reused by every bedrock draw. */
+  private bedrockTexture: Texture | null = null;
+  private bedrockTextureUnavailable = false;
   /** One renderer-lifetime alpha gradient prevents Ice from resolving into visible scan bands. */
   private freezeAtmosphereGradient: FillGradient | null = null;
 
@@ -831,6 +848,9 @@ export class TetrisRenderer {
     this.cellGradients.clear();
     for (const gradient of this.overrideGradients.values()) gradient.destroy();
     this.overrideGradients.clear();
+    this.bedrockTexture?.destroy(true);
+    this.bedrockTexture = null;
+    this.bedrockTextureUnavailable = false;
     this.freezeAtmosphereGradient?.destroy();
     this.freezeAtmosphereGradient = null;
     this.app.destroy({ removeView: true }, { children: true });
@@ -1716,7 +1736,27 @@ export class TetrisRenderer {
     }
   }
 
-  /** Draws one flat-contact cavern wall with seamless cross-grid mineral relief. */
+  private textureForBedrock(): Texture | null {
+    if (this.bedrockTexture) return this.bedrockTexture;
+    if (this.bedrockTextureUnavailable || typeof document === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 320;
+    canvas.height = 128;
+    const context = canvas.getContext('2d');
+    if (!context) {
+      this.bedrockTextureUnavailable = true;
+      return null;
+    }
+    const image = context.createImageData(canvas.width, canvas.height);
+    image.data.set(buildBedrockTexturePixels(canvas.width, canvas.height));
+    context.putImageData(image, 0, 0);
+    const texture = Texture.from(canvas, true);
+    texture.label = 'procedural-bedrock-wall';
+    this.bedrockTexture = texture;
+    return texture;
+  }
+
+  /** Draws one flat-contact cavern wall with a continuous procedural rock face. */
   private drawBedrockBody(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1745,60 +1785,12 @@ export class TetrisRenderer {
     const bottom = Math.max(...ordered.map(({ y }) => y + size));
     const width = right - left;
     const height = bottom - top;
-    const cellArea = (width * height) / (size * size);
+    const bedrockTexture = this.textureForBedrock();
     graphics
       .rect(left, top, width, height)
-      .fill({ fill: this.gradientFor(BEDROCK_CELL), alpha });
-
-    const ridgeCount = Math.max(5, Math.min(8, Math.round(width / Math.max(1, size * 1.55))));
-    for (let ridgeIndex = 0; ridgeIndex < ridgeCount; ridgeIndex += 1) {
-      const ridgeTone = 0.18 + halton(ridgeIndex + 4, 5) * 0.62;
-      const ridgeColor = mixHexColor(material.fillStart, material.fillEnd, 0.16 + ridgeTone * 0.6);
-      graphics
-        .poly(buildRockRidge(
-          left,
-          top,
-          width,
-          height,
-          ridgeIndex,
-          ridgeCount,
-          1.14,
-          size * 0.06,
-        ).flatMap(([x, y]) => [x, y]))
-        .fill({ color: material.edge, alpha: Math.min(alpha, alpha * 0.32) })
-        .poly(buildRockRidge(
-          left,
-          top,
-          width,
-          height,
-          ridgeIndex,
-          ridgeCount,
-          0.9,
-        ).flatMap(([x, y]) => [x, y]))
-        .fill({ color: ridgeColor, alpha: Math.min(alpha, alpha * (0.64 + ridgeTone * 0.12)) })
-        .poly(buildRockRidge(
-          left,
-          top,
-          width,
-          height,
-          ridgeIndex,
-          ridgeCount,
-          0.42,
-          -size * 0.055,
-        ).flatMap(([x, y]) => [x, y]))
-        .fill({ color: material.innerEdge, alpha: Math.min(alpha, alpha * (0.1 + ridgeTone * 0.08)) });
-    }
-
-    const ledgeCount = Math.max(5, Math.min(8, Math.round(cellArea / 5)));
-    for (let ledgeIndex = 0; ledgeIndex < ledgeCount; ledgeIndex += 1) {
-      const variation = halton(ledgeIndex + 5, 5);
-      const ledgeColor = ledgeIndex % 3 === 0
-        ? mixHexColor(material.fillStart, material.innerEdge, 0.2)
-        : mixHexColor(material.fillEnd, material.edge, 0.18);
-      graphics
-        .poly(buildRockLedge(left, top, width, height, ledgeIndex).flatMap(([x, y]) => [x, y]))
-        .fill({ color: ledgeColor, alpha: Math.min(alpha, alpha * (0.16 + variation * 0.1)) });
-    }
+      .fill(bedrockTexture
+        ? { texture: bedrockTexture, textureSpace: 'local', alpha }
+        : { fill: this.gradientFor(BEDROCK_CELL), alpha });
 
     graphics
       .poly(buildRockLip(left, top, width, size).flatMap(([x, y]) => [x, y]))
