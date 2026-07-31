@@ -119,7 +119,7 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 export const BEDROCK_MATERIAL: PieceMaterial = {
   // Compacted basalt shelf: a cool, heavy mass with restrained mineral lift.
   fillStart: 0x78868b,
-  fillEnd: 0x3e5058,
+  fillEnd: 0x566a73,
   edge: 0x18272e,
   innerEdge: 0xb8c2c4,
 };
