@@ -531,11 +531,15 @@ describe('Puzzle undo presentation reset', () => {
   it('draws flat-topped staggered stone courses and complete square falling stones without decals', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const shelf = Array.from({ length: 10 }, (_, x) => ({
-      cell: { x, y: 17 },
-      x: 10 + x * 24,
-      y: 20,
-    }));
+    const shelf = Array.from({ length: 30 }, (_, index) => {
+      const x = index % 10;
+      const row = Math.floor(index / 10);
+      return {
+        cell: { x, y: 15 + row },
+        x: 10 + x * 24,
+        y: 20 + row * 24,
+      };
+    });
     const pair = [
       { cell: { x: 3, y: 16 }, x: 82, y: 20 },
       { cell: { x: 3, y: 17 }, x: 82, y: 44 },
@@ -563,27 +567,63 @@ describe('Puzzle undo presentation reset', () => {
     const fallingRects = falling.operations.filter((operation) => operation.kind === 'rect');
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     expect(bedrockRects).toHaveLength(1);
-    expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 24]);
-    expect(bedrockPolygons).toHaveLength(6);
+    expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 72]);
+    expect(bedrockPolygons).toHaveLength(17);
+    const courseFaces = [
+      bedrockPolygons.slice(0, 6),
+      bedrockPolygons.slice(6, 11),
+      bedrockPolygons.slice(11, 17),
+    ];
+    expect(courseFaces.map((course) => course.length)).toEqual([6, 5, 6]);
+    for (const [course, faces] of courseFaces.entries()) {
+      for (const face of faces) {
+        const vertices = Array.from({ length: face.values.length / 2 }, (_, vertex) => (
+          `${face.values[vertex * 2]?.toFixed(3)},${face.values[vertex * 2 + 1]?.toFixed(3)}`
+        ));
+        expect(new Set(vertices).size).toBeGreaterThanOrEqual(4);
+        const yValues = face.values.filter((_, index) => index % 2 === 1);
+        if (course === 0) {
+          expect(Math.min(...yValues)).toBe(20);
+        } else {
+          expect(Math.min(...yValues)).toBeGreaterThan(20);
+        }
+      }
+    }
     const bedrockFaceFills = bedrock.operations
       .map((operation) => (operation.options as { color?: unknown } | undefined)?.color)
       .filter((color): color is number => typeof color === 'number');
-    expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(6);
+    expect(new Set(bedrockFaceFills).size).toBeGreaterThanOrEqual(9);
     const faceWidths = bedrockPolygons.map((face) => {
       const xValues = face.values.filter((_, index) => index % 2 === 0);
       return Math.max(...xValues) - Math.min(...xValues);
     });
-    expect(faceWidths.every((faceWidth) => faceWidth < 240 * 0.25)).toBe(true);
+    expect(faceWidths.every((faceWidth) => faceWidth < 240 * 0.32)).toBe(true);
     expect(new Set(faceWidths.map((faceWidth) => Math.round(faceWidth))).size).toBeGreaterThanOrEqual(5);
     expect(bedrock.operations[2]?.kind).toBe('poly');
     const bedrockSegments = bedrock.operations.filter((operation) => operation.kind === 'segment');
-    expect(bedrockSegments).toHaveLength(11);
+    expect(bedrockSegments).toHaveLength(45);
+    const courseJointCounts = [10, 8, 10] as const;
+    let jointOffset = 0;
+    const jointXSets = courseJointCounts.map((count) => {
+      const courseJoints = bedrockSegments
+        .slice(jointOffset, jointOffset + count)
+        .filter((_, index) => index % 2 === 0)
+        .map((segment) => Number(segment.values[0]?.toFixed(3)));
+      jointOffset += count;
+      return new Set(courseJoints);
+    });
+    for (let firstCourse = 0; firstCourse < jointXSets.length; firstCourse += 1) {
+      for (let secondCourse = firstCourse + 1; secondCourse < jointXSets.length; secondCourse += 1) {
+        expect([...jointXSets[firstCourse]!].some((jointX) => jointXSets[secondCourse]!.has(jointX))).toBe(false);
+      }
+    }
     expect(bedrockSegments.some((segment) => (
       segment.values[0] === 10
       && segment.values[1] === 20
       && segment.values[2] === 250
       && segment.values[3] === 20
     ))).toBe(true);
+    expect(bedrock.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(2);
     expect(bedrock.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(fallingRects).toHaveLength(2);
