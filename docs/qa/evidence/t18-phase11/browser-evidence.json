@@ -1,0 +1,660 @@
+{
+  "taskId": "TETRIS-T18-PHASE11",
+  "sourceSha": "12fb0ae0b6e373ff856ca48d0187485232c4db99",
+  "baseUrl": "http://127.0.0.1:5178/",
+  "capturedAt": "2026-08-01",
+  "method": "One bounded Vite server and one Playwright Chromium instance; visible controls plus the public DEV QA command surface; no state replacement or fabricated terminal state.",
+  "qualityGates": {
+    "typecheck": "passed",
+    "tests": {
+      "status": "passed",
+      "files": 31,
+      "tests": 288
+    },
+    "build": {
+      "status": "passed",
+      "modules": 758
+    }
+  },
+  "home": {
+    "pointerHighlightClears": true,
+    "hoverChangesSurface": true,
+    "classicTopEdgeStable": true,
+    "accentRails": 0,
+    "assertions": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [
+        {
+          "testid": null,
+          "text": "经典"
+        },
+        {
+          "testid": null,
+          "text": "生存"
+        },
+        {
+          "testid": null,
+          "text": "异变"
+        },
+        {
+          "testid": null,
+          "text": "解谜"
+        }
+      ]
+    },
+    "englishShortLandscape": {
+      "viewport": [
+        844,
+        390
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    }
+  },
+  "classic": {
+    "settings": {
+      "boxes": [
+        {
+          "id": "settings-rules",
+          "top": 294.296875,
+          "bottom": 338.09375,
+          "width": 799,
+          "height": 43.796875
+        },
+        {
+          "id": "settings-controls",
+          "top": 347.09375,
+          "bottom": 431.09375,
+          "width": 799,
+          "height": 84
+        },
+        {
+          "id": "settings-shortcuts",
+          "top": 440.09375,
+          "bottom": 594.28125,
+          "width": 799,
+          "height": 154.1875
+        },
+        {
+          "id": "settings-leaderboard",
+          "top": 603.28125,
+          "bottom": 645.28125,
+          "width": 799,
+          "height": 42
+        }
+      ],
+      "ordered": true
+    },
+    "leaveDefault": "返回首页",
+    "nextVisibleBehindLeave": true,
+    "assertions": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    },
+    "englishSettings": {
+      "viewport": [
+        844,
+        390
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    },
+    "englishRecordReachability": {
+      "ownerClass": "action-sheet__actions",
+      "clientHeight": 286,
+      "scrollHeight": 353,
+      "targetTop": 313.578125,
+      "targetBottom": 355.578125,
+      "targetVisible": true
+    },
+    "fontFamilies": {
+      "ui": "\"Space Grotesk Variable\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+      "data": "\"Geist Mono Variable\", \"TetraMorph UI Sans\", \"Cascadia Mono\", monospace",
+      "remoteStylesheets": [],
+      "status": "loaded"
+    }
+  },
+  "survival": {
+    "entry": {
+      "row1Rise": {
+        "rows": 1,
+        "elapsedMs": 767.89599999851,
+        "durationMs": 820,
+        "offsetY": 0.12093641664424994
+      },
+      "row2Rise": {
+        "rows": 2,
+        "elapsedMs": 766.6000000000004,
+        "durationMs": 820,
+        "offsetY": 0.13018701573760902
+      },
+      "countdownPreview": {
+        "previewLayerVisible": false,
+        "activeCells": 0,
+        "ghostCells": 0
+      }
+    },
+    "stoneEvents": {
+      "1": {
+        "id": 1,
+        "x": 7,
+        "y": 22,
+        "height": 1,
+        "presentationY": 21.589050816925894,
+        "cells": [
+          {
+            "x": 7,
+            "y": 22
+          }
+        ]
+      },
+      "2": {
+        "id": 1,
+        "x": 0,
+        "y": 22,
+        "height": 2,
+        "presentationY": 21.579743802478227,
+        "cells": [
+          {
+            "x": 0,
+            "y": 22
+          },
+          {
+            "x": 0,
+            "y": 23
+          }
+        ]
+      }
+    },
+    "oneAndTwoStoneEvents": true,
+    "assertions": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    }
+  },
+  "mutation": {
+    "captures": {
+      "carrier-next": "multiplier",
+      "multiplier": {
+        "activation": {
+          "item": "multiplier",
+          "elapsedMs": 200,
+          "durationMs": 520,
+          "phases": [
+            {
+              "id": "score-pop",
+              "active": true,
+              "complete": false,
+              "progress": 0.7692307692307693,
+              "value": 1.057415657715066
+            },
+            {
+              "id": "spark-tail",
+              "active": true,
+              "complete": false,
+              "progress": 0.2841163310961969,
+              "value": 0.6331171884362095
+            }
+          ],
+          "particlesEmitted": true,
+          "triggerColumns": [
+            2,
+            3,
+            4,
+            8,
+            9
+          ]
+        },
+        "filters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        }
+      },
+      "collapse": {
+        "activation": {
+          "item": "bomb",
+          "elapsedMs": 583.2999999999993,
+          "durationMs": 900,
+          "phases": [
+            {
+              "id": "warning",
+              "active": false,
+              "complete": true,
+              "progress": 1,
+              "value": 1
+            },
+            {
+              "id": "pulse",
+              "active": false,
+              "complete": true,
+              "progress": 1,
+              "value": 1
+            },
+            {
+              "id": "impact",
+              "active": true,
+              "complete": false,
+              "progress": 0.9164999999999963,
+              "value": 0.7698345671249907
+            },
+            {
+              "id": "shockwave",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 0
+            }
+          ],
+          "particlesEmitted": true,
+          "triggerColumns": [
+            6,
+            7
+          ]
+        },
+        "filters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "projectionVariedByColumn": true,
+        "dropDistances": [
+          13,
+          13,
+          15,
+          19
+        ]
+      },
+      "freeze": {
+        "activation": {
+          "item": "collapse",
+          "elapsedMs": 66.60000000000036,
+          "durationMs": 300,
+          "phases": [
+            {
+              "id": "pull",
+              "active": true,
+              "complete": false,
+              "progress": 0.370000000000002,
+              "value": 0.9998351277400023
+            },
+            {
+              "id": "settle",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 0
+            }
+          ],
+          "particlesEmitted": true,
+          "triggerColumns": [
+            8,
+            9
+          ]
+        },
+        "filters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        }
+      },
+      "bomb": {
+        "activation": {
+          "item": "bomb",
+          "elapsedMs": 116.70000000000073,
+          "durationMs": 900,
+          "phases": [
+            {
+              "id": "warning",
+              "active": true,
+              "complete": false,
+              "progress": 0.5835000000000037,
+              "value": 0.9277488078750019
+            },
+            {
+              "id": "pulse",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 2.220446049250313e-16
+            },
+            {
+              "id": "impact",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 0
+            },
+            {
+              "id": "shockwave",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 0
+            }
+          ],
+          "particlesEmitted": false,
+          "triggerColumns": [
+            6,
+            7,
+            8
+          ]
+        },
+        "filters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        }
+      }
+    },
+    "piecesPlayed": 145,
+    "lines": 81,
+    "allItemsCaptured": true,
+    "supergravityPerColumnPreview": true,
+    "assertions": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    },
+    "isolated": {
+      "freeze": {
+        "seed": 49,
+        "pieceCount": 3,
+        "activeTimedStates": [
+          "freeze"
+        ],
+        "activation": null,
+        "assertions": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "horizontalOverflow": false,
+          "verticalOverflow": false,
+          "clippedText": []
+        }
+      },
+      "collapse": {
+        "seed": 47,
+        "pieceCount": 7,
+        "activeTimedStates": [
+          "collapse"
+        ],
+        "activation": null,
+        "assertions": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "horizontalOverflow": false,
+          "verticalOverflow": false,
+          "clippedText": []
+        }
+      },
+      "bomb": {
+        "seed": 21,
+        "pieceCount": 9,
+        "activeTimedStates": [],
+        "activation": {
+          "item": "bomb",
+          "elapsedMs": 699.8999999999996,
+          "durationMs": 900,
+          "phases": [
+            {
+              "id": "warning",
+              "active": false,
+              "complete": true,
+              "progress": 1,
+              "value": 1
+            },
+            {
+              "id": "pulse",
+              "active": false,
+              "complete": true,
+              "progress": 1,
+              "value": 1
+            },
+            {
+              "id": "impact",
+              "active": false,
+              "complete": true,
+              "progress": 1,
+              "value": 1
+            },
+            {
+              "id": "shockwave",
+              "active": true,
+              "complete": false,
+              "progress": 0.3329999999999988,
+              "value": 0.7032590369999985
+            }
+          ],
+          "particlesEmitted": true,
+          "triggerColumns": [
+            5,
+            6
+          ]
+        },
+        "assertions": {
+          "viewport": [
+            1440,
+            900
+          ],
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "horizontalOverflow": false,
+          "verticalOverflow": false,
+          "clippedText": []
+        }
+      }
+    }
+  },
+  "puzzle": {
+    "library": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [
+        {
+          "testid": null,
+          "text": "缺口"
+        },
+        {
+          "testid": null,
+          "text": "解谜"
+        }
+      ]
+    },
+    "states": [
+      {
+        "metrics": [
+          {
+            "id": "direct-clears",
+            "text": "直消落点1"
+          },
+          {
+            "id": "safe-landings",
+            "text": "安全落点1"
+          },
+          {
+            "id": "buried-holes",
+            "text": "埋洞3"
+          },
+          {
+            "id": "minimum-burden",
+            "text": "最小负担1"
+          }
+        ],
+        "strategy": "有 1 个落点能直接减少原有方块，先完成目标行。",
+        "roles": [
+          {
+            "role": "junction",
+            "text": "1T接口"
+          },
+          {
+            "role": "long-well",
+            "text": "2I长槽"
+          }
+        ]
+      },
+      {
+        "metrics": [
+          {
+            "id": "direct-clears",
+            "text": "直消落点1"
+          },
+          {
+            "id": "safe-landings",
+            "text": "安全落点1"
+          },
+          {
+            "id": "buried-holes",
+            "text": "埋洞3"
+          },
+          {
+            "id": "minimum-burden",
+            "text": "最小负担1"
+          }
+        ],
+        "strategy": "有 1 个落点能直接减少原有方块，先完成目标行。",
+        "roles": [
+          {
+            "role": "long-well",
+            "text": "1I长槽"
+          },
+          {
+            "role": "edge-turn",
+            "text": "2J转角"
+          }
+        ]
+      },
+      {
+        "metrics": [
+          {
+            "id": "direct-clears",
+            "text": "Direct clears0"
+          },
+          {
+            "id": "safe-landings",
+            "text": "Safe landings22"
+          },
+          {
+            "id": "buried-holes",
+            "text": "Buried holes5"
+          },
+          {
+            "id": "minimum-burden",
+            "text": "Min burden4"
+          }
+        ],
+        "strategy": "No direct clear yet; flatten the skyline to limit extra burden.",
+        "roles": [
+          {
+            "role": "edge-turn",
+            "text": "1JEdge turn"
+          },
+          {
+            "role": "offset",
+            "text": "2ZOffset"
+          }
+        ]
+      }
+    ],
+    "distinctStrategies": 2,
+    "metricsPerState": [
+      4,
+      4,
+      4
+    ],
+    "rolesPerState": [
+      2,
+      2,
+      2
+    ],
+    "assertions": {
+      "viewport": [
+        844,
+        390
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": []
+    },
+    "reducedMotion": true
+  },
+  "resources": {
+    "vitePid": 33228,
+    "browserClosed": true,
+    "port5178Released": true
+  },
+  "captures": [
+    "classic-leave-default-1440x900-zh.png",
+    "classic-playing-1440x900-zh.png",
+    "classic-settings-1440x900-zh.png",
+    "classic-settings-844x390-en.png",
+    "classic-settings-record-844x390-en.png",
+    "home-1440x900-zh.png",
+    "home-844x390-en.png",
+    "mutation-bomb.png",
+    "mutation-carrier-next.png",
+    "mutation-freeze.png",
+    "mutation-isolated-bomb.png",
+    "mutation-isolated-collapse.png",
+    "mutation-isolated-freeze.png",
+    "mutation-multiplier.png",
+    "mutation-supergravity.png",
+    "puzzle-guidance-state-0-1440x900-zh.png",
+    "puzzle-guidance-state-1-390x844-zh.png",
+    "puzzle-guidance-state-2-844x390-en-reduced.png",
+    "puzzle-library-1440x900-zh.png",
+    "survival-cavern-1440x900-zh.png",
+    "survival-entry-rise-row1.png",
+    "survival-entry-rise-row2.png",
+    "survival-falling-stone-1.png",
+    "survival-falling-stone-2.png"
+  ]
+}
