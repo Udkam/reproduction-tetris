@@ -47,7 +47,7 @@ describe('T5 puzzle browser QA replay', () => {
     expect(first.state.puzzleId).toBe('t5r-drift-08');
     expect(first.state.puzzleCompletion).toBe('finished');
     expect(first.state.completedLevelId).toBe('t5r-drift-08');
-    expect(first.state.nextUnlockedLevelId).toBe('t5r-rift-10');
+    expect(first.state.nextUnlockedLevelId).toBe('t5r-pulse-14');
     expect(first.state.puzzleTargetCells).toEqual([]);
     expect(encodePuzzleRoute(first.commands)).toBe(phase7PuzzleQaRoute);
     expect(first.hash).toBe(second.hash);
