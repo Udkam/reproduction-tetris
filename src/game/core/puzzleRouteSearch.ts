@@ -32,7 +32,7 @@ export interface PuzzleRouteReplay {
   locks: readonly PuzzleLockPlacement[];
 }
 
-interface Landing {
+export interface PuzzleLanding {
   state: GameState;
   commands: readonly GameCommand[];
   lock: PuzzleLockPlacement;
@@ -121,11 +121,11 @@ function settleAfterLock(state: GameState): { state: GameState; commands: readon
  * delay resolution a player sees; no timing trick, unsupported counter-rotation, or
  * state injection is part of the route domain.
  */
-export function puzzleLandings(state: GameState): readonly Landing[] {
+export function puzzleLandings(state: GameState): readonly PuzzleLanding[] {
   if (!isActive(state)) return [];
   const queue: { state: GameState; commands: readonly GameCommand[] }[] = [{ state, commands: [] }];
   const seen = new Set<string>();
-  const result: Landing[] = [];
+  const result: PuzzleLanding[] = [];
 
   const activeKey = (candidate: GameState) => {
     const active = candidate.active;

@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -11,11 +12,13 @@ import {
   MUTATION_FREEZE_GRAVITY_TICKS,
   PIECE_TYPES,
   TICKS_PER_SECOND,
+  analyzePuzzleGuidance,
   type GameEvent,
   type GameMode,
   type GameState,
   type MutationItem,
   type PieceType,
+  type PuzzleGuidance,
   type PuzzleId,
   createInitialState,
   getPuzzleDefinition,
@@ -1082,6 +1085,55 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
   );
 }
 
+export function PuzzleGuidancePanel({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
+  const copy = appCopy(language);
+  const lastGuidance = useRef<PuzzleGuidance | null>(null);
+  const currentGuidance = useMemo(
+    () => analyzePuzzleGuidance(state),
+    [state.active, state.board, state.mode, state.phase, state.puzzleTargetCells, state.queue, state.status],
+  );
+  if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') lastGuidance.current = null;
+  else if (currentGuidance !== null) lastGuidance.current = currentGuidance;
+  const guidance = currentGuidance ?? lastGuidance.current;
+  if (guidance === null) return null;
+
+  const metrics = [
+    [copy.labels.directClearLandings, guidance.directClearLandings, 'direct-clears'],
+    [copy.labels.safeLandings, guidance.safeLandings, 'safe-landings'],
+    [copy.labels.buriedHoles, guidance.buriedHoles, 'buried-holes'],
+    [copy.labels.minimumBurden, guidance.minimumBurden, 'minimum-burden'],
+  ] as const;
+
+  return (
+    <section className="puzzle-guidance" data-testid="puzzle-guidance" aria-label={copy.labels.puzzleAnalysis}>
+      <header className="puzzle-guidance__header">
+        <strong>{copy.labels.puzzleAnalysis}</strong>
+        <span aria-hidden="true">{guidance.activePiece}</span>
+      </header>
+      <div className="puzzle-guidance__metrics">
+        {metrics.map(([label, value, id]) => (
+          <article key={id} data-guidance-metric={id}>
+            <span>{label}</span>
+            <b>{value}</b>
+          </article>
+        ))}
+      </div>
+      <p className="puzzle-guidance__strategy" data-guidance-strategy={guidance.strategy}>
+        {copy.phrasing.puzzleStrategy(guidance.strategy, guidance.directClearLandings)}
+      </p>
+      <div className="puzzle-guidance__roles" aria-label={copy.labels.queueRoles}>
+        {guidance.queueRoles.map(({ piece, role }, index) => (
+          <span key={`${index}-${piece}`} data-queue-role={role}>
+            <b>{index + 1}</b>
+            <i>{piece}</i>
+            {copy.phrasing.puzzlePieceRole(role)}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function mutationEffectLabel(item: MutationItem, ticks: number, language: AppLanguage, multiplierFactor: 1 | 2 | 4 = 1): string {
   const copy = appCopy(language);
   const label = item === 'multiplier' && multiplierFactor === 4 ? copy.labels.superMultiplier : itemLabel(language, item);
@@ -1749,6 +1801,7 @@ export function GameSession({
                 )}
               </div>
             </div>
+            {puzzleDoublePreview && <PuzzleGuidancePanel state={state} language={language} />}
           </aside>
         </section>
 

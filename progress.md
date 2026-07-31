@@ -748,3 +748,16 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Final typecheck, `29 / 261` full tests, and the `756`-module build pass.
   Twenty-six evidence hashes recompute exactly, and two independent read-only
   reviews accept with no P0/P1/P2 finding.
+
+## 2026-08-01 Phase 11 Puzzle guidance checkpoint
+
+- Puzzle now exposes four deterministic board/queue signals, a short strategy line,
+  and the roles of both queued pieces. The analysis evaluates only legal landings for
+  the current piece; it does not search or disclose a scripted solution.
+- Anchors do not create false buried-hole or stack-burden readings. The live panel is
+  stable across entry and pause transitions and remains absent outside active Puzzle
+  play.
+- Focused Core/App/HUD coverage passes `56/56`, checkpoint typecheck passes, and the
+  early desktop/portrait/short-landscape browser review reports one canvas, zero DOM
+  board cells, zero console errors, and no material overflow. Final integrated gates,
+  immutable-candidate browser evidence, and independent QA remain open.

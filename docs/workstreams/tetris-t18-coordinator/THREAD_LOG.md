@@ -233,3 +233,46 @@
 - Blocker: final evidence still requires the immutable integrated candidate and its
   full bilingual/reduced-motion comparison matrix.
 - Next action: commit P11.4, then open P11.5 deterministic Puzzle guidance.
+
+## 2026-08-01 — P11.5 deterministic Puzzle guidance checkpoint
+
+- Task ID: `T18-P11.5`
+- Base SHA: `ebf9036752f4a690d029ec0368107ec8a23ce650`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `src/game/core/puzzleGuidance.ts`
+  - `src/game/core/puzzleGuidance.test.ts`
+  - `src/game/core/puzzleRouteSearch.ts`
+  - `src/game/core/index.ts`
+  - `src/App.tsx`
+  - `src/App.test.ts`
+  - `src/ui/localization.ts`
+  - `src/styles/hud.css`
+  - `src/styles/hud.test.ts`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `docs/progress.md`
+  - `progress.md`
+- Commands actually run:
+  - focused Puzzle/Core/App/HUD test: `56/56` passed with one worker and no file
+    parallelism
+  - checkpoint `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed apart from the repository's existing LF/CRLF
+    checkout warnings
+  - one bounded Playwright development review at desktop, portrait, and short
+    landscape; the exact owned Vite PID `29548` was stopped and port `5178` was
+    verified released
+- Evidence: Puzzle now computes a deterministic, non-mutating analysis from the
+  current board, active piece, and fixed two-piece queue. Four compact quantities
+  expose direct target-reducing landings, safe minimum-burden landings, buried holes,
+  and minimum added burden. One concise strategy sentence and two queue-role chips
+  explain what those quantities imply without revealing a scripted solution. Fixed
+  anchors are excluded from false roof/burden readings, transient pause/entry frames
+  retain the last valid analysis instead of changing panel height, and non-Puzzle or
+  non-live states remain silent. Desktop and portrait frames have no document
+  overflow; the short-landscape correction uses a readable `2×2` metric matrix and
+  keeps one canvas, zero DOM board cells, and zero browser console errors.
+- Blocker: this is a source checkpoint, not Phase 11 acceptance. The final integrated
+  source gates, bilingual/reduced-motion browser matrix, immutable-candidate evidence,
+  and independent read-only QA remain open.
+- Next action: commit P11.5, then run the single final integrated gate sequence after
+  the last source change.

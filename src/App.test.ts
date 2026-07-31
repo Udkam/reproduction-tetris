@@ -20,6 +20,7 @@ import App, {
   MutationStatus,
   ModeHome,
   PuzzleLibrary,
+  PuzzleGuidancePanel,
   puzzleAnchorSilhouettePath,
   puzzleCelebrationCopy,
   puzzleCelebrationOutcome,
@@ -1148,6 +1149,32 @@ describe('T6 frontend mode binding', () => {
     expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
     expect(view.container.querySelector('[data-testid="entry-countdown"]')).toBeNull();
     view.unmount();
+  });
+
+  it('renders bounded Puzzle diagnosis, one strategy, and two queue roles in both languages', () => {
+    const state = dispatch(createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'), { type: 'start' }).state;
+    const chinese = render(createElement(PuzzleGuidancePanel, { state }));
+    expect(chinese.container.querySelector('[data-testid="puzzle-guidance"]')).not.toBeNull();
+    expect(chinese.container.querySelectorAll('[data-guidance-metric]')).toHaveLength(4);
+    expect(chinese.container.querySelectorAll('[data-queue-role]')).toHaveLength(2);
+    expect(chinese.container.textContent).toContain('局面分析');
+    expect(chinese.container.textContent).toMatch(/直消落点.*安全落点.*埋洞.*最小负担/);
+    expect(chinese.container.querySelector('[data-guidance-strategy]')?.textContent?.trim().length).toBeGreaterThan(12);
+    chinese.rerender(createElement(PuzzleGuidancePanel, {
+      state: { ...state, active: null, phase: 'entry' },
+    }));
+    expect(chinese.container.querySelector('[data-testid="puzzle-guidance"]')).not.toBeNull();
+    chinese.rerender(createElement(PuzzleGuidancePanel, {
+      state: { ...state, active: null, status: 'ready' },
+    }));
+    expect(chinese.container.querySelector('[data-testid="puzzle-guidance"]')).toBeNull();
+    chinese.unmount();
+
+    const english = render(createElement(PuzzleGuidancePanel, { state, language: 'en' }));
+    expect(english.container.textContent).toContain('Analysis');
+    expect(english.container.textContent).toMatch(/Direct clears.*Safe landings.*Buried holes.*Min burden/);
+    expect(english.container.querySelectorAll('[data-queue-role]')).toHaveLength(2);
+    english.unmount();
   });
 
   it('treats Settings opened from an existing pause as an overlay and continues directly to play', async () => {

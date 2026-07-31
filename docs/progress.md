@@ -1450,3 +1450,16 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
 - The machine was above the red CPU threshold during orientation, so only targeted
   no-daemon reading and documentation were admitted. No test, build, server, browser,
   Serena process, indexer, or listener was started.
+
+## 2026-08-01 — Phase 11 deterministic Puzzle guidance checkpoint
+
+- The active Puzzle board, current piece, and fixed two-piece queue now produce four
+  deterministic decision quantities: direct target-reducing landings, safe landings,
+  buried holes, and minimum added burden.
+- A single localized strategy sentence and two queue-role labels turn those quantities
+  into learnable placement guidance without revealing a fixed move sequence. Fixed
+  anchors are excluded from roof and burden calculations.
+- Focused Core/App/HUD tests pass `56/56`; typecheck and diff hygiene pass. A bounded
+  desktop/portrait/short-landscape browser review found one canvas, zero DOM board
+  cells, zero console errors, and no material overflow. The final integrated gates,
+  candidate evidence, and independent read-only QA are still pending.
