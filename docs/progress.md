@@ -10,8 +10,8 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   Evidence `d1656a1` contains 24 browser frames and a `26/26` verified manifest;
   independent read-only QA reports P0–P3/GAP all zero and the scoped redacted secret
   scan reports zero findings.
-- The browser/server batch is released. Phase 11 is accepted and awaiting only the
-  coordinator publication step.
+- The browser/server batch is released. Coordinator acceptance `1cf7d54` was pushed
+  non-force with local, tracking, and remote `main` equal; Phase 11 is closed.
 
 ### T18 Phase 11 contract — 2026-07-31
 

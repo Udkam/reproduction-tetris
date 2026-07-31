@@ -1,6 +1,6 @@
 # Phase 11 — Luminous Instruments and Legible Intent
 
-Status: `ACCEPTED / PUSH PENDING`
+Status: `ACCEPTED / PUSHED / CLOSED`
 
 Base: `main@a2d6670f6e1c6cfbf61eee232c3d4468c38dc65e`
 
@@ -61,5 +61,6 @@ Puzzle guidance that teaches the governing mechanism without revealing a script.
   entries under `docs/qa/evidence/t18-phase11/`.
 - Independent read-only QA: `ACCEPT`, P0/P1/P2/P3/GAP all zero.
 - Redacted gitleaks `8.30.1` range scan: zero findings.
-- Owned browser/server resources are released; publication to `main` is the sole
-  remaining coordinator action.
+- Owned browser/server resources are released. Coordinator acceptance `1cf7d54` was
+  pushed non-force with local, tracking, and remote `main` equal at publication;
+  Phase 11 is closed.

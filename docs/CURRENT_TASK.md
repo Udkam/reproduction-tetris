@@ -2,12 +2,12 @@
 
 ## Phase 11 active goal — luminous materials, compact information, explainable puzzles
 
-**Status (2026-08-01): ACCEPTED / PUSH PENDING.**
+**Status (2026-08-01): ACCEPTED / PUSHED / CLOSED.**
 
 Phase 11 is accepted from frozen product source `12fb0ae` and evidence candidate
-`d1656a1`. Publication remains open only until the acceptance record is committed and
-`main` is pushed. A passing unit test, a single screenshot, or an attractive isolated
-frame was not treated as completion.
+`d1656a1`; coordinator acceptance `1cf7d54` is published on `main`. A passing unit
+test, a single screenshot, or an attractive isolated frame was not treated as
+completion.
 
 1. **Ordinary pieces read as bright enamel, not dim tiles.** The seven tetromino
    families keep distinct hues and dark edge contrast, while face and inner-edge
@@ -108,6 +108,10 @@ frame was not treated as completion.
   `a2d6670f6e1c6cfbf61eee232c3d4468c38dc65e..d1656a1` reports zero findings.
 - The final browser batch is closed and port `5178` is released. No development server,
   managed browser, watcher, indexer, or active subagent remains owned by this phase.
+- Coordinator acceptance `1cf7d5416191bde665089ab8756a2c861ff79380` was pushed
+  non-force; local `main`, `origin/main`, and the remote branch matched at the
+  publication check. This terminal documentation delta closes the phase without
+  reopening source or evidence.
 
 ---
 
