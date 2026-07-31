@@ -10,6 +10,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   and explainable deterministic Puzzle metrics.
 - Resource ownership is single-writer with no server/browser during implementation.
   Focused tests precede one final full gate and a multi-round browser evidence pass.
+- P11.1 is source-green: seven brighter enamel materials retain contrast, while
+  bedrock/falling stones replace repeated cell decals with bounded component-scale
+  planes, sparse fractures, quiet seams, and a joined one/two-stone silhouette.
+  Focused Renderer/theme proof passes `45/45`; typecheck passes. Browser review is
+  still pending and this checkpoint is not final visual acceptance.
 
 ## Current phase
 

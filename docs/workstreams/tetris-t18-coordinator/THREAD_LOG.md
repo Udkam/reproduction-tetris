@@ -24,3 +24,30 @@
   heavy gates and managed browser evidence are deferred to the final candidate.
 - Blocker: none.
 - Next action: commit this docs-only checkpoint, then open P11.1 palette and geology.
+
+## 2026-07-31 — P11.1 bright enamel and connected geology checkpoint
+
+- Task ID: `T18-P11.1`
+- Base SHA: `e184dc513aae96e006e4e04f881dd1c250425737`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `src/game/render/theme.ts`
+  - `src/game/render/theme.test.ts`
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `progress.md`
+- Commands actually run:
+  - focused Renderer/theme test, first run: `43/45` passed; one intended old
+    per-cell-decal count and one too-dark material endpoint failed
+  - corrected focused Renderer/theme test: `45/45` passed
+  - `npm.cmd run typecheck`: passed
+  - `git diff --check`: passed
+- Evidence: all seven ordinary materials use brighter faces and signal edges while
+  retaining dark perimeters and contrast floors. Bedrock now limits large mineral
+  planes, fractures, chip, and pit counts at component scale rather than stamping
+  every cell; internal seams are subdued. A vertical one/two-stone event owns a
+  joined boulder treatment distinct from the permanent shelf.
+- Blocker: real-frame visual acceptance is deliberately deferred to the immutable
+  candidate; this is a source-green recovery point, not final visual acceptance.
+- Next action: commit P11.1, then open P11.2 Mutation atmosphere and projection.

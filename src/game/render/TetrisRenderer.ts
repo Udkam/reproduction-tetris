@@ -366,20 +366,6 @@ const GEOLOGY_OUTLINE_CUTS = [
   [0.13, 0.09, 0.05, 0.08],
 ] as const;
 
-const BEDROCK_PLANE_ORIGINS = [
-  [0.08, 0.12],
-  [0.5, 0.48],
-  [0.14, 0.52],
-  [0.48, 0.1],
-] as const;
-
-const BEDROCK_CRACK_TEMPLATES = [
-  [0.62, 0.3, 0.5, 0.45, 0.58, 0.56],
-  [0.34, 0.28, 0.46, 0.42, 0.38, 0.56],
-  [0.64, 0.58, 0.52, 0.46, 0.44, 0.56],
-  [0.3, 0.62, 0.42, 0.48, 0.36, 0.36],
-] as const;
-
 function geologyVariant(cell: Cell, salt: number, count: number): number {
   return Math.abs(cell.x * (29 + salt) + cell.y * (13 + salt * 2) + salt * 17) % count;
 }
@@ -1608,8 +1594,8 @@ export class TetrisRenderer {
         graphics,
         seamSegments,
         material.edge,
-        Math.min(0.3, alpha * 0.32),
-        Math.max(0.7, seamGrooveWidth * 0.72),
+        Math.min(0.13, alpha * 0.15),
+        Math.max(0.55, seamGrooveWidth * 0.54),
       );
       this.strokeSegments(
         graphics,
@@ -1671,11 +1657,7 @@ export class TetrisRenderer {
     }
   }
 
-  /**
-   * Deterministic slate facets keep bedrock geological without wood-like grain.
-   * Every internal stroke is short and diagonal; the ordinary cell relief owns
-   * the only horizontal edges.
-   */
+  /** A few component-scale basalt planes replace repeated per-cell decals. */
   private drawBedrockFacets(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1684,69 +1666,80 @@ export class TetrisRenderer {
     material: PieceMaterial,
     alpha: number,
   ): void {
-    const crackWidth = Math.max(0.6, size * 0.03);
-    const chip = Math.max(1.6, size * 0.14);
+    const ordered = [...cells].sort((first, second) => (
+      first.cell.y - second.cell.y || first.cell.x - second.cell.x
+    ));
+    const occupied = new Set(cells.map(({ cell }) => `${cell.x},${cell.y}`));
+    const selectedIndexes = [...new Set([
+      0,
+      Math.floor((ordered.length - 1) / 2),
+      ordered.length - 1,
+    ])];
+    const crackSegments: Array<[number, number, number, number]> = [];
 
-    for (const entry of cells) {
-      const left = entry.x + inset * 1.55;
-      const right = entry.x + size - inset * 1.55;
-      const top = entry.y + inset * 1.55;
-      const bottom = entry.y + size - inset * 1.55;
-      const variant = geologyVariant(entry.cell, 0, BEDROCK_PLANE_ORIGINS.length);
-      const width = right - left;
-      const height = bottom - top;
-      const [patchX, patchY] = BEDROCK_PLANE_ORIGINS[variant] ?? BEDROCK_PLANE_ORIGINS[0];
-      const patchLeft = left + width * patchX;
-      const patchTop = top + height * patchY;
+    for (const [selection, index] of selectedIndexes.entries()) {
+      const entry = ordered[index];
+      if (!entry) continue;
+      const left = entry.x + inset * 1.25;
+      const top = entry.y + inset * 1.25;
+      const joinsRight = occupied.has(`${entry.cell.x + 1},${entry.cell.y}`);
+      const joinsBelow = occupied.has(`${entry.cell.x},${entry.cell.y + 1}`);
+      const width = size * (joinsRight ? 1.62 : 0.82) - inset * 2;
+      const height = size * (joinsBelow ? 1.42 : 0.82) - inset * 2;
+      const flip = geologyVariant(entry.cell, selection + 1, 2) === 1;
 
       graphics
         .poly([
-          patchLeft, patchTop + height * 0.1,
-          patchLeft + width * 0.2, patchTop,
-          patchLeft + width * 0.36, patchTop + height * 0.13,
-          patchLeft + width * 0.29, patchTop + height * 0.32,
-          patchLeft + width * 0.09, patchTop + height * 0.29,
+          left + width * (flip ? 0.08 : 0.16), top + height * 0.2,
+          left + width * 0.54, top + height * 0.06,
+          left + width * 0.92, top + height * (flip ? 0.3 : 0.18),
+          left + width * 0.72, top + height * 0.69,
+          left + width * 0.28, top + height * 0.82,
+          left + width * 0.04, top + height * 0.55,
         ])
-        .fill({ color: material.edge, alpha: Math.min(0.23, alpha * 0.27) });
-      const chipOnLeft = variant === 0 || variant === 2;
-      graphics
-        .poly([
-          chipOnLeft ? left : right - chip,
-          top,
-          chipOnLeft ? left + chip : right,
-          top,
-          chipOnLeft ? left : right,
-          top + chip * 0.72,
-        ])
-        .fill({ color: material.innerEdge, alpha: Math.min(0.13, alpha * 0.15) });
+        .fill({
+          color: selection === 1 ? material.innerEdge : material.edge,
+          alpha: Math.min(selection === 1 ? 0.1 : 0.18, alpha * 0.2),
+        });
 
-      const crack = BEDROCK_CRACK_TEMPLATES[variant] ?? BEDROCK_CRACK_TEMPLATES[0];
-      this.strokeSegments(
-        graphics,
-        [
-          [
-            left + width * crack[0], top + height * crack[1],
-            left + width * crack[2], top + height * crack[3],
-          ],
-          [
-            left + width * crack[2], top + height * crack[3],
-            left + width * crack[4], top + height * crack[5],
-          ],
-        ],
-        material.edge,
-        Math.min(0.4, alpha * 0.46),
-        crackWidth,
-      );
-
-      const pitX = variant < 2 ? left + chip * 0.92 : right - chip * 0.92;
-      const pitY = variant === 0 || variant === 3 ? bottom - chip * 0.78 : top + chip * 0.9;
-      graphics
-        .circle(pitX, pitY, Math.max(0.65, size * 0.026))
-        .fill({ color: material.edge, alpha: Math.min(0.34, alpha * 0.4) });
+      if (selection < 2) {
+        const jointX = left + width * (flip ? 0.45 : 0.58);
+        const jointY = top + height * (flip ? 0.42 : 0.36);
+        crackSegments.push(
+          [jointX - width * 0.15, jointY - height * 0.13, jointX, jointY],
+          [jointX, jointY, jointX + width * 0.11, jointY + height * 0.17],
+        );
+      }
     }
+
+    const topCell = ordered.find(({ cell }) => !occupied.has(`${cell.x},${cell.y - 1}`)) ?? ordered[0];
+    if (topCell) {
+      const chip = Math.max(1.8, size * 0.16);
+      graphics
+        .poly([
+          topCell.x + inset, topCell.y,
+          topCell.x + inset + chip, topCell.y,
+          topCell.x + inset + chip * 0.42, topCell.y + chip * 0.66,
+        ])
+        .fill({ color: material.innerEdge, alpha: Math.min(0.18, alpha * 0.2) });
+      graphics
+        .circle(
+          topCell.x + size * 0.72,
+          topCell.y + size * 0.68,
+          Math.max(0.75, size * 0.03),
+        )
+        .fill({ color: material.edge, alpha: Math.min(0.3, alpha * 0.34) });
+    }
+    this.strokeSegments(
+      graphics,
+      crackSegments,
+      material.edge,
+      Math.min(0.42, alpha * 0.48),
+      Math.max(0.65, size * 0.032),
+    );
   }
 
-  /** Clearable fresh fractures stay lighter than permanent compacted bedrock. */
+  /** One- or two-cell falling events read as a single freshly fractured boulder. */
   private drawStoneFacets(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1755,54 +1748,56 @@ export class TetrisRenderer {
     material: PieceMaterial,
     alpha: number,
   ): void {
-    const crackWidth = Math.max(0.65, size * 0.042);
-    const chip = Math.max(1.4, size * 0.14);
-    for (const entry of cells) {
-      const left = entry.x + inset * 1.5;
-      const top = entry.y + inset * 1.5;
-      const right = entry.x + size - inset * 1.5;
-      const bottom = entry.y + size - inset * 1.5;
-      const variant = geologyVariant(entry.cell, 3, 3);
-      const width = right - left;
-      const height = bottom - top;
-      const middleX = left + width * (variant === 0 ? 0.44 : variant === 1 ? 0.58 : 0.5);
-      const middleY = top + height * (variant === 0 ? 0.5 : variant === 1 ? 0.42 : 0.58);
+    const ordered = [...cells].sort((first, second) => (
+      first.cell.y - second.cell.y || first.cell.x - second.cell.x
+    ));
+    const first = ordered[0];
+    if (!first) return;
+    const sameColumn = ordered.every(({ cell }) => cell.x === first.cell.x);
+    const span = sameColumn ? ordered.length : 1;
+    const left = first.x + inset * 1.15;
+    const top = first.y + inset * 1.15;
+    const width = size - inset * 2.3;
+    const height = size * span - inset * 2.3;
+    const jointX = left + width * 0.48;
+    const jointY = top + height * 0.46;
 
-      graphics
-        .poly([
-          left + width * 0.5, top + height * 0.09,
-          left + width * 0.84, top + height * 0.07,
-          left + width * 0.92, top + height * 0.3,
-          left + width * 0.74, top + height * 0.43,
-          left + width * 0.55, top + height * 0.34,
-        ])
-        .fill({ color: material.innerEdge, alpha: Math.min(0.18, alpha * 0.2) });
-      graphics
-        .poly([
-          left, bottom - chip,
-          left + chip * 0.9, bottom,
-          left, bottom,
-        ])
-        .fill({ color: material.innerEdge, alpha: Math.min(0.14, alpha * 0.17) });
-      this.strokeSegments(
-        graphics,
-        [
-          [middleX - width * 0.15, middleY - height * 0.12, middleX, middleY],
-          [middleX, middleY, middleX + width * 0.13, middleY + height * 0.16],
-          [middleX, middleY, middleX - width * 0.1, middleY + height * 0.18],
-        ],
-        material.edge,
-        Math.min(0.5, alpha * 0.58),
-        crackWidth,
-      );
-      graphics
-        .circle(
-          variant === 1 ? left + width * 0.22 : right - width * 0.18,
-          variant === 2 ? top + height * 0.22 : bottom - height * 0.2,
-          Math.max(0.65, size * 0.025),
-        )
-        .fill({ color: material.edge, alpha: Math.min(0.32, alpha * 0.36) });
-    }
+    graphics
+      .poly([
+        left + width * 0.08, top + height * 0.22,
+        left + width * 0.48, top + height * 0.05,
+        left + width * 0.94, top + height * 0.18,
+        left + width * 0.8, top + height * 0.5,
+        left + width * 0.26, top + height * 0.62,
+      ])
+      .fill({ color: material.innerEdge, alpha: Math.min(0.2, alpha * 0.23) });
+    graphics
+      .poly([
+        left + width * 0.04, top + height * 0.66,
+        left + width * 0.34, top + height * 0.52,
+        left + width * 0.88, top + height * 0.68,
+        left + width * 0.72, top + height * 0.94,
+        left + width * 0.18, top + height * 0.9,
+      ])
+      .fill({ color: material.edge, alpha: Math.min(0.15, alpha * 0.18) });
+    this.strokeSegments(
+      graphics,
+      [
+        [jointX - width * 0.18, jointY - height * 0.1, jointX, jointY],
+        [jointX, jointY, jointX + width * 0.16, jointY + height * 0.12],
+        [jointX, jointY, jointX - width * 0.1, jointY + height * 0.16],
+      ],
+      material.edge,
+      Math.min(0.5, alpha * 0.58),
+      Math.max(0.7, size * 0.04),
+    );
+    graphics
+      .circle(
+        left + width * 0.76,
+        top + height * 0.72,
+        Math.max(0.7, size * 0.028),
+      )
+      .fill({ color: material.edge, alpha: Math.min(0.3, alpha * 0.34) });
   }
 
   private strokeSegments(

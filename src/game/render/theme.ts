@@ -73,13 +73,13 @@ export const COLORS = {
 } as const;
 
 export const PIECE_MATERIALS: Record<PieceType, PieceMaterial> = {
-  I: { fillStart: 0xc85a72, fillEnd: 0xb14f65, edge: 0x713443, innerEdge: 0xe69aaa },
-  O: { fillStart: 0x47aaa1, fillEnd: 0x3c918a, edge: 0x245b57, innerEdge: 0x91d4cf },
-  T: { fillStart: 0xc58e4a, fillEnd: 0xad783d, edge: 0x694824, innerEdge: 0xe8bd83 },
-  S: { fillStart: 0x647bc0, fillEnd: 0x576dae, edge: 0x354675, innerEdge: 0xa9b7e3 },
-  Z: { fillStart: 0x83aa57, fillEnd: 0x6f914a, edge: 0x425a2b, innerEdge: 0xbcd79a },
-  J: { fillStart: 0x9a65b1, fillEnd: 0x87579e, edge: 0x553663, innerEdge: 0xcfa9dc },
-  L: { fillStart: 0x4d91ad, fillEnd: 0x407d99, edge: 0x295567, innerEdge: 0x95c8d9 },
+  I: { fillStart: 0xe46f89, fillEnd: 0xc75871, edge: 0x773143, innerEdge: 0xffb0c0 },
+  O: { fillStart: 0x5bcfc5, fillEnd: 0x3ca59d, edge: 0x1f5c58, innerEdge: 0xb0eee8 },
+  T: { fillStart: 0xe0a458, fillEnd: 0xc07f3f, edge: 0x6f4522, innerEdge: 0xffd29a },
+  S: { fillStart: 0x7f99e0, fillEnd: 0x5f78c3, edge: 0x334875, innerEdge: 0xc7d2ff },
+  Z: { fillStart: 0xa1ca69, fillEnd: 0x7ea64f, edge: 0x435d29, innerEdge: 0xd8efad },
+  J: { fillStart: 0xbb7fd0, fillEnd: 0x945fac, edge: 0x5b3569, innerEdge: 0xe5b6f2 },
+  L: { fillStart: 0x65b3d1, fillEnd: 0x458da9, edge: 0x29576a, innerEdge: 0xb8e5f4 },
 };
 
 /**
@@ -117,19 +117,19 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {
-  // Compacted cave shelf: dark, permanent, and visually heavier than clearable stone.
-  fillStart: 0x64727a,
-  fillEnd: 0x57646b,
-  edge: 0x1c282e,
-  innerEdge: 0x8da0a7,
+  // Compacted basalt shelf: a cool, heavy mass with restrained mineral lift.
+  fillStart: 0x6d7f89,
+  fillEnd: 0x556a75,
+  edge: 0x162630,
+  innerEdge: 0xa2b1b8,
 };
 
-/** Fresh, clearable fracture from the same cold-slate family as bedrock. */
+/** Fresh, clearable falling rock from the same basalt family as bedrock. */
 export const SURVIVAL_STONE_MATERIAL: PieceMaterial = {
-  fillStart: 0x8999a2,
-  fillEnd: 0x61727c,
-  edge: 0x2d3c44,
-  innerEdge: 0xc2d1d6,
+  fillStart: 0x9babb4,
+  fillEnd: 0x708692,
+  edge: 0x263943,
+  innerEdge: 0xd7e1e5,
 };
 
 /** Puzzle-only immutable cells use a pale mineral core rather than a playable hue. */

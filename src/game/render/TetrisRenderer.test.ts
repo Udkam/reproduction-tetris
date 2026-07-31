@@ -529,16 +529,24 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('uses diagonal slate facets for bedrock and a distinct fresh fracture for the pair', () => {
+  it('uses bounded component-scale basalt planes instead of one decal per cell', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const cell = [{ cell: { x: 3, y: 17 }, x: 10, y: 20 }];
+    const shelf = Array.from({ length: 10 }, (_, x) => ({
+      cell: { x, y: 17 },
+      x: 10 + x * 24,
+      y: 20,
+    }));
+    const pair = [
+      { cell: { x: 3, y: 16 }, x: 82, y: 20 },
+      { cell: { x: 3, y: 17 }, x: 82, y: 44 },
+    ];
     const bedrock = createGraphicsRecorder();
     const falling = createGraphicsRecorder();
 
     internals.drawBedrockFacets(
       bedrock.graphics,
-      cell,
+      shelf,
       24,
       1,
       BEDROCK_MATERIAL,
@@ -546,22 +554,25 @@ describe('Puzzle undo presentation reset', () => {
     );
     internals.drawStoneFacets(
       falling.graphics,
-      cell,
+      pair,
       24,
       1,
       SURVIVAL_STONE_MATERIAL,
       1,
     );
 
+    const bedrockPolygons = bedrock.operations.filter((operation) => operation.kind === 'poly');
+    const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     const bedrockSegments = bedrock.operations.filter((operation) => operation.kind === 'segment');
-    expect(bedrock.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(bedrockPolygons.length).toBeGreaterThanOrEqual(3);
+    expect(bedrockPolygons.length).toBeLessThanOrEqual(4);
     expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(1);
-    expect(bedrockSegments).toHaveLength(2);
-    expect(bedrockSegments.every((operation) => {
-      const [startX, startY, endX, endY] = operation.values;
-      return Math.abs(endY! - startY!) > Math.abs(endX! - startX!) * 0.5;
-    })).toBe(true);
-    expect(falling.operations.some((operation) => operation.kind === 'poly')).toBe(true);
+    expect(bedrockSegments).toHaveLength(4);
+    expect(fallingPolygons).toHaveLength(2);
+    expect(falling.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(1);
+    expect(falling.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(3);
+    const fallingBounds = fallingPolygons.flatMap((operation) => operation.values.filter((value) => value !== undefined));
+    expect(Math.max(...fallingBounds) - Math.min(...fallingBounds)).toBeGreaterThan(24);
     expect(geometrySignature(bedrock.operations)).not.toBe(geometrySignature(falling.operations));
   });
 
@@ -595,8 +606,9 @@ describe('Puzzle undo presentation reset', () => {
     ));
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
-    expect(rising.operations.filter((operation) => operation.kind === 'poly').length)
-      .toBeGreaterThanOrEqual(20);
+    const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
+    expect(entryPolygons).toBeGreaterThanOrEqual(13);
+    expect(entryPolygons).toBeLessThanOrEqual(14);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);
