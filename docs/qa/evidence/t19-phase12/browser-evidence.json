@@ -1,8 +1,8 @@
 {
   "taskId": "TETRIS-T19-PHASE12",
-  "sourceSha": "ebaa43f8efb9bd3605a74a2c9493201e1ef3195f",
+  "sourceSha": "c9996d15d109253e97f2bb3a1ea45fc2bb970f6d",
   "baseUrl": "http://127.0.0.1:5178/",
-  "capturedAt": "2026-07-31T22:29:16.117Z",
+  "capturedAt": "2026-07-31T22:55:18.367Z",
   "method": "One bounded Vite server and one Playwright Chromium instance; ordinary UI controls and persisted stable-ID progress only.",
   "screens": {
     "homeDesktopZh": {
@@ -164,9 +164,9 @@
           "y": 29,
           "rotation": 0
         },
-        "next": "I",
+        "next": "O",
         "nextPreviews": [
-          "I"
+          "O"
         ],
         "visibleBoard": [
           "..........",
@@ -184,8 +184,8 @@
           "..........",
           "..........",
           "..........",
-          "...J......",
-          "...JJJ....",
+          "....T.....",
+          "...TTT....",
           "BBBBBBBBBB",
           "BBBBBBBBBB",
           "BBBBBBBBBB"
@@ -211,9 +211,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "I",
+        "previewPiece": "O",
         "previewPieces": [
-          "I"
+          "O"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -240,19 +240,19 @@
         "ghostCells": [
           {
             "x": 3,
-            "y": 34
+            "y": 33
+          },
+          {
+            "x": 4,
+            "y": 33
           },
           {
             "x": 4,
             "y": 34
-          },
-          {
-            "x": 4,
-            "y": 35
           },
           {
             "x": 5,
-            "y": 35
+            "y": 34
           }
         ],
         "visibleLockedCells": 34,
@@ -270,7 +270,7 @@
         },
         "survivalDebris": [],
         "survivalDebrisWarningColumns": [
-          7
+          9
         ],
         "survivalDebrisWarningHeight": 1,
         "survivalStoneCueCount": 0,
@@ -318,7 +318,7 @@
         "stoneNextSeconds": 19,
         "fallingStones": [
           {
-            "x": 7,
+            "x": 9,
             "y": 22
           }
         ],
@@ -330,9 +330,9 @@
           "y": 33,
           "rotation": 0
         },
-        "next": "I",
+        "next": "O",
         "nextPreviews": [
-          "I"
+          "O"
         ],
         "visibleBoard": [
           "..........",
@@ -350,8 +350,8 @@
           "..........",
           "..........",
           "..........",
-          "...J......",
-          "...JJJ....",
+          "....T.....",
+          "...TTT....",
           "BBBBBBBBBB",
           "BBBBBBBBBB",
           "BBBBBBBBBB"
@@ -377,9 +377,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "I",
+        "previewPiece": "O",
         "previewPieces": [
-          "I"
+          "O"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -406,27 +406,27 @@
         "ghostCells": [
           {
             "x": 3,
-            "y": 34
+            "y": 33
+          },
+          {
+            "x": 4,
+            "y": 33
           },
           {
             "x": 4,
             "y": 34
-          },
-          {
-            "x": 4,
-            "y": 35
           },
           {
             "x": 5,
-            "y": 35
+            "y": 34
           }
         ],
         "visibleLockedCells": 34,
         "presentation": {
           "x": 3,
-          "y": 32.823702194798244,
+          "y": 32.919787880808315,
           "offsetX": 0,
-          "offsetY": -0.17629780520175586
+          "offsetY": -0.08021211919168536
         },
         "boardShiftOffsetY": 0,
         "mutationFilters": {
@@ -437,13 +437,13 @@
         "survivalDebris": [
           {
             "id": 1,
-            "x": 7,
+            "x": 9,
             "y": 22,
             "height": 1,
-            "presentationY": 21.66404612017593,
+            "presentationY": 21.78578634857761,
             "cells": [
               {
-                "x": 7,
+                "x": 9,
                 "y": 22
               }
             ]
@@ -521,9 +521,9 @@
           "y": 19,
           "rotation": 0
         },
-        "next": "O",
+        "next": "T",
         "nextPreviews": [
-          "O"
+          "T"
         ],
         "visibleBoard": [
           "..........",
@@ -568,9 +568,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "O",
+        "previewPiece": "T",
         "previewPieces": [
-          "O"
+          "T"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -681,7 +681,7 @@
           105
         ]
       ],
-      "headerToGalleryGap": 8,
+      "headerToGalleryGap": 16,
       "unlockedCount": 3,
       "selectedId": "t3r-shaft-01",
       "lesson": "先完成一行先补最接近完整的目标行；消行腾出的空间会让后续更清楚。",
@@ -800,7 +800,7 @@
           95
         ]
       ],
-      "headerToGalleryGap": 8,
+      "headerToGalleryGap": 16,
       "unlockedCount": 0,
       "selectedId": "tm-puzzle-31",
       "lesson": null,
@@ -923,7 +923,7 @@
           95
         ]
       ],
-      "headerToGalleryGap": 8,
+      "headerToGalleryGap": 16,
       "unlockedCount": 20,
       "selectedId": "tm-puzzle-31",
       "lesson": null,
@@ -1074,7 +1074,7 @@
           53
         ]
       ],
-      "headerToGalleryGap": 6,
+      "headerToGalleryGap": 12,
       "unlockedCount": 0,
       "selectedId": "t3r-cascade-06",
       "lesson": "Do not bury spaceCheck below the piece before locking; a covered cell usually costs several later clears.",
@@ -1125,7 +1125,7 @@
           83
         ]
       ],
-      "headerToGalleryGap": 6,
+      "headerToGalleryGap": 12,
       "unlockedCount": 3,
       "selectedId": "t3r-shaft-01",
       "lesson": "Finish one row firstClose the nearest prepared row; the clear creates room for every choice after it.",
