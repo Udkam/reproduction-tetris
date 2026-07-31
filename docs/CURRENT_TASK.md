@@ -44,6 +44,9 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    atomic coupled step at the stone cadence: the stone and active piece each move down
    exactly one row, preserving collision separation. Repeated legal debris steps keep
    pushing until lateral player movement or geometry ends the above/below obstruction.
+   The reverse ordering is not a push: when the active piece is above a falling stone,
+   the stone is only temporary dynamic support, the active piece keeps its coordinate,
+   and the stone continues away on its own faster cadence when legal.
    A coupled step may not advance ordinary gravity or lock delay; if either moved body
    would hit settled board or other debris, both wait without locking. Only settled
    board support may resume the normal lock-delay decision. One/two-stone randomness,

@@ -63,12 +63,14 @@ cannot enter or exhaust ordinary lock delay or trigger top-out. When its attempt
 row is occupied only by the active piece, Core treats the pair as one atomic debris
 step: both stone and active piece translate down exactly one row if both destinations
 are legal against settled board and every other debris event. This repeats at debris
-cadence while the stone remains above the piece. It does not consume ordinary gravity
-or lock delay, and illegal paired movement leaves both bodies waiting. Player lateral
-movement can clear the relation; normal gravity resumes once the stone is no longer
-above the piece. Normal lock delay resumes only after support is settled board. Only
-cadence, this explicit temporary-coupling boundary, warning language, and material
-presentation change.
+cadence while the stone remains above the piece. If the active piece is instead above
+the stone, the stone is temporary dynamic support only: the piece stays where it is
+while the faster stone falls away when legal. Neither ordering consumes ordinary
+gravity or lock delay, and illegal paired movement leaves both bodies waiting. Player
+lateral movement can clear the relation; normal gravity resumes once the stone is no
+longer above or below the piece. Normal lock delay resumes only after support is settled
+board. Only cadence, this explicit temporary-coupling boundary, warning language, and
+material presentation change.
 
 ### Home action geometry
 
