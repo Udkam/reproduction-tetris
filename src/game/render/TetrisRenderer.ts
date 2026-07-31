@@ -1723,8 +1723,12 @@ export class TetrisRenderer {
       .poly([
         left, top,
         right, top,
-        right, faceTop,
-        left, faceTop,
+        right, top + capDepth * 0.72,
+        left + width * 0.83, top + capDepth,
+        left + width * 0.64, top + capDepth * 0.62,
+        left + width * 0.46, top + capDepth * 0.92,
+        left + width * 0.24, top + capDepth * 0.68,
+        left, top + capDepth * 0.9,
       ])
       .fill({
         color: mixHexColor(material.fillStart, material.innerEdge, 0.28),
