@@ -28,6 +28,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   independent-column mapping as Core after rigid descent, while the query remains
   deterministic and non-mutating. Focused presentation/Renderer proof passes
   `51/51`; typecheck passes.
+- P11.2b is source-green: Ice is one long overlapping upper fade without its old
+  boundary line; Supergravity uses sparse column-bound pressure traces instead of a
+  central symbol, wells, chevrons, or bars; Bomb uses an irregular heated floor and
+  embers instead of a `3×10` frame or full-board rectangle. Focused geometry/state
+  proof passes `52/52`; typecheck passes. Integrated browser acceptance is pending.
 
 ## Current phase
 

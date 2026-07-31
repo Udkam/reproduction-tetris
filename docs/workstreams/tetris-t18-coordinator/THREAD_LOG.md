@@ -126,3 +126,31 @@
   rigid projection when inactive, repeated determinism, and zero board mutation.
 - Blocker: none for projection. Atmosphere and activation visuals remain open.
 - Next action: commit P11.2a, then implement the Ice/Supergravity/Bomb visual grammar.
+
+## 2026-08-01 — P11.2b physical Mutation feedback checkpoint
+
+- Task ID: `T18-P11.2B`
+- Base SHA: `526a4e5cc0f87b3360953552a5de793fb47ffca3`
+- Owner: primary coordinator; one production writer
+- Exact paths:
+  - `src/game/render/TetrisRenderer.ts`
+  - `src/game/render/TetrisRenderer.test.ts`
+  - `docs/workstreams/tetris-t18-coordinator/THREAD_LOG.md`
+  - `progress.md`
+- Commands actually run:
+  - first focused presentation/Renderer test: `50/52` passed; one Chai assertion
+    typo and one outdated Graphics stub were corrected without product changes
+  - second focused test: `51/52` passed; the visible-state assertion still named
+    the retired Supergravity edge color and was corrected to the new pressure fill
+  - final focused presentation/Renderer test: `52/52` passed
+  - final checkpoint `npm.cmd run typecheck`: passed
+- Evidence: Ice now occupies a continuous forty-slice upper fade with overlapping
+  fills and no terminal glint line. Supergravity replaces the central glyph, long
+  wells, chevrons, and support bars with sparse tapered pressure traces bound to
+  actual trigger or settled columns. Bomb warning/impact uses an irregular heated
+  floor silhouette and rising embers; neither phase draws a rectangular three-row
+  range or full-board rectangular flash. Direct geometry assertions reject the old
+  symbols, bars, wells, and `3×10` box while retaining reduced-motion visibility.
+- Blocker: real-frame acceptance remains part of the immutable integrated browser
+  comparison; this checkpoint proves source geometry and state ownership only.
+- Next action: commit P11.2b, then open P11.3 information architecture.

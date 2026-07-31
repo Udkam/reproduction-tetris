@@ -1080,7 +1080,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(detailScales).toEqual([0.62]);
   });
 
-  it('binds Collapse activation wells only to the trigger columns with no board-wide bar', () => {
+  it('binds Supergravity activation pressure traces only to the trigger columns', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1103,17 +1103,19 @@ describe('Puzzle undo presentation reset', () => {
       internals.mutationFlash!,
       layout,
     );
-    const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
-    expect(rectangles.length).toBeGreaterThan(0);
-    expect(rectangles.every((operation) => operation.values[2]! < layout.width * .2)).toBe(true);
+    const traces = recorder.operations.filter((operation) => operation.kind === 'poly');
+    expect(traces).toHaveLength(6);
+    expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
-    expect(rectangles.every((operation) => {
-      const center = operation.values[0]! + operation.values[2]! / 2;
+    expect(traces.every((operation) => {
+      const xs = operation.values.filter((_value, index) => index % 2 === 0);
+      const center = xs.reduce((sum, value) => sum + value, 0) / xs.length;
       return [30, 150].some((expected) => Math.abs(expected - center) < layout.cell * .15);
     })).toBe(true);
   });
 
-  it('uses a compact persistent Collapse gravity core without top or bottom bands', () => {
+  it('uses a symbol-free persistent Supergravity pressure field', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const recorder = createGraphicsRecorder();
@@ -1129,9 +1131,39 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(recorder.operations.some((operation) => operation.kind === 'circle')).toBe(true);
+    expect(recorder.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(6);
+    expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
+  });
+
+  it('shows the Bomb range as an irregular floor field instead of a 3-by-10 box', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    internals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'bomb',
+      durationTicks: 0,
+      score: 300,
+      rowsRemoved: 3,
+      triggerCells: [{ x: 4, y: VISIBLE_START_ROW + 8 }],
+    }]);
+
+    const warning = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(warning.graphics, internals.mutationFlash!, layout);
+    const warningFields = warning.operations.filter((operation) => operation.kind === 'poly');
+    expect(warningFields).toHaveLength(1);
+    expect(warning.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    const warningDepths = new Set(warningFields[0]!.values.filter((_value, index) => index % 2 === 1));
+    expect(warningDepths.size).toBeGreaterThan(5);
+
+    internals.advanceEffects(400);
+    const impact = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(impact.graphics, internals.mutationFlash!, layout);
+    expect(impact.operations.filter((operation) => operation.kind === 'poly').length).toBeGreaterThanOrEqual(2);
+    expect(impact.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
   });
 
   it('anchors multiplier feedback to Core trigger cells and preserves the 4× escalation cue', () => {
@@ -1219,7 +1251,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(collapse.scale.y).toBe(0);
   });
 
-  it('confines the Ice cold front to an upper gradient before the main stack', () => {
+  it('renders Ice as one long smooth upper gradient without a horizontal boundary', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 10, y: 20, width: 200, height: 400, cell: 20, compact: false };
@@ -1236,12 +1268,17 @@ describe('Puzzle undo presentation reset', () => {
       layout,
     );
 
-    const bands = recorder.operations.filter((operation) => operation.kind === 'rect');
-    expect(bands).toHaveLength(7);
-    expect(bands.every((operation) => (
+    const slices = recorder.operations.filter((operation) => operation.kind === 'rect');
+    expect(slices).toHaveLength(40);
+    expect(slices.every((operation) => (
       operation.values[1]! >= layout.y
-      && operation.values[1]! + operation.values[3]! <= layout.y + layout.height * 0.33
+      && operation.values[1]! + operation.values[3]! <= layout.y + layout.height * 0.52
     ))).toBe(true);
+    expect(recorder.operations.some((operation) => (
+      operation.kind === 'segment'
+      && Math.abs(operation.values[3]! - operation.values[1]!) < 0.001
+      && Math.abs(operation.values[2]! - operation.values[0]!) >= layout.width * .2
+    ))).toBe(false);
     expect(recorder.operations.some((operation) => (
       operation.kind === 'roundRect'
       && operation.values[3]! >= layout.height * 0.5
@@ -1289,6 +1326,7 @@ describe('Puzzle undo presentation reset', () => {
       roundRect: () => graphics,
       circle: () => graphics,
       rect: () => graphics,
+      poly: () => graphics,
       moveTo: () => graphics,
       lineTo: () => graphics,
       fill: (options: { color?: number }) => {
@@ -1308,7 +1346,7 @@ describe('Puzzle undo presentation reset', () => {
 
     fills.length = 0;
     internals.drawEffects({ ...base, mutationCollapseTicks: 1 }, layout);
-    expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.collapse.edge)).toBe(true);
+    expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.collapse.fillStart)).toBe(true);
 
     fills.length = 0;
     internals.drawEffects({ ...base, mutationMultiplierTicks: 1 }, layout);
@@ -1395,12 +1433,14 @@ describe('Puzzle undo presentation reset', () => {
       .82,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    const rectangles = recorder.operations.filter((operation) => operation.kind === 'roundRect');
-    expect(rectangles.every((operation) => operation.values[2]! < 160)).toBe(true);
-    expect(rectangles.every((operation) => operation.values[3]! <= 2)).toBe(true);
+    const pressureMarks = recorder.operations.filter((operation) => operation.kind === 'poly');
+    expect(pressureMarks).toHaveLength(8);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
-    expect(rectangles.every((operation) => {
-      const center = operation.values[0]! + operation.values[2]! / 2;
+    expect(pressureMarks.every((operation) => {
+      const xs = operation.values.filter((_value, index) => index % 2 === 0);
+      const center = xs.reduce((sum, value) => sum + value, 0) / xs.length;
       return [30, 150].some((expected) => Math.abs(expected - center) < 5);
     })).toBe(true);
   });

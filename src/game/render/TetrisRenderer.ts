@@ -2433,39 +2433,35 @@ export class TetrisRenderer {
     const token = MUTATION_VFX_TOKENS.freeze;
     const inset = Math.max(1.5, layout.cell * 0.08);
     const pulse = this.options.reducedMotion ? 1 : 0.88 + Math.sin(phase * Math.PI * 2) * 0.1;
-    const fieldDepth = Math.min(layout.height * 0.31, layout.cell * 6.2);
-    const bands = 7;
-    const bandHeight = fieldDepth / bands;
-    for (let band = 0; band < bands; band += 1) {
-      const normalized = band / Math.max(1, bands - 1);
+    const fieldDepth = Math.min(layout.height * 0.5, layout.cell * 10);
+    // Closely overlapped slices create one long, natural cold front. The former
+    // seven hard bands and their lower glint read as horizontal rules on the board.
+    const slices = 40;
+    const sliceHeight = fieldDepth / slices;
+    for (let slice = 0; slice < slices; slice += 1) {
+      const normalized = (slice + 0.5) / slices;
+      const envelope = Math.pow(1 - normalized, 2.25);
       graphics
         .rect(
           layout.x + inset,
-          layout.y + inset + band * bandHeight,
+          layout.y + inset + slice * sliceHeight,
           layout.width - inset * 2,
-          bandHeight + 0.5,
+          sliceHeight + 1.1,
         )
         .fill({
-          color: band < 2 ? token.palette.highlight : token.palette.primary,
-          alpha: token.shader.fieldAlpha * (0.56 * Math.pow(1 - normalized, 1.7)) * pulse * opacity,
+          color: token.palette.primary,
+          alpha: token.shader.fieldAlpha * 0.58 * envelope * pulse * opacity,
         });
     }
-    const glintY = layout.y + inset + fieldDepth * 0.92;
-    const glintInset = layout.cell * 0.56;
-    this.strokeSegments(graphics, [
-      [layout.x + glintInset, glintY, layout.x + layout.width * 0.34, glintY],
-      [layout.x + layout.width * 0.47, glintY, layout.x + layout.width * 0.66, glintY],
-      [layout.x + layout.width * 0.78, glintY, layout.x + layout.width - glintInset, glintY],
-    ], token.palette.highlight, 0.22 * pulse * opacity, Math.max(1, layout.cell * 0.025));
     const shardSize = Math.max(3, layout.cell * 0.17);
     for (const [xFactor, yFactor, scale] of [
-      [.08, .035, .72], [.27, .07, .48], [.53, .045, .56], [.72, .1, .66], [.92, .055, .42], [.16, .18, .38], [.83, .23, .5],
+      [.08, .08, .72], [.27, .14, .48], [.53, .1, .56], [.72, .2, .66], [.92, .12, .42], [.16, .35, .38], [.83, .44, .5],
     ] as const) {
       const drift = this.options.reducedMotion ? 0 : ((phase + xFactor) % 1) * layout.cell * .36;
       this.drawMutationDiamond(
         graphics,
         layout.x + layout.width * xFactor,
-        layout.y + fieldDepth * yFactor / 0.31 + drift,
+        layout.y + fieldDepth * yFactor + drift,
         shardSize * scale * .45,
         shardSize * scale,
         token.palette.highlight,
@@ -2476,42 +2472,30 @@ export class TetrisRenderer {
 
   private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
     const token = MUTATION_VFX_TOKENS.collapse;
-    const centerX = layout.x + layout.width / 2;
-    const centerY = layout.y + Math.min(layout.height * .28, layout.cell * 5.4);
-    const pulse = this.options.reducedMotion ? 1 : .78 + Math.sin(phase * Math.PI * 2) * .16;
-    const core = Math.max(5, layout.cell * .48);
-    const stroke = Math.max(1, layout.cell * .055);
-    // A compact gravity core communicates the timed global rule without inventing
-    // fake moving columns. Real column motion is drawn only by CollapseTrail.
-    graphics
-      .circle(centerX, centerY, core * 1.8)
-      .fill({ color: token.palette.deep, alpha: .18 * pulse * opacity })
-      .circle(centerX, centerY, core)
-      .stroke({ color: token.palette.highlight, alpha: .72 * pulse * opacity, width: stroke });
-    this.drawMutationDiamond(
-      graphics,
-      centerX,
-      centerY,
-      core * .64,
-      core * .9,
-      token.palette.primary,
-      .76 * pulse * opacity,
-    );
-    for (let index = 0; index < 3; index += 1) {
-      const y = centerY + core * (1.55 + index * .72);
-      const spread = core * (.84 - index * .12);
-      this.strokeSegments(graphics, [
-        [centerX - spread, y - core * .24, centerX, y + core * .22],
-        [centerX, y + core * .22, centerX + spread, y - core * .24],
-      ], token.palette.highlight, (.66 - index * .1) * pulse * opacity, stroke);
-    }
-    for (const [xOffset, yOffset, scale] of [
-      [-1.55, -.82, .5], [1.48, -.48, .42], [-1.2, 1.36, .34], [1.28, 1.72, .3],
-    ] as const) {
-      const drift = this.options.reducedMotion ? 0 : ((phase + scale) % 1) * core * 1.6;
+    const pulse = this.options.reducedMotion ? 1 : .84 + Math.sin(phase * Math.PI * 2) * .1;
+    // Supergravity is a pressure field, not a central emblem. Independent tapered
+    // traces fall at different depths without implying board-wide scan lines.
+    const traces = [
+      [.1, .08, .96, .64], [.24, .22, 1.5, .46], [.41, .12, 1.12, .56],
+      [.59, .28, 1.7, .42], [.76, .16, 1.3, .52], [.91, .09, .88, .6],
+    ] as const;
+    for (const [xFactor, yFactor, heightFactor, strength] of traces) {
+      const drift = this.options.reducedMotion ? 0 : ((phase + xFactor * .7) % 1) * layout.cell * .72;
+      const centerX = layout.x + layout.width * xFactor;
+      const top = layout.y + layout.height * yFactor + drift;
+      const height = layout.cell * heightFactor;
+      const halfWidth = Math.max(1.5, layout.cell * (.075 + strength * .025));
       graphics
-        .circle(centerX + xOffset * core, centerY + yOffset * core + drift, Math.max(1, core * scale * .16))
-        .fill({ color: token.palette.primary, alpha: .52 * pulse * opacity });
+        .poly([
+          centerX - halfWidth * .45, top,
+          centerX + halfWidth, top + height * .14,
+          centerX + halfWidth * .22, top + height,
+          centerX - halfWidth, top + height * .76,
+        ])
+        .fill({
+          color: strength > .54 ? token.palette.highlight : token.palette.primary,
+          alpha: (.2 + strength * .24) * pulse * opacity,
+        });
     }
   }
 
@@ -2798,21 +2782,6 @@ export class TetrisRenderer {
       const alpha = pull.active ? 1 - pull.progress * .18 : 1 - settle.progress;
       const compression = pull.active ? pull.value : 1;
       if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .9 * alpha, strokeWidth);
-      const coreRadius = Math.max(layout.cell * .58, 6);
-      graphics
-        .circle(anchorX, anchorY, coreRadius * (1.2 + compression * .42))
-        .fill({ color: token.palette.deep, alpha: .3 * alpha })
-        .circle(anchorX, anchorY, coreRadius * .72)
-        .stroke({ color: token.palette.highlight, alpha: .9 * alpha, width: strokeWidth });
-      this.drawMutationDiamond(
-        graphics,
-        anchorX,
-        anchorY,
-        coreRadius * .4,
-        coreRadius * .62,
-        token.palette.primary,
-        .86 * alpha,
-      );
       for (const column of flash.triggerColumns) {
         const x = layout.x + (column + .5) * layout.cell;
         let sourceY = anchorY;
@@ -2820,35 +2789,32 @@ export class TetrisRenderer {
           if (cell.x !== column) continue;
           sourceY = Math.min(sourceY, layout.y + (cell.y + .5) * layout.cell);
         }
-        const available = Math.max(layout.cell * 1.4, layout.y + layout.height - sourceY - layout.cell * .4);
-        const dropHeight = Math.min(available, layout.cell * (2.2 + compression * 2.4));
-        const wellWidth = Math.max(2, layout.cell * .09);
-        graphics
-          .roundRect(x - wellWidth * 1.8, sourceY, wellWidth, dropHeight, wellWidth / 2)
-          .fill({ color: token.palette.primary, alpha: .44 * alpha })
-          .roundRect(x + wellWidth * .8, sourceY + layout.cell * .26, wellWidth, dropHeight * .82, wellWidth / 2)
-          .fill({ color: token.palette.highlight, alpha: .26 * alpha });
-        for (let mote = 0; mote < 3; mote += 1) {
-          const progress = (compression * .58 + mote * .31) % 1;
+        for (let trace = 0; trace < 3; trace += 1) {
+          const traceTop = sourceY + layout.cell * (.18 + trace * .13);
+          const traceHeight = layout.cell * (.58 + compression * .78 - trace * .09);
+          const halfWidth = Math.max(1.2, layout.cell * (.09 - trace * .012));
+          const offsetX = (trace - 1) * layout.cell * .13;
           graphics
-            .circle(x + (mote - 1) * wellWidth * 1.25, sourceY + dropHeight * progress, Math.max(1, wellWidth * .72))
-            .fill({ color: token.palette.highlight, alpha: (.68 - mote * .1) * alpha });
+            .poly([
+              x + offsetX - halfWidth * .45, traceTop,
+              x + offsetX + halfWidth, traceTop + traceHeight * .16,
+              x + offsetX + halfWidth * .18, traceTop + traceHeight,
+              x + offsetX - halfWidth, traceTop + traceHeight * .74,
+            ])
+            .fill({
+              color: trace === 1 ? token.palette.highlight : token.palette.primary,
+              alpha: (.62 - trace * .12) * alpha,
+            });
         }
-        const settleY = sourceY + dropHeight;
-        const spread = layout.cell * .28;
-        this.strokeSegments(graphics, [
-          [x - spread, settleY - layout.cell * .12, x, settleY + layout.cell * .14],
-          [x, settleY + layout.cell * .14, x + spread, settleY - layout.cell * .12],
-        ], token.palette.highlight, .86 * alpha, strokeWidth);
         if (settle.active) {
           graphics
-            .roundRect(
-              x - layout.cell * .36,
-              settleY + layout.cell * .22,
-              layout.cell * .72,
-              Math.max(2, layout.cell * .08),
-              Math.max(1, layout.cell * .04),
-            )
+            .poly([
+              x - layout.cell * .34, sourceY + layout.cell * 1.48,
+              x - layout.cell * .12, sourceY + layout.cell * 1.38,
+              x + layout.cell * .36, sourceY + layout.cell * 1.48,
+              x + layout.cell * .18, sourceY + layout.cell * 1.62,
+              x - layout.cell * .28, sourceY + layout.cell * 1.58,
+            ])
             .fill({ color: token.palette.primary, alpha: .52 * alpha });
         }
       }
@@ -2862,12 +2828,32 @@ export class TetrisRenderer {
       const shockwave = flash.timeline.sample('shockwave');
       const rows = Math.min(3, VISIBLE_HEIGHT);
       const y = layout.y + layout.height - layout.cell * rows;
+      const floorField = (alpha: number, lift: number, color: number): void => {
+        const points: number[] = [layout.x, layout.y + layout.height, layout.x, y + layout.cell * .82];
+        const ridge = [.72, .3, .58, .18, .5, .26, .68, .16, .44, .34, .7] as const;
+        for (let index = 0; index < ridge.length; index += 1) {
+          points.push(
+            layout.x + layout.width * index / (ridge.length - 1),
+            y + layout.cell * (ridge[index]! - lift),
+          );
+        }
+        points.push(layout.x + layout.width, layout.y + layout.height);
+        graphics.poly(points).fill({ color, alpha });
+      };
       if (warning.active) {
         const alpha = .55 + Math.sin(warning.progress * Math.PI * 3) * .28;
-        graphics
-          .roundRect(layout.x + layout.cell * .12, y + layout.cell * .12, layout.width - layout.cell * .24, layout.cell * rows - layout.cell * .24, Math.max(4, layout.cell * .18))
-          .fill({ color: token.palette.deep, alpha: .46 * alpha })
-          .stroke({ color: token.palette.primary, alpha, width: strokeWidth });
+        floorField(.27 * alpha, 0, token.palette.deep);
+        for (const [xFactor, yFactor, scale] of [[.08, .6, .4], [.24, .3, .32], [.48, .52, .46], [.69, .18, .3], [.9, .42, .38]] as const) {
+          this.drawMutationDiamond(
+            graphics,
+            layout.x + layout.width * xFactor,
+            y + layout.cell * yFactor,
+            layout.cell * scale * .18,
+            layout.cell * scale * .46,
+            token.palette.primary,
+            .62 * alpha,
+          );
+        }
       }
       if (pulse.active) {
         const alpha = Math.sin(pulse.progress * Math.PI);
@@ -2880,11 +2866,8 @@ export class TetrisRenderer {
       }
       if (impact.active) {
         const alpha = 1 - impact.progress;
-        graphics
-          .roundRect(layout.x, layout.y, layout.width, layout.height, Math.max(5, layout.cell * .2))
-          .fill({ color: token.palette.highlight, alpha: .18 * alpha })
-          .roundRect(layout.x + layout.cell * .08, y + layout.cell * .08, layout.width - layout.cell * .16, layout.cell * rows - layout.cell * .16, Math.max(4, layout.cell * .16))
-          .fill({ color: token.palette.primary, alpha: .36 * alpha });
+        floorField(.42 * alpha, .18, token.palette.primary);
+        floorField(.18 * alpha, .42, token.palette.highlight);
       }
       if (shockwave.active) {
         const alpha = 1 - shockwave.progress;
@@ -3397,7 +3380,6 @@ export class TetrisRenderer {
     const alpha = this.options.reducedMotion ? .76 : .72 * (1 - progress * .68) * depthWeight;
     if (alpha <= 0) return;
     const material = this.mutationMaterial('collapse');
-    const stroke = Math.max(1, layout.cell * .055);
     for (const column of trail.columns) {
       let maxTo = 0;
       for (const path of trail.paths) {
@@ -3409,26 +3391,33 @@ export class TetrisRenderer {
       const centerX = layout.x + (column + .5) * layout.cell;
       const supportY = layout.y + (visibleTo - VISIBLE_START_ROW + 1) * layout.cell;
       const travel = this.options.reducedMotion ? 0 : (1 - eased) * layout.cell * .38;
-      const chevronY = supportY - layout.cell * .58 - travel;
-      const spread = layout.cell * .24;
-      for (let mark = 0; mark < 2; mark += 1) {
-        const y = chevronY - mark * layout.cell * .27;
-        this.strokeSegments(graphics, [
-          [centerX - spread, y - layout.cell * .08, centerX, y + layout.cell * .12],
-          [centerX, y + layout.cell * .12, centerX + spread, y - layout.cell * .08],
-        ], mark === 0 ? material.innerEdge : material.edge, alpha * (1 - mark * .18), stroke);
+      for (let shard = 0; shard < 3; shard += 1) {
+        const center = centerX + (shard - 1) * layout.cell * .22;
+        const top = supportY - layout.cell * (.28 + shard * .08) - travel;
+        const width = layout.cell * (.12 + shard * .02);
+        const height = layout.cell * (.16 + (2 - shard) * .035);
+        graphics
+          .poly([
+            center - width, top,
+            center + width * .7, top + height * .18,
+            center + width * .2, top + height,
+            center - width * .55, top + height * .72,
+          ])
+          .fill({
+            color: shard === 1 ? material.innerEdge : material.edge,
+            alpha: alpha * (.74 - shard * .1),
+          });
       }
       const imprintAlpha = this.options.reducedMotion ? alpha : alpha * Math.max(0.25, eased);
       graphics
-        .roundRect(
-          centerX - layout.cell * .39,
-          supportY + layout.cell * .055,
-          layout.cell * .78,
-          Math.max(2, layout.cell * .085),
-          Math.max(1, layout.cell * .04),
-        )
-        .fill({ color: material.fillStart, alpha: imprintAlpha * .68 })
-        .stroke({ color: material.innerEdge, alpha: imprintAlpha * .82, width: Math.max(1, stroke * .72) });
+        .poly([
+          centerX - layout.cell * .38, supportY + layout.cell * .04,
+          centerX - layout.cell * .16, supportY - layout.cell * .025,
+          centerX + layout.cell * .4, supportY + layout.cell * .035,
+          centerX + layout.cell * .22, supportY + layout.cell * .13,
+          centerX - layout.cell * .3, supportY + layout.cell * .12,
+        ])
+        .fill({ color: material.fillStart, alpha: imprintAlpha * .58 });
     }
   }
 
