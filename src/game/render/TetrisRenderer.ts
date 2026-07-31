@@ -601,7 +601,8 @@ export class TetrisRenderer {
     this.drawPreviews(state, layout);
     this.updateSnapshot(state, layout, app);
     this.previousBoard = state.board;
-    this.collapseWasActive = state.mode === 'sprint' && state.mutationCollapseTicks > 0;
+    this.collapseWasActive = state.mode === 'sprint'
+      && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched);
   }
 
   getSnapshot(): RendererSnapshot {
@@ -1649,6 +1650,39 @@ export class TetrisRenderer {
       .fill({ fill: this.gradientFor(BEDROCK_CELL), alpha })
       .stroke({ color: material.edge, alpha: Math.min(0.94, alpha), width: borderWidth });
 
+    const innerTop = top + bevel;
+    const innerBottom = bottom - bevel;
+    const innerLeft = left + bevel;
+    const innerRight = right - bevel;
+    const upperFirst = left + width * 0.31;
+    const lowerFirst = left + width * 0.23;
+    const upperSecond = left + width * 0.63;
+    const lowerSecond = left + width * 0.71;
+    graphics
+      .poly([
+        innerLeft, innerTop,
+        upperFirst, innerTop,
+        lowerFirst, innerBottom,
+        innerLeft, innerBottom,
+      ])
+      .fill({ color: material.fillStart, alpha: Math.min(0.17, alpha * 0.18) });
+    graphics
+      .poly([
+        upperFirst, innerTop,
+        upperSecond, innerTop,
+        lowerSecond, innerBottom,
+        lowerFirst, innerBottom,
+      ])
+      .fill({ color: material.edge, alpha: Math.min(0.11, alpha * 0.12) });
+    graphics
+      .poly([
+        upperSecond, innerTop,
+        innerRight, innerTop,
+        innerRight, innerBottom,
+        lowerSecond, innerBottom,
+      ])
+      .fill({ color: material.innerEdge, alpha: Math.min(0.08, alpha * 0.09) });
+
     graphics
       .poly([
         left, top,
@@ -1754,45 +1788,17 @@ export class TetrisRenderer {
   ): void {
     if (state.mode !== 'race') return;
 
-    const warningPulse = this.options.reducedMotion
-      ? 1
-      : 0.78 + Math.sin(this.mutationClockMs / 140) * 0.12;
     const warningColor = SURVIVAL_STONE_MATERIAL.innerEdge;
     for (const column of state.survivalDebrisWarningColumns) {
       const centerX = layout.x + (column + 0.5) * layout.cell;
       const top = layout.y + Math.max(2, layout.cell * 0.08);
-      const half = layout.cell * 0.31;
-      const warningHeight = state.survivalDebrisWarningHeight ?? 1;
-      const silhouetteTop = top + layout.cell * 0.21;
-      const silhouetteCellHeight = layout.cell * 0.29;
-      const silhouetteBottom = silhouetteTop + silhouetteCellHeight * warningHeight;
-      const silhouetteSegments: Array<readonly [number, number, number, number]> = [
-        [centerX - half * 0.76, silhouetteTop, centerX - half * 0.76, silhouetteBottom],
-        [centerX + half * 0.76, silhouetteTop, centerX + half * 0.76, silhouetteBottom],
-        [centerX - half * 0.76, silhouetteBottom, centerX + half * 0.76, silhouetteBottom],
-      ];
-      if (warningHeight === 2) {
-        const seamY = silhouetteTop + silhouetteCellHeight;
-        silhouetteSegments.push([
-          centerX - half * 0.76,
-          seamY,
-          centerX + half * 0.76,
-          seamY,
-        ]);
-      }
+      const markerWidth = layout.cell * 0.23;
+      const markerBottom = top + layout.cell * 0.64;
       this.strokeSegments(graphics, [
-        [centerX - half, top + layout.cell * 0.04, centerX - layout.cell * 0.13, top + layout.cell * 0.16],
-        [centerX - layout.cell * 0.13, top + layout.cell * 0.16, centerX + layout.cell * 0.02, top + layout.cell * 0.07],
-        [centerX + layout.cell * 0.02, top + layout.cell * 0.07, centerX + layout.cell * 0.16, top + layout.cell * 0.18],
-        [centerX + layout.cell * 0.16, top + layout.cell * 0.18, centerX + half, top + layout.cell * 0.1],
-      ], warningColor, 0.78 * warningPulse, Math.max(1.2, layout.cell * 0.052));
-      this.strokeSegments(
-        graphics,
-        silhouetteSegments,
-        SURVIVAL_STONE_MATERIAL.edge,
-        0.48 * warningPulse,
-        Math.max(1, layout.cell * 0.038),
-      );
+        [centerX, top, centerX, markerBottom],
+        [centerX - markerWidth, markerBottom - markerWidth, centerX, markerBottom],
+        [centerX, markerBottom, centerX + markerWidth, markerBottom - markerWidth],
+      ], warningColor, 0.86, Math.max(1.4, layout.cell * 0.065));
     }
 
     for (const cue of this.survivalStoneCues) {
@@ -2419,32 +2425,54 @@ export class TetrisRenderer {
     return this.freezeAtmosphereGradient;
   }
 
-  private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, phase: number, opacity: number): void {
+  private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, _phase: number, opacity: number): void {
     const token = MUTATION_VFX_TOKENS.collapse;
-    const pulse = this.options.reducedMotion ? 1 : .84 + Math.sin(phase * Math.PI * 2) * .1;
-    // Supergravity is a pressure field, not a central emblem. Independent tapered
-    // traces fall at different depths without implying board-wide scan lines.
+    // Supergravity is a steady downward load, not a flashing emblem. Long tapered
+    // acceleration channels widen toward the stack while local compression wedges
+    // terminate at the floor. Geometry and alpha remain stable across frames.
     const traces = [
-      [.1, .08, .96, .64], [.24, .22, 1.5, .46], [.41, .12, 1.12, .56],
-      [.59, .28, 1.7, .42], [.76, .16, 1.3, .52], [.91, .09, .88, .6],
+      [.08, .08, 1.36, .72], [.2, .2, 1.92, .48], [.34, .11, 1.58, .62],
+      [.5, .26, 2.12, .46], [.65, .14, 1.76, .66], [.8, .23, 1.94, .5],
+      [.92, .09, 1.42, .7],
     ] as const;
     for (const [xFactor, yFactor, heightFactor, strength] of traces) {
-      const drift = this.options.reducedMotion ? 0 : ((phase + xFactor * .7) % 1) * layout.cell * .72;
       const centerX = layout.x + layout.width * xFactor;
-      const top = layout.y + layout.height * yFactor + drift;
+      const top = layout.y + layout.height * yFactor;
       const height = layout.cell * heightFactor;
-      const halfWidth = Math.max(1.5, layout.cell * (.075 + strength * .025));
+      const topHalf = Math.max(1.2, layout.cell * (.034 + strength * .012));
+      const bottomHalf = Math.max(2.4, layout.cell * (.105 + strength * .045));
       graphics
         .poly([
-          centerX - halfWidth * .45, top,
-          centerX + halfWidth, top + height * .14,
-          centerX + halfWidth * .22, top + height,
-          centerX - halfWidth, top + height * .76,
+          centerX - topHalf, top,
+          centerX + topHalf, top,
+          centerX + topHalf * 1.2, top + height * .42,
+          centerX + bottomHalf, top + height * .84,
+          centerX, top + height,
+          centerX - bottomHalf, top + height * .84,
+          centerX - topHalf * 1.2, top + height * .42,
         ])
         .fill({
           color: strength > .54 ? token.palette.highlight : token.palette.primary,
-          alpha: (.2 + strength * .24) * pulse * opacity,
+          alpha: (.16 + strength * .22) * opacity,
         });
+    }
+    const floor = layout.y + layout.height;
+    for (const [xFactor, heightFactor, strength] of [
+      [.14, .42, .48], [.31, .66, .62], [.5, .5, .54], [.69, .72, .66], [.86, .44, .5],
+    ] as const) {
+      const centerX = layout.x + layout.width * xFactor;
+      const height = layout.cell * heightFactor;
+      const halfWidth = layout.cell * (.08 + strength * .055);
+      graphics
+        .poly([
+          centerX - halfWidth * .28, floor - height,
+          centerX + halfWidth * .28, floor - height,
+          centerX + halfWidth, floor - layout.cell * .08,
+          centerX + halfWidth * .54, floor,
+          centerX - halfWidth * .54, floor,
+          centerX - halfWidth, floor - layout.cell * .08,
+        ])
+        .fill({ color: token.palette.deep, alpha: (.14 + strength * .14) * opacity });
     }
   }
 
@@ -2685,7 +2713,6 @@ export class TetrisRenderer {
     const strokeWidth = Math.max(1, layout.cell * 0.06);
 
     if (this.options.reducedMotion) {
-      if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, 0.72, strokeWidth);
       this.drawReducedMutationEndpoint(
         graphics,
         flash.item,
@@ -2705,7 +2732,6 @@ export class TetrisRenderer {
       const shard = Math.max(3, layout.cell * 0.18);
       const distance = Math.max(layout.cell * 0.68, (maxX - minX + maxY - minY + 2) * layout.cell * 0.22);
       const ring = .42 + crystalise.value * .88;
-      if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .92 * alpha, strokeWidth);
       graphics
         .circle(anchorX, anchorY, distance * ring)
         .fill({ color: token.palette.primary, alpha: 0.16 * alpha })
@@ -2731,7 +2757,6 @@ export class TetrisRenderer {
       if (!pull.active && !settle.active) return;
       const alpha = pull.active ? 1 - pull.progress * .18 : 1 - settle.progress;
       const compression = pull.active ? pull.value : 1;
-      if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .9 * alpha, strokeWidth);
       for (const column of flash.triggerColumns) {
         const x = layout.x + (column + .5) * layout.cell;
         let sourceY = anchorY;
@@ -2837,7 +2862,6 @@ export class TetrisRenderer {
     const alpha = Math.max(scorePop.active ? 1 - scorePop.progress * .2 : 0, sparkTail.active ? 1 - sparkTail.progress : 0);
     const intensity = flash.multiplierFactor === 4 ? 1.32 : 1;
     const starRadius = Math.max(layout.cell * .74, layout.width * .048) * intensity;
-    if (cells.length) this.drawMutationCarrierRim(graphics, cells, flash.item, layout, 0, 0, .92 * alpha, strokeWidth);
     graphics.circle(anchorX, anchorY, starRadius * (2.1 + scorePop.value * .7)).fill({ color: token.palette.primary, alpha: 0.16 * alpha });
     this.drawMutationStar(graphics, anchorX, anchorY, starRadius * 1.72, starRadius * .46, token.palette.highlight, 0.96 * alpha);
     this.drawMutationStar(graphics, anchorX, anchorY, starRadius, starRadius * .28, token.palette.primary, alpha);

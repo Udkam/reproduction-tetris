@@ -564,7 +564,7 @@ describe('Puzzle undo presentation reset', () => {
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
     expect(bedrockRects).toHaveLength(1);
     expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 24]);
-    expect(bedrockPolygons).toHaveLength(3);
+    expect(bedrockPolygons).toHaveLength(6);
     expect(bedrock.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
@@ -630,7 +630,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
     const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
-    expect(entryPolygons).toBe(3);
+    expect(entryPolygons).toBe(6);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);
@@ -778,32 +778,14 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalDebrisPresentation.size).toBe(0);
   });
 
-  it('draws one top fissure and the frozen one- or two-stone warning silhouette', () => {
+  it('draws one steady downward arrow in the frozen Survival source column', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const drawWarning = (height: 1 | 2) => {
-      const segments: Array<readonly [number, number, number, number]> = [];
-      const strokes: unknown[] = [];
-      let start: readonly [number, number] = [0, 0];
-      const graphics = {
-        circle: () => graphics,
-        fill: () => graphics,
-        moveTo: (x: number, y: number) => {
-          start = [x, y];
-          return graphics;
-        },
-        lineTo: (x: number, y: number) => {
-          segments.push([start[0], start[1], x, y]);
-          return graphics;
-        },
-        stroke: (options: unknown) => {
-          strokes.push(options);
-          return graphics;
-        },
-      };
-
+    const drawWarning = (height: 1 | 2, clock: number) => {
+      (internals as unknown as { mutationClockMs: number }).mutationClockMs = clock;
+      const recorder = createGraphicsRecorder();
       internals.drawSurvivalPressureEffects(
-        graphics,
+        recorder.graphics,
         {
           mode: 'race',
           survivalDebrisWarningColumns: [2],
@@ -811,19 +793,18 @@ describe('Puzzle undo presentation reset', () => {
         } as unknown as GameState,
         { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
       );
-      return { segments, strokes };
+      return recorder.operations;
     };
 
-    const single = drawWarning(1);
-    const double = drawWarning(2);
-    expect(single.segments.some(([x]) => x > 43 && x < 57)).toBe(true);
-    expect(single.segments.some(([x]) => x > 140)).toBe(false);
-    expect(single.strokes).toHaveLength(2);
-    expect(double.strokes).toHaveLength(2);
-    expect(double.segments).toHaveLength(single.segments.length + 1);
-    const singleBottom = Math.max(...single.segments.flatMap((segment) => [segment[1], segment[3]]));
-    const doubleBottom = Math.max(...double.segments.flatMap((segment) => [segment[1], segment[3]]));
-    expect(doubleBottom).toBeGreaterThan(singleBottom);
+    const single = drawWarning(1, 0);
+    const doubleLater = drawWarning(2, 437);
+    expect(single).toEqual(doubleLater);
+    const segments = single.filter((operation) => operation.kind === 'segment');
+    expect(segments).toHaveLength(3);
+    expect(segments.every((segment) => (segment.values[0] ?? 0) >= 45 && (segment.values[0] ?? 0) <= 55)).toBe(true);
+    expect(single.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
+    expect(single.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(single.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
   });
 
   it('keeps a local bedrock boundary cue even when reduced motion removes the shift', () => {
@@ -852,11 +833,12 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
-  it('renders one static item-coloured activation frame for reduced motion', () => {
+  it('renders one static reduced-motion endpoint without resurrecting a consumed carrier frame', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const fills: unknown[] = [];
     const strokes: unknown[] = [];
+    let carrierRimCalls = 0;
     const graphics = {
       clear: () => graphics,
       roundRect: () => graphics,
@@ -875,6 +857,9 @@ describe('Puzzle undo presentation reset', () => {
     };
     (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).effectGraphics = graphics;
     (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).mutationGraphics = graphics;
+    (internals as unknown as { drawMutationCarrierRim: () => void }).drawMutationCarrierRim = () => {
+      carrierRimCalls += 1;
+    };
 
     renderer.setOptions({ reducedMotion: true });
     internals.consumeEvents([{
@@ -892,7 +877,9 @@ describe('Puzzle undo presentation reset', () => {
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(fills).toContainEqual({ color: MUTATION_MATERIALS.freeze.innerEdge, alpha: .44 });
+    expect(fills.length).toBeGreaterThan(0);
+    expect(strokes.length).toBeGreaterThan(0);
+    expect(carrierRimCalls).toBe(0);
 
     internals.advanceEffects(484);
     expect(internals.mutationFlash).toBeNull();
@@ -1156,11 +1143,52 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(recorder.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(6);
+    expect(recorder.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(12);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
+
+    (internals as unknown as { mutationClockMs: number }).mutationClockMs = 437;
+    const later = createGraphicsRecorder();
+    internals.drawActiveMutationAtmosphere(
+      later.graphics,
+      {
+        mode: 'sprint',
+        mutationFreezeTicks: 0,
+        mutationCollapseTicks: 60,
+        mutationMultiplierTicks: 0,
+        mutationMultiplierFactor: 2,
+      } as unknown as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+    expect(later.operations).toEqual(recorder.operations);
+  });
+
+  it('never redraws a consumed carrier rim during an item activation', () => {
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+      const renderer = new TetrisRendererClass();
+      const internals = renderer as unknown as RendererInternals;
+      let carrierRimCalls = 0;
+      (internals as unknown as { drawMutationCarrierRim: () => void }).drawMutationCarrierRim = () => {
+        carrierRimCalls += 1;
+      };
+      internals.consumeEvents([{
+        type: 'mutation-activated',
+        item,
+        durationTicks: item === 'bomb' ? 0 : 600,
+        score: item === 'bomb' ? 300 : 0,
+        rowsRemoved: item === 'bomb' ? 3 : 0,
+        triggerCells: [{ x: 4, y: VISIBLE_START_ROW + 6 }],
+        ...(item === 'multiplier' ? { multiplierFactor: 2 as const } : {}),
+      }]);
+      internals.drawMutationActivationEffect(
+        createGraphicsRecorder().graphics,
+        internals.mutationFlash!,
+        { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+      );
+      expect(carrierRimCalls, item).toBe(0);
+    }
   });
 
   it('shows the Bomb range as an irregular floor field instead of a 3-by-10 box', () => {
@@ -1419,6 +1447,30 @@ describe('Puzzle undo presentation reset', () => {
     alreadySettled[BOARD_HEIGHT - 1]![0] = 'T';
     internals.queueCollapseSettlementTrail(alreadySettled, [{ x: 0, y: BOARD_HEIGHT - 2 }]);
     expect(internals.collapseTrail).toBeNull();
+  });
+
+  it('keeps the Supergravity settlement trail after its timed field expires in flight', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const previousBoard = createBoard();
+    previousBoard[BOARD_HEIGHT - 1]![0] = 'T';
+    const finishedTimerState = {
+      ...createInitialState(0x51a1f00d, 'sprint'),
+      mutationCollapseTicks: 0,
+      mutationCollapseLandingLatched: false,
+    };
+
+    internals.consumeEvents([{
+      type: 'piece-locked',
+      piece: 'I',
+      cells: [{ x: 0, y: BOARD_HEIGHT - 4 }],
+    }], finishedTimerState, previousBoard, true);
+
+    expect(internals.collapseTrail).toMatchObject({
+      columns: [0],
+      maxDrop: 2,
+      paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
+    });
   });
 
   it('tracks every just-locked cell through a compact column settlement without a per-lock sort', () => {
