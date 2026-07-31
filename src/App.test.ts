@@ -673,9 +673,11 @@ describe('T6 frontend mode binding', () => {
     const englishStonefall = modeRules('en', 'race').find((fact) => fact.id === 'stonefall')?.value ?? '';
     expect(chineseStonefall).toContain('随机 1–2 块');
     expect(chineseStonefall).toContain('同一随机列');
+    expect(chineseStonefall).toContain('4 倍速度');
     expect(chineseStonefall).not.toContain('同列双石');
     expect(englishStonefall).toContain('1–2 clearable rocks');
     expect(englishStonefall).toContain('one random column');
+    expect(englishStonefall).toContain('4× normal speed');
   });
 
   it('uses stable typed rule facts in both languages without delimiter parsing or placeholder entries', () => {

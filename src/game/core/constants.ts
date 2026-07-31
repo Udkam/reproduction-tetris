@@ -28,8 +28,8 @@ export const SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS = 10;
 export const SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS = 1;
 /** Canonical warning lead before the independent stone event becomes due. */
 export const SURVIVAL_DEBRIS_WARNING_SECONDS = 2;
-/** Exactly 2× normal Survival gravity, represented with an integer accumulator. */
-export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 2;
+/** Exactly 4× normal Survival gravity, represented with an integer accumulator. */
+export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 4;
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD = SURVIVAL_GRAVITY_TICKS;
 /** Keeps the debris stream independent from the ordinary seven-bag randomizer. */
 export const SURVIVAL_DEBRIS_RANDOM_SALT = 0xa3c5_9ac3;

@@ -423,7 +423,7 @@ describe('independent Survival stone stream', () => {
     );
   });
 
-  it('falls at exactly twice the fixed Survival cadence while preserving the rigid pair', () => {
+  it('falls at exactly four times the fixed Survival cadence while preserving the rigid pair', () => {
     const state: GameState = {
       ...start(0x5a0f, 'race'),
       board: createBoard(),
@@ -432,9 +432,9 @@ describe('independent Survival stone stream', () => {
       survivalDebris: [{ id: 1, x: 0, y: VISIBLE_START_ROW - 1, height: 2 }],
       survivalDebrisFallProgress: 0,
     };
-    const halfway = advance(state, SURVIVAL_GRAVITY_TICKS / 2);
-    expect(halfway.active).toMatchObject({ y: 24 });
-    expect(halfway.survivalDebris).toEqual([{
+    const quarter = advance(state, SURVIVAL_GRAVITY_TICKS / 4);
+    expect(quarter.active).toMatchObject({ y: 24 });
+    expect(quarter.survivalDebris).toEqual([{
       id: 1,
       x: 0,
       y: VISIBLE_START_ROW,
@@ -446,7 +446,7 @@ describe('independent Survival stone stream', () => {
     expect(advanced.survivalDebris).toEqual([{
       id: 1,
       x: 0,
-      y: VISIBLE_START_ROW + 1,
+      y: VISIBLE_START_ROW + 3,
       height: 2,
     }]);
   });
@@ -499,7 +499,7 @@ describe('independent Survival stone stream', () => {
       survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 4, y: 28 },
       survivalDebris: [{ id: 7, x: 4, y: 30, height: 1 }],
-      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
       gravityTicks: 17,
       lockTicks: 12,
     };
@@ -509,12 +509,17 @@ describe('independent Survival stone stream', () => {
     expect(first.active).toMatchObject({ type: 'O', x: 4, y: 29 });
     expect(first.survivalDebris).toEqual([{ id: 7, x: 4, y: 31, height: 1 }]);
     expect(first.gravityTicks).toBe(1);
-    expect(first.lockTicks).toBe(1);
+    expect(first.lockTicks).toBe(0);
     expect(stateHash(first)).toBe(stateHash(repeated));
+
+    const betweenStoneSteps = dispatch(first, { type: 'tick' }).state;
+    expect(betweenStoneSteps.active).toEqual(first.active);
+    expect(betweenStoneSteps.survivalDebris).toEqual(first.survivalDebris);
+    expect(betweenStoneSteps.lockTicks).toBe(0);
 
     const second = dispatch({
       ...first,
-      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
     }, { type: 'tick' }).state;
     expect(second.active).toMatchObject({ type: 'O', x: 4, y: 30 });
     expect(second.survivalDebris).toEqual([{ id: 7, x: 4, y: 32, height: 1 }]);
@@ -527,7 +532,7 @@ describe('independent Survival stone stream', () => {
       survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 4, y: 30 },
       survivalDebris: [{ id: 3, x: 4, y: 29, height: 1 }],
-      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
     };
 
     const waited = dispatch(state, { type: 'tick' }).state;
@@ -552,6 +557,58 @@ describe('independent Survival stone stream', () => {
     expect(dropDistance(state)).toBe(0);
   });
 
+  it('hard-drops onto dynamic stone support without locking the ordinary piece', () => {
+    const state: GameState = {
+      ...start(0x5a1d, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: 24 },
+      survivalDebris: [{ id: 8, x: 4, y: 34, height: 1 }],
+      pieceCount: 0,
+      lockTicks: 17,
+    };
+
+    const dropped = dispatch(state, { type: 'hard-drop' });
+    expect(dropped.state.active).toMatchObject({ type: 'O', x: 4, y: 32 });
+    expect(dropped.state.survivalDebris).toEqual(state.survivalDebris);
+    expect(dropped.state.pieceCount).toBe(0);
+    expect(dropped.state.lockTicks).toBe(0);
+    expect(dropped.events).toEqual([{
+      type: 'piece-moved',
+      piece: 'O',
+      dx: 0,
+      dy: 8,
+      cause: 'hard-drop',
+    }]);
+    expect(dropped.events.some((event) => event.type === 'hard-dropped')).toBe(false);
+  });
+
+  it('starts ordinary lock delay only after dynamic stone support settles', () => {
+    const base: GameState = {
+      ...start(0x5a1e, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: 36 },
+      survivalDebris: [{ id: 9, x: 4, y: 38, height: 1 }],
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
+      lockTicks: 21,
+    };
+
+    const carried = dispatch(base, { type: 'tick' }).state;
+    expect(carried.active).toMatchObject({ type: 'O', y: 37 });
+    expect(carried.survivalDebris).toEqual([{ id: 9, x: 4, y: 39, height: 1 }]);
+    expect(carried.lockTicks).toBe(0);
+
+    const settled = dispatch({
+      ...carried,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
+    }, { type: 'tick' }).state;
+    expect(settled.survivalDebris).toEqual([]);
+    expect(settled.board[39]![4]).toBe(SURVIVAL_STONE_CELL);
+    expect(settled.active).toMatchObject({ type: 'O', y: 37 });
+    expect(settled.lockTicks).toBe(1);
+  });
+
   it('locks a stone as a clearable cell, scores its clear, and preserves the active player piece', () => {
     let board = createBoard();
     for (let x = 0; x < 9; x += 1) board = setCell(board, x, BOARD_HEIGHT - 1, 'J');
@@ -561,7 +618,7 @@ describe('independent Survival stone stream', () => {
       survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 3, y: 30 },
       survivalDebris: [{ id: 1, x: 9, y: BOARD_HEIGHT - 1, height: 1 }],
-      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
       pieceCount: 0,
     }, { type: 'tick' });
 
@@ -602,7 +659,7 @@ describe('independent Survival stone stream', () => {
       survivalBedrockRows: 0,
       active: { type: 'O', rotation: 0, x: 3, y: 30 },
       survivalDebris: [{ id: 1, x: 9, y: BOARD_HEIGHT - 2, height: 2 }],
-      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 2,
+      survivalDebrisFallProgress: SURVIVAL_GRAVITY_TICKS - 4,
       pieceCount: 0,
     }, { type: 'tick' });
 

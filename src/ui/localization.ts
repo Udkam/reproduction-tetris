@@ -263,7 +263,7 @@ const COPY: Record<AppLanguage, Translation> = {
       race: [
         { id: 'start', label: '开局', value: '带 3 层上升基岩。' },
         { id: 'pressure', label: '压力', value: '13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。' },
-        { id: 'stonefall', label: '落石', value: '20 秒开始，每次缩短 1 秒至 10 秒；每次随机 1–2 块可消落石，在同一随机列以普通方块 2 倍速度坠落。' },
+        { id: 'stonefall', label: '落石', value: '20 秒开始，每次缩短 1 秒至 10 秒；每次随机 1–2 块可消落石，在同一随机列以普通方块 4 倍速度坠落。' },
         { id: 'end', label: '结束', value: '基岩把堆叠顶到顶端。' },
       ],
       sprint: [
@@ -368,7 +368,7 @@ const COPY: Record<AppLanguage, Translation> = {
       race: [
         { id: 'start', label: 'Start', value: 'Begin above 3 rising bedrock rows.' },
         { id: 'pressure', label: 'Pressure', value: 'The timer drops from 13 to 6 seconds; every 3 lines removes one bedrock row.' },
-        { id: 'stonefall', label: 'Stonefall', value: 'Starts at 20 seconds, then shortens by 1 to 10; each event drops 1–2 clearable rocks at 2× normal speed in one random column.' },
+        { id: 'stonefall', label: 'Stonefall', value: 'Starts at 20 seconds, then shortens by 1 to 10; each event drops 1–2 clearable rocks at 4× normal speed in one random column.' },
         { id: 'end', label: 'End', value: 'Bedrock pushes the stack to the top.' },
       ],
       sprint: [

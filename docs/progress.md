@@ -1,5 +1,15 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T19 Phase 12 Survival checkpoint — 2026-08-01
+
+- Survival debris now advances at exactly `4x` ordinary cadence. Merely touching an
+  in-flight rock no longer grounds or locks the ordinary piece, including hard drop;
+  supported pieces ride a legal falling stone and lock delay resumes after settlement.
+- Bedrock is a flat continuous shelf and falling rocks are complete square solids with
+  broad face lighting and no decals, cracks, dots, chips, or irregular silhouettes.
+- Focused App/Core/Renderer coverage passes `106/106` and typecheck passes. This is a
+  rollback checkpoint; immutable browser evidence and final acceptance remain open.
+
 ### T19 Phase 12 shared UI/type checkpoint — 2026-08-01
 
 - Leave-dialog action roles, the single-surface Settings layout, and the local

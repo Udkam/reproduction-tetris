@@ -527,7 +527,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('replaces the square-cell body with a continuous shelf and irregular boulders', () => {
+  it('draws a flat continuous shelf and complete square falling stones without decals', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const shelf = Array.from({ length: 10 }, (_, x) => ({
@@ -557,20 +557,28 @@ describe('Puzzle undo presentation reset', () => {
       1,
     );
 
+    const bedrockRects = bedrock.operations.filter((operation) => operation.kind === 'rect');
     const bedrockPolygons = bedrock.operations.filter((operation) => operation.kind === 'poly');
+    const fallingRects = falling.operations.filter((operation) => operation.kind === 'rect');
     const fallingPolygons = falling.operations.filter((operation) => operation.kind === 'poly');
-    const bedrockSegments = bedrock.operations.filter((operation) => operation.kind === 'segment');
-    expect(bedrockPolygons).toHaveLength(4);
+    expect(bedrockRects).toHaveLength(1);
+    expect(bedrockRects[0]?.values).toEqual([10, 20, 240, 24]);
+    expect(bedrockPolygons).toHaveLength(3);
     expect(bedrock.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(bedrock.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
-    expect(bedrockSegments.length).toBeGreaterThan(4);
-    expect(bedrockSegments.length).toBeLessThanOrEqual(10);
+    expect(bedrock.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
+    expect(fallingRects).toHaveLength(2);
+    for (const body of fallingRects) {
+      expect(body.values[2]).toBeCloseTo(body.values[3] ?? 0, 6);
+      expect(body.values[2]).toBeLessThan(24);
+      expect(body.values[2]).toBeGreaterThan(22);
+    }
+    expect(fallingRects[0]?.values[0]).toBeCloseTo(fallingRects[1]?.values[0] ?? 0, 6);
+    expect((fallingRects[1]?.values[1] ?? 0) - (fallingRects[0]?.values[1] ?? 0)).toBeCloseTo(24, 6);
     expect(fallingPolygons).toHaveLength(6);
     expect(falling.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(falling.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
-    expect(falling.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(3);
-    const fallingBounds = fallingPolygons.flatMap((operation) => operation.values.filter((value) => value !== undefined));
-    expect(Math.max(...fallingBounds) - Math.min(...fallingBounds)).toBeGreaterThan(24);
+    expect(falling.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(geometrySignature(bedrock.operations)).not.toBe(geometrySignature(falling.operations));
   });
 
@@ -605,7 +613,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(firstRiseCall?.[1]).toHaveLength(10);
     expect(firstRiseCall?.[4]).toMatchObject({ offsetY: 20 });
     const entryPolygons = rising.operations.filter((operation) => operation.kind === 'poly').length;
-    expect(entryPolygons).toBe(4);
+    expect(entryPolygons).toBe(3);
     expect(rising.operations.some((operation) => operation.kind === 'roundRect')).toBe(false);
 
     internals.advanceEffects(340);

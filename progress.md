@@ -1,5 +1,15 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
+## T19 Phase 12 Survival checkpoint — 2026-08-01
+
+- Falling rocks now use exact `4x` fixed cadence. In-flight support is not ground:
+  lock delay remains zero, hard drop does not emit a landing cue, legal supported
+  pieces ride downward, and lock delay starts only after the rock settles.
+- The geology renderer now uses one flat bedrock shelf and complete square falling
+  solids with structural planes rather than surface decals or irregular boulders.
+- Focused App/Core/Renderer tests pass `106/106`; checkpoint typecheck passes. Final
+  real frames and acceptance remain open.
+
 ## T19 Phase 12 shared UI/type checkpoint — 2026-08-01
 
 - The left/default leave action is now the primary return action. Settings uses one

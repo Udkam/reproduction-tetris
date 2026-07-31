@@ -1,5 +1,31 @@
 # T19 Coordinator Workstream Log
 
+## 2026-08-01 — Phase 12 Survival dynamic-support checkpoint
+
+- Task ID: `T19-P12.2`
+- Base SHA: `336cd66`
+- Owner: primary coordinator; one production writer
+- Exact product paths: `src/game/core/{constants.ts,engine.ts,race.test.ts,types.ts}`,
+  `src/game/render/{TetrisRenderer.ts,TetrisRenderer.test.ts}`,
+  `src/ui/localization.ts`, and `src/App.test.ts`.
+- Core contract: a one- or two-cell event advances every ten fixed ticks, exactly four
+  times the ordinary Survival cadence. A piece blocked only by in-flight debris is
+  dynamically supported, so lock delay stays at zero; a hard drop becomes a movement
+  rather than a landing cue; legal support descends atomically with the stone; normal
+  grounding begins only after that stone enters the board.
+- Renderer contract: bedrock is one flat, continuous shelf with a level contact plane;
+  falling debris is one complete square solid per cell. Both use broad face lighting
+  and contain no crack, dot, chip, irregular silhouette, or per-cell bedrock decal.
+- Commands actually run: focused Core test, then focused App/Core/Renderer tests with
+  one worker, checkpoint typecheck, legacy 2x-text search, and diff hygiene.
+- Evidence: `3 files / 106 tests` pass and typecheck passes. Direct tests cover exact
+  4x cadence, rigid height-two motion, non-locking time between stone steps, hard-drop
+  non-landing, carried descent, post-settle lock resumption, flat shelf bounds, square
+  rock bounds, and no geology decal primitives.
+- Acceptance boundary: source checkpoint is green but final real-frame visual review
+  remains open. No Vite server, browser, watcher, indexer, or child agent was started.
+- Next action: commit exact P12.2 paths, then open authored Puzzle curriculum P12.3.
+
 ## 2026-08-01 — Phase 12 shared UI/type checkpoint
 
 - Task ID: `T19-P12.1`

@@ -339,7 +339,23 @@ function activeOverlapsSurvivalDebris(state: GameState, piece = state.active): b
   return cellsForPiece(piece).some((cell) => occupied.has(cellKey(cell)));
 }
 
+/**
+ * A moving stone is dynamic support, not settled ground. The ordinary board must
+ * still accept the one-cell-lower piece; only an in-flight stone may block it.
+ */
+function hasFallingSurvivalSupport(state: GameState, piece: ActivePiece): boolean {
+  if (
+    state.mode !== 'race'
+    || state.survivalDebris.length === 0
+    || activeOverlapsSurvivalDebris(state, piece)
+  ) return false;
+  const candidate = { ...piece, y: piece.y + 1 };
+  return canPlace(state.board, candidate)
+    && !canPlaceWithSurvivalDebris(state.board, state.survivalDebris, candidate);
+}
+
 function isGroundedInState(state: GameState, piece: ActivePiece): boolean {
+  if (hasFallingSurvivalSupport(state, piece)) return false;
   return !canPlaceInState(state, { ...piece, y: piece.y + 1 });
 }
 
@@ -556,7 +572,7 @@ interface SurvivalDebrisAdvance extends GameTransition {
   startedLineClear: boolean;
 }
 
-/** Advances the independent debris clock and its exact 2× fixed-tick fall accumulator. */
+/** Advances the independent debris clock and its exact 4× fixed-tick fall accumulator. */
 function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
   if (state.mode !== 'race') return { state, events: [], startedLineClear: false };
   let next = state;
@@ -961,6 +977,9 @@ function lockActive(
   if (activeOverlapsSurvivalDebris(state, state.active)) {
     return { state: { ...state, lockTicks: 0 }, events: [] };
   }
+  if (hasFallingSurvivalSupport(state, state.active)) {
+    return { state: { ...state, lockTicks: 0 }, events: extraEvents };
+  }
   const undoCheckpoint = state.mode === 'puzzle' ? state.puzzleActiveSpawnCheckpoint : null;
   const cells = cellsForPiece(state.active);
   if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
@@ -1101,6 +1120,12 @@ function hardDrop(state: GameState): GameTransition {
     distance += 1;
   }
   const next = { ...state, active: candidate, score: state.score + distance * 2 };
+  if (hasFallingSurvivalSupport(next, candidate)) {
+    return {
+      state: { ...next, gravityTicks: 0, lockTicks: 0 },
+      events: [{ type: 'piece-moved', piece: candidate.type, dx: 0, dy: distance, cause: 'hard-drop' }],
+    };
+  }
   return lockActive(next, [{ type: 'hard-dropped', piece: candidate.type, distance }]);
 }
 

@@ -183,7 +183,7 @@ export interface GameState {
   survivalDebrisWarningColumns: readonly number[];
   /** Frozen height announced with the warning column; null when no event is planned. */
   survivalDebrisWarningHeight: SurvivalDebrisHeight | null;
-  /** Exact integer accumulator that advances the event at 2× Survival gravity. */
+  /** Exact integer accumulator that advances the event at 4× Survival gravity. */
   survivalDebrisFallProgress: number;
   /** Separate deterministic stream so debris timing never changes the seven-bag. */
   survivalDebrisRandomizer: RandomizerState;
@@ -236,7 +236,7 @@ export type GameEvent =
   | { type: 'restarted' }
   | { type: 'paused' }
   | { type: 'resumed' }
-  | { type: 'piece-moved'; piece: PieceType; dx: number; dy: number; cause: 'move' | 'gravity' | 'soft-drop' }
+  | { type: 'piece-moved'; piece: PieceType; dx: number; dy: number; cause: 'move' | 'gravity' | 'soft-drop' | 'hard-drop' }
   | { type: 'piece-rotated'; piece: PieceType; direction: -1 | 1 }
   | { type: 'hard-dropped'; piece: PieceType; distance: number }
   | { type: 'piece-locked'; piece: PieceType; cells: Cell[] }

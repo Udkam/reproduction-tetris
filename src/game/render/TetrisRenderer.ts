@@ -359,10 +359,6 @@ function survivalEntryRiseProgress(elapsedMs: number): number {
   return 0.94 + easeOutCubic(settleProgress) * 0.06;
 }
 
-function geologyVariant(cell: Cell, salt: number, count: number): number {
-  return Math.abs(cell.x * (29 + salt) + cell.y * (13 + salt * 2) + salt * 17) % count;
-}
-
 const SCORE_SEGMENT_COORDINATES = [
   [.12, 0, .88, 0],
   [.88, 0, .88, .5],
@@ -1613,7 +1609,7 @@ export class TetrisRenderer {
     }
   }
 
-  /** Draws a continuous no-grid basalt shelf; geometry, not texture, creates the rock. */
+  /** Draws one flat, continuous shelf with broad structural planes and no decals. */
   private drawBedrockBody(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1642,82 +1638,40 @@ export class TetrisRenderer {
     const bottom = Math.max(...ordered.map(({ y }) => y + size));
     const width = right - left;
     const height = bottom - top;
-    const topSegments = Math.min(6, Math.max(3, Math.ceil((maxCellX - minCellX + 1) / 2)));
-    const silhouette: number[] = [left, bottom - size * 0.08, left, top + size * 0.18];
-    const ridgeSegments: Array<[number, number, number, number]> = [];
-    let previousRidge: readonly [number, number] | null = null;
-    for (let index = 0; index <= topSegments; index += 1) {
-      const ratio = index / topSegments;
-      const step = geologyVariant({ x: minCellX + index, y: minCellY }, 7, 5);
-      const ridge: readonly [number, number] = [
-        left + width * ratio,
-        top + size * (0.05 + step * 0.045),
-      ];
-      silhouette.push(...ridge);
-      if (previousRidge) ridgeSegments.push([...previousRidge, ...ridge]);
-      previousRidge = ridge;
-    }
-    silhouette.push(
-      right, top + size * 0.2,
-      right - size * 0.035, bottom - size * 0.2,
-      right - size * 0.16, bottom,
-      left + size * 0.12, bottom,
-    );
+    const bevel = Math.max(1.5, Math.min(size * 0.14, height * 0.18));
+    const borderWidth = Math.max(1.1, size * 0.045);
     graphics
-      .poly(silhouette)
+      .rect(left, top, width, height)
       .fill({ fill: this.gradientFor(BEDROCK_CELL), alpha })
-      .stroke({ color: material.edge, alpha: Math.min(0.92, alpha), width: Math.max(1.2, size * 0.055) });
-    this.strokeSegments(
-      graphics,
-      ridgeSegments,
-      material.innerEdge,
-      Math.min(0.44, alpha * 0.48),
-      Math.max(1, size * 0.045),
-    );
+      .stroke({ color: material.edge, alpha: Math.min(0.94, alpha), width: borderWidth });
 
     graphics
       .poly([
-        left + width * 0.02, top + height * 0.08,
-        left + width * 0.36, top + height * 0.03,
-        left + width * 0.52, top + height * 0.34,
-        left + width * 0.24, top + height * 0.5,
-        left + width * 0.03, top + height * 0.36,
+        left, top,
+        right, top,
+        right - bevel, top + bevel,
+        left + bevel, top + bevel,
       ])
-      .fill({ color: material.innerEdge, alpha: Math.min(0.17, alpha * 0.2) });
+      .fill({ color: material.innerEdge, alpha: Math.min(0.24, alpha * 0.26) });
     graphics
       .poly([
-        left + width * 0.36, top + height * 0.03,
-        right - width * 0.025, top + height * 0.08,
-        right - width * 0.06, top + height * 0.55,
-        left + width * 0.52, top + height * 0.34,
+        left, top,
+        left + bevel, top + bevel,
+        left + bevel, bottom - bevel,
+        left, bottom,
       ])
-      .fill({ color: material.fillStart, alpha: Math.min(0.22, alpha * 0.24) });
+      .fill({ color: material.innerEdge, alpha: Math.min(0.13, alpha * 0.15) });
     graphics
       .poly([
-        left + width * 0.03, top + height * 0.36,
-        left + width * 0.24, top + height * 0.5,
-        right - width * 0.06, top + height * 0.55,
-        right - width * 0.03, bottom - height * 0.04,
-        left + width * 0.04, bottom - height * 0.02,
+        left + bevel, bottom - bevel,
+        right - bevel, bottom - bevel,
+        right, bottom,
+        left, bottom,
       ])
-      .fill({ color: material.edge, alpha: Math.min(0.2, alpha * 0.22) });
-
-    const crackSegments: Array<[number, number, number, number]> = [
-      [left + width * 0.18, top + height * 0.24, left + width * 0.25, top + height * 0.34],
-      [left + width * 0.25, top + height * 0.34, left + width * 0.22, top + height * 0.44],
-      [left + width * 0.68, top + height * 0.42, left + width * 0.62, top + height * 0.54],
-      [left + width * 0.62, top + height * 0.54, left + width * 0.7, top + height * 0.63],
-    ];
-    this.strokeSegments(
-      graphics,
-      crackSegments,
-      material.edge,
-      Math.min(0.5, alpha * 0.56),
-      Math.max(0.8, size * 0.035),
-    );
+      .fill({ color: material.edge, alpha: Math.min(0.24, alpha * 0.27) });
   }
 
-  /** Irregular multi-face boulders replace the ordinary square cell body entirely. */
+  /** Draws each falling rock as a complete square solid with restrained face lighting. */
   private drawStoneBodies(
     graphics: Graphics,
     cells: readonly { cell: Cell; x: number; y: number }[],
@@ -1729,73 +1683,50 @@ export class TetrisRenderer {
     const ordered = [...cells].sort((first, second) => (
       first.cell.y - second.cell.y || first.cell.x - second.cell.x
     ));
-    const occupied = new Set(ordered.map(({ cell }) => `${cell.x},${cell.y}`));
-    for (const [index, entry] of ordered.entries()) {
-      const variant = geologyVariant(entry.cell, compacted ? 9 : 4, 4);
-      const joinAbove = occupied.has(`${entry.cell.x},${entry.cell.y - 1}`);
-      const joinBelow = occupied.has(`${entry.cell.x},${entry.cell.y + 1}`);
-      const left = entry.x - size * 0.015;
-      const top = entry.y - (joinAbove ? size * 0.075 : 0);
-      const width = size * 1.03;
-      const height = size * (1.03 + (joinAbove ? 0.075 : 0) + (joinBelow ? 0.075 : 0));
-      const cuts = [
-        [0.16, 0.07, 0.19, 0.12],
-        [0.08, 0.17, 0.11, 0.2],
-        [0.2, 0.11, 0.08, 0.16],
-        [0.12, 0.2, 0.17, 0.07],
-      ][variant] ?? [0.14, 0.1, 0.16, 0.1];
-      const [topLeft, topRight, bottomRight, bottomLeft] = cuts;
-      const body = [
-        left + width * topLeft, top,
-        left + width * (1 - topRight), top + height * 0.025,
-        left + width, top + height * 0.2,
-        left + width * (1 - bottomRight * 0.25), top + height * 0.72,
-        left + width * (1 - bottomRight), top + height,
-        left + width * bottomLeft, top + height * 0.97,
-        left, top + height * 0.73,
-        left + width * 0.025, top + height * 0.2,
-      ];
+    for (const entry of ordered) {
+      const gap = Math.max(0.7, size * 0.035);
+      const left = entry.x + gap;
+      const top = entry.y + gap;
+      const bodySize = Math.max(1, size - gap * 2);
+      const right = left + bodySize;
+      const bottom = top + bodySize;
+      const bevel = Math.max(1.25, bodySize * 0.13);
+      const gradientType = compacted ? BEDROCK_CELL : SURVIVAL_STONE_CELL;
       graphics
-        .poly(body)
-        .fill({ fill: this.gradientFor(compacted ? BEDROCK_CELL : SURVIVAL_STONE_CELL), alpha })
+        .rect(left, top, bodySize, bodySize)
+        .fill({ fill: this.gradientFor(gradientType), alpha })
         .stroke({
           color: material.edge,
-          alpha: Math.min(compacted ? 0.8 : 0.96, alpha),
-          width: Math.max(1, size * (compacted ? 0.04 : 0.06)),
+          alpha: Math.min(compacted ? 0.86 : 0.96, alpha),
+          width: Math.max(1, size * 0.045),
         });
 
-      const centerX = left + width * (variant % 2 === 0 ? 0.48 : 0.56);
-      const centerY = top + height * (variant < 2 ? 0.45 : 0.53);
       graphics
         .poly([
-          left + width * topLeft, top,
-          left + width * (1 - topRight), top + height * 0.025,
-          centerX, centerY,
-          left + width * 0.08, top + height * 0.56,
+          left, top,
+          right, top,
+          right - bevel, top + bevel,
+          left + bevel, top + bevel,
         ])
-        .fill({ color: material.innerEdge, alpha: Math.min(compacted ? 0.12 : 0.25, alpha * 0.28) });
+        .fill({ color: material.innerEdge, alpha: Math.min(compacted ? 0.16 : 0.28, alpha * 0.3) });
       graphics
         .poly([
-          centerX, centerY,
-          left + width, top + height * 0.2,
-          left + width * (1 - bottomRight), top + height,
-          left + width * 0.55, top + height * 0.89,
+          left, top,
+          left + bevel, top + bevel,
+          left + bevel, bottom - bevel,
+          left, bottom,
         ])
-        .fill({ color: material.edge, alpha: Math.min(compacted ? 0.16 : 0.24, alpha * 0.27) });
-
-      if (index === 0) {
-        this.strokeSegments(
-          graphics,
-          [
-            [centerX - width * 0.13, centerY - height * 0.08, centerX, centerY],
-            [centerX, centerY, centerX + width * 0.1, centerY + height * 0.13],
-            [centerX, centerY, centerX - width * 0.08, centerY + height * 0.16],
-          ],
-          material.edge,
-          Math.min(0.5, alpha * 0.58),
-          Math.max(0.7, size * 0.038),
-        );
-      }
+        .fill({ color: material.innerEdge, alpha: Math.min(compacted ? 0.1 : 0.16, alpha * 0.18) });
+      graphics
+        .poly([
+          right - bevel, top + bevel,
+          right, top,
+          right, bottom,
+          left, bottom,
+          left + bevel, bottom - bevel,
+          right - bevel, bottom - bevel,
+        ])
+        .fill({ color: material.edge, alpha: Math.min(compacted ? 0.19 : 0.25, alpha * 0.28) });
     }
   }
 
