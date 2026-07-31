@@ -29,13 +29,18 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    flat-topped continuous stone shelf whose contact plane aligns exactly with the board
    grid. It uses broad solid face lighting and edge occlusion only: no cracks, chips,
    dots, stickers, wood grain, or per-cell ornament. Falling stones are square stone
-   blocks with the same material family and a clear beveled solid face; a two-stone
-   event is two vertically adjacent squares in one frozen column. Core advances the
-   event at exactly four times ordinary Survival gravity. Contact with an unresolved
-   falling stone must never start or complete ordinary-piece lock: when that stone
-   advances, a valid piece supported by it descends with it; only settled board support
-   may resume the normal lock-delay decision. One/two-stone randomness, clearing,
-   hashing, spawn fairness, and replay remain canonical.
+   blocks with the same material family and a clear beveled solid face. Each falling
+   stone owns exactly the same visual width and height as one ordinary board cell; it
+   may not shrink into a pebble or expand beyond its collision cell. A two-stone event
+   is two vertically adjacent squares in one frozen column with zero visual or logical
+   gap, moving and settling as one rigid component. Core advances the event at exactly
+   four times ordinary Survival gravity. Contact with an unresolved falling stone is a
+   temporary obstruction, never settled support: it must not start or complete ordinary
+   lock delay or cause top-out. The stone continues to fall away when its next cell is
+   legal; the ordinary piece remains at its own coordinate, then resumes its normal
+   gravity once the faster stone has cleared the path. Only settled board support may
+   resume the normal lock-delay decision. One/two-stone randomness, clearing, hashing,
+   spawn fairness, and replay remain canonical.
 5. **Puzzle teaches authored techniques instead of publishing solver statistics.**
    Remove the live `局面分析 / Analysis` metrics, strategy sentence, and queue-role
    card. Reuse replay-verified routes to select a short sequence of approachable
@@ -77,6 +82,11 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
    bounded beam routes prove playability and alternate solutions only and must never be
    relabelled as optimal. The product consumes frozen verified certificates; it never
    runs the proof search during play.
+8. **Home actions are icon-only and optically centred.** Each of the four mode tiles
+   removes the redundant `开始 / Start` and `选关 / Levels` action labels. The arrow is
+   the sole action mark, centred in one consistent square hit target across Chinese,
+   English, pointer, keyboard focus, and every responsive layout. Removing the label
+   must not weaken the mode-name accessible label or the 44 px minimum target.
 
 ## Phase 12 checkpoint order
 
@@ -105,7 +115,9 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
   stones, 4x cadence, and ordinary-piece contact that stays unlocked until the stone
   settles; Puzzle library lessons and a live HUD with no analysis card;
   reduced motion; one Canvas; zero DOM board cells, overflow, console errors, or page
-  errors. Puzzle evidence must also prove that reordering preserves all fifty stable
+  errors. Home evidence must prove label-free, optically centred arrow actions on all
+  four tiles without changing their accessible names. Puzzle evidence must also prove
+  that reordering preserves all fifty stable
   IDs, both documented routes per level, saved completion/best values by ID, the
   intended Intro/Easy/Hard membership, the teach-then-combine opening sequence, and the
   first deeper anchor lesson. Every Hard mastery gate must name its related Easy

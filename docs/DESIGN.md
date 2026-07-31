@@ -49,17 +49,27 @@ lower occlusion plane, and an outer edge. No crack, chip, pit, speckle, tile sea
 sticker, or per-cell texture is drawn. The body can rise continuously during entry
 without changing Core rows.
 
-A falling stone is an unmistakable square block. A narrow bevel and two solid tonal
-faces create volume while keeping the silhouette and collision footprint exact. One
-event contains one or two vertically adjacent squares in one frozen column. The event
-advances with an integer accumulator at four times ordinary Survival gravity. It keeps
-the accepted moving-support and clearable-board behavior. A falling stone is dynamic
-support, not a floor: contact cannot enter or exhaust ordinary lock delay. When the
-stone advances and the coupled move is collision-safe, the supported ordinary piece
-advances one cell with it; when the stone cannot yet settle safely, both wait without
-locking the ordinary piece. Normal lock delay resumes only after the stone becomes a
+A falling stone is an unmistakable square block whose rendered outer width and height
+equal one ordinary board cell. A narrow bevel and two solid tonal faces create volume
+without changing that exact collision-sized silhouette. One event contains one or two
+vertically adjacent squares in one frozen column; a pair has no seam-sized gap and
+moves and settles as one rigid component. The event advances with an integer accumulator
+at four times ordinary Survival gravity. An in-flight stone is a temporary obstruction,
+not a floor: contact cannot enter or exhaust ordinary lock delay, trigger top-out, or
+carry the ordinary piece downward. When its next cell is legal the faster stone moves
+away while the ordinary piece retains its coordinate; ordinary gravity resumes after
+the obstruction clears. Normal lock delay resumes only after the stone becomes a
 settled board cell. Only cadence, this explicit lock boundary, and material presentation
 change.
+
+### Home action geometry
+
+The four mode tiles communicate their destination through the mode name and icon. Their
+actions therefore use one square arrow control without the redundant `开始 / Start` or
+`选关 / Levels` caption. The arrow glyph is centred by button geometry rather than a
+font-baseline nudge, while the complete localized mode action remains available to the
+accessible name. Hover, focus, and keyboard selection may strengthen the tile's own
+color but may not displace the arrow.
 
 ### Puzzle curriculum
 
