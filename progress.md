@@ -1,15 +1,19 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
-## T21 piece-count rockfall clarification — 2026-08-02
+## T21 accepted — 2026-08-02
 
-- Survival rockfall now counts locked player tetrominoes: 8 initially, one fewer after
-  every four completed events, with a floor of 4. The event accompanies the following
-  ordinary spawn and excludes every column occupied by that new tetromino.
-- Latest direct clarification freezes the HUD as `距离落石` / `X块` and requires every
-  one- or two-rock event to begin wholly inside the visible board; no hidden-buffer
-  entry or clipped first frame is acceptable.
-- The Core migration is in progress. The pause/restart/leave Next defect remains open:
-  the DOM well exists, but real screenshots prove its Canvas-owned tetromino is absent.
+- Product source `7d5e944` changes Survival rockfall to a deterministic locked-piece
+  cadence: 8 initially, one fewer after every four completed events, floor 4. The
+  event accompanies the following spawn, excludes every column occupied by that
+  tetromino, and begins its complete one- or two-rock body at the visible top row.
+- The HUD now reads `距离落石` / `X块`; language selection exists once on Home; and
+  all four bilingual rule sheets describe their complete mechanics.
+- Browser evidence `ca3d571` proves the actual Next tetromino remains visible under
+  pause, restart, and leave sheets, the first rockfall frame is wholly visible, one
+  Canvas is retained, and console errors are zero. Final typecheck, full suite
+  (`300 passed / 3 skipped`), and production build pass. Independent read-only QA of
+  `4505fb9..ca3d571` reports P0-P3 all zero. The owned server is closed and port 4178
+  is released.
 
 ## T20 Survival material harmony accepted — 2026-08-01
 

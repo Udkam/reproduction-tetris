@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-08-02 — T21 visible rockfall and preserved Next accepted
+
+- Replaced Survival's elapsed-time rockfall schedule with a deterministic locked-piece
+  cadence: 8 pieces initially, one fewer after each four events, and a floor of 4.
+  Each event accompanies the following ordinary spawn, selects outside its occupied
+  columns, and begins its complete one- or two-rock body at the visible top row.
+- Corrected the gameplay-sheet stacking boundary so pause, restart, and leave preserve
+  both the Canvas-owned Next well and its queued tetromino. The intentional blank Next
+  during the standalone countdown remains unchanged.
+- Moved the sole bilingual switch to Home, replaced the Survival HUD with `距离落石` /
+  `X块`, and rewrote all four Chinese and English rule sheets around objective,
+  pressure, unique mechanic, and end condition.
+- Product source `7d5e944` passes final typecheck, the full suite with `300 passed / 3
+  skipped`, and the production build. Evidence `ca3d571` records the three sheet/Next
+  states, first visible rockfall frame, home language control, one Canvas, and zero
+  console errors. Independent read-only QA of `4505fb9..ca3d571` reports P0-P3 all
+  zero. The evidence server is closed and port 4178 is free.
+
 ## 2026-08-01 — T20 Survival material harmony correction accepted
 
 - Replaced the rejected photographic grayscale height field with one deterministic,

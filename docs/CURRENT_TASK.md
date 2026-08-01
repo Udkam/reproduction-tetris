@@ -2,12 +2,13 @@
 
 ## T21 active goal — coherent rock relief, arrow-only warning, unobscured Next
 
-**Status (2026-08-02): IN PROGRESS.** Direct player review supersedes only the
-accepted T20 wall surface and warning presentation. Survival rules, random source
-column, one/two-stone events, four-times debris cadence, collision behavior, score,
-replay, save data, and every non-Survival gameplay rule stay frozen. The same review
-also identifies a cross-mode interaction defect: centered pause and restart sheets
-cover the right-side Next well even though the canonical queue remains available.
+**Status (2026-08-02): ACCEPTED / CLOSED / READY FOR PUBLICATION.** Final product
+source `7d5e944` and browser evidence `ca3d571` implement and verify the complete T21
+contract. Final typecheck, the complete test suite (`300 passed / 3 skipped`), and the
+production build pass. Browser evidence shows the actual queued tetromino under pause,
+restart, and leave sheets; piece-count Survival rockfall beginning wholly inside the
+visible board; one home-only language control; one gameplay Canvas; and zero console
+errors. Independent read-only QA of `4505fb9..ca3d571` reports P0-P3 all zero.
 
 1. **Bedrock remains one continuous, truthful wall.** Preserve the exact flat contact
    plane, continuous rectangular collision mass, staged entry rise, renderer-lifetime
@@ -81,6 +82,15 @@ smallest Core state/engine and direct tests plus its HUD/localization surfaces. 
 home language and rules addendum may touch `src/App.tsx`, localization, authoritative
 styles, and direct tests only. Evidence, independent read-only QA,
 changelog disposition, and push remain separate checkpoints.
+
+**Final disposition.** The accepted piece cadence starts at 8, decreases after each
+four rockfalls to the floor of 4, and schedules the rockfall with the following
+ordinary spawn outside that piece's occupied columns. One- and two-rock events begin
+at `VISIBLE_START_ROW`, so their complete body is visible on the first rendered frame.
+The HUD reads `距离落石` / `X块`. The CSS stacking correction preserves both the Next
+well and its Canvas-owned piece beneath every gameplay sheet. Language selection is
+available only on Home, and all four bilingual rule sheets now state objective,
+pressure, mechanic, and end condition without obsolete timing copy.
 
 # Previous Task — T20 TetraMorph Survival Material Harmony Correction
 
