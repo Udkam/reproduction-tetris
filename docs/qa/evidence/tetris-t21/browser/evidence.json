@@ -1,0 +1,150 @@
+{
+  "origin": "http://127.0.0.1:4178",
+  "homeLanguageControls": 1,
+  "settingsLanguageControls": 0,
+  "baseState": {
+    "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+    "screen": "game",
+    "mode": "race",
+    "status": "playing",
+    "countdown": null,
+    "phase": "active",
+    "puzzleId": null,
+    "puzzleCompletion": null,
+    "puzzleTargetsRemaining": 0,
+    "puzzleTargetsInitial": 0,
+    "puzzleUndoDepth": 0,
+    "mutation": null,
+    "score": 0,
+    "lines": 0,
+    "combo": 0,
+    "bedrockRows": 3,
+    "bedrockIntervalSeconds": 13,
+    "bedrockNextSeconds": 13,
+    "bedrockPending": false,
+    "stoneIntervalPieces": 8,
+    "stoneNextPieces": 8,
+    "fallingStones": [],
+    "fallTicks": 40,
+    "placedPieces": 0,
+    "active": {
+      "type": "O",
+      "x": 4,
+      "y": 19,
+      "rotation": 0
+    },
+    "next": "I",
+    "nextPreviews": [
+      "I"
+    ],
+    "visibleBoard": [
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "BBBBBBBBBB",
+      "BBBBBBBBBB",
+      "BBBBBBBBBB"
+    ]
+  },
+  "dialogChecks": [
+    {
+      "name": "03-pause",
+      "next": "I",
+      "nextPreviews": [
+        "I"
+      ]
+    },
+    {
+      "name": "04-restart-confirm",
+      "next": "I",
+      "nextPreviews": [
+        "I"
+      ]
+    },
+    {
+      "name": "05-leave-confirm",
+      "next": "I",
+      "nextPreviews": [
+        "I"
+      ]
+    }
+  ],
+  "rockfallState": {
+    "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+    "screen": "game",
+    "mode": "race",
+    "status": "playing",
+    "countdown": null,
+    "phase": "active",
+    "puzzleId": null,
+    "puzzleCompletion": null,
+    "puzzleTargetsRemaining": 0,
+    "puzzleTargetsInitial": 0,
+    "puzzleUndoDepth": 0,
+    "mutation": null,
+    "score": 152,
+    "lines": 0,
+    "combo": 0,
+    "bedrockRows": 3,
+    "bedrockIntervalSeconds": 13,
+    "bedrockNextSeconds": 11,
+    "bedrockPending": false,
+    "stoneIntervalPieces": 8,
+    "stoneNextPieces": 8,
+    "fallingStones": [
+      {
+        "x": 0,
+        "y": 21
+      }
+    ],
+    "fallTicks": 40,
+    "placedPieces": 8,
+    "active": {
+      "type": "S",
+      "x": 3,
+      "y": 19,
+      "rotation": 0
+    },
+    "next": "O",
+    "nextPreviews": [
+      "O"
+    ],
+    "visibleBoard": [
+      "..........",
+      "..........",
+      "...ZZ.....",
+      "....ZZ....",
+      ".....L....",
+      "...LLL....",
+      "....SS....",
+      "...SS.....",
+      "...J......",
+      "...JJJ....",
+      "....T.....",
+      "...TTT....",
+      "...ZZ.....",
+      "....ZZ....",
+      "...IIII...",
+      "....OO....",
+      "....OO....",
+      "BBBBBBBBBB",
+      "BBBBBBBBBB",
+      "BBBBBBBBBB"
+    ]
+  },
+  "consoleErrors": []
+}
