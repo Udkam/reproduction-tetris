@@ -1,7 +1,9 @@
 # Phase 12 final independent QA
 
-Date: 2026-08-01  
-Reviewer: `tetris-t19 / phase12-final-readonly-qa`  
+Date: 2026-08-01
+
+Reviewer: `tetris-t19 / phase12-final-readonly-qa`
+
 Verdict: **PASS**
 
 ## Reviewed boundary
