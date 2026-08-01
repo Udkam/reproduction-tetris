@@ -33,6 +33,14 @@ This correction does not alter stone count, frozen source column, 4x cadence,
 temporary-obstruction rules, coupled push, bedrock rise, scoring, replay, or save data.
 The procedural texture still allocates once per renderer and is destroyed on teardown.
 
+**Accepted implementation (2026-08-01).** Frozen source `eadeac6` realizes the wall
+with deterministic Halton-distributed broad planes, a seven-step cold mineral ramp,
+soft neighbour blending, and a shallow flat contact lip. Its normal-motion warning
+keeps the arrow readable between short high-contrast warm flashes; reduced motion is
+one static endpoint. Evidence `b600ace` proves the complete live Survival page and
+browser invariants. After the sole writer-log provenance gap was repaired by `534e78e`,
+independent QA `1b0c64c` accepted P0–P3 and evidence gaps at zero.
+
 ## 2026-08-01 Phase 12 — material truth and authored learning
 
 Phase 12 responds to direct visual rejection by making fewer claims and making each

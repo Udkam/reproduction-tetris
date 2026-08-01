@@ -59,3 +59,20 @@
 - **Next action:** resubmit the frozen candidate plus this log for independent QA;
   if accepted, record changelog disposition, run the scoped pre-push secret scan,
   push `main` non-force, verify local/tracking/remote equality, and report release.
+
+## 2026-08-01 — accepted
+
+- **Independent retry:** provenance-only QA commit `1b0c64c` preserves the first-round
+  failure history and reports P0=0, P1=0, P2=0, P3=0, GAP=0. Frozen product
+  `eadeac6` and evidence `b600ace` are accepted without another implementation or
+  browser pass.
+- **Accepted claim:** the Survival bedrock is one game-native continuous cold mineral
+  wall with a flat contact edge; the falling-stone warning combines one persistent
+  source-column arrow with a short visible whole-well/column flash, and reduced motion
+  stays static.
+- **Resource disposition:** unchanged from the frozen-candidate record; no browser,
+  server, test runner, build process, MCP, or indexer is retained, and port `5178`
+  remains free.
+- **Blocker:** none.
+- **Next action:** commit final acceptance docs, run one scoped redacted gitleaks scan,
+  push `main` non-force, and verify local, tracking, and remote tips are identical.

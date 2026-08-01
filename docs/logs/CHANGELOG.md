@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-08-01 — T20 Survival material harmony correction accepted
+
+- Replaced the rejected photographic grayscale height field with one deterministic,
+  renderer-cached, game-native cold mineral wall. Broad Halton-distributed planes,
+  neighbour blending, a seven-tone slate ramp, and a shallow flat contact lip keep the
+  geology continuous while matching the simplified enamel-piece material language.
+- Strengthened the falling-stone pre-warning without changing Survival mechanics. One
+  source-column arrow remains readable throughout the warning; normal motion adds a
+  short warm whole-well and column flash, while reduced motion renders one static
+  high-contrast endpoint.
+- Frozen source `eadeac6` passes final typecheck, `32 passed / 1 skipped` test files
+  (`297 passed / 3 skipped` tests), and the `762`-module build. Evidence `b600ace`
+  reports one Canvas, zero DOM cells, no viewport overflow or browser errors, different
+  normal warning hashes, identical reduced-motion hashes, and matching hashes for all
+  four committed PNGs.
+- Initial independent QA `d1ad2e9` accepted product and evidence but blocked stale
+  writer provenance. Documentation checkpoint `534e78e` closed that sole gap without
+  changing source or evidence; retry QA `1b0c64c` reports P0–P3 and evidence gaps all
+  zero. The capture browser and owned Vite server are closed and port `5178` is free.
+
 ## 2026-08-01 — Phase 12 material truth and authored learning accepted
 
 - Accepted frozen product source `d84b043` after replacing contradictory leave

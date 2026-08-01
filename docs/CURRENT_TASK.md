@@ -2,9 +2,9 @@
 
 ## T20 active goal — game-native cavern wall and unmistakable rockfall warning
 
-**Status (2026-08-01): CANDIDATE FROZEN / QA RETRY PENDING.**
+**Status (2026-08-01): ACCEPTED / CLOSED / READY FOR PUBLICATION.**
 
-**Frozen candidate.** Product source `eadeac6` replaces the rejected photographic
+**Final acceptance.** Product source `eadeac6` replaces the rejected photographic
 height field with the contracted cold-slate mineral wall and strengthens the warning
 into a persistent arrow plus a short warm flash. Final browser evidence is frozen at
 `b600ace`: one Canvas, zero DOM board cells, no viewport overflow or console errors,
@@ -12,8 +12,10 @@ different normal-motion warning phases, and identical reduced-motion samples. Af
 the last source change, typecheck, the full `32 passed / 1 skipped` file suite
 (`297 passed / 3 skipped` tests), and the `762`-module build pass. Initial independent
 QA `d1ad2e9` accepts the product and evidence but correctly blocks release because the
-writer log was stale; this documentation retry resolves only that provenance gap and
-does not reopen source or evidence.
+writer log was stale. Provenance checkpoint `534e78e` closes that sole gap without
+reopening source or evidence, and independent retry `1b0c64c` reports P0–P3 and
+evidence gaps all zero. The owned browser and Vite server are closed and port `5178`
+is free.
 
 This bounded post-acceptance correction starts from clean pushed base `0e21365`.
 Phase 12 remains historically accepted, but direct player review rejects the final
