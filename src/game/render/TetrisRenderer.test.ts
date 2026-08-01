@@ -529,29 +529,41 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalStoneCues).toHaveLength(0);
   });
 
-  it('builds a deterministic, continuous, and visibly varied cavern height field', () => {
+  it('builds a deterministic stylized cold-slate wall without photographic microtexture', () => {
     const first = buildBedrockTexturePixels(64, 32);
     const second = buildBedrockTexturePixels(64, 32);
     expect(first).toEqual(second);
     expect(first).toHaveLength(64 * 32 * 4);
     const luminance: number[] = [];
+    const colors = new Set<string>();
     let adjacentDelta = 0;
     let adjacentPairs = 0;
+    let sharpEdges = 0;
     for (let y = 0; y < 32; y += 1) {
       for (let x = 0; x < 64; x += 1) {
         const index = (y * 64 + x) * 4;
+        const red = first[index]!;
+        const green = first[index + 1]!;
+        const blue = first[index + 2]!;
         const value = (first[index]! * 0.2126) + (first[index + 1]! * 0.7152) + (first[index + 2]! * 0.0722);
         luminance.push(value);
+        colors.add(`${red},${green},${blue}`);
+        expect(green).toBeGreaterThan(red);
+        expect(blue).toBeGreaterThan(green);
         expect(first[index + 3]).toBe(255);
         if (x > 0) {
-          adjacentDelta += Math.abs(value - luminance[luminance.length - 2]!);
+          const delta = Math.abs(value - luminance[luminance.length - 2]!);
+          adjacentDelta += delta;
+          if (delta > 18) sharpEdges += 1;
           adjacentPairs += 1;
         }
       }
     }
-    expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(45);
-    expect(new Set(luminance.map((value) => Math.round(value))).size).toBeGreaterThan(55);
-    expect(adjacentDelta / adjacentPairs).toBeLessThan(24);
+    expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(35);
+    expect(colors.size).toBeGreaterThanOrEqual(5);
+    expect(colors.size).toBeLessThanOrEqual(7);
+    expect(adjacentDelta / adjacentPairs).toBeLessThan(8);
+    expect(sharpEdges / adjacentPairs).toBeLessThan(0.04);
   });
 
   it('draws a flat-contact continuous cavern wall and complete square falling stones without decals', () => {
@@ -830,10 +842,11 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalDebrisPresentation.size).toBe(0);
   });
 
-  it('draws one steady downward arrow in the frozen Survival source column', () => {
+  it('pulses one warm source-column warning and keeps a static reduced-motion endpoint', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const drawWarning = (height: 1 | 2, clock: number) => {
+    const drawWarning = (height: 1 | 2, clock: number, reducedMotion = false) => {
+      renderer.setOptions({ reducedMotion });
       (internals as unknown as { mutationClockMs: number }).mutationClockMs = clock;
       const recorder = createGraphicsRecorder();
       internals.drawSurvivalPressureEffects(
@@ -849,14 +862,28 @@ describe('Puzzle undo presentation reset', () => {
     };
 
     const single = drawWarning(1, 0);
-    const doubleLater = drawWarning(2, 437);
-    expect(single).toEqual(doubleLater);
+    const doubleLater = drawWarning(2, 190);
+    expect(single).not.toEqual(doubleLater);
     const segments = single.filter((operation) => operation.kind === 'segment');
     expect(segments).toHaveLength(3);
-    expect(segments.every((segment) => (segment.values[0] ?? 0) >= 45 && (segment.values[0] ?? 0) <= 55)).toBe(true);
+    expect(segments.every((segment) => (segment.values[0] ?? 0) >= 44 && (segment.values[0] ?? 0) <= 56)).toBe(true);
+    const warningRects = single.filter((operation) => operation.kind === 'rect');
+    expect(warningRects.map((operation) => operation.values)).toEqual([
+      [0, 0, 200, 400],
+      [41.6, 0, 16.8, 43],
+    ]);
+    const warningFills = single.filter((operation) => operation.kind === 'fill');
+    expect(warningFills).toHaveLength(2);
+    expect(warningFills.every((operation) => (
+      (operation.options as { color?: number }).color === COLORS.target
+    ))).toBe(true);
     expect(single.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
     expect(single.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(single.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
+
+    const reducedFirst = drawWarning(1, 0, true);
+    const reducedLater = drawWarning(2, 437, true);
+    expect(reducedFirst).toEqual(reducedLater);
   });
 
   it('keeps a local bedrock boundary cue even when reduced motion removes the shift', () => {
