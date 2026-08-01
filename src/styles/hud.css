@@ -193,7 +193,14 @@
    piece. The single dimmer stays translucent enough to keep that rail readable. */
 .sheet-backdrop--gameplay {
   padding-right: calc(clamp(10px, 2vh, 24px) + 244px);
-  background: rgba(11, 23, 38, .56);
+  /* The modal stays unmistakable through its opaque surface and shadow. A light
+     scene wash preserves the actual Canvas-owned Next tetromino instead of
+     turning the dark preview well into an apparently empty card. */
+  background: rgba(11, 23, 38, .16);
+}
+
+.play-shell:has(.sheet-backdrop--gameplay) .canvas-host {
+  filter: none;
 }
 
 .action-sheet--placement-gameplay {

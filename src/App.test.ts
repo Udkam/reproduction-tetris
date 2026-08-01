@@ -689,6 +689,8 @@ describe('T6 frontend mode binding', () => {
     expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
 
     expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?padding-right:\s*calc\([^}]*244px\)/);
+    expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?background:\s*rgba\(11,\s*23,\s*38,\s*\.16\)/);
+    expect(sourceHudStyles).toMatch(/\.play-shell:has\(\.sheet-backdrop--gameplay\) \.canvas-host\s*\{[\s\S]*?filter:\s*none/);
     expect(sourceHudStyles).toMatch(/\.action-sheet--placement-gameplay\s*\{[\s\S]*?width:\s*min\(420px,\s*100%\)/);
     view.unmount();
   });
