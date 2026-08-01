@@ -2,6 +2,11 @@
 
 Status: `ACTIVE / NOT ACCEPTED / NOT PUSHED`
 
+Final-QA retry: the procedural bedrock wall remains accepted and frozen. The current
+candidate is rejected until Puzzle title glyph boxes and the `844x390` Settings footer
+fit without clipping, the exact mastery certificates run successfully, and the final
+browser matrix includes active Mutation plus dynamic one/two-stone Survival evidence.
+
 Base: `main@ac11e016d459a82bd2242650632cd8a1c936c253`
 
 ## Goal

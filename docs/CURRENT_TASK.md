@@ -4,6 +4,15 @@
 
 **Status (2026-08-01): ACTIVE / NOT ACCEPTED / NOT PUSHED.**
 
+**Final-QA retry boundary (2026-08-01).** The independently accepted procedural
+bedrock wall is frozen: its continuous relief, flat contact lip, renderer-lifetime
+texture, and falling-stone material must not change in this retry. Final QA rejected
+only the responsive proof at this checkpoint: Puzzle detail titles clip their glyph
+boxes in five target frames, the English `844x390` Settings surface clips its Record
+footer, and the browser matrix still lacks the required active Mutation and dynamic
+Survival sequences. The retry therefore owns only those responsive fixes, the exact
+Puzzle certificate run, fresh final gates, and replacement evidence.
+
 Phase 12 supersedes only the rejected Phase-11 presentation and guidance outcomes below.
 Accepted deterministic game rules, save compatibility, rankings, undo, two-piece Next,
 single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.

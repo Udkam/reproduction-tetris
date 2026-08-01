@@ -11,6 +11,12 @@ motion—not a crack decal. A section is defined by typography and reading order
 card around every paragraph. A Puzzle hint is defined by a reusable idea demonstrated
 by a real level—not a dashboard of solver counts.
 
+The accepted procedural bedrock wall is immutable during the final responsive retry.
+That retry fixes measured Puzzle-title glyph clipping and the short-landscape Settings
+footer, then replaces the browser matrix with active Mutation and dynamic Survival
+proof. It may not revise the wall texture, flat contact lip, geology palette, falling
+stone geometry, or Core behavior.
+
 ### Decision surfaces
 
 The leave sheet presents the requested destination as the clear default: the left
