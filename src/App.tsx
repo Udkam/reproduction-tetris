@@ -452,11 +452,9 @@ function ModeRuleSummary({
 export function ModeHome({
   onEnter,
   language = DEFAULT_LANGUAGE,
-  onLanguageChange,
 }: {
   onEnter: (mode: GameMode) => void;
   language?: AppLanguage;
-  onLanguageChange: (language: AppLanguage) => void;
 }) {
   const [focusMode, setFocusMode] = useState<GameMode>('marathon');
   const [inputModality, setInputModality] = useState<'keyboard' | 'pointer'>('keyboard');
@@ -484,7 +482,6 @@ export function ModeHome({
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
             <h1 id="home-title" className="mode-home-wordmark"><span>Tetra</span><span>Morph</span></h1>
-            <LanguageControl language={language} onChange={onLanguageChange} className="language-control--home" />
           </div>
           <div
             className="mode-gates mode-gates--workbench"
@@ -496,6 +493,7 @@ export function ModeHome({
           >
             {MODE_ORDER.map((mode, index) => {
               const item = modeCopy(language, mode);
+              const visibleLabel = modeCopy('en', mode).label;
               return (
                 <button
                   key={mode}
@@ -511,7 +509,7 @@ export function ModeHome({
                 >
                   <span className="mode-gate__glyph"><ModeGlyph mode={mode} /></span>
                   <span className="mode-gate__body">
-                    <strong>{item.label}</strong>
+                    <strong>{visibleLabel}</strong>
                   </span>
                   <span className="mode-gate__action" aria-hidden="true">
                     <svg viewBox="0 0 28 24" focusable="false">
@@ -1291,6 +1289,7 @@ export function GameSession({
   puzzleProgress = defaultPuzzleProgress(),
   onRunFinished,
   language = DEFAULT_LANGUAGE,
+  onLanguageChange = () => undefined,
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
@@ -1300,6 +1299,7 @@ export function GameSession({
   puzzleProgress?: PuzzleProgress;
   onRunFinished?: (record: ScoreRecord) => void;
   language?: AppLanguage;
+  onLanguageChange?: (language: AppLanguage) => void;
 }) {
   const copy = appCopy(language);
   const hostRef = useRef<HTMLDivElement>(null);
@@ -1875,6 +1875,7 @@ export function GameSession({
           <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
           <section className="settings-console__controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
             <strong>{copy.labels.controls}</strong>
+            <LanguageControl language={language} onChange={onLanguageChange} />
             <AudioControls
               enabled={audioEnabled}
               volume={audioVolume}
@@ -2035,7 +2036,7 @@ export default function App() {
 
   return (
     <div className="app" lang={language}>
-      {screen === 'home' && <ModeHome onEnter={enterMode} language={language} onLanguageChange={changeLanguage} />}
+      {screen === 'home' && <ModeHome onEnter={enterMode} language={language} />}
       {screen === 'puzzle-library' && (
         <PuzzleLibrary
           progress={progress}
@@ -2057,6 +2058,7 @@ export default function App() {
           puzzleProgress={progress}
           onRunFinished={recordRun}
           language={language}
+          onLanguageChange={changeLanguage}
         />
       )}
       <ActionSheet

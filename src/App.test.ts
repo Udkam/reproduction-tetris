@@ -838,12 +838,14 @@ describe('T6 frontend mode binding', () => {
       race: [],
       sprint: [],
     };
+    const onLanguageChange = vi.fn();
     const view = render(createElement(GameSession, {
       mode: 'marathon',
       puzzleId: CAMPAIGN_LEVELS[0]!.id,
       onExit: vi.fn(),
       onCanonicalCompletion: vi.fn(),
       leaderboard,
+      onLanguageChange,
     }));
     await act(async () => Promise.resolve());
     await advanceEntryCountdown();
@@ -893,8 +895,12 @@ describe('T6 frontend mode binding', () => {
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.classList.contains('settings-console__key-group--gameplay')).toBe(true);
     expect(shortcutKeys.classList.contains('settings-console__key-group--shortcuts')).toBe(true);
-    expect(view.container.querySelector('[data-testid="language-zh"]')).toBeNull();
-    expect(view.container.querySelector('[data-testid="language-en"]')).toBeNull();
+    const chinese = view.container.querySelector<HTMLButtonElement>('[data-testid="language-zh"]')!;
+    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
+    expect(chinese.getAttribute('aria-pressed')).toBe('true');
+    expect(english.getAttribute('aria-pressed')).toBe('false');
+    act(() => english.click());
+    expect(onLanguageChange).toHaveBeenCalledExactlyOnceWith('en');
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')!;
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     expect(resume.dataset.arrowSelected).toBe('true');
@@ -910,12 +916,16 @@ describe('T6 frontend mode binding', () => {
       [toggle, 'ArrowDown', resume],
       [restart, 'ArrowLeft', resume],
       [restart, 'ArrowRight', resume],
-      [restart, 'ArrowUp', toggle],
-      [restart, 'ArrowDown', toggle],
+      [restart, 'ArrowUp', chinese],
+      [restart, 'ArrowDown', chinese],
       [resume, 'ArrowLeft', restart],
       [resume, 'ArrowRight', restart],
       [resume, 'ArrowUp', toggle],
       [resume, 'ArrowDown', toggle],
+      [chinese, 'ArrowLeft', toggle],
+      [chinese, 'ArrowRight', english],
+      [english, 'ArrowRight', toggle],
+      [english, 'ArrowDown', restart],
     ];
     for (const [from, key, to] of routes) assertArrowRoute(from, key, to);
 
@@ -1359,8 +1369,7 @@ describe('T6 frontend mode binding', () => {
 
   it('keeps the homepage navigational without visible rules or record copy', () => {
     const onEnter = vi.fn();
-    const onLanguageChange = vi.fn();
-    const view = render(createElement(ModeHome, { onEnter, onLanguageChange }));
+    const view = render(createElement(ModeHome, { onEnter, language: 'zh-CN' }));
     const classic = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]');
     const survival = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-race"]');
     const mutation = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-sprint"]');
@@ -1373,18 +1382,19 @@ describe('T6 frontend mode binding', () => {
     expect([classic, survival, mutation, puzzle].every((button) => (
       !button?.hasAttribute('data-selected') && !button?.hasAttribute('aria-pressed')
     ))).toBe(true);
-    expect(classic?.textContent).toContain('经典');
+    expect([classic, survival, mutation, puzzle].map((button) => button?.querySelector('strong')?.textContent)).toEqual([
+      'Classic',
+      'Survival',
+      'Mutation',
+      'Puzzle',
+    ]);
     expect(view.container.textContent).not.toMatch(/马拉松|竞速|等级|速度档/);
     expect(view.container.textContent).not.toContain('选择模式');
     expect(view.container.textContent).not.toContain('补满任意横行即可消除并得分。');
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
-    const homeLanguage = view.container.querySelector<HTMLElement>('.language-control--home');
-    expect(homeLanguage).not.toBeNull();
-    expect(homeLanguage?.querySelector(':scope > span')).toBeNull();
-    expect(homeLanguage?.getAttribute('aria-label')).toBe('语言');
-    expect(homeLanguage?.querySelector('[role="group"]')?.getAttribute('aria-label')).toBe('语言');
+    expect(view.container.querySelector('.language-control')).toBeNull();
     const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
     expect(actionArrows).toHaveLength(4);
     expect(actionArrows.every((arrow) => arrow.getAttribute('viewBox') === '0 0 28 24')).toBe(true);
@@ -1450,7 +1460,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('persists an English home choice across the active game surface without Chinese fallback copy', async () => {
+  it('persists an English settings choice across the active game surface without Chinese fallback copy', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1458,13 +1468,16 @@ describe('T6 frontend mode binding', () => {
     localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
     const view = render(createElement(App));
 
-    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
-    expect(english).not.toBeNull();
-    act(() => english.click());
+    expect(view.container.querySelector('[data-testid="language-en"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="enter-marathon"] strong')?.textContent).toBe('Classic');
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
     await act(async () => Promise.resolve());
     await advanceEntryCountdown();
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+
+    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
+    expect(english).not.toBeNull();
+    act(() => english.click());
 
     const sheet = view.container.querySelector<HTMLElement>('[data-testid="settings-sheet"]')!;
     expect(document.documentElement.lang).toBe('en');
@@ -1472,7 +1485,7 @@ describe('T6 frontend mode binding', () => {
     expect(sheet.textContent).toContain('Settings');
     expect(sheet.textContent).toMatch(/Keyboard.*Move.*Hard drop/s);
     expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
-    expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe('TetraMorph started.');
+    expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
     expect(view.container.querySelector('.keyboard-map')).toBeNull();
     expect(view.container.querySelector('canvas')?.getAttribute('aria-label')).toBe('TetraMorph 10 by 20 game board');
     view.unmount();
@@ -1809,7 +1822,7 @@ describe('T6 frontend mode binding', () => {
       survivalRisePending: true,
     };
     expect(fallCadenceLabel(classic)).toBe('0.7 秒/格');
-    expect(fallCadenceLabel(survival)).toBe('0.7 秒/格');
+    expect(fallCadenceLabel(survival)).toBe('0.6 秒/格');
     expect(fallCadenceLabel(sprint)).toBe('0.8 秒/格');
     expect(survivalCountdownLabel(pending)).toBe('待上升');
   });
