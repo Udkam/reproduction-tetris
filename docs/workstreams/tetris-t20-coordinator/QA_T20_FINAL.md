@@ -33,3 +33,24 @@ Verdict: **FAIL**
 ## Required retry boundary
 
 Keep product source `eadeac6` and evidence `b600ace` frozen. Add a bounded documentation checkpoint that updates the T20 writer log with the actual implementation/evidence history and aligns any still-open progress wording with the current candidate state. Then resubmit the resulting contiguous range for independent read-only QA; no product repair or browser recapture is requested by this verdict.
+
+## Provenance-only retry — PASS
+
+Retry candidate: `0e21365611d9bbaa8a59460bdaf1c10541e78cee..534e78e0b3fc95da7427bdcfe773777a22d6eaf7`.
+
+- Frozen product remains `eadeac6fbd5885be9b7ed4c6405cc2ee3dad2688`.
+- Frozen evidence remains `b600ace37c1ade1fc0028adb91a06908ed3996b5`.
+- Provenance checkpoint `534e78e0b3fc95da7427bdcfe773777a22d6eaf7` changes only `docs/CURRENT_TASK.md`, `progress.md`, and `docs/workstreams/tetris-t20-coordinator/THREAD_LOG.md`. It does not alter source, tests, screenshots, or the evidence manifest.
+- The writer log now records the exact changed product paths, actual focused/final commands, final gate results, evidence checkpoint and binding, owned browser/Vite release, free port, prior QA blocker, and coordinator-owned next action.
+- `docs/CURRENT_TASK.md` and `progress.md` now identify the source/evidence as frozen, preserve QA as pending until this retry, and no longer claim that implementation, gates, or evidence remain unperformed.
+- `git diff --check b600ace..534e78e` returns no finding.
+
+Retry findings:
+
+- P0: none.
+- P1: none.
+- P2: none; the original provenance inconsistency is resolved.
+- P3: none.
+- Evidence Gap: none.
+
+**Final retry verdict: PASS.** The first-round FAIL remains above as durable history; this bounded re-review accepts the unchanged product/evidence candidate after the sole documentation provenance gap was closed. Changelog disposition, scoped pre-push scanning, non-force push, and local/tracking/remote equality remain coordinator-owned.
