@@ -856,3 +856,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   preserved the Next well: the queued tetromino itself was absent. T21 now requires the
   complete queued piece to remain readable for pause, restart, and leave sheets while
   retaining the intentional blank preview during the standalone countdown.
+- The player then replaced Survival's seconds-based rockfall with a piece-count cadence
+  (8 initially, -1 after every four events, floor 4), required spawn-column exclusion,
+  moved the only language switch to the home screen, and requested mechanically complete
+  bilingual rule copy. These are new bounded Core/HUD/localization checkpoints before
+  final browser acceptance.

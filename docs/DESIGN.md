@@ -53,6 +53,29 @@ well and its queued tetromino remain visible. The overlay may lower contrast uni
 but it cannot clear, cover, or replace the preview. This exception is scoped to pause,
 restart, and leave sheets; the clean pre-run countdown continues to hide Next content.
 
+### Piece-count stonefall, home language, and explicit rules
+
+Survival pressure is now coupled to player decisions rather than wall-clock waiting.
+The counter measures locked player tetrominoes until the next rockfall: 8 pieces at the
+start, then one fewer after every four rockfall events, bottoming out at 4. The event is
+scheduled on the following spawn so the player can read one coherent arrival beat. Its
+one- or two-rock column is drawn deterministically from columns outside the new active
+piece footprint; the rocks remain independent actors after entry. The HUD shows the
+remaining piece count, not seconds.
+
+Language selection is a global front-door preference, so its single control lives on
+the home composition rather than inside a live run's Settings hierarchy. It remains
+visually secondary to the mode grid and wordmark, supports keyboard focus, and persists
+the existing preference. Settings keeps rules, audio, controls, keyboard help, and
+records without duplicating language state.
+
+Every mode rule sheet uses the same four-part information order: objective, escalating
+pressure, mode-specific mechanic, end condition. Classic explains ten-line speed
+tiers; Survival explains rising bedrock, piece-count rockfalls, and top-out; Mutation
+explains six-line speed tiers and all carrier effects; Puzzle explains authored fixed
+queues, original-block clearing, anchors, Undo, and progression. Copy is compact, but
+no rule depends on inference from the HUD.
+
 ## 2026-08-01 T20 — Survival material harmony correction
 
 The Survival floor is still an exposed cavern wall, but its visual truth is judged

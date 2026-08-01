@@ -51,6 +51,21 @@ cover the right-side Next well even though the canonical queue remains available
    inside Next remains rendered and readable beside the sheet. A bordered but empty
    Next well does not satisfy this requirement. Countdown still keeps its existing
    intentional preview suppression when no sheet is open.
+8. **Survival stonefall is piece-count driven.** Replace the elapsed-seconds cadence
+   with a deterministic piece interval. The first rockfall accompanies the spawn after
+   eight player pieces have been used. Every four completed rockfalls reduces the next
+   interval by one piece until the floor of four. The HUD reads “距离出现落石还有” and
+   the live remaining value as “X 块”. Each event still creates one or two vertically
+   joined rocks, but its seeded column must exclude every column occupied by the newly
+   spawned tetromino at that instant.
+9. **Language belongs on the home screen.** Move the Chinese/English switch out of the
+   in-game Settings sheet and into a quiet, keyboard-reachable home control. The choice
+   remains persisted and updates the entire interface without introducing a second
+   language control or disturbing the centered TetraMorph wordmark.
+10. **Mode rules are concise but mechanically complete.** Rewrite all four rule sheets
+    in both languages so each explains the objective, progression or pressure, unique
+    mechanic, and end condition in plain language. Remove legacy timing claims and
+    vague slogan-like fragments; Survival must describe the new piece-count rockfall.
 
 **Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
 paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and
@@ -59,7 +74,10 @@ paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and
 the smallest inspected Core/runtime event path and its direct test; Mutation visual
 work is limited to the renderer and its direct tests. Gameplay-sheet work is limited
 to `src/App.tsx`, `src/App.test.ts`, `src/ui/ActionSheet.tsx`, and the authoritative
-HUD/style paths required after inspection. Evidence, independent read-only QA,
+HUD/style paths required after inspection. The Survival cadence addendum may touch the
+smallest Core state/engine and direct tests plus its HUD/localization surfaces. The
+home language and rules addendum may touch `src/App.tsx`, localization, authoritative
+styles, and direct tests only. Evidence, independent read-only QA,
 changelog disposition, and push remain separate checkpoints.
 
 # Previous Task — T20 TetraMorph Survival Material Harmony Correction
