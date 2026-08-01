@@ -359,6 +359,20 @@ function rockNoise(x: number, y: number, seed: number): number {
   return top * (1 - fadeY) + bottom * fadeY;
 }
 
+function rockFbm(x: number, y: number, seed: number, octaves: number): number {
+  let value = 0;
+  let amplitude = 0.5;
+  let amplitudeTotal = 0;
+  let frequency = 1;
+  for (let octave = 0; octave < octaves; octave += 1) {
+    value += rockNoise(x * frequency, y * frequency, seed + octave * 0x9e37) * amplitude;
+    amplitudeTotal += amplitude;
+    amplitude *= 0.5;
+    frequency *= 2.03;
+  }
+  return amplitudeTotal > 0 ? value / amplitudeTotal : 0;
+}
+
 /**
  * A deliberately small game-native mineral ramp. Keeping the generated wall inside
  * these seven related slate tones prevents the procedural surface from drifting into
@@ -379,64 +393,53 @@ export function buildBedrockTexturePixels(requestedWidth: number, requestedHeigh
   const width = Math.max(2, Math.floor(requestedWidth));
   const height = Math.max(2, Math.floor(requestedHeight));
   const aspect = width / height;
-  // Halton-distributed facets have no row, column, or cell cadence. The narrow
-  // neighbour blend removes drawn seams while retaining broad game-scale rock planes.
-  const sites = Array.from({ length: 19 }, (_, index) => {
-    const sample = index + 3;
-    const u = halton(sample, 2);
-    const v = halton(sample, 3);
-    const mineral = rockNoise(u * 2.2 + 1.7, v * 1.8 + 4.2, 0x4d31);
-    const variation = rockHash(index, 4, 0x72a5) - 0.5;
-    const tone = Math.max(0, Math.min(1, 0.16 + mineral * 0.69 + variation * 0.44 - v * 0.07));
-    return {
-      u,
-      v,
-      band: Math.max(0, Math.min(
-        BEDROCK_MINERAL_RAMP.length - 1,
-        Math.round(tone * (BEDROCK_MINERAL_RAMP.length - 1)),
-      )),
-    };
-  });
-  const pixels = new Uint8ClampedArray(width * height * 4);
+  // A continuous warped height field replaces the rejected Voronoi planes. Three
+  // deliberately low-frequency layers create connected mineral folds without a
+  // photographic grain, a giant fan facet, or any logical row/column cadence.
+  const heights = new Float32Array(width * height);
   for (let y = 0; y < height; y += 1) {
     const v = y / (height - 1);
     for (let x = 0; x < width; x += 1) {
       const u = x / (width - 1);
-      let nearest = sites[0]!;
-      let secondNearest = sites[1]!;
-      let nearestDistance = Number.POSITIVE_INFINITY;
-      let secondDistance = Number.POSITIVE_INFINITY;
-      for (const site of sites) {
-        const deltaX = (u - site.u) * aspect;
-        const deltaY = v - site.v;
-        const distance = deltaX * deltaX + deltaY * deltaY;
-        if (distance < nearestDistance) {
-          secondNearest = nearest;
-          secondDistance = nearestDistance;
-          nearest = site;
-          nearestDistance = distance;
-        } else if (distance < secondDistance) {
-          secondNearest = site;
-          secondDistance = distance;
-        }
-      }
-      const distanceGap = secondDistance - nearestDistance;
-      const neighbourMix = Math.max(0, Math.min(0.5, (0.026 - distanceGap) / 0.052));
-      const rawRampPosition = nearest.band * (1 - neighbourMix) + secondNearest.band * neighbourMix;
-      const rampPosition = Math.round(rawRampPosition * 4) / 4;
+      const physicalX = u * aspect;
+      const warpX = (rockFbm(physicalX * 0.92 + 1.7, v * 1.08 + 3.1, 0x4d31, 3) - 0.5) * 0.3;
+      const warpY = (rockFbm(physicalX * 1.04 + 5.2, v * 0.88 + 1.9, 0x72a5, 3) - 0.5) * 0.24;
+      const warpedX = physicalX + warpX;
+      const warpedY = v + warpY;
+      const mass = rockFbm(warpedX * 1.72 + 0.8, warpedY * 1.82 + 2.4, 0x31b7, 4);
+      const foldedSource = rockFbm(warpedX * 3.05 + 4.6, warpedY * 2.72 + 0.7, 0x5a19, 3);
+      const fold = 1 - Math.abs(foldedSource * 2 - 1);
+      const strataPhase = warpedY * 3.35 + warpedX * 0.42
+        + rockFbm(warpedX * 1.18 + 6.1, warpedY * 1.32 + 4.4, 0x23d1, 3) * 1.35;
+      const strata = 0.5 + 0.5 * Math.sin(strataPhase * Math.PI * 2);
+      heights[y * width + x] = Math.max(0, Math.min(1, mass * 0.64 + fold * 0.23 + strata * 0.13));
+    }
+  }
+
+  const pixels = new Uint8ClampedArray(width * height * 4);
+  for (let y = 0; y < height; y += 1) {
+    const v = y / (height - 1);
+    for (let x = 0; x < width; x += 1) {
+      const left = heights[y * width + Math.max(0, x - 1)]!;
+      const right = heights[y * width + Math.min(width - 1, x + 1)]!;
+      const above = heights[Math.max(0, y - 1) * width + x]!;
+      const below = heights[Math.min(height - 1, y + 1) * width + x]!;
+      const heightValue = heights[y * width + x]!;
+      const reliefLight = Math.max(-0.16, Math.min(0.16, (left - right) * 1.4 + (below - above) * 1.05));
+      const tone = Math.max(0, Math.min(1, 0.08 + heightValue * 0.78 + reliefLight + (1 - v) * 0.08));
+      // Fourteen soft graphic steps retain natural connected relief while avoiding
+      // both high-frequency photographic texture and oversized flat polygons.
+      const quantizedTone = Math.round(tone * 14) / 14;
+      const rampPosition = quantizedTone * (BEDROCK_MINERAL_RAMP.length - 1);
       const lowerBand = Math.max(0, Math.min(BEDROCK_MINERAL_RAMP.length - 1, Math.floor(rampPosition)));
       const upperBand = Math.min(BEDROCK_MINERAL_RAMP.length - 1, lowerBand + 1);
       const blend = rampPosition - lowerBand;
       const lowerColor = BEDROCK_MINERAL_RAMP[lowerBand]!;
       const upperColor = BEDROCK_MINERAL_RAMP[upperBand]!;
-      const facetLight = Math.max(-0.045, Math.min(0.045, (
-        (nearest.u - u) * 0.08 + (nearest.v - v) * 0.055
-      )));
-      const shade = Math.round((0.93 + (1 - v) * 0.08 + facetLight) * 40) / 40;
       const index = (y * width + x) * 4;
-      pixels[index] = Math.round((lowerColor[0] * (1 - blend) + upperColor[0] * blend) * shade);
-      pixels[index + 1] = Math.round((lowerColor[1] * (1 - blend) + upperColor[1] * blend) * shade);
-      pixels[index + 2] = Math.round((lowerColor[2] * (1 - blend) + upperColor[2] * blend) * shade);
+      pixels[index] = Math.round(lowerColor[0] * (1 - blend) + upperColor[0] * blend);
+      pixels[index + 1] = Math.round(lowerColor[1] * (1 - blend) + upperColor[1] * blend);
+      pixels[index + 2] = Math.round(lowerColor[2] * (1 - blend) + upperColor[2] * blend);
       pixels[index + 3] = 255;
     }
   }
@@ -1905,39 +1908,19 @@ export class TetrisRenderer {
     const pulseWave = this.options.reducedMotion
       ? 1
       : 0.5 + 0.5 * Math.sin((this.mutationClockMs / 760) * Math.PI * 2);
-    // Compress the bright portion of the cycle into a short peak. The arrow remains
-    // legible between peaks while the board-wide wash reads as a warning flash instead
-    // of a permanent tint over normal play.
-    const warningFlash = this.options.reducedMotion ? 1 : pulseWave ** 5;
-    if (state.survivalDebrisWarningColumns.length > 0) {
-      graphics
-        .rect(layout.x, layout.y, layout.width, layout.height)
-        .fill({
-          color: warningColor,
-          alpha: this.options.reducedMotion ? 0.08 : 0.008 + warningFlash * 0.17,
-        });
-    }
+    // The arrow itself is the complete warning. Compress its bright endpoint into a
+    // short pulse without tinting the board, source column, pieces, Ghost, or wall.
+    const warningFlash = this.options.reducedMotion ? 1 : pulseWave ** 4;
     for (const column of state.survivalDebrisWarningColumns) {
       const centerX = layout.x + (column + 0.5) * layout.cell;
       const top = layout.y + Math.max(2, layout.cell * 0.08);
       const markerWidth = layout.cell * 0.29;
       const markerBottom = top + layout.cell * 0.92;
-      graphics
-        .rect(
-          layout.x + column * layout.cell + layout.cell * 0.08,
-          layout.y,
-          layout.cell * 0.84,
-          layout.cell * 2.15,
-        )
-        .fill({
-          color: warningColor,
-          alpha: this.options.reducedMotion ? 0.25 : 0.08 + warningFlash * 0.34,
-        });
       this.strokeSegments(graphics, [
         [centerX, top, centerX, markerBottom],
         [centerX - markerWidth, markerBottom - markerWidth, centerX, markerBottom],
         [centerX, markerBottom, centerX + markerWidth, markerBottom - markerWidth],
-      ], warningColor, this.options.reducedMotion ? 0.98 : 0.78 + warningFlash * 0.22,
+      ], warningColor, this.options.reducedMotion ? 0.98 : 0.2 + warningFlash * 0.8,
       Math.max(1.8, layout.cell * 0.085));
     }
 

@@ -539,7 +539,9 @@ describe('Puzzle undo presentation reset', () => {
     let adjacentDelta = 0;
     let adjacentPairs = 0;
     let sharpEdges = 0;
+    let longestFlatRun = 0;
     for (let y = 0; y < 32; y += 1) {
+      let flatRun = 1;
       for (let x = 0; x < 64; x += 1) {
         const index = (y * 64 + x) * 4;
         const red = first[index]!;
@@ -555,15 +557,19 @@ describe('Puzzle undo presentation reset', () => {
           const delta = Math.abs(value - luminance[luminance.length - 2]!);
           adjacentDelta += delta;
           if (delta > 18) sharpEdges += 1;
+          if (delta < 0.01) flatRun += 1;
+          else flatRun = 1;
+          longestFlatRun = Math.max(longestFlatRun, flatRun);
           adjacentPairs += 1;
         }
       }
     }
     expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(30);
-    expect(colors.size).toBeGreaterThanOrEqual(12);
+    expect(colors.size).toBeGreaterThanOrEqual(9);
     expect(colors.size).toBeLessThanOrEqual(128);
     expect(adjacentDelta / adjacentPairs).toBeLessThan(8);
     expect(sharpEdges / adjacentPairs).toBeLessThan(0.04);
+    expect(longestFlatRun).toBeLessThan(18);
   });
 
   it('draws a flat-contact continuous cavern wall and complete square falling stones without decals', () => {
@@ -842,7 +848,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.survivalDebrisPresentation.size).toBe(0);
   });
 
-  it('pulses one warm source-column warning and keeps a static reduced-motion endpoint', () => {
+  it('pulses only one warm source-column arrow and keeps a static reduced-motion endpoint', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const drawWarning = (height: 1 | 2, clock: number, reducedMotion = false) => {
@@ -867,25 +873,12 @@ describe('Puzzle undo presentation reset', () => {
     const segments = trough.filter((operation) => operation.kind === 'segment');
     expect(segments).toHaveLength(3);
     expect(segments.every((segment) => (segment.values[0] ?? 0) >= 44 && (segment.values[0] ?? 0) <= 56)).toBe(true);
-    const warningRects = trough.filter((operation) => operation.kind === 'rect');
-    expect(warningRects.map((operation) => operation.values)).toEqual([
-      [0, 0, 200, 400],
-      [41.6, 0, 16.8, 43],
-    ]);
-    const warningFills = trough.filter((operation) => operation.kind === 'fill');
-    expect(warningFills).toHaveLength(2);
-    expect(warningFills.every((operation) => (
-      (operation.options as { color?: number }).color === COLORS.target
-    ))).toBe(true);
-    const troughAlphas = warningFills.map((operation) => (
-      (operation.options as { alpha?: number }).alpha ?? 0
-    ));
-    const peakAlphas = peak.filter((operation) => operation.kind === 'fill').map((operation) => (
-      (operation.options as { alpha?: number }).alpha ?? 0
-    ));
-    expect((peakAlphas[0] ?? 0) - (troughAlphas[0] ?? 0)).toBeGreaterThan(0.15);
-    expect((peakAlphas[1] ?? 0) - (troughAlphas[1] ?? 0)).toBeGreaterThan(0.3);
+    expect(trough.filter((operation) => operation.kind === 'rect')).toHaveLength(0);
+    expect(trough.filter((operation) => operation.kind === 'fill')).toHaveLength(0);
     expect(trough.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
+    const troughAlpha = (trough.find((operation) => operation.kind === 'stroke')?.options as { alpha?: number } | undefined)?.alpha ?? 0;
+    const peakAlpha = (peak.find((operation) => operation.kind === 'stroke')?.options as { alpha?: number } | undefined)?.alpha ?? 0;
+    expect(peakAlpha - troughAlpha).toBeGreaterThan(0.7);
     expect(trough.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(trough.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
 
