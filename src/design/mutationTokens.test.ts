@@ -23,10 +23,13 @@ describe('mutation VFX token contract', () => {
   });
 
   it('defines the required readable bomb and timed-state durations without changing Core ticks', () => {
-    expect(MUTATION_VFX_TOKENS.bomb.animation.activationMs).toBe(900);
-    expect(MUTATION_VFX_TOKENS.freeze.animation.enterMs).toBe(500);
+    expect(MUTATION_VFX_TOKENS.bomb.animation.activationMs).toBe(620);
+    expect(MUTATION_VFX_TOKENS.freeze.animation.activationMs).toBeLessThanOrEqual(320);
+    expect(MUTATION_VFX_TOKENS.collapse.animation.activationMs).toBeLessThanOrEqual(220);
+    expect(MUTATION_VFX_TOKENS.multiplier.animation.activationMs).toBeLessThanOrEqual(320);
+    expect(MUTATION_VFX_TOKENS.freeze.animation.enterMs).toBe(320);
     expect(MUTATION_VFX_TOKENS.freeze.animation.pulseMs).toBe(800);
-    expect(MUTATION_VFX_TOKENS.freeze.animation.exitMs).toBe(1000);
+    expect(MUTATION_VFX_TOKENS.freeze.animation.exitMs).toBe(680);
     expect(MUTATION_VFX_TOKENS.multiplier.audio).toMatchObject({
       loopHz: null,
       loopGain: 0,

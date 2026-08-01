@@ -83,7 +83,7 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
       distortion: 0.06,
       frost: { noiseScale: 0.8, edgeStrength: 1.5, noise: 0.035 },
     },
-    animation: { enterMs: 500, pulseMs: 800, exitMs: 1000, activationMs: 500 },
+    animation: { enterMs: 320, pulseMs: 800, exitMs: 680, activationMs: 320 },
     audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.08, loopHz: null, loopGain: 0, endHz: null },
   },
   collapse: {
@@ -95,21 +95,21 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
       distortion: 0.14,
       displacement: { strength: 0.015, speed: 0.8 },
     },
-    animation: { enterMs: 180, pulseMs: 120, exitMs: 420, activationMs: 300 },
+    animation: { enterMs: 120, pulseMs: 100, exitMs: 300, activationMs: 220 },
     audio: { activateHz: 148, accentHz: 93, waveform: 'triangle', gain: 0.13, loopHz: 73.42, loopGain: 0.022, endHz: 196 },
   },
   bomb: {
     palette: { primary: 0xff6b35, highlight: 0xffe8a3, deep: 0x5a1a20, facet: 0xbd4b2d, glow: 0xffb347 },
     particles: { burst: 72, drift: 18, lifeMs: 900, speed: 0.16, size: 0.34 },
     shader: { fieldAlpha: 0.26, edgeGlow: 0.96, distortion: 0.22 },
-    animation: { enterMs: 200, pulseMs: 200, exitMs: 500, activationMs: 900 },
+    animation: { enterMs: 120, pulseMs: 100, exitMs: 320, activationMs: 620 },
     audio: { activateHz: 74, accentHz: 111, waveform: 'triangle', gain: 0.16, loopHz: null, loopGain: 0, endHz: null },
   },
   multiplier: {
     palette: { primary: 0xffd166, highlight: 0xfff2b2, deep: 0x8d5b10, facet: 0xd1a244, glow: 0xffe29a },
     particles: { burst: 28, drift: 18, lifeMs: 620, speed: 0.092, size: 0.3 },
     shader: { fieldAlpha: 0.2, edgeGlow: 0.9, distortion: 0.04 },
-    animation: { enterMs: 260, pulseMs: 520, exitMs: 520, activationMs: 520 },
+    animation: { enterMs: 180, pulseMs: 520, exitMs: 360, activationMs: 320 },
     audio: { activateHz: 523.25, accentHz: 659.25, waveform: 'sine', gain: 0.13, loopHz: null, loopGain: 0, endHz: null },
   },
 };

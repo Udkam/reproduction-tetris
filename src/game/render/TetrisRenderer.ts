@@ -2476,9 +2476,10 @@ export class TetrisRenderer {
       const token = MUTATION_VFX_TOKENS[field.item];
       const alpha = this.mutationFieldOpacity(field);
       if (alpha <= 0) continue;
-      const phase = this.options.reducedMotion ? 0 : (this.mutationClockMs % token.animation.pulseMs) / token.animation.pulseMs;
+      const phaseDuration = field.item === 'collapse' ? 560 : token.animation.pulseMs;
+      const phase = this.options.reducedMotion ? 0 : (this.mutationClockMs % phaseDuration) / phaseDuration;
       if (field.item === 'freeze') this.drawFreezeAtmosphere(graphics, layout, phase, alpha);
-      else if (field.item === 'collapse') this.drawCollapseAtmosphere(graphics, layout, phase, alpha);
+      else if (field.item === 'collapse') this.drawCollapseAtmosphere(graphics, state, layout, phase, alpha);
       else this.drawMultiplierAtmosphere(
         graphics,
         layout,
@@ -2548,54 +2549,78 @@ export class TetrisRenderer {
     return this.freezeAtmosphereGradient;
   }
 
-  private drawCollapseAtmosphere(graphics: Graphics, layout: BoardLayout, _phase: number, opacity: number): void {
+  private drawCollapseAtmosphere(
+    graphics: Graphics,
+    state: GameState,
+    layout: BoardLayout,
+    phase: number,
+    opacity: number,
+  ): void {
     const token = MUTATION_VFX_TOKENS.collapse;
-    // Supergravity is a steady downward load, not a flashing emblem. Long tapered
-    // acceleration channels widen toward the stack while local compression wedges
-    // terminate at the floor. Geometry and alpha remain stable across frames.
-    const traces = [
-      [.08, .08, 1.36, .72], [.2, .2, 1.92, .48], [.34, .11, 1.58, .62],
-      [.5, .26, 2.12, .46], [.65, .14, 1.76, .66], [.8, .23, 1.94, .5],
-      [.92, .09, 1.42, .7],
+    const visibleStart = BOARD_HEIGHT - VISIBLE_HEIGHT;
+    const stackTopByColumn = Array.from({ length: BOARD_WIDTH }, (_, x) => {
+      const boardY = state.board?.findIndex((row, y) => y >= visibleStart && row?.[x] != null) ?? -1;
+      return boardY < visibleStart
+        ? layout.y + layout.height - layout.cell * .16
+        : layout.y + (boardY - visibleStart) * layout.cell;
+    });
+    for (const cell of state.active ? cellsForPiece(state.active) : []) {
+      if (cell.x < 0 || cell.x >= BOARD_WIDTH || cell.y < visibleStart) continue;
+      stackTopByColumn[cell.x] = Math.min(
+        stackTopByColumn[cell.x]!,
+        layout.y + (cell.y - visibleStart) * layout.cell,
+      );
+    }
+
+    // Seven constant-alpha force lanes descend toward the live stack. Only their
+    // position advances, so Supergravity reads as mass and acceleration without a
+    // brightness pulse or a screen-sized emblem.
+    const lanes = [
+      [.07, .02, 0], [.2, .17, .38], [.35, .06, .7], [.5, .22, .22],
+      [.65, .1, .56], [.8, .26, .84], [.93, .04, .46],
     ] as const;
-    for (const [xFactor, yFactor, heightFactor, strength] of traces) {
-      const centerX = layout.x + layout.width * xFactor;
-      const top = layout.y + layout.height * yFactor;
-      const height = layout.cell * heightFactor;
-      const topHalf = Math.max(1.2, layout.cell * (.034 + strength * .012));
-      const bottomHalf = Math.max(2.4, layout.cell * (.105 + strength * .045));
+    for (const [xFactor, startFactor, phaseOffset] of lanes) {
+      const column = Math.max(0, Math.min(BOARD_WIDTH - 1, Math.floor(xFactor * BOARD_WIDTH)));
+      const centerX = layout.x + (column + .5) * layout.cell;
+      const targetY = Math.max(layout.y + layout.cell * 2.2, stackTopByColumn[column]! - layout.cell * .2);
+      const startY = layout.y + layout.cell * (0.45 + startFactor);
+      const travel = Math.max(layout.cell * 1.4, targetY - startY);
+      const headY = this.options.reducedMotion
+        ? startY + travel * (.48 + phaseOffset * .08)
+        : startY + ((phase + phaseOffset) % 1) * travel;
+      const length = layout.cell * (1.05 + phaseOffset * .55);
+      const top = Math.max(startY, headY - length);
+      const half = Math.max(1.5, layout.cell * .055);
       graphics
         .poly([
-          centerX - topHalf, top,
-          centerX + topHalf, top,
-          centerX + topHalf * 1.2, top + height * .42,
-          centerX + bottomHalf, top + height * .84,
-          centerX, top + height,
-          centerX - bottomHalf, top + height * .84,
-          centerX - topHalf * 1.2, top + height * .42,
+          centerX - half * .58, top,
+          centerX + half * .58, top,
+          centerX + half, headY - layout.cell * .18,
+          centerX, headY,
+          centerX - half, headY - layout.cell * .18,
         ])
         .fill({
-          color: strength > .54 ? token.palette.highlight : token.palette.primary,
-          alpha: (.16 + strength * .22) * opacity,
+          color: phaseOffset > .5 ? token.palette.highlight : token.palette.primary,
+          alpha: (phaseOffset > .5 ? .34 : .42) * opacity,
         });
     }
-    const floor = layout.y + layout.height;
-    for (const [xFactor, heightFactor, strength] of [
-      [.14, .42, .48], [.31, .66, .62], [.5, .5, .54], [.69, .72, .66], [.86, .44, .5],
-    ] as const) {
-      const centerX = layout.x + layout.width * xFactor;
-      const height = layout.cell * heightFactor;
-      const halfWidth = layout.cell * (.08 + strength * .055);
+
+    // Compact load wedges terminate immediately above occupied columns. They make
+    // the stack itself look compressed while avoiding a broad horizontal band.
+    for (const column of [1, 3, 5, 7, 9]) {
+      const centerX = layout.x + (column + .5) * layout.cell;
+      const targetY = stackTopByColumn[column]!;
+      const height = layout.cell * .48;
+      const halfWidth = layout.cell * .13;
       graphics
         .poly([
-          centerX - halfWidth * .28, floor - height,
-          centerX + halfWidth * .28, floor - height,
-          centerX + halfWidth, floor - layout.cell * .08,
-          centerX + halfWidth * .54, floor,
-          centerX - halfWidth * .54, floor,
-          centerX - halfWidth, floor - layout.cell * .08,
+          centerX - halfWidth * .34, targetY - height,
+          centerX + halfWidth * .34, targetY - height,
+          centerX + halfWidth, targetY - layout.cell * .08,
+          centerX, targetY,
+          centerX - halfWidth, targetY - layout.cell * .08,
         ])
-        .fill({ color: token.palette.deep, alpha: (.14 + strength * .14) * opacity });
+        .fill({ color: token.palette.deep, alpha: .34 * opacity });
     }
   }
 
@@ -3563,6 +3588,14 @@ export class TetrisRenderer {
     const classic = state?.mode === 'marathon';
     const clearsOnLock = events.some((event) => event.type === 'clear-started');
     const seenMutationItems = new Set<MutationItem>();
+    const mutationActivations = events
+      .filter((event): event is Extract<GameEvent, { type: 'mutation-activated' }> => event.type === 'mutation-activated')
+      .filter((event) => {
+        if (seenMutationItems.has(event.item)) return false;
+        seenMutationItems.add(event.item);
+        return true;
+      })
+      .sort((left, right) => Number(right.item === 'bomb') - Number(left.item === 'bomb'));
     for (const event of events) {
       if (event.type === 'piece-moved') {
         if (this.presentation) {
@@ -3648,15 +3681,7 @@ export class TetrisRenderer {
         this.impact = Math.max(this.impact, this.options.reducedMotion ? 0.18 : 0.46);
         this.enqueueSurvivalStoneCue('land', event.cells);
       } else if (event.type === 'mutation-activated') {
-        if (seenMutationItems.has(event.item)) continue;
-        seenMutationItems.add(event.item);
-        this.enqueueMutationFlash({
-          item: event.item,
-          triggerCells: event.triggerCells ?? [],
-          multiplierFactor: event.multiplierFactor ?? 2,
-          score: event.score,
-          previousBoard,
-        });
+        continue;
       } else if (event.type === 'level-up') {
         this.impact = this.options.reducedMotion ? 0.3 : 1.35;
       } else if (event.type === 'game-over' && classic) {
@@ -3673,6 +3698,15 @@ export class TetrisRenderer {
           ? null
           : { direction, elapsed: 0, duration: 180 };
       }
+    }
+    for (const event of mutationActivations) {
+      this.enqueueMutationFlash({
+        item: event.item,
+        triggerCells: event.triggerCells ?? [],
+        multiplierFactor: event.multiplierFactor ?? 2,
+        score: event.score,
+        previousBoard,
+      });
     }
   }
 

@@ -890,7 +890,12 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
 
   let next = state;
   const events: GameEvent[] = [];
-  const pending = [...triggered];
+  // Bomb owns the first causal beat. Keep the original scan order within each
+  // priority so seeded replays remain stable while blast-driven settlement can
+  // never appear after a timed-state activation.
+  const pending = [...triggered].sort((left, right) => (
+    Number(right.item === 'bomb') - Number(left.item === 'bomb')
+  ));
   const queued = new Set(triggered.map((carrier) => carrier.id));
   const activated = new Set<number>();
   const activationOrder: MutationItem[] = [];
@@ -944,7 +949,12 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       for (const candidate of bombTriggered) {
         if (!activated.has(candidate.id) && !queued.has(candidate.id)) {
           queued.add(candidate.id);
-          pending.push(candidate);
+          if (candidate.item === 'bomb') {
+            const firstNonBomb = pending.findIndex((queuedCarrier) => queuedCarrier.item !== 'bomb');
+            pending.splice(firstNonBomb < 0 ? pending.length : firstNonBomb, 0, candidate);
+          } else {
+            pending.push(candidate);
+          }
         }
       }
     }

@@ -324,6 +324,28 @@ describe('异变 mode', () => {
     expect(activations[1]?.multiplierFactor).toBe(4);
   });
 
+  it('resolves and presents Bomb before simultaneous timed effects', () => {
+    const transition = resolveLineClear({
+      ...carrierClearState('collapse'),
+      mutationCarriers: [
+        { id: 1, item: 'freeze', cells: [{ x: 0, y: 39 }] },
+        { id: 2, item: 'bomb', cells: [{ x: 1, y: 39 }] },
+        { id: 3, item: 'multiplier', cells: [{ x: 2, y: 39 }] },
+      ],
+    });
+
+    expect(mutationActivations(transition).map((event) => event.item)).toEqual([
+      'bomb',
+      'freeze',
+      'multiplier',
+      'collapse',
+    ]);
+    expect(transition.events.find((event) => event.type === 'mutation-activated')).toMatchObject({ item: 'bomb' });
+    expect(transition.state.lines).toBe(4);
+    expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_EFFECT_TICKS);
+  });
+
   it('executes every repeated Bomb mechanically but emits one combined Bomb presentation cue', () => {
     const transition = resolveLineClear({
       ...carrierClearState('freeze'),

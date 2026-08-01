@@ -32,17 +32,17 @@ describe('MutationTimeline', () => {
     expect(timeline.complete).toBe(true);
   });
 
-  it('keeps bomb readable through the full 900 ms visual sequence', () => {
+  it('keeps Bomb first and readable through a compact 620 ms visual sequence', () => {
     const timeline = createMutationActivationTimeline('bomb');
-    expect(timeline.duration).toBe(900);
-    timeline.advance(200);
+    expect(timeline.duration).toBe(620);
+    timeline.advance(120);
     expect(timeline.sample('warning')).toMatchObject({ complete: true });
     expect(timeline.sample('pulse')).toMatchObject({ active: true, progress: 0 });
-    timeline.advance(200);
+    timeline.advance(100);
     expect(timeline.sample('impact')).toMatchObject({ active: true, progress: 0 });
-    timeline.advance(200);
+    timeline.advance(140);
     expect(timeline.sample('shockwave')).toMatchObject({ active: true, progress: 0 });
-    timeline.advance(300);
+    timeline.advance(260);
     expect(timeline.complete).toBe(true);
   });
 });

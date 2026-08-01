@@ -405,7 +405,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toMatchObject({
       item: 'bomb',
       elapsed: 0,
-      duration: 900,
+      duration: 620,
       triggerCells: [],
       score: 300,
       particlesEmitted: false,
@@ -416,35 +416,36 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
     expect(internals.mutationFlashQueue).toHaveLength(1);
     expect(internals.mutationFlashQueue[0]).toMatchObject({ item: 'freeze' });
-    internals.advanceEffects(399);
+    internals.advanceEffects(219);
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(0);
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb', particlesEmitted: true });
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb')).toHaveLength(72);
     expect(internals.mutationParticles.some((particle) => particle.active && particle.item === 'bomb' && Math.abs(particle.rotationVelocity) > 0)).toBe(true);
-    internals.advanceEffects(499);
+    internals.advanceEffects(399);
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
     internals.advanceEffects(1);
-    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0, duration: 500 });
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0, duration: 320 });
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'freeze')).toHaveLength(18);
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb').length).toBeGreaterThan(0);
-    internals.advanceEffects(499);
+    internals.advanceEffects(319);
     expect(internals.mutationFlash).not.toBeNull();
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toBeNull();
   });
 
-  it('queues one renderer activation per distinct item in a simultaneous batch', () => {
+  it('queues one renderer activation per distinct item with Bomb first', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     internals.consumeEvents([
       { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
       { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
       { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 },
     ]);
 
-    expect(internals.mutationFlash).toMatchObject({ item: 'freeze' });
-    expect(internals.mutationFlashQueue).toMatchObject([{ item: 'collapse' }]);
+    expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
+    expect(internals.mutationFlashQueue).toMatchObject([{ item: 'freeze' }, { item: 'collapse' }]);
   });
 
   it('preserves the current Mutation flash, FIFO, and timed fields when reduced motion changes', () => {
@@ -463,9 +464,9 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFields.get('collapse')).toMatchObject({ stage: 'active' });
     expect(internals.mutationParticles.every((particle) => !particle.active)).toBe(true);
 
-    internals.advanceEffects(900);
+    internals.advanceEffects(620);
     expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0 });
-    internals.advanceEffects(500);
+    internals.advanceEffects(320);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -952,7 +953,7 @@ describe('Puzzle undo presentation reset', () => {
     }]);
     internals.advanceEffects(16);
 
-    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 500 });
+    expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 16, duration: 320 });
     internals.drawEffects(
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
@@ -961,7 +962,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(strokes.length).toBeGreaterThan(0);
     expect(carrierRimCalls).toBe(0);
 
-    internals.advanceEffects(484);
+    internals.advanceEffects(304);
     expect(internals.mutationFlash).toBeNull();
   });
 
@@ -995,7 +996,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(queued.mutationActivation).toMatchObject({
       item: 'bomb',
       elapsedMs: 0,
-      durationMs: 900,
+      durationMs: 620,
       particlesEmitted: false,
       triggerColumns: [1, 7],
     });
@@ -1006,11 +1007,11 @@ describe('Puzzle undo presentation reset', () => {
     expect(queued.mutationActivationQueueItems).toEqual(['freeze']);
     expect(queued.mutationActiveParticleCount).toBe(0);
 
-    internals.advanceEffects(400);
+    internals.advanceEffects(220);
     const impact = renderer.getSnapshot();
     expect(impact.mutationActivation).toMatchObject({
       item: 'bomb',
-      elapsedMs: 400,
+      elapsedMs: 220,
       particlesEmitted: true,
       triggerColumns: [1, 7],
     });
@@ -1207,7 +1208,7 @@ describe('Puzzle undo presentation reset', () => {
     })).toBe(true);
   });
 
-  it('uses a symbol-free persistent Supergravity pressure field', () => {
+  it('uses a moving constant-alpha Supergravity pressure field without symbols or flashing', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const recorder = createGraphicsRecorder();
@@ -1242,7 +1243,39 @@ describe('Puzzle undo presentation reset', () => {
       } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(later.operations).toEqual(recorder.operations);
+    expect(geometrySignature(later.operations)).not.toBe(geometrySignature(recorder.operations));
+    expect(later.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options))
+      .toEqual(recorder.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options));
+
+    const reduced = new TetrisRendererClass();
+    reduced.setOptions({ reducedMotion: true });
+    const reducedInternals = reduced as unknown as RendererInternals;
+    const reducedFirst = createGraphicsRecorder();
+    reducedInternals.drawActiveMutationAtmosphere(
+      reducedFirst.graphics,
+      {
+        mode: 'sprint',
+        mutationFreezeTicks: 0,
+        mutationCollapseTicks: 60,
+        mutationMultiplierTicks: 0,
+        mutationMultiplierFactor: 2,
+      } as unknown as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+    reducedInternals.mutationClockMs = 437;
+    const reducedLater = createGraphicsRecorder();
+    reducedInternals.drawActiveMutationAtmosphere(
+      reducedLater.graphics,
+      {
+        mode: 'sprint',
+        mutationFreezeTicks: 0,
+        mutationCollapseTicks: 60,
+        mutationMultiplierTicks: 0,
+        mutationMultiplierFactor: 2,
+      } as unknown as GameState,
+      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    );
+    expect(reducedLater.operations).toEqual(reducedFirst.operations);
   });
 
   it('never redraws a consumed carrier rim during an item activation', () => {
@@ -1292,7 +1325,7 @@ describe('Puzzle undo presentation reset', () => {
     const warningDepths = new Set(warningFields[0]!.values.filter((_value, index) => index % 2 === 1));
     expect(warningDepths.size).toBeGreaterThan(5);
 
-    internals.advanceEffects(400);
+    internals.advanceEffects(220);
     const impact = createGraphicsRecorder();
     internals.drawMutationActivationEffect(impact.graphics, internals.mutationFlash!, layout);
     expect(impact.operations.filter((operation) => operation.kind === 'poly').length).toBeGreaterThanOrEqual(2);
@@ -1318,7 +1351,7 @@ describe('Puzzle undo presentation reset', () => {
       item: 'multiplier',
       triggerCells,
       multiplierFactor: 4,
-      duration: 520,
+      duration: 320,
     });
   });
 

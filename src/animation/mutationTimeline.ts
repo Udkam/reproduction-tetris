@@ -121,8 +121,8 @@ export function createMutationActivationTimeline(item: MutationItem): MutationTi
     return new MutationTimeline(sequence(
       phase('warning', timing.enterMs, 'cubicOut'),
       phase('pulse', timing.pulseMs, 'backOut'),
-      phase('impact', 200, 'cubicIn'),
-      phase('shockwave', 300, 'cubicOut'),
+      phase('impact', 140, 'cubicIn'),
+      phase('shockwave', 260, 'cubicOut'),
     ));
   }
   if (item === 'collapse') {
