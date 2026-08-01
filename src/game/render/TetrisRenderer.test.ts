@@ -559,9 +559,9 @@ describe('Puzzle undo presentation reset', () => {
         }
       }
     }
-    expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(35);
-    expect(colors.size).toBeGreaterThanOrEqual(5);
-    expect(colors.size).toBeLessThanOrEqual(7);
+    expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(30);
+    expect(colors.size).toBeGreaterThanOrEqual(12);
+    expect(colors.size).toBeLessThanOrEqual(48);
     expect(adjacentDelta / adjacentPairs).toBeLessThan(8);
     expect(sharpEdges / adjacentPairs).toBeLessThan(0.04);
   });
@@ -861,25 +861,33 @@ describe('Puzzle undo presentation reset', () => {
       return recorder.operations;
     };
 
-    const single = drawWarning(1, 0);
-    const doubleLater = drawWarning(2, 190);
-    expect(single).not.toEqual(doubleLater);
-    const segments = single.filter((operation) => operation.kind === 'segment');
+    const trough = drawWarning(1, 570);
+    const peak = drawWarning(2, 190);
+    expect(trough).not.toEqual(peak);
+    const segments = trough.filter((operation) => operation.kind === 'segment');
     expect(segments).toHaveLength(3);
     expect(segments.every((segment) => (segment.values[0] ?? 0) >= 44 && (segment.values[0] ?? 0) <= 56)).toBe(true);
-    const warningRects = single.filter((operation) => operation.kind === 'rect');
+    const warningRects = trough.filter((operation) => operation.kind === 'rect');
     expect(warningRects.map((operation) => operation.values)).toEqual([
       [0, 0, 200, 400],
       [41.6, 0, 16.8, 43],
     ]);
-    const warningFills = single.filter((operation) => operation.kind === 'fill');
+    const warningFills = trough.filter((operation) => operation.kind === 'fill');
     expect(warningFills).toHaveLength(2);
     expect(warningFills.every((operation) => (
       (operation.options as { color?: number }).color === COLORS.target
     ))).toBe(true);
-    expect(single.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
-    expect(single.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
-    expect(single.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
+    const troughAlphas = warningFills.map((operation) => (
+      (operation.options as { alpha?: number }).alpha ?? 0
+    ));
+    const peakAlphas = peak.filter((operation) => operation.kind === 'fill').map((operation) => (
+      (operation.options as { alpha?: number }).alpha ?? 0
+    ));
+    expect((peakAlphas[0] ?? 0) - (troughAlphas[0] ?? 0)).toBeGreaterThan(0.07);
+    expect((peakAlphas[1] ?? 0) - (troughAlphas[1] ?? 0)).toBeGreaterThan(0.16);
+    expect(trough.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
+    expect(trough.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(trough.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
 
     const reducedFirst = drawWarning(1, 0, true);
     const reducedLater = drawWarning(2, 437, true);

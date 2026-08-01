@@ -359,89 +359,84 @@ function rockNoise(x: number, y: number, seed: number): number {
   return top * (1 - fadeY) + bottom * fadeY;
 }
 
-function rockFbm(x: number, y: number, seed: number, octaves: number): number {
-  let amplitude = 0.56;
-  let frequency = 1;
-  let sum = 0;
-  let weight = 0;
-  for (let octave = 0; octave < octaves; octave += 1) {
-    sum += rockNoise(x * frequency, y * frequency, seed + octave * 0x9e37) * amplitude;
-    weight += amplitude;
-    amplitude *= 0.52;
-    frequency *= 2.03;
-  }
-  return weight > 0 ? sum / weight : 0;
-}
-
 /**
  * A deliberately small game-native mineral ramp. Keeping the generated wall inside
  * these seven related slate tones prevents the procedural surface from drifting into
  * photographic greyscale noise beside the enamel tetrominoes.
  */
 const BEDROCK_MINERAL_RAMP = [
-  [47, 65, 75],
-  [58, 77, 88],
-  [69, 90, 102],
-  [80, 103, 116],
-  [92, 116, 128],
-  [105, 129, 140],
-  [119, 142, 152],
+  [52, 73, 85],
+  [59, 80, 92],
+  [66, 88, 102],
+  [74, 96, 110],
+  [82, 104, 118],
+  [91, 113, 128],
+  [101, 123, 137],
 ] as const;
 
 /** Deterministic local height-field texture; exported only for renderer contract tests. */
 export function buildBedrockTexturePixels(requestedWidth: number, requestedHeight: number): Uint8ClampedArray {
   const width = Math.max(2, Math.floor(requestedWidth));
   const height = Math.max(2, Math.floor(requestedHeight));
-  const heights = new Float32Array(width * height);
-  for (let y = 0; y < height; y += 1) {
-    const v = y / (height - 1);
-    for (let x = 0; x < width; x += 1) {
-      const u = x / (width - 1);
-      const warpX = rockFbm(u * 1.3 + 7.3, v * 1.15 + 1.1, 0x4a39, 2) - 0.5;
-      const warpY = rockFbm(u * 1.15 + 2.8, v * 1.35 + 8.7, 0x6d27, 2) - 0.5;
-      const warpedU = u + warpX * 0.16;
-      const warpedV = v + warpY * 0.14;
-      const broad = rockFbm(warpedU * 3.1 + 1.7, warpedV * 2.65 + 4.2, 0x4d31, 3);
-      const stratum = rockNoise(
-        warpedU * 2.25 + warpedV * 0.42 + 3.9,
-        warpedV * 3.15 + 6.7,
-        0x218d,
-      );
-      const shoulder = rockFbm(warpedU * 1.65 + 8.1, warpedV * 1.45 + 1.3, 0x72a5, 2);
-      const rawHeight = broad * 0.66 + stratum * 0.21 + shoulder * 0.13;
-      heights[y * width + x] = rawHeight * rawHeight * (3 - 2 * rawHeight);
+  const siteColumns = 7;
+  const siteRows = 3;
+  const sites: Array<{ u: number; v: number; band: number }> = [];
+  for (let row = 0; row < siteRows; row += 1) {
+    for (let column = 0; column < siteColumns; column += 1) {
+      const jitterX = (rockHash(column, row, 0x31b7) - 0.5) * 0.56;
+      const jitterY = (rockHash(column, row, 0x6a51) - 0.5) * 0.52;
+      const u = (column + 0.5 + jitterX) / siteColumns;
+      const v = (row + 0.5 + jitterY) / siteRows;
+      const mineral = rockNoise(u * 2.35 + 1.7, v * 1.9 + 4.2, 0x4d31);
+      const plane = rockHash(column, row, 0x72a5) - 0.5;
+      const tone = Math.max(0, Math.min(1, 0.1 + mineral * 0.72 + plane * 0.62 - v * 0.08 + (1 - u) * 0.05));
+      sites.push({
+        u,
+        v,
+        band: Math.max(0, Math.min(
+          BEDROCK_MINERAL_RAMP.length - 1,
+          Math.round(tone * (BEDROCK_MINERAL_RAMP.length - 1)),
+        )),
+      });
     }
   }
 
   const pixels = new Uint8ClampedArray(width * height * 4);
-  const lightX = -0.41;
-  const lightY = -0.5;
-  const lightZ = 0.76;
+  const aspect = width / height;
   for (let y = 0; y < height; y += 1) {
     const v = y / (height - 1);
     for (let x = 0; x < width; x += 1) {
-      const source = y * width + x;
-      const leftHeight = heights[y * width + Math.max(0, x - 1)]!;
-      const rightHeight = heights[y * width + Math.min(width - 1, x + 1)]!;
-      const upHeight = heights[Math.max(0, y - 1) * width + x]!;
-      const downHeight = heights[Math.min(height - 1, y + 1) * width + x]!;
-      const normalX = (leftHeight - rightHeight) * 8.2;
-      const normalY = (upHeight - downHeight) * 7.4;
-      const normalLength = Math.sqrt(normalX * normalX + normalY * normalY + 1);
-      const light = Math.max(-0.25, Math.min(1, (
-        normalX * lightX + normalY * lightY + lightZ
-      ) / normalLength));
-      const heightValue = heights[source]!;
-      const tone = Math.max(0, Math.min(1, 0.08 + heightValue * 0.62 + light * 0.28 - v * 0.08));
-      const band = Math.max(0, Math.min(
-        BEDROCK_MINERAL_RAMP.length - 1,
-        Math.round(tone * (BEDROCK_MINERAL_RAMP.length - 1)),
-      ));
+      const u = x / (width - 1);
+      let nearest = sites[0]!;
+      let secondNearest = sites[1]!;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      let secondDistance = Number.POSITIVE_INFINITY;
+      for (const site of sites) {
+        const deltaX = (u - site.u) * aspect;
+        const deltaY = v - site.v;
+        const distance = deltaX * deltaX + deltaY * deltaY;
+        if (distance < nearestDistance) {
+          secondNearest = nearest;
+          secondDistance = nearestDistance;
+          nearest = site;
+          nearestDistance = distance;
+        } else if (distance < secondDistance) {
+          secondNearest = site;
+          secondDistance = distance;
+        }
+      }
+      const band = secondDistance - nearestDistance < 0.012
+        ? Math.round((nearest.band + secondNearest.band) / 2)
+        : nearest.band;
       const color = BEDROCK_MINERAL_RAMP[band]!;
-      const index = source * 4;
-      pixels[index] = color[0];
-      pixels[index + 1] = color[1];
-      pixels[index + 2] = color[2];
+      const facetLight = Math.max(-0.045, Math.min(0.045, (
+        (nearest.u - u) * 0.08 + (nearest.v - v) * 0.055
+      )));
+      const shade = Math.round((0.93 + (1 - v) * 0.08 + facetLight) * 40) / 40;
+      const index = (y * width + x) * 4;
+      pixels[index] = Math.round(color[0] * shade);
+      pixels[index + 1] = Math.round(color[1] * shade);
+      pixels[index + 2] = Math.round(color[2] * shade);
       pixels[index + 3] = 255;
     }
   }
@@ -1907,15 +1902,19 @@ export class TetrisRenderer {
     if (state.mode !== 'race') return;
 
     const warningColor = COLORS.target;
-    const pulse = this.options.reducedMotion
+    const pulseWave = this.options.reducedMotion
       ? 1
       : 0.5 + 0.5 * Math.sin((this.mutationClockMs / 760) * Math.PI * 2);
+    // Compress the bright portion of the cycle into a short peak. The arrow remains
+    // legible between peaks while the board-wide wash reads as a warning flash instead
+    // of a permanent tint over normal play.
+    const warningFlash = this.options.reducedMotion ? 1 : pulseWave ** 3;
     if (state.survivalDebrisWarningColumns.length > 0) {
       graphics
         .rect(layout.x, layout.y, layout.width, layout.height)
         .fill({
           color: warningColor,
-          alpha: this.options.reducedMotion ? 0.035 : 0.018 + pulse * 0.035,
+          alpha: this.options.reducedMotion ? 0.045 : 0.014 + warningFlash * 0.08,
         });
     }
     for (const column of state.survivalDebrisWarningColumns) {
@@ -1932,13 +1931,13 @@ export class TetrisRenderer {
         )
         .fill({
           color: warningColor,
-          alpha: this.options.reducedMotion ? 0.12 : 0.055 + pulse * 0.105,
+          alpha: this.options.reducedMotion ? 0.17 : 0.065 + warningFlash * 0.18,
         });
       this.strokeSegments(graphics, [
         [centerX, top, centerX, markerBottom],
         [centerX - markerWidth, markerBottom - markerWidth, centerX, markerBottom],
         [centerX, markerBottom, centerX + markerWidth, markerBottom - markerWidth],
-      ], warningColor, this.options.reducedMotion ? 0.96 : 0.62 + pulse * 0.36,
+      ], warningColor, this.options.reducedMotion ? 0.98 : 0.72 + warningFlash * 0.28,
       Math.max(1.8, layout.cell * 0.085));
     }
 
