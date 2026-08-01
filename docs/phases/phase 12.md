@@ -1,11 +1,11 @@
 # Phase 12 — Material Truth and Authored Learning
 
-Status: `ACTIVE / NOT ACCEPTED / NOT PUSHED`
+Status: `ACCEPTED / CLOSED / FINAL PUBLICATION CHECKPOINT`
 
-Final-QA retry: the procedural bedrock wall remains accepted and frozen. The current
-candidate is rejected until Puzzle title glyph boxes and the `844x390` Settings footer
-fit without clipping, the exact mastery certificates run successfully, and the final
-browser matrix includes active Mutation plus dynamic one/two-stone Survival evidence.
+Final-QA retry resolved: the procedural bedrock wall remains accepted and frozen.
+Puzzle title glyph boxes and the `844x390` Settings footer now fit without clipping,
+the exact mastery certificates pass, and the final browser matrix includes active
+Mutation plus dynamic one/two-stone Survival evidence.
 
 Base: `main@ac11e016d459a82bd2242650632cd8a1c936c253`
 
@@ -67,4 +67,27 @@ enumeration into route-backed introductory technique lessons.
   review rejects the resulting metrics dashboard. It will be retired from product UI.
 - Fontsource registry confirms Barlow Semi Condensed and Fira Code packages at `5.3.0`
   under OFL-1.1. Installation, notices, and license files belong to P12.1.
-- No Phase-12 source, visual frame, or acceptance claim exists yet.
+- The initial inventory contained no Phase-12 acceptance artifact; the completed
+  immutable source/evidence/QA chain is recorded below.
+
+## Final acceptance
+
+- Frozen product source: `d84b04351dc89d5f503df2112a71789950ba0796`.
+- Final evidence: `18f8886..9e22a8b`; the static manifest contains sixteen screen
+  groups and the dynamic manifest contains four groups with twenty hashed PNGs. Both
+  bind to the frozen source and report zero console/page errors.
+- Survival proof covers deterministic one/two-stone events, exact four-times cadence,
+  temporary non-locking support, and atomic stone-above push. The accepted procedural
+  wall remains `2e14ec3 / dcb1d79 / 5619bce / 92a124f` and was not modified.
+- Mutation proof covers all four named activations, persistent Ice, Supergravity and
+  Multiplier states, cleared-carrier cleanup, and the airborne Supergravity landing
+  latch. Each activation screenshot's renderer item matches its filename; the
+  multiplier field records `600` ticks at factor `2`.
+- Strict exact Puzzle certificates pass `3/3`. Final typecheck passes; the full suite
+  passes `32` files with `1` skipped (`297` tests with `3` skipped); production build
+  passes with `762` modules and only the existing bundle-size advisory.
+- Independent read-only QA `9ec1149..6fce9e6` reports P0–P3 and evidence gaps all
+  zero. A scoped redacted gitleaks scan of the eight pre-closeout commits reports no
+  finding; the lockfile OSV scan previously covered `158` packages with no issue.
+- Owned browser/server resources are released and port `5178` is free. Publication is
+  coordinator-owned, non-force, and requires exact local/tracking/remote equality.

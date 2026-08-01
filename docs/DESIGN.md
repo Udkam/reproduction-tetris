@@ -223,14 +223,16 @@ tabs, or responsive matrices and must preserve zero overflow at every target vie
 
 ### Phase 12 acceptance
 
-No Phase-12 source is accepted yet. Acceptance requires focused checkpoint tests, one
-final typecheck/full suite/build after the last edit, real Chinese/English frames at
-desktop/portrait/short-landscape, reduced-motion proof, route replay evidence for every
- authored lesson, one Canvas and zero DOM board cells/errors/overflow, preservation
- and replay of both verified routes for every stable ID after the curriculum reorder,
- exhaustive optimum certificates and threshold-boundary tests for every mastery gate,
- independent read-only QA on an immutable candidate, scoped dependency/secret scans
- where relevant, non-force push, and release of every owned server/browser/helper.
+Phase 12 is accepted at frozen product source
+`d84b04351dc89d5f503df2112a71789950ba0796`. Final evidence
+`18f8886..9e22a8b` supplies Chinese/English desktop, portrait, short-landscape,
+reduced-motion, active Mutation, and dynamic Survival proof with one Canvas, zero DOM
+board cells, zero overflow, and zero console/page errors. Strict optimum certificates
+pass `3/3`; the final typecheck, full `32 passed / 1 skipped` file suite
+(`297 passed / 3 skipped` tests), and `762`-module build pass. Independent read-only
+QA `9ec1149..6fce9e6` reports P0–P3 and evidence gaps all zero. The separately
+accepted procedural cavern wall chain `2e14ec3 / dcb1d79 / 5619bce / 92a124f`
+remains immutable. Publication is non-force and owned resources are released.
 
 ## 2026-07-31 Phase 11 — luminous instruments and legible intent
 

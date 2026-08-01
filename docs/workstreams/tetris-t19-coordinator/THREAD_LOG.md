@@ -1,5 +1,33 @@
 # T19 Coordinator Workstream Log
 
+## 2026-08-01 — Phase 12 final acceptance
+
+- Task ID: `T19-P12.6`
+- Base SHA: `ac11e016d459a82bd2242650632cd8a1c936c253`
+- Frozen product SHA: `d84b04351dc89d5f503df2112a71789950ba0796`
+- Final evidence range: `18f8886..9e22a8b`
+- Independent QA range: `9ec1149..6fce9e6`
+- Exact final source paths: no source path changed after `d84b043`; the final retry
+  touched only the responsive Puzzle/Settings styles before the immutable gate.
+- Implementation/evidence: the accepted procedural wall remains frozen; the responsive
+  glyph/footer defects are closed; strict Puzzle certificates pass; final static and
+  dynamic manifests prove the requested Survival, Mutation, Puzzle, Home, leave,
+  Settings, bilingual, reduced-motion, Canvas, overflow, and error boundaries.
+- Commands actually run after the final source edit: strict exact-certificate Vitest
+  (`3/3`); one final typecheck; one single-worker full suite (`32 passed / 1 skipped`
+  files, `297 passed / 3 skipped` tests); one production build (`762` modules); the
+  official web-game client; one final static browser matrix; one corrected dynamic
+  browser matrix; `git diff --check`; and scoped redacted gitleaks.
+- QA: `QA_PHASE12_FINAL.md` reports PASS with P0–P3 and evidence gaps all zero. The
+  corrected dynamic manifest binds to `d84b043`, has zero browser errors, and matches
+  all twenty referenced PNG hashes.
+- Resource note: both bounded Vite PIDs `23012` and `28096` were released after their
+  evidence batches; no managed browser remains and port `5178` is free. The unrelated
+  port `5173` was not touched.
+- Blocker: none.
+- Next action: exact-path commit this acceptance record, non-force push `main`, verify
+  local/tracking/remote equality, and mark the goal complete.
+
 ## 2026-08-01 — Phase 12 procedural bedrock-wall correction accepted
 
 - Task ID: `T19-P12.2-BEDROCK-WALL`

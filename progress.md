@@ -1,5 +1,16 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
+## T19 Phase 12 accepted — 2026-08-01
+
+- Frozen product `d84b043` and evidence `18f8886..9e22a8b` close the material,
+  responsive, Survival, Mutation, and authored Puzzle curriculum contract. The
+  independently accepted continuous cavern wall remains unchanged.
+- Exact certificates pass `3/3`; final typecheck, `32 passed / 1 skipped` files
+  (`297 passed / 3 skipped` tests), and the `762`-module build pass. Two browser
+  manifests cover sixteen static and four dynamic groups with zero errors.
+- Independent QA `9ec1149..6fce9e6` reports P0–P3/GAP all zero. Scoped secret and
+  dependency checks report no finding; all owned server/browser resources are released.
+
 ## T19 Phase 12 Survival checkpoint — 2026-08-01
 
 - Falling rocks now use exact `4x` fixed cadence. In-flight support is not ground:

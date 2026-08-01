@@ -2,16 +2,27 @@
 
 ## Phase 12 active goal — continuous settings, solid geology, authored technique
 
-**Status (2026-08-01): ACTIVE / NOT ACCEPTED / NOT PUSHED.**
+**Status (2026-08-01): ACCEPTED / CLOSED / READY FOR FINAL PUBLICATION.**
 
-**Final-QA retry boundary (2026-08-01).** The independently accepted procedural
+**Final acceptance (2026-08-01).** Product source is frozen at
+`d84b04351dc89d5f503df2112a71789950ba0796`; final browser evidence is
+`18f8886..9e22a8b`, and independent read-only QA is recorded by
+`9ec1149..6fce9e6` with P0–P3 and evidence gaps all zero. The procedural cavern
+wall remains the separately accepted `2e14ec3 / dcb1d79 / 5619bce / 92a124f`
+chain and was not reopened by the final responsive retry. Exact Puzzle
+certificates pass `3/3`; final typecheck, `32 passed / 1 skipped` test files
+(`297 passed / 3 skipped` tests), and the `762`-module build pass. The two final
+browser manifests bind to `d84b043`, cover sixteen static and four dynamic screen
+groups, and report zero browser errors. The owned browser and both bounded Vite
+processes are closed; port `5178` is free. Only the coordinator's final docs
+checkpoint, non-force push, and local/tracking/remote equality check remain.
+
+**Resolved Final-QA retry boundary (2026-08-01).** The independently accepted procedural
 bedrock wall is frozen: its continuous relief, flat contact lip, renderer-lifetime
-texture, and falling-stone material must not change in this retry. Final QA rejected
-only the responsive proof at this checkpoint: Puzzle detail titles clip their glyph
-boxes in five target frames, the English `844x390` Settings surface clips its Record
-footer, and the browser matrix still lacks the required active Mutation and dynamic
-Survival sequences. The retry therefore owns only those responsive fixes, the exact
-Puzzle certificate run, fresh final gates, and replacement evidence.
+texture, and falling-stone material did not change in this retry. The measured Puzzle
+title and English `844x390` Settings defects are closed, the exact Puzzle certificate
+run passes, and replacement evidence now contains the required active Mutation and
+dynamic Survival sequences. Independent final QA accepts all four corrections.
 
 Phase 12 supersedes only the rejected Phase-11 presentation and guidance outcomes below.
 Accepted deterministic game rules, save compatibility, rankings, undo, two-piece Next,

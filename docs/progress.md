@@ -1,5 +1,16 @@
 Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the mixed Temple/Tetris history and local QA copies, then correct the tiny and overlapping Tetris presentation without changing accepted game rules.
 
+### T19 Phase 12 accepted — 2026-08-01
+
+- Product `d84b043` and final evidence `18f8886..9e22a8b` close the continuous
+  Settings, local typography, four-times Survival debris, procedural cavern wall, and
+  authored Intro/Easy/Hard Puzzle curriculum contract.
+- Strict certificates pass `3/3`; final typecheck, the `32 passed / 1 skipped` file
+  suite (`297 passed / 3 skipped` tests), and the `762`-module build pass. Static and
+  dynamic browser manifests bind to the frozen source and report zero errors.
+- Independent QA `9ec1149..6fce9e6` reports P0–P3/GAP all zero. Scoped scans report
+  no finding, the final browser/server batch is released, and port `5178` is free.
+
 ### T19 Phase 12 Survival checkpoint — 2026-08-01
 
 - Survival debris now advances at exactly `4x` ordinary cadence. Merely touching an

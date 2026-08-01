@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-08-01 — Phase 12 material truth and authored learning accepted
+
+- Accepted frozen product source `d84b043` after replacing contradictory leave
+  semantics, carded Settings, rejected English/data typography, decorative Survival
+  geology, and live Puzzle solver statistics with one coherent, bilingual system.
+  The final responsive retry preserves the independently accepted procedural cavern
+  wall and closes the Puzzle-title and `844×390` English Settings clipping gaps.
+- Survival now proves one/two square stones at exactly four times ordinary gravity,
+  temporary in-flight support without premature lock, and atomic stone-above push.
+  Puzzle is reordered into Intro/Easy/Hard authored lessons with stable IDs, strict
+  optimum certificates, technique-linked mastery thresholds, and no live answer feed.
+  Mutation evidence covers every activation, persistent field, consumed-carrier
+  cleanup, and airborne Supergravity landing latch.
+- Strict Puzzle certificate verification passes `3/3`; final typecheck, the
+  `32 passed / 1 skipped` file suite (`297 passed / 3 skipped` tests), and the
+  `762`-module build pass. Final evidence `18f8886..9e22a8b` binds both manifests to
+  `d84b043`, contains sixteen static and four dynamic screen groups, verifies twenty
+  dynamic PNG hashes, and reports zero browser errors.
+- Independent read-only QA `9ec1149..6fce9e6` reports P0–P3 and evidence gaps all
+  zero. The accepted wall chain remains `2e14ec3 / dcb1d79 / 5619bce / 92a124f`.
+  Scoped gitleaks reports no finding; the earlier lockfile OSV scan reports none across
+  158 packages. All owned browser/Vite resources are closed and port `5178` is free.
+
 ## 2026-08-01 — Phase 12 procedural bedrock wall correction accepted
 
 - Replaced the rejected flat slab, pebble relief, and repeated ridge candidates with
