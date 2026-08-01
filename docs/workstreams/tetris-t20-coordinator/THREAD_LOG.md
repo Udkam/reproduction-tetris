@@ -18,3 +18,44 @@
 - **Blocker:** none.
 - **Next action:** commit the contract checkpoint, then replace only the bedrock pixel
   language and rockfall warning presentation inside the declared renderer boundary.
+
+## 2026-08-01 — frozen candidate and evidence
+
+- **Task ID:** T20 Survival material harmony correction
+- **Base SHA:** `0e21365611d9bbaa8a59460bdaf1c10541e78cee`
+- **Contract checkpoints:** `2443ce3` opens the bounded correction; `eeccbad` records
+  the final irregular mineral-plane contract after real-frame iteration.
+- **Product checkpoints:** `a8e22ef`, `92337cb`, `243d5a9`, and final source
+  `eadeac6`. The final renderer uses one deterministic cached cold blue-grey wall
+  texture with Halton-distributed broad planes, neighbour blending, no row/column
+  cadence, and a flat contact top. The rockfall signal keeps a source-column arrow
+  and adds a short, high-contrast warm board/column flash; reduced motion is static.
+- **Exact product paths changed:** `src/game/render/TetrisRenderer.ts` and
+  `src/game/render/TetrisRenderer.test.ts`. No Core, rules, collision, cadence,
+  scoring, replay, save, layout, theme, or dependency path changed.
+- **Commands actually run:** focused renderer tests with
+  `npm.cmd run test -- src/game/render/TetrisRenderer.test.ts --maxWorkers=1
+  --no-file-parallelism`; final `npm.cmd run typecheck`; final
+  `npm.cmd run test -- --maxWorkers=1 --no-file-parallelism`; final
+  `npm.cmd run build`; one bounded Playwright capture through
+  `.local/t20-early/capture-warning.cjs`; direct inspection of all four final PNGs;
+  `netstat -ano` plus exact-PID process release for the owned Vite listener.
+- **Gate results after the last source change:** typecheck passed; `32 passed / 1
+  skipped` test files with `297 passed / 3 skipped` tests; production build passed
+  with `762` transformed modules and only the existing chunk-size advisory.
+- **Evidence:** the superseded exploratory evidence checkpoint is `a173998`; frozen
+  final evidence is `b600ace` under `docs/qa/evidence/t20-survival-material/`.
+  Its manifest binds to source `eadeac6`, reports one Canvas, zero DOM cells, no
+  viewport overflow or browser errors, animated normal warning phases, and a static
+  reduced-motion endpoint. All four committed PNG hashes match the manifest.
+- **Resource disposition:** the capture browser closed itself; owned Vite PID `27484`
+  was stopped after capture and inspection; port `5178` is free. No MCP, indexer,
+  browser, test runner, build process, or development server is retained.
+- **Independent QA:** `d1ad2e9` reports P0=0, P1=0, P2=1, P3=0, GAP=1. Product,
+  visuals, scope, and frozen evidence pass. The sole blocker is this log having
+  previously stopped at contract-open; this checkpoint supplies the missing durable
+  provenance without altering source or evidence.
+- **Blocker:** documentation provenance pending one bounded read-only QA retry.
+- **Next action:** resubmit the frozen candidate plus this log for independent QA;
+  if accepted, record changelog disposition, run the scoped pre-push secret scan,
+  push `main` non-force, verify local/tracking/remote equality, and report release.

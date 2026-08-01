@@ -1,6 +1,6 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
-## T20 Survival material harmony active — 2026-08-01
+## T20 Survival material harmony candidate frozen — 2026-08-01
 
 - Direct review rejects the accepted height-field's photographic grayscale grain as
   visually foreign beside TetraMorph's enamel pieces. The replacement is a bounded
@@ -8,9 +8,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The formerly steady rockfall arrow is reopened: normal motion may use a short warm
   pulse with restrained column/board wash, while reduced motion keeps a static high-
   contrast endpoint. Mechanics and canonical state stay frozen.
-- Contract checkpoint, renderer implementation, early real-frame review, final gates,
-  immutable evidence, independent QA, changelog disposition, and non-force push remain
-  open. No project server or browser is retained during implementation.
+- Frozen source `eadeac6` and evidence `b600ace` pass the visual contract, final
+  typecheck, `32 passed / 1 skipped` files (`297 passed / 3 skipped` tests), the
+  `762`-module build, one-Canvas/zero-DOM-cell geometry, responsive fit, and zero
+  browser errors. The normal warning frames differ while reduced motion is static.
+- Initial QA `d1ad2e9` finds no product defect and only one stale-log provenance gap.
+  The writer record is being aligned before the bounded QA retry; changelog acceptance,
+  scoped pre-push secret scan, non-force push, and remote equality check remain open.
+  No project server or browser is retained.
 
 ## T19 Phase 12 accepted — 2026-08-01
 

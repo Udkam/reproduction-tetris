@@ -2,7 +2,18 @@
 
 ## T20 active goal — game-native cavern wall and unmistakable rockfall warning
 
-**Status (2026-08-01): ACTIVE / UNVERIFIED.**
+**Status (2026-08-01): CANDIDATE FROZEN / QA RETRY PENDING.**
+
+**Frozen candidate.** Product source `eadeac6` replaces the rejected photographic
+height field with the contracted cold-slate mineral wall and strengthens the warning
+into a persistent arrow plus a short warm flash. Final browser evidence is frozen at
+`b600ace`: one Canvas, zero DOM board cells, no viewport overflow or console errors,
+different normal-motion warning phases, and identical reduced-motion samples. After
+the last source change, typecheck, the full `32 passed / 1 skipped` file suite
+(`297 passed / 3 skipped` tests), and the `762`-module build pass. Initial independent
+QA `d1ad2e9` accepts the product and evidence but correctly blocks release because the
+writer log was stale; this documentation retry resolves only that provenance gap and
+does not reopen source or evidence.
 
 This bounded post-acceptance correction starts from clean pushed base `0e21365`.
 Phase 12 remains historically accepted, but direct player review rejects the final
