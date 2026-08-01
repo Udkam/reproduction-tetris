@@ -54,10 +54,12 @@ cover the right-side Next well even though the canonical queue remains available
 8. **Survival stonefall is piece-count driven.** Replace the elapsed-seconds cadence
    with a deterministic piece interval. The first rockfall accompanies the spawn after
    eight player pieces have been used. Every four completed rockfalls reduces the next
-   interval by one piece until the floor of four. The HUD reads “距离出现落石还有” and
-   the live remaining value as “X 块”. Each event still creates one or two vertically
-   joined rocks, but its seeded column must exclude every column occupied by the newly
-   spawned tetromino at that instant.
+   interval by one piece until the floor of four. The HUD uses the compact two-line
+   reading “距离落石” / “X块”. Each event still creates one or two vertically joined
+   rocks, but its seeded column must exclude every column occupied by the newly spawned
+   tetromino at that instant. The event's first rendered state is wholly inside the
+   visible board: a one- or two-rock body appears at the top row without entering from
+   or being clipped by the hidden spawn buffer.
 9. **Language belongs on the home screen.** Move the Chinese/English switch out of the
    in-game Settings sheet and into a quiet, keyboard-reachable home control. The choice
    remains persisted and updates the entire interface without introducing a second

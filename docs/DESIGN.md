@@ -60,8 +60,10 @@ The counter measures locked player tetrominoes until the next rockfall: 8 pieces
 start, then one fewer after every four rockfall events, bottoming out at 4. The event is
 scheduled on the following spawn so the player can read one coherent arrival beat. Its
 one- or two-rock column is drawn deterministically from columns outside the new active
-piece footprint; the rocks remain independent actors after entry. The HUD shows the
-remaining piece count, not seconds.
+piece footprint; the rocks remain independent actors after entry. Their first frame is
+already wholly visible at the board top, including both cells of a two-rock body—no
+stone may enter through or be clipped by the hidden spawn buffer. The HUD shows the
+compact pair `距离落石` / `X块`, never a seconds countdown.
 
 Language selection is a global front-door preference, so its single control lives on
 the home composition rather than inside a live run's Settings hierarchy. It remains

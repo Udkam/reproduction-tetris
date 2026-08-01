@@ -24,3 +24,6 @@
 - Blocker: none
 - Next action: implement and directly test piece-count Survival stonefall, the sole
   home language switch, and rewritten bilingual rules before the final gate/browser batch
+- Direct clarification (2026-08-02): the piece-count HUD is exactly `距离落石` / `X块`;
+  the first stone frame must contain the complete one- or two-cell body inside the
+  visible board, never clipped by or descending through the hidden spawn buffer.
