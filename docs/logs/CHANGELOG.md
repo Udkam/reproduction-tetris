@@ -11,7 +11,8 @@
 - Product `0a0f2bc` passes direct tests `49/49`, final typecheck, the full suite with
   `300 passed / 3 skipped`, and the 762-module production build. English Home evidence
   `631393a` shows no visible language label or overflow. Independent read-only QA of
-  `e1f3eb3..631393a` reports P0-P3 all zero, and the owned browser server is closed.
+  `e1f3eb3..631393a` reports P0-P3 all zero; a scoped redacted gitleaks scan reports no
+  finding, and the owned browser server is closed.
 
 ## 2026-08-02 — T21 visible rockfall and preserved Next accepted
 

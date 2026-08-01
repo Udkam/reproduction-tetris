@@ -14,6 +14,7 @@
   `300 passed / 3 skipped`; 762-module production build; prescribed action client;
   original-detail inspection of the English Home frame
 - Independent QA: exact range `e1f3eb3..631393a`, P0-P3 zero
+- Pre-push security: scoped redacted gitleaks scan reports no finding
 - Resource disposition: owned Vite PID 33048 stopped; port 4178 has no listener
 - Blocker: none
-- Next action: scoped pre-push scan and non-force push of `main`
+- Next action: non-force push of `main` and remote-equality verification
