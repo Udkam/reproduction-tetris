@@ -2,14 +2,14 @@
 
 ## T22 active goal — buttons only and one English type family
 
-**Status (2026-08-02): IN PROGRESS.** Remove the visible `语言 / Language` label
-from the single Home language control. Keep the Chinese and English buttons, persisted
-selection, keyboard navigation, `aria-label`, bottom-right placement, and every other
-Home/game surface unchanged. When English is active, use the same Playwrite NZ Basic
-family as the game name for all prose and interface-text roles. The game name keeps
-its existing visually bold stroke treatment; other English text uses the face normally
-without synthetic bolding. Chinese display/UI families and numeric data roles remain
-unchanged. Acceptance requires direct token and React regressions.
+**Status (2026-08-02): ACCEPTED / CLOSED / READY FOR PUBLICATION.** Product source
+`0a0f2bc` removes the redundant visible label while retaining localized accessible
+names, and makes Playwrite NZ Basic the first English UI family without changing
+Chinese or numeric-data roles. The wordmark retains its maximum real weight and stroke
+treatment. Direct tests pass `49/49`; final typecheck, the full suite (`300 passed / 3
+skipped`), and the 762-module production build pass. English Home evidence `631393a`
+shows the finished hierarchy without overflow, and independent read-only QA of
+`e1f3eb3..631393a` reports P0-P3 all zero.
 
 **Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
 changes are limited to this file and `docs/DESIGN.md`; product changes are limited to

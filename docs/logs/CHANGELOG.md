@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-02 — T22 concise language control and unified English type accepted
+
+- Removed the redundant visible `语言 / Language` prefix from the single Home
+  selector while preserving the localized outer and button-group accessible names,
+  persistence, focus, and keyboard navigation.
+- Made Playwrite NZ Basic the first family for English prose and interface copy. The
+  TetraMorph wordmark remains the sole visually bold expression through its maximum
+  shipped weight and existing outline; Chinese and tabular numeric roles are unchanged.
+- Product `0a0f2bc` passes direct tests `49/49`, final typecheck, the full suite with
+  `300 passed / 3 skipped`, and the 762-module production build. English Home evidence
+  `631393a` shows no visible language label or overflow. Independent read-only QA of
+  `e1f3eb3..631393a` reports P0-P3 all zero, and the owned browser server is closed.
+
 ## 2026-08-02 — T21 visible rockfall and preserved Next accepted
 
 - Replaced Survival's elapsed-time rockfall schedule with a deterministic locked-piece
