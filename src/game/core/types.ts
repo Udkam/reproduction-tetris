@@ -94,7 +94,7 @@ export type PuzzleCompletion =
   /** @deprecated Compatibility-only; the normal-play Puzzle engine never emits this. */
   | 'failed-invalid-spawn';
 
-export type MutationItem = 'freeze' | 'collapse' | 'bomb' | 'multiplier';
+export type MutationItem = 'freeze' | 'collapse' | 'bomb' | 'multiplier' | 'reshape';
 
 /** One incoming carrier is represented once, even though all four locked cells carry it. */
 export interface MutationCarrier {

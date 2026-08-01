@@ -58,7 +58,7 @@ import {
   type SurvivalDebris,
 } from './types';
 
-const MUTATION_ITEMS: readonly MutationItem[] = Object.freeze(['freeze', 'collapse', 'bomb', 'multiplier']);
+const MUTATION_ITEMS: readonly MutationItem[] = Object.freeze(['freeze', 'collapse', 'bomb', 'multiplier', 'reshape']);
 
 function survivalDebrisSeed(seed: number): number {
   return (seed ^ SURVIVAL_DEBRIS_RANDOM_SALT) >>> 0;
@@ -945,6 +945,12 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
         mutationMultiplierTicks: durationTicks,
         mutationMultiplierFactor: wasActive ? 4 : 2,
       };
+    } else if (carrier.item === 'reshape') {
+      const queue = [...next.queue];
+      // Clear resolution spawns queue[0] in this same transition. Rewrite the
+      // following entry so the new I remains visible in Next for a full turn.
+      if (queue.length > 1) queue[1] = 'I';
+      next = { ...next, queue };
     } else {
       const rows = bottomBombRows();
       const bombTriggered = mutationCarriersClearedByRows(next.mutationCarriers, rows);

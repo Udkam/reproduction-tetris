@@ -7,7 +7,7 @@ import {
 } from './mutationTokens';
 
 describe('mutation VFX token contract', () => {
-  it('keeps the four visual families distinct and within the renderer budget', () => {
+  it('keeps the five visual families distinct and within the renderer budget', () => {
     expect(MUTATION_PARTICLE_LIMIT).toBe(120);
     expect(MUTATION_MAX_EFFECT_PLANES).toBe(2);
     expect(MUTATION_MAX_ACTIVE_FILTERS).toBe(2);
@@ -19,7 +19,9 @@ describe('mutation VFX token contract', () => {
     expect(MUTATION_VFX_TOKENS.bomb.palette.facet).toBe(0xbd4b2d);
     expect(MUTATION_VFX_TOKENS.multiplier.palette.primary).toBe(0xffd166);
     expect(MUTATION_VFX_TOKENS.multiplier.palette.facet).toBe(0xd1a244);
-    expect(new Set(Object.values(MUTATION_VFX_TOKENS).map((token) => token.palette.primary)).size).toBe(4);
+    expect(MUTATION_VFX_TOKENS.reshape.palette.primary).toBe(0x54e0b3);
+    expect(MUTATION_VFX_TOKENS.reshape.palette.facet).toBe(0x2dac84);
+    expect(new Set(Object.values(MUTATION_VFX_TOKENS).map((token) => token.palette.primary)).size).toBe(5);
   });
 
   it('defines the required readable bomb and timed-state durations without changing Core ticks', () => {
@@ -27,10 +29,16 @@ describe('mutation VFX token contract', () => {
     expect(MUTATION_VFX_TOKENS.freeze.animation.activationMs).toBeLessThanOrEqual(320);
     expect(MUTATION_VFX_TOKENS.collapse.animation.activationMs).toBeLessThanOrEqual(220);
     expect(MUTATION_VFX_TOKENS.multiplier.animation.activationMs).toBeLessThanOrEqual(320);
+    expect(MUTATION_VFX_TOKENS.reshape.animation.activationMs).toBeLessThanOrEqual(260);
     expect(MUTATION_VFX_TOKENS.freeze.animation.enterMs).toBe(320);
     expect(MUTATION_VFX_TOKENS.freeze.animation.pulseMs).toBe(800);
     expect(MUTATION_VFX_TOKENS.freeze.animation.exitMs).toBe(680);
     expect(MUTATION_VFX_TOKENS.multiplier.audio).toMatchObject({
+      loopHz: null,
+      loopGain: 0,
+      endHz: null,
+    });
+    expect(MUTATION_VFX_TOKENS.reshape.audio).toMatchObject({
       loopHz: null,
       loopGain: 0,
       endHz: null,

@@ -114,6 +114,12 @@ export const MUTATION_MATERIALS: Record<MutationItem, PieceMaterial> = {
     edge: MUTATION_VFX_TOKENS.multiplier.palette.deep,
     innerEdge: MUTATION_VFX_TOKENS.multiplier.palette.highlight,
   },
+  reshape: {
+    fillStart: MUTATION_VFX_TOKENS.reshape.palette.primary,
+    fillEnd: MUTATION_VFX_TOKENS.reshape.palette.facet,
+    edge: MUTATION_VFX_TOKENS.reshape.palette.deep,
+    innerEdge: MUTATION_VFX_TOKENS.reshape.palette.highlight,
+  },
 };
 
 export const BEDROCK_MATERIAL: PieceMaterial = {

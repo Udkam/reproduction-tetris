@@ -112,6 +112,13 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
     animation: { enterMs: 180, pulseMs: 520, exitMs: 360, activationMs: 320 },
     audio: { activateHz: 523.25, accentHz: 659.25, waveform: 'sine', gain: 0.13, loopHz: null, loopGain: 0, endHz: null },
   },
+  reshape: {
+    palette: { primary: 0x54e0b3, highlight: 0xc9ffec, deep: 0x135844, facet: 0x2dac84, glow: 0x8ff5d2 },
+    particles: { burst: 20, drift: 8, lifeMs: 480, speed: 0.074, size: 0.24 },
+    shader: { fieldAlpha: 0.16, edgeGlow: 0.84, distortion: 0.03 },
+    animation: { enterMs: 120, pulseMs: 100, exitMs: 260, activationMs: 260 },
+    audio: { activateHz: 440, accentHz: 659.25, waveform: 'sine', gain: 0.1, loopHz: null, loopGain: 0, endHz: null },
+  },
 };
 
 export function mutationVfxToken(item: MutationItem): MutationVfxToken {
