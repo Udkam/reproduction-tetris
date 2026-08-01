@@ -45,6 +45,7 @@
   display: grid;
   min-height: 0;
   padding: clamp(30px, 4.4vw, 58px);
+  place-content: center;
   place-items: center;
   overflow: hidden;
   color: #eff8fa;

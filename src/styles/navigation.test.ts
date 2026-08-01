@@ -29,6 +29,7 @@ describe('Phase 9 navigation authority', () => {
 
   it('centres the wordmark with a shrink-to-ink box instead of a legacy full-width offset', () => {
     expect(legacy).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark\s*\{[^}]*width:\s*100%;[^}]*transform:\s*translateX/s);
+    expect(navigation).toMatch(/\.mode-chooser--workbench \.landing-intro\s*\{[^}]*place-content:\s*center;[^}]*place-items:\s*center;/s);
     expect(navigation).toMatch(
       /\.mode-chooser--workbench \.mode-home-wordmark\s*\{[^}]*justify-self:\s*center;[^}]*width:\s*max-content;[^}]*transform:\s*none;/s,
     );
