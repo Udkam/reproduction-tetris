@@ -1,8 +1,8 @@
 {
   "taskId": "TETRIS-T19-PHASE12-FINAL",
-  "sourceSha": "b883cb28a552bf9f9926a5bffc062a10029f5ae0",
+  "sourceSha": "d84b04351dc89d5f503df2112a71789950ba0796",
   "baseUrl": "http://127.0.0.1:5178/",
-  "capturedAt": "2026-08-01T00:21:08.467408+00:00",
+  "capturedAt": "2026-08-01T00:49:49.881577+00:00",
   "method": "One bounded Vite server and one Playwright Chromium process; UI controls, persisted stable-ID progress, and public runtime QA commands only.",
   "screens": {
     "homeDesktopZh": {
@@ -314,19 +314,19 @@
         "settings-record"
       ],
       "surfaceRect": [
-        306.97,
-        306.72,
-        811.21,
-        333.38
+        304.3,
+        303.2,
+        816.45,
+        335.53
       ],
       "sections": [
         {
           "id": "settings-rules",
           "rect": [
-            323.81,
-            321.58,
-            777.53,
-            55.85
+            321.24,
+            318.16,
+            782.56,
+            56.22
           ],
           "background": "rgba(0, 0, 0, 0)",
           "border": "0px none rgb(16, 42, 67)",
@@ -336,10 +336,10 @@
         {
           "id": "settings-controls",
           "rect": [
-            323.81,
-            389.32,
-            777.53,
-            43.58
+            321.24,
+            386.34,
+            782.56,
+            43.86
           ],
           "background": "rgba(0, 0, 0, 0)",
           "border": "0px none rgb(16, 42, 67)",
@@ -349,10 +349,10 @@
         {
           "id": "settings-shortcuts",
           "rect": [
-            323.81,
-            444.78,
-            777.53,
-            126.97
+            321.24,
+            442.16,
+            782.56,
+            127.79
           ],
           "background": "rgba(0, 0, 0, 0)",
           "border": "0px none rgb(82, 103, 127)",
@@ -362,10 +362,10 @@
         {
           "id": "settings-record",
           "rect": [
-            323.81,
-            583.64,
-            777.53,
-            40.61
+            321.24,
+            581.91,
+            782.56,
+            40.87
           ],
           "background": "rgba(0, 0, 0, 0)",
           "border": "0px none rgb(16, 42, 67)",
@@ -484,19 +484,19 @@
         "settings-record"
       ],
       "surfaceRect": [
-        27,
-        58.3,
-        775,
-        348.17
+        25,
+        66.56,
+        779,
+        281.88
       ],
       "sections": [
         {
           "id": "settings-rules",
           "rect": [
-            41,
-            69.3,
-            747,
-            88.98
+            36,
+            74.56,
+            757,
+            55.08
           ],
           "background": "rgba(0, 0, 0, 0)",
           "border": "0px none rgb(16, 42, 67)",
@@ -506,9 +506,9 @@
         {
           "id": "settings-controls",
           "rect": [
-            41,
-            166.28,
-            747,
+            36,
+            134.64,
+            757,
             44
           ],
           "background": "rgba(0, 0, 0, 0)",
@@ -519,10 +519,10 @@
         {
           "id": "settings-shortcuts",
           "rect": [
-            41,
-            218.28,
-            747,
-            128.19
+            36,
+            183.64,
+            757,
+            109.8
           ],
           "background": "rgba(0, 0, 0, 0)",
           "border": "0px none rgb(82, 103, 127)",
@@ -532,9 +532,9 @@
         {
           "id": "settings-record",
           "rect": [
-            41,
-            354.47,
-            747,
+            36,
+            298.44,
+            757,
             41
           ],
           "background": "rgba(0, 0, 0, 0)",
@@ -593,9 +593,9 @@
             "y": 19,
             "rotation": 0
           },
-          "next": "J",
+          "next": "T",
           "nextPreviews": [
-            "J"
+            "T"
           ],
           "visibleBoard": [
             "..........",
@@ -1113,11 +1113,11 @@
               "y": 19
             },
             "queue": [
-              "J",
               "T",
+              "O",
               "L",
               "I",
-              "O"
+              "S"
             ],
             "score": 0,
             "lines": 0,
@@ -1150,12 +1150,12 @@
             "survivalDebrisWarningHeight": null,
             "survivalDebrisFallProgress": 0,
             "survivalDebrisRandomizer": {
-              "seed": 2703138267,
+              "seed": 866675303,
               "bag": []
             },
             "mutationActiveCarrier": null,
             "mutationRandomizer": {
-              "seed": 1334727513,
+              "seed": 3711476965,
               "bag": []
             },
             "mutationCarriers": [],
@@ -1176,12 +1176,12 @@
             "lockResets": 0,
             "elapsedTicks": 0,
             "randomizer": {
-              "seed": 2984394359,
+              "seed": 1049590945,
               "bag": [
-                "S"
+                "J"
               ]
             },
-            "seed": 47908632
+            "seed": 2423124132
           },
           "renderer": {
             "canvas": {
@@ -1222,9 +1222,9 @@
             "survivalEntryBedrockRows": 3,
             "survivalEntryBedrockRise": {
               "rows": 3,
-              "elapsedMs": 233.29999999999973,
+              "elapsedMs": 283.3000000000002,
               "durationMs": 820,
-              "offsetY": 9.607777643413545
+              "offsetY": 7.303256809444432
             },
             "classicFeedback": [],
             "mutationActivation": null,
@@ -1323,9 +1323,9 @@
             "y": 19,
             "rotation": 0
           },
-          "next": "J",
+          "next": "T",
           "nextPreviews": [
-            "J"
+            "T"
           ],
           "visibleBoard": [
             "..........",
@@ -1843,11 +1843,11 @@
               "y": 19
             },
             "queue": [
-              "J",
               "T",
+              "O",
               "L",
               "I",
-              "O"
+              "S"
             ],
             "score": 0,
             "lines": 0,
@@ -1870,22 +1870,22 @@
             "nextUnlockedLevelId": null,
             "pieceCount": 0,
             "survivalBedrockRows": 3,
-            "survivalPressureTicks": 9,
+            "survivalPressureTicks": 7,
             "survivalRisePending": false,
             "survivalDebris": [],
             "survivalDebrisNextId": 1,
-            "survivalDebrisIntervalTicks": 9,
+            "survivalDebrisIntervalTicks": 7,
             "survivalDebrisIntervalSeconds": 20,
             "survivalDebrisWarningColumns": [],
             "survivalDebrisWarningHeight": null,
-            "survivalDebrisFallProgress": 36,
+            "survivalDebrisFallProgress": 28,
             "survivalDebrisRandomizer": {
-              "seed": 2703138267,
+              "seed": 866675303,
               "bag": []
             },
             "mutationActiveCarrier": null,
             "mutationRandomizer": {
-              "seed": 1334727513,
+              "seed": 3711476965,
               "bag": []
             },
             "mutationCarriers": [],
@@ -1901,17 +1901,17 @@
             "phase": "active",
             "phaseTicks": 0,
             "pendingClearRows": [],
-            "gravityTicks": 9,
+            "gravityTicks": 7,
             "lockTicks": 0,
             "lockResets": 0,
-            "elapsedTicks": 9,
+            "elapsedTicks": 7,
             "randomizer": {
-              "seed": 2984394359,
+              "seed": 1049590945,
               "bag": [
-                "S"
+                "J"
               ]
             },
-            "seed": 47908632
+            "seed": 2423124132
           },
           "renderer": {
             "canvas": {
@@ -1933,9 +1933,9 @@
               "height": 124
             },
             "previewLayerVisible": true,
-            "previewPiece": "J",
+            "previewPiece": "T",
             "previewPieces": [
-              "J"
+              "T"
             ],
             "previewMutationItem": null,
             "previewClearBounds": null,
@@ -2073,14 +2073,14 @@
           "fallTicks": 40,
           "placedPieces": 1,
           "active": {
-            "type": "J",
+            "type": "T",
             "x": 3,
             "y": 29,
             "rotation": 0
           },
-          "next": "T",
+          "next": "O",
           "nextPreviews": [
-            "T"
+            "O"
           ],
           "visibleBoard": [
             "..........",
@@ -2125,9 +2125,9 @@
             "height": 124
           },
           "previewLayerVisible": true,
-          "previewPiece": "T",
+          "previewPiece": "O",
           "previewPieces": [
-            "T"
+            "O"
           ],
           "previewMutationItem": null,
           "previewClearBounds": null,
@@ -2135,7 +2135,7 @@
           "scrim": null,
           "activeCells": [
             {
-              "x": 3,
+              "x": 4,
               "y": 29
             },
             {
@@ -2153,7 +2153,7 @@
           ],
           "ghostCells": [
             {
-              "x": 3,
+              "x": 4,
               "y": 33
             },
             {
@@ -2184,9 +2184,9 @@
           },
           "survivalDebris": [],
           "survivalDebrisWarningColumns": [
-            1
+            8
           ],
-          "survivalDebrisWarningHeight": 1,
+          "survivalDebrisWarningHeight": 2,
           "survivalStoneCueCount": 0,
           "survivalBedrockCue": null,
           "survivalEntryBedrockRows": null,
@@ -2224,21 +2224,25 @@
           "stoneNextSeconds": 19,
           "fallingStones": [
             {
-              "x": 1,
+              "x": 8,
+              "y": 19
+            },
+            {
+              "x": 8,
               "y": 20
             }
           ],
           "fallTicks": 40,
           "placedPieces": 1,
           "active": {
-            "type": "J",
+            "type": "T",
             "x": 3,
             "y": 32,
             "rotation": 0
           },
-          "next": "T",
+          "next": "O",
           "nextPreviews": [
-            "T"
+            "O"
           ],
           "visibleBoard": [
             "..........",
@@ -2283,9 +2287,9 @@
             "height": 124
           },
           "previewLayerVisible": true,
-          "previewPiece": "T",
+          "previewPiece": "O",
           "previewPieces": [
-            "T"
+            "O"
           ],
           "previewMutationItem": null,
           "previewClearBounds": null,
@@ -2293,7 +2297,7 @@
           "scrim": null,
           "activeCells": [
             {
-              "x": 3,
+              "x": 4,
               "y": 32
             },
             {
@@ -2311,7 +2315,7 @@
           ],
           "ghostCells": [
             {
-              "x": 3,
+              "x": 4,
               "y": 33
             },
             {
@@ -2343,13 +2347,17 @@
           "survivalDebris": [
             {
               "id": 1,
-              "x": 1,
-              "y": 20,
-              "height": 1,
-              "presentationY": 20,
+              "x": 8,
+              "y": 19,
+              "height": 2,
+              "presentationY": 19,
               "cells": [
                 {
-                  "x": 1,
+                  "x": 8,
+                  "y": 19
+                },
+                {
+                  "x": 8,
                   "y": 20
                 }
               ]
@@ -2410,21 +2418,25 @@
           "stoneNextSeconds": 19,
           "fallingStones": [
             {
-              "x": 1,
+              "x": 8,
+              "y": 19
+            },
+            {
+              "x": 8,
               "y": 20
             }
           ],
           "fallTicks": 40,
           "placedPieces": 1,
           "active": {
-            "type": "J",
+            "type": "T",
             "x": 3,
             "y": 32,
             "rotation": 0
           },
-          "next": "T",
+          "next": "O",
           "nextPreviews": [
-            "T"
+            "O"
           ],
           "visibleBoard": [
             "..........",
@@ -2936,17 +2948,17 @@
               ]
             ],
             "active": {
-              "type": "J",
+              "type": "T",
               "rotation": 0,
               "x": 3,
               "y": 32
             },
             "queue": [
-              "T",
+              "O",
               "L",
               "I",
-              "O",
-              "S"
+              "S",
+              "J"
             ],
             "score": 0,
             "lines": 0,
@@ -2974,24 +2986,24 @@
             "survivalDebris": [
               {
                 "id": 1,
-                "x": 1,
-                "y": 20,
-                "height": 1
+                "x": 8,
+                "y": 19,
+                "height": 2
               }
             ],
             "survivalDebrisNextId": 2,
-            "survivalDebrisIntervalTicks": 5,
+            "survivalDebrisIntervalTicks": 3,
             "survivalDebrisIntervalSeconds": 19,
             "survivalDebrisWarningColumns": [],
             "survivalDebrisWarningHeight": null,
-            "survivalDebrisFallProgress": 20,
+            "survivalDebrisFallProgress": 12,
             "survivalDebrisRandomizer": {
-              "seed": 430853213,
+              "seed": 3029351253,
               "bag": []
             },
             "mutationActiveCarrier": null,
             "mutationRandomizer": {
-              "seed": 1334727513,
+              "seed": 3711476965,
               "bag": []
             },
             "mutationCarriers": [],
@@ -3007,15 +3019,15 @@
             "phase": "active",
             "phaseTicks": 0,
             "pendingClearRows": [],
-            "gravityTicks": 24,
+            "gravityTicks": 22,
             "lockTicks": 0,
             "lockResets": 0,
-            "elapsedTicks": 1205,
+            "elapsedTicks": 1203,
             "randomizer": {
-              "seed": 2984394359,
+              "seed": 1049590945,
               "bag": []
             },
-            "seed": 47908632
+            "seed": 2423124132
           },
           "renderer": {
             "canvas": {
@@ -3037,9 +3049,9 @@
               "height": 124
             },
             "previewLayerVisible": true,
-            "previewPiece": "T",
+            "previewPiece": "O",
             "previewPieces": [
-              "T"
+              "O"
             ],
             "previewMutationItem": null,
             "previewClearBounds": null,
@@ -3047,7 +3059,7 @@
             "scrim": null,
             "activeCells": [
               {
-                "x": 3,
+                "x": 4,
                 "y": 32
               },
               {
@@ -3065,7 +3077,7 @@
             ],
             "ghostCells": [
               {
-                "x": 3,
+                "x": 4,
                 "y": 33
               },
               {
@@ -3097,13 +3109,17 @@
             "survivalDebris": [
               {
                 "id": 1,
-                "x": 1,
-                "y": 20,
-                "height": 1,
-                "presentationY": 20,
+                "x": 8,
+                "y": 19,
+                "height": 2,
+                "presentationY": 19,
                 "cells": [
                   {
-                    "x": 1,
+                    "x": 8,
+                    "y": 19
+                  },
+                  {
+                    "x": 8,
                     "y": 20
                   }
                 ]
@@ -3215,14 +3231,14 @@
         "fallTicks": 48,
         "placedPieces": 0,
         "active": {
-          "type": "I",
+          "type": "Z",
           "x": 3,
           "y": 19,
           "rotation": 0
         },
-        "next": "L",
+        "next": "T",
         "nextPreviews": [
-          "L"
+          "T"
         ],
         "visibleBoard": [
           "..........",
@@ -3734,17 +3750,17 @@
             ]
           ],
           "active": {
-            "type": "I",
+            "type": "Z",
             "rotation": 0,
             "x": 3,
             "y": 19
           },
           "queue": [
-            "L",
             "T",
-            "O",
+            "J",
+            "L",
             "S",
-            "J"
+            "O"
           ],
           "score": 0,
           "lines": 0,
@@ -3777,12 +3793,12 @@
           "survivalDebrisWarningHeight": null,
           "survivalDebrisFallProgress": 0,
           "survivalDebrisRandomizer": {
-            "seed": 3775620259,
+            "seed": 4277053658,
             "bag": []
           },
           "mutationActiveCarrier": null,
           "mutationRandomizer": {
-            "seed": 261859873,
+            "seed": 276719192,
             "bag": []
           },
           "mutationCarriers": [],
@@ -3798,17 +3814,17 @@
           "phase": "active",
           "phaseTicks": 0,
           "pendingClearRows": [],
-          "gravityTicks": 8,
+          "gravityTicks": 7,
           "lockTicks": 0,
           "lockResets": 0,
-          "elapsedTicks": 8,
+          "elapsedTicks": 7,
           "randomizer": {
-            "seed": 716104189,
+            "seed": 752631465,
             "bag": [
-              "Z"
+              "I"
             ]
           },
-          "seed": 1120861792
+          "seed": 1563111961
         },
         "renderer": {
           "canvas": {
@@ -3830,9 +3846,9 @@
             "height": 124
           },
           "previewLayerVisible": true,
-          "previewPiece": "L",
+          "previewPiece": "T",
           "previewPieces": [
-            "L"
+            "T"
           ],
           "previewMutationItem": null,
           "previewClearBounds": null,
@@ -3841,7 +3857,11 @@
           "activeCells": [
             {
               "x": 3,
-              "y": 20
+              "y": 19
+            },
+            {
+              "x": 4,
+              "y": 19
             },
             {
               "x": 4,
@@ -3849,17 +3869,17 @@
             },
             {
               "x": 5,
-              "y": 20
-            },
-            {
-              "x": 6,
               "y": 20
             }
           ],
           "ghostCells": [
             {
               "x": 3,
-              "y": 39
+              "y": 38
+            },
+            {
+              "x": 4,
+              "y": 38
             },
             {
               "x": 4,
@@ -3867,10 +3887,6 @@
             },
             {
               "x": 5,
-              "y": 39
-            },
-            {
-              "x": 6,
               "y": 39
             }
           ],
@@ -3952,20 +3968,7 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [
-        {
-          "text": "缺口",
-          "className": "puzzle-gallery__title",
-          "client": [
-            87,
-            46
-          ],
-          "scroll": [
-            87,
-            56
-          ]
-        }
-      ],
+      "clippedText": [],
       "documentLanguage": "zh-CN",
       "fonts": {
         "ready": "loading",
@@ -4023,20 +4026,7 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [
-        {
-          "text": "曲井",
-          "className": "puzzle-gallery__title",
-          "client": [
-            69,
-            46
-          ],
-          "scroll": [
-            69,
-            51
-          ]
-        }
-      ],
+      "clippedText": [],
       "documentLanguage": "zh-CN",
       "fonts": {
         "ready": "loaded",
@@ -4158,20 +4148,7 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [
-        {
-          "text": "曲井",
-          "className": "puzzle-gallery__title",
-          "client": [
-            69,
-            46
-          ],
-          "scroll": [
-            69,
-            51
-          ]
-        }
-      ],
+      "clippedText": [],
       "documentLanguage": "zh-CN",
       "fonts": {
         "ready": "loaded",
@@ -4293,20 +4270,7 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [
-        {
-          "text": "Switchback",
-          "className": "puzzle-gallery__title",
-          "client": [
-            225,
-            27
-          ],
-          "scroll": [
-            225,
-            29
-          ]
-        }
-      ],
+      "clippedText": [],
       "documentLanguage": "en",
       "fonts": {
         "ready": "loaded",
@@ -4460,20 +4424,7 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [
-        {
-          "text": "Gap",
-          "className": "puzzle-gallery__title",
-          "client": [
-            44,
-            32
-          ],
-          "scroll": [
-            44,
-            35
-          ]
-        }
-      ],
+      "clippedText": [],
       "documentLanguage": "en",
       "fonts": {
         "ready": "loading",
