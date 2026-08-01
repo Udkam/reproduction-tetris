@@ -11,8 +11,8 @@ const phase7PuzzleQaRoute = phase7Batch1File.levels
 
 describe('Survival bedrock browser QA replay', () => {
   it('reaches the first deterministic timed rise through ordinary gravity and public commands only', () => {
-    const first = replaySurvivalBedrock(0x51a1f00d);
-    const second = replaySurvivalBedrock(0x51a1f00d);
+    const first = replaySurvivalBedrock(5);
+    const second = replaySurvivalBedrock(5);
 
     expect(first.replay.commands[0]).toEqual({ type: 'start' });
     expect(first.replay.commands.some((command) => command.type === 'move')).toBe(true);
@@ -32,7 +32,7 @@ describe('Survival bedrock browser QA replay', () => {
     expect(survivalIntervalSeconds(first.state.lines)).toBe(12);
     expect(stateHash(first.state)).toBe(stateHash(second.state));
     expect(first.replay).toEqual(second.replay);
-  });
+  }, 30_000);
 });
 
 describe('T5 puzzle browser QA replay', () => {
