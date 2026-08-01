@@ -18,7 +18,8 @@
 - Initial independent QA `d1ad2e9` accepted product and evidence but blocked stale
   writer provenance. Documentation checkpoint `534e78e` closed that sole gap without
   changing source or evidence; retry QA `1b0c64c` reports P0–P3 and evidence gaps all
-  zero. The capture browser and owned Vite server are closed and port `5178` is free.
+  zero. A scoped redacted gitleaks scan of the complete T20 range reports no finding.
+  The capture browser and owned Vite server are closed and port `5178` is free.
 
 ## 2026-08-01 — Phase 12 material truth and authored learning accepted
 

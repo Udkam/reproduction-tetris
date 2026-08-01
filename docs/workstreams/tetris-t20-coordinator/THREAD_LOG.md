@@ -73,6 +73,9 @@
 - **Resource disposition:** unchanged from the frozen-candidate record; no browser,
   server, test runner, build process, MCP, or indexer is retained, and port `5178`
   remains free.
+- **Publication scan:** `gitleaks 8.30.1` scanned the scoped Git range
+  `0e21365611d9bbaa8a59460bdaf1c10541e78cee..90770f2` with full redaction and
+  reported no leaks across twelve commits.
 - **Blocker:** none.
-- **Next action:** commit final acceptance docs, run one scoped redacted gitleaks scan,
+- **Next action:** commit this scan disposition, re-scan the final documentation delta,
   push `main` non-force, and verify local, tracking, and remote tips are identical.
