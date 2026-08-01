@@ -16,7 +16,8 @@
   skipped`, and the production build. Evidence `ca3d571` records the three sheet/Next
   states, first visible rockfall frame, home language control, one Canvas, and zero
   console errors. Independent read-only QA of `4505fb9..ca3d571` reports P0-P3 all
-  zero. The evidence server is closed and port 4178 is free.
+  zero. A scoped redacted gitleaks scan of the 14-commit T21 range reports no finding.
+  The evidence server is closed and port 4178 is free.
 
 ## 2026-08-01 — T20 Survival material harmony correction accepted
 

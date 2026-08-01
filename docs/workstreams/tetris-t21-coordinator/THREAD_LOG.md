@@ -34,7 +34,9 @@
   path/manifest checked and coordinator-inspected at original detail
 - Resource disposition: owned Vite PID 30444 stopped; port 4178 released
 - Blocker: none
-- Next action: changelog checkpoint, scoped pre-push scan, and non-force push of `main`
+- Pre-push security: gitleaks 8.30.1 scanned 14 commits in
+  `4505fb9..d977de8` with redaction enabled and reported no leak
+- Next action: non-force push of `main` and remote-equality verification
 - Direct clarification (2026-08-02): the piece-count HUD is exactly `距离落石` / `X块`;
   the first stone frame must contain the complete one- or two-cell body inside the
   visible board, never clipped by or descending through the hidden spawn buffer.
