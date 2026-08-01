@@ -14,8 +14,9 @@ erase the cave's accumulated cycle. The ordinary rise label changes to Aftershoc
 only when the next resolved rise will be doubled.
 
 Mutation's fifth carrier is **Reshape**. Its reward is forward information: clearing
-the carrier rewrites the next queued piece to `I`, and the existing Canvas-owned Next
-well immediately shows that result. Reshape is an instantaneous emerald event with a
+the carrier rewrites the first queue entry that remains after the same-transition
+spawn to `I`, and the existing Canvas-owned Next well immediately shows that result
+for one complete turn before it enters. Reshape is an instantaneous emerald event with a
 compact four-cell alignment motif. It never opens a persistent status card or field,
 and it cannot disturb Bomb-first resolution, seeded replay, carrier cleanup, or the
 fixed queue/preview contract.

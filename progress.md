@@ -899,3 +899,6 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   that rewrites the next queue entry to `I`.
 - No source is accepted yet. Next checkpoint is Survival Core plus focused replay,
   restart, hash, cadence, and gravity tests; Mutation Core follows in its own commit.
+- Core inspection clarified Reshape timing before implementation: carrier activation
+  and the already-waiting spawn share one transition, so Reshape rewrites the following
+  queue entry. It is therefore visible in Next for a full turn before it spawns.

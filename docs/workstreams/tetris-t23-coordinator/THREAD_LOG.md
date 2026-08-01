@@ -10,4 +10,7 @@
 - Commands run: read-only Git status/log, targeted `rg`, UTF-8 contract inspection
 - Evidence: clean `main...origin/main` at base before edits
 - Blocker: none
-- Next action: commit the contract checkpoint, then implement Survival Core only
+- Survival checkpoint: `5626b81`; focused Core/runtime `38/38` and typecheck pass
+- Timing correction: Reshape targets the first post-activation Next entry because
+  clear resolution and the already-waiting spawn are one Core transition
+- Next action: commit the timing clarification, then implement Mutation Core only

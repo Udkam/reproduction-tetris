@@ -17,8 +17,10 @@ independent read-only QA all pass.
    warn when the pending rise is an Aftershock, and bilingual rules must explain the
    four-rise cycle. The cycle participates in restart, replay, and state hashing.
 3. **Mutation gains one planning item: Reshape.** A Reshape carrier is a fifth seeded
-   item outcome. When any of its cells clear, it immediately changes the next queued
-   tetromino to `I`, so the result is visible in Next before spawn. It has a distinct
+   item outcome. When any of its cells clear, it changes the first post-activation
+   preview tetromino to `I`. Core resolves the clear and spawns the already-waiting
+   piece in one transition, so Reshape targets the following queue entry: it then
+   remains visible in Next for the full active-piece turn before its own spawn. It has a distinct
    emerald material and a short reconfiguration cue, but no timed status field or
    looping sound. Existing Bomb-first activation order and seeded determinism remain
    authoritative.
