@@ -883,8 +883,8 @@ describe('Puzzle undo presentation reset', () => {
     const peakAlphas = peak.filter((operation) => operation.kind === 'fill').map((operation) => (
       (operation.options as { alpha?: number }).alpha ?? 0
     ));
-    expect((peakAlphas[0] ?? 0) - (troughAlphas[0] ?? 0)).toBeGreaterThan(0.07);
-    expect((peakAlphas[1] ?? 0) - (troughAlphas[1] ?? 0)).toBeGreaterThan(0.16);
+    expect((peakAlphas[0] ?? 0) - (troughAlphas[0] ?? 0)).toBeGreaterThan(0.15);
+    expect((peakAlphas[1] ?? 0) - (troughAlphas[1] ?? 0)).toBeGreaterThan(0.3);
     expect(trough.filter((operation) => operation.kind === 'stroke')).toHaveLength(1);
     expect(trough.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(trough.filter((operation) => operation.kind === 'poly')).toHaveLength(0);

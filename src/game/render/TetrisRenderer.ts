@@ -1908,13 +1908,13 @@ export class TetrisRenderer {
     // Compress the bright portion of the cycle into a short peak. The arrow remains
     // legible between peaks while the board-wide wash reads as a warning flash instead
     // of a permanent tint over normal play.
-    const warningFlash = this.options.reducedMotion ? 1 : pulseWave ** 3;
+    const warningFlash = this.options.reducedMotion ? 1 : pulseWave ** 5;
     if (state.survivalDebrisWarningColumns.length > 0) {
       graphics
         .rect(layout.x, layout.y, layout.width, layout.height)
         .fill({
           color: warningColor,
-          alpha: this.options.reducedMotion ? 0.045 : 0.014 + warningFlash * 0.08,
+          alpha: this.options.reducedMotion ? 0.08 : 0.008 + warningFlash * 0.17,
         });
     }
     for (const column of state.survivalDebrisWarningColumns) {
@@ -1931,13 +1931,13 @@ export class TetrisRenderer {
         )
         .fill({
           color: warningColor,
-          alpha: this.options.reducedMotion ? 0.17 : 0.065 + warningFlash * 0.18,
+          alpha: this.options.reducedMotion ? 0.25 : 0.08 + warningFlash * 0.34,
         });
       this.strokeSegments(graphics, [
         [centerX, top, centerX, markerBottom],
         [centerX - markerWidth, markerBottom - markerWidth, centerX, markerBottom],
         [centerX, markerBottom, centerX + markerWidth, markerBottom - markerWidth],
-      ], warningColor, this.options.reducedMotion ? 0.98 : 0.72 + warningFlash * 0.28,
+      ], warningColor, this.options.reducedMotion ? 0.98 : 0.78 + warningFlash * 0.22,
       Math.max(1.8, layout.cell * 0.085));
     }
 
