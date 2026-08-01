@@ -171,6 +171,8 @@ export interface GameState {
   survivalPressureTicks: number;
   /** A due pressure row waiting for the next safe lock/clear resolution. */
   survivalRisePending: boolean;
+  /** Resolved natural pressure rises; every fourth produces a two-row Aftershock. */
+  survivalRiseCount: number;
   /** Independently falling, clearable stones that have not reached the board yet. */
   survivalDebris: readonly SurvivalDebris[];
   /** Stable identity for a new falling stone; useful for deterministic presentation. */

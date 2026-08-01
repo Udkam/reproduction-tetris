@@ -11,6 +11,7 @@ import {
   SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES,
   SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES,
   SURVIVAL_LINES_PER_BEDROCK,
+  SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
   VISIBLE_START_ROW,
   gravityForMode,
@@ -58,6 +59,7 @@ describe('progressive gravity and Survival intervals', () => {
     expect(gravityForMode('marathon', 0, 0, 10_000)).toBe(3);
     expect(gravityForMode('race', 0, 0, 0)).toBe(SURVIVAL_GRAVITY_TICKS);
     expect(gravityForMode('race', 0, 50_000, 10_000)).toBe(SURVIVAL_GRAVITY_TICKS);
+    expect(SURVIVAL_GRAVITY_TICKS).toBe(38);
     expect(gravityForMode('puzzle', 99, 50_000, 10_000)).toBe(STANDARD_GRAVITY_TICKS);
   });
 
@@ -75,10 +77,12 @@ describe('timed Survival pressure and three-line reward', () => {
   it('opens and restarts with the configured three unbreakable bedrock rows', () => {
     const opened = createInitialState(0x5000, 'race');
     expect(opened.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
+    expect(opened.survivalRiseCount).toBe(0);
     expect(opened.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
 
     const restarted = dispatch({ ...opened, survivalBedrockRows: 1, board: createBoard() }, { type: 'restart' }).state;
     expect(restarted.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
+    expect(restarted.survivalRiseCount).toBe(0);
     expect(restarted.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
   });
   it('advances only while playing, becomes pending exactly at zero, and then stops', () => {
@@ -113,11 +117,29 @@ describe('timed Survival pressure and three-line reward', () => {
     expect(transition.state.survivalBedrockRows).toBe(1);
     expect(transition.state.survivalPressureTicks).toBe(0);
     expect(transition.state.survivalRisePending).toBe(false);
+    expect(transition.state.survivalRiseCount).toBe(1);
     expect(transition.state.board.at(-1)).toEqual(Array(10).fill(BEDROCK_CELL));
     expect(transition.events.at(-1)).toEqual({ type: 'bedrock-raised', count: 1, height: 1 });
 
     const spawned = advance(transition.state, ENTRY_DELAY_TICKS);
     expect(spawned.active).not.toBeNull();
+  });
+
+  it('turns every fourth natural rise into a deterministic two-row Aftershock', () => {
+    const transition = dispatch({
+      ...start(0x50a4, 'race'),
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      survivalRiseCount: SURVIVAL_RISES_PER_AFTERSHOCK - 1,
+      active: { type: 'O', rotation: 0, x: 4, y: 38 },
+      survivalPressureTicks: survivalIntervalTicks(0),
+      survivalRisePending: true,
+    }, { type: 'hard-drop' });
+
+    expect(transition.state.survivalRiseCount).toBe(SURVIVAL_RISES_PER_AFTERSHOCK);
+    expect(transition.state.survivalBedrockRows).toBe(2);
+    expect(transition.state.board.slice(-2).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
+    expect(transition.events).toContainEqual({ type: 'bedrock-raised', count: 2, height: 2 });
   });
 
   it('resolves a pressure row that becomes pending during entry before spawning', () => {
@@ -206,12 +228,14 @@ describe('timed Survival pressure and three-line reward', () => {
     expect(stateHash(first)).toBe(stateHash(second));
     expect(stateHash(first)).not.toBe(stateHash({ ...first, survivalPressureTicks: first.survivalPressureTicks + 1 }));
     expect(stateHash(first)).not.toBe(stateHash({ ...first, survivalRisePending: !first.survivalRisePending }));
+    expect(stateHash(first)).not.toBe(stateHash({ ...first, survivalRiseCount: first.survivalRiseCount + 1 }));
 
     const withBedrock = {
       ...first,
       survivalBedrockRows: 1,
       survivalPressureTicks: 999,
       survivalRisePending: true,
+      survivalRiseCount: 3,
       board: Array.from({ length: BOARD_HEIGHT }, (_, row) => row === BOARD_HEIGHT - 1
         ? Array(10).fill(BEDROCK_CELL)
         : Array(10).fill(null)) as Board,
@@ -221,6 +245,7 @@ describe('timed Survival pressure and three-line reward', () => {
     expect(restarted.survivalBedrockRows).toBe(INITIAL_SURVIVAL_BEDROCK_ROWS);
     expect(restarted.survivalPressureTicks).toBe(0);
     expect(restarted.survivalRisePending).toBe(false);
+    expect(restarted.survivalRiseCount).toBe(0);
     expect(restarted.board.slice(-INITIAL_SURVIVAL_BEDROCK_ROWS).every((row) => row.every((cell) => cell === BEDROCK_CELL))).toBe(true);
   });
 });

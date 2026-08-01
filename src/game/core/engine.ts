@@ -22,6 +22,7 @@ import {
   SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES,
   SURVIVAL_DEBRIS_RANDOM_SALT,
   SURVIVAL_LINES_PER_BEDROCK,
+  SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
   VISIBLE_START_ROW,
   gravityForMode,
@@ -275,6 +276,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalBedrockRows: openingBedrock?.added ?? 0,
     survivalPressureTicks: 0,
     survivalRisePending: false,
+    survivalRiseCount: 0,
     survivalDebris: Object.freeze([]),
     survivalDebrisNextId: 1,
     survivalDebrisPiecesRemaining: SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES,
@@ -822,7 +824,9 @@ interface SurvivalRiseResolution extends GameTransition {
 
 function resolvePendingSurvivalRise(state: GameState, deferOverflow = false): SurvivalRiseResolution {
   if (state.mode !== 'race' || !state.survivalRisePending) return { state, events: [], overflow: false };
-  const raised = raiseBedrock(state.board, 1);
+  const survivalRiseCount = state.survivalRiseCount + 1;
+  const riseRows = survivalRiseCount % SURVIVAL_RISES_PER_AFTERSHOCK === 0 ? 2 : 1;
+  const raised = raiseBedrock(state.board, riseRows);
   const movers = shiftSurvivalMovers(state, -raised.added);
   const next: GameState = {
     ...state,
@@ -832,6 +836,7 @@ function resolvePendingSurvivalRise(state: GameState, deferOverflow = false): Su
     survivalBedrockRows: state.survivalBedrockRows + raised.added,
     survivalPressureTicks: 0,
     survivalRisePending: false,
+    survivalRiseCount,
   };
   const events: GameEvent[] = raised.added > 0
     ? [{ type: 'bedrock-raised', count: raised.added, height: next.survivalBedrockRows }]
@@ -1440,6 +1445,7 @@ export function stateHash(state: GameState): string {
         survivalBedrockRows: _survivalBedrockRows,
         survivalPressureTicks: _survivalPressureTicks,
         survivalRisePending: _survivalRisePending,
+        survivalRiseCount: _survivalRiseCount,
         survivalDebris: _survivalDebris,
         survivalDebrisNextId: _survivalDebrisNextId,
         survivalDebrisPiecesRemaining: _survivalDebrisPiecesRemaining,
@@ -1487,6 +1493,7 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
+          survivalRiseCount: _survivalRiseCount,
           survivalDebris: _survivalDebris,
           survivalDebrisNextId: _survivalDebrisNextId,
           survivalDebrisPiecesRemaining: _survivalDebrisPiecesRemaining,
@@ -1517,6 +1524,7 @@ export function stateHash(state: GameState): string {
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
+          survivalRiseCount: _survivalRiseCount,
           survivalDebris: _survivalDebris,
           survivalDebrisNextId: _survivalDebrisNextId,
           survivalDebrisPiecesRemaining: _survivalDebrisPiecesRemaining,

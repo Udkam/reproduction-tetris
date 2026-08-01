@@ -21,7 +21,9 @@ export const SURVIVAL_INITIAL_INTERVAL_SECONDS = 13;
 export const SURVIVAL_INTERVAL_STEP_SECONDS = 1;
 export const SURVIVAL_MIN_INTERVAL_SECONDS = 6;
 /** Survival stays brisk but never accelerates as lines increase. */
-export const SURVIVAL_GRAVITY_TICKS = 40;
+export const SURVIVAL_GRAVITY_TICKS = 38;
+/** Every fourth resolved natural pressure rise is a two-row Aftershock. */
+export const SURVIVAL_RISES_PER_AFTERSHOCK = 4;
 /** Survival rockfall is paced by locked player pieces, not wall-clock time. */
 export const SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES = 8;
 export const SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES = 4;
