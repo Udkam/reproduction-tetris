@@ -838,3 +838,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   early desktop/portrait/short-landscape browser review reports one canvas, zero DOM
   board cells, zero console errors, and no material overflow. Final integrated gates,
   immutable-candidate browser evidence, and independent QA remain open.
+# 2026-08-02 T21 Survival wall and gameplay-sheet correction
+
+- Opened from clean pushed base `4505fb9` after direct player review rejected T20's
+  oversized planar wall and clarified that only the falling-stone arrow may flash.
+- The same slice keeps the canonical queue and single Canvas while moving pause and
+  restart confirmation away from the right Next rail; the existing centered sheet is
+  the obstruction, not missing queue state.
+- Product work is not yet accepted. Required next checkpoints are renderer material +
+  arrow tests, gameplay-sheet placement + Next visibility tests, one final gate batch,
+  real browser frames, independent read-only QA, changelog integration, and push.

@@ -1,4 +1,49 @@
-# Current Task — T20 TetraMorph Survival Material Harmony Correction
+# Current Task — T21 Survival Wall and Gameplay Sheet Correction
+
+## T21 active goal — coherent rock relief, arrow-only warning, unobscured Next
+
+**Status (2026-08-02): IN PROGRESS.** Direct player review supersedes only the
+accepted T20 wall surface and warning presentation. Survival rules, random source
+column, one/two-stone events, four-times debris cadence, collision behavior, score,
+replay, save data, and every non-Survival gameplay rule stay frozen. The same review
+also identifies a cross-mode interaction defect: centered pause and restart sheets
+cover the right-side Next well even though the canonical queue remains available.
+
+1. **Bedrock remains one continuous, truthful wall.** Preserve the exact flat contact
+   plane, continuous rectangular collision mass, staged entry rise, renderer-lifetime
+   texture cache, deterministic generation, and cleanup. Replace the current oversized
+   planar tessellation with medium-scale connected mineral relief and restrained strata
+   whose forms cross logical rows and columns. The result must remain stylized beside
+   the enamel pieces: no photograph, masonry, grid, timber grain, cracks, decals,
+   isolated boulders, giant fan facets, or high-frequency noise.
+2. **Only the warning arrow may flash.** Remove every time-varying board wash and
+   source-column wash. Normal motion pulses only the single downward arrow in the
+   frozen source column; the board, active piece, Ghost, bedrock, and settled stack do
+   not change brightness. Reduced motion keeps that same arrow at one steady,
+   high-contrast endpoint.
+3. **Gameplay sheets respect the information rail.** Pause and restart confirmation
+   use one compact gameplay-sheet placement centred over the board track on desktop,
+   never over the right-side rail. The existing Canvas-owned Next preview remains the
+   sole preview implementation and stays visible while either sheet is open. Small
+   screens retain a readable bottom-sheet fallback without adding a second Canvas or
+   DOM-rendered tetromino.
+4. **Acceptance is visual and fail-closed.** Direct tests must prove deterministic
+   cold-toned wall pixels without large flat regions, zero warning fill rectangles,
+   time-varying normal arrow opacity, time-invariant reduced-motion geometry, and the
+   gameplay-sheet placement contract. Browser evidence must show complete live pages
+   for pause and restart with a visible Next piece and no sheet/Next overlap, plus a
+   live Survival wall and arrow-only warning. One Canvas, zero DOM board cells, zero
+   console errors, and no viewport overflow remain mandatory.
+
+**Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
+paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and
+`docs/workstreams/tetris-t21-coordinator/THREAD_LOG.md`. Renderer work is limited to
+`src/game/render/TetrisRenderer.ts` and its direct test. Gameplay-sheet work is limited
+to `src/App.tsx`, `src/App.test.ts`, `src/ui/ActionSheet.tsx`, and the authoritative
+HUD/style paths required after inspection. Evidence, independent read-only QA,
+changelog disposition, and push remain separate checkpoints.
+
+# Previous Task — T20 TetraMorph Survival Material Harmony Correction
 
 ## T20 active goal — game-native cavern wall and unmistakable rockfall warning
 

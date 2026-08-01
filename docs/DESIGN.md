@@ -3,6 +3,35 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-02 T21 — relief continuity and modal sightlines
+
+The Survival floor keeps the exact flat collision top and one uninterrupted cave-wall
+body. Its new relief is neither a photograph nor a polygon mosaic. A deterministic,
+low-frequency height field forms connected folds and mineral bands at several medium
+scales; the bands cross both logical axes, receive one restrained upper-left light,
+and use a compact cold blue-grey ramp. Neighboring values blend enough to read as one
+eroded face, while gentle quantization keeps the surface compatible with the game's
+graphic enamel pieces. No individual region may dominate the wall as a giant triangle
+or reveal row, column, brick, tile, or wood cadence. The contact lip stays narrow and
+integrated rather than becoming a separate platform.
+
+The rockfall warning is deliberately singular. The one downward source-column arrow
+is the only animated warning primitive. Normal motion changes that arrow's opacity on
+a short rhythm; no board fill, column fill, halo, scan, or global brightness change
+participates. Reduced motion shows the same arrow steadily at maximum clarity. The
+warning cannot alter the legibility of pieces, Ghost cells, stack, Next, or geology.
+
+Pause and restart confirmation are gameplay-local interruptions. On a desktop game
+surface their compact sheet is centred on the board track, leaving the entire right
+information rail—including the Canvas-owned Next piece—outside the opaque sheet.
+The dimmer may subordinate the scene but must not clear, replace, or cover the preview.
+On a narrow layout the sheet returns to the established bottom placement so the top
+information band remains readable. Focus trapping, Left/Right selection, Enter,
+Escape/cancel, and restoration to the same Canvas remain unchanged.
+
+T21 changes no Core state, queue, preview semantics, stone cadence, collision, scoring,
+replay, persistence, mode layout, or result behavior.
+
 ## 2026-08-01 T20 — Survival material harmony correction
 
 The Survival floor is still an exposed cavern wall, but its visual truth is judged
