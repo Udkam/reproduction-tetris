@@ -1,4 +1,22 @@
-# Current Task — T21 Survival Wall and Gameplay Sheet Correction
+# Current Task — T22 Home Language and English Typography Refinement
+
+## T22 active goal — buttons only and one English type family
+
+**Status (2026-08-02): IN PROGRESS.** Remove the visible `语言 / Language` label
+from the single Home language control. Keep the Chinese and English buttons, persisted
+selection, keyboard navigation, `aria-label`, bottom-right placement, and every other
+Home/game surface unchanged. When English is active, use the same Playwrite NZ Basic
+family as the game name for all prose and interface-text roles. The game name keeps
+its existing visually bold stroke treatment; other English text uses the face normally
+without synthetic bolding. Chinese display/UI families and numeric data roles remain
+unchanged. Acceptance requires direct token and React regressions.
+
+**Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
+changes are limited to this file and `docs/DESIGN.md`; product changes are limited to
+`src/App.tsx`, `src/styles/tokens.css`, `src/design/tokens/typography.ts`, and their
+direct tests. Final verification, changelog, and push remain separate checkpoints.
+
+# Previous Task — T21 Survival Wall and Gameplay Sheet Correction
 
 ## T21 active goal — coherent rock relief, arrow-only warning, unobscured Next
 

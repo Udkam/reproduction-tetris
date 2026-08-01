@@ -3,6 +3,20 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-02 T22 — label-free control and unified English face
+
+The Home language selector is self-evident from its two explicit choices. It displays
+only `中文` and `English`; the redundant visible `语言 / Language` prefix is removed.
+The control and its button group retain localized accessible names, persisted state,
+keyboard focus and navigation, and the established quiet bottom-right placement.
+No spacing placeholder replaces the removed label.
+
+English interface copy shares the Playwrite NZ Basic family with the TetraMorph
+wordmark so the English surface has one authored voice. The wordmark remains the sole
+bold expression through its existing maximum shipped weight and restrained outline;
+other English prose uses the family without synthetic bolding. Chinese typography and
+the dedicated tabular numeric/data face remain unchanged for legibility.
+
 ## 2026-08-02 T21 — relief continuity and modal sightlines
 
 The Survival floor keeps the exact flat collision top and one uninterrupted cave-wall
