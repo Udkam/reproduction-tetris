@@ -13,12 +13,13 @@ surface detail made the wall less believable in this game.
 The replacement is **stylized mineral relief**. One deterministic, renderer-cached
 surface uses broad low-frequency masses, a limited cold blue-grey tonal ramp, and one
 restrained upper-left light direction. Regions span multiple cells and never reveal
-the occupancy grid. Tonal transitions may be softly interpolated, but the surface
-cannot regain photographic microtexture, neutral monochrome noise, pebble detail,
-camouflage, hard contour rings, or a tessellated low-poly mosaic. The exact collision
-top remains level, and a narrow integrated lip may clarify contact without becoming a
-separate platform bar. The lower wall deepens gently so it retains weight beside the
-brighter playable palette.
+the occupancy grid. Their sources have no row or column cadence, and neighbouring
+planes blend without outlines, brick joints, or a closed repeated tile pattern. Tonal
+transitions may be softly stepped to retain the game's graphic material language, but
+the surface cannot regain photographic microtexture, neutral monochrome noise, pebble
+detail, camouflage, or hard contour rings. The exact collision top remains level, and
+a narrow integrated lip may clarify contact without becoming a separate platform bar.
+The lower wall deepens gently so it retains weight beside the brighter playable palette.
 
 The rockfall pre-warning is a signal layer, not geology. A warm accent distinguishes it
 from the cold stone family and from every Mutation item. The source column retains a
