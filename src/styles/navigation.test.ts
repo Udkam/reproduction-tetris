@@ -25,6 +25,9 @@ describe('Phase 9 navigation authority', () => {
     expect(navigation).toMatch(/\.mode-gates--workbench\s*\{[\s\S]*grid-template-rows:\s*repeat\(2,/);
     expect(navigation).toMatch(/\.mode-gates--workbench \.mode-gate__action b,[\s\S]*background:\s*var\(--gate-accent\)/);
     expect(navigation).not.toContain('font-weight 170ms');
+    expect(navigation).toMatch(
+      /\.mode-gates--workbench \.mode-gate__body strong\s*\{[^}]*min-block-size:\s*1\.16em;[^}]*overflow:\s*visible;[^}]*line-height:\s*1\.16;[^}]*text-overflow:\s*clip;/s,
+    );
   });
 
   it('centres the wordmark with a shrink-to-ink box instead of a legacy full-width offset', () => {
