@@ -1094,7 +1094,6 @@ function LanguageControl({
   const copy = appCopy(language);
   return (
     <section className={`language-control ${className}`.trim()} aria-label={copy.labels.language}>
-      <span>{copy.labels.language}</span>
       <div role="group" aria-label={copy.labels.language}>
         <button type="button" data-testid="language-zh" data-arrow-nav data-arrow-row="0" data-arrow-col="0" aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
         <button type="button" data-testid="language-en" data-arrow-nav data-arrow-row="0" data-arrow-col="1" aria-pressed={language === 'en'} onClick={() => onChange('en')}>{copy.labels.english}</button>

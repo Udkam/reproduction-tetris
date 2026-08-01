@@ -22,7 +22,7 @@
   --font-brand: "Playwrite NZ Basic", "Barlow Semi Condensed", "TetraMorph UI Sans", sans-serif;
   --font-ui-zh: "TetraMorph UI Sans", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --font-display-zh: "Smiley Sans", "TetraMorph UI Sans", "Microsoft YaHei UI", sans-serif;
-  --font-ui-en: "Barlow Semi Condensed", "TetraMorph UI Sans", system-ui, sans-serif;
+  --font-ui-en: "Playwrite NZ Basic", "Barlow Semi Condensed", "TetraMorph UI Sans", sans-serif;
   --font-data: "Fira Code Variable", "TetraMorph UI Sans", "Cascadia Mono", monospace;
   --font-body: var(--font-ui-zh);
   --font-ui: var(--font-ui-zh);

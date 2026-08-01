@@ -1380,7 +1380,11 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
-    expect(view.container.querySelector('.language-control--home')).not.toBeNull();
+    const homeLanguage = view.container.querySelector<HTMLElement>('.language-control--home');
+    expect(homeLanguage).not.toBeNull();
+    expect(homeLanguage?.querySelector(':scope > span')).toBeNull();
+    expect(homeLanguage?.getAttribute('aria-label')).toBe('语言');
+    expect(homeLanguage?.querySelector('[role="group"]')?.getAttribute('aria-label')).toBe('语言');
     const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
     expect(actionArrows).toHaveLength(4);
     expect(actionArrows.every((arrow) => arrow.getAttribute('viewBox') === '0 0 28 24')).toBe(true);

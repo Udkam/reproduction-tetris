@@ -4,7 +4,7 @@ export const TYPOGRAPHY = {
     brand: '"Playwrite NZ Basic", "Barlow Semi Condensed", "TetraMorph UI Sans", sans-serif',
     chineseUi: '"TetraMorph UI Sans", "Microsoft YaHei UI", "PingFang SC", sans-serif',
     chineseDisplay: '"Smiley Sans", "TetraMorph UI Sans", "Microsoft YaHei UI", sans-serif',
-    englishUi: '"Barlow Semi Condensed", "TetraMorph UI Sans", system-ui, sans-serif',
+    englishUi: '"Playwrite NZ Basic", "Barlow Semi Condensed", "TetraMorph UI Sans", sans-serif',
     data: '"Fira Code Variable", "TetraMorph UI Sans", "Cascadia Mono", monospace',
   },
   weight: {
