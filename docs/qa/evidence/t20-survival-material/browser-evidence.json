@@ -1,6 +1,6 @@
 {
-  "candidateSha": "92337cb",
-  "generatedAt": "2026-08-01T04:06:55.453Z",
+  "candidateSha": "eadeac6",
+  "generatedAt": "2026-08-01T04:29:56.115Z",
   "contract": {
     "singleCanvas": true,
     "noDomCells": true,
@@ -13,19 +13,19 @@
   "captures": {
     "active": {
       "file": "survival-active-wall-1440x900-zh.png",
-      "sha256": "e3a8b06a09b9910d32595e3945a356aa63eb2d7cb12b6ebd96bf9ddf62a2e068"
+      "sha256": "4c17c85c3db384db677ab828d4350266fe61c4b459287d7625b518aa9fbcdd3f"
     },
     "warningPhaseA": {
       "file": "survival-warning-phase-a-1440x900-zh.png",
-      "sha256": "bf794191e6819fec7bd08e26f13d14f448a39ad9a7630ec0a259f6b49490fdb0"
+      "sha256": "be33c5365b9f5ec15f89e3551aa0712cc7e6b16149b5894624bc2ca800f451f7"
     },
     "warningPhaseB": {
       "file": "survival-warning-phase-b-1440x900-zh.png",
-      "sha256": "5917f9e9e0e684bc0ff9aa658919bb33ab55c4ba425f842bf120a712d4b2de2a"
+      "sha256": "2f97be6ae7b86cbbec0271b0e706f550013fdb070ca3d6c47442bcc748bc79c7"
     },
     "reducedWarning": {
       "file": "survival-warning-reduced-1280x720-zh.png",
-      "sha256": "c9733bfea3784589f3472dd666e4de514159554e3d8a1e9727f79b6abbbf9bd7"
+      "sha256": "f87569560c19b79a9dbfbc6f959be32d0be1e573f1ae1131b9e787d936a4a0b4"
     }
   },
   "normal": {
@@ -55,14 +55,14 @@
       "fallTicks": 40,
       "placedPieces": 1,
       "active": {
-        "type": "S",
+        "type": "T",
         "x": 3,
         "y": 29,
         "rotation": 0
       },
-      "next": "J",
+      "next": "I",
       "nextPreviews": [
-        "J"
+        "I"
       ],
       "visibleBoard": [
         "..........",
@@ -80,8 +80,8 @@
         "..........",
         "..........",
         "..........",
-        "....OO....",
-        "....OO....",
+        "....SS....",
+        "...SS.....",
         "BBBBBBBBBB",
         "BBBBBBBBBB",
         "BBBBBBBBBB"
@@ -517,8 +517,8 @@
             null,
             null,
             null,
-            "O",
-            "O",
+            "S",
+            "S",
             null,
             null,
             null,
@@ -528,9 +528,9 @@
             null,
             null,
             null,
+            "S",
+            "S",
             null,
-            "O",
-            "O",
             null,
             null,
             null,
@@ -574,17 +574,17 @@
           ]
         ],
         "active": {
-          "type": "S",
+          "type": "T",
           "rotation": 0,
           "x": 3,
           "y": 29
         },
         "queue": [
-          "J",
-          "L",
           "I",
+          "O",
+          "J",
           "Z",
-          "T"
+          "L"
         ],
         "score": 0,
         "lines": 0,
@@ -614,17 +614,17 @@
         "survivalDebrisIntervalTicks": 1080,
         "survivalDebrisIntervalSeconds": 20,
         "survivalDebrisWarningColumns": [
-          7
+          9
         ],
-        "survivalDebrisWarningHeight": 2,
+        "survivalDebrisWarningHeight": 1,
         "survivalDebrisFallProgress": 0,
         "survivalDebrisRandomizer": {
-          "seed": 2749234932,
+          "seed": 213801552,
           "bag": []
         },
         "mutationActiveCarrier": null,
         "mutationRandomizer": {
-          "seed": 746671277,
+          "seed": 3102012029,
           "bag": []
         },
         "mutationCarriers": [],
@@ -645,10 +645,10 @@
         "lockResets": 0,
         "elapsedTicks": 1080,
         "randomizer": {
-          "seed": 857513172,
+          "seed": 3707864524,
           "bag": []
         },
-        "seed": 1641289964
+        "seed": 4122060348
       },
       "renderer": {
         "canvas": {
@@ -670,9 +670,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "J",
+        "previewPiece": "I",
         "previewPieces": [
-          "J"
+          "I"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -684,15 +684,15 @@
             "y": 29
           },
           {
-            "x": 5,
-            "y": 29
-          },
-          {
             "x": 3,
             "y": 30
           },
           {
             "x": 4,
+            "y": 30
+          },
+          {
+            "x": 5,
             "y": 30
           }
         ],
@@ -702,15 +702,15 @@
             "y": 33
           },
           {
-            "x": 5,
-            "y": 33
-          },
-          {
             "x": 3,
             "y": 34
           },
           {
             "x": 4,
+            "y": 34
+          },
+          {
+            "x": 5,
             "y": 34
           }
         ],
@@ -729,9 +729,9 @@
         },
         "survivalDebris": [],
         "survivalDebrisWarningColumns": [
-          7
+          9
         ],
-        "survivalDebrisWarningHeight": 2,
+        "survivalDebrisWarningHeight": 1,
         "survivalStoneCueCount": 0,
         "survivalBedrockCue": null,
         "survivalEntryBedrockRows": null,
@@ -785,9 +785,9 @@
       }
     },
     "warningColumns": [
-      7
+      9
     ],
-    "warningHeight": 2
+    "warningHeight": 1
   },
   "reduced": {
     "text": {
@@ -816,14 +816,14 @@
       "fallTicks": 40,
       "placedPieces": 1,
       "active": {
-        "type": "S",
+        "type": "J",
         "x": 3,
         "y": 29,
         "rotation": 0
       },
-      "next": "Z",
+      "next": "L",
       "nextPreviews": [
-        "Z"
+        "L"
       ],
       "visibleBoard": [
         "..........",
@@ -841,8 +841,8 @@
         "..........",
         "..........",
         "..........",
-        "....OO....",
-        "....OO....",
+        "..........",
+        "...IIII...",
         "BBBBBBBBBB",
         "BBBBBBBBBB",
         "BBBBBBBBBB"
@@ -1278,8 +1278,8 @@
             null,
             null,
             null,
-            "O",
-            "O",
+            null,
+            null,
             null,
             null,
             null,
@@ -1289,10 +1289,10 @@
             null,
             null,
             null,
-            null,
-            "O",
-            "O",
-            null,
+            "I",
+            "I",
+            "I",
+            "I",
             null,
             null,
             null
@@ -1335,17 +1335,17 @@
           ]
         ],
         "active": {
-          "type": "S",
+          "type": "J",
           "rotation": 0,
           "x": 3,
           "y": 29
         },
         "queue": [
-          "Z",
           "L",
+          "O",
+          "Z",
           "T",
-          "J",
-          "I"
+          "S"
         ],
         "score": 0,
         "lines": 0,
@@ -1377,15 +1377,15 @@
         "survivalDebrisWarningColumns": [
           1
         ],
-        "survivalDebrisWarningHeight": 1,
+        "survivalDebrisWarningHeight": 2,
         "survivalDebrisFallProgress": 0,
         "survivalDebrisRandomizer": {
-          "seed": 1073409001,
+          "seed": 3485238740,
           "bag": []
         },
         "mutationActiveCarrier": null,
         "mutationRandomizer": {
-          "seed": 1862329586,
+          "seed": 4235777094,
           "bag": []
         },
         "mutationCarriers": [],
@@ -1406,10 +1406,10 @@
         "lockResets": 0,
         "elapsedTicks": 1080,
         "randomizer": {
-          "seed": 2778741308,
+          "seed": 2380137823,
           "bag": []
         },
-        "seed": 576041139
+        "seed": 2972549127
       },
       "renderer": {
         "canvas": {
@@ -1431,9 +1431,9 @@
           "height": 124
         },
         "previewLayerVisible": true,
-        "previewPiece": "Z",
+        "previewPiece": "L",
         "previewPieces": [
-          "Z"
+          "L"
         ],
         "previewMutationItem": null,
         "previewClearBounds": null,
@@ -1441,11 +1441,7 @@
         "scrim": null,
         "activeCells": [
           {
-            "x": 4,
-            "y": 29
-          },
-          {
-            "x": 5,
+            "x": 3,
             "y": 29
           },
           {
@@ -1454,25 +1450,29 @@
           },
           {
             "x": 4,
+            "y": 30
+          },
+          {
+            "x": 5,
             "y": 30
           }
         ],
         "ghostCells": [
           {
-            "x": 4,
-            "y": 33
-          },
-          {
-            "x": 5,
-            "y": 33
-          },
-          {
             "x": 3,
             "y": 34
           },
           {
+            "x": 3,
+            "y": 35
+          },
+          {
             "x": 4,
-            "y": 34
+            "y": 35
+          },
+          {
+            "x": 5,
+            "y": 35
           }
         ],
         "visibleLockedCells": 34,
@@ -1492,7 +1492,7 @@
         "survivalDebrisWarningColumns": [
           1
         ],
-        "survivalDebrisWarningHeight": 1,
+        "survivalDebrisWarningHeight": 2,
         "survivalStoneCueCount": 0,
         "survivalBedrockCue": null,
         "survivalEntryBedrockRows": null,

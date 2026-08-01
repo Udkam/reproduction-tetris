@@ -1,6 +1,6 @@
 # T20 Survival material harmony evidence
 
-- Candidate source SHA: `92337cb`
+- Candidate source SHA: `eadeac6`
 - Viewports: `1440×900` normal motion and `1280×720` reduced motion
 - Canonical state: Survival active play with three bedrock rows; the warning captures are taken at the seeded two-second falling-stone warning window.
 - Browser contract: one PixiJS canvas, zero DOM board cells, no horizontal or vertical overflow, no browser console errors.
