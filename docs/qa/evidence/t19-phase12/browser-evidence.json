@@ -1,9 +1,9 @@
 {
-  "taskId": "TETRIS-T19-PHASE12",
-  "sourceSha": "c9996d15d109253e97f2bb3a1ea45fc2bb970f6d",
+  "taskId": "TETRIS-T19-PHASE12-FINAL",
+  "sourceSha": "b883cb28a552bf9f9926a5bffc062a10029f5ae0",
   "baseUrl": "http://127.0.0.1:5178/",
-  "capturedAt": "2026-07-31T22:55:18.367Z",
-  "method": "One bounded Vite server and one Playwright Chromium instance; ordinary UI controls and persisted stable-ID progress only.",
+  "capturedAt": "2026-08-01T00:21:08.467408+00:00",
+  "method": "One bounded Vite server and one Playwright Chromium process; UI controls, persisted stable-ID progress, and public runtime QA commands only.",
   "screens": {
     "homeDesktopZh": {
       "viewport": [
@@ -15,54 +15,101 @@
       "horizontalOverflow": false,
       "verticalOverflow": false,
       "clippedText": [],
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
+      },
       "wordmarkCenterDelta": [
-        -7.92,
+        0,
         0
       ],
       "actionCenters": [
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "开始 经典",
+          "actionText": "",
+          "actionSize": [
+            42,
+            42
+          ],
+          "arrowSize": [
+            28,
+            24
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(49, 151, 141)"
         },
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "开始 生存",
+          "actionText": "",
+          "actionSize": [
+            42,
+            42
+          ],
+          "arrowSize": [
+            28,
+            24
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(88, 120, 196)"
         },
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "开始 异变",
+          "actionText": "",
+          "actionSize": [
+            42,
+            42
+          ],
+          "arrowSize": [
+            28,
+            24
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(199, 122, 53)"
         },
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "选关 解谜",
+          "actionText": "",
+          "actionSize": [
+            42,
+            42
+          ],
+          "arrowSize": [
+            28,
+            24
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(138, 99, 179)"
         }
       ],
-      "visibleStartLabels": [
-        "经典",
-        "生存",
-        "异变",
-        "解谜"
-      ]
+      "pointerHighlight": {
+        "baseline": "color(srgb 0.956588 0.978157 0.980569)",
+        "hover": "oklab(0.97943 -0.00529921 -0.00247163)",
+        "afterLeave": "color(srgb 0.956588 0.978157 0.980569)",
+        "cleared": true
+      }
     },
     "homePortraitEnReduced": {
       "viewport": [
@@ -74,217 +121,175 @@
       "horizontalOverflow": false,
       "verticalOverflow": false,
       "clippedText": [],
+      "documentLanguage": "en",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+        "data": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif"
+      },
       "wordmarkCenterDelta": [
-        -77.65,
+        0,
         0
       ],
       "actionCenters": [
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "Play Classic",
+          "actionText": "",
+          "actionSize": [
+            38,
+            38
+          ],
+          "arrowSize": [
+            26,
+            22
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(49, 151, 141)"
         },
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "Play Survival",
+          "actionText": "",
+          "actionSize": [
+            38,
+            38
+          ],
+          "arrowSize": [
+            26,
+            22
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(88, 120, 196)"
         },
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "Play Mutation",
+          "actionText": "",
+          "actionSize": [
+            38,
+            38
+          ],
+          "arrowSize": [
+            26,
+            22
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(199, 122, 53)"
         },
         {
-          "mode": null,
-          "arrowViewBox": "0 0 28 24",
+          "label": "Levels Puzzle",
+          "actionText": "",
+          "actionSize": [
+            38,
+            38
+          ],
+          "arrowSize": [
+            26,
+            22
+          ],
+          "arrowViewBox": "0 0 40 40",
           "arrowPath": "M3 12h22m-6-6 6 6-6 6",
           "arrowToBoxDelta": [
             0,
             0
-          ]
+          ],
+          "background": "rgb(138, 99, 179)"
         }
-      ],
-      "visibleStartLabels": [
-        "Classic",
-        "Survival",
-        "Mutation",
-        "Puzzle"
       ]
     },
-    "survivalWarningDesktopZh": {
+    "leaveDesktopZh": {
       "viewport": [
-        1440,
-        900
+        1280,
+        720
       ],
       "canvasCount": 1,
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
       "clippedText": [],
-      "state": {
-        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
-        "screen": "game",
-        "mode": "race",
-        "status": "playing",
-        "countdown": null,
-        "phase": "active",
-        "puzzleId": null,
-        "puzzleCompletion": null,
-        "puzzleTargetsRemaining": 0,
-        "puzzleTargetsInitial": 0,
-        "puzzleUndoDepth": 0,
-        "mutation": null,
-        "score": 0,
-        "lines": 0,
-        "combo": 0,
-        "bedrockRows": 3,
-        "bedrockIntervalSeconds": 13,
-        "bedrockNextSeconds": 0,
-        "bedrockPending": true,
-        "stoneIntervalSeconds": 20,
-        "stoneNextSeconds": 2,
-        "fallingStones": [],
-        "fallTicks": 40,
-        "placedPieces": 1,
-        "active": {
-          "type": "Z",
-          "x": 3,
-          "y": 29,
-          "rotation": 0
-        },
-        "next": "O",
-        "nextPreviews": [
-          "O"
-        ],
-        "visibleBoard": [
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "....T.....",
-          "...TTT....",
-          "BBBBBBBBBB",
-          "BBBBBBBBBB",
-          "BBBBBBBBBB"
-        ]
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
       },
-      "renderer": {
-        "canvas": {
-          "width": 758,
-          "height": 810,
-          "resolution": 1
+      "title": "离开本局？",
+      "buttons": [
+        {
+          "text": "返回首页",
+          "className": "primary-action",
+          "background": "rgb(49, 95, 150)",
+          "color": "rgb(248, 250, 252)",
+          "focused": true,
+          "autofocus": true
         },
-        "board": {
-          "x": 61.5,
-          "y": 14,
-          "width": 391,
-          "height": 782,
-          "cell": 39.1
-        },
-        "preview": {
-          "x": 504.5,
-          "y": 429.5,
-          "width": 178,
-          "height": 124
-        },
-        "previewLayerVisible": true,
-        "previewPiece": "O",
-        "previewPieces": [
-          "O"
-        ],
-        "previewMutationItem": null,
-        "previewClearBounds": null,
-        "previewClearPiece": null,
-        "scrim": null,
-        "activeCells": [
-          {
-            "x": 3,
-            "y": 29
-          },
-          {
-            "x": 4,
-            "y": 29
-          },
-          {
-            "x": 4,
-            "y": 30
-          },
-          {
-            "x": 5,
-            "y": 30
-          }
-        ],
-        "ghostCells": [
-          {
-            "x": 3,
-            "y": 33
-          },
-          {
-            "x": 4,
-            "y": 33
-          },
-          {
-            "x": 4,
-            "y": 34
-          },
-          {
-            "x": 5,
-            "y": 34
-          }
-        ],
-        "visibleLockedCells": 34,
-        "presentation": {
-          "x": 3,
-          "y": 29,
-          "offsetX": 0,
-          "offsetY": 0
-        },
-        "boardShiftOffsetY": 0,
-        "mutationFilters": {
-          "freeze": false,
-          "collapse": false,
-          "activeCount": 0
-        },
-        "survivalDebris": [],
-        "survivalDebrisWarningColumns": [
-          9
-        ],
-        "survivalDebrisWarningHeight": 1,
-        "survivalStoneCueCount": 0,
-        "survivalBedrockCue": null,
-        "survivalEntryBedrockRows": null,
-        "survivalEntryBedrockRise": null,
-        "classicFeedback": [],
-        "mutationActivation": null,
-        "mutationActivationQueueItems": [],
-        "mutationActiveParticleCount": 0,
-        "mutationCollapseTrail": null
-      }
+        {
+          "text": "留在本局",
+          "className": "secondary-action",
+          "background": "rgb(237, 243, 247)",
+          "color": "rgb(16, 42, 67)",
+          "focused": false,
+          "autofocus": false
+        }
+      ],
+      "focusAfterRight": "留在本局",
+      "focusAfterLeft": "返回首页",
+      "escapeClosed": true,
+      "enterFollowedDefaultToHome": true
     },
-    "survivalStoneDesktopZh": {
+    "leaveLandscapeEnReduced": {
+      "viewport": [
+        844,
+        390
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "documentLanguage": "en",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+        "data": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif"
+      },
+      "title": "Leave this run?",
+      "buttons": [
+        {
+          "text": "Back to home",
+          "className": "primary-action",
+          "background": "rgb(49, 95, 150)",
+          "color": "rgb(248, 250, 252)",
+          "focused": true,
+          "autofocus": true
+        },
+        {
+          "text": "Stay in this run",
+          "className": "secondary-action",
+          "background": "rgb(237, 243, 247)",
+          "color": "rgb(16, 42, 67)",
+          "focused": false,
+          "autofocus": false
+        }
+      ]
+    },
+    "settingsDesktopZh": {
       "viewport": [
         1440,
         900
@@ -294,184 +299,2871 @@
       "horizontalOverflow": false,
       "verticalOverflow": false,
       "clippedText": [],
-      "state": {
-        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
-        "screen": "game",
-        "mode": "race",
-        "status": "playing",
-        "countdown": null,
-        "phase": "active",
-        "puzzleId": null,
-        "puzzleCompletion": null,
-        "puzzleTargetsRemaining": 0,
-        "puzzleTargetsInitial": 0,
-        "puzzleUndoDepth": 0,
-        "mutation": null,
-        "score": 0,
-        "lines": 0,
-        "combo": 0,
-        "bedrockRows": 3,
-        "bedrockIntervalSeconds": 13,
-        "bedrockNextSeconds": 0,
-        "bedrockPending": true,
-        "stoneIntervalSeconds": 19,
-        "stoneNextSeconds": 19,
-        "fallingStones": [
-          {
-            "x": 9,
-            "y": 22
-          }
-        ],
-        "fallTicks": 40,
-        "placedPieces": 1,
-        "active": {
-          "type": "Z",
-          "x": 3,
-          "y": 33,
-          "rotation": 0
-        },
-        "next": "O",
-        "nextPreviews": [
-          "O"
-        ],
-        "visibleBoard": [
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "..........",
-          "....T.....",
-          "...TTT....",
-          "BBBBBBBBBB",
-          "BBBBBBBBBB",
-          "BBBBBBBBBB"
-        ]
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
       },
-      "renderer": {
-        "canvas": {
-          "width": 758,
-          "height": 810,
-          "resolution": 1
+      "heading": "设置",
+      "order": [
+        "settings-rules",
+        "settings-controls",
+        "settings-shortcuts",
+        "settings-record"
+      ],
+      "surfaceRect": [
+        306.97,
+        306.72,
+        811.21,
+        333.38
+      ],
+      "sections": [
+        {
+          "id": "settings-rules",
+          "rect": [
+            323.81,
+            321.58,
+            777.53,
+            55.85
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "规则\n开局\n带 3 层上升基岩。\n压力\n13 秒逐步缩短至 6 秒；每消 3 行移除一层基岩。\n落石\n20 秒开始，每次缩短 1 秒至 10 秒；每次随机 1–2 块可消落石，在同一随机列以普通方块 4 倍速度坠落。\n结束\n基岩把堆叠顶到顶端。"
         },
-        "board": {
-          "x": 61.5,
-          "y": 14,
-          "width": 391,
-          "height": 782,
-          "cell": 39.1
+        {
+          "id": "settings-controls",
+          "rect": [
+            323.81,
+            389.32,
+            777.53,
+            43.58
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "控制\n语言\n中文\nEnglish\n音效开\n音量\n100%\n重新开始\n继续游戏"
         },
-        "preview": {
-          "x": 504.5,
-          "y": 429.5,
-          "width": 178,
-          "height": 124
+        {
+          "id": "settings-shortcuts",
+          "rect": [
+            323.81,
+            444.78,
+            777.53,
+            126.97
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(82, 103, 127)",
+          "shadow": "none",
+          "text": "键盘\n玩法操作\n← →\n移动\n↑\n旋转\n↓\n快速下落\nSpace\n直接落底\n快捷键\nS\n设置\nP\n暂停 / 继续\nR\n重开确认\nEsc\n返回\n← →\n选择\n↑ ↓\n切换\nEnter\n执行"
         },
-        "previewLayerVisible": true,
-        "previewPiece": "O",
-        "previewPieces": [
-          "O"
+        {
+          "id": "settings-record",
+          "rect": [
+            323.81,
+            583.64,
+            777.53,
+            40.61
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "本模式排行\n前 5\n\n暂无记录"
+        }
+      ]
+    },
+    "settingsPortraitEnReduced": {
+      "viewport": [
+        390,
+        844
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "documentLanguage": "en",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+        "data": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif"
+      },
+      "heading": "Settings",
+      "order": [
+        "settings-rules",
+        "settings-controls",
+        "settings-shortcuts",
+        "settings-record"
+      ],
+      "surfaceRect": [
+        30.88,
+        133.17,
+        331,
+        679.95
+      ],
+      "sections": [
+        {
+          "id": "settings-rules",
+          "rect": [
+            43.88,
+            146.17,
+            305,
+            156.58
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "RULES\nStart\nBegin above 3 rising bedrock rows.\nPressure\nThe timer drops from 13 to 6 seconds; every 3 lines removes one bedrock row.\nStonefall\nStarts at 20 seconds, then shortens by 1 to 10; each event drops 1–2 clearable rocks at 4× normal speed in one random column.\nEnd\nBedrock pushes the stack to the top."
+        },
+        {
+          "id": "settings-controls",
+          "rect": [
+            43.88,
+            314.75,
+            305,
+            171
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "CONTROLS\nLanguage\nChinese\nEnglish\nSFX on\nVolume\n100%\nRestart\nContinue"
+        },
+        {
+          "id": "settings-shortcuts",
+          "rect": [
+            43.88,
+            497.75,
+            305,
+            229.38
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(82, 103, 127)",
+          "shadow": "none",
+          "text": "KEYBOARD\nGameplay\n← →\nMove\n↑\nRotate\n↓\nSoft drop\nSpace\nHard drop\nShortcuts\nS\nSettings\nP\nPause / resume\nR\nRestart confirmation\nEsc\nBack\n← →\nSelect\n↑ ↓\nMove between controls\nEnter\nActivate"
+        },
+        {
+          "id": "settings-record",
+          "rect": [
+            43.88,
+            739.13,
+            305,
+            61
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "THIS MODE\nTop 5\n\nNo records yet"
+        }
+      ]
+    },
+    "settingsLandscapeEnReduced": {
+      "viewport": [
+        844,
+        390
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "clippedText": [],
+      "documentLanguage": "en",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+        "data": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif"
+      },
+      "heading": "Settings",
+      "order": [
+        "settings-rules",
+        "settings-controls",
+        "settings-shortcuts",
+        "settings-record"
+      ],
+      "surfaceRect": [
+        27,
+        58.3,
+        775,
+        348.17
+      ],
+      "sections": [
+        {
+          "id": "settings-rules",
+          "rect": [
+            41,
+            69.3,
+            747,
+            88.98
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "RULES\nStart\nBegin above 3 rising bedrock rows.\nPressure\nThe timer drops from 13 to 6 seconds; every 3 lines removes one bedrock row.\nStonefall\nStarts at 20 seconds, then shortens by 1 to 10; each event drops 1–2 clearable rocks at 4× normal speed in one random column.\nEnd\nBedrock pushes the stack to the top."
+        },
+        {
+          "id": "settings-controls",
+          "rect": [
+            41,
+            166.28,
+            747,
+            44
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "CONTROLS\nLanguage\nChinese\nEnglish\nSFX on\nVolume\n100%\nRestart\nContinue"
+        },
+        {
+          "id": "settings-shortcuts",
+          "rect": [
+            41,
+            218.28,
+            747,
+            128.19
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(82, 103, 127)",
+          "shadow": "none",
+          "text": "KEYBOARD\nGameplay\n← →\nMove\n↑\nRotate\n↓\nSoft drop\nSpace\nHard drop\nShortcuts\nS\nSettings\nP\nPause / resume\nR\nRestart confirmation\nEsc\nBack\n← →\nSelect\n↑ ↓\nMove between controls\nEnter\nActivate"
+        },
+        {
+          "id": "settings-record",
+          "rect": [
+            41,
+            354.47,
+            747,
+            41
+          ],
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(16, 42, 67)",
+          "shadow": "none",
+          "text": "THIS MODE\nTop 5\n\nNo records yet"
+        }
+      ]
+    },
+    "survivalFinalZh": {
+      "entry": {
+        "viewport": [
+          1440,
+          900
         ],
-        "previewMutationItem": null,
-        "previewClearBounds": null,
-        "previewClearPiece": null,
-        "scrim": null,
-        "activeCells": [
-          {
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "clippedText": [],
+        "documentLanguage": "zh-CN",
+        "fonts": {
+          "ready": "loaded",
+          "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+          "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+          "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
+        },
+        "state": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "ready",
+          "countdown": 1,
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "puzzleTargetsRemaining": 0,
+          "puzzleTargetsInitial": 0,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 3,
+          "bedrockIntervalSeconds": 13,
+          "bedrockNextSeconds": 13,
+          "bedrockPending": false,
+          "stoneIntervalSeconds": 20,
+          "stoneNextSeconds": 20,
+          "fallingStones": [],
+          "fallTicks": 40,
+          "placedPieces": 0,
+          "active": {
+            "type": "Z",
             "x": 3,
-            "y": 33
+            "y": 19,
+            "rotation": 0
           },
-          {
-            "x": 4,
-            "y": 33
+          "next": "J",
+          "nextPreviews": [
+            "J"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB"
+          ]
+        },
+        "qa": {
+          "screen": "game",
+          "countdown": 1,
+          "state": {
+            "board": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ]
+            ],
+            "active": {
+              "type": "Z",
+              "rotation": 0,
+              "x": 3,
+              "y": 19
+            },
+            "queue": [
+              "J",
+              "T",
+              "L",
+              "I",
+              "O"
+            ],
+            "score": 0,
+            "lines": 0,
+            "combo": 0,
+            "level": 0,
+            "mode": "race",
+            "puzzleId": null,
+            "puzzleTargetLines": null,
+            "puzzleTargetCells": [],
+            "puzzleInitialTargetCount": 0,
+            "puzzleBoardRows": null,
+            "puzzleQueue": null,
+            "puzzleQueueIndex": 0,
+            "puzzleSpawnCount": 0,
+            "puzzleGoal": null,
+            "puzzleCompletion": null,
+            "puzzleUndoHistory": [],
+            "puzzleActiveSpawnCheckpoint": null,
+            "completedLevelId": null,
+            "nextUnlockedLevelId": null,
+            "pieceCount": 0,
+            "survivalBedrockRows": 3,
+            "survivalPressureTicks": 0,
+            "survivalRisePending": false,
+            "survivalDebris": [],
+            "survivalDebrisNextId": 1,
+            "survivalDebrisIntervalTicks": 0,
+            "survivalDebrisIntervalSeconds": 20,
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalDebrisFallProgress": 0,
+            "survivalDebrisRandomizer": {
+              "seed": 2703138267,
+              "bag": []
+            },
+            "mutationActiveCarrier": null,
+            "mutationRandomizer": {
+              "seed": 1334727513,
+              "bag": []
+            },
+            "mutationCarriers": [],
+            "mutationNextCarrierId": 1,
+            "mutationFreezeTicks": 0,
+            "mutationCollapseTicks": 0,
+            "mutationCollapseLandingLatched": false,
+            "mutationMultiplierTicks": 0,
+            "mutationMultiplierFactor": 1,
+            "mutationLastItem": null,
+            "mutationLastItemTicks": 0,
+            "status": "ready",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "gravityTicks": 0,
+            "lockTicks": 0,
+            "lockResets": 0,
+            "elapsedTicks": 0,
+            "randomizer": {
+              "seed": 2984394359,
+              "bag": [
+                "S"
+              ]
+            },
+            "seed": 47908632
           },
-          {
-            "x": 4,
-            "y": 34
+          "renderer": {
+            "canvas": {
+              "width": 758,
+              "height": 810,
+              "resolution": 1
+            },
+            "board": {
+              "x": 61.5,
+              "y": 14,
+              "width": 391,
+              "height": 782,
+              "cell": 39.1
+            },
+            "preview": null,
+            "previewLayerVisible": false,
+            "previewPiece": null,
+            "previewPieces": [],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [],
+            "ghostCells": [],
+            "visibleLockedCells": 30,
+            "presentation": null,
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalStoneCueCount": 0,
+            "survivalBedrockCue": null,
+            "survivalEntryBedrockRows": 3,
+            "survivalEntryBedrockRise": {
+              "rows": 3,
+              "elapsedMs": 233.29999999999973,
+              "durationMs": 820,
+              "offsetY": 9.607777643413545
+            },
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
           },
-          {
-            "x": 5,
-            "y": 34
+          "viewport": {
+            "width": 1440,
+            "height": 900,
+            "scrollWidth": 1440,
+            "scrollHeight": 900
+          },
+          "bounds": {
+            "board": {
+              "left": 402.5,
+              "top": 91,
+              "right": 793.5,
+              "bottom": 873,
+              "width": 391,
+              "height": 782
+            },
+            "stats": {
+              "left": 831.5,
+              "top": 319.5,
+              "right": 1037.5,
+              "bottom": 445.5,
+              "width": 206,
+              "height": 126
+            },
+            "next": {
+              "left": 845.5,
+              "top": 506.5,
+              "right": 1023.5,
+              "bottom": 630.5,
+              "width": 178,
+              "height": 124
+            },
+            "touch": null
+          },
+          "assertions": {
+            "canvasCount": 1,
+            "domCellCount": 0,
+            "minButtonWidth": 58.015625,
+            "minButtonHeight": 44,
+            "noHorizontalOverflow": true,
+            "noVerticalOverflow": true
           }
+        }
+      },
+      "active": {
+        "viewport": [
+          1440,
+          900
         ],
-        "ghostCells": [
-          {
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "clippedText": [],
+        "documentLanguage": "zh-CN",
+        "fonts": {
+          "ready": "loaded",
+          "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+          "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+          "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
+        },
+        "state": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "puzzleTargetsRemaining": 0,
+          "puzzleTargetsInitial": 0,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 3,
+          "bedrockIntervalSeconds": 13,
+          "bedrockNextSeconds": 13,
+          "bedrockPending": false,
+          "stoneIntervalSeconds": 20,
+          "stoneNextSeconds": 20,
+          "fallingStones": [],
+          "fallTicks": 40,
+          "placedPieces": 0,
+          "active": {
+            "type": "Z",
             "x": 3,
-            "y": 33
+            "y": 19,
+            "rotation": 0
           },
-          {
-            "x": 4,
-            "y": 33
-          },
-          {
-            "x": 4,
-            "y": 34
-          },
-          {
-            "x": 5,
-            "y": 34
-          }
-        ],
-        "visibleLockedCells": 34,
-        "presentation": {
-          "x": 3,
-          "y": 32.919787880808315,
-          "offsetX": 0,
-          "offsetY": -0.08021211919168536
+          "next": "J",
+          "nextPreviews": [
+            "J"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB"
+          ]
         },
-        "boardShiftOffsetY": 0,
-        "mutationFilters": {
-          "freeze": false,
-          "collapse": false,
-          "activeCount": 0
-        },
-        "survivalDebris": [
-          {
-            "id": 1,
-            "x": 9,
-            "y": 22,
-            "height": 1,
-            "presentationY": 21.78578634857761,
-            "cells": [
+        "qa": {
+          "screen": "game",
+          "countdown": null,
+          "state": {
+            "board": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ]
+            ],
+            "active": {
+              "type": "Z",
+              "rotation": 0,
+              "x": 3,
+              "y": 19
+            },
+            "queue": [
+              "J",
+              "T",
+              "L",
+              "I",
+              "O"
+            ],
+            "score": 0,
+            "lines": 0,
+            "combo": 0,
+            "level": 0,
+            "mode": "race",
+            "puzzleId": null,
+            "puzzleTargetLines": null,
+            "puzzleTargetCells": [],
+            "puzzleInitialTargetCount": 0,
+            "puzzleBoardRows": null,
+            "puzzleQueue": null,
+            "puzzleQueueIndex": 0,
+            "puzzleSpawnCount": 0,
+            "puzzleGoal": null,
+            "puzzleCompletion": null,
+            "puzzleUndoHistory": [],
+            "puzzleActiveSpawnCheckpoint": null,
+            "completedLevelId": null,
+            "nextUnlockedLevelId": null,
+            "pieceCount": 0,
+            "survivalBedrockRows": 3,
+            "survivalPressureTicks": 9,
+            "survivalRisePending": false,
+            "survivalDebris": [],
+            "survivalDebrisNextId": 1,
+            "survivalDebrisIntervalTicks": 9,
+            "survivalDebrisIntervalSeconds": 20,
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalDebrisFallProgress": 36,
+            "survivalDebrisRandomizer": {
+              "seed": 2703138267,
+              "bag": []
+            },
+            "mutationActiveCarrier": null,
+            "mutationRandomizer": {
+              "seed": 1334727513,
+              "bag": []
+            },
+            "mutationCarriers": [],
+            "mutationNextCarrierId": 1,
+            "mutationFreezeTicks": 0,
+            "mutationCollapseTicks": 0,
+            "mutationCollapseLandingLatched": false,
+            "mutationMultiplierTicks": 0,
+            "mutationMultiplierFactor": 1,
+            "mutationLastItem": null,
+            "mutationLastItemTicks": 0,
+            "status": "playing",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "gravityTicks": 9,
+            "lockTicks": 0,
+            "lockResets": 0,
+            "elapsedTicks": 9,
+            "randomizer": {
+              "seed": 2984394359,
+              "bag": [
+                "S"
+              ]
+            },
+            "seed": 47908632
+          },
+          "renderer": {
+            "canvas": {
+              "width": 758,
+              "height": 810,
+              "resolution": 1
+            },
+            "board": {
+              "x": 61.5,
+              "y": 14,
+              "width": 391,
+              "height": 782,
+              "cell": 39.1
+            },
+            "preview": {
+              "x": 504.5,
+              "y": 429.5,
+              "width": 178,
+              "height": 124
+            },
+            "previewLayerVisible": true,
+            "previewPiece": "J",
+            "previewPieces": [
+              "J"
+            ],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [
               {
-                "x": 9,
-                "y": 22
+                "x": 3,
+                "y": 19
+              },
+              {
+                "x": 4,
+                "y": 19
+              },
+              {
+                "x": 4,
+                "y": 20
+              },
+              {
+                "x": 5,
+                "y": 20
               }
-            ]
+            ],
+            "ghostCells": [
+              {
+                "x": 3,
+                "y": 35
+              },
+              {
+                "x": 4,
+                "y": 35
+              },
+              {
+                "x": 4,
+                "y": 36
+              },
+              {
+                "x": 5,
+                "y": 36
+              }
+            ],
+            "visibleLockedCells": 30,
+            "presentation": {
+              "x": 3,
+              "y": 19,
+              "offsetX": 0,
+              "offsetY": 0
+            },
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [],
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalStoneCueCount": 0,
+            "survivalBedrockCue": null,
+            "survivalEntryBedrockRows": null,
+            "survivalEntryBedrockRise": null,
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900,
+            "scrollWidth": 1440,
+            "scrollHeight": 900
+          },
+          "bounds": {
+            "board": {
+              "left": 402.5,
+              "top": 91,
+              "right": 793.5,
+              "bottom": 873,
+              "width": 391,
+              "height": 782
+            },
+            "stats": {
+              "left": 831.5,
+              "top": 319.5,
+              "right": 1037.5,
+              "bottom": 445.5,
+              "width": 206,
+              "height": 126
+            },
+            "next": {
+              "left": 845.5,
+              "top": 506.5,
+              "right": 1023.5,
+              "bottom": 630.5,
+              "width": 178,
+              "height": 124
+            },
+            "touch": null
+          },
+          "assertions": {
+            "canvasCount": 1,
+            "domCellCount": 0,
+            "minButtonWidth": 58.015625,
+            "minButtonHeight": 44,
+            "noHorizontalOverflow": true,
+            "noVerticalOverflow": true
           }
+        }
+      },
+      "warning": {
+        "state": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "puzzleTargetsRemaining": 0,
+          "puzzleTargetsInitial": 0,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 3,
+          "bedrockIntervalSeconds": 13,
+          "bedrockNextSeconds": 0,
+          "bedrockPending": true,
+          "stoneIntervalSeconds": 20,
+          "stoneNextSeconds": 2,
+          "fallingStones": [],
+          "fallTicks": 40,
+          "placedPieces": 1,
+          "active": {
+            "type": "J",
+            "x": 3,
+            "y": 29,
+            "rotation": 0
+          },
+          "next": "T",
+          "nextPreviews": [
+            "T"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...ZZ.....",
+            "....ZZ....",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB"
+          ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 758,
+            "height": 810,
+            "resolution": 1
+          },
+          "board": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782,
+            "cell": 39.1
+          },
+          "preview": {
+            "x": 504.5,
+            "y": 429.5,
+            "width": 178,
+            "height": 124
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "previewPieces": [
+            "T"
+          ],
+          "previewMutationItem": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 29
+            },
+            {
+              "x": 3,
+              "y": 30
+            },
+            {
+              "x": 4,
+              "y": 30
+            },
+            {
+              "x": 5,
+              "y": 30
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 33
+            },
+            {
+              "x": 3,
+              "y": 34
+            },
+            {
+              "x": 4,
+              "y": 34
+            },
+            {
+              "x": 5,
+              "y": 34
+            }
+          ],
+          "visibleLockedCells": 34,
+          "presentation": {
+            "x": 3,
+            "y": 29,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "boardShiftOffsetY": 0,
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          },
+          "survivalDebris": [],
+          "survivalDebrisWarningColumns": [
+            1
+          ],
+          "survivalDebrisWarningHeight": 1,
+          "survivalStoneCueCount": 0,
+          "survivalBedrockCue": null,
+          "survivalEntryBedrockRows": null,
+          "survivalEntryBedrockRise": null,
+          "classicFeedback": [],
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
+          "mutationActiveParticleCount": 0,
+          "mutationCollapseTrail": null
+        },
+        "chunks": 72
+      },
+      "stone": {
+        "state": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "puzzleTargetsRemaining": 0,
+          "puzzleTargetsInitial": 0,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 3,
+          "bedrockIntervalSeconds": 13,
+          "bedrockNextSeconds": 0,
+          "bedrockPending": true,
+          "stoneIntervalSeconds": 19,
+          "stoneNextSeconds": 19,
+          "fallingStones": [
+            {
+              "x": 1,
+              "y": 20
+            }
+          ],
+          "fallTicks": 40,
+          "placedPieces": 1,
+          "active": {
+            "type": "J",
+            "x": 3,
+            "y": 32,
+            "rotation": 0
+          },
+          "next": "T",
+          "nextPreviews": [
+            "T"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...ZZ.....",
+            "....ZZ....",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB"
+          ]
+        },
+        "renderer": {
+          "canvas": {
+            "width": 758,
+            "height": 810,
+            "resolution": 1
+          },
+          "board": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782,
+            "cell": 39.1
+          },
+          "preview": {
+            "x": 504.5,
+            "y": 429.5,
+            "width": 178,
+            "height": 124
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "previewPieces": [
+            "T"
+          ],
+          "previewMutationItem": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 32
+            },
+            {
+              "x": 3,
+              "y": 33
+            },
+            {
+              "x": 4,
+              "y": 33
+            },
+            {
+              "x": 5,
+              "y": 33
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 33
+            },
+            {
+              "x": 3,
+              "y": 34
+            },
+            {
+              "x": 4,
+              "y": 34
+            },
+            {
+              "x": 5,
+              "y": 34
+            }
+          ],
+          "visibleLockedCells": 34,
+          "presentation": {
+            "x": 3,
+            "y": 29,
+            "offsetX": 0,
+            "offsetY": -3
+          },
+          "boardShiftOffsetY": 0,
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          },
+          "survivalDebris": [
+            {
+              "id": 1,
+              "x": 1,
+              "y": 20,
+              "height": 1,
+              "presentationY": 20,
+              "cells": [
+                {
+                  "x": 1,
+                  "y": 20
+                }
+              ]
+            }
+          ],
+          "survivalDebrisWarningColumns": [],
+          "survivalDebrisWarningHeight": null,
+          "survivalStoneCueCount": 1,
+          "survivalBedrockCue": null,
+          "survivalEntryBedrockRows": null,
+          "survivalEntryBedrockRise": null,
+          "classicFeedback": [],
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
+          "mutationActiveParticleCount": 0,
+          "mutationCollapseTrail": null
+        },
+        "chunks": 19
+      },
+      "final": {
+        "viewport": [
+          1440,
+          900
         ],
-        "survivalDebrisWarningColumns": [],
-        "survivalDebrisWarningHeight": null,
-        "survivalStoneCueCount": 1,
-        "survivalBedrockCue": null,
-        "survivalEntryBedrockRows": null,
-        "survivalEntryBedrockRise": null,
-        "classicFeedback": [],
-        "mutationActivation": null,
-        "mutationActivationQueueItems": [],
-        "mutationActiveParticleCount": 0,
-        "mutationCollapseTrail": null
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "horizontalOverflow": false,
+        "verticalOverflow": false,
+        "clippedText": [],
+        "documentLanguage": "zh-CN",
+        "fonts": {
+          "ready": "loaded",
+          "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+          "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+          "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
+        },
+        "state": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "race",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": null,
+          "puzzleCompletion": null,
+          "puzzleTargetsRemaining": 0,
+          "puzzleTargetsInitial": 0,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 3,
+          "bedrockIntervalSeconds": 13,
+          "bedrockNextSeconds": 0,
+          "bedrockPending": true,
+          "stoneIntervalSeconds": 19,
+          "stoneNextSeconds": 19,
+          "fallingStones": [
+            {
+              "x": 1,
+              "y": 20
+            }
+          ],
+          "fallTicks": 40,
+          "placedPieces": 1,
+          "active": {
+            "type": "J",
+            "x": 3,
+            "y": 32,
+            "rotation": 0
+          },
+          "next": "T",
+          "nextPreviews": [
+            "T"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...ZZ.....",
+            "....ZZ....",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB",
+            "BBBBBBBBBB"
+          ]
+        },
+        "qa": {
+          "screen": "game",
+          "countdown": null,
+          "state": {
+            "board": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                "Z",
+                "Z",
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                "Z",
+                "Z",
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ],
+              [
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B",
+                "B"
+              ]
+            ],
+            "active": {
+              "type": "J",
+              "rotation": 0,
+              "x": 3,
+              "y": 32
+            },
+            "queue": [
+              "T",
+              "L",
+              "I",
+              "O",
+              "S"
+            ],
+            "score": 0,
+            "lines": 0,
+            "combo": 0,
+            "level": 0,
+            "mode": "race",
+            "puzzleId": null,
+            "puzzleTargetLines": null,
+            "puzzleTargetCells": [],
+            "puzzleInitialTargetCount": 0,
+            "puzzleBoardRows": null,
+            "puzzleQueue": null,
+            "puzzleQueueIndex": 0,
+            "puzzleSpawnCount": 0,
+            "puzzleGoal": null,
+            "puzzleCompletion": null,
+            "puzzleUndoHistory": [],
+            "puzzleActiveSpawnCheckpoint": null,
+            "completedLevelId": null,
+            "nextUnlockedLevelId": null,
+            "pieceCount": 1,
+            "survivalBedrockRows": 3,
+            "survivalPressureTicks": 780,
+            "survivalRisePending": true,
+            "survivalDebris": [
+              {
+                "id": 1,
+                "x": 1,
+                "y": 20,
+                "height": 1
+              }
+            ],
+            "survivalDebrisNextId": 2,
+            "survivalDebrisIntervalTicks": 5,
+            "survivalDebrisIntervalSeconds": 19,
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalDebrisFallProgress": 20,
+            "survivalDebrisRandomizer": {
+              "seed": 430853213,
+              "bag": []
+            },
+            "mutationActiveCarrier": null,
+            "mutationRandomizer": {
+              "seed": 1334727513,
+              "bag": []
+            },
+            "mutationCarriers": [],
+            "mutationNextCarrierId": 1,
+            "mutationFreezeTicks": 0,
+            "mutationCollapseTicks": 0,
+            "mutationCollapseLandingLatched": false,
+            "mutationMultiplierTicks": 0,
+            "mutationMultiplierFactor": 1,
+            "mutationLastItem": null,
+            "mutationLastItemTicks": 0,
+            "status": "playing",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "gravityTicks": 24,
+            "lockTicks": 0,
+            "lockResets": 0,
+            "elapsedTicks": 1205,
+            "randomizer": {
+              "seed": 2984394359,
+              "bag": []
+            },
+            "seed": 47908632
+          },
+          "renderer": {
+            "canvas": {
+              "width": 758,
+              "height": 810,
+              "resolution": 1
+            },
+            "board": {
+              "x": 61.5,
+              "y": 14,
+              "width": 391,
+              "height": 782,
+              "cell": 39.1
+            },
+            "preview": {
+              "x": 504.5,
+              "y": 429.5,
+              "width": 178,
+              "height": 124
+            },
+            "previewLayerVisible": true,
+            "previewPiece": "T",
+            "previewPieces": [
+              "T"
+            ],
+            "previewMutationItem": null,
+            "previewClearBounds": null,
+            "previewClearPiece": null,
+            "scrim": null,
+            "activeCells": [
+              {
+                "x": 3,
+                "y": 32
+              },
+              {
+                "x": 3,
+                "y": 33
+              },
+              {
+                "x": 4,
+                "y": 33
+              },
+              {
+                "x": 5,
+                "y": 33
+              }
+            ],
+            "ghostCells": [
+              {
+                "x": 3,
+                "y": 33
+              },
+              {
+                "x": 3,
+                "y": 34
+              },
+              {
+                "x": 4,
+                "y": 34
+              },
+              {
+                "x": 5,
+                "y": 34
+              }
+            ],
+            "visibleLockedCells": 34,
+            "presentation": {
+              "x": 3,
+              "y": 32,
+              "offsetX": 0,
+              "offsetY": 0
+            },
+            "boardShiftOffsetY": 0,
+            "mutationFilters": {
+              "freeze": false,
+              "collapse": false,
+              "activeCount": 0
+            },
+            "survivalDebris": [
+              {
+                "id": 1,
+                "x": 1,
+                "y": 20,
+                "height": 1,
+                "presentationY": 20,
+                "cells": [
+                  {
+                    "x": 1,
+                    "y": 20
+                  }
+                ]
+              }
+            ],
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalStoneCueCount": 0,
+            "survivalBedrockCue": null,
+            "survivalEntryBedrockRows": null,
+            "survivalEntryBedrockRise": null,
+            "classicFeedback": [],
+            "mutationActivation": null,
+            "mutationActivationQueueItems": [],
+            "mutationActiveParticleCount": 0,
+            "mutationCollapseTrail": null
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900,
+            "scrollWidth": 1440,
+            "scrollHeight": 900
+          },
+          "bounds": {
+            "board": {
+              "left": 402.5,
+              "top": 91,
+              "right": 793.5,
+              "bottom": 873,
+              "width": 391,
+              "height": 782
+            },
+            "stats": {
+              "left": 831.5,
+              "top": 319.5,
+              "right": 1037.5,
+              "bottom": 445.5,
+              "width": 206,
+              "height": 126
+            },
+            "next": {
+              "left": 845.5,
+              "top": 506.5,
+              "right": 1023.5,
+              "bottom": 630.5,
+              "width": 178,
+              "height": 124
+            },
+            "touch": null
+          },
+          "assertions": {
+            "canvasCount": 1,
+            "domCellCount": 0,
+            "minButtonWidth": 58.015625,
+            "minButtonHeight": 44,
+            "noHorizontalOverflow": true,
+            "noVerticalOverflow": true
+          }
+        }
       }
-    },
-    "settingsSurvivalDesktopZh": {
-      "viewport": [
-        1440,
-        900
-      ],
-      "canvasCount": 1,
-      "domCellCount": 0,
-      "horizontalOverflow": false,
-      "verticalOverflow": false,
-      "clippedText": []
     },
     "mutationDesktopZh": {
       "viewport": [
@@ -483,6 +3175,13 @@
       "horizontalOverflow": false,
       "verticalOverflow": false,
       "clippedText": [],
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
+      },
       "state": {
         "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
         "screen": "game",
@@ -516,14 +3215,14 @@
         "fallTicks": 48,
         "placedPieces": 0,
         "active": {
-          "type": "J",
+          "type": "I",
           "x": 3,
           "y": 19,
           "rotation": 0
         },
-        "next": "T",
+        "next": "L",
         "nextPreviews": [
-          "T"
+          "L"
         ],
         "visibleBoard": [
           "..........",
@@ -548,98 +3247,703 @@
           ".........."
         ]
       },
-      "renderer": {
-        "canvas": {
-          "width": 758,
-          "height": 810,
-          "resolution": 1
-        },
-        "board": {
-          "x": 61.5,
-          "y": 14,
-          "width": 391,
-          "height": 782,
-          "cell": 39.1
-        },
-        "preview": {
-          "x": 504.5,
-          "y": 429.5,
-          "width": 178,
-          "height": 124
-        },
-        "previewLayerVisible": true,
-        "previewPiece": "T",
-        "previewPieces": [
-          "T"
-        ],
-        "previewMutationItem": null,
-        "previewClearBounds": null,
-        "previewClearPiece": null,
-        "scrim": null,
-        "activeCells": [
-          {
+      "qa": {
+        "screen": "game",
+        "countdown": null,
+        "state": {
+          "board": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          ],
+          "active": {
+            "type": "I",
+            "rotation": 0,
             "x": 3,
             "y": 19
           },
-          {
-            "x": 3,
-            "y": 20
+          "queue": [
+            "L",
+            "T",
+            "O",
+            "S",
+            "J"
+          ],
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "level": 0,
+          "mode": "sprint",
+          "puzzleId": null,
+          "puzzleTargetLines": null,
+          "puzzleTargetCells": [],
+          "puzzleInitialTargetCount": 0,
+          "puzzleBoardRows": null,
+          "puzzleQueue": null,
+          "puzzleQueueIndex": 0,
+          "puzzleSpawnCount": 0,
+          "puzzleGoal": null,
+          "puzzleCompletion": null,
+          "puzzleUndoHistory": [],
+          "puzzleActiveSpawnCheckpoint": null,
+          "completedLevelId": null,
+          "nextUnlockedLevelId": null,
+          "pieceCount": 0,
+          "survivalBedrockRows": 0,
+          "survivalPressureTicks": 0,
+          "survivalRisePending": false,
+          "survivalDebris": [],
+          "survivalDebrisNextId": 1,
+          "survivalDebrisIntervalTicks": 0,
+          "survivalDebrisIntervalSeconds": 20,
+          "survivalDebrisWarningColumns": [],
+          "survivalDebrisWarningHeight": null,
+          "survivalDebrisFallProgress": 0,
+          "survivalDebrisRandomizer": {
+            "seed": 3775620259,
+            "bag": []
           },
-          {
-            "x": 4,
-            "y": 20
+          "mutationActiveCarrier": null,
+          "mutationRandomizer": {
+            "seed": 261859873,
+            "bag": []
           },
-          {
-            "x": 5,
-            "y": 20
-          }
-        ],
-        "ghostCells": [
-          {
-            "x": 3,
-            "y": 38
+          "mutationCarriers": [],
+          "mutationNextCarrierId": 1,
+          "mutationFreezeTicks": 0,
+          "mutationCollapseTicks": 0,
+          "mutationCollapseLandingLatched": false,
+          "mutationMultiplierTicks": 0,
+          "mutationMultiplierFactor": 1,
+          "mutationLastItem": null,
+          "mutationLastItemTicks": 0,
+          "status": "playing",
+          "phase": "active",
+          "phaseTicks": 0,
+          "pendingClearRows": [],
+          "gravityTicks": 8,
+          "lockTicks": 0,
+          "lockResets": 0,
+          "elapsedTicks": 8,
+          "randomizer": {
+            "seed": 716104189,
+            "bag": [
+              "Z"
+            ]
           },
-          {
-            "x": 3,
-            "y": 39
-          },
-          {
-            "x": 4,
-            "y": 39
-          },
-          {
-            "x": 5,
-            "y": 39
-          }
-        ],
-        "visibleLockedCells": 0,
-        "presentation": {
-          "x": 3,
-          "y": 19,
-          "offsetX": 0,
-          "offsetY": 0
+          "seed": 1120861792
         },
-        "boardShiftOffsetY": 0,
-        "mutationFilters": {
-          "freeze": false,
-          "collapse": false,
-          "activeCount": 0
+        "renderer": {
+          "canvas": {
+            "width": 758,
+            "height": 810,
+            "resolution": 1
+          },
+          "board": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782,
+            "cell": 39.1
+          },
+          "preview": {
+            "x": 504.5,
+            "y": 429.5,
+            "width": 178,
+            "height": 124
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "L",
+          "previewPieces": [
+            "L"
+          ],
+          "previewMutationItem": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            },
+            {
+              "x": 6,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            },
+            {
+              "x": 6,
+              "y": 39
+            }
+          ],
+          "visibleLockedCells": 0,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "boardShiftOffsetY": 0,
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          },
+          "survivalDebris": [],
+          "survivalDebrisWarningColumns": [],
+          "survivalDebrisWarningHeight": null,
+          "survivalStoneCueCount": 0,
+          "survivalBedrockCue": null,
+          "survivalEntryBedrockRows": null,
+          "survivalEntryBedrockRise": null,
+          "classicFeedback": [],
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
+          "mutationActiveParticleCount": 0,
+          "mutationCollapseTrail": null
         },
-        "survivalDebris": [],
-        "survivalDebrisWarningColumns": [],
-        "survivalDebrisWarningHeight": null,
-        "survivalStoneCueCount": 0,
-        "survivalBedrockCue": null,
-        "survivalEntryBedrockRows": null,
-        "survivalEntryBedrockRise": null,
-        "classicFeedback": [],
-        "mutationActivation": null,
-        "mutationActivationQueueItems": [],
-        "mutationActiveParticleCount": 0,
-        "mutationCollapseTrail": null
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "scrollWidth": 1440,
+          "scrollHeight": 900
+        },
+        "bounds": {
+          "board": {
+            "left": 402.5,
+            "top": 91,
+            "right": 793.5,
+            "bottom": 873,
+            "width": 391,
+            "height": 782
+          },
+          "stats": {
+            "left": 831.5,
+            "top": 319.5,
+            "right": 1037.5,
+            "bottom": 445.5,
+            "width": 206,
+            "height": 126
+          },
+          "next": {
+            "left": 845.5,
+            "top": 506.5,
+            "right": 1023.5,
+            "bottom": 630.5,
+            "width": 178,
+            "height": 124
+          },
+          "touch": null
+        },
+        "assertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58.015625,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
+        }
       }
     },
-    "introDesktopZh": {
+    "puzzleIntroDesktopZh": {
       "viewport": [
         1440,
         900
@@ -648,49 +3952,69 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [],
+      "clippedText": [
+        {
+          "text": "缺口",
+          "className": "puzzle-gallery__title",
+          "client": [
+            87,
+            46
+          ],
+          "scroll": [
+            87,
+            56
+          ]
+        }
+      ],
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loading",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"Fira Code Variable\", \"TetraMorph UI Sans\", \"Cascadia Mono\", monospace"
+      },
       "category": "intro",
       "tabs": [
         {
-          "label": "入门",
+          "text": "入门",
           "selected": true
         },
         {
-          "label": "简单",
+          "text": "简单",
           "selected": false
         },
         {
-          "label": "困难",
+          "text": "困难",
           "selected": false
         }
       ],
-      "activeTab": "入门",
       "cardCount": 3,
-      "squareCards": true,
       "cardSizes": [
         [
-          105,
-          105
+          105.33,
+          105.33
         ],
         [
-          105,
-          105
+          105.33,
+          105.33
         ],
         [
-          105,
-          105
+          105.34,
+          105.34
         ]
       ],
-      "headerToGalleryGap": 16,
-      "unlockedCount": 3,
       "selectedId": "t3r-shaft-01",
-      "lesson": "先完成一行先补最接近完整的目标行；消行腾出的空间会让后续更清楚。",
-      "liveGuidancePresent": false,
-      "startDisabled": false,
+      "unlockedCount": 3,
+      "lesson": {
+        "technique": "complete-row",
+        "title": "先完成一行",
+        "body": "先补最接近完整的目标行；消行腾出的空间会让后续更清楚。"
+      },
       "requirement": null,
-      "masteryKeys": []
+      "liveAnalysisPresent": false,
+      "headerGap": 16
     },
-    "hardLockedDesktopZh": {
+    "puzzleHardLockedDesktopZh": {
       "viewport": [
         1440,
         900
@@ -699,121 +4023,133 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [],
+      "clippedText": [
+        {
+          "text": "曲井",
+          "className": "puzzle-gallery__title",
+          "client": [
+            69,
+            46
+          ],
+          "scroll": [
+            69,
+            51
+          ]
+        }
+      ],
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"Fira Code Variable\", \"TetraMorph UI Sans\", \"Cascadia Mono\", monospace"
+      },
       "category": "hard",
       "tabs": [
         {
-          "label": "入门",
+          "text": "入门",
           "selected": false
         },
         {
-          "label": "简单",
+          "text": "简单",
           "selected": false
         },
         {
-          "label": "困难",
+          "text": "困难",
           "selected": true
         }
       ],
-      "activeTab": "困难",
       "cardCount": 20,
-      "squareCards": true,
       "cardSizes": [
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ]
       ],
-      "headerToGalleryGap": 16,
+      "selectedId": "tm-puzzle-31",
       "unlockedCount": 0,
-      "selectedId": "tm-puzzle-31",
       "lesson": null,
-      "liveGuidancePresent": false,
-      "startDisabled": true,
       "requirement": "在“回路”中用 10 步内通关，掌握“不埋空格”后解锁。",
-      "masteryKeys": [
-        "不埋空格— / 10",
-        "两块一起看— / 10",
-        "压平但留口— / 10"
-      ]
+      "liveAnalysisPresent": false,
+      "headerGap": 16
     },
-    "hardUnlockedDesktopZh": {
+    "puzzleHardUnlockedDesktopZh": {
       "viewport": [
         1440,
         900
@@ -822,121 +4158,133 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [],
+      "clippedText": [
+        {
+          "text": "曲井",
+          "className": "puzzle-gallery__title",
+          "client": [
+            69,
+            46
+          ],
+          "scroll": [
+            69,
+            51
+          ]
+        }
+      ],
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"Fira Code Variable\", \"TetraMorph UI Sans\", \"Cascadia Mono\", monospace"
+      },
       "category": "hard",
       "tabs": [
         {
-          "label": "入门",
+          "text": "入门",
           "selected": false
         },
         {
-          "label": "简单",
+          "text": "简单",
           "selected": false
         },
         {
-          "label": "困难",
+          "text": "困难",
           "selected": true
         }
       ],
-      "activeTab": "困难",
       "cardCount": 20,
-      "squareCards": true,
       "cardSizes": [
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.02,
+          95.02
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ],
         [
-          95,
-          95
+          95.03,
+          95.03
         ]
       ],
-      "headerToGalleryGap": 16,
-      "unlockedCount": 20,
       "selectedId": "tm-puzzle-31",
+      "unlockedCount": 20,
       "lesson": null,
-      "liveGuidancePresent": false,
-      "startDisabled": false,
       "requirement": "已通过“回路”以 10 步掌握“不埋空格”。",
-      "masteryKeys": [
-        "不埋空格10 / 10",
-        "两块一起看10 / 10",
-        "压平但留口10 / 10"
-      ]
+      "liveAnalysisPresent": false,
+      "headerGap": 16
     },
-    "easyPortraitEnReduced": {
+    "puzzleEasyPortraitEnReduced": {
       "viewport": [
         390,
         844
@@ -945,145 +4293,165 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [],
+      "clippedText": [
+        {
+          "text": "Switchback",
+          "className": "puzzle-gallery__title",
+          "client": [
+            225,
+            27
+          ],
+          "scroll": [
+            225,
+            29
+          ]
+        }
+      ],
+      "documentLanguage": "en",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+        "data": "\"Fira Code Variable\", \"TetraMorph UI Sans\", \"Cascadia Mono\", monospace"
+      },
       "category": "easy",
       "tabs": [
         {
-          "label": "Intro",
+          "text": "Intro",
           "selected": false
         },
         {
-          "label": "Easy",
+          "text": "Easy",
           "selected": true
         },
         {
-          "label": "Hard",
+          "text": "Hard",
           "selected": false
         }
       ],
-      "activeTab": "Easy",
       "cardCount": 27,
-      "squareCards": true,
       "cardSizes": [
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.66,
+          52.66
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ],
         [
-          53,
-          53
+          52.67,
+          52.67
         ]
       ],
-      "headerToGalleryGap": 12,
-      "unlockedCount": 0,
       "selectedId": "t3r-cascade-06",
-      "lesson": "Do not bury spaceCheck below the piece before locking; a covered cell usually costs several later clears.",
-      "liveGuidancePresent": false,
-      "startDisabled": true,
+      "unlockedCount": 0,
+      "lesson": {
+        "technique": "avoid-hole",
+        "title": "Do not bury space",
+        "body": "Check below the piece before locking; a covered cell usually costs several later clears."
+      },
       "requirement": null,
-      "masteryKeys": []
+      "liveAnalysisPresent": false,
+      "headerGap": 12
     },
-    "introShortEnReduced": {
+    "puzzleIntroLandscapeEnReduced": {
       "viewport": [
         844,
         390
@@ -1092,47 +4460,67 @@
       "domCellCount": 0,
       "horizontalOverflow": false,
       "verticalOverflow": false,
-      "clippedText": [],
+      "clippedText": [
+        {
+          "text": "Gap",
+          "className": "puzzle-gallery__title",
+          "client": [
+            44,
+            32
+          ],
+          "scroll": [
+            44,
+            35
+          ]
+        }
+      ],
+      "documentLanguage": "en",
+      "fonts": {
+        "ready": "loading",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"Barlow Semi Condensed\", \"TetraMorph UI Sans\", system-ui, sans-serif",
+        "data": "\"Fira Code Variable\", \"TetraMorph UI Sans\", \"Cascadia Mono\", monospace"
+      },
       "category": "intro",
       "tabs": [
         {
-          "label": "Intro",
+          "text": "Intro",
           "selected": true
         },
         {
-          "label": "Easy",
+          "text": "Easy",
           "selected": false
         },
         {
-          "label": "Hard",
+          "text": "Hard",
           "selected": false
         }
       ],
-      "activeTab": "Intro",
       "cardCount": 3,
-      "squareCards": true,
       "cardSizes": [
         [
-          83,
-          83
+          83.14,
+          83.14
         ],
         [
-          83,
-          83
+          83.14,
+          83.14
         ],
         [
-          83,
-          83
+          83.16,
+          83.16
         ]
       ],
-      "headerToGalleryGap": 12,
-      "unlockedCount": 3,
       "selectedId": "t3r-shaft-01",
-      "lesson": "Finish one row firstClose the nearest prepared row; the clear creates room for every choice after it.",
-      "liveGuidancePresent": false,
-      "startDisabled": false,
+      "unlockedCount": 3,
+      "lesson": {
+        "technique": "complete-row",
+        "title": "Finish one row first",
+        "body": "Close the nearest prepared row; the clear creates room for every choice after it."
+      },
       "requirement": null,
-      "masteryKeys": []
+      "liveAnalysisPresent": false,
+      "headerGap": 12
     },
     "puzzleGameDesktopZh": {
       "viewport": [
@@ -1144,8 +4532,13 @@
       "horizontalOverflow": false,
       "verticalOverflow": false,
       "clippedText": [],
-      "nextSegments": 2,
-      "liveGuidancePresent": false,
+      "documentLanguage": "zh-CN",
+      "fonts": {
+        "ready": "loaded",
+        "brand": "\"Playwrite NZ Basic\", \"Barlow Semi Condensed\", \"TetraMorph UI Sans\", sans-serif",
+        "interface": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "data": "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif"
+      },
       "state": {
         "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
         "screen": "game",
@@ -1204,7 +4597,1740 @@
           "TTTOO.LZZJ",
           ".TIIIIL.ZZ"
         ]
-      }
+      },
+      "qa": {
+        "screen": "game",
+        "countdown": null,
+        "state": {
+          "board": [
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            [
+              null,
+              null,
+              null,
+              "O",
+              "O",
+              "L",
+              "L",
+              "J",
+              "J",
+              "J"
+            ],
+            [
+              "T",
+              "T",
+              "T",
+              "O",
+              "O",
+              null,
+              "L",
+              "Z",
+              "Z",
+              "J"
+            ],
+            [
+              null,
+              "T",
+              "I",
+              "I",
+              "I",
+              "I",
+              "L",
+              null,
+              "Z",
+              "Z"
+            ]
+          ],
+          "active": {
+            "type": "L",
+            "rotation": 0,
+            "x": 3,
+            "y": 19
+          },
+          "queue": [
+            "T",
+            "I",
+            "J",
+            "Z",
+            "S"
+          ],
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "level": 0,
+          "mode": "puzzle",
+          "puzzleId": "t3r-shaft-01",
+          "puzzleTargetLines": null,
+          "puzzleTargetCells": [
+            {
+              "x": 3,
+              "y": 37
+            },
+            {
+              "x": 4,
+              "y": 37
+            },
+            {
+              "x": 5,
+              "y": 37
+            },
+            {
+              "x": 6,
+              "y": 37
+            },
+            {
+              "x": 7,
+              "y": 37
+            },
+            {
+              "x": 8,
+              "y": 37
+            },
+            {
+              "x": 9,
+              "y": 37
+            },
+            {
+              "x": 0,
+              "y": 38
+            },
+            {
+              "x": 1,
+              "y": 38
+            },
+            {
+              "x": 2,
+              "y": 38
+            },
+            {
+              "x": 3,
+              "y": 38
+            },
+            {
+              "x": 4,
+              "y": 38
+            },
+            {
+              "x": 6,
+              "y": 38
+            },
+            {
+              "x": 7,
+              "y": 38
+            },
+            {
+              "x": 8,
+              "y": 38
+            },
+            {
+              "x": 9,
+              "y": 38
+            },
+            {
+              "x": 1,
+              "y": 39
+            },
+            {
+              "x": 2,
+              "y": 39
+            },
+            {
+              "x": 3,
+              "y": 39
+            },
+            {
+              "x": 4,
+              "y": 39
+            },
+            {
+              "x": 5,
+              "y": 39
+            },
+            {
+              "x": 6,
+              "y": 39
+            },
+            {
+              "x": 8,
+              "y": 39
+            },
+            {
+              "x": 9,
+              "y": 39
+            }
+          ],
+          "puzzleInitialTargetCount": 24,
+          "puzzleBoardRows": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...OOLLJJJ",
+            "TTTOO.LZZJ",
+            ".TIIIIL.ZZ"
+          ],
+          "puzzleQueue": [
+            "T",
+            "I",
+            "J",
+            "Z",
+            "S"
+          ],
+          "puzzleQueueIndex": 0,
+          "puzzleSpawnCount": 1,
+          "puzzleGoal": "original-targets-cleared",
+          "puzzleCompletion": "active",
+          "puzzleUndoHistory": [],
+          "puzzleActiveSpawnCheckpoint": {
+            "board": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              [
+                null,
+                null,
+                null,
+                "O",
+                "O",
+                "L",
+                "L",
+                "J",
+                "J",
+                "J"
+              ],
+              [
+                "T",
+                "T",
+                "T",
+                "O",
+                "O",
+                null,
+                "L",
+                "Z",
+                "Z",
+                "J"
+              ],
+              [
+                null,
+                "T",
+                "I",
+                "I",
+                "I",
+                "I",
+                "L",
+                null,
+                "Z",
+                "Z"
+              ]
+            ],
+            "active": null,
+            "queue": [],
+            "score": 0,
+            "lines": 0,
+            "combo": 0,
+            "level": 0,
+            "mode": "puzzle",
+            "puzzleId": "t3r-shaft-01",
+            "puzzleTargetLines": null,
+            "puzzleTargetCells": [
+              {
+                "x": 3,
+                "y": 37
+              },
+              {
+                "x": 4,
+                "y": 37
+              },
+              {
+                "x": 5,
+                "y": 37
+              },
+              {
+                "x": 6,
+                "y": 37
+              },
+              {
+                "x": 7,
+                "y": 37
+              },
+              {
+                "x": 8,
+                "y": 37
+              },
+              {
+                "x": 9,
+                "y": 37
+              },
+              {
+                "x": 0,
+                "y": 38
+              },
+              {
+                "x": 1,
+                "y": 38
+              },
+              {
+                "x": 2,
+                "y": 38
+              },
+              {
+                "x": 3,
+                "y": 38
+              },
+              {
+                "x": 4,
+                "y": 38
+              },
+              {
+                "x": 6,
+                "y": 38
+              },
+              {
+                "x": 7,
+                "y": 38
+              },
+              {
+                "x": 8,
+                "y": 38
+              },
+              {
+                "x": 9,
+                "y": 38
+              },
+              {
+                "x": 1,
+                "y": 39
+              },
+              {
+                "x": 2,
+                "y": 39
+              },
+              {
+                "x": 3,
+                "y": 39
+              },
+              {
+                "x": 4,
+                "y": 39
+              },
+              {
+                "x": 5,
+                "y": 39
+              },
+              {
+                "x": 6,
+                "y": 39
+              },
+              {
+                "x": 8,
+                "y": 39
+              },
+              {
+                "x": 9,
+                "y": 39
+              }
+            ],
+            "puzzleInitialTargetCount": 24,
+            "puzzleBoardRows": [
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "..........",
+              "...OOLLJJJ",
+              "TTTOO.LZZJ",
+              ".TIIIIL.ZZ"
+            ],
+            "puzzleQueue": null,
+            "puzzleQueueIndex": 0,
+            "puzzleSpawnCount": 0,
+            "puzzleGoal": "original-targets-cleared",
+            "puzzleCompletion": "active",
+            "completedLevelId": null,
+            "nextUnlockedLevelId": null,
+            "pieceCount": 0,
+            "survivalBedrockRows": 0,
+            "survivalPressureTicks": 0,
+            "survivalRisePending": false,
+            "survivalDebris": [],
+            "survivalDebrisNextId": 1,
+            "survivalDebrisIntervalTicks": 0,
+            "survivalDebrisIntervalSeconds": 20,
+            "survivalDebrisWarningColumns": [],
+            "survivalDebrisWarningHeight": null,
+            "survivalDebrisFallProgress": 0,
+            "survivalDebrisRandomizer": {
+              "seed": 3821378240,
+              "bag": []
+            },
+            "mutationActiveCarrier": null,
+            "mutationRandomizer": {
+              "seed": 223695938,
+              "bag": []
+            },
+            "mutationCarriers": [],
+            "mutationNextCarrierId": 1,
+            "mutationFreezeTicks": 0,
+            "mutationCollapseTicks": 0,
+            "mutationCollapseLandingLatched": false,
+            "mutationMultiplierTicks": 0,
+            "mutationMultiplierFactor": 1,
+            "mutationLastItem": null,
+            "mutationLastItemTicks": 0,
+            "status": "ready",
+            "phase": "active",
+            "phaseTicks": 0,
+            "pendingClearRows": [],
+            "gravityTicks": 0,
+            "lockTicks": 0,
+            "lockResets": 0,
+            "elapsedTicks": 0,
+            "randomizer": {
+              "seed": 1073741827,
+              "bag": []
+            },
+            "seed": 1073741827
+          },
+          "completedLevelId": null,
+          "nextUnlockedLevelId": null,
+          "pieceCount": 0,
+          "survivalBedrockRows": 0,
+          "survivalPressureTicks": 0,
+          "survivalRisePending": false,
+          "survivalDebris": [],
+          "survivalDebrisNextId": 1,
+          "survivalDebrisIntervalTicks": 0,
+          "survivalDebrisIntervalSeconds": 20,
+          "survivalDebrisWarningColumns": [],
+          "survivalDebrisWarningHeight": null,
+          "survivalDebrisFallProgress": 0,
+          "survivalDebrisRandomizer": {
+            "seed": 3821378240,
+            "bag": []
+          },
+          "mutationActiveCarrier": null,
+          "mutationRandomizer": {
+            "seed": 223695938,
+            "bag": []
+          },
+          "mutationCarriers": [],
+          "mutationNextCarrierId": 1,
+          "mutationFreezeTicks": 0,
+          "mutationCollapseTicks": 0,
+          "mutationCollapseLandingLatched": false,
+          "mutationMultiplierTicks": 0,
+          "mutationMultiplierFactor": 1,
+          "mutationLastItem": null,
+          "mutationLastItemTicks": 0,
+          "status": "playing",
+          "phase": "active",
+          "phaseTicks": 0,
+          "pendingClearRows": [],
+          "gravityTicks": 9,
+          "lockTicks": 0,
+          "lockResets": 0,
+          "elapsedTicks": 9,
+          "randomizer": {
+            "seed": 1580611968,
+            "bag": [
+              "O"
+            ]
+          },
+          "seed": 1073741827
+        },
+        "renderer": {
+          "canvas": {
+            "width": 758,
+            "height": 810,
+            "resolution": 1
+          },
+          "board": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782,
+            "cell": 39.1
+          },
+          "preview": {
+            "x": 504.5,
+            "y": 396.5,
+            "width": 178,
+            "height": 124
+          },
+          "previewLayerVisible": true,
+          "previewPiece": "T",
+          "previewPieces": [
+            "T",
+            "I"
+          ],
+          "previewMutationItem": null,
+          "previewClearBounds": null,
+          "previewClearPiece": null,
+          "scrim": null,
+          "activeCells": [
+            {
+              "x": 5,
+              "y": 19
+            },
+            {
+              "x": 3,
+              "y": 20
+            },
+            {
+              "x": 4,
+              "y": 20
+            },
+            {
+              "x": 5,
+              "y": 20
+            }
+          ],
+          "ghostCells": [
+            {
+              "x": 5,
+              "y": 35
+            },
+            {
+              "x": 3,
+              "y": 36
+            },
+            {
+              "x": 4,
+              "y": 36
+            },
+            {
+              "x": 5,
+              "y": 36
+            }
+          ],
+          "visibleLockedCells": 24,
+          "presentation": {
+            "x": 3,
+            "y": 19,
+            "offsetX": 0,
+            "offsetY": 0
+          },
+          "boardShiftOffsetY": 0,
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          },
+          "survivalDebris": [],
+          "survivalDebrisWarningColumns": [],
+          "survivalDebrisWarningHeight": null,
+          "survivalStoneCueCount": 0,
+          "survivalBedrockCue": null,
+          "survivalEntryBedrockRows": null,
+          "survivalEntryBedrockRise": null,
+          "classicFeedback": [],
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
+          "mutationActiveParticleCount": 0,
+          "mutationCollapseTrail": null
+        },
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "scrollWidth": 1440,
+          "scrollHeight": 900
+        },
+        "bounds": {
+          "board": {
+            "left": 402.5,
+            "top": 91,
+            "right": 793.5,
+            "bottom": 873,
+            "width": 391,
+            "height": 782
+          },
+          "stats": {
+            "left": 831.5,
+            "top": 352.5,
+            "right": 1037.5,
+            "bottom": 412.5,
+            "width": 206,
+            "height": 60
+          },
+          "next": {
+            "left": 845.5,
+            "top": 473.5,
+            "right": 1023.5,
+            "bottom": 597.5,
+            "width": 178,
+            "height": 124
+          },
+          "touch": null
+        },
+        "assertions": {
+          "canvasCount": 1,
+          "domCellCount": 0,
+          "minButtonWidth": 58.015625,
+          "minButtonHeight": 44,
+          "noHorizontalOverflow": true,
+          "noVerticalOverflow": true
+        }
+      },
+      "nextSegments": 2,
+      "nextLabels": [
+        "1 下一个方块: T",
+        "2 后一个方块: I"
+      ],
+      "analysisPresent": false,
+      "undo": {
+        "before": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "puzzle",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": "t3r-shaft-01",
+          "puzzleCompletion": "active",
+          "puzzleTargetsRemaining": 24,
+          "puzzleTargetsInitial": 24,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 0,
+          "bedrockIntervalSeconds": null,
+          "bedrockNextSeconds": null,
+          "bedrockPending": false,
+          "stoneIntervalSeconds": null,
+          "stoneNextSeconds": null,
+          "fallingStones": [],
+          "fallTicks": 48,
+          "placedPieces": 0,
+          "active": {
+            "type": "L",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "T",
+          "nextPreviews": [
+            "T",
+            "I"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...OOLLJJJ",
+            "TTTOO.LZZJ",
+            ".TIIIIL.ZZ"
+          ]
+        },
+        "afterDrop": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "puzzle",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": "t3r-shaft-01",
+          "puzzleCompletion": "active",
+          "puzzleTargetsRemaining": 24,
+          "puzzleTargetsInitial": 24,
+          "puzzleUndoDepth": 1,
+          "mutation": null,
+          "score": 32,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 0,
+          "bedrockIntervalSeconds": null,
+          "bedrockNextSeconds": null,
+          "bedrockPending": false,
+          "stoneIntervalSeconds": null,
+          "stoneNextSeconds": null,
+          "fallingStones": [],
+          "fallTicks": 48,
+          "placedPieces": 1,
+          "active": {
+            "type": "T",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "I",
+          "nextPreviews": [
+            "I",
+            "J"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            ".....L....",
+            "...LLL....",
+            "...OOLLJJJ",
+            "TTTOO.LZZJ",
+            ".TIIIIL.ZZ"
+          ]
+        },
+        "afterUndo": {
+          "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+          "screen": "game",
+          "mode": "puzzle",
+          "status": "playing",
+          "countdown": null,
+          "phase": "active",
+          "puzzleId": "t3r-shaft-01",
+          "puzzleCompletion": "active",
+          "puzzleTargetsRemaining": 24,
+          "puzzleTargetsInitial": 24,
+          "puzzleUndoDepth": 0,
+          "mutation": null,
+          "score": 0,
+          "lines": 0,
+          "combo": 0,
+          "bedrockRows": 0,
+          "bedrockIntervalSeconds": null,
+          "bedrockNextSeconds": null,
+          "bedrockPending": false,
+          "stoneIntervalSeconds": null,
+          "stoneNextSeconds": null,
+          "fallingStones": [],
+          "fallTicks": 48,
+          "placedPieces": 0,
+          "active": {
+            "type": "L",
+            "x": 3,
+            "y": 19,
+            "rotation": 0
+          },
+          "next": "T",
+          "nextPreviews": [
+            "T",
+            "I"
+          ],
+          "visibleBoard": [
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "..........",
+            "...OOLLJJJ",
+            "TTTOO.LZZJ",
+            ".TIIIIL.ZZ"
+          ]
+        }
+      },
+      "publicRouteCompletion": {
+        "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+        "screen": "game",
+        "mode": "puzzle",
+        "status": "finished",
+        "countdown": null,
+        "phase": "active",
+        "puzzleId": "t5r-drift-08",
+        "puzzleCompletion": "finished",
+        "puzzleTargetsRemaining": 0,
+        "puzzleTargetsInitial": 20,
+        "puzzleUndoDepth": 6,
+        "mutation": null,
+        "score": 326,
+        "lines": 3,
+        "combo": 0,
+        "bedrockRows": 0,
+        "bedrockIntervalSeconds": null,
+        "bedrockNextSeconds": null,
+        "bedrockPending": false,
+        "stoneIntervalSeconds": null,
+        "stoneNextSeconds": null,
+        "fallingStones": [],
+        "fallTicks": 48,
+        "placedPieces": 6,
+        "active": null,
+        "next": "O",
+        "nextPreviews": [
+          "O",
+          "O"
+        ],
+        "visibleBoard": [
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          "..........",
+          ".........S",
+          ".........A",
+          "..........",
+          "I.....JJS.",
+          "IZZTTTJSS."
+        ]
+      },
+      "celebrationText": "恭喜你破解谜题\n当前最优步数：6步\n重来\n返回关卡库"
+    },
+    "identity": {
+      "title": "TetraMorph",
+      "href": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='24' height='24' rx='3' fill='%233f9f96'/%3E%3Crect x='34' y='6' width='24' height='24' rx='3' fill='%236687d5'/%3E%3Crect x='6' y='34' width='24' height='24' rx='3' fill='%23c98243'/%3E%3Crect x='34' y='34' width='24' height='24' rx='3' fill='%239875be'/%3E%3C/svg%3E",
+      "colors": [
+        "#3f9f96",
+        "#6687d5",
+        "#c98243",
+        "#9875be"
+      ],
+      "fourColor": true
     }
   },
   "consoleErrors": []
