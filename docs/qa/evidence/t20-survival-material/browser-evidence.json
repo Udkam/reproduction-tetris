@@ -1,0 +1,1549 @@
+{
+  "candidateSha": "92337cb",
+  "generatedAt": "2026-08-01T04:06:55.453Z",
+  "contract": {
+    "singleCanvas": true,
+    "noDomCells": true,
+    "desktopFitsViewport": true,
+    "reducedFitsViewport": true,
+    "warningAnimated": true,
+    "reducedWarningStatic": true,
+    "consoleErrors": []
+  },
+  "captures": {
+    "active": {
+      "file": "survival-active-wall-1440x900-zh.png",
+      "sha256": "e3a8b06a09b9910d32595e3945a356aa63eb2d7cb12b6ebd96bf9ddf62a2e068"
+    },
+    "warningPhaseA": {
+      "file": "survival-warning-phase-a-1440x900-zh.png",
+      "sha256": "bf794191e6819fec7bd08e26f13d14f448a39ad9a7630ec0a259f6b49490fdb0"
+    },
+    "warningPhaseB": {
+      "file": "survival-warning-phase-b-1440x900-zh.png",
+      "sha256": "5917f9e9e0e684bc0ff9aa658919bb33ab55c4ba425f842bf120a712d4b2de2a"
+    },
+    "reducedWarning": {
+      "file": "survival-warning-reduced-1280x720-zh.png",
+      "sha256": "c9733bfea3784589f3472dd666e4de514159554e3d8a1e9727f79b6abbbf9bd7"
+    }
+  },
+  "normal": {
+    "text": {
+      "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+      "screen": "game",
+      "mode": "race",
+      "status": "playing",
+      "countdown": null,
+      "phase": "active",
+      "puzzleId": null,
+      "puzzleCompletion": null,
+      "puzzleTargetsRemaining": 0,
+      "puzzleTargetsInitial": 0,
+      "puzzleUndoDepth": 0,
+      "mutation": null,
+      "score": 0,
+      "lines": 0,
+      "combo": 0,
+      "bedrockRows": 3,
+      "bedrockIntervalSeconds": 13,
+      "bedrockNextSeconds": 0,
+      "bedrockPending": true,
+      "stoneIntervalSeconds": 20,
+      "stoneNextSeconds": 2,
+      "fallingStones": [],
+      "fallTicks": 40,
+      "placedPieces": 1,
+      "active": {
+        "type": "S",
+        "x": 3,
+        "y": 29,
+        "rotation": 0
+      },
+      "next": "J",
+      "nextPreviews": [
+        "J"
+      ],
+      "visibleBoard": [
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "....OO....",
+        "....OO....",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB"
+      ]
+    },
+    "qa": {
+      "screen": "game",
+      "countdown": null,
+      "state": {
+        "board": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ]
+        ],
+        "active": {
+          "type": "S",
+          "rotation": 0,
+          "x": 3,
+          "y": 29
+        },
+        "queue": [
+          "J",
+          "L",
+          "I",
+          "Z",
+          "T"
+        ],
+        "score": 0,
+        "lines": 0,
+        "combo": 0,
+        "level": 0,
+        "mode": "race",
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzleTargetCells": [],
+        "puzzleInitialTargetCount": 0,
+        "puzzleBoardRows": null,
+        "puzzleQueue": null,
+        "puzzleQueueIndex": 0,
+        "puzzleSpawnCount": 0,
+        "puzzleGoal": null,
+        "puzzleCompletion": null,
+        "puzzleUndoHistory": [],
+        "puzzleActiveSpawnCheckpoint": null,
+        "completedLevelId": null,
+        "nextUnlockedLevelId": null,
+        "pieceCount": 1,
+        "survivalBedrockRows": 3,
+        "survivalPressureTicks": 780,
+        "survivalRisePending": true,
+        "survivalDebris": [],
+        "survivalDebrisNextId": 1,
+        "survivalDebrisIntervalTicks": 1080,
+        "survivalDebrisIntervalSeconds": 20,
+        "survivalDebrisWarningColumns": [
+          7
+        ],
+        "survivalDebrisWarningHeight": 2,
+        "survivalDebrisFallProgress": 0,
+        "survivalDebrisRandomizer": {
+          "seed": 2749234932,
+          "bag": []
+        },
+        "mutationActiveCarrier": null,
+        "mutationRandomizer": {
+          "seed": 746671277,
+          "bag": []
+        },
+        "mutationCarriers": [],
+        "mutationNextCarrierId": 1,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 0,
+        "mutationCollapseLandingLatched": false,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationLastItem": null,
+        "mutationLastItemTicks": 0,
+        "status": "playing",
+        "phase": "active",
+        "phaseTicks": 0,
+        "pendingClearRows": [],
+        "gravityTicks": 19,
+        "lockTicks": 0,
+        "lockResets": 0,
+        "elapsedTicks": 1080,
+        "randomizer": {
+          "seed": 857513172,
+          "bag": []
+        },
+        "seed": 1641289964
+      },
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 810,
+          "resolution": 1
+        },
+        "board": {
+          "x": 61.5,
+          "y": 14,
+          "width": 391,
+          "height": 782,
+          "cell": 39.1
+        },
+        "preview": {
+          "x": 504.5,
+          "y": 429.5,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "J",
+        "previewPieces": [
+          "J"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 29
+          },
+          {
+            "x": 5,
+            "y": 29
+          },
+          {
+            "x": 3,
+            "y": 30
+          },
+          {
+            "x": 4,
+            "y": 30
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 33
+          },
+          {
+            "x": 5,
+            "y": 33
+          },
+          {
+            "x": 3,
+            "y": 34
+          },
+          {
+            "x": 4,
+            "y": 34
+          }
+        ],
+        "visibleLockedCells": 34,
+        "presentation": {
+          "x": 3,
+          "y": 29,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [
+          7
+        ],
+        "survivalDebrisWarningHeight": 2,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "bounds": {
+        "board": {
+          "left": 402.5,
+          "top": 91,
+          "right": 793.5,
+          "bottom": 873,
+          "width": 391,
+          "height": 782
+        },
+        "stats": {
+          "left": 831.5,
+          "top": 319.5,
+          "right": 1037.5,
+          "bottom": 445.5,
+          "width": 206,
+          "height": 126
+        },
+        "next": {
+          "left": 845.5,
+          "top": 506.5,
+          "right": 1023.5,
+          "bottom": 630.5,
+          "width": 178,
+          "height": 124
+        },
+        "touch": null
+      },
+      "assertions": {
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "minButtonWidth": 58.015625,
+        "minButtonHeight": 44,
+        "noHorizontalOverflow": true,
+        "noVerticalOverflow": true
+      }
+    },
+    "warningColumns": [
+      7
+    ],
+    "warningHeight": 2
+  },
+  "reduced": {
+    "text": {
+      "coordinateSystem": "board origin is top-left; x increases right; y increases down; visible board is 10 columns by 20 rows",
+      "screen": "game",
+      "mode": "race",
+      "status": "playing",
+      "countdown": null,
+      "phase": "active",
+      "puzzleId": null,
+      "puzzleCompletion": null,
+      "puzzleTargetsRemaining": 0,
+      "puzzleTargetsInitial": 0,
+      "puzzleUndoDepth": 0,
+      "mutation": null,
+      "score": 0,
+      "lines": 0,
+      "combo": 0,
+      "bedrockRows": 3,
+      "bedrockIntervalSeconds": 13,
+      "bedrockNextSeconds": 0,
+      "bedrockPending": true,
+      "stoneIntervalSeconds": 20,
+      "stoneNextSeconds": 2,
+      "fallingStones": [],
+      "fallTicks": 40,
+      "placedPieces": 1,
+      "active": {
+        "type": "S",
+        "x": 3,
+        "y": 29,
+        "rotation": 0
+      },
+      "next": "Z",
+      "nextPreviews": [
+        "Z"
+      ],
+      "visibleBoard": [
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "..........",
+        "....OO....",
+        "....OO....",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB",
+        "BBBBBBBBBB"
+      ]
+    },
+    "qa": {
+      "screen": "game",
+      "countdown": null,
+      "state": {
+        "board": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ]
+        ],
+        "active": {
+          "type": "S",
+          "rotation": 0,
+          "x": 3,
+          "y": 29
+        },
+        "queue": [
+          "Z",
+          "L",
+          "T",
+          "J",
+          "I"
+        ],
+        "score": 0,
+        "lines": 0,
+        "combo": 0,
+        "level": 0,
+        "mode": "race",
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzleTargetCells": [],
+        "puzzleInitialTargetCount": 0,
+        "puzzleBoardRows": null,
+        "puzzleQueue": null,
+        "puzzleQueueIndex": 0,
+        "puzzleSpawnCount": 0,
+        "puzzleGoal": null,
+        "puzzleCompletion": null,
+        "puzzleUndoHistory": [],
+        "puzzleActiveSpawnCheckpoint": null,
+        "completedLevelId": null,
+        "nextUnlockedLevelId": null,
+        "pieceCount": 1,
+        "survivalBedrockRows": 3,
+        "survivalPressureTicks": 780,
+        "survivalRisePending": true,
+        "survivalDebris": [],
+        "survivalDebrisNextId": 1,
+        "survivalDebrisIntervalTicks": 1080,
+        "survivalDebrisIntervalSeconds": 20,
+        "survivalDebrisWarningColumns": [
+          1
+        ],
+        "survivalDebrisWarningHeight": 1,
+        "survivalDebrisFallProgress": 0,
+        "survivalDebrisRandomizer": {
+          "seed": 1073409001,
+          "bag": []
+        },
+        "mutationActiveCarrier": null,
+        "mutationRandomizer": {
+          "seed": 1862329586,
+          "bag": []
+        },
+        "mutationCarriers": [],
+        "mutationNextCarrierId": 1,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 0,
+        "mutationCollapseLandingLatched": false,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationLastItem": null,
+        "mutationLastItemTicks": 0,
+        "status": "playing",
+        "phase": "active",
+        "phaseTicks": 0,
+        "pendingClearRows": [],
+        "gravityTicks": 19,
+        "lockTicks": 0,
+        "lockResets": 0,
+        "elapsedTicks": 1080,
+        "randomizer": {
+          "seed": 2778741308,
+          "bag": []
+        },
+        "seed": 576041139
+      },
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 630,
+          "resolution": 1
+        },
+        "board": {
+          "x": 106.5,
+          "y": 14,
+          "width": 301,
+          "height": 602,
+          "cell": 30.1
+        },
+        "preview": {
+          "x": 459.5,
+          "y": 339.5,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "Z",
+        "previewPieces": [
+          "Z"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 29
+          },
+          {
+            "x": 5,
+            "y": 29
+          },
+          {
+            "x": 3,
+            "y": 30
+          },
+          {
+            "x": 4,
+            "y": 30
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 33
+          },
+          {
+            "x": 5,
+            "y": 33
+          },
+          {
+            "x": 3,
+            "y": 34
+          },
+          {
+            "x": 4,
+            "y": 34
+          }
+        ],
+        "visibleLockedCells": 34,
+        "presentation": {
+          "x": 3,
+          "y": 29,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [
+          1
+        ],
+        "survivalDebrisWarningHeight": 1,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "scrollWidth": 1280,
+        "scrollHeight": 720
+      },
+      "bounds": {
+        "board": {
+          "left": 367.5,
+          "top": 91,
+          "right": 668.5,
+          "bottom": 693,
+          "width": 301,
+          "height": 602
+        },
+        "stats": {
+          "left": 706.5,
+          "top": 229.5,
+          "right": 912.5,
+          "bottom": 355.5,
+          "width": 206,
+          "height": 126
+        },
+        "next": {
+          "left": 720.5,
+          "top": 416.5,
+          "right": 898.5,
+          "bottom": 540.5,
+          "width": 178,
+          "height": 124
+        },
+        "touch": null
+      },
+      "assertions": {
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "minButtonWidth": 58.015625,
+        "minButtonHeight": 44,
+        "noHorizontalOverflow": true,
+        "noVerticalOverflow": true
+      }
+    }
+  }
+}
