@@ -36,5 +36,6 @@ describe('Phase 12 Settings authority', () => {
     expect(settings).toMatch(/\.settings-console__controls \.language-control button,[\s\S]*min-height:\s*44px/);
     expect(settings).toMatch(/@media \(max-width:\s*460px\)[\s\S]*grid-template-areas:\s*"heading"\s*"language"\s*"sound"\s*"actions"/);
     expect(settings).toMatch(/@media \(max-height:\s*520px\) and \(min-width:\s*700px\)/);
+    expect(settings).toMatch(/@media \(max-height:\s*520px\) and \(min-width:\s*700px\)[\s\S]*max-height:\s*calc\(100dvh - 51px\);[\s\S]*grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\);/);
   });
 });

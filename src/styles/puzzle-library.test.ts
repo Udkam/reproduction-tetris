@@ -58,6 +58,11 @@ describe('Phase 12 Puzzle curriculum authority', () => {
     expect(gallery).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*animation:\s*none !important/);
   });
 
+  it('keeps localized Puzzle titles inside a complete glyph box', () => {
+    expect(gallery).toMatch(/\.puzzle-gallery__title\s*\{[^}]*min-block-size:\s*1\.34em;[^}]*padding-block:\s*\.06em;[^}]*overflow:\s*visible;[^}]*line-height:\s*1\.2;[^}]*text-overflow:\s*clip;/s);
+    expect(gallery).not.toMatch(/\.puzzle-gallery__title\s*\{[^}]*text-overflow:\s*ellipsis;/s);
+  });
+
   it('implements independent keyboard navigation for category tabs and level grids', () => {
     expect(app).toContain('const movePageFocus');
     expect(app).toContain('const moveLevelFocus');

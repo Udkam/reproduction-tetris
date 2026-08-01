@@ -171,15 +171,18 @@
 }
 
 .puzzle-gallery__title {
+  box-sizing: border-box;
   min-width: 0;
+  min-block-size: 1.34em;
   margin: 0;
-  overflow: hidden;
+  padding-block: .06em;
+  overflow: visible;
   color: #f5f9fb;
   font-size: clamp(29px, 3.4vw, 46px);
   font-weight: 740;
   letter-spacing: -.055em;
-  line-height: 1;
-  text-overflow: ellipsis;
+  line-height: 1.2;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
