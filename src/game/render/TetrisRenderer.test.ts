@@ -561,7 +561,7 @@ describe('Puzzle undo presentation reset', () => {
     }
     expect(Math.max(...luminance) - Math.min(...luminance)).toBeGreaterThan(30);
     expect(colors.size).toBeGreaterThanOrEqual(12);
-    expect(colors.size).toBeLessThanOrEqual(48);
+    expect(colors.size).toBeLessThanOrEqual(128);
     expect(adjacentDelta / adjacentPairs).toBeLessThan(8);
     expect(sharpEdges / adjacentPairs).toBeLessThan(0.04);
   });

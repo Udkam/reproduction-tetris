@@ -378,31 +378,26 @@ const BEDROCK_MINERAL_RAMP = [
 export function buildBedrockTexturePixels(requestedWidth: number, requestedHeight: number): Uint8ClampedArray {
   const width = Math.max(2, Math.floor(requestedWidth));
   const height = Math.max(2, Math.floor(requestedHeight));
-  const siteColumns = 7;
-  const siteRows = 3;
-  const sites: Array<{ u: number; v: number; band: number }> = [];
-  for (let row = 0; row < siteRows; row += 1) {
-    for (let column = 0; column < siteColumns; column += 1) {
-      const jitterX = (rockHash(column, row, 0x31b7) - 0.5) * 0.56;
-      const jitterY = (rockHash(column, row, 0x6a51) - 0.5) * 0.52;
-      const u = (column + 0.5 + jitterX) / siteColumns;
-      const v = (row + 0.5 + jitterY) / siteRows;
-      const mineral = rockNoise(u * 2.35 + 1.7, v * 1.9 + 4.2, 0x4d31);
-      const plane = rockHash(column, row, 0x72a5) - 0.5;
-      const tone = Math.max(0, Math.min(1, 0.1 + mineral * 0.72 + plane * 0.62 - v * 0.08 + (1 - u) * 0.05));
-      sites.push({
-        u,
-        v,
-        band: Math.max(0, Math.min(
-          BEDROCK_MINERAL_RAMP.length - 1,
-          Math.round(tone * (BEDROCK_MINERAL_RAMP.length - 1)),
-        )),
-      });
-    }
-  }
-
-  const pixels = new Uint8ClampedArray(width * height * 4);
   const aspect = width / height;
+  // Halton-distributed facets have no row, column, or cell cadence. The narrow
+  // neighbour blend removes drawn seams while retaining broad game-scale rock planes.
+  const sites = Array.from({ length: 19 }, (_, index) => {
+    const sample = index + 3;
+    const u = halton(sample, 2);
+    const v = halton(sample, 3);
+    const mineral = rockNoise(u * 2.2 + 1.7, v * 1.8 + 4.2, 0x4d31);
+    const variation = rockHash(index, 4, 0x72a5) - 0.5;
+    const tone = Math.max(0, Math.min(1, 0.16 + mineral * 0.69 + variation * 0.44 - v * 0.07));
+    return {
+      u,
+      v,
+      band: Math.max(0, Math.min(
+        BEDROCK_MINERAL_RAMP.length - 1,
+        Math.round(tone * (BEDROCK_MINERAL_RAMP.length - 1)),
+      )),
+    };
+  });
+  const pixels = new Uint8ClampedArray(width * height * 4);
   for (let y = 0; y < height; y += 1) {
     const v = y / (height - 1);
     for (let x = 0; x < width; x += 1) {
@@ -425,18 +420,23 @@ export function buildBedrockTexturePixels(requestedWidth: number, requestedHeigh
           secondDistance = distance;
         }
       }
-      const band = secondDistance - nearestDistance < 0.012
-        ? Math.round((nearest.band + secondNearest.band) / 2)
-        : nearest.band;
-      const color = BEDROCK_MINERAL_RAMP[band]!;
+      const distanceGap = secondDistance - nearestDistance;
+      const neighbourMix = Math.max(0, Math.min(0.5, (0.026 - distanceGap) / 0.052));
+      const rawRampPosition = nearest.band * (1 - neighbourMix) + secondNearest.band * neighbourMix;
+      const rampPosition = Math.round(rawRampPosition * 4) / 4;
+      const lowerBand = Math.max(0, Math.min(BEDROCK_MINERAL_RAMP.length - 1, Math.floor(rampPosition)));
+      const upperBand = Math.min(BEDROCK_MINERAL_RAMP.length - 1, lowerBand + 1);
+      const blend = rampPosition - lowerBand;
+      const lowerColor = BEDROCK_MINERAL_RAMP[lowerBand]!;
+      const upperColor = BEDROCK_MINERAL_RAMP[upperBand]!;
       const facetLight = Math.max(-0.045, Math.min(0.045, (
         (nearest.u - u) * 0.08 + (nearest.v - v) * 0.055
       )));
       const shade = Math.round((0.93 + (1 - v) * 0.08 + facetLight) * 40) / 40;
       const index = (y * width + x) * 4;
-      pixels[index] = Math.round(color[0] * shade);
-      pixels[index + 1] = Math.round(color[1] * shade);
-      pixels[index + 2] = Math.round(color[2] * shade);
+      pixels[index] = Math.round((lowerColor[0] * (1 - blend) + upperColor[0] * blend) * shade);
+      pixels[index + 1] = Math.round((lowerColor[1] * (1 - blend) + upperColor[1] * blend) * shade);
+      pixels[index + 2] = Math.round((lowerColor[2] * (1 - blend) + upperColor[2] * blend) * shade);
       pixels[index + 3] = 255;
     }
   }
@@ -453,7 +453,7 @@ function buildRockLip(
   const points: ReliefPoint[] = [[left, top], [left + width, top]];
   for (let segment = segments; segment >= 0; segment -= 1) {
     const ratio = segment / segments;
-    const depth = size * (0.1 + halton(segment + 5, 3) * 0.13);
+    const depth = size * (0.045 + halton(segment + 5, 3) * 0.065);
     points.push([left + width * ratio, top + depth]);
   }
   return points;
