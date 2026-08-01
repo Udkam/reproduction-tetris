@@ -1,4 +1,48 @@
-# Current Task — T19 TetraMorph Phase 12 Material Truth and Learnable Puzzles
+# Current Task — T20 TetraMorph Survival Material Harmony Correction
+
+## T20 active goal — game-native cavern wall and unmistakable rockfall warning
+
+**Status (2026-08-01): ACTIVE / UNVERIFIED.**
+
+This bounded post-acceptance correction starts from clean pushed base `0e21365`.
+Phase 12 remains historically accepted, but direct player review rejects the final
+bedrock texture because its dense neutral-grey photographic relief conflicts with the
+bright, simplified enamel-mineral language of the playable pieces. The player also
+finds the existing steady rockfall arrow too quiet and explicitly permits a flashing
+warning. No Survival rule, collision, cadence, score, replay, save, or layout change is
+authorized.
+
+1. **Bedrock remains one truthful wall.** Preserve the continuous rectangular mass,
+   mathematically flat contact plane, staged entry rise, renderer-lifetime cached
+   texture, deterministic generation, and teardown. Do not restore a `10 x N` cell
+   grid, masonry, bricks, wood, decals, cracks, isolated boulders, or an irregular
+   collision silhouette.
+2. **The material becomes stylized rather than photographic.** Replace dense fine
+   grain and neutral photo-grey microcontrast with a cold blue-grey mineral ramp of
+   roughly five to seven perceptual bands. Broad low-frequency planes may cross every
+   logical cell boundary; a restrained upper-left lift and lower depth may add mass.
+   At gameplay scale the wall must belong beside the enamel tetrominoes instead of
+   reading as a pasted photograph, asset-store texture, concrete slab, or metal panel.
+3. **Rockfall warning becomes unmistakable without becoming noise.** The frozen source
+   column keeps one downward arrow, but it may use a short rhythmic pulse plus a
+   restrained board/column flash in a warm warning accent. The flash must cease as soon
+   as the warning clears, never obscure the active piece, and never resemble Mutation
+   state feedback. `prefers-reduced-motion` replaces the pulse with one steady,
+   high-contrast warning endpoint.
+4. **Acceptance is fail-closed.** Direct renderer tests must prove deterministic pixel
+   output, cold chroma, bounded tonal complexity, low high-frequency neighbour change,
+   continuous wall geometry, a time-varying normal-motion warning, and a time-invariant
+   reduced-motion warning. Final evidence must show the complete live Survival page at
+   ordinary desktop scale with one Canvas, zero DOM board cells, zero browser errors,
+   the wall visible beneath real pieces, and the warned column visible before a rock
+   event. Visual acceptance is required; a green test alone cannot close this slice.
+
+**Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
+paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and
+`docs/workstreams/tetris-t20-coordinator/THREAD_LOG.md`. Product work is limited to
+`src/game/render/TetrisRenderer.ts`, `src/game/render/TetrisRenderer.test.ts`,
+`src/game/render/theme.ts`, and `src/game/render/theme.test.ts`. Evidence, independent
+read-only QA, changelog disposition, and push remain separate checkpoints.
 
 ## Phase 12 active goal — continuous settings, solid geology, authored technique
 

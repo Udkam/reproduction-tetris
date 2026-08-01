@@ -3,6 +3,35 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-01 T20 — Survival material harmony correction
+
+The Survival floor is still an exposed cavern wall, but its visual truth is judged
+inside TetraMorph's own material system. The rejected height-field looked like a
+high-frequency grayscale photograph placed beneath clean enamel pieces. More literal
+surface detail made the wall less believable in this game.
+
+The replacement is **stylized mineral relief**. One deterministic, renderer-cached
+surface uses broad low-frequency masses, a limited cold blue-grey tonal ramp, and one
+restrained upper-left light direction. Regions span multiple cells and never reveal
+the occupancy grid. Tonal transitions may be softly interpolated, but the surface
+cannot regain photographic microtexture, neutral monochrome noise, pebble detail,
+camouflage, hard contour rings, or a tessellated low-poly mosaic. The exact collision
+top remains level, and a narrow integrated lip may clarify contact without becoming a
+separate platform bar. The lower wall deepens gently so it retains weight beside the
+brighter playable palette.
+
+The rockfall pre-warning is a signal layer, not geology. A warm accent distinguishes it
+from the cold stone family and from every Mutation item. The source column retains a
+single downward arrow with a longer shaft and clearer head. During normal motion the
+arrow, a narrow column wash, and a very restrained whole-well wash share one short
+rhythmic pulse; the board content stays readable and there is no sustained strobe after
+the Core warning state ends. Reduced motion renders the maximum-clarity static endpoint
+with no time-based opacity change.
+
+This correction does not alter stone count, frozen source column, 4x cadence,
+temporary-obstruction rules, coupled push, bedrock rise, scoring, replay, or save data.
+The procedural texture still allocates once per renderer and is destroyed on teardown.
+
 ## 2026-08-01 Phase 12 — material truth and authored learning
 
 Phase 12 responds to direct visual rejection by making fewer claims and making each
