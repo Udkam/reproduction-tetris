@@ -508,8 +508,8 @@ describe('Puzzle undo presentation reset', () => {
     internals.consumeEvents([{
       type: 'survival-stones-spawned',
       cells: [{ x: 2, y: 19 }, { x: 2, y: 20 }],
-      intervalSeconds: 20,
-      nextIntervalSeconds: 19,
+      intervalPieces: 8,
+      nextIntervalPieces: 8,
     }]);
     expect(internals.impact).toBeGreaterThan(0);
     internals.consumeEvents([{

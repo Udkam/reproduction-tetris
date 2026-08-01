@@ -175,10 +175,12 @@ export interface GameState {
   survivalDebris: readonly SurvivalDebris[];
   /** Stable identity for a new falling stone; useful for deterministic presentation. */
   survivalDebrisNextId: number;
-  /** Playing ticks consumed in the current stone-stream interval. */
-  survivalDebrisIntervalTicks: number;
-  /** Seconds used by the next stone-stream emission; starts at 20 and floors at 10. */
-  survivalDebrisIntervalSeconds: number;
+  /** Player pieces still to lock before rockfall accompanies the following spawn. */
+  survivalDebrisPiecesRemaining: number;
+  /** Current lock interval: starts at 8 pieces and floors at 4. */
+  survivalDebrisPieceInterval: number;
+  /** Completed rockfall events; every fourth event shortens the interval by one. */
+  survivalDebrisSpawnCount: number;
   /** The single canonical column announced before the next one-or-two-stone event. */
   survivalDebrisWarningColumns: readonly number[];
   /** Frozen height announced with the warning column; null when no event is planned. */
@@ -265,13 +267,13 @@ export type GameEvent =
     type: 'survival-stones-warned';
     columns: readonly number[];
     height: SurvivalDebrisHeight;
-    leadSeconds: number;
+    leadPieces: number;
   }
   | {
     type: 'survival-stones-spawned';
     cells: readonly Cell[];
-    intervalSeconds: number;
-    nextIntervalSeconds: number;
+    intervalPieces: number;
+    nextIntervalPieces: number;
   }
   | { type: 'survival-stones-landed'; cells: readonly Cell[] }
   | { type: 'level-up'; level: number }

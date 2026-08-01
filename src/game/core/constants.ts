@@ -22,12 +22,10 @@ export const SURVIVAL_INTERVAL_STEP_SECONDS = 1;
 export const SURVIVAL_MIN_INTERVAL_SECONDS = 6;
 /** Survival stays brisk but never accelerates as lines increase. */
 export const SURVIVAL_GRAVITY_TICKS = 40;
-/** The independent Survival stone stream starts slowly, then settles at ten seconds. */
-export const SURVIVAL_DEBRIS_INITIAL_INTERVAL_SECONDS = 20;
-export const SURVIVAL_DEBRIS_MIN_INTERVAL_SECONDS = 10;
-export const SURVIVAL_DEBRIS_INTERVAL_STEP_SECONDS = 1;
-/** Canonical warning lead before the independent stone event becomes due. */
-export const SURVIVAL_DEBRIS_WARNING_SECONDS = 2;
+/** Survival rockfall is paced by locked player pieces, not wall-clock time. */
+export const SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES = 8;
+export const SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES = 4;
+export const SURVIVAL_DEBRIS_EVENTS_PER_INTERVAL_STEP = 4;
 /** Exactly 4× normal Survival gravity, represented with an integer accumulator. */
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 4;
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD = SURVIVAL_GRAVITY_TICKS;
