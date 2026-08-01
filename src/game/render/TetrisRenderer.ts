@@ -203,9 +203,10 @@ interface CollapseTrail {
 }
 
 type MutationFieldStage = 'enter' | 'active' | 'exit';
+type TimedMutationItem = Extract<MutationItem, 'freeze' | 'collapse' | 'multiplier'>;
 
 interface MutationField {
-  item: Exclude<MutationItem, 'bomb'>;
+  item: TimedMutationItem;
   stage: MutationFieldStage;
   elapsed: number;
 }
@@ -568,7 +569,7 @@ export class TetrisRenderer {
    */
   private readonly collapseIncomingStamps = new Uint32Array(BOARD_WIDTH * BOARD_HEIGHT);
   private collapseIncomingStamp = 0;
-  private readonly mutationFields = new Map<Exclude<MutationItem, 'bomb'>, MutationField>();
+  private readonly mutationFields = new Map<TimedMutationItem, MutationField>();
   private readonly mutationParticles: MutationParticle[] = Array.from(
     { length: MUTATION_PARTICLE_LIMIT },
     () => ({
@@ -1247,6 +1248,16 @@ export class TetrisRenderer {
           .fill({ color: token.palette.deep, alpha: .5 })
           .circle(centerX - mark * .18, centerY - mark * .18, mark * .26)
           .fill({ color: token.palette.highlight, alpha: .78 * pulse });
+      } else if (item === 'reshape') {
+        for (let row = -1; row <= 1; row += 1) {
+          const width = mark * (row === 0 ? 2.3 : 1.62);
+          graphics
+            .roundRect(centerX - width / 2, centerY + row * mark * .66 - mark * .17, width, mark * .34, mark * .16)
+            .fill({
+              color: row === 0 ? token.palette.highlight : token.palette.primary,
+              alpha: (row === 0 ? .7 : .44) * pulse,
+            });
+        }
       } else {
         this.drawMutationDiamond(graphics, centerX, centerY, mark * .8, mark * .8, token.palette.highlight, .5 * pulse);
         this.strokeSegments(graphics, [
@@ -1323,6 +1334,25 @@ export class TetrisRenderer {
           [centerX + radius * 1.46, centerY - radius * 0.4, centerX + radius * 1.92, centerY - radius * 0.66],
           [centerX - radius * 1.48, centerY + radius * 0.78, centerX - radius * 1.92, centerY + radius * 1.16],
         ], material.innerEdge, 0.92, Math.max(1, radius * 0.22));
+      } else if (item === 'reshape') {
+        const unit = radius * .66;
+        const gap = unit * .16;
+        const totalWidth = unit * 4 + gap * 3;
+        const left = centerX - totalWidth / 2;
+        for (let index = 0; index < 4; index += 1) {
+          graphics
+            .roundRect(left + index * (unit + gap), centerY - unit / 2, unit, unit, unit * .18)
+            .fill({
+              color: index === 1 || index === 2 ? material.innerEdge : material.edge,
+              alpha: .94,
+            });
+        }
+        this.strokeSegments(graphics, [
+          [left - radius * .38, centerY - unit * .82, left - radius * .38, centerY + unit * .82],
+          [left - radius * .38, centerY - unit * .82, left + radius * .08, centerY - unit * .82],
+          [left + totalWidth + radius * .38, centerY - unit * .82, left + totalWidth + radius * .38, centerY + unit * .82],
+          [left + totalWidth - radius * .08, centerY + unit * .82, left + totalWidth + radius * .38, centerY + unit * .82],
+        ], material.fillStart, .86, Math.max(1, radius * .18));
       } else {
         graphics.circle(centerX, centerY, radius * 1.35).fill({ color: material.edge, alpha: 0.76 });
         this.drawMutationStar(graphics, centerX, centerY, radius * 1.25, radius * 0.52, material.innerEdge, 0.97);
@@ -1439,6 +1469,20 @@ export class TetrisRenderer {
         if (exposed.bottom) marks.push([x + layout.cell / 2, bottom - inset]);
         if (exposed.left && exposed.top) marks.push([x + inset, y + inset]);
         if (exposed.right && exposed.bottom) marks.push([right - inset, bottom - inset]);
+      } else if (item === 'reshape') {
+        const centerX = x + layout.cell / 2;
+        if (exposed.top) {
+          accents.push(
+            [centerX - layout.cell * .22, y + inset * .72, centerX - layout.cell * .04, y + inset * .72],
+            [centerX + layout.cell * .04, y + inset * .72, centerX + layout.cell * .22, y + inset * .72],
+          );
+        }
+        if (exposed.bottom) {
+          accents.push(
+            [centerX - layout.cell * .22, bottom - inset * .72, centerX - layout.cell * .04, bottom - inset * .72],
+            [centerX + layout.cell * .04, bottom - inset * .72, centerX + layout.cell * .22, bottom - inset * .72],
+          );
+        }
       }
     }
     this.strokeSegments(
@@ -2464,7 +2508,7 @@ export class TetrisRenderer {
   /** Persistent, low-obstruction board treatment makes every ten-second state legible. */
   private drawActiveMutationAtmosphere(graphics: Graphics, state: GameState, layout: BoardLayout): void {
     if (state.mode !== 'sprint') return;
-    const fallback: Array<Exclude<MutationItem, 'bomb'>> = [];
+    const fallback: TimedMutationItem[] = [];
     if (state.mutationFreezeTicks > 0) fallback.push('freeze');
     if (state.mutationCollapseTicks > 0) fallback.push('collapse');
     if (state.mutationMultiplierTicks > 0) fallback.push('multiplier');
@@ -2572,56 +2616,53 @@ export class TetrisRenderer {
       );
     }
 
-    // Seven constant-alpha force lanes descend toward the live stack. Only their
-    // position advances, so Supergravity reads as mass and acceleration without a
-    // brightness pulse or a screen-sized emblem.
-    const lanes = [
-      [.07, .02, 0], [.2, .17, .38], [.35, .06, .7], [.5, .22, .22],
-      [.65, .1, .56], [.8, .26, .84], [.93, .04, .46],
-    ] as const;
-    for (const [xFactor, startFactor, phaseOffset] of lanes) {
-      const column = Math.max(0, Math.min(BOARD_WIDTH - 1, Math.floor(xFactor * BOARD_WIDTH)));
-      const centerX = layout.x + (column + .5) * layout.cell;
-      const targetY = Math.max(layout.y + layout.cell * 2.2, stackTopByColumn[column]! - layout.cell * .2);
-      const startY = layout.y + layout.cell * (0.45 + startFactor);
-      const travel = Math.max(layout.cell * 1.4, targetY - startY);
-      const headY = this.options.reducedMotion
-        ? startY + travel * (.48 + phaseOffset * .08)
-        : startY + ((phase + phaseOffset) % 1) * travel;
-      const length = layout.cell * (1.05 + phaseOffset * .55);
-      const top = Math.max(startY, headY - length);
-      const half = Math.max(1.5, layout.cell * .055);
+    const occupiedColumns = stackTopByColumn
+      .map((top, column) => ({ top, column }))
+      .filter(({ top }) => top < layout.y + layout.height - layout.cell * .2);
+    const firstColumn = occupiedColumns.length ? occupiedColumns[0]!.column : 1;
+    const lastColumn = occupiedColumns.length ? occupiedColumns[occupiedColumns.length - 1]!.column : BOARD_WIDTH - 2;
+    const stackTop = occupiedColumns.length
+      ? Math.min(...occupiedColumns.map(({ top }) => top))
+      : layout.y + layout.height - layout.cell * .16;
+    const centerX = layout.x + ((firstColumn + lastColumn + 1) / 2) * layout.cell;
+    const halfWidth = Math.min(
+      layout.width * .42,
+      Math.max(layout.cell * 2.2, (lastColumn - firstColumn + 2.3) * layout.cell / 2),
+    );
+
+    // Broad, shallow contours compress around the live stack. Their opacity is
+    // constant; only a restrained downward translation moves, so Supergravity
+    // reads as sustained pressure rather than rain or a flashing symbol.
+    for (let contour = 0; contour < 3; contour += 1) {
+      const travel = this.options.reducedMotion ? .44 : (phase + contour * .27) % 1;
+      const baseline = Math.max(
+        layout.y + layout.cell * (1.15 + contour * .78),
+        stackTop - layout.cell * (2.7 - contour * .64) + travel * layout.cell * .32,
+      );
+      const width = halfWidth * (1 - contour * .12);
+      const depth = layout.cell * (.22 + contour * .035);
       graphics
         .poly([
-          centerX - half * .58, top,
-          centerX + half * .58, top,
-          centerX + half, headY - layout.cell * .18,
-          centerX, headY,
-          centerX - half, headY - layout.cell * .18,
+          centerX - width, baseline,
+          centerX - width * .28, baseline + depth * .34,
+          centerX, baseline + depth,
+          centerX + width * .28, baseline + depth * .34,
+          centerX + width, baseline,
+          centerX + width * .94, baseline + depth * .22,
+          centerX, baseline + depth * 1.34,
+          centerX - width * .94, baseline + depth * .22,
         ])
         .fill({
-          color: phaseOffset > .5 ? token.palette.highlight : token.palette.primary,
-          alpha: (phaseOffset > .5 ? .34 : .42) * opacity,
+          color: contour === 1 ? token.palette.highlight : token.palette.primary,
+          alpha: (.13 + contour * .035) * opacity,
         });
     }
 
-    // Compact load wedges terminate immediately above occupied columns. They make
-    // the stack itself look compressed while avoiding a broad horizontal band.
-    for (const column of [1, 3, 5, 7, 9]) {
-      const centerX = layout.x + (column + .5) * layout.cell;
-      const targetY = stackTopByColumn[column]!;
-      const height = layout.cell * .48;
-      const halfWidth = layout.cell * .13;
-      graphics
-        .poly([
-          centerX - halfWidth * .34, targetY - height,
-          centerX + halfWidth * .34, targetY - height,
-          centerX + halfWidth, targetY - layout.cell * .08,
-          centerX, targetY,
-          centerX - halfWidth, targetY - layout.cell * .08,
-        ])
-        .fill({ color: token.palette.deep, alpha: .34 * opacity });
-    }
+    // A low contact shelf makes the stack itself look loaded without covering it.
+    const shelfY = Math.max(layout.y + layout.cell * 2.2, stackTop - layout.cell * .18);
+    graphics
+      .roundRect(centerX - halfWidth * .7, shelfY, halfWidth * 1.4, Math.max(2, layout.cell * .075), layout.cell * .04)
+      .fill({ color: token.palette.deep, alpha: .3 * opacity });
   }
 
   private drawMultiplierAtmosphere(
@@ -2632,46 +2673,40 @@ export class TetrisRenderer {
     factor: 2 | 4,
   ): void {
     const token = MUTATION_VFX_TOKENS.multiplier;
-    const centerX = layout.x + layout.width / 2;
-    const centerY = layout.y + layout.height * .43;
-    // The multiplier seal is a persistent status mark, not a flash. Keep its
-    // footprint and alpha identical across frames; 4x adds detail inside the
-    // same boundary instead of scaling into a board-wide signal.
-    const radius = Math.max(layout.cell * 1.08, layout.width * .075);
-    graphics.circle(centerX, centerY, radius).fill({ color: token.palette.primary, alpha: 0.09 * opacity });
-    graphics.circle(centerX, centerY, radius * .58).fill({ color: token.palette.highlight, alpha: 0.09 * opacity });
-    graphics.circle(centerX, centerY, radius * .94)
+    const centerX = layout.x + layout.width - layout.cell * .72;
+    const centerY = layout.y + layout.cell * .72;
+    // Multiplier is a quiet corner constellation. The HUD owns the timer, while
+    // the board gets a small fixed landmark instead of a central seal.
+    const badgeWidth = layout.cell * 1.02;
+    const badgeHeight = layout.cell * .66;
+    graphics
+      .roundRect(centerX - badgeWidth / 2, centerY - badgeHeight / 2, badgeWidth, badgeHeight, layout.cell * .13)
+      .fill({ color: token.palette.deep, alpha: .18 * opacity })
       .stroke({
         color: factor === 4 ? token.palette.highlight : token.palette.primary,
-        alpha: (factor === 4 ? .5 : .34) * opacity,
-        width: Math.max(1, layout.cell * .045),
+        alpha: .42 * opacity,
+        width: Math.max(1, layout.cell * .032),
       });
     this.drawMutationStar(
       graphics,
-      centerX,
+      centerX - layout.cell * .27,
       centerY,
-      Math.max(layout.cell * .5, layout.width * .034),
-      Math.max(layout.cell * .15, layout.width * .01),
-      token.palette.highlight,
-      0.56 * opacity,
+      layout.cell * .17,
+      layout.cell * .06,
+      token.palette.primary,
+      .72 * opacity,
     );
-    const ray = radius * 1.06;
-    this.strokeSegments(graphics, [
-      [centerX - ray, centerY, centerX - radius * .72, centerY],
-      [centerX + radius * .72, centerY, centerX + ray, centerY],
-      [centerX, centerY - ray, centerX, centerY - radius * .72],
-      [centerX, centerY + radius * .72, centerX, centerY + ray],
-    ], token.palette.primary, 0.38 * opacity, Math.max(1, layout.cell * .042));
     if (factor === 4) {
-      for (const angle of [-Math.PI * .25, Math.PI * .25, Math.PI * .75, Math.PI * 1.25]) {
-        const x = centerX + Math.cos(angle) * radius * .78;
-        const y = centerY + Math.sin(angle) * radius * .78;
+      for (const [x, y] of [
+        [centerX - layout.cell * .42, centerY - layout.cell * .2],
+        [centerX - layout.cell * .4, centerY + layout.cell * .2],
+      ] as const) {
         this.drawMutationStar(
           graphics,
           x,
           y,
-          Math.max(2.2, layout.cell * .13),
-          Math.max(1, layout.cell * .045),
+          Math.max(1.8, layout.cell * .075),
+          Math.max(.8, layout.cell * .028),
           token.palette.highlight,
           .62 * opacity,
         );
@@ -2679,12 +2714,12 @@ export class TetrisRenderer {
     }
     this.drawMutationMultiplierValue(
       graphics,
-      centerX,
-      centerY + radius * .54,
-      Math.max(4, layout.cell * .25),
+      centerX + layout.cell * .17,
+      centerY,
+      Math.max(2.6, layout.cell * .11),
       factor,
       token.palette.highlight,
-      .88 * opacity,
+      .82 * opacity,
     );
   }
 
@@ -2820,6 +2855,27 @@ export class TetrisRenderer {
         [centerX + size * .58, centerY + size * .28, centerX + size * .96, centerY + size * .48],
         [centerX + size * .18, centerY - size * .72, centerX + size * .42, centerY - size * 1.08],
       ], token.palette.highlight, .84, stroke);
+      return;
+    }
+    if (item === 'reshape') {
+      const unit = size * .42;
+      const gap = unit * .18;
+      const totalWidth = unit * 4 + gap * 3;
+      const left = centerX - totalWidth / 2;
+      for (let index = 0; index < 4; index += 1) {
+        graphics
+          .roundRect(left + index * (unit + gap), centerY - unit / 2, unit, unit, unit * .16)
+          .fill({
+            color: index === 1 || index === 2 ? token.palette.highlight : token.palette.primary,
+            alpha: .9,
+          });
+      }
+      this.strokeSegments(graphics, [
+        [left - size * .25, centerY - unit, left - size * .25, centerY + unit],
+        [left - size * .25, centerY - unit, left + size * .08, centerY - unit],
+        [left + totalWidth + size * .25, centerY - unit, left + totalWidth + size * .25, centerY + unit],
+        [left + totalWidth - size * .08, centerY + unit, left + totalWidth + size * .25, centerY + unit],
+      ], token.palette.highlight, .82, stroke);
       return;
     }
     graphics.circle(centerX, centerY, size * 1.08).fill({ color: token.palette.primary, alpha: factor === 4 ? .28 : .18 });
@@ -3004,6 +3060,43 @@ export class TetrisRenderer {
       return;
     }
 
+    if (flash.item === 'reshape') {
+      const align = flash.timeline.sample('align');
+      const commit = flash.timeline.sample('commit');
+      if (!align.active && !commit.active) return;
+      const progress = align.active ? align.value : 1;
+      const alpha = align.active ? 1 - align.progress * .12 : 1 - commit.progress;
+      const unit = Math.max(layout.cell * .24, 4);
+      const gap = unit * .2;
+      const totalWidth = unit * 4 + gap * 3;
+      const left = anchorX - totalWidth / 2;
+      const starts = [
+        [-1.15, -.72], [-.46, .78], [.42, -.58], [1.18, .62],
+      ] as const;
+      for (let index = 0; index < 4; index += 1) {
+        const [startX, startY] = starts[index]!;
+        const targetX = left + index * (unit + gap) + unit / 2;
+        const x = anchorX + startX * layout.cell * (1 - progress) + (targetX - anchorX) * progress;
+        const y = anchorY + startY * layout.cell * (1 - progress);
+        graphics
+          .roundRect(x - unit / 2, y - unit / 2, unit, unit, unit * .16)
+          .fill({
+            color: index === 1 || index === 2 ? token.palette.highlight : token.palette.primary,
+            alpha: .88 * alpha,
+          });
+      }
+      if (commit.active) {
+        const bracket = unit * (.64 + commit.value * .42);
+        this.strokeSegments(graphics, [
+          [left - bracket, anchorY - unit, left - bracket, anchorY + unit],
+          [left - bracket, anchorY - unit, left - unit * .08, anchorY - unit],
+          [left + totalWidth + bracket, anchorY - unit, left + totalWidth + bracket, anchorY + unit],
+          [left + totalWidth + unit * .08, anchorY + unit, left + totalWidth + bracket, anchorY + unit],
+        ], token.palette.highlight, .82 * alpha, strokeWidth);
+      }
+      return;
+    }
+
     const scorePop = flash.timeline.sample('score-pop');
     const sparkTail = flash.timeline.sample('spark-tail');
     if (!scorePop.active && !sparkTail.active) return;
@@ -3129,7 +3222,7 @@ export class TetrisRenderer {
 
   /** Sync renderer-only field transitions from Core's authoritative timers. */
   private syncMutationFields(state: GameState): void {
-    const timed: Array<{ item: Exclude<MutationItem, 'bomb'>; active: boolean }> = [
+    const timed: Array<{ item: TimedMutationItem; active: boolean }> = [
       { item: 'freeze', active: state.mode === 'sprint' && state.mutationFreezeTicks > 0 },
       { item: 'collapse', active: state.mode === 'sprint' && state.mutationCollapseTicks > 0 },
       { item: 'multiplier', active: state.mode === 'sprint' && state.mutationMultiplierTicks > 0 },
@@ -3315,7 +3408,7 @@ export class TetrisRenderer {
     }
   }
 
-  private mutationFieldOpacityFor(item: Exclude<MutationItem, 'bomb'>): number {
+  private mutationFieldOpacityFor(item: TimedMutationItem): number {
     const field = this.mutationFields.get(item);
     return field ? this.mutationFieldOpacity(field) : 0;
   }
@@ -3387,6 +3480,10 @@ export class TetrisRenderer {
       if (item === 'collapse') particle.velocityV = Math.abs(particle.velocityV) * 1.26 + speed * .18;
       if (item === 'bomb') particle.velocityV -= speed * .44;
       if (item === 'multiplier') particle.velocityV -= speed * .36;
+      if (item === 'reshape') {
+        particle.velocityU = (index % 2 === 0 ? -1 : 1) * speed * (.42 + this.nextMutationRandom() * .28);
+        particle.velocityV *= .24;
+      }
       particle.elapsed = 0;
       particle.lifeMs = token.particles.lifeMs * (.72 + this.nextMutationRandom() * .38);
       particle.size = token.particles.size * (.72 + this.nextMutationRandom() * .62);
@@ -3430,6 +3527,10 @@ export class TetrisRenderer {
           particle.color,
           .86 * alpha,
         );
+      } else if (particle.item === 'reshape') {
+        graphics
+          .roundRect(x - size * .58, y - size * .22, size * 1.16, size * .44, size * .14)
+          .fill({ color: particle.color, alpha: .78 * alpha });
       } else {
         this.drawMutationStar(graphics, x, y, size, size * .34, particle.color, .82 * alpha);
       }

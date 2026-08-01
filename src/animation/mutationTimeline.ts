@@ -114,7 +114,7 @@ export class MutationTimeline {
   }
 }
 
-/** Four visual-only activation beats. Core duration remains independently owned. */
+/** Item-specific visual-only activation beats. Core duration remains independently owned. */
 export function createMutationActivationTimeline(item: MutationItem): MutationTimeline {
   const timing = MUTATION_VFX_TOKENS[item].animation;
   if (item === 'bomb') {
@@ -135,6 +135,12 @@ export function createMutationActivationTimeline(item: MutationItem): MutationTi
     return new MutationTimeline(parallel(
       phase('crystalise', timing.enterMs, 'cubicOut'),
       delay(Math.round(timing.enterMs * 0.34), phase('snow-burst', Math.round(timing.enterMs * 0.66), 'cubicOut')),
+    ));
+  }
+  if (item === 'reshape') {
+    return new MutationTimeline(sequence(
+      phase('align', Math.min(150, timing.enterMs), 'cubicOut'),
+      phase('commit', Math.min(110, Math.max(80, timing.activationMs - Math.min(150, timing.enterMs))), 'cubicOut'),
     ));
   }
   return new MutationTimeline(parallel(

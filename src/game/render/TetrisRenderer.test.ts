@@ -184,7 +184,10 @@ type RendererInternals = {
   } | null;
   mutationFlashQueue: Array<{ item: MutationItem }>;
   mutationParticles: Array<{ active: boolean; item: MutationItem; rotation: number; rotationVelocity: number }>;
-  mutationFields: Map<Exclude<MutationItem, 'bomb'>, { item: Exclude<MutationItem, 'bomb'>; stage: 'enter' | 'active' | 'exit'; elapsed: number }>;
+  mutationFields: Map<
+    Extract<MutationItem, 'freeze' | 'collapse' | 'multiplier'>,
+    { item: Extract<MutationItem, 'freeze' | 'collapse' | 'multiplier'>; stage: 'enter' | 'active' | 'exit'; elapsed: number }
+  >;
   mutationClockMs: number;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
@@ -1047,11 +1050,11 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
-  it('gives all four reduced-motion activations distinct static silhouettes and preserves 2× / 4×', () => {
+  it('gives all five reduced-motion activations distinct static silhouettes and preserves 2× / 4×', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const signatures = new Map<MutationItem, string>();
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
       const recorder = createGraphicsRecorder();
       internals.drawReducedMutationEndpoint(
         recorder.graphics,
@@ -1064,7 +1067,7 @@ describe('Puzzle undo presentation reset', () => {
       signatures.set(item, geometrySignature(recorder.operations));
     }
 
-    expect(new Set(signatures.values()).size).toBe(4);
+    expect(new Set(signatures.values()).size).toBe(5);
     const two = createGraphicsRecorder();
     const four = createGraphicsRecorder();
     internals.drawReducedMutationEndpoint(two.graphics, 'multiplier', 100, 120, 20, 2);
@@ -1077,28 +1080,28 @@ describe('Puzzle undo presentation reset', () => {
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
     const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }];
-    const assertFourGeometries = (
+    const assertFiveGeometries = (
       drawLayer: (graphics: unknown, cells: readonly Cell[], item: MutationItem) => void,
     ) => {
       const signatures = new Set<string>();
-      for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+      for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
         const recorder = createGraphicsRecorder();
         drawLayer(recorder.graphics, cells, item);
         signatures.add(geometrySignature(recorder.operations));
       }
-      expect(signatures.size).toBe(4);
+      expect(signatures.size).toBe(5);
     };
 
-    assertFourGeometries((graphics, layerCells, item) => {
+    assertFiveGeometries((graphics, layerCells, item) => {
       internals.drawMutationCarrierSurface(graphics, layerCells, item, layout);
     });
     const originalRim = internals.drawMutationCarrierRim;
     internals.drawMutationCarrierRim = () => undefined;
-    assertFourGeometries((graphics, layerCells, item) => {
+    assertFiveGeometries((graphics, layerCells, item) => {
       internals.drawMutationCarrierCore(graphics, layerCells, item, layout);
     });
     internals.drawMutationCarrierRim = originalRim;
-    assertFourGeometries((graphics, layerCells, item) => {
+    assertFiveGeometries((graphics, layerCells, item) => {
       internals.drawMutationCarrierRim(graphics, layerCells, item, layout);
     });
   });
@@ -1121,7 +1124,7 @@ describe('Puzzle undo presentation reset', () => {
       originalCore(graphics, cells, item, coreLayout, offsetX, offsetY, detailScale);
     };
 
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
       const recorder = createGraphicsRecorder();
       const locked = {
         mode: 'sprint',
@@ -1137,7 +1140,7 @@ describe('Puzzle undo presentation reset', () => {
       internals.drawPreviewPiece(recorder.graphics, 'T', 100, 100, 20, item);
     }
 
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
       expect(calls.filter((call) => call.item === item && call.layer === 'surface')).toHaveLength(3);
       expect(calls.filter((call) => call.item === item && call.layer === 'core')).toHaveLength(3);
       expect(calls.filter((call) => call.item === item && call.layer === 'rim')).toHaveLength(3);
@@ -1208,7 +1211,7 @@ describe('Puzzle undo presentation reset', () => {
     })).toBe(true);
   });
 
-  it('uses a moving constant-alpha Supergravity pressure field without symbols or flashing', () => {
+  it('uses broad moving constant-alpha Supergravity compression contours without rain strokes or flashing', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const recorder = createGraphicsRecorder();
@@ -1224,11 +1227,17 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(recorder.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(12);
+    const contours = recorder.operations.filter((operation) => operation.kind === 'poly');
+    expect(contours).toHaveLength(3);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(1);
+    expect(contours.every((operation) => {
+      const xs = operation.values.filter((_value, index) => index % 2 === 0);
+      const ys = operation.values.filter((_value, index) => index % 2 === 1);
+      return Math.max(...xs) - Math.min(...xs) >= 80
+        && Math.max(...ys) - Math.min(...ys) < 20;
+    })).toBe(true);
 
     (internals as unknown as { mutationClockMs: number }).mutationClockMs = 437;
     const later = createGraphicsRecorder();
@@ -1279,7 +1288,7 @@ describe('Puzzle undo presentation reset', () => {
   });
 
   it('never redraws a consumed carrier rim during an item activation', () => {
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier'] as const) {
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
       const renderer = new TetrisRendererClass();
       const internals = renderer as unknown as RendererInternals;
       let carrierRimCalls = 0;
@@ -1355,6 +1364,30 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
+  it('renders Reshape as a compact alignment beat instead of a multiplier star', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    internals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'reshape',
+      durationTicks: 0,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells: [{ x: 4, y: VISIBLE_START_ROW + 7 }],
+    }]);
+
+    expect(internals.mutationFlash).toMatchObject({ item: 'reshape' });
+    const align = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(align.graphics, internals.mutationFlash!, layout);
+    expect(align.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(4);
+    expect(align.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    internals.advanceEffects(150);
+    const commit = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(commit.graphics, internals.mutationFlash!, layout);
+    expect(commit.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(4);
+  });
+
   it('keeps the persistent multiplier field compact, steady, and explicit at both 2× and 4×', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
@@ -1380,9 +1413,11 @@ describe('Puzzle undo presentation reset', () => {
     );
     expect(geometrySignature(twoField.operations)).not.toBe(geometrySignature(fourField.operations));
     expect(twoField.operations.filter((operation) => operation.kind === 'rect')).toHaveLength(0);
-    expect(Math.max(...twoField.operations
-      .filter((operation) => operation.kind === 'circle')
-      .map((operation) => operation.values[2] ?? 0))).toBeLessThanOrEqual(layout.cell * 1.2);
+    expect(twoField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    const cornerPanels = twoField.operations.filter((operation) => operation.kind === 'roundRect');
+    expect(cornerPanels.length).toBeGreaterThanOrEqual(2);
+    expect(cornerPanels.every((operation) => (operation.values[0] ?? 0) >= layout.width - layout.cell * 2)).toBe(true);
+    expect(Math.max(...cornerPanels.map((operation) => operation.values[2] ?? 0))).toBeLessThanOrEqual(layout.cell * 1.1);
 
     internals.mutationClockMs = 437;
     const laterField = createGraphicsRecorder();

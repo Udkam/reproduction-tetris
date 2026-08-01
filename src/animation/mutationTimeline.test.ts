@@ -45,4 +45,16 @@ describe('MutationTimeline', () => {
     timeline.advance(260);
     expect(timeline.complete).toBe(true);
   });
+
+  it('gives Reshape a short align-and-commit sequence without borrowing multiplier beats', () => {
+    const timeline = createMutationActivationTimeline('reshape');
+    expect(timeline.duration).toBeLessThanOrEqual(260);
+    expect(timeline.sample('align')).toMatchObject({ active: true, progress: 0 });
+    expect(timeline.sample('score-pop')).toMatchObject({ active: false, progress: 0 });
+    timeline.advance(120);
+    expect(timeline.sample('align')).toMatchObject({ complete: true, progress: 1 });
+    expect(timeline.sample('commit')).toMatchObject({ active: true, progress: 0 });
+    timeline.advance(110);
+    expect(timeline.complete).toBe(true);
+  });
 });
