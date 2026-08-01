@@ -46,6 +46,11 @@ cover the right-side Next well even though the canonical queue remains available
    faster and more decisive, but brightness may not oscillate and the board, active
    piece, Ghost, and Next must remain legible. Existing airborne-piece latching and
    independent-column landing truth remain unchanged.
+7. **Gameplay sheets preserve the actual Next tetromino, not only its well.** Pause,
+   restart confirmation, and leave confirmation may dim the game, but the queued piece
+   inside Next remains rendered and readable beside the sheet. A bordered but empty
+   Next well does not satisfy this requirement. Countdown still keeps its existing
+   intentional preview suppression when no sheet is open.
 
 **Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
 paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and

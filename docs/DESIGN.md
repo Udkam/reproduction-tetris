@@ -48,6 +48,11 @@ may be brisk, but opacity remains stable. The active piece and independently set
 Ghost stay the strongest geometry. Timer expiry continues to leave an already-airborne
 latched piece under Supergravity through its next lock.
 
+Gameplay sheets preserve queue context as a complete visual instrument: both the Next
+well and its queued tetromino remain visible. The overlay may lower contrast uniformly,
+but it cannot clear, cover, or replace the preview. This exception is scoped to pause,
+restart, and leave sheets; the clean pre-run countdown continues to hide Next content.
+
 ## 2026-08-01 T20 — Survival material harmony correction
 
 The Survival floor is still an exposed cavern wall, but its visual truth is judged

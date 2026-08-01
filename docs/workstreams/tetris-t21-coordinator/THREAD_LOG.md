@@ -21,4 +21,5 @@
   tests), and 762-module build
 - Blocker: none
 - Next action: inspect and implement Bomb-first activation plus the revised sustained
-  Supergravity field, then rerun the final gate and browser batch
+  Supergravity field, preserve the actual Next piece for gameplay sheets, then rerun
+  the final gate and browser batch

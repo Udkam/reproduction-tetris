@@ -852,3 +852,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   grants must present Bomb first, every item cue should be faster, and sustained
   Supergravity needs a clearer constant-alpha downward-pressure field without screen
   flashing. This is a separate source checkpoint and reopens the final gate batch.
+- A real restart-confirmation frame then proved that the earlier sheet placement only
+  preserved the Next well: the queued tetromino itself was absent. T21 now requires the
+  complete queued piece to remain readable for pause, restart, and leave sheets while
+  retaining the intentional blank preview during the standalone countdown.
