@@ -7,6 +7,7 @@ interface ActionSheetProps {
   description: string;
   tone?: 'default' | 'success' | 'danger';
   className?: string;
+  placement?: 'viewport' | 'gameplay';
   dismissOnBackdropClick?: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -31,6 +32,7 @@ export function ActionSheet({
   description,
   tone = 'default',
   className,
+  placement = 'viewport',
   dismissOnBackdropClick = false,
   onCancel,
   onConfirm,
@@ -208,15 +210,16 @@ export function ActionSheet({
 
   return (
     <div
-      className="sheet-backdrop"
+      className={`sheet-backdrop sheet-backdrop--${placement}`}
       data-testid="action-sheet-backdrop"
+      data-sheet-placement={placement}
       onClick={(event) => {
         if (dismissOnBackdropClick && event.target === event.currentTarget) onCancel?.();
       }}
     >
       <section
         ref={panelRef}
-        className={`action-sheet action-sheet--${tone}${className ? ` ${className}` : ''}`}
+        className={`action-sheet action-sheet--${tone} action-sheet--placement-${placement}${className ? ` ${className}` : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}

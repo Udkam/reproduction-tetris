@@ -49,6 +49,7 @@ import { itemLabel, modeRules, modeRulesTitle } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
+const sourceHudStyles = readFileSync('src/styles/hud.css', 'utf8');
 const puzzleLibraryStyles = readFileSync('src/styles/puzzle-library.css', 'utf8');
 const sourceIndex = readFileSync('index.html', 'utf8');
 
@@ -655,6 +656,40 @@ describe('T6 frontend mode binding', () => {
     expect(JSON.parse(localStorage.getItem('tetris:mode-rule-intros:v1') ?? '[]')).toContain('sprint');
     expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
     view.unmount();
+    view.unmount();
+  });
+
+  it('places pause and restart sheets on the board track while retaining the live Next forecast', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'race', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+    const runtime = runtimeHarness.instances.at(-1)!;
+    const nextSlot = view.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
+    const queuedPiece = runtime.getState().queue[0]!;
+    expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
+
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    const pauseBackdrop = view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')!;
+    expect(pauseBackdrop.dataset.sheetPlacement).toBe('gameplay');
+    expect(pauseBackdrop.querySelector('.action-sheet--placement-gameplay')).not.toBeNull();
+    expect(view.container.querySelector('[data-testid="next-slot"]')).toBe(nextSlot);
+    expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    const restartBackdrop = view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')!;
+    expect(restartBackdrop.dataset.sheetPlacement).toBe('gameplay');
+    expect(restartBackdrop.querySelector('[data-testid="confirm-restart"]')).not.toBeNull();
+    expect(view.container.querySelector('[data-testid="next-slot"]')).toBe(nextSlot);
+    expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
+
+    expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?padding-right:\s*calc\([^}]*244px\)/);
+    expect(sourceHudStyles).toMatch(/\.action-sheet--placement-gameplay\s*\{[\s\S]*?width:\s*min\(420px,\s*100%\)/);
     view.unmount();
   });
 

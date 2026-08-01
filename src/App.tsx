@@ -1843,6 +1843,7 @@ export function GameSession({
         open={pauseOpen}
         title={copy.labels.pauseTitle}
         description=""
+        placement="gameplay"
         onCancel={resumeRun}
         onConfirm={resumeRun}
       >
@@ -1892,6 +1893,7 @@ export function GameSession({
         title={copy.labels.restartTitle}
         description=""
         tone="danger"
+        placement="gameplay"
         onCancel={cancelRestart}
         onConfirm={restartRun}
       >

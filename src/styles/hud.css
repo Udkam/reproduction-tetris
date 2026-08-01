@@ -188,6 +188,18 @@
   padding: 0;
 }
 
+/* Pause and restart interrupt the board, not the forecast. Reserve the complete
+   desktop rail width so the compact opaque sheet cannot cover the Canvas-owned Next
+   piece. The single dimmer stays translucent enough to keep that rail readable. */
+.sheet-backdrop--gameplay {
+  padding-right: calc(clamp(10px, 2vh, 24px) + 244px);
+  background: rgba(11, 23, 38, .56);
+}
+
+.action-sheet--placement-gameplay {
+  width: min(420px, 100%);
+}
+
 .preview-rail--puzzle .next-slot__segment-label b {
   font-family: var(--font-mono);
   font-size: 16px;
@@ -200,6 +212,15 @@
     width: min(100%, calc(100% - 8px));
     margin: 4px auto;
     border-radius: 12px;
+  }
+
+  .sheet-backdrop--gameplay {
+    align-items: end;
+    padding: 10px;
+  }
+
+  .action-sheet--placement-gameplay {
+    width: min(500px, 100%);
   }
 
   .game-arena,
