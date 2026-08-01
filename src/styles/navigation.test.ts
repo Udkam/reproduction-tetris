@@ -27,6 +27,13 @@ describe('Phase 9 navigation authority', () => {
     expect(navigation).not.toContain('font-weight 170ms');
   });
 
+  it('centres the wordmark with a shrink-to-ink box instead of a legacy full-width offset', () => {
+    expect(legacy).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark\s*\{[^}]*width:\s*100%;[^}]*transform:\s*translateX/s);
+    expect(navigation).toMatch(
+      /\.mode-chooser--workbench \.mode-home-wordmark\s*\{[^}]*justify-self:\s*center;[^}]*width:\s*max-content;[^}]*transform:\s*none;/s,
+    );
+  });
+
   it('keeps pointer highlighting transient instead of persisting an active mode class', () => {
     expect(app).not.toContain('mode-gate--active');
     expect(app).not.toContain('data-selection={');

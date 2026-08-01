@@ -4,6 +4,16 @@
  * the active game surface so Settings, modals and the Puzzle selector retain ownership.
  */
 
+/* Barlow's vertical metrics extend beyond the legacy one-em crop used by the
+   compact play header. Keep the translated mode label visible while the header
+   grid, rather than overflow clipping, owns horizontal fit. */
+.play-identity > h1 {
+  min-block-size: 1.14em;
+  overflow: visible;
+  line-height: 1.14;
+  text-overflow: clip;
+}
+
 .play-surface {
   grid-template-rows: minmax(0, 1fr);
   width: min(760px, calc(100% - 24px));

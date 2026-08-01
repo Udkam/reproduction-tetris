@@ -68,6 +68,12 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toContain('.preview-rail--puzzle');
   });
 
+  it('keeps translated play-header labels outside the legacy one-em clipping box', () => {
+    expect(hudCss).toMatch(
+      /\.play-identity > h1\s*\{[^}]*min-block-size:\s*1\.14em;[^}]*overflow:\s*visible;[^}]*line-height:\s*1\.14;[^}]*text-overflow:\s*clip;/s,
+    );
+  });
+
   it('never solves the compact HUD by shrinking labels below twelve pixels', () => {
     expect(hudCss).not.toMatch(/font-size:\s*(?:[0-9](?:\.[0-9]+)?|1[01](?:\.[0-9]+)?)px/);
   });
