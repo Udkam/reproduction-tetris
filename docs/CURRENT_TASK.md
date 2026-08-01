@@ -1,4 +1,57 @@
-# Current Task — T22 Home Language and English Typography Refinement
+# Current Task — T23 Pressure, Reshape, and Quiet State Fields
+
+## T23 active goal — readable new decisions without visual noise
+
+**Status (2026-08-02): ACTIVE / CONTRACT FROZEN / IMPLEMENTATION OPEN.** This
+slice starts from clean pushed base `0107e52`. The coordinator is the sole writer.
+Nothing in T23 is accepted until Core tests, final gates, real browser evidence, and
+independent read-only QA all pass.
+
+1. **Survival is slightly faster, not abruptly harsher.** Ordinary Survival gravity
+   changes from 40 to 38 simulation ticks per cell (about 0.63 seconds per cell). The
+   falling-rock cadence, four-times rock speed, initial three-row countdown, and
+   three-line bedrock removal remain unchanged.
+2. **Survival gains one deterministic cave risk: Aftershock.** Every fourth natural
+   pressure rise adds two bedrock rows instead of one. Initial countdown rows do not
+   count toward this cycle, and line-clear removal does not reset it. The HUD must
+   warn when the pending rise is an Aftershock, and bilingual rules must explain the
+   four-rise cycle. The cycle participates in restart, replay, and state hashing.
+3. **Mutation gains one planning item: Reshape.** A Reshape carrier is a fifth seeded
+   item outcome. When any of its cells clear, it immediately changes the next queued
+   tetromino to `I`, so the result is visible in Next before spawn. It has a distinct
+   emerald material and a short reconfiguration cue, but no timed status field or
+   looping sound. Existing Bomb-first activation order and seeded determinism remain
+   authoritative.
+4. **Persistent Mutation fields become quieter and more truthful.** Supergravity no
+   longer uses narrow falling strokes that read as rain; broad constant-alpha
+   compression contours converge on the occupied stack. Multiplier no longer owns a
+   large central seal; one compact, time-invariant corner constellation indicates
+   x2/x4 while the status rail remains the primary timer. Reduced motion uses the
+   same static endpoint.
+5. **Language returns to Settings; Home mode names stay English.** Remove the Home
+   language control and restore the single persisted bilingual control inside
+   Settings. The four visible Home labels are always `Classic`, `Survival`,
+   `Mutation`, and `Puzzle`; surrounding interface and accessible action copy still
+   follow the selected language. No duplicate language control is allowed.
+6. **Acceptance is fail-closed.** Focused Core tests must prove 38-tick gravity,
+   the fourth-rise double wall, restart/hash participation, seeded Reshape drawing,
+   and queue replacement. Renderer tests must reject rain-like Supergravity strokes
+   and oversized/animated Multiplier geometry. App tests must prove one Settings-only
+   language control and invariant English Home labels. After the final source change,
+   run one typecheck, one full test suite, one build, and one real browser evidence
+   batch covering Home, Settings, Survival Aftershock, Reshape/Next, Supergravity,
+   and Multiplier. One Canvas, zero DOM board cells, zero console errors, responsive
+   fit, and resource cleanup remain mandatory.
+
+**Checkpoint boundary.** Contract paths are `docs/CURRENT_TASK.md`,
+`docs/DESIGN.md`, `progress.md`, and
+`docs/workstreams/tetris-t23-coordinator/THREAD_LOG.md`. Core checkpoints may touch
+only the smallest constants/state/engine paths and direct tests. Mutation visual work
+may touch tokens, materials, timeline, renderer, and their direct tests. Language and
+HUD work may touch App, localization, authoritative styles, and direct tests. Browser
+evidence, QA disposition, changelog integration, and push remain separate commits.
+
+# Previous Task — T22 Home Language and English Typography Refinement
 
 ## T22 active goal — buttons only and one English type family
 

@@ -3,6 +3,36 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-02 T23 — authored pressure and quiet transformation
+
+T23 adds decisions, not ambient randomness. Survival receives a slight five-percent
+gravity increase and a deterministic Aftershock cadence: every fourth natural wall
+rise advances two rows. Because the risk follows the same visible pressure clock and
+does not depend on another random stream, players can plan around it. Initial staged
+bedrock is presentation setup rather than pressure history; cleared bedrock does not
+erase the cave's accumulated cycle. The ordinary rise label changes to Aftershock
+only when the next resolved rise will be doubled.
+
+Mutation's fifth carrier is **Reshape**. Its reward is forward information: clearing
+the carrier rewrites the next queued piece to `I`, and the existing Canvas-owned Next
+well immediately shows that result. Reshape is an instantaneous emerald event with a
+compact four-cell alignment motif. It never opens a persistent status card or field,
+and it cannot disturb Bomb-first resolution, seeded replay, carrier cleanup, or the
+fixed queue/preview contract.
+
+Persistent effects recede behind play. Supergravity uses several broad horizontal
+compression contours and a shallow contact-pressure wedge around occupied columns;
+it contains no narrow vertical rain strokes and never pulses opacity. Multiplier uses
+a small upper-corner constellation and x2/x4 mark rather than a central seal. Its
+geometry and opacity are time-invariant, and x4 adds only one tiny secondary point.
+The status rail remains the strongest source of effect name and remaining time.
+
+Language selection is a run-level setting, so the one persisted control returns to
+the Settings console. Home uses four permanent English proper names—Classic,
+Survival, Mutation, Puzzle—while actions, rules, Settings, records, and accessibility
+continue to localize. The wordmark and mode matrix remain centered and gain no second
+language control.
+
 ## 2026-08-02 T22 — label-free control and unified English face
 
 The Home language selector is self-evident from its two explicit choices. It displays

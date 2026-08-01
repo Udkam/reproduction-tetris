@@ -888,3 +888,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   moved the only language switch to the home screen, and requested mechanically complete
   bilingual rule copy. These are new bounded Core/HUD/localization checkpoints before
   final browser acceptance.
+# 2026-08-02 T23 — pressure, Reshape, and quiet state fields
+
+- Opened from clean pushed base `0107e52` after player review requested slightly
+  faster Survival, less distracting Supergravity/Multiplier fields, a Settings-owned
+  language switch with English Home mode names, and one meaningful new mechanic for
+  each of Survival and Mutation.
+- Contract freezes Survival gravity at 38 ticks/cell, a deterministic double-row
+  Aftershock every fourth natural pressure rise, and an immediate seeded Reshape item
+  that rewrites the next queue entry to `I`.
+- No source is accepted yet. Next checkpoint is Survival Core plus focused replay,
+  restart, hash, cadence, and gravity tests; Mutation Core follows in its own commit.
