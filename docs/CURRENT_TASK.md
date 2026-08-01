@@ -155,6 +155,12 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     a nearly uniform low-contrast fill, or a sharp tessellated mosaic are still failed
     candidates. The generated texture is one renderer-lifetime resource and must be
     released on teardown.
+18. **Final responsive typography proof is fail-closed.** The Home wordmark must own a
+    shrink-to-content box centred by the dark panel at desktop, portrait, and short
+    landscape sizes; legacy full-width or translation rules may not displace it. The
+    play-header mode label must preserve the complete English glyph box without clipping
+    ascenders or descenders. Any measured wordmark centre drift or clipped translated
+    label keeps Phase 12 open and requires a fresh browser matrix after correction.
 
 ## Phase 12 checkpoint order
 

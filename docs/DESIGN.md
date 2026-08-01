@@ -132,6 +132,13 @@ mark off-centre. The browser icon is a clean 2×2 square of Classic green, Survi
 Mutation orange, and Puzzle purple in reading order. It is an original mode-map mark
 with no letter, copied logo, or trade-dress silhouette.
 
+Final responsive proof must preserve that same geometry after every legacy cascade.
+The wordmark owns a shrink-to-ink box (`max-content`) centred by the parent grid; it may
+not inherit a full-width flex box or a compensating translation at portrait or short
+landscape widths. The play header follows the same content-safety rule: translated mode
+names keep a complete glyph box and visible ascenders/descenders, so a narrow layout may
+reduce type size but may not crop Barlow glyphs with `overflow: hidden`.
+
 ### Puzzle curriculum
 
 The rejected live analysis panel is removed. It offered counts generated from the
