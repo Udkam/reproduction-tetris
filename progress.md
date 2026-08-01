@@ -848,3 +848,7 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Product work is not yet accepted. Required next checkpoints are renderer material +
   arrow tests, gameplay-sheet placement + Next visibility tests, one final gate batch,
   real browser frames, independent read-only QA, changelog integration, and push.
+- Before browser acceptance, the player added one Mutation correction: simultaneous
+  grants must present Bomb first, every item cue should be faster, and sustained
+  Supergravity needs a clearer constant-alpha downward-pressure field without screen
+  flashing. This is a separate source checkpoint and reopens the final gate batch.

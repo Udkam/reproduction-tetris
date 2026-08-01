@@ -32,6 +32,22 @@ Escape/cancel, and restoration to the same Canvas remain unchanged.
 T21 changes no Core state, queue, preview semantics, stone cadence, collision, scoring,
 replay, persistence, mode layout, or result behavior.
 
+### Mutation activation order and supergravity weight
+
+A simultaneous item grant is one causal sequence rather than a pile of unrelated
+flashes. Bomb owns the first beat: its irregular localized blast begins before any
+subsequent Ice, Supergravity, or Multiplier activation cue and before their changed
+presentation can imply that the board settled by itself. Remaining distinct items then
+enter in deterministic order with shorter, non-overlapping activation beats. Repeated
+grants of one item still refresh its state once and do not replay duplicate cues.
+
+Supergravity communicates sustained mass through downward compression, not an emblem
+or screen pulse. A compact field of constant-alpha acceleration traces converges toward
+the live stack and a restrained pressure band hugs the occupied region; trace motion
+may be brisk, but opacity remains stable. The active piece and independently settled
+Ghost stay the strongest geometry. Timer expiry continues to leave an already-airborne
+latched piece under Supergravity through its next lock.
+
 ## 2026-08-01 T20 — Survival material harmony correction
 
 The Survival floor is still an exposed cavern wall, but its visual truth is judged

@@ -34,11 +34,25 @@ cover the right-side Next well even though the canonical queue remains available
    for pause and restart with a visible Next piece and no sheet/Next overlap, plus a
    live Survival wall and arrow-only warning. One Canvas, zero DOM board cells, zero
    console errors, and no viewport overflow remain mandatory.
+5. **Simultaneous Mutation effects preserve visible causality.** When one clear earns
+   several distinct items, Bomb resolves and starts its board-local explosion before
+   gravity-changing or scoring states present their activation. This prevents the
+   stack from visibly settling before the blast that caused that settlement. All item
+   activation cues may be shortened, but none may be skipped, duplicated, or left
+   queued indefinitely.
+6. **Supergravity must read as sustained downward force without flashing.** Replace
+   the weak ambient field with compact, constant-alpha downward compression traces and
+   a denser pressure zone that follows the occupied stack region. Translation may be
+   faster and more decisive, but brightness may not oscillate and the board, active
+   piece, Ghost, and Next must remain legible. Existing airborne-piece latching and
+   independent-column landing truth remain unchanged.
 
 **Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
 paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and
 `docs/workstreams/tetris-t21-coordinator/THREAD_LOG.md`. Renderer work is limited to
-`src/game/render/TetrisRenderer.ts` and its direct test. Gameplay-sheet work is limited
+`src/game/render/TetrisRenderer.ts` and its direct test. Mutation sequencing may touch
+the smallest inspected Core/runtime event path and its direct test; Mutation visual
+work is limited to the renderer and its direct tests. Gameplay-sheet work is limited
 to `src/App.tsx`, `src/App.test.ts`, `src/ui/ActionSheet.tsx`, and the authoritative
 HUD/style paths required after inspection. Evidence, independent read-only QA,
 changelog disposition, and push remain separate checkpoints.
