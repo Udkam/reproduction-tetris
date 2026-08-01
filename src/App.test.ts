@@ -31,7 +31,7 @@ import App, {
   scoreRecordRank,
   scoreRecordForState,
   survivalCountdownLabel,
-  survivalStoneCountdownSeconds,
+  survivalStoneCountdownPieces,
   terminalCopy,
 } from './App';
 import {
@@ -261,15 +261,14 @@ describe('Survival stone timing presentation', () => {
     view.unmount();
   });
 
-  it('reports the independent stone clock from the canonical Core state', () => {
+  it('reports the piece-count rockfall cadence from the canonical Core state', () => {
     const initial = createInitialState(0x51a1f00d, 'race');
-    expect(survivalStoneCountdownSeconds(initial)).toBe(20);
-    expect(survivalStoneCountdownSeconds({
+    expect(survivalStoneCountdownPieces(initial)).toBe(8);
+    expect(survivalStoneCountdownPieces({
       ...initial,
-      survivalDebrisIntervalSeconds: 10,
-      survivalDebrisIntervalTicks: 599,
+      survivalDebrisPiecesRemaining: 1,
     })).toBe(1);
-    expect(survivalStoneCountdownSeconds(createInitialState(0x51a1f00d, 'marathon'))).toBe(0);
+    expect(survivalStoneCountdownPieces(createInitialState(0x51a1f00d, 'marathon'))).toBe(0);
   });
 
   it('reads the live runtime snapshot immediately after a deterministic state change', async () => {
@@ -288,8 +287,8 @@ describe('Survival stone timing presentation', () => {
     const current = {
       ...runtime.getState(),
       status: 'playing' as const,
-      survivalDebrisIntervalSeconds: 19,
-      survivalDebrisIntervalTicks: 0,
+      survivalDebrisPieceInterval: 7,
+      survivalDebrisPiecesRemaining: 6,
       survivalDebris: [{ id: 1, x: 4, y: 21, height: 2 as const }],
     };
     // Deliberately bypass a React wait: the QA text path must still report the
@@ -298,8 +297,8 @@ describe('Survival stone timing presentation', () => {
     const text = JSON.parse(window.render_game_to_text?.() ?? '{}') as Record<string, unknown>;
     expect(text).toMatchObject({
       mode: 'race',
-      stoneIntervalSeconds: 19,
-      stoneNextSeconds: 19,
+      stoneIntervalPieces: 7,
+      stoneNextPieces: 6,
       fallingStones: [{ x: 4, y: 21 }, { x: 4, y: 22 }],
     });
     view.unmount();
@@ -589,7 +588,7 @@ describe('T6 frontend mode binding', () => {
     expect(block).not.toContain('#071427');
   });
 
-  it('keeps the live canvas visible but demoted while a modal owns the compositor', () => {
+  it('keeps the live canvas visible at its gameplay layer while a modal owns the compositor', () => {
     const selector = '.play-shell:has(.sheet-backdrop) .canvas-host';
     const start = sourceStyles.indexOf(selector);
     const end = sourceStyles.indexOf('\n}', start);
@@ -597,7 +596,7 @@ describe('T6 frontend mode binding', () => {
     expect(end).toBeGreaterThan(start);
     const block = sourceStyles.slice(start, end);
 
-    expect(block).toMatch(/z-index:\s*0\s*;/);
+    expect(block).toMatch(/z-index:\s*6\s*;/);
     expect(block).toMatch(/transform:\s*none\s*;/);
     expect(block).toMatch(/visibility:\s*visible\s*;/);
     expect(block).not.toMatch(/display:\s*none|visibility:\s*hidden|opacity:\s*0(?:\D|$)/);
@@ -646,8 +645,8 @@ describe('T6 frontend mode binding', () => {
     expect(sheet.querySelector('h2')?.textContent).toBe('异变规则');
     expect(sheet.textContent).not.toContain('首次进入说明');
     expect(rules.querySelector('strong')).toBeNull();
-    expect(rules.textContent).toContain('特殊整块任一格被清除时，立即释放一次道具。');
-    expect(rules.textContent).toContain('计时效果重复触发会刷新为 10 秒');
+    expect(rules.textContent).toContain('带有彩色核心标记的方块携带道具');
+    expect(rules.textContent).toContain('计时效果再次触发会刷新为 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
@@ -710,13 +709,13 @@ describe('T6 frontend mode binding', () => {
     ]);
     const chineseStonefall = modeRules('zh-CN', 'race').find((fact) => fact.id === 'stonefall')?.value ?? '';
     const englishStonefall = modeRules('en', 'race').find((fact) => fact.id === 'stonefall')?.value ?? '';
-    expect(chineseStonefall).toContain('随机 1–2 块');
-    expect(chineseStonefall).toContain('同一随机列');
+    expect(chineseStonefall).toContain('同列的 1–2 块');
+    expect(chineseStonefall).toContain('每使用 8 个方块');
     expect(chineseStonefall).toContain('4 倍速度');
-    expect(chineseStonefall).not.toContain('同列双石');
-    expect(englishStonefall).toContain('1–2 clearable rocks');
-    expect(englishStonefall).toContain('one random column');
-    expect(englishStonefall).toContain('4× normal speed');
+    expect(chineseStonefall).toContain('最低为 4 个');
+    expect(englishStonefall).toContain('1–2 joined rocks');
+    expect(englishStonefall).toContain('every 8 used pieces');
+    expect(englishStonefall).toContain('4× piece speed');
   });
 
   it('uses stable typed rule facts in both languages without delimiter parsing or placeholder entries', () => {
@@ -759,7 +758,7 @@ describe('T6 frontend mode binding', () => {
         state: survival,
         roles: ['survival-time', 'lines', 'survival-bedrock', 'survival-stones'],
         label: '生存模式数据',
-        copy: ['生存时间', '0:00', '上升', '13 秒', '落石', '20 秒'],
+        copy: ['生存时间', '0:00', '上升', '13 秒', '距离落石', '8块'],
       },
       { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度', '1.0 秒/格'] },
       {
@@ -792,8 +791,7 @@ describe('T6 frontend mode binding', () => {
     const state = {
       ...createInitialState(0x51a1f00d, 'race'),
       survivalRisePending: true,
-      survivalDebrisIntervalSeconds: 20,
-      survivalDebrisIntervalTicks: 19 * 60,
+      survivalDebrisPiecesRemaining: 1,
       survivalDebrisWarningColumns: [2],
     };
     const view = render(createElement(RunStats, { state }));
@@ -804,7 +802,7 @@ describe('T6 frontend mode binding', () => {
     expect(bedrock?.textContent).toBe('上升待上升');
     expect(stones?.dataset.warning).toBe('true');
     expect(stones?.dataset.urgent).toBe('true');
-    expect(stones?.textContent).toBe('落石1 秒');
+    expect(stones?.textContent).toBe('距离落石1块');
     view.unmount();
   });
 
@@ -845,7 +843,6 @@ describe('T6 frontend mode binding', () => {
       puzzleId: CAMPAIGN_LEVELS[0]!.id,
       onExit: vi.fn(),
       onCanonicalCompletion: vi.fn(),
-      onLanguageChange: vi.fn(),
       leaderboard,
     }));
     await act(async () => Promise.resolve());
@@ -885,7 +882,7 @@ describe('T6 frontend mode binding', () => {
     ]);
     expect(controls.textContent).toContain('控制');
     expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行44 方块2026.07.24');
-    expect(rules.textContent).toContain('补满横行，消除并得分。');
+    expect(rules.textContent).toContain('填满一整行即可消除并得分。');
     expect([...rules.querySelectorAll<HTMLElement>('[data-rule-id]')].map((fact) => fact.dataset.ruleId)).toEqual([
       'goal',
       'pace',
@@ -896,8 +893,8 @@ describe('T6 frontend mode binding', () => {
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.classList.contains('settings-console__key-group--gameplay')).toBe(true);
     expect(shortcutKeys.classList.contains('settings-console__key-group--shortcuts')).toBe(true);
-    const chinese = view.container.querySelector<HTMLButtonElement>('[data-testid="language-zh"]')!;
-    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
+    expect(view.container.querySelector('[data-testid="language-zh"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="language-en"]')).toBeNull();
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')!;
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     expect(resume.dataset.arrowSelected).toBe('true');
@@ -909,22 +906,12 @@ describe('T6 frontend mode binding', () => {
       expect(to.dataset.arrowSelected).toBe('true');
     };
     const routes: readonly [HTMLButtonElement, string, HTMLButtonElement][] = [
-      [chinese, 'ArrowLeft', toggle],
-      [chinese, 'ArrowRight', english],
-      [chinese, 'ArrowUp', restart],
-      [chinese, 'ArrowDown', restart],
-      [english, 'ArrowLeft', chinese],
-      [english, 'ArrowRight', toggle],
-      [english, 'ArrowUp', restart],
-      [english, 'ArrowDown', restart],
-      [toggle, 'ArrowLeft', english],
-      [toggle, 'ArrowRight', chinese],
       [toggle, 'ArrowUp', resume],
       [toggle, 'ArrowDown', resume],
       [restart, 'ArrowLeft', resume],
       [restart, 'ArrowRight', resume],
-      [restart, 'ArrowUp', chinese],
-      [restart, 'ArrowDown', chinese],
+      [restart, 'ArrowUp', toggle],
+      [restart, 'ArrowDown', toggle],
       [resume, 'ArrowLeft', restart],
       [resume, 'ArrowRight', restart],
       [resume, 'ArrowUp', toggle],
@@ -1372,7 +1359,8 @@ describe('T6 frontend mode binding', () => {
 
   it('keeps the homepage navigational without visible rules or record copy', () => {
     const onEnter = vi.fn();
-    const view = render(createElement(ModeHome, { onEnter }));
+    const onLanguageChange = vi.fn();
+    const view = render(createElement(ModeHome, { onEnter, onLanguageChange }));
     const classic = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]');
     const survival = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-race"]');
     const mutation = view.container.querySelector<HTMLButtonElement>('[data-testid="enter-sprint"]');
@@ -1392,6 +1380,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
+    expect(view.container.querySelector('.language-control--home')).not.toBeNull();
     const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
     expect(actionArrows).toHaveLength(4);
     expect(actionArrows.every((arrow) => arrow.getAttribute('viewBox') === '0 0 28 24')).toBe(true);
@@ -1457,7 +1446,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('persists an English settings choice across the active game surface without Chinese fallback copy', async () => {
+  it('persists an English home choice across the active game surface without Chinese fallback copy', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1465,13 +1454,13 @@ describe('T6 frontend mode binding', () => {
     localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
     const view = render(createElement(App));
 
+    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
+    expect(english).not.toBeNull();
+    act(() => english.click());
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
     await act(async () => Promise.resolve());
     await advanceEntryCountdown();
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
-    const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
-    expect(english).not.toBeNull();
-    act(() => english.click());
 
     const sheet = view.container.querySelector<HTMLElement>('[data-testid="settings-sheet"]')!;
     expect(document.documentElement.lang).toBe('en');
@@ -1479,7 +1468,7 @@ describe('T6 frontend mode binding', () => {
     expect(sheet.textContent).toContain('Settings');
     expect(sheet.textContent).toMatch(/Keyboard.*Move.*Hard drop/s);
     expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
-    expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe('');
+    expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe('TetraMorph started.');
     expect(view.container.querySelector('.keyboard-map')).toBeNull();
     expect(view.container.querySelector('canvas')?.getAttribute('aria-label')).toBe('TetraMorph 10 by 20 game board');
     view.unmount();
@@ -1668,8 +1657,8 @@ describe('T6 frontend mode binding', () => {
     const bomb = render(createElement(MutationStatus, { state: bombState }));
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
     const mutationRule = modeRules('zh-CN', 'sprint').find((fact) => fact.id === 'items')?.value ?? '';
-    expect(mutationRule).toContain('冰冻把自动下落固定为 1.0 秒/格');
-    expect(mutationRule).toContain('超重使各列独立下沉');
+    expect(mutationRule).toContain('冰冻令方块以 1.0 秒/格下落');
+    expect(mutationRule).toContain('超重令落地时各列独立下沉');
     expect(mutationRule).not.toContain('冻结');
     bomb.unmount();
     view.unmount();

@@ -238,11 +238,10 @@ export function survivalCountdownLabel(state: GameState, language: AppLanguage =
   return state.survivalRisePending ? copy.labels.pendingRise : copy.phrasing.seconds(survivalCountdownSeconds(state));
 }
 
-/** DEV-visible timer for the independent Survival stone stream. */
-export function survivalStoneCountdownSeconds(state: GameState): number {
+/** Remaining player placements before the next Survival rockfall. */
+export function survivalStoneCountdownPieces(state: GameState): number {
   if (state.mode !== 'race') return 0;
-  const remaining = state.survivalDebrisIntervalSeconds * TICKS_PER_SECOND - state.survivalDebrisIntervalTicks;
-  return Math.max(0, Math.ceil(remaining / TICKS_PER_SECOND));
+  return Math.max(0, state.survivalDebrisPiecesRemaining);
 }
 
 function campaignLevel(id: PuzzleId | null) {
@@ -450,7 +449,15 @@ function ModeRuleSummary({
   );
 }
 
-export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (mode: GameMode) => void; language?: AppLanguage }) {
+export function ModeHome({
+  onEnter,
+  language = DEFAULT_LANGUAGE,
+  onLanguageChange,
+}: {
+  onEnter: (mode: GameMode) => void;
+  language?: AppLanguage;
+  onLanguageChange: (language: AppLanguage) => void;
+}) {
   const [focusMode, setFocusMode] = useState<GameMode>('marathon');
   const [inputModality, setInputModality] = useState<'keyboard' | 'pointer'>('keyboard');
   const modeButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -477,6 +484,7 @@ export function ModeHome({ onEnter, language = DEFAULT_LANGUAGE }: { onEnter: (m
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
             <h1 id="home-title" className="mode-home-wordmark"><span>Tetra</span><span>Morph</span></h1>
+            <LanguageControl language={language} onChange={onLanguageChange} className="language-control--home" />
           </div>
           <div
             className="mode-gates mode-gates--workbench"
@@ -1074,10 +1082,18 @@ export function SettingsRecord({
   return <LeaderboardPanel mode={mode} records={recordsForMode(leaderboard, mode)} variant="settings" language={language} />;
 }
 
-function LanguageControl({ language, onChange }: { language: AppLanguage; onChange: (language: AppLanguage) => void }) {
+function LanguageControl({
+  language,
+  onChange,
+  className = '',
+}: {
+  language: AppLanguage;
+  onChange: (language: AppLanguage) => void;
+  className?: string;
+}) {
   const copy = appCopy(language);
   return (
-    <section className="language-control" aria-label={copy.labels.language}>
+    <section className={`language-control ${className}`.trim()} aria-label={copy.labels.language}>
       <span>{copy.labels.language}</span>
       <div role="group" aria-label={copy.labels.language}>
         <button type="button" data-testid="language-zh" data-arrow-nav data-arrow-row="0" data-arrow-col="0" aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
@@ -1119,7 +1135,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
   const modeLabel = modeCopy(language, state.mode).label;
   if (state.mode === 'race') {
     const riseSeconds = survivalCountdownSeconds(state);
-    const stoneSeconds = survivalStoneCountdownSeconds(state);
+    const stonePieces = survivalStoneCountdownPieces(state);
     return (
       <section className="run-stats run-stats--survival" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
         <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><strong>{elapsedClockLabel(state.elapsedTicks)}</strong></article>
@@ -1131,10 +1147,10 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
         <article
           data-stat-role="survival-stones"
           data-warning={state.survivalDebrisWarningColumns.length > 0 || undefined}
-          data-urgent={stoneSeconds <= 5 || undefined}
+          data-urgent={stonePieces <= 2 || undefined}
         >
           <span>{copy.labels.stonefall}</span>
-          <strong>{copy.phrasing.seconds(stoneSeconds)}</strong>
+          <strong>{copy.phrasing.rockfallPieces(stonePieces)}</strong>
         </article>
       </section>
     );
@@ -1276,7 +1292,6 @@ export function GameSession({
   puzzleProgress = defaultPuzzleProgress(),
   onRunFinished,
   language = DEFAULT_LANGUAGE,
-  onLanguageChange,
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
@@ -1286,7 +1301,6 @@ export function GameSession({
   puzzleProgress?: PuzzleProgress;
   onRunFinished?: (record: ScoreRecord) => void;
   language?: AppLanguage;
-  onLanguageChange?: (language: AppLanguage) => void;
 }) {
   const copy = appCopy(language);
   const hostRef = useRef<HTMLDivElement>(null);
@@ -1531,8 +1545,8 @@ export function GameSession({
         bedrockIntervalSeconds: current.mode === 'race' ? survivalIntervalSeconds(current.lines) : null,
         bedrockNextSeconds: current.mode === 'race' ? survivalCountdownSeconds(current) : null,
         bedrockPending: current.mode === 'race' ? current.survivalRisePending : false,
-        stoneIntervalSeconds: current.mode === 'race' ? current.survivalDebrisIntervalSeconds : null,
-        stoneNextSeconds: current.mode === 'race' ? survivalStoneCountdownSeconds(current) : null,
+        stoneIntervalPieces: current.mode === 'race' ? current.survivalDebrisPieceInterval : null,
+        stoneNextPieces: current.mode === 'race' ? survivalStoneCountdownPieces(current) : null,
         fallingStones: current.mode === 'race'
           ? current.survivalDebris.flatMap((pair) => survivalDebrisCells(pair).map((cell) => ({ ...cell })))
           : [],
@@ -1862,7 +1876,6 @@ export function GameSession({
           <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
           <section className="settings-console__controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
             <strong>{copy.labels.controls}</strong>
-            {onLanguageChange && <LanguageControl language={language} onChange={onLanguageChange} />}
             <AudioControls
               enabled={audioEnabled}
               volume={audioVolume}
@@ -2023,7 +2036,7 @@ export default function App() {
 
   return (
     <div className="app" lang={language}>
-      {screen === 'home' && <ModeHome onEnter={enterMode} language={language} />}
+      {screen === 'home' && <ModeHome onEnter={enterMode} language={language} onLanguageChange={changeLanguage} />}
       {screen === 'puzzle-library' && (
         <PuzzleLibrary
           progress={progress}
@@ -2045,7 +2058,6 @@ export default function App() {
           puzzleProgress={progress}
           onRunFinished={recordRun}
           language={language}
-          onLanguageChange={changeLanguage}
         />
       )}
       <ActionSheet
