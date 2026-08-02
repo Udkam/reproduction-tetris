@@ -11,6 +11,7 @@ import {
   ANCHOR_CELL,
   MUTATION_FREEZE_GRAVITY_TICKS,
   PIECE_TYPES,
+  SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
   type GameEvent,
   type GameMode,
@@ -1133,12 +1134,17 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
   if (state.mode === 'race') {
     const riseSeconds = survivalCountdownSeconds(state);
     const stonePieces = survivalStoneCountdownPieces(state);
+    const aftershockNext = (state.survivalRiseCount + 1) % SURVIVAL_RISES_PER_AFTERSHOCK === 0;
     return (
       <section className="run-stats run-stats--survival" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
         <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><strong>{elapsedClockLabel(state.elapsedTicks)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="survival-bedrock" data-urgent={state.survivalRisePending || riseSeconds <= 5 || undefined}>
-          <span>{copy.phrasing.bedrockRise(state.survivalBedrockRows)}</span>
+        <article
+          data-stat-role="survival-bedrock"
+          data-aftershock={aftershockNext || undefined}
+          data-urgent={state.survivalRisePending || riseSeconds <= 5 || undefined}
+        >
+          <span>{aftershockNext ? copy.labels.aftershock : copy.phrasing.bedrockRise(state.survivalBedrockRows)}</span>
           <strong>{survivalCountdownLabel(state, language)}</strong>
         </article>
         <article

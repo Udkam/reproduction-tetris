@@ -716,6 +716,8 @@ describe('T6 frontend mode binding', () => {
     expect(englishStonefall).toContain('1–2 joined rocks');
     expect(englishStonefall).toContain('every 8 used pieces');
     expect(englishStonefall).toContain('4× piece speed');
+    expect(modeRules('zh-CN', 'race').find((fact) => fact.id === 'start')?.value).toContain('每第 4 次自然上升触发余震');
+    expect(modeRules('en', 'race').find((fact) => fact.id === 'start')?.value).toContain('Every fourth natural rise is an Aftershock');
   });
 
   it('uses stable typed rule facts in both languages without delimiter parsing or placeholder entries', () => {
@@ -1186,6 +1188,19 @@ describe('T6 frontend mode binding', () => {
     await advanceEntryCountdown();
     expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
     expect(view.container.querySelector('[data-testid="entry-countdown"]')).toBeNull();
+    view.unmount();
+  });
+
+  it('announces the predictable two-row Survival aftershock before it resolves', () => {
+    const state = {
+      ...createInitialState(0x51a1f00d, 'race'),
+      survivalRiseCount: 3,
+    };
+    const view = render(createElement(RunStats, { state }));
+    const bedrock = view.container.querySelector<HTMLElement>('[data-stat-role="survival-bedrock"]');
+
+    expect(bedrock?.dataset.aftershock).toBe('true');
+    expect(bedrock?.textContent).toBe('余震13 秒');
     view.unmount();
   });
 
