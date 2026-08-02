@@ -78,13 +78,14 @@ const autoplayerScript = String.raw`
     if (!canPlace(board, cells, x, y)) return null;
     while (canPlace(board, cells, x, y + 1)) y += 1;
     for (const [dx, dy] of cells) board[y + dy][x + dx] = state.active.type;
-    const kept = board.filter((row) => row.some((cell) => cell === null));
+    // Match Core row removal: permanent Survival bedrock is full but never clearable.
+    const kept = board.filter((row) => !row.every((cell) => cell !== null && cell !== 'B'));
     const cleared = board.length - kept.length;
     while (kept.length < board.length) kept.unshift(Array(board[0].length).fill(null));
     return { rotation, x, y, score: evaluateBoard(kept, cleared), cleared };
   };
 
-  window.__T23_AUTOPLAY_STEP__ = () => {
+  window.__T23_AUTOPLAY_STEP__ = (hardDrop = true) => {
     const qa = window.__SIGNAL_FOUNDRY_QA__;
     let state = qa.getState();
     if (state.status !== 'playing') return { stopped: state.status };
@@ -113,6 +114,15 @@ const autoplayerScript = String.raw`
     state = qa.getState();
     const direction = best.x < state.active.x ? 'left' : 'right';
     for (let step = 0; step < Math.abs(best.x - state.active.x); step += 1) qa.action(direction);
+    if (!hardDrop) {
+      state = qa.getState();
+      return {
+        status: state.status,
+        phase: state.phase,
+        pieceCount: state.pieceCount,
+        positioned: true,
+      };
+    }
     qa.action('hard-drop');
 
     state = qa.getState();
@@ -230,6 +240,7 @@ await page.setViewportSize({ width: 1440, height: 900 });
 await page.getByTestId('enter-race').click();
 await waitForPlaying();
 await page.evaluate(() => window.__SIGNAL_FOUNDRY_QA__.setFrozen(true));
+await page.evaluate(autoplayerScript);
 let survival = await runtimeSnapshot();
 if (survival.canvasCount !== 1 || survival.domCellCount !== 0) throw new Error(`Invalid renderer topology: ${JSON.stringify(survival)}`);
 
@@ -262,7 +273,13 @@ await page.getByRole('dialog').waitFor({ state: 'hidden' });
 await page.evaluate(() => {
   const qa = window.__SIGNAL_FOUNDRY_QA__;
   let guard = 0;
+  let positionedPieceCount = -1;
   while (qa.getState().survivalRiseCount < 3 && qa.getState().status === 'playing' && guard < 5000) {
+    const state = qa.getState();
+    if (state.active && state.pieceCount !== positionedPieceCount) {
+      window.__T23_AUTOPLAY_STEP__(false);
+      positionedPieceCount = state.pieceCount;
+    }
     qa.advanceTicks(1);
     guard += 1;
   }
@@ -274,6 +291,29 @@ if (survival.status !== 'playing' || survival.survivalRiseCount !== 3) {
 const aftershockLabel = await page.locator('[data-stat-role="survival-bedrock"] span').textContent();
 if (!aftershockLabel?.includes('余震')) throw new Error(`Expected the Aftershock HUD label, got ${aftershockLabel}`);
 await screenshot('06-survival-aftershock');
+const aftershockWarning = survival;
+await page.evaluate(() => {
+  const qa = window.__SIGNAL_FOUNDRY_QA__;
+  let guard = 0;
+  let positionedPieceCount = qa.getState().pieceCount;
+  while (qa.getState().survivalRiseCount < 4 && qa.getState().status === 'playing' && guard < 5000) {
+    const state = qa.getState();
+    if (state.active && state.pieceCount !== positionedPieceCount) {
+      window.__T23_AUTOPLAY_STEP__(false);
+      positionedPieceCount = state.pieceCount;
+    }
+    qa.advanceTicks(1);
+    guard += 1;
+  }
+});
+const aftershockResolved = await runtimeSnapshot();
+if (aftershockResolved.status !== 'playing'
+    || aftershockResolved.survivalRiseCount !== 4
+    || aftershockResolved.survivalBedrockRows !== aftershockWarning.survivalBedrockRows + 2) {
+  throw new Error(`Fourth pressure rise did not add exactly two rows: ${JSON.stringify({ aftershockWarning, aftershockResolved })}`);
+}
+await screenshot('06b-survival-aftershock-resolved');
+survival = aftershockResolved;
 await exitToHome();
 
 await page.getByTestId('enter-sprint').click();
@@ -281,7 +321,6 @@ await waitForPlaying();
 await page.evaluate(() => {
   window.__SIGNAL_FOUNDRY_QA__.setFrozen(true);
 });
-await page.evaluate(autoplayerScript);
 
 const mutationCaptures = {
   reshapePreview: null,
@@ -308,10 +347,26 @@ for (let step = 1; step <= 240; step += 1) {
     mutationCaptures.reshapeNext = { step, snapshot };
   }
   if (!mutationCaptures.supergravity && snapshot.mutationCollapseTicks > 0) {
+    await page.waitForFunction(() => {
+      const renderer = window.__SIGNAL_FOUNDRY_QA__.getRendererSnapshot();
+      return renderer.mutationActivation === null && renderer.mutationActivationQueueItems.length === 0;
+    }, null, { timeout: 5_000 });
+    snapshot = await runtimeSnapshot();
+    if (snapshot.mutationCollapseTicks <= 0 || snapshot.renderer.mutationActivation !== null) {
+      throw new Error(`Supergravity field was not captured in its persistent state: ${JSON.stringify(snapshot)}`);
+    }
     await screenshot('09-mutation-supergravity-field');
     mutationCaptures.supergravity = { step, snapshot };
   }
   if (!mutationCaptures.multiplier && snapshot.mutationMultiplierTicks > 0) {
+    await page.waitForFunction(() => {
+      const renderer = window.__SIGNAL_FOUNDRY_QA__.getRendererSnapshot();
+      return renderer.mutationActivation === null && renderer.mutationActivationQueueItems.length === 0;
+    }, null, { timeout: 5_000 });
+    snapshot = await runtimeSnapshot();
+    if (snapshot.mutationMultiplierTicks <= 0 || snapshot.renderer.mutationActivation !== null) {
+      throw new Error(`Multiplier field was not captured in its persistent state: ${JSON.stringify(snapshot)}`);
+    }
     await screenshot('10-mutation-multiplier-field');
     mutationCaptures.multiplier = { step, snapshot };
   }
@@ -342,6 +397,8 @@ const evidence = {
   paused,
   restartDialog,
   survival,
+  aftershockWarning,
+  aftershockResolved,
   aftershockLabel,
   mutationCaptures,
   finalMutation,
@@ -356,7 +413,12 @@ if (consoleErrors.length) throw new Error(`Browser console errors: ${consoleErro
 console.log(JSON.stringify({
   sourceSha: evidence.sourceSha,
   artifacts: artifacts.length,
-  aftershock: survival.survivalRiseCount,
+  aftershock: {
+    warningRise: aftershockWarning.survivalRiseCount,
+    warningRows: aftershockWarning.survivalBedrockRows,
+    resolvedRise: aftershockResolved.survivalRiseCount,
+    resolvedRows: aftershockResolved.survivalBedrockRows,
+  },
   mutation: Object.fromEntries(Object.entries(mutationCaptures).map(([key, value]) => [key, value.step])),
   cleanup,
   consoleErrors: consoleErrors.length,

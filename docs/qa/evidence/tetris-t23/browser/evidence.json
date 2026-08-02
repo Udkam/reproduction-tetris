@@ -1,7 +1,7 @@
 {
   "taskId": "T23",
-  "sourceSha": "8e893f1a8e7011aa448c85632cb8ca72db213668",
-  "capturedAt": "2026-08-02T00:15:14.851Z",
+  "sourceSha": "4c43619df6df4da050e69e2dd1bd32e765dc7ae0",
+  "capturedAt": "2026-08-02T00:37:38.928Z",
   "origin": "http://127.0.0.1:4178",
   "fixedSeed": 28949,
   "homeModeLabels": [
@@ -94,8 +94,84 @@
     "seed": 28949,
     "pieceCount": 8,
     "lines": 0,
+    "survivalRiseCount": 4,
+    "survivalBedrockRows": 8,
+    "mutationLastItem": null,
+    "mutationLastItemTicks": 0,
+    "mutationFreezeTicks": 0,
+    "mutationCollapseTicks": 0,
+    "mutationMultiplierTicks": 0,
+    "mutationMultiplierFactor": 1,
+    "mutationActiveCarrier": null,
+    "renderer": {
+      "previewPiece": "O",
+      "previewPieces": [
+        "O"
+      ],
+      "previewMutationItem": null,
+      "previewLayerVisible": true,
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      }
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "overflow": {
+      "horizontal": false,
+      "vertical": false
+    }
+  },
+  "aftershockWarning": {
+    "mode": "race",
+    "status": "playing",
+    "phase": "entry",
+    "seed": 28949,
+    "pieceCount": 6,
+    "lines": 0,
     "survivalRiseCount": 3,
     "survivalBedrockRows": 6,
+    "mutationLastItem": null,
+    "mutationLastItemTicks": 0,
+    "mutationFreezeTicks": 0,
+    "mutationCollapseTicks": 0,
+    "mutationMultiplierTicks": 0,
+    "mutationMultiplierFactor": 1,
+    "mutationActiveCarrier": null,
+    "renderer": {
+      "previewPiece": "Z",
+      "previewPieces": [
+        "Z"
+      ],
+      "previewMutationItem": null,
+      "previewLayerVisible": true,
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      }
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "overflow": {
+      "horizontal": false,
+      "vertical": false
+    }
+  },
+  "aftershockResolved": {
+    "mode": "race",
+    "status": "playing",
+    "phase": "entry",
+    "seed": 28949,
+    "pieceCount": 8,
+    "lines": 0,
+    "survivalRiseCount": 4,
+    "survivalBedrockRows": 8,
     "mutationLastItem": null,
     "mutationLastItemTicks": 0,
     "mutationFreezeTicks": 0,
@@ -195,15 +271,15 @@
           "previewLayerVisible": true,
           "mutationActivation": {
             "item": "collapse",
-            "elapsedMs": 33.399999999999636,
+            "elapsedMs": 33.29999999999927,
             "durationMs": 220,
             "phases": [
               {
                 "id": "pull",
                 "active": true,
                 "complete": false,
-                "progress": 0.2783333333333303,
-                "value": 0.8708095414237911
+                "progress": 0.2774999999999939,
+                "value": 0.8693358064528017
               },
               {
                 "id": "settle",
@@ -262,36 +338,8 @@
           ],
           "previewMutationItem": "freeze",
           "previewLayerVisible": true,
-          "mutationActivation": {
-            "item": "collapse",
-            "elapsedMs": 33.399999999999636,
-            "durationMs": 220,
-            "phases": [
-              {
-                "id": "pull",
-                "active": true,
-                "complete": false,
-                "progress": 0.2783333333333303,
-                "value": 0.8708095414237911
-              },
-              {
-                "id": "settle",
-                "active": false,
-                "complete": false,
-                "progress": 0,
-                "value": 0
-              }
-            ],
-            "particlesEmitted": true,
-            "triggerColumns": [
-              0,
-              1,
-              2
-            ]
-          },
-          "mutationActivationQueueItems": [
-            "reshape"
-          ],
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
           "mutationFilters": {
             "freeze": false,
             "collapse": false,
@@ -334,35 +382,8 @@
           ],
           "previewMutationItem": null,
           "previewLayerVisible": true,
-          "mutationActivation": {
-            "item": "freeze",
-            "elapsedMs": 133.40000000000146,
-            "durationMs": 320,
-            "phases": [
-              {
-                "id": "crystalise",
-                "active": true,
-                "complete": false,
-                "progress": 0.41687500000000455,
-                "value": 0.8017172272949264
-              },
-              {
-                "id": "snow-burst",
-                "active": true,
-                "complete": false,
-                "progress": 0.11563981042654718,
-                "value": 0.30834813498205926
-              }
-            ],
-            "particlesEmitted": true,
-            "triggerColumns": [
-              8,
-              9
-            ]
-          },
-          "mutationActivationQueueItems": [
-            "multiplier"
-          ],
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
           "mutationFilters": {
             "freeze": false,
             "collapse": false,
@@ -404,34 +425,7 @@
       ],
       "previewMutationItem": null,
       "previewLayerVisible": true,
-      "mutationActivation": {
-        "item": "multiplier",
-        "elapsedMs": 133.29999999999927,
-        "durationMs": 320,
-        "phases": [
-          {
-            "id": "score-pop",
-            "active": true,
-            "complete": false,
-            "progress": 0.7405555555555515,
-            "value": 1.067356523639655
-          },
-          {
-            "id": "spark-tail",
-            "active": true,
-            "complete": false,
-            "progress": 0.3085185185185158,
-            "value": 0.6693704535385826
-          }
-        ],
-        "particlesEmitted": true,
-        "triggerColumns": [
-          4,
-          5,
-          6,
-          7
-        ]
-      },
+      "mutationActivation": null,
       "mutationActivationQueueItems": [],
       "mutationFilters": {
         "freeze": false,
@@ -470,27 +464,31 @@
     },
     {
       "file": "docs/qa/evidence/tetris-t23/browser/05-survival-restart-next.png",
-      "sha256": "6cfd4c01bee876fd35ac37d9a501511abbc51c65cc628294e6e41d79e3fb2d28"
+      "sha256": "ffde79b7a52180ad8b6c762db8325d2b1a0e66ebded922937d08882790492ea8"
     },
     {
       "file": "docs/qa/evidence/tetris-t23/browser/06-survival-aftershock.png",
-      "sha256": "64445376dba27079bd7e7e797585afb9b3fc3b4144b06b6009e2d16d104ad29f"
+      "sha256": "3e947ec74868bf667a642ec70cfc49595fe23f82d58e0cef82275345b7038c93"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/06b-survival-aftershock-resolved.png",
+      "sha256": "813534ba0d63c688dd83ea74c856ac0510eb3896d30719c31d06f3f891c8f909"
     },
     {
       "file": "docs/qa/evidence/tetris-t23/browser/07-mutation-reshape-preview.png",
-      "sha256": "1ae149a0bfa364d7c2660efec7a497f4f8d46bfceb0d3eca19efda1635597cc0"
+      "sha256": "cabba516fc3e3d62de9f953ac1031a9b3cede122abb703078511bdb668c5b21b"
     },
     {
       "file": "docs/qa/evidence/tetris-t23/browser/08-mutation-reshape-next-i.png",
-      "sha256": "596e5f003d3cf14aad17a09a6bc77b7e1b1e862f1c4e12f21f72b4ba57f729ff"
+      "sha256": "be580ef902970f0e0848cc5adaa670f8a6240edcbc077c51c92dd69f93093461"
     },
     {
       "file": "docs/qa/evidence/tetris-t23/browser/09-mutation-supergravity-field.png",
-      "sha256": "ed05d3d8fe97519db9365339a4381266ac6db3096576e9580316b6582609a5b4"
+      "sha256": "2c8e599016b9b767696fe0c08bf25ae849ee951425e45bc20525325422e74b6b"
     },
     {
       "file": "docs/qa/evidence/tetris-t23/browser/10-mutation-multiplier-field.png",
-      "sha256": "1fbe6115e79035e962d78b348172fcced5a3b446d7bb26393fe66a7e3b7fbd00"
+      "sha256": "d47ec7db305b309e9d8d3436bbeeb56aafb199199e6763e4dfb5bfab0cfaf1b8"
     }
   ]
 }
