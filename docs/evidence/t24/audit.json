@@ -1,68 +1,286 @@
 {
-  "home": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif"
-    ],
-    "proseInDataFace": []
+  "sourceSha": "1dabee85146fa8322b750acb2e57d2e75d86aafa",
+  "capturedAt": "2026-08-02T01:34:56.744Z",
+  "origin": "http://127.0.0.1:5178",
+  "browser": "149.0.7827.55",
+  "states": {
+    "homeEn": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": null,
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 0,
+      "domCellCount": 0
+    },
+    "puzzleEn": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": null,
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 0,
+      "domCellCount": 0
+    },
+    "settingsEnDesktopPopulated": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": {
+        "clientWidth": 837,
+        "clientHeight": 564,
+        "scrollWidth": 837,
+        "scrollHeight": 564
+      },
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsZhDesktopPopulated": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": {
+        "clientWidth": 837,
+        "clientHeight": 544,
+        "scrollWidth": 837,
+        "scrollHeight": 544
+      },
+      "clipped": [],
+      "fonts": [
+        "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"Smiley Sans\", \"TetraMorph UI Sans\", \"Microsoft YaHei UI\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnPortrait": {
+      "viewport": {
+        "width": 720,
+        "height": 960
+      },
+      "document": {
+        "clientWidth": 720,
+        "clientHeight": 960,
+        "scrollWidth": 720,
+        "scrollHeight": 960
+      },
+      "settings": {
+        "clientWidth": 575,
+        "clientHeight": 766,
+        "scrollWidth": 575,
+        "scrollHeight": 766
+      },
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnShort": {
+      "viewport": {
+        "width": 1024,
+        "height": 500
+      },
+      "document": {
+        "clientWidth": 1024,
+        "clientHeight": 500,
+        "scrollWidth": 1024,
+        "scrollHeight": 500
+      },
+      "settings": {
+        "clientWidth": 897,
+        "clientHeight": 473,
+        "scrollWidth": 897,
+        "scrollHeight": 473
+      },
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "pause": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": null,
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "marathonGame": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": null,
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "raceGame": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": null,
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "sprintGame": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": null,
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnEmpty": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "document": {
+        "clientWidth": 1440,
+        "clientHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900
+      },
+      "settings": {
+        "clientWidth": 837,
+        "clientHeight": 421,
+        "scrollWidth": 837,
+        "scrollHeight": 421
+      },
+      "clipped": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+        "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "proseInDataFace": [],
+      "canvasCount": 1,
+      "domCellCount": 0
+    }
   },
-  "puzzle": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+  "keyboard": {
+    "path": [
+      "Continue",
+      "exit-game",
+      "open-settings"
     ],
-    "proseInDataFace": []
+    "expected": [
+      "Continue",
+      "exit-game",
+      "open-settings"
+    ],
+    "escapeOpenedLeave": true,
+    "settingsFromPause": true
   },
-  "marathon": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
-    ],
-    "proseInDataFace": []
-  },
-  "race": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
-    ],
-    "proseInDataFace": []
-  },
-  "sprint": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
-    ],
-    "proseInDataFace": []
-  },
-  "settingsZh": {
-    "clipped": [],
-    "fonts": [
-      "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
-    ],
-    "proseInDataFace": []
-  },
-  "settingsEn": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
-    ],
-    "proseInDataFace": []
-  },
-  "settingsFromPause": true,
-  "backFromPause": true,
-  "settingsShort": {
-    "clipped": [],
-    "fonts": [
-      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
-      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
-    ],
-    "proseInDataFace": []
+  "cleanup": {
+    "canvasCount": 0,
+    "domCellCount": 0,
+    "hasTextHook": false,
+    "hasQaHook": false
   },
   "errors": []
 }
