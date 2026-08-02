@@ -1775,6 +1775,7 @@ export function GameSession({
         <button
           className="topbar-action topbar-action--back"
           type="button"
+          data-pause-global-action
           data-testid="exit-game"
           onClick={(event) => {
             event.currentTarget.focus({ preventScroll: true });
@@ -1791,6 +1792,7 @@ export function GameSession({
           <button
             className="topbar-action topbar-action--settings"
             type="button"
+            data-pause-global-action
             data-testid="open-settings"
             aria-label={`${copy.labels.settings} (S)`}
             aria-keyshortcuts="S"
@@ -1868,7 +1870,8 @@ export function GameSession({
         title={copy.labels.pauseTitle}
         description=""
         placement="gameplay"
-        onCancel={resumeRun}
+        externalFocusSelector="[data-pause-global-action]:not([disabled])"
+        onCancel={requestExit}
         onConfirm={resumeRun}
       >
         <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>{copy.labels.continue}</button>

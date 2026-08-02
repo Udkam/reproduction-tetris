@@ -1321,8 +1321,9 @@ describe('T6 frontend mode binding', () => {
 
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
     act(flushFrame);
-    const pauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
+    const pauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"]')!;
     expect(pauseDialog.textContent).toContain('已暂停');
+    expect(pauseDialog.hasAttribute('aria-modal')).toBe(false);
     expect(pauseDialog.contains(document.activeElement)).toBe(true);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
@@ -1371,8 +1372,8 @@ describe('T6 frontend mode binding', () => {
     act(() => [...pausedRestartDialog.querySelectorAll<HTMLButtonElement>('button')]
       .find((button) => button.textContent === '取消')?.click());
     flushTwoFrames();
-    const returnedPauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
-    expect(view.container.querySelectorAll('[role="dialog"][aria-modal="true"]')).toHaveLength(1);
+    const returnedPauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"]')!;
+    expect(returnedPauseDialog.hasAttribute('aria-modal')).toBe(false);
     expect(returnedPauseDialog.textContent).toContain('已暂停');
     expect(returnedPauseDialog.contains(document.activeElement)).toBe(true);
     expect(document.activeElement).not.toBe(canvas);
@@ -1504,6 +1505,38 @@ describe('T6 frontend mode binding', () => {
 
     act(() => survival?.click());
     expect(onEnter).toHaveBeenCalledWith('race');
+    view.unmount();
+  });
+
+  it('cycles keyboard focus through paused Continue, Back, and Settings and routes Escape to Back', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+    const runtime = runtimeHarness.instances.at(-1)!;
+
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    const continueButton = [...view.container.querySelectorAll<HTMLButtonElement>('[role="dialog"] button')]
+      .find((button) => button.textContent === '继续游戏')!;
+    const backButton = view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')!;
+    const settingsButton = view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')!;
+    expect(document.activeElement).toBe(continueButton);
+
+    act(() => continueButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true })));
+    expect(document.activeElement).toBe(backButton);
+    act(() => backButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true })));
+    expect(document.activeElement).toBe(settingsButton);
+    act(() => settingsButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true })));
+    expect(document.activeElement).toBe(continueButton);
+    act(() => continueButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true })));
+    expect(document.activeElement).toBe(settingsButton);
+
+    act(() => settingsButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(view.container.querySelector('[role="dialog"]')?.textContent).toContain('离开本局？');
     view.unmount();
   });
 

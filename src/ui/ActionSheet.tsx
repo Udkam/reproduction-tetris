@@ -8,6 +8,7 @@ interface ActionSheetProps {
   tone?: 'default' | 'success' | 'danger';
   className?: string;
   placement?: 'viewport' | 'gameplay';
+  externalFocusSelector?: string;
   dismissOnBackdropClick?: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
@@ -33,6 +34,7 @@ export function ActionSheet({
   tone = 'default',
   className,
   placement = 'viewport',
+  externalFocusSelector,
   dismissOnBackdropClick = false,
   onCancel,
   onConfirm,
@@ -176,21 +178,24 @@ export function ActionSheet({
         return;
       }
       if (keyboardEvent.key !== 'Tab' || !panel) return;
-      const focusable = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
+      const panelFocusable = [...panel.querySelectorAll<HTMLElement>(FOCUSABLE)];
+      const externalFocusable = externalFocusSelector
+        ? [...browserPlatform.documentTarget()?.querySelectorAll<HTMLElement>(externalFocusSelector) ?? []]
+        : [];
+      const focusable = [...panelFocusable, ...externalFocusable]
+        .filter((control, index, controls) => controls.indexOf(control) === index);
       if (focusable.length === 0) {
         keyboardEvent.preventDefault();
         panel.focus();
         return;
       }
-      const first = focusable[0]!;
-      const last = focusable.at(-1)!;
-      if (keyboardEvent.shiftKey && browserPlatform.activeElement() === first) {
-        keyboardEvent.preventDefault();
-        last.focus();
-      } else if (!keyboardEvent.shiftKey && browserPlatform.activeElement() === last) {
-        keyboardEvent.preventDefault();
-        first.focus();
-      }
+      const activeIndex = focusable.indexOf(browserPlatform.activeElement() as HTMLElement);
+      const direction = keyboardEvent.shiftKey ? -1 : 1;
+      const nextIndex = activeIndex < 0
+        ? 0
+        : (activeIndex + direction + focusable.length) % focusable.length;
+      keyboardEvent.preventDefault();
+      focusable[nextIndex]!.focus({ preventScroll: true });
     };
 
     const removeKeyDown = browserPlatform.listenDocument('keydown', handleKeyDown, true);
@@ -204,7 +209,7 @@ export function ActionSheet({
         browserPlatform.deferFocus(previouslyFocused);
       });
     };
-  }, [onCancel, onConfirm, open]);
+  }, [externalFocusSelector, onCancel, onConfirm, open]);
 
   if (!open) return null;
 
@@ -221,7 +226,7 @@ export function ActionSheet({
         ref={panelRef}
         className={`action-sheet action-sheet--${tone} action-sheet--placement-${placement}${className ? ` ${className}` : ''}`}
         role="dialog"
-        aria-modal="true"
+        aria-modal={externalFocusSelector ? undefined : 'true'}
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
