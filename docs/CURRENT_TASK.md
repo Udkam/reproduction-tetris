@@ -2,11 +2,17 @@
 
 ## T24 active goal — complete English typography, readable data, and compact settings
 
-**Status (2026-08-02): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
-This bounded correction begins from clean pushed base `230eb09`. Direct player review
-shows English text collisions and incomplete family replacement, rejects the current
-numeric face, requires Back and Settings to remain clickable while the pause sheet is
-open, and rejects the Settings composition as structurally loose.
+**Status (2026-08-02): ACCEPTED / CLOSED / READY FOR PUBLICATION.** Candidate
+`eeb7c00` completes the frozen contract. Final typecheck, the full suite (`305 passed /
+3 skipped`), and the 760-module production build pass. Reproducible browser evidence
+binds to source `1dabee8` and covers English/Chinese Settings, populated and empty
+records, desktop/portrait/short-landscape geometry, and Pause keyboard navigation.
+Independent read-only QA of `230eb09..eeb7c00` reports P0-P3 all zero.
+
+This bounded correction began from clean pushed base `230eb09`. Direct player review
+showed English text collisions and incomplete family replacement, rejected the current
+numeric face, required Back and Settings to remain clickable while the pause sheet was
+open, and rejected the Settings composition as structurally loose.
 
 1. **English UI uses one complete, content-safe family.** Every player-facing English
    prose, heading, label, button, rule, keyboard explanation, record caption, and unit

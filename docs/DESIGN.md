@@ -5,6 +5,12 @@
 
 ## 2026-08-02 T24 — editorial settings console and stable type roles
 
+**Accepted implementation.** Product/evidence candidate `eeb7c00` preserves one
+Playwrite English UI role, one IBM Plex Mono data role, a balanced responsive Settings
+console, and a non-modal Pause status window whose focus cycle explicitly includes
+Continue, Back, and Settings. The reproducible evidence matrix binds to source
+`1dabee8`; independent QA reports no P0-P3 finding.
+
 T24 treats localization as layout truth rather than a string swap. English interface
 copy has one consistent handwritten-humanist voice, but it is allowed real line height,
 ordinary letter spacing, and content-width columns instead of being squeezed into the

@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-08-02 — T24 complete English typography and compact Settings accepted
+
+- Unified all English interface prose under locally bundled Playwrite NZ Basic and
+  moved scores, times, ranks, dates, countdowns, keycaps, and numeric units to IBM
+  Plex Mono. Removed legacy Barlow/Fira package and notice state; a final real-browser
+  audit also found and corrected the remaining English Puzzle category tabs.
+- Rebuilt Settings as one compact responsive console: rules span the top,
+  Controls/Keyboard form the balanced middle pair, and records span the bottom.
+  English and Chinese populated/empty record states fit desktop, `720x960` portrait,
+  and `1024x500` short landscape without text clipping or horizontal overflow.
+- Pause is now an honest non-modal status window. Pointer actions remain available and
+  the keyboard loop is `Continue -> Back -> Settings`; Shift+Tab reverses it and Escape
+  opens Leave. Ordinary successor sheets remain modal and keep their internal traps.
+- Candidate `eeb7c00` passes final typecheck, the complete suite (`305 passed / 3
+  skipped`), and the 760-module build. Reproducible evidence binds to source `1dabee8`
+  and records one Canvas, zero DOM cells, zero browser errors, canonical cleanup, and
+  the complete viewport/state matrix. Independent read-only QA of
+  `230eb09..eeb7c00` reports P0-P3 all zero.
+
 ## 2026-08-02 — T23 authored pressure and Reshape accepted
 
 - Increased ordinary Survival gravity from 40 to 38 ticks per cell and added one

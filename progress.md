@@ -921,4 +921,16 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Original prompt: ①英文还存在有部分文字重叠/字体未完全替换的现象，请全部检查一遍并解决；②数字字体重新选择更合适的；③出现暂停窗口时要能点击返回键和设置键；④设置面板又乱了，重新编排。
 - Base: `230eb09` (clean, synchronized before adoption).
 - Contract frozen: English UI family must be complete and collision-safe; numeric data moves to IBM Plex Mono; Pause keeps Back and Settings clickable; Settings uses one rules / two-column controls+keyboard / record composition without nested cards.
-- TODO: typography source checkpoint, pause/Settings source checkpoint, final gates, browser evidence, independent QA, changelog and push.
+- Delivered eight bounded checkpoints through candidate `eeb7c00`: contract,
+  typography, font notices, Settings/Pause composition, initial evidence, keyboard
+  reachability, the final English Puzzle-tab correction, and reproducible evidence.
+- English player-facing prose resolves through Playwrite NZ Basic; IBM Plex Mono owns
+  scores, times, ranks, dates, countdowns, keycaps, and numeric units. Legacy Barlow,
+  Fira Code, and slashed-zero declarations are absent from active roles.
+- Pause now cycles keyboard focus through Continue, Back, and Settings; Escape opens
+  Leave. Settings is a single rules / controls+keyboard / records console with no
+  nested-card structure or horizontal overflow in the accepted matrix.
+- Final typecheck, full suite (`305 passed / 3 skipped`), and build pass. Evidence
+  `docs/evidence/t24/audit.json` binds to source `1dabee8`, reports no clipping,
+  horizontal overflow, extra Canvas, DOM cells, console errors, or cleanup leak.
+  Independent QA of `230eb09..eeb7c00` reports P0-P3 all zero.
