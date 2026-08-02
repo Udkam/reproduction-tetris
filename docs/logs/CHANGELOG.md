@@ -17,8 +17,9 @@
   skipped`), and the 762-module build. Evidence `e8418d5` records `3 rises / 6 rows →
   4 rises / 8 rows`, Reshape/Next, activation-free persistent fields, one Canvas,
   zero DOM cells, zero console errors, responsive fit, and cleanup. Independent
-  read-only QA of `0107e52..e8418d5` reports P0-P3 all zero; the owned Vite PID was
-  stopped and port `4178` has no listener.
+  read-only QA of `0107e52..e8418d5` reports P0-P3 all zero. A scoped redacted
+  gitleaks scan of the 12-commit T23 range reports no finding; the owned Vite PID
+  was stopped and port `4178` has no listener.
 
 ## 2026-08-02 — T22 concise language control and unified English type accepted
 

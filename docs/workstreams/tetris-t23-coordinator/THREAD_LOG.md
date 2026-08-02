@@ -44,6 +44,8 @@
   warning.
 - Independent read-only QA retry on `0107e52..e8418d5`: **PASS**, P0-P3 all zero.
 - Browser resource: owned Vite PID `11344` stopped; port `4178` has no listener.
+- Scoped redacted gitleaks scan of `0107e52..e7b2223`: 12 commits scanned, zero
+  findings; temporary report removed.
 - Blocker: none.
-- Next action: scoped redacted secret scan, exact-path documentation commit, non-force
-  push, and local/remote SHA equality check.
+- Next action: exact-path documentation commit, non-force push, and local/remote SHA
+  equality check.
