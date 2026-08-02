@@ -673,6 +673,9 @@ describe('T6 frontend mode binding', () => {
     expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
 
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(true);
+    expect(view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.disabled).toBe(false);
+    expect(view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.disabled).toBe(false);
     const pauseBackdrop = view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')!;
     expect(pauseBackdrop.dataset.sheetPlacement).toBe('gameplay');
     expect(pauseBackdrop.querySelector('.action-sheet--placement-gameplay')).not.toBeNull();
@@ -690,7 +693,36 @@ describe('T6 frontend mode binding', () => {
     expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?padding-right:\s*calc\([^}]*244px\)/);
     expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?background:\s*rgba\(11,\s*23,\s*38,\s*\.16\)/);
     expect(sourceHudStyles).toMatch(/\.play-shell:has\(\.sheet-backdrop--gameplay\) \.canvas-host\s*\{[\s\S]*?filter:\s*none/);
+    expect(sourceHudStyles).toMatch(/\.play-shell--paused \.play-topbar\s*\{[\s\S]*?z-index:\s*110;[\s\S]*?pointer-events:\s*auto/);
     expect(sourceHudStyles).toMatch(/\.action-sheet--placement-gameplay\s*\{[\s\S]*?width:\s*min\(420px,\s*100%\)/);
+    view.unmount();
+  });
+
+  it('keeps Back and Settings actionable while the pause sheet is visible', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+    const runtime = runtimeHarness.instances.at(-1)!;
+
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.click());
+    expect(view.container.querySelector('[role="dialog"]')?.textContent).toContain('离开本局？');
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(false);
+
+    const stay = [...view.container.querySelectorAll<HTMLButtonElement>('[role="dialog"] button')]
+      .find((button) => button.textContent === '留在本局')!;
+    act(() => stay.click());
+    expect(view.container.textContent).toContain('已暂停');
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(true);
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(false);
     view.unmount();
   });
 

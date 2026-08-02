@@ -205,6 +205,15 @@
   background: rgba(11, 23, 38, .16);
 }
 
+/* Pause interrupts the board, but its two persistent navigation actions remain
+   available. Successor dialogs remove this class and regain full modal ownership. */
+.play-shell--paused .play-topbar {
+  z-index: 110;
+  pointer-events: auto;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 78%, transparent);
+}
+
 .play-shell:has(.sheet-backdrop--gameplay) .canvas-host {
   filter: none;
 }

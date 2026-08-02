@@ -1765,7 +1765,12 @@ export function GameSession({
     : copy.labels.followingPiece;
 
   return (
-    <main id="game" lang={language} className="play-shell" data-testid="game-screen">
+    <main
+      id="game"
+      lang={language}
+      className={`play-shell${pauseOpen ? ' play-shell--paused' : ''}`}
+      data-testid="game-screen"
+    >
       <header className="play-topbar" data-testid="cluster-header">
         <button
           className="topbar-action topbar-action--back"
