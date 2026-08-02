@@ -29,20 +29,13 @@ font CDN at runtime.
 - Packaged file SHA-256:
   `731F22973349404B15A88A99EF3B5DD4104C0965C23B7E485C1F11E84FEA99E2`.
 
-## Barlow Semi Condensed
+## IBM Plex Mono
 
-- Package: `@fontsource/barlow-semi-condensed` `5.3.0`.
-- Upstream: <https://github.com/jpt/barlow>.
-- Packaged subsets: Latin normal weights 400, 500, 600, 700, and 800.
+- Package: `@fontsource/ibm-plex-mono` `5.3.0`.
+- Upstream: <https://github.com/IBM/plex>.
+- Packaged subsets: Latin normal weights 400, 500, 600, and 700.
 - License: SIL Open Font License 1.1; see
-  [`licenses/fonts/BarlowSemiCondensed-OFL.txt`](licenses/fonts/BarlowSemiCondensed-OFL.txt).
-
-## Fira Code Variable
-
-- Package: `@fontsource-variable/fira-code` `5.3.0`.
-- Upstream: <https://github.com/tonsky/FiraCode>.
-- License: SIL Open Font License 1.1; see
-  [`licenses/fonts/FiraCode-OFL.txt`](licenses/fonts/FiraCode-OFL.txt).
+  [`licenses/fonts/IBMPlexMono-OFL.txt`](licenses/fonts/IBMPlexMono-OFL.txt).
 
 ## Playwrite New Zealand Basic
 

@@ -4,7 +4,7 @@
  * the active game surface so Settings, modals and the Puzzle selector retain ownership.
  */
 
-/* Barlow's vertical metrics extend beyond the legacy one-em crop used by the
+/* The authored English face extends beyond the legacy one-em crop used by the
    compact play header. Keep the translated mode label visible while the header
    grid, rather than overflow clipping, owns horizontal fit. */
 .play-identity > h1 {
