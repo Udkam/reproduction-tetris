@@ -1,0 +1,496 @@
+{
+  "taskId": "T23",
+  "sourceSha": "8e893f1a8e7011aa448c85632cb8ca72db213668",
+  "capturedAt": "2026-08-02T00:15:14.851Z",
+  "origin": "http://127.0.0.1:4178",
+  "fixedSeed": 28949,
+  "homeModeLabels": [
+    "Classic",
+    "Survival",
+    "Mutation",
+    "Puzzle"
+  ],
+  "portraitOverflow": false,
+  "paused": {
+    "mode": "race",
+    "status": "paused",
+    "phase": "active",
+    "seed": 28949,
+    "pieceCount": 0,
+    "lines": 0,
+    "survivalRiseCount": 0,
+    "survivalBedrockRows": 3,
+    "mutationLastItem": null,
+    "mutationLastItemTicks": 0,
+    "mutationFreezeTicks": 0,
+    "mutationCollapseTicks": 0,
+    "mutationMultiplierTicks": 0,
+    "mutationMultiplierFactor": 1,
+    "mutationActiveCarrier": null,
+    "renderer": {
+      "previewPiece": "L",
+      "previewPieces": [
+        "L"
+      ],
+      "previewMutationItem": null,
+      "previewLayerVisible": true,
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      }
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "overflow": {
+      "horizontal": false,
+      "vertical": false
+    }
+  },
+  "restartDialog": {
+    "mode": "race",
+    "status": "paused",
+    "phase": "active",
+    "seed": 28949,
+    "pieceCount": 0,
+    "lines": 0,
+    "survivalRiseCount": 0,
+    "survivalBedrockRows": 3,
+    "mutationLastItem": null,
+    "mutationLastItemTicks": 0,
+    "mutationFreezeTicks": 0,
+    "mutationCollapseTicks": 0,
+    "mutationMultiplierTicks": 0,
+    "mutationMultiplierFactor": 1,
+    "mutationActiveCarrier": null,
+    "renderer": {
+      "previewPiece": "L",
+      "previewPieces": [
+        "L"
+      ],
+      "previewMutationItem": null,
+      "previewLayerVisible": true,
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      }
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "overflow": {
+      "horizontal": false,
+      "vertical": false
+    }
+  },
+  "survival": {
+    "mode": "race",
+    "status": "playing",
+    "phase": "entry",
+    "seed": 28949,
+    "pieceCount": 8,
+    "lines": 0,
+    "survivalRiseCount": 3,
+    "survivalBedrockRows": 6,
+    "mutationLastItem": null,
+    "mutationLastItemTicks": 0,
+    "mutationFreezeTicks": 0,
+    "mutationCollapseTicks": 0,
+    "mutationMultiplierTicks": 0,
+    "mutationMultiplierFactor": 1,
+    "mutationActiveCarrier": null,
+    "renderer": {
+      "previewPiece": "O",
+      "previewPieces": [
+        "O"
+      ],
+      "previewMutationItem": null,
+      "previewLayerVisible": true,
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      }
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "overflow": {
+      "horizontal": false,
+      "vertical": false
+    }
+  },
+  "aftershockLabel": "余震",
+  "mutationCaptures": {
+    "reshapePreview": {
+      "step": 5,
+      "snapshot": {
+        "mode": "sprint",
+        "status": "playing",
+        "phase": "active",
+        "seed": 28949,
+        "pieceCount": 4,
+        "lines": 0,
+        "survivalRiseCount": 0,
+        "survivalBedrockRows": 0,
+        "mutationLastItem": null,
+        "mutationLastItemTicks": 0,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 0,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationActiveCarrier": null,
+        "renderer": {
+          "previewPiece": "T",
+          "previewPieces": [
+            "T"
+          ],
+          "previewMutationItem": "reshape",
+          "previewLayerVisible": true,
+          "mutationActivation": null,
+          "mutationActivationQueueItems": [],
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          }
+        },
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "overflow": {
+          "horizontal": false,
+          "vertical": false
+        }
+      }
+    },
+    "reshapeNext": {
+      "step": 10,
+      "snapshot": {
+        "mode": "sprint",
+        "status": "playing",
+        "phase": "active",
+        "seed": 28949,
+        "pieceCount": 10,
+        "lines": 1,
+        "survivalRiseCount": 0,
+        "survivalBedrockRows": 0,
+        "mutationLastItem": "reshape",
+        "mutationLastItemTicks": 120,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 600,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationActiveCarrier": null,
+        "renderer": {
+          "previewPiece": "I",
+          "previewPieces": [
+            "I"
+          ],
+          "previewMutationItem": "freeze",
+          "previewLayerVisible": true,
+          "mutationActivation": {
+            "item": "collapse",
+            "elapsedMs": 33.399999999999636,
+            "durationMs": 220,
+            "phases": [
+              {
+                "id": "pull",
+                "active": true,
+                "complete": false,
+                "progress": 0.2783333333333303,
+                "value": 0.8708095414237911
+              },
+              {
+                "id": "settle",
+                "active": false,
+                "complete": false,
+                "progress": 0,
+                "value": 0
+              }
+            ],
+            "particlesEmitted": true,
+            "triggerColumns": [
+              0,
+              1,
+              2
+            ]
+          },
+          "mutationActivationQueueItems": [
+            "reshape"
+          ],
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          }
+        },
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "overflow": {
+          "horizontal": false,
+          "vertical": false
+        }
+      }
+    },
+    "supergravity": {
+      "step": 10,
+      "snapshot": {
+        "mode": "sprint",
+        "status": "playing",
+        "phase": "active",
+        "seed": 28949,
+        "pieceCount": 10,
+        "lines": 1,
+        "survivalRiseCount": 0,
+        "survivalBedrockRows": 0,
+        "mutationLastItem": "reshape",
+        "mutationLastItemTicks": 120,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 600,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationActiveCarrier": null,
+        "renderer": {
+          "previewPiece": "I",
+          "previewPieces": [
+            "I"
+          ],
+          "previewMutationItem": "freeze",
+          "previewLayerVisible": true,
+          "mutationActivation": {
+            "item": "collapse",
+            "elapsedMs": 33.399999999999636,
+            "durationMs": 220,
+            "phases": [
+              {
+                "id": "pull",
+                "active": true,
+                "complete": false,
+                "progress": 0.2783333333333303,
+                "value": 0.8708095414237911
+              },
+              {
+                "id": "settle",
+                "active": false,
+                "complete": false,
+                "progress": 0,
+                "value": 0
+              }
+            ],
+            "particlesEmitted": true,
+            "triggerColumns": [
+              0,
+              1,
+              2
+            ]
+          },
+          "mutationActivationQueueItems": [
+            "reshape"
+          ],
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          }
+        },
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "overflow": {
+          "horizontal": false,
+          "vertical": false
+        }
+      }
+    },
+    "multiplier": {
+      "step": 24,
+      "snapshot": {
+        "mode": "sprint",
+        "status": "playing",
+        "phase": "active",
+        "seed": 28949,
+        "pieceCount": 24,
+        "lines": 9,
+        "survivalRiseCount": 0,
+        "survivalBedrockRows": 0,
+        "mutationLastItem": "multiplier",
+        "mutationLastItemTicks": 600,
+        "mutationFreezeTicks": 582,
+        "mutationCollapseTicks": 513,
+        "mutationMultiplierTicks": 600,
+        "mutationMultiplierFactor": 2,
+        "mutationActiveCarrier": {
+          "id": 7,
+          "item": "multiplier"
+        },
+        "renderer": {
+          "previewPiece": "L",
+          "previewPieces": [
+            "L"
+          ],
+          "previewMutationItem": null,
+          "previewLayerVisible": true,
+          "mutationActivation": {
+            "item": "freeze",
+            "elapsedMs": 133.40000000000146,
+            "durationMs": 320,
+            "phases": [
+              {
+                "id": "crystalise",
+                "active": true,
+                "complete": false,
+                "progress": 0.41687500000000455,
+                "value": 0.8017172272949264
+              },
+              {
+                "id": "snow-burst",
+                "active": true,
+                "complete": false,
+                "progress": 0.11563981042654718,
+                "value": 0.30834813498205926
+              }
+            ],
+            "particlesEmitted": true,
+            "triggerColumns": [
+              8,
+              9
+            ]
+          },
+          "mutationActivationQueueItems": [
+            "multiplier"
+          ],
+          "mutationFilters": {
+            "freeze": false,
+            "collapse": false,
+            "activeCount": 0
+          }
+        },
+        "canvasCount": 1,
+        "domCellCount": 0,
+        "overflow": {
+          "horizontal": false,
+          "vertical": false
+        }
+      }
+    }
+  },
+  "finalMutation": {
+    "mode": "sprint",
+    "status": "playing",
+    "phase": "active",
+    "seed": 28949,
+    "pieceCount": 24,
+    "lines": 9,
+    "survivalRiseCount": 0,
+    "survivalBedrockRows": 0,
+    "mutationLastItem": "multiplier",
+    "mutationLastItemTicks": 600,
+    "mutationFreezeTicks": 582,
+    "mutationCollapseTicks": 513,
+    "mutationMultiplierTicks": 600,
+    "mutationMultiplierFactor": 2,
+    "mutationActiveCarrier": {
+      "id": 7,
+      "item": "multiplier"
+    },
+    "renderer": {
+      "previewPiece": "L",
+      "previewPieces": [
+        "L"
+      ],
+      "previewMutationItem": null,
+      "previewLayerVisible": true,
+      "mutationActivation": {
+        "item": "multiplier",
+        "elapsedMs": 133.29999999999927,
+        "durationMs": 320,
+        "phases": [
+          {
+            "id": "score-pop",
+            "active": true,
+            "complete": false,
+            "progress": 0.7405555555555515,
+            "value": 1.067356523639655
+          },
+          {
+            "id": "spark-tail",
+            "active": true,
+            "complete": false,
+            "progress": 0.3085185185185158,
+            "value": 0.6693704535385826
+          }
+        ],
+        "particlesEmitted": true,
+        "triggerColumns": [
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "mutationActivationQueueItems": [],
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      }
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "overflow": {
+      "horizontal": false,
+      "vertical": false
+    }
+  },
+  "cleanup": {
+    "canvasCount": 0,
+    "qaSurface": false
+  },
+  "consoleErrors": [],
+  "artifacts": [
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/01-home-desktop.png",
+      "sha256": "fcb635504c83f68f64caa045c6f092749917d9904d2af0d5f0c41ed0fccf734b"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/02-home-portrait.png",
+      "sha256": "e47025ba444952653afda61c6b8170bbdcbde28b9042f80e3534dc45b7a0e161"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/03-settings-language.png",
+      "sha256": "1f51fed7dd014e095b683a05c3f31f5939f422a1ec57ac38941129b9c973d716"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/04-survival-pause-next.png",
+      "sha256": "f8b92ceacf3441d242dba7f12c73642d705814d535a2a79a7efbb1fc56d2bff7"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/05-survival-restart-next.png",
+      "sha256": "6cfd4c01bee876fd35ac37d9a501511abbc51c65cc628294e6e41d79e3fb2d28"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/06-survival-aftershock.png",
+      "sha256": "64445376dba27079bd7e7e797585afb9b3fc3b4144b06b6009e2d16d104ad29f"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/07-mutation-reshape-preview.png",
+      "sha256": "1ae149a0bfa364d7c2660efec7a497f4f8d46bfceb0d3eca19efda1635597cc0"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/08-mutation-reshape-next-i.png",
+      "sha256": "596e5f003d3cf14aad17a09a6bc77b7e1b1e862f1c4e12f21f72b4ba57f729ff"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/09-mutation-supergravity-field.png",
+      "sha256": "ed05d3d8fe97519db9365339a4381266ac6db3096576e9580316b6582609a5b4"
+    },
+    {
+      "file": "docs/qa/evidence/tetris-t23/browser/10-mutation-multiplier-field.png",
+      "sha256": "1fbe6115e79035e962d78b348172fcced5a3b446d7bb26393fe66a7e3b7fbd00"
+    }
+  ]
+}
