@@ -280,6 +280,10 @@
   box-shadow: none;
 }
 
+[lang="en"] .puzzle-gallery__page {
+  font-family: var(--font-ui);
+}
+
 .puzzle-gallery__mastery {
   display: grid;
   gap: 6px;

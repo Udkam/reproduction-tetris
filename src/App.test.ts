@@ -1472,6 +1472,7 @@ describe('T6 frontend mode binding', () => {
     expect(sourceStyles).toContain('transform: translateX(-.38em)');
     expect(sourceStyles).toContain('stroke: #ffffff');
     expect(puzzleLibraryStyles).toMatch(/data-puzzle-category="easy"[^}]*repeat\(6,/s);
+    expect(puzzleLibraryStyles).toMatch(/\[lang="en"\] \.puzzle-gallery__page\s*\{[^}]*font-family:\s*var\(--font-ui\)/s);
     for (const color of ['%233f9f96', '%236687d5', '%23c98243', '%239875be']) {
       expect(sourceIndex).toContain(color);
     }
