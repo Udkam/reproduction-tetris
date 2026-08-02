@@ -1,0 +1,68 @@
+{
+  "home": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif"
+    ],
+    "proseInDataFace": []
+  },
+  "puzzle": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "marathon": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "race": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "sprint": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "settingsZh": {
+    "clipped": [],
+    "fonts": [
+      "\"TetraMorph UI Sans\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "settingsEn": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "settingsFromPause": true,
+  "backFromPause": true,
+  "settingsShort": {
+    "clipped": [],
+    "fonts": [
+      "\"Playwrite NZ Basic\", \"TetraMorph UI Sans\", sans-serif",
+      "\"IBM Plex Mono\", \"Cascadia Mono\", monospace"
+    ],
+    "proseInDataFace": []
+  },
+  "errors": []
+}
