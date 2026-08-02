@@ -1,4 +1,51 @@
-# Current Task — T23 Pressure, Reshape, and Quiet State Fields
+# Current Task — T24 Typography, Pause Navigation, and Settings Composition
+
+## T24 active goal — complete English typography, readable data, and compact settings
+
+**Status (2026-08-02): ACTIVE / CONTRACT FROZEN / SOURCE NOT YET ACCEPTED.**
+This bounded correction begins from clean pushed base `230eb09`. Direct player review
+shows English text collisions and incomplete family replacement, rejects the current
+numeric face, requires Back and Settings to remain clickable while the pause sheet is
+open, and rejects the Settings composition as structurally loose.
+
+1. **English UI uses one complete, content-safe family.** Every player-facing English
+   prose, heading, label, button, rule, keyboard explanation, record caption, and unit
+   must resolve through the same locally bundled UI family. `TetraMorph` remains its
+   isolated bold brand treatment. Keycaps and numeric values are separate semantic
+   roles, not exceptions that allow arbitrary legacy UI fonts. Long English content
+   must wrap inside its own region without overlap, clipping, ellipsis, or disappearance.
+2. **Numeric data receives a clearer dedicated face.** Replace Fira Code with locally
+   bundled IBM Plex Mono for scores, times, ranks, dates, countdowns, board indices,
+   keycaps, and numeric units. Use real packaged weights, tabular figures, and ordinary
+   zeroes; do not synthesize weight or force slashed zeroes.
+3. **Pause does not disable global navigation.** While the compact pause sheet is open,
+   the top-bar Back and Settings buttons remain visible, pointer-clickable, and keyboard
+   reachable. Back opens the existing leave confirmation; Settings replaces Pause with
+   the single Settings dialog. Gameplay input remains disabled and no second dialog,
+   Canvas, or preview implementation may appear.
+4. **Settings becomes one compact two-column console.** Rules span the top. Controls
+   and Keyboard form a balanced middle pair with explicit internal alignment; Record
+   spans the bottom. Sections remain typographic regions inside one enclosing surface,
+   not nested cards. Chinese and English, Classic/Survival/Mutation/Puzzle, empty and
+   populated records, desktop, portrait, and short landscape must contain no structural
+   void, collision, clipped copy, accidental two-line action, or internal horizontal
+   overflow.
+5. **Acceptance is fail-closed.** Direct tests must cover English font ownership,
+   IBM Plex Mono loading, Settings content order and geometry contracts, and clicking
+   Back/Settings from Pause. After the final source edit run one typecheck, the complete
+   suite, one build, and one real browser batch covering Chinese and English Settings,
+   populated Survival records, empty records, and Pause-to-Back/Settings transitions.
+   One Canvas, zero DOM board cells, zero console errors, responsive fit, and cleanup
+   remain mandatory.
+
+**Ownership and checkpoint boundary.** The coordinator is the sole writer. Contract
+paths are `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, and
+`docs/workstreams/tetris-t24-coordinator/THREAD_LOG.md`. Typography may touch package
+metadata, `src/main.tsx`, typography tokens, and direct tests. Pause/Settings work may
+touch `src/App.tsx`, authoritative Settings/HUD styles, and direct tests. Evidence,
+independent read-only QA, changelog integration, and push remain separate checkpoints.
+
+# Previous Task — T23 Pressure, Reshape, and Quiet State Fields
 
 ## T23 accepted goal — readable new decisions without visual noise
 

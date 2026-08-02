@@ -3,6 +3,29 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-02 T24 — editorial settings console and stable type roles
+
+T24 treats localization as layout truth rather than a string swap. English interface
+copy has one consistent handwritten-humanist voice, but it is allowed real line height,
+ordinary letter spacing, and content-width columns instead of being squeezed into the
+metrics of the former condensed face. The wordmark alone retains the bold outlined brand
+treatment. Data moves from the programmer-coded appearance of Fira Code to IBM Plex Mono:
+clearer open counters, less aggressive punctuation, real tabular alignment, and no forced
+slashed zeroes.
+
+Settings is one editorial console. The top rule strip establishes context; the middle
+is a balanced two-column composition with run controls on the left and the complete
+keyboard map on the right; the record ledger forms the shared baseline below. Section
+color and heading rhythm distinguish content without nested cards or ornamental boxes.
+At narrow widths the columns collapse in reading order without retaining desktop-sized
+empty tracks.
+
+The pause sheet interrupts the board, not global navigation. Its translucent gameplay
+backdrop and compact board-centred surface remain, while the top bar sits on a deliberate
+interaction plane above it. Back and Settings can therefore replace Pause with their
+existing single-dialog flows. Focus, input disablement, Next visibility, and one-Canvas
+ownership do not change.
+
 ## 2026-08-02 T23 — authored pressure and quiet transformation
 
 T23 adds decisions, not ambient randomness. Survival receives a slight five-percent

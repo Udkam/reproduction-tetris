@@ -916,3 +916,9 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Core inspection clarified Reshape timing before implementation: carrier activation
   and the already-waiting spawn share one transition, so Reshape rewrites the following
   queue entry. It is therefore visible in Next for a full turn before it spawns.
+# T24 typography, pause navigation, and Settings composition
+
+- Original prompt: ①英文还存在有部分文字重叠/字体未完全替换的现象，请全部检查一遍并解决；②数字字体重新选择更合适的；③出现暂停窗口时要能点击返回键和设置键；④设置面板又乱了，重新编排。
+- Base: `230eb09` (clean, synchronized before adoption).
+- Contract frozen: English UI family must be complete and collision-safe; numeric data moves to IBM Plex Mono; Pause keeps Back and Settings clickable; Settings uses one rules / two-column controls+keyboard / record composition without nested cards.
+- TODO: typography source checkpoint, pause/Settings source checkpoint, final gates, browser evidence, independent QA, changelog and push.
