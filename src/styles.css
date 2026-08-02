@@ -101,12 +101,12 @@ kbd,
 .console-node button,
 .settings-shortcuts kbd {
   font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
 }
 
 .run-stats article:not([data-stat-role="objective"]) strong {
   font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
 }
 
 .skip-link {
@@ -5641,7 +5641,7 @@ kbd,
   font-family: var(--font-mono);
   font-size: 21px;
   font-weight: 760;
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
   letter-spacing: -.055em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, .75);
 }

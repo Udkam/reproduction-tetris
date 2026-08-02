@@ -38,7 +38,7 @@ describe('TetraMorph Design System v1.0', () => {
     expect(TYPOGRAPHY.fontFamily.chineseUi).toContain('TetraMorph UI Sans');
     expect(TYPOGRAPHY.fontFamily.chineseDisplay).toContain('Smiley Sans');
     expect(TYPOGRAPHY.fontFamily.englishUi).toMatch(/^"Playwrite NZ Basic"/);
-    expect(TYPOGRAPHY.fontFamily.data).toContain('Fira Code Variable');
+    expect(TYPOGRAPHY.fontFamily.data).toContain('IBM Plex Mono');
     expect(TYPOGRAPHY.weight.brand).toBe(400);
     expect(TYPOGRAPHY.scale).toEqual({
       display: { size: 28, weight: 700, lineHeight: 1.1 },
@@ -90,16 +90,16 @@ describe('TetraMorph Design System v1.0', () => {
     }
     expect(tokenStyles).toContain('--font-ui-zh: "TetraMorph UI Sans"');
     expect(tokenStyles).toContain('--font-display-zh: "Smiley Sans"');
-    expect(tokenStyles).toContain('--font-ui-en: "Playwrite NZ Basic", "Barlow Semi Condensed"');
-    expect(tokenStyles).toContain('--font-data: "Fira Code Variable"');
+    expect(tokenStyles).toContain('--font-ui-en: "Playwrite NZ Basic", "TetraMorph UI Sans"');
+    expect(tokenStyles).toContain('--font-data: "IBM Plex Mono"');
     expect(tokenStyles).toContain('url("../assets/fonts/TetraMorphUISans-subset.otf")');
     expect(tokenStyles).toContain('url("../assets/fonts/SmileySans-Oblique.woff2")');
     expect(tokenStyles).not.toMatch(/url\(["']?https?:/);
-    expect(mainSource).toContain("import '@fontsource/barlow-semi-condensed/latin-400.css';");
-    expect(mainSource).toContain("import '@fontsource/barlow-semi-condensed/latin-800.css';");
-    expect(mainSource).toContain("import '@fontsource-variable/fira-code/index.css';");
-    expect(bootSource).toContain('"Barlow Semi Condensed"');
-    expect(`${tokenStyles}\n${mainSource}\n${bootSource}\n${packageSource}`).not.toMatch(/Space Grotesk|Geist Mono|Sora Variable|IBM Plex Mono|@fontsource-variable\/space-grotesk|@fontsource-variable\/geist-mono|@fontsource-variable\/sora|@fontsource\/ibm-plex-mono/);
+    expect(mainSource).toContain("import '@fontsource/ibm-plex-mono/latin-400.css';");
+    expect(mainSource).toContain("import '@fontsource/ibm-plex-mono/latin-700.css';");
+    expect(mainSource).not.toMatch(/barlow-semi-condensed|fira-code/);
+    expect(bootSource).not.toMatch(/Barlow Semi Condensed|Fira Code/);
+    expect(`${tokenStyles}\n${mainSource}\n${bootSource}\n${packageSource}`).not.toMatch(/Space Grotesk|Geist Mono|Sora Variable|Barlow Semi Condensed|Fira Code Variable|@fontsource-variable\/space-grotesk|@fontsource-variable\/geist-mono|@fontsource-variable\/sora|@fontsource\/barlow-semi-condensed|@fontsource-variable\/fira-code/);
     expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).toMatch(/:root:lang\(en\),[\s\S]*--font-ui:\s*var\(--font-ui-en\);/);
     expect(tokenStyles).toContain('font-synthesis: none;');
@@ -113,12 +113,9 @@ describe('TetraMorph Design System v1.0', () => {
       .toBeGreaterThan(1_000_000);
     expect(fontNotices).toContain('TetraMorph UI Sans');
     expect(fontNotices).toContain('Smiley Sans');
-    expect(fontNotices).toContain('Barlow Semi Condensed');
-    expect(fontNotices).toContain('Fira Code Variable');
+    expect(fontNotices).toContain('IBM Plex Mono');
     expect(fontNotices).toContain('reserves the WenYuan family names');
-    expect(statSync(new URL('../../../licenses/fonts/BarlowSemiCondensed-OFL.txt', import.meta.url)).size)
-      .toBeGreaterThan(4_000);
-    expect(statSync(new URL('../../../licenses/fonts/FiraCode-OFL.txt', import.meta.url)).size)
+    expect(statSync(new URL('../../../licenses/fonts/IBMPlexMono-OFL.txt', import.meta.url)).size)
       .toBeGreaterThan(4_000);
   });
 });
