@@ -1227,11 +1227,21 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    const contours = recorder.operations.filter((operation) => operation.kind === 'poly');
+    const polygons = recorder.operations.filter((operation) => operation.kind === 'poly');
+    const contours = polygons.filter((operation) => {
+      const ys = operation.values.filter((_value, index) => index % 2 === 1);
+      return Math.max(...ys) - Math.min(...ys) >= 4;
+    });
+    const contactWedges = polygons.filter((operation) => {
+      const ys = operation.values.filter((_value, index) => index % 2 === 1);
+      return Math.max(...ys) - Math.min(...ys) < 4;
+    });
+    expect(polygons).toHaveLength(4);
     expect(contours).toHaveLength(3);
+    expect(contactWedges).toHaveLength(1);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(1);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(contours.every((operation) => {
       const xs = operation.values.filter((_value, index) => index % 2 === 0);
       const ys = operation.values.filter((_value, index) => index % 2 === 1);
@@ -1418,6 +1428,11 @@ describe('Puzzle undo presentation reset', () => {
     expect(cornerPanels.length).toBeGreaterThanOrEqual(2);
     expect(cornerPanels.every((operation) => (operation.values[0] ?? 0) >= layout.width - layout.cell * 2)).toBe(true);
     expect(Math.max(...cornerPanels.map((operation) => operation.values[2] ?? 0))).toBeLessThanOrEqual(layout.cell * 1.1);
+    const twoSegments = twoField.operations.filter((operation) => operation.kind === 'segment');
+    const fourSegments = fourField.operations.filter((operation) => operation.kind === 'segment');
+    // One eight-segment secondary star minus the two-segment difference between
+    // the vector 2 and 4 glyphs leaves exactly six additional x4 segments.
+    expect(fourSegments).toHaveLength(twoSegments.length + 6);
 
     internals.mutationClockMs = 437;
     const laterField = createGraphicsRecorder();

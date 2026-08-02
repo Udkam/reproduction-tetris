@@ -2658,11 +2658,18 @@ export class TetrisRenderer {
         });
     }
 
-    // A low contact shelf makes the stack itself look loaded without covering it.
-    const shelfY = Math.max(layout.y + layout.cell * 2.2, stackTop - layout.cell * .18);
+    // A shallow contact wedge loads the occupied span without reading as a UI bar.
+    const wedgeY = Math.max(layout.y + layout.cell * 2.2, stackTop - layout.cell * .18);
+    const wedgeHalfWidth = halfWidth * .6;
+    const wedgeDepth = Math.max(2, layout.cell * .14);
     graphics
-      .roundRect(centerX - halfWidth * .7, shelfY, halfWidth * 1.4, Math.max(2, layout.cell * .075), layout.cell * .04)
-      .fill({ color: token.palette.deep, alpha: .3 * opacity });
+      .poly([
+        centerX - wedgeHalfWidth, wedgeY,
+        centerX + wedgeHalfWidth, wedgeY,
+        centerX + wedgeHalfWidth * .78, wedgeY + wedgeDepth,
+        centerX - wedgeHalfWidth * .78, wedgeY + wedgeDepth,
+      ])
+      .fill({ color: token.palette.deep, alpha: .26 * opacity });
   }
 
   private drawMultiplierAtmosphere(
@@ -2697,20 +2704,15 @@ export class TetrisRenderer {
       .72 * opacity,
     );
     if (factor === 4) {
-      for (const [x, y] of [
-        [centerX - layout.cell * .42, centerY - layout.cell * .2],
-        [centerX - layout.cell * .4, centerY + layout.cell * .2],
-      ] as const) {
-        this.drawMutationStar(
-          graphics,
-          x,
-          y,
-          Math.max(1.8, layout.cell * .075),
-          Math.max(.8, layout.cell * .028),
-          token.palette.highlight,
-          .62 * opacity,
-        );
-      }
+      this.drawMutationStar(
+        graphics,
+        centerX - layout.cell * .4,
+        centerY - layout.cell * .2,
+        Math.max(1.8, layout.cell * .075),
+        Math.max(.8, layout.cell * .028),
+        token.palette.highlight,
+        .62 * opacity,
+      );
     }
     this.drawMutationMultiplierValue(
       graphics,
