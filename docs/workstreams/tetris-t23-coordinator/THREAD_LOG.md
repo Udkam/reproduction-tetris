@@ -46,6 +46,8 @@
 - Browser resource: owned Vite PID `11344` stopped; port `4178` has no listener.
 - Scoped redacted gitleaks scan of `0107e52..e7b2223`: 12 commits scanned, zero
   findings; temporary report removed.
+- Publication: accepted range through `f6af9f8` pushed to `origin/main` without
+  rewriting history; lockfile dry-run reported up to date.
 - Blocker: none.
-- Next action: exact-path documentation commit, non-force push, and local/remote SHA
-  equality check.
+- Next action: none after this metadata-only closeout is pushed and local/remote SHA
+  equality is confirmed.
