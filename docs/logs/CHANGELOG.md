@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-08-02 — T23 authored pressure and Reshape accepted
+
+- Increased ordinary Survival gravity from 40 to 38 ticks per cell and added one
+  readable deterministic risk: every fourth natural pressure rise advances two rows.
+  Initial countdown rows do not enter the cycle, cleared bedrock does not reset it,
+  and the HUD previews the pending Aftershock.
+- Added Reshape as the fifth seeded Mutation carrier. Clearing it rewrites the first
+  post-activation Next entry to `I` for a complete preview turn, with a distinct
+  emerald alignment cue and no persistent status or looping sound.
+- Replaced rain-like Supergravity and dominant Multiplier fields with broad
+  constant-alpha compression contours, a shallow contact wedge, and a compact fixed
+  corner constellation. The Settings console again owns the sole language selector;
+  Home mode names remain permanently English.
+- Product `4c43619` passes final typecheck, the complete suite (`305 passed / 3
+  skipped`), and the 762-module build. Evidence `e8418d5` records `3 rises / 6 rows →
+  4 rises / 8 rows`, Reshape/Next, activation-free persistent fields, one Canvas,
+  zero DOM cells, zero console errors, responsive fit, and cleanup. Independent
+  read-only QA of `0107e52..e8418d5` reports P0-P3 all zero; the owned Vite PID was
+  stopped and port `4178` has no listener.
+
 ## 2026-08-02 — T22 concise language control and unified English type accepted
 
 - Removed the redundant visible `语言 / Language` prefix from the single Home

@@ -34,6 +34,13 @@ Survival, Mutation, Puzzle—while actions, rules, Settings, records, and access
 continue to localize. The wordmark and mode matrix remain centered and gain no second
 language control.
 
+Accepted source `4c43619` and browser evidence `e8418d5` close this contract. Final
+typecheck, the full suite (`305 passed / 3 skipped`), and the 762-module build pass.
+The evidence resolves the fourth rise from six to eight rows, captures Reshape plus
+activation-free Supergravity and Multiplier fields, and reports one Canvas, zero DOM
+board cells, zero console errors, responsive fit, and complete cleanup. Independent
+read-only QA of `0107e52..e8418d5` reports P0-P3 all zero.
+
 ## 2026-08-02 T22 — label-free control and unified English face
 
 The Home language selector is self-evident from its two explicit choices. It displays

@@ -1,11 +1,14 @@
 # Current Task — T23 Pressure, Reshape, and Quiet State Fields
 
-## T23 active goal — readable new decisions without visual noise
+## T23 accepted goal — readable new decisions without visual noise
 
-**Status (2026-08-02): ACTIVE / CONTRACT FROZEN / IMPLEMENTATION OPEN.** This
-slice starts from clean pushed base `0107e52`. The coordinator is the sole writer.
-Nothing in T23 is accepted until Core tests, final gates, real browser evidence, and
-independent read-only QA all pass.
+**Status (2026-08-02): ACCEPTED / CLOSED / READY FOR PUBLICATION.** Product source
+`4c43619` implements the frozen contract. Final typecheck, the complete suite (`305
+passed / 3 skipped`), and the 762-module production build pass. Browser evidence
+`e8418d5` proves the fourth natural rise changes `3 / 6` to `4 / 8`, captures Reshape
+and activation-free persistent fields, and reports one Canvas, zero DOM board cells,
+zero console errors, responsive fit, and complete runtime cleanup. Independent
+read-only QA of `0107e52..e8418d5` reports P0-P3 all zero.
 
 1. **Survival is slightly faster, not abruptly harsher.** Ordinary Survival gravity
    changes from 40 to 38 simulation ticks per cell (about 0.63 seconds per cell). The

@@ -3,7 +3,7 @@
 - Task: T23 pressure, Reshape, and quiet state fields
 - Owner: primary coordinator / sole writer
 - Base SHA: `0107e52`
-- Status: contract frozen; implementation not yet accepted
+- Status: accepted; closed; ready for publication
 - Contract paths: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, this log
 - Product boundary: Survival gravity and Aftershock state; Mutation Reshape item;
   Supergravity/Multiplier fields; Settings language placement and English Home labels
@@ -33,8 +33,17 @@
   two-row rise, captured persistent Mutation fields while activation overlays were
   still active, rendered two x4 secondary points instead of one, and used a rounded
   contact shelf instead of the contracted shallow Supergravity wedge.
-- Blocker: the rejected evidence and two presentation mismatches must be corrected;
-  no acceptance or publication claim is allowed from `fc00913`.
-- Next action: align the two renderer geometries, add direct regression assertions,
-  rerun the required final gates, then replace the rejected browser evidence with
-  resolved Aftershock and activation-free persistent-field frames.
+- Correction source checkpoint: `4c43619`; x4 now has exactly one secondary point,
+  Supergravity uses a shallow polygon wedge, and direct renderer tests freeze both
+  claims.
+- Corrected evidence checkpoint: `e8418d5`; warning state `3 rises / 6 rows` resolves
+  to `4 rises / 8 rows`. Supergravity and Multiplier frames wait for a null activation
+  and empty activation queue. The 11 committed PNG hashes match the manifest.
+- Final gate after `4c43619`: typecheck passed; full suite passed `305` tests with `3`
+  skipped; the 762-module production build passed with only the existing bundle-size
+  warning.
+- Independent read-only QA retry on `0107e52..e8418d5`: **PASS**, P0-P3 all zero.
+- Browser resource: owned Vite PID `11344` stopped; port `4178` has no listener.
+- Blocker: none.
+- Next action: scoped redacted secret scan, exact-path documentation commit, non-force
+  push, and local/remote SHA equality check.
