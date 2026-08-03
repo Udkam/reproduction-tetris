@@ -8,7 +8,7 @@ coordinator is the only writer. The accepted deterministic Core, one Pixi canvas
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
 information architecture remain authoritative.
 
-The slice has twelve player-visible acceptance requirements:
+The slice has thirteen player-visible acceptance requirements:
 
 1. Home shows the single `TetraMorph` wordmark without the Chinese positioning line.
    The English positioning line may remain in English UI; Chinese Home must not reserve
@@ -101,6 +101,12 @@ The slice has twelve player-visible acceptance requirements:
     units. Metal is loaded from the pinned repository dependency for offline packaging;
     no remote font request, fabricated weight face, or partial Kavivanar cascade may
     remain active.
+13. Every Mutation carrier remains identifiable when its item palette is close to the
+    underlying tetromino color. Carrier rendering therefore uses two channels that do
+    not depend on hue alone: a high-contrast neutral backing/keyline plus the existing
+    item-specific symbol and accent. The complete carrier silhouette is readable on the
+    active board and in Next; reduced motion keeps the same static identity, and the
+    treatment cannot leave a residual cell frame after the carrier is cleared.
 
 ### Required checkpoints and verification
 
@@ -112,8 +118,9 @@ The slice has twelve player-visible acceptance requirements:
 5. Commit countdown audio, the restrained Supergravity visual, and the portrait scored
    and Puzzle result hierarchy with direct audio, renderer, CSS, and reduced-motion
    tests.
-6. Commit the persistent Mutation status rail, Reshape activation, and Metal typography
-   as bounded checkpoints with direct React, renderer/timeline, token, and CSS tests.
+6. Commit the persistent Mutation status rail, stronger carrier identity, Reshape
+   activation, and Metal typography as bounded checkpoints with direct React,
+   renderer/timeline, token, and CSS tests.
 7. After the final source edit, run one typecheck, the complete two-worker suite, one
    production build, and one controlled bilingual browser-evidence batch. Inspect real
    Home, Classic Settings, Survival HUD, countdown, Supergravity, and all three ranked

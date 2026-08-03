@@ -107,6 +107,15 @@ legible against a busy stack without becoming a full-screen flash. Reduced motio
 the assembled I plus a static confirmation frame. The cue uses Reshape's teal palette,
 never Double's star language, and completes quickly enough to preserve input cadence.
 
+Mutation carriers never rely on item hue alone. Each occupied carrier cell receives a
+small neutral dark backing plate with a pale keyline, then the item-specific cyan,
+violet, coral, amber, or teal mark is drawn above it. A restrained outer silhouette cue
+ties the marked cells into one carrier without recoloring the base tetromino. This same
+two-channel identity is rendered on the active piece and in Next, so similar base/item
+colors remain separable. The cue is attached to the live carrier only; clearing or
+replacing it removes every overlay immediately. Reduced motion freezes the mark instead
+of removing it.
+
 ### Portrait result hierarchy
 
 The ranked Classic, Survival, and Mutation result sheet becomes a narrow vertical game
