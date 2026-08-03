@@ -1,4 +1,60 @@
-# Current Task — T26 TetraMorph v1.0 Release Candidate
+# Current Task — T27 Personalised Pace and Feedback Polish
+
+## T27 active goal — make the opening pace configurable and feedback easier to read
+
+**Status (2026-08-03): CONTRACT FROZEN / IMPLEMENTATION OPEN.** Direct player
+feedback reopens a bounded post-RC correction on clean pushed base `ffb2ec9`. The
+coordinator is the only writer. The accepted deterministic Core, one Pixi canvas,
+four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
+information architecture remain authoritative.
+
+The slice has seven player-visible acceptance requirements:
+
+1. Home shows the single `TetraMorph` wordmark without the Chinese positioning line.
+   The English positioning line may remain in English UI; Chinese Home must not reserve
+   a blank line after removing its copy.
+2. Locally packaged **Kavivanar 400** replaces Space Grotesk for ordinary English UI.
+   Playwrite NZ Basic remains exclusive to the `TetraMorph` wordmark, Noto Sans SC
+   remains the Chinese face, and Geist Mono remains the numeric/data face. English text
+   must wrap without overlap, clipping, disappearance, or synthetic weights.
+3. Classic Settings exposes a persisted starting gravity from `1.0` through `0.1`
+   seconds per cell in `0.1` steps. A fresh profile starts at `0.8`; changing the
+   preference never changes the current falling run and applies on the next restart,
+   play-again, or newly entered Classic run. The ten-line acceleration rule remains.
+4. Survival falling rocks advance at exactly **7x** the current ordinary Survival
+   gravity through the existing deterministic integer accumulator. The piece-count
+   schedule, warning lead, one-column one-or-two-rock body, collision rules, random
+   stream, line-clear participation, and entry-safe spawn contract do not change.
+5. The Survival `距离落石 / Until rockfall` metric uses the same normal, urgent, and
+   reduced-motion countdown treatment as the bedrock-rise metric. This is HUD feedback
+   only and cannot add an extra timer or alter the deterministic rockfall schedule.
+6. Mutation Supergravity refreshes to **5 seconds**, while Ice and Double retain their
+   ten-second windows. Its status meter uses the item-specific duration. The active
+   board field becomes a quiet pressure treatment local to the stack: no large central
+   symbol, rain-like marks, flashing, or high-opacity full-board decoration; reduced
+   motion receives a static equivalent. The latched landing rule remains unchanged.
+7. The `3 / 2 / 1` entry countdown gains three short, ascending procedural SFX cues.
+   The existing Start event remains the confirmation beat. Cues obey SFX enablement and
+   volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
+   or timers after unmount.
+
+### Required checkpoints and verification
+
+1. Commit this contract before product code.
+2. Commit typography/Home and its direct tests as one rollback point.
+3. Commit Classic Core/runtime persistence and UI controls in reviewable checkpoints;
+   directly prove defaulting, validation, current-run immutability, and next-run use.
+4. Commit Survival and Mutation timing changes with deterministic Core tests.
+5. Commit countdown audio and the restrained Supergravity visual with direct audio,
+   renderer, CSS, and reduced-motion tests.
+6. After the final source edit, run one typecheck, the complete two-worker suite, one
+   production build, and one controlled bilingual browser-evidence batch. Inspect real
+   Home, Classic Settings, Survival HUD, countdown, and Supergravity frames. Then create
+   a candidate SHA for independent read-only QA before changelog acceptance and push.
+
+No source, test, build, browser, or evidence claim is complete at contract freeze.
+
+# Previous Task — T26 TetraMorph v1.0 Release Candidate
 
 ## T26 accepted goal — converge the current game into Release Candidate 1.0
 

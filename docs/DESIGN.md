@@ -3,6 +3,55 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-03 T27 — personalised Classic pace and restrained feedback
+
+T27 is a bounded post-RC polish slice. It does not add a mode or replace the renderer;
+it makes the accepted game easier to personalise and makes time-critical feedback more
+legible without increasing visual noise.
+
+### Typography and Home
+
+The wordmark remains the only Playwrite NZ Basic text. Ordinary English interface copy
+uses the locally packaged Kavivanar regular face at its real 400 weight. Chinese keeps
+Noto Sans SC and numeric/data roles keep Geist Mono, so applying Kavivanar never changes
+score columns, timers, dates, keycaps, or board indices. Chinese Home removes its
+positioning line and collapses that line from layout; English Home retains its concise
+English line. Every fallback remains local/system-safe for offline Steam packaging.
+
+### Classic starting gravity
+
+Classic owns one player preference measured in seconds per cell: `1.0, 0.9, ... 0.1`.
+Its persisted default is `0.8`. The Core stores the chosen starting tick count inside a
+Classic run so seeded replay and state hashing include all future-affecting state. Every
+ten cleared lines advances one 0.1-second tier until the 0.1-second floor. Settings may
+change the next-run preference while a run exists, but it cannot mutate that run; the
+runtime injects the new value only when it constructs or restarts the next Classic
+state. Invalid or stale storage falls back to `0.8` rather than entering Core.
+
+### Survival pace feedback
+
+The independent falling-rock accumulator advances seven units for every one simulation
+tick and resolves at the unchanged Survival gravity threshold. This gives exactly 7x
+ordinary gravity without browser-time fractions. No other rockfall rule changes.
+`距离落石 / Until rockfall` shares the bedrock countdown's urgent color and restrained
+pulse at its existing piece threshold; reduced motion keeps the color/state change but
+removes the pulse. The visual parity is not a second countdown source.
+
+### Supergravity and entry audio
+
+Supergravity is the one five-second timed Mutation. Re-triggering refreshes it to five
+seconds; the currently airborne piece keeps the accepted landing latch if the timer
+expires. Its active field is stack-relative and low contrast: a shallow contact shadow
+and two broad pressure shoulders compress toward occupied columns. There is no falling
+stripe, large icon, screen flash, or board-wide displacement. Motion is slow and bounded;
+reduced motion is static. The HUD meter divides by the five-second maximum while other
+timed items continue to divide by ten seconds.
+
+The entry countdown uses three original procedural tones on the runtime-owned effects
+bus. `3`, `2`, and `1` rise in pitch and remain shorter and quieter than the existing
+Start confirmation. They respect mute and volume, never create music or another audio
+context, and are cancelled by the existing runtime teardown boundary.
+
 ## 2026-08-03 T26 — v1.0 Release Candidate convergence
 
 TetraMorph now follows a release-candidate convergence programme rather than another
