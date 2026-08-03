@@ -121,6 +121,16 @@ Canvas, visible Next, no overlap, no horizontal overflow, and no clipped control
    Classic, Mutation, Puzzle dual Next, Pause, and compact layouts. Independent
    read-only QA must accept the exact candidate before changelog closure and push.
 
+**Atomic HUD line-budget exception.** The React/CSS half of checkpoint 3 may exceed the
+default 500-line budget only across `src/App.tsx`, `src/App.test.ts`,
+`src/styles/hud.css`, and `src/styles/hud.test.ts`. The centred three-column DOM,
+interruption ownership, History integration, authoritative selectors, and direct
+contracts replace the former card-stage topology as one coupled surface; splitting
+these four paths would create a checkpoint whose class names, selectors, or tests do
+not describe the mounted UI. The coordinator is the sole writer. Cached-path review,
+`git diff --check`, one typecheck, the focused App/HUD suite, and the final whole-range
+gates are required before this exception can be accepted.
+
 ## T27 active goal — make the opening pace configurable and feedback easier to read
 
 **Status (2026-08-03): CONTRACT FROZEN / IMPLEMENTATION OPEN.** Direct player
