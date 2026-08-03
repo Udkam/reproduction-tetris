@@ -1290,7 +1290,7 @@ function serialiseRect(element: Element | null) {
 
 declare global {
   interface Window {
-    __TETRIS_D4_QA__?: { collect: () => unknown };
+    __TETRAMORPH_LAYOUT_QA__?: { collect: () => unknown };
     render_game_to_text?: () => string;
     advanceTime?: (ms: number) => void;
   }
@@ -1575,9 +1575,9 @@ export function GameSession({
     };
     window.advanceTime = (ms: number) => {
       const ticks = Math.max(1, Math.round(Math.max(0, ms) / (1000 / 60)));
-      window.__SIGNAL_FOUNDRY_QA__?.advanceTicks(ticks);
+      window.__TETRAMORPH_QA__?.advanceTicks(ticks);
     };
-    window.__TETRIS_D4_QA__ = {
+    window.__TETRAMORPH_LAYOUT_QA__ = {
       collect: () => {
         const buttons = [...document.querySelectorAll<HTMLElement>('button')].map((button) => button.getBoundingClientRect());
         return {
@@ -1611,7 +1611,7 @@ export function GameSession({
     return () => {
       delete window.render_game_to_text;
       delete window.advanceTime;
-      delete window.__TETRIS_D4_QA__;
+      delete window.__TETRAMORPH_LAYOUT_QA__;
     };
   }, [countdownDigit, runtime]);
 

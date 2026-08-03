@@ -133,10 +133,10 @@ describe('GameRuntime public state boundary', () => {
     runtime.start();
     runtime.press('left');
     runtime.togglePause();
-    window.__SIGNAL_FOUNDRY_QA__?.action('hard-drop');
-    window.__SIGNAL_FOUNDRY_QA__?.advanceTicks(180);
+    window.__TETRAMORPH_QA__?.action('hard-drop');
+    window.__TETRAMORPH_QA__?.advanceTicks(180);
 
-    const qaSurface = window.__SIGNAL_FOUNDRY_QA__!;
+    const qaSurface = window.__TETRAMORPH_QA__!;
     const gatedEntries = [
       { name: 'direct restart', run: () => runtime.restart(456, 'race') },
       { name: 'direct mode selection', run: () => runtime.selectMode('race') },
@@ -292,7 +292,7 @@ describe('GameRuntime public state boundary', () => {
     const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
     await runtime.mount(document.createElement('div'));
 
-    const qaSurface = window.__SIGNAL_FOUNDRY_QA__;
+    const qaSurface = window.__TETRAMORPH_QA__;
     expect(qaSurface).toBeDefined();
     expect(qaSurface).not.toHaveProperty('replayScenario');
     expect(qaSurface).not.toHaveProperty('setState');
@@ -311,7 +311,7 @@ describe('GameRuntime public state boundary', () => {
     expect(rendererCaptureBoardPng).toHaveBeenCalledTimes(1);
 
     runtime.destroy();
-    expect(window.__SIGNAL_FOUNDRY_QA__).toBeUndefined();
+    expect(window.__TETRAMORPH_QA__).toBeUndefined();
   });
 
   it('hands every same-transition Mutation activation to the renderer in FIFO order', () => {

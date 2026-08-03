@@ -55,7 +55,7 @@ export interface RuntimeQaSurface {
 
 declare global {
   interface Window {
-    __SIGNAL_FOUNDRY_QA__?: RuntimeQaSurface;
+    __TETRAMORPH_QA__?: RuntimeQaSurface;
   }
 }
 
@@ -106,7 +106,7 @@ export class GameRuntime {
 
     if (import.meta.env.DEV) {
       const target = this.platform.windowTarget();
-      if (target) target.__SIGNAL_FOUNDRY_QA__ = {
+      if (target) target.__TETRAMORPH_QA__ = {
         getState: () => structuredClone(this.state),
         getRendererSnapshot: () => this.renderer.getSnapshot(),
         captureBoardPng: () => this.renderer.captureBoardPng(),
@@ -229,7 +229,7 @@ export class GameRuntime {
     this.pendingUiEvents = [];
     this.state = { ...this.state, puzzleUndoHistory: Object.freeze([]) };
     const target = this.platform.windowTarget();
-    if (target) delete target.__SIGNAL_FOUNDRY_QA__;
+    if (target) delete target.__TETRAMORPH_QA__;
   }
 
   private readonly frame = (deltaMs: number): void => {

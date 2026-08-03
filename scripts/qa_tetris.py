@@ -24,22 +24,22 @@ def sha256(path: Path) -> str:
 
 def wait_for_runtime(page: Page) -> None:
     page.goto(BASE_URL, wait_until="networkidle")
-    page.wait_for_function("() => Boolean(window.__SIGNAL_FOUNDRY_QA__)")
+    page.wait_for_function("() => Boolean(window.__TETRAMORPH_QA__)")
     page.wait_for_selector("canvas[data-testid='game-canvas']")
 
 
 def play_sequence(page: Page, pieces: int = 7) -> None:
-    if page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().status") == "ready":
+    if page.evaluate("window.__TETRAMORPH_QA__.getState().status") == "ready":
         page.get_by_role("button", name="开始", exact=True).click()
     for index in range(pieces):
         if index % 3 == 0:
-            page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('left')")
+            page.evaluate("window.__TETRAMORPH_QA__.action('left')")
         elif index % 3 == 1:
-            page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('right')")
+            page.evaluate("window.__TETRAMORPH_QA__.action('right')")
         if index % 2 == 0:
-            page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('rotate-cw')")
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(18)")
+            page.evaluate("window.__TETRAMORPH_QA__.action('rotate-cw')")
+        page.evaluate("window.__TETRAMORPH_QA__.action('hard-drop')")
+        page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(18)")
     page.wait_for_timeout(180)
 
 
@@ -79,37 +79,37 @@ def play_touch_sequence(page: Page, session: Any, pieces: int = 7) -> None:
         if index % 2 == 0:
             touch_tap(page, session, "旋转")
         touch_tap(page, session, "直接落底")
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(18)")
+        page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(18)")
 
 
 def exercise_touch_controls(page: Page, session: Any) -> dict[str, Any]:
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(true)")
-    before_x = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.x")
+    page.evaluate("window.__TETRAMORPH_QA__.setFrozen(true)")
+    before_x = page.evaluate("window.__TETRAMORPH_QA__.getState().active.x")
     touch_start(page, session, "右移")
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(12)")
-    held_x = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.x")
+    page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(12)")
+    held_x = page.evaluate("window.__TETRAMORPH_QA__.getState().active.x")
     touch_end(session)
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(6)")
-    released_x = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.x")
+    page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(6)")
+    released_x = page.evaluate("window.__TETRAMORPH_QA__.getState().active.x")
     assert held_x > before_x, {"before": before_x, "held": held_x}
     assert released_x == held_x, {"held": held_x, "released": released_x}
 
-    before_y = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    before_y = page.evaluate("window.__TETRAMORPH_QA__.getState().active.y")
     touch_start(page, session, "快速下落")
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(8)")
-    held_y = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(8)")
+    held_y = page.evaluate("window.__TETRAMORPH_QA__.getState().active.y")
     touch_end(session)
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(4)")
-    released_y = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
-    page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(false)")
+    page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(4)")
+    released_y = page.evaluate("window.__TETRAMORPH_QA__.getState().active.y")
+    page.evaluate("window.__TETRAMORPH_QA__.setFrozen(false)")
     assert held_y - before_y >= 6, {"before": before_y, "held": held_y}
     assert released_y == held_y, {"held": held_y, "released": released_y}
 
     touch_tap(page, session, "暂停游戏")
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'paused'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().status === 'paused'")
     assert page.get_by_role("heading", name="已暂停").is_visible()
     touch_tap(page, session, "继续游戏")
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().status === 'playing'")
     return {
         "pointerType": "touch",
         "longHold": {"beforeX": before_x, "heldX": held_x, "releasedX": released_x},
@@ -123,7 +123,7 @@ def geometry(page: Page) -> dict[str, Any]:
     return page.evaluate(
         """
         () => {
-          const qa = window.__SIGNAL_FOUNDRY_QA__;
+          const qa = window.__TETRAMORPH_QA__;
           const renderer = qa.getRendererSnapshot();
           const state = qa.getState();
           return {
@@ -176,7 +176,7 @@ def measure_frames(page: Page, frame_count: int = 120) -> dict[str, float]:
 
 
 def measure_soft_drop_motion(page: Page) -> dict[str, Any]:
-    before = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    before = page.evaluate("window.__TETRAMORPH_QA__.getState().active.y")
     page.keyboard.down("ArrowDown")
     samples = page.evaluate(
         """
@@ -184,8 +184,8 @@ def measure_soft_drop_motion(page: Page) -> dict[str, Any]:
           const samples = [];
           for (let index = 0; index < 10; index += 1) {
             await new Promise((resolve) => requestAnimationFrame(resolve));
-            const state = window.__SIGNAL_FOUNDRY_QA__.getState();
-            const presentation = window.__SIGNAL_FOUNDRY_QA__.getRendererSnapshot().presentation;
+            const state = window.__TETRAMORPH_QA__.getState();
+            const presentation = window.__TETRAMORPH_QA__.getRendererSnapshot().presentation;
             samples.push({ coreY: state.active?.y ?? null, visualY: presentation?.y ?? null });
           }
           return samples;
@@ -193,9 +193,9 @@ def measure_soft_drop_motion(page: Page) -> dict[str, Any]:
         """
     )
     page.keyboard.up("ArrowDown")
-    after = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    after = page.evaluate("window.__TETRAMORPH_QA__.getState().active.y")
     page.wait_for_timeout(80)
-    after_release = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().active.y")
+    after_release = page.evaluate("window.__TETRAMORPH_QA__.getState().active.y")
     visual = [sample["visualY"] for sample in samples if sample["visualY"] is not None]
     assert after - before >= 4, {"before": before, "after": after, "samples": samples}
     assert all(right >= left for left, right in zip(visual, visual[1:])), samples
@@ -297,21 +297,21 @@ def main() -> None:
         assert playing_geometry["state"]["score"] > 0
         assert playing_geometry["state"]["lockedCells"] > 0
         frame_metrics = measure_frames(page)
-        render_cpu_metrics = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.benchmarkRender(160)")
+        render_cpu_metrics = page.evaluate("window.__TETRAMORPH_QA__.benchmarkRender(160)")
         assert render_cpu_metrics["p95Ms"] < 8, render_cpu_metrics
 
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.loadScenario('four-line-clear')")
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(true)")
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(6)")
-        clear_state = page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState()")
+        page.evaluate("window.__TETRAMORPH_QA__.loadScenario('four-line-clear')")
+        page.evaluate("window.__TETRAMORPH_QA__.setFrozen(true)")
+        page.evaluate("window.__TETRAMORPH_QA__.action('hard-drop')")
+        page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(6)")
+        clear_state = page.evaluate("window.__TETRAMORPH_QA__.getState()")
         assert clear_state["phase"] == "line-clear", clear_state
         assert clear_state["phaseTicks"] == 6, clear_state
         clear_path = SCREENSHOT_DIR / "desktop-four-line-midpoint.png"
         page.screenshot(path=str(clear_path), full_page=True)
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.setFrozen(false)")
+        page.evaluate("window.__TETRAMORPH_QA__.setFrozen(false)")
 
-        page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('pause')")
+        page.evaluate("window.__TETRAMORPH_QA__.action('pause')")
         page.wait_for_timeout(80)
         pause_path = SCREENSHOT_DIR / "desktop-paused.png"
         page.screenshot(path=str(pause_path), full_page=True)
@@ -342,11 +342,11 @@ def main() -> None:
         race_page.on("pageerror", lambda error: race_errors.append(str(error)))
         wait_for_runtime(race_page)
         race_page.get_by_role("button", name="竞速", exact=True).click()
-        assert race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().mode") == "race"
+        assert race_page.evaluate("window.__TETRAMORPH_QA__.getState().mode") == "race"
         race_page.get_by_role("button", name="开始", exact=True).click()
-        race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
-        race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(6)")
-        race_state = race_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState()")
+        race_page.evaluate("window.__TETRAMORPH_QA__.action('hard-drop')")
+        race_page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(6)")
+        race_state = race_page.evaluate("window.__TETRAMORPH_QA__.getState()")
         assert race_state["mode"] == "race" and race_state["pieceCount"] == 1, race_state
         race_path = SCREENSHOT_DIR / "desktop-race.png"
         race_page.screenshot(path=str(race_path), full_page=True)
@@ -368,12 +368,12 @@ def main() -> None:
         wait_for_runtime(game_over_page)
         game_over_page.get_by_role("button", name="开始", exact=True).click()
         for _ in range(60):
-            status = game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState().status")
+            status = game_over_page.evaluate("window.__TETRAMORPH_QA__.getState().status")
             if status == "game-over":
                 break
-            game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.action('hard-drop')")
-            game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.advanceTicks(18)")
-        final_state = game_over_page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState()")
+            game_over_page.evaluate("window.__TETRAMORPH_QA__.action('hard-drop')")
+            game_over_page.evaluate("window.__TETRAMORPH_QA__.advanceTicks(18)")
+        final_state = game_over_page.evaluate("window.__TETRAMORPH_QA__.getState()")
         assert final_state["status"] == "game-over", final_state
         assert game_over_page.get_by_role("heading", name="本局结束").is_visible()
         game_over_page.wait_for_function("document.querySelectorAll('.leaderboard li').length > 0")

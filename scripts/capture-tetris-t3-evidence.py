@@ -48,20 +48,20 @@ def git_head() -> str:
 
 def wait_for_runtime(page: Page, base_url: str) -> None:
     page.goto(base_url, wait_until="networkidle")
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__ && window.__TETRIS_D4_QA__")
+    page.wait_for_function("window.__TETRAMORPH_QA__ && window.__TETRAMORPH_LAYOUT_QA__")
     page.wait_for_timeout(80)
 
 
 def collect(page: Page) -> dict[str, Any]:
-    return page.evaluate("window.__TETRIS_D4_QA__.collect()")
+    return page.evaluate("window.__TETRAMORPH_LAYOUT_QA__.collect()")
 
 
 def game_state(page: Page) -> dict[str, Any]:
-    return page.evaluate("window.__SIGNAL_FOUNDRY_QA__.getState()")
+    return page.evaluate("window.__TETRAMORPH_QA__.getState()")
 
 
 def runtime(page: Page, expression: str) -> Any:
-    return page.evaluate(f"() => {{ const qa = window.__SIGNAL_FOUNDRY_QA__; return qa.{expression}; }}")
+    return page.evaluate(f"() => {{ const qa = window.__TETRAMORPH_QA__; return qa.{expression}; }}")
 
 
 def assert_contract(snapshot: dict[str, Any], *, expect_next: bool | None = None, mode_switch: bool = False) -> None:
@@ -139,7 +139,7 @@ def capture(page: Page, output: Path, name: str, errors: list[str], *, expect_ne
 
 def start_playing(page: Page) -> None:
     page.get_by_role("button", name="开始", exact=True).click()
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().status === 'playing'")
 
 
 def open_puzzle_select(page: Page) -> None:
@@ -159,7 +159,7 @@ def start_first_puzzle(page: Page) -> None:
     open_puzzle_select(page)
     page.locator('[data-testid="level-row"][data-level-id="t3r-shaft-01"]').click()
     page.get_by_role("button", name="开始关卡", exact=True).click()
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().mode === 'puzzle' && window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().mode === 'puzzle' && window.__TETRAMORPH_QA__.getState().status === 'playing'")
 
 
 def complete_first_puzzle(page: Page) -> None:
@@ -172,7 +172,7 @@ def complete_first_puzzle(page: Page) -> None:
         runtime(page, action)
         if ticks:
             runtime(page, f"advanceTicks({ticks})")
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().puzzleCompletion === 'finished'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().puzzleCompletion === 'finished'")
 
 
 def fail_second_puzzle(page: Page) -> None:
@@ -183,7 +183,7 @@ def fail_second_puzzle(page: Page) -> None:
             break
         runtime(page, "action('hard-drop')")
         runtime(page, "advanceTicks(12)")
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().puzzleCompletion && window.__SIGNAL_FOUNDRY_QA__.getState().puzzleCompletion !== 'active'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().puzzleCompletion && window.__TETRAMORPH_QA__.getState().puzzleCompletion !== 'active'")
     assert game_state(page)["puzzleCompletion"] in {"failed-top-out", "failed-invalid-spawn"}
 
 
@@ -217,7 +217,7 @@ def touch_probe(page: Page) -> dict[str, Any]:
 def set_malformed_progress(page: Page, base_url: str) -> None:
     page.evaluate(f"localStorage.setItem('{PROGRESS_KEY}', '{{bad')")
     page.reload(wait_until="networkidle")
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__ && window.__TETRIS_D4_QA__")
+    page.wait_for_function("window.__TETRAMORPH_QA__ && window.__TETRAMORPH_LAYOUT_QA__")
     page.get_by_role("button", name="解谜模式", exact=True).click()
     page.get_by_role("button", name="选择关卡", exact=True).click()
     assert page.locator('[data-testid="level-row"]:not(:disabled)').count() == 1
@@ -260,7 +260,7 @@ def desktop_cases(browser: Browser, output: Path, base_url: str) -> tuple[list[d
     captures.append(capture(page, output, "desktop-puzzle-select", errors, expect_next=False))
     page.locator('[data-testid="level-row"][data-level-id="t3r-shaft-01"]').click()
     page.get_by_role("button", name="开始关卡", exact=True).click()
-    page.wait_for_function("window.__SIGNAL_FOUNDRY_QA__.getState().mode === 'puzzle' && window.__SIGNAL_FOUNDRY_QA__.getState().status === 'playing'")
+    page.wait_for_function("window.__TETRAMORPH_QA__.getState().mode === 'puzzle' && window.__TETRAMORPH_QA__.getState().status === 'playing'")
     keyboard = keyboard_release_probe(page)
     captures.append(capture(page, output, "desktop-puzzle-playing", errors, expect_next=True))
     runtime(page, "restart()")
