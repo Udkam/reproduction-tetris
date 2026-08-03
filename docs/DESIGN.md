@@ -43,11 +43,13 @@ Mutation adds one stable state instrument before the shared statistics surface. 
 present in both idle and active play so activating or expiring an item never shifts the
 statistics or Next preview. Idle state retains only the instrument heading and empty
 reserved body; it shows neither a standby sentence nor a decorative spectrum. The
-containing surface shares the quiet raised background, border, and shadow language of
-the statistics and Next modules. Active Freeze, Supergravity, and multiplier rows add
-their cyan, violet, and amber signals inside that common shell. The DOM/source order is
-status, statistics, then Next on every viewport, even when compact CSS turns that column
-into a horizontal strip.
+containing surface keeps the same raised hardware family but receives a restrained cool
+violet-grey tint and coordinated border, visibly separating Mutation state from the
+neutral statistics and Next modules without becoming a yellow warning card. Idle keeps
+only that quiet shell tint. Active Freeze, Supergravity, and multiplier rows remain the
+primary cyan, violet, and amber signals inside it. The DOM/source order is status,
+statistics, then Next on every viewport, even when compact CSS turns that column into a
+horizontal strip.
 
 ### Classic gravity interval
 

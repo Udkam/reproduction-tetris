@@ -98,8 +98,10 @@ The slice has thirteen player-visible acceptance requirements:
     of the side rail, before statistics and Next. The instrument remains mounted while
     no timed item is active so the rail never jumps when an item begins or expires, but
     idle state contains no `暂无持续状态 / No active mutation` sentence or decorative
-    spectrum. Its enclosing surface uses the same quiet raised background as the
-    statistics and Next modules; only active rows introduce item color. Compact/short
+    spectrum. Its enclosing surface uses a restrained cool violet-grey tint and a
+    coordinated border so it is distinguishable from the neutral statistics and Next
+    modules without reading as a warning card. The idle shell keeps only this quiet
+    tint; active rows remain the primary source of item-specific color. Compact/short
     layouts may reflow without changing this source order.
 11. Reshape receives an unmistakable but short board-local activation: scattered units
     visibly converge into an I silhouette, the assembled piece receives one confirmation
