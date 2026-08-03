@@ -63,16 +63,32 @@ The deterministic game rules live in `src/game/core`; React owns page compositio
 lifecycle, while PixiJS owns the single board canvas. Project contracts and release
 evidence are maintained under `docs/`.
 
+The current release-candidate notes and portfolio capture plan are available in
+[`docs/release/RELEASE_NOTES-v1.0-rc.md`](docs/release/RELEASE_NOTES-v1.0-rc.md) and
+[`docs/release/SHOWCASE.md`](docs/release/SHOWCASE.md).
+
 ## Screenshots
 
 ### Mode selection
 
-![TetraMorph mode selection](docs/evidence/t24/home-en.png)
+![TetraMorph mode selection](docs/evidence/t26/phase-f/home.png)
+
+### Classic play
+
+![TetraMorph Classic play](docs/evidence/t26/phase-f/classic.png)
+
+### Survival pressure
+
+![TetraMorph Survival danger warning](docs/evidence/t26/phase-f/survival-danger.png)
+
+### Mutation impact
+
+![TetraMorph Mutation Bomb impact](docs/evidence/t26/phase-f/mutation-bomb.png)
 
 ### Puzzle campaign
 
-![TetraMorph puzzle campaign](docs/evidence/t24/puzzle-en.png)
+![TetraMorph puzzle campaign](docs/evidence/t26/phase-f/puzzle-campaign.png)
 
 ### Settings
 
-![TetraMorph settings](docs/evidence/t24/settings-en-desktop.png)
+![TetraMorph settings](docs/evidence/t26/phase-f/settings.png)
