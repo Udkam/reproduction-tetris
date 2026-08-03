@@ -280,20 +280,24 @@ describe('GameRuntime public state boundary', () => {
     vi.unstubAllGlobals();
   });
 
-  it('applies a changed Classic opening pace only when the next run is created', () => {
+  it('applies a changed Classic pace interval only when the next run is created', () => {
     const runtime = new GameRuntime({
       seed: 123,
       mode: 'marathon',
       audioEnabled: false,
       classicStartingGravityTicks: 60,
+      classicGravityFloorTicks: 30,
     });
 
     expect(runtime.getState().classicStartingGravityTicks).toBe(60);
-    runtime.setClassicStartingGravityTicks(18);
+    expect(runtime.getState().classicGravityFloorTicks).toBe(30);
+    runtime.setClassicGravityRange(24, 12);
     expect(runtime.getState().classicStartingGravityTicks).toBe(60);
+    expect(runtime.getState().classicGravityFloorTicks).toBe(30);
 
     runtime.restart(456);
-    expect(runtime.getState().classicStartingGravityTicks).toBe(18);
+    expect(runtime.getState().classicStartingGravityTicks).toBe(24);
+    expect(runtime.getState().classicGravityFloorTicks).toBe(12);
     expect(runtime.getState().seed).toBe(456);
   });
 

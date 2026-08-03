@@ -1,8 +1,10 @@
 import { AudioEngine } from '../audio/AudioEngine';
 import {
+  CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
   CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
   createInitialState,
   dispatch,
+  normalizeClassicGravityFloorTicks,
   normalizeClassicStartingGravityTicks,
   type GameCommand,
   type GameEvent,
@@ -43,6 +45,7 @@ export interface RuntimeOptions {
   reducedMotion?: boolean;
   survivalEntryBedrockRows?: number | null;
   classicStartingGravityTicks?: number;
+  classicGravityFloorTicks?: number;
   audioEnabled?: boolean;
   audioVolume?: number;
   platform?: BrowserPlatform;
@@ -87,6 +90,7 @@ export class GameRuntime {
   private inputEnabled: boolean;
   private survivalEntryBedrockRows: number | null;
   private nextClassicStartingGravityTicks: number;
+  private nextClassicGravityFloorTicks: number;
   private readonly onState?: RuntimeOptions['onState'];
 
   constructor(private readonly options: RuntimeOptions = {}) {
@@ -95,11 +99,16 @@ export class GameRuntime {
     this.nextClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(
       options.classicStartingGravityTicks ?? CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
     );
+    this.nextClassicGravityFloorTicks = normalizeClassicGravityFloorTicks(
+      options.classicGravityFloorTicks ?? CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
+      this.nextClassicStartingGravityTicks,
+    );
     this.state = createInitialState(
       options.seed,
       options.mode,
       options.puzzleId,
       this.nextClassicStartingGravityTicks,
+      this.nextClassicGravityFloorTicks,
     );
     this.inputEnabled = options.inputEnabled ?? true;
     this.survivalEntryBedrockRows = options.survivalEntryBedrockRows ?? null;
@@ -181,6 +190,7 @@ export class GameRuntime {
       mode,
       puzzleId,
       classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+      classicGravityFloorTicks: this.nextClassicGravityFloorTicks,
     });
     this.input?.clearHeld();
   }
@@ -193,6 +203,7 @@ export class GameRuntime {
       seed: mode === 'puzzle' ? this.state.seed : randomRunSeed(),
       mode,
       classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+      classicGravityFloorTicks: this.nextClassicGravityFloorTicks,
     });
     this.input?.clearHeld();
   }
@@ -207,6 +218,7 @@ export class GameRuntime {
       mode: 'puzzle',
       puzzleId,
       classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+      classicGravityFloorTicks: this.nextClassicGravityFloorTicks,
     });
     this.input?.clearHeld();
   }
@@ -226,9 +238,13 @@ export class GameRuntime {
     this.flushRender(0);
   }
 
-  /** Stores the player's Classic opening pace for the next run without mutating this run. */
-  setClassicStartingGravityTicks(ticks: number): void {
-    this.nextClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(ticks);
+  /** Stores both Classic pace bounds for the next run without mutating this run. */
+  setClassicGravityRange(startingTicks: number, floorTicks: number): void {
+    this.nextClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(startingTicks);
+    this.nextClassicGravityFloorTicks = normalizeClassicGravityFloorTicks(
+      floorTicks,
+      this.nextClassicStartingGravityTicks,
+    );
   }
 
   /** Re-renders renderer-owned presentation after React commits new layout geometry. */
