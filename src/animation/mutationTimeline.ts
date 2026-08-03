@@ -139,8 +139,9 @@ export function createMutationActivationTimeline(item: MutationItem): MutationTi
   }
   if (item === 'reshape') {
     return new MutationTimeline(sequence(
-      phase('align', Math.min(150, timing.enterMs), 'cubicOut'),
-      phase('commit', Math.min(110, Math.max(80, timing.activationMs - Math.min(150, timing.enterMs))), 'cubicOut'),
+      phase('gather', timing.enterMs, 'cubicOut'),
+      phase('lock', timing.pulseMs, 'backOut'),
+      phase('confirm', Math.max(1, timing.activationMs - timing.enterMs - timing.pulseMs), 'cubicOut'),
     ));
   }
   return new MutationTimeline(parallel(

@@ -29,7 +29,11 @@ describe('mutation VFX token contract', () => {
     expect(MUTATION_VFX_TOKENS.freeze.animation.activationMs).toBeLessThanOrEqual(320);
     expect(MUTATION_VFX_TOKENS.collapse.animation.activationMs).toBeLessThanOrEqual(220);
     expect(MUTATION_VFX_TOKENS.multiplier.animation.activationMs).toBeLessThanOrEqual(320);
-    expect(MUTATION_VFX_TOKENS.reshape.animation.activationMs).toBeLessThanOrEqual(260);
+    expect(MUTATION_VFX_TOKENS.reshape.animation).toMatchObject({
+      enterMs: 140,
+      pulseMs: 140,
+      activationMs: 420,
+    });
     expect(MUTATION_VFX_TOKENS.freeze.animation.enterMs).toBe(320);
     expect(MUTATION_VFX_TOKENS.freeze.animation.pulseMs).toBe(800);
     expect(MUTATION_VFX_TOKENS.freeze.animation.exitMs).toBe(680);

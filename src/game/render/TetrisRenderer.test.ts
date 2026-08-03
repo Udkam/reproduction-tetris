@@ -16,6 +16,7 @@ import {
   type PieceType,
   VISIBLE_START_ROW,
 } from '../core';
+import { MUTATION_VFX_BACKGROUND, MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -1133,6 +1134,30 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
+  it('puts every carrier item on the same high-contrast neutral key plate', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }];
+    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+      const surface = createGraphicsRecorder();
+      internals.drawMutationCarrierSurface(surface.graphics, cells, item, layout);
+      expect(surface.operations.filter((operation) => operation.kind === 'roundRect').length, item)
+        .toBeGreaterThanOrEqual(cells.length);
+      expect(surface.operations.some((operation) => operation.kind === 'fill'
+        && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well), item).toBe(true);
+      expect(surface.operations.some((operation) => operation.kind === 'stroke'
+        && (operation.options as { color?: number }).color === 0xf5fbf7), item).toBe(true);
+
+      const core = createGraphicsRecorder();
+      internals.drawMutationCarrierCore(core.graphics, cells, item, layout, 0, 0, .62);
+      expect(core.operations.some((operation) => operation.kind === 'fill'
+        && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well), item).toBe(true);
+      expect(core.operations.some((operation) => operation.kind === 'stroke'
+        && (operation.options as { color?: number }).color === 0xf5fbf7), item).toBe(true);
+    }
+  });
+
   it('routes locked, active, and Next carriers through the same surface/core grammar', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
@@ -1238,7 +1263,7 @@ describe('Puzzle undo presentation reset', () => {
     })).toBe(true);
   });
 
-  it('uses broad moving constant-alpha Supergravity compression contours without rain strokes or flashing', () => {
+  it('uses a lightly trembling top boundary for Supergravity without rain or screen flashing', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const recorder = createGraphicsRecorder();
@@ -1254,26 +1279,19 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    const polygons = recorder.operations.filter((operation) => operation.kind === 'poly');
-    const contours = polygons.filter((operation) => {
-      const ys = operation.values.filter((_value, index) => index % 2 === 1);
-      return Math.max(...ys) - Math.min(...ys) >= 4;
-    });
-    const contactWedges = polygons.filter((operation) => {
-      const ys = operation.values.filter((_value, index) => index % 2 === 1);
-      return Math.max(...ys) - Math.min(...ys) < 4;
-    });
-    expect(polygons).toHaveLength(4);
-    expect(contours).toHaveLength(3);
-    expect(contactWedges).toHaveLength(1);
+    const topContours = recorder.operations.filter((operation) => operation.kind === 'poly');
+    expect(topContours).toHaveLength(2);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(contours.every((operation) => {
+    expect(recorder.operations.filter((operation) => operation.kind === 'fill')).toHaveLength(0);
+    expect(recorder.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(2);
+    expect(topContours.every((operation) => {
       const xs = operation.values.filter((_value, index) => index % 2 === 0);
       const ys = operation.values.filter((_value, index) => index % 2 === 1);
-      return Math.max(...xs) - Math.min(...xs) >= 80
-        && Math.max(...ys) - Math.min(...ys) < 20;
+      return Math.max(...xs) - Math.min(...xs) === 200
+        && Math.max(...ys) - Math.min(...ys) < 4
+        && Math.max(...ys) < 8;
     })).toBe(true);
 
     (internals as unknown as { mutationClockMs: number }).mutationClockMs = 437;
@@ -1290,8 +1308,8 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
     expect(geometrySignature(later.operations)).not.toBe(geometrySignature(recorder.operations));
-    expect(later.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options))
-      .toEqual(recorder.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options));
+    expect(later.operations.filter((operation) => operation.kind === 'stroke').map((operation) => operation.options))
+      .toEqual(recorder.operations.filter((operation) => operation.kind === 'stroke').map((operation) => operation.options));
 
     const reduced = new TetrisRendererClass();
     reduced.setOptions({ reducedMotion: true });
@@ -1401,7 +1419,7 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
-  it('renders Reshape as a compact alignment beat instead of a multiplier star', () => {
+  it('renders Reshape as an unmistakable gather, lock, and confirmation sequence', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1415,17 +1433,23 @@ describe('Puzzle undo presentation reset', () => {
     }]);
 
     expect(internals.mutationFlash).toMatchObject({ item: 'reshape' });
-    const align = createGraphicsRecorder();
-    internals.drawMutationActivationEffect(align.graphics, internals.mutationFlash!, layout);
-    expect(align.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(4);
-    expect(align.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
-    internals.advanceEffects(150);
-    const commit = createGraphicsRecorder();
-    internals.drawMutationActivationEffect(commit.graphics, internals.mutationFlash!, layout);
-    expect(commit.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(4);
+    expect(internals.mutationFlash).toMatchObject({ duration: 420 });
+    const gather = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(gather.graphics, internals.mutationFlash!, layout);
+    expect(gather.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(4);
+    expect(gather.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(1);
+    internals.advanceEffects(140);
+    const lock = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(lock.graphics, internals.mutationFlash!, layout);
+    expect(lock.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(4);
+    internals.advanceEffects(140);
+    const confirm = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(confirm.graphics, internals.mutationFlash!, layout);
+    expect(confirm.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(2);
+    expect(confirm.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(8);
   });
 
-  it('keeps the persistent multiplier field compact, steady, and explicit at both 2× and 4×', () => {
+  it('uses small descending top stars for the multiplier without a fixed corner badge', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1451,15 +1475,11 @@ describe('Puzzle undo presentation reset', () => {
     expect(geometrySignature(twoField.operations)).not.toBe(geometrySignature(fourField.operations));
     expect(twoField.operations.filter((operation) => operation.kind === 'rect')).toHaveLength(0);
     expect(twoField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
-    const cornerPanels = twoField.operations.filter((operation) => operation.kind === 'roundRect');
-    expect(cornerPanels.length).toBeGreaterThanOrEqual(2);
-    expect(cornerPanels.every((operation) => (operation.values[0] ?? 0) >= layout.width - layout.cell * 2)).toBe(true);
-    expect(Math.max(...cornerPanels.map((operation) => operation.values[2] ?? 0))).toBeLessThanOrEqual(layout.cell * 1.1);
+    expect(twoField.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     const twoSegments = twoField.operations.filter((operation) => operation.kind === 'segment');
     const fourSegments = fourField.operations.filter((operation) => operation.kind === 'segment');
-    // One eight-segment secondary star minus the two-segment difference between
-    // the vector 2 and 4 glyphs leaves exactly six additional x4 segments.
-    expect(fourSegments).toHaveLength(twoSegments.length + 6);
+    expect(twoSegments).toHaveLength(5 * 8);
+    expect(fourSegments).toHaveLength(7 * 8);
 
     internals.mutationClockMs = 437;
     const laterField = createGraphicsRecorder();
@@ -1468,7 +1488,9 @@ describe('Puzzle undo presentation reset', () => {
       { ...base, mutationMultiplierFactor: 2 },
       layout,
     );
-    expect(laterField.operations).toEqual(twoField.operations);
+    expect(geometrySignature(laterField.operations)).not.toBe(geometrySignature(twoField.operations));
+    expect(laterField.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options))
+      .toEqual(twoField.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options));
 
     const twoGlyph = createGraphicsRecorder();
     const fourGlyph = createGraphicsRecorder();
@@ -1547,7 +1569,7 @@ describe('Puzzle undo presentation reset', () => {
     ))).toBe(false);
   });
 
-  it('uses one crystalline material core per connected freeze carrier without white glyphs', () => {
+  it('uses one crystalline material core per connected freeze carrier on a neutral plate', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const fills: Array<{ color?: number }> = [];
@@ -1573,8 +1595,13 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(fills).toHaveLength(2);
-    expect(fills.map((entry) => entry.color)).toEqual([MUTATION_MATERIALS.freeze.edge, MUTATION_MATERIALS.freeze.innerEdge]);
+    expect(fills).toHaveLength(3);
+    expect(fills.map((entry) => entry.color)).toEqual([
+      MUTATION_VFX_BACKGROUND.well,
+      MUTATION_MATERIALS.freeze.edge,
+      MUTATION_MATERIALS.freeze.innerEdge,
+    ]);
+    expect(strokes.some((entry) => entry.color === 0xf5fbf7)).toBe(true);
     expect(strokes.every((entry) => entry.color !== 0xffffff)).toBe(true);
     expect(fills.every((entry) => entry.color !== 0xffffff)).toBe(true);
   });
@@ -1583,6 +1610,7 @@ describe('Puzzle undo presentation reset', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const fills: Array<{ color?: number }> = [];
+    const strokes: Array<{ color?: number }> = [];
     const graphics = {
       clear: () => graphics,
       roundRect: () => graphics,
@@ -1595,7 +1623,10 @@ describe('Puzzle undo presentation reset', () => {
         fills.push(options);
         return graphics;
       },
-      stroke: () => graphics,
+      stroke: (options: { color?: number }) => {
+        strokes.push(options);
+        return graphics;
+      },
     };
     (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).effectGraphics = graphics;
     (internals as unknown as { effectGraphics: typeof graphics; mutationGraphics: typeof graphics }).mutationGraphics = graphics;
@@ -1607,8 +1638,9 @@ describe('Puzzle undo presentation reset', () => {
     expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.freeze.innerEdge)).toBe(true);
 
     fills.length = 0;
+    strokes.length = 0;
     internals.drawEffects({ ...base, mutationCollapseTicks: 1 }, layout);
-    expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.collapse.fillStart)).toBe(true);
+    expect(strokes.some((entry) => entry.color === MUTATION_VFX_TOKENS.collapse.palette.highlight)).toBe(true);
 
     fills.length = 0;
     internals.drawEffects({ ...base, mutationMultiplierTicks: 1 }, layout);
