@@ -129,6 +129,7 @@ describe('GameRuntime public state boundary', () => {
     await runtime.mount(document.createElement('div'));
     expect(rendererSetOptions).toHaveBeenCalledWith({
       reducedMotion: false,
+      visualTheme: 'deep-tide',
       survivalEntryBedrockRows: 2,
     });
 

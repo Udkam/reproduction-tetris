@@ -2099,13 +2099,13 @@ describe('Puzzle undo presentation reset', () => {
     }).drawPreviewPiece = (_graphics, _piece, centerX, centerY, unit) => calls.push({ centerX, centerY, unit });
 
     internals.drawPreviewPieces({}, ['I'], 0, 0, 220, 96);
-    expect(calls).toEqual([{ centerX: 110, centerY: 48, unit: 28 }]);
+    expect(calls).toEqual([{ centerX: 110, centerY: 48, unit: 36 }]);
 
     calls.length = 0;
     internals.drawPreviewPieces({}, ['I', 'O'], 0, 0, 220, 180);
     expect(calls).toEqual([
-      { centerX: 110, centerY: 45, unit: 24 },
-      { centerX: 110, centerY: 135, unit: 24 },
+      { centerX: 110, centerY: 45, unit: 28 },
+      { centerX: 110, centerY: 135, unit: 28 },
     ]);
 
     calls.length = 0;

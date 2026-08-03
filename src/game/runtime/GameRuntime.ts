@@ -19,6 +19,7 @@ import {
   type RendererSnapshot,
 } from '../render/TetrisRenderer';
 import { browserPlatform, type BrowserPlatform, type PlatformUnsubscribe } from '../../platform/browserPlatform';
+import { DEFAULT_VISUAL_THEME, type VisualThemeId } from '../../design/visualThemes';
 
 const FIXED_STEP_MS = 1000 / 60;
 const MAX_STEPS_PER_FRAME = 5;
@@ -43,6 +44,7 @@ export interface RuntimeOptions {
   puzzleId?: PuzzleId;
   inputEnabled?: boolean;
   reducedMotion?: boolean;
+  visualTheme?: VisualThemeId;
   survivalEntryBedrockRows?: number | null;
   classicStartingGravityTicks?: number;
   classicGravityFloorTicks?: number;
@@ -125,6 +127,7 @@ export class GameRuntime {
     }
     this.renderer.setOptions({
       reducedMotion: this.options.reducedMotion ?? false,
+      visualTheme: this.options.visualTheme ?? DEFAULT_VISUAL_THEME,
       survivalEntryBedrockRows: this.survivalEntryBedrockRows,
     });
     this.renderer.setFrameCallback(this.frame);
@@ -170,7 +173,18 @@ export class GameRuntime {
   }
 
   togglePause(): void {
-    this.handleAction('pause', true);
+    if (!this.inputEnabled) return;
+    void this.audio.prime();
+    if (this.state.status === 'paused') this.apply({ type: 'resume' });
+    else if (this.state.status === 'playing') this.apply({ type: 'pause' });
+    this.input?.clearHeld();
+  }
+
+  resume(): void {
+    if (!this.inputEnabled || this.state.status !== 'paused') return;
+    void this.audio.prime();
+    this.apply({ type: 'resume' });
+    this.input?.clearHeld();
   }
 
   /** Puzzle-only undo entrypoint for the touch-safe game control. */
@@ -230,6 +244,11 @@ export class GameRuntime {
 
   setReducedMotion(reducedMotion: boolean): void {
     this.renderer.setOptions({ reducedMotion });
+  }
+
+  setVisualTheme(visualTheme: VisualThemeId): void {
+    this.renderer.setOptions({ visualTheme });
+    this.flushRender(0);
   }
 
   setSurvivalEntryBedrockRows(rows: number | null): void {
@@ -362,8 +381,7 @@ export class GameRuntime {
     if (!this.inputEnabled) return;
     if (shouldPrimeAudio) void this.audio.prime();
     if (action === 'pause') {
-      if (this.state.status === 'paused') this.apply({ type: 'resume' });
-      else if (this.state.status === 'playing') this.apply({ type: 'pause' });
+      if (this.state.status === 'playing') this.apply({ type: 'pause' });
       this.input?.clearHeld();
       return;
     }

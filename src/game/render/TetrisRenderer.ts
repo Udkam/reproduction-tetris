@@ -40,9 +40,13 @@ import {
 } from './theme';
 import {
   MUTATION_PARTICLE_LIMIT,
-  MUTATION_VFX_BACKGROUND,
   MUTATION_VFX_TOKENS,
 } from '../../design/mutationTokens';
+import {
+  DEFAULT_VISUAL_THEME,
+  canvasThemePalette,
+  type VisualThemeId,
+} from '../../design/visualThemes';
 import {
   createMutationActivationTimeline,
   mutationEase,
@@ -70,6 +74,7 @@ import {
 interface RenderOptions {
   reducedMotion: boolean;
   modeSwitch: boolean;
+  visualTheme: VisualThemeId;
   /** Renderer-only staged reveal of the canonical three ready-state bedrock rows. */
   survivalEntryBedrockRows: number | null;
 }
@@ -595,6 +600,7 @@ export class TetrisRenderer {
   private options: RenderOptions = {
     reducedMotion: false,
     modeSwitch: false,
+    visualTheme: DEFAULT_VISUAL_THEME,
     survivalEntryBedrockRows: null,
   };
   private previewBounds: RendererSnapshot['preview'] = null;
@@ -815,7 +821,7 @@ export class TetrisRenderer {
       target: app.stage,
       frame: new Rectangle(frame.x, frame.y, frame.width, frame.height),
       resolution: app.renderer.resolution,
-      clearColor: COLORS.well,
+      clearColor: canvasThemePalette(this.options.visualTheme).well,
       antialias: true,
     });
     if (!('toDataURL' in extracted)) {
@@ -931,9 +937,7 @@ export class TetrisRenderer {
     const boardWidth = cell * BOARD_WIDTH;
     const boardHeight = cell * VISIBLE_HEIGHT;
     return {
-      x: compact
-        ? (width - boardWidth) / 2
-        : Math.max(0, (width - boardWidth) / 2 - Math.min(130, width * 0.14)),
+      x: (width - boardWidth) / 2,
       y: compact ? topBand + (height - topBand - boardHeight) / 2 : (height - boardHeight) / 2,
       width: boardWidth,
       height: boardHeight,
@@ -946,12 +950,13 @@ export class TetrisRenderer {
     const graphics = this.boardGraphics;
     graphics.clear();
     const radius = Math.max(8, Math.min(12, layout.cell * 0.38));
+    const palette = canvasThemePalette(this.options.visualTheme);
     const mutationWell = state.mode === 'sprint';
     graphics
       .roundRect(layout.x, layout.y, layout.width, layout.height, radius)
-      .fill({ color: mutationWell ? MUTATION_VFX_BACKGROUND.well : COLORS.well, alpha: 1 })
+      .fill({ color: palette.well, alpha: 1 })
       .stroke({
-        color: mutationWell ? MUTATION_VFX_BACKGROUND.support : COLORS.edge,
+        color: mutationWell ? palette.mutationEdge : palette.edge,
         alpha: .9,
         width: Math.max(1, layout.cell * 0.035),
       });
@@ -965,7 +970,7 @@ export class TetrisRenderer {
           layout.height - inset * 2,
           Math.max(5, layout.cell * 0.2),
         )
-        .stroke({ color: MUTATION_VFX_BACKGROUND.support, alpha: 0.28, width: Math.max(1, layout.cell * 0.026) });
+        .stroke({ color: palette.mutationEdge, alpha: 0.28, width: Math.max(1, layout.cell * 0.026) });
     }
     this.scrimBounds = null;
     if (state.status === 'paused' || state.status === 'game-over' || state.status === 'finished' || this.options.modeSwitch) {
@@ -2142,25 +2147,31 @@ export class TetrisRenderer {
       // establishes those row bounds and uses the loaded data-face numerals;
       // Pixi owns the shared well and pieces.
       const segmentedQueue = segmentSlots.length > 1;
+      // A DOM-anchored gameplay preview is intentionally open space. The DOM owns
+      // geometry and labels; Pixi owns only the tetromino. Fallback previews without
+      // a DOM slot may still use the legacy well for isolated renderer harnesses.
+      const frameless = slotElement !== null;
       const segmentInset = segmentedQueue ? 0 : 1;
-      if (segmentedQueue) {
-        this.drawPreviewBackdrop(
-          fallbackSlot.x + 1,
-          fallbackSlot.y + 1,
-          Math.max(8, fallbackSlot.width - 2),
-          Math.max(8, fallbackSlot.height - 2),
-          segmentSlots.length,
-        );
-      } else {
-        for (const previewSlot of previewSlots) {
+      if (!frameless) {
+        if (segmentedQueue) {
           this.drawPreviewBackdrop(
-            previewSlot.x + segmentInset,
-            previewSlot.y + segmentInset,
-            Math.max(8, previewSlot.width - segmentInset * 2),
-            Math.max(8, previewSlot.height - segmentInset * 2),
-            1,
-            previewSlot.labelInset,
+            fallbackSlot.x + 1,
+            fallbackSlot.y + 1,
+            Math.max(8, fallbackSlot.width - 2),
+            Math.max(8, fallbackSlot.height - 2),
+            segmentSlots.length,
           );
+        } else {
+          for (const previewSlot of previewSlots) {
+            this.drawPreviewBackdrop(
+              previewSlot.x + segmentInset,
+              previewSlot.y + segmentInset,
+              Math.max(8, previewSlot.width - segmentInset * 2),
+              Math.max(8, previewSlot.height - segmentInset * 2),
+              1,
+              previewSlot.labelInset,
+            );
+          }
         }
       }
       if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
@@ -2274,14 +2285,15 @@ export class TetrisRenderer {
   }
 
   private drawPreviewBackdrop(x: number, y: number, width: number, height: number, segments = 1, labelInset = 0): void {
+    const palette = canvasThemePalette(this.options.visualTheme);
     const captionInset = Math.min(labelInset, Math.max(0, height - 8));
     const contentY = y + captionInset;
     const contentHeight = Math.max(8, height - captionInset);
     const radius = Math.max(6, Math.min(8, Math.min(width, contentHeight) * 0.075));
     this.boardGraphics
       .roundRect(x, contentY, width, contentHeight, radius)
-      .fill({ color: COLORS.well, alpha: 1 })
-      .stroke({ color: COLORS.edge, alpha: 0.86, width: 1 });
+      .fill({ color: palette.well, alpha: 1 })
+      .stroke({ color: palette.edge, alpha: 0.86, width: 1 });
 
     if (segments < 2) return;
     const dividerInset = Math.max(8, Math.min(14, width * 0.08));
@@ -2290,7 +2302,7 @@ export class TetrisRenderer {
       this.boardGraphics
         .moveTo(x + dividerInset, dividerY)
         .lineTo(x + width - dividerInset, dividerY)
-        .stroke({ color: COLORS.edge, alpha: 0.42, width: 1 });
+        .stroke({ color: palette.edge, alpha: 0.42, width: 1 });
     }
   }
 
@@ -2829,9 +2841,9 @@ export class TetrisRenderer {
     const shape = PIECE_SHAPES[type][0];
     const spanX = Math.max(...shape.map((cell) => cell.x)) - Math.min(...shape.map((cell) => cell.x)) + 1;
     const spanY = Math.max(...shape.map((cell) => cell.y)) - Math.min(...shape.map((cell) => cell.y)) + 1;
-    const horizontalAllowance = Math.max(0, width) * (dualPreview ? 0.7 : 0.74);
-    const verticalAllowance = Math.max(0, height) * (dualPreview ? 0.72 : 0.7);
-    const cap = dualPreview ? 24 : 28;
+    const horizontalAllowance = Math.max(0, width) * (dualPreview ? 0.76 : 0.84);
+    const verticalAllowance = Math.max(0, height) * (dualPreview ? 0.76 : 0.82);
+    const cap = dualPreview ? 28 : 36;
     return Math.max(5, Math.min(cap, horizontalAllowance / spanX, verticalAllowance / spanY));
   }
 
