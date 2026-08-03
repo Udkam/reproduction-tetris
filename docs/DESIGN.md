@@ -291,11 +291,11 @@ is introduced.
 
 Puzzle uses the same portrait rhythm without becoming a ranked-mode ledger. Its title
 continues to communicate the actual outcome: first clear, new personal record, or solved
-replay. Below it, a compact assembled-prism signal resolves into one central best-step
-number with the localized `当前最优步数 / Current best` label and step unit. The signal
-is unboxed and celebratory but restrained; the former side-by-side constellation card,
-generic completion statistics, level metadata, and explanatory paragraph are absent.
-Reduced motion freezes the assembled state instead of removing the hierarchy.
+replay. The outcome title leads directly into one central best-step number with the
+localized `当前最优步数 / Current best` label and step unit. No emblem, prism, orbiting
+particle, or other decorative figure may sit between the title and that number; the
+former constellation card, generic completion statistics, level metadata, and
+explanatory paragraph are absent.
 
 ## 2026-08-03 T26 — v1.0 Release Candidate convergence
 
@@ -1116,20 +1116,19 @@ discard the achievement.
 
 ### Puzzle celebration
 
-Puzzle success keeps a dedicated **violet prism celebration** rather than sharing the
+Puzzle success keeps a dedicated **violet-accent celebration** rather than sharing the
 mode-loss ledger. The modal uses mineral white, a narrow violet-to-teal light edge, one
 large success title, and the single meaningful figure `当前最优步数 / Current best`.
 First completion says `恭喜你破解谜题 / Puzzle solved`; a new best says
 `刷新个人纪录 / New personal best`; a repeat says `谜题已破解 / Puzzle solved`.
 No eyebrow, line count, score, generic “run complete,” or duplicate “首次完成” detail
-appears.
+appears. The title flows directly to the best-step figure: no prism emblem,
+constellation, or decorative particles appear above it.
 
-Motion is short and bounded: eight to twelve Canvas/DOM-independent decorative prism
-fragments travel at most `24 px` for `360 ms`, while the edge glow settles in `180 ms`.
-They are non-semantic, never cover copy or controls, and use existing piece colors at
-reduced saturation. `prefers-reduced-motion` renders the final edge and static fragments
-without translation. Focus opens on Replay; Left/Right selects Replay or Back, Enter
-executes, Escape returns to the library.
+Motion is short and bounded to the edge glow settling in `180 ms`; no decorative
+fragments are emitted. `prefers-reduced-motion` renders the final edge without a
+transition. Focus opens on Replay; Left/Right selects Replay or Back, Enter executes,
+Escape returns to the library.
 
 ### Survival cave motion and geology
 

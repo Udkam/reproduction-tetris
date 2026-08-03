@@ -216,8 +216,8 @@ The slice has thirteen player-visible acceptance requirements:
    row; top-five history follows as a quiet vertical list; and actions close the same
    axis. Puzzle retains the meaningful outcome title (`恭喜你破解谜题`, `刷新个人纪录`,
    or `谜题已破解`) but upgrades to a matching portrait celebration: one restrained
-   assembled-prism signal, one unboxed best-operation hero, and no horizontal boxed
-   summary or redundant completion sentence. No large empty bordered metric field,
+   unboxed best-operation hero directly below the title, with no emblem, prism,
+   particles, horizontal boxed summary, or redundant completion sentence. No large empty bordered metric field,
    spreadsheet-like visual weight, decorative subtitle, or duplicate rank statement is
    allowed. Hero numerals keep the complete Geist Mono glyph box: no negative tracking,
    sub-unit line height, or overflow clipping may trim a counter, terminal, or baseline.
