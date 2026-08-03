@@ -40,8 +40,11 @@ describe('Phase 3 HUD authority', () => {
     expect(compact).not.toContain('.keyboard-map');
   });
 
-  it('gives the always-mounted Mutation instrument the shared raised surface and a silent idle reserve', () => {
-    expect(mutationVfxCss).toContain('background: color-mix(in srgb, var(--raised) 82%, var(--surface)) !important');
+  it('gives the always-mounted Mutation instrument a quiet violet-grey shell and a silent idle reserve', () => {
+    expect(mutationVfxCss).toContain('color-mix(in srgb, var(--raised) 72%, #eee8f7)');
+    expect(mutationVfxCss).toContain('color-mix(in srgb, var(--surface) 80%, #e4ebf5)');
+    expect(mutationVfxCss).toContain('border: 1px solid color-mix(in srgb, var(--line) 68%, #9b8ab7) !important');
+    expect(mutationVfxCss).not.toContain('background: color-mix(in srgb, var(--raised) 82%, var(--surface)) !important');
     expect(mutationVfxCss).toContain('.mutation-status--vfx .mutation-status__idle');
     expect(mutationVfxCss).toContain('min-height: 8px');
     expect(mutationVfxCss).not.toContain('.mutation-status__idle-spectrum');

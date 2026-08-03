@@ -1,15 +1,20 @@
-/* Persistent Mutation instrument: the same quiet raised hardware as the data and Next modules. */
+/* Persistent Mutation instrument: quiet cool-violet hardware distinct from data and Next. */
 .game-side-panel--sprint .mutation-status.mutation-status--vfx {
   display: grid !important;
   gap: 8px !important;
   padding: 11px !important;
   color: var(--ink);
-  background: color-mix(in srgb, var(--raised) 82%, var(--surface)) !important;
-  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface)) !important;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--raised) 72%, #eee8f7),
+      color-mix(in srgb, var(--surface) 80%, #e4ebf5)
+    ) !important;
+  border: 1px solid color-mix(in srgb, var(--line) 68%, #9b8ab7) !important;
   border-radius: 10px !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .46),
-    0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent) !important;
+    inset 0 1px 0 rgba(255, 255, 255, .52),
+    0 5px 13px rgba(81, 66, 111, .09) !important;
   -webkit-backdrop-filter: blur(12px) saturate(125%);
   backdrop-filter: blur(12px) saturate(125%);
   transform-origin: center top;
