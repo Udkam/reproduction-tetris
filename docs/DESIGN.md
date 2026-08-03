@@ -15,7 +15,9 @@ The wordmark remains the only Playwrite NZ Basic text. Ordinary English interfac
 uses the locally packaged Kavivanar regular face at its real 400 weight. Chinese keeps
 Noto Sans SC and numeric/data roles keep Geist Mono, so applying Kavivanar never changes
 score digits, timers, dates, keycaps, or board indices. Alphabetic units inside mixed
-readouts are separate UI spans and therefore still use Kavivanar. Since the family has
+readouts are separate UI spans and therefore still use Kavivanar. Chinese cadence units
+remain Noto Sans SC and use the same 700 weight as the cadence label, so the unit does
+not look weaker than its label. Since the family has
 no bold file, English UI receives a subtle, constant optical ink stroke to improve
 small-size legibility; it does not invent or declare a Kavivanar 700 face, and it does
 not touch the wordmark or data glyphs. Chinese Home removes its positioning line and

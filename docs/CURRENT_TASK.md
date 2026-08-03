@@ -19,7 +19,8 @@ The slice has eight player-visible acceptance requirements:
    must wrap without overlap, clipping, or disappearance. Because Kavivanar publishes
    only Regular 400, Chromium receives a restrained optical ink compensation rather
    than a fabricated font face. Mixed values split their roles: digits remain Geist
-   Mono, while alphabetic units such as `s/cell` use Kavivanar.
+   Mono, while alphabetic units such as `s/cell` use Kavivanar. Chinese cadence units
+   such as `秒/格` remain Noto Sans SC but match the fall-speed label's visual weight.
 3. Classic Settings exposes a persisted gravity interval with two bounds, both limited
    to `1.0` through `0.1` seconds per cell in `0.1` steps. A fresh profile opens at
    `0.8` and accelerates no faster than `0.1`; the fastest bound cannot be slower than
