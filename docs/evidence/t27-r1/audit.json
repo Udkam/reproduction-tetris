@@ -1,0 +1,172 @@
+{
+  "sourceSha": "cf19f6da8094250dee4b0aebde97e3f4ba6e8bb0",
+  "capturedAt": "2026-08-03T23:25:51.868Z",
+  "browser": "149.0.7827.55",
+  "home": {
+    "pathname": "/",
+    "theme": "deep-tide",
+    "wordmarkCenterDelta": 0,
+    "brandBackground": "rgb(23, 54, 74)",
+    "brandBackgroundImage": "none",
+    "firstCardTopBorder": "1px",
+    "activeCards": 0
+  },
+  "homePointerReset": {
+    "activeCards": 0,
+    "selected": false
+  },
+  "routes": {
+    "pushedMutationPath": "/play/mutation",
+    "backPath": "/",
+    "puzzlePlayPath": "/play/puzzle/t3r-shaft-01"
+  },
+  "stage": {
+    "theme": "deep-tide",
+    "canvasCount": 1,
+    "next": {
+      "borderTopWidth": "0px",
+      "borderTopStyle": "none",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "boxShadow": "none",
+      "textAlign": "center"
+    },
+    "mutationHeadingAlign": "center",
+    "statValue": {
+      "color": "rgb(237, 245, 244)",
+      "fontSize": "21px"
+    },
+    "pageBackground": "rgba(0, 0, 0, 0)",
+    "geometry": {
+      "board": {
+        "top": 88,
+        "right": 916,
+        "bottom": 872,
+        "left": 524,
+        "width": 392,
+        "height": 784,
+        "centerX": 720,
+        "centerY": 480
+      },
+      "next": {
+        "top": 143,
+        "right": 480.8125,
+        "bottom": 255,
+        "left": 256.8125,
+        "width": 224,
+        "height": 112,
+        "centerX": 368.8125,
+        "centerY": 199
+      },
+      "stats": {
+        "top": 118,
+        "right": 1183.1875,
+        "bottom": 376.03125,
+        "left": 959.1875,
+        "width": 224,
+        "height": 258.03125,
+        "centerX": 1071.1875,
+        "centerY": 247.015625
+      }
+    },
+    "boardCenterDelta": 0,
+    "statContrast": 18.968198831453805
+  },
+  "motion": {
+    "referenceControl": {
+      "backgroundColor": "rgb(57, 116, 136)",
+      "borderColor": "rgb(57, 116, 136)",
+      "borderRadius": "8px"
+    },
+    "fullControl": {
+      "label": "完整动效",
+      "mode": "full",
+      "pressed": "false",
+      "color": "rgb(247, 251, 251)",
+      "backgroundColor": "rgb(57, 116, 136)",
+      "borderColor": "rgb(57, 116, 136)",
+      "borderRadius": "8px"
+    },
+    "reducedControl": {
+      "label": "减少动效",
+      "mode": "reduced",
+      "pressed": "true",
+      "color": "rgb(247, 251, 251)",
+      "backgroundColor": "rgb(57, 116, 136)",
+      "borderColor": "rgb(57, 116, 136)",
+      "borderRadius": "8px"
+    },
+    "fullCover": {
+      "coverageDelta": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "backgroundColor": "color(srgb 0.0697255 0.167608 0.222824 / 0.82)",
+      "backgroundImage": "linear-gradient(90deg, color(srgb 0.223529 0.454902 0.533333 / 0.07), rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0) 62%, color(srgb 0.223529 0.454902 0.533333 / 0.07)), linear-gradient(color(srgb 0.223529 0.454902 0.533333 / 0.08), rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0) 66%, color(srgb 0.223529 0.454902 0.533333 / 0.08)), none",
+      "animationName": "entry-cover-in",
+      "glowAnimationName": "entry-cover-breathe",
+      "glowOpacity": "0.480015"
+    },
+    "reducedCover": {
+      "coverageDelta": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "backgroundColor": "color(srgb 0.0697255 0.167608 0.222824 / 0.82)",
+      "backgroundImage": "linear-gradient(90deg, color(srgb 0.223529 0.454902 0.533333 / 0.07), rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0) 62%, color(srgb 0.223529 0.454902 0.533333 / 0.07)), linear-gradient(color(srgb 0.223529 0.454902 0.533333 / 0.08), rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0) 66%, color(srgb 0.223529 0.454902 0.533333 / 0.08)), none",
+      "animationName": "none",
+      "glowAnimationName": "none",
+      "glowOpacity": "0.56"
+    }
+  },
+  "interruption": {
+    "pause": {
+      "nextVisible": true,
+      "backEnabled": true,
+      "settingsEnabled": true
+    },
+    "pauseLeave": {
+      "nextVisible": true,
+      "pauseCurtainVisible": false
+    },
+    "restartR": {
+      "pauseCurtainVisible": false,
+      "nextVisible": true
+    },
+    "restartActions": {
+      "backEnabled": true,
+      "settingsEnabled": true
+    },
+    "restartEscape": {
+      "restartCurtainVisible": false,
+      "nextVisible": true
+    }
+  },
+  "themes": {
+    "buttonCount": 3,
+    "switchedTheme": "sunstone"
+  },
+  "puzzleLibrary": {
+    "pathname": "/puzzles",
+    "difficultyTabs": 3,
+    "horizontalOverflow": 0,
+    "theme": "deep-tide"
+  },
+  "puzzleResult": {
+    "title": "恭喜你破解谜题",
+    "best": "当前最优步数：4步",
+    "value": "4",
+    "unit": "步",
+    "label": "当前最优步数",
+    "constellationCount": 0,
+    "prismCount": 0
+  },
+  "compactHome": {
+    "horizontalOverflow": 0,
+    "modeCount": 4
+  },
+  "browserErrors": []
+}
