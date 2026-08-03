@@ -724,9 +724,24 @@ export class TetrisRenderer {
     }
   }
 
+  private syncCanvasSize(app: Application): void {
+    const host = this.host;
+    if (!host) return;
+    const width = host.clientWidth;
+    const height = host.clientHeight;
+    if (width <= 0 || height <= 0) return;
+    if (app.screen.width === width && app.screen.height === height) return;
+    // Pixi's resize plugin queues window resizes for the next animation frame.
+    // A responsive settings sheet can restore the gameplay layout and open a
+    // successor dialog in that same frame, so synchronize here before reading
+    // DOM-owned HUD geometry for the canvas preview.
+    app.resize();
+  }
+
   render(state: GameState, events: readonly GameEvent[], deltaMs: number): void {
     const app = this.app;
     if (!app) return;
+    this.syncCanvasSize(app);
     this.consumeEvents(events, state, this.previousBoard, this.collapseWasActive);
     this.syncMutationFields(state);
     this.advanceEffects(deltaMs);

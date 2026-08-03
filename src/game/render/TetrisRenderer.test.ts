@@ -104,6 +104,7 @@ function hasBroadHorizontalGeometry(operations: readonly DrawOperation[], boardW
 }
 
 type RendererInternals = {
+  host: HTMLElement | null;
   app: {
     stage: unknown;
     renderer: {
@@ -126,6 +127,10 @@ type RendererInternals = {
     duration: number;
     piece: PieceType;
   } | null;
+  syncCanvasSize: (app: {
+    screen: { width: number; height: number };
+    resize: () => void;
+  }) => void;
   lockPulse: {
     cells: Cell[];
     elapsed: number;
@@ -358,6 +363,28 @@ describe('Puzzle undo presentation reset', () => {
 
   afterAll(() => {
     if (originalCanvasContext) Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', originalCanvasContext);
+  });
+
+  it('synchronizes the Pixi screen before rendering restored responsive layouts', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const host = document.createElement('div');
+    Object.defineProperties(host, {
+      clientWidth: { configurable: true, value: 758 },
+      clientHeight: { configurable: true, value: 810 },
+    });
+    const screen = { width: 318, height: 313 };
+    const resize = vi.fn(() => {
+      screen.width = host.clientWidth;
+      screen.height = host.clientHeight;
+    });
+    internals.host = host;
+
+    internals.syncCanvasSize({ screen, resize });
+    internals.syncCanvasSize({ screen, resize });
+
+    expect(resize).toHaveBeenCalledTimes(1);
+    expect(screen).toEqual({ width: 758, height: 810 });
   });
 
   it('removes every discarded lock, line-impact, and interpolation residue', () => {
