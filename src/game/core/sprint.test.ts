@@ -6,6 +6,7 @@ import {
   MUTATION_EFFECT_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
   MUTATION_RESULT_TICKS,
+  MUTATION_SUPERGRAVITY_EFFECT_TICKS,
   TICKS_PER_SECOND,
   gravityForMode,
 } from './constants';
@@ -337,7 +338,7 @@ describe('异变 mode', () => {
     expect(activations.filter((event) => event.item === 'freeze')).toHaveLength(1);
     expect(activations.filter((event) => event.item === 'multiplier')).toHaveLength(1);
     expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
-    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_SUPERGRAVITY_EFFECT_TICKS);
     expect(transition.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
     expect(transition.state.mutationMultiplierFactor).toBe(4);
 
@@ -367,7 +368,7 @@ describe('异变 mode', () => {
     expect(transition.events.find((event) => event.type === 'mutation-activated')).toMatchObject({ item: 'bomb' });
     expect(transition.state.lines).toBe(4);
     expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
-    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_SUPERGRAVITY_EFFECT_TICKS);
   });
 
   it('executes every repeated Bomb mechanically but emits one combined Bomb presentation cue', () => {
@@ -495,10 +496,13 @@ describe('异变 mode', () => {
     expect(restored.active?.y).toBe((finalIceTick.active?.y ?? 0) + 1);
   });
 
-  it('refreshes an already active Freeze or Collapse effect to exactly ten seconds', () => {
+  it('refreshes Ice to ten seconds and Supergravity to five seconds', () => {
     for (const item of ['freeze', 'collapse'] as const) {
       const timer = item === 'freeze' ? 'mutationFreezeTicks' : 'mutationCollapseTicks';
       const otherTimer = item === 'freeze' ? 'mutationCollapseTicks' : 'mutationFreezeTicks';
+      const expectedDuration = item === 'freeze'
+        ? MUTATION_EFFECT_TICKS
+        : MUTATION_SUPERGRAVITY_EFFECT_TICKS;
       const transition = resolveLineClear({
         ...carrierClearState(item),
         [timer]: 17,
@@ -506,7 +510,7 @@ describe('异变 mode', () => {
         mutationMultiplierTicks: 321,
         mutationMultiplierFactor: 2,
       });
-      expect(transition.state[timer]).toBe(MUTATION_EFFECT_TICKS);
+      expect(transition.state[timer]).toBe(expectedDuration);
       expect(transition.state[otherTimer]).toBe(123 - LINE_CLEAR_DELAY_TICKS);
       expect(transition.state.mutationMultiplierTicks).toBe(321 - LINE_CLEAR_DELAY_TICKS);
       expect(transition.state.mutationMultiplierFactor).toBe(2);

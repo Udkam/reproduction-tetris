@@ -45,6 +45,8 @@ export const SURVIVAL_DEBRIS_RANDOM_SALT = 0xa3c5_9ac3;
 /** 异变 accelerates on a more frequent, six-line cadence than Classic. */
 export const MUTATION_LINES_PER_SPEED = 6;
 export const MUTATION_EFFECT_TICKS = 10 * TICKS_PER_SECOND;
+/** Supergravity is intentionally shorter and more decisive than the other timed items. */
+export const MUTATION_SUPERGRAVITY_EFFECT_TICKS = 5 * TICKS_PER_SECOND;
 export const MUTATION_RESULT_TICKS = 2 * TICKS_PER_SECOND;
 export const MUTATION_CARRIER_CHANCE = 0.32;
 export const MUTATION_BOMB_SCORE = 300;

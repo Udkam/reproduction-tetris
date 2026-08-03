@@ -14,6 +14,7 @@ import {
   MUTATION_FREEZE_GRAVITY_TICKS,
   MUTATION_RANDOM_SALT,
   MUTATION_RESULT_TICKS,
+  MUTATION_SUPERGRAVITY_EFFECT_TICKS,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
@@ -968,7 +969,7 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       durationTicks = MUTATION_EFFECT_TICKS;
       next = { ...next, mutationFreezeTicks: durationTicks };
     } else if (carrier.item === 'collapse') {
-      durationTicks = MUTATION_EFFECT_TICKS;
+      durationTicks = MUTATION_SUPERGRAVITY_EFFECT_TICKS;
       next = { ...next, mutationCollapseTicks: durationTicks };
     } else if (carrier.item === 'multiplier') {
       const wasActive = next.mutationMultiplierTicks > 0;
