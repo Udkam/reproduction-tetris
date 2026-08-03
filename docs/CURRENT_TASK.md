@@ -102,7 +102,10 @@ The slice has thirteen player-visible acceptance requirements:
     coordinated border so it is distinguishable from the neutral statistics and Next
     modules without reading as a warning card. The idle shell keeps only this quiet
     tint; active rows remain the primary source of item-specific color. Compact/short
-    layouts may reflow without changing this source order.
+    layouts may reflow without changing this source order. Idle and a single active
+    row occupy the same reserved ledger height. On desktop, additional simultaneous
+    rows grow upward from a fixed lower edge rather than displacing statistics or Next;
+    starting, refreshing, or expiring any item cannot move those downstream modules.
 11. Reshape receives an unmistakable but short board-local activation: scattered units
     visibly converge into an I silhouette, the assembled piece receives one confirmation
     pulse, and a low-opacity field response connects the event to the board. It cannot

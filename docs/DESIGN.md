@@ -49,7 +49,10 @@ neutral statistics and Next modules without becoming a yellow warning card. Idle
 only that quiet shell tint. Active Freeze, Supergravity, and multiplier rows remain the
 primary cyan, violet, and amber signals inside it. The DOM/source order is status,
 statistics, then Next on every viewport, even when compact CSS turns that column into a
-horizontal strip.
+horizontal strip. Idle and one active row share one reserved ledger height. On desktop,
+the instrument is lower-edge anchored above statistics, so simultaneous rows expand
+upward while statistics and Next retain invariant coordinates; the empty state does not
+need a tall three-row placeholder to achieve that stability.
 
 ### Classic gravity interval
 
