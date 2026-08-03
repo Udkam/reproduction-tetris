@@ -101,9 +101,12 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto;
-  gap: 7px;
-  overflow: visible;
-  border: 0;
+  gap: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--raised) 82%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface));
+  border-radius: 10px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
 }
 
 .run-stats [data-stat-role],
@@ -116,10 +119,17 @@
   min-width: 0;
   min-height: 52px;
   padding: 7px 10px;
-  background: color-mix(in srgb, var(--raised) 82%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface)) !important;
-  border-radius: 9px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
+  background: transparent;
+  border: 0 !important;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.run-stats [data-stat-role]:not(:last-child),
+.run-stats--collapse [data-stat-role]:not(:last-child),
+.run-stats--puzzle [data-stat-role]:not(:last-child),
+.run-stats--mutation [data-stat-role]:not(:last-child) {
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
 }
 
 .run-stats span,
@@ -183,19 +193,16 @@
 }
 
 .run-stats--survival [data-stat-role="survival-bedrock"][data-aftershock="true"] {
-  border-color: color-mix(in srgb, var(--race) 54%, var(--line)) !important;
   background: color-mix(in srgb, var(--race) 9%, var(--raised));
-  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--race) 72%, transparent);
+  box-shadow: none;
 }
 
 .run-stats--survival [data-stat-role="survival-stones"][data-warning="true"] {
-  border-color: color-mix(in srgb, #e5b86a 68%, var(--line)) !important;
   background: color-mix(in srgb, #e5b86a 10%, var(--raised));
-  box-shadow: inset 3px 0 0 color-mix(in srgb, #e5b86a 82%, transparent);
+  box-shadow: none;
 }
 
 .run-stats--survival [data-urgent="true"] {
-  border-color: color-mix(in srgb, var(--danger) 44%, var(--line)) !important;
   background: color-mix(in srgb, var(--danger) 7%, var(--raised));
   box-shadow: none !important;
   animation: survival-countdown-urgent 720ms ease-in-out infinite alternate;
@@ -361,7 +368,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
     align-self: stretch;
-    gap: 4px;
+    gap: 0;
     height: 100%;
     min-height: 0;
   }
@@ -376,8 +383,29 @@
   .run-stats--mutation [data-stat-role] {
     min-height: 0;
     padding: 4px 6px;
-    border-radius: 7px;
+    border-bottom: 0 !important;
+    border-radius: 0;
     box-shadow: none;
+  }
+
+  .run-stats [data-stat-role]:not(:last-child),
+  .run-stats--collapse [data-stat-role]:not(:last-child),
+  .run-stats--puzzle [data-stat-role]:not(:last-child),
+  .run-stats--mutation [data-stat-role]:not(:last-child) {
+    border-bottom: 0 !important;
+  }
+
+  .run-stats [data-stat-role]:nth-child(odd),
+  .run-stats--collapse [data-stat-role]:nth-child(odd),
+  .run-stats--puzzle [data-stat-role]:nth-child(odd),
+  .run-stats--mutation [data-stat-role]:nth-child(odd) {
+    border-right: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
+  }
+
+  .run-stats [data-stat-role]:nth-child(-n + 2),
+  .run-stats--collapse [data-stat-role]:nth-child(-n + 2),
+  .run-stats--mutation [data-stat-role]:nth-child(-n + 2) {
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
   }
 
   .run-stats span {
@@ -547,6 +575,7 @@
   .run-stats--mutation {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 0;
   }
 
   .run-stats--puzzle {
@@ -560,7 +589,29 @@
   .run-stats--mutation [data-stat-role] {
     min-height: 52px;
     padding: 5px 7px;
+    border-bottom: 0 !important;
+    border-radius: 0;
     box-shadow: none;
+  }
+
+  .run-stats [data-stat-role]:not(:last-child),
+  .run-stats--collapse [data-stat-role]:not(:last-child),
+  .run-stats--puzzle [data-stat-role]:not(:last-child),
+  .run-stats--mutation [data-stat-role]:not(:last-child) {
+    border-bottom: 0 !important;
+  }
+
+  .run-stats [data-stat-role]:nth-child(odd),
+  .run-stats--collapse [data-stat-role]:nth-child(odd),
+  .run-stats--puzzle [data-stat-role]:nth-child(odd),
+  .run-stats--mutation [data-stat-role]:nth-child(odd) {
+    border-right: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
+  }
+
+  .run-stats [data-stat-role]:nth-child(-n + 2),
+  .run-stats--collapse [data-stat-role]:nth-child(-n + 2),
+  .run-stats--mutation [data-stat-role]:nth-child(-n + 2) {
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
   }
 
   .run-stats span {

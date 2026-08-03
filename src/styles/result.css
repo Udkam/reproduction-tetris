@@ -77,16 +77,18 @@
 }
 
 .run-result__hero strong {
-  overflow: hidden;
+  display: inline-block;
+  overflow: visible;
   max-width: 100%;
+  padding: .04em .07em .07em;
   color: color-mix(in srgb, var(--result-accent) 88%, var(--ink));
   font-family: var(--font-data);
   font-size: clamp(48px, 13vw, 68px);
-  font-weight: 720;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -.065em;
-  line-height: .96;
-  text-overflow: ellipsis;
+  letter-spacing: -.03em;
+  line-height: 1.08;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
@@ -265,15 +267,17 @@
 }
 
 .puzzle-celebration__value strong {
-  overflow: hidden;
+  display: inline-block;
+  overflow: visible;
+  padding: .04em .07em .07em;
   color: inherit;
   font-family: var(--font-data);
   font-size: clamp(52px, 14vw, 70px);
-  font-weight: 720;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -.065em;
-  line-height: .96;
-  text-overflow: ellipsis;
+  letter-spacing: -.03em;
+  line-height: 1.08;
+  text-overflow: clip;
   white-space: nowrap;
 }
 

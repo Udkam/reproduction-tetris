@@ -60,12 +60,13 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot__segment-label b\s*\{[^}]*font-size:\s*16px;/s);
   });
 
-  it('stacks the four desktop instruments above one aligned Next module', () => {
+  it('stacks four rows in one desktop instrument surface above one aligned Next module', () => {
     const desktop = hudCss.slice(0, hudCss.indexOf('@media (max-width: 599px)'));
-    expect(desktop).toMatch(/\.run-stats,[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\);/);
+    expect(desktop).toMatch(/\.run-stats,[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\);[\s\S]*gap:\s*0;[\s\S]*overflow:\s*hidden;[\s\S]*border-radius:\s*10px;/);
     expect(desktop).toMatch(/\.game-side-panel,[\s\S]*align-content:\s*center;[\s\S]*width:\s*224px;/);
     expect(desktop).toMatch(/\.preview-rail,[\s\S]*grid-template-rows:\s*auto 124px;[\s\S]*border-radius:\s*9px;/);
-    expect(desktop).toMatch(/\.run-stats \[data-stat-role\],[\s\S]*border-radius:\s*9px;/);
+    expect(desktop).toMatch(/\.run-stats \[data-stat-role\],[\s\S]*background:\s*transparent;[\s\S]*border:\s*0 !important;[\s\S]*border-radius:\s*0;[\s\S]*box-shadow:\s*none;/);
+    expect(desktop).toMatch(/\.run-stats \[data-stat-role\]:not\(:last-child\),[\s\S]*border-bottom:\s*1px solid/);
   });
 
   it('gives both Survival countdowns one urgency treatment with a static reduced-motion state', () => {

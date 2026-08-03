@@ -26,6 +26,7 @@ describe('T27 run-result scorecard authority', () => {
   it('keeps one unboxed achievement and one supporting row in a narrow portrait scorecard', () => {
     expect(result).toMatch(/\.action-sheet--run-result\s*\{[\s\S]*width:\s*min\(31rem, calc\(100vw - 24px\)\)/);
     expect(result).toMatch(/\.run-result__hero strong\s*\{[\s\S]*font-size:\s*clamp\(48px, 13vw, 68px\)/);
+    expect(result).toMatch(/\.run-result__hero strong\s*\{[\s\S]*overflow:\s*visible;[\s\S]*font-weight:\s*700;[\s\S]*line-height:\s*1\.08;[\s\S]*text-overflow:\s*clip;/);
     expect(result).toMatch(/\.run-result__support\s*\{[\s\S]*justify-content:\s*space-between/);
     expect(result).not.toContain('.run-result__metric');
     expect(result).toMatch(/@media \(min-width:\s*700px\) and \(max-height:\s*520px\)/);
@@ -41,6 +42,7 @@ describe('T27 run-result scorecard authority', () => {
     expect(result).toMatch(/\.action-sheet--puzzle-celebration\s*\{[\s\S]*width:\s*min\(31rem, calc\(100vw - 24px\)\)/);
     expect(result).toMatch(/\.puzzle-celebration\s*\{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*border:\s*0;[\s\S]*background:\s*transparent;/);
     expect(result).toMatch(/\.puzzle-celebration__value strong\s*\{[\s\S]*font-size:\s*clamp\(52px, 14vw, 70px\)/);
+    expect(result).toMatch(/\.puzzle-celebration__value strong\s*\{[\s\S]*overflow:\s*visible;[\s\S]*font-weight:\s*700;[\s\S]*line-height:\s*1\.08;[\s\S]*text-overflow:\s*clip;/);
     expect(result).toMatch(/\.puzzle-celebration__summary > span\s*\{[\s\S]*font-size:\s*12px/);
   });
 });
