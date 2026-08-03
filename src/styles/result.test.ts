@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const result = readFileSync('src/styles/result.css', 'utf8');
+const legacy = readFileSync('src/styles.css', 'utf8');
 const main = readFileSync('src/main.tsx', 'utf8');
 
 describe('T27 run-result scorecard authority', () => {
@@ -46,6 +47,9 @@ describe('T27 run-result scorecard authority', () => {
     expect(result).toMatch(/\.puzzle-celebration__summary > span\s*\{[\s\S]*font-size:\s*12px/);
     expect(result).not.toMatch(/\.puzzle-celebration__constellation\s*\{/);
     expect(result).not.toMatch(/\.puzzle-celebration__prism\s*\{/);
+    expect(legacy).not.toContain('.puzzle-celebration__constellation');
+    expect(legacy).not.toContain('.puzzle-celebration__prism');
+    expect(legacy).not.toContain('puzzle-celebration-fragment');
     expect(result).not.toMatch(/grid-template-rows:\s*(?:84|90)px auto/);
   });
 });
