@@ -2,14 +2,13 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASE A VERIFIED; PHASES B-C ACTIVE.** The accepted game remains the product
-baseline. This is a convergence programme: no Core rewrite, renderer replacement,
-fifth mode, account system, server dependency, or broad React migration is authorised.
-Each change must improve first-time understanding, portfolio presentation, or long-term
-maintenance.
+**Status (2026-08-03): PHASE A VERIFIED; PHASE-C TYPOGRAPHY / SETTINGS CORRECTION
+VERIFIED; RC PROGRAMME ACTIVE.** The accepted game remains the product baseline. This
+is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
+system, server dependency, or broad React migration is authorised. Each change must
+improve first-time understanding, portfolio presentation, or long-term maintenance.
 
-The complete phase contract is recorded in `docs/phases/rc-1.0.md`. The current bounded
-slice is Phase A only:
+The complete phase contract is recorded in `docs/phases/rc-1.0.md`. Phase A delivered:
 
 1. package metadata, README, active DEV-QA globals, active persistence writes, comments,
    and visible copy use `TetraMorph` / `tetramorph`;
@@ -30,10 +29,11 @@ Targeted tests pass; final typecheck, the complete suite (`308 passed / 3 skippe
 the 760-module production build, and the active-identifier scan pass. No server or
 browser was started for this nonvisual slice.
 
-**Active bounded slice — B-C typography, pause reachability, and Settings
-information architecture.** Direct player review rejects the inherited handwritten
+**Verified bounded slice — Phase-C typography, pause reachability, and Settings
+information architecture.** Direct player review rejected the inherited handwritten
 English UI, the IBM Plex Mono data role, a pause layer that can intercept the persistent
-top actions, and a Settings sheet that exposes every subsystem at once. This slice must:
+top actions, and a Settings sheet that exposes every subsystem at once. The correction
+required:
 
 1. keep Playwrite NZ Basic exclusive to the `TetraMorph` wordmark; use locally packaged
    Space Grotesk for all ordinary English headings, prose, labels, buttons, rules,
@@ -54,10 +54,26 @@ top actions, and a Settings sheet that exposes every subsystem at once. This sli
    After the last source edit, run one typecheck, the full suite, one build, and one
    controlled bilingual browser batch at desktop, portrait, and short-landscape sizes.
 
-This slice may change typography dependencies/imports/tokens/notices, localization,
-`src/App.tsx`, authoritative Settings/HUD CSS, and direct tests. It may not change Core
+The bounded slice allowed typography dependencies/imports/tokens/notices, localization,
+`src/App.tsx`, authoritative Settings/HUD CSS, and direct tests. It did not change Core
 rules, renderer primitives, Puzzle definitions, scoring, persistence schemas, or add a
 new gameplay feature.
+
+**Verified result.** Product source `310d83a` assigns Playwrite NZ Basic only to the
+wordmark, Space Grotesk to ordinary English UI, Noto Sans SC to Chinese UI, and Geist
+Mono to numeric/data roles. Settings now renders one of three compact panels at a time;
+its run actions span the available width and its Controls panel keeps Gameplay and
+Shortcuts balanced. Pause ends below the persistent top bar, so pointer hit testing and
+real transitions both prove Back and Settings remain available while the board and Next
+stay mounted.
+
+Final typecheck, the complete suite (`309 passed / 3 skipped`), and the 768-module build
+pass. Reproducible evidence under `docs/evidence/t26/` covers nine bilingual/responsive
+states and reports zero clipping, text overlap, wrong English/data face, horizontal
+overflow, DOM board cells, or browser errors. It binds to `310d83a`; evidence checkpoint
+`32b4457` contains the runner, audit, and inspected frames. The browser-owned preview was
+released and port `4186` has no listener. Phase B first-experience work and the remaining
+RC phases stay open; this verification does not label the complete RC finished.
 
 # Previous Task — T25 Invariant Home Mode Typography
 

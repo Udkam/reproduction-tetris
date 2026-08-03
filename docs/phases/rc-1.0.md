@@ -1,7 +1,8 @@
 # TetraMorph v1.0 Release Candidate Plan
 
-Status: active from 2026-08-03. `docs/CURRENT_TASK.md` owns the currently authorised
-slice; this file owns the complete ordered programme.
+Status: active from 2026-08-03. Phase A and the Phase-C typography / Settings correction
+are verified; Phase B first experience and Phases D-F remain open. `docs/CURRENT_TASK.md`
+owns the currently authorised slice; this file owns the complete ordered programme.
 
 ## Product guardrails
 
@@ -35,6 +36,12 @@ slice; this file owns the complete ordered programme.
   and structural whitespace at supported desktop, portrait, and short-landscape sizes.
 - Recompose Settings into three tabs: Settings (language, SFX, volume, reduced motion),
   Controls (keyboard, touch), and Rules (current rules, leaderboard).
+
+Verified correction checkpoint: product `310d83a`, evidence `32b4457`. The accepted
+implementation uses Playwrite NZ Basic only for the wordmark, Space Grotesk for English
+UI, Geist Mono for data, and Noto Sans SC for Chinese UI; it also proves responsive
+Settings tabs and Pause-time Back/Settings pointer reachability. This checkpoint does
+not close Phase B or the complete release candidate.
 
 ## Phase D — bounded mode polish
 

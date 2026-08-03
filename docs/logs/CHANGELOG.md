@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-08-03 — T26 RC typography, Settings, and Pause correction verified
+
+- Replaced the rejected inherited English/data typography with four explicit local
+  roles: Playwrite NZ Basic for the wordmark only, Space Grotesk for ordinary English
+  UI, Noto Sans SC for Chinese UI, and Geist Mono for scores, times, ranks, dates,
+  percentages, keycaps, and numeric units.
+- Rebuilt Settings as one compact three-tab console. Settings balances language and
+  sound with full-width run actions; Controls keeps Gameplay and Shortcuts in two
+  readable columns; Rules pairs concise current-mode rules with its record surface.
+- Kept the persistent Back and Settings actions above the Pause interaction layer.
+  Pointer hit tests and real transitions both pass while the single Canvas and visible
+  Next preview remain mounted behind the compact pause sheet.
+- Frozen source `310d83a` passes final typecheck, the complete suite (`309 passed / 3
+  skipped`), and the 768-module build. Evidence `32b4457` covers nine bilingual and
+  responsive states with zero clipping, text overlap, wrong font role, horizontal
+  overflow, DOM board cells, or browser errors. The evidence server is released and
+  port `4186` is free. This closes the correction slice, not the complete RC programme.
+
 ## 2026-08-03 — T26 RC Phase A project identity and compatibility verified
 
 - Published TetraMorph as the package and README identity, with public Features,

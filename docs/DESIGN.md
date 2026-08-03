@@ -61,6 +61,14 @@ pointer targets as well as members of the focus loop. A chosen top action replac
 pause sheet rather than stacking another modal; the live board and Next remain mounted,
 dimmed, and unchanged.
 
+**Verified implementation.** Frozen product source `310d83a` implements the four
+semantic font roles and the three-panel Settings console without changing gameplay.
+Range-based browser geometry checks cover English and Chinese desktop Settings, English
+portrait Controls, short-landscape Rules, Home, Pause, and an English Mutation HUD.
+Every state has zero clipped text, text-ink overlap, wrong English/data face, or
+horizontal overflow. Pause hit testing and real navigation both reach Back and Settings;
+the inspected frame preserves a visible Next well beside the compact pause sheet.
+
 ## 2026-08-03 T25 — language-invariant English mode names
 
 The four Home mode names are permanent English proper names, so their typography is

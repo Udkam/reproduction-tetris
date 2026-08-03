@@ -959,7 +959,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `tetramorph:*` without deleting rollback keys; the active legacy-name scan is clean.
 - Final Phase-A typecheck, complete suite (`308 passed / 3 skipped`), and 760-module
   build pass. No server/browser was started. Next work is the Phases B-C visual slice.
-- Phases B-C are active. The frozen correction replaces inherited Playwrite UI text
-  with Space Grotesk, IBM Plex Mono data with JetBrains Mono, and custom Chinese faces
-  with Noto Sans SC. Settings becomes Settings / Controls / Rules tabs, and the Pause
-  backdrop ends below the top bar so Back and Settings remain true pointer targets.
+- The Phase-C typography / Settings correction is now verified at product source `310d83a` and
+  evidence `32b4457`. The final data face is Geist Mono; Settings uses one compact active
+  panel; Pause preserves working Back/Settings hit targets and a visible Next. Final
+  typecheck, `309 passed / 3 skipped`, the 768-module build, and nine-state bilingual
+  browser audit pass with no clipping, text overlap, wrong font role, overflow, extra
+  Canvas/DOM cells, or browser errors. Phase B first experience and Phases D-F remain
+  open.
