@@ -54,13 +54,20 @@ The slice has eight player-visible acceptance requirements:
    The existing Start event remains the confirmation beat. Cues obey SFX enablement and
    volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
    or timers after unmount.
-8. Classic, Survival, and Mutation results use a portrait, content-height scorecard
-   rather than a wide sheet or a stack of dashboard cards. The mode's ranking metric is
-   an unboxed hero number with a short label; the secondary metric becomes one compact
-   supporting row; top-five history follows as a quiet vertical list; and actions close
-   the same axis. No large empty bordered metric field, spreadsheet-like visual weight,
-   decorative subtitle, or duplicate rank statement is allowed. The dialog targets a
-   `30–32rem` desktop width and remains viewport-safe on small screens.
+8. Result sheets use a portrait, content-height scorecard rather than a wide sheet or a
+   stack of dashboard cards. Classic is titled `消行 / Lines`, Survival is titled
+   `生存时间 / Survival time`, and Mutation is titled `得分 / Score`; no scored mode
+   may prepend or append its mode name or the generic word `结果 / result`. The same
+   ranking metric is the unboxed hero number directly below that title, so its label is
+   not repeated under the number. The secondary metric becomes one compact supporting
+   row; top-five history follows as a quiet vertical list; and actions close the same
+   axis. Puzzle retains the meaningful outcome title (`恭喜你破解谜题`, `刷新个人纪录`,
+   or `谜题已破解`) but upgrades to a matching portrait celebration: one restrained
+   assembled-prism signal, one unboxed best-operation hero, and no horizontal boxed
+   summary or redundant completion sentence. No large empty bordered metric field,
+   spreadsheet-like visual weight, decorative subtitle, or duplicate rank statement is
+   allowed. Each dialog targets a `30–32rem` desktop width and remains viewport-safe on
+   small screens.
 
 ### Required checkpoints and verification
 
@@ -69,8 +76,9 @@ The slice has eight player-visible acceptance requirements:
 3. Commit Classic Core/runtime persistence and UI controls in reviewable checkpoints;
    directly prove defaulting, validation, current-run immutability, and next-run use.
 4. Commit Survival and Mutation timing changes with deterministic Core tests.
-5. Commit countdown audio, the restrained Supergravity visual, and the portrait result
-   hierarchy with direct audio, renderer, CSS, and reduced-motion tests.
+5. Commit countdown audio, the restrained Supergravity visual, and the portrait scored
+   and Puzzle result hierarchy with direct audio, renderer, CSS, and reduced-motion
+   tests.
 6. After the final source edit, run one typecheck, the complete two-worker suite, one
    production build, and one controlled bilingual browser-evidence batch. Inspect real
    Home, Classic Settings, Survival HUD, countdown, Supergravity, and all three ranked

@@ -73,14 +73,25 @@ context, and are cancelled by the existing runtime teardown boundary.
 ### Portrait result hierarchy
 
 The ranked Classic, Survival, and Mutation result sheet becomes a narrow vertical game
-scorecard instead of a wide dashboard. Its desktop measure is `30–32rem`: the mode's
-principal ranking metric is an unboxed hero number, framed only by restrained mode
-color and whitespace; the contextual metric is one compact supporting row; the top-five
-history reads down a low-noise list; and the actions finish the same axis. A giant
-bordered hero card and a second dashboard card are explicitly excluded. Width may
-collapse to the viewport but does not expand to fill board space. The current run is
-still identified inside its real list row; no duplicate rank sentence, decorative
-subtitle, or empty side column is introduced.
+scorecard instead of a wide dashboard. Its desktop measure is `30–32rem`. The sheet
+title is the principal ranking metric itself—`消行 / Lines`, `生存时间 / Survival time`,
+or `得分 / Score`—rather than `经典结果`, `生存结果`, `异变结果`, or their English
+equivalents. The same metric's unboxed hero number follows directly, framed only by
+restrained mode color and whitespace, so the label is not duplicated beneath it. The
+contextual metric is one compact supporting row; the top-five history reads down a
+low-noise list; and the actions finish the same axis. A giant bordered hero card and a
+second dashboard card are explicitly excluded. Width may collapse to the viewport but
+does not expand to fill board space. The current run is still identified inside its
+real list row; no duplicate rank sentence, decorative subtitle, or empty side column
+is introduced.
+
+Puzzle uses the same portrait rhythm without becoming a ranked-mode ledger. Its title
+continues to communicate the actual outcome: first clear, new personal record, or solved
+replay. Below it, a compact assembled-prism signal resolves into one central best-step
+number with the localized `当前最优步数 / Current best` label and step unit. The signal
+is unboxed and celebratory but restrained; the former side-by-side constellation card,
+generic completion statistics, level metadata, and explanatory paragraph are absent.
+Reduced motion freezes the assembled state instead of removing the hierarchy.
 
 ## 2026-08-03 T26 — v1.0 Release Candidate convergence
 
