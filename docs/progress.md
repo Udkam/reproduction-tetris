@@ -1535,3 +1535,13 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   browser error or cleanup residue.
 - Phase F and the redacted candidate-range gitleaks scan are verified; final acceptance
   and push remain blocked only on a second independent read-only QA decision.
+
+## 2026-08-03 — T26 TetraMorph 1.0.0-rc.1 accepted
+
+- Independent read-only QA first rejected contradictory top-level status text while
+  accepting the package version, portable evidence dependency, reproduction commands,
+  and Phase-E/F audits.
+- Docs-only synchronization `d700ca3` corrected the authoritative headers, blocker, and
+  next action without reopening product source or evidence.
+- Final QA accepted `d700ca3` with P0 0 / P1 0 / P2 0 / P3 0. Phases A-F and the final
+  acceptance gate are closed; coordinator publication is the remaining delivery action.

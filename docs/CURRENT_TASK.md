@@ -1,8 +1,8 @@
 # Current Task — T26 TetraMorph v1.0 Release Candidate
 
-## T26 active goal — converge the current game into Release Candidate 1.0
+## T26 accepted goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASES A-F VERIFIED; FINAL INDEPENDENT ACCEPTANCE ACTIVE.**
+**Status (2026-08-03): TETRAMORPH 1.0.0-RC.1 INDEPENDENTLY ACCEPTED.**
 The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
@@ -5598,7 +5598,7 @@ changed by these refinements.
 
 Task ID: `TETRIS-T26-RC-PORTABLE-RELEASE-023`
 
-Status: **CORRECTED CANDIDATE READY FOR SECOND INDEPENDENT QA**.
+Status: **ACCEPTED — FINAL INDEPENDENT QA P0/P1/P2/P3 ALL ZERO**.
 
 Independent read-only QA found no P0 product failure, but final acceptance remains
 fail-closed until all of the following are corrected and reverified together:
@@ -5627,5 +5627,12 @@ Post-source gates pass typecheck, `318 passed / 3 skipped`, the 756-module build
 `npm ci` from the committed lockfile, a clean direct dependency tree, and OSV with no
 known issue. Phase-E/F browser audits bind to source `85a3431`, report no errors or
 cleanup residue, and release ports `4191` and `4192`. A redacted gitleaks 8.30.1 scan of
-the candidate range passes. Final acceptance and push remain blocked only until the
-second independent read-only QA accepts the committed range.
+the candidate range passes. The second independent read-only QA accepted the committed
+range with P0 0 / P1 0 / P2 0 / P3 0; coordinator closure and push are the only
+remaining operations.
+
+Final disposition: independent read-only QA accepted docs synchronization `d700ca3`
+with P0 0 / P1 0 / P2 0 / P3 0 after verifying the portable evidence dependency,
+`1.0.0-rc.1` package/lock alignment, source-bound Phase-E/F audits, and consistent current
+status records. No product or evidence change followed the accepted source; coordinator
+closure and ordinary push are the only remaining operations.

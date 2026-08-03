@@ -1,10 +1,9 @@
 # TetraMorph v1.0 Release Candidate Plan
 
-Status: active from 2026-08-03. Phases A-F are verified on corrected source `85a3431`
-and evidence `6d2255a`. The first final-QA rejection has been repaired; the second
-independent read-only decision and coordinator acceptance remain open.
-`docs/CURRENT_TASK.md` owns the final acceptance slice; this file owns the complete
-ordered programme.
+Status: complete 2026-08-03. Phases A-F are verified on corrected source `85a3431` and
+evidence `6d2255a`. Final independent read-only QA accepted synchronization `d700ca3`
+with P0 0 / P1 0 / P2 0 / P3 0. `docs/CURRENT_TASK.md` records the accepted disposition;
+this file owns the completed ordered programme.
 
 ## Product guardrails
 
@@ -90,3 +89,6 @@ Correction gate: version both npm metadata files as `1.0.0-rc.1`, declare and pi
 Playwright evidence dependency in-repository, remove personal absolute paths from the
 active evidence toolchain, regenerate Phase-E/Phase-F proof, rerun every release gate,
 and synchronize all status documents before requesting the second QA decision.
+
+Accepted: every correction gate passed, and final read-only QA reported no P0-P3
+finding on `d700ca3`.

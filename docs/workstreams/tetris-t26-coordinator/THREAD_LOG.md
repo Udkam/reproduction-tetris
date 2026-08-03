@@ -3,8 +3,7 @@
 - Task ID: `tetris-t26-coordinator`
 - Base SHA: `2d4f3ecc7d51ee756ac55442088be59aa0d7d0f9`
 - Owner: primary coordinator / final acceptance and push owner; product source frozen
-- Status: Phases A-F verified; the first final-QA findings are corrected; only the
-  independent read-only recheck and coordinator acceptance remain open.
+- Status: TetraMorph `1.0.0-rc.1` accepted; Phases A-F and final independent QA closed.
 - Historical Phase-A paths reviewed:
   - contract/archive: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`,
     `docs/phases/rc-1.0.md`, `progress.md`, this log, `docs/logs/CHANGELOG.md`
@@ -58,9 +57,9 @@
   (`310 passed / 3 skipped`), 768-module build, and one controlled evidence runner.
   Preview PID 27104 and manual dev PID 23588 were released; ports 4187/4188 have no
   listener.
-- Blocker: final independent read-only QA recheck only.
-- Next action: obtain the final exact-range disposition on this docs-only correction.
-  No Phase-C implementation work remains open.
+- Blocker: none.
+- Next action: commit coordinator closure, run the final redacted range scan, and push
+  `main` without rewriting shared history. No implementation phase remains open.
 
 ## 2026-08-03 — Phase-F candidate rejected; portable-release correction opened
 
@@ -99,3 +98,15 @@
 - Blocker: second independent read-only QA only.
 - Next action: commit this scan disposition, rescan the resulting final HEAD, then request
   exact-range QA without opening a server, browser, test, build, or writer process.
+
+## 2026-08-03 — Final independent acceptance
+
+- First recheck found one remaining P1: stale top-level status in `CURRENT_TASK.md` and
+  this log. Package/lock `1.0.0-rc.1`, Playwright portability, reproduction instructions,
+  and Phase-E/F audits all passed that review.
+- Docs-only checkpoint `d700ca3` aligned both current-status headers and removed the
+  obsolete Phase-C next action.
+- Final independent read-only QA accepted `d700ca3` with P0 0 / P1 0 / P2 0 / P3 0.
+- Blocker: none.
+- Next action: commit this coordinator disposition, rescan the final range, and push
+  `main` normally.

@@ -1,4 +1,4 @@
-# TetraMorph 1.0.0-rc.1 Candidate Package
+# TetraMorph 1.0.0-rc.1 Release Candidate
 
 Date: 2026-08-03
 
@@ -50,7 +50,7 @@ clipping, horizontal overflow, wrong font roles, DOM board cells, or console err
 
 ## Scope note
 
-This web candidate package has passed the implementation, engineering, and evidence
-gates and is awaiting the final independent acceptance decision. Native desktop/Steam
-packaging, store metadata, platform SDK integration, signing, and distribution QA are
-separate future delivery work and are not claimed by this milestone.
+This validated web release candidate passed the implementation, engineering, evidence,
+and independent read-only acceptance gates. Native desktop/Steam packaging, store
+metadata, platform SDK integration, signing, and distribution QA are separate future
+delivery work and are not claimed by this milestone.

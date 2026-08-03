@@ -1,6 +1,6 @@
 # TetraMorph v1.0 RC Requirement Audit
 
-Status: active, fail-closed audit started 2026-08-03. A phase is `VERIFIED` only when
+Status: complete and independently accepted 2026-08-03. A phase is `VERIFIED` only when
 the current source, automated gates, and (for visible behavior) source-bound browser
 evidence all support the same claim.
 
@@ -21,11 +21,11 @@ evidence all support the same claim.
 | E | Bundle, font, dependency, and unused-asset inspection | Source `4d37d59` emits only 13 required WOFF2 faces, removes 57.6% of font payload, removes proven dead legacy font assets, retains the measured 546.62 kB main warning, and has a clean direct dependency tree plus scoped OSV result. | `VERIFIED` |
 | F | Current-source final frames and 30–60 second capture plan | Evidence `6d2255a` binds the six final frames and capture plan to corrected source `85a3431`; its runner imports pinned repository Playwright and releases ports 4191/4192. | `VERIFIED` |
 | F | GitHub, resume, portfolio copy and RC Release Notes | README, Showcase, and Release Notes are present; npm metadata and committed lockfile agree on `1.0.0-rc.1`. | `VERIFIED` |
-| Final | Independent read-only QA and coordinator acceptance | First QA rejection is corrected. Typecheck, `318 passed / 3 skipped`, build, committed-lock `npm ci`, direct tree, OSV, redacted gitleaks, and refreshed browser proof pass. | `SECOND QA PENDING` |
+| Final | Independent read-only QA and coordinator acceptance | First QA rejection was corrected. Final docs-only synchronization `d700ca3` received P0 0 / P1 0 / P2 0 / P3 0; typecheck, `318 passed / 3 skipped`, build, committed-lock `npm ci`, direct tree, OSV, redacted gitleaks, and refreshed browser proof pass. | `ACCEPTED` |
 
 ## Current bounded slice
 
-Phase F is verified on the corrected portable `1.0.0-rc.1` candidate. Gameplay, Puzzle
-content/order, presentation design, ranking, and persistence schemas stayed frozen.
-The scoped secret scan passes. Final acceptance remains fail-closed until the second
-independent read-only QA accepts the exact committed range.
+Phase F and final acceptance are closed on the corrected portable `1.0.0-rc.1`
+candidate. Gameplay, Puzzle content/order, presentation design, ranking, and persistence
+schemas stayed frozen. Independent QA accepted the final exact-range status correction
+with no P0-P3 finding.

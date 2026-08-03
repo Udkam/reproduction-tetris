@@ -1402,3 +1402,14 @@
   direct dependency inspection, OSV, and redacted candidate-range gitleaks pass. This
   is a corrected candidate, not final acceptance; the second independent QA is still
   required.
+
+## 2026-08-03 — T26 TetraMorph 1.0.0-rc.1 accepted
+
+- Final QA's only remaining P1 was contradictory current-status text at the top of
+  `docs/CURRENT_TASK.md` and the T26 coordinator log; product, package, portable evidence,
+  and refreshed audits were accepted.
+- Docs-only checkpoint `d700ca3` aligned both authoritative headers, blocker, and next
+  action with the verified Phase-F audit.
+- Independent read-only QA accepted `d700ca3` with P0 0 / P1 0 / P2 0 / P3 0. The RC
+  programme is complete; no gameplay or evidence artifact changed after the accepted
+  source-bound proof.
