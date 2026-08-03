@@ -997,3 +997,19 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   pauses consume no lead time, fast hard drops hold only the remaining entry time, and
   a single 65 ms non-looping chirp accompanies the warning event. Focused Core, audio,
   and renderer tests pass `85/85`; full gates and browser evidence remain pending.
+- Phase D now has replayable public-command Mutation evidence fixtures for all five
+  items. A single short-lived Vite middleware search found deterministic three-piece
+  line clears for Multiplier, Freeze, Reshape, Bomb, and Collapse without injecting a
+  board state; the middleware process closed after writing the fixture JSON. Browser
+  capture and current-source Settings / typography / Pause revalidation remain next.
+- Phase D current-source browser evidence now binds to `fcabe49`. Classic records a
+  real public-command line clear; Survival proves the 48-tick warning floor and the
+  following rockfall; all five Mutation items are captured at Next, carrier, and
+  activation/active state; Puzzle retains its three authored curriculum bands. The
+  synchronized Bomb board export catches the real impact phase with 72 fragments.
+  Automated inspection reports zero visual failures, clipped text, overlapping text,
+  wrong font roles, legacy active font faces, horizontal overflow, extra Canvas/DOM
+  cells, console errors, or teardown residue. Human review accepted the desktop and
+  short-layout Settings tabs, Pause/Leave sheets, visible Next wells, Survival warning
+  and rockfall frames, Puzzle library, and five Mutation families. The owned Vite and
+  Chromium chain closed normally; port 4190 has no listener.

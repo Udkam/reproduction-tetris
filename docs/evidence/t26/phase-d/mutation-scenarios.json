@@ -1,0 +1,219 @@
+{
+  "multiplier": {
+    "seed": 11,
+    "pieces": [
+      "I",
+      "T",
+      "L"
+    ],
+    "actions": [
+      [
+        "left",
+        "left",
+        "left",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ]
+    ],
+    "activation": {
+      "durationTicks": 600,
+      "score": 0,
+      "rowsRemoved": 0
+    }
+  },
+  "freeze": {
+    "seed": 49,
+    "pieces": [
+      "I",
+      "L",
+      "T"
+    ],
+    "actions": [
+      [
+        "left",
+        "left",
+        "left",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ]
+    ],
+    "activation": {
+      "durationTicks": 600,
+      "score": 0,
+      "rowsRemoved": 0
+    }
+  },
+  "reshape": {
+    "seed": 65,
+    "pieces": [
+      "L",
+      "I",
+      "J"
+    ],
+    "actions": [
+      [
+        "left",
+        "left",
+        "left",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ]
+    ],
+    "activation": {
+      "durationTicks": 0,
+      "score": 0,
+      "rowsRemoved": 0
+    }
+  },
+  "bomb": {
+    "seed": 90,
+    "pieces": [
+      "T",
+      "J",
+      "I"
+    ],
+    "actions": [
+      [
+        "left",
+        "left",
+        "left",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ]
+    ],
+    "activation": {
+      "durationTicks": 0,
+      "score": 300,
+      "rowsRemoved": 3
+    }
+  },
+  "collapse": {
+    "seed": 308,
+    "pieces": [
+      "I",
+      "J",
+      "L"
+    ],
+    "actions": [
+      [
+        "left",
+        "left",
+        "left",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ],
+      [
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+        "hard-drop"
+      ]
+    ],
+    "activation": {
+      "durationTicks": 600,
+      "score": 0,
+      "rowsRemoved": 0
+    }
+  }
+}

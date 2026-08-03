@@ -1,0 +1,6387 @@
+{
+  "sourceSha": "fcabe49990ea59c5620747eb2b2c0fc550aa47e4",
+  "capturedAt": "2026-08-03T10:37:07.401Z",
+  "origin": "http://127.0.0.1:4190",
+  "browser": "149.0.7827.55",
+  "settingsPanels": 1,
+  "pauseEvidence": {
+    "backHit": true,
+    "settingsHit": true,
+    "sheet": {
+      "left": 391.1499938964844,
+      "top": 407.22998046875,
+      "right": 804.8499755859375,
+      "bottom": 568.77001953125,
+      "width": 413.6999816894531,
+      "height": 161.5400390625
+    },
+    "next": {
+      "left": 845.5,
+      "top": 506,
+      "right": 1023.5,
+      "bottom": 630,
+      "width": 178,
+      "height": 124
+    },
+    "sheetOverlapsNext": false,
+    "previewLayerVisible": true,
+    "previewPiece": "T"
+  },
+  "settingsOpenedFromPause": true,
+  "backOpenedFromPause": true,
+  "classic": {
+    "state": {
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          "T",
+          null,
+          null,
+          null,
+          "L"
+        ]
+      ],
+      "active": {
+        "type": "S",
+        "rotation": 0,
+        "x": 3,
+        "y": 19
+      },
+      "queue": [
+        "O",
+        "J",
+        "Z",
+        "I",
+        "O"
+      ],
+      "score": 152,
+      "lines": 1,
+      "combo": 1,
+      "level": 0,
+      "mode": "marathon",
+      "puzzleId": null,
+      "puzzleTargetLines": null,
+      "puzzleTargetCells": [],
+      "puzzleInitialTargetCount": 0,
+      "puzzleBoardRows": null,
+      "puzzleQueue": null,
+      "puzzleQueueIndex": 0,
+      "puzzleSpawnCount": 0,
+      "puzzleGoal": null,
+      "puzzleCompletion": null,
+      "puzzleUndoHistory": [],
+      "puzzleActiveSpawnCheckpoint": null,
+      "completedLevelId": null,
+      "nextUnlockedLevelId": null,
+      "pieceCount": 3,
+      "survivalBedrockRows": 0,
+      "survivalPressureTicks": 0,
+      "survivalRisePending": false,
+      "survivalRiseCount": 0,
+      "survivalDebris": [],
+      "survivalDebrisNextId": 1,
+      "survivalDebrisPiecesRemaining": 8,
+      "survivalDebrisPieceInterval": 8,
+      "survivalDebrisSpawnCount": 0,
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalDebrisWarningTicks": 0,
+      "survivalDebrisFallProgress": 0,
+      "survivalDebrisRandomizer": {
+        "seed": 2747636424,
+        "bag": []
+      },
+      "mutationActiveCarrier": null,
+      "mutationRandomizer": {
+        "seed": 1297437770,
+        "bag": []
+      },
+      "mutationCarriers": [],
+      "mutationNextCarrierId": 1,
+      "mutationFreezeTicks": 0,
+      "mutationCollapseTicks": 0,
+      "mutationCollapseLandingLatched": false,
+      "mutationMultiplierTicks": 0,
+      "mutationMultiplierFactor": 1,
+      "mutationLastItem": null,
+      "mutationLastItemTicks": 0,
+      "status": "playing",
+      "phase": "active",
+      "phaseTicks": 0,
+      "pendingClearRows": [],
+      "gravityTicks": 0,
+      "lockTicks": 0,
+      "lockResets": 0,
+      "elapsedTicks": 86,
+      "randomizer": {
+        "seed": 3054772869,
+        "bag": [
+          "J",
+          "Z",
+          "T",
+          "S",
+          "L"
+        ]
+      },
+      "seed": 11
+    },
+    "renderer": {
+      "canvas": {
+        "width": 758,
+        "height": 810,
+        "resolution": 1
+      },
+      "board": {
+        "x": 61.5,
+        "y": 14,
+        "width": 391,
+        "height": 782,
+        "cell": 39.1
+      },
+      "preview": {
+        "x": 504.5,
+        "y": 429,
+        "width": 178,
+        "height": 124
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "O",
+      "previewPieces": [
+        "O"
+      ],
+      "previewMutationItem": null,
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 5,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 38
+        },
+        {
+          "x": 5,
+          "y": 38
+        },
+        {
+          "x": 3,
+          "y": 39
+        },
+        {
+          "x": 4,
+          "y": 39
+        }
+      ],
+      "visibleLockedCells": 2,
+      "presentation": {
+        "x": 3,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 0,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 0,
+      "mutationCollapseTrail": null
+    },
+    "stats": "Score152Lines1Combo1Fall speed0.8 s/cell"
+  },
+  "survival": {
+    "warning": {
+      "piece": 7,
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 810,
+          "resolution": 1
+        },
+        "board": {
+          "x": 61.5,
+          "y": 14,
+          "width": 391,
+          "height": 782,
+          "cell": 39.1
+        },
+        "preview": {
+          "x": 504.5,
+          "y": 442.265625,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "S",
+        "previewPieces": [
+          "S"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 19
+          },
+          {
+            "x": 5,
+            "y": 19
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 20
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 31
+          },
+          {
+            "x": 5,
+            "y": 31
+          },
+          {
+            "x": 4,
+            "y": 32
+          },
+          {
+            "x": 5,
+            "y": 32
+          }
+        ],
+        "visibleLockedCells": 58,
+        "presentation": {
+          "x": 4,
+          "y": 19,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [
+          7
+        ],
+        "survivalDebrisWarningHeight": 2,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "state": {
+        "board": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            "T",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            "T",
+            "T",
+            "T",
+            "I",
+            "I",
+            "I",
+            "I",
+            null,
+            "L",
+            null
+          ],
+          [
+            "Z",
+            "Z",
+            null,
+            null,
+            null,
+            null,
+            "L",
+            "L",
+            "L",
+            null
+          ],
+          [
+            "J",
+            "Z",
+            "Z",
+            null,
+            "S",
+            "S",
+            null,
+            "O",
+            "O",
+            null
+          ],
+          [
+            "J",
+            "J",
+            "J",
+            "S",
+            "S",
+            null,
+            null,
+            "O",
+            "O",
+            null
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ]
+        ],
+        "active": {
+          "type": "O",
+          "rotation": 0,
+          "x": 4,
+          "y": 19
+        },
+        "queue": [
+          "S",
+          "Z",
+          "I",
+          "J",
+          "L"
+        ],
+        "score": 204,
+        "lines": 0,
+        "combo": 0,
+        "level": 0,
+        "mode": "race",
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzleTargetCells": [],
+        "puzzleInitialTargetCount": 0,
+        "puzzleBoardRows": null,
+        "puzzleQueue": null,
+        "puzzleQueueIndex": 0,
+        "puzzleSpawnCount": 0,
+        "puzzleGoal": null,
+        "puzzleCompletion": null,
+        "puzzleUndoHistory": [],
+        "puzzleActiveSpawnCheckpoint": null,
+        "completedLevelId": null,
+        "nextUnlockedLevelId": null,
+        "pieceCount": 7,
+        "survivalBedrockRows": 3,
+        "survivalPressureTicks": 94,
+        "survivalRisePending": false,
+        "survivalRiseCount": 0,
+        "survivalDebris": [],
+        "survivalDebrisNextId": 1,
+        "survivalDebrisPiecesRemaining": 1,
+        "survivalDebrisPieceInterval": 8,
+        "survivalDebrisSpawnCount": 0,
+        "survivalDebrisWarningColumns": [
+          7
+        ],
+        "survivalDebrisWarningHeight": 2,
+        "survivalDebrisWarningTicks": 48,
+        "survivalDebrisFallProgress": 34,
+        "survivalDebrisRandomizer": {
+          "seed": 2479168674,
+          "bag": []
+        },
+        "mutationActiveCarrier": null,
+        "mutationRandomizer": {
+          "seed": 485794892,
+          "bag": []
+        },
+        "mutationCarriers": [],
+        "mutationNextCarrierId": 1,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 0,
+        "mutationCollapseLandingLatched": false,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationLastItem": null,
+        "mutationLastItemTicks": 0,
+        "status": "playing",
+        "phase": "active",
+        "phaseTicks": 0,
+        "pendingClearRows": [],
+        "gravityTicks": 0,
+        "lockTicks": 0,
+        "lockResets": 0,
+        "elapsedTicks": 94,
+        "randomizer": {
+          "seed": 1415106130,
+          "bag": [
+            "T"
+          ]
+        },
+        "seed": 1369567245
+      }
+    },
+    "immediatelyAfterLock": {
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          "O",
+          "O",
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          "T",
+          null,
+          null,
+          "O",
+          "O",
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "T",
+          "T",
+          "T",
+          "I",
+          "I",
+          "I",
+          "I",
+          null,
+          "L",
+          null
+        ],
+        [
+          "Z",
+          "Z",
+          null,
+          null,
+          null,
+          null,
+          "L",
+          "L",
+          "L",
+          null
+        ],
+        [
+          "J",
+          "Z",
+          "Z",
+          null,
+          "S",
+          "S",
+          null,
+          "O",
+          "O",
+          null
+        ],
+        [
+          "J",
+          "J",
+          "J",
+          "S",
+          "S",
+          null,
+          null,
+          "O",
+          "O",
+          null
+        ],
+        [
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        [
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        [
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B",
+          "B"
+        ]
+      ],
+      "active": null,
+      "queue": [
+        "S",
+        "Z",
+        "I",
+        "J",
+        "L"
+      ],
+      "score": 228,
+      "lines": 0,
+      "combo": 0,
+      "level": 0,
+      "mode": "race",
+      "puzzleId": null,
+      "puzzleTargetLines": null,
+      "puzzleTargetCells": [],
+      "puzzleInitialTargetCount": 0,
+      "puzzleBoardRows": null,
+      "puzzleQueue": null,
+      "puzzleQueueIndex": 0,
+      "puzzleSpawnCount": 0,
+      "puzzleGoal": null,
+      "puzzleCompletion": null,
+      "puzzleUndoHistory": [],
+      "puzzleActiveSpawnCheckpoint": null,
+      "completedLevelId": null,
+      "nextUnlockedLevelId": null,
+      "pieceCount": 8,
+      "survivalBedrockRows": 3,
+      "survivalPressureTicks": 94,
+      "survivalRisePending": false,
+      "survivalRiseCount": 0,
+      "survivalDebris": [],
+      "survivalDebrisNextId": 1,
+      "survivalDebrisPiecesRemaining": 0,
+      "survivalDebrisPieceInterval": 8,
+      "survivalDebrisSpawnCount": 0,
+      "survivalDebrisWarningColumns": [
+        7
+      ],
+      "survivalDebrisWarningHeight": 2,
+      "survivalDebrisWarningTicks": 48,
+      "survivalDebrisFallProgress": 34,
+      "survivalDebrisRandomizer": {
+        "seed": 2479168674,
+        "bag": []
+      },
+      "mutationActiveCarrier": null,
+      "mutationRandomizer": {
+        "seed": 485794892,
+        "bag": []
+      },
+      "mutationCarriers": [],
+      "mutationNextCarrierId": 1,
+      "mutationFreezeTicks": 0,
+      "mutationCollapseTicks": 0,
+      "mutationCollapseLandingLatched": false,
+      "mutationMultiplierTicks": 0,
+      "mutationMultiplierFactor": 1,
+      "mutationLastItem": null,
+      "mutationLastItemTicks": 0,
+      "status": "playing",
+      "phase": "entry",
+      "phaseTicks": 0,
+      "pendingClearRows": [],
+      "gravityTicks": 0,
+      "lockTicks": 0,
+      "lockResets": 0,
+      "elapsedTicks": 94,
+      "randomizer": {
+        "seed": 1415106130,
+        "bag": [
+          "T"
+        ]
+      },
+      "seed": 1369567245
+    },
+    "at47": {
+      "state": {
+        "board": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            "T",
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            "T",
+            "T",
+            "T",
+            "I",
+            "I",
+            "I",
+            "I",
+            null,
+            "L",
+            null
+          ],
+          [
+            "Z",
+            "Z",
+            null,
+            null,
+            null,
+            null,
+            "L",
+            "L",
+            "L",
+            null
+          ],
+          [
+            "J",
+            "Z",
+            "Z",
+            null,
+            "S",
+            "S",
+            null,
+            "O",
+            "O",
+            null
+          ],
+          [
+            "J",
+            "J",
+            "J",
+            "S",
+            "S",
+            null,
+            null,
+            "O",
+            "O",
+            null
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ]
+        ],
+        "active": null,
+        "queue": [
+          "S",
+          "Z",
+          "I",
+          "J",
+          "L"
+        ],
+        "score": 228,
+        "lines": 0,
+        "combo": 0,
+        "level": 0,
+        "mode": "race",
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzleTargetCells": [],
+        "puzzleInitialTargetCount": 0,
+        "puzzleBoardRows": null,
+        "puzzleQueue": null,
+        "puzzleQueueIndex": 0,
+        "puzzleSpawnCount": 0,
+        "puzzleGoal": null,
+        "puzzleCompletion": null,
+        "puzzleUndoHistory": [],
+        "puzzleActiveSpawnCheckpoint": null,
+        "completedLevelId": null,
+        "nextUnlockedLevelId": null,
+        "pieceCount": 8,
+        "survivalBedrockRows": 3,
+        "survivalPressureTicks": 141,
+        "survivalRisePending": false,
+        "survivalRiseCount": 0,
+        "survivalDebris": [],
+        "survivalDebrisNextId": 1,
+        "survivalDebrisPiecesRemaining": 0,
+        "survivalDebrisPieceInterval": 8,
+        "survivalDebrisSpawnCount": 0,
+        "survivalDebrisWarningColumns": [
+          7
+        ],
+        "survivalDebrisWarningHeight": 2,
+        "survivalDebrisWarningTicks": 1,
+        "survivalDebrisFallProgress": 32,
+        "survivalDebrisRandomizer": {
+          "seed": 2479168674,
+          "bag": []
+        },
+        "mutationActiveCarrier": null,
+        "mutationRandomizer": {
+          "seed": 485794892,
+          "bag": []
+        },
+        "mutationCarriers": [],
+        "mutationNextCarrierId": 1,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 0,
+        "mutationCollapseLandingLatched": false,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationLastItem": null,
+        "mutationLastItemTicks": 0,
+        "status": "playing",
+        "phase": "entry",
+        "phaseTicks": 3,
+        "pendingClearRows": [],
+        "gravityTicks": 0,
+        "lockTicks": 0,
+        "lockResets": 0,
+        "elapsedTicks": 141,
+        "randomizer": {
+          "seed": 1415106130,
+          "bag": [
+            "T"
+          ]
+        },
+        "seed": 1369567245
+      },
+      "renderer": {
+        "canvas": {
+          "width": 758,
+          "height": 810,
+          "resolution": 1
+        },
+        "board": {
+          "x": 61.5,
+          "y": 14,
+          "width": 391,
+          "height": 782,
+          "cell": 39.1
+        },
+        "preview": {
+          "x": 504.5,
+          "y": 442.265625,
+          "width": 178,
+          "height": 124
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "S",
+        "previewPieces": [
+          "S"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [],
+        "ghostCells": [],
+        "visibleLockedCells": 62,
+        "presentation": null,
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [
+          7
+        ],
+        "survivalDebrisWarningHeight": 2,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      }
+    },
+    "spawn": {
+      "state": {
+        "board": [
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            null,
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            null,
+            "T",
+            null,
+            null,
+            "O",
+            "O",
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            "T",
+            "T",
+            "T",
+            "I",
+            "I",
+            "I",
+            "I",
+            null,
+            "L",
+            null
+          ],
+          [
+            "Z",
+            "Z",
+            null,
+            null,
+            null,
+            null,
+            "L",
+            "L",
+            "L",
+            null
+          ],
+          [
+            "J",
+            "Z",
+            "Z",
+            null,
+            "S",
+            "S",
+            null,
+            "O",
+            "O",
+            null
+          ],
+          [
+            "J",
+            "J",
+            "J",
+            "S",
+            "S",
+            null,
+            null,
+            "O",
+            "O",
+            null
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ],
+          [
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B",
+            "B"
+          ]
+        ],
+        "active": {
+          "type": "S",
+          "rotation": 0,
+          "x": 3,
+          "y": 19
+        },
+        "queue": [
+          "Z",
+          "I",
+          "J",
+          "L",
+          "T"
+        ],
+        "score": 228,
+        "lines": 0,
+        "combo": 0,
+        "level": 0,
+        "mode": "race",
+        "puzzleId": null,
+        "puzzleTargetLines": null,
+        "puzzleTargetCells": [],
+        "puzzleInitialTargetCount": 0,
+        "puzzleBoardRows": null,
+        "puzzleQueue": null,
+        "puzzleQueueIndex": 0,
+        "puzzleSpawnCount": 0,
+        "puzzleGoal": null,
+        "puzzleCompletion": null,
+        "puzzleUndoHistory": [],
+        "puzzleActiveSpawnCheckpoint": null,
+        "completedLevelId": null,
+        "nextUnlockedLevelId": null,
+        "pieceCount": 8,
+        "survivalBedrockRows": 3,
+        "survivalPressureTicks": 142,
+        "survivalRisePending": false,
+        "survivalRiseCount": 0,
+        "survivalDebris": [
+          {
+            "id": 1,
+            "x": 7,
+            "y": 20,
+            "height": 2
+          }
+        ],
+        "survivalDebrisNextId": 2,
+        "survivalDebrisPiecesRemaining": 8,
+        "survivalDebrisPieceInterval": 8,
+        "survivalDebrisSpawnCount": 1,
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalDebrisWarningTicks": 0,
+        "survivalDebrisFallProgress": 36,
+        "survivalDebrisRandomizer": {
+          "seed": 2479168674,
+          "bag": []
+        },
+        "mutationActiveCarrier": null,
+        "mutationRandomizer": {
+          "seed": 485794892,
+          "bag": []
+        },
+        "mutationCarriers": [],
+        "mutationNextCarrierId": 1,
+        "mutationFreezeTicks": 0,
+        "mutationCollapseTicks": 0,
+        "mutationCollapseLandingLatched": false,
+        "mutationMultiplierTicks": 0,
+        "mutationMultiplierFactor": 1,
+        "mutationLastItem": null,
+        "mutationLastItemTicks": 0,
+        "status": "playing",
+        "phase": "active",
+        "phaseTicks": 0,
+        "pendingClearRows": [],
+        "gravityTicks": 0,
+        "lockTicks": 0,
+        "lockResets": 0,
+        "elapsedTicks": 142,
+        "randomizer": {
+          "seed": 1415106130,
+          "bag": []
+        },
+        "seed": 1369567245
+      },
+      "ticks": 0
+    },
+    "spawnRenderer": {
+      "canvas": {
+        "width": 758,
+        "height": 810,
+        "resolution": 1
+      },
+      "board": {
+        "x": 61.5,
+        "y": 14,
+        "width": 391,
+        "height": 782,
+        "cell": 39.1
+      },
+      "preview": {
+        "x": 504.5,
+        "y": 442.265625,
+        "width": 178,
+        "height": 124
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "Z",
+      "previewPieces": [
+        "Z"
+      ],
+      "previewMutationItem": null,
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 5,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 29
+        },
+        {
+          "x": 5,
+          "y": 29
+        },
+        {
+          "x": 3,
+          "y": 30
+        },
+        {
+          "x": 4,
+          "y": 30
+        }
+      ],
+      "visibleLockedCells": 62,
+      "presentation": {
+        "x": 3,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [
+        {
+          "id": 1,
+          "x": 7,
+          "y": 20,
+          "height": 2,
+          "presentationY": 20,
+          "cells": [
+            {
+              "x": 7,
+              "y": 20
+            },
+            {
+              "x": 7,
+              "y": 21
+            }
+          ]
+        }
+      ],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 1,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 0,
+      "mutationCollapseTrail": null
+    }
+  },
+  "mutation": {
+    "freeze": {
+      "seed": 49,
+      "pieces": [
+        "I",
+        "L",
+        "T"
+      ],
+      "preview": {
+        "body": "T",
+        "item": "freeze",
+        "label": "Next piece: T piece carrying Freeze",
+        "pieceCount": 1
+      },
+      "carrier": {
+        "id": 1,
+        "item": "freeze"
+      },
+      "activation": {
+        "lastItem": "freeze",
+        "freezeTicks": 600,
+        "collapseTicks": 0,
+        "multiplierTicks": 0,
+        "score": 152,
+        "rowsRemoved": 0,
+        "rendererItem": "freeze",
+        "rendererElapsedMs": 116.69999999999982,
+        "rendererDurationMs": 320,
+        "rendererPhases": [
+          {
+            "id": "crystalise",
+            "active": true,
+            "complete": false,
+            "progress": 0.36468749999999944,
+            "value": 0.7435739154968255
+          },
+          {
+            "id": "snow-burst",
+            "active": true,
+            "complete": false,
+            "progress": 0.0364928909952598,
+            "value": 0.1055320784238224
+          }
+        ],
+        "queuedItems": [],
+        "particles": 18,
+        "status": "Mutation status///FreezeActive10s",
+        "boardCapture": null
+      },
+      "activeCarrierAtSpawn": {
+        "id": 1,
+        "item": "freeze"
+      }
+    },
+    "collapse": {
+      "seed": 308,
+      "pieces": [
+        "I",
+        "J",
+        "L"
+      ],
+      "preview": {
+        "body": "L",
+        "item": "collapse",
+        "label": "Next piece: L piece carrying Supergravity",
+        "pieceCount": 1
+      },
+      "carrier": {
+        "id": 1,
+        "item": "collapse"
+      },
+      "activation": {
+        "lastItem": "collapse",
+        "freezeTicks": 0,
+        "collapseTicks": 600,
+        "multiplierTicks": 0,
+        "score": 152,
+        "rowsRemoved": 0,
+        "rendererItem": "collapse",
+        "rendererElapsedMs": 133.30000000000018,
+        "rendererDurationMs": 220,
+        "rendererPhases": [
+          {
+            "id": "pull",
+            "active": false,
+            "complete": true,
+            "progress": 1,
+            "value": 1
+          },
+          {
+            "id": "settle",
+            "active": true,
+            "complete": false,
+            "progress": 0.1330000000000018,
+            "value": 0.002352637000000096
+          }
+        ],
+        "queuedItems": [],
+        "particles": 16,
+        "status": "Mutation status///SupergravityActive10s",
+        "boardCapture": null
+      },
+      "activeCarrierAtSpawn": {
+        "id": 1,
+        "item": "collapse"
+      }
+    },
+    "bomb": {
+      "seed": 90,
+      "pieces": [
+        "T",
+        "J",
+        "I"
+      ],
+      "preview": {
+        "body": "I",
+        "item": "bomb",
+        "label": "Next piece: I piece carrying Bomb",
+        "pieceCount": 1
+      },
+      "carrier": {
+        "id": 1,
+        "item": "bomb"
+      },
+      "activation": {
+        "lastItem": "bomb",
+        "freezeTicks": 0,
+        "collapseTicks": 0,
+        "multiplierTicks": 0,
+        "score": 454,
+        "rowsRemoved": 3,
+        "rendererItem": "bomb",
+        "rendererElapsedMs": 250,
+        "rendererDurationMs": 620,
+        "rendererPhases": [
+          {
+            "id": "warning",
+            "active": false,
+            "complete": true,
+            "progress": 1,
+            "value": 1
+          },
+          {
+            "id": "pulse",
+            "active": false,
+            "complete": true,
+            "progress": 1,
+            "value": 1
+          },
+          {
+            "id": "impact",
+            "active": true,
+            "complete": false,
+            "progress": 0.21428571428571427,
+            "value": 0.009839650145772594
+          },
+          {
+            "id": "shockwave",
+            "active": false,
+            "complete": false,
+            "progress": 0,
+            "value": 0
+          }
+        ],
+        "queuedItems": [],
+        "particles": 72,
+        "status": null,
+        "boardCapture": {
+          "frame": {
+            "x": 61.5,
+            "y": 14,
+            "width": 391,
+            "height": 782
+          },
+          "resolution": 1,
+          "outputPixels": {
+            "width": 391,
+            "height": 782
+          },
+          "pixelProbe": {
+            "samples": 8264,
+            "nonTransparentSamples": 8264,
+            "distinctBuckets": 73
+          }
+        }
+      },
+      "activeCarrierAtSpawn": {
+        "id": 1,
+        "item": "bomb"
+      }
+    },
+    "multiplier": {
+      "seed": 11,
+      "pieces": [
+        "I",
+        "T",
+        "L"
+      ],
+      "preview": {
+        "body": "L",
+        "item": "multiplier",
+        "label": "Next piece: L piece carrying Double",
+        "pieceCount": 1
+      },
+      "carrier": {
+        "id": 1,
+        "item": "multiplier"
+      },
+      "activation": {
+        "lastItem": "multiplier",
+        "freezeTicks": 0,
+        "collapseTicks": 0,
+        "multiplierTicks": 600,
+        "score": 154,
+        "rowsRemoved": 0,
+        "rendererItem": "multiplier",
+        "rendererElapsedMs": 133.30000000000018,
+        "rendererDurationMs": 320,
+        "rendererPhases": [
+          {
+            "id": "score-pop",
+            "active": true,
+            "complete": false,
+            "progress": 0.7405555555555565,
+            "value": 1.0673565236396534
+          },
+          {
+            "id": "spark-tail",
+            "active": true,
+            "complete": false,
+            "progress": 0.3085185185185192,
+            "value": 0.6693704535385876
+          }
+        ],
+        "queuedItems": [],
+        "particles": 28,
+        "status": "Mutation status///DoubleActive10s",
+        "boardCapture": null
+      },
+      "activeCarrierAtSpawn": {
+        "id": 1,
+        "item": "multiplier"
+      }
+    },
+    "reshape": {
+      "seed": 65,
+      "pieces": [
+        "L",
+        "I",
+        "J"
+      ],
+      "preview": {
+        "body": "J",
+        "item": "reshape",
+        "label": "Next piece: J piece carrying Reshape",
+        "pieceCount": 1
+      },
+      "carrier": {
+        "id": 1,
+        "item": "reshape"
+      },
+      "activation": {
+        "lastItem": "reshape",
+        "freezeTicks": 0,
+        "collapseTicks": 0,
+        "multiplierTicks": 0,
+        "score": 152,
+        "rowsRemoved": 0,
+        "rendererItem": "reshape",
+        "rendererElapsedMs": 133.30000000000018,
+        "rendererDurationMs": 230,
+        "rendererPhases": [
+          {
+            "id": "align",
+            "active": false,
+            "complete": true,
+            "progress": 1,
+            "value": 1
+          },
+          {
+            "id": "commit",
+            "active": true,
+            "complete": false,
+            "progress": 0.12090909090909256,
+            "value": 0.3206378189331367
+          }
+        ],
+        "queuedItems": [],
+        "particles": 20,
+        "status": null,
+        "boardCapture": null
+      },
+      "activeCarrierAtSpawn": {
+        "id": 1,
+        "item": "reshape"
+      }
+    }
+  },
+  "puzzle": {
+    "lesson": "Finish one row firstClose the nearest prepared row; the clear creates room for every choice after it.",
+    "technique": "complete-row",
+    "mastery": null,
+    "tabs": [
+      "Intro",
+      "Easy",
+      "Hard"
+    ]
+  },
+  "cleanup": {
+    "canvasCount": 0,
+    "domCellCount": 0,
+    "qaGlobals": []
+  },
+  "states": {
+    "settings-en-settings": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        232,
+        232
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T"
+    },
+    "settings-en-controls": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        322,
+        322
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T"
+    },
+    "settings-en-rules": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        247,
+        247
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T"
+    },
+    "settings-en-short-controls": {
+      "viewport": [
+        844,
+        390
+      ],
+      "document": [
+        844,
+        844,
+        390,
+        390
+      ],
+      "settings": [
+        773,
+        773,
+        274,
+        274
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T"
+    },
+    "pause-en": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T"
+    },
+    "leave-en": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T"
+    },
+    "classic-clear": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: O"
+    },
+    "survival-warning": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: S"
+    },
+    "survival-rockfall": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: Z"
+    },
+    "mutation-freeze-next": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: T piece carrying Freeze"
+    },
+    "mutation-freeze-carrier": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: J"
+    },
+    "mutation-freeze-effect": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: O"
+    },
+    "mutation-collapse-next": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L piece carrying Supergravity"
+    },
+    "mutation-collapse-carrier": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: O"
+    },
+    "mutation-collapse-effect": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: S piece carrying Bomb"
+    },
+    "mutation-bomb-next": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: I piece carrying Bomb"
+    },
+    "mutation-bomb-carrier": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: S piece carrying Supergravity"
+    },
+    "mutation-bomb-effect": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L"
+    },
+    "mutation-multiplier-next": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L piece carrying Double"
+    },
+    "mutation-multiplier-carrier": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: S piece carrying Supergravity"
+    },
+    "mutation-multiplier-effect": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: O piece carrying Bomb"
+    },
+    "mutation-reshape-next": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: J piece carrying Reshape"
+    },
+    "mutation-reshape-carrier": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: Z"
+    },
+    "mutation-reshape-effect": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: I"
+    },
+    "puzzle-campaign": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongDataFace": [],
+      "englishUiLeaks": [],
+      "brandFaces": [
+        {
+          "text": "TetraMorph",
+          "font": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+          "weight": "400"
+        }
+      ],
+      "legacyFaces": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "fontFaces": [
+        {
+          "family": "Geist Mono",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "500",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Geist Mono",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "600",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Noto Sans SC",
+          "weight": "700",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Playwrite NZ Basic",
+          "weight": "400",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "400",
+          "style": "normal",
+          "status": "unloaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "600",
+          "style": "normal",
+          "status": "loaded"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "700",
+          "style": "normal",
+          "status": "loaded"
+        }
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "nextVisible": null,
+      "nextLabel": null
+    }
+  },
+  "errors": []
+}
