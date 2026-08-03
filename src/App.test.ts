@@ -85,6 +85,7 @@ interface RuntimeTestInstance {
   togglePause: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
+  playEntryCountdown: ReturnType<typeof vi.fn>;
   press: ReturnType<typeof vi.fn>;
   release: ReturnType<typeof vi.fn>;
   getState: () => GameState;
@@ -112,6 +113,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     readonly refreshPresentation = vi.fn();
     readonly setAudioEnabled = vi.fn();
     readonly setAudioVolume = vi.fn();
+    readonly playEntryCountdown = vi.fn();
     readonly start = vi.fn(() => {
       const transition = core.dispatch(this.state, { type: 'start' });
       this.state = transition.state;
@@ -508,6 +510,7 @@ describe('entry countdown', () => {
     expect(textState).not.toHaveProperty('level');
     expect(textState).toMatchObject({ combo: 0, bedrockRows: 0, fallTicks: 48 });
     expect(countdown()?.dataset.countdown).toBe('3');
+    expect(runtime.playEntryCountdown).toHaveBeenCalledExactlyOnceWith(3);
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);
     expect(view.container.querySelector('[data-testid="touch-rail"]')).toBeNull();
@@ -530,6 +533,7 @@ describe('entry countdown', () => {
     expect(countdown()?.dataset.countdown).toBe('3');
     await act(async () => vi.advanceTimersByTimeAsync(1));
     expect(countdown()?.dataset.countdown).toBe('2');
+    expect(runtime.playEntryCountdown).toHaveBeenLastCalledWith(2);
 
     act(() => back.click());
     expect(view.container.querySelector('.action-sheet')?.textContent).toContain('离开本局？');
@@ -545,6 +549,7 @@ describe('entry countdown', () => {
     expect(countdown()?.dataset.countdown).toBe('2');
     await act(async () => vi.advanceTimersByTimeAsync(1));
     expect(countdown()?.dataset.countdown).toBe('1');
+    expect(runtime.playEntryCountdown).toHaveBeenLastCalledWith(1);
     await act(async () => vi.advanceTimersByTimeAsync(999));
     expect(countdown()?.dataset.countdown).toBe('1');
     expect(runtime.start).not.toHaveBeenCalled();
@@ -556,6 +561,7 @@ describe('entry countdown', () => {
     expect(runtime.setInputEnabled).toHaveBeenLastCalledWith(true);
     expect(runtime.setInputEnabled).toHaveBeenCalledWith(false);
     expect(runtime.start).toHaveBeenCalledTimes(1);
+    expect(runtime.playEntryCountdown.mock.calls.map(([digit]) => digit)).toEqual([3, 2, 1]);
     expect(runtime.setInputEnabled.mock.invocationCallOrder[0]).toBeLessThan(runtime.start.mock.invocationCallOrder[0]!);
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);

@@ -1749,6 +1749,11 @@ export function GameSession({
   }, [classicGravityRange.floorTicks, classicGravityRange.startingTicks, runtime]);
 
   useEffect(() => {
+    if (!runtime || countdownDigit === null) return;
+    runtime.playEntryCountdown(countdownDigit);
+  }, [countdownDigit, runtime]);
+
+  useEffect(() => {
     if (!runtime || countdownDigit === null || settingsOpen || restartConfirmOpen || exitOpen) return;
     let cancelled = false;
     const timer = browserPlatform.scheduleTimeout(() => {
