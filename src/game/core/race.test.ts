@@ -452,7 +452,7 @@ describe('independent Survival stone stream', () => {
     expect(opened.state.survivalDebrisPiecesRemaining).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES);
   });
 
-  it('falls at exactly four times the fixed Survival cadence while preserving the rigid pair', () => {
+  it('falls at exactly seven times the fixed Survival cadence while preserving the rigid pair', () => {
     const state: GameState = {
       ...start(0x5a0f, 'race'),
       board: createBoard(),
@@ -461,9 +461,9 @@ describe('independent Survival stone stream', () => {
       survivalDebris: [{ id: 1, x: 0, y: VISIBLE_START_ROW, height: 2 }],
       survivalDebrisFallProgress: 0,
     };
-    const quarter = advance(state, SURVIVAL_GRAVITY_TICKS / 4);
-    expect(quarter.active).toMatchObject({ y: 24 });
-    expect(quarter.survivalDebris).toEqual([{
+    const firstStoneStep = advance(state, Math.ceil(SURVIVAL_GRAVITY_TICKS / 7));
+    expect(firstStoneStep.active).toMatchObject({ y: 24 });
+    expect(firstStoneStep.survivalDebris).toEqual([{
       id: 1,
       x: 0,
       y: VISIBLE_START_ROW + 1,
@@ -475,7 +475,7 @@ describe('independent Survival stone stream', () => {
     expect(advanced.survivalDebris).toEqual([{
       id: 1,
       x: 0,
-      y: VISIBLE_START_ROW + 4,
+      y: VISIBLE_START_ROW + 7,
       height: 2,
     }]);
   });

@@ -701,7 +701,7 @@ interface SurvivalDebrisAdvance extends GameTransition {
   pushedActive: boolean;
 }
 
-/** Advances only the independent 4× fixed-tick fall accumulator. */
+/** Advances only the independent 7× fixed-tick fall accumulator. */
 function advanceSurvivalDebris(state: GameState): SurvivalDebrisAdvance {
   if (state.mode !== 'race') return {
     state,

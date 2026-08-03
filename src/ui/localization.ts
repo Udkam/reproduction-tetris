@@ -282,7 +282,7 @@ const COPY: Record<AppLanguage, Translation> = {
       race: [
         { id: 'start', label: '岩壁', value: '开局连续升起 3 层基岩；之后每 13 秒上升一层，逐步加快至每 6 秒；每第 4 次自然上升触发余震，一次升起 2 层。' },
         { id: 'pressure', label: '反制', value: '每累计消除 3 行，移除最上方一层基岩。' },
-        { id: 'stonefall', label: '落石', value: '最初每使用 8 个方块，随下一个方块落下同列的 1–2 块落石；每触发 4 次，间隔减少 1 个，最低为 4 个。落石以普通方块 4 倍速度下落，也能参与消行。' },
+        { id: 'stonefall', label: '落石', value: '最初每使用 8 个方块，随下一个方块落下同列的 1–2 块落石；每触发 4 次，间隔减少 1 个，最低为 4 个。落石以普通方块 7 倍速度下落，也能参与消行。' },
         { id: 'end', label: '结束', value: '基岩或堆叠令新方块无法进入棋盘时，本局结束。' },
       ],
       sprint: [
@@ -412,7 +412,7 @@ const COPY: Record<AppLanguage, Translation> = {
       race: [
         { id: 'start', label: 'Wall', value: 'Three bedrock rows rise during the opening. Another row rises every 13 seconds, accelerating to every 6 seconds. Every fourth natural rise is an Aftershock that raises 2 rows.' },
         { id: 'pressure', label: 'Relief', value: 'Every 3 cleared lines removes the top bedrock row.' },
-        { id: 'stonefall', label: 'Rockfall', value: 'At first, every 8 used pieces schedules 1–2 joined rocks with the next piece. Every 4 rockfalls shortens the interval by one, to a minimum of 4. Rocks fall at 4× piece speed and can complete lines.' },
+        { id: 'stonefall', label: 'Rockfall', value: 'At first, every 8 used pieces schedules 1–2 joined rocks with the next piece. Every 4 rockfalls shortens the interval by one, to a minimum of 4. Rocks fall at 7× piece speed and can complete lines.' },
         { id: 'end', label: 'End', value: 'The run ends when bedrock or the stack prevents a new piece from entering.' },
       ],
       sprint: [

@@ -831,11 +831,11 @@ describe('T6 frontend mode binding', () => {
     const englishStonefall = modeRules('en', 'race').find((fact) => fact.id === 'stonefall')?.value ?? '';
     expect(chineseStonefall).toContain('同列的 1–2 块');
     expect(chineseStonefall).toContain('每使用 8 个方块');
-    expect(chineseStonefall).toContain('4 倍速度');
+    expect(chineseStonefall).toContain('7 倍速度');
     expect(chineseStonefall).toContain('最低为 4 个');
     expect(englishStonefall).toContain('1–2 joined rocks');
     expect(englishStonefall).toContain('every 8 used pieces');
-    expect(englishStonefall).toContain('4× piece speed');
+    expect(englishStonefall).toContain('7× piece speed');
     expect(modeRules('zh-CN', 'race').find((fact) => fact.id === 'start')?.value).toContain('每第 4 次自然上升触发余震');
     expect(modeRules('en', 'race').find((fact) => fact.id === 'start')?.value).toContain('Every fourth natural rise is an Aftershock');
   });

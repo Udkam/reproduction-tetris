@@ -37,8 +37,8 @@ export const SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES = 4;
 export const SURVIVAL_DEBRIS_EVENTS_PER_INTERVAL_STEP = 4;
 /** Minimum visible warning lead: 48 playing ticks are exactly 800 ms at 60 Hz. */
 export const SURVIVAL_DEBRIS_WARNING_TICKS = 48;
-/** Exactly 4× normal Survival gravity, represented with an integer accumulator. */
-export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 4;
+/** Exactly 7× normal Survival gravity, represented with an integer accumulator. */
+export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 7;
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD = SURVIVAL_GRAVITY_TICKS;
 /** Keeps the debris stream independent from the ordinary seven-bag randomizer. */
 export const SURVIVAL_DEBRIS_RANDOM_SALT = 0xa3c5_9ac3;
