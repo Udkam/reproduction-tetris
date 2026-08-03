@@ -3,9 +3,9 @@
 TetraMorph packages all gameplay fonts locally. The application does not request a
 font CDN at runtime.
 
-## Kavivanar
+## Metal
 
-- Package: `@fontsource/kavivanar` `5.3.0`.
+- Package: `@fontsource/metal` `5.3.0`.
 - Upstream: <https://github.com/google/fonts>.
 - Packaged subset: Latin normal weight 400.
 - License: SIL Open Font License 1.1, distributed in the package `LICENSE`.

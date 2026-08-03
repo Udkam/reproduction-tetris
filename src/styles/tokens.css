@@ -7,7 +7,7 @@
   --font-brand: "Playwrite NZ Basic", "Segoe UI", cursive;
   --font-ui-zh: "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --font-display-zh: "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif;
-  --font-ui-en: "Kavivanar", "Segoe UI", cursive;
+  --font-ui-en: "Metal", "Segoe UI", serif;
   --font-data: "Geist Mono", "Cascadia Mono", monospace;
   --font-body: var(--font-ui-zh);
   --font-ui: var(--font-ui-zh);
@@ -69,14 +69,6 @@
   --font-body: var(--font-ui-en);
   --font-ui: var(--font-ui-en);
   --font-display: var(--font-ui-en);
-}
-
-/* Kavivanar ships only its authored Regular face. A restrained optical ink pass
-   keeps compact English controls legible without substituting or synthesizing a
-   different weight. Numeric roles remain on Geist Mono below. */
-.app:lang(en) {
-  -webkit-text-stroke: .22px currentColor;
-  paint-order: stroke fill;
 }
 
 :root:lang(zh-CN),

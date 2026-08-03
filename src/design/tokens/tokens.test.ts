@@ -38,7 +38,7 @@ describe('TetraMorph Design System v1.0', () => {
     expect(TYPOGRAPHY.fontFamily.brand).toContain('Playwrite NZ Basic');
     expect(TYPOGRAPHY.fontFamily.chineseUi).toContain('Noto Sans SC');
     expect(TYPOGRAPHY.fontFamily.chineseDisplay).toContain('Noto Sans SC');
-    expect(TYPOGRAPHY.fontFamily.englishUi).toMatch(/^"Kavivanar"/);
+    expect(TYPOGRAPHY.fontFamily.englishUi).toMatch(/^"Metal"/);
     expect(TYPOGRAPHY.fontFamily.data).toContain('Geist Mono');
     expect(TYPOGRAPHY.weight.brand).toBe(400);
     expect(TYPOGRAPHY.scale).toEqual({
@@ -91,35 +91,35 @@ describe('TetraMorph Design System v1.0', () => {
     }
     expect(tokenStyles).toContain('--font-ui-zh: "Noto Sans SC"');
     expect(tokenStyles).toContain('--font-display-zh: "Noto Sans SC"');
-    expect(tokenStyles).toContain('--font-ui-en: "Kavivanar", "Segoe UI"');
+    expect(tokenStyles).toContain('--font-ui-en: "Metal", "Segoe UI"');
     expect(tokenStyles).toContain('--font-data: "Geist Mono"');
     expect(tokenStyles).not.toMatch(/url\(["']?https?:/);
     expect(mainSource).toContain("import './styles/fonts.css';");
-    expect(fontStyles).toContain('kavivanar-latin-400-normal.woff2');
-    expect(fontStyles.match(/font-family: "Kavivanar"/g)).toHaveLength(1);
+    expect(fontStyles).toContain('metal-latin-400-normal.woff2');
+    expect(fontStyles.match(/font-family: "Metal"/g)).toHaveLength(1);
     expect(fontStyles).toContain('geist-mono-latin-400-normal.woff2');
     expect(fontStyles).toContain('geist-mono-latin-700-normal.woff2');
     expect(fontStyles).toContain('noto-sans-sc-chinese-simplified-400-normal.woff2');
     expect(fontStyles).toContain('noto-sans-sc-chinese-simplified-700-normal.woff2');
     expect(fontStyles).not.toMatch(/\.woff["')]/);
     expect(`${tokenStyles}\n${fontStyles}\n${mainSource}\n${bootSource}\n${packageSource}`).not.toMatch(/IBM Plex Mono|JetBrains Mono|TetraMorph UI Sans|Smiley Sans|Barlow Semi Condensed|Fira Code/);
-    expect(`${tokenStyles}\n${fontStyles}\n${mainSource}`).toMatch(/Kavivanar/);
+    expect(`${tokenStyles}\n${fontStyles}\n${mainSource}`).toMatch(/Metal/);
+    expect(`${tokenStyles}\n${fontStyles}\n${mainSource}\n${packageSource}`).not.toMatch(/Kavivanar|kavivanar/);
     expect(`${tokenStyles}\n${fontStyles}\n${mainSource}\n${packageSource}`).not.toMatch(/Space Grotesk|space-grotesk/);
     expect(`${tokenStyles}\n${fontStyles}\n${mainSource}`).toMatch(/Geist Mono|geist-mono/);
     expect(`${tokenStyles}\n${fontStyles}\n${mainSource}`).toMatch(/Noto Sans SC|noto-sans-sc/);
     expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).toMatch(/:root:lang\(en\),[\s\S]*--font-ui:\s*var\(--font-ui-en\);/);
     expect(tokenStyles).toContain('font-synthesis: none;');
-    expect(tokenStyles).toMatch(/\.app:lang\(en\)\s*\{[^}]*-webkit-text-stroke:\s*\.22px currentColor;/s);
-    expect(tokenStyles).toMatch(/\.app:lang\(en\) :is\([^}]*\.run-stats strong[^}]*\)\s*\{[^}]*-webkit-text-stroke:\s*0;/s);
+    expect(tokenStyles).not.toMatch(/\.app:lang\(en\)\s*\{[^}]*-webkit-text-stroke:/s);
     expect(tokenStyles).not.toMatch(/(^|\n)\s*(display|grid-template|flex|position|width|height):/);
   });
 
   it('packages the selected semantic families locally with redistribution notices', () => {
-    expect(packageSource).toContain('"@fontsource/kavivanar": "5.3.0"');
+    expect(packageSource).toContain('"@fontsource/metal": "5.3.0"');
     expect(packageSource).toContain('"@fontsource/geist-mono": "5.3.0"');
     expect(packageSource).toContain('"@fontsource/noto-sans-sc": "5.3.0"');
-    expect(fontNotices).toContain('Kavivanar');
+    expect(fontNotices).toContain('Metal');
     expect(fontNotices).toContain('Geist Mono');
     expect(fontNotices).toContain('Noto Sans SC');
     expect(fontNotices).toContain('Playwrite New Zealand Basic');

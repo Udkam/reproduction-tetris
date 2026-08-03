@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@fontsource/geist-mono": "5.3.0",
-    "@fontsource/kavivanar": "5.3.0",
+    "@fontsource/metal": "5.3.0",
     "@fontsource/noto-sans-sc": "5.3.0",
     "@fontsource/playwrite-nz-basic": "5.3.0",
     "pixi.js": "^8.19.0",

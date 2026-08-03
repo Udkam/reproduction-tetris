@@ -4,7 +4,7 @@ export const TYPOGRAPHY = {
     brand: '"Playwrite NZ Basic", "Segoe UI", cursive',
     chineseUi: '"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif',
     chineseDisplay: '"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif',
-    englishUi: '"Kavivanar", "Segoe UI", cursive',
+    englishUi: '"Metal", "Segoe UI", serif',
     data: '"Geist Mono", "Cascadia Mono", monospace',
   },
   weight: {
