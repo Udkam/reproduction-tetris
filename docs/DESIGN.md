@@ -3,6 +3,25 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-03 T26 — v1.0 Release Candidate convergence
+
+TetraMorph now follows a release-candidate convergence programme rather than another
+feature cycle. The accepted deterministic Core, single Pixi canvas, four modes, local
+audio, replay model, and React composition remain authoritative. Product work is split
+into project cleanup, first experience, visual unification, bounded mode polish,
+engineering closure, and showcase evidence. Each phase produces a green rollback point.
+
+Phase A separates identity from compatibility. Public metadata, README, active QA
+surfaces, and all new persistence writes use `TetraMorph` / `tetramorph`. Historical
+`qingliu:*`, `tetris:*`, and `stack-order:*` storage keys remain named migration inputs;
+they are not user-facing brand and must not be bulk-deleted. A valid old value is parsed,
+written once under the current `tetramorph:*` key, and left intact for rollback.
+
+The final typography contract intentionally supersedes T24/T25 experimentation:
+Playwrite NZ Basic is the brand face, Space Grotesk is the English/UI face, JetBrains
+Mono is the data face, and Noto Sans SC is the Chinese face. That change belongs to
+Phase C and must not be mixed into Phase A.
+
 ## 2026-08-03 T25 — language-invariant English mode names
 
 The four Home mode names are permanent English proper names, so their typography is

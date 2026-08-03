@@ -1,4 +1,33 @@
-# Current Task — T25 Invariant Home Mode Typography
+# Current Task — T26 TetraMorph v1.0 Release Candidate
+
+## T26 active goal — converge the current game into Release Candidate 1.0
+
+**Status (2026-08-03): PHASE A IN PROGRESS.** The accepted game remains the product
+baseline. This is a convergence programme: no Core rewrite, renderer replacement,
+fifth mode, account system, server dependency, or broad React migration is authorised.
+Each change must improve first-time understanding, portfolio presentation, or long-term
+maintenance.
+
+The complete phase contract is recorded in `docs/phases/rc-1.0.md`. The current bounded
+slice is Phase A only:
+
+1. package metadata, README, active DEV-QA globals, active persistence writes, comments,
+   and visible copy use `TetraMorph` / `tetramorph`;
+2. `qingliu:*`, `tetris:*`, and `stack-order:*` keys remain explicit read-only migration
+   sources so existing Puzzle progress, rule-intro state, and leaderboards survive;
+3. current writes move to `tetramorph:*`, and direct tests prove the old values migrate
+   without deleting or reinterpreting them;
+4. README becomes the public project entry point with Features, Technical Highlights,
+   Controls, Development, and Screenshots sections; it contains no retired project pitch;
+5. `__SIGNAL_FOUNDRY_QA__` and `__TETRIS_D4_QA__` become clearly named TetraMorph DEV-QA
+   surfaces, with every maintained script and direct test updated in the same checkpoint.
+
+**Checkpoint boundary.** Contract, public metadata/README, persistence migration, QA
+surface, and final Phase-A archive are separate reviewable commits. Targeted tests and
+typecheck run per source checkpoint; the full suite and build run once after the last
+Phase-A source edit. No dev server or browser is needed for this nonvisual slice.
+
+# Previous Task — T25 Invariant Home Mode Typography
 
 ## T25 active goal — keep the four English mode names typographically invariant
 

@@ -945,3 +945,12 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   errors.
 - This is retained as a small green rollback point. The subsequent RC 1.0 contract
   supersedes its final visual direction by assigning Space Grotesk to general UI.
+
+# T26 TetraMorph v1.0 Release Candidate
+
+- Opened from clean, synchronized `main@2d4f3ec`; no Tetris project server remains.
+- The six ordered phases are frozen in `docs/phases/rc-1.0.md`. The active slice is
+  Phase A project cleanup only; accepted gameplay and visual systems remain unchanged.
+- Live audit found Signal Foundry in package metadata, README, and the DEV-QA global.
+  Current storage also uses historic `qingliu:*` / `tetris:*` names. New writes will
+  move to `tetramorph:*` while the old keys remain tested migration inputs.

@@ -1,0 +1,67 @@
+# TetraMorph v1.0 Release Candidate Plan
+
+Status: active from 2026-08-03. `docs/CURRENT_TASK.md` owns the currently authorised
+slice; this file owns the complete ordered programme.
+
+## Product guardrails
+
+- Preserve the deterministic Core, PixiJS renderer boundary, one gameplay canvas, four
+  modes, local-only persistence, replay system, and procedural audio.
+- Do not add a fifth mode, online leaderboard, account, cloud save, server dependency,
+  large story system, growth tree, or broad architecture rewrite.
+- Accept a change only when it improves onboarding, showcase value, or maintenance.
+
+## Phase A — project cleanup
+
+- Replace active Signal Foundry identity with TetraMorph in package metadata, README,
+  QA globals, active storage keys, comments, and visible copy.
+- Preserve every historic storage key as a tested one-way migration source.
+- Publish a concise README with Features, Technical Highlights, Controls, Development,
+  and Screenshots.
+
+## Phase B — first experience
+
+- Keep the four-mode Home and add no more than the wordmark plus the positioning line
+  `Transform the way blocks fall.` / `重新定义下落方块`.
+- Rewrite each first-entry sheet into Goal / Mechanic / Challenge, under 100 Chinese
+  characters for the mode body.
+- Present the entry sequence as `3`, `2`, `1`, `Start` without delaying control beyond
+  the existing countdown contract.
+
+## Phase C — final UI system
+
+- Brand: Playwrite NZ Basic. UI: Space Grotesk. Data: JetBrains Mono. Chinese: Noto Sans SC.
+- Audit Settings, HUD, results, and leaderboards for overlap, undersized copy, truncation,
+  and structural whitespace at supported desktop, portrait, and short-landscape sizes.
+- Recompose Settings into three tabs: Settings (language, SFX, volume, reduced motion),
+  Controls (keyboard, touch), and Rules (current rules, leaderboard).
+
+## Phase D — bounded mode polish
+
+- Classic: verify score, fall speed, and combo feedback; add no system.
+- Survival: preserve pressure/rock rules; make the existing danger column obvious for
+  800 ms before entry and pair it with a concise warning sound.
+- Mutation: preserve the existing five abilities; improve carrier recognition,
+  activation, and state feedback so the first activation is a showcase moment.
+- Puzzle: keep boards and order; change only copy, guidance, and visual consistency.
+
+## Phase E — engineering closure
+
+- Run final typecheck, complete tests, and production build.
+- Prove zero browser console errors, deterministic replay, and clean Pixi, listener,
+  timer, animation-frame, and AudioContext teardown after restart and unmount.
+- Inspect bundle composition, font size, dependencies, and unused assets without trading
+  maintainability for marginal compression.
+
+## Phase F — showcase package
+
+- Capture source-bound final frames for Home, Classic, Survival danger, Mutation effect,
+  Puzzle campaign, and Settings.
+- Prepare a 30–60 second capture sequence: logo, normal play, Mutation peak, four modes.
+- Publish concise GitHub, resume, and portfolio descriptions plus RC Release Notes.
+
+## Final acceptance
+
+The release report must include changed files, tests, build, performance/lifecycle
+results, inspected screenshots, and Release Notes. Only after independent read-only QA
+and coordinator acceptance may the project be called `TetraMorph v1.0 Release Candidate`.
