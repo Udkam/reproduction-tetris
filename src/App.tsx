@@ -1581,9 +1581,13 @@ export function GameSession({
 
   useLayoutEffect(() => {
     // Gameplay sheets change the board/rail layout in the same React commit that
-    // changes their visibility. Re-render Pixi after that layout is committed so
-    // the live Next piece is positioned against the final DOM slot geometry.
-    runtime?.refreshPresentation();
+    // changes their visibility. Re-render once in the layout phase and once on the
+    // following paint frame: the second pass covers the browser's WebGL compositor
+    // update without introducing a persistent loop or changing canonical state.
+    if (!runtime) return undefined;
+    runtime.refreshPresentation();
+    const frame = browserPlatform.defer(() => runtime.refreshPresentation());
+    return () => browserPlatform.cancelFrame(frame);
   }, [exitOpen, restartConfirmOpen, runtime, settingsOpen, state.status]);
 
   useEffect(() => {
