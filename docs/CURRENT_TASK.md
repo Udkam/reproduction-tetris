@@ -67,14 +67,17 @@ The slice has nine player-visible acceptance requirements:
    assembled-prism signal, one unboxed best-operation hero, and no horizontal boxed
    summary or redundant completion sentence. No large empty bordered metric field,
    spreadsheet-like visual weight, decorative subtitle, or duplicate rank statement is
-   allowed. Each dialog targets a `30–32rem` desktop width and remains viewport-safe on
-   small screens.
+   allowed. Hero numerals keep the complete Geist Mono glyph box: no negative tracking,
+   sub-unit line height, or overflow clipping may trim a counter, terminal, or baseline.
+   Each dialog targets a `30–32rem` desktop width and remains viewport-safe on small
+   screens.
 9. The ordinary gameplay side rail is a deliberate **4 x 1** instrument column, not a
-   `2 x 2` dashboard: its four statistic cards stack vertically in source order. The
-   Next module follows directly beneath them at the same measured width, using the same
-   border, radius, spacing, and surface language without covering the Pixi-owned preview.
-   The complete statistics-plus-Next group is vertically centred within the available
-   rail height and cannot create a structural blank gap. Puzzle keeps its accepted dual
+   `2 x 2` dashboard: one enclosing statistics surface contains four rows in source
+   order, separated only by quiet internal rules. The rows may not become four bordered,
+   rounded, or shadowed cards. The Next module follows directly beneath the unified
+   surface at the same measured width without covering the Pixi-owned preview. The
+   complete statistics-plus-Next group is vertically centred within the available rail
+   height and cannot create a structural blank gap. Puzzle keeps its accepted dual
    preview and Mutation may still insert its active status module, but neither may
    regress compact/mobile layouts, pause visibility, or the single-canvas contract.
 

@@ -26,15 +26,17 @@ fallback remains local/system-safe for offline Steam packaging.
 
 ### Gameplay side rail
 
-The ordinary desktop rail is one vertical instrument stack. Four statistic cards form
-a `4 x 1` column in reading order; it is explicitly not a `2 x 2` dashboard. The Next
-module follows immediately below at the same width, border weight, corner rhythm, and
-surface tone. React owns that grouping and label hierarchy while Pixi remains the sole
-owner of the actual preview well and piece drawing. The combined group is vertically
-centred in the available rail height, so changing the Next frame cannot strand a large
-structural gap above or below it. Puzzle preserves its two-item preview and active
-Mutation status may join the stack, but responsive reflow, paused-state visibility, and
-the one-canvas boundary remain unchanged.
+The ordinary desktop rail is one vertical instrument stack. One enclosing statistics
+surface forms a `4 x 1` reading order; it is explicitly neither a `2 x 2` dashboard nor
+four independent cards. Its four rows share one border, radius, background, and shadow,
+with only quiet horizontal separators between adjacent rows. The Next module follows
+immediately below at the same width and surface rhythm. React owns that grouping and
+label hierarchy while Pixi remains the sole owner of the actual preview well and piece
+drawing. The combined group is vertically centred in the available rail height, so
+changing the Next frame cannot strand a large structural gap above or below it. Puzzle
+preserves its two-item preview and active Mutation status may join the stack, but
+responsive reflow, paused-state visibility, and the one-canvas boundary remain
+unchanged.
 
 ### Classic gravity interval
 
@@ -90,7 +92,10 @@ title is the principal ranking metric itself—`消行 / Lines`, `生存时间 /
 or `得分 / Score`—rather than `经典结果`, `生存结果`, `异变结果`, or their English
 equivalents. The same metric's unboxed hero number follows directly, framed only by
 restrained mode color and whitespace, so the label is not duplicated beneath it. The
-contextual metric is one compact supporting row; the top-five history reads down a
+number keeps the complete Geist Mono glyph box: its container remains overflow-visible,
+uses a safe line box, and does not tighten tracking enough to clip counters, terminals,
+or the baseline. The contextual metric is one compact supporting row; the top-five
+history reads down a
 low-noise list; and the actions finish the same axis. A giant bordered hero card and a
 second dashboard card are explicitly excluded. Width may collapse to the viewport but
 does not expand to fill board space. The current run is still identified inside its
