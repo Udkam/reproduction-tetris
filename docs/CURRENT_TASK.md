@@ -25,6 +25,17 @@ current-proof mode polish** only:
 4. audit Puzzle copy, guidance, and visual consistency without changing its boards,
    order, deterministic sequences, unlock graph, or mechanics.
 
+**Phase-D Survival timing contract.** The existing one-piece-ahead warning now owns a
+deterministic minimum lead of `48` playing ticks (`800 ms` at the canonical 60 Hz). If
+the warned player piece is locked sooner, the following ordinary-piece/rockfall entry
+waits only for the unconsumed warning ticks; ordinary play that already consumes the
+window receives no extra delay. The frozen column, one-or-two-rock height, piece-count
+cadence, four-times fall rate, separate random stream, and simultaneous following-spawn
+semantics do not change. One short, non-looping warning chirp accompanies the single
+warning event. Direct Core and audio tests must cover immediate hard drop, natural
+expiry, restart reset, deterministic hashing, and one-voice audio behavior before the
+browser capture is accepted.
+
 **Verified Phase-C result.** Product checkpoints through `06bd8b9` add the persisted
 OS-aware reduced-motion choice, inline touch guidance, complete cross-surface bilingual
 coverage, and synchronous Pixi host-size reconciliation after responsive Settings

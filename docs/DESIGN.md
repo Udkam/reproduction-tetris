@@ -117,6 +117,23 @@ outside a stale backing buffer. Source `06bd8b9` and evidence `a062799` close Ph
 across current English/Chinese HUD, result, leaderboard, Settings, Pause, and Leave
 surfaces with one Canvas and clean teardown.
 
+### Phase D — deterministic Survival warning lead
+
+The existing Survival source-column arrow remains the only visual danger primitive,
+but its warning is now a deterministic gameplay-time contract rather than an assumed
+by-product of how long the player considers the preceding piece. The warning owns
+exactly `48` minimum playing ticks, equal to `800 ms` at the canonical 60 Hz. Those
+ticks begin with the single `survival-stones-warned` event. If the player hard-drops
+the warned piece immediately, the following entry phase holds only until the remaining
+warning ticks reach zero; if ordinary play already consumed the interval, the usual
+entry delay is unchanged. Pause consumes no warning time and restart clears the timer.
+
+The timing floor does not redraw the plan or perturb the ordinary seven-bag or Survival
+stone randomizer. The frozen source column, one-or-two-cell rigid stone body, interval
+progression, four-times fall cadence, blocked-entry deferral, and shared following-spawn
+beat remain unchanged. Audio adds one dry, short, rising warning chirp at event time;
+it has no loop or expiry voice and cannot mask piece, clear, or rock-impact feedback.
+
 ## 2026-08-03 T25 — language-invariant English mode names
 
 The four Home mode names are permanent English proper names, so their typography is

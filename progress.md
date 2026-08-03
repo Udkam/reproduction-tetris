@@ -992,3 +992,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   was reproduced and fixed at the renderer boundary; Next remains complete across the
   successor sheets. Final gates are typecheck, `312 passed / 3 skipped`, and the
   768-module build. Phase D is next; Phases E-F remain open.
+- Phase D Survival timing is now implemented but not yet accepted: the existing
+  one-piece-ahead warning owns a deterministic 48-playing-tick / 800 ms minimum lead,
+  pauses consume no lead time, fast hard drops hold only the remaining entry time, and
+  a single 65 ms non-looping chirp accompanies the warning event. Focused Core, audio,
+  and renderer tests pass `85/85`; full gates and browser evidence remain pending.
