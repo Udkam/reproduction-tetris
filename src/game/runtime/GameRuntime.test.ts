@@ -25,6 +25,7 @@ const inputClearHeld = vi.hoisted(() => vi.fn());
 const inputDestroy = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
 const audioPrime = vi.hoisted(() => vi.fn());
+const audioPlayEntryCountdown = vi.hoisted(() => vi.fn());
 const audioSetVolume = vi.hoisted(() => vi.fn());
 const audioDestroy = vi.hoisted(() => vi.fn());
 const rendererDestroy = vi.hoisted(() => vi.fn());
@@ -34,6 +35,7 @@ vi.mock('../audio/AudioEngine', () => ({
     setEnabled(): void {}
     setVolume(volume: number): void { audioSetVolume(volume); }
     async prime(): Promise<void> { audioPrime(); }
+    playEntryCountdown(digit: 3 | 2 | 1): void { audioPlayEntryCountdown(digit); }
     play(): void {}
     syncMutationState(): void {}
     suspend(): void {}
@@ -323,6 +325,20 @@ describe('GameRuntime public state boundary', () => {
     expect(audioSetVolume).toHaveBeenNthCalledWith(1, 2);
     expect(audioSetVolume).toHaveBeenNthCalledWith(2, -1);
     expect(runtime.getState()).toBe(before);
+  });
+
+  it('primes and forwards countdown cues while gameplay input is gated', async () => {
+    const runtime = new GameRuntime({ seed: 123, inputEnabled: false });
+    audioPrime.mockClear();
+    audioPlayEntryCountdown.mockClear();
+
+    runtime.playEntryCountdown(3);
+    await Promise.resolve();
+
+    expect(audioPrime).toHaveBeenCalledTimes(1);
+    expect(audioPlayEntryCountdown).toHaveBeenCalledExactlyOnceWith(3);
+    expect(runtime.getState().status).toBe('ready');
+    runtime.destroy();
   });
 
   it('restarts immediately from active play when the public R action is received', async () => {

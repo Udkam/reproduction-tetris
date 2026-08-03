@@ -153,6 +153,14 @@ export class AudioEngine {
     this.playMutationActivations(mutationActivations);
   }
 
+  /** Three compact ascending notes lead into the existing Start confirmation. */
+  playEntryCountdown(digit: 3 | 2 | 1): void {
+    if (!this.context || !this.master || !this.enabled) return;
+    const frequency = digit === 3 ? 330 : digit === 2 ? 392 : 494;
+    const gain = digit === 3 ? 0.09 : digit === 2 ? 0.1 : 0.11;
+    this.tone({ frequency, duration: 0.06, gain, type: 'sine' });
+  }
+
   destroy(): void {
     this.stopMutationCue();
     this.stopMutationLoops(false);

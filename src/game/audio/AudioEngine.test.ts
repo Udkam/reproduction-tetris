@@ -174,6 +174,21 @@ describe('AudioEngine original feedback', () => {
     expect(audioContextCloseCalls).toBe(1);
   });
 
+  it('plays 3-2-1 as three short ascending cues below the Start confirmation', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.playEntryCountdown(3);
+    audio.playEntryCountdown(2);
+    audio.playEntryCountdown(1);
+
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([330, 392, 494]);
+    expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
+    expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.08)).toBe(true);
+    audio.destroy();
+  });
+
   it('gives every mutation material a concise, unbent original signature', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
 

@@ -272,6 +272,18 @@ export class GameRuntime {
     this.audio.setVolume(volume);
   }
 
+  /** Countdown presentation may sound while gameplay input is still gated. */
+  playEntryCountdown(digit: 3 | 2 | 1): void {
+    if (this.destroyed) return;
+    void this.audio.prime()
+      .then(() => {
+        if (!this.destroyed) this.audio.playEntryCountdown(digit);
+      })
+      .catch(() => {
+        // Hosts may deny autoplay until a later gesture; countdown remains visual.
+      });
+  }
+
   getState(): GameState {
     return this.state;
   }
