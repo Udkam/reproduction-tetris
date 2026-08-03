@@ -2,8 +2,8 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASES A-B VERIFIED; PHASE-C TYPOGRAPHY / SETTINGS CORRECTION
-VERIFIED; RC PROGRAMME ACTIVE.** The accepted game remains the product baseline. This
+**Status (2026-08-03): PHASES A-C VERIFIED; PHASE D ACTIVE; RC PROGRAMME ACTIVE.**
+The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
 improve first-time understanding, portfolio presentation, or long-term maintenance.
@@ -14,24 +14,29 @@ closed rollback point: Home has one localized positioning line, first-entry guid
 has exactly Goal / Mechanic / Challenge, and `Start` acknowledges the same boundary at
 which the runtime becomes controllable.
 
-The current bounded product slice is the remaining **Phase C accessibility and surface
-coverage** only:
+Phase C is now a closed rollback point. The next bounded product slice is **Phase D
+current-proof mode polish** only:
 
-1. add one persisted player reduced-motion control to the Settings tab without changing
-   the existing operating-system default or deterministic runtime timing. With no saved
-   choice it follows `prefers-reduced-motion`; an explicit player choice persists as
-   `tetramorph:reduced-motion:v1 = on|off` and drives both CSS and Pixi presentation;
-2. add concise visible touch guidance to the Controls tab while retaining gameplay-first
-   and shortcuts-second keyboard order. It must reuse the implemented tap / horizontal
-   swipe / short-down / long-down gesture contract and remain an inline information band,
-   not a new nested card or input implementation;
-3. complete the current-source responsive browser matrix for HUDs, results, and
-   leaderboards in Chinese and English, repairing only demonstrated clipping,
-   overlap, truncation, or structural whitespace;
-4. preserve the accepted Playwrite / Space Grotesk / Geist Mono / Noto Sans SC roles,
-   the three Settings tabs, Pause-time Back/Settings reachability, one Canvas, and a
-   visible Next. This slice cannot change Core, renderer rules, persistence schemas,
-   Puzzle boards/order, ranking, or mode mechanics.
+1. verify Classic score, fall-speed, and combo feedback without adding a new system;
+2. verify Survival's existing danger-column warning and concise warning sound against
+   the 800 ms acceptance window, changing only demonstrated presentation gaps;
+3. capture carrier, activation, and active-state recognition for all five Mutation
+   abilities, repairing only evidence-backed clarity defects;
+4. audit Puzzle copy, guidance, and visual consistency without changing its boards,
+   order, deterministic sequences, unlock graph, or mechanics.
+
+**Verified Phase-C result.** Product checkpoints through `06bd8b9` add the persisted
+OS-aware reduced-motion choice, inline touch guidance, complete cross-surface bilingual
+coverage, and synchronous Pixi host-size reconciliation after responsive Settings
+transitions. The final typecheck, complete suite (`312 passed / 3 skipped`), and
+768-module build pass; the 546.05 kB application-chunk warning is recorded for Phase E,
+not hidden. Evidence checkpoint `a062799` binds to source `06bd8b9` and proves desktop,
+portrait, and short-landscape Settings, four current HUDs, two result/leaderboard
+surfaces, Pause, and Leave with zero clipping, text overlap, wrong font role, horizontal
+overflow, console errors, extra Canvas, DOM board cells, or teardown residue. Back and
+Settings remain clickable during Pause; the live Next piece stays visible and does not
+overlap either successor sheet. The owned preview process was released and port 4189
+has no listener.
 
 **Verified Phase-B result.** Product commits `29405e2` and `2198b92` add the localized
 positioning line, separate concise first-entry copy, the non-blocking `Start` cue, and

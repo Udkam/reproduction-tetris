@@ -984,3 +984,11 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   five inspected browser frames pass. The controlled browser/server batch was released.
   Remaining work starts with the separate Phase-C reduced-motion, touch guidance, and
   current-source results/leaderboard audit.
+- Phase C is now a green rollback point at final product `06bd8b9` and evidence
+  `a062799`. The persisted OS-aware motion preference, touch guidance, four current HUDs,
+  two result/leaderboard states, three responsive Settings compositions, Pause, and
+  Leave pass with no clipping, overlap, wrong font role, overflow, browser error, extra
+  Canvas/DOM cell, or teardown residue. A missed Pixi resize after responsive Settings
+  was reproduced and fixed at the renderer boundary; Next remains complete across the
+  successor sheets. Final gates are typecheck, `312 passed / 3 skipped`, and the
+  768-module build. Phase D is next; Phases E-F remain open.

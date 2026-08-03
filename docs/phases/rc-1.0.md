@@ -1,7 +1,6 @@
 # TetraMorph v1.0 Release Candidate Plan
 
-Status: active from 2026-08-03. Phases A-B and the Phase-C typography / Settings correction
-are verified; the remaining Phase-C accessibility/coverage work and Phases D-F remain open. `docs/CURRENT_TASK.md`
+Status: active from 2026-08-03. Phases A-C are verified; Phases D-F remain open. `docs/CURRENT_TASK.md`
 owns the currently authorised slice; this file owns the complete ordered programme.
 
 ## Product guardrails
@@ -48,6 +47,11 @@ implementation uses Playwrite NZ Basic only for the wordmark, Space Grotesk for 
 UI, Geist Mono for data, and Noto Sans SC for Chinese UI; it also proves responsive
 Settings tabs and Pause-time Back/Settings pointer reachability. This checkpoint does
 not close Phase B or the complete release candidate.
+
+Verified phase checkpoint: final product source `06bd8b9`, evidence `a062799`. The
+persisted OS-aware motion preference, touch guidance, responsive Settings/HUD/result/
+leaderboard matrix, Pause-time top actions, visible live Next, and responsive Pixi
+backing geometry all pass current-source browser proof. This closes Phase C only.
 
 ## Phase D — bounded mode polish
 

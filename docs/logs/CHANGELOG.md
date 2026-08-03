@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-08-03 — T26 RC Phase C accessibility and responsive surfaces verified
+
+- Added one persisted player motion preference. With no saved choice TetraMorph follows
+  `prefers-reduced-motion`; an explicit `on` or `off` selection drives both CSS and Pixi
+  presentation without changing countdown, gravity, scoring, or replay timing.
+- Added concise touch guidance after the gameplay-first and shortcuts-second keyboard
+  groups, while retaining the compact three-tab Settings composition.
+- Completed the current-source bilingual HUD/result/leaderboard matrix and fixed the
+  underlying responsive Canvas defect: after portrait or short-landscape Settings,
+  Pixi now synchronizes to the restored host before drawing the board and Next preview.
+  Pause and Leave keep the complete live Next piece visible, avoid its rail, and leave
+  the persistent Back and Settings pointer targets operative.
+- Final source `06bd8b9` passes typecheck, the complete suite (`312 passed / 3 skipped`),
+  and the 768-module build. The 546.05 kB application chunk warning remains declared for
+  Phase E. Evidence `a062799` reports zero browser errors, clipping, overlap, wrong font
+  roles, horizontal overflow, extra Canvas/DOM cells, or cleanup residue. Its preview
+  PID was released and port 4189 is free. Phases D-F remain open.
+
 ## 2026-08-03 — T26 RC typography, Settings, and Pause correction verified
 
 - Replaced the rejected inherited English/data typography with four explicit local

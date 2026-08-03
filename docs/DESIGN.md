@@ -54,7 +54,7 @@ short-landscape, and reduced-motion compositions; the Start frame already owns t
 single gameplay Canvas and populated Next forecast. No Core, renderer, persistence,
 Puzzle ordering, ranking, or mode mechanic changed.
 
-### Phases B-C active correction — semantic type and progressive Settings disclosure
+### Phase C — semantic type, progressive Settings disclosure, and responsive presentation
 
 The player-facing type system now has four non-overlapping roles. Playwrite NZ Basic
 belongs only to the `TetraMorph` wordmark. Space Grotesk owns ordinary English UI and
@@ -98,13 +98,24 @@ pointer targets as well as members of the focus loop. A chosen top action replac
 pause sheet rather than stacking another modal; the live board and Next remain mounted,
 dimmed, and unchanged.
 
-**Verified implementation.** Frozen product source `310d83a` implements the four
+**Verified implementation.** Frozen typography source `310d83a` implements the four
 semantic font roles and the three-panel Settings console without changing gameplay.
 Range-based browser geometry checks cover English and Chinese desktop Settings, English
 portrait Controls, short-landscape Rules, Home, Pause, and an English Mutation HUD.
 Every state has zero clipped text, text-ink overlap, wrong English/data face, or
 horizontal overflow. Pause hit testing and real navigation both reach Back and Settings;
 the inspected frame preserves a visible Next well beside the compact pause sheet.
+
+The completed Phase-C candidate extends that correction without changing Core rules.
+An explicit reduced-motion choice persists as `tetramorph:reduced-motion:v1 = on|off`,
+while an unset preference continues to follow live operating-system media changes. The
+same resolved value drives CSS and the existing Pixi option. Controls adds one concise
+gesture line after gameplay-first and shortcuts-second keyboard groups. Renderer-owned
+HUD previews synchronize the Pixi screen to the current host before every geometry read,
+so returning from portrait or short-landscape Settings cannot leave a desktop Next well
+outside a stale backing buffer. Source `06bd8b9` and evidence `a062799` close Phase C
+across current English/Chinese HUD, result, leaderboard, Settings, Pause, and Leave
+surfaces with one Canvas and clean teardown.
 
 ## 2026-08-03 T25 — language-invariant English mode names
 
