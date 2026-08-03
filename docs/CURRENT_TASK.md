@@ -7,7 +7,7 @@ visual correction supersedes T27 requirements 9 and 10 only where they describe 
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
 persistence migrations, the single-canvas boundary, or Mutation mechanics.
 
-The correction has eight coupled acceptance requirements:
+The correction has ten coupled acceptance requirements:
 
 1. The live gameplay field becomes an axis-symmetric three-column stage. The 10 x 20
    board occupies the true horizontal centre column. Left and right instrument rails
@@ -25,7 +25,8 @@ The correction has eight coupled acceptance requirements:
    right rail as a four-row typographic instrument. Puzzle preserves its two correctly
    labelled forecasts. Pixi continues to own every tetromino preview, but it no longer
    paints a dark rounded preview card behind gameplay Next; the DOM remains geometry
-   only and no DOM cell grid is introduced.
+   only and no DOM cell grid is introduced. The frameless forecast uses a larger,
+   immediately legible tetromino scale without changing the measured rail footprint.
 4. Settings adds one persisted, keyboard-operable three-theme choice. The themes are
    not palette-only skins: each changes page field, typography contrast, separators,
    navigation/action treatment, board well and edge, Settings, modal/result surfaces,
@@ -37,26 +38,59 @@ The correction has eight coupled acceptance requirements:
      phosphor teal/blue/violet accents, and a deeper blue-black well without neon glow;
    - **暖砂日晷 / Sunstone** — a warm bone and sand field, graphite ink, copper/olive
      accents, and a charcoal-brown well with etched rather than glossy surfaces.
-5. Theme choices do not use circular or segmented color samples. Each complete button
-   uses its own theme field, ink, edge, and accent as the preview; pressed state adds a
-   semantic outline/check treatment without replacing that theme-native background with
-   the generic action blue.
-6. Pause and restart-confirmation sheets are centred on the invariant board/page axis.
-   They may cover the interrupted board, but the left Next instrument stays outside the
-   sheet and remains visibly populated through the dim layer. No gameplay sheet may be
-   stranded at the far right edge.
+   **深潮夜航 / Deep Tide** is the product default for a fresh profile. Home and the
+   Puzzle library must consume the active theme across their complete page field,
+   primary surfaces, controls, selection states, preview/detail regions, and typography;
+   neither page may remain a light-only shell after a theme change.
+   Home's wordmark panel is one theme-owned **solid color** with no gradient, radial
+   texture, or split-tone wash. The wordmark gains a restrained static theme-colored
+   glow that remains legible without flashing and becomes non-animated under reduced
+   motion. Every mode tile uses theme-owned hover and keyboard-focus colors; pointer
+   highlight ends when the pointer leaves instead of persisting as a generic blue state.
+5. Theme choices do not use circular or segmented color samples. All three complete
+   buttons use the currently active theme's shared control surface instead of carrying
+   three independent theme previews. The selected button adds a semantic outline and
+   localized selected-state text, without a circle, swatch, or checkmark. The Motion
+   control uses the same button language as Language and Sound, and switching from
+   reduced to full motion must not flash or repaint the complete page as a transient frame.
+6. Pause and Restart both use the same full-board interruption composition as the
+   opening cue instead of compact white sheets. Pause shows large `暂停 / Paused` and
+   smaller `回车继续 / Press Enter to continue`; only Enter resumes the same run.
+   Pressing `P` again and pointer clicks on the cover do nothing. Restart shows large `重新开始 / Restart` and
+   smaller `回车确认，按 R 取消 / Enter to confirm; R to cancel`; Enter starts a fresh
+   countdown and R cancels. The left Next instrument stays outside either interruption
+   and remains visibly populated through the dim layer. Escape opens the existing leave
+   flow from Pause and cancels Restart confirmation.
 7. The open-space instruments remain genuinely frameless in both DOM and Pixi. Next has
-   no enclosing rectangle, backdrop, rounded well, shadow, or blank placeholder frame.
+   no enclosing rectangle, DOM border/outline, Canvas backdrop, rounded well, shadow, or
+   blank placeholder frame, including while its slot is empty, loading, paused, or
+   restarting. No neutral parent or Canvas-host outline may reconstruct the rectangle.
    Idle Mutation status contains no sentence, spectrum, dash, underline, or horizontal
-   rule. Left and right rails become larger desktop instruments, with the statistics
-   side receiving the strongest hierarchy. Value changes may use one short opacity and
-   vertical-settle cue; reduced motion disables it and no animation changes layout.
+   rule. Left and right rails become larger desktop instruments positioned in the upper
+   stage rather than the vertical middle, with the statistics side receiving the strongest
+   hierarchy. The four right-rail numeric values use a larger desktop scale and
+   theme-owned high-contrast value color; labels receive only the contrast correction
+   needed for the active theme. Value changes may use one short opacity and vertical-settle cue; reduced
+   motion disables it and no animation changes layout.
 8. Home, Puzzle library, and every live mode are real inner pages backed by browser
    History paths: `/`, `/puzzles`, `/play/classic`, `/play/survival`,
    `/play/mutation`, and `/play/puzzle/:id`. Direct loading, browser Back/Forward, visible
    navigation controls, and first-entry rule confirmation all converge on the same
    canonical screen/mode/puzzle state. Unknown paths replace to `/`; routing never enters
    Core, changes a seed, or adds a dependency.
+9. The opening board cover has one visible `3 / 2 / 1` sequence and no trailing
+   `开始 / Start` word. After `1`, the cover exits through one short opacity/light
+   transition and the first piece begins falling at that same completion boundary.
+   Opening, pausing, restarting, and dismissing a cover must not hard-cut the board glow.
+   Each countdown digit has a clearer short procedural SFX accent while still obeying
+   the shared SFX enablement and volume controls; no music or persistent voice is added.
+10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line
+    acceleration ladder clamps at that floor, while Classic's player-configured interval,
+    Survival's cadence, Ice's one-second override, and Supergravity landing semantics remain
+    unchanged.
+
+The visible Back control uses the same theme-owned filled action treatment as Settings,
+including its background, foreground, border, hover, focus, and disabled-state language.
 
 Theme selection writes only the current `tetramorph:*` preference key, survives reload,
 and changes the mounted game without rebuilding runtime or canonical state. Color never
@@ -144,9 +178,9 @@ The slice has thirteen player-visible acceptance requirements:
    corner badge, board-wide wash, or high-opacity score burst. Reduced motion receives a
    clearly visible static top-edge glint field. The latched landing rule remains unchanged.
 7. The `3 / 2 / 1` entry countdown gains three short, ascending procedural SFX cues.
-   The existing Start event remains the confirmation beat. Cues obey SFX enablement and
-   volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
-   or timers after unmount.
+   There is no trailing Start word or separate Start hold: after `1`, the cover fades out
+   briefly and the runtime begins. Cues obey SFX enablement and volume, replay on restart,
+   share the runtime-owned AudioContext, and leave no voices or timers after unmount.
 8. Result sheets use a portrait, content-height scorecard rather than a wide sheet or a
    stack of dashboard cards. Classic is titled `消行 / Lines`, Survival is titled
    `生存时间 / Survival time`, and Mutation is titled `得分 / Score`; no scored mode

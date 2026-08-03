@@ -20,13 +20,18 @@ on open space; Pixi does not paint a preview well or rounded preview border for 
 surface. Mutation states use item color, a short timer rule, and type hierarchy without
 an enclosing status card. This removal does not apply to real controls or modal sheets,
 whose visible boundaries remain necessary for affordance, focus, and accessibility.
+The open Next forecast uses a larger tetromino scale but never regains a DOM outline,
+Canvas backing well, rounded rectangle, shadow, or empty placeholder frame. Right-rail
+numeric values use a stronger desktop scale and theme-owned high-contrast value color;
+their labels remain subordinate.
 
 Three coherent themes share geometry and semantic roles:
 
-- **Mineral Mist / 雾昼矿物** is the bright default. Cool paper-blue space, pale stone
+- **Mineral Mist / 雾昼矿物** is the bright alternative. Cool paper-blue space, pale stone
   surfaces, slate ink, teal actions, and a navy well express the established precise
   mineral workshop.
-- **Deep Tide / 深潮夜航** is a restrained dark composition. Blue-black space, desaturated
+- **Deep Tide / 深潮夜航** is the default composition for a fresh profile. Blue-black
+  space, desaturated
   mineral text, teal/blue/violet signals, and a deeper well create night navigation
   without neon bloom, translucent glass cards, or decorative telemetry.
 - **Sunstone / 暖砂日晷** is the warm alternative. Bone and sand space, graphite text,
@@ -42,25 +47,71 @@ the Canvas never looks pasted onto the page. The current theme is a persisted UI
 preference and may update a mounted runtime presentation, but it never enters Core,
 replay hashes, scoring, or saved game state.
 
+Home and Puzzle library are complete theme surfaces rather than bright pages placed on a
+themed backdrop. Their page field, primary and raised surfaces, navigation controls,
+selection states, preview/detail regions, structural lines, ink, and focus treatment all
+resolve through the active semantic tokens. Mode identity colors and tetromino identity
+remain recognisable without forcing a light card. The visible Back control uses the same
+theme-owned filled action color, foreground, border, hover, and focus treatment as the
+Settings control.
+
+Home's wordmark panel uses a single solid field resolved from the active theme. It has no
+radial glow painted into the panel, no gradient, and no split-tone texture. Light belongs
+to the wordmark itself: one restrained, static theme-colored halo improves presence
+without pulsing, flashing, or reducing contrast; reduced motion removes any entrance
+interpolation. Mode tiles use the active theme's surface, edge, ink, and mode accent for
+hover and keyboard focus. Pointer hover is transient and clears on pointer exit, while
+keyboard focus remains visibly themed without falling back to the generic action blue.
+
 Settings presents the three choices as one labelled, arrow-key navigable theme rail.
-No option uses a circle, segmented chip, or detached color sample. The complete button
-is the sample: its field, ink, edge, and accent come from that theme. A visible selected
-outline/check and `aria-pressed` keep selection from depending on hue. Enter activates
+No option uses a circle, segmented chip, detached color sample, or checkmark. All options
+use the currently active theme's shared control surface; they do not preview three separate
+theme palettes inside one Settings page. A visible selected outline, localized
+selected-state text, and `aria-pressed` keep selection from depending on hue. Enter activates
 the focused option, focus remains visible, and reduced motion removes theme cross-fades.
+The Motion choice uses the same button construction as Language and Sound. Changing from
+reduced to full motion must not flash or repaint the entire page as an intermediate frame.
+
+Pause and Restart are board-cover states, not floating white dialogs. Pause uses the
+opening cue's full-board composition with `暂停 / Paused` and `回车继续 / Press Enter to
+continue`; Enter is the only resume path. Pressing `P` again and pointer clicks on the
+cover do nothing.
+Restart uses the same composition with `重新开始 / Restart` and `回车确认，按 R 取消 /
+Enter to confirm; R to cancel`; Enter restarts through the normal countdown and R returns
+to the interrupted run. Escape opens the established leave flow from Pause and cancels
+Restart confirmation. Neither cover may hide or clear the external Next forecast.
 Theme names and accessible descriptions are localized; identifiers and storage values
 remain stable English keys.
 
-Gameplay interruption sheets share the board's horizontal centre. Pause and restart
-confirmation are compact sheets on that axis rather than detached right-side cards.
-Their dim layer preserves readable Next content on the left; only the interrupted board
-may sit behind the sheet. Next itself is an open Pixi forecast with no DOM or Canvas
-backdrop, and idle Mutation state contains no placeholder dash or rule.
+Gameplay interruption remains board-local. Pause is not a white dialog: it reuses the
+opening cue's board-cover language, with a large localized Pause label and one quieter
+instruction line. Only Enter resumes the same run; pointer input and a repeated `P` are
+inert while paused. Restart confirmation uses the same board-cover composition and a
+wider, more comfortable text measure than the earlier undersized card. Its dim layer
+preserves readable Next content on the left. Next itself is an open Pixi forecast with no
+DOM border, outline, Canvas backdrop, preview-well geometry, or neutral host rectangle in
+populated, empty, paused, restart, or loading states, and idle Mutation state contains no
+placeholder dash or rule.
 
-The mirrored instruments are deliberately larger than the first T27-R1 pass. Next gains
-enough drawing area to read at a glance; statistics use a stronger label/value scale on
-the right. A value change may settle upward over roughly 180 ms with opacity, but may
-not resize the rail, flash, pulse continuously, or move the centred board. Reduced motion
-removes this cue.
+The mirrored instruments are deliberately larger than the first T27-R1 pass and begin
+in the upper portion of the stage rather than floating around its vertical midpoint.
+Next gains enough drawing area to read at a glance; statistics use a stronger label/value
+scale on the right. A value change may settle upward over roughly 180 ms with opacity,
+but may not resize the rail, flash, pulse continuously, or move the centred board.
+Reduced motion removes this cue.
+
+The entry cover presents only `3`, `2`, and `1`. It never adds a trailing `开始 / Start`
+word or hold. After the `1` beat, the veil and its board-local light treatment leave via
+one short opacity transition; the first piece begins falling when that exit completes.
+The cover uses a corresponding short entrance rather than appearing as a hard cut.
+Reduced motion keeps the same timing boundary but removes interpolation. Each digit owns
+one stronger, short procedural SFX accent on the runtime AudioContext; the cues remain
+volume-controlled and leave no persistent voice.
+
+Mutation's ordinary acceleration ladder now clamps at `0.2` seconds per cell. Ice still
+overrides the live display and automatic fall to `1.0` second per cell, and the latched
+Supergravity landing rule is unchanged. This Mutation-only floor does not modify Classic's
+saved two-handle interval or Survival's independent cadence.
 
 ### Inner-page navigation
 
