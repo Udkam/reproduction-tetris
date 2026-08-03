@@ -1,9 +1,9 @@
 # T26 Phase F final showcase evidence
 
 This final frame set binds to source
-`404fbb8735952a2bab675475e4fbdd2c270c919d` and Chromium
+`85a343106125ef78e3f55203d032a635e92b63c1` and Chromium
 `149.0.7827.55`. The capture used one short-lived Vite server on
-`127.0.0.1:4192` and one headless browser. PID `28620` closed in the runner's
+`127.0.0.1:4192` and one headless browser. PID `5944` closed in the runner's
 `finally` block; post-run inspection found no listening socket on port 4192.
 
 ## Inspected frames

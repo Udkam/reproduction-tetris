@@ -1,6 +1,6 @@
 {
-  "sourceSha": "404fbb8735952a2bab675475e4fbdd2c270c919d",
-  "capturedAt": "2026-08-03T11:20:32.607Z",
+  "sourceSha": "85a343106125ef78e3f55203d032a635e92b63c1",
+  "capturedAt": "2026-08-03T11:48:14.816Z",
   "origin": "http://127.0.0.1:4192",
   "browser": "149.0.7827.55",
   "states": {
@@ -46,7 +46,7 @@
       "modeCardCount": 0,
       "settingsPanelCount": 0,
       "lines": 1,
-      "score": 152
+      "score": 154
     },
     "settings": {
       "viewport": [
