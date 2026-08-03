@@ -1,5 +1,5 @@
 // @ts-expect-error Vitest runs this test in Node while the product tsconfig intentionally omits Node globals.
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ANIMATION } from './animation';
 import { COLOR_NUMBERS, COLOR_TOKENS, hexToColorNumber } from './colors';
@@ -35,10 +35,10 @@ describe('TetraMorph Design System v1.0', () => {
 
   it('freezes role-specific typography', () => {
     expect(TYPOGRAPHY.fontFamily.brand).toContain('Playwrite NZ Basic');
-    expect(TYPOGRAPHY.fontFamily.chineseUi).toContain('TetraMorph UI Sans');
-    expect(TYPOGRAPHY.fontFamily.chineseDisplay).toContain('Smiley Sans');
-    expect(TYPOGRAPHY.fontFamily.englishUi).toMatch(/^"Playwrite NZ Basic"/);
-    expect(TYPOGRAPHY.fontFamily.data).toContain('IBM Plex Mono');
+    expect(TYPOGRAPHY.fontFamily.chineseUi).toContain('Noto Sans SC');
+    expect(TYPOGRAPHY.fontFamily.chineseDisplay).toContain('Noto Sans SC');
+    expect(TYPOGRAPHY.fontFamily.englishUi).toMatch(/^"Space Grotesk"/);
+    expect(TYPOGRAPHY.fontFamily.data).toContain('JetBrains Mono');
     expect(TYPOGRAPHY.weight.brand).toBe(400);
     expect(TYPOGRAPHY.scale).toEqual({
       display: { size: 28, weight: 700, lineHeight: 1.1 },
@@ -88,34 +88,34 @@ describe('TetraMorph Design System v1.0', () => {
     for (const [token, value] of Object.entries(cssTokens)) {
       expect(tokenStyles).toContain(`${token}: ${value};`);
     }
-    expect(tokenStyles).toContain('--font-ui-zh: "TetraMorph UI Sans"');
-    expect(tokenStyles).toContain('--font-display-zh: "Smiley Sans"');
-    expect(tokenStyles).toContain('--font-ui-en: "Playwrite NZ Basic", "TetraMorph UI Sans"');
-    expect(tokenStyles).toContain('--font-data: "IBM Plex Mono"');
-    expect(tokenStyles).toContain('url("../assets/fonts/TetraMorphUISans-subset.otf")');
-    expect(tokenStyles).toContain('url("../assets/fonts/SmileySans-Oblique.woff2")');
+    expect(tokenStyles).toContain('--font-ui-zh: "Noto Sans SC"');
+    expect(tokenStyles).toContain('--font-display-zh: "Noto Sans SC"');
+    expect(tokenStyles).toContain('--font-ui-en: "Space Grotesk", "Segoe UI"');
+    expect(tokenStyles).toContain('--font-data: "JetBrains Mono"');
     expect(tokenStyles).not.toMatch(/url\(["']?https?:/);
-    expect(mainSource).toContain("import '@fontsource/ibm-plex-mono/latin-400.css';");
-    expect(mainSource).toContain("import '@fontsource/ibm-plex-mono/latin-700.css';");
-    expect(mainSource).not.toMatch(/barlow-semi-condensed|fira-code/);
-    expect(bootSource).not.toMatch(/Barlow Semi Condensed|Fira Code/);
-    expect(`${tokenStyles}\n${mainSource}\n${bootSource}\n${packageSource}`).not.toMatch(/Space Grotesk|Geist Mono|Sora Variable|Barlow Semi Condensed|Fira Code Variable|@fontsource-variable\/space-grotesk|@fontsource-variable\/geist-mono|@fontsource-variable\/sora|@fontsource\/barlow-semi-condensed|@fontsource-variable\/fira-code/);
+    expect(mainSource).toContain("import '@fontsource/space-grotesk/latin-400.css';");
+    expect(mainSource).toContain("import '@fontsource/space-grotesk/latin-700.css';");
+    expect(mainSource).toContain("import '@fontsource/jetbrains-mono/latin-400.css';");
+    expect(mainSource).toContain("import '@fontsource/jetbrains-mono/latin-700.css';");
+    expect(mainSource).toContain("import '@fontsource/noto-sans-sc/chinese-simplified-400.css';");
+    expect(mainSource).toContain("import '@fontsource/noto-sans-sc/chinese-simplified-700.css';");
+    expect(`${tokenStyles}\n${mainSource}\n${bootSource}\n${packageSource}`).not.toMatch(/IBM Plex Mono|TetraMorph UI Sans|Smiley Sans|Barlow Semi Condensed|Fira Code/);
+    expect(`${tokenStyles}\n${mainSource}`).toMatch(/Space Grotesk/);
+    expect(`${tokenStyles}\n${mainSource}`).toMatch(/JetBrains Mono|jetbrains-mono/);
+    expect(`${tokenStyles}\n${mainSource}`).toMatch(/Noto Sans SC|noto-sans-sc/);
     expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).toMatch(/:root:lang\(en\),[\s\S]*--font-ui:\s*var\(--font-ui-en\);/);
     expect(tokenStyles).toContain('font-synthesis: none;');
     expect(tokenStyles).not.toMatch(/(^|\n)\s*(display|grid-template|flex|position|width|height):/);
   });
 
-  it('packages the selected Chinese families locally with redistribution notices', () => {
-    expect(statSync(new URL('../../assets/fonts/TetraMorphUISans-subset.otf', import.meta.url)).size)
-      .toBeGreaterThan(400_000);
-    expect(statSync(new URL('../../assets/fonts/SmileySans-Oblique.woff2', import.meta.url)).size)
-      .toBeGreaterThan(1_000_000);
-    expect(fontNotices).toContain('TetraMorph UI Sans');
-    expect(fontNotices).toContain('Smiley Sans');
-    expect(fontNotices).toContain('IBM Plex Mono');
-    expect(fontNotices).toContain('reserves the WenYuan family names');
-    expect(statSync(new URL('../../../licenses/fonts/IBMPlexMono-OFL.txt', import.meta.url)).size)
-      .toBeGreaterThan(4_000);
+  it('packages the selected semantic families locally with redistribution notices', () => {
+    expect(packageSource).toContain('"@fontsource/space-grotesk": "5.3.0"');
+    expect(packageSource).toContain('"@fontsource/jetbrains-mono": "5.3.0"');
+    expect(packageSource).toContain('"@fontsource/noto-sans-sc": "5.3.0"');
+    expect(fontNotices).toContain('Space Grotesk');
+    expect(fontNotices).toContain('JetBrains Mono');
+    expect(fontNotices).toContain('Noto Sans SC');
+    expect(fontNotices).toContain('Playwrite New Zealand Basic');
   });
 });

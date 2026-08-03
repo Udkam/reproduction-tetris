@@ -29,13 +29,26 @@ font CDN at runtime.
 - Packaged file SHA-256:
   `731F22973349404B15A88A99EF3B5DD4104C0965C23B7E485C1F11E84FEA99E2`.
 
-## IBM Plex Mono
+## Space Grotesk
 
-- Package: `@fontsource/ibm-plex-mono` `5.3.0`.
-- Upstream: <https://github.com/IBM/plex>.
+- Package: `@fontsource/space-grotesk` `5.3.0`.
+- Upstream: <https://github.com/floriankarsten/space-grotesk>.
 - Packaged subsets: Latin normal weights 400, 500, 600, and 700.
-- License: SIL Open Font License 1.1; see
-  [`licenses/fonts/IBMPlexMono-OFL.txt`](licenses/fonts/IBMPlexMono-OFL.txt).
+- License: SIL Open Font License 1.1, distributed in the package `LICENSE`.
+
+## JetBrains Mono
+
+- Package: `@fontsource/jetbrains-mono` `5.3.0`.
+- Upstream: <https://github.com/JetBrains/JetBrainsMono>.
+- Packaged subsets: Latin normal weights 400, 500, 600, and 700.
+- License: SIL Open Font License 1.1, distributed in the package `LICENSE`.
+
+## Noto Sans SC
+
+- Package: `@fontsource/noto-sans-sc` `5.3.0`.
+- Upstream: <https://github.com/notofonts/noto-cjk>.
+- Packaged subsets: Simplified Chinese normal weights 400, 500, 600, and 700.
+- License: SIL Open Font License 1.1, distributed in the package `LICENSE`.
 
 ## Playwrite New Zealand Basic
 
