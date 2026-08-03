@@ -534,7 +534,11 @@ function PuzzleCelebrationPanel({ celebration, language }: { celebration: Puzzle
         <i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
       </div>
       <div className="puzzle-celebration__summary">
-        <strong>{presentation.best}</strong>
+        <div className="puzzle-celebration__value">
+          <strong>{presentation.bestValue}</strong>
+          <small>{presentation.bestUnit}</small>
+        </div>
+        <span>{presentation.bestLabel}</span>
       </div>
     </section>
   );
@@ -1133,7 +1137,6 @@ export function RunResultSummary({
         </p>
       )}
       <div className="run-result__hero" data-metric={primaryMetric.id}>
-        <span>{primaryMetric.label}</span>
         <strong>{primaryMetric.value}</strong>
       </div>
       {supportingMetrics.map((metric) => (
@@ -1392,12 +1395,17 @@ function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: A
 
 function FallCadenceValue({ state, language }: { state: GameState; language: AppLanguage }) {
   const cadence = fallCadenceParts(state, language);
-  return <strong aria-label={fallCadenceLabel(state, language)}>{cadence.value}</strong>;
+  return (
+    <div className="run-stats__value-row">
+      <strong aria-label={fallCadenceLabel(state, language)}>{cadence.value}</strong>
+      <small className="run-stats__unit" aria-hidden="true">{cadence.unit}</small>
+    </div>
+  );
 }
 
-function FallCadenceLabel({ state, language }: { state: GameState; language: AppLanguage }) {
+function FallCadenceLabel({ language }: { language: AppLanguage }) {
   const copy = appCopy(language);
-  return <span className="run-stats__label">{copy.labels.fall}<small>{fallCadenceParts(state, language).unit}</small></span>;
+  return <span className="run-stats__label">{copy.labels.fall}</span>;
 }
 
 export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
@@ -1444,7 +1452,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
         <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
         <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
-        <article data-stat-role="fall-cadence"><FallCadenceLabel state={state} language={language} /><FallCadenceValue state={state} language={language} /></article>
+        <article data-stat-role="fall-cadence"><FallCadenceLabel language={language} /><FallCadenceValue state={state} language={language} /></article>
       </section>
     );
   }
@@ -1453,7 +1461,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
       <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
       <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
       <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
-      <article data-stat-role="fall-cadence"><FallCadenceLabel state={state} language={language} /><FallCadenceValue state={state} language={language} /></article>
+      <article data-stat-role="fall-cadence"><FallCadenceLabel language={language} /><FallCadenceValue state={state} language={language} /></article>
     </section>
   );
 }

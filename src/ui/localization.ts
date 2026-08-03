@@ -188,6 +188,9 @@ type Translation = {
       title: string;
       detail: string;
       best: string;
+      bestLabel: string;
+      bestValue: string;
+      bestUnit: string;
     };
     terminalPuzzleFailure: (remaining: number, pieces: number) => { title: string; detail: string };
     terminalMutation: () => { title: string; detail: string };
@@ -341,30 +344,36 @@ const COPY: Record<AppLanguage, Translation> = {
       leaderboardSummary: (score, pieces, lines, survival, mutation) => mutation ? `${score} 分  ${pieces} 方块` : survival ? `${lines} 行` : `${score} 分`,
       terminalPuzzleSuccess: (pieces, lines) => ({ title: '原有方块已清除', detail: `${pieces} 方块 · ${lines} 消行` }),
       puzzleCelebration: (outcome, best) => {
+        const metric = {
+          best: `当前最优步数：${best}步`,
+          bestLabel: '当前最优步数',
+          bestValue: String(best),
+          bestUnit: '步',
+        };
         if (outcome === 'first') {
           return {
             title: '恭喜你破解谜题',
             detail: '',
-            best: `当前最优步数：${best}步`,
+            ...metric,
           };
         }
         if (outcome === 'record') {
           return {
             title: '刷新个人纪录',
             detail: '',
-            best: `当前最优步数：${best}步`,
+            ...metric,
           };
         }
         return {
           title: '谜题已破解',
           detail: '',
-          best: `当前最优步数：${best}步`,
+          ...metric,
         };
       },
       terminalPuzzleFailure: (remaining, pieces) => ({ title: '堆叠到顶', detail: `剩余 ${remaining} 原有方块 · 已落 ${pieces} 块` }),
-      terminalMutation: () => ({ title: '异变结果', detail: '' }),
-      terminalSurvival: () => ({ title: '生存结果', detail: '' }),
-      terminalClassic: () => ({ title: '经典结果', detail: '' }),
+      terminalMutation: () => ({ title: '得分', detail: '' }),
+      terminalSurvival: () => ({ title: '生存时间', detail: '' }),
+      terminalClassic: () => ({ title: '消行', detail: '' }),
       selectedPuzzle: (name) => `已选残局：${name}`,
       puzzleBoard: (name) => `${name}棋盘轮廓`,
       startPuzzle: (name) => `开始 ${name}`,
@@ -471,30 +480,36 @@ const COPY: Record<AppLanguage, Translation> = {
       leaderboardSummary: (score, pieces, lines, survival, mutation) => mutation ? `${score} pts  ${pieces} pieces` : survival ? `${lines} lines` : `${score} pts`,
       terminalPuzzleSuccess: (pieces, lines) => ({ title: 'Original blocks cleared', detail: `${pieces} pieces · ${lines} lines` }),
       puzzleCelebration: (outcome, best) => {
+        const metric = {
+          best: `Current best: ${best} moves`,
+          bestLabel: 'Current best',
+          bestValue: String(best),
+          bestUnit: 'moves',
+        };
         if (outcome === 'first') {
           return {
             title: 'Puzzle solved',
             detail: '',
-            best: `Current best: ${best} moves`,
+            ...metric,
           };
         }
         if (outcome === 'record') {
           return {
             title: 'New personal best',
             detail: '',
-            best: `Current best: ${best} moves`,
+            ...metric,
           };
         }
         return {
           title: 'Puzzle solved',
           detail: '',
-          best: `Current best: ${best} moves`,
+          ...metric,
         };
       },
       terminalPuzzleFailure: (remaining, pieces) => ({ title: 'Stacked out', detail: `${remaining} original blocks left · ${pieces} pieces placed` }),
-      terminalMutation: () => ({ title: 'Mutation result', detail: '' }),
-      terminalSurvival: () => ({ title: 'Survival result', detail: '' }),
-      terminalClassic: () => ({ title: 'Classic result', detail: '' }),
+      terminalMutation: () => ({ title: 'Score', detail: '' }),
+      terminalSurvival: () => ({ title: 'Survival time', detail: '' }),
+      terminalClassic: () => ({ title: 'Lines', detail: '' }),
       selectedPuzzle: (name) => `Selected puzzle: ${name}`,
       puzzleBoard: (name) => `${name} board outline`,
       startPuzzle: (name) => `Start ${name}`,

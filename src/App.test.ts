@@ -399,7 +399,10 @@ describe('Puzzle completion ceremony', () => {
     expect(first.view.container.querySelector<HTMLElement>('[data-testid="puzzle-celebration"]')?.dataset.outcome).toBe('first');
     expect(first.view.container.textContent).toContain('恭喜你破解谜题');
     expect(first.view.container.textContent).not.toContain('首次完成 · 9 步 · 5 消行');
-    expect(first.view.container.textContent).toContain('当前最优步数：9步');
+    expect(first.view.container.querySelector('[data-testid="puzzle-celebration"]')?.getAttribute('aria-label')).toBe('当前最优步数：9步');
+    expect(first.view.container.querySelector('.puzzle-celebration__value strong')?.textContent).toBe('9');
+    expect(first.view.container.querySelector('.puzzle-celebration__value small')?.textContent).toBe('步');
+    expect(first.view.container.querySelector('.puzzle-celebration__summary > span')?.textContent).toBe('当前最优步数');
     expect(first.view.container.textContent).not.toContain('首次破解');
     expect(first.view.container.querySelectorAll('.puzzle-celebration__constellation i')).toHaveLength(10);
     expect(first.onCanonicalCompletion).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ completedLevelId: puzzleId, pieceCount: 9 }));
@@ -589,7 +592,8 @@ describe('entry countdown', () => {
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ mode: 'marathon', score: 4321, lines: 12 }));
     expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('排行榜前 50112 行44 方块');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
-    expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('消行12');
+    expect(view.container.querySelector('.action-sheet--run-result > h2')?.textContent).toBe('消行');
+    expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('12');
     expect(view.container.querySelector('[data-metric="pieces"]')?.textContent).toBe('使用方块44');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
     expect(onExit).toHaveBeenCalledExactlyOnceWith('home');
@@ -2018,7 +2022,7 @@ describe('T6 frontend mode binding', () => {
     };
 
     expect(terminalCopy(terminalState)).toEqual({
-      title: '生存结果',
+      title: '生存时间',
       detail: '',
       success: false,
     });
@@ -2036,6 +2040,7 @@ describe('T6 frontend mode binding', () => {
       hasRecord: true,
     }));
     expect(resultSummary.container.querySelector('.run-result__hero strong')?.textContent).toBe('2:05');
+    expect(resultSummary.container.querySelector('.run-result__hero span')).toBeNull();
     expect(resultSummary.container.querySelector('.run-result__support')?.textContent).toContain('24');
     expect(resultSummary.container.querySelector('.run-result__metric')).toBeNull();
     expect(resultSummary.container.querySelector('.run-result__rank')).toBeNull();
@@ -2084,6 +2089,9 @@ describe('T6 frontend mode binding', () => {
       title: '恭喜你破解谜题',
       detail: '',
       best: '当前最优步数：9步',
+      bestLabel: '当前最优步数',
+      bestValue: '9',
+      bestUnit: '步',
     });
     expect(puzzleCelebrationCopy({ outcome: 'record', pieces: 9, lines: 5, previousBest: 12 })).toMatchObject({
       title: '刷新个人纪录',
@@ -2099,7 +2107,7 @@ describe('T6 frontend mode binding', () => {
       score: 1800,
     };
     expect(terminalCopy(endedSprint)).toEqual({
-      title: '异变结果',
+      title: '得分',
       detail: '',
       success: false,
     });
@@ -2115,7 +2123,7 @@ describe('T6 frontend mode binding', () => {
       score: 3200,
     };
     expect(terminalCopy(endedClassic)).toEqual({
-      title: '经典结果',
+      title: '消行',
       detail: '',
       success: false,
     });
@@ -2144,14 +2152,16 @@ describe('T6 frontend mode binding', () => {
 
     const english = render(createElement(RunStats, { state: classic, language: 'en' }));
     const cadence = english.container.querySelector('[data-stat-role="fall-cadence"] strong');
-    const cadenceUnit = english.container.querySelector('[data-stat-role="fall-cadence"] .run-stats__label small');
+    const cadenceRow = english.container.querySelector('[data-stat-role="fall-cadence"] .run-stats__value-row');
+    const cadenceUnit = english.container.querySelector('[data-stat-role="fall-cadence"] .run-stats__unit');
     expect(cadence?.textContent).toBe('0.7');
+    expect(cadence?.getAttribute('aria-label')).toBe('0.7 s/cell');
     expect(cadenceUnit?.textContent).toBe('s/cell');
-    expect(english.container.querySelector('.run-stats__unit')).toBeNull();
     english.unmount();
 
-    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*12px[^}]*font-weight:\s*700/s);
-    expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-weight:\s*400/s);
+    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__value-row\s*\{[^}]*display:\s*flex[^}]*align-items:\s*baseline[^}]*white-space:\s*nowrap/s);
+    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__unit\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*12px[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\[data-stat-role="fall-cadence"\] \.run-stats__unit\s*\{[^}]*font-weight:\s*400/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s*\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*font-size:\s*19px/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s+strong\s*\{[^}]*display:\s*inline-flex[^}]*min-height:\s*1\.08em[^}]*align-items:\s*baseline/s);
   });

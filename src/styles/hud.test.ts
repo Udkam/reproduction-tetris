@@ -60,6 +60,14 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot__segment-label b\s*\{[^}]*font-size:\s*16px;/s);
   });
 
+  it('stacks the four desktop instruments above one aligned Next module', () => {
+    const desktop = hudCss.slice(0, hudCss.indexOf('@media (max-width: 599px)'));
+    expect(desktop).toMatch(/\.run-stats,[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\);/);
+    expect(desktop).toMatch(/\.game-side-panel,[\s\S]*align-content:\s*center;[\s\S]*width:\s*224px;/);
+    expect(desktop).toMatch(/\.preview-rail,[\s\S]*grid-template-rows:\s*auto 124px;[\s\S]*border-radius:\s*9px;/);
+    expect(desktop).toMatch(/\.run-stats \[data-stat-role\],[\s\S]*border-radius:\s*9px;/);
+  });
+
   it('gives both Survival countdowns one urgency treatment with a static reduced-motion state', () => {
     expect(hudCss).toMatch(/\.run-stats--survival \[data-urgent="true"\]\s*\{[^}]*animation:\s*survival-countdown-urgent/s);
     expect(hudCss).toMatch(/\.app\[data-reduced-motion="true"\][\s\S]*\.run-stats--survival \[data-urgent="true"\]\s*\{[^}]*animation:\s*none/s);

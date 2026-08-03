@@ -64,13 +64,14 @@
   grid-row: 1;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto auto;
-  align-self: center;
-  align-content: start;
-  gap: 14px;
+  align-self: stretch;
+  align-content: center;
+  gap: 10px;
   width: 224px;
-  height: auto;
-  max-height: none;
-  padding: 0 0 0 18px;
+  height: min(calc(100% - 8px), 920px);
+  max-height: 920px;
+  margin-block: auto;
+  padding: 0;
   background: transparent;
   border: 0;
   pointer-events: none;
@@ -98,9 +99,9 @@
 .run-stats--puzzle,
 .run-stats--mutation {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto;
-  gap: 6px;
+  gap: 7px;
   overflow: visible;
   border: 0;
 }
@@ -113,8 +114,8 @@
   grid-column: auto !important;
   align-content: center;
   min-width: 0;
-  min-height: 60px;
-  padding: 9px 10px;
+  min-height: 52px;
+  padding: 7px 10px;
   background: color-mix(in srgb, var(--raised) 82%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface)) !important;
   border-radius: 9px;
@@ -141,14 +142,19 @@
 }
 
 .run-stats [data-stat-role="fall-cadence"] .run-stats__label {
+  display: block;
+  min-width: 0;
+}
+
+.run-stats [data-stat-role="fall-cadence"] .run-stats__value-row {
   display: flex;
   min-width: 0;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 5px;
+  gap: 6px;
+  white-space: nowrap;
 }
 
-.run-stats [data-stat-role="fall-cadence"] .run-stats__label small {
+.run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
   flex: 0 0 auto;
   color: color-mix(in srgb, var(--muted) 82%, var(--ink));
   font-family: var(--font-ui);
@@ -165,7 +171,7 @@
   white-space: nowrap;
 }
 
-.app:lang(en) .run-stats [data-stat-role="fall-cadence"] .run-stats__label small {
+.app:lang(en) .run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
   font-weight: 400;
   -webkit-text-stroke: .18px currentColor;
   paint-order: stroke fill;
@@ -214,14 +220,17 @@
   align-content: start;
   min-width: 0;
   min-height: 0;
-  padding-top: 13px;
-  border-top: 1px solid var(--line);
+  padding: 9px 10px 10px;
+  background: color-mix(in srgb, var(--raised) 82%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface));
+  border-radius: 9px;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
 }
 
 .preview-rail .rail-label,
 .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
   display: block;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-size: 12px;
 }
 
@@ -390,7 +399,10 @@
     align-content: stretch;
     height: 100%;
     padding: 0;
+    background: transparent;
     border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .preview-rail .rail-label,
@@ -530,6 +542,18 @@
     gap: 6px;
   }
 
+  .run-stats,
+  .run-stats--collapse,
+  .run-stats--mutation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .run-stats--puzzle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+  }
+
   .run-stats [data-stat-role],
   .run-stats--collapse [data-stat-role],
   .run-stats--puzzle [data-stat-role],
@@ -557,7 +581,10 @@
     align-self: stretch;
     height: 100%;
     padding: 0;
+    background: transparent;
     border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .preview-rail .rail-label,

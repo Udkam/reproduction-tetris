@@ -36,4 +36,11 @@ describe('T27 run-result scorecard authority', () => {
     expect(result).toMatch(/@media \(max-width:\s*560px\)/);
     expect(result).toMatch(/\.app\[data-reduced-motion="true"\] \.action-sheet--run-result[\s\S]*animation:\s*none !important/);
   });
+
+  it('gives Puzzle the same portrait rhythm without a boxed horizontal summary', () => {
+    expect(result).toMatch(/\.action-sheet--puzzle-celebration\s*\{[\s\S]*width:\s*min\(31rem, calc\(100vw - 24px\)\)/);
+    expect(result).toMatch(/\.puzzle-celebration\s*\{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\)[\s\S]*border:\s*0;[\s\S]*background:\s*transparent;/);
+    expect(result).toMatch(/\.puzzle-celebration__value strong\s*\{[\s\S]*font-size:\s*clamp\(52px, 14vw, 70px\)/);
+    expect(result).toMatch(/\.puzzle-celebration__summary > span\s*\{[\s\S]*font-size:\s*12px/);
+  });
 });
