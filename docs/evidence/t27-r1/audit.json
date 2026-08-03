@@ -1,6 +1,6 @@
 {
-  "sourceSha": "cf19f6da8094250dee4b0aebde97e3f4ba6e8bb0",
-  "capturedAt": "2026-08-03T23:25:51.868Z",
+  "sourceSha": "db021f6d73f04cf48c2c7c4d1339a6767502fae2",
+  "capturedAt": "2026-08-03T23:52:10.558Z",
   "browser": "149.0.7827.55",
   "home": {
     "pathname": "/",
@@ -106,7 +106,7 @@
       "backgroundImage": "linear-gradient(90deg, color(srgb 0.223529 0.454902 0.533333 / 0.07), rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0) 62%, color(srgb 0.223529 0.454902 0.533333 / 0.07)), linear-gradient(color(srgb 0.223529 0.454902 0.533333 / 0.08), rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0) 66%, color(srgb 0.223529 0.454902 0.533333 / 0.08)), none",
       "animationName": "entry-cover-in",
       "glowAnimationName": "entry-cover-breathe",
-      "glowOpacity": "0.480015"
+      "glowOpacity": "0.48"
     },
     "reducedCover": {
       "coverageDelta": {
