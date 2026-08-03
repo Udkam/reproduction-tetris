@@ -158,6 +158,7 @@
 .settings-console__controls .language-control,
 .settings-console__controls .audio-controls,
 .settings-console__actions {
+  grid-area: auto;
   min-width: 0;
 }
 
@@ -230,8 +231,10 @@
 
 .settings-console__actions {
   grid-column: 1 / -1;
+  justify-self: stretch;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
   gap: 8px;
   margin-top: 18px;
   padding-top: 14px;
