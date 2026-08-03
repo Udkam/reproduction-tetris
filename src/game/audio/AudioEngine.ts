@@ -153,12 +153,13 @@ export class AudioEngine {
     this.playMutationActivations(mutationActivations);
   }
 
-  /** Three compact ascending notes lead into the existing Start confirmation. */
+  /** Three compact, two-layer ascending cues carry the whole 3-2-1 entry. */
   playEntryCountdown(digit: 3 | 2 | 1): void {
     if (!this.context || !this.master || !this.enabled) return;
-    const frequency = digit === 3 ? 330 : digit === 2 ? 392 : 494;
-    const gain = digit === 3 ? 0.09 : digit === 2 ? 0.1 : 0.11;
-    this.tone({ frequency, duration: 0.06, gain, type: 'sine' });
+    const frequency = digit === 3 ? 294 : digit === 2 ? 392 : 523.25;
+    const gain = digit === 3 ? 0.12 : digit === 2 ? 0.135 : 0.15;
+    this.tone({ frequency, duration: 0.085, gain, type: 'triangle' });
+    this.tone({ frequency: frequency * 2, duration: 0.034, gain: gain * 0.3, delay: 0.008, type: 'sine' });
   }
 
   destroy(): void {

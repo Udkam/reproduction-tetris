@@ -174,7 +174,7 @@ describe('AudioEngine original feedback', () => {
     expect(audioContextCloseCalls).toBe(1);
   });
 
-  it('plays 3-2-1 as three short ascending cues below the Start confirmation', async () => {
+  it('plays 3-2-1 as three stronger, two-layer ascending cues without a Start confirmation', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -183,9 +183,9 @@ describe('AudioEngine original feedback', () => {
     audio.playEntryCountdown(2);
     audio.playEntryCountdown(1);
 
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([330, 392, 494]);
-    expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
-    expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.08)).toBe(true);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([294, 588, 392, 784, 523.25, 1046.5]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine', 'triangle', 'sine', 'triangle', 'sine']);
+    expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.1)).toBe(true);
     audio.destroy();
   });
 
