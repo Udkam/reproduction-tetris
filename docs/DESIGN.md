@@ -124,15 +124,15 @@ legible against a busy stack without becoming a full-screen flash. Reduced motio
 the assembled I plus a static confirmation frame. The cue uses Reshape's teal palette,
 never Double's star language, and completes quickly enough to preserve input cadence.
 
-Mutation carriers never rely on item hue alone, but also never restyle every cell as a
-crate. The underlying tetromino keeps its ordinary material. A deterministic attachment
-cell owns one compact charm: a neutral charcoal socket, pale item pictogram, and
-item-colored outer ring. One very light whole-piece halo connects the charm to its body
-without repeated plates, rivets, or full cell rims. This same two-channel identity is
-rendered on the falling piece, locked carrier, and Next preview, so similar base/item
-colors remain separable. The charm is attached to the live carrier only; clearing or
-replacing it removes every overlay immediately. Reduced motion freezes the charm instead
-of removing it.
+Mutation carriers return to the pre-plate, pre-charm material language. The underlying
+tetromino keeps its ordinary body, while every one of its four cells receives the same
+fine item-specific surface mark and the connected carrier receives one compact core plus
+a restrained perimeter accent. There is no neutral key plate, crate frame, detached
+socket, or single-cell charm implying that only one mino owns the item. The same material
+language is rendered on the falling piece, locked carrier, and Next preview. All four
+cells retain one carrier identity: clearing any one triggers the item, removes that
+identity from every surviving sibling, and emits one activation only. Reduced motion
+keeps the marks static; clearing or replacing the carrier removes every overlay.
 
 ### Portrait result hierarchy
 
@@ -649,12 +649,16 @@ steady: no screen flash, alternating opacity, or bright/dark field pulse. Super
 multiplier strengthens detail and value inside the same bounded footprint. Reduced
 motion uses that same static endpoint.
 
-Supergravity uses the same no-flash discipline. Its field is made from constant-alpha
-downward acceleration traces and a restrained compression zone near the stack; motion
-may translate those traces but never oscillates the whole field's brightness. The
-effect is latched onto the already-airborne piece: timer expiry changes the HUD and
-future spawns, while that piece retains independent per-column settlement through its
-next lock. The latch is consumed by that lock and cannot leak to the following piece.
+Supergravity uses the same no-flash discipline, but no longer draws a board-wide top
+boundary or ambient field. Weight follows the airborne piece itself: each visible cell
+casts a short violet afterimage and tapered upward trail, so downward acceleration is
+read from the moving form rather than from unrelated screen decoration. The trail is
+clipped to the well, stays behind the solid piece, and disappears on lock without
+leaving an empty cell frame. Reduced motion keeps one quiet, static short-tail endpoint.
+The effect is latched onto the already-airborne piece: timer expiry changes the HUD and
+future spawns, while that piece retains both the trail and independent per-column
+settlement through its next lock. The latch is consumed by that lock and cannot leak to
+the following piece.
 
 Carrier material is owned only by extant cells. A consumed carrier can seed a bounded
 activation burst, but the renderer must not retain or reconstruct its former square
@@ -2327,7 +2331,8 @@ make local tactical changes without altering Puzzle or Survival's identity.
   Collapse or Sprint.
 - After the first two input pieces, a seeded deterministic item roll may attach one
   item identity to an incoming tetromino. The one identity is carried by all four
-  locked cells, while a single core-marked cell makes the carrier unmistakable. No
+  locked cells; every cell receives the same fine item surface while one connected
+  core and perimeter accent make the carrier unmistakable. No
   item exists in Classic, Survival, or Puzzle; no carrier is inserted from wall-clock
   randomness or a non-replayable source.
 - Clearing any cell belonging to a carrier activates that carrier exactly once. If

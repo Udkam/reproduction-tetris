@@ -118,14 +118,15 @@ The slice has thirteen player-visible acceptance requirements:
     units. Metal is loaded from the pinned repository dependency for offline packaging;
     no remote font request, fabricated weight face, or partial Kavivanar cascade may
     remain active.
-13. Every Mutation carrier remains identifiable when its item palette is close to the
-    underlying tetromino color, without turning every occupied cell into a crate. The
-    base tetromino material stays clean. One compact **attached charm** is placed on a
-    stable carrier cell: a neutral dark socket and pale pictogram provide contrast while
-    an item-colored ring and restrained whole-piece halo identify the item family. No
-    repeated cell plates, rivets, or boxed rims may overpower the tetromino. The same
-    charm grammar is readable on the falling piece, locked carrier, and Next preview;
-    reduced motion keeps it static, and clearing the carrier removes it completely.
+13. Every Mutation carrier returns to the earlier pre-plate, pre-charm material. The
+    base tetromino stays visible; all four cells receive the same fine item-specific
+    surface mark, and the connected carrier receives one compact core plus a restrained
+    perimeter accent. Do not draw a neutral key plate, crate, detached socket, or a
+    single-cell charm. The same grammar must remain readable on the falling piece,
+    locked carrier, and Next preview. Mechanically all four cells own one carrier ID:
+    clearing any one cell triggers the item exactly once and strips the identity from
+    every surviving sibling. Reduced motion keeps the marks static, and clearing the
+    carrier removes them completely.
 
 ### Required checkpoints and verification
 
@@ -769,10 +770,12 @@ single-Canvas ownership, and the remaining Phase-11 visual work stay unchanged.
     by a line clear, its material rim, cell outline, and attachment frame disappear
     with the cell. The one-shot activation may use local light or particles, but it may
     not redraw the cleared cell footprint as a lingering square cage.
-14. **Supergravity communicates weight without flashing.** Its persistent field keeps
-    constant opacity and uses compact downward acceleration traces plus local lower-well
-    compression instead of a pulsing emblem, opacity oscillation, or screen flash.
-    Reduced motion preserves the same readable weight endpoint without drift.
+14. **Supergravity communicates weight on the falling piece itself.** Remove the
+    board-wide top boundary and ambient field. While Supergravity applies, each visible
+    active cell owns a short violet afterimage with an upward-fading vertical tail,
+    rendered behind the solid piece and clipped to the well. The tail never flashes,
+    never becomes a full-board overlay, and vanishes at lock without leaving a cell
+    frame. Reduced motion keeps one static short-tail endpoint.
 15. **An airborne Supergravity piece keeps its landing contract.** If the ten-second
     timer expires after the current piece has spawned but before it locks, that piece
     still settles each occupied column independently when it eventually lands. The
