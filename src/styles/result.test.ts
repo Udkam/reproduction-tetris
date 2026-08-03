@@ -44,5 +44,8 @@ describe('T27 run-result scorecard authority', () => {
     expect(result).toMatch(/\.puzzle-celebration__value strong\s*\{[\s\S]*font-size:\s*clamp\(52px, 14vw, 70px\)/);
     expect(result).toMatch(/\.puzzle-celebration__value strong\s*\{[\s\S]*overflow:\s*visible;[\s\S]*font-weight:\s*700;[\s\S]*line-height:\s*1\.08;[\s\S]*text-overflow:\s*clip;/);
     expect(result).toMatch(/\.puzzle-celebration__summary > span\s*\{[\s\S]*font-size:\s*12px/);
+    expect(result).not.toMatch(/\.puzzle-celebration__constellation\s*\{/);
+    expect(result).not.toMatch(/\.puzzle-celebration__prism\s*\{/);
+    expect(result).not.toMatch(/grid-template-rows:\s*(?:84|90)px auto/);
   });
 });

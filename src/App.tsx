@@ -564,10 +564,6 @@ function PuzzleCelebrationPanel({ celebration, language }: { celebration: Puzzle
       data-outcome={celebration.outcome}
       aria-label={presentation.best}
     >
-      <div className="puzzle-celebration__constellation" aria-hidden="true">
-        <span className="puzzle-celebration__prism" />
-        <i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
-      </div>
       <div className="puzzle-celebration__summary">
         <div className="puzzle-celebration__value">
           <strong>{presentation.bestValue}</strong>

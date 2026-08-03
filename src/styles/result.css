@@ -226,27 +226,12 @@
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: 90px auto;
-  min-height: 194px;
-  padding: 8px 8px 18px;
+  min-height: 126px;
+  padding: 10px 8px 18px;
   place-items: center;
   border: 0;
   background: transparent;
   box-shadow: none;
-}
-
-.puzzle-celebration__constellation {
-  position: relative;
-  width: 132px;
-  min-height: 90px;
-  overflow: visible;
-  border: 0;
-  background: radial-gradient(circle at 50% 52%, color-mix(in srgb, var(--puzzle) 13%, transparent), transparent 52%);
-}
-
-.puzzle-celebration__prism {
-  top: 31px;
-  left: 49px;
 }
 
 .puzzle-celebration__summary {
@@ -359,14 +344,7 @@
 
   .puzzle-celebration {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 84px auto;
-    min-height: 178px;
-  }
-
-  .puzzle-celebration__constellation {
-    width: 132px;
-    min-height: 84px;
-    transform: none;
+    min-height: 118px;
   }
 
   .result-leaderboard li {
@@ -376,8 +354,7 @@
 }
 
 .app[data-reduced-motion="true"] .action-sheet--run-result,
-.app[data-reduced-motion="true"] .action-sheet--puzzle-celebration,
-.app[data-reduced-motion="true"] .puzzle-celebration__constellation i {
+.app[data-reduced-motion="true"] .action-sheet--puzzle-celebration {
   animation: none !important;
   transition: none !important;
 }

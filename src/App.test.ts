@@ -416,7 +416,8 @@ describe('Puzzle completion ceremony', () => {
     expect(first.view.container.querySelector('.puzzle-celebration__value small')?.textContent).toBe('步');
     expect(first.view.container.querySelector('.puzzle-celebration__summary > span')?.textContent).toBe('当前最优步数');
     expect(first.view.container.textContent).not.toContain('首次破解');
-    expect(first.view.container.querySelectorAll('.puzzle-celebration__constellation i')).toHaveLength(10);
+    expect(first.view.container.querySelector('.puzzle-celebration__constellation')).toBeNull();
+    expect(first.view.container.querySelector('.puzzle-celebration__prism')).toBeNull();
     expect(first.onCanonicalCompletion).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ completedLevelId: puzzleId, pieceCount: 9 }));
     first.view.unmount();
 
