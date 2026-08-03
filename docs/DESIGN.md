@@ -42,11 +42,36 @@ the Canvas never looks pasted onto the page. The current theme is a persisted UI
 preference and may update a mounted runtime presentation, but it never enters Core,
 replay hashes, scoring, or saved game state.
 
-Settings presents the three choices as one labelled, arrow-key navigable swatch rail.
-Each option combines a name with three small semantic color samples, so selection is
-not communicated by hue alone. Enter activates the focused option, focus remains
-visible, and reduced motion removes theme cross-fades. Theme names and accessible
-descriptions are localized; identifiers and storage values remain stable English keys.
+Settings presents the three choices as one labelled, arrow-key navigable theme rail.
+No option uses a circle, segmented chip, or detached color sample. The complete button
+is the sample: its field, ink, edge, and accent come from that theme. A visible selected
+outline/check and `aria-pressed` keep selection from depending on hue. Enter activates
+the focused option, focus remains visible, and reduced motion removes theme cross-fades.
+Theme names and accessible descriptions are localized; identifiers and storage values
+remain stable English keys.
+
+Gameplay interruption sheets share the board's horizontal centre. Pause and restart
+confirmation are compact sheets on that axis rather than detached right-side cards.
+Their dim layer preserves readable Next content on the left; only the interrupted board
+may sit behind the sheet. Next itself is an open Pixi forecast with no DOM or Canvas
+backdrop, and idle Mutation state contains no placeholder dash or rule.
+
+The mirrored instruments are deliberately larger than the first T27-R1 pass. Next gains
+enough drawing area to read at a glance; statistics use a stronger label/value scale on
+the right. A value change may settle upward over roughly 180 ms with opacity, but may
+not resize the rail, flash, pulse continuously, or move the centred board. Reduced motion
+removes this cue.
+
+### Inner-page navigation
+
+The application uses the browser History API without a router dependency. Canonical
+paths are `/` for Home, `/puzzles` for the Puzzle library, `/play/classic`,
+`/play/survival`, `/play/mutation`, and `/play/puzzle/:stablePuzzleId`. Initial render
+parses the current path, direct links enter the same canonical React state as visible
+controls, and `popstate` restores screen, mode, and selected Puzzle. Invalid modes or
+Puzzle IDs replace to `/`. First-entry rules are still a modal gate: confirming pushes
+the destination path, cancelling leaves the current path unchanged. Core and replay
+state never read URL values.
 
 ## 2026-08-03 T27 — personalised Classic pace and restrained feedback
 

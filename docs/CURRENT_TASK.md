@@ -7,7 +7,7 @@ visual correction supersedes T27 requirements 9 and 10 only where they describe 
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
 persistence migrations, the single-canvas boundary, or Mutation mechanics.
 
-The correction has four coupled acceptance requirements:
+The correction has eight coupled acceptance requirements:
 
 1. The live gameplay field becomes an axis-symmetric three-column stage. The 10 x 20
    board occupies the true horizontal centre column. Left and right instrument rails
@@ -37,6 +37,26 @@ The correction has four coupled acceptance requirements:
      phosphor teal/blue/violet accents, and a deeper blue-black well without neon glow;
    - **暖砂日晷 / Sunstone** — a warm bone and sand field, graphite ink, copper/olive
      accents, and a charcoal-brown well with etched rather than glossy surfaces.
+5. Theme choices do not use circular or segmented color samples. Each complete button
+   uses its own theme field, ink, edge, and accent as the preview; pressed state adds a
+   semantic outline/check treatment without replacing that theme-native background with
+   the generic action blue.
+6. Pause and restart-confirmation sheets are centred on the invariant board/page axis.
+   They may cover the interrupted board, but the left Next instrument stays outside the
+   sheet and remains visibly populated through the dim layer. No gameplay sheet may be
+   stranded at the far right edge.
+7. The open-space instruments remain genuinely frameless in both DOM and Pixi. Next has
+   no enclosing rectangle, backdrop, rounded well, shadow, or blank placeholder frame.
+   Idle Mutation status contains no sentence, spectrum, dash, underline, or horizontal
+   rule. Left and right rails become larger desktop instruments, with the statistics
+   side receiving the strongest hierarchy. Value changes may use one short opacity and
+   vertical-settle cue; reduced motion disables it and no animation changes layout.
+8. Home, Puzzle library, and every live mode are real inner pages backed by browser
+   History paths: `/`, `/puzzles`, `/play/classic`, `/play/survival`,
+   `/play/mutation`, and `/play/puzzle/:id`. Direct loading, browser Back/Forward, visible
+   navigation controls, and first-entry rule confirmation all converge on the same
+   canonical screen/mode/puzzle state. Unknown paths replace to `/`; routing never enters
+   Core, changes a seed, or adds a dependency.
 
 Theme selection writes only the current `tetramorph:*` preference key, survives reload,
 and changes the mounted game without rebuilding runtime or canonical state. Color never
@@ -47,10 +67,13 @@ Canvas, visible Next, no overlap, no horizontal overflow, and no clipped control
 ### T27-R1 checkpoints
 
 1. Commit this contract before product code.
-2. Commit theme tokens, persistence, Settings control, localization, and direct tests.
-3. Commit the centred frameless HUD topology, Pixi frameless preview support, and direct
-   React/renderer/CSS tests.
-4. After the final source edit run one typecheck, the complete two-worker suite, one
+2. Commit theme tokens, persistence, theme-native Settings controls, localization, and
+   direct tests.
+3. Commit the centred frameless HUD topology, centred gameplay sheets, larger animated
+   instruments, Pixi frameless preview support, and direct React/renderer/CSS tests.
+4. Commit History-backed inner-page routing and direct-link/popstate tests as its own
+   rollback point.
+5. After the final source edit run one typecheck, the complete two-worker suite, one
    production build, and one controlled browser batch covering all three themes plus
    Classic, Mutation, Puzzle dual Next, Pause, and compact layouts. Independent
    read-only QA must accept the exact candidate before changelog closure and push.
