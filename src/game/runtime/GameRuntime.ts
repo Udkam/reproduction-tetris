@@ -189,6 +189,12 @@ export class GameRuntime {
     this.flushRender(0);
   }
 
+  /** Re-renders renderer-owned presentation after React commits new layout geometry. */
+  refreshPresentation(): void {
+    if (this.destroyed) return;
+    this.flushRender(0);
+  }
+
   setInputEnabled(enabled: boolean): void {
     if (this.inputEnabled === enabled) return;
     this.inputEnabled = enabled;

@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -1577,6 +1578,13 @@ export function GameSession({
     runtime?.setAudioEnabled(audioEnabled);
     runtime?.setAudioVolume(audioVolume);
   }, [audioEnabled, audioVolume, runtime]);
+
+  useLayoutEffect(() => {
+    // Gameplay sheets change the board/rail layout in the same React commit that
+    // changes their visibility. Re-render Pixi after that layout is committed so
+    // the live Next piece is positioned against the final DOM slot geometry.
+    runtime?.refreshPresentation();
+  }, [exitOpen, restartConfirmOpen, runtime, settingsOpen, state.status]);
 
   useEffect(() => {
     languageRef.current = language;

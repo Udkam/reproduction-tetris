@@ -71,6 +71,7 @@ interface RuntimeTestInstance {
   setInputEnabled: ReturnType<typeof vi.fn>;
   setSurvivalEntryBedrockRows: ReturnType<typeof vi.fn>;
   setReducedMotion: ReturnType<typeof vi.fn>;
+  refreshPresentation: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
   restart: ReturnType<typeof vi.fn>;
   undoPuzzle: ReturnType<typeof vi.fn>;
@@ -95,6 +96,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     readonly setInputEnabled = vi.fn();
     readonly setSurvivalEntryBedrockRows = vi.fn();
     readonly setReducedMotion = vi.fn();
+    readonly refreshPresentation = vi.fn();
     readonly setAudioEnabled = vi.fn();
     readonly setAudioVolume = vi.fn();
     readonly start = vi.fn(() => {
@@ -729,7 +731,9 @@ describe('T6 frontend mode binding', () => {
     const queuedPiece = runtime.getState().queue[0]!;
     expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
 
+    runtime.refreshPresentation.mockClear();
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    expect(runtime.refreshPresentation).toHaveBeenCalled();
     expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(true);
     expect(view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.disabled).toBe(false);
     expect(view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.disabled).toBe(false);

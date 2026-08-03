@@ -117,6 +117,20 @@ describe('GameRuntime public state boundary', () => {
     runtime.destroy();
   });
 
+  it('refreshes renderer-owned presentation without mutating canonical state', async () => {
+    rendererRender.mockClear();
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false });
+    await runtime.mount(document.createElement('div'));
+    rendererRender.mockClear();
+    const canonicalState = runtime.getState();
+
+    runtime.refreshPresentation();
+
+    expect(rendererRender).toHaveBeenCalledWith(canonicalState, [], 0);
+    expect(runtime.getState()).toBe(canonicalState);
+    runtime.destroy();
+  });
+
   it('gates every public and QA gameplay entry until input is enabled', async () => {
     const onState = vi.fn();
     const runtime = new GameRuntime({ seed: 123, onState, audioEnabled: false, inputEnabled: false });
