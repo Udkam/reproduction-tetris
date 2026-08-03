@@ -30,7 +30,7 @@ slice; this file owns the complete ordered programme.
 
 ## Phase C — final UI system
 
-- Brand: Playwrite NZ Basic. UI: Space Grotesk. Data: JetBrains Mono. Chinese: Noto Sans SC.
+- Brand: Playwrite NZ Basic. UI: Space Grotesk. Data: Geist Mono. Chinese: Noto Sans SC.
 - Audit Settings, HUD, results, and leaderboards for overlap, undersized copy, truncation,
   and structural whitespace at supported desktop, portrait, and short-landscape sizes.
 - Recompose Settings into three tabs: Settings (language, SFX, volume, reduced motion),
