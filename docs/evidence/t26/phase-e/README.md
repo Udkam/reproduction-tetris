@@ -50,5 +50,16 @@ After the last source/test change:
 - `npm.cmd run build` — pass, 756 modules transformed;
 - targeted runtime/audio teardown tests — 3 files and 28 tests passed.
 
-The capture scripts are retained beside the evidence so the lifecycle result
-can be reproduced without leaving a persistent server or browser.
+## Reproduction
+
+From a clean clone, install the committed dependencies and the pinned Chromium
+runtime once, then run the bounded owner script:
+
+```powershell
+npm.cmd ci
+npx.cmd playwright install chromium
+node docs/evidence/t26/phase-e/run-phase-e-evidence.mjs
+```
+
+The repository-declared Playwright dependency is used directly. The runner closes its
+single server and browser in `finally`, so it leaves no persistent helper or listener.

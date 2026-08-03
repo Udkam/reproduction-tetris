@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { chromium } from 'file:///C:/Users/Alex%20Chen/.codex/skills/develop-web-game/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const origin = process.argv[2] ?? 'http://127.0.0.1:4192';
 const output = path.resolve('docs/evidence/t26/phase-f');

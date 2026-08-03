@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { chromium } from 'file:///C:/Users/Alex%20Chen/.codex/skills/develop-web-game/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const origin = process.argv[2] ?? 'http://127.0.0.1:4178';
 const output = path.resolve('docs/qa/evidence/tetris-t21/browser');

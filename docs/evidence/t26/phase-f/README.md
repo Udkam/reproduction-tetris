@@ -33,9 +33,13 @@ cells, and no QA global.
 Run the bounded owner script from the repository root:
 
 ```powershell
+npm.cmd ci
+npx.cmd playwright install chromium
 node docs/evidence/t26/phase-f/run-phase-f-evidence.mjs
 ```
 
-The script uses deterministic seeds and only the public QA command surface to
-reach the Classic clear, Survival warning, and Mutation Bomb impact. It does
-not inject a board state or leave a persistent server/browser process.
+The first two commands install the committed dependency graph and pinned Chromium
+runtime for a clean clone. The capture script imports the repository-declared
+Playwright package, uses deterministic seeds and only the public QA command surface to
+reach the Classic clear, Survival warning, and Mutation Bomb impact. It does not inject
+a board state or leave a persistent server/browser process.

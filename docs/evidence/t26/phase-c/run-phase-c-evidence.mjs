@@ -6,8 +6,6 @@ const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.
 const origin = 'http://127.0.0.1:4189';
 const vite = path.join(repository, 'node_modules/vite/bin/vite.js');
 const capture = path.join(repository, 'docs/evidence/t26/phase-c/capture-phase-c-evidence.mjs');
-const client = 'C:/Users/Alex Chen/.codex/skills/develop-web-game/scripts/web_game_playwright_client.js';
-const clientOutput = path.join(repository, 'docs/evidence/t26/phase-c/client');
 
 const preview = spawn(process.execPath, [vite, 'preview', '--host', '127.0.0.1', '--port', '4189', '--strictPort'], {
   cwd: repository,
@@ -48,14 +46,6 @@ const runNode = (script, args) => new Promise((resolve, reject) => {
 try {
   await waitForPreview();
   process.stdout.write(`preview_pid=${preview.pid}\n`);
-  await runNode(client, [
-    '--url', origin,
-    '--iterations', '1',
-    '--pause-ms', '150',
-    '--headless', 'true',
-    '--screenshot-dir', clientOutput,
-    '--actions-json', '[{"buttons":[],"frames":1}]',
-  ]);
   await runNode(capture, [origin]);
 } finally {
   if (preview.exitCode === null) preview.kill();
