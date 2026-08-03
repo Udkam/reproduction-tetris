@@ -33,6 +33,9 @@ advances one 0.1-second tier until the selected fastest bound. Settings may chan
 next-run interval while a run exists, but it cannot mutate that run; the runtime injects
 both new values only when it constructs or restarts the next Classic state. Invalid or
 stale storage falls back to the `0.8` through `0.1` interval rather than entering Core.
+The two range controls share the Settings control blue through explicit local range
+tokens; browser-default bright blue and unrelated grey states are not part of the
+component. Focus remains visible and contrast-safe.
 
 ### Survival pace feedback
 

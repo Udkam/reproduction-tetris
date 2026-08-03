@@ -26,7 +26,8 @@ The slice has eight player-visible acceptance requirements:
    the opening bound. Every ten cleared lines still accelerates by `0.1` seconds per
    cell until the chosen fastest bound. Changing either bound never changes the current
    falling run and applies on the next restart, play-again, or newly entered Classic
-   run.
+   run. Both range controls use the Settings panel's established blue control palette
+   for track, thumb, focus, and value feedback instead of browser-default mixed colors.
 4. Survival falling rocks advance at exactly **7x** the current ordinary Survival
    gravity through the existing deterministic integer accumulator. The piece-count
    schedule, warning lead, one-column one-or-two-rock body, collision rules, random
