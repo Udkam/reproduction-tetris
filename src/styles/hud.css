@@ -152,7 +152,7 @@
   flex: 0 0 auto;
   color: color-mix(in srgb, var(--muted) 82%, var(--ink));
   font-family: var(--font-ui);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1;

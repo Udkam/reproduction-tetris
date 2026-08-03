@@ -2150,7 +2150,7 @@ describe('T6 frontend mode binding', () => {
     expect(english.container.querySelector('.run-stats__unit')).toBeNull();
     english.unmount();
 
-    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*9px[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*12px[^}]*font-weight:\s*700/s);
     expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-weight:\s*400/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s*\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*font-size:\s*19px/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s+strong\s*\{[^}]*display:\s*inline-flex[^}]*min-height:\s*1\.08em[^}]*align-items:\s*baseline/s);
