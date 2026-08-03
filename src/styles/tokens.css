@@ -8,7 +8,7 @@
   --font-ui-zh: "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --font-display-zh: "Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif;
   --font-ui-en: "Space Grotesk", "Segoe UI", sans-serif;
-  --font-data: "JetBrains Mono", "Cascadia Mono", monospace;
+  --font-data: "Geist Mono", "Cascadia Mono", monospace;
   --font-body: var(--font-ui-zh);
   --font-ui: var(--font-ui-zh);
   --font-display: var(--font-display-zh);
@@ -107,6 +107,7 @@ h3 {
   .result-leaderboard li > b,
   .result-leaderboard__run strong,
   .result-leaderboard li > time,
+  [data-record-field],
   .puzzle-gallery__index,
   .puzzle-gallery__page,
   .level-entry__number

@@ -36,10 +36,10 @@ font CDN at runtime.
 - Packaged subsets: Latin normal weights 400, 500, 600, and 700.
 - License: SIL Open Font License 1.1, distributed in the package `LICENSE`.
 
-## JetBrains Mono
+## Geist Mono
 
-- Package: `@fontsource/jetbrains-mono` `5.3.0`.
-- Upstream: <https://github.com/JetBrains/JetBrainsMono>.
+- Package: `@fontsource/geist-mono` `5.3.0`.
+- Upstream: <https://github.com/vercel/geist-font>.
 - Packaged subsets: Latin normal weights 400, 500, 600, and 700.
 - License: SIL Open Font License 1.1, distributed in the package `LICENSE`.
 

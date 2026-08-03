@@ -5,7 +5,7 @@ export const TYPOGRAPHY = {
     chineseUi: '"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif',
     chineseDisplay: '"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif',
     englishUi: '"Space Grotesk", "Segoe UI", sans-serif',
-    data: '"JetBrains Mono", "Cascadia Mono", monospace',
+    data: '"Geist Mono", "Cascadia Mono", monospace',
   },
   weight: {
     /** Playwrite NZ Basic ships 100–400; 400 is its real maximum weight. */
