@@ -60,6 +60,11 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.preview-rail--puzzle \.next-slot__segment-label b\s*\{[^}]*font-size:\s*16px;/s);
   });
 
+  it('gives both Survival countdowns one urgency treatment with a static reduced-motion state', () => {
+    expect(hudCss).toMatch(/\.run-stats--survival \[data-urgent="true"\]\s*\{[^}]*animation:\s*survival-countdown-urgent/s);
+    expect(hudCss).toMatch(/\.app\[data-reduced-motion="true"\][\s\S]*\.run-stats--survival \[data-urgent="true"\]\s*\{[^}]*animation:\s*none/s);
+  });
+
   it('removes live Puzzle diagnostics and keeps the reclaimed rail structurally quiet', () => {
     expect(hudCss).not.toContain('.puzzle-guidance');
     expect(hudCss).not.toContain('.puzzle-guidance__metrics');
