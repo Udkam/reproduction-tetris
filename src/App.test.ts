@@ -2106,6 +2106,8 @@ describe('T6 frontend mode binding', () => {
 
     expect(sourceHudStyles).toMatch(/fall-cadence[^}]*strong\s*>\s*span[^}]*display:\s*inline/s);
     expect(sourceHudStyles).toMatch(/\.run-stats__unit\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\.run-stats__unit\s*\{[^}]*font-size:\s*12px[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*column-gap:\s*4px/s);
     expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\.run-stats__unit\s*\{[^}]*font-weight:\s*400/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s*\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*font-size:\s*19px/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s+strong\s*\{[^}]*display:\s*inline-flex[^}]*min-height:\s*1\.08em[^}]*align-items:\s*baseline/s);
