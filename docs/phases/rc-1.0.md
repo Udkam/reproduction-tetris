@@ -1,9 +1,10 @@
 # TetraMorph v1.0 Release Candidate Plan
 
-Status: active from 2026-08-03. Phases A-E are verified. Phase F content exists, but
-final read-only QA rejected candidate `62163b1` for non-portable evidence, conflicting
-status records, and stale package version metadata. `docs/CURRENT_TASK.md` owns the
-currently authorised correction; this file owns the complete ordered programme.
+Status: active from 2026-08-03. Phases A-F are verified on corrected source `85a3431`
+and evidence `6d2255a`. The first final-QA rejection has been repaired; the second
+independent read-only decision and coordinator acceptance remain open.
+`docs/CURRENT_TASK.md` owns the final acceptance slice; this file owns the complete
+ordered programme.
 
 ## Product guardrails
 

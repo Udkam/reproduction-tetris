@@ -19,15 +19,13 @@ evidence all support the same claim.
 | D | Puzzle copy/guidance/visual consistency with frozen boards/order | Current-source evidence preserves the three authored curriculum bands, existing board order, and the accepted technique copy. | `VERIFIED` |
 | E | Final gates and clean lifecycle teardown | Source `6af5403` passes typecheck, `318 passed / 3 skipped`, build, direct idempotent teardown tests, and evidence `323d01d`. Return Home restores zero Canvas/RAF, four baseline listeners, one closed AudioContext, and no QA bridge. | `VERIFIED` |
 | E | Bundle, font, dependency, and unused-asset inspection | Source `4d37d59` emits only 13 required WOFF2 faces, removes 57.6% of font payload, removes proven dead legacy font assets, retains the measured 546.62 kB main warning, and has a clean direct dependency tree plus scoped OSV result. | `VERIFIED` |
-| F | Current-source final frames and 30–60 second capture plan | Candidate `62163b1` contains the six-frame package and capture plan, but its runner imports Playwright from a personal absolute Codex path. | `REJECTED BY FINAL QA`; regenerate with the repository dependency. |
-| F | GitHub, resume, portfolio copy and RC Release Notes | Candidate `62163b1` contains the requested copy and notes. Package metadata still reports `0.1.0`. | `REJECTED BY FINAL QA`; align metadata to `1.0.0-rc.1`. |
-| Final | Independent read-only QA and coordinator acceptance | First final read-only QA reported 0 P0, 2 P1, 1 P2: non-portable evidence, conflicting status documents, and stale package version. | `BLOCKED BY QA CORRECTION` |
+| F | Current-source final frames and 30–60 second capture plan | Evidence `6d2255a` binds the six final frames and capture plan to corrected source `85a3431`; its runner imports pinned repository Playwright and releases ports 4191/4192. | `VERIFIED` |
+| F | GitHub, resume, portfolio copy and RC Release Notes | README, Showcase, and Release Notes are present; npm metadata and committed lockfile agree on `1.0.0-rc.1`. | `VERIFIED` |
+| Final | Independent read-only QA and coordinator acceptance | First QA rejection is corrected. Typecheck, `318 passed / 3 skipped`, build, committed-lock `npm ci`, direct tree, OSV, and refreshed browser proof pass. | `SECOND QA PENDING` |
 
 ## Current bounded slice
 
-Phase F correction is active. The existing Home, Classic, Survival, Mutation, Puzzle,
-and Settings package must be rebound to a portable `1.0.0-rc.1` candidate using the
-repository-declared Playwright dependency. Gameplay, Puzzle content/order, presentation
-design, ranking, and persistence schemas remain frozen. Final acceptance remains
-fail-closed until all status records agree and independent read-only QA accepts the
-corrected exact range.
+Phase F is verified on the corrected portable `1.0.0-rc.1` candidate. Gameplay, Puzzle
+content/order, presentation design, ranking, and persistence schemas stayed frozen.
+Final acceptance remains fail-closed until the scoped secret scan and second independent
+read-only QA accept the exact committed range.

@@ -1387,3 +1387,17 @@
   motion. Typecheck, the one-worker 22-file / 146-test suite, the 746-module build,
   and desktop/portrait/landscape browser audits pass with one gameplay canvas, zero DOM
   board cells, no overflow, and zero console/page errors.
+
+## 2026-08-03 — T26 v1.0.0-rc.1 portable release correction candidate
+
+- Reopened Phase F after final read-only QA rejected `62163b1` with 0 P0, 2 P1, and 1
+  P2: evidence was machine-specific, status documents conflicted, and package metadata
+  was stale.
+- Aligned package and lock metadata to `1.0.0-rc.1`, pinned Playwright `1.61.1`, removed
+  personal absolute paths from executable evidence scripts, and documented clean-clone
+  Chromium setup. Gameplay and presentation source remained frozen.
+- Refreshed Phase-E lifecycle and Phase-F six-frame evidence on source `85a3431` in
+  Chromium `149.0.7827.55`; ports `4191/4192` were released and both audits are clean.
+- Typecheck, `318 passed / 3 skipped`, the 756-module build, committed-lock `npm ci`,
+  direct dependency inspection, and OSV pass. This is a corrected candidate, not final
+  acceptance; scoped gitleaks and the second independent QA are still required.

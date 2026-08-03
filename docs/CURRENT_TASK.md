@@ -5598,7 +5598,7 @@ changed by these refinements.
 
 Task ID: `TETRIS-T26-RC-PORTABLE-RELEASE-023`
 
-Status: **IN PROGRESS — FINAL QA REJECTED CANDIDATE `62163b1`**.
+Status: **CORRECTED CANDIDATE READY FOR SECOND INDEPENDENT QA**.
 
 Independent read-only QA found no P0 product failure, but final acceptance remains
 fail-closed until all of the following are corrected and reverified together:
@@ -5618,3 +5618,13 @@ This correction may change package metadata, the committed lockfile, active T26
 evidence runners/readmes, regenerated Phase-E/Phase-F evidence, and coordinator-owned
 release documents. It may not change gameplay, presentation, Puzzle content/order,
 ranking, persistence, renderer behavior, or the accepted release scope.
+
+Correction checkpoints: contract `3dc5dfb`; npm version/dependency metadata `e4e97a1`;
+portable evidence runners `85a3431`; refreshed lifecycle/showcase evidence `6d2255a`.
+The corrected source reports `1.0.0-rc.1`, imports Playwright from the pinned repository
+dependency, and has no executable browser-evidence script containing a personal path.
+Post-source gates pass typecheck, `318 passed / 3 skipped`, the 756-module build, a clean
+`npm ci` from the committed lockfile, a clean direct dependency tree, and OSV with no
+known issue. Phase-E/F browser audits bind to source `85a3431`, report no errors or
+cleanup residue, and release ports `4191` and `4192`. Final acceptance and push remain
+blocked until gitleaks and the second independent read-only QA pass the committed range.

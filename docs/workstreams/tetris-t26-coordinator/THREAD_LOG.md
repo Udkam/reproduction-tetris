@@ -81,3 +81,20 @@
   release its exact PID/port; no watcher, indexer, Serena, or persistent helper.
 - Blocker: final acceptance is fail-closed on the correction and second QA pass.
 - Next action: commit this contract checkpoint, then align Playwright/version metadata.
+
+## 2026-08-03 — Portable correction frozen for second QA
+
+- Checkpoints: contract `3dc5dfb`; metadata/lock `e4e97a1`; portable browser runners
+  `85a3431`; refreshed evidence `6d2255a`.
+- Version is `1.0.0-rc.1` in package and lock metadata. Playwright `1.61.1` is a pinned
+  development dependency, imports resolve by package name, and a scoped executable-script
+  scan finds no personal home/Codex path.
+- Final post-source commands pass: typecheck; complete suite (`318 passed / 3 skipped`);
+  production build (756 modules); committed-lock `npm ci`; clean `npm ls --depth=0`;
+  OSV Scanner 2.4.0 with no issue.
+- Phase-E lifecycle audit and Phase-F six-frame audit bind to source `85a3431` in Chromium
+  `149.0.7827.55`, report no browser errors or cleanup residue, and leave no listener on
+  ports `4191` or `4192`. The three changed Phase-F frames were visually inspected.
+- Blocker: scoped gitleaks and second independent read-only QA remain.
+- Next action: commit synchronized candidate status, run the secret scan, then request
+  exact-range QA without opening a server, browser, test, build, or writer process.

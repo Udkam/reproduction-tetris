@@ -1520,3 +1520,18 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   desktop/portrait/short-landscape browser review found one canvas, zero DOM board
   cells, zero console errors, and no material overflow. The final integrated gates,
   candidate evidence, and independent read-only QA are still pending.
+
+## 2026-08-03 — T26 portable RC correction ready for final QA
+
+- The first final read-only QA found no P0, but rejected candidate `62163b1` for a
+  personal absolute Playwright import, inconsistent RC status documents, and npm version
+  `0.1.0` beneath v1.0 RC release copy.
+- Contract `3dc5dfb` reopened a bounded correction. Metadata `e4e97a1` aligns both npm
+  files to `1.0.0-rc.1` and pins Playwright `1.61.1`; evidence tooling `85a3431` removes
+  personal paths from all executable browser scripts and documents clean-clone setup.
+- Refreshed evidence `6d2255a` binds Phase E/F to source `85a3431`. Typecheck, 318 passed
+  / 3 skipped tests, the 756-module build, committed-lock `npm ci`, direct dependency
+  tree, and OSV pass. Both evidence servers released their ports and audits report no
+  browser error or cleanup residue.
+- Phase F is verified; final acceptance and push remain blocked on the scoped secret
+  scan and a second independent read-only QA decision.

@@ -1,8 +1,8 @@
-# TetraMorph v1.0 Release Candidate
+# TetraMorph 1.0.0-rc.1 Candidate Package
 
 Date: 2026-08-03
 
-TetraMorph v1.0 RC freezes the current four-mode game as a coherent, testable portfolio
+TetraMorph 1.0.0-rc.1 freezes the current four-mode game as a coherent, testable portfolio
 release. This milestone focuses on clarity, visual consistency, deterministic behavior,
 and clean delivery rather than expanding the feature set.
 
@@ -49,6 +49,7 @@ clipping, horizontal overflow, wrong font roles, DOM board cells, or console err
 
 ## Scope note
 
-This is the validated web release candidate. Native desktop/Steam packaging, store
-metadata, platform SDK integration, signing, and distribution QA are separate future
-delivery work and are not claimed by this milestone.
+This web candidate package has passed the implementation, engineering, and evidence
+gates and is awaiting the final independent acceptance decision. Native desktop/Steam
+packaging, store metadata, platform SDK integration, signing, and distribution QA are
+separate future delivery work and are not claimed by this milestone.
