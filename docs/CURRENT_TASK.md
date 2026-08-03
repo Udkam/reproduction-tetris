@@ -16,7 +16,10 @@ The slice has eight player-visible acceptance requirements:
 2. Locally packaged **Kavivanar 400** replaces Space Grotesk for ordinary English UI.
    Playwrite NZ Basic remains exclusive to the `TetraMorph` wordmark, Noto Sans SC
    remains the Chinese face, and Geist Mono remains the numeric/data face. English text
-   must wrap without overlap, clipping, disappearance, or synthetic weights.
+   must wrap without overlap, clipping, or disappearance. Because Kavivanar publishes
+   only Regular 400, Chromium receives a restrained optical ink compensation rather
+   than a fabricated font face. Mixed values split their roles: digits remain Geist
+   Mono, while alphabetic units such as `s/cell` use Kavivanar.
 3. Classic Settings exposes a persisted starting gravity from `1.0` through `0.1`
    seconds per cell in `0.1` steps. A fresh profile starts at `0.8`; changing the
    preference never changes the current falling run and applies on the next restart,

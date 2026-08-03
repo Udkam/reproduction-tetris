@@ -14,9 +14,13 @@ legible without increasing visual noise.
 The wordmark remains the only Playwrite NZ Basic text. Ordinary English interface copy
 uses the locally packaged Kavivanar regular face at its real 400 weight. Chinese keeps
 Noto Sans SC and numeric/data roles keep Geist Mono, so applying Kavivanar never changes
-score columns, timers, dates, keycaps, or board indices. Chinese Home removes its
-positioning line and collapses that line from layout; English Home retains its concise
-English line. Every fallback remains local/system-safe for offline Steam packaging.
+score digits, timers, dates, keycaps, or board indices. Alphabetic units inside mixed
+readouts are separate UI spans and therefore still use Kavivanar. Since the family has
+no bold file, English UI receives a subtle, constant optical ink stroke to improve
+small-size legibility; it does not invent or declare a Kavivanar 700 face, and it does
+not touch the wordmark or data glyphs. Chinese Home removes its positioning line and
+collapses that line from layout; English Home retains its concise English line. Every
+fallback remains local/system-safe for offline Steam packaging.
 
 ### Classic starting gravity
 
