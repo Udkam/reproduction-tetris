@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-08-03 — T26 RC Phase A project identity and compatibility verified
+
+- Published TetraMorph as the package and README identity, with public Features,
+  Technical Highlights, Controls, Development, and Screenshots sections.
+- Moved current rule-intro, leaderboard, and Puzzle-progress writes to `tetramorph:*`.
+  Existing `tetris:*`, `qingliu:*`, and `stack-order:*` values remain read-only,
+  directly tested migration inputs and are never deleted during adoption.
+- Renamed the maintained runtime/layout automation globals to
+  `__TETRAMORPH_QA__` and `__TETRAMORPH_LAYOUT_QA__` across source, tests, and Python
+  evidence scripts. A non-document active-name scan finds no retired project identity.
+- Phase-A targeted tests, final typecheck, the complete suite (`308 passed / 3
+  skipped`), and the 760-module production build pass. This nonvisual slice started no
+  server or browser and is retained as four bounded rollback checkpoints.
+
 ## 2026-08-03 — T25 invariant Home mode typography implemented
 
 - Bound the permanent English Home names `Classic`, `Survival`, `Mutation`, and

@@ -2,7 +2,7 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASE A IN PROGRESS.** The accepted game remains the product
+**Status (2026-08-03): PHASE A VERIFIED; PHASES B-C NEXT.** The accepted game remains the product
 baseline. This is a convergence programme: no Core rewrite, renderer replacement,
 fifth mode, account system, server dependency, or broad React migration is authorised.
 Each change must improve first-time understanding, portfolio presentation, or long-term
@@ -19,13 +19,21 @@ slice is Phase A only:
    without deleting or reinterpreting them;
 4. README becomes the public project entry point with Features, Technical Highlights,
    Controls, Development, and Screenshots sections; it contains no retired project pitch;
-5. `__SIGNAL_FOUNDRY_QA__` and `__TETRIS_D4_QA__` become clearly named TetraMorph DEV-QA
-   surfaces, with every maintained script and direct test updated in the same checkpoint.
+5. The retired DEV-QA globals become `__TETRAMORPH_QA__` and
+   `__TETRAMORPH_LAYOUT_QA__`, with every maintained script and direct test updated in
+   the same checkpoint.
 
-**Checkpoint boundary.** Contract, public metadata/README, persistence migration, QA
-surface, and final Phase-A archive are separate reviewable commits. Targeted tests and
-typecheck run per source checkpoint; the full suite and build run once after the last
-Phase-A source edit. No dev server or browser is needed for this nonvisual slice.
+**Verified Phase-A result.** Contract, public metadata/README, persistence migration,
+and QA identity are separate rollback points. Valid former leaderboard, Puzzle, and
+mode-intro records copy into `tetramorph:*` keys while their rollback values remain.
+Targeted tests pass; final typecheck, the complete suite (`308 passed / 3 skipped`),
+the 760-module production build, and the active-identifier scan pass. No server or
+browser was started for this nonvisual slice.
+
+**Next bounded slice.** Phases B-C now own the first-experience and visual-system
+corrections, including complete English typography, the dedicated data face, pause
+navigation availability, and a compact Settings tab composition. These visual changes
+require real browser evidence before acceptance.
 
 # Previous Task — T25 Invariant Home Mode Typography
 

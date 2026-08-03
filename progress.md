@@ -954,3 +954,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - Live audit found Signal Foundry in package metadata, README, and the DEV-QA global.
   Current storage also uses historic `qingliu:*` / `tetris:*` names. New writes will
   move to `tetramorph:*` while the old keys remain tested migration inputs.
+- Phase A is now green across four reviewable checkpoints: contract, public identity,
+  persistence compatibility, and QA identity. Valid former saves are copied into
+  `tetramorph:*` without deleting rollback keys; the active legacy-name scan is clean.
+- Final Phase-A typecheck, complete suite (`308 passed / 3 skipped`), and 760-module
+  build pass. No server/browser was started. Next work is the Phases B-C visual slice.

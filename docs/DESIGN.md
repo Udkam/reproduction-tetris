@@ -17,6 +17,12 @@ surfaces, and all new persistence writes use `TetraMorph` / `tetramorph`. Histor
 they are not user-facing brand and must not be bulk-deleted. A valid old value is parsed,
 written once under the current `tetramorph:*` key, and left intact for rollback.
 
+**Verified Phase-A implementation.** Package metadata and the public README now lead
+with TetraMorph. Current rule-intro, leaderboard, and Puzzle-progress writes use
+`tetramorph:*`; every former key remains a tested migration input. Maintained runtime
+and layout automation now use explicitly branded TetraMorph QA globals. The complete
+nonvisual gate passes without starting a development server or browser.
+
 The final typography contract intentionally supersedes T24/T25 experimentation:
 Playwrite NZ Basic is the brand face, Space Grotesk is the English/UI face, JetBrains
 Mono is the data face, and Noto Sans SC is the Chinese face. That change belongs to
