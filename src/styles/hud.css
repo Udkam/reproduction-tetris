@@ -1,12 +1,6 @@
-/*
- * T15 Phase 3 — authoritative live HUD topology.
- * This file loads after the historical page and Mutation layers. Keep it limited to
- * the active game surface so Settings, modals and the Puzzle selector retain ownership.
- */
+/* T27-R1 — centered board stage. The board is the only framed object in the live
+ * play field; Next, Mutation status, and run data are typographic instruments. */
 
-/* The authored English face extends beyond the legacy one-em crop used by the
-   compact play header. Keep the translated mode label visible while the header
-   grid, rather than overflow clipping, owns horizontal fit. */
 .play-identity > h1 {
   min-block-size: 1.14em;
   overflow: visible;
@@ -16,82 +10,241 @@
 
 .play-surface {
   grid-template-rows: minmax(0, 1fr);
-  width: min(760px, calc(100% - 24px));
-  margin: 12px auto;
+  width: min(1320px, calc(100% - 32px));
+  margin: 10px auto 14px;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .game-arena,
 .game-arena:has(.preview-rail--puzzle) {
-  grid-template-columns: auto 224px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(218px, 1fr) auto minmax(218px, 1fr);
   grid-template-rows: minmax(0, 1fr);
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 10px 22px;
+  justify-items: stretch;
+  width: 100%;
+  height: 100%;
+  gap: clamp(28px, 3vw, 48px);
+  padding: 8px 12px;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.canvas-host {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  background: transparent;
+  pointer-events: none;
+}
+
+.canvas-host canvas {
+  width: 100%;
+  height: 100%;
 }
 
 .board-frame {
   position: relative;
-  z-index: 7;
-  grid-column: 1;
+  z-index: 3;
+  grid-column: 2;
   grid-row: 1;
-  height: min(calc(100% - 8px), 920px);
-  max-width: calc(100vw - 300px);
+  justify-self: center;
+  height: min(calc(100% - 12px), 920px);
+  max-width: min(44vw, 460px);
   aspect-ratio: 1 / 2;
   background: transparent;
+  border: 0;
+  box-shadow: none;
   pointer-events: auto;
   touch-action: none;
 }
 
-.board-frame--countdown {
-  z-index: 8;
-}
-
+.board-frame--countdown { z-index: 4; }
 .entry-countdown {
   inset: 0;
+  background:
+    radial-gradient(ellipse 72% 30% at 50% 0%, color-mix(in srgb, var(--action) 11%, transparent), transparent 74%),
+    radial-gradient(ellipse 72% 30% at 50% 100%, color-mix(in srgb, var(--action) 9%, transparent), transparent 74%),
+    radial-gradient(ellipse 30% 72% at 0% 50%, color-mix(in srgb, var(--action) 9%, transparent), transparent 74%),
+    radial-gradient(ellipse 30% 72% at 100% 50%, color-mix(in srgb, var(--action) 9%, transparent), transparent 74%),
+    color-mix(in srgb, var(--well) 72%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--action-ink) 8%, transparent),
+    inset 0 0 108px color-mix(in srgb, var(--action) 8%, transparent);
+  animation: entry-cover-in 180ms ease-out both;
 }
 
-.game-side-panel,
-.game-side-panel--sprint,
-.game-side-panel:has(.preview-rail--puzzle) {
-  position: relative;
-  /* Do not create a stacking context here. The Pixi Canvas stays above the
-     transparent rail geometry, while Puzzle's positioned 1/2 labels can escape
-     to their own z-layer above the Canvas-owned well. */
-  z-index: auto;
-  display: grid;
-  grid-column: 2;
-  grid-row: 1;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  align-self: stretch;
-  align-content: center;
-  gap: 10px;
-  width: 224px;
-  height: min(calc(100% - 8px), 920px);
-  max-height: 920px;
-  margin-block: auto;
-  padding: 0;
-  background: transparent;
+.entry-countdown--exit {
+  animation: entry-cover-out 220ms ease-in both;
+}
+
+.entry-countdown--pause,
+.entry-countdown--restart {
+  z-index: 8;
+  place-content: center;
+  justify-items: center;
+  gap: 15px;
+  width: 100%;
+  padding: 24px;
+  color: var(--action-ink);
   border: 0;
+  cursor: default;
+  pointer-events: none;
+  appearance: none;
+}
+
+.entry-countdown__digit--pause,
+.entry-countdown__digit--restart {
+  font-family: var(--font-ui);
+  font-size: clamp(48px, 8vmin, 76px);
+  font-weight: 760;
+  letter-spacing: .04em;
+  text-indent: .04em;
+}
+
+.entry-countdown__hint {
+  color: color-mix(in srgb, var(--action-ink) 78%, transparent);
+  font-family: var(--font-ui);
+  font-size: clamp(13px, 1.5vw, 17px);
+  font-weight: 560;
+  letter-spacing: .035em;
+  line-height: 1.35;
+}
+
+.game-left-rail,
+.game-right-rail {
+  position: relative;
+  z-index: 3;
+  align-self: start;
+  width: min(100%, 224px);
+  min-width: 0;
+  margin-block-start: clamp(24px, 4vh, 42px);
   pointer-events: none;
 }
 
-.game-side-panel.game-side-panel--sprint {
-  z-index: auto;
-}
-
-.info-rail,
-.game-side-panel--sprint .info-rail,
-.game-side-panel:has(.preview-rail--puzzle) .info-rail {
+.game-left-rail {
   display: grid;
   grid-column: 1;
   grid-row: 1;
+  justify-self: end;
   align-content: start;
-  gap: 12px;
-  width: 100%;
-  height: auto;
+  gap: 26px;
+}
+
+.game-right-rail {
+  display: grid;
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: start;
+  align-content: start;
+}
+
+.preview-rail,
+.game-left-rail .preview-rail,
+.game-left-rail .preview-rail--puzzle {
+  display: grid;
+  grid-template-rows: auto 112px;
   min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.preview-rail--puzzle,
+.game-left-rail .preview-rail--puzzle {
+  grid-template-rows: auto 196px;
+}
+
+.preview-rail .rail-label {
+  display: block;
+  margin: 0 0 2px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: .045em;
+  text-align: center;
+}
+
+.next-slot,
+.preview-rail--puzzle .next-slot--dual,
+.game-left-rail .next-slot {
+  position: relative;
+  width: 100%;
+  height: 112px;
+  min-height: 0;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.next-slot[data-preview-frameless="true"],
+.game-left-rail .next-slot[data-preview-frameless="true"],
+.preview-rail--puzzle .next-slot--dual[data-preview-frameless="true"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.next-slot[data-preview-frameless="true"]::before,
+.next-slot[data-preview-frameless="true"]::after,
+.game-left-rail .next-slot[data-preview-frameless="true"]::before,
+.game-left-rail .next-slot[data-preview-frameless="true"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+.preview-rail--puzzle .next-slot--dual,
+.game-left-rail .preview-rail--puzzle .next-slot--dual {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  height: 196px;
+}
+
+.next-slot__segment {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.next-slot__segment-label {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 0;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  color: color-mix(in srgb, var(--puzzle) 74%, var(--ink));
+  transform: translateY(-50%);
+}
+
+.next-slot__segment-label b {
+  font-family: var(--font-data);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .run-stats,
@@ -100,13 +253,13 @@
 .run-stats--mutation {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto;
-  gap: 0;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--raised) 82%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface));
-  border-radius: 10px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
+  gap: 21px;
+  min-width: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .run-stats [data-stat-role],
@@ -117,46 +270,40 @@
   grid-column: auto !important;
   align-content: center;
   min-width: 0;
-  min-height: 52px;
-  padding: 7px 10px;
-  background: transparent;
+  min-height: 0;
+  padding: 0;
+  background: transparent !important;
   border: 0 !important;
   border-radius: 0;
-  box-shadow: none;
-}
-
-.run-stats [data-stat-role]:not(:last-child),
-.run-stats--collapse [data-stat-role]:not(:last-child),
-.run-stats--puzzle [data-stat-role]:not(:last-child),
-.run-stats--mutation [data-stat-role]:not(:last-child) {
-  border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
+  box-shadow: none !important;
 }
 
 .run-stats span,
 .run-stats [data-stat-role] > span {
-  margin-bottom: 3px;
-  font-size: 12px;
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1.15;
+  letter-spacing: .035em;
 }
 
 .run-stats strong {
   display: inline-flex;
+  min-width: 0;
   min-height: 1.08em;
   align-items: baseline;
-  font-family: var(--font-mono);
-  font-size: 19px;
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: clamp(34px, 3vw, 44px);
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.05;
   overflow: visible;
   text-overflow: clip;
+  white-space: nowrap;
 }
 
-.run-stats [data-stat-role="fall-cadence"] .run-stats__label {
-  display: block;
-  min-width: 0;
-}
-
-.run-stats [data-stat-role="fall-cadence"] .run-stats__value-row {
+.run-stats__value-row {
   display: flex;
   min-width: 0;
   align-items: baseline;
@@ -164,558 +311,338 @@
   white-space: nowrap;
 }
 
-.run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
+.run-stats__unit {
   flex: 0 0 auto;
-  color: color-mix(in srgb, var(--muted) 82%, var(--ink));
+  color: var(--muted);
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0;
   line-height: 1;
   white-space: nowrap;
 }
 
 .run-stats [data-stat-role="fall-cadence"] strong {
-  font-size: 19px;
+  font-size: clamp(34px, 3vw, 44px);
   letter-spacing: -.04em;
+}
+
+.run-stats [data-stat-role="fall-cadence"] .run-stats__value-row {
+  display: flex;
+  align-items: baseline;
   white-space: nowrap;
+}
+
+.run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .app:lang(en) .run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
   font-weight: 400;
-  -webkit-text-stroke: .18px currentColor;
-  paint-order: stroke fill;
 }
 
 .run-stats--survival [data-stat-role="survival-bedrock"] span {
-  color: color-mix(in srgb, var(--race) 72%, var(--ink));
-  font-weight: 700;
-}
-
-.run-stats--survival [data-stat-role="survival-bedrock"][data-aftershock="true"] {
-  background: color-mix(in srgb, var(--race) 9%, var(--raised));
-  box-shadow: none;
-}
-
-.run-stats--survival [data-stat-role="survival-stones"][data-warning="true"] {
-  background: color-mix(in srgb, #e5b86a 10%, var(--raised));
-  box-shadow: none;
-}
-
-.run-stats--survival [data-urgent="true"] {
-  background: color-mix(in srgb, var(--danger) 7%, var(--raised));
-  box-shadow: none !important;
-  animation: survival-countdown-urgent 720ms ease-in-out infinite alternate;
+  color: color-mix(in srgb, var(--race) 76%, var(--ink));
 }
 
 .run-stats--survival [data-urgent="true"] strong {
   color: var(--danger);
+  animation: survival-urgent-value 720ms ease-in-out infinite alternate;
 }
 
-@keyframes survival-countdown-urgent {
-  from { background: color-mix(in srgb, var(--danger) 5%, var(--raised)); }
-  to { background: color-mix(in srgb, var(--danger) 12%, var(--raised)); }
+.run-stats--survival [data-stat-role="survival-stones"][data-warning="true"] strong {
+  color: color-mix(in srgb, #d29436 78%, var(--ink));
 }
 
-.preview-rail,
-.game-side-panel--sprint .preview-rail,
-.game-side-panel:has(.preview-rail--puzzle) .preview-rail {
-  display: grid;
-  grid-column: 1;
-  grid-row: 2;
-  grid-template-rows: auto 124px;
-  align-content: start;
+@keyframes survival-urgent-value {
+  from { opacity: .72; }
+  to { opacity: 1; }
+}
+
+.run-stats__value {
+  animation: run-stat-value-enter 180ms cubic-bezier(.2, .8, .3, 1) both;
+}
+
+@keyframes run-stat-value-enter {
+  from { opacity: .55; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mutation status occupies a stable place below Next. Only the active signal and
+ * time meter carry color; neither the instrument nor its rows draw a card. */
+.game-left-rail .mutation-status.mutation-status--vfx {
+  position: static !important;
+  display: grid !important;
+  width: 100% !important;
   min-width: 0;
+  min-height: 62px;
+  gap: 9px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.game-left-rail .mutation-status__header {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   min-height: 0;
-  padding: 9px 10px 10px;
-  background: color-mix(in srgb, var(--raised) 82%, var(--surface));
-  border: 1px solid color-mix(in srgb, var(--line) 88%, var(--surface));
-  border-radius: 9px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 5%, transparent);
+  color: var(--muted);
+  text-align: center;
 }
 
-.preview-rail .rail-label,
-.game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
-  display: block;
-  margin: 0 0 6px;
-  font-size: 12px;
-}
-
-.next-slot,
-.preview-rail--puzzle .next-slot--dual,
-.game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
+.game-left-rail .mutation-status__header > strong {
   width: 100%;
-  height: 124px;
-  min-height: 0;
-  padding: 0;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: .035em !important;
+  text-align: center;
 }
 
-/* Pause and restart interrupt the board, not the forecast. Reserve the complete
-   desktop rail width so the compact opaque sheet cannot cover the Canvas-owned Next
-   piece. The single dimmer stays translucent enough to keep that rail readable. */
+.game-left-rail .mutation-status__header > span { display: none !important; }
+
+.game-left-rail .mutation-status__ledger {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 8px !important;
+  min-width: 0;
+}
+
+.game-left-rail .mutation-status__idle {
+  display: none;
+}
+
+.game-left-rail .mutation-status__effect {
+  display: grid !important;
+  grid-template-columns: 12px minmax(0, 1fr) auto !important;
+  grid-template-rows: auto 2px !important;
+  min-width: 0;
+  min-height: 0 !important;
+  gap: 4px 7px !important;
+  padding: 0 !important;
+  color: var(--ink) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.game-left-rail .mutation-status__signal {
+  align-self: center;
+  width: 9px !important;
+  height: 9px !important;
+}
+
+.game-left-rail .mutation-status__effect-copy {
+  display: block !important;
+  min-width: 0;
+}
+
+.game-left-rail .mutation-status__effect-copy > b {
+  display: block;
+  overflow: hidden;
+  color: var(--ink) !important;
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-left-rail .mutation-status__effect-copy > small { display: none !important; }
+
+.game-left-rail .mutation-status__effect > em {
+  align-self: center;
+  color: var(--mutation-base, var(--puzzle)) !important;
+  font-family: var(--font-data) !important;
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+}
+
+.game-left-rail .mutation-status__meter {
+  grid-column: 2 / -1 !important;
+  height: 2px !important;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--mutation-base, var(--puzzle)) 20%, transparent) !important;
+  border-radius: 999px;
+}
+
+.game-left-rail .mutation-status__meter > i {
+  display: block;
+  height: 100%;
+  background: var(--mutation-base, var(--puzzle)) !important;
+}
+
+/* Gameplay sheets interrupt the board at its visual center. Next stays rendered
+ * beneath the wash, while the compact sheet avoids drifting to a viewport edge. */
 .sheet-backdrop--gameplay {
   top: var(--play-topbar-height);
-  padding-right: calc(clamp(10px, 2vh, 24px) + 244px);
-  /* The modal stays unmistakable through its opaque surface and shadow. A light
-     scene wash preserves the actual Canvas-owned Next tetromino instead of
-     turning the dark preview well into an apparently empty card. */
-  background: rgba(11, 23, 38, .16);
-}
-
-/* Pause interrupts the board, but its two persistent navigation actions remain
-   available. Successor dialogs remove this class and regain full modal ownership. */
-.play-shell--paused .play-topbar {
-  position: relative;
-  z-index: 110;
-  isolation: isolate;
-  pointer-events: auto;
-  background: color-mix(in srgb, var(--surface) 96%, transparent);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 78%, transparent);
-}
-
-.play-shell:has(.sheet-backdrop--gameplay) .canvas-host {
-  filter: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 2vh, 24px);
+  background: color-mix(in srgb, var(--well) 25%, transparent);
 }
 
 .action-sheet--placement-gameplay {
   width: min(420px, 100%);
 }
 
-.preview-rail--puzzle .next-slot__segment-label b {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
+.play-shell--interrupted .play-topbar {
+  position: relative;
+  z-index: 110;
+  isolation: isolate;
+  pointer-events: auto;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--line) 72%, transparent);
 }
 
-@media (max-width: 599px) {
+.play-shell:has(.sheet-backdrop--gameplay) .canvas-host { filter: none; }
+
+@media (max-width: 760px) {
   .play-surface {
     width: min(100%, calc(100% - 8px));
-    margin: 4px auto;
-    border-radius: 12px;
+    margin: 4px auto 8px;
   }
+
+  .game-arena,
+  .game-arena:has(.preview-rail--puzzle) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: clamp(118px, 20vh, 166px) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 4px 12px;
+    padding: 4px 8px;
+  }
+
+  .board-frame {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    height: min(100%, calc((100vw - 24px) * 2));
+    max-width: calc(100vw - 24px);
+  }
+
+  .game-left-rail,
+  .game-right-rail {
+    grid-row: 1;
+    align-self: stretch;
+    width: 100%;
+    max-width: none;
+    margin-block-start: 0;
+  }
+
+  .game-left-rail {
+    grid-column: 1;
+    justify-self: stretch;
+    grid-template-columns: minmax(92px, .9fr) minmax(100px, 1.1fr);
+    align-items: start;
+    gap: 10px;
+  }
+
+  .game-right-rail {
+    grid-column: 2;
+    justify-self: stretch;
+  }
+
+  .preview-rail,
+  .game-left-rail .preview-rail,
+  .game-left-rail .preview-rail--puzzle {
+    grid-template-rows: 16px minmax(0, 1fr);
+    height: 100%;
+  }
+
+  .next-slot,
+  .game-left-rail .next-slot,
+  .preview-rail--puzzle .next-slot--dual,
+  .game-left-rail .preview-rail--puzzle .next-slot--dual {
+    height: 100%;
+  }
+
+  .game-left-rail .mutation-status.mutation-status--vfx {
+    align-self: start;
+    min-height: 0;
+  }
+
+  .run-stats,
+  .run-stats--collapse,
+  .run-stats--puzzle,
+  .run-stats--mutation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 8px 14px;
+  }
+
+  .run-stats span,
+  .run-stats [data-stat-role] > span { font-size: 12px; }
+  .run-stats strong,
+  .run-stats [data-stat-role="fall-cadence"] strong { font-size: 17px; }
+  .run-stats__unit { font-size: 12px; }
 
   .sheet-backdrop--gameplay {
     align-items: end;
+    justify-content: center;
     padding: 10px;
   }
 
-  .action-sheet--placement-gameplay {
-    width: min(500px, 100%);
-  }
-
-  .game-arena,
-  .game-arena:has(.preview-rail--puzzle) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: clamp(156px, 23vh, 184px) minmax(0, 1fr);
-    align-items: stretch;
-    gap: 4px;
-    padding: 4px;
-  }
-
-  .board-frame {
-    grid-column: 1;
-    grid-row: 2;
-    height: min(100%, calc((100vw - 16px) * 2));
-    max-width: calc(100vw - 16px);
-  }
-
-  .game-side-panel,
-  .game-side-panel--sprint,
-  .game-side-panel:has(.preview-rail--puzzle) {
-    display: grid !important;
-    grid-column: 1;
-    grid-row: 1;
-    grid-template-columns: minmax(0, 1.18fr) minmax(124px, .82fr);
-    grid-template-rows: minmax(0, 1fr);
-    align-self: stretch;
-    align-content: stretch;
-    gap: 8px;
-    width: 100%;
-    height: 100%;
-    max-height: none;
-    padding: 4px;
-    background: transparent;
-    border: 0;
-  }
-
-  .info-rail,
-  .game-side-panel--sprint .info-rail,
-  .game-side-panel:has(.preview-rail--puzzle) .info-rail {
-    display: grid !important;
-    grid-column: 1;
-    grid-row: 1;
-    grid-template-rows: auto auto;
-    align-content: start;
-    gap: 4px;
-    width: 100%;
-    height: 100%;
-  }
-
-  .game-side-panel--sprint .run-stats,
-  .game-side-panel--sprint .preview-rail,
-  .run-stats,
-  .run-stats--collapse,
-  .run-stats--puzzle,
-  .run-stats--mutation {
-    display: grid !important;
-  }
-
-  .run-stats,
-  .run-stats--collapse,
-  .run-stats--puzzle,
-  .run-stats--mutation {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
-    align-self: stretch;
-    gap: 0;
-    height: 100%;
-    min-height: 0;
-  }
-
-  .run-stats--puzzle {
-    grid-template-rows: minmax(0, 1fr);
-  }
-
-  .run-stats [data-stat-role],
-  .run-stats--collapse [data-stat-role],
-  .run-stats--puzzle [data-stat-role],
-  .run-stats--mutation [data-stat-role] {
-    min-height: 0;
-    padding: 4px 6px;
-    border-bottom: 0 !important;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .run-stats [data-stat-role]:not(:last-child),
-  .run-stats--collapse [data-stat-role]:not(:last-child),
-  .run-stats--puzzle [data-stat-role]:not(:last-child),
-  .run-stats--mutation [data-stat-role]:not(:last-child) {
-    border-bottom: 0 !important;
-  }
-
-  .run-stats [data-stat-role]:nth-child(odd),
-  .run-stats--collapse [data-stat-role]:nth-child(odd),
-  .run-stats--puzzle [data-stat-role]:nth-child(odd),
-  .run-stats--mutation [data-stat-role]:nth-child(odd) {
-    border-right: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
-  }
-
-  .run-stats [data-stat-role]:nth-child(-n + 2),
-  .run-stats--collapse [data-stat-role]:nth-child(-n + 2),
-  .run-stats--mutation [data-stat-role]:nth-child(-n + 2) {
-    border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
-  }
-
-  .run-stats span {
-    margin-bottom: 2px;
-    font-size: 12px;
-  }
-
-  .run-stats strong,
-  .run-stats [data-stat-role="fall-cadence"] strong {
-    font-size: 15px;
-  }
-
-  .preview-rail,
-  .game-side-panel--sprint .preview-rail,
-  .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
-    grid-column: 2;
-    grid-row: 1;
-    grid-template-rows: 18px minmax(0, 1fr);
-    align-content: stretch;
-    height: 100%;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .preview-rail .rail-label,
-  .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
-    display: block;
-    align-self: center;
-    margin: 0;
-    font-size: 12px;
-    line-height: 1;
-  }
-
-  .next-slot,
-  .preview-rail--puzzle .next-slot--dual,
-  .game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
-    height: 100%;
-    min-height: 0;
-    padding: 0;
-  }
-
-  .preview-rail--puzzle .next-slot__segment-label {
-    left: 9px;
-  }
-
-  .preview-rail--puzzle .next-slot__segment-label b {
-    font-size: 16px;
-  }
-
-  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
-    width: 100%;
-    height: auto;
-    min-height: 0;
-    gap: 4px !important;
-    padding: 6px !important;
-  }
-
-  /* Mutation always owns one stable instrument column, including its idle state. */
-  .game-side-panel.game-side-panel--sprint:has(.mutation-status) {
-    grid-template-columns: minmax(92px, .84fr) minmax(80px, 1fr) minmax(110px, .94fr);
-    grid-template-rows: minmax(0, 1fr);
-    gap: 4px;
-    height: 100%;
-    padding: 4px !important;
-  }
-
-  .game-side-panel--sprint:has(.mutation-status) .info-rail {
-    display: contents !important;
-  }
-
-  .game-side-panel--sprint:has(.mutation-status) .run-stats {
-    grid-column: 1;
-    grid-row: 1;
-    height: 100%;
-  }
-
-  .game-side-panel--sprint .run-stats [data-stat-role="fall-cadence"] strong {
-    font-size: 12px;
-    letter-spacing: -.06em;
-    white-space: nowrap;
-  }
-
-  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: stretch;
-    height: 100%;
-    padding: 5px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: none;
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 3px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
-    height: auto;
-    min-height: 0;
-    padding: 4px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > b {
-    font-size: 12px !important;
-  }
-
-  .game-side-panel--sprint:has(.mutation-status) .preview-rail {
-    grid-column: 3;
-    grid-row: 1;
-  }
+  .action-sheet--placement-gameplay { width: min(500px, 100%); }
 }
 
-/* Desktop Mutation rows grow upward from a stable lower edge. Keeping the status
-   outside info-rail flow prevents simultaneous effects from moving stats or Next. */
-@media (min-width: 600px) and (min-height: 521px) {
-  .game-side-panel--sprint .info-rail:has(> .mutation-status) {
-    position: relative;
-    gap: 0;
-  }
-
-  .game-side-panel--sprint .info-rail:has(> .mutation-status) > .mutation-status {
-    position: absolute;
-    inset-inline: 0;
-    bottom: calc(100% + 12px);
-  }
-}
-
-@media (min-width: 600px) and (max-height: 520px) {
+@media (min-width: 761px) and (max-height: 560px) {
   .play-surface {
-    width: min(680px, calc(100% - 16px));
-    margin: 6px auto;
-    border-radius: 13px;
+    width: min(920px, calc(100% - 16px));
+    margin: 4px auto 8px;
   }
 
   .game-arena,
   .game-arena:has(.preview-rail--puzzle) {
-    grid-template-columns: auto 300px;
-    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(118px, 1fr) auto minmax(118px, 1fr);
     gap: 14px;
-    padding: 4px 14px;
+    padding: 3px 8px;
   }
 
-  .board-frame {
-    grid-column: 1;
-    grid-row: 1;
-    height: min(calc(100% - 4px), 920px);
-    max-width: calc(100vw - 340px);
+  .board-frame { height: min(calc(100% - 4px), 920px); }
+  .game-left-rail,
+  .game-right-rail {
+    width: min(100%, 154px);
+    margin-block-start: 22px;
   }
-
-  .game-side-panel,
-  .game-side-panel--sprint,
-  .game-side-panel:has(.preview-rail--puzzle) {
-    grid-column: 2;
-    grid-row: 1;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-    align-self: center;
-    align-content: stretch;
-    gap: 8px;
-    width: 300px;
-    height: min(calc(100% - 4px), 920px);
-    padding: 6px 0 6px 12px;
-  }
-
-  .info-rail,
-  .game-side-panel--sprint .info-rail,
-  .game-side-panel:has(.preview-rail--puzzle) .info-rail {
-    grid-column: 1;
-    grid-row: 1;
-    gap: 6px;
-  }
-
+  .game-left-rail { gap: 10px; }
+  .preview-rail,
+  .game-left-rail .preview-rail { grid-template-rows: auto 92px; }
+  .next-slot,
+  .game-left-rail .next-slot { height: 92px; }
+  .preview-rail--puzzle,
+  .game-left-rail .preview-rail--puzzle { grid-template-rows: auto 118px; }
+  .preview-rail--puzzle .next-slot--dual,
+  .game-left-rail .preview-rail--puzzle .next-slot--dual { height: 118px; }
   .run-stats,
   .run-stats--collapse,
-  .run-stats--mutation {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
-    gap: 0;
-  }
-
-  .run-stats--puzzle {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: minmax(0, 1fr);
-  }
-
-  .run-stats [data-stat-role],
-  .run-stats--collapse [data-stat-role],
-  .run-stats--puzzle [data-stat-role],
-  .run-stats--mutation [data-stat-role] {
-    min-height: 52px;
-    padding: 5px 7px;
-    border-bottom: 0 !important;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .run-stats [data-stat-role]:not(:last-child),
-  .run-stats--collapse [data-stat-role]:not(:last-child),
-  .run-stats--puzzle [data-stat-role]:not(:last-child),
-  .run-stats--mutation [data-stat-role]:not(:last-child) {
-    border-bottom: 0 !important;
-  }
-
-  .run-stats [data-stat-role]:nth-child(odd),
-  .run-stats--collapse [data-stat-role]:nth-child(odd),
-  .run-stats--puzzle [data-stat-role]:nth-child(odd),
-  .run-stats--mutation [data-stat-role]:nth-child(odd) {
-    border-right: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
-  }
-
-  .run-stats [data-stat-role]:nth-child(-n + 2),
-  .run-stats--collapse [data-stat-role]:nth-child(-n + 2),
-  .run-stats--mutation [data-stat-role]:nth-child(-n + 2) {
-    border-bottom: 1px solid color-mix(in srgb, var(--line) 74%, var(--surface)) !important;
-  }
-
-  .run-stats span {
-    font-size: 12px;
-  }
-
+  .run-stats--puzzle,
+  .run-stats--mutation { gap: 8px; }
   .run-stats strong,
-  .run-stats [data-stat-role="fall-cadence"] strong {
-    font-size: 15px;
-  }
-
-  .preview-rail,
-  .game-side-panel--sprint .preview-rail,
-  .game-side-panel:has(.preview-rail--puzzle) .preview-rail {
-    grid-column: 1;
-    grid-row: 2;
-    grid-template-rows: 18px minmax(0, 1fr);
-    align-self: stretch;
-    height: 100%;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .preview-rail .rail-label,
-  .game-side-panel:has(.preview-rail--puzzle) .preview-rail .rail-label {
-    display: block;
-    margin: 0;
-    font-size: 12px;
-  }
-
-  .next-slot,
-  .preview-rail--puzzle .next-slot--dual,
-  .game-side-panel:has(.preview-rail--puzzle) .next-slot--dual {
-    height: 100%;
-    min-height: 0;
-    padding: 0;
-  }
-
-  .preview-rail--puzzle .next-slot__segment-label {
-    left: 7px;
-  }
-
-  .preview-rail--puzzle .next-slot__segment-label b {
-    font-size: 14px;
-  }
-
-  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
-    gap: 4px !important;
-    padding: 6px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
-    grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
-    grid-template-rows: none;
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 3px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
-    grid-template-columns: 10px minmax(0, 1fr) auto;
-    grid-template-rows: minmax(0, 1fr) 2px;
-    column-gap: 3px;
-    min-height: 42px;
-    padding: 4px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__signal {
-    width: 10px;
-    height: 10px;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > b {
-    font-size: 12px !important;
-    letter-spacing: 0;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect > em {
-    font-size: 14px !important;
-    letter-spacing: -.08em;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > small {
-    display: none;
-  }
+  .run-stats [data-stat-role="fall-cadence"] strong { font-size: 18px; }
 }
 
 .app[data-reduced-motion="true"] .entry-countdown,
 .app[data-reduced-motion="true"] .entry-countdown__digit,
-.app[data-reduced-motion="true"] .run-stats--survival [data-urgent="true"] {
+.app[data-reduced-motion="true"] .run-stats__value,
+.app[data-reduced-motion="true"] .run-stats--survival [data-urgent="true"] strong {
   animation: none;
   transition: none;
+}
+
+@keyframes entry-cover-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes entry-cover-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }

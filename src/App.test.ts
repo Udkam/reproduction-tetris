@@ -52,6 +52,7 @@ import {
 import { PUZZLE_HARD_MASTERY_GROUPS, PUZZLE_OPTIMAL_CERTIFICATES } from './puzzleMastery';
 import { LEADERBOARD_KEY, emptyLeaderboard, type ScoreRecord } from './leaderboard';
 import { itemLabel, modeIntroRules, modeRules, modeRulesTitle } from './ui/localization';
+import type { VisualThemeId } from './design/visualThemes';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
@@ -67,6 +68,7 @@ interface RuntimeTestOptions {
   puzzleId?: PuzzleId;
   inputEnabled?: boolean;
   reducedMotion?: boolean;
+  visualTheme?: VisualThemeId;
   survivalEntryBedrockRows?: number | null;
   classicStartingGravityTicks?: number;
   classicGravityFloorTicks?: number;
@@ -78,12 +80,14 @@ interface RuntimeTestInstance {
   setInputEnabled: ReturnType<typeof vi.fn>;
   setSurvivalEntryBedrockRows: ReturnType<typeof vi.fn>;
   setReducedMotion: ReturnType<typeof vi.fn>;
+  setVisualTheme: ReturnType<typeof vi.fn>;
   setClassicGravityRange: ReturnType<typeof vi.fn>;
   refreshPresentation: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
   restart: ReturnType<typeof vi.fn>;
   undoPuzzle: ReturnType<typeof vi.fn>;
   togglePause: ReturnType<typeof vi.fn>;
+  resume: ReturnType<typeof vi.fn>;
   setAudioEnabled: ReturnType<typeof vi.fn>;
   setAudioVolume: ReturnType<typeof vi.fn>;
   playEntryCountdown: ReturnType<typeof vi.fn>;
@@ -107,6 +111,7 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     readonly setInputEnabled = vi.fn();
     readonly setSurvivalEntryBedrockRows = vi.fn();
     readonly setReducedMotion = vi.fn();
+    readonly setVisualTheme = vi.fn();
     readonly setClassicGravityRange = vi.fn((startingTicks: number, floorTicks: number) => {
       this.nextClassicStartingGravityTicks = startingTicks;
       this.nextClassicGravityFloorTicks = floorTicks;
@@ -147,6 +152,10 @@ vi.mock('./game/runtime/GameRuntime', async () => {
       else if (this.state.status === 'paused') this.state = { ...this.state, status: 'playing' };
       this.options.onState?.(this.state, []);
     });
+    readonly resume = vi.fn(() => {
+      if (this.state.status === 'paused') this.state = { ...this.state, status: 'playing' };
+      this.options.onState?.(this.state, []);
+    });
     readonly restart = vi.fn(() => {
       const transition = core.dispatch(this.state, {
         type: 'restart',
@@ -176,6 +185,7 @@ afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   localStorage.clear();
+  window.history.replaceState({}, '', '/');
   runtimeHarness.instances.length = 0;
 });
 
@@ -202,7 +212,7 @@ async function advanceEntryCountdown(): Promise<void> {
   for (let step = 0; step < 3; step += 1) {
     await act(async () => vi.advanceTimersByTimeAsync(1000));
   }
-  await act(async () => vi.advanceTimersByTimeAsync(560));
+  await act(async () => vi.advanceTimersByTimeAsync(220));
 }
 
 describe('DEV QA state snapshot isolation', () => {
@@ -293,6 +303,8 @@ describe('Survival stone timing presentation', () => {
     expect(runtime.setSurvivalEntryBedrockRows).toHaveBeenLastCalledWith(3);
     await act(async () => vi.advanceTimersByTimeAsync(1000));
     expect(runtime.setSurvivalEntryBedrockRows).toHaveBeenLastCalledWith(null);
+    expect(runtime.start).not.toHaveBeenCalled();
+    await act(async () => vi.advanceTimersByTimeAsync(220));
     expect(runtime.start).toHaveBeenCalledTimes(1);
     view.unmount();
   });
@@ -560,19 +572,22 @@ describe('entry countdown', () => {
 
     await act(async () => vi.advanceTimersByTimeAsync(1));
 
-    expect(countdown()?.dataset.countdown).toBe('start');
-    expect(countdown()?.textContent).toBe('开始');
-    expect(runtime.setInputEnabled).toHaveBeenLastCalledWith(true);
+    expect(countdown()?.dataset.countdown).toBe('exit');
+    expect(countdown()?.textContent).toBe('');
+    expect(runtime.setInputEnabled.mock.calls.some(([enabled]) => enabled === true)).toBe(false);
     expect(runtime.setInputEnabled).toHaveBeenCalledWith(false);
-    expect(runtime.start).toHaveBeenCalledTimes(1);
+    expect(runtime.start).not.toHaveBeenCalled();
     expect(runtime.playEntryCountdown.mock.calls.map(([digit]) => digit)).toEqual([3, 2, 1]);
-    expect(runtime.setInputEnabled.mock.invocationCallOrder[0]).toBeLessThan(runtime.start.mock.invocationCallOrder[0]!);
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);
-    await act(async () => vi.advanceTimersByTimeAsync(559));
-    expect(countdown()?.dataset.countdown).toBe('start');
+    await act(async () => vi.advanceTimersByTimeAsync(219));
+    expect(countdown()?.dataset.countdown).toBe('exit');
+    expect(runtime.start).not.toHaveBeenCalled();
     await act(async () => vi.advanceTimersByTimeAsync(1));
     expect(countdown()).toBeNull();
+    expect(runtime.setInputEnabled).toHaveBeenLastCalledWith(true);
+    expect(runtime.start).toHaveBeenCalledTimes(1);
+    expect(runtime.setInputEnabled.mock.invocationCallOrder.at(-1)).toBeLessThan(runtime.start.mock.invocationCallOrder[0]!);
     expect(document.activeElement).toBe(view.container.querySelector('canvas'));
     await act(async () => vi.advanceTimersByTimeAsync(5000));
     expect(runtime.start).toHaveBeenCalledTimes(1);
@@ -753,7 +768,7 @@ describe('T6 frontend mode binding', () => {
     }
   });
 
-  it('places pause and restart sheets on the board track while retaining the live Next forecast', async () => {
+  it('covers the board for pause and restart while retaining the live Next forecast', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -770,30 +785,35 @@ describe('T6 frontend mode binding', () => {
     runtime.refreshPresentation.mockClear();
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
     expect(runtime.refreshPresentation).toHaveBeenCalled();
-    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(true);
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--interrupted')).toBe(true);
     expect(view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.disabled).toBe(false);
     expect(view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.disabled).toBe(false);
-    const pauseBackdrop = view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')!;
-    expect(pauseBackdrop.dataset.sheetPlacement).toBe('gameplay');
-    expect(pauseBackdrop.querySelector('.action-sheet--placement-gameplay')).not.toBeNull();
+    const pauseCurtain = view.container.querySelector<HTMLElement>('[data-testid="pause-curtain"]')!;
+    expect(pauseCurtain.textContent).toContain('暂停');
+    expect(pauseCurtain.textContent).toContain('回车继续');
+    expect(view.container.querySelector('[data-testid="action-sheet-backdrop"]')).toBeNull();
     expect(view.container.querySelector('[data-testid="next-slot"]')).toBe(nextSlot);
     expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
-    const restartBackdrop = view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')!;
-    expect(restartBackdrop.dataset.sheetPlacement).toBe('gameplay');
-    expect(restartBackdrop.querySelector('[data-testid="confirm-restart"]')).not.toBeNull();
+    const restartCurtain = view.container.querySelector<HTMLElement>('[data-testid="restart-curtain"]')!;
+    expect(restartCurtain.textContent).toContain('重新开始');
+    expect(restartCurtain.textContent).not.toContain('？');
+    expect(restartCurtain.textContent).toContain('回车确认，按 R 取消');
+    expect(view.container.querySelector('[data-testid="action-sheet-backdrop"]')).toBeNull();
     expect(view.container.querySelector('[data-testid="next-slot"]')).toBe(nextSlot);
     expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--interrupted')).toBe(true);
 
-    expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?padding-right:\s*calc\([^}]*244px\)/);
-    expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?top:\s*var\(--play-topbar-height\)/);
-    expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?background:\s*rgba\(11,\s*23,\s*38,\s*\.16\)/);
-    expect(sourceHudStyles).toMatch(/\.play-shell:has\(\.sheet-backdrop--gameplay\) \.canvas-host\s*\{[\s\S]*?filter:\s*none/);
-    expect(sourceHudStyles).toMatch(/\.play-shell--paused \.play-topbar\s*\{[\s\S]*?z-index:\s*110;[\s\S]*?isolation:\s*isolate;[\s\S]*?pointer-events:\s*auto/);
+    expect(sourceHudStyles).toMatch(/\.entry-countdown--pause,\s*\.entry-countdown--restart\s*\{[^}]*width:\s*100%[^}]*pointer-events:\s*none/s);
+    expect(sourceHudStyles).toMatch(/\.entry-countdown__digit--pause,\s*\.entry-countdown__digit--restart\s*\{[^}]*font-size:\s*clamp\(48px,\s*8vmin,\s*76px\)/s);
+    expect(sourceHudStyles).toMatch(/\.play-shell--interrupted \.play-topbar\s*\{[\s\S]*?z-index:\s*110;[\s\S]*?isolation:\s*isolate;[\s\S]*?pointer-events:\s*auto/);
     expect(sourceStyles).toMatch(/\.play-shell\s*\{[\s\S]*?--play-topbar-height:\s*64px/);
-    expect(sourceHudStyles).toMatch(/\.action-sheet--placement-gameplay\s*\{[\s\S]*?width:\s*min\(420px,\s*100%\)/);
+    expect(sourceHudStyles).toMatch(/\.run-stats strong\s*\{[^}]*font-size:\s*clamp\(34px,\s*3vw,\s*44px\)/s);
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')).not.toBeNull();
     view.unmount();
   });
 
@@ -811,17 +831,45 @@ describe('T6 frontend mode binding', () => {
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.click());
     expect(view.container.querySelector('[role="dialog"]')?.textContent).toContain('离开本局？');
-    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(false);
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--interrupted')).toBe(false);
 
     const stay = [...view.container.querySelectorAll<HTMLButtonElement>('[role="dialog"] button')]
       .find((button) => button.textContent === '留在本局')!;
     act(() => stay.click());
-    expect(view.container.textContent).toContain('已暂停');
-    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(true);
+    expect(view.container.textContent).toContain('暂停');
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--interrupted')).toBe(true);
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
     expect(view.container.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
-    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--paused')).toBe(false);
+    expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--interrupted')).toBe(false);
+    view.unmount();
+  });
+
+  it('replaces the restart curtain with Back or Settings flows without resuming the run', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    const view = render(createElement(GameSession, {
+      mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+    await advanceEntryCountdown();
+    const runtime = runtimeHarness.instances.at(-1)!;
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
+    expect(runtime.getState().status).toBe('paused');
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
+    expect(runtime.getState().status).toBe('paused');
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.click());
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[role="dialog"]')?.textContent).toContain('离开本局？');
+    expect(runtime.getState().status).toBe('paused');
     view.unmount();
   });
 
@@ -940,17 +988,16 @@ describe('T6 frontend mode binding', () => {
   });
 
   it('breathes the full urgent Survival card without a left-side pulse rail', () => {
-    const urgentStart = sourceHudStyles.indexOf('.run-stats--survival [data-urgent="true"] {');
+    const urgentStart = sourceHudStyles.indexOf('.run-stats--survival [data-urgent="true"] strong {');
     const urgentEnd = sourceHudStyles.indexOf('\n}', urgentStart);
-    const keyframesStart = sourceHudStyles.indexOf('@keyframes survival-countdown-urgent');
-    const keyframesEnd = sourceHudStyles.indexOf('\n.preview-rail', keyframesStart);
+    const keyframesStart = sourceHudStyles.indexOf('@keyframes survival-urgent-value');
+    const keyframesEnd = sourceHudStyles.indexOf('\n}', keyframesStart);
     const urgentBlock = sourceHudStyles.slice(urgentStart, urgentEnd);
     const keyframesBlock = sourceHudStyles.slice(keyframesStart, keyframesEnd);
 
-    expect(urgentBlock).toContain('box-shadow: none !important');
-    expect(urgentBlock).toContain('animation: survival-countdown-urgent');
-    expect(keyframesBlock).toContain('background:');
-    expect(keyframesBlock).not.toContain('box-shadow');
+    expect(urgentBlock).toContain('animation: survival-urgent-value');
+    expect(keyframesBlock).toContain('opacity:');
+    expect(sourceHudStyles).not.toContain('survival-countdown-urgent');
   });
 
   it('shows Puzzle target progress and a non-limiting placed-piece count', () => {
@@ -1047,9 +1094,9 @@ describe('T6 frontend mode binding', () => {
     const shortcuts = view.container.querySelector<HTMLElement>('[data-testid="settings-shortcuts"]')!;
     const gameplay = view.container.querySelector<HTMLElement>('[data-testid="keyboard-gameplay"]')!;
     const shortcutKeys = view.container.querySelector<HTMLElement>('[data-testid="keyboard-shortcuts"]')!;
-    expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行触控操作触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。');
+    expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行触控操作触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
-    expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
+    expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.classList.contains('settings-console__key-group--gameplay')).toBe(true);
     expect(shortcutKeys.classList.contains('settings-console__key-group--shortcuts')).toBe(true);
 
@@ -1078,6 +1125,9 @@ describe('T6 frontend mode binding', () => {
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
     const startingSpeed = view.container.querySelector<HTMLInputElement>('[data-testid="classic-starting-speed"]')!;
     const fastestSpeed = view.container.querySelector<HTMLInputElement>('[data-testid="classic-fastest-speed"]')!;
+    const mineralMist = view.container.querySelector<HTMLButtonElement>('[data-testid="theme-mineral-mist"]')!;
+    const deepTide = view.container.querySelector<HTMLButtonElement>('[data-testid="theme-deep-tide"]')!;
+    const sunstone = view.container.querySelector<HTMLButtonElement>('[data-testid="theme-sunstone"]')!;
 
     const assertArrowRoute = (from: HTMLElement, key: string, to: HTMLElement) => {
       act(() => from.focus());
@@ -1091,10 +1141,14 @@ describe('T6 frontend mode binding', () => {
       [english, 'ArrowRight', motion],
       [motion, 'ArrowLeft', english],
       [chinese, 'ArrowUp', settingsTab],
-      [english, 'ArrowDown', startingSpeed],
-      [motion, 'ArrowDown', fastestSpeed],
+      [english, 'ArrowDown', deepTide],
+      [motion, 'ArrowDown', sunstone],
       [toggle, 'ArrowUp', chinese],
-      [toggle, 'ArrowDown', restart],
+      [toggle, 'ArrowDown', startingSpeed],
+      [mineralMist, 'ArrowRight', deepTide],
+      [deepTide, 'ArrowRight', sunstone],
+      [deepTide, 'ArrowDown', startingSpeed],
+      [sunstone, 'ArrowDown', fastestSpeed],
       [restart, 'ArrowRight', resume],
       [resume, 'ArrowLeft', restart],
       [resume, 'ArrowUp', startingSpeed],
@@ -1308,7 +1362,7 @@ describe('T6 frontend mode binding', () => {
     classic.unmount();
   });
 
-  it('pauses through Settings and routes Settings/R restart through the same Enter confirmation', async () => {
+  it('pauses through Settings and routes Settings/R restart through the same board curtain', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1330,34 +1384,29 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).toContain('继续游戏');
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(1);
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
-    expect(view.container.textContent).toContain('重新开始？');
-    expect(view.container.textContent).not.toContain('按 Enter 确认。');
-    const confirmRestart = view.container.querySelector<HTMLButtonElement>('[data-testid="confirm-restart"]')!;
-    const cancelRestart = [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')]
-      .find((button) => button.textContent === '取消')!;
-    expect(confirmRestart.textContent).toBe('确认');
-    expect(confirmRestart.dataset.actionSelected).toBe('true');
+    const settingsRestartCurtain = view.container.querySelector<HTMLElement>('[data-testid="restart-curtain"]')!;
+    expect(settingsRestartCurtain.textContent).toContain('重新开始');
+    expect(settingsRestartCurtain.textContent).not.toContain('？');
+    expect(settingsRestartCurtain.textContent).toContain('回车确认，按 R 取消');
+    expect(view.container.querySelector('[data-testid="confirm-restart"]')).toBeNull();
     expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
-    expect(cancelRestart.dataset.actionSelected).toBe('true');
-    expect(confirmRestart.dataset.actionSelected).toBeUndefined();
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
-    expect(view.container.textContent).not.toContain('重新开始？');
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(2);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
-    expect(view.container.textContent).toContain('重新开始？');
+    expect(view.container.textContent).toContain('重新开始');
     expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
-    expect(view.container.querySelector('[data-testid="confirm-restart"]')?.getAttribute('data-action-selected')).toBe('true');
-    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true })));
     expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
     expect(runtimeHarness.instances.at(-1)?.start).not.toHaveBeenCalled();
     expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
-    expect(view.container.querySelector('[data-testid="confirm-restart"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
     await advanceEntryCountdown();
     expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
     expect(view.container.querySelector('[data-testid="entry-countdown"]')).toBeNull();
@@ -1413,7 +1462,7 @@ describe('T6 frontend mode binding', () => {
     const runtime = runtimeHarness.instances.at(-1)!;
     runtime.togglePause.mockClear();
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
-    expect(view.container.textContent).toContain('已暂停');
+    expect(view.container.textContent).toContain('暂停');
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
     expect(runtime.togglePause).not.toHaveBeenCalled();
@@ -1423,33 +1472,15 @@ describe('T6 frontend mode binding', () => {
     act(() => [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="settings-sheet"] button')]
       .find((button) => button.textContent === '继续游戏')?.click());
     expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
-    expect(view.container.textContent).not.toContain('已暂停');
+    expect(view.container.textContent).not.toContain('暂停');
     expect(runtime.togglePause).toHaveBeenCalledTimes(1);
     view.unmount();
   });
 
-  it('hands focus to a successor sheet before restoring the game canvas', async () => {
+  it('keeps one canvas while Settings supersedes pause and Escape cancels restart', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
-    let nextFrame = 0;
-    const frameQueue = new Map<number, FrameRequestCallback>();
-    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => {
-      nextFrame += 1;
-      frameQueue.set(nextFrame, callback);
-      return nextFrame;
-    }));
-    vi.stubGlobal('cancelAnimationFrame', vi.fn((handle: number) => {
-      frameQueue.delete(handle);
-    }));
-    const flushFrame = () => {
-      const callbacks = [...frameQueue.values()];
-      frameQueue.clear();
-      callbacks.forEach((callback) => callback(0));
-    };
-    const flushTwoFrames = () => {
-      act(flushFrame);
-      act(flushFrame);
-    };
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
 
     const view = render(createElement(GameSession, {
       mode: 'marathon', puzzleId: CAMPAIGN_LEVELS[0]!.id, onExit: vi.fn(), onCanonicalCompletion: vi.fn(),
@@ -1458,66 +1489,38 @@ describe('T6 frontend mode binding', () => {
     await advanceEntryCountdown();
     const canvas = view.container.querySelector<HTMLCanvasElement>('canvas')!;
     const runtime = runtimeHarness.instances.at(-1)!;
-    act(() => canvas.focus());
-
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
-    act(flushFrame);
-    const pauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"]')!;
-    expect(pauseDialog.textContent).toContain('已暂停');
-    expect(pauseDialog.hasAttribute('aria-modal')).toBe(false);
-    expect(pauseDialog.contains(document.activeElement)).toBe(true);
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')?.textContent).toContain('暂停');
+    expect(view.container.querySelector('[role="dialog"]')).toBeNull();
+    expect(view.container.querySelector('canvas')).toBe(canvas);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
     const settingsDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
     expect(view.container.querySelectorAll('[role="dialog"][aria-modal="true"]')).toHaveLength(1);
     expect(settingsDialog.querySelector('[data-testid="settings-sheet"]')).not.toBeNull();
-    flushTwoFrames();
-    expect(settingsDialog.contains(document.activeElement)).toBe(true);
-    expect(document.activeElement).not.toBe(canvas);
     expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
     expect(view.container.querySelector('canvas')).toBe(canvas);
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
 
     act(() => view.container.querySelector<HTMLElement>('[data-testid="action-sheet-backdrop"]')?.click());
-    flushTwoFrames();
     expect(view.container.querySelector('[role="dialog"]')).toBeNull();
-    expect(document.activeElement).toBe(canvas);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
-    act(flushFrame);
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
-    const restartDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
-    expect(restartDialog.textContent).toContain('重新开始？');
-    flushTwoFrames();
-    expect(restartDialog.contains(document.activeElement)).toBe(true);
-    expect(document.activeElement).not.toBe(canvas);
-    const cancelRestart = [...restartDialog.querySelectorAll<HTMLButtonElement>('button')]
-      .find((button) => button.textContent === '取消')!;
-    act(() => cancelRestart.click());
-    flushTwoFrames();
-    expect(view.container.querySelector('[role="dialog"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')?.textContent).toContain('重新开始');
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', key: 'Escape', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
     expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
     expect(view.container.querySelector('canvas')).toBe(canvas);
-    expect(document.activeElement).toBe(canvas);
 
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
-    flushTwoFrames();
-    expect(view.container.querySelector<HTMLElement>('[role="dialog"]')?.textContent).toContain('已暂停');
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')?.textContent).toContain('暂停');
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
-    flushTwoFrames();
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
-    flushTwoFrames();
-    const pausedRestartDialog = view.container.querySelector<HTMLElement>('[role="dialog"][aria-modal="true"]')!;
-    expect(pausedRestartDialog.textContent).toContain('重新开始？');
-    expect(pausedRestartDialog.contains(document.activeElement)).toBe(true);
-    act(() => [...pausedRestartDialog.querySelectorAll<HTMLButtonElement>('button')]
-      .find((button) => button.textContent === '取消')?.click());
-    flushTwoFrames();
-    const returnedPauseDialog = view.container.querySelector<HTMLElement>('[role="dialog"]')!;
-    expect(returnedPauseDialog.hasAttribute('aria-modal')).toBe(false);
-    expect(returnedPauseDialog.textContent).toContain('已暂停');
-    expect(returnedPauseDialog.contains(document.activeElement)).toBe(true);
-    expect(document.activeElement).not.toBe(canvas);
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')?.textContent).toContain('暂停');
     expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
     expect(view.container.querySelector('canvas')).toBe(canvas);
     view.unmount();
@@ -1656,7 +1659,7 @@ describe('T6 frontend mode binding', () => {
     english.unmount();
   });
 
-  it('cycles keyboard focus through paused Continue, Back, and Settings and routes Escape to Back', async () => {
+  it('keeps pause as a board curtain while Back, Settings, Enter, and Escape remain routed', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1668,22 +1671,16 @@ describe('T6 frontend mode binding', () => {
     const runtime = runtimeHarness.instances.at(-1)!;
 
     act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
-    const continueButton = [...view.container.querySelectorAll<HTMLButtonElement>('[role="dialog"] button')]
-      .find((button) => button.textContent === '继续游戏')!;
     const backButton = view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')!;
     const settingsButton = view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')!;
-    expect(document.activeElement).toBe(continueButton);
-
-    act(() => continueButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true })));
-    expect(document.activeElement).toBe(backButton);
-    act(() => backButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true })));
-    expect(document.activeElement).toBe(settingsButton);
-    act(() => settingsButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true })));
-    expect(document.activeElement).toBe(continueButton);
-    act(() => continueButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true })));
-    expect(document.activeElement).toBe(settingsButton);
-
-    act(() => settingsButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')?.textContent).toContain('回车继续');
+    expect(view.container.querySelector('[role="dialog"]')).toBeNull();
+    expect(backButton.disabled).toBe(false);
+    expect(settingsButton.disabled).toBe(false);
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true })));
+    expect(runtime.getState().status).toBe('playing');
+    act(() => runtime.setState({ ...runtime.getState(), status: 'paused' }));
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', key: 'Escape', bubbles: true })));
     expect(view.container.querySelector('[role="dialog"]')?.textContent).toContain('离开本局？');
     view.unmount();
   });
@@ -2168,9 +2165,9 @@ describe('T6 frontend mode binding', () => {
     english.unmount();
 
     expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__value-row\s*\{[^}]*display:\s*flex[^}]*align-items:\s*baseline[^}]*white-space:\s*nowrap/s);
-    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__unit\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*12px[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__unit\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*14px[^}]*font-weight:\s*700/s);
     expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\[data-stat-role="fall-cadence"\] \.run-stats__unit\s*\{[^}]*font-weight:\s*400/s);
-    expect(sourceHudStyles).toMatch(/\.run-stats\s*\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*font-size:\s*19px/s);
+    expect(sourceHudStyles).toMatch(/\.run-stats\s*\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*font-size:\s*clamp\(34px, 3vw, 44px\)/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s+strong\s*\{[^}]*display:\s*inline-flex[^}]*min-height:\s*1\.08em[^}]*align-items:\s*baseline/s);
   });
 

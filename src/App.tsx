@@ -39,6 +39,13 @@ import {
 import { GameRuntime, randomRunSeed } from './game/runtime/GameRuntime';
 import { browserPlatform } from './platform/browserPlatform';
 import {
+  DEFAULT_APP_NAVIGATION,
+  appPathFor,
+  navigationForMode,
+  parseAppPath,
+  type AppNavigationState,
+} from './navigation/appRoute';
+import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
   LEGACY_V5_PUZZLE_PROGRESS_KEY,
@@ -62,6 +69,13 @@ import {
 } from './puzzleProgress';
 import { puzzleLessonFor } from './puzzleLessons';
 import { PUZZLE_HARD_MASTERY_GROUPS, puzzleOptimalCertificate } from './puzzleMastery';
+import {
+  DEFAULT_VISUAL_THEME,
+  VISUAL_THEMES,
+  VISUAL_THEME_STORAGE_KEY,
+  parseVisualTheme,
+  type VisualThemeId,
+} from './design/visualThemes';
 import { ANCHOR_MATERIAL, PIECE_MATERIALS } from './game/render/theme';
 import { nextPreviewPieces, survivalDebrisCells } from './game/render/presentation';
 import { ActionSheet } from './ui/ActionSheet';
@@ -94,7 +108,6 @@ import {
   type ScoreRecord,
 } from './leaderboard';
 
-type AppScreen = 'home' | 'puzzle-library' | 'game';
 type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
 type SettingsTab = 'settings' | 'controls' | 'rules';
@@ -112,6 +125,12 @@ export type ClassicGravityRange = {
 
 const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
+const ENTRY_COVER_EXIT_MS = 220;
+
+function readAppNavigation(): AppNavigationState {
+  const pathname = browserPlatform.windowTarget()?.location.pathname ?? '/';
+  return parseAppPath(pathname) ?? DEFAULT_APP_NAVIGATION;
+}
 const MODE_RULE_INTROS_KEY = 'tetramorph:mode-rule-intros:v1';
 const LEGACY_MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 export const REDUCED_MOTION_STORAGE_KEY = 'tetramorph:reduced-motion:v1';
@@ -154,6 +173,22 @@ function writeLanguage(language: AppLanguage): void {
     browserPlatform.writeStorage(LANGUAGE_STORAGE_KEY, language);
   } catch {
     // Storage is optional: the active session still switches language immediately.
+  }
+}
+
+function readVisualTheme(): VisualThemeId {
+  try {
+    return parseVisualTheme(browserPlatform.readStorage(VISUAL_THEME_STORAGE_KEY));
+  } catch {
+    return DEFAULT_VISUAL_THEME;
+  }
+}
+
+function writeVisualTheme(theme: VisualThemeId): void {
+  try {
+    browserPlatform.writeStorage(VISUAL_THEME_STORAGE_KEY, theme);
+  } catch {
+    // Storage is optional: the active surface still adopts the theme immediately.
   }
 }
 
@@ -1243,6 +1278,48 @@ function LanguageControl({
   );
 }
 
+function VisualThemeControl({
+  theme,
+  language,
+  onChange,
+}: {
+  theme: VisualThemeId;
+  language: AppLanguage;
+  onChange: (theme: VisualThemeId) => void;
+}) {
+  const copy = appCopy(language);
+  const labels: Record<VisualThemeId, string> = {
+    'mineral-mist': copy.labels.mineralMist,
+    'deep-tide': copy.labels.deepTide,
+    sunstone: copy.labels.sunstone,
+  };
+  return (
+    <section className="visual-theme-control" aria-label={copy.labels.theme}>
+      <div role="group" aria-label={copy.labels.theme}>
+        {VISUAL_THEMES.map((option, index) => (
+          <button
+            key={option}
+            type="button"
+            className="visual-theme-control__option"
+            data-testid={`theme-${option}`}
+            data-theme-option={option}
+            data-arrow-nav
+            data-arrow-row="2"
+            data-arrow-col={index}
+            aria-pressed={theme === option}
+            onClick={() => onChange(option)}
+          >
+            <span>{labels[option]}</span>
+            <span className="visual-theme-control__selection" aria-hidden="true">
+              {theme === option ? copy.labels.currentTheme : ''}
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function MotionControl({
   reducedMotion,
   onChange,
@@ -1323,7 +1400,7 @@ function ClassicGravityRangeControl({
           type="range"
           data-testid="classic-starting-speed"
           data-arrow-nav
-          data-arrow-row="2"
+          data-arrow-row="3"
           data-arrow-col="1"
           min={CLASSIC_STARTING_GRAVITY_MIN_TICKS / TICKS_PER_SECOND}
           max={CLASSIC_STARTING_GRAVITY_MAX_TICKS / TICKS_PER_SECOND}
@@ -1342,7 +1419,7 @@ function ClassicGravityRangeControl({
           type="range"
           data-testid="classic-fastest-speed"
           data-arrow-nav
-          data-arrow-row="2"
+          data-arrow-row="3"
           data-arrow-col="2"
           min={CLASSIC_STARTING_GRAVITY_MIN_TICKS / TICKS_PER_SECOND}
           max={CLASSIC_STARTING_GRAVITY_MAX_TICKS / TICKS_PER_SECOND}
@@ -1392,11 +1469,21 @@ function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: A
   );
 }
 
+function RunStatValue({
+  children,
+  ariaLabel,
+}: {
+  children: string | number;
+  ariaLabel?: string;
+}) {
+  return <strong key={String(children)} className="run-stats__value" aria-label={ariaLabel}>{children}</strong>;
+}
+
 function FallCadenceValue({ state, language }: { state: GameState; language: AppLanguage }) {
   const cadence = fallCadenceParts(state, language);
   return (
     <div className="run-stats__value-row">
-      <strong aria-label={fallCadenceLabel(state, language)}>{cadence.value}</strong>
+      <RunStatValue ariaLabel={fallCadenceLabel(state, language)}>{cadence.value}</RunStatValue>
       <small className="run-stats__unit" aria-hidden="true">{cadence.unit}</small>
     </div>
   );
@@ -1416,15 +1503,15 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
     const aftershockNext = (state.survivalRiseCount + 1) % SURVIVAL_RISES_PER_AFTERSHOCK === 0;
     return (
       <section className="run-stats run-stats--survival" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
-        <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><strong>{elapsedClockLabel(state.elapsedTicks)}</strong></article>
-        <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
+        <article data-stat-role="survival-time"><span>{copy.labels.survivalTime}</span><RunStatValue>{elapsedClockLabel(state.elapsedTicks)}</RunStatValue></article>
+        <article data-stat-role="lines"><span>{copy.labels.lines}</span><RunStatValue>{state.lines}</RunStatValue></article>
         <article
           data-stat-role="survival-bedrock"
           data-aftershock={aftershockNext || undefined}
           data-urgent={state.survivalRisePending || riseSeconds <= 5 || undefined}
         >
           <span>{aftershockNext ? copy.labels.aftershock : copy.phrasing.bedrockRise(state.survivalBedrockRows)}</span>
-          <strong>{survivalCountdownLabel(state, language)}</strong>
+          <RunStatValue>{survivalCountdownLabel(state, language)}</RunStatValue>
         </article>
         <article
           data-stat-role="survival-stones"
@@ -1432,7 +1519,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
           data-urgent={stonePieces <= 2 || undefined}
         >
           <span>{copy.labels.stonefall}</span>
-          <strong>{copy.phrasing.rockfallPieces(stonePieces)}</strong>
+          <RunStatValue>{copy.phrasing.rockfallPieces(stonePieces)}</RunStatValue>
         </article>
       </section>
     );
@@ -1440,26 +1527,26 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
   if (state.mode === 'puzzle') {
     return (
       <section className="run-stats run-stats--puzzle" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
-        <article data-stat-role="puzzle-targets"><span>{copy.labels.originalBlocks}</span><strong>{state.puzzleTargetCells.length}/{state.puzzleInitialTargetCount}</strong></article>
-        <article data-stat-role="puzzle-placed"><span>{copy.labels.placed}</span><strong>{state.pieceCount}</strong></article>
+        <article data-stat-role="puzzle-targets"><span>{copy.labels.originalBlocks}</span><RunStatValue>{`${state.puzzleTargetCells.length}/${state.puzzleInitialTargetCount}`}</RunStatValue></article>
+        <article data-stat-role="puzzle-placed"><span>{copy.labels.placed}</span><RunStatValue>{state.pieceCount}</RunStatValue></article>
       </section>
     );
   }
   if (state.mode === 'sprint') {
     return (
       <section className="run-stats run-stats--mutation" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
-        <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
-        <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
-        <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
+        <article data-stat-role="score"><span>{copy.labels.score}</span><RunStatValue>{formatScore(state.score, language)}</RunStatValue></article>
+        <article data-stat-role="lines"><span>{copy.labels.lines}</span><RunStatValue>{state.lines}</RunStatValue></article>
+        <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><RunStatValue>{state.combo}</RunStatValue></article>
         <article data-stat-role="fall-cadence"><FallCadenceLabel language={language} /><FallCadenceValue state={state} language={language} /></article>
       </section>
     );
   }
   return (
     <section className="run-stats" data-testid="stats" aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}>
-      <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
-      <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
-      <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
+      <article data-stat-role="score"><span>{copy.labels.score}</span><RunStatValue>{formatScore(state.score, language)}</RunStatValue></article>
+      <article data-stat-role="lines"><span>{copy.labels.lines}</span><RunStatValue>{state.lines}</RunStatValue></article>
+      <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><RunStatValue>{state.combo}</RunStatValue></article>
       <article data-stat-role="fall-cadence"><FallCadenceLabel language={language} /><FallCadenceValue state={state} language={language} /></article>
     </section>
   );
@@ -1585,6 +1672,8 @@ export function GameSession({
   onRunFinished,
   language = DEFAULT_LANGUAGE,
   onLanguageChange = () => undefined,
+  visualTheme = DEFAULT_VISUAL_THEME,
+  onVisualThemeChange = () => undefined,
   classicGravityRange = {
     startingTicks: CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
     floorTicks: CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
@@ -1602,6 +1691,8 @@ export function GameSession({
   onRunFinished?: (record: ScoreRecord) => void;
   language?: AppLanguage;
   onLanguageChange?: (language: AppLanguage) => void;
+  visualTheme?: VisualThemeId;
+  onVisualThemeChange?: (theme: VisualThemeId) => void;
   classicGravityRange?: ClassicGravityRange;
   onClassicGravityRangeChange?: (range: ClassicGravityRange) => void;
   reducedMotion?: boolean;
@@ -1631,7 +1722,7 @@ export function GameSession({
     initialClassicGravityRangeRef.current.floorTicks,
   ));
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
-  const [startCueVisible, setStartCueVisible] = useState(false);
+  const [entryCoverExiting, setEntryCoverExiting] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -1716,6 +1807,7 @@ export function GameSession({
       puzzleId: mode === 'puzzle' ? puzzleId : undefined,
       inputEnabled: false,
       reducedMotion: reducedMotionRef.current,
+      visualTheme,
       survivalEntryBedrockRows: mode === 'race' ? 1 : null,
       classicStartingGravityTicks: initialClassicGravityRangeRef.current.startingTicks,
       classicGravityFloorTicks: initialClassicGravityRangeRef.current.floorTicks,
@@ -1785,6 +1877,10 @@ export function GameSession({
   }, [reducedMotion, runtime]);
 
   useEffect(() => {
+    runtime?.setVisualTheme?.(visualTheme);
+  }, [runtime, visualTheme]);
+
+  useEffect(() => {
     runtime?.setClassicGravityRange(classicGravityRange.startingTicks, classicGravityRange.floorTicks);
   }, [classicGravityRange.floorTicks, classicGravityRange.startingTicks, runtime]);
 
@@ -1806,13 +1902,8 @@ export function GameSession({
         setCountdownDigit(1);
         return;
       }
-      countdownCompleteRef.current = true;
-      runtime.setInputEnabled(true);
-      runtime.start();
-      setStartCueVisible(true);
+      setEntryCoverExiting(true);
       setCountdownDigit(null);
-      setLiveMessage(appCopy(languageRef.current).labels.runStarted);
-      focusBoard();
     }, 1000);
     return () => {
       cancelled = true;
@@ -1821,10 +1912,17 @@ export function GameSession({
   }, [countdownDigit, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen]);
 
   useEffect(() => {
-    if (!startCueVisible) return;
-    const timer = browserPlatform.scheduleTimeout(() => setStartCueVisible(false), 560);
+    if (!runtime || !entryCoverExiting || settingsOpen || restartConfirmOpen || exitOpen) return;
+    const timer = browserPlatform.scheduleTimeout(() => {
+      countdownCompleteRef.current = true;
+      runtime.setInputEnabled(true);
+      runtime.start();
+      setEntryCoverExiting(false);
+      setLiveMessage(appCopy(languageRef.current).labels.runStarted);
+      focusBoard();
+    }, ENTRY_COVER_EXIT_MS);
     return () => browserPlatform.cancelTimeout(timer);
-  }, [startCueVisible]);
+  }, [entryCoverExiting, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen]);
 
   useEffect(() => {
     runtime?.setSurvivalEntryBedrockRows(
@@ -1953,25 +2051,31 @@ export function GameSession({
   }, [countdownDigit, runtime]);
 
   const openSettings = useCallback(() => {
-    if (!runtime || settingsOpen || restartConfirmOpen) return;
+    if (!runtime || settingsOpen || exitOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'ready' && runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
-    settingsWasPlayingRef.current = runtimeState.status === 'playing';
-    if (settingsWasPlayingRef.current) runtime.togglePause();
+    settingsWasPlayingRef.current = restartConfirmOpen
+      ? restartWasPlayingRef.current
+      : runtimeState.status === 'playing';
+    if (runtimeState.status === 'playing') runtime.togglePause();
+    if (restartConfirmOpen) {
+      setRestartConfirmOpen(false);
+      restartWasPlayingRef.current = false;
+    }
     runtime.setInputEnabled(false);
     setSettingsTab('settings');
     setSettingsOpen(true);
-  }, [restartConfirmOpen, runtime, settingsOpen]);
+  }, [exitOpen, restartConfirmOpen, runtime, settingsOpen]);
 
   const closeSettings = useCallback(() => {
     setSettingsOpen(false);
-    if (countdownDigit === null) runtime?.setInputEnabled(true);
+    if (countdownDigit === null && !entryCoverExiting) runtime?.setInputEnabled(true);
     // Opening settings is a temporary overlay even when the player paused before it.
     // Closing it always returns directly to the live board, never to a second pause sheet.
     if (runtime?.getState().status === 'paused') runtime.togglePause();
     settingsWasPlayingRef.current = false;
     focusBoard();
-  }, [countdownDigit, focusBoard, runtime]);
+  }, [countdownDigit, entryCoverExiting, focusBoard, runtime]);
 
   const restartRun = useCallback(() => {
     setExitOpen(false);
@@ -1980,7 +2084,7 @@ export function GameSession({
     settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
     countdownCompleteRef.current = false;
-    setStartCueVisible(false);
+    setEntryCoverExiting(false);
     runtime?.setInputEnabled(true);
     runtime?.restart();
     runtime?.setInputEnabled(false);
@@ -2018,7 +2122,7 @@ export function GameSession({
   }, [countdownDigit, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen, state.mode]);
 
   const resumeRun = useCallback(() => {
-    if (runtime?.getState().status === 'paused') runtime.togglePause();
+    runtime?.resume();
     focusBoard();
   }, [focusBoard, runtime]);
 
@@ -2026,40 +2130,67 @@ export function GameSession({
     const handleRestartShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyR' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (countdownDigit !== null || state.status !== 'playing' || exitOpen || restartConfirmOpen || settingsOpen) return;
+      if (restartConfirmOpen) {
+        keyboardEvent.preventDefault();
+        cancelRestart();
+        return;
+      }
+      if (countdownDigit !== null || (state.status !== 'playing' && state.status !== 'paused') || exitOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestRestart();
     };
     return browserPlatform.listenWindow('keydown', handleRestartShortcut);
-  }, [countdownDigit, exitOpen, requestRestart, restartConfirmOpen, settingsOpen, state.status]);
+  }, [cancelRestart, countdownDigit, exitOpen, requestRestart, restartConfirmOpen, settingsOpen, state.status]);
+
+  useEffect(() => {
+    const handleInterruptionConfirm = (event: Event) => {
+      const keyboardEvent = event as KeyboardEvent;
+      if (keyboardEvent.code !== 'Enter' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
+      if (restartConfirmOpen) {
+        keyboardEvent.preventDefault();
+        restartRun();
+        return;
+      }
+      if (state.status !== 'paused' || exitOpen || settingsOpen) return;
+      keyboardEvent.preventDefault();
+      resumeRun();
+    };
+    return browserPlatform.listenWindow('keydown', handleInterruptionConfirm);
+  }, [exitOpen, restartConfirmOpen, restartRun, resumeRun, settingsOpen, state.status]);
 
   useEffect(() => {
     const handleSettingsShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'KeyS' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (exitOpen || restartConfirmOpen || settingsOpen) return;
+      if (exitOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       openSettings();
     };
     return browserPlatform.listenWindow('keydown', handleSettingsShortcut);
-  }, [exitOpen, openSettings, restartConfirmOpen, settingsOpen]);
+  }, [exitOpen, openSettings, settingsOpen]);
 
   const requestExit = useCallback(() => {
-    if (!runtime || exitOpen || restartConfirmOpen || settingsOpen) return;
+    if (!runtime || exitOpen || settingsOpen) return;
     const runtimeState = runtime.getState();
     if (runtimeState.status !== 'ready' && runtimeState.status !== 'playing' && runtimeState.status !== 'paused') return;
-    exitWasPlayingRef.current = runtimeState.status === 'playing';
-    if (exitWasPlayingRef.current) runtime.togglePause();
+    exitWasPlayingRef.current = restartConfirmOpen
+      ? restartWasPlayingRef.current
+      : runtimeState.status === 'playing';
+    if (restartConfirmOpen) {
+      setRestartConfirmOpen(false);
+      restartWasPlayingRef.current = false;
+    }
+    if (runtimeState.status === 'playing') runtime.togglePause();
     runtime.setInputEnabled(false);
     setExitOpen(true);
   }, [exitOpen, restartConfirmOpen, runtime, settingsOpen]);
 
   const cancelExit = useCallback(() => {
     setExitOpen(false);
-    if (countdownDigit === null) runtime?.setInputEnabled(true);
+    if (countdownDigit === null && !entryCoverExiting) runtime?.setInputEnabled(true);
     if (exitWasPlayingRef.current && runtime?.getState().status === 'paused') runtime.togglePause();
     exitWasPlayingRef.current = false;
-  }, [countdownDigit, runtime]);
+  }, [countdownDigit, entryCoverExiting, runtime]);
 
   useEffect(() => {
     const handlePuzzleUndoShortcut = (event: Event) => {
@@ -2076,12 +2207,17 @@ export function GameSession({
     const handleExitShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'Escape' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if ((state.status !== 'ready' && state.status !== 'playing') || exitOpen || restartConfirmOpen || settingsOpen) return;
+      if (restartConfirmOpen) {
+        keyboardEvent.preventDefault();
+        cancelRestart();
+        return;
+      }
+      if ((state.status !== 'ready' && state.status !== 'playing' && state.status !== 'paused') || exitOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestExit();
     };
     return browserPlatform.listenWindow('keydown', handleExitShortcut);
-  }, [exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
+  }, [cancelRestart, exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
 
   const terminal = terminalCopy(state, language);
   const activePuzzleCelebration = state.mode === 'puzzle' && terminal?.success ? puzzleCelebration : null;
@@ -2117,7 +2253,7 @@ export function GameSession({
     <main
       id="game"
       lang={language}
-      className={`play-shell${pauseOpen ? ' play-shell--paused' : ''}`}
+      className={`play-shell${pauseOpen || restartConfirmOpen ? ' play-shell--interrupted' : ''}`}
       data-testid="game-screen"
     >
       <header className="play-topbar" data-testid="cluster-header">
@@ -2155,45 +2291,17 @@ export function GameSession({
       <section className="play-surface" aria-label={`${modeLabel} ${copy.labels.gamePanel}`}>
         <section className="game-arena" data-testid="game-cluster" aria-label={`${modeLabel} ${copy.labels.gameArea}`}>
           <div ref={hostRef} className="canvas-host" data-testid="canvas-host" />
-          <section
-            className={`board-frame ${countdownDigit !== null || startCueVisible ? 'board-frame--countdown' : ''}`}
-            data-testid="board-frame"
-            onPointerDown={beginBoardGesture}
-            onPointerUp={finishBoardGesture}
-            onPointerCancel={cancelBoardGesture}
-          >
-            {(countdownDigit !== null || startCueVisible) && (
-              <div
-                className="entry-countdown"
-                data-testid="entry-countdown"
-                data-countdown={countdownDigit ?? 'start'}
-                role="status"
-                aria-live="assertive"
-                aria-atomic="true"
-              >
-                <span
-                  key={countdownDigit ?? 'start'}
-                  className={`entry-countdown__digit${countdownDigit === null ? ' entry-countdown__digit--start' : ''}`}
-                >{countdownDigit ?? copy.labels.start}</span>
-              </div>
-            )}
-          </section>
           <aside
-            className={`game-side-panel game-side-panel--${state.mode}`}
+            className={`game-left-rail game-left-rail--${state.mode}`}
             data-testid="side-rail"
-            aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.gamePanel}`}
+            aria-label={`${copy.labels.next}${state.mode === 'sprint' ? ` · ${copy.labels.mutationStatus}` : ''}`}
           >
-            <div className="info-rail" data-testid="context-top">
-              <MutationStatus state={state} language={language} />
-              <RunStats state={state} language={language} />
-            </div>
             <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
-              <p className="rail-label">
-                <span>{copy.labels.next}</span>
-              </p>
+              <p className="rail-label"><span>{copy.labels.next}</span></p>
               <div
                 className={`next-slot ${puzzleDoublePreview ? 'next-slot--dual' : ''}`}
                 data-testid="next-slot"
+                data-preview-frameless="true"
                 data-preview-count={puzzleDoublePreview ? 2 : 1}
                 role={puzzleDoublePreview ? undefined : 'img'}
                 aria-label={puzzleDoublePreview
@@ -2212,22 +2320,63 @@ export function GameSession({
                 )}
               </div>
             </div>
+            <MutationStatus state={state} language={language} />
+          </aside>
+          <section
+            className={`board-frame ${countdownDigit !== null || entryCoverExiting || pauseOpen || restartConfirmOpen ? 'board-frame--countdown' : ''}`}
+            data-testid="board-frame"
+            onPointerDown={beginBoardGesture}
+            onPointerUp={finishBoardGesture}
+            onPointerCancel={cancelBoardGesture}
+          >
+            {(countdownDigit !== null || entryCoverExiting) && (
+              <div
+                className={`entry-countdown${entryCoverExiting ? ' entry-countdown--exit' : ''}`}
+                data-testid="entry-countdown"
+                data-countdown={countdownDigit ?? 'exit'}
+                role="status"
+                aria-live="assertive"
+                aria-atomic="true"
+              >
+                {countdownDigit !== null && (
+                  <span key={countdownDigit} className="entry-countdown__digit">{countdownDigit}</span>
+                )}
+              </div>
+            )}
+            {pauseOpen && (
+              <div
+                className="entry-countdown entry-countdown--pause"
+                data-testid="pause-curtain"
+                role="status"
+                aria-label={`${copy.labels.pauseTitle}。${copy.labels.pauseHint}`}
+              >
+                <span className="entry-countdown__digit entry-countdown__digit--pause">{copy.labels.pauseTitle}</span>
+                <small className="entry-countdown__hint">{copy.labels.pauseHint}</small>
+              </div>
+            )}
+            {restartConfirmOpen && (
+              <div
+                className="entry-countdown entry-countdown--restart"
+                data-testid="restart-curtain"
+                role="alertdialog"
+                aria-modal="true"
+                aria-label={`${copy.labels.restartTitle}。${copy.labels.restartHint}`}
+              >
+                <span className="entry-countdown__digit entry-countdown__digit--restart">{copy.labels.restartTitle}</span>
+                <small className="entry-countdown__hint">{copy.labels.restartHint}</small>
+              </div>
+            )}
+          </section>
+          <aside
+            className={`game-right-rail game-right-rail--${state.mode}`}
+            data-testid="data-rail"
+            aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.modeData}`}
+          >
+            <RunStats state={state} language={language} />
           </aside>
         </section>
 
       </section>
-
-      <ActionSheet
-        open={pauseOpen}
-        title={copy.labels.pauseTitle}
-        description=""
-        placement="gameplay"
-        externalFocusSelector="[data-pause-global-action]:not([disabled])"
-        onCancel={requestExit}
-        onConfirm={resumeRun}
-      >
-        <button className="primary-action" data-autofocus type="button" onClick={resumeRun}>{copy.labels.continue}</button>
-      </ActionSheet>
 
       <ActionSheet
         open={settingsOpen}
@@ -2293,6 +2442,14 @@ export function GameSession({
                     language={language}
                   />
                 </div>
+                <div className="settings-console__preference settings-console__preference--theme">
+                  <strong>{copy.labels.theme}</strong>
+                  <VisualThemeControl
+                    theme={visualTheme}
+                    language={language}
+                    onChange={onVisualThemeChange}
+                  />
+                </div>
                 {state.mode === 'marathon' && (
                   <div className="settings-console__preference settings-console__preference--classic-speed">
                     <ClassicGravityRangeControl
@@ -2303,8 +2460,8 @@ export function GameSession({
                   </div>
                 )}
                 <div className="settings-console__actions">
-                  <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="3" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
-                  <button className="primary-action" type="button" data-arrow-nav data-arrow-row="3" data-arrow-col="1" onClick={closeSettings}>
+                  <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="4" data-arrow-col="0" disabled={countdownDigit !== null || entryCoverExiting} onClick={requestRestart}>{copy.labels.restart}</button>
+                  <button className="primary-action" type="button" data-arrow-nav data-arrow-row="4" data-arrow-col="1" onClick={closeSettings}>
                     {copy.labels.continue}
                   </button>
                 </div>
@@ -2341,19 +2498,6 @@ export function GameSession({
             </section>
           )}
         </section>
-      </ActionSheet>
-
-      <ActionSheet
-        open={restartConfirmOpen}
-        title={copy.labels.restartTitle}
-        description=""
-        tone="danger"
-        placement="gameplay"
-        onCancel={cancelRestart}
-        onConfirm={restartRun}
-      >
-        <button className="primary-action" data-autofocus data-testid="confirm-restart" type="button" onClick={restartRun}>{copy.labels.confirm}</button>
-        <button className="secondary-action" type="button" onClick={cancelRestart}>{copy.labels.cancel}</button>
       </ActionSheet>
 
       <ActionSheet
@@ -2398,11 +2542,11 @@ export function GameSession({
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<AppScreen>('home');
+  const [navigation, setNavigation] = useState<AppNavigationState>(readAppNavigation);
   const [language, setLanguage] = useState<AppLanguage>(readLanguage);
+  const [visualTheme, setVisualTheme] = useState<VisualThemeId>(readVisualTheme);
   const [classicGravityRange, setClassicGravityRange] = useState(readClassicGravityRange);
-  const [mode, setMode] = useState<GameMode>('marathon');
-  const [selectedPuzzleId, setSelectedPuzzleId] = useState<PuzzleId>(CAMPAIGN_LEVELS[0]!.id);
+  const { screen, mode, selectedPuzzleId } = navigation;
   const [progress, setProgress] = useState<PuzzleProgress>(readPuzzleProgress);
   const progressRef = useRef(progress);
   const [leaderboard, setLeaderboard] = useState<Leaderboard>(readLeaderboard);
@@ -2431,9 +2575,42 @@ export default function App() {
     if (bootScreen) bootScreen.setAttribute('aria-label', copy.labels.loading);
   }, [language]);
 
+  const navigate = useCallback((nextNavigation: AppNavigationState, replace = false) => {
+    const windowTarget = browserPlatform.windowTarget();
+    const nextPath = appPathFor(nextNavigation);
+    if (windowTarget && windowTarget.location.pathname !== nextPath) {
+      if (replace) windowTarget.history.replaceState({}, '', nextPath);
+      else windowTarget.history.pushState({}, '', nextPath);
+    }
+    setNavigation(nextNavigation);
+  }, []);
+
+  useEffect(() => {
+    const windowTarget = browserPlatform.windowTarget();
+    if (!windowTarget) return undefined;
+    const initialRoute = parseAppPath(windowTarget.location.pathname);
+    if (!initialRoute) navigate(DEFAULT_APP_NAVIGATION, true);
+
+    return browserPlatform.listenWindow('popstate', () => {
+      const nextRoute = parseAppPath(windowTarget.location.pathname);
+      setRuleIntroMode(null);
+      if (nextRoute) setNavigation(nextRoute);
+      else navigate(DEFAULT_APP_NAVIGATION, true);
+    });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (screen !== 'home' && !introducedModes.includes(mode)) setRuleIntroMode(mode);
+  }, [introducedModes, mode, screen]);
+
   const changeLanguage = useCallback((nextLanguage: AppLanguage) => {
     setLanguage(nextLanguage);
     writeLanguage(nextLanguage);
+  }, []);
+
+  const changeVisualTheme = useCallback((nextTheme: VisualThemeId) => {
+    setVisualTheme(nextTheme);
+    writeVisualTheme(nextTheme);
   }, []);
 
   const changeClassicGravityRange = useCallback((range: ClassicGravityRange) => {
@@ -2448,9 +2625,8 @@ export default function App() {
   }, []);
 
   const openMode = useCallback((nextMode: GameMode) => {
-    setMode(nextMode);
-    setScreen(nextMode === 'puzzle' ? 'puzzle-library' : 'game');
-  }, []);
+    navigate(navigationForMode(nextMode, selectedPuzzleId));
+  }, [navigate, selectedPuzzleId]);
 
   const enterMode = useCallback((nextMode: GameMode) => {
     if (!introducedModes.includes(nextMode)) {
@@ -2472,9 +2648,8 @@ export default function App() {
   }, [introducedModes, openMode, ruleIntroMode]);
 
   const startPuzzle = useCallback(() => {
-    setMode('puzzle');
-    setScreen('game');
-  }, []);
+    navigate({ screen: 'game', mode: 'puzzle', selectedPuzzleId });
+  }, [navigate, selectedPuzzleId]);
 
   const recordCompletion = useCallback((state: GameState) => {
     const current = progressRef.current;
@@ -2496,19 +2671,30 @@ export default function App() {
   }, []);
 
   const exitGame = useCallback((destination: ExitDestination) => {
-    setScreen(destination === 'puzzle-library' ? 'puzzle-library' : 'home');
+    navigate(destination === 'puzzle-library'
+      ? { screen: 'puzzle-library', mode: 'puzzle', selectedPuzzleId }
+      : DEFAULT_APP_NAVIGATION);
+  }, [navigate, selectedPuzzleId]);
+
+  const selectPuzzle = useCallback((puzzleId: PuzzleId) => {
+    setNavigation((current) => ({ ...current, mode: 'puzzle', selectedPuzzleId: puzzleId }));
   }, []);
 
   return (
-    <div className="app" lang={language} data-reduced-motion={reducedMotion ? 'true' : 'false'}>
+    <div
+      className="app"
+      lang={language}
+      data-theme={visualTheme}
+      data-reduced-motion={reducedMotion ? 'true' : 'false'}
+    >
       {screen === 'home' && <ModeHome onEnter={enterMode} language={language} />}
       {screen === 'puzzle-library' && (
         <PuzzleLibrary
           progress={progress}
           selectedId={selectedPuzzleId}
-          onSelect={setSelectedPuzzleId}
+          onSelect={selectPuzzle}
           onStart={startPuzzle}
-          onBack={() => setScreen('home')}
+          onBack={() => navigate(DEFAULT_APP_NAVIGATION)}
           language={language}
         />
       )}
@@ -2524,6 +2710,8 @@ export default function App() {
           onRunFinished={recordRun}
           language={language}
           onLanguageChange={changeLanguage}
+          visualTheme={visualTheme}
+          onVisualThemeChange={changeVisualTheme}
           classicGravityRange={classicGravityRange}
           onClassicGravityRangeChange={changeClassicGravityRange}
           reducedMotion={reducedMotion}
