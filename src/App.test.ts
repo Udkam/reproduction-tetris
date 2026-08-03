@@ -20,6 +20,7 @@ import App, {
   MutationStatus,
   ModeHome,
   PuzzleLibrary,
+  parseReducedMotionOverride,
   puzzleAnchorSilhouettePath,
   puzzleCelebrationCopy,
   puzzleCelebrationOutcome,
@@ -27,6 +28,7 @@ import App, {
   runResultMetrics,
   RunResultSummary,
   RunStats,
+  REDUCED_MOTION_STORAGE_KEY,
   SettingsRecord,
   scoreRecordRank,
   scoreRecordForState,
@@ -59,6 +61,7 @@ interface RuntimeTestOptions {
   mode?: GameMode;
   puzzleId?: PuzzleId;
   inputEnabled?: boolean;
+  reducedMotion?: boolean;
   survivalEntryBedrockRows?: number | null;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
 }
@@ -67,6 +70,7 @@ interface RuntimeTestInstance {
   options: RuntimeTestOptions;
   setInputEnabled: ReturnType<typeof vi.fn>;
   setSurvivalEntryBedrockRows: ReturnType<typeof vi.fn>;
+  setReducedMotion: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
   restart: ReturnType<typeof vi.fn>;
   undoPuzzle: ReturnType<typeof vi.fn>;
@@ -928,6 +932,7 @@ describe('T6 frontend mode binding', () => {
       sprint: [],
     };
     const onLanguageChange = vi.fn();
+    const onReducedMotionChange = vi.fn();
     const view = render(createElement(GameSession, {
       mode: 'marathon',
       puzzleId: CAMPAIGN_LEVELS[0]!.id,
@@ -935,6 +940,8 @@ describe('T6 frontend mode binding', () => {
       onCanonicalCompletion: vi.fn(),
       leaderboard,
       onLanguageChange,
+      reducedMotion: true,
+      onReducedMotionChange,
     }));
     await act(async () => Promise.resolve());
     await advanceEntryCountdown();
@@ -959,6 +966,7 @@ describe('T6 frontend mode binding', () => {
     const rulesTab = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-tab-rules"]')!;
     let toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
     let volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
+    let motion = view.container.querySelector<HTMLButtonElement>('[data-testid="reduced-motion-toggle"]')!;
     const controls = view.container.querySelector<HTMLElement>('[data-testid="settings-controls"]')!;
     expect(settingsTab.getAttribute('aria-selected')).toBe('true');
     expect(controlsTab.getAttribute('aria-selected')).toBe('false');
@@ -968,6 +976,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="settings-rules"]')).toBeNull();
     expect(view.container.querySelector('[data-testid="settings-leaderboard"]')).toBeNull();
     expect(toggle.textContent).toBe('音效开');
+    expect(motion.textContent).toBe('减少动效');
+    expect(motion.getAttribute('aria-pressed')).toBe('true');
     expect(view.container.querySelector('[data-testid="music-toggle"]')).toBeNull();
     expect(volume.value).toBe('100');
     expect([...sheet.children].map((child) => child.getAttribute('data-testid') ?? child.className)).toEqual([
@@ -983,7 +993,7 @@ describe('T6 frontend mode binding', () => {
     const shortcuts = view.container.querySelector<HTMLElement>('[data-testid="settings-shortcuts"]')!;
     const gameplay = view.container.querySelector<HTMLElement>('[data-testid="keyboard-gameplay"]')!;
     const shortcutKeys = view.container.querySelector<HTMLElement>('[data-testid="keyboard-shortcuts"]')!;
-    expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
+    expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行触控操作触控：轻点旋转；左右滑动移动；向下短滑加速，长滑直接落底。');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.classList.contains('settings-console__key-group--gameplay')).toBe(true);
@@ -1003,6 +1013,7 @@ describe('T6 frontend mode binding', () => {
     expect(settingsTab.getAttribute('aria-selected')).toBe('true');
     toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
     volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
+    motion = view.container.querySelector<HTMLButtonElement>('[data-testid="reduced-motion-toggle"]')!;
     const chinese = view.container.querySelector<HTMLButtonElement>('[data-testid="language-zh"]')!;
     const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
     expect(chinese.getAttribute('aria-pressed')).toBe('true');
@@ -1021,6 +1032,8 @@ describe('T6 frontend mode binding', () => {
     const routes: readonly [HTMLButtonElement, string, HTMLButtonElement][] = [
       [settingsTab, 'ArrowDown', chinese],
       [chinese, 'ArrowRight', english],
+      [english, 'ArrowRight', motion],
+      [motion, 'ArrowLeft', english],
       [chinese, 'ArrowUp', settingsTab],
       [english, 'ArrowDown', toggle],
       [toggle, 'ArrowUp', chinese],
@@ -1030,6 +1043,9 @@ describe('T6 frontend mode binding', () => {
       [resume, 'ArrowUp', toggle],
     ];
     for (const [from, key, to] of routes) assertArrowRoute(from, key, to);
+
+    act(() => motion.click());
+    expect(onReducedMotionChange).toHaveBeenCalledExactlyOnceWith(false);
 
     act(() => volume.focus());
     const nativeRangeArrow = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true });
@@ -1618,12 +1634,23 @@ describe('T6 frontend mode binding', () => {
     localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
     const view = render(createElement(App));
 
+    expect(parseReducedMotionOverride(null)).toBeNull();
+    expect(parseReducedMotionOverride('on')).toBe(true);
+    expect(parseReducedMotionOverride('off')).toBe(false);
+    expect(view.container.querySelector('.app')?.getAttribute('data-reduced-motion')).toBe('true');
     expect(view.container.querySelector('[data-testid="language-en"]')).toBeNull();
     expect(view.container.querySelector('[data-testid="enter-marathon"] strong')?.textContent).toBe('Classic');
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
     await act(async () => Promise.resolve());
     await advanceEntryCountdown();
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+
+    const motion = view.container.querySelector<HTMLButtonElement>('[data-testid="reduced-motion-toggle"]')!;
+    expect(motion.textContent).toBe('减少动效');
+    act(() => motion.click());
+    expect(localStorage.getItem(REDUCED_MOTION_STORAGE_KEY)).toBe('off');
+    expect(view.container.querySelector('.app')?.getAttribute('data-reduced-motion')).toBe('false');
+    expect(runtimeHarness.instances.at(-1)?.setReducedMotion).toHaveBeenLastCalledWith(false);
 
     const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
     expect(english).not.toBeNull();
@@ -1633,6 +1660,7 @@ describe('T6 frontend mode binding', () => {
     expect(document.documentElement.lang).toBe('en');
     expect(localStorage.getItem('tetramorph:language:v1')).toBe('en');
     expect(sheet.textContent).toContain('Settings');
+    expect(view.container.querySelector<HTMLButtonElement>('[data-testid="reduced-motion-toggle"]')?.textContent).toBe('Full motion');
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-tab-controls"]')?.click());
     expect(sheet.textContent).toMatch(/Keyboard.*Move.*Hard drop/s);
     expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
@@ -1640,6 +1668,10 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('.keyboard-map')).toBeNull();
     expect(view.container.querySelector('canvas')?.getAttribute('aria-label')).toBe('TetraMorph 10 by 20 game board');
     view.unmount();
+
+    const resumed = render(createElement(App));
+    expect(resumed.container.querySelector('.app')?.getAttribute('data-reduced-motion')).toBe('false');
+    resumed.unmount();
   });
 
   it('keeps the active English language in the terminal leaderboard call site', async () => {

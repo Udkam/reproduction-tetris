@@ -55,7 +55,7 @@ describe('Phase 12 Puzzle curriculum authority', () => {
     expect(gallery).toMatch(/\.puzzle-gallery__node--locked > button\s*\{[^}]*border-style:\s*dashed;/s);
     expect(gallery).toMatch(/@media \(max-width:\s*719px\),\s*\(orientation:\s*portrait\)[\s\S]*\.puzzle-gallery\s*\{[\s\S]*grid-template-rows:/);
     expect(gallery).toMatch(/@media \(min-width:\s*720px\) and \(max-height:\s*520px\)[\s\S]*\.puzzle-gallery__grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(5,/);
-    expect(gallery).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*animation:\s*none !important/);
+    expect(gallery).toMatch(/\.app\[data-reduced-motion="true"\] \.puzzle-gallery__stage[\s\S]*animation:\s*none !important/);
   });
 
   it('keeps localized Puzzle titles inside a complete glyph box', () => {

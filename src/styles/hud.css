@@ -583,10 +583,8 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .entry-countdown,
-  .entry-countdown__digit {
-    animation: none;
-    transition: none;
-  }
+.app[data-reduced-motion="true"] .entry-countdown,
+.app[data-reduced-motion="true"] .entry-countdown__digit {
+  animation: none;
+  transition: none;
 }

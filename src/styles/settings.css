@@ -114,7 +114,7 @@
 
 .settings-console__controls {
   display: grid;
-  grid-template-columns: minmax(220px, .9fr) minmax(300px, 1.1fr);
+  grid-template-columns: minmax(170px, .75fr) minmax(280px, 1.2fr) minmax(140px, .62fr);
   gap: 0 20px;
   min-width: 0;
 }
@@ -127,7 +127,8 @@
   min-width: 0;
 }
 
-.settings-console__preference--language {
+.settings-console__preference--language,
+.settings-console__preference--sound {
   padding-right: 20px;
   border-right: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
 }
@@ -170,6 +171,7 @@
 
 .settings-console__controls .language-control button,
 .settings-console__controls .audio-toggle,
+.settings-console__controls .motion-toggle,
 .settings-console__actions > button {
   min-width: 0;
   min-height: 42px;
@@ -179,6 +181,19 @@
   font-weight: 650;
   line-height: 1.2;
   white-space: normal;
+}
+
+.settings-console__controls .motion-toggle {
+  width: 100%;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 88%, var(--raised));
+  border-color: color-mix(in srgb, var(--edge) 82%, var(--surface));
+}
+
+.settings-console__controls .motion-toggle[aria-pressed="true"] {
+  color: #fff;
+  background: var(--settings-accent);
+  border-color: var(--settings-accent);
 }
 
 .settings-console__controls .audio-controls {
@@ -296,6 +311,35 @@
   font-family: var(--font-data);
   font-style: normal;
   font-variant-numeric: tabular-nums;
+}
+
+.settings-console__touch {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  margin-top: 2px;
+  padding-top: 11px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+}
+
+.settings-console__touch > span {
+  color: var(--settings-keyboard-tone);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .035em;
+  white-space: nowrap;
+}
+
+.settings-console__touch > p {
+  min-width: 0;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .settings-console__panel--rules {
@@ -433,13 +477,15 @@
   }
 
   .settings-console__preference--language,
+  .settings-console__preference--sound,
   .settings-console__key-group--shortcuts {
     padding: 0 0 14px;
     border-right: 0;
     border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
   }
 
-  .settings-console__preference--sound {
+  .settings-console__preference--sound,
+  .settings-console__preference--motion {
     padding-top: 14px;
   }
 
@@ -499,6 +545,7 @@
 
   .settings-console__controls .language-control button,
   .settings-console__controls .audio-toggle,
+  .settings-console__controls .motion-toggle,
   .settings-console__actions > button {
     min-height: 36px;
   }
@@ -522,8 +569,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .settings-console__panel {
-    animation: none;
-  }
+.app[data-reduced-motion="true"] .settings-console__panel {
+  animation: none;
 }

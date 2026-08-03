@@ -281,10 +281,8 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .action-sheet--run-result,
-  .action-sheet--run-result::before {
-    animation: none !important;
-    transition: none !important;
-  }
+.app[data-reduced-motion="true"] .action-sheet--run-result,
+.app[data-reduced-motion="true"] .action-sheet--run-result::before {
+  animation: none !important;
+  transition: none !important;
 }

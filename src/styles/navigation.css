@@ -955,13 +955,11 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mode-gates--workbench .mode-gate,
-  .mode-gates--workbench .mode-gate::before,
-  .console-focus__well,
-  .console-node button,
-  .console-node--selected button {
-    animation: none !important;
-    transition: none !important;
-  }
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate::before,
+.app[data-reduced-motion="true"] .console-focus__well,
+.app[data-reduced-motion="true"] .console-node button,
+.app[data-reduced-motion="true"] .console-node--selected button {
+  animation: none !important;
+  transition: none !important;
 }

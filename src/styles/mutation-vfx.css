@@ -245,6 +245,4 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .game-side-panel--sprint .mutation-status.mutation-status--vfx { animation: none; }
-}
+.app[data-reduced-motion="true"] .game-side-panel--sprint .mutation-status.mutation-status--vfx { animation: none; }

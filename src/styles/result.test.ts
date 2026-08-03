@@ -30,6 +30,6 @@ describe('Phase 9 run-result authority', () => {
     expect(result).toMatch(/@media \(min-width:\s*700px\) and \(max-height:\s*520px\)[\s\S]*\.action-sheet--run-result \.result-leaderboard--result\s*\{[\s\S]*grid-area:\s*leaderboard;/);
     expect(result).toMatch(/@media \(min-width:\s*700px\) and \(max-height:\s*520px\)[\s\S]*overflow:\s*hidden;/);
     expect(result).toMatch(/@media \(max-width:\s*560px\)/);
-    expect(result).toMatch(/@media \(prefers-reduced-motion:\s*reduce\)[\s\S]*animation:\s*none !important/);
+    expect(result).toMatch(/\.app\[data-reduced-motion="true"\] \.action-sheet--run-result[\s\S]*animation:\s*none !important/);
   });
 });

@@ -8,7 +8,7 @@ describe('RC1 Settings composition', () => {
   it('uses one three-tab console and renders each concern in its own compact panel', () => {
     expect(settingsCss).toMatch(/\.settings-console__tabs\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/s);
     expect(settingsCss).toMatch(/\.settings-console__panel\s*\{[^}]*padding:\s*18px/s);
-    expect(settingsCss).toMatch(/\.settings-console__controls\s*\{[^}]*grid-template-columns:\s*minmax\(220px,\s*\.9fr\) minmax\(300px,\s*1\.1fr\)/s);
+    expect(settingsCss).toMatch(/\.settings-console__controls\s*\{[^}]*grid-template-columns:\s*minmax\(170px,\s*\.75fr\) minmax\(280px,\s*1\.2fr\) minmax\(140px,\s*\.62fr\)/s);
     expect(settingsCss).toMatch(/\.settings-console__actions\s*\{[^}]*grid-column:\s*1\s*\/\s*-1;[^}]*justify-self:\s*stretch;[^}]*width:\s*100%;/s);
     expect(settingsCss).toMatch(/\.settings-console__keyboard\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\);[^}]*grid-template-areas:\s*none;/s);
     expect(settingsCss).toMatch(/\.settings-console__key-group\s*\{[^}]*grid-area:\s*auto;/s);
@@ -22,6 +22,8 @@ describe('RC1 Settings composition', () => {
     expect(settingsCss).toMatch(/\.settings-console__key-group > span\s*\{[^}]*font-family:\s*var\(--font-ui\)/s);
     expect(settingsCss).toMatch(/\.settings-console__keyboard kbd\s*\{[^}]*font-family:\s*var\(--font-data\)/s);
     expect(settingsCss).toMatch(/\.settings-console__controls \.audio-volume output\s*\{[^}]*font-family:\s*var\(--font-data\)/s);
+    expect(settingsCss).toMatch(/\.settings-console__controls \.motion-toggle\s*\{[^}]*width:\s*100%/s);
+    expect(settingsCss).toMatch(/\.settings-console__touch\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
   });
 
   it('collapses columns without shrinking English or Chinese copy below the readable floor', () => {

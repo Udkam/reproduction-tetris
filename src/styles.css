@@ -4438,60 +4438,58 @@ kbd,
   .observatory-transit strong { font-size: 12px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .entry-countdown__digit,
-  .mode-gate,
-  .sheet-backdrop,
-  .action-sheet,
-  .observatory-stage,
-  .observatory-sector,
-  .observatory-stop,
-  .observatory-focus__well,
-  .observatory-focus__well::after,
-  .observatory-stop--selected button::after,
-  .run-stats [data-stat-role="survival-next"][data-urgent="true"] strong,
-  .run-stats--puzzle [data-stat-role="objective"][data-urgent="true"] strong {
-    animation: none;
-  }
+.app[data-reduced-motion="true"] .entry-countdown__digit,
+.app[data-reduced-motion="true"] .mode-gate,
+.app[data-reduced-motion="true"] .sheet-backdrop,
+.app[data-reduced-motion="true"] .action-sheet,
+.app[data-reduced-motion="true"] .observatory-stage,
+.app[data-reduced-motion="true"] .observatory-sector,
+.app[data-reduced-motion="true"] .observatory-stop,
+.app[data-reduced-motion="true"] .observatory-focus__well,
+.app[data-reduced-motion="true"] .observatory-focus__well::after,
+.app[data-reduced-motion="true"] .observatory-stop--selected button::after,
+.app[data-reduced-motion="true"] .run-stats [data-stat-role="survival-next"][data-urgent="true"] strong,
+.app[data-reduced-motion="true"] .run-stats--puzzle [data-stat-role="objective"][data-urgent="true"] strong {
+  animation: none;
+}
 
-  .mode-gate__glyph svg,
-  .mode-gate__motif,
-  .mode-gate__action b,
-  .level-item,
-  .atlas-waypoint,
-  .observatory-sector button,
-  .observatory-stop button,
-  .library-back,
-  .touch-key,
-  .level-detail--atlas .primary-action::after,
-  .observatory-focus__start::after {
-    transition: none !important;
-  }
+.app[data-reduced-motion="true"] .mode-gate__glyph svg,
+.app[data-reduced-motion="true"] .mode-gate__motif,
+.app[data-reduced-motion="true"] .mode-gate__action b,
+.app[data-reduced-motion="true"] .level-item,
+.app[data-reduced-motion="true"] .atlas-waypoint,
+.app[data-reduced-motion="true"] .observatory-sector button,
+.app[data-reduced-motion="true"] .observatory-stop button,
+.app[data-reduced-motion="true"] .library-back,
+.app[data-reduced-motion="true"] .touch-key,
+.app[data-reduced-motion="true"] .level-detail--atlas .primary-action::after,
+.app[data-reduced-motion="true"] .observatory-focus__start::after {
+  transition: none !important;
+}
 
-  .mode-gate,
-  .mode-gate__glyph svg,
-  .mode-gate__motif,
-  .mode-gate__action b,
-  .level-item,
-  .atlas-waypoint,
-  .observatory-stage,
-  .observatory-sector,
-  .observatory-stop,
-  .observatory-focus__well,
-  .observatory-focus__well::after,
-  .library-back,
-  .touch-key:active {
-    transform: none !important;
-  }
+.app[data-reduced-motion="true"] .mode-gate,
+.app[data-reduced-motion="true"] .mode-gate__glyph svg,
+.app[data-reduced-motion="true"] .mode-gate__motif,
+.app[data-reduced-motion="true"] .mode-gate__action b,
+.app[data-reduced-motion="true"] .level-item,
+.app[data-reduced-motion="true"] .atlas-waypoint,
+.app[data-reduced-motion="true"] .observatory-stage,
+.app[data-reduced-motion="true"] .observatory-sector,
+.app[data-reduced-motion="true"] .observatory-stop,
+.app[data-reduced-motion="true"] .observatory-focus__well,
+.app[data-reduced-motion="true"] .observatory-focus__well::after,
+.app[data-reduced-motion="true"] .library-back,
+.app[data-reduced-motion="true"] .touch-key:active {
+  transform: none !important;
+}
 
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
+.app[data-reduced-motion="true"] *,
+.app[data-reduced-motion="true"] *::before,
+.app[data-reduced-motion="true"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
 }
 
 /* T13.1 — Quiet fields. The UI frame stays flat so actual board cells carry the image. */
@@ -4912,11 +4910,9 @@ kbd,
    .console-node button { min-height: 44px; font-size: 10px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mode-gates--workbench .mode-gate,
-  .console-node button,
-  .console-node--selected button { animation: none !important; transition: none !important; }
-}
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate,
+.app[data-reduced-motion="true"] .console-node button,
+.app[data-reduced-motion="true"] .console-node--selected button { animation: none !important; transition: none !important; }
 
 /* T15 Phase 2 authoritative Settings console
    One connected instrument, one namespace, and no inherited equal-height card grid. */
@@ -5469,10 +5465,8 @@ kbd,
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .action-sheet--settings {
-    animation: none !important;
-  }
+.app[data-reduced-motion="true"] .action-sheet--settings {
+  animation: none !important;
 }
 /* End T15 Phase 2 authoritative Settings console */
 
@@ -5613,9 +5607,7 @@ kbd,
   50% { transform: translateY(-1px); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .game-side-panel--sprint .mutation-status__effect[data-active="true"] { animation: none; }
-}
+.app[data-reduced-motion="true"] .game-side-panel--sprint .mutation-status__effect[data-active="true"] { animation: none; }
 
 /* A best-result chip is optional, but the selected Puzzle specimen must never make
    the preview/copy boundary jump. Reserve the exact status slot in both states. */
@@ -5949,9 +5941,7 @@ kbd,
   .result-leaderboard li > time { font-size: 9px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .console-route .console-node > button { transition: none !important; }
-}
+.app[data-reduced-motion="true"] .console-route .console-node > button { transition: none !important; }
 
 /* T13.12 keeps one compact information grammar across the selector, settings, and play rails. */
 .console-focus__board .puzzle-silhouette {
@@ -6200,10 +6190,8 @@ kbd,
   .mutation-status { padding: 8px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .topbar-action,
-  .text-action { transition: none; }
-}
+.app[data-reduced-motion="true"] .topbar-action,
+.app[data-reduced-motion="true"] .text-action { transition: none; }
 
 /* T13.10 final delivery cascade — intentionally after the historical workbench layers. */
 .mode-gates--workbench .mode-gate,
@@ -6253,9 +6241,7 @@ kbd,
   .console-workbench { border-color: #93acbb; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .console-node--selected button { animation: none !important; }
-}
+.app[data-reduced-motion="true"] .console-node--selected button { animation: none !important; }
 
 /* T13.10 final delivery cascade — intentionally after the historical workbench layers. */
 .mode-gates--workbench .mode-gate,
@@ -6304,9 +6290,7 @@ kbd,
   .console-workbench { border-color: #93acbb; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .console-node--selected button { animation: none !important; }
-}
+.app[data-reduced-motion="true"] .console-node--selected button { animation: none !important; }
 
 /* T13.10 — mineral interface: one clear home rhythm and a calm Puzzle workbench. */
 .mode-gates--workbench .mode-gate,
@@ -6452,9 +6436,7 @@ kbd,
   .console-workbench { border-color: #93acbb; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .console-node--selected button { animation: none !important; }
-}
+.app[data-reduced-motion="true"] .console-node--selected button { animation: none !important; }
 
 /* T13.8: one measured rail language, while retaining each mode's own information. */
 .console-focus__action {
@@ -7325,27 +7307,25 @@ kbd,
   .relay-footer { font-size: 9px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .relay-workbench,
-  .relay-node,
-  .relay-node--selected button,
-  .relay-focus__well,
-  .relay-focus__well::after {
-    animation: none !important;
-  }
+.app[data-reduced-motion="true"] .relay-workbench,
+.app[data-reduced-motion="true"] .relay-node,
+.app[data-reduced-motion="true"] .relay-node--selected button,
+.app[data-reduced-motion="true"] .relay-focus__well,
+.app[data-reduced-motion="true"] .relay-focus__well::after {
+  animation: none !important;
+}
 
-  .relay-node button,
-  .relay-band__label,
-  .relay-focus__start::after {
-    transition: none !important;
-  }
+.app[data-reduced-motion="true"] .relay-node button,
+.app[data-reduced-motion="true"] .relay-band__label,
+.app[data-reduced-motion="true"] .relay-focus__start::after {
+  transition: none !important;
+}
 
-  .relay-node button:hover,
-  .relay-node button:focus-visible,
-  .relay-band--active .relay-band__label,
-  .relay-focus__well {
-    transform: none !important;
-  }
+.app[data-reduced-motion="true"] .relay-node button:hover,
+.app[data-reduced-motion="true"] .relay-node button:focus-visible,
+.app[data-reduced-motion="true"] .relay-band--active .relay-band__label,
+.app[data-reduced-motion="true"] .relay-focus__well {
+  transform: none !important;
 }
 
 /* T13 — Gravity Workbench.
@@ -8416,35 +8396,33 @@ kbd,
   .console-footer { font-size: 8px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .landing-stage--workbench,
-  .mode-gates--workbench .mode-gate,
-  .console-workbench,
-  .console-node,
-  .console-node--selected button,
-  .console-focus__well,
-  .console-focus__pulse {
-    animation: none !important;
-  }
+.app[data-reduced-motion="true"] .landing-stage--workbench,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate,
+.app[data-reduced-motion="true"] .console-workbench,
+.app[data-reduced-motion="true"] .console-node,
+.app[data-reduced-motion="true"] .console-node--selected button,
+.app[data-reduced-motion="true"] .console-focus__well,
+.app[data-reduced-motion="true"] .console-focus__pulse {
+  animation: none !important;
+}
 
-  .mode-gates--workbench .mode-gate,
-  .mode-gates--workbench .mode-gate__glyph svg,
-  .mode-gates--workbench .mode-gate__motif,
-  .mode-gates--workbench .mode-gate__action b,
-  .console-node button,
-  .console-band__label,
-  .console-focus__start::after {
-    transition: none !important;
-  }
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate__glyph svg,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate__motif,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate__action b,
+.app[data-reduced-motion="true"] .console-node button,
+.app[data-reduced-motion="true"] .console-band__label,
+.app[data-reduced-motion="true"] .console-focus__start::after {
+  transition: none !important;
+}
 
-  .mode-gates--workbench .mode-gate:hover,
-  .mode-gates--workbench .mode-gate:focus-visible,
-  .mode-gates--workbench .mode-gate--active,
-  .console-node button:hover,
-  .console-node button:focus-visible,
-  .console-band--active .console-band__label {
-    transform: none !important;
-  }
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate:hover,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate:focus-visible,
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate--active,
+.app[data-reduced-motion="true"] .console-node button:hover,
+.app[data-reduced-motion="true"] .console-node button:focus-visible,
+.app[data-reduced-motion="true"] .console-band--active .console-band__label {
+  transform: none !important;
 }
 
 /* T13.1 final cascade: placed after the legacy workbench rules on purpose. */
@@ -9295,10 +9273,8 @@ kbd,
   .puzzle-celebration__summary { padding: 14px 15px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .action-sheet--puzzle-celebration::before,
-  .puzzle-celebration__constellation i { animation: none !important; }
-}
+.app[data-reduced-motion="true"] .action-sheet--puzzle-celebration::before,
+.app[data-reduced-motion="true"] .puzzle-celebration__constellation i { animation: none !important; }
 
 @media (max-width: 700px) {
   .action-sheet:has(.settings-sheet) { width: min(520px, calc(100vw - 18px)); padding: 16px; }
@@ -9571,11 +9547,9 @@ kbd,
    .console-node button { min-height: 44px; font-size: 10px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mode-gates--workbench .mode-gate,
-  .console-node button,
-  .console-node--selected button { animation: none !important; transition: none !important; }
-}
+.app[data-reduced-motion="true"] .mode-gates--workbench .mode-gate,
+.app[data-reduced-motion="true"] .console-node button,
+.app[data-reduced-motion="true"] .console-node--selected button { animation: none !important; transition: none !important; }
 
 /* RC 1.0 first-experience handoff: the wordmark gets one quiet product line,
    first-entry rules become a three-beat briefing, and Start acknowledges the
@@ -9650,6 +9624,4 @@ kbd,
   .action-sheet .mode-rule-summary--intro li { padding: 11px 13px 12px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .entry-countdown__digit--start { animation: none !important; }
-}
+.app[data-reduced-motion="true"] .entry-countdown__digit--start { animation: none !important; }

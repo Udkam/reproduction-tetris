@@ -88,6 +88,7 @@ type AppScreen = 'home' | 'puzzle-library' | 'game';
 type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
 type SettingsTab = 'settings' | 'controls' | 'rules';
+type ReducedMotionOverride = boolean | null;
 export type PuzzleCelebration = {
   outcome: PuzzleCelebrationOutcome;
   pieces: number;
@@ -99,6 +100,7 @@ const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
 const MODE_RULE_INTROS_KEY = 'tetramorph:mode-rule-intros:v1';
 const LEGACY_MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
+export const REDUCED_MOTION_STORAGE_KEY = 'tetramorph:reduced-motion:v1';
 
 const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'sprint', 'puzzle'];
 
@@ -255,6 +257,20 @@ export function survivalCountdownLabel(state: GameState, language: AppLanguage =
 export function survivalStoneCountdownPieces(state: GameState): number {
   if (state.mode !== 'race') return 0;
   return Math.max(0, state.survivalDebrisPiecesRemaining);
+}
+
+export function parseReducedMotionOverride(value: string | null): ReducedMotionOverride {
+  if (value === 'on') return true;
+  if (value === 'off') return false;
+  return null;
+}
+
+function readReducedMotionOverride(): ReducedMotionOverride {
+  return parseReducedMotionOverride(browserPlatform.readStorage(REDUCED_MOTION_STORAGE_KEY));
+}
+
+function writeReducedMotionOverride(reducedMotion: boolean): void {
+  browserPlatform.writeStorage(REDUCED_MOTION_STORAGE_KEY, reducedMotion ? 'on' : 'off');
 }
 
 function campaignLevel(id: PuzzleId | null) {
@@ -1117,6 +1133,31 @@ function LanguageControl({
   );
 }
 
+function MotionControl({
+  reducedMotion,
+  onChange,
+  language,
+}: {
+  reducedMotion: boolean;
+  onChange: (reducedMotion: boolean) => void;
+  language: AppLanguage;
+}) {
+  const copy = appCopy(language);
+  return (
+    <button
+      className="motion-toggle"
+      type="button"
+      data-testid="reduced-motion-toggle"
+      data-arrow-nav
+      data-arrow-row="1"
+      data-arrow-col="2"
+      aria-label={reducedMotion ? copy.labels.turnReducedMotionOff : copy.labels.turnReducedMotionOn}
+      aria-pressed={reducedMotion}
+      onClick={() => onChange(!reducedMotion)}
+    >{reducedMotion ? copy.labels.reducedMotionOn : copy.labels.reducedMotionOff}</button>
+  );
+}
+
 function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: AppLanguage }) {
   const copy = appCopy(language);
   return (
@@ -1139,6 +1180,10 @@ function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: A
         <span><kbd>← →</kbd> {copy.labels.select}</span>
         <span><kbd>↑ ↓</kbd> {copy.labels.switch}</span>
         <span><kbd>Enter</kbd> {copy.labels.activate}</span>
+      </div>
+      <div className="settings-console__touch" data-testid="touch-guidance">
+        <span>{copy.labels.touchControls}</span>
+        <p>{copy.labels.touchGestureHint}</p>
       </div>
     </section>
   );
@@ -1312,6 +1357,8 @@ export function GameSession({
   onRunFinished,
   language = DEFAULT_LANGUAGE,
   onLanguageChange = () => undefined,
+  reducedMotion = browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)').matches,
+  onReducedMotionChange = () => undefined,
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
@@ -1322,6 +1369,8 @@ export function GameSession({
   onRunFinished?: (record: ScoreRecord) => void;
   language?: AppLanguage;
   onLanguageChange?: (language: AppLanguage) => void;
+  reducedMotion?: boolean;
+  onReducedMotionChange?: (reducedMotion: boolean) => void;
 }) {
   const copy = appCopy(language);
   const hostRef = useRef<HTMLDivElement>(null);
@@ -1332,6 +1381,7 @@ export function GameSession({
   const restartWasPlayingRef = useRef(false);
   const settingsWasPlayingRef = useRef(false);
   const languageRef = useRef(language);
+  const reducedMotionRef = useRef(reducedMotion);
   const lastRecordedRunRef = useRef<string | null>(null);
   const puzzleCompletionKeyRef = useRef<string | null>(null);
   const puzzleProgressRef = useRef(puzzleProgress);
@@ -1350,6 +1400,7 @@ export function GameSession({
   const [resultRecord, setResultRecord] = useState<ScoreRecord | null>(null);
   const [puzzleCelebration, setPuzzleCelebration] = useState<PuzzleCelebration | null>(null);
   puzzleProgressRef.current = puzzleProgress;
+  reducedMotionRef.current = reducedMotion;
 
   const changeAudioEnabled = useCallback((enabled: boolean) => {
     runtime?.setAudioEnabled(enabled);
@@ -1411,13 +1462,12 @@ export function GameSession({
     if (!host) return;
     let disposed = false;
     countdownCompleteRef.current = false;
-    const motionQuery = browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)');
     const nextRuntime = new GameRuntime({
       seed: runSeed,
       mode,
       puzzleId: mode === 'puzzle' ? puzzleId : undefined,
       inputEnabled: false,
-      reducedMotion: motionQuery.matches,
+      reducedMotion: reducedMotionRef.current,
       survivalEntryBedrockRows: mode === 'race' ? 1 : null,
       audioEnabled,
       audioVolume,
@@ -1462,12 +1512,11 @@ export function GameSession({
         }
       },
     });
-    const removeMotionListener = motionQuery.subscribe((matches) => nextRuntime.setReducedMotion(matches));
     runtimeRef.current = nextRuntime;
     void nextRuntime.mount(host).then(() => {
       if (disposed) return;
       setRuntime(nextRuntime);
-      nextRuntime.setReducedMotion(motionQuery.matches);
+      nextRuntime.setReducedMotion(reducedMotionRef.current);
       const canvas = host.querySelector('canvas');
       canvas?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);
       canvas?.setAttribute('aria-description', appCopy(languageRef.current).labels.touchGestureHint);
@@ -1476,11 +1525,14 @@ export function GameSession({
 
     return () => {
       disposed = true;
-      removeMotionListener();
       nextRuntime.destroy();
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
   }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId, runSeed]);
+
+  useEffect(() => {
+    runtime?.setReducedMotion(reducedMotion);
+  }, [reducedMotion, runtime]);
 
   useEffect(() => {
     if (!runtime || countdownDigit === null || settingsOpen || restartConfirmOpen || exitOpen) return;
@@ -1963,6 +2015,14 @@ export function GameSession({
                     language={language}
                   />
                 </div>
+                <div className="settings-console__preference settings-console__preference--motion">
+                  <strong>{copy.labels.motion}</strong>
+                  <MotionControl
+                    reducedMotion={reducedMotion}
+                    onChange={onReducedMotionChange}
+                    language={language}
+                  />
+                </div>
                 <div className="settings-console__actions">
                   <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="3" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
                   <button className="primary-action" type="button" data-arrow-nav data-arrow-row="3" data-arrow-col="1" onClick={closeSettings}>
@@ -2068,7 +2128,18 @@ export default function App() {
   const [leaderboard, setLeaderboard] = useState<Leaderboard>(readLeaderboard);
   const [introducedModes, setIntroducedModes] = useState<readonly GameMode[]>(readModeRuleIntros);
   const [ruleIntroMode, setRuleIntroMode] = useState<GameMode | null>(null);
+  const [reducedMotionOverride, setReducedMotionOverride] = useState<ReducedMotionOverride>(readReducedMotionOverride);
+  const [systemReducedMotion, setSystemReducedMotion] = useState(
+    () => browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)').matches,
+  );
   progressRef.current = progress;
+  const reducedMotion = reducedMotionOverride ?? systemReducedMotion;
+
+  useEffect(() => {
+    const query = browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)');
+    setSystemReducedMotion(query.matches);
+    return query.subscribe(setSystemReducedMotion);
+  }, []);
 
   useEffect(() => {
     const documentTarget = browserPlatform.documentTarget();
@@ -2083,6 +2154,11 @@ export default function App() {
   const changeLanguage = useCallback((nextLanguage: AppLanguage) => {
     setLanguage(nextLanguage);
     writeLanguage(nextLanguage);
+  }, []);
+
+  const changeReducedMotion = useCallback((nextReducedMotion: boolean) => {
+    setReducedMotionOverride(nextReducedMotion);
+    writeReducedMotionOverride(nextReducedMotion);
   }, []);
 
   const openMode = useCallback((nextMode: GameMode) => {
@@ -2138,7 +2214,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app" lang={language}>
+    <div className="app" lang={language} data-reduced-motion={reducedMotion ? 'true' : 'false'}>
       {screen === 'home' && <ModeHome onEnter={enterMode} language={language} />}
       {screen === 'puzzle-library' && (
         <PuzzleLibrary
@@ -2162,6 +2238,8 @@ export default function App() {
           onRunFinished={recordRun}
           language={language}
           onLanguageChange={changeLanguage}
+          reducedMotion={reducedMotion}
+          onReducedMotionChange={changeReducedMotion}
         />
       )}
       <ActionSheet

@@ -686,13 +686,11 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .puzzle-gallery__stage,
-  .puzzle-gallery__grid {
-    animation: none !important;
-  }
+.app[data-reduced-motion="true"] .puzzle-gallery__stage,
+.app[data-reduced-motion="true"] .puzzle-gallery__grid {
+  animation: none !important;
+}
 
-  .puzzle-gallery__node > button {
-    transition: none !important;
-  }
+.app[data-reduced-motion="true"] .puzzle-gallery__node > button {
+  transition: none !important;
 }
