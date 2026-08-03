@@ -1260,7 +1260,7 @@ describe('Puzzle undo presentation reset', () => {
     })).toBe(true);
   });
 
-  it('uses a lightly trembling top boundary for Supergravity without rain or screen flashing', () => {
+  it('moves the complete Supergravity boundary vertically against a quiet fixed reference', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const recorder = createGraphicsRecorder();
@@ -1287,11 +1287,10 @@ describe('Puzzle undo presentation reset', () => {
       const xs = operation.values.filter((_value, index) => index % 2 === 0);
       const ys = operation.values.filter((_value, index) => index % 2 === 1);
       return Math.max(...xs) - Math.min(...xs) === 200
-        && Math.max(...ys) - Math.min(...ys) < 4
-        && Math.max(...ys) < 8;
+        && Math.max(...ys) - Math.min(...ys) < 1;
     })).toBe(true);
 
-    (internals as unknown as { mutationClockMs: number }).mutationClockMs = 437;
+    (internals as unknown as { mutationClockMs: number }).mutationClockMs = 140;
     const later = createGraphicsRecorder();
     internals.drawActiveMutationAtmosphere(
       later.graphics,
@@ -1307,6 +1306,13 @@ describe('Puzzle undo presentation reset', () => {
     expect(geometrySignature(later.operations)).not.toBe(geometrySignature(recorder.operations));
     expect(later.operations.filter((operation) => operation.kind === 'stroke').map((operation) => operation.options))
       .toEqual(recorder.operations.filter((operation) => operation.kind === 'stroke').map((operation) => operation.options));
+    const averageY = (operation: DrawOperation): number => {
+      const ys = operation.values.filter((_value, index) => index % 2 === 1);
+      return ys.reduce((sum, value) => sum + value, 0) / ys.length;
+    };
+    const laterContours = later.operations.filter((operation) => operation.kind === 'poly');
+    expect(averageY(laterContours[0])).toBe(averageY(topContours[0]));
+    expect(Math.abs(averageY(laterContours[1]) - averageY(topContours[1]))).toBeGreaterThan(2);
 
     const reduced = new TetrisRendererClass();
     reduced.setOptions({ reducedMotion: true });
@@ -1446,7 +1452,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(confirm.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(8);
   });
 
-  it('uses a visible upper-field score constellation without a fixed corner badge', () => {
+  it('uses independent upper-field score glints without discs, stems, or a fixed badge', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1471,13 +1477,17 @@ describe('Puzzle undo presentation reset', () => {
     );
     expect(geometrySignature(twoField.operations)).not.toBe(geometrySignature(fourField.operations));
     expect(twoField.operations.filter((operation) => operation.kind === 'rect')).toHaveLength(0);
-    expect(twoField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(8);
-    expect(fourField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(12);
+    expect(twoField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(fourField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(twoField.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(twoField.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(0);
+    expect(fourField.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(0);
     const twoSegments = twoField.operations.filter((operation) => operation.kind === 'segment');
     const fourSegments = fourField.operations.filter((operation) => operation.kind === 'segment');
-    expect(twoSegments).toHaveLength(8 * 9);
-    expect(fourSegments).toHaveLength(12 * 9);
+    expect(twoSegments).toHaveLength(7 * 24);
+    expect(fourSegments).toHaveLength(10 * 24);
+    expect(twoField.operations.filter((operation) => operation.kind === 'fill')).toHaveLength(7 * 4);
+    expect(fourField.operations.filter((operation) => operation.kind === 'fill')).toHaveLength(10 * 4);
 
     internals.mutationClockMs = 437;
     const laterField = createGraphicsRecorder();
@@ -1487,8 +1497,8 @@ describe('Puzzle undo presentation reset', () => {
       layout,
     );
     expect(geometrySignature(laterField.operations)).not.toBe(geometrySignature(twoField.operations));
-    expect(laterField.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options))
-      .toEqual(twoField.operations.filter((operation) => operation.kind === 'fill').map((operation) => operation.options));
+    expect(laterField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(laterField.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(0);
 
     const twoGlyph = createGraphicsRecorder();
     const fourGlyph = createGraphicsRecorder();

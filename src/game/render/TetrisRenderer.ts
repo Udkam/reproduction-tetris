@@ -2411,7 +2411,11 @@ export class TetrisRenderer {
       const token = MUTATION_VFX_TOKENS[field.item];
       const alpha = this.mutationFieldOpacity(field);
       if (alpha <= 0) continue;
-      const phaseDuration = field.item === 'collapse' ? 560 : token.animation.pulseMs;
+      const phaseDuration = field.item === 'collapse'
+        ? 560
+        : field.item === 'multiplier'
+          ? 4_800
+          : token.animation.pulseMs;
       const phase = this.options.reducedMotion ? 0 : (this.mutationClockMs % phaseDuration) / phaseDuration;
       if (field.item === 'freeze') this.drawFreezeAtmosphere(graphics, layout, phase, alpha);
       else if (field.item === 'collapse') this.drawCollapseAtmosphere(graphics, state, layout, phase, alpha);
@@ -2492,25 +2496,40 @@ export class TetrisRenderer {
     opacity: number,
   ): void {
     const token = MUTATION_VFX_TOKENS.collapse;
-    // The board's top boundary carries a damped tremor: it makes the change in
-    // gravity tactile without raining symbols or flashing over the playfield.
-    for (let echo = 0; echo < 2; echo += 1) {
-      const points: number[] = [];
-      for (let index = 0; index <= BOARD_WIDTH; index += 1) {
-        const x = layout.x + layout.width * index / BOARD_WIDTH;
-        const tremor = this.options.reducedMotion
-          ? 0
-          : Math.sin(phase * Math.PI * 2 + index * 1.63 + echo * .9) * layout.cell * (.045 - echo * .012);
-        points.push(x, layout.y + layout.cell * (.09 + echo * .14) + tremor);
-      }
-      graphics
-        .poly(points)
-        .stroke({
-          color: echo === 0 ? token.palette.highlight : token.palette.primary,
-          alpha: (.52 - echo * .24) * opacity,
-          width: Math.max(1, layout.cell * (.055 - echo * .015)),
-        });
+    const baselineY = layout.y + layout.cell * .18;
+    const reference: number[] = [];
+    const boundary: number[] = [];
+    const verticalShift = this.options.reducedMotion
+      ? 0
+      : (
+        Math.sin(phase * Math.PI * 6) * .09
+        + Math.sin(phase * Math.PI * 14 + .7) * .035
+      ) * layout.cell;
+    // The full horizontal boundary, not the board, moves vertically. A quiet
+    // stationary echo makes that irregular displacement immediately readable;
+    // minute local variation prevents a mechanical slider without becoming a wave.
+    for (let index = 0; index <= BOARD_WIDTH; index += 1) {
+      const x = layout.x + layout.width * index / BOARD_WIDTH;
+      const localVariation = this.options.reducedMotion
+        ? 0
+        : Math.sin(phase * Math.PI * 2 + index * 1.37) * layout.cell * .008;
+      reference.push(x, baselineY);
+      boundary.push(x, baselineY + verticalShift + localVariation);
     }
+    graphics
+      .poly(reference)
+      .stroke({
+        color: token.palette.primary,
+        alpha: .22 * opacity,
+        width: Math.max(1, layout.cell * .025),
+      });
+    graphics
+      .poly(boundary)
+      .stroke({
+        color: token.palette.highlight,
+        alpha: .72 * opacity,
+        width: Math.max(1.5, layout.cell * .075),
+      });
   }
 
   private drawMultiplierAtmosphere(
@@ -2521,39 +2540,66 @@ export class TetrisRenderer {
     factor: 2 | 4,
   ): void {
     const token = MUTATION_VFX_TOKENS.multiplier;
-    const starCount = factor === 4 ? 12 : 8;
-    const fieldDepth = Math.min(layout.height * .44, layout.cell * 8.8);
-    // A compact score constellation occupies only the upper field. Every mote
-    // owns a small local halo and a short angled tail, so Double reads as an
-    // intentional sustained state rather than dust or rain. Super Double adds
-    // lanes and warmth without making any single mark larger than gameplay.
-    for (let index = 0; index < starCount; index += 1) {
-      const xFactor = ((index * 43 + 11) % 89 + 5) / 100;
-      const offset = index / starCount;
-      const travel = this.options.reducedMotion ? .08 + offset * .5 : (phase * .72 + offset) % 1;
-      const radius = layout.cell * (index % 4 === 0 ? .16 : .12);
-      const x = layout.x + layout.width * xFactor;
-      const y = layout.y + layout.cell * .32 + fieldDepth * travel;
-      const warmth = factor === 4 && index % 3 !== 1;
-      const color = warmth || index % 2 === 0 ? token.palette.highlight : token.palette.primary;
-      const alpha = (factor === 4 ? .68 : .58) * opacity;
-      const tailDirection = index % 2 === 0 ? -1 : 1;
+    const glintCount = factor === 4 ? 10 : 7;
+    const fieldDepth = Math.min(layout.height * .34, layout.cell * 6.8);
+    // Independent double-layer glints keep Double readable without turning the
+    // board into rain or hanging markers. Detached diamond dust has no circular
+    // backing, stem, tail, or shared pulse. Super Double adds count and warmth,
+    // while every individual mark keeps the same quiet gameplay-safe footprint.
+    for (let index = 0; index < glintCount; index += 1) {
+      const xFactor = (((index * 37 + 13) % 83) + 8) / 100;
+      const offset = ((index * 29) % glintCount) / glintCount;
+      const travel = this.options.reducedMotion ? .14 + offset * .64 : (phase + offset) % 1;
+      const edgeFade = this.options.reducedMotion
+        ? 1
+        : Math.max(0, Math.min(1, travel / .14, (1 - travel) / .2));
+      const sway = this.options.reducedMotion
+        ? 0
+        : Math.sin((phase + offset) * Math.PI * 2) * layout.cell * .08;
+      const radius = layout.cell * (index % 4 === 0 ? .15 : .11);
+      const x = layout.x + layout.width * xFactor + sway;
+      const y = layout.y + layout.cell * .42 + fieldDepth * travel;
+      const warmer = factor === 4 && index % 3 !== 1;
+      const outerColor = warmer ? token.palette.highlight : token.palette.primary;
+      const innerColor = factor === 4 && index % 2 === 0 ? token.palette.glow : token.palette.highlight;
+      const alpha = (factor === 4 ? .68 : .6) * opacity * edgeFade;
 
-      graphics
-        .circle(x, y, radius * 2.35)
-        .fill({ color, alpha: .09 * opacity });
-      graphics
-        .moveTo(x + tailDirection * radius * .68, y - radius * 3.6)
-        .lineTo(x + tailDirection * radius * .18, y - radius * 1.15)
-        .stroke({ color, alpha: alpha * .38, width: Math.max(.8, radius * .22) });
+      this.drawMutationStar(
+        graphics,
+        x,
+        y,
+        radius * 1.58,
+        radius * .42,
+        outerColor,
+        alpha * .22,
+      );
       this.drawMutationStar(
         graphics,
         x,
         y,
         radius,
-        radius * .36,
-        color,
-        alpha,
+        radius * .25,
+        innerColor,
+        alpha * .88,
+      );
+      const moteDirection = index % 2 === 0 ? -1 : 1;
+      this.drawMutationDiamond(
+        graphics,
+        x + moteDirection * radius * 2.35,
+        y - radius * 1.7,
+        radius * .18,
+        radius * .3,
+        innerColor,
+        alpha * .34,
+      );
+      this.drawMutationDiamond(
+        graphics,
+        x - moteDirection * radius * 1.55,
+        y + radius * 1.32,
+        radius * .12,
+        radius * .2,
+        outerColor,
+        alpha * .22,
       );
     }
   }
