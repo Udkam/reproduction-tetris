@@ -81,8 +81,8 @@ continue`; Enter is the only resume path. Pressing `P` again and pointer clicks 
 cover do nothing.
 Restart uses the same composition with `重新开始 / Restart` and `回车确认，按 R 取消 /
 Enter to confirm; R to cancel`; Enter restarts through the normal countdown and R returns
-to the interrupted run. Escape opens the established leave flow from Pause and cancels
-Restart confirmation. Neither cover may hide or clear the external Next forecast. The
+directly to the interrupted run. Escape opens the established leave flow from either
+Pause or Restart without resuming the run. Neither cover may hide or clear the external Next forecast. The
 top-bar Back and Settings controls remain live above both covers. Invoking either control
 keeps gameplay paused and replaces the board-local interruption with the existing leave
 or Settings transaction.

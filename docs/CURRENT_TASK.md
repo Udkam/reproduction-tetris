@@ -62,9 +62,10 @@ The correction has ten coupled acceptance requirements:
    smaller `回车继续 / Press Enter to continue`; only Enter resumes the same run.
    Pressing `P` again and pointer clicks on the cover do nothing. Restart shows large `重新开始 / Restart` and
    smaller `回车确认，按 R 取消 / Enter to confirm; R to cancel`; Enter starts a fresh
-   countdown and R cancels. The left Next instrument stays outside either interruption
-   and remains visibly populated through the dim layer. Escape opens the existing leave
-   flow from Pause and cancels Restart confirmation. The visible top-bar Back and Settings
+   countdown and R cancels directly back into the interrupted run. The left Next
+   instrument stays outside either interruption and remains visibly populated through
+   the dim layer. Escape opens the same established leave flow from Pause or Restart
+   without resuming the run. The visible top-bar Back and Settings
    controls remain pointer- and keyboard-operable over both covers; opening either replaces
    the board interruption with the established leave or Settings flow without resuming play.
 7. The open-space instruments remain genuinely frameless in both DOM and Pixi. Next has
