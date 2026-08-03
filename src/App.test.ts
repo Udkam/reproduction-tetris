@@ -1530,7 +1530,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
-    expect(view.container.querySelector('.mode-home-tagline')?.textContent).toBe('重新定义下落方块');
+    expect(view.container.querySelector('.mode-home-tagline')).toBeNull();
     expect(view.container.querySelector('.language-control')).toBeNull();
     const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
     expect(actionArrows).toHaveLength(4);

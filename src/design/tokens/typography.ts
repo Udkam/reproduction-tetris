@@ -1,10 +1,10 @@
 /** TetraMorph Design System v1.0 — type faces, weights, and roles. */
 export const TYPOGRAPHY = {
   fontFamily: {
-    brand: '"Playwrite NZ Basic", "Space Grotesk", sans-serif',
+    brand: '"Playwrite NZ Basic", "Segoe UI", cursive',
     chineseUi: '"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif',
     chineseDisplay: '"Noto Sans SC", "Microsoft YaHei UI", "PingFang SC", sans-serif',
-    englishUi: '"Space Grotesk", "Segoe UI", sans-serif',
+    englishUi: '"Kavivanar", "Segoe UI", cursive',
     data: '"Geist Mono", "Cascadia Mono", monospace',
   },
   weight: {

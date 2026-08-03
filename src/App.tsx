@@ -515,7 +515,7 @@ export function ModeHome({
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
             <h1 id="home-title" className="mode-home-wordmark"><span>Tetra</span><span>Morph</span></h1>
-            <p className="mode-home-tagline">{copy.labels.tagline}</p>
+            {language === 'en' && <p className="mode-home-tagline">{copy.labels.tagline}</p>}
           </div>
           <div
             className="mode-gates mode-gates--workbench"

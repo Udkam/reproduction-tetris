@@ -3,11 +3,11 @@
 TetraMorph packages all gameplay fonts locally. The application does not request a
 font CDN at runtime.
 
-## Space Grotesk
+## Kavivanar
 
-- Package: `@fontsource/space-grotesk` `5.3.0`.
-- Upstream: <https://github.com/floriankarsten/space-grotesk>.
-- Packaged subsets: Latin normal weights 400, 500, 600, and 700.
+- Package: `@fontsource/kavivanar` `5.3.0`.
+- Upstream: <https://github.com/google/fonts>.
+- Packaged subset: Latin normal weight 400.
 - License: SIL Open Font License 1.1, distributed in the package `LICENSE`.
 
 ## Geist Mono
