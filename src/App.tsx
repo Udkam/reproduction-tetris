@@ -2207,17 +2207,12 @@ export function GameSession({
     const handleExitShortcut = (event: Event) => {
       const keyboardEvent = event as KeyboardEvent;
       if (keyboardEvent.code !== 'Escape' || keyboardEvent.repeat || keyboardEvent.isComposing) return;
-      if (restartConfirmOpen) {
-        keyboardEvent.preventDefault();
-        cancelRestart();
-        return;
-      }
       if ((state.status !== 'ready' && state.status !== 'playing' && state.status !== 'paused') || exitOpen || settingsOpen) return;
       keyboardEvent.preventDefault();
       requestExit();
     };
     return browserPlatform.listenWindow('keydown', handleExitShortcut);
-  }, [cancelRestart, exitOpen, requestExit, restartConfirmOpen, settingsOpen, state.status]);
+  }, [exitOpen, requestExit, settingsOpen, state.status]);
 
   const terminal = terminalCopy(state, language);
   const activePuzzleCelebration = state.mode === 'puzzle' && terminal?.success ? puzzleCelebration : null;

@@ -1477,7 +1477,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('keeps one canvas while Settings supersedes pause and Escape cancels restart', async () => {
+  it('keeps one canvas while Settings supersedes pause and Escape replaces restart with leave', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1510,6 +1510,10 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="restart-curtain"]')?.textContent).toContain('重新开始');
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', key: 'Escape', bubbles: true })));
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.textContent).toContain('离开本局？');
+    act(() => [...view.container.querySelectorAll<HTMLButtonElement>('.action-sheet__actions > button')]
+      .find((button) => button.textContent === '留在本局')?.click());
+    expect(view.container.textContent).not.toContain('离开本局？');
     expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
     expect(view.container.querySelector('canvas')).toBe(canvas);
 

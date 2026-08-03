@@ -5,6 +5,7 @@ import {
   MUTATION_BOMB_SCORE,
   MUTATION_EFFECT_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
+  MUTATION_GRAVITY_TICKS,
   MUTATION_RESULT_TICKS,
   MUTATION_SUPERGRAVITY_EFFECT_TICKS,
   TICKS_PER_SECOND,
@@ -280,8 +281,8 @@ describe('异变 mode', () => {
     expect(observed).toEqual(expected);
   });
 
-  it('caps Mutation gravity at 0.1 seconds per cell without slowing Classic', () => {
-    expect(gravityForMode('sprint', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(TICKS_PER_SECOND / 10);
+  it('caps Mutation gravity at 0.2 seconds per cell without slowing Classic', () => {
+    expect(gravityForMode('sprint', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(MUTATION_GRAVITY_TICKS.at(-1));
     expect(gravityForMode('marathon', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(6);
   });
 
@@ -492,7 +493,7 @@ describe('异变 mode', () => {
     expect(finalIceTick.gravityTicks).toBe(0);
 
     let restored = finalIceTick;
-    for (let tick = 1; tick < TICKS_PER_SECOND / 10; tick += 1) {
+    for (let tick = 1; tick < MUTATION_GRAVITY_TICKS.at(-1)!; tick += 1) {
       restored = dispatch(restored, { type: 'tick' }).state;
     }
     expect(restored.active?.y).toBe(finalIceTick.active?.y);
