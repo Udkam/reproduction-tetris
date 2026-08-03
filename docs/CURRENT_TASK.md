@@ -2,7 +2,7 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASES A-C VERIFIED; PHASE D ACTIVE; RC PROGRAMME ACTIVE.**
+**Status (2026-08-03): PHASES A-D VERIFIED; PHASE E ACTIVE; RC PROGRAMME ACTIVE.**
 The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
@@ -14,16 +14,12 @@ closed rollback point: Home has one localized positioning line, first-entry guid
 has exactly Goal / Mechanic / Challenge, and `Start` acknowledges the same boundary at
 which the runtime becomes controllable.
 
-Phase C is now a closed rollback point. The next bounded product slice is **Phase D
-current-proof mode polish** only:
-
-1. verify Classic score, fall-speed, and combo feedback without adding a new system;
-2. verify Survival's existing danger-column warning and concise warning sound against
-   the 800 ms acceptance window, changing only demonstrated presentation gaps;
-3. capture carrier, activation, and active-state recognition for all five Mutation
-   abilities, repairing only evidence-backed clarity defects;
-4. audit Puzzle copy, guidance, and visual consistency without changing its boards,
-   order, deterministic sequences, unlock graph, or mechanics.
+Phase D is now a closed rollback point. The next bounded slice is **Phase E engineering
+closure** only: inspect lifecycle cleanup, current bundle composition, locally packaged
+font cost, dependency health, and unused production assets. It may remove demonstrably
+unused delivery weight or repair a measured lifecycle defect, but it may not redesign
+the accepted presentation, change gameplay, alter Puzzle content, or hide the current
+main-chunk warning by merely raising a threshold.
 
 **Phase-D Survival timing contract.** The existing one-piece-ahead warning now owns a
 deterministic minimum lead of `48` playing ticks (`800 ms` at the canonical 60 Hz). If
@@ -35,6 +31,21 @@ semantics do not change. One short, non-looping warning chirp accompanies the si
 warning event. Direct Core and audio tests must cover immediate hard drop, natural
 expiry, restart reset, deterministic hashing, and one-voice audio behavior before the
 browser capture is accepted.
+
+**Verified Phase-D result.** Source `fcabe49` and evidence `c83b156` close the current
+mode-feedback audit. A real public-command Classic clear updates score/lines; Survival
+holds an immediate hard drop for exactly the unconsumed part of its 48-tick warning,
+shows no rock at tick 47, and spawns the planned rockfall on the next tick; all five
+Mutation items are captured in Next, on their carrier, and at activation or active
+state; Puzzle retains its three authored curriculum bands and existing order. The
+synchronized Bomb board export captures the real impact phase with 72 fragments rather
+than a fabricated board. Current English Settings/Controls/Rules, short-layout controls,
+Pause, Leave, visible Next wells, and numeric data roles revalidate with zero clipping,
+text overlap, wrong font role, legacy active face, horizontal overflow, extra Canvas or
+DOM board cells, browser errors, or teardown residue. Final typecheck, the complete
+suite (`316 passed / 3 skipped`), and the 768-module build pass. The 546.62 kB main
+application chunk remains an explicit Phase-E audit item. The evidence-owned Vite and
+Chromium chain closed normally and port 4190 has no listener.
 
 **Verified Phase-C result.** Product checkpoints through `06bd8b9` add the persisted
 OS-aware reduced-motion choice, inline touch guidance, complete cross-surface bilingual

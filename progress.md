@@ -1013,3 +1013,8 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   short-layout Settings tabs, Pause/Leave sheets, visible Next wells, Survival warning
   and rockfall frames, Puzzle library, and five Mutation families. The owned Vite and
   Chromium chain closed normally; port 4190 has no listener.
+- Phase D final gates pass: typecheck, the complete Vitest suite (`316 passed / 3
+  skipped`), and the 768-module production build. Source `fcabe49`, evidence `c83b156`,
+  and the documented audit now form the closed Phase-D rollback chain. The 546.62 kB
+  main-chunk warning remains visible and moves into the active Phase-E engineering
+  audit; no product source changed during Phase-D evidence/document closure.

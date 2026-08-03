@@ -134,6 +134,15 @@ progression, four-times fall cadence, blocked-entry deferral, and shared followi
 beat remain unchanged. Audio adds one dry, short, rising warning chirp at event time;
 it has no loop or expiry voice and cannot mask piece, clear, or rock-impact feedback.
 
+Accepted source `fcabe49` and evidence `c83b156` close Phase D. The evidence uses only
+public commands and deterministic seeds, proves the Survival lead at ticks 47/48,
+captures every Mutation family at Next/carrier/activation, and synchronizes the Bomb
+board export to its actual impact phase. Classic and Puzzle remain presentation audits,
+not new systems. Current English typography, numeric data, Settings tabs, Pause/Leave,
+live Next wells, responsive fit, and teardown all remain green; final typecheck, the
+complete suite (`316 passed / 3 skipped`), and the 768-module build pass. Bundle and
+font weight are intentionally deferred to Phase E rather than disguised by thresholds.
+
 ## 2026-08-03 T25 — language-invariant English mode names
 
 The four Home mode names are permanent English proper names, so their typography is

@@ -13,10 +13,10 @@ evidence all support the same claim.
 | C | Brand/UI/data/Chinese typography | Browser evidence binds Playwrite NZ Basic / Space Grotesk / Geist Mono / Noto Sans SC to the accepted source. | `VERIFIED` — retain the direct-player-approved Geist Mono data role. |
 | C | Responsive Settings, HUD, results, and leaderboards | Evidence `a062799` binds desktop, portrait, short-landscape, four HUDs, two results/leaderboards, Pause, and Leave to source `06bd8b9`; no clipping, overlap, overflow, wrong font role, extra Canvas/DOM cells, console error, or teardown residue is reported. | `VERIFIED` |
 | C | Settings tabs: settings, controls, rules | The persisted `tetramorph:reduced-motion:v1 = on|off` preference follows the OS while unset and drives CSS/Pixi together; Controls exposes the implemented gesture contract after the two keyboard groups. | `VERIFIED` |
-| D | Classic feedback clarity | Existing score, speed, combo implementation has historical tests/evidence. | `PENDING CURRENT PROOF` — audit without adding a system. |
-| D | Survival 800 ms danger warning plus concise warning sound | The existing warning is scheduled one player piece ahead and renders a flashing arrow; exact visible lead time/audio contract is not yet proven. | `OPEN` — reconcile timing with 800 ms acceptance and capture the actual warning. |
-| D | Five Mutation abilities recognizable at carrier, activation, and active-state stages | Five items exist with renderer/audio tests and historical evidence. | `PENDING CURRENT PROOF` — capture all recognition stages, repair only demonstrated gaps. |
-| D | Puzzle copy/guidance/visual consistency with frozen boards/order | Current lessons and campaign exist. | `PENDING CURRENT PROOF` — do not edit puzzle definitions or ordering. |
+| D | Classic feedback clarity | Evidence `c83b156` drives a real public-command clear and observes the corresponding score/line update without adding a system. | `VERIFIED` |
+| D | Survival 800 ms danger warning plus concise warning sound | Source `fcabe49` owns a 48-playing-tick minimum lead and one 65 ms chirp; evidence shows no rock at tick 47 and the planned rockfall on the next tick. | `VERIFIED` |
+| D | Five Mutation abilities recognizable at carrier, activation, and active-state stages | Evidence `c83b156` captures Next, carrier, and activation/active state for Freeze, Supergravity, Bomb, Double, and Reshape; the synchronized Bomb board export contains the real 72-fragment impact. | `VERIFIED` |
+| D | Puzzle copy/guidance/visual consistency with frozen boards/order | Current-source evidence preserves the three authored curriculum bands, existing board order, and the accepted technique copy. | `VERIFIED` |
 | E | Final gates and clean lifecycle teardown | Previous source passed typecheck, full tests, build, and bounded browser checks. | `OPEN` — rerun only after final source edit; add explicit teardown/bundle audit. |
 | E | Bundle, font, dependency, and unused-asset inspection | Local font packages and build output exist; no final RC composition report exists. | `OPEN` — measure current output and document decisions. |
 | F | Current-source final frames and 30–60 second capture plan | Historical evidence exists, but no complete RC showcase package binds to the final candidate. | `OPEN` |
@@ -25,8 +25,8 @@ evidence all support the same claim.
 
 ## Current bounded slice
 
-The next product checkpoint is Phase D current-proof mode polish. It must first audit
-Classic feedback, Survival's 800 ms danger warning and warning sound, all five Mutation
-recognition stages, and Puzzle copy/guidance consistency. Only demonstrated presentation
-gaps may be repaired. It must not add a gameplay system or alter Puzzle boards/order,
-deterministic sequences, unlocks, scoring, ranking, persistence schemas, or mode rules.
+Phase E engineering closure is active. It must measure lifecycle teardown, bundle and
+font composition, dependency health, and unused production assets against the accepted
+Phase-D source. It may repair only a measured engineering defect or remove proven dead
+delivery weight. It must not change gameplay, Puzzle content/order, presentation design,
+ranking, persistence schemas, or suppress the main-chunk warning by raising its limit.

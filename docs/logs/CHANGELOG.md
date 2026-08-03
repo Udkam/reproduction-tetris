@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-08-03 — T26 RC Phase D current mode feedback verified
+
+- Made Survival's existing one-piece-ahead rockfall warning a deterministic
+  48-playing-tick / 800 ms minimum lead. Fast locks wait only for the unconsumed lead,
+  ordinary play adds no delay, pause freezes the counter, restart clears it, and one
+  65 ms non-looping chirp marks the warning.
+- Recorded reproducible public-command evidence for a real Classic clear, the exact
+  Survival warning/rockfall boundary, every Mutation family at Next/carrier/activation,
+  and the unchanged three-band Puzzle curriculum. The Bomb impact capture synchronizes
+  to the renderer's real impact phase and records 72 fragments without injecting state.
+- Revalidated the direct player-requested English typography, Geist Mono numeric role,
+  compact three-tab Settings surface, clickable Back/Settings actions during Pause,
+  and visible Next wells. Evidence `c83b156` binds to source `fcabe49` and reports zero
+  clipping, overlap, wrong/legacy active font roles, horizontal overflow, browser
+  errors, extra Canvas/DOM cells, or teardown residue.
+- Final typecheck, complete suite (`316 passed / 3 skipped`), and 768-module build pass.
+  The 546.62 kB main chunk remains an explicit Phase-E audit item. The owned browser
+  process closed and port 4190 has no listener; Phases E-F remain open.
+
 ## 2026-08-03 — T26 RC Phase C accessibility and responsive surfaces verified
 
 - Added one persisted player motion preference. With no saved choice TetraMorph follows
