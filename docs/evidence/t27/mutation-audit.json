@@ -1,0 +1,343 @@
+{
+  "sourceSha": "7c2627e7d073c2809219e0c4166332defca75659",
+  "capturedAt": "2026-08-03T19:35:44.361Z",
+  "browser": "149.0.7827.55",
+  "canvasCount": 1,
+  "home": {
+    "taglineCount": 0,
+    "taglineTextPresent": false,
+    "fontFamily": "Metal, \"Segoe UI\", serif",
+    "fontSize": "31px"
+  },
+  "idle": {
+    "text": "",
+    "statusBackground": "rgba(0, 0, 0, 0)",
+    "statusBackgroundImage": "linear-gradient(145deg, color(srgb 0.93051 0.940863 0.968627), color(srgb 0.956863 0.968627 0.982745))",
+    "statsBackground": "color(srgb 0.937176 0.957882 0.972157)",
+    "statsBackgroundImage": "none",
+    "statusBorder": "color(srgb 0.717176 0.73851 0.824314)",
+    "statsBorder": "color(srgb 0.793098 0.849255 0.888157)"
+  },
+  "settings": {
+    "client": [
+      721,
+      342
+    ],
+    "scroll": [
+      721,
+      342
+    ],
+    "fontFamily": "Metal, \"Segoe UI\", serif",
+    "fontSize": "13px"
+  },
+  "placement": {
+    "statusRect": {
+      "top": 239.796875,
+      "bottom": 296.796875,
+      "left": 813.5,
+      "right": 1037.5,
+      "width": 224,
+      "height": 57
+    },
+    "statsRect": {
+      "top": 308.796875,
+      "bottom": 526.203125,
+      "left": 813.5,
+      "right": 1037.5,
+      "width": 224,
+      "height": 217.40625
+    }
+  },
+  "preview": {
+    "piece": "T",
+    "item": "freeze"
+  },
+  "carrier": {
+    "state": {
+      "id": 1,
+      "item": "freeze"
+    },
+    "renderer": {
+      "canvas": {
+        "width": 758,
+        "height": 810,
+        "resolution": 1
+      },
+      "board": {
+        "x": 61.5,
+        "y": 14,
+        "width": 391,
+        "height": 782,
+        "cell": 39.1
+      },
+      "preview": {
+        "x": 483.5,
+        "y": 512.203125,
+        "width": 202,
+        "height": 124
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "J",
+      "previewPieces": [
+        "J"
+      ],
+      "previewMutationItem": null,
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 8,
+          "y": 19
+        },
+        {
+          "x": 7,
+          "y": 20
+        },
+        {
+          "x": 8,
+          "y": 20
+        },
+        {
+          "x": 9,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 8,
+          "y": 38
+        },
+        {
+          "x": 7,
+          "y": 39
+        },
+        {
+          "x": 8,
+          "y": 39
+        },
+        {
+          "x": 9,
+          "y": 39
+        }
+      ],
+      "visibleLockedCells": 8,
+      "presentation": {
+        "x": 6.3316821218675745,
+        "y": 19,
+        "offsetX": -0.6683178781324255,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 0,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 0,
+      "mutationCollapseTrail": null
+    }
+  },
+  "multiplier": {
+    "state": {
+      "ticks": 600,
+      "factor": 2
+    },
+    "status": "Mutation status///DoubleActive10s",
+    "renderer": {
+      "canvas": {
+        "width": 758,
+        "height": 810,
+        "resolution": 1
+      },
+      "board": {
+        "x": 61.5,
+        "y": 14,
+        "width": 391,
+        "height": 782,
+        "cell": 39.1
+      },
+      "preview": {
+        "x": 483.5,
+        "y": 531.203125,
+        "width": 202,
+        "height": 124
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "O",
+      "previewPieces": [
+        "O"
+      ],
+      "previewMutationItem": "bomb",
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 5,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 38
+        },
+        {
+          "x": 5,
+          "y": 38
+        },
+        {
+          "x": 3,
+          "y": 39
+        },
+        {
+          "x": 4,
+          "y": 39
+        }
+      ],
+      "visibleLockedCells": 2,
+      "presentation": {
+        "x": 3,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 0,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 0,
+      "mutationCollapseTrail": null
+    }
+  },
+  "supergravity": {
+    "ticks": 300,
+    "status": "Mutation status///SupergravityActive5s",
+    "renderer": {
+      "canvas": {
+        "width": 758,
+        "height": 810,
+        "resolution": 1
+      },
+      "board": {
+        "x": 61.5,
+        "y": 14,
+        "width": 391,
+        "height": 782,
+        "cell": 39.1
+      },
+      "preview": {
+        "x": 483.5,
+        "y": 531.203125,
+        "width": 202,
+        "height": 124
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "S",
+      "previewPieces": [
+        "S"
+      ],
+      "previewMutationItem": "bomb",
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 5,
+          "y": 19
+        },
+        {
+          "x": 4,
+          "y": 20
+        },
+        {
+          "x": 5,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 37
+        },
+        {
+          "x": 5,
+          "y": 38
+        },
+        {
+          "x": 4,
+          "y": 38
+        },
+        {
+          "x": 5,
+          "y": 39
+        }
+      ],
+      "visibleLockedCells": 2,
+      "presentation": {
+        "x": 4,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 0,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 0,
+      "mutationCollapseTrail": null
+    }
+  },
+  "errors": []
+}
