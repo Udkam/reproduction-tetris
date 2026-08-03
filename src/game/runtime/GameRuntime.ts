@@ -1,5 +1,15 @@
 import { AudioEngine } from '../audio/AudioEngine';
-import { createInitialState, dispatch, type GameCommand, type GameEvent, type GameMode, type GameState, type PuzzleId } from '../core';
+import {
+  CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+  createInitialState,
+  dispatch,
+  normalizeClassicStartingGravityTicks,
+  type GameCommand,
+  type GameEvent,
+  type GameMode,
+  type GameState,
+  type PuzzleId,
+} from '../core';
 import { InputController, type InputAction } from '../input/InputController';
 import {
   TetrisRenderer,
@@ -32,6 +42,7 @@ export interface RuntimeOptions {
   inputEnabled?: boolean;
   reducedMotion?: boolean;
   survivalEntryBedrockRows?: number | null;
+  classicStartingGravityTicks?: number;
   audioEnabled?: boolean;
   audioVolume?: number;
   platform?: BrowserPlatform;
@@ -75,12 +86,21 @@ export class GameRuntime {
   private qaFrozen = false;
   private inputEnabled: boolean;
   private survivalEntryBedrockRows: number | null;
+  private nextClassicStartingGravityTicks: number;
   private readonly onState?: RuntimeOptions['onState'];
 
   constructor(private readonly options: RuntimeOptions = {}) {
     this.platform = options.platform ?? browserPlatform;
     this.audio = new AudioEngine(this.platform);
-    this.state = createInitialState(options.seed, options.mode, options.puzzleId);
+    this.nextClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(
+      options.classicStartingGravityTicks ?? CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+    );
+    this.state = createInitialState(
+      options.seed,
+      options.mode,
+      options.puzzleId,
+      this.nextClassicStartingGravityTicks,
+    );
     this.inputEnabled = options.inputEnabled ?? true;
     this.survivalEntryBedrockRows = options.survivalEntryBedrockRows ?? null;
     this.onState = options.onState;
@@ -155,14 +175,25 @@ export class GameRuntime {
   restart(seed?: number, mode = this.state.mode, puzzleId = this.state.puzzleId ?? undefined): void {
     if (!this.inputEnabled) return;
     void this.audio.prime();
-    this.apply({ type: 'restart', seed: mode === 'puzzle' ? this.state.seed : seed ?? randomRunSeed(), mode, puzzleId });
+    this.apply({
+      type: 'restart',
+      seed: mode === 'puzzle' ? this.state.seed : seed ?? randomRunSeed(),
+      mode,
+      puzzleId,
+      classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+    });
     this.input?.clearHeld();
   }
 
   selectMode(mode: GameMode): void {
     if (!this.inputEnabled) return;
     if (this.state.status !== 'ready' && this.state.status !== 'game-over' && this.state.status !== 'finished') return;
-    this.apply({ type: 'restart', seed: mode === 'puzzle' ? this.state.seed : randomRunSeed(), mode });
+    this.apply({
+      type: 'restart',
+      seed: mode === 'puzzle' ? this.state.seed : randomRunSeed(),
+      mode,
+      classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+    });
     this.input?.clearHeld();
   }
 
@@ -170,7 +201,13 @@ export class GameRuntime {
   selectPuzzle(puzzleId: PuzzleId): void {
     if (!this.inputEnabled) return;
     if (this.state.status !== 'ready' && this.state.status !== 'game-over' && this.state.status !== 'finished') return;
-    this.apply({ type: 'restart', seed: this.state.seed, mode: 'puzzle', puzzleId });
+    this.apply({
+      type: 'restart',
+      seed: this.state.seed,
+      mode: 'puzzle',
+      puzzleId,
+      classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+    });
     this.input?.clearHeld();
   }
 
@@ -187,6 +224,11 @@ export class GameRuntime {
     this.survivalEntryBedrockRows = rows;
     this.renderer.setOptions({ survivalEntryBedrockRows: rows });
     this.flushRender(0);
+  }
+
+  /** Stores the player's Classic opening pace for the next run without mutating this run. */
+  setClassicStartingGravityTicks(ticks: number): void {
+    this.nextClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(ticks);
   }
 
   /** Re-renders renderer-owned presentation after React commits new layout geometry. */
