@@ -17,16 +17,17 @@ evidence all support the same claim.
 | D | Survival 800 ms danger warning plus concise warning sound | Source `fcabe49` owns a 48-playing-tick minimum lead and one 65 ms chirp; evidence shows no rock at tick 47 and the planned rockfall on the next tick. | `VERIFIED` |
 | D | Five Mutation abilities recognizable at carrier, activation, and active-state stages | Evidence `c83b156` captures Next, carrier, and activation/active state for Freeze, Supergravity, Bomb, Double, and Reshape; the synchronized Bomb board export contains the real 72-fragment impact. | `VERIFIED` |
 | D | Puzzle copy/guidance/visual consistency with frozen boards/order | Current-source evidence preserves the three authored curriculum bands, existing board order, and the accepted technique copy. | `VERIFIED` |
-| E | Final gates and clean lifecycle teardown | Previous source passed typecheck, full tests, build, and bounded browser checks. | `OPEN` — rerun only after final source edit; add explicit teardown/bundle audit. |
-| E | Bundle, font, dependency, and unused-asset inspection | Local font packages and build output exist; no final RC composition report exists. | `OPEN` — measure current output and document decisions. |
+| E | Final gates and clean lifecycle teardown | Source `6af5403` passes typecheck, `318 passed / 3 skipped`, build, direct idempotent teardown tests, and evidence `323d01d`. Return Home restores zero Canvas/RAF, four baseline listeners, one closed AudioContext, and no QA bridge. | `VERIFIED` |
+| E | Bundle, font, dependency, and unused-asset inspection | Source `4d37d59` emits only 13 required WOFF2 faces, removes 57.6% of font payload, removes proven dead legacy font assets, retains the measured 546.62 kB main warning, and has a clean direct dependency tree plus scoped OSV result. | `VERIFIED` |
 | F | Current-source final frames and 30–60 second capture plan | Historical evidence exists, but no complete RC showcase package binds to the final candidate. | `OPEN` |
 | F | GitHub, resume, portfolio copy and RC Release Notes | README exists; dedicated final showcase copy and release notes are absent. | `OPEN` |
 | Final | Independent read-only QA and coordinator acceptance | Not yet requested because the candidate is not frozen. | `BLOCKED BY OPEN WORK`, not a product blocker. |
 
 ## Current bounded slice
 
-Phase E engineering closure is active. It must measure lifecycle teardown, bundle and
-font composition, dependency health, and unused production assets against the accepted
-Phase-D source. It may repair only a measured engineering defect or remove proven dead
-delivery weight. It must not change gameplay, Puzzle content/order, presentation design,
-ranking, persistence schemas, or suppress the main-chunk warning by raising its limit.
+Phase F showcase packaging is active. It must bind final Home, Classic, Survival,
+Mutation, Puzzle, and Settings frames to the frozen source; define a truthful 30-60
+second capture sequence; and publish concise GitHub, resume, portfolio, and RC release
+copy. It must not change gameplay, Puzzle content/order, presentation design, ranking,
+or persistence schemas. Final independent read-only QA remains fail-closed until these
+release artifacts are present and the candidate range is frozen.

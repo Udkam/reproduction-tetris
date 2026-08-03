@@ -2,7 +2,7 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASES A-D VERIFIED; PHASE E ACTIVE; RC PROGRAMME ACTIVE.**
+**Status (2026-08-03): PHASES A-E VERIFIED; PHASE F ACTIVE; RC PROGRAMME ACTIVE.**
 The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
@@ -14,12 +14,25 @@ closed rollback point: Home has one localized positioning line, first-entry guid
 has exactly Goal / Mechanic / Challenge, and `Start` acknowledges the same boundary at
 which the runtime becomes controllable.
 
-Phase D is now a closed rollback point. The next bounded slice is **Phase E engineering
-closure** only: inspect lifecycle cleanup, current bundle composition, locally packaged
-font cost, dependency health, and unused production assets. It may remove demonstrably
-unused delivery weight or repair a measured lifecycle defect, but it may not redesign
-the accepted presentation, change gameplay, alter Puzzle content, or hide the current
-main-chunk warning by merely raising a threshold.
+Phase E is now a closed rollback point. The next bounded slice is **Phase F showcase
+package** only: bind final current-source frames to the candidate, define a truthful
+30-60 second capture sequence, and publish concise GitHub, resume, portfolio, and RC
+release copy. It may improve release documentation and evidence composition, but it
+may not redesign the accepted product or reopen gameplay.
+
+**Verified Phase-E result.** Source checkpoints `4d37d59` and `6af5403` replace
+Fontsource's broad CSS delivery with the exact 13 WOFF2 faces used by the accepted type
+system and add direct idempotent teardown tests for the runtime and AudioContext.
+Emitted font payload falls from 11,208,240 to 4,752,492 bytes (`57.6%`) without changing
+the four semantic font roles. Scoped dependency inspection reports a clean direct tree
+and no known OSV issue. Final typecheck, complete suite (`318 passed / 3 skipped`), and
+756-module build pass. Evidence `323d01d` restores zero Canvas, zero
+renderer RAF, four baseline listeners, one closed AudioContext, and no QA bridge after
+returning Home; restart preserves one runtime rather than accumulating a second. The
+live Next well remains visible through restart and Pause, browser errors are zero, the
+owned process chain is released, and port 4191 has no listener. The 546.62 kB main
+application warning remains visible because threshold suppression or static chunk
+reshuffling would not reduce first-run execution weight.
 
 **Phase-D Survival timing contract.** The existing one-piece-ahead warning now owns a
 deterministic minimum lead of `48` playing ticks (`800 ms` at the canonical 60 Hz). If

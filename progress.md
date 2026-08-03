@@ -1018,3 +1018,13 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   and the documented audit now form the closed Phase-D rollback chain. The 546.62 kB
   main-chunk warning remains visible and moves into the active Phase-E engineering
   audit; no product source changed during Phase-D evidence/document closure.
+- Phase E is now a green engineering rollback point. Source `4d37d59` ships only the
+  13 accepted WOFF2 faces and removes 57.6% of emitted font bytes; source `6af5403`
+  directly proves idempotent runtime and AudioContext teardown. Evidence `323d01d`
+  binds those claims to the inspected lifecycle sequence. Scoped dependency/OSV
+  inspection is clean, final gates pass `318 passed / 3 skipped`, and source-bound
+  browser evidence shows one runtime across restart plus baseline-equivalent cleanup on
+  return Home. The measured 546.62 kB main warning remains visible and documented.
+- The Phase-E Vite/Chromium owner chain was released and port 4191 has no listener.
+  Phase F showcase packaging is the only active implementation slice; final read-only
+  QA and RC acceptance remain blocked until its artifacts freeze the candidate.

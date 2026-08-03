@@ -143,6 +143,32 @@ live Next wells, responsive fit, and teardown all remain green; final typecheck,
 complete suite (`316 passed / 3 skipped`), and the 768-module build pass. Bundle and
 font weight are intentionally deferred to Phase E rather than disguised by thresholds.
 
+### Phase E — measured delivery and idempotent teardown
+
+Production typography keeps the accepted semantic roles but ships only the explicitly
+used WOFF2 faces. The Chromium/Steam release target does not require duplicate WOFF
+payloads, and historical unused font binaries are not production assets. This is a
+delivery correction, not another typography redesign.
+
+Runtime teardown is idempotent by contract. Restart replaces one active runtime with
+one active runtime; unmount releases renderer frames, visibility/input listeners, the
+single Canvas, QA bridge, and the runtime-owned AudioContext exactly once. Development
+tooling may retain its own baseline interval and listeners, so evidence compares the
+post-unmount state with the measured pre-runtime baseline rather than claiming an
+impossible process-wide zero.
+
+The current main application chunk warning remains visible. The measured payload is
+dominated by React DOM, Pixi/runtime rendering, application composition, deterministic
+Core, and authored Puzzle data. Raising the warning limit would hide evidence, while
+static vendor chunk reshuffling would change request boundaries without reducing first
+run execution weight. A lazy runtime boundary is deferred until it can be justified and
+verified as a behavior-preserving product change.
+
+**Verified implementation.** Source `4d37d59` reduces emitted font bytes by `57.6%` and
+source `6af5403` adds direct idempotent runtime/audio teardown proof. Final typecheck,
+the complete suite (`318 passed / 3 skipped`), build, scoped dependency audit, and
+source-bound lifecycle browser evidence pass without changing gameplay or presentation.
+
 ## 2026-08-03 T25 — language-invariant English mode names
 
 The four Home mode names are permanent English proper names, so their typography is

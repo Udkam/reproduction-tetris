@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-08-03 — T26 RC Phase E engineering closure verified
+
+- Replaced broad Fontsource CSS delivery with the exact 13 WOFF2 faces used by the
+  accepted semantic type system. Emitted font payload falls from 11,208,240 to
+  4,752,492 bytes (`57.6%`) while the four approved roles remain unchanged; proven
+  unused legacy font files and obsolete notices were removed.
+- Added direct idempotent teardown tests for `GameRuntime` and its owned AudioContext.
+  Source-bound evidence proves restart retains one active runtime and return Home
+  restores zero Canvas/renderer RAF, four baseline listeners, one closed AudioContext,
+  no QA bridge, and no DOM board cells or browser errors.
+- Scoped `npm ls` and OSV Scanner inspection report a clean dependency tree and no known
+  issue. The measured 546.62 kB main warning remains visible because threshold
+  suppression or static chunk reshuffling would not reduce first-run execution weight.
+- Final source `6af5403` passes typecheck, complete suite (`318 passed / 3 skipped`),
+  756-module build, and evidence `323d01d` contains the inspected restart/Pause/Home
+  frames. The evidence process was released and port 4191 has no listener. Phase F
+  showcase packaging is now active.
+
 ## 2026-08-03 — T26 RC Phase D current mode feedback verified
 
 - Made Survival's existing one-piece-ahead rockfall warning a deterministic
