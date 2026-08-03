@@ -140,8 +140,8 @@ gates are required before this exception can be accepted.
 
 ### T27-R1 acceptance record
 
-- Accepted source: `cf19f6da8094250dee4b0aebde97e3f4ba6e8bb0`.
-- Accepted evidence: `401bfa52350d3ea971d54fc2e04638b66813082d` in
+- Accepted source: `db021f6d73f04cf48c2c7c4d1339a6767502fae2`.
+- Accepted evidence: `06595e95cf447c19ef8bcca29b987898d2e4fcc6` in
   `docs/evidence/t27-r1/`; the audit binds to the accepted source and reports one
   Canvas, zero browser errors, a centred board, frameless Next, theme-complete Home
   and Puzzle library pages, operative interruption controls, and a Puzzle result with
@@ -150,9 +150,10 @@ gates are required before this exception can be accepted.
   with `338 passed / 3 skipped`; production build passed with 759 transformed modules.
   A subsequent `npm.cmd ci --ignore-scripts` also rebuilt dependencies successfully
   from the committed lockfile without changing either npm metadata file.
-- Independent read-only QA accepted the complete 75-commit range
-  `ffb2ec926cfaef60a8d7f6b13b7274a9cf165983..401bfa52350d3ea971d54fc2e04638b66813082d`
-  with P0 0 / P1 0 / P2 0 / P3 0.
+- Independent read-only QA accepted the original 75-commit product/evidence range
+  through `401bfa5` and separately accepted the final orphan-style/evidence delta
+  `088afa2..06595e9`; both reviews reported P0 0 / P1 0 / P2 0 / P3 0. The three
+  intervening commits contain only QA/coordinator publication records.
 - The controlled evidence listener was released. Four stale Node processes that were
   verified to have loaded this repository's Rolldown native module were released by
   exact PID before the lockfile rebuild; no development server remains owned by this

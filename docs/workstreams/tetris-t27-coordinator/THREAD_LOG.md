@@ -2,11 +2,12 @@
 
 - Task ID: `tetris-t27-coordinator` / `T27-R1`.
 - Base SHA: `ffb2ec926cfaef60a8d7f6b13b7274a9cf165983`.
-- Accepted source SHA: `cf19f6da8094250dee4b0aebde97e3f4ba6e8bb0`.
-- Accepted evidence SHA: `401bfa52350d3ea971d54fc2e04638b66813082d`.
+- Accepted source SHA: `db021f6d73f04cf48c2c7c4d1339a6767502fae2`.
+- Accepted evidence SHA: `06595e95cf447c19ef8bcca29b987898d2e4fcc6`.
 - Owner: primary coordinator; final documentation, integration, resource release, and
   push owner.
-- Status: accepted by independent read-only QA and published to `origin/main`.
+- Status: accepted by independent read-only QA; this coordinator record accompanies
+  the final accepted delta to `origin/main`.
 
 ## Exact candidate paths
 
@@ -93,8 +94,8 @@ directory.
   — 56 passed.
 - Final source gates: `npm.cmd run typecheck`; `npm.cmd run test`; `npm.cmd run build`
   — pass, `338 passed / 3 skipped`, 759 transformed modules.
-- Source-bound browser batch: `docs/evidence/t27-r1/run-capture.mjs`; audit source
-  `cf19f6d`, browser errors 0, visually inspected result at
+- Source-bound browser batch: `docs/evidence/t27-r1/run-capture.mjs`; final audit source
+  `db021f6d`, browser errors 0, visually inspected result at
   `docs/evidence/t27-r1/puzzle-result-no-emblem.png`.
 - Lockfile sync: `npm.cmd install --package-lock-only --ignore-scripts` — up to date,
   no metadata change.
@@ -110,6 +111,14 @@ directory.
   coverage was changed.
 - Independent read-only QA reviewed all 75 commits and returned ACCEPTED with
   P0 0 / P1 0 / P2 0 / P3 0; see `QA_T27_R1_FINAL.md`.
+- A final loaded-style grep found obsolete constellation/prism/fragment definitions in
+  the shared stylesheet after the first push. Source `db021f6d` removed those selectors,
+  animation, mobile, and reduced-motion remnants; the focused App/result suite passed
+  56/56, then the final complete suite passed `338/338` with 3 intentional skips and
+  the production build passed with 759 transformed modules.
+- Browser evidence was rebound at `06595e9` to source `db021f6d`; the audit reports
+  constellation 0, prism 0, and browser errors 0. Incremental read-only QA accepted
+  `088afa2..06595e9` with P0 0 / P1 0 / P2 0 / P3 0.
 
 ## Resource and dirty-state boundary
 

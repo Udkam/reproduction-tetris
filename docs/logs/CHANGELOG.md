@@ -15,15 +15,18 @@
 - Applied the last player correction by removing the decorative prism, orbiting marks,
   and particles above the Puzzle result's best-step value. The compact celebration now
   leads directly from `恭喜你破解谜题` to the step count and keeps both actions intact.
-- Source-bound evidence at `401bfa5` binds to source `cf19f6d` and reports board-centre
+  A final loaded-style audit also removed the obsolete constellation, prism, fragment,
+  responsive, and reduced-motion selectors from the shared stylesheet.
+- Source-bound evidence at `06595e9` binds to source `db021f6` and reports board-centre
   delta 0, one Canvas, frameless Next, complete theme switching, accessible interruption
   controls, zero Puzzle-result emblem nodes, no horizontal overflow, and zero browser
   errors. Final gates passed: typecheck; `338 passed / 3 skipped`; 759-module build.
 - Independent read-only QA accepted the complete range `ffb2ec9..401bfa5` with
-  P0 0 / P1 0 / P2 0 / P3 0. Dependencies were subsequently rebuilt from the committed
-  lockfile without metadata drift; project-owned evidence/worker processes were
-  released. Eight inherited `docs/evidence/t27/` working-tree deltas remain unstaged
-  and deliberately excluded from coordinator closure.
+  P0 0 / P1 0 / P2 0 / P3 0, then separately accepted the final delta
+  `088afa2..06595e9` with the same zero-finding result. Dependencies were subsequently
+  rebuilt from the committed lockfile without metadata drift; project-owned
+  evidence/worker processes were released. Eight inherited `docs/evidence/t27/`
+  working-tree deltas remain unstaged and deliberately excluded from coordinator closure.
 
 ## 2026-08-03 — T26 RC post-acceptance gate reliability recheck
 
