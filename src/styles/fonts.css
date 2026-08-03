@@ -1,0 +1,108 @@
+/*
+ * TetraMorph ships through modern Chromium-class hosts. Loading the Fontsource
+ * WOFF2 assets directly preserves the exact families and weights while avoiding
+ * the duplicate legacy WOFF payload emitted by the package convenience CSS.
+ */
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("../../node_modules/@fontsource/geist-mono/files/geist-mono-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("../../node_modules/@fontsource/geist-mono/files/geist-mono-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("../../node_modules/@fontsource/geist-mono/files/geist-mono-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("../../node_modules/@fontsource/geist-mono/files/geist-mono-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("../../node_modules/@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Playwrite NZ Basic";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("../../node_modules/@fontsource/playwrite-nz-basic/files/playwrite-nz-basic-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2") format("woff2");
+}
