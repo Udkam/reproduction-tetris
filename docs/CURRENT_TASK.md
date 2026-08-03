@@ -20,10 +20,13 @@ The slice has eight player-visible acceptance requirements:
    only Regular 400, Chromium receives a restrained optical ink compensation rather
    than a fabricated font face. Mixed values split their roles: digits remain Geist
    Mono, while alphabetic units such as `s/cell` use Kavivanar.
-3. Classic Settings exposes a persisted starting gravity from `1.0` through `0.1`
-   seconds per cell in `0.1` steps. A fresh profile starts at `0.8`; changing the
-   preference never changes the current falling run and applies on the next restart,
-   play-again, or newly entered Classic run. The ten-line acceleration rule remains.
+3. Classic Settings exposes a persisted gravity interval with two bounds, both limited
+   to `1.0` through `0.1` seconds per cell in `0.1` steps. A fresh profile opens at
+   `0.8` and accelerates no faster than `0.1`; the fastest bound cannot be slower than
+   the opening bound. Every ten cleared lines still accelerates by `0.1` seconds per
+   cell until the chosen fastest bound. Changing either bound never changes the current
+   falling run and applies on the next restart, play-again, or newly entered Classic
+   run.
 4. Survival falling rocks advance at exactly **7x** the current ordinary Survival
    gravity through the existing deterministic integer accumulator. The piece-count
    schedule, warning lead, one-column one-or-two-rock body, collision rules, random

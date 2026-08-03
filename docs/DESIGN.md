@@ -22,15 +22,17 @@ not touch the wordmark or data glyphs. Chinese Home removes its positioning line
 collapses that line from layout; English Home retains its concise English line. Every
 fallback remains local/system-safe for offline Steam packaging.
 
-### Classic starting gravity
+### Classic gravity interval
 
-Classic owns one player preference measured in seconds per cell: `1.0, 0.9, ... 0.1`.
-Its persisted default is `0.8`. The Core stores the chosen starting tick count inside a
-Classic run so seeded replay and state hashing include all future-affecting state. Every
-ten cleared lines advances one 0.1-second tier until the 0.1-second floor. Settings may
-change the next-run preference while a run exists, but it cannot mutate that run; the
-runtime injects the new value only when it constructs or restarts the next Classic
-state. Invalid or stale storage falls back to `0.8` rather than entering Core.
+Classic owns two player preferences measured in seconds per cell: the opening speed and
+the fastest speed. Each is selectable from `1.0, 0.9, ... 0.1`; a fresh profile uses
+`0.8` and `0.1` respectively. The fastest value cannot be numerically greater (slower)
+than the opening value. The Core stores both tick counts inside a Classic run so seeded
+replay and state hashing include all future-affecting state. Every ten cleared lines
+advances one 0.1-second tier until the selected fastest bound. Settings may change the
+next-run interval while a run exists, but it cannot mutate that run; the runtime injects
+both new values only when it constructs or restarts the next Classic state. Invalid or
+stale storage falls back to the `0.8` through `0.1` interval rather than entering Core.
 
 ### Survival pace feedback
 
