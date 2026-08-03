@@ -32,8 +32,10 @@ The slice has eight player-visible acceptance requirements:
    disconnected sliders: two labelled handles identify the opening and fastest bounds,
    the selected acceleration band is visible between them, both current values remain
    visible above the rail, and the unit appears once. Mouse, touch, and keyboard each
-   adjust a handle by one `0.1` step with an explicit focus state. The component uses
-   the Settings panel's established blue palette instead of browser-default colors.
+   adjust a handle by one `0.1` step with an explicit focus state. Dragging or selecting
+   a handle must never draw a rectangular outline around the complete rail: focus is
+   carried by the active circular thumb alone. The component uses the Settings panel's
+   established blue palette instead of browser-default colors.
 4. Survival falling rocks advance at exactly **7x** the current ordinary Survival
    gravity through the existing deterministic integer accumulator. The piece-count
    schedule, warning lead, one-column one-or-two-rock body, collision rules, random

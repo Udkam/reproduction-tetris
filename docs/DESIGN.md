@@ -40,7 +40,9 @@ The two bounds share one discrete speed rail running from `1.0` (slower) to `0.1
 single localized unit and the highlighted interval remove repeated labels. Two handles
 remain independently focusable and move in `0.1` steps; pointer selection chooses the
 nearest handle. The rail, interval, handles, and focus treatment share the Settings
-control blue; browser-default colors are not part of the component.
+control blue; browser-default colors are not part of the component. The active thumb
+owns the focus ring. Pointer drag, click selection, and keyboard adjustment never place
+a rectangular focus outline around the full rail.
 
 ### Survival pace feedback
 
