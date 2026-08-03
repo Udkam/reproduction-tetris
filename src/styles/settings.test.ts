@@ -10,7 +10,8 @@ describe('RC1 Settings composition', () => {
     expect(settingsCss).toMatch(/\.settings-console__panel\s*\{[^}]*padding:\s*18px/s);
     expect(settingsCss).toMatch(/\.settings-console__controls\s*\{[^}]*grid-template-columns:\s*minmax\(220px,\s*\.9fr\) minmax\(300px,\s*1\.1fr\)/s);
     expect(settingsCss).toMatch(/\.settings-console__actions\s*\{[^}]*grid-column:\s*1\s*\/\s*-1;[^}]*justify-self:\s*stretch;[^}]*width:\s*100%;/s);
-    expect(settingsCss).toMatch(/\.settings-console__keyboard\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+    expect(settingsCss).toMatch(/\.settings-console__keyboard\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\);[^}]*grid-template-areas:\s*none;/s);
+    expect(settingsCss).toMatch(/\.settings-console__key-group\s*\{[^}]*grid-area:\s*auto;/s);
     expect(settingsCss).not.toMatch(/grid-template-areas:\s*"rules rules"\s*"controls keyboard"\s*"record record"/s);
     expect(settingsCss).not.toMatch(/font-size:\s*(?:9|9\.5|10)px/);
   });
