@@ -84,12 +84,15 @@ pulse. The visual parity is not a second countdown source.
 
 Supergravity is the one five-second timed Mutation. Re-triggering refreshes it to five
 seconds; the currently airborne piece keeps the accepted landing latch if the timer
-expires. Its active field is stack-relative and low contrast: a shallow contact shadow
-and two broad pressure shoulders compress toward occupied columns while the top board
-boundary shifts by only a few pixels in an irregular, damped tremor. There is no falling
-stripe, large icon, screen flash, rain language, or board-wide displacement. Reduced
-motion keeps one static compressed top edge. The HUD meter divides by the five-second
-maximum while other timed items continue to divide by ten seconds.
+expires. Its persistent cue is the complete top horizontal boundary moving vertically
+with a clearly visible irregular two-frequency tremor. All points share the dominant
+up/down displacement, with only a minute local variation so it reads as a gravity
+boundary rather than a decorative wave. One low-opacity stationary reference echo makes
+the travel legible. The board, active piece, and stack never shake with it. There is no
+falling stripe, large icon, screen flash, rain language, or board-wide displacement.
+Reduced motion keeps one static compressed top edge and its reference echo. The HUD meter
+divides by the five-second maximum while other timed items continue to divide by ten
+seconds.
 
 Double and Super Double abandon the fixed upper-right star emblem. Their sustained
 language is a shallow upper-field score-glint field: independent amber four-point glints

@@ -49,9 +49,12 @@ The slice has thirteen player-visible acceptance requirements:
    left rail, inset stripe, or other one-sided ornament. The border remains stable.
 6. Mutation Supergravity refreshes to **5 seconds**, while Ice and Double retain their
    ten-second windows. Its status meter uses the item-specific duration. Supergravity
-   is expressed by a lightly shivering top boundary and restrained downward pressure at
-   the stack, not a central symbol, rain-like marks, screen flash, or high-opacity
-   full-board decoration. Double and Super Double replace the fixed upper-right emblem
+   is expressed by the complete top boundary visibly shifting up and down with an
+   irregular two-frequency tremor. A quiet stationary reference echo makes that vertical
+   displacement readable; the moving line remains mostly horizontal rather than turning
+   into a decorative wave. The board, active piece, and stack do not shake with it. This
+   replaces a central symbol, rain-like marks, screen flash, or high-opacity full-board
+   decoration. Double and Super Double replace the fixed upper-right emblem
    with a persistent **upper-field score glint field**: compact, independent amber
    four-point glints drift through a shallow top region and dissolve before reaching the
    lower playfield. Each glint uses one low-opacity outer star, one crisp inner star, and
