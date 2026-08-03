@@ -2,7 +2,7 @@
 
 ## T27-R1 active goal — centred board stage and three complete visual themes
 
-**Status (2026-08-03): CONTRACT FROZEN / IMPLEMENTATION OPEN.** This player-requested
+**Status (2026-08-04): ACCEPTED / READY TO PUSH.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
 persistence migrations, the single-canvas boundary, or Mutation mechanics.
@@ -137,6 +137,29 @@ these four paths would create a checkpoint whose class names, selectors, or test
 not describe the mounted UI. The coordinator is the sole writer. Cached-path review,
 `git diff --check`, one typecheck, the focused App/HUD suite, and the final whole-range
 gates are required before this exception can be accepted.
+
+### T27-R1 acceptance record
+
+- Accepted source: `cf19f6da8094250dee4b0aebde97e3f4ba6e8bb0`.
+- Accepted evidence: `401bfa52350d3ea971d54fc2e04638b66813082d` in
+  `docs/evidence/t27-r1/`; the audit binds to the accepted source and reports one
+  Canvas, zero browser errors, a centred board, frameless Next, theme-complete Home
+  and Puzzle library pages, operative interruption controls, and a Puzzle result with
+  no emblem, prism, or celebration-particle graphic above the best-step value.
+- Final gates after the last source change: typecheck passed; complete suite passed
+  with `338 passed / 3 skipped`; production build passed with 759 transformed modules.
+  A subsequent `npm.cmd ci --ignore-scripts` also rebuilt dependencies successfully
+  from the committed lockfile without changing either npm metadata file.
+- Independent read-only QA accepted the complete 75-commit range
+  `ffb2ec926cfaef60a8d7f6b13b7274a9cf165983..401bfa52350d3ea971d54fc2e04638b66813082d`
+  with P0 0 / P1 0 / P2 0 / P3 0.
+- The controlled evidence listener was released. Four stale Node processes that were
+  verified to have loaded this repository's Rolldown native module were released by
+  exact PID before the lockfile rebuild; no development server remains owned by this
+  slice.
+- Eight inherited working-tree deltas under `docs/evidence/t27/` remain unstaged and
+  outside the closure commit. They are not acceptance evidence for T27-R1 and must not
+  be overwritten or bundled into the push.
 
 ## T27 active goal — make the opening pace configurable and feedback easier to read
 

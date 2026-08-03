@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-08-04 — T27-R1 centred themed stage and final Puzzle result accepted
+
+- Completed the T27 personalised pace and feedback chain, then rebuilt gameplay as a
+  centred three-column stage whose board is the only enclosing box. Next and Mutation
+  status are frameless upper-left instruments, the larger four-value statistic rail is
+  theme-legible on the right, and Home, Puzzle library, gameplay, Settings, interruption,
+  and result surfaces share three complete persisted themes with Deep Tide as default.
+- Added History-backed inner-page routes, theme-aware Home/Puzzle selection states,
+  full-board countdown/pause/restart covers, exact Enter/R/Escape interruption
+  semantics, a configurable deferred Classic gravity interval, sevenfold Survival
+  rockfall, clearer timed Mutation feedback, a 0.2-second Mutation gravity floor, and
+  direct regression coverage for their deterministic boundaries.
+- Applied the last player correction by removing the decorative prism, orbiting marks,
+  and particles above the Puzzle result's best-step value. The compact celebration now
+  leads directly from `恭喜你破解谜题` to the step count and keeps both actions intact.
+- Source-bound evidence at `401bfa5` binds to source `cf19f6d` and reports board-centre
+  delta 0, one Canvas, frameless Next, complete theme switching, accessible interruption
+  controls, zero Puzzle-result emblem nodes, no horizontal overflow, and zero browser
+  errors. Final gates passed: typecheck; `338 passed / 3 skipped`; 759-module build.
+- Independent read-only QA accepted the complete range `ffb2ec9..401bfa5` with
+  P0 0 / P1 0 / P2 0 / P3 0. Dependencies were subsequently rebuilt from the committed
+  lockfile without metadata drift; project-owned evidence/worker processes were
+  released. Eight inherited `docs/evidence/t27/` working-tree deltas remain unstaged
+  and deliberately excluded from coordinator closure.
+
 ## 2026-08-03 — T26 RC post-acceptance gate reliability recheck
 
 - Re-ran the active requirement matrix against current Git, source, release copy, and
