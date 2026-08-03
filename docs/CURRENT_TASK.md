@@ -18,9 +18,13 @@ The current bounded product slice is the remaining **Phase C accessibility and s
 coverage** only:
 
 1. add one persisted player reduced-motion control to the Settings tab without changing
-   the existing operating-system default or deterministic runtime timing;
+   the existing operating-system default or deterministic runtime timing. With no saved
+   choice it follows `prefers-reduced-motion`; an explicit player choice persists as
+   `tetramorph:reduced-motion:v1 = on|off` and drives both CSS and Pixi presentation;
 2. add concise visible touch guidance to the Controls tab while retaining gameplay-first
-   and shortcuts-second keyboard order;
+   and shortcuts-second keyboard order. It must reuse the implemented tap / horizontal
+   swipe / short-down / long-down gesture contract and remain an inline information band,
+   not a new nested card or input implementation;
 3. complete the current-source responsive browser matrix for HUDs, results, and
    leaderboards in Chinese and English, repairing only demonstrated clipping,
    overlap, truncation, or structural whitespace;

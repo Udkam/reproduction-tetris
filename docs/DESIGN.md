@@ -69,8 +69,10 @@ regression.
 Settings is no longer a poster containing four simultaneous sections. The enclosing
 sheet owns one compact tab rail and one content viewport:
 
-- **Settings** presents language, SFX, volume, and the restart/continue pair;
-- **Controls** presents gameplay controls first and global shortcuts second;
+- **Settings** presents language, SFX, volume, one reduced-motion preference, and the
+  restart/continue pair;
+- **Controls** presents gameplay controls first, global shortcuts second, and one
+  compact visible touch-gesture note beneath those keyboard groups;
 - **Rules** presents the current mode's concise rule facts followed by its Puzzle best
   record or non-Puzzle top-five table.
 
@@ -80,6 +82,15 @@ uses one connected surface and consistent vertical rhythm. Arrow Left/Right chan
 tabs; Arrow Up/Down moves between rows inside a panel; Enter activates the focused
 control. Desktop, portrait, and 844 x 390 must have no collision, clipped copy,
 unintentional two-line action, or empty quadrant retained for content on another tab.
+
+Reduced motion is a player preference with an operating-system default. With no saved
+choice, the app follows `prefers-reduced-motion` and continues to react to later system
+changes. The first explicit player toggle writes `tetramorph:reduced-motion:v1` as
+`on` or `off`; that choice then owns both CSS presentation and the existing Pixi
+`setReducedMotion` path. It never changes countdown, gravity, scoring, replay, or any
+other deterministic timing. The Controls touch note reuses the actual board gesture
+contract—tap to rotate, horizontal swipe to move, short downward swipe to soft-drop,
+and long downward swipe to hard-drop—and does not create a second control surface.
 
 Pause interrupts the game surface below the 64 px top bar. Its translucent backdrop
 must not participate in hit testing over the header, so Back and Settings remain real
