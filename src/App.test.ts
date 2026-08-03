@@ -1951,11 +1951,14 @@ describe('T6 frontend mode binding', () => {
     }
   });
 
-  it('labels an active 4× multiplier with a visible ten-second meter and no Bomb rail copy', () => {
+  it('keeps the Mutation instrument mounted above the run data and labels active timed states', () => {
     const idle = render(createElement(MutationStatus, {
       state: createInitialState(0x51a1f00d, 'sprint'),
     }));
-    expect(idle.container.querySelector('[data-testid="mutation-status"]')).toBeNull();
+    const idlePanel = idle.container.querySelector<HTMLElement>('[data-testid="mutation-status"]');
+    expect(idlePanel?.dataset.activeCount).toBe('0');
+    expect(idle.container.querySelector('[data-testid="mutation-status-idle"]')?.textContent).toContain('暂无持续状态');
+    expect(idle.container.querySelectorAll('.mutation-status__idle-spectrum > i')).toHaveLength(5);
     idle.unmount();
 
     const active = {

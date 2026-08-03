@@ -466,10 +466,7 @@
     padding: 6px !important;
   }
 
-  /*
-   * Mutation keeps the ordinary two-column HUD while idle. A third instrument
-   * column exists only while at least one timed state is visible.
-   */
+  /* Mutation always owns one stable instrument column, including its idle state. */
   .game-side-panel.game-side-panel--sprint:has(.mutation-status) {
     grid-template-columns: minmax(92px, .84fr) minmax(80px, 1fr) minmax(110px, .94fr);
     grid-template-rows: minmax(0, 1fr);

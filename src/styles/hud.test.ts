@@ -24,7 +24,7 @@ describe('Phase 3 HUD authority', () => {
     expect(hudCss).toMatch(/\.game-side-panel,[\s\S]*z-index:\s*auto;/);
   });
 
-  it('keeps the compact Mutation HUD two-column while idle and opens a status column only while active', () => {
+  it('keeps the compact Mutation status in one stable instrument column', () => {
     const compact = hudCss.slice(hudCss.indexOf('@media (max-width: 599px)'), hudCss.indexOf('@media (min-width: 600px)'));
     expect(compact).toContain('display: grid !important');
     expect(compact).toContain('.game-side-panel--sprint .run-stats');
@@ -38,6 +38,12 @@ describe('Phase 3 HUD authority', () => {
     expect(compact).toContain('.game-arena:has(.preview-rail--puzzle)');
     expect(compact).toContain('.game-side-panel:has(.preview-rail--puzzle)');
     expect(compact).not.toContain('.keyboard-map');
+  });
+
+  it('gives the always-mounted Mutation instrument a warm surface and a compact idle ledger', () => {
+    expect(mutationVfxCss).toContain('linear-gradient(145deg, rgba(255, 252, 244, .97), rgba(241, 228, 205, .94))');
+    expect(mutationVfxCss).toContain('.mutation-status--vfx .mutation-status__idle');
+    expect(mutationVfxCss).toContain('grid-template-columns: repeat(5, 5px)');
   });
 
   it('sizes Mutation ledgers from the active effect count instead of reserving three empty tracks', () => {

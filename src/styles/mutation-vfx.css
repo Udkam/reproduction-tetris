@@ -1,16 +1,17 @@
-/* T14 rail card: one compact deep-space readout, never a second explanation panel. */
+/* Persistent Mutation instrument: warm mineral hardware, distinct from the navy Next well. */
 .game-side-panel--sprint .mutation-status.mutation-status--vfx {
   display: grid !important;
   gap: 8px !important;
   padding: 11px !important;
-  color: #d9f7ff;
-  background: rgba(7, 17, 31, .92) !important;
-  border: 1px solid rgba(217, 247, 255, .22) !important;
+  color: #5d4327;
+  background:
+    linear-gradient(145deg, rgba(255, 252, 244, .97), rgba(241, 228, 205, .94)) !important;
+  border: 1px solid rgba(185, 139, 74, .48) !important;
   border-radius: 10px !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .08),
-    inset 0 0 0 1px rgba(16, 36, 58, .72),
-    0 10px 22px rgba(7, 17, 31, .18) !important;
+    inset 0 1px 0 rgba(255, 255, 255, .72),
+    inset 0 0 0 1px rgba(255, 255, 255, .28),
+    0 10px 22px rgba(93, 67, 39, .1) !important;
   -webkit-backdrop-filter: blur(12px) saturate(125%);
   backdrop-filter: blur(12px) saturate(125%);
   transform-origin: center top;
@@ -21,7 +22,7 @@
   display: flex;
   align-items: center;
   min-height: 17px;
-  color: #d9f7ff;
+  color: #684a2a;
 }
 
 .mutation-status--vfx .mutation-status__header > strong {
@@ -43,6 +44,42 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 6px !important;
 }
+
+.game-side-panel--sprint .mutation-status--vfx .mutation-status__idle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 7px 8px;
+  color: color-mix(in srgb, #684a2a 72%, var(--muted));
+  background: rgba(255, 255, 255, .42);
+  border: 1px solid rgba(168, 127, 72, .2);
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.mutation-status__idle-spectrum {
+  display: inline-grid;
+  grid-template-columns: repeat(5, 5px);
+  gap: 2px;
+}
+
+.mutation-status__idle-spectrum > i {
+  width: 5px;
+  height: 16px;
+  background: #8799a6;
+  border-radius: 2px;
+  opacity: .72;
+}
+
+.mutation-status__idle-spectrum > i[data-mutation-state="freeze"] { background: #57bfd9; }
+.mutation-status__idle-spectrum > i[data-mutation-state="collapse"] { background: #8159c8; }
+.mutation-status__idle-spectrum > i[data-mutation-state="bomb"] { background: #d65c34; }
+.mutation-status__idle-spectrum > i[data-mutation-state="multiplier"] { background: #d9a83d; }
+.mutation-status__idle-spectrum > i[data-mutation-state="reshape"] { background: #37ad88; }
 
 .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
   --mutation-primary: #8799a6;
@@ -70,7 +107,7 @@
 
 .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-active="true"] {
   color: #f7fcff;
-  background: color-mix(in srgb, var(--mutation-deep) 82%, #10243a) !important;
+  background: color-mix(in srgb, var(--mutation-deep) 88%, #10243a) !important;
   border-color: color-mix(in srgb, var(--mutation-primary) 74%, #d9f7ff) !important;
   box-shadow:
     inset 3px 0 0 var(--mutation-primary),

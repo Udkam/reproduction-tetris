@@ -1486,15 +1486,29 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     { item: 'multiplier', ticks: state.mutationMultiplierTicks, multiplierFactor: state.mutationMultiplierFactor },
   ];
   const activeEffects = candidates.filter((effect) => effect.ticks > 0);
-  if (activeEffects.length === 0) return null;
 
   return (
-    <section className="mutation-status mutation-status--vfx" data-testid="mutation-status" aria-label={copy.labels.mutationStatus}>
+    <section
+      className="mutation-status mutation-status--vfx"
+      data-testid="mutation-status"
+      data-active-count={activeEffects.length}
+      aria-label={copy.labels.mutationStatus}
+    >
       <header className="mutation-status__header">
         <strong>{copy.labels.mutationStatus}</strong>
         <span aria-hidden="true">///</span>
       </header>
       <div className="mutation-status__ledger">
+        {activeEffects.length === 0 && (
+          <div className="mutation-status__idle" data-testid="mutation-status-idle">
+            <span className="mutation-status__idle-spectrum" aria-hidden="true">
+              {(['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const).map((item) => (
+                <i key={item} data-mutation-state={item} />
+              ))}
+            </span>
+            <span>{copy.labels.mutationIdle}</span>
+          </div>
+        )}
         {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
           const seconds = Math.ceil(effect.ticks / TICKS_PER_SECOND);
@@ -2178,8 +2192,8 @@ export function GameSession({
             aria-label={`${modeLabel}${language === 'en' ? ' ' : ''}${copy.labels.gamePanel}`}
           >
             <div className="info-rail" data-testid="context-top">
-              <RunStats state={state} language={language} />
               <MutationStatus state={state} language={language} />
+              <RunStats state={state} language={language} />
             </div>
             <div className={`preview-rail ${puzzleDoublePreview ? 'preview-rail--puzzle' : ''}`}>
               <p className="rail-label">
