@@ -8,7 +8,7 @@ coordinator is the only writer. The accepted deterministic Core, one Pixi canvas
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
 information architecture remain authoritative.
 
-The slice has eight player-visible acceptance requirements:
+The slice has nine player-visible acceptance requirements:
 
 1. Home shows the single `TetraMorph` wordmark without the Chinese positioning line.
    The English positioning line may remain in English UI; Chinese Home must not reserve
@@ -19,9 +19,10 @@ The slice has eight player-visible acceptance requirements:
    must wrap without overlap, clipping, or disappearance. Because Kavivanar publishes
    only Regular 400, Chromium receives a restrained optical ink compensation rather
    than a fabricated font face. Cadence cards never force two type systems onto one
-   value baseline: the large value is digits only in Geist Mono, while `秒/格` or
-   `s/cell` sits beside the fall-speed label as a quiet unit token. Chinese cadence
-   units remain Noto Sans SC and match the label's visual weight.
+   value baseline: the complete `下落速度 / Fall speed` label owns the first row,
+   while the Geist Mono value and localized `秒/格` or `s/cell` unit share a second
+   no-wrap baseline. Chinese cadence units remain Noto Sans SC and match the label's
+   visual weight.
 3. Classic Settings exposes a persisted gravity interval with two bounds, both limited
    to `1.0` through `0.1` seconds per cell in `0.1` steps. A fresh profile opens at
    `0.8` and accelerates no faster than `0.1`; the fastest bound cannot be slower than
@@ -68,6 +69,14 @@ The slice has eight player-visible acceptance requirements:
    spreadsheet-like visual weight, decorative subtitle, or duplicate rank statement is
    allowed. Each dialog targets a `30–32rem` desktop width and remains viewport-safe on
    small screens.
+9. The ordinary gameplay side rail is a deliberate **4 x 1** instrument column, not a
+   `2 x 2` dashboard: its four statistic cards stack vertically in source order. The
+   Next module follows directly beneath them at the same measured width, using the same
+   border, radius, spacing, and surface language without covering the Pixi-owned preview.
+   The complete statistics-plus-Next group is vertically centred within the available
+   rail height and cannot create a structural blank gap. Puzzle keeps its accepted dual
+   preview and Mutation may still insert its active status module, but neither may
+   regress compact/mobile layouts, pause visibility, or the single-canvas contract.
 
 ### Required checkpoints and verification
 

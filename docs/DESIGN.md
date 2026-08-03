@@ -14,15 +14,27 @@ legible without increasing visual noise.
 The wordmark remains the only Playwrite NZ Basic text. Ordinary English interface copy
 uses the locally packaged Kavivanar regular face at its real 400 weight. Chinese keeps
 Noto Sans SC and numeric/data roles keep Geist Mono, so applying Kavivanar never changes
-score digits, timers, dates, keycaps, or board indices. A cadence metric has one clean
-numeric baseline: its large value contains only Geist Mono digits. The localized unit
-is a small token beside the metric label, using Kavivanar for English and Noto Sans SC
-for Chinese at the label's visual weight. Since the family has
+score digits, timers, dates, keycaps, or board indices. A cadence metric has a stable
+two-row rhythm: the complete localized label occupies the first row, then the Geist Mono
+value and localized unit share one no-wrap baseline on the second. The unit uses
+Kavivanar for English and Noto Sans SC for Chinese at the label's visual weight. Since the family has
 no bold file, English UI receives a subtle, constant optical ink stroke to improve
 small-size legibility; it does not invent or declare a Kavivanar 700 face, and it does
 not touch the wordmark or data glyphs. Chinese Home removes its positioning line and
 collapses that line from layout; English Home retains its concise English line. Every
 fallback remains local/system-safe for offline Steam packaging.
+
+### Gameplay side rail
+
+The ordinary desktop rail is one vertical instrument stack. Four statistic cards form
+a `4 x 1` column in reading order; it is explicitly not a `2 x 2` dashboard. The Next
+module follows immediately below at the same width, border weight, corner rhythm, and
+surface tone. React owns that grouping and label hierarchy while Pixi remains the sole
+owner of the actual preview well and piece drawing. The combined group is vertically
+centred in the available rail height, so changing the Next frame cannot strand a large
+structural gap above or below it. Puzzle preserves its two-item preview and active
+Mutation status may join the stack, but responsive reflow, paused-state visibility, and
+the one-canvas boundary remain unchanged.
 
 ### Classic gravity interval
 
