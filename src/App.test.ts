@@ -57,6 +57,7 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
 const sourceHudStyles = readFileSync('src/styles/hud.css', 'utf8');
 const sourceSettingsStyles = readFileSync('src/styles/settings.css', 'utf8');
+const sourceResultStyles = readFileSync('src/styles/result.css', 'utf8');
 const puzzleLibraryStyles = readFileSync('src/styles/puzzle-library.css', 'utf8');
 const sourceIndex = readFileSync('index.html', 'utf8');
 
@@ -2018,6 +2019,10 @@ describe('T6 frontend mode binding', () => {
       { id: 'survival-time', label: '生存时间', value: '2:05', primary: true },
       { id: 'lines', label: '消行', value: '24', primary: false },
     ]);
+    expect(sourceResultStyles).toContain('width: min(31rem, calc(100vw - 24px))');
+    expect(sourceResultStyles).toMatch(/\.run-result__metrics\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\)/s);
+    expect(sourceResultStyles).toMatch(/\.run-result__metric--primary strong\s*\{[^}]*font-size:\s*clamp\(34px, 8vw, 44px\)/s);
+    expect(sourceResultStyles).not.toContain('"summary leaderboard"');
     const resultSummary = render(createElement(RunResultSummary, {
       state: { ...terminalState, elapsedTicks: 125 * 60 },
       rank: 2,
