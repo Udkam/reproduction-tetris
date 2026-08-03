@@ -52,9 +52,13 @@ The slice has thirteen player-visible acceptance requirements:
    is expressed by a lightly shivering top boundary and restrained downward pressure at
    the stack, not a central symbol, rain-like marks, screen flash, or high-opacity
    full-board decoration. Double and Super Double replace the fixed upper-right emblem
-   with sparse, small starlets falling from the top; the stronger tier may increase
-   density without masking gameplay. Reduced motion receives static equivalents. The
-   latched landing rule remains unchanged.
+   with a persistent **upper-field score constellation**: compact amber starlets enter
+   from varied top positions with short comet tails and soft local halos, then dissolve
+   before reaching the lower playfield. Double must be immediately recognisable without
+   flashing; Super Double increases the lane count, density, and warmth while preserving
+   the active-piece silhouette. The effect cannot become a corner badge, board-wide wash,
+   or high-opacity score burst. Reduced motion receives a clearly visible static top-edge
+   constellation. The latched landing rule remains unchanged.
 7. The `3 / 2 / 1` entry countdown gains three short, ascending procedural SFX cues.
    The existing Start event remains the confirmation beat. Cues obey SFX enablement and
    volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
