@@ -92,13 +92,16 @@ motion keeps one static compressed top edge. The HUD meter divides by the five-s
 maximum while other timed items continue to divide by ten seconds.
 
 Double and Super Double abandon the fixed upper-right star emblem. Their sustained
-language is an upper-field score constellation: compact amber starlets enter from varied
-points along the top boundary, carry short comet tails plus soft local halos, and dissolve
-before reaching the lower playfield. This makes the timed state readable at a glance
-without a screen flash or board-wide tint. The ×4 tier increases lane count, density, and
-warmth, not the footprint of any one mark. The pattern is ambient state feedback, never
-an input target or score burst, and it remains behind active/ghost pieces. Reduced motion
-retains a clearly visible static top-edge constellation without falling animation.
+language is a shallow upper-field score-glint field: independent amber four-point glints
+drift from varied top positions and dissolve before reaching the lower playfield. Each
+mark is assembled from a faint outer star, a crisp inner star, and no more than two
+detached dust motes. There is no circular backing disc, connected stem, line tail, comet
+trail, or pulsing halo: those shapes resemble hanging lamps, rain, or UI markers instead
+of natural light. This keeps the timed state readable without a screen flash or board-wide
+tint. The ×4 tier increases count and warmth, not the footprint of any one mark. The
+pattern is ambient state feedback, never an input target or score burst, and it remains
+behind active/ghost pieces. Reduced motion retains a clearly visible static top-edge glint
+field without drifting animation.
 
 The entry countdown uses three original procedural tones on the runtime-owned effects
 bus. `3`, `2`, and `1` rise in pitch and remain shorter and quieter than the existing
