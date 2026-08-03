@@ -1608,6 +1608,7 @@ describe('T6 frontend mode binding', () => {
     expect(styles).not.toContain('.phase-seam');
     expect(styles).not.toContain('.action-sheet::before');
     expect(styles).not.toContain('rotate(3deg)');
+
     expect(sourceStyles).toContain('grid-template-columns: 56px minmax(0, 1fr) 42px');
     expect(sourceStyles).toMatch(/\.mode-gates--workbench \.mode-gate__action \{[^}]*display: flex;[^}]*align-items: center;[^}]*justify-content: center;/s);
     expect(sourceStyles).not.toMatch(/\.mode-gates--workbench \.mode-gate__action svg \{[^}]*transform:/s);
@@ -1649,6 +1650,10 @@ describe('T6 frontend mode binding', () => {
     act(() => survival?.click());
     expect(onEnter).toHaveBeenCalledWith('race');
     view.unmount();
+    const english = render(createElement(ModeHome, { onEnter, language: 'en' }));
+    expect(english.container.querySelector('.mode-home-tagline')).toBeNull();
+    expect(english.container.textContent).not.toContain('Transform the way blocks fall.');
+    english.unmount();
   });
 
   it('cycles keyboard focus through paused Continue, Back, and Settings and routes Escape to Back', async () => {
@@ -1957,8 +1962,8 @@ describe('T6 frontend mode binding', () => {
     }));
     const idlePanel = idle.container.querySelector<HTMLElement>('[data-testid="mutation-status"]');
     expect(idlePanel?.dataset.activeCount).toBe('0');
-    expect(idle.container.querySelector('[data-testid="mutation-status-idle"]')?.textContent).toContain('暂无持续状态');
-    expect(idle.container.querySelectorAll('.mutation-status__idle-spectrum > i')).toHaveLength(5);
+    expect(idle.container.querySelector('[data-testid="mutation-status-idle"]')?.textContent).toBe('');
+    expect(idle.container.textContent).not.toContain('暂无持续状态');
     idle.unmount();
 
     const active = {

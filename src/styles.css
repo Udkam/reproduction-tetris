@@ -9551,22 +9551,6 @@ kbd,
 .app[data-reduced-motion="true"] .console-node button,
 .app[data-reduced-motion="true"] .console-node--selected button { animation: none !important; transition: none !important; }
 
-/* RC 1.0 first-experience handoff: the wordmark gets one quiet product line,
-   first-entry rules become a three-beat briefing, and Start acknowledges the
-   exact frame where control is handed to the player. This block is intentionally
-   last so archived surface rules cannot override the active RC contract. */
-.mode-chooser--workbench .mode-home-tagline {
-  width: 100%;
-  margin: clamp(13px, 1.8vw, 20px) 0 0;
-  color: rgba(202, 224, 229, .78);
-  font-family: var(--font-ui);
-  font-size: clamp(11px, 1.1vw, 14px);
-  font-weight: 560;
-  letter-spacing: .16em;
-  line-height: 1.4;
-  text-align: center;
-}
-
 .action-sheet .mode-rule-summary--intro {
   padding: 0;
   overflow: hidden;

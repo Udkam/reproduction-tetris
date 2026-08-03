@@ -625,7 +625,6 @@ export function ModeHome({
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
             <h1 id="home-title" className="mode-home-wordmark"><span>Tetra</span><span>Morph</span></h1>
-            {language === 'en' && <p className="mode-home-tagline">{copy.labels.tagline}</p>}
           </div>
           <div
             className="mode-gates mode-gates--workbench"
@@ -1500,14 +1499,7 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
       </header>
       <div className="mutation-status__ledger">
         {activeEffects.length === 0 && (
-          <div className="mutation-status__idle" data-testid="mutation-status-idle">
-            <span className="mutation-status__idle-spectrum" aria-hidden="true">
-              {(['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const).map((item) => (
-                <i key={item} data-mutation-state={item} />
-              ))}
-            </span>
-            <span>{copy.labels.mutationIdle}</span>
-          </div>
+          <div className="mutation-status__idle" data-testid="mutation-status-idle" aria-hidden="true" />
         )}
         {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);

@@ -40,10 +40,11 @@ describe('Phase 3 HUD authority', () => {
     expect(compact).not.toContain('.keyboard-map');
   });
 
-  it('gives the always-mounted Mutation instrument a warm surface and a compact idle ledger', () => {
-    expect(mutationVfxCss).toContain('linear-gradient(145deg, rgba(255, 252, 244, .97), rgba(241, 228, 205, .94))');
+  it('gives the always-mounted Mutation instrument the shared raised surface and a silent idle reserve', () => {
+    expect(mutationVfxCss).toContain('background: color-mix(in srgb, var(--raised) 82%, var(--surface)) !important');
     expect(mutationVfxCss).toContain('.mutation-status--vfx .mutation-status__idle');
-    expect(mutationVfxCss).toContain('grid-template-columns: repeat(5, 5px)');
+    expect(mutationVfxCss).toContain('min-height: 8px');
+    expect(mutationVfxCss).not.toContain('.mutation-status__idle-spectrum');
   });
 
   it('sizes Mutation ledgers from the active effect count instead of reserving three empty tracks', () => {

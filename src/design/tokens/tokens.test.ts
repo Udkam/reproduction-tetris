@@ -96,6 +96,7 @@ describe('TetraMorph Design System v1.0', () => {
     expect(tokenStyles).not.toMatch(/url\(["']?https?:/);
     expect(mainSource).toContain("import './styles/fonts.css';");
     expect(fontStyles).toContain('metal-latin-400-normal.woff2');
+    expect(fontStyles).toContain('size-adjust: 112%');
     expect(fontStyles.match(/font-family: "Metal"/g)).toHaveLength(1);
     expect(fontStyles).toContain('geist-mono-latin-400-normal.woff2');
     expect(fontStyles).toContain('geist-mono-latin-700-normal.woff2');
