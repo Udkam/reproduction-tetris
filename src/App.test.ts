@@ -6,7 +6,7 @@ import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import styles from './styles.css?raw';
-import { PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, nextMutationPreviewItem, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
+import { MUTATION_EFFECT_TICKS, MUTATION_SUPERGRAVITY_EFFECT_TICKS, PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, nextMutationPreviewItem, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
 import App, {
   cloneQaState,
   countdownTimeLabel,
@@ -1952,13 +1952,23 @@ describe('T6 frontend mode binding', () => {
     expect(multiplier?.dataset.mutationTier).toBe('4');
     expect(multiplier?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     expect(view.container.textContent).not.toContain('倍增');
+    const supergravity = render(createElement(MutationStatus, {
+      state: {
+        ...createInitialState(0x51a1f00d, 'sprint'),
+        mutationCollapseTicks: MUTATION_SUPERGRAVITY_EFFECT_TICKS,
+      },
+    }));
+    const collapse = supergravity.container.querySelector<HTMLElement>('[data-mutation-state="collapse"]');
+    expect(collapse?.textContent).toBe('超重生效中5 秒');
+    expect(collapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     const bombState = { ...active, mutationLastItem: 'bomb' as const, mutationLastItemTicks: 120 };
     const bomb = render(createElement(MutationStatus, { state: bombState }));
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
     const mutationRule = modeRules('zh-CN', 'sprint').find((fact) => fact.id === 'items')?.value ?? '';
     expect(mutationRule).toContain('冰冻令方块以 1.0 秒/格下落');
-    expect(mutationRule).toContain('超重令落地时各列独立下沉');
+    expect(mutationRule).toContain('超重令落地时各列独立下沉 5 秒');
     expect(mutationRule).not.toContain('冻结');
+    supergravity.unmount();
     bomb.unmount();
     view.unmount();
   });
@@ -1974,12 +1984,12 @@ describe('T6 frontend mode binding', () => {
     const runtime = runtimeHarness.instances.at(-1)!;
     const events: GameEvent[] = [
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
-      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
-      { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: MUTATION_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: MUTATION_SUPERGRAVITY_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
     ];
     act(() => runtime.options.onState?.(runtime.getState(), events));
     expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe(
-      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 10 秒。',
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 5 秒。',
     );
     view.unmount();
   });
@@ -2023,14 +2033,14 @@ describe('T6 frontend mode binding', () => {
     expect(eventMessage({ type: 'puzzle-undone' })).toBe('已撤回上一次落子。');
     const mutationEvents: GameEvent[] = [
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
-      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0 },
-      { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'freeze', durationTicks: MUTATION_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: MUTATION_SUPERGRAVITY_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
     ];
     expect(eventMessages(mutationEvents)).toBe(
-      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 10 秒。',
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 5 秒。',
     );
     expect(eventMessages(mutationEvents, 'en')).toBe(
-      '1 lines cleared. Freeze activated for 10 seconds. Supergravity activated for 10 seconds.',
+      '1 lines cleared. Freeze activated for 10 seconds. Supergravity activated for 5 seconds.',
     );
 
     const completedPuzzle: GameState = {

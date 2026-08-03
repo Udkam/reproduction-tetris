@@ -14,7 +14,9 @@ import {
   CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
   CLASSIC_STARTING_GRAVITY_MAX_TICKS,
   CLASSIC_STARTING_GRAVITY_MIN_TICKS,
+  MUTATION_EFFECT_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
+  MUTATION_SUPERGRAVITY_EFFECT_TICKS,
   PIECE_TYPES,
   SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
@@ -1463,6 +1465,9 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
           const seconds = Math.ceil(effect.ticks / TICKS_PER_SECOND);
           const label = mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor);
+          const durationTicks = effect.item === 'collapse'
+            ? MUTATION_SUPERGRAVITY_EFFECT_TICKS
+            : MUTATION_EFFECT_TICKS;
           return (
             <div
               key={effect.item}
@@ -1478,7 +1483,7 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
                 <small>{copy.labels.mutationActive}</small>
               </span>
               <em>{language === 'en' ? `${seconds}s` : `${seconds} 秒`}</em>
-              <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / (10 * TICKS_PER_SECOND) * 100)}%` }} /></span>
+              <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / durationTicks * 100)}%` }} /></span>
             </div>
           );
         })}
@@ -1501,7 +1506,7 @@ export function eventMessage(event: GameEvent, language: AppLanguage = DEFAULT_L
     const label = event.item === 'multiplier' && event.multiplierFactor === 4
       ? copy.labels.superMultiplier
       : itemLabel(language, event.item);
-    return copy.phrasing.eventItemTriggered(label);
+    return copy.phrasing.eventItemTriggered(label, Math.ceil(event.durationTicks / TICKS_PER_SECOND));
   }
   if (event.type === 'finished') return copy.labels.targetReached;
   if (event.type === 'game-over') return copy.labels.runEnded;

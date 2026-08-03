@@ -205,7 +205,7 @@ type Translation = {
     eventLinesCleared: (count: number) => string;
     eventBedrockRaised: (height: number) => string;
     eventBedrockLowered: (height: number) => string;
-    eventItemTriggered: (item: string) => string;
+    eventItemTriggered: (item: string, seconds: number) => string;
     mutationTimer: (item: string, seconds: number) => string;
     mutationPreview: (piece: string, item: string) => string;
     puzzleLesson: (technique: PuzzleTechnique) => { title: string; body: string };
@@ -288,7 +288,7 @@ const COPY: Record<AppLanguage, Translation> = {
       sprint: [
         { id: 'goal', label: '消行', value: '基础规则与经典相同；每累计消除 6 行，下落速度提升一级。' },
         { id: 'carriers', label: '携带', value: '带有彩色核心标记的方块携带道具；该方块任意一格被消除时立即触发。' },
-        { id: 'items', label: '道具', value: '冰冻令方块以 1.0 秒/格下落；超重令落地时各列独立下沉；炸弹清除底部 3 行；加倍令消行得分 ×2；重塑把生成后 Next 中的方块变为 I。计时效果再次触发会刷新为 10 秒，加倍叠加后升级为超级加倍 ×4。' },
+        { id: 'items', label: '道具', value: '冰冻令方块以 1.0 秒/格下落 10 秒；超重令落地时各列独立下沉 5 秒；炸弹清除底部 3 行；加倍令消行得分 ×2，持续 10 秒；重塑把生成后 Next 中的方块变为 I。再次触发会刷新对应时长，加倍叠加后升级为超级加倍 ×4。' },
         { id: 'end', label: '结束', value: '新方块无法进入棋盘时，本局结束。' },
       ],
       puzzle: [
@@ -381,7 +381,7 @@ const COPY: Record<AppLanguage, Translation> = {
       eventLinesCleared: (count) => `消除了 ${count} 行。`,
       eventBedrockRaised: (height) => `基岩升至 ${height} 层。`,
       eventBedrockLowered: (height) => `基岩降至 ${height} 层。`,
-      eventItemTriggered: (item) => `${item} 已触发，持续 10 秒。`,
+      eventItemTriggered: (item, seconds) => `${item} 已触发，持续 ${seconds} 秒。`,
       mutationTimer: (item, seconds) => `${item}：${seconds} 秒`,
       mutationPreview: (piece, item) => `${piece} 方块，携带${item}道具`,
       puzzleLesson: (technique) => ({
@@ -418,7 +418,7 @@ const COPY: Record<AppLanguage, Translation> = {
       sprint: [
         { id: 'goal', label: 'Clear', value: 'Classic rules apply; gravity increases one tier after every 6 cleared lines.' },
         { id: 'carriers', label: 'Carriers', value: 'A piece with a colored core carries an item. Clearing any cell of that piece triggers it immediately.' },
-        { id: 'items', label: 'Items', value: 'Freeze sets gravity to 1.0 s/cell; Supergravity settles each column independently; Bomb clears the bottom 3 rows; Double makes line-clear scores ×2; Reshape turns the post-spawn Next piece into I. Repeating a timed item refreshes it to 10 seconds, while stacked Double becomes Super Double ×4.' },
+        { id: 'items', label: 'Items', value: 'Freeze sets gravity to 1.0 s/cell for 10 seconds; Supergravity settles each column independently for 5 seconds; Bomb clears the bottom 3 rows; Double makes line-clear scores ×2 for 10 seconds; Reshape turns the post-spawn Next piece into I. Repeating an item refreshes its duration, while stacked Double becomes Super Double ×4.' },
         { id: 'end', label: 'End', value: 'The run ends when a new piece cannot enter the board.' },
       ],
       puzzle: [
@@ -511,7 +511,7 @@ const COPY: Record<AppLanguage, Translation> = {
       eventLinesCleared: (count) => `${count} lines cleared.`,
       eventBedrockRaised: (height) => `Bedrock rose to ${height} rows.`,
       eventBedrockLowered: (height) => `Bedrock fell to ${height} rows.`,
-      eventItemTriggered: (item) => `${item} activated for 10 seconds.`,
+      eventItemTriggered: (item, seconds) => `${item} activated for ${seconds} seconds.`,
       mutationTimer: (item, seconds) => `${item}: ${seconds}s`,
       mutationPreview: (piece, item) => `${piece} piece carrying ${item}`,
       puzzleLesson: (technique) => ({
