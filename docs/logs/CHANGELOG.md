@@ -12,8 +12,10 @@
   `318 passed / 3 skipped` without weakening a timeout or skipping coverage.
 - Current typecheck and the 756-module production build pass. The package lock remains
   synchronized without a change, and a scoped OSV Scanner 2.4.0 run reports no issue.
-  Product code remains byte-identical to the Phase-E/F evidence source; independent
-  read-only QA of the test-only correction is still required before reacceptance.
+  Product code remains byte-identical to the Phase-E/F evidence source.
+- Independent read-only QA accepted exact range `bcbb229..5aceb53` with P0 0 / P1 0 /
+  P2 0 / P3 0. It confirmed the worker cap limits concurrency without filtering tests,
+  relaxing timeouts, or changing product behavior, so the RC is reaccepted.
 
 ## 2026-08-03 — T26 RC Phase E engineering closure verified
 

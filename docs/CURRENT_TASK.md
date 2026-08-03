@@ -2,7 +2,7 @@
 
 ## T26 accepted goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): TETRAMORPH 1.0.0-RC.1 POST-ACCEPTANCE GATE RECHECK PENDING QA.**
+**Status (2026-08-03): TETRAMORPH 1.0.0-RC.1 INDEPENDENTLY REACCEPTED.**
 The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
@@ -15,8 +15,10 @@ setup hook expired. Checkpoint `c8ceb70` caps the official test command at two w
 the isolated renderer file passes `45/45`, and the corrected official gates pass
 typecheck, the complete suite (`318 passed / 3 skipped`), and the 756-module build.
 `package-lock.json` remains synchronized without a delta, and the scoped OSV scan is
-clean. Final acceptance is temporarily fail-closed on an independent read-only review
-of this test-only correction and the resulting status records.
+clean. Independent read-only QA accepted the exact `bcbb229..5aceb53` range with
+P0 0 / P1 0 / P2 0 / P3 0: the worker cap limits concurrency without filtering tests,
+relaxing timeouts, or changing product behavior. The coordinator therefore reaccepts
+the RC candidate; only final redacted scanning and a normal `main` push remain.
 
 The live requirement-by-requirement disposition is `docs/RC_AUDIT.md`. It records
 unproven work as open even when a related historical slice passed. Phase B is now a
