@@ -18,7 +18,7 @@ typecheck, the complete suite (`318 passed / 3 skipped`), and the 756-module bui
 clean. Independent read-only QA accepted the exact `bcbb229..5aceb53` range with
 P0 0 / P1 0 / P2 0 / P3 0: the worker cap limits concurrency without filtering tests,
 relaxing timeouts, or changing product behavior. The coordinator therefore reaccepts
-the RC candidate; only final redacted scanning and a normal `main` push remain.
+the RC candidate for a normal `main` push.
 
 The live requirement-by-requirement disposition is `docs/RC_AUDIT.md`. It records
 unproven work as open even when a related historical slice passed. Phase B is now a
