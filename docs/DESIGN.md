@@ -46,6 +46,14 @@ not another countdown second: the runtime and controls enable at the same bounda
 which the former overlay disappeared. The cue ignores pointer input, clears on every
 restart or mode reset, and honors reduced motion without changing deterministic time.
 
+**Verified Phase-B implementation.** Product source `2198b92` keeps one wordmark and
+one positioning line, separates three concise first-entry facts from the complete
+Settings rules, and makes the final Start cue visually authoritative without adding a
+fourth blocking interval. Source-bound evidence `96b8854` proves the desktop, narrow,
+short-landscape, and reduced-motion compositions; the Start frame already owns the
+single gameplay Canvas and populated Next forecast. No Core, renderer, persistence,
+Puzzle ordering, ranking, or mode mechanic changed.
+
 ### Phases B-C active correction — semantic type and progressive Settings disclosure
 
 The player-facing type system now has four non-overlapping roles. Playwrite NZ Basic

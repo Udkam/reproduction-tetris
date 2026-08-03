@@ -2,32 +2,43 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASE A VERIFIED; PHASE-C TYPOGRAPHY / SETTINGS CORRECTION
+**Status (2026-08-03): PHASES A-B VERIFIED; PHASE-C TYPOGRAPHY / SETTINGS CORRECTION
 VERIFIED; RC PROGRAMME ACTIVE.** The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
 improve first-time understanding, portfolio presentation, or long-term maintenance.
 
 The live requirement-by-requirement disposition is `docs/RC_AUDIT.md`. It records
-unproven work as open even when a related historical slice passed. The current bounded
-product slice is **Phase B first experience**:
+unproven work as open even when a related historical slice passed. Phase B is now a
+closed rollback point: Home has one localized positioning line, first-entry guidance
+has exactly Goal / Mechanic / Challenge, and `Start` acknowledges the same boundary at
+which the runtime becomes controllable.
 
-1. add exactly one localized Home positioning line under the sole wordmark:
-   `Transform the way blocks fall.` / `重新定义下落方块`;
-2. give first-entry sheets their own Goal / Mechanic / Challenge copy instead of
-   reusing the detailed Settings rules; each Chinese mode body remains under 100
-   characters;
-3. render `3`, `2`, `1`, then a short `Start` cue. Input and runtime timing begin at
-   the existing three-second boundary, so the word is feedback rather than a fourth
-   blocking count;
-4. add direct copy/timing tests, focused typecheck/tests, then one source-bound
-   responsive browser pass. This slice cannot change Core, renderer, persistence,
+The current bounded product slice is the remaining **Phase C accessibility and surface
+coverage** only:
+
+1. add one persisted player reduced-motion control to the Settings tab without changing
+   the existing operating-system default or deterministic runtime timing;
+2. add concise visible touch guidance to the Controls tab while retaining gameplay-first
+   and shortcuts-second keyboard order;
+3. complete the current-source responsive browser matrix for HUDs, results, and
+   leaderboards in Chinese and English, repairing only demonstrated clipping,
+   overlap, truncation, or structural whitespace;
+4. preserve the accepted Playwrite / Space Grotesk / Geist Mono / Noto Sans SC roles,
+   the three Settings tabs, Pause-time Back/Settings reachability, one Canvas, and a
+   visible Next. This slice cannot change Core, renderer rules, persistence schemas,
    Puzzle boards/order, ranking, or mode mechanics.
 
-The remaining Phase-C gaps are explicitly open: a persisted player reduced-motion
-control on the Settings tab, visible touch guidance on the Controls tab, and a final
-responsive audit of results/leaderboards. They will be a separate checkpoint after
-Phase B, not silently bundled into it.
+**Verified Phase-B result.** Product commits `29405e2` and `2198b92` add the localized
+positioning line, separate concise first-entry copy, the non-blocking `Start` cue, and
+an authoritative final cascade position for those rules. Evidence checkpoint `96b8854`
+binds to source `2198b92` and covers English desktop, Chinese 390 x 844, English
+844 x 390 reduced motion, countdown, and `Start`. The audit reports zero console
+errors, clipped text, horizontal overflow, DOM board cells, or extra Canvas; all
+first-entry surfaces contain three facts, the Chinese Mutation body is 48 characters,
+and the `Start` frame contains one Canvas plus a live Next label. Typecheck, focused
+App/Settings tests (`52 passed`), the complete suite (`310 passed / 3 skipped`), and
+the 768-module build pass. The evidence-owned preview process released port 4188.
 
 The complete phase contract is recorded in `docs/phases/rc-1.0.md`. Phase A delivered:
 

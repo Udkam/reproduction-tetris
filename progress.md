@@ -977,3 +977,10 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   browser audit pass with no clipping, text overlap, wrong font role, overflow, extra
   Canvas/DOM cells, or browser errors. Phase B first experience and Phases D-F remain
   open.
+- Phase B is now a green rollback point at product `2198b92` and evidence `96b8854`.
+  Home has one localized positioning line; first-entry sheets use three concise facts;
+  runtime control and the visible Start cue share the established three-second handoff.
+  Typecheck, focused `52/52`, full `310 passed / 3 skipped`, the 768-module build, and
+  five inspected browser frames pass. The controlled browser/server batch was released.
+  Remaining work starts with the separate Phase-C reduced-motion, touch guidance, and
+  current-source results/leaderboard audit.

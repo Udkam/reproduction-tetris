@@ -4,8 +4,8 @@
 - Base SHA: `2d4f3ecc7d51ee756ac55442088be59aa0d7d0f9`
 - Owner: primary coordinator / sole writer until an immutable candidate is ready for
   independent read-only QA
-- Status: Phase A verified and archived; Phase-C typography/Settings correction
-  verified; RC programme remains active; Phase B first-experience slice opened
+- Status: Phases A-B verified and archived; Phase-C typography/Settings correction
+  verified; RC programme remains active; remaining Phase-C accessibility/coverage open
 - Exact Phase-A paths under review:
   - contract/archive: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`,
     `docs/phases/rc-1.0.md`, `progress.md`, this log, `docs/logs/CHANGELOG.md`
@@ -48,6 +48,16 @@
   Settings rules in first-entry sheets, and renders only `3–2–1`; Settings still lacks
   player reduced-motion and visible touch controls. These are recorded in
   `docs/RC_AUDIT.md` without relabelling the prior accepted evidence.
+- Phase-B product: `29405e2` plus cascade correction `2198b92`; evidence `96b8854`.
+  Exact source paths were `src/App.tsx`, `src/ui/localization.ts`, `src/styles.css`, and
+  `src/App.test.ts`. The browser matrix covers English desktop, Chinese 390 x 844,
+  English 844 x 390 reduced motion, countdown, and Start. Audit result: zero browser
+  errors, clipped text, horizontal overflow, DOM board cells, or extra Canvas; Start
+  has one Canvas and populated Next; Chinese inspected body length is 48 characters.
+- Phase-B commands: focused App/Settings tests (`52 passed`), typecheck, complete suite
+  (`310 passed / 3 skipped`), 768-module build, and one controlled evidence runner.
+  Preview PID 27104 and manual dev PID 23588 were released; ports 4187/4188 have no
+  listener.
 - Blocker: none
-- Next action: commit the Phase-B contract checkpoint, then implement only the Home
-  positioning line, concise first-entry facts, non-blocking Start cue, and direct proof.
+- Next action: open the separate Phase-C reduced-motion/touch-guidance checkpoint, then
+  run one current-source HUD/result/leaderboard browser audit before authoring repairs.

@@ -1,7 +1,7 @@
 # TetraMorph v1.0 Release Candidate Plan
 
-Status: active from 2026-08-03. Phase A and the Phase-C typography / Settings correction
-are verified; Phase B first experience and Phases D-F remain open. `docs/CURRENT_TASK.md`
+Status: active from 2026-08-03. Phases A-B and the Phase-C typography / Settings correction
+are verified; the remaining Phase-C accessibility/coverage work and Phases D-F remain open. `docs/CURRENT_TASK.md`
 owns the currently authorised slice; this file owns the complete ordered programme.
 
 ## Product guardrails
@@ -28,6 +28,12 @@ owns the currently authorised slice; this file owns the complete ordered program
   characters for the mode body.
 - Present the entry sequence as `3`, `2`, `1`, `Start` without delaying control beyond
   the existing countdown contract.
+
+Verified checkpoint: product `2198b92`, evidence `96b8854`. English desktop, Chinese
+narrow, English reduced-motion short-landscape, countdown, and Start frames pass with
+zero clipping, overflow, browser errors, extra Canvas, or DOM board cells. The Start
+frame already exposes the live Next forecast, and all four mode mechanics remain
+unchanged.
 
 ## Phase C — final UI system
 

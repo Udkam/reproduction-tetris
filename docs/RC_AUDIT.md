@@ -7,9 +7,9 @@ evidence all support the same claim.
 | Phase | Requirement | Current evidence | Status / next proof |
 | --- | --- | --- | --- |
 | A | TetraMorph identity, compatibility migrations, public README | Accepted source and tests are recorded in T26; active source/package scan has no Signal Foundry identity. | `VERIFIED` |
-| B | Home wordmark plus one positioning line | Home currently renders the wordmark only. | `OPEN` — add the bilingual positioning line and inspect all required viewports. |
-| B | First-entry Goal / Mechanic / Challenge under 100 Chinese body characters | Entry sheet currently reuses the longer Settings rules. | `OPEN` — add a separate concise intro contract and direct character-count tests. |
-| B | `3`, `2`, `1`, `Start` without added input delay | Current sequence ends after `1`; no Start cue is rendered. | `OPEN` — show a short non-blocking Start cue while control begins at the existing boundary. |
+| B | Home wordmark plus one positioning line | Source `2198b92` and desktop/narrow frames show exactly one wordmark plus the localized line. | `VERIFIED` |
+| B | First-entry Goal / Mechanic / Challenge under 100 Chinese body characters | Evidence `96b8854` shows three facts in every audited layout; the inspected Chinese Mutation body is 48 characters. | `VERIFIED` |
+| B | `3`, `2`, `1`, `Start` without added input delay | Direct timing tests pass; the source-bound Start frame already contains one Canvas and a populated Next label. | `VERIFIED` |
 | C | Brand/UI/data/Chinese typography | Browser evidence binds Playwrite NZ Basic / Space Grotesk / Geist Mono / Noto Sans SC to the accepted source. | `VERIFIED` — retain the direct-player-approved Geist Mono data role. |
 | C | Responsive Settings, HUD, results, and leaderboards | T26 proves Settings and selected HUD states; final results/leaderboard/current-source matrix is incomplete. | `PARTIAL` — complete final cross-surface browser audit. |
 | C | Settings tabs: settings, controls, rules | Three tabs exist, but Settings lacks a player reduced-motion control and Controls lacks visible touch guidance. | `OPEN` — add both without structural whitespace or runtime reconstruction. |
@@ -25,9 +25,10 @@ evidence all support the same claim.
 
 ## Current bounded slice
 
-The next product checkpoint is Phase B only. It may change `src/App.tsx`,
-`src/ui/localization.ts`, the smallest authoritative style paths, and direct tests.
-It must not alter Core rules, renderer primitives, persistence schemas, puzzle content,
-leaderboard ordering, or mode mechanics. Focused tests and typecheck precede a single
-source-bound browser pass. The Settings accessibility gaps remain documented for the
-next separate Phase C checkpoint.
+The next product checkpoint is the remaining Phase C accessibility and surface audit.
+It may change `src/App.tsx`, localization, authoritative Settings/HUD/result styles,
+the smallest persistence path required for the player motion preference, and direct
+tests. It must not alter Core rules, renderer primitives, puzzle content, leaderboard
+ordering, or mode mechanics. Implement the reduced-motion control and visible touch
+guidance first; then use one current-source browser batch to identify rather than assume
+HUD/result/leaderboard defects.
