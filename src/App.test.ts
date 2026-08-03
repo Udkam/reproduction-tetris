@@ -719,9 +719,11 @@ describe('T6 frontend mode binding', () => {
     expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
 
     expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?padding-right:\s*calc\([^}]*244px\)/);
+    expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?top:\s*var\(--play-topbar-height\)/);
     expect(sourceHudStyles).toMatch(/\.sheet-backdrop--gameplay\s*\{[\s\S]*?background:\s*rgba\(11,\s*23,\s*38,\s*\.16\)/);
     expect(sourceHudStyles).toMatch(/\.play-shell:has\(\.sheet-backdrop--gameplay\) \.canvas-host\s*\{[\s\S]*?filter:\s*none/);
-    expect(sourceHudStyles).toMatch(/\.play-shell--paused \.play-topbar\s*\{[\s\S]*?z-index:\s*110;[\s\S]*?pointer-events:\s*auto/);
+    expect(sourceHudStyles).toMatch(/\.play-shell--paused \.play-topbar\s*\{[\s\S]*?z-index:\s*110;[\s\S]*?isolation:\s*isolate;[\s\S]*?pointer-events:\s*auto/);
+    expect(sourceStyles).toMatch(/\.play-shell\s*\{[\s\S]*?--play-topbar-height:\s*64px/);
     expect(sourceHudStyles).toMatch(/\.action-sheet--placement-gameplay\s*\{[\s\S]*?width:\s*min\(420px,\s*100%\)/);
     view.unmount();
   });
@@ -880,7 +882,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('keeps the header to one S-accessible settings control and groups audio controls inside it', async () => {
+  it('keeps one S-accessible settings control and reveals one compact settings concern at a time', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -927,36 +929,55 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('.settings-sheet')).toBeNull();
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalled();
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
-    const toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
-    const volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
+    const settingsTab = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-tab-settings"]')!;
+    const controlsTab = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-tab-controls"]')!;
+    const rulesTab = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-tab-rules"]')!;
+    let toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
+    let volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
     const controls = view.container.querySelector<HTMLElement>('[data-testid="settings-controls"]')!;
-    const settingsLeaderboard = view.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')!;
-    const shortcuts = view.container.querySelector<HTMLElement>('[data-testid="settings-shortcuts"]')!;
-    const gameplay = view.container.querySelector<HTMLElement>('[data-testid="keyboard-gameplay"]')!;
-    const shortcutKeys = view.container.querySelector<HTMLElement>('[data-testid="keyboard-shortcuts"]')!;
-    const rules = view.container.querySelector<HTMLElement>('[data-testid="settings-rules"]')!;
+    expect(settingsTab.getAttribute('aria-selected')).toBe('true');
+    expect(controlsTab.getAttribute('aria-selected')).toBe('false');
+    expect(rulesTab.getAttribute('aria-selected')).toBe('false');
+    expect(document.activeElement).toBe(settingsTab);
+    expect(view.container.querySelector('[data-testid="settings-shortcuts"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="settings-rules"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="settings-leaderboard"]')).toBeNull();
     expect(toggle.textContent).toBe('音效开');
     expect(view.container.querySelector('[data-testid="music-toggle"]')).toBeNull();
     expect(volume.value).toBe('100');
     expect([...sheet.children].map((child) => child.getAttribute('data-testid') ?? child.className)).toEqual([
-      'settings-rules',
-      'settings-controls',
-      'settings-shortcuts',
-      'settings-leaderboard',
+      'settings-console__tabs',
+      'settings-console__panel settings-console__panel--settings',
     ]);
-    expect(controls.textContent).toContain('控制');
-    expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行44 方块2026.07.24');
-    expect(rules.textContent).toContain('填满一整行即可消除并得分。');
-    expect([...rules.querySelectorAll<HTMLElement>('[data-rule-id]')].map((fact) => fact.dataset.ruleId)).toEqual([
-      'goal',
-      'pace',
-      'end',
-    ]);
+    expect(controls.textContent).toContain('语言');
+
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+    expect(document.activeElement).toBe(controlsTab);
+    expect(controlsTab.getAttribute('aria-selected')).toBe('true');
+    expect(view.container.querySelector('[data-testid="settings-controls"]')).toBeNull();
+    const shortcuts = view.container.querySelector<HTMLElement>('[data-testid="settings-shortcuts"]')!;
+    const gameplay = view.container.querySelector<HTMLElement>('[data-testid="keyboard-gameplay"]')!;
+    const shortcutKeys = view.container.querySelector<HTMLElement>('[data-testid="keyboard-shortcuts"]')!;
     expect(shortcuts.textContent).toContain('键盘玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.textContent).toBe('玩法操作← → 移动↑ 旋转↓ 快速下落Space 直接落底');
     expect(shortcutKeys.textContent).toBe('快捷键S 设置P 暂停 / 继续R 重开确认Esc 返回← → 选择↑ ↓ 切换Enter 执行');
     expect(gameplay.classList.contains('settings-console__key-group--gameplay')).toBe(true);
     expect(shortcutKeys.classList.contains('settings-console__key-group--shortcuts')).toBe(true);
+
+    act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+    expect(document.activeElement).toBe(rulesTab);
+    expect(rulesTab.getAttribute('aria-selected')).toBe('true');
+    expect(view.container.querySelector('[data-testid="settings-shortcuts"]')).toBeNull();
+    const settingsLeaderboard = view.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')!;
+    const rules = view.container.querySelector<HTMLElement>('[data-testid="settings-rules"]')!;
+    expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行44 方块2026.07.24');
+    expect(rules.textContent).toContain('填满一整行即可消除并得分。');
+    expect([...rules.querySelectorAll<HTMLElement>('[data-rule-id]')].map((fact) => fact.dataset.ruleId)).toEqual(['goal', 'pace', 'end']);
+
+    act(() => settingsTab.click());
+    expect(settingsTab.getAttribute('aria-selected')).toBe('true');
+    toggle = view.container.querySelector<HTMLButtonElement>('[data-testid="audio-toggle"]')!;
+    volume = view.container.querySelector<HTMLInputElement>('[data-testid="audio-volume"]')!;
     const chinese = view.container.querySelector<HTMLButtonElement>('[data-testid="language-zh"]')!;
     const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;
     expect(chinese.getAttribute('aria-pressed')).toBe('true');
@@ -965,7 +986,6 @@ describe('T6 frontend mode binding', () => {
     expect(onLanguageChange).toHaveBeenCalledExactlyOnceWith('en');
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')!;
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
-    expect(resume.dataset.arrowSelected).toBe('true');
 
     const assertArrowRoute = (from: HTMLButtonElement, key: string, to: HTMLButtonElement) => {
       act(() => from.focus());
@@ -974,20 +994,15 @@ describe('T6 frontend mode binding', () => {
       expect(to.dataset.arrowSelected).toBe('true');
     };
     const routes: readonly [HTMLButtonElement, string, HTMLButtonElement][] = [
-      [toggle, 'ArrowUp', resume],
-      [toggle, 'ArrowDown', resume],
-      [restart, 'ArrowLeft', resume],
-      [restart, 'ArrowRight', resume],
-      [restart, 'ArrowUp', chinese],
-      [restart, 'ArrowDown', chinese],
-      [resume, 'ArrowLeft', restart],
-      [resume, 'ArrowRight', restart],
-      [resume, 'ArrowUp', toggle],
-      [resume, 'ArrowDown', toggle],
-      [chinese, 'ArrowLeft', toggle],
+      [settingsTab, 'ArrowDown', chinese],
       [chinese, 'ArrowRight', english],
-      [english, 'ArrowRight', toggle],
-      [english, 'ArrowDown', restart],
+      [chinese, 'ArrowUp', settingsTab],
+      [english, 'ArrowDown', toggle],
+      [toggle, 'ArrowUp', chinese],
+      [toggle, 'ArrowDown', restart],
+      [restart, 'ArrowRight', resume],
+      [resume, 'ArrowLeft', restart],
+      [resume, 'ArrowUp', toggle],
     ];
     for (const [from, key, to] of routes) assertArrowRoute(from, key, to);
 
@@ -1592,6 +1607,7 @@ describe('T6 frontend mode binding', () => {
     expect(document.documentElement.lang).toBe('en');
     expect(localStorage.getItem('tetramorph:language:v1')).toBe('en');
     expect(sheet.textContent).toContain('Settings');
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-tab-controls"]')?.click());
     expect(sheet.textContent).toMatch(/Keyboard.*Move.*Hard drop/s);
     expect(sheet.textContent).not.toMatch(/[\u4E00-\u9FFF]/);
     expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).not.toMatch(/[\u4E00-\u9FFF]/);

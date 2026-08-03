@@ -155,6 +155,7 @@ export function ActionSheet({
 
         next.focus({ preventScroll: true });
         syncArrowSelection(next);
+        if (next.dataset.arrowActivateOnFocus === 'true') next.click();
         return;
       }
       if (keyboardEvent.key === 'Enter' && !keyboardEvent.isComposing && actionButtons.length === 2) {

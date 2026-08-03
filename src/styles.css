@@ -959,6 +959,7 @@ kbd,
 /* Gameplay */
 
 .play-shell {
+  --play-topbar-height: 64px;
   position: relative;
   display: grid;
   grid-template-rows: 64px minmax(0, 1fr);
@@ -2005,6 +2006,7 @@ kbd,
   }
 
   .play-shell {
+    --play-topbar-height: 56px;
     grid-template-rows: 56px minmax(0, 1fr);
   }
 
@@ -2509,6 +2511,7 @@ kbd,
   }
 
   .play-shell {
+    --play-topbar-height: 48px;
     grid-template-rows: 48px minmax(0, 1fr);
   }
 

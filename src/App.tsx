@@ -86,6 +86,7 @@ import {
 type AppScreen = 'home' | 'puzzle-library' | 'game';
 type ExitDestination = 'home' | 'puzzle-library';
 type EntryCountdownDigit = 3 | 2 | 1;
+type SettingsTab = 'settings' | 'controls' | 'rules';
 export type PuzzleCelebration = {
   outcome: PuzzleCelebrationOutcome;
   pieces: number;
@@ -1039,8 +1040,8 @@ function AudioControls({
           type="button"
           data-testid="audio-toggle"
           data-arrow-nav
-          data-arrow-row="0"
-          data-arrow-col="2"
+          data-arrow-row="2"
+          data-arrow-col="0"
           aria-label={enabled ? copy.labels.turnSoundOff : copy.labels.turnSoundOn}
           aria-pressed={enabled}
           onClick={() => onEnabledChange(!enabled)}
@@ -1104,8 +1105,8 @@ function LanguageControl({
   return (
     <section className={`language-control ${className}`.trim()} aria-label={copy.labels.language}>
       <div role="group" aria-label={copy.labels.language}>
-        <button type="button" data-testid="language-zh" data-arrow-nav data-arrow-row="0" data-arrow-col="0" aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
-        <button type="button" data-testid="language-en" data-arrow-nav data-arrow-row="0" data-arrow-col="1" aria-pressed={language === 'en'} onClick={() => onChange('en')}>{copy.labels.english}</button>
+        <button type="button" data-testid="language-zh" data-arrow-nav data-arrow-row="1" data-arrow-col="0" aria-pressed={language === 'zh-CN'} onClick={() => onChange('zh-CN')}>{copy.labels.chinese}</button>
+        <button type="button" data-testid="language-en" data-arrow-nav data-arrow-row="1" data-arrow-col="1" aria-pressed={language === 'en'} onClick={() => onChange('en')}>{copy.labels.english}</button>
       </div>
     </section>
   );
@@ -1336,6 +1337,7 @@ export function GameSession({
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<SettingsTab>('settings');
   const [liveMessage, setLiveMessage] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioVolume, setAudioVolume] = useState(1);
@@ -1622,6 +1624,7 @@ export function GameSession({
     settingsWasPlayingRef.current = runtimeState.status === 'playing';
     if (settingsWasPlayingRef.current) runtime.togglePause();
     runtime.setInputEnabled(false);
+    setSettingsTab('settings');
     setSettingsOpen(true);
   }, [restartConfirmOpen, runtime, settingsOpen]);
 
@@ -1896,32 +1899,91 @@ export function GameSession({
         onCancel={closeSettings}
       >
         <section className="settings-console" data-testid="settings-sheet" aria-label={copy.labels.settings}>
-          <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
-          <section className="settings-console__controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
-            <strong>{copy.labels.controls}</strong>
-            <LanguageControl language={language} onChange={onLanguageChange} />
-            <AudioControls
-              enabled={audioEnabled}
-              volume={audioVolume}
-              onEnabledChange={changeAudioEnabled}
-              onVolumeChange={changeAudioVolume}
-              language={language}
-            />
-            <div className="settings-console__actions">
-              <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="1" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
-              <button className="primary-action" data-autofocus type="button" data-arrow-nav data-arrow-row="1" data-arrow-col="2" onClick={closeSettings}>
-                {copy.labels.continue}
-              </button>
-            </div>
-          </section>
-          <SettingsShortcutGuide mode={state.mode} language={language} />
-          <SettingsRecord
-            mode={state.mode}
-            puzzleId={state.puzzleId ?? puzzleId}
-            leaderboard={leaderboard}
-            progress={puzzleProgress}
-            language={language}
-          />
+          <nav className="settings-console__tabs" role="tablist" aria-label={copy.labels.settings}>
+            {([
+              ['settings', copy.labels.settings],
+              ['controls', copy.labels.controls],
+              ['rules', copy.labels.rules],
+            ] as const).map(([tab, label], index) => (
+              <button
+                id={`settings-tab-${tab}`}
+                key={tab}
+                type="button"
+                role="tab"
+                data-testid={`settings-tab-${tab}`}
+                data-arrow-nav
+                data-arrow-activate-on-focus="true"
+                data-arrow-row="0"
+                data-arrow-col={index}
+                data-autofocus={settingsTab === tab ? true : undefined}
+                aria-controls={`settings-panel-${tab}`}
+                aria-selected={settingsTab === tab}
+                tabIndex={settingsTab === tab ? 0 : -1}
+                onClick={() => setSettingsTab(tab)}
+              >{label}</button>
+            ))}
+          </nav>
+
+          {settingsTab === 'settings' && (
+            <section
+              id="settings-panel-settings"
+              className="settings-console__panel settings-console__panel--settings"
+              role="tabpanel"
+              aria-labelledby="settings-tab-settings"
+            >
+              <section className="settings-console__controls" data-testid="settings-controls" aria-label={copy.labels.controls}>
+                <div className="settings-console__preference settings-console__preference--language">
+                  <strong>{copy.labels.language}</strong>
+                  <LanguageControl language={language} onChange={onLanguageChange} />
+                </div>
+                <div className="settings-console__preference settings-console__preference--sound">
+                  <strong>{copy.labels.soundControls}</strong>
+                  <AudioControls
+                    enabled={audioEnabled}
+                    volume={audioVolume}
+                    onEnabledChange={changeAudioEnabled}
+                    onVolumeChange={changeAudioVolume}
+                    language={language}
+                  />
+                </div>
+                <div className="settings-console__actions">
+                  <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="3" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
+                  <button className="primary-action" type="button" data-arrow-nav data-arrow-row="3" data-arrow-col="1" onClick={closeSettings}>
+                    {copy.labels.continue}
+                  </button>
+                </div>
+              </section>
+            </section>
+          )}
+
+          {settingsTab === 'controls' && (
+            <section
+              id="settings-panel-controls"
+              className="settings-console__panel settings-console__panel--controls"
+              role="tabpanel"
+              aria-labelledby="settings-tab-controls"
+            >
+              <SettingsShortcutGuide mode={state.mode} language={language} />
+            </section>
+          )}
+
+          {settingsTab === 'rules' && (
+            <section
+              id="settings-panel-rules"
+              className="settings-console__panel settings-console__panel--rules"
+              role="tabpanel"
+              aria-labelledby="settings-tab-rules"
+            >
+              <ModeRuleSummary mode={state.mode} language={language} testId="settings-rules" />
+              <SettingsRecord
+                mode={state.mode}
+                puzzleId={state.puzzleId ?? puzzleId}
+                leaderboard={leaderboard}
+                progress={puzzleProgress}
+                language={language}
+              />
+            </section>
+          )}
         </section>
       </ActionSheet>
 
