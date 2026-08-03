@@ -64,6 +64,7 @@ import {
   initialLanguage,
   itemLabel,
   modeCopy,
+  modeIntroRules,
   modeRules,
   modeRulesTitle,
   parseLanguage,
@@ -442,18 +443,21 @@ function ModeRuleSummary({
   language,
   testId,
   showHeading = true,
+  variant = 'full',
 }: {
   mode: GameMode;
   language: AppLanguage;
   testId?: string;
   showHeading?: boolean;
+  variant?: 'full' | 'intro';
 }) {
   const copy = appCopy(language);
+  const facts = variant === 'intro' ? modeIntroRules(language, mode) : modeRules(language, mode);
   return (
-    <section className={`mode-rule-summary mode-rule-summary--${mode}`} data-testid={testId} aria-label={modeRulesTitle(language, mode)}>
+    <section className={`mode-rule-summary mode-rule-summary--${mode} mode-rule-summary--${variant}`} data-testid={testId} aria-label={modeRulesTitle(language, mode)}>
       {showHeading && <strong>{copy.labels.rules}</strong>}
       <ul>
-        {modeRules(language, mode).map((fact) => (
+        {facts.map((fact) => (
           <li key={fact.id} data-rule-id={fact.id}><b>{fact.label}</b><span>{fact.value}</span></li>
         ))}
       </ul>
@@ -494,6 +498,7 @@ export function ModeHome({
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
             <h1 id="home-title" className="mode-home-wordmark"><span>Tetra</span><span>Morph</span></h1>
+            <p className="mode-home-tagline">{copy.labels.tagline}</p>
           </div>
           <div
             className="mode-gates mode-gates--workbench"
@@ -1334,6 +1339,7 @@ export function GameSession({
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
   const [state, setState] = useState<GameState>(() => createInitialState(runSeed, mode, mode === 'puzzle' ? puzzleId : undefined));
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
+  const [startCueVisible, setStartCueVisible] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -1492,6 +1498,7 @@ export function GameSession({
       countdownCompleteRef.current = true;
       runtime.setInputEnabled(true);
       runtime.start();
+      setStartCueVisible(true);
       setCountdownDigit(null);
       setLiveMessage(appCopy(languageRef.current).labels.runStarted);
       focusBoard();
@@ -1501,6 +1508,12 @@ export function GameSession({
       browserPlatform.cancelTimeout(timer);
     };
   }, [countdownDigit, exitOpen, focusBoard, restartConfirmOpen, runtime, settingsOpen]);
+
+  useEffect(() => {
+    if (!startCueVisible) return;
+    const timer = browserPlatform.scheduleTimeout(() => setStartCueVisible(false), 560);
+    return () => browserPlatform.cancelTimeout(timer);
+  }, [startCueVisible]);
 
   useEffect(() => {
     runtime?.setSurvivalEntryBedrockRows(
@@ -1645,6 +1658,7 @@ export function GameSession({
     settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
     countdownCompleteRef.current = false;
+    setStartCueVisible(false);
     runtime?.setInputEnabled(true);
     runtime?.restart();
     runtime?.setInputEnabled(false);
@@ -1820,22 +1834,25 @@ export function GameSession({
         <section className="game-arena" data-testid="game-cluster" aria-label={`${modeLabel} ${copy.labels.gameArea}`}>
           <div ref={hostRef} className="canvas-host" data-testid="canvas-host" />
           <section
-            className={`board-frame ${countdownDigit !== null ? 'board-frame--countdown' : ''}`}
+            className={`board-frame ${countdownDigit !== null || startCueVisible ? 'board-frame--countdown' : ''}`}
             data-testid="board-frame"
             onPointerDown={beginBoardGesture}
             onPointerUp={finishBoardGesture}
             onPointerCancel={cancelBoardGesture}
           >
-            {countdownDigit !== null && (
+            {(countdownDigit !== null || startCueVisible) && (
               <div
                 className="entry-countdown"
                 data-testid="entry-countdown"
-                data-countdown={countdownDigit}
+                data-countdown={countdownDigit ?? 'start'}
                 role="status"
                 aria-live="assertive"
                 aria-atomic="true"
               >
-                <span key={countdownDigit} className="entry-countdown__digit">{countdownDigit}</span>
+                <span
+                  key={countdownDigit ?? 'start'}
+                  className={`entry-countdown__digit${countdownDigit === null ? ' entry-countdown__digit--start' : ''}`}
+                >{countdownDigit ?? copy.labels.start}</span>
               </div>
             )}
           </section>
@@ -2154,7 +2171,7 @@ export default function App() {
         onCancel={() => setRuleIntroMode(null)}
         onConfirm={beginIntroducedMode}
       >
-        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} language={language} testId="entry-mode-rules" showHeading={false} />}
+        {ruleIntroMode !== null && <ModeRuleSummary mode={ruleIntroMode} language={language} testId="entry-mode-rules" showHeading={false} variant="intro" />}
         <button className="primary-action" data-autofocus type="button" onClick={beginIntroducedMode}>{appCopy(language).labels.okay}</button>
         <button className="secondary-action" type="button" onClick={() => setRuleIntroMode(null)}>{appCopy(language).labels.back}</button>
       </ActionSheet>

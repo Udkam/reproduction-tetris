@@ -4918,6 +4918,82 @@ kbd,
   .console-node--selected button { animation: none !important; transition: none !important; }
 }
 
+/* RC 1.0 first-experience handoff: the wordmark gets one quiet product line,
+   first-entry rules become a three-beat briefing, and Start acknowledges the
+   exact frame where control is handed to the player. */
+.mode-chooser--workbench .mode-home-tagline {
+  width: 100%;
+  margin: clamp(13px, 1.8vw, 20px) 0 0;
+  color: rgba(202, 224, 229, .78);
+  font-family: var(--font-ui);
+  font-size: clamp(11px, 1.1vw, 14px);
+  font-weight: 560;
+  letter-spacing: .16em;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.action-sheet .mode-rule-summary--intro {
+  padding: 0;
+  overflow: hidden;
+  background: #eef4f7;
+  border-color: #b8cdd8;
+}
+
+.action-sheet .mode-rule-summary--intro ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.action-sheet .mode-rule-summary--intro li {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+  padding: 14px 15px 16px;
+}
+
+.action-sheet .mode-rule-summary--intro li + li {
+  border-left: 1px solid #c4d5de;
+}
+
+.action-sheet .mode-rule-summary--intro li b {
+  color: #2e6a80;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: .08em;
+}
+
+.action-sheet .mode-rule-summary--intro li span {
+  color: #49687a;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.entry-countdown__digit--start {
+  font-family: var(--font-ui);
+  font-size: clamp(34px, 7vw, 66px);
+  font-weight: 780;
+  letter-spacing: .08em;
+  text-indent: .08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 599px) {
+  .action-sheet .mode-rule-summary--intro ul { grid-template-columns: minmax(0, 1fr); }
+  .action-sheet .mode-rule-summary--intro li + li { border-top: 1px solid #c4d5de; border-left: 0; }
+  .action-sheet .mode-rule-summary--intro li { padding: 11px 13px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry-countdown__digit--start { animation: none !important; }
+}
+
 /* T15 Phase 2 authoritative Settings console
    One connected instrument, one namespace, and no inherited equal-height card grid. */
 .action-sheet--settings {

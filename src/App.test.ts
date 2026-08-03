@@ -46,7 +46,7 @@ import {
 } from './puzzleProgress';
 import { PUZZLE_HARD_MASTERY_GROUPS, PUZZLE_OPTIMAL_CERTIFICATES } from './puzzleMastery';
 import { LEADERBOARD_KEY, emptyLeaderboard, type ScoreRecord } from './leaderboard';
-import { itemLabel, modeRules, modeRulesTitle } from './ui/localization';
+import { itemLabel, modeIntroRules, modeRules, modeRulesTitle } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
@@ -168,6 +168,7 @@ async function advanceEntryCountdown(): Promise<void> {
   for (let step = 0; step < 3; step += 1) {
     await act(async () => vi.advanceTimersByTimeAsync(1000));
   }
+  await act(async () => vi.advanceTimersByTimeAsync(560));
 }
 
 describe('DEV QA state snapshot isolation', () => {
@@ -519,13 +520,18 @@ describe('entry countdown', () => {
 
     await act(async () => vi.advanceTimersByTimeAsync(1));
 
-    expect(countdown()).toBeNull();
+    expect(countdown()?.dataset.countdown).toBe('start');
+    expect(countdown()?.textContent).toBe('开始');
     expect(runtime.setInputEnabled).toHaveBeenLastCalledWith(true);
     expect(runtime.setInputEnabled).toHaveBeenCalledWith(false);
     expect(runtime.start).toHaveBeenCalledTimes(1);
     expect(runtime.setInputEnabled.mock.invocationCallOrder[0]).toBeLessThan(runtime.start.mock.invocationCallOrder[0]!);
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);
+    await act(async () => vi.advanceTimersByTimeAsync(559));
+    expect(countdown()?.dataset.countdown).toBe('start');
+    await act(async () => vi.advanceTimersByTimeAsync(1));
+    expect(countdown()).toBeNull();
     expect(document.activeElement).toBe(view.container.querySelector('canvas'));
     await act(async () => vi.advanceTimersByTimeAsync(5000));
     expect(runtime.start).toHaveBeenCalledTimes(1);
@@ -673,8 +679,13 @@ describe('T6 frontend mode binding', () => {
     expect(sheet.querySelector('h2')?.textContent).toBe('异变规则');
     expect(sheet.textContent).not.toContain('首次进入说明');
     expect(rules.querySelector('strong')).toBeNull();
-    expect(rules.textContent).toContain('带有彩色核心标记的方块携带道具');
-    expect(rules.textContent).toContain('计时效果再次触发会刷新为 10 秒');
+    expect([...rules.querySelectorAll('[data-rule-id]')].map((fact) => fact.getAttribute('data-rule-id'))).toEqual([
+      'objective',
+      'mechanic',
+      'challenge',
+    ]);
+    expect(rules.textContent).toContain('消除带核心标记的任意一格即可触发道具');
+    expect(rules.textContent).not.toContain('计时效果再次触发会刷新为 10 秒');
     expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
 
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
@@ -683,7 +694,21 @@ describe('T6 frontend mode binding', () => {
     expect(JSON.parse(localStorage.getItem('tetramorph:mode-rule-intros:v1') ?? '[]')).toContain('sprint');
     expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
     view.unmount();
-    view.unmount();
+  });
+
+  it('keeps every first-entry briefing to Goal, Mechanic, and Challenge in both languages', () => {
+    for (const language of ['zh-CN', 'en'] as const) {
+      for (const mode of ['marathon', 'race', 'sprint', 'puzzle'] as const) {
+        const facts = modeIntroRules(language, mode);
+        expect(facts.map((fact) => fact.id)).toEqual(['objective', 'mechanic', 'challenge']);
+        expect(facts.map((fact) => fact.label)).toEqual(
+          language === 'zh-CN' ? ['目标', '机制', '挑战'] : ['Goal', 'Mechanic', 'Challenge'],
+        );
+        if (language === 'zh-CN') {
+          expect(facts.reduce((total, fact) => total + fact.value.length, 0)).toBeLessThan(100);
+        }
+      }
+    }
   });
 
   it('places pause and restart sheets on the board track while retaining the live Next forecast', async () => {
@@ -1485,6 +1510,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="brand"]')).toBeNull();
     expect(view.container.querySelector('h1.mode-home-wordmark')?.tagName).toBe('H1');
     expect(view.container.querySelector('h1.mode-home-wordmark')?.textContent).toBe('TetraMorph');
+    expect(view.container.querySelector('.mode-home-tagline')?.textContent).toBe('重新定义下落方块');
     expect(view.container.querySelector('.language-control')).toBeNull();
     const actionArrows = [...view.container.querySelectorAll<SVGElement>('.mode-gate__action > svg')];
     expect(actionArrows).toHaveLength(4);
