@@ -196,6 +196,7 @@
 .mode-gates--workbench .mode-gate__body strong {
   min-block-size: 1.16em;
   overflow: visible;
+  font-family: var(--font-ui-en);
   font-size: clamp(22px, 2.35vw, 31px);
   font-weight: 720;
   font-synthesis: none;
