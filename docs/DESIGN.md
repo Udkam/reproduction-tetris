@@ -3845,3 +3845,18 @@ only under `docs/workstreams/tetris-t5-*` and `docs/qa/evidence/tetris-t5`.
 
 A nonblank screenshot, internal QA state injection, mock terminal state, copied level
 layout, or copied frontend treatment is not acceptance evidence.
+
+## T26 portable RC evidence and version contract
+
+The final TetraMorph RC is versioned `1.0.0-rc.1` in both npm metadata files. Release
+evidence must be reproducible from a normal clone: Playwright is a pinned development
+dependency, capture scripts import it by package name, and their instructions name the
+one-time Chromium installation prerequisite. No committed release runner may contain a
+personal home-directory path, Codex skill-cache path, or coordinator-specific username.
+
+Phase-E lifecycle and Phase-F showcase evidence must be regenerated after the metadata
+and runner correction so their source SHA, browser audit, screenshots, and cleanup
+claims bind to the corrected candidate. Final acceptance additionally requires a clean
+install from the committed lockfile, the full project gates, scoped dependency and
+secret scans, synchronized status documents, and an independent read-only QA pass on
+the exact frozen range.

@@ -61,3 +61,23 @@
 - Blocker: none
 - Next action: open the separate Phase-C reduced-motion/touch-guidance checkpoint, then
   run one current-source HUD/result/leaderboard browser audit before authoring repairs.
+
+## 2026-08-03 — Phase-F candidate rejected; portable-release correction opened
+
+- Phases D and E are verified. Phase-F source-bound showcase evidence is commit
+  `6916300`; public release copy is commit `62163b1`.
+- First final independent read-only QA returned 0 P0, 2 P1, and 1 P2. It rejected
+  candidate `62163b1` because Phase-E/F capture scripts depend on a personal absolute
+  Codex Playwright path, status documents disagree about the RC phase, and npm metadata
+  remains `0.1.0` while release copy claims a v1.0 RC.
+- Authorized correction paths are npm metadata/lockfile, active T26 evidence runners
+  and readmes, regenerated Phase-E/Phase-F evidence, and coordinator-owned status/release
+  documents. Product gameplay, presentation, Puzzle data/order, ranking, persistence,
+  and renderer behavior remain frozen.
+- Required gates after the correction: clean install from the committed lockfile,
+  typecheck, complete suite, production build, refreshed source-bound browser evidence,
+  one-shot OSV and gitleaks scans, then a second independent read-only QA decision.
+- Resource boundary: one short-lived evidence server/browser at a time; record and
+  release its exact PID/port; no watcher, indexer, Serena, or persistent helper.
+- Blocker: final acceptance is fail-closed on the correction and second QA pass.
+- Next action: commit this contract checkpoint, then align Playwright/version metadata.

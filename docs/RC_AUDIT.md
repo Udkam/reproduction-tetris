@@ -19,15 +19,15 @@ evidence all support the same claim.
 | D | Puzzle copy/guidance/visual consistency with frozen boards/order | Current-source evidence preserves the three authored curriculum bands, existing board order, and the accepted technique copy. | `VERIFIED` |
 | E | Final gates and clean lifecycle teardown | Source `6af5403` passes typecheck, `318 passed / 3 skipped`, build, direct idempotent teardown tests, and evidence `323d01d`. Return Home restores zero Canvas/RAF, four baseline listeners, one closed AudioContext, and no QA bridge. | `VERIFIED` |
 | E | Bundle, font, dependency, and unused-asset inspection | Source `4d37d59` emits only 13 required WOFF2 faces, removes 57.6% of font payload, removes proven dead legacy font assets, retains the measured 546.62 kB main warning, and has a clean direct dependency tree plus scoped OSV result. | `VERIFIED` |
-| F | Current-source final frames and 30–60 second capture plan | Historical evidence exists, but no complete RC showcase package binds to the final candidate. | `OPEN` |
-| F | GitHub, resume, portfolio copy and RC Release Notes | README exists; dedicated final showcase copy and release notes are absent. | `OPEN` |
-| Final | Independent read-only QA and coordinator acceptance | Not yet requested because the candidate is not frozen. | `BLOCKED BY OPEN WORK`, not a product blocker. |
+| F | Current-source final frames and 30–60 second capture plan | Candidate `62163b1` contains the six-frame package and capture plan, but its runner imports Playwright from a personal absolute Codex path. | `REJECTED BY FINAL QA`; regenerate with the repository dependency. |
+| F | GitHub, resume, portfolio copy and RC Release Notes | Candidate `62163b1` contains the requested copy and notes. Package metadata still reports `0.1.0`. | `REJECTED BY FINAL QA`; align metadata to `1.0.0-rc.1`. |
+| Final | Independent read-only QA and coordinator acceptance | First final read-only QA reported 0 P0, 2 P1, 1 P2: non-portable evidence, conflicting status documents, and stale package version. | `BLOCKED BY QA CORRECTION` |
 
 ## Current bounded slice
 
-Phase F showcase packaging is active. It must bind final Home, Classic, Survival,
-Mutation, Puzzle, and Settings frames to the frozen source; define a truthful 30-60
-second capture sequence; and publish concise GitHub, resume, portfolio, and RC release
-copy. It must not change gameplay, Puzzle content/order, presentation design, ranking,
-or persistence schemas. Final independent read-only QA remains fail-closed until these
-release artifacts are present and the candidate range is frozen.
+Phase F correction is active. The existing Home, Classic, Survival, Mutation, Puzzle,
+and Settings package must be rebound to a portable `1.0.0-rc.1` candidate using the
+repository-declared Playwright dependency. Gameplay, Puzzle content/order, presentation
+design, ranking, and persistence schemas remain frozen. Final acceptance remains
+fail-closed until all status records agree and independent read-only QA accepts the
+corrected exact range.

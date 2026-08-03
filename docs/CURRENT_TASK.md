@@ -5593,3 +5593,28 @@ countdown proof, canonical immutability under QA start/reset/selection/action at
 one canvas, zero DOM cells, and zero unexpected browser errors. `index.html`,
 dependencies, Puzzle definitions/references, and separate game repositories were not
 changed by these refinements.
+
+## T26 Phase-F release-correction slice
+
+Task ID: `TETRIS-T26-RC-PORTABLE-RELEASE-023`
+
+Status: **IN PROGRESS — FINAL QA REJECTED CANDIDATE `62163b1`**.
+
+Independent read-only QA found no P0 product failure, but final acceptance remains
+fail-closed until all of the following are corrected and reverified together:
+
+- replace every active T26 release-evidence import of the coordinator's personal
+  Codex Playwright path with a repository-declared, pinned Playwright dependency;
+- remove personal absolute paths from the active T26 evidence toolchain and document
+  clone-local reproduction prerequisites;
+- align `package.json` and `package-lock.json` to `1.0.0-rc.1`;
+- refresh Phase-E and Phase-F evidence from the corrected candidate, then rerun the
+  lockfile-clean install, typecheck, complete suite, build, OSV, and gitleaks gates;
+- synchronize the RC plan, audit, progress, changelog, coordinator log, and release
+  notes only after the corrected candidate and refreshed evidence are frozen;
+- obtain a second independent read-only QA decision on that exact final range.
+
+This correction may change package metadata, the committed lockfile, active T26
+evidence runners/readmes, regenerated Phase-E/Phase-F evidence, and coordinator-owned
+release documents. It may not change gameplay, presentation, Puzzle content/order,
+ranking, persistence, renderer behavior, or the accepted release scope.

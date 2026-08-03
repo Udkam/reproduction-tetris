@@ -1,7 +1,9 @@
 # TetraMorph v1.0 Release Candidate Plan
 
-Status: active from 2026-08-03. Phases A-C are verified; Phases D-F remain open. `docs/CURRENT_TASK.md`
-owns the currently authorised slice; this file owns the complete ordered programme.
+Status: active from 2026-08-03. Phases A-E are verified. Phase F content exists, but
+final read-only QA rejected candidate `62163b1` for non-portable evidence, conflicting
+status records, and stale package version metadata. `docs/CURRENT_TASK.md` owns the
+currently authorised correction; this file owns the complete ordered programme.
 
 ## Product guardrails
 
@@ -82,3 +84,8 @@ backing geometry all pass current-source browser proof. This closes Phase C only
 The release report must include changed files, tests, build, performance/lifecycle
 results, inspected screenshots, and Release Notes. Only after independent read-only QA
 and coordinator acceptance may the project be called `TetraMorph v1.0 Release Candidate`.
+
+Correction gate: version both npm metadata files as `1.0.0-rc.1`, declare and pin the
+Playwright evidence dependency in-repository, remove personal absolute paths from the
+active evidence toolchain, regenerate Phase-E/Phase-F proof, rerun every release gate,
+and synchronize all status documents before requesting the second QA decision.
