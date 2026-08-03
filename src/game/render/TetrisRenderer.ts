@@ -1120,6 +1120,18 @@ export class TetrisRenderer {
       ? requestedRotationScale
       : 1;
     if (drawableActive) {
+      if (
+        state.mode === 'sprint'
+        && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched)
+      ) {
+        this.drawSupergravityPieceTrail(
+          graphics,
+          visibleActiveCells,
+          layout,
+          offsetX,
+          offsetY,
+        );
+      }
       this.drawCellGroups(
         graphics,
         visibleActiveCells,
@@ -1221,10 +1233,7 @@ export class TetrisRenderer {
     this.drawMutationCarrierCore(graphics, cells, state.mutationActiveCarrier.item, layout, offsetX, offsetY);
   }
 
-  /**
-   * A restrained halo links the carrier cells without repainting their body.
-   * The actual item identity lives in one attached charm, rendered below.
-   */
+  /** Fine item material marks every cell without replacing the tetromino body. */
   private drawMutationCarrierSurface(
     graphics: Graphics,
     cells: readonly Cell[],
@@ -1233,26 +1242,62 @@ export class TetrisRenderer {
     offsetX = 0,
     offsetY = 0,
   ): void {
-    const anchor = this.mutationCarrierCharmCell(cells);
-    if (!anchor) return;
     const token = MUTATION_VFX_TOKENS[item];
-    const material = this.mutationMaterial(item);
-    const pulse = this.options.reducedMotion
-      ? 1
-      : .92 + Math.sin(this.mutationClockMs / token.animation.pulseMs * Math.PI * 2) * .08;
-    const centerX = layout.x + (anchor.x + .5) * layout.cell + offsetX;
-    const centerY = layout.y + (anchor.y + .5) * layout.cell + offsetY;
-    const radius = Math.max(3.5, layout.cell * .34);
-    graphics
-      .circle(centerX, centerY, radius * pulse)
-      .fill({ color: material.fillStart, alpha: .1 })
-      .circle(centerX, centerY, radius * .72 * pulse)
-      .fill({ color: material.innerEdge, alpha: .055 });
+    const pulse = this.options.reducedMotion ? 1 : .72 + Math.sin(this.mutationClockMs / token.animation.pulseMs * Math.PI * 2) * .16;
+    const inset = Math.max(1, layout.cell * .22);
+    const mark = Math.max(1.5, layout.cell * .11);
+    for (const cell of cells) {
+      const x = layout.x + cell.x * layout.cell + offsetX;
+      const y = layout.y + cell.y * layout.cell + offsetY;
+      const centerX = x + layout.cell / 2;
+      const centerY = y + layout.cell / 2;
+      if (item === 'freeze') {
+        graphics
+          .moveTo(x + inset, y + inset)
+          .lineTo(x + layout.cell - inset, y + inset)
+          .lineTo(x + layout.cell - inset * 1.7, y + layout.cell - inset * 1.5)
+          .lineTo(x + inset * 1.5, y + layout.cell - inset * .8)
+          .lineTo(x + inset, y + inset)
+          .fill({ color: token.palette.highlight, alpha: .16 * pulse });
+        this.strokeSegments(graphics, [
+          [x + inset, y + inset, x + layout.cell - inset * 1.35, y + layout.cell - inset * 1.35],
+          [x + layout.cell - inset, y + inset * 1.4, x + inset * 1.4, y + layout.cell - inset],
+        ], token.palette.highlight, .36 * pulse, Math.max(1, mark * .36));
+      } else if (item === 'collapse') {
+        graphics
+          .roundRect(centerX - mark * .36, y + inset, mark * .72, layout.cell - inset * 2, mark * .32)
+          .fill({ color: token.palette.deep, alpha: .38 })
+          .roundRect(centerX - mark * .16, y + inset * 1.45, mark * .32, layout.cell - inset * 3, mark * .16)
+          .fill({ color: token.palette.highlight, alpha: .46 * pulse });
+      } else if (item === 'bomb') {
+        graphics
+          .circle(centerX, centerY, mark * .78)
+          .fill({ color: token.palette.deep, alpha: .5 })
+          .circle(centerX - mark * .18, centerY - mark * .18, mark * .26)
+          .fill({ color: token.palette.highlight, alpha: .78 * pulse });
+      } else if (item === 'reshape') {
+        for (let row = -1; row <= 1; row += 1) {
+          const width = mark * (row === 0 ? 2.3 : 1.62);
+          graphics
+            .roundRect(centerX - width / 2, centerY + row * mark * .66 - mark * .17, width, mark * .34, mark * .16)
+            .fill({
+              color: row === 0 ? token.palette.highlight : token.palette.primary,
+              alpha: (row === 0 ? .7 : .44) * pulse,
+            });
+        }
+      } else {
+        this.drawMutationDiamond(graphics, centerX, centerY, mark * .8, mark * .8, token.palette.highlight, .5 * pulse);
+        this.strokeSegments(graphics, [
+          [centerX - mark * 1.15, centerY, centerX + mark * 1.15, centerY],
+          [centerX, centerY - mark * 1.15, centerX, centerY + mark * 1.15],
+        ], token.palette.primary, .46 * pulse, Math.max(1, mark * .32));
+      }
+    }
   }
 
   /**
-   * Every carrier gets exactly one compact attached charm. The neutral socket
-   * separates it from any tetromino hue; the ring and pictogram carry identity.
+   * One connected core and an item-specific rim bind the four marked cells to one
+   * identity. The core never implies that only its nearest cell can activate.
    */
   private drawMutationCarrierCore(
     graphics: Graphics,
@@ -1263,72 +1308,84 @@ export class TetrisRenderer {
     offsetY = 0,
     detailScale = 1,
   ): void {
-    const anchor = this.mutationCarrierCharmCell(cells);
-    if (!anchor) return;
+    if (cells.length === 0) return;
     const material = this.mutationMaterial(item);
-    const centerX = layout.x + (anchor.x + .5) * layout.cell + offsetX;
-    const centerY = layout.y + (anchor.y + .5) * layout.cell + offsetY;
-    const charmScale = detailScale < 1 ? .82 : 1;
-    const radius = Math.max(2.8, layout.cell * .19 * charmScale);
-    const pale = 0xf5fbf7;
-    graphics
-      .circle(centerX, centerY, radius * 1.82)
-      .fill({ color: material.fillStart, alpha: .18 })
-      .circle(centerX, centerY, radius * 1.43)
-      .fill({ color: MUTATION_VFX_BACKGROUND.well, alpha: .93 })
-      .circle(centerX, centerY, radius * 1.43)
-      .stroke({ color: material.innerEdge, alpha: .98, width: Math.max(1, radius * .24) })
-      .circle(centerX, centerY, radius * 1.08)
-      .stroke({ color: pale, alpha: .8, width: Math.max(1, radius * .12) });
-
-    if (item === 'freeze') {
-      this.drawMutationDiamond(graphics, centerX, centerY, radius * .62, radius * .82, pale, .95);
-      this.drawMutationDiamond(graphics, centerX, centerY, radius * .32, radius * .52, material.fillStart, .98);
-    } else if (item === 'collapse') {
-      const width = Math.max(1, radius * .18);
-      this.strokeSegments(graphics, [
-        [centerX - radius * .68, centerY - radius * .35, centerX, centerY + radius * .12],
-        [centerX, centerY + radius * .12, centerX + radius * .68, centerY - radius * .35],
-        [centerX - radius * .54, centerY + radius * .18, centerX, centerY + radius * .62],
-        [centerX, centerY + radius * .62, centerX + radius * .54, centerY + radius * .18],
-      ], pale, .94, width);
-      this.strokeSegments(graphics, [
-        [centerX - radius * .52, centerY - radius * .68, centerX + radius * .52, centerY - radius * .68],
-      ], material.fillStart, .96, Math.max(1, radius * .24));
-    } else if (item === 'bomb') {
-      graphics
-        .circle(centerX, centerY + radius * .08, radius * .64)
-        .fill({ color: pale, alpha: .95 })
-        .circle(centerX, centerY + radius * .08, radius * .38)
-        .fill({ color: material.fillEnd, alpha: .98 });
-      this.strokeSegments(graphics, [
-        [centerX + radius * .28, centerY - radius * .55, centerX + radius * .62, centerY - radius * .82],
-        [centerX + radius * .62, centerY - radius * .82, centerX + radius * .82, centerY - radius * .62],
-      ], material.innerEdge, .98, Math.max(1, radius * .18));
-    } else if (item === 'reshape') {
-      this.drawMutationDiamond(graphics, centerX - radius * .42, centerY, radius * .34, radius * .34, pale, .94);
-      this.drawMutationDiamond(graphics, centerX + radius * .42, centerY, radius * .34, radius * .34, material.fillStart, .98);
-      this.strokeSegments(graphics, [
-        [centerX - radius * .06, centerY - radius * .56, centerX + radius * .36, centerY - radius * .56],
-        [centerX + radius * .36, centerY - radius * .56, centerX + radius * .18, centerY - radius * .74],
-        [centerX + radius * .06, centerY + radius * .56, centerX - radius * .36, centerY + radius * .56],
-        [centerX - radius * .36, centerY + radius * .56, centerX - radius * .18, centerY + radius * .74],
-      ], pale, .9, Math.max(1, radius * .16));
-    } else {
-      this.drawMutationStar(graphics, centerX, centerY, radius * .8, radius * .32, pale, .97);
-      this.drawMutationStar(graphics, centerX, centerY, radius * .42, radius * .17, material.fillStart, .99);
-    }
-    this.drawMutationCarrierRim(graphics, cells, item, layout, offsetX, offsetY, .52);
-  }
-
-  private mutationCarrierCharmCell(cells: readonly Cell[]): Cell | null {
-    let anchor: Cell | null = null;
-    for (const cell of cells) {
-      if (!anchor || cell.y < anchor.y || (cell.y === anchor.y && cell.x > anchor.x)) {
-        anchor = cell;
+    for (const component of orthogonalCellComponents(cells)) {
+      const minX = Math.min(...component.map((cell) => cell.x));
+      const maxX = Math.max(...component.map((cell) => cell.x));
+      const minY = Math.min(...component.map((cell) => cell.y));
+      const maxY = Math.max(...component.map((cell) => cell.y));
+      const centerX = layout.x + ((minX + maxX + 1) * layout.cell) / 2 + offsetX;
+      const centerY = layout.y + ((minY + maxY + 1) * layout.cell) / 2 + offsetY;
+      const freezeBreath = item === 'freeze' && !this.options.reducedMotion
+        ? 1 + .04 * (.5 - .5 * Math.cos(this.mutationClockMs / MUTATION_VFX_TOKENS.freeze.animation.pulseMs * Math.PI * 2))
+        : 1;
+      const radius = Math.max(2, layout.cell * .19 * detailScale) * freezeBreath;
+      if (item === 'freeze') {
+        this.drawMutationDiamond(graphics, centerX, centerY, radius * 1.18, radius * 1.54, material.edge, .92);
+        this.drawMutationDiamond(graphics, centerX, centerY, radius * .7, radius, material.innerEdge, .94);
+        this.strokeSegments(graphics, [
+          [centerX - radius * 1.48, centerY, centerX + radius * 1.48, centerY],
+          [centerX, centerY - radius * 1.36, centerX, centerY + radius * 1.36],
+        ], material.fillStart, .9, Math.max(1, radius * .28));
+      } else if (item === 'collapse') {
+        const weightWidth = radius * 2.65;
+        const weightHeight = radius * .62;
+        graphics
+          .roundRect(centerX - weightWidth / 2, centerY - radius * 1.2, weightWidth, weightHeight, radius * .22)
+          .fill({ color: material.edge, alpha: .94 })
+          .roundRect(centerX - weightWidth * .38, centerY - radius * .5, weightWidth * .76, weightHeight, radius * .22)
+          .fill({ color: material.fillStart, alpha: .92 })
+          .circle(centerX, centerY + radius * .7, radius * .54)
+          .fill({ color: material.edge, alpha: .96 })
+          .circle(centerX, centerY + radius * .7, radius * .26)
+          .fill({ color: material.innerEdge, alpha: .9 });
+        this.strokeSegments(graphics, [
+          [centerX - radius * 1.3, centerY + radius * 1.36, centerX - radius * .78, centerY + radius * 2.02],
+          [centerX, centerY + radius * 1.36, centerX, centerY + radius * 2.25],
+          [centerX + radius * 1.3, centerY + radius * 1.36, centerX + radius * .78, centerY + radius * 2.02],
+        ], material.innerEdge, .82, Math.max(1, radius * .2));
+      } else if (item === 'bomb') {
+        graphics
+          .circle(centerX, centerY, radius * 1.28)
+          .fill({ color: material.edge, alpha: .96 })
+          .circle(centerX, centerY, radius * .89)
+          .fill({ color: material.fillEnd, alpha: .98 })
+          .circle(centerX, centerY, radius * .48)
+          .fill({ color: material.fillStart, alpha: .96 })
+          .circle(centerX - radius * .18, centerY - radius * .24, radius * .16)
+          .fill({ color: material.innerEdge, alpha: .94 });
+        this.strokeSegments(graphics, [
+          [centerX, centerY - radius * 1.78, centerX + radius * .56, centerY - radius * 1.24],
+          [centerX + radius * 1.46, centerY - radius * .4, centerX + radius * 1.92, centerY - radius * .66],
+          [centerX - radius * 1.48, centerY + radius * .78, centerX - radius * 1.92, centerY + radius * 1.16],
+        ], material.innerEdge, .92, Math.max(1, radius * .22));
+      } else if (item === 'reshape') {
+        const unit = radius * .66;
+        const gap = unit * .16;
+        const totalWidth = unit * 4 + gap * 3;
+        const left = centerX - totalWidth / 2;
+        for (let index = 0; index < 4; index += 1) {
+          graphics
+            .roundRect(left + index * (unit + gap), centerY - unit / 2, unit, unit, unit * .18)
+            .fill({
+              color: index === 1 || index === 2 ? material.innerEdge : material.edge,
+              alpha: .94,
+            });
+        }
+        this.strokeSegments(graphics, [
+          [left - radius * .38, centerY - unit * .82, left - radius * .38, centerY + unit * .82],
+          [left - radius * .38, centerY - unit * .82, left + radius * .08, centerY - unit * .82],
+          [left + totalWidth + radius * .38, centerY - unit * .82, left + totalWidth + radius * .38, centerY + unit * .82],
+          [left + totalWidth - radius * .08, centerY + unit * .82, left + totalWidth + radius * .38, centerY + unit * .82],
+        ], material.fillStart, .86, Math.max(1, radius * .18));
+      } else {
+        graphics.circle(centerX, centerY, radius * 1.35).fill({ color: material.edge, alpha: .76 });
+        this.drawMutationStar(graphics, centerX, centerY, radius * 1.25, radius * .52, material.innerEdge, .97);
+        this.drawMutationStar(graphics, centerX, centerY, radius * .66, radius * .25, material.fillStart, .98);
       }
+      this.drawMutationCarrierRim(graphics, component, item, layout, offsetX, offsetY, .64);
     }
-    return anchor;
   }
 
   private drawMutationDiamond(
@@ -1381,26 +1438,104 @@ export class TetrisRenderer {
     width = Math.max(1, layout.cell * 0.056),
   ): void {
     if (cells.length === 0 || alpha <= 0) return;
+    const inset = Math.max(1, layout.cell * .12);
     const material = this.mutationMaterial(item);
     const segments: Array<readonly [number, number, number, number]> = [];
-    const inset = Math.max(.5, width * .42);
+    const accents: Array<readonly [number, number, number, number]> = [];
+    const marks: Array<readonly [number, number]> = [];
+    const pushBroken = (x1: number, y1: number, x2: number, y2: number): void => {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      segments.push(
+        [x1, y1, x1 + dx * .38, y1 + dy * .38],
+        [x1 + dx * .62, y1 + dy * .62, x2, y2],
+      );
+    };
     for (const { cell, exposed } of exposedCellEdges(cells)) {
       const x = layout.x + cell.x * layout.cell + offsetX;
       const y = layout.y + cell.y * layout.cell + offsetY;
       const right = x + layout.cell;
       const bottom = y + layout.cell;
-      if (exposed.top) segments.push([x + inset, y + inset, right - inset, y + inset]);
-      if (exposed.right) segments.push([right - inset, y + inset, right - inset, bottom - inset]);
-      if (exposed.bottom) segments.push([right - inset, bottom - inset, x + inset, bottom - inset]);
-      if (exposed.left) segments.push([x + inset, bottom - inset, x + inset, y + inset]);
+      const top: readonly [number, number, number, number] = [x + inset, y + inset, right - inset, y + inset];
+      const rightEdge: readonly [number, number, number, number] = [right - inset, y + inset, right - inset, bottom - inset];
+      const bottomEdge: readonly [number, number, number, number] = [right - inset, bottom - inset, x + inset, bottom - inset];
+      const left: readonly [number, number, number, number] = [x + inset, bottom - inset, x + inset, y + inset];
+      if (item === 'freeze') {
+        if (exposed.top) pushBroken(...top);
+        if (exposed.right) pushBroken(...rightEdge);
+        if (exposed.bottom) pushBroken(...bottomEdge);
+        if (exposed.left) pushBroken(...left);
+        if (exposed.top && exposed.left) {
+          accents.push([x + inset, y + inset * 1.9, x + inset * 1.9, y + inset]);
+        }
+        if (exposed.bottom && exposed.right) {
+          accents.push([right - inset * 1.9, bottom - inset, right - inset, bottom - inset * 1.9]);
+        }
+      } else {
+        if (exposed.top) segments.push(top);
+        if (exposed.right) segments.push(rightEdge);
+        if (exposed.bottom) segments.push(bottomEdge);
+        if (exposed.left) segments.push(left);
+      }
+      if (item === 'collapse' && exposed.bottom) {
+        const centerX = x + layout.cell / 2;
+        const baseline = bottom - inset * .72;
+        accents.push(
+          [x + inset * 1.25, baseline, right - inset * 1.25, baseline],
+          [centerX - layout.cell * .18, baseline + inset * .22, centerX, baseline + inset * .72],
+          [centerX, baseline + inset * .72, centerX + layout.cell * .18, baseline + inset * .22],
+        );
+      } else if (item === 'bomb') {
+        if (exposed.top) marks.push([x + layout.cell / 2, y + inset]);
+        if (exposed.right) marks.push([right - inset, y + layout.cell / 2]);
+        if (exposed.bottom) marks.push([x + layout.cell / 2, bottom - inset]);
+        if (exposed.left) marks.push([x + inset, y + layout.cell / 2]);
+      } else if (item === 'multiplier') {
+        if (exposed.top) marks.push([x + layout.cell / 2, y + inset]);
+        if (exposed.bottom) marks.push([x + layout.cell / 2, bottom - inset]);
+        if (exposed.left && exposed.top) marks.push([x + inset, y + inset]);
+        if (exposed.right && exposed.bottom) marks.push([right - inset, bottom - inset]);
+      } else if (item === 'reshape') {
+        const centerX = x + layout.cell / 2;
+        if (exposed.top) {
+          accents.push(
+            [centerX - layout.cell * .22, y + inset * .72, centerX - layout.cell * .04, y + inset * .72],
+            [centerX + layout.cell * .04, y + inset * .72, centerX + layout.cell * .22, y + inset * .72],
+          );
+        }
+        if (exposed.bottom) {
+          accents.push(
+            [centerX - layout.cell * .22, bottom - inset * .72, centerX - layout.cell * .04, bottom - inset * .72],
+            [centerX + layout.cell * .04, bottom - inset * .72, centerX + layout.cell * .22, bottom - inset * .72],
+          );
+        }
+      }
     }
     this.strokeSegments(
       graphics,
       segments,
-      material.innerEdge,
-      Math.min(.72, alpha * .62),
-      Math.max(1, width * .82),
+      item === 'collapse' ? material.edge : material.fillStart,
+      alpha,
+      item === 'collapse' ? width * 1.18 : width,
     );
+    if (accents.length > 0) {
+      this.strokeSegments(graphics, accents, material.innerEdge, Math.min(1, alpha * 1.08), Math.max(1, width * .78));
+    }
+    if (item === 'bomb') {
+      const radius = Math.max(1.1, layout.cell * .035);
+      for (const [x, y] of marks) {
+        graphics
+          .circle(x, y, radius * 1.55)
+          .fill({ color: material.edge, alpha: alpha * .82 })
+          .circle(x, y, radius)
+          .fill({ color: material.innerEdge, alpha });
+      }
+    } else if (item === 'multiplier') {
+      const radius = Math.max(1.8, layout.cell * .075);
+      for (const [x, y] of marks) {
+        this.drawMutationDiamond(graphics, x, y, radius, radius, material.innerEdge, alpha * .9);
+      }
+    }
   }
 
   private drawMutationCarrierEdgePulse(
@@ -2418,7 +2553,7 @@ export class TetrisRenderer {
           : token.animation.pulseMs;
       const phase = this.options.reducedMotion ? 0 : (this.mutationClockMs % phaseDuration) / phaseDuration;
       if (field.item === 'freeze') this.drawFreezeAtmosphere(graphics, layout, phase, alpha);
-      else if (field.item === 'collapse') this.drawCollapseAtmosphere(graphics, state, layout, phase, alpha);
+      else if (field.item === 'collapse') continue;
       else this.drawMultiplierAtmosphere(
         graphics,
         layout,
@@ -2488,48 +2623,69 @@ export class TetrisRenderer {
     return this.freezeAtmosphereGradient;
   }
 
-  private drawCollapseAtmosphere(
+  /**
+   * Supergravity follows the active tetromino instead of decorating the whole well.
+   * Two soft silhouettes and top-edge acceleration wedges sit behind the solid cells,
+   * move with the piece, and are rebuilt every frame so no empty-cell frame survives a
+   * lock. Geometry is clipped manually because the ordinary piece plane is not masked.
+   */
+  private drawSupergravityPieceTrail(
     graphics: Graphics,
-    _state: GameState,
+    cells: readonly Cell[],
     layout: BoardLayout,
-    phase: number,
-    opacity: number,
+    offsetX = 0,
+    offsetY = 0,
   ): void {
+    if (cells.length === 0) return;
     const token = MUTATION_VFX_TOKENS.collapse;
-    const baselineY = layout.y + layout.cell * .18;
-    const reference: number[] = [];
-    const boundary: number[] = [];
-    const verticalShift = this.options.reducedMotion
-      ? 0
-      : (
-        Math.sin(phase * Math.PI * 6) * .09
-        + Math.sin(phase * Math.PI * 14 + .7) * .035
-      ) * layout.cell;
-    // The full horizontal boundary, not the board, moves vertically. A quiet
-    // stationary echo makes that irregular displacement immediately readable;
-    // minute local variation prevents a mechanical slider without becoming a wave.
-    for (let index = 0; index <= BOARD_WIDTH; index += 1) {
-      const x = layout.x + layout.width * index / BOARD_WIDTH;
-      const localVariation = this.options.reducedMotion
-        ? 0
-        : Math.sin(phase * Math.PI * 2 + index * 1.37) * layout.cell * .008;
-      reference.push(x, baselineY);
-      boundary.push(x, baselineY + verticalShift + localVariation);
+    const wellTop = layout.y + Math.max(1, layout.cell * .04);
+    const wellBottom = layout.y + layout.height - Math.max(1, layout.cell * .04);
+    const layers = this.options.reducedMotion
+      ? [{ lift: .18, inset: .2, alpha: .1 }]
+      : [
+          { lift: .2, inset: .16, alpha: .13 },
+          { lift: .48, inset: .24, alpha: .065 },
+        ];
+
+    for (const cell of cells) {
+      const cellX = layout.x + cell.x * layout.cell + offsetX;
+      const cellY = layout.y + cell.y * layout.cell + offsetY;
+      for (const layer of layers) {
+        const inset = layout.cell * layer.inset;
+        const rawTop = cellY - layout.cell * layer.lift + inset;
+        const rawBottom = rawTop + layout.cell - inset * 2;
+        const top = Math.max(wellTop, rawTop);
+        const bottom = Math.min(wellBottom, rawBottom);
+        if (bottom <= top) continue;
+        graphics
+          .roundRect(
+            cellX + inset,
+            top,
+            layout.cell - inset * 2,
+            bottom - top,
+            Math.max(1, layout.cell * .09),
+          )
+          .fill({ color: token.palette.primary, alpha: layer.alpha });
+      }
     }
-    graphics
-      .poly(reference)
-      .stroke({
-        color: token.palette.primary,
-        alpha: .22 * opacity,
-        width: Math.max(1, layout.cell * .025),
-      });
-    graphics
-      .poly(boundary)
-      .stroke({
-        color: token.palette.highlight,
-        alpha: .72 * opacity,
-        width: Math.max(1.5, layout.cell * .075),
-      });
+
+    if (this.options.reducedMotion) return;
+    const occupied = new Set(cells.map((cell) => `${cell.x},${cell.y}`));
+    for (const cell of cells) {
+      if (occupied.has(`${cell.x},${cell.y - 1}`)) continue;
+      const centerX = layout.x + (cell.x + .5) * layout.cell + offsetX;
+      const baseY = Math.min(wellBottom, layout.y + cell.y * layout.cell + offsetY + layout.cell * .24);
+      const topY = Math.max(wellTop, baseY - layout.cell * .92);
+      if (baseY <= topY) continue;
+      const halfWidth = layout.cell * .16;
+      graphics
+        .moveTo(centerX - halfWidth, baseY)
+        .lineTo(centerX - halfWidth * .16, topY)
+        .lineTo(centerX + halfWidth * .16, topY)
+        .lineTo(centerX + halfWidth, baseY)
+        .lineTo(centerX - halfWidth, baseY)
+        .fill({ color: token.palette.highlight, alpha: .13 });
+    }
   }
 
   private drawMultiplierAtmosphere(

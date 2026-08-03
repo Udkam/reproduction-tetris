@@ -285,11 +285,14 @@ describe('异变 mode', () => {
     expect(gravityForMode('marathon', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(6);
   });
 
-  it('activates a marked carrier exactly once when any of its cells clears', () => {
-    const transition = resolveLineClear(carrierClearState('freeze'));
+  it('lets any of four marked cells activate one shared carrier identity exactly once', () => {
+    const state = carrierClearState('freeze');
+    const expectedCarrierCells = cellsForPiece(state.active!);
+    const transition = resolveLineClear(state);
     const [activation] = mutationActivations(transition);
     expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
     expect(transition.state.mutationCarriers).toEqual([]);
+    expect(mutationActivations(transition)).toHaveLength(1);
     expect(activation).toMatchObject({
       type: 'mutation-activated',
       item: 'freeze',
@@ -297,6 +300,7 @@ describe('异变 mode', () => {
       score: 0,
       rowsRemoved: 0,
     });
+    expect(activation?.triggerCells).toEqual(expectedCarrierCells);
   });
 
   it('reshapes the first post-activation Next entry into I for one full turn', () => {

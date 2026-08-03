@@ -16,7 +16,7 @@ import {
   type PieceType,
   VISIBLE_START_ROW,
 } from '../core';
-import { MUTATION_VFX_BACKGROUND, MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
+import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -338,6 +338,13 @@ type RendererInternals = {
     graphics: unknown,
     state: GameState,
     layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
+  drawSupergravityPieceTrail: (
+    graphics: unknown,
+    cells: readonly Cell[],
+    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    offsetX?: number,
+    offsetY?: number,
   ) => void;
   drawCollapseSettlementTrail: (
     graphics: unknown,
@@ -1103,7 +1110,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(geometrySignature(two.operations)).not.toBe(geometrySignature(four.operations));
   });
 
-  it('keeps the carrier halo and silhouette quiet while all five charm pictograms stay distinct', () => {
+  it('uses item-specific surface, core, and rim geometry instead of palette-only carrier variants', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1122,7 +1129,7 @@ describe('Puzzle undo presentation reset', () => {
 
     expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierSurface(graphics, layerCells, item, layout);
-    })).toBe(1);
+    })).toBe(5);
     const originalRim = internals.drawMutationCarrierRim;
     internals.drawMutationCarrierRim = () => undefined;
     expect(geometryCount((graphics, layerCells, item) => {
@@ -1131,27 +1138,23 @@ describe('Puzzle undo presentation reset', () => {
     internals.drawMutationCarrierRim = originalRim;
     expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierRim(graphics, layerCells, item, layout);
-    })).toBe(1);
+    })).toBe(5);
   });
 
-  it('uses one compact neutral charm instead of repeating plates across carrier cells', () => {
+  it('marks all four carrier cells without repeating plates or implying one trigger cell', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
-    const cells = [{ x: 2, y: 4 }, { x: 5, y: 7 }, { x: 3, y: 9 }];
+    const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 2, y: 5 }, { x: 3, y: 5 }];
     for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
-      const surface = createGraphicsRecorder();
-      internals.drawMutationCarrierSurface(surface.graphics, cells, item, layout);
-      expect(surface.operations.filter((operation) => operation.kind === 'roundRect'), item).toHaveLength(0);
-      expect(surface.operations.filter((operation) => operation.kind === 'circle'), item).toHaveLength(2);
-
-      const core = createGraphicsRecorder();
-      internals.drawMutationCarrierCore(core.graphics, cells, item, layout, 0, 0, .62);
-      expect(core.operations.filter((operation) => operation.kind === 'roundRect'), item).toHaveLength(0);
-      expect(core.operations.filter((operation) => operation.kind === 'fill'
-        && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well), item).toHaveLength(1);
-      expect(core.operations.some((operation) => operation.kind === 'stroke'
-        && (operation.options as { color?: number }).color === 0xf5fbf7), item).toBe(true);
+      const single = createGraphicsRecorder();
+      internals.drawMutationCarrierSurface(single.graphics, cells.slice(0, 1), item, layout);
+      const complete = createGraphicsRecorder();
+      internals.drawMutationCarrierSurface(complete.graphics, cells, item, layout);
+      const singleGeometry = single.operations.filter((operation) => operation.kind !== 'fill' && operation.kind !== 'stroke');
+      const completeGeometry = complete.operations.filter((operation) => operation.kind !== 'fill' && operation.kind !== 'stroke');
+      expect(completeGeometry.length, item).toBe(singleGeometry.length * 4);
+      expect(complete.operations.some((operation) => operation.kind === 'rect'), item).toBe(false);
     }
   });
 
@@ -1260,88 +1263,57 @@ describe('Puzzle undo presentation reset', () => {
     })).toBe(true);
   });
 
-  it('moves the complete Supergravity boundary vertically against a quiet fixed reference', () => {
+  it('attaches a clipped Supergravity trail to the falling piece without a board-wide field', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    const cells = [{ x: 3, y: 8 }, { x: 4, y: 8 }, { x: 5, y: 8 }, { x: 4, y: 7 }];
+    const atmosphere = createGraphicsRecorder();
+    internals.drawActiveMutationAtmosphere(
+      atmosphere.graphics,
+      {
+        mode: 'sprint',
+        mutationFreezeTicks: 0,
+        mutationCollapseTicks: 60,
+        mutationMultiplierTicks: 0,
+        mutationMultiplierFactor: 2,
+      } as unknown as GameState,
+      layout,
+    );
+    expect(atmosphere.operations).toEqual([]);
+
     const recorder = createGraphicsRecorder();
-    internals.drawActiveMutationAtmosphere(
-      recorder.graphics,
-      {
-        mode: 'sprint',
-        mutationFreezeTicks: 0,
-        mutationCollapseTicks: 60,
-        mutationMultiplierTicks: 0,
-        mutationMultiplierFactor: 2,
-      } as unknown as GameState,
-      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
-    );
+    internals.drawSupergravityPieceTrail(recorder.graphics, cells, layout);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(8);
+    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(12);
+    expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
+    const localValues = recorder.operations
+      .filter((operation) => operation.kind === 'roundRect' || operation.kind === 'segment')
+      .flatMap((operation) => operation.values);
+    expect(Math.min(...localValues)).toBeGreaterThanOrEqual(0);
+    expect(Math.max(...localValues)).toBeLessThanOrEqual(layout.height);
 
-    const topContours = recorder.operations.filter((operation) => operation.kind === 'poly');
-    expect(topContours).toHaveLength(2);
-    expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'fill')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'stroke')).toHaveLength(2);
-    expect(topContours.every((operation) => {
-      const xs = operation.values.filter((_value, index) => index % 2 === 0);
-      const ys = operation.values.filter((_value, index) => index % 2 === 1);
-      return Math.max(...xs) - Math.min(...xs) === 200
-        && Math.max(...ys) - Math.min(...ys) < 1;
-    })).toBe(true);
-
-    (internals as unknown as { mutationClockMs: number }).mutationClockMs = 140;
-    const later = createGraphicsRecorder();
-    internals.drawActiveMutationAtmosphere(
-      later.graphics,
-      {
-        mode: 'sprint',
-        mutationFreezeTicks: 0,
-        mutationCollapseTicks: 60,
-        mutationMultiplierTicks: 0,
-        mutationMultiplierFactor: 2,
-      } as unknown as GameState,
-      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
+    const shifted = createGraphicsRecorder();
+    internals.drawSupergravityPieceTrail(
+      shifted.graphics,
+      cells.map((cell) => ({ ...cell, y: cell.y + 1 })),
+      layout,
     );
-    expect(geometrySignature(later.operations)).not.toBe(geometrySignature(recorder.operations));
-    expect(later.operations.filter((operation) => operation.kind === 'stroke').map((operation) => operation.options))
-      .toEqual(recorder.operations.filter((operation) => operation.kind === 'stroke').map((operation) => operation.options));
-    const averageY = (operation: DrawOperation): number => {
-      const ys = operation.values.filter((_value, index) => index % 2 === 1);
-      return ys.reduce((sum, value) => sum + value, 0) / ys.length;
-    };
-    const laterContours = later.operations.filter((operation) => operation.kind === 'poly');
-    expect(averageY(laterContours[0])).toBe(averageY(topContours[0]));
-    expect(Math.abs(averageY(laterContours[1]) - averageY(topContours[1]))).toBeGreaterThan(2);
+    expect(geometrySignature(shifted.operations)).not.toBe(geometrySignature(recorder.operations));
+    const firstTop = recorder.operations.find((operation) => operation.kind === 'roundRect')?.values[1];
+    const shiftedTop = shifted.operations.find((operation) => operation.kind === 'roundRect')?.values[1];
+    expect((shiftedTop ?? 0) - (firstTop ?? 0)).toBeCloseTo(layout.cell, 6);
 
     const reduced = new TetrisRendererClass();
     reduced.setOptions({ reducedMotion: true });
     const reducedInternals = reduced as unknown as RendererInternals;
     const reducedFirst = createGraphicsRecorder();
-    reducedInternals.drawActiveMutationAtmosphere(
-      reducedFirst.graphics,
-      {
-        mode: 'sprint',
-        mutationFreezeTicks: 0,
-        mutationCollapseTicks: 60,
-        mutationMultiplierTicks: 0,
-        mutationMultiplierFactor: 2,
-      } as unknown as GameState,
-      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
-    );
+    reducedInternals.drawSupergravityPieceTrail(reducedFirst.graphics, cells, layout);
     reducedInternals.mutationClockMs = 437;
     const reducedLater = createGraphicsRecorder();
-    reducedInternals.drawActiveMutationAtmosphere(
-      reducedLater.graphics,
-      {
-        mode: 'sprint',
-        mutationFreezeTicks: 0,
-        mutationCollapseTicks: 60,
-        mutationMultiplierTicks: 0,
-        mutationMultiplierFactor: 2,
-      } as unknown as GameState,
-      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
-    );
+    reducedInternals.drawSupergravityPieceTrail(reducedLater.graphics, cells, layout);
+    expect(reducedFirst.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(4);
+    expect(reducedFirst.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(reducedLater.operations).toEqual(reducedFirst.operations);
   });
 
@@ -1577,24 +1549,26 @@ describe('Puzzle undo presentation reset', () => {
     ))).toBe(false);
   });
 
-  it('uses one crystalline freeze charm even when supergravity separates the carrier cells', () => {
+  it('uses one crystalline material core for one connected freeze carrier without a neutral charm', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const recorder = createGraphicsRecorder();
 
     internals.drawMutationCarrierCore(
       recorder.graphics,
-      [{ x: 3, y: 5 }, { x: 4, y: 8 }, { x: 4, y: 11 }, { x: 5, y: 14 }],
+      [{ x: 3, y: 5 }, { x: 4, y: 5 }, { x: 3, y: 6 }, { x: 4, y: 6 }],
       'freeze',
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'fill'
-      && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well)).toHaveLength(1);
-    expect(recorder.operations.some((operation) => operation.kind === 'stroke'
-      && (operation.options as { color?: number }).color === 0xf5fbf7)).toBe(true);
-    expect(recorder.operations.filter((operation) => operation.kind === 'circle').length).toBeGreaterThanOrEqual(4);
+    expect(recorder.operations.filter((operation) => operation.kind === 'fill').map((operation) => (
+      operation.options as { color?: number }
+    ).color)).toEqual([
+      MUTATION_MATERIALS.freeze.edge,
+      MUTATION_MATERIALS.freeze.innerEdge,
+    ]);
+    expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
   });
 
   it('keeps every timed mutation state visibly present while the timer is active', () => {
@@ -1630,8 +1604,8 @@ describe('Puzzle undo presentation reset', () => {
 
     fills.length = 0;
     strokes.length = 0;
-    internals.drawEffects({ ...base, mutationCollapseTicks: 1 }, layout);
-    expect(strokes.some((entry) => entry.color === MUTATION_VFX_TOKENS.collapse.palette.highlight)).toBe(true);
+    internals.drawSupergravityPieceTrail(graphics, [{ x: 4, y: 6 }], layout);
+    expect(fills.some((entry) => entry.color === MUTATION_VFX_TOKENS.collapse.palette.primary)).toBe(true);
 
     fills.length = 0;
     internals.drawEffects({ ...base, mutationMultiplierTicks: 1 }, layout);
