@@ -131,6 +131,8 @@ export interface GameState {
   combo: number;
   level: number;
   mode: GameMode;
+  /** Classic-only opening gravity captured when this run is created. */
+  classicStartingGravityTicks: number;
   puzzleId: PuzzleId | null;
   /**
    * Temporary presentation bridge for the frozen T2 shell. Puzzle core rules
@@ -240,7 +242,7 @@ export type GameCommand =
   | { type: 'pause' }
   | { type: 'resume' }
   | { type: 'undo' }
-  | { type: 'restart'; seed?: number; mode?: GameMode; puzzleId?: PuzzleId };
+  | { type: 'restart'; seed?: number; mode?: GameMode; puzzleId?: PuzzleId; classicStartingGravityTicks?: number };
 
 export type GameEvent =
   | { type: 'started' }

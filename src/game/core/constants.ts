@@ -14,6 +14,11 @@ export const LINE_CLEAR_DELAY_TICKS = 12;
 export const NEXT_QUEUE_SIZE = 5;
 
 export const STANDARD_GRAVITY_TICKS = 48;
+/** Player-selectable Classic opening gravity, expressed at the canonical 60 Hz. */
+export const CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS = 48;
+export const CLASSIC_STARTING_GRAVITY_MIN_TICKS = 6;
+export const CLASSIC_STARTING_GRAVITY_MAX_TICKS = 60;
+export const CLASSIC_GRAVITY_STEP_TICKS = 6;
 export const INITIAL_SURVIVAL_BEDROCK_ROWS = 3;
 export const SURVIVAL_LINES_PER_BEDROCK = 3;
 export const TICKS_PER_SECOND = 60;
@@ -47,12 +52,27 @@ export const MUTATION_RANDOM_SALT = 0x4d55_5441;
 /** Ice slows automatic gravity to exactly one board cell per playing second. */
 export const MUTATION_FREEZE_GRAVITY_TICKS = TICKS_PER_SECOND;
 
-export const PROGRESSIVE_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6, 5, 4, 3] as const;
+/** Default 0.8-second Classic opening pace, accelerating by 0.1 seconds every ten lines. */
+export const PROGRESSIVE_GRAVITY_TICKS = [48, 42, 36, 30, 24, 18, 12, 6] as const;
 /** Mutation alone caps at 0.1 seconds per cell so late-game item play stays readable. */
 export const MUTATION_GRAVITY_TICKS = [48, 43, 38, 33, 28, 23, 18, 13, 10, 8, 6] as const;
 
 export function speedTierForLines(lines: number): number {
   return Math.min(PROGRESSIVE_GRAVITY_TICKS.length - 1, Math.max(0, Math.floor(lines / 10)));
+}
+
+export function normalizeClassicStartingGravityTicks(ticks: number): number {
+  if (!Number.isFinite(ticks)) return CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS;
+  const stepped = Math.round(ticks / CLASSIC_GRAVITY_STEP_TICKS) * CLASSIC_GRAVITY_STEP_TICKS;
+  return Math.min(CLASSIC_STARTING_GRAVITY_MAX_TICKS, Math.max(CLASSIC_STARTING_GRAVITY_MIN_TICKS, stepped));
+}
+
+export function classicGravityTicks(startingTicks: number, lines: number): number {
+  const tiers = Math.max(0, Math.floor(lines / 10));
+  return Math.max(
+    CLASSIC_STARTING_GRAVITY_MIN_TICKS,
+    normalizeClassicStartingGravityTicks(startingTicks) - tiers * CLASSIC_GRAVITY_STEP_TICKS,
+  );
 }
 
 export function mutationSpeedTierForLines(lines: number): number {
@@ -77,13 +97,19 @@ export function raceSpeedTier(pieceCount: number, lines: number): number {
   return 0;
 }
 
-export function gravityForMode(mode: GameMode, level: number, pieceCount: number, lines: number): number {
+export function gravityForMode(
+  mode: GameMode,
+  level: number,
+  pieceCount: number,
+  lines: number,
+  classicStartingGravityTicks = CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+): number {
   void level;
   void pieceCount;
   if (mode === 'puzzle') return STANDARD_GRAVITY_TICKS;
   if (mode === 'race') return SURVIVAL_GRAVITY_TICKS;
   if (mode === 'sprint') return MUTATION_GRAVITY_TICKS[mutationSpeedTierForLines(lines)]!;
-  return PROGRESSIVE_GRAVITY_TICKS[speedTierForLines(lines)]!;
+  return classicGravityTicks(classicStartingGravityTicks, lines);
 }
 
 export const LINE_CLEAR_BASE_SCORE = [0, 40, 100, 300, 1200] as const;
