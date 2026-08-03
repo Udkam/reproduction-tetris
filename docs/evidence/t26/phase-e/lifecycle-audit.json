@@ -1,0 +1,53 @@
+{
+  "sourceSha": "6af54030ac8ce1e65f781887ed0f8ad2f752f7e1",
+  "capturedAt": "2026-08-03T11:06:34.840Z",
+  "origin": "http://127.0.0.1:4191",
+  "browser": "149.0.7827.55",
+  "baseline": {
+    "activeTimeouts": 0,
+    "activeIntervals": 1,
+    "activeFrames": 0,
+    "activeWindowDocumentListeners": 4,
+    "audioCreated": 0,
+    "audioClosed": 0,
+    "canvasCount": 0,
+    "domCellCount": 0,
+    "qaBridge": false
+  },
+  "beforeRestart": {
+    "activeTimeouts": 0,
+    "activeIntervals": 1,
+    "activeFrames": 2,
+    "activeWindowDocumentListeners": 15,
+    "audioCreated": 1,
+    "audioClosed": 0,
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "qaBridge": true
+  },
+  "afterRestart": {
+    "activeTimeouts": 0,
+    "activeIntervals": 1,
+    "activeFrames": 2,
+    "activeWindowDocumentListeners": 15,
+    "audioCreated": 1,
+    "audioClosed": 0,
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "qaBridge": true
+  },
+  "afterReturn": {
+    "activeTimeouts": 0,
+    "activeIntervals": 1,
+    "activeFrames": 0,
+    "activeWindowDocumentListeners": 4,
+    "audioCreated": 1,
+    "audioClosed": 1,
+    "canvasCount": 0,
+    "domCellCount": 0,
+    "qaBridge": false
+  },
+  "restartNextVisible": true,
+  "pauseNextVisible": true,
+  "errors": []
+}
