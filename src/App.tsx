@@ -31,6 +31,7 @@ import { browserPlatform } from './platform/browserPlatform';
 import {
   CAMPAIGN_LEVELS,
   LEGACY_PUZZLE_PROGRESS_KEY,
+  LEGACY_V5_PUZZLE_PROGRESS_KEY,
   PUZZLE_CATEGORIES,
   PUZZLE_PROGRESS_KEY,
   V4_PUZZLE_PROGRESS_KEY,
@@ -75,7 +76,6 @@ import {
   LEGACY_LEADERBOARD_KEYS,
   emptyLeaderboard,
   insertScoreRecord,
-  migrateLegacyLeaderboard,
   parseLeaderboard,
   recordsForMode,
   type Leaderboard,
@@ -95,7 +95,8 @@ export type PuzzleCelebration = {
 
 const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
-const MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
+const MODE_RULE_INTROS_KEY = 'tetramorph:mode-rule-intros:v1';
+const LEGACY_MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 
 const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'sprint', 'puzzle'];
 
@@ -105,11 +106,14 @@ export function cloneQaState(state: GameState): GameState {
 
 function readModeRuleIntros(): readonly GameMode[] {
   try {
-    const raw = browserPlatform.readStorage(MODE_RULE_INTROS_KEY);
+    const current = browserPlatform.readStorage(MODE_RULE_INTROS_KEY);
+    const raw = current ?? browserPlatform.readStorage(LEGACY_MODE_RULE_INTROS_KEY);
     if (raw === null) return Object.freeze([]);
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return Object.freeze([]);
-    return Object.freeze(parsed.filter((value): value is GameMode => MODE_ORDER.includes(value as GameMode)));
+    const modes = Object.freeze(parsed.filter((value): value is GameMode => MODE_ORDER.includes(value as GameMode)));
+    if (current === null) browserPlatform.writeStorage(MODE_RULE_INTROS_KEY, JSON.stringify(modes));
+    return modes;
   } catch {
     return Object.freeze([]);
   }
@@ -153,6 +157,12 @@ function readPuzzleProgress(): PuzzleProgress {
   try {
     const current = browserPlatform.readStorage(PUZZLE_PROGRESS_KEY);
     if (current !== null) return parsePuzzleProgress(current);
+    const legacyV5 = browserPlatform.readStorage(LEGACY_V5_PUZZLE_PROGRESS_KEY);
+    if (legacyV5 !== null) {
+      const migrated = parsePuzzleProgress(legacyV5);
+      writePuzzleProgress(migrated);
+      return migrated;
+    }
     const v4 = browserPlatform.readStorage(V4_PUZZLE_PROGRESS_KEY);
     if (v4 !== null) {
       const migrated = migrateV4PuzzleProgress(v4);
@@ -190,7 +200,7 @@ function readLeaderboard(): Leaderboard {
     for (const key of LEGACY_LEADERBOARD_KEYS) {
       const legacy = browserPlatform.readStorage(key);
       if (legacy !== null) {
-        const migrated = migrateLegacyLeaderboard(legacy);
+        const migrated = parseLeaderboard(legacy);
         browserPlatform.writeStorage(LEADERBOARD_KEY, JSON.stringify(migrated));
         return migrated;
       }

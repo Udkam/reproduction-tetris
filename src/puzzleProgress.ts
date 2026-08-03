@@ -7,7 +7,8 @@ import {
 } from './puzzleMastery';
 
 /** Current persisted format. Keep every former key for one-way local migration and rollback. */
-export const PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v5';
+export const PUZZLE_PROGRESS_KEY = 'tetramorph:puzzle-completion:v5';
+export const LEGACY_V5_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v5';
 export const V4_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v4';
 export const V3_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v3';
 export const V2_PUZZLE_PROGRESS_KEY = 'qingliu:puzzle-completion:v2';

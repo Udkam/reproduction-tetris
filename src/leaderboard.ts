@@ -30,8 +30,8 @@ export interface Leaderboard {
   sprint: StandardScoreRecord[];
 }
 
-export const LEADERBOARD_KEY = 'tetris:leaderboard:v8';
-export const LEGACY_LEADERBOARD_KEYS = ['tetris:leaderboard:v7', 'tetris:leaderboard:v6', 'tetris:leaderboard:v5', 'tetris:leaderboard:v4', 'tetris:leaderboard:v3', 'stack-order:leaderboard:v2', 'stack-order:leaderboard:v1'] as const;
+export const LEADERBOARD_KEY = 'tetramorph:leaderboard:v8';
+export const LEGACY_LEADERBOARD_KEYS = ['tetris:leaderboard:v8', 'tetris:leaderboard:v7', 'tetris:leaderboard:v6', 'tetris:leaderboard:v5', 'tetris:leaderboard:v4', 'tetris:leaderboard:v3', 'stack-order:leaderboard:v2', 'stack-order:leaderboard:v1'] as const;
 export const LEADERBOARD_LIMIT = 5;
 export const MUTATION_LEADERBOARD_LIMIT = LEADERBOARD_LIMIT;
 

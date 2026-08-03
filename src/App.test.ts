@@ -40,11 +40,12 @@ import {
   PUZZLE_CATEGORIES,
   PUZZLE_CAMPAIGN_REVISION,
   PUZZLE_PROGRESS_KEY,
+  LEGACY_V5_PUZZLE_PROGRESS_KEY,
   V4_PUZZLE_PROGRESS_KEY,
   type PuzzleProgress,
 } from './puzzleProgress';
 import { PUZZLE_HARD_MASTERY_GROUPS, PUZZLE_OPTIMAL_CERTIFICATES } from './puzzleMastery';
-import type { ScoreRecord } from './leaderboard';
+import { LEADERBOARD_KEY, emptyLeaderboard, type ScoreRecord } from './leaderboard';
 import { itemLabel, modeRules, modeRulesTitle } from './ui/localization';
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -261,6 +262,32 @@ describe('Survival stone timing presentation', () => {
     view.unmount();
   });
 
+  it('copies the former branded v5 key into the TetraMorph key without deleting rollback data', () => {
+    const levelId = CAMPAIGN_LEVELS[2]!.id;
+    const legacy = JSON.stringify({
+      version: 5,
+      campaignRevision: PUZZLE_CAMPAIGN_REVISION,
+      completedLevelIds: [levelId],
+      bestPieceCounts: { [levelId]: 8 },
+    });
+    localStorage.setItem(LEGACY_V5_PUZZLE_PROGRESS_KEY, legacy);
+
+    const view = render(createElement(App));
+    expect(localStorage.getItem(PUZZLE_PROGRESS_KEY)).toBe(legacy);
+    expect(localStorage.getItem(LEGACY_V5_PUZZLE_PROGRESS_KEY)).toBe(legacy);
+    view.unmount();
+  });
+
+  it('copies the former v8 leaderboard key into the TetraMorph key', () => {
+    const legacy = JSON.stringify(emptyLeaderboard());
+    localStorage.setItem('tetris:leaderboard:v8', legacy);
+
+    const view = render(createElement(App));
+    expect(localStorage.getItem(LEADERBOARD_KEY)).toBe(legacy);
+    expect(localStorage.getItem('tetris:leaderboard:v8')).toBe(legacy);
+    view.unmount();
+  });
+
   it('reports the piece-count rockfall cadence from the canonical Core state', () => {
     const initial = createInitialState(0x51a1f00d, 'race');
     expect(survivalStoneCountdownPieces(initial)).toBe(8);
@@ -378,6 +405,7 @@ describe('Puzzle completion ceremony', () => {
     localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon', 'race', 'sprint', 'puzzle']));
     const level = CAMPAIGN_LEVELS[2]!;
     const view = render(createElement(App));
+    expect(JSON.parse(localStorage.getItem('tetramorph:mode-rule-intros:v1') ?? '[]')).toContain('puzzle');
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-puzzle"]')!.click());
     const levelButton = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')]
@@ -652,7 +680,7 @@ describe('T6 frontend mode binding', () => {
     const start = [...(view.container.querySelector('.action-sheet')?.querySelectorAll<HTMLButtonElement>('button') ?? [])]
       .find((button) => button.textContent === '好的')!;
     act(() => start.click());
-    expect(JSON.parse(localStorage.getItem('tetris:mode-rule-intros:v1') ?? '[]')).toContain('sprint');
+    expect(JSON.parse(localStorage.getItem('tetramorph:mode-rule-intros:v1') ?? '[]')).toContain('sprint');
     expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
     view.unmount();
     view.unmount();

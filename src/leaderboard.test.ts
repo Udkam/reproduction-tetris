@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  LEADERBOARD_KEY,
+  LEGACY_LEADERBOARD_KEYS,
   MUTATION_LEADERBOARD_LIMIT,
   LEADERBOARD_LIMIT,
   emptyLeaderboard,
@@ -59,6 +61,12 @@ const legacyRecord = (mode: 'marathon' | 'race' | 'sprint') => ({
 });
 
 describe('local leaderboard boundary', () => {
+  it('uses a TetraMorph current key while preserving every former key as a migration source', () => {
+    expect(LEADERBOARD_KEY).toBe('tetramorph:leaderboard:v8');
+    expect(LEGACY_LEADERBOARD_KEYS).toContain('tetris:leaderboard:v8');
+    expect(LEGACY_LEADERBOARD_KEYS).toContain('stack-order:leaderboard:v1');
+  });
+
   it('fails closed on malformed schema, invalid outcomes, and non-migratable stores', () => {
     expect(parseLeaderboard('{broken')).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
