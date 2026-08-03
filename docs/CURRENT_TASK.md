@@ -2,7 +2,7 @@
 
 ## T27-R1 active goal — centred board stage and three complete visual themes
 
-**Status (2026-08-04): ACCEPTED / READY TO PUSH.** This player-requested
+**Status (2026-08-04): ACCEPTED / PUBLISHED TO `origin/main`.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
 persistence migrations, the single-canvas boundary, or Mutation mechanics.

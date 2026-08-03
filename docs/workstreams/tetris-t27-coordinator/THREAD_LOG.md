@@ -6,7 +6,7 @@
 - Accepted evidence SHA: `401bfa52350d3ea971d54fc2e04638b66813082d`.
 - Owner: primary coordinator; final documentation, integration, resource release, and
   push owner.
-- Status: accepted by independent read-only QA; coordinator closure ready.
+- Status: accepted by independent read-only QA and published to `origin/main`.
 
 ## Exact candidate paths
 
@@ -128,5 +128,5 @@ directory.
   `docs/evidence/t27/settings-en.png`.
 
 - Blocker: none.
-- Next action: exact-path coordinator commit, scoped redacted Git secret scan, push
-  `main`, and report acceptance without rewriting shared history.
+- Next action: none for T27-R1. Preserve the eight inherited working-tree deltas and
+  wait for a separately scoped player request.
