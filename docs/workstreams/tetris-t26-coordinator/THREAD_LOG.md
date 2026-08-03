@@ -2,11 +2,10 @@
 
 - Task ID: `tetris-t26-coordinator`
 - Base SHA: `2d4f3ecc7d51ee756ac55442088be59aa0d7d0f9`
-- Owner: primary coordinator / sole writer until an immutable candidate is ready for
-  independent read-only QA
-- Status: Phases A-B verified and archived; Phase-C typography/Settings correction
-  verified; RC programme remains active; remaining Phase-C accessibility/coverage open
-- Exact Phase-A paths under review:
+- Owner: primary coordinator / final acceptance and push owner; product source frozen
+- Status: Phases A-F verified; the first final-QA findings are corrected; only the
+  independent read-only recheck and coordinator acceptance remain open.
+- Historical Phase-A paths reviewed:
   - contract/archive: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`,
     `docs/phases/rc-1.0.md`, `progress.md`, this log, `docs/logs/CHANGELOG.md`
   - metadata/public entry: `package.json`, `package-lock.json`, `README.md`
@@ -22,11 +21,11 @@
 - Evidence: `308 passed / 3 skipped`; 760 transformed build modules; active legacy-name
   scan clean. Former storage values migrate one way into `tetramorph:*` keys without
   deletion. No Phase-A server, browser, listener, or helper process was started.
-- Active B-C paths: `package.json`, `package-lock.json`, `index.html`, `licenses/`,
+- Historical B-C paths: `package.json`, `package-lock.json`, `index.html`, `licenses/`,
   `src/main.tsx`, `src/design/tokens/typography.ts`, `src/styles/tokens.css`,
   `src/ui/localization.ts`, `src/App.tsx`, `src/ui/ActionSheet.tsx`,
-  `src/styles/settings.css`, `src/styles/hud.css`, and direct tests. The exact set will
-  be reduced to files genuinely changed before each checkpoint.
+  `src/styles/settings.css`, `src/styles/hud.css`, and direct tests. The exact set was
+  reduced to files genuinely changed before each checkpoint.
 - Accepted source: `310d83a6b9cba97de845effc02a7ed673454d789`.
 - Accepted evidence: `32b4457`; `docs/evidence/t26/audit.json` plus eleven runner/frame
   artifacts cover Home, all three English Settings tabs, Chinese Settings, portrait
@@ -44,8 +43,9 @@
 - Final gates: typecheck pass; `309 passed / 3 skipped`; 768 transformed modules; nine
   audit states; both Pause hit targets and both real successor transitions true.
 - Resources: evidence-owned Vite PID released; no listener remains on port `4186`.
-- RC audit checkpoint: current source lacks the Home positioning line, reuses detailed
-  Settings rules in first-entry sheets, and renders only `3–2–1`; Settings still lacks
+- Historical pre-repair RC audit checkpoint: source then lacked the Home positioning
+  line, reused detailed Settings rules in first-entry sheets, and rendered only
+  `3–2–1`; Settings then lacked
   player reduced-motion and visible touch controls. These are recorded in
   `docs/RC_AUDIT.md` without relabelling the prior accepted evidence.
 - Phase-B product: `29405e2` plus cascade correction `2198b92`; evidence `96b8854`.
@@ -58,9 +58,9 @@
   (`310 passed / 3 skipped`), 768-module build, and one controlled evidence runner.
   Preview PID 27104 and manual dev PID 23588 were released; ports 4187/4188 have no
   listener.
-- Blocker: none
-- Next action: open the separate Phase-C reduced-motion/touch-guidance checkpoint, then
-  run one current-source HUD/result/leaderboard browser audit before authoring repairs.
+- Blocker: final independent read-only QA recheck only.
+- Next action: obtain the final exact-range disposition on this docs-only correction.
+  No Phase-C implementation work remains open.
 
 ## 2026-08-03 — Phase-F candidate rejected; portable-release correction opened
 

@@ -2,7 +2,7 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASES A-E VERIFIED; PHASE F ACTIVE; RC PROGRAMME ACTIVE.**
+**Status (2026-08-03): PHASES A-F VERIFIED; FINAL INDEPENDENT ACCEPTANCE ACTIVE.**
 The accepted game remains the product baseline. This
 is a convergence programme: no Core rewrite, renderer replacement, fifth mode, account
 system, server dependency, or broad React migration is authorised. Each change must
@@ -14,11 +14,11 @@ closed rollback point: Home has one localized positioning line, first-entry guid
 has exactly Goal / Mechanic / Challenge, and `Start` acknowledges the same boundary at
 which the runtime becomes controllable.
 
-Phase E is now a closed rollback point. The next bounded slice is **Phase F showcase
-package** only: bind final current-source frames to the candidate, define a truthful
-30-60 second capture sequence, and publish concise GitHub, resume, portfolio, and RC
-release copy. It may improve release documentation and evidence composition, but it
-may not redesign the accepted product or reopen gameplay.
+Phases E and F are closed rollback points. The only active slice is the final independent
+read-only QA disposition and coordinator acceptance. No gameplay, presentation, Puzzle,
+ranking, persistence, dependency, release-evidence, or showcase change is authorised;
+only a QA-requested correction to contradictory current-status text may precede the
+final decision.
 
 **Verified Phase-E result.** Source checkpoints `4d37d59` and `6af5403` replace
 Fontsource's broad CSS delivery with the exact 13 WOFF2 faces used by the accepted type
