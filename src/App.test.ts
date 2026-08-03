@@ -928,6 +928,20 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
+  it('breathes the full urgent Survival card without a left-side pulse rail', () => {
+    const urgentStart = sourceHudStyles.indexOf('.run-stats--survival [data-urgent="true"] {');
+    const urgentEnd = sourceHudStyles.indexOf('\n}', urgentStart);
+    const keyframesStart = sourceHudStyles.indexOf('@keyframes survival-countdown-urgent');
+    const keyframesEnd = sourceHudStyles.indexOf('\n.preview-rail', keyframesStart);
+    const urgentBlock = sourceHudStyles.slice(urgentStart, urgentEnd);
+    const keyframesBlock = sourceHudStyles.slice(keyframesStart, keyframesEnd);
+
+    expect(urgentBlock).toContain('box-shadow: none !important');
+    expect(urgentBlock).toContain('animation: survival-countdown-urgent');
+    expect(keyframesBlock).toContain('background:');
+    expect(keyframesBlock).not.toContain('box-shadow');
+  });
+
   it('shows Puzzle target progress and a non-limiting placed-piece count', () => {
     const state = createInitialState(0x51a1f00d, 'puzzle', 't5r-lattice-09');
     const view = render(createElement(RunStats, { state }));

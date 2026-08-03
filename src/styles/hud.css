@@ -192,6 +192,7 @@
 .run-stats--survival [data-urgent="true"] {
   border-color: color-mix(in srgb, var(--danger) 44%, var(--line)) !important;
   background: color-mix(in srgb, var(--danger) 7%, var(--raised));
+  box-shadow: none !important;
   animation: survival-countdown-urgent 720ms ease-in-out infinite alternate;
 }
 
@@ -200,8 +201,8 @@
 }
 
 @keyframes survival-countdown-urgent {
-  from { box-shadow: inset 2px 0 0 color-mix(in srgb, var(--danger) 42%, transparent); }
-  to { box-shadow: inset 4px 0 0 color-mix(in srgb, var(--danger) 72%, transparent); }
+  from { background: color-mix(in srgb, var(--danger) 5%, var(--raised)); }
+  to { background: color-mix(in srgb, var(--danger) 12%, var(--raised)); }
 }
 
 .preview-rail,
