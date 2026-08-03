@@ -1103,56 +1103,53 @@ describe('Puzzle undo presentation reset', () => {
     expect(geometrySignature(two.operations)).not.toBe(geometrySignature(four.operations));
   });
 
-  it('uses item-specific surface, core, and rim geometry instead of palette-only variants', () => {
+  it('keeps the carrier halo and silhouette quiet while all five charm pictograms stay distinct', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
     const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }];
-    const assertFiveGeometries = (
+    const geometryCount = (
       drawLayer: (graphics: unknown, cells: readonly Cell[], item: MutationItem) => void,
-    ) => {
+    ): number => {
       const signatures = new Set<string>();
       for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
         const recorder = createGraphicsRecorder();
         drawLayer(recorder.graphics, cells, item);
         signatures.add(geometrySignature(recorder.operations));
       }
-      expect(signatures.size).toBe(5);
+      return signatures.size;
     };
 
-    assertFiveGeometries((graphics, layerCells, item) => {
+    expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierSurface(graphics, layerCells, item, layout);
-    });
+    })).toBe(1);
     const originalRim = internals.drawMutationCarrierRim;
     internals.drawMutationCarrierRim = () => undefined;
-    assertFiveGeometries((graphics, layerCells, item) => {
+    expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierCore(graphics, layerCells, item, layout);
-    });
+    })).toBe(5);
     internals.drawMutationCarrierRim = originalRim;
-    assertFiveGeometries((graphics, layerCells, item) => {
+    expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierRim(graphics, layerCells, item, layout);
-    });
+    })).toBe(1);
   });
 
-  it('puts every carrier item on the same high-contrast neutral key plate', () => {
+  it('uses one compact neutral charm instead of repeating plates across carrier cells', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
-    const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 3, y: 5 }];
+    const cells = [{ x: 2, y: 4 }, { x: 5, y: 7 }, { x: 3, y: 9 }];
     for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
       const surface = createGraphicsRecorder();
       internals.drawMutationCarrierSurface(surface.graphics, cells, item, layout);
-      expect(surface.operations.filter((operation) => operation.kind === 'roundRect').length, item)
-        .toBeGreaterThanOrEqual(cells.length);
-      expect(surface.operations.some((operation) => operation.kind === 'fill'
-        && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well), item).toBe(true);
-      expect(surface.operations.some((operation) => operation.kind === 'stroke'
-        && (operation.options as { color?: number }).color === 0xf5fbf7), item).toBe(true);
+      expect(surface.operations.filter((operation) => operation.kind === 'roundRect'), item).toHaveLength(0);
+      expect(surface.operations.filter((operation) => operation.kind === 'circle'), item).toHaveLength(2);
 
       const core = createGraphicsRecorder();
       internals.drawMutationCarrierCore(core.graphics, cells, item, layout, 0, 0, .62);
-      expect(core.operations.some((operation) => operation.kind === 'fill'
-        && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well), item).toBe(true);
+      expect(core.operations.filter((operation) => operation.kind === 'roundRect'), item).toHaveLength(0);
+      expect(core.operations.filter((operation) => operation.kind === 'fill'
+        && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well), item).toHaveLength(1);
       expect(core.operations.some((operation) => operation.kind === 'stroke'
         && (operation.options as { color?: number }).color === 0xf5fbf7), item).toBe(true);
     }
@@ -1569,41 +1566,24 @@ describe('Puzzle undo presentation reset', () => {
     ))).toBe(false);
   });
 
-  it('uses one crystalline material core per connected freeze carrier on a neutral plate', () => {
+  it('uses one crystalline freeze charm even when supergravity separates the carrier cells', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const fills: Array<{ color?: number }> = [];
-    const strokes: Array<{ color?: number }> = [];
-    const graphics = {
-      roundRect: () => graphics,
-      moveTo: () => graphics,
-      lineTo: () => graphics,
-      fill: (options: { color?: number }) => {
-        fills.push(options);
-        return graphics;
-      },
-      stroke: (options: { color?: number }) => {
-        strokes.push(options);
-        return graphics;
-      },
-    };
+    const recorder = createGraphicsRecorder();
 
     internals.drawMutationCarrierCore(
-      graphics,
-      [{ x: 3, y: 5 }, { x: 4, y: 5 }, { x: 4, y: 6 }, { x: 5, y: 6 }],
+      recorder.graphics,
+      [{ x: 3, y: 5 }, { x: 4, y: 8 }, { x: 4, y: 11 }, { x: 5, y: 14 }],
       'freeze',
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
 
-    expect(fills).toHaveLength(3);
-    expect(fills.map((entry) => entry.color)).toEqual([
-      MUTATION_VFX_BACKGROUND.well,
-      MUTATION_MATERIALS.freeze.edge,
-      MUTATION_MATERIALS.freeze.innerEdge,
-    ]);
-    expect(strokes.some((entry) => entry.color === 0xf5fbf7)).toBe(true);
-    expect(strokes.every((entry) => entry.color !== 0xffffff)).toBe(true);
-    expect(fills.every((entry) => entry.color !== 0xffffff)).toBe(true);
+    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(recorder.operations.filter((operation) => operation.kind === 'fill'
+      && (operation.options as { color?: number }).color === MUTATION_VFX_BACKGROUND.well)).toHaveLength(1);
+    expect(recorder.operations.some((operation) => operation.kind === 'stroke'
+      && (operation.options as { color?: number }).color === 0xf5fbf7)).toBe(true);
+    expect(recorder.operations.filter((operation) => operation.kind === 'circle').length).toBeGreaterThanOrEqual(4);
   });
 
   it('keeps every timed mutation state visibly present while the timer is active', () => {
