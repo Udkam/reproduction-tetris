@@ -934,3 +934,14 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   `docs/evidence/t24/audit.json` binds to source `1dabee8`, reports no clipping,
   horizontal overflow, extra Canvas, DOM cells, console errors, or cleanup leak.
   Independent QA of `230eb09..eeb7c00` reports P0-P3 all zero.
+
+# T25 invariant Home mode typography
+
+- The four permanent English Home mode names now bind directly to the existing
+  English UI family, so switching the surrounding interface language no longer
+  changes their family or geometry.
+- Focused navigation proof, typecheck, the complete suite (`305 passed / 3 skipped`),
+  the 760-module build, and a bilingual Chromium comparison passed with zero console
+  errors.
+- This is retained as a small green rollback point. The subsequent RC 1.0 contract
+  supersedes its final visual direction by assigning Space Grotesk to general UI.

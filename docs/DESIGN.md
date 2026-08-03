@@ -3,6 +3,20 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-03 T25 — language-invariant English mode names
+
+The four Home mode names are permanent English proper names, so their typography is
+also permanent. `Classic`, `Survival`, `Mutation`, and `Puzzle` use the existing
+Playwrite NZ Basic English UI role whether the surrounding interface language is
+`zh-CN` or `en`. The selected language still owns accessible action copy and every
+other localized surface. This correction changes no wording, card geometry, mode
+order, focus behavior, or animation.
+
+**Verified implementation.** The authoritative Home navigation rule owns the English
+family explicitly instead of inheriting the page-language `--font-ui` alias. Chromium
+reports the same loaded family, weight, width, height, and position for all four labels
+in both language states.
+
 ## 2026-08-02 T24 — editorial settings console and stable type roles
 
 **Accepted implementation.** Product/evidence candidate `eeb7c00` preserves one

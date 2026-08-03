@@ -1,4 +1,32 @@
-# Current Task — T24 Typography, Pause Navigation, and Settings Composition
+# Current Task — T25 Invariant Home Mode Typography
+
+## T25 active goal — keep the four English mode names typographically invariant
+
+**Status (2026-08-03): VERIFIED / AWAITING PLAYER REVIEW.** Direct player comparison found that the four
+permanent English Home labels use the Chinese UI face while the selected interface
+language is Chinese, but use Playwrite NZ Basic when the language is English. Their
+   content is intentionally language-invariant, so their font role must be invariant too.
+
+The authoritative Home selector now binds those four labels directly to
+`--font-ui-en`. Typecheck, the complete suite (`305 passed / 3 skipped`), and the
+760-module production build pass. A bilingual Chromium check after `document.fonts.ready`
+reports identical Playwrite NZ Basic families and identical label rectangles in
+`zh-CN` and `en`, with zero console errors. The first complete-suite run hit one
+unrelated renderer setup timeout; that file and the complete suite both passed on the
+single controlled retry.
+
+1. `Classic`, `Survival`, `Mutation`, and `Puzzle` use the existing English UI family
+   in both `zh-CN` and `en` states.
+2. Surrounding localized actions and accessible labels continue to follow the selected
+   language; no copy, layout, card geometry, mode order, or interaction changes.
+3. A direct style contract and bilingual rendered-font check must prevent regression.
+
+**Ownership and checkpoint boundary.** The coordinator is the sole writer. Product
+scope is limited to the authoritative Home navigation typography selector and its
+direct tests. Documentation records the invariant proper-name role; browser evidence
+must compare Chinese and English Home states before acceptance.
+
+# Previous Task — T24 Typography, Pause Navigation, and Settings Composition
 
 ## T24 active goal — complete English typography, readable data, and compact settings
 
