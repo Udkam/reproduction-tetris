@@ -110,6 +110,8 @@ describe('TetraMorph Design System v1.0', () => {
     expect(tokenStyles).toMatch(/\.mode-chooser--workbench \.mode-home-wordmark,[\s\S]*font-weight:\s*400;/);
     expect(tokenStyles).toMatch(/:root:lang\(en\),[\s\S]*--font-ui:\s*var\(--font-ui-en\);/);
     expect(tokenStyles).toContain('font-synthesis: none;');
+    expect(tokenStyles).toMatch(/\.app:lang\(en\)\s*\{[^}]*-webkit-text-stroke:\s*\.22px currentColor;/s);
+    expect(tokenStyles).toMatch(/\.app:lang\(en\) :is\([^}]*\.run-stats strong[^}]*\)\s*\{[^}]*-webkit-text-stroke:\s*0;/s);
     expect(tokenStyles).not.toMatch(/(^|\n)\s*(display|grid-template|flex|position|width|height):/);
   });
 

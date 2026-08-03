@@ -15,12 +15,14 @@ import App, {
   eventMessage,
   eventMessages,
   fallCadenceLabel,
+  fallCadenceParts,
   GameSession,
   LeaderboardPanel,
   MutationStatus,
   ModeHome,
   PuzzleLibrary,
   parseReducedMotionOverride,
+  parseClassicGravityRange,
   puzzleAnchorSilhouettePath,
   puzzleCelebrationCopy,
   puzzleCelebrationOutcome,
@@ -29,6 +31,7 @@ import App, {
   RunResultSummary,
   RunStats,
   REDUCED_MOTION_STORAGE_KEY,
+  CLASSIC_GRAVITY_RANGE_STORAGE_KEY,
   SettingsRecord,
   scoreRecordRank,
   scoreRecordForState,
@@ -53,6 +56,7 @@ import { itemLabel, modeIntroRules, modeRules, modeRulesTitle } from './ui/local
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
 const sourceStyles = readFileSync('src/styles.css', 'utf8');
 const sourceHudStyles = readFileSync('src/styles/hud.css', 'utf8');
+const sourceSettingsStyles = readFileSync('src/styles/settings.css', 'utf8');
 const puzzleLibraryStyles = readFileSync('src/styles/puzzle-library.css', 'utf8');
 const sourceIndex = readFileSync('index.html', 'utf8');
 
@@ -63,6 +67,8 @@ interface RuntimeTestOptions {
   inputEnabled?: boolean;
   reducedMotion?: boolean;
   survivalEntryBedrockRows?: number | null;
+  classicStartingGravityTicks?: number;
+  classicGravityFloorTicks?: number;
   onState?: (state: GameState, events: readonly GameEvent[]) => void;
 }
 
@@ -71,6 +77,7 @@ interface RuntimeTestInstance {
   setInputEnabled: ReturnType<typeof vi.fn>;
   setSurvivalEntryBedrockRows: ReturnType<typeof vi.fn>;
   setReducedMotion: ReturnType<typeof vi.fn>;
+  setClassicGravityRange: ReturnType<typeof vi.fn>;
   refreshPresentation: ReturnType<typeof vi.fn>;
   start: ReturnType<typeof vi.fn>;
   restart: ReturnType<typeof vi.fn>;
@@ -92,10 +99,16 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     randomRunSeed: () => 0x51a1f00d,
     GameRuntime: class {
     private state: GameState;
+    private nextClassicStartingGravityTicks: number;
+    private nextClassicGravityFloorTicks: number;
     private canvas: HTMLCanvasElement | null = null;
     readonly setInputEnabled = vi.fn();
     readonly setSurvivalEntryBedrockRows = vi.fn();
     readonly setReducedMotion = vi.fn();
+    readonly setClassicGravityRange = vi.fn((startingTicks: number, floorTicks: number) => {
+      this.nextClassicStartingGravityTicks = startingTicks;
+      this.nextClassicGravityFloorTicks = floorTicks;
+    });
     readonly refreshPresentation = vi.fn();
     readonly setAudioEnabled = vi.fn();
     readonly setAudioVolume = vi.fn();
@@ -106,7 +119,15 @@ vi.mock('./game/runtime/GameRuntime', async () => {
     });
 
     constructor(readonly options: RuntimeTestOptions) {
-      this.state = core.createInitialState(options.seed, options.mode, options.puzzleId);
+      this.nextClassicStartingGravityTicks = options.classicStartingGravityTicks ?? 48;
+      this.nextClassicGravityFloorTicks = options.classicGravityFloorTicks ?? 6;
+      this.state = core.createInitialState(
+        options.seed,
+        options.mode,
+        options.puzzleId,
+        this.nextClassicStartingGravityTicks,
+        this.nextClassicGravityFloorTicks,
+      );
       runtimeHarness.instances.push(this);
     }
 
@@ -124,7 +145,11 @@ vi.mock('./game/runtime/GameRuntime', async () => {
       this.options.onState?.(this.state, []);
     });
     readonly restart = vi.fn(() => {
-      const transition = core.dispatch(this.state, { type: 'restart' });
+      const transition = core.dispatch(this.state, {
+        type: 'restart',
+        classicStartingGravityTicks: this.nextClassicStartingGravityTicks,
+        classicGravityFloorTicks: this.nextClassicGravityFloorTicks,
+      });
       this.state = transition.state;
       this.options.onState?.(this.state, transition.events);
     });
@@ -1026,25 +1051,28 @@ describe('T6 frontend mode binding', () => {
     expect(onLanguageChange).toHaveBeenCalledExactlyOnceWith('en');
     const restart = view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')!;
     const resume = [...sheet.querySelectorAll<HTMLButtonElement>('button')].find((button) => button.textContent === '继续游戏')!;
+    const startingSpeed = view.container.querySelector<HTMLInputElement>('[data-testid="classic-starting-speed"]')!;
+    const fastestSpeed = view.container.querySelector<HTMLInputElement>('[data-testid="classic-fastest-speed"]')!;
 
-    const assertArrowRoute = (from: HTMLButtonElement, key: string, to: HTMLButtonElement) => {
+    const assertArrowRoute = (from: HTMLElement, key: string, to: HTMLElement) => {
       act(() => from.focus());
       act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true })));
       expect(document.activeElement).toBe(to);
       expect(to.dataset.arrowSelected).toBe('true');
     };
-    const routes: readonly [HTMLButtonElement, string, HTMLButtonElement][] = [
+    const routes: readonly [HTMLElement, string, HTMLElement][] = [
       [settingsTab, 'ArrowDown', chinese],
       [chinese, 'ArrowRight', english],
       [english, 'ArrowRight', motion],
       [motion, 'ArrowLeft', english],
       [chinese, 'ArrowUp', settingsTab],
-      [english, 'ArrowDown', toggle],
+      [english, 'ArrowDown', startingSpeed],
+      [motion, 'ArrowDown', fastestSpeed],
       [toggle, 'ArrowUp', chinese],
       [toggle, 'ArrowDown', restart],
       [restart, 'ArrowRight', resume],
       [resume, 'ArrowLeft', restart],
-      [resume, 'ArrowUp', toggle],
+      [resume, 'ArrowUp', startingSpeed],
     ];
     for (const [from, key, to] of routes) assertArrowRoute(from, key, to);
 
@@ -1678,6 +1706,59 @@ describe('T6 frontend mode binding', () => {
     resumed.unmount();
   });
 
+  it('persists a bounded Classic pace interval and applies it to the next runtime only', async () => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
+
+    expect(parseClassicGravityRange(null)).toEqual({ startingTicks: 48, floorTicks: 6 });
+    expect(parseClassicGravityRange('31')).toEqual({ startingTicks: 30, floorTicks: 6 });
+    expect(parseClassicGravityRange('{"startingTicks":31,"floorTicks":17}')).toEqual({
+      startingTicks: 30,
+      floorTicks: 18,
+    });
+
+    const view = render(createElement(App));
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
+    await act(async () => Promise.resolve());
+    const runtime = runtimeHarness.instances.at(-1)!;
+    expect(runtime.options.classicStartingGravityTicks).toBe(48);
+    expect(runtime.options.classicGravityFloorTicks).toBe(6);
+    expect(runtime.getState().classicStartingGravityTicks).toBe(48);
+    expect(runtime.getState().classicGravityFloorTicks).toBe(6);
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    const startingRange = view.container.querySelector<HTMLInputElement>('[data-testid="classic-starting-speed"]')!;
+    const floorRange = view.container.querySelector<HTMLInputElement>('[data-testid="classic-fastest-speed"]')!;
+    const setRangeValue = (input: HTMLInputElement, value: string) => {
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(input, value);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    expect(startingRange.value).toBe('0.8');
+    expect(floorRange.value).toBe('0.1');
+    act(() => {
+      setRangeValue(startingRange, '0.6');
+    });
+    act(() => {
+      setRangeValue(floorRange, '0.3');
+    });
+
+    expect(localStorage.getItem(CLASSIC_GRAVITY_RANGE_STORAGE_KEY)).toBe('{"startingTicks":36,"floorTicks":18}');
+    expect(runtime.setClassicGravityRange).toHaveBeenLastCalledWith(36, 18);
+    expect(runtime.getState().classicStartingGravityTicks).toBe(48);
+    expect(runtime.getState().classicGravityFloorTicks).toBe(6);
+    expect(sourceSettingsStyles).toMatch(/classic-speed-control__bound input\s*\{[^}]*appearance:\s*none[^}]*background:\s*color-mix\([^}]*var\(--settings-accent\)/s);
+    expect(sourceSettingsStyles).toMatch(/input::-(?:webkit-slider-thumb|moz-range-thumb)\s*\{[^}]*background:\s*var\(--settings-accent\)/s);
+    view.unmount();
+
+    const resumed = render(createElement(App));
+    act(() => resumed.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
+    await act(async () => Promise.resolve());
+    expect(runtimeHarness.instances.at(-1)?.options.classicStartingGravityTicks).toBe(36);
+    expect(runtimeHarness.instances.at(-1)?.options.classicGravityFloorTicks).toBe(18);
+    resumed.unmount();
+  });
+
   it('keeps the active English language in the terminal leaderboard call site', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
@@ -2001,6 +2082,7 @@ describe('T6 frontend mode binding', () => {
 
   it('shows direct progressive cadence and pending pressure instead of a level label', () => {
     const classic = { ...createInitialState(0x51a1f00d, 'marathon'), lines: 10 };
+    const customClassic = { ...createInitialState(0x51a1f00d, 'marathon', undefined, 60), lines: 10 };
     const survival = { ...createInitialState(0x51a1f00d, 'race'), lines: 3 };
     const sprint = createInitialState(0x51a1f00d, 'sprint');
     const pending = {
@@ -2009,9 +2091,22 @@ describe('T6 frontend mode binding', () => {
       survivalRisePending: true,
     };
     expect(fallCadenceLabel(classic)).toBe('0.7 秒/格');
+    expect(fallCadenceLabel(customClassic)).toBe('0.9 秒/格');
+    expect(fallCadenceParts(classic, 'en')).toEqual({ value: '0.7', unit: 's/cell' });
     expect(fallCadenceLabel(survival)).toBe('0.6 秒/格');
     expect(fallCadenceLabel(sprint)).toBe('0.8 秒/格');
     expect(survivalCountdownLabel(pending)).toBe('待上升');
+
+    const english = render(createElement(RunStats, { state: classic, language: 'en' }));
+    const cadence = english.container.querySelector('[data-stat-role="fall-cadence"] strong');
+    expect(cadence?.textContent).toBe('0.7 s/cell');
+    expect(cadence?.querySelector('.run-stats__value')?.textContent).toBe('0.7');
+    expect(cadence?.querySelector('.run-stats__unit')?.textContent).toBe('s/cell');
+    english.unmount();
+
+    expect(sourceHudStyles).toMatch(/fall-cadence[^}]*strong\s*>\s*span[^}]*display:\s*inline/s);
+    expect(sourceHudStyles).toMatch(/\.run-stats__unit\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\.run-stats__unit\s*\{[^}]*font-weight:\s*400/s);
   });
 
   it('uses a three-stage Puzzle curriculum with lessons and mastery-gated Hard puzzles', () => {

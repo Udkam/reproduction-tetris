@@ -143,6 +143,30 @@
   white-space: nowrap;
 }
 
+.run-stats [data-stat-role="fall-cadence"] strong > span {
+  display: inline;
+  margin: 0;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.run-stats [data-stat-role="fall-cadence"] .run-stats__value {
+  font-family: var(--font-data);
+}
+
+.run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
+  font-family: var(--font-ui);
+  font-size: .84em;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.app:lang(en) .run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
+  font-weight: 400;
+  -webkit-text-stroke: .22px currentColor;
+  paint-order: stroke fill;
+}
+
 .run-stats--survival [data-stat-role="survival-bedrock"] span {
   color: color-mix(in srgb, var(--race) 72%, var(--ink));
   font-weight: 700;

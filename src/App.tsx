@@ -10,6 +10,10 @@ import {
 } from 'react';
 import {
   ANCHOR_CELL,
+  CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
+  CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+  CLASSIC_STARTING_GRAVITY_MAX_TICKS,
+  CLASSIC_STARTING_GRAVITY_MIN_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
   PIECE_TYPES,
   SURVIVAL_RISES_PER_AFTERSHOCK,
@@ -24,6 +28,8 @@ import {
   getPuzzleDefinition,
   gravityForMode,
   nextMutationPreviewItem,
+  normalizeClassicGravityFloorTicks,
+  normalizeClassicStartingGravityTicks,
   survivalIntervalSeconds,
   survivalIntervalTicks,
 } from './game/core';
@@ -96,12 +102,18 @@ export type PuzzleCelebration = {
   lines: number;
   previousBest: number | null;
 };
+export type ClassicGravityRange = {
+  startingTicks: number;
+  floorTicks: number;
+};
 
 const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
 const MODE_RULE_INTROS_KEY = 'tetramorph:mode-rule-intros:v1';
 const LEGACY_MODE_RULE_INTROS_KEY = 'tetris:mode-rule-intros:v1';
 export const REDUCED_MOTION_STORAGE_KEY = 'tetramorph:reduced-motion:v1';
+export const CLASSIC_GRAVITY_RANGE_STORAGE_KEY = 'tetramorph:classic-gravity-range:v1';
+const LEGACY_CLASSIC_STARTING_GRAVITY_STORAGE_KEY = 'tetramorph:classic-start-gravity:v1';
 
 const MODE_ORDER: readonly GameMode[] = ['marathon', 'race', 'sprint', 'puzzle'];
 
@@ -139,6 +151,79 @@ function writeLanguage(language: AppLanguage): void {
     browserPlatform.writeStorage(LANGUAGE_STORAGE_KEY, language);
   } catch {
     // Storage is optional: the active session still switches language immediately.
+  }
+}
+
+function normalizeClassicGravityRange(range: ClassicGravityRange): ClassicGravityRange {
+  const startingTicks = normalizeClassicStartingGravityTicks(range.startingTicks);
+  return {
+    startingTicks,
+    floorTicks: normalizeClassicGravityFloorTicks(range.floorTicks, startingTicks),
+  };
+}
+
+export function parseClassicGravityRange(
+  value: string | null,
+  legacyStartingValue: string | null = null,
+): ClassicGravityRange {
+  const fallback = {
+    startingTicks: CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+    floorTicks: CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
+  };
+  const source = value?.trim();
+  if (source) {
+    try {
+      const parsed: unknown = JSON.parse(source);
+      if (typeof parsed === 'number') {
+        return normalizeClassicGravityRange({ startingTicks: parsed, floorTicks: fallback.floorTicks });
+      }
+      if (typeof parsed === 'object' && parsed !== null) {
+        const candidate = parsed as Partial<ClassicGravityRange>;
+        if (typeof candidate.startingTicks === 'number' && typeof candidate.floorTicks === 'number') {
+          return normalizeClassicGravityRange({
+            startingTicks: candidate.startingTicks,
+            floorTicks: candidate.floorTicks,
+          });
+        }
+      }
+    } catch {
+      const legacyNumber = Number(source);
+      if (Number.isFinite(legacyNumber)) {
+        return normalizeClassicGravityRange({ startingTicks: legacyNumber, floorTicks: fallback.floorTicks });
+      }
+    }
+  }
+  if (legacyStartingValue?.trim()) {
+    return normalizeClassicGravityRange({
+      startingTicks: Number(legacyStartingValue),
+      floorTicks: fallback.floorTicks,
+    });
+  }
+  return fallback;
+}
+
+function readClassicGravityRange(): ClassicGravityRange {
+  try {
+    return parseClassicGravityRange(
+      browserPlatform.readStorage(CLASSIC_GRAVITY_RANGE_STORAGE_KEY),
+      browserPlatform.readStorage(LEGACY_CLASSIC_STARTING_GRAVITY_STORAGE_KEY),
+    );
+  } catch {
+    return {
+      startingTicks: CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+      floorTicks: CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
+    };
+  }
+}
+
+function writeClassicGravityRange(range: ClassicGravityRange): void {
+  try {
+    browserPlatform.writeStorage(
+      CLASSIC_GRAVITY_RANGE_STORAGE_KEY,
+      JSON.stringify(normalizeClassicGravityRange(range)),
+    );
+  } catch {
+    // Storage is optional: the next run in this session still uses the chosen pace.
   }
 }
 
@@ -236,12 +321,30 @@ export function countdownTimeLabel(remainingTicks: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
-export function fallCadenceLabel(state: GameState, language: AppLanguage = DEFAULT_LANGUAGE): string {
+export function fallCadenceParts(
+  state: GameState,
+  language: AppLanguage = DEFAULT_LANGUAGE,
+): { value: string; unit: string } {
   const ticks = state.mode === 'sprint' && state.mutationFreezeTicks > 0
     ? MUTATION_FREEZE_GRAVITY_TICKS
-    : gravityForMode(state.mode, state.level, state.pieceCount, state.lines);
+    : gravityForMode(
+      state.mode,
+      state.level,
+      state.pieceCount,
+      state.lines,
+      state.classicStartingGravityTicks,
+      state.classicGravityFloorTicks,
+    );
   const seconds = ticks / TICKS_PER_SECOND;
-  return appCopy(language).phrasing.cadence(seconds.toFixed(seconds < 0.1 ? 2 : 1));
+  return {
+    value: seconds.toFixed(seconds < 0.1 ? 2 : 1),
+    unit: language === 'en' ? 's/cell' : '秒/格',
+  };
+}
+
+export function fallCadenceLabel(state: GameState, language: AppLanguage = DEFAULT_LANGUAGE): string {
+  const { value, unit } = fallCadenceParts(state, language);
+  return `${value} ${unit}`;
 }
 
 export function survivalCountdownSeconds(state: GameState): number {
@@ -1159,6 +1262,75 @@ function MotionControl({
   );
 }
 
+function ClassicGravityRangeControl({
+  range,
+  language,
+  onChange,
+}: {
+  range: ClassicGravityRange;
+  language: AppLanguage;
+  onChange: (range: ClassicGravityRange) => void;
+}) {
+  const copy = appCopy(language);
+  const startingSeconds = (range.startingTicks / TICKS_PER_SECOND).toFixed(1);
+  const floorSeconds = (range.floorTicks / TICKS_PER_SECOND).toFixed(1);
+  const unit = language === 'en' ? 's/cell' : '秒/格';
+  const value = (seconds: string) => (
+    <output aria-live="polite">
+      <span className="classic-speed-control__value">{seconds}</span>{' '}
+      <span className="classic-speed-control__unit">{unit}</span>
+    </output>
+  );
+  return (
+    <div className="classic-speed-control" role="group" aria-label={copy.labels.classicSpeedRange}>
+      <span className="classic-speed-control__heading">
+        <b>{copy.labels.classicSpeedRange}</b>
+        <small>{copy.labels.appliesNextRun}</small>
+      </span>
+      <label className="classic-speed-control__bound">
+        <span>{copy.labels.startingFallSpeed}</span>
+        <input
+          type="range"
+          data-testid="classic-starting-speed"
+          data-arrow-nav
+          data-arrow-row="2"
+          data-arrow-col="1"
+          min={range.floorTicks / TICKS_PER_SECOND}
+          max={CLASSIC_STARTING_GRAVITY_MAX_TICKS / TICKS_PER_SECOND}
+          step="0.1"
+          value={startingSeconds}
+          aria-label={copy.labels.startingFallSpeed}
+          onChange={(event) => onChange(normalizeClassicGravityRange({
+            startingTicks: Number(event.currentTarget.value) * TICKS_PER_SECOND,
+            floorTicks: range.floorTicks,
+          }))}
+        />
+        {value(startingSeconds)}
+      </label>
+      <label className="classic-speed-control__bound">
+        <span>{copy.labels.fastestFallSpeed}</span>
+        <input
+          type="range"
+          data-testid="classic-fastest-speed"
+          data-arrow-nav
+          data-arrow-row="2"
+          data-arrow-col="2"
+          min={CLASSIC_STARTING_GRAVITY_MIN_TICKS / TICKS_PER_SECOND}
+          max={range.startingTicks / TICKS_PER_SECOND}
+          step="0.1"
+          value={floorSeconds}
+          aria-label={copy.labels.fastestFallSpeed}
+          onChange={(event) => onChange(normalizeClassicGravityRange({
+            startingTicks: range.startingTicks,
+            floorTicks: Number(event.currentTarget.value) * TICKS_PER_SECOND,
+          }))}
+        />
+        {value(floorSeconds)}
+      </label>
+    </div>
+  );
+}
+
 function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: AppLanguage }) {
   const copy = appCopy(language);
   return (
@@ -1187,6 +1359,16 @@ function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: A
         <p>{copy.labels.touchGestureHint}</p>
       </div>
     </section>
+  );
+}
+
+function FallCadenceValue({ state, language }: { state: GameState; language: AppLanguage }) {
+  const cadence = fallCadenceParts(state, language);
+  return (
+    <strong aria-label={fallCadenceLabel(state, language)}>
+      <span className="run-stats__value">{cadence.value}</span>{' '}
+      <span className="run-stats__unit">{cadence.unit}</span>
+    </strong>
   );
 }
 
@@ -1234,7 +1416,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
         <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
         <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
-        <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
+        <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><FallCadenceValue state={state} language={language} /></article>
       </section>
     );
   }
@@ -1243,7 +1425,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
       <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
       <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
       <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
-      <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><strong>{fallCadenceLabel(state, language)}</strong></article>
+      <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><FallCadenceValue state={state} language={language} /></article>
     </section>
   );
 }
@@ -1358,6 +1540,11 @@ export function GameSession({
   onRunFinished,
   language = DEFAULT_LANGUAGE,
   onLanguageChange = () => undefined,
+  classicGravityRange = {
+    startingTicks: CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+    floorTicks: CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
+  },
+  onClassicGravityRangeChange = () => undefined,
   reducedMotion = browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)').matches,
   onReducedMotionChange = () => undefined,
 }: {
@@ -1370,6 +1557,8 @@ export function GameSession({
   onRunFinished?: (record: ScoreRecord) => void;
   language?: AppLanguage;
   onLanguageChange?: (language: AppLanguage) => void;
+  classicGravityRange?: ClassicGravityRange;
+  onClassicGravityRangeChange?: (range: ClassicGravityRange) => void;
   reducedMotion?: boolean;
   onReducedMotionChange?: (reducedMotion: boolean) => void;
 }) {
@@ -1383,12 +1572,19 @@ export function GameSession({
   const settingsWasPlayingRef = useRef(false);
   const languageRef = useRef(language);
   const reducedMotionRef = useRef(reducedMotion);
+  const initialClassicGravityRangeRef = useRef(normalizeClassicGravityRange(classicGravityRange));
   const lastRecordedRunRef = useRef<string | null>(null);
   const puzzleCompletionKeyRef = useRef<string | null>(null);
   const puzzleProgressRef = useRef(puzzleProgress);
   const [runSeed] = useState(() => mode === 'puzzle' ? APP_SEED : randomRunSeed());
   const [runtime, setRuntime] = useState<GameRuntime | null>(null);
-  const [state, setState] = useState<GameState>(() => createInitialState(runSeed, mode, mode === 'puzzle' ? puzzleId : undefined));
+  const [state, setState] = useState<GameState>(() => createInitialState(
+    runSeed,
+    mode,
+    mode === 'puzzle' ? puzzleId : undefined,
+    initialClassicGravityRangeRef.current.startingTicks,
+    initialClassicGravityRangeRef.current.floorTicks,
+  ));
   const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
   const [startCueVisible, setStartCueVisible] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
@@ -1412,6 +1608,12 @@ export function GameSession({
     runtime?.setAudioVolume(volume);
     setAudioVolume(volume);
   }, [runtime]);
+
+  const changeClassicGravityRange = useCallback((range: ClassicGravityRange) => {
+    const normalized = normalizeClassicGravityRange(range);
+    runtime?.setClassicGravityRange(normalized.startingTicks, normalized.floorTicks);
+    onClassicGravityRangeChange(normalized);
+  }, [onClassicGravityRangeChange, runtime]);
 
   const focusBoard = useCallback(() => {
     browserPlatform.defer(() => {
@@ -1470,6 +1672,8 @@ export function GameSession({
       inputEnabled: false,
       reducedMotion: reducedMotionRef.current,
       survivalEntryBedrockRows: mode === 'race' ? 1 : null,
+      classicStartingGravityTicks: initialClassicGravityRangeRef.current.startingTicks,
+      classicGravityFloorTicks: initialClassicGravityRangeRef.current.floorTicks,
       audioEnabled,
       audioVolume,
       onState: (nextState, events) => {
@@ -1534,6 +1738,10 @@ export function GameSession({
   useEffect(() => {
     runtime?.setReducedMotion(reducedMotion);
   }, [reducedMotion, runtime]);
+
+  useEffect(() => {
+    runtime?.setClassicGravityRange(classicGravityRange.startingTicks, classicGravityRange.floorTicks);
+  }, [classicGravityRange.floorTicks, classicGravityRange.startingTicks, runtime]);
 
   useEffect(() => {
     if (!runtime || countdownDigit === null || settingsOpen || restartConfirmOpen || exitOpen) return;
@@ -2035,6 +2243,15 @@ export function GameSession({
                     language={language}
                   />
                 </div>
+                {state.mode === 'marathon' && (
+                  <div className="settings-console__preference settings-console__preference--classic-speed">
+                    <ClassicGravityRangeControl
+                      range={classicGravityRange}
+                      language={language}
+                      onChange={changeClassicGravityRange}
+                    />
+                  </div>
+                )}
                 <div className="settings-console__actions">
                   <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="3" data-arrow-col="0" disabled={countdownDigit !== null} onClick={requestRestart}>{copy.labels.restart}</button>
                   <button className="primary-action" type="button" data-arrow-nav data-arrow-row="3" data-arrow-col="1" onClick={closeSettings}>
@@ -2133,6 +2350,7 @@ export function GameSession({
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>('home');
   const [language, setLanguage] = useState<AppLanguage>(readLanguage);
+  const [classicGravityRange, setClassicGravityRange] = useState(readClassicGravityRange);
   const [mode, setMode] = useState<GameMode>('marathon');
   const [selectedPuzzleId, setSelectedPuzzleId] = useState<PuzzleId>(CAMPAIGN_LEVELS[0]!.id);
   const [progress, setProgress] = useState<PuzzleProgress>(readPuzzleProgress);
@@ -2166,6 +2384,12 @@ export default function App() {
   const changeLanguage = useCallback((nextLanguage: AppLanguage) => {
     setLanguage(nextLanguage);
     writeLanguage(nextLanguage);
+  }, []);
+
+  const changeClassicGravityRange = useCallback((range: ClassicGravityRange) => {
+    const normalized = normalizeClassicGravityRange(range);
+    setClassicGravityRange(normalized);
+    writeClassicGravityRange(normalized);
   }, []);
 
   const changeReducedMotion = useCallback((nextReducedMotion: boolean) => {
@@ -2250,6 +2474,8 @@ export default function App() {
           onRunFinished={recordRun}
           language={language}
           onLanguageChange={changeLanguage}
+          classicGravityRange={classicGravityRange}
+          onClassicGravityRangeChange={changeClassicGravityRange}
           reducedMotion={reducedMotion}
           onReducedMotionChange={changeReducedMotion}
         />

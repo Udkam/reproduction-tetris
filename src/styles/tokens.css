@@ -71,6 +71,14 @@
   --font-display: var(--font-ui-en);
 }
 
+/* Kavivanar ships only its authored Regular face. A restrained optical ink pass
+   keeps compact English controls legible without substituting or synthesizing a
+   different weight. Numeric roles remain on Geist Mono below. */
+.app:lang(en) {
+  -webkit-text-stroke: .22px currentColor;
+  paint-order: stroke fill;
+}
+
 :root:lang(zh-CN),
 [lang="zh-CN"] {
   --font-body: var(--font-ui-zh);
@@ -115,6 +123,21 @@ h3 {
   font-family: var(--font-data);
   font-feature-settings: "zero" 0;
   font-variant-numeric: tabular-nums;
+}
+
+.app:lang(en) :is(
+  kbd,
+  .entry-countdown__digit,
+  .run-stats strong,
+  .result-leaderboard li > b,
+  .result-leaderboard__run strong,
+  .result-leaderboard li > time,
+  [data-record-field],
+  .puzzle-gallery__index,
+  .puzzle-gallery__page,
+  .level-entry__number
+) {
+  -webkit-text-stroke: 0;
 }
 
 /* Brand typography is deliberately isolated from every other player-facing role. */

@@ -244,6 +244,114 @@
   text-align: right;
 }
 
+.settings-console__preference--classic-speed {
+  grid-column: 1 / -1;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+}
+
+.classic-speed-control {
+  display: grid;
+  grid-template-columns: minmax(124px, .55fr) repeat(2, minmax(190px, 1fr));
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.classic-speed-control__heading {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.classic-speed-control__heading b {
+  font-size: 12px;
+}
+
+.classic-speed-control__heading small {
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.classic-speed-control__bound {
+  display: grid;
+  grid-template-columns: auto minmax(84px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.classic-speed-control__bound input {
+  appearance: none;
+  width: 100%;
+  min-width: 84px;
+  height: 5px;
+  margin: 0;
+  background: color-mix(in srgb, var(--settings-accent) 30%, var(--raised));
+  border: 0;
+  border-radius: 999px;
+  accent-color: var(--settings-accent);
+  cursor: pointer;
+}
+
+.classic-speed-control__bound input::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--settings-accent);
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--settings-accent) 72%, var(--ink));
+}
+
+.classic-speed-control__bound input::-moz-range-track {
+  height: 5px;
+  background: color-mix(in srgb, var(--settings-accent) 30%, var(--raised));
+  border: 0;
+  border-radius: 999px;
+}
+
+.classic-speed-control__bound input::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--settings-accent);
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--settings-accent) 72%, var(--ink));
+}
+
+.classic-speed-control__bound input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 5px;
+}
+
+.classic-speed-control output {
+  min-width: 7.5ch;
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.classic-speed-control__unit {
+  font-family: var(--font-ui);
+  font-weight: 700;
+}
+
+.app:lang(en) .classic-speed-control__unit {
+  font-weight: 400;
+}
+
 .settings-console__actions {
   grid-column: 1 / -1;
   justify-self: stretch;
@@ -493,6 +601,18 @@
     grid-column: auto;
   }
 
+  .settings-console__preference--classic-speed {
+    grid-column: auto;
+  }
+
+  .classic-speed-control {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .classic-speed-control__bound {
+    grid-template-columns: minmax(74px, auto) minmax(90px, 1fr) auto;
+  }
+
   .settings-console__panel--rules > .mode-rule-summary ul,
   .settings-console__panel--rules > .mode-rule-summary--marathon ul {
     grid-template-columns: minmax(0, 1fr);
@@ -516,6 +636,14 @@
 
   .settings-console__controls .audio-volume {
     grid-template-columns: auto minmax(90px, 1fr) auto;
+  }
+
+  .classic-speed-control__bound {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .classic-speed-control__bound > span {
+    grid-column: 1 / -1;
   }
 }
 
