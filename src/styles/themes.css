@@ -1,0 +1,387 @@
+/* T27-R1 — three complete presentation environments. Piece identity colors stay
+ * canonical; page hierarchy, interaction color, and the Pixi well move together. */
+
+.app[data-theme="mineral-mist"] {
+  color-scheme: light;
+  --page: #dce7f1;
+  --surface: #f8fafc;
+  --raised: #edf3f7;
+  --selected: #e4eff1;
+  --well: #071522;
+  --ink: #102a43;
+  --muted: #52677f;
+  --line: #c4d4df;
+  --edge: #9fb4c4;
+  --classic: #31978d;
+  --race: #5878c4;
+  --sprint: #c77a35;
+  --puzzle: #8a63b3;
+  --selection: #a75e71;
+  --target: #d9c187;
+  --action: #315f96;
+  --hover: #3d70a8;
+  --focus: #245e9c;
+  --action-ink: #f8fafc;
+  --success: #3f7f5d;
+  --danger: #a64e61;
+  --muted-soft: #627d98;
+  --wordmark-field: #17324a;
+  --theme-page-wash: radial-gradient(circle at 50% 28%, #edf4f8 0, #dce7f1 62%, #d1deea 100%);
+}
+
+.app[data-theme="deep-tide"] {
+  color-scheme: dark;
+  --page: #0c1721;
+  --surface: #142430;
+  --raised: #1a2d3a;
+  --selected: #203844;
+  --well: #04111d;
+  --ink: #edf5f4;
+  --muted: #a9bec5;
+  --line: #344e5c;
+  --edge: #5f8190;
+  --classic: #53b7aa;
+  --race: #819ce0;
+  --sprint: #da9350;
+  --puzzle: #a98ad0;
+  --selection: #cc7e91;
+  --target: #dbc27d;
+  --action: #397488;
+  --hover: #47879a;
+  --focus: #7fc4d0;
+  --action-ink: #f7fbfb;
+  --success: #6aa27f;
+  --danger: #d27483;
+  --muted-soft: #8da6af;
+  --wordmark-field: #17364a;
+  --theme-page-wash: radial-gradient(circle at 50% 24%, #172a36 0, #0c1721 66%, #08111a 100%);
+}
+
+.app[data-theme="sunstone"] {
+  color-scheme: light;
+  --page: #e9e0d2;
+  --surface: #faf5eb;
+  --raised: #f0e7d8;
+  --selected: #e7dcc8;
+  --well: #191510;
+  --ink: #332b24;
+  --muted: #6d6257;
+  --line: #cdbda5;
+  --edge: #a88964;
+  --classic: #4f8c81;
+  --race: #687fae;
+  --sprint: #b96635;
+  --puzzle: #866b9b;
+  --selection: #a55866;
+  --target: #c9a851;
+  --action: #8a5b38;
+  --hover: #9f6a41;
+  --focus: #6e553e;
+  --action-ink: #fffaf1;
+  --success: #567a5d;
+  --danger: #a84f55;
+  --muted-soft: #7c6f62;
+  --wordmark-field: #3b3128;
+  --theme-page-wash: radial-gradient(circle at 50% 25%, #f3ecdf 0, #e9e0d2 65%, #ded1bd 100%);
+}
+
+.app[data-theme] {
+  color: var(--ink);
+  background: var(--theme-page-wash);
+}
+
+.app[data-theme] :is(.landing-shell, .library-shell, .play-shell) {
+  color: var(--ink);
+  background: transparent;
+}
+
+.app[data-theme] :is(
+  .mode-chooser--workbench,
+  .library-stage,
+  .action-sheet,
+  .settings-console,
+  .result-leaderboard
+) {
+  color: var(--ink);
+}
+
+.app[data-theme="deep-tide"] :is(.mode-gate, .library-panel, .action-sheet, .settings-console) {
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .24);
+}
+
+.app[data-theme="sunstone"] :is(.mode-gate, .library-panel, .action-sheet, .settings-console) {
+  box-shadow: 0 18px 42px rgba(72, 50, 31, .14);
+}
+
+.visual-theme-control > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.visual-theme-control__option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-width: 0;
+  min-height: 46px;
+  gap: 8px;
+  padding: 7px 9px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.15;
+  text-align: left;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--raised) 84%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--edge) 78%, var(--surface));
+  border-radius: 8px;
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--focus) 42%, transparent);
+}
+
+.visual-theme-control__option[aria-pressed="true"] {
+  color: var(--action-ink);
+  background: var(--action);
+  border-color: color-mix(in srgb, var(--action) 70%, var(--edge));
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visual-theme-control__option:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.visual-theme-control__selection {
+  display: block;
+  min-width: 3.5em;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: right;
+}
+
+.app:not([data-reduced-motion="true"]) :is(.action-sheet, .settings-console, .mode-gate) {
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+/* Shared chrome follows the active environment. Back and Settings intentionally
+ * use one treatment so navigation hierarchy does not change between themes. */
+.app[data-theme] :is(.topbar-action--back, .topbar-action--settings) {
+  color: var(--action-ink);
+  background: var(--action);
+  border-color: color-mix(in srgb, var(--action) 72%, var(--edge));
+}
+
+.app[data-theme] :is(.topbar-action--back, .topbar-action--settings):is(:hover, :focus-visible) {
+  color: var(--action-ink);
+  background: var(--hover);
+  border-color: color-mix(in srgb, var(--hover) 72%, var(--focus));
+}
+
+/* Only the live values are promoted on the right rail. Labels remain quiet and
+ * keep the scanning hierarchy requested for the centered-board composition. */
+.app[data-theme] .run-stats strong,
+.app[data-theme] .run-stats__value {
+  color: var(--ink);
+  text-shadow: 0 1px 0 color-mix(in srgb, var(--well) 36%, transparent);
+}
+
+.app[data-theme] .run-stats :is(span, .run-stats__unit) {
+  color: var(--muted);
+}
+
+/* Home is a real themed surface rather than a fixed light card laid over a
+ * themed page. Mode identity remains semantic while all neutrals follow the
+ * active environment. */
+.app[data-theme] .landing-stage--workbench {
+  background: var(--surface);
+  border-color: var(--edge);
+  box-shadow: 0 22px 54px color-mix(in srgb, var(--well) 34%, transparent);
+}
+
+.app[data-theme] .mode-chooser--workbench,
+.app[data-theme] .mode-gates--workbench {
+  background: var(--surface);
+}
+
+.app[data-theme] .mode-chooser--workbench .landing-intro {
+  color: var(--action-ink);
+  background: var(--wordmark-field);
+}
+
+.app[data-theme] .mode-chooser--workbench .mode-home-wordmark,
+.app[data-theme] .mode-chooser--workbench .mode-home-wordmark span:first-child {
+  color: var(--action-ink);
+  text-shadow:
+    0 0 12px color-mix(in srgb, var(--action-ink) 34%, transparent),
+    0 0 30px color-mix(in srgb, var(--classic) 22%, transparent);
+}
+
+.app[data-theme] .mode-chooser--workbench .mode-home-wordmark span:last-child {
+  color: color-mix(in srgb, var(--classic) 78%, var(--action-ink));
+  text-shadow:
+    0 0 12px color-mix(in srgb, var(--classic) 52%, transparent),
+    0 0 32px color-mix(in srgb, var(--classic) 30%, transparent);
+}
+
+.app[data-theme] .mode-gates--workbench .mode-gate {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--gate-accent) 7%, var(--raised));
+  border-color: color-mix(in srgb, var(--gate-accent) 42%, var(--edge));
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--well) 13%, transparent);
+}
+
+.app[data-theme] .mode-gates--workbench .mode-gate:first-child {
+  border-top-color: color-mix(in srgb, var(--gate-accent) 42%, var(--edge));
+}
+
+.app[data-theme] .mode-gates--workbench .mode-gate:is(:hover, :focus-visible) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--gate-accent) 20%, var(--raised));
+  border-color: color-mix(in srgb, var(--gate-accent) 84%, var(--focus));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--gate-accent) 38%, transparent),
+    0 10px 28px color-mix(in srgb, var(--gate-accent) 22%, transparent);
+}
+
+.app[data-theme] .mode-gates--workbench .mode-gate:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--gate-accent) 72%, var(--focus));
+  outline-offset: -4px;
+}
+
+.app[data-theme] .mode-gates--workbench .mode-gate__glyph {
+  background: color-mix(in srgb, var(--gate-accent) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--gate-accent) 62%, var(--edge));
+}
+
+.app[data-theme] .mode-gates--workbench .mode-gate__action {
+  color: color-mix(in srgb, var(--gate-accent) 84%, var(--ink));
+}
+
+.app[data-theme] .mode-gates--workbench[data-input-modality="pointer"] .mode-gate:focus:not(:hover) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--gate-accent) 7%, var(--raised));
+  border-color: color-mix(in srgb, var(--gate-accent) 42%, var(--edge));
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--well) 13%, transparent);
+  outline: 0;
+}
+
+/* The gameplay queue is open instrument space in every environment. This final
+ * theme-layer reset intentionally outranks the retired card/well rules from the
+ * legacy stylesheet while preserving Puzzle's two numbered queue rows. */
+.app[data-theme] .game-left-rail :is(.preview-rail, .next-slot, .next-slot__segment) {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.app[data-theme] .game-left-rail :is(.preview-rail, .next-slot)::before,
+.app[data-theme] .game-left-rail :is(.preview-rail, .next-slot)::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Puzzle library consumes the same environment tokens across its shell,
+ * specimen well, detail strip, paging controls, and level nodes. */
+.app[data-theme] .library-shell--gallery {
+  color: var(--ink);
+  background: transparent;
+}
+
+.app[data-theme] .puzzle-gallery {
+  background: var(--surface);
+  border-color: var(--edge);
+  box-shadow: 0 22px 52px color-mix(in srgb, var(--well) 30%, transparent);
+}
+
+.app[data-theme] .puzzle-gallery__hero {
+  color: var(--action-ink);
+  background:
+    radial-gradient(circle at 50% 46%, color-mix(in srgb, var(--puzzle) 22%, transparent), transparent 38%),
+    linear-gradient(148deg, color-mix(in srgb, var(--raised) 38%, var(--well)) 0%, var(--well) 72%);
+  border-color: var(--edge);
+}
+
+.app[data-theme] .puzzle-gallery__stage::before,
+.app[data-theme] .puzzle-gallery__board {
+  background: color-mix(in srgb, var(--well) 86%, transparent);
+  border-color: color-mix(in srgb, var(--edge) 52%, transparent);
+}
+
+.app[data-theme] .puzzle-gallery__meta {
+  background: color-mix(in srgb, var(--raised) 50%, var(--well));
+  border-color: color-mix(in srgb, var(--edge) 42%, transparent);
+}
+
+.app[data-theme] .puzzle-gallery__title { color: var(--action-ink); }
+.app[data-theme] .puzzle-gallery__title--complete { color: color-mix(in srgb, var(--success) 62%, var(--action-ink)); }
+.app[data-theme] .puzzle-gallery__best,
+.app[data-theme] .puzzle-gallery__lesson,
+.app[data-theme] .puzzle-gallery__requirement { color: color-mix(in srgb, var(--muted) 42%, var(--action-ink)); }
+.app[data-theme] .puzzle-gallery__lesson strong { color: color-mix(in srgb, var(--classic) 72%, var(--action-ink)); }
+
+.app[data-theme] .puzzle-gallery__catalog {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 92% 8%, color-mix(in srgb, var(--puzzle) 12%, transparent), transparent 25%),
+    var(--surface);
+}
+
+.app[data-theme] .puzzle-gallery__catalog-header h1 { color: var(--ink); }
+
+.app[data-theme] .puzzle-gallery__pages,
+.app[data-theme] .puzzle-gallery__mastery {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--raised) 86%, var(--surface));
+  border-color: color-mix(in srgb, var(--edge) 68%, var(--surface));
+}
+
+.app[data-theme] .puzzle-gallery__page { color: var(--muted); }
+.app[data-theme] .puzzle-gallery__page:is(:hover, :focus-visible) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--puzzle) 13%, var(--raised));
+}
+.app[data-theme] .puzzle-gallery__page--active {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-color: var(--puzzle);
+}
+
+.app[data-theme] .puzzle-gallery__node > button {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--raised) 86%, var(--surface));
+  border-color: color-mix(in srgb, var(--edge) 76%, var(--surface));
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--well) 12%, transparent);
+}
+
+.app[data-theme] .puzzle-gallery__node > button:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--puzzle) 14%, var(--raised));
+  border-color: color-mix(in srgb, var(--puzzle) 68%, var(--edge));
+}
+
+.app[data-theme] .puzzle-gallery__node--complete > button {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 64%, var(--edge));
+}
+
+.app[data-theme] .puzzle-gallery__node--locked > button {
+  color: var(--muted-soft);
+  background: color-mix(in srgb, var(--raised) 62%, var(--surface));
+}
+
+.app[data-theme] .puzzle-gallery__node--selected > button {
+  color: var(--action-ink);
+  background: var(--puzzle);
+  border-color: color-mix(in srgb, var(--puzzle) 74%, var(--focus));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--puzzle) 22%, transparent), 0 10px 20px color-mix(in srgb, var(--well) 26%, transparent);
+}
+
+@media (max-width: 599px) {
+  .visual-theme-control > div { grid-template-columns: minmax(0, 1fr); }
+}

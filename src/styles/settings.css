@@ -13,6 +13,11 @@
   background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 96%, white), var(--surface));
   border-color: color-mix(in srgb, var(--edge) 78%, var(--surface));
   box-shadow: 0 24px 64px rgba(11, 23, 38, .24);
+  animation: none !important;
+}
+
+.sheet-backdrop:has(.action-sheet--settings) {
+  animation: none !important;
 }
 
 .action-sheet--settings > h2 {
@@ -109,7 +114,7 @@
 .settings-console__panel {
   min-width: 0;
   padding: 18px;
-  animation: settings-panel-in 140ms ease-out both;
+  animation: none;
 }
 
 .settings-console__controls {
@@ -257,6 +262,13 @@
 }
 
 .settings-console__preference--classic-speed {
+  grid-column: 1 / -1;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+}
+
+.settings-console__preference--theme {
   grid-column: 1 / -1;
   margin-top: 14px;
   padding-top: 13px;
@@ -669,11 +681,6 @@
   padding: 0;
   background: transparent;
   border: 0;
-}
-
-@keyframes settings-panel-in {
-  from { opacity: 0; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 680px) {
