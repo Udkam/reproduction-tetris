@@ -1,0 +1,106 @@
+{
+  "sourceSha": "2198b92860f70427fe01459ce390b43aabdd30d6",
+  "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "errors": [],
+  "homeTypography": {
+    "wordmark": "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+    "modeName": "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+    "tagline": "\"Space Grotesk\", \"Segoe UI\", sans-serif"
+  },
+  "homeEn": {
+    "viewport": [
+      1440,
+      900
+    ],
+    "documentSize": [
+      1440,
+      900
+    ],
+    "horizontalOverflow": false,
+    "clipped": [],
+    "canvasCount": 0,
+    "domBoardCellCount": 0
+  },
+  "introEn": {
+    "viewport": [
+      1440,
+      900
+    ],
+    "documentSize": [
+      1440,
+      900
+    ],
+    "horizontalOverflow": false,
+    "clipped": [],
+    "canvasCount": 0,
+    "domBoardCellCount": 0,
+    "factCount": 3
+  },
+  "startCueElapsedMs": 3733,
+  "startState": {
+    "cue": "Start",
+    "nextLabel": "Next piece: I"
+  },
+  "startEn": {
+    "viewport": [
+      1440,
+      900
+    ],
+    "documentSize": [
+      1440,
+      900
+    ],
+    "horizontalOverflow": false,
+    "clipped": [],
+    "canvasCount": 1,
+    "domBoardCellCount": 0
+  },
+  "homeZhNarrow": {
+    "viewport": [
+      390,
+      844
+    ],
+    "documentSize": [
+      390,
+      844
+    ],
+    "horizontalOverflow": false,
+    "clipped": [],
+    "canvasCount": 0,
+    "domBoardCellCount": 0
+  },
+  "introZhNarrow": {
+    "viewport": [
+      390,
+      844
+    ],
+    "documentSize": [
+      390,
+      844
+    ],
+    "horizontalOverflow": false,
+    "clipped": [],
+    "canvasCount": 0,
+    "domBoardCellCount": 0,
+    "factCount": 3,
+    "chineseBodyCharacters": 48
+  },
+  "reducedMotion": {
+    "sheetAnimation": "none",
+    "ruleFacts": 3
+  },
+  "introReduced": {
+    "viewport": [
+      844,
+      390
+    ],
+    "documentSize": [
+      844,
+      390
+    ],
+    "horizontalOverflow": false,
+    "clipped": [],
+    "canvasCount": 0,
+    "domBoardCellCount": 0
+  }
+}
