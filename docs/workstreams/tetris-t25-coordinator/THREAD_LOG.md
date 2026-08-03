@@ -3,7 +3,8 @@
 - Task ID: `tetris-t25-coordinator`
 - Base SHA: `299f6d1d34a5c9e408c9d9e694dbbd83b5e326dd`
 - Owner: primary coordinator / sole writer
-- Status: verified source checkpoint; the later RC 1.0 typography contract may supersede this presentation choice
+- Status: verified source checkpoint `09bcca8`; the later RC 1.0 typography contract may supersede this presentation choice
+- Ordered checkpoints: contract `fc6ac00`, source `09bcca8`
 - Exact changed paths:
   - contract: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`, `progress.md`, this log
   - source: `src/styles/navigation.css`, `src/styles/navigation.test.ts`

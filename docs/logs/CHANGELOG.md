@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-03 — T25 invariant Home mode typography implemented
+
+- Bound the permanent English Home names `Classic`, `Survival`, `Mutation`, and
+  `Puzzle` directly to the existing Playwrite NZ Basic English UI role. Chinese and
+  English interface states now render the same handwritten labels while localized
+  actions and accessible names continue to follow the selected language.
+- Typecheck, the complete suite (`305 passed / 3 skipped`), and the 760-module build
+  pass. A bilingual Chromium check after font readiness reports identical family and
+  label geometry in both states with zero console errors. One unrelated renderer
+  setup timeout on the first full run passed in isolation and on the full-suite retry.
+
 ## 2026-08-02 — T24 complete English typography and compact Settings accepted
 
 - Unified all English interface prose under locally bundled Playwrite NZ Basic and
