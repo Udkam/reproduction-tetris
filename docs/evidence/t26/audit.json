@@ -1,0 +1,259 @@
+{
+  "sourceSha": "310d83a6b9cba97de845effc02a7ed673454d789",
+  "capturedAt": "2026-08-03T05:15:37.387Z",
+  "origin": "http://127.0.0.1:4186",
+  "browser": "149.0.7827.55",
+  "states": {
+    "homeEn": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif"
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0
+    },
+    "settingsEnSettings": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        232,
+        232
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnControls": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        280,
+        280
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnRules": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        414,
+        414
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsZhSettings": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        232,
+        232
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnPortraitControls": {
+      "viewport": [
+        720,
+        960
+      ],
+      "document": [
+        720,
+        720,
+        960,
+        960
+      ],
+      "settings": [
+        637,
+        637,
+        280,
+        280
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "settingsEnShortRules": {
+      "viewport": [
+        1024,
+        500
+      ],
+      "document": [
+        1024,
+        1024,
+        500,
+        500
+      ],
+      "settings": [
+        773,
+        773,
+        370,
+        370
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "pause": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    },
+    "mutationEnData": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "wrongEnglishFace": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0
+    }
+  },
+  "pauseHitTest": {
+    "back": true,
+    "settings": true
+  },
+  "settingsOpenedFromPause": true,
+  "backOpenedFromPause": true,
+  "errors": []
+}
