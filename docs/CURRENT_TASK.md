@@ -8,7 +8,7 @@ coordinator is the only writer. The accepted deterministic Core, one Pixi canvas
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
 information architecture remain authoritative.
 
-The slice has seven player-visible acceptance requirements:
+The slice has eight player-visible acceptance requirements:
 
 1. Home shows the single `TetraMorph` wordmark without the Chinese positioning line.
    The English positioning line may remain in English UI; Chinese Home must not reserve
@@ -37,6 +37,12 @@ The slice has seven player-visible acceptance requirements:
    The existing Start event remains the confirmation beat. Cues obey SFX enablement and
    volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
    or timers after unmount.
+8. Classic, Survival, and Mutation results use a portrait, content-height ledger rather
+   than the current wide sheet. The mode's ranking metric is the dominant full-width
+   hero value; the secondary metric is visibly subordinate; top-five history follows in
+   one compact vertical table; and actions close the flow without side whitespace. The
+   dialog targets a `30–32rem` desktop width, remains viewport-safe on small screens, and
+   adds no decorative subtitle or duplicate rank statement.
 
 ### Required checkpoints and verification
 
@@ -45,12 +51,13 @@ The slice has seven player-visible acceptance requirements:
 3. Commit Classic Core/runtime persistence and UI controls in reviewable checkpoints;
    directly prove defaulting, validation, current-run immutability, and next-run use.
 4. Commit Survival and Mutation timing changes with deterministic Core tests.
-5. Commit countdown audio and the restrained Supergravity visual with direct audio,
-   renderer, CSS, and reduced-motion tests.
+5. Commit countdown audio, the restrained Supergravity visual, and the portrait result
+   hierarchy with direct audio, renderer, CSS, and reduced-motion tests.
 6. After the final source edit, run one typecheck, the complete two-worker suite, one
    production build, and one controlled bilingual browser-evidence batch. Inspect real
-   Home, Classic Settings, Survival HUD, countdown, and Supergravity frames. Then create
-   a candidate SHA for independent read-only QA before changelog acceptance and push.
+   Home, Classic Settings, Survival HUD, countdown, Supergravity, and all three ranked
+   result frames. Then create a candidate SHA for independent read-only QA before
+   changelog acceptance and push.
 
 No source, test, build, browser, or evidence claim is complete at contract freeze.
 

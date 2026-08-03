@@ -52,6 +52,17 @@ bus. `3`, `2`, and `1` rise in pitch and remain shorter and quieter than the exi
 Start confirmation. They respect mute and volume, never create music or another audio
 context, and are cancelled by the existing runtime teardown boundary.
 
+### Portrait result hierarchy
+
+The ranked Classic, Survival, and Mutation result sheet becomes a narrow vertical
+ledger instead of a wide dashboard. Its desktop measure is `30–32rem`: the mode's
+principal ranking metric occupies one full-width hero field with the largest data type,
+the contextual metric sits beneath it at a clearly lower visual weight, the top-five
+history reads down one compact table, and the actions finish the same axis. Width may
+collapse to the viewport but does not expand to fill available board space. The current
+run is still identified inside its real table row; no duplicate rank sentence,
+decorative subtitle, or empty side column is introduced.
+
 ## 2026-08-03 T26 — v1.0 Release Candidate convergence
 
 TetraMorph now follows a release-candidate convergence programme rather than another
