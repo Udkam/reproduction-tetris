@@ -55,8 +55,13 @@ The correction has ten coupled acceptance requirements:
    buttons use the currently active theme's shared control surface instead of carrying
    three independent theme previews. The selected button adds a semantic outline and
    localized selected-state text, without a circle, swatch, or checkmark. The Motion
-   control uses the same button language as Language and Sound, and switching from
-   reduced to full motion must not flash or repaint the complete page as a transient frame.
+   control uses the same filled, theme-owned button language as Language and Sound in
+   both states, so Full motion does not read as a disabled control. Full motion keeps the
+   bounded cover fades, value-settle cues, surface interpolation, and short renderer
+   particles/trails; Reduced motion presents static endpoints without interpolation,
+   continuous breathing, value translation, particles, or trails. Switching modes must
+   not flash or repaint the complete page as a transient frame and never changes gameplay
+   timing or canonical state.
 6. Pause and Restart both use the same full-board interruption composition as the
    opening cue instead of compact white sheets. Pause shows large `暂停 / Paused` and
    smaller `回车继续 / Press Enter to continue`; only Enter resumes the same run.
@@ -89,9 +94,10 @@ The correction has ten coupled acceptance requirements:
    `开始 / Start` word. After `1`, the cover exits through one short opacity/light
    transition and the first piece begins falling at that same completion boundary.
    Opening, pausing, restarting, and dismissing a cover must not hard-cut the board glow.
-   The veil uses one soft, low-contrast light field that reaches toward all four board
-   edges with broad falloff; it must not read as a central circular spotlight, ring, or
-   hard radial hotspot.
+   The veil uses one soft, low-contrast luminous base that visibly fills the complete
+   board, with broad four-direction edge falloff layered over that continuous field. It
+   must not leave a mostly dark centre, split into four isolated edge lobes, or read as a
+   central circular spotlight, ring, or hard radial hotspot.
    Each countdown digit has a clearer short procedural SFX accent while still obeying
    the shared SFX enablement and volume controls; no music or persistent voice is added.
 10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line

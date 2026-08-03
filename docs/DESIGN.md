@@ -72,8 +72,14 @@ use the currently active theme's shared control surface; they do not preview thr
 theme palettes inside one Settings page. A visible selected outline, localized
 selected-state text, and `aria-pressed` keep selection from depending on hue. Enter activates
 the focused option, focus remains visible, and reduced motion removes theme cross-fades.
-The Motion choice uses the same button construction as Language and Sound. Changing from
-reduced to full motion must not flash or repaint the entire page as an intermediate frame.
+The Motion choice uses the same filled, theme-owned button construction as Language and
+Sound in both states; `Full motion` must never look disabled merely because the reduced-
+motion boolean is false. Full motion retains bounded cover fades, value-settle cues,
+theme/surface interpolation, and the renderer's short particles and trails. Reduced motion
+shows the same informative endpoints without cover interpolation, continuous breathing,
+value translation, particles, or trails; deterministic timers and game state remain
+unchanged. Changing between the two states must not flash or repaint the entire page as an
+intermediate frame.
 
 Pause and Restart are board-cover states, not floating white dialogs. Pause uses the
 opening cue's full-board composition with `暂停 / Paused` and `回车继续 / Press Enter to
@@ -110,8 +116,10 @@ The entry cover presents only `3`, `2`, and `1`. It never adds a trailing `开�
 word or hold. After the `1` beat, the veil and its board-local light treatment leave via
 one short opacity transition; the first piece begins falling when that exit completes.
 The cover uses a corresponding short entrance rather than appearing as a hard cut.
-Its illumination is a soft full-board field with broad four-direction falloff: no central
-circle, ring, hard hotspot, or single-axis beam may remain visible.
+Its illumination begins with one low-contrast luminous base that visibly fills the complete
+board, then adds only broad four-direction edge falloff. It must read as one continuous soft
+field rather than four isolated edge lobes or a mostly unlit board; no central circle, ring,
+hard hotspot, or single-axis beam may remain visible.
 Reduced motion keeps the same timing boundary but removes interpolation. Each digit owns
 one stronger, short procedural SFX accent on the runtime AudioContext; the cues remain
 volume-controlled and leave no persistent voice.
