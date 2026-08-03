@@ -22,9 +22,12 @@ const rendererCaptureBoardPng = vi.hoisted(() => vi.fn(() => ({
   pixelProbe: { samples: 32, nonTransparentSamples: 32, distinctBuckets: 4 },
 })));
 const inputClearHeld = vi.hoisted(() => vi.fn());
+const inputDestroy = vi.hoisted(() => vi.fn());
 const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void) | null }));
 const audioPrime = vi.hoisted(() => vi.fn());
 const audioSetVolume = vi.hoisted(() => vi.fn());
+const audioDestroy = vi.hoisted(() => vi.fn());
+const rendererDestroy = vi.hoisted(() => vi.fn());
 
 vi.mock('../audio/AudioEngine', () => ({
   AudioEngine: class {
@@ -34,7 +37,7 @@ vi.mock('../audio/AudioEngine', () => ({
     play(): void {}
     syncMutationState(): void {}
     suspend(): void {}
-    destroy(): void {}
+    destroy(): void { audioDestroy(); }
   },
 }));
 
@@ -45,7 +48,7 @@ vi.mock('../input/InputController', () => ({
     release(): void {}
     step(): void {}
     clearHeld(): void { inputClearHeld(); }
-    destroy(): void {}
+    destroy(): void { inputDestroy(); }
   },
 }));
 
@@ -55,7 +58,7 @@ vi.mock('../render/TetrisRenderer', () => ({
     setOptions(options: unknown): void { rendererSetOptions(options); }
     setFrameCallback(): void {}
     render(state: unknown, events: unknown, deltaMs: number): void { rendererRender(state, events, deltaMs); }
-    destroy(): void {}
+    destroy(): void { rendererDestroy(); }
     getSnapshot(): Record<string, never> { return {}; }
     captureBoardPng(): ReturnType<typeof rendererCaptureBoardPng> {
       return rendererCaptureBoardPng();
@@ -85,6 +88,28 @@ describe('GameRuntime public state boundary', () => {
 
     expect(runtime.getState().status).toBe('playing');
     expect(() => runtime.destroy()).not.toThrow();
+  });
+
+  it('releases the visibility listener, input, renderer, audio, and QA bridge exactly once', async () => {
+    inputDestroy.mockClear();
+    rendererDestroy.mockClear();
+    audioDestroy.mockClear();
+    const removeVisibility = vi.fn();
+    const platform = createBrowserPlatform();
+    vi.spyOn(platform, 'listenVisibility').mockReturnValue(removeVisibility);
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false, platform });
+
+    await runtime.mount(document.createElement('div'));
+    expect(window.__TETRAMORPH_QA__).toBeDefined();
+
+    runtime.destroy();
+    runtime.destroy();
+
+    expect(removeVisibility).toHaveBeenCalledTimes(1);
+    expect(inputDestroy).toHaveBeenCalledTimes(1);
+    expect(rendererDestroy).toHaveBeenCalledTimes(1);
+    expect(audioDestroy).toHaveBeenCalledTimes(1);
+    expect(window.__TETRAMORPH_QA__).toBeUndefined();
   });
 
   it('forwards Survival entry bedrock staging without changing canonical Core state', async () => {

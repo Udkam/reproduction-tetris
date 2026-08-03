@@ -79,6 +79,7 @@ class FakeCompressor {
 const oscillators: FakeOscillator[] = [];
 const gains: FakeGain[] = [];
 const noiseSources: FakeBufferSource[] = [];
+let audioContextCloseCalls = 0;
 
 class FakeAudioContext {
   currentTime = 0;
@@ -114,7 +115,7 @@ class FakeAudioContext {
 
   async resume(): Promise<void> {}
   async suspend(): Promise<void> {}
-  async close(): Promise<void> {}
+  async close(): Promise<void> { audioContextCloseCalls += 1; }
 }
 
 interface ScheduledTimer {
@@ -155,12 +156,24 @@ afterEach(() => {
   oscillators.length = 0;
   gains.length = 0;
   noiseSources.length = 0;
+  audioContextCloseCalls = 0;
   vi.clearAllTimers();
   vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
 describe('AudioEngine original feedback', () => {
+  it('closes its owned AudioContext exactly once during idempotent teardown', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+
+    await audio.prime();
+    audio.destroy();
+    audio.destroy();
+
+    expect(audioContextCloseCalls).toBe(1);
+  });
+
   it('gives every mutation material a concise, unbent original signature', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
 
