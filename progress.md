@@ -1,5 +1,16 @@
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 
+## T26 RC audit resumed — 2026-08-03
+
+- Reconciled the active RC programme against current source instead of treating
+  historical acceptance as whole-release proof. `docs/RC_AUDIT.md` now distinguishes
+  verified, partial, open, and current-proof requirements.
+- The next bounded checkpoint is Phase B only: one bilingual Home positioning line,
+  separate concise Goal / Mechanic / Challenge first-entry copy, and a non-blocking
+  `Start` handoff after `3–2–1`.
+- Remaining Settings reduced-motion/touch guidance, cross-surface browser proof,
+  bounded mode polish, lifecycle/bundle closure, and showcase assets remain open.
+
 ## T23 accepted — 2026-08-02
 
 - Survival ordinary gravity is now 38 ticks per cell, and every fourth natural

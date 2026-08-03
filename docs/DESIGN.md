@@ -28,6 +28,24 @@ Playwrite NZ Basic is the brand face, Space Grotesk is the English/UI face, Geis
 is the data face, and Noto Sans SC is the Chinese face. That change belongs to
 Phase C and must not be mixed into Phase A.
 
+### Phase B — one-sentence promise, concise rules, immediate Start
+
+The Home keeps its existing four-mode matrix and single `TetraMorph` wordmark. A single
+positioning line sits with that brand, never inside the mode cards and never expands
+into marketing prose: `Transform the way blocks fall.` in English and
+`重新定义下落方块` in Chinese.
+
+First-entry guidance is a separate information layer from Settings. Every mode uses
+exactly three facts—Goal / Mechanic / Challenge—written for a first run; Settings keeps
+the complete operational rules. The Chinese values for each mode total fewer than 100
+characters. This separation prevents a concise onboarding edit from deleting precise
+rules players may revisit later.
+
+The entry overlay presents `3`, `2`, `1`, `Start`. `Start` is a short visual handoff,
+not another countdown second: the runtime and controls enable at the same boundary at
+which the former overlay disappeared. The cue ignores pointer input, clears on every
+restart or mode reset, and honors reduced motion without changing deterministic time.
+
 ### Phases B-C active correction — semantic type and progressive Settings disclosure
 
 The player-facing type system now has four non-overlapping roles. Playwrite NZ Basic

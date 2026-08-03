@@ -5,7 +5,7 @@
 - Owner: primary coordinator / sole writer until an immutable candidate is ready for
   independent read-only QA
 - Status: Phase A verified and archived; Phase-C typography/Settings correction
-  verified; RC programme remains active
+  verified; RC programme remains active; Phase B first-experience slice opened
 - Exact Phase-A paths under review:
   - contract/archive: `docs/CURRENT_TASK.md`, `docs/DESIGN.md`,
     `docs/phases/rc-1.0.md`, `progress.md`, this log, `docs/logs/CHANGELOG.md`
@@ -44,6 +44,10 @@
 - Final gates: typecheck pass; `309 passed / 3 skipped`; 768 transformed modules; nine
   audit states; both Pause hit targets and both real successor transitions true.
 - Resources: evidence-owned Vite PID released; no listener remains on port `4186`.
+- RC audit checkpoint: current source lacks the Home positioning line, reuses detailed
+  Settings rules in first-entry sheets, and renders only `3–2–1`; Settings still lacks
+  player reduced-motion and visible touch controls. These are recorded in
+  `docs/RC_AUDIT.md` without relabelling the prior accepted evidence.
 - Blocker: none
-- Next action: keep product source frozen and open only the next explicitly authorised
-  RC slice. Phase B first experience and Phases D-F remain unfinished.
+- Next action: commit the Phase-B contract checkpoint, then implement only the Home
+  positioning line, concise first-entry facts, non-blocking Start cue, and direct proof.

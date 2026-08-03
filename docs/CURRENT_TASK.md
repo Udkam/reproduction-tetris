@@ -8,6 +8,27 @@ is a convergence programme: no Core rewrite, renderer replacement, fifth mode, a
 system, server dependency, or broad React migration is authorised. Each change must
 improve first-time understanding, portfolio presentation, or long-term maintenance.
 
+The live requirement-by-requirement disposition is `docs/RC_AUDIT.md`. It records
+unproven work as open even when a related historical slice passed. The current bounded
+product slice is **Phase B first experience**:
+
+1. add exactly one localized Home positioning line under the sole wordmark:
+   `Transform the way blocks fall.` / `重新定义下落方块`;
+2. give first-entry sheets their own Goal / Mechanic / Challenge copy instead of
+   reusing the detailed Settings rules; each Chinese mode body remains under 100
+   characters;
+3. render `3`, `2`, `1`, then a short `Start` cue. Input and runtime timing begin at
+   the existing three-second boundary, so the word is feedback rather than a fourth
+   blocking count;
+4. add direct copy/timing tests, focused typecheck/tests, then one source-bound
+   responsive browser pass. This slice cannot change Core, renderer, persistence,
+   Puzzle boards/order, ranking, or mode mechanics.
+
+The remaining Phase-C gaps are explicitly open: a persisted player reduced-motion
+control on the Settings tab, visible touch guidance on the Controls tab, and a final
+responsive audit of results/leaderboards. They will be a separate checkpoint after
+Phase B, not silently bundled into it.
+
 The complete phase contract is recorded in `docs/phases/rc-1.0.md`. Phase A delivered:
 
 1. package metadata, README, active DEV-QA globals, active persistence writes, comments,
