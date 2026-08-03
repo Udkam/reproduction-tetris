@@ -1,38 +1,78 @@
-# Signal Foundry
+# TetraMorph
 
-An original, polished falling-block puzzle study built with React, TypeScript,
-Vite, and PixiJS. The project reproduces the familiar strategic rules of the
-genre while using original presentation, audio, naming, and interface design.
+A modern mutation-driven falling-block puzzle game built for precise play,
+readable pressure, and deterministic replay.
 
-```bash
-npm.cmd install
-npm.cmd run dev
-```
+## Features
+
+- **Classic Mode** — clear lines, build combos, and manage steadily rising gravity.
+- **Survival Mode** — play above rising bedrock while clearable falling stones reshape
+  the board.
+- **Mutation Mode** — trigger visible item carriers and adapt to five temporary or
+  immediate rule mutations.
+- **Puzzle Campaign** — solve 50 authored boards with fixed queues, undo support, and
+  a staged learning curve.
+
+## Technical Highlights
+
+- **PixiJS renderer** with one gameplay canvas and renderer-owned pieces, materials,
+  particles, and effects.
+- **Deterministic Core** isolated from React, PixiJS, browser timing, storage, and audio.
+- **Replay system** with seeded runs and public state snapshots for reproducible QA.
+- **Procedural audio** generated locally without licensed music or runtime media calls.
+- **TypeScript architecture** with explicit Core, runtime, input, renderer, platform,
+  persistence, and React composition boundaries.
 
 ## Controls
 
-- Move: `Left` / `Right` or `A` / `D`
-- Soft drop: `Down` or `S`
-- Hard drop: `Space`
-- Rotate clockwise: `Up`, `X`, or `W`
-- Rotate counter-clockwise: `Z`
-- Hold: `C` or `Shift`
-- Pause: `P` or `Escape`
-- Restart: `R`
+| Action | Keyboard |
+| --- | --- |
+| Move | `←` / `→` or `A` / `D` |
+| Rotate clockwise | `↑`, `W`, or `X` |
+| Rotate counter-clockwise | `Q` |
+| Soft drop | `↓` |
+| Hard drop | `Space` |
+| Pause / resume | `P` |
+| Settings | `S` |
+| Restart confirmation | `R` |
+| Puzzle undo | `Z` |
+| Back / close | `Esc` |
+| Select / activate | Arrow keys / `Enter` |
 
-Portrait and landscape touch controls are provided automatically on compact viewports. Audio, reduced motion, and high-contrast rendering can be changed from the interface.
+Touch controls are available on compact portrait and landscape layouts. The interface
+also supports Chinese and English, reduced-motion preferences, and adjustable SFX.
 
-Quality gates:
+## Development
+
+Requirements: a current Node.js release compatible with Vite 8 and npm.
 
 ```bash
-npm.cmd run typecheck
-npm.cmd run test
-npm.cmd run build
+npm ci
+npm run dev
 ```
 
-Browser evidence and hashed screenshots are recorded in
-`docs/qa/tetris-browser-evidence.json` and `docs/screenshots/tetris/`.
-The maintained file layout is documented in `docs/PROJECT_STRUCTURE.md`.
+Release gates:
 
-The endless-runner study and recursive-puzzle archive live in the separate
-`reproduction-temple-run` and `reproduction-patricks-parabox` repositories.
+```bash
+npm run typecheck
+npm run test
+npm run build
+```
+
+The deterministic game rules live in `src/game/core`; React owns page composition and
+lifecycle, while PixiJS owns the single board canvas. Project contracts and release
+evidence are maintained under `docs/`.
+
+## Screenshots
+
+### Mode selection
+
+![TetraMorph mode selection](docs/evidence/t24/home-en.png)
+
+### Puzzle campaign
+
+![TetraMorph puzzle campaign](docs/evidence/t24/puzzle-en.png)
+
+### Settings
+
+![TetraMorph settings](docs/evidence/t24/settings-en-desktop.png)
