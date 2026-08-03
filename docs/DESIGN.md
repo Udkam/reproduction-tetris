@@ -24,8 +24,8 @@ and layout automation now use explicitly branded TetraMorph QA globals. The comp
 nonvisual gate passes without starting a development server or browser.
 
 The final typography contract intentionally supersedes T24/T25 experimentation:
-Playwrite NZ Basic is the brand face, Space Grotesk is the English/UI face, JetBrains
-Mono is the data face, and Noto Sans SC is the Chinese face. That change belongs to
+Playwrite NZ Basic is the brand face, Space Grotesk is the English/UI face, Geist Mono
+is the data face, and Noto Sans SC is the Chinese face. That change belongs to
 Phase C and must not be mixed into Phase A.
 
 ### Phases B-C active correction — semantic type and progressive Settings disclosure
@@ -33,10 +33,12 @@ Phase C and must not be mixed into Phase A.
 The player-facing type system now has four non-overlapping roles. Playwrite NZ Basic
 belongs only to the `TetraMorph` wordmark. Space Grotesk owns ordinary English UI and
 must keep translated prose within the same measured regions as Chinese. Noto Sans SC
-owns Chinese UI and headings without a separate novelty display face. JetBrains Mono
-owns numeric/data content, keycaps, ranks, dates, percentages, countdowns, and compact
-units. A player-facing English selector resolving to Playwrite or a data selector
-resolving to IBM Plex Mono is a regression.
+owns Chinese UI and headings without a separate novelty display face. Geist Mono owns
+numeric/data content, keycaps, ranks, dates, percentages, countdowns, and compact units;
+its open counters and balanced width must remain readable at HUD size without the
+rejected narrow technical tone. A player-facing English selector resolving to
+Playwrite, or a data selector resolving to JetBrains Mono / IBM Plex Mono, is a
+regression.
 
 Settings is no longer a poster containing four simultaneous sections. The enclosing
 sheet owns one compact tab rail and one content viewport:

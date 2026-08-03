@@ -38,9 +38,10 @@ top actions, and a Settings sheet that exposes every subsystem at once. This sli
 1. keep Playwrite NZ Basic exclusive to the `TetraMorph` wordmark; use locally packaged
    Space Grotesk for all ordinary English headings, prose, labels, buttons, rules,
    keyboard descriptions, records, and units; use Noto Sans SC for Chinese UI;
-2. use locally packaged JetBrains Mono for scores, times, ranks, dates, countdowns,
-   board indices, keycaps, percentages, and numeric units, with tabular figures and no
-   synthetic slashed-zero styling;
+2. use locally packaged Geist Mono for scores, times, ranks, dates, countdowns,
+   board indices, keycaps, percentages, and numeric units. Its compact, open figures
+   replace the rejected narrow JetBrains Mono treatment; tabular figures remain enabled
+   and synthetic slashed-zero styling remains prohibited;
 3. replace the all-at-once Settings console with three explicit tabs: **Settings**
    (language, SFX, volume, restart/continue), **Controls** (gameplay first, shortcuts
    second), and **Rules** (current-mode rules followed by its record or top-five table).
