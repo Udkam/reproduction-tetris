@@ -411,6 +411,11 @@
   outline: 0;
 }
 
+.settings-console .classic-speed-control__input[data-arrow-nav][data-arrow-selected="true"] {
+  outline: 0;
+  outline-offset: 0;
+}
+
 .classic-speed-control__input:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--focus), 0 3px 7px rgba(20, 57, 87, .18);
 }

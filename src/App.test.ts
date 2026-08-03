@@ -1775,6 +1775,8 @@ describe('T6 frontend mode binding', () => {
     expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__track i\s*\{[^}]*left:\s*var\(--classic-speed-start\)[^}]*width:\s*calc\(var\(--classic-speed-floor\) - var\(--classic-speed-start\)\)/s);
     expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input\s*\{[^}]*appearance:\s*none[^}]*direction:\s*rtl[^}]*pointer-events:\s*none/s);
     expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input::-(?:webkit-slider-thumb|moz-range-thumb)\s*\{[^}]*pointer-events:\s*auto[^}]*border:\s*4px solid var\(--settings-accent\)/s);
+    expect(sourceSettingsStyles).toMatch(/\.settings-console \.classic-speed-control__input\[data-arrow-nav\]\[data-arrow-selected="true"\]\s*\{[^}]*outline:\s*0/s);
+    expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input:focus-visible::-(?:webkit-slider-thumb|moz-range-thumb)\s*\{[^}]*box-shadow:[^}]*var\(--focus\)/s);
     view.unmount();
 
     const resumed = render(createElement(App));
