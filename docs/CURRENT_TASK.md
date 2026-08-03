@@ -5626,5 +5626,6 @@ dependency, and has no executable browser-evidence script containing a personal 
 Post-source gates pass typecheck, `318 passed / 3 skipped`, the 756-module build, a clean
 `npm ci` from the committed lockfile, a clean direct dependency tree, and OSV with no
 known issue. Phase-E/F browser audits bind to source `85a3431`, report no errors or
-cleanup residue, and release ports `4191` and `4192`. Final acceptance and push remain
-blocked until gitleaks and the second independent read-only QA pass the committed range.
+cleanup residue, and release ports `4191` and `4192`. A redacted gitleaks 8.30.1 scan of
+the candidate range passes. Final acceptance and push remain blocked only until the
+second independent read-only QA accepts the committed range.

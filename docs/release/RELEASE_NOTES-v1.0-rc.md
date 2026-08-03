@@ -38,7 +38,8 @@ and clean delivery rather than expanding the feature set.
 - Production typography emits only the 13 WOFF2 faces used by the accepted semantic
   roles, reducing emitted font bytes by 57.6%.
 - The direct dependency tree is clean and a scoped OSV Scanner 2.4.0 lockfile scan found
-  no known issue in the candidate.
+  no known issue in the candidate. A redacted gitleaks 8.30.1 scan reports no secret
+  finding in the release range.
 
 ## Evidence
 

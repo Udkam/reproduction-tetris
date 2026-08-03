@@ -1399,5 +1399,6 @@
 - Refreshed Phase-E lifecycle and Phase-F six-frame evidence on source `85a3431` in
   Chromium `149.0.7827.55`; ports `4191/4192` were released and both audits are clean.
 - Typecheck, `318 passed / 3 skipped`, the 756-module build, committed-lock `npm ci`,
-  direct dependency inspection, and OSV pass. This is a corrected candidate, not final
-  acceptance; scoped gitleaks and the second independent QA are still required.
+  direct dependency inspection, OSV, and redacted candidate-range gitleaks pass. This
+  is a corrected candidate, not final acceptance; the second independent QA is still
+  required.

@@ -1533,5 +1533,5 @@ Original prompt: separate Tetris into E:\Proj\reproduction-tetris, diagnose the 
   / 3 skipped tests, the 756-module build, committed-lock `npm ci`, direct dependency
   tree, and OSV pass. Both evidence servers released their ports and audits report no
   browser error or cleanup residue.
-- Phase F is verified; final acceptance and push remain blocked on the scoped secret
-  scan and a second independent read-only QA decision.
+- Phase F and the redacted candidate-range gitleaks scan are verified; final acceptance
+  and push remain blocked only on a second independent read-only QA decision.

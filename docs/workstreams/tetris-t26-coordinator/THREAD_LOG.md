@@ -95,6 +95,7 @@
 - Phase-E lifecycle audit and Phase-F six-frame audit bind to source `85a3431` in Chromium
   `149.0.7827.55`, report no browser errors or cleanup residue, and leave no listener on
   ports `4191` or `4192`. The three changed Phase-F frames were visually inspected.
-- Blocker: scoped gitleaks and second independent read-only QA remain.
-- Next action: commit synchronized candidate status, run the secret scan, then request
+- Redacted gitleaks 8.30.1 passes for `2d4f3ec..98d71ef` with no finding.
+- Blocker: second independent read-only QA only.
+- Next action: commit this scan disposition, rescan the resulting final HEAD, then request
   exact-range QA without opening a server, browser, test, build, or writer process.
