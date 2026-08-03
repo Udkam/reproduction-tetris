@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOARD_HEIGHT, BOARD_WIDTH, CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS, CLASSIC_STARTING_GRAVITY_MAX_TICKS, CLASSIC_STARTING_GRAVITY_MIN_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, MUTATION_GRAVITY_TICKS, MUTATION_LINES_PER_SPEED, PROGRESSIVE_GRAVITY_TICKS, STANDARD_GRAVITY_TICKS, SURVIVAL_GRAVITY_TICKS, gravityForMode, normalizeClassicStartingGravityTicks } from './constants';
+import { BOARD_HEIGHT, BOARD_WIDTH, CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS, CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS, CLASSIC_STARTING_GRAVITY_MAX_TICKS, CLASSIC_STARTING_GRAVITY_MIN_TICKS, LINE_CLEAR_DELAY_TICKS, LOCK_DELAY_TICKS, MAX_LOCK_RESETS, MUTATION_GRAVITY_TICKS, MUTATION_LINES_PER_SPEED, PROGRESSIVE_GRAVITY_TICKS, STANDARD_GRAVITY_TICKS, SURVIVAL_GRAVITY_TICKS, gravityForMode, normalizeClassicGravityFloorTicks, normalizeClassicStartingGravityTicks } from './constants';
 import { canPlace, createBoard, setCell } from './board';
 import { createInitialState, dispatch, stateHash } from './engine';
 import { cellsForPiece } from './pieces';
@@ -67,19 +67,30 @@ describe('Modern Classic timing and score contract', () => {
     expect(transition.events.some((event) => event.type === 'level-up')).toBe(false);
   });
 
-  it('normalizes the selectable opening pace and keeps it run-local across restarts', () => {
+  it('normalizes the selectable pace interval and keeps both bounds run-local across restarts', () => {
     expect(normalizeClassicStartingGravityTicks(Number.NaN)).toBe(CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS);
     expect(normalizeClassicStartingGravityTicks(1)).toBe(CLASSIC_STARTING_GRAVITY_MIN_TICKS);
     expect(normalizeClassicStartingGravityTicks(999)).toBe(CLASSIC_STARTING_GRAVITY_MAX_TICKS);
     expect(normalizeClassicStartingGravityTicks(47)).toBe(48);
-    expect(gravityForMode('marathon', 0, 0, 0, 60)).toBe(60);
-    expect(gravityForMode('marathon', 0, 0, 10, 60)).toBe(54);
-    expect(gravityForMode('marathon', 0, 0, 90, 60)).toBe(CLASSIC_STARTING_GRAVITY_MIN_TICKS);
+    expect(normalizeClassicGravityFloorTicks(Number.NaN, 48)).toBe(CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS);
+    expect(normalizeClassicGravityFloorTicks(54, 48)).toBe(48);
+    expect(normalizeClassicGravityFloorTicks(29, 60)).toBe(30);
+    expect(gravityForMode('marathon', 0, 0, 0, 60, 30)).toBe(60);
+    expect(gravityForMode('marathon', 0, 0, 10, 60, 30)).toBe(54);
+    expect(gravityForMode('marathon', 0, 0, 90, 60, 30)).toBe(30);
 
-    const opened = createInitialState(123, 'marathon', undefined, 60);
+    const opened = createInitialState(123, 'marathon', undefined, 60, 30);
     expect(opened.classicStartingGravityTicks).toBe(60);
+    expect(opened.classicGravityFloorTicks).toBe(30);
     expect(dispatch(opened, { type: 'restart' }).state.classicStartingGravityTicks).toBe(60);
-    expect(dispatch(opened, { type: 'restart', classicStartingGravityTicks: 18 }).state.classicStartingGravityTicks).toBe(18);
+    expect(dispatch(opened, { type: 'restart' }).state.classicGravityFloorTicks).toBe(30);
+    const restarted = dispatch(opened, {
+      type: 'restart',
+      classicStartingGravityTicks: 18,
+      classicGravityFloorTicks: 12,
+    }).state;
+    expect(restarted.classicStartingGravityTicks).toBe(18);
+    expect(restarted.classicGravityFloorTicks).toBe(12);
   });
 
   it('adds a Classic chain bonus and breaks the chain on a non-clearing lock', () => {

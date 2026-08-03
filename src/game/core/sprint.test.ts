@@ -281,7 +281,7 @@ describe('异变 mode', () => {
 
   it('caps Mutation gravity at 0.1 seconds per cell without slowing Classic', () => {
     expect(gravityForMode('sprint', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(TICKS_PER_SECOND / 10);
-    expect(gravityForMode('marathon', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(3);
+    expect(gravityForMode('marathon', 0, 0, Number.MAX_SAFE_INTEGER)).toBe(6);
   });
 
   it('activates a marked carrier exactly once when any of its cells clears', () => {

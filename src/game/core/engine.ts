@@ -1,6 +1,7 @@
 import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
+  CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
   CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
   ENTRY_DELAY_TICKS,
   LINE_CLEAR_BASE_SCORE,
@@ -28,6 +29,7 @@ import {
   TICKS_PER_SECOND,
   VISIBLE_START_ROW,
   gravityForMode,
+  normalizeClassicGravityFloorTicks,
   normalizeClassicStartingGravityTicks,
   survivalIntervalTicks,
 } from './constants';
@@ -255,12 +257,14 @@ export function createInitialState(
   mode: GameMode = 'marathon',
   puzzleId?: PuzzleId,
   classicStartingGravityTicks = CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+  classicGravityFloorTicks = CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
 ): GameState {
   const selectedPuzzle = mode === 'puzzle' ? getPuzzleDefinition(puzzleId ?? defaultPuzzleId()) : null;
   const effectiveSeed = selectedPuzzle?.seed ?? seed;
   const initialBoard = selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard();
   const puzzleTargetCells = selectedPuzzle ? originalTargetCells(selectedPuzzle) : Object.freeze([]);
   const openingBedrock = mode === 'race' ? raiseBedrock(initialBoard, INITIAL_SURVIVAL_BEDROCK_ROWS) : null;
+  const normalizedClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(classicStartingGravityTicks);
   const base: GameState = {
     board: openingBedrock?.board ?? initialBoard,
     active: null,
@@ -270,7 +274,11 @@ export function createInitialState(
     combo: 0,
     level: 0,
     mode,
-    classicStartingGravityTicks: normalizeClassicStartingGravityTicks(classicStartingGravityTicks),
+    classicStartingGravityTicks: normalizedClassicStartingGravityTicks,
+    classicGravityFloorTicks: normalizeClassicGravityFloorTicks(
+      classicGravityFloorTicks,
+      normalizedClassicStartingGravityTicks,
+    ),
     puzzleId: selectedPuzzle?.id ?? null,
     puzzleTargetLines: null,
     puzzleTargetCells,
@@ -1425,7 +1433,14 @@ function tick(state: GameState): GameTransition {
   const gravityTicks = next.gravityTicks + 1;
   const gravityInterval = freezeGravityActive
     ? MUTATION_FREEZE_GRAVITY_TICKS
-    : gravityForMode(next.mode, next.level, next.pieceCount, next.lines, next.classicStartingGravityTicks);
+    : gravityForMode(
+      next.mode,
+      next.level,
+      next.pieceCount,
+      next.lines,
+      next.classicStartingGravityTicks,
+      next.classicGravityFloorTicks,
+    );
   if (gravityTicks >= gravityInterval) {
     const moved = moveActive({ ...next, gravityTicks: 0 }, 0, 1, 'gravity');
     return { state: moved.state, events: [...timedEvents, ...moved.events] };
@@ -1441,6 +1456,7 @@ export function dispatch(state: GameState, command: GameCommand): GameTransition
         command.mode ?? state.mode,
         command.puzzleId ?? state.puzzleId ?? undefined,
         command.classicStartingGravityTicks ?? state.classicStartingGravityTicks,
+        command.classicGravityFloorTicks ?? state.classicGravityFloorTicks,
       ),
       events: [{ type: 'restarted' }],
     };
@@ -1485,10 +1501,11 @@ export function replay(
   mode: GameMode = 'marathon',
   puzzleId?: PuzzleId,
   classicStartingGravityTicks = CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+  classicGravityFloorTicks = CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
 ): GameState {
   return commands.reduce(
     (state, command) => dispatch(state, command).state,
-    createInitialState(seed, mode, puzzleId, classicStartingGravityTicks),
+    createInitialState(seed, mode, puzzleId, classicStartingGravityTicks, classicGravityFloorTicks),
   );
 }
 
@@ -1501,6 +1518,7 @@ export function stateHash(state: GameState): string {
       const {
         combo: _combo,
         classicStartingGravityTicks: _classicStartingGravityTicks,
+        classicGravityFloorTicks: _classicGravityFloorTicks,
         survivalBedrockRows: _survivalBedrockRows,
         survivalPressureTicks: _survivalPressureTicks,
         survivalRisePending: _survivalRisePending,
@@ -1583,6 +1601,7 @@ export function stateHash(state: GameState): string {
         const {
           combo: _combo,
           classicStartingGravityTicks: _classicStartingGravityTicks,
+          classicGravityFloorTicks: _classicGravityFloorTicks,
           survivalBedrockRows: _survivalBedrockRows,
           survivalPressureTicks: _survivalPressureTicks,
           survivalRisePending: _survivalRisePending,
@@ -1604,6 +1623,7 @@ export function stateHash(state: GameState): string {
       const {
         combo: _combo,
         classicStartingGravityTicks: _classicStartingGravityTicks,
+        classicGravityFloorTicks: _classicGravityFloorTicks,
         mutationActiveCarrier: _mutationActiveCarrier,
         mutationRandomizer: _mutationRandomizer,
         mutationCarriers: _mutationCarriers,

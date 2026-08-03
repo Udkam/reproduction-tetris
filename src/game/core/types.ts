@@ -133,6 +133,8 @@ export interface GameState {
   mode: GameMode;
   /** Classic-only opening gravity captured when this run is created. */
   classicStartingGravityTicks: number;
+  /** Classic-only fastest gravity captured when this run is created. */
+  classicGravityFloorTicks: number;
   puzzleId: PuzzleId | null;
   /**
    * Temporary presentation bridge for the frozen T2 shell. Puzzle core rules
@@ -242,7 +244,14 @@ export type GameCommand =
   | { type: 'pause' }
   | { type: 'resume' }
   | { type: 'undo' }
-  | { type: 'restart'; seed?: number; mode?: GameMode; puzzleId?: PuzzleId; classicStartingGravityTicks?: number };
+  | {
+    type: 'restart';
+    seed?: number;
+    mode?: GameMode;
+    puzzleId?: PuzzleId;
+    classicStartingGravityTicks?: number;
+    classicGravityFloorTicks?: number;
+  };
 
 export type GameEvent =
   | { type: 'started' }

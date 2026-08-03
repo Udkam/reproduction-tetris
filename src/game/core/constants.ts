@@ -16,6 +16,8 @@ export const NEXT_QUEUE_SIZE = 5;
 export const STANDARD_GRAVITY_TICKS = 48;
 /** Player-selectable Classic opening gravity, expressed at the canonical 60 Hz. */
 export const CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS = 48;
+/** Default fastest Classic gravity: 0.1 seconds per cell. */
+export const CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS = 6;
 export const CLASSIC_STARTING_GRAVITY_MIN_TICKS = 6;
 export const CLASSIC_STARTING_GRAVITY_MAX_TICKS = 60;
 export const CLASSIC_GRAVITY_STEP_TICKS = 6;
@@ -67,11 +69,24 @@ export function normalizeClassicStartingGravityTicks(ticks: number): number {
   return Math.min(CLASSIC_STARTING_GRAVITY_MAX_TICKS, Math.max(CLASSIC_STARTING_GRAVITY_MIN_TICKS, stepped));
 }
 
-export function classicGravityTicks(startingTicks: number, lines: number): number {
+export function normalizeClassicGravityFloorTicks(
+  ticks: number,
+  startingTicks = CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+): number {
+  const normalizedStart = normalizeClassicStartingGravityTicks(startingTicks);
+  const normalizedFloor = Number.isFinite(ticks)
+    ? normalizeClassicStartingGravityTicks(ticks)
+    : CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS;
+  return Math.min(normalizedStart, normalizedFloor);
+}
+
+export function classicGravityTicks(startingTicks: number, floorTicks: number, lines: number): number {
   const tiers = Math.max(0, Math.floor(lines / 10));
+  const normalizedStart = normalizeClassicStartingGravityTicks(startingTicks);
+  const normalizedFloor = normalizeClassicGravityFloorTicks(floorTicks, normalizedStart);
   return Math.max(
-    CLASSIC_STARTING_GRAVITY_MIN_TICKS,
-    normalizeClassicStartingGravityTicks(startingTicks) - tiers * CLASSIC_GRAVITY_STEP_TICKS,
+    normalizedFloor,
+    normalizedStart - tiers * CLASSIC_GRAVITY_STEP_TICKS,
   );
 }
 
@@ -103,13 +118,14 @@ export function gravityForMode(
   pieceCount: number,
   lines: number,
   classicStartingGravityTicks = CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
+  classicGravityFloorTicks = CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
 ): number {
   void level;
   void pieceCount;
   if (mode === 'puzzle') return STANDARD_GRAVITY_TICKS;
   if (mode === 'race') return SURVIVAL_GRAVITY_TICKS;
   if (mode === 'sprint') return MUTATION_GRAVITY_TICKS[mutationSpeedTierForLines(lines)]!;
-  return classicGravityTicks(classicStartingGravityTicks, lines);
+  return classicGravityTicks(classicStartingGravityTicks, classicGravityFloorTicks, lines);
 }
 
 export const LINE_CLEAR_BASE_SCORE = [0, 40, 100, 300, 1200] as const;
