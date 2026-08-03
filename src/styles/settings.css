@@ -202,15 +202,15 @@
 
 .settings-console__controls .motion-toggle {
   width: 100%;
-  color: var(--ink);
-  background: color-mix(in srgb, var(--surface) 88%, var(--raised));
-  border-color: color-mix(in srgb, var(--edge) 82%, var(--surface));
+  color: var(--action-ink);
+  background: var(--action);
+  border-color: var(--action);
 }
 
-.settings-console__controls .motion-toggle[aria-pressed="true"] {
-  color: #fff;
-  background: var(--settings-accent);
-  border-color: var(--settings-accent);
+.settings-console__controls .motion-toggle:is(:hover, :focus-visible) {
+  color: var(--action-ink);
+  background: var(--hover);
+  border-color: color-mix(in srgb, var(--hover) 72%, var(--focus));
 }
 
 .settings-console__controls .audio-controls {

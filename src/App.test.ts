@@ -1710,9 +1710,11 @@ describe('T6 frontend mode binding', () => {
 
     const motion = view.container.querySelector<HTMLButtonElement>('[data-testid="reduced-motion-toggle"]')!;
     expect(motion.textContent).toBe('减少动效');
+    expect(motion.dataset.motionMode).toBe('reduced');
     act(() => motion.click());
     expect(localStorage.getItem(REDUCED_MOTION_STORAGE_KEY)).toBe('off');
     expect(view.container.querySelector('.app')?.getAttribute('data-reduced-motion')).toBe('false');
+    expect(motion.dataset.motionMode).toBe('full');
     expect(runtimeHarness.instances.at(-1)?.setReducedMotion).toHaveBeenLastCalledWith(false);
 
     const english = view.container.querySelector<HTMLButtonElement>('[data-testid="language-en"]')!;

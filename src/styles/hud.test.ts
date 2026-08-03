@@ -60,7 +60,20 @@ describe('T27-R1 centered live stage', () => {
     expect(hudCss).toMatch(/\.sheet-backdrop--gameplay\s*\{[^}]*top:\s*var\(--play-topbar-height\);[^}]*justify-content:\s*center;/s);
     expect(hudCss).toMatch(/\.play-shell:has\(\.sheet-backdrop--gameplay\) \.canvas-host\s*\{[^}]*filter:\s*none;/s);
     expect(hudCss).toMatch(/\.play-shell--interrupted \.play-topbar\s*\{[^}]*z-index:\s*110;[^}]*pointer-events:\s*auto;/s);
-    expect(hudCss).toMatch(/\.entry-countdown\s*\{[^}]*radial-gradient\(ellipse 72% 30% at 50% 0%[^}]*radial-gradient\(ellipse 30% 72% at 100% 50%/s);
+  });
+
+  it('fills the complete board with soft light and removes motion in reduced mode', () => {
+    const coverBlock = hudCss.slice(
+      hudCss.indexOf('.entry-countdown {'),
+      hudCss.indexOf('\n}', hudCss.indexOf('.entry-countdown {')) + 2,
+    );
+    expect(coverBlock).toContain('--entry-cover-fill:');
+    expect(coverBlock).toContain('linear-gradient(\n      90deg');
+    expect(coverBlock).toContain('linear-gradient(\n      180deg');
+    expect(coverBlock).toContain('var(--entry-cover-fill)');
+    expect(coverBlock).not.toContain('radial-gradient');
+    expect(hudCss).toMatch(/\.entry-countdown::before\s*\{[^}]*animation:\s*entry-cover-breathe 2600ms ease-in-out infinite alternate;/s);
+    expect(hudCss).toMatch(/\.app\[data-reduced-motion="true"\] \.entry-countdown,[\s\S]*\.app\[data-reduced-motion="true"\] \.entry-countdown::before,[\s\S]*animation:\s*none;/s);
   });
 
   it('uses one semantic urgency signal and disables it under reduced motion', () => {

@@ -72,17 +72,57 @@
 
 .board-frame--countdown { z-index: 4; }
 .entry-countdown {
+  --entry-cover-fill: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--well) 74%, var(--action)) 82%,
+    transparent
+  );
   inset: 0;
   background:
-    radial-gradient(ellipse 72% 30% at 50% 0%, color-mix(in srgb, var(--action) 11%, transparent), transparent 74%),
-    radial-gradient(ellipse 72% 30% at 50% 100%, color-mix(in srgb, var(--action) 9%, transparent), transparent 74%),
-    radial-gradient(ellipse 30% 72% at 0% 50%, color-mix(in srgb, var(--action) 9%, transparent), transparent 74%),
-    radial-gradient(ellipse 30% 72% at 100% 50%, color-mix(in srgb, var(--action) 9%, transparent), transparent 74%),
-    color-mix(in srgb, var(--well) 72%, transparent);
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--action) 7%, transparent),
+      transparent 38% 62%,
+      color-mix(in srgb, var(--action) 7%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--action) 8%, transparent),
+      transparent 34% 66%,
+      color-mix(in srgb, var(--action) 8%, transparent)
+    ),
+    var(--entry-cover-fill);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--action-ink) 8%, transparent),
-    inset 0 0 108px color-mix(in srgb, var(--action) 8%, transparent);
+    inset 0 0 132px color-mix(in srgb, var(--action) 11%, transparent);
   animation: entry-cover-in 180ms ease-out both;
+}
+
+.entry-countdown::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--action) 9%, transparent),
+      transparent 44% 56%,
+      color-mix(in srgb, var(--action) 9%, transparent)
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--action) 10%, transparent),
+      transparent 42% 58%,
+      color-mix(in srgb, var(--action) 10%, transparent)
+    );
+  opacity: .56;
+  animation: entry-cover-breathe 2600ms ease-in-out infinite alternate;
+}
+
+.entry-countdown > * {
+  position: relative;
+  z-index: 1;
 }
 
 .entry-countdown--exit {
@@ -630,6 +670,7 @@
 }
 
 .app[data-reduced-motion="true"] .entry-countdown,
+.app[data-reduced-motion="true"] .entry-countdown::before,
 .app[data-reduced-motion="true"] .entry-countdown__digit,
 .app[data-reduced-motion="true"] .run-stats__value,
 .app[data-reduced-motion="true"] .run-stats--survival [data-urgent="true"] strong {
@@ -645,4 +686,9 @@
 @keyframes entry-cover-out {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+@keyframes entry-cover-breathe {
+  from { opacity: .48; }
+  to { opacity: .68; }
 }

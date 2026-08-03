@@ -1335,6 +1335,7 @@ function MotionControl({
       className="motion-toggle"
       type="button"
       data-testid="reduced-motion-toggle"
+      data-motion-mode={reducedMotion ? 'reduced' : 'full'}
       data-arrow-nav
       data-arrow-row="1"
       data-arrow-col="2"

@@ -22,7 +22,8 @@ describe('RC1 Settings composition', () => {
     expect(settingsCss).toMatch(/\.settings-console__key-group > span\s*\{[^}]*font-family:\s*var\(--font-ui\)/s);
     expect(settingsCss).toMatch(/\.settings-console__keyboard kbd\s*\{[^}]*font-family:\s*var\(--font-data\)/s);
     expect(settingsCss).toMatch(/\.settings-console__controls \.audio-volume output\s*\{[^}]*font-family:\s*var\(--font-data\)/s);
-    expect(settingsCss).toMatch(/\.settings-console__controls \.motion-toggle\s*\{[^}]*width:\s*100%/s);
+    expect(settingsCss).toMatch(/\.settings-console__controls \.motion-toggle\s*\{[^}]*width:\s*100%;[^}]*color:\s*var\(--action-ink\);[^}]*background:\s*var\(--action\);[^}]*border-color:\s*var\(--action\);/s);
+    expect(settingsCss).not.toMatch(/\.settings-console__controls \.motion-toggle\[aria-pressed="true"\]/);
     expect(settingsCss).toMatch(/\.settings-console__touch\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
   });
 
