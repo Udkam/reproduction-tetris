@@ -110,3 +110,26 @@
 - Blocker: none.
 - Next action: commit this coordinator disposition, rescan the final range, and push
   `main` normally.
+
+## 2026-08-03 — Post-acceptance requirement recheck correction
+
+- Task: re-audit every active RC requirement from current Git/source/evidence and close
+  only with direct proof.
+- Base SHA: `bcbb2290d71a924d90657451e6267df84753d820`.
+- Changed path: `package.json` only in test checkpoint `c8ceb70`; it caps Vitest at two
+  workers. No product source, dependency version, lockfile, browser evidence, or release
+  image changed.
+- Trigger: the unbounded official run starved the Pixi renderer suite and timed out its
+  setup hook; the isolated suite passed `45/45` in 2.69 seconds. The corrected official
+  run passes `318 passed / 3 skipped` without increasing a timeout or suppressing tests.
+- Commands: targeted renderer test; official `npm.cmd run typecheck`, `npm.cmd run test`,
+  and `npm.cmd run build`; `npm.cmd install --package-lock-only --ignore-scripts`;
+  lockfile-only OSV Scanner 2.4.0; redacted exact-file gitleaks scan.
+- Evidence: typecheck pass; 756 transformed modules; unchanged measured 546.62 kB main
+  warning; no package-lock delta; no known OSV issue; no secret finding in the changed
+  configuration. Existing Phase-E/F evidence remains valid because `src`, `public`,
+  `index.html`, `vite.config.ts`, and `package-lock.json` have no delta after source
+  `85a3431`.
+- Blocker: independent read-only QA of the bounded checkpoint and status records.
+- Next action: freeze the docs checkpoint, scan the exact candidate range, request QA,
+  then accept and push only if P0-P3 are all zero.

@@ -1,6 +1,7 @@
 # TetraMorph v1.0 RC Requirement Audit
 
-Status: complete and independently accepted 2026-08-03. A phase is `VERIFIED` only when
+Status: product requirements complete; test-runner recheck pending independent QA on
+2026-08-03. A phase is `VERIFIED` only when
 the current source, automated gates, and (for visible behavior) source-bound browser
 evidence all support the same claim.
 
@@ -17,15 +18,15 @@ evidence all support the same claim.
 | D | Survival 800 ms danger warning plus concise warning sound | Source `fcabe49` owns a 48-playing-tick minimum lead and one 65 ms chirp; evidence shows no rock at tick 47 and the planned rockfall on the next tick. | `VERIFIED` |
 | D | Five Mutation abilities recognizable at carrier, activation, and active-state stages | Evidence `c83b156` captures Next, carrier, and activation/active state for Freeze, Supergravity, Bomb, Double, and Reshape; the synchronized Bomb board export contains the real 72-fragment impact. | `VERIFIED` |
 | D | Puzzle copy/guidance/visual consistency with frozen boards/order | Current-source evidence preserves the three authored curriculum bands, existing board order, and the accepted technique copy. | `VERIFIED` |
-| E | Final gates and clean lifecycle teardown | Source `6af5403` passes typecheck, `318 passed / 3 skipped`, build, direct idempotent teardown tests, and evidence `323d01d`. Return Home restores zero Canvas/RAF, four baseline listeners, one closed AudioContext, and no QA bridge. | `VERIFIED` |
+| E | Final gates and clean lifecycle teardown | Source `6af5403` and product-bound evidence `323d01d` retain zero Canvas/RAF, four baseline listeners, one closed AudioContext, and no QA bridge after return Home. Recheck checkpoint `c8ceb70` caps Vitest at two workers after default parallel resource contention caused a setup-hook timeout; the official command then passes `318 passed / 3 skipped`. | `VERIFIED`; test-only checkpoint awaits independent QA. |
 | E | Bundle, font, dependency, and unused-asset inspection | Source `4d37d59` emits only 13 required WOFF2 faces, removes 57.6% of font payload, removes proven dead legacy font assets, retains the measured 546.62 kB main warning, and has a clean direct dependency tree plus scoped OSV result. | `VERIFIED` |
 | F | Current-source final frames and 30–60 second capture plan | Evidence `6d2255a` binds the six final frames and capture plan to corrected source `85a3431`; its runner imports pinned repository Playwright and releases ports 4191/4192. | `VERIFIED` |
 | F | GitHub, resume, portfolio copy and RC Release Notes | README, Showcase, and Release Notes are present; npm metadata and committed lockfile agree on `1.0.0-rc.1`. | `VERIFIED` |
-| Final | Independent read-only QA and coordinator acceptance | First QA rejection was corrected. Final docs-only synchronization `d700ca3` received P0 0 / P1 0 / P2 0 / P3 0; typecheck, `318 passed / 3 skipped`, build, committed-lock `npm ci`, direct tree, OSV, redacted gitleaks, and refreshed browser proof pass. | `ACCEPTED` |
+| Final | Independent read-only QA and coordinator acceptance | The portable RC candidate received P0 0 / P1 0 / P2 0 / P3 0. A later full recheck found only the bounded test-worker correction `c8ceb70`; current typecheck, official complete suite, build, lock synchronization, and OSV scan pass without a product-source delta. | `RECHECK QA PENDING` |
 
 ## Current bounded slice
 
-Phase F and final acceptance are closed on the corrected portable `1.0.0-rc.1`
-candidate. Gameplay, Puzzle content/order, presentation design, ranking, and persistence
-schemas stayed frozen. Independent QA accepted the final exact-range status correction
-with no P0-P3 finding.
+Phase F remains closed on the corrected portable `1.0.0-rc.1` candidate. Gameplay,
+Puzzle content/order, presentation design, ranking, persistence schemas, and browser
+evidence stay frozen. The only open path is the two-worker Vitest cap plus these truthful
+status records; independent QA must accept that exact range before coordinator closure.

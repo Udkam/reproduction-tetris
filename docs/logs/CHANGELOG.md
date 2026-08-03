@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-08-03 — T26 RC post-acceptance gate reliability recheck
+
+- Re-ran the active requirement matrix against current Git, source, release copy, and
+  source-bound browser evidence instead of relying on the prior accepted label. No
+  product, mode, persistence, typography, responsive-layout, or showcase regression was
+  found.
+- The default Vitest worker count starved the Pixi renderer suite and expired its
+  10-second setup hook. Checkpoint `c8ceb70` bounds the official command to two workers;
+  the isolated renderer suite passes `45/45`, then the official full suite passes
+  `318 passed / 3 skipped` without weakening a timeout or skipping coverage.
+- Current typecheck and the 756-module production build pass. The package lock remains
+  synchronized without a change, and a scoped OSV Scanner 2.4.0 run reports no issue.
+  Product code remains byte-identical to the Phase-E/F evidence source; independent
+  read-only QA of the test-only correction is still required before reacceptance.
+
 ## 2026-08-03 — T26 RC Phase E engineering closure verified
 
 - Replaced broad Fontsource CSS delivery with the exact 13 WOFF2 faces used by the
