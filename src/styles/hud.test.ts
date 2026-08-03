@@ -46,8 +46,8 @@ describe('Phase 3 HUD authority', () => {
     expect(mutationVfxCss).toContain('border: 1px solid color-mix(in srgb, var(--line) 68%, #9b8ab7) !important');
     expect(mutationVfxCss).not.toContain('background: color-mix(in srgb, var(--raised) 82%, var(--surface)) !important');
     expect(mutationVfxCss).toContain('.mutation-status--vfx .mutation-status__idle');
-    expect(mutationVfxCss).toMatch(/\.mutation-status--vfx \.mutation-status__ledger\s*\{[^}]*min-height:\s*42px;/s);
-    expect(mutationVfxCss).toMatch(/\.mutation-status--vfx \.mutation-status__idle\s*\{[^}]*min-height:\s*42px;/s);
+    expect(mutationVfxCss).toMatch(/\.mutation-status--vfx \.mutation-status__ledger\s*\{[^}]*min-height:\s*46px;/s);
+    expect(mutationVfxCss).toMatch(/\.mutation-status--vfx \.mutation-status__idle\s*\{[^}]*min-height:\s*46px;/s);
     expect(mutationVfxCss).not.toContain('.mutation-status__idle-spectrum');
   });
 
