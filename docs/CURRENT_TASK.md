@@ -18,17 +18,22 @@ The slice has eight player-visible acceptance requirements:
    remains the Chinese face, and Geist Mono remains the numeric/data face. English text
    must wrap without overlap, clipping, or disappearance. Because Kavivanar publishes
    only Regular 400, Chromium receives a restrained optical ink compensation rather
-   than a fabricated font face. Mixed values split their roles: digits remain Geist
-   Mono, while alphabetic units such as `s/cell` use Kavivanar. Chinese cadence units
-   such as `秒/格` remain Noto Sans SC but match the fall-speed label's visual weight.
+   than a fabricated font face. Cadence cards never force two type systems onto one
+   value baseline: the large value is digits only in Geist Mono, while `秒/格` or
+   `s/cell` sits beside the fall-speed label as a quiet unit token. Chinese cadence
+   units remain Noto Sans SC and match the label's visual weight.
 3. Classic Settings exposes a persisted gravity interval with two bounds, both limited
    to `1.0` through `0.1` seconds per cell in `0.1` steps. A fresh profile opens at
    `0.8` and accelerates no faster than `0.1`; the fastest bound cannot be slower than
    the opening bound. Every ten cleared lines still accelerates by `0.1` seconds per
    cell until the chosen fastest bound. Changing either bound never changes the current
    falling run and applies on the next restart, play-again, or newly entered Classic
-   run. Both range controls use the Settings panel's established blue control palette
-   for track, thumb, focus, and value feedback instead of browser-default mixed colors.
+   run. The interval is presented as one discrete `1.0 -> 0.1` rail rather than two
+   disconnected sliders: two labelled handles identify the opening and fastest bounds,
+   the selected acceleration band is visible between them, both current values remain
+   visible above the rail, and the unit appears once. Mouse, touch, and keyboard each
+   adjust a handle by one `0.1` step with an explicit focus state. The component uses
+   the Settings panel's established blue palette instead of browser-default colors.
 4. Survival falling rocks advance at exactly **7x** the current ordinary Survival
    gravity through the existing deterministic integer accumulator. The piece-count
    schedule, warning lead, one-column one-or-two-rock body, collision rules, random
@@ -47,12 +52,13 @@ The slice has eight player-visible acceptance requirements:
    The existing Start event remains the confirmation beat. Cues obey SFX enablement and
    volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
    or timers after unmount.
-8. Classic, Survival, and Mutation results use a portrait, content-height ledger rather
-   than the current wide sheet. The mode's ranking metric is the dominant full-width
-   hero value; the secondary metric is visibly subordinate; top-five history follows in
-   one compact vertical table; and actions close the flow without side whitespace. The
-   dialog targets a `30–32rem` desktop width, remains viewport-safe on small screens, and
-   adds no decorative subtitle or duplicate rank statement.
+8. Classic, Survival, and Mutation results use a portrait, content-height scorecard
+   rather than a wide sheet or a stack of dashboard cards. The mode's ranking metric is
+   an unboxed hero number with a short label; the secondary metric becomes one compact
+   supporting row; top-five history follows as a quiet vertical list; and actions close
+   the same axis. No large empty bordered metric field, spreadsheet-like visual weight,
+   decorative subtitle, or duplicate rank statement is allowed. The dialog targets a
+   `30–32rem` desktop width and remains viewport-safe on small screens.
 
 ### Required checkpoints and verification
 

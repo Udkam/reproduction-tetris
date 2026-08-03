@@ -14,10 +14,10 @@ legible without increasing visual noise.
 The wordmark remains the only Playwrite NZ Basic text. Ordinary English interface copy
 uses the locally packaged Kavivanar regular face at its real 400 weight. Chinese keeps
 Noto Sans SC and numeric/data roles keep Geist Mono, so applying Kavivanar never changes
-score digits, timers, dates, keycaps, or board indices. Alphabetic units inside mixed
-readouts are separate UI spans and therefore still use Kavivanar. Chinese cadence units
-remain Noto Sans SC and use the same 700 weight as the cadence label, so the unit does
-not look weaker than its label. Since the family has
+score digits, timers, dates, keycaps, or board indices. A cadence metric has one clean
+numeric baseline: its large value contains only Geist Mono digits. The localized unit
+is a small token beside the metric label, using Kavivanar for English and Noto Sans SC
+for Chinese at the label's visual weight. Since the family has
 no bold file, English UI receives a subtle, constant optical ink stroke to improve
 small-size legibility; it does not invent or declare a Kavivanar 700 face, and it does
 not touch the wordmark or data glyphs. Chinese Home removes its positioning line and
@@ -35,9 +35,12 @@ advances one 0.1-second tier until the selected fastest bound. Settings may chan
 next-run interval while a run exists, but it cannot mutate that run; the runtime injects
 both new values only when it constructs or restarts the next Classic state. Invalid or
 stale storage falls back to the `0.8` through `0.1` interval rather than entering Core.
-The two range controls share the Settings control blue through explicit local range
-tokens; browser-default bright blue and unrelated grey states are not part of the
-component. Focus remains visible and contrast-safe.
+The two bounds share one discrete speed rail running from `1.0` (slower) to `0.1`
+(faster). Opening and fastest are named above the rail with their live values, while a
+single localized unit and the highlighted interval remove repeated labels. Two handles
+remain independently focusable and move in `0.1` steps; pointer selection chooses the
+nearest handle. The rail, interval, handles, and focus treatment share the Settings
+control blue; browser-default colors are not part of the component.
 
 ### Survival pace feedback
 
@@ -67,14 +70,15 @@ context, and are cancelled by the existing runtime teardown boundary.
 
 ### Portrait result hierarchy
 
-The ranked Classic, Survival, and Mutation result sheet becomes a narrow vertical
-ledger instead of a wide dashboard. Its desktop measure is `30–32rem`: the mode's
-principal ranking metric occupies one full-width hero field with the largest data type,
-the contextual metric sits beneath it at a clearly lower visual weight, the top-five
-history reads down one compact table, and the actions finish the same axis. Width may
-collapse to the viewport but does not expand to fill available board space. The current
-run is still identified inside its real table row; no duplicate rank sentence,
-decorative subtitle, or empty side column is introduced.
+The ranked Classic, Survival, and Mutation result sheet becomes a narrow vertical game
+scorecard instead of a wide dashboard. Its desktop measure is `30–32rem`: the mode's
+principal ranking metric is an unboxed hero number, framed only by restrained mode
+color and whitespace; the contextual metric is one compact supporting row; the top-five
+history reads down a low-noise list; and the actions finish the same axis. A giant
+bordered hero card and a second dashboard card are explicitly excluded. Width may
+collapse to the viewport but does not expand to fill board space. The current run is
+still identified inside its real list row; no duplicate rank sentence, decorative
+subtitle, or empty side column is introduced.
 
 ## 2026-08-03 T26 — v1.0 Release Candidate convergence
 
