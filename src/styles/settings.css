@@ -156,6 +156,18 @@
   text-transform: uppercase;
 }
 
+[lang="en"] .settings-console__tabs button {
+  font-size: 14px;
+}
+
+[lang="en"] .settings-console__preference > strong,
+[lang="en"] .settings-console__keyboard > strong,
+[lang="en"] .settings-console > .settings-console__panel--rules .mode-rule-summary > strong,
+[lang="en"] .settings-console > .settings-console__panel--rules .settings-console__record > span,
+[lang="en"] .settings-console > .settings-console__panel--rules .result-leaderboard > header > strong {
+  font-size: 12px;
+}
+
 .settings-console__controls .language-control,
 .settings-console__controls .audio-controls,
 .settings-console__actions {
@@ -531,6 +543,18 @@
   font-size: 11.5px;
   line-height: 1.4;
   overflow-wrap: anywhere;
+}
+
+[lang="en"] .settings-console__key-group > span {
+  font-size: 13px;
+}
+
+[lang="en"] .settings-console__touch > span {
+  font-size: 12px;
+}
+
+[lang="en"] .settings-console__touch > p {
+  font-size: 12.5px;
 }
 
 .settings-console__panel--rules {

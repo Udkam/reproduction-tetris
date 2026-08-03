@@ -2521,23 +2521,39 @@ export class TetrisRenderer {
     factor: 2 | 4,
   ): void {
     const token = MUTATION_VFX_TOKENS.multiplier;
-    const starCount = factor === 4 ? 7 : 5;
-    const fieldDepth = Math.min(layout.height * .34, layout.cell * 6.8);
-    // Sparse stars descend from the top and stay small enough to remain
-    // atmospheric. Their alpha is steady; only position changes.
+    const starCount = factor === 4 ? 12 : 8;
+    const fieldDepth = Math.min(layout.height * .44, layout.cell * 8.8);
+    // A compact score constellation occupies only the upper field. Every mote
+    // owns a small local halo and a short angled tail, so Double reads as an
+    // intentional sustained state rather than dust or rain. Super Double adds
+    // lanes and warmth without making any single mark larger than gameplay.
     for (let index = 0; index < starCount; index += 1) {
-      const xFactor = ((index * 37 + 13) % 91 + 4) / 100;
+      const xFactor = ((index * 43 + 11) % 89 + 5) / 100;
       const offset = index / starCount;
-      const travel = this.options.reducedMotion ? offset : (phase * .62 + offset) % 1;
-      const radius = layout.cell * (factor === 4 && index % 3 === 0 ? .13 : .09);
+      const travel = this.options.reducedMotion ? .08 + offset * .5 : (phase * .72 + offset) % 1;
+      const radius = layout.cell * (index % 4 === 0 ? .16 : .12);
+      const x = layout.x + layout.width * xFactor;
+      const y = layout.y + layout.cell * .32 + fieldDepth * travel;
+      const warmth = factor === 4 && index % 3 !== 1;
+      const color = warmth || index % 2 === 0 ? token.palette.highlight : token.palette.primary;
+      const alpha = (factor === 4 ? .68 : .58) * opacity;
+      const tailDirection = index % 2 === 0 ? -1 : 1;
+
+      graphics
+        .circle(x, y, radius * 2.35)
+        .fill({ color, alpha: .09 * opacity });
+      graphics
+        .moveTo(x + tailDirection * radius * .68, y - radius * 3.6)
+        .lineTo(x + tailDirection * radius * .18, y - radius * 1.15)
+        .stroke({ color, alpha: alpha * .38, width: Math.max(.8, radius * .22) });
       this.drawMutationStar(
         graphics,
-        layout.x + layout.width * xFactor,
-        layout.y + layout.cell * .28 + fieldDepth * travel,
+        x,
+        y,
         radius,
-        radius * .34,
-        index % 2 === 0 ? token.palette.highlight : token.palette.primary,
-        (.34 + (index % 3) * .045) * opacity,
+        radius * .36,
+        color,
+        alpha,
       );
     }
   }

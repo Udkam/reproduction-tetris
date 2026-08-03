@@ -1446,7 +1446,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(confirm.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(8);
   });
 
-  it('uses small descending top stars for the multiplier without a fixed corner badge', () => {
+  it('uses a visible upper-field score constellation without a fixed corner badge', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1471,12 +1471,13 @@ describe('Puzzle undo presentation reset', () => {
     );
     expect(geometrySignature(twoField.operations)).not.toBe(geometrySignature(fourField.operations));
     expect(twoField.operations.filter((operation) => operation.kind === 'rect')).toHaveLength(0);
-    expect(twoField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
+    expect(twoField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(8);
+    expect(fourField.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(12);
     expect(twoField.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     const twoSegments = twoField.operations.filter((operation) => operation.kind === 'segment');
     const fourSegments = fourField.operations.filter((operation) => operation.kind === 'segment');
-    expect(twoSegments).toHaveLength(5 * 8);
-    expect(fourSegments).toHaveLength(7 * 8);
+    expect(twoSegments).toHaveLength(8 * 9);
+    expect(fourSegments).toHaveLength(12 * 9);
 
     internals.mutationClockMs = 437;
     const laterField = createGraphicsRecorder();
