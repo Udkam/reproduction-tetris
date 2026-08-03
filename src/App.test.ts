@@ -589,8 +589,8 @@ describe('entry countdown', () => {
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ mode: 'marathon', score: 4321, lines: 12 }));
     expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('排行榜前 50112 行44 方块');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
-    expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('12消行');
-    expect(view.container.querySelector('[data-metric="pieces"]')?.textContent).toBe('44使用方块');
+    expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('消行12');
+    expect(view.container.querySelector('[data-metric="pieces"]')?.textContent).toBe('使用方块44');
     act(() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
     expect(onExit).toHaveBeenCalledExactlyOnceWith('home');
     view.unmount();
@@ -882,14 +882,14 @@ describe('T6 frontend mode binding', () => {
       mutationCarriers: [{ id: 1, item: 'freeze' as const, cells: [] }],
     };
     const cases = [
-      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '下落速度', '0.8 秒/格'] },
+      { state: classic, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '经典模式数据', copy: ['连消', '3', '下落速度', '秒/格', '0.8'] },
       {
         state: survival,
         roles: ['survival-time', 'lines', 'survival-bedrock', 'survival-stones'],
         label: '生存模式数据',
         copy: ['生存时间', '0:00', '上升', '13 秒', '距离落石', '8块'],
       },
-      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度', '1.0 秒/格'] },
+      { state: sprint, roles: ['score', 'lines', 'classic-combo', 'fall-cadence'], label: '异变模式数据', copy: ['消行', '9', '连消', '下落速度', '秒/格', '1.0'] },
       {
         state: createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-01'),
         roles: ['puzzle-targets', 'puzzle-placed'],
@@ -1730,6 +1730,7 @@ describe('T6 frontend mode binding', () => {
   it('persists a bounded Classic pace interval and applies it to the next runtime only', async () => {
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
+    localStorage.setItem('tetramorph:language:v1', 'zh-CN');
     localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
 
     expect(parseClassicGravityRange(null)).toEqual({ startingTicks: 48, floorTicks: 6 });
@@ -1768,8 +1769,12 @@ describe('T6 frontend mode binding', () => {
     expect(runtime.setClassicGravityRange).toHaveBeenLastCalledWith(36, 18);
     expect(runtime.getState().classicStartingGravityTicks).toBe(48);
     expect(runtime.getState().classicGravityFloorTicks).toBe(6);
-    expect(sourceSettingsStyles).toMatch(/classic-speed-control__bound input\s*\{[^}]*appearance:\s*none[^}]*background:\s*color-mix\([^}]*var\(--settings-accent\)/s);
-    expect(sourceSettingsStyles).toMatch(/input::-(?:webkit-slider-thumb|moz-range-thumb)\s*\{[^}]*background:\s*var\(--settings-accent\)/s);
+    expect(view.container.querySelectorAll('.classic-speed-control__rail')).toHaveLength(1);
+    expect(view.container.querySelectorAll('.classic-speed-control__input')).toHaveLength(2);
+    expect(view.container.querySelector('.classic-speed-control__heading em')?.textContent).toBe('秒/格');
+    expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__track i\s*\{[^}]*left:\s*var\(--classic-speed-start\)[^}]*width:\s*calc\(var\(--classic-speed-floor\) - var\(--classic-speed-start\)\)/s);
+    expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input\s*\{[^}]*appearance:\s*none[^}]*direction:\s*rtl[^}]*pointer-events:\s*none/s);
+    expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input::-(?:webkit-slider-thumb|moz-range-thumb)\s*\{[^}]*pointer-events:\s*auto[^}]*border:\s*4px solid var\(--settings-accent\)/s);
     view.unmount();
 
     const resumed = render(createElement(App));
@@ -2020,14 +2025,17 @@ describe('T6 frontend mode binding', () => {
       { id: 'lines', label: '消行', value: '24', primary: false },
     ]);
     expect(sourceResultStyles).toContain('width: min(31rem, calc(100vw - 24px))');
-    expect(sourceResultStyles).toMatch(/\.run-result__metrics\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\)/s);
-    expect(sourceResultStyles).toMatch(/\.run-result__metric--primary strong\s*\{[^}]*font-size:\s*clamp\(34px, 8vw, 44px\)/s);
+    expect(sourceResultStyles).toMatch(/\.run-result__hero strong\s*\{[^}]*font-size:\s*clamp\(48px, 13vw, 68px\)/s);
+    expect(sourceResultStyles).toMatch(/\.run-result__support\s*\{[^}]*justify-content:\s*space-between/s);
     expect(sourceResultStyles).not.toContain('"summary leaderboard"');
     const resultSummary = render(createElement(RunResultSummary, {
       state: { ...terminalState, elapsedTicks: 125 * 60 },
       rank: 2,
       hasRecord: true,
     }));
+    expect(resultSummary.container.querySelector('.run-result__hero strong')?.textContent).toBe('2:05');
+    expect(resultSummary.container.querySelector('.run-result__support')?.textContent).toContain('24');
+    expect(resultSummary.container.querySelector('.run-result__metric')).toBeNull();
     expect(resultSummary.container.querySelector('.run-result__rank')).toBeNull();
     expect(resultSummary.container.textContent).not.toContain('本局第');
     expect(resultSummary.container.textContent).not.toMatch(/方块|基岩/);
@@ -2134,16 +2142,14 @@ describe('T6 frontend mode binding', () => {
 
     const english = render(createElement(RunStats, { state: classic, language: 'en' }));
     const cadence = english.container.querySelector('[data-stat-role="fall-cadence"] strong');
-    expect(cadence?.textContent).toBe('0.7 s/cell');
-    expect(cadence?.querySelector('.run-stats__value')?.textContent).toBe('0.7');
-    expect(cadence?.querySelector('.run-stats__unit')?.textContent).toBe('s/cell');
+    const cadenceUnit = english.container.querySelector('[data-stat-role="fall-cadence"] .run-stats__label small');
+    expect(cadence?.textContent).toBe('0.7');
+    expect(cadenceUnit?.textContent).toBe('s/cell');
+    expect(english.container.querySelector('.run-stats__unit')).toBeNull();
     english.unmount();
 
-    expect(sourceHudStyles).toMatch(/fall-cadence[^}]*strong\s*>\s*span[^}]*display:\s*inline/s);
-    expect(sourceHudStyles).toMatch(/\.run-stats__unit\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-weight:\s*700/s);
-    expect(sourceHudStyles).toMatch(/\.run-stats__unit\s*\{[^}]*font-size:\s*12px[^}]*font-weight:\s*700/s);
-    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*column-gap:\s*4px/s);
-    expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\.run-stats__unit\s*\{[^}]*font-weight:\s*400/s);
+    expect(sourceHudStyles).toMatch(/\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-family:\s*var\(--font-ui\)[^}]*font-size:\s*9px[^}]*font-weight:\s*700/s);
+    expect(sourceHudStyles).toMatch(/\.app:lang\(en\)[^{]*\[data-stat-role="fall-cadence"\] \.run-stats__label small\s*\{[^}]*font-weight:\s*400/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s*\[data-stat-role="fall-cadence"\]\s*strong\s*\{[^}]*font-size:\s*19px/s);
     expect(sourceHudStyles).toMatch(/\.run-stats\s+strong\s*\{[^}]*display:\s*inline-flex[^}]*min-height:\s*1\.08em[^}]*align-items:\s*baseline/s);
   });

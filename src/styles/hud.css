@@ -140,35 +140,34 @@
   text-overflow: clip;
 }
 
+.run-stats [data-stat-role="fall-cadence"] .run-stats__label {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.run-stats [data-stat-role="fall-cadence"] .run-stats__label small {
+  flex: 0 0 auto;
+  color: color-mix(in srgb, var(--muted) 82%, var(--ink));
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .run-stats [data-stat-role="fall-cadence"] strong {
-  column-gap: 4px;
   font-size: 19px;
   letter-spacing: -.04em;
   white-space: nowrap;
 }
 
-.run-stats [data-stat-role="fall-cadence"] strong > span {
-  display: inline;
-  margin: 0;
-  line-height: inherit;
-  white-space: nowrap;
-}
-
-.run-stats [data-stat-role="fall-cadence"] .run-stats__value {
-  font-family: var(--font-data);
-}
-
-.run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1;
-}
-
-.app:lang(en) .run-stats [data-stat-role="fall-cadence"] .run-stats__unit {
+.app:lang(en) .run-stats [data-stat-role="fall-cadence"] .run-stats__label small {
   font-weight: 400;
-  -webkit-text-stroke: .22px currentColor;
+  -webkit-text-stroke: .18px currentColor;
   paint-order: stroke fill;
 }
 

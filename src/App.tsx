@@ -5,6 +5,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
@@ -1118,6 +1119,9 @@ export function RunResultSummary({
   language?: AppLanguage;
 }) {
   const copy = appCopy(language);
+  const metrics = runResultMetrics(state, language);
+  const primaryMetric = metrics.find((metric) => metric.primary) ?? metrics[0]!;
+  const supportingMetrics = metrics.filter((metric) => metric !== primaryMetric);
   const rankLabel = hasRecord && rank === null
     ? copy.labels.currentRunMissedLeaderboard
     : null;
@@ -1128,18 +1132,16 @@ export function RunResultSummary({
           {rankLabel}
         </p>
       )}
-      <div className="run-result__metrics">
-        {runResultMetrics(state, language).map((metric) => (
-          <article
-            className={`run-result__metric${metric.primary ? ' run-result__metric--primary' : ''}`}
-            data-metric={metric.id}
-            key={metric.id}
-          >
-            <strong>{metric.value}</strong>
-            <span>{metric.label}</span>
-          </article>
-        ))}
+      <div className="run-result__hero" data-metric={primaryMetric.id}>
+        <span>{primaryMetric.label}</span>
+        <strong>{primaryMetric.value}</strong>
       </div>
+      {supportingMetrics.map((metric) => (
+        <article className="run-result__support" data-metric={metric.id} key={metric.id}>
+          <span>{metric.label}</span>
+          <strong>{metric.value}</strong>
+        </article>
+      ))}
     </section>
   );
 }
@@ -1277,58 +1279,82 @@ function ClassicGravityRangeControl({
   const startingSeconds = (range.startingTicks / TICKS_PER_SECOND).toFixed(1);
   const floorSeconds = (range.floorTicks / TICKS_PER_SECOND).toFixed(1);
   const unit = language === 'en' ? 's/cell' : '秒/格';
-  const value = (seconds: string) => (
-    <output aria-live="polite">
-      <span className="classic-speed-control__value">{seconds}</span>{' '}
-      <span className="classic-speed-control__unit">{unit}</span>
-    </output>
-  );
+  const percentForSeconds = (seconds: number) => ((1 - seconds) / .9) * 100;
+  const controlStyle = {
+    '--classic-speed-start': `${percentForSeconds(Number(startingSeconds))}%`,
+    '--classic-speed-floor': `${percentForSeconds(Number(floorSeconds))}%`,
+  } as CSSProperties;
+  const updateBoundFromRail = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest('input')) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const position = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    const seconds = Math.round((1 - position * .9) * 10) / 10;
+    const ticks = seconds * TICKS_PER_SECOND;
+    const selectStarting = Math.abs(ticks - range.startingTicks) <= Math.abs(ticks - range.floorTicks);
+    const testId = selectStarting ? 'classic-starting-speed' : 'classic-fastest-speed';
+    event.currentTarget.querySelector<HTMLInputElement>(`[data-testid="${testId}"]`)?.focus();
+    onChange(normalizeClassicGravityRange(selectStarting
+      ? { startingTicks: Math.max(ticks, range.floorTicks), floorTicks: range.floorTicks }
+      : { startingTicks: range.startingTicks, floorTicks: Math.min(ticks, range.startingTicks) }));
+  };
   return (
-    <div className="classic-speed-control" role="group" aria-label={copy.labels.classicSpeedRange}>
-      <span className="classic-speed-control__heading">
-        <b>{copy.labels.classicSpeedRange}</b>
-        <small>{copy.labels.appliesNextRun}</small>
-      </span>
-      <label className="classic-speed-control__bound">
-        <span>{copy.labels.startingFallSpeed}</span>
+    <div className="classic-speed-control" role="group" aria-label={copy.labels.classicSpeedRange} style={controlStyle}>
+      <div className="classic-speed-control__heading">
+        <span><b>{copy.labels.classicSpeedRange}</b><small>{copy.labels.appliesNextRun}</small></span>
+        <em>{unit}</em>
+      </div>
+      <div className="classic-speed-control__values">
+        <output className="classic-speed-control__value" htmlFor="classic-starting-speed" aria-live="polite">
+          <span>{copy.labels.startingFallSpeed}</span><strong>{startingSeconds}</strong>
+        </output>
+        <span className="classic-speed-control__direction" aria-hidden="true">→</span>
+        <output className="classic-speed-control__value" htmlFor="classic-fastest-speed" aria-live="polite">
+          <span>{copy.labels.fastestFallSpeed}</span><strong>{floorSeconds}</strong>
+        </output>
+      </div>
+      <div className="classic-speed-control__rail" onPointerDown={updateBoundFromRail}>
+        <span className="classic-speed-control__track" aria-hidden="true"><i /></span>
         <input
+          id="classic-starting-speed"
+          className="classic-speed-control__input classic-speed-control__input--start"
           type="range"
           data-testid="classic-starting-speed"
           data-arrow-nav
           data-arrow-row="2"
           data-arrow-col="1"
-          min={range.floorTicks / TICKS_PER_SECOND}
+          min={CLASSIC_STARTING_GRAVITY_MIN_TICKS / TICKS_PER_SECOND}
           max={CLASSIC_STARTING_GRAVITY_MAX_TICKS / TICKS_PER_SECOND}
           step="0.1"
           value={startingSeconds}
           aria-label={copy.labels.startingFallSpeed}
+          aria-valuetext={`${startingSeconds} ${unit}`}
           onChange={(event) => onChange(normalizeClassicGravityRange({
-            startingTicks: Number(event.currentTarget.value) * TICKS_PER_SECOND,
+            startingTicks: Math.max(Number(event.currentTarget.value) * TICKS_PER_SECOND, range.floorTicks),
             floorTicks: range.floorTicks,
           }))}
         />
-        {value(startingSeconds)}
-      </label>
-      <label className="classic-speed-control__bound">
-        <span>{copy.labels.fastestFallSpeed}</span>
         <input
+          id="classic-fastest-speed"
+          className="classic-speed-control__input classic-speed-control__input--floor"
           type="range"
           data-testid="classic-fastest-speed"
           data-arrow-nav
           data-arrow-row="2"
           data-arrow-col="2"
           min={CLASSIC_STARTING_GRAVITY_MIN_TICKS / TICKS_PER_SECOND}
-          max={range.startingTicks / TICKS_PER_SECOND}
+          max={CLASSIC_STARTING_GRAVITY_MAX_TICKS / TICKS_PER_SECOND}
           step="0.1"
           value={floorSeconds}
           aria-label={copy.labels.fastestFallSpeed}
+          aria-valuetext={`${floorSeconds} ${unit}`}
           onChange={(event) => onChange(normalizeClassicGravityRange({
             startingTicks: range.startingTicks,
-            floorTicks: Number(event.currentTarget.value) * TICKS_PER_SECOND,
+            floorTicks: Math.min(Number(event.currentTarget.value) * TICKS_PER_SECOND, range.startingTicks),
           }))}
         />
-        {value(floorSeconds)}
-      </label>
+      </div>
+      <div className="classic-speed-control__limits" aria-hidden="true"><span>1.0</span><span>0.1</span></div>
     </div>
   );
 }
@@ -1366,12 +1392,12 @@ function SettingsShortcutGuide({ mode, language }: { mode: GameMode; language: A
 
 function FallCadenceValue({ state, language }: { state: GameState; language: AppLanguage }) {
   const cadence = fallCadenceParts(state, language);
-  return (
-    <strong aria-label={fallCadenceLabel(state, language)}>
-      <span className="run-stats__value">{cadence.value}</span>{' '}
-      <span className="run-stats__unit">{cadence.unit}</span>
-    </strong>
-  );
+  return <strong aria-label={fallCadenceLabel(state, language)}>{cadence.value}</strong>;
+}
+
+function FallCadenceLabel({ state, language }: { state: GameState; language: AppLanguage }) {
+  const copy = appCopy(language);
+  return <span className="run-stats__label">{copy.labels.fall}<small>{fallCadenceParts(state, language).unit}</small></span>;
 }
 
 export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
@@ -1418,7 +1444,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
         <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
         <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
         <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
-        <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><FallCadenceValue state={state} language={language} /></article>
+        <article data-stat-role="fall-cadence"><FallCadenceLabel state={state} language={language} /><FallCadenceValue state={state} language={language} /></article>
       </section>
     );
   }
@@ -1427,7 +1453,7 @@ export function RunStats({ state, language = DEFAULT_LANGUAGE }: { state: GameSt
       <article data-stat-role="score"><span>{copy.labels.score}</span><strong>{formatScore(state.score, language)}</strong></article>
       <article data-stat-role="lines"><span>{copy.labels.lines}</span><strong>{state.lines}</strong></article>
       <article data-stat-role="classic-combo"><span>{copy.labels.combo}</span><strong>{state.combo}</strong></article>
-      <article data-stat-role="fall-cadence"><span>{copy.labels.fall}</span><FallCadenceValue state={state} language={language} /></article>
+      <article data-stat-role="fall-cadence"><FallCadenceLabel state={state} language={language} /><FallCadenceValue state={state} language={language} /></article>
     </section>
   );
 }
