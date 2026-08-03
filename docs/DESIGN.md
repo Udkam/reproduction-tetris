@@ -28,6 +28,37 @@ Playwrite NZ Basic is the brand face, Space Grotesk is the English/UI face, JetB
 Mono is the data face, and Noto Sans SC is the Chinese face. That change belongs to
 Phase C and must not be mixed into Phase A.
 
+### Phases B-C active correction — semantic type and progressive Settings disclosure
+
+The player-facing type system now has four non-overlapping roles. Playwrite NZ Basic
+belongs only to the `TetraMorph` wordmark. Space Grotesk owns ordinary English UI and
+must keep translated prose within the same measured regions as Chinese. Noto Sans SC
+owns Chinese UI and headings without a separate novelty display face. JetBrains Mono
+owns numeric/data content, keycaps, ranks, dates, percentages, countdowns, and compact
+units. A player-facing English selector resolving to Playwrite or a data selector
+resolving to IBM Plex Mono is a regression.
+
+Settings is no longer a poster containing four simultaneous sections. The enclosing
+sheet owns one compact tab rail and one content viewport:
+
+- **Settings** presents language, SFX, volume, and the restart/continue pair;
+- **Controls** presents gameplay controls first and global shortcuts second;
+- **Rules** presents the current mode's concise rule facts followed by its Puzzle best
+  record or non-Puzzle top-five table.
+
+Only the active panel is in the document layout. This is progressive disclosure, not
+three nested cards: tab color and a single lower rule identify state, while the content
+uses one connected surface and consistent vertical rhythm. Arrow Left/Right changes
+tabs; Arrow Up/Down moves between rows inside a panel; Enter activates the focused
+control. Desktop, portrait, and 844 x 390 must have no collision, clipped copy,
+unintentional two-line action, or empty quadrant retained for content on another tab.
+
+Pause interrupts the game surface below the 64 px top bar. Its translucent backdrop
+must not participate in hit testing over the header, so Back and Settings remain real
+pointer targets as well as members of the focus loop. A chosen top action replaces the
+pause sheet rather than stacking another modal; the live board and Next remain mounted,
+dimmed, and unchanged.
+
 ## 2026-08-03 T25 — language-invariant English mode names
 
 The four Home mode names are permanent English proper names, so their typography is

@@ -2,7 +2,7 @@
 
 ## T26 active goal — converge the current game into Release Candidate 1.0
 
-**Status (2026-08-03): PHASE A VERIFIED; PHASES B-C NEXT.** The accepted game remains the product
+**Status (2026-08-03): PHASE A VERIFIED; PHASES B-C ACTIVE.** The accepted game remains the product
 baseline. This is a convergence programme: no Core rewrite, renderer replacement,
 fifth mode, account system, server dependency, or broad React migration is authorised.
 Each change must improve first-time understanding, portfolio presentation, or long-term
@@ -30,10 +30,33 @@ Targeted tests pass; final typecheck, the complete suite (`308 passed / 3 skippe
 the 760-module production build, and the active-identifier scan pass. No server or
 browser was started for this nonvisual slice.
 
-**Next bounded slice.** Phases B-C now own the first-experience and visual-system
-corrections, including complete English typography, the dedicated data face, pause
-navigation availability, and a compact Settings tab composition. These visual changes
-require real browser evidence before acceptance.
+**Active bounded slice — B-C typography, pause reachability, and Settings
+information architecture.** Direct player review rejects the inherited handwritten
+English UI, the IBM Plex Mono data role, a pause layer that can intercept the persistent
+top actions, and a Settings sheet that exposes every subsystem at once. This slice must:
+
+1. keep Playwrite NZ Basic exclusive to the `TetraMorph` wordmark; use locally packaged
+   Space Grotesk for all ordinary English headings, prose, labels, buttons, rules,
+   keyboard descriptions, records, and units; use Noto Sans SC for Chinese UI;
+2. use locally packaged JetBrains Mono for scores, times, ranks, dates, countdowns,
+   board indices, keycaps, percentages, and numeric units, with tabular figures and no
+   synthetic slashed-zero styling;
+3. replace the all-at-once Settings console with three explicit tabs: **Settings**
+   (language, SFX, volume, restart/continue), **Controls** (gameplay first, shortcuts
+   second), and **Rules** (current-mode rules followed by its record or top-five table).
+   The active panel alone is rendered, eliminating structural voids and translation
+   collisions while preserving arrow-key navigation and Enter activation;
+4. keep Back and Settings visually and pointer-operable while Pause is open by ending
+   the gameplay backdrop below the 64 px top bar. Either action replaces Pause with its
+   existing successor sheet; gameplay input stays disabled and only one Canvas remains;
+5. add direct typography, Settings-tab, keyboard-navigation, and pause-transition tests.
+   After the last source edit, run one typecheck, the full suite, one build, and one
+   controlled bilingual browser batch at desktop, portrait, and short-landscape sizes.
+
+This slice may change typography dependencies/imports/tokens/notices, localization,
+`src/App.tsx`, authoritative Settings/HUD CSS, and direct tests. It may not change Core
+rules, renderer primitives, Puzzle definitions, scoring, persistence schemas, or add a
+new gameplay feature.
 
 # Previous Task — T25 Invariant Home Mode Typography
 
