@@ -129,6 +129,9 @@
 }
 
 .run-stats strong {
+  display: inline-flex;
+  min-height: 1.08em;
+  align-items: baseline;
   font-family: var(--font-mono);
   font-size: 19px;
   font-weight: 700;
@@ -138,7 +141,7 @@
 }
 
 .run-stats [data-stat-role="fall-cadence"] strong {
-  font-size: 14px;
+  font-size: 19px;
   letter-spacing: -.04em;
   white-space: nowrap;
 }
