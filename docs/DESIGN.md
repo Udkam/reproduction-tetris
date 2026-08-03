@@ -12,15 +12,17 @@ legible without increasing visual noise.
 ### Typography and Home
 
 The wordmark remains the only Playwrite NZ Basic text. Ordinary English interface copy
-uses the locally packaged Metal regular face at its real 400 weight. Chinese keeps
+uses the locally packaged Metal regular face at its real 400 weight with one controlled
+optical size adjustment so its compact authored metrics remain as legible as the Chinese
+UI without substituting another family. Chinese keeps
 Noto Sans SC and numeric/data roles keep Geist Mono, so applying Metal never changes
 score digits, timers, dates, keycaps, or board indices. A cadence metric has a stable
 two-row rhythm: the complete localized label occupies the first row, then the Geist Mono
 value and localized unit share one no-wrap baseline on the second. The unit uses
 Metal for English and Noto Sans SC for Chinese at the label's visual weight. Metal is
 loaded only at its authored 400 weight; the cascade does not invent a bold face and does
-not touch the wordmark or data glyphs. Chinese Home removes its positioning line and
-collapses that line from layout; English Home retains its concise English line. Every
+not touch the wordmark or data glyphs. Home removes its positioning line in both
+languages and collapses that line from layout. Every
 fallback remains local/system-safe for offline Steam packaging.
 
 ### Gameplay side rail
@@ -39,11 +41,13 @@ unchanged.
 
 Mutation adds one stable state instrument before the shared statistics surface. It is
 present in both idle and active play so activating or expiring an item never shifts the
-statistics or Next preview. The idle state is one quiet standby row. The containing
-surface uses a warm mineral wash and mode-colored edge rather than a near-black slab;
-active Freeze, Supergravity, and multiplier rows retain their own cyan, violet, and
-amber signals. The DOM/source order is status, statistics, then Next on every viewport,
-even when compact CSS turns that column into a horizontal strip.
+statistics or Next preview. Idle state retains only the instrument heading and empty
+reserved body; it shows neither a standby sentence nor a decorative spectrum. The
+containing surface shares the quiet raised background, border, and shadow language of
+the statistics and Next modules. Active Freeze, Supergravity, and multiplier rows add
+their cyan, violet, and amber signals inside that common shell. The DOM/source order is
+status, statistics, then Next on every viewport, even when compact CSS turns that column
+into a horizontal strip.
 
 ### Classic gravity interval
 
@@ -107,13 +111,14 @@ legible against a busy stack without becoming a full-screen flash. Reduced motio
 the assembled I plus a static confirmation frame. The cue uses Reshape's teal palette,
 never Double's star language, and completes quickly enough to preserve input cadence.
 
-Mutation carriers never rely on item hue alone. Each occupied carrier cell receives a
-small neutral dark backing plate with a pale keyline, then the item-specific cyan,
-violet, coral, amber, or teal mark is drawn above it. A restrained outer silhouette cue
-ties the marked cells into one carrier without recoloring the base tetromino. This same
-two-channel identity is rendered on the active piece and in Next, so similar base/item
-colors remain separable. The cue is attached to the live carrier only; clearing or
-replacing it removes every overlay immediately. Reduced motion freezes the mark instead
+Mutation carriers never rely on item hue alone, but also never restyle every cell as a
+crate. The underlying tetromino keeps its ordinary material. A deterministic attachment
+cell owns one compact charm: a neutral charcoal socket, pale item pictogram, and
+item-colored outer ring. One very light whole-piece halo connects the charm to its body
+without repeated plates, rivets, or full cell rims. This same two-channel identity is
+rendered on the falling piece, locked carrier, and Next preview, so similar base/item
+colors remain separable. The charm is attached to the live carrier only; clearing or
+replacing it removes every overlay immediately. Reduced motion freezes the charm instead
 of removing it.
 
 ### Portrait result hierarchy

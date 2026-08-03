@@ -10,13 +10,15 @@ information architecture remain authoritative.
 
 The slice has thirteen player-visible acceptance requirements:
 
-1. Home shows the single `TetraMorph` wordmark without the Chinese positioning line.
-   The English positioning line may remain in English UI; Chinese Home must not reserve
-   a blank line after removing its copy.
+1. Home shows the single `TetraMorph` wordmark with no positioning line in either
+   language. Removing the subtitle must collapse its layout space rather than leave a
+   blank band below the wordmark.
 2. Locally packaged **Metal 400** replaces Kavivanar for ordinary English UI.
    Playwrite NZ Basic remains exclusive to the `TetraMorph` wordmark, Noto Sans SC
    remains the Chinese face, and Geist Mono remains the numeric/data face. English text
-   must wrap without overlap, clipping, or disappearance. Metal uses its authored
+   must wrap without overlap, clipping, disappearance, or the undersized appearance
+   shown by the first Metal pass. The packaged face receives one controlled optical
+   size adjustment rather than per-screen font substitutions. Metal uses its authored
    Regular 400 face rather than a fabricated bold face. Cadence cards never force two
    type systems onto one value baseline: the complete `下落速度 / Fall speed` label owns the first row,
    while the Geist Mono value and localized `秒/格` or `s/cell` unit share a second
@@ -84,11 +86,11 @@ The slice has thirteen player-visible acceptance requirements:
    regress compact/mobile layouts, pause visibility, or the single-canvas contract.
 10. Mutation always reserves one **异变状态 / Mutation status** instrument at the top
     of the side rail, before statistics and Next. The instrument remains mounted while
-    no timed item is active, using one concise standby state so the rail never jumps
-    when an item begins or expires. Its surface uses a restrained warm Mutation tint
-    instead of the inherited near-black block; active item colors remain individually
-    distinguishable, and compact/short layouts may reflow without changing this source
-    order.
+    no timed item is active so the rail never jumps when an item begins or expires, but
+    idle state contains no `暂无持续状态 / No active mutation` sentence or decorative
+    spectrum. Its enclosing surface uses the same quiet raised background as the
+    statistics and Next modules; only active rows introduce item color. Compact/short
+    layouts may reflow without changing this source order.
 11. Reshape receives an unmistakable but short board-local activation: scattered units
     visibly converge into an I silhouette, the assembled piece receives one confirmation
     pulse, and a low-opacity field response connects the event to the board. It cannot
@@ -102,11 +104,13 @@ The slice has thirteen player-visible acceptance requirements:
     no remote font request, fabricated weight face, or partial Kavivanar cascade may
     remain active.
 13. Every Mutation carrier remains identifiable when its item palette is close to the
-    underlying tetromino color. Carrier rendering therefore uses two channels that do
-    not depend on hue alone: a high-contrast neutral backing/keyline plus the existing
-    item-specific symbol and accent. The complete carrier silhouette is readable on the
-    active board and in Next; reduced motion keeps the same static identity, and the
-    treatment cannot leave a residual cell frame after the carrier is cleared.
+    underlying tetromino color, without turning every occupied cell into a crate. The
+    base tetromino material stays clean. One compact **attached charm** is placed on a
+    stable carrier cell: a neutral dark socket and pale pictogram provide contrast while
+    an item-colored ring and restrained whole-piece halo identify the item family. No
+    repeated cell plates, rivets, or boxed rims may overpower the tetromino. The same
+    charm grammar is readable on the falling piece, locked carrier, and Next preview;
+    reduced motion keeps it static, and clearing the carrier removes it completely.
 
 ### Required checkpoints and verification
 
