@@ -36,6 +36,8 @@ The slice has eight player-visible acceptance requirements:
 5. The Survival `距离落石 / Until rockfall` metric uses the same normal, urgent, and
    reduced-motion countdown treatment as the bedrock-rise metric. This is HUD feedback
    only and cannot add an extra timer or alter the deterministic rockfall schedule.
+   Urgency breathes through the complete card background; it must not add a pulsing
+   left rail, inset stripe, or other one-sided ornament. The border remains stable.
 6. Mutation Supergravity refreshes to **5 seconds**, while Ice and Double retain their
    ten-second windows. Its status meter uses the item-specific duration. The active
    board field becomes a quiet pressure treatment local to the stack: no large central

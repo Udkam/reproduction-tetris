@@ -45,8 +45,10 @@ The independent falling-rock accumulator advances seven units for every one simu
 tick and resolves at the unchanged Survival gravity threshold. This gives exactly 7x
 ordinary gravity without browser-time fractions. No other rockfall rule changes.
 `距离落石 / Until rockfall` shares the bedrock countdown's urgent color and restrained
-pulse at its existing piece threshold; reduced motion keeps the color/state change but
-removes the pulse. The visual parity is not a second countdown source.
+pulse at its existing piece threshold. The complete card surface performs a quiet,
+uniform background breath while the border stays stable; no left inset rail or local
+stripe is introduced. Reduced motion keeps the color/state change but removes the
+pulse. The visual parity is not a second countdown source.
 
 ### Supergravity and entry audio
 
