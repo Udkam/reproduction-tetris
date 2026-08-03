@@ -296,6 +296,25 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
+  it('announces Survival rockfall with one concise non-looping chirp', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.play([{
+      type: 'survival-stones-warned',
+      columns: [3],
+      height: 2,
+      leadPieces: 1,
+    }]);
+
+    expect(oscillators).toHaveLength(1);
+    expect(oscillators[0]?.type).toBe('triangle');
+    expect(oscillators[0]?.frequency.setValues).toEqual([540]);
+    expect(oscillators[0]?.frequency.ramps).toEqual([760]);
+    audio.destroy();
+  });
+
   it('routes every event through bounded original oscillator voices', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();

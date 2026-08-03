@@ -1966,7 +1966,7 @@ export class TetrisRenderer {
     const warningColor = COLORS.target;
     const pulseWave = this.options.reducedMotion
       ? 1
-      : 0.5 + 0.5 * Math.sin((this.mutationClockMs / 760) * Math.PI * 2);
+      : 0.5 + 0.5 * Math.sin((this.mutationClockMs / 800) * Math.PI * 2);
     // The arrow itself is the complete warning. Compress its bright endpoint into a
     // short pulse without tinting the board, source column, pieces, Ghost, or wall.
     const warningFlash = this.options.reducedMotion ? 1 : pulseWave ** 4;

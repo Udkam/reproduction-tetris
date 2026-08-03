@@ -21,6 +21,7 @@ import {
   SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES,
   SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES,
   SURVIVAL_DEBRIS_RANDOM_SALT,
+  SURVIVAL_DEBRIS_WARNING_TICKS,
   SURVIVAL_LINES_PER_BEDROCK,
   SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
@@ -194,6 +195,7 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
             ...spawnedState,
             survivalDebrisWarningColumns: Object.freeze([]),
             survivalDebrisWarningHeight: null,
+            survivalDebrisWarningTicks: 0,
           }
         : spawnedState;
       const planned = planSurvivalDebris(safePlanState, active);
@@ -227,7 +229,10 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
       && spawnedState.queue[0]
     ) {
       const planned = planSurvivalDebris(spawnedState, createSpawnPiece(spawnedState.queue[0]));
-      spawnedState = planned.state;
+      spawnedState = {
+        ...planned.state,
+        survivalDebrisWarningTicks: SURVIVAL_DEBRIS_WARNING_TICKS,
+      };
       events.push({
         type: 'survival-stones-warned',
         columns: planned.columns,
@@ -284,6 +289,7 @@ export function createInitialState(seed = 0x51a1f00d, mode: GameMode = 'marathon
     survivalDebrisSpawnCount: 0,
     survivalDebrisWarningColumns: Object.freeze([]),
     survivalDebrisWarningHeight: null,
+    survivalDebrisWarningTicks: 0,
     survivalDebrisFallProgress: 0,
     survivalDebrisRandomizer: createRandomizer(survivalDebrisSeed(effectiveSeed)),
     mutationActiveCarrier: null,
@@ -444,6 +450,14 @@ function advanceSurvivalPressure(state: GameState): GameState {
   };
 }
 
+function advanceSurvivalDebrisWarning(state: GameState): GameState {
+  if (state.mode !== 'race' || state.survivalDebrisWarningTicks <= 0) return state;
+  return {
+    ...state,
+    survivalDebrisWarningTicks: state.survivalDebrisWarningTicks - 1,
+  };
+}
+
 function planSurvivalDebris(state: GameState, piece: ActivePiece): {
   state: GameState;
   columns: readonly number[];
@@ -532,6 +546,9 @@ function spawnSurvivalDebris(state: GameState): { state: GameState; cells: reado
       survivalDebrisWarningHeight: cells.length > 0
         ? null
         : state.survivalDebrisWarningHeight,
+      survivalDebrisWarningTicks: cells.length > 0
+        ? 0
+        : state.survivalDebrisWarningTicks,
     },
     cells: Object.freeze(cells),
   };
@@ -1337,7 +1354,9 @@ function tick(state: GameState): GameTransition {
   if (state.status !== 'playing') return { state, events: [] };
   const freezeGravityActive = state.mode === 'sprint' && state.mutationFreezeTicks > 0;
   const debris = advanceSurvivalDebris(
-    advanceMutationEffects(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 })),
+    advanceSurvivalDebrisWarning(
+      advanceMutationEffects(advanceSurvivalPressure({ ...state, elapsedTicks: state.elapsedTicks + 1 })),
+    ),
   );
   let next: GameState = debris.state;
   const timedEvents: GameEvent[] = [...debris.events];
@@ -1352,6 +1371,17 @@ function tick(state: GameState): GameTransition {
   if (next.phase === 'entry') {
     const phaseTicks = next.phaseTicks + 1;
     if (phaseTicks >= ENTRY_DELAY_TICKS) {
+      if (
+        next.mode === 'race'
+        && next.survivalDebrisPiecesRemaining <= 0
+        && next.survivalDebrisWarningColumns.length > 0
+        && next.survivalDebrisWarningTicks > 0
+      ) {
+        return {
+          state: { ...next, phaseTicks: ENTRY_DELAY_TICKS },
+          events: timedEvents,
+        };
+      }
       const resolved = resolvePendingSurvivalRise({ ...next, phaseTicks: 0 });
       if (resolved.state.status === 'game-over') return { state: resolved.state, events: [...timedEvents, ...resolved.events] };
       const spawned = spawnPiece(resolved.state);
@@ -1459,6 +1489,7 @@ export function stateHash(state: GameState): string {
         survivalDebrisSpawnCount: _survivalDebrisSpawnCount,
         survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
         survivalDebrisWarningHeight: _survivalDebrisWarningHeight,
+        survivalDebrisWarningTicks: _survivalDebrisWarningTicks,
         survivalDebrisFallProgress: _survivalDebrisFallProgress,
         survivalDebrisRandomizer: _survivalDebrisRandomizer,
         mutationActiveCarrier: _mutationActiveCarrier,
@@ -1507,6 +1538,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisSpawnCount: _survivalDebrisSpawnCount,
           survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
           survivalDebrisWarningHeight: _survivalDebrisWarningHeight,
+          survivalDebrisWarningTicks: _survivalDebrisWarningTicks,
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           mutationActiveCarrier: _mutationActiveCarrier,
@@ -1538,6 +1570,7 @@ export function stateHash(state: GameState): string {
           survivalDebrisSpawnCount: _survivalDebrisSpawnCount,
           survivalDebrisWarningColumns: _survivalDebrisWarningColumns,
           survivalDebrisWarningHeight: _survivalDebrisWarningHeight,
+          survivalDebrisWarningTicks: _survivalDebrisWarningTicks,
           survivalDebrisFallProgress: _survivalDebrisFallProgress,
           survivalDebrisRandomizer: _survivalDebrisRandomizer,
           ...sprintState

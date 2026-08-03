@@ -187,6 +187,8 @@ export interface GameState {
   survivalDebrisWarningColumns: readonly number[];
   /** Frozen height announced with the warning column; null when no event is planned. */
   survivalDebrisWarningHeight: SurvivalDebrisHeight | null;
+  /** Unconsumed playing ticks from the deterministic 800 ms warning floor. */
+  survivalDebrisWarningTicks: number;
   /** Exact integer accumulator that advances the event at 4× Survival gravity. */
   survivalDebrisFallProgress: number;
   /** Separate deterministic stream so debris timing never changes the seven-bag. */

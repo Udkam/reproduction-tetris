@@ -10,6 +10,7 @@ import {
   SURVIVAL_DEBRIS_EVENTS_PER_INTERVAL_STEP,
   SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES,
   SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES,
+  SURVIVAL_DEBRIS_WARNING_TICKS,
   SURVIVAL_LINES_PER_BEDROCK,
   SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
@@ -297,6 +298,85 @@ describe('independent Survival stone stream', () => {
     const restarted = dispatch(paused, { type: 'restart' }).state;
     expect(restarted.survivalDebrisPiecesRemaining).toBe(SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES);
     expect(restarted.survivalDebrisWarningColumns).toEqual([]);
+    expect(restarted.survivalDebrisWarningTicks).toBe(0);
+  });
+
+  it('guarantees the warned column 800 ms before an immediate following entry', () => {
+    const base = start(0x5a09, 'race');
+    let transition = dispatch({
+      ...base,
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: BOARD_HEIGHT - 2 },
+      survivalDebrisPiecesRemaining: 2,
+    }, { type: 'hard-drop' });
+
+    for (let index = 0; index < ENTRY_DELAY_TICKS; index += 1) {
+      transition = dispatch(transition.state, { type: 'tick' });
+    }
+    expect(transition.events).toContainEqual(expect.objectContaining({
+      type: 'survival-stones-warned',
+      leadPieces: 1,
+    }));
+    expect(transition.state.survivalDebrisWarningTicks).toBe(SURVIVAL_DEBRIS_WARNING_TICKS);
+    expect(transition.state.survivalDebrisWarningColumns).toHaveLength(1);
+
+    const warnedHash = stateHash(transition.state);
+    const paused = dispatch(transition.state, { type: 'pause' }).state;
+    expect(dispatch(paused, { type: 'tick' }).state.survivalDebrisWarningTicks)
+      .toBe(SURVIVAL_DEBRIS_WARNING_TICKS);
+
+    transition = dispatch(transition.state, { type: 'hard-drop' });
+    expect(transition.state).toMatchObject({ active: null, phase: 'entry' });
+    for (let index = 0; index < SURVIVAL_DEBRIS_WARNING_TICKS - 1; index += 1) {
+      transition = dispatch(transition.state, { type: 'tick' });
+    }
+    expect(transition.state).toMatchObject({
+      active: null,
+      phase: 'entry',
+      survivalDebrisWarningTicks: 1,
+    });
+    expect(transition.state.survivalDebris).toEqual([]);
+
+    transition = dispatch(transition.state, { type: 'tick' });
+    expect(transition.state.active).not.toBeNull();
+    expect(transition.state.survivalDebrisWarningTicks).toBe(0);
+    expect(transition.events).toContainEqual(expect.objectContaining({ type: 'survival-stones-spawned' }));
+    expect(stateHash(transition.state)).not.toBe(warnedHash);
+  });
+
+  it('hashes the warning clock only for Survival state', () => {
+    const survival = start(0x5a0b, 'race');
+    const classic = start(0x5a0b, 'marathon');
+
+    expect(stateHash({ ...survival, survivalDebrisWarningTicks: 17 }))
+      .not.toBe(stateHash(survival));
+    expect(stateHash({ ...classic, survivalDebrisWarningTicks: 17 }))
+      .toBe(stateHash(classic));
+  });
+
+  it('adds no entry wait after ordinary play already consumes the warning floor', () => {
+    const base = start(0x5a0a, 'race');
+    let transition = dispatch({
+      ...base,
+      board: createBoard(),
+      survivalBedrockRows: 0,
+      active: { type: 'O', rotation: 0, x: 4, y: BOARD_HEIGHT - 2 },
+      survivalDebrisPiecesRemaining: 2,
+    }, { type: 'hard-drop' });
+    for (let index = 0; index < ENTRY_DELAY_TICKS; index += 1) {
+      transition = dispatch(transition.state, { type: 'tick' });
+    }
+    transition = { state: advance(transition.state, SURVIVAL_DEBRIS_WARNING_TICKS), events: [] };
+    expect(transition.state.survivalDebrisWarningTicks).toBe(0);
+
+    transition = dispatch(transition.state, { type: 'hard-drop' });
+    for (let index = 0; index < ENTRY_DELAY_TICKS; index += 1) {
+      transition = dispatch(transition.state, { type: 'tick' });
+    }
+    expect(transition.state.active).not.toBeNull();
+    expect(transition.state.survivalDebris).toHaveLength(1);
+    expect(transition.events).toContainEqual(expect.objectContaining({ type: 'survival-stones-spawned' }));
   });
 
   it('spawns one or two joined rocks wholly visible and outside the accompanying piece columns', () => {

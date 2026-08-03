@@ -131,6 +131,10 @@ export class AudioEngine {
         this.tone({ frequency: 92, duration: 0.17, gain: 0.23, endFrequency: 78, type: 'sine' });
       } else if (event.type === 'bedrock-lowered') {
         this.tone({ frequency: 220, duration: 0.12, gain: 0.2, endFrequency: 278, type: 'sine' });
+      } else if (event.type === 'survival-stones-warned') {
+        // One dry rising chirp identifies the announced source column. It has no
+        // loop or follow-up voice, so the 800 ms visual lead stays calm and legible.
+        this.tone({ frequency: 540, duration: 0.065, gain: 0.16, endFrequency: 760, type: 'triangle' });
       } else if (event.type === 'level-up') {
         [330, 495, 660].forEach((frequency, index) => this.tone({ frequency, duration: 0.13, gain: 0.18, delay: index * 0.055, type: 'sine' }));
       } else if (event.type === 'finished') {

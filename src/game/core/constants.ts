@@ -28,6 +28,8 @@ export const SURVIVAL_RISES_PER_AFTERSHOCK = 4;
 export const SURVIVAL_DEBRIS_INITIAL_INTERVAL_PIECES = 8;
 export const SURVIVAL_DEBRIS_MIN_INTERVAL_PIECES = 4;
 export const SURVIVAL_DEBRIS_EVENTS_PER_INTERVAL_STEP = 4;
+/** Minimum visible warning lead: 48 playing ticks are exactly 800 ms at 60 Hz. */
+export const SURVIVAL_DEBRIS_WARNING_TICKS = 48;
 /** Exactly 4× normal Survival gravity, represented with an integer accumulator. */
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_PER_TICK = 4;
 export const SURVIVAL_DEBRIS_FALL_PROGRESS_THRESHOLD = SURVIVAL_GRAVITY_TICKS;

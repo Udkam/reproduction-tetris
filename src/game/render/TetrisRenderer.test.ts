@@ -898,8 +898,8 @@ describe('Puzzle undo presentation reset', () => {
       return recorder.operations;
     };
 
-    const trough = drawWarning(1, 570);
-    const peak = drawWarning(2, 190);
+    const trough = drawWarning(1, 600);
+    const peak = drawWarning(2, 200);
     expect(trough).not.toEqual(peak);
     const segments = trough.filter((operation) => operation.kind === 'segment');
     expect(segments).toHaveLength(3);
