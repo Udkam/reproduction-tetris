@@ -8,18 +8,17 @@ coordinator is the only writer. The accepted deterministic Core, one Pixi canvas
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
 information architecture remain authoritative.
 
-The slice has nine player-visible acceptance requirements:
+The slice has twelve player-visible acceptance requirements:
 
 1. Home shows the single `TetraMorph` wordmark without the Chinese positioning line.
    The English positioning line may remain in English UI; Chinese Home must not reserve
    a blank line after removing its copy.
-2. Locally packaged **Kavivanar 400** replaces Space Grotesk for ordinary English UI.
+2. Locally packaged **Metal 400** replaces Kavivanar for ordinary English UI.
    Playwrite NZ Basic remains exclusive to the `TetraMorph` wordmark, Noto Sans SC
    remains the Chinese face, and Geist Mono remains the numeric/data face. English text
-   must wrap without overlap, clipping, or disappearance. Because Kavivanar publishes
-   only Regular 400, Chromium receives a restrained optical ink compensation rather
-   than a fabricated font face. Cadence cards never force two type systems onto one
-   value baseline: the complete `下落速度 / Fall speed` label owns the first row,
+   must wrap without overlap, clipping, or disappearance. Metal uses its authored
+   Regular 400 face rather than a fabricated bold face. Cadence cards never force two
+   type systems onto one value baseline: the complete `下落速度 / Fall speed` label owns the first row,
    while the Geist Mono value and localized `秒/格` or `s/cell` unit share a second
    no-wrap baseline. Chinese cadence units remain Noto Sans SC and match the label's
    visual weight.
@@ -47,10 +46,13 @@ The slice has nine player-visible acceptance requirements:
    Urgency breathes through the complete card background; it must not add a pulsing
    left rail, inset stripe, or other one-sided ornament. The border remains stable.
 6. Mutation Supergravity refreshes to **5 seconds**, while Ice and Double retain their
-   ten-second windows. Its status meter uses the item-specific duration. The active
-   board field becomes a quiet pressure treatment local to the stack: no large central
-   symbol, rain-like marks, flashing, or high-opacity full-board decoration; reduced
-   motion receives a static equivalent. The latched landing rule remains unchanged.
+   ten-second windows. Its status meter uses the item-specific duration. Supergravity
+   is expressed by a lightly shivering top boundary and restrained downward pressure at
+   the stack, not a central symbol, rain-like marks, screen flash, or high-opacity
+   full-board decoration. Double and Super Double replace the fixed upper-right emblem
+   with sparse, small starlets falling from the top; the stronger tier may increase
+   density without masking gameplay. Reduced motion receives static equivalents. The
+   latched landing rule remains unchanged.
 7. The `3 / 2 / 1` entry countdown gains three short, ascending procedural SFX cues.
    The existing Start event remains the confirmation beat. Cues obey SFX enablement and
    volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
@@ -78,8 +80,27 @@ The slice has nine player-visible acceptance requirements:
    surface at the same measured width without covering the Pixi-owned preview. The
    complete statistics-plus-Next group is vertically centred within the available rail
    height and cannot create a structural blank gap. Puzzle keeps its accepted dual
-   preview and Mutation may still insert its active status module, but neither may
+   preview and Mutation keeps its persistent status before statistics, but neither may
    regress compact/mobile layouts, pause visibility, or the single-canvas contract.
+10. Mutation always reserves one **异变状态 / Mutation status** instrument at the top
+    of the side rail, before statistics and Next. The instrument remains mounted while
+    no timed item is active, using one concise standby state so the rail never jumps
+    when an item begins or expires. Its surface uses a restrained warm Mutation tint
+    instead of the inherited near-black block; active item colors remain individually
+    distinguishable, and compact/short layouts may reflow without changing this source
+    order.
+11. Reshape receives an unmistakable but short board-local activation: scattered units
+    visibly converge into an I silhouette, the assembled piece receives one confirmation
+    pulse, and a low-opacity field response connects the event to the board. It cannot
+    reuse Double's star, add persistent screen decoration, obscure the active piece, or
+    ignore reduced motion. The cue must remain visually distinct from the carried-item
+    material and from the ordinary line-clear effect.
+12. The Metal migration is complete across every active English surface and package
+    artifact. Playwrite NZ Basic remains exclusive to the `TetraMorph` wordmark, Geist Mono keeps
+    every numeric/data role, and Noto Sans SC keeps Chinese text and localized Chinese
+    units. Metal is loaded from the pinned repository dependency for offline packaging;
+    no remote font request, fabricated weight face, or partial Kavivanar cascade may
+    remain active.
 
 ### Required checkpoints and verification
 
@@ -91,7 +112,9 @@ The slice has nine player-visible acceptance requirements:
 5. Commit countdown audio, the restrained Supergravity visual, and the portrait scored
    and Puzzle result hierarchy with direct audio, renderer, CSS, and reduced-motion
    tests.
-6. After the final source edit, run one typecheck, the complete two-worker suite, one
+6. Commit the persistent Mutation status rail, Reshape activation, and Metal typography
+   as bounded checkpoints with direct React, renderer/timeline, token, and CSS tests.
+7. After the final source edit, run one typecheck, the complete two-worker suite, one
    production build, and one controlled bilingual browser-evidence batch. Inspect real
    Home, Classic Settings, Survival HUD, countdown, Supergravity, and all three ranked
    result frames. Then create a candidate SHA for independent read-only QA before

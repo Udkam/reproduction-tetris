@@ -12,14 +12,13 @@ legible without increasing visual noise.
 ### Typography and Home
 
 The wordmark remains the only Playwrite NZ Basic text. Ordinary English interface copy
-uses the locally packaged Kavivanar regular face at its real 400 weight. Chinese keeps
-Noto Sans SC and numeric/data roles keep Geist Mono, so applying Kavivanar never changes
+uses the locally packaged Metal regular face at its real 400 weight. Chinese keeps
+Noto Sans SC and numeric/data roles keep Geist Mono, so applying Metal never changes
 score digits, timers, dates, keycaps, or board indices. A cadence metric has a stable
 two-row rhythm: the complete localized label occupies the first row, then the Geist Mono
 value and localized unit share one no-wrap baseline on the second. The unit uses
-Kavivanar for English and Noto Sans SC for Chinese at the label's visual weight. Since the family has
-no bold file, English UI receives a subtle, constant optical ink stroke to improve
-small-size legibility; it does not invent or declare a Kavivanar 700 face, and it does
+Metal for English and Noto Sans SC for Chinese at the label's visual weight. Metal is
+loaded only at its authored 400 weight; the cascade does not invent a bold face and does
 not touch the wordmark or data glyphs. Chinese Home removes its positioning line and
 collapses that line from layout; English Home retains its concise English line. Every
 fallback remains local/system-safe for offline Steam packaging.
@@ -37,6 +36,14 @@ changing the Next frame cannot strand a large structural gap above or below it. 
 preserves its two-item preview and active Mutation status may join the stack, but
 responsive reflow, paused-state visibility, and the one-canvas boundary remain
 unchanged.
+
+Mutation adds one stable state instrument before the shared statistics surface. It is
+present in both idle and active play so activating or expiring an item never shifts the
+statistics or Next preview. The idle state is one quiet standby row. The containing
+surface uses a warm mineral wash and mode-colored edge rather than a near-black slab;
+active Freeze, Supergravity, and multiplier rows retain their own cyan, violet, and
+amber signals. The DOM/source order is status, statistics, then Next on every viewport,
+even when compact CSS turns that column into a horizontal strip.
 
 ### Classic gravity interval
 
@@ -74,15 +81,31 @@ pulse. The visual parity is not a second countdown source.
 Supergravity is the one five-second timed Mutation. Re-triggering refreshes it to five
 seconds; the currently airborne piece keeps the accepted landing latch if the timer
 expires. Its active field is stack-relative and low contrast: a shallow contact shadow
-and two broad pressure shoulders compress toward occupied columns. There is no falling
-stripe, large icon, screen flash, or board-wide displacement. Motion is slow and bounded;
-reduced motion is static. The HUD meter divides by the five-second maximum while other
-timed items continue to divide by ten seconds.
+and two broad pressure shoulders compress toward occupied columns while the top board
+boundary shifts by only a few pixels in an irregular, damped tremor. There is no falling
+stripe, large icon, screen flash, rain language, or board-wide displacement. Reduced
+motion keeps one static compressed top edge. The HUD meter divides by the five-second
+maximum while other timed items continue to divide by ten seconds.
+
+Double and Super Double abandon the fixed upper-right star emblem. A small number of
+tiny amber starlets enter from varied points along the top boundary and descend only
+through the upper field before dissolving; ×4 increases the count slightly but not the
+individual size or opacity. The pattern is ambient state feedback, never an input target
+or score burst, and it remains behind active/ghost pieces. Reduced motion retains a few
+static top-edge starlets without falling animation.
 
 The entry countdown uses three original procedural tones on the runtime-owned effects
 bus. `3`, `2`, and `1` rise in pitch and remain shorter and quieter than the existing
 Start confirmation. They respect mute and volume, never create music or another audio
 context, and are cancelled by the existing runtime teardown boundary.
+
+Reshape is an instantaneous Mutation and therefore does not occupy the persistent timed
+status ledger. Its activation instead owns a concise three-beat Pixi cue: four displaced
+cell facets gather, lock into an I silhouette, and release one restrained confirmation
+ripple. A very low-opacity teal field response and corner alignment marks make the event
+legible against a busy stack without becoming a full-screen flash. Reduced motion renders
+the assembled I plus a static confirmation frame. The cue uses Reshape's teal palette,
+never Double's star language, and completes quickly enough to preserve input cadence.
 
 ### Portrait result hierarchy
 
