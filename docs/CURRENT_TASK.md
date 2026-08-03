@@ -27,6 +27,9 @@ The correction has ten coupled acceptance requirements:
    paints a dark rounded preview card behind gameplay Next; the DOM remains geometry
    only and no DOM cell grid is introduced. The frameless forecast uses a larger,
    immediately legible tetromino scale without changing the measured rail footprint.
+   `Next` and `异变状态 / Mutation status` are horizontally centred in the left
+   instrument column; the forecast piece begins close beneath the Next label instead of
+   floating in the vertical middle of an invisible former card.
 4. Settings adds one persisted, keyboard-operable three-theme choice. The themes are
    not palette-only skins: each changes page field, typography contrast, separators,
    navigation/action treatment, board well and edge, Settings, modal/result surfaces,
@@ -43,7 +46,8 @@ The correction has ten coupled acceptance requirements:
    primary surfaces, controls, selection states, preview/detail regions, and typography;
    neither page may remain a light-only shell after a theme change.
    Home's wordmark panel is one theme-owned **solid color** with no gradient, radial
-   texture, or split-tone wash. The wordmark gains a restrained static theme-colored
+   texture, or split-tone wash. Its solid field is the theme's brighter brand surface,
+   not the near-black board-well token. The wordmark gains a restrained static theme-colored
    glow that remains legible without flashing and becomes non-animated under reduced
    motion. Every mode tile uses theme-owned hover and keyboard-focus colors; pointer
    highlight ends when the pointer leaves instead of persisting as a generic blue state.
@@ -60,7 +64,9 @@ The correction has ten coupled acceptance requirements:
    smaller `回车确认，按 R 取消 / Enter to confirm; R to cancel`; Enter starts a fresh
    countdown and R cancels. The left Next instrument stays outside either interruption
    and remains visibly populated through the dim layer. Escape opens the existing leave
-   flow from Pause and cancels Restart confirmation.
+   flow from Pause and cancels Restart confirmation. The visible top-bar Back and Settings
+   controls remain pointer- and keyboard-operable over both covers; opening either replaces
+   the board interruption with the established leave or Settings flow without resuming play.
 7. The open-space instruments remain genuinely frameless in both DOM and Pixi. Next has
    no enclosing rectangle, DOM border/outline, Canvas backdrop, rounded well, shadow, or
    blank placeholder frame, including while its slot is empty, loading, paused, or
@@ -82,6 +88,9 @@ The correction has ten coupled acceptance requirements:
    `开始 / Start` word. After `1`, the cover exits through one short opacity/light
    transition and the first piece begins falling at that same completion boundary.
    Opening, pausing, restarting, and dismissing a cover must not hard-cut the board glow.
+   The veil uses one soft, low-contrast light field that reaches toward all four board
+   edges with broad falloff; it must not read as a central circular spotlight, ring, or
+   hard radial hotspot.
    Each countdown digit has a clearer short procedural SFX accent while still obeying
    the shared SFX enablement and volume controls; no music or persistent voice is added.
 10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line

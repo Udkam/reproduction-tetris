@@ -23,7 +23,9 @@ whose visible boundaries remain necessary for affordance, focus, and accessibili
 The open Next forecast uses a larger tetromino scale but never regains a DOM outline,
 Canvas backing well, rounded rectangle, shadow, or empty placeholder frame. Right-rail
 numeric values use a stronger desktop scale and theme-owned high-contrast value color;
-their labels remain subordinate.
+their labels remain subordinate. The `Next` and `异变状态 / Mutation status` headings
+share the left rail's horizontal centreline, and the forecast geometry sits directly
+beneath its heading rather than preserving the dead vertical centre of the removed card.
 
 Three coherent themes share geometry and semantic roles:
 
@@ -55,7 +57,8 @@ remain recognisable without forcing a light card. The visible Back control uses 
 theme-owned filled action color, foreground, border, hover, and focus treatment as the
 Settings control.
 
-Home's wordmark panel uses a single solid field resolved from the active theme. It has no
+Home's wordmark panel uses a single solid field resolved from the active theme. That field
+comes from a brighter brand-surface token rather than the near-black board-well token. It has no
 radial glow painted into the panel, no gradient, and no split-tone texture. Light belongs
 to the wordmark itself: one restrained, static theme-colored halo improves presence
 without pulsing, flashing, or reducing contrast; reduced motion removes any entrance
@@ -79,7 +82,10 @@ cover do nothing.
 Restart uses the same composition with `重新开始 / Restart` and `回车确认，按 R 取消 /
 Enter to confirm; R to cancel`; Enter restarts through the normal countdown and R returns
 to the interrupted run. Escape opens the established leave flow from Pause and cancels
-Restart confirmation. Neither cover may hide or clear the external Next forecast.
+Restart confirmation. Neither cover may hide or clear the external Next forecast. The
+top-bar Back and Settings controls remain live above both covers. Invoking either control
+keeps gameplay paused and replaces the board-local interruption with the existing leave
+or Settings transaction.
 Theme names and accessible descriptions are localized; identifiers and storage values
 remain stable English keys.
 
@@ -104,6 +110,8 @@ The entry cover presents only `3`, `2`, and `1`. It never adds a trailing `开�
 word or hold. After the `1` beat, the veil and its board-local light treatment leave via
 one short opacity transition; the first piece begins falling when that exit completes.
 The cover uses a corresponding short entrance rather than appearing as a hard cut.
+Its illumination is a soft full-board field with broad four-direction falloff: no central
+circle, ring, hard hotspot, or single-axis beam may remain visible.
 Reduced motion keeps the same timing boundary but removes interpolation. Each digit owns
 one stronger, short procedural SFX accent on the runtime AudioContext; the cues remain
 volume-controlled and leave no persistent voice.
