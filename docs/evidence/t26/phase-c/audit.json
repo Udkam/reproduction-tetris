@@ -1,0 +1,1053 @@
+{
+  "sourceSha": "06bd8b91b6b054dca661ff5e54e06b7c49f426f7",
+  "capturedAt": "2026-08-03T08:30:22.097Z",
+  "origin": "http://127.0.0.1:4189",
+  "browser": "149.0.7827.55",
+  "inheritedMotion": {
+    "root": "true",
+    "stored": null,
+    "pressed": "true"
+  },
+  "explicitFullMotion": {
+    "root": "false",
+    "stored": "off",
+    "animation": "settings-panel-in"
+  },
+  "explicitReducedMotion": {
+    "root": "true",
+    "stored": "on",
+    "animation": "none"
+  },
+  "controlsOrder": {
+    "gameplayTop": 411.3125,
+    "shortcutsTop": 411.3125,
+    "touch": "Touch controlsTouch: tap to rotate; swipe sideways to move; swipe down to soft-drop or hard-drop."
+  },
+  "englishLeaderboard": "This modeTop 5011m 37s27 lines2026-08-01021m 13s19 lines2026-07-30",
+  "pauseGeometry": {
+    "backHit": true,
+    "settingsHit": true,
+    "sheet": {
+      "left": 388,
+      "top": 400,
+      "right": 808,
+      "bottom": 564,
+      "width": 420,
+      "height": 164
+    },
+    "next": {
+      "left": 845.5,
+      "top": 519.265625,
+      "right": 1023.5,
+      "bottom": 643.265625,
+      "width": 178,
+      "height": 124
+    },
+    "sheetOverlapsNext": false
+  },
+  "settingsOpenedFromPause": true,
+  "backOpenedFromPause": true,
+  "matrix": [
+    {
+      "language": "en",
+      "mode": "marathon",
+      "piecesToTopOut": 11
+    },
+    {
+      "language": "en",
+      "mode": "race",
+      "piecesToTopOut": 9
+    },
+    {
+      "language": "en",
+      "mode": "sprint",
+      "piecesToTopOut": 12
+    },
+    {
+      "language": "zh-CN",
+      "mode": "marathon",
+      "piecesToTopOut": 11
+    },
+    {
+      "language": "zh-CN",
+      "mode": "race",
+      "piecesToTopOut": 10
+    },
+    {
+      "language": "zh-CN",
+      "mode": "sprint",
+      "piecesToTopOut": 11
+    }
+  ],
+  "cleanup": {
+    "canvasCount": 0,
+    "domCellCount": 0,
+    "qaGlobals": []
+  },
+  "states": {
+    "home-en": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif"
+      ],
+      "canvasCount": 0,
+      "domCellCount": 0,
+      "nextVisible": null,
+      "nextLabel": null,
+      "reducedMotion": "true"
+    },
+    "hud-en-survival": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "settings-en-settings": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        232,
+        232
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "settings-en-controls": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        322,
+        322
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "settings-en-rules": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        414,
+        414
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "settings-zh-settings": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        232,
+        232
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: L",
+      "reducedMotion": "true"
+    },
+    "settings-zh-controls": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        316,
+        316
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: L",
+      "reducedMotion": "true"
+    },
+    "settings-zh-rules": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        367,
+        367
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: L",
+      "reducedMotion": "true"
+    },
+    "settings-en-portrait-controls": {
+      "viewport": [
+        390,
+        844
+      ],
+      "document": [
+        390,
+        390,
+        844,
+        844
+      ],
+      "settings": [
+        327,
+        327,
+        626,
+        626
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "settings-en-short-rules": {
+      "viewport": [
+        844,
+        390
+      ],
+      "document": [
+        844,
+        844,
+        390,
+        390
+      ],
+      "settings": [
+        773,
+        773,
+        370,
+        370
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "pause-en": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "leave-en": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: L",
+      "reducedMotion": "true"
+    },
+    "hud-en-marathon": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: S",
+      "reducedMotion": "false"
+    },
+    "rules-en-marathon": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        319,
+        322
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: S",
+      "reducedMotion": "false"
+    },
+    "result-en-marathon": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece",
+      "reducedMotion": "false"
+    },
+    "hud-en-race": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: Z",
+      "reducedMotion": "false"
+    },
+    "rules-en-race": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        414,
+        417
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: Z",
+      "reducedMotion": "false"
+    },
+    "result-en-race": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece",
+      "reducedMotion": "false"
+    },
+    "hud-en-sprint": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: O",
+      "reducedMotion": "false"
+    },
+    "rules-en-sprint": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        414,
+        417
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece: O",
+      "reducedMotion": "false"
+    },
+    "result-en-sprint": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Next piece",
+      "reducedMotion": "false"
+    },
+    "hud-zh-marathon": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: I",
+      "reducedMotion": "false"
+    },
+    "rules-zh-marathon": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        307,
+        310
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: I",
+      "reducedMotion": "false"
+    },
+    "result-zh-marathon": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块",
+      "reducedMotion": "false"
+    },
+    "hud-zh-race": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: J",
+      "reducedMotion": "false"
+    },
+    "rules-zh-race": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        367,
+        370
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: J",
+      "reducedMotion": "false"
+    },
+    "result-zh-race": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块",
+      "reducedMotion": "false"
+    },
+    "hud-zh-sprint": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: O",
+      "reducedMotion": "false"
+    },
+    "rules-zh-sprint": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": [
+        721,
+        721,
+        385,
+        388
+      ],
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块: O",
+      "reducedMotion": "false"
+    },
+    "result-zh-sprint": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "下一个方块",
+      "reducedMotion": "false"
+    },
+    "hud-en-puzzle": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "Two upcoming pieces: 1 is next; 2 follows it (T, I)",
+      "reducedMotion": "true"
+    },
+    "hud-zh-puzzle": {
+      "viewport": [
+        1440,
+        900
+      ],
+      "document": [
+        1440,
+        1440,
+        900,
+        900
+      ],
+      "settings": null,
+      "clipped": [],
+      "overlaps": [],
+      "legacyFaces": [],
+      "playwriteLeaks": [],
+      "wrongDataFace": [],
+      "fonts": [
+        "\"Noto Sans SC\", \"Microsoft YaHei UI\", \"PingFang SC\", sans-serif",
+        "\"Playwrite NZ Basic\", \"Space Grotesk\", sans-serif",
+        "\"Geist Mono\", \"Cascadia Mono\", monospace"
+      ],
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "nextVisible": true,
+      "nextLabel": "后续两个方块：1 为下一个，2 为后一个 (T, I)",
+      "reducedMotion": "true"
+    }
+  },
+  "errors": []
+}
