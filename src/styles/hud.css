@@ -522,6 +522,21 @@
   }
 }
 
+/* Desktop Mutation rows grow upward from a stable lower edge. Keeping the status
+   outside info-rail flow prevents simultaneous effects from moving stats or Next. */
+@media (min-width: 600px) and (min-height: 521px) {
+  .game-side-panel--sprint .info-rail:has(> .mutation-status) {
+    position: relative;
+    gap: 0;
+  }
+
+  .game-side-panel--sprint .info-rail:has(> .mutation-status) > .mutation-status {
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(100% + 12px);
+  }
+}
+
 @media (min-width: 600px) and (max-height: 520px) {
   .play-surface {
     width: min(680px, calc(100% - 16px));

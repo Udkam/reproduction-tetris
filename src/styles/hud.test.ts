@@ -46,8 +46,17 @@ describe('Phase 3 HUD authority', () => {
     expect(mutationVfxCss).toContain('border: 1px solid color-mix(in srgb, var(--line) 68%, #9b8ab7) !important');
     expect(mutationVfxCss).not.toContain('background: color-mix(in srgb, var(--raised) 82%, var(--surface)) !important');
     expect(mutationVfxCss).toContain('.mutation-status--vfx .mutation-status__idle');
-    expect(mutationVfxCss).toContain('min-height: 8px');
+    expect(mutationVfxCss).toMatch(/\.mutation-status--vfx \.mutation-status__ledger\s*\{[^}]*min-height:\s*42px;/s);
+    expect(mutationVfxCss).toMatch(/\.mutation-status--vfx \.mutation-status__idle\s*\{[^}]*min-height:\s*42px;/s);
     expect(mutationVfxCss).not.toContain('.mutation-status__idle-spectrum');
+  });
+
+  it('anchors desktop Mutation growth above invariant statistics and Next geometry', () => {
+    const desktopAnchor = hudCss.slice(hudCss.indexOf('/* Desktop Mutation rows grow upward'));
+    expect(desktopAnchor).toContain('.info-rail:has(> .mutation-status)');
+    expect(desktopAnchor).toContain('position: relative');
+    expect(desktopAnchor).toContain('position: absolute');
+    expect(desktopAnchor).toContain('bottom: calc(100% + 12px)');
   });
 
   it('sizes Mutation ledgers from the active effect count instead of reserving three empty tracks', () => {

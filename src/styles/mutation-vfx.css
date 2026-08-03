@@ -46,10 +46,11 @@
   display: grid !important;
   grid-template-columns: minmax(0, 1fr);
   gap: 6px !important;
+  min-height: 42px;
 }
 
 .game-side-panel--sprint .mutation-status--vfx .mutation-status__idle {
-  min-height: 8px;
+  min-height: 42px;
 }
 
 .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
