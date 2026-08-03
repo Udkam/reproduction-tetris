@@ -3,6 +3,51 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-03 T27-R1 — axis-symmetric board stage and visual-theme system
+
+The gameplay page is now a stage rather than a dashboard. Its visual centre is the
+board, not the combined width of a board and one asymmetric dock. Desktop uses equal
+left and right instrument columns around one fixed central board column. The board's
+centre therefore remains invariant when mode-specific instruments change. The left
+rail owns Next; Mutation places its timed-state ledger beneath Next. The right rail
+owns the four statistics. Narrow layouts retain the same semantic order while moving
+the instruments into a compact band around the board.
+
+Only the board is framed inside the live gameplay field. The arena and play surface
+are transparent layout planes. Statistics are four aligned text rows with restrained
+rules, not four cards and not one rounded card. Next is a label plus a Pixi-drawn piece
+on open space; Pixi does not paint a preview well or rounded preview border for this
+surface. Mutation states use item color, a short timer rule, and type hierarchy without
+an enclosing status card. This removal does not apply to real controls or modal sheets,
+whose visible boundaries remain necessary for affordance, focus, and accessibility.
+
+Three coherent themes share geometry and semantic roles:
+
+- **Mineral Mist / 雾昼矿物** is the bright default. Cool paper-blue space, pale stone
+  surfaces, slate ink, teal actions, and a navy well express the established precise
+  mineral workshop.
+- **Deep Tide / 深潮夜航** is a restrained dark composition. Blue-black space, desaturated
+  mineral text, teal/blue/violet signals, and a deeper well create night navigation
+  without neon bloom, translucent glass cards, or decorative telemetry.
+- **Sunstone / 暖砂日晷** is the warm alternative. Bone and sand space, graphite text,
+  copper/olive actions, and a charcoal-brown well use etched separators and dry mineral
+  contrast rather than gradients, gloss, or nostalgic trade dress.
+
+Every theme defines the complete semantic token set: page, surface, raised surface,
+ink, muted ink, structural line, strong edge, board well, action/focus, success/danger,
+and four mode accents. Home, Puzzle library, gameplay, Settings, action sheets, results,
+and the Canvas board shell consume those semantic roles. Canonical tetromino hues remain
+recognisable across themes; renderer well and frame values follow the selected theme so
+the Canvas never looks pasted onto the page. The current theme is a persisted UI
+preference and may update a mounted runtime presentation, but it never enters Core,
+replay hashes, scoring, or saved game state.
+
+Settings presents the three choices as one labelled, arrow-key navigable swatch rail.
+Each option combines a name with three small semantic color samples, so selection is
+not communicated by hue alone. Enter activates the focused option, focus remains
+visible, and reduced motion removes theme cross-fades. Theme names and accessible
+descriptions are localized; identifiers and storage values remain stable English keys.
+
 ## 2026-08-03 T27 — personalised Classic pace and restrained feedback
 
 T27 is a bounded post-RC polish slice. It does not add a mode or replace the renderer;

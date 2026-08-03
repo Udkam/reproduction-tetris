@@ -1,5 +1,60 @@
 # Current Task — T27 Personalised Pace and Feedback Polish
 
+## T27-R1 active goal — centred board stage and three complete visual themes
+
+**Status (2026-08-03): CONTRACT FROZEN / IMPLEMENTATION OPEN.** This player-requested
+visual correction supersedes T27 requirements 9 and 10 only where they describe the
+desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
+persistence migrations, the single-canvas boundary, or Mutation mechanics.
+
+The correction has four coupled acceptance requirements:
+
+1. The live gameplay field becomes an axis-symmetric three-column stage. The 10 x 20
+   board occupies the true horizontal centre column. Left and right instrument rails
+   have the same measured width, so content appearing or disappearing in either rail
+   cannot move the board. At supported desktop viewports the board centre must remain
+   within one CSS pixel of the play-surface centre.
+2. Inside the gameplay field, the board frame is the only enclosing visual box. The
+   play surface, arena, statistics group, statistic rows, Next module, and Mutation
+   status lose card fills, rounded outlines, and shadows. Top-bar controls and modal
+   sheets remain recognisable interactive surfaces. Plain typography, deliberate
+   whitespace, and short separators may organise information without recreating a
+   hidden card.
+3. Next moves to the left rail. Mutation keeps that same Next forecast and places its
+   persistent timed-state ledger immediately below it. Statistics move to the mirrored
+   right rail as a four-row typographic instrument. Puzzle preserves its two correctly
+   labelled forecasts. Pixi continues to own every tetromino preview, but it no longer
+   paints a dark rounded preview card behind gameplay Next; the DOM remains geometry
+   only and no DOM cell grid is introduced.
+4. Settings adds one persisted, keyboard-operable three-theme choice. The themes are
+   not palette-only skins: each changes page field, typography contrast, separators,
+   navigation/action treatment, board well and edge, Settings, modal/result surfaces,
+   Home, Puzzle library, and gameplay instruments while retaining semantic mode and
+   tetromino identity. The three themes are:
+   - **雾昼矿物 / Mineral Mist** — the bright cool mineral baseline, with paper-blue
+     space, slate ink, teal action, and a deep navy well;
+   - **深潮夜航 / Deep Tide** — a low-luminance marine field, pale mineral ink,
+     phosphor teal/blue/violet accents, and a deeper blue-black well without neon glow;
+   - **暖砂日晷 / Sunstone** — a warm bone and sand field, graphite ink, copper/olive
+     accents, and a charcoal-brown well with etched rather than glossy surfaces.
+
+Theme selection writes only the current `tetramorph:*` preference key, survives reload,
+and changes the mounted game without rebuilding runtime or canonical state. Color never
+becomes the only state signal. Reduced motion removes theme transition interpolation,
+not theme identity. Desktop, portrait, and short-landscape layouts must retain one
+Canvas, visible Next, no overlap, no horizontal overflow, and no clipped controls.
+
+### T27-R1 checkpoints
+
+1. Commit this contract before product code.
+2. Commit theme tokens, persistence, Settings control, localization, and direct tests.
+3. Commit the centred frameless HUD topology, Pixi frameless preview support, and direct
+   React/renderer/CSS tests.
+4. After the final source edit run one typecheck, the complete two-worker suite, one
+   production build, and one controlled browser batch covering all three themes plus
+   Classic, Mutation, Puzzle dual Next, Pause, and compact layouts. Independent
+   read-only QA must accept the exact candidate before changelog closure and push.
+
 ## T27 active goal — make the opening pace configurable and feedback easier to read
 
 **Status (2026-08-03): CONTRACT FROZEN / IMPLEMENTATION OPEN.** Direct player
