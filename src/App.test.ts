@@ -581,7 +581,7 @@ describe('entry countdown', () => {
     expect(runtime.playEntryCountdown.mock.calls.map(([digit]) => digit)).toEqual([3, 2, 1]);
     expect(settings.disabled).toBe(false);
     expect(back.disabled).toBe(false);
-    await act(async () => vi.advanceTimersByTimeAsync(219));
+    await act(async () => vi.advanceTimersByTimeAsync(119));
     expect(countdown()?.dataset.countdown).toBe('exit');
     expect(runtime.start).not.toHaveBeenCalled();
     await act(async () => vi.advanceTimersByTimeAsync(1));

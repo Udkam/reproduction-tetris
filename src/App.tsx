@@ -125,7 +125,7 @@ export type ClassicGravityRange = {
 
 const APP_SEED = 0x51a1f00d;
 const PRODUCT_NAME = 'TetraMorph';
-const ENTRY_COVER_EXIT_MS = 220;
+const ENTRY_COVER_EXIT_MS = 120;
 
 function readAppNavigation(): AppNavigationState {
   const pathname = browserPlatform.windowTarget()?.location.pathname ?? '/';

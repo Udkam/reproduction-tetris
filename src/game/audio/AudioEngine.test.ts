@@ -176,7 +176,7 @@ describe('AudioEngine original feedback', () => {
     expect(audioContextCloseCalls).toBe(1);
   });
 
-  it('plays 3-2-1 as two matching ticks and one higher continuous release without a melody', async () => {
+  it('plays 3-2-1 as three short discrete beats without a melody or release tail', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -185,15 +185,20 @@ describe('AudioEngine original feedback', () => {
     audio.playEntryCountdown(2);
     audio.playEntryCountdown(1);
 
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([523.25, 523.25, 783.99]);
-    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['sine', 'sine', 'sine']);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([
+      440, 880,
+      440, 880,
+      659.25, 1318.5,
+    ]);
+    expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
-    expect(oscillators.slice(0, 2).every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.12)).toBe(true);
-    expect(oscillators[0]?.stops[0]).toBe(oscillators[1]?.stops[0]);
-    expect(oscillators[2]?.stops[0]).toBeCloseTo(1.23, 4);
+    expect(oscillators.slice(0, 4).every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.12)).toBe(true);
+    expect(oscillators.slice(4).every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.25)).toBe(true);
+    expect(oscillators[0]?.stops[0]).toBe(oscillators[2]?.stops[0]);
+    expect((oscillators[4]?.stops[0] ?? 0) > (oscillators[2]?.stops[0] ?? 1)).toBe(true);
     audio.setEnabled(false);
     audio.playEntryCountdown(1);
-    expect(oscillators).toHaveLength(3);
+    expect(oscillators).toHaveLength(6);
     audio.destroy();
   });
 
@@ -246,12 +251,12 @@ describe('AudioEngine original feedback', () => {
     audio.play([{ type: 'restarted' }]);
     expect(oscillators).toHaveLength(0);
     audio.playEntryCountdown(3);
-    expect(oscillators).toHaveLength(1);
-    expect(oscillators[0]?.frequency.setValues).toEqual([523.25]);
+    expect(oscillators).toHaveLength(2);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([440, 880]);
     audio.destroy();
   });
 
-  it('uses one digit-1 oscillator whose quiet tail reaches the cover-exit boundary', async () => {
+  it('keeps the cover exit silent after the short third countdown beat', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -259,15 +264,14 @@ describe('AudioEngine original feedback', () => {
     audio.playEntryCountdown(1);
     audio.play([{ type: 'started' }]);
 
-    expect(oscillators).toHaveLength(1);
-    expect(oscillators[0]?.frequency.setValues).toEqual([783.99]);
-    expect(oscillators[0]?.type).toBe('sine');
-    expect(oscillators[0]?.frequency.ramps).toEqual([]);
-    expect(oscillators[0]?.stops[0]).toBeCloseTo(1.23, 4);
-    expect(gains[2]?.gain.rampTimes).toEqual([0.012, 0.18, 1, 1.22]);
-    expect(gains[2]?.gain.ramps[1]).toBeLessThan(gains[2]?.gain.ramps[0] ?? 0);
-    expect(gains[2]?.gain.ramps[2]).toBeLessThan(gains[2]?.gain.ramps[1] ?? 0);
-    expect(gains[2]?.gain.ramps[3]).toBe(0.0001);
+    expect(oscillators).toHaveLength(2);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([659.25, 1318.5]);
+    expect(oscillators.every((oscillator) => oscillator.type === 'sine')).toBe(true);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    expect(oscillators[0]?.stops[0]).toBeCloseTo(0.25, 4);
+    expect(oscillators[1]?.stops[0]).toBeLessThan(0.16);
+    expect(gains[2]?.gain.rampTimes).toEqual([0.012, 0.24]);
+    expect(gains[3]?.gain.rampTimes.at(-1)).toBeCloseTo(0.1392, 4);
     audio.destroy();
   });
 
@@ -471,7 +475,7 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
-  it('keeps started silent and resume feedback foreground-only with no ambient music bus', async () => {
+  it('keeps started silent and uses soft unbent pause/resume cover taps', async () => {
     const { audio, timers } = createTimedAudio();
     await audio.prime();
     expect(oscillators).toHaveLength(0);
@@ -480,8 +484,12 @@ describe('AudioEngine original feedback', () => {
     expect(oscillators).toHaveLength(0);
     expect(timers.size).toBe(0);
 
-    audio.play([{ type: 'resumed' }]);
-    expect(oscillators).toHaveLength(1);
+    audio.play([{ type: 'paused' }, { type: 'resumed' }]);
+    expect(oscillators).toHaveLength(2);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([246.94, 329.63]);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.085)).toBe(true);
+    expect(gains.slice(2).every((gain) => Math.max(...gain.gain.ramps) <= 0.1)).toBe(true);
     expect(timers.size).toBe(0);
     audio.destroy();
   });
