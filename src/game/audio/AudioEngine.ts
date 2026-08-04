@@ -153,13 +153,27 @@ export class AudioEngine {
     this.playMutationActivations(mutationActivations);
   }
 
-  /** Three compact, two-layer ascending cues carry the whole 3-2-1 entry. */
+  /** Warm F-major mallet dyads carry the whole 3-2-1 entry without a buzzer edge. */
   playEntryCountdown(digit: 3 | 2 | 1): void {
     if (!this.context || !this.master || !this.enabled) return;
-    const frequency = digit === 3 ? 294 : digit === 2 ? 392 : 523.25;
-    const gain = digit === 3 ? 0.12 : digit === 2 ? 0.135 : 0.15;
-    this.tone({ frequency, duration: 0.085, gain, type: 'triangle' });
-    this.tone({ frequency: frequency * 2, duration: 0.034, gain: gain * 0.3, delay: 0.008, type: 'sine' });
+    const profile = digit === 3
+      ? { fundamentalHz: 349.23, fifthHz: 523.25, duration: 0.17, gain: 0.12 }
+      : digit === 2
+        ? { fundamentalHz: 440, fifthHz: 659.25, duration: 0.18, gain: 0.13 }
+        : { fundamentalHz: 523.25, fifthHz: 783.99, duration: 0.21, gain: 0.145 };
+    this.tone({
+      frequency: profile.fundamentalHz,
+      duration: profile.duration,
+      gain: profile.gain,
+      type: 'triangle',
+    });
+    this.tone({
+      frequency: profile.fifthHz,
+      duration: profile.duration * 0.68,
+      gain: profile.gain * 0.25,
+      delay: 0.01,
+      type: 'sine',
+    });
   }
 
   destroy(): void {

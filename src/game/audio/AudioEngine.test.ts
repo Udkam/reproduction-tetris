@@ -174,7 +174,7 @@ describe('AudioEngine original feedback', () => {
     expect(audioContextCloseCalls).toBe(1);
   });
 
-  it('plays 3-2-1 as three stronger, two-layer ascending cues without a Start confirmation', async () => {
+  it('plays 3-2-1 as a bounded warm F-major ascent without a Start confirmation', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -183,9 +183,18 @@ describe('AudioEngine original feedback', () => {
     audio.playEntryCountdown(2);
     audio.playEntryCountdown(1);
 
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([294, 588, 392, 784, 523.25, 1046.5]);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([
+      349.23, 523.25,
+      440, 659.25,
+      523.25, 783.99,
+    ]);
     expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine', 'triangle', 'sine', 'triangle', 'sine']);
-    expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.1)).toBe(true);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.23)).toBe(true);
+    expect((oscillators[4]?.stops[0] ?? 0) > (oscillators[2]?.stops[0] ?? 1)).toBe(true);
+    audio.setEnabled(false);
+    audio.playEntryCountdown(1);
+    expect(oscillators).toHaveLength(6);
     audio.destroy();
   });
 
