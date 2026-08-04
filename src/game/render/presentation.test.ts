@@ -11,6 +11,10 @@ import {
   lineClearPresentationProgress,
   nextPreviewPieces,
   nextPreviewPiece,
+  ordinaryLineClearCellProgress,
+  ordinaryLineClearFragment,
+  ordinaryLineClearPresentationProgress,
+  ordinaryLineClearProfile,
   orthogonalCellComponents,
   projectedLandingCells,
   survivalDebrisCells,
@@ -72,7 +76,28 @@ describe('presentation interpolation', () => {
     expect(point.y).toBe(point.x);
   });
 
-  it('caps the ordinary clear seam at nine ticks and keeps a six-tick reduced signal', () => {
+  it('maps only the four ordinary clear profiles to their fixed normal and reduced timing', () => {
+    expect([1, 2, 3, 4].map((count) => ordinaryLineClearProfile(count))).toMatchObject([
+      { id: 'precision-cut', normalTicks: 9, reducedTicks: 6, postCommitTailMs: 0 },
+      { id: 'dual-resonance', normalTicks: 11, reducedTicks: 7, postCommitTailMs: 20 },
+      { id: 'cascade-fracture', normalTicks: 12, reducedTicks: 8, postCommitTailMs: 80 },
+      { id: 'tetramorph', normalTicks: 12, reducedTicks: 8, postCommitTailMs: 220 },
+    ]);
+    for (const count of [-1, 0, 1.5, 5, Number.NaN]) {
+      expect(ordinaryLineClearProfile(count)).toBeNull();
+      expect(ordinaryLineClearPresentationProgress(8, count, false)).toBe(0);
+    }
+
+    expect(ordinaryLineClearPresentationProgress(9, 1, false)).toBe(1);
+    expect(ordinaryLineClearPresentationProgress(9, 2, false)).toBeCloseTo(9 / 11);
+    expect(ordinaryLineClearPresentationProgress(12, 3, false)).toBe(1);
+    expect(ordinaryLineClearPresentationProgress(12, 4, false)).toBe(1);
+    expect(ordinaryLineClearPresentationProgress(6, 1, true)).toBe(1);
+    expect(ordinaryLineClearPresentationProgress(7, 2, true)).toBe(1);
+    expect(ordinaryLineClearPresentationProgress(8, 3, true)).toBe(1);
+    expect(ordinaryLineClearPresentationProgress(8, 4, true)).toBe(1);
+
+    // Compatibility callers still receive the original single-clear seam.
     expect(lineClearPresentationProgress(0, false)).toBe(0);
     expect(lineClearPresentationProgress(9, false)).toBe(1);
     expect(lineClearPresentationProgress(12, false)).toBe(1);
@@ -84,6 +109,38 @@ describe('presentation interpolation', () => {
     expect(center).toBeGreaterThan(edge);
     expect(lineClearCellProgress(1, 0, 10)).toBe(1);
     expect(lineClearCellProgress(1, 9, 10)).toBe(1);
+  });
+
+  it('stages three and four rows bottom-to-top but keeps reduced feedback simultaneous', () => {
+    const bottom = ordinaryLineClearCellProgress(0.34, 4, 10, 0, 4, false);
+    const upper = ordinaryLineClearCellProgress(0.34, 4, 10, 3, 4, false);
+    expect(bottom).toBeGreaterThan(upper);
+    expect(ordinaryLineClearCellProgress(0.34, 4, 10, 0, 4, true)).toBe(0.34);
+    expect(ordinaryLineClearCellProgress(0.34, 4, 10, 3, 4, true)).toBe(0.34);
+    expect(ordinaryLineClearCellProgress(0.5, 4, 10, 0, 7, false)).toBe(0);
+  });
+
+  it('derives bounded deterministic mineral chips without allocating random state', () => {
+    const ceilings = [8, 16, 32, 48];
+    const counts: number[] = [];
+    for (const count of [1, 2, 3, 4]) {
+      const samples = Array.from({ length: count }, (_, row) => (
+        Array.from({ length: 10 }, (_, column) => (
+          [0, 1].map((index) => ordinaryLineClearFragment(count, 30 + row, column, index))
+        )).flat()
+      )).flat().filter(Boolean);
+      counts.push(samples.length);
+      expect(samples.length).toBeLessThanOrEqual(ceilings[count - 1]!);
+      expect(samples).toEqual(Array.from({ length: count }, (_, row) => (
+        Array.from({ length: 10 }, (_, column) => (
+          [0, 1].map((index) => ordinaryLineClearFragment(count, 30 + row, column, index))
+        )).flat()
+      )).flat().filter(Boolean));
+    }
+    expect(counts[0]).toBeLessThan(counts[1]!);
+    expect(counts[1]).toBeLessThan(counts[2]!);
+    expect(counts[2]).toBeLessThan(counts[3]!);
+    expect(ordinaryLineClearFragment(0, 39, 4)).toBeNull();
   });
 
   it('keeps interpolated active cells within the visible well at both edges', () => {

@@ -32,6 +32,148 @@ export type BoardShiftDirection = 'up' | 'down';
 
 export const LINE_CLEAR_SWEEP_TICKS = 9;
 export const REDUCED_LINE_CLEAR_TICKS = 6;
+export const ORDINARY_LINE_CLEAR_TAIL_LIMIT = 4;
+
+export type OrdinaryLineClearCount = 1 | 2 | 3 | 4;
+export type OrdinaryLineClearProfileId =
+  | 'precision-cut'
+  | 'dual-resonance'
+  | 'cascade-fracture'
+  | 'tetramorph';
+
+export interface OrdinaryLineClearProfile {
+  count: OrdinaryLineClearCount;
+  id: OrdinaryLineClearProfileId;
+  normalTicks: number;
+  reducedTicks: number;
+  /** Renderer-owned residue after Core's fixed 200 ms line-clear commit. */
+  postCommitTailMs: number;
+  faceAlpha: number;
+  fragmentCeiling: number;
+  rowStagger: number;
+}
+
+export interface OrdinaryLineClearFragment {
+  offsetX: number;
+  offsetY: number;
+  width: number;
+  height: number;
+  driftX: number;
+  driftY: number;
+}
+
+const ORDINARY_LINE_CLEAR_PROFILES = Object.freeze({
+  1: Object.freeze({
+    count: 1,
+    id: 'precision-cut',
+    normalTicks: 9,
+    reducedTicks: 6,
+    postCommitTailMs: 0,
+    faceAlpha: 0.15,
+    fragmentCeiling: 8,
+    rowStagger: 0,
+  }),
+  2: Object.freeze({
+    count: 2,
+    id: 'dual-resonance',
+    normalTicks: 11,
+    reducedTicks: 7,
+    postCommitTailMs: 20,
+    faceAlpha: 0.18,
+    fragmentCeiling: 16,
+    rowStagger: 0,
+  }),
+  3: Object.freeze({
+    count: 3,
+    id: 'cascade-fracture',
+    normalTicks: 12,
+    reducedTicks: 8,
+    postCommitTailMs: 80,
+    faceAlpha: 0.21,
+    fragmentCeiling: 32,
+    rowStagger: 0.1,
+  }),
+  4: Object.freeze({
+    count: 4,
+    id: 'tetramorph',
+    normalTicks: 12,
+    reducedTicks: 8,
+    postCommitTailMs: 220,
+    faceAlpha: 0.24,
+    fragmentCeiling: 48,
+    rowStagger: 0.07,
+  }),
+} satisfies Record<OrdinaryLineClearCount, OrdinaryLineClearProfile>);
+
+/** Invalid or synthetic counts fail closed instead of borrowing another profile. */
+export function ordinaryLineClearProfile(count: number): Readonly<OrdinaryLineClearProfile> | null {
+  if (!Number.isInteger(count) || count < 1 || count > 4) return null;
+  return ORDINARY_LINE_CLEAR_PROFILES[count as OrdinaryLineClearCount];
+}
+
+export function ordinaryLineClearPresentationProgress(
+  phaseTicks: number,
+  count: number,
+  reducedMotion: boolean,
+): number {
+  const profile = ordinaryLineClearProfile(count);
+  if (!profile) return 0;
+  const duration = reducedMotion ? profile.reducedTicks : profile.normalTicks;
+  return Math.max(0, Math.min(1, phaseTicks / duration));
+}
+
+/**
+ * Three and four-line profiles resolve bottom-to-top. Reduced motion and Puzzle
+ * pass rowOrder=0 so every row remains simultaneous and stationary.
+ */
+export function ordinaryLineClearCellProgress(
+  phaseProgress: number,
+  column: number,
+  width: number,
+  rowOrder: number,
+  count: number,
+  reducedMotion: boolean,
+): number {
+  const profile = ordinaryLineClearProfile(count);
+  if (!profile) return 0;
+  if (reducedMotion) return Math.max(0, Math.min(1, phaseProgress));
+  const delay = Math.max(0, rowOrder) * profile.rowStagger;
+  if (phaseProgress <= delay) return 0;
+  const rowProgress = Math.min(1, (phaseProgress - delay) / Math.max(0.001, 1 - delay));
+  return lineClearCellProgress(rowProgress, column, width);
+}
+
+/**
+ * Stateless chip geometry derived only from canonical clear inputs. Returning
+ * null is part of the bounded profile: a caller never needs an RNG or a pool.
+ */
+export function ordinaryLineClearFragment(
+  count: number,
+  row: number,
+  column: number,
+  index = 0,
+): Readonly<OrdinaryLineClearFragment> | null {
+  const profile = ordinaryLineClearProfile(count);
+  if (!profile || index < 0 || !Number.isInteger(index)) return null;
+  const ordinal = Math.abs(row * 31 + column * 17 + index * 13 + count * 7);
+  const eligible = count === 1
+    ? index === 0 && ordinal % 4 === 0
+    : count === 2
+      ? index === 0 && ordinal % 2 === 0
+      : count === 3
+        ? index === 0
+        : index === 0 || (index === 1 && ordinal % 5 === 0);
+  if (!eligible) return null;
+  const parity = ordinal % 2 === 0 ? 1 : -1;
+  return Object.freeze({
+    offsetX: 0.18 + ((ordinal * 37) % 59) / 100,
+    offsetY: 0.2 + ((ordinal * 23) % 47) / 100,
+    width: 0.08 + (ordinal % 3) * 0.025,
+    height: 0.035 + (ordinal % 2) * 0.018,
+    driftX: parity * (0.08 + (ordinal % 4) * 0.025),
+    driftY: -0.08 - (ordinal % 3) * 0.035,
+  });
+}
 
 const EDGE_OFFSETS: ReadonlyArray<{ edge: CellEdge; dx: number; dy: number }> = [
   { edge: 'top', dx: 0, dy: -1 },
@@ -228,8 +370,7 @@ export function lineClearCellProgress(phaseProgress: number, column: number, wid
  * simultaneous stationary seam for six ticks instead of deleting clear feedback.
  */
 export function lineClearPresentationProgress(phaseTicks: number, reducedMotion: boolean): number {
-  const duration = reducedMotion ? REDUCED_LINE_CLEAR_TICKS : LINE_CLEAR_SWEEP_TICKS;
-  return Math.max(0, Math.min(1, phaseTicks / duration));
+  return ordinaryLineClearPresentationProgress(phaseTicks, 1, reducedMotion);
 }
 
 /** Briefly preserves the stack's previous visual position while Core applies a bedrock shift. */

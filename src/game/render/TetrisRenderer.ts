@@ -61,9 +61,12 @@ import {
   clampActivePresentationOffsetY,
   exposedCellEdges,
   internalCellSeams,
-  lineClearCellProgress,
-  lineClearPresentationProgress,
   nextPreviewPieces,
+  ORDINARY_LINE_CLEAR_TAIL_LIMIT,
+  ordinaryLineClearCellProgress,
+  ordinaryLineClearFragment,
+  ordinaryLineClearPresentationProgress,
+  ordinaryLineClearProfile,
   orthogonalCellComponents,
   projectedLandingCells,
   survivalDebrisCells,
@@ -125,6 +128,14 @@ interface BoardShift {
   direction: BoardShiftDirection;
   elapsed: number;
   duration: number;
+}
+
+interface OrdinaryLineClearTail {
+  count: 2 | 3 | 4;
+  cells: readonly { cell: Cell; material: BoardMaterial }[];
+  elapsed: number;
+  duration: number;
+  intensity: number;
 }
 
 interface SurvivalDebrisPresentation {
@@ -557,6 +568,7 @@ export class TetrisRenderer {
   private impact = 0;
   private rotationPulse = 0;
   private boardShift: BoardShift | null = null;
+  private readonly ordinaryLineClearTails: OrdinaryLineClearTail[] = [];
   private readonly classicFeedbackCues: ClassicFeedbackCue[] = [];
   private readonly survivalDebrisPresentation = new Map<number, SurvivalDebrisPresentation>();
   private readonly survivalStoneCues: SurvivalStoneCue[] = [];
@@ -719,6 +731,7 @@ export class TetrisRenderer {
       this.impact = 0;
       this.rotationPulse = 0;
       this.boardShift = null;
+      this.ordinaryLineClearTails.length = 0;
       this.survivalEntryBedrockRise = null;
       this.mutationArrival = null;
       // Keep the authoritative Mutation FIFO, timed fields, Collapse endpoint,
@@ -882,8 +895,8 @@ export class TetrisRenderer {
   }
 
   destroy(): void {
-    if (!this.app) return;
-    this.app.ticker.remove(this.onTick);
+    const app = this.app;
+    if (app) app.ticker.remove(this.onTick);
     this.frameCallback = null;
     this.destroyMutationFilters();
     for (const gradient of this.cellGradients.values()) gradient.destroy();
@@ -895,11 +908,12 @@ export class TetrisRenderer {
     this.bedrockTextureUnavailable = false;
     this.freezeAtmosphereGradient?.destroy();
     this.freezeAtmosphereGradient = null;
-    this.app.destroy({ removeView: true }, { children: true });
+    app?.destroy({ removeView: true }, { children: true });
     this.app = null;
     this.host = null;
     this.presentation = null;
     this.lockPulse = null;
+    this.ordinaryLineClearTails.length = 0;
     this.classicFeedbackCues.length = 0;
     this.mutationFlash = null;
     this.mutationArrival = null;
@@ -2100,6 +2114,7 @@ export class TetrisRenderer {
       const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
       this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
     }
+    this.drawOrdinaryLineClearTails(graphics, layout);
     if (state.phase === 'line-clear') this.drawOrdinaryLineClearFaces(graphics, state, layout);
     this.drawClassicFeedbackCues(graphics, state, layout);
 
@@ -2354,32 +2369,53 @@ export class TetrisRenderer {
     }
   }
 
-  /**
-   * Ordinary clears briefly brighten each real cell face. The geometry is fixed
-   * and fill-only: no stroke, sweep line, row band, scaling, or displacement.
-   */
+  /** Ordinary 1–4 line clears share one local grammar without moving the board. */
   private drawOrdinaryLineClearFaces(
     graphics: Graphics,
     state: GameState,
     layout: BoardLayout,
   ): void {
-    const phaseProgress = lineClearPresentationProgress(
+    const count = state.pendingClearRows.length;
+    const profile = ordinaryLineClearProfile(count);
+    if (!profile) return;
+    const restrainedGeometry = this.options.reducedMotion || state.mode === 'puzzle';
+    const phaseProgress = ordinaryLineClearPresentationProgress(
       state.phaseTicks,
-      this.options.reducedMotion,
+      count,
+      restrainedGeometry,
     );
-    for (const row of state.pendingClearRows) {
+    const activationOwnsClear = state.mode === 'sprint' && (state.mutationCarriers ?? []).some(
+      (carrier) => carrier.cells.some((cell) => state.pendingClearRows.includes(cell.y)),
+    );
+    const modeFaceScale = state.mode === 'race'
+      ? 0.95
+      : state.mode === 'sprint'
+        ? 1.05
+        : state.mode === 'puzzle'
+          ? 0.78
+          : 1;
+    const faceScale = modeFaceScale * (activationOwnsClear ? 0.65 : 1);
+    const fragmentScale = (state.mode === 'race' ? 0.9 : 1) * (activationOwnsClear ? 0.65 : 1);
+    const orderedRows = [...state.pendingClearRows].sort((left, right) => right - left);
+    for (let rowOrder = 0; rowOrder < orderedRows.length; rowOrder += 1) {
+      const row = orderedRows[rowOrder]!;
       if (row < VISIBLE_START_ROW || row >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
       const boardRow = state.board[row];
       for (let column = 0; column < BOARD_WIDTH; column += 1) {
         const type = boardRow?.[column];
-        if (!type) continue;
-        const cellProgress = this.options.reducedMotion
-          ? phaseProgress
-          : lineClearCellProgress(phaseProgress, column, BOARD_WIDTH);
-        if (!this.options.reducedMotion && cellProgress <= 0) continue;
+        if (!type || type === ANCHOR_CELL || type === BEDROCK_CELL) continue;
+        const cellProgress = ordinaryLineClearCellProgress(
+          phaseProgress,
+          column,
+          BOARD_WIDTH,
+          restrainedGeometry ? 0 : rowOrder,
+          count,
+          restrainedGeometry,
+        );
+        if (cellProgress <= 0) continue;
         const eased = easeOutCubic(cellProgress);
-        const pulse = this.options.reducedMotion
-          ? Math.max(0, 1 - phaseProgress)
+        const pulse = restrainedGeometry
+          ? Math.max(0.5, 1 - phaseProgress * 0.5)
           : Math.sin(cellProgress * Math.PI);
         if (pulse <= 0) continue;
         const material = this.materialFor(type);
@@ -2387,11 +2423,132 @@ export class TetrisRenderer {
         const x = layout.x + column * layout.cell + inset;
         const y = layout.y + (row - VISIBLE_START_ROW) * layout.cell + inset;
         const size = layout.cell - inset * 2;
-        const alpha = Math.min(0.18, pulse * (0.12 + eased * 0.06));
+        const alpha = Math.min(0.29, pulse * profile.faceAlpha * faceScale * (0.84 + eased * 0.16));
         graphics
           .roundRect(x, y, size, size, Math.max(1, layout.cell * 0.08))
           .fill({ color: material.innerEdge, alpha });
+
+        if (restrainedGeometry) continue;
+        const centerX = x + size * 0.5;
+        const centerY = y + size * 0.5;
+        if (profile.id === 'precision-cut') {
+          const cutWidth = Math.max(1, layout.cell * 0.035);
+          graphics
+            .rect(centerX - cutWidth * 0.5, y + size * 0.22, cutWidth, size * 0.56)
+            .fill({ color: material.innerEdge, alpha: alpha * 0.7 });
+        } else if (profile.id === 'dual-resonance') {
+          const echoHeight = Math.max(1, layout.cell * 0.035);
+          const echoY = centerY + (rowOrder === 0 ? -1 : 1) * size * 0.16;
+          graphics
+            .roundRect(x + size * 0.24, echoY - echoHeight * 0.5, size * 0.52, echoHeight, echoHeight * 0.5)
+            .fill({ color: material.innerEdge, alpha: alpha * 0.48 });
+        } else if (
+          profile.id === 'tetramorph'
+          && column === (rowOrder * 3 + 2) % BOARD_WIDTH
+        ) {
+          const glint = size * (0.2 + eased * 0.13);
+          graphics
+            .moveTo(centerX - glint, centerY + glint)
+            .lineTo(centerX + glint, centerY - glint)
+            .stroke({
+              color: material.innerEdge,
+              alpha: Math.min(0.42, alpha * 1.35),
+              width: Math.max(0.75, layout.cell * 0.035),
+            });
+        }
+
+        const fragmentIndexes = profile.id === 'tetramorph' ? 2 : 1;
+        for (let index = 0; index < fragmentIndexes; index += 1) {
+          const fragment = ordinaryLineClearFragment(count, row, column, index);
+          if (!fragment) continue;
+          const release = Math.max(0, Math.min(1, (cellProgress - 0.2) / 0.8));
+          if (release <= 0) continue;
+          const chipWidth = Math.max(1, layout.cell * fragment.width);
+          const chipHeight = Math.max(0.75, layout.cell * fragment.height);
+          graphics
+            .rect(
+              layout.x + column * layout.cell + layout.cell * (fragment.offsetX + fragment.driftX * release),
+              layout.y + (row - VISIBLE_START_ROW) * layout.cell + layout.cell * (fragment.offsetY + fragment.driftY * release),
+              chipWidth,
+              chipHeight,
+            )
+            .fill({
+              color: material.innerEdge,
+              alpha: Math.min(0.22, alpha * 0.86 * fragmentScale * (1 - release * 0.35)),
+            });
+        }
       }
+    }
+  }
+
+  /** Low-alpha post-commit residue; never more than four renderer-owned cues. */
+  private drawOrdinaryLineClearTails(graphics: Graphics, layout: BoardLayout): void {
+    for (const tail of this.ordinaryLineClearTails) {
+      const progress = Math.max(0, Math.min(1, tail.elapsed / tail.duration));
+      const fade = Math.pow(1 - progress, 2);
+      for (const { cell, material } of tail.cells) {
+        if (cell.y < VISIBLE_START_ROW || cell.y >= VISIBLE_START_ROW + VISIBLE_HEIGHT) continue;
+        const fragmentIndexes = tail.count === 4 ? 2 : 1;
+        for (let index = 0; index < fragmentIndexes; index += 1) {
+          const fragment = ordinaryLineClearFragment(tail.count, cell.y, cell.x, index);
+          if (!fragment) continue;
+          const pieceMaterial = this.materialFor(material);
+          const width = Math.max(1, layout.cell * fragment.width * 0.82);
+          const height = Math.max(0.75, layout.cell * fragment.height * 0.82);
+          graphics
+            .rect(
+              layout.x + cell.x * layout.cell + layout.cell * (fragment.offsetX + fragment.driftX * progress),
+              layout.y + (cell.y - VISIBLE_START_ROW) * layout.cell + layout.cell * (fragment.offsetY + fragment.driftY * progress),
+              width,
+              height,
+            )
+            .fill({
+              color: pieceMaterial.innerEdge,
+              alpha: 0.14 * fade * tail.intensity,
+            });
+        }
+      }
+    }
+  }
+
+  private enqueueOrdinaryLineClearTail(
+    event: Extract<GameEvent, { type: 'lines-cleared' }>,
+    state: GameState | undefined,
+    previousBoard: GameState['board'] | null,
+    activationOwnsBatch: boolean,
+  ): void {
+    const profile = ordinaryLineClearProfile(event.count);
+    if (
+      !profile
+      || profile.count === 1
+      || profile.postCommitTailMs <= 0
+      || event.rows.length !== profile.count
+      || !previousBoard
+      || this.options.reducedMotion
+      || state?.mode === 'puzzle'
+      || activationOwnsBatch
+    ) return;
+    const cells: Array<{ cell: Cell; material: BoardMaterial }> = [];
+    for (const row of event.rows) {
+      for (let x = 0; x < BOARD_WIDTH; x += 1) {
+        const material = previousBoard[row]?.[x];
+        if (!material || material === ANCHOR_CELL || material === BEDROCK_CELL) continue;
+        cells.push({ cell: { x, y: row }, material });
+      }
+    }
+    if (cells.length === 0) return;
+    this.ordinaryLineClearTails.push({
+      count: profile.count,
+      cells,
+      elapsed: 0,
+      duration: profile.postCommitTailMs,
+      intensity: state?.mode === 'race' ? 0.9 : 1,
+    });
+    if (this.ordinaryLineClearTails.length > ORDINARY_LINE_CLEAR_TAIL_LIMIT) {
+      this.ordinaryLineClearTails.splice(
+        0,
+        this.ordinaryLineClearTails.length - ORDINARY_LINE_CLEAR_TAIL_LIMIT,
+      );
     }
   }
 
@@ -3776,6 +3933,7 @@ export class TetrisRenderer {
       } else if (event.type === 'restarted') {
         this.presentation = null;
         this.boardShift = null;
+        this.ordinaryLineClearTails.length = 0;
         this.classicFeedbackCues.length = 0;
         this.clearSurvivalVisualState();
         this.mutationFlash = null;
@@ -3792,6 +3950,7 @@ export class TetrisRenderer {
         this.presentation = null;
         this.trail = null;
         this.lockPulse = null;
+        this.ordinaryLineClearTails.length = 0;
         this.classicFeedbackCues.length = 0;
         this.impact = 0;
         this.rotationPulse = 0;
@@ -3829,6 +3988,12 @@ export class TetrisRenderer {
         }
       } else if (event.type === 'lines-cleared') {
         this.impact = this.options.reducedMotion ? 0.3 : Math.min(1.4, 0.55 + event.count * 0.2);
+        this.enqueueOrdinaryLineClearTail(
+          event,
+          state,
+          previousBoard,
+          mutationActivations.length > 0,
+        );
         if (classic) {
           if ((state?.combo ?? 0) > 1) {
             this.enqueueClassicFeedback('combo', {
@@ -3958,6 +4123,11 @@ export class TetrisRenderer {
       const cue = this.survivalStoneCues[index]!;
       cue.elapsed += Math.max(0, deltaMs);
       if (cue.elapsed >= cue.duration) this.survivalStoneCues.splice(index, 1);
+    }
+    for (let index = this.ordinaryLineClearTails.length - 1; index >= 0; index -= 1) {
+      const cue = this.ordinaryLineClearTails[index]!;
+      cue.elapsed += Math.max(0, deltaMs);
+      if (cue.elapsed >= cue.duration) this.ordinaryLineClearTails.splice(index, 1);
     }
     if (this.survivalBedrockCue) {
       this.survivalBedrockCue.elapsed += Math.max(0, deltaMs);

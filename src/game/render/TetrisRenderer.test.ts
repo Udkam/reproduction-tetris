@@ -2,13 +2,16 @@
 
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
+  ANCHOR_CELL,
   BEDROCK_CELL,
   BOARD_HEIGHT,
+  BOARD_WIDTH,
   SURVIVAL_STONE_CELL,
   createBoard,
   createInitialState,
   createRandomizer,
   dispatch,
+  type BoardMaterial,
   type Cell,
   type GameEvent,
   type GameState,
@@ -157,6 +160,13 @@ type RendererInternals = {
     cells: readonly Cell[];
     elapsed: number;
     duration: number;
+  }>;
+  ordinaryLineClearTails: Array<{
+    count: 2 | 3 | 4;
+    cells: readonly { cell: Cell; material: BoardMaterial }[];
+    elapsed: number;
+    duration: number;
+    intensity: number;
   }>;
   survivalBedrockCue: {
     direction: 'up' | 'down';
@@ -1746,55 +1756,162 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
   });
 
-  it('renders fill-only per-cell face blooms and a stationary reduced-motion clear', () => {
+  it('renders four distinct, bounded ordinary clear profiles without a board-wide flash', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const pieces: PieceType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L', 'I', 'O', 'T'];
+    const signatures: string[] = [];
+    const operationCounts: number[] = [];
+
+    for (const count of [1, 2, 3, 4] as const) {
+      const board = createBoard();
+      const rows = Array.from({ length: count }, (_, index) => BOARD_HEIGHT - 1 - index);
+      for (const row of rows) {
+        for (let column = 0; column < pieces.length; column += 1) {
+          board[row]![column] = pieces[column]!;
+        }
+      }
+      const state = {
+        ...createInitialState(0x1a16_3ff + count, 'marathon'),
+        board,
+        status: 'playing',
+        phase: 'line-clear',
+        phaseTicks: 8,
+        pendingClearRows: rows,
+      } as GameState;
+      const recorder = createGraphicsRecorder();
+      (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = recorder.graphics;
+
+      internals.drawEffects(state, layout);
+
+      const faceBlooms = recorder.operations.filter((operation) => (
+        operation.kind === 'roundRect' && operation.values[2] === operation.values[3]
+      ));
+      expect(faceBlooms).toHaveLength(count * BOARD_WIDTH);
+      expect(faceBlooms.every((operation) => {
+        const [x, y, width, height] = operation.values;
+        return width === height
+          && width! < layout.cell
+          && x! >= layout.x
+          && x! + width! <= layout.x + layout.width
+          && y! >= layout.y
+          && y! + height! <= layout.y + layout.height;
+      })).toBe(true);
+      expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
+      expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(
+        count === 4 ? 4 : 0,
+      );
+      signatures.push(geometrySignature(recorder.operations));
+      operationCounts.push(recorder.operations.length);
+    }
+
+    expect(new Set(signatures).size).toBe(4);
+    expect(operationCounts.every((value, index) => index === 0 || value > operationCounts[index - 1]!)).toBe(true);
+  });
+
+  it('excludes anchors and bedrock from ordinary clear faces while retaining live materials', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
     const board = createBoard();
-    const pieces: PieceType[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L', 'I', 'O', 'T'];
-    for (let column = 0; column < pieces.length; column += 1) {
-      board[BOARD_HEIGHT - 1]![column] = pieces[column]!;
-    }
+    const row = BOARD_HEIGHT - 1;
+    board[row]![0] = ANCHOR_CELL;
+    board[row]![1] = BEDROCK_CELL;
+    board[row]![2] = SURVIVAL_STONE_CELL;
+    for (let column = 3; column < BOARD_WIDTH; column += 1) board[row]![column] = 'T';
     const state = {
-      ...createInitialState(0x1a16_3ff, 'marathon'),
+      ...createInitialState(0x1a16_4ff, 'race'),
       board,
       status: 'playing',
       phase: 'line-clear',
       phaseTicks: 4,
-      pendingClearRows: [BOARD_HEIGHT - 1],
+      pendingClearRows: [row],
     } as GameState;
     const recorder = createGraphicsRecorder();
     (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = recorder.graphics;
 
     internals.drawEffects(state, layout);
 
-    const faces = recorder.operations.filter((operation) => operation.kind === 'roundRect');
-    expect(faces).toHaveLength(10);
-    expect(faces.every((operation) => {
-      const [x, y, width, height] = operation.values;
-      return width === height
-        && width! < layout.cell
-        && x! >= layout.x
-        && x! + width! <= layout.x + layout.width
-        && y! >= layout.y
-        && y! + height! <= layout.y + layout.height;
-    })).toBe(true);
+    expect(recorder.operations.filter((operation) => (
+      operation.kind === 'roundRect' && operation.values[2] === operation.values[3]
+    ))).toHaveLength(8);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
-    expect(recorder.operations.some((operation) => operation.kind === 'segment')).toBe(false);
-    expect(recorder.operations.filter((operation) => operation.kind === 'fill')).toHaveLength(10);
-    expect(recorder.operations.some((operation) => operation.kind === 'rect')).toBe(false);
-    expect(recorder.operations.some((operation) => operation.kind === 'circle')).toBe(false);
+  });
 
-    renderer.setOptions({ reducedMotion: true });
+  it('uses a simultaneous stationary substitute for reduced motion and Puzzle', () => {
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+    const board = createBoard();
+    const rows = Array.from({ length: 4 }, (_, index) => BOARD_HEIGHT - 1 - index);
+    for (const row of rows) board[row]!.fill('I');
+    const base = {
+      ...createInitialState(0x1a16_5ff, 'marathon'),
+      board,
+      status: 'playing',
+      phase: 'line-clear',
+      pendingClearRows: rows,
+    } as GameState;
+
+    const reducedRenderer = new TetrisRendererClass();
+    reducedRenderer.setOptions({ reducedMotion: true });
+    const reduced = reducedRenderer as unknown as RendererInternals;
     const reducedStart = createGraphicsRecorder();
-    (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedStart.graphics;
-    internals.drawEffects({ ...state, phaseTicks: 1 }, layout);
-    expect(reducedStart.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(10);
-    expect(reducedStart.operations.some((operation) => operation.kind === 'segment')).toBe(false);
+    (reduced as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedStart.graphics;
+    reduced.drawEffects({ ...base, phaseTicks: 1 }, layout);
     const reducedLater = createGraphicsRecorder();
-    (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedLater.graphics;
-    internals.drawEffects({ ...state, phaseTicks: 4 }, layout);
+    (reduced as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = reducedLater.graphics;
+    reduced.drawEffects({ ...base, phaseTicks: 4 }, layout);
     expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
+    expect(reducedStart.operations.some((operation) => operation.kind === 'rect' || operation.kind === 'segment')).toBe(false);
+
+    const puzzleRenderer = new TetrisRendererClass();
+    const puzzle = puzzleRenderer as unknown as RendererInternals;
+    const puzzleFrame = createGraphicsRecorder();
+    (puzzle as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = puzzleFrame.graphics;
+    puzzle.drawEffects({ ...base, mode: 'puzzle', phaseTicks: 4 }, layout);
+    expect(puzzleFrame.operations.some((operation) => operation.kind === 'rect' || operation.kind === 'segment')).toBe(false);
+    expect(puzzleFrame.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(40);
+  });
+
+  it('bounds post-commit clear tails and clears them on conflicts and lifecycle boundaries', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const board = createBoard();
+    const rows = Array.from({ length: 4 }, (_, index) => BOARD_HEIGHT - 1 - index);
+    for (const row of rows) board[row]!.fill('I');
+    const event: Extract<GameEvent, { type: 'lines-cleared' }> = {
+      type: 'lines-cleared',
+      rows,
+      count: 4,
+      score: 1200,
+    };
+    const classic = { ...createInitialState(0x1a16_6ff, 'marathon'), status: 'playing' } as GameState;
+
+    for (let index = 0; index < 6; index += 1) internals.consumeEvents([event], classic, board);
+    expect(internals.ordinaryLineClearTails).toHaveLength(4);
+    expect(internals.ordinaryLineClearTails.every((tail) => tail.duration === 220)).toBe(true);
+    expect(internals.ordinaryLineClearTails.every((tail) => tail.cells.length === 40)).toBe(true);
+    internals.advanceEffects(220);
+    expect(internals.ordinaryLineClearTails).toHaveLength(0);
+
+    internals.consumeEvents([event], { ...classic, mode: 'puzzle' }, board);
+    expect(internals.ordinaryLineClearTails).toHaveLength(0);
+    internals.consumeEvents([
+      event,
+      { type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3 },
+    ], { ...classic, mode: 'sprint' }, board);
+    expect(internals.ordinaryLineClearTails).toHaveLength(0);
+
+    internals.consumeEvents([event], classic, board);
+    expect(internals.ordinaryLineClearTails).toHaveLength(1);
+    internals.consumeEvents([{ type: 'restarted' }], classic);
+    expect(internals.ordinaryLineClearTails).toHaveLength(0);
+    internals.consumeEvents([event], classic, board);
+    internals.consumeEvents([{ type: 'puzzle-undone' }], classic);
+    expect(internals.ordinaryLineClearTails).toHaveLength(0);
+    internals.consumeEvents([event], classic, board);
+    renderer.destroy();
+    expect(internals.ordinaryLineClearTails).toHaveLength(0);
   });
 
   it('queues bounded coexisting Classic combo, speed, and top-out cues only', () => {
