@@ -6,7 +6,6 @@ import {
   MUTATION_EFFECT_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
   MUTATION_GRAVITY_TICKS,
-  MUTATION_RESULT_TICKS,
   MUTATION_SUPERGRAVITY_EFFECT_TICKS,
   TICKS_PER_SECOND,
   gravityForMode,
@@ -260,7 +259,7 @@ describe('异变 mode', () => {
 
   it('lets every ordinary tetromino body carry every Mutation item independently', () => {
     const bodies = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
-    const items = ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const;
+    const items = ['freeze', 'collapse', 'bomb', 'multiplier'] as const;
     const expected = new Set(bodies.flatMap((body) => items.map((item) => `${body}:${item}`)));
     const observed = new Set<string>();
 
@@ -302,29 +301,6 @@ describe('异变 mode', () => {
       rowsRemoved: 0,
     });
     expect(activation?.triggerCells).toEqual(expectedCarrierCells);
-  });
-
-  it('reshapes the first post-activation Next entry into I for one full turn', () => {
-    const transition = resolveLineClear({
-      ...carrierClearState('reshape'),
-      queue: ['T', 'O', 'S', 'Z', 'J'],
-    });
-    const [activation] = mutationActivations(transition);
-
-    expect(transition.state.active?.type).toBe('T');
-    expect(transition.state.queue[0]).toBe('I');
-    expect(transition.state.mutationLastItem).toBe('reshape');
-    expect(transition.state.mutationLastItemTicks).toBe(MUTATION_RESULT_TICKS);
-    expect(activation).toMatchObject({
-      type: 'mutation-activated',
-      item: 'reshape',
-      durationTicks: 0,
-      score: 0,
-      rowsRemoved: 0,
-    });
-
-    const spawned = lockAndSpawn(transition.state);
-    expect(spawned.active?.type).toBe('I');
   });
 
   it('aggregates repeated item cues in first-seen order while applying every timer and multiplier carrier', () => {

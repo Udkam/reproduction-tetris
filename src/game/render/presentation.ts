@@ -195,7 +195,9 @@ export function projectedLandingCells(state: GameState): readonly Cell[] {
     x: cell.x,
     y: cell.y + dropDistance(state),
   }));
-  if (state.mode !== 'sprint' || state.mutationCollapseTicks <= 0) return rigidLanding;
+  const usesSupergravityLanding = state.mode === 'sprint'
+    && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched);
+  if (!usesSupergravityLanding) return rigidLanding;
   if (rigidLanding.some(({ x, y }) => x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT)) {
     return rigidLanding;
   }

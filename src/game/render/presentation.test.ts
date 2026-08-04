@@ -39,12 +39,24 @@ describe('presentation interpolation', () => {
     } as GameState;
     const before = board.map((row) => [...row]);
 
-    expect(projectedLandingCells({ ...state, mutationCollapseTicks: 0 })).toEqual([
+    const rigidLanding = [
       { x: 3, y: 36 }, { x: 4, y: 36 }, { x: 3, y: 37 }, { x: 4, y: 37 },
-    ]);
-    expect(projectedLandingCells(state)).toEqual([
+    ];
+    const independentLanding = [
       { x: 3, y: 36 }, { x: 4, y: 37 }, { x: 3, y: 37 }, { x: 4, y: 38 },
-    ]);
+    ];
+
+    expect(projectedLandingCells({
+      ...state,
+      mutationCollapseTicks: 0,
+      mutationCollapseLandingLatched: false,
+    })).toEqual(rigidLanding);
+    expect(projectedLandingCells(state)).toEqual(independentLanding);
+    expect(projectedLandingCells({
+      ...state,
+      mutationCollapseTicks: 0,
+      mutationCollapseLandingLatched: true,
+    })).toEqual(independentLanding);
     expect(projectedLandingCells(state)).toEqual(projectedLandingCells(state));
     expect(board).toEqual(before);
   });
