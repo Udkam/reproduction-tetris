@@ -3,6 +3,64 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-05 T31 — Mutation gravity, ice, and status clarity
+
+T31 is a bounded correction to Mutation mode. It removes the Reshape carrier from the
+live product, makes Supergravity landing guidance obey the same per-piece latch as Core,
+and replaces the rejected Supergravity/Ice feedback with shorter, local, readable
+effects. Scoring, Bomb, Multiplier, ordinary clears, themes, layout, navigation, Puzzle,
+Survival, persistence, and the single-Canvas boundary remain unchanged.
+
+### Four-item live contract
+
+- The live Mutation pool contains exactly Ice, Supergravity, Bomb, and Multiplier.
+  Reshape is removed from the type, deterministic pool, activation logic, renderer,
+  audio, tokens, theme material map, localization, rules, and active tests. Historical
+  documentation may retain the name only as provenance.
+- A carrier still activates at most once even when several of its cells clear together.
+  Multiple different carriers resolved in one batch retain deterministic priority.
+- Supergravity still lasts five seconds for newly active pieces. A piece that was
+  airborne while Supergravity was active keeps independent-column landing semantics
+  until that piece locks, even if the global timer expires first. Both the ghost guide
+  and the final lock use `timer active OR piece latch`; the next piece does not inherit
+  an expired effect.
+
+### Activation, clear, and sustained feedback
+
+- Ice activation/clear uses a board-local frost bind on the cleared carrier cells,
+  followed by a short upward faceted-shard release. It must not recolor the whole board,
+  create scan lines, or mask the ordinary playfield.
+- Supergravity activation/clear uses a compact downward pressure pulse attached to the
+  cleared carrier columns. It must read as compression, not a symbol, explosion, screen
+  flash, or full-width bar.
+- While an airborne piece is Supergravity-latched, the rejected spike trail is replaced
+  by two or three soft, clipped rectangular afterimages behind its moving cells. The
+  trail never survives a lock and does not render in reduced motion.
+- Supergravity has no sustained oscillator, expiry tone, or special landing sound/VFX.
+  Its short activation cue remains distinct; ordinary locking keeps the ordinary lock
+  contract. Reduced motion renders one local static activation endpoint and omits
+  travelling shards, pressure streaks, and trails.
+
+### Mutation status ledger
+
+- The left rail keeps the established heading, item signal, localized name, seconds,
+  and remaining-time meter. Active effects are rows in one visual ledger, not separate
+  cards: no row background, outline, radius, inset stripe, or shadow.
+- Idle state remains intentionally empty beneath the heading; no placeholder sentence,
+  decorative rule, or disabled-state box is shown. Simultaneous effects remain legible
+  through their item color, signal, name, timer, and meter only.
+
+### T31 acceptance
+
+Focused Core/presentation tests must prove the four-item pool and latched Supergravity
+ghost/lock agreement. Renderer tests must freeze the new Ice and Supergravity activation
+geometry, the clipped non-spike trail, reduced-motion endpoint, and absence of Reshape.
+Audio tests must prove Supergravity state sync creates no sustained voice and that no
+Reshape cue remains. UI/style tests must prove frameless status rows. After the final
+source edit, run one typecheck, the complete suite, one production build, and one bounded
+browser pass covering Ice activation, Supergravity before/after timer expiry, status
+layout, one Canvas, zero DOM board cells, zero console errors, and teardown.
+
 ## 2026-08-04 T30 — in-well piece arrival and route transitions
 
 T30 adds two bounded motion contracts without changing Core simulation, input timing,

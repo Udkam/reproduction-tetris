@@ -1,4 +1,66 @@
-# Current Task — T30 In-Well Arrival and Route Transitions
+# Current Task — T31 Mutation Gravity, Ice, and Status Clarity
+
+## Active goal
+
+Remove the rejected Reshape carrier; align the Supergravity ghost with the canonical
+per-piece latch; replace Supergravity/Ice activation, clear, trail, and audio feedback;
+and restore the earlier information-rich Mutation status as one frameless ledger. The
+authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
+
+## Scope and ownership
+
+- Coordinator/writer: primary task `/root`.
+- Base: `main@7392edf372324dbf7fbb9fc08d606dc9e0d94070`.
+- Contract checkpoint paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/phases/t31-mutation-gravity-and-feedback.md`, and `progress.md` only.
+- Core checkpoint paths: `src/game/core/types.ts`, `src/game/core/engine.ts`,
+  `src/game/core/sprint.test.ts`, `src/game/render/presentation.ts`, and its direct test.
+- Feedback checkpoint paths: Mutation token/timeline/theme files and direct tests,
+  `src/game/render/TetrisRenderer.ts` plus direct test, and `src/game/audio/AudioEngine.ts`
+  plus direct test.
+- UI checkpoint paths: `src/App.tsx`, `src/App.test.ts`, `src/ui/localization.ts`, and
+  `src/styles/mutation-vfx.css` / `src/styles/hud.css` plus direct tests where required.
+- Evidence, independent QA, changelog, and accepted status are later separate
+  checkpoints. Existing dirty `docs/evidence/t27/**` and
+  `docs/evidence/t27-r1-followup/**` are inherited user evidence and remain unstaged
+  and unmodified.
+- No scoring, Bomb/Multiplier mechanics, ordinary clear profile, Survival, Puzzle,
+  theme selection, layout, navigation, persistence, dependency, or package change is
+  authorized.
+
+## Ordered checkpoints
+
+1. **T31 contract** — freeze the four-item pool, latch semantics, visual/audio grammar,
+   status layout, exact paths, and evidence before source edits.
+2. **T31 Core and preview** — remove Reshape and prove timer-or-latch agreement for
+   Supergravity lock and ghost projection.
+3. **T31 feedback** — implement local Ice/Supergravity activation and clear grammar,
+   replace the trail, remove sustained/landing feedback, and cover reduced motion.
+4. **T31 status and copy** — restore the old information set as frameless ledger rows
+   and remove Reshape from live localized rules.
+5. **T31 evidence and closure** — run focused tests, final gates, one bounded visual
+   audit, independent QA, changelog reconciliation, scoped scan, and push.
+
+## Acceptance checklist
+
+- [ ] The live Mutation item union, random pool, rules, renderer, audio, and tests contain
+  Ice, Supergravity, Bomb, and Multiplier only.
+- [ ] A Supergravity-latched airborne piece keeps independent-column ghost and lock
+  behavior after global expiry; an unlatched next piece is rigid.
+- [ ] Supergravity produces no sustained or expiry voice and no special landing effect.
+- [ ] Ice and Supergravity activation/clear effects are local, short, distinct, and
+  reduced-motion safe; the Supergravity trail has no spikes or stale frame.
+- [ ] Mutation status shows signal/name/time/meter without individual row cards or idle
+  placeholder copy.
+- [ ] Focused tests, final typecheck, complete suite, build, one-Canvas browser evidence,
+  zero console errors, teardown, and independent QA pass before acceptance.
+
+Status (2026-08-05): **IN PROGRESS**. Contract checkpoint is being established from
+`main@7392edf`; no source claim is accepted yet.
+
+---
+
+## Previous task — T30 In-Well Arrival and Route Transitions
 
 ## Active goal
 

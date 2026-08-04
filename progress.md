@@ -1,3 +1,16 @@
+## T31 Mutation gravity, ice, and status clarity — 2026-08-05
+
+- Freeze a four-item live Mutation pool: Ice, Supergravity, Bomb, and Multiplier;
+  remove Reshape from live source, rules, rendering, audio, and tests.
+- Freeze one canonical Supergravity rule: an airborne piece uses independent-column
+  ghost and lock geometry while the timer is active or that piece is latched.
+- Replace Ice/Supergravity activation and clear feedback with local effects; replace
+  the rejected spike trail, remove sustained/expiry and special landing feedback, and
+  preserve a static reduced-motion endpoint.
+- Restore signal, item name, remaining seconds, and meter as a frameless status ledger.
+- Status: contract in progress from `main@7392edf`; no source acceptance yet. Inherited
+  T27 evidence remains untouched and unstaged.
+
 ## T30 in-well arrival and route transitions — 2026-08-04
 
 - Freeze a renderer-only four-cell assembly at the already-safe visible spawn geometry;
