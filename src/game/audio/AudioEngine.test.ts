@@ -37,11 +37,12 @@ class FakeOscillator {
   type: OscillatorType = 'sine';
   readonly frequency = new FakeAudioParam();
   onended: (() => void) | null = null;
+  readonly starts: number[] = [];
   readonly stops: number[] = [];
 
   connect(): void {}
   disconnect(): void {}
-  start(): void {}
+  start(time = 0): void { this.starts.push(time); }
   stop(time = 0): void { this.stops.push(time); this.onended?.(); }
 }
 
@@ -379,6 +380,49 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
+  it('uses four quiet, bounded line-clear signatures and rejects invalid clear counts', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    const expectedFrequencies = [
+      [293.66],
+      [277.18, 349.23],
+      [261.63, 329.63, 392],
+      [246.94, 329.63, 415.3, 493.88],
+    ];
+
+    expectedFrequencies.forEach((expected, index) => {
+      const oscillatorStart = oscillators.length;
+      const gainStart = gains.length;
+      const count = index + 1;
+      audio.play([{
+        type: 'lines-cleared',
+        rows: Array.from({ length: count }, (_, row) => 39 - row),
+        count,
+        score: count * 100,
+      }]);
+
+      const voices = oscillators.slice(oscillatorStart);
+      const voiceGains = gains.slice(gainStart);
+      expect(voices).toHaveLength(count);
+      expect(voices.map((oscillator) => oscillator.frequency.setValues[0])).toEqual(expected);
+      expect(voices.every((oscillator) => oscillator.type === 'sine')).toBe(true);
+      expect(voices.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+      expect(voices.every((oscillator) => (
+        (oscillator.stops[0] ?? 1) - (oscillator.starts[0] ?? 0)
+      ) <= 0.12)).toBe(true);
+      expect(voiceGains).toHaveLength(count);
+      expect(voiceGains.every((gain) => Math.max(...gain.gain.ramps) <= 0.065)).toBe(true);
+    });
+
+    const beforeInvalid = oscillators.length;
+    audio.play([{ type: 'lines-cleared', rows: [], count: 0, score: 0 }]);
+    audio.play([{ type: 'lines-cleared', rows: [35, 36, 37, 38, 39], count: 5, score: 0 }]);
+    expect(oscillators).toHaveLength(beforeInvalid);
+    audio.destroy();
+  });
+
   it('gives a same-frame mutation precedence over a clear chord without creating background voices', async () => {
     const { audio, timers } = createTimedAudio();
     await audio.prime();
@@ -390,7 +434,7 @@ describe('AudioEngine original feedback', () => {
       { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
     ]);
 
-    // Ice's single glass tap remains; the three-note normal clear chord is absent.
+    // Ice's single glass tap remains; the ordinary clear cue is absent.
     expect(oscillators).toHaveLength(foregroundBefore + 1);
     expect(timers.size).toBe(0);
     audio.destroy();

@@ -31,6 +31,27 @@ const VOICE_GAIN_BOOST = 1.3;
 const BRIGHT_PARTIAL_RATIO = 2.01;
 const MOVE_CUE_MIN_INTERVAL_MS = 60;
 
+const CLEAR_CUE_PROFILES: Readonly<Record<1 | 2 | 3 | 4, readonly ToneOptions[]>> = Object.freeze({
+  1: Object.freeze([
+    Object.freeze({ frequency: 293.66, duration: 0.07, gain: 0.045, type: 'sine' as const }),
+  ]),
+  2: Object.freeze([
+    Object.freeze({ frequency: 277.18, duration: 0.08, gain: 0.043, type: 'sine' as const }),
+    Object.freeze({ frequency: 349.23, duration: 0.075, gain: 0.035, delay: 0.022, type: 'sine' as const }),
+  ]),
+  3: Object.freeze([
+    Object.freeze({ frequency: 261.63, duration: 0.09, gain: 0.045, type: 'sine' as const }),
+    Object.freeze({ frequency: 329.63, duration: 0.085, gain: 0.036, delay: 0.023, type: 'sine' as const }),
+    Object.freeze({ frequency: 392, duration: 0.08, gain: 0.028, delay: 0.046, type: 'sine' as const }),
+  ]),
+  4: Object.freeze([
+    Object.freeze({ frequency: 246.94, duration: 0.1, gain: 0.048, type: 'sine' as const }),
+    Object.freeze({ frequency: 329.63, duration: 0.095, gain: 0.038, delay: 0.02, type: 'sine' as const }),
+    Object.freeze({ frequency: 415.3, duration: 0.09, gain: 0.03, delay: 0.04, type: 'sine' as const }),
+    Object.freeze({ frequency: 493.88, duration: 0.11, gain: 0.024, delay: 0.065, type: 'sine' as const }),
+  ]),
+});
+
 export class AudioEngine {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -191,15 +212,12 @@ export class AudioEngine {
   }
 
   private clearChord(count: number): void {
-    const base = [0, 392, 440, 494, 587][count] ?? 392;
-    const notes = count === 4 ? [1, 1.25, 1.5, 2] : [1, 1.25, 1.5];
-    notes.forEach((ratio, index) => this.tone({
-      frequency: base * ratio,
-      duration: 0.12 + count * 0.025,
-      gain: 0.16 + count * 0.022,
-      delay: index * 0.022,
-      type: 'sine',
-    }));
+    if (count < 1 || count > 4 || !Number.isInteger(count)) return;
+    const profile = CLEAR_CUE_PROFILES[count as 1 | 2 | 3 | 4];
+    // A clear is a compact confirmation, not a melody: every tier stays below
+    // 500 Hz, uses unbent sine voices, and gains distinction through a short
+    // stagger rather than a louder transient or an explosive noise layer.
+    profile.forEach((tone) => this.tone(tone));
   }
 
   private landingThump(): void {
