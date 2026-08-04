@@ -25,11 +25,12 @@
   width: 100%;
   color: inherit;
   font-family: var(--font-ui);
-  font-size: 15px;
-  font-weight: 780;
-  letter-spacing: .045em;
+  font-size: 17px;
+  font-weight: 820;
+  letter-spacing: .055em;
   line-height: 1.2;
   text-align: center;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--ink) 18%, transparent);
 }
 
 .mutation-status--vfx .mutation-status__ledger {
@@ -44,7 +45,7 @@
   --mutation-highlight: #dce8ed;
   --mutation-deep: #50636d;
   display: grid;
-  grid-template-columns: 13px minmax(0, 1fr);
+  grid-template-columns: 14px minmax(0, 1fr);
   grid-template-rows: auto 1px;
   gap: 7px 9px;
   min-width: 0;
@@ -79,8 +80,8 @@
 .mutation-status--vfx .mutation-status__signal {
   display: block;
   align-self: center;
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   margin: 0;
   background: var(--mutation-primary);
   border: 1px solid color-mix(in srgb, var(--mutation-deep) 72%, var(--board));
@@ -120,13 +121,14 @@
 .mutation-status--vfx .mutation-status__effect-copy > b {
   display: block;
   overflow: hidden;
-  color: var(--ink);
+  color: color-mix(in srgb, var(--mutation-primary) 62%, var(--ink));
   font-family: var(--font-ui);
-  font-size: 15px;
-  font-weight: 780;
-  letter-spacing: .035em;
+  font-size: 17px;
+  font-weight: 820;
+  letter-spacing: .04em;
   line-height: 1.15;
   text-overflow: ellipsis;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--mutation-primary) 24%, transparent);
   white-space: nowrap;
 }
 

@@ -438,10 +438,11 @@
 .game-left-rail .mutation-status__header > strong {
   width: 100%;
   color: color-mix(in srgb, var(--ink) 78%, var(--muted)) !important;
-  font-size: 15px !important;
-  font-weight: 780 !important;
-  letter-spacing: .045em !important;
+  font-size: 17px !important;
+  font-weight: 820 !important;
+  letter-spacing: .055em !important;
   text-align: center;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--ink) 18%, transparent);
 }
 
 .game-left-rail .mutation-status__header > span { display: none !important; }
@@ -459,7 +460,7 @@
 
 .game-left-rail .mutation-status__effect {
   display: grid !important;
-  grid-template-columns: 13px minmax(0, 1fr) !important;
+  grid-template-columns: 14px minmax(0, 1fr) !important;
   grid-template-rows: auto 1px !important;
   min-width: 0;
   min-height: 0 !important;
@@ -475,8 +476,8 @@
 
 .game-left-rail .mutation-status__signal {
   align-self: center;
-  width: 11px !important;
-  height: 11px !important;
+  width: 12px !important;
+  height: 12px !important;
 }
 
 .game-left-rail .mutation-status__effect-copy {
@@ -494,12 +495,13 @@
 .game-left-rail .mutation-status__effect-copy > b {
   display: block;
   overflow: hidden;
-  color: var(--ink) !important;
-  font-size: 15px !important;
-  font-weight: 780 !important;
-  letter-spacing: .035em !important;
+  color: color-mix(in srgb, var(--mutation-primary) 62%, var(--ink)) !important;
+  font-size: 17px !important;
+  font-weight: 820 !important;
+  letter-spacing: .04em !important;
   line-height: 1.15 !important;
   text-overflow: ellipsis;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--mutation-primary) 24%, transparent);
   white-space: nowrap;
 }
 
