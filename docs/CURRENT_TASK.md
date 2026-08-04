@@ -2,7 +2,7 @@
 
 ## T27-R1 active goal — centred board stage and three complete visual themes
 
-**Status (2026-08-04): ACCEPTED / SETTINGS, AUDIO, AND CLASSIC RANKING FOLLOW-UP OPEN.** This player-requested
+**Status (2026-08-04): ACCEPTED / SETTINGS, AUDIO, CLASSIC RANKING, AND PUZZLE ENTRY FOLLOW-UP OPEN.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, the single-canvas
 boundary, or Mutation mechanics. The later direct request narrowly reopens Classic
@@ -179,7 +179,7 @@ coordinator is the only writer. The accepted deterministic Core, one Pixi canvas
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
 information architecture remain authoritative.
 
-The slice has sixteen player-visible acceptance requirements:
+The slice has twenty player-visible acceptance requirements:
 
 1. Home shows the single `TetraMorph` wordmark with no positioning line in either
    language. Removing the subtitle must collapse its layout space rather than leave a
@@ -336,6 +336,13 @@ The slice has sixteen player-visible acceptance requirements:
     grade filters without creating nine or more micro-tiers. Valid v8 Classic rows lack
     interval evidence and migrate conservatively into Standard; Survival and Mutation
     records, ordering, and limits remain unchanged.
+20. Puzzle is the only mode without the `3 / 2 / 1` entry countdown. Opening a Puzzle,
+   replaying it after completion, restarting it from Settings, or confirming the board
+   restart action immediately resets the deterministic authored queue, enables input,
+   and starts the first fixed piece. Puzzle must not render the entry veil, wait for its
+   exit transition, or play any countdown cue. Classic, Survival, and Mutation retain
+   the accepted countdown contract; Survival's staged bedrock-rise entry remains
+   unchanged.
 
 ### Required checkpoints and verification
 

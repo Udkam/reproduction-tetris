@@ -285,6 +285,13 @@ Confirming a restart must not layer the generic `restarted` event cue underneath
 `3`: every restart path hands audible ownership to this one countdown sequence, so its
 first beat is exactly one pulse rather than a restart flourish plus a countdown pulse.
 
+Puzzle is the sole entry exception. Because a Puzzle run begins from an authored,
+deterministic board and fixed queue, opening, replaying, or restarting it skips the
+entry veil, its `3 / 2 / 1` audio, and the veil-exit delay. React enables input and
+starts the first fixed piece as soon as the runtime mounts or resets. Classic,
+Survival, and Mutation keep the shared countdown; Survival also keeps its staged
+bedrock-rise presentation.
+
 Fast horizontal repeat uses one separate soft sine voice with no frequency sweep and a
 minimum 60 ms accepted-voice interval. The interval suppresses stacked attacks rather
 than delaying input or creating a queued audio stream; gameplay timing remains wholly
