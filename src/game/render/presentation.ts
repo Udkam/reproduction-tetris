@@ -344,7 +344,7 @@ export function activeCellsInsideVisibleRows(
     .filter((cell) => cell.y >= visibleStartRow && cell.y < visibleEndRow);
 }
 
-/** Complete renderer-owned active-piece arrival; the final stagger settles within 204 ms. */
+/** Complete renderer-owned active-piece arrival; the final row stagger settles within 204 ms. */
 export const ACTIVE_SPAWN_REVEAL_DURATION_MS = 204;
 const ACTIVE_SPAWN_CELL_DURATION_MS = 126;
 const ACTIVE_SPAWN_CELL_STAGGER_MS = 26;
@@ -356,9 +356,10 @@ function easeOutCubic(value: number): number {
 }
 
 /**
- * Returns one progress value per input cell while revealing the shape in a stable
- * top-to-bottom, then left-to-right order. Cells never receive a translation here:
- * the renderer applies scale and opacity at the already-clamped in-well position.
+ * Returns one progress value per input cell while revealing the shape in stable
+ * top-to-bottom row groups. Cells sharing one visible row always share progress; cells
+ * never receive a translation here. The renderer applies scale and opacity at the
+ * already-clamped in-well position.
  */
 export function activeSpawnCellProgresses(
   cells: readonly Cell[],
@@ -367,19 +368,11 @@ export function activeSpawnCellProgresses(
 ): number[] {
   if (reducedMotion) return cells.map(() => 1);
   const safeElapsed = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
-  const revealRanks = new Array<number>(cells.length);
-  cells
-    .map((cell, index) => ({ cell, index }))
-    .sort((left, right) => (
-      left.cell.y - right.cell.y
-      || left.cell.x - right.cell.x
-      || left.index - right.index
-    ))
-    .forEach(({ index }, rank) => {
-      revealRanks[index] = rank;
-    });
-  return cells.map((_, index) => {
-    const rank = revealRanks[index] ?? index;
+  const visibleRows = [...new Set(cells.map((cell) => cell.y))]
+    .sort((left, right) => left - right);
+  const rowRank = new Map(visibleRows.map((row, rank) => [row, rank]));
+  return cells.map((cell) => {
+    const rank = rowRank.get(cell.y) ?? 0;
     const localProgress = (safeElapsed - rank * ACTIVE_SPAWN_CELL_STAGGER_MS)
       / ACTIVE_SPAWN_CELL_DURATION_MS;
     return easeOutCubic(localProgress);

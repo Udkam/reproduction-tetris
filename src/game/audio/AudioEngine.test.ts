@@ -299,7 +299,7 @@ describe('AudioEngine complete feedback remaster', () => {
     audio.destroy();
   });
 
-  it('gives every mutation material a concise, unbent original signature', async () => {
+  it('gives every live mutation material a concise, unbent original signature', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
 
     const freeze = new AudioEngine();
@@ -331,14 +331,6 @@ describe('AudioEngine complete feedback remaster', () => {
     expect((noiseSources[0]?.buffer as unknown as FakeAudioBuffer).channel.some((sample) => sample !== 0)).toBe(true);
     bomb.destroy();
 
-    oscillators.length = 0;
-    const reshape = new AudioEngine();
-    await reshape.prime();
-    reshape.play([{ type: 'mutation-activated', item: 'reshape', durationTicks: 0, score: 0, rowsRemoved: 0, triggerCells: carrierCells }]);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([392, 493.88, 587.33]);
-    expect(oscillators.every((oscillator) => oscillator.type === 'triangle')).toBe(true);
-    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
-    reshape.destroy();
   });
 
   it('keeps Double compact and adds only a clean octave for Super Double', async () => {
@@ -361,7 +353,7 @@ describe('AudioEngine complete feedback remaster', () => {
     superDouble.destroy();
   });
 
-  it('keeps Ice and multiplier silent after activation while Supergravity retains bounded ambience', async () => {
+  it('keeps every timed mutation silent after its concise activation cue', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
@@ -373,11 +365,9 @@ describe('AudioEngine complete feedback remaster', () => {
       mutationMultiplierFactor: 4 as const,
     };
 
+    const voiceCount = oscillators.length;
     audio.syncMutationState(active);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).not.toContain(261.63);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).not.toContain(392);
-    const loop = oscillators.find((oscillator) => oscillator.frequency.setValues[0] === 98);
-    expect(loop?.stops).toHaveLength(0);
+    expect(oscillators).toHaveLength(voiceCount);
 
     audio.syncMutationState({
       ...active,
@@ -385,8 +375,7 @@ describe('AudioEngine complete feedback remaster', () => {
       mutationCollapseTicks: 0,
       mutationMultiplierTicks: 0,
     });
-    expect(loop?.stops).toHaveLength(1);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toContain(220);
+    expect(oscillators).toHaveLength(voiceCount);
     audio.destroy();
   });
 
@@ -417,7 +406,6 @@ describe('AudioEngine complete feedback remaster', () => {
 
     audio.play([
       { type: 'mutation-activated', item: 'multiplier', durationTicks: 600, score: 0, rowsRemoved: 0, multiplierFactor: 4, triggerCells: carrierCells },
-      { type: 'mutation-activated', item: 'reshape', durationTicks: 0, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
       { type: 'mutation-activated', item: 'collapse', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
       { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
       { type: 'mutation-activated', item: 'bomb', durationTicks: 0, score: 300, rowsRemoved: 3, triggerCells: carrierCells },
@@ -430,7 +418,6 @@ describe('AudioEngine complete feedback remaster', () => {
       110,
       698.46, 1046.5,
       196, 261.63,
-      392, 493.88, 587.33,
       523.25, 659.25, 1046.5,
     ]);
     expect(oscillators.length + noiseSources.length).toBeLessThanOrEqual(16);

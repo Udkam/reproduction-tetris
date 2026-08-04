@@ -127,21 +127,14 @@ export function createMutationActivationTimeline(item: MutationItem): MutationTi
   }
   if (item === 'collapse') {
     return new MutationTimeline(sequence(
-      phase('pull', timing.enterMs, 'backOut'),
-      phase('settle', timing.pulseMs, 'cubicIn'),
+      phase('pressure-bind', timing.enterMs, 'cubicOut'),
+      phase('column-release', timing.pulseMs, 'cubicIn'),
     ));
   }
   if (item === 'freeze') {
     return new MutationTimeline(parallel(
-      phase('crystalise', timing.enterMs, 'cubicOut'),
-      delay(Math.round(timing.enterMs * 0.34), phase('snow-burst', Math.round(timing.enterMs * 0.66), 'cubicOut')),
-    ));
-  }
-  if (item === 'reshape') {
-    return new MutationTimeline(sequence(
-      phase('gather', timing.enterMs, 'cubicOut'),
-      phase('lock', timing.pulseMs, 'backOut'),
-      phase('confirm', Math.max(1, timing.activationMs - timing.enterMs - timing.pulseMs), 'cubicOut'),
+      phase('frost-bind', timing.enterMs, 'cubicOut'),
+      delay(Math.round(timing.enterMs * 0.34), phase('shard-release', Math.round(timing.enterMs * 0.66), 'cubicOut')),
     ));
   }
   return new MutationTimeline(parallel(

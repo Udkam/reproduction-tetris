@@ -218,15 +218,6 @@ interface MutationArrival {
   duration: number;
 }
 
-interface CollapseTrail {
-  paths: readonly { x: number; fromY: number; toY: number }[];
-  /** Sorted naturally by the fixed left-to-right compaction scan. */
-  columns: readonly number[];
-  maxDrop: number;
-  elapsed: number;
-  duration: number;
-}
-
 type MutationFieldStage = 'enter' | 'active' | 'exit';
 type TimedMutationItem = Extract<MutationItem, 'freeze' | 'collapse' | 'multiplier'>;
 
@@ -596,14 +587,6 @@ export class TetrisRenderer {
   private readonly mutationFlashQueue: MutationFlashRequest[] = [];
   private mutationArrival: MutationArrival | null = null;
   private activeMutationCarrierId: number | null = null;
-  private collapseTrail: CollapseTrail | null = null;
-  /**
-   * Reused marker grid for Collapse settlement. A stamp avoids allocating Maps,
-   * Sets, arrays, and sort work on a lock while still distinguishing the just-
-   * locked cells from the immutable board snapshot.
-   */
-  private readonly collapseIncomingStamps = new Uint32Array(BOARD_WIDTH * BOARD_HEIGHT);
-  private collapseIncomingStamp = 0;
   private readonly mutationFields = new Map<TimedMutationItem, MutationField>();
   private readonly mutationParticles: MutationParticle[] = Array.from(
     { length: MUTATION_PARTICLE_LIMIT },
@@ -626,7 +609,6 @@ export class TetrisRenderer {
   private particleSeed = 0x4d555441;
   private mutationClockMs = 0;
   private previousBoard: GameState['board'] | null = null;
-  private collapseWasActive = false;
   private options: RenderOptions = {
     reducedMotion: false,
     modeSwitch: false,
@@ -781,7 +763,7 @@ export class TetrisRenderer {
     const app = this.app;
     if (!app) return;
     this.syncCanvasSize(app);
-    this.consumeEvents(events, state, this.previousBoard, this.collapseWasActive);
+    this.consumeEvents(events, state, this.previousBoard);
     this.syncMutationFields(state);
     this.advanceEffects(deltaMs);
     this.advanceSurvivalDebrisPresentation(state, deltaMs);
@@ -795,8 +777,6 @@ export class TetrisRenderer {
     this.drawPreviews(state, layout);
     this.updateSnapshot(state, layout, app);
     this.previousBoard = state.board;
-    this.collapseWasActive = state.mode === 'sprint'
-      && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched);
   }
 
   getSnapshot(): RendererSnapshot {
@@ -827,14 +807,7 @@ export class TetrisRenderer {
         : null,
       mutationActivationQueueItems: this.mutationFlashQueue.map((request) => request.item),
       mutationActiveParticleCount: activeParticleCount,
-      mutationCollapseTrail: this.collapseTrail
-        ? {
-            columns: [...this.collapseTrail.columns],
-            maxDrop: this.collapseTrail.maxDrop,
-            elapsedMs: this.collapseTrail.elapsed,
-            durationMs: this.collapseTrail.duration,
-          }
-        : null,
+      mutationCollapseTrail: null,
     });
   }
 
@@ -940,11 +913,9 @@ export class TetrisRenderer {
     this.mutationFlash = null;
     this.mutationArrival = null;
     this.activeMutationCarrierId = null;
-    this.collapseTrail = null;
     this.clearSurvivalVisualState();
     this.clearMutationVisualState();
     this.previousBoard = null;
-    this.collapseWasActive = false;
   }
 
   private readonly onTick = (ticker: Ticker): void => {
@@ -1347,16 +1318,6 @@ export class TetrisRenderer {
           .fill({ color: token.palette.deep, alpha: .5 })
           .circle(centerX - mark * .18, centerY - mark * .18, mark * .26)
           .fill({ color: token.palette.highlight, alpha: .78 * pulse });
-      } else if (item === 'reshape') {
-        for (let row = -1; row <= 1; row += 1) {
-          const width = mark * (row === 0 ? 2.3 : 1.62);
-          graphics
-            .roundRect(centerX - width / 2, centerY + row * mark * .66 - mark * .17, width, mark * .34, mark * .16)
-            .fill({
-              color: row === 0 ? token.palette.highlight : token.palette.primary,
-              alpha: (row === 0 ? .7 : .44) * pulse,
-            });
-        }
       } else {
         this.drawMutationDiamond(graphics, centerX, centerY, mark * .8, mark * .8, token.palette.highlight, .5 * pulse);
         this.strokeSegments(graphics, [
@@ -1432,25 +1393,6 @@ export class TetrisRenderer {
           [centerX + radius * 1.46, centerY - radius * .4, centerX + radius * 1.92, centerY - radius * .66],
           [centerX - radius * 1.48, centerY + radius * .78, centerX - radius * 1.92, centerY + radius * 1.16],
         ], material.innerEdge, .92, Math.max(1, radius * .22));
-      } else if (item === 'reshape') {
-        const unit = radius * .66;
-        const gap = unit * .16;
-        const totalWidth = unit * 4 + gap * 3;
-        const left = centerX - totalWidth / 2;
-        for (let index = 0; index < 4; index += 1) {
-          graphics
-            .roundRect(left + index * (unit + gap), centerY - unit / 2, unit, unit, unit * .18)
-            .fill({
-              color: index === 1 || index === 2 ? material.innerEdge : material.edge,
-              alpha: .94,
-            });
-        }
-        this.strokeSegments(graphics, [
-          [left - radius * .38, centerY - unit * .82, left - radius * .38, centerY + unit * .82],
-          [left - radius * .38, centerY - unit * .82, left + radius * .08, centerY - unit * .82],
-          [left + totalWidth + radius * .38, centerY - unit * .82, left + totalWidth + radius * .38, centerY + unit * .82],
-          [left + totalWidth - radius * .08, centerY + unit * .82, left + totalWidth + radius * .38, centerY + unit * .82],
-        ], material.fillStart, .86, Math.max(1, radius * .18));
       } else {
         graphics.circle(centerX, centerY, radius * 1.35).fill({ color: material.edge, alpha: .76 });
         this.drawMutationStar(graphics, centerX, centerY, radius * 1.25, radius * .52, material.innerEdge, .97);
@@ -1567,20 +1509,6 @@ export class TetrisRenderer {
         if (exposed.bottom) marks.push([x + layout.cell / 2, bottom - inset]);
         if (exposed.left && exposed.top) marks.push([x + inset, y + inset]);
         if (exposed.right && exposed.bottom) marks.push([right - inset, bottom - inset]);
-      } else if (item === 'reshape') {
-        const centerX = x + layout.cell / 2;
-        if (exposed.top) {
-          accents.push(
-            [centerX - layout.cell * .22, y + inset * .72, centerX - layout.cell * .04, y + inset * .72],
-            [centerX + layout.cell * .04, y + inset * .72, centerX + layout.cell * .22, y + inset * .72],
-          );
-        }
-        if (exposed.bottom) {
-          accents.push(
-            [centerX - layout.cell * .22, bottom - inset * .72, centerX - layout.cell * .04, bottom - inset * .72],
-            [centerX + layout.cell * .04, bottom - inset * .72, centerX + layout.cell * .22, bottom - inset * .72],
-          );
-        }
       }
     }
     this.strokeSegments(
@@ -2163,10 +2091,6 @@ export class TetrisRenderer {
       this.drawMutationActivationEffect(mutationGraphics, this.mutationFlash, layout);
     }
     this.drawMutationParticles(mutationGraphics, layout);
-    if (this.collapseTrail) {
-      const progress = Math.min(1, this.collapseTrail.elapsed / this.collapseTrail.duration);
-      this.drawCollapseSettlementTrail(mutationGraphics, this.collapseTrail, progress, layout);
-    }
     this.drawOrdinaryLineClearTails(graphics, layout);
     if (state.phase === 'line-clear') this.drawOrdinaryLineClearFaces(graphics, state, layout);
     this.drawClassicFeedbackCues(graphics, state, layout);
@@ -2450,6 +2374,12 @@ export class TetrisRenderer {
           : 1;
     const faceScale = modeFaceScale * (activationOwnsClear ? 0.65 : 1);
     const fragmentScale = (state.mode === 'race' ? 0.9 : 1) * (activationOwnsClear ? 0.65 : 1);
+    const mutationItemByCell = new Map<string, MutationItem>();
+    if (state.mode === 'sprint') {
+      for (const carrier of state.mutationCarriers) {
+        for (const cell of carrier.cells) mutationItemByCell.set(`${cell.x},${cell.y}`, carrier.item);
+      }
+    }
     const orderedRows = [...state.pendingClearRows].sort((left, right) => right - left);
     for (let rowOrder = 0; rowOrder < orderedRows.length; rowOrder += 1) {
       const row = orderedRows[rowOrder]!;
@@ -2481,6 +2411,11 @@ export class TetrisRenderer {
         graphics
           .roundRect(x, y, size, size, Math.max(1, layout.cell * 0.08))
           .fill({ color: material.innerEdge, alpha });
+
+        const mutationItem = mutationItemByCell.get(`${column},${row}`);
+        if (mutationItem === 'freeze' || mutationItem === 'collapse') {
+          this.drawMutationLineClearAccent(graphics, mutationItem, x, y, size, cellProgress, layout.cell);
+        }
 
         if (restrainedGeometry) continue;
         const centerX = x + size * 0.5;
@@ -2532,6 +2467,47 @@ export class TetrisRenderer {
             });
         }
       }
+    }
+  }
+
+  /** Carrier-only clear accents make the triggering cell readable before activation. */
+  private drawMutationLineClearAccent(
+    graphics: Graphics,
+    item: 'freeze' | 'collapse',
+    x: number,
+    y: number,
+    size: number,
+    progress: number,
+    cellSize: number,
+  ): void {
+    const token = MUTATION_VFX_TOKENS[item];
+    const pulse = Math.sin(Math.max(0, Math.min(1, progress)) * Math.PI);
+    const alpha = Math.max(.22, pulse) * (this.options.reducedMotion ? .62 : 1);
+    const centerX = x + size * .5;
+    const centerY = y + size * .5;
+    const stroke = Math.max(1, cellSize * .045);
+    if (item === 'freeze') {
+      const inset = size * (.08 + progress * .22);
+      graphics
+        .roundRect(x + inset, y + inset, size - inset * 2, size - inset * 2, Math.max(1, cellSize * .045))
+        .stroke({ color: token.palette.highlight, alpha: .86 * alpha, width: stroke });
+      this.strokeSegments(graphics, [
+        [x + size * .2, centerY, centerX, y + size * .2],
+        [centerX, y + size * .2, x + size * .8, centerY],
+      ], token.palette.primary, .64 * alpha, stroke * .72);
+      return;
+    }
+
+    for (let index = 0; index < 3; index += 1) {
+      const lineY = centerY - size * .22 + index * size * .22;
+      const halfWidth = size * (.36 - index * .055) * (1 - progress * .24);
+      this.strokeSegments(
+        graphics,
+        [[centerX - halfWidth, lineY, centerX + halfWidth, lineY]],
+        index === 1 ? token.palette.highlight : token.palette.primary,
+        (.78 - index * .12) * alpha,
+        stroke,
+      );
     }
   }
 
@@ -2847,10 +2823,9 @@ export class TetrisRenderer {
   }
 
   /**
-   * Supergravity follows the active tetromino instead of decorating the whole well.
-   * Two soft silhouettes and top-edge acceleration wedges sit behind the solid cells,
-   * move with the piece, and are rebuilt every frame so no empty-cell frame survives a
-   * lock. Geometry is clipped manually because the ordinary piece plane is not masked.
+   * Supergravity keeps two quiet, cell-shaped afterimages behind the airborne piece.
+   * The cue follows every moving cell, is clipped to the well, and disappears at lock;
+   * reduced motion omits it entirely instead of leaving a static landing mark.
    */
   private drawSupergravityPieceTrail(
     graphics: Graphics,
@@ -2859,55 +2834,35 @@ export class TetrisRenderer {
     offsetX = 0,
     offsetY = 0,
   ): void {
-    if (cells.length === 0) return;
+    if (cells.length === 0 || this.options.reducedMotion) return;
     const token = MUTATION_VFX_TOKENS.collapse;
-    const wellTop = layout.y + Math.max(1, layout.cell * .04);
-    const wellBottom = layout.y + layout.height - Math.max(1, layout.cell * .04);
-    const layers = this.options.reducedMotion
-      ? [{ lift: .18, inset: .2, alpha: .1 }]
-      : [
-          { lift: .2, inset: .16, alpha: .13 },
-          { lift: .48, inset: .24, alpha: .065 },
-        ];
+    const wellLeft = layout.x;
+    const wellTop = layout.y;
+    const wellRight = layout.x + layout.width;
+    const wellBottom = layout.y + layout.height;
+    const inset = Math.max(1, layout.cell * .075);
+    const phase = (this.mutationClockMs % 360) / 360;
 
     for (const cell of cells) {
-      const cellX = layout.x + cell.x * layout.cell + offsetX;
-      const cellY = layout.y + cell.y * layout.cell + offsetY;
-      for (const layer of layers) {
-        const inset = layout.cell * layer.inset;
-        const rawTop = cellY - layout.cell * layer.lift + inset;
-        const rawBottom = rawTop + layout.cell - inset * 2;
+      const baseX = layout.x + cell.x * layout.cell + offsetX + inset;
+      const baseY = layout.y + cell.y * layout.cell + offsetY + inset;
+      const width = layout.cell - inset * 2;
+      const height = layout.cell - inset * 2;
+      for (let layer = 0; layer < 2; layer += 1) {
+        const distance = layout.cell * (.17 + layer * .18 + phase * .035);
+        const rawTop = baseY - distance;
+        const left = Math.max(wellLeft, baseX);
+        const right = Math.min(wellRight, baseX + width);
         const top = Math.max(wellTop, rawTop);
-        const bottom = Math.min(wellBottom, rawBottom);
-        if (bottom <= top) continue;
+        const bottom = Math.min(wellBottom, rawTop + height);
+        if (right <= left || bottom <= top) continue;
         graphics
-          .roundRect(
-            cellX + inset,
-            top,
-            layout.cell - inset * 2,
-            bottom - top,
-            Math.max(1, layout.cell * .09),
-          )
-          .fill({ color: token.palette.primary, alpha: layer.alpha });
+          .roundRect(left, top, right - left, bottom - top, Math.max(1, layout.cell * .08))
+          .fill({
+            color: layer === 0 ? token.palette.highlight : token.palette.primary,
+            alpha: layer === 0 ? .15 : .08,
+          });
       }
-    }
-
-    if (this.options.reducedMotion) return;
-    const occupied = new Set(cells.map((cell) => `${cell.x},${cell.y}`));
-    for (const cell of cells) {
-      if (occupied.has(`${cell.x},${cell.y - 1}`)) continue;
-      const centerX = layout.x + (cell.x + .5) * layout.cell + offsetX;
-      const baseY = Math.min(wellBottom, layout.y + cell.y * layout.cell + offsetY + layout.cell * .24);
-      const topY = Math.max(wellTop, baseY - layout.cell * .92);
-      if (baseY <= topY) continue;
-      const halfWidth = layout.cell * .16;
-      graphics
-        .moveTo(centerX - halfWidth, baseY)
-        .lineTo(centerX - halfWidth * .16, topY)
-        .lineTo(centerX + halfWidth * .16, topY)
-        .lineTo(centerX + halfWidth, baseY)
-        .lineTo(centerX - halfWidth, baseY)
-        .fill({ color: token.palette.highlight, alpha: .13 });
     }
   }
 
@@ -3078,28 +3033,20 @@ export class TetrisRenderer {
       return;
     }
     if (item === 'collapse') {
-      graphics
-        .circle(centerX, centerY - size * .18, size * .66)
-        .fill({ color: token.palette.deep, alpha: .42 })
-        .circle(centerX, centerY - size * .18, size * .4)
-        .stroke({ color: token.palette.highlight, alpha: .86, width: stroke });
-      this.drawMutationDiamond(
-        graphics,
-        centerX,
-        centerY - size * .18,
-        size * .28,
-        size * .4,
-        token.palette.primary,
-        .86,
-      );
-      for (let index = 0; index < 2; index += 1) {
-        const y = centerY + size * (.68 + index * .48);
-        const spread = size * (.54 - index * .08);
-        this.strokeSegments(graphics, [
-          [centerX - spread, y - size * .16, centerX, y + size * .16],
-          [centerX, y + size * .16, centerX + spread, y - size * .16],
-        ], token.palette.highlight, .78 - index * .16, stroke);
+      for (let index = 0; index < 3; index += 1) {
+        const y = centerY - size * .42 + index * size * .34;
+        const halfWidth = size * (.72 - index * .14);
+        this.strokeSegments(
+          graphics,
+          [[centerX - halfWidth, y, centerX + halfWidth, y]],
+          index === 1 ? token.palette.highlight : token.palette.primary,
+          .88 - index * .14,
+          stroke,
+        );
       }
+      this.strokeSegments(graphics, [
+        [centerX, centerY + size * .28, centerX, centerY + size * .94],
+      ], token.palette.highlight, .74, stroke * .72);
       return;
     }
     if (item === 'bomb') {
@@ -3115,27 +3062,6 @@ export class TetrisRenderer {
         [centerX + size * .58, centerY + size * .28, centerX + size * .96, centerY + size * .48],
         [centerX + size * .18, centerY - size * .72, centerX + size * .42, centerY - size * 1.08],
       ], token.palette.highlight, .84, stroke);
-      return;
-    }
-    if (item === 'reshape') {
-      const unit = size * .42;
-      const gap = unit * .18;
-      const totalWidth = unit * 4 + gap * 3;
-      const left = centerX - totalWidth / 2;
-      for (let index = 0; index < 4; index += 1) {
-        graphics
-          .roundRect(left + index * (unit + gap), centerY - unit / 2, unit, unit, unit * .16)
-          .fill({
-            color: index === 1 || index === 2 ? token.palette.highlight : token.palette.primary,
-            alpha: .9,
-          });
-      }
-      this.strokeSegments(graphics, [
-        [left - size * .25, centerY - unit, left - size * .25, centerY + unit],
-        [left - size * .25, centerY - unit, left + size * .08, centerY - unit],
-        [left + totalWidth + size * .25, centerY - unit, left + totalWidth + size * .25, centerY + unit],
-        [left + totalWidth - size * .08, centerY + unit, left + totalWidth + size * .25, centerY + unit],
-      ], token.palette.highlight, .82, stroke);
       return;
     }
     graphics.circle(centerX, centerY, size * 1.08).fill({ color: token.palette.primary, alpha: factor === 4 ? .28 : .18 });
@@ -3189,72 +3115,80 @@ export class TetrisRenderer {
     }
 
     if (flash.item === 'freeze') {
-      const crystalise = flash.timeline.sample('crystalise');
-      const snowBurst = flash.timeline.sample('snow-burst');
-      if (!crystalise.active && !snowBurst.active) return;
-      const alpha = Math.max(crystalise.active ? 1 - crystalise.progress * .26 : 0, snowBurst.active ? 1 - snowBurst.progress : 0);
-      const shard = Math.max(3, layout.cell * 0.18);
-      const distance = Math.max(layout.cell * 0.68, (maxX - minX + maxY - minY + 2) * layout.cell * 0.22);
-      const ring = .42 + crystalise.value * .88;
-      graphics
-        .circle(anchorX, anchorY, distance * ring)
-        .fill({ color: token.palette.primary, alpha: 0.16 * alpha })
-        .circle(anchorX, anchorY, distance * (ring + .18))
-        .stroke({ color: token.palette.highlight, alpha: .88 * alpha, width: strokeWidth });
-      for (const [xFactor, yFactor, scale] of [[-1, -.46, .85], [.82, -.72, 1], [.5, .82, .68], [-.68, .66, .58], [.12, -1.05, .56]] as const) {
-        this.drawMutationDiamond(
-          graphics,
-          anchorX + xFactor * distance,
-          anchorY + yFactor * distance,
-          shard * scale * .45,
-          shard * scale,
-          token.palette.highlight,
-          0.84 * alpha,
-        );
+      const bind = flash.timeline.sample('frost-bind');
+      const release = flash.timeline.sample('shard-release');
+      if (!bind.active && !release.active) return;
+      const sourceCells = cells.length ? cells : [{ x: minX, y: minY }];
+      for (const [index, cell] of sourceCells.entries()) {
+        const left = layout.x + cell.x * layout.cell;
+        const top = layout.y + cell.y * layout.cell;
+        const centerCellX = left + layout.cell * .5;
+        const centerCellY = top + layout.cell * .5;
+        if (bind.active) {
+          const inset = layout.cell * (.08 + bind.value * .18);
+          graphics
+            .roundRect(
+              left + inset,
+              top + inset,
+              layout.cell - inset * 2,
+              layout.cell - inset * 2,
+              Math.max(1, layout.cell * .06),
+            )
+            .stroke({ color: token.palette.highlight, alpha: .82 * (1 - bind.progress * .22), width: strokeWidth });
+          this.strokeSegments(graphics, [
+            [left + layout.cell * .16, centerCellY, centerCellX, top + layout.cell * .16],
+            [centerCellX, top + layout.cell * .16, left + layout.cell * .84, centerCellY],
+          ], token.palette.primary, .48, Math.max(1, strokeWidth * .72));
+        }
+        if (release.active) {
+          const lift = layout.cell * (.18 + release.value * (.46 + index % 2 * .08));
+          this.drawMutationDiamond(
+            graphics,
+            centerCellX + (index % 2 ? 1 : -1) * layout.cell * .16,
+            centerCellY - lift,
+            layout.cell * .075,
+            layout.cell * .17,
+            token.palette.highlight,
+            .76 * (1 - release.progress),
+          );
+        }
       }
       return;
     }
 
     if (flash.item === 'collapse') {
-      const pull = flash.timeline.sample('pull');
-      const settle = flash.timeline.sample('settle');
-      if (!pull.active && !settle.active) return;
-      const alpha = pull.active ? 1 - pull.progress * .18 : 1 - settle.progress;
-      const compression = pull.active ? pull.value : 1;
+      const pressure = flash.timeline.sample('pressure-bind');
+      const release = flash.timeline.sample('column-release');
+      if (!pressure.active && !release.active) return;
+      const alpha = pressure.active ? 1 - pressure.progress * .14 : 1 - release.progress;
       for (const column of flash.triggerColumns) {
         const x = layout.x + (column + .5) * layout.cell;
-        let sourceY = anchorY;
+        let sourceY = anchorY + layout.cell * .5;
         for (const cell of cells) {
           if (cell.x !== column) continue;
-          sourceY = Math.min(sourceY, layout.y + (cell.y + .5) * layout.cell);
+          sourceY = Math.max(sourceY, layout.y + (cell.y + 1) * layout.cell);
         }
         for (let trace = 0; trace < 3; trace += 1) {
-          const traceTop = sourceY + layout.cell * (.18 + trace * .13);
-          const traceHeight = layout.cell * (.58 + compression * .78 - trace * .09);
-          const halfWidth = Math.max(1.2, layout.cell * (.09 - trace * .012));
-          const offsetX = (trace - 1) * layout.cell * .13;
-          graphics
-            .poly([
-              x + offsetX - halfWidth * .45, traceTop,
-              x + offsetX + halfWidth, traceTop + traceHeight * .16,
-              x + offsetX + halfWidth * .18, traceTop + traceHeight,
-              x + offsetX - halfWidth, traceTop + traceHeight * .74,
-            ])
-            .fill({
-              color: trace === 1 ? token.palette.highlight : token.palette.primary,
-              alpha: (.62 - trace * .12) * alpha,
-            });
+          const y = sourceY + layout.cell * (.06 + trace * .14 + (release.active ? release.value * .12 : 0));
+          const halfWidth = layout.cell * (.32 - trace * .055);
+          this.strokeSegments(
+            graphics,
+            [[x - halfWidth, y, x + halfWidth, y]],
+            trace === 1 ? token.palette.highlight : token.palette.primary,
+            (.76 - trace * .14) * alpha,
+            Math.max(1, layout.cell * (.055 - trace * .008)),
+          );
         }
-        if (settle.active) {
-          graphics
-            .poly([
-              x - layout.cell * .34, sourceY + layout.cell * 1.48,
-              x - layout.cell * .12, sourceY + layout.cell * 1.38,
-              x + layout.cell * .36, sourceY + layout.cell * 1.48,
-              x + layout.cell * .18, sourceY + layout.cell * 1.62,
-              x - layout.cell * .28, sourceY + layout.cell * 1.58,
-            ])
-            .fill({ color: token.palette.primary, alpha: .52 * alpha });
+        const stemTop = sourceY + layout.cell * .1;
+        const stemBottom = Math.min(layout.y + layout.height, sourceY + layout.cell * (.42 + (release.active ? release.value * .26 : 0)));
+        if (stemBottom > stemTop) {
+          this.strokeSegments(
+            graphics,
+            [[x, stemTop, x, stemBottom]],
+            token.palette.highlight,
+            .58 * alpha,
+            Math.max(1, layout.cell * .035),
+          );
         }
       }
       return;
@@ -3316,62 +3250,6 @@ export class TetrisRenderer {
           .stroke({ color: token.palette.highlight, alpha: .96 * alpha, width: Math.max(strokeWidth, layout.cell * .09) })
           .circle(anchorX, anchorY, radius * .68)
           .stroke({ color: token.palette.primary, alpha: .5 * alpha, width: strokeWidth });
-      }
-      return;
-    }
-
-    if (flash.item === 'reshape') {
-      const gather = flash.timeline.sample('gather');
-      const lock = flash.timeline.sample('lock');
-      const confirm = flash.timeline.sample('confirm');
-      if (!gather.active && !lock.active && !confirm.active) return;
-      const progress = gather.active ? gather.value : 1;
-      const alpha = confirm.active ? 1 - confirm.progress : 1;
-      const unit = Math.max(layout.cell * .34, 5);
-      const gap = unit * .2;
-      const totalWidth = unit * 4 + gap * 3;
-      const left = anchorX - totalWidth / 2;
-      const starts = [
-        [-1.48, -.92], [-.58, 1.06], [.56, -.84], [1.52, .88],
-      ] as const;
-      const fieldRadius = layout.cell * (1.45 + (lock.active ? lock.value * .18 : 0));
-      graphics
-        .circle(anchorX, anchorY, fieldRadius)
-        .fill({ color: token.palette.deep, alpha: .12 * alpha });
-      for (let index = 0; index < 4; index += 1) {
-        const [startX, startY] = starts[index]!;
-        const targetX = left + index * (unit + gap) + unit / 2;
-        const x = anchorX + startX * layout.cell * (1 - progress) + (targetX - anchorX) * progress;
-        const y = anchorY + startY * layout.cell * (1 - progress);
-        graphics
-          .roundRect(x - unit / 2, y - unit / 2, unit, unit, unit * .16)
-          .fill({
-            color: index === 1 || index === 2 ? token.palette.highlight : token.palette.primary,
-            alpha: .94 * alpha,
-          })
-          .stroke({ color: 0xf5fbf7, alpha: .8 * alpha, width: strokeWidth });
-      }
-      if (lock.active || confirm.active) {
-        const beat = lock.active ? lock.value : 1;
-        const bracket = unit * (.72 + beat * .5);
-        this.strokeSegments(graphics, [
-          [left - bracket, anchorY - unit, left - bracket, anchorY + unit],
-          [left - bracket, anchorY - unit, left - unit * .08, anchorY - unit],
-          [left + totalWidth + bracket, anchorY - unit, left + totalWidth + bracket, anchorY + unit],
-          [left + totalWidth + unit * .08, anchorY + unit, left + totalWidth + bracket, anchorY + unit],
-        ], token.palette.highlight, .82 * alpha, strokeWidth);
-      }
-      if (confirm.active) {
-        const ring = fieldRadius * (.64 + confirm.value * .72);
-        graphics
-          .circle(anchorX, anchorY, ring)
-          .stroke({ color: token.palette.highlight, alpha: .88 * alpha, width: strokeWidth * 1.25 });
-        this.strokeSegments(graphics, [
-          [anchorX - ring * 1.18, anchorY, anchorX - ring * .78, anchorY],
-          [anchorX + ring * .78, anchorY, anchorX + ring * 1.18, anchorY],
-          [anchorX, anchorY - ring * 1.18, anchorX, anchorY - ring * .78],
-          [anchorX, anchorY + ring * .78, anchorX, anchorY + ring * 1.18],
-        ], token.palette.primary, .74 * alpha, strokeWidth);
       }
       return;
     }
@@ -3759,10 +3637,6 @@ export class TetrisRenderer {
       if (item === 'collapse') particle.velocityV = Math.abs(particle.velocityV) * 1.26 + speed * .18;
       if (item === 'bomb') particle.velocityV -= speed * .44;
       if (item === 'multiplier') particle.velocityV -= speed * .36;
-      if (item === 'reshape') {
-        particle.velocityU = (index % 2 === 0 ? -1 : 1) * speed * (.42 + this.nextMutationRandom() * .28);
-        particle.velocityV *= .24;
-      }
       particle.elapsed = 0;
       particle.lifeMs = token.particles.lifeMs * (.72 + this.nextMutationRandom() * .38);
       particle.size = token.particles.size * (.72 + this.nextMutationRandom() * .62);
@@ -3794,7 +3668,9 @@ export class TetrisRenderer {
       if (particle.item === 'freeze') {
         this.drawMutationDiamond(graphics, x, y, size * .45, size, particle.color, .82 * alpha);
       } else if (particle.item === 'collapse') {
-        graphics.roundRect(x - size * .18, y - size, size * .36, size * 2.1, size * .16).fill({ color: particle.color, alpha: .7 * alpha });
+        graphics
+          .roundRect(x - size * .72, y - size * .11, size * 1.44, size * .22, size * .1)
+          .fill({ color: particle.color, alpha: .66 * alpha });
       } else if (particle.item === 'bomb') {
         this.drawMutationFragment(
           graphics,
@@ -3806,10 +3682,6 @@ export class TetrisRenderer {
           particle.color,
           .86 * alpha,
         );
-      } else if (particle.item === 'reshape') {
-        graphics
-          .roundRect(x - size * .58, y - size * .22, size * 1.16, size * .44, size * .14)
-          .fill({ color: particle.color, alpha: .78 * alpha });
       } else {
         this.drawMutationStar(graphics, x, y, size, size * .34, particle.color, .82 * alpha);
       }
@@ -3871,58 +3743,6 @@ export class TetrisRenderer {
     this.setWorldOffset(Math.sin(phase * 1.7) * amplitude, Math.cos(phase * 2.3) * amplitude * .55);
   }
 
-  private drawCollapseSettlementTrail(
-    graphics: Graphics,
-    trail: CollapseTrail,
-    progress: number,
-    layout: BoardLayout,
-  ): void {
-    const eased = this.options.reducedMotion ? 1 : easeOutCubic(progress);
-    const depthWeight = .82 + Math.min(1, trail.maxDrop / 6) * .18;
-    const alpha = this.options.reducedMotion ? .76 : .72 * (1 - progress * .68) * depthWeight;
-    if (alpha <= 0) return;
-    const material = this.mutationMaterial('collapse');
-    for (const column of trail.columns) {
-      let maxTo = 0;
-      for (const path of trail.paths) {
-        if (path.x !== column) continue;
-        maxTo = Math.max(maxTo, path.toY);
-      }
-      if (maxTo < VISIBLE_START_ROW) continue;
-      const visibleTo = Math.min(VISIBLE_START_ROW + VISIBLE_HEIGHT - 1, maxTo);
-      const centerX = layout.x + (column + .5) * layout.cell;
-      const supportY = layout.y + (visibleTo - VISIBLE_START_ROW + 1) * layout.cell;
-      const travel = this.options.reducedMotion ? 0 : (1 - eased) * layout.cell * .38;
-      for (let shard = 0; shard < 3; shard += 1) {
-        const center = centerX + (shard - 1) * layout.cell * .22;
-        const top = supportY - layout.cell * (.28 + shard * .08) - travel;
-        const width = layout.cell * (.12 + shard * .02);
-        const height = layout.cell * (.16 + (2 - shard) * .035);
-        graphics
-          .poly([
-            center - width, top,
-            center + width * .7, top + height * .18,
-            center + width * .2, top + height,
-            center - width * .55, top + height * .72,
-          ])
-          .fill({
-            color: shard === 1 ? material.innerEdge : material.edge,
-            alpha: alpha * (.74 - shard * .1),
-          });
-      }
-      const imprintAlpha = this.options.reducedMotion ? alpha : alpha * Math.max(0.25, eased);
-      graphics
-        .poly([
-          centerX - layout.cell * .38, supportY + layout.cell * .04,
-          centerX - layout.cell * .16, supportY - layout.cell * .025,
-          centerX + layout.cell * .4, supportY + layout.cell * .035,
-          centerX + layout.cell * .22, supportY + layout.cell * .13,
-          centerX - layout.cell * .3, supportY + layout.cell * .12,
-        ])
-        .fill({ color: material.fillStart, alpha: imprintAlpha * .58 });
-    }
-  }
-
   private enqueueClassicFeedback(
     kind: ClassicFeedbackKind,
     details: Partial<Pick<ClassicFeedbackCue, 'cells' | 'rows' | 'combo' | 'tier'>> = {},
@@ -3963,7 +3783,6 @@ export class TetrisRenderer {
     events: readonly GameEvent[],
     state?: GameState,
     previousBoard: GameState['board'] | null = null,
-    collapseWasActive = false,
   ): void {
     const classic = state?.mode === 'marathon';
     const clearsOnLock = events.some((event) => event.type === 'clear-started');
@@ -3995,10 +3814,8 @@ export class TetrisRenderer {
         this.mutationFlash = null;
         this.mutationArrival = null;
         this.activeMutationCarrierId = null;
-        this.collapseTrail = null;
         this.clearMutationVisualState();
         this.previousBoard = null;
-        this.collapseWasActive = false;
       } else if (event.type === 'puzzle-undone') {
         // Undo restores a pre-lock Core snapshot. Any lock, trail, line-impact, or
         // interpolation residue belongs to the discarded timeline and must not
@@ -4017,10 +3834,8 @@ export class TetrisRenderer {
         this.mutationFlash = null;
         this.mutationArrival = null;
         this.activeMutationCarrierId = null;
-        this.collapseTrail = null;
         this.clearMutationVisualState();
         this.previousBoard = null;
-        this.collapseWasActive = false;
       } else if (event.type === 'piece-locked') {
         this.lockPulse = {
           cells: this.landingSupportCells(event.cells, state?.board),
@@ -4029,9 +3844,6 @@ export class TetrisRenderer {
           piece: event.piece,
           strength: clearsOnLock ? 0.55 : 1,
         };
-        if (state?.mode === 'sprint' && collapseWasActive) {
-          this.queueCollapseSettlementTrail(previousBoard, event.cells);
-        }
       } else if (event.type === 'hard-dropped') {
         this.impact = this.options.reducedMotion ? 0.25 : 1;
         const lock = events.find((candidate) => candidate.type === 'piece-locked');
@@ -4102,46 +3914,6 @@ export class TetrisRenderer {
     }
   }
 
-  /**
-   * Compute a trail only for a real independently-settled lock. Carrier
-   * activation alone is not enough: the board must already have Collapse
-   * active and the incoming cells must actually move farther down a column.
-   */
-  private queueCollapseSettlementTrail(previousBoard: GameState['board'] | null, cells: readonly Cell[]): void {
-    if (!previousBoard || cells.length === 0) return;
-    this.collapseIncomingStamp = (this.collapseIncomingStamp + 1) >>> 0;
-    if (this.collapseIncomingStamp === 0) {
-      this.collapseIncomingStamps.fill(0);
-      this.collapseIncomingStamp = 1;
-    }
-    for (const cell of cells) {
-      if (cell.x < 0 || cell.x >= BOARD_WIDTH || cell.y < 0 || cell.y >= BOARD_HEIGHT) continue;
-      this.collapseIncomingStamps[cell.y * BOARD_WIDTH + cell.x] = this.collapseIncomingStamp;
-    }
-
-    const paths: Array<{ x: number; fromY: number; toY: number }> = [];
-    const columns: number[] = [];
-    let maxDrop = 0;
-    for (let x = 0; x < BOARD_WIDTH; x += 1) {
-      let destinationY = BOARD_HEIGHT - 1;
-      let columnMoved = false;
-      for (let y = BOARD_HEIGHT - 1; y >= 0; y -= 1) {
-        const incoming = this.collapseIncomingStamps[y * BOARD_WIDTH + x] === this.collapseIncomingStamp;
-        if (!incoming && !previousBoard[y]?.[x]) continue;
-        if (destinationY > y) {
-          paths.push({ x, fromY: y, toY: destinationY });
-          columnMoved = true;
-          maxDrop = Math.max(maxDrop, destinationY - y);
-        }
-        destinationY -= 1;
-      }
-      if (columnMoved) columns.push(x);
-    }
-    this.collapseTrail = paths.length > 0
-      ? { paths, columns, maxDrop, elapsed: 0, duration: 260 }
-      : null;
-  }
-
   private advanceEffects(deltaMs: number): void {
     this.mutationClockMs += Math.max(0, deltaMs);
     this.advanceMutationFields(deltaMs);
@@ -4178,10 +3950,6 @@ export class TetrisRenderer {
     if (this.mutationArrival) {
       this.mutationArrival.elapsed += deltaMs;
       if (this.mutationArrival.elapsed >= this.mutationArrival.duration) this.mutationArrival = null;
-    }
-    if (this.collapseTrail) {
-      this.collapseTrail.elapsed += deltaMs;
-      if (this.collapseTrail.elapsed >= this.collapseTrail.duration) this.collapseTrail = null;
     }
     for (let index = this.survivalStoneCues.length - 1; index >= 0; index -= 1) {
       const cue = this.survivalStoneCues[index]!;

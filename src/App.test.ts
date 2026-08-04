@@ -2182,7 +2182,7 @@ describe('T6 frontend mode binding', () => {
     }));
     const idlePanel = idle.container.querySelector<HTMLElement>('[data-testid="mutation-status"]');
     expect(idlePanel?.dataset.activeCount).toBe('0');
-    expect(idle.container.querySelector('[data-testid="mutation-status-idle"]')?.textContent).toBe('');
+    expect(idle.container.querySelector('[data-testid="mutation-status-idle"]')).toBeNull();
     expect(idle.container.textContent).not.toContain('暂无持续状态');
     idle.unmount();
 

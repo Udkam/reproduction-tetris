@@ -1682,12 +1682,8 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     >
       <header className="mutation-status__header">
         <strong>{copy.labels.mutationStatus}</strong>
-        <span aria-hidden="true">///</span>
       </header>
       <div className="mutation-status__ledger">
-        {activeEffects.length === 0 && (
-          <div className="mutation-status__idle" data-testid="mutation-status-idle" aria-hidden="true" />
-        )}
         {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
           const seconds = Math.ceil(effect.ticks / TICKS_PER_SECOND);

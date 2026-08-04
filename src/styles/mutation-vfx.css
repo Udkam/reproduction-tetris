@@ -1,257 +1,182 @@
-/* Persistent Mutation instrument: quiet cool-violet hardware distinct from data and Next. */
-.game-side-panel--sprint .mutation-status.mutation-status--vfx {
-  display: grid !important;
-  gap: 8px !important;
-  padding: 11px !important;
+/* Mutation instrument: compact information, never a stack of nested cards. */
+.mutation-status.mutation-status--vfx {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  min-height: 62px;
+  padding: 0;
   color: var(--ink);
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, var(--raised) 72%, #eee8f7),
-      color-mix(in srgb, var(--surface) 80%, #e4ebf5)
-    ) !important;
-  border: 1px solid color-mix(in srgb, var(--line) 68%, #9b8ab7) !important;
-  border-radius: 10px !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .52),
-    0 5px 13px rgba(81, 66, 111, .09) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(125%);
-  backdrop-filter: blur(12px) saturate(125%);
-  transform-origin: center top;
-  animation: mutation-status-arrive 220ms cubic-bezier(.16, 1, .3, 1) both;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .mutation-status--vfx .mutation-status__header {
   display: flex;
   align-items: center;
-  min-height: 17px;
-  color: var(--ink);
+  justify-content: center;
+  min-height: 18px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .mutation-status--vfx .mutation-status__header > strong {
-  color: inherit !important;
+  width: 100%;
+  color: inherit;
   font-family: var(--font-ui);
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  letter-spacing: .04em !important;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .035em;
   line-height: 1.2;
+  text-align: center;
 }
 
-/* The source marker preserves structural compatibility; it is not player-facing copy. */
-.mutation-status--vfx .mutation-status__header > span {
-  display: none !important;
-}
-
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
-  display: grid !important;
+.mutation-status--vfx .mutation-status__ledger {
+  display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 6px !important;
-  min-height: 46px;
+  gap: 8px;
+  min-width: 0;
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__idle {
-  min-height: 46px;
-}
-
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
+.mutation-status--vfx .mutation-status__effect {
   --mutation-primary: #8799a6;
   --mutation-highlight: #dce8ed;
   --mutation-deep: #50636d;
-  position: relative;
-  display: grid !important;
-  grid-template-columns: 22px minmax(0, 1fr) auto;
-  grid-template-rows: minmax(22px, auto) 3px;
-  column-gap: 8px;
-  row-gap: 5px;
-  min-height: 42px;
-  padding: 7px 8px 7px 7px !important;
-  color: rgba(217, 247, 255, .64);
-  background: rgba(255, 255, 255, .045) !important;
-  border: 1px solid color-mix(in srgb, var(--mutation-primary) 34%, rgba(217, 247, 255, .16)) !important;
-  border-radius: 7px !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045) !important;
-  animation: none !important;
+  display: grid;
+  grid-template-columns: 11px minmax(0, 1fr) auto;
+  grid-template-rows: auto 2px;
+  gap: 5px 8px;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  animation: mutation-status-row-arrive 180ms cubic-bezier(.2, .8, .3, 1) both;
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-mutation-state="freeze"] { --mutation-primary: #8debff; --mutation-highlight: #d9f7ff; --mutation-deep: #287b99; }
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-mutation-state="collapse"] { --mutation-primary: #9b6cff; --mutation-highlight: #d8b4fe; --mutation-deep: #35145f; }
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-mutation-state="multiplier"] { --mutation-primary: #ffd166; --mutation-highlight: #fff2b2; --mutation-deep: #8d5b10; }
-
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-active="true"] {
-  color: #f7fcff;
-  background: color-mix(in srgb, var(--mutation-deep) 88%, #10243a) !important;
-  border-color: color-mix(in srgb, var(--mutation-primary) 74%, #d9f7ff) !important;
-  box-shadow:
-    inset 3px 0 0 var(--mutation-primary),
-    inset 0 1px 0 color-mix(in srgb, var(--mutation-highlight) 20%, transparent),
-    0 3px 10px color-mix(in srgb, var(--mutation-primary) 11%, transparent) !important;
+.mutation-status--vfx .mutation-status__effect[data-mutation-state="freeze"] {
+  --mutation-primary: #8debff;
+  --mutation-highlight: #d9f7ff;
+  --mutation-deep: #287b99;
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__signal {
-  display: block !important;
-  grid-column: 1;
-  grid-row: 1;
+.mutation-status--vfx .mutation-status__effect[data-mutation-state="collapse"] {
+  --mutation-primary: #9b6cff;
+  --mutation-highlight: #d8b4fe;
+  --mutation-deep: #35145f;
+}
+
+.mutation-status--vfx .mutation-status__effect[data-mutation-state="multiplier"] {
+  --mutation-primary: #ffd166;
+  --mutation-highlight: #fff2b2;
+  --mutation-deep: #8d5b10;
+}
+
+.mutation-status--vfx .mutation-status__signal {
+  display: block;
   align-self: center;
-  width: 16px;
-  height: 16px;
-  margin: 0 !important;
-  background: var(--mutation-primary) !important;
-  border: 1px solid color-mix(in srgb, var(--mutation-deep) 76%, #07111f) !important;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--mutation-highlight) 72%, transparent) !important;
+  width: 9px;
+  height: 9px;
+  margin: 0;
+  background: var(--mutation-primary);
+  border: 1px solid color-mix(in srgb, var(--mutation-deep) 72%, var(--board));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--mutation-highlight) 72%, transparent);
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-mutation-state="freeze"] .mutation-status__signal {
-  border-radius: 3px;
+.mutation-status--vfx .mutation-status__effect[data-mutation-state="freeze"] .mutation-status__signal {
+  border-radius: 2px;
   transform: rotate(45deg) scale(.78);
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-mutation-state="collapse"] .mutation-status__signal {
-  border-radius: 4px 4px 7px 7px;
-  box-shadow: inset 0 -5px 0 color-mix(in srgb, var(--mutation-deep) 45%, transparent) !important;
+.mutation-status--vfx .mutation-status__effect[data-mutation-state="collapse"] .mutation-status__signal {
+  border-radius: 3px 3px 6px 6px;
+  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--mutation-deep) 46%, transparent);
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect[data-mutation-state="multiplier"] .mutation-status__signal {
-  border: 0 !important;
-  border-radius: 0;
+.mutation-status--vfx .mutation-status__effect[data-mutation-state="multiplier"] .mutation-status__signal {
+  border: 0;
   clip-path: polygon(50% 0, 66% 34%, 100% 50%, 66% 66%, 50% 100%, 34% 66%, 0 50%, 34% 34%);
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy {
-  display: grid;
-  grid-column: 2;
-  grid-row: 1;
+.mutation-status--vfx .mutation-status__effect-copy {
+  display: block;
   min-width: 0;
-  min-height: 0 !important;
-  padding: 0 !important;
-  color: inherit !important;
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  align-self: center;
+  color: inherit;
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > b {
-  min-width: 0;
-  color: inherit !important;
+.mutation-status--vfx .mutation-status__effect-copy > b {
+  display: block;
   overflow: hidden;
+  color: var(--ink);
   font-family: var(--font-ui);
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  letter-spacing: .04em;
-  line-height: 1.2;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .025em;
+  line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* aria-label keeps the full explanation available; the card itself stays concise. */
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > small {
-  display: none !important;
-}
-
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__effect > em {
-  grid-column: 3;
-  grid-row: 1;
-  align-self: center;
-  color: var(--mutation-primary) !important;
-  font-family: var(--font-mono);
-  font-size: 18px !important;
-  font-style: normal;
-  font-weight: 800 !important;
-  letter-spacing: -.04em;
+.mutation-status--vfx .mutation-status__effect-copy > small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .035em;
   line-height: 1;
   white-space: nowrap;
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__meter {
-  display: block !important;
-  grid-column: 1 / -1;
-  grid-row: 2;
-  width: 100% !important;
-  height: 3px !important;
-  min-height: 0 !important;
-  padding: 0 !important;
+.mutation-status--vfx .mutation-status__effect > em {
+  align-self: center;
+  color: var(--mutation-primary);
+  font-family: var(--font-data);
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mutation-status--vfx .mutation-status__meter {
+  grid-column: 2 / -1;
+  width: 100%;
+  height: 2px;
   overflow: hidden;
-  background: rgba(255, 255, 255, .1) !important;
-  border: 0 !important;
-  border-radius: 999px !important;
-  box-shadow: none !important;
+  background: color-mix(in srgb, var(--mutation-primary) 20%, transparent);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: none;
 }
 
-.game-side-panel--sprint .mutation-status--vfx .mutation-status__meter > i {
-  display: block !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  background: var(--mutation-primary) !important;
-  border: 0 !important;
-  border-radius: inherit !important;
-  box-shadow: none !important;
+.mutation-status--vfx .mutation-status__meter > i {
+  display: block;
+  height: 100%;
+  background: var(--mutation-primary);
+  border: 0;
+  border-radius: inherit;
+  box-shadow: none;
 }
 
-@keyframes mutation-status-arrive {
-  from { opacity: 0; transform: scale(.8); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes mutation-status-row-arrive {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 599px) {
-  .game-side-panel--sprint .mutation-status.mutation-status--vfx { padding: 9px !important; }
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect { min-height: 40px; padding: 6px 7px !important; }
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect > em { font-size: 16px !important; }
-
-  .game-side-panel--sprint .mutation-status.mutation-status--vfx {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    gap: 6px !important;
-    padding: 8px !important;
-  }
-
-  .mutation-status--vfx .mutation-status__header {
-    min-height: 14px;
-  }
-
-  .mutation-status--vfx .mutation-status__header > strong {
-    font-size: 12px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__ledger {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: none;
-    grid-auto-rows: minmax(0, 1fr);
-    gap: 4px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect {
-    grid-template-columns: 12px minmax(0, 1fr) auto;
-    grid-template-rows: minmax(0, 1fr) 2px;
-    column-gap: 4px;
-    row-gap: 3px;
-    min-height: 0;
-    height: 44px;
-    padding: 5px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__signal {
-    width: 12px;
-    height: 12px;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect-copy > b {
-    font-size: 10px !important;
-    letter-spacing: .02em;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__effect > em {
-    font-size: 14px !important;
-  }
-
-  .game-side-panel--sprint .mutation-status--vfx .mutation-status__meter {
-    height: 2px !important;
-  }
+  .mutation-status--vfx .mutation-status__header > strong { font-size: 12px; }
+  .mutation-status--vfx .mutation-status__effect { gap: 4px 6px; }
+  .mutation-status--vfx .mutation-status__effect-copy > b { font-size: 11px; }
+  .mutation-status--vfx .mutation-status__effect-copy > small { font-size: 9px; }
+  .mutation-status--vfx .mutation-status__effect > em { font-size: 13px; }
 }
 
-.app[data-reduced-motion="true"] .game-side-panel--sprint .mutation-status.mutation-status--vfx { animation: none; }
+.app[data-reduced-motion="true"] .mutation-status--vfx .mutation-status__effect {
+  animation: none;
+}

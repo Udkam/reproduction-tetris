@@ -229,7 +229,7 @@ describe('presentation interpolation', () => {
     expect(activeCellsInsideVisibleRows(visible, 2, 20)).toEqual(visible);
   });
 
-  it('reveals spawn cells top-to-bottom then left-to-right and delays the ghost', () => {
+  it('reveals spawn rows top-to-bottom with one shared progress per row and delays the ghost', () => {
     const cells: Cell[] = [
       { x: 5, y: 3 },
       { x: 4, y: 2 },
@@ -240,14 +240,14 @@ describe('presentation interpolation', () => {
     expect(activeSpawnCellProgresses(cells, 0)).toEqual([0, 0, 0, 0]);
     const firstBeat = activeSpawnCellProgresses(cells, 20);
     expect(firstBeat[1]).toBeGreaterThan(0);
-    expect(firstBeat[3]).toBe(0);
+    expect(firstBeat[3]).toBe(firstBeat[1]);
     expect(firstBeat[2]).toBe(0);
     expect(firstBeat[0]).toBe(0);
 
     const middle = activeSpawnCellProgresses(cells, 100);
-    expect(middle[1]).toBeGreaterThan(middle[3]!);
-    expect(middle[3]).toBeGreaterThan(middle[2]!);
-    expect(middle[2]).toBeGreaterThan(middle[0]!);
+    expect(middle[1]).toBe(middle[3]);
+    expect(middle[1]).toBeGreaterThan(middle[2]!);
+    expect(middle[2]).toBe(middle[0]);
     expect(activeSpawnGhostProgress(123)).toBe(0);
     expect(activeSpawnGhostProgress(164)).toBeGreaterThan(0);
     expect(activeSpawnGhostProgress(164)).toBeLessThan(1);

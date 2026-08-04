@@ -66,7 +66,7 @@ describe('T5 bright mineral matte material', () => {
     expect(contrastRatio(SURVIVAL_STONE_MATERIAL.fillEnd, COLORS.well)).toBeGreaterThanOrEqual(3);
   });
 
-  it('derives five high-contrast attached-signal materials from the VFX palette', () => {
+  it('derives four high-contrast attached-signal materials from the VFX palette', () => {
     expect(MUTATION_MATERIALS).toEqual({
       freeze: {
         fillStart: MUTATION_VFX_TOKENS.freeze.palette.primary,
@@ -92,15 +92,9 @@ describe('T5 bright mineral matte material', () => {
         edge: MUTATION_VFX_TOKENS.multiplier.palette.deep,
         innerEdge: MUTATION_VFX_TOKENS.multiplier.palette.highlight,
       },
-      reshape: {
-        fillStart: MUTATION_VFX_TOKENS.reshape.palette.primary,
-        fillEnd: MUTATION_VFX_TOKENS.reshape.palette.facet,
-        edge: MUTATION_VFX_TOKENS.reshape.palette.deep,
-        innerEdge: MUTATION_VFX_TOKENS.reshape.palette.highlight,
-      },
     });
     const starts = Object.values(MUTATION_MATERIALS).map((material) => material.fillStart);
-    expect(new Set(starts).size).toBe(5);
+    expect(new Set(starts).size).toBe(4);
     for (const material of Object.values(MUTATION_MATERIALS)) {
       expect(contrastRatio(material.fillStart, COLORS.well)).toBeGreaterThanOrEqual(3);
       // The lower gradient endpoint is intentionally deep to keep the carrier

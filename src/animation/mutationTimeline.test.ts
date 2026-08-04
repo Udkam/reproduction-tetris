@@ -46,17 +46,20 @@ describe('MutationTimeline', () => {
     expect(timeline.complete).toBe(true);
   });
 
-  it('gives Reshape three explicit gather, lock, and confirmation beats', () => {
-    const timeline = createMutationActivationTimeline('reshape');
-    expect(timeline.duration).toBe(420);
-    expect(timeline.sample('gather')).toMatchObject({ active: true, progress: 0 });
-    expect(timeline.sample('score-pop')).toMatchObject({ active: false, progress: 0 });
-    timeline.advance(140);
-    expect(timeline.sample('gather')).toMatchObject({ complete: true, progress: 1 });
-    expect(timeline.sample('lock')).toMatchObject({ active: true, progress: 0 });
-    timeline.advance(140);
-    expect(timeline.sample('confirm')).toMatchObject({ active: true, progress: 0 });
-    timeline.advance(140);
-    expect(timeline.complete).toBe(true);
+  it('gives Ice and Supergravity short local bind-and-release beats', () => {
+    const freeze = createMutationActivationTimeline('freeze');
+    expect(freeze.duration).toBe(320);
+    expect(freeze.sample('frost-bind')).toMatchObject({ active: true, progress: 0 });
+    expect(freeze.sample('shard-release')).toMatchObject({ active: false, progress: 0 });
+    freeze.advance(120);
+    expect(freeze.sample('shard-release').active).toBe(true);
+
+    const collapse = createMutationActivationTimeline('collapse');
+    expect(collapse.duration).toBe(220);
+    expect(collapse.sample('pressure-bind')).toMatchObject({ active: true, progress: 0 });
+    collapse.advance(120);
+    expect(collapse.sample('column-release')).toMatchObject({ active: true, progress: 0 });
+    collapse.advance(100);
+    expect(collapse.complete).toBe(true);
   });
 });

@@ -19,7 +19,6 @@ import {
   type PieceType,
   VISIBLE_START_ROW,
 } from '../core';
-import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
 import { ACTIVE_SPAWN_REVEAL_DURATION_MS, ordinaryLineClearProfile } from './presentation';
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
@@ -107,6 +106,8 @@ function hasBroadHorizontalGeometry(operations: readonly DrawOperation[], boardW
     return false;
   });
 }
+
+const MUTATION_ITEMS = ['freeze', 'collapse', 'bomb', 'multiplier'] as const satisfies readonly MutationItem[];
 
 type RendererInternals = {
   host: HTMLElement | null;
@@ -221,13 +222,6 @@ type RendererInternals = {
   mutationClockMs: number;
   mutationArrival: unknown;
   activeMutationCarrierId: number | null;
-  collapseTrail: {
-    paths: readonly { x: number; fromY: number; toY: number }[];
-    columns: readonly number[];
-    maxDrop: number;
-    elapsed: number;
-    duration: number;
-  } | null;
   consumeEvents: (
     events: readonly GameEvent[],
     state?: GameState,
@@ -371,13 +365,15 @@ type RendererInternals = {
     offsetX?: number,
     offsetY?: number,
   ) => void;
-  drawCollapseSettlementTrail: (
+  drawMutationLineClearAccent: (
     graphics: unknown,
-    trail: NonNullable<RendererInternals['collapseTrail']>,
+    item: 'freeze' | 'collapse',
+    x: number,
+    y: number,
+    size: number,
     progress: number,
-    layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+    cellSize: number,
   ) => void;
-  queueCollapseSettlementTrail: (previousBoard: GameState['board'], cells: readonly Cell[]) => void;
   syncMutationFilters: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   resolvePreviewMutationItem: (state: GameState) => MutationItem | null;
   previewMutationRandomizerRef: GameState['mutationRandomizer'] | null;
@@ -851,9 +847,9 @@ describe('Puzzle undo presentation reset', () => {
     internals.advanceEffects(52);
     internals.drawPieces(playing, layout);
     internals.updateSnapshot(playing, layout, app);
-    expect(renderer.getSnapshot().activeSpawnReveal?.cellProgress.filter((progress) => progress > 0)).toHaveLength(2);
+    expect(renderer.getSnapshot().activeSpawnReveal?.cellProgress.filter((progress) => progress > 0)).toHaveLength(4);
     expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBe(0);
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(2);
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(4);
 
     drawGroups.mockClear();
     internals.advanceEffects(100);
@@ -1082,7 +1078,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toBeNull();
   });
 
-  it('exposes immutable renderer-owned FIFO, impact, particle, and Collapse trail evidence', () => {
+  it('exposes immutable renderer-owned FIFO, impact, and particle evidence without a landing trail', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const previousBoard = createBoard();
@@ -1143,15 +1139,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot().mutationActivation?.triggerColumns).toEqual([1, 7]);
     expect(renderer.getSnapshot().mutationActivationQueueItems).toEqual(['freeze']);
 
-    const withGap = createBoard();
-    withGap[BOARD_HEIGHT - 1]![0] = 'T';
-    internals.queueCollapseSettlementTrail(withGap, [{ x: 0, y: BOARD_HEIGHT - 4 }]);
-    expect(renderer.getSnapshot().mutationCollapseTrail).toEqual({
-      columns: [0],
-      maxDrop: 2,
-      elapsedMs: 0,
-      durationMs: 260,
-    });
+    expect(renderer.getSnapshot().mutationCollapseTrail).toBeNull();
 
     internals.advanceEffects(500);
     expect(renderer.getSnapshot()).toMatchObject({
@@ -1163,11 +1151,11 @@ describe('Puzzle undo presentation reset', () => {
     });
   });
 
-  it('gives all five reduced-motion activations distinct static silhouettes and preserves 2× / 4×', () => {
+  it('gives all four reduced-motion activations distinct static silhouettes and preserves 2× / 4×', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const signatures = new Map<MutationItem, string>();
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+    for (const item of MUTATION_ITEMS) {
       const recorder = createGraphicsRecorder();
       internals.drawReducedMutationEndpoint(
         recorder.graphics,
@@ -1180,7 +1168,7 @@ describe('Puzzle undo presentation reset', () => {
       signatures.set(item, geometrySignature(recorder.operations));
     }
 
-    expect(new Set(signatures.values()).size).toBe(5);
+    expect(new Set(signatures.values()).size).toBe(4);
     const two = createGraphicsRecorder();
     const four = createGraphicsRecorder();
     internals.drawReducedMutationEndpoint(two.graphics, 'multiplier', 100, 120, 20, 2);
@@ -1197,7 +1185,7 @@ describe('Puzzle undo presentation reset', () => {
       drawLayer: (graphics: unknown, cells: readonly Cell[], item: MutationItem) => void,
     ): number => {
       const signatures = new Set<string>();
-      for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+      for (const item of MUTATION_ITEMS) {
         const recorder = createGraphicsRecorder();
         drawLayer(recorder.graphics, cells, item);
         signatures.add(geometrySignature(recorder.operations));
@@ -1207,16 +1195,16 @@ describe('Puzzle undo presentation reset', () => {
 
     expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierSurface(graphics, layerCells, item, layout);
-    })).toBe(5);
+    })).toBe(4);
     const originalRim = internals.drawMutationCarrierRim;
     internals.drawMutationCarrierRim = () => undefined;
     expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierCore(graphics, layerCells, item, layout);
-    })).toBe(5);
+    })).toBe(4);
     internals.drawMutationCarrierRim = originalRim;
     expect(geometryCount((graphics, layerCells, item) => {
       internals.drawMutationCarrierRim(graphics, layerCells, item, layout);
-    })).toBe(5);
+    })).toBe(4);
   });
 
   it('marks all four carrier cells without repeating plates or implying one trigger cell', () => {
@@ -1224,7 +1212,7 @@ describe('Puzzle undo presentation reset', () => {
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
     const cells = [{ x: 2, y: 4 }, { x: 3, y: 4 }, { x: 2, y: 5 }, { x: 3, y: 5 }];
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+    for (const item of MUTATION_ITEMS) {
       const single = createGraphicsRecorder();
       internals.drawMutationCarrierSurface(single.graphics, cells.slice(0, 1), item, layout);
       const complete = createGraphicsRecorder();
@@ -1254,7 +1242,7 @@ describe('Puzzle undo presentation reset', () => {
       originalCore(graphics, cells, item, coreLayout, offsetX, offsetY, detailScale);
     };
 
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+    for (const item of MUTATION_ITEMS) {
       const recorder = createGraphicsRecorder();
       const locked = {
         mode: 'sprint',
@@ -1270,7 +1258,7 @@ describe('Puzzle undo presentation reset', () => {
       internals.drawPreviewPiece(recorder.graphics, 'T', 100, 100, 20, item);
     }
 
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+    for (const item of MUTATION_ITEMS) {
       expect(calls.filter((call) => call.item === item && call.layer === 'surface')).toHaveLength(3);
       expect(calls.filter((call) => call.item === item && call.layer === 'core')).toHaveLength(3);
       expect(calls.filter((call) => call.item === item && call.layer === 'rim')).toHaveLength(3);
@@ -1306,6 +1294,37 @@ describe('Puzzle undo presentation reset', () => {
     expect(detailScales).toEqual([0.62]);
   });
 
+  it('binds Ice activation to carrier cells before releasing faceted shards upward', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
+    internals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'freeze',
+      durationTicks: 600,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells: [
+        { x: 3, y: VISIBLE_START_ROW + 4 },
+        { x: 4, y: VISIBLE_START_ROW + 4 },
+      ],
+    }]);
+
+    const bind = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(bind.graphics, internals.mutationFlash!, layout);
+    expect(bind.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(2);
+    expect(bind.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(4);
+    expect(bind.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
+    expect(hasBroadHorizontalGeometry(bind.operations, layout.width)).toBe(false);
+
+    internals.advanceEffects(160);
+    const release = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(release.graphics, internals.mutationFlash!, layout);
+    expect(release.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(2);
+    expect(release.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(12);
+    expect(hasBroadHorizontalGeometry(release.operations, layout.width)).toBe(false);
+  });
+
   it('binds Supergravity activation pressure traces only to the trigger columns', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
@@ -1329,16 +1348,33 @@ describe('Puzzle undo presentation reset', () => {
       internals.mutationFlash!,
       layout,
     );
-    const traces = recorder.operations.filter((operation) => operation.kind === 'poly');
-    expect(traces).toHaveLength(6);
+    const traces = recorder.operations.filter((operation) => operation.kind === 'segment');
+    expect(traces).toHaveLength(8);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
     expect(traces.every((operation) => {
-      const xs = operation.values.filter((_value, index) => index % 2 === 0);
-      const center = xs.reduce((sum, value) => sum + value, 0) / xs.length;
+      const center = (operation.values[0]! + operation.values[2]!) / 2;
       return [30, 150].some((expected) => Math.abs(expected - center) < layout.cell * .15);
     })).toBe(true);
+  });
+
+  it('keeps Ice and Supergravity line-clear accents local to the consumed carrier cell', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+
+    const freeze = createGraphicsRecorder();
+    internals.drawMutationLineClearAccent(freeze.graphics, 'freeze', 40, 80, 14, .5, 20);
+    expect(freeze.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(1);
+    expect(freeze.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(2);
+    expect(hasBroadHorizontalGeometry(freeze.operations, 200)).toBe(false);
+
+    const collapse = createGraphicsRecorder();
+    internals.drawMutationLineClearAccent(collapse.graphics, 'collapse', 40, 80, 14, .5, 20);
+    expect(collapse.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(3);
+    expect(collapse.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(collapse.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
+    expect(hasBroadHorizontalGeometry(collapse.operations, 200)).toBe(false);
   });
 
   it('attaches a clipped Supergravity trail to the falling piece without a board-wide field', () => {
@@ -1363,7 +1399,7 @@ describe('Puzzle undo presentation reset', () => {
     const recorder = createGraphicsRecorder();
     internals.drawSupergravityPieceTrail(recorder.graphics, cells, layout);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(8);
-    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(12);
+    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
     const localValues = recorder.operations
       .filter((operation) => operation.kind === 'roundRect' || operation.kind === 'segment')
@@ -1390,13 +1426,12 @@ describe('Puzzle undo presentation reset', () => {
     reducedInternals.mutationClockMs = 437;
     const reducedLater = createGraphicsRecorder();
     reducedInternals.drawSupergravityPieceTrail(reducedLater.graphics, cells, layout);
-    expect(reducedFirst.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(4);
-    expect(reducedFirst.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
-    expect(reducedLater.operations).toEqual(reducedFirst.operations);
+    expect(reducedFirst.operations).toEqual([]);
+    expect(reducedLater.operations).toEqual([]);
   });
 
   it('never redraws a consumed carrier rim during an item activation', () => {
-    for (const item of ['freeze', 'collapse', 'bomb', 'multiplier', 'reshape'] as const) {
+    for (const item of MUTATION_ITEMS) {
       const renderer = new TetrisRendererClass();
       const internals = renderer as unknown as RendererInternals;
       let carrierRimCalls = 0;
@@ -1470,36 +1505,6 @@ describe('Puzzle undo presentation reset', () => {
       multiplierFactor: 4,
       duration: 320,
     });
-  });
-
-  it('renders Reshape as an unmistakable gather, lock, and confirmation sequence', () => {
-    const renderer = new TetrisRendererClass();
-    const internals = renderer as unknown as RendererInternals;
-    const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
-    internals.consumeEvents([{
-      type: 'mutation-activated',
-      item: 'reshape',
-      durationTicks: 0,
-      score: 0,
-      rowsRemoved: 0,
-      triggerCells: [{ x: 4, y: VISIBLE_START_ROW + 7 }],
-    }]);
-
-    expect(internals.mutationFlash).toMatchObject({ item: 'reshape' });
-    expect(internals.mutationFlash).toMatchObject({ duration: 420 });
-    const gather = createGraphicsRecorder();
-    internals.drawMutationActivationEffect(gather.graphics, internals.mutationFlash!, layout);
-    expect(gather.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(4);
-    expect(gather.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(1);
-    internals.advanceEffects(140);
-    const lock = createGraphicsRecorder();
-    internals.drawMutationActivationEffect(lock.graphics, internals.mutationFlash!, layout);
-    expect(lock.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(4);
-    internals.advanceEffects(140);
-    const confirm = createGraphicsRecorder();
-    internals.drawMutationActivationEffect(confirm.graphics, internals.mutationFlash!, layout);
-    expect(confirm.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(2);
-    expect(confirm.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThanOrEqual(8);
   });
 
   it('uses independent upper-field score glints without discs, stems, or a fixed badge', () => {
@@ -1649,7 +1654,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
   });
 
-  it('keeps every timed mutation state visibly present while the timer is active', () => {
+  it('keeps Ice and Multiplier visible while reduced motion omits Supergravity trails', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const fills: Array<{ color?: number }> = [];
@@ -1682,39 +1687,16 @@ describe('Puzzle undo presentation reset', () => {
 
     fills.length = 0;
     strokes.length = 0;
-    internals.drawSupergravityPieceTrail(graphics, [{ x: 4, y: 6 }], layout);
-    expect(fills.some((entry) => entry.color === MUTATION_VFX_TOKENS.collapse.palette.primary)).toBe(true);
+    const reducedTrail = createGraphicsRecorder();
+    internals.drawSupergravityPieceTrail(reducedTrail.graphics, [{ x: 4, y: 6 }], layout);
+    expect(reducedTrail.operations).toEqual([]);
 
     fills.length = 0;
     internals.drawEffects({ ...base, mutationMultiplierTicks: 1 }, layout);
     expect(fills.some((entry) => entry.color === MUTATION_MATERIALS.multiplier.fillStart)).toBe(true);
   });
 
-  it('shows collapse trails only when an independently settling lock actually moves', () => {
-    const renderer = new TetrisRendererClass();
-    const internals = renderer as unknown as RendererInternals;
-    const withGap = createBoard();
-    withGap[BOARD_HEIGHT - 1]![0] = 'T';
-
-    internals.queueCollapseSettlementTrail(withGap, [{ x: 0, y: BOARD_HEIGHT - 4 }]);
-    expect(internals.collapseTrail).toMatchObject({
-      duration: 260,
-      columns: [0],
-      maxDrop: 2,
-      paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
-    });
-    internals.advanceEffects(259);
-    expect(internals.collapseTrail).not.toBeNull();
-    internals.advanceEffects(1);
-    expect(internals.collapseTrail).toBeNull();
-
-    const alreadySettled = createBoard();
-    alreadySettled[BOARD_HEIGHT - 1]![0] = 'T';
-    internals.queueCollapseSettlementTrail(alreadySettled, [{ x: 0, y: BOARD_HEIGHT - 2 }]);
-    expect(internals.collapseTrail).toBeNull();
-  });
-
-  it('keeps the Supergravity settlement trail after its timed field expires in flight', () => {
+  it('uses the generic lock pulse and leaves no Supergravity landing residue', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const previousBoard = createBoard();
@@ -1731,97 +1713,8 @@ describe('Puzzle undo presentation reset', () => {
       cells: [{ x: 0, y: BOARD_HEIGHT - 4 }],
     }], finishedTimerState, previousBoard, true);
 
-    expect(internals.collapseTrail).toMatchObject({
-      columns: [0],
-      maxDrop: 2,
-      paths: [{ x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 2 }],
-    });
-  });
-
-  it('tracks every just-locked cell through a compact column settlement without a per-lock sort', () => {
-    const renderer = new TetrisRendererClass();
-    const internals = renderer as unknown as RendererInternals;
-    const board = createBoard();
-    board[BOARD_HEIGHT - 1]![0] = 'T';
-    board[BOARD_HEIGHT - 3]![0] = 'S';
-
-    internals.queueCollapseSettlementTrail(board, [
-      { x: 0, y: BOARD_HEIGHT - 5 },
-      { x: 0, y: BOARD_HEIGHT - 4 },
-    ]);
-
-    expect(internals.collapseTrail).toMatchObject({
-      duration: 260,
-      columns: [0],
-      maxDrop: 1,
-      paths: [
-        { x: 0, fromY: BOARD_HEIGHT - 3, toY: BOARD_HEIGHT - 2 },
-        { x: 0, fromY: BOARD_HEIGHT - 4, toY: BOARD_HEIGHT - 3 },
-        { x: 0, fromY: BOARD_HEIGHT - 5, toY: BOARD_HEIGHT - 4 },
-      ],
-    });
-  });
-
-  it('tracks existing and incoming movement in only the columns that actually settle', () => {
-    const renderer = new TetrisRendererClass();
-    const internals = renderer as unknown as RendererInternals;
-    const board = createBoard();
-    board[BOARD_HEIGHT - 1]![1] = 'T';
-    board[BOARD_HEIGHT - 5]![1] = 'S';
-    board[BOARD_HEIGHT - 1]![3] = 'J';
-    board[BOARD_HEIGHT - 1]![7] = 'L';
-    internals.queueCollapseSettlementTrail(board, [
-      { x: 1, y: BOARD_HEIGHT - 6 },
-      { x: 3, y: BOARD_HEIGHT - 2 },
-      { x: 7, y: BOARD_HEIGHT - 3 },
-    ]);
-
-    expect(internals.collapseTrail).toMatchObject({
-      columns: [1, 7],
-      maxDrop: 3,
-    });
-    expect(internals.collapseTrail?.paths).toContainEqual({
-      x: 1,
-      fromY: BOARD_HEIGHT - 5,
-      toY: BOARD_HEIGHT - 2,
-    });
-    expect(internals.collapseTrail?.paths.some((path) => path.x === 3)).toBe(false);
-
-    const recorder = createGraphicsRecorder();
-    internals.drawCollapseSettlementTrail(
-      recorder.graphics,
-      internals.collapseTrail!,
-      .82,
-      { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
-    );
-    const pressureMarks = recorder.operations.filter((operation) => operation.kind === 'poly');
-    expect(pressureMarks).toHaveLength(8);
-    expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
-    expect(hasBroadHorizontalGeometry(recorder.operations, 200)).toBe(false);
-    expect(pressureMarks.every((operation) => {
-      const xs = operation.values.filter((_value, index) => index % 2 === 0);
-      const center = xs.reduce((sum, value) => sum + value, 0) / xs.length;
-      return [30, 150].some((expected) => Math.abs(expected - center) < 5);
-    })).toBe(true);
-  });
-
-  it('retains a Collapse settlement cue when the same lock also resolves a line', () => {
-    const renderer = new TetrisRendererClass();
-    const internals = renderer as unknown as RendererInternals;
-    const board = createBoard();
-    board[BOARD_HEIGHT - 1]![0] = 'T';
-    internals.consumeEvents(
-      [
-        { type: 'piece-locked', piece: 'I', cells: [{ x: 0, y: BOARD_HEIGHT - 4 }] },
-        { type: 'clear-started', rows: [BOARD_HEIGHT - 1] },
-      ],
-      { mode: 'sprint' } as GameState,
-      board,
-      true,
-    );
-
-    expect(internals.collapseTrail).toMatchObject({ columns: [0], maxDrop: 2 });
+    expect(internals.lockPulse).toMatchObject({ piece: 'I' });
+    expect(renderer.getSnapshot().mutationCollapseTrail).toBeNull();
   });
 
   it('renders four distinct, bounded ordinary clear profiles without a board-wide flash', () => {

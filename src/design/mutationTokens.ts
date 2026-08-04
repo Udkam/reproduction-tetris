@@ -52,9 +52,6 @@ export interface MutationVfxToken {
     accentHz: number;
     waveform: OscillatorType;
     gain: number;
-    loopHz: number | null;
-    loopGain: number;
-    endHz: number | null;
   };
 }
 
@@ -84,7 +81,7 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
       frost: { noiseScale: 0.8, edgeStrength: 1.5, noise: 0.035 },
     },
     animation: { enterMs: 320, pulseMs: 800, exitMs: 680, activationMs: 320 },
-    audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.08, loopHz: null, loopGain: 0, endHz: null },
+    audio: { activateHz: 659.25, accentHz: 783.99, waveform: 'triangle', gain: 0.08 },
   },
   collapse: {
     palette: { primary: 0x9b6cff, highlight: 0xd8b4fe, deep: 0x35145f, facet: 0x7249bf, glow: 0xc396ff },
@@ -96,28 +93,21 @@ export const MUTATION_VFX_TOKENS: Record<MutationItem, MutationVfxToken> = {
       displacement: { strength: 0.015, speed: 0.8 },
     },
     animation: { enterMs: 120, pulseMs: 100, exitMs: 300, activationMs: 220 },
-    audio: { activateHz: 148, accentHz: 93, waveform: 'triangle', gain: 0.13, loopHz: 73.42, loopGain: 0.022, endHz: 196 },
+    audio: { activateHz: 148, accentHz: 93, waveform: 'triangle', gain: 0.13 },
   },
   bomb: {
     palette: { primary: 0xff6b35, highlight: 0xffe8a3, deep: 0x5a1a20, facet: 0xbd4b2d, glow: 0xffb347 },
     particles: { burst: 72, drift: 18, lifeMs: 900, speed: 0.16, size: 0.34 },
     shader: { fieldAlpha: 0.26, edgeGlow: 0.96, distortion: 0.22 },
     animation: { enterMs: 120, pulseMs: 100, exitMs: 320, activationMs: 620 },
-    audio: { activateHz: 74, accentHz: 111, waveform: 'triangle', gain: 0.16, loopHz: null, loopGain: 0, endHz: null },
+    audio: { activateHz: 74, accentHz: 111, waveform: 'triangle', gain: 0.16 },
   },
   multiplier: {
     palette: { primary: 0xffd166, highlight: 0xfff2b2, deep: 0x8d5b10, facet: 0xd1a244, glow: 0xffe29a },
     particles: { burst: 28, drift: 18, lifeMs: 620, speed: 0.092, size: 0.3 },
     shader: { fieldAlpha: 0.2, edgeGlow: 0.9, distortion: 0.04 },
     animation: { enterMs: 180, pulseMs: 520, exitMs: 360, activationMs: 320 },
-    audio: { activateHz: 523.25, accentHz: 659.25, waveform: 'sine', gain: 0.13, loopHz: null, loopGain: 0, endHz: null },
-  },
-  reshape: {
-    palette: { primary: 0x54e0b3, highlight: 0xc9ffec, deep: 0x135844, facet: 0x2dac84, glow: 0x8ff5d2 },
-    particles: { burst: 20, drift: 8, lifeMs: 480, speed: 0.074, size: 0.24 },
-    shader: { fieldAlpha: 0.16, edgeGlow: 0.84, distortion: 0.03 },
-    animation: { enterMs: 140, pulseMs: 140, exitMs: 300, activationMs: 420 },
-    audio: { activateHz: 440, accentHz: 659.25, waveform: 'sine', gain: 0.1, loopHz: null, loopGain: 0, endHz: null },
+    audio: { activateHz: 523.25, accentHz: 659.25, waveform: 'sine', gain: 0.13 },
   },
 };
 
