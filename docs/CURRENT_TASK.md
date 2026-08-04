@@ -18,6 +18,16 @@ and matching complete landing preview after the global timer reaches zero, and t
 frameless Next piece must remain visibly rendered in active Classic and Mutation play.
 These are regression repairs, not permission to broaden Mutation mechanics.
 
+The reopened claims are one continuous delivery target rather than a new feature
+branch. The status ledger must remain frameless but gain enough typographic, signal,
+spacing, and meter contrast to be read at a glance against all three themes. Next must
+be anchored to the current gameplay arena rather than whichever matching DOM node is
+found first, stay inside the live Canvas bounds, and have real visible pixels at both
+1440 × 900 and the reported 1125 × 1196 layout. Supergravity compensation belongs to
+the current active-piece generation: once that airborne piece latches the effect, its
+complete independent-column guide and final settlement persist through global expiry,
+row-wise board-mouth entry, movement, and rotation until that exact piece locks.
+
 ## Scope and ownership
 
 - Coordinator/writer: primary task `/root`.
@@ -106,6 +116,20 @@ smallest owning path, add a regression test for timer-expired airborne preview/l
 agreement, and capture one final Mutation plus one Classic frame proving Next remains
 visible. Prior accepted evidence is historical and cannot close this new review.
 
+T31-R2 acceptance is fail-closed until all of the following are green together:
+
+- [ ] concurrent Mutation rows remain one frameless ledger but the heading, signal,
+  name, spacing, and thin remaining-time line are unmistakable without cards, seconds,
+  placeholder copy, or overlap;
+- [ ] the renderer resolves the transparent Next anchor inside its own current arena,
+  keeps the preview bounds inside the live Canvas, and produces visible Next pixels in
+  active Classic and Mutation at 1440 × 900 and 1125 × 1196;
+- [ ] a two-row active piece can reveal its lower entry slice, outlive the global
+  Supergravity timer, move or rotate, and still show the same complete per-column ghost
+  that Core finally locks; only the following generation becomes rigid;
+- [ ] focused tests, one final typecheck, complete suite, production build, bounded
+  browser evidence, zero console errors, teardown, and independent read-only QA pass.
+
 ## Queued next task — T32 Puzzle curriculum rebuild
 
 Status (2026-08-05): **ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT**. T31-R2 is a
@@ -183,8 +207,10 @@ blocked until the roster contract is committed and the T31-R2 regression gate is
 2. [complete] Implement exact, symmetry-normalized, and near-topology fingerprint
    comparison in the isolated two-file foundation checkpoint; campaign data remained
    read-only. Focused tests and typecheck pass at `da8e2b9`.
-3. [in progress] Freeze the final board roster, 10/20/20 order, technique families, mastery map,
-   campaign migration, exact source paths, and checkpoint budget before product edits.
+3. [complete] Freeze the final board roster, 10/20/20 order, technique families,
+   candidate mastery map, campaign migration, exact source paths, and checkpoint budget
+   before product edits at `d81f2db`. Candidate mastery relations remain non-product
+   until strict optimum and replay-signature proof promotes them.
 4. Author and Core-replay the rebuilt Intro set plus replacement boards 36/38/47;
    commit the first green campaign-definition claim before changing progression.
 5. Generate and replay a second distinct route for every changed board; create strict

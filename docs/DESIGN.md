@@ -65,6 +65,17 @@ retain independent-column lock and the same complete projected landing after the
 timer expires. The repair must be reproduced and regression-tested before T32 changes a
 board. No Reshape, new item, status cards, or broader Mutation redesign is admitted.
 
+Prominence is carried by hierarchy, not another container: concurrent rows use a
+stronger heading, larger item signal and name, clearer row spacing, and a still-thin
+item-colored lifetime line. Next is a Canvas-rendered instrument whose transparent DOM
+anchor is resolved inside the current gameplay arena and clamped to that arena's live
+Canvas geometry; a global first-match query is not authoritative. Acceptance records
+actual preview pixels in Classic and Mutation at 1440 × 900 and 1125 × 1196, not only a
+queue value or renderer visibility flag. The Supergravity latch is bound to the active
+piece generation, so row-wise entry, movement, rotation, timer expiry, complete ghost
+projection, and independent-column lock all consult the same retained decision until
+that piece locks. The next generation begins rigid when no global timer remains.
+
 ### Solvability and mastery evidence
 
 - Every new or changed board has at least **two distinct successful routes** replayed
