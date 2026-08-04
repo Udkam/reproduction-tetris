@@ -1,70 +1,71 @@
-# Current Task — T29 Complete SFX Remaster
+# Current Task — T30 In-Well Arrival and Route Transitions
 
 ## Active goal
 
-Remaster every procedural SFX family so gameplay feedback is clearly audible and
-rewarding without turning frequent controls into harsh repetition. The authoritative
-contract is the top T29 section of `docs/DESIGN.md`. T29 changes audio scheduling and
-its direct tests only; gameplay, rendering, UI, themes, Puzzle data, localization,
-dependencies, and music remain frozen.
+Turn active-piece creation into a visible but collision-neutral in-well assembly, and
+give real page navigation a short, coherent handoff. The authoritative contract is the
+top T30 section of `docs/DESIGN.md`. Core state, gameplay timing, audio, themes, content,
+localization, dependencies, and layout remain frozen.
 
 ## Scope and ownership
 
 - Coordinator/writer: primary task `/root`.
-- Base: `main@dfb9fbb7ea49e8a28938ee385a60406d46e65b19`.
+- Base: `main@dc2aaad`.
 - Contract checkpoint paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
-  `docs/phases/t29-complete-sfx-remaster.md`, and `progress.md` only.
-- Product checkpoint paths: `src/game/audio/AudioEngine.ts` and
-  `src/game/audio/AudioEngine.test.ts` only.
+  `docs/phases/t30-spawn-and-page-transitions.md`, and `progress.md` only.
+- Renderer checkpoint paths: `src/game/render/presentation.ts`,
+  `src/game/render/presentation.test.ts`, `src/game/render/TetrisRenderer.ts`, and
+  `src/game/render/TetrisRenderer.test.ts` only.
+- Navigation checkpoint paths: `src/App.tsx`, `src/App.test.ts`,
+  `src/styles/navigation.css`, and `src/styles/navigation.test.ts` only.
 - Evidence, independent QA, changelog, and accepted status are separate later
   checkpoints. Existing dirty `docs/evidence/t27/**` and
   `docs/evidence/t27-r1-followup/**` are inherited user evidence and remain unstaged
   and unmodified.
-- No Core, runtime, React, renderer, CSS, persistence, package, asset, or dependency
-  change is authorized.
+- No Core, runtime, persistence, package, asset, audio, theme, Puzzle content, or
+  dependency change is authorized.
 
 ## Ordered checkpoints
 
-1. **T29 contract** — freeze hierarchy, event families, lifecycle bounds, exact paths,
-   and verification before source edits.
-2. **T29 procedural mix** — revise shared dynamics plus control, landing, clear,
-   Survival, Mutation, countdown, pause/resume, level, finish, and game-over schedules;
-   update direct scheduling and relative-energy tests in the same commit.
-3. **T29 correction** — only if focused playback or tests identify a concrete defect;
-   keep it in the audio subsystem and add a direct regression.
-4. **T29 evidence** — after the last source edit, run final typecheck, complete suite,
-   build, and one bounded source-linked browser runtime audit.
-5. **T29 independent QA and closure** — read-only review of the exact range, then
+1. **T30 contract** — freeze arrival geometry/timing, route handoff, reduced motion,
+   exact paths, and final evidence before source edits.
+2. **T30 active arrival** — implement deterministic renderer-only cell staging and
+   focused geometry/lifecycle tests.
+3. **T30 route handoff** — centralize transitions around push/replace/popstate, add the
+   CSS fallback and reduced-motion rules, and cover them directly.
+4. **T30 evidence** — after the last source edit, run final typecheck, complete suite,
+   build, and one bounded source-linked browser audit.
+5. **T30 independent QA and closure** — read-only review of the exact range, then
    changelog/status reconciliation, scoped pre-push secret scan, and coordinator push.
 
 ## Acceptance checklist
 
-- [x] Move and soft drop remain short, single-voice, and rate-limited; rotation is
-  rounded and readable under repetition.
-- [x] Gravity lock is quieter than hard drop; both are audible and neither sounds like
-  an explosion, electrical pop, or bass-heavy impact.
-- [x] One through four cleared lines use 2/3/4/5 related voices, rise monotonically in
-  aggregate energy, and produce the clearest repeatable positive feedback.
-- [x] Undo, pause/resume, countdown, bedrock, falling stones, level-up, finish, and
-  game-over each retain a distinct and clearly audible contour.
-- [x] Ice, Supergravity, Bomb, Reshape, Double, and Super Double are distinguishable;
-  duplicate activations trigger once and persistent audio remains limited to the
-  existing Supergravity loop.
-- [x] Same-frame priority, invalid clear refusal, sixteen-voice ceiling, master/volume
-  control, disable/suspend/restart/destroy cleanup, and silence without AudioContext
-  remain covered by direct tests.
-- [x] Focused audio tests pass after the source checkpoint.
-- [x] Final typecheck, complete suite, production build, source-bound browser audit,
-  one Canvas, zero console errors, and teardown pass.
-- [x] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
+- [ ] Each new active generation visibly assembles over at most 210 ms without changing
+  Core coordinates, collision, gravity, or seeded replay hashes.
+- [ ] Every arrival cell is fully inside the board throughout the effect; movement and
+  rotation do not restart it, and the ghost guide joins only after the piece is legible.
+- [ ] Restart, Puzzle undo, terminal/unmount, and reduced motion leave no stale arrival
+  state; reduced motion renders the complete endpoint immediately.
+- [ ] Push, replace, and popstate route changes use one bounded transition; no-URL
+  Puzzle selection changes do not animate or create history entries.
+- [ ] Unsupported browsers retain an immediate navigation plus short entry fallback;
+  reduced motion removes translation and long duration.
+- [ ] Focused renderer/navigation/style tests pass after their checkpoints.
+- [ ] Final typecheck, complete suite, production build, browser evidence, one Canvas,
+  zero DOM board cells, zero console errors, and teardown pass.
+- [ ] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
+
+Status (2026-08-04): **IN PROGRESS**. Contract frozen; source work has not started.
+
+---
+
+## Previous task — T29 Complete SFX Remaster
 
 Status (2026-08-04): **ACCEPTED** at candidate `abce548`, with product source
 `ca5da48`. Focused audio tests pass `29/29`; final typecheck, the complete suite
 (`365 passed / 3 skipped`), the 759-module build, and the source-bound browser audit
-pass. Runtime evidence reports one Canvas, zero DOM board cells, zero browser errors,
-2/3/4/5 clear voices, a 12-voice dense Mutation batch, correct enable/volume/suspend
-routing, and all 31 AudioContexts closed exactly once. Independent read-only QA accepts
-`dfb9fbb7..abce548` with P0 0 / P1 0 / P2 0 / P3 0.
+pass. Independent read-only QA accepted `dfb9fbb7..abce548` with P0 0 / P1 0 / P2 0 /
+P3 0.
 
 ---
 

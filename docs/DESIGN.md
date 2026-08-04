@@ -3,6 +3,53 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-04 T30 — in-well piece arrival and route transitions
+
+T30 adds two bounded motion contracts without changing Core simulation, input timing,
+randomization, scoring, layouts, themes, audio, or the single-Canvas boundary. A newly
+active tetromino must read as entering the playfield instead of appearing fully formed
+in one frame, while page changes must have a short spatial handoff instead of a hard
+cut. Both effects are presentation-only and must remain safe under reduced motion.
+
+### Active-piece arrival
+
+- Core remains authoritative: the piece still spawns in the same hidden rows with the
+  same coordinates and collision state. Rendering continues to project all four cells
+  wholly inside the visible well before any arrival effect is applied.
+- A new active generation is identified by the run's placed-piece count plus the active
+  piece identity. Its four cells assemble in a deterministic top-to-bottom,
+  left-to-right stagger over no more than 210 ms. Each cell grows and gains opacity at
+  its already-safe in-well position; no cell travels through, clips against, or appears
+  outside the board frame.
+- The ghost landing guide remains hidden until the materialisation is substantially
+  readable, then joins quietly. Movement and rotation interpolation continue from the
+  canonical active piece and must not restart the arrival.
+- Restart, Puzzle undo, terminal state, unmount, and reduced-motion changes clear the
+  renderer-owned arrival state. Reduced motion presents the complete legal endpoint
+  immediately, with no stagger or scale travel.
+
+### Page handoff
+
+- Home, Puzzle library, and game URLs remain the navigation authority. Every actual
+  route change through push, replace, or browser history uses one shared transition
+  boundary; selection changes that do not change the URL do not animate the page.
+- Supporting browsers receive a restrained 180 ms old-page fade/settle and 220 ms
+  new-page fade/rise. The fallback remounts only the route surface and applies a short
+  entry fade, without delaying history or changing focus ownership.
+- Reduced motion suppresses translation and collapses the handoff to an effectively
+  immediate opacity change. Transitions may not create a second Canvas, preserve a
+  hidden gameplay runtime, intercept controls after navigation, or start a persistent
+  timer/service.
+
+### T30 acceptance
+
+Focused renderer tests must freeze generation identity, cell staggering, ghost delay,
+in-well bounds, restart/undo cleanup, and the reduced-motion endpoint. Navigation tests
+must freeze URL behavior, browser-history transitions, fallback behavior, and the CSS
+reduced-motion contract. After the last source edit, run one typecheck, the complete
+suite, one production build, and one bounded browser pass showing the arrival sequence
+and two route changes with one Canvas and zero browser errors.
+
 ## 2026-08-04 T29 — complete SFX remaster
 
 T29 is one bounded procedural-audio remaster. Player review rejects the accepted T28

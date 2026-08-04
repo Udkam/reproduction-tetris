@@ -1,3 +1,13 @@
+## T30 in-well arrival and route transitions — 2026-08-04
+
+- Freeze a renderer-only four-cell assembly at the already-safe visible spawn geometry;
+  Core coordinates, collisions, timing, queue order, and replay hashes remain unchanged.
+- Freeze one shared route-transition boundary for Home, Puzzle library, gameplay, and
+  browser history, with an immediate reduced-motion endpoint and no persistent service.
+- Scope is limited to the four contract files, renderer/presentation plus direct tests,
+  App/navigation CSS plus direct tests, and later source-bound evidence/closure.
+- Status: contract checkpoint in progress; inherited T27 evidence remains untouched.
+
 ## T29 complete SFX remaster — 2026-08-04
 
 - Player review rejects the accepted T28 mix as globally too soft. T29 freezes a new
