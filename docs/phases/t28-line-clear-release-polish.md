@@ -31,13 +31,17 @@ React/Pixi ownership, one Canvas, persisted reduced motion, and current themes.
   on restart, undo, and renderer destruction.
 - Reduced motion is simultaneous stationary brightness with no chips or tail.
 
-## Phase C — soft procedural audio
+## Phase C — clear-forward procedural audio
 
-- Replace the generic rising clear chord with four rounded low-gain schedules.
-- Avoid noise, boom, distortion, metallic transients, alarm contours, and large volume
-  steps. Keep voices beneath the current 16-source ceiling.
-- Suppress ordinary clear audio when a Mutation activation owns the same batch, and
-  refuse invalid counts without allocating a voice.
+- Replace the rejected sparse clear chord with four rounded but present schedules whose
+  onset, harmonic body, and release make every clear obvious without becoming harsh.
+- Give 1/2/3/4 clears 2/3/4/5 bounded voices and an increasing consonant spread. Avoid
+  noise, boom, distortion, metallic transients, alarm contours, and master-volume jumps.
+- Rebalance the existing move, soft-drop, rotate, lock, hard-drop, countdown, system,
+  Survival, and Mutation cues so they remain readable but do not mask resolution feedback.
+- Suppress routine landing/lock audio when an ordinary clear owns the same batch; suppress
+  ordinary clear audio when a Mutation activation owns it; refuse invalid counts without
+  allocating a voice. Keep the total beneath the current 16-source ceiling.
 
 ## Phase D — conflict and lifecycle proof
 

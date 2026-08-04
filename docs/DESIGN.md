@@ -62,24 +62,34 @@ and must never receive a clear face or fragment.
   Bomb, Mutation activation, Puzzle completion, quad, triple, double, and single form
   that descending priority order.
 
-### Soft procedural audio
+### Clear-forward procedural audio and supporting mix
 
 The existing AudioContext, effects bus, compressor, master volume, and 16-voice ceiling
-remain authoritative. T28 replaces the generic rising clear chord with four concise
-profiles scheduled directly on that context. All use rounded sine/triangle envelopes,
-consonant intervals, conservative gain below the current movement/landing mix, and no
-noise burst, sub-boom, metallic click, distortion, alarm contour, or combo-driven gain.
+remain authoritative. The first T28 audio pass was too quiet and tonally sparse in player
+review. The accepted direction is **soft-edged but unmistakable**: keep rounded envelopes,
+consonant intervals, and bounded gain, while giving each clear enough onset, harmonic body,
+and release to read as the positive resolution of the placement. Presence comes from
+layering and duration, not a global volume jump, noise burst, sub-boom, metallic click,
+distortion, alarm contour, or combo-driven gain.
 
-- one line: one soft mineral tick plus a near-silent air partial, 60–90 ms;
-- two lines: two close rounded tones heard as one event, not two loud singles;
-- three lines: three low-gain pulses staggered by 22 ms and one quiet settling tone;
-- four lines: one warm fundamental with three consonant partials and a smooth luminous
-  tail, still below the normal voice ceiling and without a loudness jump.
+- one line: two compact voices form one clean confirmation, approximately 85–120 ms;
+- two lines: three voices form one consonant answer with a short 18–22 ms spread;
+- three lines: four voices rise in a 20–22 ms cascade and settle without a bass impact;
+- four lines: five bounded voices form the sole signature cadence, with a smooth bright
+  release ending within 240 ms and no piercing upper partial.
 
-Mutation activation in the same event batch continues to suppress the ordinary clear
-profile. Invalid counts schedule no oscillator. Disable, restart, hidden-state suspend,
-and destroy retain the existing lifecycle rules; every scheduled source disconnects
-through its normal `onended` path.
+A gameplay batch has one audible resolution hierarchy. Mutation activation remains above
+ordinary clear. Otherwise an ordinary clear suppresses the routine hard-drop or lock tap
+from the same batch so the positive clear cue cannot be masked. Invalid counts schedule no
+oscillator. Repeated movement remains rate-limited; rotation stays one unbent mid-low voice;
+hard drop remains one rounded contact; soft drop, pause/resume, countdown, Survival warnings,
+bedrock motion, level/finish/game-over, and Mutation activations retain distinct contours but
+must be rebalanced against the clearer line-resolution family. No supporting cue may become
+sharper, more explosive, or more prominent than a same-frame clear or item activation.
+
+Disable, restart, hidden-state suspend, and destroy retain the existing lifecycle rules;
+every scheduled source disconnects through its normal `onended` path. No new AudioContext,
+sample asset, background loop, dependency, or persistent voice is introduced.
 
 ### Acceptance evidence
 

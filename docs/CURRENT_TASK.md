@@ -4,8 +4,11 @@
 
 Turn the supplied ordinary-clear proposal into one independent, reversible release-
 polish chain. Implement a deterministic, theme-consistent 1/2/3/4-line visual grammar
-and matching soft procedural audio without changing Core's fixed twelve-tick / 200 ms
-clear boundary, rules, scoring, Puzzle content, branding, or the one-Pixi-Canvas split.
+and a clear-forward procedural feedback mix without changing Core's fixed twelve-tick /
+200 ms clear boundary, rules, scoring, Puzzle content, branding, or the one-Pixi-Canvas
+split. The audio must remain rounded and non-fatiguing, but an ordinary clear is now the
+most legible positive-feedback event in its gameplay batch rather than a near-silent
+confirmation.
 
 The authoritative behavior and conflict contract is the top T28 section of
 `docs/DESIGN.md`. T27 and older sections below remain historical provenance unless that
@@ -31,12 +34,13 @@ section explicitly supersedes them.
 
 ## Ordered checkpoints
 
-1. **T28 contract** — freeze profiles, timing, mode priority, reduced motion, soft audio,
-   exact paths, and acceptance evidence before source work.
+1. **T28 contract** — freeze profiles, timing, mode priority, reduced motion, the
+   clear-forward audio mix, exact paths, and acceptance evidence before source work.
 2. **T28 visual profiles** — pure count profiles, deterministic board-local rendering,
    anchor exclusion, bounded tail lifecycle, and focused renderer tests.
-3. **T28 soft audio profiles** — rounded low-gain 1/2/3/4 cues, invalid-count refusal,
-   Mutation suppression, scheduling/lifecycle tests.
+3. **T28 positive-feedback audio profiles** — rounded but present 1/2/3/4 cues,
+   supporting move/rotate/drop/lock mix correction, invalid-count refusal, resolution-
+   event priority, Mutation suppression, and scheduling/lifecycle tests.
 4. **T28 integration correction** — only if focused evidence finds a mode/conflict gap;
    it receives its own reviewable commit and direct regression test.
 5. **T28 evidence** — after the last source change, run one typecheck, complete suite,
@@ -54,14 +58,21 @@ section explicitly supersedes them.
   stagger, travel, post-tail, page flash, board displacement, or filter.
 - [ ] Survival, Mutation activation, Bomb, Puzzle completion, and anchor conflicts obey
   the T28 priority contract.
-- [ ] New clear audio is soft, short, low-gain, non-metallic, non-explosive, volume-
-  controlled, bounded by 16 voices, and fully disconnected on lifecycle completion.
+- [ ] New clear audio is short, rounded, non-metallic, non-explosive, volume-controlled,
+  and unmistakable above movement/landing in the same action. Counts 1–4 gain audible
+  harmonic weight without abrupt master-volume jumps; all work remains bounded by 16
+  voices and fully disconnects on lifecycle completion.
+- [ ] Supporting move, soft-drop, rotate, lock, hard-drop, countdown, system, Survival,
+  and Mutation cues remain semantically distinct and audible without sharp chirps,
+  electrical buzz, blast-like repetition, or masking an ordinary clear.
 - [ ] Focused tests pass at each source checkpoint.
 - [ ] Final typecheck, complete tests, build, 1/2/3/4 browser frames, reduced-motion and
   mode-conflict frames, one Canvas, zero DOM board cells, zero errors, and teardown pass.
 - [ ] Independent QA reports no unresolved P0/P1/P2 finding before acceptance and push.
 
-Status: contract drafting active. No T28 source claim is complete or accepted yet.
+Status: contract and visual checkpoint complete; the first audio checkpoint was rejected
+by direct player review for insufficient presence. The bounded audio correction is active;
+T28 remains unaccepted until final evidence and independent QA pass.
 
 ---
 
