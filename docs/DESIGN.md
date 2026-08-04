@@ -3,6 +3,70 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-04 T29 — complete SFX remaster
+
+T29 is one bounded procedural-audio remaster. Player review rejects the accepted T28
+mix as globally too soft: increasing the master alone is not an acceptable repair,
+because it would make repeated input abrasive while leaving event hierarchy unclear.
+This slice therefore supersedes T28's literal "soft-edged" balance for audio only with
+**defined, responsive, and non-fatiguing** feedback. It does not change gameplay,
+visuals, timing, scoring, localization, themes, music, or the single-Canvas boundary.
+
+### Dynamic hierarchy and material language
+
+The mix uses one shared procedural instrument family with three intentionally separate
+roles. Each role is audible at the default 100% setting, and higher-priority feedback
+must remain identifiable when events share a frame.
+
+1. **Controls** — horizontal move and soft drop stay single-voice, short, and
+   rate-limited. Rotation gains a rounded two-part turn rather than a sharp click.
+   Gravity lock remains quieter than hard drop, and hard drop uses a compact body/contact
+   pair without a sub-bass tail.
+2. **State and hazard** — undo, pause/resume, bedrock motion, rock warning/spawn/landing,
+   and level-up receive distinct direction, register, and duration. Repetition must not
+   create an alarm, burst, electrical buzz, or explosive transient.
+3. **Reward and resolution** — one through four cleared lines form an ascending family
+   with progressively more harmonic body, stereo-independent temporal spread, and a
+   longer resolved tail. Four lines are the strongest repeatable gameplay reward.
+   Mutation activation, Puzzle completion, and terminal results retain higher semantic
+   priority and must not be mistaken for ordinary clears.
+
+At 100% volume, presence comes from cue-specific midrange fundamentals, a restrained
+triangle body where useful, 3–8 ms attacks, and deliberate 70–300 ms envelopes. It must
+not come from clipping, a full-band noise wash, a global gain jump, or a large persistent
+loop. The master path preserves transient contrast with a bounded ceiling and compressor;
+every individual voice stays below the fixed gain ceiling and total live voices remain
+at or below sixteen.
+
+### Event contracts
+
+- One/two/three/four-line clears schedule 2/3/4/5 voices respectively, are materially
+  stronger than a move tick, and increase monotonically in aggregate peak energy.
+- The same-batch resolution order remains Mutation activation, completion/game-over/
+  level-up, ordinary clear, hard drop, gravity lock. A lower item cannot mask or double
+  the event that owns the resolution.
+- Ice is a short crystalline confirmation without a persistent tone; Supergravity is
+  a weight-and-settle pair with only its already-bounded low ambience; Bomb is a compact
+  low body plus filtered air; Reshape is a fast three-facet rewrite; Double and Super
+  Double use distinct two- and three-step mallet signatures. Duplicate same-item events
+  still trigger once.
+- Countdown remains three unmistakable transport beats: `3` and `2` repeat, `1` is
+  higher and longer. `started` and `restarted` remain silent so the first countdown beat
+  is never doubled.
+- SFX enablement, volume, suspend, restart, Mutation expiry, and destroy retain strict
+  ownership. No sample asset, music loop, new dependency, timer queue, AudioContext, or
+  persistent background service is introduced.
+
+### T29 acceptance
+
+Direct scheduling tests must freeze each event family's voice count, contour, ordering,
+relative peak hierarchy, rate limit, invalid-input refusal, same-frame suppression,
+sixteen-voice ceiling, and lifecycle cleanup. After the final source edit, run one
+typecheck, the complete test suite, one production build, and one source-bound browser
+runtime audit proving SFX enable/volume routing, countdown ownership, one Canvas, zero
+browser errors, and complete teardown. Perceptual acceptance is based on the declared
+hierarchy and real playback; a higher numeric gain alone is not evidence of completion.
+
 ## 2026-08-04 T28 — ordinary line-clear release polish
 
 T28 is one bounded Release Polish slice for the shared ordinary clear. It supersedes

@@ -1,4 +1,68 @@
-# Current Task — T28 Ordinary Line-Clear Release Polish
+# Current Task — T29 Complete SFX Remaster
+
+## Active goal
+
+Remaster every procedural SFX family so gameplay feedback is clearly audible and
+rewarding without turning frequent controls into harsh repetition. The authoritative
+contract is the top T29 section of `docs/DESIGN.md`. T29 changes audio scheduling and
+its direct tests only; gameplay, rendering, UI, themes, Puzzle data, localization,
+dependencies, and music remain frozen.
+
+## Scope and ownership
+
+- Coordinator/writer: primary task `/root`.
+- Base: `main@dfb9fbb7ea49e8a28938ee385a60406d46e65b19`.
+- Contract checkpoint paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/phases/t29-complete-sfx-remaster.md`, and `progress.md` only.
+- Product checkpoint paths: `src/game/audio/AudioEngine.ts` and
+  `src/game/audio/AudioEngine.test.ts` only.
+- Evidence, independent QA, changelog, and accepted status are separate later
+  checkpoints. Existing dirty `docs/evidence/t27/**` and
+  `docs/evidence/t27-r1-followup/**` are inherited user evidence and remain unstaged
+  and unmodified.
+- No Core, runtime, React, renderer, CSS, persistence, package, asset, or dependency
+  change is authorized.
+
+## Ordered checkpoints
+
+1. **T29 contract** — freeze hierarchy, event families, lifecycle bounds, exact paths,
+   and verification before source edits.
+2. **T29 procedural mix** — revise shared dynamics plus control, landing, clear,
+   Survival, Mutation, countdown, pause/resume, level, finish, and game-over schedules;
+   update direct scheduling and relative-energy tests in the same commit.
+3. **T29 correction** — only if focused playback or tests identify a concrete defect;
+   keep it in the audio subsystem and add a direct regression.
+4. **T29 evidence** — after the last source edit, run final typecheck, complete suite,
+   build, and one bounded source-linked browser runtime audit.
+5. **T29 independent QA and closure** — read-only review of the exact range, then
+   changelog/status reconciliation, scoped pre-push secret scan, and coordinator push.
+
+## Acceptance checklist
+
+- [ ] Move and soft drop remain short, single-voice, and rate-limited; rotation is
+  rounded and readable under repetition.
+- [ ] Gravity lock is quieter than hard drop; both are audible and neither sounds like
+  an explosion, electrical pop, or bass-heavy impact.
+- [ ] One through four cleared lines use 2/3/4/5 related voices, rise monotonically in
+  aggregate energy, and produce the clearest repeatable positive feedback.
+- [ ] Undo, pause/resume, countdown, bedrock, falling stones, level-up, finish, and
+  game-over each retain a distinct and clearly audible contour.
+- [ ] Ice, Supergravity, Bomb, Reshape, Double, and Super Double are distinguishable;
+  duplicate activations trigger once and persistent audio remains limited to the
+  existing Supergravity loop.
+- [ ] Same-frame priority, invalid clear refusal, sixteen-voice ceiling, master/volume
+  control, disable/suspend/restart/destroy cleanup, and silence without AudioContext
+  remain covered by direct tests.
+- [ ] Focused audio tests pass after the source checkpoint.
+- [ ] Final typecheck, complete suite, production build, source-bound browser audit,
+  one Canvas, zero console errors, and teardown pass.
+- [ ] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
+
+Status (2026-08-04): **ACTIVE / CONTRACT FROZEN; SOURCE NOT YET ACCEPTED.**
+
+---
+
+## Previous task — T28 Ordinary Line-Clear Release Polish
 
 ## Active goal
 
