@@ -29,6 +29,7 @@ const FULL_VOLUME_MASTER_GAIN = 1.7;
 const VOICE_GAIN_CEILING = 0.5;
 const VOICE_GAIN_BOOST = 1.3;
 const BRIGHT_PARTIAL_RATIO = 2.01;
+const MOVE_CUE_MIN_INTERVAL_MS = 60;
 
 export class AudioEngine {
   private context: AudioContext | null = null;
@@ -39,7 +40,7 @@ export class AudioEngine {
   private mutationVoices: EffectVoice[] = [];
   private readonly mutationLoops = new Map<MutationLoopItem, MutationLoopVoice>();
   private volume = 1;
-  private lastMoveAt = 0;
+  private lastMoveAt = Number.NEGATIVE_INFINITY;
   private lastSoftDropAt = 0;
   private voices = 0;
 
@@ -106,8 +107,8 @@ export class AudioEngine {
     for (const event of events) {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = this.platform.now();
-        if (now - this.lastMoveAt > 28) {
-          this.tone({ frequency: 244, duration: 0.028, gain: 0.14, endFrequency: 258, type: 'triangle' });
+        if (now - this.lastMoveAt >= MOVE_CUE_MIN_INTERVAL_MS) {
+          this.tone({ frequency: 196, duration: 0.05, gain: 0.05, type: 'sine' });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
@@ -153,25 +154,16 @@ export class AudioEngine {
     this.playMutationActivations(mutationActivations);
   }
 
-  /** Warm F-major mallet dyads carry the whole 3-2-1 entry without a buzzer edge. */
+  /** Two steady ticks and one higher release make the countdown readable without a melody. */
   playEntryCountdown(digit: 3 | 2 | 1): void {
     if (!this.context || !this.master || !this.enabled) return;
-    const profile = digit === 3
-      ? { fundamentalHz: 349.23, fifthHz: 523.25, duration: 0.17, gain: 0.12 }
-      : digit === 2
-        ? { fundamentalHz: 440, fifthHz: 659.25, duration: 0.18, gain: 0.13 }
-        : { fundamentalHz: 523.25, fifthHz: 783.99, duration: 0.21, gain: 0.145 };
+    const profile = digit === 1
+      ? { frequency: 783.99, duration: 0.18, gain: 0.14 }
+      : { frequency: 523.25, duration: 0.11, gain: 0.105 };
     this.tone({
-      frequency: profile.fundamentalHz,
+      frequency: profile.frequency,
       duration: profile.duration,
       gain: profile.gain,
-      type: 'triangle',
-    });
-    this.tone({
-      frequency: profile.fifthHz,
-      duration: profile.duration * 0.68,
-      gain: profile.gain * 0.25,
-      delay: 0.01,
       type: 'sine',
     });
   }
