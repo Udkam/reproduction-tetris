@@ -2,7 +2,7 @@
 
 ## T27-R1 active goal — centred board stage and three complete visual themes
 
-**Status (2026-08-04): ACCEPTED / COUNTDOWN TIMBRE FOLLOW-UP OPEN.** This player-requested
+**Status (2026-08-04): ACCEPTED / SETTINGS AND AUDIO FOLLOW-UP OPEN.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
 persistence migrations, the single-canvas boundary, or Mutation mechanics.
@@ -98,11 +98,11 @@ The correction has ten coupled acceptance requirements:
    board, with broad four-direction edge falloff layered over that continuous field. It
    must not leave a mostly dark centre, split into four isolated edge lobes, or read as a
    central circular spotlight, ring, or hard radial hotspot.
-   Each countdown digit has a warm, mallet-like procedural SFX accent: `3 / 2 / 1`
-   outline `F4 / A4 / C5`, each with one quiet perfect-fifth partial. The first two
-   beats end within 200 ms and the slightly fuller final beat within 230 ms. No harsh
-   buzzer/sweep, noise burst, music, sample, or persistent voice is added. All cues
-   obey the shared SFX enablement and volume controls and share runtime teardown.
+   The countdown uses an unmistakable transport cue instead of a melody: `3` and `2`
+   repeat one short, clean sine pulse, while `1` is a clearly higher and slightly
+   longer final pulse. No ascending triad, mallet dyad, pitch sweep, noise burst,
+   music, sample, or persistent voice is added. All cues obey the shared SFX
+   enablement and volume controls and share runtime teardown.
 10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line
     acceleration ladder clamps at that floor, while Classic's player-configured interval,
     Survival's cadence, Ice's one-second override, and Supergravity landing semantics remain
@@ -173,7 +173,7 @@ coordinator is the only writer. The accepted deterministic Core, one Pixi canvas
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
 information architecture remain authoritative.
 
-The slice has thirteen player-visible acceptance requirements:
+The slice has sixteen player-visible acceptance requirements:
 
 1. Home shows the single `TetraMorph` wordmark with no positioning line in either
    language. Removing the subtitle must collapse its layout space rather than leave a
@@ -296,6 +296,19 @@ The slice has thirteen player-visible acceptance requirements:
     clearing any one cell triggers the item exactly once and strips the identity from
     every surviving sibling. Reduced motion keeps the marks static, and clearing the
     carrier removes them completely.
+14. The Settings sheet keeps an accessible dialog name but removes its duplicated
+    visible top-left `设置 / Settings` heading. In Deep Tide, inactive and selected
+    `设置 / 控制 / 规则` tabs use distinct theme-owned surfaces with readable text;
+    neither state may fall back to generic blue or low-contrast dark-on-dark styling.
+15. The Settings `重新开始 / Restart` control is an immediate action. Activating it
+    closes Settings, resets the current run, and begins a fresh `3 / 2 / 1` countdown
+    without opening the board restart-confirmation cover. The gameplay `R` shortcut
+    retains its existing confirmation and cancellation contract.
+16. Repeated horizontal movement uses one soft, low-gain sine cue without pitch sweep.
+    Accepted movement voices are spaced by at least 60 ms so key repeat cannot stack
+    transients into a pop, burst, or explosion-like sound. The cue remains audible at
+    normal cadence, obeys the shared SFX controls, and creates no timer or teardown
+    obligation.
 
 ### Required checkpoints and verification
 

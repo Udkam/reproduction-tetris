@@ -248,14 +248,26 @@ pattern is ambient state feedback, never an input target or score burst, and it 
 behind active/ghost pieces. Reduced motion retains a clearly visible static top-edge glint
 field without drifting animation.
 
-The entry countdown uses three original, warm mallet-like procedural tones on the
-runtime-owned effects bus. `3`, `2`, and `1` outline a consonant ascending F-major
-triad (`F4`, `A4`, `C5`). Each beat combines one soft triangle fundamental with one
-quiet sine perfect-fifth partial; there is no square/saw voice, noise burst, buzzer
-sweep, or external sample. The attack stays soft, the first two beats end within
-200 ms, and the final beat is only slightly fuller while still ending within 230 ms.
-They respect mute and volume, never create music or another audio context, and leave
-no oscillator, timer, or listener beyond the existing runtime teardown boundary.
+The entry countdown uses an original transport-style procedural cue on the
+runtime-owned effects bus. `3` and `2` repeat one short, clean sine pulse; `1` moves to
+a clearly higher pitch and lasts slightly longer so the player hears an unambiguous
+final beat. It is deliberately not an ascending melody or mallet chord. There is no
+pitch sweep, square/saw voice, noise burst, external sample, or trailing Start cue.
+The pulses respect mute and volume, never create music or another audio context, and
+leave no oscillator, timer, or listener beyond the existing runtime teardown boundary.
+
+Fast horizontal repeat uses one separate soft sine voice with no frequency sweep and a
+minimum 60 ms accepted-voice interval. The interval suppresses stacked attacks rather
+than delaying input or creating a queued audio stream; gameplay timing remains wholly
+unchanged. The movement voice is intentionally quieter than landing, clearing, and
+countdown feedback.
+
+The Settings sheet does not repeat its page name as a visible top-left heading. Its
+dialog keeps the same programmatic name through a visually hidden heading, preserving
+screen-reader and focus semantics. Deep Tide Settings tabs use the theme's raised and
+action surfaces with near-white text for a clear idle/selected hierarchy. Restart from
+Settings is a direct command: it closes the sheet, resets the runtime, and starts a new
+countdown. The board-level R shortcut remains the deliberate confirmation flow.
 
 Reshape is an instantaneous Mutation and therefore does not occupy the persistent timed
 status ledger. Its activation instead owns a concise three-beat Pixi cue: four displaced
