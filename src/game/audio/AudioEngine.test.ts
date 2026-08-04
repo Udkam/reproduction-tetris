@@ -93,6 +93,7 @@ const gains: FakeGain[] = [];
 const noiseSources: FakeBufferSource[] = [];
 const filters: FakeBiquadFilter[] = [];
 let audioContextCloseCalls = 0;
+let audioContextSuspendCalls = 0;
 
 class FakeAudioContext {
   currentTime = 0;
@@ -133,7 +134,7 @@ class FakeAudioContext {
   }
 
   async resume(): Promise<void> {}
-  async suspend(): Promise<void> {}
+  async suspend(): Promise<void> { audioContextSuspendCalls += 1; }
   async close(): Promise<void> { audioContextCloseCalls += 1; }
 }
 
@@ -177,6 +178,7 @@ afterEach(() => {
   noiseSources.length = 0;
   filters.length = 0;
   audioContextCloseCalls = 0;
+  audioContextSuspendCalls = 0;
   vi.clearAllTimers();
   vi.useRealTimers();
   vi.unstubAllGlobals();
@@ -561,6 +563,32 @@ describe('AudioEngine complete feedback remaster', () => {
     audio.destroy();
   });
 
+  it('lets a same-frame mutation replace level, completion, and game-over resolution cues', async () => {
+    const lowerResolutionEvents: readonly GameEvent[] = [
+      { type: 'level-up', level: 2 },
+      { type: 'finished', completionTicks: 120 },
+      { type: 'game-over', reason: 'block-out' },
+    ];
+
+    for (const lowerResolutionEvent of lowerResolutionEvents) {
+      oscillators.length = 0;
+      gains.length = 0;
+      const audio = new AudioEngine(createBrowserPlatform({
+        audioContextFactory: () => new FakeAudioContext() as unknown as AudioContext,
+      }));
+      await audio.prime();
+      audio.play([
+        lowerResolutionEvent,
+        { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
+      ]);
+
+      expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([
+        698.46, 1046.5,
+      ]);
+      audio.destroy();
+    }
+  });
+
   it('lets a clear own the placement resolution instead of stacking landing or lock taps', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
@@ -737,6 +765,60 @@ describe('AudioEngine complete feedback remaster', () => {
     audio.setVolume(0.5);
     expect(gains[0]?.gain.value).toBeGreaterThan(0.5);
     expect(gains[0]?.gain.value).toBeLessThan(1);
+    audio.destroy();
+  });
+
+  it('caps live voices at sixteen, then reuses capacity after scheduled voices end', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+    const fourLineClear: GameEvent = {
+      type: 'lines-cleared',
+      rows: [36, 37, 38, 39],
+      count: 4,
+      score: 800,
+    };
+
+    audio.play([fourLineClear]);
+    audio.play([fourLineClear]);
+    audio.play([fourLineClear]);
+    audio.play([fourLineClear]);
+    expect(oscillators).toHaveLength(16);
+
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+    expect(oscillators).toHaveLength(16);
+
+    oscillators.slice(0, 2).forEach((oscillator) => oscillator.onended?.());
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+    expect(oscillators).toHaveLength(18);
+    expect(oscillators.slice(-2).map((oscillator) => oscillator.frequency.setValues[0])).toEqual([
+      146.83, 293.66,
+    ]);
+    audio.destroy();
+  });
+
+  it('mutes and releases owned mutation voices on disable, resumes routing, and suspends once', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+    audio.play([
+      { type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells },
+    ]);
+    expect(oscillators).toHaveLength(2);
+
+    audio.setEnabled(false);
+    expect(audio.isEnabled()).toBe(false);
+    expect(gains[1]?.gain.targets.at(-1)?.value).toBe(0);
+    expect(oscillators.every((oscillator) => oscillator.stops.length === 2)).toBe(true);
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+    expect(oscillators).toHaveLength(2);
+
+    audio.setEnabled(true);
+    expect(gains[1]?.gain.targets.at(-1)?.value).toBe(1);
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+    expect(oscillators).toHaveLength(4);
+    audio.suspend();
+    expect(audioContextSuspendCalls).toBe(1);
     audio.destroy();
   });
 

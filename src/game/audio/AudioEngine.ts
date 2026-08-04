@@ -192,11 +192,11 @@ export class AudioEngine {
       } else if (event.type === 'survival-stones-landed') {
         this.tone({ frequency: 123.47, duration: 0.12, gain: 0.24, endFrequency: 110, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
         this.tone({ frequency: 246.94, duration: 0.07, gain: 0.07, delay: 0.008, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' });
-      } else if (event.type === 'level-up') {
+      } else if (event.type === 'level-up' && !hasMutationActivation) {
         [392, 493.88, 587.33, 783.99].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.22 : 0.17, gain: index === 3 ? 0.15 : 0.19, delay: index * 0.05, attack: 0.004, body: 0.5, bodyGain: 0.58, type: index < 2 ? 'triangle' : 'sine' }));
-      } else if (event.type === 'finished') {
+      } else if (event.type === 'finished' && !hasMutationActivation) {
         [392, 493.88, 659.25, 783.99, 987.77].forEach((frequency, index) => this.tone({ frequency, duration: index === 4 ? 0.3 : 0.22, gain: index === 4 ? 0.105 : 0.2 - index * 0.018, delay: index * 0.055, attack: 0.004, body: 0.54, bodyGain: 0.6, type: index < 2 ? 'triangle' : 'sine' }));
-      } else if (event.type === 'game-over') {
+      } else if (event.type === 'game-over' && !hasMutationActivation) {
         [220, 174.61, 146.83, 110].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.26 : 0.19, gain: 0.18 - index * 0.018, delay: index * 0.09, attack: 0.006, body: 0.54, bodyGain: 0.6, type: index < 3 ? 'triangle' : 'sine' }));
       } else if (event.type === 'started') {
         // The cover exits silently after the third short countdown beat.
