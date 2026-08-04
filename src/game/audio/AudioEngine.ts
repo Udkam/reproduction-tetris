@@ -9,6 +9,14 @@ interface ToneOptions {
   type?: OscillatorType;
   delay?: number;
   endFrequency?: number;
+  envelope?: readonly ToneEnvelopePoint[];
+}
+
+interface ToneEnvelopePoint {
+  /** Seconds after voice start. */
+  at: number;
+  /** Multiplier of the voice's peak gain. */
+  gainRatio: number;
 }
 
 /** A short-lived foreground voice, including the occasional buffer-noise puff. */
@@ -142,9 +150,8 @@ export class AudioEngine {
       } else if (event.type === 'game-over') {
         [174, 131, 98].forEach((frequency, index) => this.tone({ frequency, duration: 0.17, gain: 0.19, delay: index * 0.12, type: 'sine' }));
       } else if (event.type === 'started') {
-        // Opening the board continues digit 1 instead of appending a separate
-        // rising jingle: same sine/pitch, much quieter and shorter.
-        this.tone({ frequency: 783.99, duration: 0.055, gain: 0.045, type: 'sine' });
+        // Digit 1 owns the complete release through the cover-exit boundary.
+        // A second onset here would detach that release from the countdown.
       } else if (event.type === 'resumed') {
         this.tone({ frequency: 440, duration: 0.09, gain: 0.17, endFrequency: 554, type: 'sine' });
       } else if (event.type === 'paused') {
@@ -157,16 +164,27 @@ export class AudioEngine {
     this.playMutationActivations(mutationActivations);
   }
 
-  /** Two steady ticks and one higher release make the countdown readable without a melody. */
+  /** Two steady ticks and one continuous final envelope make the countdown readable without a melody. */
   playEntryCountdown(digit: 3 | 2 | 1): void {
     if (!this.context || !this.master || !this.enabled) return;
-    const profile = digit === 1
-      ? { frequency: 783.99, duration: 0.18, gain: 0.14 }
-      : { frequency: 523.25, duration: 0.11, gain: 0.105 };
+    if (digit === 1) {
+      this.tone({
+        frequency: 783.99,
+        duration: 1.22,
+        gain: 0.14,
+        type: 'sine',
+        envelope: [
+          { at: 0.18, gainRatio: 0.22 },
+          { at: 1, gainRatio: 0.075 },
+          { at: 1.22, gainRatio: 0.0005 },
+        ],
+      });
+      return;
+    }
     this.tone({
-      frequency: profile.frequency,
-      duration: profile.duration,
-      gain: profile.gain,
+      frequency: 523.25,
+      duration: 0.11,
+      gain: 0.105,
       type: 'sine',
     });
   }
@@ -348,11 +366,21 @@ export class AudioEngine {
     oscillator.frequency.setValueAtTime(options.frequency, start);
     if (options.endFrequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(1, options.endFrequency), end);
     gain.gain.setValueAtTime(0.0001, start);
+    const peakGain = Math.max(0.0001, Math.min(VOICE_GAIN_CEILING, options.gain * VOICE_GAIN_BOOST));
     gain.gain.exponentialRampToValueAtTime(
-      Math.max(0.0001, Math.min(VOICE_GAIN_CEILING, options.gain * VOICE_GAIN_BOOST)),
+      peakGain,
       start + Math.min(0.012, options.duration * 0.25),
     );
-    gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    if (options.envelope?.length) {
+      for (const point of options.envelope) {
+        gain.gain.exponentialRampToValueAtTime(
+          Math.max(0.0001, Math.min(VOICE_GAIN_CEILING, peakGain * point.gainRatio)),
+          start + Math.max(0.012, Math.min(options.duration, point.at)),
+        );
+      }
+    } else {
+      gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    }
     oscillator.connect(gain);
     gain.connect(effects);
     const voice: EffectVoice = { source: oscillator, gain };
