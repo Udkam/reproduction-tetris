@@ -2,10 +2,12 @@
 
 ## T27-R1 active goal — centred board stage and three complete visual themes
 
-**Status (2026-08-04): ACCEPTED / SETTINGS AND AUDIO FOLLOW-UP OPEN.** This player-requested
+**Status (2026-08-04): ACCEPTED / SETTINGS, AUDIO, AND CLASSIC RANKING FOLLOW-UP OPEN.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
-desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
-persistence migrations, the single-canvas boundary, or Mutation mechanics.
+desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, the single-canvas
+boundary, or Mutation mechanics. The later direct request narrowly reopens Classic
+ranking and its leaderboard persistence so player-selected gravity intervals are no
+longer compared as one difficulty.
 
 The correction has ten coupled acceptance requirements:
 
@@ -317,11 +319,23 @@ The slice has sixteen player-visible acceptance requirements:
     Neither path may use a heavy bass fall, stacked impact voices, electrical hum, or
     a long pitch sweep. Hard drop may remain slightly more present than a gravity lock,
     but both must sit below line-clear and countdown feedback in perceived weight.
-18. The sound emitted when the entry cover finishes disappearing is part of the same
-    countdown phrase, not an unrelated start flourish. It reuses the final digit's sine
-    timbre and pitch at much lower gain as a brief release tail exactly when input opens.
-    No rising sweep, second chord, noise burst, or generic `started` jingle may follow
+18. Countdown digit `1` and the disappearing entry cover are one continuous sound
+    envelope, not two adjacent cues. Digit `1` has one clear high sine attack followed
+    by a low-gain decay that remains audible through its remaining one-second hold and
+    the 220 ms cover exit, reaching silence at the input-open boundary. It uses exactly
+    one oscillator and one onset: `started` is silent, so no short release note, rising
+    sweep, second chord, noise burst, or generic start jingle may restart the sound after
     digit `1`.
+19. Classic uses exactly three difficulty grades derived deterministically from both
+    selected gravity bounds. The arithmetic midpoint of opening and fastest seconds per
+    cell is **Relaxed / 休闲** at `0.65` or slower, **Standard / 标准** from `0.35` through
+    `0.60`, and **Challenge / 挑战** at `0.30` or faster. The current grade is visible
+    beside the interval control. Every new Classic score stores the selected opening
+    and fastest tick bounds plus the derived grade, and Classic leaderboards keep a
+    separate top five for each grade. Settings and result views allow the three compact
+    grade filters without creating nine or more micro-tiers. Valid v8 Classic rows lack
+    interval evidence and migrate conservatively into Standard; Survival and Mutation
+    records, ordering, and limits remain unchanged.
 
 ### Required checkpoints and verification
 
@@ -336,7 +350,9 @@ The slice has sixteen player-visible acceptance requirements:
 6. Commit the persistent Mutation status rail, stronger carrier identity, Reshape
    activation, and Metal typography as bounded checkpoints with direct React,
    renderer/timeline, token, and CSS tests.
-7. After the final source edit, run one typecheck, the complete two-worker suite, one
+7. Commit Classic three-grade derivation, v9 leaderboard migration, per-grade retention,
+   Settings/result filters, and focused persistence/UI tests as one bounded rollback point.
+8. After the final source edit, run one typecheck, the complete two-worker suite, one
    production build, and one controlled bilingual browser-evidence batch. Inspect real
    Home, Classic Settings, Survival HUD, countdown, Supergravity, and all three ranked
    result frames. Then create a candidate SHA for independent read-only QA before

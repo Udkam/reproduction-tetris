@@ -211,6 +211,26 @@ control blue; browser-default colors are not part of the component. The active t
 owns the focus ring. Pointer drag, click selection, and keyboard adjustment never place
 a rectangular focus outline around the full rail.
 
+Classic ranking has three deliberately broad difficulty grades rather than one board
+per possible pair of handles. Convert the opening and fastest tick bounds back to
+seconds per cell, take their arithmetic midpoint, and classify that midpoint as
+`relaxed` at `0.65` seconds or slower, `standard` from `0.35` through `0.60`, or
+`challenge` at `0.30` seconds or faster. Because each bound moves in 0.1-second steps,
+the midpoint moves in 0.05-second steps and there is no unclassified gap. The Settings
+rail displays the localized grade next to the pending interval so the consequence is
+known before the next run.
+
+The v9 Classic record stores `classicDifficulty`, `classicStartingGravityTicks`, and
+`classicGravityFloorTicks` with the score. A run is therefore compared only with the
+top five rows that used the same derived grade, even if the player changes Settings
+before opening the result. Settings and results expose one compact three-choice grade
+filter, defaulting to the pending or completed run's grade respectively. The underlying
+Classic collection retains at most five rows per grade; Survival and Mutation retain
+their existing independent top-five collections. Valid v8 Classic records cannot prove
+their historical interval, so migration assigns them to Standard while preserving their
+score, line, piece, date, and ordering data. The old key remains readable for rollback
+and is never destructively rewritten in place.
+
 ### Survival pace feedback
 
 The independent falling-rock accumulator advances seven units for every one simulation
@@ -249,16 +269,16 @@ behind active/ghost pieces. Reduced motion retains a clearly visible static top-
 field without drifting animation.
 
 The entry countdown uses an original transport-style procedural cue on the
-runtime-owned effects bus. `3` and `2` repeat one short, clean sine pulse; `1` moves to
-a clearly higher pitch and lasts slightly longer so the player hears an unambiguous
-final beat. It is deliberately not an ascending melody or mallet chord. There is no
-pitch sweep, square/saw voice, noise burst, external sample, or unrelated Start jingle.
-When the cover has completed its exit and input opens, the runtime's `started` event
-plays one very quiet, brief release tail at the same pitch and with the same sine timbre
-as digit `1`. This is an audible continuation of the cover transition rather than a new
-note or flourish. The pulses respect mute and volume, never create music or another
-audio context, and leave no oscillator, timer, or listener beyond the existing runtime
-teardown boundary.
+runtime-owned effects bus. `3` and `2` repeat one short, clean sine pulse. `1` moves to
+a clearly higher pitch and begins with one slightly stronger final attack, then the same
+oscillator falls rapidly to a quiet release level and decays across the remainder of the
+one-second digit hold plus the 220 ms cover exit. It reaches silence as input opens.
+There is no second onset at the visual boundary: the runtime's `started` event is silent.
+The result is one continuous audible phrase rather than a detached low-volume tail.
+It is deliberately not an ascending melody or mallet chord. There is no pitch sweep,
+square/saw voice, noise burst, external sample, unrelated Start jingle, extra timer, or
+persistent voice. The pulses respect mute and volume, share the runtime AudioContext,
+and are released by the existing teardown boundary.
 Confirming a restart must not layer the generic `restarted` event cue underneath digit
 `3`: every restart path hands audible ownership to this one countdown sequence, so its
 first beat is exactly one pulse rather than a restart flourish plus a countdown pulse.
