@@ -3,7 +3,83 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-05 T32 — active Puzzle curriculum rebuild
+
+**Status: ACTIVE / POST-T31 AUDIT.** T31 Mutation feedback and row-wise arrival are
+accepted on product/test source `7c4a9a1` with browser evidence `735effe` and an
+independent P0/P1/P2/P3-zero verdict. T32 now begins with a read-only campaign,
+duplicate, replay, solver, progression, and shared-path audit. No board definition or
+progression source changes until that audit freezes the final roster and exact source
+ownership.
+
+When admitted, T32 replaces the current Puzzle curriculum without changing the total
+campaign size: **50 levels = 10 Intro + 20 Easy + 20 Hard**. The ten Intro boards are
+all rebuilt as authored teaching puzzles; Intro remains immediately available. All
+twenty Easy levels are immediately available and never depend on prior completion or
+operation-count gates. The twenty Hard levels are mastery-gated: each Hard puzzle names
+one certified Easy prerequisite whose route demonstrates the same technique and the
+same decisive board-reading problem.
+
+### Curriculum and duplicate policy
+
+- Difficulty is assigned from replay evidence and board decisions, not from the old
+  row band or historical position alone. Intro isolates one teachable decision, Easy
+  asks the player to apply it without a forced sequence, and Hard combines it with a
+  materially tighter or misleading continuation.
+- Exact duplicate boards are forbidden. Near-duplicates are compared through a
+  symmetry-normalized occupancy/anchor fingerprint plus route-critical decisions;
+  renaming, mirroring, changing colors, or moving one non-decisive cell is not a new
+  puzzle.
+- The near-repeated boards currently occupying campaign positions 36, 38, and 47 are
+  replaced, respectively, by an authored **lower-triangle**, **pyramid**, and
+  **two-sided suspended-roof with a hollow middle** residue. Their geometry must remain
+  legal under the existing deterministic setup contract rather than being painted or
+  injected directly into runtime state.
+- Names, ordering, categories, lesson copy, and unlock relations are derived only after
+  the final boards and replay evidence are frozen. A stable ID may be retained for a
+  replaced slot only with an explicit campaign-revision migration; stale best counts
+  may not masquerade as records for a different board.
+
+### Solvability and mastery evidence
+
+- Every new or changed board has at least **two distinct successful routes** replayed
+  from the registered initial state through public Core commands only: move, rotate,
+  soft drop, and hard drop. Direct state mutation, private landing injection, renderer
+  coordinates, and solver-only commands are invalid evidence.
+- Both routes must clear every original ordinary cell while preserving anchor rules,
+  fixed queue order, collision, line-clear timing, and ordinary lock semantics. A
+  route is evidence only after deterministic Core replay reaches the canonical Puzzle
+  completion state.
+- Any Easy puzzle used as a Hard unlock prerequisite additionally carries an exhaustive
+  **strict minimum placed-piece certificate**. Its mastery threshold is exactly
+  `optimal placed pieces + 5`; a bounded beam-search result or best route found so far
+  cannot set this threshold.
+- An auditable technique signature links each certified Easy puzzle to its dependent
+  Hard puzzle(s). The signature includes measurable initial-board preconditions, the
+  route's decisive placement/clear event, and the post-decision invariant that makes
+  the continuation work. Tests must derive or verify those facts against replayed
+  states. A handwritten technique label without matching board and route assertions
+  cannot unlock a Hard level.
+- Each Hard level has exactly one visible mastery prerequisite and cannot be unlocked
+  by generic completion totals. One certified Easy level may unlock several Hard
+  levels only when every dependent level proves the same technique signature and
+  strengthens the same key decision rather than sharing a broad topic name.
+
+### T32 acceptance boundary
+
+T32 acceptance requires campaign validators for the 10/20/20 split, duplicate and
+near-duplicate rejection, all-open Intro/Easy access, mastery-only Hard access, two
+Core-replayed routes for every changed board, exhaustive optimality for every mastery
+prerequisite, and technique-signature correspondence. Final typecheck, complete suite,
+production build, one bounded browser pass across all three pages/categories, migrated
+progress behavior, one Canvas, zero browser errors, and independent read-only QA are
+required before the coordinator may call the rebuild complete. This queued contract is
+not implementation or verification evidence.
+
 ## 2026-08-05 T31 — Mutation gravity, ice, and status clarity
+
+**Status: ACCEPTED / CLOSED.** Product/test source `7c4a9a1`, evidence `735effe`,
+final gates, and independent read-only QA pass with no P0-P3 findings.
 
 T31 is a bounded correction to Mutation mode. It removes the Reshape carrier from the
 live product, makes Supergravity landing guidance obey the same per-piece latch as Core,
@@ -12,10 +88,12 @@ effects. Scoring, Bomb, Multiplier, ordinary clears, themes, layout, navigation,
 Survival, persistence, and the single-Canvas boundary remain unchanged.
 
 T31 also carries one direct clarification into the already accepted T30 arrival
-presentation: a newly spawned tetromino enters **row by row**, not cell by cell. Cells
-sharing the same visible row reveal together; rows reveal from top to bottom. This stays
-renderer-only, keeps every cell at an already-clamped legal in-well position, and does
-not change spawn coordinates, collision, queue, timing, or deterministic state.
+presentation: a newly spawned tetromino enters **row by row**, not cell by cell. This is
+real board-mouth travel, not an opacity/scale reveal. Core keeps its canonical hidden
+spawn rows; the lower occupied row appears first in visible board row 1, then higher
+rows cross the board mouth on the configured gravity beat while lower rows advance.
+Rendering clips at the board mouth and does not shift the whole piece into view. Spawn
+coordinates, collision, queue, gravity timing, and deterministic state remain unchanged.
 
 ### Four-item live contract
 
@@ -28,17 +106,19 @@ not change spawn coordinates, collision, queue, timing, or deterministic state.
 - Supergravity still lasts five seconds for newly active pieces. A piece that was
   airborne while Supergravity was active keeps independent-column landing semantics
   until that piece locks, even if the global timer expires first. Both the ghost guide
-  and the final lock use `timer active OR piece latch`; the next piece does not inherit
-  an expired effect.
+  and the final lock use `timer active OR piece latch`; the settled board cells,
+  `piece-locked` event, lock pulse, and hard-drop trail all use the same final per-column
+  coordinates. The next piece does not inherit an expired effect.
 
 ### Activation, clear, and sustained feedback
 
-- Ice activation/clear uses a board-local frost bind on the cleared carrier cells,
-  followed by a short upward faceted-shard release. It must not recolor the whole board,
-  create scan lines, or mask the ordinary playfield.
-- Supergravity activation/clear uses a compact downward pressure pulse attached to the
-  cleared carrier columns. It must read as compression, not a symbol, explosion, screen
-  flash, or full-width bar.
+- Ice activation/clear uses a board-local burst of four small six-arm snowflakes released
+  from the consumed carrier cells. It must not recolor the whole board, create scan
+  lines, or mask the ordinary playfield.
+- Supergravity activation/clear uses five compact gravity-factor particles released from
+  the consumed carrier columns. Each has a dense purple kite and a short downward
+  chevron tail; it must not read as a symbol, explosion, screen flash, pressure ribbon,
+  or full-width bar.
 - While an airborne piece is Supergravity-latched, the rejected spike trail is replaced
   by two or three soft, clipped rectangular afterimages behind its moving cells. The
   trail never survives a lock and does not render in reduced motion.
@@ -49,12 +129,38 @@ not change spawn coordinates, collision, queue, timing, or deterministic state.
 
 ### Mutation status ledger
 
-- The left rail keeps the established heading, item signal, localized name, seconds,
-  and remaining-time meter. Active effects are rows in one visual ledger, not separate
+- The left rail keeps the established heading, item signal, localized name, and one
+  one-pixel remaining-time line. Visible `生效中` / `Active` and seconds are removed;
+  remaining time stays in the row's accessible label. Active effects are rows in one visual ledger, not separate
   cards: no row background, outline, radius, inset stripe, or shadow.
 - Idle state remains intentionally empty beneath the heading; no placeholder sentence,
   decorative rule, or disabled-state box is shown. Simultaneous effects remain legible
-  through their item color, signal, name, timer, and meter only.
+  through their item color, signal, name, and thin time line only, with enough fixed row
+  spacing that concurrent effects never overlap.
+- Frameless does not mean faint: the heading, signal, and item name use a stronger
+  typographic hierarchy, and the one-pixel item-colored meter may use a restrained glow.
+  No background card, visible countdown, pill, or separator is added.
+
+### T31-R1 correction
+
+- Row arrival must expose the canonical lower occupied row first at visible board row 1.
+  A higher occupied row then crosses the clipped board mouth only after the current
+  gravity interval while the lower slice advances. The complete final landing guide is
+  available as soon as the lower slice is visible; it does not wait for the higher row.
+  Fixed reveal timers, row opacity/scale staging, and whole-piece clamping are rejected.
+- Ice activation uses four small carrier-local snowflakes. Supergravity uses five local
+  gravity factors that separate and fall from the consumed columns. Neither may use a
+  whole-board recolor, hard scan line, central symbol, pressure ribbon, full-width bar,
+  or screen flash.
+- Next is rendered by Pixi on a dedicated unmasked plane anchored to the transparent DOM
+  slot. The active-piece board-mouth mask cannot clip it. It remains visible through
+  board-local pause/restart/leave interruptions and is hidden only before play, after a
+  terminal state, or during actual route teardown.
+- When the global Supergravity timer reaches zero, an already latched airborne piece
+  retains the same independent-column ghost and final settlement until lock. Expiry
+  removes only the global status; the next piece is the first rigid piece.
+- The correction contract and evidence boundary are frozen in
+  `docs/phases/t31-r1-status-and-arrival-correction.md`.
 
 ### T31 acceptance
 
@@ -62,7 +168,8 @@ Focused Core/presentation tests must prove the four-item pool and latched Superg
 ghost/lock agreement. Renderer tests must freeze the new Ice and Supergravity activation
 geometry, the clipped non-spike trail, reduced-motion endpoint, and absence of Reshape.
 Audio tests must prove Supergravity state sync creates no sustained voice and that no
-Reshape cue remains. UI/style tests must prove frameless status rows. After the final
+Reshape cue remains. UI/style tests must prove frameless status rows with no visible
+active-state copy or seconds. After the final
 source edit, run one typecheck, the complete suite, one production build, and one bounded
 browser pass covering Ice activation, Supergravity before/after timer expiry, status
 layout, row-grouped active-piece arrival, one Canvas, zero DOM board cells, zero console

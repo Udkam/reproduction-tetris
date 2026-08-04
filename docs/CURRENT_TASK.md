@@ -5,7 +5,10 @@
 Remove the rejected Reshape carrier; align the Supergravity ghost with the canonical
 per-piece latch; replace Supergravity/Ice activation, clear, trail, and audio feedback;
 restore the earlier information-rich Mutation status as one frameless ledger; and apply
-the clarified row-by-row active-piece arrival. The
+the clarified row-by-row active-piece arrival. T31-R1 additionally restores the
+frameless Next preview on a dedicated unmasked Pixi plane, strengthens the Mutation
+ledger hierarchy without adding cards, and proves that an airborne Supergravity-latched
+piece keeps its projected and final independent-column landing after global expiry. The
 authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
 
 ## Scope and ownership
@@ -39,31 +42,138 @@ authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
    Supergravity lock and ghost projection.
 3. **T31 feedback** — implement local Ice/Supergravity activation and clear grammar,
    replace the trail, remove sustained/landing feedback, and cover reduced motion.
-4. **T31 status and copy** — restore the old information set as frameless ledger rows
-   and remove Reshape from live localized rules.
-5. **T31 row arrival clarification** — reveal each occupied row as one slice in stable
-   top-to-bottom order without changing Core spawn/collision state.
-6. **T31 evidence and closure** — run focused tests, final gates, one bounded visual
+4. **T31 status and copy** — use frameless ledger rows with only signal/name/thin time
+   line visible, and remove Reshape from live localized rules. Remaining seconds stay
+   accessible but are not rendered as row copy.
+5. **T31 row arrival clarification** — preserve hidden Core spawn rows and clip at the
+   board mouth: the lower occupied row enters board row 1 first, then the next row enters
+   after the current gravity interval while the lower row advances. No opacity/scale
+   reveal or renderer-only whole-piece shift is accepted.
+6. **T31-R1 activation correction** — replace the rejected Ice/Supergravity activation
+   geometry with local snowflake and gravity-factor particle languages; restore Next on
+   a dedicated unmasked plane; strengthen the frameless status hierarchy; and freeze the
+   expiry-latched Supergravity ghost/lock chain in renderer evidence.
+7. **T31 evidence and closure** — run focused tests, final gates, one bounded visual
    audit, independent QA, changelog reconciliation, scoped scan, and push.
 
 ## Acceptance checklist
 
-- [ ] The live Mutation item union, random pool, rules, renderer, audio, and tests contain
+- [x] The live Mutation item union, random pool, rules, renderer, audio, and tests contain
   Ice, Supergravity, Bomb, and Multiplier only.
-- [ ] A Supergravity-latched airborne piece keeps independent-column ghost and lock
-  behavior after global expiry; an unlatched next piece is rigid.
-- [ ] Supergravity produces no sustained or expiry voice and no special landing effect.
-- [ ] Ice and Supergravity activation/clear effects are local, short, distinct, and
-  reduced-motion safe; the Supergravity trail has no spikes or stale frame.
-- [ ] Mutation status shows signal/name/time/meter without individual row cards or idle
-  placeholder copy.
-- [ ] A newly spawned active piece reveals by row: cells sharing one visible row have
-  identical progress, rows enter top-to-bottom, and reduced motion shows the endpoint.
-- [ ] Focused tests, final typecheck, complete suite, build, one-Canvas browser evidence,
+- [x] A Supergravity-latched airborne piece keeps independent-column ghost and lock
+  behavior after global expiry; its ghost, final board cells, lock pulse, and hard-drop
+  trail share the same settled per-column coordinates. An unlatched next piece is rigid.
+- [x] Supergravity produces no sustained or expiry voice and no special landing effect.
+- [x] Ice and Supergravity activation/clear effects use respectively four local
+  snowflakes and five local gravity-factor particles, remain short and reduced-motion
+  safe, and the Supergravity trail has no spikes or stale frame.
+- [x] Mutation status shows only signal/name/one-pixel time line without visible
+  `生效中` / `Active`, seconds, individual row cards, overlap, or idle placeholder copy.
+- [x] Mutation status is clearly legible through stronger heading/name/signal hierarchy,
+  and Next is visible on its own unmasked, frameless plane during active play and
+  board-local interruption states.
+- [x] A newly spawned two-row piece has a lower-row-only first beat at board row 1; the
+  upper row crosses the board mouth only after the configured gravity interval while the
+  lower row advances. The complete final landing guide appears as soon as that lower row
+  is visible; it does not wait for the upper row. No fake opacity/scale reveal or
+  whole-piece clamp replaces canonical hidden-row geometry.
+- [x] Focused tests, final typecheck, complete suite, build, one-Canvas browser evidence,
   zero console errors, teardown, and independent QA pass before acceptance.
 
-Status (2026-08-05): **IN PROGRESS**. Contract checkpoint is being established from
-`main@7392edf`; no source claim is accepted yet.
+Status (2026-08-05): **ACCEPTED / CLOSED**. Accepted product/test source is
+`7c4a9a1`; final browser evidence is `735effe`. Typecheck, the complete suite
+(`369 passed / 3 skipped`), production build, one-Canvas/zero-error browser audit, and
+independent QA all pass. Independent QA reported P0 0 / P1 0 / P2 0 / P3 0 and verified
+the unmasked Next plane, timer-expired airborne Supergravity latch, row-wise arrival
+with immediate complete ghost, prominent frameless status ledger, and local activation
+geometry. The correction contract is
+`docs/phases/t31-r1-status-and-arrival-correction.md`.
+
+## Queued next task — T32 Puzzle curriculum rebuild
+
+Status (2026-08-05): **ACTIVE / POST-T31 AUDIT**. T31 is accepted and closed. T32 now
+owns the curriculum audit and rebuild, beginning from accepted product/evidence base
+`735effe`. Product edits remain blocked until the current fifty boards, duplicate
+fingerprints, solver/replay artifacts, progression schema, and exact shared-path
+ownership have been re-audited and the final roster is frozen.
+
+### Frozen T32 outcome
+
+- Preserve exactly 50 levels, redistributed as 10 Intro, 20 Easy, and 20 Hard.
+- Rebuild all ten Intro boards. Intro remains immediately available and isolates
+  concrete techniques instead of asking the player to guess through a miniature hard
+  residue.
+- Make all twenty Easy boards immediately available. Easy is the open practice field;
+  completion totals and tier gates do not hide any Easy puzzle.
+- Keep all twenty Hard boards behind technique mastery. Each Hard board names one
+  certified Easy prerequisite, and satisfying that prerequisite within its exact
+  threshold unlocks the dependent Hard board(s).
+- Remove exact and near-repeated residues. Replace campaign positions 36, 38, and 47
+  with, respectively, a lower-triangle, pyramid, and two-sided suspended-roof/hollow-
+  middle residue while preserving legal deterministic authoring.
+- Require at least two distinct public-Core-command solution replays for every new or
+  changed board. A changed board is not admitted on visual plausibility or a solver
+  search result that was not replayed by Core.
+- Require an exhaustive strict-minimum placed-piece certificate for every Easy board
+  that gates Hard content. The visible unlock threshold is `optimum + 5`.
+- Require a machine-auditable technique signature and route-critical decision match
+  between every gating Easy puzzle and its Hard dependants. Handwritten labels alone
+  do not establish correspondence.
+
+### Ownership and isolation
+
+- Coordinator/writer after admission: primary task `/root`; this queued documentation
+  checkpoint does not transfer ownership away from active T31.
+- T32 contract paths are `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/phases/t32-puzzle-curriculum-rebuild.md`, `progress.md`, and
+  `docs/workstreams/tetris-t32-puzzle/THREAD_LOG.md` only.
+- Eventual source is expected to remain in Puzzle definitions, progress/mastery/
+  lesson data, exact solver/certificate support, their direct tests, and scoped Puzzle
+  library layout only where the new 10/20/20 data requires it. Exact source paths and
+  checkpoint budgets must be re-audited against the post-T31 tree before admission.
+- Existing T31 Mutation/audio/arrival working-tree changes and inherited T27 evidence
+  are frozen owner work. T32 may not edit, stage, revert, format, regenerate, or bundle
+  any of those paths. Any path collision stops T32 rather than resolving it implicitly.
+- Mutation mechanics/feedback, audio, Survival, Classic, themes, navigation, package
+  metadata, and unrelated evidence remain outside the T32 product boundary.
+
+### Ordered checkpoints
+
+1. Re-audit the accepted post-T31 base, current 50 boards, symmetry-normalized
+   duplicate fingerprints, route artifacts, saved-progress revision, and shared-path
+   ownership.
+2. Freeze the final board roster, 10/20/20 order, technique families, mastery map,
+   campaign migration, exact source paths, and checkpoint budget before product edits.
+3. Author and Core-replay the rebuilt Intro set plus replacement boards 36/38/47;
+   commit the first green campaign-definition claim before changing progression.
+4. Generate and replay a second distinct route for every changed board; create strict
+   exhaustive certificates for the Easy mastery prerequisites in a separate proof
+   checkpoint.
+5. Implement all-open Intro/Easy access, mastery-only Hard access, campaign revision,
+   and technique-signature validators with direct tests.
+6. Adapt the Puzzle library only as required by the frozen categories and relations,
+   then run final gates, bounded visual evidence, multi-round independent QA,
+   changelog reconciliation, and coordinator push.
+
+### T32 acceptance checklist
+
+- [x] T31 is accepted and closed before the first T32 source edit.
+- [ ] The campaign contains exactly 10 Intro, 20 Easy, and 20 Hard levels.
+- [ ] All Intro boards are newly authored; all Intro and Easy boards are immediately
+  available; no Hard board bypasses a mastery prerequisite.
+- [ ] Campaign positions 36, 38, and 47 contain the three frozen distinct silhouettes,
+  and duplicate/near-duplicate validation finds no unresolved repetition.
+- [ ] Every new or changed board has two distinct successful public-command Core
+  replays from its registered initial state.
+- [ ] Every gating Easy board has an exhaustive optimal placed-piece certificate and
+  unlocks at exactly optimum plus five.
+- [ ] Every Easy-to-Hard relation has replay-verified measurable preconditions, a
+  matching decisive event, and a matching continuation invariant.
+- [ ] Final typecheck, complete tests, build, migration checks, three-category browser
+  evidence, one Canvas, zero browser errors, teardown, and multi-round independent QA
+  pass before acceptance.
+
+No checklist item is satisfied by this documentation-only queue checkpoint.
 
 ---
 

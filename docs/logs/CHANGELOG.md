@@ -1546,3 +1546,20 @@
 - Independent read-only QA accepted `6189622..b0aa433` with P0 0 / P1 0 / P2 0 / P3 0.
   Existing local deltas under `docs/evidence/t27/` and
   `docs/evidence/t27-r1-followup/` remain outside this accepted candidate.
+
+## 2026-08-05 — T31 Mutation feedback and row-wise arrival accepted
+
+- Restored the frameless Mutation status as a stronger readable ledger and moved Next
+  to a dedicated unmasked Pixi preview plane, keeping it visible during active play and
+  board-local interruption states.
+- Preserved Supergravity as a per-piece landing latch after the global timer expires:
+  the airborne piece's independent-column ghost, final locked cells, lock event, and
+  feedback coordinates agree; the latch clears only after that piece locks.
+- Reworked two-row board-mouth arrival so the lower occupied row enters first while the
+  complete final landing guide is already visible; the upper row crosses one configured
+  gravity interval later without changing deterministic Core spawn geometry.
+- Ice and Supergravity activations now use respectively four local snowflakes and five
+  local gravity-factor particles, with reduced-motion-safe static endpoints.
+- Accepted product/test source `7c4a9a1` and evidence `735effe` pass typecheck, the
+  complete suite (`369 passed / 3 skipped`), production build, one-Canvas/zero-error
+  browser audit, and independent QA with P0 0 / P1 0 / P2 0 / P3 0.
