@@ -220,6 +220,35 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
+  it('uses one soft unbent mid-low voice for rotation', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.play([{ type: 'piece-rotated', piece: 'T', direction: 1 }]);
+
+    expect(oscillators).toHaveLength(1);
+    expect(oscillators[0]?.frequency.setValues).toEqual([330]);
+    expect(oscillators[0]?.frequency.ramps).toEqual([]);
+    expect(oscillators[0]?.type).toBe('sine');
+    expect(oscillators[0]?.stops[0]).toBeLessThanOrEqual(0.07);
+    expect(Math.max(...(gains[2]?.gain.ramps ?? []))).toBeLessThanOrEqual(0.11);
+    audio.destroy();
+  });
+
+  it('keeps restarted silent so countdown digit 3 is the sole first beat', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.play([{ type: 'restarted' }]);
+    expect(oscillators).toHaveLength(0);
+    audio.playEntryCountdown(3);
+    expect(oscillators).toHaveLength(1);
+    expect(oscillators[0]?.frequency.setValues).toEqual([523.25]);
+    audio.destroy();
+  });
+
   it('gives every mutation material a concise, unbent original signature', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
 

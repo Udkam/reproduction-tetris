@@ -118,8 +118,7 @@ export class AudioEngine {
           this.lastSoftDropAt = now;
         }
       } else if (event.type === 'piece-rotated') {
-        this.tone({ frequency: 392, duration: 0.052, gain: 0.21, endFrequency: 466, type: 'triangle' });
-        this.tone({ frequency: 587, duration: 0.04, gain: 0.14, delay: 0.018, endFrequency: 660, type: 'sine' });
+        this.tone({ frequency: 330, duration: 0.06, gain: 0.08, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
         this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop) {
@@ -147,8 +146,8 @@ export class AudioEngine {
       } else if (event.type === 'paused') {
         this.tone({ frequency: 262, duration: 0.09, gain: 0.14, endFrequency: 218, type: 'sine' });
       } else if (event.type === 'restarted') {
-        this.tone({ frequency: 294, duration: 0.08, gain: 0.16, endFrequency: 330, type: 'sine' });
-        this.tone({ frequency: 440, duration: 0.08, gain: 0.14, delay: 0.045, endFrequency: 494, type: 'sine' });
+        // The fresh 3-2-1 sequence owns restart feedback; another voice here would
+        // double the first beat when the restarted event and digit 3 share a frame.
       }
     }
     this.playMutationActivations(mutationActivations);
