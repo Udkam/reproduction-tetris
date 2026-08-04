@@ -7,6 +7,7 @@ import phase7Batch5File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle
 import t32Changed01To03File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-01-03.json';
 import t32Changed04To06File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-04-06.json';
 import t32Changed07To09File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-07-09.json';
+import t32Changed10File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-10.json';
 import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
 import {
@@ -19,7 +20,7 @@ import {
 import { metricsForPuzzleRoute, replayPuzzleRoute } from './puzzleRouteSearch';
 import { ANCHOR_CELL, type GameCommand, type PuzzleId } from './types';
 
-type CommandToken = 'S' | 'T' | 'L' | 'R' | 'H' | 'C';
+type CommandToken = 'S' | 'T' | 'L' | 'R' | 'H' | 'C' | 'D';
 
 type VerifiedRoute = {
   id: 'primary' | 'alternate';
@@ -75,6 +76,7 @@ const phase7Batch5 = phase7Batch5File as unknown as Phase7Artifact;
 const t32Changed01To03 = t32Changed01To03File as unknown as Phase7Artifact;
 const t32Changed04To06 = t32Changed04To06File as unknown as Phase7Artifact;
 const t32Changed07To09 = t32Changed07To09File as unknown as Phase7Artifact;
+const t32Changed10 = t32Changed10File as unknown as Phase7Artifact;
 const phase7Artifacts = Object.freeze([
   phase7Batch1,
   phase7Batch2,
@@ -94,6 +96,7 @@ const t32ChangedById = new Map(
     ...t32Changed01To03.levels,
     ...t32Changed04To06.levels,
     ...t32Changed07To09.levels,
+    ...t32Changed10.levels,
   ].map((level) => [level.id, level]),
 );
 const historicalById = new Map(historicalLevels.map((level) => [level.id, level]));
@@ -115,12 +118,13 @@ function commandFor(token: CommandToken): GameCommand {
     case 'R': return { type: 'move', dx: 1 };
     case 'H': return { type: 'hard-drop' };
     case 'C': return { type: 'rotate', direction: 1 };
+    case 'D': return { type: 'soft-drop' };
   }
 }
 
 function decode(stream: string): GameCommand[] {
   return [...stream].map((token) => {
-    if (!['S', 'T', 'L', 'R', 'H', 'C'].includes(token)) throw new Error(`Unknown compact public command: ${token}`);
+    if (!['S', 'T', 'L', 'R', 'H', 'C', 'D'].includes(token)) throw new Error(`Unknown compact public command: ${token}`);
     return commandFor(token as CommandToken);
   });
 }
@@ -157,6 +161,16 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       alternateBeam: 750,
     });
     expect(activeLevels.slice(6, 9)).toEqual(t32Changed07To09.levels);
+    expect(t32Changed10.schemaVersion).toBe(7);
+    expect(t32Changed10.batch).toEqual({ from: 10, to: 10 });
+    expect(t32Changed10.campaignOrder).toEqual(['t5r-drift-08']);
+    expect(t32Changed10.levels).toHaveLength(1);
+    expect(t32Changed10.searchBounds).toEqual({
+      maxLocks: 14,
+      primaryBeam: 1600,
+      alternateBeam: 1600,
+    });
+    expect(activeLevels.slice(9, 10)).toEqual(t32Changed10.levels);
     expect(historicalLevels.slice(0, 3)).toEqual(phase7Batch1.levels.slice(0, 3));
   });
 
@@ -242,7 +256,7 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
           rotationCount: route.rotationCount,
           moveCount: route.moveCount,
         });
-        expect(route.commandStream, `${level.id}/${route.id}`).toMatch(/^S[STLRHC]+$/);
+        expect(route.commandStream, `${level.id}/${route.id}`).toMatch(/^S[STLRHCD]+$/);
         expect(route.locks, `${level.id}/${route.id}`).toBeGreaterThanOrEqual(level.targetRowCount);
       }
     }

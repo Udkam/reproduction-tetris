@@ -63,14 +63,17 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(50);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(50);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
-      '补行', '留井', '托台', '留口', '后手', '避坑', '归心', '分流', '择门', '绕柱',
+      '补行', '留井', '托台', '留口', '后手', '避坑', '归心', '分流', '择门', '侧隙',
       '平台', '井口', '悬边', '阶梯', '双井', '回填', '侧台', '横桥', '窄门', '交汇',
       '门柱', '回廊', '中柱', '斜坡', '夹井', '错台', '缓坡', '侧桥', '双层', '断台',
       '曲井', '左闸', '错桥', '阶井', '悬台', '右闸', '双廊', '回井', '边塔', '折桥',
       '横沟', '中阶', '分廊', '双塔', '斜廊', '边井', '深槽', '断槽', '叠井', '岔口',
     ]);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(50);
-    expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows }) => boardRows.join('/'))).size).toBe(50);
+    expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows, anchorCells }) => JSON.stringify({
+      boardRows,
+      anchorCells,
+    }))).size).toBe(50);
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
       't5r-drift-08', 't5r-pulse-14', 't6r-cairn-17',
       'tm-puzzle-22', 'tm-puzzle-26', 'tm-puzzle-27',

@@ -8,7 +8,9 @@ export type PuzzleTechnique =
   | 'avoid-hole'
   | 'read-queue'
   | 'retain-opening'
-  | 'anchor-geometry'
+  | 'edge-to-centre'
+  | 'split-lanes'
+  | 'choose-gate'
   | 'anchor-side-slip';
 
 export type PuzzleLesson = Readonly<{
@@ -18,19 +20,20 @@ export type PuzzleLesson = Readonly<{
 }>;
 
 /**
- * The opening curriculum deliberately leaves combination levels 7–9 unlabelled: the
- * player applies the first six ideas without receiving a live answer feed. Level 10
- * introduces fixed collision geometry; level 11 then adds the timed side-slip.
+ * Each Intro level names one transferable decision without exposing a live solver
+ * answer. The tenth lesson introduces the only timing-specific anchor manoeuvre.
  */
 export const PUZZLE_LESSONS: readonly PuzzleLesson[] = Object.freeze([
   Object.freeze({ levelId: 't3r-shaft-01', technique: 'complete-row', stage: 'foundation' }),
   Object.freeze({ levelId: 't3r-shaft-02', technique: 'preserve-well', stage: 'foundation' }),
   Object.freeze({ levelId: 't3r-shaft-03', technique: 'build-support', stage: 'foundation' }),
-  Object.freeze({ levelId: 't3r-cascade-06', technique: 'avoid-hole', stage: 'foundation' }),
+  Object.freeze({ levelId: 't3r-cascade-06', technique: 'retain-opening', stage: 'foundation' }),
   Object.freeze({ levelId: 't3r-shaft-04', technique: 'read-queue', stage: 'foundation' }),
-  Object.freeze({ levelId: 't3r-cascade-05', technique: 'retain-opening', stage: 'foundation' }),
-  Object.freeze({ levelId: 't5r-drift-08', technique: 'anchor-geometry', stage: 'anchor' }),
-  Object.freeze({ levelId: 't5r-pulse-14', technique: 'anchor-side-slip', stage: 'anchor' }),
+  Object.freeze({ levelId: 't3r-cascade-05', technique: 'avoid-hole', stage: 'foundation' }),
+  Object.freeze({ levelId: 't5r-delta-07', technique: 'edge-to-centre', stage: 'foundation' }),
+  Object.freeze({ levelId: 't5r-lattice-09', technique: 'split-lanes', stage: 'foundation' }),
+  Object.freeze({ levelId: 't5r-rift-10', technique: 'choose-gate', stage: 'foundation' }),
+  Object.freeze({ levelId: 't5r-drift-08', technique: 'anchor-side-slip', stage: 'anchor' }),
 ]);
 
 const LESSON_BY_LEVEL = new Map<PuzzleId, PuzzleLesson>(
