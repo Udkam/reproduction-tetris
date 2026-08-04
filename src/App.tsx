@@ -1696,10 +1696,11 @@ export function GameSession({
   onReducedMotionChange?: (reducedMotion: boolean) => void;
 }) {
   const copy = appCopy(language);
+  const skipsEntryCountdown = mode === 'puzzle';
   const hostRef = useRef<HTMLDivElement>(null);
   const boardGestureRef = useRef<{ id: number; x: number; y: number; at: number } | null>(null);
   const runtimeRef = useRef<GameRuntime | null>(null);
-  const countdownCompleteRef = useRef(false);
+  const countdownCompleteRef = useRef(skipsEntryCountdown);
   const exitWasPlayingRef = useRef(false);
   const restartWasPlayingRef = useRef(false);
   const settingsWasPlayingRef = useRef(false);
@@ -1718,7 +1719,7 @@ export function GameSession({
     initialClassicGravityRangeRef.current.startingTicks,
     initialClassicGravityRangeRef.current.floorTicks,
   ));
-  const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(3);
+  const [countdownDigit, setCountdownDigit] = useState<EntryCountdownDigit | null>(() => skipsEntryCountdown ? null : 3);
   const [entryCoverExiting, setEntryCoverExiting] = useState(false);
   const [exitOpen, setExitOpen] = useState(false);
   const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
@@ -1797,12 +1798,12 @@ export function GameSession({
     const host = hostRef.current;
     if (!host) return;
     let disposed = false;
-    countdownCompleteRef.current = false;
+    countdownCompleteRef.current = skipsEntryCountdown;
     const nextRuntime = new GameRuntime({
       seed: runSeed,
       mode,
       puzzleId: mode === 'puzzle' ? puzzleId : undefined,
-      inputEnabled: false,
+      inputEnabled: skipsEntryCountdown,
       reducedMotion: reducedMotionRef.current,
       visualTheme,
       survivalEntryBedrockRows: mode === 'race' ? 1 : null,
@@ -1859,7 +1860,13 @@ export function GameSession({
       const canvas = host.querySelector('canvas');
       canvas?.setAttribute('aria-label', appCopy(languageRef.current).phrasing.boardLabel);
       canvas?.setAttribute('aria-description', appCopy(languageRef.current).labels.touchGestureHint);
-      if (countdownCompleteRef.current) focusBoard();
+      if (skipsEntryCountdown) {
+        nextRuntime.start();
+        setLiveMessage(appCopy(languageRef.current).labels.runStarted);
+        focusBoard();
+      } else if (countdownCompleteRef.current) {
+        focusBoard();
+      }
     });
 
     return () => {
@@ -1867,7 +1874,7 @@ export function GameSession({
       nextRuntime.destroy();
       if (runtimeRef.current === nextRuntime) runtimeRef.current = null;
     };
-  }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId, runSeed]);
+  }, [focusBoard, mode, onCanonicalCompletion, onRunFinished, puzzleId, runSeed, skipsEntryCountdown]);
 
   useEffect(() => {
     runtime?.setReducedMotion(reducedMotion);
@@ -2080,13 +2087,20 @@ export function GameSession({
     setRestartConfirmOpen(false);
     settingsWasPlayingRef.current = false;
     restartWasPlayingRef.current = false;
-    countdownCompleteRef.current = false;
+    countdownCompleteRef.current = skipsEntryCountdown;
     setEntryCoverExiting(false);
     runtime?.setInputEnabled(true);
     runtime?.restart();
+    if (skipsEntryCountdown) {
+      setCountdownDigit(null);
+      runtime?.start();
+      setLiveMessage(appCopy(languageRef.current).labels.runStarted);
+      focusBoard();
+      return;
+    }
     runtime?.setInputEnabled(false);
     setCountdownDigit(3);
-  }, [runtime]);
+  }, [focusBoard, runtime, skipsEntryCountdown]);
 
   const requestRestart = useCallback(() => {
     if (!runtime || restartConfirmOpen) return;

@@ -392,7 +392,6 @@ describe('Puzzle completion ceremony', () => {
         mode: 'puzzle', puzzleId, onExit: vi.fn(), onCanonicalCompletion, puzzleProgress,
       }));
       await act(async () => Promise.resolve());
-      await advanceEntryCountdown();
       const runtime = runtimeHarness.instances.at(-1)!;
       const finished = {
         ...runtime.getState(),
@@ -464,7 +463,6 @@ describe('Puzzle completion ceremony', () => {
     act(() => levelButton.click());
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]')!.click());
     await act(async () => Promise.resolve());
-    await advanceEntryCountdown();
 
     const runtime = runtimeHarness.instances.at(-1)!;
     act(() => runtime.setState({
@@ -495,6 +493,69 @@ describe('Puzzle completion ceremony', () => {
 });
 
 describe('entry countdown', () => {
+  it('starts Puzzle immediately on entry, restart confirmation, Settings restart, and replay', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })));
+    vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => {
+      callback(0);
+      return 1;
+    }));
+    const puzzleId = CAMPAIGN_LEVELS[0]!.id;
+    const view = render(createElement(GameSession, {
+      mode: 'puzzle',
+      puzzleId,
+      onExit: vi.fn(),
+      onCanonicalCompletion: vi.fn(),
+    }));
+    await act(async () => Promise.resolve());
+
+    const runtime = runtimeHarness.instances.at(-1)!;
+    const countdown = () => view.container.querySelector('[data-testid="entry-countdown"]');
+    expect(runtime.options.inputEnabled).toBe(true);
+    expect(runtime.start).toHaveBeenCalledTimes(1);
+    expect(runtime.getState().status).toBe('playing');
+    expect(runtime.playEntryCountdown).not.toHaveBeenCalled();
+    expect(countdown()).toBeNull();
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    expect(runtime.restart).toHaveBeenCalledTimes(1);
+    expect(runtime.start).toHaveBeenCalledTimes(2);
+    expect(runtime.getState().status).toBe('playing');
+    expect(runtime.playEntryCountdown).not.toHaveBeenCalled();
+    expect(countdown()).toBeNull();
+
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true })));
+    expect(runtime.restart).toHaveBeenCalledTimes(2);
+    expect(runtime.start).toHaveBeenCalledTimes(3);
+    expect(runtime.getState().status).toBe('playing');
+    expect(runtime.playEntryCountdown).not.toHaveBeenCalled();
+    expect(countdown()).toBeNull();
+
+    act(() => runtime.setState({
+      ...runtime.getState(),
+      status: 'finished',
+      puzzleCompletion: 'finished',
+      completedLevelId: puzzleId,
+      puzzleTargetCells: [],
+      pieceCount: 8,
+      lines: 4,
+    }));
+    act(() => view.container.querySelector<HTMLButtonElement>('.action-sheet--puzzle-celebration .primary-action')?.click());
+    expect(runtime.restart).toHaveBeenCalledTimes(3);
+    expect(runtime.start).toHaveBeenCalledTimes(4);
+    expect(runtime.getState().status).toBe('playing');
+    expect(runtime.playEntryCountdown).not.toHaveBeenCalled();
+    expect(countdown()).toBeNull();
+    view.unmount();
+  });
+
   it('freezes the current digit across Settings and Exit, then starts exactly once after three open-sheet-free seconds', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({
@@ -1242,19 +1303,16 @@ describe('T6 frontend mode binding', () => {
     await act(async () => Promise.resolve());
     const puzzleSlot = puzzle.container.querySelector<HTMLElement>('[data-testid="next-slot"]')!;
     const segments = puzzle.container.querySelectorAll<HTMLElement>('[data-testid="puzzle-next-segment"]');
+    const puzzlePreview = runtimeHarness.instances.at(-1)!.getState().queue.slice(0, 2);
     expect(puzzle.container.querySelector('.preview-sequence')).toBeNull();
     expect(puzzleSlot.dataset.previewCount).toBe('2');
     expect(segments).toHaveLength(2);
     expect(segments[0]?.dataset.previewSegment).toBe('1');
-    expect(segments[0]?.getAttribute('aria-label')).toBe('1 下一个方块');
+    expect(segments[0]?.getAttribute('aria-label')).toBe(`1 下一个方块: ${puzzlePreview[0]}`);
     expect(segments[0]?.textContent).toBe('1');
     expect(segments[1]?.dataset.previewSegment).toBe('2');
-    expect(segments[1]?.getAttribute('aria-label')).toBe('2 后一个方块');
-    expect(segments[1]?.textContent).toBe('2');
-    await advanceEntryCountdown();
-    const puzzlePreview = runtimeHarness.instances.at(-1)!.getState().queue.slice(0, 2);
-    expect(segments[0]?.getAttribute('aria-label')).toBe(`1 下一个方块: ${puzzlePreview[0]}`);
     expect(segments[1]?.getAttribute('aria-label')).toBe(`2 后一个方块: ${puzzlePreview[1]}`);
+    expect(segments[1]?.textContent).toBe('2');
     expect(puzzleSlot.getAttribute('aria-label')).toContain(puzzlePreview.join(', '));
     puzzle.unmount();
 
@@ -1358,7 +1416,6 @@ describe('T6 frontend mode binding', () => {
     expect(puzzle.container.querySelector('canvas')?.getAttribute('aria-description')).toContain('触控');
     expect(puzzle.container.querySelector('.keyboard-map')).toBeNull();
 
-    await advanceEntryCountdown();
     const instance = runtimeHarness.instances.at(-1)!;
     const current = instance.getState();
     const locked = dispatch(current, { type: 'hard-drop' }).state;
