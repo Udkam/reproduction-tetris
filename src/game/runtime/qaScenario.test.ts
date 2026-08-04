@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import phase7Batch1File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json';
+import t32Changed10File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-10.json';
 import { BEDROCK_CELL, BOARD_WIDTH, INITIAL_SURVIVAL_BEDROCK_ROWS, TICKS_PER_SECOND, stateHash, survivalIntervalSeconds } from '../core';
 import { encodePuzzleRoute } from '../core/puzzleRouteSearch';
 import { replayPuzzleChallenge, replaySurvivalBedrock } from './qaScenario';
 
-const phase7PuzzleQaRoute = phase7Batch1File.levels
+const phase7PuzzleQaRoute = t32Changed10File.levels
   .find(({ id }) => id === 't5r-drift-08')!
   .routes.find(({ id }) => id === 'primary')!
   .commandStream;
