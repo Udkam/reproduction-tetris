@@ -482,6 +482,8 @@
 .game-left-rail .mutation-status__effect-copy {
   display: block !important;
   min-width: 0;
+  min-height: 0 !important;
+  height: auto !important;
   padding: 0 !important;
   background: transparent !important;
   border: 0 !important;
@@ -500,17 +502,36 @@
 }
 
 .game-left-rail .mutation-status__meter {
+  display: block !important;
   grid-column: 2 !important;
+  grid-row: 2 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
   height: 1px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   overflow: hidden;
   background: color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 20%, transparent) !important;
-  border-radius: 0;
+  border: 0 !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
 }
 
 .game-left-rail .mutation-status__meter > i {
-  display: block;
-  height: 100%;
+  display: block !important;
+  width: auto;
+  height: 1px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   background: var(--mutation-primary, var(--puzzle)) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 /* Gameplay sheets interrupt the board at its visual center. Next stays rendered
