@@ -271,7 +271,8 @@ field without drifting animation.
 The entry countdown uses an original transport-style procedural cue on the
 runtime-owned effects bus. `3` and `2` repeat one short electronic pulse built from a
 warm sine body and a very quiet octave partial. `1` repeats that same material at a
-clearly higher pitch and slightly longer duration; it does not carry a quiet envelope
+clearly higher pitch with an approximately 240 ms body so the final beat reads as a
+deliberate countdown resolution; it does not carry a separate quiet envelope
 through the remaining hold. The cover then exits silently in 120 ms and input opens. There is no
 second onset at the visual boundary: the runtime's `started` event is silent. The three
 discrete beats remain rhythmically legible without a detached release sound, pitch

@@ -320,8 +320,8 @@ The slice has sixteen player-visible acceptance requirements:
     a long pitch sweep. Hard drop may remain slightly more present than a gravity lock,
     but both must sit below line-clear and countdown feedback in perceived weight.
 18. Countdown returns to three discrete short cues: `3` and `2` share one warm electronic
-    pulse with a restrained octave partial, while `1` reuses that material as a short,
-    higher and slightly longer third beat with no low-volume tail. The
+    pulse with a restrained octave partial, while `1` reuses that material as a higher
+    approximately 240 ms resolving beat with no separate low-volume tail. The
     entry cover exits silently in 120 ms after the `1` hold; `started` remains silent, so
     no release note, sweep, chord, noise burst, or generic start jingle may play at the
     input-open boundary. Pause/resume and other interruption-cover feedback must use
