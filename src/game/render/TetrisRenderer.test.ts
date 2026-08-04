@@ -20,6 +20,7 @@ import {
   VISIBLE_START_ROW,
 } from '../core';
 import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
+import { ordinaryLineClearProfile } from './presentation';
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -1871,6 +1872,52 @@ describe('Puzzle undo presentation reset', () => {
     puzzle.drawEffects({ ...base, mode: 'puzzle', phaseTicks: 4 }, layout);
     expect(puzzleFrame.operations.some((operation) => operation.kind === 'rect' || operation.kind === 'segment')).toBe(false);
     expect(puzzleFrame.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(40);
+  });
+
+  it('ends reduced-motion and Puzzle clear faces at each declared profile duration', () => {
+    const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
+
+    for (const count of [1, 2, 3, 4] as const) {
+      const profile = ordinaryLineClearProfile(count)!;
+      const board = createBoard();
+      const rows = Array.from({ length: count }, (_, index) => BOARD_HEIGHT - 1 - index);
+      for (const row of rows) board[row]!.fill('I');
+      const base = {
+        ...createInitialState(0x1a16_600 + count, 'marathon'),
+        board,
+        status: 'playing',
+        phase: 'line-clear',
+        pendingClearRows: rows,
+      } as GameState;
+
+      for (const variant of [
+        { mode: 'marathon' as const, reducedMotion: true },
+        { mode: 'puzzle' as const, reducedMotion: false },
+      ]) {
+        const renderer = new TetrisRendererClass();
+        renderer.setOptions({ reducedMotion: variant.reducedMotion });
+        const internals = renderer as unknown as RendererInternals;
+        const beforeEnd = createGraphicsRecorder();
+        (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = beforeEnd.graphics;
+        internals.drawEffects({
+          ...base,
+          mode: variant.mode,
+          phaseTicks: profile.reducedTicks - 1,
+        }, layout);
+        expect(beforeEnd.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(
+          count * BOARD_WIDTH,
+        );
+
+        const atEnd = createGraphicsRecorder();
+        (internals as unknown as { effectGraphics: RecorderGraphics }).effectGraphics = atEnd.graphics;
+        internals.drawEffects({
+          ...base,
+          mode: variant.mode,
+          phaseTicks: profile.reducedTicks,
+        }, layout);
+        expect(atEnd.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+      }
+    }
   });
 
   it('bounds post-commit clear tails and clears them on conflicts and lifecycle boundaries', () => {

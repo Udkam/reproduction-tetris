@@ -2384,6 +2384,7 @@ export class TetrisRenderer {
       count,
       restrainedGeometry,
     );
+    if (restrainedGeometry && phaseProgress >= 1) return;
     const activationOwnsClear = state.mode === 'sprint' && (state.mutationCarriers ?? []).some(
       (carrier) => carrier.cells.some((cell) => state.pendingClearRows.includes(cell.y)),
     );
