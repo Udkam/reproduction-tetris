@@ -1,7 +1,7 @@
 {
-  "sourceSha": "39e6317388ee006c64237c352ad8bba3ef15c400",
+  "sourceSha": "7c4a9a128a6cfaff8f805afe43ec3a247d2aae56",
   "liveSeed": 163,
-  "capturedAt": "2026-08-04T18:49:13.383Z",
+  "capturedAt": "2026-08-04T20:22:20.440Z",
   "browser": "149.0.7827.55",
   "idle": {
     "text": "Mutation status",
@@ -41,7 +41,7 @@
       "0px"
     ],
     "copyBackground": "rgba(0, 0, 0, 0)",
-    "meterWidth": 205,
+    "meterWidth": 201,
     "meterTrackHeight": 1,
     "meterFillHeight": 1
   },
@@ -605,7 +605,7 @@
       "gravityTicks": 0,
       "lockTicks": 0,
       "lockResets": 0,
-      "elapsedTicks": 50,
+      "elapsedTicks": 44,
       "randomizer": {
         "seed": 3276183793,
         "bag": [
@@ -682,17 +682,11 @@
           "y": 39
         }
       ],
-      "activeSpawnReveal": {
+      "activeSpawnEntry": {
         "generationKey": "3:S",
-        "elapsedMs": 183.30000000000018,
-        "durationMs": 420,
-        "cellProgress": [
-          1,
-          1,
-          0.9509832661527997,
-          0.9509832661527997
-        ],
-        "ghostProgress": 0
+        "pending": true,
+        "visibleCellCount": 2,
+        "hiddenCellCount": 2
       },
       "visibleLockedCells": 2,
       "presentation": {
@@ -715,33 +709,7 @@
       "survivalEntryBedrockRows": null,
       "survivalEntryBedrockRise": null,
       "classicFeedback": [],
-      "mutationActivation": {
-        "item": "collapse",
-        "elapsedMs": 183.30000000000018,
-        "durationMs": 220,
-        "phases": [
-          {
-            "id": "pressure-bind",
-            "active": false,
-            "complete": true,
-            "progress": 1,
-            "value": 1
-          },
-          {
-            "id": "column-release",
-            "active": true,
-            "complete": false,
-            "progress": 0.6330000000000018,
-            "value": 0.25363613700000215
-          }
-        ],
-        "particlesEmitted": true,
-        "triggerColumns": [
-          7,
-          8,
-          9
-        ]
-      },
+      "mutationActivation": null,
       "mutationActivationQueueItems": [],
       "mutationActiveParticleCount": 0,
       "mutationCollapseTrail": null
@@ -803,39 +771,80 @@
         "x": 4,
         "y": 38
       }
-    ]
+    ],
+    "coreEndpoint": {
+      "ticksAfterExpiry": 0,
+      "landingLatchedAfterExpiry": true,
+      "ghostAfterExpiry": [
+        {
+          "x": 3,
+          "y": 36
+        },
+        {
+          "x": 4,
+          "y": 37
+        },
+        {
+          "x": 3,
+          "y": 37
+        },
+        {
+          "x": 4,
+          "y": 38
+        }
+      ],
+      "lockedCells": [
+        {
+          "x": 3,
+          "y": 36
+        },
+        {
+          "x": 4,
+          "y": 37
+        },
+        {
+          "x": 3,
+          "y": 37
+        },
+        {
+          "x": 4,
+          "y": 38
+        }
+      ],
+      "landingLatchedAfterLock": false
+    }
   },
   "frames": {
     "spawnEarly": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 33
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 25
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -849,19 +858,19 @@
         "activeCells": [
           {
             "x": 4,
-            "y": 20
+            "y": 19
           },
           {
             "x": 3,
-            "y": 21
+            "y": 20
           },
           {
             "x": 4,
-            "y": 21
+            "y": 20
           },
           {
             "x": 5,
-            "y": 21
+            "y": 20
           }
         ],
         "ghostCells": [
@@ -882,22 +891,16 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 70,
-          "durationMs": 420,
-          "cellProgress": [
-            0.864291302297668,
-            0,
-            0,
-            0
-          ],
-          "ghostProgress": 0
+          "pending": true,
+          "visibleCellCount": 3,
+          "hiddenCellCount": 1
         },
         "visibleLockedCells": 0,
         "presentation": {
           "x": 3,
-          "y": 20,
+          "y": 19,
           "offsetX": 0,
           "offsetY": 0
         },
@@ -920,57 +923,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 20,
-          "progress": 0.864291302297668
-        },
-        {
-          "row": 21,
-          "progress": 0
-        },
-        {
-          "row": 21,
-          "progress": 0
-        },
-        {
-          "row": 21,
-          "progress": 0
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "spawnMiddle": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 42
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 27
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1017,24 +1001,18 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 180,
-          "durationMs": 420,
-          "cellProgress": [
-            1,
-            0.9411865569272977,
-            0.9411865569272977,
-            0.9411865569272977
-          ],
-          "ghostProgress": 0
+          "pending": true,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
         },
         "visibleLockedCells": 0,
         "presentation": {
           "x": 3,
-          "y": 20,
+          "y": 19.57562715432305,
           "offsetX": 0,
-          "offsetY": 0
+          "offsetY": -0.4243728456769489
         },
         "boardShiftOffsetY": 0,
         "mutationFilters": {
@@ -1055,57 +1033,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 20,
-          "progress": 1
-        },
-        {
-          "row": 21,
-          "progress": 0.9411865569272977
-        },
-        {
-          "row": 21,
-          "progress": 0.9411865569272977
-        },
-        {
-          "row": 21,
-          "progress": 0.9411865569272977
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "spawnComplete": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 39
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 30
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1152,7 +1111,12 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": null,
+        "activeSpawnEntry": {
+          "generationKey": "1:T",
+          "pending": false,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
+        },
         "visibleLockedCells": 0,
         "presentation": {
           "x": 3,
@@ -1179,40 +1143,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "iceActivationBloom": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 33
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 34
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1259,17 +1221,11 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 60,
-          "durationMs": 420,
-          "cellProgress": [
-            0.8015046296296298,
-            0,
-            0,
-            0
-          ],
-          "ghostProgress": 0
+          "pending": false,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
         },
         "visibleLockedCells": 0,
         "presentation": {
@@ -1322,57 +1278,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 28,
-          "progress": 0.8015046296296298
-        },
-        {
-          "row": 29,
-          "progress": 0
-        },
-        {
-          "row": 29,
-          "progress": 0
-        },
-        {
-          "row": 29,
-          "progress": 0
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "iceActivationFacet": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 61
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 42
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1419,17 +1356,11 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 160,
-          "durationMs": 420,
-          "cellProgress": [
-            1,
-            0.8529878257887518,
-            0.8529878257887518,
-            0.8529878257887518
-          ],
-          "ghostProgress": 0
+          "pending": false,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
         },
         "visibleLockedCells": 0,
         "presentation": {
@@ -1482,57 +1413,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 28,
-          "progress": 1
-        },
-        {
-          "row": 29,
-          "progress": 0.8529878257887518
-        },
-        {
-          "row": 29,
-          "progress": 0.8529878257887518
-        },
-        {
-          "row": 29,
-          "progress": 0.8529878257887518
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "supergravityActivationPressure": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 28
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 35
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1579,17 +1491,11 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 60,
-          "durationMs": 420,
-          "cellProgress": [
-            0.8015046296296298,
-            0,
-            0,
-            0
-          ],
-          "ghostProgress": 0
+          "pending": false,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
         },
         "visibleLockedCells": 0,
         "presentation": {
@@ -1642,57 +1548,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 28,
-          "progress": 0.8015046296296298
-        },
-        {
-          "row": 29,
-          "progress": 0
-        },
-        {
-          "row": 29,
-          "progress": 0
-        },
-        {
-          "row": 29,
-          "progress": 0
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "supergravityActivationRelease": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 42
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 35
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1739,17 +1626,11 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 160,
-          "durationMs": 420,
-          "cellProgress": [
-            1,
-            0.8529878257887518,
-            0.8529878257887518,
-            0.8529878257887518
-          ],
-          "ghostProgress": 0
+          "pending": false,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
         },
         "visibleLockedCells": 0,
         "presentation": {
@@ -1802,57 +1683,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 28,
-          "progress": 1
-        },
-        {
-          "row": 29,
-          "progress": 0.8529878257887518
-        },
-        {
-          "row": 29,
-          "progress": 0.8529878257887518
-        },
-        {
-          "row": 29,
-          "progress": 0.8529878257887518
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "iceClear": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 49
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 38
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1865,7 +1727,7 @@
         "scrim": null,
         "activeCells": [],
         "ghostCells": [],
-        "activeSpawnReveal": null,
+        "activeSpawnEntry": null,
         "visibleLockedCells": 10,
         "presentation": null,
         "boardShiftOffsetY": 0,
@@ -1887,40 +1749,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "supergravityClear": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
-        "distinctBuckets": 47
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
+        "distinctBuckets": 40
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -1933,7 +1793,7 @@
         "scrim": null,
         "activeCells": [],
         "ghostCells": [],
-        "activeSpawnReveal": null,
+        "activeSpawnEntry": null,
         "visibleLockedCells": 10,
         "presentation": null,
         "boardShiftOffsetY": 0,
@@ -1955,40 +1815,38 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     },
     "supergravityTrail": {
       "frame": {
-        "x": 85,
-        "y": 108,
-        "width": 390,
-        "height": 780
+        "x": 261,
+        "y": 12,
+        "width": 438,
+        "height": 876
       },
       "pixelProbe": {
-        "samples": 8222,
-        "nonTransparentSamples": 8222,
+        "samples": 8342,
+        "nonTransparentSamples": 8342,
         "distinctBuckets": 33
       },
       "snapshot": {
         "canvas": {
-          "width": 560,
+          "width": 960,
           "height": 900,
           "resolution": 1
         },
         "board": {
-          "x": 85,
-          "y": 108,
-          "width": 390,
-          "height": 780,
-          "cell": 39
+          "x": 261,
+          "y": 12,
+          "width": 438,
+          "height": 876,
+          "cell": 43.8
         },
         "preview": {
-          "x": 85,
-          "y": 16,
-          "width": 195,
-          "height": 156
+          "x": 12,
+          "y": 12,
+          "width": 239,
+          "height": 175.2
         },
         "previewLayerVisible": true,
         "previewPiece": "L",
@@ -2035,17 +1893,11 @@
             "y": 39
           }
         ],
-        "activeSpawnReveal": {
+        "activeSpawnEntry": {
           "generationKey": "1:T",
-          "elapsedMs": 220,
-          "durationMs": 420,
-          "cellProgress": [
-            1,
-            0.9986282578875172,
-            0.9986282578875172,
-            0.9986282578875172
-          ],
-          "ghostProgress": 0
+          "pending": false,
+          "visibleCellCount": 4,
+          "hiddenCellCount": 0
         },
         "visibleLockedCells": 0,
         "presentation": {
@@ -2073,25 +1925,6 @@
         "mutationActiveParticleCount": 0,
         "mutationCollapseTrail": null
       },
-      "rowProgress": [
-        {
-          "row": 28,
-          "progress": 1
-        },
-        {
-          "row": 29,
-          "progress": 0.9986282578875172
-        },
-        {
-          "row": 29,
-          "progress": 0.9986282578875172
-        },
-        {
-          "row": 29,
-          "progress": 0.9986282578875172
-        }
-      ],
-      "revealDurationMs": 420,
       "canvasCountAfterDestroy": 0
     }
   },
