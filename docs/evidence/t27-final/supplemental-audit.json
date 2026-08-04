@@ -1,0 +1,26 @@
+{
+  "sourceSha": "ca2bc48d404e5e9272f849c7534d8d0ffe46d800",
+  "capturedAt": "2026-08-04T02:19:32.665Z",
+  "browser": "149.0.7827.55",
+  "countdownDigit": "3",
+  "classic": {
+    "gradeBadge": "难度 · 标准",
+    "gradeFilters": [
+      "休闲",
+      "标准",
+      "挑战"
+    ]
+  },
+  "survival": {
+    "hud": "生存时间0:00消行0上升13 秒距离落石8块"
+  },
+  "puzzle": {
+    "countdownSeen": false,
+    "countdownCount": 0,
+    "status": "playing",
+    "hasActivePiece": true,
+    "canvasCount": 1,
+    "domCellCount": 0
+  },
+  "errors": []
+}

@@ -1,0 +1,203 @@
+{
+  "sourceSha": "ca2bc48d404e5e9272f849c7534d8d0ffe46d800",
+  "capturedAt": "2026-08-04T02:18:50.298Z",
+  "browser": "149.0.7827.55",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "canvasCount": 1,
+  "domCellCount": 0,
+  "hud": {
+    "label": "下落速度",
+    "unit": "秒/格",
+    "value": "0.8",
+    "card": {
+      "left": 959.1875,
+      "top": 309.296875,
+      "right": 1183.1875,
+      "bottom": 376.03125,
+      "width": 224,
+      "height": 66.734375
+    },
+    "labelBox": {
+      "left": 959.1875,
+      "top": 309.296875,
+      "right": 1183.1875,
+      "bottom": 325.390625,
+      "width": 224,
+      "height": 16.09375
+    },
+    "valueBox": {
+      "left": 959.1875,
+      "top": 329.390625,
+      "right": 1031.765625,
+      "bottom": 376.03125,
+      "width": 72.578125,
+      "height": 46.640625
+    },
+    "statisticCards": [
+      {
+        "left": 959.1875,
+        "top": 118,
+        "right": 1183.1875,
+        "bottom": 160.765625,
+        "width": 224,
+        "height": 42.765625
+      },
+      {
+        "left": 959.1875,
+        "top": 181.765625,
+        "right": 1183.1875,
+        "bottom": 224.53125,
+        "width": 224,
+        "height": 42.765625
+      },
+      {
+        "left": 959.1875,
+        "top": 245.53125,
+        "right": 1183.1875,
+        "bottom": 288.296875,
+        "width": 224,
+        "height": 42.765625
+      },
+      {
+        "left": 959.1875,
+        "top": 309.296875,
+        "right": 1183.1875,
+        "bottom": 376.03125,
+        "width": 224,
+        "height": 66.734375
+      }
+    ],
+    "statisticStyles": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "boxShadow": "none"
+      }
+    ],
+    "statistics": {
+      "left": 959.1875,
+      "top": 118,
+      "right": 1183.1875,
+      "bottom": 376.03125,
+      "width": 224,
+      "height": 258.03125
+    },
+    "statisticsStyle": {
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "overflow": "visible"
+    },
+    "nextModule": {
+      "left": 256.8125,
+      "top": 118,
+      "right": 480.8125,
+      "bottom": 255,
+      "width": 224,
+      "height": 137
+    },
+    "nextWell": {
+      "left": 256.8125,
+      "top": 143,
+      "right": 480.8125,
+      "bottom": 255,
+      "width": 224,
+      "height": 112
+    }
+  },
+  "settings": {
+    "sheet": [
+      721,
+      721,
+      467,
+      467
+    ],
+    "railCount": 1,
+    "inputCount": 2,
+    "values": [
+      "开局速度0.6",
+      "最快速度0.1"
+    ],
+    "unit": "秒/格",
+    "selectedOutline": {
+      "style": "none",
+      "width": "3px"
+    },
+    "railOutline": {
+      "style": "none",
+      "width": "3px"
+    }
+  },
+  "result": {
+    "title": "消行",
+    "heroValueText": "0",
+    "support": "使用方块12",
+    "sheet": {
+      "left": 472,
+      "top": 159.609375,
+      "right": 968,
+      "bottom": 740.375,
+      "width": 496,
+      "height": 580.765625
+    },
+    "hero": {
+      "left": 497,
+      "top": 218.078125,
+      "right": 943,
+      "bottom": 338.984375,
+      "width": 446,
+      "height": 120.90625
+    },
+    "heroValueBox": {
+      "left": 695.859375,
+      "top": 228.078125,
+      "right": 744.125,
+      "bottom": 308.984375,
+      "width": 48.265625,
+      "height": 80.90625
+    },
+    "heroValueStyle": {
+      "overflow": "visible",
+      "fontWeight": "700",
+      "lineHeight": "73.44px",
+      "textOverflow": "clip"
+    },
+    "heroBorder": "none",
+    "leaderboardRows": 4,
+    "metricCards": 0
+  },
+  "puzzle": {
+    "title": "恭喜你破解谜题",
+    "outcome": "first",
+    "best": "当前最优步数：4步",
+    "value": "4",
+    "unit": "步",
+    "label": "当前最优步数",
+    "sheet": {
+      "left": 472,
+      "top": 305.8125,
+      "right": 968,
+      "bottom": 594.1875,
+      "width": 496,
+      "height": 288.375
+    }
+  },
+  "errors": []
+}
