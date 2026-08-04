@@ -1,4 +1,4 @@
-# Current Task — T31 Mutation Gravity, Ice, and Status Clarity
+# Current Task — T32 Puzzle Curriculum Rebuild
 
 ## Active goal
 
@@ -91,11 +91,12 @@ geometry. The correction contract is
 
 ## Queued next task — T32 Puzzle curriculum rebuild
 
-Status (2026-08-05): **ACTIVE / POST-T31 AUDIT**. T31 is accepted and closed. T32 now
+Status (2026-08-05): **ACTIVE / AUDIT FROZEN / FINGERPRINT FOUNDATION**. T31 is accepted and closed. T32 now
 owns the curriculum audit and rebuild, beginning from accepted product/evidence base
-`735effe`. Product edits remain blocked until the current fifty boards, duplicate
-fingerprints, solver/replay artifacts, progression schema, and exact shared-path
-ownership have been re-audited and the final roster is frozen.
+`735effe`. The post-T31 audit is frozen: live data is 3/27/20, fresh progress opens only
+three levels, and none of the three historic exact certificates remains reusable after
+the Intro rebuild. Only the new fingerprint module and its direct test are admitted;
+board definitions and progression remain blocked until that checkpoint is green.
 
 ### Frozen T32 outcome
 
@@ -136,28 +137,52 @@ ownership have been re-audited and the final roster is frozen.
   any of those paths. Any path collision stops T32 rather than resolving it implicitly.
 - Mutation mechanics/feedback, audio, Survival, Classic, themes, navigation, package
   metadata, and unrelated evidence remain outside the T32 product boundary.
+- First source checkpoint writer: `/root`, exact paths
+  `src/game/core/puzzleFingerprints.ts` and
+  `src/game/core/puzzleFingerprints.test.ts` only. It may read but not edit
+  `puzzles.ts`; it starts no server, browser, watcher, index, or solver.
+
+### Frozen audit and migration
+
+- Stable positions 01-10 become rebuilt Intro; 11-30 become all-open Easy; 31-50
+  become mastery-only Hard. Stable IDs and ordinals are retained.
+- The changed definition set is 01-10, 36, 38, and 47. Revision 2 removes completion
+  and best-operation records for those thirteen IDs while preserving both for the
+  thirty-seven unchanged boards.
+- Existing unchanged Hard completion keeps only that level replayable; it cannot unlock
+  another Hard level or bypass a new prerequisite. Uncompleted Hard remains locked.
+- Existing artifacts provide seventy-four potentially reusable routes for the
+  thirty-seven unchanged levels; twenty-six new Core-replayed routes are required for
+  the changed set.
+- The anchor-free Easy pool supported by the current exhaustive solver is 12-15,
+  17-21, 23-25, and 28-30. No pairing or optimum is frozen before exact proof and
+  replay-signature evidence.
 
 ### Ordered checkpoints
 
-1. Re-audit the accepted post-T31 base, current 50 boards, symmetry-normalized
-   duplicate fingerprints, route artifacts, saved-progress revision, and shared-path
-   ownership.
-2. Freeze the final board roster, 10/20/20 order, technique families, mastery map,
+1. [complete] Re-audit the accepted post-T31 base, current 50 boards, route artifacts,
+   saved-progress revision, exact solver capability, and shared-path ownership.
+2. Implement exact, symmetry-normalized, and near-topology fingerprint comparison in
+   the isolated two-file foundation checkpoint; keep all campaign data read-only.
+3. Freeze the final board roster, 10/20/20 order, technique families, mastery map,
    campaign migration, exact source paths, and checkpoint budget before product edits.
-3. Author and Core-replay the rebuilt Intro set plus replacement boards 36/38/47;
+4. Author and Core-replay the rebuilt Intro set plus replacement boards 36/38/47;
    commit the first green campaign-definition claim before changing progression.
-4. Generate and replay a second distinct route for every changed board; create strict
+5. Generate and replay a second distinct route for every changed board; create strict
    exhaustive certificates for the Easy mastery prerequisites in a separate proof
    checkpoint.
-5. Implement all-open Intro/Easy access, mastery-only Hard access, campaign revision,
+6. Implement all-open Intro/Easy access, mastery-only Hard access, campaign revision,
    and technique-signature validators with direct tests.
-6. Adapt the Puzzle library only as required by the frozen categories and relations,
+7. Adapt the Puzzle library only as required by the frozen categories and relations,
    then run final gates, bounded visual evidence, multi-round independent QA,
    changelog reconciliation, and coordinator push.
 
 ### T32 acceptance checklist
 
 - [x] T31 is accepted and closed before the first T32 source edit.
+- [x] The post-T31 category/route/solver/revision/path audit is frozen.
+- [ ] The isolated exact/symmetry/near-topology fingerprint checkpoint is green before
+  campaign definition edits.
 - [ ] The campaign contains exactly 10 Intro, 20 Easy, and 20 Hard levels.
 - [ ] All Intro boards are newly authored; all Intro and Easy boards are immediately
   available; no Hard board bypasses a mastery prerequisite.

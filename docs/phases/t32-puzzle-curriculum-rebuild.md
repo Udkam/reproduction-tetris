@@ -1,6 +1,6 @@
 # T32 — Puzzle Curriculum Rebuild
 
-Status: **ACTIVE / POST-T31 AUDIT**
+Status: **ACTIVE / AUDIT FROZEN / FINGERPRINT CHECKPOINT AUTHORIZED**
 Recorded: 2026-08-05
 Repository: `E:\Proj\reproduction-tetris`
 Accepted product/evidence base: `main@735effe`
@@ -8,15 +8,71 @@ Accepted product/evidence base: `main@735effe`
 ## Admission gate
 
 T31 is accepted and closed on source `7c4a9a1` plus evidence `735effe`; final gates and
-independent QA pass with no P0-P3 findings. T32 is admitted only to the post-T31
-read-only audit. Before its first product edit the coordinator must freeze the audited
-board roster, duplicate findings, replay/solver evidence, campaign migration, exact
-source paths, and shared-path ownership. Inherited T27 evidence and unrelated dirty
-paths remain isolated and may not be edited, staged, reverted, formatted, regenerated,
-or silently adopted.
+independent QA pass with no P0-P3 findings. The post-T31 audit is frozen below. It
+authorizes only the first isolated fingerprint checkpoint; campaign definitions,
+routes, mastery data, progression, and Puzzle UI remain read-only until that checkpoint
+is green and the technique roster is evidence-backed. Inherited T27 evidence and
+unrelated dirty paths remain isolated and may not be edited, staged, reverted,
+formatted, regenerated, or silently adopted.
 
 This file freezes a future contract only. It is not evidence that a board is authored,
 solved, optimal, migrated, visually accepted, or complete.
+
+## Frozen post-T31 audit
+
+The accepted tree currently contains fifty stable Puzzle IDs, but its live categories
+are **3 Intro / 27 Easy / 20 Hard**, fresh progress exposes only the first three levels,
+and later Easy access still depends on completion-count tiers. `difficulty` is an
+authored ordinal rather than a measured difficulty value. T32 therefore retains the
+fifty stable IDs and ordinals while changing their curriculum meaning as follows:
+
+| Stable positions | T32 category | Definition action | Fresh availability |
+| --- | --- | --- | --- |
+| 01-10 | Intro | rebuild every board | all open |
+| 11-30 | Easy | retain unless later fingerprint/route proof rejects it | all open |
+| 31-50 | Hard | retain except 36, 38, and 47 | mastery only |
+
+The changed-board set is exactly positions **01-10, 36, 38, and 47**. The five current
+schema-7 route artifacts contain two Core-replayed routes for all fifty existing
+boards; the thirty-seven unchanged boards may retain their seventy-four routes only
+after campaign-wide replay against revision 2. The thirteen changed boards require
+twenty-six newly replayed routes.
+
+The existing three strict certificates belong to positions 04-06, which are rebuilt
+Intro boards under T32. They are not reusable mastery evidence. The directly supported,
+anchor-free Easy candidate pool for exhaustive certification is positions
+**12-15, 17-21, 23-25, and 28-30**. No Easy-to-Hard relation or optimum number is frozen
+until exact search and replay-derived technique signatures exist. Positions 11, 16,
+22, 26, and 27 contain anchors and cannot be selected as gating Easy levels unless the
+exact proof implementation is first extended and independently justified for anchors.
+
+Campaign revision becomes **2**. Migration preserves completion and best-operation
+records only for the thirty-seven unchanged definitions. It removes both fields for
+the thirteen changed stable IDs. A completed unchanged Hard level remains replayable,
+but that historical completion cannot unlock a sibling Hard level or replace its new
+Easy mastery prerequisite; every uncompleted Hard level remains mastery-only.
+
+Inherited T27 evidence, its follow-up directory, and `progress.md` remain isolated.
+The audit started no server, browser, watcher, index, or solver process.
+
+## Fingerprint admission checkpoint
+
+Before any board is edited, `src/game/core/puzzleFingerprints.ts` and its direct
+`src/game/core/puzzleFingerprints.test.ts` are the only authorized source paths. They
+provide three layers of comparison:
+
+1. an exact structural fingerprint of color-normalized ordinary occupancy, anchors,
+   target rows, and legal setup geometry;
+2. a canonical topology fingerprint normalized across horizontal reflection and
+   translation through unused columns while preserving anchor relationships; and
+3. deterministic near-topology measurements that flag one-cell/non-decisive variants,
+   repeated row/column profiles, cavities, and connected-component structure for later
+   route-event adjudication.
+
+Exact or topology-equal boards fail directly. A near-topology match is a blocking audit
+candidate until replay evidence proves a distinct decisive event; it is never accepted
+because of different colors, names, seeds, or queue labels. This checkpoint does not
+rewrite campaign data and does not claim that the current roster is accepted.
 
 ## Product outcome
 
@@ -103,20 +159,23 @@ substitute for it.
 
 ## Checkpoint chain after admission
 
-1. **Post-T31 audit** — accepted base, dirty-path ownership, current board fingerprints,
-   route artifacts, persisted revision, and shared UI-path collisions.
-2. **Roster contract correction** — final board/order/name/category table, technique
-   families, Easy-to-Hard map, migration version, exact paths, and any commit-budget
-   exception.
-3. **Campaign definitions** — ten rebuilt Intro boards, the three frozen silhouette
+1. **Post-T31 audit** — complete: accepted base, dirty-path ownership, current category
+   split, route artifacts, solver limits, revision, and shared-path boundaries are
+   frozen in this document.
+2. **Fingerprint foundation** — exact/symmetry/near-topology comparison and direct
+   campaign audit, without changing a board.
+3. **Roster contract correction** — final board/order/name/category table, technique
+   families, Easy-to-Hard map, revision-2 migration, exact paths, and any commit-budget
+   exception. Pairings remain open until replay signatures justify them.
+4. **Campaign definitions** — ten rebuilt Intro boards, the three frozen silhouette
    replacements, duplicate validation, and direct definition tests.
-4. **Replay evidence** — two distinct public-command Core routes for every changed
+5. **Replay evidence** — two distinct public-command Core routes for every changed
    board plus campaign-wide replay of unchanged artifacts.
-5. **Exact mastery evidence** — exhaustive optima for every gating Easy board and
+6. **Exact mastery evidence** — exhaustive optima for every gating Easy board and
    replay-derived technique-signature correspondence.
-6. **Progression and library** — all-open Intro/Easy, mastery-only Hard, migration,
+7. **Progression and library** — all-open Intro/Easy, mastery-only Hard, migration,
    category presentation, and direct persistence/UI tests.
-7. **Final evidence and closure** — one typecheck, complete suite, production build,
+8. **Final evidence and closure** — one typecheck, complete suite, production build,
    bounded three-category browser audit, multi-round independent QA, changelog,
    coordinator acceptance, scoped scan, and non-force push.
 
@@ -125,8 +184,9 @@ green claim is committed before entering the next subsystem.
 
 ## Acceptance matrix
 
-- [ ] T31 has accepted closure; T32 still requires the renewed path/board audit before
-  source work.
+- [x] T31 has accepted closure and the T32 post-T31 path/board/solver audit is frozen.
+- [ ] Exact, symmetry-normalized, and near-topology fingerprint tests are green before
+  any campaign definition changes.
 - [ ] Exactly 10 Intro, 20 Easy, and 20 Hard boards are registered.
 - [ ] Every Intro board is newly authored; all Intro and Easy boards are available at
   fresh progress state; every Hard board is mastery-gated.

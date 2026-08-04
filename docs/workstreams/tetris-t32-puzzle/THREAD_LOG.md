@@ -46,3 +46,31 @@
 - Next action: inventory the fifty registered boards, route artifacts, exact/near-
   duplicate topology, strict solver capabilities, progression schema, and source-path
   collisions; then freeze the final 10/20/20 roster and checkpoint budget.
+
+## 2026-08-05 — post-T31 audit freeze
+
+- Task ID: `/root/t32_post_t31_audit`.
+- Owner: coordinator `/root`; independent audit was read-only.
+- Base SHA: `c43e893` on `main`.
+- Status: **AUDIT FROZEN / FINGERPRINT CHECKPOINT AUTHORIZED**.
+- Current-state findings: 50 stable IDs; live split 3 Intro / 27 Easy / 20 Hard;
+  only the first three fresh levels open; five schema-7 artifacts contain 100 current
+  Core-replayed routes; 37 unchanged boards / 74 routes are revalidation candidates;
+  changed positions 01-10, 36, 38, and 47 need 26 new routes.
+- Strict-proof finding: all three historic exact certificates target positions 04-06
+  and become invalid after the Intro rebuild, so reusable T32 gating certificates are
+  zero. The current exact solver directly supports anchor-free Easy positions 12-15,
+  17-21, 23-25, and 28-30; no optimum or Easy-to-Hard pairing is frozen yet.
+- Migration freeze: campaign revision 2; preserve unchanged-board completion/best
+  records, clear both for the thirteen changed stable IDs, and do not let historic
+  Hard completion unlock sibling Hard content.
+- First writer scope: only `src/game/core/puzzleFingerprints.ts` and
+  `src/game/core/puzzleFingerprints.test.ts`. `puzzles.ts`, progression, mastery,
+  lessons, routes, UI, and evidence remain read-only.
+- Commands actually run: targeted UTF-8 reads and `rg` over the T32 contract, campaign,
+  progression, mastery, solver and route structure; Git status/log; no tests, build,
+  server, browser, watcher, index, or solver.
+- Inherited exclusions remain `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: commit this audit correction, implement the two-file fingerprint
+  foundation, run its focused test/typecheck, and commit the first green source claim.

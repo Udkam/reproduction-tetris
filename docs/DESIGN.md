@@ -5,12 +5,14 @@
 
 ## 2026-08-05 T32 — active Puzzle curriculum rebuild
 
-**Status: ACTIVE / POST-T31 AUDIT.** T31 Mutation feedback and row-wise arrival are
+**Status: ACTIVE / AUDIT FROZEN / FINGERPRINT FOUNDATION.** T31 Mutation feedback and row-wise arrival are
 accepted on product/test source `7c4a9a1` with browser evidence `735effe` and an
-independent P0/P1/P2/P3-zero verdict. T32 now begins with a read-only campaign,
-duplicate, replay, solver, progression, and shared-path audit. No board definition or
-progression source changes until that audit freezes the final roster and exact source
-ownership.
+independent P0/P1/P2/P3-zero verdict. The renewed audit proves the live campaign is
+still 3/27/20, later Easy access is tier-gated, the three existing exact certificates
+will be invalidated by the Intro rebuild, and no gating certificate is directly
+reusable. The first admitted implementation is therefore an isolated structural /
+symmetry / near-topology fingerprint foundation; no board definition or progression
+source may change until it is green.
 
 When admitted, T32 replaces the current Puzzle curriculum without changing the total
 campaign size: **50 levels = 10 Intro + 20 Easy + 20 Hard**. The ten Intro boards are
@@ -39,6 +41,14 @@ same decisive board-reading problem.
   the final boards and replay evidence are frozen. A stable ID may be retained for a
   replaced slot only with an explicit campaign-revision migration; stale best counts
   may not masquerade as records for a different board.
+- Stable positions 01-10 remain the rebuilt Intro IDs, 11-30 remain the Easy IDs, and
+  31-50 remain the Hard IDs. The changed set is exactly 01-10, 36, 38, and 47; campaign
+  revision 2 preserves records only for unchanged geometry and clears completion/best
+  data for those thirteen changed IDs.
+- The directly supported anchor-free mastery candidate pool is positions 12-15, 17-21,
+  23-25, and 28-30. A final Easy-to-Hard map is not design truth until exact optimum
+  certificates and three-part replay signatures are checked; the contract does not
+  invent optimum numbers or relationships in advance.
 
 ### Solvability and mastery evidence
 
