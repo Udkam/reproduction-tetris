@@ -1043,7 +1043,17 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
   TetraMorph profiles, deterministic bounded fragments/tails, reduced-motion semantic
   equivalents, anchor exclusion, and soft low-gain procedural audio with no metallic,
   explosive, or alarm-like transient.
-- Inherited dirty T27 evidence remains explicitly outside T28. No T28 source, test,
-  build, browser, evidence, QA, changelog, or push claim is complete yet.
-- Next action: commit this contract as the first rollback point, then implement the pure
-  visual profile table and focused tests before touching renderer geometry.
+- The first audio checkpoint was retained as a rejected rollback point after direct
+  player review found it too quiet. The accepted correction strengthens the complete
+  procedural mix, gives 1/2/3/4 clears increasing 2/3/4/5-voice harmonic weight, and
+  preserves same-batch suppression, the 16-voice ceiling, and complete source cleanup.
+- The rollback chain is contract `787ba6b`, visual profiles `76fda68`, rejected audio
+  `8e12568`, reopened contract `2684860`, accepted feedback mix `35509a7`, initial
+  evidence `7f755f1`, reduced/Puzzle cutoff fix `2c4e4ae`, and corrected evidence
+  `9784b1b`.
+- Final gates pass: typecheck; complete suite `359 passed / 3 skipped`; 759-module build.
+  Evidence binds to source `2c4e4ae` and reports one Canvas, zero DOM board cells,
+  twelve target frames, zero browser errors, zero failures, and released browser/server
+  ownership. Independent read-only QA accepted with P0 0 / P1 0 / P2 0 / P3 0.
+- Inherited dirty T27 evidence remains unstaged and outside T28. T28 is accepted; the
+  coordinator documentation and push are the only remaining closure actions.

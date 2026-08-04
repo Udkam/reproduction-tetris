@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-08-04 — T28 complete gameplay-feedback polish accepted
+
+- Reworked the complete procedural SFX mix so movement, rotation, soft/hard drop,
+  landing, countdown, system, Survival, and Mutation actions remain distinct while an
+  ordinary clear becomes the unmistakable positive-feedback owner of its gameplay
+  batch. The 1/2/3/4 clear family gains increasing 2/3/4/5-voice harmonic weight without
+  noise, blast repetition, a master-volume jump, or breaking the 16-voice lifecycle.
+- Added four deterministic board-local ordinary-clear profiles: Precision Cut, Dual
+  Resonance, Cascade Fracture, and TetraMorph. They exclude anchors and permanent
+  bedrock, bound fragment/tail ownership, preserve the fixed Core clear boundary, and
+  fail closed for invalid counts. Reduced motion and Puzzle use simultaneous stationary
+  substitutes with exact 100/117/133/133 ms cutoffs.
+- Preserved resolution priority across ordinary landing, Mutation activation, Bomb,
+  Puzzle completion, and lifecycle boundaries. The initial audio checkpoint remains a
+  deliberate rejected rollback node; subsequent correction is isolated from Core,
+  scoring, Puzzle data, themes, persistence, and dependencies.
+- Product source `2c4e4ae` passes typecheck, the complete suite (`359 passed / 3
+  skipped`), and the 759-module production build. Evidence `9784b1b` covers the live
+  Classic run, full/reduced 1–4 profiles, and Survival/Mutation/Bomb/Puzzle conflicts
+  with one Canvas, zero DOM cells, zero browser errors, and zero audit failures.
+- Independent read-only QA accepted candidate `17d4f82..9784b1b` with P0 0 / P1 0 /
+  P2 0 / P3 0 after a direct cutoff regression closed its sole preliminary P2. The
+  project-owned browser/server batch was released; inherited T27 evidence remains
+  unstaged and excluded.
+
 ## 2026-08-04 — T27-R1 centred themed stage and final Puzzle result accepted
 
 - Completed the T27 personalised pace and feedback chain, then rebuilt gameplay as a

@@ -50,29 +50,32 @@ section explicitly supersedes them.
 
 ## Acceptance checklist
 
-- [ ] Counts 1–4 have visibly related but unambiguous profiles; invalid counts fail
+- [x] Counts 1–4 have visibly related but unambiguous profiles; invalid counts fail
   closed.
-- [ ] Core hashes, 12-tick clear timing, inputs, scoring, randomization, and all Puzzle
+- [x] Core hashes, 12-tick clear timing, inputs, scoring, randomization, and all Puzzle
   data remain unchanged.
-- [ ] Full motion remains board-local and bounded; reduced motion contains no fragment,
+- [x] Full motion remains board-local and bounded; reduced motion contains no fragment,
   stagger, travel, post-tail, page flash, board displacement, or filter.
-- [ ] Survival, Mutation activation, Bomb, Puzzle completion, and anchor conflicts obey
+- [x] Survival, Mutation activation, Bomb, Puzzle completion, and anchor conflicts obey
   the T28 priority contract.
-- [ ] New clear audio is short, rounded, non-metallic, non-explosive, volume-controlled,
+- [x] New clear audio is short, rounded, non-metallic, non-explosive, volume-controlled,
   and unmistakable above movement/landing in the same action. Counts 1–4 gain audible
   harmonic weight without abrupt master-volume jumps; all work remains bounded by 16
   voices and fully disconnects on lifecycle completion.
-- [ ] Supporting move, soft-drop, rotate, lock, hard-drop, countdown, system, Survival,
+- [x] Supporting move, soft-drop, rotate, lock, hard-drop, countdown, system, Survival,
   and Mutation cues remain semantically distinct and audible without sharp chirps,
   electrical buzz, blast-like repetition, or masking an ordinary clear.
-- [ ] Focused tests pass at each source checkpoint.
-- [ ] Final typecheck, complete tests, build, 1/2/3/4 browser frames, reduced-motion and
+- [x] Focused tests pass at each source checkpoint.
+- [x] Final typecheck, complete tests, build, 1/2/3/4 browser frames, reduced-motion and
   mode-conflict frames, one Canvas, zero DOM board cells, zero errors, and teardown pass.
-- [ ] Independent QA reports no unresolved P0/P1/P2 finding before acceptance and push.
+- [x] Independent QA reports no unresolved P0/P1/P2 finding before acceptance and push.
 
-Status: contract and visual checkpoint complete; the first audio checkpoint was rejected
-by direct player review for insufficient presence. The bounded audio correction is active;
-T28 remains unaccepted until final evidence and independent QA pass.
+Status (2026-08-04): **ACCEPTED** at candidate `9784b1b`, with product source
+`2c4e4ae` and source-bound browser evidence reporting one Canvas, zero DOM board cells,
+zero browser errors, and zero audit failures. Final gates pass (`359 passed / 3 skipped`),
+and independent read-only QA reports P0 0 / P1 0 / P2 0 / P3 0. The first audio
+checkpoint remains in history as the rejected rollback point; the accepted correction
+makes ordinary clears unmistakable without reopening Core or the broader UI.
 
 ---
 

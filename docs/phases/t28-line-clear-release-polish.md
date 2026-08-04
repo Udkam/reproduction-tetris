@@ -1,6 +1,7 @@
 # T28 — Ordinary Line-Clear Release Polish
 
-Status: active from `main@17d4f82e0474f7417a261fea0aa6d41cd230fc9a`.
+Status: accepted on 2026-08-04 from
+`main@17d4f82e0474f7417a261fea0aa6d41cd230fc9a` through candidate `9784b1b`.
 
 ## Product intent
 
@@ -60,3 +61,17 @@ React/Pixi ownership, one Canvas, persisted reduced motion, and current themes.
   and released browser/server ownership.
 - Request independent read-only QA on the exact candidate range. Only the coordinator
   may then record acceptance, update the changelog, and push.
+
+## Acceptance record
+
+- Product source `2c4e4ae` closes the only independent-QA defect by ending every
+  reduced-motion and Puzzle clear face exactly at its declared 100/117/133/133 ms
+  boundary; direct renderer tests cover the frame before and the cutoff frame.
+- Evidence commit `9784b1b` binds the live Classic run, four full-motion profiles, four
+  reduced profiles, and Survival/Mutation/Bomb/Puzzle conflict frames to that source.
+  Its audit reports one Canvas, zero DOM cells, zero browser errors, zero failures, and
+  successful renderer teardown.
+- Final gates pass: typecheck, complete Vitest suite (`359 passed / 3 skipped`), and the
+  759-module production build. The existing large-chunk warning remains visible and was
+  not hidden as part of this polish slice.
+- Independent read-only QA accepted the final candidate with P0 0 / P1 0 / P2 0 / P3 0.
