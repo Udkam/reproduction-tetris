@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import phase7Batch1File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-01-10.json';
 import phase7Batch2File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-11-20.json';
 import phase7Batch5File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json';
+import t32Changed01To03File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-01-03.json';
 import {
   encodePuzzleRoute,
   findPuzzleAlternativeRoute,
@@ -23,9 +23,9 @@ type RecordedLevel = {
   routes: readonly [RecordedRoute, RecordedRoute];
 };
 
-const phase7Batch1 = phase7Batch1File as unknown as { levels: readonly RecordedLevel[] };
 const phase7Batch2 = phase7Batch2File as unknown as { levels: readonly RecordedLevel[] };
 const phase7Batch5 = phase7Batch5File as unknown as { levels: readonly RecordedLevel[] };
+const t32Changed01To03 = t32Changed01To03File as unknown as { levels: readonly RecordedLevel[] };
 
 describe('Phase-7 Puzzle route search', () => {
   it('finds a legal Core path for a deep current endgame without introducing a product-side lock budget', () => {
@@ -39,7 +39,7 @@ describe('Phase-7 Puzzle route search', () => {
   }, 120_000);
 
   it('can exclude the primary opening landing and recover a distinct first-lock solution through the same public move domain', () => {
-    const level = phase7Batch1.levels.find(({ id }) => id === 't3r-shaft-01')!;
+    const level = t32Changed01To03.levels.find(({ id }) => id === 't3r-shaft-01')!;
     const primary = level.routes.find((route) => route.id === 'primary')!;
     const result = findPuzzleAlternativeRoute(level.id, primary.commandStream, {
       maxLocks: primary.locks + 8,

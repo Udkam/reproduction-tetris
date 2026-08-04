@@ -4,6 +4,7 @@ import phase7Batch2File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle
 import phase7Batch3File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-21-30.json';
 import phase7Batch4File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-31-40.json';
 import phase7Batch5File from '../../../docs/workstreams/tetris-t15-puzzle/puzzle-levels-41-50.json';
+import t32Changed01To03File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-01-03.json';
 import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
 import {
@@ -69,6 +70,7 @@ const phase7Batch2 = phase7Batch2File as unknown as Phase7Artifact;
 const phase7Batch3 = phase7Batch3File as unknown as Phase7Artifact;
 const phase7Batch4 = phase7Batch4File as unknown as Phase7Artifact;
 const phase7Batch5 = phase7Batch5File as unknown as Phase7Artifact;
+const t32Changed01To03 = t32Changed01To03File as unknown as Phase7Artifact;
 const phase7Artifacts = Object.freeze([
   phase7Batch1,
   phase7Batch2,
@@ -76,13 +78,17 @@ const phase7Artifacts = Object.freeze([
   phase7Batch4,
   phase7Batch5,
 ]);
-const activeLevels: readonly Phase7VerifiedLevel[] = Object.freeze([
+const historicalLevels: readonly Phase7VerifiedLevel[] = Object.freeze([
   ...phase7Batch1.levels,
   ...phase7Batch2.levels,
   ...phase7Batch3.levels,
   ...phase7Batch4.levels,
   ...phase7Batch5.levels,
 ]);
+const t32ChangedById = new Map(t32Changed01To03.levels.map((level) => [level.id, level]));
+const activeLevels: readonly Phase7VerifiedLevel[] = Object.freeze(
+  historicalLevels.map((level) => t32ChangedById.get(level.id) ?? level),
+);
 
 function commandFor(token: CommandToken): GameCommand {
   switch (token) {
@@ -103,6 +109,20 @@ function decode(stream: string): GameCommand[] {
 }
 
 describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
+  it('overlays the admitted T32 definitions without rewriting the historical T15 evidence', () => {
+    expect(t32Changed01To03.schemaVersion).toBe(7);
+    expect(t32Changed01To03.batch).toEqual({ from: 1, to: 3 });
+    expect(t32Changed01To03.campaignOrder).toEqual(t32Changed01To03.levels.map(({ id }) => id));
+    expect(t32Changed01To03.levels).toHaveLength(3);
+    expect(t32Changed01To03.searchBounds).toEqual({
+      maxLocks: 14,
+      primaryBeam: 900,
+      alternateBeam: 750,
+    });
+    expect(activeLevels.slice(0, 3)).toEqual(t32Changed01To03.levels);
+    expect(historicalLevels.slice(0, 3)).toEqual(phase7Batch1.levels.slice(0, 3));
+  });
+
   it('binds all five re-authored ten-level batches to real Core route families', () => {
     for (const [index, artifact] of phase7Artifacts.entries()) {
       const from = index * 10 + 1;
