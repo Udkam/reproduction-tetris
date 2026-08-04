@@ -122,7 +122,7 @@ export class AudioEngine {
       } else if (event.type === 'hard-dropped') {
         this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop) {
-        this.tone({ frequency: 154, duration: 0.075, gain: 0.24, endFrequency: 116, type: 'triangle' });
+        this.tone({ frequency: 220, duration: 0.035, gain: 0.045, type: 'sine' });
       } else if (event.type === 'lines-cleared') {
         // A material trigger is the player-facing resolution of this clear. Let it
         // speak on its own rather than stacking a clear chord into the same transient.
@@ -141,7 +141,11 @@ export class AudioEngine {
         [392, 494, 587].forEach((frequency, index) => this.tone({ frequency, duration: 0.18, gain: 0.19, delay: index * 0.06, type: 'sine' }));
       } else if (event.type === 'game-over') {
         [174, 131, 98].forEach((frequency, index) => this.tone({ frequency, duration: 0.17, gain: 0.19, delay: index * 0.12, type: 'sine' }));
-      } else if (event.type === 'started' || event.type === 'resumed') {
+      } else if (event.type === 'started') {
+        // Opening the board continues digit 1 instead of appending a separate
+        // rising jingle: same sine/pitch, much quieter and shorter.
+        this.tone({ frequency: 783.99, duration: 0.055, gain: 0.045, type: 'sine' });
+      } else if (event.type === 'resumed') {
         this.tone({ frequency: 440, duration: 0.09, gain: 0.17, endFrequency: 554, type: 'sine' });
       } else if (event.type === 'paused') {
         this.tone({ frequency: 262, duration: 0.09, gain: 0.14, endFrequency: 218, type: 'sine' });
@@ -195,10 +199,9 @@ export class AudioEngine {
   }
 
   private landingThump(): void {
-    // Two brief triangle transients read as a dry material impact. Keeping both voices
-    // non-sinusoidal avoids the sustained electrical-hum character of the former pair.
-    this.tone({ frequency: 174, duration: 0.064, gain: 0.34, endFrequency: 118, type: 'triangle' });
-    this.tone({ frequency: 286, duration: 0.024, gain: 0.11, delay: 0.006, endFrequency: 218, type: 'triangle' });
+    // One rounded contact keeps hard drop present without the former stacked,
+    // bass-heavy impact. Its short envelope prevents an electrical hum.
+    this.tone({ frequency: 185, duration: 0.055, gain: 0.095, type: 'sine' });
   }
 
   private uniqueMutationActivations(events: readonly GameEvent[]): MutationActivation[] {

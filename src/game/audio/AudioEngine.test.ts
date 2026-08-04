@@ -249,6 +249,23 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
+  it('continues digit 1 with one quieter same-pitch cover-release tail', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.playEntryCountdown(1);
+    audio.play([{ type: 'started' }]);
+
+    expect(oscillators).toHaveLength(2);
+    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([783.99, 783.99]);
+    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['sine', 'sine']);
+    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
+    expect(oscillators[1]?.stops[0]).toBeLessThan(oscillators[0]?.stops[0] ?? 0);
+    expect(Math.max(...(gains[3]?.gain.ramps ?? []))).toBeLessThan(Math.max(...(gains[2]?.gain.ramps ?? [])));
+    audio.destroy();
+  });
+
   it('gives every mutation material a concise, unbent original signature', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
 
@@ -370,17 +387,35 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
-  it('uses a short physical landing thump instead of an electrical low-sine hum', async () => {
+  it('uses one light rounded hard-drop contact without stacked impact voices', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
     await audio.prime();
 
     audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }, { type: 'piece-locked', piece: 'T', cells: [] }]);
 
-    expect(oscillators).toHaveLength(2);
-    expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'triangle']);
-    expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([174, 286]);
-    expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length > 0)).toBe(true);
+    expect(oscillators).toHaveLength(1);
+    expect(oscillators[0]?.type).toBe('sine');
+    expect(oscillators[0]?.frequency.setValues).toEqual([185]);
+    expect(oscillators[0]?.frequency.ramps).toEqual([]);
+    expect(oscillators[0]?.stops[0]).toBeLessThanOrEqual(0.065);
+    expect(Math.max(...(gains[2]?.gain.ramps ?? []))).toBeLessThanOrEqual(0.13);
+    audio.destroy();
+  });
+
+  it('keeps ordinary gravity lock quieter and shorter than hard drop', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    audio.play([{ type: 'piece-locked', piece: 'T', cells: [] }]);
+
+    expect(oscillators).toHaveLength(1);
+    expect(oscillators[0]?.type).toBe('sine');
+    expect(oscillators[0]?.frequency.setValues).toEqual([220]);
+    expect(oscillators[0]?.frequency.ramps).toEqual([]);
+    expect(oscillators[0]?.stops[0]).toBeLessThanOrEqual(0.046);
+    expect(Math.max(...(gains[2]?.gain.ramps ?? []))).toBeLessThanOrEqual(0.065);
     audio.destroy();
   });
 
@@ -431,14 +466,15 @@ describe('AudioEngine original feedback', () => {
     audio.destroy();
   });
 
-  it('keeps start and resume feedback foreground-only with no ambient music bus', async () => {
+  it('keeps cover release and resume feedback foreground-only with no ambient music bus', async () => {
     const { audio, timers } = createTimedAudio();
     await audio.prime();
     expect(oscillators).toHaveLength(0);
 
     audio.play([{ type: 'started' }]);
     expect(oscillators).toHaveLength(1);
-    expect(oscillators[0]?.frequency.setValues[0]).toBe(440);
+    expect(oscillators[0]?.frequency.setValues[0]).toBe(783.99);
+    expect(oscillators[0]?.frequency.ramps).toEqual([]);
     expect(timers.size).toBe(0);
 
     audio.play([{ type: 'resumed' }]);
