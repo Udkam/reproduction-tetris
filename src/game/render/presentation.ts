@@ -344,11 +344,14 @@ export function activeCellsInsideVisibleRows(
     .filter((cell) => cell.y >= visibleStartRow && cell.y < visibleEndRow);
 }
 
-/** Complete renderer-owned active-piece arrival; the final row stagger settles within 204 ms. */
-export const ACTIVE_SPAWN_REVEAL_DURATION_MS = 204;
-const ACTIVE_SPAWN_CELL_DURATION_MS = 126;
-const ACTIVE_SPAWN_CELL_STAGGER_MS = 26;
-const ACTIVE_SPAWN_GHOST_DELAY_MS = 124;
+/**
+ * Complete renderer-owned active-piece arrival. A four-row I piece finishes on the
+ * 420 ms endpoint, while every row keeps a measurable 92 ms lead over the next one.
+ */
+export const ACTIVE_SPAWN_REVEAL_DURATION_MS = 420;
+const ACTIVE_SPAWN_ROW_DURATION_MS = 144;
+const ACTIVE_SPAWN_ROW_STAGGER_MS = 92;
+const ACTIVE_SPAWN_GHOST_DELAY_MS = 346;
 
 function easeOutCubic(value: number): number {
   const bounded = Math.max(0, Math.min(1, value));
@@ -373,8 +376,8 @@ export function activeSpawnCellProgresses(
   const rowRank = new Map(visibleRows.map((row, rank) => [row, rank]));
   return cells.map((cell) => {
     const rank = rowRank.get(cell.y) ?? 0;
-    const localProgress = (safeElapsed - rank * ACTIVE_SPAWN_CELL_STAGGER_MS)
-      / ACTIVE_SPAWN_CELL_DURATION_MS;
+    const localProgress = (safeElapsed - rank * ACTIVE_SPAWN_ROW_STAGGER_MS)
+      / ACTIVE_SPAWN_ROW_DURATION_MS;
     return easeOutCubic(localProgress);
   });
 }

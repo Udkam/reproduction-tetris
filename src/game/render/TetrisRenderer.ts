@@ -1154,25 +1154,34 @@ export class TetrisRenderer {
       }
       if (activeReveal) {
         const cellProgress = activeSpawnCellProgresses(visibleActiveCells, activeReveal.elapsed);
+        const arrivalRows = new Map<number, { cells: Cell[]; progress: number }>();
         visibleActiveCells.forEach((cell, index) => {
-          const progress = cellProgress[index] ?? 0;
-          if (progress <= 0) return;
-          this.drawCellGroups(
-            graphics,
-            [cell],
-            drawableActive.type,
-            progress,
-            {
-              originX: layout.x,
-              originY: layout.y,
-              unit: layout.cell,
-              offsetX,
-              offsetY,
-              active: true,
-              scale: rotationScale * (0.72 + progress * 0.28),
-            },
-          );
+          const row = arrivalRows.get(cell.y) ?? { cells: [], progress: cellProgress[index] ?? 0 };
+          row.cells.push(cell);
+          row.progress = Math.max(row.progress, cellProgress[index] ?? 0);
+          arrivalRows.set(cell.y, row);
         });
+        [...arrivalRows.entries()]
+          .sort(([leftY], [rightY]) => leftY - rightY)
+          .forEach(([, row]) => {
+            const progress = row.progress;
+            if (progress <= 0) return;
+            this.drawCellGroups(
+              graphics,
+              row.cells,
+              drawableActive.type,
+              progress,
+              {
+                originX: layout.x,
+                originY: layout.y,
+                unit: layout.cell,
+                offsetX,
+                offsetY: offsetY + (1 - progress) * Math.min(5, layout.cell * 0.16),
+                active: true,
+                scale: rotationScale * (0.94 + progress * 0.06),
+              },
+            );
+          });
       } else {
         this.drawCellGroups(
           graphics,

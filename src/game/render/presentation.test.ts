@@ -238,19 +238,19 @@ describe('presentation interpolation', () => {
     ];
 
     expect(activeSpawnCellProgresses(cells, 0)).toEqual([0, 0, 0, 0]);
-    const firstBeat = activeSpawnCellProgresses(cells, 20);
+    const firstBeat = activeSpawnCellProgresses(cells, 70);
     expect(firstBeat[1]).toBeGreaterThan(0);
     expect(firstBeat[3]).toBe(firstBeat[1]);
     expect(firstBeat[2]).toBe(0);
     expect(firstBeat[0]).toBe(0);
 
-    const middle = activeSpawnCellProgresses(cells, 100);
+    const middle = activeSpawnCellProgresses(cells, 180);
     expect(middle[1]).toBe(middle[3]);
     expect(middle[1]).toBeGreaterThan(middle[2]!);
     expect(middle[2]).toBe(middle[0]);
-    expect(activeSpawnGhostProgress(123)).toBe(0);
-    expect(activeSpawnGhostProgress(164)).toBeGreaterThan(0);
-    expect(activeSpawnGhostProgress(164)).toBeLessThan(1);
+    expect(activeSpawnGhostProgress(345)).toBe(0);
+    expect(activeSpawnGhostProgress(383)).toBeGreaterThan(0);
+    expect(activeSpawnGhostProgress(383)).toBeLessThan(1);
 
     expect(activeSpawnCellProgresses(cells, ACTIVE_SPAWN_REVEAL_DURATION_MS)).toEqual([1, 1, 1, 1]);
     expect(activeSpawnGhostProgress(ACTIVE_SPAWN_REVEAL_DURATION_MS)).toBe(1);

@@ -844,22 +844,36 @@ describe('Puzzle undo presentation reset', () => {
     expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(0);
 
     drawGroups.mockClear();
-    internals.advanceEffects(52);
+    internals.advanceEffects(70);
     internals.drawPieces(playing, layout);
     internals.updateSnapshot(playing, layout, app);
-    expect(renderer.getSnapshot().activeSpawnReveal?.cellProgress.filter((progress) => progress > 0)).toHaveLength(4);
+    const firstRowProgress = renderer.getSnapshot().activeSpawnReveal?.cellProgress ?? [];
+    const activeRows = renderer.getSnapshot().activeCells.map((cell) => cell.y);
+    const topRow = Math.min(...activeRows);
+    const firstRowCellCount = activeRows.filter((row) => row === topRow).length;
+    const rowCount = new Set(activeRows).size;
+    expect(firstRowProgress.filter((progress) => progress > 0)).toHaveLength(firstRowCellCount);
+    expect(firstRowProgress.filter((progress) => progress === 0)).toHaveLength(4 - firstRowCellCount);
     expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBe(0);
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(4);
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(1);
 
     drawGroups.mockClear();
-    internals.advanceEffects(100);
+    internals.advanceEffects(240);
+    internals.drawPieces(playing, layout);
+    internals.updateSnapshot(playing, layout, app);
+    expect(renderer.getSnapshot().activeSpawnReveal?.cellProgress.every((progress) => progress > 0)).toBe(true);
+    expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBe(0);
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(rowCount);
+
+    drawGroups.mockClear();
+    internals.advanceEffects(60);
     internals.drawPieces(playing, layout);
     internals.updateSnapshot(playing, layout, app);
     expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBeGreaterThan(0);
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(5);
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(rowCount + 1);
 
     drawGroups.mockClear();
-    internals.advanceEffects(52);
+    internals.advanceEffects(50);
     internals.drawPieces(playing, layout);
     internals.updateSnapshot(playing, layout, app);
     expect(renderer.getSnapshot().activeSpawnReveal).toBeNull();
