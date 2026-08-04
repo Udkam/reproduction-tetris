@@ -97,3 +97,50 @@
 - Next action: commit the evidence-backed Intro/Easy/Hard technique roster, then repair
   the bounded player-reported T31-R2 status/Next/expiry-latch regressions before any
   campaign definition edit.
+
+## 2026-08-05 — rebuilt Intro 01–03 route checkpoint
+
+- Task ID: `/root/t32_intro_01_03`.
+- Owner: coordinator/writer `/root`.
+- Base SHA: `822cbe2` on `main`; definition checkpoint: `86609c4`; route-proof
+  checkpoint: `07bbc83`.
+- Status: **GREEN BOUNDED CHECKPOINT / T32 REMAINS ACTIVE**. This is not the complete
+  ten-level Intro rebuild and does not authorize a final campaign acceptance claim.
+- Exact changed paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/game/core/puzzleRouteSearch.test.ts`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-01-03.json`
+- Definitions: positions 01–03 retain their stable IDs but now use the admitted
+  `补行`, `留井`, and `托台` boards. Each setup is a legal six-piece, three-row Core
+  replay with no initial full row and no anchor.
+- Route proof: the one-shot batch solver emitted two non-equivalent public-command
+  routes for every changed board and replayed all six through production Core. Route
+  lock counts are `4/4`, `4/8`, and `5/6`; this proves solvability and route plurality,
+  not strict optimality.
+- Historical evidence boundary: the T15 route JSON remains unchanged. T32 tests overlay
+  only the admitted 01–03 records when binding active definitions, preserving the
+  historical archive while preventing stale-route false positives.
+- Commands actually run:
+  - bounded candidate search over seeds `5200001..5200024`, setup counts `5,6,7`,
+    30 requested candidates, beam 700, and a 3,000,000-node budget — terminated at the
+    budget after producing candidate material; candidate output alone was not accepted
+    as proof.
+  - `node docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs --from 1 --to 3
+    --max-locks 14 --primary-beam 900 --alternate-beam 750 --output
+    docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-01-03.json` — PASS, six
+    production-Core replays.
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts` —
+    PASS, 15 tests.
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts
+    src/game/core/puzzleSolverResults.test.ts src/game/core/puzzleRouteSearch.test.ts` —
+    PASS, 21 tests in five files.
+- Full suite/build/browser/independent QA: intentionally deferred until the last T32
+  source edit. No service, watcher, browser, or persistent solver was started.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: author and prove the bounded 04/06 technique pair, checkpoint it, then
+  continue 05/07/08/09 and finally the anchor-side-slip position 10.
