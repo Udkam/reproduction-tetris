@@ -327,8 +327,10 @@ export function clampActivePresentationOffsetY(
 }
 
 /**
- * Keeps a newly spawned active tetromino fully visible at the mouth of the well.
- * This shifts renderer-only cells; Core coordinates and collision state are untouched.
+ * Returns only the active cells that have actually crossed the visible board mouth.
+ * Core owns the row-by-row arrival cadence: a spawn row below the mouth is visible
+ * first, then higher rows enter after the next gravity step. Renderer coordinates are
+ * never shifted to make the whole tetromino appear early.
  */
 export function activeCellsInsideVisibleRows(
   cells: readonly Cell[],
@@ -337,59 +339,9 @@ export function activeCellsInsideVisibleRows(
 ): Cell[] {
   if (!cells.length || !Number.isInteger(visibleStartRow) || !Number.isInteger(visibleHeight) || visibleHeight <= 0) return [];
   const visibleEndRow = visibleStartRow + visibleHeight;
-  const minimumY = Math.min(...cells.map((cell) => cell.y));
-  const spawnShiftY = Math.max(0, visibleStartRow - minimumY);
   return cells
-    .map((cell) => ({ x: cell.x, y: cell.y + spawnShiftY }))
-    .filter((cell) => cell.y >= visibleStartRow && cell.y < visibleEndRow);
-}
-
-/**
- * Complete renderer-owned active-piece arrival. A four-row I piece finishes on the
- * 420 ms endpoint, while every row keeps a measurable 92 ms lead over the next one.
- */
-export const ACTIVE_SPAWN_REVEAL_DURATION_MS = 420;
-const ACTIVE_SPAWN_ROW_DURATION_MS = 144;
-const ACTIVE_SPAWN_ROW_STAGGER_MS = 92;
-const ACTIVE_SPAWN_GHOST_DELAY_MS = 346;
-
-function easeOutCubic(value: number): number {
-  const bounded = Math.max(0, Math.min(1, value));
-  return 1 - (1 - bounded) ** 3;
-}
-
-/**
- * Returns one progress value per input cell while revealing the shape in stable
- * top-to-bottom row groups. Cells sharing one visible row always share progress; cells
- * never receive a translation here. The renderer applies scale and opacity at the
- * already-clamped in-well position.
- */
-export function activeSpawnCellProgresses(
-  cells: readonly Cell[],
-  elapsedMs: number,
-  reducedMotion = false,
-): number[] {
-  if (reducedMotion) return cells.map(() => 1);
-  const safeElapsed = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
-  const visibleRows = [...new Set(cells.map((cell) => cell.y))]
-    .sort((left, right) => left - right);
-  const rowRank = new Map(visibleRows.map((row, rank) => [row, rank]));
-  return cells.map((cell) => {
-    const rank = rowRank.get(cell.y) ?? 0;
-    const localProgress = (safeElapsed - rank * ACTIVE_SPAWN_ROW_STAGGER_MS)
-      / ACTIVE_SPAWN_ROW_DURATION_MS;
-    return easeOutCubic(localProgress);
-  });
-}
-
-/** The ghost joins only after the active shape is substantially legible. */
-export function activeSpawnGhostProgress(elapsedMs: number, reducedMotion = false): number {
-  if (reducedMotion) return 1;
-  const safeElapsed = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
-  return easeOutCubic(
-    (safeElapsed - ACTIVE_SPAWN_GHOST_DELAY_MS)
-    / (ACTIVE_SPAWN_REVEAL_DURATION_MS - ACTIVE_SPAWN_GHOST_DELAY_MS),
-  );
+    .filter((cell) => cell.y >= visibleStartRow && cell.y < visibleEndRow)
+    .map((cell) => ({ ...cell }));
 }
 
 /** Verifies that a component-centered active-piece scale remains inside the visible well. */

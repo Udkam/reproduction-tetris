@@ -19,7 +19,7 @@ import {
   type PieceType,
   VISIBLE_START_ROW,
 } from '../core';
-import { ACTIVE_SPAWN_REVEAL_DURATION_MS, ordinaryLineClearProfile } from './presentation';
+import { ordinaryLineClearProfile } from './presentation';
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -124,20 +124,18 @@ type RendererInternals = {
     board: { x: number; y: number; width: number; height: number; cell: number };
     activeCells: Cell[];
     ghostCells: Cell[];
-    activeSpawnReveal: {
+    activeSpawnEntry: {
       generationKey: string;
-      elapsedMs: number;
-      durationMs: number;
-      cellProgress: number[];
-      ghostProgress: number;
+      pending: boolean;
+      visibleCellCount: number;
+      hiddenCellCount: number;
     } | null;
   };
   presentation: unknown;
   activeSpawnGenerationKey: string | null;
-  activeSpawnReveal: {
+  activeSpawnEntry: {
     generationKey: string;
-    elapsed: number;
-    duration: number;
+    pending: boolean;
   } | null;
   trail: {
     cells: Cell[];
@@ -229,7 +227,7 @@ type RendererInternals = {
     collapseWasActive?: boolean,
   ) => void;
   advanceEffects: (deltaMs: number) => void;
-  syncActiveSpawnReveal: (state: GameState) => void;
+  syncActiveSpawnEntry: (state: GameState) => void;
   advanceSurvivalDebrisPresentation: (state: GameState, deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   drawSurvivalPressureEffects: (
@@ -803,7 +801,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot().survivalEntryBedrockRise).toBeNull();
   });
 
-  it('keeps ready cells hidden, then reveals the spawned piece before its ghost', () => {
+  it('lets a two-row spawn cross the board mouth one real row at a time', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
@@ -824,12 +822,16 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot()).toMatchObject({
       activeCells: [],
       ghostCells: [],
-      activeSpawnReveal: null,
+      activeSpawnEntry: null,
       visibleLockedCells: 10,
     });
     expect(drawGroups.mock.calls.filter((call) => call[2] === ready.active?.type)).toHaveLength(0);
 
-    const playing = dispatch(ready, { type: 'start' }).state;
+    const started = dispatch(ready, { type: 'start' }).state;
+    const playing = {
+      ...started,
+      active: { type: 'T', rotation: 0, x: 3, y: 19 },
+    } as GameState;
     drawGroups.mockClear();
     renderer.setOptions({ survivalEntryBedrockRows: null });
     internals.drawPieces(playing, layout);
@@ -837,71 +839,84 @@ describe('Puzzle undo presentation reset', () => {
 
     expect(renderer.getSnapshot().activeCells).toHaveLength(4);
     expect(renderer.getSnapshot().ghostCells).toHaveLength(4);
-    expect(renderer.getSnapshot().activeSpawnReveal).toMatchObject({
-      elapsedMs: 0,
-      ghostProgress: 0,
+    expect(renderer.getSnapshot().activeSpawnEntry).toMatchObject({
+      pending: true,
+      visibleCellCount: 3,
+      hiddenCellCount: 1,
     });
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(0);
+    const firstVisibleRow = drawGroups.mock.calls.find((call) => (
+      call[2] === 'T' && (call[4] as { active?: boolean } | undefined)?.active === true
+    ));
+    expect(firstVisibleRow?.[1]).toEqual([
+      { x: 3, y: 0 }, { x: 4, y: 0 }, { x: 5, y: 0 },
+    ]);
+    expect(drawGroups.mock.calls.some((call) => (
+      (call[4] as { ghost?: boolean } | undefined)?.ghost === true
+    ))).toBe(false);
 
+    const entering = {
+      ...playing,
+      active: { ...playing.active!, y: 20 },
+    } as GameState;
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      presentation: { type: 'T', x: 3, y: 19, settleMs: 56 },
+    });
     drawGroups.mockClear();
-    internals.advanceEffects(70);
-    internals.drawPieces(playing, layout);
-    internals.updateSnapshot(playing, layout, app);
-    const firstRowProgress = renderer.getSnapshot().activeSpawnReveal?.cellProgress ?? [];
-    const activeRows = renderer.getSnapshot().activeCells.map((cell) => cell.y);
-    const topRow = Math.min(...activeRows);
-    const firstRowCellCount = activeRows.filter((row) => row === topRow).length;
-    const rowCount = new Set(activeRows).size;
-    expect(firstRowProgress.filter((progress) => progress > 0)).toHaveLength(firstRowCellCount);
-    expect(firstRowProgress.filter((progress) => progress === 0)).toHaveLength(4 - firstRowCellCount);
-    expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBe(0);
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(1);
+    internals.drawPieces(entering, layout);
+    internals.updateSnapshot(entering, layout, app);
+    const crossingRows = drawGroups.mock.calls.find((call) => (
+      call[2] === 'T' && (call[4] as { active?: boolean } | undefined)?.active === true
+    ));
+    expect(crossingRows?.[1]).toEqual([
+      { x: 4, y: 0 }, { x: 3, y: 1 }, { x: 4, y: 1 }, { x: 5, y: 1 },
+    ]);
+    expect(crossingRows?.[4]).toMatchObject({ offsetY: -20 });
+    expect(renderer.getSnapshot().activeSpawnEntry).toMatchObject({
+      pending: true,
+      visibleCellCount: 4,
+      hiddenCellCount: 0,
+    });
+    expect(drawGroups.mock.calls.some((call) => (
+      (call[4] as { ghost?: boolean } | undefined)?.ghost === true
+    ))).toBe(false);
 
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      presentation: { type: 'T', x: 3, y: 19.99, settleMs: 56 },
+    });
     drawGroups.mockClear();
-    internals.advanceEffects(240);
-    internals.drawPieces(playing, layout);
-    internals.updateSnapshot(playing, layout, app);
-    expect(renderer.getSnapshot().activeSpawnReveal?.cellProgress.every((progress) => progress > 0)).toBe(true);
-    expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBe(0);
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(rowCount);
-
-    drawGroups.mockClear();
-    internals.advanceEffects(60);
-    internals.drawPieces(playing, layout);
-    internals.updateSnapshot(playing, layout, app);
-    expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBeGreaterThan(0);
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(rowCount + 1);
-
-    drawGroups.mockClear();
-    internals.advanceEffects(50);
-    internals.drawPieces(playing, layout);
-    internals.updateSnapshot(playing, layout, app);
-    expect(renderer.getSnapshot().activeSpawnReveal).toBeNull();
-    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(2);
+    internals.drawPieces(entering, layout);
+    internals.updateSnapshot(entering, layout, app);
+    expect(renderer.getSnapshot().activeSpawnEntry).toMatchObject({ pending: false });
+    expect(drawGroups.mock.calls.some((call) => (
+      (call[4] as { ghost?: boolean } | undefined)?.ghost === true
+    ))).toBe(true);
   });
 
-  it('does not restart the arrival reveal for movement, rotation, or pause', () => {
+  it('does not restart spatial spawn entry for movement, rotation, or pause', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
-    const playing = dispatch(createInitialState(0x51a1f00d, 'marathon'), { type: 'start' }).state;
+    const base = dispatch(createInitialState(0x51a1f00d, 'marathon'), { type: 'start' }).state;
+    const playing = {
+      ...base,
+      active: { type: 'T', rotation: 0, x: 3, y: 19 },
+    } as GameState;
 
-    internals.syncActiveSpawnReveal(playing);
-    internals.advanceEffects(80);
-    const originalReveal = internals.activeSpawnReveal;
+    internals.syncActiveSpawnEntry(playing);
+    const originalEntry = internals.activeSpawnEntry;
 
-    internals.syncActiveSpawnReveal({
+    internals.syncActiveSpawnEntry({
       ...playing,
       active: playing.active ? { ...playing.active, x: playing.active.x + 1, rotation: 1 } : null,
     });
-    expect(internals.activeSpawnReveal).toBe(originalReveal);
-    expect(internals.activeSpawnReveal?.elapsed).toBe(80);
+    expect(internals.activeSpawnEntry).toBe(originalEntry);
+    expect(internals.activeSpawnEntry?.pending).toBe(true);
 
-    internals.syncActiveSpawnReveal({ ...playing, status: 'paused' });
-    expect(internals.activeSpawnReveal).toBe(originalReveal);
+    internals.syncActiveSpawnEntry({ ...playing, status: 'paused' });
+    expect(internals.activeSpawnEntry).toBe(originalEntry);
 
-    internals.syncActiveSpawnReveal({ ...playing, pieceCount: playing.pieceCount + 1 });
-    expect(internals.activeSpawnReveal).not.toBe(originalReveal);
-    expect(internals.activeSpawnReveal?.elapsed).toBe(0);
+    internals.syncActiveSpawnEntry({ ...playing, pieceCount: playing.pieceCount + 1 });
+    expect(internals.activeSpawnEntry).not.toBe(originalEntry);
+    expect(internals.activeSpawnEntry?.pending).toBe(true);
   });
 
   it('draws and snapshots the independently settled Supergravity ghost', () => {
@@ -927,8 +942,6 @@ describe('Puzzle undo presentation reset', () => {
     });
     const drawGroups = vi.spyOn(internals, 'drawCellGroups');
 
-    internals.syncActiveSpawnReveal(state);
-    internals.advanceEffects(ACTIVE_SPAWN_REVEAL_DURATION_MS);
     internals.drawPieces(state, layout);
     internals.updateSnapshot(state, layout, {
       screen: { width: 280, height: 480 },

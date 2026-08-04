@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  ACTIVE_SPAWN_REVEAL_DURATION_MS,
   activeCellsInsideVisibleRows,
   activePresentationScaleFitsVisibleWell,
-  activeSpawnCellProgresses,
-  activeSpawnGhostProgress,
   approachPresentationPoint,
   boardShiftPresentationOffset,
   clampActivePresentationOffsetY,
@@ -57,6 +54,11 @@ describe('presentation interpolation', () => {
       mutationCollapseTicks: 0,
       mutationCollapseLandingLatched: true,
     })).toEqual(independentLanding);
+    const locked = dispatch(state, { type: 'hard-drop' }).events.find(
+      (event) => event.type === 'piece-locked',
+    );
+    expect(locked?.cells).toEqual(independentLanding);
+    expect(locked?.cells).toEqual(projectedLandingCells(state));
     expect(projectedLandingCells(state)).toEqual(projectedLandingCells(state));
     expect(board).toEqual(before);
   });
@@ -193,12 +195,12 @@ describe('presentation interpolation', () => {
     }
   });
 
-  it('presents all four spawn cells inside the well without mutating Core coordinates', () => {
+  it('keeps hidden spawn cells above the board mouth without mutating Core coordinates', () => {
     const hiddenSpawn: Cell[] = [
-      { x: 3, y: 0 },
-      { x: 4, y: 0 },
-      { x: 5, y: 0 },
-      { x: 6, y: 0 },
+      { x: 4, y: 1 },
+      { x: 3, y: 2 },
+      { x: 4, y: 2 },
+      { x: 5, y: 2 },
     ];
     const original = structuredClone(hiddenSpawn);
     const presented = activeCellsInsideVisibleRows(hiddenSpawn, 2, 20);
@@ -206,13 +208,12 @@ describe('presentation interpolation', () => {
       { x: 3, y: 2 },
       { x: 4, y: 2 },
       { x: 5, y: 2 },
-      { x: 6, y: 2 },
     ]);
     expect(hiddenSpawn).toEqual(original);
-    expect(presented).toHaveLength(4);
+    expect(presented).toHaveLength(3);
   });
 
-  it('removes the renderer-only spawn shift once every active cell is naturally visible', () => {
+  it('adds the higher spawn row only after Core moves it through the board mouth', () => {
     const entering: Cell[] = [
       { x: 4, y: 1 },
       { x: 4, y: 2 },
@@ -221,47 +222,11 @@ describe('presentation interpolation', () => {
     ];
     expect(activeCellsInsideVisibleRows(entering, 2, 20)).toEqual([
       { x: 4, y: 2 },
-      { x: 4, y: 3 },
-      { x: 5, y: 3 },
-      { x: 6, y: 3 },
+      { x: 5, y: 2 },
+      { x: 6, y: 2 },
     ]);
     const visible = entering.map((cell) => ({ ...cell, y: cell.y + 1 }));
     expect(activeCellsInsideVisibleRows(visible, 2, 20)).toEqual(visible);
-  });
-
-  it('reveals spawn rows top-to-bottom with one shared progress per row and delays the ghost', () => {
-    const cells: Cell[] = [
-      { x: 5, y: 3 },
-      { x: 4, y: 2 },
-      { x: 4, y: 3 },
-      { x: 5, y: 2 },
-    ];
-
-    expect(activeSpawnCellProgresses(cells, 0)).toEqual([0, 0, 0, 0]);
-    const firstBeat = activeSpawnCellProgresses(cells, 70);
-    expect(firstBeat[1]).toBeGreaterThan(0);
-    expect(firstBeat[3]).toBe(firstBeat[1]);
-    expect(firstBeat[2]).toBe(0);
-    expect(firstBeat[0]).toBe(0);
-
-    const middle = activeSpawnCellProgresses(cells, 180);
-    expect(middle[1]).toBe(middle[3]);
-    expect(middle[1]).toBeGreaterThan(middle[2]!);
-    expect(middle[2]).toBe(middle[0]);
-    expect(activeSpawnGhostProgress(345)).toBe(0);
-    expect(activeSpawnGhostProgress(383)).toBeGreaterThan(0);
-    expect(activeSpawnGhostProgress(383)).toBeLessThan(1);
-
-    expect(activeSpawnCellProgresses(cells, ACTIVE_SPAWN_REVEAL_DURATION_MS)).toEqual([1, 1, 1, 1]);
-    expect(activeSpawnGhostProgress(ACTIVE_SPAWN_REVEAL_DURATION_MS)).toBe(1);
-  });
-
-  it('clamps invalid arrival time and resolves reduced motion immediately', () => {
-    const cells: Cell[] = [{ x: 4, y: 2 }, { x: 5, y: 2 }];
-    expect(activeSpawnCellProgresses(cells, Number.NaN)).toEqual([0, 0]);
-    expect(activeSpawnGhostProgress(-100)).toBe(0);
-    expect(activeSpawnCellProgresses(cells, 0, true)).toEqual([1, 1]);
-    expect(activeSpawnGhostProgress(0, true)).toBe(1);
   });
 
   it('settles timed bedrock shifts in their canonical direction without overshoot', () => {
