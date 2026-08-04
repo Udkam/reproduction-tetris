@@ -111,6 +111,9 @@ const MUTATION_ITEMS = ['freeze', 'collapse', 'bomb', 'multiplier'] as const sat
 
 type RendererInternals = {
   host: HTMLElement | null;
+  previewGraphics: unknown;
+  pieceGraphics: unknown;
+  previewLayerVisible: boolean;
   app: {
     stage: unknown;
     renderer: {
@@ -230,6 +233,7 @@ type RendererInternals = {
   syncActiveSpawnEntry: (state: GameState) => void;
   advanceSurvivalDebrisPresentation: (state: GameState, deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
+  drawPreviews: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   drawSurvivalPressureEffects: (
     graphics: unknown,
     state: GameState,
@@ -355,6 +359,24 @@ type RendererInternals = {
     graphics: unknown,
     state: GameState,
     layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean },
+  ) => void;
+  drawMutationSnowflake: (
+    graphics: unknown,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    color: number,
+    alpha: number,
+    rotation?: number,
+  ) => void;
+  drawGravityFactorParticle: (
+    graphics: unknown,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    color: number,
+    alpha: number,
+    scale?: number,
   ) => void;
   drawSupergravityPieceTrail: (
     graphics: unknown,
@@ -852,7 +874,10 @@ describe('Puzzle undo presentation reset', () => {
     ]);
     expect(drawGroups.mock.calls.some((call) => (
       (call[4] as { ghost?: boolean } | undefined)?.ghost === true
-    ))).toBe(false);
+    ))).toBe(true);
+    expect(drawGroups.mock.calls.find((call) => (
+      (call[4] as { ghost?: boolean } | undefined)?.ghost === true
+    ))?.[1]).toHaveLength(4);
 
     const entering = {
       ...playing,
@@ -878,7 +903,10 @@ describe('Puzzle undo presentation reset', () => {
     });
     expect(drawGroups.mock.calls.some((call) => (
       (call[4] as { ghost?: boolean } | undefined)?.ghost === true
-    ))).toBe(false);
+    ))).toBe(true);
+    expect(drawGroups.mock.calls.find((call) => (
+      (call[4] as { ghost?: boolean } | undefined)?.ghost === true
+    ))?.[1]).toHaveLength(4);
 
     Object.assign(internals as unknown as Record<string, unknown>, {
       presentation: { type: 'T', x: 3, y: 19.99, settleMs: 56 },
@@ -919,7 +947,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.activeSpawnEntry?.pending).toBe(true);
   });
 
-  it('draws and snapshots the independently settled Supergravity ghost', () => {
+  it('draws and snapshots the independently settled Supergravity ghost after its timer expires', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
@@ -932,7 +960,8 @@ describe('Puzzle undo presentation reset', () => {
       ...base,
       board,
       active: { type: 'O', rotation: 0, x: 3, y: 20 },
-      mutationCollapseTicks: 600,
+      mutationCollapseTicks: 0,
+      mutationCollapseLandingLatched: true,
     } as GameState;
     const pieces = createGraphicsRecorder();
     Object.assign(internals as unknown as Record<string, unknown>, {
@@ -957,6 +986,42 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot().ghostCells).toEqual([
       { x: 3, y: 36 }, { x: 4, y: 37 }, { x: 3, y: 37 }, { x: 4, y: 38 },
     ]);
+  });
+
+  it('draws the DOM-anchored Next queue on the unmasked preview plane', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const host = document.createElement('div');
+    const slot = document.createElement('div');
+    slot.dataset.testid = 'next-slot';
+    document.body.append(slot);
+    vi.spyOn(host, 'getBoundingClientRect').mockReturnValue({
+      x: 100, y: 40, left: 100, top: 40, right: 1100, bottom: 840, width: 1000, height: 800,
+      toJSON: () => ({}),
+    } as DOMRect);
+    vi.spyOn(slot, 'getBoundingClientRect').mockReturnValue({
+      x: 130, y: 100, left: 130, top: 100, right: 350, bottom: 260, width: 220, height: 160,
+      toJSON: () => ({}),
+    } as DOMRect);
+    const preview = createGraphicsRecorder();
+    const pieces = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      host,
+      previewGraphics: preview.graphics,
+      pieceGraphics: pieces.graphics,
+    });
+    const drawPreviews = vi.spyOn(internals, 'drawPreviewPieces');
+    const state = dispatch(createInitialState(0x51a1f00d, 'marathon'), { type: 'start' }).state;
+
+    try {
+      internals.drawPreviews(state, { x: 400, y: 40, width: 200, height: 400, cell: 20, compact: false });
+      expect(drawPreviews).toHaveBeenCalledTimes(1);
+      expect(drawPreviews.mock.calls[0]?.[0]).toBe(preview.graphics);
+      expect(drawPreviews.mock.calls[0]?.[0]).not.toBe(pieces.graphics);
+      expect(internals.previewLayerVisible).toBe(true);
+    } finally {
+      slot.remove();
+    }
   });
 
   it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {
@@ -1098,8 +1163,8 @@ describe('Puzzle undo presentation reset', () => {
       { phase: 'active', pendingClearRows: [] } as unknown as GameState,
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
-    expect(fills.length).toBeGreaterThan(0);
-    expect(strokes).toHaveLength(0);
+    expect(fills).toHaveLength(0);
+    expect(strokes.length).toBeGreaterThan(0);
     expect(carrierRimCalls).toBe(0);
 
     internals.advanceEffects(304);
@@ -1322,7 +1387,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(detailScales).toEqual([0.62]);
   });
 
-  it('keeps Ice activation as local bloom and facets inside the carrier cells', () => {
+  it('activates Ice with exactly four local snowflakes', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1339,23 +1404,23 @@ describe('Puzzle undo presentation reset', () => {
     }]);
 
     internals.advanceEffects(60);
+    const snowflakes = vi.spyOn(internals, 'drawMutationSnowflake');
     const bind = createGraphicsRecorder();
     internals.drawMutationActivationEffect(bind.graphics, internals.mutationFlash!, layout);
-    expect(bind.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(snowflakes).toHaveBeenCalledTimes(4);
+    expect(bind.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
     expect(bind.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(bind.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
+    expect(bind.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThan(0);
     expect(hasBroadHorizontalGeometry(bind.operations, layout.width)).toBe(false);
 
     internals.advanceEffects(100);
+    snowflakes.mockClear();
     const release = createGraphicsRecorder();
     internals.drawMutationActivationEffect(release.graphics, internals.mutationFlash!, layout);
-    const facets = release.operations.filter((operation) => operation.kind === 'poly');
-    expect(facets.length).toBeGreaterThanOrEqual(4);
+    expect(snowflakes).toHaveBeenCalledTimes(4);
+    expect(release.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
     expect(release.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
-    expect(release.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
-    expect(facets.every((operation) => operation.values.every((value, index) => (
-      index % 2 === 0 ? value >= 60 && value <= 100 : value >= 80 && value <= 100
-    )))).toBe(true);
+    expect(release.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThan(0);
     expect(hasBroadHorizontalGeometry(release.operations, layout.width)).toBe(false);
 
     const reduced = new TetrisRendererClass();
@@ -1372,16 +1437,20 @@ describe('Puzzle undo presentation reset', () => {
         { x: 4, y: VISIBLE_START_ROW + 4 },
       ],
     }]);
+    const reducedSnowflakes = vi.spyOn(reducedInternals, 'drawMutationSnowflake');
     const reducedStart = createGraphicsRecorder();
     reducedInternals.drawMutationActivationEffect(reducedStart.graphics, reducedInternals.mutationFlash!, layout);
+    expect(reducedSnowflakes).toHaveBeenCalledTimes(3);
+    reducedSnowflakes.mockClear();
     reducedInternals.mutationClockMs = 999;
     const reducedLater = createGraphicsRecorder();
     reducedInternals.drawMutationActivationEffect(reducedLater.graphics, reducedInternals.mutationFlash!, layout);
+    expect(reducedSnowflakes).toHaveBeenCalledTimes(3);
     expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
-    expect(reducedStart.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(reducedStart.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
   });
 
-  it('compresses Supergravity ribbons and wedges only inside the trigger columns', () => {
+  it('activates Supergravity with exactly five local gravity factors', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1398,28 +1467,27 @@ describe('Puzzle undo presentation reset', () => {
     }]);
 
     expect(internals.mutationFlash).toMatchObject({ triggerColumns: [1, 7] });
+    const factors = vi.spyOn(internals, 'drawGravityFactorParticle');
     const recorder = createGraphicsRecorder();
     internals.drawMutationActivationEffect(
       recorder.graphics,
       internals.mutationFlash!,
       layout,
     );
-    const ribbons = recorder.operations.filter((operation) => operation.kind === 'poly');
-    expect(ribbons).toHaveLength(4);
-    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
+    expect(factors).toHaveBeenCalledTimes(5);
+    expect(recorder.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(5);
+    expect(recorder.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThan(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
-    expect(ribbons.every((operation) => {
-      const xValues = operation.values.filter((_value, index) => index % 2 === 0);
-      return [[20, 40], [140, 160]].some(([min, max]) => xValues.every((value) => value >= min! && value <= max!));
-    })).toBe(true);
 
     internals.advanceEffects(160);
+    factors.mockClear();
     const release = createGraphicsRecorder();
     internals.drawMutationActivationEffect(release.graphics, internals.mutationFlash!, layout);
-    expect(release.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
-    expect(release.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
+    expect(factors).toHaveBeenCalledTimes(5);
+    expect(release.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(5);
+    expect(release.operations.filter((operation) => operation.kind === 'segment').length).toBeGreaterThan(0);
 
     const reduced = new TetrisRendererClass();
     reduced.setOptions({ reducedMotion: true });
@@ -1435,13 +1503,17 @@ describe('Puzzle undo presentation reset', () => {
         { x: 7, y: VISIBLE_START_ROW + 7 },
       ],
     }]);
+    const reducedFactors = vi.spyOn(reducedInternals, 'drawGravityFactorParticle');
     const reducedStart = createGraphicsRecorder();
     reducedInternals.drawMutationActivationEffect(reducedStart.graphics, reducedInternals.mutationFlash!, layout);
+    expect(reducedFactors).toHaveBeenCalledTimes(3);
+    reducedFactors.mockClear();
     reducedInternals.mutationClockMs = 999;
     const reducedLater = createGraphicsRecorder();
     reducedInternals.drawMutationActivationEffect(reducedLater.graphics, reducedInternals.mutationFlash!, layout);
+    expect(reducedFactors).toHaveBeenCalledTimes(3);
     expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
-    expect(reducedStart.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(reducedStart.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(3);
   });
 
   it('keeps Ice and Supergravity line-clear accents local to the consumed carrier cell', () => {

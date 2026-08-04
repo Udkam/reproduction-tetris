@@ -545,6 +545,8 @@ export class TetrisRenderer {
   private readonly pieceGraphics = new Graphics();
   /** Board-mouth clip for spatial spawn entry; active rows above the well stay hidden. */
   private readonly pieceMaskGraphics = new Graphics();
+  /** HUD preview plane stays outside the board-mouth mask and world-only Mutation filters. */
+  private readonly previewGraphics = new Graphics();
   private readonly survivalEntryGraphics = new Graphics();
   private readonly survivalEntryMaskGraphics = new Graphics();
   private readonly effectGraphics = new Graphics();
@@ -692,7 +694,7 @@ export class TetrisRenderer {
       this.pieceMaskGraphics,
     );
     this.initializeMutationFilters();
-    app.stage.addChild(this.world);
+    app.stage.addChild(this.world, this.previewGraphics);
     app.ticker.add(this.onTick);
     this.app = app;
   }
@@ -1107,7 +1109,10 @@ export class TetrisRenderer {
       : 0;
     const spawnEntryPending = this.activeSpawnEntry?.generationKey === this.activeSpawnGenerationKey
       && this.activeSpawnEntry.pending;
-    if (drawableActive && !spawnEntryPending) {
+    const hasVisibleSpawnSlice = activeCells.some((cell) => (
+      cell.y >= VISIBLE_START_ROW && cell.y < VISIBLE_START_ROW + VISIBLE_HEIGHT
+    ));
+    if (drawableActive && (!spawnEntryPending || hasVisibleSpawnSlice)) {
       this.drawCellGroups(graphics, visibleGhostCells, drawableActive.type, 0.82, {
         originX: layout.x,
         originY: layout.y,
@@ -2081,7 +2086,8 @@ export class TetrisRenderer {
   }
 
   private drawPreviews(state: GameState, layout: BoardLayout): void {
-    const graphics = this.pieceGraphics;
+    const graphics = this.previewGraphics;
+    graphics.clear();
     this.previewBounds = null;
     this.previewLayerVisible = false;
     this.previewPiece = null;
@@ -3064,6 +3070,73 @@ export class TetrisRenderer {
     );
   }
 
+  private drawMutationSnowflake(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    color: number,
+    alpha: number,
+    rotation = 0,
+  ): void {
+    const segments: Array<readonly [number, number, number, number]> = [];
+    const branchRadius = radius * .26;
+    for (let axis = 0; axis < 3; axis += 1) {
+      const angle = rotation + axis * Math.PI / 3;
+      const dx = Math.cos(angle);
+      const dy = Math.sin(angle);
+      segments.push([
+        centerX - dx * radius,
+        centerY - dy * radius,
+        centerX + dx * radius,
+        centerY + dy * radius,
+      ]);
+      for (const direction of [-1, 1] as const) {
+        const branchX = centerX + dx * radius * .62 * direction;
+        const branchY = centerY + dy * radius * .62 * direction;
+        const reverseAngle = angle + (direction > 0 ? Math.PI : 0);
+        for (const branchTurn of [-.62, .62] as const) {
+          segments.push([
+            branchX,
+            branchY,
+            branchX + Math.cos(reverseAngle + branchTurn) * branchRadius,
+            branchY + Math.sin(reverseAngle + branchTurn) * branchRadius,
+          ]);
+        }
+      }
+    }
+    this.strokeSegments(graphics, segments, color, alpha, Math.max(1, radius * .16));
+  }
+
+  private drawGravityFactorParticle(
+    graphics: Graphics,
+    centerX: number,
+    centerY: number,
+    radius: number,
+    color: number,
+    alpha: number,
+    scale = 1,
+  ): void {
+    const radiusX = radius * .72 * scale;
+    const radiusY = radius * scale;
+    graphics.poly([
+      centerX,
+      centerY - radiusY,
+      centerX + radiusX,
+      centerY - radiusY * .08,
+      centerX,
+      centerY + radiusY,
+      centerX - radiusX,
+      centerY - radiusY * .08,
+    ]).fill({ color, alpha });
+    const chevronTop = centerY + radiusY * 1.3;
+    const chevronHalf = radiusX * .72;
+    this.strokeSegments(graphics, [
+      [centerX - chevronHalf, chevronTop, centerX, chevronTop + radiusY * .42],
+      [centerX, chevronTop + radiusY * .42, centerX + chevronHalf, chevronTop],
+    ], color, alpha * .82, Math.max(1, radius * .14));
+  }
+
   private drawMutationActivationEffect(
     graphics: Graphics,
     flash: MutationFlash,
@@ -3083,35 +3156,23 @@ export class TetrisRenderer {
 
     if (this.options.reducedMotion) {
       if (flash.item === 'freeze') {
-        const orderedCells = [...cells]
+        const sourceCells = [...cells]
           .sort((left, right) => left.y - right.y || left.x - right.x)
-          .slice(0, 6);
-        for (const [index, cell] of orderedCells.entries()) {
-          const left = layout.x + cell.x * layout.cell;
-          const top = layout.y + cell.y * layout.cell;
-          const inset = layout.cell * .12;
-          const points = index % 2 === 0
-            ? [
-                left + inset,
-                top + layout.cell * .72,
-                left + layout.cell * .42,
-                top + inset,
-                left + layout.cell - inset,
-                top + layout.cell * .34,
-                left + layout.cell * .68,
-                top + layout.cell - inset,
-              ]
-            : [
-                left + inset,
-                top + layout.cell * .34,
-                left + layout.cell * .58,
-                top + inset,
-                left + layout.cell - inset,
-                top + layout.cell * .72,
-                left + layout.cell * .32,
-                top + layout.cell - inset,
-              ];
-          graphics.poly(points).fill({ color: token.palette.facet, alpha: .34 });
+          .filter((cell, index, ordered) => index === 0 || cell.x !== ordered[index - 1]!.x || cell.y !== ordered[index - 1]!.y);
+        if (sourceCells.length === 0) return;
+        const offsets = [[-.18, -.08], [.19, .04], [-.04, .18]] as const;
+        for (let index = 0; index < 3; index += 1) {
+          const cell = sourceCells[Math.floor(index * sourceCells.length / 3)]!;
+          const [offsetX, offsetY] = offsets[index]!;
+          this.drawMutationSnowflake(
+            graphics,
+            layout.x + (cell.x + .5 + offsetX) * layout.cell,
+            layout.y + (cell.y + .5 + offsetY) * layout.cell,
+            layout.cell * [.12, .1, .11][index]!,
+            token.palette.highlight,
+            .52,
+            [-.2, .16, -.12][index]!,
+          );
         }
         return;
       }
@@ -3121,23 +3182,18 @@ export class TetrisRenderer {
           if (!flash.triggerColumns.includes(cell.x)) continue;
           bottomByColumn.set(cell.x, Math.max(bottomByColumn.get(cell.x) ?? -Infinity, cell.y + 1));
         }
-        for (const [column, bottom] of bottomByColumn) {
-          const centerX = layout.x + (column + .5) * layout.cell;
-          const sourceY = layout.y + bottom * layout.cell;
-          const halfWidth = layout.cell * .24;
-          const top = Math.max(layout.y, sourceY - layout.cell * .3);
-          graphics.poly([
-            centerX - halfWidth,
-            top,
-            centerX + halfWidth * .72,
-            top,
-            centerX + halfWidth,
-            sourceY - layout.cell * .08,
-            centerX,
-            sourceY,
-            centerX - halfWidth,
-            sourceY - layout.cell * .08,
-          ]).fill({ color: token.palette.facet, alpha: .38 });
+        const sources = [...bottomByColumn.entries()].sort(([left], [right]) => left - right);
+        if (sources.length === 0) return;
+        for (let index = 0; index < 3; index += 1) {
+          const [column, bottom] = sources[Math.floor(index * sources.length / 3)]!;
+          this.drawGravityFactorParticle(
+            graphics,
+            layout.x + (column + .5 + [-.08, .06, 0][index]!) * layout.cell,
+            Math.min(layout.y + layout.height - layout.cell * .18, layout.y + bottom * layout.cell + layout.cell * [.06, .12, .18][index]!),
+            layout.cell * [.105, .09, .1][index]!,
+            token.palette.highlight,
+            .52,
+          );
         }
         return;
       }
@@ -3158,87 +3214,28 @@ export class TetrisRenderer {
       if (!bind.active && !release.active) return;
       const sourceCells = [...cells]
         .sort((left, right) => left.y - right.y || left.x - right.x)
-        .filter((cell, index, ordered) => index === 0 || cell.x !== ordered[index - 1]!.x || cell.y !== ordered[index - 1]!.y)
-        .slice(0, 6);
+        .filter((cell, index, ordered) => index === 0 || cell.x !== ordered[index - 1]!.x || cell.y !== ordered[index - 1]!.y);
       if (sourceCells.length === 0) return;
-      for (const [index, cell] of sourceCells.entries()) {
-        const left = layout.x + cell.x * layout.cell;
-        const top = layout.y + cell.y * layout.cell;
-        const centerCellX = left + layout.cell * .5;
-        const stagger = sourceCells.length > 1 ? index * .35 / (sourceCells.length - 1) : 0;
-        const localProgress = Math.max(0, Math.min(1, bind.progress * 1.35 - stagger));
-        if (bind.active) {
-          const lobeCenterY = top + layout.cell * (.15 + localProgress * .28);
-          const lobeHalfWidth = layout.cell * (.22 + localProgress * .18);
-          const lobeHalfHeight = layout.cell * (.06 + localProgress * .05);
-          graphics.poly([
-            centerCellX - lobeHalfWidth,
-            lobeCenterY,
-            centerCellX - lobeHalfWidth * .48,
-            lobeCenterY - lobeHalfHeight,
-            centerCellX + lobeHalfWidth * .52,
-            lobeCenterY - lobeHalfHeight * .72,
-            centerCellX + lobeHalfWidth,
-            lobeCenterY,
-            centerCellX + lobeHalfWidth * .46,
-            lobeCenterY + lobeHalfHeight,
-            centerCellX - lobeHalfWidth * .58,
-            lobeCenterY + lobeHalfHeight * .72,
-          ]).fill({ color: token.palette.glow, alpha: .08 + localProgress * .12 });
-
-          if (localProgress >= .42) {
-            const facetProgress = Math.min(1, (localProgress - .42) / .58);
-            const inset = layout.cell * (.18 - facetProgress * .06);
-            const points = index % 2 === 0
-              ? [
-                  left + inset,
-                  top + layout.cell * .7,
-                  left + layout.cell * .42,
-                  top + inset,
-                  left + layout.cell - inset,
-                  top + layout.cell * .35,
-                  left + layout.cell * .68,
-                  top + layout.cell - inset,
-                ]
-              : [
-                  left + inset,
-                  top + layout.cell * .35,
-                  left + layout.cell * .58,
-                  top + inset,
-                  left + layout.cell - inset,
-                  top + layout.cell * .7,
-                  left + layout.cell * .32,
-                  top + layout.cell - inset,
-                ];
-            graphics.poly(points).fill({ color: token.palette.facet, alpha: .12 + facetProgress * .22 });
-          }
-        }
-        if (release.active) {
-          const inset = layout.cell * (.12 + release.value * .03);
-          const lift = layout.cell * .08 * release.value;
-          const points = index % 2 === 0
-            ? [
-                left + inset,
-                top + layout.cell * .7 - lift,
-                left + layout.cell * .42,
-                top + inset - lift,
-                left + layout.cell - inset,
-                top + layout.cell * .35 - lift,
-                left + layout.cell * .68,
-                top + layout.cell - inset - lift,
-              ]
-            : [
-                left + inset,
-                top + layout.cell * .35 - lift,
-                left + layout.cell * .58,
-                top + inset - lift,
-                left + layout.cell - inset,
-                top + layout.cell * .7 - lift,
-                left + layout.cell * .32,
-                top + layout.cell - inset - lift,
-              ];
-          graphics.poly(points).fill({ color: token.palette.highlight, alpha: .32 * (1 - release.progress) });
-        }
+      const phaseProgress = bind.active ? bind.progress * .42 : .42 + release.progress * .58;
+      const sourceOffsets = [[-.22, -.04], [.18, .06], [-.08, .17], [.24, -.15]] as const;
+      const drift = [[-.1, -.34], [.08, -.45], [.04, -.29], [-.06, -.4]] as const;
+      const radii = [.12, .1, .11, .09] as const;
+      const rotations = [-.21, .17, -.14, .24] as const;
+      for (let index = 0; index < 4; index += 1) {
+        const cell = sourceCells[Math.floor(index * sourceCells.length / 4)]!;
+        const localProgress = Math.max(0, Math.min(1, (phaseProgress - index * .06) / .82));
+        const [offsetX, offsetY] = sourceOffsets[index]!;
+        const [driftX, driftY] = drift[index]!;
+        const releaseFade = release.active ? 1 - release.progress : 1;
+        this.drawMutationSnowflake(
+          graphics,
+          layout.x + (cell.x + .5 + offsetX + driftX * localProgress) * layout.cell,
+          layout.y + (cell.y + .5 + offsetY + driftY * localProgress) * layout.cell,
+          layout.cell * radii[index]! * (.62 + localProgress * .48),
+          token.palette.highlight,
+          (.24 + localProgress * .58) * releaseFade,
+          rotations[index]! + localProgress * (index % 2 === 0 ? -.38 : .34),
+        );
       }
       return;
     }
@@ -3252,67 +3249,28 @@ export class TetrisRenderer {
         if (!flash.triggerColumns.includes(cell.x)) continue;
         bottomByColumn.set(cell.x, Math.max(bottomByColumn.get(cell.x) ?? -Infinity, cell.y + 1));
       }
-      for (const [column, bottom] of bottomByColumn) {
-        const centerX = layout.x + (column + .5) * layout.cell;
+      const sources = [...bottomByColumn.entries()].sort(([left], [right]) => left - right);
+      if (sources.length === 0) return;
+      const phaseProgress = pressure.active ? pressure.progress * .4 : .4 + release.progress * .6;
+      const lateralDrift = [-.24, -.12, 0, .14, .25] as const;
+      const verticalTravel = [.38, .52, .62, .46, .56] as const;
+      for (let index = 0; index < 5; index += 1) {
+        const [column, bottom] = sources[Math.floor(index * sources.length / 5)]!;
+        const localProgress = Math.max(0, Math.min(1, (phaseProgress - index * .045) / .82));
         const sourceY = layout.y + bottom * layout.cell;
-        if (pressure.active) {
-          const compression = pressure.value;
-          const drawRibbon = (
-            topHalfWidth: number,
-            lowerHalfWidth: number,
-            topDistance: number,
-            alpha: number,
-            color: number,
-          ): void => {
-            const topY = Math.max(layout.y, sourceY - topDistance);
-            const lowerY = Math.max(layout.y, sourceY - layout.cell * .08);
-            graphics.poly([
-              centerX - topHalfWidth,
-              topY,
-              centerX + topHalfWidth * .72,
-              topY + layout.cell * .025,
-              centerX + lowerHalfWidth,
-              lowerY - layout.cell * .08,
-              centerX + lowerHalfWidth * .34,
-              lowerY,
-              centerX - lowerHalfWidth,
-              lowerY - layout.cell * .04,
-              centerX - topHalfWidth * .78,
-              topY + layout.cell * .04,
-            ]).fill({ color, alpha });
-          };
-          drawRibbon(
-            layout.cell * (.41 - compression * .13),
-            layout.cell * (.29 - compression * .08),
-            layout.cell * (1.25 - compression * 1.01),
-            .08 + compression * .04,
-            token.palette.deep,
-          );
-          drawRibbon(
-            layout.cell * (.32 - compression * .09),
-            layout.cell * (.23 - compression * .06),
-            layout.cell * (.86 - compression * .72),
-            .14 + compression * .08,
-            token.palette.primary,
-          );
-        }
-        if (release.active) {
-          const travel = layout.cell * (.04 + release.value * .5);
-          const top = Math.min(layout.y + layout.height - layout.cell * .3, sourceY + travel);
-          const halfWidth = layout.cell * .24;
-          graphics.poly([
-            centerX - halfWidth,
-            top,
-            centerX + halfWidth * .68,
-            top,
-            centerX + halfWidth,
-            top + layout.cell * .12,
-            centerX,
-            Math.min(layout.y + layout.height, top + layout.cell * .34),
-            centerX - halfWidth,
-            top + layout.cell * .12,
-          ]).fill({ color: token.palette.highlight, alpha: .34 * (1 - release.progress) });
-        }
+        const releaseFade = release.active ? 1 - release.progress : 1;
+        this.drawGravityFactorParticle(
+          graphics,
+          layout.x + (column + .5 + lateralDrift[index]! * localProgress) * layout.cell,
+          Math.min(
+            layout.y + layout.height - layout.cell * .25,
+            sourceY + layout.cell * (.04 + verticalTravel[index]! * localProgress),
+          ),
+          layout.cell * (.085 + (index % 2) * .012),
+          token.palette.highlight,
+          (.22 + localProgress * .58) * releaseFade,
+          .66 + localProgress * .52,
+        );
       }
       return;
     }

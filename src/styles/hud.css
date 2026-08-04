@@ -437,10 +437,10 @@
 
 .game-left-rail .mutation-status__header > strong {
   width: 100%;
-  color: var(--muted) !important;
-  font-size: 14px !important;
-  font-weight: 700 !important;
-  letter-spacing: .035em !important;
+  color: color-mix(in srgb, var(--ink) 78%, var(--muted)) !important;
+  font-size: 15px !important;
+  font-weight: 780 !important;
+  letter-spacing: .045em !important;
   text-align: center;
 }
 
@@ -449,7 +449,7 @@
 .game-left-rail .mutation-status__ledger {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
-  gap: 12px !important;
+  gap: 14px !important;
   min-width: 0;
 }
 
@@ -459,11 +459,11 @@
 
 .game-left-rail .mutation-status__effect {
   display: grid !important;
-  grid-template-columns: 12px minmax(0, 1fr) !important;
+  grid-template-columns: 13px minmax(0, 1fr) !important;
   grid-template-rows: auto 1px !important;
   min-width: 0;
   min-height: 0 !important;
-  gap: 6px 7px !important;
+  gap: 7px 9px !important;
   padding: 0 !important;
   color: var(--ink) !important;
   background: transparent !important;
@@ -475,8 +475,8 @@
 
 .game-left-rail .mutation-status__signal {
   align-self: center;
-  width: 9px !important;
-  height: 9px !important;
+  width: 11px !important;
+  height: 11px !important;
 }
 
 .game-left-rail .mutation-status__effect-copy {
@@ -495,7 +495,9 @@
   display: block;
   overflow: hidden;
   color: var(--ink) !important;
-  font-size: 13px !important;
+  font-size: 15px !important;
+  font-weight: 780 !important;
+  letter-spacing: .035em !important;
   line-height: 1.15 !important;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -512,7 +514,7 @@
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden;
-  background: color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 20%, transparent) !important;
+  background: color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 28%, transparent) !important;
   border: 0 !important;
   border-left: 0 !important;
   border-radius: 0 !important;
@@ -531,7 +533,7 @@
   background: var(--mutation-primary, var(--puzzle)) !important;
   border: 0 !important;
   border-radius: 0 !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 5px color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 64%, transparent) !important;
 }
 
 /* Gameplay sheets interrupt the board at its visual center. Next stays rendered

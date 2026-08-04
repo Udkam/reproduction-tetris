@@ -2213,6 +2213,18 @@ describe('T6 frontend mode binding', () => {
     expect(collapse?.textContent).toBe('超重');
     expect(collapse?.getAttribute('aria-label')).toBe('超重：5 秒');
     expect(collapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
+    const latchedSupergravity = render(createElement(MutationStatus, {
+      state: {
+        ...createInitialState(0x51a1f00d, 'sprint'),
+        mutationCollapseTicks: 0,
+        mutationCollapseLandingLatched: true,
+      },
+    }));
+    const latchedCollapse = latchedSupergravity.container.querySelector<HTMLElement>('[data-mutation-state="collapse"]');
+    expect(latchedCollapse?.dataset.landingLatched).toBe('true');
+    expect(latchedCollapse?.textContent).toBe('超重');
+    expect(latchedCollapse?.getAttribute('aria-label')).toBe('超重');
+    expect(latchedCollapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('8%');
     const bombState = { ...active, mutationLastItem: 'bomb' as const, mutationLastItemTicks: 120 };
     const bomb = render(createElement(MutationStatus, { state: bombState }));
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
@@ -2221,6 +2233,7 @@ describe('T6 frontend mode binding', () => {
     expect(mutationRule).toContain('超重令落地时各列独立下沉 5 秒');
     expect(mutationRule).not.toContain('冻结');
     supergravity.unmount();
+    latchedSupergravity.unmount();
     bomb.unmount();
     view.unmount();
   });

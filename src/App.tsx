@@ -1666,12 +1666,24 @@ function mutationEffectName(item: MutationItem, language: AppLanguage, multiplie
 export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: GameState; language?: AppLanguage }) {
   if (state.mode !== 'sprint') return null;
   const copy = appCopy(language);
-  const candidates: Array<{ item: MutationItem; ticks: number; multiplierFactor?: 1 | 2 | 4 }> = [
+  const candidates: Array<{
+    item: MutationItem;
+    ticks: number;
+    multiplierFactor?: 1 | 2 | 4;
+    landingLatched?: boolean;
+  }> = [
     { item: 'freeze', ticks: state.mutationFreezeTicks },
-    { item: 'collapse', ticks: state.mutationCollapseTicks },
+    {
+      item: 'collapse',
+      ticks: state.mutationCollapseTicks,
+      landingLatched: state.mutationCollapseLandingLatched,
+    },
     { item: 'multiplier', ticks: state.mutationMultiplierTicks, multiplierFactor: state.mutationMultiplierFactor },
   ];
-  const activeEffects = candidates.filter((effect) => effect.ticks > 0);
+  // Supergravity belongs to the tetromino that spawned while the timer was active.
+  // Keep its instrument row visible after the global timer reaches zero until that
+  // tetromino locks, matching both Core's endpoint and the renderer's landing ghost.
+  const activeEffects = candidates.filter((effect) => effect.ticks > 0 || effect.landingLatched);
 
   return (
     <section
@@ -1686,16 +1698,22 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
       <div className="mutation-status__ledger">
         {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
-          const label = mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor);
+          const label = effect.landingLatched && effect.ticks <= 0
+            ? name
+            : mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor);
           const durationTicks = effect.item === 'collapse'
             ? MUTATION_SUPERGRAVITY_EFFECT_TICKS
             : MUTATION_EFFECT_TICKS;
+          const meterPercent = effect.landingLatched && effect.ticks <= 0
+            ? 8
+            : Math.round(effect.ticks / durationTicks * 100);
           return (
             <div
               key={effect.item}
               className="mutation-status__effect"
               data-mutation-state={effect.item}
               data-mutation-tier={effect.item === 'multiplier' ? effect.multiplierFactor : undefined}
+              data-landing-latched={effect.landingLatched || undefined}
               data-active
               aria-label={label}
             >
@@ -1703,7 +1721,7 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
               <span className="mutation-status__effect-copy">
                 <b>{name}</b>
               </span>
-              <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / durationTicks * 100)}%` }} /></span>
+              <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${meterPercent}%` }} /></span>
             </div>
           );
         })}
