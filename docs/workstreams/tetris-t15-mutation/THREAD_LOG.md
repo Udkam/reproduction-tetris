@@ -1800,3 +1800,40 @@
 - Next action: push this final recovery/pause record, verify local/remote equality,
   confirm a clean worktree and zero project helper/listener residue, then stop work
   until the player explicitly resumes the next phase.
+
+## 2026-08-05 — T31-R2 candidate gates and responsive Next evidence
+
+- Task ID: `/root/t31-r2-player-review`.
+- Owner: coordinator/writer `/root`; final review is read-only.
+- Candidate range: contract `c291afb`, product/test source `432fde4`, first browser
+  evidence `a00845c`, and responsive evidence completion `f859d68`.
+- Exact source scope: Mutation endpoint-latch ownership in Core/renderer presentation,
+  the current-arena Next bridge, the frameless Mutation ledger, and direct regression
+  tests. No Puzzle definition, progression, audio, Survival, dependency, or package
+  path changed.
+- Final gates run after the last source change:
+  - `npm.cmd run typecheck` — PASS;
+  - focused four-file test batch — PASS, 4 files / 101 tests;
+  - `npm.cmd run test` — PASS, 35 files passed and 1 skipped / 373 tests passed and
+    3 skipped;
+  - `npm.cmd run build` — PASS;
+  - final exact-path `git diff --check` — PASS.
+- Browser evidence:
+  - `docs/evidence/t31/audit.json` proves the stronger concurrent status ledger and
+    timer-expired airborne Supergravity latch whose complete ghost matches Core lock;
+  - `docs/evidence/t31-r2/responsive-audit.json` binds Classic and Mutation at
+    1440x900 and 1125x1196. All four captures report one Canvas, zero DOM board cells,
+    zero console errors, visible preview state, one rendered Next piece, and zero audit
+    failures. The four PNGs visibly contain the Next piece.
+- QA history is retained rather than hidden: the first read-only pass correctly found
+  missing Classic browser frames; `f859d68` closed that evidence gap. The focused
+  re-review then confirmed the four-frame Next claim but withheld PASS because these
+  already-run source gates had not yet been written to a durable record.
+- Resource disposition: the bounded browser/server batch exited; port 4212 has no
+  listener and only normal `TIME_WAIT` connections remained. No watcher, index,
+  Serena, WMI/CIM query, or persistent project helper was started.
+- Inherited exclusions stayed untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Status: **CANDIDATE GREEN / FINAL INDEPENDENT QA REQUIRED**.
+- Next action: let one read-only reviewer verify this persisted gate record against
+  `c291afb..f859d68`; only a P0/P1/P2/P3-zero verdict admits T32 board authoring.

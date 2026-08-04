@@ -108,23 +108,22 @@ geometry. The correction contract is
 
 ### T31-R2 player re-review gate
 
-Status (2026-08-05): **REOPENED / VISUAL AND LATCH REPAIR REQUIRED**. The player's
-current frames show a blank Next surface and insufficient Mutation-state emphasis, and
-the player reports that Supergravity endpoint compensation does not hold in live play.
-Before Puzzle definitions change, the coordinator must reproduce each state, repair the
-smallest owning path, add a regression test for timer-expired airborne preview/lock
-agreement, and capture one final Mutation plus one Classic frame proving Next remains
-visible. Prior accepted evidence is historical and cannot close this new review.
+Status (2026-08-05): **CANDIDATE GREEN / FINAL INDEPENDENT QA REQUIRED**. Product/test
+source `432fde4` repairs the player-reported status, Next, and Supergravity endpoint
+regressions. Evidence `a00845c` and `f859d68` binds the live Mutation state plus Classic
+and Mutation Next at both required viewports. The final source gates and resource
+teardown are recorded in `docs/workstreams/tetris-t15-mutation/THREAD_LOG.md`; T32 board
+authoring remains closed until the independent reviewer accepts that complete record.
 
 T31-R2 acceptance is fail-closed until all of the following are green together:
 
-- [ ] concurrent Mutation rows remain one frameless ledger but the heading, signal,
+- [x] concurrent Mutation rows remain one frameless ledger but the heading, signal,
   name, spacing, and thin remaining-time line are unmistakable without cards, seconds,
   placeholder copy, or overlap;
-- [ ] the renderer resolves the transparent Next anchor inside its own current arena,
+- [x] the renderer resolves the transparent Next anchor inside its own current arena,
   keeps the preview bounds inside the live Canvas, and produces visible Next pixels in
   active Classic and Mutation at 1440 × 900 and 1125 × 1196;
-- [ ] a two-row active piece can reveal its lower entry slice, outlive the global
+- [x] a two-row active piece can reveal its lower entry slice, outlive the global
   Supergravity timer, move or rotate, and still show the same complete per-column ghost
   that Core finally locks; only the following generation becomes rigid;
 - [ ] focused tests, one final typecheck, complete suite, production build, bounded
