@@ -99,11 +99,13 @@ import {
 import {
   LEADERBOARD_KEY,
   LEGACY_LEADERBOARD_KEYS,
+  classicDifficultyGrade,
   emptyLeaderboard,
   insertScoreRecord,
   parseLeaderboard,
   recordsForMode,
   type Leaderboard,
+  type ClassicDifficultyGrade,
   type RunMode,
   type ScoreRecord,
 } from './leaderboard';
@@ -508,7 +510,7 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
   const mode: RunMode = state.mode === 'sprint' ? 'sprint' : state.mode === 'race' ? 'race' : 'marathon';
   if (mode === 'race') {
     return {
-      version: 8,
+      version: 9,
       lines: state.lines,
       elapsedTicks: state.elapsedTicks,
       mode,
@@ -516,29 +518,59 @@ export function scoreRecordForState(state: GameState, completedAt: string): Scor
       completedAt,
     };
   }
-  return {
-    version: 8,
+  const scoredRecord = {
+    version: 9 as const,
     score: state.score,
     lines: state.lines,
     pieces: state.pieceCount,
     elapsedTicks: state.elapsedTicks,
     chain: 0,
     mode,
-    outcome: 'top-out',
+    outcome: 'top-out' as const,
     completedAt,
   };
+  if (mode === 'marathon') {
+    return {
+      ...scoredRecord,
+      mode,
+      classicStartingGravityTicks: state.classicStartingGravityTicks,
+      classicGravityFloorTicks: state.classicGravityFloorTicks,
+      classicGrade: classicDifficultyGrade(
+        state.classicStartingGravityTicks,
+        state.classicGravityFloorTicks,
+      ),
+    };
+  }
+  return { ...scoredRecord, mode: 'sprint' };
 }
 
 export function scoreRecordKey(record: ScoreRecord): string {
   if (record.mode === 'race') {
     return [record.mode, record.completedAt, record.lines, record.elapsedTicks].join(':');
   }
+  if (record.mode === 'marathon') {
+    return [
+      record.mode,
+      record.classicGrade,
+      record.classicStartingGravityTicks,
+      record.classicGravityFloorTicks,
+      record.completedAt,
+      record.score,
+      record.lines,
+      record.pieces,
+      record.elapsedTicks,
+      record.chain,
+    ].join(':');
+  }
   return [record.mode, record.completedAt, record.score, record.lines, record.pieces, record.elapsedTicks, record.chain].join(':');
 }
 
 export function scoreRecordRank(records: readonly ScoreRecord[], record: ScoreRecord | null): number | null {
   if (!record) return null;
-  const index = records.findIndex((candidate) => scoreRecordKey(candidate) === scoreRecordKey(record));
+  const comparableRecords = record.mode === 'marathon'
+    ? records.filter((candidate) => candidate.mode === 'marathon' && candidate.classicGrade === record.classicGrade)
+    : records;
+  const index = comparableRecords.findIndex((candidate) => scoreRecordKey(candidate) === scoreRecordKey(record));
   return index >= 0 ? index + 1 : null;
 }
 

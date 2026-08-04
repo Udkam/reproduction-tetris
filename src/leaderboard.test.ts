@@ -4,17 +4,19 @@ import {
   LEGACY_LEADERBOARD_KEYS,
   MUTATION_LEADERBOARD_LIMIT,
   LEADERBOARD_LIMIT,
+  classicDifficultyGrade,
   emptyLeaderboard,
   insertScoreRecord,
   migrateLegacyLeaderboard,
   parseLeaderboard,
   recordsForMode,
-  type StandardScoreRecord,
+  type ClassicScoreRecord,
+  type MutationScoreRecord,
   type SurvivalScoreRecord,
 } from './leaderboard';
 
-const marathonRecord = (overrides: Partial<StandardScoreRecord> = {}): StandardScoreRecord => ({
-  version: 8,
+const marathonRecord = (overrides: Partial<ClassicScoreRecord> = {}): ClassicScoreRecord => ({
+  version: 9,
   score: 1200,
   lines: 8,
   pieces: 31,
@@ -23,11 +25,14 @@ const marathonRecord = (overrides: Partial<StandardScoreRecord> = {}): StandardS
   mode: 'marathon',
   outcome: 'top-out',
   completedAt: '2026-07-14T01:00:00.000Z',
+  classicStartingGravityTicks: 48,
+  classicGravityFloorTicks: 6,
+  classicGrade: 'standard',
   ...overrides,
 });
 
 const raceRecord = (overrides: Partial<SurvivalScoreRecord> = {}): SurvivalScoreRecord => ({
-  version: 8,
+  version: 9,
   lines: 20,
   elapsedTicks: 3600,
   mode: 'race',
@@ -36,8 +41,8 @@ const raceRecord = (overrides: Partial<SurvivalScoreRecord> = {}): SurvivalScore
   ...overrides,
 });
 
-const sprintRecord = (overrides: Partial<StandardScoreRecord> = {}): StandardScoreRecord => ({
-  version: 8,
+const sprintRecord = (overrides: Partial<MutationScoreRecord> = {}): MutationScoreRecord => ({
+  version: 9,
   score: 2400,
   lines: 40,
   pieces: 55,
@@ -61,8 +66,15 @@ const legacyRecord = (mode: 'marathon' | 'race' | 'sprint') => ({
 });
 
 describe('local leaderboard boundary', () => {
+  it('derives the three Classic grades from the normalized interval midpoint', () => {
+    expect(classicDifficultyGrade(60, 18)).toBe('relaxed');
+    expect(classicDifficultyGrade(48, 6)).toBe('standard');
+    expect(classicDifficultyGrade(30, 6)).toBe('challenge');
+  });
+
   it('uses a TetraMorph current key while preserving every former key as a migration source', () => {
-    expect(LEADERBOARD_KEY).toBe('tetramorph:leaderboard:v8');
+    expect(LEADERBOARD_KEY).toBe('tetramorph:leaderboard:v9');
+    expect(LEGACY_LEADERBOARD_KEYS).toContain('tetramorph:leaderboard:v8');
     expect(LEGACY_LEADERBOARD_KEYS).toContain('tetris:leaderboard:v8');
     expect(LEGACY_LEADERBOARD_KEYS).toContain('stack-order:leaderboard:v1');
   });
@@ -70,19 +82,19 @@ describe('local leaderboard boundary', () => {
   it('fails closed on malformed schema, invalid outcomes, and non-migratable stores', () => {
     expect(parseLeaderboard('{broken')).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 8,
+      version: 9,
       marathon: [marathonRecord(), { ...marathonRecord(), pieces: -1 }],
       race: [],
       sprint: [],
     }))).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 8,
+      version: 9,
       marathon: [],
       race: [],
       sprint: [{ ...sprintRecord(), outcome: 'finished' }],
     }))).toEqual(emptyLeaderboard());
     expect(parseLeaderboard(JSON.stringify({
-      version: 8,
+      version: 9,
       marathon: [],
       race: [{ ...raceRecord(), score: 9, pieces: 1, chain: 0 }],
       sprint: [],
@@ -99,11 +111,11 @@ describe('local leaderboard boundary', () => {
     };
     const migrated = parseLeaderboard(JSON.stringify(legacy));
 
-    expect(migrated.version).toBe(8);
-    expect(migrated.marathon[0]).toMatchObject({ version: 8, mode: 'marathon', score: 1200 });
-    expect(migrated.sprint[0]).toMatchObject({ version: 8, mode: 'sprint', score: 2400 });
+    expect(migrated.version).toBe(9);
+    expect(migrated.marathon[0]).toMatchObject({ version: 9, mode: 'marathon', score: 1200, classicGrade: 'standard' });
+    expect(migrated.sprint[0]).toMatchObject({ version: 9, mode: 'sprint', score: 2400 });
     expect(migrated.race[0]).toEqual({
-      version: 8,
+      version: 9,
       lines: 20,
       elapsedTicks: 3600,
       mode: 'race',
@@ -111,6 +123,56 @@ describe('local leaderboard boundary', () => {
       completedAt: '2026-07-14T01:00:00.000Z',
     });
     expect(JSON.stringify(migrated.race[0])).not.toMatch(/score|pieces|chain/);
+  });
+
+  it('migrates valid v8 rows while assigning historical Classic scores to Standard', () => {
+    const legacy = {
+      version: 8,
+      marathon: [{
+        version: 8,
+        score: 1800,
+        lines: 12,
+        pieces: 44,
+        elapsedTicks: 4200,
+        chain: 0,
+        mode: 'marathon',
+        outcome: 'top-out',
+        completedAt: '2026-07-20T01:00:00.000Z',
+      }],
+      race: [{
+        version: 8,
+        lines: 23,
+        elapsedTicks: 5100,
+        mode: 'race',
+        outcome: 'top-out',
+        completedAt: '2026-07-20T02:00:00.000Z',
+      }],
+      sprint: [{
+        version: 8,
+        score: 2600,
+        lines: 18,
+        pieces: 51,
+        elapsedTicks: 3900,
+        chain: 0,
+        mode: 'sprint',
+        outcome: 'top-out',
+        completedAt: '2026-07-20T03:00:00.000Z',
+      }],
+    };
+
+    const migrated = parseLeaderboard(JSON.stringify(legacy));
+    expect(migrated.marathon[0]).toMatchObject({
+      version: 9,
+      classicStartingGravityTicks: 48,
+      classicGravityFloorTicks: 6,
+      classicGrade: 'standard',
+    });
+    expect(migrated.race[0]).toEqual(raceRecord({
+      lines: 23,
+      elapsedTicks: 5100,
+      completedAt: '2026-07-20T02:00:00.000Z',
+    }));
+    expect(migrated.sprint[0]).toMatchObject({ version: 9, mode: 'sprint', score: 2600 });
   });
 
   it('migrates valid v5 Classic/Survival rows but clears incompatible fourth-mode rows', () => {
@@ -121,8 +183,8 @@ describe('local leaderboard boundary', () => {
       sprint: [{ ...legacyRecord('sprint'), version: 5, outcome: 'finished' as const }],
     };
     const migrated = migrateLegacyLeaderboard(JSON.stringify(legacy));
-    expect(migrated.version).toBe(8);
-    expect(migrated.marathon[0]).toMatchObject({ version: 8, chain: 0, mode: 'marathon', outcome: 'top-out' });
+    expect(migrated.version).toBe(9);
+    expect(migrated.marathon[0]).toMatchObject({ version: 9, chain: 0, mode: 'marathon', outcome: 'top-out', classicGrade: 'standard' });
     expect(migrated.race[0]).toEqual(raceRecord());
     expect(migrated.sprint).toEqual([]);
   });
@@ -135,9 +197,9 @@ describe('local leaderboard boundary', () => {
       sprint: [{ ...legacyRecord('sprint'), version: 6, chain: 4 }],
     };
     const migrated = migrateLegacyLeaderboard(JSON.stringify(legacy));
-    expect(migrated).toMatchObject({ version: 8, sprint: [] });
-    expect(migrated.marathon[0]).toMatchObject({ version: 8, mode: 'marathon' });
-    expect(migrated.race[0]).toMatchObject({ version: 8, mode: 'race' });
+    expect(migrated).toMatchObject({ version: 9, sprint: [] });
+    expect(migrated.marathon[0]).toMatchObject({ version: 9, mode: 'marathon' });
+    expect(migrated.race[0]).toMatchObject({ version: 9, mode: 'race' });
   });
 
   it('preserves a valid v3 Classic/Survival store while opening an empty 异变 table', () => {
@@ -147,9 +209,9 @@ describe('local leaderboard boundary', () => {
       race: [{ ...legacyRecord('race'), version: 3 }],
     };
     const migrated = migrateLegacyLeaderboard(JSON.stringify(legacy));
-    expect(migrated.version).toBe(8);
-    expect(migrated.marathon[0]).toMatchObject({ version: 8, chain: 0, mode: 'marathon', outcome: 'top-out' });
-    expect(migrated.race[0]).toMatchObject({ version: 8, mode: 'race', outcome: 'top-out' });
+    expect(migrated.version).toBe(9);
+    expect(migrated.marathon[0]).toMatchObject({ version: 9, chain: 0, mode: 'marathon', outcome: 'top-out' });
+    expect(migrated.race[0]).toMatchObject({ version: 9, mode: 'race', outcome: 'top-out' });
     expect(migrated.race[0]).not.toHaveProperty('score');
     expect(migrated.sprint).toEqual([]);
   });
@@ -185,6 +247,36 @@ describe('local leaderboard boundary', () => {
     expect(recordsForMode(leaderboard, 'race')[0]?.elapsedTicks).toBe(3000 + MUTATION_LEADERBOARD_LIMIT + 3);
     expect(recordsForMode(leaderboard, 'sprint').map((record) => record.lines)).toEqual([8, 7, 6, 5, 4]);
     expect(parseLeaderboard(JSON.stringify(leaderboard))).toEqual(leaderboard);
+  });
+
+  it('keeps an independent Classic top five for each difficulty grade', () => {
+    let leaderboard = emptyLeaderboard();
+    const grades = [
+      { classicGrade: 'relaxed' as const, classicStartingGravityTicks: 60, classicGravityFloorTicks: 18 },
+      { classicGrade: 'standard' as const, classicStartingGravityTicks: 48, classicGravityFloorTicks: 6 },
+      { classicGrade: 'challenge' as const, classicStartingGravityTicks: 30, classicGravityFloorTicks: 6 },
+    ];
+
+    for (const [gradeIndex, interval] of grades.entries()) {
+      for (let index = 0; index < LEADERBOARD_LIMIT + 2; index += 1) {
+        leaderboard = insertScoreRecord(leaderboard, marathonRecord({
+          ...interval,
+          lines: gradeIndex * 20 + index,
+          score: 1000 + index,
+          completedAt: new Date(Date.UTC(2026, 6, 21 + gradeIndex, 1, index)).toISOString(),
+        }));
+      }
+    }
+
+    const records = recordsForMode(leaderboard, 'marathon') as ClassicScoreRecord[];
+    expect(records).toHaveLength(LEADERBOARD_LIMIT * 3);
+    for (const { classicGrade } of grades) {
+      const gradeRecords = records.filter((record) => record.classicGrade === classicGrade);
+      expect(gradeRecords).toHaveLength(LEADERBOARD_LIMIT);
+      expect(gradeRecords.map((record) => record.lines)).toEqual(
+        [...gradeRecords.map((record) => record.lines)].sort((left, right) => right - left),
+      );
+    }
   });
 
   it('ranks Classic by lines, Survival by endurance, and 异变 by score', () => {
