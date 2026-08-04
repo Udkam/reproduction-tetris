@@ -1686,7 +1686,6 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
       <div className="mutation-status__ledger">
         {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
-          const seconds = Math.ceil(effect.ticks / TICKS_PER_SECOND);
           const label = mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor);
           const durationTicks = effect.item === 'collapse'
             ? MUTATION_SUPERGRAVITY_EFFECT_TICKS
@@ -1703,9 +1702,7 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
               <i className="mutation-status__signal" aria-hidden="true" />
               <span className="mutation-status__effect-copy">
                 <b>{name}</b>
-                <small>{copy.labels.mutationActive}</small>
               </span>
-              <em>{language === 'en' ? `${seconds}s` : `${seconds} 秒`}</em>
               <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${Math.round(effect.ticks / durationTicks * 100)}%` }} /></span>
             </div>
           );

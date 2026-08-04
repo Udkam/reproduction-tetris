@@ -2188,15 +2188,20 @@ describe('T6 frontend mode binding', () => {
 
     const active = {
       ...createInitialState(0x51a1f00d, 'sprint'),
+      mutationFreezeTicks: 300,
       mutationMultiplierTicks: 600,
       mutationMultiplierFactor: 4 as const,
     };
     const view = render(createElement(MutationStatus, { state: active }));
     const multiplier = view.container.querySelector<HTMLElement>('[data-mutation-state="multiplier"]');
-    expect(view.container.querySelectorAll('.mutation-status__effect')).toHaveLength(1);
-    expect(multiplier?.textContent).toBe('超级加倍 ×4生效中10 秒');
+    expect(view.container.querySelectorAll('.mutation-status__effect')).toHaveLength(2);
+    expect(multiplier?.textContent).toBe('超级加倍 ×4');
     expect(multiplier?.dataset.mutationTier).toBe('4');
     expect(multiplier?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
+    expect(multiplier?.getAttribute('aria-label')).toBe('超级加倍 ×4：10 秒');
+    expect(view.container.textContent).not.toContain('生效中');
+    expect(view.container.textContent).not.toContain('秒');
+    expect(view.container.querySelector('.mutation-status__effect small, .mutation-status__effect em')).toBeNull();
     expect(view.container.textContent).not.toContain('倍增');
     const supergravity = render(createElement(MutationStatus, {
       state: {
@@ -2205,7 +2210,8 @@ describe('T6 frontend mode binding', () => {
       },
     }));
     const collapse = supergravity.container.querySelector<HTMLElement>('[data-mutation-state="collapse"]');
-    expect(collapse?.textContent).toBe('超重生效中5 秒');
+    expect(collapse?.textContent).toBe('超重');
+    expect(collapse?.getAttribute('aria-label')).toBe('超重：5 秒');
     expect(collapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     const bombState = { ...active, mutationLastItem: 'bomb' as const, mutationLastItemTicks: 120 };
     const bomb = render(createElement(MutationStatus, { state: bombState }));

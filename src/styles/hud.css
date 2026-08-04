@@ -449,7 +449,7 @@
 .game-left-rail .mutation-status__ledger {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
-  gap: 8px !important;
+  gap: 12px !important;
   min-width: 0;
 }
 
@@ -459,11 +459,11 @@
 
 .game-left-rail .mutation-status__effect {
   display: grid !important;
-  grid-template-columns: 12px minmax(0, 1fr) auto !important;
-  grid-template-rows: auto 2px !important;
+  grid-template-columns: 12px minmax(0, 1fr) !important;
+  grid-template-rows: auto 1px !important;
   min-width: 0;
   min-height: 0 !important;
-  gap: 4px 7px !important;
+  gap: 6px 7px !important;
   padding: 0 !important;
   color: var(--ink) !important;
   background: transparent !important;
@@ -499,32 +499,12 @@
   white-space: nowrap;
 }
 
-.game-left-rail .mutation-status__effect-copy > small {
-  display: block !important;
-  margin-top: 2px;
-  color: var(--muted) !important;
-  font-size: 12px !important;
-  font-weight: 650 !important;
-  line-height: 1 !important;
-}
-
-.game-left-rail .mutation-status__effect > em {
-  align-self: center;
-  color: var(--mutation-primary, var(--puzzle)) !important;
-  font-family: var(--font-data) !important;
-  font-size: 14px !important;
-  font-style: normal;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  white-space: nowrap;
-}
-
 .game-left-rail .mutation-status__meter {
-  grid-column: 2 / -1 !important;
-  height: 2px !important;
+  grid-column: 2 !important;
+  height: 1px !important;
   overflow: hidden;
   background: color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 20%, transparent) !important;
-  border-radius: 999px;
+  border-radius: 0;
 }
 
 .game-left-rail .mutation-status__meter > i {
