@@ -252,9 +252,13 @@ The entry countdown uses an original transport-style procedural cue on the
 runtime-owned effects bus. `3` and `2` repeat one short, clean sine pulse; `1` moves to
 a clearly higher pitch and lasts slightly longer so the player hears an unambiguous
 final beat. It is deliberately not an ascending melody or mallet chord. There is no
-pitch sweep, square/saw voice, noise burst, external sample, or trailing Start cue.
-The pulses respect mute and volume, never create music or another audio context, and
-leave no oscillator, timer, or listener beyond the existing runtime teardown boundary.
+pitch sweep, square/saw voice, noise burst, external sample, or unrelated Start jingle.
+When the cover has completed its exit and input opens, the runtime's `started` event
+plays one very quiet, brief release tail at the same pitch and with the same sine timbre
+as digit `1`. This is an audible continuation of the cover transition rather than a new
+note or flourish. The pulses respect mute and volume, never create music or another
+audio context, and leave no oscillator, timer, or listener beyond the existing runtime
+teardown boundary.
 Confirming a restart must not layer the generic `restarted` event cue underneath digit
 `3`: every restart path hands audible ownership to this one countdown sequence, so its
 first beat is exactly one pulse rather than a restart flourish plus a countdown pulse.
@@ -268,6 +272,12 @@ countdown feedback.
 Rotation uses one short mid-low sine voice with no second partial and no pitch sweep.
 It remains distinguishable from horizontal movement through register and duration, but
 must not produce the sharp two-voice chirp of the former triangle-plus-sine cue.
+
+Landing uses a compact mid-low sine contact rather than a bass-heavy impact. A gravity
+lock is the quietest form; a hard drop is only modestly stronger and still owns one
+short voice. Neither path stacks a second transient, sweeps into sub-bass, or lingers
+long enough to read as a thud or electrical tone. Line clears remain the stronger
+resolution event.
 
 The Settings sheet does not repeat its page name as a visible top-left heading. Its
 dialog keeps the same programmatic name through a visually hidden heading, preserving

@@ -313,6 +313,15 @@ The slice has sixteen player-visible acceptance requirements:
     transients into a pop, burst, or explosion-like sound. The cue remains audible at
     normal cadence, obeys the shared SFX controls, and creates no timer or teardown
     obligation.
+17. Ordinary lock and hard-drop landing feedback are both short, rounded, and light.
+    Neither path may use a heavy bass fall, stacked impact voices, electrical hum, or
+    a long pitch sweep. Hard drop may remain slightly more present than a gravity lock,
+    but both must sit below line-clear and countdown feedback in perceived weight.
+18. The sound emitted when the entry cover finishes disappearing is part of the same
+    countdown phrase, not an unrelated start flourish. It reuses the final digit's sine
+    timbre and pitch at much lower gain as a brief release tail exactly when input opens.
+    No rising sweep, second chord, noise burst, or generic `started` jingle may follow
+    digit `1`.
 
 ### Required checkpoints and verification
 
