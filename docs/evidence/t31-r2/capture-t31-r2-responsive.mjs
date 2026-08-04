@@ -9,6 +9,13 @@ const origin = 'http://127.0.0.1:4212';
 const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 fs.mkdirSync(output, { recursive: true });
 
+const cases = Object.freeze([
+  { mode: 'classic', entry: 'enter-marathon', width: 1440, height: 900 },
+  { mode: 'classic', entry: 'enter-marathon', width: 1125, height: 1196 },
+  { mode: 'mutation', entry: 'enter-sprint', width: 1440, height: 900 },
+  { mode: 'mutation', entry: 'enter-sprint', width: 1125, height: 1196 },
+]);
+
 const server = spawn(
   'npm.cmd',
   ['run', 'dev', '--', '--host', '127.0.0.1', '--port', '4212', '--strictPort'],
@@ -34,10 +41,11 @@ const waitForServer = async () => {
   throw new Error(`Vite did not become ready.\n${serverLog}`);
 };
 
-try {
-  await waitForServer();
-  browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ viewport: { width: 1125, height: 1196 }, deviceScaleFactor: 1 });
+const captureCase = async (testCase) => {
+  const context = await browser.newContext({
+    viewport: { width: testCase.width, height: testCase.height },
+    deviceScaleFactor: 1,
+  });
   const page = await context.newPage();
   const errors = [];
   page.on('console', (message) => {
@@ -59,7 +67,7 @@ try {
   });
   await page.reload({ waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
-  await page.getByTestId('enter-sprint').click();
+  await page.getByTestId(testCase.entry).click();
   await page.getByTestId('game-screen').waitFor({ state: 'visible' });
   await page.getByTestId('entry-countdown').waitFor({ state: 'detached', timeout: 12_000 });
   await page.evaluate(() => globalThis.__TETRAMORPH_QA__?.setFrozen(true));
@@ -90,7 +98,8 @@ try {
     };
   });
 
-  await page.screenshot({ path: path.join(output, 'mutation-next-1125x1196.png'), fullPage: true });
+  const screenshot = `${testCase.mode}-next-${testCase.width}x${testCase.height}.png`;
+  await page.screenshot({ path: path.join(output, screenshot), fullPage: true });
   const failures = [];
   if (errors.length > 0) failures.push(...errors.map((error) => `browser: ${error}`));
   if (audit.canvasCount !== 1 || audit.domCellCount !== 0) {
@@ -107,12 +116,22 @@ try {
   ) {
     failures.push(`Next renderer pixels are absent: ${JSON.stringify(audit.renderer)}`);
   }
+
+  await context.close();
+  return { ...testCase, screenshot, audit, errors, failures };
+};
+
+try {
+  await waitForServer();
+  browser = await chromium.launch({ headless: true });
+  const captures = [];
+  for (const testCase of cases) captures.push(await captureCase(testCase));
+  const failures = captures.flatMap((capture) => capture.failures.map((failure) => `${capture.mode} ${capture.width}x${capture.height}: ${failure}`));
   const report = {
     sourceSha,
     capturedAt: new Date().toISOString(),
     browser: await browser.version(),
-    audit,
-    errors,
+    captures,
     failures,
   };
   fs.writeFileSync(path.join(output, 'responsive-audit.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
