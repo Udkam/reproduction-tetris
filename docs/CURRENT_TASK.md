@@ -102,7 +102,9 @@ The correction has ten coupled acceptance requirements:
    repeat one short, clean sine pulse, while `1` is a clearly higher and slightly
    longer final pulse. No ascending triad, mallet dyad, pitch sweep, noise burst,
    music, sample, or persistent voice is added. All cues obey the shared SFX
-   enablement and volume controls and share runtime teardown.
+   enablement and volume controls and share runtime teardown. Confirming either the
+   R-key restart flow or the direct Settings restart produces no separate `restarted`
+   flourish; digit `3` is the only audible first beat of the new run.
 10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line
     acceleration ladder clamps at that floor, while Classic's player-configured interval,
     Survival's cadence, Ice's one-second override, and Supergravity landing semantics remain

@@ -255,6 +255,9 @@ final beat. It is deliberately not an ascending melody or mallet chord. There is
 pitch sweep, square/saw voice, noise burst, external sample, or trailing Start cue.
 The pulses respect mute and volume, never create music or another audio context, and
 leave no oscillator, timer, or listener beyond the existing runtime teardown boundary.
+Confirming a restart must not layer the generic `restarted` event cue underneath digit
+`3`: every restart path hands audible ownership to this one countdown sequence, so its
+first beat is exactly one pulse rather than a restart flourish plus a countdown pulse.
 
 Fast horizontal repeat uses one separate soft sine voice with no frequency sweep and a
 minimum 60 ms accepted-voice interval. The interval suppresses stacked attacks rather
