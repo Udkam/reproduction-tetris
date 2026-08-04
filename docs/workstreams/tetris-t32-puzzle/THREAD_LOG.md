@@ -144,3 +144,48 @@
   `docs/evidence/t27-r1-followup/**`, and `progress.md`.
 - Next action: author and prove the bounded 04/06 technique pair, checkpoint it, then
   continue 05/07/08/09 and finally the anchor-side-slip position 10.
+
+## 2026-08-05 — rebuilt Intro 04/06 route checkpoint
+
+- Task ID: `/root/t32_intro_04_06`.
+- Owner: coordinator/writer `/root`.
+- Base SHA: `aa31a71` on `main`; definition checkpoint: `1b3d997`; route-proof
+  checkpoint: `8d4f6b4`.
+- Status: **GREEN BOUNDED CHECKPOINT / T32 REMAINS ACTIVE**. Positions 05 and 07–10
+  still require their admitted rebuilds, so this is not a complete Intro claim.
+- Exact changed paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-04-06.json`
+- Definitions: position 04 now teaches `留口`; position 06 now teaches `避坑`.
+  Both retain their stable IDs, use legal six-piece three-row anchor-free setups, and
+  begin without a complete row.
+- Route proof: the one-shot Core batch solver emitted non-equivalent routes with lock
+  counts `4/5` for position 04 and `5/7` for position 06. The temporary 04–06 artifact
+  also carries the still-historical position 05 route pair (`5/5`) and must be
+  regenerated when position 05 is rebuilt.
+- Evidence assembly correction: the first focused replay run correctly exposed that
+  stable-ID replacement still preserved the historical file order after positions 04
+  and 06 exchanged curriculum slots. The active route view now overlays by stable ID
+  and then sorts by current `curriculumPosition`; no historical T15 file was rewritten.
+- Commands actually run:
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts` —
+    PASS, 15 tests.
+  - `node docs/workstreams/tetris-t15-puzzle/solve-puzzle-batch.mjs --from 4 --to 6
+    --max-locks 14 --primary-beam 900 --alternate-beam 750 --output
+    docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-04-06.json` — PASS, six
+    production-Core replays across the three-position batch.
+  - the first four-file focused run failed two ordering assertions only; the bounded
+    evidence assembly fix above was applied.
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts
+    src/game/core/puzzleSolverResults.test.ts` — PASS, 18 tests in four files.
+- Full suite/build/browser/independent QA: intentionally deferred until the last T32
+  source edit. No listener, watcher, browser, or persistent solver was started.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: rebuild positions 05 and 07–09 in bounded groups, refresh the 04–06
+  artifact, create a 07–09 route artifact, and leave the anchor-side-slip position 10
+  for the final Intro authoring slice.
