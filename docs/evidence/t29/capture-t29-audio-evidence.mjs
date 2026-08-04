@@ -62,15 +62,38 @@ const auditAudioGraph = async (page) => page.evaluate(async () => {
     construct(Target, args, NewTarget) {
       const context = Reflect.construct(Target, args, NewTarget);
       const id = ++contextId;
-      const contextRecord = { id, closeCalls: 0 };
+      const contextRecord = { id, closeCalls: 0, suspendCalls: 0 };
       contexts.push(contextRecord);
+      let gainIndex = 0;
+      const originalGain = context.createGain.bind(context);
       const originalOscillator = context.createOscillator.bind(context);
       const originalBufferSource = context.createBufferSource.bind(context);
       const originalFilter = context.createBiquadFilter.bind(context);
+      const originalSuspend = context.suspend.bind(context);
       const originalClose = context.close.bind(context);
+      context.suspend = () => {
+        contextRecord.suspendCalls += 1;
+        return originalSuspend();
+      };
       context.close = () => {
         contextRecord.closeCalls += 1;
         return originalClose();
+      };
+      context.createGain = () => {
+        const gain = originalGain();
+        const record = { kind: 'gain', id, node: gain, gainIndex: ++gainIndex, targets: [], values: [] };
+        const originalTarget = gain.gain.setTargetAtTime.bind(gain.gain);
+        const originalSet = gain.gain.setValueAtTime.bind(gain.gain);
+        gain.gain.setTargetAtTime = (value, time, constant) => {
+          record.targets.push({ value, time, constant });
+          return originalTarget(value, time, constant);
+        };
+        gain.gain.setValueAtTime = (value, time) => {
+          record.values.push({ value, time });
+          return originalSet(value, time);
+        };
+        records.push(record);
+        return gain;
       };
       context.createOscillator = () => {
         const oscillator = originalOscillator();
@@ -166,6 +189,45 @@ const auditAudioGraph = async (page) => page.evaluate(async () => {
   countdownEngine.destroy();
   await new Promise((resolve) => setTimeout(resolve, 20));
 
+  const routingStart = records.length;
+  const routingContextStart = contexts.length;
+  const routingEngine = new AudioEngine();
+  await routingEngine.prime();
+  const routingContext = contexts.at(-1);
+  const routingGains = records.slice(routingStart).filter((entry) => entry.kind === 'gain');
+  routingEngine.setVolume(0.25);
+  const masterGainAfterVolume = routingGains[0]?.targets.at(-1)?.value ?? null;
+  routingEngine.setEnabled(false);
+  const effectsGainAfterDisable = routingGains[1]?.targets.at(-1)?.value ?? null;
+  const sourceCountBeforeDisabledPlay = records.filter((entry) => (
+    entry.kind === 'oscillator' || entry.kind === 'buffer'
+  )).length;
+  routingEngine.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+  const sourceCountAfterDisabledPlay = records.filter((entry) => (
+    entry.kind === 'oscillator' || entry.kind === 'buffer'
+  )).length;
+  routingEngine.setEnabled(true);
+  const effectsGainAfterEnable = routingGains[1]?.targets.at(-1)?.value ?? null;
+  routingEngine.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+  const sourceCountAfterEnabledPlay = records.filter((entry) => (
+    entry.kind === 'oscillator' || entry.kind === 'buffer'
+  )).length;
+  routingEngine.suspend();
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  routingEngine.destroy();
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  const routing = {
+    volume: routingEngine.getVolume(),
+    enabledAfterRestore: routingEngine.isEnabled(),
+    masterGainAfterVolume,
+    effectsGainAfterDisable,
+    effectsGainAfterEnable,
+    voicesWhileDisabled: sourceCountAfterDisabledPlay - sourceCountBeforeDisabledPlay,
+    voicesAfterEnable: sourceCountAfterEnabledPlay - sourceCountAfterDisabledPlay,
+    suspendCalls: routingContext?.suspendCalls ?? 0,
+    contextClosed: contexts.slice(routingContextStart).every((entry) => entry.closeCalls === 1),
+  };
+
   const denseStart = records.length;
   const denseEngine = new AudioEngine();
   await denseEngine.prime();
@@ -190,6 +252,7 @@ const auditAudioGraph = async (page) => page.evaluate(async () => {
       totalVoices: dense.filter((entry) => entry.kind === 'oscillator' || entry.kind === 'buffer').length,
       frequencies: dense.filter((entry) => entry.kind === 'oscillator').map((entry) => entry.frequency),
     },
+    routing,
     contextCount: contexts.length,
     everyContextClosed: contexts.every((entry) => entry.closeCalls === 1),
   };
@@ -273,6 +336,21 @@ try {
   if (clearCounts.join(',') !== '2,3,4,5') failures.push(`Clear hierarchy mismatch: ${clearCounts.join(',')}`);
   if (audio.denseMutationBatch.totalVoices !== 12 || audio.denseMutationBatch.totalVoices > 16) {
     failures.push(`Dense mutation batch used ${audio.denseMutationBatch.totalVoices} voices, expected 12 within ceiling 16.`);
+  }
+  if (audio.routing.volume !== 0.25 || audio.routing.enabledAfterRestore !== true) {
+    failures.push(`SFX preference state did not round-trip: ${JSON.stringify(audio.routing)}`);
+  }
+  if (Math.abs((audio.routing.masterGainAfterVolume ?? -1) - 0.375) > 0.0001) {
+    failures.push(`Master gain did not route 25% volume to 0.375: ${audio.routing.masterGainAfterVolume}`);
+  }
+  if (audio.routing.effectsGainAfterDisable !== 0 || audio.routing.voicesWhileDisabled !== 0) {
+    failures.push(`Disabled SFX routing was not silent: ${JSON.stringify(audio.routing)}`);
+  }
+  if (audio.routing.effectsGainAfterEnable !== 1 || audio.routing.voicesAfterEnable !== 2) {
+    failures.push(`Re-enabled SFX routing did not restore the hard-drop pair: ${JSON.stringify(audio.routing)}`);
+  }
+  if (audio.routing.suspendCalls !== 1 || !audio.routing.contextClosed) {
+    failures.push(`SFX suspend/teardown ownership mismatch: ${JSON.stringify(audio.routing)}`);
   }
   if (!audio.everyContextClosed) failures.push('At least one audited AudioContext was not closed exactly once.');
 
