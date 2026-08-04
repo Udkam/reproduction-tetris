@@ -1,0 +1,261 @@
+{
+  "sourceSha": "19a17e6aa6bd56b8590435f7b885cc9ca192937f",
+  "capturedAt": "2026-08-04T15:58:10.548Z",
+  "browser": "149.0.7827.55",
+  "routes": {
+    "home": {
+      "path": "/",
+      "transitionMode": "idle",
+      "surfaceCount": 1,
+      "canvasCount": 0,
+      "viewTransitionName": "app-route",
+      "nativeViewTransition": true
+    },
+    "puzzle": {
+      "path": "/puzzles",
+      "transitionMode": "native",
+      "surfaceCount": 1,
+      "canvasCount": 0,
+      "viewTransitionName": "app-route",
+      "nativeViewTransition": true
+    },
+    "returnedHome": {
+      "path": "/",
+      "transitionMode": "native",
+      "surfaceCount": 1,
+      "canvasCount": 0,
+      "viewTransitionName": "app-route",
+      "nativeViewTransition": true
+    },
+    "gameRoute": {
+      "path": "/play/classic",
+      "transitionMode": "native",
+      "surfaceCount": 1,
+      "canvasCount": 0,
+      "viewTransitionName": "app-route",
+      "nativeViewTransition": true
+    }
+  },
+  "arrival": {
+    "liveEarly": {
+      "status": "playing",
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        },
+        {
+          "x": 5,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 36
+        },
+        {
+          "x": 3,
+          "y": 37
+        },
+        {
+          "x": 4,
+          "y": 37
+        },
+        {
+          "x": 5,
+          "y": 37
+        }
+      ],
+      "activeSpawnReveal": {
+        "generationKey": "1:T",
+        "elapsedMs": 83.30000000000018,
+        "durationMs": 204,
+        "cellProgress": [
+          0.9610800754458166,
+          0.8379091215851433,
+          0.5754407556379425,
+          0.12095688860494613
+        ],
+        "ghostProgress": 0
+      }
+    },
+    "liveComplete": {
+      "status": "playing",
+      "canvasCount": 1,
+      "domCellCount": 0,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        },
+        {
+          "x": 5,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 36
+        },
+        {
+          "x": 3,
+          "y": 37
+        },
+        {
+          "x": 4,
+          "y": 37
+        },
+        {
+          "x": 5,
+          "y": 37
+        }
+      ],
+      "activeSpawnReveal": null
+    },
+    "frames": {
+      "early": {
+        "frame": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780
+        },
+        "pixelProbe": {
+          "samples": 8222,
+          "nonTransparentSamples": 8222,
+          "distinctBuckets": 28
+        },
+        "activeCells": [
+          {
+            "x": 3,
+            "y": 20
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 20
+          },
+          {
+            "x": 6,
+            "y": 20
+          }
+        ],
+        "activeSpawnReveal": {
+          "generationKey": "0:I",
+          "elapsedMs": 48,
+          "durationMs": 204,
+          "cellProgress": [
+            0.7627685995032933,
+            0.4376737173411399,
+            0,
+            0
+          ],
+          "ghostProgress": 0
+        },
+        "canvasCountAfterDestroy": 0
+      },
+      "middle": {
+        "frame": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780
+        },
+        "pixelProbe": {
+          "samples": 8222,
+          "nonTransparentSamples": 8222,
+          "distinctBuckets": 48
+        },
+        "activeCells": [
+          {
+            "x": 3,
+            "y": 20
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 20
+          },
+          {
+            "x": 6,
+            "y": 20
+          }
+        ],
+        "activeSpawnReveal": {
+          "generationKey": "0:I",
+          "elapsedMs": 112,
+          "durationMs": 204,
+          "cellProgress": [
+            0.9986282578875172,
+            0.9680060148692046,
+            0.8562790195443256,
+            0.6107291829136121
+          ],
+          "ghostProgress": 0
+        },
+        "canvasCountAfterDestroy": 0
+      },
+      "complete": {
+        "frame": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780
+        },
+        "pixelProbe": {
+          "samples": 8222,
+          "nonTransparentSamples": 8222,
+          "distinctBuckets": 36
+        },
+        "activeCells": [
+          {
+            "x": 3,
+            "y": 20
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 20
+          },
+          {
+            "x": 6,
+            "y": 20
+          }
+        ],
+        "activeSpawnReveal": null,
+        "canvasCountAfterDestroy": 0
+      }
+    }
+  },
+  "errors": [],
+  "failures": []
+}
