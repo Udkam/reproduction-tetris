@@ -54,8 +54,11 @@ import {
   type TimelineSample,
 } from '../../animation/mutationTimeline';
 import {
+  ACTIVE_SPAWN_REVEAL_DURATION_MS,
   activeCellsInsideVisibleRows,
   activePresentationScaleFitsVisibleWell,
+  activeSpawnCellProgresses,
+  activeSpawnGhostProgress,
   approachPresentationPoint,
   boardShiftPresentationOffset,
   clampActivePresentationOffsetY,
@@ -96,6 +99,12 @@ interface PiecePresentation {
   x: number;
   y: number;
   settleMs: number;
+}
+
+interface ActiveSpawnReveal {
+  generationKey: string;
+  elapsed: number;
+  duration: number;
 }
 
 interface TrailState {
@@ -269,6 +278,13 @@ export interface RendererSnapshot {
   scrim: { x: number; y: number; width: number; height: number } | null;
   activeCells: Cell[];
   ghostCells: Cell[];
+  activeSpawnReveal: {
+    generationKey: string;
+    elapsedMs: number;
+    durationMs: number;
+    cellProgress: number[];
+    ghostProgress: number;
+  } | null;
   visibleLockedCells: number;
   presentation: { x: number; y: number; offsetX: number; offsetY: number } | null;
   boardShiftOffsetY: number;
@@ -563,6 +579,8 @@ export class TetrisRenderer {
 
   private frameCallback: ((deltaMs: number) => void) | null = null;
   private presentation: PiecePresentation | null = null;
+  private activeSpawnGenerationKey: string | null = null;
+  private activeSpawnReveal: ActiveSpawnReveal | null = null;
   private trail: TrailState | null = null;
   private lockPulse: LockPulse | null = null;
   private impact = 0;
@@ -651,6 +669,7 @@ export class TetrisRenderer {
     scrim: null,
     activeCells: [],
     ghostCells: [],
+    activeSpawnReveal: null,
     visibleLockedCells: 0,
     presentation: null,
     boardShiftOffsetY: 0,
@@ -726,6 +745,7 @@ export class TetrisRenderer {
     }
     if (this.options.reducedMotion) {
       this.presentation = null;
+      this.activeSpawnReveal = null;
       this.trail = null;
       this.lockPulse = null;
       this.impact = 0;
@@ -912,6 +932,8 @@ export class TetrisRenderer {
     this.app = null;
     this.host = null;
     this.presentation = null;
+    this.activeSpawnGenerationKey = null;
+    this.activeSpawnReveal = null;
     this.lockPulse = null;
     this.ordinaryLineClearTails.length = 0;
     this.classicFeedbackCues.length = 0;
@@ -1004,6 +1026,7 @@ export class TetrisRenderer {
       .rect(layout.x, layout.y, layout.width, layout.height)
       .fill({ color: 0xffffff, alpha: 1 });
     this.syncMutationArrival(state);
+    this.syncActiveSpawnReveal(state);
     let visibleLockedCells = 0;
     const lockedByMaterial = new Map<BoardMaterial, Cell[]>();
     const risingBedrockCells: Cell[] = [];
@@ -1109,8 +1132,14 @@ export class TetrisRenderer {
     const ghostOffsetX = this.presentation && drawableActive
       ? (this.presentation.x - drawableActive.x) * layout.cell
       : 0;
-    if (drawableActive) {
-      this.drawCellGroups(graphics, visibleGhostCells, drawableActive.type, 0.82, {
+    const activeReveal = this.activeSpawnReveal?.generationKey === this.activeSpawnGenerationKey
+      ? this.activeSpawnReveal
+      : null;
+    const ghostRevealProgress = activeReveal
+      ? activeSpawnGhostProgress(activeReveal.elapsed)
+      : 1;
+    if (drawableActive && ghostRevealProgress > 0) {
+      this.drawCellGroups(graphics, visibleGhostCells, drawableActive.type, 0.82 * ghostRevealProgress, {
         originX: layout.x,
         originY: layout.y,
         unit: layout.cell,
@@ -1140,7 +1169,8 @@ export class TetrisRenderer {
       : 1;
     if (drawableActive) {
       if (
-        state.mode === 'sprint'
+        !activeReveal
+        && state.mode === 'sprint'
         && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched)
       ) {
         this.drawSupergravityPieceTrail(
@@ -1151,30 +1181,53 @@ export class TetrisRenderer {
           offsetY,
         );
       }
-      this.drawCellGroups(
-        graphics,
-        visibleActiveCells,
-        drawableActive.type,
-        1,
-        {
-          originX: layout.x,
-          originY: layout.y,
-          unit: layout.cell,
+      if (activeReveal) {
+        const cellProgress = activeSpawnCellProgresses(visibleActiveCells, activeReveal.elapsed);
+        visibleActiveCells.forEach((cell, index) => {
+          const progress = cellProgress[index] ?? 0;
+          if (progress <= 0) return;
+          this.drawCellGroups(
+            graphics,
+            [cell],
+            drawableActive.type,
+            progress,
+            {
+              originX: layout.x,
+              originY: layout.y,
+              unit: layout.cell,
+              offsetX,
+              offsetY,
+              active: true,
+              scale: rotationScale * (0.72 + progress * 0.28),
+            },
+          );
+        });
+      } else {
+        this.drawCellGroups(
+          graphics,
+          visibleActiveCells,
+          drawableActive.type,
+          1,
+          {
+            originX: layout.x,
+            originY: layout.y,
+            unit: layout.cell,
+            offsetX,
+            offsetY,
+            active: true,
+            scale: rotationScale,
+          },
+        );
+        this.drawActiveMutationCarrierMaterial(graphics, state, visibleActiveCells, layout, offsetX, offsetY);
+        this.drawMutationCarrierEdgePulse(
+          graphics,
+          visibleActiveCells,
+          state.mutationActiveCarrier?.item ?? null,
+          layout,
           offsetX,
           offsetY,
-          active: true,
-          scale: rotationScale,
-        },
-      );
-      this.drawActiveMutationCarrierMaterial(graphics, state, visibleActiveCells, layout, offsetX, offsetY);
-      this.drawMutationCarrierEdgePulse(
-        graphics,
-        visibleActiveCells,
-        state.mutationActiveCarrier?.item ?? null,
-        layout,
-        offsetX,
-        offsetY,
-      );
+        );
+      }
     }
 
     this.snapshot.visibleLockedCells = visibleLockedCells;
@@ -3933,6 +3986,8 @@ export class TetrisRenderer {
         this.rotationPulse = this.options.reducedMotion ? 0 : 1;
       } else if (event.type === 'restarted') {
         this.presentation = null;
+        this.activeSpawnGenerationKey = null;
+        this.activeSpawnReveal = null;
         this.boardShift = null;
         this.ordinaryLineClearTails.length = 0;
         this.classicFeedbackCues.length = 0;
@@ -3949,6 +4004,8 @@ export class TetrisRenderer {
         // interpolation residue belongs to the discarded timeline and must not
         // linger over the restored board for a frame.
         this.presentation = null;
+        this.activeSpawnGenerationKey = null;
+        this.activeSpawnReveal = null;
         this.trail = null;
         this.lockPulse = null;
         this.ordinaryLineClearTails.length = 0;
@@ -4089,6 +4146,12 @@ export class TetrisRenderer {
     this.mutationClockMs += Math.max(0, deltaMs);
     this.advanceMutationFields(deltaMs);
     this.advanceMutationParticles(deltaMs);
+    if (this.activeSpawnReveal) {
+      this.activeSpawnReveal.elapsed += Math.max(0, deltaMs);
+      if (this.activeSpawnReveal.elapsed >= this.activeSpawnReveal.duration) {
+        this.activeSpawnReveal = null;
+      }
+    }
     if (this.trail) {
       this.trail.elapsed += deltaMs;
       if (this.trail.elapsed >= this.trail.duration) this.trail = null;
@@ -4218,10 +4281,45 @@ export class TetrisRenderer {
     this.presentation.settleMs += (64 - this.presentation.settleMs) * Math.min(1, deltaMs / 90);
   }
 
+  private syncActiveSpawnReveal(state: GameState): void {
+    if (
+      state.status === 'ready'
+      || state.status === 'game-over'
+      || state.status === 'finished'
+      || !state.active
+    ) {
+      this.activeSpawnGenerationKey = null;
+      this.activeSpawnReveal = null;
+      return;
+    }
+
+    const generationKey = `${state.pieceCount}:${state.active.type}`;
+    if (generationKey === this.activeSpawnGenerationKey) return;
+    this.activeSpawnGenerationKey = generationKey;
+    this.activeSpawnReveal = this.options.reducedMotion
+      ? null
+      : {
+          generationKey,
+          elapsed: 0,
+          duration: ACTIVE_SPAWN_REVEAL_DURATION_MS,
+        };
+  }
+
   private updateSnapshot(state: GameState, layout: BoardLayout, app: Application): void {
     const drawableActive = state.status === 'ready' ? null : state.active;
     const activeCells = drawableActive ? cellsForPiece(drawableActive) : [];
     const ghostCells = drawableActive ? [...projectedLandingCells(state)] : [];
+    const visibleActiveCells = activeCellsInsideVisibleRows(activeCells, VISIBLE_START_ROW, VISIBLE_HEIGHT)
+      .map((cell) => ({ x: cell.x, y: cell.y - VISIBLE_START_ROW }));
+    const activeSpawnReveal = this.activeSpawnReveal?.generationKey === this.activeSpawnGenerationKey
+      ? {
+          generationKey: this.activeSpawnReveal.generationKey,
+          elapsedMs: this.activeSpawnReveal.elapsed,
+          durationMs: this.activeSpawnReveal.duration,
+          cellProgress: activeSpawnCellProgresses(visibleActiveCells, this.activeSpawnReveal.elapsed),
+          ghostProgress: activeSpawnGhostProgress(this.activeSpawnReveal.elapsed),
+        }
+      : null;
     this.snapshot = {
       canvas: { width: app.screen.width, height: app.screen.height, resolution: app.renderer.resolution },
       board: { x: layout.x, y: layout.y, width: layout.width, height: layout.height, cell: layout.cell },
@@ -4235,6 +4333,7 @@ export class TetrisRenderer {
       scrim: this.scrimBounds,
       activeCells,
       ghostCells,
+      activeSpawnReveal,
       visibleLockedCells: this.snapshot.visibleLockedCells,
       presentation: drawableActive && this.presentation
         ? {

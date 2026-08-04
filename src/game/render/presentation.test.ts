@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ACTIVE_SPAWN_REVEAL_DURATION_MS,
   activeCellsInsideVisibleRows,
   activePresentationScaleFitsVisibleWell,
+  activeSpawnCellProgresses,
+  activeSpawnGhostProgress,
   approachPresentationPoint,
   boardShiftPresentationOffset,
   clampActivePresentationOffsetY,
@@ -212,6 +215,41 @@ describe('presentation interpolation', () => {
     ]);
     const visible = entering.map((cell) => ({ ...cell, y: cell.y + 1 }));
     expect(activeCellsInsideVisibleRows(visible, 2, 20)).toEqual(visible);
+  });
+
+  it('reveals spawn cells top-to-bottom then left-to-right and delays the ghost', () => {
+    const cells: Cell[] = [
+      { x: 5, y: 3 },
+      { x: 4, y: 2 },
+      { x: 4, y: 3 },
+      { x: 5, y: 2 },
+    ];
+
+    expect(activeSpawnCellProgresses(cells, 0)).toEqual([0, 0, 0, 0]);
+    const firstBeat = activeSpawnCellProgresses(cells, 20);
+    expect(firstBeat[1]).toBeGreaterThan(0);
+    expect(firstBeat[3]).toBe(0);
+    expect(firstBeat[2]).toBe(0);
+    expect(firstBeat[0]).toBe(0);
+
+    const middle = activeSpawnCellProgresses(cells, 100);
+    expect(middle[1]).toBeGreaterThan(middle[3]!);
+    expect(middle[3]).toBeGreaterThan(middle[2]!);
+    expect(middle[2]).toBeGreaterThan(middle[0]!);
+    expect(activeSpawnGhostProgress(123)).toBe(0);
+    expect(activeSpawnGhostProgress(164)).toBeGreaterThan(0);
+    expect(activeSpawnGhostProgress(164)).toBeLessThan(1);
+
+    expect(activeSpawnCellProgresses(cells, ACTIVE_SPAWN_REVEAL_DURATION_MS)).toEqual([1, 1, 1, 1]);
+    expect(activeSpawnGhostProgress(ACTIVE_SPAWN_REVEAL_DURATION_MS)).toBe(1);
+  });
+
+  it('clamps invalid arrival time and resolves reduced motion immediately', () => {
+    const cells: Cell[] = [{ x: 4, y: 2 }, { x: 5, y: 2 }];
+    expect(activeSpawnCellProgresses(cells, Number.NaN)).toEqual([0, 0]);
+    expect(activeSpawnGhostProgress(-100)).toBe(0);
+    expect(activeSpawnCellProgresses(cells, 0, true)).toEqual([1, 1]);
+    expect(activeSpawnGhostProgress(0, true)).toBe(1);
   });
 
   it('settles timed bedrock shifts in their canonical direction without overshoot', () => {

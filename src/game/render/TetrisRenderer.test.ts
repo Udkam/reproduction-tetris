@@ -20,7 +20,7 @@ import {
   VISIBLE_START_ROW,
 } from '../core';
 import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
-import { ordinaryLineClearProfile } from './presentation';
+import { ACTIVE_SPAWN_REVEAL_DURATION_MS, ordinaryLineClearProfile } from './presentation';
 import { BEDROCK_MATERIAL, COLORS, MUTATION_MATERIALS, SURVIVAL_STONE_MATERIAL, type PieceMaterial } from './theme';
 
 let TetrisRendererClass: (typeof import('./TetrisRenderer'))['TetrisRenderer'];
@@ -123,8 +123,21 @@ type RendererInternals = {
     board: { x: number; y: number; width: number; height: number; cell: number };
     activeCells: Cell[];
     ghostCells: Cell[];
+    activeSpawnReveal: {
+      generationKey: string;
+      elapsedMs: number;
+      durationMs: number;
+      cellProgress: number[];
+      ghostProgress: number;
+    } | null;
   };
   presentation: unknown;
+  activeSpawnGenerationKey: string | null;
+  activeSpawnReveal: {
+    generationKey: string;
+    elapsed: number;
+    duration: number;
+  } | null;
   trail: {
     cells: Cell[];
     distance: number;
@@ -222,6 +235,7 @@ type RendererInternals = {
     collapseWasActive?: boolean,
   ) => void;
   advanceEffects: (deltaMs: number) => void;
+  syncActiveSpawnReveal: (state: GameState) => void;
   advanceSurvivalDebrisPresentation: (state: GameState, deltaMs: number) => void;
   drawEffects: (state: GameState, layout: { x: number; y: number; width: number; height: number; cell: number; compact: boolean }) => void;
   drawSurvivalPressureEffects: (
@@ -793,7 +807,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot().survivalEntryBedrockRise).toBeNull();
   });
 
-  it('keeps ready active and ghost cells hidden until the first playing frame', () => {
+  it('keeps ready cells hidden, then reveals the spawned piece before its ghost', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 40, y: 24, width: 200, height: 400, cell: 20, compact: false };
@@ -814,6 +828,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(renderer.getSnapshot()).toMatchObject({
       activeCells: [],
       ghostCells: [],
+      activeSpawnReveal: null,
       visibleLockedCells: 10,
     });
     expect(drawGroups.mock.calls.filter((call) => call[2] === ready.active?.type)).toHaveLength(0);
@@ -826,7 +841,57 @@ describe('Puzzle undo presentation reset', () => {
 
     expect(renderer.getSnapshot().activeCells).toHaveLength(4);
     expect(renderer.getSnapshot().ghostCells).toHaveLength(4);
+    expect(renderer.getSnapshot().activeSpawnReveal).toMatchObject({
+      elapsedMs: 0,
+      ghostProgress: 0,
+    });
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(0);
+
+    drawGroups.mockClear();
+    internals.advanceEffects(52);
+    internals.drawPieces(playing, layout);
+    internals.updateSnapshot(playing, layout, app);
+    expect(renderer.getSnapshot().activeSpawnReveal?.cellProgress.filter((progress) => progress > 0)).toHaveLength(2);
+    expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBe(0);
     expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(2);
+
+    drawGroups.mockClear();
+    internals.advanceEffects(100);
+    internals.drawPieces(playing, layout);
+    internals.updateSnapshot(playing, layout, app);
+    expect(renderer.getSnapshot().activeSpawnReveal?.ghostProgress).toBeGreaterThan(0);
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(5);
+
+    drawGroups.mockClear();
+    internals.advanceEffects(52);
+    internals.drawPieces(playing, layout);
+    internals.updateSnapshot(playing, layout, app);
+    expect(renderer.getSnapshot().activeSpawnReveal).toBeNull();
+    expect(drawGroups.mock.calls.filter((call) => call[2] === playing.active?.type)).toHaveLength(2);
+  });
+
+  it('does not restart the arrival reveal for movement, rotation, or pause', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const playing = dispatch(createInitialState(0x51a1f00d, 'marathon'), { type: 'start' }).state;
+
+    internals.syncActiveSpawnReveal(playing);
+    internals.advanceEffects(80);
+    const originalReveal = internals.activeSpawnReveal;
+
+    internals.syncActiveSpawnReveal({
+      ...playing,
+      active: playing.active ? { ...playing.active, x: playing.active.x + 1, rotation: 1 } : null,
+    });
+    expect(internals.activeSpawnReveal).toBe(originalReveal);
+    expect(internals.activeSpawnReveal?.elapsed).toBe(80);
+
+    internals.syncActiveSpawnReveal({ ...playing, status: 'paused' });
+    expect(internals.activeSpawnReveal).toBe(originalReveal);
+
+    internals.syncActiveSpawnReveal({ ...playing, pieceCount: playing.pieceCount + 1 });
+    expect(internals.activeSpawnReveal).not.toBe(originalReveal);
+    expect(internals.activeSpawnReveal?.elapsed).toBe(0);
   });
 
   it('draws and snapshots the independently settled Supergravity ghost', () => {
@@ -852,6 +917,8 @@ describe('Puzzle undo presentation reset', () => {
     });
     const drawGroups = vi.spyOn(internals, 'drawCellGroups');
 
+    internals.syncActiveSpawnReveal(state);
+    internals.advanceEffects(ACTIVE_SPAWN_REVEAL_DURATION_MS);
     internals.drawPieces(state, layout);
     internals.updateSnapshot(state, layout, {
       screen: { width: 280, height: 480 },

@@ -342,6 +342,58 @@ export function activeCellsInsideVisibleRows(
     .filter((cell) => cell.y >= visibleStartRow && cell.y < visibleEndRow);
 }
 
+/** Complete renderer-owned active-piece arrival; the final stagger settles within 204 ms. */
+export const ACTIVE_SPAWN_REVEAL_DURATION_MS = 204;
+const ACTIVE_SPAWN_CELL_DURATION_MS = 126;
+const ACTIVE_SPAWN_CELL_STAGGER_MS = 26;
+const ACTIVE_SPAWN_GHOST_DELAY_MS = 124;
+
+function easeOutCubic(value: number): number {
+  const bounded = Math.max(0, Math.min(1, value));
+  return 1 - (1 - bounded) ** 3;
+}
+
+/**
+ * Returns one progress value per input cell while revealing the shape in a stable
+ * top-to-bottom, then left-to-right order. Cells never receive a translation here:
+ * the renderer applies scale and opacity at the already-clamped in-well position.
+ */
+export function activeSpawnCellProgresses(
+  cells: readonly Cell[],
+  elapsedMs: number,
+  reducedMotion = false,
+): number[] {
+  if (reducedMotion) return cells.map(() => 1);
+  const safeElapsed = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
+  const revealRanks = new Array<number>(cells.length);
+  cells
+    .map((cell, index) => ({ cell, index }))
+    .sort((left, right) => (
+      left.cell.y - right.cell.y
+      || left.cell.x - right.cell.x
+      || left.index - right.index
+    ))
+    .forEach(({ index }, rank) => {
+      revealRanks[index] = rank;
+    });
+  return cells.map((_, index) => {
+    const rank = revealRanks[index] ?? index;
+    const localProgress = (safeElapsed - rank * ACTIVE_SPAWN_CELL_STAGGER_MS)
+      / ACTIVE_SPAWN_CELL_DURATION_MS;
+    return easeOutCubic(localProgress);
+  });
+}
+
+/** The ghost joins only after the active shape is substantially legible. */
+export function activeSpawnGhostProgress(elapsedMs: number, reducedMotion = false): number {
+  if (reducedMotion) return 1;
+  const safeElapsed = Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0);
+  return easeOutCubic(
+    (safeElapsed - ACTIVE_SPAWN_GHOST_DELAY_MS)
+    / (ACTIVE_SPAWN_REVEAL_DURATION_MS - ACTIVE_SPAWN_GHOST_DELAY_MS),
+  );
+}
+
 /** Verifies that a component-centered active-piece scale remains inside the visible well. */
 export function activePresentationScaleFitsVisibleWell(
   visibleCells: readonly Cell[],
