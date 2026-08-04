@@ -25,14 +25,20 @@ layout, audio, Survival, Puzzle, or the queued T32 curriculum rebuild.
 
 ## Row-wise arrival contract
 
-- A newly active tetromino reveals one occupied row at a time from top to bottom. Every
-  cell in the same row shares one progress value and is drawn as one connected slice.
-- For a two-row piece there is a verifiable intermediate interval in which the first row
-  is complete and the second row has not started, followed by an interval in which the
-  second row is entering. The ghost appears only near the end of the arrival.
-- The animation uses only already-clamped in-well cell coordinates. It does not change
-  Core spawn coordinates, collision, input timing, or replay state. Reduced motion shows
-  the final endpoint immediately.
+- Arrival is spatial, not an opacity or scale reveal. Core keeps the canonical hidden
+  spawn rows. The lowest occupied row is the first slice wholly visible in board row 1;
+  higher occupied rows cross the board mouth only after the current gravity interval.
+- For a two-row piece there is therefore a verifiable first beat containing only the
+  lower occupied row. The upper row then enters while the lower row advances to board
+  row 2. Cells sharing a source row travel together as one connected slice.
+- The renderer clips the active piece at the board mouth instead of shifting hidden
+  cells into the well. The ghost remains hidden until spatial entry has settled. Core
+  spawn coordinates, collision, input timing, gravity, queue, and replay state remain
+  authoritative; reduced motion may jump between the same canonical Core positions.
+- Supergravity landing guidance, the eventual independent-column board settlement, and
+  all `piece-locked` feedback coordinates must resolve to the same final per-column
+  cells, including a piece whose Supergravity timer expires while its landing latch is
+  still active.
 
 ## Ice and Supergravity activation language
 
@@ -49,9 +55,10 @@ layout, audio, Survival, Puzzle, or the queued T32 curriculum rebuild.
 ## Evidence and rollback
 
 - Focused UI/style tests prove the exact visible status content and frameless row layout.
-- Presentation and renderer tests prove row grouping, intermediate visibility windows,
-  delayed ghost, activation geometry, and reduced-motion endpoints.
-- Browser evidence must capture simultaneous status rows, early/mid/final row arrival,
-  and the Ice/Supergravity activation frames from the final source candidate.
+- Core, presentation, and renderer tests prove hidden-row clipping, lower-row-first
+  entry at the configured gravity interval, delayed ghost, final Supergravity event
+  coordinates, activation geometry, and reduced-motion endpoints.
+- Browser evidence must capture simultaneous status rows, lower-row-only and fully
+  entered arrival frames, and the Ice/Supergravity activation frames from the final
+  source candidate.
 - Status, arrival, activation, evidence, and closure remain separate rollback commits.
-
