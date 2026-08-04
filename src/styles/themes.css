@@ -109,6 +109,26 @@
   box-shadow: 0 18px 48px rgba(0, 0, 0, .24);
 }
 
+.app[data-theme="deep-tide"] .settings-console__tabs {
+  background: color-mix(in srgb, var(--raised) 70%, var(--page));
+  border-bottom-color: color-mix(in srgb, var(--edge) 78%, var(--surface));
+}
+
+.app[data-theme="deep-tide"] .settings-console__tabs button {
+  color: color-mix(in srgb, var(--ink) 90%, var(--muted));
+  background: color-mix(in srgb, var(--selected) 64%, var(--raised));
+}
+
+.app[data-theme="deep-tide"] .settings-console__tabs button:is(:hover, :focus-visible) {
+  color: var(--action-ink);
+  background: color-mix(in srgb, var(--hover) 58%, var(--selected));
+}
+
+.app[data-theme="deep-tide"] .settings-console__tabs button[aria-selected="true"] {
+  color: var(--action-ink);
+  background: color-mix(in srgb, var(--action) 86%, var(--selected));
+}
+
 .app[data-theme="sunstone"] :is(.mode-gate, .library-panel, .action-sheet, .settings-console) {
   box-shadow: 0 18px 42px rgba(72, 50, 31, .14);
 }

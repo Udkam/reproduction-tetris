@@ -10,6 +10,7 @@ interface ActionSheetProps {
   placement?: 'viewport' | 'gameplay';
   externalFocusSelector?: string;
   dismissOnBackdropClick?: boolean;
+  visuallyHideTitle?: boolean;
   onCancel?: () => void;
   onConfirm?: () => void;
   children: ReactNode;
@@ -36,6 +37,7 @@ export function ActionSheet({
   placement = 'viewport',
   externalFocusSelector,
   dismissOnBackdropClick = false,
+  visuallyHideTitle = false,
   onCancel,
   onConfirm,
   children,
@@ -236,7 +238,7 @@ export function ActionSheet({
           syncArrowSelection(event.target);
         }}
       >
-        <h2 id={titleId}>{title}</h2>
+        <h2 id={titleId} className={visuallyHideTitle ? 'sr-only' : undefined}>{title}</h2>
         {description && <p id={descriptionId}>{description}</p>}
         <div className="action-sheet__actions">{children}</div>
       </section>

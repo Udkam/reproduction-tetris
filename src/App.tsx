@@ -2375,6 +2375,7 @@ export function GameSession({
         title={copy.labels.settings}
         description=""
         className="action-sheet--settings"
+        visuallyHideTitle
         dismissOnBackdropClick
         onCancel={closeSettings}
       >
@@ -2452,7 +2453,7 @@ export function GameSession({
                   </div>
                 )}
                 <div className="settings-console__actions">
-                  <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="4" data-arrow-col="0" disabled={countdownDigit !== null || entryCoverExiting} onClick={requestRestart}>{copy.labels.restart}</button>
+                  <button className="secondary-action" type="button" data-testid="settings-restart" data-arrow-nav data-arrow-row="4" data-arrow-col="0" disabled={countdownDigit !== null || entryCoverExiting} onClick={restartRun}>{copy.labels.restart}</button>
                   <button className="primary-action" type="button" data-arrow-nav data-arrow-row="4" data-arrow-col="1" onClick={closeSettings}>
                     {copy.labels.continue}
                   </button>

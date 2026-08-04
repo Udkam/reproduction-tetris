@@ -798,13 +798,23 @@ describe('T6 frontend mode binding', () => {
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="open-settings"]')?.click());
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
+    expect(runtime.restart).toHaveBeenCalledTimes(1);
+    expect(runtime.setInputEnabled).toHaveBeenLastCalledWith(false);
+    expect(view.container.querySelector('[data-testid="next-slot"]')).toBe(nextSlot);
+    expect(nextSlot.getAttribute('aria-label')).toBe('下一个方块');
+
+    await advanceEntryCountdown();
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     const restartCurtain = view.container.querySelector<HTMLElement>('[data-testid="restart-curtain"]')!;
     expect(restartCurtain.textContent).toContain('重新开始');
     expect(restartCurtain.textContent).not.toContain('？');
     expect(restartCurtain.textContent).toContain('回车确认，按 R 取消');
     expect(view.container.querySelector('[data-testid="action-sheet-backdrop"]')).toBeNull();
     expect(view.container.querySelector('[data-testid="next-slot"]')).toBe(nextSlot);
-    expect(nextSlot.getAttribute('aria-label')).toContain(queuedPiece);
+    expect(nextSlot.getAttribute('aria-label')).toContain(runtime.getState().queue[0]!);
     expect(view.container.querySelector('[data-testid="game-screen"]')?.classList.contains('play-shell--interrupted')).toBe(true);
 
     expect(sourceHudStyles).toMatch(/\.entry-countdown--pause,\s*\.entry-countdown--restart\s*\{[^}]*width:\s*100%[^}]*pointer-events:\s*none/s);
@@ -814,7 +824,8 @@ describe('T6 frontend mode binding', () => {
     expect(sourceHudStyles).toMatch(/\.run-stats strong\s*\{[^}]*font-size:\s*clamp\(34px,\s*3vw,\s*44px\)/s);
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
-    expect(view.container.querySelector('[data-testid="pause-curtain"]')).not.toBeNull();
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')).toBeNull();
+    expect(runtime.getState().status).toBe('playing');
     view.unmount();
   });
 
@@ -866,6 +877,12 @@ describe('T6 frontend mode binding', () => {
     expect(runtime.getState().status).toBe('paused');
 
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
+    expect(runtime.restart).toHaveBeenCalledTimes(1);
+    await advanceEntryCountdown();
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="exit-game"]')?.click());
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
@@ -1057,8 +1074,12 @@ describe('T6 frontend mode binding', () => {
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
     const sheet = view.container.querySelector<HTMLElement>('[data-testid="settings-sheet"]')!;
     const dialog = sheet.closest<HTMLElement>('[role="dialog"]')!;
+    const dialogTitle = dialog.querySelector<HTMLHeadingElement>('h2')!;
     expect(sheet).not.toBeNull();
     expect(dialog.classList.contains('action-sheet--settings')).toBe(true);
+    expect(dialogTitle.textContent).toBe('设置');
+    expect(dialogTitle.classList.contains('sr-only')).toBe(true);
+    expect(dialog.getAttribute('aria-labelledby')).toBe(dialogTitle.id);
     expect(sheet.className).toBe('settings-console');
     expect(view.container.querySelector('.settings-sheet')).toBeNull();
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalled();
@@ -1363,7 +1384,7 @@ describe('T6 frontend mode binding', () => {
     classic.unmount();
   });
 
-  it('pauses through Settings and routes Settings/R restart through the same board curtain', async () => {
+  it('restarts directly from Settings while retaining the R-key confirmation curtain', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1385,31 +1406,27 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="settings-sheet"]')?.textContent).toContain('继续游戏');
     expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(1);
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
-    const settingsRestartCurtain = view.container.querySelector<HTMLElement>('[data-testid="restart-curtain"]')!;
-    expect(settingsRestartCurtain.textContent).toContain('重新开始');
-    expect(settingsRestartCurtain.textContent).not.toContain('？');
-    expect(settingsRestartCurtain.textContent).toContain('回车确认，按 R 取消');
-    expect(view.container.querySelector('[data-testid="confirm-restart"]')).toBeNull();
-    expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
-    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
-    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
-    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(true);
-    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(2);
+    expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
+    expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
+    await advanceEntryCountdown();
+    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.textContent).toContain('重新开始');
-    expect(runtimeHarness.instances.at(-1)?.restart).not.toHaveBeenCalled();
-    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(3);
+    expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
+    expect(runtimeHarness.instances.at(-1)?.togglePause).toHaveBeenCalledTimes(2);
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Enter', key: 'Enter', bubbles: true })));
-    expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(1);
-    expect(runtimeHarness.instances.at(-1)?.start).not.toHaveBeenCalled();
+    expect(runtimeHarness.instances.at(-1)?.restart).toHaveBeenCalledTimes(2);
+    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
     expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
     expect(runtimeHarness.instances.at(-1)?.setInputEnabled).toHaveBeenLastCalledWith(false);
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
     await advanceEntryCountdown();
-    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(1);
+    expect(runtimeHarness.instances.at(-1)?.start).toHaveBeenCalledTimes(2);
     expect(view.container.querySelector('[data-testid="entry-countdown"]')).toBeNull();
     view.unmount();
   });
@@ -1478,7 +1495,7 @@ describe('T6 frontend mode binding', () => {
     view.unmount();
   });
 
-  it('keeps one canvas while Settings supersedes pause and Escape replaces restart with leave', async () => {
+  it('keeps one canvas while Settings supersedes pause and direct restart begins a fresh countdown', async () => {
     vi.useFakeTimers();
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })));
     vi.stubGlobal('requestAnimationFrame', vi.fn((callback: FrameRequestCallback) => { callback(0); return 1; }));
@@ -1508,6 +1525,12 @@ describe('T6 frontend mode binding', () => {
 
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
+    expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="settings-sheet"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
+    expect(runtime.restart).toHaveBeenCalledTimes(1);
+    await advanceEntryCountdown();
+    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.querySelector('[data-testid="restart-curtain"]')?.textContent).toContain('重新开始');
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'Escape', key: 'Escape', bubbles: true })));
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
@@ -1522,10 +1545,10 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="pause-curtain"]')?.textContent).toContain('暂停');
     act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyS', key: 's', bubbles: true })));
     act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="settings-restart"]')?.click());
-    expect(view.container.querySelector('[data-testid="restart-curtain"]')).not.toBeNull();
-    act(() => window.dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyR', key: 'r', bubbles: true })));
     expect(view.container.querySelector('[data-testid="restart-curtain"]')).toBeNull();
-    expect(view.container.querySelector('[data-testid="pause-curtain"]')?.textContent).toContain('暂停');
+    expect(view.container.querySelector('[data-testid="pause-curtain"]')).toBeNull();
+    expect(view.container.querySelector('[data-testid="entry-countdown"]')?.getAttribute('data-countdown')).toBe('3');
+    expect(runtime.restart).toHaveBeenCalledTimes(2);
     expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
     expect(view.container.querySelector('canvas')).toBe(canvas);
     view.unmount();

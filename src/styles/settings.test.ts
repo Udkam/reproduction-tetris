@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const settingsCss = readFileSync('src/styles/settings.css', 'utf8');
+const themesCss = readFileSync('src/styles/themes.css', 'utf8');
 
 describe('RC1 Settings composition', () => {
   it('uses one three-tab console and renders each concern in its own compact panel', () => {
@@ -30,5 +31,10 @@ describe('RC1 Settings composition', () => {
   it('collapses columns without shrinking English or Chinese copy below the readable floor', () => {
     expect(settingsCss).toMatch(/@media \(max-width:\s*680px\)[\s\S]*?\.settings-console__controls,[\s\S]*?\.settings-console__keyboard\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
     expect(settingsCss).toMatch(/@media \(max-height:\s*520px\)[\s\S]*?\.settings-console__key-group > span,[\s\S]*?font-size:\s*11\.5px/s);
+  });
+
+  it('gives Deep Tide Settings tabs distinct readable idle and selected surfaces', () => {
+    expect(themesCss).toMatch(/\.app\[data-theme="deep-tide"\] \.settings-console__tabs button\s*\{[^}]*color:\s*color-mix\(in srgb, var\(--ink\) 90%, var\(--muted\)\);[^}]*background:\s*color-mix\(in srgb, var\(--selected\) 64%, var\(--raised\)\);/s);
+    expect(themesCss).toMatch(/\.app\[data-theme="deep-tide"\] \.settings-console__tabs button\[aria-selected="true"\]\s*\{[^}]*color:\s*var\(--action-ink\);[^}]*background:\s*color-mix\(in srgb, var\(--action\) 86%, var\(--selected\)\);/s);
   });
 });
