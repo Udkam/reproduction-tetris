@@ -4,7 +4,8 @@
 
 Remove the rejected Reshape carrier; align the Supergravity ghost with the canonical
 per-piece latch; replace Supergravity/Ice activation, clear, trail, and audio feedback;
-and restore the earlier information-rich Mutation status as one frameless ledger. The
+restore the earlier information-rich Mutation status as one frameless ledger; and apply
+the clarified row-by-row active-piece arrival. The
 authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
 
 ## Scope and ownership
@@ -20,6 +21,8 @@ authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
   plus direct test.
 - UI checkpoint paths: `src/App.tsx`, `src/App.test.ts`, `src/ui/localization.ts`, and
   `src/styles/mutation-vfx.css` / `src/styles/hud.css` plus direct tests where required.
+- Arrival clarification paths: `src/game/render/presentation.ts` and its direct test,
+  plus renderer snapshot coverage only if the pure row grouping changes that contract.
 - Evidence, independent QA, changelog, and accepted status are later separate
   checkpoints. Existing dirty `docs/evidence/t27/**` and
   `docs/evidence/t27-r1-followup/**` are inherited user evidence and remain unstaged
@@ -38,7 +41,9 @@ authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
    replace the trail, remove sustained/landing feedback, and cover reduced motion.
 4. **T31 status and copy** — restore the old information set as frameless ledger rows
    and remove Reshape from live localized rules.
-5. **T31 evidence and closure** — run focused tests, final gates, one bounded visual
+5. **T31 row arrival clarification** — reveal each occupied row as one slice in stable
+   top-to-bottom order without changing Core spawn/collision state.
+6. **T31 evidence and closure** — run focused tests, final gates, one bounded visual
    audit, independent QA, changelog reconciliation, scoped scan, and push.
 
 ## Acceptance checklist
@@ -52,6 +57,8 @@ authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
   reduced-motion safe; the Supergravity trail has no spikes or stale frame.
 - [ ] Mutation status shows signal/name/time/meter without individual row cards or idle
   placeholder copy.
+- [ ] A newly spawned active piece reveals by row: cells sharing one visible row have
+  identical progress, rows enter top-to-bottom, and reduced motion shows the endpoint.
 - [ ] Focused tests, final typecheck, complete suite, build, one-Canvas browser evidence,
   zero console errors, teardown, and independent QA pass before acceptance.
 

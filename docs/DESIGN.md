@@ -11,6 +11,12 @@ and replaces the rejected Supergravity/Ice feedback with shorter, local, readabl
 effects. Scoring, Bomb, Multiplier, ordinary clears, themes, layout, navigation, Puzzle,
 Survival, persistence, and the single-Canvas boundary remain unchanged.
 
+T31 also carries one direct clarification into the already accepted T30 arrival
+presentation: a newly spawned tetromino enters **row by row**, not cell by cell. Cells
+sharing the same visible row reveal together; rows reveal from top to bottom. This stays
+renderer-only, keeps every cell at an already-clamped legal in-well position, and does
+not change spawn coordinates, collision, queue, timing, or deterministic state.
+
 ### Four-item live contract
 
 - The live Mutation pool contains exactly Ice, Supergravity, Bomb, and Multiplier.
@@ -59,7 +65,8 @@ Audio tests must prove Supergravity state sync creates no sustained voice and th
 Reshape cue remains. UI/style tests must prove frameless status rows. After the final
 source edit, run one typecheck, the complete suite, one production build, and one bounded
 browser pass covering Ice activation, Supergravity before/after timer expiry, status
-layout, one Canvas, zero DOM board cells, zero console errors, and teardown.
+layout, row-grouped active-piece arrival, one Canvas, zero DOM board cells, zero console
+errors, and teardown.
 
 ## 2026-08-04 T30 — in-well piece arrival and route transitions
 
@@ -75,10 +82,11 @@ cut. Both effects are presentation-only and must remain safe under reduced motio
   same coordinates and collision state. Rendering continues to project all four cells
   wholly inside the visible well before any arrival effect is applied.
 - A new active generation is identified by the run's placed-piece count plus the active
-  piece identity. Its four cells assemble in a deterministic top-to-bottom,
-  left-to-right stagger over no more than 210 ms. Each cell grows and gains opacity at
-  its already-safe in-well position; no cell travels through, clips against, or appears
-  outside the board frame.
+  piece identity. Its occupied rows assemble in a deterministic top-to-bottom stagger
+  over no more than 210 ms. Every cell in one row shares the same reveal progress, so a
+  row enters as one readable slice before the next row begins. Each cell grows and gains
+  opacity at its already-safe in-well position; no cell travels through, clips against,
+  or appears outside the board frame.
 - The ghost landing guide remains hidden until the materialisation is substantially
   readable, then joins quietly. Movement and rotation interpolation continue from the
   canonical active piece and must not restart the arrival.
