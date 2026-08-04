@@ -1458,3 +1458,22 @@
 - Independent read-only QA accepted `d700ca3` with P0 0 / P1 0 / P2 0 / P3 0. The RC
   programme is complete; no gameplay or evidence artifact changed after the accepted
   source-bound proof.
+
+## 2026-08-04 — T27-R1 final follow-ups accepted
+
+- Removed the entry countdown from Puzzle only. Opening a level, replaying a completed
+  level, restarting from Settings, or confirming the board restart now resets the fixed
+  authored queue and starts the first piece immediately; Classic, Survival, and Mutation
+  retain their accepted entry staging.
+- Added three broad Classic difficulty grades derived from the configured gravity-range
+  midpoint, persisted the selected bounds and grade in the v9 leaderboard schema, migrated
+  valid v8 Classic rows to Standard, and retained an independent top five per grade with
+  compact Settings and result filters.
+- Final product source `ca2bc48` passed typecheck, the complete suite
+  (`348 passed / 3 skipped`), and the 759-module production build. Browser evidence commit
+  `b0aa433` in `docs/evidence/t27-final/` reports zero errors, one Canvas, zero DOM board
+  cells, a populated active Puzzle piece with no countdown node, and the retained Classic
+  countdown plus all three grade filters.
+- Independent read-only QA accepted `6189622..b0aa433` with P0 0 / P1 0 / P2 0 / P3 0.
+  Existing local deltas under `docs/evidence/t27/` and
+  `docs/evidence/t27-r1-followup/` remain outside this accepted candidate.

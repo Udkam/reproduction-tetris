@@ -1,13 +1,14 @@
 # Current Task — T27 Personalised Pace and Feedback Polish
 
-## T27-R1 active goal — centred board stage and three complete visual themes
+## T27-R1 accepted goal — centred board stage and three complete visual themes
 
-**Status (2026-08-04): ACCEPTED / SETTINGS, AUDIO, CLASSIC RANKING, AND PUZZLE ENTRY FOLLOW-UP OPEN.** This player-requested
+**Status (2026-08-04): ACCEPTED / ALL FOLLOW-UPS CLOSED.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, the single-canvas
 boundary, or Mutation mechanics. The later direct request narrowly reopens Classic
 ranking and its leaderboard persistence so player-selected gravity intervals are no
-longer compared as one difficulty.
+longer compared as one difficulty. The final accepted follow-up also makes Puzzle the
+only mode that enters and restarts immediately without the shared countdown.
 
 The correction has ten coupled acceptance requirements:
 
@@ -170,10 +171,21 @@ gates are required before this exception can be accepted.
 - Eight inherited working-tree deltas under `docs/evidence/t27/` remain unstaged and
   outside the closure commit. They are not acceptance evidence for T27-R1 and must not
   be overwritten or bundled into the push.
+- Final follow-up source `ca2bc48d404e5e9272f849c7534d8d0ffe46d800` adds the
+  three-grade Classic ranking and immediate Puzzle entry/restart paths. Evidence commit
+  `b0aa433` in `docs/evidence/t27-final/` binds all audits to that source. The supplemental
+  audit records Classic countdown digit `3`, all three difficulty filters, and Puzzle
+  `countdownSeen=false`, `countdownCount=0`, `status=playing`, an active piece, one Canvas,
+  zero DOM board cells, and zero errors.
+- Final source gates passed after `ca2bc48`: typecheck; complete suite with
+  `348 passed / 3 skipped`; production build with 759 transformed modules. Independent
+  read-only QA accepted `6189622..b0aa433` with P0 0 / P1 0 / P2 0 / P3 0 and confirmed
+  that inherited `docs/evidence/t27/` and `docs/evidence/t27-r1-followup/` deltas are not
+  part of the candidate.
 
-## T27 active goal — make the opening pace configurable and feedback easier to read
+## T27 accepted goal — make the opening pace configurable and feedback easier to read
 
-**Status (2026-08-03): CONTRACT FROZEN / IMPLEMENTATION OPEN.** Direct player
+**Status (2026-08-04): ACCEPTED / CLOSED / READY FOR PUSH.** Direct player
 feedback reopens a bounded post-RC correction on clean pushed base `ffb2ec9`. The
 coordinator is the only writer. The accepted deterministic Core, one Pixi canvas,
 four-mode structure, Puzzle campaign, ranking, persistence migrations, and Settings
@@ -365,7 +377,8 @@ The slice has twenty player-visible acceptance requirements:
    result frames. Then create a candidate SHA for independent read-only QA before
    changelog acceptance and push.
 
-No source, test, build, browser, or evidence claim is complete at contract freeze.
+Requirements 1–20 are accepted. The final source/evidence and independent QA record are
+captured in the T27-R1 acceptance record above.
 
 # Previous Task — T26 TetraMorph v1.0 Release Candidate
 
