@@ -269,16 +269,17 @@ behind active/ghost pieces. Reduced motion retains a clearly visible static top-
 field without drifting animation.
 
 The entry countdown uses an original transport-style procedural cue on the
-runtime-owned effects bus. `3` and `2` repeat one short, clean sine pulse. `1` moves to
-a clearly higher pitch and begins with one slightly stronger final attack, then the same
-oscillator falls rapidly to a quiet release level and decays across the remainder of the
-one-second digit hold plus the 220 ms cover exit. It reaches silence as input opens.
-There is no second onset at the visual boundary: the runtime's `started` event is silent.
-The result is one continuous audible phrase rather than a detached low-volume tail.
-It is deliberately not an ascending melody or mallet chord. There is no pitch sweep,
-square/saw voice, noise burst, external sample, unrelated Start jingle, extra timer, or
+runtime-owned effects bus. `3` and `2` repeat one short electronic pulse built from a
+warm sine body and a very quiet octave partial. `1` repeats that same material at a
+clearly higher pitch and slightly longer duration; it does not carry a quiet envelope
+through the remaining hold. The cover then exits silently in 120 ms and input opens. There is no
+second onset at the visual boundary: the runtime's `started` event is silent. The three
+discrete beats remain rhythmically legible without a detached release sound, pitch
+sweep, chord, noise burst, external sample, unrelated Start jingle, extra timer, or
 persistent voice. The pulses respect mute and volume, share the runtime AudioContext,
-and are released by the existing teardown boundary.
+and are released by the existing teardown boundary. Pause/resume cover feedback uses
+separate low-gain, short sine taps without sharp pitch sweeps so these interruptions stay
+softer than the entry countdown.
 Confirming a restart must not layer the generic `restarted` event cue underneath digit
 `3`: every restart path hands audible ownership to this one countdown sequence, so its
 first beat is exactly one pulse rather than a restart flourish plus a countdown pulse.

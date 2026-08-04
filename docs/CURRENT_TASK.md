@@ -319,13 +319,13 @@ The slice has sixteen player-visible acceptance requirements:
     Neither path may use a heavy bass fall, stacked impact voices, electrical hum, or
     a long pitch sweep. Hard drop may remain slightly more present than a gravity lock,
     but both must sit below line-clear and countdown feedback in perceived weight.
-18. Countdown digit `1` and the disappearing entry cover are one continuous sound
-    envelope, not two adjacent cues. Digit `1` has one clear high sine attack followed
-    by a low-gain decay that remains audible through its remaining one-second hold and
-    the 220 ms cover exit, reaching silence at the input-open boundary. It uses exactly
-    one oscillator and one onset: `started` is silent, so no short release note, rising
-    sweep, second chord, noise burst, or generic start jingle may restart the sound after
-    digit `1`.
+18. Countdown returns to three discrete short cues: `3` and `2` share one warm electronic
+    pulse with a restrained octave partial, while `1` reuses that material as a short,
+    higher and slightly longer third beat with no low-volume tail. The
+    entry cover exits silently in 120 ms after the `1` hold; `started` remains silent, so
+    no release note, sweep, chord, noise burst, or generic start jingle may play at the
+    input-open boundary. Pause/resume and other interruption-cover feedback must use
+    low-gain, short sine taps without sharp sweeps and remain softer than the countdown.
 19. Classic uses exactly three difficulty grades derived deterministically from both
     selected gravity bounds. The arithmetic midpoint of opening and fastest seconds per
     cell is **Relaxed / 休闲** at `0.65` or slower, **Standard / 标准** from `0.35` through
