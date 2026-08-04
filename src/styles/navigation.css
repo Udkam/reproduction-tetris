@@ -963,3 +963,60 @@
   animation: none !important;
   transition: none !important;
 }
+
+/* T30 route-motion authority: one restrained transition surface per URL route. */
+:root {
+  view-transition-name: none;
+}
+
+.app-route-surface {
+  view-transition-name: app-route;
+}
+
+::view-transition-group(app-route) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(.22, .76, .24, 1);
+}
+
+::view-transition-old(app-route) {
+  animation: t30-route-leave 180ms cubic-bezier(.4, 0, .6, 1) both;
+}
+
+::view-transition-new(app-route) {
+  animation: t30-route-enter 220ms cubic-bezier(.22, .76, .24, 1) both;
+}
+
+.app[data-route-transition="fallback"] > .app-route-surface {
+  animation: t30-route-enter 180ms cubic-bezier(.22, .76, .24, 1) both;
+}
+
+.app[data-route-transition="reduced"] > .app-route-surface {
+  animation: t30-route-reduced 1ms linear both;
+}
+
+@keyframes t30-route-leave {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(3px); }
+}
+
+@keyframes t30-route-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes t30-route-reduced {
+  from { opacity: .99; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(app-route),
+  ::view-transition-old(app-route),
+  ::view-transition-new(app-route) {
+    animation: t30-route-reduced 1ms linear both;
+  }
+
+  .app[data-route-transition="fallback"] > .app-route-surface {
+    animation: t30-route-reduced 1ms linear both;
+  }
+}

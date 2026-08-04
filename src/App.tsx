@@ -9,6 +9,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
+import { flushSync } from 'react-dom';
 import {
   ANCHOR_CELL,
   CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
@@ -684,7 +685,7 @@ export function ModeHome({
     modeButtonRefs.current[nextIndex]?.focus();
   };
   return (
-    <main id="game" lang={language} className="landing-shell landing-shell--workbench landing-shell--wordmark" data-testid="mode-home">
+    <main id="game" lang={language} className="landing-shell landing-shell--workbench landing-shell--wordmark app-route-surface" data-testid="mode-home">
       <section className="landing-stage landing-stage--workbench" aria-labelledby="home-title">
         <section className="mode-chooser mode-chooser--workbench">
           <div className="landing-intro">
@@ -949,7 +950,7 @@ export function PuzzleLibrary({
     selectLevelAtIndex(pageLevels[nextLocalIndex]!.index - 1, true);
   };
   return (
-    <main id="game" lang={language} className="library-shell library-shell--gallery" data-testid="puzzle-library">
+    <main id="game" lang={language} className="library-shell library-shell--gallery app-route-surface" data-testid="puzzle-library">
       <header className="library-header puzzle-gallery__header">
         <button className="library-back" type="button" aria-label={copy.labels.leaveRun} onClick={onBack}>
           <b aria-hidden="true">←</b><span>{copy.labels.modeHome}</span>
@@ -2361,7 +2362,7 @@ export function GameSession({
     <main
       id="game"
       lang={language}
-      className={`play-shell${pauseOpen || restartConfirmOpen ? ' play-shell--interrupted' : ''}`}
+      className={`play-shell app-route-surface${pauseOpen || restartConfirmOpen ? ' play-shell--interrupted' : ''}`}
       data-testid="game-screen"
     >
       <header className="play-topbar" data-testid="cluster-header">
@@ -2657,8 +2658,20 @@ export function GameSession({
   );
 }
 
+type RouteTransitionMode = 'idle' | 'native' | 'fallback' | 'reduced';
+
+interface AppViewTransition {
+  finished: Promise<unknown>;
+}
+
+type AppViewTransitionDocument = Document & {
+  startViewTransition?: (update: () => void) => AppViewTransition;
+};
+
 export default function App() {
   const [navigation, setNavigation] = useState<AppNavigationState>(readAppNavigation);
+  const navigationRef = useRef(navigation);
+  const [routeTransitionMode, setRouteTransitionMode] = useState<RouteTransitionMode>('idle');
   const [language, setLanguage] = useState<AppLanguage>(readLanguage);
   const [visualTheme, setVisualTheme] = useState<VisualThemeId>(readVisualTheme);
   const [classicGravityRange, setClassicGravityRange] = useState(readClassicGravityRange);
@@ -2672,6 +2685,7 @@ export default function App() {
   const [systemReducedMotion, setSystemReducedMotion] = useState(
     () => browserPlatform.mediaQuery('(prefers-reduced-motion: reduce)').matches,
   );
+  navigationRef.current = navigation;
   progressRef.current = progress;
   const reducedMotion = reducedMotionOverride ?? systemReducedMotion;
 
@@ -2691,27 +2705,62 @@ export default function App() {
     if (bootScreen) bootScreen.setAttribute('aria-label', copy.labels.loading);
   }, [language]);
 
-  const navigate = useCallback((nextNavigation: AppNavigationState, replace = false) => {
+  const navigate = useCallback((
+    nextNavigation: AppNavigationState,
+    action: 'push' | 'replace' | 'pop' = 'push',
+  ) => {
     const windowTarget = browserPlatform.windowTarget();
+    const previousPath = appPathFor(navigationRef.current);
     const nextPath = appPathFor(nextNavigation);
-    if (windowTarget && windowTarget.location.pathname !== nextPath) {
-      if (replace) windowTarget.history.replaceState({}, '', nextPath);
+    if (windowTarget && action !== 'pop' && windowTarget.location.pathname !== nextPath) {
+      if (action === 'replace') windowTarget.history.replaceState({}, '', nextPath);
       else windowTarget.history.pushState({}, '', nextPath);
     }
-    setNavigation(nextNavigation);
-  }, []);
+
+    const commit = (mode: RouteTransitionMode) => {
+      navigationRef.current = nextNavigation;
+      setRouteTransitionMode(mode);
+      setNavigation(nextNavigation);
+    };
+    if (previousPath === nextPath) {
+      commit('idle');
+      return;
+    }
+    if (reducedMotion) {
+      commit('reduced');
+      return;
+    }
+
+    const transitionDocument = browserPlatform.documentTarget() as AppViewTransitionDocument | null;
+    let committed = false;
+    const commitOnce = (mode: RouteTransitionMode) => {
+      if (committed) return;
+      committed = true;
+      flushSync(() => commit(mode));
+    };
+    if (transitionDocument?.startViewTransition) {
+      try {
+        transitionDocument.startViewTransition(() => commitOnce('native'));
+        return;
+      } catch {
+        commitOnce('fallback');
+        return;
+      }
+    }
+    commitOnce('fallback');
+  }, [reducedMotion]);
 
   useEffect(() => {
     const windowTarget = browserPlatform.windowTarget();
     if (!windowTarget) return undefined;
     const initialRoute = parseAppPath(windowTarget.location.pathname);
-    if (!initialRoute) navigate(DEFAULT_APP_NAVIGATION, true);
+    if (!initialRoute) navigate(DEFAULT_APP_NAVIGATION, 'replace');
 
     return browserPlatform.listenWindow('popstate', () => {
       const nextRoute = parseAppPath(windowTarget.location.pathname);
       setRuleIntroMode(null);
-      if (nextRoute) setNavigation(nextRoute);
-      else navigate(DEFAULT_APP_NAVIGATION, true);
+      if (nextRoute) navigate(nextRoute, 'pop');
+      else navigate(DEFAULT_APP_NAVIGATION, 'replace');
     });
   }, [navigate]);
 
@@ -2793,7 +2842,12 @@ export default function App() {
   }, [navigate, selectedPuzzleId]);
 
   const selectPuzzle = useCallback((puzzleId: PuzzleId) => {
-    setNavigation((current) => ({ ...current, mode: 'puzzle', selectedPuzzleId: puzzleId }));
+    setRouteTransitionMode('idle');
+    setNavigation((current) => {
+      const nextNavigation = { ...current, mode: 'puzzle' as const, selectedPuzzleId: puzzleId };
+      navigationRef.current = nextNavigation;
+      return nextNavigation;
+    });
   }, []);
 
   return (
@@ -2802,6 +2856,7 @@ export default function App() {
       lang={language}
       data-theme={visualTheme}
       data-reduced-motion={reducedMotion ? 'true' : 'false'}
+      data-route-transition={routeTransitionMode}
     >
       {screen === 'home' && <ModeHome onEnter={enterMode} language={language} />}
       {screen === 'puzzle-library' && (

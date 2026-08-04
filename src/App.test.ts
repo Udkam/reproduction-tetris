@@ -184,9 +184,88 @@ vi.mock('./game/runtime/GameRuntime', async () => {
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
+  Reflect.deleteProperty(document as unknown as Record<string, unknown>, 'startViewTransition');
   localStorage.clear();
   window.history.replaceState({}, '', '/');
   runtimeHarness.instances.length = 0;
+});
+
+describe('T30 route transition boundary', () => {
+  function installViewTransition() {
+    const startViewTransition = vi.fn((update: () => void) => {
+      update();
+      return { finished: Promise.resolve() };
+    });
+    Object.defineProperty(document, 'startViewTransition', {
+      configurable: true,
+      value: startViewTransition,
+    });
+    return startViewTransition;
+  }
+
+  it('uses the native transition for push and pop routes without retaining a canvas', async () => {
+    localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
+    const startViewTransition = installViewTransition();
+    const view = render(createElement(App));
+
+    expect(view.container.querySelectorAll('.app-route-surface')).toHaveLength(1);
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
+    await act(async () => Promise.resolve());
+
+    expect(window.location.pathname).toBe('/play/classic');
+    expect(startViewTransition).toHaveBeenCalledTimes(1);
+    expect(view.container.querySelector('.app')?.getAttribute('data-route-transition')).toBe('native');
+    expect(view.container.querySelectorAll('.app-route-surface')).toHaveLength(1);
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(1);
+
+    act(() => {
+      window.history.replaceState({}, '', '/');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    await act(async () => Promise.resolve());
+
+    expect(startViewTransition).toHaveBeenCalledTimes(2);
+    expect(view.container.querySelector('[data-testid="mode-home"]')).not.toBeNull();
+    expect(view.container.querySelectorAll('canvas')).toHaveLength(0);
+    view.unmount();
+  });
+
+  it('falls back immediately when the native API is absent', () => {
+    localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['marathon']));
+    const view = render(createElement(App));
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-marathon"]')?.click());
+
+    expect(window.location.pathname).toBe('/play/classic');
+    expect(view.container.querySelector('[data-testid="game-screen"]')).not.toBeNull();
+    expect(view.container.querySelector('.app')?.getAttribute('data-route-transition')).toBe('fallback');
+    view.unmount();
+  });
+
+  it('uses an opacity-only reduced path and leaves in-page puzzle selection unanimated', () => {
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })));
+    localStorage.setItem('tetris:mode-rule-intros:v1', JSON.stringify(['puzzle']));
+    const startViewTransition = installViewTransition();
+    const view = render(createElement(App));
+
+    act(() => view.container.querySelector<HTMLButtonElement>('[data-testid="enter-puzzle"]')?.click());
+    expect(startViewTransition).not.toHaveBeenCalled();
+    expect(window.location.pathname).toBe('/puzzles');
+    expect(view.container.querySelector('.app')?.getAttribute('data-route-transition')).toBe('reduced');
+
+    const routeRoot = view.container.querySelector('[data-testid="puzzle-library"]');
+    const nextLevel = view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')[1]!;
+    act(() => nextLevel.click());
+    expect(window.location.pathname).toBe('/puzzles');
+    expect(startViewTransition).not.toHaveBeenCalled();
+    expect(view.container.querySelector('[data-testid="puzzle-library"]')).toBe(routeRoot);
+    expect(view.container.querySelector('.app')?.getAttribute('data-route-transition')).toBe('idle');
+    view.unmount();
+  });
 });
 
 function render(element: ReactNode): {

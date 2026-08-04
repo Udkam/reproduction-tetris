@@ -65,4 +65,18 @@ describe('Phase 9 navigation authority', () => {
     );
   });
 
+  it('owns one restrained T30 transition surface for each URL route', () => {
+    expect(app.match(/app-route-surface/g)).toHaveLength(3);
+    expect(navigation).toContain('T30 route-motion authority');
+    expect(navigation).toMatch(/:root\s*\{[^}]*view-transition-name:\s*none;/s);
+    expect(navigation).toMatch(/\.app-route-surface\s*\{[^}]*view-transition-name:\s*app-route;/s);
+    expect(navigation).toMatch(/::view-transition-old\(app-route\)\s*\{[^}]*180ms/s);
+    expect(navigation).toMatch(/::view-transition-new\(app-route\)\s*\{[^}]*220ms/s);
+    expect(navigation).toContain('.app[data-route-transition="fallback"] > .app-route-surface');
+    expect(navigation).toContain('.app[data-route-transition="reduced"] > .app-route-surface');
+    const reducedKeyframes = navigation.match(/@keyframes t30-route-reduced\s*\{[\s\S]*?\n\}/)?.[0] ?? '';
+    expect(reducedKeyframes).toContain('opacity');
+    expect(reducedKeyframes).not.toContain('transform');
+  });
+
 });
