@@ -1,0 +1,1749 @@
+{
+  "sourceSha": "d12c673f692ca45da5cef1cbdd2866a87e0da40b",
+  "liveSeed": 163,
+  "capturedAt": "2026-08-04T18:01:42.108Z",
+  "browser": "149.0.7827.55",
+  "idle": {
+    "text": "Mutation status",
+    "idleMarkerCount": 0,
+    "ledgerChildren": 0,
+    "rowCount": 0,
+    "name": null,
+    "subcopy": null,
+    "seconds": null,
+    "rowBorderWidths": null,
+    "rowBackground": null,
+    "copyBorderWidths": null,
+    "copyBackground": null,
+    "meterWidth": 0
+  },
+  "activeStatus": {
+    "text": "Mutation statusSupergravityActive5s",
+    "idleMarkerCount": 0,
+    "ledgerChildren": 1,
+    "rowCount": 1,
+    "name": "Supergravity",
+    "subcopy": "Active",
+    "seconds": "5s",
+    "rowBorderWidths": [
+      "0px",
+      "0px",
+      "0px",
+      "0px"
+    ],
+    "rowBackground": "rgba(0, 0, 0, 0)",
+    "copyBorderWidths": [
+      "0px",
+      "0px",
+      "0px",
+      "0px"
+    ],
+    "copyBackground": "rgba(0, 0, 0, 0)",
+    "meterWidth": 193
+  },
+  "activeState": {
+    "state": {
+      "board": [
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          "L",
+          null,
+          "T",
+          null
+        ]
+      ],
+      "active": {
+        "type": "S",
+        "rotation": 0,
+        "x": 3,
+        "y": 19
+      },
+      "queue": [
+        "Z",
+        "J",
+        "O",
+        "L",
+        "O"
+      ],
+      "score": 154,
+      "lines": 1,
+      "combo": 0,
+      "level": 0,
+      "mode": "sprint",
+      "classicStartingGravityTicks": 48,
+      "classicGravityFloorTicks": 6,
+      "puzzleId": null,
+      "puzzleTargetLines": null,
+      "puzzleTargetCells": [],
+      "puzzleInitialTargetCount": 0,
+      "puzzleBoardRows": null,
+      "puzzleQueue": null,
+      "puzzleQueueIndex": 0,
+      "puzzleSpawnCount": 0,
+      "puzzleGoal": null,
+      "puzzleCompletion": null,
+      "puzzleUndoHistory": [],
+      "puzzleActiveSpawnCheckpoint": null,
+      "completedLevelId": null,
+      "nextUnlockedLevelId": null,
+      "pieceCount": 3,
+      "survivalBedrockRows": 0,
+      "survivalPressureTicks": 0,
+      "survivalRisePending": false,
+      "survivalRiseCount": 0,
+      "survivalDebris": [],
+      "survivalDebrisNextId": 1,
+      "survivalDebrisPiecesRemaining": 8,
+      "survivalDebrisPieceInterval": 8,
+      "survivalDebrisSpawnCount": 0,
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalDebrisWarningTicks": 0,
+      "survivalDebrisFallProgress": 0,
+      "survivalDebrisRandomizer": {
+        "seed": 2747636320,
+        "bag": []
+      },
+      "mutationActiveCarrier": {
+        "id": 2,
+        "item": "bomb"
+      },
+      "mutationRandomizer": {
+        "seed": 2580008802,
+        "bag": []
+      },
+      "mutationCarriers": [],
+      "mutationNextCarrierId": 3,
+      "mutationFreezeTicks": 0,
+      "mutationCollapseTicks": 300,
+      "mutationCollapseLandingLatched": true,
+      "mutationMultiplierTicks": 0,
+      "mutationMultiplierFactor": 1,
+      "mutationLastItem": "collapse",
+      "mutationLastItemTicks": 300,
+      "status": "playing",
+      "phase": "active",
+      "phaseTicks": 0,
+      "pendingClearRows": [],
+      "gravityTicks": 0,
+      "lockTicks": 0,
+      "lockResets": 0,
+      "elapsedTicks": 28,
+      "randomizer": {
+        "seed": 3276183793,
+        "bag": [
+          "Z",
+          "I",
+          "S",
+          "J",
+          "T"
+        ]
+      },
+      "seed": 163
+    },
+    "renderer": {
+      "canvas": {
+        "width": 1320,
+        "height": 812,
+        "resolution": 1
+      },
+      "board": {
+        "x": 464,
+        "y": 14,
+        "width": 392,
+        "height": 784,
+        "cell": 39.2
+      },
+      "preview": {
+        "x": 196.8125,
+        "y": 69,
+        "width": 224,
+        "height": 112
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "Z",
+      "previewPieces": [
+        "Z"
+      ],
+      "previewMutationItem": null,
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 5,
+          "y": 19
+        },
+        {
+          "x": 3,
+          "y": 20
+        },
+        {
+          "x": 4,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 38
+        },
+        {
+          "x": 5,
+          "y": 39
+        },
+        {
+          "x": 3,
+          "y": 39
+        },
+        {
+          "x": 4,
+          "y": 39
+        }
+      ],
+      "activeSpawnReveal": {
+        "generationKey": "3:S",
+        "elapsedMs": 183.39999999999964,
+        "durationMs": 204,
+        "cellProgress": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "ghostProgress": 0.9829261406249991
+      },
+      "visibleLockedCells": 2,
+      "presentation": {
+        "x": 3,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 0,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": {
+        "item": "collapse",
+        "elapsedMs": 183.39999999999964,
+        "durationMs": 220,
+        "phases": [
+          {
+            "id": "pressure-bind",
+            "active": false,
+            "complete": true,
+            "progress": 1,
+            "value": 1
+          },
+          {
+            "id": "column-release",
+            "active": true,
+            "complete": false,
+            "progress": 0.6339999999999963,
+            "value": 0.25484010399999557
+          }
+        ],
+        "particlesEmitted": true,
+        "triggerColumns": [
+          7,
+          8,
+          9
+        ]
+      },
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 16,
+      "mutationCollapseTrail": null
+    },
+    "canvasCount": 1,
+    "domCellCount": 0
+  },
+  "ghostLatch": {
+    "ordinary": [
+      {
+        "x": 3,
+        "y": 36
+      },
+      {
+        "x": 4,
+        "y": 36
+      },
+      {
+        "x": 3,
+        "y": 37
+      },
+      {
+        "x": 4,
+        "y": 37
+      }
+    ],
+    "active": [
+      {
+        "x": 3,
+        "y": 36
+      },
+      {
+        "x": 4,
+        "y": 37
+      },
+      {
+        "x": 3,
+        "y": 37
+      },
+      {
+        "x": 4,
+        "y": 38
+      }
+    ],
+    "expiredButLatched": [
+      {
+        "x": 3,
+        "y": 36
+      },
+      {
+        "x": 4,
+        "y": 37
+      },
+      {
+        "x": 3,
+        "y": 37
+      },
+      {
+        "x": 4,
+        "y": 38
+      }
+    ]
+  },
+  "frames": {
+    "spawnEarly": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 29
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 3,
+            "y": 21
+          },
+          {
+            "x": 4,
+            "y": 21
+          },
+          {
+            "x": 5,
+            "y": 21
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 3,
+            "y": 39
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "activeSpawnReveal": {
+          "generationKey": "1:T",
+          "elapsedMs": 18,
+          "durationMs": 204,
+          "cellProgress": [
+            0.3702623906705538,
+            0,
+            0,
+            0
+          ],
+          "ghostProgress": 0
+        },
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 3,
+          "y": 20,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [
+        {
+          "row": 20,
+          "progress": 0.3702623906705538
+        },
+        {
+          "row": 21,
+          "progress": 0
+        },
+        {
+          "row": 21,
+          "progress": 0
+        },
+        {
+          "row": 21,
+          "progress": 0
+        }
+      ],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "spawnMiddle": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 44
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 3,
+            "y": 21
+          },
+          {
+            "x": 4,
+            "y": 21
+          },
+          {
+            "x": 5,
+            "y": 21
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 3,
+            "y": 39
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "activeSpawnReveal": {
+          "generationKey": "1:T",
+          "elapsedMs": 88,
+          "durationMs": 204,
+          "cellProgress": [
+            0.9725691569984842,
+            0.868952636904262,
+            0.868952636904262,
+            0.868952636904262
+          ],
+          "ghostProgress": 0
+        },
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 3,
+          "y": 20,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [
+        {
+          "row": 20,
+          "progress": 0.9725691569984842
+        },
+        {
+          "row": 21,
+          "progress": 0.868952636904262
+        },
+        {
+          "row": 21,
+          "progress": 0.868952636904262
+        },
+        {
+          "row": 21,
+          "progress": 0.868952636904262
+        }
+      ],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "spawnComplete": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 39
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 3,
+            "y": 21
+          },
+          {
+            "x": 4,
+            "y": 21
+          },
+          {
+            "x": 5,
+            "y": 21
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 3,
+            "y": 39
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "activeSpawnReveal": null,
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 3,
+          "y": 20,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "iceActivation": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 67
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 28
+          },
+          {
+            "x": 3,
+            "y": 29
+          },
+          {
+            "x": 4,
+            "y": 29
+          },
+          {
+            "x": 5,
+            "y": 29
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 3,
+            "y": 39
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "activeSpawnReveal": {
+          "generationKey": "1:T",
+          "elapsedMs": 84,
+          "durationMs": 204,
+          "cellProgress": [
+            0.9629629629629629,
+            0.8428135510524021,
+            0.8428135510524021,
+            0.8428135510524021
+          ],
+          "ghostProgress": 0
+        },
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 3,
+          "y": 28,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": {
+          "item": "freeze",
+          "elapsedMs": 84,
+          "durationMs": 320,
+          "phases": [
+            {
+              "id": "frost-bind",
+              "active": true,
+              "complete": false,
+              "progress": 0.2625,
+              "value": 0.598869140625
+            },
+            {
+              "id": "shard-release",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 0
+            }
+          ],
+          "particlesEmitted": true,
+          "triggerColumns": [
+            3,
+            6
+          ]
+        },
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 18,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [
+        {
+          "row": 28,
+          "progress": 0.9629629629629629
+        },
+        {
+          "row": 29,
+          "progress": 0.8428135510524021
+        },
+        {
+          "row": 29,
+          "progress": 0.8428135510524021
+        },
+        {
+          "row": 29,
+          "progress": 0.8428135510524021
+        }
+      ],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "supergravityActivation": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 48
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 28
+          },
+          {
+            "x": 3,
+            "y": 29
+          },
+          {
+            "x": 4,
+            "y": 29
+          },
+          {
+            "x": 5,
+            "y": 29
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 3,
+            "y": 39
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "activeSpawnReveal": {
+          "generationKey": "1:T",
+          "elapsedMs": 84,
+          "durationMs": 204,
+          "cellProgress": [
+            0.9629629629629629,
+            0.8428135510524021,
+            0.8428135510524021,
+            0.8428135510524021
+          ],
+          "ghostProgress": 0
+        },
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 3,
+          "y": 28,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": {
+          "item": "collapse",
+          "elapsedMs": 84,
+          "durationMs": 220,
+          "phases": [
+            {
+              "id": "pressure-bind",
+              "active": true,
+              "complete": false,
+              "progress": 0.7,
+              "value": 0.973
+            },
+            {
+              "id": "column-release",
+              "active": false,
+              "complete": false,
+              "progress": 0,
+              "value": 0
+            }
+          ],
+          "particlesEmitted": true,
+          "triggerColumns": [
+            3,
+            6
+          ]
+        },
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 16,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [
+        {
+          "row": 28,
+          "progress": 0.9629629629629629
+        },
+        {
+          "row": 29,
+          "progress": 0.8428135510524021
+        },
+        {
+          "row": 29,
+          "progress": 0.8428135510524021
+        },
+        {
+          "row": 29,
+          "progress": 0.8428135510524021
+        }
+      ],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "iceClear": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 49
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [],
+        "ghostCells": [],
+        "activeSpawnReveal": null,
+        "visibleLockedCells": 10,
+        "presentation": null,
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "supergravityClear": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 47
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [],
+        "ghostCells": [],
+        "activeSpawnReveal": null,
+        "visibleLockedCells": 10,
+        "presentation": null,
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    },
+    "supergravityTrail": {
+      "frame": {
+        "x": 85,
+        "y": 108,
+        "width": 390,
+        "height": 780
+      },
+      "pixelProbe": {
+        "samples": 8222,
+        "nonTransparentSamples": 8222,
+        "distinctBuckets": 38
+      },
+      "snapshot": {
+        "canvas": {
+          "width": 560,
+          "height": 900,
+          "resolution": 1
+        },
+        "board": {
+          "x": 85,
+          "y": 108,
+          "width": 390,
+          "height": 780,
+          "cell": 39
+        },
+        "preview": {
+          "x": 85,
+          "y": 16,
+          "width": 195,
+          "height": 156
+        },
+        "previewLayerVisible": true,
+        "previewPiece": "L",
+        "previewPieces": [
+          "L"
+        ],
+        "previewMutationItem": null,
+        "previewClearBounds": null,
+        "previewClearPiece": null,
+        "scrim": null,
+        "activeCells": [
+          {
+            "x": 4,
+            "y": 28
+          },
+          {
+            "x": 3,
+            "y": 29
+          },
+          {
+            "x": 4,
+            "y": 29
+          },
+          {
+            "x": 5,
+            "y": 29
+          }
+        ],
+        "ghostCells": [
+          {
+            "x": 4,
+            "y": 38
+          },
+          {
+            "x": 3,
+            "y": 39
+          },
+          {
+            "x": 4,
+            "y": 39
+          },
+          {
+            "x": 5,
+            "y": 39
+          }
+        ],
+        "activeSpawnReveal": null,
+        "visibleLockedCells": 0,
+        "presentation": {
+          "x": 3,
+          "y": 28,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "boardShiftOffsetY": 0,
+        "mutationFilters": {
+          "freeze": false,
+          "collapse": false,
+          "activeCount": 0
+        },
+        "survivalDebris": [],
+        "survivalDebrisWarningColumns": [],
+        "survivalDebrisWarningHeight": null,
+        "survivalStoneCueCount": 0,
+        "survivalBedrockCue": null,
+        "survivalEntryBedrockRows": null,
+        "survivalEntryBedrockRise": null,
+        "classicFeedback": [],
+        "mutationActivation": null,
+        "mutationActivationQueueItems": [],
+        "mutationActiveParticleCount": 0,
+        "mutationCollapseTrail": null
+      },
+      "rowProgress": [],
+      "revealDurationMs": 204,
+      "canvasCountAfterDestroy": 0
+    }
+  },
+  "reshapeSourceHits": "",
+  "errors": [],
+  "failures": []
+}
