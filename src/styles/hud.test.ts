@@ -32,6 +32,7 @@ describe('T27-R1 centered live stage', () => {
     expect(hudCss).toContain('.game-left-rail .mutation-status.mutation-status--vfx');
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status\.mutation-status--vfx\s*\{[^}]*position:\s*static !important;[^}]*background:\s*transparent !important;[^}]*border:\s*0 !important;/s);
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect\s*\{[^}]*background:\s*transparent !important;[^}]*border:\s*0 !important;[^}]*border-radius:\s*0 !important;[^}]*box-shadow:\s*none !important;/s);
+    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect-copy\s*\{[^}]*padding:\s*0 !important;[^}]*background:\s*transparent !important;[^}]*border:\s*0 !important;[^}]*border-radius:\s*0 !important;[^}]*box-shadow:\s*none !important;/s);
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect > em\s*\{[^}]*color:\s*var\(--mutation-primary,/s);
     expect(hudCss).not.toContain('var(--mutation-base');
     expect(hudCss).toMatch(/\.preview-rail \.rail-label\s*\{[^}]*margin:\s*0 0 2px;[^}]*text-align:\s*center;/s);

@@ -482,6 +482,11 @@
 .game-left-rail .mutation-status__effect-copy {
   display: block !important;
   min-width: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 .game-left-rail .mutation-status__effect-copy > b {
