@@ -105,6 +105,8 @@ The correction has ten coupled acceptance requirements:
    enablement and volume controls and share runtime teardown. Confirming either the
    R-key restart flow or the direct Settings restart produces no separate `restarted`
    flourish; digit `3` is the only audible first beat of the new run.
+   Rotation uses one concise mid-low sine pulse with no layered partial or pitch sweep;
+   repeated turns must remain clear without a sharp chirp.
 10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line
     acceleration ladder clamps at that floor, while Classic's player-configured interval,
     Survival's cadence, Ice's one-second override, and Supergravity landing semantics remain

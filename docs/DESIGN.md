@@ -265,6 +265,10 @@ than delaying input or creating a queued audio stream; gameplay timing remains w
 unchanged. The movement voice is intentionally quieter than landing, clearing, and
 countdown feedback.
 
+Rotation uses one short mid-low sine voice with no second partial and no pitch sweep.
+It remains distinguishable from horizontal movement through register and duration, but
+must not produce the sharp two-voice chirp of the former triangle-plus-sine cue.
+
 The Settings sheet does not repeat its page name as a visible top-left heading. Its
 dialog keeps the same programmatic name through a visually hidden heading, preserving
 screen-reader and focus semantics. Deep Tide Settings tabs use the theme's raised and
