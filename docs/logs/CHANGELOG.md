@@ -1563,3 +1563,18 @@
 - Accepted product/test source `7c4a9a1` and evidence `735effe` pass typecheck, the
   complete suite (`369 passed / 3 skipped`), production build, one-Canvas/zero-error
   browser audit, and independent QA with P0 0 / P1 0 / P2 0 / P3 0.
+
+## 2026-08-05 — T31-R2 player re-review regressions accepted
+
+- Strengthened the frameless Mutation-state hierarchy without reintroducing cards or
+  visible seconds, restored the current-arena Next bridge, and preserved a complete
+  independent-column ghost and lock for an airborne Supergravity-latched piece after
+  the global timer expires.
+- Product/test source `432fde4` passes focused 101-test coverage, final typecheck, the
+  complete suite (`373 passed / 3 skipped`), production build, and diff check.
+- Evidence `a00845c` plus `f859d68` proves visible Next pieces in active Classic and
+  Mutation at 1440x900 and 1125x1196, one Canvas, zero DOM board cells, zero browser
+  errors, and timer-expired Supergravity preview/lock agreement.
+- Independent read-only QA accepts exact range `c291afb..532e636` with P0 0 / P1 0 /
+  P2 0 / P3 0. The bounded browser/server batch is released, and T32 board authoring is
+  admitted under its committed curriculum and exact-proof contract.

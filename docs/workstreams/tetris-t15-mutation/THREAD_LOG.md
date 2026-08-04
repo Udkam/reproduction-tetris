@@ -1837,3 +1837,18 @@
 - Status: **CANDIDATE GREEN / FINAL INDEPENDENT QA REQUIRED**.
 - Next action: let one read-only reviewer verify this persisted gate record against
   `c291afb..f859d68`; only a P0/P1/P2/P3-zero verdict admits T32 board authoring.
+
+## 2026-08-05 — T31-R2 accepted and T32 admitted
+
+- Independent reviewer: `/root/t31_r2_evidence_reqa`, read-only.
+- Reviewed exact range: `c291afb..532e636`.
+- Verdict: **PASS / P0 0 / P1 0 / P2 0 / P3 0**.
+- The prior P1 is closed by the persisted final gate record at this log's candidate
+  section. The reviewer also rechecked the four responsive Classic/Mutation Next
+  frames, one-Canvas/zero-DOM-board/zero-error audit, and resource teardown.
+- Accepted product/test source: `432fde4`.
+- Accepted browser evidence: `a00845c` plus responsive completion `f859d68`.
+- Status: **ACCEPTED / CLOSED**. T32 board authoring is admitted under its separately
+  frozen curriculum and exact-proof contract.
+- No extra test, build, browser, server, watcher, index, or process was started for this
+  disposition.

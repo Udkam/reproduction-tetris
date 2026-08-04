@@ -108,12 +108,12 @@ geometry. The correction contract is
 
 ### T31-R2 player re-review gate
 
-Status (2026-08-05): **CANDIDATE GREEN / FINAL INDEPENDENT QA REQUIRED**. Product/test
-source `432fde4` repairs the player-reported status, Next, and Supergravity endpoint
-regressions. Evidence `a00845c` and `f859d68` binds the live Mutation state plus Classic
-and Mutation Next at both required viewports. The final source gates and resource
-teardown are recorded in `docs/workstreams/tetris-t15-mutation/THREAD_LOG.md`; T32 board
-authoring remains closed until the independent reviewer accepts that complete record.
+Status (2026-08-05): **ACCEPTED / CLOSED**. Product/test source `432fde4` repairs the
+player-reported status, Next, and Supergravity endpoint regressions. Evidence `a00845c`
+and `f859d68` binds the live Mutation state plus Classic and Mutation Next at both
+required viewports. The final source gates and resource teardown are recorded in
+`docs/workstreams/tetris-t15-mutation/THREAD_LOG.md`; independent read-only QA accepted
+the exact range `c291afb..532e636` with P0 0 / P1 0 / P2 0 / P3 0.
 
 T31-R2 acceptance is fail-closed until all of the following are green together:
 
@@ -126,18 +126,18 @@ T31-R2 acceptance is fail-closed until all of the following are green together:
 - [x] a two-row active piece can reveal its lower entry slice, outlive the global
   Supergravity timer, move or rotate, and still show the same complete per-column ghost
   that Core finally locks; only the following generation becomes rigid;
-- [ ] focused tests, one final typecheck, complete suite, production build, bounded
+- [x] focused tests, one final typecheck, complete suite, production build, bounded
   browser evidence, zero console errors, teardown, and independent read-only QA pass.
 
 ## Queued next task — T32 Puzzle curriculum rebuild
 
-Status (2026-08-05): **ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT**. T31-R2 is a
-bounded repair gate before board authoring. T32 owns the curriculum audit and rebuild,
-beginning from accepted product/evidence base `735effe`. The post-T31 audit is frozen:
+Status (2026-08-05): **ACTIVE / BOARD AUTHORING ADMITTED**. T31-R2 is accepted and
+closed. T32 owns the curriculum audit and rebuild, beginning from accepted product/test
+source `432fde4` plus evidence `f859d68`. The post-T31 audit is frozen:
 live data is 3/27/20, fresh progress opens only three levels, and none of the three
 historic exact certificates remains reusable after the Intro rebuild. The isolated
 fingerprint foundation is green at `da8e2b9`; board definitions and progression remain
-blocked until the roster contract is committed and the T31-R2 regression gate is green.
+bounded by the committed roster contract and exact-proof acceptance below.
 
 ### Frozen T32 outcome
 
