@@ -1,0 +1,130 @@
+{
+  "sourceSha": "432fde4a263efb00331a1528db3f938392f43347",
+  "capturedAt": "2026-08-04T21:46:08.050Z",
+  "browser": "149.0.7827.55",
+  "audit": {
+    "viewport": {
+      "width": 1125,
+      "height": 1196
+    },
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "arena": {
+      "x": 16,
+      "y": 74,
+      "width": 1093,
+      "height": 1108
+    },
+    "canvas": {
+      "x": 16,
+      "y": 74,
+      "width": 1093,
+      "height": 1108
+    },
+    "nextSlot": {
+      "x": 74.75,
+      "y": 149,
+      "width": 224,
+      "height": 112
+    },
+    "nextLabel": "下一个方块: I",
+    "renderer": {
+      "canvas": {
+        "width": 1093,
+        "height": 1108,
+        "resolution": 1
+      },
+      "board": {
+        "x": 316.5,
+        "y": 94,
+        "width": 460,
+        "height": 920,
+        "cell": 46
+      },
+      "preview": {
+        "x": 58.75,
+        "y": 75,
+        "width": 224,
+        "height": 112
+      },
+      "previewLayerVisible": true,
+      "previewPiece": "I",
+      "previewPieces": [
+        "I"
+      ],
+      "previewMutationItem": null,
+      "previewClearBounds": null,
+      "previewClearPiece": null,
+      "scrim": null,
+      "activeCells": [
+        {
+          "x": 4,
+          "y": 19
+        },
+        {
+          "x": 5,
+          "y": 19
+        },
+        {
+          "x": 4,
+          "y": 20
+        },
+        {
+          "x": 5,
+          "y": 20
+        }
+      ],
+      "ghostCells": [
+        {
+          "x": 4,
+          "y": 38
+        },
+        {
+          "x": 5,
+          "y": 38
+        },
+        {
+          "x": 4,
+          "y": 39
+        },
+        {
+          "x": 5,
+          "y": 39
+        }
+      ],
+      "activeSpawnEntry": {
+        "generationKey": "0:O",
+        "pending": true,
+        "visibleCellCount": 2,
+        "hiddenCellCount": 2
+      },
+      "visibleLockedCells": 0,
+      "presentation": {
+        "x": 4,
+        "y": 19,
+        "offsetX": 0,
+        "offsetY": 0
+      },
+      "boardShiftOffsetY": 0,
+      "mutationFilters": {
+        "freeze": false,
+        "collapse": false,
+        "activeCount": 0
+      },
+      "survivalDebris": [],
+      "survivalDebrisWarningColumns": [],
+      "survivalDebrisWarningHeight": null,
+      "survivalStoneCueCount": 0,
+      "survivalBedrockCue": null,
+      "survivalEntryBedrockRows": null,
+      "survivalEntryBedrockRise": null,
+      "classicFeedback": [],
+      "mutationActivation": null,
+      "mutationActivationQueueItems": [],
+      "mutationActiveParticleCount": 0,
+      "mutationCollapseTrail": null
+    }
+  },
+  "errors": [],
+  "failures": []
+}

@@ -1,7 +1,7 @@
 {
-  "sourceSha": "7c4a9a128a6cfaff8f805afe43ec3a247d2aae56",
+  "sourceSha": "432fde4a263efb00331a1528db3f938392f43347",
   "liveSeed": 163,
-  "capturedAt": "2026-08-04T20:22:20.440Z",
+  "capturedAt": "2026-08-04T21:44:36.668Z",
   "browser": "149.0.7827.55",
   "idle": {
     "text": "Mutation status",
@@ -41,7 +41,7 @@
       "0px"
     ],
     "copyBackground": "rgba(0, 0, 0, 0)",
-    "meterWidth": 201,
+    "meterWidth": 198,
     "meterTrackHeight": 1,
     "meterFillHeight": 1
   },
@@ -605,7 +605,7 @@
       "gravityTicks": 0,
       "lockTicks": 0,
       "lockResets": 0,
-      "elapsedTicks": 44,
+      "elapsedTicks": 42,
       "randomizer": {
         "seed": 3276183793,
         "bag": [
@@ -709,7 +709,33 @@
       "survivalEntryBedrockRows": null,
       "survivalEntryBedrockRise": null,
       "classicFeedback": [],
-      "mutationActivation": null,
+      "mutationActivation": {
+        "item": "collapse",
+        "elapsedMs": 166.70000000000073,
+        "durationMs": 220,
+        "phases": [
+          {
+            "id": "pressure-bind",
+            "active": false,
+            "complete": true,
+            "progress": 1,
+            "value": 1
+          },
+          {
+            "id": "column-release",
+            "active": true,
+            "complete": false,
+            "progress": 0.4670000000000073,
+            "value": 0.10184756300000478
+          }
+        ],
+        "particlesEmitted": true,
+        "triggerColumns": [
+          7,
+          8,
+          9
+        ]
+      },
       "mutationActivationQueueItems": [],
       "mutationActiveParticleCount": 0,
       "mutationCollapseTrail": null
