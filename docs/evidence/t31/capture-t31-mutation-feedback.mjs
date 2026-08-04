@@ -146,17 +146,19 @@ const findActivationSeed = (page, actionGroups, targetItem) => page.evaluate(asy
 
 const captureRendererFrame = async (page, file, scenario) => {
   const result = await page.evaluate(async (request) => {
-    const [{ TetrisRenderer }, engine, constants, presentation] = await Promise.all([
+    const [{ TetrisRenderer }, engine, constants] = await Promise.all([
       import('/src/game/render/TetrisRenderer.ts'),
       import('/src/game/core/engine.ts'),
       import('/src/game/core/constants.ts'),
-      import('/src/game/render/presentation.ts'),
     ]);
     document.body.innerHTML = '';
     document.body.style.margin = '0';
     document.body.style.background = '#071724';
     const host = document.createElement('div');
-    host.style.width = '560px';
+    // Keep the isolated fallback preview beside the board so the board-only
+    // entry captures prove the mouth transition without a synthetic HUD
+    // preview overlapping the first visible row.
+    host.style.width = '960px';
     host.style.height = '900px';
     host.style.margin = '0 auto';
     document.body.append(host);
@@ -169,7 +171,7 @@ const captureRendererFrame = async (page, file, scenario) => {
       ...initial,
       status: 'playing',
       phase: 'active',
-      active: { type: 'T', rotation: 0, x: 3, y: 20 },
+      active: { type: 'T', rotation: 0, x: 3, y: request.kind === 'spawn' ? 19 : 20 },
       pieceCount: 1,
     };
     let events = [];
@@ -216,23 +218,26 @@ const captureRendererFrame = async (page, file, scenario) => {
     }
 
     renderer.render(state, events, 0);
-    renderer.render(state, [], request.elapsedMs);
+    if (request.kind === 'spawn' && request.stage !== 'first-row') {
+      state = {
+        ...state,
+        active: state.active ? { ...state.active, y: 20 } : null,
+      };
+      const frameCount = request.stage === 'crossing' ? 1 : 32;
+      for (let frame = 0; frame < frameCount; frame += 1) {
+        renderer.render(state, [], 16);
+      }
+    } else {
+      renderer.render(state, [], request.elapsedMs);
+    }
     const capture = renderer.captureBoardPng();
     const snapshot = renderer.getSnapshot();
-    const rowProgress = snapshot.activeSpawnReveal
-      ? snapshot.activeCells.map((cell, index) => ({
-          row: cell.y,
-          progress: snapshot.activeSpawnReveal.cellProgress[index],
-        }))
-      : [];
     renderer.destroy();
     return {
       dataUrl: capture.dataUrl,
       frame: capture.frame,
       pixelProbe: capture.pixelProbe,
       snapshot,
-      rowProgress,
-      revealDurationMs: presentation.ACTIVE_SPAWN_REVEAL_DURATION_MS,
       canvasCountAfterDestroy: document.querySelectorAll('canvas').length,
     };
   }, scenario);
@@ -268,12 +273,31 @@ const collectGhostLatchProjection = (page) => page.evaluate(async () => {
     mutationCollapseTicks: 300,
     mutationCollapseLandingLatched: true,
   });
-  const expiredButLatched = presentation.projectedLandingCells({
+  const expiredButLatchedState = {
     ...base,
     mutationCollapseTicks: 0,
     mutationCollapseLandingLatched: true,
-  });
-  return { ordinary, active, expiredButLatched };
+  };
+  const expiredButLatched = presentation.projectedLandingCells(expiredButLatchedState);
+  const timerEndpoint = engine.dispatch({
+    ...base,
+    mutationCollapseTicks: 1,
+    mutationCollapseLandingLatched: false,
+  }, { type: 'tick' }).state;
+  const locked = engine.dispatch(timerEndpoint, { type: 'hard-drop' });
+  const lockedEvent = locked.events.find((event) => event.type === 'piece-locked');
+  return {
+    ordinary,
+    active,
+    expiredButLatched,
+    coreEndpoint: {
+      ticksAfterExpiry: timerEndpoint.mutationCollapseTicks,
+      landingLatchedAfterExpiry: timerEndpoint.mutationCollapseLandingLatched,
+      ghostAfterExpiry: presentation.projectedLandingCells(timerEndpoint),
+      lockedCells: lockedEvent?.cells ?? [],
+      landingLatchedAfterLock: locked.state.mutationCollapseLandingLatched,
+    },
+  };
 });
 
 try {
@@ -333,9 +357,9 @@ try {
   await renderPage.goto(origin, { waitUntil: 'networkidle' });
 
   const frames = {
-    spawnEarly: await captureRendererFrame(renderPage, 'spawn-row-early.png', { kind: 'spawn', elapsedMs: 70 }),
-    spawnMiddle: await captureRendererFrame(renderPage, 'spawn-row-middle.png', { kind: 'spawn', elapsedMs: 180 }),
-    spawnComplete: await captureRendererFrame(renderPage, 'spawn-row-complete.png', { kind: 'spawn', elapsedMs: 430 }),
+    spawnEarly: await captureRendererFrame(renderPage, 'spawn-row-early.png', { kind: 'spawn', stage: 'first-row', elapsedMs: 0 }),
+    spawnMiddle: await captureRendererFrame(renderPage, 'spawn-row-middle.png', { kind: 'spawn', stage: 'crossing', elapsedMs: 0 }),
+    spawnComplete: await captureRendererFrame(renderPage, 'spawn-row-complete.png', { kind: 'spawn', stage: 'settled', elapsedMs: 0 }),
     iceActivationBloom: await captureRendererFrame(renderPage, 'ice-activation-bloom.png', { kind: 'activation', item: 'freeze', elapsedMs: 60 }),
     iceActivationFacet: await captureRendererFrame(renderPage, 'ice-activation-final.png', { kind: 'activation', item: 'freeze', elapsedMs: 160 }),
     supergravityActivationPressure: await captureRendererFrame(renderPage, 'supergravity-activation-final.png', { kind: 'activation', item: 'collapse', elapsedMs: 60 }),
@@ -378,47 +402,51 @@ try {
   if ((activeState.state?.mutationCollapseTicks ?? 0) <= 0) {
     failures.push(`Supergravity was not activated: ${JSON.stringify(activeState.state)}`);
   }
+  if (
+    activeState.renderer?.previewLayerVisible !== true
+    || !Array.isArray(activeState.renderer?.previewPieces)
+    || activeState.renderer.previewPieces.length < 1
+  ) {
+    failures.push(`Next preview is not visible: ${JSON.stringify(activeState.renderer)}`);
+  }
   if (JSON.stringify(ghostLatch.ordinary) === JSON.stringify(ghostLatch.active)) {
     failures.push(`ordinary and Supergravity ghosts are identical: ${JSON.stringify(ghostLatch)}`);
   }
   if (JSON.stringify(ghostLatch.active) !== JSON.stringify(ghostLatch.expiredButLatched)) {
     failures.push(`expired latched ghost changed: ${JSON.stringify(ghostLatch)}`);
   }
+  if (
+    ghostLatch.coreEndpoint.ticksAfterExpiry !== 0
+    || ghostLatch.coreEndpoint.landingLatchedAfterExpiry !== true
+    || ghostLatch.coreEndpoint.landingLatchedAfterLock !== false
+    || JSON.stringify(ghostLatch.coreEndpoint.ghostAfterExpiry) !== JSON.stringify(ghostLatch.coreEndpoint.lockedCells)
+  ) {
+    failures.push(`Supergravity endpoint compensation is inconsistent: ${JSON.stringify(ghostLatch.coreEndpoint)}`);
+  }
 
-  const earlyRows = new Map();
-  for (const entry of frames.spawnEarly.rowProgress) {
-    const group = earlyRows.get(entry.row) ?? [];
-    group.push(entry);
-    earlyRows.set(entry.row, group);
+  if (
+    frames.spawnEarly.snapshot.activeSpawnEntry?.pending !== true
+    || frames.spawnEarly.snapshot.activeSpawnEntry?.visibleCellCount !== 3
+    || frames.spawnEarly.snapshot.activeSpawnEntry?.hiddenCellCount !== 1
+  ) {
+    failures.push(`first spawn frame does not expose only the lower occupied row: ${JSON.stringify(frames.spawnEarly.snapshot)}`);
   }
-  const earlyGroups = [...earlyRows.values()].sort((left, right) => left[0].row - right[0].row);
-  if (earlyGroups.length < 2) failures.push(`spawn evidence has fewer than two visible rows: ${JSON.stringify(frames.spawnEarly.rowProgress)}`);
-  if (earlyGroups.length >= 2) {
-    if (!earlyGroups[0].every((entry) => entry.progress > 0)) {
-      failures.push(`first spawn row did not enter: ${JSON.stringify(frames.spawnEarly.rowProgress)}`);
-    }
-    if (!earlyGroups[1].every((entry) => entry.progress === 0)) {
-      failures.push(`second spawn row entered too early: ${JSON.stringify(frames.spawnEarly.rowProgress)}`);
-    }
-    for (const group of earlyGroups) {
-      if (!group.every((entry) => entry.progress === group[0].progress)) {
-        failures.push(`cells in one spawn row diverged: ${JSON.stringify(frames.spawnEarly.rowProgress)}`);
-      }
-    }
+  if (frames.spawnEarly.snapshot.ghostCells.length !== 4) {
+    failures.push(`first spawn row does not expose the complete landing ghost: ${JSON.stringify(frames.spawnEarly.snapshot)}`);
   }
-  if (frames.spawnComplete.snapshot.activeSpawnReveal !== null) failures.push('spawn reveal did not settle');
-  const middleRows = new Map();
-  for (const entry of frames.spawnMiddle.rowProgress) {
-    const group = middleRows.get(entry.row) ?? [];
-    group.push(entry);
-    middleRows.set(entry.row, group);
+  if (
+    frames.spawnMiddle.snapshot.activeSpawnEntry?.pending !== true
+    || frames.spawnMiddle.snapshot.activeSpawnEntry?.visibleCellCount !== 4
+    || frames.spawnMiddle.snapshot.activeSpawnEntry?.hiddenCellCount !== 0
+    || !(frames.spawnMiddle.snapshot.presentation?.offsetY < -0.02)
+  ) {
+    failures.push(`second spawn row is not crossing the board mouth: ${JSON.stringify(frames.spawnMiddle.snapshot)}`);
   }
-  const middleGroups = [...middleRows.values()].sort((left, right) => left[0].row - right[0].row);
-  if (middleGroups.length >= 2 && (
-    !middleGroups[0].every((entry) => entry.progress === 1)
-    || !middleGroups[1].every((entry) => entry.progress > 0 && entry.progress < 1)
-  )) {
-    failures.push(`spawn middle frame does not show one settled row and one entering row: ${JSON.stringify(frames.spawnMiddle.rowProgress)}`);
+  if (
+    frames.spawnComplete.snapshot.activeSpawnEntry?.pending !== false
+    || Math.abs(frames.spawnComplete.snapshot.presentation?.offsetY ?? 1) >= 0.02
+  ) {
+    failures.push(`spatial spawn entry did not settle: ${JSON.stringify(frames.spawnComplete.snapshot)}`);
   }
   if (frames.iceActivationBloom.snapshot.mutationActivation?.item !== 'freeze') failures.push('Ice bloom frame is missing');
   if (frames.iceActivationFacet.snapshot.mutationActivation?.item !== 'freeze') failures.push('Ice facet frame is missing');
