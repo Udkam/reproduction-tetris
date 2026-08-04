@@ -126,6 +126,49 @@ describe('异变 mode', () => {
     expect(ordinaryLock.mutationCollapseLandingLatched).toBe(false);
   });
 
+  it('emits the final independent-column cells for a latched Supergravity lock', () => {
+    let board = createBoard();
+    board = setCell(board, 8, 39, 'J');
+    const transition = dispatch({
+      ...playingMutation(),
+      board,
+      active: { type: 'O', rotation: 0, x: 8, y: 0 },
+      mutationCollapseTicks: 0,
+      mutationCollapseLandingLatched: true,
+    }, { type: 'hard-drop' });
+
+    const locked = transition.events.find((event) => event.type === 'piece-locked');
+    expect(locked?.cells).toEqual([
+      { x: 8, y: 37 },
+      { x: 9, y: 38 },
+      { x: 8, y: 38 },
+      { x: 9, y: 39 },
+    ]);
+    expect(transition.state.board[37]?.[8]).toBe('O');
+    expect(transition.state.board[38]?.[8]).toBe('O');
+    expect(transition.state.board[38]?.[9]).toBe('O');
+    expect(transition.state.board[39]?.[9]).toBe('O');
+    expect(transition.state.mutationCollapseLandingLatched).toBe(false);
+  });
+
+  it('evaluates lock-out after independent columns settle into visible rows', () => {
+    let board = createBoard();
+    board = setCell(board, 4, 20, 'J');
+    board = setCell(board, 5, 20, 'L');
+    const transition = dispatch({
+      ...playingMutation(),
+      board,
+      active: { type: 'O', rotation: 0, x: 4, y: 0 },
+      mutationCollapseTicks: 0,
+      mutationCollapseLandingLatched: true,
+    }, { type: 'hard-drop' });
+
+    expect(transition.state.status).toBe('playing');
+    expect(transition.events.some((event) => event.type === 'game-over')).toBe(false);
+    const locked = transition.events.find((event) => event.type === 'piece-locked');
+    expect(locked?.cells.every((cell) => cell.y >= 37)).toBe(true);
+  });
+
   it('starts with no carrier, schedules one only after two locks, and remains seeded', () => {
     const candidates = Array.from({ length: 128 }, (_, index) => index + 1).map((seed) => {
       let state = playingMutation(seed);

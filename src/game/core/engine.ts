@@ -1087,11 +1087,11 @@ function lockActive(
     return { state: { ...state, lockTicks: 0 }, events: extraEvents };
   }
   const undoCheckpoint = state.mode === 'puzzle' ? state.puzzleActiveSpawnCheckpoint : null;
-  const cells = cellsForPiece(state.active);
-  if (cells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
+  const sourceCells = cellsForPiece(state.active);
+  if (sourceCells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
   let board = mergePiece(state.board, state.active);
   const pieceCount = state.pieceCount + 1;
-  const lockedEvent: GameEvent = { type: 'piece-locked', piece: state.active.type, cells };
+  let settledCells = sourceCells;
   let mutationCarriers = state.mutationCarriers;
   if (state.mode === 'sprint') {
     if (state.mutationActiveCarrier !== null) {
@@ -1100,16 +1100,25 @@ function lockActive(
         {
           id: state.mutationActiveCarrier.id,
           item: state.mutationActiveCarrier.item,
-          cells: Object.freeze(cells.map((cell) => ({ ...cell }))),
+          cells: Object.freeze(sourceCells.map((cell) => ({ ...cell }))),
         },
       ]);
     }
     if (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched) {
       const collapsed = collapseSprintColumns(board);
+      settledCells = sourceCells.map((cell) => {
+        const settledY = collapsed.settledRowBySource[cell.y * BOARD_WIDTH + cell.x];
+        return { x: cell.x, y: settledY !== undefined && settledY >= 0 ? settledY : cell.y };
+      });
       mutationCarriers = collapseMutationCarriers(collapsed.settledRowBySource, mutationCarriers);
       board = collapsed.board;
     }
   }
+  const lockedEvent: GameEvent = {
+    type: 'piece-locked',
+    piece: state.active.type,
+    cells: settledCells,
+  };
   const lockedState: GameState = {
     ...state,
     board,
@@ -1124,7 +1133,7 @@ function lockActive(
     puzzleActiveSpawnCheckpoint: null,
   };
   const rows = fullRows(board);
-  const lockOut = cells.every((cell) => cell.y < VISIBLE_START_ROW) && rows.length === 0;
+  const lockOut = settledCells.every((cell) => cell.y < VISIBLE_START_ROW) && rows.length === 0;
 
   if (lockOut) {
     if (state.mode === 'puzzle') {
