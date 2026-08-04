@@ -248,10 +248,14 @@ pattern is ambient state feedback, never an input target or score burst, and it 
 behind active/ghost pieces. Reduced motion retains a clearly visible static top-edge glint
 field without drifting animation.
 
-The entry countdown uses three original procedural tones on the runtime-owned effects
-bus. `3`, `2`, and `1` rise in pitch and remain shorter and quieter than the existing
-Start confirmation. They respect mute and volume, never create music or another audio
-context, and are cancelled by the existing runtime teardown boundary.
+The entry countdown uses three original, warm mallet-like procedural tones on the
+runtime-owned effects bus. `3`, `2`, and `1` outline a consonant ascending F-major
+triad (`F4`, `A4`, `C5`). Each beat combines one soft triangle fundamental with one
+quiet sine perfect-fifth partial; there is no square/saw voice, noise burst, buzzer
+sweep, or external sample. The attack stays soft, the first two beats end within
+200 ms, and the final beat is only slightly fuller while still ending within 230 ms.
+They respect mute and volume, never create music or another audio context, and leave
+no oscillator, timer, or listener beyond the existing runtime teardown boundary.
 
 Reshape is an instantaneous Mutation and therefore does not occupy the persistent timed
 status ledger. Its activation instead owns a concise three-beat Pixi cue: four displaced

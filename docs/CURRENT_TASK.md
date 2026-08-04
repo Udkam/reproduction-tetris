@@ -2,7 +2,7 @@
 
 ## T27-R1 active goal — centred board stage and three complete visual themes
 
-**Status (2026-08-04): ACCEPTED / PUBLISHED TO `origin/main`.** This player-requested
+**Status (2026-08-04): ACCEPTED / COUNTDOWN TIMBRE FOLLOW-UP OPEN.** This player-requested
 visual correction supersedes T27 requirements 9 and 10 only where they describe the
 desktop gameplay rail. It does not reopen Core rules, Puzzle ordering, ranking,
 persistence migrations, the single-canvas boundary, or Mutation mechanics.
@@ -98,8 +98,11 @@ The correction has ten coupled acceptance requirements:
    board, with broad four-direction edge falloff layered over that continuous field. It
    must not leave a mostly dark centre, split into four isolated edge lobes, or read as a
    central circular spotlight, ring, or hard radial hotspot.
-   Each countdown digit has a clearer short procedural SFX accent while still obeying
-   the shared SFX enablement and volume controls; no music or persistent voice is added.
+   Each countdown digit has a warm, mallet-like procedural SFX accent: `3 / 2 / 1`
+   outline `F4 / A4 / C5`, each with one quiet perfect-fifth partial. The first two
+   beats end within 200 ms and the slightly fuller final beat within 230 ms. No harsh
+   buzzer/sweep, noise burst, music, sample, or persistent voice is added. All cues
+   obey the shared SFX enablement and volume controls and share runtime teardown.
 10. Mutation's non-Ice automatic-gravity floor is **0.2 seconds per cell**. Its six-line
     acceleration ladder clamps at that floor, while Classic's player-configured interval,
     Survival's cadence, Ice's one-second override, and Supergravity landing semantics remain
@@ -227,10 +230,14 @@ The slice has thirteen player-visible acceptance requirements:
    the size of each mark and the active-piece silhouette. The effect cannot become a
    corner badge, board-wide wash, or high-opacity score burst. Reduced motion receives a
    clearly visible static top-edge glint field. The latched landing rule remains unchanged.
-7. The `3 / 2 / 1` entry countdown gains three short, ascending procedural SFX cues.
-   There is no trailing Start word or separate Start hold: after `1`, the cover fades out
-   briefly and the runtime begins. Cues obey SFX enablement and volume, replay on restart,
-   share the runtime-owned AudioContext, and leave no voices or timers after unmount.
+7. The `3 / 2 / 1` entry countdown gains three warm, mallet-like procedural SFX cues.
+   They outline the consonant `F4 / A4 / C5` ascent; every beat contains one soft
+   triangle fundamental and one quiet sine perfect-fifth partial. The first two beats
+   finish within 200 ms and the slightly fuller final beat within 230 ms. There is no
+   harsh buzzer/sweep, noise burst, trailing Start word, or separate Start hold: after
+   `1`, the cover fades out briefly and the runtime begins. Cues obey SFX enablement and
+   volume, replay on restart, share the runtime-owned AudioContext, and leave no voices
+   or timers after unmount.
 8. Result sheets use a portrait, content-height scorecard rather than a wide sheet or a
    stack of dashboard cards. Classic is titled `消行 / Lines`, Survival is titled
    `生存时间 / Survival time`, and Mutation is titled `得分 / Score`; no scored mode
