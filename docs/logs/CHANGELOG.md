@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-08-04 — T30 in-well arrival and route transitions accepted
+
+- Replaced instant active-piece appearance with a renderer-only 204 ms assembly at
+  already-safe visible coordinates. Cells materialize top-to-bottom and left-to-right;
+  the ghost joins after the piece is legible, while movement, rotation, pause, restart,
+  Puzzle undo, terminal state, destroy, and reduced motion retain explicit lifecycle
+  behavior without changing Core timing or replay state.
+- Routed Home, Puzzle library, gameplay, push/replace, and browser history through one
+  bounded page handoff. Supporting browsers use the native View Transition API;
+  unsupported browsers receive a short CSS entry fallback, and reduced motion removes
+  translation and long duration. Page-local Puzzle selection does not animate or add
+  history.
+- Product source `19a17e6` passes focused tests, typecheck, the complete suite
+  (`372 passed / 3 skipped`), and the production build. Evidence `2da8a37` captures
+  early/middle/complete arrival frames and real route transitions with one Canvas, zero
+  DOM board cells, zero browser errors, and zero audit failures.
+- Independent read-only QA accepts exact range `dc2aaad..2da8a37` with P0 0 / P1 0 /
+  P2 0 / P3 0. The bounded browser/server batch was released; inherited T27 evidence
+  remains unstaged and excluded.
+
 ## 2026-08-04 — T29 complete SFX remaster accepted
 
 - Rebuilt the complete procedural SFX hierarchy after player review found the prior

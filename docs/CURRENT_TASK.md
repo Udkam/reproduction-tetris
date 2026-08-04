@@ -40,22 +40,27 @@ localization, dependencies, and layout remain frozen.
 
 ## Acceptance checklist
 
-- [ ] Each new active generation visibly assembles over at most 210 ms without changing
+- [x] Each new active generation visibly assembles over at most 210 ms without changing
   Core coordinates, collision, gravity, or seeded replay hashes.
-- [ ] Every arrival cell is fully inside the board throughout the effect; movement and
+- [x] Every arrival cell is fully inside the board throughout the effect; movement and
   rotation do not restart it, and the ghost guide joins only after the piece is legible.
-- [ ] Restart, Puzzle undo, terminal/unmount, and reduced motion leave no stale arrival
+- [x] Restart, Puzzle undo, terminal/unmount, and reduced motion leave no stale arrival
   state; reduced motion renders the complete endpoint immediately.
-- [ ] Push, replace, and popstate route changes use one bounded transition; no-URL
+- [x] Push, replace, and popstate route changes use one bounded transition; no-URL
   Puzzle selection changes do not animate or create history entries.
-- [ ] Unsupported browsers retain an immediate navigation plus short entry fallback;
+- [x] Unsupported browsers retain an immediate navigation plus short entry fallback;
   reduced motion removes translation and long duration.
-- [ ] Focused renderer/navigation/style tests pass after their checkpoints.
-- [ ] Final typecheck, complete suite, production build, browser evidence, one Canvas,
+- [x] Focused renderer/navigation/style tests pass after their checkpoints.
+- [x] Final typecheck, complete suite, production build, browser evidence, one Canvas,
   zero DOM board cells, zero console errors, and teardown pass.
-- [ ] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
+- [x] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
 
-Status (2026-08-04): **IN PROGRESS**. Contract frozen; source work has not started.
+Status (2026-08-04): **ACCEPTED** at product source `19a17e6`, with evidence
+`2da8a37`. Focused renderer/navigation/style tests pass; final typecheck, the complete
+suite (`372 passed / 3 skipped`), the production build, and the source-bound Chromium
+audit pass. The audit reports one Canvas, zero DOM board cells, zero browser errors,
+zero failures, and native route transitions. Independent read-only QA accepts exact
+range `dc2aaad..2da8a37` with P0 0 / P1 0 / P2 0 / P3 0.
 
 ---
 

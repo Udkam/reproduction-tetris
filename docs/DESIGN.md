@@ -50,6 +50,17 @@ reduced-motion contract. After the last source edit, run one typecheck, the comp
 suite, one production build, and one bounded browser pass showing the arrival sequence
 and two route changes with one Canvas and zero browser errors.
 
+### T30 acceptance disposition
+
+Product source `19a17e6` and evidence `2da8a37` satisfy the frozen contract. The
+renderer stages each new generation at already-safe visible coordinates over 204 ms,
+delays the ghost, and clears its presentation state across lifecycle boundaries. Home,
+Puzzle library, and gameplay use one route surface with native View Transitions where
+available, a CSS entry fallback, and a transform-free reduced-motion endpoint. Final
+typecheck, `372 passed / 3 skipped`, the production build, and the Chromium audit pass
+with one Canvas, zero DOM board cells, zero browser errors, and zero audit failures.
+Independent read-only QA accepts `dc2aaad..2da8a37` with P0–P3 all zero.
+
 ## 2026-08-04 T29 — complete SFX remaster
 
 T29 is one bounded procedural-audio remaster. Player review rejects the accepted T28

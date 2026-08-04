@@ -6,7 +6,12 @@
   browser history, with an immediate reduced-motion endpoint and no persistent service.
 - Scope is limited to the four contract files, renderer/presentation plus direct tests,
   App/navigation CSS plus direct tests, and later source-bound evidence/closure.
-- Status: contract checkpoint in progress; inherited T27 evidence remains untouched.
+- Accepted rollback chain: contract `dae3853`, renderer `4c1d7a2`, navigation
+  `19a17e6`, and evidence `2da8a37`.
+- Final typecheck, complete suite (`372 passed / 3 skipped`), production build, and
+  Chromium audit pass. Evidence reports one Canvas, zero DOM board cells, zero browser
+  errors, and zero failures; independent read-only QA accepts with P0–P3 all zero.
+- Status: accepted; inherited T27 evidence remains untouched and unstaged.
 
 ## T29 complete SFX remaster — 2026-08-04
 
