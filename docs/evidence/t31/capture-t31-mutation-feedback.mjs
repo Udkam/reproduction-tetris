@@ -68,8 +68,10 @@ const collectMutationStatus = (page) => page.evaluate(() => {
   const rowStyle = row ? getComputedStyle(row) : null;
   const copy = row?.querySelector('.mutation-status__effect-copy');
   const copyStyle = copy ? getComputedStyle(copy) : null;
-  const meter = row?.querySelector('.mutation-status__meter > i');
+  const meter = row?.querySelector('.mutation-status__meter');
+  const meterFill = meter?.querySelector('i');
   const meterBox = meter?.getBoundingClientRect();
+  const meterFillBox = meterFill?.getBoundingClientRect();
   return {
     text: status?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
     idleMarkerCount: status?.querySelectorAll('[data-testid="mutation-status-idle"]').length ?? -1,
@@ -86,7 +88,9 @@ const collectMutationStatus = (page) => page.evaluate(() => {
       ? [copyStyle.borderTopWidth, copyStyle.borderRightWidth, copyStyle.borderBottomWidth, copyStyle.borderLeftWidth]
       : null,
     copyBackground: copyStyle?.backgroundColor ?? null,
-    meterWidth: meterBox?.width ?? 0,
+    meterWidth: meterFillBox?.width ?? 0,
+    meterTrackHeight: meterBox?.height ?? 0,
+    meterFillHeight: meterFillBox?.height ?? 0,
   };
 });
 
@@ -329,11 +333,13 @@ try {
   await renderPage.goto(origin, { waitUntil: 'networkidle' });
 
   const frames = {
-    spawnEarly: await captureRendererFrame(renderPage, 'spawn-row-early.png', { kind: 'spawn', elapsedMs: 18 }),
-    spawnMiddle: await captureRendererFrame(renderPage, 'spawn-row-middle.png', { kind: 'spawn', elapsedMs: 88 }),
-    spawnComplete: await captureRendererFrame(renderPage, 'spawn-row-complete.png', { kind: 'spawn', elapsedMs: 220 }),
-    iceActivation: await captureRendererFrame(renderPage, 'ice-activation-final.png', { kind: 'activation', item: 'freeze', elapsedMs: 84 }),
-    supergravityActivation: await captureRendererFrame(renderPage, 'supergravity-activation-final.png', { kind: 'activation', item: 'collapse', elapsedMs: 84 }),
+    spawnEarly: await captureRendererFrame(renderPage, 'spawn-row-early.png', { kind: 'spawn', elapsedMs: 70 }),
+    spawnMiddle: await captureRendererFrame(renderPage, 'spawn-row-middle.png', { kind: 'spawn', elapsedMs: 180 }),
+    spawnComplete: await captureRendererFrame(renderPage, 'spawn-row-complete.png', { kind: 'spawn', elapsedMs: 430 }),
+    iceActivationBloom: await captureRendererFrame(renderPage, 'ice-activation-bloom.png', { kind: 'activation', item: 'freeze', elapsedMs: 60 }),
+    iceActivationFacet: await captureRendererFrame(renderPage, 'ice-activation-final.png', { kind: 'activation', item: 'freeze', elapsedMs: 160 }),
+    supergravityActivationPressure: await captureRendererFrame(renderPage, 'supergravity-activation-final.png', { kind: 'activation', item: 'collapse', elapsedMs: 60 }),
+    supergravityActivationRelease: await captureRendererFrame(renderPage, 'supergravity-activation-release.png', { kind: 'activation', item: 'collapse', elapsedMs: 160 }),
     iceClear: await captureRendererFrame(renderPage, 'ice-line-clear-final.png', { kind: 'clear', item: 'freeze', elapsedMs: 0 }),
     supergravityClear: await captureRendererFrame(renderPage, 'supergravity-line-clear-final.png', { kind: 'clear', item: 'collapse', elapsedMs: 0 }),
     supergravityTrail: await captureRendererFrame(renderPage, 'supergravity-trail-final.png', { kind: 'trail', elapsedMs: 220 }),
@@ -350,8 +356,8 @@ try {
   if (activeStatus.rowCount !== 1 || !/Supergravity/i.test(activeStatus.name ?? '')) {
     failures.push(`active mutation row mismatch: ${JSON.stringify(activeStatus)}`);
   }
-  if (!/Active/i.test(activeStatus.subcopy ?? '') || !/^\d+s$/.test(activeStatus.seconds ?? '')) {
-    failures.push(`active mutation metadata mismatch: ${JSON.stringify(activeStatus)}`);
+  if (activeStatus.subcopy !== null || activeStatus.seconds !== null) {
+    failures.push(`active mutation row restored forbidden subcopy or seconds: ${JSON.stringify(activeStatus)}`);
   }
   if (!activeStatus.rowBorderWidths?.every((width) => width === '0px')) {
     failures.push(`mutation row still has a card border: ${JSON.stringify(activeStatus)}`);
@@ -366,6 +372,9 @@ try {
     failures.push(`mutation copy still has a card background: ${JSON.stringify(activeStatus)}`);
   }
   if (activeStatus.meterWidth <= 0) failures.push(`mutation meter is empty: ${JSON.stringify(activeStatus)}`);
+  if (activeStatus.meterTrackHeight !== 1 || activeStatus.meterFillHeight !== 1) {
+    failures.push(`mutation timer is not a one-pixel hairline: ${JSON.stringify(activeStatus)}`);
+  }
   if ((activeState.state?.mutationCollapseTicks ?? 0) <= 0) {
     failures.push(`Supergravity was not activated: ${JSON.stringify(activeState.state)}`);
   }
@@ -398,8 +407,23 @@ try {
     }
   }
   if (frames.spawnComplete.snapshot.activeSpawnReveal !== null) failures.push('spawn reveal did not settle');
-  if (frames.iceActivation.snapshot.mutationActivation?.item !== 'freeze') failures.push('Ice activation frame is missing');
-  if (frames.supergravityActivation.snapshot.mutationActivation?.item !== 'collapse') failures.push('Supergravity activation frame is missing');
+  const middleRows = new Map();
+  for (const entry of frames.spawnMiddle.rowProgress) {
+    const group = middleRows.get(entry.row) ?? [];
+    group.push(entry);
+    middleRows.set(entry.row, group);
+  }
+  const middleGroups = [...middleRows.values()].sort((left, right) => left[0].row - right[0].row);
+  if (middleGroups.length >= 2 && (
+    !middleGroups[0].every((entry) => entry.progress === 1)
+    || !middleGroups[1].every((entry) => entry.progress > 0 && entry.progress < 1)
+  )) {
+    failures.push(`spawn middle frame does not show one settled row and one entering row: ${JSON.stringify(frames.spawnMiddle.rowProgress)}`);
+  }
+  if (frames.iceActivationBloom.snapshot.mutationActivation?.item !== 'freeze') failures.push('Ice bloom frame is missing');
+  if (frames.iceActivationFacet.snapshot.mutationActivation?.item !== 'freeze') failures.push('Ice facet frame is missing');
+  if (frames.supergravityActivationPressure.snapshot.mutationActivation?.item !== 'collapse') failures.push('Supergravity pressure frame is missing');
+  if (frames.supergravityActivationRelease.snapshot.mutationActivation?.item !== 'collapse') failures.push('Supergravity release frame is missing');
   for (const [name, frame] of Object.entries(frames)) {
     if (frame.canvasCountAfterDestroy !== 0) failures.push(`${name} leaked a canvas`);
     if (frame.pixelProbe.distinctBuckets < 3 || frame.pixelProbe.nonTransparentSamples === 0) {
