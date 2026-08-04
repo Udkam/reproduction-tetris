@@ -189,3 +189,51 @@
 - Next action: rebuild positions 05 and 07–09 in bounded groups, refresh the 04–06
   artifact, create a 07–09 route artifact, and leave the anchor-side-slip position 10
   for the final Intro authoring slice.
+
+## 2026-08-05 — rebuilt Intro 05/07–09 route checkpoint
+
+- Task ID: `/root/t32_intro_05_07_09`.
+- Owner: coordinator/writer `/root`.
+- Base SHA: `12325bd` on `main`; definition checkpoint: `d387e63`; route-proof
+  checkpoint: `b4cdc20`.
+- Status: **GREEN BOUNDED CHECKPOINT / T32 REMAINS ACTIVE**. Intro position 10 still
+  requires its admitted anchor-side-slip rebuild and proof; no complete Intro or
+  campaign acceptance claim is made here.
+- Exact changed paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-04-06.json`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-07-09.json`
+- Definitions: position 05 now teaches `后手`; positions 07–09 teach `归心`, `分流`,
+  and `择门`. All four retain their stable IDs, use legal three-row anchor-free
+  setups, and begin without a complete row.
+- Route proof: the serial one-shot Core solver regenerated the 04–06 artifact and
+  emitted the new 07–09 artifact. Current lock counts are `5/7` for position 05,
+  `5/5` for position 07, `4/4` for position 08, and `4/4` for position 09. Every
+  route pair diverges at its first branch and all routes replay through production
+  Core.
+- Evidence assembly correction: the first focused four-file run exposed that historical
+  evidence records could retain stale `curriculumPosition` metadata for stable IDs whose
+  positions changed. Active evidence is now assembled in current
+  `PUZZLE_DEFINITIONS` order and overwrites historical position metadata without
+  modifying the T15 archive.
+- Commands actually run:
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts` —
+    PASS, 15 tests.
+  - serial batch solver runs for positions `04..06` and `07..09`, with maximum 14
+    locks, primary beam 900, and alternate beam 750 — PASS, twelve production-Core
+    route replays.
+  - the first four-file focused run failed two position-ordering assertions only; the
+    bounded current-order evidence fix above was applied.
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts
+    src/game/core/puzzleSolverResults.test.ts` — PASS, 18 tests in four files.
+- Full suite/build/browser/independent QA: intentionally deferred until the last T32
+  source edit. No listener, watcher, browser, or persistent solver was started.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: author position 10 as a genuine timed anchor-side-slip lesson, prove two
+  non-equivalent Core routes including the side-slip mechanic, and checkpoint the
+  complete ten-level Intro curriculum before changing Easy or Hard.
