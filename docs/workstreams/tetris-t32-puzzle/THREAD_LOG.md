@@ -237,3 +237,58 @@
 - Next action: author position 10 as a genuine timed anchor-side-slip lesson, prove two
   non-equivalent Core routes including the side-slip mechanic, and checkpoint the
   complete ten-level Intro curriculum before changing Easy or Hard.
+
+## 2026-08-05 — rebuilt Intro 10 anchor-side-slip checkpoint
+
+- Task ID: `/root/t32_intro_10`.
+- Owner: coordinator/writer `/root`.
+- Base SHA: `1d597d5` on `main`; definition/route checkpoint: `a23ce1c`; runtime-QA
+  replay checkpoint: `84315b7`.
+- Status: **GREEN BOUNDED CHECKPOINT / T32 REMAINS ACTIVE**. The ten Intro definitions
+  now have replayed authoring routes, but Easy ordering, Hard replacements, exhaustive
+  mastery thresholds, progression migration, final gates, browser evidence, and
+  independent QA remain open.
+- Exact changed paths:
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/puzzleLessons.ts`
+  - `src/puzzleLessons.test.ts`
+  - `src/ui/localization.ts`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-10.json`
+  - `src/game/runtime/qaScenario.ts`
+  - `src/game/runtime/qaScenario.test.ts`
+- Definition: stable ID `t5r-drift-08` remains at curriculum position 10 and is renamed
+  `侧隙` / `Side Gap`. Its target residue intentionally reuses the position-01 base
+  silhouette, then adds one fixed anchor at visible coordinate `(1, 15)`. This is a
+  deliberate scaffold: the ordinary row-completion target is familiar, while the new
+  collision geometry isolates the timed side-slip decision.
+- Duplicate audit decision: uniqueness is evaluated from the complete puzzle layout
+  (`boardRows` plus `anchorCells`), not ordinary residue alone. Position 10 therefore
+  differs mechanically from position 01 and is not admitted by name, color, seed, or
+  queue variation. A bounded legal-setup perturbation search did not find a different
+  residue that preserved both accepted timed routes; its temporary authoring tests were
+  removed and are not part of the candidate.
+- Route proof: `puzzle-levels-changed-10.json` contains two public-command production-
+  Core routes. Both complete in six locks, diverge at the second lock, and use a real
+  soft-drop-plus-lateral side-slip. The first locked footprint
+  `1,37|2,36|2,37|3,36` is absent from the ordinary hard-drop landing set at the same
+  decision state. These routes prove feasibility and mechanical distinction; they do
+  **not** claim strict optimality.
+- Runtime QA: the deterministic Puzzle QA specimen now consumes the new T32 route and
+  decodes public soft-drop tokens instead of retaining the superseded T15 route.
+- Commands actually run:
+  - `npm.cmd run test -- --run src/game/core/puzzles.test.ts
+    src/game/core/puzzleCampaign.test.ts src/game/core/puzzleFingerprints.test.ts
+    src/game/core/puzzleSolverResults.test.ts src/puzzleLessons.test.ts
+    src/game/runtime/qaScenario.test.ts src/game/render/presentation.test.ts` — PASS,
+    36 tests in seven files after correcting the compact soft-drop decoder and current
+    player-facing name.
+  - `npm.cmd run typecheck` — PASS.
+- Full suite/build/browser/independent QA: intentionally deferred until the last T32
+  source edit. No listener, watcher, browser, or persistent solver was started.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: freeze and implement the twenty-position all-open Easy ordering, then
+  author and prove the three admitted Hard silhouette replacements before opening the
+  exact mastery solver and progression migration.
