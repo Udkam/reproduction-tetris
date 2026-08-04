@@ -1028,3 +1028,22 @@ Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实
 - The Phase-E Vite/Chromium owner chain was released and port 4191 has no listener.
   Phase F showcase packaging is the only active implementation slice; final read-only
   QA and RC acceptance remain blocked until its artifacts freeze the candidate.
+
+# T28 ordinary line-clear release polish
+
+- Task ID: T28. Base: `17d4f82e0474f7417a261fea0aa6d41cd230fc9a`.
+- The supplied line-clear proposal is now bounded as a finishing slice rather than a
+  new effect framework. Core's twelve-tick / 200 ms clear boundary, gameplay, Puzzle
+  data, themes, brand, and one-Canvas architecture are frozen.
+- Read-only audit confirmed the existing renderer provides one count-agnostic 150 ms
+  stationary face pulse and the audio engine provides one generic three/four-voice
+  rising chord. Mutation activation already suppresses that chord; Bomb can emit a
+  synthetic three-row clear and must never be classified as the ordinary triple cue.
+- The active contract introduces Precision Cut, Dual Resonance, Cascade Fracture, and
+  TetraMorph profiles, deterministic bounded fragments/tails, reduced-motion semantic
+  equivalents, anchor exclusion, and soft low-gain procedural audio with no metallic,
+  explosive, or alarm-like transient.
+- Inherited dirty T27 evidence remains explicitly outside T28. No T28 source, test,
+  build, browser, evidence, QA, changelog, or push claim is complete yet.
+- Next action: commit this contract as the first rollback point, then implement the pure
+  visual profile table and focused tests before touching renderer geometry.

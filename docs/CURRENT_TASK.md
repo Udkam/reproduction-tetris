@@ -1,4 +1,71 @@
-# Current Task — T27 Personalised Pace and Feedback Polish
+# Current Task — T28 Ordinary Line-Clear Release Polish
+
+## Active goal
+
+Turn the supplied ordinary-clear proposal into one independent, reversible release-
+polish chain. Implement a deterministic, theme-consistent 1/2/3/4-line visual grammar
+and matching soft procedural audio without changing Core's fixed twelve-tick / 200 ms
+clear boundary, rules, scoring, Puzzle content, branding, or the one-Pixi-Canvas split.
+
+The authoritative behavior and conflict contract is the top T28 section of
+`docs/DESIGN.md`. T27 and older sections below remain historical provenance unless that
+section explicitly supersedes them.
+
+## Scope and ownership
+
+- Coordinator/writer: primary task `/root`.
+- Base: `main@17d4f82e0474f7417a261fea0aa6d41cd230fc9a`.
+- Contract checkpoint paths: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/phases/t28-line-clear-release-polish.md`, and `progress.md` only.
+- Visual checkpoint paths: `src/game/render/presentation.ts`,
+  `src/game/render/presentation.test.ts`, `src/game/render/TetrisRenderer.ts`, and
+  `src/game/render/TetrisRenderer.test.ts` only.
+- Audio checkpoint paths: `src/game/audio/AudioEngine.ts` and
+  `src/game/audio/AudioEngine.test.ts` only. A runtime call-site may be added only if
+  live mode context is necessary and is covered in the same focused checkpoint.
+- Evidence, independent QA disposition, and coordinator changelog are later separate
+  checkpoints. Existing dirty `docs/evidence/t27/**` and `docs/evidence/t27-r1-followup/**`
+  paths are inherited user evidence and remain unstaged and unmodified.
+- `src/game/core/**`, Puzzle definitions/solutions, layout/theme systems, persistence,
+  package metadata, and dependencies are excluded.
+
+## Ordered checkpoints
+
+1. **T28 contract** — freeze profiles, timing, mode priority, reduced motion, soft audio,
+   exact paths, and acceptance evidence before source work.
+2. **T28 visual profiles** — pure count profiles, deterministic board-local rendering,
+   anchor exclusion, bounded tail lifecycle, and focused renderer tests.
+3. **T28 soft audio profiles** — rounded low-gain 1/2/3/4 cues, invalid-count refusal,
+   Mutation suppression, scheduling/lifecycle tests.
+4. **T28 integration correction** — only if focused evidence finds a mode/conflict gap;
+   it receives its own reviewable commit and direct regression test.
+5. **T28 evidence** — after the last source change, run one typecheck, complete suite,
+   build, and real browser matrix. Commit generated evidence separately.
+6. **T28 independent QA and closure** — read-only review of the exact candidate range,
+   then coordinator changelog/status reconciliation and push.
+
+## Acceptance checklist
+
+- [ ] Counts 1–4 have visibly related but unambiguous profiles; invalid counts fail
+  closed.
+- [ ] Core hashes, 12-tick clear timing, inputs, scoring, randomization, and all Puzzle
+  data remain unchanged.
+- [ ] Full motion remains board-local and bounded; reduced motion contains no fragment,
+  stagger, travel, post-tail, page flash, board displacement, or filter.
+- [ ] Survival, Mutation activation, Bomb, Puzzle completion, and anchor conflicts obey
+  the T28 priority contract.
+- [ ] New clear audio is soft, short, low-gain, non-metallic, non-explosive, volume-
+  controlled, bounded by 16 voices, and fully disconnected on lifecycle completion.
+- [ ] Focused tests pass at each source checkpoint.
+- [ ] Final typecheck, complete tests, build, 1/2/3/4 browser frames, reduced-motion and
+  mode-conflict frames, one Canvas, zero DOM board cells, zero errors, and teardown pass.
+- [ ] Independent QA reports no unresolved P0/P1/P2 finding before acceptance and push.
+
+Status: contract drafting active. No T28 source claim is complete or accepted yet.
+
+---
+
+## Previous task — T27 Personalised Pace and Feedback Polish
 
 ## T27-R1 accepted goal — centred board stage and three complete visual themes
 

@@ -3,6 +3,95 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-04 T28 — ordinary line-clear release polish
+
+T28 is one bounded Release Polish slice for the shared ordinary clear. It supersedes
+the 2026-07-30 ordinary-clear rollback only for the feedback described here; it does
+not reopen gameplay rules, Puzzle boards, scoring, themes, layout, branding, or the
+single-Canvas architecture. Core still owns the same deterministic twelve-tick /
+200 ms `line-clear` phase and row removal. Presentation may read that phase and the
+existing terminal events, but may not delay, advance, or reproduce the simulation.
+
+### Four related profiles
+
+The family is theme-led rather than rainbow-coded by line count. Every profile keeps
+the locked cells legible and uses the material/theme accent already attached to the
+cleared cells. More lines increase spatial coverage, layer count, and the length of a
+quiet tail; they do not increase page brightness or introduce giant text.
+
+1. **Precision Cut / 精准切割** — one restrained centre-out face release, a narrow
+   inner cut, and at most a few tiny horizontal chips. It has no board impulse, page
+   flash, or post-commit tail.
+2. **Dual Resonance / 双层共振** — both rows answer as one event with a short paired
+   face pulse and one quiet connecting echo. Its post-commit residue is no longer than
+   20 ms and cannot cover the next active piece.
+3. **Cascade Fracture / 级联裂解** — three rows resolve bottom-to-top with a bounded
+   stagger, slightly stronger face separation, and a sparse mineral-chip field. Its
+   low-alpha residue ends within 280 ms of `clear-started`.
+4. **TetraMorph / 四线重构** — four rows form the only signature clear: four local
+   diagonal glints and a denser but still board-local chip field. The Core-facing
+   portion still ends at 200 ms; only a low-alpha, non-blocking afterglow may continue,
+   and the complete presentation ends within 420 ms of `clear-started`.
+
+The profile table is pure and clamps only valid counts `1..4`; malformed counts fail
+closed and create neither visual nor audio work. Normal-motion core durations are
+150/183/200/200 ms. Reduced-motion durations are 100/117/133/133 ms and contain only
+simultaneous stationary face brightness. Reduced motion removes fragments, stagger,
+travel, and post-commit tails while preserving the 1/2/3/4 brightness/layer hierarchy.
+
+No ordinary profile translates or scales the board, flashes the page/HUD, adds blur or
+bloom, creates a DOM cell, or instantiates a Pixi filter. All fragment placement is a
+stable presentation-only function of count, row, column, and phase. The renderer uses
+one bounded ordinary-tail queue, clears it on restart, Puzzle undo, and destruction,
+and never lets it grow beyond four cues. Anchors are not ordinary clear participants
+and must never receive a clear face or fragment.
+
+### Mode and conflict policy
+
+- **Classic** uses the canonical profile unchanged.
+- **Survival** uses 95% face intensity and 90% chip intensity. Clearable falling stone
+  cells may emit the same bounded chips in their own cold mineral material; permanent
+  bedrock never fractures as part of an ordinary clear.
+- **Mutation** uses 105% face intensity. If the same clear activates an item, generic
+  face intensity is reduced to 65%, no generic tail is queued, and the item activation
+  keeps visual and audio priority.
+- **Puzzle** uses 78% face intensity, no chips or tail, and reduced-motion geometry even
+  when full motion is enabled. Completion begins only after Core commits the clear.
+- **Bomb** removal is not a generic three-line profile. A batch containing Bomb or any
+  other Mutation activation suppresses the generic terminal tail and clear chord;
+  Bomb, Mutation activation, Puzzle completion, quad, triple, double, and single form
+  that descending priority order.
+
+### Soft procedural audio
+
+The existing AudioContext, effects bus, compressor, master volume, and 16-voice ceiling
+remain authoritative. T28 replaces the generic rising clear chord with four concise
+profiles scheduled directly on that context. All use rounded sine/triangle envelopes,
+consonant intervals, conservative gain below the current movement/landing mix, and no
+noise burst, sub-boom, metallic click, distortion, alarm contour, or combo-driven gain.
+
+- one line: one soft mineral tick plus a near-silent air partial, 60–90 ms;
+- two lines: two close rounded tones heard as one event, not two loud singles;
+- three lines: three low-gain pulses staggered by 22 ms and one quiet settling tone;
+- four lines: one warm fundamental with three consonant partials and a smooth luminous
+  tail, still below the normal voice ceiling and without a loudness jump.
+
+Mutation activation in the same event batch continues to suppress the ordinary clear
+profile. Invalid counts schedule no oscillator. Disable, restart, hidden-state suspend,
+and destroy retain the existing lifecycle rules; every scheduled source disconnects
+through its normal `onended` path.
+
+### Acceptance evidence
+
+Focused tests must prove profile mapping, invalid-count refusal, count-specific normal
+and reduced timing, deterministic fragments, anchor exclusion, bounded tail cleanup,
+and Mutation/Bomb priority. Audio tests must prove oscillator count, frequencies,
+delays, low gain, Mutation suppression, and cleanup. After the last source edit, one
+typecheck, one complete suite, one production build, and one source-bound browser pass
+must inspect 1/2/3/4 clears in full and reduced motion plus Survival, Mutation/Bomb, and
+Puzzle conflict frames. Evidence must retain one Canvas, zero DOM board cells, zero
+console/page errors, and no project-owned server or browser residue.
+
 ## 2026-08-03 T27-R1 — axis-symmetric board stage and visual-theme system
 
 The gameplay page is now a stage rather than a dashboard. Its visual centre is the
