@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-08-04 — T29 complete SFX remaster accepted
+
+- Rebuilt the complete procedural SFX hierarchy after player review found the prior
+  mix globally too soft. Frequent movement and soft-drop cues remain concise and
+  rate-limited; rotation, landing, Survival hazards, countdown/system events, Mutation
+  items, and terminal outcomes now retain distinct contours without relying on a
+  blanket master-volume increase.
+- Made ordinary clears the strongest repeatable positive feedback family: one through
+  four lines use related 2/3/4/5-voice profiles with monotonically increasing harmonic
+  weight. Same-frame Mutation and terminal ownership prevents doubled or masked
+  resolutions, while dense mixed activations remain below the sixteen-voice ceiling.
+- Added direct regression coverage for all event schedules, invalid input, rate limits,
+  same-frame priority, voice refusal/release/reuse, disable/re-enable, suspend, restart,
+  idempotent destroy, and silence without AudioContext. No music, sample asset,
+  dependency, gameplay, renderer, or UI change was introduced.
+- Product source `ca5da48` passes focused audio tests `29/29`, typecheck, the complete
+  suite (`365 passed / 3 skipped`), and the 759-module production build. Evidence
+  `abce548` reports one Canvas, zero DOM board cells, zero browser errors, 2/3/4/5 clear
+  voices, a 12-voice dense Mutation batch, correct live routing, and all 31 observed
+  AudioContexts closed exactly once.
+- Independent read-only QA accepts exact range `dfb9fbb7..abce548` with P0 0 / P1 0 /
+  P2 0 / P3 0. The project-owned evidence batch was released, and inherited T27
+  evidence remains unstaged and excluded.
+
 ## 2026-08-04 — T28 complete gameplay-feedback polish accepted
 
 - Reworked the complete procedural SFX mix so movement, rotation, soft/hard drop,

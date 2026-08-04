@@ -1,6 +1,7 @@
 # T29 — Complete SFX Remaster
 
-Status: active from `main@dfb9fbb7ea49e8a28938ee385a60406d46e65b19`.
+Status: accepted from `main@dfb9fbb7ea49e8a28938ee385a60406d46e65b19`
+through candidate `abce548`.
 
 ## Product intent
 
@@ -44,3 +45,16 @@ feedback. The repair is not a blanket volume increase and does not add music or 
 The contract, source/test, evidence, and closure are separate exact-path commits. The
 audio source commit can be reverted without touching T28 visuals, Core, UI, themes, or
 the inherited T27 evidence tree.
+
+## Accepted outcome
+
+- Product source `ca5da48` remasters the complete procedural SFX hierarchy while
+  preserving the sixteen-voice ceiling, event ownership, volume path, and lifecycle.
+- Evidence `abce548` binds to that source and proves 2/3/4/5 clear voices, a 12-voice
+  dense Mutation batch, live enable/volume/suspend routing, one Canvas, zero browser
+  errors, and all 31 observed AudioContexts closed exactly once.
+- Focused audio tests pass `29/29`; final typecheck, the complete suite (`365 passed / 3
+  skipped`), and the 759-module production build pass with only the existing bundle-size
+  advisory.
+- Independent read-only QA accepts `dfb9fbb7..abce548` with P0 0 / P1 0 / P2 0 / P3 0
+  and confirms inherited T27 evidence is absent from the candidate.

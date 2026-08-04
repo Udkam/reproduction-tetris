@@ -39,26 +39,32 @@ dependencies, and music remain frozen.
 
 ## Acceptance checklist
 
-- [ ] Move and soft drop remain short, single-voice, and rate-limited; rotation is
+- [x] Move and soft drop remain short, single-voice, and rate-limited; rotation is
   rounded and readable under repetition.
-- [ ] Gravity lock is quieter than hard drop; both are audible and neither sounds like
+- [x] Gravity lock is quieter than hard drop; both are audible and neither sounds like
   an explosion, electrical pop, or bass-heavy impact.
-- [ ] One through four cleared lines use 2/3/4/5 related voices, rise monotonically in
+- [x] One through four cleared lines use 2/3/4/5 related voices, rise monotonically in
   aggregate energy, and produce the clearest repeatable positive feedback.
-- [ ] Undo, pause/resume, countdown, bedrock, falling stones, level-up, finish, and
+- [x] Undo, pause/resume, countdown, bedrock, falling stones, level-up, finish, and
   game-over each retain a distinct and clearly audible contour.
-- [ ] Ice, Supergravity, Bomb, Reshape, Double, and Super Double are distinguishable;
+- [x] Ice, Supergravity, Bomb, Reshape, Double, and Super Double are distinguishable;
   duplicate activations trigger once and persistent audio remains limited to the
   existing Supergravity loop.
-- [ ] Same-frame priority, invalid clear refusal, sixteen-voice ceiling, master/volume
+- [x] Same-frame priority, invalid clear refusal, sixteen-voice ceiling, master/volume
   control, disable/suspend/restart/destroy cleanup, and silence without AudioContext
   remain covered by direct tests.
-- [ ] Focused audio tests pass after the source checkpoint.
-- [ ] Final typecheck, complete suite, production build, source-bound browser audit,
+- [x] Focused audio tests pass after the source checkpoint.
+- [x] Final typecheck, complete suite, production build, source-bound browser audit,
   one Canvas, zero console errors, and teardown pass.
-- [ ] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
+- [x] Independent QA reports no unresolved P0/P1/P2 issue before acceptance and push.
 
-Status (2026-08-04): **ACTIVE / CONTRACT FROZEN; SOURCE NOT YET ACCEPTED.**
+Status (2026-08-04): **ACCEPTED** at candidate `abce548`, with product source
+`ca5da48`. Focused audio tests pass `29/29`; final typecheck, the complete suite
+(`365 passed / 3 skipped`), the 759-module build, and the source-bound browser audit
+pass. Runtime evidence reports one Canvas, zero DOM board cells, zero browser errors,
+2/3/4/5 clear voices, a 12-voice dense Mutation batch, correct enable/volume/suspend
+routing, and all 31 AudioContexts closed exactly once. Independent read-only QA accepts
+`dfb9fbb7..abce548` with P0 0 / P1 0 / P2 0 / P3 0.
 
 ---
 

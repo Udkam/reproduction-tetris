@@ -5,8 +5,12 @@
   legible reward/resolution feedback rather than a blanket master-volume increase.
 - Scope is limited to `AudioEngine` and its direct tests after a four-document contract
   checkpoint. Existing T27 evidence remains inherited and untouched.
-- Source, focused playback/tests, final gates, browser runtime audit, independent QA,
-  changelog closure, and push remain open.
+- Accepted product source `ca5da48` passes focused audio tests `29/29`, final typecheck,
+  the complete suite (`365 passed / 3 skipped`), and the 759-module build. Evidence
+  `abce548` proves live routing, bounded polyphony, one Canvas, zero browser errors, and
+  complete AudioContext teardown.
+- Independent read-only QA accepts `dfb9fbb7..abce548` with P0 0 / P1 0 / P2 0 / P3 0.
+  Existing T27 evidence remains inherited, unstaged, and excluded.
 
 Original prompt: 以“异变模式视觉反馈设计”对话中的流程为实现目标，分阶段实现并 push；允许重新实现效果不明显的 Phase 1，完成除 Puzzle 选关界面修改之外的全部流程；在当前基础上把 Puzzle 扩展到 50 个有逻辑、可验证、可学习的关卡，并继续强化异变模式 Freeze 与 Collapse 等画面反馈。
 

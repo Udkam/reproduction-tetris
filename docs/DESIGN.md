@@ -67,6 +67,16 @@ runtime audit proving SFX enable/volume routing, countdown ownership, one Canvas
 browser errors, and complete teardown. Perceptual acceptance is based on the declared
 hierarchy and real playback; a higher numeric gain alone is not evidence of completion.
 
+### T29 accepted evidence
+
+The accepted product source is `ca5da48`, with source-bound browser evidence at
+`abce548`. Direct audio coverage passes `29/29`; final typecheck, the complete suite
+(`365 passed / 3 skipped`), and the 759-module production build pass. The browser audit
+proves 2/3/4/5-voice clear tiers, a bounded 12-voice dense Mutation batch, real
+enable/volume/suspend routing, 31 AudioContexts each closed exactly once, one Canvas,
+zero DOM board cells, and zero browser errors or audit failures. Independent read-only
+QA accepts exact range `dfb9fbb7..abce548` with P0 0 / P1 0 / P2 0 / P3 0.
+
 ## 2026-08-04 T28 — ordinary line-clear release polish
 
 T28 is one bounded Release Polish slice for the shared ordinary clear. It supersedes
