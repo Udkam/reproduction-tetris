@@ -3112,6 +3112,65 @@ export class TetrisRenderer {
     const strokeWidth = Math.max(1, layout.cell * 0.06);
 
     if (this.options.reducedMotion) {
+      if (flash.item === 'freeze') {
+        const orderedCells = [...cells]
+          .sort((left, right) => left.y - right.y || left.x - right.x)
+          .slice(0, 6);
+        for (const [index, cell] of orderedCells.entries()) {
+          const left = layout.x + cell.x * layout.cell;
+          const top = layout.y + cell.y * layout.cell;
+          const inset = layout.cell * .12;
+          const points = index % 2 === 0
+            ? [
+                left + inset,
+                top + layout.cell * .72,
+                left + layout.cell * .42,
+                top + inset,
+                left + layout.cell - inset,
+                top + layout.cell * .34,
+                left + layout.cell * .68,
+                top + layout.cell - inset,
+              ]
+            : [
+                left + inset,
+                top + layout.cell * .34,
+                left + layout.cell * .58,
+                top + inset,
+                left + layout.cell - inset,
+                top + layout.cell * .72,
+                left + layout.cell * .32,
+                top + layout.cell - inset,
+              ];
+          graphics.poly(points).fill({ color: token.palette.facet, alpha: .34 });
+        }
+        return;
+      }
+      if (flash.item === 'collapse') {
+        const bottomByColumn = new Map<number, number>();
+        for (const cell of cells) {
+          if (!flash.triggerColumns.includes(cell.x)) continue;
+          bottomByColumn.set(cell.x, Math.max(bottomByColumn.get(cell.x) ?? -Infinity, cell.y + 1));
+        }
+        for (const [column, bottom] of bottomByColumn) {
+          const centerX = layout.x + (column + .5) * layout.cell;
+          const sourceY = layout.y + bottom * layout.cell;
+          const halfWidth = layout.cell * .24;
+          const top = Math.max(layout.y, sourceY - layout.cell * .3);
+          graphics.poly([
+            centerX - halfWidth,
+            top,
+            centerX + halfWidth * .72,
+            top,
+            centerX + halfWidth,
+            sourceY - layout.cell * .08,
+            centerX,
+            sourceY,
+            centerX - halfWidth,
+            sourceY - layout.cell * .08,
+          ]).fill({ color: token.palette.facet, alpha: .38 });
+        }
+        return;
+      }
       this.drawReducedMutationEndpoint(
         graphics,
         flash.item,
@@ -3127,39 +3186,88 @@ export class TetrisRenderer {
       const bind = flash.timeline.sample('frost-bind');
       const release = flash.timeline.sample('shard-release');
       if (!bind.active && !release.active) return;
-      const sourceCells = cells.length ? cells : [{ x: minX, y: minY }];
+      const sourceCells = [...cells]
+        .sort((left, right) => left.y - right.y || left.x - right.x)
+        .filter((cell, index, ordered) => index === 0 || cell.x !== ordered[index - 1]!.x || cell.y !== ordered[index - 1]!.y)
+        .slice(0, 6);
+      if (sourceCells.length === 0) return;
       for (const [index, cell] of sourceCells.entries()) {
         const left = layout.x + cell.x * layout.cell;
         const top = layout.y + cell.y * layout.cell;
         const centerCellX = left + layout.cell * .5;
-        const centerCellY = top + layout.cell * .5;
+        const stagger = sourceCells.length > 1 ? index * .35 / (sourceCells.length - 1) : 0;
+        const localProgress = Math.max(0, Math.min(1, bind.progress * 1.35 - stagger));
         if (bind.active) {
-          const inset = layout.cell * (.08 + bind.value * .18);
-          graphics
-            .roundRect(
-              left + inset,
-              top + inset,
-              layout.cell - inset * 2,
-              layout.cell - inset * 2,
-              Math.max(1, layout.cell * .06),
-            )
-            .stroke({ color: token.palette.highlight, alpha: .82 * (1 - bind.progress * .22), width: strokeWidth });
-          this.strokeSegments(graphics, [
-            [left + layout.cell * .16, centerCellY, centerCellX, top + layout.cell * .16],
-            [centerCellX, top + layout.cell * .16, left + layout.cell * .84, centerCellY],
-          ], token.palette.primary, .48, Math.max(1, strokeWidth * .72));
+          const lobeCenterY = top + layout.cell * (.15 + localProgress * .28);
+          const lobeHalfWidth = layout.cell * (.22 + localProgress * .18);
+          const lobeHalfHeight = layout.cell * (.06 + localProgress * .05);
+          graphics.poly([
+            centerCellX - lobeHalfWidth,
+            lobeCenterY,
+            centerCellX - lobeHalfWidth * .48,
+            lobeCenterY - lobeHalfHeight,
+            centerCellX + lobeHalfWidth * .52,
+            lobeCenterY - lobeHalfHeight * .72,
+            centerCellX + lobeHalfWidth,
+            lobeCenterY,
+            centerCellX + lobeHalfWidth * .46,
+            lobeCenterY + lobeHalfHeight,
+            centerCellX - lobeHalfWidth * .58,
+            lobeCenterY + lobeHalfHeight * .72,
+          ]).fill({ color: token.palette.glow, alpha: .08 + localProgress * .12 });
+
+          if (localProgress >= .42) {
+            const facetProgress = Math.min(1, (localProgress - .42) / .58);
+            const inset = layout.cell * (.18 - facetProgress * .06);
+            const points = index % 2 === 0
+              ? [
+                  left + inset,
+                  top + layout.cell * .7,
+                  left + layout.cell * .42,
+                  top + inset,
+                  left + layout.cell - inset,
+                  top + layout.cell * .35,
+                  left + layout.cell * .68,
+                  top + layout.cell - inset,
+                ]
+              : [
+                  left + inset,
+                  top + layout.cell * .35,
+                  left + layout.cell * .58,
+                  top + inset,
+                  left + layout.cell - inset,
+                  top + layout.cell * .7,
+                  left + layout.cell * .32,
+                  top + layout.cell - inset,
+                ];
+            graphics.poly(points).fill({ color: token.palette.facet, alpha: .12 + facetProgress * .22 });
+          }
         }
         if (release.active) {
-          const lift = layout.cell * (.18 + release.value * (.46 + index % 2 * .08));
-          this.drawMutationDiamond(
-            graphics,
-            centerCellX + (index % 2 ? 1 : -1) * layout.cell * .16,
-            centerCellY - lift,
-            layout.cell * .075,
-            layout.cell * .17,
-            token.palette.highlight,
-            .76 * (1 - release.progress),
-          );
+          const inset = layout.cell * (.12 + release.value * .03);
+          const lift = layout.cell * .08 * release.value;
+          const points = index % 2 === 0
+            ? [
+                left + inset,
+                top + layout.cell * .7 - lift,
+                left + layout.cell * .42,
+                top + inset - lift,
+                left + layout.cell - inset,
+                top + layout.cell * .35 - lift,
+                left + layout.cell * .68,
+                top + layout.cell - inset - lift,
+              ]
+            : [
+                left + inset,
+                top + layout.cell * .35 - lift,
+                left + layout.cell * .58,
+                top + inset - lift,
+                left + layout.cell - inset,
+                top + layout.cell * .7 - lift,
+                left + layout.cell * .32,
+                top + layout.cell - inset - lift,
+              ];
+          graphics.poly(points).fill({ color: token.palette.highlight, alpha: .32 * (1 - release.progress) });
         }
       }
       return;
@@ -3169,35 +3277,71 @@ export class TetrisRenderer {
       const pressure = flash.timeline.sample('pressure-bind');
       const release = flash.timeline.sample('column-release');
       if (!pressure.active && !release.active) return;
-      const alpha = pressure.active ? 1 - pressure.progress * .14 : 1 - release.progress;
-      for (const column of flash.triggerColumns) {
-        const x = layout.x + (column + .5) * layout.cell;
-        let sourceY = anchorY + layout.cell * .5;
-        for (const cell of cells) {
-          if (cell.x !== column) continue;
-          sourceY = Math.max(sourceY, layout.y + (cell.y + 1) * layout.cell);
-        }
-        for (let trace = 0; trace < 3; trace += 1) {
-          const y = sourceY + layout.cell * (.06 + trace * .14 + (release.active ? release.value * .12 : 0));
-          const halfWidth = layout.cell * (.32 - trace * .055);
-          this.strokeSegments(
-            graphics,
-            [[x - halfWidth, y, x + halfWidth, y]],
-            trace === 1 ? token.palette.highlight : token.palette.primary,
-            (.76 - trace * .14) * alpha,
-            Math.max(1, layout.cell * (.055 - trace * .008)),
+      const bottomByColumn = new Map<number, number>();
+      for (const cell of cells) {
+        if (!flash.triggerColumns.includes(cell.x)) continue;
+        bottomByColumn.set(cell.x, Math.max(bottomByColumn.get(cell.x) ?? -Infinity, cell.y + 1));
+      }
+      for (const [column, bottom] of bottomByColumn) {
+        const centerX = layout.x + (column + .5) * layout.cell;
+        const sourceY = layout.y + bottom * layout.cell;
+        if (pressure.active) {
+          const compression = pressure.value;
+          const drawRibbon = (
+            topHalfWidth: number,
+            lowerHalfWidth: number,
+            topDistance: number,
+            alpha: number,
+            color: number,
+          ): void => {
+            const topY = Math.max(layout.y, sourceY - topDistance);
+            const lowerY = Math.max(layout.y, sourceY - layout.cell * .08);
+            graphics.poly([
+              centerX - topHalfWidth,
+              topY,
+              centerX + topHalfWidth * .72,
+              topY + layout.cell * .025,
+              centerX + lowerHalfWidth,
+              lowerY - layout.cell * .08,
+              centerX + lowerHalfWidth * .34,
+              lowerY,
+              centerX - lowerHalfWidth,
+              lowerY - layout.cell * .04,
+              centerX - topHalfWidth * .78,
+              topY + layout.cell * .04,
+            ]).fill({ color, alpha });
+          };
+          drawRibbon(
+            layout.cell * (.41 - compression * .13),
+            layout.cell * (.29 - compression * .08),
+            layout.cell * (1.25 - compression * 1.01),
+            .08 + compression * .04,
+            token.palette.deep,
+          );
+          drawRibbon(
+            layout.cell * (.32 - compression * .09),
+            layout.cell * (.23 - compression * .06),
+            layout.cell * (.86 - compression * .72),
+            .14 + compression * .08,
+            token.palette.primary,
           );
         }
-        const stemTop = sourceY + layout.cell * .1;
-        const stemBottom = Math.min(layout.y + layout.height, sourceY + layout.cell * (.42 + (release.active ? release.value * .26 : 0)));
-        if (stemBottom > stemTop) {
-          this.strokeSegments(
-            graphics,
-            [[x, stemTop, x, stemBottom]],
-            token.palette.highlight,
-            .58 * alpha,
-            Math.max(1, layout.cell * .035),
-          );
+        if (release.active) {
+          const travel = layout.cell * (.04 + release.value * .5);
+          const top = Math.min(layout.y + layout.height - layout.cell * .3, sourceY + travel);
+          const halfWidth = layout.cell * .24;
+          graphics.poly([
+            centerX - halfWidth,
+            top,
+            centerX + halfWidth * .68,
+            top,
+            centerX + halfWidth,
+            top + layout.cell * .12,
+            centerX,
+            Math.min(layout.y + layout.height, top + layout.cell * .34),
+            centerX - halfWidth,
+            top + layout.cell * .12,
+          ]).fill({ color: token.palette.highlight, alpha: .34 * (1 - release.progress) });
         }
       }
       return;
@@ -3473,8 +3617,9 @@ export class TetrisRenderer {
       triggerColumns: this.mutationColumnsFor(request.triggerCells),
     };
     // Bomb owns a warning and pulse before impact, so its fragments cannot exist
-    // until the impact phase begins. Other item families emit immediately.
-    if (request.item !== 'bomb' && !this.options.reducedMotion) {
+    // until the impact phase begins. Only the multiplier keeps a local sparkle
+    // burst; Ice and Supergravity activation geometry remains carrier-bound.
+    if (request.item === 'multiplier' && !this.options.reducedMotion) {
       this.emitMutationParticles(request.item, request.triggerCells, request.previousBoard);
     }
     this.impact = this.options.reducedMotion ? 0.24 : request.item === 'bomb' ? 0 : 0.72;

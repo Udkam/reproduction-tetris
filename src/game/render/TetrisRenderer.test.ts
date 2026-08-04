@@ -485,7 +485,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(internals.mutationFlash).toMatchObject({ item: 'bomb' });
     internals.advanceEffects(1);
     expect(internals.mutationFlash).toMatchObject({ item: 'freeze', elapsed: 0, duration: 320 });
-    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'freeze')).toHaveLength(18);
+    expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'freeze')).toHaveLength(0);
     expect(internals.mutationParticles.filter((particle) => particle.active && particle.item === 'bomb').length).toBeGreaterThan(0);
     internals.advanceEffects(319);
     expect(internals.mutationFlash).not.toBeNull();
@@ -1051,6 +1051,7 @@ describe('Puzzle undo presentation reset', () => {
       roundRect: () => graphics,
       circle: () => graphics,
       rect: () => graphics,
+      poly: () => graphics,
       moveTo: () => graphics,
       lineTo: () => graphics,
       fill: (options: unknown) => {
@@ -1085,7 +1086,7 @@ describe('Puzzle undo presentation reset', () => {
       { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false },
     );
     expect(fills.length).toBeGreaterThan(0);
-    expect(strokes.length).toBeGreaterThan(0);
+    expect(strokes).toHaveLength(0);
     expect(carrierRimCalls).toBe(0);
 
     internals.advanceEffects(304);
@@ -1308,7 +1309,7 @@ describe('Puzzle undo presentation reset', () => {
     expect(detailScales).toEqual([0.62]);
   });
 
-  it('binds Ice activation to carrier cells before releasing faceted shards upward', () => {
+  it('keeps Ice activation as local bloom and facets inside the carrier cells', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1324,22 +1325,50 @@ describe('Puzzle undo presentation reset', () => {
       ],
     }]);
 
+    internals.advanceEffects(60);
     const bind = createGraphicsRecorder();
     internals.drawMutationActivationEffect(bind.graphics, internals.mutationFlash!, layout);
-    expect(bind.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(2);
-    expect(bind.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(4);
-    expect(bind.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(0);
+    expect(bind.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(bind.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(bind.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(bind.operations, layout.width)).toBe(false);
 
-    internals.advanceEffects(160);
+    internals.advanceEffects(100);
     const release = createGraphicsRecorder();
     internals.drawMutationActivationEffect(release.graphics, internals.mutationFlash!, layout);
-    expect(release.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(2);
-    expect(release.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(12);
+    const facets = release.operations.filter((operation) => operation.kind === 'poly');
+    expect(facets.length).toBeGreaterThanOrEqual(4);
+    expect(release.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
+    expect(release.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
+    expect(facets.every((operation) => operation.values.every((value, index) => (
+      index % 2 === 0 ? value >= 60 && value <= 100 : value >= 80 && value <= 100
+    )))).toBe(true);
     expect(hasBroadHorizontalGeometry(release.operations, layout.width)).toBe(false);
+
+    const reduced = new TetrisRendererClass();
+    reduced.setOptions({ reducedMotion: true });
+    const reducedInternals = reduced as unknown as RendererInternals;
+    reducedInternals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'freeze',
+      durationTicks: 600,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells: [
+        { x: 3, y: VISIBLE_START_ROW + 4 },
+        { x: 4, y: VISIBLE_START_ROW + 4 },
+      ],
+    }]);
+    const reducedStart = createGraphicsRecorder();
+    reducedInternals.drawMutationActivationEffect(reducedStart.graphics, reducedInternals.mutationFlash!, layout);
+    reducedInternals.mutationClockMs = 999;
+    const reducedLater = createGraphicsRecorder();
+    reducedInternals.drawMutationActivationEffect(reducedLater.graphics, reducedInternals.mutationFlash!, layout);
+    expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
+    expect(reducedStart.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
   });
 
-  it('binds Supergravity activation pressure traces only to the trigger columns', () => {
+  it('compresses Supergravity ribbons and wedges only inside the trigger columns', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
     const layout = { x: 0, y: 0, width: 200, height: 400, cell: 20, compact: false };
@@ -1362,15 +1391,44 @@ describe('Puzzle undo presentation reset', () => {
       internals.mutationFlash!,
       layout,
     );
-    const traces = recorder.operations.filter((operation) => operation.kind === 'segment');
-    expect(traces).toHaveLength(8);
+    const ribbons = recorder.operations.filter((operation) => operation.kind === 'poly');
+    expect(ribbons).toHaveLength(4);
+    expect(recorder.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'circle')).toHaveLength(0);
     expect(recorder.operations.filter((operation) => operation.kind === 'roundRect')).toHaveLength(0);
     expect(hasBroadHorizontalGeometry(recorder.operations, layout.width)).toBe(false);
-    expect(traces.every((operation) => {
-      const center = (operation.values[0]! + operation.values[2]!) / 2;
-      return [30, 150].some((expected) => Math.abs(expected - center) < layout.cell * .15);
+    expect(ribbons.every((operation) => {
+      const xValues = operation.values.filter((_value, index) => index % 2 === 0);
+      return [[20, 40], [140, 160]].some(([min, max]) => xValues.every((value) => value >= min! && value <= max!));
     })).toBe(true);
+
+    internals.advanceEffects(160);
+    const release = createGraphicsRecorder();
+    internals.drawMutationActivationEffect(release.graphics, internals.mutationFlash!, layout);
+    expect(release.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
+    expect(release.operations.filter((operation) => operation.kind === 'segment')).toHaveLength(0);
+
+    const reduced = new TetrisRendererClass();
+    reduced.setOptions({ reducedMotion: true });
+    const reducedInternals = reduced as unknown as RendererInternals;
+    reducedInternals.consumeEvents([{
+      type: 'mutation-activated',
+      item: 'collapse',
+      durationTicks: 600,
+      score: 0,
+      rowsRemoved: 0,
+      triggerCells: [
+        { x: 1, y: VISIBLE_START_ROW + 4 },
+        { x: 7, y: VISIBLE_START_ROW + 7 },
+      ],
+    }]);
+    const reducedStart = createGraphicsRecorder();
+    reducedInternals.drawMutationActivationEffect(reducedStart.graphics, reducedInternals.mutationFlash!, layout);
+    reducedInternals.mutationClockMs = 999;
+    const reducedLater = createGraphicsRecorder();
+    reducedInternals.drawMutationActivationEffect(reducedLater.graphics, reducedInternals.mutationFlash!, layout);
+    expect(geometrySignature(reducedLater.operations)).toBe(geometrySignature(reducedStart.operations));
+    expect(reducedStart.operations.filter((operation) => operation.kind === 'poly')).toHaveLength(2);
   });
 
   it('keeps Ice and Supergravity line-clear accents local to the consumed carrier cell', () => {
