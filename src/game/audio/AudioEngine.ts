@@ -10,6 +10,10 @@ interface ToneOptions {
   delay?: number;
   endFrequency?: number;
   attack?: number;
+  /** Fraction of the voice duration used for a short audible body before release. */
+  body?: number;
+  /** Gain retained at the end of the body segment, relative to the peak. */
+  bodyGain?: number;
 }
 
 /** A short-lived foreground voice, including the occasional buffer-noise puff. */
@@ -25,35 +29,41 @@ interface MutationLoopVoice extends EffectVoice {
 type MutationActivation = Extract<GameEvent, { type: 'mutation-activated' }>;
 type MutationLoopItem = Extract<MutationItem, 'collapse'>;
 
-/** Full-volume mix gain is deliberately above unity, then safely contained by the compressor. */
-const FULL_VOLUME_MASTER_GAIN = 1.85;
-const VOICE_GAIN_CEILING = 0.5;
-const VOICE_GAIN_BOOST = 1.45;
-const BRIGHT_PARTIAL_RATIO = 2.01;
+/** Per-event dynamics carry presence; the master adds headroom without flattening hierarchy. */
+const FULL_VOLUME_MASTER_GAIN = 1.5;
+const VOICE_GAIN_CEILING = 0.46;
+const VOICE_GAIN_BOOST = 1.6;
 const MOVE_CUE_MIN_INTERVAL_MS = 60;
+const MUTATION_CUE_ORDER: Readonly<Record<MutationItem, number>> = Object.freeze({
+  bomb: 0,
+  freeze: 1,
+  collapse: 2,
+  reshape: 3,
+  multiplier: 4,
+});
 
 const CLEAR_CUE_PROFILES: Readonly<Record<1 | 2 | 3 | 4, readonly ToneOptions[]>> = Object.freeze({
   1: Object.freeze([
-    Object.freeze({ frequency: 392, duration: 0.105, gain: 0.09, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 784, duration: 0.07, gain: 0.025, delay: 0.006, attack: 0.004, type: 'sine' as const }),
+    Object.freeze({ frequency: 392, duration: 0.135, gain: 0.14, attack: 0.004, body: 0.48, bodyGain: 0.62, type: 'triangle' as const }),
+    Object.freeze({ frequency: 587.33, duration: 0.105, gain: 0.062, delay: 0.008, attack: 0.003, body: 0.42, bodyGain: 0.5, type: 'sine' as const }),
   ]),
   2: Object.freeze([
-    Object.freeze({ frequency: 349.23, duration: 0.12, gain: 0.095, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 523.25, duration: 0.112, gain: 0.075, delay: 0.018, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 698.46, duration: 0.09, gain: 0.028, delay: 0.026, attack: 0.005, type: 'sine' as const }),
+    Object.freeze({ frequency: 349.23, duration: 0.165, gain: 0.15, attack: 0.004, body: 0.5, bodyGain: 0.64, type: 'triangle' as const }),
+    Object.freeze({ frequency: 523.25, duration: 0.15, gain: 0.115, delay: 0.018, attack: 0.004, body: 0.48, bodyGain: 0.58, type: 'triangle' as const }),
+    Object.freeze({ frequency: 698.46, duration: 0.115, gain: 0.06, delay: 0.038, attack: 0.003, body: 0.42, bodyGain: 0.48, type: 'sine' as const }),
   ]),
   3: Object.freeze([
-    Object.freeze({ frequency: 329.63, duration: 0.14, gain: 0.1, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 415.3, duration: 0.132, gain: 0.082, delay: 0.022, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 493.88, duration: 0.122, gain: 0.07, delay: 0.044, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 659.25, duration: 0.105, gain: 0.032, delay: 0.06, attack: 0.005, type: 'sine' as const }),
+    Object.freeze({ frequency: 329.63, duration: 0.195, gain: 0.165, attack: 0.004, body: 0.52, bodyGain: 0.66, type: 'triangle' as const }),
+    Object.freeze({ frequency: 415.3, duration: 0.18, gain: 0.135, delay: 0.018, attack: 0.004, body: 0.5, bodyGain: 0.62, type: 'triangle' as const }),
+    Object.freeze({ frequency: 493.88, duration: 0.165, gain: 0.105, delay: 0.04, attack: 0.004, body: 0.47, bodyGain: 0.56, type: 'sine' as const }),
+    Object.freeze({ frequency: 659.25, duration: 0.13, gain: 0.064, delay: 0.065, attack: 0.003, body: 0.42, bodyGain: 0.48, type: 'sine' as const }),
   ]),
   4: Object.freeze([
-    Object.freeze({ frequency: 293.66, duration: 0.18, gain: 0.105, attack: 0.007, type: 'sine' as const }),
-    Object.freeze({ frequency: 440, duration: 0.17, gain: 0.09, delay: 0.018, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 587.33, duration: 0.16, gain: 0.075, delay: 0.036, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 739.99, duration: 0.15, gain: 0.055, delay: 0.054, attack: 0.006, type: 'sine' as const }),
-    Object.freeze({ frequency: 880, duration: 0.17, gain: 0.032, delay: 0.07, attack: 0.007, type: 'sine' as const }),
+    Object.freeze({ frequency: 293.66, duration: 0.255, gain: 0.18, attack: 0.004, body: 0.55, bodyGain: 0.68, type: 'triangle' as const }),
+    Object.freeze({ frequency: 440, duration: 0.235, gain: 0.15, delay: 0.018, attack: 0.004, body: 0.53, bodyGain: 0.64, type: 'triangle' as const }),
+    Object.freeze({ frequency: 587.33, duration: 0.215, gain: 0.12, delay: 0.04, attack: 0.004, body: 0.5, bodyGain: 0.6, type: 'sine' as const }),
+    Object.freeze({ frequency: 739.99, duration: 0.195, gain: 0.09, delay: 0.065, attack: 0.003, body: 0.47, bodyGain: 0.54, type: 'sine' as const }),
+    Object.freeze({ frequency: 880, duration: 0.175, gain: 0.062, delay: 0.09, attack: 0.003, body: 0.44, bodyGain: 0.48, type: 'sine' as const }),
   ]),
 });
 
@@ -103,13 +113,13 @@ export class AudioEngine {
       this.master = this.context.createGain();
       this.effects = this.context.createGain();
       this.compressor = this.context.createDynamicsCompressor();
-      // Preserve the onset of intentional feedback at 100%, then contain only dense
-      // clear/item overlaps. A gentler knee avoids flattening the whole mix.
-      this.compressor.threshold.value = -4;
-      this.compressor.knee.value = 6;
-      this.compressor.ratio.value = 3;
-      this.compressor.attack.value = 0.003;
-      this.compressor.release.value = 0.12;
+      // Let short event transients remain distinct; contain only genuinely dense
+      // resolution batches instead of flattening routine controls into the same level.
+      this.compressor.threshold.value = -2;
+      this.compressor.knee.value = 4;
+      this.compressor.ratio.value = 2.4;
+      this.compressor.attack.value = 0.006;
+      this.compressor.release.value = 0.16;
       this.applyMasterGain();
       this.applyEffectsGain();
       this.effects.connect(this.master);
@@ -139,26 +149,25 @@ export class AudioEngine {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = this.platform.now();
         if (now - this.lastMoveAt >= MOVE_CUE_MIN_INTERVAL_MS) {
-          this.tone({ frequency: 220, duration: 0.044, gain: 0.062, attack: 0.006, type: 'sine' });
+          this.tone({ frequency: 196, duration: 0.046, gain: 0.068, attack: 0.003, body: 0.46, bodyGain: 0.46, type: 'triangle' });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
         const now = this.platform.now();
         if (now - this.lastSoftDropAt > 52) {
-          this.tone({ frequency: 196, duration: 0.036, gain: 0.078, endFrequency: 185, attack: 0.007, type: 'sine' });
+          this.tone({ frequency: 174.61, duration: 0.04, gain: 0.072, endFrequency: 164.81, attack: 0.003, body: 0.45, bodyGain: 0.42, type: 'sine' });
           this.lastSoftDropAt = now;
         }
       } else if (event.type === 'piece-rotated') {
-        // A rounded fundamental carries the action; the very short fifth adds a
-        // readable edge without restoring the former sharp electronic click.
-        this.tone({ frequency: 293.66, duration: 0.065, gain: 0.09, attack: 0.006, type: 'sine' });
-        this.tone({ frequency: 440, duration: 0.038, gain: 0.024, delay: 0.004, attack: 0.004, type: 'sine' });
+        this.tone({ frequency: 261.63, duration: 0.08, gain: 0.105, attack: 0.004, body: 0.5, bodyGain: 0.52, type: 'triangle' });
+        this.tone({ frequency: 392, duration: 0.055, gain: 0.045, delay: 0.012, attack: 0.003, body: 0.42, bodyGain: 0.44, type: 'sine' });
       } else if (event.type === 'hard-dropped') {
         if (!hasResolutionCue) this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop && !hasResolutionCue) {
-        this.tone({ frequency: 246.94, duration: 0.048, gain: 0.06, attack: 0.007, type: 'sine' });
+        this.tone({ frequency: 220, duration: 0.055, gain: 0.07, attack: 0.004, body: 0.48, bodyGain: 0.48, type: 'triangle' });
       } else if (event.type === 'puzzle-undone') {
-        this.tone({ frequency: 392, duration: 0.09, gain: 0.095, endFrequency: 293.66, attack: 0.006, type: 'sine' });
+        this.tone({ frequency: 440, duration: 0.13, gain: 0.13, endFrequency: 329.63, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
+        this.tone({ frequency: 659.25, duration: 0.085, gain: 0.05, delay: 0.008, endFrequency: 493.88, attack: 0.003, body: 0.44, bodyGain: 0.46, type: 'sine' });
       } else if (event.type === 'clear-started') {
         // The renderer owns the brief pre-clear anticipation. Sound resolves once,
         // on lines-cleared, so the positive cue stays rhythmically precise.
@@ -167,34 +176,36 @@ export class AudioEngine {
         // this batch. Otherwise the clear owns the mix and suppresses landing/lock taps.
         if (!hasHigherPriorityResolution) this.clearChord(event.count);
       } else if (event.type === 'bedrock-raised') {
-        this.tone({ frequency: 98, duration: 0.17, gain: 0.2, endFrequency: 123.47, attack: 0.008, type: 'sine' });
-        this.tone({ frequency: 196, duration: 0.09, gain: 0.055, delay: 0.025, endFrequency: 246.94, attack: 0.006, type: 'sine' });
+        this.tone({ frequency: 110, duration: 0.21, gain: 0.24, endFrequency: 146.83, attack: 0.006, body: 0.56, bodyGain: 0.66, type: 'triangle' });
+        this.tone({ frequency: 220, duration: 0.13, gain: 0.085, delay: 0.025, endFrequency: 293.66, attack: 0.004, body: 0.48, bodyGain: 0.5, type: 'sine' });
       } else if (event.type === 'bedrock-lowered') {
-        this.tone({ frequency: 164.81, duration: 0.14, gain: 0.18, endFrequency: 110, attack: 0.008, type: 'sine' });
+        this.tone({ frequency: 196, duration: 0.19, gain: 0.22, endFrequency: 123.47, attack: 0.006, body: 0.52, bodyGain: 0.62, type: 'triangle' });
+        this.tone({ frequency: 293.66, duration: 0.11, gain: 0.065, delay: 0.014, endFrequency: 196, attack: 0.004, body: 0.44, bodyGain: 0.46, type: 'sine' });
       } else if (event.type === 'survival-stones-warned') {
         // Two compact rounded pulses make the flashing arrow unmistakable without a
         // continuous alarm or a piercing square-wave chirp.
-        this.tone({ frequency: 392, duration: 0.075, gain: 0.14, endFrequency: 523.25, attack: 0.006, type: 'sine' });
-        this.tone({ frequency: 523.25, duration: 0.07, gain: 0.105, delay: 0.085, endFrequency: 659.25, attack: 0.006, type: 'sine' });
+        this.tone({ frequency: 392, duration: 0.095, gain: 0.17, endFrequency: 523.25, attack: 0.004, body: 0.46, bodyGain: 0.56, type: 'triangle' });
+        this.tone({ frequency: 523.25, duration: 0.095, gain: 0.145, delay: 0.105, endFrequency: 698.46, attack: 0.004, body: 0.46, bodyGain: 0.54, type: 'triangle' });
       } else if (event.type === 'survival-stones-spawned') {
-        this.tone({ frequency: 329.63, duration: 0.12, gain: 0.13, endFrequency: 220, attack: 0.006, type: 'sine' });
+        this.tone({ frequency: 349.23, duration: 0.15, gain: 0.17, endFrequency: 220, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
+        this.tone({ frequency: 523.25, duration: 0.09, gain: 0.055, delay: 0.008, endFrequency: 329.63, attack: 0.003, body: 0.42, bodyGain: 0.44, type: 'sine' });
       } else if (event.type === 'survival-stones-landed') {
-        this.tone({ frequency: 130.81, duration: 0.085, gain: 0.18, attack: 0.006, type: 'sine' });
-        this.tone({ frequency: 196, duration: 0.055, gain: 0.045, delay: 0.006, attack: 0.004, type: 'sine' });
+        this.tone({ frequency: 123.47, duration: 0.12, gain: 0.24, endFrequency: 110, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
+        this.tone({ frequency: 246.94, duration: 0.07, gain: 0.07, delay: 0.008, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' });
       } else if (event.type === 'level-up') {
-        [392, 493.88, 587.33, 783.99].forEach((frequency, index) => this.tone({ frequency, duration: 0.145, gain: index === 3 ? 0.12 : 0.17, delay: index * 0.047, attack: 0.006, type: 'sine' }));
+        [392, 493.88, 587.33, 783.99].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.22 : 0.17, gain: index === 3 ? 0.15 : 0.19, delay: index * 0.05, attack: 0.004, body: 0.5, bodyGain: 0.58, type: index < 2 ? 'triangle' : 'sine' }));
       } else if (event.type === 'finished') {
-        [440, 554.37, 659.25, 880].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.24 : 0.19, gain: index === 3 ? 0.1 : 0.19, delay: index * 0.055, attack: 0.007, type: 'sine' }));
+        [392, 493.88, 659.25, 783.99, 987.77].forEach((frequency, index) => this.tone({ frequency, duration: index === 4 ? 0.3 : 0.22, gain: index === 4 ? 0.105 : 0.2 - index * 0.018, delay: index * 0.055, attack: 0.004, body: 0.54, bodyGain: 0.6, type: index < 2 ? 'triangle' : 'sine' }));
       } else if (event.type === 'game-over') {
-        [196, 164.81, 130.81].forEach((frequency, index) => this.tone({ frequency, duration: 0.165, gain: 0.16, delay: index * 0.11, attack: 0.01, type: 'sine' }));
+        [220, 174.61, 146.83, 110].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.26 : 0.19, gain: 0.18 - index * 0.018, delay: index * 0.09, attack: 0.006, body: 0.54, bodyGain: 0.6, type: index < 3 ? 'triangle' : 'sine' }));
       } else if (event.type === 'started') {
         // The cover exits silently after the third short countdown beat.
       } else if (event.type === 'resumed') {
-        this.tone({ frequency: 349.23, duration: 0.09, gain: 0.1, attack: 0.007, type: 'sine' });
-        this.tone({ frequency: 523.25, duration: 0.06, gain: 0.035, delay: 0.018, attack: 0.005, type: 'sine' });
+        this.tone({ frequency: 329.63, duration: 0.105, gain: 0.12, attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' });
+        this.tone({ frequency: 493.88, duration: 0.075, gain: 0.06, delay: 0.02, attack: 0.003, body: 0.44, bodyGain: 0.46, type: 'sine' });
       } else if (event.type === 'paused') {
-        this.tone({ frequency: 293.66, duration: 0.085, gain: 0.09, attack: 0.007, type: 'sine' });
-        this.tone({ frequency: 220, duration: 0.07, gain: 0.045, delay: 0.018, attack: 0.006, type: 'sine' });
+        this.tone({ frequency: 329.63, duration: 0.1, gain: 0.11, attack: 0.004, body: 0.48, bodyGain: 0.52, type: 'triangle' });
+        this.tone({ frequency: 246.94, duration: 0.085, gain: 0.06, delay: 0.02, attack: 0.004, body: 0.44, bodyGain: 0.46, type: 'sine' });
       } else if (event.type === 'restarted') {
         // The fresh 3-2-1 sequence owns restart feedback; another voice here would
         // double the first beat when the restarted event and digit 3 share a frame.
@@ -203,22 +214,28 @@ export class AudioEngine {
     this.playMutationActivations(mutationActivations);
   }
 
-  /** Three discrete short beats make the countdown readable without a melody or release tail. */
+  /** Three transport-like beats: 3 and 2 repeat; 1 resolves higher and longer. */
   playEntryCountdown(digit: 3 | 2 | 1): void {
     if (!this.context || !this.master || !this.enabled) return;
     const profile = digit === 1
-      ? { frequency: 659.25, duration: 0.24, gain: 0.13 }
-      : { frequency: 440, duration: 0.105, gain: 0.105 };
+      ? { frequency: 587.33, duration: 0.27, gain: 0.17 }
+      : { frequency: 392, duration: 0.125, gain: 0.14 };
     this.tone({
       frequency: profile.frequency,
       duration: profile.duration,
       gain: profile.gain,
-      type: 'sine',
+      attack: 0.004,
+      body: digit === 1 ? 0.58 : 0.48,
+      bodyGain: digit === 1 ? 0.64 : 0.54,
+      type: 'triangle',
     });
     this.tone({
       frequency: profile.frequency * 2,
       duration: profile.duration * 0.58,
-      gain: profile.gain * 0.16,
+      gain: profile.gain * 0.24,
+      attack: 0.003,
+      body: 0.42,
+      bodyGain: 0.44,
       type: 'sine',
     });
   }
@@ -241,16 +258,14 @@ export class AudioEngine {
   private clearChord(count: number): void {
     if (count < 1 || count > 4 || !Number.isInteger(count)) return;
     const profile = CLEAR_CUE_PROFILES[count as 1 | 2 | 3 | 4];
-    // The clear is the positive resolution of a placement. Consonant unbent voices
-    // provide presence and tier identity without noise, a sub-boom, or a gain spike.
+    // Triangle fundamentals add tactile body; delayed sine voices add an increasingly
+    // resolved reward without noise, a sub-boom, or a master-gain jump.
     profile.forEach((tone) => this.tone(tone));
   }
 
   private landingThump(): void {
-    // A compact body plus a quiet contact overtone is audible without becoming the
-    // former bass-heavy impact. A clear in the same batch suppresses both voices.
-    this.tone({ frequency: 174.61, duration: 0.072, gain: 0.1, attack: 0.006, type: 'sine' });
-    this.tone({ frequency: 349.23, duration: 0.038, gain: 0.03, delay: 0.004, attack: 0.004, type: 'sine' });
+    this.tone({ frequency: 146.83, duration: 0.09, gain: 0.13, endFrequency: 130.81, attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' });
+    this.tone({ frequency: 293.66, duration: 0.05, gain: 0.045, delay: 0.006, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' });
   }
 
   private uniqueMutationActivations(events: readonly GameEvent[]): MutationActivation[] {
@@ -269,14 +284,15 @@ export class AudioEngine {
         unique.set(event.item, event);
       }
     }
-    return [...unique.values()];
+    return [...unique.values()].sort((left, right) => (
+      MUTATION_CUE_ORDER[left.item] - MUTATION_CUE_ORDER[right.item]
+    ));
   }
 
   private playMutationActivations(activations: readonly MutationActivation[]): void {
     if (!activations.length) return;
-    this.stopMutationCue();
     activations.forEach((activation, index) => {
-      this.mutationCue(activation, index * 0.045);
+      this.mutationCue(activation, index * 0.035);
     });
   }
 
@@ -286,45 +302,48 @@ export class AudioEngine {
     const carrierAccent = Math.min(1.1, 0.84 + Math.max(0, event.triggerCells?.length ?? 4) * 0.04);
     const token = MUTATION_VFX_TOKENS[event.item].audio;
     if (event.item === 'freeze') {
-      // One clean glass tap marks the cold front. Ice has no sustained oscillator
-      // and no second note that could turn simultaneous activations into a chime.
       this.tone({
-        frequency: token.accentHz,
-        duration: 0.078,
-        gain: 0.1 * carrierAccent,
+        frequency: 698.46,
+        duration: 0.105,
+        gain: 0.135 * carrierAccent,
         delay: delayOffset,
-        attack: 0.005,
+        attack: 0.003,
+        body: 0.46,
+        bodyGain: 0.54,
+        type: 'triangle',
+      }, true);
+      this.tone({
+        frequency: 1046.5,
+        duration: 0.075,
+        gain: 0.04 * carrierAccent,
+        delay: delayOffset + 0.012,
+        attack: 0.0025,
+        body: 0.4,
+        bodyGain: 0.42,
         type: 'sine',
       }, true);
       return;
     }
     if (event.item === 'collapse') {
-      // A rounded two-part weight cue reads as a column settling without triangle buzz.
-      this.tone({ frequency: token.activateHz, duration: 0.09, gain: 0.25 * carrierAccent, delay: delayOffset, attack: 0.008, type: 'sine' }, true);
-      this.tone({ frequency: token.accentHz, duration: 0.12, gain: 0.17 * carrierAccent, delay: delayOffset + 0.018, attack: 0.009, type: 'sine' }, true);
+      this.tone({ frequency: 196, duration: 0.155, gain: 0.27 * carrierAccent, delay: delayOffset, endFrequency: 130.81, attack: 0.004, body: 0.54, bodyGain: 0.64, type: 'triangle' }, true);
+      this.tone({ frequency: 261.63, duration: 0.1, gain: 0.085 * carrierAccent, delay: delayOffset + 0.02, endFrequency: 196, attack: 0.003, body: 0.46, bodyGain: 0.5, type: 'sine' }, true);
       return;
     }
     if (event.item === 'bomb') {
-      // A rounded bass bloom plus a low-passed deterministic air puff, not a harsh
-      // full-band sweep. The buffer is generated locally and contains no sample asset.
-      this.tone({ frequency: token.activateHz, duration: 0.16, gain: 0.32 * carrierAccent, delay: delayOffset, attack: 0.006, type: 'sine' }, true);
-      this.noisePuff({ duration: 0.075, gain: 0.12 * carrierAccent, delay: delayOffset + 0.006, cutoff: 640 });
+      this.tone({ frequency: 110, duration: 0.17, gain: 0.22 * carrierAccent, delay: delayOffset, endFrequency: 82.41, attack: 0.004, body: 0.52, bodyGain: 0.6, type: 'triangle' }, true);
+      this.noisePuff({ duration: 0.07, gain: 0.085 * carrierAccent, delay: delayOffset + 0.006, cutoff: 480 });
       return;
     }
     if (event.item === 'reshape') {
-      // Three quick, consonant facets make the board rewrite explicit without a
-      // long success jingle or a confusing copy of the multiplier material.
-      [440, 554.37, 659.25].forEach((frequency, index) => {
-        this.tone({ frequency, duration: 0.105, gain: (0.14 - index * 0.018) * carrierAccent, delay: delayOffset + index * 0.035, attack: 0.005, type: 'sine' }, true);
+      [392, 493.88, 587.33].forEach((frequency, index) => {
+        this.tone({ frequency, duration: 0.12, gain: (0.155 - index * 0.02) * carrierAccent, delay: delayOffset + index * 0.03, attack: 0.003, body: 0.46, bodyGain: 0.52, type: 'triangle' }, true);
       });
       return;
     }
-    // Double is a compact marimba dyad. Super Double adds one clean octave above it;
-    // subsequent carriers remain Super Double in Core and keep this signature.
-    this.mutationMarimbaStrike(token.activateHz, 0.165 * carrierAccent, delayOffset);
-    this.mutationMarimbaStrike(token.accentHz, 0.145 * carrierAccent, delayOffset + 0.052);
+    this.mutationMarimbaStrike(token.activateHz, 0.18 * carrierAccent, delayOffset);
+    this.mutationMarimbaStrike(token.accentHz, 0.155 * carrierAccent, delayOffset + 0.05);
     if (event.multiplierFactor === 4) {
-      this.mutationMarimbaStrike(token.activateHz * 2, 0.12 * carrierAccent, delayOffset + 0.104);
+      this.mutationMarimbaStrike(token.activateHz * 2, 0.1 * carrierAccent, delayOffset + 0.1, 'sine');
     }
   }
 
@@ -351,10 +370,10 @@ export class AudioEngine {
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     const start = context.currentTime;
-    oscillator.type = item === 'collapse' ? 'triangle' : 'sine';
-    oscillator.frequency.setValueAtTime(profile.loopHz, start);
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(Math.max(profile.loopHz, 98), start);
     gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, profile.loopGain), start + .08);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, Math.min(profile.loopGain, 0.012)), start + .08);
     oscillator.connect(gain);
     gain.connect(effects);
     const voice: MutationLoopVoice = { source: oscillator, gain };
@@ -380,7 +399,7 @@ export class AudioEngine {
     }
     const profile = MUTATION_VFX_TOKENS[item].audio;
     if (playEnd && this.enabled && profile.endHz) {
-      this.tone({ frequency: profile.endHz, duration: .075, gain: profile.gain * .52, endFrequency: profile.endHz * .86, type: 'sine' });
+      this.tone({ frequency: 220, duration: 0.1, gain: 0.09, endFrequency: 164.81, attack: 0.004, body: 0.46, bodyGain: 0.5, type: 'triangle' });
     }
   }
 
@@ -388,9 +407,13 @@ export class AudioEngine {
     for (const item of [...this.mutationLoops.keys()]) this.stopMutationLoop(item, playEnd);
   }
 
-  private mutationMarimbaStrike(frequency: number, gain: number, delay: number): void {
-    this.tone({ frequency, duration: 0.145, gain, delay, type: 'triangle' }, true);
-    this.tone({ frequency: frequency * BRIGHT_PARTIAL_RATIO, duration: 0.096, gain: gain * 0.22, delay, type: 'sine' }, true);
+  private mutationMarimbaStrike(
+    frequency: number,
+    gain: number,
+    delay: number,
+    type: OscillatorType = 'triangle',
+  ): void {
+    this.tone({ frequency, duration: 0.145, gain, delay, attack: 0.003, body: 0.45, bodyGain: 0.48, type }, true);
   }
 
   private tone(options: ToneOptions, belongsToMutationCue = false): void {
@@ -407,10 +430,18 @@ export class AudioEngine {
     if (options.endFrequency) oscillator.frequency.exponentialRampToValueAtTime(Math.max(1, options.endFrequency), end);
     gain.gain.setValueAtTime(0.0001, start);
     const peakGain = Math.max(0.0001, Math.min(VOICE_GAIN_CEILING, options.gain * VOICE_GAIN_BOOST));
-    gain.gain.exponentialRampToValueAtTime(
-      peakGain,
-      start + Math.min(options.attack ?? 0.012, options.duration * 0.25),
-    );
+    const attackEnd = start + Math.min(options.attack ?? 0.012, options.duration * 0.25);
+    gain.gain.exponentialRampToValueAtTime(peakGain, attackEnd);
+    if (options.body) {
+      const bodyEnd = Math.min(
+        end - 0.004,
+        Math.max(attackEnd + 0.003, start + options.duration * Math.min(0.82, Math.max(0.28, options.body))),
+      );
+      gain.gain.exponentialRampToValueAtTime(
+        Math.max(0.0001, peakGain * Math.min(0.9, Math.max(0.18, options.bodyGain ?? 0.5))),
+        bodyEnd,
+      );
+    }
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
     oscillator.connect(gain);
     gain.connect(effects);
