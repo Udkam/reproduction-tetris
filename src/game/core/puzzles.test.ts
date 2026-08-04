@@ -63,7 +63,7 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(new Set(PUZZLE_DEFINITIONS.map(({ id }) => id)).size).toBe(50);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ name }) => name)).size).toBe(50);
     expect(PUZZLE_DEFINITIONS.map(({ name }) => name)).toEqual([
-      '补行', '留井', '托台', '回路', '转折', '双槽', '长井', '交错', '双门', '绕柱',
+      '补行', '留井', '托台', '留口', '转折', '避坑', '长井', '交错', '双门', '绕柱',
       '平台', '井口', '悬边', '阶梯', '双井', '回填', '侧台', '横桥', '窄门', '交汇',
       '门柱', '回廊', '中柱', '斜坡', '夹井', '错台', '缓坡', '侧桥', '双层', '断台',
       '曲井', '左闸', '错桥', '阶井', '悬台', '右闸', '双廊', '回井', '边塔', '折桥',
