@@ -97,6 +97,7 @@ import {
   type PuzzleCelebrationOutcome,
 } from './ui/localization';
 import {
+  CLASSIC_DIFFICULTY_GRADES,
   LEADERBOARD_KEY,
   LEGACY_LEADERBOARD_KEYS,
   classicDifficultyGrade,
@@ -1111,17 +1112,34 @@ export function LeaderboardPanel({
   highlightRecord = null,
   variant = 'result',
   language = DEFAULT_LANGUAGE,
+  initialClassicGrade,
 }: {
   mode: RunMode;
   records: readonly ScoreRecord[];
   highlightRecord?: ScoreRecord | null;
   variant?: 'result' | 'settings';
   language?: AppLanguage;
+  initialClassicGrade?: ClassicDifficultyGrade;
 }) {
   const copy = appCopy(language);
   const survival = mode === 'race';
+  const preferredClassicGrade = highlightRecord?.mode === 'marathon'
+    ? highlightRecord.classicGrade
+    : initialClassicGrade ?? 'standard';
+  const [selectedClassicGrade, setSelectedClassicGrade] = useState<ClassicDifficultyGrade>(preferredClassicGrade);
+  useEffect(() => {
+    setSelectedClassicGrade(preferredClassicGrade);
+  }, [preferredClassicGrade]);
   const highlightKey = highlightRecord ? scoreRecordKey(highlightRecord) : null;
-  const visibleRecords = records.slice(0, 5);
+  const classicGradeLabels: Record<ClassicDifficultyGrade, string> = {
+    relaxed: copy.labels.classicRelaxed,
+    standard: copy.labels.classicStandard,
+    challenge: copy.labels.classicChallenge,
+  };
+  const filteredRecords = mode === 'marathon'
+    ? records.filter((record) => record.mode === 'marathon' && record.classicGrade === selectedClassicGrade)
+    : records;
+  const visibleRecords = filteredRecords.slice(0, 5);
   const title = variant === 'settings'
     ? copy.labels.leaderboard
     : copy.labels.resultLeaderboard;
@@ -1131,12 +1149,43 @@ export function LeaderboardPanel({
       data-mode={mode}
       data-testid={variant === 'settings' ? 'settings-leaderboard' : undefined}
       data-empty={visibleRecords.length === 0 || undefined}
+      data-classic-grade={mode === 'marathon' ? selectedClassicGrade : undefined}
       aria-label={title}
     >
       <header>
         <strong>{title}</strong>
         <span>{copy.phrasing.leaderboardCriterion(survival)}</span>
       </header>
+      {mode === 'marathon' && (
+        <div
+          className="result-leaderboard__grades"
+          role="group"
+          aria-label={copy.labels.classicDifficulty}
+          data-testid="classic-leaderboard-grades"
+          onKeyDown={(event) => {
+            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+            event.preventDefault();
+            const direction = event.key === 'ArrowRight' ? 1 : -1;
+            const currentIndex = CLASSIC_DIFFICULTY_GRADES.indexOf(selectedClassicGrade);
+            const nextIndex = (currentIndex + direction + CLASSIC_DIFFICULTY_GRADES.length) % CLASSIC_DIFFICULTY_GRADES.length;
+            const nextGrade = CLASSIC_DIFFICULTY_GRADES[nextIndex]!;
+            setSelectedClassicGrade(nextGrade);
+            event.currentTarget.querySelector<HTMLButtonElement>(`button[data-grade="${nextGrade}"]`)?.focus();
+          }}
+        >
+          {CLASSIC_DIFFICULTY_GRADES.map((grade) => (
+            <button
+              key={grade}
+              type="button"
+              data-grade={grade}
+              aria-pressed={selectedClassicGrade === grade}
+              onClick={() => setSelectedClassicGrade(grade)}
+            >
+              {classicGradeLabels[grade]}
+            </button>
+          ))}
+        </div>
+      )}
       {visibleRecords.length === 0 ? <p>{copy.labels.noRecords}</p> : (
         <ol>
           {visibleRecords.map((record, index) => {
@@ -1265,12 +1314,14 @@ export function SettingsRecord({
   leaderboard,
   progress,
   language = DEFAULT_LANGUAGE,
+  classicGrade = 'standard',
 }: {
   mode: GameMode;
   puzzleId: PuzzleId;
   leaderboard: Leaderboard;
   progress: PuzzleProgress;
   language?: AppLanguage;
+  classicGrade?: ClassicDifficultyGrade;
 }) {
   const copy = appCopy(language);
   if (mode === 'puzzle') {
@@ -1283,7 +1334,15 @@ export function SettingsRecord({
     );
   }
 
-  return <LeaderboardPanel mode={mode} records={recordsForMode(leaderboard, mode)} variant="settings" language={language} />;
+  return (
+    <LeaderboardPanel
+      mode={mode}
+      records={recordsForMode(leaderboard, mode)}
+      variant="settings"
+      language={language}
+      initialClassicGrade={mode === 'marathon' ? classicGrade : undefined}
+    />
+  );
 }
 
 function LanguageControl({
@@ -1387,6 +1446,12 @@ function ClassicGravityRangeControl({
   const startingSeconds = (range.startingTicks / TICKS_PER_SECOND).toFixed(1);
   const floorSeconds = (range.floorTicks / TICKS_PER_SECOND).toFixed(1);
   const unit = language === 'en' ? 's/cell' : '秒/格';
+  const difficultyGrade = classicDifficultyGrade(range.startingTicks, range.floorTicks);
+  const difficultyLabel = {
+    relaxed: copy.labels.classicRelaxed,
+    standard: copy.labels.classicStandard,
+    challenge: copy.labels.classicChallenge,
+  }[difficultyGrade];
   const percentForSeconds = (seconds: number) => ((1 - seconds) / .9) * 100;
   const controlStyle = {
     '--classic-speed-start': `${percentForSeconds(Number(startingSeconds))}%`,
@@ -1410,7 +1475,12 @@ function ClassicGravityRangeControl({
     <div className="classic-speed-control" role="group" aria-label={copy.labels.classicSpeedRange} style={controlStyle}>
       <div className="classic-speed-control__heading">
         <span><b>{copy.labels.classicSpeedRange}</b><small>{copy.labels.appliesNextRun}</small></span>
-        <em>{unit}</em>
+        <span className="classic-speed-control__meta">
+          <strong className="classic-speed-control__grade" data-grade={difficultyGrade} data-testid="classic-difficulty-grade">
+            {copy.labels.classicDifficulty} · {difficultyLabel}
+          </strong>
+          <em>{unit}</em>
+        </span>
       </div>
       <div className="classic-speed-control__values">
         <output className="classic-speed-control__value" htmlFor="classic-starting-speed" aria-live="polite">
@@ -2533,6 +2603,7 @@ export function GameSession({
                 leaderboard={leaderboard}
                 progress={puzzleProgress}
                 language={language}
+                classicGrade={classicDifficultyGrade(classicGravityRange.startingTicks, classicGravityRange.floorTicks)}
               />
             </section>
           )}
@@ -2567,7 +2638,13 @@ export function GameSession({
         {activePuzzleCelebration && <PuzzleCelebrationPanel celebration={activePuzzleCelebration} language={language} />}
         {state.mode !== 'puzzle' && <>
           <RunResultSummary state={state} rank={resultRank} hasRecord={resultRecord !== null} language={language} />
-          <LeaderboardPanel mode={state.mode} records={leaderboardRecords} highlightRecord={resultRank !== null ? resultRecord : null} language={language} />
+          <LeaderboardPanel
+            mode={state.mode}
+            records={leaderboardRecords}
+            highlightRecord={resultRank !== null ? resultRecord : null}
+            initialClassicGrade={resultRecord?.mode === 'marathon' ? resultRecord.classicGrade : undefined}
+            language={language}
+          />
         </>}
         <button className="primary-action" data-autofocus type="button" onClick={restartRun}>{state.mode === 'puzzle' ? copy.labels.replay : copy.labels.playAgain}</button>
         <button className="secondary-action" type="button" onClick={leaveResult}>

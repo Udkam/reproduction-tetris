@@ -177,6 +177,46 @@
   line-height: 1.2;
 }
 
+.result-leaderboard__grades {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin: 6px 3px 4px;
+  padding: 3px;
+  background: color-mix(in srgb, var(--result-accent, var(--selection)) 7%, var(--raised));
+  border: 1px solid color-mix(in srgb, var(--result-accent, var(--selection)) 18%, var(--line));
+  border-radius: 9px;
+}
+
+.result-leaderboard__grades button {
+  min-width: 0;
+  min-height: 27px;
+  padding: 4px 7px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.result-leaderboard__grades button:hover,
+.result-leaderboard__grades button:focus-visible {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border-color: color-mix(in srgb, var(--result-accent, var(--selection)) 26%, var(--line));
+}
+
+.result-leaderboard__grades button[aria-pressed="true"] {
+  color: var(--action-ink);
+  background: var(--result-accent, var(--selection));
+  border-color: var(--result-accent, var(--selection));
+  box-shadow: 0 3px 9px color-mix(in srgb, var(--result-accent, var(--selection)) 20%, transparent);
+}
+
 .action-sheet--run-result > .action-sheet__actions > .primary-action {
   color: #f8fcfd;
   background: var(--result-accent);

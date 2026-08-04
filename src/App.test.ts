@@ -667,7 +667,9 @@ describe('entry countdown', () => {
       runtime.options.onState?.(terminalState, []);
     });
     expect(onRunFinished).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ mode: 'marathon', score: 4321, lines: 12 }));
-    expect(view.container.querySelector('.result-leaderboard')?.textContent).toContain('排行榜前 50112 行44 方块');
+    const resultLeaderboard = view.container.querySelector<HTMLElement>('.result-leaderboard')!;
+    expect(resultLeaderboard.querySelector('header')?.textContent).toBe('排行榜前 5');
+    expect(resultLeaderboard.querySelector('[data-current-record="true"]')?.textContent).toContain('0112 行44 方块');
     expect(view.container.querySelector('[data-current-record="true"]')?.textContent).toContain('12 行');
     expect(view.container.querySelector('.action-sheet--run-result > h2')?.textContent).toBe('消行');
     expect(view.container.querySelector('[data-metric="lines"]')?.textContent).toBe('12');
@@ -1192,7 +1194,8 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelector('[data-testid="settings-shortcuts"]')).toBeNull();
     const settingsLeaderboard = view.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')!;
     const rules = view.container.querySelector<HTMLElement>('[data-testid="settings-rules"]')!;
-    expect(settingsLeaderboard.textContent).toContain('本模式排行前 50112 行44 方块2026.07.24');
+    expect(settingsLeaderboard.querySelector('header')?.textContent).toBe('本模式排行前 5');
+    expect(settingsLeaderboard.querySelector('li')?.textContent).toContain('0112 行44 方块2026.07.24');
     expect(rules.textContent).toContain('填满一整行即可消除并得分。');
     expect([...rules.querySelectorAll<HTMLElement>('[data-rule-id]')].map((fact) => fact.dataset.ruleId)).toEqual(['goal', 'pace', 'end']);
 
@@ -1868,6 +1871,7 @@ describe('T6 frontend mode binding', () => {
     expect(view.container.querySelectorAll('.classic-speed-control__rail')).toHaveLength(1);
     expect(view.container.querySelectorAll('.classic-speed-control__input')).toHaveLength(2);
     expect(view.container.querySelector('.classic-speed-control__heading em')?.textContent).toBe('秒/格');
+    expect(view.container.querySelector('[data-testid="classic-difficulty-grade"]')?.textContent).toBe('难度 · 标准');
     expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__track i\s*\{[^}]*left:\s*var\(--classic-speed-start\)[^}]*width:\s*calc\(var\(--classic-speed-floor\) - var\(--classic-speed-start\)\)/s);
     expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input\s*\{[^}]*appearance:\s*none[^}]*direction:\s*rtl[^}]*pointer-events:\s*none/s);
     expect(sourceSettingsStyles).toMatch(/\.classic-speed-control__input::-(?:webkit-slider-thumb|moz-range-thumb)\s*\{[^}]*pointer-events:\s*auto[^}]*border:\s*4px solid var\(--settings-accent\)/s);
@@ -1943,9 +1947,40 @@ describe('T6 frontend mode binding', () => {
     expect(classic.container.querySelector('.result-leaderboard li')?.textContent).not.toContain('·');
     expect(classic.container.querySelector('[data-current-record="true"]')).not.toBeNull();
     expect(classic.container.querySelector<HTMLElement>('.result-leaderboard')?.dataset.empty).toBeUndefined();
+    expect(classic.container.querySelector<HTMLElement>('.result-leaderboard')?.dataset.classicGrade).toBe('standard');
+    expect([...classic.container.querySelectorAll('[data-testid="classic-leaderboard-grades"] button')].map((button) => button.textContent))
+      .toEqual(['休闲', '标准', '挑战']);
+    expect(classic.container.querySelector('[data-grade="standard"]')?.getAttribute('aria-pressed')).toBe('true');
     expect(scoreRecordRank([base], base)).toBe(1);
     expect(scoreRecordRank([base], { ...base, completedAt: '2026-07-19T12:00:00.000Z' })).toBeNull();
     classic.unmount();
+
+    const relaxed: ScoreRecord = {
+      ...base,
+      lines: 22,
+      completedAt: '2026-07-17T12:00:00.000Z',
+      classicStartingGravityTicks: 60,
+      classicGravityFloorTicks: 18,
+      classicGrade: 'relaxed',
+    };
+    const challenge: ScoreRecord = {
+      ...base,
+      lines: 26,
+      completedAt: '2026-07-16T12:00:00.000Z',
+      classicStartingGravityTicks: 30,
+      classicGravityFloorTicks: 6,
+      classicGrade: 'challenge',
+    };
+    const filteredClassic = render(createElement(LeaderboardPanel, {
+      mode: 'marathon',
+      records: [relaxed, base, challenge],
+      initialClassicGrade: 'challenge',
+    }));
+    expect(filteredClassic.container.querySelector('[data-record-field="lines"]')?.textContent).toBe('26 行');
+    act(() => filteredClassic.container.querySelector<HTMLButtonElement>('[data-grade="relaxed"]')?.click());
+    expect(filteredClassic.container.querySelector('[data-record-field="lines"]')?.textContent).toBe('22 行');
+    expect(filteredClassic.container.querySelector<HTMLElement>('.result-leaderboard')?.dataset.classicGrade).toBe('relaxed');
+    filteredClassic.unmount();
 
     const emptySettings = render(createElement(LeaderboardPanel, { mode: 'marathon', records: [], variant: 'settings' }));
     expect(emptySettings.container.querySelector<HTMLElement>('[data-testid="settings-leaderboard"]')?.dataset.empty).toBe('true');
@@ -1993,6 +2028,13 @@ describe('T6 frontend mode binding', () => {
     });
     const endedSprint = { ...createInitialState(1, 'sprint'), status: 'game-over' as const, score: 1800, lines: 40, pieceCount: 48, elapsedTicks: 5400 };
     expect(scoreRecordForState(endedSprint, base.completedAt)).toMatchObject({ mode: 'sprint', score: 1800, lines: 40, chain: 0, outcome: 'top-out' });
+    const endedClassic = { ...createInitialState(1, 'marathon'), status: 'game-over' as const };
+    expect(scoreRecordForState(endedClassic, base.completedAt)).toMatchObject({
+      mode: 'marathon',
+      classicStartingGravityTicks: 48,
+      classicGravityFloorTicks: 6,
+      classicGrade: 'standard',
+    });
     expect(scoreRecordForState(createInitialState(1, 'puzzle', CAMPAIGN_LEVELS[0]!.id), base.completedAt)).toBeNull();
   });
 

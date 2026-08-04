@@ -315,6 +315,29 @@
   font-weight: 700;
 }
 
+.classic-speed-control__meta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.classic-speed-control__grade {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 3px 8px;
+  color: color-mix(in srgb, var(--settings-accent) 86%, var(--ink));
+  background: color-mix(in srgb, var(--settings-accent) 10%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--settings-accent) 28%, var(--line));
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .classic-speed-control__values {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -668,6 +691,29 @@
 
 .settings-console__panel--rules > .result-leaderboard > ol {
   border-top: 1px solid color-mix(in srgb, var(--settings-record-tone) 22%, var(--line));
+}
+
+.settings-console__panel--rules > .result-leaderboard > .result-leaderboard__grades {
+  width: min(330px, 100%);
+  margin: 0 0 8px auto;
+  background: color-mix(in srgb, var(--settings-record-tone) 7%, var(--raised));
+  border-color: color-mix(in srgb, var(--settings-record-tone) 20%, var(--line));
+}
+
+.settings-console__panel--rules > .result-leaderboard > .result-leaderboard__grades button[aria-pressed="true"] {
+  background: var(--settings-record-tone);
+  border-color: var(--settings-record-tone);
+  box-shadow: 0 3px 9px color-mix(in srgb, var(--settings-record-tone) 18%, transparent);
+}
+
+.settings-console__panel--rules > .result-leaderboard[data-mode="marathon"][data-empty="true"] {
+  display: block;
+}
+
+.settings-console__panel--rules > .result-leaderboard[data-mode="marathon"][data-empty="true"] > p {
+  padding: 8px 0 0;
+  background: transparent;
+  border: 0;
 }
 
 .settings-console__panel--rules > .result-leaderboard[data-empty="true"] {
