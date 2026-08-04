@@ -416,8 +416,8 @@
   display: grid !important;
   width: 100% !important;
   min-width: 0;
-  min-height: 62px;
-  gap: 9px !important;
+  min-height: 72px;
+  gap: 11px !important;
   padding: 0 !important;
   overflow: visible !important;
   background: transparent !important;
@@ -437,12 +437,12 @@
 
 .game-left-rail .mutation-status__header > strong {
   width: 100%;
-  color: color-mix(in srgb, var(--ink) 78%, var(--muted)) !important;
-  font-size: 17px !important;
-  font-weight: 820 !important;
-  letter-spacing: .055em !important;
+  color: color-mix(in srgb, var(--ink) 90%, var(--muted)) !important;
+  font-size: 19px !important;
+  font-weight: 900 !important;
+  letter-spacing: .065em !important;
   text-align: center;
-  text-shadow: 0 0 12px color-mix(in srgb, var(--ink) 18%, transparent);
+  text-shadow: 0 0 16px color-mix(in srgb, var(--ink) 26%, transparent);
 }
 
 .game-left-rail .mutation-status__header > span { display: none !important; }
@@ -450,7 +450,7 @@
 .game-left-rail .mutation-status__ledger {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
-  gap: 14px !important;
+  gap: 16px !important;
   min-width: 0;
 }
 
@@ -460,11 +460,11 @@
 
 .game-left-rail .mutation-status__effect {
   display: grid !important;
-  grid-template-columns: 14px minmax(0, 1fr) !important;
+  grid-template-columns: 16px minmax(0, 1fr) !important;
   grid-template-rows: auto 1px !important;
   min-width: 0;
   min-height: 0 !important;
-  gap: 7px 9px !important;
+  gap: 8px 10px !important;
   padding: 0 !important;
   color: var(--ink) !important;
   background: transparent !important;
@@ -476,8 +476,8 @@
 
 .game-left-rail .mutation-status__signal {
   align-self: center;
-  width: 12px !important;
-  height: 12px !important;
+  width: 14px !important;
+  height: 14px !important;
 }
 
 .game-left-rail .mutation-status__effect-copy {
@@ -496,12 +496,12 @@
   display: block;
   overflow: hidden;
   color: color-mix(in srgb, var(--mutation-primary) 62%, var(--ink)) !important;
-  font-size: 17px !important;
-  font-weight: 820 !important;
+  font-size: 19px !important;
+  font-weight: 900 !important;
   letter-spacing: .04em !important;
   line-height: 1.15 !important;
   text-overflow: ellipsis;
-  text-shadow: 0 0 10px color-mix(in srgb, var(--mutation-primary) 24%, transparent);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--mutation-primary) 34%, transparent);
   white-space: nowrap;
 }
 

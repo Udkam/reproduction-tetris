@@ -19,6 +19,7 @@ import {
   PIECE_SHAPES,
   VISIBLE_HEIGHT,
   VISIBLE_START_ROW,
+  activeUsesSupergravityLanding,
   cellsForPiece,
   nextMutationPreviewItem,
   type Cell,
@@ -1148,8 +1149,7 @@ export class TetrisRenderer {
     if (drawableActive) {
       if (
         !spawnEntryPending
-        && state.mode === 'sprint'
-        && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched)
+        && activeUsesSupergravityLanding(state)
       ) {
         this.drawSupergravityPieceTrail(
           graphics,
@@ -2094,14 +2094,20 @@ export class TetrisRenderer {
     this.previewPieces = [];
     this.previewMutationItem = this.resolvePreviewMutationItem(state);
     const hostBounds = this.host?.getBoundingClientRect();
-    const slotElement = document.querySelector<HTMLElement>('[data-testid="next-slot"]');
+    const arena = this.host?.closest<HTMLElement>('[data-testid="game-cluster"]');
+    const slotElement = arena?.querySelector<HTMLElement>('[data-testid="next-slot"]') ?? null;
     const slot = slotElement?.getBoundingClientRect();
     if (hostBounds && slot && slot.width > 0 && slot.height > 0) {
+      const clippedLeft = Math.max(hostBounds.left, slot.left);
+      const clippedTop = Math.max(hostBounds.top, slot.top);
+      const clippedRight = Math.min(hostBounds.right, slot.right);
+      const clippedBottom = Math.min(hostBounds.bottom, slot.bottom);
+      if (clippedRight <= clippedLeft || clippedBottom <= clippedTop) return;
       const fallbackSlot: PreviewSlot = {
-        x: slot.left - hostBounds.left,
-        y: slot.top - hostBounds.top,
-        width: slot.width,
-        height: slot.height,
+        x: clippedLeft - hostBounds.left,
+        y: clippedTop - hostBounds.top,
+        width: clippedRight - clippedLeft,
+        height: clippedBottom - clippedTop,
         labelInset: 0,
       };
       const segmentSlots = slotElement
@@ -2109,11 +2115,16 @@ export class TetrisRenderer {
           .map((segment): PreviewSlot | null => {
             const bounds = segment.getBoundingClientRect();
             if (bounds.width <= 0 || bounds.height <= 0) return null;
+            const left = Math.max(hostBounds.left, bounds.left);
+            const top = Math.max(hostBounds.top, bounds.top);
+            const right = Math.min(hostBounds.right, bounds.right);
+            const bottom = Math.min(hostBounds.bottom, bounds.bottom);
+            if (right <= left || bottom <= top) return null;
             return {
-              x: bounds.left - hostBounds.left,
-              y: bounds.top - hostBounds.top,
-              width: bounds.width,
-              height: bounds.height,
+              x: left - hostBounds.left,
+              y: top - hostBounds.top,
+              width: right - left,
+              height: bottom - top,
               labelInset: 0,
             };
           })

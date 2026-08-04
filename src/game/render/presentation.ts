@@ -1,6 +1,7 @@
 import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
+  activeUsesSupergravityLanding,
   cellsForPiece,
   collapseSprintColumns,
   dropDistance,
@@ -195,8 +196,7 @@ export function projectedLandingCells(state: GameState): readonly Cell[] {
     x: cell.x,
     y: cell.y + dropDistance(state),
   }));
-  const usesSupergravityLanding = state.mode === 'sprint'
-    && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched);
+  const usesSupergravityLanding = activeUsesSupergravityLanding(state);
   if (!usesSupergravityLanding) return rigidLanding;
   if (rigidLanding.some(({ x, y }) => x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT)) {
     return rigidLanding;

@@ -33,8 +33,11 @@ describe('T27-R1 centered live stage', () => {
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status\.mutation-status--vfx\s*\{[^}]*position:\s*static !important;[^}]*background:\s*transparent !important;[^}]*border:\s*0 !important;/s);
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect\s*\{[^}]*background:\s*transparent !important;[^}]*border:\s*0 !important;[^}]*border-radius:\s*0 !important;[^}]*box-shadow:\s*none !important;/s);
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect-copy\s*\{[^}]*min-height:\s*0 !important;[^}]*height:\s*auto !important;[^}]*padding:\s*0 !important;[^}]*background:\s*transparent !important;[^}]*border:\s*0 !important;[^}]*border-radius:\s*0 !important;[^}]*box-shadow:\s*none !important;/s);
-    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__ledger\s*\{[^}]*gap:\s*14px !important;/s);
-    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect\s*\{[^}]*grid-template-columns:\s*14px minmax\(0, 1fr\) !important;[^}]*grid-template-rows:\s*auto 1px !important;/s);
+    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__ledger\s*\{[^}]*gap:\s*16px !important;/s);
+    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect\s*\{[^}]*grid-template-columns:\s*16px minmax\(0, 1fr\) !important;[^}]*grid-template-rows:\s*auto 1px !important;/s);
+    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__header > strong\s*\{[^}]*font-size:\s*19px !important;[^}]*font-weight:\s*900 !important;/s);
+    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__signal\s*\{[^}]*width:\s*14px !important;[^}]*height:\s*14px !important;/s);
+    expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__effect-copy > b\s*\{[^}]*font-size:\s*19px !important;[^}]*font-weight:\s*900 !important;/s);
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__meter\s*\{[^}]*display:\s*block !important;[^}]*grid-column:\s*2 !important;[^}]*grid-row:\s*2 !important;[^}]*height:\s*1px !important;[^}]*min-height:\s*0 !important;[^}]*padding:\s*0 !important;[^}]*border:\s*0 !important;[^}]*border-left:\s*0 !important;[^}]*box-shadow:\s*none !important;/s);
     expect(hudCss).toMatch(/\.game-left-rail \.mutation-status__meter > i\s*\{[^}]*display:\s*block !important;[^}]*height:\s*1px !important;[^}]*min-height:\s*0 !important;[^}]*padding:\s*0 !important;[^}]*border:\s*0 !important;[^}]*box-shadow:\s*0 0 5px/s);
     expect(hudCss).not.toContain('.game-left-rail .mutation-status__effect > em');

@@ -113,6 +113,7 @@ type RendererInternals = {
   host: HTMLElement | null;
   previewGraphics: unknown;
   pieceGraphics: unknown;
+  previewBounds: { x: number; y: number; width: number; height: number } | null;
   previewLayerVisible: boolean;
   app: {
     stage: unknown;
@@ -991,12 +992,21 @@ describe('Puzzle undo presentation reset', () => {
   it('draws the DOM-anchored Next queue on the unmasked preview plane', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
+    const arena = document.createElement('section');
+    arena.dataset.testid = 'game-cluster';
     const host = document.createElement('div');
     const slot = document.createElement('div');
     slot.dataset.testid = 'next-slot';
-    document.body.append(slot);
+    const staleSlot = document.createElement('div');
+    staleSlot.dataset.testid = 'next-slot';
+    document.body.append(staleSlot, arena);
+    arena.append(host, slot);
     vi.spyOn(host, 'getBoundingClientRect').mockReturnValue({
       x: 100, y: 40, left: 100, top: 40, right: 1100, bottom: 840, width: 1000, height: 800,
+      toJSON: () => ({}),
+    } as DOMRect);
+    vi.spyOn(staleSlot, 'getBoundingClientRect').mockReturnValue({
+      x: 0, y: 0, left: 0, top: 0, right: 80, bottom: 80, width: 80, height: 80,
       toJSON: () => ({}),
     } as DOMRect);
     vi.spyOn(slot, 'getBoundingClientRect').mockReturnValue({
@@ -1018,9 +1028,12 @@ describe('Puzzle undo presentation reset', () => {
       expect(drawPreviews).toHaveBeenCalledTimes(1);
       expect(drawPreviews.mock.calls[0]?.[0]).toBe(preview.graphics);
       expect(drawPreviews.mock.calls[0]?.[0]).not.toBe(pieces.graphics);
+      expect(drawPreviews.mock.calls[0]?.slice(2, 6)).toEqual([30, 60, 220, 160]);
+      expect(internals.previewBounds).toEqual({ x: 30, y: 60, width: 220, height: 160 });
       expect(internals.previewLayerVisible).toBe(true);
     } finally {
-      slot.remove();
+      staleSlot.remove();
+      arena.remove();
     }
   });
 

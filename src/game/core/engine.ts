@@ -41,6 +41,7 @@ import { createRandomizer, drawPiece, drawRandom } from './random';
 import { kickTests } from './rotation';
 import { collapseSprintColumns } from './sprint';
 import {
+  activeUsesSupergravityLanding,
   collapseMutationCarriers,
   mapMutationCarriersAfterClear,
   mutationCarriersClearedByRows,
@@ -1063,7 +1064,7 @@ function advanceMutationEffects(state: GameState): GameState {
   if (state.mode !== 'sprint') return state;
   const mutationMultiplierTicks = Math.max(0, state.mutationMultiplierTicks - 1);
   const mutationCollapseLandingLatched = state.mutationCollapseLandingLatched
-    || (state.active !== null && state.mutationCollapseTicks > 0);
+    || activeUsesSupergravityLanding(state);
   return {
     ...state,
     mutationFreezeTicks: Math.max(0, state.mutationFreezeTicks - 1),
@@ -1104,7 +1105,7 @@ function lockActive(
         },
       ]);
     }
-    if (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched) {
+    if (activeUsesSupergravityLanding(state)) {
       const collapsed = collapseSprintColumns(board);
       settledCells = sourceCells.map((cell) => {
         const settledY = collapsed.settledRowBySource[cell.y * BOARD_WIDTH + cell.x];

@@ -1,6 +1,21 @@
 import { mapCellsAfterClear } from './board';
 import { BOARD_WIDTH } from './constants';
-import type { Board, Cell, MutationCarrier } from './types';
+import type { Board, Cell, GameState, MutationCarrier } from './types';
+
+/**
+ * Supergravity is granted to the active piece, not merely to the global timer.
+ * Once granted, the landing rule survives timer expiry until that piece locks.
+ */
+export function activeUsesSupergravityLanding(
+  state: Pick<
+    GameState,
+    'mode' | 'active' | 'mutationCollapseTicks' | 'mutationCollapseLandingLatched'
+  >,
+): boolean {
+  return state.mode === 'sprint'
+    && state.active !== null
+    && (state.mutationCollapseTicks > 0 || state.mutationCollapseLandingLatched);
+}
 
 function sameCell(first: Cell, second: Cell): boolean {
   return first.x === second.x && first.y === second.y;

@@ -107,10 +107,12 @@ describe('异变 mode', () => {
       mutationCollapseLandingLatched: false,
     }));
 
-    const latchedLock = dispatch({
-      ...expired,
-      active: { type: 'O', rotation: 0, x: 8, y: 38 },
-    }, { type: 'hard-drop' }).state;
+    const moved = dispatch(expired, { type: 'move', dx: -1 }).state;
+    const rotated = dispatch(moved, { type: 'rotate', direction: 1 }).state;
+    expect(moved.mutationCollapseLandingLatched).toBe(true);
+    expect(rotated.mutationCollapseLandingLatched).toBe(true);
+
+    const latchedLock = dispatch(rotated, { type: 'hard-drop' }).state;
     expect(latchedLock.board[39]?.[0]).toBe('T');
     expect(latchedLock.mutationCollapseLandingLatched).toBe(false);
 
