@@ -1,17 +1,20 @@
 # T32 — Puzzle Curriculum Rebuild
 
-Status: **ACTIVE / AUDIT FROZEN / FINGERPRINT CHECKPOINT AUTHORIZED**
+Status: **ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT FREEZE**
 Recorded: 2026-08-05
 Repository: `E:\Proj\reproduction-tetris`
 Accepted product/evidence base: `main@735effe`
+Current implementation base: `main@da8e2b9`
 
 ## Admission gate
 
 T31 is accepted and closed on source `7c4a9a1` plus evidence `735effe`; final gates and
 independent QA pass with no P0-P3 findings. The post-T31 audit is frozen below. It
-authorizes only the first isolated fingerprint checkpoint; campaign definitions,
-routes, mastery data, progression, and Puzzle UI remain read-only until that checkpoint
-is green and the technique roster is evidence-backed. Inherited T27 evidence and
+authorized the first isolated fingerprint checkpoint. Commit `da8e2b9` now provides
+green exact, symmetry-normalized, and near-topology comparison without changing a
+board. Campaign definitions, routes, mastery data, progression, and Puzzle UI remain
+read-only until the technique roster below is committed and the next exact writer/path
+slice is admitted. Inherited T27 evidence and
 unrelated dirty paths remain isolated and may not be edited, staged, reverted,
 formatted, regenerated, or silently adopted.
 
@@ -89,6 +92,81 @@ inputs to the audit, not automatic difficulty. Difficulty follows the verified r
 the number and reversibility of meaningful choices, topology pressure, anchor/timing
 burden where present, and the cost of a wrong decision.
 
+## Frozen curriculum roster
+
+The ten rebuilt Intro positions isolate one decision each. The names below are stable
+technique IDs for authoring and proof; player-facing names remain open until the board
+and route evidence is green.
+
+| Position | Stable ID | Technique | Required readable decision |
+| ---: | --- | --- | --- |
+| 01 | `t3r-shaft-01` | `complete-row` | finish one obvious low-row gap without adding a covered target cell |
+| 02 | `t3r-shaft-02` | `preserve-well` | keep a one-column route from the board mouth to the target band open |
+| 03 | `t3r-shaft-03` | `build-support` | place support before a bridge so no unreachable pocket is created |
+| 04 | `t3r-cascade-06` | `retain-opening` | clear locally while preserving the residue's only entry corridor |
+| 05 | `t3r-shaft-04` | `read-queue` | choose the current landing that preserves a compatible slot for the following piece |
+| 06 | `t3r-cascade-05` | `avoid-hole` | reject the tempting flat fill that covers an original target cell |
+| 07 | `t5r-delta-07` | `edge-to-centre` | reduce a small triangle from its shoulders toward the centre |
+| 08 | `t5r-lattice-09` | `split-lanes` | allocate the current and following pieces across two constrained lanes |
+| 09 | `t5r-rift-10` | `choose-gate` | keep the continuation-compatible one of two apparently safe openings |
+| 10 | `t5r-drift-08` | `anchor-side-slip` | move laterally at anchor height to enter a pocket that cannot be hard-dropped into |
+
+Each Intro board is authored backward from at least two non-equivalent successful
+public-Core routes. A mirror, translation, final soft-drop variation, or renamed queue
+is not a second solution.
+
+The twenty all-open Easy positions are grouped by the same evidence vocabulary:
+
+| Technique family | Easy positions |
+| --- | --- |
+| anchor navigation | 11, 16, 22, 26, 27 |
+| clear order | 12, 17, 21 |
+| queue / branch choice | 23, 30 |
+| preserve well / opening | 13, 15, 25, 28 |
+| support / bridge | 14, 18, 20, 24 |
+| avoid hole / recover | 19, 29 |
+
+These are authoring hypotheses until two replayed routes produce the same measurable
+precondition, decisive event, and continuation invariant. They cannot unlock Hard
+content merely because the label appears in this table.
+
+The candidate Hard proof map is frozen for validation, not yet activation:
+
+| Hard | Easy prerequisite candidate | Technique / added pressure |
+| ---: | ---: | --- |
+| 31 | 13 | preserve a turning well through consecutive clears |
+| 32 | 28 | preserve an opening under an anchor pinch |
+| 33 | 14 | support a bridge across an offset level |
+| 34 | 13 | retain a multi-level stepped well |
+| 35 | 14 | order multiple support stages |
+| 36 | 24 | clear a lower triangle from edge to centre |
+| 37 | 23 | split a fixed queue between two corridors |
+| 38 | 24 | preserve pyramid shoulders before the apex |
+| 39 | 19 | avoid a covered hole in narrow edge space |
+| 40 | 14 | support a folded bridge in stages |
+| 41 | 12 | clear segmented horizontal targets in order |
+| 42 | 24 | reduce a stepped edge toward the centre |
+| 43 | 23 | choose the fixed-queue continuation branch |
+| 44 | 14 | support twin towers before crossing the centre |
+| 45 | 28 | retain a diagonal corridor opening |
+| 46 | 13 | protect a deep edge well |
+| 47 | 20 | open and preserve the hollow beneath a suspended roof |
+| 48 | 12 | clear separated slots in a dependency order |
+| 49 | 13 | switch between multiple wells without sealing either |
+| 50 | 23 | choose the only safe branch for the fixed queue |
+
+The first exact-certificate candidate set is positions **12, 13, 14, 19, 20, 23, 24,
+and 28**. Positions 15, 17, 18, 21, 25, 29, and 30 are fallbacks. Positions 11, 16,
+22, 26, and 27 cannot gate Hard content while the exhaustive solver rejects anchors.
+No numeric optimum or `optimum + 5` threshold is admitted until the exhaustive search
+closes and its public-Core route replays.
+
+Revision-2 route artifacts additionally bind `definitionHash`, `campaignRevision`,
+`initialPreconditions`, `decisiveEvent`, `continuationInvariant`, `routeHash`,
+`techniqueId`, and the dependent Hard puzzle's `hardeningDelta`. Changed definitions
+reset completion and best-operation records; unchanged records survive only when their
+stable ID and definition hash both match.
+
 ## Distinct-board contract
 
 The authoring audit computes both an exact canonical fingerprint and a
@@ -162,9 +240,9 @@ substitute for it.
 1. **Post-T31 audit** — complete: accepted base, dirty-path ownership, current category
    split, route artifacts, solver limits, revision, and shared-path boundaries are
    frozen in this document.
-2. **Fingerprint foundation** — exact/symmetry/near-topology comparison and direct
-   campaign audit, without changing a board.
-3. **Roster contract correction** — final board/order/name/category table, technique
+2. **Fingerprint foundation** — complete at `da8e2b9`: exact/symmetry/near-topology
+   comparison and direct campaign audit, without changing a board.
+3. **Roster contract correction** — in progress: final board/order/name/category table, technique
    families, Easy-to-Hard map, revision-2 migration, exact paths, and any commit-budget
    exception. Pairings remain open until replay signatures justify them.
 4. **Campaign definitions** — ten rebuilt Intro boards, the three frozen silhouette
@@ -185,8 +263,8 @@ green claim is committed before entering the next subsystem.
 ## Acceptance matrix
 
 - [x] T31 has accepted closure and the T32 post-T31 path/board/solver audit is frozen.
-- [ ] Exact, symmetry-normalized, and near-topology fingerprint tests are green before
-  any campaign definition changes.
+- [x] Exact, symmetry-normalized, and near-topology fingerprint tests are green at
+  `da8e2b9` before any campaign definition changes.
 - [ ] Exactly 10 Intro, 20 Easy, and 20 Hard boards are registered.
 - [ ] Every Intro board is newly authored; all Intro and Easy boards are available at
   fresh progress state; every Hard board is mastery-gated.
@@ -202,4 +280,4 @@ green claim is committed before entering the next subsystem.
   production build, one-Canvas/zero-error browser proof, teardown, and multi-round
   independent QA pass before acceptance.
 
-All boxes remain open at queue time.
+Open boxes remain unverified implementation or proof work.

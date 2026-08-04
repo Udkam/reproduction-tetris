@@ -11,6 +11,13 @@ ledger hierarchy without adding cards, and proves that an airborne Supergravity-
 piece keeps its projected and final independent-column landing after global expiry. The
 authoritative behavior contract is the top T31 section of `docs/DESIGN.md`.
 
+Player re-review reopens three T31-R2 acceptance claims before T32 board authoring:
+the frameless Mutation status must become unmistakably readable without restoring row
+cards, an airborne Supergravity-latched piece must retain both independent-column lock
+and matching complete landing preview after the global timer reaches zero, and the
+frameless Next piece must remain visibly rendered in active Classic and Mutation play.
+These are regression repairs, not permission to broaden Mutation mechanics.
+
 ## Scope and ownership
 
 - Coordinator/writer: primary task `/root`.
@@ -89,14 +96,25 @@ with immediate complete ghost, prominent frameless status ledger, and local acti
 geometry. The correction contract is
 `docs/phases/t31-r1-status-and-arrival-correction.md`.
 
+### T31-R2 player re-review gate
+
+Status (2026-08-05): **REOPENED / VISUAL AND LATCH REPAIR REQUIRED**. The player's
+current frames show a blank Next surface and insufficient Mutation-state emphasis, and
+the player reports that Supergravity endpoint compensation does not hold in live play.
+Before Puzzle definitions change, the coordinator must reproduce each state, repair the
+smallest owning path, add a regression test for timer-expired airborne preview/lock
+agreement, and capture one final Mutation plus one Classic frame proving Next remains
+visible. Prior accepted evidence is historical and cannot close this new review.
+
 ## Queued next task — T32 Puzzle curriculum rebuild
 
-Status (2026-08-05): **ACTIVE / AUDIT FROZEN / FINGERPRINT FOUNDATION**. T31 is accepted and closed. T32 now
-owns the curriculum audit and rebuild, beginning from accepted product/evidence base
-`735effe`. The post-T31 audit is frozen: live data is 3/27/20, fresh progress opens only
-three levels, and none of the three historic exact certificates remains reusable after
-the Intro rebuild. Only the new fingerprint module and its direct test are admitted;
-board definitions and progression remain blocked until that checkpoint is green.
+Status (2026-08-05): **ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT**. T31-R2 is a
+bounded repair gate before board authoring. T32 owns the curriculum audit and rebuild,
+beginning from accepted product/evidence base `735effe`. The post-T31 audit is frozen:
+live data is 3/27/20, fresh progress opens only three levels, and none of the three
+historic exact certificates remains reusable after the Intro rebuild. The isolated
+fingerprint foundation is green at `da8e2b9`; board definitions and progression remain
+blocked until the roster contract is committed and the T31-R2 regression gate is green.
 
 ### Frozen T32 outcome
 
@@ -137,10 +155,10 @@ board definitions and progression remain blocked until that checkpoint is green.
   any of those paths. Any path collision stops T32 rather than resolving it implicitly.
 - Mutation mechanics/feedback, audio, Survival, Classic, themes, navigation, package
   metadata, and unrelated evidence remain outside the T32 product boundary.
-- First source checkpoint writer: `/root`, exact paths
+- Completed first source checkpoint writer: `/root`, exact paths
   `src/game/core/puzzleFingerprints.ts` and
-  `src/game/core/puzzleFingerprints.test.ts` only. It may read but not edit
-  `puzzles.ts`; it starts no server, browser, watcher, index, or solver.
+  `src/game/core/puzzleFingerprints.test.ts` only, committed at `da8e2b9`. It did not
+  edit `puzzles.ts` or start a server, browser, watcher, index, or solver.
 
 ### Frozen audit and migration
 
@@ -162,9 +180,10 @@ board definitions and progression remain blocked until that checkpoint is green.
 
 1. [complete] Re-audit the accepted post-T31 base, current 50 boards, route artifacts,
    saved-progress revision, exact solver capability, and shared-path ownership.
-2. Implement exact, symmetry-normalized, and near-topology fingerprint comparison in
-   the isolated two-file foundation checkpoint; keep all campaign data read-only.
-3. Freeze the final board roster, 10/20/20 order, technique families, mastery map,
+2. [complete] Implement exact, symmetry-normalized, and near-topology fingerprint
+   comparison in the isolated two-file foundation checkpoint; campaign data remained
+   read-only. Focused tests and typecheck pass at `da8e2b9`.
+3. [in progress] Freeze the final board roster, 10/20/20 order, technique families, mastery map,
    campaign migration, exact source paths, and checkpoint budget before product edits.
 4. Author and Core-replay the rebuilt Intro set plus replacement boards 36/38/47;
    commit the first green campaign-definition claim before changing progression.
@@ -181,8 +200,8 @@ board definitions and progression remain blocked until that checkpoint is green.
 
 - [x] T31 is accepted and closed before the first T32 source edit.
 - [x] The post-T31 category/route/solver/revision/path audit is frozen.
-- [ ] The isolated exact/symmetry/near-topology fingerprint checkpoint is green before
-  campaign definition edits.
+- [x] The isolated exact/symmetry/near-topology fingerprint checkpoint is green at
+  `da8e2b9` before campaign definition edits.
 - [ ] The campaign contains exactly 10 Intro, 20 Easy, and 20 Hard levels.
 - [ ] All Intro boards are newly authored; all Intro and Easy boards are immediately
   available; no Hard board bypasses a mastery prerequisite.

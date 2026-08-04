@@ -5,14 +5,15 @@
 
 ## 2026-08-05 T32 — active Puzzle curriculum rebuild
 
-**Status: ACTIVE / AUDIT FROZEN / FINGERPRINT FOUNDATION.** T31 Mutation feedback and row-wise arrival are
+**Status: ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT.** T31 Mutation feedback and row-wise arrival were
 accepted on product/test source `7c4a9a1` with browser evidence `735effe` and an
 independent P0/P1/P2/P3-zero verdict. The renewed audit proves the live campaign is
 still 3/27/20, later Easy access is tier-gated, the three existing exact certificates
 will be invalidated by the Intro rebuild, and no gating certificate is directly
-reusable. The first admitted implementation is therefore an isolated structural /
-symmetry / near-topology fingerprint foundation; no board definition or progression
-source may change until it is green.
+reusable. The isolated structural / symmetry / near-topology fingerprint foundation is
+green at `da8e2b9`. No board definition or progression source may change until the
+roster/technique contract is committed and the bounded T31-R2 player-review regressions
+below are repaired.
 
 When admitted, T32 replaces the current Puzzle curriculum without changing the total
 campaign size: **50 levels = 10 Intro + 20 Easy + 20 Hard**. The ten Intro boards are
@@ -49,6 +50,20 @@ same decisive board-reading problem.
   23-25, and 28-30. A final Easy-to-Hard map is not design truth until exact optimum
   certificates and three-part replay signatures are checked; the contract does not
   invent optimum numbers or relationships in advance.
+- The authoritative authoring roster, Intro decision matrix, Easy technique families,
+  candidate Hard proof map, first exact-certificate set, and revision-2 artifact fields
+  are frozen in `docs/phases/t32-puzzle-curriculum-rebuild.md`. A candidate relation is
+  not an unlock until exhaustive optimum and replay-signature checks pass.
+
+### T31-R2 regression gate before board authoring
+
+The current player review supersedes the visual sufficiency of the older T31 evidence
+for three bounded claims. Mutation status must be more prominent while remaining a
+frameless signal/name/thin-line ledger; Next must be visibly populated in both Classic
+and Mutation active play; and a piece that latched Supergravity while airborne must
+retain independent-column lock and the same complete projected landing after the global
+timer expires. The repair must be reproduced and regression-tested before T32 changes a
+board. No Reshape, new item, status cards, or broader Mutation redesign is admitted.
 
 ### Solvability and mastery evidence
 

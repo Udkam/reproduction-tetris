@@ -74,3 +74,26 @@
   `docs/evidence/t27-r1-followup/**`, and `progress.md`.
 - Next action: commit this audit correction, implement the two-file fingerprint
   foundation, run its focused test/typecheck, and commit the first green source claim.
+
+## 2026-08-05 — fingerprint foundation green
+
+- Task ID: `/root/t32_fingerprint_foundation`.
+- Owner: coordinator/writer `/root`.
+- Base SHA: `90d12c2` on `main`; source checkpoint: `da8e2b9`.
+- Exact changed paths:
+  - `src/game/core/puzzleFingerprints.ts`
+  - `src/game/core/puzzleFingerprints.test.ts`
+- Result: exact structural, reflection/translation-normalized topology, deterministic
+  near-topology metrics, and campaign-wide audit are implemented without changing any
+  puzzle definition. The current campaign has no exact or normalized-topology
+  collision; near matches remain review candidates rather than automatic acceptance.
+- Commands actually run:
+  - `npm.cmd run test -- src/game/core/puzzleFingerprints.test.ts` — PASS, four tests.
+  - `npm.cmd run typecheck` — first run exposed unsupported `findLastIndex`; the bounded
+    implementation was corrected, and the final run passed.
+  - focused fingerprint test rerun — PASS, four tests.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: commit the evidence-backed Intro/Easy/Hard technique roster, then repair
+  the bounded player-reported T31-R2 status/Next/expiry-latch regressions before any
+  campaign definition edit.
