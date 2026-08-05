@@ -129,6 +129,30 @@ T31-R2 acceptance is fail-closed until all of the following are green together:
 - [x] focused tests, one final typecheck, complete suite, production build, bounded
   browser evidence, zero console errors, teardown, and independent read-only QA pass.
 
+### T31-R3 live-regression checkpoint
+
+Status (2026-08-05): **SOURCE CANDIDATE / VISUAL ACCEPTANCE PENDING**. Player review
+reopened two visible claims after the accepted T31-R2 boundary: Mutation status still
+read too quietly, and the frameless Next preview could disappear when a transient DOM
+layout measurement moved its geometry outside the current Canvas. Source checkpoint
+`fa34cc8` keeps the last valid preview bounds through that one-frame geometry miss and
+strengthens the existing frameless Mutation ledger without restoring cards, countdown
+copy, or decorative separators.
+
+- [x] A renderer regression test proves that active play redraws the immediate queue
+  item at the last valid rail bounds during a transient slot miss instead of clearing
+  the preview.
+- [x] A Core-derived App regression test advances an airborne Supergravity piece across
+  timer expiry and proves both the landing latch and its visible status contract.
+- [x] Focused T31 tests pass (`5 files / 158 tests`) and the candidate typechecks.
+- [ ] Final full suite, production build, live browser evidence at the required
+  viewports, resource teardown, and independent read-only QA remain required before
+  T31-R3 can be accepted.
+
+This checkpoint does not reopen Mutation mechanics, queue order, timers, scoring,
+audio, Survival, or Puzzle authoring. T32 may continue as a separate bounded stream,
+but final publication remains fail-closed until both streams complete their own gates.
+
 ## Queued next task — T32 Puzzle curriculum rebuild
 
 Status (2026-08-05): **ACTIVE / BOARD AUTHORING ADMITTED**. T31-R2 is accepted and

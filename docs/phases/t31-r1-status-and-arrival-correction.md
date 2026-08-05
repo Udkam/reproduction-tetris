@@ -99,3 +99,23 @@ layout, audio, Survival, Puzzle, or the queued T32 curriculum rebuild.
   guide already visible, followed by the upper row crossing the board mouth on the
   gravity beat.
 - Independent read-only QA accepted the candidate with no P0-P3 findings.
+
+## T31-R3 addendum — transient Next geometry and status prominence
+
+Status (2026-08-05): **SOURCE CANDIDATE / FINAL VISUAL GATES PENDING**. This addendum
+records a later player-visible regression without rewriting the accepted T31-R1/R2
+history above.
+
+- Source checkpoint `fa34cc8` retains and reuses the preview plane's last valid rail
+  bounds when the transparent DOM anchor is temporarily measured outside the current
+  Canvas. Active play no longer clears Next for that transient layout frame.
+- The same checkpoint increases the frameless Mutation ledger's heading, signal, name,
+  spacing, and one-pixel meter contrast. It deliberately keeps one shared ledger and
+  does not restore per-state cards, visible seconds, placeholder text, or separators.
+- A Core-derived App regression advances a real airborne Supergravity piece through
+  timer expiry and proves `mutationCollapseLandingLatched` remains true while the
+  visible state row exposes `data-landing-latched=true`.
+- Focused source gates pass: the five directly affected Core/App/presentation/renderer/
+  style files report `158 passed`, and `npm.cmd run typecheck` passes.
+- Browser evidence, the final full suite/build, teardown, and independent QA are still
+  pending. This addendum is not an acceptance claim.

@@ -1852,3 +1852,38 @@
   frozen curriculum and exact-proof contract.
 - No extra test, build, browser, server, watcher, index, or process was started for this
   disposition.
+
+## 2026-08-05 — T31-R3 transient Next and status regression checkpoint
+
+- Task ID: `/root/t31-r3-live-regression`.
+- Owner: coordinator/writer `/root`; independent review remains read-only.
+- Base SHA: `17d7f24`; product/test candidate SHA: `fa34cc8`.
+- Exact changed paths:
+  - `src/game/render/TetrisRenderer.ts`;
+  - `src/game/render/TetrisRenderer.test.ts`;
+  - `src/styles/hud.css`;
+  - `src/styles/hud.test.ts`;
+  - `src/App.test.ts`.
+- Implemented claims:
+  - active play reuses the last valid rail geometry instead of clearing Next during a
+    transient off-Canvas slot measurement;
+  - the existing frameless Mutation ledger is more prominent while retaining its
+    single-ledger, no-card, no-visible-seconds contract;
+  - a Core-derived App test crosses Supergravity timer expiry with an airborne piece
+    and binds the live landing latch to the visible Mutation status row.
+- Commands actually run:
+  - `npm.cmd run test -- src/styles/hud.test.ts` — PASS, 11 tests;
+  - `npm.cmd run test -- src/App.test.ts -t "keeps the Mutation instrument mounted"`
+    — PASS, 1 selected / 55 skipped;
+  - `npm.cmd run test -- src/game/core/sprint.test.ts src/game/render/presentation.test.ts src/game/render/TetrisRenderer.test.ts src/App.test.ts src/styles/hud.test.ts`
+    — PASS, 5 files / 158 tests;
+  - `npm.cmd run typecheck` — PASS.
+- Evidence: source/test checkpoint only. Final browser frames, complete suite/build,
+  teardown, and independent QA are deliberately pending until the remaining source
+  work is frozen.
+- Inherited exclusions remain untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Blocker: no product blocker; acceptance is fail-closed on final visual and independent
+  gates.
+- Next action: commit this documentation checkpoint, then resume bounded T32 board
+  authoring and strict proof work without reopening T31 source opportunistically.
