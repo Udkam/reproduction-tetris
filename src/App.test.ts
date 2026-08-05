@@ -2242,7 +2242,7 @@ describe('T6 frontend mode binding', () => {
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
     const mutationRule = modeRules('zh-CN', 'sprint').find((fact) => fact.id === 'items')?.value ?? '';
     expect(mutationRule).toContain('冰冻令方块以 1.0 秒/格下落');
-    expect(mutationRule).toContain('超重令落地时各列独立下沉 5 秒');
+    expect(mutationRule).toContain('超重令后续 5 个方块落地时各列独立下沉');
     expect(mutationRule).not.toContain('冻结');
     supergravity.unmount();
     latchedSupergravity.unmount();
