@@ -8,6 +8,9 @@ import t32Changed01To03File from '../../../docs/workstreams/tetris-t32-puzzle/pu
 import t32Changed04To06File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-04-06.json';
 import t32Changed07To09File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-07-09.json';
 import t32Changed10File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-10.json';
+import t32Changed36File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-36.json';
+import t32Changed38File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-38.json';
+import t32Changed47File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-47.json';
 import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
 import {
@@ -77,6 +80,9 @@ const t32Changed01To03 = t32Changed01To03File as unknown as Phase7Artifact;
 const t32Changed04To06 = t32Changed04To06File as unknown as Phase7Artifact;
 const t32Changed07To09 = t32Changed07To09File as unknown as Phase7Artifact;
 const t32Changed10 = t32Changed10File as unknown as Phase7Artifact;
+const t32Changed36 = t32Changed36File as unknown as Phase7Artifact;
+const t32Changed38 = t32Changed38File as unknown as Phase7Artifact;
+const t32Changed47 = t32Changed47File as unknown as Phase7Artifact;
 const phase7Artifacts = Object.freeze([
   phase7Batch1,
   phase7Batch2,
@@ -97,6 +103,9 @@ const t32ChangedById = new Map(
     ...t32Changed04To06.levels,
     ...t32Changed07To09.levels,
     ...t32Changed10.levels,
+    ...t32Changed36.levels,
+    ...t32Changed38.levels,
+    ...t32Changed47.levels,
   ].map((level) => [level.id, level]),
 );
 const historicalById = new Map(historicalLevels.map((level) => [level.id, level]));
@@ -171,6 +180,22 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       alternateBeam: 1600,
     });
     expect(activeLevels.slice(9, 10)).toEqual(t32Changed10.levels);
+    for (const [position, artifact] of [
+      [36, t32Changed36],
+      [38, t32Changed38],
+      [47, t32Changed47],
+    ] as const) {
+      expect(artifact.schemaVersion).toBe(7);
+      expect(artifact.batch).toEqual({ from: position, to: position });
+      expect(artifact.campaignOrder).toEqual([PUZZLE_DEFINITIONS[position - 1]?.id]);
+      expect(artifact.levels).toHaveLength(1);
+      expect(artifact.searchBounds).toEqual({
+        maxLocks: 36,
+        primaryBeam: 720,
+        alternateBeam: 560,
+      });
+      expect(activeLevels.slice(position - 1, position)).toEqual(artifact.levels);
+    }
     expect(historicalLevels.slice(0, 3)).toEqual(phase7Batch1.levels.slice(0, 3));
   });
 
