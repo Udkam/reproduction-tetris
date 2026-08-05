@@ -90,6 +90,9 @@ that piece locks. The next generation begins rigid when no global timer remains.
   **strict minimum placed-piece certificate**. Its mastery threshold is exactly
   `optimal placed pieces + 5`; a bounded beam-search result or best route found so far
   cannot set this threshold.
+- Mastery prerequisites form a small technique curriculum rather than a one-off gate per
+  Hard board. Each prerequisite is a deliberate at-most-seven-piece teaching puzzle and
+  may unlock multiple Hard boards that reuse its certified decision pattern.
 - An auditable technique signature links each certified Easy puzzle to its dependent
   Hard puzzle(s). The signature includes measurable initial-board preconditions, the
   route's decisive placement/clear event, and the post-decision invariant that makes

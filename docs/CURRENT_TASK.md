@@ -182,6 +182,9 @@ bounded by the committed roster contract and exact-proof acceptance below.
   search result that was not replayed by Core.
 - Require an exhaustive strict-minimum placed-piece certificate for every Easy board
   that gates Hard content. The visible unlock threshold is `optimum + 5`.
+- Keep that prerequisite set deliberately small and teachable: each gating Easy board
+  must be solvable in at most seven placed pieces, and may unlock a related Hard cluster.
+  Never promote an eight-or-nine-piece route from bounded search as an optimal proof.
 - Require a machine-auditable technique signature and route-critical decision match
   between every gating Easy puzzle and its Hard dependants. Handwritten labels alone
   do not establish correspondence.
