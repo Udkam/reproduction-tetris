@@ -66,9 +66,10 @@ export const PUZZLE_CATEGORIES: readonly PuzzleCategory[] = Object.freeze([
 /** Revision 2 re-authors these stable positions; their former clears are not equivalent. */
 export const PUZZLE_REVISION_2_CHANGED_IDS: readonly PuzzleId[] = Object.freeze([
   ...CAMPAIGN_LEVELS.slice(0, 10).map(({ id }) => id),
+  ...CAMPAIGN_LEVELS.slice(11, 14).map(({ id }) => id),
   CAMPAIGN_LEVELS[35]!.id,
   CAMPAIGN_LEVELS[37]!.id,
-  CAMPAIGN_LEVELS[46]!.id,
+  ...CAMPAIGN_LEVELS.slice(45, 50).map(({ id }) => id),
 ]);
 const PUZZLE_REVISION_2_CHANGED_ID_SET = new Set<PuzzleId>(PUZZLE_REVISION_2_CHANGED_IDS);
 

@@ -83,6 +83,13 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
     ]);
     expect(PUZZLE_CATEGORIES.flatMap(({ levels }) => levels.map(({ id }) => id)))
       .toEqual(CAMPAIGN_LEVELS.map(({ id }) => id));
+    expect(PUZZLE_REVISION_2_CHANGED_IDS).toEqual([
+      ...CAMPAIGN_LEVELS.slice(0, 10).map(({ id }) => id),
+      ...CAMPAIGN_LEVELS.slice(11, 14).map(({ id }) => id),
+      CAMPAIGN_LEVELS[35]!.id,
+      CAMPAIGN_LEVELS[37]!.id,
+      ...CAMPAIGN_LEVELS.slice(45, 50).map(({ id }) => id),
+    ]);
   });
 
   it('opens every Intro and Easy level immediately while keeping Hard mastery-only', () => {
@@ -205,7 +212,7 @@ describe('revisioned progressive Puzzle campaign persistence', () => {
       bestPieceCounts: { [first]: 5, [third]: 8 },
     });
 
-    const unchanged = V2_CAMPAIGN_ORDER[10]!;
+    const unchanged = CAMPAIGN_LEVELS[10]!.id;
     const revisionOne = parsePuzzleProgress(JSON.stringify({
       version: 5,
       campaignRevision: 1,
