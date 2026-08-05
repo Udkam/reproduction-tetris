@@ -1,7 +1,7 @@
 {
-  "sourceSha": "432fde4a263efb00331a1528db3f938392f43347",
+  "sourceSha": "50b272e48f7eee5ca29da1178ca961228ba715d9",
   "liveSeed": 163,
-  "capturedAt": "2026-08-04T21:44:36.668Z",
+  "capturedAt": "2026-08-05T22:53:49.661Z",
   "browser": "149.0.7827.55",
   "idle": {
     "text": "Mutation status",
@@ -41,7 +41,7 @@
       "0px"
     ],
     "copyBackground": "rgba(0, 0, 0, 0)",
-    "meterWidth": 198,
+    "meterWidth": 196,
     "meterTrackHeight": 1,
     "meterFillHeight": 1
   },
@@ -553,6 +553,7 @@
       "puzzleTargetLines": null,
       "puzzleTargetCells": [],
       "puzzleInitialTargetCount": 0,
+      "puzzleAnchorSupportedCells": [],
       "puzzleBoardRows": null,
       "puzzleQueue": null,
       "puzzleQueueIndex": 0,
@@ -605,7 +606,7 @@
       "gravityTicks": 0,
       "lockTicks": 0,
       "lockResets": 0,
-      "elapsedTicks": 42,
+      "elapsedTicks": 49,
       "randomizer": {
         "seed": 3276183793,
         "bag": [
@@ -711,7 +712,7 @@
       "classicFeedback": [],
       "mutationActivation": {
         "item": "collapse",
-        "elapsedMs": 166.70000000000073,
+        "elapsedMs": 200,
         "durationMs": 220,
         "phases": [
           {
@@ -725,8 +726,8 @@
             "id": "column-release",
             "active": true,
             "complete": false,
-            "progress": 0.4670000000000073,
-            "value": 0.10184756300000478
+            "progress": 0.8,
+            "value": 0.5120000000000001
           }
         ],
         "particlesEmitted": true,
