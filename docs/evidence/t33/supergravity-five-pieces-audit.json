@@ -1,0 +1,12 @@
+{
+  "sourceSha": "60c3fdd356501eaac90e4db7717868e6579d8e0e",
+  "capturedAt": "2026-08-05T23:50:33.863Z",
+  "browser": "149.0.7827.55",
+  "audit": {
+    "remaining": 4,
+    "landingLatched": true,
+    "status": "Mutation statusSupergravity · 5 pieces left",
+    "canvasCount": 1
+  },
+  "failures": []
+}
