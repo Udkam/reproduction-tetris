@@ -2102,7 +2102,15 @@ export class TetrisRenderer {
       const clippedTop = Math.max(hostBounds.top, slot.top);
       const clippedRight = Math.min(hostBounds.right, slot.right);
       const clippedBottom = Math.min(hostBounds.bottom, slot.bottom);
-      if (clippedRight <= clippedLeft || clippedBottom <= clippedTop) return;
+      if (clippedRight <= clippedLeft || clippedBottom <= clippedTop) {
+        // During a route/layout transition React can keep the canonical Next slot
+        // mounted while its measured rectangle misses the full-arena canvas for one
+        // frame. Clearing and returning here used to freeze a blank Next instrument.
+        // Repaint the current queue into the last verified rail rectangle; mode
+        // switching and terminal states still clear intentionally below.
+        if (this.drawPreviewsAtLastValidBounds(state)) return;
+        return;
+      }
       const fallbackSlot: PreviewSlot = {
         x: clippedLeft - hostBounds.left,
         y: clippedTop - hostBounds.top,
@@ -2270,6 +2278,40 @@ export class TetrisRenderer {
       this.lastPreviewBounds = this.previewBounds;
       this.lastPreviewPiece = this.previewPiece;
     }
+  }
+
+  private drawPreviewsAtLastValidBounds(state: GameState): boolean {
+    const bounds = this.lastPreviewBounds;
+    if (
+      !bounds
+      || bounds.width <= 0
+      || bounds.height <= 0
+      || state.status === 'ready'
+      || state.status === 'finished'
+      || state.status === 'game-over'
+      || this.options.modeSwitch
+    ) return false;
+
+    const previews = nextPreviewPieces(state);
+    if (previews.length === 0) return false;
+    this.previewClearBounds = null;
+    this.previewClearPiece = null;
+    this.drawPreviewPieces(
+      this.previewGraphics,
+      previews,
+      bounds.x,
+      bounds.y,
+      bounds.width,
+      bounds.height,
+      0,
+      this.previewMutationItem,
+    );
+    this.previewBounds = { ...bounds };
+    this.previewLayerVisible = true;
+    this.previewPieces = [...previews];
+    this.previewPiece = previews[0] ?? null;
+    this.lastPreviewPiece = this.previewPiece;
+    return true;
   }
 
   private drawPreviewBackdrop(x: number, y: number, width: number, height: number, segments = 1, labelInset = 0): void {

@@ -412,18 +412,34 @@
 /* Mutation status occupies a stable place below Next. Only the active signal and
  * time meter carry color; neither the instrument nor its rows draw a card. */
 .game-left-rail .mutation-status.mutation-status--vfx {
-  position: static !important;
+  position: relative !important;
   display: grid !important;
+  isolation: isolate;
   width: 100% !important;
   min-width: 0;
-  min-height: 72px;
-  gap: 11px !important;
+  min-height: 84px;
+  gap: 14px !important;
   padding: 0 !important;
   overflow: visible !important;
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+}
+
+.game-left-rail .mutation-status.mutation-status--vfx::before {
+  position: absolute;
+  z-index: -1;
+  inset: -18px -22px;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(
+    ellipse at 50% 42%,
+    color-mix(in srgb, var(--puzzle) 18%, transparent),
+    transparent 72%
+  );
+  filter: blur(18px);
+  opacity: .78;
 }
 
 .game-left-rail .mutation-status__header {
@@ -438,7 +454,7 @@
 .game-left-rail .mutation-status__header > strong {
   width: 100%;
   color: color-mix(in srgb, var(--ink) 90%, var(--muted)) !important;
-  font-size: 19px !important;
+  font-size: 21px !important;
   font-weight: 900 !important;
   letter-spacing: .065em !important;
   text-align: center;
@@ -450,7 +466,7 @@
 .game-left-rail .mutation-status__ledger {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
-  gap: 16px !important;
+  gap: 18px !important;
   min-width: 0;
 }
 
@@ -460,7 +476,7 @@
 
 .game-left-rail .mutation-status__effect {
   display: grid !important;
-  grid-template-columns: 16px minmax(0, 1fr) !important;
+  grid-template-columns: 18px minmax(0, 1fr) !important;
   grid-template-rows: auto 1px !important;
   min-width: 0;
   min-height: 0 !important;
@@ -476,8 +492,9 @@
 
 .game-left-rail .mutation-status__signal {
   align-self: center;
-  width: 14px !important;
-  height: 14px !important;
+  width: 16px !important;
+  height: 16px !important;
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--mutation-primary) 72%, transparent));
 }
 
 .game-left-rail .mutation-status__effect-copy {
@@ -496,12 +513,12 @@
   display: block;
   overflow: hidden;
   color: color-mix(in srgb, var(--mutation-primary) 62%, var(--ink)) !important;
-  font-size: 19px !important;
+  font-size: 21px !important;
   font-weight: 900 !important;
   letter-spacing: .04em !important;
   line-height: 1.15 !important;
   text-overflow: ellipsis;
-  text-shadow: 0 0 14px color-mix(in srgb, var(--mutation-primary) 34%, transparent);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--mutation-primary) 44%, transparent);
   white-space: nowrap;
 }
 
@@ -516,7 +533,7 @@
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden;
-  background: color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 28%, transparent) !important;
+  background: color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 38%, transparent) !important;
   border: 0 !important;
   border-left: 0 !important;
   border-radius: 0 !important;
@@ -535,7 +552,7 @@
   background: var(--mutation-primary, var(--puzzle)) !important;
   border: 0 !important;
   border-radius: 0 !important;
-  box-shadow: 0 0 5px color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 64%, transparent) !important;
+  box-shadow: 0 0 9px color-mix(in srgb, var(--mutation-primary, var(--puzzle)) 76%, transparent) !important;
 }
 
 /* Gameplay sheets interrupt the board at its visual center. Next stays rendered

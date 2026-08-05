@@ -1037,6 +1037,54 @@ describe('Puzzle undo presentation reset', () => {
     }
   });
 
+  it('keeps the current Next queue in its last valid rail bounds during a transient layout miss', () => {
+    const renderer = new TetrisRendererClass();
+    const internals = renderer as unknown as RendererInternals;
+    const arena = document.createElement('section');
+    arena.dataset.testid = 'game-cluster';
+    const host = document.createElement('div');
+    const slot = document.createElement('div');
+    slot.dataset.testid = 'next-slot';
+    arena.append(host, slot);
+    document.body.append(arena);
+    vi.spyOn(host, 'getBoundingClientRect').mockReturnValue({
+      x: 100, y: 40, left: 100, top: 40, right: 1100, bottom: 840, width: 1000, height: 800,
+      toJSON: () => ({}),
+    } as DOMRect);
+    vi.spyOn(slot, 'getBoundingClientRect')
+      .mockReturnValueOnce({
+        x: 130, y: 100, left: 130, top: 100, right: 350, bottom: 260, width: 220, height: 160,
+        toJSON: () => ({}),
+      } as DOMRect)
+      .mockReturnValue({
+        x: -320, y: 100, left: -320, top: 100, right: -100, bottom: 260, width: 220, height: 160,
+        toJSON: () => ({}),
+      } as DOMRect);
+    const preview = createGraphicsRecorder();
+    Object.assign(internals as unknown as Record<string, unknown>, {
+      host,
+      previewGraphics: preview.graphics,
+      pieceGraphics: createGraphicsRecorder().graphics,
+    });
+    const drawPreviews = vi.spyOn(internals, 'drawPreviewPieces');
+    const state = dispatch(createInitialState(0x51a1f00d, 'marathon'), { type: 'start' }).state;
+    const layout = { x: 400, y: 40, width: 200, height: 400, cell: 20, compact: false };
+
+    try {
+      internals.drawPreviews(state, layout);
+      expect(internals.previewBounds).toEqual({ x: 30, y: 60, width: 220, height: 160 });
+
+      internals.drawPreviews(state, layout);
+
+      expect(drawPreviews).toHaveBeenCalledTimes(2);
+      expect(drawPreviews.mock.calls[1]?.slice(2, 6)).toEqual([30, 60, 220, 160]);
+      expect(internals.previewBounds).toEqual({ x: 30, y: 60, width: 220, height: 160 });
+      expect(internals.previewLayerVisible).toBe(true);
+    } finally {
+      arena.remove();
+    }
+  });
+
   it('interpolates each Survival stone by id and snaps the reduced-motion endpoint', () => {
     const renderer = new TetrisRendererClass();
     const internals = renderer as unknown as RendererInternals;
