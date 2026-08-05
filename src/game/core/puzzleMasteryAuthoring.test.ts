@@ -1,3 +1,5 @@
+// @ts-expect-error Vitest runs this authoring test in Node while product types omit Node.
+import { writeFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { VISIBLE_START_ROW } from './constants';
 import { getPuzzleDefinition, replayPuzzleSetup, type PuzzleSetupHistory } from './puzzles';
@@ -14,6 +16,8 @@ const ALTERNATE = process.env.PUZZLE_AUTHOR_ALTERNATE === '1';
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
 const MAX_LOCKS = Number(process.env.PUZZLE_AUTHOR_MAX_LOCKS ?? 8);
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
+const OUTPUT_PATH = process.env.PUZZLE_AUTHOR_OUTPUT_PATH as string | undefined;
+// @ts-expect-error Node environment variables are available to Vitest but not product types.
 const GENERATE_SETUP = process.env.PUZZLE_AUTHOR_GENERATE_SETUP === '1';
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
 const SETUP_INDEX = Number(process.env.PUZZLE_AUTHOR_SETUP_INDEX ?? 0);
@@ -21,6 +25,23 @@ const SETUP_INDEX = Number(process.env.PUZZLE_AUTHOR_SETUP_INDEX ?? 0);
 const SETUP_BASE_ID = process.env.PUZZLE_AUTHOR_SETUP_BASE_ID as PuzzleId | undefined;
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
 const SETUP_PREFIX = Number(process.env.PUZZLE_AUTHOR_SETUP_PREFIX ?? 0);
+
+function emitAuthoringResult(
+  label: 'PUZZLE_ROUTE' | 'PUZZLE_ALTERNATE',
+  result: Record<string, unknown>,
+): void {
+  if (OUTPUT_PATH) {
+    writeFileSync(OUTPUT_PATH, `${JSON.stringify(result)}\n`, 'utf8');
+    return;
+  }
+
+  const message = `${label} ${JSON.stringify(result)}`;
+  if (label === 'PUZZLE_ALTERNATE') {
+    console.error(message);
+  } else {
+    console.log(message);
+  }
+}
 
 describe.runIf(Boolean(LEVEL_ID && ROUTE && !ALTERNATE))('single Puzzle mastery authoring proof', () => {
   it(`proves the strict optimum for ${LEVEL_ID ?? 'unset'}`, () => {
@@ -45,12 +66,12 @@ describe.runIf(Boolean(LEVEL_ID && ROUTE && ALTERNATE))('single Puzzle alternate
       beamWidth: 900,
     });
     expect(result.alternative).not.toBeNull();
-    console.error(`PUZZLE_ALTERNATE ${JSON.stringify({
+    emitAuthoringResult('PUZZLE_ALTERNATE', {
       levelId: LEVEL_ID,
       firstDivergenceLock: result.firstDivergenceLock,
       locks: result.alternative?.locks.length,
       route: result.alternative ? encodePuzzleRoute(result.alternative.commands) : '',
-    })}`);
+    });
   }, 600_000);
 });
 
@@ -58,11 +79,11 @@ describe.runIf(Boolean(LEVEL_ID && !ROUTE && !GENERATE_SETUP && !SETUP_PREFIX))(
   it(`finds a bounded route for ${LEVEL_ID ?? 'unset'}`, () => {
     const replay = findPuzzleRoute(LEVEL_ID as PuzzleId, { maxLocks: MAX_LOCKS, beamWidth: 900 });
     expect(replay).not.toBeNull();
-    console.log(`PUZZLE_ROUTE ${JSON.stringify({
+    emitAuthoringResult('PUZZLE_ROUTE', {
       levelId: LEVEL_ID,
       locks: replay?.locks.length,
       route: replay ? encodePuzzleRoute(replay.commands) : null,
-    })}`);
+    });
   }, 180_000);
 });
 

@@ -8,9 +8,11 @@ import t32Changed01To03File from '../../../docs/workstreams/tetris-t32-puzzle/pu
 import t32Changed04To06File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-04-06.json';
 import t32Changed07To09File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-07-09.json';
 import t32Changed10File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-10.json';
+import t32ChangedEasyMasteryFile from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-easy-mastery.json';
 import t32Changed36File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-36.json';
 import t32Changed38File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-38.json';
 import t32Changed47File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-47.json';
+import t32ChangedHardR2File from '../../../docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-46-50-r2.json';
 import { VISIBLE_START_ROW } from './constants';
 import { createInitialState, dispatch } from './engine';
 import {
@@ -80,9 +82,11 @@ const t32Changed01To03 = t32Changed01To03File as unknown as Phase7Artifact;
 const t32Changed04To06 = t32Changed04To06File as unknown as Phase7Artifact;
 const t32Changed07To09 = t32Changed07To09File as unknown as Phase7Artifact;
 const t32Changed10 = t32Changed10File as unknown as Phase7Artifact;
+const t32ChangedEasyMastery = t32ChangedEasyMasteryFile as unknown as Phase7Artifact;
 const t32Changed36 = t32Changed36File as unknown as Phase7Artifact;
 const t32Changed38 = t32Changed38File as unknown as Phase7Artifact;
 const t32Changed47 = t32Changed47File as unknown as Phase7Artifact;
+const t32ChangedHardR2 = t32ChangedHardR2File as unknown as Phase7Artifact;
 const phase7Artifacts = Object.freeze([
   phase7Batch1,
   phase7Batch2,
@@ -103,9 +107,11 @@ const t32ChangedById = new Map(
     ...t32Changed04To06.levels,
     ...t32Changed07To09.levels,
     ...t32Changed10.levels,
+    ...t32ChangedEasyMastery.levels,
     ...t32Changed36.levels,
     ...t32Changed38.levels,
     ...t32Changed47.levels,
+    ...t32ChangedHardR2.levels,
   ].map((level) => [level.id, level]),
 );
 const historicalById = new Map(historicalLevels.map((level) => [level.id, level]));
@@ -180,6 +186,18 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
       alternateBeam: 1600,
     });
     expect(activeLevels.slice(9, 10)).toEqual(t32Changed10.levels);
+    expect(t32ChangedEasyMastery.schemaVersion).toBe(7);
+    expect(t32ChangedEasyMastery.batch).toEqual({ from: 12, to: 14 });
+    expect(t32ChangedEasyMastery.campaignOrder).toEqual([
+      't5r-arc-13', 't5r-current-12', 't5r-prism-11',
+    ]);
+    expect(t32ChangedEasyMastery.levels).toHaveLength(3);
+    expect(t32ChangedEasyMastery.searchBounds).toEqual({
+      maxLocks: 12,
+      primaryBeam: 900,
+      alternateBeam: 900,
+    });
+    expect(activeLevels.slice(11, 14)).toEqual(t32ChangedEasyMastery.levels);
     for (const [position, artifact] of [
       [36, t32Changed36],
       [38, t32Changed38],
@@ -195,6 +213,20 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
         alternateBeam: 560,
       });
       expect(activeLevels.slice(position - 1, position)).toEqual(artifact.levels);
+    }
+    expect(t32ChangedHardR2.schemaVersion).toBe(7);
+    expect(t32ChangedHardR2.batch).toEqual({ from: 46, to: 50 });
+    expect(t32ChangedHardR2.campaignOrder).toEqual([
+      'tm-puzzle-46', 'tm-puzzle-48', 'tm-puzzle-49', 'tm-puzzle-50',
+    ]);
+    expect(t32ChangedHardR2.levels).toHaveLength(4);
+    expect(t32ChangedHardR2.searchBounds).toEqual({
+      maxLocks: 22,
+      primaryBeam: 720,
+      alternateBeam: 560,
+    });
+    for (const level of t32ChangedHardR2.levels) {
+      expect(activeLevels[level.curriculumPosition - 1]).toEqual(level);
     }
     expect(historicalLevels.slice(0, 3)).toEqual(phase7Batch1.levels.slice(0, 3));
   });
@@ -289,7 +321,8 @@ describe('Phase-7 source-bound multi-route Puzzle curriculum', () => {
     for (const level of activeLevels) {
       const definition = getPuzzleDefinition(level.id);
       expect(level.targetRowCount, level.id).toBe(
-        definition.difficulty <= 10 ? 3
+        t32ChangedHardR2.campaignOrder.includes(definition.id) ? 6
+          : definition.difficulty <= 10 ? 3
           : definition.difficulty <= 20 ? 4
             : definition.difficulty <= 30 ? 5
               : definition.difficulty <= 40 ? 6 : 7,
