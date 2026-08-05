@@ -304,24 +304,24 @@ function sameJson(left: unknown, right: unknown): boolean {
 }
 
 /** Validates T13's derived, legal three-through-seven-row endgames. */
-export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
+export function validatePuzzleDefinition(definition: PuzzleDefinition, requireCanonical = true): void {
   if (!PUZZLE_ID_SET.has(definition.id)) throw new Error(`Unknown puzzle id: ${definition.id}`);
   const canonical = PUZZLE_LIBRARY.find((candidate) => candidate.id === definition.id)!;
   if (!Number.isSafeInteger(definition.seed) || definition.seed <= 0 || definition.seed > 0xffff_ffff) {
     throw new Error(`Puzzle ${definition.id} has an invalid level seed.`);
   }
-  if (definition.seed !== canonical.seed) throw new Error(`Puzzle ${definition.id} must retain its stable level seed.`);
+  if (requireCanonical && definition.seed !== canonical.seed) throw new Error(`Puzzle ${definition.id} must retain its stable level seed.`);
   if (PUZZLE_SEED_SET.size !== PUZZLE_LIBRARY.length) throw new Error('Puzzle level seeds must be unique.');
   if (!Number.isSafeInteger(definition.difficulty) || definition.difficulty < 1
-    || definition.difficulty > PUZZLE_LIBRARY.length || definition.difficulty !== canonical.difficulty) {
+    || definition.difficulty > PUZZLE_LIBRARY.length || (requireCanonical && definition.difficulty !== canonical.difficulty)) {
     throw new Error(`Puzzle ${definition.id} must retain its authored campaign difficulty.`);
   }
   if (!Number.isSafeInteger(definition.targetRows) || definition.targetRows < 3 || definition.targetRows > 8
-    || definition.targetRows !== canonical.targetRows) {
+    || (requireCanonical && definition.targetRows !== canonical.targetRows)) {
     throw new Error(`Puzzle ${definition.id} must retain its explicit authored target-row count.`);
   }
-  if (definition.name !== canonical.name) throw new Error(`Puzzle ${definition.id} must retain its authored name.`);
-  if (!sameJson(definition.setup, canonical.setup)) throw new Error(`Puzzle ${definition.id} must retain its legal setup history.`);
+  if (requireCanonical && definition.name !== canonical.name) throw new Error(`Puzzle ${definition.id} must retain its authored name.`);
+  if (requireCanonical && !sameJson(definition.setup, canonical.setup)) throw new Error(`Puzzle ${definition.id} must retain its legal setup history.`);
   if (!Array.isArray(definition.hiddenCells) || definition.hiddenCells.length !== 0) {
     throw new Error(`Puzzle ${definition.id} must begin with an empty hidden buffer.`);
   }
@@ -329,7 +329,7 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
     throw new Error(`Puzzle ${definition.id} requires exactly ${VISIBLE_HEIGHT} visible board rows.`);
   }
   const derivedRows = rowsForSetup(definition.setup);
-  if (!sameJson(definition.boardRows, derivedRows) || !sameJson(definition.boardRows, canonical.boardRows)) {
+  if (!sameJson(definition.boardRows, derivedRows) || (requireCanonical && !sameJson(definition.boardRows, canonical.boardRows))) {
     throw new Error(`Puzzle ${definition.id} board must be derived exactly from its legal setup history.`);
   }
 
@@ -377,7 +377,7 @@ export function validatePuzzleDefinition(definition: PuzzleDefinition): void {
     if (anchorKeys.has(key)) throw new Error(`Puzzle ${definition.id} contains duplicate immutable anchors.`);
     anchorKeys.add(key);
   }
-  if (!sameJson(definition.anchorCells, canonical.anchorCells)) {
+  if (requireCanonical && !sameJson(definition.anchorCells, canonical.anchorCells)) {
     throw new Error(`Puzzle ${definition.id} must retain its authored immutable-anchor distribution.`);
   }
   validateSeedBags(definition);
@@ -390,8 +390,8 @@ export function getPuzzleDefinition(id: PuzzleId): PuzzleDefinition {
   return selected;
 }
 
-export function createPuzzleBoard(definition: PuzzleDefinition, includeAnchors = true): Board {
-  validatePuzzleDefinition(definition);
+export function createPuzzleBoard(definition: PuzzleDefinition, includeAnchors = true, requireCanonical = true): Board {
+  validatePuzzleDefinition(definition, requireCanonical);
   const board = replayPuzzleSetup(definition.setup);
   if (!includeAnchors) return board;
   for (const anchor of definition.anchorCells) board[VISIBLE_START_ROW + anchor.y]![anchor.x] = ANCHOR_CELL;
@@ -399,8 +399,8 @@ export function createPuzzleBoard(definition: PuzzleDefinition, includeAnchors =
 }
 
 /** Canonical coordinates for all authored ordinary cells that must be cleared. */
-export function originalTargetCells(definition: PuzzleDefinition): readonly Cell[] {
-  validatePuzzleDefinition(definition);
+export function originalTargetCells(definition: PuzzleDefinition, requireCanonical = true): readonly Cell[] {
+  validatePuzzleDefinition(definition, requireCanonical);
   return Object.freeze(definition.boardRows.flatMap((row, y) => [...row].flatMap((cell, x) => (
     cell === '.' ? [] : [Object.freeze({ x, y: VISIBLE_START_ROW + y })]
   ))));

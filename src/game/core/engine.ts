@@ -36,7 +36,7 @@ import {
 } from './constants';
 import { canPlace, clearRows, createBoard, fullRows, lowerBedrock, mapCellsAfterClear, mergePiece, raiseBedrock, setCell } from './board';
 import { cellsForPiece, createSpawnPiece, nextRotation } from './pieces';
-import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells } from './puzzles';
+import { createPuzzleBoard, defaultPuzzleId, getPuzzleDefinition, nextPuzzleId, originalTargetCells, type PuzzleDefinition } from './puzzles';
 import { createRandomizer, drawPiece, drawRandom } from './random';
 import { kickTests } from './rotation';
 import { collapseSprintColumns } from './sprint';
@@ -260,11 +260,15 @@ export function createInitialState(
   puzzleId?: PuzzleId,
   classicStartingGravityTicks = CLASSIC_STARTING_GRAVITY_DEFAULT_TICKS,
   classicGravityFloorTicks = CLASSIC_GRAVITY_FLOOR_DEFAULT_TICKS,
+  puzzleDefinitionOverride?: PuzzleDefinition,
 ): GameState {
-  const selectedPuzzle = mode === 'puzzle' ? getPuzzleDefinition(puzzleId ?? defaultPuzzleId()) : null;
+  const selectedPuzzle = mode === 'puzzle'
+    ? puzzleDefinitionOverride ?? getPuzzleDefinition(puzzleId ?? defaultPuzzleId())
+    : null;
   const effectiveSeed = selectedPuzzle?.seed ?? seed;
-  const initialBoard = selectedPuzzle ? createPuzzleBoard(selectedPuzzle) : createBoard();
-  const puzzleTargetCells = selectedPuzzle ? originalTargetCells(selectedPuzzle) : Object.freeze([]);
+  const requireCanonicalPuzzle = puzzleDefinitionOverride === undefined;
+  const initialBoard = selectedPuzzle ? createPuzzleBoard(selectedPuzzle, true, requireCanonicalPuzzle) : createBoard();
+  const puzzleTargetCells = selectedPuzzle ? originalTargetCells(selectedPuzzle, requireCanonicalPuzzle) : Object.freeze([]);
   const openingBedrock = mode === 'race' ? raiseBedrock(initialBoard, INITIAL_SURVIVAL_BEDROCK_ROWS) : null;
   const normalizedClassicStartingGravityTicks = normalizeClassicStartingGravityTicks(classicStartingGravityTicks);
   const base: GameState = {

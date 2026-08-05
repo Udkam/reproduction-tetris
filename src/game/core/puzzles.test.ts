@@ -193,6 +193,11 @@ describe('T13 legal endgame workshop definitions', () => {
   it('rejects mutated seeds, histories, rows, hidden cells, and invalid anchors', () => {
     const first = getPuzzleDefinition('t3r-shaft-01');
     expect(() => validatePuzzleDefinition(invalid(first, { seed: 0 }))).toThrow(/seed/i);
+    const authoringOverride = invalid(first, { seed: first.seed + 1, name: 'authoring override' });
+    expect(() => validatePuzzleDefinition(authoringOverride, false)).not.toThrow();
+    expect(() => validatePuzzleDefinition(invalid(authoringOverride, {
+      boardRows: first.boardRows.slice(1),
+    }), false)).toThrow(/exactly/i);
     expect(() => validatePuzzleDefinition(invalid(first, { seed: getPuzzleDefinition('t3r-shaft-02').seed }))).toThrow(/stable level seed/i);
     expect(() => validatePuzzleDefinition(invalid(first, { difficulty: 20 }))).toThrow(/difficulty/i);
     expect(() => validatePuzzleDefinition(invalid(first, { targetRows: 4 }))).toThrow(/target-row/i);

@@ -1,6 +1,6 @@
 import { createInitialState, dispatch, stateHash } from './engine';
-import { getPuzzleDefinition } from './puzzles';
-import type { Cell, GameCommand, GameState, PieceType, PuzzleId } from './types';
+import { getPuzzleDefinition, type PuzzleDefinition } from './puzzles';
+import { ANCHOR_CELL, type Cell, type GameCommand, type GameState, type PieceType, type PuzzleId } from './types';
 
 /** Public controls available to the ordinary Puzzle player and recorded in route evidence. */
 export type PuzzleRouteToken = 'S' | 'T' | 'L' | 'R' | 'C' | 'D' | 'H';
@@ -254,7 +254,12 @@ function targetKey(state: GameState): string {
 function routeStateKey(state: GameState): string {
   const active = state.active;
   return [
-    state.board.map((row) => row.map((cell) => cell ?? '.').join('')).join('/'),
+    // Piece colours are renderer data: future collisions and Puzzle completion only
+    // distinguish empty, occupied, and immutable anchor cells. Canonicalising them
+    // prevents the exhaustive authoring proof from retaining equivalent colourings.
+    state.board.map((row) => row.map((cell) => (
+      cell === null ? '.' : cell === ANCHOR_CELL ? 'A' : '#'
+    )).join('')).join('/'),
     targetKey(state),
     active ? `${active.type}:${active.rotation}:${active.x}:${active.y}` : '-',
     state.queue.join(''),
@@ -463,6 +468,21 @@ function searchRoute(
 /** Finds one legal Core-replayed route without making it a product rule or hint script. */
 export function findPuzzleRoute(levelId: PuzzleId, options: PuzzleRouteSearchOptions = {}): PuzzleRouteReplay | null {
   return searchRoute(levelId, options.maxLocks ?? 30, options.beamWidth ?? 480);
+}
+
+export function findPuzzleRouteForDefinition(
+  definition: PuzzleDefinition,
+  options: PuzzleRouteSearchOptions = {},
+): PuzzleRouteReplay | null {
+  const started = dispatch(createInitialState(
+    0x51a1f00d,
+    'puzzle',
+    definition.id,
+    undefined,
+    undefined,
+    definition,
+  ), { type: 'start' }).state;
+  return searchRoute(definition.id, options.maxLocks ?? 30, options.beamWidth ?? 480, undefined, started);
 }
 
 export function decodePuzzleRoute(commandStream: string): readonly GameCommand[] {
