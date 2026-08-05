@@ -292,3 +292,41 @@
 - Next action: freeze and implement the twenty-position all-open Easy ordering, then
   author and prove the three admitted Hard silhouette replacements before opening the
   exact mastery solver and progression migration.
+
+## T32-HARD-SHAPES — legal signature-board checkpoint
+
+- Task ID / base: `T32-HARD-SHAPES`, base `a5f1925`.
+- Candidate checkpoints:
+  - `d253a5b` — deterministic no-daemon silhouette authoring search.
+  - `4e718d6` — positions 36/38/47 rebuilt as `斜阶` / `层塔` / `悬廊` with exact
+    legal setup histories and frozen occupancy tests.
+  - `929f967` — generated public-Core dual-route evidence for the three boards.
+  - `2663e52` — active route overlay and replay assertions bound to those artifacts.
+- Exact changed paths:
+  - `docs/workstreams/tetris-t32-puzzle/search-silhouette-setups.mjs`
+  - `src/game/core/puzzles.ts`
+  - `src/game/core/puzzles.test.ts`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-36.json`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-38.json`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-47.json`
+  - `src/game/core/puzzleSolverResults.test.ts`
+- Authoring proof: each frozen silhouette was reproduced from its single accepted setup
+  seed with legal seeded seven-bag hard drops, no setup clear, no hidden cell, and no
+  merged same-type source tetrominoes. Seeds are `142658`, `156544`, and `373965`.
+- Completion proof: the production-Core solver produced and replayed two divergent
+  public-command routes per board. Lock pairs are `7/7`, `6/9`, and `9/10`; all three
+  pairs diverge at lock 1. This proves feasibility and route plurality, not optimality.
+- Commands actually run:
+  - three single-seed silhouette reproductions with node budget `200000` — PASS.
+  - three serial production-Core route runs with maximum 36 locks, primary beam 720,
+    and alternate beam 560 — PASS, six routes replayed.
+  - `npm.cmd run test -- src/game/core/puzzles.test.ts` — PASS, 7 tests.
+  - `npm.cmd run test -- src/game/core/puzzles.test.ts
+    src/game/core/puzzleSolverResults.test.ts` — PASS, 10 tests in two files.
+  - `npm.cmd run typecheck` — PASS after the final source/test edit.
+- Full suite/build/browser/independent QA: intentionally deferred until the last T32
+  source edit. No listener, watcher, browser, or persistent solver was started.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: implement the 10/20/20 progression and exact Easy-to-Hard mastery gates,
+  then run the final T32 gates and independent QA.
