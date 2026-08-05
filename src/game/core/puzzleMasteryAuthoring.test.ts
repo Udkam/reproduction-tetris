@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { VISIBLE_START_ROW } from './constants';
 import { getPuzzleDefinition, replayPuzzleSetup, type PuzzleSetupHistory } from './puzzles';
-import { certifyOptimalPuzzleRoute, encodePuzzleRoute, findPuzzleRoute, findPuzzleRouteForDefinition } from './puzzleRouteSearch';
+import { certifyOptimalPuzzleRoute, encodePuzzleRoute, findPuzzleAlternativeRoute, findPuzzleRoute, findPuzzleRouteForDefinition } from './puzzleRouteSearch';
 import type { PuzzleId, Rotation } from './types';
 
 // This authoring-only proof runs one level at a time so exhaustive search stays resource-bounded.
@@ -9,6 +9,8 @@ import type { PuzzleId, Rotation } from './types';
 const LEVEL_ID = process.env.PUZZLE_AUTHOR_LEVEL_ID as PuzzleId | undefined;
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
 const ROUTE = process.env.PUZZLE_AUTHOR_ROUTE as string | undefined;
+// @ts-expect-error Node environment variables are available to Vitest but not product types.
+const ALTERNATE = process.env.PUZZLE_AUTHOR_ALTERNATE === '1';
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
 const MAX_LOCKS = Number(process.env.PUZZLE_AUTHOR_MAX_LOCKS ?? 8);
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
@@ -20,7 +22,7 @@ const SETUP_BASE_ID = process.env.PUZZLE_AUTHOR_SETUP_BASE_ID as PuzzleId | unde
 // @ts-expect-error Node environment variables are available to Vitest but not product types.
 const SETUP_PREFIX = Number(process.env.PUZZLE_AUTHOR_SETUP_PREFIX ?? 0);
 
-describe.runIf(Boolean(LEVEL_ID && ROUTE))('single Puzzle mastery authoring proof', () => {
+describe.runIf(Boolean(LEVEL_ID && ROUTE && !ALTERNATE))('single Puzzle mastery authoring proof', () => {
   it(`proves the strict optimum for ${LEVEL_ID ?? 'unset'}`, () => {
     const certificate = certifyOptimalPuzzleRoute(LEVEL_ID as PuzzleId, ROUTE as string);
     expect(certificate).not.toBeNull();
@@ -32,6 +34,22 @@ describe.runIf(Boolean(LEVEL_ID && ROUTE))('single Puzzle mastery authoring proo
       exploredStateCount: certificate?.exploredStateCount,
       transitionCount: certificate?.transitionCount,
       deficitBoundPrunes: certificate?.deficitBoundPrunes,
+    })}`);
+  }, 600_000);
+});
+
+describe.runIf(Boolean(LEVEL_ID && ROUTE && ALTERNATE))('single Puzzle alternate-route authoring search', () => {
+  it(`finds a genuinely divergent route for ${LEVEL_ID ?? 'unset'}`, () => {
+    const result = findPuzzleAlternativeRoute(LEVEL_ID as PuzzleId, ROUTE as string, {
+      maxLocks: MAX_LOCKS,
+      beamWidth: 900,
+    });
+    expect(result.alternative).not.toBeNull();
+    console.error(`PUZZLE_ALTERNATE ${JSON.stringify({
+      levelId: LEVEL_ID,
+      firstDivergenceLock: result.firstDivergenceLock,
+      locks: result.alternative?.locks.length,
+      route: result.alternative ? encodePuzzleRoute(result.alternative.commands) : '',
     })}`);
   }, 600_000);
 });
