@@ -177,6 +177,9 @@ bounded by the committed roster contract and exact-proof acceptance below.
 - Remove exact and near-repeated residues. Replace campaign positions 36, 38, and 47
   with, respectively, a lower-triangle, pyramid, and two-sided suspended-roof/hollow-
   middle residue while preserving legal deterministic authoring.
+- Replace legacy positions 46, 48, 49, and 50 with distinct six-row, prefix-preserving
+  residues because strict public-Core probes found no completion within the frozen
+  twenty-two-lock proof ceiling.
 - Require at least two distinct public-Core-command solution replays for every new or
   changed board. A changed board is not admitted on visual plausibility or a solver
   search result that was not replayed by Core.
@@ -214,14 +217,14 @@ bounded by the committed roster contract and exact-proof acceptance below.
 
 - Stable positions 01-10 become rebuilt Intro; 11-30 become all-open Easy; 31-50
   become mastery-only Hard. Stable IDs and ordinals are retained.
-- The changed definition set is 01-10, 36, 38, and 47. Revision 2 removes completion
-  and best-operation records for those thirteen IDs while preserving both for the
-  thirty-seven unchanged boards.
+- The changed definition set is 01-10, 36, 38, and 46-50. Revision 2 removes completion
+  and best-operation records for those seventeen IDs while preserving both for the
+  thirty-three unchanged boards.
 - Existing unchanged Hard completion keeps only that level replayable; it cannot unlock
   another Hard level or bypass a new prerequisite. Uncompleted Hard remains locked.
-- Existing artifacts provide seventy-four potentially reusable routes for the
-  thirty-seven unchanged levels; twenty-six new Core-replayed routes are required for
-  the changed set.
+- Existing artifacts provide sixty-six potentially reusable routes for the thirty-three
+  unchanged levels; thirty-four new Core-replayed routes are required for the changed
+  set.
 - The anchor-free Easy pool supported by the current exhaustive solver is 12-15,
   17-21, 23-25, and 28-30. No pairing or optimum is frozen before exact proof and
   replay-signature evidence.
@@ -257,8 +260,9 @@ bounded by the committed roster contract and exact-proof acceptance below.
 - [ ] The campaign contains exactly 10 Intro, 20 Easy, and 20 Hard levels.
 - [ ] All Intro boards are newly authored; all Intro and Easy boards are immediately
   available; no Hard board bypasses a mastery prerequisite.
-- [ ] Campaign positions 36, 38, and 47 contain the three frozen distinct silhouettes,
-  and duplicate/near-duplicate validation finds no unresolved repetition.
+- [ ] Campaign positions 36, 38, and 47 contain the three frozen distinct silhouettes;
+  positions 46, 48, 49, and 50 contain their strict-proof six-row rebuilds; duplicate/
+  near-duplicate validation finds no unresolved repetition.
 - [ ] Every new or changed board has two distinct successful public-command Core
   replays from its registered initial state.
 - [ ] Every gating Easy board has an exhaustive optimal placed-piece certificate and

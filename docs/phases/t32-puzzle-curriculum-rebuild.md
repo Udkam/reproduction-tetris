@@ -33,13 +33,16 @@ fifty stable IDs and ordinals while changing their curriculum meaning as follows
 | --- | --- | --- | --- |
 | 01-10 | Intro | rebuild every board | all open |
 | 11-30 | Easy | retain unless later fingerprint/route proof rejects it | all open |
-| 31-50 | Hard | retain except 36, 38, and 47 | mastery only |
+| 31-50 | Hard | retain except 36, 38, and 46-50 | mastery only |
 
-The changed-board set is exactly positions **01-10, 36, 38, and 47**. The five current
+The changed-board set is exactly positions **01-10, 36, 38, and 46-50**. Strict
+public-Core probes reject the legacy tails at 46, 48, 49, and 50 within the frozen
+twenty-two-lock proof ceiling, so those positions keep their deterministic prefixes
+but receive distinct six-row rebuilds. The five current
 schema-7 route artifacts contain two Core-replayed routes for all fifty existing
-boards; the thirty-seven unchanged boards may retain their seventy-four routes only
-after campaign-wide replay against revision 2. The thirteen changed boards require
-twenty-six newly replayed routes.
+boards; the thirty-three unchanged boards may retain their sixty-six routes only
+after campaign-wide replay against revision 2. The seventeen changed boards require
+thirty-four newly replayed routes.
 
 The existing three strict certificates belong to positions 04-06, which are rebuilt
 Intro boards under T32. They are not reusable mastery evidence. The directly supported,
@@ -50,8 +53,8 @@ until exact search and replay-derived technique signatures exist. Positions 11, 
 exact proof implementation is first extended and independently justified for anchors.
 
 Campaign revision becomes **2**. Migration preserves completion and best-operation
-records only for the thirty-seven unchanged definitions. It removes both fields for
-the thirteen changed stable IDs. A completed unchanged Hard level remains replayable,
+records only for the thirty-three unchanged definitions. It removes both fields for
+the seventeen changed stable IDs. A completed unchanged Hard level remains replayable,
 but that historical completion cannot unlock a sibling Hard level or replace its new
 Easy mastery prerequisite; every uncompleted Hard level remains mastery-only.
 

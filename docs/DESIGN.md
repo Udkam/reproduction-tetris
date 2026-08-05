@@ -37,14 +37,18 @@ same decisive board-reading problem.
   **two-sided suspended-roof with a hollow middle** residue. Their geometry must remain
   legal under the existing deterministic setup contract rather than being painted or
   injected directly into runtime state.
+- Strict public-Core replay probes also reject the legacy tails at positions 46, 48,
+  49, and 50: none completes within the frozen twenty-two-lock proof ceiling. Those
+  positions retain their deterministic setup prefixes but are rebuilt as distinct
+  six-row residues with registered successful replay witnesses.
 - Names, ordering, categories, lesson copy, and unlock relations are derived only after
   the final boards and replay evidence are frozen. A stable ID may be retained for a
   replaced slot only with an explicit campaign-revision migration; stale best counts
   may not masquerade as records for a different board.
 - Stable positions 01-10 remain the rebuilt Intro IDs, 11-30 remain the Easy IDs, and
-  31-50 remain the Hard IDs. The changed set is exactly 01-10, 36, 38, and 47; campaign
-  revision 2 preserves records only for unchanged geometry and clears completion/best
-  data for those thirteen changed IDs.
+  31-50 remain the Hard IDs. The changed set is exactly 01-10, 36, 38, and 46-50;
+  campaign revision 2 preserves records only for unchanged geometry and clears
+  completion/best data for those seventeen changed IDs.
 - The directly supported anchor-free mastery candidate pool is positions 12-15, 17-21,
   23-25, and 28-30. A final Easy-to-Hard map is not design truth until exact optimum
   certificates and three-part replay signatures are checked; the contract does not
