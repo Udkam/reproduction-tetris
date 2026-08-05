@@ -1,6 +1,10 @@
 # T32 — Puzzle Curriculum Rebuild
 
 Status: **ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT FREEZE**
+
+Anchor-support acceptance: a multi-column settled piece resting on an immutable anchor
+must remain intact and fixed when a lower row clears; board cells and tracked target
+coordinates must resolve through the same support-aware transform.
 Recorded: 2026-08-05
 Repository: `E:\Proj\reproduction-tetris`
 Accepted product/evidence base: `main@735effe`

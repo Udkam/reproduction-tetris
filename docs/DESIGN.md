@@ -5,6 +5,11 @@
 
 ## 2026-08-05 T32 — active Puzzle curriculum rebuild
 
+Puzzle anchors are fixed world obstacles and physical supports. During a line clear,
+an already-settled connected piece resting on an anchor retains its complete geometry
+and world coordinates; the clear may move unsupported cells, but may not split or pull
+the supported piece around its anchor. Target-cell tracking uses this same mapping.
+
 **Status: ACTIVE / BOARD AUTHORING ADMITTED.** T31-R2 is accepted on product/test source
 `432fde4` with browser evidence through `f859d68` and an independent P0/P1/P2/P3-zero
 verdict for exact range `c291afb..532e636`. The renewed audit proves the live campaign is
