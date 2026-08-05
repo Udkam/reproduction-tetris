@@ -14,7 +14,7 @@ import {
   MUTATION_FREEZE_GRAVITY_TICKS,
   MUTATION_RANDOM_SALT,
   MUTATION_RESULT_TICKS,
-  MUTATION_SUPERGRAVITY_EFFECT_TICKS,
+  MUTATION_SUPERGRAVITY_PIECES,
   MAX_LOCK_RESETS,
   NEXT_QUEUE_SIZE,
   INITIAL_SURVIVAL_BEDROCK_ROWS,
@@ -174,10 +174,15 @@ function spawnPiece(state: GameState, type?: PieceType): GameTransition {
       events: [{ type: 'game-over', reason: 'block-out' }],
     };
   }
+  const claimsSupergravity = next.mode === 'sprint'
+    && next.mutationCollapsePiecesRemaining > 0;
   let spawnedState: GameState = {
       ...next,
       active,
-      mutationCollapseLandingLatched: next.mode === 'sprint' && next.mutationCollapseTicks > 0,
+      mutationCollapsePiecesRemaining: claimsSupergravity
+        ? next.mutationCollapsePiecesRemaining - 1
+        : next.mutationCollapsePiecesRemaining,
+      mutationCollapseLandingLatched: claimsSupergravity,
       puzzleQueue: next.mode === 'puzzle' ? Object.freeze([...next.queue]) : next.puzzleQueue,
       puzzleQueueIndex: 0,
       puzzleSpawnCount: next.mode === 'puzzle' ? next.puzzleSpawnCount + 1 : next.puzzleSpawnCount,
@@ -321,7 +326,7 @@ export function createInitialState(
     mutationCarriers: Object.freeze([]),
     mutationNextCarrierId: 1,
     mutationFreezeTicks: 0,
-    mutationCollapseTicks: 0,
+    mutationCollapsePiecesRemaining: 0,
     mutationCollapseLandingLatched: false,
     mutationMultiplierTicks: 0,
     mutationMultiplierFactor: 1,
@@ -935,6 +940,7 @@ interface MutationActivationSummary {
   triggerCells: Cell[];
   triggerKeys: Set<string>;
   multiplierFactor?: 2 | 4;
+  coveredPieces?: number;
 }
 
 /**
@@ -976,8 +982,7 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       durationTicks = MUTATION_EFFECT_TICKS;
       next = { ...next, mutationFreezeTicks: durationTicks };
     } else if (carrier.item === 'collapse') {
-      durationTicks = MUTATION_SUPERGRAVITY_EFFECT_TICKS;
-      next = { ...next, mutationCollapseTicks: durationTicks };
+      next = { ...next, mutationCollapsePiecesRemaining: MUTATION_SUPERGRAVITY_PIECES };
     } else if (carrier.item === 'multiplier') {
       const wasActive = next.mutationMultiplierTicks > 0;
       durationTicks = MUTATION_EFFECT_TICKS;
@@ -1037,6 +1042,7 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       summaries.set(carrier.item, summary);
       activationOrder.push(carrier.item);
     }
+    if (carrier.item === 'collapse') summary.coveredPieces = MUTATION_SUPERGRAVITY_PIECES;
     summary.durationTicks = Math.max(summary.durationTicks, durationTicks);
     summary.score += score;
     summary.rowsRemoved += rowsRemoved;
@@ -1061,6 +1067,9 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
       ...(summary.multiplierFactor === undefined
         ? {}
         : { multiplierFactor: summary.multiplierFactor }),
+      ...(summary.coveredPieces === undefined
+        ? {}
+        : { coveredPieces: summary.coveredPieces }),
     });
   }
   return { state: next, events };
@@ -1069,13 +1078,9 @@ function activateMutationCarriers(state: GameState, triggered: readonly Mutation
 function advanceMutationEffects(state: GameState): GameState {
   if (state.mode !== 'sprint') return state;
   const mutationMultiplierTicks = Math.max(0, state.mutationMultiplierTicks - 1);
-  const mutationCollapseLandingLatched = state.mutationCollapseLandingLatched
-    || activeUsesSupergravityLanding(state);
   return {
     ...state,
     mutationFreezeTicks: Math.max(0, state.mutationFreezeTicks - 1),
-    mutationCollapseTicks: Math.max(0, state.mutationCollapseTicks - 1),
-    mutationCollapseLandingLatched,
     mutationMultiplierTicks,
     mutationMultiplierFactor: mutationMultiplierTicks > 0 ? state.mutationMultiplierFactor : 1,
     mutationLastItemTicks: Math.max(0, state.mutationLastItemTicks - 1),
@@ -1576,7 +1581,7 @@ export function stateHash(state: GameState): string {
         mutationCarriers: _mutationCarriers,
         mutationNextCarrierId: _mutationNextCarrierId,
         mutationFreezeTicks: _mutationFreezeTicks,
-        mutationCollapseTicks: _mutationCollapseTicks,
+        mutationCollapsePiecesRemaining: _mutationCollapsePiecesRemaining,
         mutationCollapseLandingLatched: _mutationCollapseLandingLatched,
         mutationMultiplierTicks: _mutationMultiplierTicks,
         mutationMultiplierFactor: _mutationMultiplierFactor,
@@ -1626,7 +1631,7 @@ export function stateHash(state: GameState): string {
           mutationCarriers: _mutationCarriers,
           mutationNextCarrierId: _mutationNextCarrierId,
           mutationFreezeTicks: _mutationFreezeTicks,
-          mutationCollapseTicks: _mutationCollapseTicks,
+          mutationCollapsePiecesRemaining: _mutationCollapsePiecesRemaining,
           mutationCollapseLandingLatched: _mutationCollapseLandingLatched,
           mutationMultiplierTicks: _mutationMultiplierTicks,
           mutationMultiplierFactor: _mutationMultiplierFactor,
@@ -1668,7 +1673,7 @@ export function stateHash(state: GameState): string {
         mutationCarriers: _mutationCarriers,
         mutationNextCarrierId: _mutationNextCarrierId,
         mutationFreezeTicks: _mutationFreezeTicks,
-        mutationCollapseTicks: _mutationCollapseTicks,
+        mutationCollapsePiecesRemaining: _mutationCollapsePiecesRemaining,
         mutationCollapseLandingLatched: _mutationCollapseLandingLatched,
         mutationMultiplierTicks: _mutationMultiplierTicks,
         mutationMultiplierFactor: _mutationMultiplierFactor,

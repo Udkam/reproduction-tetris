@@ -6,7 +6,7 @@ import {
   MUTATION_EFFECT_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
   MUTATION_GRAVITY_TICKS,
-  MUTATION_SUPERGRAVITY_EFFECT_TICKS,
+  MUTATION_SUPERGRAVITY_PIECES,
   TICKS_PER_SECOND,
   gravityForMode,
 } from './constants';
@@ -81,51 +81,54 @@ describe('异变 mode', () => {
       ...playingMutation(),
       board,
       active: { type: 'O', rotation: 0, x: 8, y: 38 },
-      mutationCollapseTicks: 1,
+      mutationCollapseLandingLatched: true,
       mutationCarriers: [{ id: 4, item: 'freeze', cells: [{ x: 0, y: 34 }] }],
     }, { type: 'hard-drop' }).state;
     expect(collapsed.board[39]?.[0]).toBe('T');
     expect(collapsed.mutationCarriers).toEqual([{ id: 4, item: 'freeze', cells: [{ x: 0, y: 39 }] }]);
   });
 
-  it('latches Supergravity settlement onto an airborne piece through timer expiry only', () => {
-    let board = createBoard();
-    board = setCell(board, 0, 34, 'T');
-    const active = {
+  it('covers exactly the next five spawned pieces and keeps the fifth latched at quota zero', () => {
+    let next: GameState = {
       ...playingMutation(),
-      board,
-      active: { type: 'O', rotation: 0, x: 8, y: 4 } as const,
-      mutationCollapseTicks: 1,
+      board: createBoard(),
+      active: null,
+      phase: 'entry',
+      phaseTicks: ENTRY_DELAY_TICKS - 1,
+      mutationCollapsePiecesRemaining: MUTATION_SUPERGRAVITY_PIECES,
       mutationCollapseLandingLatched: false,
     };
 
-    const expired = dispatch(active, { type: 'tick' }).state;
-    expect(expired.mutationCollapseTicks).toBe(0);
-    expect(expired.mutationCollapseLandingLatched).toBe(true);
-    expect(stateHash(expired)).not.toBe(stateHash({
-      ...expired,
-      mutationCollapseLandingLatched: false,
-    }));
+    for (let index = 0; index < MUTATION_SUPERGRAVITY_PIECES; index += 1) {
+      next = dispatch(next, { type: 'tick' }).state;
+      expect(next.active).not.toBeNull();
+      expect(next.mutationCollapsePiecesRemaining).toBe(MUTATION_SUPERGRAVITY_PIECES - index - 1);
+      expect(next.mutationCollapseLandingLatched).toBe(true);
 
-    const moved = dispatch(expired, { type: 'move', dx: -1 }).state;
-    const rotated = dispatch(moved, { type: 'rotate', direction: 1 }).state;
-    expect(moved.mutationCollapseLandingLatched).toBe(true);
-    expect(rotated.mutationCollapseLandingLatched).toBe(true);
+      const moved = dispatch(next, { type: 'move', dx: -1 }).state;
+      const rotated = dispatch(moved, { type: 'rotate', direction: 1 }).state;
+      expect(moved.mutationCollapsePiecesRemaining).toBe(next.mutationCollapsePiecesRemaining);
+      expect(rotated.mutationCollapseLandingLatched).toBe(true);
+      if (index === MUTATION_SUPERGRAVITY_PIECES - 1) {
+        expect(stateHash(rotated)).not.toBe(stateHash({
+          ...rotated,
+          mutationCollapseLandingLatched: false,
+        }));
+      }
 
-    const latchedLock = dispatch(rotated, { type: 'hard-drop' }).state;
-    expect(latchedLock.board[39]?.[0]).toBe('T');
-    expect(latchedLock.mutationCollapseLandingLatched).toBe(false);
+      next = dispatch(rotated, { type: 'hard-drop' }).state;
+      expect(next.mutationCollapseLandingLatched).toBe(false);
+      next = {
+        ...next,
+        board: createBoard(),
+        phase: 'entry',
+        phaseTicks: ENTRY_DELAY_TICKS - 1,
+      };
+    }
 
-    let next = latchedLock;
-    for (let tick = 0; tick < ENTRY_DELAY_TICKS; tick += 1) next = dispatch(next, { type: 'tick' }).state;
-    const ordinaryBoard = setCell(next.board, 1, 34, 'L');
-    const ordinaryLock = dispatch({
-      ...next,
-      board: ordinaryBoard,
-      active: { type: 'O', rotation: 0, x: 8, y: 38 },
-    }, { type: 'hard-drop' }).state;
-    expect(ordinaryLock.board[34]?.[1]).toBe('L');
-    expect(ordinaryLock.mutationCollapseLandingLatched).toBe(false);
+    const sixth = dispatch(next, { type: 'tick' }).state;
+    expect(sixth.mutationCollapsePiecesRemaining).toBe(0);
+    expect(sixth.mutationCollapseLandingLatched).toBe(false);
   });
 
   it('emits the final independent-column cells for a latched Supergravity lock', () => {
@@ -135,7 +138,7 @@ describe('异变 mode', () => {
       ...playingMutation(),
       board,
       active: { type: 'O', rotation: 0, x: 8, y: 0 },
-      mutationCollapseTicks: 0,
+      mutationCollapsePiecesRemaining: 0,
       mutationCollapseLandingLatched: true,
     }, { type: 'hard-drop' });
 
@@ -161,7 +164,7 @@ describe('异变 mode', () => {
       ...playingMutation(),
       board,
       active: { type: 'O', rotation: 0, x: 4, y: 0 },
-      mutationCollapseTicks: 0,
+      mutationCollapsePiecesRemaining: 0,
       mutationCollapseLandingLatched: true,
     }, { type: 'hard-drop' });
 
@@ -364,7 +367,12 @@ describe('异变 mode', () => {
     expect(activations.filter((event) => event.item === 'freeze')).toHaveLength(1);
     expect(activations.filter((event) => event.item === 'multiplier')).toHaveLength(1);
     expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
-    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_SUPERGRAVITY_EFFECT_TICKS);
+    expect(transition.state.mutationCollapsePiecesRemaining).toBe(MUTATION_SUPERGRAVITY_PIECES - 1);
+    expect(transition.state.mutationCollapseLandingLatched).toBe(true);
+    expect(activations.find((event) => event.item === 'collapse')).toMatchObject({
+      durationTicks: 0,
+      coveredPieces: MUTATION_SUPERGRAVITY_PIECES,
+    });
     expect(transition.state.mutationMultiplierTicks).toBe(MUTATION_EFFECT_TICKS);
     expect(transition.state.mutationMultiplierFactor).toBe(4);
 
@@ -394,7 +402,8 @@ describe('异变 mode', () => {
     expect(transition.events.find((event) => event.type === 'mutation-activated')).toMatchObject({ item: 'bomb' });
     expect(transition.state.lines).toBe(4);
     expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
-    expect(transition.state.mutationCollapseTicks).toBe(MUTATION_SUPERGRAVITY_EFFECT_TICKS);
+    expect(transition.state.mutationCollapsePiecesRemaining).toBe(MUTATION_SUPERGRAVITY_PIECES - 1);
+    expect(transition.state.mutationCollapseLandingLatched).toBe(true);
   });
 
   it('executes every repeated Bomb mechanically but emits one combined Bomb presentation cue', () => {
@@ -522,25 +531,39 @@ describe('异变 mode', () => {
     expect(restored.active?.y).toBe((finalIceTick.active?.y ?? 0) + 1);
   });
 
-  it('refreshes Ice to ten seconds and Supergravity to five seconds', () => {
-    for (const item of ['freeze', 'collapse'] as const) {
-      const timer = item === 'freeze' ? 'mutationFreezeTicks' : 'mutationCollapseTicks';
-      const otherTimer = item === 'freeze' ? 'mutationCollapseTicks' : 'mutationFreezeTicks';
-      const expectedDuration = item === 'freeze'
-        ? MUTATION_EFFECT_TICKS
-        : MUTATION_SUPERGRAVITY_EFFECT_TICKS;
-      const transition = resolveLineClear({
-        ...carrierClearState(item),
-        [timer]: 17,
-        [otherTimer]: 123,
-        mutationMultiplierTicks: 321,
-        mutationMultiplierFactor: 2,
-      });
-      expect(transition.state[timer]).toBe(expectedDuration);
-      expect(transition.state[otherTimer]).toBe(123 - LINE_CLEAR_DELAY_TICKS);
-      expect(transition.state.mutationMultiplierTicks).toBe(321 - LINE_CLEAR_DELAY_TICKS);
-      expect(transition.state.mutationMultiplierFactor).toBe(2);
-    }
+  it('refreshes Ice while the next post-clear spawn claims one existing Supergravity slot', () => {
+    const transition = resolveLineClear({
+      ...carrierClearState('freeze'),
+      mutationFreezeTicks: 17,
+      mutationCollapsePiecesRemaining: 3,
+      mutationMultiplierTicks: 321,
+      mutationMultiplierFactor: 2,
+    });
+    expect(transition.state.mutationFreezeTicks).toBe(MUTATION_EFFECT_TICKS);
+    expect(transition.state.mutationCollapsePiecesRemaining).toBe(2);
+    expect(transition.state.mutationCollapseLandingLatched).toBe(true);
+    expect(transition.state.mutationMultiplierTicks).toBe(321 - LINE_CLEAR_DELAY_TICKS);
+    expect(transition.state.mutationMultiplierFactor).toBe(2);
+  });
+
+  it('refreshes Supergravity to five pieces before the first post-clear spawn claims one', () => {
+    const transition = resolveLineClear({
+      ...carrierClearState('collapse'),
+      mutationCollapsePiecesRemaining: 2,
+      mutationFreezeTicks: 123,
+      mutationMultiplierTicks: 321,
+      mutationMultiplierFactor: 2,
+    });
+    expect(transition.state.mutationCollapsePiecesRemaining).toBe(MUTATION_SUPERGRAVITY_PIECES - 1);
+    expect(transition.state.mutationCollapseLandingLatched).toBe(true);
+    expect(transition.state.mutationFreezeTicks).toBe(123 - LINE_CLEAR_DELAY_TICKS);
+    expect(transition.state.mutationMultiplierTicks).toBe(321 - LINE_CLEAR_DELAY_TICKS);
+    expect(transition.state.mutationMultiplierFactor).toBe(2);
+    expect(mutationActivations(transition)).toContainEqual(expect.objectContaining({
+      item: 'collapse',
+      durationTicks: 0,
+      coveredPieces: MUTATION_SUPERGRAVITY_PIECES,
+    }));
   });
 
   it('uses a bomb to remove the bottom three rows, award points, and advance speed progress', () => {

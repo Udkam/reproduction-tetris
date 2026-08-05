@@ -2779,7 +2779,7 @@ export class TetrisRenderer {
     if (state.mode !== 'sprint') return;
     const fallback: TimedMutationItem[] = [];
     if (state.mutationFreezeTicks > 0) fallback.push('freeze');
-    if (state.mutationCollapseTicks > 0) fallback.push('collapse');
+    if (state.mutationCollapsePiecesRemaining > 0 || state.mutationCollapseLandingLatched) fallback.push('collapse');
     if (state.mutationMultiplierTicks > 0) fallback.push('multiplier');
 
     const fields = this.mutationFields.size
@@ -3521,7 +3521,11 @@ export class TetrisRenderer {
   private syncMutationFields(state: GameState): void {
     const timed: Array<{ item: TimedMutationItem; active: boolean }> = [
       { item: 'freeze', active: state.mode === 'sprint' && state.mutationFreezeTicks > 0 },
-      { item: 'collapse', active: state.mode === 'sprint' && state.mutationCollapseTicks > 0 },
+      {
+        item: 'collapse',
+        active: state.mode === 'sprint'
+          && (state.mutationCollapsePiecesRemaining > 0 || state.mutationCollapseLandingLatched),
+      },
       { item: 'multiplier', active: state.mode === 'sprint' && state.mutationMultiplierTicks > 0 },
     ];
     for (const { item, active } of timed) {

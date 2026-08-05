@@ -221,7 +221,9 @@ type Translation = {
     eventBedrockRaised: (height: number) => string;
     eventBedrockLowered: (height: number) => string;
     eventItemTriggered: (item: string, seconds: number) => string;
+    eventSupergravityTriggered: (item: string, pieces: number) => string;
     mutationTimer: (item: string, seconds: number) => string;
+    mutationPieces: (item: string, pieces: number) => string;
     mutationPreview: (piece: string, item: string) => string;
     puzzleLesson: (technique: PuzzleTechnique) => { title: string; body: string };
   };
@@ -403,7 +405,9 @@ const COPY: Record<AppLanguage, Translation> = {
       eventBedrockRaised: (height) => `基岩升至 ${height} 层。`,
       eventBedrockLowered: (height) => `基岩降至 ${height} 层。`,
       eventItemTriggered: (item, seconds) => `${item} 已触发，持续 ${seconds} 秒。`,
+      eventSupergravityTriggered: (item, pieces) => `${item}已触发，覆盖后续 ${pieces} 块。`,
       mutationTimer: (item, seconds) => `${item}：${seconds} 秒`,
+      mutationPieces: (item, pieces) => `${item} · 剩余 ${pieces} 块`,
       mutationPreview: (piece, item) => `${piece} 方块，携带${item}道具`,
       puzzleLesson: (technique) => ({
         'complete-row': { title: '先完成一行', body: '先补最接近完整的目标行；消行腾出的空间会让后续更清楚。' },
@@ -541,7 +545,9 @@ const COPY: Record<AppLanguage, Translation> = {
       eventBedrockRaised: (height) => `Bedrock rose to ${height} rows.`,
       eventBedrockLowered: (height) => `Bedrock fell to ${height} rows.`,
       eventItemTriggered: (item, seconds) => `${item} activated for ${seconds} seconds.`,
+      eventSupergravityTriggered: (item, pieces) => `${item} activated for the next ${pieces} pieces.`,
       mutationTimer: (item, seconds) => `${item}: ${seconds}s`,
+      mutationPieces: (item, pieces) => `${item} · ${pieces} pieces left`,
       mutationPreview: (piece, item) => `${piece} piece carrying ${item}`,
       puzzleLesson: (technique) => ({
         'complete-row': { title: 'Finish one row first', body: 'Close the nearest prepared row; the clear creates room for every choice after it.' },

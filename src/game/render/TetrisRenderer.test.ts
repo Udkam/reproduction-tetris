@@ -961,7 +961,7 @@ describe('Puzzle undo presentation reset', () => {
       ...base,
       board,
       active: { type: 'O', rotation: 0, x: 3, y: 20 },
-      mutationCollapseTicks: 0,
+      mutationCollapsePiecesRemaining: 0,
       mutationCollapseLandingLatched: true,
     } as GameState;
     const pieces = createGraphicsRecorder();
@@ -1644,7 +1644,7 @@ describe('Puzzle undo presentation reset', () => {
       {
         mode: 'sprint',
         mutationFreezeTicks: 0,
-        mutationCollapseTicks: 60,
+        mutationCollapsePiecesRemaining: 1,
         mutationMultiplierTicks: 0,
         mutationMultiplierFactor: 2,
       } as unknown as GameState,
@@ -1770,7 +1770,7 @@ describe('Puzzle undo presentation reset', () => {
     const base = {
       mode: 'sprint',
       mutationFreezeTicks: 0,
-      mutationCollapseTicks: 0,
+      mutationCollapsePiecesRemaining: 0,
       mutationMultiplierTicks: 60,
     } as unknown as GameState;
 
@@ -1858,7 +1858,7 @@ describe('Puzzle undo presentation reset', () => {
       {
         mode: 'sprint',
         mutationFreezeTicks: 600,
-        mutationCollapseTicks: 0,
+        mutationCollapsePiecesRemaining: 0,
         mutationMultiplierTicks: 0,
         mutationMultiplierFactor: 1,
       } as unknown as GameState,
@@ -1959,7 +1959,7 @@ describe('Puzzle undo presentation reset', () => {
     previousBoard[BOARD_HEIGHT - 1]![0] = 'T';
     const finishedTimerState = {
       ...createInitialState(0x51a1f00d, 'sprint'),
-      mutationCollapseTicks: 0,
+      mutationCollapsePiecesRemaining: 0,
       mutationCollapseLandingLatched: false,
     };
 

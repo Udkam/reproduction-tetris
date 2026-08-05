@@ -32,9 +32,9 @@ describe('presentation interpolation', () => {
       ...base,
       board,
       active: { type: 'O', rotation: 0, x: 3, y: 20 },
-      mutationCollapseTicks: 1,
+      mutationCollapsePiecesRemaining: 0,
+      mutationCollapseLandingLatched: true,
     } as GameState;
-    const expired = dispatch(state, { type: 'tick' }).state;
     const before = board.map((row) => [...row]);
 
     const rigidLanding = [
@@ -46,19 +46,15 @@ describe('presentation interpolation', () => {
 
     expect(projectedLandingCells({
       ...state,
-      mutationCollapseTicks: 0,
       mutationCollapseLandingLatched: false,
     })).toEqual(rigidLanding);
     expect(projectedLandingCells(state)).toEqual(independentLanding);
-    expect(expired.mutationCollapseTicks).toBe(0);
-    expect(expired.mutationCollapseLandingLatched).toBe(true);
-    expect(projectedLandingCells(expired)).toEqual(independentLanding);
-    const locked = dispatch(expired, { type: 'hard-drop' }).events.find(
+    const locked = dispatch(state, { type: 'hard-drop' }).events.find(
       (event) => event.type === 'piece-locked',
     );
     expect(locked?.cells).toEqual(independentLanding);
-    expect(locked?.cells).toEqual(projectedLandingCells(expired));
-    expect(projectedLandingCells(expired)).toEqual(projectedLandingCells(expired));
+    expect(locked?.cells).toEqual(projectedLandingCells(state));
+    expect(projectedLandingCells(state)).toEqual(projectedLandingCells(state));
     expect(board).toEqual(before);
   });
 

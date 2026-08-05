@@ -6,7 +6,7 @@ import { act, createElement, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import styles from './styles.css?raw';
-import { MUTATION_EFFECT_TICKS, MUTATION_SUPERGRAVITY_EFFECT_TICKS, PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, nextMutationPreviewItem, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
+import { MUTATION_EFFECT_TICKS, MUTATION_SUPERGRAVITY_PIECES, PIECE_TYPES, createInitialState, dispatch, getPuzzleDefinition, nextMutationPreviewItem, type GameEvent, type GameMode, type GameState, type PieceType, type PuzzleId } from './game/core';
 import App, {
   cloneQaState,
   countdownTimeLabel,
@@ -2207,38 +2207,36 @@ describe('T6 frontend mode binding', () => {
     const supergravity = render(createElement(MutationStatus, {
       state: {
         ...createInitialState(0x51a1f00d, 'sprint'),
-        mutationCollapseTicks: MUTATION_SUPERGRAVITY_EFFECT_TICKS,
+        mutationCollapsePiecesRemaining: MUTATION_SUPERGRAVITY_PIECES,
       },
     }));
     const collapse = supergravity.container.querySelector<HTMLElement>('[data-mutation-state="collapse"]');
-    expect(collapse?.textContent).toBe('超重');
-    expect(collapse?.getAttribute('aria-label')).toBe('超重：5 秒');
+    expect(collapse?.textContent).toBe('超重 · 剩余 5 块');
+    expect(collapse?.getAttribute('aria-label')).toBe('超重 · 剩余 5 块');
     expect(collapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     const latchedSupergravity = render(createElement(MutationStatus, {
       state: {
         ...createInitialState(0x51a1f00d, 'sprint'),
-        mutationCollapseTicks: 0,
+        mutationCollapsePiecesRemaining: 0,
         mutationCollapseLandingLatched: true,
       },
     }));
     const latchedCollapse = latchedSupergravity.container.querySelector<HTMLElement>('[data-mutation-state="collapse"]');
     expect(latchedCollapse?.dataset.landingLatched).toBe('true');
-    expect(latchedCollapse?.textContent).toBe('超重');
-    expect(latchedCollapse?.getAttribute('aria-label')).toBe('超重');
-    expect(latchedCollapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('8%');
-    const airborneAtExpiry = dispatch({
-      ...dispatch(createInitialState(0x51a1f00d, 'sprint'), { type: 'start' }).state,
+    expect(latchedCollapse?.textContent).toBe('超重 · 剩余 1 块');
+    expect(latchedCollapse?.getAttribute('aria-label')).toBe('超重 · 剩余 1 块');
+    expect(latchedCollapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('20%');
+    const firstCoveredPiece = {
+      ...createInitialState(0x51a1f00d, 'sprint'),
       active: { type: 'O', rotation: 0, x: 4, y: 4 },
-      mutationCollapseTicks: 1,
-      mutationCollapseLandingLatched: false,
-    }, { type: 'tick' }).state;
-    expect(airborneAtExpiry.mutationCollapseTicks).toBe(0);
-    expect(airborneAtExpiry.mutationCollapseLandingLatched).toBe(true);
-    const derivedLatchedSupergravity = render(createElement(MutationStatus, { state: airborneAtExpiry }));
+      mutationCollapsePiecesRemaining: 4,
+      mutationCollapseLandingLatched: true,
+    } as GameState;
+    const derivedLatchedSupergravity = render(createElement(MutationStatus, { state: firstCoveredPiece }));
     const derivedLatchedCollapse = derivedLatchedSupergravity.container.querySelector<HTMLElement>('[data-mutation-state="collapse"]');
     expect(derivedLatchedCollapse?.dataset.landingLatched).toBe('true');
-    expect(derivedLatchedCollapse?.textContent).toBe('超重');
-    expect(derivedLatchedCollapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('8%');
+    expect(derivedLatchedCollapse?.textContent).toBe('超重 · 剩余 5 块');
+    expect(derivedLatchedCollapse?.querySelector<HTMLElement>('.mutation-status__meter > i')?.style.width).toBe('100%');
     const bombState = { ...active, mutationLastItem: 'bomb' as const, mutationLastItemTicks: 120 };
     const bomb = render(createElement(MutationStatus, { state: bombState }));
     expect(bomb.container.textContent).not.toContain('炸弹已清除底部 3 行');
@@ -2265,11 +2263,11 @@ describe('T6 frontend mode binding', () => {
     const events: GameEvent[] = [
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
       { type: 'mutation-activated', item: 'freeze', durationTicks: MUTATION_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
-      { type: 'mutation-activated', item: 'collapse', durationTicks: MUTATION_SUPERGRAVITY_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: 0, coveredPieces: MUTATION_SUPERGRAVITY_PIECES, score: 0, rowsRemoved: 0 },
     ];
     act(() => runtime.options.onState?.(runtime.getState(), events));
     expect(view.container.querySelector('.sr-only[aria-live="polite"]')?.textContent).toBe(
-      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 5 秒。',
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重已触发，覆盖后续 5 块。',
     );
     view.unmount();
   });
@@ -2322,13 +2320,13 @@ describe('T6 frontend mode binding', () => {
     const mutationEvents: GameEvent[] = [
       { type: 'lines-cleared', rows: [39], count: 1, score: 40 },
       { type: 'mutation-activated', item: 'freeze', durationTicks: MUTATION_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
-      { type: 'mutation-activated', item: 'collapse', durationTicks: MUTATION_SUPERGRAVITY_EFFECT_TICKS, score: 0, rowsRemoved: 0 },
+      { type: 'mutation-activated', item: 'collapse', durationTicks: 0, coveredPieces: MUTATION_SUPERGRAVITY_PIECES, score: 0, rowsRemoved: 0 },
     ];
     expect(eventMessages(mutationEvents)).toBe(
-      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重 已触发，持续 5 秒。',
+      '消除了 1 行。 冰冻 已触发，持续 10 秒。 超重已触发，覆盖后续 5 块。',
     );
     expect(eventMessages(mutationEvents, 'en')).toBe(
-      '1 lines cleared. Freeze activated for 10 seconds. Supergravity activated for 5 seconds.',
+      '1 lines cleared. Freeze activated for 10 seconds. Supergravity activated for the next 5 pieces.',
     );
 
     const completedPuzzle: GameState = {

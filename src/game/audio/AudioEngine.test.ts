@@ -360,7 +360,7 @@ describe('AudioEngine complete feedback remaster', () => {
     const active = {
       ...createInitialState(0x51a1f00d, 'sprint'),
       mutationFreezeTicks: 600,
-      mutationCollapseTicks: 600,
+      mutationCollapsePiecesRemaining: 5,
       mutationMultiplierTicks: 600,
       mutationMultiplierFactor: 4 as const,
     };
@@ -372,7 +372,7 @@ describe('AudioEngine complete feedback remaster', () => {
     audio.syncMutationState({
       ...active,
       mutationFreezeTicks: 0,
-      mutationCollapseTicks: 0,
+      mutationCollapsePiecesRemaining: 0,
       mutationMultiplierTicks: 0,
     });
     expect(oscillators).toHaveLength(voiceCount);

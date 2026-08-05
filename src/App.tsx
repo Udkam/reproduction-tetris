@@ -18,7 +18,7 @@ import {
   CLASSIC_STARTING_GRAVITY_MIN_TICKS,
   MUTATION_EFFECT_TICKS,
   MUTATION_FREEZE_GRAVITY_TICKS,
-  MUTATION_SUPERGRAVITY_EFFECT_TICKS,
+  MUTATION_SUPERGRAVITY_PIECES,
   PIECE_TYPES,
   SURVIVAL_RISES_PER_AFTERSHOCK,
   TICKS_PER_SECOND,
@@ -1675,14 +1675,12 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
     { item: 'freeze', ticks: state.mutationFreezeTicks },
     {
       item: 'collapse',
-      ticks: state.mutationCollapseTicks,
+      ticks: state.mutationCollapsePiecesRemaining,
       landingLatched: state.mutationCollapseLandingLatched,
     },
     { item: 'multiplier', ticks: state.mutationMultiplierTicks, multiplierFactor: state.mutationMultiplierFactor },
   ];
-  // Supergravity belongs to the tetromino that spawned while the timer was active.
-  // Keep its instrument row visible after the global timer reaches zero until that
-  // tetromino locks, matching both Core's endpoint and the renderer's landing ghost.
+  // Count the latched active tetromino alongside the unclaimed future quota.
   const activeEffects = candidates.filter((effect) => effect.ticks > 0 || effect.landingLatched);
 
   return (
@@ -1698,15 +1696,18 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
       <div className="mutation-status__ledger">
         {activeEffects.map((effect) => {
           const name = mutationEffectName(effect.item, language, effect.multiplierFactor);
-          const label = effect.landingLatched && effect.ticks <= 0
-            ? name
+          const coveredPieces = effect.item === 'collapse'
+            ? effect.ticks + (effect.landingLatched ? 1 : 0)
+            : 0;
+          const label = effect.item === 'collapse'
+            ? copy.phrasing.mutationPieces(name, coveredPieces)
             : mutationEffectLabel(effect.item, effect.ticks, language, effect.multiplierFactor);
           const durationTicks = effect.item === 'collapse'
-            ? MUTATION_SUPERGRAVITY_EFFECT_TICKS
+            ? MUTATION_SUPERGRAVITY_PIECES
             : MUTATION_EFFECT_TICKS;
-          const meterPercent = effect.landingLatched && effect.ticks <= 0
-            ? 8
-            : Math.round(effect.ticks / durationTicks * 100);
+          const meterPercent = Math.round(
+            (effect.item === 'collapse' ? coveredPieces : effect.ticks) / durationTicks * 100,
+          );
           return (
             <div
               key={effect.item}
@@ -1719,7 +1720,7 @@ export function MutationStatus({ state, language = DEFAULT_LANGUAGE }: { state: 
             >
               <i className="mutation-status__signal" aria-hidden="true" />
               <span className="mutation-status__effect-copy">
-                <b>{name}</b>
+                <b>{effect.item === 'collapse' ? label : name}</b>
               </span>
               <span className="mutation-status__meter" aria-hidden="true"><i style={{ width: `${meterPercent}%` }} /></span>
             </div>
@@ -1744,6 +1745,12 @@ export function eventMessage(event: GameEvent, language: AppLanguage = DEFAULT_L
     const label = event.item === 'multiplier' && event.multiplierFactor === 4
       ? copy.labels.superMultiplier
       : itemLabel(language, event.item);
+    if (event.item === 'collapse') {
+      return copy.phrasing.eventSupergravityTriggered(
+        label,
+        event.coveredPieces ?? MUTATION_SUPERGRAVITY_PIECES,
+      );
+    }
     return copy.phrasing.eventItemTriggered(label, Math.ceil(event.durationTicks / TICKS_PER_SECOND));
   }
   if (event.type === 'finished') return copy.labels.targetReached;
@@ -2102,7 +2109,7 @@ export function GameSession({
           activeCarrier: current.mutationActiveCarrier?.item ?? null,
           lockedCarriers: current.mutationCarriers.length,
           freezeTicks: current.mutationFreezeTicks,
-          collapseTicks: current.mutationCollapseTicks,
+          collapsePiecesRemaining: current.mutationCollapsePiecesRemaining,
           multiplierTicks: current.mutationMultiplierTicks,
           lastItem: current.mutationLastItem,
         } : null,

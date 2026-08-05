@@ -207,12 +207,13 @@ export interface GameState {
   mutationCarriers: readonly MutationCarrier[];
   /** Monotonic local identity used to make every carrier activate once. */
   mutationNextCarrierId: number;
-  /** Remaining game-time ticks for the three timed fourth-mode effects. */
+  /** Remaining game-time ticks for Ice. */
   mutationFreezeTicks: number;
-  mutationCollapseTicks: number;
+  /** Future tetromino spawns that will claim Supergravity; refreshed to five. */
+  mutationCollapsePiecesRemaining: number;
   /**
-   * Supergravity settlement belongs to the piece that spawned while the effect was
-   * active. Timer expiry may hide the field, but cannot change that piece's lock.
+   * Supergravity settlement belongs to the piece that claimed one coverage unit when
+   * it spawned. The future quota may reach zero, but cannot change that piece's lock.
    */
   mutationCollapseLandingLatched: boolean;
   mutationMultiplierTicks: number;
@@ -277,6 +278,8 @@ export type GameEvent =
     triggerCells?: readonly Cell[];
     /** Present for a Multiplier trigger: 2 for Double, 4 for Super Double. */
     multiplierFactor?: 2 | 4;
+    /** Present for Supergravity: number of future tetrominoes covered by this award. */
+    coveredPieces?: number;
   }
   | { type: 'bedrock-raised'; count: number; height: number }
   | { type: 'bedrock-lowered'; count: number; height: number }
