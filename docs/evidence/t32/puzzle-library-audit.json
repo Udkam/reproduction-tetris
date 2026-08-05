@@ -1,0 +1,206 @@
+{
+  "sourceSha": "474b2cae36449ec813fee3418ac471d9a07d3155",
+  "capturedAt": "2026-08-05T21:37:59.699Z",
+  "captures": [
+    {
+      "category": "intro",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "levelCount": 10,
+      "unlockedCount": 10,
+      "selectedLevelId": "t3r-shaft-01",
+      "canvasCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "shell": {
+        "x": 60,
+        "y": 0,
+        "width": 1320,
+        "height": 900,
+        "right": 1380,
+        "bottom": 900
+      },
+      "hero": {
+        "x": 71,
+        "y": 111,
+        "width": 727,
+        "height": 738,
+        "right": 798,
+        "bottom": 849
+      },
+      "catalog": {
+        "x": 798,
+        "y": 111,
+        "width": 571,
+        "height": 738,
+        "right": 1369,
+        "bottom": 849
+      },
+      "grid": {
+        "x": 913,
+        "y": 280,
+        "width": 340,
+        "height": 457,
+        "right": 1253,
+        "bottom": 738
+      },
+      "shellWithinViewport": true,
+      "errors": [],
+      "screenshot": "puzzle-library-intro-1440x900.png"
+    },
+    {
+      "category": "easy",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "levelCount": 20,
+      "unlockedCount": 20,
+      "selectedLevelId": "t5r-pulse-14",
+      "canvasCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "shell": {
+        "x": 60,
+        "y": 0,
+        "width": 1320,
+        "height": 900,
+        "right": 1380,
+        "bottom": 900
+      },
+      "hero": {
+        "x": 71,
+        "y": 111,
+        "width": 727,
+        "height": 738,
+        "right": 798,
+        "bottom": 849
+      },
+      "catalog": {
+        "x": 798,
+        "y": 111,
+        "width": 571,
+        "height": 738,
+        "right": 1369,
+        "bottom": 849
+      },
+      "grid": {
+        "x": 822,
+        "y": 337,
+        "width": 523,
+        "height": 345,
+        "right": 1345,
+        "bottom": 681
+      },
+      "shellWithinViewport": true,
+      "errors": [],
+      "screenshot": "puzzle-library-easy-1440x900.png"
+    },
+    {
+      "category": "hard",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "levelCount": 20,
+      "unlockedCount": 0,
+      "selectedLevelId": "tm-puzzle-31",
+      "canvasCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "shell": {
+        "x": 60,
+        "y": 0,
+        "width": 1320,
+        "height": 900,
+        "right": 1380,
+        "bottom": 900
+      },
+      "hero": {
+        "x": 71,
+        "y": 111,
+        "width": 727,
+        "height": 738,
+        "right": 798,
+        "bottom": 849
+      },
+      "catalog": {
+        "x": 798,
+        "y": 111,
+        "width": 571,
+        "height": 738,
+        "right": 1369,
+        "bottom": 849
+      },
+      "grid": {
+        "x": 822,
+        "y": 333,
+        "width": 523,
+        "height": 416,
+        "right": 1345,
+        "bottom": 749
+      },
+      "shellWithinViewport": true,
+      "errors": [],
+      "screenshot": "puzzle-library-hard-1440x900.png"
+    },
+    {
+      "category": "intro",
+      "viewport": {
+        "width": 1125,
+        "height": 1196
+      },
+      "levelCount": 10,
+      "unlockedCount": 10,
+      "selectedLevelId": "t3r-shaft-01",
+      "canvasCount": 0,
+      "horizontalOverflow": false,
+      "verticalOverflow": false,
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "width": 1125,
+        "height": 1196,
+        "right": 1125,
+        "bottom": 1196
+      },
+      "hero": {
+        "x": 8,
+        "y": 255,
+        "width": 1109,
+        "height": 303,
+        "right": 1117,
+        "bottom": 558
+      },
+      "catalog": {
+        "x": 8,
+        "y": 558,
+        "width": 1109,
+        "height": 435,
+        "right": 1117,
+        "bottom": 993
+      },
+      "grid": {
+        "x": 393,
+        "y": 559,
+        "width": 340,
+        "height": 456,
+        "right": 733,
+        "bottom": 1015
+      },
+      "shellWithinViewport": true,
+      "errors": [],
+      "screenshot": "puzzle-library-intro-1125x1196.png"
+    }
+  ],
+  "gameplay": {
+    "canvasCount": 1,
+    "domBoardCellCount": 0,
+    "horizontalOverflow": false,
+    "errors": [],
+    "screenshot": "puzzle-gameplay-intro-1440x900.png"
+  },
+  "passed": true
+}
