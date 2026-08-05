@@ -24,6 +24,47 @@ describe('anchor-aware row resolution', () => {
     expect(targets).toEqual([{ x: 4, y: anchorY - 1 }, { x: 3, y: anchorY }]);
   });
 
+  it('keeps only the explicitly tracked anchored placement fixed when a same-color cell touches it', () => {
+    const anchorY = 29;
+    const clearY = 33;
+    let board = createBoard();
+    board = setCell(board, 4, anchorY, ANCHOR_CELL);
+    const supportedPiece = [
+      { x: 4, y: anchorY - 1 },
+      { x: 3, y: anchorY - 1 },
+      { x: 2, y: anchorY - 1 },
+      { x: 4, y: anchorY - 2 },
+    ];
+    for (const { x, y } of supportedPiece) {
+      board = setCell(board, x, y, 'J');
+    }
+    board = setCell(board, 1, anchorY - 1, 'J');
+    board = setCell(board, 7, anchorY - 1, 'L');
+    board = setCell(board, 3, anchorY - 3, 'S');
+    for (let x = 0; x < BOARD_WIDTH; x += 1) board = setCell(board, x, clearY, 'I');
+
+    const rows = fullRows(board);
+    const tracked = [
+      ...supportedPiece,
+      { x: 1, y: anchorY - 1 },
+      { x: 7, y: anchorY - 1 },
+      { x: 3, y: anchorY - 3 },
+    ];
+    const cleared = clearRows(board, rows, supportedPiece);
+    const targets = mapCellsAfterClear(board, rows, tracked, supportedPiece);
+
+    for (const { x, y } of supportedPiece) expect(cleared[y]?.[x]).toBe('J');
+    expect(cleared[anchorY]?.[1]).toBe('J');
+    expect(cleared[anchorY]?.[7]).toBe('L');
+    expect(cleared[anchorY - 3]?.[3]).toBe('S');
+    expect(targets).toEqual([
+      ...supportedPiece,
+      { x: 1, y: anchorY },
+      { x: 7, y: anchorY },
+      { x: 3, y: anchorY - 3 },
+    ]);
+  });
+
   it('removes the ordinary cells from an anchor row without moving the anchor itself', () => {
     const anchorY = 31;
     let board = createBoard();

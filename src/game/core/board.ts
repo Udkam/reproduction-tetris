@@ -43,35 +43,61 @@ function removableRows(board: Board, rows: readonly number[]): ReadonlySet<numbe
   return new Set(rows.filter((index) => !board[index]?.includes(BEDROCK_CELL)));
 }
 
-function nearestAnchorBelow(board: Board, x: number, y: number): number {
+function nearestFixedSupportBelow(
+  board: Board,
+  supported: ReadonlySet<number>,
+  x: number,
+  y: number,
+): number {
   for (let nextY = y + 1; nextY < BOARD_HEIGHT; nextY += 1) {
-    if (board[nextY]![x] === ANCHOR_CELL) return nextY;
+    if (board[nextY]![x] === ANCHOR_CELL || supported.has(cellKey(x, nextY))) return nextY;
   }
   return BOARD_HEIGHT;
+}
+
+function cellKey(x: number, y: number): number {
+  return y * BOARD_WIDTH + x;
+}
+
+function supportedKeys(cells: readonly Cell[]): ReadonlySet<number> {
+  return new Set(cells.map((cell) => cellKey(cell.x, cell.y)));
 }
 
 /**
  * Returns the coordinate after a line clear while treating Puzzle anchors as fixed
  * world coordinates. A clear below an anchor cannot pull a cell through that anchor.
  */
-function destinationAfterClear(board: Board, removed: ReadonlySet<number>, cell: Cell): Cell {
-  const floor = nearestAnchorBelow(board, cell.x, cell.y);
+function destinationAfterClear(
+  board: Board,
+  removed: ReadonlySet<number>,
+  supported: ReadonlySet<number>,
+  cell: Cell,
+): Cell {
+  if (supported.has(cellKey(cell.x, cell.y))) return cell;
+  const floor = nearestFixedSupportBelow(board, supported, cell.x, cell.y);
   let shift = 0;
   for (const row of removed) if (row > cell.y && row < floor) shift += 1;
   return { x: cell.x, y: cell.y + shift };
 }
 
 /** Maps tracked canonical Puzzle cells through the exact anchor-aware line-clear rule. */
-export function mapCellsAfterClear(board: Board, rows: readonly number[], cells: readonly Cell[]): readonly Cell[] {
+export function mapCellsAfterClear(
+  board: Board,
+  rows: readonly number[],
+  cells: readonly Cell[],
+  supportedCells: readonly Cell[] = [],
+): readonly Cell[] {
   const removed = removableRows(board, rows);
+  const supported = supportedKeys(supportedCells);
   return Object.freeze(cells.flatMap((cell) => (
-    removed.has(cell.y) ? [] : [Object.freeze(destinationAfterClear(board, removed, cell))]
+    removed.has(cell.y) ? [] : [Object.freeze(destinationAfterClear(board, removed, supported, cell))]
   )));
 }
 
-export function clearRows(board: Board, rows: readonly number[]): Board {
+export function clearRows(board: Board, rows: readonly number[], supportedCells: readonly Cell[] = []): Board {
   const removed = removableRows(board, rows);
   if (removed.size === 0) return cloneBoard(board);
+  const supported = supportedKeys(supportedCells);
   const settled = createBoard();
 
   // Anchors are obstacles tied to their original world coordinates. Lay them down
@@ -82,7 +108,7 @@ export function clearRows(board: Board, rows: readonly number[]): Board {
   for (let y = 0; y < BOARD_HEIGHT; y += 1) for (let x = 0; x < BOARD_WIDTH; x += 1) {
     const material = board[y]![x];
     if (material === null || material === ANCHOR_CELL || removed.has(y)) continue;
-    const destination = destinationAfterClear(board, removed, { x, y });
+    const destination = destinationAfterClear(board, removed, supported, { x, y });
     if (settled[destination.y]![destination.x] !== null) {
       throw new Error('Line clear attempted to move a cell through a fixed anchor.');
     }

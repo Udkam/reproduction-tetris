@@ -111,3 +111,30 @@ describe('T13 Puzzle ordinary consecutive-piece flow', () => {
     expect(state.puzzleTargetCells).toHaveLength(state.puzzleInitialTargetCount - clearedTargetCount);
   });
 });
+
+describe('Puzzle anchor-supported placement identity', () => {
+  it('records all four cells of the exact piece that locks on an anchor', () => {
+    let board = createBoard();
+    board = setCell(board, 3, 10, ANCHOR_CELL);
+    const state: GameState = {
+      ...createInitialState(0x51a1f00d, 'puzzle', 't3r-shaft-02'),
+      status: 'playing',
+      phase: 'active',
+      phaseTicks: 0,
+      lockTicks: 0,
+      board,
+      active: { type: 'O', rotation: 0, x: 3, y: 8 },
+      pendingClearRows: [],
+      puzzleAnchorSupportedCells: Object.freeze([]),
+    };
+
+    const locked = dispatch(state, { type: 'hard-drop' }).state;
+
+    expect(locked.puzzleAnchorSupportedCells).toEqual([
+      { x: 3, y: 8 },
+      { x: 4, y: 8 },
+      { x: 3, y: 9 },
+      { x: 4, y: 9 },
+    ]);
+  });
+});

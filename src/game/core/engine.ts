@@ -48,6 +48,7 @@ import {
   withoutMutationCarriers,
 } from './mutation';
 import {
+  ANCHOR_CELL,
   SURVIVAL_STONE_CELL,
   type ActivePiece,
   type Cell,
@@ -289,6 +290,7 @@ export function createInitialState(
     puzzleTargetLines: null,
     puzzleTargetCells,
     puzzleInitialTargetCount: puzzleTargetCells.length,
+    puzzleAnchorSupportedCells: Object.freeze([]),
     puzzleBoardRows: selectedPuzzle?.boardRows ?? null,
     puzzleQueue: null,
     puzzleQueueIndex: 0,
@@ -1080,6 +1082,21 @@ function advanceMutationEffects(state: GameState): GameState {
   };
 }
 
+function puzzleAnchorSupportAfterLock(state: GameState, sourceCells: readonly Cell[]): readonly Cell[] {
+  if (state.mode !== 'puzzle') return state.puzzleAnchorSupportedCells;
+  const supportedKeys = new Set(state.puzzleAnchorSupportedCells.map((cell) => cell.y * BOARD_WIDTH + cell.x));
+  const isSupported = sourceCells.some((cell) => {
+    const belowY = cell.y + 1;
+    return state.board[belowY]?.[cell.x] === ANCHOR_CELL
+      || supportedKeys.has(belowY * BOARD_WIDTH + cell.x);
+  });
+  if (!isSupported) return state.puzzleAnchorSupportedCells;
+  const appended = sourceCells
+    .filter((cell) => !supportedKeys.has(cell.y * BOARD_WIDTH + cell.x))
+    .map((cell) => Object.freeze({ ...cell }));
+  return Object.freeze([...state.puzzleAnchorSupportedCells, ...appended]);
+}
+
 function lockActive(
   state: GameState,
   extraEvents: GameEvent[] = [],
@@ -1094,6 +1111,7 @@ function lockActive(
   const undoCheckpoint = state.mode === 'puzzle' ? state.puzzleActiveSpawnCheckpoint : null;
   const sourceCells = cellsForPiece(state.active);
   if (sourceCells.some((cell) => cell.y < 0 || cell.y >= BOARD_HEIGHT)) return invalidState(state);
+  const puzzleAnchorSupportedCells = puzzleAnchorSupportAfterLock(state, sourceCells);
   let board = mergePiece(state.board, state.active);
   const pieceCount = state.pieceCount + 1;
   let settledCells = sourceCells;
@@ -1135,6 +1153,7 @@ function lockActive(
     mutationActiveCarrier: null,
     mutationCarriers,
     mutationCollapseLandingLatched: false,
+    puzzleAnchorSupportedCells,
     puzzleActiveSpawnCheckpoint: null,
   };
   const rows = fullRows(board);
@@ -1304,10 +1323,20 @@ function finishLineClear(state: GameState): GameTransition {
     : state.survivalDebris;
   let cleared: GameState = {
     ...state,
-    board: clearRows(state.board, rows),
+    board: clearRows(state.board, rows, state.puzzleAnchorSupportedCells),
     active: activeAfterClear,
     survivalDebris: debrisAfterClear,
-    puzzleTargetCells: state.mode === 'puzzle' ? mapCellsAfterClear(state.board, rows, state.puzzleTargetCells) : state.puzzleTargetCells,
+    puzzleTargetCells: state.mode === 'puzzle'
+      ? mapCellsAfterClear(state.board, rows, state.puzzleTargetCells, state.puzzleAnchorSupportedCells)
+      : state.puzzleTargetCells,
+    puzzleAnchorSupportedCells: state.mode === 'puzzle'
+      ? mapCellsAfterClear(
+        state.board,
+        rows,
+        state.puzzleAnchorSupportedCells,
+        state.puzzleAnchorSupportedCells,
+      )
+      : state.puzzleAnchorSupportedCells,
     mutationCarriers: state.mode === 'sprint'
       ? mapMutationCarriersAfterClear(
         state.board,
@@ -1564,6 +1593,7 @@ export function stateHash(state: GameState): string {
         puzzleBoardRows: _puzzleBoardRows,
         puzzleTargetCells: _puzzleTargetCells,
         puzzleInitialTargetCount: _puzzleInitialTargetCount,
+        puzzleAnchorSupportedCells: _puzzleAnchorSupportedCells,
         puzzleQueue: _puzzleQueue,
         puzzleQueueIndex: _puzzleQueueIndex,
         puzzleSpawnCount: _puzzleSpawnCount,

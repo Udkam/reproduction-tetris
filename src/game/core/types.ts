@@ -146,6 +146,8 @@ export interface GameState {
   puzzleTargetCells: readonly Cell[];
   /** Stable original-target count used for the player-facing progress display. */
   puzzleInitialTargetCount: number;
+  /** Exact settled Puzzle cells whose placements are physically supported by anchors. */
+  puzzleAnchorSupportedCells: readonly Cell[];
   /** Immutable authored visible board source; the mutable canonical board is above. */
   puzzleBoardRows: readonly string[] | null;
   /**
