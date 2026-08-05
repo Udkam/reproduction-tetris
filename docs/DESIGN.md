@@ -3,6 +3,30 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-06 T33 — Supergravity covers five pieces
+
+**Status: ACTIVE.** Mutation Supergravity changes from elapsed-time ownership to a
+deterministic five-piece budget. Clearing a Supergravity carrier sets the number of
+future covered spawns to five. A spawn atomically consumes one unit and copies the
+effect into that active piece's immutable landing latch.
+
+The remaining budget and the active-piece latch are deliberately different state:
+
+- the budget answers how many *future* pieces will receive Supergravity;
+- the latch answers whether the *current* piece uses independent-column projection and
+  settlement;
+- timer ticks, pause duration, input rate, render frames, and row-wise entry do not
+  affect either claim;
+- after the fifth spawn consumes the last unit, its latch remains true until that piece
+  locks, so preview and settlement cannot diverge at the boundary;
+- another Supergravity award refreshes the future budget to five rather than adding
+  five, while an already-airborne latched piece remains latched.
+
+The status ledger communicates discrete ownership, not time: it shows the remaining
+piece count and has no seconds label or continuously draining time meter. Activation
+feedback may remain short-lived presentation, but it must not imply that gameplay
+ownership expires by time.
+
 ## 2026-08-06 T32 — accepted Puzzle curriculum rebuild
 
 Accepted source `9092402`; browser evidence `75cc2f9`; final independent QA PASS.

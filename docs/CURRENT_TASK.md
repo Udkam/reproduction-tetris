@@ -1,4 +1,45 @@
-# Current Task — T31-R1 and T32 Final Acceptance
+# Current Task — T33 Supergravity Five-Piece Coverage
+
+Status: **ACTIVE — contract checkpoint in progress**
+
+## Active objective
+
+Replace Mutation Supergravity's five-second timer with coverage of the next five
+spawned tetrominoes. Each covered piece owns an immutable per-piece Supergravity latch
+from its first visible row through ghost projection and final settlement. The global
+counter records only how many future pieces remain to be claimed; it may reach zero
+while the fifth piece is airborne without changing that piece's landing behavior.
+
+## Frozen behavior
+
+- A cleared Supergravity carrier refreshes the future-piece quota to exactly five; it
+  does not stack beyond five and does not retroactively alter the already-locked carrier
+  piece that awarded it.
+- Each subsequent successful spawn consumes one quota and latches Supergravity onto
+  that exact piece. Movement, rotation, row-wise entry, pausing, and unrelated Mutation
+  activation do not consume another quota.
+- Ghost projection and final lock use the piece latch, never the remaining global
+  quota. The fifth covered piece therefore keeps independent-column landing after the
+  visible counter reaches zero.
+- The Mutation status ledger presents a piece count rather than seconds or a timed
+  progress meter. Chinese copy uses `剩余 N 块`; English copy uses `N pieces left`.
+- Re-triggering Supergravity while a covered piece is already airborne refreshes the
+  quota for future spawns to five while preserving the airborne piece's latch.
+
+## Scope and checkpoints
+
+- Contract: `docs/DESIGN.md`, `docs/CURRENT_TASK.md`,
+  `docs/phases/t33-supergravity-five-piece-coverage.md`.
+- Core: Supergravity state/types, activation, spawn consumption, latch, ghost/lock, and
+  focused deterministic tests.
+- UI: Mutation status/localization and direct tests only; no unrelated visual redesign.
+- Final: one typecheck, one full suite, one build, one bounded browser evidence pass,
+  independent QA, changelog, exact-path commits, then push.
+- Inherited T27 evidence and `progress.md` remain untouched and unstaged.
+
+---
+
+# Previous Task — T31-R1 and T32 Final Acceptance
 
 Status: **ACCEPTED 2026-08-06 — T31 evidence `a76e5e5`; T32 evidence `75cc2f9`**
 
