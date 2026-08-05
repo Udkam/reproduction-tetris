@@ -26,6 +26,39 @@ describe('Puzzle mastery certificate registry', () => {
     }
   });
 
+  it('replays each technique signature from setup through contraction', () => {
+    for (const certificate of PUZZLE_OPTIMAL_CERTIFICATES) {
+      const { signature } = certificate;
+      const initial = replayPuzzleRoute(certificate.levelId, 'S');
+      const settledTargetCounts: number[] = [];
+
+      for (let index = 1; index <= certificate.route.length; index += 1) {
+        const replay = replayPuzzleRoute(certificate.levelId, certificate.route.slice(0, index));
+        if (replay.locks.length > 0) {
+          settledTargetCounts[replay.locks.length - 1] = replay.state.puzzleTargetCells.length;
+        }
+      }
+
+      expect(initial.state.puzzleTargetCells, certificate.levelId).toHaveLength(signature.initialTargetCount);
+      expect(settledTargetCounts, certificate.levelId).toHaveLength(certificate.optimalOperations);
+      expect(settledTargetCounts.slice(0, signature.setupLockCount), certificate.levelId).toEqual(
+        Array.from({ length: signature.setupLockCount }, () => signature.initialTargetCount),
+      );
+      expect(settledTargetCounts[signature.setupLockCount], certificate.levelId).toBe(
+        signature.decisiveTargetCount,
+      );
+      expect(settledTargetCounts.slice(signature.setupLockCount + 1), certificate.levelId).toEqual([
+        ...signature.continuationTargetCounts,
+      ]);
+
+      const contraction = [signature.decisiveTargetCount, ...signature.continuationTargetCounts];
+      expect(contraction.at(-1), certificate.levelId).toBe(0);
+      expect(contraction.every((count, index) => index === 0 || count < contraction[index - 1]), certificate.levelId).toBe(
+        true,
+      );
+    }
+  });
+
   it('assigns every Hard level to exactly one related Easy mastery group', () => {
     const easyIds = new Set(PUZZLE_CATEGORIES.find(({ id }) => id === 'easy')!.levels.map(({ id }) => id));
     const hardIds = PUZZLE_CATEGORIES.find(({ id }) => id === 'hard')!.levels.map(({ id }) => id);

@@ -1,6 +1,17 @@
 import type { PuzzleId } from './game/core';
 import type { PuzzleTechnique } from './puzzleLessons';
 
+export type PuzzleTechniqueSignature = Readonly<{
+  /** Original targets present before the certified route makes any placement. */
+  initialTargetCount: number;
+  /** Placements that establish the technique before its first target-removing clear. */
+  setupLockCount: number;
+  /** Targets remaining immediately after the route's first decisive clear. */
+  decisiveTargetCount: number;
+  /** Settled target frontier after every later placement; the final value must be zero. */
+  continuationTargetCounts: readonly number[];
+}>;
+
 export type PuzzleOptimalCertificate = Readonly<{
   levelId: PuzzleId;
   technique: PuzzleTechnique;
@@ -12,6 +23,7 @@ export type PuzzleOptimalCertificate = Readonly<{
   exploredStateCount: number;
   transitionCount: number;
   deficitBoundPrunes: number;
+  signature: PuzzleTechniqueSignature;
 }>;
 
 /**
@@ -30,6 +42,12 @@ export const PUZZLE_OPTIMAL_CERTIFICATES: readonly PuzzleOptimalCertificate[] = 
     exploredStateCount: 32,
     transitionCount: 850,
     deficitBoundPrunes: 819,
+    signature: Object.freeze({
+      initialTargetCount: 24,
+      setupLockCount: 2,
+      decisiveTargetCount: 17,
+      continuationTargetCounts: Object.freeze([16, 0]),
+    }),
   }),
   Object.freeze({
     levelId: 't5r-current-12',
@@ -42,6 +60,12 @@ export const PUZZLE_OPTIMAL_CERTIFICATES: readonly PuzzleOptimalCertificate[] = 
     exploredStateCount: 3086,
     transitionCount: 103810,
     deficitBoundPrunes: 100621,
+    signature: Object.freeze({
+      initialTargetCount: 24,
+      setupLockCount: 4,
+      decisiveTargetCount: 8,
+      continuationTargetCounts: Object.freeze([0]),
+    }),
   }),
   Object.freeze({
     levelId: 't5r-prism-11',
@@ -54,6 +78,12 @@ export const PUZZLE_OPTIMAL_CERTIFICATES: readonly PuzzleOptimalCertificate[] = 
     exploredStateCount: 10519,
     transitionCount: 293596,
     deficitBoundPrunes: 282471,
+    signature: Object.freeze({
+      initialTargetCount: 24,
+      setupLockCount: 2,
+      decisiveTargetCount: 17,
+      continuationTargetCounts: Object.freeze([16, 8, 0]),
+    }),
   }),
 ]);
 
