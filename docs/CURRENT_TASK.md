@@ -1,6 +1,16 @@
-# Current Task — T32 Puzzle Curriculum Rebuild
+# Current Task — T31-R1 and T32 Final Acceptance
 
-Status: **ACCEPTED 2026-08-06 — source `9092402`; evidence `75cc2f9`**
+Status: **ACCEPTED 2026-08-06 — T31 evidence `a76e5e5`; T32 evidence `75cc2f9`**
+
+## Combined closure
+
+- T31-R1/R3: Mutation status clarity, independent Next rendering, row-wise spatial
+  entry, Supergravity expiry latch/preview agreement, and local Ice/Supergravity
+  activation feedback are verified on current `main`.
+- T32: the rebuilt 10/20/20 Puzzle curriculum, migration, strict solver certificates,
+  progression graph, and anchor-safe clear mapping are accepted.
+- Final source gates, browser evidence, teardown, and independent QA passed for both
+  phases. No unverified requirement remains in this combined objective.
 
 ## Anchor support correction
 

@@ -1,6 +1,13 @@
 # T31 — Mutation Gravity, Ice, and Status Clarity
 
-Status (2026-08-05): **IN PROGRESS** from `main@7392edf`.
+Status (2026-08-06): **ACCEPTED / CLOSED**. Source closure through `fa34cc8`;
+current evidence `a76e5e5`; independent QA PASS.
+
+Final acceptance: the four-item Mutation pool, Supergravity expiry latch, frameless
+status rows, independent Next plane, row-wise spatial entry, and local Ice/Supergravity
+activation language are present in current `main`. Current-tree verification records
+focused `145 / 145`, full `387 passed / 8 skipped`, typecheck/build PASS, zero browser
+errors/failures, clean port teardown, and independent QA PASS.
 
 ## Objective
 

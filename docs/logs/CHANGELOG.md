@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-06 — T31-R1/R3 final current-tree acceptance
+
+- Re-captured T31 against current `main`, replacing stale evidence provenance with
+  source `50b272e` and evidence commit `a76e5e5`.
+- Verified visible frameless Mutation status, independent Next, lower-row-first spatial
+  entry with immediate complete landing guide, Supergravity expiry latch/preview/lock
+  agreement, local Ice snowflakes and Supergravity gravity factors, and Reshape removal.
+- Focused tests passed `145 / 145`; current full suite remained `387 passed / 8 skipped`;
+  typecheck/build PASS; browser errors/failures 0; port 4211 teardown PASS; independent
+  QA P0-P3 all 0.
+
 ## 2026-08-06 — T32 accepted Puzzle curriculum and anchor-safe clearing
 
 - Accepted the rebuilt 10/20/20 Puzzle curriculum and its migration, solver,

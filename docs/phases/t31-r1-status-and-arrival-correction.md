@@ -102,9 +102,9 @@ layout, audio, Survival, Puzzle, or the queued T32 curriculum rebuild.
 
 ## T31-R3 addendum — transient Next geometry and status prominence
 
-Status (2026-08-05): **SOURCE CANDIDATE / FINAL VISUAL GATES PENDING**. This addendum
-records a later player-visible regression without rewriting the accepted T31-R1/R2
-history above.
+Status (2026-08-06): **ACCEPTED / CLOSED**. Source `fa34cc8`; current browser evidence
+`a76e5e5`; independent QA P0 0 / P1 0 / P2 0 / P3 0. This addendum records the
+later player-visible regression without rewriting the accepted T31-R1/R2 history above.
 
 - Source checkpoint `fa34cc8` retains and reuses the preview plane's last valid rail
   bounds when the transparent DOM anchor is temporarily measured outside the current
@@ -117,5 +117,10 @@ history above.
   visible state row exposes `data-landing-latched=true`.
 - Focused source gates pass: the five directly affected Core/App/presentation/renderer/
   style files report `158 passed`, and `npm.cmd run typecheck` passes.
-- Browser evidence, the final full suite/build, teardown, and independent QA are still
-  pending. This addendum is not an acceptance claim.
+- Current browser evidence at `main@a76e5e5` records source `50b272e`, zero errors and
+  zero failures; inspected frames prove visible Next, prominent frameless status,
+  lower-row-first entry, activation bursts, and the expired-airborne Supergravity latch.
+- The current source already passed the final T32-era typecheck, complete suite
+  (`387 passed / 8 skipped`), and production build; the T31-focused rerun passed
+  `145 / 145`, port 4211 teardown passed, and final independent read-only QA found no
+  P0-P3 issue.
