@@ -64,7 +64,7 @@ describe.runIf(Boolean(LEVEL_ID && SETUP_BASE_ID && SETUP_PREFIX > 0))('Puzzle s
       targetRows,
       setup: history,
       boardRows: Object.freeze(visible.map((row) => row.map((cell) => cell ?? '.').join(''))),
-      anchorCells: Object.freeze([]),
+      anchorCells: baseDefinition.anchorCells,
     };
     const replay = findPuzzleRouteForDefinition(definition, { maxLocks: MAX_LOCKS, beamWidth: 900 });
     expect(replay).not.toBeNull();
@@ -106,7 +106,7 @@ describe.runIf(Boolean(LEVEL_ID && GENERATE_SETUP))('three-row Puzzle setup auth
           targetRows: 3,
           setup: history,
           boardRows: Object.freeze(visible.map((row) => row.map((cell) => cell ?? '.').join(''))),
-          anchorCells: Object.freeze([]),
+          anchorCells: baseDefinition.anchorCells,
         };
         const replay = findPuzzleRouteForDefinition(definition, { maxLocks: MAX_LOCKS, beamWidth: 120 });
         if (!replay) continue;

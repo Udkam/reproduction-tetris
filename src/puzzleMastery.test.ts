@@ -16,6 +16,7 @@ describe('Puzzle mastery certificate registry', () => {
       expect(replay.state.status, certificate.levelId).toBe('finished');
       expect(replay.state.puzzleCompletion, certificate.levelId).toBe('finished');
       expect(replay.locks, certificate.levelId).toHaveLength(certificate.optimalOperations);
+      expect(certificate.optimalOperations, certificate.levelId).toBeLessThanOrEqual(7);
       expect(certificate.masteryOperations, certificate.levelId).toBe(certificate.optimalOperations + 5);
       expect(certificate.exhaustedFrontierWidths, certificate.levelId).toHaveLength(certificate.optimalOperations - 1);
       expect(certificate.exploredStateCount, certificate.levelId).toBe(
