@@ -2109,6 +2109,7 @@ export class TetrisRenderer {
         // Repaint the current queue into the last verified rail rectangle; mode
         // switching and terminal states still clear intentionally below.
         if (this.drawPreviewsAtLastValidBounds(state)) return;
+        this.drawPreviewsAtBoardFallback(state, layout);
         return;
       }
       const fallbackSlot: PreviewSlot = {
@@ -2221,6 +2222,11 @@ export class TetrisRenderer {
       this.lastPreviewPiece = this.previewPiece;
       return;
     }
+    this.drawPreviewsAtBoardFallback(state, layout);
+  }
+
+  private drawPreviewsAtBoardFallback(state: GameState, layout: BoardLayout): void {
+    const graphics = this.previewGraphics;
     if (state.status === 'ready' || state.status === 'finished' || state.status === 'game-over') {
       this.previewClearBounds = null;
       this.previewClearPiece = null;
