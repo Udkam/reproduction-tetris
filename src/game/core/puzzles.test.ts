@@ -66,8 +66,8 @@ describe('T13 legal endgame workshop definitions', () => {
       '补行', '留井', '托台', '留口', '后手', '避坑', '归心', '分流', '择门', '侧隙',
       '平台', '井口', '悬边', '阶梯', '双井', '回填', '侧台', '横桥', '窄门', '交汇',
       '门柱', '回廊', '中柱', '斜坡', '夹井', '错台', '缓坡', '侧桥', '双层', '断台',
-      '曲井', '左闸', '错桥', '阶井', '悬台', '右闸', '双廊', '回井', '边塔', '折桥',
-      '横沟', '中阶', '分廊', '双塔', '斜廊', '边井', '深槽', '断槽', '叠井', '岔口',
+      '曲井', '左闸', '错桥', '阶井', '悬台', '斜阶', '双廊', '层塔', '边塔', '折桥',
+      '横沟', '中阶', '分廊', '双塔', '斜廊', '边井', '悬廊', '断槽', '叠井', '岔口',
     ]);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ seed }) => seed)).size).toBe(50);
     expect(new Set(PUZZLE_DEFINITIONS.map(({ boardRows, anchorCells }) => JSON.stringify({
@@ -77,7 +77,7 @@ describe('T13 legal endgame workshop definitions', () => {
     expect(PUZZLE_DEFINITIONS.filter((definition) => definition.anchorCells.length > 0).map(({ id }) => id)).toEqual([
       't5r-drift-08', 't5r-pulse-14', 't6r-cairn-17',
       'tm-puzzle-22', 'tm-puzzle-26', 'tm-puzzle-27',
-      'tm-puzzle-32', 'tm-puzzle-36', 'tm-puzzle-39',
+      'tm-puzzle-32', 'tm-puzzle-39',
     ] satisfies PuzzleId[]);
   });
 
@@ -117,6 +117,38 @@ describe('T13 legal endgame workshop definitions', () => {
         expect(definition.boardRows[anchor.y]?.[anchor.x], definition.id).toBe('.');
       }
     }
+  });
+
+  it('keeps the three rebuilt hard silhouettes exact after public-Core setup replay', () => {
+    const occupiedSilhouette = (id: PuzzleId): string[] => getPuzzleDefinition(id).boardRows
+      .slice(-getPuzzleDefinition(id).targetRows)
+      .map((row) => row.replace(/[IJLOSTZ]/g, '#'));
+
+    expect(occupiedSilhouette('tm-puzzle-36')).toEqual([
+      '##........',
+      '####......',
+      '######....',
+      '########..',
+      '########..',
+      '########..',
+    ]);
+    expect(occupiedSilhouette('tm-puzzle-38')).toEqual([
+      '...####...',
+      '..######..',
+      '..######..',
+      '.########.',
+      '.########.',
+      '.########.',
+    ]);
+    expect(occupiedSilhouette('tm-puzzle-47')).toEqual([
+      '###....###',
+      '###....###',
+      '###....###',
+      '##......##',
+      '###....###',
+      '###....###',
+      '###....###',
+    ]);
   });
 
   it('starts every selected level from the exact derived board and a stable seven-bag', () => {
