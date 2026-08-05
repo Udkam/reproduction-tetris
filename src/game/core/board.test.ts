@@ -65,6 +65,24 @@ describe('anchor-aware row resolution', () => {
     ]);
   });
 
+  it('does not use a supported cell from the cleared row as a lingering collision boundary', () => {
+    const anchorY = 29;
+    const clearY = anchorY - 1;
+    let board = createBoard();
+    board = setCell(board, 4, anchorY, ANCHOR_CELL);
+    for (let x = 0; x < BOARD_WIDTH; x += 1) board = setCell(board, x, clearY, 'I');
+    board = setCell(board, 4, clearY, 'J');
+    board = setCell(board, 4, clearY - 1, 'L');
+    const supported = [{ x: 4, y: clearY }];
+
+    const rows = fullRows(board);
+    const cleared = clearRows(board, rows, supported);
+    const targets = mapCellsAfterClear(board, rows, [...supported, { x: 4, y: clearY - 1 }], supported);
+
+    expect(cleared[clearY]?.[4]).toBe('L');
+    expect(targets).toEqual([{ x: 4, y: clearY }]);
+  });
+
   it('removes the ordinary cells from an anchor row without moving the anchor itself', () => {
     const anchorY = 31;
     let board = createBoard();

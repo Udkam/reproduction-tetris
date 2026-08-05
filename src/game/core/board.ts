@@ -59,8 +59,8 @@ function cellKey(x: number, y: number): number {
   return y * BOARD_WIDTH + x;
 }
 
-function supportedKeys(cells: readonly Cell[]): ReadonlySet<number> {
-  return new Set(cells.map((cell) => cellKey(cell.x, cell.y)));
+function supportedKeys(cells: readonly Cell[], removed: ReadonlySet<number>): ReadonlySet<number> {
+  return new Set(cells.filter((cell) => !removed.has(cell.y)).map((cell) => cellKey(cell.x, cell.y)));
 }
 
 /**
@@ -88,7 +88,7 @@ export function mapCellsAfterClear(
   supportedCells: readonly Cell[] = [],
 ): readonly Cell[] {
   const removed = removableRows(board, rows);
-  const supported = supportedKeys(supportedCells);
+  const supported = supportedKeys(supportedCells, removed);
   return Object.freeze(cells.flatMap((cell) => (
     removed.has(cell.y) ? [] : [Object.freeze(destinationAfterClear(board, removed, supported, cell))]
   )));
@@ -97,7 +97,7 @@ export function mapCellsAfterClear(
 export function clearRows(board: Board, rows: readonly number[], supportedCells: readonly Cell[] = []): Board {
   const removed = removableRows(board, rows);
   if (removed.size === 0) return cloneBoard(board);
-  const supported = supportedKeys(supportedCells);
+  const supported = supportedKeys(supportedCells, removed);
   const settled = createBoard();
 
   // Anchors are obstacles tied to their original world coordinates. Lay them down
