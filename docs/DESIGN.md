@@ -3,7 +3,9 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
-## 2026-08-05 T32 — active Puzzle curriculum rebuild
+## 2026-08-06 T32 — accepted Puzzle curriculum rebuild
+
+Accepted source `9092402`; browser evidence `75cc2f9`; final independent QA PASS.
 
 Puzzle anchors are fixed world obstacles and physical supports. During a line clear,
 an already-settled connected piece resting on an anchor retains its complete geometry
@@ -19,7 +21,7 @@ reusable. The isolated structural / symmetry / near-topology fingerprint foundat
 green at `da8e2b9`, and the roster/technique contract is committed. Board authoring is
 therefore admitted under the exact-proof and duplicate-rejection boundary below.
 
-When admitted, T32 replaces the current Puzzle curriculum without changing the total
+T32 replaces the current Puzzle curriculum without changing the total
 campaign size: **50 levels = 10 Intro + 20 Easy + 20 Hard**. The ten Intro boards are
 all rebuilt as authored teaching puzzles; Intro remains immediately available. All
 twenty Easy levels are immediately available and never depend on prior completion or

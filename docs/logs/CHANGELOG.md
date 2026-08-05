@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-08-06 — T32 accepted Puzzle curriculum and anchor-safe clearing
+
+- Accepted the rebuilt 10/20/20 Puzzle curriculum and its migration, solver,
+  progression, and browser evidence chain.
+- Fixed anchor-supported line clearing by recording exact placement identity, keeping
+  multi-column placements intact across lower clears, preserving normal gravity for
+  adjacent same-color placements, and removing cleared support cells before collision
+  resolution.
+- Final source `9092402`; evidence `75cc2f9`; typecheck/build PASS; full suite
+  387 passed and 8 skipped; browser audit PASS with four captures and zero errors;
+  final independent QA PASS.
+
 ## 2026-08-04 — T30 in-well arrival and route transitions accepted
 
 - Replaced instant active-piece appearance with a renderer-only 204 ms assembly at

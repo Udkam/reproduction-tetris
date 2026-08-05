@@ -371,3 +371,23 @@
   `docs/evidence/t27-r1-followup/**`, and `progress.md`.
 - Next action: finish the Puzzle library category/lesson presentation against the frozen
   10/20/20 graph, then run the final T32 gates and independent QA.
+
+## 2026-08-06 — T32 final acceptance and anchor-clear correction
+
+- Coordinator: primary Tetris task.
+- Final source candidate: `9092402`; browser evidence: `75cc2f9`.
+- Changed source paths for the closing regression:
+  `src/game/core/board.ts`, `src/game/core/board.test.ts`,
+  `src/game/core/engine.ts`, `src/game/core/puzzleFlow.test.ts`,
+  and `src/game/core/types.ts`.
+- Corrected invariant: Puzzle support uses exact locked-placement identity rather than
+  material/adjacency inference. A surviving anchor-supported placement remains fixed
+  through lower clears; a supported cell cleared in the current row cannot remain as
+  a phantom collision boundary.
+- Verification: focused regression PASS; typecheck PASS; full suite 387 passed and
+  8 skipped; production build PASS; browser audit PASS with four captures, zero game
+  errors, zero library errors, and zero remaining port-4213 listeners.
+- Independent QA: final read-only pass returned PASS with no blocker.
+- Inherited T27 evidence and `progress.md` remained untouched and unstaged.
+- Blocker: none.
+- Next action: none; T32 is accepted.

@@ -1,14 +1,17 @@
 # Current Task — T32 Puzzle Curriculum Rebuild
 
-Status: **IN PROGRESS — anchor-supported line-clear regression found 2026-08-06**
+Status: **ACCEPTED 2026-08-06 — source `9092402`; evidence `75cc2f9`**
 
 ## Anchor support correction
 
 - A fixed Puzzle anchor keeps its world coordinate during line clears.
-- An already-settled connected piece resting on that anchor is supported as one unit:
-  clearing rows below it must not pull its off-column cells downward or tear its shape.
-- Canonical Puzzle target coordinates must follow the same support-aware mapping as the
-  board, with a focused regression covering a multi-column piece resting on one anchor.
+- The exact cells of a settled placement that locks onto an anchor-supported chain are
+  tracked as one supported unit; lower clears cannot pull its off-column cells downward
+  or tear its shape, and adjacent same-material placements are not inferred into it.
+- A tracked support cell removed by the current clear is discarded before collision
+  boundaries resolve, so it cannot leave a phantom floor behind.
+- Canonical Puzzle target coordinates and supported placement coordinates follow the
+  same transform as the board.
 
 ## Active goal
 

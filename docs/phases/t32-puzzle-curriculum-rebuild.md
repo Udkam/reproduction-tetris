@@ -1,14 +1,16 @@
 # T32 — Puzzle Curriculum Rebuild
 
-Status: **ACTIVE / FINGERPRINT GREEN / ROSTER CONTRACT FREEZE**
+Status: **ACCEPTED 2026-08-06**
 
-Anchor-support acceptance: a multi-column settled piece resting on an immutable anchor
-must remain intact and fixed when a lower row clears; board cells and tracked target
-coordinates must resolve through the same support-aware transform.
+Anchor-support acceptance: the exact cells of a placement supported by an immutable
+anchor chain remain fixed during lower clears, while adjacent same-material placements
+retain normal gravity. Removed support cells cannot become phantom collision boundaries.
+Board cells, tracked targets, and support coordinates share the same transform.
 Recorded: 2026-08-05
+Accepted: 2026-08-06
 Repository: `E:\Proj\reproduction-tetris`
-Accepted product/evidence base: `main@735effe`
-Current implementation base: `main@da8e2b9`
+Accepted source candidate: `main@9092402`
+Accepted browser evidence: `main@75cc2f9`
 
 ## Admission gate
 
@@ -274,19 +276,19 @@ green claim is committed before entering the next subsystem.
 - [x] T31 has accepted closure and the T32 post-T31 path/board/solver audit is frozen.
 - [x] Exact, symmetry-normalized, and near-topology fingerprint tests are green at
   `da8e2b9` before any campaign definition changes.
-- [ ] Exactly 10 Intro, 20 Easy, and 20 Hard boards are registered.
-- [ ] Every Intro board is newly authored; all Intro and Easy boards are available at
+- [x] Exactly 10 Intro, 20 Easy, and 20 Hard boards are registered.
+- [x] Every Intro board is newly authored; all Intro and Easy boards are available at
   fresh progress state; every Hard board is mastery-gated.
-- [ ] No exact or unresolved near-duplicate remains; positions 36/38/47 match the three
+- [x] No exact or unresolved near-duplicate remains; positions 36/38/47 match the three
   frozen silhouette contracts and remain legal Core-authored states.
-- [ ] Every new/changed board has two distinct successful public-command Core replays.
-- [ ] Every gating Easy board has an exhaustive strict optimum certificate and uses
+- [x] Every new/changed board has two distinct successful public-command Core replays.
+- [x] Every gating Easy board has an exhaustive strict optimum certificate and uses
   the `optimum + 5` threshold.
-- [ ] Every unlock relation passes measurable precondition, decisive-event, and
+- [x] Every unlock relation passes measurable precondition, decisive-event, and
   continuation-invariant correspondence.
-- [ ] Persisted progress migrates without attaching old records to replaced geometry.
-- [ ] Focused tests pass at each source checkpoint; final typecheck, complete suite,
+- [x] Persisted progress migrates without attaching old records to replaced geometry.
+- [x] Focused tests pass at each source checkpoint; final typecheck, complete suite,
   production build, one-Canvas/zero-error browser proof, teardown, and multi-round
   independent QA pass before acceptance.
 
-Open boxes remain unverified implementation or proof work.
+All acceptance boxes were verified before final T32 closure.
