@@ -46,9 +46,10 @@ same decisive board-reading problem.
   replaced slot only with an explicit campaign-revision migration; stale best counts
   may not masquerade as records for a different board.
 - Stable positions 01-10 remain the rebuilt Intro IDs, 11-30 remain the Easy IDs, and
-  31-50 remain the Hard IDs. The changed set is exactly 01-10, 36, 38, and 46-50;
+  31-50 remain the Hard IDs. The changed set is exactly 01-10, 12-14, 36, 38, and 46-50;
   campaign revision 2 preserves records only for unchanged geometry and clears
-  completion/best data for those seventeen changed IDs.
+  completion/best data for those twenty changed IDs. Easy positions 12-14 are the
+  rebuilt strict-mastery boards whose exact certificates drive the Hard unlock graph.
 - The directly supported anchor-free mastery candidate pool is positions 12-15, 17-21,
   23-25, and 28-30. A final Easy-to-Hard map is not design truth until exact optimum
   certificates and three-part replay signatures are checked; the contract does not

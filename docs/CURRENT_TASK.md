@@ -217,14 +217,14 @@ bounded by the committed roster contract and exact-proof acceptance below.
 
 - Stable positions 01-10 become rebuilt Intro; 11-30 become all-open Easy; 31-50
   become mastery-only Hard. Stable IDs and ordinals are retained.
-- The changed definition set is 01-10, 36, 38, and 46-50. Revision 2 removes completion
-  and best-operation records for those seventeen IDs while preserving both for the
-  thirty-three unchanged boards.
+- The changed definition set is 01-10, 12-14, 36, 38, and 46-50. Revision 2 removes
+  completion and best-operation records for those twenty IDs while preserving both for
+  the thirty unchanged boards. Positions 12-14 are rebuilt Easy mastery prerequisites
+  with strict optimum certificates and divergent public-Core completion routes.
 - Existing unchanged Hard completion keeps only that level replayable; it cannot unlock
   another Hard level or bypass a new prerequisite. Uncompleted Hard remains locked.
-- Existing artifacts provide sixty-six potentially reusable routes for the thirty-three
-  unchanged levels; thirty-four new Core-replayed routes are required for the changed
-  set.
+- Existing artifacts provide sixty potentially reusable routes for the thirty unchanged
+  levels; forty new Core-replayed routes are required for the changed set.
 - The anchor-free Easy pool supported by the current exhaustive solver is 12-15,
   17-21, 23-25, and 28-30. No pairing or optimum is frozen before exact proof and
   replay-signature evidence.
@@ -240,13 +240,14 @@ bounded by the committed roster contract and exact-proof acceptance below.
    candidate mastery map, campaign migration, exact source paths, and checkpoint budget
    before product edits at `d81f2db`. Candidate mastery relations remain non-product
    until strict optimum and replay-signature proof promotes them.
-4. Author and Core-replay the rebuilt Intro set plus replacement boards 36/38/47;
-   commit the first green campaign-definition claim before changing progression.
-5. Generate and replay a second distinct route for every changed board; create strict
-   exhaustive certificates for the Easy mastery prerequisites in a separate proof
-   checkpoint.
-6. Implement all-open Intro/Easy access, mastery-only Hard access, campaign revision,
-   and technique-signature validators with direct tests.
+4. [complete] Author and Core-replay the rebuilt Intro set plus replacement boards
+   36/38/47, then extend the strict-proof rebuild to 46/48/49/50.
+5. [complete] Generate and replay a second distinct route for every changed board;
+   freeze strict exhaustive certificates for Easy mastery positions 12-14. Remaining
+   route evidence is committed at `8e0e2ba`.
+6. [complete] Implement all-open Intro/Easy access, mastery-only Hard access, campaign
+   revision, and technique-signature validators with direct tests. Revision-2 cleanup
+   now covers all twenty rebuilt definitions at `08cbb4d`.
 7. Adapt the Puzzle library only as required by the frozen categories and relations,
    then run final gates, bounded visual evidence, multi-round independent QA,
    changelog reconciliation, and coordinator push.

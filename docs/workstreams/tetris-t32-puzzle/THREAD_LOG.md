@@ -330,3 +330,44 @@
   `docs/evidence/t27-r1-followup/**`, and `progress.md`.
 - Next action: implement the 10/20/20 progression and exact Easy-to-Hard mastery gates,
   then run the final T32 gates and independent QA.
+
+## T32-ROUTE-CLOSURE — remaining route evidence and revision migration
+
+- Task ID / base: `T32-ROUTE-CLOSURE`, base `9ac768e`.
+- Candidate checkpoints:
+  - `8e0e2ba` — freezes the remaining four rebuilt Hard dual-route artifacts and the
+    three rebuilt Easy mastery alternate routes, with public-Core replay aggregation.
+  - `08cbb4d` — expands campaign revision 2 migration to every rebuilt definition and
+    freezes the exact twenty-ID order in a direct test.
+- Exact changed paths in the candidate range:
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-46-50-r2.json`
+  - `docs/workstreams/tetris-t32-puzzle/puzzle-levels-changed-easy-mastery.json`
+  - `src/game/core/puzzleHardWitnesses.test.ts`
+  - `src/game/core/puzzleMasteryAuthoring.test.ts`
+  - `src/game/core/puzzleSolverResults.test.ts`
+  - `src/game/core/puzzleT32EasyMasteryAlternates.ts`
+  - `src/game/core/puzzleT32EasyMasteryArtifactAuthoring.test.ts`
+  - `src/game/core/puzzleT32HardArtifactAuthoring.test.ts`
+  - `src/game/core/puzzleT32HardRebuildRoutes.ts`
+  - `src/puzzleProgress.ts`
+  - `src/puzzleProgress.test.ts`
+- Evidence: Easy positions 12-14 replay strict primary certificates and divergent
+  alternates; rebuilt Hard positions 46/48/49/50 replay two divergent public-command
+  routes each. Both schema-7 artifacts are regenerated only behind explicit opt-in
+  environment flags and otherwise compared byte-for-structure through Vitest.
+- Commands actually run:
+  - focused six-file Vitest command covering migration, mastery authoring, both artifact
+    authors, Hard witnesses, and aggregate solver results — PASS, 20 passed and five
+    opt-in tests skipped.
+  - `npm.cmd run typecheck` — PASS after the final source/test edit.
+  - `git diff --check` and both exact staged-path checks — PASS.
+- Correction found by the regression: the revision-one fixture called the rebuilt
+  `t5r-prism-11` board unchanged. It now uses actual unchanged campaign position 11,
+  while production migration clears positions 01-10, 12-14, 36, 38, and 46-50.
+- Blocker: none. Full suite/build/browser/independent QA remain intentionally deferred
+  until the last T32 source edit. No listener, watcher, browser, or persistent solver
+  was started.
+- Inherited exclusions remained untouched and unstaged: `docs/evidence/t27/**`,
+  `docs/evidence/t27-r1-followup/**`, and `progress.md`.
+- Next action: finish the Puzzle library category/lesson presentation against the frozen
+  10/20/20 graph, then run the final T32 gates and independent QA.
