@@ -33,6 +33,15 @@ while the fifth piece is airborne without changing that piece's landing behavior
 - Core: Supergravity state/types, activation, spawn consumption, latch, ghost/lock, and
   focused deterministic tests.
 - UI: Mutation status/localization and direct tests only; no unrelated visual redesign.
+- Atomic source exception: the implementation checkpoint may touch exactly these 12
+  paths because renaming the shared canonical state from timed Supergravity to
+  piece-count coverage cannot leave a green intermediate tree with Core and UI using
+  different units: `src/game/core/constants.ts`, `src/game/core/types.ts`,
+  `src/game/core/mutation.ts`, `src/game/core/engine.ts`,
+  `src/game/core/sprint.test.ts`, `src/game/render/presentation.test.ts`,
+  `src/game/render/TetrisRenderer.ts`, `src/game/render/TetrisRenderer.test.ts`,
+  `src/game/audio/AudioEngine.test.ts`, `src/App.tsx`, `src/App.test.ts`, and
+  `src/ui/localization.ts`. No other product/test path is authorized in that checkpoint.
 - Final: one typecheck, one full suite, one build, one bounded browser evidence pass,
   independent QA, changelog, exact-path commits, then push.
 - Inherited T27 evidence and `progress.md` remain untouched and unstaged.
