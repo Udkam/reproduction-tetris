@@ -18,10 +18,10 @@ const V4_PROGRESS_VERSION = 4;
 const V3_PROGRESS_VERSION = 3;
 const V2_PROGRESS_VERSION = 2;
 const LEGACY_PROGRESS_VERSION = 1;
-export const PUZZLE_CAMPAIGN_REVISION = 1;
+export const PUZZLE_CAMPAIGN_REVISION = 2;
 
-/** Fresh Phase-7 progress begins with the first three authored lessons. */
-export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = 3;
+/** Intro and Easy are exploration space; only Hard is mastery-gated. */
+export const INITIAL_AVAILABLE_PUZZLE_LEVEL_COUNT = 30;
 
 export interface PuzzleProgress {
   version: typeof PROGRESS_VERSION;
@@ -58,10 +58,19 @@ export const CAMPAIGN_LEVELS: readonly CampaignLevel[] = Object.freeze(
 );
 
 export const PUZZLE_CATEGORIES: readonly PuzzleCategory[] = Object.freeze([
-  Object.freeze({ id: 'intro', levels: Object.freeze(CAMPAIGN_LEVELS.slice(0, 3)) }),
-  Object.freeze({ id: 'easy', levels: Object.freeze(CAMPAIGN_LEVELS.slice(3, 30)) }),
+  Object.freeze({ id: 'intro', levels: Object.freeze(CAMPAIGN_LEVELS.slice(0, 10)) }),
+  Object.freeze({ id: 'easy', levels: Object.freeze(CAMPAIGN_LEVELS.slice(10, 30)) }),
   Object.freeze({ id: 'hard', levels: Object.freeze(CAMPAIGN_LEVELS.slice(30)) }),
 ]);
+
+/** Revision 2 re-authors these stable positions; their former clears are not equivalent. */
+export const PUZZLE_REVISION_2_CHANGED_IDS: readonly PuzzleId[] = Object.freeze([
+  ...CAMPAIGN_LEVELS.slice(0, 10).map(({ id }) => id),
+  CAMPAIGN_LEVELS[35]!.id,
+  CAMPAIGN_LEVELS[37]!.id,
+  CAMPAIGN_LEVELS[46]!.id,
+]);
+const PUZZLE_REVISION_2_CHANGED_ID_SET = new Set<PuzzleId>(PUZZLE_REVISION_2_CHANGED_IDS);
 
 /**
  * The v4 workshop used this difficulty-sorted visible order. Keep it literal: Phase 7
@@ -135,7 +144,7 @@ function buildRowBands(levels: readonly CampaignLevel[]): readonly (readonly Cam
   return Object.freeze(tiers);
 }
 
-/** Legacy five-level grouping; only bands through level 30 still define Easy frontier gates. */
+/** Legacy five-level grouping retained for save-order compatibility and diagnostics only. */
 export const PUZZLE_ROW_BANDS = buildRowBands(CAMPAIGN_LEVELS);
 /** @deprecated Compatibility export for the same canonical five-level bands. */
 export const CAMPAIGN_TIERS = PUZZLE_ROW_BANDS;
@@ -155,23 +164,7 @@ interface PuzzleTierGateDefinition {
   requiredCount: number;
 }
 
-const PUZZLE_TIER_GATES: readonly PuzzleTierGateDefinition[] = Object.freeze([
-  Object.freeze({
-    prerequisiteTier: Object.freeze(CAMPAIGN_LEVELS.slice(0, 3)),
-    unlocksTier: Object.freeze(CAMPAIGN_LEVELS.slice(3, 5)),
-    requiredCount: 2,
-  }),
-  Object.freeze({
-    prerequisiteTier: Object.freeze(CAMPAIGN_LEVELS.slice(0, 5)),
-    unlocksTier: PUZZLE_ROW_BANDS[1]!,
-    requiredCount: 3,
-  }),
-  ...PUZZLE_ROW_BANDS.slice(1, 5).map((prerequisiteTier, index) => Object.freeze({
-    prerequisiteTier,
-    unlocksTier: PUZZLE_ROW_BANDS[index + 2]!,
-    requiredCount: 3,
-  })),
-]);
+const PUZZLE_TIER_GATES: readonly PuzzleTierGateDefinition[] = Object.freeze([]);
 
 const LEVEL_IDS = new Set<PuzzleId>(CAMPAIGN_LEVELS.map((level) => level.id));
 const V4_LEVEL_IDS = new Set<PuzzleId>(V4_CAMPAIGN_ORDER);
@@ -371,17 +364,24 @@ export function parsePuzzleProgress(raw: string | null): PuzzleProgress {
       completedLevelIds?: unknown;
       bestPieceCounts?: unknown;
     };
-    if (
-      candidate.version !== PROGRESS_VERSION
-      || candidate.campaignRevision !== PUZZLE_CAMPAIGN_REVISION
-      || !Array.isArray(candidate.completedLevelIds)
-    ) {
+    if (candidate.version !== PROGRESS_VERSION || !Array.isArray(candidate.completedLevelIds)) {
+      return defaultPuzzleProgress();
+    }
+    if (candidate.campaignRevision !== 1 && candidate.campaignRevision !== PUZZLE_CAMPAIGN_REVISION) {
       return defaultPuzzleProgress();
     }
     if (!candidate.completedLevelIds.every(isPuzzleId)) return defaultPuzzleProgress();
-    const completedLevelIds = orderedUnique(candidate.completedLevelIds);
-    const bestPieceCounts = orderedBestPieceCounts(candidate.bestPieceCounts, completedLevelIds);
-    if (bestPieceCounts === null) return defaultPuzzleProgress();
+    const priorCompletedLevelIds = orderedUnique(candidate.completedLevelIds);
+    const priorBestPieceCounts = orderedBestPieceCounts(candidate.bestPieceCounts, priorCompletedLevelIds);
+    if (priorBestPieceCounts === null) return defaultPuzzleProgress();
+    const completedLevelIds = candidate.campaignRevision === PUZZLE_CAMPAIGN_REVISION
+      ? priorCompletedLevelIds
+      : priorCompletedLevelIds.filter((id) => !PUZZLE_REVISION_2_CHANGED_ID_SET.has(id));
+    const bestPieceCounts: Partial<Record<PuzzleId, number>> = {};
+    for (const id of completedLevelIds) {
+      const best = priorBestPieceCounts[id];
+      if (best !== undefined) bestPieceCounts[id] = best;
+    }
     return {
       version: PROGRESS_VERSION,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
@@ -414,7 +414,7 @@ export function migrateV4PuzzleProgress(raw: string | null): PuzzleProgress {
     return {
       version: PROGRESS_VERSION,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
-      completedLevelIds: orderedUnique(completedLevelIds),
+      completedLevelIds: orderedUnique(completedLevelIds).filter((id) => !PUZZLE_REVISION_2_CHANGED_ID_SET.has(id)),
       bestPieceCounts: {},
     };
   } catch {
@@ -436,7 +436,8 @@ export function migrateV3PuzzleProgress(raw: string | null): PuzzleProgress {
     return {
       version: PROGRESS_VERSION,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
-      completedLevelIds: orderedUnique(orderedV4Unique(candidate.completedLevelIds)),
+      completedLevelIds: orderedUnique(orderedV4Unique(candidate.completedLevelIds))
+        .filter((id) => !PUZZLE_REVISION_2_CHANGED_ID_SET.has(id)),
       bestPieceCounts: {},
     };
   } catch {
@@ -458,7 +459,8 @@ export function migrateV2PuzzleProgress(raw: string | null): PuzzleProgress {
     return {
       version: PROGRESS_VERSION,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
-      completedLevelIds: orderedUnique(orderedV2Unique(candidate.completedLevelIds)),
+      completedLevelIds: orderedUnique(orderedV2Unique(candidate.completedLevelIds))
+        .filter((id) => !PUZZLE_REVISION_2_CHANGED_ID_SET.has(id)),
       bestPieceCounts: {},
     };
   } catch {
@@ -483,7 +485,8 @@ export function migrateLegacyPuzzleProgress(raw: string | null): PuzzleProgress 
     return {
       version: PROGRESS_VERSION,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
-      completedLevelIds: orderedUnique(V2_CAMPAIGN_ORDER.slice(0, Math.max(0, nextIndex))),
+      completedLevelIds: orderedUnique(V2_CAMPAIGN_ORDER.slice(0, Math.max(0, nextIndex)))
+        .filter((id) => !PUZZLE_REVISION_2_CHANGED_ID_SET.has(id)),
       bestPieceCounts: {},
     };
   } catch {

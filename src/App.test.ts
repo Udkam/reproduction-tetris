@@ -316,12 +316,13 @@ describe('DEV QA state snapshot isolation', () => {
 });
 
 describe('Puzzle progress boot migration', () => {
-  it('writes a frozen v4 completion into v5 without deleting the rollback key or promoting its retired-board best', () => {
-    const levelId = CAMPAIGN_LEVELS[0]!.id;
+  it('migrates v4 progress by clearing revision-two boards while preserving unchanged completions', () => {
+    const changedLevelId = CAMPAIGN_LEVELS[0]!.id;
+    const unchangedLevelId = CAMPAIGN_LEVELS[10]!.id;
     const v4 = JSON.stringify({
       version: 4,
-      completedLevelIds: [levelId],
-      bestPieceCounts: { [levelId]: 6 },
+      completedLevelIds: [changedLevelId, unchangedLevelId],
+      bestPieceCounts: { [changedLevelId]: 6, [unchangedLevelId]: 8 },
     });
     localStorage.setItem(V4_PUZZLE_PROGRESS_KEY, v4);
 
@@ -329,7 +330,7 @@ describe('Puzzle progress boot migration', () => {
     expect(JSON.parse(localStorage.getItem(PUZZLE_PROGRESS_KEY) ?? 'null')).toEqual({
       version: 5,
       campaignRevision: PUZZLE_CAMPAIGN_REVISION,
-      completedLevelIds: [levelId],
+      completedLevelIds: [unchangedLevelId],
       bestPieceCounts: {},
     });
     expect(localStorage.getItem(V4_PUZZLE_PROGRESS_KEY)).toBe(v4);
@@ -2430,7 +2431,7 @@ describe('T6 frontend mode binding', () => {
   it('uses a three-stage Puzzle curriculum with lessons and mastery-gated Hard puzzles', () => {
     expect(CAMPAIGN_LEVELS).toHaveLength(50);
     expect(PUZZLE_CATEGORIES.map(({ id, levels }) => [id, levels.length])).toEqual([
-      ['intro', 3], ['easy', 27], ['hard', 20],
+      ['intro', 10], ['easy', 20], ['hard', 20],
     ]);
     const onSelect = vi.fn();
     const onStart = vi.fn();
@@ -2445,8 +2446,8 @@ describe('T6 frontend mode binding', () => {
     const view = render(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[0]!.id)));
 
     let rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    expect(rows).toHaveLength(3);
-    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(0, 3).map((level) => level.id));
+    expect(rows).toHaveLength(10);
+    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(0, 10).map((level) => level.id));
     expect(rows.every((row) => row.dataset.unlocked === 'true')).toBe(true);
     expect(view.container.querySelector('[data-testid="level-list"]')?.getAttribute('aria-label')).toBe('50 个开放解谜残局');
     expect(view.container.querySelector('[data-testid="campaign-availability"], [data-testid="campaign-rules"]')).toBeNull();
@@ -2457,28 +2458,28 @@ describe('T6 frontend mode binding', () => {
     expect(pageTabs).toHaveLength(3);
     expect(pageTabs.map((tab) => tab.textContent)).toEqual(['入门', '简单', '困难']);
     expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
-    expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('入门，3 关');
+    expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('入门，10 关');
     act(() => {
       pageTabs[0]!.focus();
       pageTabs[0]!.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     });
     expect(document.activeElement).toBe(pageTabs[1]);
     expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['false', 'true', 'false']);
-    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[3]!.id);
-    view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[3]!.id)));
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[10]!.id);
+    view.rerender(createElement(PuzzleLibrary, props(CAMPAIGN_LEVELS[10]!.id)));
     rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    expect(rows).toHaveLength(27);
-    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(3, 30).map((level) => level.id));
-    expect(rows.every((row) => row.dataset.unlocked === 'false')).toBe(true);
+    expect(rows).toHaveLength(20);
+    expect(rows.map((row) => row.dataset.levelId)).toEqual(CAMPAIGN_LEVELS.slice(10, 30).map((level) => level.id));
+    expect(rows.every((row) => row.dataset.unlocked === 'true')).toBe(true);
     expect(rows.every((row) => row.getAttribute('aria-disabled') === null)).toBe(true);
-    expect(rows[0]?.getAttribute('aria-label')).toContain('未解锁');
-    expect(view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]')?.disabled).toBe(true);
+    expect(rows[0]?.getAttribute('aria-label')).toContain('可进入');
+    expect(view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]')?.disabled).toBe(false);
     act(() => {
       pageTabs[1]!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
     });
     expect(document.activeElement).toBe(pageTabs[0]);
     expect(pageTabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
-    expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('入门，3 关');
+    expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('aria-label')).toBe('入门，10 关');
     rows = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
     expect(rows[0]?.textContent).toContain('01');
     expect(view.container.querySelectorAll('.puzzle-gallery__catalog .puzzle-silhouette')).toHaveLength(0);
@@ -2511,7 +2512,7 @@ describe('T6 frontend mode binding', () => {
     expect(selectedBest?.closest('.puzzle-gallery__title-row')?.querySelector('.puzzle-gallery__title')).not.toBeNull();
     expect(startSelected?.closest('.puzzle-gallery__meta')?.contains(selectedBest ?? null)).toBe(true);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.dataset.bestPieces).toBe('7');
-    expect(view.container.querySelectorAll('.puzzle-gallery__completion-tick')).toHaveLength(3);
+    expect(view.container.querySelectorAll('.puzzle-gallery__completion-tick')).toHaveLength(10);
     expect(view.container.querySelectorAll('.puzzle-gallery__node--complete .puzzle-gallery__index')).toHaveLength(0);
     expect(view.container.querySelector<HTMLButtonElement>('[data-level-id="t3r-shaft-01"]')?.textContent).toBe('');
     expect(view.container.textContent).not.toContain('√');
@@ -2551,14 +2552,17 @@ describe('T6 frontend mode binding', () => {
     }
 
     const gatedGroup = PUZZLE_HARD_MASTERY_GROUPS[0]!;
+    const gatedThreshold = PUZZLE_OPTIMAL_CERTIFICATES.find(
+      (certificate) => certificate.levelId === gatedGroup.prerequisiteId,
+    )!.masteryOperations;
     const blocked: PuzzleProgress = {
       ...mastered,
-      bestPieceCounts: { ...masteredBests, [gatedGroup.prerequisiteId]: 11 },
+      bestPieceCounts: { ...masteredBests, [gatedGroup.prerequisiteId]: gatedThreshold + 1 },
     };
     view.rerender(createElement(PuzzleLibrary, props(gatedGroup.hardLevelIds[0]!, blocked)));
     expect(view.container.querySelector<HTMLButtonElement>('[data-testid="start-selected-puzzle"]')?.disabled).toBe(true);
-    expect(view.container.querySelector('[data-testid="puzzle-mastery-requirement"]')?.textContent).toContain('10 步内');
-    expect(view.container.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.getAttribute('aria-label')).toContain('10 步内');
+    expect(view.container.querySelector('[data-testid="puzzle-mastery-requirement"]')?.textContent).toContain(`${gatedThreshold} 步内`);
+    expect(view.container.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.getAttribute('aria-label')).toContain(`${gatedThreshold} 步内`);
 
     const historicHard: PuzzleProgress = {
       version: 5,
@@ -2596,23 +2600,23 @@ describe('T6 frontend mode binding', () => {
     expect(levels.filter((button) => button.tabIndex === 0)).toEqual([levels[0]]);
     act(() => levels[0]!.focus());
     press(levels[0]!, 'ArrowDown');
-    expect(document.activeElement).toBe(levels[2]);
-    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[2]!.id);
+    expect(document.activeElement).toBe(levels[3]);
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[3]!.id);
 
     const tabs = [...view.container.querySelectorAll<HTMLButtonElement>('.puzzle-gallery__pages [role="tab"]')];
     act(() => tabs[1]!.click());
     levels = [...view.container.querySelectorAll<HTMLButtonElement>('[data-testid="level-row"]')];
-    expect(levels).toHaveLength(27);
+    expect(levels).toHaveLength(20);
     act(() => levels[0]!.focus());
     press(levels[0]!, 'ArrowDown');
     expect(document.activeElement).toBe(levels[6]);
-    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[9]!.id);
+    expect(onSelect).toHaveBeenLastCalledWith(CAMPAIGN_LEVELS[16]!.id);
     press(levels[6]!, 'Home');
     expect(document.activeElement).toBe(levels[0]);
     press(levels[0]!, 'End');
-    expect(document.activeElement).toBe(levels[26]);
-    press(levels[26]!, 'ArrowRight');
-    expect(document.activeElement).toBe(levels[26]);
+    expect(document.activeElement).toBe(levels[19]);
+    press(levels[19]!, 'ArrowRight');
+    expect(document.activeElement).toBe(levels[19]);
     expect(view.container.querySelector('.puzzle-gallery__grid')?.getAttribute('data-puzzle-category')).toBe('easy');
 
     act(() => tabs[1]!.focus());
