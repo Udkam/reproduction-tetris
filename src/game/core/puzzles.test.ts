@@ -81,12 +81,12 @@ describe('T13 legal endgame workshop definitions', () => {
     ] satisfies PuzzleId[]);
   });
 
-  it('derives the three- through seven-row batches from legal zero-clear hard-drop histories', () => {
+  it('derives each authored row count from a legal zero-clear hard-drop history', () => {
     expect(PUZZLE_DEFINITIONS.map(({ targetRows }) => targetRows)).toEqual([
       3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
       5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
       6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-      7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+      7, 7, 7, 7, 7, 6, 7, 6, 6, 6,
     ]);
 
     for (const definition of PUZZLE_DEFINITIONS) {
