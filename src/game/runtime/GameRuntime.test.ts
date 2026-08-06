@@ -27,6 +27,7 @@ const inputHarness = vi.hoisted(() => ({ emit: null as ((action: string) => void
 const audioPrime = vi.hoisted(() => vi.fn());
 const audioPlayEntryCountdown = vi.hoisted(() => vi.fn());
 const audioSetVolume = vi.hoisted(() => vi.fn());
+const audioSetAmbientTheme = vi.hoisted(() => vi.fn());
 const audioDestroy = vi.hoisted(() => vi.fn());
 const rendererDestroy = vi.hoisted(() => vi.fn());
 
@@ -34,6 +35,7 @@ vi.mock('../audio/AudioEngine', () => ({
   AudioEngine: class {
     setEnabled(): void {}
     setVolume(volume: number): void { audioSetVolume(volume); }
+    setAmbientTheme(theme: string): void { audioSetAmbientTheme(theme); }
     async prime(): Promise<void> { audioPrime(); }
     playEntryCountdown(digit: 3 | 2 | 1): void { audioPlayEntryCountdown(digit); }
     play(): void {}
@@ -72,6 +74,18 @@ vi.mock('../render/TetrisRenderer', () => ({
 }));
 
 describe('GameRuntime public state boundary', () => {
+  it('keeps the quiet ambient layer aligned with the selected visual theme', () => {
+    audioSetAmbientTheme.mockClear();
+    rendererSetOptions.mockClear();
+    const runtime = new GameRuntime({ seed: 123, audioEnabled: false, visualTheme: 'sunstone' });
+
+    expect(audioSetAmbientTheme).toHaveBeenLastCalledWith('sunstone');
+    runtime.setVisualTheme('mineral-mist');
+    expect(audioSetAmbientTheme).toHaveBeenLastCalledWith('mineral-mist');
+    expect(rendererSetOptions).toHaveBeenLastCalledWith({ visualTheme: 'mineral-mist' });
+    runtime.destroy();
+  });
+
   it('starts from a deterministic ready state without browser mounting', () => {
     const onState = vi.fn();
     const runtime = new GameRuntime({ seed: 123, onState });

@@ -117,6 +117,7 @@ export class GameRuntime {
     this.onState = options.onState;
     this.audio.setEnabled(options.audioEnabled ?? true);
     this.audio.setVolume(options.audioVolume ?? 1);
+    this.audio.setAmbientTheme(options.visualTheme ?? DEFAULT_VISUAL_THEME);
   }
 
   async mount(host: HTMLElement): Promise<void> {
@@ -248,6 +249,7 @@ export class GameRuntime {
 
   setVisualTheme(visualTheme: VisualThemeId): void {
     this.renderer.setOptions({ visualTheme });
+    this.audio.setAmbientTheme(visualTheme);
     this.flushRender(0);
   }
 

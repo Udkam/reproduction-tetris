@@ -1,6 +1,7 @@
 import type { GameEvent, GameState, MutationItem } from '../core';
 import { browserPlatform, type BrowserPlatform } from '../../platform/browserPlatform';
 import { MUTATION_VFX_TOKENS } from '../../design/mutationTokens';
+import type { VisualThemeId } from '../../design/visualThemes';
 
 interface ToneOptions {
   frequency: number;
@@ -42,6 +43,24 @@ interface EffectVoice {
   gain: GainNode;
 }
 
+interface AmbientVoice {
+  oscillator: OscillatorNode;
+  gain: GainNode;
+  filter: BiquadFilterNode;
+}
+
+interface AmbientToneProfile {
+  frequency: number;
+  gain: number;
+  type: OscillatorType;
+}
+
+interface AmbientThemeProfile {
+  filterType: BiquadFilterType;
+  cutoff: number;
+  tones: readonly [AmbientToneProfile, AmbientToneProfile];
+}
+
 type MutationActivation = Extract<GameEvent, { type: 'mutation-activated' }>;
 
 /** Per-event dynamics carry presence; the master adds headroom without flattening hierarchy. */
@@ -62,6 +81,32 @@ const AUDIO_BUS_GAINS: Readonly<Record<AudioBus, number>> = Object.freeze({
   mutation: 0.88,
   ambient: 0.18,
   ui: 0.58,
+});
+const AMBIENT_THEME_PROFILES: Readonly<Record<VisualThemeId, AmbientThemeProfile>> = Object.freeze({
+  'deep-tide': Object.freeze({
+    filterType: 'lowpass' as const,
+    cutoff: 230,
+    tones: Object.freeze([
+      Object.freeze({ frequency: 55, gain: 0.026, type: 'sine' as const }),
+      Object.freeze({ frequency: 82.41, gain: 0.011, type: 'triangle' as const }),
+    ]) as readonly [AmbientToneProfile, AmbientToneProfile],
+  }),
+  'mineral-mist': Object.freeze({
+    filterType: 'bandpass' as const,
+    cutoff: 520,
+    tones: Object.freeze([
+      Object.freeze({ frequency: 130.81, gain: 0.016, type: 'sine' as const }),
+      Object.freeze({ frequency: 196, gain: 0.007, type: 'triangle' as const }),
+    ]) as readonly [AmbientToneProfile, AmbientToneProfile],
+  }),
+  sunstone: Object.freeze({
+    filterType: 'lowpass' as const,
+    cutoff: 420,
+    tones: Object.freeze([
+      Object.freeze({ frequency: 110, gain: 0.019, type: 'sine' as const }),
+      Object.freeze({ frequency: 164.81, gain: 0.008, type: 'triangle' as const }),
+    ]) as readonly [AmbientToneProfile, AmbientToneProfile],
+  }),
 });
 const MUTATION_CUE_ORDER: Readonly<Record<MutationItem, number>> = Object.freeze({
   bomb: 0,
@@ -107,6 +152,8 @@ export class AudioEngine {
   private lastMoveAt = Number.NEGATIVE_INFINITY;
   private lastSoftDropAt = 0;
   private voices = 0;
+  private ambientTheme: VisualThemeId | null = null;
+  private ambientVoices: AmbientVoice[] = [];
 
   constructor(private readonly platform: BrowserPlatform = browserPlatform) {}
 
@@ -114,8 +161,18 @@ export class AudioEngine {
     this.enabled = enabled;
     if (!enabled) {
       this.stopMutationCue();
+      this.stopAmbientLayer();
+    } else {
+      this.ensureAmbientLayer();
     }
     this.applyEffectsGain();
+  }
+
+  setAmbientTheme(theme: VisualThemeId): void {
+    if (theme === this.ambientTheme) return;
+    this.stopAmbientLayer();
+    this.ambientTheme = theme;
+    this.ensureAmbientLayer();
   }
 
   setVolume(volume: number): void {
@@ -160,6 +217,7 @@ export class AudioEngine {
       this.compressor.connect(this.context.destination);
     }
     if (this.context.state === 'suspended') await this.context.resume();
+    this.ensureAmbientLayer();
   }
 
   suspend(): void {
@@ -182,18 +240,29 @@ export class AudioEngine {
       if (event.type === 'piece-moved' && event.cause === 'move') {
         const now = this.platform.now();
         if (now - this.lastMoveAt >= MOVE_CUE_MIN_INTERVAL_MS) {
-          this.tone({ frequency: 196, duration: 0.046, gain: 0.068, attack: 0.003, body: 0.46, bodyGain: 0.46, type: 'triangle' });
+          this.layeredCue({
+            bus: 'gameplay',
+            body: { frequency: 246.94, duration: 0.042, gain: 0.03, attack: 0.003, body: 0.44, bodyGain: 0.42, type: 'triangle' },
+            texture: { duration: 0.024, gain: 0.0045, delay: 0.002, cutoff: 980, filterType: 'bandpass' },
+          });
           this.lastMoveAt = now;
         }
       } else if (event.type === 'piece-moved' && event.cause === 'soft-drop') {
         const now = this.platform.now();
         if (now - this.lastSoftDropAt > 52) {
-          this.tone({ frequency: 174.61, duration: 0.04, gain: 0.072, endFrequency: 164.81, attack: 0.003, body: 0.45, bodyGain: 0.42, type: 'sine' });
+          this.layeredCue({
+            bus: 'gameplay',
+            body: { frequency: 400, duration: 0.034, gain: 0.024, endFrequency: 250, attack: 0.003, body: 0.42, bodyGain: 0.38, type: 'sine' },
+            texture: { duration: 0.026, gain: 0.004, delay: 0.001, cutoff: 720, filterType: 'bandpass' },
+          });
           this.lastSoftDropAt = now;
         }
       } else if (event.type === 'piece-rotated') {
-        this.tone({ frequency: 261.63, duration: 0.08, gain: 0.105, attack: 0.004, body: 0.5, bodyGain: 0.52, type: 'triangle' });
-        this.tone({ frequency: 392, duration: 0.055, gain: 0.045, delay: 0.012, attack: 0.003, body: 0.42, bodyGain: 0.44, type: 'sine' });
+        this.layeredCue({
+          bus: 'gameplay',
+          body: { frequency: 300, duration: 0.072, gain: 0.044, endFrequency: 450, attack: 0.004, body: 0.5, bodyGain: 0.5, type: 'sine' },
+          harmonic: { frequency: 600, duration: 0.036, gain: 0.014, delay: 0.011, attack: 0.003, body: 0.4, bodyGain: 0.38, type: 'triangle' },
+        });
       } else if (event.type === 'hard-dropped') {
         if (!hasResolutionCue) this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop && !hasResolutionCue) {
@@ -213,22 +282,36 @@ export class AudioEngine {
         // this batch. Otherwise the clear owns the mix and suppresses landing/lock taps.
         if (!hasHigherPriorityResolution) this.clearChord(event.count);
       } else if (event.type === 'bedrock-raised') {
-        this.tone({ frequency: 110, duration: 0.21, gain: 0.24, endFrequency: 146.83, attack: 0.006, body: 0.56, bodyGain: 0.66, type: 'triangle' });
-        this.tone({ frequency: 220, duration: 0.13, gain: 0.085, delay: 0.025, endFrequency: 293.66, attack: 0.004, body: 0.48, bodyGain: 0.5, type: 'sine' });
+        this.layeredCue({
+          bus: 'gameplay',
+          body: { frequency: 82.41, duration: 0.86, gain: 0.045, endFrequency: 110, attack: 0.035, body: 0.62, bodyGain: 0.68, type: 'sine' },
+          harmonic: { frequency: 164.81, duration: 0.64, gain: 0.018, delay: 0.035, endFrequency: 220, attack: 0.025, body: 0.58, bodyGain: 0.58, type: 'sine' },
+          texture: { duration: 0.28, gain: 0.006, delay: 0.04, cutoff: 260, filterType: 'lowpass' },
+        });
       } else if (event.type === 'bedrock-lowered') {
-        this.tone({ frequency: 196, duration: 0.19, gain: 0.22, endFrequency: 123.47, attack: 0.006, body: 0.52, bodyGain: 0.62, type: 'triangle' });
-        this.tone({ frequency: 293.66, duration: 0.11, gain: 0.065, delay: 0.014, endFrequency: 196, attack: 0.004, body: 0.44, bodyGain: 0.46, type: 'sine' });
+        this.layeredCue({
+          bus: 'gameplay',
+          body: { frequency: 110, duration: 0.72, gain: 0.04, endFrequency: 82.41, attack: 0.026, body: 0.6, bodyGain: 0.62, type: 'sine' },
+          harmonic: { frequency: 220, duration: 0.52, gain: 0.016, delay: 0.025, endFrequency: 164.81, attack: 0.02, body: 0.55, bodyGain: 0.54, type: 'sine' },
+          texture: { duration: 0.24, gain: 0.0055, delay: 0.025, cutoff: 240, filterType: 'lowpass' },
+        });
       } else if (event.type === 'survival-stones-warned') {
-        // Two compact rounded pulses make the flashing arrow unmistakable without a
-        // continuous alarm or a piercing square-wave chirp.
-        this.tone({ frequency: 392, duration: 0.095, gain: 0.17, endFrequency: 523.25, attack: 0.004, body: 0.46, bodyGain: 0.56, type: 'triangle' });
-        this.tone({ frequency: 523.25, duration: 0.095, gain: 0.145, delay: 0.105, endFrequency: 698.46, attack: 0.004, body: 0.46, bodyGain: 0.54, type: 'triangle' });
+        // Two low, rounded pulses support the flashing arrow without becoming an alarm.
+        this.tone({ frequency: 130.81, duration: 0.11, gain: 0.065, endFrequency: 123.47, attack: 0.008, body: 0.52, bodyGain: 0.58, type: 'sine' });
+        this.tone({ frequency: 164.81, duration: 0.11, gain: 0.055, delay: 0.13, endFrequency: 146.83, attack: 0.008, body: 0.52, bodyGain: 0.55, type: 'sine' });
       } else if (event.type === 'survival-stones-spawned') {
-        this.tone({ frequency: 349.23, duration: 0.15, gain: 0.17, endFrequency: 220, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
-        this.tone({ frequency: 523.25, duration: 0.09, gain: 0.055, delay: 0.008, endFrequency: 329.63, attack: 0.003, body: 0.42, bodyGain: 0.44, type: 'sine' });
+        this.layeredCue({
+          bus: 'gameplay',
+          body: { frequency: 261.63, duration: 0.16, gain: 0.055, endFrequency: 146.83, attack: 0.007, body: 0.52, bodyGain: 0.58, type: 'sine' },
+          texture: { duration: 0.055, gain: 0.008, delay: 0.008, cutoff: 480, filterType: 'bandpass' },
+        });
       } else if (event.type === 'survival-stones-landed') {
-        this.tone({ frequency: 123.47, duration: 0.12, gain: 0.24, endFrequency: 110, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
-        this.tone({ frequency: 246.94, duration: 0.07, gain: 0.07, delay: 0.008, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' });
+        this.layeredCue({
+          bus: 'gameplay',
+          body: { frequency: 98, duration: 0.15, gain: 0.075, endFrequency: 82.41, attack: 0.007, body: 0.5, bodyGain: 0.6, type: 'sine' },
+          harmonic: { frequency: 196, duration: 0.09, gain: 0.028, delay: 0.008, endFrequency: 164.81, attack: 0.005, body: 0.44, bodyGain: 0.45, type: 'triangle' },
+          texture: { duration: 0.06, gain: 0.012, delay: 0.006, cutoff: 420, filterType: 'lowpass' },
+        });
       } else if (event.type === 'level-up' && !hasMutationActivation) {
         [392, 493.88, 587.33, 783.99].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.22 : 0.17, gain: index === 3 ? 0.15 : 0.19, bus: 'reward', delay: index * 0.05, attack: 0.004, body: 0.5, bodyGain: 0.58, type: index < 2 ? 'triangle' : 'sine' }));
       } else if (event.type === 'finished' && !hasMutationActivation) {
@@ -238,11 +321,11 @@ export class AudioEngine {
       } else if (event.type === 'started') {
         // The cover exits silently after the third short countdown beat.
       } else if (event.type === 'resumed') {
-        this.tone({ frequency: 329.63, duration: 0.105, gain: 0.12, bus: 'ui', attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' });
-        this.tone({ frequency: 493.88, duration: 0.075, gain: 0.06, bus: 'ui', delay: 0.02, attack: 0.003, body: 0.44, bodyGain: 0.46, type: 'sine' });
+        this.tone({ frequency: 246.94, duration: 0.11, gain: 0.052, bus: 'ui', endFrequency: 329.63, attack: 0.008, body: 0.5, bodyGain: 0.5, type: 'sine' });
+        this.tone({ frequency: 493.88, duration: 0.065, gain: 0.018, bus: 'ui', delay: 0.022, attack: 0.005, body: 0.42, bodyGain: 0.4, type: 'sine' });
       } else if (event.type === 'paused') {
-        this.tone({ frequency: 329.63, duration: 0.1, gain: 0.11, bus: 'ui', attack: 0.004, body: 0.48, bodyGain: 0.52, type: 'triangle' });
-        this.tone({ frequency: 246.94, duration: 0.085, gain: 0.06, bus: 'ui', delay: 0.02, attack: 0.004, body: 0.44, bodyGain: 0.46, type: 'sine' });
+        this.tone({ frequency: 293.66, duration: 0.11, gain: 0.05, bus: 'ui', endFrequency: 246.94, attack: 0.008, body: 0.5, bodyGain: 0.5, type: 'sine' });
+        this.tone({ frequency: 146.83, duration: 0.07, gain: 0.02, bus: 'ui', delay: 0.02, attack: 0.005, body: 0.42, bodyGain: 0.42, type: 'sine' });
       } else if (event.type === 'restarted') {
         // The fresh 3-2-1 sequence owns restart feedback; another voice here would
         // double the first beat when the restarted event and digit 3 share a frame.
@@ -281,6 +364,7 @@ export class AudioEngine {
 
   destroy(): void {
     this.stopMutationCue();
+    this.stopAmbientLayer();
     for (const busName of AUDIO_BUSES) this.buses[busName]?.disconnect();
     this.buses = {};
     this.effects?.disconnect();
@@ -519,6 +603,50 @@ export class AudioEngine {
       voice.gain.disconnect();
     }
     this.mutationVoices = [];
+  }
+
+  private ensureAmbientLayer(): void {
+    const context = this.context;
+    const bus = this.buses.ambient;
+    const theme = this.ambientTheme;
+    if (!this.enabled || !context || !bus || !theme || this.ambientVoices.length > 0) return;
+    const profile = AMBIENT_THEME_PROFILES[theme];
+    for (const toneProfile of profile.tones) {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const filter = context.createBiquadFilter();
+      oscillator.type = toneProfile.type;
+      oscillator.frequency.setValueAtTime(toneProfile.frequency, context.currentTime);
+      filter.type = profile.filterType;
+      filter.frequency.setValueAtTime(profile.cutoff, context.currentTime);
+      filter.Q.setValueAtTime(profile.filterType === 'bandpass' ? 0.55 : 0.4, context.currentTime);
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(toneProfile.gain, context.currentTime + 0.65);
+      oscillator.connect(gain);
+      gain.connect(filter);
+      filter.connect(bus);
+      const voice: AmbientVoice = { oscillator, gain, filter };
+      oscillator.onended = () => {
+        oscillator.disconnect();
+        gain.disconnect();
+        filter.disconnect();
+      };
+      oscillator.start(context.currentTime);
+      this.ambientVoices.push(voice);
+    }
+  }
+
+  private stopAmbientLayer(): void {
+    const context = this.context;
+    for (const voice of this.ambientVoices) {
+      if (context) voice.gain.gain.setTargetAtTime(0.0001, context.currentTime, 0.02);
+      try {
+        voice.oscillator.stop((context?.currentTime ?? 0) + 0.08);
+      } catch {
+        // A context shutdown can race a scheduled ambient fade.
+      }
+    }
+    this.ambientVoices = [];
   }
 
   private applyMasterGain(): void {
