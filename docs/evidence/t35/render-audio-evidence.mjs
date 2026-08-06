@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { chromium } from 'playwright';
@@ -6,6 +7,10 @@ import { createServer } from 'vite';
 
 const evidenceDir = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(evidenceDir, '..', '..', '..');
+const sourceSha = execFileSync('git', ['rev-parse', 'HEAD'], {
+  cwd: repositoryRoot,
+  encoding: 'utf8',
+}).trim();
 const sampleRate = 48_000;
 const port = 4187;
 
@@ -64,6 +69,7 @@ function asMarkdown(manifest) {
     '# T35 Audio Audition',
     '',
     'These WAV files are rendered from the production gesture palette through the same bus gains, master gain, and compressor topology used by the game.',
+    `Source SHA: \`${manifest.sourceSha}\``,
     '',
     '| File | Duration | Peak | RMS | Clipped samples | Listen for |',
     '| --- | ---: | ---: | ---: | ---: | --- |',
@@ -182,6 +188,7 @@ try {
   }, { suites, sampleRate });
 
   const manifest = {
+    sourceSha,
     generatedAt: new Date().toISOString(),
     renderer: 'production audioPalette + audioGesture through AudioEngine-equivalent bus/master/compressor topology',
     sampleRate,
