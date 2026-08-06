@@ -1,5 +1,6 @@
 {
-  "generatedAt": "2026-08-06T20:04:35.264Z",
+  "sourceSha": "f09620e53eebe82dd59864db5c04be29d1d6c336",
+  "generatedAt": "2026-08-06T20:27:32.213Z",
   "renderer": "production audioPalette + audioGesture through AudioEngine-equivalent bus/master/compressor topology",
   "sampleRate": 48000,
   "files": [
@@ -18,7 +19,7 @@
       ],
       "durationSeconds": 2.245,
       "peak": 0.07593276351690292,
-      "rms": 0.006118942225777206,
+      "rms": 0.006118942222698368,
       "clippedSamples": 0
     },
     {
@@ -32,7 +33,7 @@
       ],
       "durationSeconds": 3.5,
       "peak": 0.170167475938797,
-      "rms": 0.01889387752729202,
+      "rms": 0.0188938775245127,
       "clippedSamples": 0
     },
     {
@@ -47,7 +48,7 @@
       ],
       "durationSeconds": 3.99,
       "peak": 0.16962136328220367,
-      "rms": 0.016224981444284445,
+      "rms": 0.016224981439280212,
       "clippedSamples": 0
     },
     {
@@ -68,7 +69,7 @@
       ],
       "durationSeconds": 7.474,
       "peak": 0.10269825160503387,
-      "rms": 0.009110130843790275,
+      "rms": 0.009110130846042357,
       "clippedSamples": 0
     },
     {
@@ -95,7 +96,7 @@
       ],
       "durationSeconds": 6.54,
       "peak": 0.1701674610376358,
-      "rms": 0.014970798013211465,
+      "rms": 0.01497079801383421,
       "clippedSamples": 0
     }
   ]

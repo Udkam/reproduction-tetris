@@ -1,6 +1,7 @@
 # T35 Audio Audition
 
 These WAV files are rendered from the production gesture palette through the same bus gains, master gain, and compressor topology used by the game.
+Source SHA: `f09620e53eebe82dd59864db5c04be29d1d6c336`
 
 | File | Duration | Peak | RMS | Clipped samples | Listen for |
 | --- | ---: | ---: | ---: | ---: | --- |
