@@ -92,7 +92,9 @@ try {
   await page.screenshot({ path: path.join(output, 'home.png'), fullPage: true });
 
   await page.getByTestId('enter-marathon').click();
+  await page.getByTestId('entry-countdown').waitFor({ state: 'visible', timeout: 4_000 });
   await page.getByTestId('entry-countdown').waitFor({ state: 'detached', timeout: 12_000 });
+  await page.waitForTimeout(250);
   await page.keyboard.press('ArrowLeft');
   await page.keyboard.press('ArrowUp');
   await page.keyboard.press('Space');
