@@ -16,13 +16,25 @@ listening.
 
 ## Current checkpoint
 
-- Phase: contract freeze.
+- Phase: final integration evidence.
 - Base SHA: `31cbb13`.
-- Planned first source paths: `src/game/audio/audioPalette.ts`,
-  `src/game/audio/audioRenderer.ts`, and their direct tests.
-- Last verified state: `main` matches `origin/main`; only inherited paths are dirty.
+- T35 commits: `a69f81e` contract, `97e8a7c` scheduler, `a781c29` palette,
+  `7c40958` engine integration, `a2b424d` onset-click correction.
+- Source paths: `src/game/audio/audioGesture.ts`, `src/game/audio/audioPalette.ts`,
+  `src/game/audio/AudioEngine.ts`, and their direct tests.
+- Focused result: 18/18 audio tests pass after the onset-click correction; the
+  earlier post-integration typecheck passed.
+- Audition evidence: five production-palette WAV suites at 48 kHz under
+  `docs/evidence/t35`; every suite reports zero clipped samples. A one-sample
+  Mutation onset spike was reproduced, traced to the default GainNode value before
+  scheduled automation, and reduced from `0.8221` to a balanced `0.1696` peak by
+  initializing every gesture gain at the inaudible floor.
+- Resource evidence: the renderer used one temporary Vite/Playwright batch on port
+  4187 and released the browser, server, and listener after each render.
+- Inherited T27 evidence and `progress.md` remain dirty and unstaged.
 
 ## Next action
 
-Commit the T35 contract checkpoint, then implement the deterministic gesture recipe
-and renderer foundation without editing AudioEngine integration yet.
+Commit the generated audition evidence, then run the single final full validation and
+browser-interaction batch before independent read-only QA. Human listening remains a
+required acceptance gate, so the candidate must not be labeled accepted automatically.

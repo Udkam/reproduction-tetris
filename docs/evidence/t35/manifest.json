@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-08-06T20:04:35.264Z",
+  "renderer": "production audioPalette + audioGesture through AudioEngine-equivalent bus/master/compressor topology",
+  "sampleRate": 48000,
+  "files": [
+    {
+      "file": "01-controls-and-contact.wav",
+      "description": "Routine movement through hard contact; repeated moves expose fatigue and click risk.",
+      "sequence": [
+        "move",
+        "move",
+        "move",
+        "rotate",
+        "soft-drop",
+        "soft-drop",
+        "hard-drop",
+        "lock"
+      ],
+      "durationSeconds": 2.245,
+      "peak": 0.07593276351690292,
+      "rms": 0.006118942225777206,
+      "clippedSamples": 0
+    },
+    {
+      "file": "02-clear-hierarchy.wav",
+      "description": "One through four cleared rows, with increasing spatial scale and no melody requirement.",
+      "sequence": [
+        "clear-1",
+        "clear-2",
+        "clear-3",
+        "clear-4"
+      ],
+      "durationSeconds": 3.5,
+      "peak": 0.170167475938797,
+      "rms": 0.01889387752729202,
+      "clippedSamples": 0
+    },
+    {
+      "file": "03-mutation-identities.wav",
+      "description": "Freeze, Supergravity, Bomb, Double, and Super Double as concise state-change signatures.",
+      "sequence": [
+        "freeze",
+        "supergravity",
+        "bomb",
+        "multiplier-2",
+        "multiplier-4"
+      ],
+      "durationSeconds": 3.99,
+      "peak": 0.16962136328220367,
+      "rms": 0.016224981444284445,
+      "clippedSamples": 0
+    },
+    {
+      "file": "04-survival-and-ui.wav",
+      "description": "Natural pressure and restrained interface feedback, including the complete countdown.",
+      "sequence": [
+        "stone-warning",
+        "stone-spawn",
+        "stone-land",
+        "bedrock-rise",
+        "bedrock-lower",
+        "countdown-tick",
+        "countdown-tick",
+        "countdown-resolve",
+        "pause",
+        "resume",
+        "puzzle-undo"
+      ],
+      "durationSeconds": 7.474,
+      "peak": 0.10269825160503387,
+      "rms": 0.009110130843790275,
+      "clippedSamples": 0
+    },
+    {
+      "file": "05-interaction-mix.wav",
+      "description": "Representative play cadence used to expose masking, stacking, and excessive loudness.",
+      "sequence": [
+        "move",
+        "move",
+        "rotate",
+        "soft-drop",
+        "hard-drop",
+        "clear-1",
+        "move",
+        "rotate",
+        "hard-drop",
+        "clear-2",
+        "stone-warning",
+        "stone-spawn",
+        "stone-land",
+        "freeze",
+        "move",
+        "hard-drop",
+        "clear-4"
+      ],
+      "durationSeconds": 6.54,
+      "peak": 0.1701674610376358,
+      "rms": 0.014970798013211465,
+      "clippedSamples": 0
+    }
+  ]
+}
