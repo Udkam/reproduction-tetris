@@ -5,7 +5,7 @@
 
 ## 2026-08-07 T36 — Kinetic harmonic audio recomposition
 
-**Status: IN PROGRESS.** T35 was technically valid but failed human listening. Its
+**Status: CANDIDATE / LISTENING REQUIRED.** T35 was technically valid but failed human listening. Its
 resonator-and-filtered-air palette still behaved like a collection of designed sound
 objects instead of one playable instrument. T36 therefore replaces the audible model,
 not merely its frequencies, envelopes, or gain values. Stable routing, ownership,
@@ -67,6 +67,9 @@ one grammar without making them identical.
 - Final typecheck, full tests, build, browser evidence, and independent read-only QA are
   mandatory. T36 remains **CANDIDATE / LISTENING REQUIRED** until explicit human
   acceptance.
+- Candidate `4433aaf` satisfies those automated and independent-QA gates. Six
+  source-bound 48 kHz WAV suites remain the authoritative human audition surface;
+  neither their measurements nor the clean browser audit assert subjective acceptance.
 
 ## 2026-08-07 T35 — Audition-led material gesture audio rebuild
 

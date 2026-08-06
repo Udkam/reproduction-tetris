@@ -1,7 +1,7 @@
 # Current Task — T36 Kinetic Harmonic Audio Recomposition
 
-Status: **IN PROGRESS — T35 rejected by human listening; T36 contract frozen before
-source changes**
+Status: **CANDIDATE / LISTENING REQUIRED — implementation, automated gates, browser
+evidence, and independent QA complete at `4433aaf`; human listening remains pending**
 
 ## Active objective
 
@@ -71,6 +71,17 @@ Inherited dirty `docs/evidence/t27/**`, `docs/evidence/t27-r1-followup/**`, and
   separable, and the three countdown beats coherent on ordinary speakers.
 - A user rejection reopens the palette; it is not converted into acceptance by passing
   tests, metrics, browser evidence, or independent QA.
+
+## Verified candidate
+
+- Product audio and the bounded Mutation-heading cleanup end at `39216d1`; generated
+  WAV evidence is recorded at `4205612`, and final browser evidence at `4433aaf`.
+- Final typecheck, the complete suite (`380 passed / 8 skipped`), production build,
+  one-Canvas/zero-DOM-cell browser audit, live audio controls, and zero browser errors
+  pass. Port 4189 was released after the short-lived evidence run.
+- Independent read-only QA accepted candidate `4433aaf` with no blocking finding.
+  Subjective timbre, balance, fatigue, and device loudness remain intentionally open
+  until the user listens to the six committed WAV suites.
 
 ---
 

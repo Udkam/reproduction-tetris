@@ -35,8 +35,8 @@ listening.
 3. `COMPLETE` — complete procedural palette + silent-by-default engine integration.
 4. `COMPLETE` — isolated Mutation-status heading-glow cleanup.
 5. `COMPLETE` — source-bound WAV evidence + measurements.
-6. `IN PROGRESS` — final gates and browser evidence complete; independent QA,
-   final docs, and push remain.
+6. `COMPLETE` — final gates, browser evidence, independent QA, and final docs complete;
+   push is the coordinator's remaining repository action.
 
 ## Verification state
 
@@ -59,12 +59,14 @@ listening.
   heading or pseudo-element glow.
 - Browser evidence used one short-lived preview on port 4189; the owned process was
   terminated and the port was confirmed released after capture.
+- Independent read-only QA accepted candidate `4433aaf` with no blocking finding and
+  confirmed that inherited T27 evidence and `progress.md` remain outside the range.
 - Human listening is the final acceptance boundary.
 
 ## Next exact action
 
-Commit the browser-evidence checkpoint, request independent read-only QA, then update
-final docs and push without declaring listening acceptance.
+Commit the final documentation disposition and push `main`, then hand the six WAV
+suites to the user without declaring listening acceptance.
 
 ## Do not repeat
 

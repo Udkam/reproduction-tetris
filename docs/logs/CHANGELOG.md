@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-08-07 — T36 kinetic-harmonic audio candidate awaiting listening
+
+- Human listening rejected T35, so T36 replaced every audible cue with deterministic
+  buffered procedural instruments: felt, impact, ribbon, glass, shimmer, and pulse.
+  All 27 cue IDs now use the new vocabulary while retaining the five buses,
+  sixteen-voice ceiling, priority, master controls, and exact lifecycle cleanup.
+- Removed the default continuous ambient bed, retained the Ambient bus for compatible
+  future ownership, kept timed Mutation states loop-free, and gave Supergravity no
+  continuous or landing sound. Countdown is exactly three related pulses with a longer
+  resolving final beat and no cover-exit sound.
+- The bounded companion visual change removes the decorative glow behind the
+  Mutation-status heading without altering its content or layout. Product/visual source
+  ends at `39216d1`; WAV evidence is `4205612`, and browser evidence is `4433aaf`.
+- Six source-bound mono 48 kHz WAV suites report finite peak/RMS values and zero clipped
+  samples. Final typecheck, the complete suite (`380 passed / 8 skipped`), production
+  build, one Canvas, zero DOM board cells, running AudioContext, live mute/volume,
+  correct board geometry, and zero browser errors pass; port 4189 was released.
+- Independent read-only QA accepted candidate `4433aaf` with no blocking finding.
+  T36 remains **CANDIDATE / LISTENING REQUIRED** because tests, measurements,
+  screenshots, and QA cannot approve timbre, balance, fatigue, or device loudness.
+
 ## 2026-08-07 — T35 material-gesture audio candidate awaiting listening
 
 - Human listening rejected T34 despite its automated acceptance record, so T35 replaced
