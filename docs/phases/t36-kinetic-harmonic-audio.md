@@ -1,8 +1,8 @@
 # T36 — Kinetic Harmonic Audio Recomposition
 
-Status: **IN PROGRESS**  
-Base: `052d9ec`  
-Owner: coordinator  
+Status: **IN PROGRESS**
+Base: `052d9ec`
+Owner: coordinator
 Human acceptance owner: user
 
 ## Why this phase exists
