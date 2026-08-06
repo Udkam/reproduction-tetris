@@ -228,6 +228,16 @@ ownership expires by time.
 
 Accepted source `9092402`; browser evidence `75cc2f9`; final independent QA PASS.
 
+### 2026-08-07 certificate-fingerprint maintenance
+
+Anchor-supported Puzzle cells now participate in the canonical Puzzle state hash
+because they affect later clear transforms. This deliberately changes the initial
+fingerprint even for the three unanchored mastery prerequisites, whose support set is
+empty, while leaving their legal search graph unchanged. The frozen certificate may
+refresh `initialStateHash` only when an exhaustive re-run reproduces every other proof
+field exactly; route, optimum, frontier, exploration, transition, and prune evidence
+must remain byte-for-byte equivalent.
+
 Puzzle anchors are fixed world obstacles and physical supports. During a line clear,
 an already-settled connected piece resting on an anchor retains its complete geometry
 and world coordinates; the clear may move unsupported cells, but may not split or pull
