@@ -1,6 +1,56 @@
-# Current Task — T34 Responsive Gravity Instrument Audio
+# Current Task — T35 Audition-Led Material Gesture Audio Rebuild
 
-Status: **ACCEPTED 2026-08-06 — source `a99a934`, evidence `67325a9`, independent QA PASS**
+Status: **IN PROGRESS — T34 rejected by human listening; no automated-only acceptance**
+
+## Active objective
+
+Rebuild the complete procedural sound palette around physical material gestures rather
+than exposed oscillator notes and musical stacks. Preserve the proven five-bus,
+priority, volume, safety, and lifecycle infrastructure, but replace every audible cue
+family and remove the pitched theme drone. Delivery must include playable WAV evidence
+generated from the same recipes as production audio; automated gates alone cannot mark
+the work accepted.
+
+## Frozen behavior
+
+- Keep Gameplay, Reward, Mutation, Ambient, and UI buses, deterministic scheduling,
+  sixteen-voice ceiling, master volume/mute, same-frame event suppression, and exact
+  disable/destroy cleanup.
+- Build cues from modal taps, filtered-air sweeps, damped impacts, pressure releases,
+  and non-synchronous spatial blooms. Avoid generic beeps, arpeggios, chord-count clear
+  rewards, harsh clicks, machine-gun movement, or continuous pitched ambience.
+- Recompose movement, rotation, drop, lock, 1/2/3/4-line clears, level/completion/game
+  over, countdown, pause/resume, Puzzle undo, Survival bedrock/stone, and all current
+  Mutation activations. No gameplay, scoring, renderer, layout, or rule change is in
+  scope.
+- Produce directly playable WAV samples and a measurement manifest for the complete
+  representative cue matrix. Browser interaction evidence remains required, but a
+  screenshot cannot stand in for listening evidence.
+- After final automated gates and independent read-only QA, status is still
+  **CANDIDATE / LISTENING REQUIRED** until the user explicitly accepts the sound.
+
+## Ordered checkpoints
+
+1. **Contract** — this file, `docs/DESIGN.md`, the T35 phase document, and the bounded
+   run state only.
+2. **Gesture foundation** — pure cue recipes, Web Audio gesture renderer, and direct
+   tests for deterministic routing/measurement-safe scheduling.
+3. **Complete palette** — AudioEngine integration and focused tests for every event
+   family, priority, mute/volume, bounded voices, and cleanup.
+4. **Audition proof** — playable WAV cue matrix and measurement manifest generated
+   from the production recipes, then one final typecheck/full suite/build/browser pass.
+5. **Independent QA and handoff** — QA may validate correctness and evidence binding;
+   only user listening may accept the palette. Coordinator then records the result and
+   pushes the bounded candidate chain.
+
+Inherited dirty `docs/evidence/t27/**`, `docs/evidence/t27-r1-followup/**`, and
+`progress.md` remain outside T35 and must not be staged.
+
+---
+
+# Previous Task — T34 Responsive Gravity Instrument Audio
+
+Status: **REJECTED BY HUMAN LISTENING 2026-08-07 — superseded by T35**
 
 ## Active objective
 

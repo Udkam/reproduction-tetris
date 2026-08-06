@@ -3,11 +3,67 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-07 T35 — Audition-led material gesture audio rebuild
+
+**Status: IN PROGRESS.** Human listening rejected T34 even though its routing,
+scheduling, lifecycle, browser, and test evidence passed. T34 proved engineering
+correctness but not sound quality: most cues were still recognisable oscillator notes
+or note stacks, so the game sounded like a generic notification bank rather than one
+coherent physical instrument. T35 supersedes that palette completely; existing buses,
+event ownership, safety limits, and cleanup remain only as infrastructure.
+
+The new world rule is **gravity excites material**. A gameplay event is rendered as an
+excitation, a short inharmonic response, and a controlled decay. Tonal oscillators may
+act as damped resonators, but exposed melodies, triads, chromatic success jingles, and
+continuous pitched drones may not carry the design. The audible blend targets soft
+ceramic, felted mechanism, pressurised air, and restrained low-frequency mass.
+
+### Sound construction contract
+
+- Preserve the five buses (Gameplay, Reward, Mutation, Ambient, UI), user volume and
+  enable controls, deterministic sources, compressor safety path, transient voice
+  ceiling, event priority, and exact teardown. Do not add licensed samples, music,
+  external runtime services, or a persistent audio process.
+- Replace the generic `tone + harmonic + noise puff` vocabulary with reusable physical
+  gestures: **modal tap** (brief impulse exciting inharmonic modes), **air sweep**
+  (band-limited noise with a moving filter), **damped impact** (low membrane body plus
+  short material contact), **pressure release** (reverse air into contained impact),
+  and **spatial bloom** (several non-synchronous, fast-decaying resonances).
+- High-frequency controls must be tactile but non-pitched. Move is a felt tick, rotate
+  is a brushed orbit, soft drop is an air ribbon, lock is a small settle, and hard drop
+  adds mass without a bass explosion. Repetition at normal play speed must remain
+  comfortable and must not produce clicks or machine-gun transients.
+- Clear rewards share one family and grow by width, decay, and spectral opening rather
+  than musical chord count. One line is a clean material release; two crosses two
+  resonant bands; three adds a wider bloom; four adds the only long low-pressure body
+  and a bright but soft tail. Clear size must remain identifiable at moderate volume.
+- Mutation activation is a physical state change, never a sustained tone: Ice is a
+  cool air crystallisation with sparse snow-grain taps; Supergravity is pressure
+  compression and a downward mass impulse; Bomb is contained pressure rupture;
+  Multiplier is two or three compact energy folds. Survival cues use stone mass and
+  cavity air without alarm-like pitches. UI uses dry, low-energy ticks and swells.
+- Remove the two-oscillator theme drone. Theme ambience, if audible at all, is a very
+  low deterministic filtered-air bed with no stable pitch and must remain below all
+  gameplay cues. Disabling audio or destroying the runtime must silence it exactly.
+
+### Audible acceptance boundary
+
+- Structural unit tests still prove routing, ownership, bounded voices, deterministic
+  scheduling, and cleanup, but they cannot accept timbre.
+- The candidate must generate short, directly playable WAV references for every cue
+  family from the same gesture recipes used by the game, plus a manifest containing
+  duration, peak, RMS, and zero-crossing measurements. Screenshots are not audio proof.
+- A browser pass must exercise representative gameplay, reward, Mutation, Survival,
+  countdown, pause/resume, and teardown flows with one Canvas and zero console errors.
+- T35 remains **CANDIDATE / LISTENING REQUIRED** after automated gates and independent
+  QA. Only explicit human listening acceptance may mark the palette accepted.
+
 ## 2026-08-06 T34 — Responsive gravity instrument audio
 
-**Status: ACCEPTED.** Contract `26c7956`, audio foundation `74bdb96`, priority palette
-`aadf593`, secondary palette/runtime bridge `a99a934`, browser evidence `67325a9`, and
-independent read-only QA all pass. T34 replaces the accumulated per-effect audio
+**Status: REJECTED BY HUMAN LISTENING; SUPERSEDED BY T35.** Contract `26c7956`, audio
+foundation `74bdb96`, priority palette `aadf593`, secondary palette/runtime bridge
+`a99a934`, browser evidence `67325a9`, and independent read-only QA all passed, but the
+resulting timbre did not pass subjective acceptance. T34 replaced the accumulated per-effect audio
 styling with one original world rule: **TetraMorph is a calm, responsive gravity
 instrument.** Sound answers every meaningful action, but it never becomes a mineral
 striking demo, a hard-sci-fi alarm bank, an arcade explosion reel, or background music.
