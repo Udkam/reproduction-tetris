@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-08-06 — T34 responsive gravity instrument audio accepted
+
+- Rebuilt TetraMorph's procedural SFX as one calm responsive gravity instrument across
+  explicit Gameplay, Reward, Mutation, Ambient, and UI buses. Layered oscillator body,
+  harmonic support, deterministic filtered texture, and quiet spatial tails now share
+  a bounded sixteen-transient-voice lifecycle beneath the existing compressor.
+- Re-authored movement, rotation, drop/lock, 1–4 line rewards, Mutation activations,
+  Survival hazards, and UI transitions with a clear response hierarchy. Timed Mutation
+  states remain silent, no music or sample assets were added, and Deep Tide, Mineral
+  Mist, and Sunstone receive only extremely quiet procedural room tones.
+- Product source `a99a934` passes focused audio/runtime tests `48 / 48`, final typecheck,
+  the complete suite (`391 passed / 8 skipped`), and production build. Evidence
+  `67325a9` records live enable/mute/volume controls, all three theme selections, one
+  Canvas, zero DOM board cells, and zero browser errors.
+- Independent read-only QA accepted `4593acf..67325a9` with no P0/P1/P2 finding. The
+  evidence browser/server was released; subjective timbre and device loudness remain a
+  human listening boundary. Inherited T27 evidence and `progress.md` remain untouched.
+
 ## 2026-08-06 — T33 five-piece Supergravity coverage accepted
 
 - Replaced Mutation Supergravity's elapsed-time ownership with a deterministic budget

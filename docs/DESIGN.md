@@ -5,7 +5,9 @@
 
 ## 2026-08-06 T34 — Responsive gravity instrument audio
 
-**Status: ACTIVE / CONTRACT FROZEN.** T34 replaces the accumulated per-effect audio
+**Status: ACCEPTED.** Contract `26c7956`, audio foundation `74bdb96`, priority palette
+`aadf593`, secondary palette/runtime bridge `a99a934`, browser evidence `67325a9`, and
+independent read-only QA all pass. T34 replaces the accumulated per-effect audio
 styling with one original world rule: **TetraMorph is a calm, responsive gravity
 instrument.** Sound answers every meaningful action, but it never becomes a mineral
 striking demo, a hard-sci-fi alarm bank, an arcade explosion reel, or background music.
@@ -62,13 +64,15 @@ body, spatial tail, and temporary voice ownership carry the larger rewards.
 
 ### Acceptance boundary
 
-T34 is accepted only when direct audio tests prove bus routing, deterministic layered
-schedules, hierarchy, same-frame suppression, theme ambience ownership, enable/volume
-behavior, the sixteen-voice transient cap, and complete cleanup. Final proof also needs
-one typecheck, one full suite, one production build, and one bounded browser pass that
-observes one Canvas, zero console errors, live audio routing, theme switching, and
-AudioContext teardown. Existing T27 evidence and `progress.md` are inherited and remain
-untouched and unstaged.
+Direct tests prove bus routing, deterministic layered schedules, hierarchy, same-frame
+suppression, theme ambience ownership, enable/volume behavior, the sixteen-voice
+transient cap, and complete cleanup. Typecheck, the complete `391 passed / 8 skipped`
+suite, and production build pass. The bounded browser audit records enabled 100% audio,
+mute/restore, a live 64% volume change, all three theme selections, one Canvas, zero DOM
+board cells, and zero console/page errors; lifecycle teardown remains directly proven by
+the unit boundary rather than inferred from a screenshot. Existing T27 evidence and
+`progress.md` remain untouched and unstaged. Cross-device loudness and timbre preference
+remain a human listening boundary, not an automated acceptance claim.
 
 ## 2026-08-06 T33 — Supergravity covers five pieces
 

@@ -1,6 +1,6 @@
 # Current Task — T34 Responsive Gravity Instrument Audio
 
-Status: **ACTIVE 2026-08-06 — contract frozen; source not yet accepted**
+Status: **ACCEPTED 2026-08-06 — source `a99a934`, evidence `67325a9`, independent QA PASS**
 
 ## Active objective
 
@@ -49,16 +49,20 @@ The normal ten-path/five-hundred-line checkpoint budget applies. Existing dirty
 `docs/evidence/t27/**`, `docs/evidence/t27-r1-followup/**`, and `progress.md` are inherited
 and must never be staged by T34.
 
-## Acceptance evidence required
+## Acceptance evidence
 
-- Direct tests prove all five buses, deterministic schedules, priority suppression,
-  monotonic reward energy/contour, ambience theme synchronization, enable/volume
-  behavior, voice cap, and exact cleanup.
-- Live browser evidence demonstrates audio can prime, switch theme, mute/unmute, and
-  unmount without a console error or leaked AudioContext, while one gameplay Canvas is
-  retained.
-- Independent QA reviews the exact contract-to-candidate range. Until that verdict and
-  coordinator closure are recorded, T34 remains active and partial work stays partial.
+- Focused audio/runtime tests pass `48 / 48`; the final typecheck, complete suite
+  (`391 passed / 8 skipped`), and production build pass. The build retains only the
+  existing bundle-size advisory.
+- `docs/evidence/t34/responsive-audio-audit.json` is bound to source `a99a934` and
+  records enabled 100% audio, mute/restore, a live 64% volume change, all three visual
+  themes, one gameplay Canvas, zero DOM board cells, and zero console/page errors.
+- Direct tests, rather than screenshot inference, prove deterministic schedules,
+  five-bus routing, reward hierarchy, bounded voices, ambient switching, and exact
+  disable/destroy cleanup.
+- Independent read-only QA accepted `4593acf..67325a9` with no P0/P1/P2 finding.
+  Remaining cross-device loudness and timbre preference requires human listening and
+  is explicitly outside automated proof.
 
 ---
 

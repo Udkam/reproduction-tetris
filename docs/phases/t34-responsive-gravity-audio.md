@@ -1,6 +1,7 @@
 # T34 — Responsive Gravity Instrument Audio
 
-Status: active from `main@4593acf`.
+Status: accepted from `main@4593acf`; final product source `a99a934`, evidence
+`67325a9`, independent read-only QA PASS.
 
 ## Product intent
 
@@ -67,3 +68,18 @@ theme persistence.
   timing change.
 - No watcher, persistent index, browser kept open after evidence, or unrelated cleanup.
 - Inherited T27 evidence and `progress.md` remain untouched and unstaged.
+
+## Acceptance record
+
+- Checkpoints: contract `26c7956`; bus/layer foundation `74bdb96`; priority palette
+  `aadf593`; secondary palette and runtime theme bridge `a99a934`; browser evidence
+  `67325a9`.
+- Focused audio/runtime tests: `48 / 48` passed. Final typecheck PASS; full suite
+  `391 passed / 8 skipped`; production build PASS with only the existing bundle-size
+  advisory.
+- Browser audit: initial audio enabled at 100%, mute/restore and 64% volume update,
+  Mineral Mist/Deep Tide/Sunstone switching, one Canvas, zero DOM board cells, and zero
+  console/page errors. The owned preview server and browser were released by the script.
+- Independent read-only QA accepted `4593acf..67325a9` with no P0/P1/P2 finding.
+  Subjective timbre and device-dependent loudness remain listening risks, not automated
+  proof claims.
