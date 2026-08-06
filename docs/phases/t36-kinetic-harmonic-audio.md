@@ -27,11 +27,13 @@ voice ceiling, and lifecycle foundations that already proved reliable.
 - Removal of default continuous ambience.
 - Playable listening evidence generated from production recipes.
 - Tests and evidence needed to prove coverage, determinism, safety, and lifecycle.
+- One isolated visual cleanup removing the Mutation-status title glow without changing
+  its content or placement.
 
 ## Out of scope
 
-- Gameplay, scoring, controls, rendering, layout, themes, rules, levels, persistence,
-  or unrelated visual effects.
+- Gameplay, scoring, controls, board rendering, layout, themes, rules, levels,
+  persistence, or unrelated visual effects.
 - Licensed samples, downloaded music, external audio services, background servers,
   watchers, or permanent browser processes.
 - Inherited T27 evidence and `progress.md` changes.

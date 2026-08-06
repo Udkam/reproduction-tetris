@@ -15,6 +15,8 @@ listening.
 - Do not touch or stage inherited dirty `docs/evidence/t27/**`,
   `docs/evidence/t27-r1-followup/**`, or `progress.md`.
 - No gameplay, renderer, layout, rule, level, or scoring changes.
+- Companion visual scope is limited to removing the Mutation-status heading glow while
+  preserving its text, placement, theme contrast, and active-state content.
 - No persistent server, browser, watcher, Serena, or external audio dependency.
 
 ## Confirmed facts
@@ -31,8 +33,9 @@ listening.
 1. `IN PROGRESS` — contract files and this state.
 2. `PENDING` — buffered procedural instrument foundation + focused tests.
 3. `PENDING` — complete palette and engine integration + focused tests.
-4. `PENDING` — WAV evidence + measurements.
-5. `PENDING` — final gates, browser evidence, independent QA, docs, push.
+4. `PENDING` — isolated Mutation-status heading-glow cleanup.
+5. `PENDING` — WAV evidence + measurements.
+6. `PENDING` — final gates, browser evidence, independent QA, docs, push.
 
 ## Verification state
 

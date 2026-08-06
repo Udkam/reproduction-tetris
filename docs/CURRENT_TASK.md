@@ -33,7 +33,9 @@ human acceptance.
   pulses with the final pulse longer and resolving, with no extra cover-exit sound.
 - Recompose movement, rotation, drop, lock, all clear sizes, level/completion/game over,
   countdown, pause/resume, Puzzle undo, Survival bedrock/stone, and all current Mutation
-  activations. No gameplay, scoring, renderer, layout, or rule change is in scope.
+  activations. One bounded companion visual cleanup removes the decorative glow behind
+  the Mutation-status heading while preserving its text, position, and status content.
+  No gameplay, scoring, layout, or rule change is in scope.
 - Produce directly playable WAV suites plus a source-bound manifest with peak, RMS,
   clipping, repetition-density, and cue-boundary measurements. Browser evidence remains
   required, but neither measurements nor screenshots may stand in for listening.
@@ -49,9 +51,11 @@ human acceptance.
 3. **Complete palette** — replace every T35 recipe, remove default ambience, then run
    focused tests for hierarchy, event coverage, priority, mute/volume, bounded voices,
    and cleanup.
-4. **Audition proof** — playable WAV cue matrix and measurement manifest generated
+4. **Mutation heading cleanup** — remove only the status-title glow in a separate
+   visual source checkpoint and verify the affected themes/states.
+5. **Audition proof** — playable WAV cue matrix and measurement manifest generated
    from the production recipes, then one final typecheck/full suite/build/browser pass.
-5. **Independent QA and handoff** — QA may validate correctness and evidence binding;
+6. **Independent QA and handoff** — QA may validate correctness and evidence binding;
    only user listening may accept the palette. Coordinator then records the result and
    pushes the bounded candidate chain.
 

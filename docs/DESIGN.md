@@ -51,6 +51,9 @@ one grammar without making them identical.
   feedback is quiet but legible. Countdown owns exactly three related pulses: beats 3
   and 2 establish cadence; beat 1 is longer and resolving. There is no separate
   cover-exit sound.
+- The Mutation-status heading carries no decorative glow, halo, spotlight, or luminous
+  background. Theme-appropriate text contrast and the active-state lines remain; this
+  cleanup does not alter status behavior or layout.
 
 ### Hierarchy and listening acceptance
 
