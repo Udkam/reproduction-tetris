@@ -1,43 +1,54 @@
-# Current Task — T35 Audition-Led Material Gesture Audio Rebuild
+# Current Task — T36 Kinetic Harmonic Audio Recomposition
 
-Status: **CANDIDATE / LISTENING REQUIRED — automated gates, browser evidence, and
-independent QA pass; human listening is still pending**
+Status: **IN PROGRESS — T35 rejected by human listening; T36 contract frozen before
+source changes**
 
 ## Active objective
 
-Rebuild the complete procedural sound palette around physical material gestures rather
-than exposed oscillator notes and musical stacks. Preserve the proven five-bus,
-priority, volume, safety, and lifecycle infrastructure, but replace every audible cue
-family and remove the pitched theme drone. Delivery must include playable WAV evidence
-generated from the same recipes as production audio; automated gates alone cannot mark
-the work accepted.
+Recompose every audible event as a short kinetic-harmonic response: an action excites a
+material body, the body opens into a controlled spectral contour, and the contour
+resolves into space. Preserve only T35's proven routing, priority, volume, safety, and
+lifecycle infrastructure. Replace its resonator-and-air timbres, remove default
+continuous ambience, and deliver a new directly playable WAV matrix generated from the
+same production recipes. Automated gates may establish a listening candidate, never
+human acceptance.
 
 ## Frozen behavior
 
 - Keep Gameplay, Reward, Mutation, Ambient, and UI buses, deterministic scheduling,
   sixteen-voice ceiling, master volume/mute, same-frame event suppression, and exact
-  disable/destroy cleanup.
-- Build cues from modal taps, filtered-air sweeps, damped impacts, pressure releases,
-  and non-synchronous spatial blooms. Avoid generic beeps, arpeggios, chord-count clear
-  rewards, harsh clicks, machine-gun movement, or continuous pitched ambience.
-- Recompose movement, rotation, drop, lock, 1/2/3/4-line clears, level/completion/game
-  over, countdown, pause/resume, Puzzle undo, Survival bedrock/stone, and all current
-  Mutation activations. No gameplay, scoring, renderer, layout, or rule change is in
-  scope.
-- Produce directly playable WAV samples and a measurement manifest for the complete
-  representative cue matrix. Browser interaction evidence remains required, but a
-  screenshot cannot stand in for listening evidence.
-- After final automated gates and independent read-only QA, status is still
-  **CANDIDATE / LISTENING REQUIRED** until the user explicitly accepts the sound.
+  disable/destroy cleanup. The Ambient bus remains available, but no default sustained
+  bed or musical loop may start.
+- Replace exposed Web Audio oscillator gestures with deterministic, short, buffered
+  procedural instruments: felt excitation, rounded impact, spectral ribbon, inharmonic
+  glass, reward shimmer, and a restrained countdown pulse. Each layer is rendered as
+  one bounded AudioBuffer voice so rapid play cannot create a node swarm.
+- Controls must remain soft under repetition while still readable. Feedback energy is
+  strictly ordered: move < rotate < lock < hard drop < one/two/three-line clear <
+  Mutation < four-line clear/completion. The clear family shares one identity contour
+  and grows by bandwidth, motion, duration, and mass rather than exposed chords.
+- Ice, Supergravity, Bomb, x2, and x4 are distinct state-change gestures with no
+  sustained loop. Supergravity has no continuous or landing sound. Survival cues use
+  restrained stone mass; UI cues stay concise; countdown is exactly three related
+  pulses with the final pulse longer and resolving, with no extra cover-exit sound.
+- Recompose movement, rotation, drop, lock, all clear sizes, level/completion/game over,
+  countdown, pause/resume, Puzzle undo, Survival bedrock/stone, and all current Mutation
+  activations. No gameplay, scoring, renderer, layout, or rule change is in scope.
+- Produce directly playable WAV suites plus a source-bound manifest with peak, RMS,
+  clipping, repetition-density, and cue-boundary measurements. Browser evidence remains
+  required, but neither measurements nor screenshots may stand in for listening.
+- After final gates and independent read-only QA, status remains **CANDIDATE / LISTENING
+  REQUIRED** until the user explicitly accepts the sound.
 
 ## Ordered checkpoints
 
-1. **Contract** — this file, `docs/DESIGN.md`, the T35 phase document, and the bounded
+1. **Contract** — this file, `docs/DESIGN.md`, the T36 phase document, and the bounded
    run state only.
-2. **Gesture foundation** — pure cue recipes, Web Audio gesture renderer, and direct
-   tests for deterministic routing/measurement-safe scheduling.
-3. **Complete palette** — AudioEngine integration and focused tests for every event
-   family, priority, mute/volume, bounded voices, and cleanup.
+2. **Instrument foundation** — deterministic PCM instruments, one-buffer voice
+   scheduling, and direct tests for reproducibility, envelope safety, and cleanup.
+3. **Complete palette** — replace every T35 recipe, remove default ambience, then run
+   focused tests for hierarchy, event coverage, priority, mute/volume, bounded voices,
+   and cleanup.
 4. **Audition proof** — playable WAV cue matrix and measurement manifest generated
    from the production recipes, then one final typecheck/full suite/build/browser pass.
 5. **Independent QA and handoff** — QA may validate correctness and evidence binding;
@@ -45,28 +56,29 @@ the work accepted.
    pushes the bounded candidate chain.
 
 Inherited dirty `docs/evidence/t27/**`, `docs/evidence/t27-r1-followup/**`, and
-`progress.md` remain outside T35 and must not be staged.
+`progress.md` remain outside T36 and must not be staged.
 
-## T35 candidate evidence
+## T36 acceptance boundary
 
-- Production audio source ends at `a2b424d`; the five cue suites exercise the same
-  gesture recipes through the production bus, master, and compressor topology.
-- Focused audio verification passes `18 / 18`; final typecheck passes; the complete
-  suite passes `378` tests with `8` skips; production build output resolves all ten
-  emitted asset references.
-- Candidate-bound browser evidence at `0a04479` records Chromium 149, one gameplay
-  Canvas, zero DOM board cells, one running AudioContext, working mute and 72% volume,
-  completed countdown plus live input, and zero console/page errors. Its temporary
-  browser and listener were released.
-- The five 48 kHz WAV suites report zero clipped samples. Evidence renderer `f09620e`
-  writes its full source SHA into both `manifest.json` and the human-readable README;
-  regenerated evidence is recorded at `30501c3`.
-- Independent read-only QA reports no blocking finding and no P0/P1/P2 issue. Its lone
-  P3 provenance note was the missing manifest SHA and is resolved by `f09620e` plus
-  `30501c3`.
-- These checks establish a technically valid listening candidate only. Movement
-  fatigue, drop/lock distinction, clear escalation, Mutation identity, countdown
-  cadence, masking, and device loudness still require explicit user listening.
+- T36 must not reuse T35 cue recipes with parameter-only edits. Reuse is limited to
+  buses, event ownership, safety, rate limiting, master controls, and teardown.
+- The final listening set must make rapid movement comfortable, lock and hard drop
+  distinguishable, all four clear sizes identifiable, five Mutation activations
+  separable, and the three countdown beats coherent on ordinary speakers.
+- A user rejection reopens the palette; it is not converted into acceptance by passing
+  tests, metrics, browser evidence, or independent QA.
+
+---
+
+# Previous Task — T35 Audition-Led Material Gesture Audio Rebuild
+
+Status: **REJECTED BY HUMAN LISTENING 2026-08-07 — superseded by T36**
+
+T35 passed typecheck, the complete automated suite, build, browser evidence, generated
+WAV measurements, and independent read-only QA. Its physical-gesture palette still did
+not pass human listening, so its audible recipes are rejected. Commit `052d9ec` remains
+the immutable rollback point and evidence archive; T36 retains only the proven audio
+infrastructure named above.
 
 ---
 

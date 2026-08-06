@@ -3,6 +3,68 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-07 T36 — Kinetic harmonic audio recomposition
+
+**Status: IN PROGRESS.** T35 was technically valid but failed human listening. Its
+resonator-and-filtered-air palette still behaved like a collection of designed sound
+objects instead of one playable instrument. T36 therefore replaces the audible model,
+not merely its frequencies, envelopes, or gain values. Stable routing, ownership,
+volume, safety, and teardown remain infrastructure only.
+
+The new world rule is **motion excites a body; the body opens, then resolves into
+space**. Every cue has three perceptual stages even when it lasts only a few
+milliseconds: kinetic onset, material response, spatial release. This gives all sounds
+one grammar without making them identical.
+
+### Procedural instrument contract
+
+- Production cues are short deterministic AudioBuffers generated from reusable
+  instruments rather than exposed note stacks. The permitted vocabulary is **felt**
+  (soft tactile excitation), **impact** (rounded low body), **ribbon** (filtered motion
+  through air), **glass** (sparse inharmonic partials), **shimmer** (reward bloom), and
+  **pulse** (restrained countdown/UI cadence).
+- A procedural layer owns one AudioBufferSource and one gain path. Internally generated
+  partials, noise, pitch motion, and envelope stages are mixed into that buffer before
+  playback. The sixteen-voice ceiling therefore remains meaningful under rapid input.
+- Determinism includes sample values, duration, cue identity, and seeded texture.
+  Generated buffers must start and end at or near zero, contain finite samples, avoid
+  hard discontinuities, and be reusable without persistent services or external files.
+- Default continuous ambience is removed. The Ambient bus remains part of the stable
+  mixer contract for future ownership, but T36 starts no background bed, drone, loop,
+  or music.
+
+### Event language
+
+- Move is a rounded felt impulse that remains readable without producing a rapid-fire
+  click train. Rotate adds a short curved ribbon. Soft drop is mostly motion; lock is a
+  compact settle; hard drop adds controlled mass and a brief spatial release without a
+  bass explosion.
+- Line clears share a branded upward-opening contour, not a scale or chord. One line is
+  narrow and dry; two adds width; three adds a broader spatial fold; four adds the only
+  long low body and a soft high resolution. Duration, spectral area, and perceived mass
+  increase monotonically.
+- Ice is a cold glass-and-air crystallisation. Supergravity is one descending mass
+  impulse with no loop and no landing sound. Bomb is a contained pressure release, not
+  a gunshot. x2 and x4 are compact energy folds whose repetition count and bandwidth
+  communicate escalation without coin or reward-jingle language.
+- Survival stone and bedrock use low, damped mass with minimal brittle texture. UI
+  feedback is quiet but legible. Countdown owns exactly three related pulses: beats 3
+  and 2 establish cadence; beat 1 is longer and resolving. There is no separate
+  cover-exit sound.
+
+### Hierarchy and listening acceptance
+
+- Perceived feedback obeys `move < rotate < lock < hard drop < 1/2/3 clear < Mutation
+  < four-line clear/completion`. Loudness is only one factor; contour, duration,
+  bandwidth, low-body energy, and spatial release carry the hierarchy.
+- The evidence renderer uses production recipes and mixer topology to create playable
+  48 kHz WAV suites. Its manifest records source SHA, peak, RMS, clipped samples,
+  cue boundaries, and rapid-repetition density. Measurements reject unsafe candidates
+  but cannot approve timbre.
+- Final typecheck, full tests, build, browser evidence, and independent read-only QA are
+  mandatory. T36 remains **CANDIDATE / LISTENING REQUIRED** until explicit human
+  acceptance.
+
 ## 2026-08-07 T35 — Audition-led material gesture audio rebuild
 
 **Status: IN PROGRESS.** Human listening rejected T34 even though its routing,
