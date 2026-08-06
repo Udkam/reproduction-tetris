@@ -6,6 +6,7 @@ interface ToneOptions {
   frequency: number;
   duration: number;
   gain: number;
+  bus?: AudioBus;
   type?: OscillatorType;
   delay?: number;
   endFrequency?: number;
@@ -14,6 +15,24 @@ interface ToneOptions {
   body?: number;
   /** Gain retained at the end of the body segment, relative to the peak. */
   bodyGain?: number;
+}
+
+type AudioBus = 'gameplay' | 'reward' | 'mutation' | 'ambient' | 'ui';
+
+interface TextureOptions {
+  duration: number;
+  gain: number;
+  delay?: number;
+  cutoff?: number;
+}
+
+interface LayeredCueOptions {
+  bus: AudioBus;
+  body: ToneOptions;
+  harmonic?: ToneOptions;
+  texture?: TextureOptions;
+  tail?: ToneOptions;
+  mutationOwned?: boolean;
 }
 
 /** A short-lived foreground voice, including the occasional buffer-noise puff. */
@@ -29,6 +48,20 @@ const FULL_VOLUME_MASTER_GAIN = 1.5;
 const VOICE_GAIN_CEILING = 0.46;
 const VOICE_GAIN_BOOST = 1.6;
 const MOVE_CUE_MIN_INTERVAL_MS = 60;
+const AUDIO_BUSES: readonly AudioBus[] = Object.freeze([
+  'gameplay',
+  'reward',
+  'mutation',
+  'ambient',
+  'ui',
+]);
+const AUDIO_BUS_GAINS: Readonly<Record<AudioBus, number>> = Object.freeze({
+  gameplay: 0.82,
+  reward: 0.94,
+  mutation: 0.88,
+  ambient: 0.18,
+  ui: 0.58,
+});
 const MUTATION_CUE_ORDER: Readonly<Record<MutationItem, number>> = Object.freeze({
   bomb: 0,
   freeze: 1,
@@ -66,6 +99,7 @@ export class AudioEngine {
   private master: GainNode | null = null;
   private effects: GainNode | null = null;
   private compressor: DynamicsCompressorNode | null = null;
+  private buses: Partial<Record<AudioBus, GainNode>> = {};
   private enabled = true;
   private mutationVoices: EffectVoice[] = [];
   private volume = 1;
@@ -105,6 +139,12 @@ export class AudioEngine {
       this.master = this.context.createGain();
       this.effects = this.context.createGain();
       this.compressor = this.context.createDynamicsCompressor();
+      for (const busName of AUDIO_BUSES) {
+        const bus = this.context.createGain();
+        bus.gain.value = AUDIO_BUS_GAINS[busName];
+        bus.connect(this.effects);
+        this.buses[busName] = bus;
+      }
       // Let short event transients remain distinct; contain only genuinely dense
       // resolution batches instead of flattening routine controls into the same level.
       this.compressor.threshold.value = -2;
@@ -185,19 +225,19 @@ export class AudioEngine {
         this.tone({ frequency: 123.47, duration: 0.12, gain: 0.24, endFrequency: 110, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
         this.tone({ frequency: 246.94, duration: 0.07, gain: 0.07, delay: 0.008, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' });
       } else if (event.type === 'level-up' && !hasMutationActivation) {
-        [392, 493.88, 587.33, 783.99].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.22 : 0.17, gain: index === 3 ? 0.15 : 0.19, delay: index * 0.05, attack: 0.004, body: 0.5, bodyGain: 0.58, type: index < 2 ? 'triangle' : 'sine' }));
+        [392, 493.88, 587.33, 783.99].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.22 : 0.17, gain: index === 3 ? 0.15 : 0.19, bus: 'reward', delay: index * 0.05, attack: 0.004, body: 0.5, bodyGain: 0.58, type: index < 2 ? 'triangle' : 'sine' }));
       } else if (event.type === 'finished' && !hasMutationActivation) {
-        [392, 493.88, 659.25, 783.99, 987.77].forEach((frequency, index) => this.tone({ frequency, duration: index === 4 ? 0.3 : 0.22, gain: index === 4 ? 0.105 : 0.2 - index * 0.018, delay: index * 0.055, attack: 0.004, body: 0.54, bodyGain: 0.6, type: index < 2 ? 'triangle' : 'sine' }));
+        [392, 493.88, 659.25, 783.99, 987.77].forEach((frequency, index) => this.tone({ frequency, duration: index === 4 ? 0.3 : 0.22, gain: index === 4 ? 0.105 : 0.2 - index * 0.018, bus: 'reward', delay: index * 0.055, attack: 0.004, body: 0.54, bodyGain: 0.6, type: index < 2 ? 'triangle' : 'sine' }));
       } else if (event.type === 'game-over' && !hasMutationActivation) {
-        [220, 174.61, 146.83, 110].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.26 : 0.19, gain: 0.18 - index * 0.018, delay: index * 0.09, attack: 0.006, body: 0.54, bodyGain: 0.6, type: index < 3 ? 'triangle' : 'sine' }));
+        [220, 174.61, 146.83, 110].forEach((frequency, index) => this.tone({ frequency, duration: index === 3 ? 0.26 : 0.19, gain: 0.18 - index * 0.018, bus: 'reward', delay: index * 0.09, attack: 0.006, body: 0.54, bodyGain: 0.6, type: index < 3 ? 'triangle' : 'sine' }));
       } else if (event.type === 'started') {
         // The cover exits silently after the third short countdown beat.
       } else if (event.type === 'resumed') {
-        this.tone({ frequency: 329.63, duration: 0.105, gain: 0.12, attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' });
-        this.tone({ frequency: 493.88, duration: 0.075, gain: 0.06, delay: 0.02, attack: 0.003, body: 0.44, bodyGain: 0.46, type: 'sine' });
+        this.tone({ frequency: 329.63, duration: 0.105, gain: 0.12, bus: 'ui', attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' });
+        this.tone({ frequency: 493.88, duration: 0.075, gain: 0.06, bus: 'ui', delay: 0.02, attack: 0.003, body: 0.44, bodyGain: 0.46, type: 'sine' });
       } else if (event.type === 'paused') {
-        this.tone({ frequency: 329.63, duration: 0.1, gain: 0.11, attack: 0.004, body: 0.48, bodyGain: 0.52, type: 'triangle' });
-        this.tone({ frequency: 246.94, duration: 0.085, gain: 0.06, delay: 0.02, attack: 0.004, body: 0.44, bodyGain: 0.46, type: 'sine' });
+        this.tone({ frequency: 329.63, duration: 0.1, gain: 0.11, bus: 'ui', attack: 0.004, body: 0.48, bodyGain: 0.52, type: 'triangle' });
+        this.tone({ frequency: 246.94, duration: 0.085, gain: 0.06, bus: 'ui', delay: 0.02, attack: 0.004, body: 0.44, bodyGain: 0.46, type: 'sine' });
       } else if (event.type === 'restarted') {
         // The fresh 3-2-1 sequence owns restart feedback; another voice here would
         // double the first beat when the restarted event and digit 3 share a frame.
@@ -216,6 +256,7 @@ export class AudioEngine {
       frequency: profile.frequency,
       duration: profile.duration,
       gain: profile.gain,
+      bus: 'ui',
       attack: 0.004,
       body: digit === 1 ? 0.58 : 0.48,
       bodyGain: digit === 1 ? 0.64 : 0.54,
@@ -225,6 +266,7 @@ export class AudioEngine {
       frequency: profile.frequency * 2,
       duration: profile.duration * 0.58,
       gain: profile.gain * 0.24,
+      bus: 'ui',
       attack: 0.003,
       body: 0.42,
       bodyGain: 0.44,
@@ -234,6 +276,8 @@ export class AudioEngine {
 
   destroy(): void {
     this.stopMutationCue();
+    for (const busName of AUDIO_BUSES) this.buses[busName]?.disconnect();
+    this.buses = {};
     this.effects?.disconnect();
     this.effects = null;
     this.master?.disconnect();
@@ -251,12 +295,15 @@ export class AudioEngine {
     const profile = CLEAR_CUE_PROFILES[count as 1 | 2 | 3 | 4];
     // Triangle fundamentals add tactile body; delayed sine voices add an increasingly
     // resolved reward without noise, a sub-boom, or a master-gain jump.
-    profile.forEach((tone) => this.tone(tone));
+    profile.forEach((tone) => this.tone({ ...tone, bus: 'reward' }));
   }
 
   private landingThump(): void {
-    this.tone({ frequency: 146.83, duration: 0.09, gain: 0.13, endFrequency: 130.81, attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' });
-    this.tone({ frequency: 293.66, duration: 0.05, gain: 0.045, delay: 0.006, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' });
+    this.layeredCue({
+      bus: 'gameplay',
+      body: { frequency: 146.83, duration: 0.09, gain: 0.13, endFrequency: 130.81, attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' },
+      harmonic: { frequency: 293.66, duration: 0.05, gain: 0.045, delay: 0.006, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' },
+    });
   }
 
   private uniqueMutationActivations(events: readonly GameEvent[]): MutationActivation[] {
@@ -297,6 +344,7 @@ export class AudioEngine {
         frequency: 698.46,
         duration: 0.105,
         gain: 0.135 * carrierAccent,
+        bus: 'mutation',
         delay: delayOffset,
         attack: 0.003,
         body: 0.46,
@@ -307,6 +355,7 @@ export class AudioEngine {
         frequency: 1046.5,
         duration: 0.075,
         gain: 0.04 * carrierAccent,
+        bus: 'mutation',
         delay: delayOffset + 0.012,
         attack: 0.0025,
         body: 0.4,
@@ -316,13 +365,13 @@ export class AudioEngine {
       return;
     }
     if (event.item === 'collapse') {
-      this.tone({ frequency: 196, duration: 0.155, gain: 0.27 * carrierAccent, delay: delayOffset, endFrequency: 130.81, attack: 0.004, body: 0.54, bodyGain: 0.64, type: 'triangle' }, true);
-      this.tone({ frequency: 261.63, duration: 0.1, gain: 0.085 * carrierAccent, delay: delayOffset + 0.02, endFrequency: 196, attack: 0.003, body: 0.46, bodyGain: 0.5, type: 'sine' }, true);
+      this.tone({ frequency: 196, duration: 0.155, gain: 0.27 * carrierAccent, bus: 'mutation', delay: delayOffset, endFrequency: 130.81, attack: 0.004, body: 0.54, bodyGain: 0.64, type: 'triangle' }, true);
+      this.tone({ frequency: 261.63, duration: 0.1, gain: 0.085 * carrierAccent, bus: 'mutation', delay: delayOffset + 0.02, endFrequency: 196, attack: 0.003, body: 0.46, bodyGain: 0.5, type: 'sine' }, true);
       return;
     }
     if (event.item === 'bomb') {
-      this.tone({ frequency: 110, duration: 0.17, gain: 0.22 * carrierAccent, delay: delayOffset, endFrequency: 82.41, attack: 0.004, body: 0.52, bodyGain: 0.6, type: 'triangle' }, true);
-      this.noisePuff({ duration: 0.07, gain: 0.085 * carrierAccent, delay: delayOffset + 0.006, cutoff: 480 });
+      this.tone({ frequency: 110, duration: 0.17, gain: 0.22 * carrierAccent, bus: 'mutation', delay: delayOffset, endFrequency: 82.41, attack: 0.004, body: 0.52, bodyGain: 0.6, type: 'triangle' }, true);
+      this.noisePuff({ duration: 0.07, gain: 0.085 * carrierAccent, delay: delayOffset + 0.006, cutoff: 480 }, 'mutation', true);
       return;
     }
     this.mutationMarimbaStrike(token.activateHz, 0.18 * carrierAccent, delayOffset);
@@ -341,13 +390,26 @@ export class AudioEngine {
     delay: number,
     type: OscillatorType = 'triangle',
   ): void {
-    this.tone({ frequency, duration: 0.145, gain, delay, attack: 0.003, body: 0.45, bodyGain: 0.48, type }, true);
+    this.tone({ frequency, duration: 0.145, gain, bus: 'mutation', delay, attack: 0.003, body: 0.45, bodyGain: 0.48, type }, true);
+  }
+
+  /**
+   * One semantic cue can own a soft body, harmonic colour, deterministic material
+   * texture, and a quiet delayed tail. All layers share the same bus and ownership so
+   * event priority remains legible rather than becoming an accidental sound pile-up.
+   */
+  private layeredCue(options: LayeredCueOptions): void {
+    const { bus, mutationOwned = false } = options;
+    this.tone({ ...options.body, bus }, mutationOwned);
+    if (options.harmonic) this.tone({ ...options.harmonic, bus }, mutationOwned);
+    if (options.texture) this.noisePuff(options.texture, bus, mutationOwned);
+    if (options.tail) this.tone({ ...options.tail, bus }, mutationOwned);
   }
 
   private tone(options: ToneOptions, belongsToMutationCue = false): void {
     const context = this.context;
-    const effects = this.effects;
-    if (!context || !effects || this.voices >= 16) return;
+    const bus = this.buses[options.bus ?? 'gameplay'];
+    if (!context || !bus || this.voices >= 16) return;
     const start = context.currentTime + (options.delay ?? 0);
     const end = start + options.duration;
     const oscillator = context.createOscillator();
@@ -372,7 +434,7 @@ export class AudioEngine {
     }
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
     oscillator.connect(gain);
-    gain.connect(effects);
+    gain.connect(bus);
     const voice: EffectVoice = { source: oscillator, gain };
     if (belongsToMutationCue) this.mutationVoices.push(voice);
     oscillator.start(start);
@@ -385,10 +447,14 @@ export class AudioEngine {
     };
   }
 
-  private noisePuff(options: Pick<ToneOptions, 'duration' | 'gain' | 'delay'> & { cutoff?: number }): void {
+  private noisePuff(
+    options: TextureOptions,
+    busName: AudioBus = 'gameplay',
+    belongsToMutationCue = false,
+  ): void {
     const context = this.context;
-    const effects = this.effects;
-    if (!context || !effects || this.voices >= 16) return;
+    const bus = this.buses[busName];
+    if (!context || !bus || this.voices >= 16) return;
     const start = context.currentTime + (options.delay ?? 0);
     const end = start + options.duration;
     const frames = Math.max(1, Math.round(context.sampleRate * options.duration));
@@ -415,9 +481,9 @@ export class AudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, end);
     source.connect(filter);
     filter.connect(gain);
-    gain.connect(effects);
+    gain.connect(bus);
     const voice: EffectVoice = { source, gain };
-    this.mutationVoices.push(voice);
+    if (belongsToMutationCue) this.mutationVoices.push(voice);
     this.voices += 1;
     source.start(start);
     source.stop(end + 0.01);
@@ -426,7 +492,7 @@ export class AudioEngine {
       filter.disconnect();
       gain.disconnect();
       this.voices = Math.max(0, this.voices - 1);
-      this.mutationVoices = this.mutationVoices.filter((candidate) => candidate !== voice);
+      if (belongsToMutationCue) this.mutationVoices = this.mutationVoices.filter((candidate) => candidate !== voice);
     };
   }
 

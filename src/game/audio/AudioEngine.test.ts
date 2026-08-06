@@ -29,7 +29,8 @@ class FakeAudioParam {
 
 class FakeGain {
   readonly gain = new FakeAudioParam();
-  connect(): void {}
+  readonly connections: unknown[] = [];
+  connect(target?: unknown): void { this.connections.push(target); }
   disconnect(): void {}
 }
 
@@ -94,6 +95,10 @@ const noiseSources: FakeBufferSource[] = [];
 const filters: FakeBiquadFilter[] = [];
 let audioContextCloseCalls = 0;
 let audioContextSuspendCalls = 0;
+
+const scheduledVoiceGains = (): FakeGain[] => (
+  gains.filter((gain) => gain.gain.rampTimes.length > 0)
+);
 
 class FakeAudioContext {
   currentTime = 0;
@@ -185,6 +190,28 @@ afterEach(() => {
 });
 
 describe('AudioEngine complete feedback remaster', () => {
+  it('routes five named buses beneath the shared effects path', async () => {
+    vi.stubGlobal('AudioContext', FakeAudioContext);
+    const audio = new AudioEngine();
+    await audio.prime();
+
+    expect(gains).toHaveLength(7);
+    expect(gains.slice(2, 7).map((gain) => gain.gain.value)).toEqual([
+      0.82, 0.94, 0.88, 0.18, 0.58,
+    ]);
+    expect(gains.slice(2, 7).every((gain) => gain.connections[0] === gains[1])).toBe(true);
+
+    audio.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
+    expect(scheduledVoiceGains().at(-1)?.connections[0]).toBe(gains[2]);
+    audio.play([{ type: 'lines-cleared', rows: [39], count: 1, score: 100 }]);
+    expect(scheduledVoiceGains().at(-1)?.connections[0]).toBe(gains[3]);
+    audio.play([{ type: 'mutation-activated', item: 'freeze', durationTicks: 600, score: 0, rowsRemoved: 0, triggerCells: carrierCells }]);
+    expect(scheduledVoiceGains().at(-1)?.connections[0]).toBe(gains[4]);
+    audio.play([{ type: 'paused' }]);
+    expect(scheduledVoiceGains().at(-1)?.connections[0]).toBe(gains[6]);
+    audio.destroy();
+  });
+
   it('closes its owned AudioContext exactly once during idempotent teardown', async () => {
     vi.stubGlobal('AudioContext', FakeAudioContext);
     const audio = new AudioEngine();
@@ -245,7 +272,7 @@ describe('AudioEngine complete feedback remaster', () => {
     expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([196, 196]);
     expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'triangle']);
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
-    const voiceGains = gains.slice(2);
+    const voiceGains = scheduledVoiceGains();
     expect(voiceGains).toHaveLength(2);
     expect(voiceGains.every((gain) => Math.max(...gain.gain.ramps) <= 0.12)).toBe(true);
     audio.destroy();
@@ -263,7 +290,7 @@ describe('AudioEngine complete feedback remaster', () => {
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
     expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine']);
     expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.1)).toBe(true);
-    expect(gains.slice(2).every((gain) => Math.max(...gain.gain.ramps) <= 0.18)).toBe(true);
+    expect(scheduledVoiceGains().every((gain) => Math.max(...gain.gain.ramps) <= 0.18)).toBe(true);
     audio.destroy();
   });
 
@@ -294,8 +321,8 @@ describe('AudioEngine complete feedback remaster', () => {
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
     expect(oscillators[0]?.stops[0]).toBeCloseTo(0.28, 4);
     expect(oscillators[1]?.stops[0]).toBeLessThan(0.18);
-    expect(gains[2]?.gain.rampTimes.at(-1)).toBeCloseTo(0.27, 4);
-    expect(gains[3]?.gain.rampTimes.at(-1)).toBeCloseTo(0.1566, 4);
+    expect(scheduledVoiceGains()[0]?.gain.rampTimes.at(-1)).toBeCloseTo(0.27, 4);
+    expect(scheduledVoiceGains()[1]?.gain.rampTimes.at(-1)).toBeCloseTo(0.1566, 4);
     audio.destroy();
   });
 
@@ -492,7 +519,7 @@ describe('AudioEngine complete feedback remaster', () => {
     const hardDrop = new AudioEngine();
     await hardDrop.prime();
     hardDrop.play([{ type: 'hard-dropped', piece: 'T', distance: 12 }]);
-    const hardDropEnergy = gains.slice(2).reduce(
+    const hardDropEnergy = scheduledVoiceGains().reduce(
       (sum, gain) => sum + Math.max(...gain.gain.ramps),
       0,
     );
@@ -503,7 +530,7 @@ describe('AudioEngine complete feedback remaster', () => {
     const clear = new AudioEngine();
     await clear.prime();
     clear.play([{ type: 'lines-cleared', rows: [39], count: 1, score: 100 }]);
-    const clearEnergy = gains.slice(2).reduce(
+    const clearEnergy = scheduledVoiceGains().reduce(
       (sum, gain) => sum + Math.max(...gain.gain.ramps),
       0,
     );
@@ -622,7 +649,7 @@ describe('AudioEngine complete feedback remaster', () => {
     expect(oscillators.map((oscillator) => oscillator.type)).toEqual(['triangle', 'sine']);
     expect(oscillators[0]?.frequency.ramps).toEqual([130.81]);
     expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.12)).toBe(true);
-    expect(gains.slice(2).every((gain) => Math.max(...gain.gain.ramps) <= 0.27)).toBe(true);
+    expect(scheduledVoiceGains().every((gain) => Math.max(...gain.gain.ramps) <= 0.27)).toBe(true);
     audio.destroy();
   });
 
@@ -638,7 +665,7 @@ describe('AudioEngine complete feedback remaster', () => {
     expect(oscillators[0]?.frequency.setValues).toEqual([220]);
     expect(oscillators[0]?.frequency.ramps).toEqual([]);
     expect(oscillators[0]?.stops[0]).toBeLessThanOrEqual(0.07);
-    expect(Math.max(...(gains[2]?.gain.ramps ?? []))).toBeLessThanOrEqual(0.12);
+    expect(Math.max(...(scheduledVoiceGains()[0]?.gain.ramps ?? []))).toBeLessThanOrEqual(0.12);
     audio.destroy();
   });
 
@@ -738,7 +765,7 @@ describe('AudioEngine complete feedback remaster', () => {
     expect(oscillators.map((oscillator) => oscillator.frequency.setValues[0])).toEqual([329.63, 246.94, 329.63, 493.88]);
     expect(oscillators.every((oscillator) => oscillator.frequency.ramps.length === 0)).toBe(true);
     expect(oscillators.every((oscillator) => (oscillator.stops[0] ?? 1) <= 0.12)).toBe(true);
-    expect(gains.slice(2).every((gain) => Math.max(...gain.gain.ramps) <= 0.2)).toBe(true);
+    expect(scheduledVoiceGains().every((gain) => Math.max(...gain.gain.ramps) <= 0.2)).toBe(true);
     expect(timers.size).toBe(0);
     audio.destroy();
   });
