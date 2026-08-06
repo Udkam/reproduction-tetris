@@ -34,7 +34,7 @@ listening.
 2. `COMPLETE` — buffered procedural instrument foundation + focused tests.
 3. `COMPLETE` — complete procedural palette + silent-by-default engine integration.
 4. `COMPLETE` — isolated Mutation-status heading-glow cleanup.
-5. `PENDING` — WAV evidence + measurements.
+5. `COMPLETE` — source-bound WAV evidence + measurements.
 6. `PENDING` — final gates, browser evidence, independent QA, docs, push.
 
 ## Verification state
@@ -47,12 +47,15 @@ listening.
 - `npm.cmd run typecheck`: passed after the silent-by-default engine integration.
 - `npm.cmd run test -- src/styles/hud.test.ts`: 11 tests passed after deleting the Mutation-status radial halo and disabling both heading text shadows.
 - `npm.cmd run typecheck`: passed after the isolated heading-glow cleanup.
+- `node docs/evidence/t36/render-audio-evidence.mjs`: produced six mono 48 kHz WAV listening suites from source SHA `39216d1`; all recorded peaks/RMS values are finite and all suites report zero clipped samples.
+- Evidence generation used one short-lived Node process and opened no server, browser, watcher, listener, or audio device.
 - Human listening is the final acceptance boundary.
 
 ## Next exact action
 
-Create source-bound T36 WAV listening evidence and a measurement manifest with a
-one-shot renderer; do not start a server, browser, watcher, or external audio process.
+Run the single final typecheck/test/build sequence, capture one browser-evidence pass
+from the final candidate, request independent read-only QA, then update final docs and
+push without declaring listening acceptance.
 
 ## Do not repeat
 

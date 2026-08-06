@@ -1,0 +1,392 @@
+{
+  "sourceSha": "39216d18bdf079d676879a0ddde6c5811b70189b",
+  "generatedAt": "2026-08-06T21:21:06.565Z",
+  "renderer": "one-shot Node renderer using production audioPalette + renderProceduralSamples, production bus/master gains, and static production compressor transfer",
+  "sampleRate": 48000,
+  "files": [
+    {
+      "file": "01-controls-fast-repeat.wav",
+      "description": "Rapid repeated movement, rotation, and soft-drop input; listen for separation without clicky fatigue.",
+      "sequence": [
+        "move",
+        "move",
+        "move",
+        "move",
+        "rotate",
+        "soft-drop",
+        "soft-drop",
+        "move",
+        "rotate"
+      ],
+      "cueBoundaries": [
+        {
+          "id": "move",
+          "startSeconds": 0.16,
+          "endSeconds": 0.212
+        },
+        {
+          "id": "move",
+          "startSeconds": 0.24,
+          "endSeconds": 0.292
+        },
+        {
+          "id": "move",
+          "startSeconds": 0.32,
+          "endSeconds": 0.372
+        },
+        {
+          "id": "move",
+          "startSeconds": 0.4,
+          "endSeconds": 0.452
+        },
+        {
+          "id": "rotate",
+          "startSeconds": 0.6,
+          "endSeconds": 0.6809999999999999
+        },
+        {
+          "id": "soft-drop",
+          "startSeconds": 0.86,
+          "endSeconds": 0.906
+        },
+        {
+          "id": "soft-drop",
+          "startSeconds": 0.98,
+          "endSeconds": 1.026
+        },
+        {
+          "id": "move",
+          "startSeconds": 1.18,
+          "endSeconds": 1.232
+        },
+        {
+          "id": "rotate",
+          "startSeconds": 1.36,
+          "endSeconds": 1.441
+        }
+      ],
+      "durationSeconds": 1.8010000000000002,
+      "repetitionDensity": 4.997223764575236,
+      "peak": 0.038736868649721146,
+      "rms": 0.004420699855147479,
+      "clippedSamples": 0
+    },
+    {
+      "file": "02-contact-and-clear-hierarchy.wav",
+      "description": "Contact and reward ladder from lock through four-row clear, level-up, and completion.",
+      "sequence": [
+        "lock",
+        "hard-drop",
+        "clear-1",
+        "clear-2",
+        "clear-3",
+        "clear-4",
+        "level-up",
+        "finished"
+      ],
+      "cueBoundaries": [
+        {
+          "id": "lock",
+          "startSeconds": 0.16,
+          "endSeconds": 0.268
+        },
+        {
+          "id": "hard-drop",
+          "startSeconds": 0.58,
+          "endSeconds": 0.77
+        },
+        {
+          "id": "clear-1",
+          "startSeconds": 1.05,
+          "endSeconds": 1.27
+        },
+        {
+          "id": "clear-2",
+          "startSeconds": 1.78,
+          "endSeconds": 2.05
+        },
+        {
+          "id": "clear-3",
+          "startSeconds": 2.62,
+          "endSeconds": 2.98
+        },
+        {
+          "id": "clear-4",
+          "startSeconds": 3.56,
+          "endSeconds": 4.28
+        },
+        {
+          "id": "level-up",
+          "startSeconds": 4.54,
+          "endSeconds": 4.98
+        },
+        {
+          "id": "finished",
+          "startSeconds": 5.42,
+          "endSeconds": 6.155
+        }
+      ],
+      "durationSeconds": 6.515000000000001,
+      "repetitionDensity": 1.2279355333844972,
+      "peak": 0.27630844712257385,
+      "rms": 0.03365635922981781,
+      "clippedSamples": 0
+    },
+    {
+      "file": "03-mutation-signatures.wav",
+      "description": "Short state signatures only: Freeze, Supergravity, Bomb, Double, and Super Double; no sustained loops.",
+      "sequence": [
+        "freeze",
+        "supergravity",
+        "bomb",
+        "multiplier-2",
+        "multiplier-4"
+      ],
+      "cueBoundaries": [
+        {
+          "id": "freeze",
+          "startSeconds": 0.16,
+          "endSeconds": 0.64
+        },
+        {
+          "id": "supergravity",
+          "startSeconds": 1.02,
+          "endSeconds": 1.5
+        },
+        {
+          "id": "bomb",
+          "startSeconds": 1.88,
+          "endSeconds": 2.31
+        },
+        {
+          "id": "multiplier-2",
+          "startSeconds": 2.78,
+          "endSeconds": 3.1999999999999997
+        },
+        {
+          "id": "multiplier-4",
+          "startSeconds": 3.52,
+          "endSeconds": 4.07
+        }
+      ],
+      "durationSeconds": 4.430000000000001,
+      "repetitionDensity": 1.128668171557562,
+      "peak": 0.2586531639099121,
+      "rms": 0.03865995600792892,
+      "clippedSamples": 0
+    },
+    {
+      "file": "04-survival-and-ui.wav",
+      "description": "Survival pressure and restrained interface feedback without an ambient bed.",
+      "sequence": [
+        "stone-warning",
+        "stone-spawn",
+        "stone-land",
+        "bedrock-rise",
+        "bedrock-lower",
+        "pause",
+        "resume",
+        "puzzle-undo",
+        "game-over"
+      ],
+      "cueBoundaries": [
+        {
+          "id": "stone-warning",
+          "startSeconds": 0.16,
+          "endSeconds": 0.405
+        },
+        {
+          "id": "stone-spawn",
+          "startSeconds": 0.72,
+          "endSeconds": 0.87
+        },
+        {
+          "id": "stone-land",
+          "startSeconds": 1.18,
+          "endSeconds": 1.41
+        },
+        {
+          "id": "bedrock-rise",
+          "startSeconds": 1.72,
+          "endSeconds": 2.38
+        },
+        {
+          "id": "bedrock-lower",
+          "startSeconds": 2.72,
+          "endSeconds": 3.24
+        },
+        {
+          "id": "pause",
+          "startSeconds": 3.68,
+          "endSeconds": 3.79
+        },
+        {
+          "id": "resume",
+          "startSeconds": 4.12,
+          "endSeconds": 4.24
+        },
+        {
+          "id": "puzzle-undo",
+          "startSeconds": 4.62,
+          "endSeconds": 4.75
+        },
+        {
+          "id": "game-over",
+          "startSeconds": 5.22,
+          "endSeconds": 5.64
+        }
+      ],
+      "durationSeconds": 6,
+      "repetitionDensity": 1.5,
+      "peak": 0.15126332640647888,
+      "rms": 0.019885271929556757,
+      "clippedSamples": 0
+    },
+    {
+      "file": "05-countdown-three-pulse.wav",
+      "description": "Exactly three related countdown pulses; the final pulse is longer and no cover-exit sound follows it.",
+      "sequence": [
+        "countdown-tick",
+        "countdown-tick",
+        "countdown-resolve"
+      ],
+      "cueBoundaries": [
+        {
+          "id": "countdown-tick",
+          "startSeconds": 0.2,
+          "endSeconds": 0.37
+        },
+        {
+          "id": "countdown-tick",
+          "startSeconds": 1.2,
+          "endSeconds": 1.3699999999999999
+        },
+        {
+          "id": "countdown-resolve",
+          "startSeconds": 2.2,
+          "endSeconds": 2.49
+        }
+      ],
+      "durationSeconds": 3.21,
+      "repetitionDensity": 0.9345794392523364,
+      "peak": 0.09370797127485275,
+      "rms": 0.010788069128613395,
+      "clippedSamples": 0
+    },
+    {
+      "file": "06-interaction-mix.wav",
+      "description": "Representative play cadence for masking, stacking, hierarchy, and peak-control review.",
+      "sequence": [
+        "move",
+        "move",
+        "rotate",
+        "soft-drop",
+        "hard-drop",
+        "clear-1",
+        "move",
+        "rotate",
+        "hard-drop",
+        "clear-2",
+        "stone-warning",
+        "stone-spawn",
+        "stone-land",
+        "freeze",
+        "move",
+        "hard-drop",
+        "clear-4"
+      ],
+      "cueBoundaries": [
+        {
+          "id": "move",
+          "startSeconds": 0.16,
+          "endSeconds": 0.212
+        },
+        {
+          "id": "move",
+          "startSeconds": 0.25,
+          "endSeconds": 0.302
+        },
+        {
+          "id": "rotate",
+          "startSeconds": 0.39,
+          "endSeconds": 0.47100000000000003
+        },
+        {
+          "id": "soft-drop",
+          "startSeconds": 0.55,
+          "endSeconds": 0.5960000000000001
+        },
+        {
+          "id": "hard-drop",
+          "startSeconds": 0.78,
+          "endSeconds": 0.97
+        },
+        {
+          "id": "clear-1",
+          "startSeconds": 1.18,
+          "endSeconds": 1.4
+        },
+        {
+          "id": "move",
+          "startSeconds": 1.72,
+          "endSeconds": 1.772
+        },
+        {
+          "id": "rotate",
+          "startSeconds": 1.86,
+          "endSeconds": 1.941
+        },
+        {
+          "id": "hard-drop",
+          "startSeconds": 2.08,
+          "endSeconds": 2.27
+        },
+        {
+          "id": "clear-2",
+          "startSeconds": 2.46,
+          "endSeconds": 2.73
+        },
+        {
+          "id": "stone-warning",
+          "startSeconds": 3.12,
+          "endSeconds": 3.365
+        },
+        {
+          "id": "stone-spawn",
+          "startSeconds": 3.48,
+          "endSeconds": 3.63
+        },
+        {
+          "id": "stone-land",
+          "startSeconds": 3.82,
+          "endSeconds": 4.05
+        },
+        {
+          "id": "freeze",
+          "startSeconds": 4.22,
+          "endSeconds": 4.7
+        },
+        {
+          "id": "move",
+          "startSeconds": 4.82,
+          "endSeconds": 4.872
+        },
+        {
+          "id": "hard-drop",
+          "startSeconds": 5.08,
+          "endSeconds": 5.2700000000000005
+        },
+        {
+          "id": "clear-4",
+          "startSeconds": 5.48,
+          "endSeconds": 6.2
+        }
+      ],
+      "durationSeconds": 6.5600000000000005,
+      "repetitionDensity": 2.591463414634146,
+      "peak": 0.27630844712257385,
+      "rms": 0.02915223218733191,
+      "clippedSamples": 0
+    }
+  ]
+}
