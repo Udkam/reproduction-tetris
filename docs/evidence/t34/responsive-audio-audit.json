@@ -1,0 +1,24 @@
+{
+  "sourceSha": "a99a93421b922e7fca57dfd713124536e3322ce5",
+  "capturedAt": "2026-08-06T00:48:17.579Z",
+  "browser": "149.0.7827.55",
+  "audioInitial": {
+    "pressed": "true",
+    "volume": "100"
+  },
+  "mutedPressed": "false",
+  "audioFinal": {
+    "pressed": "true",
+    "volume": "64"
+  },
+  "themes": {
+    "mineral-mist": "mineral-mist",
+    "deep-tide": "deep-tide",
+    "sunstone": "sunstone"
+  },
+  "renderer": {
+    "canvasCount": 1,
+    "domCellCount": 0
+  },
+  "errors": []
+}
