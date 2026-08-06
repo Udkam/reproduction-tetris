@@ -1,6 +1,7 @@
 # Current Task — T35 Audition-Led Material Gesture Audio Rebuild
 
-Status: **IN PROGRESS — T34 rejected by human listening; no automated-only acceptance**
+Status: **CANDIDATE / LISTENING REQUIRED — automated gates, browser evidence, and
+independent QA pass; human listening is still pending**
 
 ## Active objective
 
@@ -45,6 +46,27 @@ the work accepted.
 
 Inherited dirty `docs/evidence/t27/**`, `docs/evidence/t27-r1-followup/**`, and
 `progress.md` remain outside T35 and must not be staged.
+
+## T35 candidate evidence
+
+- Production audio source ends at `a2b424d`; the five cue suites exercise the same
+  gesture recipes through the production bus, master, and compressor topology.
+- Focused audio verification passes `18 / 18`; final typecheck passes; the complete
+  suite passes `378` tests with `8` skips; production build output resolves all ten
+  emitted asset references.
+- Candidate-bound browser evidence at `0a04479` records Chromium 149, one gameplay
+  Canvas, zero DOM board cells, one running AudioContext, working mute and 72% volume,
+  completed countdown plus live input, and zero console/page errors. Its temporary
+  browser and listener were released.
+- The five 48 kHz WAV suites report zero clipped samples. Evidence renderer `f09620e`
+  writes its full source SHA into both `manifest.json` and the human-readable README;
+  regenerated evidence is recorded at `30501c3`.
+- Independent read-only QA reports no blocking finding and no P0/P1/P2 issue. Its lone
+  P3 provenance note was the missing manifest SHA and is resolved by `f09620e` plus
+  `30501c3`.
+- These checks establish a technically valid listening candidate only. Movement
+  fatigue, drop/lock distinction, clear escalation, Mutation identity, countdown
+  cadence, masking, and device loudness still require explicit user listening.
 
 ---
 

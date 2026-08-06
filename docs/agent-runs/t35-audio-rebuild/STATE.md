@@ -16,12 +16,13 @@ listening.
 
 ## Current checkpoint
 
-- Phase: final integration evidence.
+- Phase: candidate handoff; human listening pending.
 - Base SHA: `31cbb13`.
 - T35 commits: `a69f81e` contract, `97e8a7c` scheduler, `a781c29` palette,
   `7c40958` engine integration, `a2b424d` onset-click correction, `3fe677c`
-  production audition evidence, `be951a4` browser acceptance harness, and `0a04479`
-  countdown-aware evidence correction.
+  production audition evidence, `be951a4` browser acceptance harness, `0a04479`
+  countdown-aware evidence correction, `ff17f83` final browser record, `f09620e`
+  source-bound audition manifest, and `30501c3` regenerated bound evidence.
 - Source paths: `src/game/audio/audioGesture.ts`, `src/game/audio/audioPalette.ts`,
   `src/game/audio/AudioEngine.ts`, and their direct tests.
 - Focused result: 18/18 audio tests pass after the onset-click correction; the
@@ -46,9 +47,13 @@ listening.
   gameplay image shows the active board after countdown and input. Port 4188 has no
   remaining listener.
 - Inherited T27 evidence and `progress.md` remain dirty and unstaged.
+- Independent read-only QA reports no blocking finding and no P0/P1/P2 issue. Its one
+  P3 finding requested a source SHA inside the portable audition manifest; `f09620e`
+  and `30501c3` resolve that provenance gap without reopening product source.
 
 ## Next action
 
-Commit the final browser evidence, then run independent read-only QA over the T35
-candidate range. Human listening remains a required acceptance gate, so the candidate
-must not be labeled accepted automatically even when automated and visual gates pass.
+Ask the user to listen to the five candidate WAV suites, focusing on control fatigue,
+drop/lock distinction, 1–4 clear escalation, Mutation identity, countdown cadence, and
+mixed-cue masking. Record explicit acceptance or concrete rejection feedback; do not
+label T35 accepted from automated evidence alone.

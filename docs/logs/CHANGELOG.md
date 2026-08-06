@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-08-07 — T35 material-gesture audio candidate awaiting listening
+
+- Human listening rejected T34 despite its automated acceptance record, so T35 replaced
+  the audible palette end to end while retaining its safe five-bus, priority, volume,
+  sixteen-voice, and lifecycle infrastructure. The new language uses felted controls,
+  modal contact, filtered air, damped mass, spatial clear blooms, concise Mutation
+  identities, natural Survival pressure, restrained UI feedback, and non-pitched room
+  tone rather than exposed notes, chord stacks, or sustained state loops.
+- Product audio source ends at `a2b424d`. Focused audio tests pass `18 / 18`; final
+  typecheck, complete suite (`378 passed / 8 skipped`), production build, and live
+  browser evidence pass. Candidate browser record `ff17f83` verifies one Canvas, zero
+  DOM board cells, a running AudioContext with working mute/volume, completed countdown
+  and input, zero page/console errors, and released temporary resources.
+- Five directly playable 48 kHz WAV suites cover controls/contact, 1–4 clears,
+  Mutation identities, Survival/UI/countdown, and a representative interaction mix.
+  All report zero clipped samples. Renderer `f09620e` embeds its full source SHA in the
+  portable manifest; bound output is recorded at `30501c3`.
+- Independent read-only QA reports no blocking finding and no P0/P1/P2 issue. Its only
+  P3 provenance note is resolved by the embedded SHA. T35 remains **CANDIDATE /
+  LISTENING REQUIRED** until the user explicitly accepts the sound; automation is not
+  treated as proof of timbre, fatigue, identity, masking, or device loudness.
+
 ## 2026-08-06 — T34 responsive gravity instrument audio accepted
 
 - Rebuilt TetraMorph's procedural SFX as one calm responsive gravity instrument across

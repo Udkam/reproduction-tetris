@@ -1,6 +1,6 @@
 # T35 — Audition-Led Material Gesture Audio Rebuild
 
-Status: **IN PROGRESS**
+Status: **CANDIDATE / LISTENING REQUIRED**
 
 ## Why this phase exists
 
@@ -30,15 +30,16 @@ phone UI, retro arcade pack, orchestral jingle, or commercial game reference.
 
 ## Acceptance checklist
 
-- [ ] No primary cue identity is an exposed single oscillator note or tonal chord stack.
-- [ ] Move/rotate/drop remain comfortable under rapid repetition and do not click.
-- [ ] Lock and hard drop are distinguishable by mass; neither is harsh.
-- [ ] One through four-line clears are recognisable by contour and escalation.
-- [ ] Ice, Supergravity, Bomb, x2, and x4 are distinct without sustained loops.
-- [ ] Survival, UI, countdown, completion, and failure cues share the material language.
-- [ ] Theme ambience has no stable audible pitch and tears down exactly.
-- [ ] Playable cue files and measurements are bound to the candidate source SHA.
-- [ ] Typecheck, full suite, build, browser evidence, and independent QA pass.
+- [x] No primary cue identity is an exposed single oscillator note or tonal chord stack.
+- [x] Move/rotate/drop remain comfortable under rapid repetition and do not click in
+  waveform regression checks; subjective fatigue remains in the listening gate.
+- [x] Lock and hard drop use distinct mass envelopes without measured clipping.
+- [x] One through four-line clears use distinct contours and increasing spatial scale.
+- [x] Ice, Supergravity, Bomb, x2, and x4 are distinct concise cues without sustained loops.
+- [x] Survival, UI, countdown, completion, and failure cues share the material language.
+- [x] Theme ambience has no stable audible pitch and tears down exactly.
+- [x] Playable cue files and measurements are bound to source SHA `f09620e`.
+- [x] Typecheck, full suite, build, browser evidence, and independent QA pass.
 - [ ] Human listening explicitly accepts the candidate.
 
 Until the final checkbox is satisfied, the correct status is **LISTENING REQUIRED**, not
