@@ -1,4 +1,9 @@
-import type { AudioBus, AudioGesture, GestureLayer } from './audioGesture';
+import type {
+  AudioBus,
+  AudioGesture,
+  ProceduralInstrument,
+  ProceduralLayer,
+} from './audioGesture';
 
 export type AudioCueId =
   | 'move' | 'rotate' | 'soft-drop' | 'hard-drop' | 'lock' | 'puzzle-undo'
@@ -8,134 +13,219 @@ export type AudioCueId =
   | 'countdown-tick' | 'countdown-resolve'
   | 'freeze' | 'supergravity' | 'bomb' | 'multiplier-2' | 'multiplier-4';
 
-const resonance = (
+type LayerOptions = Partial<Pick<
+  ProceduralLayer,
+  'delay' | 'endFrequency' | 'brightness' | 'spread' | 'seed' | 'attack' | 'release'
+>>;
+
+const voice = (
+  instrument: ProceduralInstrument,
   frequency: number,
   duration: number,
   gain: number,
-  delay = 0,
-  endFrequency?: number,
-  waveform: OscillatorType = 'sine',
-): GestureLayer => ({
-  kind: 'resonator', frequency, duration, gain, delay, endFrequency, waveform,
-  attack: Math.min(0.009, duration * 0.12),
+  options: LayerOptions = {},
+): ProceduralLayer => ({
+  kind: 'procedural',
+  instrument,
+  frequency,
+  duration,
+  gain,
+  ...options,
 });
 
-const air = (
-  startFrequency: number,
-  endFrequency: number,
-  duration: number,
-  gain: number,
-  delay = 0,
-  filter: BiquadFilterType = 'bandpass',
-  seed = 0x74657472,
-  attack = 0.003,
-  release = 0.3,
-): GestureLayer => ({
-  kind: 'air', filter, startFrequency, endFrequency, duration, gain, delay,
-  seed, attack, release, q: filter === 'bandpass' ? 1.15 : 0.72,
-});
-
-const gesture = (bus: AudioBus, layers: readonly GestureLayer[], mutationOwned = false): AudioGesture => ({
-  bus,
-  layers,
-  mutationOwned,
-});
+const gesture = (
+  bus: AudioBus,
+  layers: readonly ProceduralLayer[],
+  mutationOwned = false,
+): AudioGesture => ({ bus, layers, mutationOwned });
 
 const CONTROL_CUES: Readonly<Record<'move' | 'rotate' | 'soft-drop', AudioGesture>> = {
   move: gesture('gameplay', [
-    air(1_520, 760, 0.019, 0.0042, 0, 'bandpass', 0x11),
-    resonance(176, 0.038, 0.014, 0.001, 158, 'triangle'),
-    resonance(485, 0.024, 0.0055, 0.003, 454),
+    voice('felt', 142, 0.052, 0.052, {
+      endFrequency: 116, brightness: 0.24, spread: 0.22, seed: 0x1101, release: 0.3,
+    }),
+    voice('ribbon', 1_340, 0.047, 0.016, {
+      endFrequency: 820, brightness: 0.22, spread: 0.18, seed: 0x1102, release: 0.24,
+    }),
   ]),
   rotate: gesture('gameplay', [
-    air(690, 2_050, 0.058, 0.008, 0, 'bandpass', 0x12, 0.007, 0.68),
-    resonance(211, 0.057, 0.017, 0.002, 238, 'triangle'),
-    resonance(581, 0.036, 0.0065, 0.012, 622),
+    voice('felt', 157, 0.063, 0.058, {
+      endFrequency: 139, brightness: 0.3, spread: 0.31, seed: 0x1201, release: 0.34,
+    }),
+    voice('ribbon', 470, 0.078, 0.022, {
+      delay: 0.003, endFrequency: 1_280, brightness: 0.3, spread: 0.52,
+      seed: 0x1202, attack: 0.008, release: 0.35,
+    }),
   ]),
   'soft-drop': gesture('gameplay', [
-    air(1_080, 430, 0.036, 0.0065, 0, 'bandpass', 0x13),
-    resonance(131, 0.029, 0.009, 0.001, 108, 'triangle'),
+    voice('ribbon', 1_180, 0.046, 0.025, {
+      endFrequency: 410, brightness: 0.2, spread: 0.24, seed: 0x1301, release: 0.28,
+    }),
+    voice('felt', 118, 0.041, 0.034, {
+      endFrequency: 93, brightness: 0.18, spread: 0.16, seed: 0x1302, release: 0.3,
+    }),
   ]),
 };
 
 const CONTACT_CUES: Readonly<Record<'hard-drop' | 'lock', AudioGesture>> = {
   lock: gesture('gameplay', [
-    resonance(86, 0.105, 0.032, 0, 64),
-    resonance(237, 0.062, 0.012, 0.004, 206, 'triangle'),
-    air(310, 145, 0.037, 0.008, 0.002, 'lowpass', 0x21),
+    voice('impact', 94, 0.108, 0.08, {
+      endFrequency: 65, brightness: 0.19, spread: 0.24, seed: 0x2101, release: 0.28,
+    }),
+    voice('felt', 205, 0.068, 0.036, {
+      delay: 0.004, endFrequency: 166, brightness: 0.26, spread: 0.3,
+      seed: 0x2102, release: 0.38,
+    }),
   ]),
   'hard-drop': gesture('gameplay', [
-    resonance(58, 0.18, 0.062, 0, 42),
-    resonance(158, 0.095, 0.024, 0.003, 126, 'triangle'),
-    air(390, 125, 0.082, 0.017, 0.001, 'lowpass', 0x22),
-    resonance(431, 0.058, 0.009, 0.012, 389),
+    voice('impact', 72, 0.19, 0.12, {
+      endFrequency: 42, brightness: 0.22, spread: 0.36, seed: 0x2201, release: 0.35,
+    }),
+    voice('felt', 171, 0.09, 0.05, {
+      delay: 0.003, endFrequency: 119, brightness: 0.32, spread: 0.36,
+      seed: 0x2202, release: 0.38,
+    }),
+    voice('ribbon', 620, 0.13, 0.025, {
+      delay: 0.008, endFrequency: 210, brightness: 0.24, spread: 0.28,
+      seed: 0x2203, release: 0.5,
+    }),
   ]),
 };
 
 const CLEAR_CUES: Readonly<Record<'clear-1' | 'clear-2' | 'clear-3' | 'clear-4', AudioGesture>> = {
   'clear-1': gesture('reward', [
-    air(860, 1_820, 0.12, 0.015, 0, 'bandpass', 0x31, 0.012, 0.62),
-    resonance(282, 0.16, 0.037, 0.004, 260),
-    resonance(777, 0.09, 0.013, 0.012, 724),
+    voice('shimmer', 214, 0.22, 0.08, {
+      endFrequency: 251, brightness: 0.42, spread: 0.28, seed: 0x3101, release: 0.48,
+    }),
+    voice('glass', 438, 0.18, 0.06, {
+      delay: 0.012, endFrequency: 462, brightness: 0.38, spread: 0.3,
+      seed: 0x3102, release: 0.56,
+    }),
+    voice('ribbon', 640, 0.18, 0.035, {
+      endFrequency: 1_420, brightness: 0.3, spread: 0.36, seed: 0x3103,
+      attack: 0.018, release: 0.5,
+    }),
   ]),
   'clear-2': gesture('reward', [
-    air(720, 2_050, 0.17, 0.019, 0, 'bandpass', 0x32, 0.015, 0.66),
-    resonance(246, 0.2, 0.042, 0.003, 224),
-    resonance(678, 0.13, 0.016, 0.012, 615),
-    resonance(329, 0.17, 0.031, 0.065, 302, 'triangle'),
-    resonance(907, 0.095, 0.011, 0.076, 842),
+    voice('shimmer', 202, 0.27, 0.09, {
+      endFrequency: 272, brightness: 0.48, spread: 0.4, seed: 0x3201, release: 0.52,
+    }),
+    voice('glass', 397, 0.23, 0.067, {
+      delay: 0.015, endFrequency: 452, brightness: 0.44, spread: 0.45,
+      seed: 0x3202, release: 0.58,
+    }),
+    voice('impact', 122, 0.18, 0.04, {
+      endFrequency: 91, brightness: 0.16, spread: 0.26, seed: 0x3203, release: 0.45,
+    }),
+    voice('ribbon', 540, 0.23, 0.04, {
+      endFrequency: 1_680, brightness: 0.35, spread: 0.48, seed: 0x3204,
+      attack: 0.02, release: 0.52,
+    }),
   ]),
   'clear-3': gesture('reward', [
-    air(560, 2_350, 0.27, 0.023, 0, 'bandpass', 0x33, 0.025, 0.7),
-    resonance(174, 0.31, 0.049, 0.002, 151),
-    resonance(480, 0.2, 0.019, 0.014, 431),
-    resonance(941, 0.12, 0.012, 0.03, 872),
-    resonance(253, 0.24, 0.036, 0.09, 229, 'triangle'),
-    resonance(697, 0.14, 0.014, 0.105, 641),
+    voice('shimmer', 188, 0.36, 0.11, {
+      endFrequency: 286, brightness: 0.56, spread: 0.55, seed: 0x3301, release: 0.56,
+    }),
+    voice('glass', 362, 0.3, 0.08, {
+      delay: 0.018, endFrequency: 448, brightness: 0.52, spread: 0.58,
+      seed: 0x3302, release: 0.62,
+    }),
+    voice('impact', 104, 0.28, 0.055, {
+      endFrequency: 69, brightness: 0.18, spread: 0.34, seed: 0x3303, release: 0.5,
+    }),
+    voice('ribbon', 440, 0.32, 0.05, {
+      endFrequency: 1_940, brightness: 0.42, spread: 0.62, seed: 0x3304,
+      attack: 0.026, release: 0.58,
+    }),
   ]),
   'clear-4': gesture('reward', [
-    air(190, 1_180, 0.58, 0.028, 0, 'bandpass', 0x34, 0.16, 0.84),
-    resonance(48, 0.78, 0.083, 0.02, 36),
-    resonance(232, 0.52, 0.048, 0.055, 204, 'triangle'),
-    resonance(639, 0.38, 0.024, 0.095, 573),
-    resonance(1_254, 0.22, 0.013, 0.15, 1_098),
-    air(2_400, 880, 0.34, 0.017, 0.22, 'bandpass', 0x35, 0.04, 0.58),
+    voice('impact', 66, 0.72, 0.14, {
+      endFrequency: 34, brightness: 0.2, spread: 0.62, seed: 0x3401,
+      attack: 0.012, release: 0.56,
+    }),
+    voice('shimmer', 166, 0.6, 0.12, {
+      delay: 0.035, endFrequency: 304, brightness: 0.66, spread: 0.74,
+      seed: 0x3402, attack: 0.035, release: 0.64,
+    }),
+    voice('glass', 318, 0.48, 0.09, {
+      delay: 0.075, endFrequency: 472, brightness: 0.62, spread: 0.7,
+      seed: 0x3403, release: 0.68,
+    }),
+    voice('ribbon', 280, 0.55, 0.06, {
+      delay: 0.02, endFrequency: 2_240, brightness: 0.5, spread: 0.76,
+      seed: 0x3404, attack: 0.07, release: 0.66,
+    }),
   ]),
 };
 
 const MUTATION_CUES: Readonly<Record<'freeze' | 'supergravity' | 'bomb' | 'multiplier-2' | 'multiplier-4', AudioGesture>> = {
   freeze: gesture('mutation', [
-    air(2_700, 780, 0.46, 0.025, 0, 'bandpass', 0x41, 0.055, 0.72),
-    resonance(1_106, 0.12, 0.024, 0.025, 984),
-    resonance(1_617, 0.09, 0.016, 0.1, 1_469),
-    resonance(887, 0.14, 0.02, 0.18, 803),
-    air(3_100, 1_400, 0.12, 0.012, 0.24, 'highpass', 0x42),
+    voice('ribbon', 2_600, 0.43, 0.065, {
+      endFrequency: 610, brightness: 0.58, spread: 0.62, seed: 0x4101,
+      attack: 0.035, release: 0.62,
+    }),
+    voice('glass', 702, 0.45, 0.11, {
+      delay: 0.025, endFrequency: 612, brightness: 0.72, spread: 0.64,
+      seed: 0x4102, release: 0.7,
+    }),
+    voice('shimmer', 328, 0.4, 0.09, {
+      delay: 0.08, endFrequency: 386, brightness: 0.63, spread: 0.58,
+      seed: 0x4103, release: 0.68,
+    }),
   ], true),
   supergravity: gesture('mutation', [
-    air(340, 82, 0.42, 0.025, 0, 'lowpass', 0x43, 0.035, 0.7),
-    resonance(118, 0.48, 0.086, 0.008, 38),
-    resonance(326, 0.3, 0.031, 0.025, 102, 'triangle'),
-    resonance(71, 0.22, 0.045, 0.16, 43),
+    voice('impact', 126, 0.48, 0.18, {
+      endFrequency: 31, brightness: 0.15, spread: 0.72, seed: 0x4201,
+      attack: 0.014, release: 0.48,
+    }),
+    voice('ribbon', 430, 0.36, 0.075, {
+      delay: 0.018, endFrequency: 68, brightness: 0.18, spread: 0.55,
+      seed: 0x4202, attack: 0.028, release: 0.55,
+    }),
   ], true),
   bomb: gesture('mutation', [
-    air(96, 280, 0.27, 0.018, 0, 'bandpass', 0x44, 0.035, 0.86),
-    resonance(62, 0.28, 0.095, 0.235, 42),
-    air(1_700, 540, 0.19, 0.014, 0.235, 'highpass', 0x45, 0.008, 0.22),
-    resonance(211, 0.17, 0.027, 0.245, 164, 'triangle'),
+    voice('ribbon', 116, 0.38, 0.1, {
+      endFrequency: 840, brightness: 0.46, spread: 0.76, seed: 0x4301,
+      attack: 0.06, release: 0.58,
+    }),
+    voice('impact', 74, 0.34, 0.2, {
+      delay: 0.09, endFrequency: 39, brightness: 0.28, spread: 0.68,
+      seed: 0x4302, release: 0.5,
+    }),
+    voice('glass', 284, 0.28, 0.07, {
+      delay: 0.115, endFrequency: 226, brightness: 0.38, spread: 0.66,
+      seed: 0x4303, release: 0.62,
+    }),
   ], true),
   'multiplier-2': gesture('mutation', [
-    air(1_150, 1_900, 0.16, 0.012, 0, 'bandpass', 0x46, 0.018, 0.68),
-    resonance(361, 0.19, 0.041, 0.006, 337, 'triangle'),
-    resonance(995, 0.11, 0.016, 0.016, 913),
-    resonance(423, 0.17, 0.033, 0.075, 396, 'triangle'),
+    voice('shimmer', 242, 0.42, 0.12, {
+      endFrequency: 318, brightness: 0.58, spread: 0.54, seed: 0x4401, release: 0.62,
+    }),
+    voice('glass', 486, 0.32, 0.09, {
+      delay: 0.03, endFrequency: 544, brightness: 0.52, spread: 0.5,
+      seed: 0x4402, release: 0.66,
+    }),
+    voice('ribbon', 760, 0.32, 0.06, {
+      endFrequency: 1_520, brightness: 0.38, spread: 0.5, seed: 0x4403,
+      attack: 0.025, release: 0.58,
+    }),
   ], true),
   'multiplier-4': gesture('mutation', [
-    air(980, 2_300, 0.25, 0.017, 0, 'bandpass', 0x47, 0.03, 0.72),
-    resonance(338, 0.22, 0.043, 0.004, 312, 'triangle'),
-    resonance(931, 0.13, 0.017, 0.015, 857),
-    resonance(404, 0.2, 0.037, 0.07, 376, 'triangle'),
-    resonance(1_114, 0.12, 0.015, 0.082, 1_032),
-    resonance(476, 0.18, 0.031, 0.14, 448, 'triangle'),
+    voice('shimmer', 218, 0.55, 0.14, {
+      endFrequency: 362, brightness: 0.68, spread: 0.72, seed: 0x4501, release: 0.66,
+    }),
+    voice('glass', 438, 0.42, 0.105, {
+      delay: 0.035, endFrequency: 552, brightness: 0.63, spread: 0.67,
+      seed: 0x4502, release: 0.7,
+    }),
+    voice('ribbon', 620, 0.42, 0.075, {
+      endFrequency: 1_980, brightness: 0.46, spread: 0.7, seed: 0x4503,
+      attack: 0.035, release: 0.64,
+    }),
+    voice('impact', 116, 0.3, 0.05, {
+      delay: 0.11, endFrequency: 72, brightness: 0.18, spread: 0.36,
+      seed: 0x4504, release: 0.5,
+    }),
   ], true),
 };
 
@@ -143,68 +233,132 @@ const SECONDARY_CUES: Readonly<Record<Exclude<AudioCueId,
   keyof typeof CONTROL_CUES | keyof typeof CONTACT_CUES | keyof typeof CLEAR_CUES | keyof typeof MUTATION_CUES
 >, AudioGesture>> = {
   'puzzle-undo': gesture('ui', [
-    air(1_250, 480, 0.12, 0.011, 0, 'bandpass', 0x51),
-    resonance(318, 0.13, 0.025, 0.004, 211, 'triangle'),
+    voice('ribbon', 980, 0.13, 0.035, {
+      endFrequency: 310, brightness: 0.26, spread: 0.4, seed: 0x5101, release: 0.5,
+    }),
+    voice('felt', 226, 0.11, 0.048, {
+      delay: 0.012, endFrequency: 177, brightness: 0.24, spread: 0.3,
+      seed: 0x5102, release: 0.42,
+    }),
   ]),
   'bedrock-rise': gesture('gameplay', [
-    air(180, 390, 0.72, 0.019, 0, 'lowpass', 0x52, 0.16, 0.8),
-    resonance(67, 0.78, 0.052, 0.015, 93),
-    resonance(184, 0.46, 0.018, 0.08, 229, 'triangle'),
+    voice('impact', 58, 0.66, 0.105, {
+      endFrequency: 79, brightness: 0.14, spread: 0.58, seed: 0x5201,
+      attack: 0.08, release: 0.56,
+    }),
+    voice('ribbon', 128, 0.58, 0.04, {
+      endFrequency: 330, brightness: 0.16, spread: 0.54, seed: 0x5202,
+      attack: 0.12, release: 0.58,
+    }),
   ]),
   'bedrock-lower': gesture('gameplay', [
-    air(360, 135, 0.58, 0.016, 0, 'lowpass', 0x53, 0.06, 0.62),
-    resonance(91, 0.62, 0.045, 0.012, 58),
-    resonance(251, 0.34, 0.015, 0.045, 172, 'triangle'),
+    voice('impact', 82, 0.52, 0.092, {
+      endFrequency: 48, brightness: 0.12, spread: 0.48, seed: 0x5301,
+      attack: 0.04, release: 0.55,
+    }),
+    voice('ribbon', 290, 0.44, 0.035, {
+      endFrequency: 92, brightness: 0.15, spread: 0.42, seed: 0x5302,
+      attack: 0.06, release: 0.56,
+    }),
   ]),
   'stone-warning': gesture('ui', [
-    resonance(151, 0.09, 0.026, 0, 132, 'triangle'),
-    air(580, 280, 0.055, 0.008, 0.003, 'bandpass', 0x54),
-    resonance(151, 0.09, 0.023, 0.16, 132, 'triangle'),
+    voice('pulse', 132, 0.1, 0.065, {
+      endFrequency: 118, brightness: 0.22, spread: 0.26, seed: 0x5401, release: 0.44,
+    }),
+    voice('pulse', 132, 0.1, 0.058, {
+      delay: 0.145, endFrequency: 118, brightness: 0.22, spread: 0.26,
+      seed: 0x5402, release: 0.44,
+    }),
   ]),
   'stone-spawn': gesture('gameplay', [
-    air(1_350, 290, 0.15, 0.015, 0, 'bandpass', 0x55),
-    resonance(203, 0.15, 0.025, 0.006, 124, 'triangle'),
+    voice('ribbon', 1_180, 0.15, 0.05, {
+      endFrequency: 270, brightness: 0.24, spread: 0.36, seed: 0x5501, release: 0.52,
+    }),
+    voice('felt', 173, 0.12, 0.052, {
+      delay: 0.01, endFrequency: 112, brightness: 0.22, spread: 0.32,
+      seed: 0x5502, release: 0.45,
+    }),
   ]),
   'stone-land': gesture('gameplay', [
-    resonance(64, 0.2, 0.07, 0, 43),
-    resonance(176, 0.1, 0.025, 0.004, 131, 'triangle'),
-    air(420, 110, 0.09, 0.021, 0.002, 'lowpass', 0x56),
+    voice('impact', 61, 0.23, 0.14, {
+      endFrequency: 39, brightness: 0.2, spread: 0.46, seed: 0x5601, release: 0.4,
+    }),
+    voice('felt', 151, 0.12, 0.06, {
+      delay: 0.003, endFrequency: 101, brightness: 0.3, spread: 0.42,
+      seed: 0x5602, release: 0.42,
+    }),
   ]),
   'level-up': gesture('reward', [
-    air(440, 2_100, 0.34, 0.023, 0, 'bandpass', 0x57, 0.06, 0.76),
-    resonance(197, 0.34, 0.05, 0.01, 223),
-    resonance(543, 0.22, 0.02, 0.05, 618),
-    resonance(307, 0.28, 0.037, 0.12, 349, 'triangle'),
+    voice('shimmer', 196, 0.44, 0.12, {
+      endFrequency: 302, brightness: 0.58, spread: 0.62, seed: 0x5701, release: 0.64,
+    }),
+    voice('glass', 402, 0.34, 0.085, {
+      delay: 0.035, endFrequency: 478, brightness: 0.52, spread: 0.56,
+      seed: 0x5702, release: 0.68,
+    }),
+    voice('ribbon', 420, 0.38, 0.052, {
+      endFrequency: 1_820, brightness: 0.4, spread: 0.6, seed: 0x5703,
+      attack: 0.04, release: 0.62,
+    }),
   ]),
   finished: gesture('reward', [
-    air(380, 2_600, 0.56, 0.028, 0, 'bandpass', 0x58, 0.09, 0.82),
-    resonance(152, 0.58, 0.061, 0.01, 176),
-    resonance(419, 0.38, 0.026, 0.055, 476),
-    resonance(257, 0.42, 0.045, 0.14, 294, 'triangle'),
-    resonance(708, 0.24, 0.018, 0.17, 814),
+    voice('impact', 76, 0.68, 0.12, {
+      endFrequency: 48, brightness: 0.2, spread: 0.58, seed: 0x5801, release: 0.58,
+    }),
+    voice('shimmer', 176, 0.7, 0.135, {
+      delay: 0.035, endFrequency: 324, brightness: 0.68, spread: 0.76,
+      seed: 0x5802, release: 0.68,
+    }),
+    voice('glass', 352, 0.52, 0.09, {
+      delay: 0.08, endFrequency: 496, brightness: 0.64, spread: 0.72,
+      seed: 0x5803, release: 0.72,
+    }),
   ]),
   'game-over': gesture('reward', [
-    air(760, 170, 0.42, 0.019, 0, 'lowpass', 0x59, 0.05, 0.7),
-    resonance(164, 0.42, 0.046, 0.01, 108, 'triangle'),
-    resonance(452, 0.24, 0.016, 0.025, 302),
+    voice('impact', 112, 0.42, 0.1, {
+      endFrequency: 54, brightness: 0.14, spread: 0.52, seed: 0x5901, release: 0.52,
+    }),
+    voice('ribbon', 620, 0.4, 0.052, {
+      endFrequency: 140, brightness: 0.18, spread: 0.48, seed: 0x5902,
+      attack: 0.04, release: 0.6,
+    }),
   ]),
   pause: gesture('ui', [
-    air(620, 250, 0.1, 0.007, 0, 'bandpass', 0x5a),
-    resonance(203, 0.11, 0.019, 0.003, 174, 'triangle'),
+    voice('felt', 178, 0.105, 0.052, {
+      endFrequency: 142, brightness: 0.2, spread: 0.26, seed: 0x5a01, release: 0.46,
+    }),
+    voice('ribbon', 520, 0.11, 0.024, {
+      endFrequency: 240, brightness: 0.18, spread: 0.3, seed: 0x5a02, release: 0.52,
+    }),
   ]),
   resume: gesture('ui', [
-    air(270, 780, 0.11, 0.0075, 0, 'bandpass', 0x5b, 0.015, 0.7),
-    resonance(181, 0.12, 0.02, 0.003, 219, 'triangle'),
+    voice('felt', 162, 0.11, 0.054, {
+      endFrequency: 194, brightness: 0.22, spread: 0.28, seed: 0x5b01, release: 0.48,
+    }),
+    voice('ribbon', 270, 0.12, 0.026, {
+      endFrequency: 740, brightness: 0.22, spread: 0.34, seed: 0x5b02, release: 0.52,
+    }),
   ]),
   'countdown-tick': gesture('ui', [
-    air(1_050, 630, 0.055, 0.008, 0, 'bandpass', 0x5c),
-    resonance(188, 0.115, 0.041, 0.002, 176, 'triangle'),
-    resonance(518, 0.06, 0.012, 0.005, 477),
+    voice('pulse', 176, 0.17, 0.082, {
+      endFrequency: 148, brightness: 0.28, spread: 0.3, seed: 0x5c01, release: 0.48,
+    }),
+    voice('ribbon', 780, 0.12, 0.025, {
+      endFrequency: 420, brightness: 0.2, spread: 0.3, seed: 0x5c02, release: 0.5,
+    }),
   ]),
   'countdown-resolve': gesture('ui', [
-    air(720, 1_850, 0.16, 0.012, 0, 'bandpass', 0x5d, 0.025, 0.72),
-    resonance(224, 0.24, 0.052, 0.003, 211, 'triangle'),
-    resonance(617, 0.14, 0.018, 0.01, 572),
+    voice('pulse', 188, 0.29, 0.115, {
+      endFrequency: 144, brightness: 0.34, spread: 0.4, seed: 0x5d01, release: 0.58,
+    }),
+    voice('shimmer', 282, 0.26, 0.06, {
+      delay: 0.025, endFrequency: 344, brightness: 0.45, spread: 0.48,
+      seed: 0x5d02, release: 0.64,
+    }),
+    voice('ribbon', 620, 0.24, 0.035, {
+      endFrequency: 1_180, brightness: 0.3, spread: 0.44, seed: 0x5d03,
+      attack: 0.025, release: 0.62,
+    }),
   ]),
 };
 
