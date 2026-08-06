@@ -238,6 +238,14 @@ refresh `initialStateHash` only when an exhaustive re-run reproduces every other
 field exactly; route, optimum, frontier, exploration, transition, and prune evidence
 must remain byte-for-byte equivalent.
 
+Accepted maintenance commits are contract `d31a84b` and source/test `3d69132`. The
+three canonical initial fingerprints are now `1c4d5e6a` (`t5r-arc-13`), `04b7f198`
+(`t5r-current-12`), and `3be8a7b4` (`t5r-prism-11`). The opt-in exhaustive suite passed
+`3/3` with every non-hash proof field unchanged; focused T31/T32 tests passed `212/212`,
+and the final typecheck, complete suite (`380 passed / 8 skipped`), and build passed.
+Because the delta changes certificate metadata only, accepted browser evidence remains
+authoritative and was audited without regeneration.
+
 Puzzle anchors are fixed world obstacles and physical supports. During a line clear,
 an already-settled connected piece resting on an anchor retains its complete geometry
 and world coordinates; the clear may move unsupported cells, but may not split or pull

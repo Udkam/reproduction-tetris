@@ -234,14 +234,15 @@ Status: **ACCEPTED 2026-08-06 — T31 evidence `a76e5e5`; T32 evidence `75cc2f9`
 
 ## 2026-08-07 T32 certificate-fingerprint maintenance
 
-Status: **OPEN / EXACT PROOF RE-RUN REQUIRED.** The current exhaustive solver still
-reproduces all three certified routes, optimal operation counts, frontier widths,
-explored-state counts, transition counts, and deficit-prune counts. Only each frozen
-`initialStateHash` changed after anchor-supported Puzzle cells became future-relevant
-Core state. Refresh only those three fingerprints to the current canonical initial
-states; do not change boards, queues, routes, mastery thresholds, progression, or
-solver search behavior. Closure requires the opt-in exact suite to pass `3/3` and the
-focused T31/T32 suite to remain green.
+Status: **ACCEPTED 2026-08-07 — contract `d31a84b`; source/test `3d69132`.** The
+exhaustive solver reproduced all three certified routes, optimal operation counts,
+frontier widths, explored-state counts, transition counts, and deficit-prune counts;
+only the three frozen `initialStateHash` values changed after anchor-supported Puzzle
+cells became future-relevant Core state. The opt-in exact suite passed `3/3`, the
+focused T31/T32 suite passed `212/212`, and the final repository gates passed typecheck,
+`380 passed / 8 skipped`, and production build. This certificate-only maintenance is
+nonvisual and noninteractive, so the already accepted T31/T32 browser evidence was
+audited rather than regenerated.
 
 ## Combined closure
 

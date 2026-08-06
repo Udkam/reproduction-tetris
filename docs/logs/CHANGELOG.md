@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-08-07 — T32 mastery certificate fingerprints refreshed
+
+- Anchor-supported Puzzle cells became future-relevant canonical state, which changed
+  the initial-state fingerprint of the three strict mastery prerequisites without
+  changing their boards, queues, legal search graph, routes, optimum, progression, or
+  thresholds.
+- Contract checkpoint `d31a84b` reopened the exact-proof boundary; source/test checkpoint
+  `3d69132` refreshed only the three frozen `initialStateHash` values.
+- The opt-in exhaustive suite passed `3/3` with every non-hash proof field unchanged;
+  the focused T31/T32 set passed `212/212`, and final typecheck, complete suite
+  (`380 passed / 8 skipped`), and production build passed.
+- This is certificate metadata maintenance with no visual or interactive delta. Existing
+  accepted T31/T32 browser evidence was audited and therefore was not regenerated.
+
 ## 2026-08-07 — T36 kinetic-harmonic audio candidate awaiting listening
 
 - Human listening rejected T35, so T36 replaced every audible cue with deterministic
