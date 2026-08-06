@@ -1,0 +1,35 @@
+{
+  "sourceSha": "420561211c2bd3b78c3976af26295f4d8f76f059",
+  "capturedAt": "2026-08-06T21:27:15.613Z",
+  "browser": "149.0.7827.55",
+  "audioInitial": {
+    "pressed": "true",
+    "volume": "100"
+  },
+  "mutedPressed": "false",
+  "audioFinal": {
+    "pressed": "true",
+    "volume": "72"
+  },
+  "visual": {
+    "title": "异变状态",
+    "titleTextShadow": "none",
+    "panelBeforeContent": "none",
+    "panelBeforeBackgroundImage": "none",
+    "boardRect": {
+      "width": 392,
+      "height": 784,
+      "x": 524,
+      "y": 88
+    }
+  },
+  "runtime": {
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "audioContexts": [
+      "running"
+    ],
+    "theme": "deep-tide"
+  },
+  "errors": []
+}

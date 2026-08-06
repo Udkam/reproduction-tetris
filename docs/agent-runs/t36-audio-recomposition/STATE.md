@@ -35,7 +35,8 @@ listening.
 3. `COMPLETE` — complete procedural palette + silent-by-default engine integration.
 4. `COMPLETE` — isolated Mutation-status heading-glow cleanup.
 5. `COMPLETE` — source-bound WAV evidence + measurements.
-6. `PENDING` — final gates, browser evidence, independent QA, docs, push.
+6. `IN PROGRESS` — final gates and browser evidence complete; independent QA,
+   final docs, and push remain.
 
 ## Verification state
 
@@ -49,13 +50,21 @@ listening.
 - `npm.cmd run typecheck`: passed after the isolated heading-glow cleanup.
 - `node docs/evidence/t36/render-audio-evidence.mjs`: produced six mono 48 kHz WAV listening suites from source SHA `39216d1`; all recorded peaks/RMS values are finite and all suites report zero clipped samples.
 - Evidence generation used one short-lived Node process and opened no server, browser, watcher, listener, or audio device.
+- Final `npm.cmd run typecheck`: passed.
+- Final `npm.cmd run test`: 40 files passed / 2 skipped; 380 tests passed / 8 skipped.
+- Final `npm.cmd run build`: passed with the known Vite chunk-size advisory only.
+- `node docs/evidence/t36/capture-browser-evidence.mjs`: passed at source SHA
+  `4205612`; one canvas, zero DOM cells, running AudioContext, `deep-tide` theme,
+  zero console/page errors, correct 392 x 784 board geometry, and no Mutation-status
+  heading or pseudo-element glow.
+- Browser evidence used one short-lived preview on port 4189; the owned process was
+  terminated and the port was confirmed released after capture.
 - Human listening is the final acceptance boundary.
 
 ## Next exact action
 
-Run the single final typecheck/test/build sequence, capture one browser-evidence pass
-from the final candidate, request independent read-only QA, then update final docs and
-push without declaring listening acceptance.
+Commit the browser-evidence checkpoint, request independent read-only QA, then update
+final docs and push without declaring listening acceptance.
 
 ## Do not repeat
 
