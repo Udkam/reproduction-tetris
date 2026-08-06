@@ -30,7 +30,7 @@
   letter-spacing: .065em;
   line-height: 1.2;
   text-align: center;
-  text-shadow: 0 0 16px color-mix(in srgb, var(--ink) 26%, transparent);
+  text-shadow: none;
 }
 
 .mutation-status--vfx .mutation-status__ledger {

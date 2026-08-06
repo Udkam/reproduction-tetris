@@ -33,7 +33,7 @@ listening.
 1. `COMPLETE` — contract commits `ccd664d`, `6574b7e`, and `1cd3926`.
 2. `COMPLETE` — buffered procedural instrument foundation + focused tests.
 3. `COMPLETE` — complete procedural palette + silent-by-default engine integration.
-4. `PENDING` — isolated Mutation-status heading-glow cleanup.
+4. `COMPLETE` — isolated Mutation-status heading-glow cleanup.
 5. `PENDING` — WAV evidence + measurements.
 6. `PENDING` — final gates, browser evidence, independent QA, docs, push.
 
@@ -45,12 +45,14 @@ listening.
 - `npm.cmd run typecheck`: passed after the complete procedural palette replacement.
 - `npm.cmd run test -- src/game/audio/AudioEngine.test.ts src/game/audio/audioGesture.test.ts src/game/audio/audioPalette.test.ts`: 20 tests passed after removing the persistent ambient bed and updating engine-level T36 contracts.
 - `npm.cmd run typecheck`: passed after the silent-by-default engine integration.
+- `npm.cmd run test -- src/styles/hud.test.ts`: 11 tests passed after deleting the Mutation-status radial halo and disabling both heading text shadows.
+- `npm.cmd run typecheck`: passed after the isolated heading-glow cleanup.
 - Human listening is the final acceptance boundary.
 
 ## Next exact action
 
-Commit the silent-by-default engine checkpoint, then remove only the visual glow behind
-the Mutation-status heading without changing its content or layout.
+Create source-bound T36 WAV listening evidence and a measurement manifest with a
+one-shot renderer; do not start a server, browser, watcher, or external audio process.
 
 ## Do not repeat
 
