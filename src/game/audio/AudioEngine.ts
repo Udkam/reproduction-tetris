@@ -24,6 +24,7 @@ interface TextureOptions {
   gain: number;
   delay?: number;
   cutoff?: number;
+  filterType?: BiquadFilterType;
 }
 
 interface LayeredCueOptions {
@@ -71,26 +72,26 @@ const MUTATION_CUE_ORDER: Readonly<Record<MutationItem, number>> = Object.freeze
 
 const CLEAR_CUE_PROFILES: Readonly<Record<1 | 2 | 3 | 4, readonly ToneOptions[]>> = Object.freeze({
   1: Object.freeze([
-    Object.freeze({ frequency: 392, duration: 0.135, gain: 0.14, attack: 0.004, body: 0.48, bodyGain: 0.62, type: 'triangle' as const }),
-    Object.freeze({ frequency: 587.33, duration: 0.105, gain: 0.062, delay: 0.008, attack: 0.003, body: 0.42, bodyGain: 0.5, type: 'sine' as const }),
+    Object.freeze({ frequency: 392, duration: 0.22, gain: 0.11, attack: 0.006, body: 0.45, bodyGain: 0.58, type: 'triangle' as const }),
+    Object.freeze({ frequency: 523.25, duration: 0.18, gain: 0.055, delay: 0.018, endFrequency: 783.99, attack: 0.008, body: 0.42, bodyGain: 0.44, type: 'sine' as const }),
   ]),
   2: Object.freeze([
-    Object.freeze({ frequency: 349.23, duration: 0.165, gain: 0.15, attack: 0.004, body: 0.5, bodyGain: 0.64, type: 'triangle' as const }),
-    Object.freeze({ frequency: 523.25, duration: 0.15, gain: 0.115, delay: 0.018, attack: 0.004, body: 0.48, bodyGain: 0.58, type: 'triangle' as const }),
-    Object.freeze({ frequency: 698.46, duration: 0.115, gain: 0.06, delay: 0.038, attack: 0.003, body: 0.42, bodyGain: 0.48, type: 'sine' as const }),
+    Object.freeze({ frequency: 392, duration: 0.28, gain: 0.105, attack: 0.006, body: 0.48, bodyGain: 0.6, type: 'triangle' as const }),
+    Object.freeze({ frequency: 587.33, duration: 0.25, gain: 0.075, delay: 0.026, attack: 0.006, body: 0.46, bodyGain: 0.54, type: 'triangle' as const }),
+    Object.freeze({ frequency: 783.99, duration: 0.19, gain: 0.038, delay: 0.055, attack: 0.006, body: 0.4, bodyGain: 0.42, type: 'sine' as const }),
   ]),
   3: Object.freeze([
-    Object.freeze({ frequency: 329.63, duration: 0.195, gain: 0.165, attack: 0.004, body: 0.52, bodyGain: 0.66, type: 'triangle' as const }),
-    Object.freeze({ frequency: 415.3, duration: 0.18, gain: 0.135, delay: 0.018, attack: 0.004, body: 0.5, bodyGain: 0.62, type: 'triangle' as const }),
-    Object.freeze({ frequency: 493.88, duration: 0.165, gain: 0.105, delay: 0.04, attack: 0.004, body: 0.47, bodyGain: 0.56, type: 'sine' as const }),
-    Object.freeze({ frequency: 659.25, duration: 0.13, gain: 0.064, delay: 0.065, attack: 0.003, body: 0.42, bodyGain: 0.48, type: 'sine' as const }),
+    Object.freeze({ frequency: 261.63, duration: 0.4, gain: 0.09, attack: 0.008, body: 0.5, bodyGain: 0.62, type: 'triangle' as const }),
+    Object.freeze({ frequency: 329.63, duration: 0.36, gain: 0.075, delay: 0.025, attack: 0.007, body: 0.48, bodyGain: 0.57, type: 'triangle' as const }),
+    Object.freeze({ frequency: 392, duration: 0.32, gain: 0.065, delay: 0.052, attack: 0.007, body: 0.46, bodyGain: 0.52, type: 'sine' as const }),
+    Object.freeze({ frequency: 523.25, duration: 0.25, gain: 0.045, delay: 0.085, attack: 0.006, body: 0.42, bodyGain: 0.45, type: 'sine' as const }),
   ]),
   4: Object.freeze([
-    Object.freeze({ frequency: 293.66, duration: 0.255, gain: 0.18, attack: 0.004, body: 0.55, bodyGain: 0.68, type: 'triangle' as const }),
-    Object.freeze({ frequency: 440, duration: 0.235, gain: 0.15, delay: 0.018, attack: 0.004, body: 0.53, bodyGain: 0.64, type: 'triangle' as const }),
-    Object.freeze({ frequency: 587.33, duration: 0.215, gain: 0.12, delay: 0.04, attack: 0.004, body: 0.5, bodyGain: 0.6, type: 'sine' as const }),
-    Object.freeze({ frequency: 739.99, duration: 0.195, gain: 0.09, delay: 0.065, attack: 0.003, body: 0.47, bodyGain: 0.54, type: 'sine' as const }),
-    Object.freeze({ frequency: 880, duration: 0.175, gain: 0.062, delay: 0.09, attack: 0.003, body: 0.44, bodyGain: 0.48, type: 'sine' as const }),
+    Object.freeze({ frequency: 55, duration: 0.78, gain: 0.075, attack: 0.02, body: 0.58, bodyGain: 0.66, type: 'sine' as const }),
+    Object.freeze({ frequency: 261.63, duration: 0.9, gain: 0.085, delay: 0.035, attack: 0.012, body: 0.52, bodyGain: 0.6, type: 'triangle' as const }),
+    Object.freeze({ frequency: 392, duration: 0.78, gain: 0.07, delay: 0.09, attack: 0.01, body: 0.5, bodyGain: 0.56, type: 'triangle' as const }),
+    Object.freeze({ frequency: 523.25, duration: 0.64, gain: 0.055, delay: 0.15, attack: 0.01, body: 0.47, bodyGain: 0.5, type: 'sine' as const }),
+    Object.freeze({ frequency: 783.99, duration: 0.46, gain: 0.035, delay: 0.23, endFrequency: 880, attack: 0.009, body: 0.42, bodyGain: 0.44, type: 'sine' as const }),
   ]),
 });
 
@@ -196,7 +197,11 @@ export class AudioEngine {
       } else if (event.type === 'hard-dropped') {
         if (!hasResolutionCue) this.landingThump();
       } else if (event.type === 'piece-locked' && !includesHardDrop && !hasResolutionCue) {
-        this.tone({ frequency: 220, duration: 0.055, gain: 0.07, attack: 0.004, body: 0.48, bodyGain: 0.48, type: 'triangle' });
+        this.layeredCue({
+          bus: 'gameplay',
+          body: { frequency: 110, duration: 0.1, gain: 0.04, endFrequency: 98, attack: 0.006, body: 0.48, bodyGain: 0.52, type: 'sine' },
+          harmonic: { frequency: 220, duration: 0.065, gain: 0.017, delay: 0.006, attack: 0.005, body: 0.42, bodyGain: 0.4, type: 'triangle' },
+        });
       } else if (event.type === 'puzzle-undone') {
         this.tone({ frequency: 440, duration: 0.13, gain: 0.13, endFrequency: 329.63, attack: 0.004, body: 0.5, bodyGain: 0.58, type: 'triangle' });
         this.tone({ frequency: 659.25, duration: 0.085, gain: 0.05, delay: 0.008, endFrequency: 493.88, attack: 0.003, body: 0.44, bodyGain: 0.46, type: 'sine' });
@@ -293,16 +298,25 @@ export class AudioEngine {
   private clearChord(count: number): void {
     if (count < 1 || count > 4 || !Number.isInteger(count)) return;
     const profile = CLEAR_CUE_PROFILES[count as 1 | 2 | 3 | 4];
-    // Triangle fundamentals add tactile body; delayed sine voices add an increasingly
-    // resolved reward without noise, a sub-boom, or a master-gain jump.
+    // Each tier widens the harmony while one quiet, filtered air layer supplies the
+    // crystal-material edge. Four lines resolves as a branded spatial bloom.
     profile.forEach((tone) => this.tone({ ...tone, bus: 'reward' }));
+    this.noisePuff({
+      duration: count === 4 ? 0.32 : 0.075 + count * 0.018,
+      gain: 0.01 + count * 0.002,
+      delay: count === 4 ? 0.2 : 0.012,
+      cutoff: count === 4 ? 1500 : 1250 + count * 120,
+      filterType: 'bandpass',
+    }, 'reward');
   }
 
   private landingThump(): void {
     this.layeredCue({
       bus: 'gameplay',
-      body: { frequency: 146.83, duration: 0.09, gain: 0.13, endFrequency: 130.81, attack: 0.004, body: 0.5, bodyGain: 0.54, type: 'triangle' },
-      harmonic: { frequency: 293.66, duration: 0.05, gain: 0.045, delay: 0.006, attack: 0.003, body: 0.42, bodyGain: 0.42, type: 'sine' },
+      body: { frequency: 82.41, duration: 0.18, gain: 0.07, endFrequency: 73.42, attack: 0.007, body: 0.48, bodyGain: 0.58, type: 'sine' },
+      harmonic: { frequency: 146.83, duration: 0.13, gain: 0.042, delay: 0.008, endFrequency: 123.47, attack: 0.005, body: 0.44, bodyGain: 0.48, type: 'triangle' },
+      texture: { duration: 0.06, gain: 0.014, delay: 0.006, cutoff: 520, filterType: 'lowpass' },
+      tail: { frequency: 493.88, duration: 0.17, gain: 0.018, delay: 0.026, endFrequency: 440, attack: 0.008, body: 0.38, bodyGain: 0.38, type: 'sine' },
     });
   }
 
@@ -340,44 +354,42 @@ export class AudioEngine {
     const carrierAccent = Math.min(1.1, 0.84 + Math.max(0, event.triggerCells?.length ?? 4) * 0.04);
     const token = MUTATION_VFX_TOKENS[event.item].audio;
     if (event.item === 'freeze') {
-      this.tone({
-        frequency: 698.46,
-        duration: 0.105,
-        gain: 0.135 * carrierAccent,
+      this.layeredCue({
         bus: 'mutation',
-        delay: delayOffset,
-        attack: 0.003,
-        body: 0.46,
-        bodyGain: 0.54,
-        type: 'triangle',
-      }, true);
-      this.tone({
-        frequency: 1046.5,
-        duration: 0.075,
-        gain: 0.04 * carrierAccent,
-        bus: 'mutation',
-        delay: delayOffset + 0.012,
-        attack: 0.0025,
-        body: 0.4,
-        bodyGain: 0.42,
-        type: 'sine',
-      }, true);
+        mutationOwned: true,
+        body: { frequency: 523.25, duration: 0.58, gain: 0.085 * carrierAccent, endFrequency: 659.25, delay: delayOffset, attack: 0.016, body: 0.54, bodyGain: 0.6, type: 'sine' },
+        harmonic: { frequency: 783.99, duration: 0.42, gain: 0.045 * carrierAccent, delay: delayOffset + 0.04, attack: 0.012, body: 0.48, bodyGain: 0.52, type: 'sine' },
+        texture: { duration: 0.18, gain: 0.012 * carrierAccent, delay: delayOffset + 0.025, cutoff: 1080, filterType: 'bandpass' },
+        tail: { frequency: 1046.5, duration: 0.26, gain: 0.025 * carrierAccent, delay: delayOffset + 0.14, endFrequency: 932.33, attack: 0.01, body: 0.42, bodyGain: 0.4, type: 'sine' },
+      });
       return;
     }
     if (event.item === 'collapse') {
-      this.tone({ frequency: 196, duration: 0.155, gain: 0.27 * carrierAccent, bus: 'mutation', delay: delayOffset, endFrequency: 130.81, attack: 0.004, body: 0.54, bodyGain: 0.64, type: 'triangle' }, true);
-      this.tone({ frequency: 261.63, duration: 0.1, gain: 0.085 * carrierAccent, bus: 'mutation', delay: delayOffset + 0.02, endFrequency: 196, attack: 0.003, body: 0.46, bodyGain: 0.5, type: 'sine' }, true);
+      this.layeredCue({
+        bus: 'mutation',
+        mutationOwned: true,
+        body: { frequency: 73.42, duration: 0.5, gain: 0.105 * carrierAccent, endFrequency: 55, delay: delayOffset, attack: 0.012, body: 0.56, bodyGain: 0.65, type: 'sine' },
+        harmonic: { frequency: 200, duration: 0.42, gain: 0.065 * carrierAccent, endFrequency: 80, delay: delayOffset + 0.025, attack: 0.01, body: 0.52, bodyGain: 0.56, type: 'triangle' },
+        texture: { duration: 0.16, gain: 0.014 * carrierAccent, delay: delayOffset + 0.035, cutoff: 280, filterType: 'lowpass' },
+        tail: { frequency: 146.83, duration: 0.24, gain: 0.022 * carrierAccent, endFrequency: 98, delay: delayOffset + 0.12, attack: 0.008, body: 0.42, bodyGain: 0.42, type: 'sine' },
+      });
       return;
     }
     if (event.item === 'bomb') {
-      this.tone({ frequency: 110, duration: 0.17, gain: 0.22 * carrierAccent, bus: 'mutation', delay: delayOffset, endFrequency: 82.41, attack: 0.004, body: 0.52, bodyGain: 0.6, type: 'triangle' }, true);
-      this.noisePuff({ duration: 0.07, gain: 0.085 * carrierAccent, delay: delayOffset + 0.006, cutoff: 480 }, 'mutation', true);
+      this.layeredCue({
+        bus: 'mutation',
+        mutationOwned: true,
+        body: { frequency: 90, duration: 0.44, gain: 0.085 * carrierAccent, endFrequency: 130, delay: delayOffset, attack: 0.025, body: 0.44, bodyGain: 0.6, type: 'sine' },
+        harmonic: { frequency: 65, duration: 0.3, gain: 0.1 * carrierAccent, endFrequency: 55, delay: delayOffset + 0.075, attack: 0.008, body: 0.46, bodyGain: 0.54, type: 'triangle' },
+        texture: { duration: 0.11, gain: 0.025 * carrierAccent, delay: delayOffset + 0.082, cutoff: 360, filterType: 'lowpass' },
+        tail: { frequency: 329.63, duration: 0.24, gain: 0.024 * carrierAccent, endFrequency: 293.66, delay: delayOffset + 0.14, attack: 0.01, body: 0.4, bodyGain: 0.4, type: 'sine' },
+      });
       return;
     }
-    this.mutationMarimbaStrike(token.activateHz, 0.18 * carrierAccent, delayOffset);
-    this.mutationMarimbaStrike(token.accentHz, 0.155 * carrierAccent, delayOffset + 0.05);
+    this.mutationMarimbaStrike(token.activateHz, 0.09 * carrierAccent, delayOffset);
+    this.mutationMarimbaStrike(token.accentHz, 0.07 * carrierAccent, delayOffset + 0.06);
     if (event.multiplierFactor === 4) {
-      this.mutationMarimbaStrike(token.activateHz * 2, 0.1 * carrierAccent, delayOffset + 0.1, 'sine');
+      this.mutationMarimbaStrike(token.activateHz * 2, 0.045 * carrierAccent, delayOffset + 0.13, 'sine');
     }
   }
 
@@ -390,7 +402,7 @@ export class AudioEngine {
     delay: number,
     type: OscillatorType = 'triangle',
   ): void {
-    this.tone({ frequency, duration: 0.145, gain, bus: 'mutation', delay, attack: 0.003, body: 0.45, bodyGain: 0.48, type }, true);
+    this.tone({ frequency, duration: 0.26, gain, bus: 'mutation', delay, attack: 0.009, body: 0.48, bodyGain: 0.5, type }, true);
   }
 
   /**
@@ -470,7 +482,7 @@ export class AudioEngine {
     const filter = context.createBiquadFilter();
     const gain = context.createGain();
     source.buffer = buffer;
-    filter.type = 'lowpass';
+    filter.type = options.filterType ?? 'lowpass';
     filter.frequency.setValueAtTime(options.cutoff ?? 720, start);
     filter.Q.setValueAtTime(0.7, start);
     gain.gain.setValueAtTime(0.0001, start);
