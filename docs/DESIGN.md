@@ -3,6 +3,73 @@
 > The current page-facing identity is the plain-text `TetraMorph`. Older `Tetra` and
 > `Tetris` headings below are retained only as historical contract provenance.
 
+## 2026-08-06 T34 — Responsive gravity instrument audio
+
+**Status: ACTIVE / CONTRACT FROZEN.** T34 replaces the accumulated per-effect audio
+styling with one original world rule: **TetraMorph is a calm, responsive gravity
+instrument.** Sound answers every meaningful action, but it never becomes a mineral
+striking demo, a hard-sci-fi alarm bank, an arcade explosion reel, or background music.
+
+The mix language is approximately 40% ambient electronic tone, 30% soft acoustic
+texture, 20% crystal/glass resonance, and 10% restrained mechanism. Perceived emphasis
+is monotonic: move < rotate < lock < clear < Mutation < four-line clear / completion.
+Loudness alone may not create that hierarchy; duration, harmonic width, low-frequency
+body, spatial tail, and temporary voice ownership carry the larger rewards.
+
+### Synthesis and routing contract
+
+- Keep the existing Web Audio implementation, deterministic sources, volume setting,
+  sixteen transient-voice ceiling, and close-on-destroy lifecycle. Do not add licensed
+  music, external samples, a sample pack, or a persistent browser/server dependency.
+- Replace the single undifferentiated effect path with five explicit buses:
+  **Gameplay**, **Reward**, **Mutation**, **Ambient**, and **UI**. Every cue names one
+  owner bus, and the master compressor remains the final safety boundary.
+- A designed cue may layer two oscillators, a small deterministic filtered-noise
+  texture, and a quiet delayed spatial tail. Layers share one semantic cue and must not
+  each masquerade as a separate gameplay event.
+- High-frequency controls stay concise and rate-limited. Resolution cues may suppress
+  same-frame lock/drop transients; a Mutation activation plays once per unique item in
+  the existing canonical event order. No active Mutation owns a sustained loop.
+- The Ambient bus is a barely audible procedural room tone, not music: Deep Tide is a
+  low-passed deep-sea/instrument breath, Mineral Mist is an airy crystalline haze, and
+  Sunstone is a warm, slow harmonic bed. It starts only after audio is primed, follows
+  the selected visual theme, obeys enable/volume, and stops without leaks.
+
+### Cue grammar
+
+- Move: a roughly 40 ms soft pluck with a trace of air around 220–280 Hz. Rotate: a
+  roughly 70 ms upward sweep with a muted click. Soft drop: a roughly 30 ms descending
+  air cue. These remain quieter than physical contact.
+- Hard drop: restrained 80 Hz body, soft 150 Hz impact, and a quiet upper spatial tail,
+  roughly 180 ms total. Ordinary lock is a shorter settle resonance and cannot sound
+  heavier than hard drop.
+- Clear rewards are distinct compositions rather than one chord transposed upward:
+  single is a soft crystal sweep, double adds a stable fifth, triple opens into a short
+  ascending pad and bell, and four-line clear becomes the branded 0.8–1.0 second
+  “space unfolding” moment with low body, open C/G harmony, and a glass tail. The
+  player must identify the clear size by contour even at modest volume.
+- Ice blooms with a few soft glass/snow particles and a slow pad, then ends with a
+  quiet thaw crack. Supergravity is one deep soft pulse with a 200→80 Hz descent and a
+  restrained reverse release; its five-piece gameplay ownership does not create a
+  sustained tone. Bomb uses pressure build, soft impact, and space tail rather than a
+  gunshot. Multiplier uses harmonic expansion: two notes for x2, three for x4.
+- Survival bedrock rise is a one-second low pad and movement texture, stone warning is
+  a natural low pulse rather than an alarm, and stone landing has more body than an
+  ordinary lock without becoming harsh.
+- UI hover remains silent. Confirmation is a very light tick; a modal transition is a
+  low soft swell. Entry countdown retains its accepted three-part cadence and is not
+  broadened by this phase.
+
+### Acceptance boundary
+
+T34 is accepted only when direct audio tests prove bus routing, deterministic layered
+schedules, hierarchy, same-frame suppression, theme ambience ownership, enable/volume
+behavior, the sixteen-voice transient cap, and complete cleanup. Final proof also needs
+one typecheck, one full suite, one production build, and one bounded browser pass that
+observes one Canvas, zero console errors, live audio routing, theme switching, and
+AudioContext teardown. Existing T27 evidence and `progress.md` are inherited and remain
+untouched and unstaged.
+
 ## 2026-08-06 T33 — Supergravity covers five pieces
 
 **Status: ACCEPTED.** Product source `60c3fdd`, rule-copy repair `909f904`, final

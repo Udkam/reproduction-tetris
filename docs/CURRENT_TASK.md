@@ -1,4 +1,68 @@
-# Current Task — T33 Supergravity Five-Piece Coverage
+# Current Task — T34 Responsive Gravity Instrument Audio
+
+Status: **ACTIVE 2026-08-06 — contract frozen; source not yet accepted**
+
+## Active objective
+
+Implement the supplied TetraMorph Sound Direction v2 as one coherent procedural audio
+system. The target feeling is a calm gravity instrument that gives unmistakable,
+positive response without harsh transients, generic arcade language, licensed music,
+or unrelated visual/gameplay changes.
+
+## Frozen behavior
+
+- Route cues through five named buses: Gameplay, Reward, Mutation, Ambient, and UI.
+  Preserve the master volume setting, enable/disable behavior, compressor safety path,
+  deterministic synthesis, sixteen transient-voice ceiling, and lifecycle cleanup.
+- Use layered synthesis where it materially improves identity: oscillator body,
+  secondary harmonic, filtered deterministic air/material texture, and a quiet spatial
+  tail. A layered cue is still one semantic event.
+- Preserve the feedback hierarchy `move < rotate < lock < clear < Mutation < four-line
+  clear/completion`. Resolve conflicts by event priority and ownership rather than by
+  piling every sound into the same frame.
+- Ship the high-value palette first: 1/2/3/4-line clears, hard drop/lock, Ice,
+  Supergravity, Bomb, and Multiplier. Then align movement/rotation/drop, Survival, UI,
+  and theme ambience to the same material language.
+- No Mutation sustained loop. No music. Theme ambience is a barely audible procedural
+  room tone that follows Deep Tide, Mineral Mist, or Sunstone and stops on disable or
+  teardown.
+- Entry countdown remains its accepted three-part cadence. This phase does not alter
+  Core rules, scoring, Mutation ownership, Puzzle content, Survival timing, page
+  layout, or renderer effects.
+
+## Ordered checkpoints
+
+1. **Contract** — `docs/DESIGN.md`, `docs/CURRENT_TASK.md`, and
+   `docs/phases/t34-responsive-gravity-audio.md` only.
+2. **Audio foundation** — `src/game/audio/AudioEngine.ts` and its direct test: five
+   buses, layered routing helpers, deterministic filtered texture, spatial tail, theme
+   ambience ownership, and cleanup.
+3. **Priority palette** — the same audio pair only: clear hierarchy, hard drop/lock,
+   and Mutation activation grammar.
+4. **Secondary palette and runtime bridge** — movement/rotation/drop, Survival, UI, and
+   the smallest runtime path needed to synchronize the existing visual theme. Exact
+   runtime/test paths must be named before editing.
+5. **Final proof** — one typecheck, one full suite, one build, one bounded browser
+   evidence pass, independent read-only QA, changelog/acceptance commits, then push.
+
+The normal ten-path/five-hundred-line checkpoint budget applies. Existing dirty
+`docs/evidence/t27/**`, `docs/evidence/t27-r1-followup/**`, and `progress.md` are inherited
+and must never be staged by T34.
+
+## Acceptance evidence required
+
+- Direct tests prove all five buses, deterministic schedules, priority suppression,
+  monotonic reward energy/contour, ambience theme synchronization, enable/volume
+  behavior, voice cap, and exact cleanup.
+- Live browser evidence demonstrates audio can prime, switch theme, mute/unmute, and
+  unmount without a console error or leaked AudioContext, while one gameplay Canvas is
+  retained.
+- Independent QA reviews the exact contract-to-candidate range. Until that verdict and
+  coordinator closure are recorded, T34 remains active and partial work stays partial.
+
+---
+
+# Previous Task — T33 Supergravity Five-Piece Coverage
 
 Status: **ACCEPTED 2026-08-06 — source `60c3fdd`, rule-copy repair `909f904`,
 evidence `b887994`; independent QA PASS**
