@@ -10,20 +10,6 @@ import { audioCue, type AudioCueId } from './audioPalette';
 
 type MutationActivation = Extract<GameEvent, { type: 'mutation-activated' }>;
 
-interface AmbientProfile {
-  filter: BiquadFilterType;
-  cutoff: number;
-  q: number;
-  gain: number;
-  seed: number;
-}
-
-interface AmbientVoice {
-  source: AudioBufferSourceNode;
-  filter: BiquadFilterNode;
-  gain: GainNode;
-}
-
 const FULL_VOLUME_MASTER_GAIN = 1.42;
 const MOVE_CUE_MIN_INTERVAL_MS = 58;
 const SOFT_DROP_CUE_MIN_INTERVAL_MS = 48;
@@ -42,38 +28,12 @@ const AUDIO_BUS_GAINS: Readonly<Record<AudioBus, number>> = Object.freeze({
   ambient: 0.14,
   ui: 0.7,
 });
-const AMBIENT_PROFILES: Readonly<Record<VisualThemeId, AmbientProfile>> = Object.freeze({
-  'deep-tide': Object.freeze({ filter: 'lowpass', cutoff: 180, q: 0.42, gain: 0.018, seed: 0xdee71de }),
-  'mineral-mist': Object.freeze({ filter: 'bandpass', cutoff: 680, q: 0.52, gain: 0.011, seed: 0x51a71e }),
-  sunstone: Object.freeze({ filter: 'lowpass', cutoff: 360, q: 0.38, gain: 0.014, seed: 0x5a5710 }),
-});
 const MUTATION_CUE_ORDER: Readonly<Record<MutationItem, number>> = Object.freeze({
   bomb: 0,
   freeze: 1,
   collapse: 2,
   multiplier: 3,
 });
-
-function fillDeterministicAir(target: Float32Array, seed: number): void {
-  let state = seed >>> 0;
-  let smoothed = 0;
-  for (let index = 0; index < target.length; index += 1) {
-    state ^= state << 13;
-    state ^= state >>> 17;
-    state ^= state << 5;
-    const white = ((state >>> 0) / 2147483648) - 1;
-    smoothed += (white - smoothed) * 0.08;
-    target[index] = smoothed;
-  }
-  const seam = Math.min(Math.floor(target.length / 4), 12_000);
-  for (let index = 0; index < seam; index += 1) {
-    const mix = index / Math.max(1, seam - 1);
-    const endIndex = target.length - seam + index;
-    const blended = target[index] * (1 - mix) + target[endIndex] * mix;
-    target[index] = blended;
-    target[endIndex] = blended;
-  }
-}
 
 export class AudioEngine {
   private context: AudioContext | null = null;
@@ -85,8 +45,6 @@ export class AudioEngine {
   private volume = 1;
   private lastMoveAt = Number.NEGATIVE_INFINITY;
   private lastSoftDropAt = Number.NEGATIVE_INFINITY;
-  private ambientTheme: VisualThemeId | null = null;
-  private ambientVoice: AmbientVoice | null = null;
   private readonly activeVoices = new Set<GestureVoice>();
   private readonly mutationVoices = new Set<GestureVoice>();
 
@@ -94,20 +52,12 @@ export class AudioEngine {
 
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
-    if (enabled) this.ensureAmbientLayer();
-    else {
-      this.stopMutationCue();
-      this.stopAmbientLayer();
-    }
+    if (!enabled) this.stopMutationCue();
     this.applyEffectsGain();
   }
 
-  setAmbientTheme(theme: VisualThemeId): void {
-    if (theme === this.ambientTheme) return;
-    this.stopAmbientLayer();
-    this.ambientTheme = theme;
-    this.ensureAmbientLayer();
-  }
+  /** Retained for runtime compatibility; T36 intentionally has no default ambient bed. */
+  setAmbientTheme(_theme: VisualThemeId): void {}
 
   setVolume(volume: number): void {
     this.volume = Math.max(0, Math.min(1, Number.isFinite(volume) ? volume : 1));
@@ -144,7 +94,6 @@ export class AudioEngine {
       this.compressor.connect(context.destination);
     }
     if (this.context.state === 'suspended') await this.context.resume();
-    this.ensureAmbientLayer();
   }
 
   suspend(): void { void this.context?.suspend(); }
@@ -219,7 +168,6 @@ export class AudioEngine {
 
   destroy(): void {
     this.stopMutationCue();
-    this.stopAmbientLayer();
     for (const voice of [...this.activeVoices]) {
       voice.stop(this.context?.currentTime);
       voice.disconnect();
@@ -299,42 +247,6 @@ export class AudioEngine {
       this.activeVoices.delete(voice);
     }
     this.mutationVoices.clear();
-  }
-
-  private ensureAmbientLayer(): void {
-    const context = this.context;
-    const destination = this.buses.ambient;
-    const theme = this.ambientTheme;
-    if (!this.enabled || !context || !destination || !theme || this.ambientVoice) return;
-    const profile = AMBIENT_PROFILES[theme];
-    const frames = Math.max(1, Math.round(context.sampleRate * 4));
-    const buffer = context.createBuffer(1, frames, context.sampleRate);
-    fillDeterministicAir(buffer.getChannelData(0), profile.seed);
-    const source = context.createBufferSource();
-    const filter = context.createBiquadFilter();
-    const gain = context.createGain();
-    source.buffer = buffer;
-    source.loop = true;
-    filter.type = profile.filter;
-    filter.frequency.setValueAtTime(profile.cutoff, context.currentTime);
-    filter.Q.setValueAtTime(profile.q, context.currentTime);
-    gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(profile.gain, context.currentTime + 0.8);
-    source.connect(filter);
-    filter.connect(gain);
-    gain.connect(destination);
-    source.start(context.currentTime);
-    this.ambientVoice = { source, filter, gain };
-  }
-
-  private stopAmbientLayer(): void {
-    const voice = this.ambientVoice;
-    if (!voice) return;
-    try { voice.source.stop((this.context?.currentTime ?? 0) + 0.05); } catch { /* already stopped */ }
-    voice.source.disconnect();
-    voice.filter.disconnect();
-    voice.gain.disconnect();
-    this.ambientVoice = null;
   }
 
   private applyMasterGain(): void {

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createBrowserPlatform } from '../../platform/browserPlatform';
 import type { GameEvent } from '../core';
 import { AudioEngine } from './AudioEngine';
+import { audioCue } from './audioPalette';
 
 class FakeAudioParam {
   value = 0;
@@ -153,7 +154,6 @@ const platformFor = (context = new FakeAudioContext(), now = () => 0) => createB
 
 const sourceCount = (): number => oscillators.length + buffers.length;
 const foregroundBufferCount = (): number => buffers.filter((source) => !source.loop).length;
-const voiceGains = (): FakeGain[] => gains.filter((gain) => gain.gain.rampTimes.length > 0);
 const mutation = (
   item: 'freeze' | 'collapse' | 'bomb' | 'multiplier',
   multiplierFactor?: 2 | 4,
@@ -188,31 +188,22 @@ describe('AudioEngine material feedback contract', () => {
     expect(compressors).toHaveLength(1);
 
     audio.play([{ type: 'piece-moved', piece: 'I', dx: 1, dy: 0, cause: 'move' }]);
-    expect(voiceGains()).toHaveLength(3);
-    expect(voiceGains().every((node) => node.connections[0] === gains[2])).toBe(true);
+    const cueGains = gains.slice(7);
+    expect(cueGains).toHaveLength(audioCue('move').layers.length);
+    expect(cueGains.every((node) => node.connections[0] === gains[2])).toBe(true);
   });
 
-  it('uses one deterministic, quiet theme ambience and replaces it cleanly', async () => {
+  it('keeps theme selection compatible without starting a persistent ambient voice', async () => {
     const audio = new AudioEngine(platformFor());
     audio.setAmbientTheme('deep-tide');
     await audio.prime();
 
-    expect(buffers).toHaveLength(1);
-    expect(buffers[0]?.loop).toBe(true);
-    expect(filters[0]?.type).toBe('lowpass');
-    expect(filters[0]?.frequency.setValues).toEqual([180]);
-    expect(gains.at(-1)?.gain.ramps).toEqual([0.018]);
-
+    expect(buffers).toHaveLength(0);
+    expect(filters).toHaveLength(0);
     audio.setAmbientTheme('mineral-mist');
-    expect(buffers[0]?.stops).toHaveLength(1);
-    expect(buffers[1]?.loop).toBe(true);
-    expect(filters[1]?.type).toBe('bandpass');
-    expect(filters[1]?.frequency.setValues).toEqual([680]);
-
     audio.setEnabled(false);
-    expect(buffers[1]?.stops).toHaveLength(1);
     audio.setEnabled(true);
-    expect(buffers[2]?.loop).toBe(true);
+    expect(buffers).toHaveLength(0);
   });
 
   it('keeps entry ownership with two short ticks and one longer resolve', async () => {
@@ -227,8 +218,11 @@ describe('AudioEngine material feedback contract', () => {
     audio.playEntryCountdown(1);
     const resolveEnd = Math.max(...oscillators.flatMap((node) => node.stops), ...buffers.flatMap((node) => node.stops));
 
-    expect(resolveEnd).toBeGreaterThan(tickEnd * 1.7);
-    expect(sourceCount()).toBe(9);
+    expect(resolveEnd).toBeGreaterThan(tickEnd + 0.1);
+    expect(sourceCount()).toBe(
+      audioCue('countdown-tick').layers.length * 2
+      + audioCue('countdown-resolve').layers.length,
+    );
   });
 
   it('rate-limits rapid movement while preserving a later tactile response', async () => {
@@ -264,12 +258,11 @@ describe('AudioEngine material feedback contract', () => {
     ]);
 
     expect(sourceCount()).toBeLessThanOrEqual(16);
-    expect(oscillators[0]?.frequency.setValues[0]).toBe(62);
-    expect(foregroundBufferCount()).toBe(6);
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 1_106)).toBe(true);
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 118)).toBe(true);
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 338)).toBe(true);
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 361)).toBe(false);
+    expect(foregroundBufferCount()).toBe(12);
+    expect(buffers[0]?.starts[0]).toBe(0);
+    expect(buffers[3]?.starts[0]).toBeCloseTo(0.035);
+    expect(buffers[6]?.starts[0]).toBeCloseTo(0.07);
+    expect(buffers[8]?.starts[0]).toBeCloseTo(0.105);
   });
 
   it('lets higher resolution cues own a frame instead of stacking contacts or clears', async () => {
@@ -282,9 +275,9 @@ describe('AudioEngine material feedback contract', () => {
       mutation('freeze'),
     ]);
 
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 58)).toBe(false);
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 282)).toBe(false);
-    expect(oscillators.some((node) => node.frequency.setValues[0] === 1_106)).toBe(true);
+    expect(oscillators).toHaveLength(0);
+    expect(buffers).toHaveLength(audioCue('freeze').layers.length);
+    expect(buffers.map((node) => node.starts[0])).toEqual([0, 0.025, 0.08]);
   });
 
   it('maps clear tiers, survival pressure, UI, and puzzle events to bounded gestures', async () => {

@@ -32,7 +32,7 @@ listening.
 
 1. `COMPLETE` — contract commits `ccd664d`, `6574b7e`, and `1cd3926`.
 2. `COMPLETE` — buffered procedural instrument foundation + focused tests.
-3. `IN PROGRESS` — complete palette landed; engine ambient removal remains.
+3. `COMPLETE` — complete procedural palette + silent-by-default engine integration.
 4. `PENDING` — isolated Mutation-status heading-glow cleanup.
 5. `PENDING` — WAV evidence + measurements.
 6. `PENDING` — final gates, browser evidence, independent QA, docs, push.
@@ -43,12 +43,14 @@ listening.
 - `npm.cmd run typecheck`: passed after the instrument foundation.
 - `npm.cmd run test -- src/game/audio/audioGesture.test.ts src/game/audio/audioPalette.test.ts`: 10 tests passed after the complete procedural palette replacement.
 - `npm.cmd run typecheck`: passed after the complete procedural palette replacement.
+- `npm.cmd run test -- src/game/audio/AudioEngine.test.ts src/game/audio/audioGesture.test.ts src/game/audio/audioPalette.test.ts`: 20 tests passed after removing the persistent ambient bed and updating engine-level T36 contracts.
+- `npm.cmd run typecheck`: passed after the silent-by-default engine integration.
 - Human listening is the final acceptance boundary.
 
 ## Next exact action
 
-Commit the complete palette checkpoint, then remove the default persistent ambient bed
-from `AudioEngine` while preserving its public theme and bus contracts.
+Commit the silent-by-default engine checkpoint, then remove only the visual glow behind
+the Mutation-status heading without changing its content or layout.
 
 ## Do not repeat
 
