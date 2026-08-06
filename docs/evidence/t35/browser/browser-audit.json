@@ -1,0 +1,23 @@
+{
+  "sourceSha": "0a044794411bdab4acbc50bedde8c3dba403e3b7",
+  "capturedAt": "2026-08-06T20:12:46.153Z",
+  "browser": "149.0.7827.55",
+  "audioInitial": {
+    "pressed": "true",
+    "volume": "100"
+  },
+  "mutedPressed": "false",
+  "audioFinal": {
+    "pressed": "true",
+    "volume": "72"
+  },
+  "runtime": {
+    "canvasCount": 1,
+    "domCellCount": 0,
+    "audioContexts": [
+      "running"
+    ],
+    "theme": "deep-tide"
+  },
+  "errors": []
+}
