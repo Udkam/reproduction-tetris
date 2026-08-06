@@ -1,6 +1,7 @@
 # Current Task — T33 Supergravity Five-Piece Coverage
 
-Status: **ACTIVE — contract checkpoint in progress**
+Status: **ACCEPTED 2026-08-06 — source `60c3fdd`, rule-copy repair `909f904`,
+evidence `b887994`; independent QA PASS**
 
 ## Active objective
 
@@ -45,6 +46,18 @@ while the fifth piece is airborne without changing that piece's landing behavior
 - Final: one typecheck, one full suite, one build, one bounded browser evidence pass,
   independent QA, changelog, exact-path commits, then push.
 - Inherited T27 evidence and `progress.md` remain untouched and unstaged.
+
+## Acceptance evidence
+
+- Focused App regression: `56 / 56` passed after the final localization repair.
+- Final quality gates: typecheck PASS; complete suite `388 passed / 8 skipped`; build
+  PASS with only the existing chunk-size advisory.
+- Browser audit at source `909f90421f332eb6a5ac301724fbceb029521cb7` records
+  `remaining: 4`, `landingLatched: true`, one gameplay canvas, and zero failures after
+  the first covered spawn.
+- Independent read-only QA confirms the five-piece Core/latch contract and the repaired
+  Chinese/English rule copy with no remaining P0-P3 finding.
+- The bounded Vite evidence service on port 5190 was stopped and the listener released.
 
 ---
 

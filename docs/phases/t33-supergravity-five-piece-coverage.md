@@ -1,6 +1,6 @@
 # T33 — Supergravity Five-Piece Coverage
 
-Status: **ACTIVE**
+Status: **ACCEPTED 2026-08-06**
 
 ## Goal
 
@@ -20,14 +20,23 @@ seconds, with deterministic preview/lock agreement across the fifth-piece bounda
 
 ## Acceptance matrix
 
-- [ ] The first through fifth post-award pieces use Supergravity projection and lock.
-- [ ] The sixth post-award piece uses normal projection and lock.
-- [ ] The fifth piece remains Supergravity-latched while airborne at quota 0.
-- [ ] Move, rotate, pause, row-wise entry, and ticks do not consume extra quota.
-- [ ] Re-award refreshes future coverage to 5 and preserves the current latch.
-- [ ] Mutation status copy is correct in Chinese and English and contains no countdown.
-- [ ] Deterministic replay, typecheck, full tests, build, and browser evidence pass.
-- [ ] Independent QA reports no P0-P3 finding before acceptance and push.
+- [x] The first through fifth post-award pieces use Supergravity projection and lock.
+- [x] The sixth post-award piece uses normal projection and lock.
+- [x] The fifth piece remains Supergravity-latched while airborne at quota 0.
+- [x] Move, rotate, pause, row-wise entry, and ticks do not consume extra quota.
+- [x] Re-award refreshes future coverage to 5 and preserves the current latch.
+- [x] Mutation status copy is correct in Chinese and English and contains no countdown.
+- [x] Deterministic replay, typecheck, full tests, build, and browser evidence pass.
+- [x] Independent QA reports no P0-P3 finding before acceptance and push.
+
+## Accepted candidate
+
+- Product source: `60c3fdd`.
+- Rule-copy repair: `909f904`.
+- Current-source browser evidence: `b887994` with one Canvas and zero failures.
+- Final gates: typecheck PASS; `388 passed / 8 skipped`; build PASS.
+- Independent read-only QA: PASS after verifying both localization paths and evidence
+  provenance.
 
 ## Checkpoint order
 

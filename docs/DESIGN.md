@@ -5,10 +5,12 @@
 
 ## 2026-08-06 T33 — Supergravity covers five pieces
 
-**Status: ACTIVE.** Mutation Supergravity changes from elapsed-time ownership to a
-deterministic five-piece budget. Clearing a Supergravity carrier sets the number of
-future covered spawns to five. A spawn atomically consumes one unit and copies the
-effect into that active piece's immutable landing latch.
+**Status: ACCEPTED.** Product source `60c3fdd`, rule-copy repair `909f904`, final
+browser evidence `b887994`, and independent read-only QA all pass. Mutation
+Supergravity changes from elapsed-time ownership to a deterministic five-piece budget.
+Clearing a Supergravity carrier sets the number of future covered spawns to five. A
+spawn atomically consumes one unit and copies the effect into that active piece's
+immutable landing latch.
 
 The remaining budget and the active-piece latch are deliberately different state:
 

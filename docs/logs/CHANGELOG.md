@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-08-06 — T33 five-piece Supergravity coverage accepted
+
+- Replaced Mutation Supergravity's elapsed-time ownership with a deterministic budget
+  covering the next five successfully spawned tetrominoes. Each claimed piece keeps an
+  immutable landing latch through projection and lock, so the fifth piece remains
+  Supergravity-active after the visible future quota reaches zero; the sixth is normal.
+- Re-triggering refreshes the future quota to five without altering the airborne piece.
+  Status and Chinese/English rule copy now communicate pieces rather than seconds.
+- Product source `60c3fdd`, rule-copy repair `909f904`, and current-source evidence
+  `b887994` pass typecheck, the full suite (`388 passed / 8 skipped`), build, and the
+  bounded browser audit (`remaining: 4`, active latch true, one Canvas, zero failures).
+- Independent read-only QA reports PASS with no remaining P0-P3 finding. The evidence
+  server was stopped and port 5190 released; inherited T27 evidence and `progress.md`
+  remain untouched and unstaged.
+
 ## 2026-08-06 — T31-R1/R3 final current-tree acceptance
 
 - Re-captured T31 against current `main`, replacing stale evidence provenance with
