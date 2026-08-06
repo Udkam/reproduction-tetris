@@ -47,7 +47,9 @@ export interface ScheduleGestureOptions {
   onVoiceEnd?: (voice: GestureVoice) => void;
 }
 
-const SILENCE = 0.0001;
+// Web Audio cannot ramp exponentially to literal zero. Keep the floor far below
+// audibility so a freshly primed filter cannot turn its first sample into a click.
+const SILENCE = 0.000001;
 
 function deterministicNoise(target: Float32Array, seed: number): void {
   let state = (seed >>> 0) || 0x6d2b79f5;
@@ -120,6 +122,7 @@ function scheduleResonator(
   const end = start + layer.duration;
   const oscillator = context.createOscillator();
   const gain = context.createGain();
+  gain.gain.value = SILENCE;
   oscillator.type = layer.waveform ?? 'sine';
   oscillator.frequency.setValueAtTime(Math.max(1, layer.frequency), start);
   if (layer.endFrequency) {
@@ -149,6 +152,7 @@ function scheduleAir(
   const source = context.createBufferSource();
   const filter = context.createBiquadFilter();
   const gain = context.createGain();
+  gain.gain.value = SILENCE;
   source.buffer = buffer;
   filter.type = layer.filter;
   filter.frequency.setValueAtTime(Math.max(1, layer.startFrequency), start);

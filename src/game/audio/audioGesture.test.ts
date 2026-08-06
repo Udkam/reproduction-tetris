@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { gestureDuration, scheduleGesture, type AudioGesture } from './audioGesture';
 
 class FakeParam {
+  value = 1;
   readonly setValues: number[] = [];
   readonly ramps: number[] = [];
   setValueAtTime(value: number): void { this.setValues.push(value); }
@@ -84,8 +85,9 @@ describe('material audio gesture scheduler', () => {
     expect(first.filters[0]?.frequency.setValues).toContain(920);
     expect(first.filters[0]?.frequency.ramps).toContain(540);
     expect(first.buffers[0]?.samples).toEqual(second.buffers[0]?.samples);
-    expect(first.gains.every((gain) => gain.gain.setValues[0] === 0.0001)).toBe(true);
-    expect(first.gains.every((gain) => gain.gain.ramps.at(-1) === 0.0001)).toBe(true);
+    expect(first.gains.every((gain) => gain.gain.value === 0.000001)).toBe(true);
+    expect(first.gains.every((gain) => gain.gain.setValues[0] === 0.000001)).toBe(true);
+    expect(first.gains.every((gain) => gain.gain.ramps.at(-1) === 0.000001)).toBe(true);
   });
 
   it('respects the caller voice budget and reports lifecycle once', () => {

@@ -118,9 +118,9 @@ const MUTATION_CUES: Readonly<Record<'freeze' | 'supergravity' | 'bomb' | 'multi
     resonance(71, 0.22, 0.045, 0.16, 43),
   ], true),
   bomb: gesture('mutation', [
-    air(120, 660, 0.27, 0.028, 0, 'lowpass', 0x44, 0.2, 0.9),
+    air(96, 280, 0.27, 0.018, 0, 'bandpass', 0x44, 0.035, 0.86),
     resonance(62, 0.28, 0.095, 0.235, 42),
-    air(1_700, 390, 0.19, 0.04, 0.235, 'highpass', 0x45, 0.002, 0.22),
+    air(1_700, 540, 0.19, 0.014, 0.235, 'highpass', 0x45, 0.008, 0.22),
     resonance(211, 0.17, 0.027, 0.245, 164, 'triangle'),
   ], true),
   'multiplier-2': gesture('mutation', [
