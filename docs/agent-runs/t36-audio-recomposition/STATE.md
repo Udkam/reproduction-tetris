@@ -30,8 +30,8 @@ listening.
 
 ## Checkpoints
 
-1. `IN PROGRESS` — contract files and this state.
-2. `PENDING` — buffered procedural instrument foundation + focused tests.
+1. `COMPLETE` — contract commits `ccd664d`, `6574b7e`, and `1cd3926`.
+2. `COMPLETE` — buffered procedural instrument foundation + focused tests.
 3. `PENDING` — complete palette and engine integration + focused tests.
 4. `PENDING` — isolated Mutation-status heading-glow cleanup.
 5. `PENDING` — WAV evidence + measurements.
@@ -39,13 +39,14 @@ listening.
 
 ## Verification state
 
-- No T36 source verification run yet.
+- `npm.cmd run test -- src/game/audio/audioGesture.test.ts`: 5 tests passed.
+- `npm.cmd run typecheck`: passed after the instrument foundation.
 - Human listening is the final acceptance boundary.
 
 ## Next exact action
 
-Commit the contract checkpoint with only the four declared T36 documentation paths,
-then implement the buffered procedural instrument foundation.
+Commit the instrument foundation with only `audioGesture.ts`, its direct test, and this
+state file; then replace the complete event palette.
 
 ## Do not repeat
 

@@ -7,6 +7,20 @@ interface GestureLayerBase {
   attack?: number;
 }
 
+export type ProceduralInstrument = 'felt' | 'impact' | 'ribbon' | 'glass' | 'shimmer' | 'pulse';
+
+export interface ProceduralLayer extends GestureLayerBase {
+  kind: 'procedural';
+  instrument: ProceduralInstrument;
+  frequency: number;
+  endFrequency?: number;
+  brightness?: number;
+  spread?: number;
+  seed?: number;
+  /** Fraction of the layer reserved for a smooth zero-ending release. */
+  release?: number;
+}
+
 export interface ResonatorLayer extends GestureLayerBase {
   kind: 'resonator';
   frequency: number;
@@ -25,7 +39,7 @@ export interface AirLayer extends GestureLayerBase {
   release?: number;
 }
 
-export type GestureLayer = ResonatorLayer | AirLayer;
+export type GestureLayer = ResonatorLayer | AirLayer | ProceduralLayer;
 
 export interface AudioGesture {
   bus: AudioBus;
@@ -50,6 +64,11 @@ export interface ScheduleGestureOptions {
 // Web Audio cannot ramp exponentially to literal zero. Keep the floor far below
 // audibility so a freshly primed filter cannot turn its first sample into a click.
 const SILENCE = 0.000001;
+const proceduralBufferCache = new WeakMap<BaseAudioContext, Map<string, AudioBuffer>>();
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
 
 function deterministicNoise(target: Float32Array, seed: number): void {
   let state = (seed >>> 0) || 0x6d2b79f5;
@@ -60,6 +79,146 @@ function deterministicNoise(target: Float32Array, seed: number): void {
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
     target[index] = (((value ^ (value >>> 14)) >>> 0) / 2147483648) - 1;
   }
+}
+
+function proceduralEnvelope(
+  index: number,
+  frameCount: number,
+  sampleRate: number,
+  attackSeconds: number,
+  releaseFraction: number,
+  decayPower: number,
+): number {
+  if (index <= 0 || index >= frameCount - 1) return 0;
+  const progress = index / (frameCount - 1);
+  const attackFrames = Math.max(1, Math.round(sampleRate * attackSeconds));
+  const attack = Math.sin(Math.min(1, index / attackFrames) * Math.PI * 0.5) ** 2;
+  const releaseStart = clamp(1 - releaseFraction, 0.08, 0.96);
+  const releaseProgress = clamp((1 - progress) / Math.max(0.001, 1 - releaseStart), 0, 1);
+  const release = Math.sin(releaseProgress * Math.PI * 0.5) ** 2;
+  return attack * release * Math.max(0, 1 - progress) ** decayPower;
+}
+
+function sampleFrequency(layer: ProceduralLayer, progress: number): number {
+  const start = Math.max(18, layer.frequency);
+  const end = Math.max(18, layer.endFrequency ?? start);
+  return start * ((end / start) ** progress);
+}
+
+/**
+ * Render one deterministic, bounded, mono procedural instrument voice. The generated
+ * buffer owns its complete onset/body/release contour, so playback needs only one
+ * AudioBufferSource and cannot multiply Web Audio nodes with internal partial count.
+ */
+export function renderProceduralSamples(layer: ProceduralLayer, sampleRate: number): Float32Array {
+  const safeRate = Math.max(1_000, Math.round(sampleRate));
+  const frameCount = Math.max(2, Math.round(safeRate * layer.duration));
+  const samples = new Float32Array(frameCount);
+  const noise = new Float32Array(frameCount);
+  deterministicNoise(noise, layer.seed ?? 0x544d3336);
+  const brightness = clamp(layer.brightness ?? 0.5, 0, 1);
+  const spread = clamp(layer.spread ?? 0.35, 0, 1);
+  const release = clamp(layer.release ?? 0.24, 0.04, 0.8);
+  const defaultAttack = layer.instrument === 'ribbon' || layer.instrument === 'shimmer' ? 0.012 : 0.003;
+  const attack = clamp(layer.attack ?? defaultAttack, 0.001, Math.max(0.001, layer.duration * 0.45));
+  let phase = 0;
+  let filteredNoise = 0;
+  let previousNoise = 0;
+
+  for (let index = 0; index < frameCount; index += 1) {
+    const progress = index / (frameCount - 1);
+    const frequency = sampleFrequency(layer, progress);
+    phase += (Math.PI * 2 * frequency) / safeRate;
+    const rawNoise = noise[index] ?? 0;
+    const noiseFollow = 0.015 + brightness * 0.11 + progress * spread * 0.08;
+    filteredNoise += (rawNoise - filteredNoise) * noiseFollow;
+    const highNoise = rawNoise - previousNoise * 0.82;
+    previousNoise = rawNoise;
+
+    let sample = 0;
+    let envelope = 0;
+    switch (layer.instrument) {
+      case 'felt': {
+        envelope = proceduralEnvelope(index, frameCount, safeRate, attack, release, 2.8);
+        const contact = filteredNoise * (0.42 + brightness * 0.28) * Math.max(0, 1 - progress * 5);
+        const body = Math.sin(phase) * 0.52
+          + Math.sin(phase * (2.07 + spread * 0.18) + 0.4) * 0.16
+          + Math.sin(phase * 3.41 + 1.1) * 0.055 * brightness;
+        sample = (body + contact) * envelope;
+        break;
+      }
+      case 'impact': {
+        envelope = proceduralEnvelope(index, frameCount, safeRate, attack, release, 1.65);
+        const body = Math.sin(phase) * 0.72 + Math.sin(phase * 1.58 + 0.3) * 0.18;
+        const contact = filteredNoise * (0.36 + brightness * 0.24) * Math.max(0, 1 - progress * 9);
+        sample = Math.tanh((body + contact) * (1.15 + spread * 0.45)) * envelope;
+        break;
+      }
+      case 'ribbon': {
+        envelope = proceduralEnvelope(index, frameCount, safeRate, attack, release, 0.45);
+        const motion = filteredNoise * (0.7 + brightness * 0.2) + highNoise * brightness * 0.12;
+        const contour = Math.sin(phase * (0.31 + spread * 0.08)) * 0.12;
+        sample = (motion + contour) * envelope;
+        break;
+      }
+      case 'glass': {
+        envelope = proceduralEnvelope(index, frameCount, safeRate, attack, release, 1.05);
+        const decay2 = Math.max(0, 1 - progress) ** (1.8 + brightness);
+        const decay3 = Math.max(0, 1 - progress) ** (2.7 + brightness * 1.4);
+        sample = (
+          Math.sin(phase) * 0.52
+          + Math.sin(phase * (2.37 + spread * 0.23) + 0.7) * 0.25 * decay2
+          + Math.sin(phase * (4.13 + spread * 0.41) + 1.6) * 0.13 * decay3
+          + filteredNoise * 0.045 * brightness * Math.max(0, 1 - progress * 4)
+        ) * envelope;
+        break;
+      }
+      case 'shimmer': {
+        envelope = proceduralEnvelope(index, frameCount, safeRate, attack, release, 0.72);
+        const opening = Math.sin(Math.min(1, progress * 4) * Math.PI * 0.5) ** 2;
+        const partialA = Math.sin(phase * (1.61 + spread * 0.19) + 0.2) * 0.34;
+        const partialB = Math.sin(phase * (2.73 + spread * 0.31) + 1.4) * 0.22 * opening;
+        const partialC = Math.sin(phase * (4.49 + spread * 0.37) + 2.1) * 0.11 * opening * brightness;
+        sample = (partialA + partialB + partialC + filteredNoise * 0.035) * envelope;
+        break;
+      }
+      case 'pulse': {
+        envelope = proceduralEnvelope(index, frameCount, safeRate, attack, release, 1.35);
+        const body = Math.sin(phase) * 0.65 + Math.sin(phase * (1.91 + spread * 0.12) + 0.5) * 0.17;
+        const breath = filteredNoise * 0.08 * brightness * Math.max(0, 1 - progress * 3);
+        sample = (body + breath) * envelope;
+        break;
+      }
+    }
+    samples[index] = Number.isFinite(sample) ? clamp(sample, -1, 1) : 0;
+  }
+
+  samples[0] = 0;
+  samples[frameCount - 1] = 0;
+  return samples;
+}
+
+function proceduralBufferKey(layer: ProceduralLayer, sampleRate: number): string {
+  return [
+    sampleRate, layer.instrument, layer.duration, layer.frequency, layer.endFrequency,
+    layer.brightness, layer.spread, layer.seed, layer.attack, layer.release,
+  ].join(':');
+}
+
+function getProceduralBuffer(context: BaseAudioContext, layer: ProceduralLayer): AudioBuffer {
+  let contextCache = proceduralBufferCache.get(context);
+  if (!contextCache) {
+    contextCache = new Map<string, AudioBuffer>();
+    proceduralBufferCache.set(context, contextCache);
+  }
+  const key = proceduralBufferKey(layer, context.sampleRate);
+  const cached = contextCache.get(key);
+  if (cached) return cached;
+  const samples = renderProceduralSamples(layer, context.sampleRate);
+  const buffer = context.createBuffer(1, samples.length, context.sampleRate);
+  buffer.getChannelData(0).set(samples);
+  contextCache.set(key, buffer);
+  return buffer;
 }
 
 function scheduleEnvelope(
@@ -170,6 +329,29 @@ function scheduleAir(
   return voice;
 }
 
+function scheduleProcedural(
+  context: BaseAudioContext,
+  destination: AudioNode,
+  layer: ProceduralLayer,
+  baseStart: number,
+  onEnd?: (voice: GestureVoice) => void,
+): GestureVoice {
+  const start = baseStart + (layer.delay ?? 0);
+  const end = start + layer.duration;
+  const source = context.createBufferSource();
+  const gain = context.createGain();
+  source.buffer = getProceduralBuffer(context, layer);
+  gain.gain.value = SILENCE;
+  gain.gain.setValueAtTime(Math.max(SILENCE, layer.gain), start);
+  gain.gain.setValueAtTime(SILENCE, end + 0.002);
+  source.connect(gain);
+  gain.connect(destination);
+  const voice = makeVoice(source, gain, [gain], onEnd);
+  source.start(start);
+  source.stop(end + 0.004);
+  return voice;
+}
+
 export function scheduleGesture(
   context: BaseAudioContext,
   destination: AudioNode,
@@ -182,7 +364,9 @@ export function scheduleGesture(
   for (const layer of gesture.layers.slice(0, maxVoices)) {
     const voice = layer.kind === 'resonator'
       ? scheduleResonator(context, destination, layer, startAt, options.onVoiceEnd)
-      : scheduleAir(context, destination, layer, startAt, options.onVoiceEnd);
+      : layer.kind === 'air'
+        ? scheduleAir(context, destination, layer, startAt, options.onVoiceEnd)
+        : scheduleProcedural(context, destination, layer, startAt, options.onVoiceEnd);
     voices.push(voice);
     options.onVoiceStart?.(voice);
   }

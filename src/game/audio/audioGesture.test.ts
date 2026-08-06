@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { gestureDuration, scheduleGesture, type AudioGesture } from './audioGesture';
+import {
+  gestureDuration,
+  renderProceduralSamples,
+  scheduleGesture,
+  type AudioGesture,
+  type ProceduralInstrument,
+} from './audioGesture';
 
 class FakeParam {
   value = 1;
@@ -72,6 +78,16 @@ const gesture: AudioGesture = {
   ],
 };
 
+const proceduralGesture: AudioGesture = {
+  bus: 'gameplay',
+  layers: [
+    {
+      kind: 'procedural', instrument: 'felt', frequency: 164, endFrequency: 128,
+      duration: 0.09, gain: 0.08, brightness: 0.38, spread: 0.42, seed: 36,
+    },
+  ],
+};
+
 describe('material audio gesture scheduler', () => {
   it('schedules resonators and deterministic filtered air without exposed zero-gain edges', () => {
     const first = fakeContext();
@@ -108,5 +124,47 @@ describe('material audio gesture scheduler', () => {
 
   it('computes the full delayed gesture duration', () => {
     expect(gestureDuration(gesture)).toBeCloseTo(0.08, 6);
+  });
+
+  it('renders every T36 instrument deterministically with finite zero endpoints', () => {
+    const instruments: ProceduralInstrument[] = ['felt', 'impact', 'ribbon', 'glass', 'shimmer', 'pulse'];
+    const signatures = new Set<string>();
+    for (const instrument of instruments) {
+      const layer = {
+        kind: 'procedural' as const,
+        instrument,
+        frequency: 173,
+        endFrequency: 121,
+        duration: 0.12,
+        gain: 0.08,
+        brightness: 0.57,
+        spread: 0.44,
+        seed: 42,
+      };
+      const first = renderProceduralSamples(layer, 8_000);
+      const second = renderProceduralSamples(layer, 8_000);
+      expect(first).toEqual(second);
+      expect(first[0]).toBe(0);
+      expect(first.at(-1)).toBe(0);
+      expect([...first].every(Number.isFinite)).toBe(true);
+      expect(Math.max(...first.map(Math.abs))).toBeLessThanOrEqual(1);
+      signatures.add([...first.slice(0, 64)].map((value) => value.toFixed(5)).join(','));
+    }
+    expect(signatures.size).toBe(instruments.length);
+  });
+
+  it('schedules one cached AudioBuffer voice for a procedural layer', () => {
+    const { context, sources, buffers, gains } = fakeContext();
+    const destination = new FakeNode() as unknown as AudioNode;
+    const first = scheduleGesture(context, destination, proceduralGesture);
+    const second = scheduleGesture(context, destination, proceduralGesture);
+
+    expect(first).toHaveLength(1);
+    expect(second).toHaveLength(1);
+    expect(sources).toHaveLength(2);
+    expect(buffers).toHaveLength(1);
+    expect(sources[0]?.buffer).toBe(sources[1]?.buffer);
+    expect(gains[0]?.gain.setValues).toContain(0.08);
+    expect(gains[0]?.gain.setValues.at(-1)).toBe(0.000001);
   });
 });
